@@ -612,6 +612,233 @@ sgi)
 		SYSTEM=IRIX
 		;;
 	6.3)
+		# The OS is updated with the 7.2 compilers,
+		# development environment, and latest patch set.
+
+		# Local packages section.
+
+		# New packages to load locally
+		echo "i c++_eoe.sw.lib"			>> "$LOCALPACKAGES"
+		echo "i c++_eoe.sw32.lib"		>> "$LOCALPACKAGES"
+		echo "i c_eoe.sw.lib"			>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.cpp"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.lboot"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.lib"		>> "$LOCALPACKAGES"
+		echo "i compiler_eoe.sw.unix"		>> "$LOCALPACKAGES"
+
+		# compiler_eoe.sw.unix has the following dependency
+		echo "i compiler_dev.hdr.lib"		>> "$LOCALPACKAGES"
+
+		# New local patches
+		# 6.3_O2 set
+		echo "i patchSG0002133.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002213.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002334.eoe_sw.xfs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002366.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002366.nfs3_sw.nfs3"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002366.nfs_sw.nfs"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002387.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002413.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002447.x_eoe_sw.Server"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002485.dmedia_eoe_sw.base" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002485.dmedia_eoe_sw.lib" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002537.desktop_base_sw.dso" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002537.desktop_base_sw.dso6_2" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002537.desktop_base_sw.ftrdso6_2" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002537.desktop_eoe_sw.envm" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002603.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002652.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002704.eoe_sw.gfx"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002715.compiler_eoe_sw.unix" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002747.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002757.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002796.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002801.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002838.eoe_sw.unix"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002933.eoe_sw.unix"	>> "$LOCALPACKAGES"
+
+		# 6.3_MIPSpro_7.2_Compilers set
+		echo "i patchSG0002752.c++_eoe_sw.lib"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.compiler_eoe_sw.cpp" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.compiler_eoe_sw.lib" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002752.compiler_eoe_sw.unix" \
+							>> "$LOCALPACKAGES"
+		echo "i patchSG0002773.compiler_eoe_sw.lib" \
+							>> "$LOCALPACKAGES"
+
+		# 6.3_POSIX set
+		echo "i patchSG0002420.eoe_sw.irix_lib"	>> "$LOCALPACKAGES"
+		echo "i patchSG0002420.eoe_sw64.lib"	>> "$LOCALPACKAGES"
+
+		# Install other new packages in symlink mode
+
+		# Install all packages from new distributions
+		echo "i A /install/fortran77-7.2/dist6.3:" \
+							>> "$LINKPACKAGES"
+		echo "i A /install/cc-7.2/dist6.3:"	>> "$LINKPACKAGES"
+		echo "i A /install/fortran90-7.2/dist6.3:" \
+							>> "$LINKPACKAGES"
+		echo "i A /install/c++-7.2/dist6.3:"	>> "$LINKPACKAGES"
+		echo "i A /install/dev_foundation/dist/dist6.3:" \
+							>> "$LINKPACKAGES"
+		echo "i A /install/dev_libs/dist/dist6.3:" \
+							>> "$LINKPACKAGES"
+
+		# But don't install identical packages
+		echo "keep same"			>> "$LINKPACKAGES"
+
+		# ...except for the following
+		echo "i ftn_eoe.sw.lib"			>> "$LINKPACKAGES"
+		echo "i ftn_eoe.sw64.lib"		>> "$LINKPACKAGES"
+
+		# Install everything from new patch sets
+		echo "i A /install/patches/6.3_O2:"	>> "$LINKPACKAGES"
+		echo "i A /install/patches/6.3_MIPSpro_7.2_Compilers:" \
+							>> "$LINKPACKAGES"
+		echo "i A /install/patches/6.3_POSIX:"	>> "$LINKPACKAGES"
+
+		# New packages to load locally, skip here
+		echo "di c++_eoe.sw.lib "		>> "$LINKPACKAGES"
+		echo "di c++_eoe.sw32.lib "		>> "$LINKPACKAGES"
+		echo "di c_eoe.sw.lib "			>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.cpp"		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.lboot "	>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.lib "		>> "$LINKPACKAGES"
+		echo "di compiler_eoe.sw.unix "		>> "$LINKPACKAGES"
+
+		# compiler_eoe.sw.unix has the following dependency:
+		echo "di compiler_dev.hdr.lib"		>> "$LINKPACKAGES"
+
+		# Skip all local patches
+		# 6.3_O2 set
+		echo "di patchSG0001759.desktop_eoe_sw.envm" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001894.x_eoe_sw.Server" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0001959.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0001974.eoe_sw.perf"	>> "$LINKPACKAGES"
+		echo "di patchSG0001995.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002009.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0002023.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002037.motif_eoe_sw.eoe" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002087.eoe_sw.irix_lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002087.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002090.x_eoe_sw.eoe"	>> "$LINKPACKAGES"
+		echo "di patchSG0002112.dmedia_eoe_sw.audio" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002112.dmedia_eoe_sw.base" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002112.dmedia_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002112.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002133.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002144.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002148.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002153.x_eoe_sw.eoe"	>> "$LINKPACKAGES"
+		echo "di patchSG0002180.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002213.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002232.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002244.desktop_eoe_sw.Confidence" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002244.dmedia_eoe_sw.base" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002275.desktop_base_sw.FileTypingRules" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002275.dmedia_eoe_sw.base" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002275.dmedia_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002275.media_warehouse_sw.viewers" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002279.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002288.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002288.eoe_sw.xfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002334.eoe_sw.xfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002366.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002366.nfs3_sw.nfs3"	>> "$LINKPACKAGES"
+		echo "di patchSG0002366.nfs_sw.nfs"	>> "$LINKPACKAGES"
+		echo "di patchSG0002387.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0002392.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002413.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002447.x_eoe_sw.Server" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002485.dmedia_eoe_sw.base" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002485.dmedia_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002537.desktop_base_sw.dso" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002537.desktop_base_sw.dso6_2" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002537.desktop_base_sw.ftrdso6_2" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002537.desktop_eoe_sw.envm" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002603.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002652.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0002704.eoe_sw.gfx"	>> "$LINKPACKAGES"
+		echo "di patchSG0002715.compiler_eoe_sw.unix" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002747.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002757.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002796.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002801.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002838.eoe_sw.unix"	>> "$LINKPACKAGES"
+		echo "di patchSG0002933.eoe_sw.unix"	>> "$LINKPACKAGES"
+
+		# 6.3_MIPSpro_7.2_Compilers set
+		echo "di patchSG0002752.c++_eoe_sw.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw.cpp" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.compiler_eoe_sw.unix" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002773.compiler_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+
+		# 6.3_POSIX set
+		echo "di patchSG0002420.eoe_sw.irix_lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002420.eoe_sw64.lib"	>> "$LINKPACKAGES"
+
+		# Punt conflicts
+		echo "di patchSG0002752.ftn77_eoe_sw64.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002752.ftn77_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002801.nfs_sw.dskless_client" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002747.nfs_sw.dskless_client" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002715.compiler_eoe_hdr.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw64.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn_dev_sw64.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn_dev_sw.lib"	>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw64.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.ftn77_eoe_sw.lib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002575.compiler_dev_sw.speclib" \
+							>> "$LINKPACKAGES"
+		echo "di patchSG0002180.nfs_sw.nis"	>> "$LINKPACKAGES"
+
 		MACHINE=O2
 		SYSTEM=IRIX
 		;;
