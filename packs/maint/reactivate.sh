@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.42 1999-06-01 20:27:58 mwhitson Exp $
+# $Id: reactivate.sh,v 1.43 1999-10-01 13:43:41 rbasch Exp $
 
 trap "" 1 15
 
@@ -97,14 +97,26 @@ if [ "$PUBLIC" = true ]; then
 fi
 
 # Restore password and group files
-if [ -f /etc/passwd.local ] ; then
-	cp -p /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
+if [ -s /etc/passwd.local ] ; then
+	cmp -s /etc/passwd.local /etc/passwd || {
+		cp -p /etc/passwd.local /etc/ptmp &&
+		/bin/mv -f /etc/ptmp /etc/passwd &&
+		sync
+	}
 fi
-if [ -f /etc/shadow.local ] ; then
-	cp -p /etc/shadow.local /etc/stmp && /bin/mv -f /etc/stmp /etc/shadow
+if [ -s /etc/shadow.local ] ; then
+	cmp -s /etc/shadow.local /etc/shadow || {
+		cp -p /etc/shadow.local /etc/stmp &&
+		/bin/mv -f /etc/stmp /etc/shadow &&
+		sync
+	}
 fi
-if [ -f /etc/group.local ] ; then
-	cp -p /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
+if [ -s /etc/group.local ] ; then
+	cmp -s /etc/group.local /etc/group || {
+		cp -p /etc/group.local /etc/gtmp &&
+		/bin/mv -f /etc/gtmp /etc/group &&
+		sync
+	}
 fi
 
 if [ "$full" = true ]; then
