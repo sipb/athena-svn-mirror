@@ -5,15 +5,12 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: probe $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.17 1993-11-24 14:39:07 probe Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.18 1994-08-01 15:46:57 probe Exp $
 /**/#
 
 #if defined(SYSLOG_COMPAT42)
-SYSLOG_LIB= ../clients/syslogd/syslog.o
+SYSLOG_OBJ= ../clients/syslogd/syslog.o
 SYSLOG_DEF= -I../clients/syslogd
-#else
-SYSLOG_LIB=
-SYSLOG_DEF=
 #endif
 
 XDEFS = $(SYSLOG_DEF) -DCONCURRENT
@@ -54,7 +51,7 @@ OBJS=	access.o \
 	zstring.o
 
 error_table(zsrv_err)
-SimpleProgram(zephyrd,$(OBJS) version.o $(ZLIB),$(ZLIBS) $(LIB_HES),$(ATHETCDIR))
+SimpleProgram(zephyrd,$(OBJS) version.o $(SYSLOG_OBJ) $(ZLIB),$(ZLIBS) $(LIB_HES),$(ATHETCDIR))
 install_man(zephyrd.8,zephyrd.8)
 install_file(default.subscriptions,$(ZLIBDIR))
 
