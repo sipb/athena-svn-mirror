@@ -4,18 +4,18 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v $
- *	$Author: jfc $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.25 1991-06-20 14:28:19 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.26 1991-07-02 14:54:13 lwvanels Exp $ */
 
 #ifndef lint
 static char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.25 1991-06-20 14:28:19 jfc Exp $";
+  "$Id: Zinternal.c,v 1.26 1991-07-02 14:54:13 lwvanels Exp $";
 static char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -58,7 +58,6 @@ ZSubscription_t *__subscriptions_list;
 int __subscriptions_num;
 int __subscriptions_next;
 void (*__Z_debug_print) Zproto((const char *fmt, va_list args, void *closure));
-pointer __Z_debug_print_closure;
 
 #define min(a,b) ((a)<(b)?(a):(b))
 
@@ -870,7 +869,7 @@ Zconst char *Zconst ZNoticeKinds[] = { "UNSAFE", "UNACKED", "ACKED", "HMACK",
 					 "CLIENTACK", "STAT", };
 
 #undef Z_debug
-#ifdef Z_Varargs
+#ifdef Z_varargs
 void Z_debug (va_alist) va_dcl
 {
     va_list pvar;
