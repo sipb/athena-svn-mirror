@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.4 1990-07-20 14:50:14 probe Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.5 1990-08-30 13:17:10 epeisach Exp $
  */
 
 /*
@@ -27,6 +27,10 @@
 #if !defined(AIX) && !defined(_AUX_SOURCE)
 #define	RVD
 #define UFS
+#endif
+/* hack, we don't have the necessary header files yet */
+#ifdef ultrix
+#undef RVD
 #endif
 #define ZEPHYR
 #define HESIOD
