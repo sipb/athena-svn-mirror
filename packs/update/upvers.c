@@ -1,0 +1,89 @@
+#include	<sys/types.h>
+#include	<sys/dir.h>
+#include	<ctype.h>
+
+struct	verfile {
+	int	mjr;	/* Major Version Number */
+	int	mnr; 	/* Minor Version Number */
+	int	deg;	/* Version Designation Char */
+} vf[20];
+
+main(argc, argv)
+int	argc;
+char	*argv[];
+{
+
+	DIR	*dp;
+	int	n = 0, i;
+	int	oldmjr, oldmnr, newmjr, newmnr;
+	int	olddeg, newdeg, start, end, vcmp();
+	char	file[10];
+	extern	int	errno;
+	struct	direct	*dirp;
+
+	if (argc < 4) 
+		puts("Usage: verup <old-vers> <new-vers> <libdir>"), exit(2);
+
+	if (chdir(argv[3]) == -1) 
+		perror(argv[3]), exit(1);
+ 	oldmjr = atoi(index(argv[1], '.') - 1);
+	oldmnr = atoi(rindex(argv[1], '.') + 1);
+	if (isalpha(argv[1][strlen(argv[1]) - 1]))
+		olddeg = argv[1][strlen(argv[1]) - 1];
+		
+	newmjr = atoi(index(argv[2], '.') - 1);
+	newmnr = atoi(rindex(argv[2], '.') + 1);
+	if (isalpha(argv[2][strlen(argv[2]) - 1]))
+		newdeg = argv[2][strlen(argv[2]) - 1];
+		
+	if ((dp = opendir(".")) == NULL)
+		puts("Cannot open ."), exit(2);
+		
+	while (dirp = readdir(dp)) {
+		if(isdigit(dirp->d_name[0])) {
+			vf[n].mjr = atoi(index(dirp->d_name, '.') - 1);
+			vf[n].mnr = atoi(rindex(dirp->d_name, '.') + 1);
+			if (isalpha(dirp->d_name[strlen(dirp->d_name) - 1]))
+				vf[n].deg = dirp->d_name[strlen(dirp->d_name) - 1];
+			n++;
+		}
+	}
+	qsort(vf, n, sizeof(struct verfile), vcmp);
+	for (i = 0; i < n; i++) {
+		if (vf[i].mjr == oldmjr && vf[i].mnr == oldmnr && vf[i].deg == olddeg) 
+			start = i + 1;
+		if (vf[i].mjr == newmjr && vf[i].mnr == newmnr && vf[i].deg == newdeg) 
+			end = i;
+	}
+	if (end == 0) {
+		end = i - 1;
+		printf("Warning -- File for version %s not found.. Asuming file %d.%d%c.\n", argv[2], vf[end].mjr, vf[end].mnr, vf[end].deg);
+	}
+	for(i = start; i <= end; i++) {
+		sprintf(file, "%d.%d%c", vf[i].mjr, vf[i].mnr, vf[i].deg);
+		printf("Would be running %s\n", file);
+/*		system(file); */		
+	}
+}
+		
+vcmp(v1, v2)
+struct	verfile	*v1, *v2;
+{
+	if (v1->mjr == v2->mjr) {
+		if (v1->mnr == v2->mnr) {
+			if (v1->deg == v2->deg) {
+				return 0;
+			} else if (v1->deg > v2->deg) {
+				return 1;
+			} else return -1;
+		} else if(v1->mnr > v2->mnr) {
+			return 1;
+		} else return -1;
+	}
+	else if(v1->mjr > v2->mjr)
+		return 1;
+	else return -1;
+}
+			
+				
+		
