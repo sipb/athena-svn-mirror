@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.2 1991-01-15 18:08:24 lwvanels Exp $
+ *	$Id: polld.c,v 1.3 1991-01-16 13:32:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.2 1991-01-15 18:08:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.3 1991-01-16 13:32:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -41,6 +41,8 @@ char DaemonInst[20];
 #else
 # define P(s) ()
 #endif
+
+static int clean_up P(( int sig ));
 
 #undef P
 
