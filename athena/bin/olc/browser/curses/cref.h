@@ -27,6 +27,8 @@
  */
 
 
+#include <mit-copyright.h>
+
 /* General type definitions. */
 
 typedef int (*PROC)();				/* A pointer to a function. */
@@ -41,7 +43,7 @@ typedef int ERRCODE;				/* An error code. */
 #define LINE_LENGTH	200		/* Length of a line of text. */
 #define LOG_LENGTH      500             /* Length of log string*/
 #define	ERRSIZE		200		/* Size of an error message. */
-#define MAX_INDEX_LINES	(LINES - 12)	/* Number of index lines. */
+#define MAX_INDEX_LINES	(LINES - 9)	/* Number of index lines. */
 #define LOGIN_NAMESIZE  20              /* Maximum size of login name. */
 /* Structure describing a CREF entry. */
 
@@ -70,15 +72,21 @@ typedef struct tABBREV {
 
 /* Where things are. */
 
+#define	STOCK_ROOT	"/mit/olc-stock"
 #define	CREF_ROOT	"/mit/cref/Ref"
+
 #define	CONTENTS	".index"
 #define GLOBAL_ABBREV	"cref_abbrevs"
 #define USER_ABBREV	".crefrc"
 
 /* Other important definitions. */
 
+#define	STOCK_HEADER	"On-Line Consulting Browser"
+#define	STOCK_PROMPT	"olc_browser> "	/* Prompt string. */
+
 #define	CREF_HEADER	"Consultants' On-line Reference System"
 #define	CREF_PROMPT	"cref> "	/* Prompt string. */
+
 
 #define	CREF_ENTRY	"entry"		/* String for a file entry. */
 #define CREF_SUBDIR	"directory"	/* String for a directory entry. */
