@@ -1,19 +1,20 @@
 /*
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v $
- *	$Author: jweiss $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.9 1997-12-18 03:02:11 jweiss Exp $";
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.10 1998-03-17 03:56:34 cfields Exp $";
 
 #include "attach.h"
 #ifdef NFS
 
-nfs_attach(at, mopt, errorout)
+nfs_attach(at, mopt, errorout, mountpoint_list)
 	struct _attachtab *at;
 	struct mntopts	*mopt;
 	int errorout;
+	string_list **mountpoint_list;
 {
 	char fsname[BUFSIZ];
 	static char myhostname[BUFSIZ] = "";
