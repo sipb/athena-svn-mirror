@@ -49,7 +49,8 @@ start)
 		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
 
 		UPDATE_ROOT=/
-		export UPDATE_ROOT
+		SUNPLATFORM=`uname -m`
+		export UPDATE_ROOT SUNPLATFORM
 
 		. /srvd/usr/athena/lib/update/update-environment
 		. $CONFDIR/rc.conf
