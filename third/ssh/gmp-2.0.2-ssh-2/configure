@@ -1819,6 +1819,10 @@ rm -f conftest*
   a29k*-*-*)
     path="am29000"
     ;;
+  i[3456]86*-*-*elf | pentium-*-*elf)  # 386/486 running BSD or Linux with ELF
+    path="x86"
+    syntax_alternatives="$syntax_alternatives ELF_SYNTAX BSD_SYNTAX INTEL_SYNTAX"
+    ;;
   i[34]86*-*-linuxaout* | i[34]86*-*-linuxoldld* | \
   i[34]86*-*-*bsd*)         # 386/486 running BSD or Linux with a.out
     path="x86"
@@ -1972,7 +1976,7 @@ fi
 
 # Check whether an underscore gets prepended in names
 echo $ac_n "checking whether underscore gets prepended in C function names""... $ac_c" 1>&6
-echo "configure:1976: checking whether underscore gets prepended in C function names" >&5
+echo "configure:1980: checking whether underscore gets prepended in C function names" >&5
 if eval "test \"`echo '$''{'ac_cv_c_underscore'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2012,7 +2016,7 @@ path="$path generic"
 if test '!' -d mpn; then mkdir mpn; fi
 
 echo $ac_n "checking asm code""... $ac_c" 1>&6
-echo "configure:2016: checking asm code" >&5
+echo "configure:2020: checking asm code" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_asm_status'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2166,7 +2170,7 @@ if test "$ac_cv_gmp_asm_status" = "FAILED"; then
 fi
 
 echo $ac_n "checking asm links""... $ac_c" 1>&6
-echo "configure:2170: checking asm links" >&5
+echo "configure:2174: checking asm links" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_asm_links'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2176,7 +2180,7 @@ fi
 echo "$ac_t""done" 1>&6
 
 echo $ac_n "checking asm sources""... $ac_c" 1>&6
-echo "configure:2180: checking asm sources" >&5
+echo "configure:2184: checking asm sources" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_asm_files'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2186,7 +2190,7 @@ fi
 echo "$ac_t""done" 1>&6
 
 echo $ac_n "checking asm objects""... $ac_c" 1>&6
-echo "configure:2190: checking asm objects" >&5
+echo "configure:2194: checking asm objects" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_asm_objs'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2196,7 +2200,7 @@ fi
 echo "$ac_t""done" 1>&6
 
 echo $ac_n "checking asm syntax""... $ac_c" 1>&6
-echo "configure:2200: checking asm syntax" >&5
+echo "configure:2204: checking asm syntax" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_asm_syntax'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2205,7 +2209,7 @@ fi
 
 echo "$ac_t""$ac_cv_gmp_asm_syntax" 1>&6
 echo $ac_n "checking asm syntax header""... $ac_c" 1>&6
-echo "configure:2209: checking asm syntax header" >&5
+echo "configure:2213: checking asm syntax header" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_asm_syntax_h'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2215,7 +2219,7 @@ fi
 echo "$ac_t""$ac_cv_gmp_asm_syntax_h" 1>&6
 
 echo $ac_n "checking for gmp-mparam.h""... $ac_c" 1>&6
-echo "configure:2219: checking for gmp-mparam.h" >&5
+echo "configure:2223: checking for gmp-mparam.h" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_mparam'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2239,7 +2243,7 @@ fi
 echo "$ac_t""$ac_cv_gmp_mparam" 1>&6
 
 echo $ac_n "checking other objs""... $ac_c" 1>&6
-echo "configure:2243: checking other objs" >&5
+echo "configure:2247: checking other objs" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_other_objs'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2267,7 +2271,7 @@ fi
 echo "$ac_t""done" 1>&6
 
 echo $ac_n "checking other sources""... $ac_c" 1>&6
-echo "configure:2271: checking other sources" >&5
+echo "configure:2275: checking other sources" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_other_files'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2277,7 +2281,7 @@ fi
 echo "$ac_t""done" 1>&6
 
 echo $ac_n "checking other links""... $ac_c" 1>&6
-echo "configure:2281: checking other links" >&5
+echo "configure:2285: checking other links" >&5
 if eval "test \"`echo '$''{'ac_cv_gmp_other_links'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2299,7 +2303,7 @@ fi
 MPN_OBJS="$ac_cv_gmp_asm_objs $ac_cv_gmp_other_objs"
 
 echo $ac_n "checking links to mpz sources in mpbsd""... $ac_c" 1>&6
-echo "configure:2303: checking links to mpz sources in mpbsd" >&5
+echo "configure:2307: checking links to mpz sources in mpbsd" >&5
 mpz_files="add.c cmp.c dmincl.c gcd.c mul.c pow_ui.c powm.c sqrtrem.c sub.c"
 if test '!' -d mpbsd; then mkdir mpbsd; fi
 for file in $mpz_files; do

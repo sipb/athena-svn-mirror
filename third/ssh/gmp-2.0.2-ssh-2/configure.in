@@ -118,6 +118,10 @@ case "$host" in
   a29k*-*-*)
     path="am29000"
     ;;
+  i[3456]86*-*-*elf | pentium-*-*elf)  # 386/486 running BSD or Linux with ELF
+    path="x86"
+    syntax_alternatives="$syntax_alternatives ELF_SYNTAX BSD_SYNTAX INTEL_SYNTAX"
+    ;;
   i[34]86*-*-linuxaout* | i[34]86*-*-linuxoldld* | \
   i[34]86*-*-*bsd*)         # 386/486 running BSD or Linux with a.out
     path="x86"

@@ -15,8 +15,11 @@ output to the system log.
 */
 
 /*
- * $Id: log-server.c,v 1.1.1.1 1997-10-17 22:26:02 danw Exp $
+ * $Id: log-server.c,v 1.1.1.2 1998-01-24 01:25:21 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  1998/01/02 06:18:49  kivinen
+ * 	Fixed kerberos ticket name handling.
+ *
  * Revision 1.4  1997/04/17 04:05:51  kivinen
  * 	Added return to end of syslog_severity to remove warning about
  * 	it.
@@ -277,7 +280,8 @@ static void do_fatal_cleanups()
       if (ticket)
 	{
 	  if (strcmp(ticket,"none"))
-	    unlink(ticket);
+	    /* ticket -> FILE:path */
+	    unlink(ticket + 5);
 	  else
 	    ticket = NULL;
 	}

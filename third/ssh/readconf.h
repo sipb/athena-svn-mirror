@@ -14,8 +14,11 @@ Functions for reading the configuration file.
 */
 
 /*
- * $Id: readconf.h,v 1.1.1.1 1997-10-17 22:26:15 danw Exp $
+ * $Id: readconf.h,v 1.1.1.2 1998-01-24 01:25:38 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  1998/01/02 06:20:12  kivinen
+ * 	Added xauthlocation option.
+ *
  * Revision 1.6  1997/04/23 00:01:35  kivinen
  * 	Added number_of_password_prompts and clear_all_forwardings
  * 	fields.
@@ -109,6 +112,7 @@ typedef struct
   /* Remote TCP/IP forward requests. */
   int num_remote_forwards;
   Forward remote_forwards[SSH_MAX_FORWARDS_PER_DIRECTION];
+  char *xauth_path;
 } Options;
 
 
