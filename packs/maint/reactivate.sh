@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.25 1996-06-06 17:51:36 ghudson Exp $
+# $Id: reactivate.sh,v 1.26 1996-06-06 19:19:13 ghudson Exp $
 
 trap "" 1 15
 
@@ -156,45 +156,7 @@ if [ "${RVDCLIENT}" = "true" ]; then
 fi
 
 # Perform an update if appropriate
-if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then 
-	/srvd/auto_update reactivate
-elif [ -f /srvd/.rvdinfo ]; then
-	NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
-	VERSION=`awk '{a=$5}; END{print a}' /etc/athena/version`
-	if [ "${NEWVERS}" != "${VERSION}" ]; then
-		cat <<EOF
-The workstation software version ($VERSION) does not match the
-version on the system packs ($NEWVERS).  A new version of software
-may be available.  Please contact Athena Operations (x3-1410) to
-have your workstation updated.
-EOF
-		if [ ! -f /usr/tmp/update.check -a -f /usr/ucb/logger ]; then
-			/usr/ucb/logger -t `hostname` -p user.notice at revision $VERSION
-			cp /dev/null /usr/tmp/update.check
-		fi
-	elif [ -s "$NEW_PRODUCTION_RELEASE" ]; then
-		V="$NEW_PRODUCTION_RELEASE"
-		cat <<EOF
-A new Athena release ($V) is available.  Since it may be
-incompatible with your workstation software, your workstation
-is still using the old system packs.  Please contact Athena
-Operations (x3-1410) to have your workstation updated.
-EOF
-	fi
-fi
-
-if [ -s "$NEW_TESTING_RELEASE" ]; then
-	if [ -s "$NEW_PRODUCTION_RELEASE" ]; then echo; fi
-	V="$NEW_TESTING_RELEASE"
-	cat << EOF
-A new Athena release ($V) is now in testing.  You are
-theoretically interested in this phase of testing, but
-because there may be bugs which would inconvenience
-your work, you must update to this release manually.
-Please contact Athena Operations (x3-1410) if you have
-not received instructions on how to do so.
-EOF
-fi
+/srvd/auto_update reactivate
 
 fi				# END time-consuming stuff
 
