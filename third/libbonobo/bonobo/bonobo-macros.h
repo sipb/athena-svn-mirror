@@ -28,8 +28,9 @@ static void								\
 type_as_function ## _class_init_trampoline (gpointer klass,		\
 					    gpointer data)		\
 {									\
-	parent_class = g_type_class_ref (parent_type_macro);		\
-	type_as_function ## _class_init (klass);			\
+	parent_class = (parent_type ## Class *)g_type_class_ref (	\
+		parent_type_macro);					\
+	type_as_function ## _class_init ((type ## Class *)klass);	\
 }									\
 GType									\
 type_as_function ## _get_type (void)					\

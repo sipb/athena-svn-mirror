@@ -2,7 +2,8 @@
 BonoboObject
 
 <!-- ##### SECTION Short_Description ##### -->
-Base object for wrapping Bonobo::Unknown derived objects.
+Base object for wrapping Bonobo::Unknown derived objects. Implements
+<xref linkend="bonobo-unknown-img"/>.
 
 <!-- ##### SECTION Long_Description ##### -->
 
@@ -14,10 +15,14 @@ Base object for wrapping Bonobo::Unknown derived objects.
   libbonobo-2.0, it strongly deprecates #BonoboXObject.
 </para>
 
-<para>
-  Again if you are looking to implement a CORBA interface you want to 
-see #BonoboXObject.
-</para>
+<figure id="bonobo-unknown-img">
+    <title>The Bonobo::Unknown interface</title>
+    <mediaobject>
+	<imageobject>
+	    <imagedata fileref="unknown.png" format="PNG"/>
+	</imageobject>
+    </mediaobject>
+</figure>
 
 <para>
   The <classname>Bonobo::Unknown</classname> interface (wrapped by
@@ -197,7 +202,7 @@ Returns the #GtkType for the BonoboObject object.
 
 
 
-<!-- ##### TYPEDEF BonoboObject ##### -->
+<!-- ##### STRUCT BonoboObject ##### -->
 <para>
 
 </para>
@@ -468,4 +473,20 @@ Returns the #GtkType for the BonoboObject object.
 @parent: 
 @prefix: 
 
+
+<!-- ##### SIGNAL BonoboObject::destroy ##### -->
+<para>
+
+</para>
+
+@bonoboobject: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboObject::system-exception ##### -->
+<para>
+
+</para>
+
+@bonoboobject: the object which received the signal.
+@arg1: 
+@arg2: 
 

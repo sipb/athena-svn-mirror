@@ -15,6 +15,7 @@
 G_BEGIN_DECLS
 
 typedef struct _BonoboMonikerPrivate BonoboMonikerPrivate;
+typedef struct _BonoboMoniker        BonoboMoniker;
 
 #define BONOBO_TYPE_MONIKER        (bonobo_moniker_get_type ())
 #define BONOBO_MONIKER_TYPE        BONOBO_TYPE_MONIKER /* deprecated, you should use BONOBO_TYPE_MONIKER */
@@ -23,11 +24,11 @@ typedef struct _BonoboMonikerPrivate BonoboMonikerPrivate;
 #define BONOBO_IS_MONIKER(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), BONOBO_TYPE_MONIKER))
 #define BONOBO_IS_MONIKER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_MONIKER))
 
-typedef struct {
+struct _BonoboMoniker {
         BonoboObject         object;
 	
 	BonoboMonikerPrivate *priv;
-} BonoboMoniker;
+};
 
 typedef struct {
 	BonoboObjectClass      parent_class;

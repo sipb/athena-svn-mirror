@@ -1,3 +1,15 @@
+libbonobo 2.2.1
+
+	* Bugs fixed
+		+ macro statement issues with g++ (Martin Kretzschmar)
+		+ IDL pre-processing for portability (Bill Haneman)
+		+ gettext domain issue (Hidetoshi Tajima)
+		+ build fixage (Thomas Vander Stichele)
+	* Features
+		+ very much improved documentation (Gustavo Carneiro)
+	* Translations
+		+ mn, eo, id, ro (Christian Rose, Marius Andreiana)
+
 libbonobo 2.2.0
 
 	* Features

@@ -1,3 +1,155 @@
+2003-06-12  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.2.3
+
+2003-06-10  Dan Winship  <danw@ximian.com>
+
+	* bonobo/bonobo-property-bag-client.h: Oops, fix prototype too
+
+2003-06-09  Dan Winship  <danw@ximian.com>
+
+	* bonobo/bonobo-property-bag-client.c
+	(bonobo_pbclient_set_boolean): another gboolean vs CORBA_boolean
+	bug.
+
+2003-05-29  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-property-bag-client.c
+	(bonobo_pbclient_get_boolean): fix a nasty with
+	CORBA_boolean vs. 'gboolean'.
+
+2003-05-20  Telsa Gwymme  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.on: Added cy (Welsh) to ALL_LINGUAS.
+
+2003-05-19  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.2.2
+
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
+
+2003-04-08  Raphael Finkel <raphael@cs.uky.edu>
+
+	* configure.in: Added "yi" in ALL_LINGUAS
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "ml" in ALL_LINGUAS
+
+2003-03-14  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.2.1
+
+2003-03-11  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* bonobo/bonobo-macros.h (BONOBO_BOILERPLATE): insert explicit
+	casts in class_init_trampoline for C++ compatibility
+
+	* bonobo/bonobo-arg.h (BONOBO_ARG_GET_STRING)
+	(BONOBO_ARG_SET_STRING): disable typechecks for
+	__STRICT_ANSI__ and C++
+
+2003-03-08  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eo" to ALL_LINGUAS.
+
+2003-03-07  Bill Haneman <bill.haneman@sun.com>
+
+	* idl/Bonobo.idl:
+	* idl/Bonobo_Property.idl:
+	Replaced #if !defined(FOO) with #ifndef(FOO), for more
+	IDL portability.  Fixes bug #107729.
+
+2003-02-28  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* bonobo/bonobo-exception.c (BONOBO_EXPLICIT_TRANSLATION_DOMAIN):
+	* bonobo/bonobo-moniker.c (BONOBO_EXPLICIT_TRANSLATION_DOMAIN):
+	* bonobo/bonobo-moniker-util.c (BONOBO_EXPLICIT_TRANSLATION_DOMAIN):
+	use GETTEXT_PACKAGE instead of PACKAGE (#107228).
+	Michael: back-port - got missed somehow.
+
+2003-03-04  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-arg.h: update macros.
+
+2003-02-19  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* monikers/bonobo-moniker-std.c (bonobo_std_moniker_factory): idem.
+
+	* monikers/bonobo-moniker-oaf.c (bonobo_moniker_oaf_resolve): idem.
+
+	* monikers/bonobo-moniker-new.c (bonobo_moniker_new_resolve): idem.
+
+	* monikers/bonobo-moniker-item.c (bonobo_moniker_item_resolve): idem.
+
+	* monikers/bonobo-moniker-query.c (bonobo_moniker_query_resolve): idem.
+
+	* monikers/bonobo-moniker-extender-stream.c (bonobo_stream_extender_resolve):
+	Wrap g_warnings and g_messages in #ifdef G_ENABLE_DEBUG / #endif.
+
+2003-02-18  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/tmpl/bonobo-item-handler.sgml: Corrected the
+	BonoboItemHandler example to ref() the object being returned.
+
+	* monikers/bonobo-moniker-extender-stream.c (bonobo_stream_extender_resolve):
+	Replace a couple of invalid uses of g_warning with g_message.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
+2003-02-05  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/libbonobo-docs.sgml: Include monikers-overview.xml. This
+	file is a simple conversion of doc/Monikers from bonobo-1.x
+	distribution. It was written quite some time ago, but most of it
+	still applies and provides fascinating insight on bonobo moniker
+	architecture.
+
+	* doc/api/Makefile.am (content_files): Added monikers-overview.xml.
+
+2003-02-03  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/libbonobo.hierarchy: Removed from version control, since
+	it is a purely generated file.
+
+	* doc/api/libbonobo.signals: Removed from version control, since
+	it is a purely generated file.
+
+	* doc/api/tmpl/bonobo-object.sgml: Removed the comment "if you are
+	looking to implement a CORBA interface you want to see
+	#BonoboXObject"; It doesn't make much sense since libbonobo 2.0.
+
+	* doc/api/libbonobo-sections.txt: Removed the 'bonobo-transient'
+	section.
+
+	* doc/api/Makefile.am (HTML_IMAGES): Added unknown.png.
+
+	* doc/api/tmpl/bonobo-object.sgml: Include figure with the
+	Bonobo::Unknown interface.
+
+	* doc/api/figures/Makefile.am (diagrams): Added unknown.dia.
+
+2003-01-23  Thomas Vander Stichele <thomas@apestaart.org>
+
+ 	* configure.in: fix aclocal maintainer mode 
+
+2003-01-22  Marius Andreiana <marius galuna.ro>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-21  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/Makefile.am (SCAN_OPTIONS): Changed --deprecated-guards
+	option value to BONOBO_DISABLE_DEPRECATED, as it should be.
+
 2003-01-20  Michael Meeks  <michael@ximian.com>
 
 	* Version 2.2.0
@@ -10,6 +162,20 @@
 
 	* configure.in: Added German (de), Farsi (fa),
 	Macedonian (mk) and Dutch (nl) to ALL_LINGUAS
+
+2003-01-18  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/libbonobo.types: Declare list of types of GObjecs to be
+	scanned.
+
+	* doc/api/Makefile.am: Enable scanning of GObjects for signals,
+	parameters, and object hierarchy.
+
+	* bonobo/bonobo-persist.h, bonobo/bonobo-storage-memory.h,
+	  bonobo/bonobo-item-container.h, bonobo/bonobo-moniker.h,
+	  bonobo/bonobo-listener.h, bonobo/bonobo-event-source.h,
+	  bonobo/bonobo-object.h, bonobo/bonobo-running-context.h: Split
+	  struct declaration from typedef, otherwise gtkdoc gets confused.
 
 2003-01-16  Daniel Yacob <locales@geez.org>
 
@@ -246,7 +412,7 @@
 
 	* idl/*.idl: add dummy padding.
 
-2002-05-27  Gustavo Gir·ldez  <gustavo.giraldez@gmx.net>
+2002-05-27  Gustavo Gir√°ldez  <gustavo.giraldez@gmx.net>
 
 	* configure.in: add a --enable-debug parameter to compile the
 	debugging code.
@@ -469,7 +635,7 @@
 	(BONOBO_PROPERTY_WRITABLE): add for people who like
 	sueing other people.
 
-2002-02-01  Tomasz K≥oczko  <kloczek@pld.org.pl>
+2002-02-01  Tomasz K¬≥oczko  <kloczek@pld.org.pl>
 
 	* monikers/Makefile.am: small fix for automake 1.5.
 
@@ -2206,7 +2372,7 @@ Tue Nov 20 21:14:15 2001  Owen Taylor  <otaylor@redhat.com>
 	* bonobo/bonobo-moniker-util.c (url_to_name): Implemented
 	this for ORBit2.
 
-2001-07-09  Lutz M¸ller  <urc8@rz.uni-karlsruhe.de>
+2001-07-09  Lutz M√ºller  <urc8@rz.uni-karlsruhe.de>
 
         * bonobo/bonobo-stream-memory.[c,h]: Make mem_[get,set]_info
         functional.
@@ -2491,7 +2657,7 @@ Sat Jun 30 14:53:52 2001  Jonathan Blandford  <jrb@redhat.com>
 	* bonobo/bonobo-property-bag.c (bonobo_property_bag_add_gtk_args): 
 	Update to match new GObject property retrieval API.
 
-2001-06-19  HÈctor GarcÌa ¡lvarez <hector@scouts-es.org>
+2001-06-19  H√©ctor Garc√≠a √Ålvarez <hector@scouts-es.org>
 
 	* configure.in: added "es" for Spanish to $ALL_LINGUAS
 

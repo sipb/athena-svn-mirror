@@ -14,7 +14,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 DOC_SOURCE_DIR=../../bonobo
 
 # Extra options to supply to gtkdoc-scan.
-SCAN_OPTIONS=--deprecated-guards="G_DISABLE_DEPRECATED"
+SCAN_OPTIONS=--deprecated-guards="BONOBO_DISABLE_DEPRECATED"
 
 # Extra options to supply to gtkdoc-mkdb.
 MKDB_OPTIONS=--sgml-mode --output-format=xml
@@ -32,18 +32,26 @@ IGNORE_HFILES=
 # Images to copy into HTML directory.
 HTML_IMAGES = figures/persist.png figures/persist-file.png\
 	      figures/persist-storage.png figures/persist-stream.png\
-              figures/stream.png figures/storage.png
+              figures/stream.png figures/storage.png figures/unknown.png
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
-content_files = faq.xml debugging.xml properties.xml refcounting.xml
+content_files = faq.xml debugging.xml properties.xml refcounting.xml\
+		monikers-overview.xml
 
 # Other files to distribute.
 extra_files =
 
-# CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
-# contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS =
-GTKDOC_LIBS =
+
+# CFLAGS and LDFLAGS for compiling scan program. Only needed
+# if $(DOC_MODULE).types is non-empty.
+GTKDOC_CFLAGS =						\
+	@CFLAGS@					\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	$(LIBBONOBO_CFLAGS)				\
+	-I$(top_srcdir)					\
+	-I$(top_builddir)
+
+GTKDOC_LIBS = $(top_builddir)/bonobo/libbonobo-2.la $(LIBBONOBO_LIBS)
 
 GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
 GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)

@@ -35,6 +35,7 @@ typedef void  (*BonoboObjectPOAFn) (PortableServer_Servant servant,
 				    CORBA_Environment     *ev);
 
 typedef struct _BonoboObjectPrivate BonoboObjectPrivate;
+typedef struct _BonoboObject        BonoboObject;
 
 typedef struct {
 	GObject              base;             /* pointer + guint + pointer */
@@ -46,7 +47,7 @@ typedef struct {
 #define BONOBO_OBJECT_SIGNATURE   0xaef2
 #define BONOBO_SERVANT_SIGNATURE  0x2fae
 
-typedef struct {
+struct _BonoboObject {
 	/* A GObject and its signature of type BonoboObjectHeader */
 	GObject              base;             /* pointer + guint + pointer */
 	BonoboObjectPrivate *priv;             /* pointer */
@@ -57,7 +58,7 @@ typedef struct {
 	guint                dummy;            /* guint   */
 	Bonobo_Unknown       corba_objref;     /* pointer */
 	guint                servant_signature;
-} BonoboObject;
+};
 
 typedef struct {
 	GObjectClass parent_class;

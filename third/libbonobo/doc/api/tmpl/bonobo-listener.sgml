@@ -90,7 +90,7 @@ connect_to_keyboard_source (Bonobo_EventSource *keyboard)
 </para>
 
 
-<!-- ##### TYPEDEF BonoboListener ##### -->
+<!-- ##### STRUCT BonoboListener ##### -->
 <para>
 
 </para>

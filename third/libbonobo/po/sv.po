@@ -2,13 +2,13 @@
 # Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.2 2003-01-29 20:04:36 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2.2.1 2003-07-24 18:43:25 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
-"PO-Revision-Date: 2003-01-02 19:51+0100\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"PO-Revision-Date: 2003-02-06 02:00+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -85,15 +85,13 @@ msgstr "Objektet är inget lagringsutrymme"
 msgid "Storage is not empty"
 msgstr "Lagringsutrymmet är inte tomt"
 
-# SUN CHANGED MESSAGE
 #: bonobo/bonobo-exception.c:210
 msgid "malformed user interface XML description"
-msgstr "felaktig beskrivning av XML-användargränssnitt"
+msgstr "felaktig XML-beskrivning av användargränssnitt"
 
-# SUN CHANGED MESSAGE
 #: bonobo/bonobo-exception.c:213
 msgid "invalid path to XML user interface element"
-msgstr "ogiltig sökväg till element för XML-användargränssnitt"
+msgstr "ogiltig sökväg till XML-element för användargränssnitt"
 
 #: bonobo/bonobo-exception.c:216
 msgid "the requested UI attribute didn't exist"
@@ -200,12 +198,12 @@ msgstr "allmän objektmoniker"
 msgid "stream MonikerExtender"
 msgstr "strömmonikerutökare"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
 msgstr "Undantag vid aktivering av \"%s\""
 
-#: monikers/bonobo-moniker-oaf.c:60
+#: monikers/bonobo-moniker-oaf.c:62
 #, c-format
 msgid "Failed to activate '%s'"
 msgstr "Misslyckades med att aktivera \"%s\""

@@ -110,13 +110,6 @@ eog_image_data_construct (EogImageData *image_data)
 
 </para>
 
-@persist: 
-@is_dirty: 
-@save_fn: 
-@load_fn: 
-@types_fn: 
-@closure: 
-@priv: 
 
 <!-- ##### USER_FUNCTION BonoboPersistStreamIOFn ##### -->
 <para>
