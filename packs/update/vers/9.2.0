@@ -1,34 +1,55 @@
 #!/bin/sh
 
-case "$HOSTTYPE" in
-sun4)
-  echo "MINIROOT=true"					>> $CONFVARS
-  echo "NEWOS=true"					>> $CONFVARS
-  echo "NEWDEVS=true"					>> $CONFVARS
-  echo "OSCHANGES=true"					>> $CONFVARS
+echo "MINIROOT=true"					>> $CONFVARS
+echo "NEWOS=true"					>> $CONFVARS
+echo "NEWDEVS=true"					>> $CONFVARS
+echo "OSCHANGES=true"					>> $CONFVARS
 
-  cat "$LIBDIR/solaris9.1-9.2"				>> $DEADFILES
-  cat "$LIBDIR/solaris28-pkgs"				>> $OLDPKGS
-  cat "$LIBDIR/solaris28-ptchs"				>> $OLDPTCHS
+cat "$LIBDIR/solaris9.1-9.2"				>> $DEADFILES
+cat "$LIBDIR/solaris28-pkgs"				>> $OLDPKGS
+cat "$LIBDIR/solaris28-ptchs"				>> $OLDPTCHS
 
-  # This file will be inaccurate after we remove the pkgs and patches.
-  echo "/var/sadm/install/contents"			>> $DEADFILES
+# This file will be inaccurate after we remove the pkgs and patches.
+echo "/var/sadm/install/contents"			>> $DEADFILES
 
-  # Create the lists of packages and patches to install.
-  cat "$LIBDIR/solaris9.2"			> "$PACKAGES"
+# Create the lists of packages and patches to install.
+cat "$LIBDIR/solaris9.2"				> $PACKAGES
 
-  echo "/etc/mail/sendmail.cf"				>> "$CONFCHG"
-  echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
-  ;;
+echo "113319-05"					> $PATCHES
+echo "112785-12"					>> $PATCHES
+echo "112970-03"					>> $PATCHES
+echo "112963-06"					>> $PATCHES
+echo "112233-04"					>> $PATCHES
+echo "112964-03"					>> $PATCHES
+echo "112764-04"					>> $PATCHES
+echo "113033-03"					>> $PATCHES
+echo "113333-02"					>> $PATCHES
+echo "113923-02"					>> $PATCHES
+echo "113993-01"					>> $PATCHES
+echo "113718-01"					>> $PATCHES
+echo "114135-01"					>> $PATCHES
+echo "114133-01"					>> $PATCHES
+echo "113575-03"					>> $PATCHES
+echo "113713-02"					>> $PATCHES
+echo "112902-11"					>> $PATCHES
+echo "113277-05"					>> $PATCHES
+echo "112908-07"					>> $PATCHES
+echo "112540-09"					>> $PATCHES
+echo "112620-03"					>> $PATCHES
+echo "112621-05"					>> $PATCHES
+echo "112622-08"					>> $PATCHES
+echo "113096-02"					>> $PATCHES
+echo "113098-04"					>> $PATCHES
 
-sgi)
-  ;;
-esac
+echo "/etc/minor_perm"					>> $CONFCHG
+echo "/etc/driver_aliases"				>> $CONFCHG
+echo "/etc/devlink.tab"					>> $CONFCHG
+echo "/etc/mail/sendmail.cf"				>> $CONFCHG
+echo "/etc/ntp.conf"					>> $CONFCHG
+echo "/etc/sshd_config"					>> $CONFCHG
+echo "/etc/athena/named.conf"				>> $CONFCHG
+echo "/var/spool/cron/crontabs/root"			>> $CONFCHG
 
-echo "/etc/ntp.conf"					>> "$CONFCHG"
-echo "/etc/sshd_config"					>> "$CONFCHG"
-echo "/etc/athena/named.conf"				>> "$CONFCHG"
-
-echo "/etc/afsd"					>> "$DEADFILES"
-echo "/etc/init.d/athena"				>> "$DEADFILES"
-echo "/etc/rc2.d/S90athena"				>> "$DEADFILES"
+echo "/etc/afsd"					>> $DEADFILES
+echo "/etc/init.d/athena"				>> $DEADFILES
+echo "/etc/rc2.d/S90athena"				>> $DEADFILES
