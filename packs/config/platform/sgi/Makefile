@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:01:02 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-12-18 18:18:34 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -38,7 +38,7 @@ install:
 	install -c -m 0644 fonts.dir ${DESTDIR}${FONTS}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${ETCDIR}
-	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 nodelock ${DESTDIR}${NETLS}
 	install -c -m 0644 passwd.fallback ${DESTDIR}${ETCDIR}
