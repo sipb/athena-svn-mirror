@@ -1,3 +1,21 @@
+Version 0.7, 2001-02-12
+-----------------------
+ * Applied patch from Frederic Crozat <fcrozat@mandrakesoft.com>. This
+   fixes some problems related to glibc and setuid apps. 
+
+
+Version 0.6, 2001-02-12
+-----------------------
+ * Applied patch from George <jirka@5z.com>: Some sanity checks,
+   checks for Xsync, and more.
+
+
+Version 0.5, 2001-01-31
+-----------------------
+ * Applied patch from George <jirka@5z.com>: xalf-capplet now
+   correctly sets up "invisible window" as default. 
+
+
 Version 0.4, 2000-06-18
 -----------------------
  * Added GNOME Control Center capplet. 

@@ -241,10 +241,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-launch-feedback-capplet.o: launch-feedback-capplet.c ../config.h
-launch-feedback.o: launch-feedback.c ../config.h
-xalf-capplet.o: xalf-capplet.c ../config.h
-
 info-am:
 info: info-am
 dvi-am:

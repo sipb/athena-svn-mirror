@@ -1,4 +1,4 @@
-Xalf 0.4 (http://www.lysator.liu.se/~altic/projects/xalf/)
+Xalf 0.7 (http://www.lysator.liu.se/~astrand/projects/xalf/)
 ----------------------------------------------------------
 
 This a utility to provide feedback when starting X11 applications.
@@ -99,7 +99,7 @@ COMMANDLINE OPTIONS
 
 Comments and bug-reports are appreciated. 
 
-/Peter Åstrand <altic@lysator.liu.se>
+/Peter Åstrand <astrand@lysator.liu.se>
 
 
 

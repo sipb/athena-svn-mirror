@@ -87,7 +87,7 @@ xalfoff_LDADD = -lXmu -lXt -lSM -lICE -lXext -lX11 -lXext -L/usr/X11R6/lib @GTK_
 
 INCLUDES = @GTK_CFLAGS@ 
 
-CFLAGS = -Wall
+CFLAGS = -Wall -DLIBDIR=\""$(libdir)"\"
 
 EXTRA_DIST = hourglass.xpm splash.xpm hgcursor.h hgcursor_mask.h getopt.h 	sp1.xpm sp2.xpm sp3.xpm sp4.xpm sp5.xpm sp6.xpm sp7.xpm sp8.xpm sp9.xpm 
 
@@ -247,13 +247,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-getopt.o: getopt.c ../config.h
-getopt1.o: getopt1.c ../config.h getopt.h
-xalf.o: xalf.c ../config.h getopt.h hourglass.xpm splash.xpm hgcursor.h \
-	hgcursor_mask.h sp1.xpm sp2.xpm sp3.xpm sp4.xpm sp5.xpm sp6.xpm \
-	sp7.xpm sp8.xpm sp9.xpm
-xalfoff.o: xalfoff.c
-
 info-am:
 info: info-am
 dvi-am:

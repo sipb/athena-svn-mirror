@@ -10,7 +10,7 @@
  * */
  
 #undef DEBUG 
-//#define DEBUG
+/* #define DEBUG /**/
 
 #ifdef DEBUG
 #   define DPRINTF(args) fprintf args
@@ -31,67 +31,88 @@
 
 
 #define PID_PROPERTY_NAME "XALF_LAUNCH_PID"
-#define PRELOAD_LIBRARY "libxalflaunch.so.0"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
 
 static void *pfXMapWindow = NULL;
 static void *pfXMapRaised = NULL;
-static void *dlhX11 = NULL;
 static void restore_env();
-static const char *pid_string;
-static long int launch_pid=0;
+static long int launch_pid = 0;
 
 void
 _init () {
+    char *pid_string;
+    void *dlh = NULL;
+
     DPRINTF ((stderr, "_init xalf_launch\n"));
-    dlhX11 = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
-    if (dlhX11 == NULL) 
-  	dlhX11 = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
-    if (dlhX11 == NULL)
-	fprintf (stderr, "libxalflaunch: %s\n", dlerror ());
-    pfXMapWindow = dlsym (dlhX11,"XMapWindow");
-    pfXMapRaised = dlsym (dlhX11,"XMapRaised");
-    DPRINTF ((stderr, "pfXMapWindow is at %p\n", pfXMapWindow));
 
     pid_string = getenv (PID_PROPERTY_NAME);
     if (pid_string)
 	launch_pid = atol (pid_string);
     DPRINTF ((stderr, "launch_pid is %ld\n", launch_pid));
+    if (launch_pid == 0) {
+        restore_env ();
+    }
+
+    dlh = dlopen (NULL, RTLD_GLOBAL | RTLD_NOW);
+    if (dlsym (dlh, "XSync") == NULL) {
+        DPRINTF ((stderr, "no XSync\n"));
+        return;
+    }
+
+    dlh = dlopen ("libX11.so", RTLD_GLOBAL | RTLD_NOW);
+    if (dlh == NULL) 
+  	dlh = dlopen ("libX11.so.6", RTLD_GLOBAL | RTLD_NOW); 
+    if (dlh == NULL)
+	fprintf (stderr, "libxalflaunch: %s\n", dlerror ());
+    if (dlh != NULL) {
+        pfXMapWindow = dlsym (dlh,"XMapWindow");
+        pfXMapRaised = dlsym (dlh,"XMapRaised");
+        dlclose (dlh);
+    }
+
+    DPRINTF ((stderr, "pfXMapWindow is at %p\n", pfXMapWindow));
+
+    restore_env ();
 }
 
 
-typedef Window (*XMType)(Display* display, Window w);
+typedef int (*XMType)(Display* display, Window w);
 
 
 extern int 
 XMapWindow (Display* display, Window w)                               
 {                                                                               
-    int i;
+    int i = 0;
     
-    i = ((XMType)pfXMapWindow)(display, w); 
+    if (pfXMapWindow != NULL)
+        i = ((XMType)pfXMapWindow)(display, w); 
 
-    restore_env();
-	
-    DPRINTF ((stderr, "XMapWindow: Sending signal to process %d\n", launch_pid));
     
-    kill (launch_pid, SIGUSR1);
+    /* we don't want to kill neither 0 nor init */
+    if (launch_pid > 1) {
+        DPRINTF ((stderr, "XMapWindow: Sending signal to process %d\n", launch_pid));
+        kill (launch_pid, SIGUSR1);
+        launch_pid = 0;
+    }
 	
     return i;                                                                   
 }
 
-
-
 extern int 
 XMapRaised (Display* display, Window w)                               
 {                                                                               
-    int i;
+    int i = 0;
     
-    i = ((XMType)pfXMapRaised)(display, w); 
+    if (pfXMapRaised != NULL)
+        i = ((XMType)pfXMapRaised)(display, w); 
     
-    restore_env();
-
-    DPRINTF ((stderr, "XMapRaised: Sending signal to process %d\n", launch_pid));
+    /* we don't want to kill neither 0 nor init */
+    if (launch_pid > 1) {
+        DPRINTF ((stderr, "XMapRaised: Sending signal to process %d\n", launch_pid));
     
-    kill (launch_pid, SIGUSR1);
+        kill (launch_pid, SIGUSR1);
+        launch_pid = 0;
+    }
 	
     return i;                                                                   
 }
@@ -131,8 +152,10 @@ restore_env()
     /* Find the substring PRELOAD_LIBRARY */
     p = strstr (newenv, PRELOAD_LIBRARY);
 
-    if (!p)
+    if (!p) {
+	free (envstring);
 	return;
+    }
 
     /* Find the string after the next colon */
     rest = strchr (p, ':');

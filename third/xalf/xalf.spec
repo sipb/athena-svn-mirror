@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.4
+%define ver      0.7
 %define rel      1
 %define prefix   /usr
 
@@ -9,9 +9,9 @@ Version: %ver
 Release: %rel
 Copyright: GPL
 Group: X11/Utilities
-Source: xalf-%{ver}.tar.gz
+Source: xalf-%{ver}.tgz
 #BuildRoot: /var/tmp/xalf-%{PACKAGE_VERSION}-root
-URL: http://www.lysator.liu.se/~altic/projects/xalf
+URL: http://www.lysator.liu.se/~astrand/projects/xalf
 
 %description
 This is a small utility to provide feedback when starting X11
@@ -21,6 +21,15 @@ Gnomes tasklist_applet or KDE Taskbar), an generic splashscreen, an
 hourglass attached to the mouse cursor or an animated star. 
 
 %changelog
+* Mon Feb 12 2001 Peter Åstrand <astrand@lysator.liu.se>
+- version 0.7 (yes, two releases on the same day!)
+
+* Mon Feb 12 2001 Peter Åstrand <astrand@lysator.liu.se>
+- version 0.6
+
+* Wed Jan 31 2001 Peter Åstrand <astrand@lysator.liu.se>
+- version 0.5
+
 * Sun Jun 18 2000 Peter Astrand <altic@lysator.liu.se>
 - version 0.4
 
@@ -52,7 +61,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 
-%doc AUTHORS FAQ COPYING ChangeLog NEWS README INSTALL extras
+%doc AUTHORS FAQ COPYING ChangeLog NEWS README INSTALL TODO BUGS extras 
 %{prefix}/lib/libxalflaunch.*
 %{prefix}/bin/xalf
 %{prefix}/bin/xalfoff

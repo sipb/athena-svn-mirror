@@ -6,6 +6,8 @@ libxalflaunch_la_SOURCES = xalflaunch.c
 
 libxalflaunch_la_LDFLAGS = -version-info 0:1:0
 
+CFLAGS = -DLIBDIR=\""$(libdir)"\"
+
 ##INCLUDES = -I$(top_srcdir)/intl @GDK_IMLIB_CFLAGS@ @XML_CFLAGS@ @GNOME_CFLAGS@ @GTK_CFLAGS@ -DDIA_SHEETDIR=\"$(sheetdir)\"
 
 ## INCLUDES = @GTK_CFLAGS@
