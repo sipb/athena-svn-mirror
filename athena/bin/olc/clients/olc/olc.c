@@ -23,19 +23,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.33 1991-11-05 14:03:10 lwvanels Exp $
+ *	$Id: olc.c,v 1.34 1992-01-10 20:02:11 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.33 1991-11-05 14:03:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.34 1992-01-10 20:02:11 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
+#include <olc/olc_tty.h>
 
 #include <signal.h>
 #include <sys/file.h>
