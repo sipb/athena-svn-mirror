@@ -19,12 +19,6 @@
  *      $Author: raeburn $
  */
 
-#ifndef lint
-static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.11 1990-01-10 13:53:15 raeburn Exp $";
-#endif
-
-
 #include <sys/time.h>		/* System time definitions. */
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/stat.h>		/* File status definitions. */
@@ -41,12 +35,19 @@ static const char rcsid[] =
 #include <olc/olc.h>
 #include <olcd.h>
 
+#ifndef lint
+static const char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.12 1990-01-10 15:10:45 raeburn Exp $";
+#endif
+
 static FILE *status_log = (FILE *)NULL;
 static FILE *error_log = (FILE *)NULL;
 static FILE *admin_log = (FILE *) NULL;
 
+#if __STDC__
 static ERRCODE terminate_log_crash (KNUCKLE *);
 static ERRCODE dispose_of_log (KNUCKLE *, int);
+#endif
 
 /*
  * Function:	write_line_to_log() writes a single line of text into a
