@@ -727,7 +727,10 @@ check_path(char *path, mode_t newmode)
 static void 
 dump_profile (TProfile *p, int one_only)
 {
+	char *tempname;
 	FILE *profile;
+	struct stat sb;
+	int err;
     
 	if (!p)
 		return;
@@ -762,10 +765,22 @@ dump_profile (TProfile *p, int one_only)
 			p->to_be_deleted = FALSE;
 			if(p==Current)
 				Current = NULL;
-		} else if (check_path(p->filename,0755) &&
-		    (profile = fopen (p->filename, "w")) != NULL){
-			dump_sections (profile, p->section);
-			fclose (profile);
+		} else {
+			tempname = g_strconcat (p->filename, ".new_tmp", NULL);
+			unlink (tempname);
+			if (check_path (tempname, 0755) &&
+			    (profile = fopen (tempname, "w")) != NULL) {
+				dump_sections (profile, p->section);
+				err = ferror(profile);
+				if (fclose (profile) != EOF && !err) {
+					if (lstat (p->filename, &sb) == 0
+					    && S_ISLNK (sb.st_mode))
+						unlink (p->filename);
+					rename (tempname, p->filename);
+				}
+				unlink (tempname);
+			}
+			g_free (tempname);
 		}
 	}
 	

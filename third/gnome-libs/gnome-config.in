@@ -111,6 +111,7 @@ cflags=false
 libs_L=false
 libs_l=false
 modversion=false
+moddatadir=false
 
 while test $# -gt 0; do
     case "$1" in
@@ -130,6 +131,9 @@ while test $# -gt 0; do
     --prefix)
 	echo $prefix
 	exit 0
+	;;
+    --moddatadir)
+        moddatadir=true
 	;;
     --*dir)
 	dirname=\$`echo $1 | sed -e 's,^--,,'`
@@ -202,8 +206,10 @@ while test $# -gt 0; do
     		cnf_libdir=\$${up_name}_LIBDIR
     		cnf_libs=\$${up_name}_LIBS
     		cnf_flags=\$${up_name}_INCLUDEDIR
+    		cnf_datadir=\$${up_name}_DATADIR
     		the_libs="$the_libs `eval echo $cnf_libdir` `eval echo $cnf_libs`"
     		the_flags="$the_flags `eval echo $cnf_flags`"
+    		the_datadir="`eval echo $cnf_datadir`"
 		error=false
 		break
     	    fi
@@ -222,6 +228,11 @@ fi
 
 if $libs_L || $libs_l; then
     all_flags="$all_flags $the_libs"
+fi
+
+if $moddatadir; then
+    echo $the_datadir
+    exit 0
 fi
 
 if $modversion; then

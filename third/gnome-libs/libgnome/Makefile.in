@@ -168,7 +168,7 @@ noinst_HEADERS =  	gnome-i18nP.h					gnome-triggersP.h				libgnomeP.h
 
 EXTRA_DIST = parse-path.cP 
 
-libgnome_la_LDFLAGS = -version-info 35:12:3 #-rpath $(libdir)
+libgnome_la_LDFLAGS = -version-info 36:1:4 #-rpath $(libdir)
 libgnome_la_LIBADD = $(GLIB_LIBS) -lm $(DL_LIB)
 
 bin_PROGRAMS = dns-helper gnome-dump-metadata gnome-moz-remote 	gconfigger gnome-gen-mimedb
