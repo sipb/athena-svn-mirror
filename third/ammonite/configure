@@ -4105,8 +4105,8 @@ echo "$ac_t""$socks_enabled" 1>&6
 
 
 
-AMMONITE_LIBDIR='-L${libdir}'
-AMMONITE_INCLUDEDIR='-I${includedir}'
+AMMONITE_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+AMMONITE_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}'
 AMMONITE_LIBS='-lammonite-gtk -lammonite'
 
 

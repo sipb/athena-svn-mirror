@@ -225,8 +225,8 @@ dnl
 dnl Variables used for ammoniteConf.sh
 dnl
 
-AMMONITE_LIBDIR='-L${libdir}'
-AMMONITE_INCLUDEDIR='-I${includedir}'
+AMMONITE_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+AMMONITE_INCLUDEDIR='-I$$ATHTOOLROOT${includedir}'
 AMMONITE_LIBS='-lammonite-gtk -lammonite'
 
 AC_SUBST(AMMONITE_LIBDIR)
