@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.6 1988-07-01 10:24:10 jtkohl Exp $";
+static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.7 1988-07-14 09:46:14 jtkohl Exp $";
 #endif lint
 
 #include <sys/uio.h>
@@ -307,7 +307,7 @@ mail_notify(mail)
 	notice.z_opcode = "NEW_MAIL";
 	notice.z_sender = 0;
 	notice.z_recipient = ZGetSender();
-	notice.z_default_format = "You have new mail:\n\nFrom: $1\nTo: $1\nSubject: $3";
+	notice.z_default_format = "You have new mail:\n\nFrom: $1\nTo: $2\nSubject: $3";
 
 	fields[0] = mail->from;
 	fields[1] = mail->to;
