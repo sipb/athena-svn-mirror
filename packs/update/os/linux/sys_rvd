@@ -1,6 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-# $Id: sys_rvd,v 1.3 1999-07-06 16:44:49 mwhitson Exp $
-	/core::::
+# $Id: sys_rvd,v 1.4 1999-08-12 15:45:31 danw Exp $
 	/etc:::
 		aliases
 		crontab
