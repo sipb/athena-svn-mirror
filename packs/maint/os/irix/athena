@@ -1,4 +1,4 @@
-# $Id: athena,v 1.3 1999-02-26 21:03:56 rbasch Exp $
+# $Id: athena,v 1.4 1999-02-27 00:01:01 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -76,8 +76,8 @@ $ECHO "Removing old attach mount points"
 detach -L -O -n -h -a
 
 if [ "$PUBLIC" = true ]; then
-	rm -f /var/athena/attachtab
-	touch /var/athena/attachtab
+	rm -f /var/athena/attachtab/mountpoints/*
+	rm -f /var/athena/attachtab/lockers/*
 fi
 
 if [ "$RVDCLIENT" = true ]; then
