@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.88 1997-05-17 08:44:18 ghudson Exp $
+ * $Id: login.c,v 1.89 1997-06-17 03:17:40 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.88 1997-05-17 08:44:18 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.89 1997-06-17 03:17:40 danw Exp $";
 #endif
 
 /*
@@ -735,7 +735,7 @@ main(argc, argv)
 		krbval = krb_get_pw_in_tkt(lusername, "", realm,
 				    "krbtgt", realm, KRBTKLIFETIME, pp2);
 #ifdef KRB5
-		{
+		if (krbval == 0) {
 		    krb5_error_code krb5_ret;
 		    char *etext;
 		    

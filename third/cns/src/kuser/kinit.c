@@ -346,20 +346,20 @@ main(argc, argv)
  
     if (!sflag) {
 #if defined(_WINDOWS) || defined(macintosh)
-    printf("Password: ");
-    get_input(password, sizeof(password), stdin);
+	printf("Password: ");
+	get_input(password, sizeof(password), stdin);
 #else
-    des_read_pw_string(password, BUFSIZ, "Password: ", 0);
+	des_read_pw_string(password, BUFSIZ, "Password: ", 0);
 #endif
 
-    if (pflag) {
-      k_errno = krb_get_pw_in_tkt_preauth(aname, inst, realm, "krbtgt", realm,
-					  lifetime, password);
-    } else {
-      k_errno = krb_get_pw_in_tkt(aname, inst, realm, "krbtgt", realm,
-				  lifetime, password);
-    }
-    {
+	if (pflag) {
+	    k_errno = krb_get_pw_in_tkt_preauth(aname, inst, realm, "krbtgt",
+						realm, lifetime, password);
+	} else {
+	    k_errno = krb_get_pw_in_tkt(aname, inst, realm, "krbtgt", realm,
+					lifetime, password);
+	}
+	if (k_errno == 0) {
 	    krb5_error_code retval;
 	    char	*etext;
 	    
@@ -370,7 +370,7 @@ main(argc, argv)
 		retval != KRB5KRB_AP_ERR_BAD_INTEGRITY) {
 		    com_err(argv[0], retval, etext);
 	    }
-    }
+	}
     } else { /* sflag is set, so we do snk4 support instead */
       /* for the SNK4 we have to get the ticket explicitly. */
 
