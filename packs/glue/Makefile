@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 1997-03-31 03:37:37 ghudson Exp $
+# $Id: Makefile,v 1.12 1997-03-31 17:57:13 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -50,7 +50,9 @@ SYMLINKS=	/mit/sipb			/usr/sipb \
 		${MOIRA}/man/man1/usermaint.1	${ATHMANDIR}/man1/usermaint.1 \
 		${MOIRA}/man/cat1/usermaint.1	${ATHMANDIR}/cat1/usermaint.1 \
 		${MOIRA}/man/man1/userreg.1	${ATHMANDIR}/man1/userreg.1 \
-		${MOIRA}/man/cat1/userreg.1	${ATHMANDIR}/cat1/userreg.1
+		${MOIRA}/man/cat1/userreg.1	${ATHMANDIR}/cat1/userreg.1 \
+		${MKSERV}/man/man8/mkserv.8	${ATHMANDIR}/man8/mkserv.8 \
+		${MKSERV}/man/cat8/mkserv.8	${ATHMANDIR}/cat8/mkserv.8
 
 all: ${ATTACHRUN} verify-message
 	cd platform/${HOSTTYPE} && ${MAKE} $@
