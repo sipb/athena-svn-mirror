@@ -10,14 +10,6 @@ Provides: krb5-server = 1.2.5
 The Kerberos secure net authentication system.
 
 %build
-
-if [ X$RPM_BUILD_ROOT = X ]; then
-cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-exit 1
-fi
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
 
@@ -25,15 +17,6 @@ cp athena-version src/appl/athena-version
 (cd src/appl; ../../do.sh -p -s /xxx -d $RPM_BUILD_ROOT all)
 
 %install
-
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install

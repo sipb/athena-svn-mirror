@@ -17,26 +17,9 @@ Athena workstation.
 %define extrashells %esh1 %esh2 %esh3 %esh4 %esh5 %esh6
 
 %build
-
-if [ X$RPM_BUILD_ROOT = X ]; then
-cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-exit 1
-fi
-
 cd os/linux && cc -O -o vortex-diag vortex-diag.c
 
 %install
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
@@ -106,6 +89,25 @@ fi
 %triggerin -- setup
 sed -e '/^COLOR/s/tty/none/' /etc/DIR_COLORS > /etc/DIR_COLORS.new
 mv -f /etc/DIR_COLORS.new /etc/DIR_COLORS
+
+%triggerin -- kernel
+# /sbin/new-kernel-pkg blew away the single-user boot option.  Put it
+# back.
+cf=/boot/grub/grub.conf
+if [ -f $cf ] && ! grep -qi 'kernel.*single' $cf; then
+  cp $cf $cf.new
+  # The first awk script spits out the default entry; the second one
+  # modifies it for single-user mode.
+  awk -F '[[:blank:]=]' '
+    /^[[:blank:]]*default[[:blank:]=]/  { default = $2; }
+    /^[[:blank:]]*title[[:blank:]=]/    { printing = (which++ == default); }
+                                        { if (printing) print; }' $cf \
+  | awk '
+    /^[[:blank:]]*title[[:blank:]=]/    { $0 = $0 " (single user mode)"; }
+    /^[[:blank:]]*kernel[[:blank:]=]/   { $0 = $0 " single"; }
+                                        { print; }' >> $cf.new
+  mv $cf.new $cf
+fi
 
 %triggerin -- kernel >= 2.4.9
 # punt on smp machines

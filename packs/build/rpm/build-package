@@ -143,12 +143,16 @@ if grep -q Vendor: $sourcedir/packs/build/rpm/specs/$package_name; then true; el
   echo Vendor: MIT Athena >> $destdir/SPECS/$source_name
 fi
 
+if grep -q BuildRoot: $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
+  echo 'BuildRoot: %{_tmppath}/%{name}-%{version}-root' >> $destdir/SPECS/$source_name
+fi
+
 # Now the file as we have it gets included.
 cat $sourcedir/packs/build/rpm/specs/$package_name >> $destdir/SPECS/$source_name
 
 # And finally the scripts get included.
 if grep -q %prep $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-cat >> $destdir/SPECS/$source_name << EOF
+cat >> $destdir/SPECS/$source_name << 'EOF'
 %prep
 %setup
 
@@ -156,54 +160,39 @@ EOF
 fi
 
 if grep -q %build $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-cat >> $destdir/SPECS/$source_name << EOF
+cat >> $destdir/SPECS/$source_name << 'EOF'
 %build
-if [ X\$RPM_BUILD_ROOT = X ]; then
-cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-exit 1
-fi
-./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT prepare
-./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT all
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
 
 EOF
 fi
 
 if grep -q %install $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-cat >> $destdir/SPECS/$source_name << EOF
+cat >> $destdir/SPECS/$source_name << 'EOF'
 %install
-if [ X\$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
-rm -rf \$RPM_BUILD_ROOT
-mkdir \$RPM_BUILD_ROOT
-./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Don't try to install a /usr/athena/info/dir file.
-rm -f \$RPM_BUILD_ROOT/usr/athena/info/dir
+rm -f $RPM_BUILD_ROOT/usr/athena/info/dir
 
-find \$RPM_BUILD_ROOT -type f -or -type l |
-    sed -e "s|\$RPM_BUILD_ROOT||" | sort > rpm.filelist
+find $RPM_BUILD_ROOT -type f -or -type l |
+    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
 EOF
 fi
 
 if grep -q %files $sourcedir/packs/build/rpm/specs/$package_name; then true; else 
-cat >> $destdir/SPECS/$source_name << EOF
+cat >> $destdir/SPECS/$source_name << 'EOF'
 %files -f rpm.filelist
 
 EOF
 fi
 
 if grep -q %post $sourcedir/packs/build/rpm/specs/$package_name; then true; else
-cat >> $destdir/SPECS/$source_name <<'EOF'
+cat >> $destdir/SPECS/$source_name << 'EOF'
 %post
 for file in `find /usr/athena/info -type f ! -name dir`; do
     install-info --info-dir=/usr/athena/info $file 2>/dev/null
@@ -216,7 +205,7 @@ fi
 
 echo "==== build package"
 
-rpmbuild -ba -v --rcfile $destdir/rpmrc --target=i386-athena-linux --buildroot $destdir/INSTALL $destdir/SPECS/$source_name
+rpmbuild -ba -v --rcfile=$destdir/rpmrc --target=i386-athena-linux --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name
 if [ $? -ne 0 ]; then
     exit 1
 fi
