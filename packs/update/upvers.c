@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.5 1988-08-31 21:40:56 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.6 1988-08-31 23:50:23 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
  * $Author: probe $
  */
@@ -15,7 +15,7 @@ struct	verfile {
 } vf[20];
 
 #ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.5 1988-08-31 21:40:56 probe Exp $";
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.6 1988-08-31 23:50:23 probe Exp $";
 #endif
 
 main(argc, argv)
@@ -63,7 +63,7 @@ char	*argv[];
 	for (i = 0; i < n; i++) {
 	    if (vf[i].mjr > oldmjr ||
 		(vf[i].mjr == oldmjr && vf[i].mnr > oldmnr) ||
-		(vf[i].mjr == oldmjr && vf[i].mnr == oldmnr && vf[i].deg >= olddeg))
+		(vf[i].mjr == oldmjr && vf[i].mnr == oldmnr && vf[i].deg > olddeg))
 		if (start == n-1) start = i;
 	    if (vf[i].mjr > newmjr ||
 		(vf[i].mjr == newmjr && vf[i].mnr > newmnr) ||
