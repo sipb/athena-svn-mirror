@@ -9,7 +9,8 @@ menu communication: "Communication"	{communication}     [root/40]       ;
 menu writeedit:     "Text/Graphics"	{editing}           [root/50]       ;	
 menu nummath:	    "Numerical/Math"	{numeric,math}	    [root/60]       ;	
 menu programming:   "Programming"	{programming}       [root/70]       ;	
-menu special:	    "Special"		{misc}		    [root/80]       ;	
+menu swinfo:	    "SoftwareInfo"	{swinfo}	    [root/80]       ;	
+menu special:	    "Special"		{misc}		    [root/90]       ;	
 
   item yhelp:	    "About Dash" 			    [dash/01]	    ;
   item qhelp:	    "How to use Dash menus" 		    [dash/02]	    ;
@@ -20,6 +21,7 @@ menu special:	    "Special"		{misc}		    [root/80]       ;
   item helptoggle:  "Hide `?' Buttons"	-verify		    [dash/100]	    toggleHelp("* Show `?' Buttons");
   item restart:     "Restart Dash" 	-verify		    [dash/500]	    restart();
   item quitopt:	    "Quit Dash"				    [dash/1000]	    -verify createMapTree("quitDialog"),mapTree("quitDialog"),warpTree("quitDialog") ;
+   item gnomeopt:    "Re-enable GNOME"			    [dash/1050]	    -verify createMapTree("enableGNOME"),mapTree("enableGNOME"),warpTree("enableGNOME") ;
   item logoutopt:	    "Logout of Athena" [dash/1100]  -verify createMapTree("logoutDialog"),mapTree("logoutDialog"),warpTree("logoutDialog") ;  
 
   item xterm:	    "New xterm window"			    [screenaccs][misc]	exec("xterm");
@@ -30,7 +32,7 @@ menu special:	    "Special"		{misc}		    [root/80]       ;
   item xcalcti:	    "Calculator (TI style)"		    [screenaccs/10][analysis/100]	exec("xcalc");
   item xcalchp:	    "Calculator (HP style)"		    [screenaccs/10][analysis/100]	exec("xcalc -rpn");
   item calendar:    "Calendar"				    [screenaccs/10]	add("calendar"),exec("/mit/calendar/%B/xcal");
-  item screensaver:  "Screen saver"			    [screenaccs/10]	add("sipb"),exec("xscreensaver");
+  item screensaver:  "Screen Saver"			    [screenaccs/10]	exec("xss-button");
   item logoutbutton: "Logout Button"			    [screenaccs/100]	createMapTree("logoutButton"),mapTree("logoutButton");
   
 menu ehelp:		"Emergency help"		{ehelp}		[help/01]					                        ;
@@ -46,16 +48,15 @@ item contactline:	"Contact Line"					[ehelp/50]								;
 item psych:		"Psychiatric services"				[ehelp/60]								;
 
 ! item lucy:		"Advice from Lucy"				[mhelp/40]								;
-item mitdir:		"MIT Directory"					[mhelp/50]			add("infoagents"),exec("htmlview http://web.mit.edu/search.html")           ;
-item map:		"Campus Map"					[mhelp/100]			add("infoagents"),exec("htmlview http://web.mit.edu/map.html")           ; 
+item mitdir:		"MIT Directory"					[mhelp/50]			exec("/usr/athena/bin/htmlview http://web.mit.edu/search.html")           ;
+item map:		"Campus Map"					[mhelp/100]			exec("/usr/athena/bin/htmlview http://web.mit.edu/map.html")           ; 
 
 item olh:		"On Line Help"					[ahelp/10]			exec("help")				;
 item olcstock:		"OLC Answers"					[ahelp/20]			exec("xterm -e olc answers")		;
 item olc:		"On Line Consulting"				[ahelp/30]			exec("xterm -e olc")		        ;
 item xman:		"Manual Pages"			-rsaix		[ahelp/40] 			exec("xman")				;
-item minic:		"Athena Minicourses"				[ahelp/42]			add("infoagents"),exec("htmlview http://web.mit.edu//minidev/www/")					;
+item minic:		"Athena Minicourses"				[ahelp/42]			exec("/usr/athena/bin/htmlview http://web.mit.edu/minidev/")					;
 item hotline:		"Hardware Hotline"				[ahelp/45][ehelp/70][misc/90]						;
-item separator:		"___________________"				[ahelp/50][misc/900][graphicsediting/10]	                        ;
 item xcluster:		"Athena Cluster Map"				[ahelp/70]			exec("xcluster")			;
 
 item ishelp:		"I/S Computing Help Desk" 			[chelp]									;
@@ -99,50 +100,57 @@ item xdsc:		"X Discuss Reader"				[discuss/10]			exec("xdsc")				;
 item discuss:		"Text-based Discuss Reader"			[discuss/15]			exec("xterm -e discuss")		;
 item edsc:		"Emacs Discuss Reader"				[discuss/20]			exec("emacs -f discuss") 		;
 
-item wwwcert:		"Certificates at MIT"				[www/0]				add("infoagents"),exec("htmlview http://web.mit.edu/is/help/cert/") ;
+item wwwcert:		"Certificates at MIT"				[www/0]				exec("/usr/athena/bin/htmlview http://web.mit.edu/is/help/cert/") ;
 menu wwwlynx:		"Lynx"		{lynx}				[www/1]	;
 menu wwwnetscape:	"Netscape 4 (default)"	{netscape}		[www/2]	;
 menu wwwnetscape3:	"Netscape 3"	        {netscape3}		[www/3]	;
+menu mozilla:	"Mozilla"	        {mozilla}		[www/4]	;
 
 item lynxmit:		"Lynx - MIT Home Page"				[lynx/10]			add("infoagents"),exec("xterm -e lynx http://web.mit.edu/") ;
-item lynxsipb:		"Lynx - SIPB Home Page"				[lynx/20]			add("infoagents"),exec("xterm -e lynx http://www.mit.edu/") ;
-item lynxdefault:	"Lynx - default Home Page"			[lynx/30]			add("infoagents"),exec("xterm -e lynx") ;
+item lynxsipb:		"Lynx - SIPB Home Page"				[lynx/20]			add("infoagents"),exec("xterm -e lynx http://www.mit.edu/sipb/") ;
+! item lynxdefault:	"Lynx - default Home Page"			[lynx/30]			add("infoagents"),exec("xterm -e lynx") ;
 
-item netscapemit:	"Netscape 4 - MIT Home Page"	-decmips	[netscape/10]			add("infoagents"),exec("netscape http://web.mit.edu/");
-item netscapesipb:	"Netscape 4 - SIPB Home Page"	-decmips	[netscape/20]			add("infoagents"),exec("netscape http://www.mit.edu/");
-item netscapedefault:	"Netscape 4 - default Home Page"	-decmips	[netscape/30]			add("infoagents"),exec("netscape") ;
+item netscapemit:	"Netscape 4 - MIT Home Page"	-decmips	[netscape/10]			exec("/usr/athena/bin/netscape http://web.mit.edu/");
+item netscapesipb:	"Netscape 4 - SIPB Home Page"	-decmips	[netscape/20]			exec("/usr/athena/bin/netscape http://www.mit.edu/sipb/");
+! item netscapedefault:	"Netscape 4 - default Home Page"	-decmips	[netscape/30]			exec("/usr/athena/bin/netscape") ;
 
 item netscape3mit:	"Netscape 3 - MIT Home Page"	-decmips	[netscape3/10]			add("infoagents"),exec("netscape-3.01 http://web.mit.edu/");
-item netscape3sipb:	"Netscape 3 - SIPB Home Page"	-decmips	[netscape3/20]			add("infoagents"),exec("netscape-3.01 http://www.mit.edu/");
-item netscape3default:	"Netscape 3 - default Home Page"	-decmips	[netscape3/30]			add("infoagents"),exec("netscape-3.01") ;
+item netscape3sipb:	"Netscape 3 - SIPB Home Page"	-decmips	[netscape3/20]			add("infoagents"),exec("netscape-3.01 http://www.mit.edu/sipb/");
+! item netscape3default:	"Netscape 3 - default Home Page"	-decmips	[netscape3/30]			add("infoagents"),exec("netscape-3.01") ;
+
+item mozillamit:	"Mozilla - MIT Home Page"	-decmips	[mozilla/10]			add("infoagents"),exec("mozilla");
+item mozillasipb:	"Mozilla - SIPB Home Page"	-decmips	[mozilla/20]			add("infoagents"),exec("mozilla http://www.mit.edu/sipb/");
 
 menu textediting:	"Text"		{textediting}			[editing/1]								;
 menu graphicsediting:	"Graphics"	{graphicsediting}		[editing/2]								;
 menu cad:		"CAD"		{cad}				[editing/3]                                                         	;
 
 item emacs:		"Emacs"						[textediting/1]			exec("emacs")				;
-item ez:		"EZ"						[textediting/2]			exec("ez -d")				;
+item ez:		"EZ"		 		[textediting/2]			exec("ez -d")				;
 item latex:		"LaTeX"						[textediting/3]								;
 menu framestuff:	"FrameMaker"	{framestuff}		[textediting/4]
  ; 
-item frame:		"Maker"		     -decmips -rsaix		[framestuff/1]  	add("frame"),exec("maker")		;
-item imaker:		"Imaker"	-sun4 -sgi -decmips -rsaix	[framestuff/2]				;
+item frame:		"Maker"		-linux -decmips -rsaix		[framestuff/1]  	add("frame"),exec("maker")		;
+item imaker:		"Imaker"	-sun4 -sgi -linux -decmips -rsaix	[framestuff/2]				;
 item framereader:	"Reader (Acrobat)"	-decmips		[framestuff/3]		add("acro"),exec("acroread")		;
 
+item soffice:		"StarOffice (limited OLC support)" -sgi		[textediting/4][graphicsediting/7][spreadsheets/15]	add("soffice"),exec("soffice")		;
+
+
 item aboutpictures:	"About picture editors"				[graphicsediting/0]							;
-item coreldraw:		"CorelDraw"					[graphicsediting/1]			add("corel"),exec("coreldraw")	;
+item coreldraw:		"CorelDraw"	-linux				[graphicsediting/1]			add("corel"),exec("coreldraw")	;
 item xpaint:		"Xpaint"					[graphicsediting/5]			add("graphics"),exec("xpaint")	;
 item xfig:		"Xfig"						[graphicsediting/4]			add("sipb"),exec("xfig")	;
 item tgif:		"Tgif"						[graphicsediting/3]			add("sipb"),exec("tgif")	;
 item xv:		"XV"						[graphicsediting/6]			add("graphics"),exec("xv")	;
-item graphother:	"Other"						[graphicsediting/7]							;
+item graphother:	"Other"						[graphicsediting/8]							;
 ! item with weight 10 in this menu is a separator.												;
 item xwd:		"xwd/xwud"					[graphicsediting/30]							;
 item xdpr:		"xdpr"						[graphicsediting/30]			exec("xdpr")			;
 item bitmap:		"bitmap"					[graphicsediting/20]							;
 
-item autocad13:		"AutoCAD 13"  -rsaix -decmips		[cad/10]   add("autocad"),exec("autocad -version 13")                        ;
-item autocad12:		"AutoCAD 12" 				[cad/20]   add("autocad"),exec("autocad -version 12")                         ;
+item autocad13:		"AutoCAD 13"  -linux  		[cad/10]   add("autocad"),exec("autocad -version 13")                        ;
+item autocad12:		"AutoCAD 12"  -linux  		[cad/20]   add("autocad"),exec("autocad -version 12")                         ;
 
 
 
@@ -160,7 +168,7 @@ item perl:		"Perl"						[otherlanguages]				                        ;
 item ct:		"cT"						[otherlanguages]				                        ;
 item lisp:		"Allegro Common Lisp"				[otherlanguages]				                        ;
 item schemelang:	"Scheme"					[otherlanguages]							;
-item multi:		"Multi"						[otherlanguages]				                        ;
+item multilang:		"Multi"						[otherlanguages]				                        ;
 
 item codecenter:	"Codecenter"			 		[debuggers/10] 								;
 item multi:		"Multi"						[debuggers/20]					                        ;
@@ -180,16 +188,23 @@ item xess:		"Xess"			 			[spreadsheets/10][104/50]	add("xess"),exec("xess")		;
 
 item splus:		"S-PLUS"  	 			[analysis]			add("splus"),exec("xterm -e splus")	;
 item sas:		"SAS"		-sgi 			[analysis,plotting]		add("sas"),exec("sas") 			;
-item maple:		"Maple V"			[plotting] add("maple"),exec("maple");
+item maple:		"Maple"			[plotting] add("maple"),exec("maple");
 item tecplot:		"Tecplot"			[plotting] add("tecplot"),exec("tecplot");
 item matlab:	"MATLAB"		[104/40][course6/5][course16][analysis,plotting]	add("matlab"),exec("matlab") 	; 
 
-item rules:		"Athena Rules of Use"					[misc/10]	add("infoagents"),exec("htmlview http://web.mit.edu/olh/Welcome/rules.html");
-item licenses:		"Software licenses"				[misc/20]									;
-item sendbug:		"Send a bug report"				[misc/30][ahelp/49]			exec("xterm -e sendbug")	;
-item library:		"MIT Libraries"					[misc/100]				add("library"),exec("library");
 
-item websis:		"WebSIS"					[misc/40]		add("infoagents"),exec("htmlview -c  http://student.mit.edu");
+item sw-wrw:		"List of available software"			[swinfo/10]		exec("/usr/athena/bin/htmlview http://web.mit.edu/acs/whereruns.html");
+item sw-new:		"What's new?"					[swinfo/20]		exec("/usr/athena/bin/htmlview http://web.mit.edu/acs/whatsnew.html");
+!item sendbug from [misc/30]						[swinfo/30]			   ;
+item sw-help:		"Help and comments"				[swinfo/40]                        ;
+
+
+item rules:		"Athena Rules of Use"					[misc/10]	exec("/usr/athena/bin/htmlview http://web.mit.edu/olh/Welcome/rules.html");
+item licenses:		"Software licenses"				[misc/20]									;
+item sendbug:		"Send a bug report"				[misc/30][ahelp/49][swinfo/30]			exec("xterm -e sendbug")	;
+item library:		"MIT Libraries"					[misc/100]		exec("/usr/athena/bin/htmlview http://libraries.mit.edu/");
+
+item websis:		"WebSIS"					[misc/40]		exec("/usr/athena/bin/htmlview -c  http://student.mit.edu");
 item logout:		"Logout of Athena"				[misc/1000]  -verify	createMapTree("logoutDialog"),mapTree("logoutDialog"),warpTree("logoutDialog") ;
 
 !item lucyann:		"Lucy is available"				[announce]								;
@@ -224,10 +239,10 @@ menu courseHST:		"HST Health Sciences and Technology"	{courseHST} 	[courseware/2
 menu courseSTS:		"STS Science, Technology, and Society"    {courseSTS} 	[courseware/270]		;
 
   item aboutneos:	"About NEOS"			    [neos]	    ;
-  item eos:		"Eos"				    [neos/10]	    exec("eos");
-  item grade:		"Grade"				    [neos/10]	    exec("grade");
+  item eos:		"Eos"	-linux			    [neos/10]	    add("andrew"),exec("eos");
+  item grade:		"Grade"	-linux			    [neos/10]	    add("andrew"),exec("grade");
 
-  item fishwrap:	"Fishwrap"	-decmips	    [frosh/10][misc/90]	add("infoagents"),exec("htmlview http://fishwrap.mit.edu/") ;
+  item fishwrap:	"Fishwrap"	-decmips	    [frosh/10][misc/90]	exec("/usr/athena/bin/htmlview http://fishwrap.mit.edu/") ;
   help fishwrap:
 "This brings up the  Fishwrap home page in an existing web browser,
 or starts a new browser if one is not running.  Fishwrap is the MIT Media 
@@ -236,23 +251,23 @@ tailors the content of your paper based on regional or topical interest from
 news wires like the AP, Reuters and Knight-Ridder. 
 ";
 
-  item esg7.01:		"7.01-ESG Hyper Textbook"	    [esg/10]	    add("infoagents"),exec("htmlview http://esg-www.mit.edu:8001/esgbio/7001main.html") ;
+  item esg7.01:		"7.01-ESG Hyper Textbook"	    [esg/10]	    exec("/usr/athena/bin/htmlview http://esg-www.mit.edu:8001/esgbio/7001main.html") ;
 
-  item esg18.01a:	"18.01A-ESG"	    [esg/12]	    add("infoagents"),exec("htmlview http://web.mit.edu/18.01-esg/18.01A/home.html");
+  item esg18.01a:	"18.01A-ESG"	    [esg/12]	    exec("/usr/athena/bin/htmlview http://web.mit.edu/18.01-esg/18.01A/home.html");
 
-  item esg18.02:	"18.02/18.02A-ESG"  [esg/14]	    add("infoagents"),exec("htmlview  http://web.mit.edu/18.02-esg/18.02A/home.html");
+  item esg18.02:	"18.02/18.02A-ESG"  [esg/14]	    exec("/usr/athena/bin/htmlview  http://web.mit.edu/18.02-esg/18.02A/home.html");
 
-  item esg18.02_is:	"18.02-ESG Independent Study"  [esg/16]	    add("infoagents"),exec("htmlview  http://web.mit.edu/18.02-esg/18.02IS/main.html");
+  item esg18.02_is:	"18.02-ESG Independent Study"  [esg/16]	    exec("/usr/athena/bin/htmlview  http://web.mit.edu/18.02-esg/18.02IS/main.html");
 
-  item esg18.023:	"18.023-ESG"	    [esg/18]	    add("infoagents"),exec("htmlview http://web.mit.edu/18.02-esg/www/18.023/home.html");
+  item esg18.023:	"18.023-ESG"	    [esg/18]	    exec("/usr/athena/bin/htmlview http://web.mit.edu/18.02-esg/www/18.023/home.html");
 
-  item esg18.03_is:	"18.03-ESG Independent Study"  [esg/20]	    add("infoagents"),exec("htmlview  http://web.mit.edu/18.03-esg/www/home.html");
+  item esg18.03_is:	"18.03-ESG Independent Study"  [esg/20]	    exec("/usr/athena/bin/htmlview  http://web.mit.edu/18.03-esg/www/home.html");
 
-  item esg_robotics:	"ESG Robotics Seminar Home Page"    [esg/30]	    add("infoagents"),exec("htmlview http://web.mit.edu/esg/proj/ic/www");
+  item esg_robotics:	"ESG Robotics Seminar Home Page"    [esg/30]	    exec("/usr/athena/bin/htmlview http://web.mit.edu/esg/proj/ic/www");
 
-  item esg_sp281:	"SP281: Hands-on Engineering Projects"    [esg/40]	    add("infoagents"),exec("htmlview http://web.mit.edu/esg/sp281/www/home.html");
+  item esg_sp281:	"SP281: Hands-on Engineering Projects"    [esg/40]	    exec("/usr/athena/bin/htmlview http://web.mit.edu/esg/sp281/www/home.html");
 
-  item 100web:		"1.00 Home Page"		    [course1/10]    add("infoagents"),exec("htmlview http://monett.mit.edu/100/home.nsf") ;
+  item 100web:		"1.00 Home Page"		    [course1/10]    exec("/usr/athena/bin/htmlview http://monett.mit.edu/100/home.nsf") ;
 
  
   menu 104:		"1.050/1.105"			{104}	    [course1/20]    ;
@@ -271,15 +286,15 @@ news wires like the AP, Reuters and Knight-Ridder.
 .mime.types files to be able to run the
 1.050/1.105 Electronic Textbook.
 ";
-  item 1124web:		"1.124 Home Page"		    [course1/25]    add("infoagents"),exec("htmlview http://web.mit.edu//1.124/www/home.html") ;
+  item 1124web:		"1.124 Home Page"		    [course1/25]    exec("/usr/athena/bin/htmlview http://web.mit.edu//1.124/www/home.html") ;
 
-  item 1.130web:	"1.130 Home Page"		   [course1/26]	add("infoagents"),exec("htmlview http://web.mit.edu/1.130");
+  item 1.130web:	"1.130 Home Page"		   [course1/26]	exec("/usr/athena/bin/htmlview http://web.mit.edu/1.130");
 
-  item tunsim:		"Tunnel Simulator"	-sgi	    [course1/30]    add("simsuper"),exec("xterm -title Tunnel_Simulator -e menu");
+  item tunsim:		"Tunnel Simulator"	-sgi	    [course1/30]    add("1.383_dev"),exec("xterm -title Tunnel_Simulator -e SIMSUPER &");
   item assess:		"Assess"		-sun4	    [course1/40]    add("1.101"),exec("xterm -n Assess -e assess");
   item growltiger:	"Growltiger"	  		    [course1/50]    add("growltiger"),exec("growltiger");
 
-   item meweb:		"me.mit.edu ME Home Page"	    [course2/02]    add("infoagents"),exec("htmlview http://me.mit.edu/");
+   item meweb:		"me.mit.edu ME Home Page"	    [course2/02]    exec("/usr/athena/bin/htmlview http://me.mit.edu/");
   help meweb:
 "The WWW server for the Mechanical 
 Engineering Department.
@@ -287,19 +302,19 @@ Engineering Department.
  
   menu 2001:		"2.001"			{2001}	    [course2/10]    ;
 
-    item 2001web:	"2.001 Home Page"		    [2001/10]	    add("infoagents"),exec("htmlview http://web.mit.edu//2.001/www/home.html");
+    item 2001web:	"2.001 Home Page"		    [2001/10]	    exec("/usr/athena/bin/htmlview http://web.mit.edu//2.001/www/home.html");
     item 2001frame2d:	"Matrix Methods - Frame2d"	    [2001/15]       add("2.01"),exec("frame2d");
     item 2001truss2d:	"Matrix Methods - Truss2d"	    [2001/20]       add("2.01"),exec("truss2d");
 
-  item 2002web:		"2.002 Home Page"		    [course2/20]    add("infoagents"),exec("htmlview http://web.mit.edu/2.002/www/index.html");
+  item 2002web:		"2.002 Home Page"		    [course2/20]    exec("/usr/athena/bin/htmlview http://web.mit.edu/2.002/www/index.html");
 
-  item 2004web:		"2.004 Home Page"		    [course2/20]    add("infoagents"),exec("htmlview http://web.mit.edu/2.004/www/index.html");
+  item 2004web:		"2.004 Home Page"		    [course2/20]    exec("/usr/athena/bin/htmlview http://web.mit.edu/2.004/www/index.html");
 
-  item 2010web:		"2.010 Home Page"		    [course2/30]    add("infoagents"),exec("htmlview http://web.mit.edu/2.010/www/index.html");
+  item 2010web:		"2.010 Home Page"		    [course2/30]    exec("/usr/athena/bin/htmlview http://web.mit.edu/2.010/www/index.html");
 
-  item 2032web:		"2.032 Home Page"		    [course2/50]    add("infoagents"),exec("htmlview http://web.mit.edu/2.032/www/home.html") ;
+  item 2032web:		"2.032 Home Page"		    [course2/50]    exec("/usr/athena/bin/htmlview http://web.mit.edu/2.032/www/home.html") ;
 
-  item 2670web:		"2.670 Home Page"		    [course2/60]    add("infoagents"),exec("htmlview http://me.mit.edu/2.670");
+  item 2670web:		"2.670 Home Page"		    [course2/60]    exec("/usr/athena/bin/htmlview http://me.mit.edu/2.670");
 
   item adina:		"ADINA"			 	    [course2/70]    add("adina"),exec("runaui");
   help adina:
@@ -347,15 +362,16 @@ To run:  add parametric; proeng
     phase
 ";
 
+  item 3082:          "3.082 Home Page"                   [course3/20]    exec("/usr/athena/bin/htmlview http://web.mit.edu/3.082/www/");
   item 3091:		"3.091"		 		    [course3/30]    setup("3.091"),exec("xterm -n 3.091");
-  item 311:		"3.11 Home Page"	  	    [course3/40]    add("infoagents"),exec("htmlview http://web.mit.edu/course/3/3.11/www/home.html");
+  item 311:		"3.11 Home Page"	  	    [course3/40]    exec("/usr/athena/bin/htmlview http://web.mit.edu/course/3/3.11/www/home.html");
 
   menu 3185:		"3.185"			{3185}	    [course3/60]    ;
 
    item 3185gas:	"Gas Properties"	-sun4	    [3185/10]	    add("3.185"),exec("Propgas");
    item 3185heat:	"Heat Transfer"		-sun4 	    [3185/20]	    add("3.185"),exec("Heattrans");
    item 3185fluid:	"Fluid Flow"		-sun4	    [3185/30]	    add("3.185"),exec("Fluidflow");
-   item 3185web:	"3.185 Home Page"		    [3185/40]       add("infoagents"),exec("htmlview http://web.mit.edu/3.185/www/");
+   item 3185web:	"3.185 Home Page"		    [3185/40]       exec("/usr/athena/bin/htmlview http://web.mit.edu/3.185/www/");
 
    help 3185web:
 "This brings up the 3.185 World Wide
@@ -365,10 +381,9 @@ To run:  add parametric; proeng
 
 ";
 
-  item 3a16web:		"3-A16 Home Page"		    [course3/70]    add("infoagents"),exec("htmlview http://web.mit.edu/3a16/www/home.html");
-  item 3s32web:		"3-S32 Home Page"		    [course3/80]    add("infoagents"),exec("htmlview http://web.mit.edu/3s32/www/index.html");
+  item 3s32web:		"3-S32 Home Page"		    [course3/80]    exec("/usr/athena/bin/htmlview http://web.mit.edu/3s32/www/index.html");
 
-  item 353web:		"3.53 Home Page"		    [course3/90]    add("infoagents"),exec("htmlview http://web.mit.edu/3.53/www/index.html");
+  item 353web:		"3.53 Home Page"		    [course3/90]    exec("/usr/athena/bin/htmlview http://web.mit.edu/3.53/www/index.html");
 
   menu 4.203:		"4.203"			{4203}	    [course4/1]     ;
     item 4023Manual:	"AutoCAD Manual"	-decmips    [4203/5]	    add("autocad"),exec("/mit/autocad/bin/dtext");
@@ -385,13 +400,13 @@ will get back to you as soon as possible." ;
 
     item crlolh:	"Answers"	 -decmips	    [aboutcrl/2][aboutcrl2/2] attach("crl"),add("frame"),exec("reader +viewerIsServer -file /mit/crl/Help/help/about-crl.doc")	;
 
-  item 507web:		"5.07 Home Page"		    [course5/10]    add("infoagents"),exec("htmlview http://web.mit.edu/5.07/www/course.html") ;
-  item 511web:		"5.11 Home Page"		    [course5/20]    add("infoagents"),exec("htmlview http://web.mit.edu/5.11/www/") ;
+  item 507web:		"5.07 Home Page"		    [course5/10]    exec("/usr/athena/bin/htmlview http://web.mit.edu/5.07/www/course.html") ;
+  item 511web:		"5.11 Home Page"		    [course5/20]    exec("/usr/athena/bin/htmlview http://web.mit.edu/5.11/www/") ;
 
   menu 6003:		"6.003 Signals & Systems" {6003}    [course6/10]    ;
     item 6003matlab:	"6.003 MATLAB"			    [6003/10]       add("6.003"),exec("6003matlab");
  
-  item 6012web:		"6.012 Home Page"	-decmips    [course6/20]    add("infoagents"),exec("htmlview http://web.mit.edu/6.012/www/home.html") ;
+  item 6012web:		"6.012 Home Page"	-decmips    [course6/20]    exec("/usr/athena/bin/htmlview http://web.mit.edu/6.012/www/index.htm") ;
 
   menu quantphys:	"6.021J/6.521J Quantitative Physiology"  {6021j}  [course6/30]  ;
     item quantphysx11:	"X11 Software"			    [6021j/10]	    setup("6.021J"),exec("xterm -n qp");
@@ -402,36 +417,36 @@ will get back to you as soon as possible." ;
     item 6022cvsim:	"CVSIM"			 -sgi	    [6022j] 	    add("hst"),exec("xterm -e cvsim");
 
   item 6041:		"6.041/6.431 Probabilistic Systems Analysis"    [course6/50]    setup("6.041"),exec("xterm -n 6.041/6.431");
-  item 6070web	:	"6.070 Home Page"		    [course6/60]    add("infoagents"),exec("htmlview http://web.mit.edu/6.070/index.html") ;
-  item 6071web:		"6.071 Home Page"		    [course6/70]    add("infoagents"),exec("htmlview http://web.mit.edu/6.071/www/home.html") ;
+  item 6070web	:	"6.070 Home Page"		    [course6/60]    exec("/usr/athena/bin/htmlview http://web.mit.edu/6.070/index.html") ;
+  item 6071web:		"6.071 Home Page"		    [course6/70]    exec("/usr/athena/bin/htmlview http://web.mit.edu/6.071/www/home.html") ;
   item 6111:		"6.111 Digital Design Tools"  	    [course6/80]    setup("6.111"),exec("xterm -n 6.111");
 
   item 6270:		"6.270 Robot Design"     -sun4	    [course6/90]    setup("6.270"),exec("xterm -n 6.270");
-  item 6728web:		"6.728 Home Page"		    [course6/100]   add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
-  item 6730web:		"6.730 Home Page"		    [course6/110]   add("infoagents"),exec("htmlview http://web.mit.edu/6.730/www/info.html");
-  item 6965web:		"6.965 Home Page"		    [course6/120]   add("infoagents"),exec("htmlview http://web.mit.edu/6.728/www/home.html");
+  item 6728web:		"6.728 Home Page"		    [course6/100]   exec("/usr/athena/bin/htmlview http://web.mit.edu/6.728/www/home.html");
+  item 6730web:		"6.730 Home Page"		    [course6/110]   exec("/usr/athena/bin/htmlview http://web.mit.edu/6.730/www/info.html");
+  item 6965web:		"6.965 Home Page"		    [course6/120]   exec("/usr/athena/bin/htmlview http://web.mit.edu/6.728/www/home.html");
 
-  item 701web:		"7.01x Home Page"		    [course7/10]       add("infoagents"),exec("htmlview http://web.mit.edu/7.01x/www");
-  item 702web:		"7.02 Home Page"		    [course7/20]       add("infoagents"),exec("htmlview http://web.mit.edu/7.02/www");
+  item 701web:		"7.01x Home Page"		    [course7/10]       exec("/usr/athena/bin/htmlview http://web.mit.edu/7.01x/www");
+  item 702web:		"7.02 Home Page"		    [course7/20]       exec("/usr/athena/bin/htmlview http://web.mit.edu/7.02/www");
 
-  item 801web:		"8.01 Home Page"		    [course8/05]    add("infoagents"),exec("htmlview http://web.mit.edu/8.01/www");
+  item 801web:		"8.01 Home Page"		    [course8/05]    exec("/usr/athena/bin/htmlview http://web.mit.edu/8.01/www");
 
-  item 802web:		"8.02 Home Page"		    [course8/06]    add("infoagents"),exec("htmlview http://web.mit.edu/8.02/www");
+  item 802web:		"8.02 Home Page"		    [course8/06]    exec("/usr/athena/bin/htmlview http://web.mit.edu/8.02/www");
 
-  item 803web:		"8.03 Home Page"		    [course8/10]    add("infoagents"),exec("htmlview http://web.mit.edu/8.03/Kaspi/");
-  item 804web:		"8.04 Home Page"		    [course8/20]    add("infoagents"),exec("htmlview http://web.mit.edu/8.04/www/8.04.html");
+  item 803web:		"8.03 Home Page"		    [course8/10]    exec("/usr/athena/bin/htmlview http://web.mit.edu/8.03/Kaspi/");
+  item 804web:		"8.04 Home Page"		    [course8/20]    exec("/usr/athena/bin/htmlview http://web.mit.edu/8.04/www/8.04.html");
 
-  item 10001web:	"10.001 Home Page"		    [course10/10]   add("infoagents"),exec("htmlview http://web.mit.edu/10.001/Web/index.html");
+  item 10001web:	"10.001 Home Page"		    [course10/10]   exec("/usr/athena/bin/htmlview http://web.mit.edu/10.001/Web/index.html");
 
-  item 10213web:	"10.213 Home Page"		    [course10/20]   add("infoagents"),exec("htmlview http://web.mit.edu/10.213/www/10213hp.html") ;
+  item 10213web:	"10.213 Home Page"		    [course10/20]   exec("/usr/athena/bin/htmlview http://web.mit.edu/10.213/www/10213hp.html") ;
 
-  item 10490web:	"10.490 Home Page"		    [course10/30]   add("infoagents"),exec("htmlview http://web.mit.edu/10.490/Web/index.html");
+  item 10490web:	"10.490 Home Page"		    [course10/30]   exec("/usr/athena/bin/htmlview http://web.mit.edu/10.490/Web/index.html");
 
-  item 10491web:	"10.491 Home Page"		    [course10/40]   add("infoagents"),exec("htmlview http://web.mit.edu/10.491/Web/index.html");
+  item 10491web:	"10.491 Home Page"		    [course10/40]   exec("/usr/athena/bin/htmlview http://web.mit.edu/10.491/Web/index.html");
 
   menu 10550:		"10.550"		{10550}	    [course10/50]    ;	
     item 10550control:	"10.550 Control Modules"	    [10550/10]	    attach("10.550"),add("matlab"),exec("matlab /mit/10.550/Courseware/PCM");
-  item 10551web:	"10.551 Home Page"		    [course10/60]   add("infoagents"),exec("htmlview http://web.mit.edu/10.551/www/index.html");
+  item 10551web:	"10.551 Home Page"		    [course10/60]   exec("/usr/athena/bin/htmlview http://web.mit.edu/10.551/www/index.html");
 
   item xmap:		"MITMapper"		-sgi	    [course11/10]   attach("crldata"),add("crlbin"),exec("mitmap");
 
@@ -450,7 +465,7 @@ will get back to you as soon as possible." ;
 The package is supported only on the context of a course; please
 contact your course TA for help.  
 
-Mathematica is ONLY available on Athena Suns.
+Mathematica is NOT available on Athena SGIs.
 
 To run on a workstation:
 
@@ -480,47 +495,64 @@ Bug reports:  use sendbug
     item VIEWDXF:	"Viewdxf"		-sgi -sun4  [shipdesign]    attach("13.ship"),exec("xterm -e /mit/13.ship/autocad/%Mbin/viewdxf");
 
 
-  item 14.01web:	"14.01 Home Page"		    [course14/10]   add("infoagents"),exec("htmlview http://web.mit.edu/14.01/www/");
-  item 14.02web:	"14.02 Home Page"		    [course14/12]   add("infoagents"),exec("htmlview http://web.mit.edu/14.02/www/");
-  item 1421jweb:	"14.21J Home Page"		    [course14/20]   add("infoagents"),exec("htmlview http://web.mit.edu/14.21j/www/index.html");
-  item 1431web:         "14.31 Home Page"                   [course14/23]   add("infoagents"),exec("htmlview http://web.mit.edu/14.31/www/");
-  item 1475jweb:	"14.75J Home Page"		    [course14/30]   add("infoagents"),exec("htmlview http://web.mit.edu/14.75j/www/");
-  item 14a02web:	"14a02 Home Page"		    [course14/40]   add("infoagents"),exec("htmlview http://web.mit.edu/14a02/www/index.html");
+  item 14.01web:	"14.01 Home Page"		    [course14/10]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14.01/www/");
+  item 14.02web:	"14.02 Home Page"		    [course14/12]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14.02/www/");
+  item 1421jweb:	"14.21J Home Page"		    [course14/20]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14.21j/www/index.html");
+  item 1431web:         "14.31 Home Page"                   [course14/23]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14.31/www/");
+  item 1474web:		"14.74 Home Page"		    [course14/25]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14.74/www/");
+  item 1475jweb:	"14.75J Home Page"		    [course14/30]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14.75j/www/");
+  item 14a02web:	"14a02 Home Page"		    [course14/40]   exec("/usr/athena/bin/htmlview http://web.mit.edu/14a02/www/index.html");
 
 ! Matlab appears here on the course 16 menu;
 
+  item 18.01web:	"18.01 Home Page"		    [course18/4]    sh("/usr/athena/bin/htmlview http://www-math.mit.edu/~bray/18.01 &");
+! URLs with tildes are problematic because the string gets passed to exec callback with ~ interpreted as HOME (cf. dash man page); 
+! sh callback just uses Bourne shell and seems to DTRT but in case of trouble, switch to the form below instead;
+!  item 18.01web:	"18.01 Home Page"		    [course18/4]    exec("/usr/athena/bin/htmlview http://www-math.mit.edu/%%7eszenes/1801.html");
+
+  item 18.01Aweb:	"18.01A Home Page"		    [course18/5]    sh("/usr/athena/bin/htmlview http://math.mit.edu/~apm/1801A.html");
+  item 18.02web:	"18.02 Home Page"		    [course18/7]    sh("/usr/athena/bin/htmlview http://math.mit.edu/~donald/1802.html");
+
   menu 1803:		"18.03"			{1803}	    [course18/10]   ;
-    item 1803web:	"18.03 Home Page"		    [1803/10]	    add("infoagents"),exec("htmlview http://www-math.mit.edu/18.03/");
+    item 1803web:	"18.03 Home Page"		    [1803/10]	    exec("/usr/athena/bin/htmlview http://math.mit.edu/%%7eapm/1803.html");
     item 1803maple:	"Maple"				    [1803/20]	    add("maple"),exec("maple");
     item 1803matlab:	"MATLAB"			    [1803/30]	    add("matlab"),exec("matlab");
     item 1803x1:	"xphased 1"			    [1803/40]	    add("18.03"),exec("x1");
     item 1803x2:	"xphased 2"			    [1803/50]	    add("18.03"),exec("x2");
 
+  menu 1804:           "18.04"                {1804}     [course18/12]   ;
+    item 1804web:	"18.04 Home Page"                   [1804/05]	exec("/usr/athena/bin/htmlview http://www-math.mit.edu/18.04/");
+    item 1804matlab4:  "18.04 MATLAB 4"                   [1804/10]  add("18.04"),exec("18.04matlab4");
+    item 1804matlab5:  "18.04 MATLAB 5"                   [1804/20]  add("18.04"),exec("18.04matlab5");
+
   menu 1806:		"18.06"			{1806}	    [course18/15]   ;
-    item 1806web:	"18.06 Home Page"		    [1806/20]	add("infoagents"),exec("htmlview http://web.mit.edu/18.06/www/index.html");
+    item 1806web:	"18.06 Home Page"		    [1806/20]	exec("/usr/athena/bin/htmlview http://web.mit.edu/18.06/www/index.html");
     item 1806matlab:	"18.06 MATLAB"			    [1806/30]	    add("18.06"),exec("1806matlab");
 
+  item 18.100Aweb:	"18.100A Home Page"		    [course18/17]    sh("/usr/athena/bin/htmlview http://math.mit.edu/~apm/18100A.html");
+
   menu 18311:           "18.311"                {18311}     [course18/20]   ;
-    item 18311web:	"18.311 Home Page"                   [18311/05]	add("infoagents"),exec("htmlview http://www-math.mit.edu/18.311/");
+    item 18311web:	"18.311 Home Page"                   [18311/05]	exec("/usr/athena/bin/htmlview http://www-math.mit.edu/18.311/");
     item 18311matlab4:  "18.311 MATLAB 4"                   [18311/10]  add("18.311"),exec("18.311matlab4");
     item 18311matlab5:  "18.311 MATLAB 5"                   [18311/20]  add("18.311"),exec("18.311matlab5");
 
-
-  item 18.327web:	"18.327 Home Page"		[course18/25]	add("infoagents"),exec("htmlview http://web.mit.edu/18.327");
+  item 18.327web:	"18.327 Home Page"		[course18/25]	exec("/usr/athena/bin/htmlview http://web.mit.edu/18.327");
 
   menu 18385:		"18.385"		{18385}	    [course18/30]	;
+   item 18385matlab4:  "18.385 MATLAB 4"                   [18385]  add("18.385"),exec("18.385matlab4");
+   item 18385matlab5:  "18.385 MATLAB 5"                   [18385] add("18.385"),exec("18.385matlab5");
    item dstool:		"dstool"		-sgi	    [18385]	    add("18.385"),exec("xterm -sb -e dstool");
    item xphased:	"xphased"		-sgi	    [18385]	    add("18.385"),exec("xphased");
 
 
   menu french:		"French"		{french}    [course21/10]   ;
 
-    item french2web:	"French II Home Page"		    [french]	    add("infoagents"),exec("htmlview http://web.mit.edu/21.french/francaisII/");
+    item french2web:	"French II Home Page"		    [french]	    exec("/usr/athena/bin/htmlview http://web.mit.edu/21.french/francaisII/");
 
 ! Should check the 21.254 items - they are probably out of date.;
 
   menu japanese:	"Japanese"	{japanese}	    [course21/20]   ;
-    item jmaterials:	"Japanese 1-8 Materials (WWW)"      [japanese/10]   add("infoagents"),exec("htmlview http://www-japan.mit.edu/mit/mit-materials/");
+    item jmaterials:	"Japanese 1-8 Materials (WWW)"      [japanese/10]   exec("/usr/athena/bin/htmlview http://www-japan.mit.edu/mit/mit-materials/");
 
     menu 21254:		"Advanced Japanese (21F505)" {21254} [japanese/40]	;
 
@@ -768,15 +800,15 @@ Bug-reports:  email to <bug-nihongo@mit.edu>
 
 
   menu filmstudies:	"Film and Media Studies" {filmstudies} [course21/30] ;
-    item flmstudweb:	"Film and Media Home Page"	    [filmstudies/10] add("infoagents"),exec("htmlview http://web.mit.edu/21fms/Program/home.html");
+    item flmstudweb:	"Film and Media Home Page"	    [filmstudies/10] exec("/usr/athena/bin/htmlview http://web.mit.edu/21fms/Program/home.html");
 
   menu humstudies:	"Writing and Humanistic Studies"  {humstudies}	[course21/40]  ;
-    item sciwriteweb:	"21W.783 Home Page"	    [humstudies/10] add("infoagents"),exec("htmlview http://web.mit.edu/21w783/www/home.html");
-    item techwriteweb:	"21W.794 Home Page"	    [humstudies/20] add("infoagents"),exec("htmlview http://web.mit.edu/21w794/www/home.html");
+    item sciwriteweb:	"21W.783 Home Page"	    [humstudies/10] exec("/usr/athena/bin/htmlview http://web.mit.edu/21w783/www/home.html");
+    item techwriteweb:	"21W.794 Home Page"	    [humstudies/20] exec("/usr/athena/bin/htmlview http://web.mit.edu/21w794/www/home.html");
 
   item cvsim:		"CVSIM"		-sgi		    [courseHST]     add("hst"),exec("xterm -e cvsim");
 
-  item sts001:	"STS001 Home Page"	    [courseSTS/10] add("infoagents"),exec("htmlview http://web.mit.edu/sts001/www/index.html");
+  item sts001:	"STS001 Home Page"	    [courseSTS/10] exec("/usr/athena/bin/htmlview http://web.mit.edu/sts001/www/index.html");
 
 help yhelp:
 "Dash is the Athena Dashboard.  In addition to 
@@ -816,7 +848,10 @@ Menu items which are marked with a `*' (star) will start
   clicking a `yes' or `no' button.
 Other menu items are informational only - clicking on the
   `?' will give help, but clicking on the item itself will
-  do nothing but close the menu.";
+  do nothing but close the menu.
+If a menu item appears dimmed, it means the application is 
+  not available on the type of machine you are using.
+";
 
 help xcluster:
 "Xcluster brings up a map of MIT showing the location
@@ -837,7 +872,7 @@ Bug reports:  use sendbug
 help olta:
 "The On-Line TA system works just like the OLC (Athena's On-line
 Consulting system) except for the fact that the `consultants' are the
-TA's for a course, and the `topics' are the course numbers themselves.
+TAs for a course, and the `topics' are the course numbers themselves.
 Users can ask questions about their course assignments which will be
 answered by the TAs for that course.  Any course may use the system,
 but must contact the Faculty Liaison Office to set it up.
@@ -1044,7 +1079,7 @@ complexity, it is not well-suited for writing simple documents such as
 letters and memos, or non-formatted documents such as email and
 dotfiles.
 
-To run on a workstation: add frame; maker 
+To run on a workstation (non-Linux): add frame; maker 
 
 Other help: click on `Help' from the Frame startup menubar
                          choose the `Help' menu inside the Frame window
@@ -1074,6 +1109,25 @@ To run Acrobat Reader on a workstation: add acro; acroread
 
 Other help: see help for the `Maker' item
 ";
+
+help soffice:
+"StarOffice is an office suite offering word processing, 
+spreadsheet, presentation, drawing, and HTML authoring 
+capabilities, as well as interoperability with Microsoft 
+Office.  StarOffice is currently under evaluation for full 
+support as Athena's recommended Office Suite. For now, 
+limited support is available through Athena Consulting (OLC).
+
+To run on a workstation (non-SGI): add soffice ; soffice &
+
+Other help: select 'Help' in the program's menu bar (use
+                              binoculars icon for index of topics)
+                          see http://web.mit.edu/soffice/www/
+
+Instructors interested in using StarOffice for coursework should
+contact the Faculty Liaisons, <f_l@mit.edu>.
+
+Bug reports:  use sendbug";
 
 help graphother:
 "FrameMaker and TecPlot also have some graphics capabilities
@@ -1299,26 +1353,21 @@ Bug reports:  use sendbug
 help javalang: 
 
 "Java is available on all supported Athena platforms in the form of the
-Java Development Kit (JDK).  At present, Java is supported by Academic
-Computing in the context of courses, but OLC support is not available.
+Java Development Kit (JDK) and several integrated development
+environments.  At present, Java is supported by Academic Computing 
+in the context of courses, but OLC support is not available.
 
 To use, first:  add java  (SGI, Linux)  or  add -f  java  (Sun)
    to compile:  javac myfile.java     (compile source file myfile.java -> myfile.class)
    to run:           java myfile                  (run myfile.class)
 
-The Java Studio and Java Workshop development environments are also
-available on the Sun.
+For information about Java resources on Athena see:
 
-To run:  add studio ; js &     (Java Studio)
-                  add workshop ; jws &   (Java Workshop)
+   http://web.mit.edu/java/www/
+   http://web.mit.edu/acs/whererunsa.html#Java
 
 Other help:  see /mit/java/README.athena      
                            man pages
-                           http://web.mit.edu/java/www/home.html  (general resources)
-                           http://web.mit.edu/acs/www/whererunsa.html#Java  (JDK)
-                           http://web.mit.edu/acs/www/whererunsa.html#javas (Java Studio)
-                           http://web.mit.edu/acs/www/whererunsa.html#javaw (Java Workshop)
-
 
 Bug reports:  use sendbug";
 
@@ -1347,7 +1396,7 @@ Bug reports:  use sendbug
 
 help xmcd:
 
-"On Athena Sun workstations, audio CDs can be played using xmcd. 
+"On Athena Sun and Linux workstations, audio CDs can be played using xmcd. 
 Insert the CD first and wait for the status light on the CD drive to
 settle down before starting the program.  
 
@@ -1525,6 +1574,11 @@ at the athena% prompt.
 Quitting Dash does not log you out (but will cause the logout button
 to disappear, if you're using xlogout).";
  
+help gnomeopt:
+"This option causes future logins to use the GNOME Athena interface
+(the new default introduced in Athena 9.0), with the panel menu at 
+the bottom of the screen replacing Dash, and the sawfish window 
+manager replacing MWM.";
 
 help hidemenus:
 "This option hides the Dash menu bar. 
@@ -1630,7 +1684,7 @@ most of the day and night.  Phone x3-7788
 or stop by the office on the fifth floor
 of the Student Center.
 
-http://www.mit.edu/";
+http://www.mit.edu/sipb/";
 
 help aboutcw:
 "Courseware is, for the most part, only supported by
@@ -1650,24 +1704,26 @@ should be directed via email to <f_l@mit.edu>";
 
 help screensaver:
 "Use this program if you need to leave your workstation
-unattended for less than 20 minutes.  It blanks and/or locks 
-your screen so that others cannot use the machine.
-If the screen is locked, you must type in your
-password to unlock it.
+unattended for less than 20 minutes.  To lock the screen, 
+click on the xss icon; this activates a locked screensaver, 
+which you clear by typing in your password.  (By default,
+the screensaver comes up automatically when you are
+idle for 10 minutes and locks after an additional minute.)
 
 It is against the Athena Rules of Use to attempt to lock up
 a workstation for more than 20 minutes!  Cluster Patrol staff
-will reboot any machine whose screensaver displays more than
-20 minutes of idle time, and will immediately reboot a workstation
-whose screensaver has been hacked to not display any idle time.
+will logout users whose screensaver displays more than 20
+minutes of idle time, and will immediately reboot a workstation
+whose screensaver has been hacked to hide the idle time 
+or to disable the logout option.
 
 Please be courteous to your fellow users and abide by these rules.
 
-To run on a workstation:   add sipb ; xscreensaver
+To run on a workstation:   xss-button &       
 
-Other help: man xscreensaver
+Other help: man xss, man xss-button
 
-Bug reports:  send email to <bug-sipb@mit.edu>";
+Bug reports:  use sendbug";
 
 help sendbug:
 "This program is used to send bug reports
@@ -1733,6 +1789,32 @@ To see this information, type:
 
 ";
 
+help sw-wrw:
+"This item opens the 'What Runs Where' 
+table of software on Athena:
+
+      http://web.mit.edu/acs/whereruns.html
+
+in your web browser.
+";
+
+help sw-new:
+"This item opens the 'What's New' 
+list of software on Athena:
+
+      http://web.mit.edu/acs/whatsnew.html
+
+in your web browser. 
+";
+
+help sw-help:
+"For help, see the resources under Help -> Help on Athena.
+
+If you have comments or suggestions, send mail to:
+
+            <suggest@mit.edu>
+";
+
 help aboutpictures:
 "Athena currently does not have a fully-supported drawing program like
 MacDraw.  There are a few different packages available, but we may not be
@@ -1759,12 +1841,11 @@ EZ, which also allows students to turn in and pick up papers, where papers
 can be assignments, handouts or papers for general viewing (Exchange
 papers).
 
-To run on a workstation:   eos
+To run on a workstation:   add andrew; eos
 
-Other help: man eos
-                         ahelp eos
-                         click on the `Help' button in the application
-                         NEOS on Athena Student Guide (AC-91) and TA Guide (AC-92), from CopyTech
+Other help:   ahelp eos
+              click on the `Help' button in the application
+              NEOS on Athena Student Guide (AC-91) and TA Guide (AC-92), from CopyTech
                             and in OLH under `Using Athena for Courses' (http://web.mit.edu/olh/)
 
 Bug reports:  use sendbug
@@ -1775,12 +1856,11 @@ help grade:
 by students, edit and annotate the work and to return it back to the
 student.  It can also be used to create and review handouts for courses.
 
-To run on a workstation:   grade
+To run on a workstation:   add andrew; grade
 
-Other help: man grade
-                         ahelp grade
-                         click on the `Help' button in the application
-                         NEOS on Athena Student Guide (AC-91) and TA Guide (AC-92), from CopyTech
+Other help:   ahelp grade
+              click on the `Help' button in the application
+              NEOS on Athena Student Guide (AC-91) and TA Guide (AC-92), from CopyTech
                             and in OLH under `Using Athena for Courses' (http://web.mit.edu/olh/)
 
 Bug reports:  use sendbug
@@ -1797,7 +1877,7 @@ how.";
 
 help mh:
 "The mail handler (MH) system is really a set of commands.
-The most commony used are:
+The most commonly used are:
   inc                      incorporate (get) new mail
   show                  show message(s)
   next                    show the next message
@@ -1973,7 +2053,7 @@ To run on a workstation:   xdsc &
 
 Other help: man xdsc
                           Discuss on Athena (AC-32) at CopyTech or http://web.mit.edu/is/pubs/
-                          OLH under `Communicatin with Other Users' (http://web.mit.edu/olh/)
+                          OLH under `Communicating with Other Users' (http://web.mit.edu/olh/)
                           click on the `HELP' button within the application
 
 Bug reports:  use sendbug
@@ -1987,7 +2067,7 @@ To run:    discuss
 
 Other help:  man discuss
                           Discuss on Athena (AC-32) at CopyTech or http://web.mit.edu/is/pubs/
-                          OLH under `Communicatin with Other Users' (http://web.mit.edu/olh/)
+                          OLH under `Communicating with Other Users' (http://web.mit.edu/olh/)
                           type `help' or `?' within the application
 
 Bug reports:  use sendbug
@@ -2008,7 +2088,7 @@ help aboutzephyr:
 system.  Using zephyr, you can send a message to
 any user who is logged-in to Athena without having
 to know where they are logged in.  The message is
-sent immediately and shows up in a seperate window
+sent immediately and shows up in a separate window
 on their screen.  If you receive a `zephyrgram',
 you can get rid of it by simply clicking a mouse
 button in it.
@@ -2042,7 +2122,7 @@ The program that is used to control your
 subscriptions (what you listen to) is called
 `zctl'.
 
-For more information on scubscriptions,
+For more information on subscriptions,
 refer to On-Line Help or the manual page
 for zctl.";
 
@@ -2067,7 +2147,7 @@ help zephhide:
 zephyr, so that people will not be able
 to locate you.  You will still be able to
 receive zephyrgrams, and it will not
-change your visisbility for future sessions.
+change your visibility for future sessions.
 
 To run:    zctl hide
 
@@ -2077,7 +2157,7 @@ Bug reports:  use sendbug
 help zephunhide:
 "This option will unhide your location from
 zephyr, so that people can locate you.  It
-will not change your visisbility for future
+will not change your visibility for future
 sessions.
 
 To run:    zctl unhide
@@ -2142,7 +2222,7 @@ can be run in an xterm or over dialup.
 This item will connect you to the SIPB 
 Home Page.
 
-To run: add infoagents; lynx http://www.mit.edu 
+To run: add infoagents; lynx http://www.mit.edu/sipb/ 
 
 Other help: man lynx
                           type `h' in the application
@@ -2151,7 +2231,7 @@ Bug reports: use sendbug
 ";
 
 
-help lynxdefault:
+!help lynxdefault:
 "Lynx is a text-only web browser which
 can be run in an xterm or over dialup.
 This item will, by default, connect you to
@@ -2172,10 +2252,9 @@ help netscapemit:
 "Netscape is a graphical WWW browser.  This item connects  
 you to the MIT Home Page.
 
-To run: add infoagents; netscape http://web.mit.edu/ &
+To run: netscape http://web.mit.edu/ &
 
-Other help: See http://web.mit.edu/infoagents/www/netscape/
-                          Click on the `Help' menu item in the application 
+Other help: Click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
@@ -2184,23 +2263,21 @@ help netscapesipb:
 "Netscape is a graphical WWW browser.  This item connects 
 you to the SIPB Home Page.
 
-To run: add infoagents; netscape http://www.mit.edu/ &
+To run: netscape http://www.mit.edu/sipb/ &
 
-Other help: See http://web.mit.edu/infoagents/www/netscape/
-                          Click on the `Help' menu item in the application 
+Other help: Click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
 
-help netscapedefault:
+!help netscapedefault:
 "Netscape is a graphical WWW browser.  By default, this item
 connects you to the MIT Home Page.  (If you have set another page as
 your startup default,  it will start on that instead.)
 
-To run: add infoagents; netscape &
+To run: netscape &
 
-Other help: See http://web.mit.edu/infoagents/www/netscape/
-                          Click on the `Help' menu item in the application 
+Other help: Click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
@@ -2211,8 +2288,7 @@ you to the MIT Home Page.
 
 To run: add infoagents; netscape-3.01 http://web.mit.edu/ &
 
-Other help: man netscape
-  			  click on the `Help' menu item in the application 
+Other help:  click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
@@ -2221,26 +2297,48 @@ help netscape3sipb:
 "Netscape is a graphical WWW browser.  This item connects 
 you to the SIPB Home Page.
 
-To run: add infoagents; netscape-3.01 http://www.mit.edu/ &
+To run: add infoagents; netscape-3.01 http://www.mit.edu/sipb/ &
 
-Other help: man netscape
-  			  click on the `Help' menu item in the application 
+Other help: click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
 
-help netscape3default:
-"Netscape is a graphical WWW browser.  By default, this item 
+!help netscape3default:
+"Netscape is a graphical WWWW browser.  By default, this item 
 connects you to the MIT Home Page.  (If you have set another page as
 your startup default,  it will start on that instead.)
 
 To run: add infoagents; netscape-3.01 &
 
-Other help: man netscape
-  			  click on the `Help' menu item in the application 
+Other help: click on the `Help' menu item in the application 
 
 Bug reports: use sendbug
 ";
+
+
+help mozillamit:
+"Mozilla is a graphical WWW browser.  This item connects  
+you to the MIT Home Page.
+
+To run: add infoagents; mozilla &
+
+Other help:  click on the `Help' menu item in the application 
+
+Bug reports: use sendbug
+";
+
+help mozillasipb:
+"Netscape is a graphical WWW browser.  This item connects 
+you to the SIPB Home Page.
+
+To run: add infoagents; mozilla http://www.mit.edu/sipb/ &
+
+Help: click on the `Help' menu item in the application 
+
+Bug reports: use sendbug
+";
+
 
 
 !help aboutgopher:
@@ -2346,6 +2444,19 @@ and see the file /mit/multi/README.to_run for usage info.
 Bug reports:  use sendbug
 ";
 
+help multilang:
+"Multi is an integrated debugging environment coupled
+to a set of C, C++, and FORTRAN compilers (ghcc, gcx, and gfc
+respectively) from Green Hills Software. It is unsupported and use is
+on an `as is' basis.  It is available on Athena Suns only. To run:
+
+   add multi
+
+and see the file /mit/multi/README.to_run for usage info.
+
+Bug reports:  use sendbug
+";
+
 help maple:
 "Maple, developed at the University of Waterloo,
 performs numerical and symbolic computations
@@ -2399,10 +2510,11 @@ Bug reports:  use sendbug
 ";
 
 help library:
-"Connect to the Athena interface for the 
-MIT Libraries Services.
+"Connect to the MIT Libraries' web site for electronic 
+resources and full information on MIT's library collections, 
+services, and locations:
 
-To run:    add library; library";
+    http://libraries.mit.edu/";
 
 
 help assess:
