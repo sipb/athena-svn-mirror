@@ -33,6 +33,15 @@ After attaching the correct locker, you can build a package by doing:
 	sh $src/packs/build/do.sh prepare
 	sh $src/packs/build/do.sh all
 
+If you are building the from the current sources (that is, $src is
+/mit/source), the package may have dependencies on changes which have
+been made since the last release.  In this case, use the "-c" flag to
+do.sh to make the build use a recent build for tools and libraries.
+The last two commands are then:
+
+	sh $src/packs/build/do.sh -c prepare
+	sh $src/packs/build/do.sh -c all
+
 "do" accepts the following options (-c and -t are mutually exclusive):
 
 	-s SRCDIR	Specifies the source hierarchy, if not default
