@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *	$Id: macros.h,v 1.9 1990-12-12 15:25:56 lwvanels Exp $
+ *	$Id: macros.h,v 1.10 1991-02-24 15:14:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -90,7 +90,7 @@ typedef int     RESPONSE;       /* A response code. */
 #define TIME_SIZE       30      /* Size of a time string. */
 #define STATUS_SIZE     20
 #define STRING_SIZE     16
-#define LABEL_SIZE      32
+#define TITLE_SIZE      32
 #define NAME_SIZE       64      /* Maximum length for a filename. */
 #define NOTE_SIZE       64
 #define LINE_SIZE      128      /* Maximum length for an input line. */
