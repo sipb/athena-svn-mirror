@@ -1,25 +1,11 @@
-.TH INTLTOOLIZE 8 "September 09, 2001" "intltool"
+.TH INTLTOOLIZE 8 "2003-08-02" "intltool"
 
 .SH NAME
-intltoolize \- prepare a package to use intltool
+intltoolize \- copy intltool related files to software package
 
 .SH SYNOPSIS
-.B "intltoolize"
-[
-.BR --automake
-] [
-.BR \-c | --copy
-] [
-.BR --debug
-] [
-.BR \-n | --dry-run
-] [
-.BR \-f | --force
-] [
-.BR \--help
-] [
-.BR \--version
-]
+.B intltoolize
+[\fIoption\fR]...
 
 
 .SH DESCRIPTION
@@ -31,42 +17,45 @@ level directory of the package before running
 
 
 .SH OPTIONS
-.TP
-.B \--automake
-Work silently and assume that
-.B automake
-is being used.
-.TP
-.B \-c, \--copy
-Copy files rather than symlinking to them.
-.TP
-.B \--debug
+.IP "\fB\--automake\fR" 4
+Work silently and assume that \fIautomake\fR is being used in software.
+.IP "\fB\-c\fR" 4
+.PD 0
+.IP "\fB\--copy\fR" 4
+.PD
+Copy files rather than creating symbolic links to them.
+.IP "\fB\--debug\fR" 4
 Enable verbose shell tracing.
-.TP
-.B \-n, \--dry-run
-Print commands rather then executing them.
-.TP
-.B \-f, \--force
+.IP "\fB\-n\fR" 4
+.PD 0
+.IP "\fB\--dry-run\fR" 4
+.PD
+Print commands only, instead of executing them.
+.IP "\fB\-f\fR" 4
+.PD 0
+.IP "\fB\--force\fR" 4
+.PD
 Replace existing files if they exist.
-.TP
-.B \--help
+.IP "\fB\-\-help\fR" 4
 Show usage and basic help information.
-.TP
-.B \--version
+.IP "\fB\-\-version\fR" 4
 Show version information.
 
 
 .SH REPORTING BUGS
-Report bugs to http://bugzilla.gnome.org or by sending email
-to xml-i18n-tools@gnome.org.
+Report bugs to http://bugzilla.gnome.org (product name "\fBintltool\fR")
+or send email to <xml-i18n-tools@gnome.org>.
 
 .SH AUTHOR
-Darin Adler           <darin@bentspoon.com>
+Darin Adler <darin@bentspoon.com>
 .br
-Kenneth Christiansen  <kenneth@gnu.org>
+Kenneth Christiansen <kenneth@gnu.org>
 .br
-Maciej Stachowiak     <mjs@eazel.com>
+Maciej Stachowiak <mjs@eazel.com>
 
 
 .SH SEE ALSO
-intltool-merge(8), intltool-prepare(8), intltool-extract(8)
+.BR intltool-prepare (8),
+.BR intltool-extract (8),
+.BR intltool-merge (8),
+.BR intltool-update (8)

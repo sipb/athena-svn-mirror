@@ -4,6 +4,8 @@ Autoconf/I18n-ify HelloWorld HOW-TO
 Authors:
 	Kenneth Christiansen <kenneth at gnu dot org>
 	Thomas Vander Stichele <thomas at apestaart dot org>
+	
+Help from: Bruno Haible <bruno at clisp dot org>
 
 Disclaimer:
 	Kenneth last used autoconf 2.52 and automake 1.4p5 to test this guide.
@@ -32,13 +34,13 @@ int main (void) {
    and place the helloworld.c file in the src/ dir
 
 2. If your program has not been autoconf-enabled yet, you can
-   create configure.scan (which is a good starting point for configure.in)
-   and rename it to configure.in
+   create configure.scan (which is a good starting point for configure.ac)
+   and rename it to configure.ac
 
         autoscan   # creates configure.scan
-        mv configure.scan configure.in
+        mv configure.scan configure.ac
 
-   Now edit configure.in and make some changes.
+   Now edit configure.ac and make some changes.
    You can remove everything after AC_INIT, we'll be using AM_INIT_AUTOMAKE
    to pass on variables.
 
@@ -57,7 +59,9 @@ int main (void) {
    line to read
      AC_OUTPUT(Makefile)
 
-4. We add some files that automake does not make but are necessary
+   NOTE: configure.ac used to be called configure.in
+
+3. We add some files that automake does not make but are necessary
    to adhere to GNU standards.
 
    touch NEWS README AUTHORS ChangeLog
@@ -76,28 +80,20 @@ int main (void) {
 5. After that we do the big i18n trick :-), also in the toplevel
    directory.
 
-   gettextize --force --copy    # created po/ intl/ dir with some files
+   gettextize --force --copy    # created po/ dir with some files
    intltoolize 		        # bring in the perl helper scripts
 
-7. Add support for libtool to our package (which provides a platform
-   independent way of creating static and shared libraries)
-
-	libtoolize --force
-
-   FIXME: is there good reason to do so ? If not, let's leave it out
-
-
-9. Run autoheader which will create config.h.in
+6. Run autoheader which will create config.h.in
 
 	autoheader # create config.h.in
 
-10. Now, open up configure.in and make some modifications.
+7. Now, open up configure.in and make some modifications.
 
     The gettext macros need to be added after the initial checks.  
     Putting them after the checks for library functions is a good idea.
 
-    AC_PROG_INTLTOOL(0.18)
-    AM_WITH_NLS
+    AC_PROG_INTLTOOL(0.26)
+    AM_GNU_GETTEXT([external])
     ALL_LINGUAS="da nl"                 # Internationalization, means there is 
 					# a .po file for danish and dutch.
     AM_GLIB_GNU_GETTEXT
@@ -113,10 +109,10 @@ int main (void) {
     Please require the latest intltool that exists. Intltool releases
     are pretty stable and often only contains bugfixes.
 
-    AM_WITH_NLS adds native language support to automake, together
+    AM_GNU_GETTEXT adds native language support to automake, together
     with a compile option.
 
-    AM_GLIB_GNU_GETTEXT will check for additional required functions and
+    AM_GNU_GETTEXT will check for additional required functions and
     programs and will finally create po/POTFILES during configure.
 
     Instead of using AM_GLIB_GNU_GETTEXT you can do the following:
@@ -129,7 +125,15 @@ int main (void) {
     Also, this will be the base filename for all your translation files, 
     so make sure you choose a unique one.
 
-13.  Run 
+8.
+    Now add the add the supported languages to po/LINGUAS:
+
+    da nl
+
+    NOTE: These used to be in configure.{in,ac} in the ALL_LINGUAS
+    variable. This is deprecated since gettext 0.11
+
+9.  Run 
        aclocal 
      to make sure that the necessary autoconf and automake macros
      are inserted in aclocal.m4
@@ -138,85 +142,26 @@ int main (void) {
        autoconf 
      to create the configure script.
 
-15. in the source directory add a i18n-support.h file
+10. install the gettext.h file (since gettext 0.11) and include it:
 
-    touch src/i18n-support.h
+    #include "gettext.h"
+    #define _(String) gettext (String)
 
-16. And fill it up with contents :
+11. Now add the following to helloworld.c
 
-/*
- * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
- * All rights reserved.
- *
- * The program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this program; see the file COPYING.LIB.  If not,
- * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-/*
-  @NOTATION@
- */
+    #include <locale.h>
+    #include "gettext.h"
+    #define _(String) gettext (String)
+    /* includes used by original program here */    
 
-/*
- * Handles all of the internationalization configuration options.
- * Author: Tom Tromey <tromey@creche.cygnus.com>
- */
-
-#ifndef __I18N_SUPPORT_H__
-#define __I18N_SUPPORT_H__
-
-#include <config.h>
-
-#ifdef ENABLE_NLS
-#    include <libintl.h>
-#    ifdef EXPLICIT_TRANSLATION_DOMAIN
-#        undef _
-#        define _(String) dgettext (EXPLICIT_TRANSLATION_DOMAIN, String)
-#    else 
-#        define _(String) gettext (String)
-#    endif
-#    ifdef gettext_noop
-#        define N_(String) gettext_noop (String)
-#    else
-#        define N_(String) (String)
-#    endif
-#else
-/* Stubs that do something close enough.  */
-#    define textdomain(String) (String)
-#    define gettext(String) (String)
-#    define dgettext(Domain,Message) (Message)
-#    define dcgettext(Domain,Message,Type) (Message)
-#    define bindtextdomain(Domain,Directory) (Domain)
-#    define _(String) (String)
-#    define N_(String) (String)
-#endif
-
-#endif /* __I18N_SUPPORT_H__ */
-
-17. Now add the following to helloworld.c
-
-    #include <i18n-support.h>
-/* includes used by original program here */    
-
-    int main(void) {
+    int main (void) 
+    {
 
 	    setlocale (LC_ALL, "");
             bindtextdomain (PACKAGE, LOCALEDIR);
             textdomain (PACKAGE);
 
-            /* 
-             * Original Helloworld code here
-             */
+            /* Original Helloworld code here */
     }
 
     If you use GNOME og GTK+ the setlocale sentence shouldn't be needed
@@ -227,10 +172,10 @@ int main (void) {
 
       printf (_("Hello, world!\n"));
 
-18. We create src/Makefile.am (from which Makefile.in and Makefile will be
+12. We create src/Makefile.am (from which Makefile.in and Makefile will be
     generated)
 
-    INCLUDES = -I$(top_srcdir) -I$(includedir) -I$(top_srcdir)/intl \
+    INCLUDES = -I$(top_srcdir) -I$(includedir) \
                -DLOCALEDIR=\""$(datadir)/locale"\"
 
     bin_PROGRAMS = helloworld
@@ -238,9 +183,9 @@ int main (void) {
     helloworld_SOURCES = helloworld.c
     noinst_HEADERS = i18n-support.h
 
-19. Now we create the following toplevel Makefile.am
+13. Now we create the following toplevel Makefile.am
 
-     SUBDIRS = src po intl
+     SUBDIRS = src po
 
      EXTRA_DIST = intltool-extract.in intltool-merge.in intltool-update.in
 
@@ -260,14 +205,11 @@ int main (void) {
     to see if you are missing files that contain marked strings.  
     You should consider adding these to POTFILES.in
 
-    FIXME: I get the following error on my system :
-    mismatched quotes at line 353 in ../intl/plural.c
 
+15. Now we start making a Danish and Dutch translation
 
-21. Now we start making a Danish and Dutch translation
-
-    cp helloworld.pot da.po
-    cp helloworld.pot nl.po
+    msginit --locale=da
+    msginit --locale=nl
 
     intltool-update da
     intltool-update nl
@@ -275,30 +217,30 @@ int main (void) {
     edit and update da.po and nl.po
     (The respective translations are "Hej verden" and "Hallo wereld")
     
-20. Now we can compile.  We will test it later, so we will install it in
+16. Now we can compile.  We will test it later, so we will install it in
     a temporary location.
     Close your eyes and type 
       ./configure --prefix=/tmp/helloworld && make 
     in the toplevel directory. :-)
 
-22. To test if it works, you have to install the package.
+17. To test if it works, you have to install the package.
     Run
       make install
     in the toplevel directory.
 
-23. Now set the environment variable LC_ALL to your preferred language :
+18. Now set the environment variable LC_ALL to your preferred language :
       export LC_ALL=nl_NL
       /tmp/helloworld/bin/helloworld
-      export LC_ALL=nl_DK
+      export LC_ALL=da_DK
       /tmp/helloworld/bin/helloworld
 
     And if all goes well, the string should be translated in the two languages.
 
-24. To finish it all up, run
+19. To finish it all up, run
       make dist
     to create a distributable tarball containing your internationalized
     program.
 
-25. Exercises :
+20. Exercises :
     - add another language
 

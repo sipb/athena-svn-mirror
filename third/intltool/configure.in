@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to create configure.
 AC_INIT(intltoolize.in)
-INTLTOOL_VERSION=0.25
+INTLTOOL_VERSION=0.31.2
 
 AM_INIT_AUTOMAKE(intltool, $INTLTOOL_VERSION)
 
@@ -33,6 +33,12 @@ fi
 if test -z "`$PERL -v | fgrep 'v5.' 2> /dev/null`" -a -z "`$PERL -v | fgrep 'version 5.' 2> /dev/null`"; then
    AC_MSG_ERROR([perl 5.x required for intltool])
 fi
+AC_MSG_CHECKING([for XML::Parser])
+if `$PERL -e "require XML::Parser" 2>/dev/null`; then
+   AC_MSG_RESULT([ok])
+else
+   AC_MSG_ERROR([XML::Parser perl module is required for intltool])
+fi
 
 # find the actual value for $prefix that we'll end up with
 # i think there's a better way to do this...
@@ -54,10 +60,18 @@ EXPANDED_LIBDIR=`eval echo $LIBDIR_TMP`
 exec_prefix=$old_exec_prefix
 AC_SUBST(EXPANDED_LIBDIR)
 
+DATADIR_TMP="$datadir"
+old_exec_prefix=$exec_prefix
+exec_prefix=$REAL_PREFIX
+EXPANDED_DATADIR=`eval echo $DATADIR_TMP`
+exec_prefix=$old_exec_prefix
+AC_SUBST(EXPANDED_DATADIR)
+
+
 AC_OUTPUT([
 Makefile
-doc-i18n-tool/Makefile
 doc/Makefile
+doc-i18n-tool/Makefile
 intltool-extract.in
 intltool-merge.in
 intltool-prepare

@@ -45,9 +45,11 @@ intltool_m4="${datadir}/aclocal/intltool.m4"
 dry_run=no
 help="Try '$progname --help' for more information."
 rm="rm -f"
+rm_rec="rm -rf"
 ln_s="ln -s"
 cp="cp -f"
 mkdir="mkdir"
+mkinstalldirs="mkinstalldirs"
 
 # Global variables.
 automake=
@@ -100,9 +102,11 @@ EOF
     if test "$dry_run" != yes; then
       dry_run=yes
       rm="echo $rm"
+      rm_rec="echo $rm_rec"
       test -n "$ln_s" && ln_s="echo $ln_s"
       cp="echo $cp"
       mkdir="echo mkdir"
+      mkinstalldirs="echo $mkinstalldirs"
     fi
     ;;
 
@@ -218,6 +222,7 @@ fi
 
 # Change to the auxiliary directory.
 (
+cur=`pwd`
 if test "$auxdir" != .; then
   test -z "$automake" && echo "Putting files in AC_CONFIG_AUX_DIR, '$auxdir'."
   cd $auxdir || exit 1
@@ -237,7 +242,10 @@ for file in $files; do
     status=1
   fi
 done
-)
+
+exit $status
+# make sure this subshell exits with the exit value if it failed
+) || exit $?
 
 # FIXME: This probably does not work w/ builddir != srcdir because it
 # gets at source files relative to the current directory.
@@ -248,11 +256,16 @@ if grep GENPOT po/Makefile.in.in >/dev/null; then
 # gettextize 4.x Standard 
 elif grep '# Copyright (C) 1995-1997, 2000-2002' po/Makefile.in.in > /dev/null; then
   patch po/Makefile.in.in < $pkgdatadir/intltool-po-Makefile.in.in-patch-5
+# gettext 0.12 and 0.13
+elif grep '# Copyright (C) 1995-1997, 2000-2003' po/Makefile.in.in > /dev/null;
+then
+  patch po/Makefile.in.in < $pkgdatadir/intltool-po-Makefile.in.in-patch-8
 
 # glib-gettextize
 elif grep '# POTFILES is created from POTFILES.in' po/Makefile.in.in > /dev/null; then
-  if grep 'XGETTEXT = @XGETTEXT@' po/Makefile.in.in > /dev/null;
-  then 
+  if grep 'lang.new.po' po/Makefile.in.in > /dev/null; then
+    patch po/Makefile.in.in < $pkgdatadir/intltool-po-Makefile.in.in-patch-7
+  elif grep 'XGETTEXT = @XGETTEXT@' po/Makefile.in.in > /dev/null; then 
     patch po/Makefile.in.in < $pkgdatadir/intltool-po-Makefile.in.in-patch-6
   else
     patch po/Makefile.in.in < $pkgdatadir/intltool-po-Makefile.in.in-patch-4

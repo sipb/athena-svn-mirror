@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = . tests doc doc-i18n-tool
+SUBDIRS = tests doc doc-i18n-tool
 
 NULL = 
 
@@ -16,7 +16,6 @@ CLEANFILES =					\
 	intltool-merge				\
 	intltool-prepare			\
 	intltool-update				\
-	intltool-unicodify			\
 	*.gz					\
 	$(NULL)
 
@@ -31,6 +30,8 @@ pkgdata_DATA =					\
 	intltool-po-Makefile.in.in-patch-4	\
 	intltool-po-Makefile.in.in-patch-5	\
 	intltool-po-Makefile.in.in-patch-6	\
+	intltool-po-Makefile.in.in-patch-7	\
+	intltool-po-Makefile.in.in-patch-8	\
 	xml-i18n-po-Makefile.in.in-patch-1	\
 	xml-i18n-po-Makefile.in.in-patch-2	\
 	xml-i18n-po-Makefile.in.in-patch-5	\
@@ -49,7 +50,6 @@ bin_SCRIPTS =					\
 	intltool-merge				\
 	intltool-extract			\
 	intltool-prepare			\
-	intltool-unicodify			\
 	$(NULL)
 
 EXTRA_DIST =					\
@@ -60,7 +60,6 @@ EXTRA_DIST =					\
 	intltool-merge.in.in			\
 	intltool-update.in.in			\
 	intltool-prepare.in			\
-	intltool-unicodify.in			\
 	intltool.spec.in			\
 	$(pkgdata_DATA)				\
 	$(NULL)

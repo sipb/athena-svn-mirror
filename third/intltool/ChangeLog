@@ -1,3 +1,797 @@
+2004-08-22  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in: Update version to 0.31.2
+
+2004-08-22  Rodney Dawes  <dobey@novell.com>
+
+	* NEWS: Document fix for #144725
+
+2004-08-22  Daniel Elstner  <daniel.elstner@gmx.net>
+
+	* intltool-update.in.in (FindPackageName): Correctly strip spaces
+	and brackets from the local $name and $version variables too.
+	(FindMakevarsDomain): Ignore make variable substitutions in the
+	assignment to DOMAIN, such as DOMAIN = $(PACKAGE).
+
+	Fixes #144725
+
+2004-08-22  Danilo Šegan  <dsegan@gmx.net>
+
+	* NEWS: Document additions.
+
+	* intltool-extract.in.in (type_xml): Adjust re to allow for
+	translating both content and attributes (i.e. 
+	<_t _name="ah">content</_t>).
+
+	* intltool-extract.in.in (type_xml): Add support for comments
+	before translatable attributes.
+	* tests/cases/extract-comments.xml: Add testcases for comments
+	around attributes.
+	* tests/results/extract-comments.xml.h: Updated results.
+
+	Fixes bug #143581.
+
+2004-07-27  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am (SUBDIRS): "." is not a subdir
+
+	* NEWS: Update for 0.31.1
+
+	* configure.in: Change version to 0.31.1
+
+2004-07-23  Jordi Mallach  <jordi@sindominio.net>
+
+	* autogen.sh: Switch to gnome-common autogen.sh, and use
+	AUTOMAKE_REQUIRED_VERSION=1.6
+
+	Fixes bug 145027.
+
+2004-06-25  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Change version to 0.31
+
+2004-06-17  Danilo Šegan  <dsegan@gmx.net>
+
+	* tests/cases/Makefile.am (EXTRA_DIST): Add extract-comments.xml.
+
+	* tests/results/Makefile.am (EXTRA_DIST): Add
+	extract-comments.xml.h, multi.merge6.xml.
+
+2004-06-17  Danilo Šegan  <dsegan@gmx.net>
+
+	* tests/results/multi.merge6.xml: New file for test 18.
+
+	* tests/selftest.pl.in (check_extract_result)
+	(check_merge_result, check_command_result): Combine general
+	functionality from check_extract_result and check_merge_result
+	into check_command_result. 
+	(check_multimerge_result): New function.
+	Adjust test 18. for checking multiple-output XML merging.
+
+2004-06-17  Danilo Šegan  <dsegan@gmx.net>
+
+	* NEWS: Mention multiple-output changes.
+	Mention Rodney's changes since the last release.
+
+	* intltool-merge.in.in (traverse): Output only single tag in
+	--multiple-output, setting "xml:lang" if there's a translation.
+
+2004-06-15  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-merge.in.in (getAttributeString): Sort attributes when
+	outputting.
+	* tests/results/merge6.xml: Sort attributes in a tag.
+
+2004-06-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* README: Extend section on using without autoconf to mention
+	Makevars.
+	* NEWS: Document using without autoconf-style files.
+
+	* intltool-update.in.in (FindMakevarsDomain): Read $DOMAIN from 
+	po/Makevars.
+	(FindPOTKeywords): Try Makevars/XGETTEXT_OPTIONS first, then
+	Makefile.in.in/XGETTEXT_KEYWORDS.
+	(FindPackageName): Try FindMakevarsDomain first.
+	Don't bork out if there's no configure.in or configure.ac.
+	(CONF_Handle_Open): Try Makevars first, don't bork out if
+	there're no autoconf-style files.
+
+2004-06-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* tests/results/merge5p.sheet: Make it correct UTF-8.
+	* tests/selftest.pl.in (check_merge_result): Use "-u" in test 8.
+
+	Fixes bug #138512.
+
+2004-06-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* NEWS: Document recent changes of XML merging/extracting.
+
+2004-06-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* tests/results/extract7.xml.h: 
+	* tests/cases/merge6.po: 
+	* tests/results/merge6.xml: 
+	Adjust test cases for new behaviour of intltool-merge and intltool-extract.
+
+	* intltool-extract.in.in (type_xml): Remove entity decoding for
+	tag content.
+
+	Complete fix for bug #130802.
+
+2004-06-13  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-merge.in.in (getAttributeString): Separate out a
+	function for getting string with attributes.
+	(getXMLstring): Recursive function to extract translatable messages.
+	(traverse): Function to traverse the XML::Parser tree.
+	(parseTree): Complete rewrite to use traverse(), $depth parameter
+	removed.
+	(xml_merge_output): Adjust calls to parseTree().
+
+	Fixes bug #130802.
+
+2004-06-12  Rodney Dawes  <dobey@novell.com>
+
+	* tests/selftest.pl.in: Fix the alignment of the output text for
+	test number 18
+
+2004-06-12  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-merge.in.in:
+	* intltool-prepare.in:
+	* intltool-update.in.in:
+	Add perl mode comment for emacs to be consistent with the
+	intltool-extract.in.in script so we can edit properly
+	
+2004-06-12  Rodney Dawes  <dobey@novell.com>
+
+	* README: Document the changes to intltool.m4 for declaring that
+	an application does not need the XML processing features of intltool
+
+	* intltool.m4: Add the second option of [no-xml] to AC_PROG_INTLTOOL
+	so that applications can request to not use the XML processing features
+	of intltool that require the XML::Parser perl module
+
+	Fixes #130850
+
+2004-06-12  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-update.in.in (SubstituteVariable, FindPackageName):
+	Strip the leading and trailing quotes from variable values
+
+2004-06-07  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-update.in.in (FindPackageName): Substitute the PACKAGE
+	variable in the same way we do AC_PACKAGE_NAME
+	Fixes a bug introduced by changing the regex clause for doing the
+	variable substitution
+
+2004-05-30  Rodney Dawes  <dobey@novell.com>
+
+	* intltool.m4 (AC_PROG_INTLTOOL): Apply patch to fix arugment ordering
+	from Matthew Fischer <futhark@vzavenue.net>
+
+	Fixes #112721
+
+2004-05-29  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-update.in.in: Add "cs" to the list of source extensions
+	that are natively handled by gettext
+	(FindLeftoutFiles): Add check for .GetString () call so that -m
+	works properly for detecting C# files
+
+2004-05-27  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in: Add check for XML::Parser at configure time (#129009)
+
+	* intltool.m4: Use $INTLTOOL_PERL instead of "perl" to check for the
+	existence of XML::Parser (#133366)
+
+	Fixes #129009 and #133366
+
+2004-05-27  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-update.in.in (SubstituteVariable): Grab the entire line
+	after the = in the variable declaration, not just up to the first bit
+	of whitespace (#143245)
+	(FindPackageName): Substitute the VERSION variable in the same way that
+	we use AC_PACKAGE_VERSION (#143248)
+
+	Fixes #143245 and #143248
+
+2004-05-26  Rodney Dawes  <dobey@novell.com>
+
+	* intltool-update.in.in (FindPackageName): Fix the regex clauses
+	for getting the package name from configure.(in|ac)
+
+	Fixes #143242
+
+2004-05-06  Danilo Šegan  <dsegan@gmx.net>
+
+	Fix bug #131505.
+
+	* tests/selftest.pl.in (check_merge_result): Add a new testcase.
+	* tests/results/extract-comments.xml.h: Added.
+	* tests/cases/extract-comments.xml: Added a test case.
+
+	* tests/cases/schemasmerge1.po: Remove bracketed comment from string.
+	* tests/cases/schemasmerge2.po: Likewise.
+	* tests/results/test.schemas.in.h (s): Adjust results.
+	* tests/cases/test.schemas.in: Modify comment for new syntax.
+
+	* README: Document additions regarding translators' comments in 
+	XML files.
+
+	* intltool-merge.in.in: Ignore comments when merging.
+	* intltool-extract.in.in (type_xml): Add support for comments.
+	(type_schemas): Likewise.
+
+2004-04-06  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-update.in.in:
+	s/GetLanguageFromPOFile/POFile_GetLanguage/ (fix for
+	"intltool-update -r").
+
+2004-03-10  Danilo Šegan  <dsegan@gmx.net>
+
+	* tests/results/merge7.xml: Corrected test case.
+
+2004-03-02  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-merge.in.in: Reverted compressing of whitespace in
+	CDATA, this broke gnome-desktop (discussed in bug #131585).
+
+2004-02-05  Callum McKenzie  <callum@physics.otago.ac.nz>
+
+	* intltool-merge.in.in: Removed the sqaure-bracket feature for
+	presenting comments in schema files. It conflicts with the
+	encoding of gconf lists which also use square brackets. See bug
+	#133369 for details.
+
+2004-02-03  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* NEWS, configure.in: update for new release.
+
+2004-01-31  Tomasz Kloczko <kloczek@pld.org.pl>
+
+	*xml-i18n-tools.m4, intltool.m4: added missing [] quotation
+	macro name defined in AC_DEFUN() (neccessary for aclocal from
+	automake 1.8.2 and backward compatible with older auto tools).
+
+2004-01-30  Morten Welinder  <terra@gnome.org>
+
+	* intltool-merge.in.in (intltool_tree_start): Handle embedded
+	newlines thereby avoiding the silent corruption of files.
+	(See http://bugzilla.gnome.org/show_bug.cgi?id=132909)
+
+2004-01-22  Brian Cameron <brian.cameron@sun.com>
+
+	* intltool-merge.in.in, tests/cases/merge6.xml.in,
+	  tests/results/merge6.xml, tests/results/merge7.xml:
+	  Now intltool-merge does not compress whitespace
+      in attributes and CDATA.  Fixes bug 131585.
+
+2004-01-22  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* README: AUTHORS: Updated.
+
+2004-01-21  Brian Cameron <brian.cameron@sun.com>
+
+	* intltool-merge.in.in, tests/cases/merge6.xml.in,
+	  tests/results/merge6.xml:  Now intltool-merge
+	  supports dashes in attribute names, and supports
+	  attributes delimited by single quotes.  Updated
+	  make test so it checks for these cases.  Partial
+	  fix for bug 131585.
+
+2004-01-21  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-update.in.in: Fix bug I introduced in #131885 (don't
+	bail out if there's no Makefile.in.in).
+
+2004-01-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* Release version 0.29.
+	
+2004-01-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* README: add $XGETTEXT_KEYWORDS and $XGETTEXT_ARGS documentation
+	from Danio.
+
+2004-01-19  Danilo Šegan  <dsegan@gmx.net>
+
+	* intltool-update.in.in (FindPOTKeywords): Searches Makefile.in.in
+	for XGETTEXT_KEYWORDS.
+	(GeneratePOTemplate): Use FindPOTKeywords to get XGETTEXT_KEYWORDS.
+	Fixes bug #131885.
+
+2004-01-08  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool-update.in.in: Added support for .kbd.in files.
+
+2004-01-07  Brian Cameron <brian.cameron@sun.com>
+
+	* intltool-merge.in.in: Fixed DOCTYPE regular expression.
+
+2004-01-07  Denis Barbier  <barbier@linuxfr.org>
+
+       * intltool-merge.in.in: The XML::Parser Perl module is only
+	 needed to merge XML files, so do not require it when building
+	 other formats.
+
+
+2004-01-07  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool-update.in.in: Fix (#130201, Danilo Segan)
+	Reported by Noah Levitt.
+
+2004-01-06  Denis Barbier  <barbier@linuxfr.org>
+
+	* intltool-extract.in.in, tests/cases/extract10.templates_,
+	  tests/cases/fr.po, tests/results/extract10.templates_.h,:
+	  Added framework to allow comments in source files, which are
+	  automatically added to PO files in order to give instructions
+	  to translators.  Each format has to define its own comment
+	  parsing, only rfc822deb currently implements this new feature.
+
+2004-01-06  Denis Barbier  <barbier@linuxfr.org>
+
+	* intltool-extract.in.in, intltool-merge.in.in,
+	  tests/results/merge10.templates:  Apply changes to rfc822deb
+	  formatted files to match current Debian usage.
+
+2004-01-06  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* HACKING: Added a tiny bit of information.
+
+	* intltool-prepare.in: Fix bug #129793
+
+2004-01-06  Morten Welinder  <terra@gnome.org>
+
+	* intltool.m4: Fix broken shell syntax.
+
+2004-01-06  Tommi Komulainen  <tommi.komulainen@iki.fi>
+
+	* intltoolize.in: Don't create intltool-modules directory, it's no
+	longer needed. (#130694)
+
+2004-01-05  Jonathan Blandford  <jrb@redhat.com>
+
+	* intltool.m4: fix broken shell syntax.
+
+2004-01-05  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* NEWS: Changed.
+	* configure.in: Changed version to 0.29 so people can require that.
+
+2004-01-05  Noah Levitt  <nlevitt@columbia.edu>
+
+	* intltool-update.in.in: Print xgettext command being run in verbose
+	mode. (#130200)
+
+2004-01-05  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool-update.in.in: Fix a few bugs introduced.
+
+2004-01-05  Brian Cameron <brian.cameron@sun.com>
+
+	* configure.in, intltoolize.in, Makefile.am, NEWS, README:
+	  Removed references to OrigTree and the modules directory
+	  since the OrigTree module is longer used.
+	* intltool-merge.in.in, tests/cases/merge6.xml.in,
+	  tests/results/merge6.xml:  Now intltool-merge retains the
+	  DOCTYPE from the original document in the output.
+	  Also, it translates entities in attributes properly (see
+	  the intltool_tree_start function.  Lastly it no longer
+	  uses the OrigTree Style.  Now just uses Tree and
+	  overrides the start and char handlers.  Much cleaner.
+
+
+2004-01-05  Morten Welinder  <terra@gnome.org>
+
+	* intltoolize.in (cur): Don't use "if ! ...".
+
+	* intltool.m4: Don't use "if ! ...".
+
+2004-01-05  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * intltool.m4: recommit patch from Chee Bin HOH (#129773)
+          this solves ${ac_aux_dir} not present in config.status when
+          built with automake 1.4
+
+2003-12-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * intltool.m4: fix for the case where AC_CONFIG_AUX_DIR is set
+                       (#130280)
+
+2003-12-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* intltoolize.in: make sure errors return non-zero (#130279)
+
+2003-12-31  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+        * intltool.m4: 
+          reverted patches:
+          from Chee Bin HOH commited by Kristian (#129773, 2003-12-23)
+	  from Kees Cook commited by Kenneth (#116362, 2003-12-16)
+          to work on proper solution for AC_CONFIG_AUX_DIR
+
+2003-12-30  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* modules/Makefile.am: Fixed #130140
+
+2003-12-23  Kristian Rietveld  <kris@gtk.org>
+
+	[Commit as per Kenneth's request]
+
+	* intltool.m4: include ac_aux_dir into INIT-CMDS of
+	AC_OUTPUT_COMMANDS. (#129773, patch from Chee Bin HOH).
+
+2003-12-22  Brian Cameron <brian.cameron@sun.com>
+
+	* intltool-merge.in.in.: Fixed bug in translating entities.
+
+2003-12-16  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool-update.in.in: Fixed a little bug; minor code cleanup.
+
+	* intltool-update.in.in: Fixed some FIXME's in the code.
+	Did my best at not breaking anything - ie. performed some tests.
+
+	Made it recognize .py files.
+	
+	* intltool.m4: Changed to work with auxdir. 
+	Patch from Kees Cook (#116362).
+
+2003-12-11  Brian Cameron <brian.cameron@sun.com>
+
+        * intltool-merge.in.in
+        * tests/results/merge4.xml
+        * tests/results/merge5p.sheet
+        * tests/results/merge5u.shee
+        * tests/results/merge6.xml
+        * tests/results/merge7.xml
+        Avoid including translations for languages where no
+        translation exists, except for child nodes of a
+        tag with a translated element (e.g. inside a tag
+        of the following form <tag _element="value">).
+
+2003-12-08  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* modules/Makefile.am: Fixing for upcoming release.
+
+2003-12-06  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* intltoolize.in: Install OrigTree.pm in the distribution tree.
+
+	* intltool-merge.in.in: Find the local version of OrigTree when
+	building a package.
+
+	* README: Updated. Another file needs to be added to EXTRA_DIST
+	in a client package's Makefile.am file now.
+
+	* tests/selftest.pl.in: Fix(?) the running of test 18 (multiple
+	output test).
+
+	* intltool.m4: Check for the XML::Parse module at build time.
+
+2003-12-03  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* intltoolize.in: Handle standard GNU gettext 0.12 and 0.13
+	installations.
+
+	* intltool-po-Makefile.in.in-patch-8: Makefile.in.in patch for
+	gettext 0.12 and 0.13.
+
+	* Makefile.am: Distribute intltool-po-Makefile.in.in-patch-8.
+
+	* intltool-update.in.in: When building with srcdir != builddir,
+	fetch POTFILES.in and source files from srcdir (only works with
+	*-patch-8 at the moment, but is backwards compatible with other
+	patches).
+
+	* intltool-extract.in.in: Allow a --srcdir argument to be passed
+	in.
+
+2003-12-01  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool/Makefile.am
+	* intltool/configure.in
+	* intltool/intltool-merge.in.in
+	* intltool/intltool.m4
+
+
+2003-12-01  Kenneth Rohde Christiansen  <kenneth@gnu.org>	
+
+	* intltool-merge.in.in:	
+	* tests/results/merge6.xml:
+	* tests/results/merge7.xml:
+	
+	Remove some changes committed by accident.
+	Added OrigStyle as the default Style.
+	Updated tests to match the changes.
+	
+2003-11-30  Abel Cheung  <maddog@linux.org.hk>
+
+	* modules/Makefile.am: Add missing DESTDIR.
+
+2003-11-26  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* Makefile.am:
+	* configure.in:
+	* intltool-merge.in.in:
+	* modules/Makefile.am:
+	* modules/XML/Parser/Style/OrigTree.pm:
+	* intltool.m4: 
+	
+	Added Brian's OrigTree module.
+
+2003-11-19  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* NEWS: Updated
+	* configure.in: Changed release to 0.28
+	* intltool-merge.in.in: Small bugfix.
+
+2003-11-18  Brian Cameron <Brian.Cameron@sun.com>
+
+	* intltool-merge.in.in
+	* tests/results/merge4.xml
+	* tests/results/merge5p.xml
+	* tests/results/merge5u.xml
+	* tests/results/merge6.xml
+	* tests/results/merge7.xml
+
+	Updated intltool-merge so that it doesn't add a trailing '\n' 
+	character to CDATA values.  Also corrected the logic of
+	encoding/decoding the string before/after translation.
+
+2003-11-11 Bill Haneman <billh@gnome.org> 
+
+	* intltool.m4:
+	Added "-m" flag to INTLTOOL_KBD_RULE.
+
+	* intltool-merge.in.in:
+	Changed "-m" behavior to write (using the original 
+	filenames) to locale-specific directories.
+
+2003-11-10  Brian Cameron <Brian.Cameron@sun.com>
+
+	* intltool-merge.in.in
+	Fixed bug which caused --multiple-output to break.
+	
+2003-11-10  Bill Haneman <billh@gnome.org>
+
+	* intltool.m4
+	Added INTLTOOL_KBD_RULE for gok's *.kbd files,
+	*.kbd.in -> *.kbd using the XML mechanism.
+	Fix for bug 127237.
+
+	* configure.in:
+	Incremented version to 0.27.3, so that clients of
+	internationalized XML attributes can depend on this new rev.	
+
+2003-11-05  Brian Cameron <Brian.Cameron@sun.com>
+
+	* intltool-merge.in.in
+	* tests/results/merge4.xml
+	* tests/results/merge5p.xml
+	* tests/results/merge5u.xml
+	* tests/results/merge6.xml
+	* tests/results/merge7.xml
+
+	Fix for bug #116526.  Now intltool-merge uses a real XML parser,
+	which means that it now depends on XML::Parser.  Added logic so
+	that element values are now translated as appropriate.  Updated
+	test output that is affected by this change.  The following
+	types of changes in output are caused by using an XML parser:
+	whitespace differences and comments are no longer retained in
+	the output.
+
+	Note that the logic has been changed so that the default 
+	translation is now included if no translation exists.  This makes
+	more sense now that you can have situations where untranslated
+	strings might exist inside a block that has a translatable
+	element (and vice versa).
+
+2003-09-13  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool-merge.in.in: Added --multiple-output
+	* test/selftest.pl.in: Added a still non-working test.
+
+	Sun/GOK guys, see if this is what you want - this should be a 
+	first cut anyway.
+
+2003-08-20  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool-update.in.in: Avoid bashism in xgettext version check.
+	(bug #120267)
+
+=== intltool 0.27.2 ===
+
+2003-08-12  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool.m4: Fix brokeness for the [encoding: *] tag I introduced.
+
+=== intltool 0.27.1 ===
+
+2003-08-11  Carlos Perelló Marín <carlos@gnome.org>
+
+	* intltool-update.in.in: Fixed a small bug that brokes intltool-update
+	when you don't specify an output file.
+	* NEWS: Updated
+	* configure.in: Version 0.27.1
+
+2003-08-11  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool-update.in.in:
+	Warn users if files in POTFILES.* do not exist, and write the file
+	list to `./notexist'.
+	Don't traverse source directory several times in "find sub{}".
+	Prefer configure.ac to configure.in when searching for autoconf file,
+	since the majority of people has been moving to autoconf 2.5x.
+
+2003-08-11  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool.m4: Fix broken support of .xam makefile rule.
+
+=== intltool 0.27 ===
+
+2003-05-17  Carlos Perelló Marín <carlos@gnome.org>
+
+	* NEWS: Updated
+	* configure.in: Version 0.27
+
+2003-08-11  Abel Cheung  <maddog@linux.org.hk>
+
+	* Makefile.am: Needn't distribute intltool-unicodify anymore since
+	its functionality is superseded by msgconv.
+	* intltool.m4: Add INTLTOOL_XAM_RULE for generating .xam files.
+
+2003-08-11  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool-update.in.in:
+	Only remove headers generated by intltool. (bug #90890)
+	Fall back to old behavior if gettext 0.12 is not found.
+	
+2003-08-11  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* intltool-update.in.in: Make use of gettext 0.12 to extract non-ASCII
+	strings. (bug #99005)
+
+2003-08-11  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool-update.in.in:
+	Code simplification and cleanup. Merge --dist option with &main.
+	Announce POTFILES.ignore is obsolete (but do nothing, for
+	compatability). Fix package name detection (where GETTEXT_PACKAGE
+	contains variable with underscore). Bonobo .server files are XML
+	type files and not INI type files.
+
+2003-08-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* intltool-update.in.in (find_leftout_file): Fix detection of
+	  translatable generic XML file.
+
+2003-08-03  Abel Cheung  <maddog@linux.org.hk>
+
+	* doc/*.8:
+	  Updated manpages to reflect current options. (bug #61965)
+	* ChangeLog: convert to UTF-8.
+	* intltool-extract.in.in, intltool-merge.in.in,
+	* intltool-prepare.in, intltool-update.in.in:
+	  Update help message.
+
+2003-06-02  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* doc/I18N-HOWTO: Updated with suggestion from gettext maintainer
+	Bruno Haible.
+
+2003-05-25  Gustavo Giraldez  <gustavo.giraldez@gmx.net>
+
+	* intltool-update.in.in: Added support for gtksourceview's .lang
+	files.
+
+2003-05-23  Callum McKenzie  <callum@physics.otago.ac.nz>
+
+	* intltool-extract.in.in (type_scheme): Added an allowance for
+	white-space between the _ and the string for scheme parsing. This
+	is to allow more "scheme-like" code.
+
+2003-05-18  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* intltool-update.in.in: Removed some \s's that were
+	coursing problems. I still don't know why though - so 
+	if you understand perl, please take a look.
+
+=== intltool 0.26 ===
+
+2003-05-17  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* NEWS: Updated
+	* configure.in: Version 0.26
+	* intltool-merge.in.in: 
+	Fix some iconv/charset issues (bug #113121, Morten Welinder)
+
+2003-03-15  Rodney Dawes  <dobey@free.fr>
+
+	* intltool-merge.in.in: Handle no translations in get_newest_po_age
+
+2003-03-12  Kenneth Christiansen <kenneth@gnu.org>
+
+	* intltool-update.in.in: Fix small buglet introduced my
+	Jamesh's patch that was added some time ago.
+
+2003-03-11  Kenneth Christiansen <kenneth@gnu.org>
+
+	* tests/selftest.pl.in: Cleaned up a bit.
+
+2003-03-11  Denis Barbier  <barbier@linuxfr.org>
+
+	* intltool-extract.in.in:
+	* intltool-merge.in.in:
+	* intltool-update.in.in: Send error messages to stderr instead of
+	  stdout.  Fix some buglets related to --quiet/--verbose flags.
+
+	Fixes bug #105013
+
+2003-03-11  Kenneth Christiansen <kenneth@gnu.org>
+
+	* intltool.m4: fixed bug #98988
+
+2003-03-04  James Henstridge  <james@daa.com.au>
+
+	* intltool-po-Makefile.in.in-patch-7: the patch.
+
+	* intltoolize.in (auxdirline): handle patch-7
+
+	* intltool-update.in.in (update_po_file): handle using a different
+	output file.
+	(print_status): if -o is specified, check its status.
+
+2003-02-27  Malcolm Tredinnick <malcolm@commsecure.com.au>
+	
+	* intltool-po-Makefile.in.in-patch-5: Correct the invocation of
+	INTLTOOL_MERGE. Fixes bug #106898.
+
+2003-02-25  Alberto Manuel Brandão Simões  <albie@alfarrabio.di.uminho.pt>
+
+	* intltool-extract.in.in (type_xml): Extract attributes when there
+	are spaces arount the equal sign;
+
+	* tests/cases/extract11.xml, tests/results/extract11.xml.h: Added
+	case for XML where attribute names and values are separated with
+	spaces arount the equal;
+
+2003-02-14  Hidetoshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* intltool-unicodify.in: Fix bug #105181. use iconv -f, instead of
+	iconv --f.
+
+2003-02-13  Kenneth Christiansen <kenneth@gnu.org>
+                                                                                
+        * intltool-update.in.in: Fixed some bugs introduced with
+	variable substitution. Cleaned up the code.
+
+2003-02-12  Kenneth Christiansen <kenneth@gnu.org>
+                                                                                
+        * intltool-update.in.in: Added variable substitution.
+
+2003-01-18  Kenneth Christiansen <kenneth@gnu.org>
+                                                                                
+        * README: Added small section for packages not 
+	using the aufo* tools.
+
+2003-01-11  Kenneth Christiansen <kenneth@gnu.org>
+
+	* intltool-merge.in.in: Added some warnings.
+
+2003-01-09  Jordi Mallach  <jordi@sindominio.net>
+
+	* intltool-update: patch from Gregory Stark, call msgmerge with
+	options before non-options to fix potential non-GNU getopt issues.
+
 === intltool 0.25 ===
 
 2002-01-06  Kenneth Rohde Christiansen  <kenneth@gnu.org>
@@ -374,7 +1168,7 @@ Wed Nov 20 15:05:36 2002  Jonathan Blandford  <jrb@redhat.com>
 	- Perform variable substitutions when determining package name.
 	(fixes #66155 and #78926)
 
-2002-03-13  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2002-03-13  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* intltool-update.in.in: We look also at AC_INIT to get the package
 	name.
@@ -763,7 +1557,7 @@ Wed Nov 20 15:05:36 2002  Jonathan Blandford  <jrb@redhat.com>
 	* intltool-merge.in.in: Fix regexp so we don't run into
 	trouble when desktop file entries have metacharacters in them.
 
-2001-11-13  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-11-13  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* USED: gedit's HEAD use now intltool.
 
@@ -1028,7 +1822,7 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 	doesn't work if you don't have any .po files by using $(wildcard)
 	inside the make rules.
 
-2001-09-29  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-09-29  Carlos Perelló Marín <carlos@gnome-db.org>
 	
 	* USED: Added ganimal.
 
@@ -1070,7 +1864,7 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 	be confused by partial escape sequences. Also remove the absurd code
 	that turns "\n" into "n".
 
-2001-09-19  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-09-19  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* xml-i18n-tools.spec.in: fixes from jgotts@linuxsavvy.com
 	(kenneth sended me this patch)
@@ -1078,7 +1872,7 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 	* xml-i18n-extract.in.in: Added .scm support from old intltool code
 	from kenneth and scripts from gimp.
 
-2001-09-19  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-09-19  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* Added the changes from kenneth (intltool rel 0.9.5)
 
@@ -1102,7 +1896,7 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* xml-i18n-prepare.in: A few simplifications.
 
-2001-09-09  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-09-09  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* doc/*: Added the manpages from intltool. They aren't
 	installed yet because I have only changed /s/intl/xml-i18n-/
@@ -1114,7 +1908,7 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 	* tests/cases/Makefile.am: changed extract1.desktop.in
 	to extract1.desktop as the .in file did not exist.
 
-2001-09-01  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-09-01  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* xml-i18n-update.in.in: Fixed the .server support.
 
@@ -1277,11 +2071,11 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 	* xml-i18n-tools.m4, xml-i18n-update.in.in: Add support for
 	.server files (what used to be .oaf)
 
-2001-07-16  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-07-16  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* USED: Added gnome-control-center
 
-2001-07-14  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-07-14  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* USED: Added procman && gturing
 
@@ -1321,7 +2115,7 @@ Mon Oct 22 17:31:26 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* xml-i18n-prepare.in (ENTRY): Add missing curly paren.
 
-2001-05-22  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-05-22  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* USED: Added gnome-db.
 

@@ -17,9 +17,7 @@ msgid "12"
 msgstr ""
 
 #: extract11.schemas.in.h:2
-msgid ""
-"[default value for /schemas/apps/clock_applet/prefs/hour_format The "
-"translation should only include the localized default eg. 12 or 24 ]24"
+msgid "24"
 msgstr "12"
 
 #: extract11.schemas.in.h:3

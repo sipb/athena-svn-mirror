@@ -1,6 +1,7 @@
 Template: timezoneconf/toplevel
 Type: select
 Choices: ${choices}
+# This comment is inserted in PO files to help translators
 _Default: US
 _Description: Select Area
  Please select your geographical area from the choices provided.  If you

@@ -1,5 +1,11 @@
 intltool README
-=======================
+===============
+
+If you have problems understanding this README file, then please report 
+these in bugzilla.gnome.org, intltool module. Also, patches are very 
+welcome.
+
+Discussion about intltool takes place on intltool@freedesktop.org - you will find subscribtion information, as well as other intltool related information on http://intltool.freedesktop.org 
 
 The intltool collection can be used to do these things:
 
@@ -16,11 +22,12 @@ The intltool collection can be used to do these things:
 The intltool package has a script, intltoolize, which copies the various
 scripts and does the other magic to your module. So users building
 from tarballs don't need intltool, only folks building from cvs.
-(This is modeled on gettextize.)
+(This is modelled on gettextize.)
 
 
-How to Use
-----------
+How to Use with autoconf/automake
+---------------------------------
+(There is a section for non-auto* configurations below)
 
 To use intltool in your module, do the following:
 
@@ -36,11 +43,11 @@ To use intltool in your module, do the following:
 
  o Add this line to configure.in near the top
 
-	AC_PROG_INTLTOOL([minimum required version])
+	AC_PROG_INTLTOOL([minimum required version], [no-xml])
 
- o Add intltool-extract.in, intltool-merge.in and intltool-update.in
-   to EXTRA_DIST in your top-level Makefile.am and also to the
-   top-level .cvsignore. Also add the non-.in versions to .cvsignore
+ o Add intltool-extract.in, intltool-merge.in, and intltool-update.in
+   to EXTRA_DIST in your top-level Makefile.am and also to the top-level
+   .cvsignore. Also add the non-.in versions to .cvsignore.  
 
  o Remove po/desk.pl and po/update.* scripts.  intltool-update will take
    over their functionality.
@@ -57,9 +64,15 @@ Examples of packages that use intltool are listed in the USED file.
 Details of the AC_PROG_INTLTOOL macro
 -------------------------------------------
 
-The parameter indicates the minimum required version. The
-configure script will halt if the version is older than
-the parameter.
+The first parameter indicates the minimum required version. The
+configure script will halt if the version is older than the first
+parameter.
+
+The second parameter is to tell intltool that we don't need the
+extended xml parsing abilities provided by the XML::Parser perl
+module. If it is not provided, or is any value other than "no-xml",
+then XML::Parser will be checked for by the configure script. This
+feature is only available in intltool 0.31 or newer.
 
 Extra Steps for DESKTOP Files
 ..............................
@@ -191,3 +204,74 @@ versions of xml-i18n-tools for documentation on how the old API worked.
 ---
 
 XXX: add section for KEYS files. Works almost like XML files .
+
+How to use without autoconf/automake
+------------------------------------
+
+intltool can also be used without the auto* tools. For instance in order 
+to translate a somename.desktop.in file, you can do the following.
+
+ o Create a po/ dir.
+ o Add a po/POTFILES.in file, including the path to the 
+   somename.desktop.in  file
+
+Then to create the somename.desktop file all you do is:
+
+$ intltool-merge po/ -d -u -c po/.intltool-merge-cache somename.desktop.in
+somename.desktop
+
+You can also type intltool-merge --help for a bit more info.
+
+To specify parameters for intltool-update (such as keywords or gettext
+domain), you can use Makevars syntax as used in recent GNU gettext, by
+putting something like the following in po/Makevars file:
+
+  DOMAIN = mydomain
+  XGETTEXT_OPTIONS = --keyword --keyword=blah
+
+This will make "intltool-update -p" produce mydomain.pot, passing
+parameters "--keyword --keyword=blah" to xgettext when extracting
+strings.
+
+Passing special parameters to xgettext via environment
+......................................................
+
+If you need to add parameters passed to xgettext on a case-by-case
+basis, you can do so using environment variable XGETTEXT_ARGS.
+
+If you would run it as follows:
+
+	XGETTEXT_ARGS=--no-location intltool-update -p
+
+You would create a PO Template file without lines which indicate
+location of messages in the source code.
+
+
+Changing keywords used in xgettext invocation
+.............................................
+
+If you need to change default keywords used to extract messages from 
+source code, you need to add variable XGETTEXT_KEYWORDS to 
+Makefile.in.in file inside directory where intltool-update is run
+from, eg.
+
+        --- start ----
+
+        XGETTEXT_KEYWORDS = --keyword --keyword=P_
+
+        --- end ----
+
+Default keywords xgettext looks for if no XGETTEXT_KEYWORDS is defined
+are _, N_ and U_. 
+
+
+Translators' comments in XML and .schemas files
+...............................................
+
+To provide comments to translators in free-form XML or .schema files, 
+you need to precede the string to be translated with the plain XML 
+comment.  If comments contain character ">", they will be ignored
+(this is implementation issue, should be fixed in the future).
+
+In .schemas files, comments need to be inside <default>, <short> or 
+<long> elements (i.e. they cannot be before the opening tag).

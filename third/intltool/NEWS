@@ -1,7 +1,155 @@
+Version 0.31.2
+
+* Handle package name extraction better
+  -- bug #144725 (Daniel Elstner)
+* Support for comments before translatable attributes in XML files,
+  support for translating both tag content and attributes 
+  -- bug #143581. (Danilo Segan)
+
+Version 0.31.1
+
+* Switch to gnome-common for autogen.sh so we can detect automake
+  versions better -- bug #145027 (Jordi Mallach)
+
+Version 0.31
+
+* Usage of [no-xml] option in AC_PROG_INTLTOOL to avoid requiring
+  XML::Parser Perl module. (Rodney Dawes)
+* Support for C#. (Rodney)
+* Support for running intltool-update without autoconf, or with
+  po/Makevars file (as used in gettext). (Danilo Segan)
+* New XML merging (compatible with pre-0.27.2 intltool) -- bug
+  #130802 -- entity decoding and encoding is not done anymore for
+  XML. (Danilo)
+* Multiple-output XML merging now produces simpler files, and sets
+  "xml:lang" only when translation is used -- bug #46650. (Danilo)
+* Support for passing comments to translators from XML and GConf
+  schema files. (Danilo)
+* Many bug fixes (Rodney, Danilo, Callum McKenzie)
+
+Version 0.30
+
+* added missing [] quotation macro name defined in AC_DEFUN() 
+ (Tomasz Kloczko)
+* Handle embedded newlines thereby avoiding the silent corruption of 
+  files. (Morten Welinder)
+* Now intltool-merge does not compress whitespace in attributes 
+  and CDATA. (Brian Cameron)
+* Now intltool-merge supports dashes in attribute names, and  supports 
+  attributes delimited by single quotes. (Brian Cameron)
+* Misc small fixes (Kenneth Chr., Danilo Segan)
+
+Version 0.29
+
+* Removed OrigTree in favor of more simply setting handlers directly
+  in intltool-merge (Brian Cameron)
+* Work correctly with AC_CONFIG_AUX_DIR (Thomas Vander Stichele, 
+  Chee Bin HOH and Kees Cook)
+* Make intltoolize return a correct exit status (Thomas Vander Stichele)
+* Fix usage of a bash-ism (Morten Welinder, Jonathan Blandford)
+* Translate GenericName in .desktop files (Kenneth Rohde Christiansen)
+* Framework to allow each format have inline comments (Denis Barbier)
+* Add $XGETTEXT_ARGS to allow passing extra args to xgettext (Danilo Segan)
+* Added support for .kbd files (Kenneth Rohde Christiansen)
+* Add $XGETTEXT_KEYWORDS to allow the use of other keywords (Danilo Segan)
+* Misc bug fixes (Noah Levitt, Tommi Komulainen)
+
+---
+
+Version 0.28 
+"...Jeg har aldrig rigtig brudt mig om glögg, det smager lidt ligesom 
+ Sverige lugter (From Jul på Vesterbro)"
+
+
+Brian Cameron fixed a long standing issue in intltool - the migration to a 
+real XML parser -  which means that it now depends on XML::Parser. Malcolm 
+Tredinnick made sure to fix some of the new bugs introduced by this as well 
+as some other long standing bugs!
+
+Thanks goes to Brian Cameron! and to Sun Microsystem for sponsoring him ;-)
+and thanks goes to Malcolm for picking up Scrollkeeper hacking and keeping 
+an eye on intltool at the same time.
+
+Thanks guys!
+
+* made intltool-merge use XML::Parser (#116526 and others) [Brian Cameron]
+
+  - added and updated tests
+  - updated so that intltool-merge doesn't add a trailing '\n' 
+    character to CDATA values.  
+  - Corrected the logic of encoding/decoding the string 
+    before/after translation.
+  - Added it to build, made it install (Kenneth Christiansen)
+    - Added missing DESTDIR (Abel Cheung)
+    - Also install OrigTree.pm in the distribution tree (Malcolm Tredinnick)
+    - Check for the XML::Parser module at build time (Malcolm Tredinnick)
+
+* Added INTLTOOL_KBD_RULE for GOK\s *.kdb files (Bill Haneman)
+* Added --multiple-output option (Kenneth Christiansen)
+* Avoid bashism in xgettext version check. (#120267) (Abel Cheung)
+* Handle standard GNU gettext 0.12 and 0.13 installations (Malcolm Tredinnick)
+* Fix the running of test 18 (multiple output test) (Malcolm Tredinnick)
+
+---
+
+Version 0.27.2
+
+* Fixed the source code encoding mark at POTFILES.in support (Abel Cheung).
+* Fixed the intltool.spec file so it can build RPMs with this release (it was
+  only a package issue (Carlos Perelló Marín)
+
+---
+
+Version 0.27.1
+
+* Fixed .xam support (Abel Cheung)
+* Fixed intltool-update, it's not usable with 0.27 :-(  (Carlos Perelló Marín)
+* intltool-update -m tells you about files that are at POTFILES.in but does not
+exists anymore (Abel Cheung)
+
+---
+
+Version 0.27
+
+* Small scheme support fixes (Callum McKenzie)
+* Added support for .lang files (Gustavo Giraldez)
+* Added support for .xam files (Abel Cheung)
+* Updated I18N-HOWTO (Kenneth, Bruno Haible)
+* Updated all manual pages and command help (Abel Cheung)
+* Improved the package name detection code (Abel Cheung)
+* better .server files handling (Abel Cheung)
+* source code with non-ASCII chars support with
+GNU gettext 0.12 (bug #99005, Abel Cheung, Carlos Perelló Marín)
+* intltool-unicodify is deprecated, please use msgconv (Abel Cheung)
+
+---
+
+Version 0.26
+
+* Handle no translations in get_newest_po_age (Rodney Dawes)
+* Cleaned up tests and fixed few bugs (Kenneth)
+* Send error messages to stderr, and fix other similar bugs
+  (bug #105013, Denis Barbier)
+* handle using a different output file. (James Henstridge)
+* Correct the invocation of INTLTOOL_MERGE. (bug #106898, Malcolm Tredinnick)
+* Extract attributes in XML when there are spaces arount the equal sign
+  (Alberto Manuel Brand?o Sim?es)
+* use iconv -f, instead of iconv --f (bug #105181, Hidetoshi Tajima)
+* Added variable substitution. (Kenneth)
+* Added small section for packages not using the aufo* tools (Kenneth)
+* Call msgmerge with options before non-options to fix potential 
+  non-GNU getopt issues. (Gregory Stark, Jordi Mallach)
+* Make it work when running an UTF-8 locale (Kenneth)
+* Fix some iconv/charset issues (bug #113121, Morten Welinder)
+
+---
+
 Version 0.25
 
 * support latest version of Makefile.in.in from glib-gettextize
   from glib >= 2.1.5 (Frederic Crozat)
+
+---
 
 Version 0.24
  
@@ -12,6 +160,8 @@ Version 0.24
 * Fix xml-i18n-tools part to work with new gettext 4 (Yanko Kaneti)
 * Fixed #96169  (Kenneth, Laurent Vivier and Morten Welinder)
 * Added a new .theme.in -> .theme rule (Jonathan Blandford, Glynn Foster)
+
+---
 
 Version 0.23
 
@@ -28,6 +178,8 @@ Version 0.23
   and 1.4 installed get the right automake. (Havoc).
 * Other bugfixes (Kjartan Maraas).
 
+---
+
 Version 0.22
 
 * Added support for translation of descriptions used by ATK in glade files
@@ -36,25 +188,32 @@ Version 0.22
 * Force intltool-update to exit if POTFILES.in is not found (Abel Cheung).
 * Add detection of glade2 files in -m mode (Abel Cheung).
 
+---
+
 Version 0.21
 
 * Use $srcdir in the version check (Mark McLoughlin)
 
+---
+
 Version 0.20
 
 * Added support for .schemas files (Kenneth)
+
+---
 
 Version 0.19
 
 * A few .m4 fixes (Jacob Berkman)
 * Now works with configure.ac (Kenneth, Abel Cheung)
 * Perform variable substitutions when determining package name (Abel Cheung)
-* We look also at AC_INIT to get the package name. (Carlos Mar�n)
+* We look also at AC_INIT to get the package name. (Carlos Perelló Marín)
 * Added HOWTO on adding i18n support to an application. (Kenneth, Thomas Vander Stichele)
 * Made the selftest more portable (Kenneth).
 * Fixed Glade XML decoding. (Kenneth)
 * Better error reporting (Kenneth)
 
+---
 
 Version 0.18
 
@@ -62,6 +221,7 @@ Version 0.18
 * Made the version check more portable. (ERDI Gergo, Jacob Bergman)
 * Don not confuse a nonexistent file with age of 0. (nix@esperi.demon.co.uk)
 
+---
 
 Version 0.17
 
@@ -77,6 +237,7 @@ Version 0.17
 * Handle XML tags inside translatable messages extracted from XML files
  (Sven Neumann)
 
+---
 
 Version 0.16
 
@@ -87,6 +248,7 @@ Version 0.16
 * Fixed intltool-update bugs introduced in 0.15 (Darin)
 * Handle strange package names without screwing up (Ole Laursen)
 
+---
 
 Version 0.15
 
@@ -98,11 +260,13 @@ Version 0.15
 * Fix to work well with the newest glib-gettextize (ERDI Gergo)
 * Remove unneeded C code parts of configure.in (Darin)
 
+---
 
 Version 0.14
 
 * Fix to work well with both new and old autoconf (ERDI Gergo)
 
+---
 
 Version 0.13
 
@@ -115,6 +279,7 @@ Version 0.13
 * Implement trial version of a cache (Kenneth)
 * Remove file type tags from POTFILES (ERDI Gergo)
 
+---
 
 Version 0.12
 
@@ -125,6 +290,7 @@ Version 0.12
 * Fixes to spec file (Toralf Lund, Darin)
 * Fix bug in intltool-prepare if string has regex metacharacters in it (Darin)
 
+---
 
 Version 0.11
 
@@ -137,6 +303,7 @@ Version 0.11
 * Remove "-?" option for compatibility with old Perl (Darin)
 * Fix longstanding undefined variable problem in *ize scripts (Peter Williams)
 
+---
 
 Version 0.9.5
 
@@ -164,6 +331,7 @@ Version 0.9.5
 
 Please see the README for more information on these new features.
 
+---
 
 Version 0.9
 
@@ -174,6 +342,7 @@ Version 0.9
 * Support for .xml files (Laszlo Kovacs)
 * Build fixes (Darin)
 
+---
 
 Version 0.8.4
 

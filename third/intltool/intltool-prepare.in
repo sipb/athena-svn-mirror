@@ -1,4 +1,5 @@
 #!@PERL@ -w
+# -*- Mode: perl; indent-tabs-mode: nil; c-basic-offset: 4  -*-
 
 #  Intltool .desktop, .directory Prepare Tool
 #
@@ -25,7 +26,6 @@
 my $PROGRAM      = "intltool-prepare";
 my $PACKAGE      = "@PACKAGE@";
 my $VERSION      = "@VERSION@";
-my $MAINTAINER   = "<menesis\@delfi.lt>";
 
 ## Loaded modules
 use strict;
@@ -44,14 +44,14 @@ my $file;
 
 my $desktop_extension = "(desktop|soundlist|keys|directory)";
 
-my $keywords = "Name|Comment|description";
+my $keywords = "Name|Comment|GenericName|SwallowTitle|description";
 
 ## Always print as the first thing
 $| = 1;
 
 ## Handle options
 GetOptions (
-            "help|h|?"          => \$HELP_ARG,
+            "help|h"            => \$HELP_ARG,
             "version|v"         => \$VERSION_ARG,
             "verbose|x"         => \$VERBOSE
             ) or &invalid_option;
@@ -88,27 +88,33 @@ sub main
     &generate_empty;
 }
 
-sub version{
+sub version {
+    print <<_EOF_;
+${PROGRAM} ${PACKAGE} $VERSION
+Written by Gediminas Paulauskas <menesis\@delfi.lt>, 2000.
 
-    ## Print version information
-    print "${PROGRAM} ${PACKAGE} $VERSION\n";
-    print "Written by Gediminas Paulauskas <menesis\@delfi.lt>, 2000.\n\n";
-    print "Copyright (C) 2000 Free Software Foundation, Inc.\n";
-    print "This is free software; see the source for copying conditions.  There is NO\n";
-    print "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
+Copyright (C) 2000 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+_EOF_
     exit;
 }
 
 sub help
 {
-    ## Print usage information
-    print "Usage: $PROGRAM [OPTION] KEYWORD ...\n";
-    print "Updates pot files and merge them with the translations.\n";
-    print "KEYWORD is additional key besides Name, Comment and description\n\n";
-    print "  -H, --help                 shows this help page\n";
-    print "  -X, --verbose              show lots of feedback\n";
-    print "  -V, --version              shows the version\n";
-    print "Report bugs to $MAINTAINER.\n";
+    print <<_EOF_;
+Usage: ${PROGRAM} [OPTION] KEYWORD...
+Automates preparation steps before software make use of intltool.
+KEYWORD is a list of additional key other than "Name", "Comment"
+and "description".
+
+  -h, --help                 shows this help page
+  -v, --version              shows the version
+  -x, --verbose              show lots of feedback
+
+Report bugs to http://bugzilla.gnome.org/ (product name "$PACKAGE")
+or send email to <xml-i18n-tools\@gnome.org>.
+_EOF_
     exit;
 }
 
@@ -117,7 +123,7 @@ sub invalid_option
     ## Handle invalid arguments
     ## my $opt = $ARGV[0];
     ## print "$PROGRAM: invalid option -- $opt\n";
-    print "Try `$PROGRAM --help' for more information.\n";
+    print STDERR "Try `$PROGRAM --help' for more information.\n";
     exit 1;
 }
 
