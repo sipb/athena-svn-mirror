@@ -15,11 +15,14 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.2  90/04/26  17:28:46  tom
+ * deleted unused constants
+ * 
  *
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 1.2 1990-04-26 17:28:46 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 1.3 1990-04-26 17:36:00 tom Exp $";
 #endif
 
 
@@ -325,3 +328,6 @@ mt_memory()
   else
     memory = atoi(buf);
 }
+
+#endif ATHENA
+#endif MIT
