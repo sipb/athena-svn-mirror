@@ -1,4 +1,4 @@
-# $Id: packages,v 1.119 2001-02-10 23:49:44 ghudson Exp $
+# $Id: packages,v 1.120 2001-02-14 02:08:53 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -119,7 +119,7 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
 third/afsbin			package afs
-third/ammonite			requires gnome-libs,libxml,GConf,oaf
+third/ammonite			requires gnome-libs,libxml,GConf,oaf,openssl
 third/audiofile			except linux
 third/bash
 third/bind
@@ -128,6 +128,7 @@ third/db			except linux
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf
 third/emacs			requires hesiod,krb5
 third/esound			except linux requires audiofile
+third/freetype
 third/GConf			requires gtk,oaf,ORBit
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
@@ -136,7 +137,7 @@ third/glib
 third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm
-third/gnome-print		requires gnome-libs,libxml
+third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf
 third/gnome-vfs			requires gnome-libs,control-center,oaf,GConf
 third/gtk			requires glib
 third/imlib			requires libpng,libungif,jpeg,gtk
@@ -151,6 +152,7 @@ third/krb5			requires et package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
+third/libghttp
 third/libglade			requires gtk,gnome-libs,libxml
 third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
@@ -163,9 +165,11 @@ third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
 third/motif			on linux
 third/motif/clients/mwm		on solaris
+third/nautilus			requires freetype,ammonite,bonobo,gnome-vfs,libghttp
 third/nmh			requires krb5,hesiod
-third/oaf			requires libxml,ORBit,popt
 third/nvi			on linux
+third/oaf			requires libxml,ORBit,popt
+third/openssl
 third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
@@ -189,6 +193,7 @@ third/transcript		requires perl
 third/wcl			requires motif
 third/whois			on irix
 third/x3270
+third/xalf			requires gtk,control-center
 third/xmh
 third/xntp
 third/xpm			on solaris
