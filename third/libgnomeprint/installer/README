@@ -1,0 +1,39 @@
+This is new experimental font installation tool
+
+Instead of parsing static fontmaps we now:
+
+1. Scan existing fontmaps (user and system one)
+2. Scan given fontmaps (NOT IMPLEMENTED YET)
+3. Scan directories for afm and pfb files
+
+We check all afm and pfb files, using timestamp from fontmap 2.0 file
+(if present) If timestamp is changed, we try to open these with parser,
+to make sure they are good.
+
+Files are then sorted into fonts, using their FullName value.
+
+The logic of font composing is following:
+
+1. Process all type1 aliases
+1.1. Check, if we have pristine pfb file for given afm file, with
+version number >= afm version. If yes, erase type1alias.
+1.2. If we do not have pristine pfb file, search for alias pfb file
+with highest version number
+1.3. Search for afm file with highest version <= pfb version number
+If found, write type1alias entry, using those afm and pfb files
+
+2. Process all fonts
+2.1. Find pfb file with highest version number
+2.2. Find afm file with highest version number <= pfb version
+If found, write type1 entry, using those afm and pfb files
+
+All remaining afm and pfb files are discarded
+
+
+Fontmap syntax is changed, but gnome-print parser can interpret
+both old and new one.
+
+
+Lauris Kaplinski <lauris@helixcode.com>
+16.11.2000
+

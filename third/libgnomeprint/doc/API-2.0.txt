@@ -1,0 +1,6 @@
+All things are ported to GObject. I do not know, what to do
+with GnomeDisplayFont, as there cannot be Gtk/Gdk dependency
+in that library.
+
+Lauris Kaplinski
+

@@ -1,0 +1,1063 @@
+<HTML
+><HEAD
+><TITLE
+>gnome-pgl</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME Print Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="API Reference"
+HREF="libgnomeprintunsorted.html"><LINK
+REL="PREVIOUS"
+TITLE="gnome-glyphlist"
+HREF="libgnomeprint-gnome-glyphlist.html"><LINK
+REL="NEXT"
+TITLE="gnome-print-config"
+HREF="libgnomeprint-gnome-print-config.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="libgnomeprint-gnome-glyphlist.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="libgnomeprintunsorted.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Print Reference Manual</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="libgnomeprint-gnome-print-config.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="LIBGNOMEPRINT-GNOME-PGL"
+></A
+>gnome-pgl</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2432"
+></A
+><H2
+>Name</H2
+>gnome-pgl&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2435"
+></A
+><H2
+>Synopsis</H2
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+>;
+<A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-pgl.html#GNOME-PGL-FROM-GL"
+>gnome_pgl_from_gl</A
+>        (const <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const gdouble *transform,
+                                             guint flags);
+void        <A
+HREF="libgnomeprint-gnome-pgl.html#GNOME-PGL-DESTROY"
+>gnome_pgl_destroy</A
+>               (<A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl);
+ArtDRect*   <A
+HREF="libgnomeprint-gnome-pgl.html#GNOME-PGL-BBOX"
+>gnome_pgl_bbox</A
+>                  (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             ArtDRect *bbox);
+gboolean    <A
+HREF="libgnomeprint-gnome-pgl.html#GNOME-PGL-TEST-POINT"
+>gnome_pgl_test_point</A
+>            (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             gdouble x,
+                                             gdouble y);
+void        <A
+HREF="libgnomeprint-gnome-pgl.html#GNOME-PGL-RENDER-RGBA8"
+>gnome_pgl_render_rgba8</A
+>          (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             gdouble x,
+                                             gdouble y,
+                                             guchar *buf,
+                                             gint width,
+                                             gint height,
+                                             gint rowstride,
+                                             guint flags);
+void        <A
+HREF="libgnomeprint-gnome-pgl.html#GNOME-PGL-RENDER-RGB8"
+>gnome_pgl_render_rgb8</A
+>           (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             gdouble x,
+                                             gdouble y,
+                                             guchar *buf,
+                                             gint width,
+                                             gint height,
+                                             gint rowstride,
+                                             guint flags);</PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2473"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2476"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2478"
+></A
+><H3
+><A
+NAME="GNOMEPOSGLYPHLIST"
+></A
+>struct GnomePosGlyphList</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomePosGlyphList;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2483"
+></A
+><H3
+><A
+NAME="GNOME-PGL-FROM-GL"
+></A
+>gnome_pgl_from_gl ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+>* gnome_pgl_from_gl        (const <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const gdouble *transform,
+                                             guint flags);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2493"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2498"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>transform</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2503"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2508"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2513"
+></A
+><H3
+><A
+NAME="GNOME-PGL-DESTROY"
+></A
+>gnome_pgl_destroy ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_pgl_destroy               (<A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2520"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>pgl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2525"
+></A
+><H3
+><A
+NAME="GNOME-PGL-BBOX"
+></A
+>gnome_pgl_bbox ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>ArtDRect*   gnome_pgl_bbox                  (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             ArtDRect *bbox);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2534"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>pgl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2539"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>bbox</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2544"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2549"
+></A
+><H3
+><A
+NAME="GNOME-PGL-TEST-POINT"
+></A
+>gnome_pgl_test_point ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    gnome_pgl_test_point            (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             gdouble x,
+                                             gdouble y);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2559"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>pgl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2564"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2569"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2574"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2579"
+></A
+><H3
+><A
+NAME="GNOME-PGL-RENDER-RGBA8"
+></A
+>gnome_pgl_render_rgba8 ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_pgl_render_rgba8          (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             gdouble x,
+                                             gdouble y,
+                                             guchar *buf,
+                                             gint width,
+                                             gint height,
+                                             gint rowstride,
+                                             guint flags);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2593"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>pgl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2598"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2603"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2608"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2613"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>width</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2618"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>height</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2623"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>rowstride</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2628"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2633"
+></A
+><H3
+><A
+NAME="GNOME-PGL-RENDER-RGB8"
+></A
+>gnome_pgl_render_rgb8 ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_pgl_render_rgb8           (const <A
+HREF="libgnomeprint-gnome-pgl.html#GNOMEPOSGLYPHLIST"
+>GnomePosGlyphList</A
+> *pgl,
+                                             gdouble x,
+                                             gdouble y,
+                                             guchar *buf,
+                                             gint width,
+                                             gint height,
+                                             gint rowstride,
+                                             guint flags);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2647"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>pgl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2652"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2657"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2662"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>buf</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2667"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>width</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2672"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>height</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2677"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>rowstride</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2682"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="libgnomeprint-gnome-glyphlist.html"
+><B
+>&lt;&lt;&lt;&nbsp;gnome-glyphlist</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="libgnomeprint-gnome-print-config.html"
+><B
+>gnome-print-config&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

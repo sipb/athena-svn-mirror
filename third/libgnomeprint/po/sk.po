@@ -1,0 +1,289 @@
+# libgnomeprint sk.po
+# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
+# Marcel Telka <marcel@telka.sk>, 2001, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-05-21 22:51+0200\n"
+"Last-Translator: Marcel Telka <marcel@telka.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Vytlačiť ladiace informácie"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Skúsi spraviť všetko automaticky"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Vyhľadať súbory s písmami v adresároch rekurzívne"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Začať s nulovou mapou typov písma namiesto analýzy starej"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr ""
+"Znovu skontroluje všetky súbory s písmami, aj pre mapy typov písma rovnakej "
+"verzie"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr ""
+"Vložiť pole poznámky typu písma (údaje o autorských právach) do mapy typov "
+"písma"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Vytvoriť $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Vytvoriť"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+"Zapísať výstupnú mapu typov písma do zadaného súboru (- pre štandardný "
+"výstup)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Vrátiť $FONTMAPDIR_STATIC a $FONTMAPDIR_DYNAMIC (použité pre túto inštaláciu "
+"gnome-print)"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Popisovanie súborov známe ako prezývky"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "CESTA"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Zadať predvolené typy písma pre všetky locale"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:typpísma]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Rýchla hnedá líška skáče cez lenivého psa."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Jednotka"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Jednotky"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "bod"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "b."
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "body"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "b."
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Používateľská jednotka"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Používateľ"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Používateľské jednotky"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "pixel"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "px"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "pixle"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "percento"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "percent"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "milimeter"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "milimetre"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "centimeter"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "centimetre"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "meter"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "metrov"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "palec"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "in"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "palce"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Vlastné"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Priamo"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Rotované o 90 stupňov"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Rotované o 180 stupňov"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Rotované o 270 stupňov"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "na výšku"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "na šírku"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "na výšku, hore nohami"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "na šírku, hore nohami"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Obyčajne"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "Vytlačiť databázu papierov"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "Popísať strom GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "Vytlačiť textový súbor"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "Použiť GnomePrintMaster na tlačenie"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Zapísať tlačový výstup do metasúboru ('-' pre štandardný výstup)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "Rozdeliť úlohu medzi bonobo"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "Vykresliť z metasúboru"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Testovacia strana gnome-print, otočená"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Testovacia strana gnome-print, naklonená"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Testovacia strana gnome-print, naklonená. Malá"

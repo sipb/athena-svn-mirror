@@ -1,0 +1,510 @@
+<!-- ##### SECTION Title ##### -->
+gnome-print
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM GnomePrintReturnCode ##### -->
+<para>
+
+</para>
+
+@GNOME_PRINT_OK: 
+@GNOME_PRINT_ERROR_UNKNOWN: 
+@GNOME_PRINT_ERROR_BADVALUE: 
+@GNOME_PRINT_ERROR_NOCURRENTPOINT: 
+@GNOME_PRINT_ERROR_NOCURRENTPATH: 
+@GNOME_PRINT_ERROR_TEXTCORRUPT: 
+@GNOME_PRINT_ERROR_BADCONTEXT: 
+@GNOME_PRINT_ERROR_NOPAGE: 
+@GNOME_PRINT_ERROR_NOMATCH: 
+
+<!-- ##### STRUCT GnomePrintContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_print_context_new ##### -->
+<para>
+
+</para>
+
+@config: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_context_close ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_newpath ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_moveto ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_lineto ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_curveto ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x1: 
+@y1: 
+@x2: 
+@y2: 
+@x3: 
+@y3: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_closepath ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_strokepath ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_bpath ##### -->
+<para>
+
+</para>
+
+@pc: 
+@bpath: 
+@append: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_vpath ##### -->
+<para>
+
+</para>
+
+@pc: 
+@vpath: 
+@append: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_arcto ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@radius: 
+@angle1: 
+@angle2: 
+@direction: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setrgbcolor ##### -->
+<para>
+
+</para>
+
+@pc: 
+@r: 
+@g: 
+@b: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setopacity ##### -->
+<para>
+
+</para>
+
+@pc: 
+@opacity: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setlinewidth ##### -->
+<para>
+
+</para>
+
+@pc: 
+@width: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setmiterlimit ##### -->
+<para>
+
+</para>
+
+@pc: 
+@limit: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setlinejoin ##### -->
+<para>
+
+</para>
+
+@pc: 
+@jointype: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setlinecap ##### -->
+<para>
+
+</para>
+
+@pc: 
+@captype: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setdash ##### -->
+<para>
+
+</para>
+
+@pc: 
+@n_values: 
+@values: 
+@offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_setfont ##### -->
+<para>
+
+</para>
+
+@pc: 
+@font: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_clip ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_eoclip ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_concat ##### -->
+<para>
+
+</para>
+
+@pc: 
+@matrix: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_scale ##### -->
+<para>
+
+</para>
+
+@pc: 
+@sx: 
+@sy: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_rotate ##### -->
+<para>
+
+</para>
+
+@pc: 
+@theta: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_translate ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_gsave ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_grestore ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_fill ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_eofill ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_stroke ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_show ##### -->
+<para>
+
+</para>
+
+@pc: 
+@text: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_show_sized ##### -->
+<para>
+
+</para>
+
+@pc: 
+@text: 
+@bytes: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_glyphlist ##### -->
+<para>
+
+</para>
+
+@pc: 
+@glyphlist: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_grayimage ##### -->
+<para>
+
+</para>
+
+@pc: 
+@data: 
+@width: 
+@height: 
+@rowstride: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_rgbimage ##### -->
+<para>
+
+</para>
+
+@pc: 
+@data: 
+@width: 
+@height: 
+@rowstride: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_rgbaimage ##### -->
+<para>
+
+</para>
+
+@pc: 
+@data: 
+@width: 
+@height: 
+@rowstride: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_beginpage ##### -->
+<para>
+
+</para>
+
+@pc: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_showpage ##### -->
+<para>
+
+</para>
+
+@pc: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION GnomePrintPageCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@pagedata: 
+@docdata: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_page_callback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@callback: 
+@name: 
+@pagedata: 
+@docdata: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_page_callback_closure ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@name: 
+@pagedata: 
+@docdata: 
+@closure: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_line_stroked ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x0: 
+@y0: 
+@x1: 
+@y1: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_rect_stroked ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@width: 
+@height: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_rect_filled ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@width: 
+@height: 
+@Returns: 
+
+

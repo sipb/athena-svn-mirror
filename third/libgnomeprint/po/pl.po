@@ -1,0 +1,291 @@
+# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
+# (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
+# Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
+# pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas na adres:
+# translators@gnome.pl
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-05-19 10:49+0200\n"
+"Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
+"Language-Team: Polish <pl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Wypisuje informacje na temat przebiegu"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Próbuje zrobić wszystko automatycznie"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Rekurencyjnie wyszukuje w katalogach plików czcionek"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Rozpoczyna z pustą mapą czcionek, zamiast używania starej"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr ""
+"Ponownie weryfikuje wszystkie pliki z czcionkami, nawet dla map tej samej "
+"wersji"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Dołącza do mapy czcionek pole z informacją na temat praw autorskich"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Tworzy $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Tworzy "
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+"Zapisuje wygenerowaną mapę czcionek do podanego pliku (- oznacza standarowe "
+"wyjście)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Zwraca wartości $FONTMAPDIR_STATIC i $FONTMAPDIR_DYNAMIC użyte przy tej "
+"instalacji gnome-print"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Plik opisujący znane aliasy"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "ŚCIEŻKA"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Określa domyślne czcionki dla dowolnych ustawień narodowych"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[NAROD[,NAROD]:nazwa_czcionki]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "W Szczebrzeszynie chrząszcz brzmi w trzcinie."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Jednostka"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Jednostki"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "Punkt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Pkt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "Punkty"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Pkty"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Jednostki przestrzeni użytkownika"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Użytkownik"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Jednostki przestrzeni użytkownika"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "Piksel"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Piks"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "Piksele"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "Procent"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "Procenty"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Milimetr"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Milimetry"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "Centymetr"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "Centymetry"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Metr"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "Metry"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "Cal"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "cal"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "Cale"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Dowolny"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Proste"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Obrócone o 90 stopni"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Obrócone o 180 stopni"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Obrócone o 270 stopni"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "Portretowe"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Pejzażowe"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "Portretowe do góry nogami"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "Pejzażowe do góry nogami"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Zwykły"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "Wypisuje bazę danych formatów papieru"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "Opisuje drzewo GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "Drukuje plik tekstowy"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "Używa do wydruku GnomePrintMaster"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Zrzuca wydruk do metapliku (\"-\" oznacza standardowe wyjście)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "Dzieli pracę pomiędzy elementy bonobo"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "Renderuje z metapliku"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Strona testowa Gnome-print, obrócona"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Strona testowa Gnome-print, pochylona"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Strona testowa Gnome-print, pochylona, mała"

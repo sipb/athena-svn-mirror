@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Vendor Id="EPSON">
+    <Name>EPSON</Name>
+    <URL>http://www.epson.com</URL>
+    <Models>
+ 	<Model Id="STYLUS-COLOR-740">
+	    <Name>Stylus Color 740</Name>
+	</Model>
+    </Models>
+</Vendor>

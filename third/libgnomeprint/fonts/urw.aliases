@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<fontmap version="3.0">
+<font format="alias" name="Times Roman" familyname="Times" speciesname="Roman" psname="Times-Roman" original="Nimbus Roman No9 L Regular" hideoriginal="true"/>
+<font format="alias" name="Times Italic" familyname="Times" speciesname="Italic" psname="Times-Italic" original="Nimbus Roman No9 L Regular Italic" hideoriginal="true"/>
+<font format="alias" name="Times Bold Italic" familyname="Times" speciesname="Bold Italic" psname="Times-BoldItalic" original="Nimbus Roman No9 L Medium Italic" hideoriginal="true"/>
+<font format="alias" name="Times Bold" familyname="Times" speciesname="Bold" psname="Times-Bold" original="Nimbus Roman No9 L Medium" hideoriginal="true"/>
+<font format="alias" name="Symbol" familyname="Symbol" speciesname="Normal" psname="Symbol" original="Standard Symbols L" hideoriginal="true"/>
+<font format="alias" name="Palatino Roman" familyname="Palatino" speciesname="Roman" psname="Palatino-Roman" original="URW Palladio L Roman" hideoriginal="true"/>
+<font format="alias" name="Palatino Italic" familyname="Palatino" speciesname="Italic" psname="Palatino-Italic" original="URW Palladio L Italic" hideoriginal="true"/>
+<font format="alias" name="Palatino Bold Italic" familyname="Palatino" speciesname="Bold Italic" psname="Palatino-BoldItalic" original="URW Palladio L Bold Italic" hideoriginal="true"/>
+<font format="alias" name="Palatino Bold" familyname="Palatino" speciesname="Bold" psname="Palatino-Bold" original="URW Palladio L Bold" hideoriginal="true"/>
+<font format="alias" name="New Century Schoolbook Roman" familyname="New Century Schoolbook" speciesname="Roman" psname="NewCenturySchlbk-Roman" original="Century Schoolbook L Roman" hideoriginal="true"/>
+<font format="alias" name="New Century Schoolbook Italic" familyname="New Century Schoolbook" speciesname="Italic" psname="NewCenturySchlbk-Italic" original="Century Schoolbook L Italic" hideoriginal="true"/>
+<font format="alias" name="New Century Schoolbook Bold Italic" familyname="New Century Schoolbook" speciesname="Bold Italic" psname="NewCenturySchlbk-BoldItalic" original="Century Schoolbook L Bold Italic" hideoriginal="true"/>
+<font format="alias" name="New Century Schoolbook Bold" familyname="New Century Schoolbook" speciesname="Bold" psname="NewCenturySchlbk-Bold" original="Century Schoolbook L Bold" hideoriginal="true"/>
+<font format="alias" name="ITC Zapf Dingbats" familyname="ITC Zapf Dingbats" speciesname="Normal" psname="ZapfDingbats" original="Dingbats " hideoriginal="true"/>
+<font format="alias" name="ITC Zapf Chancery Medium Italic" familyname="ITC Zapf Chancery" speciesname="Medium Italic" psname="ZapfChancery-MediumItalic" original="URW Chancery L Medium Italic" hideoriginal="true"/>
+<font format="alias" name="ITC Bookman Light Italic" familyname="ITC Bookman" speciesname="Light Italic" psname="Bookman-LightItalic" original="URW Bookman L Light Italic" hideoriginal="true"/>
+<font format="alias" name="ITC Bookman Light" familyname="ITC Bookman" speciesname="Light" psname="Bookman-Light" original="URW Bookman L Light" hideoriginal="true"/>
+<font format="alias" name="ITC Bookman Demi Italic" familyname="ITC Bookman" speciesname="Demi Italic" psname="Bookman-DemiItalic" original="URW Bookman L Demi Bold Italic" hideoriginal="true"/>
+<font format="alias" name="ITC Bookman Demi" familyname="ITC Bookman" speciesname="Demi" psname="Bookman-Demi" original="URW Bookman L Demi Bold" hideoriginal="true"/>
+<font format="alias" name="ITC Avant Garde Gothic Demi Oblique" familyname="ITC Avant Garde Gothic" speciesname="Demi Oblique" psname="AvantGarde-DemiOblique" original="URW Gothic L Demi Oblique" hideoriginal="true"/>
+<font format="alias" name="ITC Avant Garde Gothic Demi" familyname="ITC Avant Garde Gothic" speciesname="Demi" psname="AvantGarde-Demi" original="URW Gothic L Demi" hideoriginal="true"/>
+<font format="alias" name="ITC Avant Garde Gothic Book Oblique" familyname="ITC Avant Garde Gothic" speciesname="Book Oblique" psname="AvantGarde-BookOblique" original="URW Gothic L Book Oblique" hideoriginal="true"/>
+<font format="alias" name="ITC Avant Garde Gothic Book" familyname="ITC Avant Garde Gothic" speciesname="Book" psname="AvantGarde-Book" original="URW Gothic L Book" hideoriginal="true"/>
+<font format="alias" name="Helvetica Oblique" familyname="Helvetica" speciesname="Oblique" psname="Helvetica-Oblique" original="Nimbus Sans L Regular Italic" hideoriginal="true"/>
+<font format="alias" name="Helvetica Narrow Oblique" familyname="Helvetica" speciesname="Narrow Oblique" psname="Helvetica-Narrow-Oblique" original="Nimbus Sans L Regular Condensed Italic" hideoriginal="true"/>
+<font format="alias" name="Helvetica Narrow Bold Oblique" familyname="Helvetica" speciesname="Narrow Bold Oblique" psname="Helvetica-Narrow-BoldOblique" original="Nimbus Sans L Bold Condensed Italic" hideoriginal="true"/>
+<font format="alias" name="Helvetica Narrow Bold" familyname="Helvetica" speciesname="Narrow Bold" psname="Helvetica-Narrow-Bold" original="Nimbus Sans L Bold Condensed" hideoriginal="true"/>
+<font format="alias" name="Helvetica Narrow" familyname="Helvetica" speciesname="Narrow" psname="Helvetica-Narrow" original="Nimbus Sans L Regular Condensed" hideoriginal="true"/>
+<font format="alias" name="Helvetica Bold Oblique" familyname="Helvetica" speciesname="Bold Oblique" psname="Helvetica-BoldOblique" original="Nimbus Sans L Bold Italic" hideoriginal="true"/>
+<font format="alias" name="Helvetica Bold" familyname="Helvetica" speciesname="Bold" psname="Helvetica-Bold" original="Nimbus Sans L Bold" hideoriginal="true"/>
+<font format="alias" name="Helvetica" familyname="Helvetica" speciesname="Normal" psname="Helvetica" original="Nimbus Sans L Regular" hideoriginal="true"/>
+<font format="alias" name="Courier Oblique" familyname="Courier" speciesname="Oblique" psname="Courier-Oblique" original="Nimbus Mono L Regular Oblique" hideoriginal="true"/>
+<font format="alias" name="Courier Bold Oblique" familyname="Courier" speciesname="Bold Oblique" psname="Courier-BoldOblique" original="Nimbus Mono L Bold Oblique" hideoriginal="true"/>
+<font format="alias" name="Courier Bold" familyname="Courier" speciesname="Bold" psname="Courier-Bold" original="Nimbus Mono L Bold" hideoriginal="true"/>
+<font format="alias" name="Courier" familyname="Courier" speciesname="Normal" psname="Courier" original="Nimbus Mono L Regular" hideoriginal="true"/>
+</fontmap>

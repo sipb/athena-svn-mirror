@@ -1,0 +1,70 @@
+<!DOCTYPE book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+<!ENTITY gnome-font-face SYSTEM "sgml/gnome-font-face.sgml">
+<!ENTITY gnome-font-family SYSTEM "sgml/gnome-font-family.sgml">
+<!ENTITY gnome-font SYSTEM "sgml/gnome-font.sgml">
+<!ENTITY gnome-glyphlist SYSTEM "sgml/gnome-glyphlist.sgml">
+<!ENTITY gnome-pgl SYSTEM "sgml/gnome-pgl.sgml">
+<!ENTITY gnome-print-config SYSTEM "sgml/gnome-print-config.sgml">
+<!ENTITY gnome-print-master SYSTEM "sgml/gnome-print-master.sgml">
+<!ENTITY gnome-print-paper SYSTEM "sgml/gnome-print-paper.sgml">
+<!ENTITY gnome-print SYSTEM "sgml/gnome-print.sgml">
+<!ENTITY gnome-print-unit SYSTEM "sgml/gnome-print-unit.sgml">
+<!ENTITY gnome-rfont SYSTEM "sgml/gnome-rfont.sgml">
+
+<!ENTITY libgnomeprint-Building SYSTEM "building.sgml">
+<!ENTITY libgnomeprint-Compiling SYSTEM "compiling.sgml">
+<!ENTITY libgnomeprint-Resources SYSTEM "resources.sgml">
+<!ENTITY libgnomeprint-Questions SYSTEM "question_index.sgml">
+
+]>
+<book id="index">
+  <bookinfo>
+    <title>GNOME Print Reference Manual</title>
+  </bookinfo>
+
+  <part id="libgnomeprint">
+    <title>GNOME Print Overview</title>
+    <partintro>
+      <para>
+GNOME Print is a C-based API that implements the Postscript imaging model.
+It is an actively developed project, and it is being used by various GNOME
+applications. There are two extensions to the Postscript imaging model
+supported by GNOME Print: Alpha channel support and anti-aliasing.
+GNOME Print includes a rasterizing engine that transforms the requests into
+bitmaps for native drivers. Various drivers are provided underneath this API,
+for instance, the current version of GNOME Print ships with:
+        <itemizedlist mark="bullet">
+          <listitem>
+	    <para>
+              Postscript driver.
+	    </para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      PDF driver (needs to be ported to GNOME 2.0).
+	    </para>
+	  </listitem>
+	</itemizedlist>
+      </para>
+    </partintro>
+    &libgnomeprint-Building;
+    &libgnomeprint-Compiling;
+    &libgnomeprint-Resources;
+    &libgnomeprint-Questions;
+
+  </part>
+
+  <part id="libgnomeprintunsorted">
+    <title>API Reference</title>
+    &gnome-font-face;
+    &gnome-font;
+    &gnome-glyphlist;
+    &gnome-pgl;
+    &gnome-print-config;
+    &gnome-print-master;
+    &gnome-print-paper;
+    &gnome-print;
+    &gnome-print-unit;
+    &gnome-rfont;
+  </part>
+</book>

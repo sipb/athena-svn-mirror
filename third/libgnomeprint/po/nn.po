@@ -1,0 +1,310 @@
+# Norwegian (nynorsk) translation of gnome-print.
+# Copyright (C) 2000 Gaute Hvoslef Kvalnes.
+# Gaute Hvoslef Kvalnes <ai98ghk@stud.hib.no>, 2000
+# Kjartan Maraas <kmaraas@gnome.org>, 2001.
+# Roy-Magne Mo <rmo@sunnmore.net>, 2001.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-print 0.30\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2001-10-28 06:13GMT\n"
+"Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
+"Language-Team: nynorsk <nn@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Skriv ut avlusingsinformasjon"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Prøvar å gjere alt automatisk"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Søk katalogar rekursivt for font filer."
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Start frå ingen fontmaps, istaden for å tolke gamle"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr ""
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Inkluder skrifttypemerknad (Opphavrettdata) i skrifttypekart"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Opprett $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Opprett "
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "Skriv utdata fontmap til spesifisert fil (- for stdout)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Returner $FONTMAPDIR_STATIC og $FONTMAPDIR_DYNAMIC brukt for denne gnome-"
+"print innstallasjonen)"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Fil som skildrar kjente alias"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "PATH"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Spesifiser standard skrifttype for alle lokale"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:skrifttypename]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "The quick brown fox jumps Over the lazy dog æÆøØåÅ."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Eining"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Einingar"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "Punkt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Pkt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "Punkt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Pkt"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Brukarområdeeining"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Brukar"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Brukarområdeeiningar"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "Piksel"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Pks"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "Pikslar"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "Prosent"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "Prosent"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Millimeter"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Millimeter"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "Centimeter"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "Centimeter"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Meter"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+#, fuzzy
+msgid "Meters"
+msgstr "Meter"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "Tomme"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "tm"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "Tommar"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Tilpassa"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Rett"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Rotert 90 grader"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Rotert 180 grader"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Rotert 270 grader"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "Ståande"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Liggjande"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "Oppned ståande"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "Oppned liggjande"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Enkel"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr ""
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr ""
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr ""
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr ""
+
+#: tests/testprint.c:73
+#, fuzzy
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Skriv utdata fontmap til spesifisert fil (- for stdout)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr ""
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr ""
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr ""
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr ""
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr ""
+
+#~ msgid "meters"
+#~ msgstr "meter"
+
+#~ msgid "Default Key"
+#~ msgstr "Standard nøkkel"
+
+#~ msgid "Printer is active"
+#~ msgstr "Skrivar er aktiv"
+
+#~ msgid "Printer is ready to print"
+#~ msgstr "Skrivar er klar til å skrive ut"
+
+#~ msgid "Printer is off-line"
+#~ msgstr "Skrivar er off-line"
+
+#~ msgid "Can not communicate with printer"
+#~ msgstr "Kan ikkje kommunisere med skrivar"
+
+#~ msgid "Unknown status"
+#~ msgstr "Ukjend status"
+
+#~ msgid "Default Settings"
+#~ msgstr "Standard innstillingar"

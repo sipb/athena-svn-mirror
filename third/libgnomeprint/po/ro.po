@@ -1,0 +1,284 @@
+# Romanian translation for libgnomeprint-2.0
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Mugurel Tudor <mugurelu@go.ro>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-08-30 01:31+0300\n"
+"Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
+"Language-Team: română <ro@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Tipăreşte informaţii pentru depanare"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Încearcă să facă totul automatic"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Caută directoarele recursiv pentru fonturi"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Începe de la zero fontmap-ul, în locul prelucrării celei vechi"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr ""
+"Reverifică toate fonturile, chiar şi pentru fontma-uri de aceeaşi versiune"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Include câmpul de informaţii de copyright despre fonturi în fontmap"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Creează $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Creează"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "Scrie fontmap-ul rezultat către fişierul rezultat ( - pentru stdout)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Returnează $FONTMAPDIR_STATIC şi $FONTMAPDIR_DYNAMIC folosiţi pentru "
+"instalarea acestui gnome-print"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Fişier care descrie aliasuri cunoscute"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "PATH"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Specfică fontul(rile) implicit pentru orice locale"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:fontname]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Vulpea rapidă sare peste câinele leneş."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Unitate"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Unităţi"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "Punct"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Pct"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "Puncte"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Pcts"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Unitate a spaţiului utilizator"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Utilizator"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Unităţi ale spaţiului utilizator"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "Pixel"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "Pixeli"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "Procent"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "Procente"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Milimetru"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Milimetri"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "Centimetru"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "Centimetri"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Metru"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "Metri"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "Inch"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "in"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "Inches"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Personalizat"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Normal"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Rotit cu 90 de grade"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Rotit cu 180 de grade"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Rotit cu 270 de grade"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "Vertical"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Orizontal"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "Vertical răsturnat"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "Orizontal răsturnat"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Simplu"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "Bază de date de hârtie pentru tipărit"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "Descrie arborele GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "Tipăreşte fişier text"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "Foloseşte GnomePrintMaster pentru printare"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Printează într-un metafile ('-' pentru stdout)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "Împarte sarcina între bonobo"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "Randează din metafile"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Pagină de test Gnome-print, rotită"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Pagină de test Gnome-print, înclinată"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Pagină de test Gnome-print, înclinată. Mică"
