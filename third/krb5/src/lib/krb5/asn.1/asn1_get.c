@@ -57,7 +57,6 @@ asn1_get_tag(buf, class, construction, tagnum, retlen)
      asn1_tagnum *tagnum;
      int *retlen;
 {
-  asn1_error_code retval;
   int indef;
 
   return asn1_get_tag_indef(buf, class, construction, tagnum, retlen, &indef);
@@ -143,6 +142,8 @@ asn1_error_code asn1_get_length(buf, retlen, indef)
       if(retval) return retval;
       len = (len<<8) + (int)o;
     }
+    if (len < 0)
+      return ASN1_OVERRUN;
     if (indef != NULL && !len)
       *indef = 1;
     if(retlen != NULL) *retlen = len;

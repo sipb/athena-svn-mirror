@@ -6,7 +6,7 @@ BUILDTOP=$(REL)$(U)$(S)$(U)
 #
 # Makefile for building a standalone send-pr.
 #
-RELEASE=krb5-1.2.4
+RELEASE=krb5-1.2.5
 SUBMITTER=net
 sendprname = krb5-send-pr
 EMACS=emacs

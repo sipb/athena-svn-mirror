@@ -51,7 +51,7 @@
 #include <memory.h>
 
 /*
- * $Id: util_crypt.c,v 1.1.1.3 2001-12-05 20:48:05 rbasch Exp $
+ * $Id: util_crypt.c,v 1.1.1.4 2002-05-02 16:56:42 rbasch Exp $
  */
 
 int
@@ -156,7 +156,7 @@ kg_decrypt(context, key, usage, iv, in, out, length)
      int length;
 {
    krb5_error_code code;
-   size_t blocksize, enclen;
+   size_t blocksize;
    krb5_data ivd, *pivd, outputd;
    krb5_enc_data inputd;
 

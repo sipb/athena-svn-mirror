@@ -47,10 +47,11 @@
  */
 
 /*
- * $Id: gssapi_krb5.c,v 1.1.1.5 2001-12-05 20:48:05 rbasch Exp $
+ * $Id: gssapi_krb5.c,v 1.1.1.6 2002-05-02 16:56:38 rbasch Exp $
  */
 
 #include "gssapiP_krb5.h"
+#include "k5-int.h"
 
 /** exported constants defined in gssapi_krb5{,_nx}.h **/
 

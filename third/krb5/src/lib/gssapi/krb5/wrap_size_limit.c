@@ -73,7 +73,7 @@
 #include "gssapiP_krb5.h"
 
 /*
- * $Id: wrap_size_limit.c,v 1.1.1.6 2001-12-05 20:48:05 rbasch Exp $
+ * $Id: wrap_size_limit.c,v 1.1.1.7 2002-05-02 16:56:43 rbasch Exp $
  */
 
 /* V2 interface */
@@ -89,7 +89,6 @@ krb5_gss_wrap_size_limit(minor_status, context_handle, conf_req_flag,
 {
     krb5_context	context;
     krb5_gss_ctx_id_rec	*ctx;
-    krb5_error_code code;
     OM_uint32		data_size, conflen;
     OM_uint32		ohlen;
     int			overhead;
