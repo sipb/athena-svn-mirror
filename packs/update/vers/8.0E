@@ -1,0 +1,10 @@
+#!/bin/sh -
+# Version-specific update script for 8.0E
+
+case ${MACH} in
+SUN*)
+	;;
+
+INDY)
+	;;
+esac
