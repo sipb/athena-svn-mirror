@@ -1,8 +1,8 @@
 #ifdef ATHENA
 #include <stdio.h>
-#ifdef POSIX
+#include <string.h>
 #include <unistd.h>
-#endif
+#include <crypt.h>
 #include <pwd.h>
 #ifdef SOLARIS
 #include <shadow.h>
@@ -14,12 +14,8 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef SYSV
 #include <fcntl.h>
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/wait.h>
 #include <utmp.h>
 #ifdef _IBMR2
@@ -107,11 +103,7 @@ struct passwd *athena_getpwnam(user)
 	}
 
       if (pwd) 
-#ifdef POSIX
 	memmove(&athena_pwd, pwd, sizeof(struct passwd));
-#else
-	bcopy(pwd, &athena_pwd, sizeof(struct passwd));
-#endif
       else
 	return NULL;
     }
@@ -447,7 +439,7 @@ char *athena_authenticate(user, passwd)
 	  c += 6;
 	saltc[i] = c;
       }
-      strcpy(encrypt,crypt(passwd, saltc));	
+      strcpy(encrypt, crypt(passwd, saltc));	
 
       pwd->pw_passwd = encrypt;
     }
@@ -755,11 +747,7 @@ int homedirOK(dir)
 char *dir;
 {
     DIR *dp;
-#ifdef POSIX
     struct dirent *temp;
-#else
-    struct direct *temp;
-#endif
     int count;
 
     if ((dp = opendir(dir)) == NULL)
