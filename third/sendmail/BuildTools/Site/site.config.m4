@@ -2,7 +2,7 @@ dnl Use tcpwrappers
 APPENDDEF(`confENVDEF', `-DTCPWRAPPERS')
 APPENDDEF(`confINCDIRS', `-I$(ATHTOOLROOT)/usr/athena/include')
 APPENDDEF(`confLIBDIRS', `-L$(ATHTOOLROOT)/usr/athena/lib')
-APPENDDEF(`confLIBS', `-lwrap')
+APPENDDEF(`confLIBS', `-lwrap -lhesiod')
 
 dnl Avoid having NIS be defined
 define(`confMAPDEF', `-DNDBM -DMAP_REGEX')
