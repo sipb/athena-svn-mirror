@@ -15,7 +15,7 @@
 
 /* Routines for retrieving local filesystem quotas. */
 
-static const char rcsid[] = "$Id: ufs.c,v 1.2 1999-06-03 14:54:24 danw Exp $";
+static const char rcsid[] = "$Id: ufs.c,v 1.3 1999-07-07 22:39:17 danw Exp $";
 
 #include <errno.h>
 #include <fcntl.h>
@@ -69,11 +69,11 @@ int get_local_quota(struct quota_fs *fs, uid_t uid, int verbose)
 	fs->warn_files = 1;
     }
 
-  /* Give an error message for anything but ESRCH ("Quotas not enabled
-   * for this filesystem.") or EOPNOTSUPP ("No kernel support for
-   * quotas.")
+  /* Give an error message for anything but ESRCH/EINVAL ("Quotas not
+   * enabled for this filesystem.") or EOPNOTSUPP ("No kernel support
+   * for quotas.")
    */
-  if (status == -1 && errno != ESRCH && errno != EOPNOTSUPP)
+  if (status == -1 && errno != ESRCH && errno != EINVAL && errno != EOPNOTSUPP)
     {
       fprintf(stderr, "quota: Could not get quota for %s (%s): %s\n",
 	      fs->mount, fs->device, strerror(errno));
