@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -19,7 +19,7 @@
 #define IHaveSubdirs
 #define PassCDebugFlags
 
-SUBDIRS = lib console dash xcluster
+SUBDIRS = lib console dash xcluster bugme
 
 MakeSubdirs($(SUBDIRS))
 DependSubdirs($(SUBDIRS))

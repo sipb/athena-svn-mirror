@@ -2,6 +2,10 @@
 
 #define LDEF src/Xj_local.defs
 
+DASH_MENUS = ${ATHLIBDIR}/Dash.menus
+DASH_FALLBACK = ${ATHLIBDIR}/Dash.fallback
+QUICK_FILE = ${ATHLIBDIR}/quickstations
+
 Makefiles::
 	-@if [ -f LDEF ]; then \
 	echo "  $(RM) LDEF.bak; mv LDEF LDEF.bak"; \
@@ -23,3 +27,4 @@ Makefiles::
 	@echo XJ_INC_DIR = ${ATHINCDIR} >> LDEF
 	@echo DASH_MENUS = ${DASH_MENUS} >> LDEF
 	@echo DASH_FALLBACK = ${DASH_FALLBACK} >> LDEF
+	@echo QUICK_FILE = ${QUICK_FILE} >> LDEF

@@ -1,0 +1,92 @@
+.TH BUGME 1 "14 Jan 1997"
+.ds ]W MIT Athena
+.SH NAME
+bugme \- login session timer and user irritant
+.SH SYNOPSIS
+.nf
+bugme command [ option ... ]
+.fi
+.SH DESCRIPTION
+\fIbugme\fR is intended to run on Athena workstations where limiting
+an individual user's login time is desirable. These workstations are
+intended for quick turnaround, allowing as many users as possible to
+do things like check their mail between classes.
+
+In order to facilitate this, \fIbugme\fR provides two services.
+First, it places a login timer in the lower left-hand corner of the
+user's display. This serves to give the user a constant indication of
+how long they have been on, as well as any waiting users.
+
+Second, \fIbugme\fR periodically reminds the user via dialog boxes
+when they are over the recommended time for using the workstation.
+
+The time counter in \fIbugme\fR is tamper-resistant (not tamper-proof)
+in an effort to prevent less social users from concealing how long
+they have been using the workstation. As a consequence, malicious acts
+directed towards \fIbugme\fR or its windows may result in the user
+being logged out.
+
+The counter may be relocated from its default position by simply
+clicking in it and dragging it around. It will always keep itself on
+top of other windows and fully visible on the screen.
+
+\fIbugme\fR is only intended to be run by the global Xsession script.
+On machines where it is to be run (as determined by
+/usr/athena/lib/quickstations), it executes its arguments in a child
+process and waits for that process to exit. On machines where it is
+not meant to be run, it simply executes its arguments.
+.SH ENVIRONMENT
+In sessions where \fIbugme\fR is active, the environment variable
+ATHENA_QUICK is set so that custom user dotfiles can speed up the
+login process if desired.
+.SH OPTIONS
+\fIbugme\fR's only arguments are the command to be executed and
+its arguments.
+.SH CONFIGURATION
+The file \fI/usr/athena/lib/quickstations\fR contains the list of
+machines, one hostname per line, on which \fIbugme\fR is to be active.
+Case is ignored, and anything occurring on a line after a hostname
+is also ignored.
+
+\fIbugme\fR's app-defaults file contains the descriptions of what
+messages should be used to remind the user, and when.
+
+The "bugnames" resource lists the names of the dialog boxes that
+should possibly be created while \fIbugme\fR runs.
+
+	*bugnames:	first second last
+
+Each dialog box to be created requires two resource specifications.
+One is the text to occur in the dialog box (currently only one line).
+The other is the specification of when it should occur.
+
+	*first*question.label:      Please logout soon.
+	*first*timeout:             540
+
+This means that a dialog box saying "Please logout soon." should
+be presented to the user about 540 seconds (9 minutes) after they
+log in.
+
+	*last*question.label:       Go now!
+	*last*timeout:              1200 30
+
+This dialog box will pop up 20 minutes after the user logs in,
+and every 30 seconds thereafter.
+.SH BUGS
+\fIbugme\fR always wants to be on top of all other windows in order to
+be visible. However, interesting things can happen when it encounters
+other programs that want to do the same thing. Specifically,
+\fIbugme\fR will fight with some screensaver software. Fortunately,
+the side-effects are not damaging, and workstations where \fIbugme\fR
+is run should not in principle be idle long enough for screensavers to
+engage.
+.SH FILES
+.PP
+/etc/athena/login/Xsession      invocation of \fIbugme\fR
+.br
+/usr/athena/lib/quickstations   list of special machines
+.br
+.SH AUTHOR
+Craig Fields, MIT I/S DCNS
+.br
+Copyright (c) 1997 Massachusetts Institute of Technology
