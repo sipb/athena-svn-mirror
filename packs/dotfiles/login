@@ -1,7 +1,7 @@
 # Prototype global .login file
-# $Author: rbasch $
+# $Author: ghudson $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.6 1998-06-22 20:04:05 rbasch Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.7 1998-06-23 19:32:52 ghudson Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -105,6 +105,7 @@ if (! $?skip_tty_startup) then
 	if ($?verbose_login) echo "Running standard startup activities ..."
 	set ignoreeof			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
+	get_message -login		# Display current motd
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 endif
