@@ -1,0 +1,51 @@
+XOLC is the X-based version of OLC, the "On-Line Consulting" program at
+Project Athena.  Using OLC, a user can ask a question of a consultant or
+a volunteer via the computer.  The user and consultant can be anywhere
+on network, which makes it very convenient for both.  If there are no
+consultants avavilable when a question is asked, the OLC Daemon will
+hold the question until one is available.  The Daemon also stores the
+questions while they are passed from consultant to consultant.
+
+In order to fully compile this program, you need the following things:
+
+	(1) An OLC daemon, and the source code for it.  This program
+uses include files from the OLC source code.  Once built and run, it
+will attempt to contact the OLC daemon -- therefore you will want to get
+the sources for the daemon and install one.  OLC sources should be
+available soon.
+
+	(2) Hesiod name service.  The program determines the location of
+the OLC daemon via Hesiod name lookup.  Hesiod should be available to
+the public, I believe.  OLC and XOLC can be compiled without hesiod,
+however.  A compile flag is provided for this; see the makefile.
+
+	(3) Kerberos authentication service.  The program uses the
+kerberos authentication service, which is available to the public now.
+OLC and XOLC can be compiled without hesiod, however.  A compile flag is
+provided for this; see the makefile.
+
+	(4) Zephyr message transport system.  This program does not
+directly use zephyr, however, the OLC daemon does.  Again, OLC can be
+compiled without it, and in it's abscence, relies on Unix "write" to
+notify the user and/or consultant about new messages from the other
+party.
+
+
+** HOWEVER **, should you wish to see the XOLC interface without any of
+the 4 components mentioned above, you can compile an "interface-only"
+version of XOLC.  The makefile is set up to compile this way by default;
+should you wish to compile a real version, make the changes suggested in
+the makefile.
+
+In the "interface-only" version, every attempt has been made to make the
+interface "feel" as similar to the real working product, and to expose
+the user to as much of the interface as possible without actually
+connecting to the OLC daemon.
+
+Another note about compiling...  this code assumes that you have an ANSI
+C compiler, such as gcc or hc (on the IBM RT).  If you do not, you will
+not want to include "Mu.h" in xolc.h.
+
+The program is not yet complete, though it is close.  The help files are
+lacking, and there are most probably bugs that have not yet been
+discovered.
