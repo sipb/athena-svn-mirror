@@ -23,13 +23,13 @@
  * utilities.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
- *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.10 1997-11-22 19:25:18 ghudson Exp $
+ *	$Author: danw $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.11 1998-08-01 17:42:14 danw Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.10 1997-11-22 19:25:18 ghudson Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.11 1998-08-01 17:42:14 danw Exp $";
 #endif
 #endif
 
@@ -45,7 +45,7 @@ static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/a
 #include <sys/param.h>			/* System parameters file. */
 
 #ifdef TERMIO
-#include <sys/termio.h>
+#include <termio.h>
 #else
 #include <sgtty.h>
 #endif

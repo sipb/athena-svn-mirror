@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.43 1997-04-30 18:28:44 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: t_utils.c,v 1.44 1998-08-01 17:42:21 danw Exp $
+ *	$Author: danw $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.43 1997-04-30 18:28:44 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.44 1998-08-01 17:42:21 danw Exp $";
 #endif
 #endif
 
@@ -40,7 +40,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef TERMIO
-#include <sys/termio.h>
+#include <termio.h>
 struct termio mode;
 #else
 #include <sgtty.h>
