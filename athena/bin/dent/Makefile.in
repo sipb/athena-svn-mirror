@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1998-11-16 16:48:53 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1999-09-16 00:02:55 danw Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -14,7 +14,7 @@ mandir=@mandir@
 CC=@CC@
 DEFS=@DEFS@
 CPPFLAGS=@CPPFLAGS@
-CFLAGS=@CFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
