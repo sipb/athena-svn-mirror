@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-netscape.sh,v 1.4 2000-07-29 14:19:07 ghudson Exp $
+# $Id: local-netscape.sh,v 1.5 2001-09-18 18:54:54 zacheiss Exp $
 
 # local-netscape: A cron job to copy part of the infoagents locker onto
 # local disk so that netscape can be started more quickly.
@@ -72,6 +72,13 @@ EOF
 mkdir -p $local
 synctree -q -nosrcrules -nodstrules -s "$locker" -d $local -a $rconf
 if [ $? -ne 0 ]; then
+  rm -rf "$local"
+  exit
+fi
+
+# If we don't have a netscape binary, assume our synctree failed partially
+# and remove our local copy.
+if [ ! -f "$local/$arch/MIT-only/netscape/netscape" ]; then
   rm -rf "$local"
   exit
 fi
