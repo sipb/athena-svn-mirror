@@ -39,7 +39,7 @@ gobject_OBJECTS =		\
 	gvaluetypes.o
 
 libgobject-2.0.a : $(srcdir)/stamp-gmarshal.h gmarshal.c $(gobject_OBJECTS) gobject.def gobject-2.0.rc
-	$(BUILD_DLL) gobject-2.0 200:0:200 gobject.def $(gobject_OBJECTS) -L ../glib -lglib-2.0
+	$(BUILD_DLL) gobject-2.0 200:1:200 gobject.def $(gobject_OBJECTS) -L ../glib -lglib-2.0
 
 glib-genmarshal.exe : glib-genmarshal.c
 	$(CC) -o $@ $(CFLAGS) -UGOBJECT_COMPILATION $< -L ../glib -lglib-2.0

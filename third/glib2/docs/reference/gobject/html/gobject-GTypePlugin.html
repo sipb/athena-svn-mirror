@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GTypePlugin</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GTypePlugin</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -64,7 +64,16 @@ void        <a href="gobject-GTypePlugin.html#g-type-plugin-complete-interface-i
 
 </p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GTypePlugin"></a>struct GTypePlugin</h3><pre class="programlisting">struct GTypePlugin;</pre><p>
 
-</p></div><hr><div class="refsect2"><h3><a name="GTypePluginClass"></a>struct GTypePluginClass</h3><pre class="programlisting">struct GTypePluginClass;</pre><p>
+</p></div><hr><div class="refsect2"><h3><a name="GTypePluginClass"></a>struct GTypePluginClass</h3><pre class="programlisting">struct GTypePluginClass {
+
+  GTypeInterface		   base_iface;
+  
+  GTypePluginUse		   use_plugin;
+  GTypePluginUnuse		   unuse_plugin;
+  GTypePluginCompleteTypeInfo	   complete_type_info;
+  GTypePluginCompleteInterfaceInfo complete_interface_info;
+};
+</pre><p>
 
 </p></div><hr><div class="refsect2"><h3><a name="GTypePluginUse"></a>GTypePluginUse ()</h3><pre class="programlisting">void        (*GTypePluginUse)               (<a href="gobject-GTypePlugin.html#GTypePlugin">GTypePlugin</a> *plugin);</pre><p>
 

@@ -156,7 +156,12 @@ and should never be accessed directly.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GObjectClass"/>struct GObjectClass</title>
-<programlisting>struct GObjectClass;</programlisting>
+<programlisting>struct GObjectClass {
+
+  GTypeClass   g_type_class;
+
+};
+</programlisting>
 <para>
 
 </para></refsect2>

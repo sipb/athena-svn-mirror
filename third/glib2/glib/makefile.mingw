@@ -81,7 +81,7 @@ localcharset.c : libcharset/localcharset.c
 ################ The glib DLL
 
 libglib-2.0.a : $(glib_OBJECTS) glib.def glib-2.0.rc
-	$(BUILD_DLL) glib-2.0 200:0:200 glib.def $(glib_OBJECTS) $(INTL_LIBS) $(LIBICONV_LIBS) -luser32 -lwsock32
+	$(BUILD_DLL) glib-2.0 200:1:200 glib.def $(glib_OBJECTS) $(INTL_LIBS) $(LIBICONV_LIBS) -luser32 -lwsock32
 
 glib-2.0.rc : glib.rc
 	cp $< $@

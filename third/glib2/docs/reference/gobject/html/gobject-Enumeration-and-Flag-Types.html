@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Enums and Flags</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Enums and Flags</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -87,9 +87,26 @@ void        <a href="gobject-Enumeration-and-Flag-Types.html#g-flags-complete-ty
                                              <a href="gobject-GType.html#GTypeInfo">GTypeInfo</a> *info,
                                              const <a href="gobject-Enumeration-and-Flag-Types.html#GFlagsValue">GFlagsValue</a> *const_values);
 </pre></div><div class="refsect1"><h2>Description</h2><p>
-</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GEnumClass"></a>struct GEnumClass</h3><pre class="programlisting">struct GEnumClass;</pre><p>
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GEnumClass"></a>struct GEnumClass</h3><pre class="programlisting">struct GEnumClass {
 
-</p></div><hr><div class="refsect2"><h3><a name="GFlagsClass"></a>struct GFlagsClass</h3><pre class="programlisting">struct GFlagsClass;</pre><p>
+  GTypeClass  g_type_class;
+  
+  gint	      minimum;
+  gint	      maximum;
+  guint	      n_values;
+  GEnumValue *values;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GFlagsClass"></a>struct GFlagsClass</h3><pre class="programlisting">struct GFlagsClass {
+
+  GTypeClass   g_type_class;
+  
+  guint	       mask;
+  guint	       n_values;
+  GFlagsValue *values;
+};
+</pre><p>
 
 </p></div><hr><div class="refsect2"><h3><a name="G-ENUM-CLASS-TYPE-CAPS"></a>G_ENUM_CLASS_TYPE()</h3><pre class="programlisting">#define G_ENUM_CLASS_TYPE(class)       (G_TYPE_FROM_CLASS (class))
 </pre><p>

@@ -1078,8 +1078,10 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @OS_WIN32_TRUE@install-libtool-import-lib:
 @OS_WIN32_TRUE@	$(INSTALL) .libs/libgobject-2.0.dll.a $(DESTDIR)$(libdir)
+@OS_WIN32_TRUE@	$(INSTALL) gobject.def $(DESTDIR)$(libdir)/gobject-2.0.def
+
 @OS_WIN32_TRUE@uninstall-libtool-import-lib:
-@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libgobject-2.0.dll.a
+@OS_WIN32_TRUE@	-rm $(DESTDIR)$(libdir)/libgobject-2.0.dll.a $(DESTDIR)$(libdir)/gobject-2.0.def
 @OS_WIN32_FALSE@install-libtool-import-lib:
 @OS_WIN32_FALSE@uninstall-libtool-import-lib:
 

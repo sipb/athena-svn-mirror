@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Spawning Processes</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Spawning Processes</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -193,6 +193,24 @@ course the name of the program to execute. By default, the name of
 the program must be a full path; the <tt>PATH</tt> shell variable 
 will only be searched if you pass the <tt>G_SPAWN_SEARCH_PATH</tt> flag.
 </p><p>
+On Windows, the low-level child process creation API
+(<tt>CreateProcess()</tt>)doesn't use argument vectors,
+but a command line. The C runtime library's
+<tt>spawn*()</tt> family of functions (which
+<a href="glib-Spawning-Processes.html#g-spawn-async-with-pipes">g_spawn_async_with_pipes</a>() eventually calls) paste the argument
+vector elements into a command line, and the C runtime startup code
+does a corresponding recostruction of an argument vector from the
+command line, to be passed to
+<tt>main()</tt>. Complications arise when you have
+argument vector elements that contain spaces of double quotes. The
+<tt>spawn()</tt> functions don't do any quoting or
+escaping, but on the other hand the startup code does do unquoting
+and unescaping in order to enable receiving arguments with embedded
+spaces or double quotes. To work around this asymmetry,
+<a href="glib-Spawning-Processes.html#g-spawn-async-with-pipes">g_spawn_async_with_pipes</a>() will do quoting and escaping on argument
+vector elements that need it before calling the C runtime
+<tt>spawn()</tt> function.
+</p><p>
 <i><tt>envp</tt></i> is a <tt>NULL</tt>-terminated array of strings, where each string
 has the form <tt>KEY=VALUE</tt>. This will become
 the child's environment. If <i><tt>envp</tt></i> is <tt>NULL</tt>, the child inherits its
@@ -379,11 +397,11 @@ from <a href="glib-Shell-related-Utilities.html#g-shell-parse-argv">g_shell_pars
 </p><p>
 On Windows, please note the implications of <a href="glib-Shell-related-Utilities.html#g-shell-parse-argv">g_shell_parse_argv</a>()
 parsing <i><tt>command_line</tt></i>. Space is a separator, and backslashes are
-special. Thus you cannot simply pass a <i><tt>command_line</tt></i> consisting of
-a canonical Windows path, like &quot;c:\\program files\\app\\app.exe&quot;,
-as the backslashes will be eaten, and the space will act as a
-separator. You need to enclose the path with single quotes, like
-&quot;'c:\\program files\\app\\app.exe'&quot;.</p><p>
+special. Thus you cannot simply pass a <i><tt>command_line</tt></i> containing
+canonical Windows paths, like &quot;c:\\program files\\app\\app.exe&quot;, as
+the backslashes will be eaten, and the space will act as a
+separator. You need to enclose such paths with single quotes, like
+&quot;'c:\\program files\\app\\app.exe' 'e:\\folder\\argument.txt'&quot;.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>command_line</tt></i> :</span></td><td> a command line 
 </td></tr><tr><td><span class="term"><i><tt>standard_output</tt></i> :</span></td><td> return location for child output

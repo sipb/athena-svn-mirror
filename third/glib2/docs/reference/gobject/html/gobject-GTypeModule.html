@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GTypeModule</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GTypeModule</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -93,7 +93,20 @@ in <a href="gobject-GTypeModule.html#GTypeModuleClass">GTypeModuleClass</a>.
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2"><h3><a name="GTypeModuleClass"></a>struct GTypeModuleClass</h3><pre class="programlisting">struct GTypeModuleClass;</pre><p>
+</p></div><hr><div class="refsect2"><h3><a name="GTypeModuleClass"></a>struct GTypeModuleClass</h3><pre class="programlisting">struct GTypeModuleClass {
+
+  GObjectClass parent_class;
+
+  gboolean (* load)   (GTypeModule *module);
+  void     (* unload) (GTypeModule *module);
+
+  /* Padding for future expansion */
+  void (*reserved1) (void);
+  void (*reserved2) (void);
+  void (*reserved3) (void);
+  void (*reserved4) (void);
+};
+</pre><p>
 
 </p></div><hr><div class="refsect2"><h3><a name="g-type-module-use"></a>g_type_module_use ()</h3><pre class="programlisting"><a
 href="../glib/glib-Basic-Types.html#gboolean"

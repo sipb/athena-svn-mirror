@@ -283,136 +283,136 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-@PLATFORM_WIN32_FALSE@libmoduletestplugin_a_la_DEPENDENCIES = 
 @PLATFORM_WIN32_TRUE@libmoduletestplugin_a_la_DEPENDENCIES =  \
 @PLATFORM_WIN32_TRUE@$(top_builddir)/gmodule/libgmodule-2.0.la \
 @PLATFORM_WIN32_TRUE@$(top_builddir)/glib/libglib-2.0.la
+@PLATFORM_WIN32_FALSE@libmoduletestplugin_a_la_DEPENDENCIES = 
 libmoduletestplugin_a_la_OBJECTS =  libmoduletestplugin_a.lo
-@PLATFORM_WIN32_FALSE@libmoduletestplugin_b_la_DEPENDENCIES = 
 @PLATFORM_WIN32_TRUE@libmoduletestplugin_b_la_DEPENDENCIES =  \
 @PLATFORM_WIN32_TRUE@$(top_builddir)/gmodule/libgmodule-2.0.la \
 @PLATFORM_WIN32_TRUE@$(top_builddir)/glib/libglib-2.0.la
+@PLATFORM_WIN32_FALSE@libmoduletestplugin_b_la_DEPENDENCIES = 
 libmoduletestplugin_b_la_OBJECTS =  libmoduletestplugin_b.lo
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@check_PROGRAMS =  \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@array-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@cxx-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@date-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@dirname-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@gio-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@hash-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@iochannel-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@list-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@mainloop-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@module-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@node-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@queue-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@qsort-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@rand-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@relation-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@shell-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@slist-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@spawn-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@spawn-test-win32-gui$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@strfunc-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@string-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@strtod-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@thread-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@threadpool-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@tree-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@type-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@unicode-caseconv$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@unicode-encoding$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@uri-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_TRUE@markup-test$(EXEEXT)
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@check_PROGRAMS =  \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@array-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@date-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@dirname-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@gio-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@hash-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@iochannel-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@list-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@mainloop-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@module-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@node-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@queue-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@qsort-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@rand-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@relation-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@shell-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@slist-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@spawn-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@strfunc-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@string-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@strtod-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@thread-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@threadpool-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@tree-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@type-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@unicode-caseconv$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@unicode-encoding$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@uri-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_FALSE@markup-test$(EXEEXT)
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@check_PROGRAMS =  \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@array-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@date-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@dirname-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@gio-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@hash-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@iochannel-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@list-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@mainloop-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@module-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@node-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@queue-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@qsort-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@rand-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@relation-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@shell-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@slist-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@spawn-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@spawn-test-win32-gui$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@strfunc-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@string-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@strtod-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@thread-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@threadpool-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@tree-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@type-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@unicode-caseconv$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@unicode-encoding$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@uri-test$(EXEEXT) \
-@PLATFORM_WIN32_TRUE@@HAVE_CXX_FALSE@markup-test$(EXEEXT)
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@check_PROGRAMS =  \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@array-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@cxx-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@date-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@dirname-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@gio-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@hash-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@iochannel-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@list-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@mainloop-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@module-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@node-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@queue-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@qsort-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@rand-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@relation-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@shell-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@slist-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@spawn-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@strfunc-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@string-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@strtod-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@thread-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@threadpool-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@tree-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@type-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@unicode-caseconv$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@unicode-encoding$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@uri-test$(EXEEXT) \
-@PLATFORM_WIN32_FALSE@@HAVE_CXX_TRUE@markup-test$(EXEEXT)
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@check_PROGRAMS =  \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@array-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@date-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@dirname-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@gio-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@hash-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@iochannel-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@list-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@mainloop-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@module-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@node-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@queue-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@qsort-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@rand-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@relation-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@shell-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@slist-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@spawn-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@strfunc-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@string-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@strtod-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@thread-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@threadpool-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@tree-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@type-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@unicode-caseconv$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@unicode-encoding$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@uri-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_FALSE@markup-test$(EXEEXT)
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@check_PROGRAMS =  \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@array-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@date-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@dirname-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@gio-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@hash-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@iochannel-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@list-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@mainloop-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@module-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@node-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@queue-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@qsort-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@rand-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@relation-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@shell-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@slist-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@spawn-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@spawn-test-win32-gui$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@strfunc-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@string-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@strtod-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@thread-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@threadpool-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@tree-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@type-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@unicode-caseconv$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@unicode-encoding$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@uri-test$(EXEEXT) \
+@HAVE_CXX_FALSE@@PLATFORM_WIN32_TRUE@markup-test$(EXEEXT)
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@check_PROGRAMS =  \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@array-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@cxx-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@date-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@dirname-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@gio-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@hash-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@iochannel-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@list-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@mainloop-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@module-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@node-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@queue-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@qsort-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@rand-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@relation-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@shell-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@slist-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@spawn-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@spawn-test-win32-gui$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@strfunc-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@string-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@strtod-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@thread-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@threadpool-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@tree-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@type-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@unicode-caseconv$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@unicode-encoding$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@uri-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_TRUE@markup-test$(EXEEXT)
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@check_PROGRAMS =  \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@array-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@cxx-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@date-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@dirname-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@gio-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@hash-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@iochannel-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@list-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@mainloop-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@module-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@node-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@queue-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@qsort-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@rand-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@relation-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@shell-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@slist-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@spawn-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@strfunc-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@string-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@strtod-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@thread-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@threadpool-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@tree-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@type-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@unicode-caseconv$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@unicode-encoding$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@uri-test$(EXEEXT) \
+@HAVE_CXX_TRUE@@PLATFORM_WIN32_FALSE@markup-test$(EXEEXT)
 @ENABLE_TIMELOOP_FALSE@noinst_PROGRAMS =  testglib$(EXEEXT) \
 @ENABLE_TIMELOOP_FALSE@patterntest$(EXEEXT) testgdate$(EXEEXT) \
 @ENABLE_TIMELOOP_FALSE@testgdateparser$(EXEEXT) \
@@ -465,13 +465,13 @@ $(top_builddir)/glib/libglib-2.0.la
 mainloop_test_LDFLAGS = 
 module_test_SOURCES = module-test.c
 module_test_OBJECTS =  module-test.$(OBJEXT)
-@PLATFORM_WIN32_FALSE@module_test_DEPENDENCIES =  \
-@PLATFORM_WIN32_FALSE@$(top_builddir)/gmodule/libgmodule-2.0.la \
-@PLATFORM_WIN32_FALSE@$(top_builddir)/glib/libglib-2.0.la
 @PLATFORM_WIN32_TRUE@module_test_DEPENDENCIES =  \
 @PLATFORM_WIN32_TRUE@$(top_builddir)/gmodule/libgmodule-2.0.la \
 @PLATFORM_WIN32_TRUE@$(top_builddir)/glib/libglib-2.0.la \
 @PLATFORM_WIN32_TRUE@module-test.exp
+@PLATFORM_WIN32_FALSE@module_test_DEPENDENCIES =  \
+@PLATFORM_WIN32_FALSE@$(top_builddir)/gmodule/libgmodule-2.0.la \
+@PLATFORM_WIN32_FALSE@$(top_builddir)/glib/libglib-2.0.la
 node_test_SOURCES = node-test.c
 node_test_OBJECTS =  node-test.$(OBJEXT)
 node_test_DEPENDENCIES =  $(top_builddir)/glib/libglib-2.0.la
@@ -956,21 +956,6 @@ patterntest.o: patterntest.c ../glib/glib.h ../glib/galloca.h \
 	../glib/grel.h ../glib/gscanner.h ../glib/gshell.h \
 	../glib/gspawn.h ../glib/gstrfuncs.h ../glib/gthreadpool.h \
 	../glib/gtimer.h ../glib/gtree.h ../glib/gutils.h
-strfunc-test.o: strfunc-test.c ../glib/glib.h ../glib/galloca.h \
-	../glib/gtypes.h ../glibconfig.h ../glib/gmacros.h \
-	../glib/garray.h ../glib/gasyncqueue.h ../glib/gthread.h \
-	../glib/gerror.h ../glib/gquark.h ../glib/gbacktrace.h \
-	../glib/gcache.h ../glib/glist.h ../glib/gmem.h \
-	../glib/gcompletion.h ../glib/gconvert.h ../glib/gdataset.h \
-	../glib/gdate.h ../glib/gdir.h ../glib/gfileutils.h \
-	../glib/ghash.h ../glib/ghook.h ../glib/giochannel.h \
-	../glib/gmain.h ../glib/gslist.h ../glib/gstring.h \
-	../glib/gunicode.h ../glib/gmarkup.h ../glib/gmessages.h \
-	../glib/gnode.h ../glib/gpattern.h ../glib/gprimes.h \
-	../glib/gqsort.h ../glib/gqueue.h ../glib/grand.h \
-	../glib/grel.h ../glib/gscanner.h ../glib/gshell.h \
-	../glib/gspawn.h ../glib/gstrfuncs.h ../glib/gthreadpool.h \
-	../glib/gtimer.h ../glib/gtree.h ../glib/gutils.h
 testgdate.o: testgdate.c ../glib/glib.h ../glib/galloca.h \
 	../glib/gtypes.h ../glibconfig.h ../glib/gmacros.h \
 	../glib/garray.h ../glib/gasyncqueue.h ../glib/gthread.h \
@@ -1002,21 +987,6 @@ testgdateparser.o: testgdateparser.c ../glib/glib.h ../glib/galloca.h \
 	../glib/gspawn.h ../glib/gstrfuncs.h ../glib/gthreadpool.h \
 	../glib/gtimer.h ../glib/gtree.h ../glib/gutils.h
 testglib.o: testglib.c ../config.h ../glib/glib.h ../glib/galloca.h \
-	../glib/gtypes.h ../glibconfig.h ../glib/gmacros.h \
-	../glib/garray.h ../glib/gasyncqueue.h ../glib/gthread.h \
-	../glib/gerror.h ../glib/gquark.h ../glib/gbacktrace.h \
-	../glib/gcache.h ../glib/glist.h ../glib/gmem.h \
-	../glib/gcompletion.h ../glib/gconvert.h ../glib/gdataset.h \
-	../glib/gdate.h ../glib/gdir.h ../glib/gfileutils.h \
-	../glib/ghash.h ../glib/ghook.h ../glib/giochannel.h \
-	../glib/gmain.h ../glib/gslist.h ../glib/gstring.h \
-	../glib/gunicode.h ../glib/gmarkup.h ../glib/gmessages.h \
-	../glib/gnode.h ../glib/gpattern.h ../glib/gprimes.h \
-	../glib/gqsort.h ../glib/gqueue.h ../glib/grand.h \
-	../glib/grel.h ../glib/gscanner.h ../glib/gshell.h \
-	../glib/gspawn.h ../glib/gstrfuncs.h ../glib/gthreadpool.h \
-	../glib/gtimer.h ../glib/gtree.h ../glib/gutils.h
-thread-test.o: thread-test.c ../glib/glib.h ../glib/galloca.h \
 	../glib/gtypes.h ../glibconfig.h ../glib/gmacros.h \
 	../glib/garray.h ../glib/gasyncqueue.h ../glib/gthread.h \
 	../glib/gerror.h ../glib/gquark.h ../glib/gbacktrace.h \

@@ -1,6 +1,6 @@
 Name:		glib2
 Summary:	Handy library of utility functions
-Version:	2.2.0
+Version:	2.2.1
 Release:	1
 License:	LGPL
 Group:		Development/Libraries
