@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.6 1998-01-24 01:47:26 danw Exp $
+ * $Id: sshd.c,v 1.7 1998-02-02 23:20:15 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  1998/01/24 01:47:26  danw
+ * merge in changes for 1.2.22
+ *
  * Revision 1.5  1998/01/01 18:18:21  danw
  * Don't set KRB5CCNAME if the user didn't get tickets
  *
@@ -454,15 +457,7 @@ extern char *setlimits();
 #endif
 
 #ifndef DEFAULT_PATH
-#ifdef _PATH_USERPATH
-#define DEFAULT_PATH		_PATH_USERPATH
-#else
-#ifdef _PATH_DEFPATH
-#define	DEFAULT_PATH		_PATH_DEFPATH
-#else
 #define DEFAULT_PATH	"/bin/athena:/usr/athena/bin:/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
-#endif
-#endif
 #endif /* DEFAULT_PATH */
 
 #ifndef O_NOCTTY
