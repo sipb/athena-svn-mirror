@@ -7,6 +7,8 @@ case ${MACH} in
 DS*)
 	;;
 RSAIX)
+lsps -c hd6 | awk -F: '(NR==2) {x=20;if($4<x) {print "chps -s",x-$4,"hd6"} else
+{printf(": hd6 is ok - %d MB", $4*4)}}' | sh -x
 	;;
 SUN*)
         cp -p /srvd/etc/minor_perm /etc/minor_perm
