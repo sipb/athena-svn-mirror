@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zmailnotify.c,v 1.21 1994-02-17 16:08:43 probe Exp $
+ *	$Id: zmailnotify.c,v 1.22 1994-10-31 14:39:52 ghudson Exp $
  *
  *	Copyright (c) 1987,1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 static char rcsid_zmailnotify_c[] =
-    "$Id: zmailnotify.c,v 1.21 1994-02-17 16:08:43 probe Exp $";
+    "$Id: zmailnotify.c,v 1.22 1994-10-31 14:39:52 ghudson Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -25,7 +25,9 @@ static char rcsid_zmailnotify_c[] =
 #include <pwd.h>
 #include <errno.h>
 #include <netdb.h>
+#ifdef Z_HaveHesiod
 #include <hesiod.h>
+#endif
 #include <string.h>
 
 #ifdef KPOP
@@ -412,7 +414,7 @@ char *host;
 
     sp = getservbyname (svc_name, "tcp");
     if (sp == 0) {
-	(void) sprintf (Errmsg, "%s/tcp: unknown service");
+	(void) sprintf (Errmsg, "%s/tcp: unknown service", svc_name);
 	return NOTOK;
     }
     sin.sin_family = hp->h_addrtype;
