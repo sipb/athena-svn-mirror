@@ -2,7 +2,7 @@
 .\" All rights reserved.  The Berkeley software License Agreement
 .\" specifies the terms and conditions for redistribution.
 .\"
-.\"	@(#)printcap.5	6.4 (Berkeley) 5/14/86
+.\"     @(#)printcap.5  6.4 (Berkeley) 5/14/86
 .\"
 .TH PRINTCAP 5 "May 14, 1986"
 .UC 5
@@ -21,21 +21,21 @@ used to describe line printers.  The spooling system accesses the
 file every time it is used, allowing dynamic
 addition and deletion of printers.  Each entry in the data base
 is used to describe one printer.  This data base may not be
-substituted for, as is possible for 
+substituted for, as is possible for
 .IR termcap ,
 because it may allow accounting to be bypassed.
 .PP
-option may be used to force output to a specific printer. 
+An option may be used to force output to a specific printer.
 The printer name and capability used in
 .IR lpq (1),
-.IR lpr (1), 
+.IR lpr (1),
 and
 .IR lprm (1)
 are determined as follows.  If the
 .B \-P
-option is given in the command line, the specified printer name is used. 
-Otherwise, if the environment variable 
-.B PRINTER 
+option is given in the command line, the specified printer name is used.
+Otherwise, if the environment variable
+.B PRINTER
 is set, its value is taken.
 If neither of these are exist the name "default" is used.
 .PP
@@ -51,8 +51,8 @@ The cluster name is used in looking up the alias (see
 .IR getcluster (8)).
 The "cluster" name is determined as follows.  If a \-P argument is of the
 form "printer.cluster" , the cluster name is obtained from the
-argument.  If not, the value of the environment variable 
-.B LPR 
+argument.  If not, the value of the environment variable
+.B LPR
 is used
 if it exists.  Otherwise, the cluster name of the local machine is
 used.
@@ -62,7 +62,7 @@ capability of the printername (or the capability of the printer's
 alias, if an alias exists).  If this query fails , the lpr command
 fails, with the error message "unknown printer".
 .PP
-The other commands 
+The other commands
 .IR lpc (8), lpd (8),
 and
 .IR pac (8)
@@ -81,48 +81,48 @@ for a description of the file layout.
 .nf
 
 .ta \w'k0-k9  'u +\w'Type  'u +\w'``/usr/spool/lpd\'\'  'u
-\fBName	Type	Default	Description\fR
-af	str	NULL	name of accounting file
-br	num	none	if lp is a tty, set the baud rate (ioctl call)
-cf	str	NULL	cifplot data filter
-df	str	NULL	tex data filter (DVI format)
-fc	num	0	if lp is a tty, clear flag bits (sgtty.h)
-ff	str	``\ef''	string to send for a form feed
-fo	bool	false	print a form feed when device is opened
-fs	num	0	like `fc' but set bits
-gf	str	NULL	graph data filter (plot (3X) format)
-hl	bool	false	print the burst header page last
-ic	bool	false	driver supports (non-standard) ioctl to indent printout
-if	str	NULL	name of text filter which does accounting
-lf	str	``/dev/console''	error logging file name
-lo	str	``lock''	name of lock file
-lp	str	``/dev/lp''	device name to open for output
-mx	num	1000	maximum file size (in BUFSIZ blocks), zero = unlimited
-nd	str	NULL	next directory for list of queues (unimplemented)
-nf	str	NULL	ditroff data filter (device independent troff)
-of	str	NULL	name of output filtering program
-pc	num	200	price per foot or page in hundredths of cents
-pl	num	66	page length (in lines)
-pw	num	132	page width (in characters)
-px	num	0	page width in pixels (horizontal)
-py	num	0	page length in pixels (vertical)
-rf	str	NULL	filter for printing FORTRAN style text files
-rg	str	NULL	restricted group. Only members of group allowed access
-rm	str	NULL	machine name for remote printer
-rp	str	``lp''	remote printer name argument
-rs	bool	false	restrict remote users to those with local accounts
-rw	bool	false	open the printer device for reading and writing
-sb	bool	false	short banner (one line only)
-sc	bool	false	suppress multiple copies
-sd	str	``/usr/spool/lpd''	spool directory
-sf	bool	false	suppress form feeds
-sh	bool	false	suppress printing of burst page header
-st	str	``status''	status file name
-tf	str	NULL	troff data filter (cat phototypesetter)
-tr	str	NULL	trailer string to print when queue empties
-vf	str	NULL	raster image filter
-xc	num	0	if lp is a tty, clear local mode bits (tty (4))
-xs	num	0	like `xc' but set bits
+\fBName Type    Default Description\fR
+af      str     NULL    name of accounting file
+br      num     none    if lp is a tty, set the baud rate (ioctl call)
+cf      str     NULL    cifplot data filter
+df      str     NULL    tex data filter (DVI format)
+fc      num     0       if lp is a tty, clear flag bits (sgtty.h)
+ff      str     ``\ef'' string to send for a form feed
+fo      bool    false   print a form feed when device is opened
+fs      num     0       like `fc' but set bits
+gf      str     NULL    graph data filter (plot (3X) format)
+hl      bool    false   print the burst header page last
+ic      bool    false   driver supports (non-standard) ioctl to indent printout
+if      str     NULL    name of text filter which does accounting
+lf      str     ``/dev/console''        error logging file name
+lo      str     ``lock''        name of lock file
+lp      str     ``/dev/lp''     device name to open for output
+mx      num     1000    maximum file size (in BUFSIZ blocks), zero = unlimited
+nd      str     NULL    next directory for list of queues (unimplemented)
+nf      str     NULL    ditroff data filter (device independent troff)
+of      str     NULL    name of output filtering program
+pc      num     200     price per foot or page in hundredths of cents
+pl      num     66      page length (in lines)
+pw      num     132     page width (in characters)
+px      num     0       page width in pixels (horizontal)
+py      num     0       page length in pixels (vertical)
+rf      str     NULL    filter for printing FORTRAN style text files
+rg      str     NULL    restricted group. Only members of group allowed access
+rm      str     NULL    machine name for remote printer
+rp      str     ``lp''  remote printer name argument
+rs      bool    false   restrict remote users to those with local accounts
+rw      bool    false   open the printer device for reading and writing
+sb      bool    false   short banner (one line only)
+sc      bool    false   suppress multiple copies
+sd      str     ``/usr/spool/lpd''      spool directory
+sf      bool    false   suppress form feeds
+sh      bool    false   suppress printing of burst page header
+st      str     ``status''      status file name
+tf      str     NULL    troff data filter (cat phototypesetter)
+tr      str     NULL    trailer string to print when queue empties
+vf      str     NULL    raster image filter
+xc      num     0       if lp is a tty, clear local mode bits (tty (4))
+xs      num     0       like `xc' but set bits
 .fi
 .PP
 If the local line printer driver supports indentation, the daemon
@@ -140,15 +140,15 @@ The pipeline set up is:
 .PP
 .nf
 .ta 0.5i +1i
-\-p	pr | if	regular text + \fIpr\fP(1)
-none	if	regular text
-\-c	cf	cifplot
-\-d	df	DVI (tex)
-\-g	gf	\fIplot\fP(3)
-\-n	nf	ditroff
-\-f	rf	Fortran
-\-t	tf	troff
-\-v	vf	raster image
+\-p     pr | if regular text + \fIpr\fP(1)
+none    if      regular text
+\-c     cf      cifplot
+\-d     df      DVI (tex)
+\-g     gf      \fIplot\fP(3)
+\-n     nf      ditroff
+\-f     rf      Fortran
+\-t     tf      troff
+\-v     vf      raster image
 .fi
 .RE
 .PP
@@ -156,7 +156,8 @@ The
 .B if
 filter is invoked with arguments:
 .PP
-	\fIif\fP [ \fB\-c\fP ] \fB\-w\fPwidth \fB\-l\fPlength \fB\-i\fPindent \fB\-n\fP login \fB\-h\fP host acct-file
+        \fIif\fP [ \fB\-c\fP ] \fB\-w\fPwidth \fB\-l\fPlength \fB\-i\fPindent \f
+B\-n\fP login \fB\-h\fP host acct-file
 .PP
 The
 .B \-c
@@ -210,7 +211,8 @@ flags.
 .PP
 All other filters are called as:
 .PP
-	\fIfilter\fP \fB\-x\fPwidth \fB\-y\fPlength \fB\-n\fP login \fB\-h\fP host acct-file
+        \fIfilter\fP \fB\-x\fPwidth \fB\-y\fPlength \fB\-n\fP login \fB\-h\fP ho
+st acct-file
 .PP
 where
 .I width
