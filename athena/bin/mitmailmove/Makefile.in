@@ -1,0 +1,30 @@
+# $Id: Makefile.in,v 1.1 2004-06-07 19:13:53 rbasch Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT=@INSTALL_SCRIPT@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+all:
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_SCRIPT} mitmailmove.pl ${DESTDIR}${bindir}/mitmailmove
+	ln -s mitmailmove ${DESTDIR}${bindir}/mitmailcopy
+	${INSTALL} -m 444 ${srcdir}/mitmailmove.1 ${DESTDIR}${mandir}/man1
+	ln -s mitmailmove.1 ${DESTDIR}${mandir}/man1/mitmailcopy.1
+
+clean:
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
