@@ -13,7 +13,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: Makefile.in,v 1.1.1.1 2001-10-22 13:06:42 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2001-10-23 17:50:41 ghudson Exp $
 
 srcdir =	@srcdir@
 VPATH =		@srcdir@
@@ -95,8 +95,8 @@ clean distclean::
 	rm -f ${TARGETS}
 
 installdirs:
-	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	$(SHELL) ${top_srcdir}/mkinstalldirs ${DESTDIR}/etc/athena
 
 install:: named lwresd installdirs
-	${LIBTOOL} ${INSTALL_PROGRAM} named ${DESTDIR}${sbindir}
-	(cd ${DESTDIR}${sbindir}; rm -f lwresd; @LN@ named lwresd)
+	${LIBTOOL} ${INSTALL_PROGRAM} named ${DESTDIR}/etc/athena
+	(cd ${DESTDIR}/etc/athena; rm -f lwresd; @LN@ named lwresd)
