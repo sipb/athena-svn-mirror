@@ -1,5 +1,5 @@
 # Prototype global .login file
-# $Id: login,v 1.8 1999-02-04 17:49:03 ghudson Exp $
+# $Id: login,v 1.9 1999-05-15 03:25:41 ghudson Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -103,7 +103,7 @@ if (! $?skip_tty_startup) then
 	if ($?verbose_login) echo "Running standard startup activities ..."
 	set ignoreeof			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
-	get_message -login		# Display current motd
+	get_message -new -login		# Display current motd
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 endif
