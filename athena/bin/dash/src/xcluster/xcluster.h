@@ -32,8 +32,9 @@ struct cluster
   int cluster_number;		/* For internal use... */
   char button_name[25];		/* Name to be shown on the button. */
   ButtonJet btn;		/* Jet for the button. */
-  char cluster_names[4][25];	/* Names of clusters in group, as in cmon. */
-  int cluster_info[4][20];	/* Machine info for clusters in group. */
+  char cluster_names[5][25];	/* Names of clusters in group, as in cmon. */
+  char phone_num[5][15];	/* phone number of cluster. */
+  int cluster_info[5][20];	/* Machine info for clusters in group. */
   int x_coord;			/* Location on map. */
   int y_coord;			/* ditto. */
   char prntr_name[10][15];	/* Names of printers in cluster group. */
