@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.4 1991-04-10 00:43:09 lwvanels Exp $
+ *      $Id: olcm.c,v 1.5 1991-05-06 23:21:09 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.4 1991-04-10 00:43:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.5 1991-05-06 23:21:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -183,7 +183,7 @@ main(argc,argv)
 
       if (end != p) {
 	*end = '\0';
-	strcpy(username,p,8);
+	strncpy(username,p,8);
 	username[8] = '\0';
       }
     }
