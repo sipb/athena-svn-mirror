@@ -1,0 +1,47 @@
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.mit,v 1.1 1989-11-16 06:46:08 probe Exp $
+
+@               IN      SOA     localhost.mit.edu. hostmaster.mit.edu. (
+                                1.1     ; Serial
+                                10800   ; Refresh 3 hours
+                                3600    ; Retry   1 hour
+                                3600000 ; Expire  1000 hours
+                                86400 ) ; Minimum 24 hours
+		IN	NS	localhost.mit.edu.
+
+LOCALHOST.MIT.EDU. IN	A	127.0.0.1	; I know, it's a crock...
+
+; Hardwire the local domain so we can find it even if we can't talk to
+; the root
+MIT.EDU.	  999999999	IN	NS	    BITSY.MIT.EDU.
+MIT.EDU.	  999999999	IN	NS	    W20NS.MIT.EDU.
+MIT.EDU.	  999999999	IN	NS	    STRAWB.MIT.EDU.
+MIT.EDU.	  999999999	IN	NS	    LITHIUM.LCS.MIT.EDU.
+BITSY.MIT.EDU.    999999999 	IN	A	    18.72.0.3
+W20NS.MIT.EDU.	  999999999	IN	A	    18.70.0.160
+STRAWB.MIT.EDU.   999999999 	IN	A	    18.71.0.151
+LITHIUM.LCS.MIT.EDU. 999999999	IN	A	    18.26.0.121
+18.IN-ADDR.ARPA.  999999999     IN	NS	    BITSY.MIT.EDU.
+18.IN-ADDR.ARPA.  999999999     IN	NS	    W20NS.MIT.EDU.
+18.IN-ADDR.ARPA.  999999999     IN	NS	    STRAWB.MIT.EDU.
+18.IN-ADDR.ARPA.  999999999     IN	NS	    LITHIUM.LCS.MIT.EDU.
+
+
+; pointers to Hesiod name servers
+NS.ATHENA.MIT.EDU.	99999999	HS	NS	    SUOMI.MIT.EDU.
+NS.ATHENA.MIT.EDU.	99999999	HS	NS	    APOLLO.MIT.EDU.
+NS.ATHENA.MIT.EDU.	99999999	HS	NS	    CLIO.MIT.EDU.
+; Hesiod address records (simply duplicates of IN address records)
+SUOMI.MIT.EDU.		99999999	HS	A	    18.72.1.31
+CLIO.MIT.EDU.		99999999	HS	A	    18.63.0.7
+APOLLO.MIT.EDU.		99999999	HS	A	    18.80.0.10
+; Internet address records for the same Hesiod servers
+; required because of implementations of gethostbyname() which use
+; C_ANY/T_A queries.
+CLIO.MIT.EDU.		99999999	IN	A	    18.63.0.7
+SUOMI.MIT.EDU.		99999999	IN	A	    18.72.1.31
+APOLLO.MIT.EDU.		99999999	IN	A	    18.80.0.10
+
+; get any local hacks
+$ORIGIN	.
+$INCLUDE /etc/named.local
+
