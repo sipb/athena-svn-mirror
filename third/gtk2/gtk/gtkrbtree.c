@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "gtkrbtree.h"
 #include "gtkdebug.h"
 
@@ -989,7 +990,7 @@ _gtk_rbtree_reorder (GtkRBTree *tree,
 		     gint      *new_order,
 		     gint       length)
 {
-  GtkRBReorder reorder;
+  GtkRBReorder reorder = {0, };
   GArray *array;
   GtkRBNode *node;
   gint i;

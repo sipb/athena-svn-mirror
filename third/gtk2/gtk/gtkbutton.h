@@ -44,9 +44,8 @@ extern "C" {
 #define GTK_IS_BUTTON_CLASS(klass)      (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_BUTTON))
 #define GTK_BUTTON_GET_CLASS(obj)       (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_BUTTON, GtkButtonClass))
 
-
-typedef struct _GtkButton       GtkButton;
-typedef struct _GtkButtonClass  GtkButtonClass;
+typedef struct _GtkButton        GtkButton;
+typedef struct _GtkButtonClass   GtkButtonClass;
 
 struct _GtkButton
 {
@@ -66,6 +65,7 @@ struct _GtkButton
   guint use_stock : 1;
   guint depressed : 1;
   guint depress_on_activate : 1;
+  guint focus_on_click : 1;
 };
 
 struct _GtkButtonClass
@@ -97,28 +97,38 @@ void           gtk_button_released          (GtkButton      *button);
 void           gtk_button_clicked           (GtkButton      *button);
 void           gtk_button_enter             (GtkButton      *button);
 void           gtk_button_leave             (GtkButton      *button);
-void           gtk_button_set_relief        (GtkButton      *button,
-					     GtkReliefStyle  newstyle);
-GtkReliefStyle gtk_button_get_relief        (GtkButton      *button);
 
-void                  gtk_button_set_label         (GtkButton   *button,
-						    const gchar *label);
-G_CONST_RETURN gchar *gtk_button_get_label         (GtkButton   *button);
-void                  gtk_button_set_use_underline (GtkButton   *button,
-						    gboolean     use_underline);
-gboolean              gtk_button_get_use_underline (GtkButton   *button);
-void                  gtk_button_set_use_stock     (GtkButton   *button,
-						    gboolean     use_stock);
-gboolean              gtk_button_get_use_stock     (GtkButton   *button);
+void                  gtk_button_set_relief         (GtkButton      *button,
+						     GtkReliefStyle  newstyle);
+GtkReliefStyle        gtk_button_get_relief         (GtkButton      *button);
+void                  gtk_button_set_label          (GtkButton      *button,
+						     const gchar    *label);
+G_CONST_RETURN gchar *gtk_button_get_label          (GtkButton      *button);
+void                  gtk_button_set_use_underline  (GtkButton      *button,
+						     gboolean        use_underline);
+gboolean              gtk_button_get_use_underline  (GtkButton      *button);
+void                  gtk_button_set_use_stock      (GtkButton      *button,
+						     gboolean        use_stock);
+gboolean              gtk_button_get_use_stock      (GtkButton      *button);
+void                  gtk_button_set_focus_on_click (GtkButton      *button,
+						     gboolean        focus_on_click);
+gboolean              gtk_button_get_focus_on_click (GtkButton      *button);
+void                  gtk_button_set_alignment      (GtkButton      *button,
+						     gfloat          xalign,
+						     gfloat          yalign);
+void                  gtk_button_get_alignment      (GtkButton      *button,
+						     gfloat         *xalign,
+						     gfloat         *yalign);
 
-void _gtk_button_set_depressed (GtkButton    *button,
-				gboolean      depressed);
-void _gtk_button_paint         (GtkButton    *button,
-				GdkRectangle *area,
-				GtkStateType  state_type,
-				GtkShadowType shadow_type,
-				const gchar  *main_detail,
-				const gchar  *default_detail);
+
+void _gtk_button_set_depressed             (GtkButton     *button,
+					    gboolean       depressed);
+void _gtk_button_paint                     (GtkButton     *button,
+					    GdkRectangle  *area,
+					    GtkStateType   state_type,
+					    GtkShadowType  shadow_type,
+					    const gchar   *main_detail,
+					    const gchar   *default_detail);
 
 #ifdef __cplusplus
 }

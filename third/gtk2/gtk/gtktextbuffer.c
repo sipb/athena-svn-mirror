@@ -25,6 +25,7 @@
  */
 
 
+#include <config.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -177,8 +178,8 @@ gtk_text_buffer_class_init (GtkTextBufferClass *klass)
   g_object_class_install_property (object_class,
                                    PROP_TAG_TABLE,
                                    g_param_spec_object ("tag_table",
-                                                        _("Tag Table"),
-                                                        _("Text Tag Table"),
+                                                        P_("Tag Table"),
+                                                        P_("Text Tag Table"),
                                                         GTK_TYPE_TEXT_TAG_TABLE,
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
@@ -219,6 +220,19 @@ gtk_text_buffer_class_init (GtkTextBufferClass *klass)
                   GTK_TYPE_TEXT_ITER | G_SIGNAL_TYPE_STATIC_SCOPE,
                   GTK_TYPE_TEXT_CHILD_ANCHOR);
   
+  /**
+   * GtkTextBuffer::delete_range:
+   * @buffer: the object which received the signal.
+   * @start: the start of the range to be deleted
+   * @end: the end of the range to be deleted
+   *
+   * The ::delete_range signal is emitted to delete a range from 
+   * a #GtkTextBuffer. Note that your handler must not invalidate the
+   * @start and @end iters (or has to revalidate them), if it runs before the 
+   * default handler. There is no need to keep the iters valid in handlers
+   * which run after the default handler (see g_signal_connect_after()), but
+   * those don't have access to the deleted text.
+   */
   signals[DELETE_RANGE] =
     g_signal_new ("delete_range",
                   G_OBJECT_CLASS_TYPE (object_class),
@@ -336,7 +350,7 @@ set_table (GtkTextBuffer *buffer, GtkTextTagTable *table)
   if (table)
     {
       buffer->tag_table = table;
-      g_object_ref (G_OBJECT (buffer->tag_table));
+      g_object_ref (buffer->tag_table);
       _gtk_text_tag_table_add_buffer (table, buffer);
     }
 }
@@ -1344,7 +1358,8 @@ gtk_text_buffer_delete_interactive (GtkTextBuffer *buffer,
                                             start_iter, TRUE);
   end_mark = gtk_text_buffer_create_mark (buffer, NULL,
                                           end_iter, FALSE);
-  iter = *start_iter;
+
+  gtk_text_buffer_get_iter_at_mark (buffer, &iter, start_mark);
 
   current_state = gtk_text_iter_editable (&iter, default_editable);
 
@@ -2009,19 +2024,47 @@ void
 gtk_text_buffer_place_cursor (GtkTextBuffer     *buffer,
                               const GtkTextIter *where)
 {
-  GtkTextIter real;
+  gtk_text_buffer_select_range (buffer, where, where);
+}
+
+
+/**
+ * gtk_text_buffer_select_range:
+ * @buffer: a #GtkTextBuffer
+ * @ins: where to put the "insert" mark
+ * @bound: where to put the "selection_bound" mark
+ *
+ * This function moves the "insert" and "selection_bound" marks
+ * simultaneously.  If you move them in two steps
+ * with gtk_text_buffer_move_mark(), you will temporarily select a
+ * region in between their old and new locations, which can be pretty
+ * inefficient since the temporarily-selected region will force stuff
+ * to be recalculated. This function moves them as a unit, which can
+ * be optimized.
+ *
+ * Since: 2.4
+ **/
+void
+gtk_text_buffer_select_range (GtkTextBuffer     *buffer,
+			      const GtkTextIter *ins,
+                              const GtkTextIter *bound)
+{
+  GtkTextIter real_ins;
+  GtkTextIter real_bound;
 
   g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
 
-  real = *where;
+  real_ins = *ins;
+  real_bound = *bound;
 
-  _gtk_text_btree_place_cursor (get_btree (buffer), &real);
-  gtk_text_buffer_mark_set (buffer, &real,
+  _gtk_text_btree_select_range (get_btree (buffer), &real_ins, &real_bound);
+  gtk_text_buffer_mark_set (buffer, &real_ins,
                             gtk_text_buffer_get_mark (buffer,
                                                       "insert"));
-  gtk_text_buffer_mark_set (buffer, &real,
+  gtk_text_buffer_mark_set (buffer, &real_bound,
                             gtk_text_buffer_get_mark (buffer,
                                                       "selection_bound"));
+  update_selection_clipboards (buffer);  
 }
 
 /*

@@ -1,4 +1,4 @@
-#include <strings.h>
+#include <config.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkstock.h>
 #include <gdk/gdk.h>

@@ -5,8 +5,7 @@
 >Menu Widget</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -70,7 +69,9 @@ WIDTH="100%"></DIV
 CLASS="CHAPTER"
 ><H1
 ><A
-NAME="CH-MENUWIDGET">Menu Widget</H1
+NAME="CH-MENUWIDGET"
+></A
+>Menu Widget</H1
 ><P
 >There are two ways to create menus: there's the easy way, and there's
 the hard way. Both have their uses, but you can usually use the
@@ -89,7 +90,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-MANUALMENUCREATION">Manual Menu Creation</H1
+NAME="SEC-MANUALMENUCREATION"
+>Manual Menu Creation</A
+></H1
 ><P
 >In the true tradition of teaching, we'll show you the hard way
 first. <TT
@@ -413,8 +416,8 @@ WIDTH="90%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->static gint handler (GtkWidget *widget,
-                     GdkEvent  *event);</PRE
+>static gboolean handler( GtkWidget *widget,
+                         GdkEvent  *event );</PRE
 ></TD
 ></TR
 ></TABLE

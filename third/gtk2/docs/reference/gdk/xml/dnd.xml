@@ -17,28 +17,28 @@
 
 
 <link linkend="GdkAtom">GdkAtom</link>     <link linkend="gdk-drag-get-selection">gdk_drag_get_selection</link>          (<link linkend="GdkDragContext">GdkDragContext</link> *context);
-void        <link linkend="gdk-drag-abort">gdk_drag_abort</link>                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drag-abort">gdk_drag_abort</link>                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="guint32">guint32</link> time_);
-void        <link linkend="gdk-drop-reply">gdk_drop_reply</link>                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drop-reply">gdk_drop_reply</link>                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="gboolean">gboolean</link> ok,
                                              <link linkend="guint32">guint32</link> time_);
 <link linkend="GdkDragContext">GdkDragContext</link>* <link linkend="gdk-drag-context-new">gdk_drag_context_new</link>        (void);
-void        <link linkend="gdk-drag-drop">gdk_drag_drop</link>                   (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drag-drop">gdk_drag_drop</link>                   (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="guint32">guint32</link> time_);
-void        <link linkend="gdk-drag-find-window">gdk_drag_find_window</link>            (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drag-find-window">gdk_drag_find_window</link>            (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *drag_window,
                                              <link linkend="gint">gint</link> x_root,
                                              <link linkend="gint">gint</link> y_root,
                                              <link linkend="GdkWindow">GdkWindow</link> **dest_window,
                                              <link linkend="GdkDragProtocol">GdkDragProtocol</link> *protocol);
-void        <link linkend="gdk-drag-find-window-for-screen">gdk_drag_find_window_for_screen</link> (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drag-find-window-for-screen">gdk_drag_find_window_for_screen</link> (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *drag_window,
                                              <link linkend="GdkScreen">GdkScreen</link> *screen,
                                              <link linkend="gint">gint</link> x_root,
                                              <link linkend="gint">gint</link> y_root,
                                              <link linkend="GdkWindow">GdkWindow</link> **dest_window,
                                              <link linkend="GdkDragProtocol">GdkDragProtocol</link> *protocol);
-void        <link linkend="gdk-drag-context-ref">gdk_drag_context_ref</link>            (<link linkend="GdkDragContext">GdkDragContext</link> *context);
+<link linkend="void">void</link>        <link linkend="gdk-drag-context-ref">gdk_drag_context_ref</link>            (<link linkend="GdkDragContext">GdkDragContext</link> *context);
 <link linkend="GdkDragContext">GdkDragContext</link>* <link linkend="gdk-drag-begin">gdk_drag_begin</link>              (<link linkend="GdkWindow">GdkWindow</link> *window,
                                              <link linkend="GList">GList</link> *targets);
 <link linkend="gboolean">gboolean</link>    <link linkend="gdk-drag-motion">gdk_drag_motion</link>                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
@@ -49,7 +49,7 @@ void        <link linkend="gdk-drag-context-ref">gdk_drag_context_ref</link>    
                                              <link linkend="GdkDragAction">GdkDragAction</link> suggested_action,
                                              <link linkend="GdkDragAction">GdkDragAction</link> possible_actions,
                                              <link linkend="guint32">guint32</link> time_);
-void        <link linkend="gdk-drop-finish">gdk_drop_finish</link>                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drop-finish">gdk_drop_finish</link>                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="gboolean">gboolean</link> success,
                                              <link linkend="guint32">guint32</link> time_);
 <link linkend="guint32">guint32</link>     <link linkend="gdk-drag-get-protocol">gdk_drag_get_protocol</link>           (<link linkend="guint32">guint32</link> xid,
@@ -59,16 +59,18 @@ void        <link linkend="gdk-drop-finish">gdk_drop_finish</link>              
                                              <link linkend="guint32">guint32</link> xid,
                                              <link linkend="GdkDragProtocol">GdkDragProtocol</link> *protocol);
 enum        <link linkend="GdkDragProtocol">GdkDragProtocol</link>;
-void        <link linkend="gdk-drag-context-unref">gdk_drag_context_unref</link>          (<link linkend="GdkDragContext">GdkDragContext</link> *context);
+<link linkend="void">void</link>        <link linkend="gdk-drag-context-unref">gdk_drag_context_unref</link>          (<link linkend="GdkDragContext">GdkDragContext</link> *context);
 struct      <link linkend="GdkDragContext">GdkDragContext</link>;
 enum        <link linkend="GdkDragAction">GdkDragAction</link>;
-void        <link linkend="gdk-drag-status">gdk_drag_status</link>                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<link linkend="void">void</link>        <link linkend="gdk-drag-status">gdk_drag_status</link>                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkDragAction">GdkDragAction</link> action,
                                              <link linkend="guint32">guint32</link> time_);
 
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -95,20 +97,20 @@ the GTK+ documentation for more information.
 <title>Details</title>
 <refsect2>
 <title><anchor id="gdk-drag-get-selection"/>gdk_drag_get_selection ()</title>
-<programlisting><link linkend="GdkAtom">GdkAtom</link>     gdk_drag_get_selection          (<link linkend="GdkDragContext">GdkDragContext</link> *context);</programlisting>
+<indexterm><primary>gdk_drag_get_selection</primary></indexterm><programlisting><link linkend="GdkAtom">GdkAtom</link>     gdk_drag_get_selection          (<link linkend="GdkDragContext">GdkDragContext</link> *context);</programlisting>
 <para>
 Returns the selection atom for the current source window.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the selection atom.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-abort"/>gdk_drag_abort ()</title>
-<programlisting>void        gdk_drag_abort                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drag_abort</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_abort                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="guint32">guint32</link> time_);</programlisting>
 <para>
 Aborts a drag without dropping. 
@@ -118,7 +120,7 @@ This function is called by the drag source.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>time_</parameter>&nbsp;:</term>
 <listitem><simpara> the timestamp for this operation.
@@ -126,7 +128,7 @@ This function is called by the drag source.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drop-reply"/>gdk_drop_reply ()</title>
-<programlisting>void        gdk_drop_reply                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drop_reply</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drop_reply                  (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="gboolean">gboolean</link> ok,
                                              <link linkend="guint32">guint32</link> time_);</programlisting>
 <para>
@@ -138,7 +140,7 @@ to a drop initiated by the drag source.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ok</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if the drop is accepted.
@@ -149,17 +151,17 @@ to a drop initiated by the drag source.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-context-new"/>gdk_drag_context_new ()</title>
-<programlisting><link linkend="GdkDragContext">GdkDragContext</link>* gdk_drag_context_new        (void);</programlisting>
+<indexterm><primary>gdk_drag_context_new</primary></indexterm><programlisting><link linkend="GdkDragContext">GdkDragContext</link>* gdk_drag_context_new        (void);</programlisting>
 <para>
-Creates a new <link linkend="GdkDragContext">GdkDragContext</link>.</para>
+Creates a new <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.</para>
 <para>
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="GdkDragContext">GdkDragContext</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-drop"/>gdk_drag_drop ()</title>
-<programlisting>void        gdk_drag_drop                   (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drag_drop</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_drop                   (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="guint32">guint32</link> time_);</programlisting>
 <para>
 Drops on the current destination.
@@ -169,7 +171,7 @@ This function is called by the drag source.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>time_</parameter>&nbsp;:</term>
 <listitem><simpara> the timestamp for this operation.
@@ -177,7 +179,7 @@ This function is called by the drag source.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-find-window"/>gdk_drag_find_window ()</title>
-<programlisting>void        gdk_drag_find_window            (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drag_find_window</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_find_window            (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *drag_window,
                                              <link linkend="gint">gint</link> x_root,
                                              <link linkend="gint">gint</link> y_root,
@@ -189,11 +191,11 @@ given pointer position.
 </para>
 <para>
 This function is called by the drag source to obtain the 
-<parameter>dest_window</parameter> and <parameter>protocol</parameter> parameters for <link linkend="gdk-drag-motion">gdk_drag_motion</link>().</para>
+<parameter>dest_window</parameter> and <parameter>protocol</parameter> parameters for <link linkend="gdk-drag-motion"><function>gdk_drag_motion()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>drag_window</parameter>&nbsp;:</term>
 <listitem><simpara> a window which may be at the pointer position, but
@@ -214,7 +216,7 @@ This function is called by the drag source to obtain the
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-find-window-for-screen"/>gdk_drag_find_window_for_screen ()</title>
-<programlisting>void        gdk_drag_find_window_for_screen (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm role="2.2"><primary>gdk_drag_find_window_for_screen</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_find_window_for_screen (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *drag_window,
                                              <link linkend="GdkScreen">GdkScreen</link> *screen,
                                              <link linkend="gint">gint</link> x_root,
@@ -227,12 +229,12 @@ given pointer position.
 </para>
 <para>
 This function is called by the drag source to obtain the 
-<parameter>dest_window</parameter> and <parameter>protocol</parameter> parameters for <link linkend="gdk-drag-motion">gdk_drag_motion</link>().</para>
+<parameter>dest_window</parameter> and <parameter>protocol</parameter> parameters for <link linkend="gdk-drag-motion"><function>gdk_drag_motion()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>drag_window</parameter>&nbsp;:</term>
 <listitem><simpara> a window which may be at the pointer position, but
@@ -257,19 +259,19 @@ should be ignored, since it is put up by the drag source as an icon.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-context-ref"/>gdk_drag_context_ref ()</title>
-<programlisting>void        gdk_drag_context_ref            (<link linkend="GdkDragContext">GdkDragContext</link> *context);</programlisting>
+<indexterm role="deprecated"><primary>gdk_drag_context_ref</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_context_ref            (<link linkend="GdkDragContext">GdkDragContext</link> *context);</programlisting>
 <warning><para><literal>gdk_drag_context_ref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated function; use <link linkend="g-object-ref">g_object_ref</link>() instead.</para>
+Deprecated function; use <link linkend="g-object-ref"><function>g_object_ref()</function></link> instead.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-begin"/>gdk_drag_begin ()</title>
-<programlisting><link linkend="GdkDragContext">GdkDragContext</link>* gdk_drag_begin              (<link linkend="GdkWindow">GdkWindow</link> *window,
+<indexterm><primary>gdk_drag_begin</primary></indexterm><programlisting><link linkend="GdkDragContext">GdkDragContext</link>* gdk_drag_begin              (<link linkend="GdkWindow">GdkWindow</link> *window,
                                              <link linkend="GList">GList</link> *targets);</programlisting>
 <para>
 Starts a drag and creates a new drag context for it.
@@ -284,12 +286,12 @@ This function is called by the drag source.</para>
 <varlistentry><term><parameter>targets</parameter>&nbsp;:</term>
 <listitem><simpara> the list of offered targets.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created <link linkend="GdkDragContext">GdkDragContext</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-motion"/>gdk_drag_motion ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_drag_motion                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drag_motion</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_drag_motion                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkWindow">GdkWindow</link> *dest_window,
                                              <link linkend="GdkDragProtocol">GdkDragProtocol</link> protocol,
                                              <link linkend="gint">gint</link> x_root,
@@ -306,14 +308,14 @@ This function is called by the drag source.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dest_window</parameter>&nbsp;:</term>
 <listitem><simpara> the new destination window, obtained by 
-    <link linkend="gdk-drag-find-window">gdk_drag_find_window</link>().
+    <link linkend="gdk-drag-find-window"><function>gdk_drag_find_window()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>protocol</parameter>&nbsp;:</term>
-<listitem><simpara> the DND protocol in use, obtained by <link linkend="gdk-drag-find-window">gdk_drag_find_window</link>().
+<listitem><simpara> the DND protocol in use, obtained by <link linkend="gdk-drag-find-window"><function>gdk_drag_find_window()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x_root</parameter>&nbsp;:</term>
 <listitem><simpara> the x position of the pointer in root coordinates.
@@ -335,7 +337,7 @@ This function is called by the drag source.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drop-finish"/>gdk_drop_finish ()</title>
-<programlisting>void        gdk_drop_finish                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drop_finish</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drop_finish                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="gboolean">gboolean</link> success,
                                              <link linkend="guint32">guint32</link> time_);</programlisting>
 <para>
@@ -346,7 +348,7 @@ This function is called by the drag destination.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkDragContext">GtkDragContext</link>.
+<listitem><simpara> a <link linkend="GtkDragContext"><type>GtkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>success</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if the data was successfully received.
@@ -357,7 +359,7 @@ This function is called by the drag destination.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-get-protocol"/>gdk_drag_get_protocol ()</title>
-<programlisting><link linkend="guint32">guint32</link>     gdk_drag_get_protocol           (<link linkend="guint32">guint32</link> xid,
+<indexterm><primary>gdk_drag_get_protocol</primary></indexterm><programlisting><link linkend="guint32">guint32</link>     gdk_drag_get_protocol           (<link linkend="guint32">guint32</link> xid,
                                              <link linkend="GdkDragProtocol">GdkDragProtocol</link> *protocol);</programlisting>
 <para>
 Finds out the DND protocol supported by a window.</para>
@@ -376,7 +378,7 @@ Finds out the DND protocol supported by a window.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-get-protocol-for-display"/>gdk_drag_get_protocol_for_display ()</title>
-<programlisting><link linkend="guint32">guint32</link>     gdk_drag_get_protocol_for_display
+<indexterm role="2.2"><primary>gdk_drag_get_protocol_for_display</primary></indexterm><programlisting><link linkend="guint32">guint32</link>     gdk_drag_get_protocol_for_display
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="guint32">guint32</link> xid,
                                              <link linkend="GdkDragProtocol">GdkDragProtocol</link> *protocol);</programlisting>
@@ -386,7 +388,7 @@ Finds out the DND protocol supported by a window.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GdkDisplay">GdkDisplay</link> where the destination window resides
+<listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> where the destination window resides
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>xid</parameter>&nbsp;:</term>
 <listitem><simpara> the X id of the destination window.
@@ -402,7 +404,7 @@ Finds out the DND protocol supported by a window.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkDragProtocol"/>enum GdkDragProtocol</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkDragProtocol</primary></indexterm><programlisting>typedef enum
 {
   GDK_DRAG_PROTO_MOTIF,
   GDK_DRAG_PROTO_XDND,
@@ -415,7 +417,7 @@ Finds out the DND protocol supported by a window.</para>
 } GdkDragProtocol;
 </programlisting>
 <para>
-Used in <link linkend="GdkDragContext">GdkDragContext</link> to indicate the protocol according to
+Used in <link linkend="GdkDragContext"><type>GdkDragContext</type></link> to indicate the protocol according to
 which DND is done.
 </para><variablelist role="enum">
 <varlistentry>
@@ -458,19 +460,19 @@ which DND is done.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-context-unref"/>gdk_drag_context_unref ()</title>
-<programlisting>void        gdk_drag_context_unref          (<link linkend="GdkDragContext">GdkDragContext</link> *context);</programlisting>
+<indexterm role="deprecated"><primary>gdk_drag_context_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_context_unref          (<link linkend="GdkDragContext">GdkDragContext</link> *context);</programlisting>
 <warning><para><literal>gdk_drag_context_unref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated function; use <link linkend="g-object-unref">g_object_unref</link>() instead.</para>
+Deprecated function; use <link linkend="g-object-unref"><function>g_object_unref()</function></link> instead.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkDragContext"/>struct GdkDragContext</title>
-<programlisting>struct GdkDragContext {
+<indexterm><primary>GdkDragContext</primary></indexterm><programlisting>struct GdkDragContext {
 
   GObject parent_instance;
 
@@ -550,7 +552,7 @@ drag in progress. It is used on both source and destination sides.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkDragAction"/>enum GdkDragAction</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkDragAction</primary></indexterm><programlisting>typedef enum
 {
   GDK_ACTION_DEFAULT = 1 &lt;&lt; 0,
   GDK_ACTION_COPY    = 1 &lt;&lt; 1,
@@ -561,7 +563,7 @@ drag in progress. It is used on both source and destination sides.
 } GdkDragAction;
 </programlisting>
 <para>
-Used in <link linkend="GdkDragContext">GdkDragContext</link> to indicate what the destination
+Used in <link linkend="GdkDragContext"><type>GdkDragContext</type></link> to indicate what the destination
 should do with the dropped data.
 </para><variablelist role="enum">
 <varlistentry>
@@ -601,7 +603,7 @@ should do with the dropped data.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drag-status"/>gdk_drag_status ()</title>
-<programlisting>void        gdk_drag_status                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
+<indexterm><primary>gdk_drag_status</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drag_status                 (<link linkend="GdkDragContext">GdkDragContext</link> *context,
                                              <link linkend="GdkDragAction">GdkDragAction</link> action,
                                              <link linkend="guint32">guint32</link> time_);</programlisting>
 <para>
@@ -609,11 +611,11 @@ Selects one of the actions offered by the drag source.
 </para>
 <para>
 This function is called by the drag destination in response to
-<link linkend="gdk-drag-motion">gdk_drag_motion</link>() called by the drag source.</para>
+<link linkend="gdk-drag-motion"><function>gdk_drag_motion()</function></link> called by the drag source.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>context</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDragContext">GdkDragContext</link>.
+<listitem><simpara> a <link linkend="GdkDragContext"><type>GdkDragContext</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
 <listitem><simpara> the selected action which will be taken when a drop happens, 

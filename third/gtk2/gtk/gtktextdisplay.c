@@ -75,6 +75,7 @@
  */
 
 #define GTK_TEXT_USE_INTERNAL_UNSUPPORTED_API
+#include <config.h>
 #include "gtktextdisplay.h"
 /* DO NOT go putting private headers in here. This file should only
  * use the semi-public headers, as with gtktextview.c.
@@ -92,6 +93,7 @@ struct _GtkTextRenderState
   GtkTextAppearance *last_bg_appearance;
   GdkGC *fg_gc;
   GdkGC *bg_gc;
+  GdkGC *error_gc;
   GdkRectangle clip_rect;
 };
 
@@ -116,6 +118,7 @@ gtk_text_render_state_new (GtkWidget    *widget,
   state->widget = widget;
   state->fg_gc = gdk_gc_new (drawable);
   state->bg_gc = gdk_gc_new (drawable);
+
   state->clip_rect = *clip_rect;
 
   return state;
@@ -126,6 +129,8 @@ gtk_text_render_state_destroy (GtkTextRenderState *state)
 {
   g_object_unref (state->fg_gc);
   g_object_unref (state->bg_gc);
+  if (state->error_gc)
+    g_object_unref (state->error_gc);
 
   g_free (state);
 }
@@ -202,6 +207,36 @@ gtk_text_render_state_update (GtkTextRenderState *state,
     }
 
   state->last_appearance = new_appearance;
+}
+
+static GdkGC *
+gtk_text_render_state_get_error_gc (GtkTextRenderState *state)
+{
+  if (!state->error_gc)
+    {
+      static const GdkColor red = { 0, 0xffff, 0, 0 };
+      
+      GdkGCValues gc_values;
+      GdkGCValuesMask gc_values_mask;
+      GdkColor *underline_color;
+      GtkWidget *widget = state->widget;
+
+      gtk_widget_style_get (widget, "error-underline_color", &underline_color, NULL);
+      
+      gc_values_mask = GDK_GC_FOREGROUND;
+      if (underline_color)
+	{
+	  gc_values.foreground = *underline_color;
+	  gdk_color_free (underline_color);
+	}
+      else
+	gc_values.foreground = red;
+      
+      gdk_rgb_find_color (widget->style->colormap, &gc_values.foreground);
+      state->error_gc = gdk_gc_new_with_values (widget->window, &gc_values, gc_values_mask);
+    }
+
+  return state->error_gc;
 }
 
 static void
@@ -371,30 +406,6 @@ render_layout_line (GdkDrawable        *drawable,
               if (gdk_rectangle_intersect (&pixbuf_rect, &render_state->clip_rect,
                                            &draw_rect))
                 {
-                  GdkBitmap *mask = NULL;
-              
-                  if (gdk_pixbuf_get_has_alpha (pixbuf))
-                    {
-                      mask = gdk_pixmap_new (drawable,
-                                             gdk_pixbuf_get_width (pixbuf),
-                                             gdk_pixbuf_get_height (pixbuf),
-                                             1);
-
-                      gdk_pixbuf_render_threshold_alpha (pixbuf, mask,
-                                                         0, 0, 0, 0,
-                                                         gdk_pixbuf_get_width (pixbuf),
-                                                         gdk_pixbuf_get_height (pixbuf),
-                                                         128);
-
-                    }
-
-                  if (mask)
-                    {
-                      gdk_gc_set_clip_mask (render_state->fg_gc, mask);
-                      gdk_gc_set_clip_origin (render_state->fg_gc,
-                                              pixbuf_rect.x, pixbuf_rect.y);
-                    }
-
                   gdk_draw_pixbuf (drawable,
 				   render_state->fg_gc,
 				   pixbuf,
@@ -405,13 +416,6 @@ render_layout_line (GdkDrawable        *drawable,
 				   draw_rect.height,
 				   GDK_RGB_DITHER_NORMAL,
 				   0, 0);
-
-                  if (mask)
-                    {
-                      gdk_gc_set_clip_rectangle (render_state->fg_gc,
-                                                 &render_state->clip_rect);
-                      g_object_unref (mask);
-                    }
                 }
 
               shaped_width_pixels = width;
@@ -453,6 +457,29 @@ render_layout_line (GdkDrawable        *drawable,
                          risen_y + 1,
                          x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE,
                          risen_y + 1);
+          break;
+        case PANGO_UNDERLINE_ERROR:
+          g_assert (need_ink);
+          {
+	    GdkGC *error_gc = gtk_text_render_state_get_error_gc (render_state);
+
+            int point_x, point_y;
+            int counter = 0;
+	    int end_x = x + (x_off + ink_rect.x + ink_rect.width) / PANGO_SCALE;
+
+            for (point_x = x + (x_off + ink_rect.x) / PANGO_SCALE - 1;
+                 point_x <= end_x;
+                 point_x += 2)
+	      {
+		point_y = counter ? risen_y + 1 : risen_y + 2;
+		
+		gdk_draw_line (drawable, error_gc,
+			       point_x, point_y,
+			       MIN (point_x + 1, end_x), point_y);
+		
+		counter = (counter + 1) % 2;
+	      }
+          }
           break;
         case PANGO_UNDERLINE_LOW:
           g_assert (need_ink);
@@ -805,18 +832,18 @@ gtk_text_layout_draw (GtkTextLayout *layout,
               line_end = line_start;
 	      if (!gtk_text_iter_ends_line (&line_end))
 		gtk_text_iter_forward_to_line_end (&line_end);
-              byte_count = gtk_text_iter_get_line_index (&line_end);     
+              byte_count = gtk_text_iter_get_visible_line_index (&line_end);     
 
               if (gtk_text_iter_compare (&selection_start, &line_end) <= 0 &&
                   gtk_text_iter_compare (&selection_end, &line_start) >= 0)
                 {
                   if (gtk_text_iter_compare (&selection_start, &line_start) >= 0)
-                    selection_start_index = gtk_text_iter_get_line_index (&selection_start);
+                    selection_start_index = gtk_text_iter_get_visible_line_index (&selection_start);
                   else
                     selection_start_index = -1;
 
                   if (gtk_text_iter_compare (&selection_end, &line_end) <= 0)
-                    selection_end_index = gtk_text_iter_get_line_index (&selection_end);
+                    selection_end_index = gtk_text_iter_get_visible_line_index (&selection_end);
                   else
                     selection_end_index = MAX(byte_count, 1);
                 }
@@ -852,7 +879,6 @@ gtk_text_layout_draw (GtkTextLayout *layout,
               GtkTextCursorDisplay *cursor = cursor_list->data;
 	      GtkTextDirection dir;
  	      GdkRectangle cursor_location;
-              GdkGC *gc;
 
               dir = line_display->direction;
  	      if (have_strong && have_weak)
@@ -865,14 +891,10 @@ gtk_text_layout_draw (GtkTextLayout *layout,
  	      cursor_location.y = current_y + line_display->top_margin + cursor->y;
  	      cursor_location.width = 0;
  	      cursor_location.height = cursor->height;
- 
-	      gc = _gtk_get_insertion_cursor_gc (widget, cursor->is_strong);
-	      gdk_gc_set_clip_rectangle(gc, &clip);
- 	      _gtk_draw_insertion_cursor (widget, drawable, gc, &cursor_location,
-                                          dir, have_strong && have_weak);
-              gdk_gc_set_clip_rectangle (gc, NULL);
 
-	      g_object_unref (gc);
+	      gtk_draw_insertion_cursor (widget, drawable, &clip, &cursor_location,
+					 cursor->is_strong,
+					 dir, have_strong && have_weak);
 
               cursor_list = cursor_list->next;
             }

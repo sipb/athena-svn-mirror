@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkinternals.h>
 #include "gdkkeysyms.h"
@@ -40,7 +41,7 @@ struct _GdkFBKeyboard {
   gint io_tag;
 
   guint modifier_state;
-  gboolean caps_lock : 1;
+  guint caps_lock : 1;
 
   gint group;
   gint level;

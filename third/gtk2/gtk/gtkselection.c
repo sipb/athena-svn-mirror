@@ -17,12 +17,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* This file implements most of the work of the ICCM selection protocol.
+/* This file implements most of the work of the ICCCM selection protocol.
  * The code was written after an intensive study of the equivalent part
  * of John Ousterhout's Tk toolkit, and does many things in much the 
  * same way.
  *
- * The one thing in the ICCM that isn't fully supported here (or in Tk)
+ * The one thing in the ICCCM that isn't fully supported here (or in Tk)
  * is side effects targets. For these to be handled properly, MULTIPLE
  * targets need to be done in the order specified. This cannot be
  * guaranteed with the way we do things, since if we are doing INCR
@@ -51,6 +51,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdarg.h>
 #include <string.h>
 #include "gdk.h"
@@ -58,15 +59,23 @@
 #include "gtkmain.h"
 #include "gtkselection.h"
 
-/* #define DEBUG_SELECTION */
+#ifdef GDK_WINDOWING_X11
+#include "x11/gdkx.h"
+#endif
+
+#undef DEBUG_SELECTION
 
 /* Maximum size of a sent chunk, in bytes. Also the default size of
    our buffers */
-#ifdef GDK_WINDOWING_WIN32
-/* No chunks on Win32 */
-#define GTK_SELECTION_MAX_SIZE G_MAXINT
+#ifdef GDK_WINDOWING_X11
+#define GTK_SELECTION_MAX_SIZE(display)                                 \
+  MIN(262144,                                                           \
+      XExtendedMaxRequestSize (GDK_DISPLAY_XDISPLAY (display)) == 0     \
+       ? XMaxRequestSize (GDK_DISPLAY_XDISPLAY (display)) - 100         \
+       : XExtendedMaxRequestSize (GDK_DISPLAY_XDISPLAY (display)) - 100)
 #else
-#define GTK_SELECTION_MAX_SIZE 4000
+/* No chunks on Win32 */
+#define GTK_SELECTION_MAX_SIZE(display) G_MAXINT
 #endif
 
 #define IDLE_ABORT_TIME 300
@@ -744,7 +753,7 @@ gtk_selection_convert (GtkWidget *widget,
   
   current_retrievals = g_list_append (current_retrievals, info);
   gdk_selection_convert (widget->window, selection, target, time);
-  gtk_timeout_add (1000, (GtkFunction) gtk_selection_retrieval_timeout, info);
+  g_timeout_add (1000, (GSourceFunc) gtk_selection_retrieval_timeout, info);
   
   return TRUE;
 }
@@ -809,6 +818,55 @@ init_atoms (void)
     }
 }
 
+static gboolean
+selection_set_string (GtkSelectionData *selection_data,
+		      const gchar      *str,
+		      gint              len)
+{
+  gchar *tmp = g_strndup (str, len);
+  gchar *latin1 = gdk_utf8_to_string_target (tmp);
+  g_free (tmp);
+  
+  if (latin1)
+    {
+      gtk_selection_data_set (selection_data,
+			      GDK_SELECTION_TYPE_STRING,
+			      8, latin1, strlen (latin1));
+      g_free (latin1);
+      
+      return TRUE;
+    }
+  else
+    return FALSE;
+}
+
+static gboolean
+selection_set_compound_text (GtkSelectionData *selection_data,
+			     const gchar      *str,
+			     gint              len)
+{
+  gchar *tmp;
+  guchar *text;
+  GdkAtom encoding;
+  gint format;
+  gint new_length;
+  gboolean result = FALSE;
+  
+  tmp = g_strndup (str, len);
+  if (gdk_utf8_to_compound_text_for_display (selection_data->display, tmp,
+					     &encoding, &format, &text, &new_length))
+    {
+      gtk_selection_data_set (selection_data, encoding, format, text, new_length);
+      gdk_free_compound_text (text);
+      
+      result = TRUE;
+    }
+
+  g_free (tmp);
+
+  return result;
+}
+
 /**
  * gtk_selection_data_set_text:
  * @selection_data: a #GtkSelectionData
@@ -827,8 +885,6 @@ gtk_selection_data_set_text (GtkSelectionData     *selection_data,
 			     const gchar          *str,
 			     gint                  len)
 {
-  gboolean result = FALSE;
-  
   if (len < 0)
     len = strlen (str);
   
@@ -839,48 +895,22 @@ gtk_selection_data_set_text (GtkSelectionData     *selection_data,
       gtk_selection_data_set (selection_data,
 			      utf8_atom,
 			      8, (guchar *)str, len);
-      result = TRUE;
+      return TRUE;
     }
   else if (selection_data->target == GDK_TARGET_STRING)
     {
-      gchar *tmp = g_strndup (str, len);
-      gchar *latin1 = gdk_utf8_to_string_target (tmp);
-      g_free (tmp);
-
-      if (latin1)
-	{
-	  gtk_selection_data_set (selection_data,
-				  GDK_SELECTION_TYPE_STRING,
-				  8, latin1, strlen (latin1));
-	  g_free (latin1);
-	  
-	  result = TRUE;
-	}
-
+      return selection_set_string (selection_data, str, len);
     }
   else if (selection_data->target == ctext_atom ||
 	   selection_data->target == text_atom)
     {
-      gchar *tmp;
-      guchar *text;
-      GdkAtom encoding;
-      gint format;
-      gint new_length;
-
-      tmp = g_strndup (str, len);
-      if (gdk_utf8_to_compound_text_for_display (selection_data->display, tmp,
-						 &encoding, &format, &text, &new_length))
-	{
-	  gtk_selection_data_set (selection_data, encoding, format, text, new_length);
-	  gdk_free_compound_text (text);
-
-	  result = TRUE;
-	}
-
-      g_free (tmp);
+      if (selection_set_compound_text (selection_data, str, len))
+	return TRUE;
+      else if (selection_data->target == text_atom)
+	return selection_set_string (selection_data, str, len);
     }
-  
-  return result;
+
+  return FALSE;
 }
 
 /**
@@ -1028,14 +1058,15 @@ gtk_selection_init (void)
  * @event: the event
  * 
  * The default handler for the GtkWidget::selection_clear_event
- * signal. Instead of calling this function, chain up from
- * your selection_clear_event handler. Calling this function
- * from any other context is illegal. This function will
- * be deprecated in future versions of GTK+.
+ * signal. 
  * 
  * Return value: %TRUE if the event was handled, otherwise false
  * 
  * Since: 2.2
+ *
+ * Deprecated: Instead of calling this function, chain up from
+ * your selection_clear_event handler. Calling this function
+ * from any other context is illegal. 
  **/
 gboolean
 gtk_selection_clear (GtkWidget         *widget,
@@ -1084,14 +1115,17 @@ gboolean
 _gtk_selection_request (GtkWidget *widget,
 			GdkEventSelection *event)
 {
+  GdkDisplay *display = gtk_widget_get_display (widget);
   GtkIncrInfo *info;
   GList *tmp_list;
-  guchar *mult_atoms;
   int i;
-  
+  gulong selection_max_size;
+
   if (initialize)
     gtk_selection_init ();
   
+  selection_max_size = GTK_SELECTION_MAX_SIZE (display);
+
   /* Check if we own selection */
   
   tmp_list = current_selections;
@@ -1118,10 +1152,10 @@ _gtk_selection_request (GtkWidget *widget,
   
   /* Create GdkWindow structure for the requestor */
   
-  info->requestor = gdk_window_lookup_for_display (gtk_widget_get_display (widget),
+  info->requestor = gdk_window_lookup_for_display (display,
 						   event->requestor);
   if (!info->requestor)
-    info->requestor = gdk_window_foreign_new_for_display (gtk_widget_get_display (widget),
+    info->requestor = gdk_window_foreign_new_for_display (display,
 							  event->requestor);
   
   /* Determine conversions we need to perform */
@@ -1129,17 +1163,18 @@ _gtk_selection_request (GtkWidget *widget,
   if (event->target == gtk_selection_atoms[MULTIPLE])
     {
       GdkAtom  type;
+      guchar  *mult_atoms;
       gint     format;
       gint     length;
       
       mult_atoms = NULL;
       
       gdk_error_trap_push ();
-      if (!gdk_property_get (info->requestor, event->property, 0, /* AnyPropertyType */
-			     0, GTK_SELECTION_MAX_SIZE, FALSE,
+      if (!gdk_property_get (info->requestor, event->property, GDK_NONE, /* AnyPropertyType */
+			     0, selection_max_size, FALSE,
 			     &type, &format, &length, &mult_atoms))
 	{
-	  gdk_selection_send_notify_for_display (gtk_widget_get_display (widget),
+	  gdk_selection_send_notify_for_display (display,
 						 event->requestor, 
 						 event->selection,
 						 event->target, 
@@ -1150,14 +1185,37 @@ _gtk_selection_request (GtkWidget *widget,
 	  return TRUE;
 	}
       gdk_error_trap_pop ();
-      
-      info->num_conversions = length / (2*sizeof (GdkAtom));
-      info->conversions = g_new (GtkIncrConversion, info->num_conversions);
-      
-      for (i=0; i<info->num_conversions; i++)
+
+      /* This is annoying; the ICCCM doesn't specify the property type
+       * used for the property contents, so the autoconversion for
+       * ATOM / ATOM_PAIR in GDK doesn't work properly.
+       */
+#ifdef GDK_WINDOWING_X11
+      if (type != GDK_SELECTION_TYPE_ATOM &&
+	  type != gdk_atom_intern ("ATOM_PAIR", FALSE))
 	{
-	  info->conversions[i].target = ((GdkAtom *)mult_atoms)[2*i];
-	  info->conversions[i].property = ((GdkAtom *)mult_atoms)[2*i+1];
+	  info->num_conversions = length / (2*sizeof (glong));
+	  info->conversions = g_new (GtkIncrConversion, info->num_conversions);
+	  
+	  for (i=0; i<info->num_conversions; i++)
+	    {
+	      info->conversions[i].target = gdk_x11_xatom_to_atom_for_display (display,
+									       ((glong *)mult_atoms)[2*i]);
+	      info->conversions[i].property = gdk_x11_xatom_to_atom_for_display (display,
+										 ((glong *)mult_atoms)[2*i + 1]);
+	    }
+	}
+      else
+#endif
+	{
+	  info->num_conversions = length / (2*sizeof (GdkAtom));
+	  info->conversions = g_new (GtkIncrConversion, info->num_conversions);
+	  
+	  for (i=0; i<info->num_conversions; i++)
+	    {
+	      info->conversions[i].target = ((GdkAtom *)mult_atoms)[2*i];
+	      info->conversions[i].property = ((GdkAtom *)mult_atoms)[2*i+1];
+	    }
 	}
     }
   else				/* only a single conversion */
@@ -1166,7 +1224,6 @@ _gtk_selection_request (GtkWidget *widget,
       info->num_conversions = 1;
       info->conversions[0].target = event->target;
       info->conversions[0].property = event->property;
-      mult_atoms = (guchar *)info->conversions;
     }
   
   /* Loop through conversions and determine which of these are big
@@ -1184,16 +1241,16 @@ _gtk_selection_request (GtkWidget *widget,
       
 #ifdef DEBUG_SELECTION
       g_message ("Selection %ld, target %ld (%s) requested by 0x%x (property = %ld)",
-		 event->selection, info->conversions[i].target,
+		 event->selection, 
+		 info->conversions[i].target,
 		 gdk_atom_name (info->conversions[i].target),
-		 event->requestor, event->property);
+		 event->requestor, info->conversions[i].property);
 #endif
       
       gtk_selection_invoke_handler (widget, &data, event->time);
       
       if (data.length < 0)
 	{
-	  ((GdkAtom *)mult_atoms)[2*i+1] = GDK_NONE;
 	  info->conversions[i].property = GDK_NONE;
 	  continue;
 	}
@@ -1202,9 +1259,13 @@ _gtk_selection_request (GtkWidget *widget,
       
       items = data.length / gtk_selection_bytes_per_item (data.format);
       
-      if (data.length > GTK_SELECTION_MAX_SIZE)
+      if (data.length > selection_max_size)
 	{
 	  /* Sending via INCR */
+#ifdef DEBUG_SELECTION
+	  g_message ("Target larger (%d) than max. request size (%ld), sending incrementally\n",
+		     data.length, selection_max_size);
+#endif
 	  
 	  info->conversions[i].offset = 0;
 	  info->conversions[i].data = data;
@@ -1248,17 +1309,24 @@ _gtk_selection_request (GtkWidget *widget,
 			     gdk_window_get_events (info->requestor) |
 			     GDK_PROPERTY_CHANGE_MASK);
       current_incrs = g_list_append (current_incrs, info);
-      gtk_timeout_add (1000, (GtkFunction)gtk_selection_incr_timeout, info);
+      g_timeout_add (1000, (GSourceFunc) gtk_selection_incr_timeout, info);
     }
   
   /* If it was a MULTIPLE request, set the property to indicate which
      conversions succeeded */
   if (event->target == gtk_selection_atoms[MULTIPLE])
     {
+      GdkAtom *mult_atoms = g_new (GdkAtom, 2 * info->num_conversions);
+      for (i = 0; i < info->num_conversions; i++)
+	{
+	  mult_atoms[2*i] = info->conversions[i].target;
+	  mult_atoms[2*i+1] = info->conversions[i].property;
+	}
+      
       gdk_property_change (info->requestor, event->property,
 			   gdk_atom_intern ("ATOM_PAIR", FALSE), 32, 
 			   GDK_PROP_MODE_REPLACE,
-			   mult_atoms, 2*info->num_conversions);
+			   (guchar *)mult_atoms, 2*info->num_conversions);
       g_free (mult_atoms);
     }
 
@@ -1317,6 +1385,7 @@ _gtk_selection_incr_event (GdkWindow	   *window,
   GtkIncrInfo *info = NULL;
   gint num_bytes;
   guchar *buffer;
+  gulong selection_max_size;
   
   int i;
   
@@ -1326,7 +1395,9 @@ _gtk_selection_incr_event (GdkWindow	   *window,
 #ifdef DEBUG_SELECTION
   g_message ("PropertyDelete, property %ld", event->atom);
 #endif
-  
+
+  selection_max_size = GTK_SELECTION_MAX_SIZE (gdk_drawable_get_display (window));  
+
   /* Now find the appropriate ongoing INCR */
   tmp_list = current_incrs;
   while (tmp_list)
@@ -1364,10 +1435,10 @@ _gtk_selection_incr_event (GdkWindow	   *window,
 	      buffer = info->conversions[i].data.data + 
 		info->conversions[i].offset;
 	      
-	      if (num_bytes > GTK_SELECTION_MAX_SIZE)
+	      if (num_bytes > selection_max_size)
 		{
-		  num_bytes = GTK_SELECTION_MAX_SIZE;
-		  info->conversions[i].offset += GTK_SELECTION_MAX_SIZE;
+		  num_bytes = selection_max_size;
+		  info->conversions[i].offset += selection_max_size;
 		}
 	      else
 		info->conversions[i].offset = -2;
@@ -1398,7 +1469,6 @@ _gtk_selection_incr_event (GdkWindow	   *window,
 	      info->conversions[i].offset = -1;
 	    }
 	}
-      break;
     }
   
   /* Check if we're finished with all the targets */
@@ -1850,9 +1920,12 @@ gtk_selection_default_handler (GtkWidget	*widget,
       data->type = GDK_SELECTION_TYPE_ATOM;
       data->format = 32;
       data->length = count * sizeof (GdkAtom);
-      
-      p = g_new (GdkAtom, count);
+
+      /* selection data is always terminated by a trailing \0
+       */
+      p = g_malloc (data->length + 1);
       data->data = (guchar *)p;
+      data->data[data->length] = '\0';
       
       *p++ = gtk_selection_atoms[TIMESTAMP];
       *p++ = gtk_selection_atoms[TARGETS];

@@ -24,7 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -129,19 +129,10 @@ gdk_pixmap_impl_x11_finalize (GObject *object)
 
   if (!display->closed)
     {
-#ifdef HAVE_XFT  
-      {
-	GdkDrawableImplX11 *draw_impl = GDK_DRAWABLE_IMPL_X11 (impl);
+      GdkDrawableImplX11 *draw_impl = GDK_DRAWABLE_IMPL_X11 (impl);
 	
-#ifdef HAVE_XFT2
-	if (draw_impl->xft_draw)
-	  XftDrawDestroy (draw_impl->xft_draw);
-#else /* !HAVE_XFT2 */
-	if (draw_impl->picture)
-	  XRenderFreePicture (GDK_DISPLAY_XDISPLAY (display), draw_impl->picture);
-#endif /* HAVE_XFT2 */
-      }
-#endif /* HAVE_XFT */
+      if (draw_impl->xft_draw)
+	XftDrawDestroy (draw_impl->xft_draw);
 
       if (!impl->is_foreign)
 	XFreePixmap (GDK_DISPLAY_XDISPLAY (display), GDK_PIXMAP_XID (wrapper));
@@ -265,13 +256,13 @@ gdk_bitmap_create_from_data (GdkDrawable *drawable,
 }
 
 GdkPixmap*
-gdk_pixmap_create_from_data (GdkDrawable *drawable,
-			     const gchar *data,
-			     gint         width,
-			     gint         height,
-			     gint         depth,
-			     GdkColor    *fg,
-			     GdkColor    *bg)
+gdk_pixmap_create_from_data (GdkDrawable    *drawable,
+			     const gchar    *data,
+			     gint            width,
+			     gint            height,
+			     gint            depth,
+			     const GdkColor *fg,
+			     const GdkColor *bg)
 {
   GdkPixmap *pixmap;
   GdkDrawableImplX11 *draw_impl;

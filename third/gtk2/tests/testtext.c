@@ -1,8 +1,11 @@
+#include <config.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+#undef GTK_DISABLE_DEPRECATED
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -320,7 +323,7 @@ blink_timeout (gpointer data)
   
   tag = GTK_TEXT_TAG (data);
 
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                  "foreground", flip ? "blue" : "purple",
                  NULL);
 
@@ -455,7 +458,7 @@ fill_example_buffer (GtkTextBuffer *buffer)
   color2.red = 0xfff;
   color2.blue = 0x0;
   color2.green = 0;
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "foreground_gdk", &color,
                 "background_gdk", &color2,
                 "size_points", 24.0,
@@ -467,7 +470,7 @@ fill_example_buffer (GtkTextBuffer *buffer)
       
   color.blue = color.green = 0;
   color.red = 0xffff;
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "rise", -4 * PANGO_SCALE,
                 "foreground_gdk", &color,
                 NULL);
@@ -478,7 +481,7 @@ fill_example_buffer (GtkTextBuffer *buffer)
       
   color.blue = color.red = 0;
   color.green = 0xffff;
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "background_gdk", &color,
                 "size_points", 10.0,
                 NULL);
@@ -487,7 +490,7 @@ fill_example_buffer (GtkTextBuffer *buffer)
 
   setup_tag (tag);
       
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "strikethrough", TRUE,
                 NULL);
 
@@ -496,25 +499,27 @@ fill_example_buffer (GtkTextBuffer *buffer)
 
   setup_tag (tag);
       
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "underline", PANGO_UNDERLINE_SINGLE,
                 NULL);
 
+  tag = gtk_text_buffer_create_tag (buffer, "underline_error", NULL);
+
   setup_tag (tag);
       
-  g_object_set (G_OBJECT (tag),
-                "underline", PANGO_UNDERLINE_SINGLE,
+  g_object_set (tag,
+                "underline", PANGO_UNDERLINE_ERROR,
                 NULL);
 
   tag = gtk_text_buffer_create_tag (buffer, "centered", NULL);
       
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "justification", GTK_JUSTIFY_CENTER,
                 NULL);
 
   tag = gtk_text_buffer_create_tag (buffer, "rtl_quote", NULL);
       
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "wrap_mode", GTK_WRAP_WORD,
                 "direction", GTK_TEXT_DIR_RTL,
                 "indent", 30,
@@ -525,7 +530,7 @@ fill_example_buffer (GtkTextBuffer *buffer)
 
   tag = gtk_text_buffer_create_tag (buffer, "negative_indent", NULL);
       
-  g_object_set (G_OBJECT (tag),
+  g_object_set (tag,
                 "indent", -25,
                 NULL);
   
@@ -577,6 +582,11 @@ fill_example_buffer (GtkTextBuffer *buffer)
       gtk_text_buffer_get_iter_at_line_offset (buffer, &iter2, 1, 16);
 
       gtk_text_buffer_apply_tag_by_name (buffer, "underline", &iter, &iter2);
+
+      gtk_text_buffer_get_iter_at_line_offset (buffer, &iter, 1, 4);
+      gtk_text_buffer_get_iter_at_line_offset (buffer, &iter2, 1, 7);
+
+      gtk_text_buffer_apply_tag_by_name (buffer, "underline_error", &iter, &iter2);
 
       gtk_text_buffer_get_iter_at_line_offset (buffer, &iter, 1, 14);
       gtk_text_buffer_get_iter_at_line_offset (buffer, &iter2, 1, 24);
@@ -2023,14 +2033,14 @@ buffer_set_colors (Buffer  *buffer,
           
           hue_to_color (hue, &color);
 
-          g_object_set (G_OBJECT (tmp->data),
-                          "foreground_gdk", &color,
-                          NULL);
+          g_object_set (tmp->data,
+                        "foreground_gdk", &color,
+                        NULL);
         }
       else
-        g_object_set (G_OBJECT (tmp->data),
-                        "foreground_set", FALSE,
-                        NULL);
+        g_object_set (tmp->data,
+                      "foreground_set", FALSE,
+                      NULL);
 
       hue += 1.0 / N_COLORS;
       
@@ -2051,7 +2061,7 @@ buffer_cycle_colors (Buffer *buffer)
       
       hue_to_color (hue, &color);
       
-      g_object_set (G_OBJECT (tmp->data),
+      g_object_set (tmp->data,
                     "foreground_gdk", &color,
                     NULL);
 
@@ -2537,8 +2547,8 @@ test_init ()
   if (g_file_test ("../gdk-pixbuf/libpixbufloader-pnm.la",
 		   G_FILE_TEST_EXISTS))
     {
-      putenv ("GDK_PIXBUF_MODULE_FILE=../gdk-pixbuf/gdk-pixbuf.loaders");
-      putenv ("GTK_IM_MODULE_FILE=../modules/input/gtk.immodules");
+      g_setenv ("GDK_PIXBUF_MODULE_FILE", "../gdk-pixbuf/gdk-pixbuf.loaders", TRUE);
+      g_setenv ("GTK_IM_MODULE_FILE", "../modules/input/gtk.immodules", TRUE);
     }
 }
 

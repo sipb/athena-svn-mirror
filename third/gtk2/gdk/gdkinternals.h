@@ -77,7 +77,8 @@ typedef enum {
   GDK_DEBUG_IMAGE	  = 1 << 9,
   GDK_DEBUG_INPUT	  = 1 <<10,
   GDK_DEBUG_CURSOR	  = 1 <<11,
-  GDK_DEBUG_MULTIHEAD	  = 1 <<12
+  GDK_DEBUG_MULTIHEAD	  = 1 <<12,
+  GDK_DEBUG_XINERAMA	  = 1 <<13
 } GdkDebugFlag;
 
 #ifndef GDK_DISABLE_DEPRECATED
@@ -209,6 +210,10 @@ GdkImage *_gdk_drawable_copy_to_image (GdkDrawable  *drawable,
 				       gint          width,
 				       gint          height);
 
+/* GC caching */
+GdkGC *_gdk_drawable_get_scratch_gc (GdkDrawable *drawable,
+				     gboolean     graphics_exposures);
+
 /*************************************
  * Interfaces used by windowing code *
  *************************************/
@@ -300,6 +305,13 @@ gboolean _gdk_windowing_window_queue_antiexpose (GdkWindow  *window,
 void _gdk_windowing_window_destroy (GdkWindow *window,
 				    gboolean   recursing,
 				    gboolean   foreign_destroy);
+
+/* Called when gdk_window_destroy() is called on a foreign window
+ * or an ancestor of the foreign window. It should generally reparent
+ * the window out of it's current heirarchy, hide it, and then
+ * send a message to the owner requesting that the window be destroyed.
+ */
+void _gdk_windowing_window_destroy_foreign (GdkWindow *window);
 
 void _gdk_windowing_display_set_sm_client_id (GdkDisplay  *display,
 					      const gchar *sm_client_id);

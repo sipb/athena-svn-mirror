@@ -26,6 +26,7 @@
 
 #define GTK_MENU_INTERNALS
 
+#include <config.h>
 #include "gdk/gdkkeysyms.h"
 #include "gtkbindings.h"
 #include "gtkmain.h"
@@ -38,7 +39,6 @@
 
 
 #define BORDER_SPACING  0
-#define CHILD_SPACING   3
 #define DEFAULT_IPADDING 1
 
 static void gtk_menu_bar_class_init        (GtkMenuBarClass *klass);
@@ -153,24 +153,24 @@ gtk_menu_bar_class_init (GtkMenuBarClass *class)
 
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_enum ("shadow_type",
-                                                              _("Shadow type"),
-                                                              _("Style of bevel around the menubar"),
+                                                              P_("Shadow type"),
+                                                              P_("Style of bevel around the menubar"),
                                                               GTK_TYPE_SHADOW_TYPE,
                                                               GTK_SHADOW_OUT,
                                                               G_PARAM_READABLE));
 
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("internal_padding",
-							     _("Internal padding"),
-							     _("Amount of border space between the menubar shadow and the menu items"),
+							     P_("Internal padding"),
+							     P_("Amount of border space between the menubar shadow and the menu items"),
 							     0,
 							     G_MAXINT,
                                                              DEFAULT_IPADDING,
                                                              G_PARAM_READABLE));
 
   gtk_settings_install_property (g_param_spec_int ("gtk-menu-bar-popup-delay",
-						   _("Delay before drop down menus appear"),
-						   _("Delay before the submenus of a menu bar appear"),
+						   P_("Delay before drop down menus appear"),
+						   P_("Delay before the submenus of a menu bar appear"),
 						   0,
 						   G_MAXINT,
 						   0,
@@ -227,13 +227,6 @@ gtk_menu_bar_size_request (GtkWidget      *widget,
               requisition->width += toggle_size;
               
 	      requisition->height = MAX (requisition->height, child_requisition.height);
-	      /* Support for the right justified help menu */
-	      if ((children == NULL) && GTK_IS_MENU_ITEM(child) &&
-		  GTK_MENU_ITEM(child)->right_justify)
-		{
-		  requisition->width += CHILD_SPACING;
-		}
-
 	      nchildren += 1;
 	    }
 	}
@@ -252,9 +245,6 @@ gtk_menu_bar_size_request (GtkWidget      *widget,
 	  requisition->width += widget->style->xthickness * 2;
 	  requisition->height += widget->style->ythickness * 2;
 	}
-
-      if (nchildren > 0)
-	requisition->width += 2 * CHILD_SPACING * (nchildren - 1);
     }
 }
 
@@ -269,9 +259,9 @@ gtk_menu_bar_size_allocate (GtkWidget     *widget,
   GtkAllocation child_allocation;
   GtkRequisition child_requisition;
   guint offset;
-  gint ipadding;
   GtkTextDirection direction;
   gint ltr_x;
+  gint ipadding;
 
   g_return_if_fail (GTK_IS_MENU_BAR (widget));
   g_return_if_fail (allocation != NULL);
@@ -292,10 +282,9 @@ gtk_menu_bar_size_allocate (GtkWidget     *widget,
   if (menu_shell->children)
     {
       child_allocation.x = (GTK_CONTAINER (menu_bar)->border_width +
-                            ipadding + 
+			    ipadding + 
 			    BORDER_SPACING);
       child_allocation.y = (GTK_CONTAINER (menu_bar)->border_width +
-                            ipadding +
 			    BORDER_SPACING);
 
       if (get_shadow_type (menu_bar) != GTK_SHADOW_NONE)
@@ -344,7 +333,7 @@ gtk_menu_bar_size_allocate (GtkWidget     *widget,
                                                   toggle_size);
 	      gtk_widget_size_allocate (child, &child_allocation);
 
-	      ltr_x += child_allocation.width + CHILD_SPACING * 2;
+	      ltr_x += child_allocation.width;
 	    }
 	}
     }
@@ -438,7 +427,7 @@ window_key_press_handler (GtkWidget   *widget,
   gchar *accel = NULL;
   gboolean retval = FALSE;
   
-  g_object_get (G_OBJECT (gtk_widget_get_settings (widget)),
+  g_object_get (gtk_widget_get_settings (widget),
                 "gtk-menu-bar-accel",
                 &accel,
                 NULL);
@@ -582,7 +571,7 @@ _gtk_menu_bar_cycle_focus (GtkMenuBar       *menubar,
       g_list_free (menubars);
     }
 
-  g_signal_emit_by_name (menubar, "cancel", 0);
+  gtk_menu_shell_cancel (GTK_MENU_SHELL (menubar));
 
   if (to_activate)
     g_signal_emit_by_name (to_activate, "activate_item");
@@ -605,7 +594,7 @@ gtk_menu_bar_get_popup_delay (GtkMenuShell *menu_shell)
 {
   gint popup_delay;
   
-  g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (menu_shell))),
+  g_object_get (gtk_widget_get_settings (GTK_WIDGET (menu_shell)),
 		"gtk-menu-bar-popup-delay", &popup_delay,
 		NULL);
 

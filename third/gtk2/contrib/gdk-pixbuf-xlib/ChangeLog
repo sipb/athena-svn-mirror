@@ -1,3 +1,42 @@
+2004-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.9 ===
+
+2004-08-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.8 ===
+
+Sat Aug 14 19:15:08 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* === Released 2.4.7 ===
+
+Tue Jul 20 23:27:12 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-xlibrgb.c: Include config.h first.  (#148034)
+
+Tue Mar  9 09:33:54 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.6 ===
+
+Wed Mar  3 15:50:28 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* Makefile.am (libgdk_pixbuf_xlib_2_0_la_LIBADD): Add 
+	a shared library dependency on libgdk-pixbuf (#124687)
+
+Tue Feb 24 14:45:03 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.3 ===
+
+Fri Feb 13 10:32:09 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk-pixbuf-xlibrgb.h: Remove a couple of unneeded
+	#includes. Isn't unsupported code fun?
+	(133833, Gregory Merchan)
+
+Tue Oct  7 23:30:00 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gdk-pixbuf-xlib.h: Add C++ guards. (123955, Harring Figueiredo)
+
 2002-08-06  jacob berkman  <jacob@ximian.com>
 
 	* Makefile.am (lib_LTLIBRARIES): link against xlibs

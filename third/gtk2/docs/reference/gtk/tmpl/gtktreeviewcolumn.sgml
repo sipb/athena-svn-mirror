@@ -6,8 +6,7 @@ A visible column in a #GtkTreeView widget
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-The GtkTreeViewColumn object is a visible column in a #GtkTreeView
-widget.  It determines the geometry, type 
+The GtkTreeViewColumn object is a visible column in a #GtkTreeView widget.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -18,7 +17,7 @@ widget.  It determines the geometry, type
 
 <!-- ##### ENUM GtkTreeViewColumnSizing ##### -->
 <para>
-The sizing method the column uses to determine it's width.  Please note
+The sizing method the column uses to determine its width.  Please note
 that @GTK_TREE_VIEW_COLUMN_AUTOSIZE are inefficient for large views, and
 can make columns appear choppy.
 </para>
@@ -49,6 +48,88 @@ calling gtk_tree_view_column_set_cell_data_func()
 
 </para>
 
+
+<!-- ##### SIGNAL GtkTreeViewColumn::clicked ##### -->
+<para>
+
+</para>
+
+@treeviewcolumn: the object which received the signal.
+
+<!-- ##### ARG GtkTreeViewColumn:alignment ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:clickable ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:expand ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:fixed-width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:max-width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:min-width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:reorderable ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:resizable ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:sizing ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:sort-indicator ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:sort-order ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:title ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:visible ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:widget ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTreeViewColumn:width ##### -->
+<para>
+
+</para>
 
 <!-- ##### FUNCTION gtk_tree_view_column_new ##### -->
 <para>
@@ -309,6 +390,24 @@ calling gtk_tree_view_column_set_cell_data_func()
 @Returns: 
 
 
+<!-- ##### FUNCTION gtk_tree_view_column_set_expand ##### -->
+<para>
+
+</para>
+
+@tree_column: 
+@expand: 
+
+
+<!-- ##### FUNCTION gtk_tree_view_column_get_expand ##### -->
+<para>
+
+</para>
+
+@tree_column: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gtk_tree_view_column_set_clickable ##### -->
 <para>
 
@@ -462,6 +561,18 @@ calling gtk_tree_view_column_set_cell_data_func()
 @height: 
 
 
+<!-- ##### FUNCTION gtk_tree_view_column_cell_get_position ##### -->
+<para>
+
+</para>
+
+@tree_column: 
+@cell_renderer: 
+@start_pos: 
+@width: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gtk_tree_view_column_cell_is_visible ##### -->
 <para>
 
@@ -479,81 +590,4 @@ calling gtk_tree_view_column_set_cell_data_func()
 @tree_column: 
 @cell: 
 
-
-<!-- ##### SIGNAL GtkTreeViewColumn::clicked ##### -->
-<para>
-
-</para>
-
-@treeviewcolumn: the object which received the signal.
-
-<!-- ##### ARG GtkTreeViewColumn:alignment ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:clickable ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:fixed-width ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:max-width ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:min-width ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:reorderable ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:resizable ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:sizing ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:sort-indicator ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:sort-order ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:title ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:visible ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:widget ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTreeViewColumn:width ##### -->
-<para>
-
-</para>
 

@@ -48,7 +48,9 @@ typedef void GdkXEvent;	  /* Can be cast to window system specific
 
 typedef enum {
   GDK_FILTER_CONTINUE,	  /* Event not handled, continue processesing */
-  GDK_FILTER_TRANSLATE,	  /* Translated event stored */
+  GDK_FILTER_TRANSLATE,	  /* Native event translated into a GDK event and
+                             stored in the "event" structure that was
+                             passed in */
   GDK_FILTER_REMOVE	  /* Terminate processing, removing event */
 } GdkFilterReturn;
 
@@ -205,7 +207,9 @@ typedef enum
   GDK_WINDOW_STATE_ICONIFIED  = 1 << 1,
   GDK_WINDOW_STATE_MAXIMIZED  = 1 << 2,
   GDK_WINDOW_STATE_STICKY     = 1 << 3,
-  GDK_WINDOW_STATE_FULLSCREEN = 1 << 4
+  GDK_WINDOW_STATE_FULLSCREEN = 1 << 4,
+  GDK_WINDOW_STATE_ABOVE      = 1 << 5,
+  GDK_WINDOW_STATE_BELOW      = 1 << 6
 } GdkWindowState;
 
 typedef enum

@@ -16,50 +16,52 @@
 #include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
 
 
-void        <link linkend="gdk-pixbuf-xlib-render-threshold-alpha">gdk_pixbuf_xlib_render_threshold_alpha</link>
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-xlib-render-threshold-alpha">gdk_pixbuf_xlib_render_threshold_alpha</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Pixmap">Pixmap</link> bitmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
-                                             int alpha_threshold);
-void        <link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
+                                             <link linkend="int">int</link> alpha_threshold);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Drawable">Drawable</link> drawable,
                                              <link linkend="GC-CAPS">GC</link> gc,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="XlibRgbDither">XlibRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);
-void        <link linkend="gdk-pixbuf-xlib-render-to-drawable-alpha">gdk_pixbuf_xlib_render_to_drawable_alpha</link>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-xlib-render-to-drawable-alpha">gdk_pixbuf_xlib_render_to_drawable_alpha</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Drawable">Drawable</link> drawable,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="GdkPixbufAlphaMode">GdkPixbufAlphaMode</link> alpha_mode,
-                                             int alpha_threshold,
+                                             <link linkend="int">int</link> alpha_threshold,
                                              <link linkend="XlibRgbDither">XlibRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);
-void        <link linkend="gdk-pixbuf-xlib-render-pixmap-and-mask">gdk_pixbuf_xlib_render_pixmap_and_mask</link>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-xlib-render-pixmap-and-mask">gdk_pixbuf_xlib_render_pixmap_and_mask</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Pixmap">Pixmap</link> *pixmap_return,
                                              <link linkend="Pixmap">Pixmap</link> *mask_return,
-                                             int alpha_threshold);
+                                             <link linkend="int">int</link> alpha_threshold);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -85,16 +87,16 @@ void        <link linkend="gdk-pixbuf-xlib-render-pixmap-and-mask">gdk_pixbuf_xl
 <title>Details</title>
 <refsect2>
 <title><anchor id="gdk-pixbuf-xlib-render-threshold-alpha"/>gdk_pixbuf_xlib_render_threshold_alpha ()</title>
-<programlisting>void        gdk_pixbuf_xlib_render_threshold_alpha
+<indexterm><primary>gdk_pixbuf_xlib_render_threshold_alpha</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_xlib_render_threshold_alpha
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Pixmap">Pixmap</link> bitmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
-                                             int alpha_threshold);</programlisting>
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
+                                             <link linkend="int">int</link> alpha_threshold);</programlisting>
 <para>
 Takes the opacity values in a rectangular portion of a pixbuf and thresholds
 them to produce a bi-level alpha mask that can be used as a clipping mask for
@@ -133,19 +135,19 @@ other values will be painted as one.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-xlib-render-to-drawable"/>gdk_pixbuf_xlib_render_to_drawable ()</title>
-<programlisting>void        gdk_pixbuf_xlib_render_to_drawable
+<indexterm><primary>gdk_pixbuf_xlib_render_to_drawable</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_xlib_render_to_drawable
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Drawable">Drawable</link> drawable,
                                              <link linkend="GC-CAPS">GC</link> gc,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="XlibRgbDither">XlibRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);</programlisting>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);</programlisting>
 <para>
 Renders a rectangular portion of a pixbuf to a drawable while using the
 specified GC.  This is done using XlibRGB, so the specified drawable must
@@ -202,32 +204,32 @@ dither offsets can be both zero.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-xlib-render-to-drawable-alpha"/>gdk_pixbuf_xlib_render_to_drawable_alpha ()</title>
-<programlisting>void        gdk_pixbuf_xlib_render_to_drawable_alpha
+<indexterm><primary>gdk_pixbuf_xlib_render_to_drawable_alpha</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_xlib_render_to_drawable_alpha
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Drawable">Drawable</link> drawable,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="GdkPixbufAlphaMode">GdkPixbufAlphaMode</link> alpha_mode,
-                                             int alpha_threshold,
+                                             <link linkend="int">int</link> alpha_threshold,
                                              <link linkend="XlibRgbDither">XlibRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);</programlisting>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);</programlisting>
 <para>
 Renders a rectangular portion of a pixbuf to a drawable.  This is done using
 XlibRGB, so the specified drawable must have the XlibRGB visual and colormap.
 </para>
 <para>
-When used with <link linkend="GDK-PIXBUF-ALPHA-BILEVEL-CAPS">GDK_PIXBUF_ALPHA_BILEVEL</link>, this function has to create a bitmap
+When used with <link linkend="GDK-PIXBUF-ALPHA-BILEVEL-CAPS"><type>GDK_PIXBUF_ALPHA_BILEVEL</type></link>, this function has to create a bitmap
 out of the thresholded alpha channel of the image and, it has to set this
 bitmap as the clipping mask for the GC used for drawing.  This can be a
 significant performance penalty depending on the size and the complexity of
 the alpha channel of the image.  If performance is crucial, consider handling
 the alpha channel yourself (possibly by caching it in your application) and
-using <link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>() or GdkRGB directly instead.</para>
+using <link linkend="gdk-pixbuf-xlib-render-to-drawable"><function>gdk_pixbuf_xlib_render_to_drawable()</function></link> or GdkRGB directly instead.</para>
 <para>
 
 </para><variablelist role="params">
@@ -276,19 +278,19 @@ values.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-xlib-render-pixmap-and-mask"/>gdk_pixbuf_xlib_render_pixmap_and_mask ()</title>
-<programlisting>void        gdk_pixbuf_xlib_render_pixmap_and_mask
+<indexterm><primary>gdk_pixbuf_xlib_render_pixmap_and_mask</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_xlib_render_pixmap_and_mask
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="Pixmap">Pixmap</link> *pixmap_return,
                                              <link linkend="Pixmap">Pixmap</link> *mask_return,
-                                             int alpha_threshold);</programlisting>
+                                             <link linkend="int">int</link> alpha_threshold);</programlisting>
 <para>
 Creates a pixmap and a mask bitmap which are returned in the <parameter>pixmap_return</parameter>
 and <parameter>mask_return</parameter> arguments, respectively, and renders a pixbuf and its
 corresponding tresholded alpha mask to them.  This is merely a convenience
 function; applications that need to render pixbufs with dither offsets or to
-given drawables should use <link linkend="gdk-pixbuf-xlib-render-to-drawable-alpha">gdk_pixbuf_xlib_render_to_drawable_alpha</link>() or
-<link linkend="gdk-pixbuf-xlib-render-to-drawable">gdk_pixbuf_xlib_render_to_drawable</link>(), and
-<link linkend="gdk-pixbuf-xlib-render-threshold-alpha">gdk_pixbuf_xlib_render_threshold_alpha</link>().
+given drawables should use <link linkend="gdk-pixbuf-xlib-render-to-drawable-alpha"><function>gdk_pixbuf_xlib_render_to_drawable_alpha()</function></link> or
+<link linkend="gdk-pixbuf-xlib-render-to-drawable"><function>gdk_pixbuf_xlib_render_to_drawable()</function></link>, and
+<link linkend="gdk-pixbuf-xlib-render-threshold-alpha"><function>gdk_pixbuf_xlib_render_threshold_alpha()</function></link>.
 </para>
 <para>
 If the pixbuf does not have an alpha channel, then *<parameter>mask_return</parameter> will be set

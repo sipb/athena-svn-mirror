@@ -88,11 +88,11 @@ GtkIconSet* gtk_icon_factory_lookup_default  (const gchar     *stock_id);
  * size from the rendered pixbuf, not from here.
  */
 
-#ifndef GTK_MULTIHEAD_SAFE
+#ifndef GDK_MULTIHEAD_SAFE
 gboolean gtk_icon_size_lookup              (GtkIconSize  size,
 					    gint        *width,
 					    gint        *height);
-#endif /* GTK_MULTIHEAD_SAFE */
+#endif /* GDK_MULTIHEAD_SAFE */
 gboolean gtk_icon_size_lookup_for_settings (GtkSettings *settings,
 					    GtkIconSize  size,
 					    gint        *width,
@@ -142,11 +142,14 @@ void           gtk_icon_source_free                     (GtkIconSource       *so
 
 void           gtk_icon_source_set_filename             (GtkIconSource       *source,
                                                          const gchar         *filename);
+void           gtk_icon_source_set_icon_name            (GtkIconSource       *source,
+                                                         const gchar         *icon_name);
 void           gtk_icon_source_set_pixbuf               (GtkIconSource       *source,
                                                          GdkPixbuf           *pixbuf);
 
-G_CONST_RETURN gchar* gtk_icon_source_get_filename (const GtkIconSource *source);
-GdkPixbuf*            gtk_icon_source_get_pixbuf   (const GtkIconSource *source);
+G_CONST_RETURN gchar* gtk_icon_source_get_filename  (const GtkIconSource *source);
+G_CONST_RETURN gchar* gtk_icon_source_get_icon_name (const GtkIconSource *source);
+GdkPixbuf*            gtk_icon_source_get_pixbuf    (const GtkIconSource *source);
 
 void             gtk_icon_source_set_direction_wildcarded (GtkIconSource       *source,
                                                            gboolean             setting);

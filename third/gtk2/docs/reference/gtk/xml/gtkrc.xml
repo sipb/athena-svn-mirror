@@ -22,23 +22,24 @@ enum        <link linkend="GtkRcTokenType">GtkRcTokenType</link>;
 <link linkend="GScanner">GScanner</link>*   <link linkend="gtk-rc-scanner-new">gtk_rc_scanner_new</link>              (void);
 <link linkend="GtkStyle">GtkStyle</link>*   <link linkend="gtk-rc-get-style">gtk_rc_get_style</link>                (<link linkend="GtkWidget">GtkWidget</link> *widget);
 <link linkend="GtkStyle">GtkStyle</link>*   <link linkend="gtk-rc-get-style-by-paths">gtk_rc_get_style_by_paths</link>       (<link linkend="GtkSettings">GtkSettings</link> *settings,
-                                             const char *widget_path,
-                                             const char *class_path,
+                                             const <link linkend="char">char</link> *widget_path,
+                                             const <link linkend="char">char</link> *class_path,
                                              <link linkend="GType">GType</link> type);
-void        <link linkend="gtk-rc-add-widget-name-style">gtk_rc_add_widget_name_style</link>    (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
+<link linkend="void">void</link>        <link linkend="gtk-rc-add-widget-name-style">gtk_rc_add_widget_name_style</link>    (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
                                              const <link linkend="gchar">gchar</link> *pattern);
-void        <link linkend="gtk-rc-add-widget-class-style">gtk_rc_add_widget_class_style</link>   (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
+<link linkend="void">void</link>        <link linkend="gtk-rc-add-widget-class-style">gtk_rc_add_widget_class_style</link>   (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
                                              const <link linkend="gchar">gchar</link> *pattern);
-void        <link linkend="gtk-rc-add-class-style">gtk_rc_add_class_style</link>          (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
+<link linkend="void">void</link>        <link linkend="gtk-rc-add-class-style">gtk_rc_add_class_style</link>          (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
                                              const <link linkend="gchar">gchar</link> *pattern);
-void        <link linkend="gtk-rc-parse">gtk_rc_parse</link>                    (const <link linkend="gchar">gchar</link> *filename);
-void        <link linkend="gtk-rc-parse-string">gtk_rc_parse_string</link>             (const <link linkend="gchar">gchar</link> *rc_string);
+<link linkend="void">void</link>        <link linkend="gtk-rc-parse">gtk_rc_parse</link>                    (const <link linkend="gchar">gchar</link> *filename);
+<link linkend="void">void</link>        <link linkend="gtk-rc-parse-string">gtk_rc_parse_string</link>             (const <link linkend="gchar">gchar</link> *rc_string);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-rc-reparse-all">gtk_rc_reparse_all</link>              (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-rc-reparse-all-for-settings">gtk_rc_reparse_all_for_settings</link> (<link linkend="GtkSettings">GtkSettings</link> *settings,
                                              <link linkend="gboolean">gboolean</link> force_load);
-void        <link linkend="gtk-rc-add-default-file">gtk_rc_add_default_file</link>         (const <link linkend="gchar">gchar</link> *filename);
+<link linkend="void">void</link>        <link linkend="gtk-rc-reset-styles">gtk_rc_reset_styles</link>             (<link linkend="GtkSettings">GtkSettings</link> *settings);
+<link linkend="void">void</link>        <link linkend="gtk-rc-add-default-file">gtk_rc_add_default_file</link>         (const <link linkend="gchar">gchar</link> *filename);
 <link linkend="gchar">gchar</link>**     <link linkend="gtk-rc-get-default-files">gtk_rc_get_default_files</link>        (void);
-void        <link linkend="gtk-rc-set-default-files">gtk_rc_set_default_files</link>        (<link linkend="gchar">gchar</link> **filenames);
+<link linkend="void">void</link>        <link linkend="gtk-rc-set-default-files">gtk_rc_set_default_files</link>        (<link linkend="gchar">gchar</link> **filenames);
 <link linkend="guint">guint</link>       <link linkend="gtk-rc-parse-color">gtk_rc_parse_color</link>              (<link linkend="GScanner">GScanner</link> *scanner,
                                              <link linkend="GdkColor">GdkColor</link> *color);
 <link linkend="guint">guint</link>       <link linkend="gtk-rc-parse-state">gtk_rc_parse_state</link>              (<link linkend="GScanner">GScanner</link> *scanner,
@@ -55,8 +56,8 @@ void        <link linkend="gtk-rc-set-default-files">gtk_rc_set_default_files</l
 <link linkend="gchar">gchar</link>*      <link linkend="gtk-rc-get-theme-dir">gtk_rc_get_theme_dir</link>            (void);
 <link linkend="GtkRcStyle">GtkRcStyle</link>* <link linkend="gtk-rc-style-new">gtk_rc_style_new</link>                (void);
 <link linkend="GtkRcStyle">GtkRcStyle</link>* <link linkend="gtk-rc-style-copy">gtk_rc_style_copy</link>               (<link linkend="GtkRcStyle">GtkRcStyle</link> *orig);
-void        <link linkend="gtk-rc-style-ref">gtk_rc_style_ref</link>                (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);
-void        <link linkend="gtk-rc-style-unref">gtk_rc_style_unref</link>              (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);
+<link linkend="void">void</link>        <link linkend="gtk-rc-style-ref">gtk_rc_style_ref</link>                (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);
+<link linkend="void">void</link>        <link linkend="gtk-rc-style-unref">gtk_rc_style_unref</link>              (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);
 
 
 </synopsis>
@@ -77,6 +78,8 @@ void        <link linkend="gtk-rc-style-unref">gtk_rc_style_unref</link>        
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -88,23 +91,24 @@ at runtime.
 <refsect2><title>Default files</title>
 <para>
 An application can cause GTK+ to parse a specific RC
-file by calling <link linkend="gtk-rc-parse">gtk_rc_parse</link>(). In addition to this,
-certain files will be read at the end of <link linkend="gtk-init">gtk_init</link>().
+file by calling <link linkend="gtk-rc-parse"><function>gtk_rc_parse()</function></link>. In addition to this,
+certain files will be read at the end of <link linkend="gtk-init"><function>gtk_init()</function></link>.
 Unless modified, the files looked for will be 
 <filename>&lt;SYSCONFDIR&gt;/gtk-2.0/gtkrc</filename> 
 and <filename>.gtkrc-2.0</filename> in the users home directory.
 (<filename>&lt;SYSCONFDIR&gt;</filename> defaults to 
 <filename>/usr/local/etc</filename>. It can be changed with the
 <option>--prefix</option> or <option>--sysconfdir</option> options when 
-configuring GTK+.)
+configuring GTK+.) Note that although the filenames contain the version 
+number 2.0, all 2.x versions of GTK+ look for these files.  
 </para>
 <para>
 The set of these <firstterm>default</firstterm> files
-can be retrieved with <link linkend="gtk-rc-get-default-files">gtk_rc_get_default_files</link>()
-and modified with <link linkend="gtk-rc-add-default-file">gtk_rc_add_default_file</link>() and
-<link linkend="gtk-rc-set-default-files">gtk_rc_set_default_files</link>().
+can be retrieved with <link linkend="gtk-rc-get-default-files"><function>gtk_rc_get_default_files()</function></link>
+and modified with <link linkend="gtk-rc-add-default-file"><function>gtk_rc_add_default_file()</function></link> and
+<link linkend="gtk-rc-set-default-files"><function>gtk_rc_set_default_files()</function></link>.
 Additionally, the <envar>GTK2_RC_FILES</envar> environment variable
-can be set to a <link linkend="G-SEARCHPATH-SEPARATOR-S-separated">G_SEARCHPATH_SEPARATOR_S-separated</link> list of files
+can be set to a <link linkend="G-SEARCHPATH-SEPARATOR-S-separated"><type>G_SEARCHPATH_SEPARATOR_S-separated</type></link> list of files
 in order to overwrite the set of default files at runtime.
 </para>
 <para><anchor id="locale-specific-rc"/>
@@ -144,12 +148,12 @@ hierarchy. Both the widget and the class paths consists of a
 parents of the widget and the widget itself from
 outermost to innermost. The difference is that in
 the widget path, the name assigned by
-<link linkend="gtk-widget-set-name">gtk_widget_set_name</link>() is used
+<link linkend="gtk-widget-set-name"><function>gtk_widget_set_name()</function></link> is used
 if present, otherwise the class name of the widget, while
-for the widget path, the class name is always used.
+for the class path, the class name is always used.
 </para>
 <para>
-So, if you have a <link linkend="GtkEntry">GtkEntry</link> named
+So, if you have a <link linkend="GtkEntry"><type>GtkEntry</type></link> named
 <literal>"myentry"</literal>, inside of a of a window
 named <literal>"mywindow"</literal>, then the
 widget path is: <literal>"mwindow.GtkHBox.myentry"</literal>
@@ -163,11 +167,33 @@ pattern:
 <informalexample><programlisting>
 class "GtkButton" style "my-style"
 </programlisting></informalexample>
-will match not just <link linkend="GtkButton">GtkButton</link> widgets,
-but also <link linkend="GtkToggleButton">GtkToggleButton</link> and
-<link linkend="GtkCheckButton">GtkCheckButton</link> widgets, since
-those classes derive from <link linkend="GtkButton">GtkButton</link>.
+will match not just <link linkend="GtkButton"><type>GtkButton</type></link> widgets,
+but also <link linkend="GtkToggleButton"><type>GtkToggleButton</type></link> and
+<link linkend="GtkCheckButton"><type>GtkCheckButton</type></link> widgets, since
+those classes derive from <link linkend="GtkButton"><type>GtkButton</type></link>.
 </para>
+<para>
+Additionally, a priority can be specified for each pattern, and styles 
+override other styles first by priority, then by pattern type and then 
+by order of specification (later overrides earlier). The priorities 
+that can be specified are (highest to lowest):
+<simplelist>
+<member><literal>highest</literal></member>
+<member><literal>rc</literal></member>
+<member><literal>theme</literal></member>
+<member><literal>application</literal></member>
+<member><literal>gtk</literal></member>
+<member><literal>lowest</literal></member>
+</simplelist>
+<literal>rc</literal> is the default for styles
+read from an RC file, <literal>theme</literal>
+is the default for styles read from theme RC files,
+<literal>application</literal> 
+should be used for styles an application sets
+up, and <literal>gtk</literal> is used for styles
+that GTK+ creates internally.
+</para>
+
 </refsect2>
 
 <refsect2><title>Toplevel declarations</title>
@@ -191,7 +217,7 @@ The possible toplevel declarations are:
   </varlistentry>
   <varlistentry>
     <term><literal>class <replaceable>pattern</replaceable> 
-          [ style | binding [ : <replaceable>priority</replaceable> ]]
+          [ style | binding ][ : <replaceable>priority</replaceable> ]
           <replaceable>name</replaceable></literal></term>
     <listitem>
      <para>Specifies a style or binding set for a particular
@@ -236,7 +262,7 @@ The possible toplevel declarations are:
   </varlistentry>
   <varlistentry>
     <term><literal>widget <replaceable>pattern</replaceable> 
-          [ style | binding [ : <replaceable>priority</replaceable> ]]
+          [ style | binding ][ : <replaceable>priority</replaceable> ]
           <replaceable>name</replaceable></literal></term>
     <listitem>
      <para>Specifies a style or binding set for a particular
@@ -245,7 +271,7 @@ The possible toplevel declarations are:
   </varlistentry>
   <varlistentry>
     <term><literal>widget_class <replaceable>pattern</replaceable> 
-          [ style | binding [ : <replaceable>priority</replaceable> ]]
+          [ style | binding ][ : <replaceable>priority</replaceable> ]
           <replaceable>name</replaceable></literal></term>
     <listitem>
      <para>Specifies a style or binding set for a particular
@@ -300,7 +326,7 @@ elements are:
        <para>
          Sets the color used for the background of widgets displaying
          editable text. This color is used for the background
-         of, among others, <link linkend="GtkText">GtkText</link>, <link linkend="GtkEntry">GtkEntry</link>, <link linkend="GtkList">GtkList</link>, and <link linkend="GtkCList">GtkCList</link>.
+         of, among others, <link linkend="GtkText"><type>GtkText</type></link>, <link linkend="GtkEntry"><type>GtkEntry</type></link>, <link linkend="GtkList"><type>GtkList</type></link>, and <link linkend="GtkCList"><type>GtkCList</type></link>.
        </para>
      </listitem>
   </varlistentry>
@@ -315,12 +341,33 @@ elements are:
      </listitem>
   </varlistentry>
   <varlistentry>
+    <term><literal>xthickness =
+      <replaceable>number</replaceable></literal></term>
+     <listitem>
+       <para>
+         Sets the xthickness, which is used for various horizontal padding
+         values in GTK+.
+       </para>
+     </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>ythickness =
+      <replaceable>number</replaceable></literal></term>
+     <listitem>
+       <para>
+         Sets the ythickness, which is used for various vertical padding
+         values in GTK+.
+       </para>
+     </listitem>
+  </varlistentry>
+
+  <varlistentry>
     <term><literal>bg_pixmap[<replaceable>state</replaceable>] =
       <replaceable>pixmap</replaceable></literal></term>
      <listitem>
        <para>
          Sets a background pixmap to be used in place of
-         the <literal>bg</literal> color (or for <link linkend="GtkText">GtkText</link>,
+         the <literal>bg</literal> color (or for <link linkend="GtkText"><type>GtkText</type></link>,
          in place of the <literal>base</literal> color. The special
          value <literal>"&lt;parent&gt;"</literal> may be used to indicate that the widget should
          use the same background pixmap as its parent. The special value
@@ -332,9 +379,8 @@ elements are:
     <term><literal>font = <replaceable>font</replaceable></literal></term>
      <listitem>
        <para>
-         Sets the font for a widget. <replaceable>font</replaceable> must be
-         a XLFD font description, e.g. 
-         <literal>"-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*"</literal>.
+         Starting with GTK+ 2.0, the "font" and "fontset"
+         declarations are ignored; use "font_name" declarations instead.
        </para>
      </listitem>
   </varlistentry>
@@ -342,13 +388,8 @@ elements are:
     <term><literal>fontset = <replaceable>font</replaceable></literal></term>
      <listitem>
        <para>
-         Sets the fontset for a widget. Overrides any
-         <literal>font</literal> declarations. <replaceable>font</replaceable> 
-         must be a comma-separated list of XLFD font descriptions, e.g.
-         <literal>"-JIS-Fixed-Medium-R-Normal--26-180-100-100-C-240,
-                   -JIS-Fixed-Medium-R-Normal--26-180-100-100-C-120,
-                   -GB-Fixed-Medium-R-Normal--26-180-100-100-C-240,
-                   -Adobe-Courier-Bold-R-Normal--25-180-100-100-M-150"</literal>.
+         Starting with GTK+ 2.0, the "font" and "fontset"
+         declarations are ignored; use "font_name" declarations instead.
        </para>
      </listitem>
   </varlistentry>
@@ -356,10 +397,10 @@ elements are:
     <term><literal>font_name = <replaceable>font</replaceable></literal></term>
      <listitem>
        <para>
-         Sets the font for a widget. Overrides any
-         <literal>font</literal> or <literal>fontset</literal> declarations. 
-         <replaceable>font</replaceable> must be a Pango font name, e.g.
-         <literal>"Sans Italic 10"</literal>.
+         Sets the font for a widget. <replaceable>font</replaceable> must be 
+         a Pango font name, e.g. <literal>"Sans Italic 10"</literal>. 
+         For details about Pango font names, see 
+         <link linkend="pango-font-description-from-string"><function>pango_font_description_from_string()</function></link>.
        </para>
      </listitem>   
   </varlistentry>
@@ -442,7 +483,7 @@ state of the widget. The states are:
     <listitem>
       <para>
         A color used for the background of widgets that have
-        been set insensitive with <link linkend="gtk-widget-set-sensitive">gtk_widget_set_sensitive</link>().
+        been set insensitive with <link linkend="gtk-widget-set-sensitive"><function>gtk_widget_set_sensitive()</function></link>.
       </para>
     </listitem>
   </varlistentry>
@@ -461,14 +502,18 @@ hex digits, or they can be specified as a triplet
 <literal>{ <replaceable>r</replaceable>, <replaceable>g</replaceable>,
 <replaceable>b</replaceable>}</literal>, where <literal>r</literal>,
 <literal>g</literal> and <literal>b</literal> are either integers in 
-the range 0-65635 or floats in the range 0.0-1.0.
+the range 0-65535 or floats in the range 0.0-1.0.
 </para>
 
 <para>
 In a <literal>stock</literal> definition, icon sources are specified as a
-4-tuple of image filename, text direction, widget state, and size, in that
-order.  Each icon source specifies an image filename to use with a given
-direction, state, and size. The <literal>*</literal> character can be used as a
+4-tuple of image filename or icon name, text direction, widget state, and size, in that
+order.  Each icon source specifies an image filename or icon name to use with a given
+direction, state, and size. Filenames are specified as a string such
+as <literal>"itemltr.png"</literal>, while icon names (looked up
+in the current icon theme), are specified with a leading
+<literal>@</literal>, such as <literal>@"item-ltr"</literal>.
+The <literal>*</literal> character can be used as a
 wildcard, and if direction/state/size are omitted they default to
 <literal>*</literal>. So for example, the following specifies different icons to
 use for left-to-right and right-to-left languages:
@@ -571,7 +616,7 @@ modifiers can be:
 The action that is bound to the key is a sequence
 of signal names (strings) followed by parameters for 
 each signal. The signals must be action signals.
-(See <link linkend="g-signal-new">g_signal_new</link>()). Each parameter can be
+(See <link linkend="g-signal-new"><function>g_signal_new()</function></link>). Each parameter can be
 a float, integer, string, or unquoted string
 representing an enumeration value. The types of
 the parameters specified must match the types of the 
@@ -579,29 +624,11 @@ parameters of the signal.
 </para>
 
 <para>
-Binding sets are connected to widgets in the
-same manner as styles, with one addition. 
-A priority can be specified for each pattern,
-and within each type of pattern, binding sets
-override other binding sets first by priority,
-and only then by order of specification. (Later
-overrides earlier). The priorities that can
-be specified are (highest to lowest):
-<simplelist>
-<member><literal>highest</literal></member>
-<member><literal>rc</literal></member>
-<member><literal>theme</literal></member>
-<member><literal>application</literal></member>
-<member><literal>gtk</literal></member>
-<member><literal>lowest</literal></member>
-</simplelist>
-<literal>rc</literal> is the default for bindings
-read from an RC file, <literal>theme</literal>
-is the default for bindings read from theme RC files,
-<literal>application</literal> 
-should be used for bindings an application sets
-up, and <literal>gtk</literal> is used for bindings
-that GTK+ creates internally.
+Binding sets are connected to widgets in the same manner as styles, 
+with one difference: Binding sets override other binding sets first 
+by pattern type, then by priority and then by order of specification.
+The priorities that can be specified and their default values are the 
+same as for styles.
 </para>
 </refsect2>
 </refsect1>
@@ -610,7 +637,7 @@ that GTK+ creates internally.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkRcStyle-struct"/>struct GtkRcStyle</title>
-<programlisting>struct GtkRcStyle {
+<indexterm><primary>GtkRcStyle</primary></indexterm><programlisting>struct GtkRcStyle {
   
   gchar *name;
   gchar *bg_pixmap_name[5];
@@ -628,14 +655,14 @@ that GTK+ creates internally.
 };
 </programlisting>
 <para>
-The <link linkend="GtkRcStyle">GtkRcStyle</link> structure is used to represent a set
+The <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> structure is used to represent a set
 of information about the appearance of a widget.
 This can later be composited together with other
-<link linkend="GtkRcStyle">GtkRcStyle</link> structures to form a <link linkend="GtkStyle">GtkStyle</link>.
+<link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> structures to form a <link linkend="GtkStyle"><type>GtkStyle</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkRcFlags"/>enum GtkRcFlags</title>
-<programlisting>typedef enum
+<indexterm><primary>GtkRcFlags</primary></indexterm><programlisting>typedef enum
 {
   GTK_RC_FG		= 1 &lt;&lt; 0,
   GTK_RC_BG		= 1 &lt;&lt; 1,
@@ -644,8 +671,8 @@ This can later be composited together with other
 } GtkRcFlags;
 </programlisting>
 <para>
-The <link linkend="GtkRcFlags">GtkRcFlags</link> enumeration is used as a bitmask
-to specify which fields of a <link linkend="GtkRcStyle">GtkRcStyle</link> have been
+The <link linkend="GtkRcFlags"><type>GtkRcFlags</type></link> enumeration is used as a bitmask
+to specify which fields of a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> have been
 set for each state.
 </para><variablelist role="enum">
 <varlistentry>
@@ -672,7 +699,7 @@ set for each state.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GtkRcTokenType"/>enum GtkRcTokenType</title>
-<programlisting>typedef enum {
+<indexterm><primary>GtkRcTokenType</primary></indexterm><programlisting>typedef enum {
   GTK_RC_TOKEN_INVALID = G_TOKEN_LAST,
   GTK_RC_TOKEN_INCLUDE,
   GTK_RC_TOKEN_NORMAL,
@@ -714,14 +741,14 @@ set for each state.
 } GtkRcTokenType;
 </programlisting>
 <para>
-The <link linkend="GtkRcTokenType">GtkRcTokenType</link> enumeration represents the tokens
+The <link linkend="GtkRcTokenType"><type>GtkRcTokenType</type></link> enumeration represents the tokens
 in the RC file. It is exposed so that theme engines
 can reuse these tokens when parsing the theme-engine
 specific portions of a RC file.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-scanner-new"/>gtk_rc_scanner_new ()</title>
-<programlisting><link linkend="GScanner">GScanner</link>*   gtk_rc_scanner_new              (void);</programlisting>
+<indexterm><primary>gtk_rc_scanner_new</primary></indexterm><programlisting><link linkend="GScanner">GScanner</link>*   gtk_rc_scanner_new              (void);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -732,18 +759,18 @@ specific portions of a RC file.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-style"/>gtk_rc_get_style ()</title>
-<programlisting><link linkend="GtkStyle">GtkStyle</link>*   gtk_rc_get_style                (<link linkend="GtkWidget">GtkWidget</link> *widget);</programlisting>
+<indexterm><primary>gtk_rc_get_style</primary></indexterm><programlisting><link linkend="GtkStyle">GtkStyle</link>*   gtk_rc_get_style                (<link linkend="GtkWidget">GtkWidget</link> *widget);</programlisting>
 <para>
 Finds all matching RC styles for a given widget,
 composites them together, and then creates a 
-<link linkend="GtkStyle">GtkStyle</link> representing the composite appearance.
+<link linkend="GtkStyle"><type>GtkStyle</type></link> representing the composite appearance.
 (GTK+ actually keeps a cache of previously 
 created styles, so a new style may not be
 created.)</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkWidget">GtkWidget</link>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the resulting style. No refcount is added
   to the returned style, so if you want to save this
@@ -752,19 +779,19 @@ created.)</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-style-by-paths"/>gtk_rc_get_style_by_paths ()</title>
-<programlisting><link linkend="GtkStyle">GtkStyle</link>*   gtk_rc_get_style_by_paths       (<link linkend="GtkSettings">GtkSettings</link> *settings,
-                                             const char *widget_path,
-                                             const char *class_path,
+<indexterm><primary>gtk_rc_get_style_by_paths</primary></indexterm><programlisting><link linkend="GtkStyle">GtkStyle</link>*   gtk_rc_get_style_by_paths       (<link linkend="GtkSettings">GtkSettings</link> *settings,
+                                             const <link linkend="char">char</link> *widget_path,
+                                             const <link linkend="char">char</link> *class_path,
                                              <link linkend="GType">GType</link> type);</programlisting>
 <para>
-Creates up a <link linkend="GtkStyle">GtkStyle</link> from styles defined in a RC file by providing
+Creates up a <link linkend="GtkStyle"><type>GtkStyle</type></link> from styles defined in a RC file by providing
 the raw components used in matching. This function may be useful
 when creating pseudo-widgets that should be themed like widgets but
 don't actually have corresponding GTK+ widgets. An example of this
 would be items inside a GNOME canvas widget.
 </para>
 <para>
-The action of <link linkend="gtk-rc-get-style">gtk_rc_get_style</link>() is similar to:
+The action of <link linkend="gtk-rc-get-style"><function>gtk_rc_get_style()</function></link> is similar to:
 <informalexample><programlisting>
  gtk_widget_path (widget, NULL, &amp;path, NULL);
  gtk_widget_class_path (widget, NULL, &amp;class_path, NULL);
@@ -775,7 +802,7 @@ The action of <link linkend="gtk-rc-get-style">gtk_rc_get_style</link>() is simi
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>settings</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSettings">GtkSettings</link> object
+<listitem><simpara> a <link linkend="GtkSettings"><type>GtkSettings</type></link> object
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>widget_path</parameter>&nbsp;:</term>
 <listitem><simpara> the widget path to use when looking up the style, or <literal>NULL</literal>
@@ -787,22 +814,22 @@ The action of <link linkend="gtk-rc-get-style">gtk_rc_get_style</link>() is simi
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
 <listitem><simpara> a type that will be used along with parent types of this type
-       when matching against class styles, or <link linkend="G-TYPE-NONE-CAPS">G_TYPE_NONE</link>
+       when matching against class styles, or <link linkend="G-TYPE-NONE-CAPS"><type>G_TYPE_NONE</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A style created by matching with the supplied paths,
   or <literal>NULL</literal> if nothing matching was specified and the default style should
   be used. The returned value is owned by GTK+ as part of an internal cache,
-  so you must call <link linkend="g-object-ref">g_object_ref</link>() on the returned value if you want to
+  so you must call <link linkend="g-object-ref"><function>g_object_ref()</function></link> on the returned value if you want to
   keep a reference to it.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-add-widget-name-style"/>gtk_rc_add_widget_name_style ()</title>
-<programlisting>void        gtk_rc_add_widget_name_style    (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
+<indexterm role="deprecated"><primary>gtk_rc_add_widget_name_style</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_add_widget_name_style    (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
                                              const <link linkend="gchar">gchar</link> *pattern);</programlisting>
 <warning><para><literal>gtk_rc_add_widget_name_style</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Adds a <link linkend="GtkRcStyle">GtkRcStyle</link> that will be looked up by a match against
+Adds a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> that will be looked up by a match against
 the widget's pathname. This is equivalent to a:
 <literal>
 widget PATTERN style STYLE
@@ -810,7 +837,7 @@ widget PATTERN style STYLE
 statement in a RC file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>rc_style</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkRcStyle">GtkRcStyle</link> to use for widgets matching <parameter>pattern</parameter>
+<listitem><simpara>the <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> to use for widgets matching <parameter>pattern</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pattern</parameter>&nbsp;:</term>
 <listitem><simpara>the pattern
@@ -820,11 +847,11 @@ statement in a RC file.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-add-widget-class-style"/>gtk_rc_add_widget_class_style ()</title>
-<programlisting>void        gtk_rc_add_widget_class_style   (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
+<indexterm role="deprecated"><primary>gtk_rc_add_widget_class_style</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_add_widget_class_style   (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
                                              const <link linkend="gchar">gchar</link> *pattern);</programlisting>
 <warning><para><literal>gtk_rc_add_widget_class_style</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Adds a <link linkend="GtkRcStyle">GtkRcStyle</link> that will be looked up by a match against
+Adds a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> that will be looked up by a match against
 the widget's class pathname. This is equivalent to a:
 <literal>
 widget_class PATTERN style STYLE
@@ -832,7 +859,7 @@ widget_class PATTERN style STYLE
 statement in a RC file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>rc_style</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkRcStyle">GtkRcStyle</link> to use for widgets matching <parameter>pattern</parameter>
+<listitem><simpara>the <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> to use for widgets matching <parameter>pattern</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pattern</parameter>&nbsp;:</term>
 <listitem><simpara>the pattern
@@ -842,11 +869,11 @@ statement in a RC file.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-add-class-style"/>gtk_rc_add_class_style ()</title>
-<programlisting>void        gtk_rc_add_class_style          (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
+<indexterm role="deprecated"><primary>gtk_rc_add_class_style</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_add_class_style          (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style,
                                              const <link linkend="gchar">gchar</link> *pattern);</programlisting>
 <warning><para><literal>gtk_rc_add_class_style</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Adds a <link linkend="GtkRcStyle">GtkRcStyle</link> that will be looked up by a matching against
+Adds a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> that will be looked up by a matching against
 the class hierarchy of the widget. This is equivalent to a:
 <literal>
 class PATTERN style STYLE
@@ -854,7 +881,7 @@ class PATTERN style STYLE
 statement in a RC file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>rc_style</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkRcStyle">GtkRcStyle</link> to use for widgets deriving from <parameter>pattern</parameter>
+<listitem><simpara>the <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> to use for widgets deriving from <parameter>pattern</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pattern</parameter>&nbsp;:</term>
 <listitem><simpara>the pattern
@@ -864,7 +891,7 @@ statement in a RC file.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-parse"/>gtk_rc_parse ()</title>
-<programlisting>void        gtk_rc_parse                    (const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<indexterm><primary>gtk_rc_parse</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_parse                    (const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 Parses a given resource file.
 </para><variablelist role="params">
@@ -877,7 +904,7 @@ Parses a given resource file.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-parse-string"/>gtk_rc_parse_string ()</title>
-<programlisting>void        gtk_rc_parse_string             (const <link linkend="gchar">gchar</link> *rc_string);</programlisting>
+<indexterm><primary>gtk_rc_parse_string</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_parse_string             (const <link linkend="gchar">gchar</link> *rc_string);</programlisting>
 <para>
 Parses resource information directly from a string.
 </para><variablelist role="params">
@@ -889,10 +916,10 @@ Parses resource information directly from a string.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-reparse-all"/>gtk_rc_reparse_all ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_rc_reparse_all              (void);</programlisting>
+<indexterm><primary>gtk_rc_reparse_all</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_rc_reparse_all              (void);</programlisting>
 <para>
 If the modification time on any previously read file for the
-default <link linkend="GtkSettings">GtkSettings</link> has changed, discard all style information
+default <link linkend="GtkSettings"><type>GtkSettings</type></link> has changed, discard all style information
 and then reread all previously read RC files.</para>
 <para>
 </para><variablelist role="params">
@@ -901,17 +928,17 @@ and then reread all previously read RC files.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-reparse-all-for-settings"/>gtk_rc_reparse_all_for_settings ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_rc_reparse_all_for_settings (<link linkend="GtkSettings">GtkSettings</link> *settings,
+<indexterm><primary>gtk_rc_reparse_all_for_settings</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_rc_reparse_all_for_settings (<link linkend="GtkSettings">GtkSettings</link> *settings,
                                              <link linkend="gboolean">gboolean</link> force_load);</programlisting>
 <para>
 If the modification time on any previously read file
-for the given <link linkend="GtkSettings">GtkSettings</link> has changed, discard all style information
+for the given <link linkend="GtkSettings"><type>GtkSettings</type></link> has changed, discard all style information
 and then reread all previously read RC files.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>settings</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSettings">GtkSettings</link>
+<listitem><simpara> a <link linkend="GtkSettings"><type>GtkSettings</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>force_load</parameter>&nbsp;:</term>
 <listitem><simpara> load whether or not anything changed
@@ -920,11 +947,33 @@ and then reread all previously read RC files.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="gtk-rc-reset-styles"/>gtk_rc_reset_styles ()</title>
+<indexterm role="2.4"><primary>gtk_rc_reset_styles</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_reset_styles             (<link linkend="GtkSettings">GtkSettings</link> *settings);</programlisting>
+<para>
+This function recomputes the styles for all widgets that use a
+particular <link linkend="GtkSettings"><type>GtkSettings</type></link> object. (There is one <link linkend="GtkSettings"><type>GtkSettings</type></link> object
+per <link linkend="GdkScreen"><type>GdkScreen</type></link>, see <link linkend="gtk-settings-get-for-screen"><function>gtk_settings_get_for_screen()</function></link>); It is useful
+when some global parameter has changed that affects the appearance
+of all widgets, because when a widget gets a new style, it will
+both redraw and recompute any cached information about its
+appearance. As an example, it is used when the default font size
+set by the operating system changes. Note that this function
+doesn't affect widgets that have a style set explicitely on them
+with <link linkend="gtk-widget-set-style"><function>gtk_widget_set_style()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>settings</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkSettings"><type>GtkSettings</type></link>
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.4
+</para></refsect2>
+<refsect2>
 <title><anchor id="gtk-rc-add-default-file"/>gtk_rc_add_default_file ()</title>
-<programlisting>void        gtk_rc_add_default_file         (const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<indexterm><primary>gtk_rc_add_default_file</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_add_default_file         (const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 Adds a file to the list of files to be parsed at the
-end of <link linkend="gtk-init">gtk_init</link>().</para>
+end of <link linkend="gtk-init"><function>gtk_init()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
@@ -934,10 +983,10 @@ end of <link linkend="gtk-init">gtk_init</link>().</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-default-files"/>gtk_rc_get_default_files ()</title>
-<programlisting><link linkend="gchar">gchar</link>**     gtk_rc_get_default_files        (void);</programlisting>
+<indexterm><primary>gtk_rc_get_default_files</primary></indexterm><programlisting><link linkend="gchar">gchar</link>**     gtk_rc_get_default_files        (void);</programlisting>
 <para>
 Retrieves the current list of RC files that will be parsed
-at the end of <link linkend="gtk-init">gtk_init</link>().</para>
+at the end of <link linkend="gtk-init"><function>gtk_init()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <literal>NULL</literal>-terminated array of filenames. This memory
@@ -947,10 +996,10 @@ If you want to store this information, you should make a copy.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-set-default-files"/>gtk_rc_set_default_files ()</title>
-<programlisting>void        gtk_rc_set_default_files        (<link linkend="gchar">gchar</link> **filenames);</programlisting>
+<indexterm><primary>gtk_rc_set_default_files</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_set_default_files        (<link linkend="gchar">gchar</link> **filenames);</programlisting>
 <para>
 Sets the list of files that GTK+ will read at the
-end of <link linkend="gtk-init">gtk_init</link>().</para>
+end of <link linkend="gtk-init"><function>gtk_init()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>filenames</parameter>&nbsp;:</term>
@@ -959,16 +1008,16 @@ end of <link linkend="gtk-init">gtk_init</link>().</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-parse-color"/>gtk_rc_parse_color ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_rc_parse_color              (<link linkend="GScanner">GScanner</link> *scanner,
+<indexterm><primary>gtk_rc_parse_color</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_rc_parse_color              (<link linkend="GScanner">GScanner</link> *scanner,
                                              <link linkend="GdkColor">GdkColor</link> *color);</programlisting>
 <para>
 Parses a color in the <link linkend="color-format">format</link> expected in a RC file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkScanner">GtkScanner</link>
+<listitem><simpara>a <link linkend="GtkScanner"><type>GtkScanner</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>color</parameter>&nbsp;:</term>
-<listitem><simpara>a pointer to a <link linkend="GtkColor">GtkColor</link> structure in which to store the result
+<listitem><simpara>a pointer to a <link linkend="GtkColor"><type>GtkColor</type></link> structure in which to store the result
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>G_TOKEN_NONE</literal> if parsing succeeded, otherwise the token
 that was expected but not found.
@@ -978,17 +1027,17 @@ that was expected but not found.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-parse-state"/>gtk_rc_parse_state ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_rc_parse_state              (<link linkend="GScanner">GScanner</link> *scanner,
+<indexterm><primary>gtk_rc_parse_state</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_rc_parse_state              (<link linkend="GScanner">GScanner</link> *scanner,
                                              <link linkend="GtkStateType">GtkStateType</link> *state);</programlisting>
 <para>
-Parses a <link linkend="GtkStateType">GtkStateType</link> variable from the format expected
+Parses a <link linkend="GtkStateType"><type>GtkStateType</type></link> variable from the format expected
 in a RC file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkScanner">GtkScanner</link> (must be initialized for parsing an RC file)
+<listitem><simpara>a <link linkend="GtkScanner"><type>GtkScanner</type></link> (must be initialized for parsing an RC file)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>state</parameter>&nbsp;:</term>
-<listitem><simpara>A pointer to a <link linkend="GtkStateType">GtkStateType</link> variable in which to
+<listitem><simpara>A pointer to a <link linkend="GtkStateType"><type>GtkStateType</type></link> variable in which to
 store the result.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>G_TOKEN_NONE</literal> if parsing succeeded, otherwise the token
@@ -999,17 +1048,17 @@ that was expected but not found.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-parse-priority"/>gtk_rc_parse_priority ()</title>
-<programlisting><link linkend="guint">guint</link>       gtk_rc_parse_priority           (<link linkend="GScanner">GScanner</link> *scanner,
+<indexterm><primary>gtk_rc_parse_priority</primary></indexterm><programlisting><link linkend="guint">guint</link>       gtk_rc_parse_priority           (<link linkend="GScanner">GScanner</link> *scanner,
                                              <link linkend="GtkPathPriorityType">GtkPathPriorityType</link> *priority);</programlisting>
 <para>
-Parses a <link linkend="GtkPathPriorityType">GtkPathPriorityType</link> variable from the format expected
+Parses a <link linkend="GtkPathPriorityType"><type>GtkPathPriorityType</type></link> variable from the format expected
 in a RC file.
 </para><variablelist role="params">
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkScanner">GtkScanner</link> (must be initialized for parsing an RC file)
+<listitem><simpara>a <link linkend="GtkScanner"><type>GtkScanner</type></link> (must be initialized for parsing an RC file)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
-<listitem><simpara>A pointer to <link linkend="GtkPathPriorityType">GtkPathPriorityType</link> variable in which
+<listitem><simpara>A pointer to <link linkend="GtkPathPriorityType"><type>GtkPathPriorityType</type></link> variable in which
 to store the result.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>G_TOKEN_NONE</literal> if parsing succeeded, otherwise the token
@@ -1020,7 +1069,7 @@ that was expected but not found.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-find-module-in-path"/>gtk_rc_find_module_in_path ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gtk_rc_find_module_in_path      (const <link linkend="gchar">gchar</link> *module_file);</programlisting>
+<indexterm><primary>gtk_rc_find_module_in_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_rc_find_module_in_path      (const <link linkend="gchar">gchar</link> *module_file);</programlisting>
 <para>
 Searches for a theme engine in the GTK+ search path. This function
 is not useful for applications and should not be used.</para>
@@ -1029,23 +1078,23 @@ is not useful for applications and should not be used.</para>
 <varlistentry><term><parameter>module_file</parameter>&nbsp;:</term>
 <listitem><simpara> name of a theme engine
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The filename, if found (must be freed with <link linkend="g-free">g_free</link>()),
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The filename, if found (must be freed with <link linkend="g-free"><function>g_free()</function></link>),
   otherwise <literal>NULL</literal>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-find-pixmap-in-path"/>gtk_rc_find_pixmap_in_path ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gtk_rc_find_pixmap_in_path      (<link linkend="GtkSettings">GtkSettings</link> *settings,
+<indexterm><primary>gtk_rc_find_pixmap_in_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_rc_find_pixmap_in_path      (<link linkend="GtkSettings">GtkSettings</link> *settings,
                                              <link linkend="GScanner">GScanner</link> *scanner,
                                              const <link linkend="gchar">gchar</link> *pixmap_file);</programlisting>
 <para>
-Looks up a file in pixmap path for the specified <link linkend="GtkSettings">GtkSettings</link>.
+Looks up a file in pixmap path for the specified <link linkend="GtkSettings"><type>GtkSettings</type></link>.
 If the file is not found, it outputs a warning message using
-<link linkend="g-warning">g_warning</link>() and returns <literal>NULL</literal>.</para>
+<link linkend="g-warning"><function>g_warning()</function></link> and returns <literal>NULL</literal>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>settings</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkSettings">GtkSettings</link>
+<listitem><simpara> a <link linkend="GtkSettings"><type>GtkSettings</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>scanner</parameter>&nbsp;:</term>
 <listitem><simpara> Scanner used to get line number information for the
@@ -1059,7 +1108,7 @@ If the file is not found, it outputs a warning message using
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-module-dir"/>gtk_rc_get_module_dir ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_module_dir           (void);</programlisting>
+<indexterm><primary>gtk_rc_get_module_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_module_dir           (void);</programlisting>
 <para>
 Returns a directory in which GTK+ looks for theme engines.
 For full information about the search for theme engines,
@@ -1067,12 +1116,12 @@ see the docs for <envar>GTK_PATH</envar> in
 <xref linkend="gtk-running"/>.</para>
 <para>
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the directory. (Must be freed with <link linkend="g-free">g_free</link>())
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the directory. (Must be freed with <link linkend="g-free"><function>g_free()</function></link>)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-im-module-path"/>gtk_rc_get_im_module_path ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_im_module_path       (void);</programlisting>
+<indexterm><primary>gtk_rc_get_im_module_path</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_im_module_path       (void);</programlisting>
 <para>
 Obtains the path in which to look for IM modules. See the documentation
 of the <link linkend="im-module-path"><envar>GTK_PATH</envar></link>
@@ -1088,7 +1137,7 @@ not be used by applications under normal circumstances.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-im-module-file"/>gtk_rc_get_im_module_file ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_im_module_file       (void);</programlisting>
+<indexterm><primary>gtk_rc_get_im_module_file</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_im_module_file       (void);</programlisting>
 <para>
 Obtains the path to the IM modules file. See the documentation
 of the <link linkend="im-module-file"><envar>GTK_IM_MODULE_FILE</envar></link>
@@ -1102,66 +1151,66 @@ listing the IM modules available for loading
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-get-theme-dir"/>gtk_rc_get_theme_dir ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_theme_dir            (void);</programlisting>
+<indexterm><primary>gtk_rc_get_theme_dir</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gtk_rc_get_theme_dir            (void);</programlisting>
 <para>
 Returns the standard directory in which themes should
 be installed. (GTK+ does not actually use this directory
 itself.)
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The directory (must be freed with <link linkend="g-free">g_free</link>()).
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>The directory (must be freed with <link linkend="g-free"><function>g_free()</function></link>).
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-style-new"/>gtk_rc_style_new ()</title>
-<programlisting><link linkend="GtkRcStyle">GtkRcStyle</link>* gtk_rc_style_new                (void);</programlisting>
+<indexterm><primary>gtk_rc_style_new</primary></indexterm><programlisting><link linkend="GtkRcStyle">GtkRcStyle</link>* gtk_rc_style_new                (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkRcStyle">GtkRcStyle</link> with no fields set and
+Creates a new <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> with no fields set and
 a reference count of 1.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the newly-created <link linkend="GtkRcStyle">GtkRcStyle</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the newly-created <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-style-copy"/>gtk_rc_style_copy ()</title>
-<programlisting><link linkend="GtkRcStyle">GtkRcStyle</link>* gtk_rc_style_copy               (<link linkend="GtkRcStyle">GtkRcStyle</link> *orig);</programlisting>
+<indexterm><primary>gtk_rc_style_copy</primary></indexterm><programlisting><link linkend="GtkRcStyle">GtkRcStyle</link>* gtk_rc_style_copy               (<link linkend="GtkRcStyle">GtkRcStyle</link> *orig);</programlisting>
 <para>
-Makes a copy of the specified <link linkend="GtkRcStyle">GtkRcStyle</link>. This function
+Makes a copy of the specified <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>. This function
 will correctly copy an RC style that is a member of a class
-derived from <link linkend="GtkRcStyle">GtkRcStyle</link>.</para>
+derived from <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>orig</parameter>&nbsp;:</term>
 <listitem><simpara> the style to copy
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the resulting <link linkend="GtkRcStyle">GtkRcStyle</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the resulting <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-style-ref"/>gtk_rc_style_ref ()</title>
-<programlisting>void        gtk_rc_style_ref                (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);</programlisting>
+<indexterm><primary>gtk_rc_style_ref</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_style_ref                (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);</programlisting>
 <para>
-Increments the reference count of a <link linkend="GtkRcStyle">GtkRcStyle</link>.
+Increments the reference count of a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>rc_style</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkRcStyle">GtkRcStyle</link>
+<listitem><simpara>a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-rc-style-unref"/>gtk_rc_style_unref ()</title>
-<programlisting>void        gtk_rc_style_unref              (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);</programlisting>
+<indexterm><primary>gtk_rc_style_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_rc_style_unref              (<link linkend="GtkRcStyle">GtkRcStyle</link> *rc_style);</programlisting>
 <para>
-Decrements the reference count of a <link linkend="GtkRcStyle">GtkRcStyle</link> and
+Decrements the reference count of a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link> and
 frees if the result is 0.
 </para><variablelist role="params">
 <varlistentry><term><parameter>rc_style</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkRcStyle">GtkRcStyle</link>
+<listitem><simpara>a <link linkend="GtkRcStyle"><type>GtkRcStyle</type></link>
 
 
 </simpara></listitem></varlistentry>

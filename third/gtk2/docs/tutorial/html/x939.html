@@ -5,8 +5,7 @@
 >Statusbars</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-STATUSBARS">Statusbars</H1
+NAME="SEC-STATUSBARS"
+>Statusbars</A
+></H1
 ><P
 >Statusbars are simple widgets used to display a text message. They
 keep a stack of the messages pushed onto them, so that popping the
@@ -191,23 +192,21 @@ CLASS="PROGRAMLISTING"
 
 GtkWidget *status_bar;
 
-void push_item( GtkWidget *widget,
-                gpointer   data )
+static void push_item( GtkWidget *widget,
+                       gpointer   data )
 {
   static int count = 1;
-  char buff[20];
+  gchar *buff;
 
-  g_snprintf (buff, 20, "Item %d", count++);
+  buff = g_strdup_printf ("Item %d", count++);
   gtk_statusbar_push (GTK_STATUSBAR (status_bar), GPOINTER_TO_INT (data), buff);
-
-  return;
+  g_free (buff);
 }
 
-void pop_item( GtkWidget *widget,
-               gpointer   data )
+static void pop_item( GtkWidget *widget,
+                      gpointer   data )
 {
   gtk_statusbar_pop (GTK_STATUSBAR (status_bar), GPOINTER_TO_INT (data));
-  return;
 }
 
 int main( int   argc,

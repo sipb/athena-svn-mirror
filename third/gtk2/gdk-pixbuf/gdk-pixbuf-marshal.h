@@ -6,10 +6,10 @@
 
 G_BEGIN_DECLS
 
-/* VOID:VOID (gdk-pixbuf-marshal.list:25) */
+/* VOID:VOID (./gdk-pixbuf-marshal.list:25) */
 #define gdk_pixbuf_marshal_VOID__VOID	g_cclosure_marshal_VOID__VOID
 
-/* VOID:INT,INT,INT,INT (gdk-pixbuf-marshal.list:26) */
+/* VOID:INT,INT,INT,INT (./gdk-pixbuf-marshal.list:26) */
 extern void gdk_pixbuf_marshal_VOID__INT_INT_INT_INT (GClosure     *closure,
                                                       GValue       *return_value,
                                                       guint         n_param_values,
@@ -17,10 +17,10 @@ extern void gdk_pixbuf_marshal_VOID__INT_INT_INT_INT (GClosure     *closure,
                                                       gpointer      invocation_hint,
                                                       gpointer      marshal_data);
 
-/* VOID:POINTER (gdk-pixbuf-marshal.list:27) */
+/* VOID:POINTER (./gdk-pixbuf-marshal.list:27) */
 #define gdk_pixbuf_marshal_VOID__POINTER	g_cclosure_marshal_VOID__POINTER
 
-/* VOID:INT,INT (gdk-pixbuf-marshal.list:28) */
+/* VOID:INT,INT (./gdk-pixbuf-marshal.list:28) */
 extern void gdk_pixbuf_marshal_VOID__INT_INT (GClosure     *closure,
                                               GValue       *return_value,
                                               guint         n_param_values,

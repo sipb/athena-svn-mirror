@@ -17,14 +17,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <string.h>
 #include <locale.h>
 
 #include "gtkimmulticontext.h"
 #include "gtkimmodule.h"
+#include "gtkmain.h"
 #include "gtkradiomenuitem.h"
+#include "gtkintl.h"
+#include "gtkprivate.h"
+
+struct _GtkIMMulticontextPrivate
+{
+  GdkWindow *client_window;
+  GdkRectangle cursor_location;
+
+  guint use_preedit : 1;
+  guint have_cursor_location : 1;
+  guint focus_in : 1;
+};
 
 static void     gtk_im_multicontext_class_init         (GtkIMMulticontextClass  *class);
 static void     gtk_im_multicontext_init               (GtkIMMulticontext       *im_multicontext);
@@ -130,6 +143,11 @@ static void
 gtk_im_multicontext_init (GtkIMMulticontext *multicontext)
 {
   multicontext->slave = NULL;
+  
+  multicontext->priv = g_new0 (GtkIMMulticontextPrivate, 1);
+  multicontext->priv->use_preedit = TRUE;
+  multicontext->priv->have_cursor_location = FALSE;
+  multicontext->priv->focus_in = FALSE;
 }
 
 /**
@@ -148,7 +166,10 @@ gtk_im_multicontext_new (void)
 static void
 gtk_im_multicontext_finalize (GObject *object)
 {
-  gtk_im_multicontext_set_slave (GTK_IM_MULTICONTEXT (object), NULL, TRUE);
+  GtkIMMulticontext *multicontext = GTK_IM_MULTICONTEXT (object);
+  
+  gtk_im_multicontext_set_slave (multicontext, NULL, TRUE);
+  g_free (multicontext->priv);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -158,6 +179,7 @@ gtk_im_multicontext_set_slave (GtkIMMulticontext *multicontext,
 			       GtkIMContext      *slave,
 			       gboolean           finalizing)
 {
+  GtkIMMulticontextPrivate *priv = multicontext->priv;
   gboolean need_preedit_changed = FALSE;
   
   if (multicontext->slave)
@@ -210,8 +232,14 @@ gtk_im_multicontext_set_slave (GtkIMMulticontext *multicontext,
 			G_CALLBACK (gtk_im_multicontext_delete_surrounding_cb),
 			multicontext);
       
-      if (multicontext->client_window)
-	gtk_im_context_set_client_window (slave, multicontext->client_window);
+      if (!priv->use_preedit)	/* Default is TRUE */
+	gtk_im_context_set_use_preedit (slave, FALSE);
+      if (priv->client_window)
+	gtk_im_context_set_client_window (slave, priv->client_window);
+      if (priv->have_cursor_location)
+	gtk_im_context_set_cursor_location (slave, &priv->cursor_location);
+      if (priv->focus_in)
+	gtk_im_context_focus_in (slave);
     }
 
   if (need_preedit_changed)
@@ -227,14 +255,9 @@ gtk_im_multicontext_get_slave (GtkIMMulticontext *multicontext)
 
       if (!global_context_id)
 	{
-	  const char *locale;
-	  
-#ifdef HAVE_LC_MESSAGES
-	  locale = setlocale (LC_MESSAGES, NULL);
-#else
-	  locale = setlocale (LC_CTYPE, NULL);
-#endif
+	  gchar *locale = _gtk_get_lc_ctype ();
 	  global_context_id = _gtk_im_module_get_default_context_id (locale);
+	  g_free (locale);
 	}
 	
       slave = _gtk_im_module_create (global_context_id);
@@ -252,9 +275,10 @@ gtk_im_multicontext_set_client_window (GtkIMContext *context,
 				       GdkWindow    *window)
 {
   GtkIMMulticontext *multicontext = GTK_IM_MULTICONTEXT (context);
+  
   GtkIMContext *slave = gtk_im_multicontext_get_slave (multicontext);
 
-  multicontext->client_window = window;
+  multicontext->priv->client_window = window;
   
   if (slave)
     gtk_im_context_set_client_window (slave, window);
@@ -308,7 +332,9 @@ gtk_im_multicontext_focus_in (GtkIMContext   *context)
     gtk_im_multicontext_set_slave (multicontext, NULL, FALSE);
 
   slave = gtk_im_multicontext_get_slave (multicontext);
-
+  
+  multicontext->priv->focus_in = TRUE;
+  
   if (slave)
     gtk_im_context_focus_in (slave);
 }
@@ -319,6 +345,8 @@ gtk_im_multicontext_focus_out (GtkIMContext   *context)
   GtkIMMulticontext *multicontext = GTK_IM_MULTICONTEXT (context);
   GtkIMContext *slave = gtk_im_multicontext_get_slave (multicontext);
 
+  multicontext->priv->focus_in = FALSE;
+  
   if (slave)
     gtk_im_context_focus_out (slave);
 }
@@ -340,6 +368,9 @@ gtk_im_multicontext_set_cursor_location (GtkIMContext   *context,
   GtkIMMulticontext *multicontext = GTK_IM_MULTICONTEXT (context);
   GtkIMContext *slave = gtk_im_multicontext_get_slave (multicontext);
 
+  multicontext->priv->have_cursor_location = TRUE;
+  multicontext->priv->cursor_location = *area;
+
   if (slave)
     gtk_im_context_set_cursor_location (slave, area);
 }
@@ -350,6 +381,10 @@ gtk_im_multicontext_set_use_preedit (GtkIMContext   *context,
 {
   GtkIMMulticontext *multicontext = GTK_IM_MULTICONTEXT (context);
   GtkIMContext *slave = gtk_im_multicontext_get_slave (multicontext);
+
+  use_preedit = use_preedit != FALSE;
+
+  multicontext->priv->use_preedit = use_preedit;
 
   if (slave)
     gtk_im_context_set_use_preedit (slave, use_preedit);
@@ -480,9 +515,36 @@ gtk_im_multicontext_append_menuitems (GtkIMMulticontext *context,
   for (i=0; i < n_contexts; i++)
     {
       GtkWidget *menuitem;
-
+      const gchar *translated_name;
+#ifdef ENABLE_NLS
+      if (contexts[i]->domain && contexts[i]->domain_dirname &&
+	  contexts[i]->domain[0] && contexts[i]->domain_dirname[0])
+	{
+	  if (strcmp (contexts[i]->domain, GETTEXT_PACKAGE) == 0 &&
+	      strcmp (contexts[i]->domain_dirname, GTK_LOCALEDIR) == 0)
+	    /* Input method may have a name in the GTK+ message catalog */
+	    translated_name = _(contexts[i]->context_name);
+	  else
+	    /* Input method has own message catalog */
+	    {
+	      bindtextdomain (contexts[i]->domain,
+			      contexts[i]->domain_dirname);
+#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+	      bind_textdomain_codeset (contexts[i]->domain, "UTF-8");
+#endif
+	      translated_name = dgettext (contexts[i]->domain, contexts[i]->context_name);
+	    }
+	}
+      else
+	/* Either domain or domain_dirname is NULL or "". We assume that
+	 * input method does not want a translated name in this case
+	 */
+	translated_name = contexts[i]->context_name;
+#else
+      translated_name = contexts[i]->context_name;
+#endif
       menuitem = gtk_radio_menu_item_new_with_label (group,
-                                                     contexts[i]->context_name);
+						     translated_name);
       
       if ((global_context_id == NULL && group == NULL) ||
           (global_context_id &&

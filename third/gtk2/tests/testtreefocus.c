@@ -1,3 +1,4 @@
+#include <config.h>
 #include <gtk/gtk.h>
 
 typedef struct _TreeStruct TreeStruct;
@@ -342,7 +343,7 @@ main (int argc, char *argv[])
   renderer = gtk_cell_renderer_toggle_new ();
   g_signal_connect (renderer, "toggled", G_CALLBACK (alex_toggled), model);
 
-  g_object_set (G_OBJECT (renderer), "xalign", 0.0, NULL);
+  g_object_set (renderer, "xalign", 0.0, NULL);
   col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),
 							    -1, "Alex",
 							    renderer,
@@ -359,7 +360,7 @@ main (int argc, char *argv[])
   renderer = gtk_cell_renderer_toggle_new ();
   g_signal_connect (renderer, "toggled", G_CALLBACK (havoc_toggled), model);
 
-  g_object_set (G_OBJECT (renderer), "xalign", 0.0, NULL);
+  g_object_set (renderer, "xalign", 0.0, NULL);
   col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),
 							    -1, "Havoc",
 							    renderer,
@@ -375,7 +376,7 @@ main (int argc, char *argv[])
   renderer = gtk_cell_renderer_toggle_new ();
   g_signal_connect (renderer, "toggled", G_CALLBACK (tim_toggled), model);
 
-  g_object_set (G_OBJECT (renderer), "xalign", 0.0, NULL);
+  g_object_set (renderer, "xalign", 0.0, NULL);
   col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),
 					       -1, "Tim",
 					       renderer,
@@ -391,7 +392,7 @@ main (int argc, char *argv[])
   /* Owen Column */
   renderer = gtk_cell_renderer_toggle_new ();
   g_signal_connect (renderer, "toggled", G_CALLBACK (owen_toggled), model);
-  g_object_set (G_OBJECT (renderer), "xalign", 0.0, NULL);
+  g_object_set (renderer, "xalign", 0.0, NULL);
   col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),
 					       -1, "Owen",
 					       renderer,
@@ -406,7 +407,7 @@ main (int argc, char *argv[])
   /* Owen Column */
   renderer = gtk_cell_renderer_toggle_new ();
   g_signal_connect (renderer, "toggled", G_CALLBACK (dave_toggled), model);
-  g_object_set (G_OBJECT (renderer), "xalign", 0.0, NULL);
+  g_object_set (renderer, "xalign", 0.0, NULL);
   col_offset = gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (tree_view),
 					       -1, "Dave",
 					       renderer,

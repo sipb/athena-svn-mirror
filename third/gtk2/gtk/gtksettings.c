@@ -16,6 +16,7 @@
  * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <config.h>
 #include "gtksettings.h"
 #include "gtkrc.h"
 #include "gtkintl.h"
@@ -42,18 +43,30 @@ struct _GtkSettingsPropertyValue
   GtkSettingsSource source;
 };
 
+#ifdef GDK_WINDOWING_X11
+#include <pango/pangoxft.h>
+#include <gdk/x11/gdkx.h>
+#endif
+
 enum {
   PROP_0,
   PROP_DOUBLE_CLICK_TIME,
+  PROP_DOUBLE_CLICK_DISTANCE,
   PROP_CURSOR_BLINK,
   PROP_CURSOR_BLINK_TIME,
   PROP_SPLIT_CURSOR,
   PROP_THEME_NAME,
+  PROP_ICON_THEME_NAME,
   PROP_KEY_THEME_NAME,
   PROP_MENU_BAR_ACCEL,
   PROP_DND_DRAG_THRESHOLD,
   PROP_FONT_NAME,
-  PROP_ICON_SIZES
+  PROP_ICON_SIZES,
+  PROP_XFT_ANTIALIAS,
+  PROP_XFT_HINTING,
+  PROP_XFT_HINTSTYLE,
+  PROP_XFT_RGBA,
+  PROP_XFT_DPI
 };
 
 
@@ -74,7 +87,7 @@ static void	gtk_settings_notify		 (GObject		*object,
 static guint	settings_install_property_parser (GtkSettingsClass      *class,
 						  GParamSpec            *pspec,
 						  GtkRcPropertyParser    parser);
-static void    settings_update_double_click_time (GtkSettings           *settings);
+static void    settings_update_double_click      (GtkSettings           *settings);
 
 
 /* --- variables --- */
@@ -111,6 +124,87 @@ gtk_settings_get_type (void)
   
   return settings_type;
 }
+
+#ifdef GDK_WINDOWING_X11
+static void
+gtk_default_substitute (FcPattern *pattern,
+			gpointer   data)
+{
+  GtkSettings *settings = data;
+  gint antialias;
+  gint hinting;
+  char *rgba;
+  char *hintstyle;
+  gint dpi;
+  FcValue v;
+  
+  g_object_get (G_OBJECT (settings),
+		"gtk-xft-antialias", &antialias,
+		"gtk-xft-hinting", &hinting,
+		"gtk-xft-hintstyle", &hintstyle,
+		"gtk-xft-rgba", &rgba,
+		"gtk-xft-dpi", &dpi,
+		NULL);
+  
+  if (antialias >= 0 &&
+      FcPatternGet (pattern, FC_ANTIALIAS, 0, &v) == FcResultNoMatch)
+    FcPatternAddBool (pattern, FC_ANTIALIAS, antialias != 0);
+  
+  if (hinting >= 0 &&
+      FcPatternGet (pattern, FC_HINTING, 0, &v) == FcResultNoMatch)
+    FcPatternAddBool (pattern, FC_HINTING, hinting != 0);
+ 
+#ifdef FC_HINT_STYLE 
+  if (hintstyle && FcPatternGet (pattern, FC_HINT_STYLE, 0, &v) == FcResultNoMatch)
+    {
+      int val = FC_HINT_FULL;	/* Quiet GCC */
+      gboolean found = TRUE;
+
+      if (strcmp (hintstyle, "hintnone") == 0)
+	val = FC_HINT_NONE;
+      else if (strcmp (hintstyle, "hintslight") == 0)
+	val = FC_HINT_SLIGHT;
+      else if (strcmp (hintstyle, "hintmedium") == 0)
+	val = FC_HINT_MEDIUM;
+      else if (strcmp (hintstyle, "hintfull") == 0)
+	val = FC_HINT_FULL;
+      else
+	found = FALSE;
+
+      if (found)
+	FcPatternAddInteger (pattern, FC_HINT_STYLE, val);
+    }
+#endif /* FC_HINT_STYLE */
+
+  if (rgba && FcPatternGet (pattern, FC_RGBA, 0, &v) == FcResultNoMatch)
+    {
+      int val = FC_RGBA_NONE;	/* Quiet GCC */
+      gboolean found = TRUE;
+
+      if (strcmp (rgba, "none") == 0)
+	val = FC_RGBA_NONE;
+      else if (strcmp (rgba, "rgb") == 0)
+	val = FC_RGBA_RGB;
+      else if (strcmp (rgba, "bgr") == 0)
+	val = FC_RGBA_BGR;
+      else if (strcmp (rgba, "vrgb") == 0)
+	val = FC_RGBA_VRGB;
+      else if (strcmp (rgba, "vbgr") == 0)
+	val = FC_RGBA_VBGR;
+      else
+	found = FALSE;
+
+      if (found)
+	FcPatternAddInteger (pattern, FC_RGBA, val);
+    }
+
+  if (dpi >= 0 && FcPatternGet (pattern, FC_DPI, 0, &v) == FcResultNoMatch)
+    FcPatternAddDouble (pattern, FC_DPI, dpi / 1024.);
+
+  g_free (hintstyle);
+  g_free (rgba);
+}
+#endif /* GDK_WINDOWING_X11 */
 
 static void
 gtk_settings_init (GtkSettings *settings)
@@ -165,48 +259,65 @@ gtk_settings_class_init (GtkSettingsClass *class)
 
   result = settings_install_property_parser (class,
                                              g_param_spec_int ("gtk-double-click-time",
-                                                               _("Double Click Time"),
-                                                               _("Maximum time allowed between two clicks for them to be considered a double click (in milliseconds)"),
+                                                               P_("Double Click Time"),
+                                                               P_("Maximum time allowed between two clicks for them to be considered a double click (in milliseconds)"),
                                                                0, G_MAXINT, 250,
                                                                G_PARAM_READWRITE),
                                              NULL);
   g_assert (result == PROP_DOUBLE_CLICK_TIME);
   result = settings_install_property_parser (class,
+                                             g_param_spec_int ("gtk-double-click-distance",
+                                                               P_("Double Click Distance"),
+                                                               P_("Maximum distance allowed between two clicks for them to be considered a double click (in pixels)"),
+                                                               0, G_MAXINT, 5,
+                                                               G_PARAM_READWRITE),
+                                             NULL);
+  g_assert (result == PROP_DOUBLE_CLICK_DISTANCE);
+  result = settings_install_property_parser (class,
                                              g_param_spec_boolean ("gtk-cursor-blink",
-								   _("Cursor Blink"),
-								   _("Whether the cursor should blink"),
+								   P_("Cursor Blink"),
+								   P_("Whether the cursor should blink"),
 								   TRUE,
 								   G_PARAM_READWRITE),
 					     NULL);
   g_assert (result == PROP_CURSOR_BLINK);
   result = settings_install_property_parser (class,
                                              g_param_spec_int ("gtk-cursor-blink-time",
-                                                               _("Cursor Blink Time"),
-                                                               _("Length of the cursor blink cycle, in milleseconds"),
+                                                               P_("Cursor Blink Time"),
+                                                               P_("Length of the cursor blink cycle, in milleseconds"),
                                                                100, G_MAXINT, 1200,
                                                                G_PARAM_READWRITE),
                                              NULL);
   g_assert (result == PROP_CURSOR_BLINK_TIME);
   result = settings_install_property_parser (class,
                                              g_param_spec_boolean ("gtk-split-cursor",
-								   _("Split Cursor"),
-								   _("Whether two cursors should be displayed for mixed left-to-right and right-to-left text"),
+								   P_("Split Cursor"),
+								   P_("Whether two cursors should be displayed for mixed left-to-right and right-to-left text"),
 								   TRUE,
 								   G_PARAM_READWRITE),
                                              NULL);
   g_assert (result == PROP_SPLIT_CURSOR);
   result = settings_install_property_parser (class,
                                              g_param_spec_string ("gtk-theme-name",
-								   _("Theme Name"),
-								   _("Name of theme RC file to load"),
+								   P_("Theme Name"),
+								   P_("Name of theme RC file to load"),
 								  "Default",
 								  G_PARAM_READWRITE),
                                              NULL);
   g_assert (result == PROP_THEME_NAME);
   result = settings_install_property_parser (class,
+                                             g_param_spec_string ("gtk-icon-theme-name",
+								  P_("Icon Theme Name"),
+								  P_("Name of icon theme to use"),
+								  "hicolor",
+								  G_PARAM_READWRITE),
+                                             NULL);
+  g_assert (result == PROP_ICON_THEME_NAME);
+  
+  result = settings_install_property_parser (class,
                                              g_param_spec_string ("gtk-key-theme-name",
-								  _("Key Theme Name"),
-								  _("Name of key theme RC file to load"),
+								  P_("Key Theme Name"),
+								  P_("Name of key theme RC file to load"),
 								  NULL,
 								  G_PARAM_READWRITE),
                                              NULL);
@@ -214,8 +325,8 @@ gtk_settings_class_init (GtkSettingsClass *class)
 
   result = settings_install_property_parser (class,
                                              g_param_spec_string ("gtk-menu-bar-accel",
-                                                                  _("Menu bar accelerator"),
-                                                                  _("Keybinding to activate the menu bar"),
+                                                                  P_("Menu bar accelerator"),
+                                                                  P_("Keybinding to activate the menu bar"),
                                                                   "F10",
                                                                   G_PARAM_READWRITE),
                                              NULL);
@@ -223,8 +334,8 @@ gtk_settings_class_init (GtkSettingsClass *class)
 
   result = settings_install_property_parser (class,
 					     g_param_spec_int ("gtk-dnd-drag-threshold",
-							       _("Drag threshold"),
-							       _("Number of pixels the cursor can move before dragging"),
+							       P_("Drag threshold"),
+							       P_("Number of pixels the cursor can move before dragging"),
 							       1, G_MAXINT, 8,
                                                                G_PARAM_READWRITE),
 					     NULL);
@@ -232,8 +343,8 @@ gtk_settings_class_init (GtkSettingsClass *class)
 
   result = settings_install_property_parser (class,
                                              g_param_spec_string ("gtk-font-name",
-								   _("Font Name"),
-								   _("Name of default font to use"),
+								   P_("Font Name"),
+								   P_("Name of default font to use"),
 								  "Sans 10",
 								  G_PARAM_READWRITE),
                                              NULL);
@@ -241,12 +352,64 @@ gtk_settings_class_init (GtkSettingsClass *class)
 
   result = settings_install_property_parser (class,
                                              g_param_spec_string ("gtk-icon-sizes",
-								   _("Icon Sizes"),
-								   _("List of icon sizes (gtk-menu=16,16;gtk-button=20,20..."),
+								   P_("Icon Sizes"),
+								   P_("List of icon sizes (gtk-menu=16,16;gtk-button=20,20..."),
 								  NULL,
 								  G_PARAM_READWRITE),
                                              NULL);
   g_assert (result == PROP_ICON_SIZES);
+
+#ifdef GDK_WINDOWING_X11
+  result = settings_install_property_parser (class,
+					     g_param_spec_int ("gtk-xft-antialias",
+ 							       P_("Xft Antialias"),
+ 							       P_("Whether to antialias Xft fonts; 0=no, 1=yes, -1=default"),
+ 							       -1, 1, -1,
+ 							       G_PARAM_READWRITE),
+					     NULL);
+ 
+  g_assert (result == PROP_XFT_ANTIALIAS);
+  
+  result = settings_install_property_parser (class,
+					     g_param_spec_int ("gtk-xft-hinting",
+ 							       P_("Xft Hinting"),
+ 							       P_("Whether to hint Xft fonts; 0=no, 1=yes, -1=default"),
+ 							       -1, 1, -1,
+ 							       G_PARAM_READWRITE),
+					     NULL);
+  
+  g_assert (result == PROP_XFT_HINTING);
+  
+  result = settings_install_property_parser (class,
+					     g_param_spec_string ("gtk-xft-hintstyle",
+ 								  P_("Xft Hint Style"),
+ 								  P_("What degree of hinting to use; none, slight, medium, or full"),
+ 								  NULL,
+ 								  G_PARAM_READWRITE),
+                                              NULL);
+  
+  g_assert (result == PROP_XFT_HINTSTYLE);
+  
+  result = settings_install_property_parser (class,
+					     g_param_spec_string ("gtk-xft-rgba",
+ 								  P_("Xft RGBA"),
+ 								  P_("Type of subpixel antialiasing; none, rgb, bgr, vrgb, vbgr"),
+ 								  NULL,
+ 								  G_PARAM_READWRITE),
+					     NULL);
+  
+  g_assert (result == PROP_XFT_RGBA);
+  
+  result = settings_install_property_parser (class,
+					     g_param_spec_int ("gtk-xft-dpi",
+ 							       P_("Xft DPI"),
+ 							       P_("Resolution for Xft, in 1024 * dots/inch. -1 to use default value"),
+ 							       -1, 1024*1024, -1,
+ 							       G_PARAM_READWRITE),
+					     NULL);
+  
+  g_assert (result == PROP_XFT_DPI);
+#endif  /* GDK_WINDOWING_X11 */
 }
 
 static void
@@ -288,9 +451,19 @@ gtk_settings_get_for_screen (GdkScreen *screen)
     {
       settings = g_object_new (GTK_TYPE_SETTINGS, NULL);
       settings->screen = screen;
-      g_object_set_data (G_OBJECT (screen), "gtk-settings", settings); 
+      g_object_set_data (G_OBJECT (screen), "gtk-settings", settings);
+
+#ifdef GDK_WINDOWING_X11  
+      /* Set the default substitution function for the Pango fontmap.
+       */
+      pango_xft_set_default_substitute (GDK_SCREEN_XDISPLAY (screen),
+					GDK_SCREEN_XNUMBER (screen),
+					gtk_default_substitute,
+					settings, NULL);
+#endif /* GDK_WINDOWING_X11 */
+      
       gtk_rc_reparse_all_for_settings (settings, TRUE);
-      settings_update_double_click_time (settings);
+      settings_update_double_click (settings);
     }
   
   return settings;
@@ -411,8 +584,24 @@ gtk_settings_notify (GObject    *object,
   switch (property_id)
     {
     case PROP_DOUBLE_CLICK_TIME:
-      settings_update_double_click_time (settings);
+    case PROP_DOUBLE_CLICK_DISTANCE:
+      settings_update_double_click (settings);
       break;
+#ifdef GDK_WINDOWING_X11      
+    case PROP_XFT_ANTIALIAS:
+    case PROP_XFT_HINTING:
+    case PROP_XFT_HINTSTYLE:
+    case PROP_XFT_RGBA:
+    case PROP_XFT_DPI:
+      pango_xft_substitute_changed (GDK_SCREEN_XDISPLAY (settings->screen),
+ 				    GDK_SCREEN_XNUMBER (settings->screen));
+      /* This is a hack because with gtk_rc_reset_styles() doesn't get
+       * widgets with gtk_widget_style_set(), and also causes more
+       * recomputation than necessary.
+       */
+      gtk_rc_reset_styles (GTK_SETTINGS (object));
+      break;
+#endif /* GDK_WINDOWING_X11 */
     }
 }
 
@@ -438,12 +627,12 @@ _gtk_settings_parse_convert (GtkRcPropertyParser parser,
 	}
       else if (G_VALUE_HOLDS_LONG (src_value))
 	{
-	  gstring = g_string_new ("");
+	  gstring = g_string_new (NULL);
 	  g_string_append_printf (gstring, "%ld", g_value_get_long (src_value));
 	}
       else if (G_VALUE_HOLDS_DOUBLE (src_value))
 	{
-	  gstring = g_string_new ("");
+	  gstring = g_string_new (NULL);
 	  g_string_append_printf (gstring, "%f", g_value_get_double (src_value));
 	}
       else if (G_VALUE_HOLDS_STRING (src_value))
@@ -495,8 +684,11 @@ apply_queued_setting (GtkSettings             *data,
   if (_gtk_settings_parse_convert (parser, &qvalue->public.value,
 				   pspec, &tmp_value))
     {
-      g_object_set_property (G_OBJECT (data), pspec->name, &tmp_value);
-      data->property_values[pspec->param_id - 1].source = qvalue->source;
+      if (data->property_values[pspec->param_id - 1].source <= qvalue->source)
+	{
+	  g_object_set_property (G_OBJECT (data), pspec->name, &tmp_value);
+	  data->property_values[pspec->param_id - 1].source = qvalue->source;
+	}
     }
   else
     {
@@ -760,6 +952,22 @@ gtk_settings_set_double_property (GtkSettings *settings,
   g_value_unset (&svalue.value);
 }
 
+/**
+ * gtk_rc_property_parse_color:
+ * @pspec: a #GParamSpec
+ * @gstring: the #GString to be parsed
+ * @property_value: a #GValue which must hold #GdkColor values.
+ * 
+ * A #GtkRcPropertyParser for use with gtk_settings_install_property_parser()
+ * or gtk_widget_class_install_style_property_parser() which parses a
+ * color given either by its name or in the form 
+ * <literal>{ red, green, blue }</literal> where %red, %green and
+ * %blue are integers between 0 and 65535 or floating-point numbers
+ * between 0 and 1.
+ * 
+ * Return value: %TRUE if @gstring could be parsed and @property_value
+ * has been set to the resulting #GdkColor.
+ **/
 gboolean
 gtk_rc_property_parse_color (const GParamSpec *pspec,
 			     const GString    *gstring,
@@ -787,6 +995,23 @@ gtk_rc_property_parse_color (const GParamSpec *pspec,
   return success;
 }
 
+/**
+ * gtk_rc_property_parse_enum:
+ * @pspec: a #GParamSpec
+ * @gstring: the #GString to be parsed
+ * @property_value: a #GValue which must hold enum values.
+ * 
+ * A #GtkRcPropertyParser for use with gtk_settings_install_property_parser()
+ * or gtk_widget_class_install_style_property_parser() which parses a single
+ * enumeration value.
+ *
+ * The enumeration value can be specified by its name, its nickname or
+ * its numeric value. For consistency with flags parsing, the value
+ * may be surrounded by parentheses.
+ * 
+ * Return value: %TRUE if @gstring could be parsed and @property_value
+ * has been set to the resulting #GEnumValue.
+ **/
 gboolean
 gtk_rc_property_parse_enum (const GParamSpec *pspec,
 			    const GString    *gstring,
@@ -803,7 +1028,7 @@ gtk_rc_property_parse_enum (const GParamSpec *pspec,
   g_scanner_input_text (scanner, gstring->str, gstring->len);
 
   /* we just want to parse _one_ value, but for consistency with flags parsing
-   * we support optional paranthesis
+   * we support optional parenthesis
    */
   g_scanner_get_next_token (scanner);
   if (scanner->token == '(')
@@ -866,13 +1091,29 @@ parse_flags_value (GScanner    *scanner,
   return G_TOKEN_IDENTIFIER;
 }
 
+/**
+ * gtk_rc_property_parse_flags:
+ * @pspec: a #GParamSpec
+ * @gstring: the #GString to be parsed
+ * @property_value: a #GValue which must hold flags values.
+ * 
+ * A #GtkRcPropertyParser for use with gtk_settings_install_property_parser()
+ * or gtk_widget_class_install_style_property_parser() which parses flags. 
+ * 
+ * Flags can be specified by their name, their nickname or
+ * numerically. Multiple flags can be specified in the form 
+ * <literal>"( flag1 | flag2 | ... )"</literal>.
+ * 
+ * Return value: %TRUE if @gstring could be parsed and @property_value
+ * has been set to the resulting flags value.
+ **/
 gboolean
 gtk_rc_property_parse_flags (const GParamSpec *pspec,
 			     const GString    *gstring,
 			     GValue           *property_value)
 {
   GFlagsClass *class;
-  gboolean success = FALSE;
+   gboolean success = FALSE;
   GScanner *scanner;
 
   g_return_val_if_fail (G_IS_PARAM_SPEC (pspec), FALSE);
@@ -956,6 +1197,20 @@ get_braced_int (GScanner *scanner,
   return TRUE;
 }
 
+/**
+ * gtk_rc_property_parse_requisition:
+ * @pspec: a #GParamSpec
+ * @gstring: the #GString to be parsed
+ * @property_value: a #GValue which must hold boxed values.
+ * 
+ * A #GtkRcPropertyParser for use with gtk_settings_install_property_parser()
+ * or gtk_widget_class_install_style_property_parser() which parses a
+ * requisition in the form 
+ * <literal>"{ width, height }"</literal> for integers %width and %height.
+ * 
+ * Return value: %TRUE if @gstring could be parsed and @property_value
+ * has been set to the resulting #GtkRequisition.
+ **/
 gboolean
 gtk_rc_property_parse_requisition  (const GParamSpec *pspec,
 				    const GString    *gstring,
@@ -983,6 +1238,21 @@ gtk_rc_property_parse_requisition  (const GParamSpec *pspec,
   return success;
 }
 
+/**
+ * gtk_rc_property_parse_border:
+ * @pspec: a #GParamSpec
+ * @gstring: the #GString to be parsed
+ * @property_value: a #GValue which must hold boxed values.
+ * 
+ * A #GtkRcPropertyParser for use with gtk_settings_install_property_parser()
+ * or gtk_widget_class_install_style_property_parser() which parses
+ * borders in the form 
+ * <literal>"{ left, right, top, bottom }"</literal> for integers 
+ * %left, %right, %top and %bottom.
+ * 
+ * Return value: %TRUE if @gstring could be parsed and @property_value
+ * has been set to the resulting #GtkBorder.
+ **/
 gboolean
 gtk_rc_property_parse_border (const GParamSpec *pspec,
 			      const GString    *gstring,
@@ -1075,16 +1345,20 @@ _gtk_settings_reset_rc_values (GtkSettings *settings)
 }
 
 static void
-settings_update_double_click_time (GtkSettings *settings)
+settings_update_double_click (GtkSettings *settings)
 {
   if (gdk_screen_get_number (settings->screen) == 0)
     {
       GdkDisplay *display = gdk_screen_get_display (settings->screen);
       gint double_click_time;
+      gint double_click_distance;
   
-      g_object_get (G_OBJECT (settings), "gtk-double-click-time",
-		    &double_click_time, NULL);
+      g_object_get (settings, 
+		    "gtk-double-click-time", &double_click_time, 
+		    "gtk-double-click-distance", &double_click_distance,
+		    NULL);
       
       gdk_display_set_double_click_time (display, double_click_time);
+      gdk_display_set_double_click_distance (display, double_click_distance);
     }
 }

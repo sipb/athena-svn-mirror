@@ -38,7 +38,8 @@
 #include "gdkregion-generic.h"
 #include <linux/fb.h>
 #include <stdio.h>
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #define GDK_TYPE_DRAWABLE_IMPL_FBDATA (gdk_drawable_impl_fb_get_type ())
 #define GDK_DRAWABLE_IMPL_FBDATA(win) ((GdkDrawableFBData *)((GdkWindowObject *)(win))->impl)
@@ -119,7 +120,7 @@ struct _GdkWindowFBData
 
   GdkRegion *shape; /* Can also be GDK_FB_USE_CHILD_SHAPE */
   
-  gboolean realized : 1;
+  guint realized : 1;
 };
 
 typedef struct {
@@ -338,9 +339,9 @@ struct _GdkFBDrawingContext {
   guint rowstride, clip_rowstride;
   int clipxoff, clipyoff;
 
-  gboolean draw_bg : 1;
-  gboolean copy_region : 1;
-  gboolean handle_cursor : 1;
+  guint draw_bg : 1;
+  guint copy_region : 1;
+  guint handle_cursor : 1;
 };
 
 void       gdk_fb_drawing_context_init     (GdkFBDrawingContext *dc,

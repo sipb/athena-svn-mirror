@@ -123,12 +123,16 @@ gint    gtk_paned_get_position    (GtkPaned  *paned);
 void    gtk_paned_set_position    (GtkPaned  *paned,
 				   gint       position);
 
+GtkWidget *gtk_paned_get_child1   (GtkPaned  *paned);
+GtkWidget *gtk_paned_get_child2   (GtkPaned  *paned);
+
 /* Internal function */
+#if !defined (GTK_DISABLE_DEPRECATED) || defined (GTK_COMPILATION)
 void    gtk_paned_compute_position (GtkPaned  *paned,
 				    gint       allocation,
 				    gint       child1_req,
 				    gint       child2_req);
-
+#endif /* !GTK_DISABLE_DEPRECATED || GTK_COMPILATION */
 #ifndef GTK_DISABLE_DEPRECATED
 #define	gtk_paned_gutter_size(p,s)		(void) 0
 #define	gtk_paned_set_gutter_size(p,s)		(void) 0

@@ -18,21 +18,21 @@
 
 struct      <link linkend="GtkCurve-struct">GtkCurve</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-curve-new">gtk_curve_new</link>                   (void);
-void        <link linkend="gtk-curve-reset">gtk_curve_reset</link>                 (<link linkend="GtkCurve">GtkCurve</link> *curve);
-void        <link linkend="gtk-curve-set-gamma">gtk_curve_set_gamma</link>             (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<link linkend="void">void</link>        <link linkend="gtk-curve-reset">gtk_curve_reset</link>                 (<link linkend="GtkCurve">GtkCurve</link> *curve);
+<link linkend="void">void</link>        <link linkend="gtk-curve-set-gamma">gtk_curve_set_gamma</link>             (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                              <link linkend="gfloat">gfloat</link> gamma_);
-void        <link linkend="gtk-curve-set-range">gtk_curve_set_range</link>             (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<link linkend="void">void</link>        <link linkend="gtk-curve-set-range">gtk_curve_set_range</link>             (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                              <link linkend="gfloat">gfloat</link> min_x,
                                              <link linkend="gfloat">gfloat</link> max_x,
                                              <link linkend="gfloat">gfloat</link> min_y,
                                              <link linkend="gfloat">gfloat</link> max_y);
-void        <link linkend="gtk-curve-get-vector">gtk_curve_get_vector</link>            (<link linkend="GtkCurve">GtkCurve</link> *curve,
-                                             int veclen,
+<link linkend="void">void</link>        <link linkend="gtk-curve-get-vector">gtk_curve_get_vector</link>            (<link linkend="GtkCurve">GtkCurve</link> *curve,
+                                             <link linkend="int">int</link> veclen,
                                              <link linkend="gfloat">gfloat</link> vector[]);
-void        <link linkend="gtk-curve-set-vector">gtk_curve_set_vector</link>            (<link linkend="GtkCurve">GtkCurve</link> *curve,
-                                             int veclen,
+<link linkend="void">void</link>        <link linkend="gtk-curve-set-vector">gtk_curve_set_vector</link>            (<link linkend="GtkCurve">GtkCurve</link> *curve,
+                                             <link linkend="int">int</link> veclen,
                                              <link linkend="gfloat">gfloat</link> vector[]);
-void        <link linkend="gtk-curve-set-curve-type">gtk_curve_set_curve_type</link>        (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<link linkend="void">void</link>        <link linkend="gtk-curve-set-curve-type">gtk_curve_set_curve_type</link>        (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                              <link linkend="GtkCurveType">GtkCurveType</link> type);
 
 
@@ -52,11 +52,14 @@ void        <link linkend="gtk-curve-set-curve-type">gtk_curve_set_curve_type</l
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkCurve implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkCurve implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -64,11 +67,11 @@ GtkCurve implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkCurve--curve-type">curve-type</link>&quot;           <link linkend="GtkCurveType">GtkCurveType</link>         : Read / Write
-  &quot;<link linkend="GtkCurve--max-x">max-x</link>&quot;                <link linkend="gfloat">gfloat</link>               : Read / Write
-  &quot;<link linkend="GtkCurve--max-y">max-y</link>&quot;                <link linkend="gfloat">gfloat</link>               : Read / Write
-  &quot;<link linkend="GtkCurve--min-x">min-x</link>&quot;                <link linkend="gfloat">gfloat</link>               : Read / Write
-  &quot;<link linkend="GtkCurve--min-y">min-y</link>&quot;                <link linkend="gfloat">gfloat</link>               : Read / Write
+  &quot;<link linkend="GtkCurve--curve-type">curve-type</link>&quot;           <link linkend="GtkCurveType">GtkCurveType</link>          : Read / Write
+  &quot;<link linkend="GtkCurve--max-x">max-x</link>&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write
+  &quot;<link linkend="GtkCurve--max-y">max-y</link>&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write
+  &quot;<link linkend="GtkCurve--min-x">min-x</link>&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write
+  &quot;<link linkend="GtkCurve--min-y">min-y</link>&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write
 </synopsis>
 </refsect1>
 
@@ -77,7 +80,7 @@ GtkCurve implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 <synopsis>
 
 &quot;<link linkend="GtkCurve-curve-type-changed">curve-type-changed</link>&quot;
-            void        user_function      (<link linkend="GtkCurve">GtkCurve</link> *curve,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -85,8 +88,9 @@ GtkCurve implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
 
 <refsect1>
 <title>Description</title>
+<note>
 <para>
- NOTE this widget is considered too specialized/little-used for
+ This widget is considered too specialized/little-used for
  GTK+, and will in the future be moved to some other package.  If
  your application needs this widget, feel free to use it, as the
  widget does work and is useful in some applications; it's just not
@@ -94,13 +98,14 @@ GtkCurve implements <link linkend="AtkImplementorIface">AtkImplementorIface</lin
  the widget, and it will eventually move out of the GTK+
  distribution.
 </para>
+</note>
 <para>
-The <link linkend="GtkCurve">GtkCurve</link> widget allows the user to edit a curve covering a range of
+The <link linkend="GtkCurve"><type>GtkCurve</type></link> widget allows the user to edit a curve covering a range of
 values. It is typically used to fine-tune color balances in graphics
 applications like the Gimp.
 </para>
 <para>
-The <link linkend="GtkCurve">GtkCurve</link> widget has 3 modes of operation - spline, linear and free.
+The <link linkend="GtkCurve"><type>GtkCurve</type></link> widget has 3 modes of operation - spline, linear and free.
 In spline mode the user places points on the curve which are automatically
 connected together into a smooth curve. In linear mode the user places points
 on the curve which are connected by straight lines. In free mode the user can
@@ -112,39 +117,39 @@ draw the points of the curve freely, and they are not connected at all.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkCurve-struct"/>struct GtkCurve</title>
-<programlisting>struct GtkCurve;</programlisting>
+<indexterm><primary>GtkCurve</primary></indexterm><programlisting>struct GtkCurve;</programlisting>
 <para>
-The <link linkend="GtkCurve-struct">GtkCurve</link> struct contains private data only, and
+The <link linkend="GtkCurve-struct"><type>GtkCurve-struct</type></link> struct contains private data only, and
 should be accessed using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-new"/>gtk_curve_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_curve_new                   (void);</programlisting>
+<indexterm><primary>gtk_curve_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_curve_new                   (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkCurve">GtkCurve</link>.
+Creates a new <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkCurve">GtkCurve</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-reset"/>gtk_curve_reset ()</title>
-<programlisting>void        gtk_curve_reset                 (<link linkend="GtkCurve">GtkCurve</link> *curve);</programlisting>
+<indexterm><primary>gtk_curve_reset</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_curve_reset                 (<link linkend="GtkCurve">GtkCurve</link> *curve);</programlisting>
 <para>
 Resets the curve to a straight line from the minimum x and y values to the
 maximum x and y values (i.e. from the bottom-left to the top-right corners).
 The curve type is not changed.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkCurve">GtkCurve</link>.
+<listitem><simpara>a <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-set-gamma"/>gtk_curve_set_gamma ()</title>
-<programlisting>void        gtk_curve_set_gamma             (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<indexterm><primary>gtk_curve_set_gamma</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_curve_set_gamma             (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                              <link linkend="gfloat">gfloat</link> gamma_);</programlisting>
 <para>
 Recomputes the entire curve using the given gamma value.
@@ -154,7 +159,7 @@ below the straight line. The curve type is changed to <literal>GTK_CURVE_TYPE_FR
 FIXME: Needs a more precise definition of gamma.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkCurve">GtkCurve</link>.
+<listitem><simpara>a <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gamma_</parameter>&nbsp;:</term>
 <listitem><simpara>the gamma value.
@@ -164,17 +169,17 @@ FIXME: Needs a more precise definition of gamma.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-set-range"/>gtk_curve_set_range ()</title>
-<programlisting>void        gtk_curve_set_range             (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<indexterm><primary>gtk_curve_set_range</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_curve_set_range             (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                              <link linkend="gfloat">gfloat</link> min_x,
                                              <link linkend="gfloat">gfloat</link> max_x,
                                              <link linkend="gfloat">gfloat</link> min_y,
                                              <link linkend="gfloat">gfloat</link> max_y);</programlisting>
 <para>
 Sets the minimum and maximum x and y values of the curve.
-The curve is also reset with a call to <link linkend="gtk-curve-reset">gtk_curve_reset</link>().
+The curve is also reset with a call to <link linkend="gtk-curve-reset"><function>gtk_curve_reset()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkCurve">GtkCurve</link>.
+<listitem><simpara>a <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>min_x</parameter>&nbsp;:</term>
 <listitem><simpara>the minimum x value.
@@ -193,14 +198,14 @@ The curve is also reset with a call to <link linkend="gtk-curve-reset">gtk_curve
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-get-vector"/>gtk_curve_get_vector ()</title>
-<programlisting>void        gtk_curve_get_vector            (<link linkend="GtkCurve">GtkCurve</link> *curve,
-                                             int veclen,
+<indexterm><primary>gtk_curve_get_vector</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_curve_get_vector            (<link linkend="GtkCurve">GtkCurve</link> *curve,
+                                             <link linkend="int">int</link> veclen,
                                              <link linkend="gfloat">gfloat</link> vector[]);</programlisting>
 <para>
 Returns a vector of points representing the curve.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkCurve">GtkCurve</link>.
+<listitem><simpara>a <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>veclen</parameter>&nbsp;:</term>
 <listitem><simpara>the number of points to calculate.
@@ -213,15 +218,15 @@ Returns a vector of points representing the curve.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-set-vector"/>gtk_curve_set_vector ()</title>
-<programlisting>void        gtk_curve_set_vector            (<link linkend="GtkCurve">GtkCurve</link> *curve,
-                                             int veclen,
+<indexterm><primary>gtk_curve_set_vector</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_curve_set_vector            (<link linkend="GtkCurve">GtkCurve</link> *curve,
+                                             <link linkend="int">int</link> veclen,
                                              <link linkend="gfloat">gfloat</link> vector[]);</programlisting>
 <para>
 Sets the vector of points on the curve.
 The curve type is set to <literal>GTK_CURVE_TYPE_FREE</literal>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkCurve">GtkCurve</link>.
+<listitem><simpara>a <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>veclen</parameter>&nbsp;:</term>
 <listitem><simpara>the number of points.
@@ -234,7 +239,7 @@ The curve type is set to <literal>GTK_CURVE_TYPE_FREE</literal>.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-curve-set-curve-type"/>gtk_curve_set_curve_type ()</title>
-<programlisting>void        gtk_curve_set_curve_type        (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<indexterm><primary>gtk_curve_set_curve_type</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_curve_set_curve_type        (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                              <link linkend="GtkCurveType">GtkCurveType</link> type);</programlisting>
 <para>
 Sets the type of the curve. The curve will remain unchanged except when
@@ -242,7 +247,7 @@ changing from a free curve to a linear or spline curve, in which case the
 curve will be changed as little as possible.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkCurve">GtkCurve</link>.
+<listitem><simpara>a <link linkend="GtkCurve"><type>GtkCurve</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>type</parameter>&nbsp;:</term>
 <listitem><simpara>the type of the curve.
@@ -254,51 +259,39 @@ curve will be changed as little as possible.
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkCurve--curve-type"/>&quot;<literal>curve-type</literal>&quot; (<link linkend="GtkCurveType">GtkCurveType</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkCurve--curve-type"/>The &quot;<literal>curve-type</literal>&quot; property</title>
+<programlisting>  &quot;curve-type&quot;           <link linkend="GtkCurveType">GtkCurveType</link>          : Read / Write</programlisting>
+<para>Is this curve linear, spline interpolated, or free-form.</para><para>Default value: GTK_CURVE_TYPE_LINEAR</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCurve--max-x"/>The &quot;<literal>max-x</literal>&quot; property</title>
+<programlisting>  &quot;max-x&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write</programlisting>
+<para>Maximum possible X value.</para><para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCurve--max-y"/>The &quot;<literal>max-y</literal>&quot; property</title>
+<programlisting>  &quot;max-y&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write</programlisting>
+<para>Maximum possible value for Y.</para><para>Default value: 1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCurve--min-x"/>The &quot;<literal>min-x</literal>&quot; property</title>
+<programlisting>  &quot;min-x&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write</programlisting>
+<para>Minimum possible value for X.</para><para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkCurve--min-y"/>The &quot;<literal>min-y</literal>&quot; property</title>
+<programlisting>  &quot;min-y&quot;                <link linkend="gfloat">gfloat</link>                : Read / Write</programlisting>
+<para>Minimum possible value for Y.</para><para>Default value: 0</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCurve--max-x"/>&quot;<literal>max-x</literal>&quot; (<link linkend="gfloat">gfloat</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCurve--max-y"/>&quot;<literal>max-y</literal>&quot; (<link linkend="gfloat">gfloat</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCurve--min-x"/>&quot;<literal>min-x</literal>&quot; (<link linkend="gfloat">gfloat</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkCurve--min-y"/>&quot;<literal>min-y</literal>&quot; (<link linkend="gfloat">gfloat</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkCurve-curve-type-changed"/>The &quot;curve-type-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkCurve">GtkCurve</link> *curve,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkCurve">GtkCurve</link> *curve,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 Emitted when the curve type has been changed.
 The curve type can be changed explicitly with a call to
-<link linkend="gtk-curve-set-curve-type">gtk_curve_set_curve_type</link>(). It is also changed as a side-effect of
-calling <link linkend="gtk-curve-reset">gtk_curve_reset</link>() or <link linkend="gtk-curve-set-gamma">gtk_curve_set_gamma</link>().
+<link linkend="gtk-curve-set-curve-type"><function>gtk_curve_set_curve_type()</function></link>. It is also changed as a side-effect of
+calling <link linkend="gtk-curve-reset"><function>gtk_curve_reset()</function></link> or <link linkend="gtk-curve-set-gamma"><function>gtk_curve_set_gamma()</function></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>curve</parameter>&nbsp;:</term>
 <listitem><simpara>the object which received the signal.
@@ -315,7 +308,7 @@ calling <link linkend="gtk-curve-reset">gtk_curve_reset</link>() or <link linken
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkGammaCurve">GtkGammaCurve</link></term>
+<term><link linkend="GtkGammaCurve"><type>GtkGammaCurve</type></link></term>
 <listitem><para>a subclass for editing gamma curves.</para>
 </listitem>
 </varlistentry>

@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "gtktreeselection.h"
 #include "gtktreeprivate.h"
 #include "gtkrbtree.h"
@@ -118,7 +119,7 @@ gtk_tree_selection_finalize (GObject *object)
  * _gtk_tree_selection_new:
  *
  * Creates a new #GtkTreeSelection object.  This function should not be invoked,
- * as each #GtkTreeView will create it's own #GtkTreeSelection.
+ * as each #GtkTreeView will create its own #GtkTreeSelection.
  *
  * Return value: A newly created #GtkTreeSelection object.
  **/
@@ -137,7 +138,7 @@ _gtk_tree_selection_new (void)
  * @tree_view: The #GtkTreeView.
  *
  * Creates a new #GtkTreeSelection object.  This function should not be invoked,
- * as each #GtkTreeView will create it's own #GtkTreeSelection.
+ * as each #GtkTreeView will create its own #GtkTreeSelection.
  *
  * Return value: A newly created #GtkTreeSelection object.
  **/
@@ -241,7 +242,7 @@ gtk_tree_selection_set_mode (GtkTreeSelection *selection,
 						  node,
 						  tree,
 						  anchor_path,
-						  0,
+                                                  0,
 						  FALSE);
       if (anchor_path)
 	gtk_tree_path_free (anchor_path);
@@ -361,7 +362,6 @@ gtk_tree_selection_get_selected (GtkTreeSelection  *selection,
   g_return_val_if_fail (GTK_IS_TREE_SELECTION (selection), FALSE);
   g_return_val_if_fail (selection->type != GTK_SELECTION_MULTIPLE, FALSE);
   g_return_val_if_fail (selection->tree_view != NULL, FALSE);
-  g_return_val_if_fail (selection->tree_view->priv->model != NULL, FALSE);
 
   if (model)
     *model = selection->tree_view->priv->model;
@@ -413,7 +413,7 @@ gtk_tree_selection_get_selected (GtkTreeSelection  *selection,
  * Creates a list of path of all selected rows. Additionally, if you are
  * planning on modifying the model after calling this function, you may
  * want to convert the returned list into a list of #GtkTreeRowReference<!-- -->s.
- * To do this, you can use gtk_tree_row_reference_new_proxy().
+ * To do this, you can use gtk_tree_row_reference_new().
  *
  * To free the return value, use:
  * <informalexample><programlisting>
@@ -436,7 +436,6 @@ gtk_tree_selection_get_selected_rows (GtkTreeSelection   *selection,
 
   g_return_val_if_fail (GTK_IS_TREE_SELECTION (selection), NULL);
   g_return_val_if_fail (selection->tree_view != NULL, NULL);
-  g_return_val_if_fail (selection->tree_view->priv->model != NULL, NULL);
 
   if (selection->tree_view->priv->tree == NULL ||
       selection->tree_view->priv->tree->root == NULL)
@@ -455,7 +454,7 @@ gtk_tree_selection_get_selected_rows (GtkTreeSelection   *selection,
         {
 	  GtkTreePath *path;
 
-	  path = gtk_tree_model_get_path (*model, &iter);
+	  path = gtk_tree_model_get_path (selection->tree_view->priv->model, &iter);
 	  list = g_list_append (list, path);
 
 	  return list;
@@ -474,7 +473,7 @@ gtk_tree_selection_get_selected_rows (GtkTreeSelection   *selection,
   do
     {
       if (GTK_RBNODE_FLAG_SET (node, GTK_RBNODE_IS_SELECTED))
-	list = g_list_append (list, gtk_tree_path_copy (path));
+	list = g_list_prepend (list, gtk_tree_path_copy (path));
 
       if (node->children)
         {
@@ -506,7 +505,8 @@ gtk_tree_selection_get_selected_rows (GtkTreeSelection   *selection,
 		  if (!tree)
 		    {
 		      gtk_tree_path_free (path);
-		      return list;
+
+		      goto done; 
 		    }
 
 		  gtk_tree_path_up (path);
@@ -519,7 +519,8 @@ gtk_tree_selection_get_selected_rows (GtkTreeSelection   *selection,
 
   gtk_tree_path_free (path);
 
-  return list;
+ done:
+  return g_list_reverse (list);
 }
 
 static void
@@ -557,7 +558,6 @@ gtk_tree_selection_count_selected_rows (GtkTreeSelection *selection)
 
   g_return_val_if_fail (GTK_IS_TREE_SELECTION (selection), 0);
   g_return_val_if_fail (selection->tree_view != NULL, 0);
-  g_return_val_if_fail (selection->tree_view->priv->model != NULL, 0);
 
   if (selection->tree_view->priv->tree == NULL ||
       selection->tree_view->priv->tree->root == NULL)
@@ -618,7 +618,6 @@ gtk_tree_selection_selected_foreach (GtkTreeSelection            *selection,
 
   g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
   g_return_if_fail (selection->tree_view != NULL);
-  g_return_if_fail (selection->tree_view->priv->model != NULL);
 
   if (func == NULL ||
       selection->tree_view->priv->tree == NULL ||
@@ -752,7 +751,7 @@ out:
     TREE_VIEW_INTERNAL_ASSERT_VOID (has_parent);
   if (stop)
     g_warning
-      ("The model has been modified from within gtk_tree_selection_foreach.\n"
+      ("The model has been modified from within gtk_tree_selection_selected_foreach.\n"
        "This function is for observing the selections of the tree only.  If\n"
        "you are trying to get all selected items from the tree, try using\n"
        "gtk_tree_selection_get_selected_rows instead.\n");
@@ -771,8 +770,8 @@ gtk_tree_selection_select_path (GtkTreeSelection *selection,
 {
   GtkRBNode *node;
   GtkRBTree *tree;
-  GdkModifierType state = 0;
   gboolean ret;
+  GtkTreeSelectMode mode = 0;
 
   g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
   g_return_if_fail (selection->tree_view != NULL);
@@ -788,13 +787,13 @@ gtk_tree_selection_select_path (GtkTreeSelection *selection,
     return;
 
   if (selection->type == GTK_SELECTION_MULTIPLE)
-    state = GDK_CONTROL_MASK;
+    mode = GTK_TREE_SELECT_MODE_TOGGLE;
 
   _gtk_tree_selection_internal_select_node (selection,
 					    node,
 					    tree,
 					    path,
-					    state,
+                                            mode,
 					    FALSE);
 }
 
@@ -830,7 +829,7 @@ gtk_tree_selection_unselect_path (GtkTreeSelection *selection,
 					    node,
 					    tree,
 					    path,
-					    GDK_CONTROL_MASK,
+                                            GTK_TREE_SELECT_MODE_TOGGLE,
 					    TRUE);
 }
 
@@ -912,7 +911,9 @@ gtk_tree_selection_path_is_selected (GtkTreeSelection *selection,
   g_return_val_if_fail (GTK_IS_TREE_SELECTION (selection), FALSE);
   g_return_val_if_fail (path != NULL, FALSE);
   g_return_val_if_fail (selection->tree_view != NULL, FALSE);
-  g_return_val_if_fail (selection->tree_view->priv->model != NULL, FALSE);
+
+  if (selection->tree_view->priv->model == NULL)
+    return FALSE;
 
   ret = _gtk_tree_view_find_node (selection->tree_view,
 				  path,
@@ -1026,8 +1027,10 @@ gtk_tree_selection_select_all (GtkTreeSelection *selection)
 {
   g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
   g_return_if_fail (selection->tree_view != NULL);
-  if (selection->tree_view->priv->tree == NULL)
+
+  if (selection->tree_view->priv->tree == NULL || selection->tree_view->priv->model == NULL)
     return;
+
   g_return_if_fail (selection->type == GTK_SELECTION_MULTIPLE);
 
   if (gtk_tree_selection_real_select_all (selection))
@@ -1127,12 +1130,10 @@ gtk_tree_selection_unselect_all (GtkTreeSelection *selection)
 {
   g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
   g_return_if_fail (selection->tree_view != NULL);
-  if (selection->tree_view->priv->tree == NULL)
+
+  if (selection->tree_view->priv->tree == NULL || selection->tree_view->priv->model == NULL)
     return;
   
-  if (selection->tree_view->priv->tree == NULL)
-    return;
-
   if (gtk_tree_selection_real_unselect_all (selection))
     g_signal_emit (selection, tree_selection_signals[CHANGED], 0);
 }
@@ -1240,6 +1241,7 @@ gtk_tree_selection_real_modify_range (GtkTreeSelection *selection,
  * @end_path: The final node of the range.
  *
  * Selects a range of nodes, determined by @start_path and @end_path inclusive.
+ * @selection must be set to #GTK_SELECTION_MULTIPLE mode. 
  **/
 void
 gtk_tree_selection_select_range (GtkTreeSelection *selection,
@@ -1248,6 +1250,8 @@ gtk_tree_selection_select_range (GtkTreeSelection *selection,
 {
   g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
   g_return_if_fail (selection->tree_view != NULL);
+  g_return_if_fail (selection->type == GTK_SELECTION_MULTIPLE);
+  g_return_if_fail (selection->tree_view->priv->model != NULL);
 
   if (gtk_tree_selection_real_modify_range (selection, RANGE_SELECT, start_path, end_path))
     g_signal_emit (selection, tree_selection_signals[CHANGED], 0);
@@ -1271,6 +1275,7 @@ gtk_tree_selection_unselect_range (GtkTreeSelection *selection,
 {
   g_return_if_fail (GTK_IS_TREE_SELECTION (selection));
   g_return_if_fail (selection->tree_view != NULL);
+  g_return_if_fail (selection->tree_view->priv->model != NULL);
 
   if (gtk_tree_selection_real_modify_range (selection, RANGE_UNSELECT, start_path, end_path))
     g_signal_emit (selection, tree_selection_signals[CHANGED], 0);
@@ -1289,7 +1294,7 @@ _gtk_tree_selection_internal_select_node (GtkTreeSelection *selection,
 					  GtkRBNode        *node,
 					  GtkRBTree        *tree,
 					  GtkTreePath      *path,
-					  GdkModifierType   state,
+                                          GtkTreeSelectMode mode,
 					  gboolean          override_browse_mode)
 {
   gint flags;
@@ -1314,7 +1319,7 @@ _gtk_tree_selection_internal_select_node (GtkTreeSelection *selection,
       else if (selection->type == GTK_SELECTION_SINGLE &&
 	       anchor_path && gtk_tree_path_compare (path, anchor_path) == 0)
 	{
-	  if ((state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK)
+	  if ((mode & GTK_TREE_SELECT_MODE_TOGGLE) == GTK_TREE_SELECT_MODE_TOGGLE)
 	    {
 	      dirty = gtk_tree_selection_real_unselect_all (selection);
 	    }
@@ -1348,7 +1353,11 @@ _gtk_tree_selection_internal_select_node (GtkTreeSelection *selection,
 	      if (dirty)
 		{
 		  if (selection->tree_view->priv->anchor)
-		    gtk_tree_row_reference_free (selection->tree_view->priv->anchor);
+                    {
+                      gtk_tree_row_reference_free (selection->tree_view->priv->anchor);
+                      selection->tree_view->priv->anchor = NULL;
+                    }
+
 		  if (gtk_tree_selection_real_select_node (selection, tree, node, TRUE))
 		    {
 		      selection->tree_view->priv->anchor =
@@ -1372,7 +1381,8 @@ _gtk_tree_selection_internal_select_node (GtkTreeSelection *selection,
     }
   else if (selection->type == GTK_SELECTION_MULTIPLE)
     {
-      if (((state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) && (anchor_path == NULL))
+      if ((mode & GTK_TREE_SELECT_MODE_EXTEND) == GTK_TREE_SELECT_MODE_EXTEND
+          && (anchor_path == NULL))
 	{
 	  if (selection->tree_view->priv->anchor)
 	    gtk_tree_row_reference_free (selection->tree_view->priv->anchor);
@@ -1381,13 +1391,13 @@ _gtk_tree_selection_internal_select_node (GtkTreeSelection *selection,
 	    gtk_tree_row_reference_new_proxy (G_OBJECT (selection->tree_view), selection->tree_view->priv->model, path);
 	  dirty = gtk_tree_selection_real_select_node (selection, tree, node, TRUE);
 	}
-      else if ((state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == (GDK_SHIFT_MASK|GDK_CONTROL_MASK))
+      else if ((mode & (GTK_TREE_SELECT_MODE_EXTEND | GTK_TREE_SELECT_MODE_TOGGLE)) == (GTK_TREE_SELECT_MODE_EXTEND | GTK_TREE_SELECT_MODE_TOGGLE))
 	{
 	  gtk_tree_selection_select_range (selection,
 					   anchor_path,
 					   path);
 	}
-      else if ((state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK)
+      else if ((mode & GTK_TREE_SELECT_MODE_TOGGLE) == GTK_TREE_SELECT_MODE_TOGGLE)
 	{
 	  flags = node->flags;
 	  if (selection->tree_view->priv->anchor)
@@ -1401,7 +1411,7 @@ _gtk_tree_selection_internal_select_node (GtkTreeSelection *selection,
 	  else
 	    dirty |= gtk_tree_selection_real_select_node (selection, tree, node, TRUE);
 	}
-      else if ((state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+      else if ((mode & GTK_TREE_SELECT_MODE_EXTEND) == GTK_TREE_SELECT_MODE_EXTEND)
 	{
 	  dirty = gtk_tree_selection_real_unselect_all (selection);
 	  dirty |= gtk_tree_selection_real_modify_range (selection,
@@ -1470,4 +1480,3 @@ gtk_tree_selection_real_select_node (GtkTreeSelection *selection,
 
   return FALSE;
 }
-

@@ -35,8 +35,8 @@
 #define g_marshal_value_peek_ulong(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_int64(v)    (v)->data[0].v_int64
 #define g_marshal_value_peek_uint64(v)   (v)->data[0].v_uint64
-#define g_marshal_value_peek_enum(v)     (v)->data[0].v_int
-#define g_marshal_value_peek_flags(v)    (v)->data[0].v_uint
+#define g_marshal_value_peek_enum(v)     (v)->data[0].v_long
+#define g_marshal_value_peek_flags(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_float(v)    (v)->data[0].v_float
 #define g_marshal_value_peek_double(v)   (v)->data[0].v_double
 #define g_marshal_value_peek_string(v)   (v)->data[0].v_pointer
@@ -47,7 +47,7 @@
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOL:NONE (gtkmarshal.list:1) */
+/* BOOL:NONE (./gtkmarshal.list:1) */
 void
 gtk_marshal_BOOLEAN__VOID (GClosure     *closure,
                            GValue       *return_value,
@@ -84,7 +84,7 @@ gtk_marshal_BOOLEAN__VOID (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOL:POINTER (gtkmarshal.list:2) */
+/* BOOL:POINTER (./gtkmarshal.list:2) */
 void
 gtk_marshal_BOOLEAN__POINTER (GClosure     *closure,
                               GValue       *return_value,
@@ -123,7 +123,7 @@ gtk_marshal_BOOLEAN__POINTER (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOL:POINTER,POINTER,INT,INT (gtkmarshal.list:3) */
+/* BOOL:POINTER,POINTER,INT,INT (./gtkmarshal.list:3) */
 void
 gtk_marshal_BOOLEAN__POINTER_POINTER_INT_INT (GClosure     *closure,
                                               GValue       *return_value,
@@ -168,7 +168,7 @@ gtk_marshal_BOOLEAN__POINTER_POINTER_INT_INT (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOL:POINTER,INT,INT (gtkmarshal.list:4) */
+/* BOOL:POINTER,INT,INT (./gtkmarshal.list:4) */
 void
 gtk_marshal_BOOLEAN__POINTER_INT_INT (GClosure     *closure,
                                       GValue       *return_value,
@@ -211,7 +211,7 @@ gtk_marshal_BOOLEAN__POINTER_INT_INT (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOL:POINTER,INT,INT,UINT (gtkmarshal.list:5) */
+/* BOOL:POINTER,INT,INT,UINT (./gtkmarshal.list:5) */
 void
 gtk_marshal_BOOLEAN__POINTER_INT_INT_UINT (GClosure     *closure,
                                            GValue       *return_value,
@@ -256,7 +256,7 @@ gtk_marshal_BOOLEAN__POINTER_INT_INT_UINT (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOL:POINTER,STRING,STRING,POINTER (gtkmarshal.list:6) */
+/* BOOL:POINTER,STRING,STRING,POINTER (./gtkmarshal.list:6) */
 void
 gtk_marshal_BOOLEAN__POINTER_STRING_STRING_POINTER (GClosure     *closure,
                                                     GValue       *return_value,
@@ -301,7 +301,7 @@ gtk_marshal_BOOLEAN__POINTER_STRING_STRING_POINTER (GClosure     *closure,
   g_value_set_boolean (return_value, v_return);
 }
 
-/* ENUM:ENUM (gtkmarshal.list:7) */
+/* ENUM:ENUM (./gtkmarshal.list:7) */
 void
 gtk_marshal_ENUM__ENUM (GClosure     *closure,
                         GValue       *return_value,
@@ -340,7 +340,7 @@ gtk_marshal_ENUM__ENUM (GClosure     *closure,
   g_value_set_enum (return_value, v_return);
 }
 
-/* INT:POINTER (gtkmarshal.list:8) */
+/* INT:POINTER (./gtkmarshal.list:8) */
 void
 gtk_marshal_INT__POINTER (GClosure     *closure,
                           GValue       *return_value,
@@ -379,7 +379,7 @@ gtk_marshal_INT__POINTER (GClosure     *closure,
   g_value_set_int (return_value, v_return);
 }
 
-/* INT:POINTER,CHAR,CHAR (gtkmarshal.list:9) */
+/* INT:POINTER,CHAR,CHAR (./gtkmarshal.list:9) */
 void
 gtk_marshal_INT__POINTER_CHAR_CHAR (GClosure     *closure,
                                     GValue       *return_value,
@@ -422,13 +422,13 @@ gtk_marshal_INT__POINTER_CHAR_CHAR (GClosure     *closure,
   g_value_set_int (return_value, v_return);
 }
 
-/* NONE:BOOL (gtkmarshal.list:10) */
+/* NONE:BOOL (./gtkmarshal.list:10) */
 
-/* NONE:BOXED (gtkmarshal.list:11) */
+/* NONE:BOXED (./gtkmarshal.list:11) */
 
-/* NONE:ENUM (gtkmarshal.list:12) */
+/* NONE:ENUM (./gtkmarshal.list:12) */
 
-/* NONE:ENUM,FLOAT (gtkmarshal.list:13) */
+/* NONE:ENUM,FLOAT (./gtkmarshal.list:13) */
 void
 gtk_marshal_VOID__ENUM_FLOAT (GClosure     *closure,
                               GValue       *return_value,
@@ -465,7 +465,7 @@ gtk_marshal_VOID__ENUM_FLOAT (GClosure     *closure,
             data2);
 }
 
-/* NONE:ENUM,FLOAT,BOOL (gtkmarshal.list:14) */
+/* NONE:ENUM,FLOAT,BOOL (./gtkmarshal.list:14) */
 void
 gtk_marshal_VOID__ENUM_FLOAT_BOOLEAN (GClosure     *closure,
                                       GValue       *return_value,
@@ -504,9 +504,9 @@ gtk_marshal_VOID__ENUM_FLOAT_BOOLEAN (GClosure     *closure,
             data2);
 }
 
-/* NONE:INT (gtkmarshal.list:15) */
+/* NONE:INT (./gtkmarshal.list:15) */
 
-/* NONE:INT,INT (gtkmarshal.list:16) */
+/* NONE:INT,INT (./gtkmarshal.list:16) */
 void
 gtk_marshal_VOID__INT_INT (GClosure     *closure,
                            GValue       *return_value,
@@ -543,7 +543,7 @@ gtk_marshal_VOID__INT_INT (GClosure     *closure,
             data2);
 }
 
-/* NONE:INT,INT,POINTER (gtkmarshal.list:17) */
+/* NONE:INT,INT,POINTER (./gtkmarshal.list:17) */
 void
 gtk_marshal_VOID__INT_INT_POINTER (GClosure     *closure,
                                    GValue       *return_value,
@@ -582,13 +582,13 @@ gtk_marshal_VOID__INT_INT_POINTER (GClosure     *closure,
             data2);
 }
 
-/* NONE:NONE (gtkmarshal.list:18) */
+/* NONE:NONE (./gtkmarshal.list:18) */
 
-/* NONE:OBJECT (gtkmarshal.list:19) */
+/* NONE:OBJECT (./gtkmarshal.list:19) */
 
-/* NONE:POINTER (gtkmarshal.list:20) */
+/* NONE:POINTER (./gtkmarshal.list:20) */
 
-/* NONE:POINTER,INT (gtkmarshal.list:21) */
+/* NONE:POINTER,INT (./gtkmarshal.list:21) */
 void
 gtk_marshal_VOID__POINTER_INT (GClosure     *closure,
                                GValue       *return_value,
@@ -625,7 +625,7 @@ gtk_marshal_VOID__POINTER_INT (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,POINTER (gtkmarshal.list:22) */
+/* NONE:POINTER,POINTER (./gtkmarshal.list:22) */
 void
 gtk_marshal_VOID__POINTER_POINTER (GClosure     *closure,
                                    GValue       *return_value,
@@ -662,7 +662,7 @@ gtk_marshal_VOID__POINTER_POINTER (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,POINTER,POINTER (gtkmarshal.list:23) */
+/* NONE:POINTER,POINTER,POINTER (./gtkmarshal.list:23) */
 void
 gtk_marshal_VOID__POINTER_POINTER_POINTER (GClosure     *closure,
                                            GValue       *return_value,
@@ -701,7 +701,7 @@ gtk_marshal_VOID__POINTER_POINTER_POINTER (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,STRING,STRING (gtkmarshal.list:24) */
+/* NONE:POINTER,STRING,STRING (./gtkmarshal.list:24) */
 void
 gtk_marshal_VOID__POINTER_STRING_STRING (GClosure     *closure,
                                          GValue       *return_value,
@@ -740,7 +740,7 @@ gtk_marshal_VOID__POINTER_STRING_STRING (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,UINT (gtkmarshal.list:25) */
+/* NONE:POINTER,UINT (./gtkmarshal.list:25) */
 void
 gtk_marshal_VOID__POINTER_UINT (GClosure     *closure,
                                 GValue       *return_value,
@@ -777,7 +777,7 @@ gtk_marshal_VOID__POINTER_UINT (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,UINT,ENUM (gtkmarshal.list:26) */
+/* NONE:POINTER,UINT,ENUM (./gtkmarshal.list:26) */
 void
 gtk_marshal_VOID__POINTER_UINT_ENUM (GClosure     *closure,
                                      GValue       *return_value,
@@ -816,7 +816,7 @@ gtk_marshal_VOID__POINTER_UINT_ENUM (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,POINTER,UINT,UINT (gtkmarshal.list:27) */
+/* NONE:POINTER,POINTER,UINT,UINT (./gtkmarshal.list:27) */
 void
 gtk_marshal_VOID__POINTER_POINTER_UINT_UINT (GClosure     *closure,
                                              GValue       *return_value,
@@ -857,7 +857,7 @@ gtk_marshal_VOID__POINTER_POINTER_UINT_UINT (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,INT,INT,POINTER,UINT,UINT (gtkmarshal.list:28) */
+/* NONE:POINTER,INT,INT,POINTER,UINT,UINT (./gtkmarshal.list:28) */
 void
 gtk_marshal_VOID__POINTER_INT_INT_POINTER_UINT_UINT (GClosure     *closure,
                                                      GValue       *return_value,
@@ -902,7 +902,7 @@ gtk_marshal_VOID__POINTER_INT_INT_POINTER_UINT_UINT (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,UINT,UINT (gtkmarshal.list:29) */
+/* NONE:POINTER,UINT,UINT (./gtkmarshal.list:29) */
 void
 gtk_marshal_VOID__POINTER_UINT_UINT (GClosure     *closure,
                                      GValue       *return_value,
@@ -941,11 +941,11 @@ gtk_marshal_VOID__POINTER_UINT_UINT (GClosure     *closure,
             data2);
 }
 
-/* NONE:POINTER,UINT,UINT (gtkmarshal.list:30) */
+/* NONE:POINTER,UINT,UINT (./gtkmarshal.list:30) */
 
-/* NONE:STRING (gtkmarshal.list:31) */
+/* NONE:STRING (./gtkmarshal.list:31) */
 
-/* NONE:STRING,INT,POINTER (gtkmarshal.list:32) */
+/* NONE:STRING,INT,POINTER (./gtkmarshal.list:32) */
 void
 gtk_marshal_VOID__STRING_INT_POINTER (GClosure     *closure,
                                       GValue       *return_value,
@@ -984,9 +984,9 @@ gtk_marshal_VOID__STRING_INT_POINTER (GClosure     *closure,
             data2);
 }
 
-/* NONE:UINT (gtkmarshal.list:33) */
+/* NONE:UINT (./gtkmarshal.list:33) */
 
-/* NONE:UINT,POINTER,UINT,ENUM,ENUM,POINTER (gtkmarshal.list:34) */
+/* NONE:UINT,POINTER,UINT,ENUM,ENUM,POINTER (./gtkmarshal.list:34) */
 void
 gtk_marshal_VOID__UINT_POINTER_UINT_ENUM_ENUM_POINTER (GClosure     *closure,
                                                        GValue       *return_value,
@@ -1031,7 +1031,7 @@ gtk_marshal_VOID__UINT_POINTER_UINT_ENUM_ENUM_POINTER (GClosure     *closure,
             data2);
 }
 
-/* NONE:UINT,POINTER,UINT,UINT,ENUM (gtkmarshal.list:35) */
+/* NONE:UINT,POINTER,UINT,UINT,ENUM (./gtkmarshal.list:35) */
 void
 gtk_marshal_VOID__UINT_POINTER_UINT_UINT_ENUM (GClosure     *closure,
                                                GValue       *return_value,
@@ -1074,7 +1074,7 @@ gtk_marshal_VOID__UINT_POINTER_UINT_UINT_ENUM (GClosure     *closure,
             data2);
 }
 
-/* NONE:UINT,STRING (gtkmarshal.list:36) */
+/* NONE:UINT,STRING (./gtkmarshal.list:36) */
 void
 gtk_marshal_VOID__UINT_STRING (GClosure     *closure,
                                GValue       *return_value,

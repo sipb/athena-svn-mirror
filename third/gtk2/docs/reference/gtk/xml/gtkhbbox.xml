@@ -22,9 +22,9 @@ struct      <link linkend="GtkHButtonBox-struct">GtkHButtonBox</link>;
                                             (void);
 <link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link> <link linkend="gtk-hbutton-box-get-layout-default">gtk_hbutton_box_get_layout_default</link>
                                             (void);
-void        <link linkend="gtk-hbutton-box-set-spacing-default">gtk_hbutton_box_set_spacing_default</link>
+<link linkend="void">void</link>        <link linkend="gtk-hbutton-box-set-spacing-default">gtk_hbutton_box_set_spacing_default</link>
                                             (<link linkend="gint">gint</link> spacing);
-void        <link linkend="gtk-hbutton-box-set-layout-default">gtk_hbutton_box_set_layout_default</link>
+<link linkend="void">void</link>        <link linkend="gtk-hbutton-box-set-layout-default">gtk_hbutton_box_set_layout_default</link>
                                             (<link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link> layout);
 
 
@@ -46,11 +46,14 @@ void        <link linkend="gtk-hbutton-box-set-layout-default">gtk_hbutton_box_s
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkHButtonBox implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkHButtonBox implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -66,20 +69,20 @@ programmer, or if desired, by the user to alter the 'feel' of a
 program to a small degree.
 </para>
 <para>
-A <link linkend="GtkHButtonBox">GtkHButtonBox</link> is created with <link linkend="gtk-hbutton-box-new">gtk_hbutton_box_new</link>(). Buttons are
+A <link linkend="GtkHButtonBox"><type>GtkHButtonBox</type></link> is created with <link linkend="gtk-hbutton-box-new"><function>gtk_hbutton_box_new()</function></link>. Buttons are
 packed into a button box the same way widgets are added to any other
-container, using <link linkend="gtk-container-add">gtk_container_add</link>(). You can also use
-<link linkend="gtk-box-pack-start">gtk_box_pack_start</link>() or <link linkend="gtk-box-pack-end">gtk_box_pack_end</link>(), but for button boxes both
-these functions work just like <link linkend="gtk-container-add">gtk_container_add</link>(), ie., they pack the
+container, using <link linkend="gtk-container-add"><function>gtk_container_add()</function></link>. You can also use
+<link linkend="gtk-box-pack-start"><function>gtk_box_pack_start()</function></link> or <link linkend="gtk-box-pack-end"><function>gtk_box_pack_end()</function></link>, but for button boxes both
+these functions work just like <link linkend="gtk-container-add"><function>gtk_container_add()</function></link>, ie., they pack the
 button in a way that depends on the current layout style and on
-whether the button has had <link linkend="gtk-button-box-set-child-secondary">gtk_button_box_set_child_secondary</link>() called
+whether the button has had <link linkend="gtk-button-box-set-child-secondary"><function>gtk_button_box_set_child_secondary()</function></link> called
 on it.
 </para>
 
 <para>
-The spacing between buttons can be set with <link linkend="gtk-box-set-spacing">gtk_box_set_spacing</link>(). The
+The spacing between buttons can be set with <link linkend="gtk-box-set-spacing"><function>gtk_box_set_spacing()</function></link>. The
 arrangement and layout of the buttons can be changed with
-<link linkend="gtk-button-box-set-layout">gtk_button_box_set_layout</link>().
+<link linkend="gtk-button-box-set-layout"><function>gtk_button_box_set_layout()</function></link>.
 </para>
 </refsect1>
 
@@ -87,24 +90,24 @@ arrangement and layout of the buttons can be changed with
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkHButtonBox-struct"/>struct GtkHButtonBox</title>
-<programlisting>struct GtkHButtonBox;</programlisting>
+<indexterm><primary>GtkHButtonBox</primary></indexterm><programlisting>struct GtkHButtonBox;</programlisting>
 <para>
 GtkHButtonBox does not contain any public fields.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-hbutton-box-new"/>gtk_hbutton_box_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hbutton_box_new             (void);</programlisting>
+<indexterm><primary>gtk_hbutton_box_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hbutton_box_new             (void);</programlisting>
 <para>
 Creates a new horizontal button box.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new button box <link linkend="GtkWidget">GtkWidget</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new button box <link linkend="GtkWidget"><type>GtkWidget</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-hbutton-box-get-spacing-default"/>gtk_hbutton_box_get_spacing_default ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_hbutton_box_get_spacing_default
+<indexterm role="deprecated"><primary>gtk_hbutton_box_get_spacing_default</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_hbutton_box_get_spacing_default
                                             (void);</programlisting>
 <warning><para><literal>gtk_hbutton_box_get_spacing_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -118,20 +121,20 @@ to be placed between the buttons when they are arranged.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-hbutton-box-get-layout-default"/>gtk_hbutton_box_get_layout_default ()</title>
-<programlisting><link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link> gtk_hbutton_box_get_layout_default
+<indexterm role="deprecated"><primary>gtk_hbutton_box_get_layout_default</primary></indexterm><programlisting><link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link> gtk_hbutton_box_get_layout_default
                                             (void);</programlisting>
 <warning><para><literal>gtk_hbutton_box_get_layout_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Retrieves the current layout used to arrange buttons in button box widgets.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the current <link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the current <link linkend="GtkButtonBoxStyle"><type>GtkButtonBoxStyle</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-hbutton-box-set-spacing-default"/>gtk_hbutton_box_set_spacing_default ()</title>
-<programlisting>void        gtk_hbutton_box_set_spacing_default
+<indexterm role="deprecated"><primary>gtk_hbutton_box_set_spacing_default</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_hbutton_box_set_spacing_default
                                             (<link linkend="gint">gint</link> spacing);</programlisting>
 <warning><para><literal>gtk_hbutton_box_set_spacing_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -146,14 +149,14 @@ horizontal button box.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-hbutton-box-set-layout-default"/>gtk_hbutton_box_set_layout_default ()</title>
-<programlisting>void        gtk_hbutton_box_set_layout_default
+<indexterm role="deprecated"><primary>gtk_hbutton_box_set_layout_default</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_hbutton_box_set_layout_default
                                             (<link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link> layout);</programlisting>
 <warning><para><literal>gtk_hbutton_box_set_layout_default</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Sets a new layout mode that will be used by all button boxes.
 </para><variablelist role="params">
 <varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
-<listitem><simpara>a new <link linkend="GtkButtonBoxStyle">GtkButtonBoxStyle</link>.
+<listitem><simpara>a new <link linkend="GtkButtonBoxStyle"><type>GtkButtonBoxStyle</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -168,14 +171,14 @@ Sets a new layout mode that will be used by all button boxes.
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkBox">GtkBox</link></term>
+<term><link linkend="GtkBox"><type>GtkBox</type></link></term>
 <listitem><para>Used to pack widgets into button boxes.</para></listitem>
 </varlistentry><varlistentry>
-<term><link linkend="GtkButtonBox">GtkButtonBox</link></term>
+<term><link linkend="GtkButtonBox"><type>GtkButtonBox</type></link></term>
 <listitem><para>Provides functions for controlling button boxes.</para></listitem>
 </varlistentry>
 <varlistentry>
-<term><link linkend="GtkVButtonBox">GtkVButtonBox</link></term>
+<term><link linkend="GtkVButtonBox"><type>GtkVButtonBox</type></link></term>
 <listitem><para>Pack buttons vertically</para></listitem>
 </varlistentry>
 </variablelist>

@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <string.h>
 #include "gtktreednd.h"
 
@@ -186,7 +187,7 @@ gtk_tree_drag_dest_drag_data_received (GtkTreeDragDest  *drag_dest,
 
 
 /**
- * gtk_tree_drag_dest_drop_possible:
+ * gtk_tree_drag_dest_row_drop_possible:
  * @drag_dest: a #GtkTreeDragDest
  * @dest_path: destination row
  * @selection_data: the data being dragged
@@ -311,6 +312,9 @@ gtk_tree_get_row_drag_data (GtkSelectionData  *selection_data,
     *path = NULL;
   
   if (selection_data->target != gdk_atom_intern ("GTK_TREE_MODEL_ROW", FALSE))
+    return FALSE;
+
+  if (selection_data->length < 0)
     return FALSE;
 
   trd = (void*) selection_data->data;

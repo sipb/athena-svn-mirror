@@ -62,8 +62,8 @@ struct _GtkMenuShell
   guint active : 1;
   guint have_grab : 1;
   guint have_xgrab : 1;
-  guint ignore_leave : 1;
-  guint menu_flag : 1;
+  guint ignore_leave : 1;	/* unused */
+  guint menu_flag : 1;		/* unused */
   guint ignore_enter : 1;
 };
 
@@ -116,6 +116,7 @@ void _gtk_menu_shell_select_last       (GtkMenuShell *menu_shell,
 					gboolean      search_sensitive);
 void  _gtk_menu_shell_activate         (GtkMenuShell *menu_shell);
 gint  _gtk_menu_shell_get_popup_delay  (GtkMenuShell *menu_shell);
+void  gtk_menu_shell_cancel            (GtkMenuShell *menu_shell);
 
 #ifdef __cplusplus
 }

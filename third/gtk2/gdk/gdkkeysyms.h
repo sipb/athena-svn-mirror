@@ -781,6 +781,7 @@
 #define GDK_Serbian_nje 0x6aa
 #define GDK_Serbian_tshe 0x6ab
 #define GDK_Macedonia_kje 0x6ac
+#define GDK_Ukrainian_ghe_with_upturn 0x6ad
 #define GDK_Byelorussian_shortu 0x6ae
 #define GDK_Cyrillic_dzhe 0x6af
 #define GDK_Serbian_dze 0x6af
@@ -803,6 +804,7 @@
 #define GDK_Serbian_NJE 0x6ba
 #define GDK_Serbian_TSHE 0x6bb
 #define GDK_Macedonia_KJE 0x6bc
+#define GDK_Ukrainian_GHE_WITH_UPTURN 0x6bd
 #define GDK_Byelorussian_SHORTU 0x6be
 #define GDK_Cyrillic_DZHE 0x6bf
 #define GDK_Serbian_DZE 0x6bf
@@ -874,7 +876,8 @@
 #define GDK_Greek_EPSILONaccent 0x7a2
 #define GDK_Greek_ETAaccent 0x7a3
 #define GDK_Greek_IOTAaccent 0x7a4
-#define GDK_Greek_IOTAdiaeresis 0x7a5
+#define GDK_Greek_IOTAdieresis 0x7a5
+#define GDK_Greek_IOTAdiaeresis GDK_Greek_IOTAdieresis
 #define GDK_Greek_OMICRONaccent 0x7a7
 #define GDK_Greek_UPSILONaccent 0x7a8
 #define GDK_Greek_UPSILONdieresis 0x7a9

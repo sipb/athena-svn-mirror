@@ -24,7 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <locale.h>
 #ifdef HAVE_UNISTD_H
@@ -78,6 +78,7 @@ struct _GtkRcFile
   time_t mtime;
   gchar *name;
   gchar *canonical_name;
+  gchar *directory;
   guint reload;
 };
 
@@ -286,10 +287,11 @@ static gchar *im_module_file = NULL;
 #define GTK_RC_MAX_DEFAULT_FILES 128
 static gchar *gtk_rc_default_files[GTK_RC_MAX_DEFAULT_FILES];
 
-/* A stack of directories for RC files we are parsing currently.
- * these are implicitely added to the end of PIXMAP_PATHS
+/* A stack of information of RC files we are parsing currently.
+ * The directories for these files are implicitely added to the end of
+ * PIXMAP_PATHS.
  */
-static GSList *rc_dir_stack = NULL;
+static GSList *current_files_stack = NULL;
 
 /* RC files and strings that are parsed for every context
  */
@@ -671,6 +673,10 @@ _gtk_rc_init (void)
 		       "  bg[NORMAL]   = \"#bab5ab\"\n"
 		       "}\n"
 		       "\n"
+		       "style \"gtk-default-menu-bar-item-style\" {\n"
+		       "  GtkMenuItem::horizontal_padding = 5\n"
+		       "}\n"
+		       "\n"
 		       "style \"gtk-default-menu-item-style\" {\n"
 		       "  bg[PRELIGHT] = \"#4b6983\"\n"
 		       "  fg[PRELIGHT] = \"#ffffff\"\n"
@@ -687,6 +693,12 @@ _gtk_rc_init (void)
 		       "widget_class \"*.GtkCheckMenuItem.*\" style : gtk \"gtk-default-menu-item-style\"\n"
 		       "widget_class \"*.GtkImageMenuItem.*\" style : gtk \"gtk-default-menu-item-style\"\n"
 		       "widget_class \"*.GtkSeparatorMenuItem.*\" style : gtk \"gtk-default-menu-item-style\"\n"
+		       "widget_class \"*.GtkCellViewMenuItem.*\" style : gtk \"gtk-default-menu-item-style\"\n"
+		       "widget_class \"*GtkMenuBar*GtkMenuItem\" style : gtk \"gtk-default-menu-bar-item-style\"\n"
+		       "widget_class \"*GtkMenuBar*GtkAccelMenuItem\" style : gtk \"gtk-default-menu-bar-item-style\"\n"
+		       "widget_class \"*GtkMenuBar*GtkRadioMenuItem\" style : gtk \"gtk-default-menu-bar-item-style\"\n"
+		       "widget_class \"*GtkMenuBar*GtkCheckMenuItem\" style : gtk \"gtk-default-menu-bar-item-style\"\n"
+		       "widget_class \"*GtkMenuBar*GtkImageMenuItem\" style : gtk \"gtk-default-menu-bar-item-style\"\n"
       );
 }
   
@@ -709,9 +721,10 @@ gtk_rc_parse_string (const gchar *rc_string)
   rc_file->is_string = TRUE;
   rc_file->name = g_strdup (rc_string);
   rc_file->canonical_name = NULL;
+  rc_file->directory = NULL;
   rc_file->mtime = 0;
   rc_file->reload = TRUE;
-
+  
   global_rc_files = g_slist_append (global_rc_files, rc_file);
 
   for (tmp_list = rc_contexts; tmp_list; tmp_list = tmp_list->next)
@@ -740,6 +753,7 @@ add_to_rc_file_list (GSList     **rc_file_list,
   rc_file->is_string = FALSE;
   rc_file->name = g_strdup (filename);
   rc_file->canonical_name = NULL;
+  rc_file->directory = NULL;
   rc_file->mtime = 0;
   rc_file->reload = reload;
   
@@ -764,7 +778,7 @@ gtk_rc_context_parse_one_file (GtkRcContext *context,
   context->default_priority = priority;
 
   rc_file = add_to_rc_file_list (&context->rc_files, filename, reload);
-  
+
   if (!rc_file->canonical_name)
     {
       /* Get the absolute pathname */
@@ -779,32 +793,32 @@ gtk_rc_context_parse_one_file (GtkRcContext *context,
 	  rc_file->canonical_name = g_build_filename (cwd, rc_file->name, NULL);
 	  g_free (cwd);
 	}
+      
+      rc_file->directory = g_path_get_dirname (rc_file->canonical_name);
     }
+
+  /* If the file is already being parsed (recursion), do nothing
+   */
+  if (g_slist_find (current_files_stack, rc_file))
+    return;
 
   if (!lstat (rc_file->canonical_name, &statbuf))
     {
       gint fd;
-      GSList *tmp_list;
-
+      
       rc_file->mtime = statbuf.st_mtime;
 
       fd = open (rc_file->canonical_name, O_RDONLY);
       if (fd < 0)
 	goto out;
 
-      /* Temporarily push directory name for this file on
-       * a stack of directory names while parsing it
+      /* Temporarily push information for this file on
+       * a stack of current files while parsing it.
        */
-      rc_dir_stack = 
-	g_slist_prepend (rc_dir_stack,
-			 g_path_get_dirname (rc_file->canonical_name));
+      current_files_stack = g_slist_prepend (current_files_stack, rc_file);
       gtk_rc_parse_any (context, filename, fd, NULL);
- 
-      tmp_list = rc_dir_stack;
-      rc_dir_stack = rc_dir_stack->next;
- 
-      g_free (tmp_list->data);
-      g_slist_free_1 (tmp_list);
+      current_files_stack = g_slist_delete_link (current_files_stack,
+						 current_files_stack);
 
       close (fd);
     }
@@ -836,15 +850,11 @@ gtk_rc_context_parse_file (GtkRcContext *context,
   gchar *locale_suffixes[2];
   gint n_locale_suffixes = 0;
   gchar *p;
-  const gchar *locale;
+  gchar *locale;
   gint length, j;
   gboolean found = FALSE;
 
-#ifdef G_OS_WIN32      
-  locale = g_win32_getlocale ();
-#else      
-  locale = setlocale (LC_CTYPE, NULL);
-#endif      
+  locale = _gtk_get_lc_ctype ();
 
   if (strcmp (locale, "C") && strcmp (locale, "POSIX"))
     {
@@ -869,6 +879,8 @@ gtk_rc_context_parse_file (GtkRcContext *context,
 	  locale_suffixes[n_locale_suffixes++] = g_strndup (locale, length);
 	}
     }
+
+  g_free (locale);
   
   gtk_rc_context_parse_one_file (context, filename, priority, reload);
   for (j = 0; j < n_locale_suffixes; j++)
@@ -1330,23 +1342,24 @@ gtk_rc_clear_realized_style (gpointer key,
 }
 
 /**
- * _gtk_rc_reset_styles:
+ * gtk_rc_reset_styles:
  * @settings: a #GtkSettings
  * 
- * This setting resets all of our styles; we use it when the font
- * rendering parameters or the icon sizes have changed. It's both less
- * and more comprehensive then we actually need:
+ * This function recomputes the styles for all widgets that use a
+ * particular #GtkSettings object. (There is one #GtkSettings object
+ * per #GdkScreen, see gtk_settings_get_for_screen()); It is useful
+ * when some global parameter has changed that affects the appearance
+ * of all widgets, because when a widget gets a new style, it will
+ * both redraw and recompute any cached information about its
+ * appearance. As an example, it is used when the default font size
+ * set by the operating system changes. Note that this function
+ * doesn't affect widgets that have a style set explicitely on them
+ * with gtk_widget_set_style().
  *
- * Less comprehensive: it doesn't affect widgets that have a style
- *   set on them.
- *
- * More comprehensive: it resets the styles, but the styles haven't
- *   changed. The main reason for resetting the styles is becaues
- *   most widgets will redo all their font stuff when their style
- *   change.
+ * Since: 2.4
  **/
 void
-_gtk_rc_reset_styles (GtkSettings *settings)
+gtk_rc_reset_styles (GtkSettings *settings)
 {
   GtkRcContext *context;
   gboolean reset = FALSE;
@@ -1357,7 +1370,7 @@ _gtk_rc_reset_styles (GtkSettings *settings)
   
   if (context->default_style)
     {
-      g_object_unref (G_OBJECT (context->default_style));
+      g_object_unref (context->default_style);
       context->default_style = NULL;
       reset = TRUE;
     }
@@ -1395,7 +1408,7 @@ _gtk_rc_context_get_default_font_name (GtkSettings *settings)
        g_free (context->font_name);
        context->font_name = g_strdup (new_font_name);
  
-       _gtk_rc_reset_styles (settings);
+       gtk_rc_reset_styles (settings);
     }
           
   g_free (new_font_name);
@@ -1467,6 +1480,7 @@ gtk_rc_reparse_all_for_settings (GtkSettings *settings,
 
 	  if (rc_file->canonical_name != rc_file->name)
 	    g_free (rc_file->canonical_name);
+	  g_free (rc_file->directory);
 	  g_free (rc_file->name);
 	  g_free (rc_file);
 
@@ -2283,7 +2297,7 @@ gtk_rc_parse_assignment (GScanner      *scanner,
     case G_TOKEN_LEFT_BRACE:
       if (!negate)
 	{
-	  GString *gstring = g_string_new ("");
+	  GString *gstring = g_string_new (NULL);
 
 	  token = rc_parse_token_or_compound (scanner, gstring, 0);
 	  if (token == G_TOKEN_NONE)
@@ -2348,10 +2362,11 @@ parse_include_file (GtkRcContext *context,
        * so we can give meaningful error messages, and because on reparsing
        * non-absolute paths don't make sense.
        */
-      GSList *tmp_list = rc_dir_stack;
+      GSList *tmp_list = current_files_stack;
       while (tmp_list)
 	{
-	  gchar *tmpname = g_build_filename (tmp_list->data, filename, NULL);
+	  GtkRcFile *curfile = tmp_list->data;
+	  gchar *tmpname = g_build_filename (curfile->directory, filename, NULL);
 
 	  if (g_file_test (tmpname, G_FILE_TEST_EXISTS))
 	    {
@@ -2953,19 +2968,15 @@ gtk_rc_parse_bg_pixmap (GtkRcContext *context,
 }
 
 static gchar*
-gtk_rc_check_pixmap_dir (const gchar *dir, const gchar *pixmap_file)
+gtk_rc_check_pixmap_dir (const gchar *dir, 
+			 const gchar *pixmap_file)
 {
   gchar *buf;
-  gint fd;
 
   buf = g_build_filename (dir, pixmap_file, NULL);
-  
-  fd = open (buf, O_RDONLY);
-  if (fd >= 0)
-    {
-      close (fd);
-      return buf;
-    }
+
+  if (g_file_test (buf, G_FILE_TEST_EXISTS))
+    return buf;
    
   g_free (buf);
  
@@ -3003,10 +3014,11 @@ gtk_rc_find_pixmap_in_path (GtkSettings  *settings,
  	return filename;
     }
  
-  tmp_list = rc_dir_stack;
+  tmp_list = current_files_stack;
   while (tmp_list)
     {
-      filename = gtk_rc_check_pixmap_dir (tmp_list->data, pixmap_file);
+      GtkRcFile *curfile = tmp_list->data;
+      filename = gtk_rc_check_pixmap_dir (curfile->directory, pixmap_file);
       if (filename)
  	return filename;
        
@@ -3647,17 +3659,32 @@ gtk_rc_parse_icon_source (GtkRcContext   *context,
 
   token = g_scanner_get_next_token (scanner);
   
-  if (token != G_TOKEN_STRING)
+  if (token != G_TOKEN_STRING && token != '@')
     return G_TOKEN_STRING;
-
   
   source = gtk_icon_source_new ();
-  
-  full_filename = gtk_rc_find_pixmap_in_path (context->settings, scanner, scanner->value.v_string);
-  if (full_filename)
+
+  if (token == G_TOKEN_STRING)
     {
-      gtk_icon_source_set_filename (source, full_filename);
-      g_free (full_filename);
+      /* Filename */
+      
+      full_filename = gtk_rc_find_pixmap_in_path (context->settings, scanner, scanner->value.v_string);
+      if (full_filename)
+	{
+	  gtk_icon_source_set_filename (source, full_filename);
+	  g_free (full_filename);
+	}
+    }
+  else
+    {
+      /* Icon name */
+      
+      token = g_scanner_get_next_token (scanner);
+  
+      if (token != G_TOKEN_STRING)
+	return G_TOKEN_STRING;
+
+      gtk_icon_source_set_icon_name (source, scanner->value.v_string);
     }
 
   /* We continue parsing even if we didn't find the pixmap so that rest of the
@@ -3793,7 +3820,8 @@ gtk_rc_parse_icon_source (GtkRcContext   *context,
     }
 
  done:
-  if (gtk_icon_source_get_filename (source))
+  if (gtk_icon_source_get_filename (source) ||
+      gtk_icon_source_get_icon_name (source))
     {
       gtk_icon_set_add_source (icon_set, source);
       *icon_set_valid = TRUE;

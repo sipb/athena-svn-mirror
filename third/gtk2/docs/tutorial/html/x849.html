@@ -5,8 +5,7 @@
 >Progress Bars</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-PROGRESSBARS">Progress Bars</H1
+NAME="SEC-PROGRESSBARS"
+>Progress Bars</A
+></H1
 ><P
 >Progress bars are used to show the status of an operation. They are
 pretty easy to use, as you will see with the code below. But first
@@ -251,7 +252,7 @@ CLASS="PROGRAMLISTING"
 ><P
 >Progress Bars are usually used with timeouts or other such functions
 (see section on <A
-HREF="c1778.html"
+HREF="c1779.html"
 >Timeouts, I/O and Idle Functions</A
 >) 
 to give the illusion of multitasking. All will employ the
@@ -285,7 +286,7 @@ typedef struct _ProgressData {
 
 /* Update the value of the progress bar so that we get
  * some movement */
-gint progress_timeout( gpointer data )
+static gboolean progress_timeout( gpointer data )
 {
   ProgressData *pdata = (ProgressData *)data;
   gdouble new_val;
@@ -312,8 +313,8 @@ gint progress_timeout( gpointer data )
 } 
 
 /* Callback that toggles the text display within the progress bar trough */
-void toggle_show_text( GtkWidget    *widget,
-		       ProgressData *pdata )
+static void toggle_show_text( GtkWidget    *widget,
+                              ProgressData *pdata )
 {
   const gchar *text;
   
@@ -325,8 +326,8 @@ void toggle_show_text( GtkWidget    *widget,
 }
 
 /* Callback that toggles the activity mode of the progress bar */
-void toggle_activity_mode( GtkWidget    *widget,
-			   ProgressData *pdata )
+static void toggle_activity_mode( GtkWidget    *widget,
+                                  ProgressData *pdata )
 {
   pdata-&#62;activity_mode = !pdata-&#62;activity_mode;
   if (pdata-&#62;activity_mode) 
@@ -337,8 +338,8 @@ void toggle_activity_mode( GtkWidget    *widget,
 
  
 /* Callback that toggles the orientation of the progress bar */
-void toggle_orientation( GtkWidget    *widget,
-			 ProgressData *pdata )
+static void toggle_orientation( GtkWidget    *widget,
+                                ProgressData *pdata )
 {
   switch (gtk_progress_bar_get_orientation (GTK_PROGRESS_BAR (pdata-&#62;pbar))) {
   case GTK_PROGRESS_LEFT_TO_RIGHT:
@@ -349,17 +350,17 @@ void toggle_orientation( GtkWidget    *widget,
     gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR (pdata-&#62;pbar), 
 				      GTK_PROGRESS_LEFT_TO_RIGHT);
     break;
-  default:
-    // do nothing	
+  default:;
+    /* do nothing */
   }
 }
 
  
 /* Clean up allocated memory and remove the timer */
-void destroy_progress( GtkWidget     *widget,
-		       ProgressData *pdata)
+static void destroy_progress( GtkWidget    *widget,
+                              ProgressData *pdata)
 {
-    gtk_timeout_remove (pdata-&#62;timer);
+    g_source_remove (pdata-&#62;timer);
     pdata-&#62;timer = 0;
     pdata-&#62;window = NULL;
     g_free (pdata);
@@ -408,7 +409,7 @@ int main( int   argc,
     gtk_widget_show (pdata-&#62;pbar);
 
     /* Add a timer callback to update the value of the progress bar */
-    pdata-&#62;timer = gtk_timeout_add (100, progress_timeout, pdata);
+    pdata-&#62;timer = g_timeout_add (100, progress_timeout, pdata);
 
     separator = gtk_hseparator_new ();
     gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);

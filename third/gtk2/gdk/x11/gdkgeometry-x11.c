@@ -129,6 +129,7 @@
  * unless the user has a _really_ huge screen.
  */
 
+#include <config.h>
 #include "gdk.h"		/* For gdk_rectangle_intersect */
 #include "gdkprivate-x11.h"
 #include "gdkx.h"
@@ -226,25 +227,19 @@ gdk_window_copy_area_scroll (GdkWindow    *window,
 
   if (dest_rect->width > 0 && dest_rect->height > 0)
     {
-      GC gc;
-      XGCValues values;
+      GdkGC *gc;
 
-      values.graphics_exposures = True;
-      gc = XCreateGC (GDK_WINDOW_XDISPLAY (window),
-		      GDK_WINDOW_XID (window),
-		      GCGraphicsExposures, &values);
-
+      gc = _gdk_drawable_get_scratch_gc (window, TRUE);
+      
       gdk_window_queue_translation (window, dx, dy);
 
       XCopyArea (GDK_WINDOW_XDISPLAY (window),
 		 GDK_WINDOW_XID (window),
 		 GDK_WINDOW_XID (window),
-		 gc,
+		 gdk_x11_gc_get_xgc (gc),
 		 dest_rect->x - dx, dest_rect->y - dy,
 		 dest_rect->width, dest_rect->height,
 		 dest_rect->x, dest_rect->y);
-
-      XFreeGC (GDK_WINDOW_XDISPLAY (window), gc);
     }
 
   tmp_list = obj->children;
@@ -402,7 +397,7 @@ gdk_window_scroll (GdkWindow *window,
   GdkRegion *invalidate_region;
   GdkWindowImplX11 *impl;
   GdkWindowObject *obj;
-  GdkRectangle dest_rect;
+  GdkRectangle src_rect, dest_rect;
   
   g_return_if_fail (GDK_IS_WINDOW (window));
 
@@ -419,12 +414,23 @@ gdk_window_scroll (GdkWindow *window,
   if (obj->update_area)
     gdk_region_offset (obj->update_area, dx, dy);
   
-  invalidate_region = gdk_region_rectangle (&impl->position_info.clip_rect);
+  /* impl->position_info.clip_rect isn't meaningful for toplevels */
+  if (GDK_WINDOW_TYPE (window) == GDK_WINDOW_CHILD)
+    src_rect = impl->position_info.clip_rect;
+  else
+    {
+      src_rect.x = 0;
+      src_rect.y = 0;
+      src_rect.width = impl->width;
+      src_rect.height = impl->height;
+    }
   
-  dest_rect = impl->position_info.clip_rect;
+  invalidate_region = gdk_region_rectangle (&src_rect);
+
+  dest_rect = src_rect;
   dest_rect.x += dx;
   dest_rect.y += dy;
-  gdk_rectangle_intersect (&dest_rect, &impl->position_info.clip_rect, &dest_rect);
+  gdk_rectangle_intersect (&dest_rect, &src_rect, &dest_rect);
 
   if (dest_rect.width > 0 && dest_rect.height > 0)
     {
@@ -860,7 +866,7 @@ gdk_window_postmove (GdkWindow          *window,
     }
 }
 
-Bool
+static Bool
 expose_serial_predicate (Display *xdisplay,
 			 XEvent  *xev,
 			 XPointer arg)
@@ -903,7 +909,11 @@ queue_delete_link (GQueue *queue,
 static void
 queue_item_free (GdkWindowQueueItem *item)
 {
-  g_object_unref (item->window);
+  if (item->window)
+    {
+      g_object_remove_weak_pointer (G_OBJECT (item->window),
+				    (gpointer *)&(item->window));
+    }
   
   if (item->type == GDK_WINDOW_QUEUE_ANTIEXPOSE)
     gdk_region_destroy (item->u.antiexpose.area);
@@ -968,12 +978,13 @@ gdk_window_queue (GdkWindow          *window,
 	  tmp_list = next;
 	}
     }
-      
-  g_object_ref (window);
 
   item->window = window;
   item->serial = NextRequest (GDK_WINDOW_XDISPLAY (window));
   
+  g_object_add_weak_pointer (G_OBJECT (window),
+			     (gpointer *)&(item->window));
+
   g_queue_push_tail (display_x11->translate_queue, item);
 }
 

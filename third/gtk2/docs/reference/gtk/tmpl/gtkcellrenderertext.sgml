@@ -2,7 +2,7 @@
 GtkCellRendererText
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Renders text in a cell
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -18,23 +18,6 @@ GtkCellRendererText
 <para>
 
 </para>
-
-
-<!-- ##### FUNCTION gtk_cell_renderer_text_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
-
-<!-- ##### FUNCTION gtk_cell_renderer_text_set_fixed_height_from_font ##### -->
-<para>
-
-</para>
-
-@renderer: 
-@number_of_rows: 
 
 
 <!-- ##### SIGNAL GtkCellRendererText::edited ##### -->
@@ -111,6 +94,16 @@ GtkCellRendererText
 
 </para>
 
+<!-- ##### ARG GtkCellRendererText:language ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkCellRendererText:language-set ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG GtkCellRendererText:markup ##### -->
 <para>
 
@@ -132,6 +125,11 @@ GtkCellRendererText
 </para>
 
 <!-- ##### ARG GtkCellRendererText:scale-set ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkCellRendererText:single-paragraph-mode ##### -->
 <para>
 
 </para>
@@ -215,4 +213,21 @@ GtkCellRendererText
 <para>
 
 </para>
+
+<!-- ##### FUNCTION gtk_cell_renderer_text_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_cell_renderer_text_set_fixed_height_from_font ##### -->
+<para>
+
+</para>
+
+@renderer: 
+@number_of_rows: 
+
 

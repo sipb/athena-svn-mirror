@@ -55,6 +55,71 @@ The <structname>GtkTable</structname> structure holds the data for the actual ta
 </para>
 
 
+<!-- ##### ARG GtkTable:column-spacing ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:homogeneous ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:n-columns ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:n-rows ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:row-spacing ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:bottom-attach ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:left-attach ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:right-attach ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:top-attach ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:x-options ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:x-padding ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:y-options ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkTable:y-padding ##### -->
+<para>
+
+</para>
+
 <!-- ##### STRUCT GtkTableChild ##### -->
 <para>
 The <structfield>widget</structfield> field is a pointer to the widget that 
@@ -136,7 +201,7 @@ and row numbers of the table. (Columns and rows are indexed from zero).
 @left_attach: the column number to attach the left side of a child widget to.
 @right_attach: the column number to attach the right side of a child widget to.
 @top_attach: the row number to attach the top of a child widget to.
-@bottom_attach: the column number to attach the bottom of a child widget to.
+@bottom_attach: the row number to attach the bottom of a child widget to.
 @xoptions: Used to specify the properties of the child widget when the table is resized.
 @yoptions: The same as xoptions, except this field determines behaviour of vertical resizing.
 @xpadding: An integer value specifying the padding on the left and right of the widget being added to the table.
@@ -145,7 +210,7 @@ and row numbers of the table. (Columns and rows are indexed from zero).
 
 <!-- ##### FUNCTION gtk_table_attach_defaults ##### -->
 <para>
-As there are many options associated with gtk_table_attach(), this convenience function provides the programmer with a means to add children to a table with identical padding and expansion options.
+As there are many options associated with gtk_table_attach(), this convenience function provides the programmer with a means to add children to a table with identical padding and expansion options. The values used for the #GtkAttachOptions are <literal>GTK_EXPAND | GTK_FILL</literal>, and the padding is set to 0.
 </para>
 
 @table: The table to add a new child widget to.
@@ -250,69 +315,4 @@ to %FALSE if this is not your desired behaviour.
 @table: 
 @Returns: 
 
-
-<!-- ##### ARG GtkTable:column-spacing ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:homogeneous ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:n-columns ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:n-rows ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:row-spacing ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:bottom-attach ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:left-attach ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:right-attach ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:top-attach ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:x-options ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:x-padding ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:y-options ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkTable:y-padding ##### -->
-<para>
-
-</para>
 

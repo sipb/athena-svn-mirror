@@ -20,6 +20,7 @@
  *
  * Author:  Owen Taylor, Red Hat, Inc.
  */
+#include <config.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +38,9 @@ struct _XSettingsClient
   XSettingsNotifyFunc notify;
   XSettingsWatchFunc watch;
   void *cb_data;
+
+  XSettingsGrabFunc grab;
+  XSettingsGrabFunc ungrab;
 
   Window manager_window;
   Atom manager_atom;
@@ -370,24 +374,31 @@ read_settings (XSettingsClient *client)
   XSettingsList *old_list = client->settings;
 
   client->settings = NULL;
-  
-  old_handler = XSetErrorHandler (ignore_errors);
-  result = XGetWindowProperty (client->display, client->manager_window,
-			       client->xsettings_atom, 0, LONG_MAX,
-			       False, client->xsettings_atom,
-			       &type, &format, &n_items, &bytes_after, &data);
-  XSetErrorHandler (old_handler);
 
-  if (result == Success && type == client->xsettings_atom)
+  if (client->manager_window)
     {
-      if (format != 8)
+      old_handler = XSetErrorHandler (ignore_errors);
+      result = XGetWindowProperty (client->display, client->manager_window,
+				   client->xsettings_atom, 0, LONG_MAX,
+				   False, client->xsettings_atom,
+				   &type, &format, &n_items, &bytes_after, &data);
+      XSetErrorHandler (old_handler);
+      
+      if (result == Success && type != None)
 	{
-	  fprintf (stderr, "Invalid format for XSETTINGS property %d", format);
+	  if (type != client->xsettings_atom)
+	    {
+	      fprintf (stderr, "Invalid type for XSETTINGS property");
+	    }
+	  else if (format != 8)
+	    {
+	      fprintf (stderr, "Invalid format for XSETTINGS property %d", format);
+	    }
+	  else
+	    client->settings = parse_settings (data, n_items);
+	  
+	  XFree (data);
 	}
-      else
-	client->settings = parse_settings (data, n_items);
-
-      XFree (data);
     }
 
   notify_changes (client, old_list);
@@ -410,8 +421,11 @@ check_manager_window (XSettingsClient *client)
 {
   if (client->manager_window && client->watch)
     client->watch (client->manager_window, False, 0, client->cb_data);
-  
-  XGrabServer (client->display);
+
+  if (client->grab)
+    client->grab (client->display);
+  else
+    XGrabServer (client->display);
 
   client->manager_window = XGetSelectionOwner (client->display,
 					       client->selection_atom);
@@ -419,7 +433,11 @@ check_manager_window (XSettingsClient *client)
     XSelectInput (client->display, client->manager_window,
 		  PropertyChangeMask | StructureNotifyMask);
 
-  XUngrabServer (client->display);
+  if (client->ungrab)
+    client->ungrab (client->display);
+  else
+    XUngrabServer (client->display);
+  
   XFlush (client->display);
 
   if (client->manager_window && client->watch)
@@ -439,7 +457,9 @@ xsettings_client_new (Display             *display,
 {
   XSettingsClient *client;
   char buffer[256];
-
+  char *atom_names[3];
+  Atom atoms[3];
+  
   client = malloc (sizeof *client);
   if (!client)
     return NULL;
@@ -449,14 +469,22 @@ xsettings_client_new (Display             *display,
   client->notify = notify;
   client->watch = watch;
   client->cb_data = cb_data;
+  client->grab = NULL;
+  client->ungrab = NULL;
   
   client->manager_window = None;
   client->settings = NULL;
 
   sprintf(buffer, "_XSETTINGS_S%d", screen);
-  client->selection_atom = XInternAtom (display, buffer, False);
-  client->xsettings_atom = XInternAtom (display, "_XSETTINGS_SETTINGS", False);
-  client->manager_atom = XInternAtom (display, "MANAGER", False);
+  atom_names[0] = buffer;
+  atom_names[1] = "_XSETTINGS_SETTINGS";
+  atom_names[2] = "MANAGER";
+
+  XInternAtoms (display, atom_names, 3, False, atoms);
+  
+  client->selection_atom = atoms[0];
+  client->xsettings_atom = atoms[1];
+  client->manager_atom = atoms[2];
 
   /* Select on StructureNotify so we get MANAGER events
    */
@@ -469,6 +497,20 @@ xsettings_client_new (Display             *display,
   check_manager_window (client);
 
   return client;
+}
+
+void
+xsettings_client_set_grab_func   (XSettingsClient      *client,
+				  XSettingsGrabFunc     grab)
+{
+  client->grab = grab;
+}
+
+void
+xsettings_client_set_ungrab_func (XSettingsClient      *client,
+				  XSettingsGrabFunc     ungrab)
+{
+  client->ungrab = ungrab;
 }
 
 void

@@ -19,52 +19,52 @@
 struct      <link linkend="GtkNotebook-struct">GtkNotebook</link>;
 struct      <link linkend="GtkNotebookPage">GtkNotebookPage</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-notebook-new">gtk_notebook_new</link>                (void);
-void        <link linkend="gtk-notebook-append-page">gtk_notebook_append_page</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="gint">gint</link>        <link linkend="gtk-notebook-append-page">gtk_notebook_append_page</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label);
-void        <link linkend="gtk-notebook-append-page-menu">gtk_notebook_append_page_menu</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="gint">gint</link>        <link linkend="gtk-notebook-append-page-menu">gtk_notebook_append_page_menu</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label);
-void        <link linkend="gtk-notebook-prepend-page">gtk_notebook_prepend_page</link>       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="gint">gint</link>        <link linkend="gtk-notebook-prepend-page">gtk_notebook_prepend_page</link>       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label);
-void        <link linkend="gtk-notebook-prepend-page-menu">gtk_notebook_prepend_page_menu</link>  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="gint">gint</link>        <link linkend="gtk-notebook-prepend-page-menu">gtk_notebook_prepend_page_menu</link>  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label);
-void        <link linkend="gtk-notebook-insert-page">gtk_notebook_insert_page</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="gint">gint</link>        <link linkend="gtk-notebook-insert-page">gtk_notebook_insert_page</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="gint">gint</link> position);
-void        <link linkend="gtk-notebook-insert-page-menu">gtk_notebook_insert_page_menu</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="gint">gint</link>        <link linkend="gtk-notebook-insert-page-menu">gtk_notebook_insert_page_menu</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label,
                                              <link linkend="gint">gint</link> position);
-void        <link linkend="gtk-notebook-remove-page">gtk_notebook_remove_page</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-remove-page">gtk_notebook_remove_page</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gint">gint</link> page_num);
 #define     <link linkend="gtk-notebook-current-page">gtk_notebook_current_page</link>
 <link linkend="gint">gint</link>        <link linkend="gtk-notebook-page-num">gtk_notebook_page_num</link>           (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);
 #define     <link linkend="gtk-notebook-set-page">gtk_notebook_set_page</link>
-void        <link linkend="gtk-notebook-next-page">gtk_notebook_next_page</link>          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
-void        <link linkend="gtk-notebook-prev-page">gtk_notebook_prev_page</link>          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
-void        <link linkend="gtk-notebook-reorder-child">gtk_notebook_reorder_child</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-next-page">gtk_notebook_next_page</link>          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
+<link linkend="void">void</link>        <link linkend="gtk-notebook-prev-page">gtk_notebook_prev_page</link>          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
+<link linkend="void">void</link>        <link linkend="gtk-notebook-reorder-child">gtk_notebook_reorder_child</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gint">gint</link> position);
-void        <link linkend="gtk-notebook-set-tab-pos">gtk_notebook_set_tab_pos</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-pos">gtk_notebook_set_tab_pos</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkPositionType">GtkPositionType</link> pos);
-void        <link linkend="gtk-notebook-set-show-tabs">gtk_notebook_set_show_tabs</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-show-tabs">gtk_notebook_set_show_tabs</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> show_tabs);
-void        <link linkend="gtk-notebook-set-show-border">gtk_notebook_set_show_border</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-show-border">gtk_notebook_set_show_border</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> show_border);
-void        <link linkend="gtk-notebook-set-scrollable">gtk_notebook_set_scrollable</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-scrollable">gtk_notebook_set_scrollable</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> scrollable);
-void        <link linkend="gtk-notebook-set-tab-border">gtk_notebook_set_tab_border</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-border">gtk_notebook_set_tab_border</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="guint">guint</link> border_width);
-void        <link linkend="gtk-notebook-popup-enable">gtk_notebook_popup_enable</link>       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
-void        <link linkend="gtk-notebook-popup-disable">gtk_notebook_popup_disable</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
+<link linkend="void">void</link>        <link linkend="gtk-notebook-popup-enable">gtk_notebook_popup_enable</link>       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
+<link linkend="void">void</link>        <link linkend="gtk-notebook-popup-disable">gtk_notebook_popup_disable</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
 <link linkend="gint">gint</link>        <link linkend="gtk-notebook-get-current-page">gtk_notebook_get_current_page</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-notebook-get-menu-label">gtk_notebook_get_menu_label</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);
@@ -73,37 +73,37 @@ void        <link linkend="gtk-notebook-popup-disable">gtk_notebook_popup_disabl
 <link linkend="gint">gint</link>        <link linkend="gtk-notebook-get-n-pages">gtk_notebook_get_n_pages</link>        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-notebook-get-tab-label">gtk_notebook_get_tab_label</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);
-void        <link linkend="gtk-notebook-query-tab-label-packing">gtk_notebook_query_tab_label_packing</link>
+<link linkend="void">void</link>        <link linkend="gtk-notebook-query-tab-label-packing">gtk_notebook_query_tab_label_packing</link>
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> *expand,
                                              <link linkend="gboolean">gboolean</link> *fill,
                                              <link linkend="GtkPackType">GtkPackType</link> *pack_type);
-void        <link linkend="gtk-notebook-set-homogeneous-tabs">gtk_notebook_set_homogeneous_tabs</link>
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-homogeneous-tabs">gtk_notebook_set_homogeneous_tabs</link>
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> homogeneous);
-void        <link linkend="gtk-notebook-set-menu-label">gtk_notebook_set_menu_label</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-menu-label">gtk_notebook_set_menu_label</link>     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label);
-void        <link linkend="gtk-notebook-set-menu-label-text">gtk_notebook_set_menu_label_text</link>
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-menu-label-text">gtk_notebook_set_menu_label_text</link>
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              const <link linkend="gchar">gchar</link> *menu_text);
-void        <link linkend="gtk-notebook-set-tab-hborder">gtk_notebook_set_tab_hborder</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-hborder">gtk_notebook_set_tab_hborder</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="guint">guint</link> tab_hborder);
-void        <link linkend="gtk-notebook-set-tab-label">gtk_notebook_set_tab_label</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-label">gtk_notebook_set_tab_label</link>      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label);
-void        <link linkend="gtk-notebook-set-tab-label-packing">gtk_notebook_set_tab_label_packing</link>
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-label-packing">gtk_notebook_set_tab_label_packing</link>
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> expand,
                                              <link linkend="gboolean">gboolean</link> fill,
                                              <link linkend="GtkPackType">GtkPackType</link> pack_type);
-void        <link linkend="gtk-notebook-set-tab-label-text">gtk_notebook_set_tab_label_text</link> (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-label-text">gtk_notebook_set_tab_label_text</link> (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              const <link linkend="gchar">gchar</link> *tab_text);
-void        <link linkend="gtk-notebook-set-tab-vborder">gtk_notebook_set_tab_vborder</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-tab-vborder">gtk_notebook_set_tab_vborder</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="guint">guint</link> tab_vborder);
 G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="gtk-notebook-get-menu-label-text">gtk_notebook_get_menu_label_text</link>
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
@@ -115,7 +115,7 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="gtk-notebook-g
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);
 <link linkend="GtkPositionType">GtkPositionType</link> <link linkend="gtk-notebook-get-tab-pos">gtk_notebook_get_tab_pos</link>    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);
-void        <link linkend="gtk-notebook-set-current-page">gtk_notebook_set_current_page</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<link linkend="void">void</link>        <link linkend="gtk-notebook-set-current-page">gtk_notebook_set_current_page</link>   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gint">gint</link> page_num);
 
 
@@ -135,11 +135,14 @@ void        <link linkend="gtk-notebook-set-current-page">gtk_notebook_set_curre
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkNotebook implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkNotebook implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -147,28 +150,38 @@ GtkNotebook implements <link linkend="AtkImplementorIface">AtkImplementorIface</
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkNotebook--enable-popup">enable-popup</link>&quot;         <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--homogeneous">homogeneous</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--page">page</link>&quot;                 <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="GtkNotebook--scrollable">scrollable</link>&quot;           <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--show-border">show-border</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--show-tabs">show-tabs</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-border">tab-border</link>&quot;           <link linkend="guint">guint</link>                : Write
-  &quot;<link linkend="GtkNotebook--tab-hborder">tab-hborder</link>&quot;          <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-pos">tab-pos</link>&quot;              <link linkend="GtkPositionType">GtkPositionType</link>      : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-vborder">tab-vborder</link>&quot;          <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GtkNotebook--enable-popup">enable-popup</link>&quot;         <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--homogeneous">homogeneous</link>&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--page">page</link>&quot;                 <link linkend="gint">gint</link>                  : Read / Write
+  &quot;<link linkend="GtkNotebook--scrollable">scrollable</link>&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--show-border">show-border</link>&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--show-tabs">show-tabs</link>&quot;            <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-border">tab-border</link>&quot;           <link linkend="guint">guint</link>                 : Write
+  &quot;<link linkend="GtkNotebook--tab-hborder">tab-hborder</link>&quot;          <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-pos">tab-pos</link>&quot;              <link linkend="GtkPositionType">GtkPositionType</link>       : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-vborder">tab-vborder</link>&quot;          <link linkend="guint">guint</link>                 : Read / Write
 </synopsis>
 </refsect1>
 <refsect1>
 <title>Child Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkNotebook--menu-label">menu-label</link>&quot;           <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GtkNotebook--position">position</link>&quot;             <link linkend="gint">gint</link>                 : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-expand">tab-expand</link>&quot;           <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-fill">tab-fill</link>&quot;             <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-label">tab-label</link>&quot;            <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="GtkNotebook--tab-pack">tab-pack</link>&quot;             <link linkend="GtkPackType">GtkPackType</link>          : Read / Write
+  &quot;<link linkend="GtkNotebook--menu-label">menu-label</link>&quot;           <link linkend="gchararray">gchararray</link>            : Read / Write
+  &quot;<link linkend="GtkNotebook--position">position</link>&quot;             <link linkend="gint">gint</link>                  : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-expand">tab-expand</link>&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-fill">tab-fill</link>&quot;             <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-label">tab-label</link>&quot;            <link linkend="gchararray">gchararray</link>            : Read / Write
+  &quot;<link linkend="GtkNotebook--tab-pack">tab-pack</link>&quot;             <link linkend="GtkPackType">GtkPackType</link>           : Read / Write
+</synopsis>
+</refsect1>
+<refsect1>
+<title>Style Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GtkNotebook--has-backward-stepper">has-backward-stepper</link>&quot; <link linkend="gboolean">gboolean</link>              : Read
+  &quot;<link linkend="GtkNotebook--has-forward-stepper">has-forward-stepper</link>&quot;  <link linkend="gboolean">gboolean</link>              : Read
+  &quot;<link linkend="GtkNotebook--has-secondary-backward-stepper">has-secondary-backward-stepper</link>&quot; <link linkend="gboolean">gboolean</link>              : Read
+  &quot;<link linkend="GtkNotebook--has-secondary-forward-stepper">has-secondary-forward-stepper</link>&quot; <link linkend="gboolean">gboolean</link>              : Read
 </synopsis>
 </refsect1>
 
@@ -177,14 +190,14 @@ GtkNotebook implements <link linkend="AtkImplementorIface">AtkImplementorIface</
 <synopsis>
 
 &quot;<link linkend="GtkNotebook-change-current-page">change-current-page</link>&quot;
-            void        user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkNotebook-focus-tab">focus-tab</link>&quot; <link linkend="gboolean">gboolean</link>    user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="GtkNotebookTab">GtkNotebookTab</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkNotebook-move-focus-out">move-focus-out</link>&quot;
-            void        user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="GtkDirectionType">GtkDirectionType</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkNotebook-select-page">select-page</link>&quot;
@@ -192,7 +205,7 @@ GtkNotebook implements <link linkend="AtkImplementorIface">AtkImplementorIface</
                                             <link linkend="gboolean">gboolean</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);
 &quot;<link linkend="GtkNotebook-switch-page">switch-page</link>&quot;
-            void        user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="GtkNotebookPage">GtkNotebookPage</link> *page,
                                             <link linkend="guint">guint</link> page_num,
                                             <link linkend="gpointer">gpointer</link> user_data);
@@ -203,17 +216,17 @@ GtkNotebook implements <link linkend="AtkImplementorIface">AtkImplementorIface</
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkNotebook">GtkNotebook</link> widget is a <link linkend="GtkContainer">GtkContainer</link> whose children are pages that
+The <link linkend="GtkNotebook"><type>GtkNotebook</type></link> widget is a <link linkend="GtkContainer"><type>GtkContainer</type></link> whose children are pages that
 can be switched between using tab labels along one edge.
 </para>
 <para>
-There are many configuration options for <link linkend="GtkNotebook">GtkNotebook</link>. Among other
+There are many configuration options for <link linkend="GtkNotebook"><type>GtkNotebook</type></link>. Among other
 things, you can choose on which edge the tabs appear
-(see <link linkend="gtk-notebook-set-tab-pos">gtk_notebook_set_tab_pos</link>()), whether, if there are too many
+(see <link linkend="gtk-notebook-set-tab-pos"><function>gtk_notebook_set_tab_pos()</function></link>), whether, if there are too many
 tabs to fit the noteobook should be made bigger or scrolling
 arrows added (see gtk_notebook_set_scrollable), and whether there
 will be a popup menu allowing the users to switch pages.
-(see <link linkend="gtk-notebook-enable-popup">gtk_notebook_enable_popup</link>(), <link linkend="gtk-noteobook-disable-popup">gtk_noteobook_disable_popup</link>())
+(see <link linkend="gtk-notebook-enable-popup"><function>gtk_notebook_enable_popup()</function></link>, <link linkend="gtk-noteobook-disable-popup"><function>gtk_noteobook_disable_popup()</function></link>)
 </para>
 </refsect1>
 
@@ -221,29 +234,29 @@ will be a popup menu allowing the users to switch pages.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkNotebook-struct"/>struct GtkNotebook</title>
-<programlisting>struct GtkNotebook;</programlisting>
+<indexterm><primary>GtkNotebook</primary></indexterm><programlisting>struct GtkNotebook;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkNotebookPage"/>struct GtkNotebookPage</title>
-<programlisting>struct GtkNotebookPage;</programlisting>
+<indexterm><primary>GtkNotebookPage</primary></indexterm><programlisting>struct GtkNotebookPage;</programlisting>
 <para>
-The <link linkend="GtkNotebookPage">GtkNotebookPage</link> is an opaque implementation detail of <link linkend="GtkNotebook">GtkNotebook</link>.
+The <link linkend="GtkNotebookPage"><type>GtkNotebookPage</type></link> is an opaque implementation detail of <link linkend="GtkNotebook"><type>GtkNotebook</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-new"/>gtk_notebook_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_new                (void);</programlisting>
+<indexterm><primary>gtk_notebook_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_new                (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkNotebook">GtkNotebook</link> widget with no pages.</para>
+Creates a new <link linkend="GtkNotebook"><type>GtkNotebook</type></link> widget with no pages.</para>
 <para>
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="GtkNotebook">GtkNotebook</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the newly created <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-append-page"/>gtk_notebook_append_page ()</title>
-<programlisting>void        gtk_notebook_append_page        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_append_page</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_append_page        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label);</programlisting>
 <para>
@@ -251,19 +264,22 @@ Appends a page to <parameter>notebook</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to use as the contents of the page.
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to use as the contents of the page.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_label</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to be used as the label for the page,
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to be used as the label for the page,
             or <literal>NULL</literal> to use the default label, 'page N'.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the appended
+page in the notebook, or -1 if function fails
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-append-page-menu"/>gtk_notebook_append_page_menu ()</title>
-<programlisting>void        gtk_notebook_append_page_menu   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_append_page_menu</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_append_page_menu   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label);</programlisting>
@@ -273,27 +289,30 @@ label in the popup menu.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to use as the contents of the page.
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to use as the contents of the page.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_label</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to be used as the label for the page,
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to be used as the label for the page,
             or <literal>NULL</literal> to use the default label, 'page N'.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>menu_label</parameter>&nbsp;:</term>
 <listitem><simpara> the widget to use as a label for the page-switch
              menu, if that is enabled. If <literal>NULL</literal>, and <parameter>tab_label</parameter>
-             is a <link linkend="GtkLabel">GtkLabel</link> or <literal>NULL</literal>, then the menu label will be
+             is a <link linkend="GtkLabel"><type>GtkLabel</type></link> or <literal>NULL</literal>, then the menu label will be
              a newly created label with the same text as <parameter>tab_label</parameter>;
-             If <parameter>tab_label</parameter> is not a <link linkend="GtkLabel">GtkLabel</link>, <parameter>menu_label</parameter> must be
+             If <parameter>tab_label</parameter> is not a <link linkend="GtkLabel"><type>GtkLabel</type></link>, <parameter>menu_label</parameter> must be
              specified if the page-switch menu is to be used.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the appended
+page in the notebook, or -1 if function fails
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-prepend-page"/>gtk_notebook_prepend_page ()</title>
-<programlisting>void        gtk_notebook_prepend_page       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_prepend_page</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_prepend_page       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label);</programlisting>
 <para>
@@ -301,19 +320,22 @@ Prepends a page to <parameter>notebook</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to use as the contents of the page.
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to use as the contents of the page.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_label</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to be used as the label for the page,
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to be used as the label for the page,
             or <literal>NULL</literal> to use the default label, 'page N'.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the prepended
+page in the notebook, or -1 if function fails
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-prepend-page-menu"/>gtk_notebook_prepend_page_menu ()</title>
-<programlisting>void        gtk_notebook_prepend_page_menu  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_prepend_page_menu</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_prepend_page_menu  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label);</programlisting>
@@ -323,52 +345,58 @@ label in the popup menu.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to use as the contents of the page.
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to use as the contents of the page.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_label</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to be used as the label for the page,
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to be used as the label for the page,
             or <literal>NULL</literal> to use the default label, 'page N'.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>menu_label</parameter>&nbsp;:</term>
 <listitem><simpara> the widget to use as a label for the page-switch
              menu, if that is enabled. If <literal>NULL</literal>, and <parameter>tab_label</parameter>
-             is a <link linkend="GtkLabel">GtkLabel</link> or <literal>NULL</literal>, then the menu label will be
+             is a <link linkend="GtkLabel"><type>GtkLabel</type></link> or <literal>NULL</literal>, then the menu label will be
              a newly created label with the same text as <parameter>tab_label</parameter>;
-             If <parameter>tab_label</parameter> is not a <link linkend="GtkLabel">GtkLabel</link>, <parameter>menu_label</parameter> must be
+             If <parameter>tab_label</parameter> is not a <link linkend="GtkLabel"><type>GtkLabel</type></link>, <parameter>menu_label</parameter> must be
              specified if the page-switch menu is to be used.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the prepended
+page in the notebook, or -1 if function fails
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-insert-page"/>gtk_notebook_insert_page ()</title>
-<programlisting>void        gtk_notebook_insert_page        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_insert_page</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_insert_page        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="gint">gint</link> position);</programlisting>
 <para>
-Insert a page into <parameter>notebook</parameter> at the given position</para>
+Insert a page into <parameter>notebook</parameter> at the given position.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to use as the contents of the page.
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to use as the contents of the page.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_label</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to be used as the label for the page,
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to be used as the label for the page,
             or <literal>NULL</literal> to use the default label, 'page N'.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>position</parameter>&nbsp;:</term>
 <listitem><simpara> the index (starting at 0) at which to insert the page,
            or -1 to append the page after all other pages.
 </simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the inserted
+page in the notebook, or -1 if function fails
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-insert-page-menu"/>gtk_notebook_insert_page_menu ()</title>
-<programlisting>void        gtk_notebook_insert_page_menu   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_insert_page_menu</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_insert_page_menu   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label,
@@ -379,31 +407,34 @@ the widget to use as the label in the popup menu.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to use as the contents of the page.
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to use as the contents of the page.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_label</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWidget">GtkWidget</link> to be used as the label for the page,
+<listitem><simpara> the <link linkend="GtkWidget"><type>GtkWidget</type></link> to be used as the label for the page,
             or <literal>NULL</literal> to use the default label, 'page N'.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>menu_label</parameter>&nbsp;:</term>
 <listitem><simpara> the widget to use as a label for the page-switch
              menu, if that is enabled. If <literal>NULL</literal>, and <parameter>tab_label</parameter>
-             is a <link linkend="GtkLabel">GtkLabel</link> or <literal>NULL</literal>, then the menu label will be
+             is a <link linkend="GtkLabel"><type>GtkLabel</type></link> or <literal>NULL</literal>, then the menu label will be
              a newly created label with the same text as <parameter>tab_label</parameter>;
-             If <parameter>tab_label</parameter> is not a <link linkend="GtkLabel">GtkLabel</link>, <parameter>menu_label</parameter> must be
+             If <parameter>tab_label</parameter> is not a <link linkend="GtkLabel"><type>GtkLabel</type></link>, <parameter>menu_label</parameter> must be
              specified if the page-switch menu is to be used.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>position</parameter>&nbsp;:</term>
 <listitem><simpara> the index (starting at 0) at which to insert the page,
            or -1 to append the page after all other pages.
 </simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the inserted
+page in the notebook, or -1 if function fails
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-remove-page"/>gtk_notebook_remove_page ()</title>
-<programlisting>void        gtk_notebook_remove_page        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_remove_page</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_remove_page        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gint">gint</link> page_num);</programlisting>
 <para>
 Removes a page from the notebook given its index
@@ -411,7 +442,7 @@ in the notebook.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>.
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>page_num</parameter>&nbsp;:</term>
 <listitem><simpara> the index of a notebook page, starting
@@ -421,16 +452,16 @@ in the notebook.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-current-page"/>gtk_notebook_current_page</title>
-<programlisting>#define	gtk_notebook_current_page               gtk_notebook_get_current_page
+<indexterm role="deprecated"><primary>gtk_notebook_current_page</primary></indexterm><programlisting>#define	gtk_notebook_current_page               gtk_notebook_get_current_page
 </programlisting>
 <warning><para><literal>gtk_notebook_current_page</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Deprecated compatibility macro. Use
-<link linkend="gtk-notebook-get-current-page">gtk_notebook_get_current_page</link>() instead.
+<link linkend="gtk-notebook-get-current-page"><function>gtk_notebook_get_current_page()</function></link> instead.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-page-num"/>gtk_notebook_page_num ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_notebook_page_num           (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_page_num</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_page_num           (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
 Finds the index of the page which contains the given child
@@ -438,10 +469,10 @@ widget.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkWidget">GtkWidget</link>
+<listitem><simpara> a <link linkend="GtkWidget"><type>GtkWidget</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index of the page containing <parameter>child</parameter>, or
   -1 if <parameter>child</parameter> is not in the notebook.
@@ -449,40 +480,40 @@ widget.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-page"/>gtk_notebook_set_page</title>
-<programlisting>#define gtk_notebook_set_page                   gtk_notebook_set_current_page
+<indexterm role="deprecated"><primary>gtk_notebook_set_page</primary></indexterm><programlisting>#define gtk_notebook_set_page                   gtk_notebook_set_current_page
 </programlisting>
 <warning><para><literal>gtk_notebook_set_page</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
 Deprecated compatibility macro. Use
-<link linkend="gtk-notebook-set-current-page">gtk_notebook_set_current_page</link>() instead.
+<link linkend="gtk-notebook-set-current-page"><function>gtk_notebook_set_current_page()</function></link> instead.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-next-page"/>gtk_notebook_next_page ()</title>
-<programlisting>void        gtk_notebook_next_page          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_next_page</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_next_page          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Switches to the next page. Nothing happens if the current page is
 the last page.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-prev-page"/>gtk_notebook_prev_page ()</title>
-<programlisting>void        gtk_notebook_prev_page          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_prev_page</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_prev_page          (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Switches to the previous page. Nothing happens if the current page
 is the first page.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-reorder-child"/>gtk_notebook_reorder_child ()</title>
-<programlisting>void        gtk_notebook_reorder_child      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_reorder_child</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_reorder_child      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gint">gint</link> position);</programlisting>
 <para>
@@ -493,7 +524,7 @@ of the list.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the child to move
@@ -504,7 +535,7 @@ of the list.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-pos"/>gtk_notebook_set_tab_pos ()</title>
-<programlisting>void        gtk_notebook_set_tab_pos        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_tab_pos</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_pos        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkPositionType">GtkPositionType</link> pos);</programlisting>
 <para>
 Sets the edge at which the tabs for switching pages in the
@@ -512,7 +543,7 @@ notebook are drawn.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>.
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pos</parameter>&nbsp;:</term>
 <listitem><simpara> the edge to draw the tabs at.
@@ -520,14 +551,14 @@ notebook are drawn.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-show-tabs"/>gtk_notebook_set_show_tabs ()</title>
-<programlisting>void        gtk_notebook_set_show_tabs      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_show_tabs</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_show_tabs      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> show_tabs);</programlisting>
 <para>
 Sets whether to show the tabs for the notebook or not.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>show_tabs</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if the tabs should be shown.
@@ -535,16 +566,16 @@ Sets whether to show the tabs for the notebook or not.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-show-border"/>gtk_notebook_set_show_border ()</title>
-<programlisting>void        gtk_notebook_set_show_border    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_show_border</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_show_border    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> show_border);</programlisting>
 <para>
 Sets whether a bevel will be drawn around the notebook pages.
 This only has a visual effect when the tabs are not shown.
-See <link linkend="gtk-notebook-set-show-tabs">gtk_notebook_set_show_tabs</link>().</para>
+See <link linkend="gtk-notebook-set-show-tabs"><function>gtk_notebook_set_show_tabs()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>show_border</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if a bevel should be drawn around the notebook.
@@ -552,7 +583,7 @@ See <link linkend="gtk-notebook-set-show-tabs">gtk_notebook_set_show_tabs</link>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-scrollable"/>gtk_notebook_set_scrollable ()</title>
-<programlisting>void        gtk_notebook_set_scrollable     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_scrollable</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_scrollable     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> scrollable);</programlisting>
 <para>
 Sets whether the tab label area will have arrows for scrolling if
@@ -560,7 +591,7 @@ there are too many tabs to fit in the area.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>scrollable</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if scroll arrows should be added
@@ -568,7 +599,7 @@ there are too many tabs to fit in the area.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-border"/>gtk_notebook_set_tab_border ()</title>
-<programlisting>void        gtk_notebook_set_tab_border     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm role="deprecated"><primary>gtk_notebook_set_tab_border</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_border     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="guint">guint</link> border_width);</programlisting>
 <warning><para><literal>gtk_notebook_set_tab_border</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -579,7 +610,7 @@ by gtk_notebook_set_tab_vborder (<parameter>notebook</parameter>, <parameter>bor
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>border_width</parameter>&nbsp;:</term>
 <listitem><simpara> width of the border around the tab labels.
@@ -587,36 +618,36 @@ by gtk_notebook_set_tab_vborder (<parameter>notebook</parameter>, <parameter>bor
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-popup-enable"/>gtk_notebook_popup_enable ()</title>
-<programlisting>void        gtk_notebook_popup_enable       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_popup_enable</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_popup_enable       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Enables the popup menu: if the user clicks with the right mouse button on
 the bookmarks, a menu with all the pages will be popped up.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-popup-disable"/>gtk_notebook_popup_disable ()</title>
-<programlisting>void        gtk_notebook_popup_disable      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_popup_disable</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_popup_disable      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Disables the popup menu.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-current-page"/>gtk_notebook_get_current_page ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_notebook_get_current_page   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_get_current_page</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_get_current_page   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Returns the page number of the current page.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the index (starting from 0) of the current
 page in the notebook. If the notebook has no pages, then
@@ -625,14 +656,14 @@ page in the notebook. If the notebook has no pages, then
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-menu-label"/>gtk_notebook_get_menu_label ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_get_menu_label     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_get_menu_label</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_get_menu_label     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
 Retrieves the menu label widget of the page containing <parameter>child</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> a widget contained in a page of <parameter>notebook</parameter>
@@ -644,14 +675,14 @@ Retrieves the menu label widget of the page containing <parameter>child</paramet
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-nth-page"/>gtk_notebook_get_nth_page ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_get_nth_page       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_get_nth_page</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_get_nth_page       (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gint">gint</link> page_num);</programlisting>
 <para>
 Returns the child widget contained in page number <parameter>page_num</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>page_num</parameter>&nbsp;:</term>
 <listitem><simpara> the index of a page in the noteobok, or -1
@@ -663,14 +694,14 @@ out of bounds.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-n-pages"/>gtk_notebook_get_n_pages ()</title>
-<programlisting><link linkend="gint">gint</link>        gtk_notebook_get_n_pages        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm role="2.2"><primary>gtk_notebook_get_n_pages</primary></indexterm><programlisting><link linkend="gint">gint</link>        gtk_notebook_get_n_pages        (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Gets the number of pages in a notebook.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of pages in the notebook.
 
@@ -679,7 +710,7 @@ Gets the number of pages in a notebook.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-tab-label"/>gtk_notebook_get_tab_label ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_get_tab_label      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_get_tab_label</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_notebook_get_tab_label      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
 Returns the tab label widget for the page <parameter>child</parameter>. <literal>NULL</literal> is returned
@@ -688,7 +719,7 @@ been set for <parameter>child</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the page
@@ -698,7 +729,7 @@ been set for <parameter>child</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-query-tab-label-packing"/>gtk_notebook_query_tab_label_packing ()</title>
-<programlisting>void        gtk_notebook_query_tab_label_packing
+<indexterm><primary>gtk_notebook_query_tab_label_packing</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_query_tab_label_packing
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> *expand,
@@ -710,7 +741,7 @@ containing <parameter>child</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the page
@@ -727,7 +758,7 @@ containing <parameter>child</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-homogeneous-tabs"/>gtk_notebook_set_homogeneous_tabs ()</title>
-<programlisting>void        gtk_notebook_set_homogeneous_tabs
+<indexterm role="deprecated"><primary>gtk_notebook_set_homogeneous_tabs</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_homogeneous_tabs
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gboolean">gboolean</link> homogeneous);</programlisting>
 <warning><para><literal>gtk_notebook_set_homogeneous_tabs</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -736,7 +767,7 @@ Sets whether the tabs must have all the same size or not.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>homogeneous</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if all tabs should be the same size.
@@ -744,7 +775,7 @@ Sets whether the tabs must have all the same size or not.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-menu-label"/>gtk_notebook_set_menu_label ()</title>
-<programlisting>void        gtk_notebook_set_menu_label     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_menu_label</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_menu_label     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *menu_label);</programlisting>
 <para>
@@ -752,7 +783,7 @@ Changes the menu label for the page containing <parameter>child</parameter>.</pa
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the child widget
@@ -763,7 +794,7 @@ Changes the menu label for the page containing <parameter>child</parameter>.</pa
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-menu-label-text"/>gtk_notebook_set_menu_label_text ()</title>
-<programlisting>void        gtk_notebook_set_menu_label_text
+<indexterm><primary>gtk_notebook_set_menu_label_text</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_menu_label_text
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              const <link linkend="gchar">gchar</link> *menu_text);</programlisting>
@@ -772,7 +803,7 @@ Creates a new label and sets it as the menu label of <parameter>child</parameter
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the child widget
@@ -783,7 +814,7 @@ Creates a new label and sets it as the menu label of <parameter>child</parameter
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-hborder"/>gtk_notebook_set_tab_hborder ()</title>
-<programlisting>void        gtk_notebook_set_tab_hborder    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm role="deprecated"><primary>gtk_notebook_set_tab_hborder</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_hborder    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="guint">guint</link> tab_hborder);</programlisting>
 <warning><para><literal>gtk_notebook_set_tab_hborder</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -791,7 +822,7 @@ Sets the width of the horizontal border of tab labels.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_hborder</parameter>&nbsp;:</term>
 <listitem><simpara> width of the horizontal border of tab labels.
@@ -799,7 +830,7 @@ Sets the width of the horizontal border of tab labels.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-label"/>gtk_notebook_set_tab_label ()</title>
-<programlisting>void        gtk_notebook_set_tab_label      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_tab_label</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_label      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="GtkWidget">GtkWidget</link> *tab_label);</programlisting>
 <para>
@@ -808,7 +839,7 @@ for <parameter>tab_label</parameter>, then the page will have the label 'page N'
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the page
@@ -820,7 +851,7 @@ for <parameter>tab_label</parameter>, then the page will have the label 'page N'
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-label-packing"/>gtk_notebook_set_tab_label_packing ()</title>
-<programlisting>void        gtk_notebook_set_tab_label_packing
+<indexterm><primary>gtk_notebook_set_tab_label_packing</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_label_packing
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              <link linkend="gboolean">gboolean</link> expand,
@@ -828,12 +859,12 @@ for <parameter>tab_label</parameter>, then the page will have the label 'page N'
                                              <link linkend="GtkPackType">GtkPackType</link> pack_type);</programlisting>
 <para>
 Sets the packing parameters for the tab label of the page
-containing <parameter>child</parameter>. See <link linkend="gtk-box-pack-start">gtk_box_pack_start</link>() for the exact meaning
+containing <parameter>child</parameter>. See <link linkend="gtk-box-pack-start"><function>gtk_box_pack_start()</function></link> for the exact meaning
 of the parameters.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the child widget
@@ -850,7 +881,7 @@ of the parameters.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-label-text"/>gtk_notebook_set_tab_label_text ()</title>
-<programlisting>void        gtk_notebook_set_tab_label_text (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_tab_label_text</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_label_text (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child,
                                              const <link linkend="gchar">gchar</link> *tab_text);</programlisting>
 <para>
@@ -859,7 +890,7 @@ containing <parameter>child</parameter>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the page
@@ -870,7 +901,7 @@ containing <parameter>child</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-tab-vborder"/>gtk_notebook_set_tab_vborder ()</title>
-<programlisting>void        gtk_notebook_set_tab_vborder    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm role="deprecated"><primary>gtk_notebook_set_tab_vborder</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_tab_vborder    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="guint">guint</link> tab_vborder);</programlisting>
 <warning><para><literal>gtk_notebook_set_tab_vborder</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
@@ -878,7 +909,7 @@ Sets the width of the vertical border of tab labels.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>tab_vborder</parameter>&nbsp;:</term>
 <listitem><simpara> width of the vertical border of tab labels.
@@ -886,7 +917,7 @@ Sets the width of the vertical border of tab labels.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-menu-label-text"/>gtk_notebook_get_menu_label_text ()</title>
-<programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_notebook_get_menu_label_text
+<indexterm><primary>gtk_notebook_get_menu_label_text</primary></indexterm><programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_notebook_get_menu_label_text
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
@@ -896,7 +927,7 @@ Retrieves the text of the menu label for the page containing
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> the child widget of a page of the notebook.
@@ -904,58 +935,58 @@ Retrieves the text of the menu label for the page containing
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>value: the text of the tab label, or <literal>NULL</literal> if the
                widget does not have a menu label other than
                the default menu label, or the menu label widget
-               is not a <link linkend="GtkLabel">GtkLabel</link>. The string is owned by
+               is not a <link linkend="GtkLabel"><type>GtkLabel</type></link>. The string is owned by
                the widget and must not be freed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-scrollable"/>gtk_notebook_get_scrollable ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_notebook_get_scrollable     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_get_scrollable</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_notebook_get_scrollable     (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Returns whether the tab label area has arrows for scrolling. See
-<link linkend="gtk-notebook-set-scrollable">gtk_notebook_set_scrollable</link>().</para>
+<link linkend="gtk-notebook-set-scrollable"><function>gtk_notebook_set_scrollable()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if arrows for scrolling are present
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-show-border"/>gtk_notebook_get_show_border ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_notebook_get_show_border    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_get_show_border</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_notebook_get_show_border    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Returns whether a bevel will be drawn around the notebook pages. See
-<link linkend="gtk-notebook-set-show-border">gtk_notebook_set_show_border</link>().</para>
+<link linkend="gtk-notebook-set-show-border"><function>gtk_notebook_set_show_border()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the bevel is drawn
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-show-tabs"/>gtk_notebook_get_show_tabs ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_notebook_get_show_tabs      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_get_show_tabs</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_notebook_get_show_tabs      (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Returns whether the tabs of the notebook are shown. See
-<link linkend="gtk-notebook-set-show-tabs">gtk_notebook_set_show_tabs</link>().</para>
+<link linkend="gtk-notebook-set-show-tabs"><function>gtk_notebook_set_show_tabs()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the tabs are shown
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-tab-label-text"/>gtk_notebook_get_tab_label_text ()</title>
-<programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_notebook_get_tab_label_text
+<indexterm><primary>gtk_notebook_get_tab_label_text</primary></indexterm><programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_notebook_get_tab_label_text
                                             (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="GtkWidget">GtkWidget</link> *child);</programlisting>
 <para>
@@ -965,20 +996,20 @@ Retrieves the text of the tab label for the page containing
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>child</parameter>&nbsp;:</term>
 <listitem><simpara> a widget contained in a page of <parameter>notebook</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>value: the text of the tab label, or <literal>NULL</literal> if the
-               tab label widget is not a <link linkend="GtkLabel">GtkLabel</link>. The
+               tab label widget is not a <link linkend="GtkLabel"><type>GtkLabel</type></link>. The
                string is owned by the widget and must not
                be freed.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-get-tab-pos"/>gtk_notebook_get_tab_pos ()</title>
-<programlisting><link linkend="GtkPositionType">GtkPositionType</link> gtk_notebook_get_tab_pos    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
+<indexterm><primary>gtk_notebook_get_tab_pos</primary></indexterm><programlisting><link linkend="GtkPositionType">GtkPositionType</link> gtk_notebook_get_tab_pos    (<link linkend="GtkNotebook">GtkNotebook</link> *notebook);</programlisting>
 <para>
 Gets the edge at which the tabs for switching pages in the
 notebook are drawn.</para>
@@ -986,14 +1017,14 @@ notebook are drawn.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the edge at which the tabs are drawn
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-notebook-set-current-page"/>gtk_notebook_set_current_page ()</title>
-<programlisting>void        gtk_notebook_set_current_page   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<indexterm><primary>gtk_notebook_set_current_page</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_notebook_set_current_page   (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                              <link linkend="gint">gint</link> page_num);</programlisting>
 <para>
 Switches to the page number <parameter>page_num</parameter>.</para>
@@ -1001,7 +1032,7 @@ Switches to the page number <parameter>page_num</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>notebook</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkNotebook">GtkNotebook</link>
+<listitem><simpara> a <link linkend="GtkNotebook"><type>GtkNotebook</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>page_num</parameter>&nbsp;:</term>
 <listitem><simpara> index of the page to switch to, starting from 0.
@@ -1014,117 +1045,133 @@ Switches to the page number <parameter>page_num</parameter>.</para>
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkNotebook--enable-popup"/>&quot;<literal>enable-popup</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkNotebook--enable-popup"/>The &quot;<literal>enable-popup</literal>&quot; property</title>
+<programlisting>  &quot;enable-popup&quot;         <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>If TRUE, pressing the right mouse button on the notebook pops up a menu that you can use to go to a page.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--homogeneous"/>The &quot;<literal>homogeneous</literal>&quot; property</title>
+<programlisting>  &quot;homogeneous&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether tabs should have homogeneous sizes.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--page"/>The &quot;<literal>page</literal>&quot; property</title>
+<programlisting>  &quot;page&quot;                 <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>The index of the current page.</para><para>Allowed values: &gt;= 0</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--scrollable"/>The &quot;<literal>scrollable</literal>&quot; property</title>
+<programlisting>  &quot;scrollable&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>If TRUE, scroll arrows are added if there are too many tabs to fit.</para><para>Default value: FALSE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--show-border"/>The &quot;<literal>show-border</literal>&quot; property</title>
+<programlisting>  &quot;show-border&quot;          <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether the border should be shown or not.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--show-tabs"/>The &quot;<literal>show-tabs</literal>&quot; property</title>
+<programlisting>  &quot;show-tabs&quot;            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether tabs should be shown or not.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-border"/>The &quot;<literal>tab-border</literal>&quot; property</title>
+<programlisting>  &quot;tab-border&quot;           <link linkend="guint">guint</link>                 : Write</programlisting>
+<para>Width of the border around the tab labels.</para><para>Default value: 2</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-hborder"/>The &quot;<literal>tab-hborder</literal>&quot; property</title>
+<programlisting>  &quot;tab-hborder&quot;          <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>Width of the horizontal border of tab labels.</para><para>Default value: 2</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-pos"/>The &quot;<literal>tab-pos</literal>&quot; property</title>
+<programlisting>  &quot;tab-pos&quot;              <link linkend="GtkPositionType">GtkPositionType</link>       : Read / Write</programlisting>
+<para>Which side of the notebook holds the tabs.</para><para>Default value: GTK_POS_TOP</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-vborder"/>The &quot;<literal>tab-vborder</literal>&quot; property</title>
+<programlisting>  &quot;tab-vborder&quot;          <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>Width of the vertical border of tab labels.</para><para>Default value: 2</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--homogeneous"/>&quot;<literal>homogeneous</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--page"/>&quot;<literal>page</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--scrollable"/>&quot;<literal>scrollable</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--show-border"/>&quot;<literal>show-border</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--show-tabs"/>&quot;<literal>show-tabs</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-border"/>&quot;<literal>tab-border</literal>&quot; (<link linkend="guint">guint</link> : Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-hborder"/>&quot;<literal>tab-hborder</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-pos"/>&quot;<literal>tab-pos</literal>&quot; (<link linkend="GtkPositionType">GtkPositionType</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-vborder"/>&quot;<literal>tab-vborder</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 <refsect1>
 <title>Child Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkNotebook--menu-label"/>&quot;<literal>menu-label</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
+<refsect2><title><anchor id="GtkNotebook--menu-label"/>The &quot;<literal>menu-label</literal>&quot; child property</title>
+<programlisting>  &quot;menu-label&quot;           <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>The string displayed in the childs menu entry.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--position"/>The &quot;<literal>position</literal>&quot; child property</title>
+<programlisting>  &quot;position&quot;             <link linkend="gint">gint</link>                  : Read / Write</programlisting>
+<para>The index of the child in the parent.</para><para>Allowed values: &gt;= -1</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-expand"/>The &quot;<literal>tab-expand</literal>&quot; child property</title>
+<programlisting>  &quot;tab-expand&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether to expand the childs tab or not.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-fill"/>The &quot;<literal>tab-fill</literal>&quot; child property</title>
+<programlisting>  &quot;tab-fill&quot;             <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Wheather the childs tab should fill the allocated area or not.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-label"/>The &quot;<literal>tab-label</literal>&quot; child property</title>
+<programlisting>  &quot;tab-label&quot;            <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>The string displayed on the childs tab label.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--tab-pack"/>The &quot;<literal>tab-pack</literal>&quot; child property</title>
+<programlisting>  &quot;tab-pack&quot;             <link linkend="GtkPackType">GtkPackType</link>           : Read / Write</programlisting>
+<para>A GtkPackType indicating whether the child is packed with reference to the start or end of the parent.</para><para>Default value: GTK_PACK_START</para>
+</refsect2>
+
+</refsect1>
+<refsect1>
+<title>Style Properties</title>
+<refsect2><title><anchor id="GtkNotebook--has-backward-stepper"/>The &quot;<literal>has-backward-stepper</literal>&quot; style property</title>
+<programlisting>  &quot;has-backward-stepper&quot; <link linkend="gboolean">gboolean</link>              : Read</programlisting>
+<para>
+The "has-backward-stepper" property determines whether 
+the standard backward arrow button is displayed.</para>
 <para>
 
+</para><para>Default value: TRUE</para>
+<para>Since  2.4
 </para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--position"/>&quot;<literal>position</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
-<listitem>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--has-forward-stepper"/>The &quot;<literal>has-forward-stepper</literal>&quot; style property</title>
+<programlisting>  &quot;has-forward-stepper&quot;  <link linkend="gboolean">gboolean</link>              : Read</programlisting>
+<para>
+The "has-forward-stepper" property determines whether 
+the standard forward arrow button is displayed.</para>
 <para>
 
+</para><para>Default value: TRUE</para>
+<para>Since  2.4
 </para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-expand"/>&quot;<literal>tab-expand</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--has-secondary-backward-stepper"/>The &quot;<literal>has-secondary-backward-stepper</literal>&quot; style property</title>
+<programlisting>  &quot;has-secondary-backward-stepper&quot; <link linkend="gboolean">gboolean</link>              : Read</programlisting>
+<para>
+The "has-secondary-backward-stepper" property determines whether 
+a second backward arrow button is displayed on the opposite end 
+of the tab area.</para>
 <para>
 
+</para><para>Default value: FALSE</para>
+<para>Since  2.4
 </para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-fill"/>&quot;<literal>tab-fill</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
+</refsect2>
+<refsect2><title><anchor id="GtkNotebook--has-secondary-forward-stepper"/>The &quot;<literal>has-secondary-forward-stepper</literal>&quot; style property</title>
+<programlisting>  &quot;has-secondary-forward-stepper&quot; <link linkend="gboolean">gboolean</link>              : Read</programlisting>
+<para>
+The "has-secondary-forward-stepper" property determines whether 
+a second forward arrow button is displayed on the opposite end 
+of the tab area.</para>
 <para>
 
+</para><para>Default value: FALSE</para>
+<para>Since  2.4
 </para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-label"/>&quot;<literal>tab-label</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkNotebook--tab-pack"/>&quot;<literal>tab-pack</literal>&quot; (<link linkend="GtkPackType">GtkPackType</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkNotebook-change-current-page"/>The &quot;change-current-page&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="gint">gint</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -1157,7 +1204,7 @@ Switches to the page number <parameter>page_num</parameter>.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkNotebook-move-focus-out"/>The &quot;move-focus-out&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="GtkDirectionType">GtkDirectionType</link> arg1,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -1191,7 +1238,7 @@ Switches to the page number <parameter>page_num</parameter>.</para>
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="GtkNotebook-switch-page"/>The &quot;switch-page&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkNotebook">GtkNotebook</link> *notebook,
                                             <link linkend="GtkNotebookPage">GtkNotebookPage</link> *page,
                                             <link linkend="guint">guint</link> page_num,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -1219,9 +1266,9 @@ Emitted when the user or a function changes the current page.
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkContainer">GtkContainer</link></term>
-<listitem><para>For functions that apply to every <link linkend="GtkContainer">GtkContainer</link>
-(like <link linkend="GtkList">GtkList</link>).</para></listitem>
+<term><link linkend="GtkContainer"><type>GtkContainer</type></link></term>
+<listitem><para>For functions that apply to every <link linkend="GtkContainer"><type>GtkContainer</type></link>
+(like <link linkend="GtkList"><type>GtkList</type></link>).</para></listitem>
 </varlistentry>
 </variablelist>
 </para>

@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <string.h>
 #include <gobject/gvaluecollector.h>
 #include "gtktreemodel.h"
@@ -270,7 +271,10 @@ gtk_list_store_init (GtkListStore *list_store)
  * @Varargs: all #GType types for the columns, from first to last
  *
  * Creates a new list store as with @n_columns columns each of the types passed
- * in.  As an example, <literal>gtk_tree_store_new (3, G_TYPE_INT, G_TYPE_STRING,
+ * in.  Note that only types derived from standard GObject fundamental types 
+ * are supported. 
+ *
+ * As an example, <literal>gtk_tree_store_new (3, G_TYPE_INT, G_TYPE_STRING,
  * GDK_TYPE_PIXBUF);</literal> will create a new #GtkListStore with three columns, of type
  * int, string and #GdkPixbuf respectively.
  *
@@ -1088,8 +1092,6 @@ gtk_list_store_insert (GtkListStore *list_store,
       return;
     }
 
-  new_list = g_slist_alloc ();
-
   list = g_slist_nth (G_SLIST (list_store->root), position - 1);
 
   if (list == NULL)
@@ -1099,6 +1101,8 @@ gtk_list_store_insert (GtkListStore *list_store,
 
       return;
     }
+
+  new_list = g_slist_alloc ();
 
   insert_after (list_store, list, new_list);
 
@@ -1494,31 +1498,21 @@ gtk_list_store_drag_data_received (GtkTreeDragDest   *drag_dest,
           /* dest was the first spot in the list; which means we are supposed
            * to prepend.
            */
-          gtk_list_store_prepend (GTK_LIST_STORE (tree_model),
-                                  &dest_iter);
+          gtk_list_store_prepend (list_store, &dest_iter);
 
           retval = TRUE;
         }
       else
         {
-          if (gtk_tree_model_get_iter (GTK_TREE_MODEL (tree_model),
-                                       &dest_iter,
-                                       prev))
+          if (gtk_tree_model_get_iter (tree_model, &dest_iter, prev))
             {
               GtkTreeIter tmp_iter = dest_iter;
 
-	      if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (tree_model), "gtk-tree-model-drop-append")))
-		gtk_list_store_append (GTK_LIST_STORE (tree_model), &dest_iter);
-	      else
-		gtk_list_store_insert_after (GTK_LIST_STORE (tree_model),
-					     &dest_iter, &tmp_iter);
+              gtk_list_store_insert_after (list_store, &dest_iter, &tmp_iter);
 
               retval = TRUE;
             }
         }
-
-      g_object_set_data (G_OBJECT (tree_model), "gtk-tree-model-drop-append",
-			 NULL);
 
       gtk_tree_path_free (prev);
 
@@ -1551,11 +1545,11 @@ gtk_list_store_drag_data_received (GtkTreeDragDest   *drag_dest,
               ++col;
             }
 
-	  dest_iter.stamp = GTK_LIST_STORE (tree_model)->stamp;
+	  dest_iter.stamp = list_store->stamp;
           G_SLIST (dest_iter.user_data)->data = copy_head;
 
-	  path = gtk_list_store_get_path (GTK_TREE_MODEL (tree_model), &dest_iter);
-	  gtk_tree_model_row_changed (GTK_TREE_MODEL (tree_model), path, &dest_iter);
+	  path = gtk_list_store_get_path (tree_model, &dest_iter);
+	  gtk_tree_model_row_changed (tree_model, path, &dest_iter);
 	  gtk_tree_path_free (path);
 	}
     }
@@ -1609,7 +1603,8 @@ gtk_list_store_row_drop_possible (GtkTreeDragDest  *drag_dest,
     retval = TRUE;
 
  out:
-  gtk_tree_path_free (src_path);
+  if (src_path)
+    gtk_tree_path_free (src_path);
   
   return retval;
 }
@@ -1643,8 +1638,10 @@ gtk_list_store_reorder_func (gconstpointer a,
 
 /**
  * gtk_list_store_reorder:
- * @store: A #GtkTreeStore.
- * @new_order: An integer array indicating the new order for the list.
+ * @store: A #GtkListStore.
+ * @new_order: an array of integers mapping the new position of each child
+ *      to its old position before the re-ordering,
+ *      i.e. @new_order<literal>[newpos] = oldpos</literal>.
  *
  * Reorders @store to follow the order indicated by @new_order. Note that
  * this function only works with unsorted stores.
@@ -1670,7 +1667,7 @@ gtk_list_store_reorder (GtkListStore *store,
 
   for (i = 0; i < store->length; i++)
     {
-      sort_array[i].offset = new_order[i];
+      sort_array[new_order[i]].offset = i;
       sort_array[i].el = current_list;
 
       current_list = current_list->next;
@@ -1802,7 +1799,7 @@ gtk_list_store_move (GtkListStore *store,
   GtkTreeIter dst_a;
   GSList *i, *a, *prev = NULL, *tmp;
   gint new_pos = 0, old_pos = 0, j = 0, *order;
-  GtkTreePath *path, *pos_path = NULL;
+  GtkTreePath *path = NULL, *pos_path = NULL;
 
   g_return_if_fail (GTK_IS_LIST_STORE (store));
   g_return_if_fail (!GTK_LIST_STORE_IS_SORTED (store));
@@ -1836,6 +1833,7 @@ gtk_list_store_move (GtkListStore *store,
         goto free_paths_and_out;
 
       gtk_tree_path_free (path);
+      path = NULL;
     }
 
   /* getting destination iters */
@@ -1861,6 +1859,23 @@ gtk_list_store_move (GtkListStore *store,
 	a = G_SLIST (position->user_data);
       else
 	a = NULL;
+    }
+
+  /*  don't try to reorder the iter to it's own position  */
+  if (a)
+    {
+      if (a == iter->user_data)
+        goto free_paths_and_out;
+    }
+  else if (before)
+    {
+      if (iter->user_data == store->tail)
+        goto free_paths_and_out;
+    }
+  else
+    {
+      if (iter->user_data == store->root)
+        goto free_paths_and_out;
     }
 
   /* getting the old prev node */
@@ -1967,8 +1982,10 @@ gtk_list_store_move (GtkListStore *store,
   return;
 
 free_paths_and_out:
-  gtk_tree_path_free (path);
-  gtk_tree_path_free (pos_path);
+  if (path)
+    gtk_tree_path_free (path);
+  if (pos_path)
+    gtk_tree_path_free (pos_path);
 }
 
 /**
@@ -2088,7 +2105,7 @@ gtk_list_store_sort (GtkListStore *list_store)
 
   for (i = 0; i < list_store->length; i++)
     {
-      SortTuple tuple;
+      SortTuple tuple = {0,};
 
       /* If this fails, we are in an inconsistent state.  Bad */
       g_return_if_fail (list != NULL);

@@ -26,6 +26,7 @@
 
 #define GTK_MENU_INTERNALS
 
+#include <config.h>
 #include <string.h>
 #include "gtkaccellabel.h"
 #include "gtkmain.h"
@@ -35,11 +36,7 @@
 #include "gtkmenuitem.h"
 #include "gtkseparatormenuitem.h"
 
-
-#define BORDER_SPACING  3
-
 #define MENU_ITEM_CLASS(w)  GTK_MENU_ITEM_CLASS (GTK_OBJECT (w)->klass)
-
 
 enum {
   ACTIVATE,
@@ -93,6 +90,8 @@ static void gtk_menu_item_forall         (GtkContainer    *container,
 					  gboolean         include_internals,
 					  GtkCallback      callback,
 					  gpointer         callback_data);
+static gboolean gtk_menu_item_can_activate_accel (GtkWidget *widget,
+						  guint      signal_id);
 
 
 static GtkItemClass *parent_class;
@@ -151,6 +150,7 @@ gtk_menu_item_class_init (GtkMenuItemClass *klass)
   widget_class->hide_all = gtk_menu_item_hide_all;
   widget_class->mnemonic_activate = gtk_menu_item_mnemonic_activate;
   widget_class->parent_set = gtk_menu_item_parent_set;
+  widget_class->can_activate_accel = gtk_menu_item_can_activate_accel;
   
   container_class->forall = gtk_menu_item_forall;
 
@@ -211,6 +211,33 @@ gtk_menu_item_class_init (GtkMenuItemClass *klass)
 								     GTK_SHADOW_NONE,
 								     G_PARAM_READABLE),
 						  gtk_rc_property_parse_enum);
+
+  gtk_widget_class_install_style_property (widget_class,
+					   g_param_spec_int ("horizontal_padding",
+							     "Horizontal Padding",
+							     "Padding to left and right of the menu item",
+							     0,
+							     G_MAXINT,
+							     3,
+							     G_PARAM_READABLE));
+
+  gtk_widget_class_install_style_property (widget_class,
+					   g_param_spec_int ("toggle_spacing",
+							     "Icon Spacing",
+							     "Space between icon and label",
+							     0,
+							     G_MAXINT,
+							     5,
+							     G_PARAM_READABLE));
+
+  gtk_widget_class_install_style_property (widget_class,
+					   g_param_spec_int ("arrow_spacing",
+							     "Arrow Spacing",
+							     "Space between label and arrow",
+							     0,
+							     G_MAXINT,
+							     10,
+							     G_PARAM_READABLE));
 }
 
 static void
@@ -442,6 +469,26 @@ gtk_menu_item_accel_width_foreach (GtkWidget *widget,
 			   data);
 }
 
+static gint
+get_minimum_width (GtkWidget *widget)
+{
+  PangoContext *context;
+  PangoFontMetrics *metrics;
+  gint height;
+
+  context = gtk_widget_get_pango_context (widget);
+  metrics = pango_context_get_metrics (context,
+				       widget->style->font_desc,
+				       pango_context_get_language (context));
+
+  height = pango_font_metrics_get_ascent (metrics) +
+      pango_font_metrics_get_descent (metrics);
+  
+  pango_font_metrics_unref (metrics);
+
+  return PANGO_PIXELS (7 * height);
+}
+
 static void
 gtk_menu_item_size_request (GtkWidget      *widget,
 			    GtkRequisition *requisition)
@@ -449,16 +496,20 @@ gtk_menu_item_size_request (GtkWidget      *widget,
   GtkMenuItem *menu_item;
   GtkBin *bin;
   guint accel_width;
+  guint horizontal_padding;
 
   g_return_if_fail (GTK_IS_MENU_ITEM (widget));
   g_return_if_fail (requisition != NULL);
 
+  gtk_widget_style_get (widget,
+ 			"horizontal_padding", &horizontal_padding,
+			NULL);
+  
   bin = GTK_BIN (widget);
   menu_item = GTK_MENU_ITEM (widget);
 
   requisition->width = (GTK_CONTAINER (widget)->border_width +
-			widget->style->xthickness +
-			BORDER_SPACING) * 2;
+			widget->style->xthickness + horizontal_padding) * 2;
   requisition->height = (GTK_CONTAINER (widget)->border_width +
 			 widget->style->ythickness) * 2;
 
@@ -472,7 +523,23 @@ gtk_menu_item_size_request (GtkWidget      *widget,
       requisition->height += child_requisition.height;
 
       if (menu_item->submenu && menu_item->show_submenu_indicator)
-	requisition->width += child_requisition.height;
+	{
+	  guint arrow_spacing;
+	  
+	  gtk_widget_style_get (widget,
+				"arrow_spacing", &arrow_spacing,
+				NULL);
+
+	  requisition->width += child_requisition.height;
+	  requisition->width += arrow_spacing;
+
+	  requisition->width = MAX (requisition->width, get_minimum_width (widget));
+	}
+    }
+  else
+    {
+      /* separator item */
+      requisition->height += 4;
     }
 
   accel_width = 0;
@@ -504,10 +571,15 @@ gtk_menu_item_size_allocate (GtkWidget     *widget,
   if (bin->child)
     {
       GtkRequisition child_requisition;
+      guint horizontal_padding;
+
+      gtk_widget_style_get (widget,
+			    "horizontal_padding", &horizontal_padding,
+			    NULL);
       
       child_allocation.x = (GTK_CONTAINER (widget)->border_width +
                             widget->style->xthickness +
-			    BORDER_SPACING);
+			    horizontal_padding);
       child_allocation.y = (GTK_CONTAINER (widget)->border_width +
 			    widget->style->ythickness);
       child_allocation.width = MAX (1, (gint)allocation->width - child_allocation.x * 2);
@@ -560,7 +632,6 @@ gtk_menu_item_realize (GtkWidget *widget)
   attributes.window_type = GDK_WINDOW_CHILD;
   attributes.wclass = GDK_INPUT_ONLY;
   attributes.event_mask = (gtk_widget_get_events (widget) |
-			   GDK_EXPOSURE_MASK |
 			   GDK_BUTTON_PRESS_MASK |
 			   GDK_BUTTON_RELEASE_MASK |
 			   GDK_ENTER_NOTIFY_MASK |
@@ -649,29 +720,36 @@ gtk_menu_item_paint (GtkWidget    *widget,
 	  gint arrow_x, arrow_y;
 	  gint arrow_size;
 	  gint arrow_extent;
+	  guint horizontal_padding;
 	  GtkTextDirection direction;
 	  GtkArrowType arrow_type;
 
 	  direction = gtk_widget_get_direction (widget);
       
+ 	  gtk_widget_style_get (widget,
+ 				"horizontal_padding", &horizontal_padding,
+ 				NULL);
+ 	  
 	  gtk_widget_get_child_requisition (GTK_BIN (menu_item)->child,
 					    &child_requisition);
 
 	  arrow_size = child_requisition.height - 2 * widget->style->ythickness;
-	  arrow_extent = arrow_size * 0.6;
+	  arrow_extent = arrow_size * 0.8;
 	  
 	  shadow_type = GTK_SHADOW_OUT;
 	  if (state_type == GTK_STATE_PRELIGHT)
 	    shadow_type = GTK_SHADOW_IN;
 
-	  if (direction == GTK_TEXT_DIR_LTR) {
-	    arrow_x = x + width - 1 - arrow_size + (arrow_size - arrow_extent) / 2;
-	    arrow_type = GTK_ARROW_RIGHT;
-	  }
-	  else {
-	    arrow_x = x + 1 + (arrow_size - arrow_extent) / 2;
-	    arrow_type = GTK_ARROW_LEFT;
-	  }
+	  if (direction == GTK_TEXT_DIR_LTR)
+	    {
+	      arrow_x = x + width - horizontal_padding - arrow_extent;
+	      arrow_type = GTK_ARROW_RIGHT;
+	    }
+	  else
+	    {
+	      arrow_x = x + horizontal_padding;
+	      arrow_type = GTK_ARROW_LEFT;
+	    }
 
 	  arrow_y = y + (height - arrow_extent) / 2;
 
@@ -684,10 +762,18 @@ gtk_menu_item_paint (GtkWidget    *widget,
 	}
       else if (!GTK_BIN (menu_item)->child)
 	{
+	  guint horizontal_padding;
+
+	  gtk_widget_style_get (widget,
+				"horizontal_padding", &horizontal_padding,
+				NULL);
+	  
 	  gtk_paint_hline (widget->style, widget->window, GTK_STATE_NORMAL,
 			   area, widget, "menuitem",
-			   widget->allocation.x, widget->allocation.width,
-			   widget->allocation.y);
+			   widget->allocation.x + horizontal_padding + widget->style->xthickness,
+			   widget->allocation.x + widget->allocation.width - horizontal_padding - widget->style->xthickness - 1,
+			   widget->allocation.y + (widget->allocation.height -
+						   widget->style->ythickness) / 2);
 	}
     }
 }
@@ -722,7 +808,7 @@ get_popup_delay (GtkMenuItem *menu_item)
     {
       gint popup_delay;
       
-      g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (menu_item))),
+      g_object_get (gtk_widget_get_settings (GTK_WIDGET (menu_item)),
 		    "gtk-menu-popup-delay", &popup_delay,
 		    NULL);
 
@@ -744,7 +830,7 @@ gtk_real_menu_item_select (GtkItem *item)
       gint popup_delay;
 
       if (menu_item->timer)
-	gtk_timeout_remove (menu_item->timer);
+	g_source_remove (menu_item->timer);
 
       popup_delay = get_popup_delay (menu_item);
       
@@ -752,9 +838,9 @@ gtk_real_menu_item_select (GtkItem *item)
 	{
 	  GdkEvent *event = gtk_get_current_event ();
 	  
-	  menu_item->timer = gtk_timeout_add (popup_delay,
-					      gtk_menu_item_select_timeout,
-					      menu_item);
+	  menu_item->timer = g_timeout_add (popup_delay,
+					    gtk_menu_item_select_timeout,
+					    menu_item);
 	  if (event &&
 	      event->type != GDK_BUTTON_PRESS &&
 	      event->type != GDK_ENTER_NOTIFY)
@@ -786,7 +872,7 @@ gtk_real_menu_item_deselect (GtkItem *item)
     {
       if (menu_item->timer)
 	{
-	  gtk_timeout_remove (menu_item->timer);
+	  g_source_remove (menu_item->timer);
 	  menu_item->timer = 0;
 	}
       else
@@ -876,7 +962,8 @@ gtk_menu_item_select_timeout (gpointer data)
 
   parent = GTK_WIDGET (menu_item)->parent;
 
-  if (parent && GTK_IS_MENU_SHELL (parent) && GTK_MENU_SHELL (parent)->active)
+  if ((GTK_IS_MENU_SHELL (parent) && GTK_MENU_SHELL (parent)->active) || 
+      (GTK_IS_MENU (parent) && GTK_MENU (parent)->torn_off))
     {
       gtk_menu_item_popup_submenu (data);
       if (menu_item->timer_from_keypress && menu_item->submenu)
@@ -898,7 +985,7 @@ gtk_menu_item_popup_submenu (gpointer data)
   menu_item = GTK_MENU_ITEM (widget);
 
   if (menu_item->timer)
-    gtk_timeout_remove (menu_item->timer);
+    g_source_remove (menu_item->timer);
   menu_item->timer = 0;
 
   if (GTK_WIDGET_IS_SENSITIVE (menu_item->submenu))
@@ -909,6 +996,23 @@ gtk_menu_item_popup_submenu (gpointer data)
 		    menu_item,
 		    GTK_MENU_SHELL (widget->parent)->button,
 		    0);
+}
+
+static void
+get_offsets (GtkMenu *menu,
+	     gint    *horizontal_offset,
+	     gint    *vertical_offset)
+{
+  gint vertical_padding;
+  
+  gtk_widget_style_get (GTK_WIDGET (menu),
+			"horizontal_offset", horizontal_offset,
+			"vertical_offset", vertical_offset,
+			"vertical_padding", &vertical_padding,
+			NULL);
+
+  *vertical_offset -= GTK_WIDGET (menu)->style->ythickness;
+  *vertical_offset -= vertical_padding;
 }
 
 static void
@@ -927,6 +1031,9 @@ gtk_menu_item_position_menu (GtkMenu  *menu,
   GtkTextDirection direction;
   GdkRectangle monitor;
   gint monitor_num;
+  gint horizontal_offset;
+  gint vertical_offset;
+  gint parent_xthickness;
 
   g_return_if_fail (menu != NULL);
   g_return_if_fail (x != NULL);
@@ -935,13 +1042,16 @@ gtk_menu_item_position_menu (GtkMenu  *menu,
   menu_item = GTK_MENU_ITEM (user_data);
   widget = GTK_WIDGET (user_data);
 
+  if (push_in)
+    *push_in = FALSE;
+
   direction = gtk_widget_get_direction (widget);
 
   twidth = GTK_WIDGET (menu)->requisition.width;
   theight = GTK_WIDGET (menu)->requisition.height;
 
-  screen = gtk_widget_get_screen (widget);
-  monitor_num = gdk_screen_get_monitor_at_window (screen, widget->window);
+  screen = gtk_widget_get_screen (GTK_WIDGET (menu));
+  monitor_num = gdk_screen_get_monitor_at_window (screen, menu_item->event_window);
   if (monitor_num < 0)
     monitor_num = 0;
   gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
@@ -955,6 +1065,8 @@ gtk_menu_item_position_menu (GtkMenu  *menu,
   tx += widget->allocation.x;
   ty += widget->allocation.y;
 
+  get_offsets (menu, &horizontal_offset, &vertical_offset);
+  
   switch (menu_item->submenu_placement)
     {
     case GTK_TOP_BOTTOM:
@@ -978,6 +1090,7 @@ gtk_menu_item_position_menu (GtkMenu  *menu,
 
     case GTK_LEFT_RIGHT:
       parent_menu_item = GTK_MENU (widget->parent)->parent_menu_item;
+      parent_xthickness = widget->parent->style->xthickness;
       if (parent_menu_item && 
 	  !GTK_MENU (widget->parent)->torn_off && 
 	  !GTK_MENU_SHELL (menu)->active)
@@ -990,28 +1103,28 @@ gtk_menu_item_position_menu (GtkMenu  *menu,
       switch (menu_item->submenu_direction)
 	{
 	case GTK_DIRECTION_LEFT:
-	  if ((tx - twidth) >= monitor.x)
-	    tx -= twidth;
+	  if ((tx - twidth - parent_xthickness - horizontal_offset) >= monitor.x)
+	    tx -= twidth + parent_xthickness + horizontal_offset;
 	  else
 	    {
 	      menu_item->submenu_direction = GTK_DIRECTION_RIGHT;
-	      tx += widget->allocation.width - 5;
+	      tx += widget->allocation.width + parent_xthickness + horizontal_offset;
 	    }
 	  break;
 
 	case GTK_DIRECTION_RIGHT:
-	  if ((tx + widget->allocation.width + twidth - 5) <= monitor.x + monitor.width)
-	    tx += widget->allocation.width - 5;
+	  if ((tx + widget->allocation.width + parent_xthickness + horizontal_offset + twidth) <= monitor.x + monitor.width)
+	    tx += widget->allocation.width + parent_xthickness + horizontal_offset;
 	  else
 	    {
 	      menu_item->submenu_direction = GTK_DIRECTION_LEFT;
-	      tx -= twidth;
+	      tx -= twidth + parent_xthickness + horizontal_offset;
 	    }
 	  break;
 	}
 
-      ty += widget->allocation.height / 4;
-
+      ty += vertical_offset;
+      
       /* If the height of the menu doesn't fit we move it upward. */
       ty = CLAMP (ty, monitor.y, MAX (monitor.y, monitor.y + monitor.height - theight));
       break;
@@ -1022,6 +1135,8 @@ gtk_menu_item_position_menu (GtkMenu  *menu,
    */
   *x = CLAMP (tx, monitor.x, MAX (monitor.x, monitor.x + monitor.width - twidth));
   *y = ty;
+
+  gtk_menu_set_monitor (menu, monitor_num);
 }
 
 /**
@@ -1102,6 +1217,15 @@ gtk_menu_item_hide_all (GtkWidget *widget)
   gtk_container_foreach (GTK_CONTAINER (widget), (GtkCallback) gtk_widget_hide_all, NULL);
   if (menu_item->submenu)
     gtk_widget_hide_all (menu_item->submenu);
+}
+
+static gboolean
+gtk_menu_item_can_activate_accel (GtkWidget *widget,
+				  guint      signal_id)
+{
+  /* Chain to the parent GtkMenu for further checks */
+  return (GTK_WIDGET_IS_SENSITIVE (widget) && GTK_WIDGET_VISIBLE (widget) &&
+          widget->parent && gtk_widget_can_activate_accel (widget->parent, signal_id));
 }
 
 static void

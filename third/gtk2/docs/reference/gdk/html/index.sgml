@@ -44,6 +44,7 @@
 <ANCHOR id="gdk-display-pointer-is-grabbed" href="gdk/GdkDisplay.html#gdk-display-pointer-is-grabbed">
 <ANCHOR id="gdk-display-beep" href="gdk/GdkDisplay.html#gdk-display-beep">
 <ANCHOR id="gdk-display-sync" href="gdk/GdkDisplay.html#gdk-display-sync">
+<ANCHOR id="gdk-display-flush" href="gdk/GdkDisplay.html#gdk-display-flush">
 <ANCHOR id="gdk-display-close" href="gdk/GdkDisplay.html#gdk-display-close">
 <ANCHOR id="gdk-display-list-devices" href="gdk/GdkDisplay.html#gdk-display-list-devices">
 <ANCHOR id="gdk-display-get-event" href="gdk/GdkDisplay.html#gdk-display-get-event">
@@ -51,10 +52,16 @@
 <ANCHOR id="gdk-display-put-event" href="gdk/GdkDisplay.html#gdk-display-put-event">
 <ANCHOR id="gdk-display-add-client-message-filter" href="gdk/GdkDisplay.html#gdk-display-add-client-message-filter">
 <ANCHOR id="gdk-display-set-double-click-time" href="gdk/GdkDisplay.html#gdk-display-set-double-click-time">
+<ANCHOR id="gdk-display-set-double-click-distance" href="gdk/GdkDisplay.html#gdk-display-set-double-click-distance">
 <ANCHOR id="gdk-display-get-pointer" href="gdk/GdkDisplay.html#gdk-display-get-pointer">
 <ANCHOR id="gdk-display-get-window-at-pointer" href="gdk/GdkDisplay.html#gdk-display-get-window-at-pointer">
 <ANCHOR id="GdkDisplayPointerHooks" href="gdk/GdkDisplay.html#GdkDisplayPointerHooks">
 <ANCHOR id="gdk-display-set-pointer-hooks" href="gdk/GdkDisplay.html#gdk-display-set-pointer-hooks">
+<ANCHOR id="gdk-display-supports-cursor-color" href="gdk/GdkDisplay.html#gdk-display-supports-cursor-color">
+<ANCHOR id="gdk-display-supports-cursor-alpha" href="gdk/GdkDisplay.html#gdk-display-supports-cursor-alpha">
+<ANCHOR id="gdk-display-get-default-cursor-size" href="gdk/GdkDisplay.html#gdk-display-get-default-cursor-size">
+<ANCHOR id="gdk-display-get-maximal-cursor-size" href="gdk/GdkDisplay.html#gdk-display-get-maximal-cursor-size">
+<ANCHOR id="gdk-display-get-default-group" href="gdk/GdkDisplay.html#gdk-display-get-default-group">
 <ANCHOR id="GdkDisplay-closed" href="gdk/GdkDisplay.html#GdkDisplay-closed">
 <ANCHOR id="GdkDisplayManager" href="gdk/GdkDisplayManager.html">
 <ANCHOR id="GdkDisplayManager-struct" href="gdk/GdkDisplayManager.html#GdkDisplayManager-struct">
@@ -90,6 +97,9 @@
 <ANCHOR id="gdk-screen-get-monitor-at-window" href="gdk/GdkScreen.html#gdk-screen-get-monitor-at-window">
 <ANCHOR id="gdk-screen-broadcast-client-message" href="gdk/GdkScreen.html#gdk-screen-broadcast-client-message">
 <ANCHOR id="gdk-screen-get-setting" href="gdk/GdkScreen.html#gdk-screen-get-setting">
+<ANCHOR id="gdk-spawn-on-screen" href="gdk/GdkScreen.html#gdk-spawn-on-screen">
+<ANCHOR id="gdk-spawn-on-screen-with-pipes" href="gdk/GdkScreen.html#gdk-spawn-on-screen-with-pipes">
+<ANCHOR id="gdk-spawn-command-line-on-screen" href="gdk/GdkScreen.html#gdk-spawn-command-line-on-screen">
 <ANCHOR id="GdkScreen-size-changed" href="gdk/GdkScreen.html#GdkScreen-size-changed">
 <ANCHOR id="gdk-Points-Rectangles-and-Regions" href="gdk/gdk-Points-Rectangles-and-Regions.html">
 <ANCHOR id="GdkPoint" href="gdk/gdk-Points-Rectangles-and-Regions.html#GdkPoint">
@@ -199,6 +209,7 @@
 <ANCHOR id="gdk-draw-drawable" href="gdk/gdk-Drawing-Primitives.html#gdk-draw-drawable">
 <ANCHOR id="gdk-draw-image" href="gdk/gdk-Drawing-Primitives.html#gdk-draw-image">
 <ANCHOR id="gdk-drawable-get-image" href="gdk/gdk-Drawing-Primitives.html#gdk-drawable-get-image">
+<ANCHOR id="gdk-drawable-copy-to-image" href="gdk/gdk-Drawing-Primitives.html#gdk-drawable-copy-to-image">
 <ANCHOR id="gdk-Bitmaps-and-Pixmaps" href="gdk/gdk-Bitmaps-and-Pixmaps.html">
 <ANCHOR id="GdkPixmap" href="gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap">
 <ANCHOR id="GdkPixmap-struct" href="gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap-struct">
@@ -338,6 +349,7 @@
 <ANCHOR id="GdkCursorType" href="gdk/gdk-Cursors.html#GdkCursorType">
 <ANCHOR id="gdk-cursor-new" href="gdk/gdk-Cursors.html#gdk-cursor-new">
 <ANCHOR id="gdk-cursor-new-from-pixmap" href="gdk/gdk-Cursors.html#gdk-cursor-new-from-pixmap">
+<ANCHOR id="gdk-cursor-new-from-pixbuf" href="gdk/gdk-Cursors.html#gdk-cursor-new-from-pixbuf">
 <ANCHOR id="gdk-cursor-new-for-display" href="gdk/gdk-Cursors.html#gdk-cursor-new-for-display">
 <ANCHOR id="gdk-cursor-get-display" href="gdk/gdk-Cursors.html#gdk-cursor-get-display">
 <ANCHOR id="gdk-cursor-ref" href="gdk/gdk-Cursors.html#gdk-cursor-ref">
@@ -376,6 +388,8 @@
 <ANCHOR id="gdk-window-unmaximize" href="gdk/gdk-Windows.html#gdk-window-unmaximize">
 <ANCHOR id="gdk-window-fullscreen" href="gdk/gdk-Windows.html#gdk-window-fullscreen">
 <ANCHOR id="gdk-window-unfullscreen" href="gdk/gdk-Windows.html#gdk-window-unfullscreen">
+<ANCHOR id="gdk-window-set-keep-above" href="gdk/gdk-Windows.html#gdk-window-set-keep-above">
+<ANCHOR id="gdk-window-set-keep-below" href="gdk/gdk-Windows.html#gdk-window-set-keep-below">
 <ANCHOR id="gdk-window-move" href="gdk/gdk-Windows.html#gdk-window-move">
 <ANCHOR id="gdk-window-resize" href="gdk/gdk-Windows.html#gdk-window-resize">
 <ANCHOR id="gdk-window-move-resize" href="gdk/gdk-Windows.html#gdk-window-move-resize">
@@ -407,6 +421,7 @@
 <ANCHOR id="gdk-window-get-internal-paint-info" href="gdk/gdk-Windows.html#gdk-window-get-internal-paint-info">
 <ANCHOR id="gdk-window-set-user-data" href="gdk/gdk-Windows.html#gdk-window-set-user-data">
 <ANCHOR id="gdk-window-set-override-redirect" href="gdk/gdk-Windows.html#gdk-window-set-override-redirect">
+<ANCHOR id="gdk-window-set-accept-focus" href="gdk/gdk-Windows.html#gdk-window-set-accept-focus">
 <ANCHOR id="gdk-window-add-filter" href="gdk/gdk-Windows.html#gdk-window-add-filter">
 <ANCHOR id="gdk-window-remove-filter" href="gdk/gdk-Windows.html#gdk-window-remove-filter">
 <ANCHOR id="GdkFilterFunc" href="gdk/gdk-Windows.html#GdkFilterFunc">
@@ -454,6 +469,7 @@
 <ANCHOR id="gdk-window-set-transient-for" href="gdk/gdk-Windows.html#gdk-window-set-transient-for">
 <ANCHOR id="gdk-window-set-role" href="gdk/gdk-Windows.html#gdk-window-set-role">
 <ANCHOR id="gdk-window-set-group" href="gdk/gdk-Windows.html#gdk-window-set-group">
+<ANCHOR id="gdk-window-get-group" href="gdk/gdk-Windows.html#gdk-window-get-group">
 <ANCHOR id="gdk-window-set-decorations" href="gdk/gdk-Windows.html#gdk-window-set-decorations">
 <ANCHOR id="gdk-window-get-decorations" href="gdk/gdk-Windows.html#gdk-window-get-decorations">
 <ANCHOR id="GdkWMDecoration" href="gdk/gdk-Windows.html#GdkWMDecoration">
@@ -619,6 +635,7 @@
 <ANCHOR id="gdk-threads-enter" href="gdk/gdk-Threads.html#gdk-threads-enter">
 <ANCHOR id="gdk-threads-leave" href="gdk/gdk-Threads.html#gdk-threads-leave">
 <ANCHOR id="gdk-threads-mutex" href="gdk/gdk-Threads.html#gdk-threads-mutex">
+<ANCHOR id="gdk-threads-set-lock-functions" href="gdk/gdk-Threads.html#gdk-threads-set-lock-functions">
 <ANCHOR id="gdk-Input" href="gdk/gdk-Input.html">
 <ANCHOR id="gdk-input-add-full" href="gdk/gdk-Input.html#gdk-input-add-full">
 <ANCHOR id="GdkInputCondition" href="gdk/gdk-Input.html#GdkInputCondition">
@@ -711,6 +728,7 @@
 <ANCHOR id="gdk-x11-display-get-xdisplay" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-display-get-xdisplay">
 <ANCHOR id="gdk-x11-display-grab" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-display-grab">
 <ANCHOR id="gdk-x11-display-ungrab" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-display-ungrab">
+<ANCHOR id="gdk-x11-register-standard-event-type" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-register-standard-event-type">
 <ANCHOR id="gdk-x11-drawable-get-xdisplay" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-drawable-get-xdisplay">
 <ANCHOR id="gdk-x11-drawable-get-xid" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-drawable-get-xid">
 <ANCHOR id="gdk-x11-font-get-name" href="gdk/gdk-X-Window-System-Interaction.html#gdk-x11-font-get-name">

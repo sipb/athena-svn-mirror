@@ -16,73 +16,75 @@
 #include &lt;gdk/gdk.h&gt;
 
 
-void        <link linkend="gdk-pixbuf-render-threshold-alpha">gdk_pixbuf_render_threshold_alpha</link>
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-render-threshold-alpha">gdk_pixbuf_render_threshold_alpha</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkBitmap">GdkBitmap</link> *bitmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
-                                             int alpha_threshold);
-void        <link linkend="gdk-pixbuf-render-to-drawable">gdk_pixbuf_render_to_drawable</link>   (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
+                                             <link linkend="int">int</link> alpha_threshold);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-render-to-drawable">gdk_pixbuf_render_to_drawable</link>   (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);
-void        <link linkend="gdk-pixbuf-render-to-drawable-alpha">gdk_pixbuf_render_to_drawable_alpha</link>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-render-to-drawable-alpha">gdk_pixbuf_render_to_drawable_alpha</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *drawable,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="GdkPixbufAlphaMode">GdkPixbufAlphaMode</link> alpha_mode,
-                                             int alpha_threshold,
+                                             <link linkend="int">int</link> alpha_threshold,
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);
-void        <link linkend="gdk-pixbuf-render-pixmap-and-mask">gdk_pixbuf_render_pixmap_and_mask</link>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-render-pixmap-and-mask">gdk_pixbuf_render_pixmap_and_mask</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkPixmap">GdkPixmap</link> **pixmap_return,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask_return,
-                                             int alpha_threshold);
-void        <link linkend="gdk-pixbuf-render-pixmap-and-mask-for-colormap">gdk_pixbuf_render_pixmap_and_mask_for_colormap</link>
+                                             <link linkend="int">int</link> alpha_threshold);
+<link linkend="void">void</link>        <link linkend="gdk-pixbuf-render-pixmap-and-mask-for-colormap">gdk_pixbuf_render_pixmap_and_mask_for_colormap</link>
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap,
                                              <link linkend="GdkPixmap">GdkPixmap</link> **pixmap_return,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask_return,
-                                             int alpha_threshold);
+                                             <link linkend="int">int</link> alpha_threshold);
 <link linkend="GdkPixbuf">GdkPixbuf</link>*  <link linkend="gdk-pixbuf-get-from-drawable">gdk_pixbuf_get_from_drawable</link>    (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *src,
                                              <link linkend="GdkColormap">GdkColormap</link> *cmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height);
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height);
 <link linkend="GdkPixbuf">GdkPixbuf</link>*  <link linkend="gdk-pixbuf-get-from-image">gdk_pixbuf_get_from_image</link>       (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
                                              <link linkend="GdkImage">GdkImage</link> *src,
                                              <link linkend="GdkColormap">GdkColormap</link> *cmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height);
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -101,16 +103,16 @@ void        <link linkend="gdk-pixbuf-render-pixmap-and-mask-for-colormap">gdk_p
 <title>Details</title>
 <refsect2>
 <title><anchor id="gdk-pixbuf-render-threshold-alpha"/>gdk_pixbuf_render_threshold_alpha ()</title>
-<programlisting>void        gdk_pixbuf_render_threshold_alpha
+<indexterm><primary>gdk_pixbuf_render_threshold_alpha</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_render_threshold_alpha
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkBitmap">GdkBitmap</link> *bitmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
-                                             int alpha_threshold);</programlisting>
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
+                                             <link linkend="int">int</link> alpha_threshold);</programlisting>
 <para>
 Takes the opacity values in a rectangular portion of a pixbuf and thresholds
 them to produce a bi-level alpha mask that can be used as a clipping mask for
@@ -149,18 +151,19 @@ other values will be painted as one.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-render-to-drawable"/>gdk_pixbuf_render_to_drawable ()</title>
-<programlisting>void        gdk_pixbuf_render_to_drawable   (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
+<indexterm role="deprecated"><primary>gdk_pixbuf_render_to_drawable</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_render_to_drawable   (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);</programlisting>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);</programlisting>
+<warning><para><literal>gdk_pixbuf_render_to_drawable</literal> is deprecated and should not be used in newly-written code. This function is obsolete. Use <link linkend="gdk-draw-pixbuf"><function>gdk_draw_pixbuf()</function></link> instead.</para></warning>
 <para>
 Renders a rectangular portion of a pixbuf to a drawable while using the
 specified GC.  This is done using GdkRGB, so the specified drawable must have
@@ -174,10 +177,7 @@ brief, the dither offset is important when re-rendering partial regions of an
 image to a rendered version of the full image, or for when the offsets to a
 base position change, as in scrolling.  The dither matrix has to be shifted
 for consistent visual results.  If you do not have any of these cases, the
-dither offsets can be both zero.
-</para>
-<para>
-This function is obsolete. Use <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</link>() instead.</para>
+dither offsets can be both zero.</para>
 <para>
 
 </para><variablelist role="params">
@@ -220,20 +220,21 @@ This function is obsolete. Use <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-render-to-drawable-alpha"/>gdk_pixbuf_render_to_drawable_alpha ()</title>
-<programlisting>void        gdk_pixbuf_render_to_drawable_alpha
+<indexterm role="deprecated"><primary>gdk_pixbuf_render_to_drawable_alpha</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_render_to_drawable_alpha
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *drawable,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height,
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height,
                                              <link linkend="GdkPixbufAlphaMode">GdkPixbufAlphaMode</link> alpha_mode,
-                                             int alpha_threshold,
+                                             <link linkend="int">int</link> alpha_threshold,
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither,
-                                             int x_dither,
-                                             int y_dither);</programlisting>
+                                             <link linkend="int">int</link> x_dither,
+                                             <link linkend="int">int</link> y_dither);</programlisting>
+<warning><para><literal>gdk_pixbuf_render_to_drawable_alpha</literal> is deprecated and should not be used in newly-written code. This function is obsolete. Use <link linkend="gdk-draw-pixbuf"><function>gdk_draw_pixbuf()</function></link> instead.</para></warning>
 <para>
 Renders a rectangular portion of a pixbuf to a drawable.  The destination
 drawable must have a colormap. All windows have a colormap, however, pixmaps
@@ -242,10 +243,7 @@ Otherwise a colormap must be set on them with gdk_drawable_set_colormap.
 </para>
 <para>
 On older X servers, rendering pixbufs with an alpha channel involves round trips
-to the X server, and may be somewhat slow.
-</para>
-<para>
-This function is obsolete. Use <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</link>() instead.</para>
+to the X server, and may be somewhat slow.</para>
 <para>
 
 </para><variablelist role="params">
@@ -291,22 +289,21 @@ This function is obsolete. Use <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-render-pixmap-and-mask"/>gdk_pixbuf_render_pixmap_and_mask ()</title>
-<programlisting>void        gdk_pixbuf_render_pixmap_and_mask
+<indexterm><primary>gdk_pixbuf_render_pixmap_and_mask</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_render_pixmap_and_mask
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkPixmap">GdkPixmap</link> **pixmap_return,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask_return,
-                                             int alpha_threshold);</programlisting>
+                                             <link linkend="int">int</link> alpha_threshold);</programlisting>
 <para>
 Creates a pixmap and a mask bitmap which are returned in the <parameter>pixmap_return</parameter>
 and <parameter>mask_return</parameter> arguments, respectively, and renders a pixbuf and its
 corresponding thresholded alpha mask to them.  This is merely a convenience
 function; applications that need to render pixbufs with dither offsets or to
-given drawables should use <link linkend="gdk-pixbuf-render-to-drawable-alpha">gdk_pixbuf_render_to_drawable_alpha</link>() or
-<link linkend="gdk-pixbuf-render-to-drawable">gdk_pixbuf_render_to_drawable</link>(), and <link linkend="gdk-pixbuf-render-threshold-alpha">gdk_pixbuf_render_threshold_alpha</link>().
+given drawables should use <link linkend="gdk-draw-pixbuf"><function>gdk_draw_pixbuf()</function></link> and <link linkend="gdk-pixbuf-render-threshold-alpha"><function>gdk_pixbuf_render_threshold_alpha()</function></link>.
 </para>
 <para>
 The pixmap that is created is created for the colormap returned
-by <link linkend="gdk-rgb-get-colormap">gdk_rgb_get_colormap</link>(). You normally will want to instead use
+by <link linkend="gdk-rgb-get-colormap"><function>gdk_rgb_get_colormap()</function></link>. You normally will want to instead use
 the actual colormap for a widget, and use
 gdk_pixbuf_render_pixmap_and_mask_for_colormap.
 </para>
@@ -333,22 +330,21 @@ to NULL.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-render-pixmap-and-mask-for-colormap"/>gdk_pixbuf_render_pixmap_and_mask_for_colormap ()</title>
-<programlisting>void        gdk_pixbuf_render_pixmap_and_mask_for_colormap
+<indexterm><primary>gdk_pixbuf_render_pixmap_and_mask_for_colormap</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_pixbuf_render_pixmap_and_mask_for_colormap
                                             (<link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap,
                                              <link linkend="GdkPixmap">GdkPixmap</link> **pixmap_return,
                                              <link linkend="GdkBitmap">GdkBitmap</link> **mask_return,
-                                             int alpha_threshold);</programlisting>
+                                             <link linkend="int">int</link> alpha_threshold);</programlisting>
 <para>
 Creates a pixmap and a mask bitmap which are returned in the <parameter>pixmap_return</parameter>
 and <parameter>mask_return</parameter> arguments, respectively, and renders a pixbuf and its
 corresponding tresholded alpha mask to them.  This is merely a convenience
 function; applications that need to render pixbufs with dither offsets or to
-given drawables should use <link linkend="gdk-pixbuf-render-to-drawable-alpha">gdk_pixbuf_render_to_drawable_alpha</link>() or
-<link linkend="gdk-pixbuf-render-to-drawable">gdk_pixbuf_render_to_drawable</link>(), and <link linkend="gdk-pixbuf-render-threshold-alpha">gdk_pixbuf_render_threshold_alpha</link>().
+given drawables should use <link linkend="gdk-draw-pixbuf"><function>gdk_draw_pixbuf()</function></link>, and <link linkend="gdk-pixbuf-render-threshold-alpha"><function>gdk_pixbuf_render_threshold_alpha()</function></link>.
 </para>
 <para>
-The pixmap that is created uses the <link linkend="GdkColormap">GdkColormap</link> specified by <parameter>colormap</parameter>.
+The pixmap that is created uses the <link linkend="GdkColormap"><type>GdkColormap</type></link> specified by <parameter>colormap</parameter>.
 This colormap must match the colormap of the window where the pixmap
 will eventually be used or an error will result.
 </para>
@@ -362,7 +358,7 @@ to NULL.</para>
 <listitem><simpara> A pixbuf.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>colormap</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GdkColormap">GdkColormap</link>
+<listitem><simpara> A <link linkend="GdkColormap"><type>GdkColormap</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pixmap_return</parameter>&nbsp;:</term>
 <listitem><simpara> Location to store a pointer to the created pixmap,
@@ -378,31 +374,31 @@ to NULL.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-get-from-drawable"/>gdk_pixbuf_get_from_drawable ()</title>
-<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_get_from_drawable    (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
+<indexterm><primary>gdk_pixbuf_get_from_drawable</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_get_from_drawable    (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *src,
                                              <link linkend="GdkColormap">GdkColormap</link> *cmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height);</programlisting>
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height);</programlisting>
 <para>
-Transfers image data from a <link linkend="GdkDrawable">GdkDrawable</link> and converts it to an RGB(A)
-representation inside a <link linkend="GdkPixbuf">GdkPixbuf</link>. In other words, copies
+Transfers image data from a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> and converts it to an RGB(A)
+representation inside a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>. In other words, copies
 image data from a server-side drawable to a client-side RGB(A) buffer.
 This allows you to efficiently read individual pixels on the client side.
 </para>
 <para>
-If the drawable <parameter>src</parameter> has no colormap (<link linkend="gdk-drawable-get-colormap">gdk_drawable_get_colormap</link>()
+If the drawable <parameter>src</parameter> has no colormap (<link linkend="gdk-drawable-get-colormap"><function>gdk_drawable_get_colormap()</function></link>
 returns <literal>NULL</literal>), then a suitable colormap must be specified.
-Typically a <link linkend="GdkWindow">GdkWindow</link> or a pixmap created by passing a <link linkend="GdkWindow">GdkWindow</link>
-to <link linkend="gdk-pixmap-new">gdk_pixmap_new</link>() will already have a colormap associated with
+Typically a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a pixmap created by passing a <link linkend="GdkWindow"><type>GdkWindow</type></link>
+to <link linkend="gdk-pixmap-new"><function>gdk_pixmap_new()</function></link> will already have a colormap associated with
 it.  If the drawable has a colormap, the <parameter>cmap</parameter> argument will be
 ignored.  If the drawable is a bitmap (1 bit per pixel pixmap),
 then a colormap is not required; pixels with a value of 1 are
 assumed to be white, and pixels with a value of 0 are assumed to be
-black. For taking screenshots, <link linkend="gdk-colormap-get-system">gdk_colormap_get_system</link>() returns
+black. For taking screenshots, <link linkend="gdk-colormap-get-system"><function>gdk_colormap_get_system()</function></link> returns
 the correct colormap to use.
 </para>
 <para>
@@ -446,9 +442,9 @@ instead.
  it returns <literal>NULL</literal>; so check the return value.)
 </para>
 <para>
-This function calls <link linkend="gdk-drawable-get-image">gdk_drawable_get_image</link>() internally and
-converts the resulting image to a <link linkend="GdkPixbuf">GdkPixbuf</link>, so the
-documentation for <link linkend="gdk-drawable-get-image">gdk_drawable_get_image</link>() may also be relevant.</para>
+This function calls <link linkend="gdk-drawable-get-image"><function>gdk_drawable_get_image()</function></link> internally and
+converts the resulting image to a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>, so the
+documentation for <link linkend="gdk-drawable-get-image"><function>gdk_drawable_get_image()</function></link> may also be relevant.</para>
 <para>
 
 </para><variablelist role="params">
@@ -485,17 +481,17 @@ pixbuf with a reference count of 1 if no destination pixbuf was specified, or <l
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-pixbuf-get-from-image"/>gdk_pixbuf_get_from_image ()</title>
-<programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_get_from_image       (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
+<indexterm><primary>gdk_pixbuf_get_from_image</primary></indexterm><programlisting><link linkend="GdkPixbuf">GdkPixbuf</link>*  gdk_pixbuf_get_from_image       (<link linkend="GdkPixbuf">GdkPixbuf</link> *dest,
                                              <link linkend="GdkImage">GdkImage</link> *src,
                                              <link linkend="GdkColormap">GdkColormap</link> *cmap,
-                                             int src_x,
-                                             int src_y,
-                                             int dest_x,
-                                             int dest_y,
-                                             int width,
-                                             int height);</programlisting>
+                                             <link linkend="int">int</link> src_x,
+                                             <link linkend="int">int</link> src_y,
+                                             <link linkend="int">int</link> dest_x,
+                                             <link linkend="int">int</link> dest_y,
+                                             <link linkend="int">int</link> width,
+                                             <link linkend="int">int</link> height);</programlisting>
 <para>
-Same as <link linkend="gdk-pixbuf-get-from-drawable">gdk_pixbuf_get_from_drawable</link>() but gets the pixbuf from
+Same as <link linkend="gdk-pixbuf-get-from-drawable"><function>gdk_pixbuf_get_from_drawable()</function></link> but gets the pixbuf from
 an image.</para>
 <para>
 
@@ -504,7 +500,7 @@ an image.</para>
 <listitem><simpara> Destination pixbuf, or <literal>NULL</literal> if a new pixbuf should be created.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara> Source <link linkend="GdkImage">GdkImage</link>.
+<listitem><simpara> Source <link linkend="GdkImage"><type>GdkImage</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cmap</parameter>&nbsp;:</term>
 <listitem><simpara> A colormap, or <literal>NULL</literal> to use the one for <parameter>src</parameter>

@@ -11,6 +11,7 @@
  * each side of each widget.
  */
 
+#include <config.h>
 #include <gtk/gtk.h>
 
 void
@@ -112,7 +113,7 @@ create_pane_options (GtkPaned	 *paned,
 }
 
 GtkWidget *
-do_panes (void)
+do_panes (GtkWidget *do_widget)
 {
   static GtkWidget *window = NULL;
   GtkWidget *frame;
@@ -124,6 +125,8 @@ do_panes (void)
   if (!window)
     {
       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_window_set_screen (GTK_WINDOW (window),
+			     gtk_widget_get_screen (do_widget));
 
       g_signal_connect (window, "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &window);

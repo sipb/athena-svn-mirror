@@ -137,13 +137,9 @@ GdkTimeCoord ** _gdk_device_allocate_history (GdkDevice *device,
 /* The following functions are provided by each implementation
  * (just wintab for now)
  */
-gint             _gdk_input_window_none_event(GdkEvent         *event,
-					      MSG              *msg);
-void             _gdk_input_configure_event  (GdkEventConfigure *event,
-					      GdkWindow         *window);
-void             _gdk_input_enter_event      (GdkEventCrossing  *event,
-					      GdkWindow         *window);
-gint             _gdk_input_other_event      (GdkEvent         *event,
+void             _gdk_input_configure_event  (GdkWindow         *window);
+void             _gdk_input_enter_event      (GdkWindow         *window);
+gboolean         _gdk_input_other_event      (GdkEvent         *event,
 					      MSG              *msg,
 					      GdkWindow        *window);
 

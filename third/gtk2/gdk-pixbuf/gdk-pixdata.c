@@ -16,6 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include <config.h>
 #include "gdk-pixdata.h"
 
 #include "gdk-pixbuf-private.h"
@@ -197,7 +198,7 @@ gdk_pixdata_deserialize (GdkPixdata   *pixdata,
 
   /* deserialize header */
   stream = get_uint32 (stream, &pixdata->magic);
-  stream = get_uint32 (stream, &pixdata->length);
+  stream = get_uint32 (stream, (guint32 *)&pixdata->length);
   if (pixdata->magic != GDK_PIXBUF_MAGIC_NUMBER || pixdata->length < GDK_PIXDATA_HEADER_LENGTH)
     return_header_corrupt (error);
   stream = get_uint32 (stream, &pixdata->pixdata_type);
@@ -288,6 +289,13 @@ rl_encode_rgbx (guint8 *bp,	/* dest buffer */
   return bp;
 }
 
+/* Used as the destroy notification function for gdk_pixbuf_new() */
+static void
+free_buffer (guchar *pixels, gpointer data)
+{
+	g_free (pixels);
+}
+
 /**
  * gdk_pixdata_from_pixbuf:
  * @pixdata: a #GdkPixdata to fill.
@@ -326,16 +334,36 @@ gdk_pixdata_from_pixbuf (GdkPixdata      *pixdata,
     {
       guint pad, n_bytes = rowstride * height;
       guint8 *img_buffer_end, *data;
+      GdkPixbuf *buf = NULL;
 
+      if (n_bytes % bpp != 0) 
+	{
+	  rowstride = pixbuf->width * bpp;
+	  n_bytes = rowstride * height;
+	  data = g_malloc (n_bytes);
+	  buf = gdk_pixbuf_new_from_data (data,
+					  GDK_COLORSPACE_RGB,
+					  pixbuf->has_alpha, 8,
+					  pixbuf->width,
+					  pixbuf->height,
+					  rowstride,
+					  free_buffer, NULL);
+	  gdk_pixbuf_copy_area (pixbuf, 0, 0, pixbuf->width, pixbuf->height,
+				buf, 0, 0);
+	}
+      else
+	buf = (GdkPixbuf *)pixbuf;
       pad = rowstride;
       pad = MAX (pad, 130 + n_bytes / 127);
       data = g_new (guint8, pad + n_bytes);
       free_me = data;
       img_buffer = data;
       img_buffer_end = rl_encode_rgbx (img_buffer,
-				       pixbuf->pixels, pixbuf->pixels + n_bytes,
+				       buf->pixels, buf->pixels + n_bytes,
 				       bpp);
       length = img_buffer_end - img_buffer;
+      if (buf != pixbuf)
+	g_object_unref (buf);
     }
   else
     {
@@ -399,7 +427,9 @@ gdk_pixbuf_from_pixdata (const GdkPixdata *pixdata,
 	{
 	  g_set_error (error, GDK_PIXBUF_ERROR,
 		       GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY,
-		       _("failed to allocate image buffer of %u bytes"),
+		       ngettext("failed to allocate image buffer of %u byte",
+				"failed to allocate image buffer of %u bytes",
+				pixdata->rowstride * pixdata->height),
 		       pixdata->rowstride * pixdata->height);
 	  return NULL;
 	}
@@ -578,7 +608,7 @@ save_rle_decoder (GString     *gstring,
  * into programs. 
  *
  * GTK+ ships with a program called <command>gdk-pixbuf-csource</command> 
- * which offers a cmdline interface to this functions.
+ * which offers a command line interface to this function.
  *
  * Returns: a newly-allocated string containing the C source form
  *   of @pixdata.
@@ -635,7 +665,7 @@ gdk_pixdata_to_csource (GdkPixdata        *pixdata,
   cdata.dump_rle_decoder = (dump_type & GDK_PIXDATA_DUMP_RLE_DECODER) > 0;
   cdata.static_prefix = (dump_type & GDK_PIXDATA_DUMP_STATIC) ? "static " : "";
   cdata.const_prefix = (dump_type & GDK_PIXDATA_DUMP_CONST) ? "const " : "";
-  gstring = g_string_new ("");
+  gstring = g_string_new (NULL);
   cdata.gstring = gstring;
 
   if (!cdata.dump_macros && cdata.dump_gtypes)
@@ -727,10 +757,22 @@ gdk_pixdata_to_csource (GdkPixdata        *pixdata,
       img_buffer = stream;
       img_buffer_end = stream + stream_length;
 
+      APPEND (gstring, "#ifdef __SUNPRO_C\n");
+      APPEND (gstring, "#pragma align 4 (%s)\n", name);   
+      APPEND (gstring, "#endif\n");
+
+      APPEND (gstring, "#ifdef __GNUC__\n");
+      APPEND (gstring, "%s%s%s %s[] __attribute__ ((__aligned__ (4))) = \n",
+	      cdata.static_prefix, cdata.const_prefix,
+	      cdata.dump_gtypes ? "guint8" : "unsigned char",
+	      name);
+      APPEND (gstring, "#else\n");
       APPEND (gstring, "%s%s%s %s[] = \n",
 	      cdata.static_prefix, cdata.const_prefix,
 	      cdata.dump_gtypes ? "guint8" : "unsigned char",
 	      name);
+      APPEND (gstring, "#endif\n");
+
       APPEND (gstring, "{ \"\"\n  /* Pixbuf magic (0x%x) */\n  \"",
 	      GDK_PIXBUF_MAGIC_NUMBER);
       cdata.pos = 3;
@@ -819,7 +861,8 @@ gdk_pixdata_to_csource (GdkPixdata        *pixdata,
 
 /**
  * gdk_pixbuf_new_from_inline:
- * @data_length: Length in bytes of the @data argument
+ * @data_length: Length in bytes of the @data argument or -1 to 
+ *    disable length checks
  * @data: Byte data containing a serialized #GdkPixdata structure
  * @copy_pixels: Whether to copy the pixel data, or use direct pointers
  *               @data for the resulting pixbuf
@@ -847,13 +890,18 @@ gdk_pixdata_to_csource (GdkPixdata        *pixdata,
  * generally a bad idea.)
  *
  * If you create a pixbuf from const inline data compiled into your
- * program, it's probably safe to ignore errors, since things will
- * always succeed.  For non-const inline data, you could get out of
- * memory. For untrusted inline data located at runtime, you could
- * have corrupt inline data in addition.
+ * program, it's probably safe to ignore errors and disable length checks, 
+ * since things will always succeed:
+ * <informalexample><programlisting>
+ * pixbuf = gdk_pixbuf_new_from_inline (-1, myimage_inline, FALSE, NULL);
+ * </programlisting></informalexample>
+ *
+ * For non-const inline data, you could get out of memory. For untrusted 
+ * inline data located at runtime, you could have corrupt inline data in 
+ * addition.
  *
  * Return value: A newly-created #GdkPixbuf structure with a reference,
- *   count of 1, or %NULL if error is set.
+ *   count of 1, or %NULL if an error occurred.
  **/
 GdkPixbuf*
 gdk_pixbuf_new_from_inline (gint          data_length,

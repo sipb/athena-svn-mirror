@@ -18,7 +18,7 @@ A position in the buffer preserved across buffer modifications</refpurpose>
 
 
 struct      <link linkend="GtkTextMark-struct">GtkTextMark</link>;
-void        <link linkend="gtk-text-mark-set-visible">gtk_text_mark_set_visible</link>       (<link linkend="GtkTextMark">GtkTextMark</link> *mark,
+<link linkend="void">void</link>        <link linkend="gtk-text-mark-set-visible">gtk_text_mark_set_visible</link>       (<link linkend="GtkTextMark">GtkTextMark</link> *mark,
                                              <link linkend="gboolean">gboolean</link> setting);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-text-mark-get-visible">gtk_text_mark_get_visible</link>       (<link linkend="GtkTextMark">GtkTextMark</link> *mark);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-text-mark-get-deleted">gtk_text_mark_get_deleted</link>       (<link linkend="GtkTextMark">GtkTextMark</link> *mark);
@@ -46,6 +46,8 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="gtk-text-mark-
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -55,9 +57,9 @@ types related to the text widget and how they work together.
 </para>
 
 <para>
-A <link linkend="GtkTextMark">GtkTextMark</link> is like a bookmark in a text buffer; it preserves a position in
+A <link linkend="GtkTextMark"><type>GtkTextMark</type></link> is like a bookmark in a text buffer; it preserves a position in
 the text. You can convert the mark to an iterator using
-<link linkend="gtk-text-buffer-get-iter-at-mark">gtk_text_buffer_get_iter_at_mark</link>(). Unlike iterators, marks remain valid across
+<link linkend="gtk-text-buffer-get-iter-at-mark"><function>gtk_text_buffer_get_iter_at_mark()</function></link>. Unlike iterators, marks remain valid across
 buffer mutations, because their behavior is defined when text is inserted or
 deleted. When text containing a mark is deleted, the mark remains in the
 position originally occupied by the deleted text. When text is inserted at a
@@ -77,17 +79,17 @@ not actually on the left when displayed.
 <para>
 Marks are reference counted, but the reference count only controls the validity
 of the memory; marks can be deleted from the buffer at any time with
-<link linkend="gtk-text-buffer-delete-mark">gtk_text_buffer_delete_mark</link>(). Once deleted from the buffer, a mark is
+<link linkend="gtk-text-buffer-delete-mark"><function>gtk_text_buffer_delete_mark()</function></link>. Once deleted from the buffer, a mark is
 essentially useless.
 </para>
 
 <para>
 Marks optionally have names; these can be convenient to avoid passing the 
-<link linkend="GtkTextMark">GtkTextMark</link> object around.
+<link linkend="GtkTextMark"><type>GtkTextMark</type></link> object around.
 </para>
 
 <para>
-Marks are typically created using the <link linkend="gtk-text-buffer-create-mark">gtk_text_buffer_create_mark</link>() function.
+Marks are typically created using the <link linkend="gtk-text-buffer-create-mark"><function>gtk_text_buffer_create_mark()</function></link> function.
 </para>
 </refsect1>
 
@@ -95,13 +97,13 @@ Marks are typically created using the <link linkend="gtk-text-buffer-create-mark
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkTextMark-struct"/>struct GtkTextMark</title>
-<programlisting>struct GtkTextMark;</programlisting>
+<indexterm><primary>GtkTextMark</primary></indexterm><programlisting>struct GtkTextMark;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-mark-set-visible"/>gtk_text_mark_set_visible ()</title>
-<programlisting>void        gtk_text_mark_set_visible       (<link linkend="GtkTextMark">GtkTextMark</link> *mark,
+<indexterm><primary>gtk_text_mark_set_visible</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_text_mark_set_visible       (<link linkend="GtkTextMark">GtkTextMark</link> *mark,
                                              <link linkend="gboolean">gboolean</link> setting);</programlisting>
 <para>
 Sets the visibility of <parameter>mark</parameter>; the insertion point is normally
@@ -113,7 +115,7 @@ Marks are not visible by default.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>mark</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextMark">GtkTextMark</link>
+<listitem><simpara> a <link linkend="GtkTextMark"><type>GtkTextMark</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>setting</parameter>&nbsp;:</term>
 <listitem><simpara> visibility of mark
@@ -121,7 +123,7 @@ Marks are not visible by default.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-mark-get-visible"/>gtk_text_mark_get_visible ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_text_mark_get_visible       (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
+<indexterm><primary>gtk_text_mark_get_visible</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_text_mark_get_visible       (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
 <para>
 Returns <literal>TRUE</literal> if the mark is visible (i.e. a cursor is displayed
 for it)</para>
@@ -129,30 +131,30 @@ for it)</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>mark</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextMark">GtkTextMark</link>
+<listitem><simpara> a <link linkend="GtkTextMark"><type>GtkTextMark</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if visible
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-mark-get-deleted"/>gtk_text_mark_get_deleted ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_text_mark_get_deleted       (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
+<indexterm><primary>gtk_text_mark_get_deleted</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_text_mark_get_deleted       (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
 <para>
 Returns <literal>TRUE</literal> if the mark has been removed from its buffer
-with <link linkend="gtk-text-buffer-delete-mark">gtk_text_buffer_delete_mark</link>(). Marks can't be used
+with <link linkend="gtk-text-buffer-delete-mark"><function>gtk_text_buffer_delete_mark()</function></link>. Marks can't be used
 once deleted.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>mark</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextMark">GtkTextMark</link>
+<listitem><simpara> a <link linkend="GtkTextMark"><type>GtkTextMark</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> whether the mark is deleted
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-mark-get-name"/>gtk_text_mark_get_name ()</title>
-<programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_text_mark_get_name
+<indexterm><primary>gtk_text_mark_get_name</primary></indexterm><programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_text_mark_get_name
                                             (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
 <para>
 Returns the mark name; returns NULL for anonymous marks.</para>
@@ -160,14 +162,14 @@ Returns the mark name; returns NULL for anonymous marks.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>mark</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextMark">GtkTextMark</link>
+<listitem><simpara> a <link linkend="GtkTextMark"><type>GtkTextMark</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> mark name
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-mark-get-buffer"/>gtk_text_mark_get_buffer ()</title>
-<programlisting><link linkend="GtkTextBuffer">GtkTextBuffer</link>* gtk_text_mark_get_buffer     (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
+<indexterm><primary>gtk_text_mark_get_buffer</primary></indexterm><programlisting><link linkend="GtkTextBuffer">GtkTextBuffer</link>* gtk_text_mark_get_buffer     (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
 <para>
 Gets the buffer this mark is located inside,
 or NULL if the mark is deleted.</para>
@@ -175,21 +177,21 @@ or NULL if the mark is deleted.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>mark</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextMark">GtkTextMark</link>
+<listitem><simpara> a <link linkend="GtkTextMark"><type>GtkTextMark</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the mark's <link linkend="GtkTextBuffer">GtkTextBuffer</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the mark's <link linkend="GtkTextBuffer"><type>GtkTextBuffer</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-text-mark-get-left-gravity"/>gtk_text_mark_get_left_gravity ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_text_mark_get_left_gravity  (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
+<indexterm><primary>gtk_text_mark_get_left_gravity</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_text_mark_get_left_gravity  (<link linkend="GtkTextMark">GtkTextMark</link> *mark);</programlisting>
 <para>
 Determines whether the mark has left gravity.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>mark</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkTextMark">GtkTextMark</link>
+<listitem><simpara> a <link linkend="GtkTextMark"><type>GtkTextMark</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the mark has left gravity, <literal>FALSE</literal> otherwise
 </simpara></listitem></varlistentry>

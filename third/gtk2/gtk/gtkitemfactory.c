@@ -27,10 +27,9 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include	"config.h"
+#include	<config.h>
 
 #include	"gtkitemfactory.h"
-#include	"gtk/gtkoptionmenu.h"
 #include	"gtk/gtkmenubar.h"
 #include	"gtk/gtkmenu.h"
 #include	"gtk/gtkmenuitem.h"
@@ -50,6 +49,10 @@
 #include	<unistd.h>
 #endif
 #include	<stdio.h>
+
+#undef GTK_DISABLE_DEPRECATED
+#include	"gtk/gtkoptionmenu.h"
+#define GTK_DISABLE_DEPRECATED
 
 /* --- defines --- */
 #define		ITEM_FACTORY_STRING	((gchar*) item_factory_string)
@@ -200,6 +203,8 @@ gtk_item_factory_init (GtkItemFactory	    *ifactory)
  * @returns: a new #GtkItemFactory
  * 
  * Creates a new #GtkItemFactory.
+ *
+ * Beware that the returned object does not have a floating reference.
  */
 GtkItemFactory*
 gtk_item_factory_new (GType	     container_type,
@@ -259,7 +264,9 @@ gtk_item_factory_item_remove_widget (GtkWidget		*widget,
  * This function can be used to make widgets participate in the accel
  * saving/restoring functionality provided by gtk_accel_map_save() and
  * gtk_accel_map_load(), even if they haven't been created by an item
- * factory. The recommended API for this purpose are the functions 
+ * factory. 
+ *
+ * Deprecated: The recommended API for this purpose are the functions 
  * gtk_menu_item_set_accel_path() and gtk_widget_set_accel_path(); don't 
  * use gtk_item_factory_add_foreign() in new code, since it is likely to
  * be removed in the future.
@@ -358,7 +365,7 @@ gtk_item_factory_add_item (GtkItemFactory		*ifactory,
   if (GTK_IS_MENU (widget))
     gtk_menu_set_accel_group ((GtkMenu*) widget, ifactory->accel_group);
 
-  /* connect callback if neccessary
+  /* connect callback if necessary
    */
   if (callback)
     {
@@ -1074,22 +1081,17 @@ gtk_item_factory_create_item (GtkItemFactory	     *ifactory,
     gtk_radio_menu_item_set_group (GTK_RADIO_MENU_ITEM (widget), radio_group);
   if (type_id == quark_type_image_item)
     {
-      GError *error = NULL;
       GdkPixbuf *pixbuf = NULL;
-
       image = NULL;
-      pixbuf = gdk_pixbuf_new_from_inline (-1,
-					   entry->extra_data,
-					   FALSE,
-					   &error);
-      if (pixbuf)
-	image = gtk_image_new_from_pixbuf (pixbuf);
-      else
+      if (entry->extra_data)
 	{
-	  g_warning ("Error loading menu image: %s", error->message);
-	  g_error_free (error);
+	  pixbuf = gdk_pixbuf_new_from_inline (-1,
+					       entry->extra_data,
+					       FALSE,
+					       NULL);
+	  if (pixbuf)
+	    image = gtk_image_new_from_pixbuf (pixbuf);
 	}
-	    
       if (image)
 	{
 	  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (widget), image);

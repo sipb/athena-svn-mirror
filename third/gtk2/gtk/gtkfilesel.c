@@ -24,7 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -73,11 +73,14 @@
 #include "gtkvbox.h"
 #include "gtkmenu.h"
 #include "gtkmenuitem.h"
-#include "gtkoptionmenu.h"
 #include "gtkdialog.h"
 #include "gtkmessagedialog.h"
 #include "gtkdnd.h"
 #include "gtkeventbox.h"
+
+#undef GTK_DISABLE_DEPRECATED
+#include "gtkoptionmenu.h"
+#define GTK_DISABLE_DEPRECATED
 
 #define WANT_HPANED 1
 #include "gtkhpaned.h"
@@ -301,15 +304,20 @@ static gboolean            cmpl_updated_dir        (CompletionState* cmpl_state)
  */
 static gchar*              cmpl_reference_position (CompletionState* cmpl_state);
 
+#if 0
+/* This doesn't work currently and would require changes
+ * to fnmatch.c to get working.
+ */
 /* backing up: if cmpl_completion_matches returns NULL, you may query
  * the index of the last completable character into cmpl_updated_text.
  */
 static gint                cmpl_last_valid_char    (CompletionState* cmpl_state);
+#endif
 
 /* When the user selects a non-directory, call cmpl_completion_fullname
  * to get the full name of the selected file.
  */
-static const gchar*        cmpl_completion_fullname (const gchar*, CompletionState* cmpl_state);
+static gchar*              cmpl_completion_fullname (const gchar*, CompletionState* cmpl_state);
 
 
 /* Directory operations. */
@@ -548,23 +556,23 @@ gtk_file_selection_class_init (GtkFileSelectionClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_FILENAME,
                                    g_param_spec_string ("filename",
-                                                        _("Filename"),
-                                                        _("The currently selected filename"),
+                                                        P_("Filename"),
+                                                        P_("The currently selected filename"),
                                                         NULL,
                                                         G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
 				   PROP_SHOW_FILEOPS,
 				   g_param_spec_boolean ("show_fileops",
-							 _("Show file operations"),
-							 _("Whether buttons for creating/manipulating files should be displayed"),
+							 P_("Show file operations"),
+							 P_("Whether buttons for creating/manipulating files should be displayed"),
 							 FALSE,
 							 G_PARAM_READABLE |
 							 G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
 				   PROP_SELECT_MULTIPLE,
 				   g_param_spec_boolean ("select_multiple",
-							 _("Select multiple"),
-							 _("Whether to allow multiple files to be selected"),
+							 P_("Select multiple"),
+							 P_("Whether to allow multiple files to be selected"),
 							 FALSE,
 							 G_PARAM_READABLE |
 							 G_PARAM_WRITABLE));
@@ -1176,6 +1184,10 @@ gtk_file_selection_hide_fileop_buttons (GtkFileSelection *filesel)
  * directory path, then the requestor will open with that path as its
  * current working directory.
  *
+ * This has the consequence that in order to open the requestor with a 
+ * working directory and an empty filename, @filename must have a trailing
+ * directory separator.
+ *
  * The encoding of @filename is the on-disk encoding, which
  * may not be UTF-8. See g_filename_from_utf8().
  **/
@@ -1247,7 +1259,9 @@ gtk_file_selection_get_filename (GtkFileSelection *filesel)
   text = gtk_entry_get_text (GTK_ENTRY (filesel->selection_entry));
   if (text)
     {
-      sys_filename = g_filename_from_utf8 (cmpl_completion_fullname (text, filesel->cmpl_state), -1, NULL, NULL, NULL);
+      gchar *fullname = cmpl_completion_fullname (text, filesel->cmpl_state);
+      sys_filename = g_filename_from_utf8 (fullname, -1, NULL, NULL, NULL);
+      g_free (fullname);
       if (!sys_filename)
 	return nothing;
       strncpy (something, sys_filename, sizeof (something));
@@ -1357,7 +1371,7 @@ gtk_file_selection_fileop_error (GtkFileSelection *fs,
   dialog = gtk_message_dialog_new (GTK_WINDOW (fs),
 				   GTK_DIALOG_DESTROY_WITH_PARENT,
 				   GTK_MESSAGE_ERROR,
-				   GTK_BUTTONS_CLOSE,
+				   GTK_BUTTONS_OK,
 				   "%s", error_message);
 
   /* yes, we free it */
@@ -1431,7 +1445,7 @@ gtk_file_selection_create_dir_confirmed (GtkWidget *widget,
       goto out;
     }
 
-  if (mkdir (sys_full_path, 0755) < 0) 
+  if (mkdir (sys_full_path, 0777) < 0)
     {
       buf = g_strdup_printf (_("Error creating folder \"%s\": %s\n"), dirname,
 			     g_strerror (errno));
@@ -1493,22 +1507,20 @@ gtk_file_selection_create_dir (GtkWidget *widget,
   gtk_box_pack_start (GTK_BOX (vbox), fs->fileop_entry, 
 		      TRUE, TRUE, 5);
   GTK_WIDGET_SET_FLAGS (fs->fileop_entry, GTK_CAN_DEFAULT);
+  gtk_entry_set_activates_default (GTK_ENTRY (fs->fileop_entry), TRUE); 
   gtk_widget_show (fs->fileop_entry);
   
   /* buttons */
-  button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+  button = gtk_dialog_add_button (GTK_DIALOG (dialog), 
+				  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
   g_signal_connect_swapped (button, "clicked",
 			    G_CALLBACK (gtk_widget_destroy),
 			    dialog);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-		     button, TRUE, TRUE, 0);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_widget_grab_default (button);
-  gtk_widget_show (button);
 
   gtk_widget_grab_focus (fs->fileop_entry);
 
-  button = gtk_button_new_with_mnemonic (_("C_reate"));
+  button = gtk_dialog_add_button (GTK_DIALOG (dialog), 
+				  _("C_reate"), GTK_RESPONSE_OK);
   gtk_widget_set_sensitive (button, FALSE);
   g_signal_connect (button, "clicked",
 		    G_CALLBACK (gtk_file_selection_create_dir_confirmed),
@@ -1517,10 +1529,7 @@ gtk_file_selection_create_dir (GtkWidget *widget,
                     G_CALLBACK (gtk_file_selection_fileop_entry_changed),
 		    button);
 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-		     button, TRUE, TRUE, 0);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_widget_show (button);
+  gtk_widget_grab_default (button);
   
   gtk_widget_show (dialog);
 }
@@ -1611,7 +1620,7 @@ gtk_file_selection_delete_file (GtkWidget *widget,
                             GTK_WINDOW (fs)->modal ? GTK_DIALOG_MODAL : 0,
                             GTK_MESSAGE_QUESTION,
                             GTK_BUTTONS_NONE,
-                            _("Really delete file \"%s\" ?"), filename);
+                            _("Really delete file \"%s\"?"), filename);
 
   g_signal_connect (dialog, "destroy",
 		    G_CALLBACK (gtk_file_selection_fileop_destroy),
@@ -1762,6 +1771,7 @@ gtk_file_selection_rename_file (GtkWidget *widget,
   gtk_box_pack_start (GTK_BOX (vbox), fs->fileop_entry, 
 		      TRUE, TRUE, 5);
   GTK_WIDGET_SET_FLAGS (fs->fileop_entry, GTK_CAN_DEFAULT);
+  gtk_entry_set_activates_default (GTK_ENTRY (fs->fileop_entry), TRUE); 
   gtk_widget_show (fs->fileop_entry);
   
   gtk_entry_set_text (GTK_ENTRY (fs->fileop_entry), fs->fileop_file);
@@ -1769,19 +1779,16 @@ gtk_file_selection_rename_file (GtkWidget *widget,
 			      0, strlen (fs->fileop_file));
 
   /* buttons */
-  button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+  button = gtk_dialog_add_button (GTK_DIALOG (dialog), 
+				  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
   g_signal_connect_swapped (button, "clicked",
 			    G_CALLBACK (gtk_widget_destroy),
 			    dialog);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-		      button, TRUE, TRUE, 0);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_widget_grab_default (button);
-  gtk_widget_show (button);
 
   gtk_widget_grab_focus (fs->fileop_entry);
 
-  button = gtk_button_new_with_mnemonic (_("_Rename"));
+  button = gtk_dialog_add_button (GTK_DIALOG (dialog), 
+				  _("_Rename"), GTK_RESPONSE_OK);
   g_signal_connect (button, "clicked",
 		    G_CALLBACK (gtk_file_selection_rename_file_confirmed),
 		    fs);
@@ -1789,10 +1796,7 @@ gtk_file_selection_rename_file (GtkWidget *widget,
 		    G_CALLBACK (gtk_file_selection_fileop_entry_changed),
 		    button);
 
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->action_area),
-		      button, TRUE, TRUE, 0);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_widget_show (button);
+  gtk_widget_grab_default (button);
   
   gtk_widget_show (dialog);
 }
@@ -2059,7 +2063,7 @@ win32_gtk_add_drives_to_dir_list (GtkListStore *model)
   while (*textPtr != '\0')
     {
       /* Ignore floppies (?) */
-      if ((tolower (textPtr[0]) != 'a') && (tolower (textPtr[0]) != 'b'))
+      if (GetDriveType (textPtr) != DRIVE_REMOVABLE)
 	{
 	  /* Build the actual displayable string */
 	  g_snprintf (formatBuffer, sizeof (formatBuffer), "%c:\\", toupper (textPtr[0]));
@@ -2105,7 +2109,6 @@ gtk_file_selection_populate (GtkFileSelection *fs,
   gchar* sel_text;
   gint did_recurse = FALSE;
   gint possible_count = 0;
-  gint selection_index = -1;
   
   g_return_if_fail (GTK_IS_FILE_SELECTION (fs));
 
@@ -2199,8 +2202,6 @@ gtk_file_selection_populate (GtkFileSelection *fs,
         }
       else
         {
-          selection_index = cmpl_last_valid_char (cmpl_state) -
-                            (strlen (rel_path) - strlen (rem_path));
 	  if (fs->selection_entry)
 	    gtk_entry_set_text (GTK_ENTRY (fs->selection_entry), rem_path);
         }
@@ -2213,9 +2214,8 @@ gtk_file_selection_populate (GtkFileSelection *fs,
 
   if (!did_recurse)
     {
-      if (fs->selection_entry)
-	gtk_editable_set_position (GTK_EDITABLE (fs->selection_entry),
-				   selection_index);
+      if (fs->selection_entry && try_complete)
+	gtk_editable_set_position (GTK_EDITABLE (fs->selection_entry), -1);
 
       if (fs->selection_entry)
 	{
@@ -2544,25 +2544,28 @@ cmpl_reference_position (CompletionState *cmpl_state)
   return cmpl_state->reference_dir->fullname;
 }
 
+#if 0
+/* This doesn't work currently and would require changes
+ * to fnmatch.c to get working.
+ */
 static gint
 cmpl_last_valid_char (CompletionState *cmpl_state)
 {
   return cmpl_state->last_valid_char;
 }
+#endif
 
-static const gchar*
+static gchar*
 cmpl_completion_fullname (const gchar     *text,
 			  CompletionState *cmpl_state)
 {
-  static const char nothing[2] = "";
-
   if (!cmpl_state_okay (cmpl_state))
     {
-      return nothing;
+      return g_strdup ("");
     }
   else if (g_path_is_absolute (text))
     {
-      strcpy (cmpl_state->updated_text, text);
+      return g_strdup (text);
     }
 #ifdef HAVE_PWD_H
   else if (text[0] == '~')
@@ -2572,33 +2575,19 @@ cmpl_completion_fullname (const gchar     *text,
 
       dir = open_user_dir (text, cmpl_state);
 
-      if (!dir)
+      if (dir)
 	{
-	  /* spencer says just return ~something, so
-	   * for now just do it. */
-	  strcpy (cmpl_state->updated_text, text);
-	}
-      else
-	{
-
-	  strcpy (cmpl_state->updated_text, dir->fullname);
-
 	  slash = strchr (text, G_DIR_SEPARATOR);
-
-	  if (slash)
-	    strcat (cmpl_state->updated_text, slash);
+	  
+	  /* slash may be NULL, that works too */
+	  return g_strconcat (dir->fullname, slash, NULL);
 	}
     }
 #endif
-  else
-    {
-      strcpy (cmpl_state->updated_text, cmpl_state->reference_dir->fullname);
-      if (cmpl_state->updated_text[strlen (cmpl_state->updated_text) - 1] != G_DIR_SEPARATOR)
-	strcat (cmpl_state->updated_text, G_DIR_SEPARATOR_S);
-      strcat (cmpl_state->updated_text, text);
-    }
-
-  return cmpl_state->updated_text;
+  
+  return g_build_filename (cmpl_state->reference_dir->fullname,
+			   text,
+			   NULL);
 }
 
 /* The three completion selectors
@@ -2625,19 +2614,55 @@ cmpl_is_a_completion (PossibleCompletion* pc)
 /*	                 Construction, deletion                       */
 /**********************************************************************/
 
+/* Get the nearest parent of the current directory for which
+ * we can convert the filename into UTF-8. With paranoia.
+ * Returns "." when all goes wrong.
+ */
+static gchar *
+get_current_dir_utf8 (void)
+{
+  gchar *dir = g_get_current_dir ();
+  gchar *dir_utf8 = NULL;
+
+  while (TRUE)
+    {
+      gchar *last_slash;
+
+      dir_utf8 = g_filename_to_utf8 (dir, -1, NULL, NULL, NULL);
+      if (dir_utf8)
+	break;
+
+      last_slash = strrchr (dir, G_DIR_SEPARATOR);
+      if (!last_slash)		/* g_get_current_dir() wasn't absolute! */
+	break;
+
+      if (last_slash + 1 == g_path_skip_root (dir)) /* Parent directory is a root directory */
+	{
+	  if (last_slash[1] == '\0') /* Root misencoded! */
+	    break;
+	  else
+	    last_slash[1] = '\0';
+	}
+      else
+	last_slash[0] = '\0';
+      
+      g_assert (last_slash);
+    }
+
+  g_free (dir);
+  
+  return dir_utf8 ? dir_utf8 : g_strdup (".");
+}
+
 static CompletionState*
 cmpl_init_state (void)
 {
-  gchar *sys_getcwd_buf;
   gchar *utf8_cwd;
   CompletionState *new_state;
 
   new_state = g_new (CompletionState, 1);
 
-  /* g_get_current_dir() returns a string in the "system" charset */
-  sys_getcwd_buf = g_get_current_dir ();
-  utf8_cwd = g_filename_to_utf8 (sys_getcwd_buf, -1, NULL, NULL, NULL);
-  g_free (sys_getcwd_buf);
+  utf8_cwd = get_current_dir_utf8 ();
 
 tryagain:
 
@@ -2932,10 +2957,7 @@ open_ref_dir (gchar           *text_to_complete,
       else
 	{
 	  /* If no possible candidates, use the cwd */
-	  gchar *sys_curdir = g_get_current_dir ();
-	  gchar *utf8_curdir = g_filename_to_utf8 (sys_curdir, -1, NULL, NULL, NULL);
-
-	  g_free (sys_curdir);
+	  gchar *utf8_curdir = get_current_dir_utf8 ();
 
 	  new_dir = open_dir (utf8_curdir, cmpl_state);
 
@@ -3114,10 +3136,10 @@ open_new_dir (gchar       *dir_name,
 	  || !g_utf8_validate (sent->entries[n_entries].entry_name, -1, NULL))
 	{
 	  gchar *escaped_str = g_strescape (dirent, NULL);
-	  g_message (_("The filename \"%s\" couldn't be converted to UTF-8 "
-		       "(try setting the environment variable G_BROKEN_FILENAMES): %s"),
+	  g_message (_("The filename \"%s\" couldn't be converted to UTF-8. "
+		       "(try setting the environment variable G_FILENAME_ENCODING): %s"),
 		     escaped_str,
-		     error->message ? error->message : _("Invalid Utf-8"));
+		     error->message ? error->message : _("Invalid UTF-8"));
 	  g_free (escaped_str);
 	  g_clear_error (&error);
 	  continue;
@@ -3672,7 +3694,7 @@ find_completion_dir (gchar          *text_to_complete,
       for (i = 0; i < dir->sent->entry_count; i += 1)
 	{
 	  if (dir->sent->entries[i].is_dir &&
-	      _gtk_fnmatch (pat_buf, dir->sent->entries[i].entry_name))
+	      _gtk_fnmatch (pat_buf, dir->sent->entries[i].entry_name, TRUE))
 	    {
 	      if (found)
 		{
@@ -3733,10 +3755,10 @@ update_cmpl (PossibleCompletion *poss,
 
   if (cmpl_state->updated_text_alloc < cmpl_len + 1)
     {
+      cmpl_state->updated_text_alloc = 2*cmpl_len;
       cmpl_state->updated_text =
 	(gchar*)g_realloc (cmpl_state->updated_text,
 			   cmpl_state->updated_text_alloc);
-      cmpl_state->updated_text_alloc = 2*cmpl_len;
     }
 
   if (cmpl_state->updated_text_len < 0)
@@ -3822,7 +3844,7 @@ attempt_file_completion (CompletionState *cmpl_state)
     {
       if (dir->sent->entries[dir->cmpl_index].is_dir)
 	{
-	  if (_gtk_fnmatch (pat_buf, dir->sent->entries[dir->cmpl_index].entry_name))
+	  if (_gtk_fnmatch (pat_buf, dir->sent->entries[dir->cmpl_index].entry_name, TRUE))
 	    {
 	      CompletionDir* new_dir;
 
@@ -3870,7 +3892,7 @@ attempt_file_completion (CompletionState *cmpl_state)
       append_completion_text (dir->sent->entries[dir->cmpl_index].entry_name, cmpl_state);
 
       cmpl_state->the_completion.is_a_completion =
-	_gtk_fnmatch (pat_buf, dir->sent->entries[dir->cmpl_index].entry_name);
+	_gtk_fnmatch (pat_buf, dir->sent->entries[dir->cmpl_index].entry_name, TRUE);
 
       cmpl_state->the_completion.is_directory = dir->sent->entries[dir->cmpl_index].is_dir;
       if (dir->sent->entries[dir->cmpl_index].is_dir)

@@ -1,27 +1,25 @@
 ## Makefile.am for gtk+/tests
 
-INCLUDES = @STRIP_BEGIN@ \
-	-I$(top_srcdir) 				\
-	-I$(top_builddir)/gdk				\
-	-I$(top_srcdir)/gdk				\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
-	-DGDK_DISABLE_DEPRECATED			\
-	-DGTK_DISABLE_DEPRECATED			\
-	@GTK_DEBUG_FLAGS@				\
-	@GTK_DEP_CFLAGS@				\
-@STRIP_END@
+INCLUDES =					\
+	-I$(top_srcdir)				\
+	-I$(top_builddir)/gdk			\
+	-I$(top_srcdir)/gdk			\
+	-DG_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
+	-DGDK_DISABLE_DEPRECATED		\
+	-DGTK_DISABLE_DEPRECATED		\
+	$(GTK_DEBUG_FLAGS)			\
+	$(GTK_DEP_CFLAGS)
 
-DEPS = \
+DEPS =									\
 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
-	$(top_builddir)/gdk/@gdktargetlib@ 				\
-	$(top_builddir)/gtk/@gtktargetlib@
+	$(top_builddir)/gdk/$(gdktargetlib)				\
+	$(top_builddir)/gtk/$(gtktargetlib)
 
-LDADDS = @STRIP_BEGIN@ 					\
+LDADDS =								\
 	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
-	$(top_builddir)/gdk/@gdktargetlib@        	\
-	$(top_builddir)/gtk/@gtktargetlib@ 		\
-@STRIP_END@
+	$(top_builddir)/gdk/$(gdktargetlib)				\
+	$(top_builddir)/gtk/$(gtktargetlib)
 
 if USE_X11
 testsocket_programs = testsocket testsocket_child
@@ -31,8 +29,13 @@ endif
 noinst_PROGRAMS =			\
 	simple				\
 	testcalendar			\
+	testcombo			\
+	testcombochange			\
 	testdnd				\
+	testentrycompletion 		\
+	testfilechooser			\
 	testgtk				\
+	testicontheme			\
 	testinput			\
 	testmenus			\
 	testmultidisplay		\
@@ -40,8 +43,11 @@ noinst_PROGRAMS =			\
 	testrgb				\
 	testselection			\
 	$(testsocket_programs)		\
+	testspinbutton			\
 	testtext			\
         testtextbuffer			\
+	testtoolbar			\
+	stresstest-toolbar		\
 	testtreeedit			\
 	testtreeview			\
 	testtreefocus			\
@@ -53,11 +59,18 @@ noinst_PROGRAMS =			\
 	pixbuf-read			\
 	pixbuf-lowmem			\
 	pixbuf-randomly-modified	\
-	pixbuf-random			
+	pixbuf-random			\
+	testmerge			\
+	testactions
 
 simple_DEPENDENCIES = $(TEST_DEPS)
+testicontheme_DEPENDENCIES = $(TEST_DEPS)
 testcalendar_DEPENDENCIES = $(TEST_DEPS)
+testcombo_DEPENDENCIES = $(TEST_DEPS)
+testcombochange_DEPENDENCIES = $(TEST_DEPS)
 testdnd_DEPENDENCIES = $(TEST_DEPS)
+testentrycompletion_DEPENDENCIES = $(TEST_DEPS)
+testfilechooser_DEPENDENCIES = $(TEST_DEPS)
 testgtk_DEPENDENCIES = $(TEST_DEPS)
 testinput_DEPENDENCIES = $(TEST_DEPS)
 testmenus_DEPENDENCIES = $(TEST_DEPS)
@@ -67,6 +80,7 @@ testrgb_DEPENDENCIES = $(TEST_DEPS)
 testselection_DEPENDENCIES = $(TEST_DEPS)
 testsocket_DEPENDENCIES = $(DEPS)
 testsocket_child_DEPENDENCIES = $(DEPS)
+testspinbutton_DEPENDENCIES = $(TEST_DEPS)
 testtext_DEPENDENCIES = $(TEST_DEPS)
 testtextbuffer_DEPENDENCIES = $(TEST_DEPS)
 testtreeedit_DEPENDENCIES = $(DEPS)
@@ -77,11 +91,18 @@ testtreecolumns_DEPENDENCIES = $(DEPS)
 testtreesort_DEPENDENCIES = $(DEPS)
 treestoretest_DEPENDENCIES = $(TEST_DEPS)
 testxinerama_DEPENDENCIES = $(TEST_DEPS)
+testmerge_DEPENDENCIES = $(TEST_DEPS)
+testactions_DEPENDENCIES = $(TEST_DEPS)
 
 simple_LDADD = $(LDADDS)
 testcalendar_LDADD = $(LDADDS)
+testcombo_LDADD = $(LDADDS)
+testcombochange_LDADD = $(LDADDS)
 testdnd_LDADD = $(LDADDS)
+testentrycompletion_LDADD = $(LDADDS)
+testfilechooser_LDADD = $(LDADDS)
 testgtk_LDADD = $(LDADDS)
+testicontheme_LDADD = $(LDADDS)
 testinput_LDADD = $(LDADDS)
 testmenus_LDADD = $(LDADDS)
 testmultidisplay_LDADD = $(LDADDS)
@@ -90,7 +111,10 @@ testrgb_LDADD = $(LDADDS)
 testselection_LDADD = $(LDADDS)
 testsocket_LDADD = $(LDADDS)
 testsocket_child_LDADD = $(LDADDS)
+testspinbutton_LDADD = $(LDADDS)
 testtextbuffer_LDADD = $(LDADDS)
+testtoolbar_LDADD = $(LDADDS)
+stresstest_toolbar_LDADD = $(LDADDS)
 testtreeedit_LDADD = $(LDADDS)
 testtreeview_LDADD = $(LDADDS)
 testtreefocus_LDADD = $(LDADDS)
@@ -104,6 +128,12 @@ pixbuf_read_LDADD = $(LDADDS)
 pixbuf_lowmem_LDADD = $(LDADDS)
 pixbuf_randomly_modified_LDADD = $(LDADDS)
 pixbuf_random_LDADD = $(LDADDS)
+testmerge_LDADD = $(LDADDS)
+testactions_LDADD = $(LDADDS)
+
+testfilechooser_SOURCES = 	\
+	prop-editor.c		\
+	testfilechooser.c 	
 
 testgtk_SOURCES =	\
 	prop-editor.c   \
@@ -120,6 +150,10 @@ testtext_SOURCES =	\
 	prop-editor.c	\
 	testtext.c 
 
+testtoolbar_SOURCES =	\
+	testtoolbar.c	\
+	prop-editor.c
+
 testsocket_SOURCES =    	\
 	testsocket.c		\
 	testsocket_common.c
@@ -128,7 +162,16 @@ testsocket_child_SOURCES =    	\
 	testsocket_child.c	\
 	testsocket_common.c
 
-EXTRA_DIST = @STRIP_BEGIN@ 	\
+testspinbutton_SOURCES =    	\
+	testspinbutton.c
+
+testmerge_SOURCES = 		\
+	testmerge.c
+
+testactions_SOURCES = 		\
+	testactions.c
+
+EXTRA_DIST = 			\
 	prop-editor.h		\
 	testgtk.1 		\
 	testgtkrc 		\
@@ -144,6 +187,8 @@ EXTRA_DIST = @STRIP_BEGIN@ 	\
 	check-y.xpm		\
 	check-n.xpm		\
 	test.xpm		\
-@STRIP_END@
-
+	merge-1.ui		\
+	merge-2.ui		\
+	merge-3.ui		\
+	makefile.msc
 

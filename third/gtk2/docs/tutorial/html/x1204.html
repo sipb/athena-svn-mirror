@@ -5,8 +5,7 @@
 >Color Selection</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-COLORSELECTION">Color Selection</H1
+NAME="SEC-COLORSELECTION"
+>Color Selection</A
+></H1
 ><P
 >The color selection widget is, not surprisingly, a widget for
 interactive selection of colors. This composite widget lets the user
@@ -223,8 +224,8 @@ GdkColor color;
 
 /* Color changed handler */
 
-void color_changed_cb( GtkWidget         *widget,
-                       GtkColorSelection *colorsel )
+static void color_changed_cb( GtkWidget         *widget,
+                              GtkColorSelection *colorsel )
 {
   GdkColor ncolor;
 
@@ -234,9 +235,9 @@ void color_changed_cb( GtkWidget         *widget,
 
 /* Drawingarea event handler */
 
-gint area_event( GtkWidget *widget,
-                 GdkEvent  *event,
-                 gpointer   client_data )
+static gboolean area_event( GtkWidget *widget,
+                            GdkEvent  *event,
+                            gpointer   client_data )
 {
   gint handled = FALSE;
   gint response;
@@ -280,9 +281,9 @@ gint area_event( GtkWidget *widget,
 
 /* Close down and exit handler */
 
-gint destroy_window( GtkWidget *widget,
-                     GdkEvent  *event,
-                     gpointer   client_data )
+static gboolean destroy_window( GtkWidget *widget,
+                                GdkEvent  *event,
+                                gpointer   client_data )
 {
   gtk_main_quit ();
   return TRUE;

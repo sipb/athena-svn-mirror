@@ -24,6 +24,9 @@
  * files for a list of changes.  These files are distributed with
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
+
+#include <config.h>
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,7 +37,6 @@
 #include "gtkimmodule.h"
 #include "gtkimcontextsimple.h"
 #include "gtkrc.h"
-#include "config.h"
 #include "gtkintl.h"
 
 /* Do *not* include "gtkprivate.h" in this file. If you do, the
@@ -279,9 +281,12 @@ gtk_im_module_init ()
   file = fopen (filename, "r");
   if (!file)
     {
-      g_warning ("Can not open Input Method module file '%s': %s",
-		 filename, g_strerror (errno));
-      /* We are leaking all kinds of memory here. */
+      /* In case someone wants only the default input method,
+       * we allow no file at all.
+       */
+      g_string_free (line_buf, TRUE);
+      g_string_free (tmp_buf, TRUE);
+      g_free (filename);
       return;
     }
 
@@ -413,9 +418,13 @@ _gtk_im_module_list (const GtkIMContextInfo ***contexts,
 
   static const GtkIMContextInfo simple_context_info = {
     SIMPLE_ID,
-    "Default",
-    "gtk+",
-    NULL,
+    N_("Default"),
+    GETTEXT_PACKAGE,
+#ifdef GTK_LOCALEDIR
+    GTK_LOCALEDIR,
+#else
+    "",
+#endif
     ""
   };
 
@@ -510,10 +519,10 @@ match_locale (const gchar *locale,
   if (strcmp (against, "*") == 0)
     return 1;
 
-  if (strcmp (locale, against) == 0)
+  if (g_ascii_strcasecmp (locale, against) == 0)
     return 4;
 
-  if (strncmp (locale, against, 2) == 0)
+  if (g_ascii_strncasecmp (locale, against, 2) == 0)
     return (against_len == 2) ? 3 : 2;
 
   return 0;

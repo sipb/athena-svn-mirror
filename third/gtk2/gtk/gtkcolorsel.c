@@ -25,6 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gdkconfig.h"
 #include <math.h>
 
@@ -57,6 +58,7 @@
 #include "gtkintl.h"
 #include "gtkimage.h"
 #include "gtkstock.h"
+#include "gtkaccessible.h"
 
 #include <string.h>
 
@@ -169,6 +171,10 @@ static void     default_noscreen_change_palette_func    (const GdkColor    *colo
 static void     default_change_palette_func             (GdkScreen	   *screen,
 							 const GdkColor    *colors,
 							 gint               n_colors);
+static void     make_control_relations                  (AtkObject         *atk_obj,
+                                                         GtkWidget         *widget);
+static void     make_all_relations                      (AtkObject         *atk_obj,
+                                                         ColorSelectionPrivate *priv);
 
 static gpointer parent_class = NULL;
 static guint color_selection_signals[LAST_SIGNAL] = { 0 };
@@ -313,8 +319,10 @@ color_sample_drop_handle (GtkWidget        *widget,
   if (selection_data->length < 0)
     return;
   
-  if ((selection_data->format != 16) ||
-      (selection_data->length != 8))
+  /* We accept drops with the wrong format, since the KDE color
+   * chooser incorrectly drops application/x-color with format 8.
+   */
+  if (selection_data->length != 8)
     {
       g_warning ("Received invalid color data\n");
       return;
@@ -708,7 +716,7 @@ get_current_colors (GtkColorSelection *colorsel)
   gchar *palette;
 
   settings = gtk_widget_get_settings (GTK_WIDGET (colorsel));
-  g_object_get (G_OBJECT (settings),
+  g_object_get (settings,
 		"gtk-color-palette", &palette,
 		NULL);
   
@@ -1022,8 +1030,10 @@ palette_drop_handle (GtkWidget        *widget,
   if (selection_data->length < 0)
     return;
   
-  if ((selection_data->format != 16) ||
-      (selection_data->length != 8))
+  /* We accept drops with the wrong format, since the KDE color
+   * chooser incorrectly drops application/x-color with format 8.
+   */
+  if (selection_data->length != 8)
     {
       g_warning ("Received invalid color data\n");
       return;
@@ -1388,6 +1398,16 @@ hex_changed (GtkWidget *hex_entry,
   g_free (text);
 }
 
+static gboolean
+hex_focus_out (GtkWidget     *hex_entry, 
+	       GdkEventFocus *event,
+	       gpointer       data)
+{
+  hex_changed (hex_entry, data);
+  
+  return FALSE;
+}
+
 static void
 hsv_changed (GtkWidget *hsv,
 	     gpointer   data)
@@ -1431,7 +1451,7 @@ adjustment_changed (GtkAdjustment *adjustment,
     {
     case COLORSEL_SATURATION:
     case COLORSEL_VALUE:
-      priv->color[GPOINTER_TO_INT (data)] = adjustment->value / 255;
+      priv->color[GPOINTER_TO_INT (data)] = adjustment->value / 100;
       gtk_hsv_to_rgb (priv->color[COLORSEL_HUE],
 		      priv->color[COLORSEL_SATURATION],
 		      priv->color[COLORSEL_VALUE],
@@ -1509,6 +1529,11 @@ make_label_spinbutton (GtkColorSelection *colorsel,
     {
       adjust = GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 360.0, 1.0, 1.0, 1.0));
     }
+  else if (channel_type == COLORSEL_SATURATION ||
+	   channel_type == COLORSEL_VALUE)
+    {
+      adjust = GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 100.0, 1.0, 1.0, 1.0));
+    }
   else
     {
       adjust = GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 255.0, 1.0, 1.0, 1.0));
@@ -1585,10 +1610,10 @@ update_color (GtkColorSelection *colorsel)
 			    scale_round (priv->color[COLORSEL_HUE], 360));
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
 			    (GTK_SPIN_BUTTON (priv->sat_spinbutton)),
-			    scale_round (priv->color[COLORSEL_SATURATION], 255));
+			    scale_round (priv->color[COLORSEL_SATURATION], 100));
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
 			    (GTK_SPIN_BUTTON (priv->val_spinbutton)),
-			    scale_round (priv->color[COLORSEL_VALUE], 255));
+			    scale_round (priv->color[COLORSEL_VALUE], 100));
   gtk_adjustment_set_value (gtk_spin_button_get_adjustment
 			    (GTK_SPIN_BUTTON (priv->red_spinbutton)),
 			    scale_round (priv->color[COLORSEL_RED], 255));
@@ -1739,29 +1764,29 @@ gtk_color_selection_class_init (GtkColorSelectionClass *klass)
   g_object_class_install_property (gobject_class,
                                    PROP_HAS_OPACITY_CONTROL,
                                    g_param_spec_boolean ("has_opacity_control",
-							 _("Has Opacity Control"),
-							 _("Whether the color selector should allow setting opacity"),
+							 P_("Has Opacity Control"),
+							 P_("Whether the color selector should allow setting opacity"),
 							 FALSE,
 							 G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_HAS_PALETTE,
                                    g_param_spec_boolean ("has_palette",
-							 _("Has palette"),
-							 _("Whether a palette should be used"),
+							 P_("Has palette"),
+							 P_("Whether a palette should be used"),
 							 FALSE,
 							 G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_CURRENT_COLOR,
                                    g_param_spec_boxed ("current_color",
-                                                       _("Current Color"),
-                                                       _("The current color"),
+                                                       P_("Current Color"),
+                                                       P_("The current color"),
                                                        GDK_TYPE_COLOR,
                                                        G_PARAM_READABLE | G_PARAM_WRITABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_CURRENT_ALPHA,
                                    g_param_spec_uint ("current_alpha",
-						      _("Current Alpha"),
-						      _("The current opacity value (0 fully transparent, 65535 fully opaque)"),
+						      P_("Current Alpha"),
+						      P_("The current opacity value (0 fully transparent, 65535 fully opaque)"),
 						      0, 65535, 65535,
 						      G_PARAM_READABLE | G_PARAM_WRITABLE));
   
@@ -1775,8 +1800,8 @@ gtk_color_selection_class_init (GtkColorSelectionClass *klass)
 		  G_TYPE_NONE, 0);
 
   gtk_settings_install_property (g_param_spec_string ("gtk-color-palette",
-                                                      _("Custom palette"),
-                                                      _("Palette to use in the color selector"),
+                                                      P_("Custom palette"),
+                                                      P_("Palette to use in the color selector"),
                                                       default_colors,
                                                       G_PARAM_READWRITE));
 }
@@ -1793,6 +1818,7 @@ gtk_color_selection_init (GtkColorSelection *colorsel)
   GtkWidget *picker_image;
   gint i, j;
   ColorSelectionPrivate *priv;
+  AtkObject *atk_obj;
   
   gtk_widget_push_composite_child ();
 
@@ -1853,6 +1879,7 @@ gtk_color_selection_init (GtkColorSelection *colorsel)
   
   make_label_spinbutton (colorsel, &priv->hue_spinbutton, _("_Hue:"), table, 0, 0, COLORSEL_HUE,
                          _("Position on the color wheel."));
+  gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (priv->hue_spinbutton), TRUE);
   make_label_spinbutton (colorsel, &priv->sat_spinbutton, _("_Saturation:"), table, 0, 1, COLORSEL_SATURATION,
                          _("\"Deepness\" of the color."));
   make_label_spinbutton (colorsel, &priv->val_spinbutton, _("_Value:"), table, 0, 2, COLORSEL_VALUE,
@@ -1873,7 +1900,7 @@ gtk_color_selection_init (GtkColorSelection *colorsel)
   priv->opacity_slider = gtk_hscale_new (adjust);
   gtk_tooltips_set_tip (priv->tooltips,
                         priv->opacity_slider,
-                        _("Transparency of the currently-selected color."), NULL);
+                        _("Transparency of the color."), NULL);
   gtk_label_set_mnemonic_widget (GTK_LABEL (priv->opacity_label),
                                  priv->opacity_slider);
   gtk_scale_set_draw_value (GTK_SCALE (priv->opacity_slider), FALSE);
@@ -1882,6 +1909,9 @@ gtk_color_selection_init (GtkColorSelection *colorsel)
                     GINT_TO_POINTER (COLORSEL_OPACITY));
   gtk_table_attach_defaults (GTK_TABLE (table), priv->opacity_slider, 1, 7, 4, 5); 
   priv->opacity_entry = gtk_entry_new (); 
+  gtk_tooltips_set_tip (priv->tooltips,
+                        priv->opacity_entry,
+                        _("Transparency of the color."), NULL);
   gtk_widget_set_size_request (priv->opacity_entry, 40, -1); 
 
   g_signal_connect (priv->opacity_entry, "activate",
@@ -1898,11 +1928,14 @@ gtk_color_selection_init (GtkColorSelection *colorsel)
   g_signal_connect (priv->hex_entry, "activate",
                     G_CALLBACK (hex_changed), colorsel);
 
+  g_signal_connect (priv->hex_entry, "focus_out_event",
+                    G_CALLBACK (hex_focus_out), colorsel);
+
   gtk_tooltips_set_tip (priv->tooltips,
                         priv->hex_entry,
                         _("You can enter an HTML-style hexadecimal color value, or simply a color name such as 'orange' in this entry."), NULL);
   
-  gtk_widget_set_size_request (priv->hex_entry, 75, -1);  
+  gtk_entry_set_width_chars (GTK_ENTRY (priv->hex_entry), 7);
   gtk_table_set_col_spacing (GTK_TABLE (table), 3, 15);
   gtk_table_attach_defaults (GTK_TABLE (table), priv->hex_entry, 1, 5, 5, 6);
   
@@ -1947,6 +1980,14 @@ gtk_color_selection_init (GtkColorSelection *colorsel)
     {
       gtk_widget_hide (priv->palette_frame);
     }
+
+  atk_obj = gtk_widget_get_accessible (priv->triangle_colorsel);
+  if (GTK_IS_ACCESSIBLE (atk_obj))
+    {
+      atk_object_set_name (atk_obj, _("Color Wheel"));
+      atk_object_set_role (gtk_widget_get_accessible (GTK_WIDGET (colorsel)), ATK_ROLE_COLOR_CHOOSER);
+      make_all_relations (atk_obj, priv);
+    } 
 
   gtk_widget_pop_composite_child ();
 }
@@ -2183,13 +2224,14 @@ gtk_color_selection_set_has_palette (GtkColorSelection *colorsel,
  **/
 void
 gtk_color_selection_set_current_color (GtkColorSelection *colorsel,
-				       GdkColor          *color)
+				       const GdkColor    *color)
 {
   ColorSelectionPrivate *priv;
   gint i;
   gboolean previous_changed;
   
   g_return_if_fail (GTK_IS_COLOR_SELECTION (colorsel));
+  g_return_if_fail (color != NULL);
 
   priv = colorsel->private_data;
   priv->changing = TRUE;
@@ -2250,7 +2292,7 @@ gtk_color_selection_set_current_alpha (GtkColorSelection *colorsel,
  * Sets the current color to be @color.  The first time this is called, it will
  * also set the original color to be @color too.
  *
- * This function is deprecated, use gtk_color_selection_set_current_color() instead.
+ * Deprecated: Use gtk_color_selection_set_current_color() instead.
  **/
 void
 gtk_color_selection_set_color (GtkColorSelection    *colorsel,
@@ -2275,6 +2317,7 @@ gtk_color_selection_get_current_color (GtkColorSelection *colorsel,
   ColorSelectionPrivate *priv;
   
   g_return_if_fail (GTK_IS_COLOR_SELECTION (colorsel));
+  g_return_if_fail (color != NULL);
   
   priv = colorsel->private_data;
   color->red = UNSCALE (priv->color[COLORSEL_RED]);
@@ -2337,11 +2380,12 @@ gtk_color_selection_get_color (GtkColorSelection *colorsel,
  **/
 void
 gtk_color_selection_set_previous_color (GtkColorSelection *colorsel,
-					GdkColor          *color)
+					const GdkColor    *color)
 {
   ColorSelectionPrivate *priv;
   
   g_return_if_fail (GTK_IS_COLOR_SELECTION (colorsel));
+  g_return_if_fail (color != NULL);
   
   priv = colorsel->private_data;
   priv->changing = TRUE;
@@ -2398,6 +2442,7 @@ gtk_color_selection_get_previous_color (GtkColorSelection *colorsel,
   ColorSelectionPrivate *priv;
   
   g_return_if_fail (GTK_IS_COLOR_SELECTION (colorsel));
+  g_return_if_fail (color != NULL);
   
   priv = colorsel->private_data;
   color->red = UNSCALE (priv->old_color[COLORSEL_RED]);
@@ -2681,11 +2726,12 @@ gtk_color_selection_palette_to_string (const GdkColor *colors,
  * the new palette contents, and update the GtkSettings property
  * "gtk-color-palette" so all GtkColorSelection widgets will be modified.
  *
- * This function is deprecated in favor of
+ * Return value: the previous change palette hook (that was replaced).
+ *
+ * Deprecated: This function is deprecated in favor of 
  * gtk_color_selection_set_change_palette_with_screen_hook(), and does
  * not work in multihead environments.
  * 
- * Return value: the previous change palette hook (that was replaced).
  **/
 GtkColorSelectionChangePaletteFunc
 gtk_color_selection_set_change_palette_hook (GtkColorSelectionChangePaletteFunc func)
@@ -2722,4 +2768,27 @@ gtk_color_selection_set_change_palette_with_screen_hook (GtkColorSelectionChange
   change_palette_hook = func;
 
   return old;
+}
+
+static void
+make_control_relations (AtkObject *atk_obj,
+                        GtkWidget *widget)
+{
+  AtkObject *obj;
+
+  obj = gtk_widget_get_accessible (widget);
+  atk_object_add_relationship (atk_obj, ATK_RELATION_CONTROLLED_BY, obj);
+  atk_object_add_relationship (obj, ATK_RELATION_CONTROLLER_FOR, atk_obj);
+}
+
+static void
+make_all_relations (AtkObject *atk_obj,
+                    ColorSelectionPrivate *priv)
+{
+  make_control_relations (atk_obj, priv->hue_spinbutton);
+  make_control_relations (atk_obj, priv->sat_spinbutton);
+  make_control_relations (atk_obj, priv->val_spinbutton);
+  make_control_relations (atk_obj, priv->red_spinbutton);
+  make_control_relations (atk_obj, priv->green_spinbutton);
+  make_control_relations (atk_obj, priv->blue_spinbutton);
 }

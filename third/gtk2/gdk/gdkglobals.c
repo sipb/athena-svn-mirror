@@ -24,11 +24,12 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
+
 #include <stdio.h>
 
 #include "gdktypes.h"
 #include "gdkprivate.h"
-#include "config.h"
 
 guint               _gdk_debug_flags = 0;
 gint                _gdk_error_code = 0;
@@ -40,5 +41,6 @@ gchar              *_gdk_display_arg_name = NULL;
 
 GSList             *_gdk_displays = NULL;
 
-GMutex           *gdk_threads_mutex = NULL;          /* Global GDK lock */
-
+GMutex              *gdk_threads_mutex = NULL;          /* Global GDK lock */
+GCallback            gdk_threads_lock = NULL;
+GCallback            gdk_threads_unlock = NULL;

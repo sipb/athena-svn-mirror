@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkmenu.h"
 #include "gtktearoffmenuitem.h"
 
@@ -118,7 +119,7 @@ gtk_tearoff_menu_item_size_request (GtkWidget      *widget,
     }
   else
     {
-      requisition->height += widget->style->ythickness;
+      requisition->height += widget->style->ythickness + 4;
     }
 }
 
@@ -144,8 +145,8 @@ gtk_tearoff_menu_item_paint (GtkWidget   *widget,
 
       x = widget->allocation.x + GTK_CONTAINER (menu_item)->border_width;
       y = widget->allocation.y + GTK_CONTAINER (menu_item)->border_width;
-      width = widget->allocation.width - x * 2;
-      height = widget->allocation.height - y * 2;
+      width = widget->allocation.width - GTK_CONTAINER (menu_item)->border_width * 2;
+      height = widget->allocation.height - GTK_CONTAINER (menu_item)->border_width * 2;
       right_max = x + width;
 
       if (widget->state == GTK_STATE_PRELIGHT)

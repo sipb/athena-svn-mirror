@@ -25,12 +25,15 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdio.h>
+#include <math.h>
 #include "gtkintl.h"
 #include "gtkmain.h"
 #include "gtkmarshalers.h"
 #include "gtkrange.h"
 #include "gtkintl.h"
+#include "gtkscrollbar.h"
 
 #define SCROLL_INITIAL_DELAY 250  /* must hold button this long before ... */
 #define SCROLL_LATER_DELAY   100  /* ... it starts repeating at this rate  */
@@ -118,6 +121,10 @@ static gint gtk_range_enter_notify   (GtkWidget        *widget,
                                       GdkEventCrossing *event);
 static gint gtk_range_leave_notify   (GtkWidget        *widget,
                                       GdkEventCrossing *event);
+static void gtk_range_grab_notify    (GtkWidget          *widget,
+				      gboolean            was_grabbed);
+static void gtk_range_state_changed  (GtkWidget          *widget,
+				      GtkStateType        previous_state);
 static gint gtk_range_scroll_event   (GtkWidget        *widget,
                                       GdkEventScroll   *event);
 static void gtk_range_style_set      (GtkWidget        *widget,
@@ -233,6 +240,8 @@ gtk_range_class_init (GtkRangeClass *class)
   widget_class->scroll_event = gtk_range_scroll_event;
   widget_class->enter_notify_event = gtk_range_enter_notify;
   widget_class->leave_notify_event = gtk_range_leave_notify;
+  widget_class->grab_notify = gtk_range_grab_notify;
+  widget_class->state_changed = gtk_range_state_changed;
   widget_class->style_set = gtk_range_style_set;
 
   class->move_slider = gtk_range_move_slider;
@@ -272,8 +281,8 @@ gtk_range_class_init (GtkRangeClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_UPDATE_POLICY,
                                    g_param_spec_enum ("update_policy",
-						      _("Update policy"),
-						      _("How the range should be updated on the screen"),
+						      P_("Update policy"),
+						      P_("How the range should be updated on the screen"),
 						      GTK_TYPE_UPDATE_TYPE,
 						      GTK_UPDATE_CONTINUOUS,
 						      G_PARAM_READWRITE));
@@ -281,63 +290,63 @@ gtk_range_class_init (GtkRangeClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_ADJUSTMENT,
                                    g_param_spec_object ("adjustment",
-							_("Adjustment"),
-							_("The GtkAdjustment that contains the current value of this range object"),
+							P_("Adjustment"),
+							P_("The GtkAdjustment that contains the current value of this range object"),
                                                         GTK_TYPE_ADJUSTMENT,
                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class,
                                    PROP_INVERTED,
                                    g_param_spec_boolean ("inverted",
-							_("Inverted"),
-							_("Invert direction slider moves to increase range value"),
+							P_("Inverted"),
+							P_("Invert direction slider moves to increase range value"),
                                                          FALSE,
                                                          G_PARAM_READWRITE));
   
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("slider_width",
-							     _("Slider Width"),
-							     _("Width of scrollbar or scale thumb"),
+							     P_("Slider Width"),
+							     P_("Width of scrollbar or scale thumb"),
 							     0,
 							     G_MAXINT,
 							     14,
 							     G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("trough_border",
-                                                             _("Trough Border"),
-                                                             _("Spacing between thumb/steppers and outer trough bevel"),
+                                                             P_("Trough Border"),
+                                                             P_("Spacing between thumb/steppers and outer trough bevel"),
                                                              0,
                                                              G_MAXINT,
                                                              1,
                                                              G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("stepper_size",
-							     _("Stepper Size"),
-							     _("Length of step buttons at ends"),
+							     P_("Stepper Size"),
+							     P_("Length of step buttons at ends"),
 							     0,
 							     G_MAXINT,
 							     14,
 							     G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("stepper_spacing",
-							     _("Stepper Spacing"),
-							     _("Spacing between step buttons and thumb"),
+							     P_("Stepper Spacing"),
+							     P_("Spacing between step buttons and thumb"),
                                                              0,
 							     G_MAXINT,
 							     0,
 							     G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("arrow_displacement_x",
-							     _("Arrow X Displacement"),
-							     _("How far in the x direction to move the arrow when the button is depressed"),
+							     P_("Arrow X Displacement"),
+							     P_("How far in the x direction to move the arrow when the button is depressed"),
 							     G_MININT,
 							     G_MAXINT,
 							     0,
 							     G_PARAM_READABLE));
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("arrow_displacement_y",
-							     _("Arrow Y Displacement"),
-							     _("How far in the y direction to move the arrow when the button is depressed"),
+							     P_("Arrow Y Displacement"),
+							     P_("How far in the y direction to move the arrow when the button is depressed"),
 							     G_MININT,
 							     G_MAXINT,
 							     0,
@@ -793,8 +802,7 @@ gtk_range_realize (GtkWidget *widget)
   attributes.height = widget->allocation.height;
   attributes.wclass = GDK_INPUT_ONLY;
   attributes.event_mask = gtk_widget_get_events (widget);
-  attributes.event_mask |= (GDK_EXPOSURE_MASK |
-			    GDK_BUTTON_PRESS_MASK |
+  attributes.event_mask |= (GDK_BUTTON_PRESS_MASK |
 			    GDK_BUTTON_RELEASE_MASK |
 			    GDK_ENTER_NOTIFY_MASK |
 			    GDK_LEAVE_NOTIFY_MASK |
@@ -1079,7 +1087,10 @@ range_grab_remove (GtkRange *range)
 
 static GtkScrollType
 range_get_scroll_for_grab (GtkRange      *range)
-{  
+{ 
+  gboolean invert;
+
+  invert = should_invert (range);
   switch (range->layout->grab_location)
     {
       /* Backward stepper */
@@ -1088,13 +1099,13 @@ range_get_scroll_for_grab (GtkRange      *range)
       switch (range->layout->grab_button)
         {
         case 1:
-          return GTK_SCROLL_STEP_BACKWARD;
+          return invert ? GTK_SCROLL_STEP_FORWARD : GTK_SCROLL_STEP_BACKWARD;
           break;
         case 2:
-          return GTK_SCROLL_PAGE_BACKWARD;
+          return invert ? GTK_SCROLL_PAGE_FORWARD : GTK_SCROLL_PAGE_BACKWARD;
           break;
         case 3:
-          return GTK_SCROLL_START;
+          return invert ? GTK_SCROLL_END : GTK_SCROLL_START;
           break;
         }
       break;
@@ -1105,13 +1116,13 @@ range_get_scroll_for_grab (GtkRange      *range)
       switch (range->layout->grab_button)
         {
         case 1:
-          return GTK_SCROLL_STEP_FORWARD;
+          return invert ? GTK_SCROLL_STEP_BACKWARD : GTK_SCROLL_STEP_FORWARD;
           break;
         case 2:
-          return GTK_SCROLL_PAGE_FORWARD;
+          return invert ? GTK_SCROLL_PAGE_BACKWARD : GTK_SCROLL_PAGE_FORWARD;
           break;
         case 3:
-          return GTK_SCROLL_END;
+          return invert ? GTK_SCROLL_START : GTK_SCROLL_END;
           break;
        }
       break;
@@ -1311,6 +1322,19 @@ update_slider_position (GtkRange *range,
   gtk_range_internal_set_value (range, new_value);
 }
 
+static void stop_scrolling (GtkRange *range)
+{
+  range_grab_remove (range);
+  gtk_range_remove_step_timer (range);
+  /* Flush any pending discontinuous/delayed updates */
+  gtk_range_update_value (range);
+  
+  /* Just be lazy about this, if we scrolled it will all redraw anyway,
+   * so no point optimizing the button deactivate case
+   */
+  gtk_widget_queue_draw (GTK_WIDGET (range));
+}
+
 static gint
 gtk_range_button_release (GtkWidget      *widget,
 			  GdkEventButton *event)
@@ -1332,23 +1356,10 @@ gtk_range_button_release (GtkWidget      *widget,
   
   if (range->layout->grab_button == event->button)
     {
-      MouseLocation grab_location;
-
-      grab_location = range->layout->grab_location;
-
-      range_grab_remove (range);
-      gtk_range_remove_step_timer (range);
-      
-      if (grab_location == MOUSE_SLIDER)
+      if (range->layout->grab_location == MOUSE_SLIDER)
         update_slider_position (range, range->layout->mouse_x, range->layout->mouse_y);
 
-      /* Flush any pending discontinuous/delayed updates */
-      gtk_range_update_value (range);
-      
-      /* Just be lazy about this, if we scrolled it will all redraw anyway,
-       * so no point optimizing the button deactivate case
-       */
-      gtk_widget_queue_draw (widget);
+      stop_scrolling (range);
       
       return TRUE;
     }
@@ -1356,6 +1367,39 @@ gtk_range_button_release (GtkWidget      *widget,
   return FALSE;
 }
 
+/**
+ * _gtk_range_get_wheel_delta:
+ * @range: a #GtkRange
+ * @direction: A #GdkScrollDirection
+ * 
+ * Returns a good step value for the mouse wheel.
+ * 
+ * Return value: A good step value for the mouse wheel. 
+ * 
+ * Since: 2.4
+ **/
+gdouble
+_gtk_range_get_wheel_delta (GtkRange           *range,
+			    GdkScrollDirection  direction)
+{
+  GtkAdjustment *adj = range->adjustment;
+  gdouble delta;
+
+  if (GTK_IS_SCROLLBAR (range))
+    delta = pow (adj->page_size, 2.0 / 3.0);
+  else
+    delta = adj->step_increment * 2;
+  
+  if (direction == GDK_SCROLL_UP ||
+      direction == GDK_SCROLL_LEFT)
+    delta = - delta;
+  
+  if (range->inverted)
+    delta = - delta;
+
+  return delta;
+}
+      
 static gint
 gtk_range_scroll_event (GtkWidget      *widget,
 			GdkEventScroll *event)
@@ -1365,19 +1409,14 @@ gtk_range_scroll_event (GtkWidget      *widget,
   if (GTK_WIDGET_REALIZED (range))
     {
       GtkAdjustment *adj = GTK_RANGE (range)->adjustment;
-      gdouble increment = ((event->direction == GDK_SCROLL_UP ||
-			    event->direction == GDK_SCROLL_LEFT) ? 
-			   -adj->page_increment / 2: 
-			   adj->page_increment / 2);
-      
-      if (range->inverted)
-	increment = -increment;
-	  
-      gtk_range_internal_set_value (range, adj->value + increment);
+      gdouble delta;
 
+      delta = _gtk_range_get_wheel_delta (range, event->direction);
+      gtk_range_internal_set_value (range, adj->value + delta);
+      
       /* Policy DELAYED makes sense with scroll events,
        * but DISCONTINUOUS doesn't, so we update immediately
-       * for DISCONTINOUS
+       * for DISCONTINUOUS
        */
       if (range->update_policy == GTK_UPDATE_DISCONTINUOUS)
         gtk_range_update_value (range);
@@ -1438,6 +1477,22 @@ gtk_range_leave_notify (GtkWidget        *widget,
     gtk_widget_queue_draw (widget);
   
   return TRUE;
+}
+
+static void
+gtk_range_grab_notify (GtkWidget *widget,
+		       gboolean   was_grabbed)
+{
+  if (!was_grabbed)
+    stop_scrolling (GTK_RANGE (widget));
+}
+
+static void
+gtk_range_state_changed (GtkWidget    *widget,
+			 GtkStateType  previous_state)
+{
+  if (!GTK_WIDGET_IS_SENSITIVE (widget)) 
+    stop_scrolling (GTK_RANGE (widget));
 }
 
 static void
@@ -1508,7 +1563,6 @@ step_forward (GtkRange *range)
   gdouble newval;
 
   newval = range->adjustment->value + range->adjustment->step_increment;
-
   gtk_range_internal_set_value (range, newval);
 }
 
@@ -1528,7 +1582,21 @@ page_forward (GtkRange *range)
   gdouble newval;
 
   newval = range->adjustment->value + range->adjustment->page_increment;
+  gtk_range_internal_set_value (range, newval);
+}
 
+static void
+scroll_begin (GtkRange *range)
+{
+  gtk_range_internal_set_value (range, range->adjustment->lower);
+}
+
+static void
+scroll_end (GtkRange *range)
+{
+  gdouble newval;
+
+  newval = range->adjustment->upper - range->adjustment->page_size;
   gtk_range_internal_set_value (range, newval);
 }
 
@@ -1611,13 +1679,11 @@ gtk_range_scroll (GtkRange     *range,
       break;
 
     case GTK_SCROLL_START:
-      gtk_range_internal_set_value (range,
-                                    range->adjustment->lower);
+      scroll_begin (range);
       break;
 
     case GTK_SCROLL_END:
-      gtk_range_internal_set_value (range,
-                                    range->adjustment->upper - range->adjustment->page_size);
+      scroll_end (range);
       break;
 
     case GTK_SCROLL_JUMP:
@@ -1637,7 +1703,7 @@ gtk_range_move_slider (GtkRange     *range,
 
   /* Policy DELAYED makes sense with key events,
    * but DISCONTINUOUS doesn't, so we update immediately
-   * for DISCONTINOUS
+   * for DISCONTINUOUS
    */
   if (range->update_policy == GTK_UPDATE_DISCONTINUOUS)
     gtk_range_update_value (range);

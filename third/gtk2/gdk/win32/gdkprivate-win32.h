@@ -60,7 +60,7 @@
 #endif
 
 /* Some virtual keycodes are missing */
-#ifndef VM_OEM_PLUS
+#ifndef VK_OEM_PLUS
 #define VK_OEM_PLUS 0xBB
 #endif
 
@@ -337,13 +337,6 @@ GdkImage *_gdk_win32_copy_to_image      (GdkDrawable *drawable,
 					 gint         width,
 					 gint         height);
 
-GdkImage *_gdk_win32_setup_pixmap_image (GdkPixmap   *pixmap,
-					 GdkDrawable *drawable,
-					 gint         width,
-					 gint         height,
-					 gint         depth,
-					 guchar      *bits);
-
 void      _gdk_win32_blit               (gboolean              use_fg_bg,
 					 GdkDrawableImplWin32 *drawable,
 					 GdkGC       	       *gc,
@@ -364,23 +357,15 @@ HRGN	  _gdk_win32_gdkregion_to_hrgn  (GdkRegion   *region,
 					 gint         x_origin,
 					 gint         y_origin);
 
-void    _gdk_selection_property_store (GdkWindow *owner,
-                                       GdkAtom    type,
-                                       gint       format,
-                                       guchar    *data,
-                                       gint       length);
+void	_gdk_win32_adjust_client_rect   (GdkWindow *window,
+					 RECT      *RECT);
+
+void	_gdk_win32_get_adjusted_client_rect (GdkWindow *window,
+					     RECT      *RECT);
 
 void    _gdk_selection_property_delete (GdkWindow *);
 
 void    _gdk_dropfiles_store (gchar *data);
-
-gint    _gdk_utf8_to_ucs2         (wchar_t     *dest,
-                                   const gchar *src,
-                                   gint         src_len,
-                                   gint         dest_max);
-
-gchar  *_gdk_ucs2_to_utf8         (const wchar_t *src,
-				   gint           src_len);
 
 void    _gdk_wchar_text_handle    (GdkFont       *font,
 				   const wchar_t *wcstr,
@@ -460,6 +445,16 @@ extern GdkWindow        *_gdk_parent_root;
 extern GdkDisplay       *_gdk_display;
 extern GdkScreen        *_gdk_screen;
 
+extern gint		 _gdk_num_monitors;
+extern GdkRectangle     *_gdk_monitors;
+
+/* Offsets to add to Windows coordinates (which are relative to the
+ * primary monitor's origin, and thus might be negative for monitors
+ * to the left and/or above the primary monitor) to get GDK
+ * coordinates, which should be non-negative on the whole screen.
+ */
+extern gint		 _gdk_offset_x, _gdk_offset_y;
+
 extern HDC		 _gdk_display_hdc;
 extern HINSTANCE	 _gdk_dll_hinstance;
 extern HINSTANCE	 _gdk_app_hmodule;
@@ -468,9 +463,11 @@ extern HINSTANCE	 _gdk_app_hmodule;
  * from a single thread anyway.
  */
 extern HKL		 _gdk_input_locale;
+extern gboolean		 _gdk_input_locale_is_ime;
 extern UINT		 _gdk_input_codepage;
 
 extern guint		 _gdk_keymap_serial;
+extern gboolean		 _gdk_keyboard_has_altgr;
 
 /* Registered clipboard formats */
 extern WORD		 _cf_rtf;
@@ -480,6 +477,7 @@ extern WORD		 _cf_utf8_string;
 extern GdkAtom           _utf8_string;
 extern GdkAtom		 _compound_text;
 extern GdkAtom		 _text_uri_list;
+extern GdkAtom		 _targets;
 
 /* DND selections */
 extern GdkAtom           _local_dnd;
@@ -487,6 +485,8 @@ extern GdkAtom		 _gdk_win32_dropfiles;
 extern GdkAtom		 _gdk_ole2_dnd;
 
 extern GdkAtom		 _gdk_selection_property;
+
+extern GdkAtom		 _wm_transient_for;
 
 extern DWORD		 _windows_version;
 #define IS_WIN_NT()      (_windows_version < 0x80000000)

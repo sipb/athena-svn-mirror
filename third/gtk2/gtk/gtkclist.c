@@ -28,9 +28,11 @@
 #undef GDK_DISABLE_DEPRECATED
 #undef GTK_DISABLE_DEPRECATED
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
+
 #include "gtkmain.h"
 #include "gtkclist.h"
 #include "gtkbindings.h"
@@ -2498,7 +2500,7 @@ set_cell_contents (GtkCList    *clist,
       old_mask = GTK_CELL_PIXTEXT (clist_row->cell[column])->mask;
       break;
     case GTK_CELL_WIDGET:
-      /* unimplimented */
+      /* unimplemented */
       break;
     default:
       break;
@@ -3215,9 +3217,9 @@ gtk_clist_row_is_visible (GtkCList *clist,
 }
 
 void
-gtk_clist_set_foreground (GtkCList *clist,
-			  gint      row,
-			  GdkColor *color)
+gtk_clist_set_foreground (GtkCList       *clist,
+			  gint            row,
+			  const GdkColor *color)
 {
   GtkCListRow *clist_row;
 
@@ -3244,9 +3246,9 @@ gtk_clist_set_foreground (GtkCList *clist,
 }
 
 void
-gtk_clist_set_background (GtkCList *clist,
-			  gint      row,
-			  GdkColor *color)
+gtk_clist_set_background (GtkCList       *clist,
+			  gint            row,
+			  const GdkColor *color)
 {
   GtkCListRow *clist_row;
 
@@ -5287,8 +5289,8 @@ gtk_clist_motion (GtkWidget      *widget,
       if (clist->htimer)
 	return FALSE;
 
-      clist->htimer = gtk_timeout_add
-	(SCROLL_TIME, (GtkFunction) horizontal_timeout, clist);
+      clist->htimer = g_timeout_add
+	(SCROLL_TIME, (GSourceFunc) horizontal_timeout, clist);
 
       if (!((x < 0 && clist->hadjustment->value == 0) ||
 	    (x >= clist->clist_window_width &&
@@ -5319,8 +5321,8 @@ gtk_clist_motion (GtkWidget      *widget,
       if (clist->vtimer)
 	return FALSE;
 
-      clist->vtimer = gtk_timeout_add (SCROLL_TIME,
-				       (GtkFunction) vertical_timeout, clist);
+      clist->vtimer = g_timeout_add (SCROLL_TIME,
+				     (GSourceFunc) vertical_timeout, clist);
 
       if (clist->drag_button &&
 	  ((y < 0 && clist->focus_row == 0) ||
@@ -7101,13 +7103,13 @@ remove_grab (GtkCList *clist)
 
   if (clist->htimer)
     {
-      gtk_timeout_remove (clist->htimer);
+      g_source_remove (clist->htimer);
       clist->htimer = 0;
     }
 
   if (clist->vtimer)
     {
-      gtk_timeout_remove (clist->vtimer);
+      g_source_remove (clist->vtimer);
       clist->vtimer = 0;
     }
 }

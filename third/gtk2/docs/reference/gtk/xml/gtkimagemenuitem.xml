@@ -17,7 +17,7 @@
 
 
 struct      <link linkend="GtkImageMenuItem-struct">GtkImageMenuItem</link>;
-void        <link linkend="gtk-image-menu-item-set-image">gtk_image_menu_item_set_image</link>   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item,
+<link linkend="void">void</link>        <link linkend="gtk-image-menu-item-set-image">gtk_image_menu_item_set_image</link>   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item,
                                              <link linkend="GtkWidget">GtkWidget</link> *image);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-image-menu-item-get-image">gtk_image_menu_item_get_image</link>   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-image-menu-item-new">gtk_image_menu_item_new</link>         (void);
@@ -49,11 +49,14 @@ void        <link linkend="gtk-image-menu-item-set-image">gtk_image_menu_item_se
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkImageMenuItem implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkImageMenuItem implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -61,7 +64,7 @@ GtkImageMenuItem implements <link linkend="AtkImplementorIface">AtkImplementorIf
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkImageMenuItem--image">image</link>&quot;                <link linkend="GtkWidget">GtkWidget</link>            : Read / Write
+  &quot;<link linkend="GtkImageMenuItem--image">image</link>&quot;                <link linkend="GtkWidget">GtkWidget</link>             : Read / Write
 </synopsis>
 </refsect1>
 
@@ -82,13 +85,13 @@ fill in the text label.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkImageMenuItem-struct"/>struct GtkImageMenuItem</title>
-<programlisting>struct GtkImageMenuItem;</programlisting>
+<indexterm><primary>GtkImageMenuItem</primary></indexterm><programlisting>struct GtkImageMenuItem;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-image-menu-item-set-image"/>gtk_image_menu_item_set_image ()</title>
-<programlisting>void        gtk_image_menu_item_set_image   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item,
+<indexterm><primary>gtk_image_menu_item_set_image</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_image_menu_item_set_image   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item,
                                              <link linkend="GtkWidget">GtkWidget</link> *image);</programlisting>
 <para>
 Sets the image of <parameter>image_menu_item</parameter> to the given widget.</para>
@@ -96,7 +99,7 @@ Sets the image of <parameter>image_menu_item</parameter> to the given widget.</p
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>image_menu_item</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkImageMenuItem">GtkImageMenuItem</link>.
+<listitem><simpara> a <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>image</parameter>&nbsp;:</term>
 <listitem><simpara> a widget to set as the image for the menu item.
@@ -104,46 +107,46 @@ Sets the image of <parameter>image_menu_item</parameter> to the given widget.</p
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-image-menu-item-get-image"/>gtk_image_menu_item_get_image ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_get_image   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item);</programlisting>
+<indexterm><primary>gtk_image_menu_item_get_image</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_get_image   (<link linkend="GtkImageMenuItem">GtkImageMenuItem</link> *image_menu_item);</programlisting>
 <para>
 Gets the widget that is currently set as the image of <parameter>image_menu_item</parameter>.
-See <link linkend="gtk-image-menu-item-set-image">gtk_image_menu_item_set_image</link>().</para>
+See <link linkend="gtk-image-menu-item-set-image"><function>gtk_image_menu_item_set_image()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>image_menu_item</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkImageMenuItem">GtkImageMenuItem</link>.
+<listitem><simpara> a <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the widget set as image of <parameter>image_menu_item</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-image-menu-item-new"/>gtk_image_menu_item_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new         (void);</programlisting>
+<indexterm><primary>gtk_image_menu_item_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new         (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link> with an empty label.</para>
+Creates a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link> with an empty label.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-image-menu-item-new-from-stock"/>gtk_image_menu_item_new_from_stock ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new_from_stock
+<indexterm><primary>gtk_image_menu_item_new_from_stock</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new_from_stock
                                             (const <link linkend="gchar">gchar</link> *stock_id,
                                              <link linkend="GtkAccelGroup">GtkAccelGroup</link> *accel_group);</programlisting>
 <para>
-Creates a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link> containing the image and text from a 
-stock item. Some stock ids have preprocessor macros like <link linkend="GTK-STOCK-OK-CAPS">GTK_STOCK_OK</link> 
-and <link linkend="GTK-STOCK-APPLY-CAPS">GTK_STOCK_APPLY</link>.
+Creates a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link> containing the image and text from a 
+stock item. Some stock ids have preprocessor macros like <link linkend="GTK-STOCK-OK-CAPS"><type>GTK_STOCK_OK</type></link> 
+and <link linkend="GTK-STOCK-APPLY-CAPS"><type>GTK_STOCK_APPLY</type></link>.
 </para>
 <para>
 If you want this menu item to have changeable accelerators, then pass in
-<literal>NULL</literal> for accel_group. Next call <link linkend="gtk-menu-item-set-accel-path">gtk_menu_item_set_accel_path</link>() with an
-appropriate path for the menu item, use <link linkend="gtk-stock-lookup">gtk_stock_lookup</link>() to look up the
+<literal>NULL</literal> for accel_group. Next call <link linkend="gtk-menu-item-set-accel-path"><function>gtk_menu_item_set_accel_path()</function></link> with an
+appropriate path for the menu item, use <link linkend="gtk-stock-lookup"><function>gtk_stock_lookup()</function></link> to look up the
 standard accelerator for the stock item, and if one is found, call
-<link linkend="gtk-accel-map-add-entry">gtk_accel_map_add_entry</link>() to register it.</para>
+<link linkend="gtk-accel-map-add-entry"><function>gtk_accel_map_add_entry()</function></link> to register it.</para>
 <para>
 
 </para><variablelist role="params">
@@ -151,34 +154,34 @@ standard accelerator for the stock item, and if one is found, call
 <listitem><simpara> the name of the stock item.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>accel_group</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkAccelGroup">GtkAccelGroup</link> to add the menu items accelerator to,
+<listitem><simpara> the <link linkend="GtkAccelGroup"><type>GtkAccelGroup</type></link> to add the menu items accelerator to,
   or <literal>NULL</literal>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-image-menu-item-new-with-label"/>gtk_image_menu_item_new_with_label ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new_with_label
+<indexterm><primary>gtk_image_menu_item_new_with_label</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new_with_label
                                             (const <link linkend="gchar">gchar</link> *label);</programlisting>
 <para>
-Creates a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link> containing a label.</para>
+Creates a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link> containing a label.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>label</parameter>&nbsp;:</term>
 <listitem><simpara> the text of the menu item.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-image-menu-item-new-with-mnemonic"/>gtk_image_menu_item_new_with_mnemonic ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new_with_mnemonic
+<indexterm><primary>gtk_image_menu_item_new_with_mnemonic</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_image_menu_item_new_with_mnemonic
                                             (const <link linkend="gchar">gchar</link> *label);</programlisting>
 <para>
-Creates a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link> containing a label. The label
-will be created using <link linkend="gtk-label-new-with-mnemonic">gtk_label_new_with_mnemonic</link>(), so underscores
+Creates a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link> containing a label. The label
+will be created using <link linkend="gtk-label-new-with-mnemonic"><function>gtk_label_new_with_mnemonic()</function></link>, so underscores
 in <parameter>label</parameter> indicate the mnemonic for the menu item.</para>
 <para>
 
@@ -187,22 +190,17 @@ in <parameter>label</parameter> indicate the mnemonic for the menu item.</para>
 <listitem><simpara> the text of the menu item, with an underscore in front of the
         mnemonic character
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem">GtkImageMenuItem</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkImageMenuItem"><type>GtkImageMenuItem</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkImageMenuItem--image"/>&quot;<literal>image</literal>&quot; (<link linkend="GtkWidget">GtkWidget</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkImageMenuItem--image"/>The &quot;<literal>image</literal>&quot; property</title>
+<programlisting>  &quot;image&quot;                <link linkend="GtkWidget">GtkWidget</link>             : Read / Write</programlisting>
+<para>Child widget to appear next to the menu text.</para></refsect2>
 
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <glib/gprintf.h>
 #include <stdlib.h>
 #include <string.h>
@@ -576,6 +577,7 @@ static struct gdk_key {
   { 0x0007a2, "Greek_EPSILONaccent" },
   { 0x0007a3, "Greek_ETAaccent" },
   { 0x0007a4, "Greek_IOTAaccent" },
+  { 0x0007a5, "Greek_IOTAdieresis" },
   { 0x0007a5, "Greek_IOTAdiaeresis" },
   { 0x0007a7, "Greek_OMICRONaccent" },
   { 0x0007a8, "Greek_UPSILONaccent" },

@@ -21,6 +21,7 @@
  * Authors: Alexander Larsson <alexl@redhat.com>
  */
 
+#include <config.h>
 #include "gtkprivate.h"
 #include "gtkwindow.h"
 #include "gtkmain.h"
@@ -75,14 +76,14 @@ struct _GtkWindowDecoration
 
   GtkWindowResizeType resize;
   
-  gboolean moving : 1;
-  gboolean closing : 1;
-  gboolean maximizing : 1;
-  gboolean maximized : 1;
-  gboolean maximizable : 1;
-  gboolean decorated : 1;
-  gboolean real_inner_move : 1;
-  gboolean focused : 1;
+  guint moving : 1;
+  guint closing : 1;
+  guint maximizing : 1;
+  guint maximized : 1;
+  guint maximizable : 1;
+  guint decorated : 1;
+  guint real_inner_move : 1;
+  guint focused : 1;
 };
 
 #define DECORATION_BORDER_TOP 15

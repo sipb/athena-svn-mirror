@@ -5,8 +5,7 @@
 >Radio Buttons</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-RADIOBUTTONS">Radio Buttons</H1
+NAME="SEC-RADIOBUTTONS"
+>Radio Buttons</A
+></H1
 ><P
 >Radio buttons are similar to check buttons except they are grouped so
 that only one may be selected/depressed at a time. This is good for
@@ -208,9 +209,9 @@ CLASS="PROGRAMLISTING"
 >&#13;#include &#60;glib.h&#62;
 #include &#60;gtk/gtk.h&#62;
 
-gint close_application( GtkWidget *widget,
-                        GdkEvent  *event,
-                        gpointer   data )
+static gboolean close_application( GtkWidget *widget,
+                                   GdkEvent  *event,
+                                   gpointer   data )
 {
   gtk_main_quit ();
   return FALSE;

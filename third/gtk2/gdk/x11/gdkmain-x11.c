@@ -24,7 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <glib/gprintf.h>
 #include <stdlib.h>
@@ -48,8 +48,6 @@
 #include "gdkinternals.h"
 #include "gdkregion-generic.h"
 #include "gdkinputprivate.h"
-
-#include <pango/pangox.h>
 
 typedef struct _GdkPredicate  GdkPredicate;
 typedef struct _GdkErrorTrap  GdkErrorTrap;

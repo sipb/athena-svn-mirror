@@ -52,6 +52,36 @@ This is a read-only struct; no members should be modified directly.
 </para>
 
 
+<!-- ##### ARG GtkButtonBox:layout-style ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkButtonBox:secondary ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkButtonBox:child-internal-pad-x ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkButtonBox:child-internal-pad-y ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkButtonBox:child-min-height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkButtonBox:child-min-width ##### -->
+<para>
+
+</para>
+
 <!-- ##### MACRO GTK_BUTTONBOX_DEFAULT ##### -->
 <para>
 Used internally only.
@@ -102,6 +132,16 @@ Gets the default number of pixels that pad the buttons in a given button box.
 @ipad_y: the vertical padding used by buttons in @widget.
 @Deprecated: Use the style properties
 <literal>"child-internal-pad-x/-y"</literal> instead.
+
+
+<!-- ##### FUNCTION gtk_button_box_get_child_secondary ##### -->
+<para>
+
+</para>
+
+@widget: 
+@child: 
+@Returns: 
 
 
 <!-- ##### MACRO gtk_button_box_set_spacing ##### -->
@@ -159,34 +199,4 @@ box.
 @child: 
 @is_secondary: 
 
-
-<!-- ##### ARG GtkButtonBox:layout-style ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkButtonBox:secondary ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkButtonBox:child-internal-pad-x ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkButtonBox:child-internal-pad-y ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkButtonBox:child-min-height ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkButtonBox:child-min-width ##### -->
-<para>
-
-</para>
 

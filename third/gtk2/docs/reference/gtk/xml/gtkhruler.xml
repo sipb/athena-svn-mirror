@@ -36,11 +36,14 @@ struct      <link linkend="GtkHRuler-struct">GtkHRuler</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkHRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkHRuler implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -49,8 +52,9 @@ GtkHRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</li
 
 <refsect1>
 <title>Description</title>
+<note>
 <para>
- NOTE this widget is considered too specialized/little-used for
+ This widget is considered too specialized/little-used for
  GTK+, and will in the future be moved to some other package.  If
  your application needs this widget, feel free to use it, as the
  widget does work and is useful in some applications; it's just not
@@ -58,6 +62,7 @@ GtkHRuler implements <link linkend="AtkImplementorIface">AtkImplementorIface</li
  the widget, and it will eventually move out of the GTK+
  distribution.
 </para>
+</note>
 <para>
 The HRuler widget is a widget arranged horizontally creating a ruler that is
 utilized around other widgets such as a text widget. The ruler is used to show
@@ -72,18 +77,18 @@ rulers.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkHRuler-struct"/>struct GtkHRuler</title>
-<programlisting>struct GtkHRuler;</programlisting>
+<indexterm><primary>GtkHRuler</primary></indexterm><programlisting>struct GtkHRuler;</programlisting>
 <para>
-The <link linkend="GtkHRuler">GtkHRuler</link> struct contains private data and should be accessed
+The <link linkend="GtkHRuler"><type>GtkHRuler</type></link> struct contains private data and should be accessed
 with the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-hruler-new"/>gtk_hruler_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hruler_new                  (void);</programlisting>
+<indexterm><primary>gtk_hruler_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hruler_new                  (void);</programlisting>
 <para>
 Creates a new horizontal ruler.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkHRuler">GtkHRuler</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkHRuler"><type>GtkHRuler</type></link>.
 
 
 </simpara></listitem></varlistentry>

@@ -35,8 +35,8 @@ extern "C" {
 #endif /* __cplusplus */
 
 typedef enum {
-  GTK_TEXT_SEARCH_VISIBLE_ONLY,
-  GTK_TEXT_SEARCH_TEXT_ONLY
+  GTK_TEXT_SEARCH_VISIBLE_ONLY = 1 << 0,
+  GTK_TEXT_SEARCH_TEXT_ONLY    = 1 << 1
   /* Possible future plans: SEARCH_CASE_INSENSITIVE, SEARCH_REGEXP */
 } GtkTextSearchFlags;
 
@@ -191,6 +191,13 @@ gboolean gtk_text_iter_forward_word_ends    (GtkTextIter *iter,
 gboolean gtk_text_iter_backward_word_starts (GtkTextIter *iter,
                                              gint         count);
 
+gboolean gtk_text_iter_forward_visible_word_end     (GtkTextIter *iter);
+gboolean gtk_text_iter_backward_visible_word_start  (GtkTextIter *iter);
+gboolean gtk_text_iter_forward_visible_word_ends    (GtkTextIter *iter,
+                                             gint         count);
+gboolean gtk_text_iter_backward_visible_word_starts (GtkTextIter *iter,
+                                             gint         count);
+
 gboolean gtk_text_iter_forward_sentence_end     (GtkTextIter *iter);
 gboolean gtk_text_iter_backward_sentence_start  (GtkTextIter *iter);
 gboolean gtk_text_iter_forward_sentence_ends    (GtkTextIter *iter,
@@ -208,6 +215,13 @@ gboolean gtk_text_iter_forward_cursor_positions  (GtkTextIter *iter,
                                                   gint         count);
 gboolean gtk_text_iter_backward_cursor_positions (GtkTextIter *iter,
                                                   gint         count);
+
+gboolean gtk_text_iter_forward_visible_cursor_position   (GtkTextIter *iter);
+gboolean gtk_text_iter_backward_visible_cursor_position  (GtkTextIter *iter);
+gboolean gtk_text_iter_forward_visible_cursor_positions  (GtkTextIter *iter,
+                                                          gint         count);
+gboolean gtk_text_iter_backward_visible_cursor_positions (GtkTextIter *iter,
+                                                          gint         count);
 
 
 void     gtk_text_iter_set_offset         (GtkTextIter *iter,

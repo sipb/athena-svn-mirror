@@ -17,6 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include <config.h>
 #include <math.h>
 #include <stdio.h>
 #include <gtk/gtkmain.h>
@@ -45,7 +46,7 @@ static gint gtk_dial_button_release           (GtkWidget        *widget,
 						GdkEventButton   *event);
 static gint gtk_dial_motion_notify            (GtkWidget        *widget,
 						GdkEventMotion   *event);
-static gint gtk_dial_timer                    (GtkDial         *dial);
+static gboolean gtk_dial_timer                (GtkDial         *dial);
 
 static void gtk_dial_update_mouse             (GtkDial *dial, gint x, gint y);
 static void gtk_dial_update                   (GtkDial *dial);
@@ -146,7 +147,7 @@ gtk_dial_destroy (GtkObject *object)
 
   dial = GTK_DIAL (object);
 
-  if (dial->adjustment) 
+  if (dial->adjustment)
     {
       g_object_unref (GTK_OBJECT (dial->adjustment));
       dial->adjustment = NULL;
@@ -353,7 +354,7 @@ gtk_dial_expose (GtkWidget      *widget,
   if ((upper - lower) == 0)
     return FALSE;
 
-  increment = (100*G_PI) / (dial->radius*dial->radius);
+  increment = (100*M_PI) / (dial->radius*dial->radius);
 
   inc = (upper - lower);
 
@@ -363,7 +364,7 @@ gtk_dial_expose (GtkWidget      *widget,
 
   for (i = 0; i <= inc; i++)
     {
-      theta = ((gfloat)i*G_PI / (18*inc/24.) - G_PI/6.);
+      theta = ((gfloat)i*M_PI / (18*inc/24.) - M_PI/6.);
 
       if ((theta - last) < (increment))
 	continue;     
@@ -476,7 +477,7 @@ gtk_dial_button_release (GtkWidget      *widget,
       dial->button = 0;
 
       if (dial->policy == GTK_UPDATE_DELAYED)
-	gtk_timeout_remove (dial->timer);
+	g_source_remove (dial->timer);
       
       if ((dial->policy != GTK_UPDATE_CONTINUOUS) &&
 	  (dial->old_value != dial->adjustment->value))
@@ -531,7 +532,7 @@ gtk_dial_motion_notify (GtkWidget      *widget,
   return FALSE;
 }
 
-static gint
+static gboolean
 gtk_dial_timer (GtkDial *dial)
 {
   g_return_val_if_fail (dial != NULL, FALSE);
@@ -558,17 +559,17 @@ gtk_dial_update_mouse (GtkDial *dial, gint x, gint y)
   old_value = dial->adjustment->value;
   dial->angle = atan2(yc-y, x-xc);
 
-  if (dial->angle < -G_PI/2.)
-    dial->angle += 2*G_PI;
+  if (dial->angle < -M_PI/2.)
+    dial->angle += 2*M_PI;
 
-  if (dial->angle < -G_PI/6)
-    dial->angle = -G_PI/6;
+  if (dial->angle < -M_PI/6)
+    dial->angle = -M_PI/6;
 
-  if (dial->angle > 7.*G_PI/6.)
-    dial->angle = 7.*G_PI/6.;
+  if (dial->angle > 7.*M_PI/6.)
+    dial->angle = 7.*M_PI/6.;
 
-  dial->adjustment->value = dial->adjustment->lower + (7.*G_PI/6 - dial->angle) *
-    (dial->adjustment->upper - dial->adjustment->lower) / (4.*G_PI/3.);
+  dial->adjustment->value = dial->adjustment->lower + (7.*M_PI/6 - dial->angle) *
+    (dial->adjustment->upper - dial->adjustment->lower) / (4.*M_PI/3.);
 
   if (dial->adjustment->value != old_value)
     {
@@ -583,11 +584,11 @@ gtk_dial_update_mouse (GtkDial *dial, gint x, gint y)
 	  if (dial->policy == GTK_UPDATE_DELAYED)
 	    {
 	      if (dial->timer)
-		gtk_timeout_remove (dial->timer);
+		g_source_remove (dial->timer);
 
-	      dial->timer = gtk_timeout_add (SCROLL_DELAY_LENGTH,
-					     (GtkFunction) gtk_dial_timer,
-					     (gpointer) dial);
+	      dial->timer = g_timeout_add (SCROLL_DELAY_LENGTH,
+					   (GtkFunction) gtk_dial_timer,
+					   (gpointer) dial);
 	    }
 	}
     }
@@ -615,7 +616,7 @@ gtk_dial_update (GtkDial *dial)
       g_signal_emit_by_name (GTK_OBJECT (dial->adjustment), "value_changed");
     }
 
-  dial->angle = 7.*G_PI/6. - (new_value - dial->adjustment->lower) * 4.*G_PI/3. /
+  dial->angle = 7.*M_PI/6. - (new_value - dial->adjustment->lower) * 4.*M_PI/3. /
     (dial->adjustment->upper - dial->adjustment->lower);
 
   gtk_widget_queue_draw (GTK_WIDGET (dial));

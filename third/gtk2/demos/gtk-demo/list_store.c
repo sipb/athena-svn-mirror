@@ -7,6 +7,7 @@
  *
  */
 
+#include <config.h>
 #include <gtk/gtk.h>
 
 static GtkWidget *window = NULL;
@@ -155,7 +156,7 @@ add_columns (GtkTreeView *treeview)
 }
 
 GtkWidget *
-do_list_store (void)
+do_list_store (GtkWidget *do_widget)
 {
   if (!window)
     {
@@ -167,6 +168,8 @@ do_list_store (void)
 
       /* create window, etc */
       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_window_set_screen (GTK_WINDOW (window),
+			     gtk_widget_get_screen (do_widget));
       gtk_window_set_title (GTK_WINDOW (window), "GtkListStore demo");
 
       g_signal_connect (window, "destroy",

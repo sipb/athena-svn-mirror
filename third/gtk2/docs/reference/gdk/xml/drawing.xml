@@ -18,8 +18,8 @@
 
 struct      <link linkend="GdkDrawable-struct">GdkDrawable</link>;
 <link linkend="GdkDrawable">GdkDrawable</link>* <link linkend="gdk-drawable-ref">gdk_drawable_ref</link>               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
-void        <link linkend="gdk-drawable-unref">gdk_drawable_unref</link>              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
-void        <link linkend="gdk-drawable-set-data">gdk_drawable_set_data</link>           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-drawable-unref">gdk_drawable_unref</link>              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
+<link linkend="void">void</link>        <link linkend="gdk-drawable-set-data">gdk_drawable_set_data</link>           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              const <link linkend="gchar">gchar</link> *key,
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_func);
@@ -28,35 +28,35 @@ void        <link linkend="gdk-drawable-set-data">gdk_drawable_set_data</link>  
 <link linkend="GdkDisplay">GdkDisplay</link>* <link linkend="gdk-drawable-get-display">gdk_drawable_get_display</link>        (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
 <link linkend="GdkScreen">GdkScreen</link>*  <link linkend="gdk-drawable-get-screen">gdk_drawable_get_screen</link>         (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
 <link linkend="GdkVisual">GdkVisual</link>*  <link linkend="gdk-drawable-get-visual">gdk_drawable_get_visual</link>         (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
-void        <link linkend="gdk-drawable-set-colormap">gdk_drawable_set_colormap</link>       (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-drawable-set-colormap">gdk_drawable_set_colormap</link>       (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap);
 <link linkend="GdkColormap">GdkColormap</link>* <link linkend="gdk-drawable-get-colormap">gdk_drawable_get_colormap</link>      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
 <link linkend="gint">gint</link>        <link linkend="gdk-drawable-get-depth">gdk_drawable_get_depth</link>          (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
-void        <link linkend="gdk-drawable-get-size">gdk_drawable_get_size</link>           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-drawable-get-size">gdk_drawable_get_size</link>           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="gint">gint</link> *width,
                                              <link linkend="gint">gint</link> *height);
 <link linkend="GdkRegion">GdkRegion</link>*  <link linkend="gdk-drawable-get-clip-region">gdk_drawable_get_clip_region</link>    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
 <link linkend="GdkRegion">GdkRegion</link>*  <link linkend="gdk-drawable-get-visible-region">gdk_drawable_get_visible_region</link> (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);
 
-void        <link linkend="gdk-draw-point">gdk_draw_point</link>                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-point">gdk_draw_point</link>                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y);
-void        <link linkend="gdk-draw-points">gdk_draw_points</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-points">gdk_draw_points</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkPoint">GdkPoint</link> *points,
                                              <link linkend="gint">gint</link> npoints);
-void        <link linkend="gdk-draw-line">gdk_draw_line</link>                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-line">gdk_draw_line</link>                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x1_,
                                              <link linkend="gint">gint</link> y1_,
                                              <link linkend="gint">gint</link> x2_,
                                              <link linkend="gint">gint</link> y2_);
-void        <link linkend="gdk-draw-lines">gdk_draw_lines</link>                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-lines">gdk_draw_lines</link>                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkPoint">GdkPoint</link> *points,
                                              <link linkend="gint">gint</link> npoints);
-void        <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="gint">gint</link> src_x,
@@ -68,19 +68,19 @@ void        <link linkend="gdk-draw-pixbuf">gdk_draw_pixbuf</link>              
                                              <link linkend="GdkRgbDither">GdkRgbDither</link> dither,
                                              <link linkend="gint">gint</link> x_dither,
                                              <link linkend="gint">gint</link> y_dither);
-void        <link linkend="gdk-draw-segments">gdk_draw_segments</link>               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-segments">gdk_draw_segments</link>               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkSegment">GdkSegment</link> *segs,
                                              <link linkend="gint">gint</link> nsegs);
 struct      <link linkend="GdkSegment">GdkSegment</link>;
-void        <link linkend="gdk-draw-rectangle">gdk_draw_rectangle</link>              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-rectangle">gdk_draw_rectangle</link>              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gboolean">gboolean</link> filled,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);
-void        <link linkend="gdk-draw-arc">gdk_draw_arc</link>                    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-arc">gdk_draw_arc</link>                    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gboolean">gboolean</link> filled,
                                              <link linkend="gint">gint</link> x,
@@ -89,57 +89,57 @@ void        <link linkend="gdk-draw-arc">gdk_draw_arc</link>                    
                                              <link linkend="gint">gint</link> height,
                                              <link linkend="gint">gint</link> angle1,
                                              <link linkend="gint">gint</link> angle2);
-void        <link linkend="gdk-draw-polygon">gdk_draw_polygon</link>                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-polygon">gdk_draw_polygon</link>                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gboolean">gboolean</link> filled,
                                              <link linkend="GdkPoint">GdkPoint</link> *points,
                                              <link linkend="gint">gint</link> npoints);
-void        <link linkend="gdk-draw-glyphs">gdk_draw_glyphs</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-glyphs">gdk_draw_glyphs</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);
-void        <link linkend="gdk-draw-layout-line">gdk_draw_layout_line</link>            (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-layout-line">gdk_draw_layout_line</link>            (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line);
-void        <link linkend="gdk-draw-layout-line-with-colors">gdk_draw_layout_line_with_colors</link>
+<link linkend="void">void</link>        <link linkend="gdk-draw-layout-line-with-colors">gdk_draw_layout_line_with_colors</link>
                                             (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
-                                             <link linkend="GdkColor">GdkColor</link> *foreground,
-                                             <link linkend="GdkColor">GdkColor</link> *background);
-void        <link linkend="gdk-draw-layout">gdk_draw_layout</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+                                             const <link linkend="GdkColor">GdkColor</link> *foreground,
+                                             const <link linkend="GdkColor">GdkColor</link> *background);
+<link linkend="void">void</link>        <link linkend="gdk-draw-layout">gdk_draw_layout</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayout">PangoLayout</link> *layout);
-void        <link linkend="gdk-draw-layout-with-colors">gdk_draw_layout_with_colors</link>     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-layout-with-colors">gdk_draw_layout_with_colors</link>     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayout">PangoLayout</link> *layout,
-                                             <link linkend="GdkColor">GdkColor</link> *foreground,
-                                             <link linkend="GdkColor">GdkColor</link> *background);
+                                             const <link linkend="GdkColor">GdkColor</link> *foreground,
+                                             const <link linkend="GdkColor">GdkColor</link> *background);
 
-void        <link linkend="gdk-draw-string">gdk_draw_string</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-string">gdk_draw_string</link>                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              const <link linkend="gchar">gchar</link> *string);
-void        <link linkend="gdk-draw-text">gdk_draw_text</link>                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-text">gdk_draw_text</link>                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length);
-void        <link linkend="gdk-draw-text-wc">gdk_draw_text_wc</link>                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-text-wc">gdk_draw_text_wc</link>                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
@@ -148,7 +148,7 @@ void        <link linkend="gdk-draw-text-wc">gdk_draw_text_wc</link>            
                                              <link linkend="gint">gint</link> text_length);
 
 #define     <link linkend="gdk-draw-pixmap">gdk_draw_pixmap</link>
-void        <link linkend="gdk-draw-drawable">gdk_draw_drawable</link>               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-drawable">gdk_draw_drawable</link>               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *src,
                                              <link linkend="gint">gint</link> xsrc,
@@ -157,7 +157,7 @@ void        <link linkend="gdk-draw-drawable">gdk_draw_drawable</link>          
                                              <link linkend="gint">gint</link> ydest,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);
-void        <link linkend="gdk-draw-image">gdk_draw_image</link>                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<link linkend="void">void</link>        <link linkend="gdk-draw-image">gdk_draw_image</link>                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkImage">GdkImage</link> *image,
                                              <link linkend="gint">gint</link> xsrc,
@@ -171,6 +171,14 @@ void        <link linkend="gdk-draw-image">gdk_draw_image</link>                
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);
+<link linkend="GdkImage">GdkImage</link>*   <link linkend="gdk-drawable-copy-to-image">gdk_drawable_copy_to_image</link>      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+                                             <link linkend="GdkImage">GdkImage</link> *image,
+                                             <link linkend="gint">gint</link> src_x,
+                                             <link linkend="gint">gint</link> src_y,
+                                             <link linkend="gint">gint</link> dest_x,
+                                             <link linkend="gint">gint</link> dest_y,
+                                             <link linkend="gint">gint</link> width,
+                                             <link linkend="gint">gint</link> height);
 
 
 </synopsis>
@@ -182,9 +190,13 @@ void        <link linkend="gdk-draw-image">gdk_draw_image</link>                
 
   <link linkend="GObject">GObject</link>
    +----GdkDrawable
+         +----<link linkend="GdkWindow">GdkWindow</link>
+         +----<link linkend="GdkPixmap">GdkPixmap</link>
 </synopsis>
 
 </refsect1>
+
+
 
 
 
@@ -196,16 +208,22 @@ void        <link linkend="gdk-draw-image">gdk_draw_image</link>                
 <para>
 These functions provide support for drawing points, lines, arcs and text
 onto what are called 'drawables'. Drawables, as the name suggests, are things
-which support drawing onto them, and are either <link linkend="GdkWindow">GdkWindow</link> or <link linkend="GdkPixmap">GdkPixmap</link>
+which support drawing onto them, and are either <link linkend="GdkWindow"><type>GdkWindow</type></link> or <link linkend="GdkPixmap"><type>GdkPixmap</type></link>
 objects.
 </para>
 <para>
-Many of the drawing operations take a <link linkend="GdkGC">GdkGC</link> argument, which represents a
-graphics context. This <link linkend="GdkGC">GdkGC</link> contains a number of drawing attributes such
+Many of the drawing operations take a <link linkend="GdkGC"><type>GdkGC</type></link> argument, which represents a
+graphics context. This <link linkend="GdkGC"><type>GdkGC</type></link> contains a number of drawing attributes such
 as foreground color, background color and line width, and is used to reduce
 the number of arguments needed for each drawing operation. See the
 <link linkend="gdk-Graphics-Contexts">Graphics Contexts</link> section for
 more information.
+</para>
+<para id="pango-data-structures">
+Some of the drawing operations take Pango data structures like <link linkend="PangoContext"><type>PangoContext</type></link>,
+<link linkend="PangoLayout"><type>PangoLayout</type></link> or <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link> as arguments. If you're using GTK+, the ususal 
+way to obtain these structures is via <link linkend="gtk-widget-create-pango-context"><function>gtk_widget_create_pango_context()</function></link> or
+<link linkend="gtk-widget-create-pango-layout"><function>gtk_widget_create_pango_layout()</function></link>.
 </para>
 </refsect1>
 
@@ -213,56 +231,56 @@ more information.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkDrawable-struct"/>struct GdkDrawable</title>
-<programlisting>struct GdkDrawable;</programlisting>
+<indexterm><primary>GdkDrawable</primary></indexterm><programlisting>struct GdkDrawable;</programlisting>
 <para>
 An opaque structure representing an object that can be
-drawn onto. This can be a <link linkend="GdkPixmap">GdkPixmap</link>, a <link linkend="GdkBitmap">GdkBitmap</link>,
-or a <link linkend="GdkWindow">GdkWindow</link>.
+drawn onto. This can be a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>, a <link linkend="GdkBitmap"><type>GdkBitmap</type></link>,
+or a <link linkend="GdkWindow"><type>GdkWindow</type></link>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-ref"/>gdk_drawable_ref ()</title>
-<programlisting><link linkend="GdkDrawable">GdkDrawable</link>* gdk_drawable_ref               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm role="deprecated"><primary>gdk_drawable_ref</primary></indexterm><programlisting><link linkend="GdkDrawable">GdkDrawable</link>* gdk_drawable_ref               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <warning><para><literal>gdk_drawable_ref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated equivalent of calling <link linkend="g-object-ref">g_object_ref</link>() on <parameter>drawable</parameter>.
+Deprecated equivalent of calling <link linkend="g-object-ref"><function>g_object_ref()</function></link> on <parameter>drawable</parameter>.
 (Drawables were not objects in previous versions of GDK.)</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the same <parameter>drawable</parameter> passed in
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-unref"/>gdk_drawable_unref ()</title>
-<programlisting>void        gdk_drawable_unref              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm role="deprecated"><primary>gdk_drawable_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drawable_unref              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <warning><para><literal>gdk_drawable_unref</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Deprecated equivalent of calling <link linkend="g-object-unref">g_object_unref</link>() on <parameter>drawable</parameter>.</para>
+Deprecated equivalent of calling <link linkend="g-object-unref"><function>g_object_unref()</function></link> on <parameter>drawable</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-set-data"/>gdk_drawable_set_data ()</title>
-<programlisting>void        gdk_drawable_set_data           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm role="deprecated"><primary>gdk_drawable_set_data</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drawable_set_data           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              const <link linkend="gchar">gchar</link> *key,
                                              <link linkend="gpointer">gpointer</link> data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_func);</programlisting>
 <warning><para><literal>gdk_drawable_set_data</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-This function is equivalent to <link linkend="g-object-set-data">g_object_set_data</link>(),
-the <link linkend="GObject">GObject</link> variant should be used instead.</para>
+This function is equivalent to <link linkend="g-object-set-data"><function>g_object_set_data()</function></link>,
+the <link linkend="GObject"><type>GObject</type></link> variant should be used instead.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>key</parameter>&nbsp;:</term>
 <listitem><simpara> name to store the data under
@@ -276,17 +294,17 @@ the <link linkend="GObject">GObject</link> variant should be used instead.</para
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-data"/>gdk_drawable_get_data ()</title>
-<programlisting><link linkend="gpointer">gpointer</link>    gdk_drawable_get_data           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm role="deprecated"><primary>gdk_drawable_get_data</primary></indexterm><programlisting><link linkend="gpointer">gpointer</link>    gdk_drawable_get_data           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              const <link linkend="gchar">gchar</link> *key);</programlisting>
 <warning><para><literal>gdk_drawable_get_data</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Equivalent to <link linkend="g-object-get-data">g_object_get_data</link>(); the <link linkend="GObject">GObject</link> variant should be
+Equivalent to <link linkend="g-object-get-data"><function>g_object_get_data()</function></link>; the <link linkend="GObject"><type>GObject</type></link> variant should be
 used instead.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>key</parameter>&nbsp;:</term>
 <listitem><simpara> name the data was stored under
@@ -296,53 +314,53 @@ used instead.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-display"/>gdk_drawable_get_display ()</title>
-<programlisting><link linkend="GdkDisplay">GdkDisplay</link>* gdk_drawable_get_display        (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm role="2.2"><primary>gdk_drawable_get_display</primary></indexterm><programlisting><link linkend="GdkDisplay">GdkDisplay</link>* gdk_drawable_get_display        (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
-Gets the <link linkend="GdkDisplay">GdkDisplay</link> associated with a <link linkend="GdkDrawable">GdkDrawable</link>.</para>
+Gets the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> associated with a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GdkDisplay">GdkDisplay</link> associated with <parameter>drawable</parameter>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> associated with <parameter>drawable</parameter>
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-screen"/>gdk_drawable_get_screen ()</title>
-<programlisting><link linkend="GdkScreen">GdkScreen</link>*  gdk_drawable_get_screen         (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm role="2.2"><primary>gdk_drawable_get_screen</primary></indexterm><programlisting><link linkend="GdkScreen">GdkScreen</link>*  gdk_drawable_get_screen         (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
-Gets the <link linkend="GdkScreen">GdkScreen</link> associated with a <link linkend="GdkDrawable">GdkDrawable</link>.</para>
+Gets the <link linkend="GdkScreen"><type>GdkScreen</type></link> associated with a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GdkScreen">GdkScreen</link> associated with <parameter>drawable</parameter>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="GdkScreen"><type>GdkScreen</type></link> associated with <parameter>drawable</parameter>
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-visual"/>gdk_drawable_get_visual ()</title>
-<programlisting><link linkend="GdkVisual">GdkVisual</link>*  gdk_drawable_get_visual         (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm><primary>gdk_drawable_get_visual</primary></indexterm><programlisting><link linkend="GdkVisual">GdkVisual</link>*  gdk_drawable_get_visual         (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
-Gets the <link linkend="GdkVisual">GdkVisual</link> describing the pixel format of <parameter>drawable</parameter>.</para>
+Gets the <link linkend="GdkVisual"><type>GdkVisual</type></link> describing the pixel format of <parameter>drawable</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkVisual">GdkVisual</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkVisual"><type>GdkVisual</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-set-colormap"/>gdk_drawable_set_colormap ()</title>
-<programlisting>void        gdk_drawable_set_colormap       (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_drawable_set_colormap</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drawable_set_colormap       (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkColormap">GdkColormap</link> *colormap);</programlisting>
 <para>
 Sets the colormap associated with <parameter>drawable</parameter>. Normally this will
@@ -351,21 +369,21 @@ use this function if the drawable-creating function did not have a
 way to determine the colormap, and you then use drawable operations
 that require a colormap. The colormap for all drawables and
 graphics contexts you intend to use together should match. i.e.
-when using a <link linkend="GdkGC">GdkGC</link> to draw to a drawable, or copying one drawable
+when using a <link linkend="GdkGC"><type>GdkGC</type></link> to draw to a drawable, or copying one drawable
 to another, the colormaps should match.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>colormap</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkColormap">GdkColormap</link>
+<listitem><simpara> a <link linkend="GdkColormap"><type>GdkColormap</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-colormap"/>gdk_drawable_get_colormap ()</title>
-<programlisting><link linkend="GdkColormap">GdkColormap</link>* gdk_drawable_get_colormap      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm><primary>gdk_drawable_get_colormap</primary></indexterm><programlisting><link linkend="GdkColormap">GdkColormap</link>* gdk_drawable_get_colormap      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
 Gets the colormap for <parameter>drawable</parameter>, if one is set; returns
 <literal>NULL</literal> otherwise.</para>
@@ -373,14 +391,14 @@ Gets the colormap for <parameter>drawable</parameter>, if one is set; returns
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the colormap, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-depth"/>gdk_drawable_get_depth ()</title>
-<programlisting><link linkend="gint">gint</link>        gdk_drawable_get_depth          (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm><primary>gdk_drawable_get_depth</primary></indexterm><programlisting><link linkend="gint">gint</link>        gdk_drawable_get_depth          (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
 Obtains the bit depth of the drawable, that is, the number of bits
 that make up a pixel in the drawable's visual. Examples are 8 bits
@@ -389,14 +407,14 @@ per pixel, 24 bits per pixel, etc.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> number of bits per pixel
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-size"/>gdk_drawable_get_size ()</title>
-<programlisting>void        gdk_drawable_get_size           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_drawable_get_size</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_drawable_get_size           (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="gint">gint</link> *width,
                                              <link linkend="gint">gint</link> *height);</programlisting>
 <para>
@@ -404,14 +422,14 @@ Fills *<parameter>width</parameter> and *<parameter>height</parameter> with the 
 <parameter>width</parameter> or <parameter>height</parameter> can be <literal>NULL</literal> if you only want the other one.
 </para>
 <para>
-On the X11 platform, if <parameter>drawable</parameter> is a <link linkend="GdkWindow">GdkWindow</link>, the returned
+On the X11 platform, if <parameter>drawable</parameter> is a <link linkend="GdkWindow"><type>GdkWindow</type></link>, the returned
 size is the size reported in the most-recently-processed configure
 event, rather than the current size on the X server.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>width</parameter>&nbsp;:</term>
 <listitem><simpara> location to store drawable's width, or <literal>NULL</literal>
@@ -422,7 +440,7 @@ event, rather than the current size on the X server.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-clip-region"/>gdk_drawable_get_clip_region ()</title>
-<programlisting><link linkend="GdkRegion">GdkRegion</link>*  gdk_drawable_get_clip_region    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm><primary>gdk_drawable_get_clip_region</primary></indexterm><programlisting><link linkend="GdkRegion">GdkRegion</link>*  gdk_drawable_get_clip_region    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
 Computes the region of a drawable that potentially can be written
 to by drawing primitives. This region will not take into account
@@ -434,15 +452,15 @@ primitives.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkRegion">GdkRegion</link>. This must be freed with <link linkend="gdk-region-destroy">gdk_region_destroy</link>()
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkRegion"><type>GdkRegion</type></link>. This must be freed with <link linkend="gdk-region-destroy"><function>gdk_region_destroy()</function></link>
               when you are done.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-visible-region"/>gdk_drawable_get_visible_region ()</title>
-<programlisting><link linkend="GdkRegion">GdkRegion</link>*  gdk_drawable_get_visible_region (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
+<indexterm><primary>gdk_drawable_get_visible_region</primary></indexterm><programlisting><link linkend="GdkRegion">GdkRegion</link>*  gdk_drawable_get_visible_region (<link linkend="GdkDrawable">GdkDrawable</link> *drawable);</programlisting>
 <para>
 Computes the region of a drawable that is potentially visible.
 This does not necessarily take into account if the window is
@@ -454,26 +472,26 @@ is visible.</para>
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkRegion">GdkRegion</link>. This must be freed with <link linkend="gdk-region-destroy">gdk_region_destroy</link>()
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkRegion"><type>GdkRegion</type></link>. This must be freed with <link linkend="gdk-region-destroy"><function>gdk_region_destroy()</function></link>
               when you are done.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-point"/>gdk_draw_point ()</title>
-<programlisting>void        gdk_draw_point                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_point</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_point                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y);</programlisting>
 <para>
 Draws a point, using the foreground color and other attributes of 
-the <link linkend="GdkGC">GdkGC</link>.</para>
+the <link linkend="GdkGC"><type>GdkGC</type></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara> the x coordinate of the point.
@@ -484,23 +502,23 @@ the <link linkend="GdkGC">GdkGC</link>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-points"/>gdk_draw_points ()</title>
-<programlisting>void        gdk_draw_points                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_points</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_points                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkPoint">GdkPoint</link> *points,
                                              <link linkend="gint">gint</link> npoints);</programlisting>
 <para>
 Draws a number of points, using the foreground color and other 
-attributes of the <link linkend="GdkGC">GdkGC</link>.</para>
+attributes of the <link linkend="GdkGC"><type>GdkGC</type></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>points</parameter>&nbsp;:</term>
-<listitem><simpara> an array of <link linkend="GdkPoint">GdkPoint</link> structures.
+<listitem><simpara> an array of <link linkend="GdkPoint"><type>GdkPoint</type></link> structures.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>npoints</parameter>&nbsp;:</term>
 <listitem><simpara> the number of points to be drawn.
@@ -508,7 +526,7 @@ attributes of the <link linkend="GdkGC">GdkGC</link>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-line"/>gdk_draw_line ()</title>
-<programlisting>void        gdk_draw_line                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_line</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_line                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x1_,
                                              <link linkend="gint">gint</link> y1_,
@@ -516,14 +534,14 @@ attributes of the <link linkend="GdkGC">GdkGC</link>.</para>
                                              <link linkend="gint">gint</link> y2_);</programlisting>
 <para>
 Draws a line, using the foreground color and other attributes of 
-the <link linkend="GdkGC">GdkGC</link>.</para>
+the <link linkend="GdkGC"><type>GdkGC</type></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>). 
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>). 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x1_</parameter>&nbsp;:</term>
 <listitem><simpara> the x coordinate of the start point.
@@ -540,25 +558,25 @@ the <link linkend="GdkGC">GdkGC</link>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-lines"/>gdk_draw_lines ()</title>
-<programlisting>void        gdk_draw_lines                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_lines</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_lines                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkPoint">GdkPoint</link> *points,
                                              <link linkend="gint">gint</link> npoints);</programlisting>
 <para>
 Draws a series of lines connecting the given points.
 The way in which joins between lines are draw is determined by the
-<link linkend="GdkCapStyle">GdkCapStyle</link> value in the <link linkend="GdkGC">GdkGC</link>. This can be set with
-<link linkend="gdk-gc-set-line-attributes">gdk_gc_set_line_attributes</link>().</para>
+<link linkend="GdkCapStyle"><type>GdkCapStyle</type></link> value in the <link linkend="GdkGC"><type>GdkGC</type></link>. This can be set with
+<link linkend="gdk-gc-set-line-attributes"><function>gdk_gc_set_line_attributes()</function></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>points</parameter>&nbsp;:</term>
-<listitem><simpara> an array of <link linkend="GdkPoint">GdkPoint</link> structures specifying the endpoints of the
+<listitem><simpara> an array of <link linkend="GdkPoint"><type>GdkPoint</type></link> structures specifying the endpoints of the
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>npoints</parameter>&nbsp;:</term>
 <listitem><simpara> the size of the <parameter>points</parameter> array.
@@ -566,7 +584,7 @@ The way in which joins between lines are draw is determined by the
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-pixbuf"/>gdk_draw_pixbuf ()</title>
-<programlisting>void        gdk_draw_pixbuf                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm role="2.2"><primary>gdk_draw_pixbuf</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_pixbuf                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkPixbuf">GdkPixbuf</link> *pixbuf,
                                              <link linkend="gint">gint</link> src_x,
@@ -583,11 +601,15 @@ Renders a rectangular portion of a pixbuf to a drawable.  The destination
 drawable must have a colormap. All windows have a colormap, however, pixmaps
 only have colormap by default if they were created with a non-<literal>NULL</literal> window 
 argument. Otherwise a colormap must be set on them with 
-<link linkend="gdk-drawable-set-colormap">gdk_drawable_set_colormap</link>().
+<link linkend="gdk-drawable-set-colormap"><function>gdk_drawable_set_colormap()</function></link>.
 </para>
 <para>
 On older X servers, rendering pixbufs with an alpha channel involves round 
-trips to the X server, and may be somewhat slow.</para>
+trips to the X server, and may be somewhat slow.
+</para>
+<para>
+The clip mask of <parameter>gc</parameter> is ignored, but clip rectangles and clip regions work
+fine.</para>
 <para>
 
 </para><variablelist role="params">
@@ -595,10 +617,10 @@ trips to the X server, and may be somewhat slow.</para>
 <listitem><simpara> Destination drawable.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>, used for clipping, or <literal>NULL</literal>
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>, used for clipping, or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>pixbuf</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkPixbuf">GdkPixbuf</link>
+<listitem><simpara> a <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>src_x</parameter>&nbsp;:</term>
 <listitem><simpara> Source X coordinate within pixbuf.
@@ -619,7 +641,7 @@ trips to the X server, and may be somewhat slow.</para>
 <listitem><simpara> Height of region to render, in pixels, or -1 to use pixbuf height.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>dither</parameter>&nbsp;:</term>
-<listitem><simpara> Dithering mode for <link linkend="GdkRGB">GdkRGB</link>.
+<listitem><simpara> Dithering mode for <link linkend="GdkRGB"><type>GdkRGB</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x_dither</parameter>&nbsp;:</term>
 <listitem><simpara> X offset for dither.
@@ -631,7 +653,7 @@ trips to the X server, and may be somewhat slow.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-segments"/>gdk_draw_segments ()</title>
-<programlisting>void        gdk_draw_segments               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_segments</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_segments               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkSegment">GdkSegment</link> *segs,
                                              <link linkend="gint">gint</link> nsegs);</programlisting>
@@ -640,13 +662,13 @@ Draws a number of unconnected lines.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>segs</parameter>&nbsp;:</term>
-<listitem><simpara> an array of <link linkend="GdkSegment">GdkSegment</link> structures specifying the start and 
+<listitem><simpara> an array of <link linkend="GdkSegment"><type>GdkSegment</type></link> structures specifying the start and 
   end points of the lines to be drawn.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>nsegs</parameter>&nbsp;:</term>
@@ -656,7 +678,7 @@ Draws a number of unconnected lines.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkSegment"/>struct GdkSegment</title>
-<programlisting>struct GdkSegment {
+<indexterm><primary>GdkSegment</primary></indexterm><programlisting>struct GdkSegment {
 
   gint x1;
   gint y1;
@@ -665,7 +687,7 @@ Draws a number of unconnected lines.</para>
 };
 </programlisting>
 <para>
-Specifies the start and end point of a line for use by the <link linkend="gdk-draw-segments">gdk_draw_segments</link>()
+Specifies the start and end point of a line for use by the <link linkend="gdk-draw-segments"><function>gdk_draw_segments()</function></link>
 function.
 </para><variablelist role="struct">
 <varlistentry>
@@ -692,7 +714,7 @@ function.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-rectangle"/>gdk_draw_rectangle ()</title>
-<programlisting>void        gdk_draw_rectangle              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_rectangle</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_rectangle              (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gboolean">gboolean</link> filled,
                                              <link linkend="gint">gint</link> x,
@@ -701,7 +723,7 @@ function.
                                              <link linkend="gint">gint</link> height);</programlisting>
 <para>
 Draws a rectangular outline or filled rectangle, using the foreground color
-and other attributes of the <link linkend="GdkGC">GdkGC</link>.
+and other attributes of the <link linkend="GdkGC"><type>GdkGC</type></link>.
 </para>
 <para>
 A rectangle drawn filled is 1 pixel smaller in both dimensions than a 
@@ -718,10 +740,10 @@ and (20, 0), which makes it 21 pixels wide and 21 pixels high.</para>
 </para>
 </note><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>filled</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if the rectangle should be filled.
@@ -741,7 +763,7 @@ and (20, 0), which makes it 21 pixels wide and 21 pixels high.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-arc"/>gdk_draw_arc ()</title>
-<programlisting>void        gdk_draw_arc                    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_arc</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_arc                    (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gboolean">gboolean</link> filled,
                                              <link linkend="gint">gint</link> x,
@@ -757,10 +779,10 @@ of the ellipse to be drawn.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>filled</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if the arc should be filled, producing a 'pie slice'.
@@ -788,7 +810,7 @@ of the ellipse to be drawn.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-polygon"/>gdk_draw_polygon ()</title>
-<programlisting>void        gdk_draw_polygon                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_polygon</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_polygon                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gboolean">gboolean</link> filled,
                                              <link linkend="GdkPoint">GdkPoint</link> *points,
@@ -798,10 +820,10 @@ Draws an outlined or filled polygon.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>filled</parameter>&nbsp;:</term>
 <listitem><simpara> <literal>TRUE</literal> if the polygon should be filled. The polygon is closed
@@ -809,7 +831,7 @@ Draws an outlined or filled polygon.</para>
     necessary.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>points</parameter>&nbsp;:</term>
-<listitem><simpara> an array of <link linkend="GdkPoint">GdkPoint</link> structures specifying the points making 
+<listitem><simpara> an array of <link linkend="GdkPoint"><type>GdkPoint</type></link> structures specifying the points making 
     up the polygon.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>npoints</parameter>&nbsp;:</term>
@@ -818,7 +840,7 @@ Draws an outlined or filled polygon.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-glyphs"/>gdk_draw_glyphs ()</title>
-<programlisting>void        gdk_draw_glyphs                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_glyphs</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_glyphs                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="PangoFont">PangoFont</link> *font,
                                              <link linkend="gint">gint</link> x,
@@ -826,22 +848,22 @@ Draws an outlined or filled polygon.</para>
                                              <link linkend="PangoGlyphString">PangoGlyphString</link> *glyphs);</programlisting>
 <para>
 This is a low-level function; 99% of text rendering should be done
-using <link linkend="gdk-draw-layout">gdk_draw_layout</link>() instead.
+using <link linkend="gdk-draw-layout"><function>gdk_draw_layout()</function></link> instead.
 </para>
 <para>
 A glyph is a character in a font. This function draws a sequence of
 glyphs.  To obtain a sequence of glyphs you have to understand a
 lot about internationalized text handling, which you don't want to
-understand; thus, use <link linkend="gdk-draw-layout">gdk_draw_layout</link>() instead of this function,
-<link linkend="gdk-draw-layout">gdk_draw_layout</link>() handles the details.</para>
+understand; thus, use <link linkend="gdk-draw-layout"><function>gdk_draw_layout()</function></link> instead of this function,
+<link linkend="gdk-draw-layout"><function>gdk_draw_layout()</function></link> handles the details.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara> font to be used
@@ -858,13 +880,13 @@ understand; thus, use <link linkend="gdk-draw-layout">gdk_draw_layout</link>() i
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-layout-line"/>gdk_draw_layout_line ()</title>
-<programlisting>void        gdk_draw_layout_line            (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_layout_line</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_layout_line            (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line);</programlisting>
 <para>
-Render a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto an GDK drawable</para>
+Render a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link> onto an GDK drawable</para>
 <para>
 
 </para><variablelist role="params">
@@ -881,21 +903,21 @@ Render a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto an GDK draw
 <listitem><simpara>         the y position of baseline (in pixels)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>line</parameter>&nbsp;:</term>
-<listitem><simpara>      a <link linkend="PangoLayoutLine">PangoLayoutLine</link>
+<listitem><simpara>      a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-layout-line-with-colors"/>gdk_draw_layout_line_with_colors ()</title>
-<programlisting>void        gdk_draw_layout_line_with_colors
+<indexterm><primary>gdk_draw_layout_line_with_colors</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_layout_line_with_colors
                                             (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayoutLine">PangoLayoutLine</link> *line,
-                                             <link linkend="GdkColor">GdkColor</link> *foreground,
-                                             <link linkend="GdkColor">GdkColor</link> *background);</programlisting>
+                                             const <link linkend="GdkColor">GdkColor</link> *foreground,
+                                             const <link linkend="GdkColor">GdkColor</link> *background);</programlisting>
 <para>
-Render a <link linkend="PangoLayoutLine">PangoLayoutLine</link> onto a <link linkend="GdkDrawable">GdkDrawable</link>, overriding the
+Render a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link> onto a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, overriding the
 layout's normal colors with <parameter>foreground</parameter> and/or <parameter>background</parameter>.
 <parameter>foreground</parameter> and <parameter>background</parameter> need not be allocated.</para>
 <para>
@@ -914,7 +936,7 @@ layout's normal colors with <parameter>foreground</parameter> and/or <parameter>
 <listitem><simpara>         the y position of baseline (in pixels)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>line</parameter>&nbsp;:</term>
-<listitem><simpara>      a <link linkend="PangoLayoutLine">PangoLayoutLine</link>
+<listitem><simpara>      a <link linkend="PangoLayoutLine"><type>PangoLayoutLine</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>foreground</parameter>&nbsp;:</term>
 <listitem><simpara> foreground override color, or <literal>NULL</literal> for none
@@ -925,13 +947,17 @@ layout's normal colors with <parameter>foreground</parameter> and/or <parameter>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-layout"/>gdk_draw_layout ()</title>
-<programlisting>void        gdk_draw_layout                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_layout</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_layout                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayout">PangoLayout</link> *layout);</programlisting>
 <para>
-Render a <link linkend="PangoLayout">PangoLayout</link> onto a GDK drawable</para>
+Render a <link linkend="PangoLayout"><type>PangoLayout</type></link> onto a GDK drawable
+</para>
+<para>
+If you're using GTK+, the ususal way to obtain a <link linkend="PangoLayout"><type>PangoLayout</type></link>
+is <link linkend="gtk-widget-create-pango-layout"><function>gtk_widget_create_pango_layout()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -948,22 +974,26 @@ Render a <link linkend="PangoLayout">PangoLayout</link> onto a GDK drawable</par
 <listitem><simpara>         the Y position of the top of the layout (in pixels)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
-<listitem><simpara>    a <link linkend="PangoLayout">PangoLayout</link>
+<listitem><simpara>    a <link linkend="PangoLayout"><type>PangoLayout</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-layout-with-colors"/>gdk_draw_layout_with_colors ()</title>
-<programlisting>void        gdk_draw_layout_with_colors     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_layout_with_colors</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_layout_with_colors     (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="PangoLayout">PangoLayout</link> *layout,
-                                             <link linkend="GdkColor">GdkColor</link> *foreground,
-                                             <link linkend="GdkColor">GdkColor</link> *background);</programlisting>
+                                             const <link linkend="GdkColor">GdkColor</link> *foreground,
+                                             const <link linkend="GdkColor">GdkColor</link> *background);</programlisting>
 <para>
-Render a <link linkend="PangoLayout">PangoLayout</link> onto a <link linkend="GdkDrawable">GdkDrawable</link>, overriding the
+Render a <link linkend="PangoLayout"><type>PangoLayout</type></link> onto a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, overriding the
 layout's normal colors with <parameter>foreground</parameter> and/or <parameter>background</parameter>.
-<parameter>foreground</parameter> and <parameter>background</parameter> need not be allocated.</para>
+<parameter>foreground</parameter> and <parameter>background</parameter> need not be allocated.
+</para>
+<para>
+If you're using GTK+, the ususal way to obtain a <link linkend="PangoLayout"><type>PangoLayout</type></link>
+is <link linkend="gtk-widget-create-pango-layout"><function>gtk_widget_create_pango_layout()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -980,7 +1010,7 @@ layout's normal colors with <parameter>foreground</parameter> and/or <parameter>
 <listitem><simpara>         the Y position of the top of the layout (in pixels)
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
-<listitem><simpara>    a <link linkend="PangoLayout">PangoLayout</link>
+<listitem><simpara>    a <link linkend="PangoLayout"><type>PangoLayout</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>foreground</parameter>&nbsp;:</term>
 <listitem><simpara> foreground override color, or <literal>NULL</literal> for none
@@ -991,25 +1021,25 @@ layout's normal colors with <parameter>foreground</parameter> and/or <parameter>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-string"/>gdk_draw_string ()</title>
-<programlisting>void        gdk_draw_string                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm role="deprecated"><primary>gdk_draw_string</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_string                 (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              const <link linkend="gchar">gchar</link> *string);</programlisting>
-<warning><para><literal>gdk_draw_string</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<warning><para><literal>gdk_draw_string</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-draw-layout"><function>gdk_draw_layout()</function></link> instead.</para></warning>
 <para>
 Draws a string of characters in the given font or fontset.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara> the x coordinate of the left edge of the text.
@@ -1023,26 +1053,26 @@ Draws a string of characters in the given font or fontset.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-text"/>gdk_draw_text ()</title>
-<programlisting>void        gdk_draw_text                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm role="deprecated"><primary>gdk_draw_text</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_text                   (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              const <link linkend="gchar">gchar</link> *text,
                                              <link linkend="gint">gint</link> text_length);</programlisting>
-<warning><para><literal>gdk_draw_text</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<warning><para><literal>gdk_draw_text</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-draw-layout"><function>gdk_draw_layout()</function></link> instead.</para></warning>
 <para>
 Draws a number of characters in the given font or fontset.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara> the x coordinate of the left edge of the text.
@@ -1059,14 +1089,14 @@ Draws a number of characters in the given font or fontset.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-text-wc"/>gdk_draw_text_wc ()</title>
-<programlisting>void        gdk_draw_text_wc                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm role="deprecated"><primary>gdk_draw_text_wc</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_text_wc                (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkFont">GdkFont</link> *font,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              const <link linkend="GdkWChar">GdkWChar</link> *text,
                                              <link linkend="gint">gint</link> text_length);</programlisting>
-<warning><para><literal>gdk_draw_text_wc</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<warning><para><literal>gdk_draw_text_wc</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-draw-layout"><function>gdk_draw_layout()</function></link> instead.</para></warning>
 <para>
 Draws a number of wide characters using the given font of fontset.
 If the font is a 1-byte font, the string is converted into 1-byte 
@@ -1074,13 +1104,13 @@ characters (discarding the high bytes) before output.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkFont">GdkFont</link>.
+<listitem><simpara> a <link linkend="GdkFont"><type>GdkFont</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara> the x coordinate of the left edge of the text.
@@ -1097,15 +1127,15 @@ characters (discarding the high bytes) before output.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-pixmap"/>gdk_draw_pixmap</title>
-<programlisting>#define gdk_draw_pixmap                gdk_draw_drawable
+<indexterm role="deprecated"><primary>gdk_draw_pixmap</primary></indexterm><programlisting>#define gdk_draw_pixmap                gdk_draw_drawable
 </programlisting>
-<warning><para><literal>gdk_draw_pixmap</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<warning><para><literal>gdk_draw_pixmap</literal> is deprecated and should not be used in newly-written code. Use <link linkend="gdk-draw-drawable"><function>gdk_draw_drawable()</function></link> instead.</para></warning>
 <para>
 Draws a pixmap, or a part of a pixmap, onto another drawable.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-drawable"/>gdk_draw_drawable ()</title>
-<programlisting>void        gdk_draw_drawable               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_drawable</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_drawable               (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkDrawable">GdkDrawable</link> *src,
                                              <link linkend="gint">gint</link> xsrc,
@@ -1130,19 +1160,19 @@ colormap, or errors will result. (On X11, failure to match
 visual/colormap results in a BadMatch error from the X server.)
 A common cause of this problem is an attempt to draw a bitmap to
 a color drawable. The way to draw a bitmap is to set the
-bitmap as a clip mask on your <link linkend="GdkGC">GdkGC</link>, then use <link linkend="gdk-draw-rectangle">gdk_draw_rectangle</link>()
+bitmap as a clip mask on your <link linkend="GdkGC"><type>GdkGC</type></link>, then use <link linkend="gdk-draw-rectangle"><function>gdk_draw_rectangle()</function></link>
 to draw a rectangle clipped to the bitmap.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link> sharing the drawable's visual and colormap
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link> sharing the drawable's visual and colormap
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>src</parameter>&nbsp;:</term>
-<listitem><simpara> another <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> the source <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, which may be the same as <parameter>drawable</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>xsrc</parameter>&nbsp;:</term>
 <listitem><simpara> X position in <parameter>src</parameter> of rectangle to draw
@@ -1165,7 +1195,7 @@ to draw a rectangle clipped to the bitmap.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-draw-image"/>gdk_draw_image ()</title>
-<programlisting>void        gdk_draw_image                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_draw_image</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_draw_image                  (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="GdkGC">GdkGC</link> *gc,
                                              <link linkend="GdkImage">GdkImage</link> *image,
                                              <link linkend="gint">gint</link> xsrc,
@@ -1175,18 +1205,18 @@ to draw a rectangle clipped to the bitmap.</para>
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);</programlisting>
 <para>
-Draws a <link linkend="GdkImage">GdkImage</link> onto a drawable.
-The depth of the <link linkend="GdkImage">GdkImage</link> must match the depth of the <link linkend="GdkDrawable">GdkDrawable</link>.</para>
+Draws a <link linkend="GdkImage"><type>GdkImage</type></link> onto a drawable.
+The depth of the <link linkend="GdkImage"><type>GdkImage</type></link> must match the depth of the <link linkend="GdkDrawable"><type>GdkDrawable</type></link>.</para>
 <para>
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link> (a <link linkend="GdkWindow">GdkWindow</link> or a <link linkend="GdkPixmap">GdkPixmap</link>).
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> (a <link linkend="GdkWindow"><type>GdkWindow</type></link> or a <link linkend="GdkPixmap"><type>GdkPixmap</type></link>).
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>gc</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkGC">GdkGC</link>.
+<listitem><simpara> a <link linkend="GdkGC"><type>GdkGC</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>image</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GdkImage">GdkImage</link> to draw.
+<listitem><simpara> the <link linkend="GdkImage"><type>GdkImage</type></link> to draw.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>xsrc</parameter>&nbsp;:</term>
 <listitem><simpara> the left edge of the source rectangle within <parameter>image</parameter>.
@@ -1211,20 +1241,20 @@ The depth of the <link linkend="GdkImage">GdkImage</link> must match the depth o
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-drawable-get-image"/>gdk_drawable_get_image ()</title>
-<programlisting><link linkend="GdkImage">GdkImage</link>*   gdk_drawable_get_image          (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+<indexterm><primary>gdk_drawable_get_image</primary></indexterm><programlisting><link linkend="GdkImage">GdkImage</link>*   gdk_drawable_get_image          (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
                                              <link linkend="gint">gint</link> x,
                                              <link linkend="gint">gint</link> y,
                                              <link linkend="gint">gint</link> width,
                                              <link linkend="gint">gint</link> height);</programlisting>
 <para>
-A <link linkend="GdkImage">GdkImage</link> stores client-side image data (pixels). In contrast,
-<link linkend="GdkPixmap">GdkPixmap</link> and <link linkend="GdkWindow">GdkWindow</link> are server-side
-objects. <link linkend="gdk-drawable-get-image">gdk_drawable_get_image</link>() obtains the pixels from a
-server-side drawable as a client-side <link linkend="GdkImage">GdkImage</link>.  The format of a
-<link linkend="GdkImage">GdkImage</link> depends on the <link linkend="GdkVisual">GdkVisual</link> of the current display, which
-makes manipulating <link linkend="GdkImage">GdkImage</link> extremely difficult; therefore, in
-most cases you should use <link linkend="gdk-pixbuf-get-from-drawable">gdk_pixbuf_get_from_drawable</link>() instead of
-this lower-level function. A <link linkend="GdkPixbuf">GdkPixbuf</link> contains image data in a
+A <link linkend="GdkImage"><type>GdkImage</type></link> stores client-side image data (pixels). In contrast,
+<link linkend="GdkPixmap"><type>GdkPixmap</type></link> and <link linkend="GdkWindow"><type>GdkWindow</type></link> are server-side
+objects. <link linkend="gdk-drawable-get-image"><function>gdk_drawable_get_image()</function></link> obtains the pixels from a
+server-side drawable as a client-side <link linkend="GdkImage"><type>GdkImage</type></link>.  The format of a
+<link linkend="GdkImage"><type>GdkImage</type></link> depends on the <link linkend="GdkVisual"><type>GdkVisual</type></link> of the current display, which
+makes manipulating <link linkend="GdkImage"><type>GdkImage</type></link> extremely difficult; therefore, in
+most cases you should use <link linkend="gdk-pixbuf-get-from-drawable"><function>gdk_pixbuf_get_from_drawable()</function></link> instead of
+this lower-level function. A <link linkend="GdkPixbuf"><type>GdkPixbuf</type></link> contains image data in a
 canonicalized RGB format, rather than a display-dependent format.
 Of course, there's a convenience vs. speed tradeoff here, so you'll
 want to think about what makes sense for your application.
@@ -1247,14 +1277,14 @@ machine, this function may use shared memory to avoid copying
 the image data.
 </para>
 <para>
-If the source drawable is a <link linkend="GdkWindow">GdkWindow</link> and partially offscreen
+If the source drawable is a <link linkend="GdkWindow"><type>GdkWindow</type></link> and partially offscreen
 or obscured, then the obscured portions of the returned image
 will contain undefined data.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDrawable">GdkDrawable</link>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>x</parameter>&nbsp;:</term>
 <listitem><simpara> x coordinate on <parameter>drawable</parameter>
@@ -1268,9 +1298,56 @@ will contain undefined data.</para>
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
 <listitem><simpara> height or region to get
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkImage">GdkImage</link> containing the contents of <parameter>drawable</parameter>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="GdkImage"><type>GdkImage</type></link> containing the contents of <parameter>drawable</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="gdk-drawable-copy-to-image"/>gdk_drawable_copy_to_image ()</title>
+<indexterm role="2.4"><primary>gdk_drawable_copy_to_image</primary></indexterm><programlisting><link linkend="GdkImage">GdkImage</link>*   gdk_drawable_copy_to_image      (<link linkend="GdkDrawable">GdkDrawable</link> *drawable,
+                                             <link linkend="GdkImage">GdkImage</link> *image,
+                                             <link linkend="gint">gint</link> src_x,
+                                             <link linkend="gint">gint</link> src_y,
+                                             <link linkend="gint">gint</link> dest_x,
+                                             <link linkend="gint">gint</link> dest_y,
+                                             <link linkend="gint">gint</link> width,
+                                             <link linkend="gint">gint</link> height);</programlisting>
+<para>
+Copies a portion of <parameter>drawable</parameter> into the client side image structure
+<parameter>image</parameter>. If <parameter>image</parameter> is <literal>NULL</literal>, creates a new image of size <parameter>width</parameter> x <parameter>height</parameter>
+and copies into that. See <link linkend="gdk-drawable-get-image"><function>gdk_drawable_get_image()</function></link> for further details.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>drawable</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>image</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GdkDrawable"><type>GdkDrawable</type></link>, or <literal>NULL</literal> if a new <parameter>image</parameter> should be created.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src_x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate on <parameter>drawable</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>src_y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate on <parameter>drawable</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dest_x</parameter>&nbsp;:</term>
+<listitem><simpara> x coordinate within <parameter>image</parameter>. Must be 0 if <parameter>image</parameter> is <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dest_y</parameter>&nbsp;:</term>
+<listitem><simpara> y coordinate within <parameter>image</parameter>. Must be 0 if <parameter>image</parameter> is <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> width of region to get
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> height or region to get
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <parameter>image</parameter>, or a new a <link linkend="GdkImage"><type>GdkImage</type></link> containing the contents
+              of <parameter>drawable</parameter>
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.4
+</para></refsect2>
 
 </refsect1>
 

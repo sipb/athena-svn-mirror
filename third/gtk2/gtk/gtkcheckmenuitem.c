@@ -24,12 +24,11 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkcheckmenuitem.h"
 #include "gtkaccellabel.h"
 #include "gtkintl.h"
 #include "gtkmarshalers.h"
-
-#define CHECK_TOGGLE_SIZE 12
 
 enum {
   TOGGLED,
@@ -39,7 +38,8 @@ enum {
 enum {
   PROP_0,
   PROP_ACTIVE,
-  PROP_INCONSISTENT
+  PROP_INCONSISTENT,
+  PROP_DRAW_AS_RADIO
 };
 
 static void gtk_check_menu_item_class_init           (GtkCheckMenuItemClass *klass);
@@ -114,19 +114,37 @@ gtk_check_menu_item_class_init (GtkCheckMenuItemClass *klass)
   g_object_class_install_property (gobject_class,
                                    PROP_ACTIVE,
                                    g_param_spec_boolean ("active",
-                                                         _("Active"),
-                                                         _("Whether the menu item is checked"),
+                                                         P_("Active"),
+                                                         P_("Whether the menu item is checked"),
                                                          FALSE,
                                                          G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
                                    PROP_INCONSISTENT,
                                    g_param_spec_boolean ("inconsistent",
-                                                         _("Inconsistent"),
-                                                         _("Whether to display an \"inconsistent\" state"),
+                                                         P_("Inconsistent"),
+                                                         P_("Whether to display an \"inconsistent\" state"),
                                                          FALSE,
                                                          G_PARAM_READWRITE));
   
+  g_object_class_install_property (gobject_class,
+                                   PROP_DRAW_AS_RADIO,
+                                   g_param_spec_boolean ("draw_as_radio",
+                                                         P_("Draw as radio menu item"),
+                                                         P_("Whether the menu item looks like a radio menu item"),
+                                                         FALSE,
+                                                         G_PARAM_READWRITE));
+  
+  gtk_widget_class_install_style_property (widget_class,
+                                           g_param_spec_int ("indicator_size",
+                                                             P_("Indicator Size")
+,
+                                                             P_("Size of check or radio indicator"),
+                                                             0,
+                                                             G_MAXINT,
+                                                             12,
+                                                             G_PARAM_READABLE));
+
   widget_class->expose_event = gtk_check_menu_item_expose;
   
   menu_item_class->activate = gtk_check_menu_item_activate;
@@ -231,9 +249,17 @@ static void
 gtk_check_menu_item_toggle_size_request (GtkMenuItem *menu_item,
 					 gint        *requisition)
 {
+  guint toggle_spacing;
+  guint indicator_size;
+  
   g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (menu_item));
+  
+  gtk_widget_style_get (GTK_WIDGET (menu_item),
+			"toggle_spacing", &toggle_spacing,
+			"indicator_size", &indicator_size,
+			NULL);
 
-  *requisition = CHECK_TOGGLE_SIZE;
+  *requisition = indicator_size + toggle_spacing;
 }
 
 void
@@ -300,6 +326,51 @@ gtk_check_menu_item_get_inconsistent (GtkCheckMenuItem *check_menu_item)
   return check_menu_item->inconsistent;
 }
 
+/**
+ * gtk_check_menu_item_set_draw_as_radio:
+ * @check_menu_item: a #GtkCheckMenuItem
+ * @draw_as_radio: whether @check_menu_item is drawn like a #GtkRadioMenuItem
+ *
+ * Sets whether @check_menu_item is drawn like a #GtkRadioMenuItem
+ *
+ * Since: 2.4
+ **/
+void
+gtk_check_menu_item_set_draw_as_radio (GtkCheckMenuItem *check_menu_item,
+				       gboolean          draw_as_radio)
+{
+  g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (check_menu_item));
+  
+  draw_as_radio = draw_as_radio != FALSE;
+
+  if (draw_as_radio != check_menu_item->draw_as_radio)
+    {
+      check_menu_item->draw_as_radio = draw_as_radio;
+
+      gtk_widget_queue_draw (GTK_WIDGET (check_menu_item));
+
+      g_object_notify (G_OBJECT (check_menu_item), "draw_as_radio");
+    }
+}
+
+/**
+ * gtk_check_menu_item_get_draw_as_radio:
+ * @check_menu_item: a #GtkCheckMenuItem
+ * 
+ * Returns whether @check_menu_item looks like a #GtkRadioMenuItem
+ * 
+ * Return value: Whether @check_menu_item looks like a #GtkRadioMenuItem
+ * 
+ * Since: 2.4
+ **/
+gboolean
+gtk_check_menu_item_get_draw_as_radio (GtkCheckMenuItem *check_menu_item)
+{
+  g_return_val_if_fail (GTK_IS_CHECK_MENU_ITEM (check_menu_item), FALSE);
+  
+  return check_menu_item->draw_as_radio;
+}
+
 static void
 gtk_check_menu_item_init (GtkCheckMenuItem *check_menu_item)
 {
@@ -346,23 +417,43 @@ gtk_real_check_menu_item_draw_indicator (GtkCheckMenuItem *check_menu_item,
   GtkWidget *widget;
   GtkStateType state_type;
   GtkShadowType shadow_type;
-  gint width, height;
   gint x, y;
-  gint offset;
 
   if (GTK_WIDGET_DRAWABLE (check_menu_item))
     {
+      guint offset;
+      guint toggle_size;
+      guint toggle_spacing;
+      guint horizontal_padding;
+      guint indicator_size;
+      
       widget = GTK_WIDGET (check_menu_item);
 
-      width = 8;
-      height = 8;
+      gtk_widget_style_get (GTK_WIDGET (check_menu_item),
+ 			    "toggle_spacing", &toggle_spacing,
+ 			    "horizontal_padding", &horizontal_padding,
+			    "indicator_size", &indicator_size,
+ 			    NULL);
+
+      toggle_size = GTK_MENU_ITEM (check_menu_item)->toggle_size;
+      offset = GTK_CONTAINER (check_menu_item)->border_width + widget->style->xthickness;
+      
       offset = GTK_CONTAINER (check_menu_item)->border_width +
-	widget->style->xthickness + 2;
-      if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR) 
-	x = widget->allocation.x + offset;
+	widget->style->xthickness + 2; 
+
+      if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_LTR)
+	{
+	  x = widget->allocation.x + offset + horizontal_padding +
+	    (toggle_size - toggle_spacing - indicator_size) / 2;
+	}
       else 
-	x = widget->allocation.x + widget->allocation.width - width - offset;
-      y = widget->allocation.y + (widget->allocation.height - height) / 2;
+	{
+	  x = widget->allocation.x + widget->allocation.width -
+	    offset - horizontal_padding - toggle_size + toggle_spacing +
+	    (toggle_size - toggle_spacing - indicator_size) / 2;
+	}
+      
+      y = widget->allocation.y + (widget->allocation.height - indicator_size) / 2;
 
       if (check_menu_item->active ||
 	  check_menu_item->always_show_toggle ||
@@ -370,31 +461,30 @@ gtk_real_check_menu_item_draw_indicator (GtkCheckMenuItem *check_menu_item,
 	{
 	  state_type = GTK_WIDGET_STATE (widget);
 	  
-	  if (check_menu_item->always_show_toggle)
+	  if (check_menu_item->inconsistent)
+	    shadow_type = GTK_SHADOW_ETCHED_IN;
+	  else if (check_menu_item->active)
+	    shadow_type = GTK_SHADOW_IN;
+	  else 
+	    shadow_type = GTK_SHADOW_OUT;
+	  
+	  if (!GTK_WIDGET_IS_SENSITIVE (widget))
+	    state_type = GTK_STATE_INSENSITIVE;
+
+	  if (check_menu_item->draw_as_radio)
 	    {
-	      shadow_type = GTK_SHADOW_OUT;
-	      if (check_menu_item->active)
-		shadow_type = GTK_SHADOW_IN;
+	      gtk_paint_option (widget->style, widget->window,
+				state_type, shadow_type,
+				area, widget, "option",
+				x, y, indicator_size, indicator_size);
 	    }
 	  else
 	    {
-	      shadow_type = GTK_SHADOW_IN;
-	      if (check_menu_item->active &&
-		  (state_type == GTK_STATE_PRELIGHT))
-		shadow_type = GTK_SHADOW_OUT;
+	      gtk_paint_check (widget->style, widget->window,
+			       state_type, shadow_type,
+			       area, widget, "check",
+			       x, y, indicator_size, indicator_size);
 	    }
-
-          if (check_menu_item->inconsistent)
-            {
-              shadow_type = GTK_SHADOW_ETCHED_IN;
-              if (state_type == GTK_STATE_ACTIVE)
-                state_type = GTK_STATE_NORMAL;
-            }
-              
-	  gtk_paint_check (widget->style, widget->window,
-			   state_type, shadow_type,
-			   area, widget, "check",
-			   x, y, width, height);
 	}
     }
 }
@@ -415,6 +505,9 @@ gtk_check_menu_item_get_property (GObject     *object,
       break;
     case PROP_INCONSISTENT:
       g_value_set_boolean (value, checkitem->inconsistent);
+      break;
+    case PROP_DRAW_AS_RADIO:
+      g_value_set_boolean (value, checkitem->draw_as_radio);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -438,6 +531,9 @@ gtk_check_menu_item_set_property (GObject      *object,
       break;
     case PROP_INCONSISTENT:
       gtk_check_menu_item_set_inconsistent (checkitem, g_value_get_boolean (value));
+      break;
+    case PROP_DRAW_AS_RADIO:
+      gtk_check_menu_item_set_draw_as_radio (checkitem, g_value_get_boolean (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

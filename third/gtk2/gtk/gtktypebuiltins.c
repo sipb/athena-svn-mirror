@@ -44,6 +44,42 @@ gtk_calendar_display_options_get_type (void)
 }
 
 
+/* enumerations from "gtkcellrenderer.h" */
+GType
+gtk_cell_renderer_state_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GTK_CELL_RENDERER_SELECTED, "GTK_CELL_RENDERER_SELECTED", "selected" },
+      { GTK_CELL_RENDERER_PRELIT, "GTK_CELL_RENDERER_PRELIT", "prelit" },
+      { GTK_CELL_RENDERER_INSENSITIVE, "GTK_CELL_RENDERER_INSENSITIVE", "insensitive" },
+      { GTK_CELL_RENDERER_SORTED, "GTK_CELL_RENDERER_SORTED", "sorted" },
+      { GTK_CELL_RENDERER_FOCUSED, "GTK_CELL_RENDERER_FOCUSED", "focused" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GtkCellRendererState", values);
+  }
+  return etype;
+}
+
+GType
+gtk_cell_renderer_mode_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { GTK_CELL_RENDERER_MODE_INERT, "GTK_CELL_RENDERER_MODE_INERT", "inert" },
+      { GTK_CELL_RENDERER_MODE_ACTIVATABLE, "GTK_CELL_RENDERER_MODE_ACTIVATABLE", "activatable" },
+      { GTK_CELL_RENDERER_MODE_EDITABLE, "GTK_CELL_RENDERER_MODE_EDITABLE", "editable" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("GtkCellRendererMode", values);
+  }
+  return etype;
+}
+
+
 /* enumerations from "gtkclist.h" */
 GType
 gtk_cell_type_get_type (void)
@@ -164,42 +200,6 @@ gtk_ctree_expansion_type_get_type (void)
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("GtkCTreeExpansionType", values);
-  }
-  return etype;
-}
-
-
-/* enumerations from "gtkcellrenderer.h" */
-GType
-gtk_cell_renderer_state_get_type (void)
-{
-  static GType etype = 0;
-  if (etype == 0) {
-    static const GFlagsValue values[] = {
-      { GTK_CELL_RENDERER_SELECTED, "GTK_CELL_RENDERER_SELECTED", "selected" },
-      { GTK_CELL_RENDERER_PRELIT, "GTK_CELL_RENDERER_PRELIT", "prelit" },
-      { GTK_CELL_RENDERER_INSENSITIVE, "GTK_CELL_RENDERER_INSENSITIVE", "insensitive" },
-      { GTK_CELL_RENDERER_SORTED, "GTK_CELL_RENDERER_SORTED", "sorted" },
-      { GTK_CELL_RENDERER_FOCUSED, "GTK_CELL_RENDERER_FOCUSED", "focused" },
-      { 0, NULL, NULL }
-    };
-    etype = g_flags_register_static ("GtkCellRendererState", values);
-  }
-  return etype;
-}
-
-GType
-gtk_cell_renderer_mode_get_type (void)
-{
-  static GType etype = 0;
-  if (etype == 0) {
-    static const GEnumValue values[] = {
-      { GTK_CELL_RENDERER_MODE_INERT, "GTK_CELL_RENDERER_MODE_INERT", "inert" },
-      { GTK_CELL_RENDERER_MODE_ACTIVATABLE, "GTK_CELL_RENDERER_MODE_ACTIVATABLE", "activatable" },
-      { GTK_CELL_RENDERER_MODE_EDITABLE, "GTK_CELL_RENDERER_MODE_EDITABLE", "editable" },
-      { 0, NULL, NULL }
-    };
-    etype = g_enum_register_static ("GtkCellRendererMode", values);
   }
   return etype;
 }
@@ -595,9 +595,29 @@ gtk_movement_step_get_type (void)
       { GTK_MOVEMENT_PARAGRAPH_ENDS, "GTK_MOVEMENT_PARAGRAPH_ENDS", "paragraph-ends" },
       { GTK_MOVEMENT_PAGES, "GTK_MOVEMENT_PAGES", "pages" },
       { GTK_MOVEMENT_BUFFER_ENDS, "GTK_MOVEMENT_BUFFER_ENDS", "buffer-ends" },
+      { GTK_MOVEMENT_HORIZONTAL_PAGES, "GTK_MOVEMENT_HORIZONTAL_PAGES", "horizontal-pages" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("GtkMovementStep", values);
+  }
+  return etype;
+}
+
+GType
+gtk_scroll_step_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { GTK_SCROLL_STEPS, "GTK_SCROLL_STEPS", "steps" },
+      { GTK_SCROLL_PAGES, "GTK_SCROLL_PAGES", "pages" },
+      { GTK_SCROLL_ENDS, "GTK_SCROLL_ENDS", "ends" },
+      { GTK_SCROLL_HORIZONTAL_STEPS, "GTK_SCROLL_HORIZONTAL_STEPS", "horizontal-steps" },
+      { GTK_SCROLL_HORIZONTAL_PAGES, "GTK_SCROLL_HORIZONTAL_PAGES", "horizontal-pages" },
+      { GTK_SCROLL_HORIZONTAL_ENDS, "GTK_SCROLL_HORIZONTAL_ENDS", "horizontal-ends" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("GtkScrollStep", values);
   }
   return etype;
 }
@@ -987,6 +1007,7 @@ gtk_wrap_mode_get_type (void)
       { GTK_WRAP_NONE, "GTK_WRAP_NONE", "none" },
       { GTK_WRAP_CHAR, "GTK_WRAP_CHAR", "char" },
       { GTK_WRAP_WORD, "GTK_WRAP_WORD", "word" },
+      { GTK_WRAP_WORD_CHAR, "GTK_WRAP_WORD_CHAR", "word-char" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("GtkWrapMode", values);
@@ -1017,6 +1038,7 @@ gtk_im_preedit_style_get_type (void)
     static const GEnumValue values[] = {
       { GTK_IM_PREEDIT_NOTHING, "GTK_IM_PREEDIT_NOTHING", "nothing" },
       { GTK_IM_PREEDIT_CALLBACK, "GTK_IM_PREEDIT_CALLBACK", "callback" },
+      { GTK_IM_PREEDIT_NONE, "GTK_IM_PREEDIT_NONE", "none" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("GtkIMPreeditStyle", values);
@@ -1032,9 +1054,96 @@ gtk_im_status_style_get_type (void)
     static const GEnumValue values[] = {
       { GTK_IM_STATUS_NOTHING, "GTK_IM_STATUS_NOTHING", "nothing" },
       { GTK_IM_STATUS_CALLBACK, "GTK_IM_STATUS_CALLBACK", "callback" },
+      { GTK_IM_STATUS_NONE, "GTK_IM_STATUS_NONE", "none" },
       { 0, NULL, NULL }
     };
     etype = g_enum_register_static ("GtkIMStatusStyle", values);
+  }
+  return etype;
+}
+
+
+/* enumerations from "gtkfilechooser.h" */
+GType
+gtk_file_chooser_action_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { GTK_FILE_CHOOSER_ACTION_OPEN, "GTK_FILE_CHOOSER_ACTION_OPEN", "open" },
+      { GTK_FILE_CHOOSER_ACTION_SAVE, "GTK_FILE_CHOOSER_ACTION_SAVE", "save" },
+      { GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, "GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER", "select-folder" },
+      { GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER, "GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER", "create-folder" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("GtkFileChooserAction", values);
+  }
+  return etype;
+}
+
+GType
+gtk_file_chooser_error_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { GTK_FILE_CHOOSER_ERROR_NONEXISTENT, "GTK_FILE_CHOOSER_ERROR_NONEXISTENT", "nonexistent" },
+      { GTK_FILE_CHOOSER_ERROR_BAD_FILENAME, "GTK_FILE_CHOOSER_ERROR_BAD_FILENAME", "bad-filename" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("GtkFileChooserError", values);
+  }
+  return etype;
+}
+
+
+/* enumerations from "gtkfilefilter.h" */
+GType
+gtk_file_filter_flags_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GTK_FILE_FILTER_FILENAME, "GTK_FILE_FILTER_FILENAME", "filename" },
+      { GTK_FILE_FILTER_URI, "GTK_FILE_FILTER_URI", "uri" },
+      { GTK_FILE_FILTER_DISPLAY_NAME, "GTK_FILE_FILTER_DISPLAY_NAME", "display-name" },
+      { GTK_FILE_FILTER_MIME_TYPE, "GTK_FILE_FILTER_MIME_TYPE", "mime-type" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GtkFileFilterFlags", values);
+  }
+  return etype;
+}
+
+
+/* enumerations from "gtkicontheme.h" */
+GType
+gtk_icon_lookup_flags_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GTK_ICON_LOOKUP_NO_SVG, "GTK_ICON_LOOKUP_NO_SVG", "no-svg" },
+      { GTK_ICON_LOOKUP_FORCE_SVG, "GTK_ICON_LOOKUP_FORCE_SVG", "force-svg" },
+      { GTK_ICON_LOOKUP_USE_BUILTIN, "GTK_ICON_LOOKUP_USE_BUILTIN", "use-builtin" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GtkIconLookupFlags", values);
+  }
+  return etype;
+}
+
+GType
+gtk_icon_theme_error_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GEnumValue values[] = {
+      { GTK_ICON_THEME_NOT_FOUND, "GTK_ICON_THEME_NOT_FOUND", "not-found" },
+      { GTK_ICON_THEME_FAILED, "GTK_ICON_THEME_FAILED", "failed" },
+      { 0, NULL, NULL }
+    };
+    etype = g_enum_register_static ("GtkIconThemeError", values);
   }
   return etype;
 }
@@ -1347,12 +1456,12 @@ gtk_text_search_flags_get_type (void)
 {
   static GType etype = 0;
   if (etype == 0) {
-    static const GEnumValue values[] = {
+    static const GFlagsValue values[] = {
       { GTK_TEXT_SEARCH_VISIBLE_ONLY, "GTK_TEXT_SEARCH_VISIBLE_ONLY", "visible-only" },
       { GTK_TEXT_SEARCH_TEXT_ONLY, "GTK_TEXT_SEARCH_TEXT_ONLY", "text-only" },
       { 0, NULL, NULL }
     };
-    etype = g_enum_register_static ("GtkTextSearchFlags", values);
+    etype = g_flags_register_static ("GtkTextSearchFlags", values);
   }
   return etype;
 }
@@ -1486,6 +1595,31 @@ gtk_tree_view_column_sizing_get_type (void)
 }
 
 
+/* enumerations from "gtkuimanager.h" */
+GType
+gtk_ui_manager_item_type_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GTK_UI_MANAGER_AUTO, "GTK_UI_MANAGER_AUTO", "auto" },
+      { GTK_UI_MANAGER_MENUBAR, "GTK_UI_MANAGER_MENUBAR", "menubar" },
+      { GTK_UI_MANAGER_MENU, "GTK_UI_MANAGER_MENU", "menu" },
+      { GTK_UI_MANAGER_TOOLBAR, "GTK_UI_MANAGER_TOOLBAR", "toolbar" },
+      { GTK_UI_MANAGER_PLACEHOLDER, "GTK_UI_MANAGER_PLACEHOLDER", "placeholder" },
+      { GTK_UI_MANAGER_POPUP, "GTK_UI_MANAGER_POPUP", "popup" },
+      { GTK_UI_MANAGER_MENUITEM, "GTK_UI_MANAGER_MENUITEM", "menuitem" },
+      { GTK_UI_MANAGER_TOOLITEM, "GTK_UI_MANAGER_TOOLITEM", "toolitem" },
+      { GTK_UI_MANAGER_SEPARATOR, "GTK_UI_MANAGER_SEPARATOR", "separator" },
+      { GTK_UI_MANAGER_ACCELERATOR, "GTK_UI_MANAGER_ACCELERATOR", "accelerator" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GtkUIManagerItemType", values);
+  }
+  return etype;
+}
+
+
 /* enumerations from "gtkwidget.h" */
 GType
 gtk_widget_flags_get_type (void)
@@ -1511,6 +1645,7 @@ gtk_widget_flags_get_type (void)
       { GTK_APP_PAINTABLE, "GTK_APP_PAINTABLE", "app-paintable" },
       { GTK_RECEIVES_DEFAULT, "GTK_RECEIVES_DEFAULT", "receives-default" },
       { GTK_DOUBLE_BUFFERED, "GTK_DOUBLE_BUFFERED", "double-buffered" },
+      { GTK_NO_SHOW_ALL, "GTK_NO_SHOW_ALL", "no-show-all" },
       { 0, NULL, NULL }
     };
     etype = g_flags_register_static ("GtkWidgetFlags", values);

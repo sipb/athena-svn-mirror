@@ -40,3 +40,26 @@ End:
 -->
 
 
+<!-- ##### FUNCTION gdk_pixbuf_new_from_file_at_size ##### -->
+<para>
+
+</para>
+
+@filename: 
+@width: 
+@height: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gdk_pixbuf_get_file_info ##### -->
+<para>
+
+</para>
+
+@filename: 
+@width: 
+@height: 
+@Returns: 
+
+

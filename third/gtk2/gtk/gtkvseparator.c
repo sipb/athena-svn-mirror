@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkvseparator.h"
 
 
@@ -93,7 +94,7 @@ gtk_vseparator_expose (GtkWidget      *widget,
     gtk_paint_vline (widget->style, widget->window, GTK_STATE_NORMAL,
 		     &event->area, widget, "vseparator",
 		     widget->allocation.y,
-		     widget->allocation.y + widget->allocation.height,
+		     widget->allocation.y + widget->allocation.height - 1,
 		     widget->allocation.x + (widget->allocation.width -
 					     widget->style->xthickness) / 2);
 

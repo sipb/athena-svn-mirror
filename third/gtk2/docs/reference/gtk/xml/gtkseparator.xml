@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkSeparator</refname><refpurpose>a base class for <link linkend="GtkHSeparator">GtkHSeparator</link> and <link linkend="GtkVSeparator">GtkVSeparator</link>.</refpurpose>
+<refname>GtkSeparator</refname><refpurpose>a base class for <link linkend="GtkHSeparator"><type>GtkHSeparator</type></link> and <link linkend="GtkVSeparator"><type>GtkVSeparator</type></link>.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -30,15 +30,20 @@ struct      <link linkend="GtkSeparator-struct">GtkSeparator</link>;
    +----<link linkend="GtkObject">GtkObject</link>
          +----<link linkend="GtkWidget">GtkWidget</link>
                +----GtkSeparator
+                     +----<link linkend="GtkHSeparator">GtkHSeparator</link>
+                     +----<link linkend="GtkVSeparator">GtkVSeparator</link>
 </synopsis>
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkSeparator implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkSeparator implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -48,8 +53,8 @@ GtkSeparator implements <link linkend="AtkImplementorIface">AtkImplementorIface<
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkSeparator">GtkSeparator</link> widget is an abstract class, used only for deriving the
-subclasses <link linkend="GtkHSeparator">GtkHSeparator</link> and <link linkend="GtkVSeparator">GtkVSeparator</link>.
+The <link linkend="GtkSeparator"><type>GtkSeparator</type></link> widget is an abstract class, used only for deriving the
+subclasses <link linkend="GtkHSeparator"><type>GtkHSeparator</type></link> and <link linkend="GtkVSeparator"><type>GtkVSeparator</type></link>.
 </para>
 </refsect1>
 
@@ -57,9 +62,9 @@ subclasses <link linkend="GtkHSeparator">GtkHSeparator</link> and <link linkend=
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkSeparator-struct"/>struct GtkSeparator</title>
-<programlisting>struct GtkSeparator;</programlisting>
+<indexterm><primary>GtkSeparator</primary></indexterm><programlisting>struct GtkSeparator;</programlisting>
 <para>
-The <link linkend="GtkSeparator-struct">GtkSeparator</link> struct contains private data only.
+The <link linkend="GtkSeparator-struct"><type>GtkSeparator-struct</type></link> struct contains private data only.
 </para></refsect2>
 
 </refsect1>

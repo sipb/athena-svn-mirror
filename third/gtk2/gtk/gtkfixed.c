@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkfixed.h"
 #include "gtkintl.h"
 
@@ -117,8 +118,8 @@ gtk_fixed_class_init (GtkFixedClass *class)
   gtk_container_class_install_child_property (container_class,
 					      CHILD_PROP_X,
 					      g_param_spec_int ("x",
-                                                                _("X position"),
-                                                                _("X position of child widget"),
+                                                                P_("X position"),
+                                                                P_("X position of child widget"),
                                                                 G_MININT,
                                                                 G_MAXINT,
                                                                 0,
@@ -127,8 +128,8 @@ gtk_fixed_class_init (GtkFixedClass *class)
   gtk_container_class_install_child_property (container_class,
 					      CHILD_PROP_Y,
 					      g_param_spec_int ("y",
-                                                                _("Y position"),
-                                                                _("Y position of child widget"),
+                                                                P_("Y position"),
+                                                                P_("Y position of child widget"),
                                                                 G_MININT,
                                                                 G_MAXINT,
                                                                 0,
@@ -515,7 +516,7 @@ gtk_fixed_set_has_window (GtkFixed *fixed,
  * gtk_fixed_get_has_window:
  * @fixed: a #GtkWidget
  * 
- * Gets whether the #GtkFixed has it's own #GdkWindow.
+ * Gets whether the #GtkFixed has its own #GdkWindow.
  * See gdk_fixed_set_has_window().
  * 
  * Return value: %TRUE if @fixed has its own window.

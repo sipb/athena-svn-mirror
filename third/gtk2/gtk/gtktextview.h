@@ -89,12 +89,14 @@ struct _GtkTextView
   
   guint overwrite_mode : 1;
   guint cursor_visible : 1;
-  guint  need_im_reset : 1;	/* If we have reset the IM since the last character entered */
-  /* just selected a word or line via double/triple click */
-  guint just_selected_element : 1;
 
-  /* disable scrolling to cursor on focus */
-  guint disable_scroll_on_focus : 1;
+  /* if we have reset the IM since the last character entered */  
+  guint  need_im_reset : 1;	
+
+  guint accepts_tab : 1;
+  
+  /* this flag is no longer used */
+  guint reserved : 1;
   
   /* debug flag - means that we've validated onscreen since the
    * last "invalidate" signal from the layout
@@ -322,6 +324,12 @@ GtkWrapMode      gtk_text_view_get_wrap_mode          (GtkTextView      *text_vi
 void             gtk_text_view_set_editable           (GtkTextView      *text_view,
                                                        gboolean          setting);
 gboolean         gtk_text_view_get_editable           (GtkTextView      *text_view);
+void             gtk_text_view_set_overwrite          (GtkTextView      *text_view,
+						       gboolean          overwrite);
+gboolean         gtk_text_view_get_overwrite          (GtkTextView      *text_view);
+void		 gtk_text_view_set_accepts_tab        (GtkTextView	*text_view,
+						       gboolean		 accepts_tab);
+gboolean	 gtk_text_view_get_accepts_tab        (GtkTextView	*text_view);
 void             gtk_text_view_set_pixels_above_lines (GtkTextView      *text_view,
                                                        gint              pixels_above_lines);
 gint             gtk_text_view_get_pixels_above_lines (GtkTextView      *text_view);

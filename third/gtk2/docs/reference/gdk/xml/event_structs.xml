@@ -56,6 +56,8 @@ enum        <link linkend="GdkSettingAction">GdkSettingAction</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -64,7 +66,7 @@ The event structs contain data specific to each type of event in GDK.
 <note>
 <para>
 A common mistake is to forget to set the event mask of a widget so that the
-required events are received. See <link linkend="gtk-widget-set-events">gtk_widget_set_events</link>().
+required events are received. See <link linkend="gtk-widget-set-events"><function>gtk_widget_set_events()</function></link>.
 </para>
 </note>
 </refsect1>
@@ -73,7 +75,7 @@ required events are received. See <link linkend="gtk-widget-set-events">gtk_widg
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkEvent"/>union GdkEvent</title>
-<programlisting>union GdkEvent
+<indexterm><primary>GdkEvent</primary></indexterm><programlisting>union GdkEvent
 {
   GdkEventType		    type;
   GdkEventAny		    any;
@@ -97,7 +99,7 @@ required events are received. See <link linkend="gtk-widget-set-events">gtk_widg
 };
 </programlisting>
 <para>
-The <link linkend="GdkEvent">GdkEvent</link> struct contains a union of all of the event structs,
+The <link linkend="GdkEvent"><type>GdkEvent</type></link> struct contains a union of all of the event structs,
 and allows access to the data fields in a number of ways.
 </para>
 <para>
@@ -139,7 +141,7 @@ or:
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkEventAny"/>struct GdkEventAny</title>
-<programlisting>struct GdkEventAny {
+<indexterm><primary>GdkEventAny</primary></indexterm><programlisting>struct GdkEventAny {
 
   GdkEventType type;
   GdkWindow *window;
@@ -148,7 +150,7 @@ or:
 </programlisting>
 <para>
 Contains the fields which are common to all event structs.
-Any event pointer can safely be cast to a pointer to a <link linkend="GdkEventAny">GdkEventAny</link> to access
+Any event pointer can safely be cast to a pointer to a <link linkend="GdkEventAny"><type>GdkEventAny</type></link> to access
 these fields.
 </para><variablelist role="struct">
 <varlistentry>
@@ -171,7 +173,7 @@ these fields.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventKey"/>struct GdkEventKey</title>
-<programlisting>struct GdkEventKey {
+<indexterm><primary>GdkEventKey</primary></indexterm><programlisting>struct GdkEventKey {
 
   GdkEventType type;
   GdkWindow *window;
@@ -212,12 +214,13 @@ Describes a key press or key release event.
 <varlistentry>
 <term><link linkend="guint">guint</link> <structfield>state</structfield></term>
 <listitem><simpara>a bit-mask representing the state of the modifier keys (e.g. Control,
-Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType">GdkModifierType</link>.
+Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType"><type>GdkModifierType</type></link>.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><link linkend="guint">guint</link> <structfield>keyval</structfield></term>
-<listitem><simpara>the key that was pressed or released. See the <filename>&lt;gdk/gdkkeysym.h&gt;</filename>
+<listitem><simpara>the key that was pressed or released. See the 
+<filename>&lt;gdk/gdkkeysyms.h&gt;</filename>
 header file for a complete list of GDK key codes.
 </simpara></listitem>
 </varlistentry>
@@ -230,9 +233,9 @@ header file for a complete list of GDK key codes.
 <term><link linkend="gchar">gchar</link> *<structfield>string</structfield></term>
 <listitem><simpara>a string containing the an approximation of the text that
 would result from this keypress. The only correct way to handle text
-input of text is using input methods (see <link linkend="GtkIMContext">GtkIMContext</link>), so this
+input of text is using input methods (see <link linkend="GtkIMContext"><type>GtkIMContext</type></link>), so this
 field is deprecated and should never be used.
-(<link linkend="gdk-unicode-to-keyval">gdk_unicode_to_keyval</link>() provides a non-deprecated way of getting
+(<link linkend="gdk-unicode-to-keyval"><function>gdk_unicode_to_keyval()</function></link> provides a non-deprecated way of getting
 an approximate translation for a key.) The string is encoded in the encoding
 of the current locale (Note: this for backwards compatibility:
 strings in GTK+ and GDK are typically in UTF-8.) and NUL-terminated.
@@ -255,7 +258,7 @@ it from the an empty translation.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventButton"/>struct GdkEventButton</title>
-<programlisting>struct GdkEventButton {
+<indexterm><primary>GdkEventButton</primary></indexterm><programlisting>struct GdkEventButton {
 
   GdkEventType type;
   GdkWindow *window;
@@ -349,7 +352,7 @@ must also occur within 1/2 second of the first button press.
 <varlistentry>
 <term><link linkend="guint">guint</link> <structfield>state</structfield></term>
 <listitem><simpara>a bit-mask representing the state of the modifier keys (e.g. Control,
-Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType">GdkModifierType</link>.
+Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType"><type>GdkModifierType</type></link>.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
@@ -379,7 +382,7 @@ be simulated by pressing both mouse buttons together.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventScroll"/>struct GdkEventScroll</title>
-<programlisting>struct GdkEventScroll {
+<indexterm><primary>GdkEventScroll</primary></indexterm><programlisting>struct GdkEventScroll {
 
   GdkEventType type;
   GdkWindow *window;
@@ -432,7 +435,7 @@ when the wheel is turned.
 <varlistentry>
 <term><link linkend="guint">guint</link> <structfield>state</structfield></term>
 <listitem><simpara>a bit-mask representing the state of the modifier keys (e.g. Control,
-Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType">GdkModifierType</link>.
+Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType"><type>GdkModifierType</type></link>.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
@@ -460,7 +463,7 @@ Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType">GdkM
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventMotion"/>struct GdkEventMotion</title>
-<programlisting>struct GdkEventMotion {
+<indexterm><primary>GdkEventMotion</primary></indexterm><programlisting>struct GdkEventMotion {
 
   GdkEventType type;
   GdkWindow *window;
@@ -518,12 +521,13 @@ Generated when the pointer moves.
 <varlistentry>
 <term><link linkend="guint">guint</link> <structfield>state</structfield></term>
 <listitem><simpara>a bit-mask representing the state of the modifier keys (e.g. Control,
-  Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType">GdkModifierType</link>.
+  Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType"><type>GdkModifierType</type></link>.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><link linkend="gint16">gint16</link> <structfield>is_hint</structfield></term>
-<listitem><simpara>
+<listitem><simpara>set to 1 if this event is just a hint, see the <literal>GDK_POINTER_MOTION_HINT_MASK</literal>
+  value of <link linkend="GdkEventMask"><type>GdkEventMask</type></link>.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
@@ -545,7 +549,7 @@ Generated when the pointer moves.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventExpose"/>struct GdkEventExpose</title>
-<programlisting>struct GdkEventExpose {
+<indexterm><primary>GdkEventExpose</primary></indexterm><programlisting>struct GdkEventExpose {
 
   GdkEventType type;
   GdkWindow *window;
@@ -597,7 +601,7 @@ so this is not normally needed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventVisibility"/>struct GdkEventVisibility</title>
-<programlisting>struct GdkEventVisibility {
+<indexterm><primary>GdkEventVisibility</primary></indexterm><programlisting>struct GdkEventVisibility {
 
   GdkEventType type;
   GdkWindow *window;
@@ -634,7 +638,7 @@ Generated when the window visibility status has changed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventCrossing"/>struct GdkEventCrossing</title>
-<programlisting>struct GdkEventCrossing {
+<indexterm><primary>GdkEventCrossing</primary></indexterm><programlisting>struct GdkEventCrossing {
 
   GdkEventType type;
   GdkWindow *window;
@@ -721,14 +725,14 @@ Generated when the pointer enters or leaves a window.
 <varlistentry>
 <term><link linkend="guint">guint</link> <structfield>state</structfield></term>
 <listitem><simpara>a bit-mask representing the state of the modifier keys (e.g. Control,
-  Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType">GdkModifierType</link>.
+  Shift and Alt) and the pointer buttons. See <link linkend="GdkModifierType"><type>GdkModifierType</type></link>.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventFocus"/>struct GdkEventFocus</title>
-<programlisting>struct GdkEventFocus {
+<indexterm><primary>GdkEventFocus</primary></indexterm><programlisting>struct GdkEventFocus {
 
   GdkEventType type;
   GdkWindow *window;
@@ -764,7 +768,7 @@ the focus.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventConfigure"/>struct GdkEventConfigure</title>
-<programlisting>struct GdkEventConfigure {
+<indexterm><primary>GdkEventConfigure</primary></indexterm><programlisting>struct GdkEventConfigure {
 
   GdkEventType type;
   GdkWindow *window;
@@ -816,7 +820,7 @@ Generated when a window size or position has changed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventProperty"/>struct GdkEventProperty</title>
-<programlisting>struct GdkEventProperty {
+<indexterm><primary>GdkEventProperty</primary></indexterm><programlisting>struct GdkEventProperty {
 
   GdkEventType type;
   GdkWindow *window;
@@ -864,7 +868,7 @@ deleted (<literal>GDK_PROPERTY_DELETE</literal>).
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventSelection"/>struct GdkEventSelection</title>
-<programlisting>struct GdkEventSelection {
+<indexterm><primary>GdkEventSelection</primary></indexterm><programlisting>struct GdkEventSelection {
 
   GdkEventType type;
   GdkWindow *window;
@@ -925,13 +929,13 @@ is taken over by another client application.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkNativeWindow"/>GdkNativeWindow</title>
-<para>
+<indexterm><primary>GdkNativeWindow</primary></indexterm><para>
 Used to represent native windows (<type>Window</type>s for the X11 backend, 
 <type>HWND</type>s for Win32).
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkEventDND"/>struct GdkEventDND</title>
-<programlisting>struct GdkEventDND {
+<indexterm><primary>GdkEventDND</primary></indexterm><programlisting>struct GdkEventDND {
 
   GdkEventType type;
   GdkWindow *window;
@@ -963,7 +967,7 @@ Generated during DND operations.
 </varlistentry>
 <varlistentry>
 <term><link linkend="GdkDragContext">GdkDragContext</link> *<structfield>context</structfield></term>
-<listitem><simpara>the <link linkend="GdkDragContext">GdkDragContext</link> for the current DND operation.
+<listitem><simpara>the <link linkend="GdkDragContext"><type>GdkDragContext</type></link> for the current DND operation.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
@@ -987,7 +991,7 @@ Generated during DND operations.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventProximity"/>struct GdkEventProximity</title>
-<programlisting>struct GdkEventProximity {
+<indexterm><primary>GdkEventProximity</primary></indexterm><programlisting>struct GdkEventProximity {
 
   GdkEventType type;
   GdkWindow *window;
@@ -1033,7 +1037,7 @@ in or out of contact with a touch screen.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventClient"/>struct GdkEventClient</title>
-<programlisting>struct GdkEventClient {
+<indexterm><primary>GdkEventClient</primary></indexterm><programlisting>struct GdkEventClient {
 
   GdkEventType type;
   GdkWindow *window;
@@ -1082,7 +1086,7 @@ union, 16-bit data uses the s array, and 32-bit data uses the l array.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventNoExpose"/>struct GdkEventNoExpose</title>
-<programlisting>struct GdkEventNoExpose {
+<indexterm><primary>GdkEventNoExpose</primary></indexterm><programlisting>struct GdkEventNoExpose {
 
   GdkEventType type;
   GdkWindow *window;
@@ -1090,8 +1094,8 @@ union, 16-bit data uses the s array, and 32-bit data uses the l array.
 };
 </programlisting>
 <para>
-Generated when the area of a <link linkend="GdkDrawable">GdkDrawable</link> being copied, with <link linkend="gdk-draw-drawable">gdk_draw_drawable</link>()
-or <link linkend="gdk-window-copy-area">gdk_window_copy_area</link>(), was completely available.
+Generated when the area of a <link linkend="GdkDrawable"><type>GdkDrawable</type></link> being copied, with <link linkend="gdk-draw-drawable"><function>gdk_draw_drawable()</function></link>
+or <link linkend="gdk-window-copy-area"><function>gdk_window_copy_area()</function></link>, was completely available.
 </para>
 <para>
 FIXME: add more here.
@@ -1115,7 +1119,7 @@ FIXME: add more here.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventWindowState"/>struct GdkEventWindowState</title>
-<programlisting>struct GdkEventWindowState {
+<indexterm><primary>GdkEventWindowState</primary></indexterm><programlisting>struct GdkEventWindowState {
 
   GdkEventType type;
   GdkWindow *window;
@@ -1149,14 +1153,14 @@ Generated when the state of a toplevel window changes.
 </varlistentry>
 <varlistentry>
 <term><link linkend="GdkWindowState">GdkWindowState</link> <structfield>new_window_state</structfield></term>
-<listitem><simpara>the new window state, a combination of <link linkend="GdkWindowState">GdkWindowState</link> bits.
+<listitem><simpara>the new window state, a combination of <link linkend="GdkWindowState"><type>GdkWindowState</type></link> bits.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkEventSetting"/>struct GdkEventSetting</title>
-<programlisting>struct GdkEventSetting {
+<indexterm><primary>GdkEventSetting</primary></indexterm><programlisting>struct GdkEventSetting {
 
   GdkEventType type;
   GdkWindow *window;
@@ -1190,7 +1194,7 @@ Generated when a setting is modified.
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
-<term>char *<structfield>name</structfield></term>
+<term><link linkend="char">char</link> *<structfield>name</structfield></term>
 <listitem><simpara>the name of the setting.
 
 </simpara></listitem>
@@ -1198,7 +1202,7 @@ Generated when a setting is modified.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkScrollDirection"/>enum GdkScrollDirection</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkScrollDirection</primary></indexterm><programlisting>typedef enum
 {
   GDK_SCROLL_UP,
   GDK_SCROLL_DOWN,
@@ -1207,7 +1211,7 @@ Generated when a setting is modified.
 } GdkScrollDirection;
 </programlisting>
 <para>
-Specifies the direction for <link linkend="GdkEventScroll">GdkEventScroll</link>. 
+Specifies the direction for <link linkend="GdkEventScroll"><type>GdkEventScroll</type></link>. 
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>GDK_SCROLL_UP</literal></term>
@@ -1233,7 +1237,7 @@ Specifies the direction for <link linkend="GdkEventScroll">GdkEventScroll</link>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkVisibilityState"/>enum GdkVisibilityState</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkVisibilityState</primary></indexterm><programlisting>typedef enum
 {
   GDK_VISIBILITY_UNOBSCURED,
   GDK_VISIBILITY_PARTIAL,
@@ -1241,7 +1245,7 @@ Specifies the direction for <link linkend="GdkEventScroll">GdkEventScroll</link>
 } GdkVisibilityState;
 </programlisting>
 <para>
-Specifies the visiblity status of a window for a <link linkend="GdkEventVisibility">GdkEventVisibility</link>.
+Specifies the visiblity status of a window for a <link linkend="GdkEventVisibility"><type>GdkEventVisibility</type></link>.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>GDK_VISIBILITY_UNOBSCURED</literal></term>
@@ -1262,7 +1266,7 @@ Specifies the visiblity status of a window for a <link linkend="GdkEventVisibili
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkCrossingMode"/>enum GdkCrossingMode</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkCrossingMode</primary></indexterm><programlisting>typedef enum
 {
   GDK_CROSSING_NORMAL,
   GDK_CROSSING_GRAB,
@@ -1270,7 +1274,7 @@ Specifies the visiblity status of a window for a <link linkend="GdkEventVisibili
 } GdkCrossingMode;
 </programlisting>
 <para>
-Specifies the crossing mode for <link linkend="GdkEventCrossing">GdkEventCrossing</link>.
+Specifies the crossing mode for <link linkend="GdkEventCrossing"><type>GdkEventCrossing</type></link>.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>GDK_CROSSING_NORMAL</literal></term>
@@ -1291,7 +1295,7 @@ Specifies the crossing mode for <link linkend="GdkEventCrossing">GdkEventCrossin
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkNotifyType"/>enum GdkNotifyType</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkNotifyType</primary></indexterm><programlisting>typedef enum
 {
   GDK_NOTIFY_ANCESTOR		= 0,
   GDK_NOTIFY_VIRTUAL		= 1,
@@ -1302,7 +1306,7 @@ Specifies the crossing mode for <link linkend="GdkEventCrossing">GdkEventCrossin
 } GdkNotifyType;
 </programlisting>
 <para>
-Specifies the kind of crossing for <link linkend="GdkEventCrossing">GdkEventCrossing</link>.
+Specifies the kind of crossing for <link linkend="GdkEventCrossing"><type>GdkEventCrossing</type></link>.
 </para>
 <para>
 See the X11 protocol specification of <type>LeaveNotify</type> for
@@ -1349,14 +1353,14 @@ full details of crossing event generation.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkPropertyState"/>enum GdkPropertyState</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkPropertyState</primary></indexterm><programlisting>typedef enum
 {
   GDK_PROPERTY_NEW_VALUE,
   GDK_PROPERTY_DELETE
 } GdkPropertyState;
 </programlisting>
 <para>
-Specifies the type of a property change for a <link linkend="GdkEventProperty">GdkEventProperty</link>.
+Specifies the type of a property change for a <link linkend="GdkEventProperty"><type>GdkEventProperty</type></link>.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>GDK_PROPERTY_NEW_VALUE</literal></term>
@@ -1372,13 +1376,15 @@ Specifies the type of a property change for a <link linkend="GdkEventProperty">G
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkWindowState"/>enum GdkWindowState</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkWindowState</primary></indexterm><programlisting>typedef enum
 {
   GDK_WINDOW_STATE_WITHDRAWN  = 1 &lt;&lt; 0,
   GDK_WINDOW_STATE_ICONIFIED  = 1 &lt;&lt; 1,
   GDK_WINDOW_STATE_MAXIMIZED  = 1 &lt;&lt; 2,
   GDK_WINDOW_STATE_STICKY     = 1 &lt;&lt; 3,
-  GDK_WINDOW_STATE_FULLSCREEN = 1 &lt;&lt; 4
+  GDK_WINDOW_STATE_FULLSCREEN = 1 &lt;&lt; 4,
+  GDK_WINDOW_STATE_ABOVE      = 1 &lt;&lt; 5,
+  GDK_WINDOW_STATE_BELOW      = 1 &lt;&lt; 6
 } GdkWindowState;
 </programlisting>
 <para>
@@ -1406,14 +1412,24 @@ Specifies the state of a toplevel window.
 </varlistentry>
 <varlistentry>
 <term><literal>GDK_WINDOW_STATE_FULLSCREEN</literal></term>
-<listitem><simpara>
+<listitem><simpara>the window is maximized without decorations.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GDK_WINDOW_STATE_ABOVE</literal></term>
+<listitem><simpara>the window is kept above other windows.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GDK_WINDOW_STATE_BELOW</literal></term>
+<listitem><simpara>the window is kept below other windows.
 
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GdkSettingAction"/>enum GdkSettingAction</title>
-<programlisting>typedef enum
+<indexterm><primary>GdkSettingAction</primary></indexterm><programlisting>typedef enum
 {
   GDK_SETTING_ACTION_NEW,
   GDK_SETTING_ACTION_CHANGED,
@@ -1421,7 +1437,7 @@ Specifies the state of a toplevel window.
 } GdkSettingAction;
 </programlisting>
 <para>
-Specifies the kind of modification applied to a setting in a <link linkend="GdkEventSetting">GdkEventSetting</link>.
+Specifies the kind of modification applied to a setting in a <link linkend="GdkEventSetting"><type>GdkEventSetting</type></link>.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>GDK_SETTING_ACTION_NEW</literal></term>

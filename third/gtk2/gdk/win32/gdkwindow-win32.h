@@ -43,9 +43,9 @@ struct _GdkWin32PositionInfo
   gint height;
   gint x_offset;		/* Offsets to add to Win32 coordinates */
   gint y_offset;		/* within window to get GDK coodinates */
-  gboolean big : 1;
-  gboolean mapped : 1;
-  gboolean no_bg : 1;	        /* Set when the window background
+  guint big : 1;
+  guint mapped : 1;
+  guint no_bg : 1;	        /* Set when the window background
 				 * is temporarily unset during resizing
 				 * and scaling
 				 */
@@ -76,12 +76,12 @@ struct _GdkWindowImplWin32
   GdkWin32PositionInfo position_info;
 
   HCURSOR hcursor;
+  HICON   hicon_big;
+  HICON   hicon_small;
 
   /* Window size hints */
   gint hint_flags;
-  gint hint_x, hint_y;
-  gint hint_min_width, hint_min_height;
-  gint hint_max_width, hint_max_height;
+  GdkGeometry hints;
 
   gboolean extension_events_selected;
 };

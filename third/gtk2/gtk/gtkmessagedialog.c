@@ -18,12 +18,13 @@
  */
 
 /*
- * Modified by the GTK+ Team and others 1997-1999.  See the AUTHORS
+ * Modified by the GTK+ Team and others 1997-2003.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtkmessagedialog.h"
 #include "gtklabel.h"
 #include "gtkhbox.h"
@@ -103,25 +104,39 @@ gtk_message_dialog_class_init (GtkMessageDialogClass *class)
   
   gtk_widget_class_install_style_property (widget_class,
 					   g_param_spec_int ("message_border",
-                                                             _("Image/label border"),
-                                                             _("Width of border around the label and image in the message dialog"),
+                                                             P_("Image/label border"),
+                                                             P_("Width of border around the label and image in the message dialog"),
                                                              0,
                                                              G_MAXINT,
                                                              8,
                                                              G_PARAM_READABLE));
+  /**
+   * GtkMessageDialog::use_separator
+   *
+   * Whether to draw a separator line between the message label and the buttons
+   * in the dialog.
+   *
+   * Since: 2.4
+   */
+  gtk_widget_class_install_style_property (widget_class,
+					   g_param_spec_boolean ("use_separator",
+								 P_("Use separator"),
+								 P_("Whether to put a separator between the message dialog's text and the buttons"),
+								 FALSE,
+								 G_PARAM_READABLE));
   g_object_class_install_property (gobject_class,
                                    PROP_MESSAGE_TYPE,
                                    g_param_spec_enum ("message_type",
-						      _("Message Type"),
-						      _("The type of message"),
+						      P_("Message Type"),
+						      P_("The type of message"),
 						      GTK_TYPE_MESSAGE_TYPE,
                                                       GTK_MESSAGE_INFO,
                                                       G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (gobject_class,
                                    PROP_BUTTONS,
                                    g_param_spec_enum ("buttons",
-						      _("Message Buttons"),
-						      _("The buttons shown in the message dialog"),
+						      P_("Message Buttons"),
+						      P_("The buttons shown in the message dialog"),
 						      GTK_TYPE_BUTTONS_TYPE,
                                                       GTK_BUTTONS_NONE,
                                                       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
@@ -132,6 +147,8 @@ static void
 gtk_message_dialog_init (GtkMessageDialog *dialog)
 {
   GtkWidget *hbox;
+
+  gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
   
   dialog->label = gtk_label_new (NULL);
   dialog->image = gtk_image_new_from_stock (NULL, GTK_ICON_SIZE_DIALOG);
@@ -153,6 +170,8 @@ gtk_message_dialog_init (GtkMessageDialog *dialog)
                       FALSE, FALSE, 0);
 
   gtk_widget_show_all (hbox);
+
+  _gtk_dialog_set_ignore_separator (GTK_DIALOG (dialog), TRUE);
 }
 
 static GtkMessageType
@@ -266,6 +285,7 @@ gtk_message_dialog_get_property (GObject     *object,
     {
     case PROP_MESSAGE_TYPE:
       g_value_set_enum (value, gtk_message_dialog_get_message_type (dialog));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -302,7 +322,9 @@ gtk_message_dialog_new (GtkWindow     *parent,
   GtkDialog *dialog;
   gchar* msg = 0;
   va_list args;
-  
+
+  g_return_val_if_fail (parent == NULL || GTK_IS_WINDOW (parent), NULL);
+
   widget = g_object_new (GTK_TYPE_MESSAGE_DIALOG,
 			 "message_type", type,
 			 "buttons", buttons,
@@ -342,6 +364,96 @@ gtk_message_dialog_new (GtkWindow     *parent,
     gtk_dialog_set_has_separator (dialog, FALSE);
 
   return widget;
+}
+
+/**
+ * gtk_message_dialog_new_with_markup:
+ * @parent: transient parent, or %NULL for none 
+ * @flags: flags
+ * @type: type of message
+ * @buttons: set of buttons to use
+ * @message_format: printf()-style format string, or %NULL
+ * @Varargs: arguments for @message_format
+ * 
+ * Creates a new message dialog, which is a simple dialog with an icon
+ * indicating the dialog type (error, warning, etc.) and some text which
+ * is marked up with the <link linkend="PangoMarkupFormat">Pango text markup language</link>.
+ * When the user clicks a button a "response" signal is emitted with
+ * response IDs from #GtkResponseType. See #GtkDialog for more details.
+ *
+ * Special XML characters in the printf() arguments passed to this
+ * function will automatically be escaped as necessary.
+ * (See g_markup_printf_escaped() for how this is implemented.)
+ * Usually this is what you want, but if you have an existing
+ * Pango markup string that you want to use literally as the
+ * label, then you need to use gtk_message_dialog_set_markup()
+ * instead, since you can't pass the markup string either
+ * as the format (it might contain '%' characters) or as a string
+ * argument.
+ *
+ * <informalexample><programlisting>
+ *  GtkWidget *dialog;
+ *  dialog = gtk_message_dialog_new (main_application_window,
+ *                                   GTK_DIALOG_DESTROY_WITH_PARENT,
+ *                                   GTK_MESSAGE_ERROR,
+ *                                   GTK_BUTTON_CLOSE,
+ *                                   NULL);
+ *  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
+ *                                 markup);
+ * </programlisting></informalexample>
+ * 
+ * Return value: a new #GtkMessageDialog
+ *
+ * Since: 2.4
+ **/
+GtkWidget*
+gtk_message_dialog_new_with_markup (GtkWindow     *parent,
+                                    GtkDialogFlags flags,
+                                    GtkMessageType type,
+                                    GtkButtonsType buttons,
+                                    const gchar   *message_format,
+                                    ...)
+{
+  GtkWidget *widget;
+  gchar* msg = 0;
+  va_list args;
+
+  g_return_val_if_fail (parent == NULL || GTK_IS_WINDOW (parent), NULL);
+
+  widget = gtk_message_dialog_new (parent, flags, type, buttons, NULL);
+
+  if (message_format)
+    {
+      va_start (args, message_format);
+      msg = g_markup_vprintf_escaped (message_format, args);
+      va_end (args);
+
+      gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (widget), msg);
+
+      g_free (msg);
+    }
+
+  return widget;
+}
+
+/**
+ * gtk_message_dialog_set_markup:
+ * @message_dialog: a #GtkMessageDialog
+ * @str: markup string (see <link linkend="PangoMarkupFormat">Pango markup format</link>)
+ * 
+ * Sets the text of the message dialog to be @str, which is marked
+ * up with the <link linkend="PangoMarkupFormat">Pango text markup
+ * language</link>.
+ *
+ * Since: 2.4
+ **/
+void
+gtk_message_dialog_set_markup (GtkMessageDialog *message_dialog,
+			       const gchar      *str)
+{
+  g_return_if_fail (GTK_IS_MESSAGE_DIALOG (message_dialog));
+  
+  gtk_label_set_markup (GTK_LABEL (message_dialog->label), str);
 }
 
 static void
@@ -406,6 +518,7 @@ gtk_message_dialog_style_set (GtkWidget *widget,
 {
   GtkWidget *parent;
   gint border_width = 0;
+  gboolean use_separator;
 
   parent = GTK_WIDGET (GTK_MESSAGE_DIALOG (widget)->image->parent);
 
@@ -417,6 +530,13 @@ gtk_message_dialog_style_set (GtkWidget *widget,
       gtk_container_set_border_width (GTK_CONTAINER (parent),
                                       border_width);
     }
+
+  gtk_widget_style_get (widget,
+			"use_separator", &use_separator,
+			NULL);
+  _gtk_dialog_set_ignore_separator (GTK_DIALOG (widget), FALSE);
+  gtk_dialog_set_has_separator (GTK_DIALOG (widget), use_separator);
+  _gtk_dialog_set_ignore_separator (GTK_DIALOG (widget), TRUE);
 
   if (GTK_WIDGET_CLASS (parent_class)->style_set)
     (GTK_WIDGET_CLASS (parent_class)->style_set) (widget, prev_style);

@@ -18,7 +18,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "gdkdisplay.h"
+#include "gdkscreen.h"
 #include "gdkcursor.h"
 #include "gdkprivate-win32.h"
 
@@ -96,10 +98,10 @@ gdk_cursor_new_for_display (GdkDisplay   *display,
   hcursor = _gdk_win32_data_to_wcursor (cursor_type);
 
   if (hcursor == NULL)
-    g_warning ("gdk_cursor_new: no cursor %d found", cursor_type);
+    g_warning ("gdk_cursor_new_for_display: no cursor %d found", cursor_type);
   else
-    GDK_NOTE (MISC, g_print ("gdk_cursor_new: %d: %#x\n",
-			     cursor_type, (guint) hcursor));
+    GDK_NOTE (MISC, g_print ("gdk_cursor_new_for_display: %d: %p\n",
+			     cursor_type, hcursor));
 
   private = g_new (GdkCursorPrivate, 1);
   private->hcursor = hcursor;
@@ -111,7 +113,7 @@ gdk_cursor_new_for_display (GdkDisplay   *display,
 }
 
 static gboolean
-color_is_white (GdkColor *color)
+color_is_white (const GdkColor *color)
 {
   return (color->red == 0xFFFF
 	  && color->green == 0xFFFF
@@ -119,17 +121,18 @@ color_is_white (GdkColor *color)
 }
 
 GdkCursor*
-gdk_cursor_new_from_pixmap (GdkPixmap *source,
-			    GdkPixmap *mask,
-			    GdkColor  *fg,
-			    GdkColor  *bg,
-			    gint       x,
-			    gint       y)
+gdk_cursor_new_from_pixmap (GdkPixmap      *source,
+			    GdkPixmap      *mask,
+			    const GdkColor *fg,
+			    const GdkColor *bg,
+			    gint            x,
+			    gint            y)
 {
   GdkCursorPrivate *private;
   GdkCursor *cursor;
   GdkPixmapImplWin32 *source_impl, *mask_impl;
-  GdkImage *source_image, *mask_image;
+  guchar *source_bits, *mask_bits;
+  gint source_bpl, mask_bpl;
   HCURSOR hcursor;
   guchar *p, *q, *xor_mask, *and_mask;
   gint width, height, cursor_width, cursor_height;
@@ -158,11 +161,15 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
 
   residue = (1 << ((8-(width%8))%8)) - 1;
 
-  source_image = source_impl->image;
-  mask_image = mask_impl->image;
+  source_bits = source_impl->bits;
+  mask_bits = mask_impl->bits;
 
-  g_return_val_if_fail (source_image->depth == 1 && mask_image->depth == 1,
+  g_return_val_if_fail (GDK_PIXMAP_OBJECT (source)->depth == 1
+  			&& GDK_PIXMAP_OBJECT (mask)->depth == 1,
 			NULL);
+
+  source_bpl = ((width - 1)/32 + 1)*4;
+  mask_bpl = ((mask_impl->width - 1)/32 + 1)*4;
 
 #ifdef G_ENABLE_DEBUG
   if (_gdk_debug_flags & GDK_DEBUG_CURSOR)
@@ -174,7 +181,7 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
 	  if (iy == 16)
 	    break;
 
-	  p = (guchar *) source_image->mem + iy*source_image->bpl;
+	  p = source_bits + iy*source_bpl;
 	  for (ix = 0; ix < width; ix++)
 	    {
 	      if (ix == 79)
@@ -191,7 +198,7 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
 	  if (iy == 16)
 	    break;
 
-	  p = (guchar *) mask_image->mem + iy*source_image->bpl;
+	  p = mask_bits + iy*source_bpl;
 	  for (ix = 0; ix < width; ix++)
 	    {
 	      if (ix == 79)
@@ -222,8 +229,8 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
    */
   for (iy = 0; iy < height; iy++)
     {
-      p = (guchar *) source_image->mem + iy*source_image->bpl;
-      q = (guchar *) mask_image->mem + iy*mask_image->bpl;
+      p = source_bits + iy*source_bpl;
+      q = mask_bits + iy*mask_bpl;
       
       for (ix = 0; ix < ((width-1)/8+1); ix++)
 	if (bg_is_white)
@@ -237,7 +244,7 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
 
   for (iy = 0; iy < height; iy++)
     {
-      p = (guchar *) source_image->mem + iy*source_image->bpl;
+      p = source_bits + iy*source_bpl;
       q = xor_mask + iy*cursor_width/8;
 
       for (ix = 0; ix < ((width-1)/8+1); ix++)
@@ -255,7 +262,7 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
 
   for (iy = 0; iy < height; iy++)
     {
-      p = (guchar *) mask_image->mem + iy*mask_image->bpl;
+      p = mask_bits + iy*mask_bpl;
       q = and_mask + iy*cursor_width/8;
 
       for (ix = 0; ix < ((width-1)/8+1); ix++)
@@ -268,12 +275,12 @@ gdk_cursor_new_from_pixmap (GdkPixmap *source,
 			  and_mask, xor_mask);
 
   GDK_NOTE (MISC, g_print ("gdk_cursor_new_from_pixmap: "
-			   "%#x (%dx%d) %#x (%dx%d) = %#x (%dx%d)\n",
-			   (guint) GDK_PIXMAP_HBITMAP (source),
+			   "%p (%dx%d) %p (%dx%d) = %p (%dx%d)\n",
+			   GDK_PIXMAP_HBITMAP (source),
 			   source_impl->width, source_impl->height,
-			   (guint) GDK_PIXMAP_HBITMAP (mask),
+			   GDK_PIXMAP_HBITMAP (mask),
 			   mask_impl->width, mask_impl->height,
-			   (guint) hcursor, cursor_width, cursor_height));
+			   hcursor, cursor_width, cursor_height));
 
   g_free (xor_mask);
   g_free (and_mask);
@@ -295,11 +302,11 @@ _gdk_cursor_destroy (GdkCursor *cursor)
   g_return_if_fail (cursor != NULL);
   private = (GdkCursorPrivate *) cursor;
 
-  GDK_NOTE (MISC, g_print ("_gdk_cursor_destroy: %#x\n",
-			   (cursor->type == GDK_CURSOR_IS_PIXMAP) ? (guint) private->hcursor : 0));
+  GDK_NOTE (MISC, g_print ("_gdk_cursor_destroy: %p\n",
+			   (cursor->type == GDK_CURSOR_IS_PIXMAP) ? private->hcursor : 0));
 
-  if (GetCursor() == private->hcursor)
-    SetCursor(NULL);
+  if (GetCursor () == private->hcursor)
+    SetCursor (NULL);
 
   if (!DestroyCursor (private->hcursor))
     WIN32_API_FAILED ("DestroyCursor");
@@ -311,4 +318,116 @@ GdkDisplay *
 gdk_cursor_get_display (GdkCursor *cursor)
 {
   return gdk_display_get_default ();
+}
+
+GdkCursor *
+gdk_cursor_new_from_pixbuf (GdkDisplay *display, 
+			    GdkPixbuf  *pixbuf,
+			    gint        x,
+			    gint        y)
+{
+  /* FIXME: Use alpha if supported */
+
+  GdkCursor *cursor;
+  GdkPixmap *pixmap, *mask;
+  guint width, height, n_channels, rowstride, i, j;
+  guint8 *data, *mask_data, *pixels;
+  GdkColor fg = { 0, 0, 0, 0 };
+  GdkColor bg = { 0, 0xffff, 0xffff, 0xffff };
+  GdkScreen *screen;
+
+  g_return_val_if_fail (GDK_IS_DISPLAY (display), NULL);
+  g_return_val_if_fail (GDK_IS_PIXBUF (pixbuf), NULL);
+
+  width = gdk_pixbuf_get_width (pixbuf);
+  height = gdk_pixbuf_get_height (pixbuf);
+
+  g_return_val_if_fail (0 <= x && x < width, NULL);
+  g_return_val_if_fail (0 <= y && y < height, NULL);
+
+  n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+  pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+  data = g_new0 (guint8, (width + 7) / 8 * height);
+  mask_data = g_new0 (guint8, (width + 7) / 8 * height);
+
+  for (j = 0; j < height; j++)
+    {
+      guint8 *src = pixels + j * rowstride;
+      guint8 *d = data + (width + 7) / 8 * j;
+      guint8 *md = mask_data + (width + 7) / 8 * j;
+	
+      for (i = 0; i < width; i++)
+	{
+	  if (src[1] < 0x80)
+	    *d |= 1 << (i % 8);
+	  
+	  if (n_channels == 3 || src[3] >= 0x80)
+	    *md |= 1 << (i % 8);
+	  
+	  src += n_channels;
+	  if (i % 8 == 7)
+	    {
+	      d++; 
+	      md++;
+	    }
+	}
+    }
+      
+  screen = gdk_display_get_default_screen (display);
+  pixmap = gdk_bitmap_create_from_data (gdk_screen_get_root_window (screen), 
+					data, width, height);
+ 
+  mask = gdk_bitmap_create_from_data (gdk_screen_get_root_window (screen),
+				      mask_data, width, height);
+   
+  cursor = gdk_cursor_new_from_pixmap (pixmap, mask, &fg, &bg, x, y);
+   
+  g_object_unref (pixmap);
+  g_object_unref (mask);
+
+  g_free (data);
+  g_free (mask_data);
+  
+  return cursor;
+}
+
+gboolean 
+gdk_display_supports_cursor_alpha (GdkDisplay    *display)
+{
+  g_return_val_if_fail (GDK_IS_DISPLAY (display), FALSE);
+
+  /* FIXME */
+  return FALSE;
+}
+
+gboolean 
+gdk_display_supports_cursor_color (GdkDisplay    *display)
+{
+  g_return_val_if_fail (GDK_IS_DISPLAY (display), FALSE);
+
+  /* FIXME */
+  return FALSE;
+}
+
+guint     
+gdk_display_get_default_cursor_size (GdkDisplay    *display)
+{
+  g_return_val_if_fail (GDK_IS_DISPLAY (display), 0);
+  
+  return MIN (GetSystemMetrics (SM_CXCURSOR), GetSystemMetrics (SM_CYCURSOR));
+}
+
+void     
+gdk_display_get_maximal_cursor_size (GdkDisplay *display,
+				     guint       *width,
+				     guint       *height)
+{
+  g_return_if_fail (GDK_IS_DISPLAY (display));
+  
+  if (width)
+    *width = GetSystemMetrics (SM_CXCURSOR);
+  if (height)
+    *height = GetSystemMetrics (SM_CYCURSOR);
 }

@@ -19,7 +19,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <glib.h>
 #include <glib/gprintf.h>
@@ -31,10 +31,10 @@
 #include <unistd.h>
 #endif
 
-#ifdef G_OS_WIN32
-#define SOEXT ".dll"
+#if USE_LA_MODULES
+#define SOEXT ".la"
 #else
-#define SOEXT ".so"
+#define SOEXT ("." G_MODULE_SUFFIX)
 #endif
 
 #include <pango/pango-utils.h>
@@ -44,7 +44,7 @@
 static char *
 escape_string (const char *str)
 {
-  GString *result = g_string_new ("");
+  GString *result = g_string_new (NULL);
 
   while (TRUE)
     {
@@ -158,30 +158,36 @@ int main (int argc, char **argv)
     {
       char **dirs;
       int i;
+      GHashTable *dirs_done;
 
       path = gtk_rc_get_im_module_path ();
 
       g_printf ("# ModulesPath = %s\n#\n", path);
 
       dirs = pango_split_file_list (path);
+      dirs_done = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, NULL);
 
       for (i=0; dirs[i]; i++)
-	{
-	  GDir *dir = g_dir_open (dirs[i], 0, NULL);
-	  if (dir)
-	    {
-	      const char *dent;
+        if (!g_hash_table_lookup (dirs_done, dirs[i]))
+          {
+	    GDir *dir = g_dir_open (dirs[i], 0, NULL);
+	    if (dir)
+	      {
+	        const char *dent;
 
-	      while ((dent = g_dir_read_name (dir)))
-		{
-		  int len = strlen (dent);
-		  if (len > 3 && strcmp (dent + len - strlen (SOEXT), SOEXT) == 0)
-		    error |= query_module (dirs[i], dent);
-		}
-	      
-	      g_dir_close (dir);
-	    }
-	}
+	        while ((dent = g_dir_read_name (dir)))
+	          {
+	            if (g_str_has_suffix (dent, SOEXT))
+	              error |= query_module (dirs[i], dent);
+	          }
+	        
+	        g_dir_close (dir);
+	      }
+
+            g_hash_table_insert (dirs_done, dirs[i], GUINT_TO_POINTER (TRUE));
+          }
+
+      g_hash_table_destroy (dirs_done);
     }
   else
     {

@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <string.h>
 
 #include "gtkstock.h"
@@ -33,6 +34,11 @@
 
 static GHashTable *stock_hash = NULL;
 static void init_stock_hash (void);
+
+/* We use an unused modifier bit to mark stock items which
+ * must be freed when they are removed from the hash table.
+ */
+#define NON_STATIC_MASK (1 << 29)
 
 static void
 real_add (const GtkStockItem *items,
@@ -51,14 +57,25 @@ real_add (const GtkStockItem *items,
     {
       gpointer old_key, old_value;
       const GtkStockItem *item = &items[i];
+
+      if (item->modifier & NON_STATIC_MASK)
+	{
+	  g_warning ("Bit 29 set in stock accelerator.\n");
+	  copy = TRUE;
+	}
+
       if (copy)
-        item = gtk_stock_item_copy (item);
+	{
+	  item = gtk_stock_item_copy (item);
+	  ((GtkStockItem *)item)->modifier |= NON_STATIC_MASK;
+	}
 
       if (g_hash_table_lookup_extended (stock_hash, item->stock_id,
                                         &old_key, &old_value))
         {
           g_hash_table_remove (stock_hash, old_key);
-          gtk_stock_item_free (old_value);
+	  if (((GtkStockItem *)old_value)->modifier & NON_STATIC_MASK)
+	    gtk_stock_item_free (old_value);
         }
       
       g_hash_table_insert (stock_hash,
@@ -135,6 +152,7 @@ gtk_stock_lookup (const gchar  *stock_id,
   if (found)
     {
       *item = *found;
+      item->modifier &= ~NON_STATIC_MASK;
       if (item->label)
         item->label = dgettext (item->translation_domain, item->label);
     }
@@ -295,8 +313,11 @@ static const GtkStockItem builtin_items [] =
   { GTK_STOCK_GO_DOWN, N_("_Down"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_GO_FORWARD, N_("_Forward"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_GO_UP, N_("_Up"), 0, 0, GETTEXT_PACKAGE },
+  { GTK_STOCK_HARDDISK, N_("_Harddisk"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_HELP, N_("_Help"), GDK_CONTROL_MASK, 'h', GETTEXT_PACKAGE },
   { GTK_STOCK_HOME, N_("_Home"), 0, 0, GETTEXT_PACKAGE },
+  { GTK_STOCK_INDENT, N_("Increase Indent"), 0, 0, GETTEXT_PACKAGE },
+  { GTK_STOCK_UNINDENT, N_("Decrease Indent"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_INDEX, N_("_Index"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_ITALIC, N_("_Italic"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_JUMP_TO, N_("_Jump to"), 0, 0, GETTEXT_PACKAGE },
@@ -304,6 +325,7 @@ static const GtkStockItem builtin_items [] =
   { GTK_STOCK_JUSTIFY_FILL, N_("_Fill"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_JUSTIFY_LEFT, N_("_Left"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_JUSTIFY_RIGHT, N_("_Right"), 0, 0, GETTEXT_PACKAGE },
+  { GTK_STOCK_NETWORK, N_("_Network"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_NEW, N_("_New"), GDK_CONTROL_MASK, 'n', GETTEXT_PACKAGE },
   { GTK_STOCK_NO, N_("_No"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_OK, N_("_OK"), 0, 0, GETTEXT_PACKAGE },
@@ -331,8 +353,8 @@ static const GtkStockItem builtin_items [] =
   { GTK_STOCK_UNDERLINE, N_("_Underline"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_UNDO, N_("_Undo"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_YES, N_("_Yes"), 0, 0, GETTEXT_PACKAGE },
-  { GTK_STOCK_ZOOM_100, N_("Zoom _100%"), 0, 0, GETTEXT_PACKAGE },
-  { GTK_STOCK_ZOOM_FIT, N_("Zoom to _Fit"), 0, 0, GETTEXT_PACKAGE },
+  { GTK_STOCK_ZOOM_100, N_("_Normal Size"), 0, 0, GETTEXT_PACKAGE },
+  { GTK_STOCK_ZOOM_FIT, N_("Best _Fit"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_ZOOM_IN, N_("Zoom _In"), 0, 0, GETTEXT_PACKAGE },
   { GTK_STOCK_ZOOM_OUT, N_("Zoom _Out"), 0, 0, GETTEXT_PACKAGE }
 };

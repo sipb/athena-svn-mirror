@@ -24,7 +24,9 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gtklabel.h"
+#include "gtkmarshalers.h"
 #include "gtkradiobutton.h"
 #include "gtkintl.h"
 
@@ -54,6 +56,7 @@ static void     gtk_radio_button_get_property   (GObject             *object,
 
 static GtkCheckButtonClass *parent_class = NULL;
 
+static guint group_changed_signal = 0;
 
 GType
 gtk_radio_button_get_type (void)
@@ -106,8 +109,8 @@ gtk_radio_button_class_init (GtkRadioButtonClass *class)
   g_object_class_install_property (gobject_class,
 				   PROP_GROUP,
 				   g_param_spec_object ("group",
-							_("Group"),
-							_("The radio button whose group this widget belongs."),
+							P_("Group"),
+							P_("The radio button whose group this widget belongs."),
 							GTK_TYPE_RADIO_BUTTON,
 							G_PARAM_WRITABLE));
   object_class->destroy = gtk_radio_button_destroy;
@@ -117,6 +120,29 @@ gtk_radio_button_class_init (GtkRadioButtonClass *class)
   button_class->clicked = gtk_radio_button_clicked;
 
   check_button_class->draw_indicator = gtk_radio_button_draw_indicator;
+
+  class->group_changed = NULL;
+
+  /**
+   * GtkStyle::group-changed:
+   * @style: the object which received the signal
+   *
+   * Emitted when the group of radio buttons that a radio button belongs
+   * to changes. This is emitted when a radio button switches from
+   * being alone to being part of a group of 2 or more buttons, or
+   * vice-versa, and when a buttton is moved from one group of 2 or
+   * more buttons to a different one, but not when the composition
+   * of the group that a button belongs to changes.
+   *
+   * Since: 2.4
+   */
+  group_changed_signal = g_signal_new ("group-changed",
+				       G_OBJECT_CLASS_TYPE (object_class),
+				       G_SIGNAL_RUN_FIRST,
+				       G_STRUCT_OFFSET (GtkRadioButtonClass, group_changed),
+				       NULL, NULL,
+				       _gtk_marshal_VOID__VOID,
+				       G_TYPE_NONE, 0);
 }
 
 static void
@@ -184,15 +210,21 @@ void
 gtk_radio_button_set_group (GtkRadioButton *radio_button,
 			    GSList         *group)
 {
+  GtkWidget *old_group_singleton = NULL;
+  GtkWidget *new_group_singleton = NULL;
+  
   g_return_if_fail (GTK_IS_RADIO_BUTTON (radio_button));
   g_return_if_fail (!g_slist_find (group, radio_button));
 
   if (radio_button->group)
     {
       GSList *slist;
-      
+
       radio_button->group = g_slist_remove (radio_button->group, radio_button);
       
+      if (radio_button->group && !radio_button->group->next)
+	old_group_singleton = g_object_ref (radio_button->group->data);
+	  
       for (slist = radio_button->group; slist; slist = slist->next)
 	{
 	  GtkRadioButton *tmp_button;
@@ -202,6 +234,9 @@ gtk_radio_button_set_group (GtkRadioButton *radio_button,
 	  tmp_button->group = radio_button->group;
 	}
     }
+  
+  if (group && !group->next)
+    new_group_singleton = g_object_ref (group->data);
   
   radio_button->group = g_slist_prepend (group, radio_button);
   
@@ -219,7 +254,23 @@ gtk_radio_button_set_group (GtkRadioButton *radio_button,
 	}
     }
 
+  g_object_ref (radio_button);
+  
+  g_signal_emit (radio_button, group_changed_signal, 0);
+  if (old_group_singleton)
+    {
+      g_signal_emit (old_group_singleton, group_changed_signal, 0);
+      g_object_unref (old_group_singleton);
+    }
+  if (new_group_singleton)
+    {
+      g_signal_emit (new_group_singleton, group_changed_signal, 0);
+      g_object_unref (new_group_singleton);
+    }
+
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), group == NULL);
+
+  g_object_unref (radio_button);
 }
 
 GtkWidget*
@@ -329,13 +380,20 @@ gtk_radio_button_get_group (GtkRadioButton *radio_button)
 static void
 gtk_radio_button_destroy (GtkObject *object)
 {
+  GtkWidget *old_group_singleton = NULL;
   GtkRadioButton *radio_button;
   GtkRadioButton *tmp_button;
   GSList *tmp_list;
-
+  gboolean was_in_group;
+  
   radio_button = GTK_RADIO_BUTTON (object);
 
+  was_in_group = radio_button->group && radio_button->group->next;
+  
   radio_button->group = g_slist_remove (radio_button->group, radio_button);
+  if (radio_button->group && !radio_button->group->next)
+    old_group_singleton = radio_button->group->data;
+
   tmp_list = radio_button->group;
 
   while (tmp_list)
@@ -348,6 +406,11 @@ gtk_radio_button_destroy (GtkObject *object)
 
   /* this button is no longer in the group */
   radio_button->group = NULL;
+
+  if (old_group_singleton)
+    g_signal_emit (old_group_singleton, group_changed_signal, 0);
+  if (was_in_group)
+    g_signal_emit (radio_button, group_changed_signal, 0);
   
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -642,7 +705,7 @@ gtk_radio_button_draw_indicator (GtkCheckButton *check_button,
 	state_type = GTK_STATE_ACTIVE;
       else if (button->in_button)
 	state_type = GTK_STATE_PRELIGHT;
-      else if (!GTK_WIDGET_SENSITIVE (widget))
+      else if (!GTK_WIDGET_IS_SENSITIVE (widget))
 	state_type = GTK_STATE_INSENSITIVE;
       else
 	state_type = GTK_STATE_NORMAL;

@@ -25,6 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -103,7 +104,6 @@ gdk_pixmap_impl_win32_finalize (GObject *object)
 {
   GdkPixmapImplWin32 *impl = GDK_PIXMAP_IMPL_WIN32 (object);
   GdkPixmap *wrapper = GDK_PIXMAP (GDK_DRAWABLE_IMPL_WIN32 (impl)->wrapper);
-  GdkImage *image = impl->image;
 
   GDK_NOTE (PIXMAP, g_print ("gdk_pixmap_impl_win32_finalize: %p\n",
 			     GDK_PIXMAP_HBITMAP (wrapper)));
@@ -112,9 +112,6 @@ gdk_pixmap_impl_win32_finalize (GObject *object)
     WIN32_GDI_FAILED ("DeleteObject");
 
   gdk_win32_handle_table_remove (GDK_PIXMAP_HBITMAP (wrapper));
-
-  image->windowing_data = NULL;
-  g_object_unref (image);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -307,9 +304,9 @@ gdk_pixmap_new (GdkDrawable *drawable,
     }
 
   drawable_impl->handle = hbitmap;
-  pixmap_impl->image = _gdk_win32_setup_pixmap_image (pixmap, drawable,
-						      width, height,
-						      depth, bits);
+  /* initialize */
+  memset (bits, 0, (bmi.bmiHeader.biBitCount * width * height) / 8);
+  pixmap_impl->bits = bits;
 
   gdk_win32_handle_table_insert (&GDK_PIXMAP_HBITMAP (pixmap), pixmap);
 
@@ -359,7 +356,7 @@ gdk_bitmap_create_from_data (GdkDrawable *drawable,
 {
   GdkPixmap *pixmap;
   GdkPixmapImplWin32 *pixmap_impl;
-  gint i, j, data_bpl, image_bpl;
+  gint i, j, data_bpl, pixmap_bpl;
   guchar *bits;
 
   g_return_val_if_fail (data != NULL, NULL);
@@ -378,13 +375,13 @@ gdk_bitmap_create_from_data (GdkDrawable *drawable,
     return NULL;
 
   pixmap_impl = GDK_PIXMAP_IMPL_WIN32 (GDK_PIXMAP_OBJECT (pixmap)->impl);
-  bits = pixmap_impl->image->mem;
+  bits = pixmap_impl->bits;
   data_bpl = ((width - 1) / 8 + 1);
-  image_bpl = pixmap_impl->image->bpl;
+  pixmap_bpl = ((width - 1)/32 + 1)*4;
 
   for (i = 0; i < height; i++)
     for (j = 0; j < data_bpl; j++)
-      bits[i*image_bpl + j] = mirror[(guchar) data[i*data_bpl + j]];
+      bits[i*pixmap_bpl + j] = mirror[(guchar) data[i*data_bpl + j]];
 
   GDK_NOTE (PIXMAP, g_print ("gdk_bitmap_create_from_data: %dx%d=%p\n",
 			     width, height, GDK_PIXMAP_HBITMAP (pixmap)));
@@ -393,13 +390,13 @@ gdk_bitmap_create_from_data (GdkDrawable *drawable,
 }
 
 GdkPixmap*
-gdk_pixmap_create_from_data (GdkDrawable *drawable,
-			     const gchar *data,
-			     gint         width,
-			     gint         height,
-			     gint         depth,
-			     GdkColor    *fg,
-			     GdkColor    *bg)
+gdk_pixmap_create_from_data (GdkDrawable    *drawable,
+			     const gchar    *data,
+			     gint            width,
+			     gint            height,
+			     gint            depth,
+			     const GdkColor *fg,
+			     const GdkColor *bg)
 {
   /* Oh wow. I struggled with dozens of lines of code trying to get
    * this right using a monochrome Win32 bitmap created from data, and
@@ -432,7 +429,7 @@ gdk_pixmap_create_from_data (GdkDrawable *drawable,
     (TRUE,
      GDK_DRAWABLE_IMPL_WIN32 (GDK_PIXMAP_OBJECT (result)->impl),
      gc, source, 0, 0, 0, 0, width, height);
-  gdk_drawable_unref (source);
+  g_object_unref (source);
   gdk_gc_unref (gc);
 
   GDK_NOTE (PIXMAP, g_print ("gdk_pixmap_create_from_data: %dx%dx%d=%p\n",
@@ -481,11 +478,7 @@ gdk_pixmap_foreign_new (GdkNativeWindow anid)
   draw_impl->colormap = NULL;
   pix_impl->width = size.cx;
   pix_impl->height = size.cy;
-  pix_impl->image =
-    _gdk_win32_setup_pixmap_image (pixmap, _gdk_parent_root,
-				   size.cx, size.cy,
-				   gdk_visual_get_system ()->depth,
-				   NULL);
+  pix_impl->bits = NULL;
 
   gdk_win32_handle_table_insert (&GDK_PIXMAP_HBITMAP (pixmap), pixmap);
 

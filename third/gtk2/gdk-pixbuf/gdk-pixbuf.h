@@ -131,6 +131,11 @@ GdkPixbuf *gdk_pixbuf_new_subpixbuf (GdkPixbuf *src_pixbuf,
 GdkPixbuf *gdk_pixbuf_new_from_file (const char *filename,
                                      GError    **error);
 
+GdkPixbuf *gdk_pixbuf_new_from_file_at_size (const char *filename,
+					     int         width, 
+					     int         height,
+					     GError    **error);
+
 GdkPixbuf *gdk_pixbuf_new_from_data (const guchar *data,
 				     GdkColorspace colorspace,
 				     gboolean has_alpha,
@@ -164,6 +169,45 @@ gboolean gdk_pixbuf_savev          (GdkPixbuf  *pixbuf,
                                     char      **option_keys,
                                     char      **option_values,
                                     GError    **error);
+
+/* Saving to a callback function */
+
+typedef gboolean (*GdkPixbufSaveFunc)   (const gchar *buf,
+					 gsize count,
+					 GError **error,
+					 gpointer data);
+
+gboolean gdk_pixbuf_save_to_callback    (GdkPixbuf  *pixbuf,
+					 GdkPixbufSaveFunc save_func,
+					 gpointer user_data,
+					 const char *type, 
+					 GError    **error,
+					 ...);
+
+gboolean gdk_pixbuf_save_to_callbackv   (GdkPixbuf  *pixbuf, 
+					 GdkPixbufSaveFunc save_func,
+					 gpointer user_data,
+					 const char *type,
+					 char      **option_keys,
+					 char      **option_values,
+					 GError    **error);
+
+/* Saving into a newly allocated char array */
+
+gboolean gdk_pixbuf_save_to_buffer      (GdkPixbuf  *pixbuf,
+					 gchar     **buffer,
+					 gsize      *buffer_size,
+					 const char *type, 
+					 GError    **error,
+					 ...);
+
+gboolean gdk_pixbuf_save_to_bufferv     (GdkPixbuf  *pixbuf,
+					 gchar     **buffer,
+					 gsize      *buffer_size,
+					 const char *type, 
+					 char      **option_keys,
+					 char      **option_values,
+					 GError    **error);
 
 /* Adding an alpha channel */
 GdkPixbuf *gdk_pixbuf_add_alpha (const GdkPixbuf *pixbuf, gboolean substitute_color,
@@ -296,6 +340,10 @@ gchar     *gdk_pixbuf_format_get_description (GdkPixbufFormat *format);
 gchar    **gdk_pixbuf_format_get_mime_types  (GdkPixbufFormat *format);
 gchar    **gdk_pixbuf_format_get_extensions  (GdkPixbufFormat *format);
 gboolean   gdk_pixbuf_format_is_writable     (GdkPixbufFormat *format);
+
+GdkPixbufFormat *gdk_pixbuf_get_file_info (const gchar  *filename,
+					   gint         *width, 
+					   gint         *height);
 
 G_END_DECLS
 

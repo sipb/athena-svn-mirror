@@ -25,7 +25,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 
 #include <glib/gprintf.h>
 #include <stdlib.h>
@@ -58,6 +58,8 @@ GdkArgDesc _gdk_windowing_args[] = {
 						     (GdkArgFunc) NULL},
   { "ignore-wintab", GDK_ARG_BOOL, &_gdk_input_ignore_wintab,
 						     (GdkArgFunc) NULL},
+  { "use-wintab",    GDK_ARG_NOBOOL, &_gdk_input_ignore_wintab,
+						     (GdkArgFunc) NULL},
   { "max-colors",    GDK_ARG_INT,  &_gdk_max_colors,  (GdkArgFunc) NULL},
   { NULL }
 };
@@ -81,6 +83,8 @@ _gdk_windowing_init (gint    *argc,
 #ifdef HAVE_WINTAB
   if (getenv ("GDK_IGNORE_WINTAB") != NULL)
     _gdk_input_ignore_wintab = TRUE;
+  else if (getenv ("GDK_USE_WINTAB") != NULL)
+    _gdk_input_ignore_wintab = FALSE;
 #endif
 
   if (gdk_synchronize)
@@ -97,6 +101,7 @@ _gdk_windowing_init (gint    *argc,
   GDK_NOTE (MISC, g_print ("Windows version: %08x\n", (guint) _windows_version));
 
   _gdk_input_locale = GetKeyboardLayout (0);
+  _gdk_input_locale_is_ime = ImmIsIME (_gdk_input_locale);
   GetLocaleInfo (MAKELCID (LOWORD (_gdk_input_locale), SORT_DEFAULT),
 		 LOCALE_IDEFAULTANSICODEPAGE,
 		 buf, sizeof (buf));
@@ -110,14 +115,16 @@ _gdk_windowing_init (gint    *argc,
   _cf_utf8_string = RegisterClipboardFormat ("UTF8_STRING");
 
   _utf8_string = gdk_atom_intern ("UTF8_STRING", FALSE);
-  _compound_text = gdk_atom_intern ("COMPOUND_TEXT", FALSE);
   _text_uri_list = gdk_atom_intern ("text/uri-list", FALSE);
+  _targets = gdk_atom_intern ("TARGETS", FALSE);
 
   _local_dnd = gdk_atom_intern ("LocalDndSelection", FALSE);
   _gdk_win32_dropfiles = gdk_atom_intern ("DROPFILES_DND", FALSE);
   _gdk_ole2_dnd = gdk_atom_intern ("OLE2_DND", FALSE);
 
   _gdk_selection_property = gdk_atom_intern ("GDK_SELECTION", FALSE);
+
+  _wm_transient_for = gdk_atom_intern ("WM_TRANSIENT_FOR", FALSE);
 
   _gdk_win32_selection_init ();
 }
@@ -875,6 +882,11 @@ _gdk_win32_message_to_string (UINT msg)
       CASE (WM_PENWINFIRST);
       CASE (WM_PENWINLAST);
       CASE (WM_APP);
+#ifdef HAVE_WINTAB
+      CASE (WT_PACKET);
+      CASE (WT_CSRCHANGE);
+      CASE (WT_PROXIMITY);
+#endif
 #undef CASE
     default:
       if (msg >= WM_HANDHELDFIRST && msg <= WM_HANDHELDLAST)
@@ -922,18 +934,16 @@ _gdk_win32_gdkregion_to_string (const GdkRegion *rgn)
 gchar *
 _gdk_win32_drawable_description (GdkDrawable *d)
 {
-  GdkVisual *v;
-  gint width, height;
+  gint width, height, depth;
 
   gdk_drawable_get_size (d, &width, &height);
+  depth = gdk_drawable_get_depth (d);
 
   return static_printf
     ("%s:%p:%dx%dx%d",
      G_OBJECT_TYPE_NAME (d),
      GDK_DRAWABLE_HANDLE (d),
-     width, height,
-     (GDK_IS_PIXMAP (d) ? GDK_PIXMAP_IMPL_WIN32 (GDK_PIXMAP_OBJECT (d)->impl)->image->depth
-      : ((v = gdk_drawable_get_visual (d)) ? v->depth : gdk_visual_get_system ()->depth)));
+     width, height, depth);
 }
 
 #endif /* G_ENABLE_DEBUG */

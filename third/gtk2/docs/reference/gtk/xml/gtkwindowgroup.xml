@@ -18,9 +18,9 @@
 
 struct      <link linkend="GtkWindowGroup-struct">GtkWindowGroup</link>;
 <link linkend="GtkWindowGroup">GtkWindowGroup</link>* <link linkend="gtk-window-group-new">gtk_window_group_new</link>        (void);
-void        <link linkend="gtk-window-group-add-window">gtk_window_group_add_window</link>     (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+<link linkend="void">void</link>        <link linkend="gtk-window-group-add-window">gtk_window_group_add_window</link>     (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
                                              <link linkend="GtkWindow">GtkWindow</link> *window);
-void        <link linkend="gtk-window-group-remove-window">gtk_window_group_remove_window</link>  (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+<link linkend="void">void</link>        <link linkend="gtk-window-group-remove-window">gtk_window_group_remove_window</link>  (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
                                              <link linkend="GtkWindow">GtkWindow</link> *window);
 
 
@@ -42,6 +42,8 @@ void        <link linkend="gtk-window-group-remove-window">gtk_window_group_remo
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -53,52 +55,52 @@ void        <link linkend="gtk-window-group-remove-window">gtk_window_group_remo
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkWindowGroup-struct"/>struct GtkWindowGroup</title>
-<programlisting>struct GtkWindowGroup;</programlisting>
+<indexterm><primary>GtkWindowGroup</primary></indexterm><programlisting>struct GtkWindowGroup;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-window-group-new"/>gtk_window_group_new ()</title>
-<programlisting><link linkend="GtkWindowGroup">GtkWindowGroup</link>* gtk_window_group_new        (void);</programlisting>
+<indexterm><primary>gtk_window_group_new</primary></indexterm><programlisting><link linkend="GtkWindowGroup">GtkWindowGroup</link>* gtk_window_group_new        (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkWindowGroup">GtkWindowGroup</link> object. Grabs added with
-<link linkend="gtk-grab-add">gtk_grab_add</link>() only affect windows within the same <link linkend="GtkWindowGroup">GtkWindowGroup</link>.</para>
+Creates a new <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link> object. Grabs added with
+<link linkend="gtk-grab-add"><function>gtk_grab_add()</function></link> only affect windows within the same <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkWindowGroup">GtkWindowGroup</link>. 
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link>. 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-window-group-add-window"/>gtk_window_group_add_window ()</title>
-<programlisting>void        gtk_window_group_add_window     (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+<indexterm><primary>gtk_window_group_add_window</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_window_group_add_window     (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
                                              <link linkend="GtkWindow">GtkWindow</link> *window);</programlisting>
 <para>
-Adds a window to a <link linkend="GtkWindowGroup">GtkWindowGroup</link>.</para>
+Adds a window to a <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>window_group</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkWindowGroup">GtkWindowGroup</link>
+<listitem><simpara> a <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>window</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWindow">GtkWindow</link> to add
+<listitem><simpara> the <link linkend="GtkWindow"><type>GtkWindow</type></link> to add
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-window-group-remove-window"/>gtk_window_group_remove_window ()</title>
-<programlisting>void        gtk_window_group_remove_window  (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+<indexterm><primary>gtk_window_group_remove_window</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_window_group_remove_window  (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
                                              <link linkend="GtkWindow">GtkWindow</link> *window);</programlisting>
 <para>
-Removes a window from a <link linkend="GtkWindowGroup">GtkWindowGroup</link>.</para>
+Removes a window from a <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>window_group</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkWindowGroup">GtkWindowGroup</link>
+<listitem><simpara> a <link linkend="GtkWindowGroup"><type>GtkWindowGroup</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>window</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GtkWindow">GtkWindow</link> to remove
+<listitem><simpara> the <link linkend="GtkWindow"><type>GtkWindow</type></link> to remove
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

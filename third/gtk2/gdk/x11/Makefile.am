@@ -2,7 +2,7 @@
 
 libgdkincludedir = $(includedir)/gtk-2.0/gdk
 
-INCLUDES = @STRIP_BEGIN@ 		\
+INCLUDES = 				\
 	-DG_LOG_DOMAIN=\"Gdk\"		\
 	-DGDK_COMPILATION		\
 	-I$(top_srcdir)			\
@@ -11,27 +11,17 @@ INCLUDES = @STRIP_BEGIN@ 		\
 	-DG_DISABLE_DEPRECATED		\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED	\
 	-DGDK_DISABLE_DEPRECATED	\
-	@GTK_DEBUG_FLAGS@ 		\
-	@GDK_DEP_CFLAGS@		\
-@STRIP_END@
+	$(GTK_DEBUG_FLAGS) 		\
+	$(GDK_DEP_CFLAGS)
 
-LDADDS = @STRIP_BEGIN@ 		\
-	@GDK_DEP_LIBS@		\
-@STRIP_END@
+LDADDS = $(GDK_DEP_LIBS)
 
 noinst_LTLIBRARIES = libgdk-x11.la
 
-if XINPUT_XFREE
-xinput_sources =	   \
-	gdkinput-x11.c	   \
-	gdkinput-xfree.c
-else
-xinput_sources =	   \
-	gdkinput-none.c
-endif
-
 libgdk_x11_la_SOURCES =    	\
 	MwmUtil.h	   	\
+	gdkasync.c		\
+	gdkasync.h		\
 	gdkcolor-x11.c	   	\
 	gdkcursor-x11.c	   	\
 	gdkdisplay-x11.c	\
@@ -56,6 +46,7 @@ libgdk_x11_la_SOURCES =    	\
 	gdkscreen-x11.c		\
 	gdkscreen-x11.h		\
 	gdkselection-x11.c 	\
+	gdkspawn-x11.c		\
 	gdkvisual-x11.c	   	\
 	gdkwindow-x11.c    	\
 	gdkwindow-x11.h		\
@@ -66,8 +57,14 @@ libgdk_x11_la_SOURCES =    	\
 	xsettings-client.h	\
 	xsettings-client.c	\
 	xsettings-common.h	\
-	xsettings-common.c	\
-	$(xinput_sources)
+	xsettings-common.c
+
+if XINPUT_XFREE
+libgdk_x11_la_SOURCES += gdkinput-x11.c gdkinput-xfree.c
+else
+libgdk_x11_la_SOURCES += gdkinput-none.c
+endif
+
 
 libgdkinclude_HEADERS = 	\
 	gdkx.h
@@ -78,12 +75,3 @@ EXTRA_DIST = 			\
 	gdkinput-x11.c		\
 	gdkinput-xfree.c	\
 	gdkinput-none.c
-
-###########################################
-# Hack to get gdkenumtypes.h built first
-###########################################
-                                       
-$(libgdk_x11_la_OBJECTS): $(top_srcdir)/gdk/gdkenumtypes.h
-
-$(top_srcdir)/gdk/gdkenumtypes.h:
-	@cd $(top_builddir)/gdk && make $(AM_MAKEFLAGS) gdkenumtypes.h

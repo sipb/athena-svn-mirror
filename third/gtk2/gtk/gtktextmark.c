@@ -48,6 +48,7 @@
  */
 
 #define GTK_TEXT_USE_INTERNAL_UNSUPPORTED_API
+#include <config.h>
 #include "gtktextbtree.h"
 
 static void gtk_text_mark_init       (GtkTextMark      *mark);
@@ -203,7 +204,7 @@ gtk_text_mark_get_buffer (GtkTextMark *mark)
 {
   GtkTextLineSegment *seg;
 
-  g_return_val_if_fail (GTK_IS_TEXT_MARK (mark), FALSE);
+  g_return_val_if_fail (GTK_IS_TEXT_MARK (mark), NULL);
 
   seg = mark->segment;
 

@@ -36,11 +36,14 @@ struct      <link linkend="GtkHSeparator-struct">GtkHSeparator</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkHSeparator implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkHSeparator implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -50,16 +53,16 @@ GtkHSeparator implements <link linkend="AtkImplementorIface">AtkImplementorIface
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkHSeparator">GtkHSeparator</link> widget is a horizontal separator, used to group the
+The <link linkend="GtkHSeparator"><type>GtkHSeparator</type></link> widget is a horizontal separator, used to group the
 widgets within a window. It displays a horizontal line with a shadow to
 make it appear sunken into the interface.
 </para>
 <note>
 <para>
-The <link linkend="GtkHSeparator">GtkHSeparator</link> widget is not used as a separator within menus.
-To create a separator in a menu create an empty <link linkend="GtkSeparatorMenuItem">GtkSeparatorMenuItem</link> 
-widget using <link linkend="gtk-separator-menu-item-new">gtk_separator_menu_item_new</link>() and add it to the menu with 
-<link linkend="gtk-menu-shell-append">gtk_menu_shell_append</link>().
+The <link linkend="GtkHSeparator"><type>GtkHSeparator</type></link> widget is not used as a separator within menus.
+To create a separator in a menu create an empty <link linkend="GtkSeparatorMenuItem"><type>GtkSeparatorMenuItem</type></link> 
+widget using <link linkend="gtk-separator-menu-item-new"><function>gtk_separator_menu_item_new()</function></link> and add it to the menu with 
+<link linkend="gtk-menu-shell-append"><function>gtk_menu_shell_append()</function></link>.
 </para>
 </note>
 </refsect1>
@@ -68,18 +71,18 @@ widget using <link linkend="gtk-separator-menu-item-new">gtk_separator_menu_item
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkHSeparator-struct"/>struct GtkHSeparator</title>
-<programlisting>struct GtkHSeparator;</programlisting>
+<indexterm><primary>GtkHSeparator</primary></indexterm><programlisting>struct GtkHSeparator;</programlisting>
 <para>
-The <link linkend="GtkHSeparator-struct">GtkHSeparator</link> struct contains private data only, and
+The <link linkend="GtkHSeparator-struct"><type>GtkHSeparator-struct</type></link> struct contains private data only, and
 should be accessed using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-hseparator-new"/>gtk_hseparator_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hseparator_new              (void);</programlisting>
+<indexterm><primary>gtk_hseparator_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hseparator_new              (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkHSeparator">GtkHSeparator</link>.
+Creates a new <link linkend="GtkHSeparator"><type>GtkHSeparator</type></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkHSeparator">GtkHSeparator</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GtkHSeparator"><type>GtkHSeparator</type></link>.
 
 
 </simpara></listitem></varlistentry>
@@ -94,7 +97,7 @@ Creates a new <link linkend="GtkHSeparator">GtkHSeparator</link>.
 <para>
 <variablelist>
 <varlistentry>
-<term><link linkend="GtkVSeparator">GtkVSeparator</link></term>
+<term><link linkend="GtkVSeparator"><type>GtkVSeparator</type></link></term>
 <listitem><para>a vertical separator.</para></listitem>
 </varlistentry>
 </variablelist>

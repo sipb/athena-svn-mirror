@@ -5,8 +5,7 @@
 >Getting Started</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -70,7 +69,9 @@ WIDTH="100%"></DIV
 CLASS="CHAPTER"
 ><H1
 ><A
-NAME="CH-GETTINGSTARTED">Getting Started</H1
+NAME="CH-GETTINGSTARTED"
+></A
+>Getting Started</H1
 ><P
 >The first thing to do, of course, is download the GTK source and
 install it. You can always get the latest version from <A
@@ -303,7 +304,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-HELLOWORLD">Hello World in GTK</H1
+NAME="SEC-HELLOWORLD"
+>Hello World in GTK</A
+></H1
 ><P
 >Now for a program with a widget (a button). It's the classic
 hello world a la GTK.</P
@@ -325,15 +328,15 @@ CLASS="PROGRAMLISTING"
 
 /* This is a callback function. The data arguments are ignored
  * in this example. More on callbacks below. */
-void hello( GtkWidget *widget,
-            gpointer   data )
+static void hello( GtkWidget *widget,
+                   gpointer   data )
 {
     g_print ("Hello World\n");
 }
 
-gint delete_event( GtkWidget *widget,
-                   GdkEvent  *event,
-		   gpointer   data )
+static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent  *event,
+                              gpointer   data )
 {
     /* If you return FALSE in the "delete_event" signal handler,
      * GTK will emit the "destroy" signal. Returning TRUE means
@@ -350,8 +353,8 @@ gint delete_event( GtkWidget *widget,
 }
 
 /* Another callback */
-void destroy( GtkWidget *widget,
-              gpointer   data )
+static void destroy( GtkWidget *widget,
+                     gpointer   data )
 {
     gtk_main_quit ();
 }

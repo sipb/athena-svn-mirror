@@ -24,23 +24,21 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
+
 #include "gdk.h"
 #include "gdkprivate-x11.h"
 #include "gdkinternals.h"
 #include "gdkx.h"
 #include "gdkscreen-x11.h"
 #include "gdkdisplay-x11.h"
+#include "gdkasync.h"
 
 #include "gdkkeysyms.h"
 
 #include "xsettings-client.h"
 
-#if HAVE_CONFIG_H
-#  include <config.h>
-#  if STDC_HEADERS
-#    include <string.h>
-#  endif
-#endif
+#include <string.h>
 
 #include "gdkinputprivate.h"
 
@@ -52,11 +50,7 @@
 
 typedef struct _GdkIOClosure GdkIOClosure;
 typedef struct _GdkDisplaySource GdkDisplaySource;
-
-#define DOUBLE_CLICK_TIME      250
-#define TRIPLE_CLICK_TIME      500
-#define DOUBLE_CLICK_DIST      5
-#define TRIPLE_CLICK_DIST      5
+typedef struct _GdkEventTypeX11 GdkEventTypeX11;
 
 struct _GdkIOClosure
 {
@@ -72,6 +66,12 @@ struct _GdkDisplaySource
   
   GdkDisplay *display;
   GPollFD event_poll_fd;
+};
+
+struct _GdkEventTypeX11
+{
+  gint base;
+  gint n_events;
 };
 
 /* 
@@ -142,6 +142,22 @@ gdk_check_xpending (GdkDisplay *display)
  * Functions for maintaining the event queue *
  *********************************************/
 
+static void
+refcounted_grab_server (Display *xdisplay)
+{
+  GdkDisplay *display = gdk_x11_lookup_xdisplay (xdisplay);
+
+  gdk_x11_display_grab (display);
+}
+
+static void
+refcounted_ungrab_server (Display *xdisplay)
+{
+  GdkDisplay *display = gdk_x11_lookup_xdisplay (xdisplay);
+  
+  gdk_x11_display_ungrab (display);
+}
+
 void
 _gdk_x11_events_init_screen (GdkScreen *screen)
 {
@@ -155,6 +171,10 @@ _gdk_x11_events_init_screen (GdkScreen *screen)
 						       gdk_xsettings_notify_cb,
 						       gdk_xsettings_watch_cb,
 						       screen);
+  xsettings_client_set_grab_func (screen_x11->xsettings_client,
+				  refcounted_grab_server);
+  xsettings_client_set_ungrab_func (screen_x11->xsettings_client,
+				    refcounted_ungrab_server);
   screen_x11->xsettings_in_init = FALSE;
 }
 
@@ -332,8 +352,8 @@ gdk_display_add_client_message_filter (GdkDisplay   *display,
   filter->data = data;
   
   GDK_DISPLAY_X11(display)->client_filters = 
-    g_list_prepend (GDK_DISPLAY_X11 (display)->client_filters,
-		    filter);
+    g_list_append (GDK_DISPLAY_X11 (display)->client_filters,
+		   filter);
 }
 
 /**
@@ -357,93 +377,30 @@ gdk_add_client_message_filter (GdkAtom       message_type,
 }
 
 static void
-gdk_check_wm_state_changed (GdkWindow *window)
-{  
-  Atom type;
-  gint format;
-  gulong nitems;
-  gulong bytes_after;
-  Atom *atoms = NULL;
-  gulong i;
-  gboolean found_sticky, found_maxvert, found_maxhorz, found_fullscreen;
+do_net_wm_state_changes (GdkWindow *window)
+{
+  GdkToplevelX11 *toplevel = _gdk_x11_window_get_toplevel (window);
   GdkWindowState old_state;
-  GdkDisplay *display = GDK_WINDOW_DISPLAY (window);
   
   if (GDK_WINDOW_DESTROYED (window) ||
       gdk_window_get_window_type (window) != GDK_WINDOW_TOPLEVEL)
     return;
   
-  found_sticky = FALSE;
-  found_maxvert = FALSE;
-  found_maxhorz = FALSE;
-  found_fullscreen = FALSE;
-  
-  XGetWindowProperty (GDK_WINDOW_XDISPLAY (window), GDK_WINDOW_XID (window),
-		      gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE"),
-		      0, G_MAXLONG, False, XA_ATOM, &type, &format, &nitems,
-		      &bytes_after, (guchar **)&atoms);
-
-  if (type != None)
-    {
-      Atom sticky_atom = gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_STICKY");
-      Atom maxvert_atom = gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_MAXIMIZED_VERT");
-      Atom maxhorz_atom	= gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_MAXIMIZED_HORZ");
-      Atom fullscreen_atom = gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_FULLSCREEN");
-      
-      i = 0;
-      while (i < nitems)
-        {
-          if (atoms[i] == sticky_atom)
-            found_sticky = TRUE;
-          else if (atoms[i] == maxvert_atom)
-            found_maxvert = TRUE;
-          else if (atoms[i] == maxhorz_atom)
-            found_maxhorz = TRUE;
-          else if (atoms[i] == fullscreen_atom)
-            found_fullscreen = TRUE;
-          
-          ++i;
-        }
-
-      XFree (atoms);
-    }
+  old_state = gdk_window_get_state (window);
 
   /* For found_sticky to remain TRUE, we have to also be on desktop
    * 0xFFFFFFFF
    */
-
-  if (found_sticky)
-    {
-      gulong *desktop;
-      
-      XGetWindowProperty (GDK_WINDOW_XDISPLAY (window), 
-			  GDK_WINDOW_XID (window),
-                          gdk_x11_get_xatom_by_name_for_display 
-			  (display, "_NET_WM_DESKTOP"),
-			  0, G_MAXLONG, False, XA_CARDINAL, &type, 
-			  &format, &nitems,
-                          &bytes_after, (guchar **)&desktop);
-
-      if (type != None)
-        {
-          if (*desktop != 0xFFFFFFFF)
-            found_sticky = FALSE;
-          XFree (desktop);
-        }
-    }
-          
-  old_state = gdk_window_get_state (window);
-
   if (old_state & GDK_WINDOW_STATE_STICKY)
     {
-      if (!found_sticky)
+      if (!(toplevel->have_sticky && toplevel->on_all_desktops))
         gdk_synthesize_window_state (window,
                                      GDK_WINDOW_STATE_STICKY,
                                      0);
     }
   else
     {
-      if (found_sticky)
+      if (toplevel->have_sticky && toplevel->on_all_desktops)
         gdk_synthesize_window_state (window,
                                      0,
                                      GDK_WINDOW_STATE_STICKY);
@@ -451,14 +408,14 @@ gdk_check_wm_state_changed (GdkWindow *window)
 
   if (old_state & GDK_WINDOW_STATE_FULLSCREEN)
     {
-      if (!found_fullscreen)
+      if (!toplevel->have_fullscreen)
         gdk_synthesize_window_state (window,
                                      GDK_WINDOW_STATE_FULLSCREEN,
                                      0);
     }
   else
     {
-      if (found_fullscreen)
+      if (toplevel->have_fullscreen)
         gdk_synthesize_window_state (window,
                                      0,
                                      GDK_WINDOW_STATE_FULLSCREEN);
@@ -469,22 +426,121 @@ gdk_check_wm_state_changed (GdkWindow *window)
    */
   if (old_state & GDK_WINDOW_STATE_MAXIMIZED)
     {
-      if (!(found_maxvert && found_maxhorz))
+      if (!(toplevel->have_maxvert && toplevel->have_maxhorz))
         gdk_synthesize_window_state (window,
                                      GDK_WINDOW_STATE_MAXIMIZED,
                                      0);
     }
   else
     {
-      if (found_maxvert && found_maxhorz)
+      if (toplevel->have_maxvert && toplevel->have_maxhorz)
         gdk_synthesize_window_state (window,
                                      0,
                                      GDK_WINDOW_STATE_MAXIMIZED);
     }
 }
 
-#define HAS_FOCUS(window_impl)                           \
-  ((window_impl)->has_focus || (window_impl)->has_pointer_focus)
+static void
+gdk_check_wm_desktop_changed (GdkWindow *window)
+{
+  GdkToplevelX11 *toplevel = _gdk_x11_window_get_toplevel (window);
+  GdkDisplay *display = GDK_WINDOW_DISPLAY (window);
+
+  Atom type;
+  gint format;
+  gulong nitems;
+  gulong bytes_after;
+
+  if (toplevel->have_sticky)
+    {
+      gulong *desktop;
+      
+      type = None;
+      gdk_error_trap_push ();
+      XGetWindowProperty (GDK_DISPLAY_XDISPLAY (display), 
+			  GDK_WINDOW_XID (window),
+                          gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_DESKTOP"),
+			  0, G_MAXLONG, False, XA_CARDINAL, &type, 
+			  &format, &nitems,
+                          &bytes_after, (guchar **)&desktop);
+      gdk_error_trap_pop ();
+
+      if (type != None)
+        {
+          toplevel->on_all_desktops = (*desktop == 0xFFFFFFFF);
+          XFree (desktop);
+        }
+      else
+	toplevel->on_all_desktops = FALSE;
+      
+      do_net_wm_state_changes (window);
+    }
+}
+
+static void
+gdk_check_wm_state_changed (GdkWindow *window)
+{
+  GdkToplevelX11 *toplevel = _gdk_x11_window_get_toplevel (window);
+  GdkDisplay *display = GDK_WINDOW_DISPLAY (window);
+  
+  Atom type;
+  gint format;
+  gulong nitems;
+  gulong bytes_after;
+  Atom *atoms = NULL;
+  gulong i;
+
+  gboolean had_sticky = toplevel->have_sticky;
+
+  toplevel->have_sticky = FALSE;
+  toplevel->have_maxvert = FALSE;
+  toplevel->have_maxhorz = FALSE;
+  toplevel->have_fullscreen = FALSE;
+
+  type = None;
+  gdk_error_trap_push ();
+  XGetWindowProperty (GDK_DISPLAY_XDISPLAY (display), GDK_WINDOW_XID (window),
+		      gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE"),
+		      0, G_MAXLONG, False, XA_ATOM, &type, &format, &nitems,
+		      &bytes_after, (guchar **)&atoms);
+  gdk_error_trap_pop ();
+
+  if (type != None)
+    {
+      Atom sticky_atom = gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_STICKY");
+      Atom maxvert_atom = gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_MAXIMIZED_VERT");
+      Atom maxhorz_atom	= gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_MAXIMIZED_HORZ");
+      Atom fullscreen_atom = gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE_FULLSCREEN");
+
+      i = 0;
+      while (i < nitems)
+        {
+          if (atoms[i] == sticky_atom)
+            toplevel->have_sticky = TRUE;
+          else if (atoms[i] == maxvert_atom)
+            toplevel->have_maxvert = TRUE;
+          else if (atoms[i] == maxhorz_atom)
+            toplevel->have_maxhorz = TRUE;
+          else if (atoms[i] == fullscreen_atom)
+            toplevel->have_fullscreen = TRUE;
+          
+          ++i;
+        }
+
+      XFree (atoms);
+    }
+
+  /* When have_sticky is turned on, we have to check the DESKTOP property
+   * as well.
+   */
+  if (toplevel->have_sticky && !had_sticky)
+    gdk_check_wm_desktop_changed (window);
+  else
+    do_net_wm_state_changes (window);
+}
+
+#define HAS_FOCUS(toplevel)                           \
+  ((toplevel)->has_focus || (toplevel)->has_pointer_focus)
 
 static void
 generate_focus_event (GdkWindow *window,
@@ -613,62 +669,134 @@ translate_key_event (GdkDisplay *display,
   return;
 }
 
+/**
+ * gdk_x11_register_standard_event_type:
+ * @display: a #GdkDisplay
+ * @event_base: first event type code to register
+ * @n_events: number of event type codes to register
+ * 
+ * Registers interest in receiving extension events with type codes
+ * between @event_base and <literal>event_base + n_events - 1</literal>.
+ * The registered events must have the window field in the same place
+ * as core X events (this is not the case for e.g. XKB extension events).
+ *
+ * If an event type is registered, events of this type will go through
+ * global and window-specific filters (see gdk_window_add_filter()). 
+ * Unregistered events will only go through global filters.
+ * GDK may register the events of some X extensions on its own.
+ * 
+ * This function should only be needed in unusual circumstances, e.g.
+ * when filtering XInput extension events on the root window.
+ *
+ * Since: 2.4
+ **/
+void
+gdk_x11_register_standard_event_type (GdkDisplay          *display,
+				      gint                 event_base,
+				      gint                 n_events)
+{
+  GdkEventTypeX11 *event_type;
+  GdkDisplayX11 *display_x11;
+
+  display_x11 = GDK_DISPLAY_X11 (display);
+  event_type = g_new (GdkEventTypeX11, 1);
+
+  event_type->base = event_base;
+  event_type->n_events = n_events;
+
+  display_x11->event_types = g_slist_prepend (display_x11->event_types, event_type);
+}
+
 /* Return the window this has to do with, if any, rather
  * than the frame or root window that was selecting
  * for substructure
  */
-static Window
-get_real_window (XEvent *event)
+static void
+get_real_window (GdkDisplay *display,
+		 XEvent     *event,
+		 Window     *event_window,
+		 Window     *filter_window)
 {
-  switch (event->type)
-    {      
-    case CreateNotify:
-      return event->xcreatewindow.window;
-      
-    case DestroyNotify:
-      return event->xdestroywindow.window;
+  /* Core events all have an event->xany.window field, but that's
+   * not true for extension events
+   */
+  if (event->type >= KeyPress &&
+      event->type <= MappingNotify)
+    {
+      *filter_window = event->xany.window;
+      switch (event->type)
+	{      
+	case CreateNotify:
+	  *event_window = event->xcreatewindow.window;
+	  break;
+	case DestroyNotify:
+	  *event_window = event->xdestroywindow.window;
+	  break;
+	case UnmapNotify:
+	  *event_window = event->xunmap.window;
+	  break;
+	case MapNotify:
+	  *event_window = event->xmap.window;
+	  break;
+	case MapRequest:
+	  *event_window = event->xmaprequest.window;
+	  break;
+	case ReparentNotify:
+	  *event_window = event->xreparent.window;
+	  break;
+	case ConfigureNotify:
+	  *event_window = event->xconfigure.window;
+	  break;
+	case ConfigureRequest:
+	  *event_window = event->xconfigurerequest.window;
+	  break;
+	case GravityNotify:
+	  *event_window = event->xgravity.window;
+	  break;
+	case CirculateNotify:
+	  *event_window = event->xcirculate.window;
+	  break;
+	case CirculateRequest:
+	  *event_window = event->xcirculaterequest.window;
+	  break;
+	default:
+	  *event_window = event->xany.window;
+	}
+    }
+  else
+    {
+      GdkDisplayX11 *display_x11 = GDK_DISPLAY_X11 (display);
+      GSList *tmp_list;
 
-    case UnmapNotify:
-      return event->xunmap.window;
+      for (tmp_list = display_x11->event_types;
+	   tmp_list;
+	   tmp_list = tmp_list->next)
+	{
+	  GdkEventTypeX11 *event_type = tmp_list->data;
 
-    case MapNotify:
-      return event->xmap.window;
-
-    case MapRequest:
-      return event->xmaprequest.window;
-
-    case ReparentNotify:
-     return event->xreparent.window;
-      
-    case ConfigureNotify:
-      return event->xconfigure.window;
-      
-    case ConfigureRequest:
-      return event->xconfigurerequest.window;
-
-    case GravityNotify:
-      return event->xgravity.window;
-
-    case CirculateNotify:
-      return event->xcirculate.window;
-
-    case CirculateRequest:
-      return event->xcirculaterequest.window;
-
-    default:
-      return event->xany.window;
+	  if (event->type >= event_type->base &&
+	      event->type < event_type->base + event_type->n_events)
+	    {
+	      *event_window = event->xany.window;
+	      *filter_window = event->xany.window;
+	      return;
+	    }
+	}
+	   
+      *event_window = None;
+      *filter_window = None;
     }
 }
 
 #ifdef G_ENABLE_DEBUG
-static const char notify_modes[][18] = {
+static const char notify_modes[][19] = {
   "NotifyNormal",
   "NotifyGrab",
   "NotifyUngrab",
   "NotifyWhileGrabbed"
 };
 
-static const char notify_details[][22] = {
+static const char notify_details[][23] = {
   "NotifyAncestor",
   "NotifyVirtual",
   "NotifyInferior",
@@ -679,6 +807,23 @@ static const char notify_details[][22] = {
   "NotifyDetailNone"
 };
 #endif
+
+static void
+set_user_time (GdkWindow *window,
+	       GdkEvent  *event)
+{
+  g_return_if_fail (event != NULL);
+
+  window = gdk_window_get_toplevel (event->client.window);
+  g_return_if_fail (GDK_IS_WINDOW (window));
+
+  /* If an event doesn't have a valid timestamp, we shouldn't use it
+   * to update the latest user interaction time.
+   */
+  if (gdk_event_get_time (event) != GDK_CURRENT_TIME)
+    _gdk_x11_window_set_user_time (gdk_window_get_toplevel (window),
+				   gdk_event_get_time (event));
+}
 
 static gboolean
 gdk_event_translate (GdkDisplay *display,
@@ -691,12 +836,13 @@ gdk_event_translate (GdkDisplay *display,
   GdkWindowObject *window_private;
   GdkWindow *filter_window;
   GdkWindowImplX11 *window_impl = NULL;
-  gint return_val;
+  gboolean return_val;
   gint xoffset, yoffset;
   GdkScreen *screen = NULL;
   GdkScreenX11 *screen_x11 = NULL;
+  GdkToplevelX11 *toplevel = NULL;
   GdkDisplayX11 *display_x11 = GDK_DISPLAY_X11 (display);
-  Window xwindow;
+  Window xwindow, filter_xwindow;
   
   return_val = FALSE;
 
@@ -719,73 +865,59 @@ gdk_event_translate (GdkDisplay *display,
         }
     }  
 
-   /* We handle events with window=None
-    *  specially - they are generated by XFree86's XInput under
-    *  some circumstances. This handling for obvious reasons
-    * goes before we bother to lookup the event window.
-    */
-  
-  if (xevent->xany.window == None)
-    {
-      return_val = _gdk_input_window_none_event (event, xevent);
-      
-      if (return_val >= 0)	/* was handled */
-	return return_val;
-      else
-	return_val = FALSE;
-    }
-
   /* Find the GdkWindow that this event relates to.
    * Basically this means substructure events
    * are reported same as structure events
    */
-  xwindow = get_real_window (xevent);
+  get_real_window (display, xevent, &xwindow, &filter_xwindow);
   
   window = gdk_window_lookup_for_display (display, xwindow);
+  /* We may receive events such as NoExpose/GraphicsExpose
+   * and ShmCompletion for pixmaps
+   */
+  if (window && !GDK_IS_WINDOW (window))
+    window = NULL;
   window_private = (GdkWindowObject *) window;
 
   /* We always run the filters for the window where the event
    * is delivered, not the window that it relates to
    */
-  if (xevent->xany.window == xwindow)
+  if (filter_xwindow == xwindow)
     filter_window = window;
   else
-    filter_window = gdk_window_lookup_for_display (display, xevent->xany.window);
+    {
+      filter_window = gdk_window_lookup_for_display (display, filter_xwindow);
+      if (filter_window && !GDK_IS_WINDOW (filter_window))
+	filter_window = NULL;
+    }
 
   if (window)
     {
       screen = GDK_WINDOW_SCREEN (window);
       screen_x11 = GDK_SCREEN_X11 (screen);
+      toplevel = _gdk_x11_window_get_toplevel (window);
     }
     
   if (window != NULL)
     {
-      /* Window may be a pixmap, so check its type.
-       * (This check is probably too expensive unless
-       *  GLib short-circuits an exact type match,
-       *  which has been proposed)
-       */
-      if (GDK_IS_WINDOW (window))
-        {
-          window_impl = GDK_WINDOW_IMPL_X11 (window_private->impl);
-
-          /* Move key events on focus window to the real toplevel, and
-           * filter out all other events on focus window
-           */          
-          if (xwindow == window_impl->focus_window)
-            {
-              switch (xevent->type)
-                {
-                case KeyPress:
-                case KeyRelease:
-                  xwindow = GDK_WINDOW_XID (window);
-                  xevent->xany.window = xwindow;
-                  break;
-                default:
-                  return FALSE;
-                }
-            }
-        }
+      window_impl = GDK_WINDOW_IMPL_X11 (window_private->impl);
+      
+      /* Move key events on focus window to the real toplevel, and
+       * filter out all other events on focus window
+       */          
+      if (toplevel && xwindow == toplevel->focus_window)
+	{
+	  switch (xevent->type)
+	    {
+	    case KeyPress:
+	    case KeyRelease:
+	      xwindow = GDK_WINDOW_XID (window);
+	      xevent->xany.window = xwindow;
+	      break;
+	    default:
+	      return FALSE;
+	    }
+	}
 
       g_object_ref (window);
     }
@@ -886,6 +1018,7 @@ gdk_event_translate (GdkDisplay *display,
           break;
         }
       translate_key_event (display, event, xevent);
+      set_user_time (window, event);
       break;
 
     case KeyRelease:
@@ -984,6 +1117,7 @@ gdk_event_translate (GdkDisplay *display,
           break;
 	}
 
+      set_user_time (window, event);
       break;
       
     case ButtonRelease:
@@ -1070,16 +1204,15 @@ gdk_event_translate (GdkDisplay *display,
         }
       
       /* Handle focusing (in the case where no window manager is running */
-      if (window &&
-	  GDK_WINDOW_TYPE (window) != GDK_WINDOW_CHILD &&
+      if (toplevel &&
 	  xevent->xcrossing.detail != NotifyInferior &&
-	  xevent->xcrossing.focus && !window_impl->has_focus_window)
+	  xevent->xcrossing.focus && !toplevel->has_focus_window)
 	{
-	  gboolean had_focus = HAS_FOCUS (window_impl);
+	  gboolean had_focus = HAS_FOCUS (toplevel);
 
-	  window_impl->has_pointer_focus = TRUE;
+	  toplevel->has_pointer_focus = TRUE;
 
-	  if (HAS_FOCUS (window_impl) != had_focus)
+	  if (HAS_FOCUS (toplevel) != had_focus)
 	    generate_focus_event (window, TRUE);
 	}
 
@@ -1165,16 +1298,15 @@ gdk_event_translate (GdkDisplay *display,
         }
       
       /* Handle focusing (in the case where no window manager is running */
-      if (window &&
-	  GDK_WINDOW_TYPE (window) != GDK_WINDOW_CHILD &&
+      if (toplevel &&
 	  xevent->xcrossing.detail != NotifyInferior &&
-	  xevent->xcrossing.focus && !window_impl->has_focus_window)
+	  xevent->xcrossing.focus && !toplevel->has_focus_window)
 	{
-	  gboolean had_focus = HAS_FOCUS (window_impl);
+	  gboolean had_focus = HAS_FOCUS (toplevel);
 	  
-	  window_impl->has_pointer_focus = FALSE;
+	  toplevel->has_pointer_focus = FALSE;
 	  
-	  if (HAS_FOCUS (window_impl) != had_focus)
+	  if (HAS_FOCUS (toplevel) != had_focus)
 	    generate_focus_event (window, FALSE);
 	}
 
@@ -1251,9 +1383,9 @@ gdk_event_translate (GdkDisplay *display,
 			   notify_details[xevent->xfocus.detail],
 			   notify_modes[xevent->xfocus.mode]));
       
-      if (window && GDK_WINDOW_TYPE (window) != GDK_WINDOW_CHILD)
+      if (toplevel)
 	{
-	  gboolean had_focus = HAS_FOCUS (window_impl);
+	  gboolean had_focus = HAS_FOCUS (toplevel);
 	  
 	  switch (xevent->xfocus.detail)
 	    {
@@ -1261,13 +1393,13 @@ gdk_event_translate (GdkDisplay *display,
 	    case NotifyNonlinear:
 	    case NotifyVirtual:
 	    case NotifyNonlinearVirtual:
-	      window_impl->has_focus_window = TRUE;
+	      toplevel->has_focus_window = TRUE;
 	      /* We pretend that the focus moves to the grab
 	       * window, so we pay attention to NotifyGrab
 	       * NotifyUngrab, and ignore NotifyWhileGrabbed
 	       */
 	      if (xevent->xfocus.mode != NotifyWhileGrabbed)
-		window_impl->has_focus = TRUE;
+		toplevel->has_focus = TRUE;
 	      break;
 	    case NotifyPointer:
 	      /* The X server sends NotifyPointer/NotifyGrab,
@@ -1275,7 +1407,7 @@ gdk_event_translate (GdkDisplay *display,
 	       * grab is in effect
 	       */
 	      if (xevent->xfocus.mode != NotifyGrab)
-		window_impl->has_pointer_focus = TRUE;
+		toplevel->has_pointer_focus = TRUE;
 	      break;
 	    case NotifyInferior:
 	    case NotifyPointerRoot:
@@ -1283,7 +1415,7 @@ gdk_event_translate (GdkDisplay *display,
 	      break;
 	    }
 
-	  if (HAS_FOCUS (window_impl) != had_focus)
+	  if (HAS_FOCUS (toplevel) != had_focus)
 	    generate_focus_event (window, TRUE);
 	}
       break;
@@ -1294,9 +1426,9 @@ gdk_event_translate (GdkDisplay *display,
 			   notify_details[xevent->xfocus.detail],
 			   notify_modes[xevent->xfocus.mode]));
       
-      if (window && GDK_WINDOW_TYPE (window) != GDK_WINDOW_CHILD)
+      if (toplevel)
 	{
-	  gboolean had_focus = HAS_FOCUS (window_impl);
+	  gboolean had_focus = HAS_FOCUS (toplevel);
 	    
 	  switch (xevent->xfocus.detail)
 	    {
@@ -1304,13 +1436,13 @@ gdk_event_translate (GdkDisplay *display,
 	    case NotifyNonlinear:
 	    case NotifyVirtual:
 	    case NotifyNonlinearVirtual:
-	      window_impl->has_focus_window = FALSE;
+	      toplevel->has_focus_window = FALSE;
 	      if (xevent->xfocus.mode != NotifyWhileGrabbed)
-		window_impl->has_focus = FALSE;
+		toplevel->has_focus = FALSE;
 	      break;
 	    case NotifyPointer:
 	      if (xevent->xfocus.mode != NotifyUngrab)
-		window_impl->has_pointer_focus = FALSE;
+		toplevel->has_pointer_focus = FALSE;
 	    break;
 	    case NotifyInferior:
 	    case NotifyPointerRoot:
@@ -1318,7 +1450,7 @@ gdk_event_translate (GdkDisplay *display,
 	      break;
 	    }
 
-	  if (HAS_FOCUS (window_impl) != had_focus)
+	  if (HAS_FOCUS (toplevel) != had_focus)
 	    generate_focus_event (window, FALSE);
 	}
       break;
@@ -1606,7 +1738,8 @@ gdk_event_translate (GdkDisplay *display,
 	  event->configure.width = xevent->xconfigure.width;
 	  event->configure.height = xevent->xconfigure.height;
 	  
-	  if (!xevent->xconfigure.send_event && 
+	  if (!xevent->xconfigure.send_event &&
+	      !xevent->xconfigure.override_redirect &&
 	      !GDK_WINDOW_DESTROYED (window))
 	    {
 	      gint tx = 0;
@@ -1621,14 +1754,10 @@ gdk_event_translate (GdkDisplay *display,
 					 &tx, &ty,
 					 &child_window))
 		{
-		  if (!gdk_error_trap_pop ())
-		    {
-		      event->configure.x = tx;
-		      event->configure.y = ty;
-		    }
+		  event->configure.x = tx;
+		  event->configure.y = ty;
 		}
-	      else
-		gdk_error_trap_pop ();
+	      gdk_error_trap_pop ();
 	    }
 	  else
 	    {
@@ -1637,8 +1766,8 @@ gdk_event_translate (GdkDisplay *display,
 	    }
 	  window_private->x = event->configure.x;
 	  window_private->y = event->configure.y;
-	  GDK_WINDOW_IMPL_X11 (window_private->impl)->width = xevent->xconfigure.width;
-	  GDK_WINDOW_IMPL_X11 (window_private->impl)->height = xevent->xconfigure.height;
+	  window_impl->width = xevent->xconfigure.width;
+	  window_impl->height = xevent->xconfigure.height;
 	  if (window_private->resize_count >= 1)
 	    {
 	      window_private->resize_count -= 1;
@@ -1663,13 +1792,19 @@ gdk_event_translate (GdkDisplay *display,
 	  return_val = FALSE;
           break;
         }
-      
-      if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE") ||
-	  xevent->xproperty.atom == gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_DESKTOP"))
-        {
-          /* If window state changed, then synthesize those events. */
-          gdk_check_wm_state_changed (window);
-        }
+
+      /* We compare with the serial of the last time we mapped the
+       * window to avoid refetching properties that we set ourselves
+       */
+      if (toplevel &&
+	  xevent->xproperty.serial >= toplevel->map_serial)
+	{
+	  if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE"))
+	    gdk_check_wm_state_changed (window);
+	  
+	  if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_DESKTOP"))
+	    gdk_check_wm_desktop_changed (window);
+	}
       
       if (window_private->event_mask & GDK_PROPERTY_CHANGE_MASK) 
 	{
@@ -1754,13 +1889,14 @@ gdk_event_translate (GdkDisplay *display,
 	while (tmp_list)
 	  {
 	    GdkClientFilter *filter = tmp_list->data;
+	    tmp_list = tmp_list->next;
+	    
 	    if (filter->type == message_type)
 	      {
 		result = (*filter->function) (xevent, event, filter->data);
-		break;
+		if (result != GDK_FILTER_CONTINUE)
+		  break;
 	      }
-	    
-	    tmp_list = tmp_list->next;
 	  }
 
 	switch (result)
@@ -1811,6 +1947,7 @@ gdk_event_translate (GdkDisplay *display,
 
 	  switch (xkb_event->any.xkb_type)
 	    {
+	    case XkbNewKeyboardNotify:
 	    case XkbMapNotify:
 	      _gdk_keymap_keys_changed (display);
 
@@ -1890,21 +2027,22 @@ gdk_wm_protocols_filter (GdkXEvent *xev,
     }
   else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name_for_display (display, "WM_TAKE_FOCUS"))
     {
-      GdkWindow *win = event->any.window;
-      Window focus_win = GDK_WINDOW_IMPL_X11(((GdkWindowObject *)win)->impl)->focus_window;
+      GdkToplevelX11 *toplevel = _gdk_x11_window_get_toplevel (event->any.window);
+      GdkWindowObject *private = (GdkWindowObject *)win;
 
-      /* There is no way of knowing reliably whether we are viewable so we need
-       * to trap errors so we don't cause a BadMatch.
+      /* There is no way of knowing reliably whether we are viewable;
+       * _gdk_x11_set_input_focus_safe() traps errors asynchronously.
        */
-      gdk_error_trap_push ();
-      XSetInputFocus (GDK_WINDOW_XDISPLAY (win),
-		      focus_win,
-		      RevertToParent,
-		      xevent->xclient.data.l[1]);
-      XSync (GDK_WINDOW_XDISPLAY (win), False);
-      gdk_error_trap_pop ();
+      if (toplevel && private->accept_focus)
+	_gdk_x11_set_input_focus_safe (display, toplevel->focus_window,
+				       RevertToParent,
+				       xevent->xclient.data.l[1]);
+
+      return GDK_FILTER_REMOVE;
     }
-  else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_PING"))
+  else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_PING") &&
+	   !_gdk_x11_display_is_root_window (display,
+					     xevent->xclient.window))
     {
       XEvent xev = *xevent;
       
@@ -1913,9 +2051,11 @@ gdk_wm_protocols_filter (GdkXEvent *xev,
 		  xev.xclient.window,
 		  False, 
 		  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+
+      return GDK_FILTER_REMOVE;
     }
 
-  return GDK_FILTER_REMOVE;
+  return GDK_FILTER_CONTINUE;
 }
 
 void
@@ -2029,12 +2169,15 @@ gdk_event_dispatch (GSource    *source,
  * gdk_event_send_client_message_for_display:
  * @display: the #GdkDisplay for the window where the message is to be sent.
  * @event: the #GdkEvent to send, which should be a #GdkEventClient.
- * @winid: the window to send the X ClientMessage event to.
+ * @winid: the window to send the client message to.
  *
- * Sends an X ClientMessage event to a given window.
+ * On X11, sends an X ClientMessage event to a given window. On
+ * Windows, sends a message registered with the name
+ * GDK_WIN32_CLIENT_MESSAGE.
  *
- * This could be used for communicating between different applications,
- * though the amount of data is limited to 20 bytes.
+ * This could be used for communicating between different
+ * applications, though the amount of data is limited to 20 bytes on
+ * X11, and to just four bytes on Windows.
  *
  * Returns: non-zero on success.
  *
@@ -2083,7 +2226,7 @@ gdk_event_send_client_message_to_all_recurse (GdkDisplay *display,
   gdk_error_trap_push ();
   
   if (XGetWindowProperty (GDK_DISPLAY_XDISPLAY (display), xid, 
-			  gdk_x11_get_xatom_by_name_for_display (display, "_NET_WM_STATE"),
+			  gdk_x11_get_xatom_by_name_for_display (display, "WM_STATE"),
 			  0, 0, False, AnyPropertyType,
 			  &type, &format, &nitems, &after, &data) != Success)
     goto out;
@@ -2127,12 +2270,17 @@ gdk_event_send_client_message_to_all_recurse (GdkDisplay *display,
  * @screen: the #GdkScreen where the event will be broadcasted.
  * @event: the #GdkEvent.
  *
- * Sends an X ClientMessage event to all toplevel windows on @screen.
+ * On X11, sends an X ClientMessage event to all toplevel windows on
+ * @screen. 
  *
  * Toplevel windows are determined by checking for the WM_STATE property, 
  * as described in the Inter-Client Communication Conventions Manual (ICCCM).
  * If no windows are found with the WM_STATE property set, the message is 
  * sent to all children of the root window.
+ *
+ * On Windows, broadcasts a message registered with the name
+ * GDK_WIN32_CLIENT_MESSAGE to all top-level windows. The amount of
+ * data is limited to one long, i.e. four bytes.
  *
  * Since: 2.2
  */
@@ -2203,8 +2351,8 @@ timestamp_predicate (Display *display,
 
   if (xevent->type == PropertyNotify &&
       xevent->xproperty.window == xwindow &&
-      xevent->xproperty.atom == gdk_x11_get_xatom_by_name_for_display 
-      (gdk_display, "GDK_TIMESTAMP_PROP"))
+      xevent->xproperty.atom == gdk_x11_get_xatom_by_name_for_display (gdk_display,
+								       "GDK_TIMESTAMP_PROP"))
     return True;
 
   return False;
@@ -2285,15 +2433,19 @@ fetch_net_wm_check_window (GdkScreen *screen)
   
   /* Find out if this WM goes away, so we can reset everything. */
   XSelectInput (screen_x11->xdisplay, *xwindow, StructureNotifyMask);
+  gdk_display_sync (display);
 
-  screen_x11->wmspec_check_window = *xwindow;
-  XFree (xwindow);
-
-  screen_x11->need_refetch_net_supported = TRUE;
-  screen_x11->need_refetch_wm_name = TRUE;
-  
-  /* Careful, reentrancy */
-  _gdk_x11_screen_window_manager_changed (GDK_SCREEN (screen_x11));
+  if (gdk_error_trap_pop () == Success)
+    {
+      screen_x11->wmspec_check_window = *xwindow;
+      XFree (xwindow);
+      
+      screen_x11->need_refetch_net_supported = TRUE;
+      screen_x11->need_refetch_wm_name = TRUE;
+      
+      /* Careful, reentrancy */
+      _gdk_x11_screen_window_manager_changed (GDK_SCREEN (screen_x11));
+    }
 }
 
 /**
@@ -2334,6 +2486,8 @@ gdk_x11_screen_get_window_manager_name (GdkScreen *screen)
           guchar *name;
           
           name = NULL;
+
+	  gdk_error_trap_push ();
           
           XGetWindowProperty (GDK_DISPLAY_XDISPLAY (screen_x11->display),
                               screen_x11->wmspec_check_window,
@@ -2485,6 +2639,7 @@ static struct
   const char *gdk_name;
 } settings_map[] = {
   { "Net/DoubleClickTime", "gtk-double-click-time" },
+  { "Net/DoubleClickDistance", "gtk-double-click-distance" },
   { "Net/DndDragThreshold", "gtk-dnd-drag-threshold" },
   { "Gtk/CanChangeAccels", "gtk-can-change-accels" },
   { "Gtk/ColorPalette", "gtk-color-palette" },
@@ -2497,7 +2652,16 @@ static struct
   { "Gtk/IMStatusStyle", "gtk-im-status-style" },
   { "Net/CursorBlink", "gtk-cursor-blink" },
   { "Net/CursorBlinkTime", "gtk-cursor-blink-time" },
-  { "Net/ThemeName", "gtk-theme-name" }
+  { "Net/ThemeName", "gtk-theme-name" },
+  { "Net/IconThemeName", "gtk-icon-theme-name" },
+  { "Gtk/FileChooserBackend", "gtk-file-chooser-backend" },
+  { "Gtk/ButtonImages", "gtk-button-images" },
+  { "Gtk/MenuImages", "gtk-menu-images" },
+  { "Xft/Antialias", "gtk-xft-antialias" },
+  { "Xft/Hinting", "gtk-xft-hinting" },
+  { "Xft/HintStyle", "gtk-xft-hintstyle" },
+  { "Xft/RGBA", "gtk-xft-rgba" },
+  { "Xft/DPI", "gtk-xft-dpi" },
 };
 
 static void
@@ -2525,7 +2689,6 @@ gdk_xsettings_notify_cb (const char       *name,
 	new_event.setting.name = (char *)settings_map[i].gdk_name;
 	break;
       }
-
   
   if (!new_event.setting.name)
     return;

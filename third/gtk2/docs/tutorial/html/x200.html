@@ -5,8 +5,7 @@
 >Events</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-EVENTS">Events</H1
+NAME="SEC-EVENTS"
+>Events</A
+></H1
 ><P
 >In addition to the signal mechanism described above, there is a set
 of <I
@@ -308,9 +309,9 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->static gint button_press_callback( GtkWidget      *widget, 
-                                   GdkEventButton *event,
-                                   gpointer        data );</PRE
+>static gboolean button_press_callback( GtkWidget      *widget, 
+                                       GdkEventButton *event,
+                                       gpointer        data );</PRE
 ></TD
 ></TR
 ></TABLE
@@ -328,23 +329,23 @@ mechanism. Returning TRUE indicates that the event has been handled,
 and that it should not propagate further. Returning FALSE continues
 the normal event handling.  See the section on
 <A
-HREF="c1816.html"
+HREF="c1817.html"
 >Advanced Event and Signal Handling</A
 > 
 for more details on this propagation process.</P
 ><P
 >For details on the GdkEvent data types, see the appendix entitled
 <A
-HREF="a2780.html"
+HREF="a2784.html"
 >GDK Event Types</A
 >.</P
 ><P
 >The GDK selection and drag-and-drop APIs also emit a number of events which
 are reflected in GTK by the signals. See <A
-HREF="x1958.html#SEC-SIGNALSONSOURCEWIDGETS"
+HREF="x1959.html#SEC-SIGNALSONSOURCEWIDGETS"
 >Signals on the source widget</A
 > and <A
-HREF="x1958.html#SEC-SIGNALSONDESTWIDGETS"
+HREF="x1959.html#SEC-SIGNALSONDESTWIDGETS"
 >Signals on the destination widget</A
 >
 for details on the signatures of the callback functions for these signals:</P

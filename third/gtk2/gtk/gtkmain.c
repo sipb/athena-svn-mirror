@@ -24,6 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
+
 #include "gdkconfig.h"
 
 #include <locale.h>
@@ -48,11 +50,11 @@
 
 #include <pango/pango-utils.h>	/* For pango_split_file_list */
 
-#include "config.h"
 #include "gtkintl.h"
 
 #include "gtkaccelmap.h"
 #include "gtkbox.h"
+#include "gtkclipboard.h"
 #include "gtkdnd.h"
 #include "gtkversion.h"
 #include "gtkmain.h"
@@ -172,6 +174,40 @@ static const guint gtk_ndebug_keys = sizeof (gtk_debug_keys) / sizeof (GDebugKey
 
 #endif /* G_ENABLE_DEBUG */
 
+/**
+ * gtk_check_version:
+ * @required_major: the required major version.
+ * @required_minor: the required major version.
+ * @required_micro: the required major version.
+ * 
+ * Checks that the GTK+ library in use is compatible with the
+ * given version. Generally you would pass in the constants
+ * #GTK_MAJOR_VERSION, #GTK_MINOR_VERSION, #GTK_MICRO_VERSION
+ * as the three arguments to this function; that produces
+ * a check that the library in use is compatible with
+ * the version of GTK+ the application or module was compiled
+ * against.
+ *
+ * Compatibility is defined by two things: first the version
+ * of the running library is newer than the version
+ * @required_major.required_minor.@required_micro. Second
+ * the running library must be binary compatible with the
+ * version @required_major.required_minor.@required_micro
+ * (same major version.)
+ *
+ * This function is primarily for GTK+ modules; the module
+ * can call this function to check that it wasn't loaded
+ * into an incompatible version of GTK+. However, such a
+ * a check isn't completely reliable, since the module may be
+ * linked against an old version of GTK+ and calling the
+ * old version of gtk_check_version(), but still get loaded
+ * into an application using a newer version of GTK+.
+ *
+ * Return value: %NULL if the GTK+ library is compatible with the
+ *   given version, or a string describing the version mismatch.
+ *   The returned string is owned by GTK+ and should not be modified
+ *   or freed.
+ **/
 gchar*
 gtk_check_version (guint required_major,
 		   guint required_minor,
@@ -239,6 +275,17 @@ check_setugid (void)
 #ifdef G_OS_WIN32
 
 G_WIN32_DLLMAIN_FOR_DLL_NAME(static, dll_name)
+
+const gchar *
+_gtk_get_datadir (void)
+{
+  static char *gtk_datadir = NULL;
+  if (gtk_datadir == NULL)
+    gtk_datadir = g_win32_get_package_installation_subdirectory
+      (GETTEXT_PACKAGE, dll_name, "share");
+
+  return gtk_datadir;
+}
 
 const gchar *
 _gtk_get_libdir (void)
@@ -413,8 +460,8 @@ module_build_la_path (const gchar *directory,
  * @name: the name of the module
  * @type: the type of the module, for instance 'modules', 'engines', immodules'
  * 
- * Looks for a dynamically module named @name of type @type in the standard GTK+
- *  module search path.
+ * Looks for a dynamically loadable module named @name of type @type in the
+ * standard GTK+ module search path.
  * 
  * Return value: the pathname to the found module, or %NULL if it wasn't found.
  *  Free with g_free().
@@ -610,15 +657,15 @@ display_opened_cb (GdkDisplayManager *display_manager,
 }
 
 /**
- * gdk_parse_args:
- * @argc: the number of command line arguments.
- * @argv: the array of command line arguments.
+ * gtk_parse_args:
+ * @argc: a pointer to the number of command line arguments.
+ * @argv: a pointer to the array of command line arguments.
  * 
  * Parses command line arguments, and initializes global
  * attributes of GTK+, but does not actually open a connection
  * to a display. (See gdk_display_open(), gdk_get_display_arg_name())
  *
- * Any arguments used by GTK or GDK are removed from the array and
+ * Any arguments used by GTK+ or GDK are removed from the array and
  * @argc and @argv are updated accordingly.
  *
  * You shouldn't call this function explicitely if you are using
@@ -792,8 +839,10 @@ gtk_parse_args (int    *argc,
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, GTK_LOCALEDIR);
+  bindtextdomain (GETTEXT_PACKAGE "-properties", GTK_LOCALEDIR);
 #    ifdef HAVE_BIND_TEXTDOMAIN_CODESET
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  bind_textdomain_codeset (GETTEXT_PACKAGE "-properties", "UTF-8");
 #    endif
 #endif  
 
@@ -847,11 +896,9 @@ gtk_parse_args (int    *argc,
 /**
  * gtk_init_check:
  * @argc: Address of the <parameter>argc</parameter> parameter of your 
- *   <function>main()</function> function. Changed if any arguments were 
- *   handled.
- * @argv: Address of the <parameter>argv</parameter> parameter of 
- *   <function>main()</function>. Any parameters understood by gtk_init() 
- *   are stripped before return.
+ *   main() function. Changed if any arguments were handled.
+ * @argv: Address of the <parameter>argv</parameter> parameter of main(). 
+ *   Any parameters understood by gtk_init() are stripped before return.
  * 
  * This function does the same work as gtk_init() with only 
  * a single change: It does not terminate the program if the GUI can't be 
@@ -878,15 +925,13 @@ gtk_init_check (int	 *argc,
 /**
  * gtk_init:
  * @argc: Address of the <parameter>argc</parameter> parameter of your 
- *   <function>main()</function> function. Changed if any arguments were 
- *   handled.
- * @argv: Address of the <parameter>argv</parameter> parameter of 
- *   <function>main()</function>. Any parameters understood by gtk_init() 
- *   are stripped before return.
+ *   main() function. Changed if any arguments were handled.
+ * @argv: Address of the <parameter>argv</parameter> parameter of main(). 
+ *   Any parameters understood by gtk_init() are stripped before return.
  * 
  * Call this function before using any other GTK+ functions in your GUI
- * applications.  It will initialize everything needed to operate the toolkit and
- * parses some standard command line options. @argc and 
+ * applications.  It will initialize everything needed to operate the 
+ * toolkit and parses some standard command line options. @argc and 
  * @argv are adjusted accordingly so your own code will 
  * never see those standard arguments.
  *
@@ -989,25 +1034,91 @@ gtk_exit (gint errorcode)
  * <literal>setlocale (LC_ALL, "")</literal> but also takes care of the 
  * locale specific setup of the windowing system used by GDK.
  * 
- * Return value: a string corresponding to the locale set, as with the
- * C library function <function>setlocale()</function>.
+ * Returns: a string corresponding to the locale set, typically in the
+ * form lang_COUNTRY, where lang is an ISO-639 language code, and
+ * COUNTRY is an ISO-3166 country code. On Unix, this form matches the
+ * result of the setlocale(); it is also used on other machines, such as 
+ * Windows, where the C library returns a different result. The string is 
+ * owned by GTK+ and should not be modified or freed.
  **/
-gchar*
+gchar *
 gtk_set_locale (void)
 {
   return gdk_set_locale ();
 }
 
 /**
+ * _gtk_get_lc_ctype:
+ *
+ * Return the Unix-style locale string for the language currently in
+ * effect. On Unix systems, this is the return value from
+ * <literal>setlocale(LC_CTYPE, NULL)</literal>, and the user can
+ * affect this through the environment variables LC_ALL, LC_CTYPE or
+ * LANG (checked in that order). The locale strings typically is in
+ * the form lang_COUNTRY, where lang is an ISO-639 language code, and
+ * COUNTRY is an ISO-3166 country code. For instance, sv_FI for
+ * Swedish as written in Finland or pt_BR for Portuguese as written in
+ * Brazil.
+ * 
+ * On Windows, the C library doesn't use any such environment
+ * variables, and setting them won't affect the behaviour of functions
+ * like ctime(). The user sets the locale through the Regional Options 
+ * in the Control Panel. The C library (in the setlocale() function) 
+ * does not use country and language codes, but country and language 
+ * names spelled out in English. 
+ * However, this function does check the above environment
+ * variables, and does return a Unix-style locale string based on
+ * either said environment variables or the thread's current locale.
+ *
+ * Return value: a dynamically allocated string, free with g_free().
+ */
+
+gchar *
+_gtk_get_lc_ctype (void)
+{
+#ifdef G_OS_WIN32
+  /* Somebody might try to set the locale for this process using the
+   * LANG or LC_ environment variables. The Microsoft C library
+   * doesn't know anything about them. You set the locale in the
+   * Control Panel. Setting these env vars won't have any affect on
+   * locale-dependent C library functions like ctime(). But just for
+   * kicks, do obey LC_ALL, LC_CTYPE and LANG in GTK. (This also makes
+   * it easier to test GTK and Pango in various default languages, you
+   * don't have to clickety-click in the Control Panel, you can simply
+   * start the program with LC_ALL=something on the command line.)
+   */
+  gchar *p;
+
+  p = getenv ("LC_ALL");
+  if (p != NULL)
+    return g_strdup (p);
+
+  p = getenv ("LC_CTYPE");
+  if (p != NULL)
+    return g_strdup (p);
+
+  p = getenv ("LANG");
+  if (p != NULL)
+    return g_strdup (p);
+
+  return g_win32_getlocale ();
+#else
+  return g_strdup (setlocale (LC_CTYPE, NULL));
+#endif
+}
+
+/**
  * gtk_get_default_language:
  *
- * Returns the ISO language code for the default language currently in
+ * Returns the #PangoLanguage for the default language currently in
  * effect. (Note that this can change over the life of an
  * application.)  The default language is derived from the current
  * locale. It determines, for example, whether GTK+ uses the
- * right-to-left or left-to-right text direction.
+ * right-to-left or left-to-right text direction. See
+ * _gtk_get_lc_ctype() for notes on behaviour on Windows.
  * 
- * Return value: the default language as an allocated string, must be freed
+ * Return value: the default language as a #PangoLanguage, must not be
+ * freed
  **/
 PangoLanguage *
 gtk_get_default_language (void)
@@ -1016,37 +1127,7 @@ gtk_get_default_language (void)
   PangoLanguage *result;
   gchar *p;
   
-#ifdef G_OS_WIN32
-  /* Somebody might try to set the locale for this process using the
-   * LANG or LC_ environment variables. The Microsoft C library
-   * doesn't know anything about them. You set the locale in the
-   * Control Panel. Setting these env vars won't have any affect on
-   * locale-dependent C library functions like ctime. But just for
-   * kicks, do obey LC_ALL, LANG and LC_CTYPE in GTK. (This also makes
-   * it easier to test GTK and Pango in various default languages, you
-   * don't have to clickety-click in the Control Panel, you can simply
-   * start the program with LC_ALL=something on the command line.)
-   */
-  p = getenv ("LC_ALL");
-  if (p != NULL)
-    lang = g_strdup (p);
-  else
-    {
-      p = getenv ("LANG");
-      if (p != NULL)
-	lang = g_strdup (p);
-      else
-	{
-	  p = getenv ("LC_CTYPE");
-	  if (p != NULL)
-	    lang = g_strdup (p);
-	  else
-	    lang = g_win32_getlocale ();
-	}
-    }
-#else
-  lang = g_strdup (setlocale (LC_CTYPE, NULL));
-#endif
+  lang = _gtk_get_lc_ctype ();
   p = strchr (lang, '.');
   if (p)
     *p = '\0';
@@ -1152,7 +1233,7 @@ gtk_main_quit (void)
   g_main_loop_quit (main_loops->data);
 }
 
-gint
+gboolean
 gtk_events_pending (void)
 {
   gboolean result;
@@ -1602,8 +1683,8 @@ gtk_grab_notify_foreach (GtkWidget *child,
   if (was_grabbed != is_grabbed)
     {
       g_object_ref (child);
-      
-      g_signal_emit_by_name (child, "grab_notify", was_grabbed);
+
+      _gtk_widget_grab_notify (child, was_grabbed);
       
       if (GTK_IS_CONTAINER (child))
 	gtk_container_foreach (GTK_CONTAINER (child), gtk_grab_notify_foreach, info);
@@ -1738,7 +1819,7 @@ gtk_key_snooper_install (GtkKeySnoopFunc snooper,
 }
 
 void
-gtk_key_snooper_remove (guint		 snooper_id)
+gtk_key_snooper_remove (guint snooper_id)
 {
   GtkKeySnooperData *data = NULL;
   GSList *slist;
@@ -1754,7 +1835,10 @@ gtk_key_snooper_remove (guint		 snooper_id)
       data = NULL;
     }
   if (data)
-    key_snoopers = g_slist_remove (key_snoopers, data);
+    {
+      key_snoopers = g_slist_remove (key_snoopers, data);
+      g_free (data);
+    }
 }
 
 static gint
@@ -2249,8 +2333,17 @@ gtk_propagate_event (GtkWidget *widget,
       while (TRUE)
 	{
 	  GtkWidget *tmp;
-	  
-	  handled_event = !GTK_WIDGET_IS_SENSITIVE (widget) || gtk_widget_event (widget, event);
+
+	  /* Scroll events are special cased here because it
+	   * feels wrong when scrolling a GtkViewport, say,
+	   * to have children of the viewport eat the scroll
+	   * event
+	   */
+	  if (!GTK_WIDGET_IS_SENSITIVE (widget))
+	    handled_event = event->type != GDK_SCROLL;
+	  else
+	    handled_event = gtk_widget_event (widget, event);
+	      
 	  tmp = widget->parent;
 	  g_object_unref (widget);
 

@@ -328,26 +328,34 @@ void gdk_draw_layout_line_with_colors (GdkDrawable     *drawable,
                                        gint             x,
                                        gint             y,
                                        PangoLayoutLine *line,
-                                       GdkColor        *foreground,
-                                       GdkColor        *background);
+                                       const GdkColor  *foreground,
+                                       const GdkColor  *background);
 void gdk_draw_layout_with_colors      (GdkDrawable     *drawable,
                                        GdkGC           *gc,
                                        gint             x,
                                        gint             y,
                                        PangoLayout     *layout,
-                                       GdkColor        *foreground,
-                                       GdkColor        *background);
+                                       const GdkColor  *foreground,
+                                       const GdkColor  *background);
 
 #ifndef GDK_DISABLE_DEPRECATED
 #define gdk_draw_pixmap                gdk_draw_drawable
 #define gdk_draw_bitmap                gdk_draw_drawable
 #endif /* GDK_DISABLE_DEPRECATED */
 
-GdkImage* gdk_drawable_get_image (GdkDrawable *drawable,
-                                  gint         x,
-                                  gint         y,
-                                  gint         width,
-                                  gint         height);
+GdkImage* gdk_drawable_get_image      (GdkDrawable *drawable,
+                                       gint         x,
+                                       gint         y,
+                                       gint         width,
+                                       gint         height);
+GdkImage *gdk_drawable_copy_to_image (GdkDrawable  *drawable,
+				      GdkImage     *image,
+				      gint          src_x,
+				      gint          src_y,
+				      gint          dest_x,
+				      gint          dest_y,
+				      gint          width,
+				      gint          height);
 
 GdkRegion *gdk_drawable_get_clip_region    (GdkDrawable *drawable);
 GdkRegion *gdk_drawable_get_visible_region (GdkDrawable *drawable);

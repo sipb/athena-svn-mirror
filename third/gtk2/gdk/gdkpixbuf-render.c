@@ -25,6 +25,7 @@
 #include "gdk-pixbuf-private.h"
 #include "gdkpixbuf.h"
 #include "gdkscreen.h"
+#include "gdkinternals.h"
 
 
 
@@ -81,14 +82,13 @@ gdk_pixbuf_render_threshold_alpha (GdkPixbuf *pixbuf,
   if (width == 0 || height == 0)
     return;
 
-  gc = gdk_gc_new (bitmap);
+  gc = _gdk_drawable_get_scratch_gc (bitmap, FALSE);
 
   if (!pixbuf->has_alpha)
     {
       color.pixel = (alpha_threshold == 255) ? 0 : 1;
       gdk_gc_set_foreground (gc, &color);
       gdk_draw_rectangle (bitmap, gc, TRUE, dest_x, dest_y, width, height);
-      g_object_unref (gc);
       return;
     }
 
@@ -130,8 +130,6 @@ gdk_pixbuf_render_threshold_alpha (GdkPixbuf *pixbuf,
 		       start + dest_x, y + dest_y,
 		       x - 1 + dest_x, y + dest_y);
     }
-	
-  g_object_unref (gc);
 }
 
 
@@ -164,7 +162,7 @@ gdk_pixbuf_render_threshold_alpha (GdkPixbuf *pixbuf,
  * for consistent visual results.  If you do not have any of these cases, the
  * dither offsets can be both zero.
  *
- * This function is obsolete. Use gdk_draw_pixbuf() instead.
+ * Deprecated: This function is obsolete. Use gdk_draw_pixbuf() instead.
  **/
 void
 gdk_pixbuf_render_to_drawable (GdkPixbuf   *pixbuf,
@@ -207,7 +205,7 @@ gdk_pixbuf_render_to_drawable (GdkPixbuf   *pixbuf,
  * On older X servers, rendering pixbufs with an alpha channel involves round trips
  * to the X server, and may be somewhat slow.
  *
- * This function is obsolete. Use gdk_draw_pixbuf() instead.
+ * Deprecated: This function is obsolete. Use gdk_draw_pixbuf() instead.
  **/
 void
 gdk_pixbuf_render_to_drawable_alpha (GdkPixbuf   *pixbuf,
@@ -238,8 +236,7 @@ gdk_pixbuf_render_to_drawable_alpha (GdkPixbuf   *pixbuf,
  * and @mask_return arguments, respectively, and renders a pixbuf and its
  * corresponding thresholded alpha mask to them.  This is merely a convenience
  * function; applications that need to render pixbufs with dither offsets or to
- * given drawables should use gdk_pixbuf_render_to_drawable_alpha() or
- * gdk_pixbuf_render_to_drawable(), and gdk_pixbuf_render_threshold_alpha().
+ * given drawables should use gdk_draw_pixbuf() and gdk_pixbuf_render_threshold_alpha().
  *
  * The pixmap that is created is created for the colormap returned
  * by gdk_rgb_get_colormap(). You normally will want to instead use
@@ -275,8 +272,7 @@ gdk_pixbuf_render_pixmap_and_mask (GdkPixbuf  *pixbuf,
  * and @mask_return arguments, respectively, and renders a pixbuf and its
  * corresponding tresholded alpha mask to them.  This is merely a convenience
  * function; applications that need to render pixbufs with dither offsets or to
- * given drawables should use gdk_pixbuf_render_to_drawable_alpha() or
- * gdk_pixbuf_render_to_drawable(), and gdk_pixbuf_render_threshold_alpha().
+ * given drawables should use gdk_draw_pixbuf(), and gdk_pixbuf_render_threshold_alpha().
  *
  * The pixmap that is created uses the #GdkColormap specified by @colormap.
  * This colormap must match the colormap of the window where the pixmap
@@ -307,13 +303,12 @@ gdk_pixbuf_render_pixmap_and_mask_for_colormap (GdkPixbuf   *pixbuf,
 				       gdk_colormap_get_visual (colormap)->depth);
 
       gdk_drawable_set_colormap (GDK_DRAWABLE (*pixmap_return), colormap);
-      gc = gdk_gc_new (*pixmap_return);
-      gdk_pixbuf_render_to_drawable (pixbuf, *pixmap_return, gc,
-				     0, 0, 0, 0,
-				     gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
-				     GDK_RGB_DITHER_NORMAL,
-				     0, 0);
-      g_object_unref (gc);
+      gc = _gdk_drawable_get_scratch_gc (*pixmap_return, FALSE);
+      gdk_draw_pixbuf (*pixmap_return, gc, pixbuf, 
+		       0, 0, 0, 0,
+		       gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
+		       GDK_RGB_DITHER_NORMAL,
+		       0, 0);
     }
   
   if (mask_return)

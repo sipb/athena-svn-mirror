@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GtkTreeSortable</refname><refpurpose></refpurpose>
+<refname>GtkTreeSortable</refname><refpurpose>The interface for sortable models used by GtkTreeView</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -22,22 +22,22 @@ struct      <link linkend="GtkTreeSortableIface">GtkTreeSortableIface</link>;
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *a,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *b,
                                              <link linkend="gpointer">gpointer</link> user_data);
-void        <link linkend="gtk-tree-sortable-sort-column-changed">gtk_tree_sortable_sort_column_changed</link>
+<link linkend="void">void</link>        <link linkend="gtk-tree-sortable-sort-column-changed">gtk_tree_sortable_sort_column_changed</link>
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable);
 <link linkend="gboolean">gboolean</link>    <link linkend="gtk-tree-sortable-get-sort-column-id">gtk_tree_sortable_get_sort_column_id</link>
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="gint">gint</link> *sort_column_id,
                                              <link linkend="GtkSortType">GtkSortType</link> *order);
-void        <link linkend="gtk-tree-sortable-set-sort-column-id">gtk_tree_sortable_set_sort_column_id</link>
+<link linkend="void">void</link>        <link linkend="gtk-tree-sortable-set-sort-column-id">gtk_tree_sortable_set_sort_column_id</link>
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="gint">gint</link> sort_column_id,
                                              <link linkend="GtkSortType">GtkSortType</link> order);
-void        <link linkend="gtk-tree-sortable-set-sort-func">gtk_tree_sortable_set_sort_func</link> (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
+<link linkend="void">void</link>        <link linkend="gtk-tree-sortable-set-sort-func">gtk_tree_sortable_set_sort_func</link> (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="gint">gint</link> sort_column_id,
                                              <link linkend="GtkTreeIterCompareFunc">GtkTreeIterCompareFunc</link> sort_func,
                                              <link linkend="gpointer">gpointer</link> user_data,
                                              <link linkend="GtkDestroyNotify">GtkDestroyNotify</link> destroy);
-void        <link linkend="gtk-tree-sortable-set-default-sort-func">gtk_tree_sortable_set_default_sort_func</link>
+<link linkend="void">void</link>        <link linkend="gtk-tree-sortable-set-default-sort-func">gtk_tree_sortable_set_default_sort_func</link>
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="GtkTreeIterCompareFunc">GtkTreeIterCompareFunc</link> sort_func,
                                              <link linkend="gpointer">gpointer</link> user_data,
@@ -60,17 +60,21 @@ void        <link linkend="gtk-tree-sortable-set-default-sort-func">gtk_tree_sor
 </refsect1>
 
 <refsect1>
-<title>Implementations</title>
-<para>
-GtkTreeSortable is implemented by <link linkend="GtkTreeModelSort">GtkTreeModelSort</link>, <link linkend="GtkTreeStore">GtkTreeStore</link> and <link linkend="GtkListStore">GtkListStore</link>.
-</para>
-</refsect1>
-
-<refsect1>
 <title>Prerequisites</title>
 <para>
-GtkTreeSortable requires <link linkend="GtkTreeModel">GtkTreeModel</link> and <link linkend="GObject">GObject</link>.
-</para>
+GtkTreeSortable requires
+ <link linkend="GtkTreeModel">GtkTreeModel</link> and  <link linkend="GObject">GObject</link>.</para>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Known Implementations</title>
+<para>
+GtkTreeSortable is implemented by
+ <link linkend="GtkTreeModelSort">GtkTreeModelSort</link>,  <link linkend="GtkTreeStore">GtkTreeStore</link> and  <link linkend="GtkListStore">GtkListStore</link>.</para>
+
 </refsect1>
 
 
@@ -79,7 +83,7 @@ GtkTreeSortable requires <link linkend="GtkTreeModel">GtkTreeModel</link> and <l
 <synopsis>
 
 &quot;<link linkend="GtkTreeSortable-sort-column-changed">sort-column-changed</link>&quot;
-            void        user_function      (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *treesortable,
+            <link linkend="void">void</link>        user_function      (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *treesortable,
                                             <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsect1>
@@ -96,13 +100,13 @@ GtkTreeSortable requires <link linkend="GtkTreeModel">GtkTreeModel</link> and <l
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkTreeSortable-struct"/>struct GtkTreeSortable</title>
-<programlisting>struct GtkTreeSortable;</programlisting>
+<indexterm><primary>GtkTreeSortable</primary></indexterm><programlisting>struct GtkTreeSortable;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkTreeSortableIface"/>struct GtkTreeSortableIface</title>
-<programlisting>struct GtkTreeSortableIface {
+<indexterm><primary>GtkTreeSortableIface</primary></indexterm><programlisting>struct GtkTreeSortableIface {
 
   GTypeInterface g_iface;
 
@@ -133,7 +137,7 @@ GtkTreeSortable requires <link linkend="GtkTreeModel">GtkTreeModel</link> and <l
 </para></refsect2>
 <refsect2>
 <title><anchor id="GtkTreeIterCompareFunc"/>GtkTreeIterCompareFunc ()</title>
-<programlisting><link linkend="gint">gint</link>        (*GtkTreeIterCompareFunc)       (<link linkend="GtkTreeModel">GtkTreeModel</link> *model,
+<indexterm><primary>GtkTreeIterCompareFunc</primary></indexterm><programlisting><link linkend="gint">gint</link>        (*GtkTreeIterCompareFunc)       (<link linkend="GtkTreeModel">GtkTreeModel</link> *model,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *a,
                                              <link linkend="GtkTreeIter">GtkTreeIter</link> *b,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -159,7 +163,7 @@ GtkTreeSortable requires <link linkend="GtkTreeModel">GtkTreeModel</link> and <l
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-sortable-sort-column-changed"/>gtk_tree_sortable_sort_column_changed ()</title>
-<programlisting>void        gtk_tree_sortable_sort_column_changed
+<indexterm><primary>gtk_tree_sortable_sort_column_changed</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_sortable_sort_column_changed
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable);</programlisting>
 <para>
 Emits a GtkTreeSortable::sort_column_changed signal on</para>
@@ -167,12 +171,12 @@ Emits a GtkTreeSortable::sort_column_changed signal on</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>sortable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeSortable">GtkTreeSortable</link>
+<listitem><simpara> A <link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-sortable-get-sort-column-id"/>gtk_tree_sortable_get_sort_column_id ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_sortable_get_sort_column_id
+<indexterm><primary>gtk_tree_sortable_get_sort_column_id</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_sortable_get_sort_column_id
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="gint">gint</link> *sort_column_id,
                                              <link linkend="GtkSortType">GtkSortType</link> *order);</programlisting>
@@ -184,20 +188,20 @@ and the values in <parameter>sort_column_id</parameter> and <parameter>order</pa
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>sortable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeSortable">GtkTreeSortable</link>
+<listitem><simpara> A <link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sort_column_id</parameter>&nbsp;:</term>
 <listitem><simpara> The sort column id to be filled in
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>order</parameter>&nbsp;:</term>
-<listitem><simpara> The <link linkend="GtkSortType">GtkSortType</link> to be filled in
+<listitem><simpara> The <link linkend="GtkSortType"><type>GtkSortType</type></link> to be filled in
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal>, if the sort column has been set
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-sortable-set-sort-column-id"/>gtk_tree_sortable_set_sort_column_id ()</title>
-<programlisting>void        gtk_tree_sortable_set_sort_column_id
+<indexterm><primary>gtk_tree_sortable_set_sort_column_id</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_sortable_set_sort_column_id
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="gint">gint</link> sort_column_id,
                                              <link linkend="GtkSortType">GtkSortType</link> order);</programlisting>
@@ -211,7 +215,7 @@ will be used, if it is set.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>sortable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeSortable">GtkTreeSortable</link>
+<listitem><simpara> A <link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sort_column_id</parameter>&nbsp;:</term>
 <listitem><simpara> the sort column id to set
@@ -222,7 +226,7 @@ will be used, if it is set.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-sortable-set-sort-func"/>gtk_tree_sortable_set_sort_func ()</title>
-<programlisting>void        gtk_tree_sortable_set_sort_func (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
+<indexterm><primary>gtk_tree_sortable_set_sort_func</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_sortable_set_sort_func (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="gint">gint</link> sort_column_id,
                                              <link linkend="GtkTreeIterCompareFunc">GtkTreeIterCompareFunc</link> sort_func,
                                              <link linkend="gpointer">gpointer</link> user_data,
@@ -235,7 +239,7 @@ model will sort using this function.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>sortable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeSortable">GtkTreeSortable</link>
+<listitem><simpara> A <link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sort_column_id</parameter>&nbsp;:</term>
 <listitem><simpara> the sort column id to set the function for
@@ -252,7 +256,7 @@ model will sort using this function.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-sortable-set-default-sort-func"/>gtk_tree_sortable_set_default_sort_func ()</title>
-<programlisting>void        gtk_tree_sortable_set_default_sort_func
+<indexterm><primary>gtk_tree_sortable_set_default_sort_func</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_tree_sortable_set_default_sort_func
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable,
                                              <link linkend="GtkTreeIterCompareFunc">GtkTreeIterCompareFunc</link> sort_func,
                                              <link linkend="gpointer">gpointer</link> user_data,
@@ -271,7 +275,7 @@ GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model will be unsorted.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>sortable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeSortable">GtkTreeSortable</link>
+<listitem><simpara> A <link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>sort_func</parameter>&nbsp;:</term>
 <listitem><simpara> The sorting function
@@ -285,7 +289,7 @@ GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model will be unsorted.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-tree-sortable-has-default-sort-func"/>gtk_tree_sortable_has_default_sort_func ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_sortable_has_default_sort_func
+<indexterm><primary>gtk_tree_sortable_has_default_sort_func</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gtk_tree_sortable_has_default_sort_func
                                             (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *sortable);</programlisting>
 <para>
 Returns <literal>TRUE</literal> if the model has a default sort function.  This is used
@@ -295,7 +299,7 @@ to the default state, or not.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>sortable</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GtkTreeSortable">GtkTreeSortable</link>
+<listitem><simpara> A <link linkend="GtkTreeSortable"><type>GtkTreeSortable</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal>, if the model has a default sort function
 </simpara></listitem></varlistentry>
@@ -306,7 +310,7 @@ to the default state, or not.</para>
 <refsect1>
 <title>Signals</title>
 <refsect2><title><anchor id="GtkTreeSortable-sort-column-changed"/>The &quot;sort-column-changed&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *treesortable,
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkTreeSortable">GtkTreeSortable</link> *treesortable,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
 

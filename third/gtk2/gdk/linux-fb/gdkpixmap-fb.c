@@ -24,7 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include "config.h"
+#include <config.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -170,13 +170,13 @@ gdk_bitmap_create_from_data (GdkDrawable *window,
 }
 
 GdkPixmap*
-gdk_pixmap_create_from_data (GdkDrawable *window,
-			     const gchar *data,
-			     gint         width,
-			     gint         height,
-			     gint         depth,
-			     GdkColor    *fg,
-			     GdkColor    *bg)
+gdk_pixmap_create_from_data (GdkDrawable    *window,
+			     const gchar    *data,
+			     gint            width,
+			     gint            height,
+			     gint            depth,
+			     const GdkColor *fg,
+			     const GdkColor *bg)
 {
   GdkPixmap *pixmap;
 

@@ -32,7 +32,7 @@ Each child has two options that can be set,
 #GtkPaned is resized, that child will expand
 or shrink along with the paned widget. If @shrink
 is true, then when that child can be made smaller
-than it's requisition by the user. Setting @shrink
+than its requisition by the user. Setting @shrink
 to %FALSE allows the application to set a minimum
 size. If @resize is false for both children, then
 this is treated as if @resize is true for both
@@ -72,6 +72,92 @@ gtk_widget_set_size_request (frame2, 50, -1);
 <para>
 </para>
 
+
+<!-- ##### SIGNAL GtkPaned::accept-position ##### -->
+<para>
+
+</para>
+
+@paned: the object which received the signal.
+@Returns: 
+
+<!-- ##### SIGNAL GtkPaned::cancel-position ##### -->
+<para>
+
+</para>
+
+@paned: the object which received the signal.
+@Returns: 
+
+<!-- ##### SIGNAL GtkPaned::cycle-child-focus ##### -->
+<para>
+
+</para>
+
+@paned: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkPaned::cycle-handle-focus ##### -->
+<para>
+
+</para>
+
+@paned: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkPaned::move-handle ##### -->
+<para>
+
+</para>
+
+@paned: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkPaned::toggle-handle-focus ##### -->
+<para>
+
+</para>
+
+@paned: the object which received the signal.
+@Returns: 
+
+<!-- ##### ARG GtkPaned:max-position ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPaned:min-position ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPaned:position ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPaned:position-set ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPaned:resize ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPaned:shrink ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GtkPaned:handle-size ##### -->
+<para>
+
+</para>
 
 <!-- ##### FUNCTION gtk_paned_add1 ##### -->
 <para>
@@ -126,6 +212,24 @@ Adds a child to the bottom or right pane.
 @shrink: can this child be made smaller than its requsition.
 
 
+<!-- ##### FUNCTION gtk_paned_get_child1 ##### -->
+<para>
+
+</para>
+
+@paned: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_paned_get_child2 ##### -->
+<para>
+
+</para>
+
+@paned: 
+@Returns: 
+
+
 <!-- ##### MACRO gtk_paned_set_gutter_size ##### -->
 <para>
 In older versions of GTK+, this function used to set the width of the 
@@ -153,70 +257,4 @@ gutter (the area between the two panes). It does nothing now.
 @paned: 
 @Returns: 
 
-
-<!-- ##### SIGNAL GtkPaned::accept-position ##### -->
-<para>
-
-</para>
-
-@paned: the object which received the signal.
-@Returns: 
-
-<!-- ##### SIGNAL GtkPaned::cancel-position ##### -->
-<para>
-
-</para>
-
-@paned: the object which received the signal.
-@Returns: 
-
-<!-- ##### SIGNAL GtkPaned::cycle-child-focus ##### -->
-<para>
-
-</para>
-
-@paned: the object which received the signal.
-@arg1: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkPaned::cycle-handle-focus ##### -->
-<para>
-
-</para>
-
-@paned: the object which received the signal.
-@arg1: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkPaned::move-handle ##### -->
-<para>
-
-</para>
-
-@paned: the object which received the signal.
-@arg1: 
-@Returns: 
-
-<!-- ##### SIGNAL GtkPaned::toggle-handle-focus ##### -->
-<para>
-
-</para>
-
-@paned: the object which received the signal.
-@Returns: 
-
-<!-- ##### ARG GtkPaned:position ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkPaned:position-set ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG GtkPaned:handle-size ##### -->
-<para>
-
-</para>
 

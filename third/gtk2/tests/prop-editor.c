@@ -17,8 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include <string.h>
 
+#undef GTK_DISABLE_DEPRECATED
 #include <gtk/gtk.h>
 
 #include "prop-editor.h"
@@ -420,12 +422,16 @@ pointer_changed (GObject *object, GParamSpec *pspec, gpointer data)
 static void
 object_changed (GObject *object, GParamSpec *pspec, gpointer data)
 {
-  GtkLabel *label = GTK_LABEL (data);
+  GtkWidget *label, *button;
   gchar *str;
   GObject *obj;
   const gchar *name;
   
+  GList *children = gtk_container_get_children (GTK_CONTAINER (data)); 
+  label = GTK_WIDGET (children->data);
+  button = GTK_WIDGET (children->next->data);
   g_object_get (object, pspec->name, &obj, NULL);
+  g_list_free (children);
 
   if (obj)
     name = g_type_name (G_TYPE_FROM_INSTANCE (obj));
@@ -433,7 +439,12 @@ object_changed (GObject *object, GParamSpec *pspec, gpointer data)
     name = "unknown";
   str = g_strdup_printf ("Object: %p (%s)", obj, name);
   
-  gtk_label_set_text (label, str);
+  gtk_label_set_text (GTK_LABEL (label), str);
+  gtk_widget_set_sensitive (button, G_IS_OBJECT (obj));
+
+  if (obj)
+    g_object_unref (obj);
+
   g_free (str);
 }
 
@@ -450,6 +461,19 @@ window_destroy (gpointer data)
   g_object_steal_data (data, "prop-editor-win");
 }
 
+static void
+object_properties (GtkWidget *button, 
+		   GObject   *object)
+{
+  gchar *name;
+  GObject *obj;
+
+  name = (gchar *) g_object_get_data (G_OBJECT (button), "property-name");
+  g_object_get (object, name, &obj, NULL);
+  if (G_IS_OBJECT (obj)) 
+    create_prop_editor (obj, 0);
+}
+ 
 static GtkWidget *
 property_widget (GObject *object, GParamSpec *spec, gboolean can_modify)
 {
@@ -627,11 +651,23 @@ property_widget (GObject *object, GParamSpec *spec, gboolean can_modify)
     }
   else if (type == G_TYPE_PARAM_OBJECT)
     {
-      prop_edit = gtk_label_new ("");
+      GtkWidget *label, *button;
+
+      prop_edit = gtk_hbox_new (FALSE, 5);
+
+      label = gtk_label_new ("");
+      button = gtk_button_new_with_label ("Properties");
+      g_object_set_data (G_OBJECT (button), "property-name", spec->name);
+      g_signal_connect (button, "clicked", 
+			G_CALLBACK (object_properties), 
+			object);
+
+      gtk_container_add (GTK_CONTAINER (prop_edit), label);
+      gtk_container_add (GTK_CONTAINER (prop_edit), button);
       
       g_object_connect_property (object, spec->name,
 				 G_CALLBACK (object_changed),
-				 prop_edit, G_OBJECT (prop_edit));
+				 prop_edit, G_OBJECT (label));
     }
   else
     {  
@@ -655,13 +691,20 @@ properties_from_type (GObject     *object,
   GtkWidget *sw;
   GtkWidget *vbox;
   GtkWidget *table;
-  GObjectClass *class;
   GParamSpec **specs;
   gint n_specs;
   int i;
 
-  class = G_OBJECT_CLASS (g_type_class_peek (type));
-  specs = g_object_class_list_properties (class, &n_specs);
+  if (G_TYPE_IS_INTERFACE (type))
+    {
+      gpointer vtable = g_type_default_interface_peek (type);
+      specs = g_object_interface_list_properties (vtable, &n_specs);
+    }
+  else
+    {
+      GObjectClass *class = G_OBJECT_CLASS (g_type_class_peek (type));
+      specs = g_object_class_list_properties (class, &n_specs);
+    }
         
   if (n_specs == 0)
     return NULL;
@@ -732,6 +775,12 @@ properties_from_type (GObject     *object,
   return sw;
 }
 
+static void
+kill_tips (GtkWindow *win, GtkObject *tips)
+{
+  gtk_object_destroy (tips);
+  g_object_unref (tips);
+}
 
 /* Pass zero for type if you want all properties */
 GtkWidget*
@@ -744,7 +793,9 @@ create_prop_editor (GObject   *object,
   GtkWidget *properties;
   GtkWidget *label;
   gchar *title;
-
+  GType *ifaces;
+  guint n_ifaces;
+  
   if ((win = g_object_get_data (G_OBJECT (object), "prop-editor-win")))
     {
       gtk_window_present (GTK_WINDOW (win));
@@ -755,10 +806,13 @@ create_prop_editor (GObject   *object,
   if (GTK_IS_WIDGET (object))
     gtk_window_set_screen (GTK_WINDOW (win),
 			   gtk_widget_get_screen (GTK_WIDGET (object)));
-  
+
   tips = gtk_tooltips_new ();
-  g_signal_connect_swapped (win, "destroy",
-			    G_CALLBACK (gtk_object_destroy), tips);
+  g_object_ref (tips);
+  gtk_object_sink (GTK_OBJECT (tips));
+
+  /* Kill the tips when the widget goes away.  */
+  g_signal_connect (G_OBJECT (win), "destroy", G_CALLBACK (kill_tips), tips);
 
   /* hold a weak ref to the object we're editing */
   g_object_set_data_full (G_OBJECT (object), "prop-editor-win", win, model_destroy);
@@ -789,6 +843,20 @@ create_prop_editor (GObject   *object,
 	  
 	  type = g_type_parent (type);
 	}
+
+      ifaces = g_type_interfaces (G_TYPE_FROM_INSTANCE (object), &n_ifaces);
+      while (n_ifaces--)
+	{
+	  properties = properties_from_type (object, ifaces[n_ifaces], tips);
+	  if (properties)
+	    {
+	      label = gtk_label_new (g_type_name (ifaces[n_ifaces]));
+	      gtk_notebook_append_page (GTK_NOTEBOOK (notebook),
+					properties, label);
+	    }
+	}
+
+      g_free (ifaces);
     }
   else
     {
@@ -796,6 +864,7 @@ create_prop_editor (GObject   *object,
       gtk_container_add (GTK_CONTAINER (win), properties);
       title = g_strdup_printf ("Properties of %s", g_type_name (type));
       gtk_window_set_title (GTK_WINDOW (win), title);
+      g_free (title);
     }
   
   gtk_window_set_default_size (GTK_WINDOW (win), -1, 400);

@@ -20,7 +20,7 @@ this:
 <example>
 <title>How to create a group of radio menu items.</title>
 <programlisting>
-GList *group = NULL;
+GSList *group = NULL;
 GtkWidget *item;
 gint i;
 
@@ -55,6 +55,13 @@ the interface functions.
 </para>
 
 
+<!-- ##### SIGNAL GtkRadioMenuItem::group-changed ##### -->
+<para>
+
+</para>
+
+@radiomenuitem: the object which received the signal.
+
 <!-- ##### FUNCTION gtk_radio_menu_item_new ##### -->
 <para>
 Creates a new #GtkRadioMenuItem.
@@ -75,6 +82,35 @@ Creates a new #GtkRadioMenuItem whose child is a simple #GtkLabel.
 
 
 <!-- ##### FUNCTION gtk_radio_menu_item_new_with_mnemonic ##### -->
+<para>
+
+</para>
+
+@group: 
+@label: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_radio_menu_item_new_from_widget ##### -->
+<para>
+
+</para>
+
+@group: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_radio_menu_item_new_with_label_from_widget ##### -->
+<para>
+
+</para>
+
+@group: 
+@label: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_radio_menu_item_new_with_mnemonic_from_widget ##### -->
 <para>
 
 </para>

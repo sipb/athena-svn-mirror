@@ -18,14 +18,14 @@
 
 struct      <link linkend="GtkProgressBar-struct">GtkProgressBar</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-progress-bar-new">gtk_progress_bar_new</link>            (void);
-void        <link linkend="gtk-progress-bar-pulse">gtk_progress_bar_pulse</link>          (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);
-void        <link linkend="gtk-progress-bar-set-text">gtk_progress_bar_set_text</link>       (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-pulse">gtk_progress_bar_pulse</link>          (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-text">gtk_progress_bar_set_text</link>       (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              const <link linkend="gchar">gchar</link> *text);
-void        <link linkend="gtk-progress-bar-set-fraction">gtk_progress_bar_set_fraction</link>   (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-fraction">gtk_progress_bar_set_fraction</link>   (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="gdouble">gdouble</link> fraction);
-void        <link linkend="gtk-progress-bar-set-pulse-step">gtk_progress_bar_set_pulse_step</link> (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-pulse-step">gtk_progress_bar_set_pulse_step</link> (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="gdouble">gdouble</link> fraction);
-void        <link linkend="gtk-progress-bar-set-orientation">gtk_progress_bar_set_orientation</link>
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-orientation">gtk_progress_bar_set_orientation</link>
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link> orientation);
 enum        <link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link>;
@@ -37,19 +37,19 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="gtk-progress-b
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-progress-bar-new-with-adjustment">gtk_progress_bar_new_with_adjustment</link>
                                             (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);
-void        <link linkend="gtk-progress-bar-set-bar-style">gtk_progress_bar_set_bar_style</link>  (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-bar-style">gtk_progress_bar_set_bar_style</link>  (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link> style);
 enum        <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link>;
-void        <link linkend="gtk-progress-bar-set-discrete-blocks">gtk_progress_bar_set_discrete_blocks</link>
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-discrete-blocks">gtk_progress_bar_set_discrete_blocks</link>
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="guint">guint</link> blocks);
-void        <link linkend="gtk-progress-bar-set-activity-step">gtk_progress_bar_set_activity_step</link>
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-activity-step">gtk_progress_bar_set_activity_step</link>
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="guint">guint</link> step);
-void        <link linkend="gtk-progress-bar-set-activity-blocks">gtk_progress_bar_set_activity_blocks</link>
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-set-activity-blocks">gtk_progress_bar_set_activity_blocks</link>
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="guint">guint</link> blocks);
-void        <link linkend="gtk-progress-bar-update">gtk_progress_bar_update</link>         (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<link linkend="void">void</link>        <link linkend="gtk-progress-bar-update">gtk_progress_bar_update</link>         (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="gdouble">gdouble</link> percentage);
 
 
@@ -69,11 +69,14 @@ void        <link linkend="gtk-progress-bar-update">gtk_progress_bar_update</lin
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkProgressBar implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkProgressBar implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -81,15 +84,15 @@ GtkProgressBar implements <link linkend="AtkImplementorIface">AtkImplementorIfac
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="GtkProgressBar--activity-blocks">activity-blocks</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkProgressBar--activity-step">activity-step</link>&quot;        <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkProgressBar--adjustment">adjustment</link>&quot;           <link linkend="GtkAdjustment">GtkAdjustment</link>        : Read / Write
-  &quot;<link linkend="GtkProgressBar--bar-style">bar-style</link>&quot;            <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link>  : Read / Write
-  &quot;<link linkend="GtkProgressBar--discrete-blocks">discrete-blocks</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GtkProgressBar--fraction">fraction</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkProgressBar--orientation">orientation</link>&quot;          <link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link> : Read / Write
-  &quot;<link linkend="GtkProgressBar--pulse-step">pulse-step</link>&quot;           <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GtkProgressBar--text">text</link>&quot;                 <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GtkProgressBar--activity-blocks">activity-blocks</link>&quot;      <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkProgressBar--activity-step">activity-step</link>&quot;        <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkProgressBar--adjustment">adjustment</link>&quot;           <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write
+  &quot;<link linkend="GtkProgressBar--bar-style">bar-style</link>&quot;            <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link>   : Read / Write
+  &quot;<link linkend="GtkProgressBar--discrete-blocks">discrete-blocks</link>&quot;      <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GtkProgressBar--fraction">fraction</link>&quot;             <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkProgressBar--orientation">orientation</link>&quot;          <link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link>  : Read / Write
+  &quot;<link linkend="GtkProgressBar--pulse-step">pulse-step</link>&quot;           <link linkend="gdouble">gdouble</link>               : Read / Write
+  &quot;<link linkend="GtkProgressBar--text">text</link>&quot;                 <link linkend="gchararray">gchararray</link>            : Read / Write
 </synopsis>
 </refsect1>
 
@@ -98,47 +101,48 @@ GtkProgressBar implements <link linkend="AtkImplementorIface">AtkImplementorIfac
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkProgressBar">GtkProgressBar</link> is typically used to display the progress of a long
+The <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link> is typically used to display the progress of a long
 running operation.  It provides a visual clue that processing
-is underway.  The <link linkend="GtkProgressBar">GtkProgressBar</link> can be used in two different
+is underway.  The <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link> can be used in two different
 modes: percentage mode and activity mode.
 </para>
 
 <para>
 When an application can determine how much work needs to take place 
 (e.g. read a fixed number of bytes from a file) and can monitor its
-progress, it can use the <link linkend="GtkProgressBar">GtkProgressBar</link> in percentage mode and the user
+progress, it can use the <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link> in percentage mode and the user
 sees a growing bar indicating the percentage of the work that has
 been completed.  In this mode, the application is required to call
-<link linkend="gtk-progress-bar-set-fraction">gtk_progress_bar_set_fraction</link>() periodically to update the progress bar.
+<link linkend="gtk-progress-bar-set-fraction"><function>gtk_progress_bar_set_fraction()</function></link> periodically to update the progress bar.
 </para>
 
 <para>
 When an application has no accurate way of knowing the amount of work
-to do, it can use the <link linkend="GtkProgressBar">GtkProgressBar</link> in activity mode, which shows activity 
+to do, it can use the <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link> in activity mode, which shows activity 
 by a block moving back and forth within the progress area. In this mode,
-the application is required to call <link linkend="gtk-progress-bar-pulse">gtk_progress_bar_pulse</link>() perodically
+the application is required to call <link linkend="gtk-progress-bar-pulse"><function>gtk_progress_bar_pulse()</function></link> perodically
 to update the progress bar.
 </para>
 
 <para>
 There is quite a bit of flexibility provided to control the appearance
-of the <link linkend="GtkProgressBar">GtkProgressBar</link>.  Functions are provided to control the 
+of the <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.  Functions are provided to control the 
 orientation of the bar, optional text can be displayed along with
 the bar, and the step size used in activity mode can be set.
 </para>
 
 <note>
 <para>
-The <link linkend="GtkProgressBar">GtkProgressBar</link>/<link linkend="GtkProgress">GtkProgress</link> API in GTK 1.2 was bloated, needlessly complex
-and hard to use properly.  Therefore <link linkend="GtkProgress">GtkProgress</link> has been deprecated
-completely and the <link linkend="GtkProgressBar">GtkProgressBar</link> API has been reduced to the following 9
-functions: <link linkend="gtk-progress-bar-new">gtk_progress_bar_new</link>(), <link linkend="gtk-progress-bar-pulse">gtk_progress_bar_pulse</link>(), <link linkend="gtk-progress-bar-set-text">gtk_progress_bar_set_text</link>(),
-<link linkend="gtk-progress-bar-set-fraction">gtk_progress_bar_set_fraction</link>(), <link linkend="gtk-progress-bar-set-pulse-step">gtk_progress_bar_set_pulse_step</link>(),
-<link linkend="gtk-progress-bar-set-orientation">gtk_progress_bar_set_orientation</link>(), <link linkend="gtk-progress-bar-get-text">gtk_progress_bar_get_text</link>(),
-<link linkend="gtk-progress-bar-get-fraction">gtk_progress_bar_get_fraction</link>(), <link linkend="gtk-progress-bar-get-pulse-step">gtk_progress_bar_get_pulse_step</link>(). These have
-been grouped at the beginning of this section, followed by a large chunk of 
-deprecated 1.2 compatibility functions.
+The <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>/<link linkend="GtkProgress"><type>GtkProgress</type></link> API in GTK 1.2 was bloated, needlessly complex
+and hard to use properly.  Therefore <link linkend="GtkProgress"><type>GtkProgress</type></link> has been deprecated
+completely and the <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link> API has been reduced to the following 10
+functions: <link linkend="gtk-progress-bar-new"><function>gtk_progress_bar_new()</function></link>, <link linkend="gtk-progress-bar-pulse"><function>gtk_progress_bar_pulse()</function></link>, 
+<link linkend="gtk-progress-bar-set-text"><function>gtk_progress_bar_set_text()</function></link>, <link linkend="gtk-progress-bar-set-fraction"><function>gtk_progress_bar_set_fraction()</function></link>, 
+<link linkend="gtk-progress-bar-set-pulse-step"><function>gtk_progress_bar_set_pulse_step()</function></link>, <link linkend="gtk-progress-bar-set-orientation"><function>gtk_progress_bar_set_orientation()</function></link>, 
+<link linkend="gtk-progress-bar-get-text"><function>gtk_progress_bar_get_text()</function></link>, <link linkend="gtk-progress-bar-get-fraction"><function>gtk_progress_bar_get_fraction()</function></link>, 
+<link linkend="gtk-progress-bar-get-pulse-step"><function>gtk_progress_bar_get_pulse_step()</function></link>, <link linkend="gtk-progress-bar-get-orientation"><function>gtk_progress_bar_get_orientation()</function></link>. 
+These have been grouped at the beginning of this section, followed by 
+a large chunk of deprecated 1.2 compatibility functions.
 </para>
 </note>
 </refsect1>
@@ -147,41 +151,41 @@ deprecated 1.2 compatibility functions.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkProgressBar-struct"/>struct GtkProgressBar</title>
-<programlisting>struct GtkProgressBar;</programlisting>
+<indexterm><primary>GtkProgressBar</primary></indexterm><programlisting>struct GtkProgressBar;</programlisting>
 <para>
-The <link linkend="GtkProgressBar-struct">GtkProgressBar</link> struct contains private data only, 
+The <link linkend="GtkProgressBar-struct"><type>GtkProgressBar-struct</type></link> struct contains private data only, 
 and should be accessed using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-new"/>gtk_progress_bar_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_progress_bar_new            (void);</programlisting>
+<indexterm><primary>gtk_progress_bar_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_progress_bar_new            (void);</programlisting>
 <para>
-Creates a new <link linkend="GtkProgressBar">GtkProgressBar</link>.
+Creates a new <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-pulse"/>gtk_progress_bar_pulse ()</title>
-<programlisting>void        gtk_progress_bar_pulse          (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
+<indexterm><primary>gtk_progress_bar_pulse</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_pulse          (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
 <para>
 Indicates that some progress is made, but you don't know how much.
 Causes the progress bar to enter "activity mode," where a block
-bounces back and forth. Each call to <link linkend="gtk-progress-bar-pulse">gtk_progress_bar_pulse</link>()
+bounces back and forth. Each call to <link linkend="gtk-progress-bar-pulse"><function>gtk_progress_bar_pulse()</function></link>
 causes the block to move by a little bit (the amount of movement
-per pulse is determined by <link linkend="gtk-progress-bar-set-pulse-step">gtk_progress_bar_set_pulse_step</link>()).</para>
+per pulse is determined by <link linkend="gtk-progress-bar-set-pulse-step"><function>gtk_progress_bar_set_pulse_step()</function></link>).</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-text"/>gtk_progress_bar_set_text ()</title>
-<programlisting>void        gtk_progress_bar_set_text       (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<indexterm><primary>gtk_progress_bar_set_text</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_text       (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              const <link linkend="gchar">gchar</link> *text);</programlisting>
 <para>
 Causes the given <parameter>text</parameter> to appear superimposed on the progress bar.</para>
@@ -189,7 +193,7 @@ Causes the given <parameter>text</parameter> to appear superimposed on the progr
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text</parameter>&nbsp;:</term>
 <listitem><simpara> a UTF-8 string
@@ -197,7 +201,7 @@ Causes the given <parameter>text</parameter> to appear superimposed on the progr
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-fraction"/>gtk_progress_bar_set_fraction ()</title>
-<programlisting>void        gtk_progress_bar_set_fraction   (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<indexterm><primary>gtk_progress_bar_set_fraction</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_fraction   (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="gdouble">gdouble</link> fraction);</programlisting>
 <para>
 Causes the progress bar to "fill in" the given fraction
@@ -207,7 +211,7 @@ inclusive.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>fraction</parameter>&nbsp;:</term>
 <listitem><simpara> fraction of the task that's been completed
@@ -215,16 +219,16 @@ inclusive.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-pulse-step"/>gtk_progress_bar_set_pulse_step ()</title>
-<programlisting>void        gtk_progress_bar_set_pulse_step (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<indexterm><primary>gtk_progress_bar_set_pulse_step</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_pulse_step (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="gdouble">gdouble</link> fraction);</programlisting>
 <para>
 Sets the fraction of total progress bar length to move the
-bouncing block for each call to <link linkend="gtk-progress-bar-pulse">gtk_progress_bar_pulse</link>().</para>
+bouncing block for each call to <link linkend="gtk-progress-bar-pulse"><function>gtk_progress_bar_pulse()</function></link>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>fraction</parameter>&nbsp;:</term>
 <listitem><simpara> fraction between 0.0 and 1.0
@@ -232,7 +236,7 @@ bouncing block for each call to <link linkend="gtk-progress-bar-pulse">gtk_progr
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-orientation"/>gtk_progress_bar_set_orientation ()</title>
-<programlisting>void        gtk_progress_bar_set_orientation
+<indexterm><primary>gtk_progress_bar_set_orientation</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_orientation
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link> orientation);</programlisting>
 <para>
@@ -242,7 +246,7 @@ Causes the progress bar to switch to a different orientation
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>orientation</parameter>&nbsp;:</term>
 <listitem><simpara> orientation of the progress bar
@@ -250,7 +254,7 @@ Causes the progress bar to switch to a different orientation
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GtkProgressBarOrientation"/>enum GtkProgressBarOrientation</title>
-<programlisting>typedef enum
+<indexterm><primary>GtkProgressBarOrientation</primary></indexterm><programlisting>typedef enum
 {
   GTK_PROGRESS_LEFT_TO_RIGHT,
   GTK_PROGRESS_RIGHT_TO_LEFT,
@@ -261,36 +265,32 @@ Causes the progress bar to switch to a different orientation
 <para>
 An enumeration representing possible orientations and growth
 directions for the visible progress bar.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GTK_PROGRESS_LEFT_TO_RIGHT</literal></term>
+<listitem><simpara>A horizontal progress bar growing from left to right.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_PROGRESS_RIGHT_TO_LEFT</literal></term>
+<listitem><simpara>A horizontal progress bar growing from right to left.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_PROGRESS_BOTTOM_TO_TOP</literal></term>
+<listitem><simpara>A vertical progress bar growing from bottom to top.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_PROGRESS_TOP_TO_BOTTOM</literal></term>
+<listitem><simpara>A vertical progress bar growing from top to bottom.
 
-<informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>GTK_PROGRESS_LEFT_TO_RIGHT</entry>
-<entry>A horizontal progress bar growing from left to right.</entry>
-</row>
-
-<row>
-<entry>GTK_PROGRESS_RIGHT_TO_LEFT</entry>
-<entry>A horizontal progress bar growing from right to left.</entry>
-</row>
-
-<row>
-<entry>GTK_PROGRESS_BOTTOM_TO_TOP</entry>
-<entry>A vertical progress bar growing from bottom to top.</entry>
-</row>
-
-<row>
-<entry>GTK_PROGRESS_TOP_TO_BOTTOM</entry>
-<entry>A vertical progress bar growing from top to bottom.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-get-text"/>gtk_progress_bar_get_text ()</title>
-<programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_progress_bar_get_text
+<indexterm><primary>gtk_progress_bar_get_text</primary></indexterm><programlisting>G_CONST_RETURN <link linkend="gchar">gchar</link>* gtk_progress_bar_get_text
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
 <para>
 Retrieves the text displayed superimposed on the progress bar,
@@ -301,7 +301,7 @@ if you change the text in the progress bar.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> text, or <literal>NULL</literal>; this string is owned by the widget
 and should not be modified or freed.
@@ -309,35 +309,35 @@ and should not be modified or freed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-get-fraction"/>gtk_progress_bar_get_fraction ()</title>
-<programlisting><link linkend="gdouble">gdouble</link>     gtk_progress_bar_get_fraction   (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
+<indexterm><primary>gtk_progress_bar_get_fraction</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     gtk_progress_bar_get_fraction   (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
 <para>
 Returns the current fraction of the task that's been completed.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a fraction from 0.0 to 1.0
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-get-pulse-step"/>gtk_progress_bar_get_pulse_step ()</title>
-<programlisting><link linkend="gdouble">gdouble</link>     gtk_progress_bar_get_pulse_step (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
+<indexterm><primary>gtk_progress_bar_get_pulse_step</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     gtk_progress_bar_get_pulse_step (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
 <para>
-Retrieves the pulse step set with <link linkend="gtk-progress-bar-set-pulse-step">gtk_progress_bar_set_pulse_step</link>()</para>
+Retrieves the pulse step set with <link linkend="gtk-progress-bar-set-pulse-step"><function>gtk_progress_bar_set_pulse_step()</function></link></para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a fraction from 0.0 to 1.0
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-get-orientation"/>gtk_progress_bar_get_orientation ()</title>
-<programlisting><link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link> gtk_progress_bar_get_orientation
+<indexterm><primary>gtk_progress_bar_get_orientation</primary></indexterm><programlisting><link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link> gtk_progress_bar_get_orientation
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar);</programlisting>
 <para>
 Retrieves the current progress bar orientation.</para>
@@ -345,48 +345,48 @@ Retrieves the current progress bar orientation.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GtkProgressBar">GtkProgressBar</link>
+<listitem><simpara> a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> orientation of the progress bar
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-new-with-adjustment"/>gtk_progress_bar_new_with_adjustment ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_progress_bar_new_with_adjustment
+<indexterm role="deprecated"><primary>gtk_progress_bar_new_with_adjustment</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_progress_bar_new_with_adjustment
                                             (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
 <warning><para><literal>gtk_progress_bar_new_with_adjustment</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Creates a new <link linkend="GtkProgressBar">GtkProgressBar</link> with an associated <link linkend="GtkAdjustment">GtkAdjustment</link>.
+Creates a new <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link> with an associated <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkAdjustment">GtkAdjustment</link>.
+<listitem><simpara>a <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link>.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-bar-style"/>gtk_progress_bar_set_bar_style ()</title>
-<programlisting>void        gtk_progress_bar_set_bar_style  (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<indexterm role="deprecated"><primary>gtk_progress_bar_set_bar_style</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_bar_style  (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link> style);</programlisting>
 <warning><para><literal>gtk_progress_bar_set_bar_style</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-Sets the style of the <link linkend="GtkProgressBar">GtkProgressBar</link>.  The default style is
+Sets the style of the <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.  The default style is
 <literal>GTK_PROGRESS_CONTINUOUS</literal>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>style</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link> value indicating the desired style.
+<listitem><simpara>a <link linkend="GtkProgressBarStyle"><type>GtkProgressBarStyle</type></link> value indicating the desired style.
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GtkProgressBarStyle"/>enum GtkProgressBarStyle</title>
-<programlisting>typedef enum
+<indexterm><primary>GtkProgressBarStyle</primary></indexterm><programlisting>typedef enum
 {
   GTK_PROGRESS_CONTINUOUS,
   GTK_PROGRESS_DISCRETE
@@ -394,26 +394,22 @@ Sets the style of the <link linkend="GtkProgressBar">GtkProgressBar</link>.  The
 </programlisting>
 <para>
 An enumeration representing the styles for drawing the progress bar.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GTK_PROGRESS_CONTINUOUS</literal></term>
+<listitem><simpara>The progress bar grows in a smooth, continuous manner.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTK_PROGRESS_DISCRETE</literal></term>
+<listitem><simpara>The progress bar grows in discrete, visible blocks.
 
-<informaltable pgwide="1" frame="none" role="enum">
-<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
-<tbody>
-
-<row>
-<entry>GTK_PROGRESS_CONTINUOUS</entry>
-<entry>The progress bar grows in a smooth, continuous manner.</entry>
-</row>
-
-<row>
-<entry>GTK_PROGRESS_DISCRETE</entry>
-<entry>The progress bar grows in discrete, visible blocks.</entry>
-</row>
-
-</tbody></tgroup></informaltable>
-</para></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-discrete-blocks"/>gtk_progress_bar_set_discrete_blocks ()</title>
-<programlisting>void        gtk_progress_bar_set_discrete_blocks
+<indexterm role="deprecated"><primary>gtk_progress_bar_set_discrete_blocks</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_discrete_blocks
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="guint">guint</link> blocks);</programlisting>
 <warning><para><literal>gtk_progress_bar_set_discrete_blocks</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -422,7 +418,7 @@ Sets the number of blocks that the progress bar is divided into
 when the style is <literal>GTK_PROGRESS_DISCRETE</literal>.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>blocks</parameter>&nbsp;:</term>
 <listitem><simpara>number of individual blocks making up the bar.
@@ -432,7 +428,7 @@ when the style is <literal>GTK_PROGRESS_DISCRETE</literal>.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-activity-step"/>gtk_progress_bar_set_activity_step ()</title>
-<programlisting>void        gtk_progress_bar_set_activity_step
+<indexterm role="deprecated"><primary>gtk_progress_bar_set_activity_step</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_activity_step
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="guint">guint</link> step);</programlisting>
 <warning><para><literal>gtk_progress_bar_set_activity_step</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -442,7 +438,7 @@ mode.  The step is the amount by which the progress is incremented
 each iteration.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>step</parameter>&nbsp;:</term>
 <listitem><simpara>the amount which the progress is incremented in activity
@@ -453,7 +449,7 @@ mode.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-set-activity-blocks"/>gtk_progress_bar_set_activity_blocks ()</title>
-<programlisting>void        gtk_progress_bar_set_activity_blocks
+<indexterm role="deprecated"><primary>gtk_progress_bar_set_activity_blocks</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_set_activity_blocks
                                             (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="guint">guint</link> blocks);</programlisting>
 <warning><para><literal>gtk_progress_bar_set_activity_blocks</literal> is deprecated and should not be used in newly-written code.</para></warning>
@@ -462,7 +458,7 @@ Sets the number of blocks used when the progress bar is in activity
 mode.  Larger numbers make the visible block smaller.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>blocks</parameter>&nbsp;:</term>
 <listitem><simpara>number of blocks which can fit within the progress bar area.
@@ -472,15 +468,15 @@ mode.  Larger numbers make the visible block smaller.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-progress-bar-update"/>gtk_progress_bar_update ()</title>
-<programlisting>void        gtk_progress_bar_update         (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
+<indexterm role="deprecated"><primary>gtk_progress_bar_update</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_progress_bar_update         (<link linkend="GtkProgressBar">GtkProgressBar</link> *pbar,
                                              <link linkend="gdouble">gdouble</link> percentage);</programlisting>
 <warning><para><literal>gtk_progress_bar_update</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-This function is deprecated.  Please use <link linkend="gtk-progress-set-value">gtk_progress_set_value</link>() or
-<link linkend="gtk-progress-set-percentage">gtk_progress_set_percentage</link>() instead.
+This function is deprecated.  Please use <link linkend="gtk-progress-set-value"><function>gtk_progress_set_value()</function></link> or
+<link linkend="gtk-progress-set-percentage"><function>gtk_progress_set_percentage()</function></link> instead.
 </para><variablelist role="params">
 <varlistentry><term><parameter>pbar</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GtkProgressBar">GtkProgressBar</link>.
+<listitem><simpara>a <link linkend="GtkProgressBar"><type>GtkProgressBar</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>percentage</parameter>&nbsp;:</term>
 <listitem><simpara>the new percent complete value.
@@ -492,63 +488,47 @@ This function is deprecated.  Please use <link linkend="gtk-progress-set-value">
 </refsect1>
 <refsect1>
 <title>Properties</title>
-<variablelist>
-<varlistentry><term><anchor id="GtkProgressBar--activity-blocks"/>&quot;<literal>activity-blocks</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
+<refsect2><title><anchor id="GtkProgressBar--activity-blocks"/>The &quot;<literal>activity-blocks</literal>&quot; property</title>
+<programlisting>  &quot;activity-blocks&quot;      <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The number of blocks which can fit in the progress bar area in activity mode (Deprecated).</para><para>Allowed values: &gt;= 2</para>
+<para>Default value: 5</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--activity-step"/>The &quot;<literal>activity-step</literal>&quot; property</title>
+<programlisting>  &quot;activity-step&quot;        <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The increment used for each iteration in activity mode (Deprecated).</para><para>Allowed values: &gt;= 1</para>
+<para>Default value: 3</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--adjustment"/>The &quot;<literal>adjustment</literal>&quot; property</title>
+<programlisting>  &quot;adjustment&quot;           <link linkend="GtkAdjustment">GtkAdjustment</link>         : Read / Write</programlisting>
+<para>The GtkAdjustment connected to the progress bar (Deprecated).</para></refsect2>
+<refsect2><title><anchor id="GtkProgressBar--bar-style"/>The &quot;<literal>bar-style</literal>&quot; property</title>
+<programlisting>  &quot;bar-style&quot;            <link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link>   : Read / Write</programlisting>
+<para>Specifies the visual style of the bar in percentage mode (Deprecated).</para><para>Default value: GTK_PROGRESS_CONTINUOUS</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--discrete-blocks"/>The &quot;<literal>discrete-blocks</literal>&quot; property</title>
+<programlisting>  &quot;discrete-blocks&quot;      <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The number of discrete blocks in a progress bar (when shown in the discrete style).</para><para>Allowed values: &gt;= 2</para>
+<para>Default value: 10</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--fraction"/>The &quot;<literal>fraction</literal>&quot; property</title>
+<programlisting>  &quot;fraction&quot;             <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>The fraction of total work that has been completed.</para><para>Allowed values: [0,1]</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--orientation"/>The &quot;<literal>orientation</literal>&quot; property</title>
+<programlisting>  &quot;orientation&quot;          <link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link>  : Read / Write</programlisting>
+<para>Orientation and growth direction of the progress bar.</para><para>Default value: GTK_PROGRESS_LEFT_TO_RIGHT</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--pulse-step"/>The &quot;<literal>pulse-step</literal>&quot; property</title>
+<programlisting>  &quot;pulse-step&quot;           <link linkend="gdouble">gdouble</link>               : Read / Write</programlisting>
+<para>The fraction of total progress to move the bouncing block when pulsed.</para><para>Allowed values: [0,1]</para>
+<para>Default value: 0.1</para>
+</refsect2>
+<refsect2><title><anchor id="GtkProgressBar--text"/>The &quot;<literal>text</literal>&quot; property</title>
+<programlisting>  &quot;text&quot;                 <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>Text to be displayed in the progress bar.</para><para>Default value: "%P %%"</para>
+</refsect2>
 
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--activity-step"/>&quot;<literal>activity-step</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--adjustment"/>&quot;<literal>adjustment</literal>&quot; (<link linkend="GtkAdjustment">GtkAdjustment</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--bar-style"/>&quot;<literal>bar-style</literal>&quot; (<link linkend="GtkProgressBarStyle">GtkProgressBarStyle</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--discrete-blocks"/>&quot;<literal>discrete-blocks</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--fraction"/>&quot;<literal>fraction</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--orientation"/>&quot;<literal>orientation</literal>&quot; (<link linkend="GtkProgressBarOrientation">GtkProgressBarOrientation</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--pulse-step"/>&quot;<literal>pulse-step</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="GtkProgressBar--text"/>&quot;<literal>text</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para>
-</listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

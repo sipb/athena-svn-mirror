@@ -29,11 +29,12 @@
 
 #include <gdk/x11/gdkdrawable-x11.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
-typedef struct _GdkXPositionInfo    GdkXPositionInfo;
+typedef struct _GdkToplevelX11 GdkToplevelX11;
+typedef struct _GdkWindowImplX11 GdkWindowImplX11;
+typedef struct _GdkWindowImplX11Class GdkWindowImplX11Class;
+typedef struct _GdkXPositionInfo GdkXPositionInfo;
 
 struct _GdkXPositionInfo
 {
@@ -54,9 +55,6 @@ struct _GdkXPositionInfo
 /* Window implementation for X11
  */
 
-typedef struct _GdkWindowImplX11 GdkWindowImplX11;
-typedef struct _GdkWindowImplX11Class GdkWindowImplX11Class;
-
 #define GDK_TYPE_WINDOW_IMPL_X11              (gdk_window_impl_x11_get_type ())
 #define GDK_WINDOW_IMPL_X11(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), GDK_TYPE_WINDOW_IMPL_X11, GdkWindowImplX11))
 #define GDK_WINDOW_IMPL_X11_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), GDK_TYPE_WINDOW_IMPL_X11, GdkWindowImplX11Class))
@@ -72,6 +70,17 @@ struct _GdkWindowImplX11
   gint height;
   
   GdkXPositionInfo position_info;
+  GdkToplevelX11 *toplevel;	/* Toplevel-specific information */
+  gint8 toplevel_window_type;
+};
+ 
+struct _GdkWindowImplX11Class 
+{
+  GdkDrawableImplX11Class parent_class;
+};
+
+struct _GdkToplevelX11
+{
 
   /* Set if the window, or any descendent of it, is the server's focus window
    */
@@ -90,24 +99,37 @@ struct _GdkWindowImplX11
   /* Set if we are requesting these hints */
   guint skip_taskbar_hint : 1;
   guint skip_pager_hint : 1;
+
+  guint on_all_desktops : 1;   /* _NET_WM_STICKY == 0xFFFFFFFF */
+
+  guint have_sticky : 1;	/* _NET_WM_STATE_STICKY */
+  guint have_maxvert : 1;       /* _NET_WM_STATE_MAXIMIZED_VERT */
+  guint have_maxhorz : 1;       /* _NET_WM_STATE_MAXIMIZED_HORZ */
+  guint have_fullscreen : 1;    /* _NET_WM_STATE_FULLSCREEN */
+
+  gulong map_serial;	/* Serial of last transition from unmapped */
   
+  GdkPixmap *icon_pixmap;
+  GdkPixmap *icon_mask;
+  GdkPixmap *icon_window;
+  GdkWindow *group_leader;
+
+  /* Time of most recent user interaction. */
+  gulong user_time;
+
   /* We use an extra X window for toplevel windows that we XSetInputFocus()
    * to in order to avoid getting keyboard events redirected to subwindows
    * that might not even be part of this app
    */
   Window focus_window;
 };
- 
-struct _GdkWindowImplX11Class 
-{
-  GdkDrawableImplX11Class parent_class;
-
-};
 
 GType gdk_window_impl_x11_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+GdkToplevelX11 *_gdk_x11_window_get_toplevel  (GdkWindow *window);
+void            _gdk_x11_window_set_user_time (GdkWindow *window,
+                                               guint32    timestamp);
+
+G_END_DECLS
 
 #endif /* __GDK_WINDOW_X11_H__ */

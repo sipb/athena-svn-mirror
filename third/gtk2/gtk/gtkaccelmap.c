@@ -17,10 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "config.h"
+#include <config.h>
 
 #include "gtkaccelmap.h"
 
+#include "gtkmarshalers.h"
 #include "gtkwindow.h"  /* in lack of GtkAcceleratable */
 
 #include <string.h>
@@ -36,6 +37,16 @@
 
 
 /* --- structures --- */
+struct _GtkAccelMap
+{
+  GObject parent_instance;
+};
+
+struct _GtkAccelMapClass
+{
+  GObjectClass parent_class;
+};
+
 typedef struct {
   const gchar *accel_path;
   guint        accel_key;
@@ -43,14 +54,25 @@ typedef struct {
   guint	       std_accel_key;
   guint	       std_accel_mods;
   guint        changed : 1;
+  guint        lock_count;
   GSList      *groups;
 } AccelEntry;
 
+/* --- signals --- */
+enum {
+  CHANGED,
+  LAST_SIGNAL
+};
 
 /* --- variables --- */
-static GHashTable *accel_entry_ht = NULL;	/* accel_path -> AccelEntry */
-static GSList     *accel_filters = NULL;
 
+static GHashTable  *accel_entry_ht = NULL;	/* accel_path -> AccelEntry */
+static GSList      *accel_filters = NULL;
+static gulong	    accel_map_signals[LAST_SIGNAL] = { 0, };
+static GtkAccelMap *accel_map;
+
+/* --- prototypes --- */
+static void do_accel_map_changed (AccelEntry *entry);
 
 /* --- functions --- */
 static guint
@@ -99,7 +121,7 @@ _gtk_accel_path_is_valid (const gchar *accel_path)
       accel_path[1] == '<' || accel_path[1] == '>' || !accel_path[1])
     return FALSE;
   p = strchr (accel_path, '>');
-  if (!p || p[1] != '/')
+  if (!p || p[1] != 0 && p[1] != '/')
     return FALSE;
   return TRUE;
 }
@@ -160,7 +182,10 @@ gtk_accel_map_add_entry (const gchar    *accel_path,
       entry->accel_key = accel_key;
       entry->accel_mods = accel_mods;
       entry->changed = FALSE;
+      entry->lock_count = 0;
       g_hash_table_insert (accel_entry_ht, entry, entry);
+
+      do_accel_map_changed (entry);
     }
 }
 
@@ -240,6 +265,8 @@ internal_change_entry (const gchar    *accel_path,
 	  entry->accel_key = accel_key;
 	  entry->accel_mods = accel_mods;
 	  entry->changed = TRUE;
+
+	  do_accel_map_changed (entry);
 	}
       return TRUE;
     }
@@ -252,6 +279,12 @@ internal_change_entry (const gchar    *accel_path,
       return simulate ? TRUE : FALSE;
     }
 
+  /* The no-change case has already been handled, so 
+   * simulate doesn't make a difference here.
+   */
+  if (entry->lock_count > 0)
+    return FALSE;
+
   /* nobody's interested, easy going */
   if (!entry->groups)
     {
@@ -260,6 +293,8 @@ internal_change_entry (const gchar    *accel_path,
 	  entry->accel_key = accel_key;
 	  entry->accel_mods = accel_mods;
 	  entry->changed = TRUE;
+
+	  do_accel_map_changed (entry);
 	}
       return TRUE;
     }
@@ -364,12 +399,15 @@ internal_change_entry (const gchar    *accel_path,
       entry->accel_key = accel_key;
       entry->accel_mods = accel_mods;
       entry->changed = TRUE;
+
       for (slist = group_list; slist; slist = slist->next)
 	_gtk_accel_group_reconnect (slist->data, g_quark_from_string (entry->accel_path));
 
       /* unref accel groups */
       for (slist = group_list; slist; slist = slist->next)
 	g_object_unref (slist->data);
+
+      do_accel_map_changed (entry);
     }
   g_slist_free (replace_list);
   g_slist_free (group_list);
@@ -824,4 +862,136 @@ _gtk_accel_map_remove_group (const gchar   *accel_path,
   g_return_if_fail (g_slist_find (entry->groups, accel_group));
 
   entry->groups = g_slist_remove (entry->groups, accel_group);
+}
+
+
+/**
+ * gtk_accel_map_lock_path:
+ * @accel_path: a valid accelerator path
+ * 
+ * Locks the given accelerator path. If the accelerator map doesn't yet contain
+ * an entry for @accel_path, a new one is created.
+ *
+ * Locking an accelerator path prevents its accelerator from being changed 
+ * during runtime. A locked accelerator path can be unlocked by 
+ * gtk_accel_map_unlock_path(). Refer to gtk_accel_map_change_entry() 
+ * for information about runtime accelerator changes.
+ *
+ * If called more than once, @accel_path remains locked until
+ * gtk_accel_map_unlock_path() has been called an equivalent number
+ * of times.
+ *
+ * Note that locking of individual accelerator paths is independent from 
+ * locking the #GtkAccelGroup containing them. For runtime accelerator
+ * changes to be possible both the accelerator path and its #GtkAccelGroup
+ * have to be unlocked. 
+ *
+ * Since: 2.4
+ **/
+void 
+gtk_accel_map_lock_path (const gchar *accel_path)
+{
+  AccelEntry *entry;
+
+  g_return_if_fail (_gtk_accel_path_is_valid (accel_path));
+
+  entry = accel_path_lookup (accel_path);
+  
+  if (!entry)
+    {
+      gtk_accel_map_add_entry (accel_path, 0, 0);
+      entry = accel_path_lookup (accel_path);
+    }
+
+  entry->lock_count += 1;
+}
+
+/**
+ * gtk_accel_map_unlock_path:
+ * @accel_path: a valid accelerator path
+ * 
+ * Undoes the last call to gtk_accel_map_lock_path() on this @accel_path.
+ * Refer to gtk_accel_map_lock_path() for information about accelerator path locking.
+ *
+ * Since: 2.4
+ **/
+void 
+gtk_accel_map_unlock_path (const gchar *accel_path)
+{
+  AccelEntry *entry;
+
+  g_return_if_fail (_gtk_accel_path_is_valid (accel_path));
+
+  entry = accel_path_lookup (accel_path);
+
+  g_return_if_fail (entry != NULL && entry->lock_count > 0);
+
+  entry->lock_count -= 1;  
+}
+
+G_DEFINE_TYPE (GtkAccelMap, gtk_accel_map, G_TYPE_OBJECT);
+
+static void
+gtk_accel_map_class_init (GtkAccelMapClass *accel_map_class)
+{
+  /**
+   * GtkAccelMap::changed:
+   * @object: the global accel map object
+   * @accel_path: the path of the accelerator that changed
+   * @accel_key: the key value for the new accelerator
+   * @accel_mods: the modifier mask for the new accelerator
+   *
+   * Notifies of a change in the global accelerator map.
+   * The path is also used as the detail for the signal,
+   * so it is possible to connect to
+   * changed::<replaceable>accel_path</replaceable>.
+   *
+   * Since: 2.4
+   */
+  accel_map_signals[CHANGED] = g_signal_new ("changed",
+					     G_TYPE_FROM_CLASS (accel_map_class),
+					     G_SIGNAL_DETAILED|G_SIGNAL_RUN_LAST,
+					     0,
+					     NULL, NULL,
+					     _gtk_marshal_VOID__STRING_UINT_FLAGS,
+					     G_TYPE_NONE, 3,
+					     G_TYPE_STRING, G_TYPE_UINT, GDK_TYPE_MODIFIER_TYPE);
+}
+
+static void
+gtk_accel_map_init (GtkAccelMap *accel_map)
+{
+}
+
+/**
+ * gtk_accel_map_get:
+ * 
+ * Gets the singleton global #GtkAccelMap object. This object
+ * is useful only for notification of changes to the accelerator
+ * map via the ::changed signal; it isn't a parameter to the
+ * other accelerator map functions.
+ * 
+ * Return value: the global #GtkAccelMap object
+ *
+ * Since: 2.4
+ **/
+GtkAccelMap *
+gtk_accel_map_get (void)
+{
+  if (!accel_map)
+    accel_map = g_object_new (GTK_TYPE_ACCEL_MAP, NULL);
+
+  return accel_map;
+}
+
+static void
+do_accel_map_changed (AccelEntry *entry)
+{
+  if (accel_map)
+    g_signal_emit (accel_map,
+		   accel_map_signals[CHANGED],
+		   g_quark_from_string (entry->accel_path),
+		   entry->accel_path,
+		   entry->accel_key,
+		   entry->accel_mods);
 }

@@ -37,11 +37,14 @@ struct      <link linkend="GtkVScrollbar-struct">GtkVScrollbar</link>;
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkVScrollbar implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkVScrollbar implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -51,10 +54,10 @@ GtkVScrollbar implements <link linkend="AtkImplementorIface">AtkImplementorIface
 <refsect1>
 <title>Description</title>
 <para>
-The <link linkend="GtkVScrollbar">GtkVScrollbar</link> widget is a widget arranged vertically creating a scrollbar.
-See <link linkend="GtkScrollbar">GtkScrollbar</link> for details on scrollbars. <link linkend="GtkAdjustment">GtkAdjustment</link> pointers may be 
+The <link linkend="GtkVScrollbar"><type>GtkVScrollbar</type></link> widget is a widget arranged vertically creating a scrollbar.
+See <link linkend="GtkScrollbar"><type>GtkScrollbar</type></link> for details on scrollbars. <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> pointers may be 
 added to handle the adjustment of the scrollbar or it may be left <literal>NULL</literal> in which
-case one will be created for you. See <link linkend="GtkAdjustment">GtkAdjustment</link> for details.
+case one will be created for you. See <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> for details.
 </para>
 </refsect1>
 
@@ -62,21 +65,21 @@ case one will be created for you. See <link linkend="GtkAdjustment">GtkAdjustmen
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkVScrollbar-struct"/>struct GtkVScrollbar</title>
-<programlisting>struct GtkVScrollbar;</programlisting>
+<indexterm><primary>GtkVScrollbar</primary></indexterm><programlisting>struct GtkVScrollbar;</programlisting>
 <para>
-The <link linkend="GtkVScrollbar">GtkVScrollbar</link> struct contains private data and should be accessed
+The <link linkend="GtkVScrollbar"><type>GtkVScrollbar</type></link> struct contains private data and should be accessed
 using the functions below.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gtk-vscrollbar-new"/>gtk_vscrollbar_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_vscrollbar_new              (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
+<indexterm><primary>gtk_vscrollbar_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_vscrollbar_new              (<link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
 <para>
 Creates a new vertical scrollbar.
 </para><variablelist role="params">
 <varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara>the <link linkend="GtkAdjustment">GtkAdjustment</link> to use, or <literal>NULL</literal> to create a new adjustment.
+<listitem><simpara>the <link linkend="GtkAdjustment"><type>GtkAdjustment</type></link> to use, or <literal>NULL</literal> to create a new adjustment.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new <link linkend="GtkVScrollbar">GtkVScrollbar</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the new <link linkend="GtkVScrollbar"><type>GtkVScrollbar</type></link>
 
 
 </simpara></listitem></varlistentry>
@@ -89,7 +92,7 @@ Creates a new vertical scrollbar.
 <refsect1>
 <title>See Also</title>
 <para>
-<link linkend="GtkScrollbar">GtkScrollbar</link>, <link linkend="GtkScrolledWindow">GtkScrolledWindow</link>
+<link linkend="GtkScrollbar"><type>GtkScrollbar</type></link>, <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link>
 </para>
 </refsect1>
 

@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
 #include "gtk/gtkintl.h"
 #include "gtk/gtkimmodule.h"
 #include "gtkimcontextxim.h"
@@ -25,9 +26,9 @@
 static const GtkIMContextInfo xim_ja_info = { 
   "xim",		           /* ID */
   N_("X Input Method"),            /* Human readable name */
-  "gtk+",			   /* Translation domain */
-   GTK_LOCALEDIR,		   /* Dir for bindtextdomain (not strictly needed for "gtk+") */
-  "ko:ja:zh"		           /* Languages for which this module is the default */
+  GETTEXT_PACKAGE,		   /* Translation domain */
+  GTK_LOCALEDIR,		   /* Dir for bindtextdomain (not strictly needed for "gtk+") */
+  "ko:ja:th:zh"		           /* Languages for which this module is the default */
 };
 
 static const GtkIMContextInfo *info_list[] = {

@@ -1,3 +1,806 @@
+Overview of Changes from GTK+ 2.4.7 to GTK+ 2.4.8
+=================================================
+* GtkFileChooser
+ - Fix some memory leaks [Federico Mena Quintero]
+ - Make save mode work with old versions of the 
+   gnome-vfs backend. [Zack Cerza]
+* GtkEntryCompletion
+ - Warn if text column has wrong type [Fernando San Martin Woerner,
+   Gustavo Carneiro]
+* GtkTreeView
+ - Fix a redraw problem in fixed height mode [Pawel Salek]
+* GDK
+ - Complete the _NEW_WM_USER_TIME implementation [Elijah Newren]
+ - Update the _NET_ACTIVE_WINDOW implementation [Elijah]
+* gdk-pixbuf
+ - Avoid infinite loops for bad BMPs [Chris Evans, Manish Singh]
+ - Fix a problem with GDK_INTERP_NEAREST scaling which caused
+   Nautilus thumbnails to be misdrawn [Christoph Fergeau]
+ - Avoid segfaults in gdk-pixbuf-csource [Matthias Clasen]
+* Win32 bug fixes [Tim Evans, Tor Lillqvist]
+* Other bug fixes [Gustavo, Torsten Schoenfeld, Manish, Tomislav Jonjic, 
+  Soeren Sandmann, Tommi Komulainen, Philip Langdale, Jon-Kare Hellan]
+* Documentation improvements [Matthias]
+* Updated translations (bs,da,fi,sq)
+
+Overview of Changes from GTK+ 2.4.6 to GTK+ 2.4.7
+=================================================
+* GtkFileChooser
+ - Fix for Open button not actually opening [Tommi Komulainen]
+ - Fix crash when g_get_home_dir() returns NULL [Tor Lillqvist]
+
+Overview of Changes from GTK+ 2.4.4 to GTK+ 2.4.6
+=================================================
+* GtkFileChooser
+ - Set busy cursor while mounting [Federico Mena Quintero]
+ - Set accessible name [Padraig O'Briain]
+ - Improve activation on focus [Federico]
+ - Accept paths in entry [Federico]
+* GtkTreeView
+ - Draw focus indicator for empty tree views [Federico]
+ - Make column dragging more robust [Matthias Clasen, 
+   Christian Biere]
+ - Prevent DND on non-sources [Pawel Salek]
+* GtkUIManager
+ - Accept paths with a leading / [David Malcolm]
+* Gdk
+ - Fix handling of keep-above and keep-below 
+   state [Matthew Garret]
+ - Add some missing error traps [Thomas Leonard]
+* gdk-pixbuf
+ - Make incremental loading work for 8bit pcx 
+   files [Magnus Bergman]
+ - Handle edge pixels consistently [Brian Cameron, 
+   Matthias]
+ - Handle OS/2 BMPs [Jon-Kare Hellan]
+* Bug fixes for Copy-Paste behaviour in text widgets 
+  [Mikael Hallendal, Scott Bronson]
+* Memory leak fixes in multiple widgets [Kjartan Maraas, 
+  Tommi Komulainen, Crispin Flowerday, Matthias]
+* Win32 fixes [Robert Ögren, Tor Lillqvist, Hans Breuer
+* Other bug fixes [John Cupitt, Elke Meier, Matthias, 
+  Peter Zelezny, Guilherme Salgado, John Finlay, Tommi,
+  Padaig, Olivier Sessink, Nicolas Deves, Lorenzo Gil 
+  Sanchez, Christian Persch, Morten Welinder, Markku Vire,
+  Markus Lausser, Abel Daniel]
+* Documentation improvements [Owen Taylor, Matthias, Axel 
+  Simon, David, Federico, Mariano Suarez-Alvarez]
+* Updated translations (ang,az,bg,br,ca,cs,en_CA,es,fi,fr,hi,hu,
+  it,ja,ko,mn,nb,nl,no,pl,pt,pt_BR,ru,sq,sr,sr@Latn,sr@ije,sv,uz,
+  wa,zh_CN)
+
+Overview of Changes from GTK+ 2.4.3 to GTK+ 2.4.4
+=================================================
+* GtkFileChooser
+ - Use Save button in save mode. [Federico Mena Quintero]
+ - Check for errors when opening folders [Federico]
+ - Fall back to stock icons if icon theme is not found [Federico]
+ - Bug fixes [Federico, Alex Roitman, Owen Taylor]
+* GtkComboBox
+ - Make it work without a model [Mariano Suarez-Alvarez, Christian Persch]
+ - Improve placement of popup [David A. Knight]
+* GtkImage
+ - Fix issues with partial redrawing [John Ehresman, Felipe Heidrich, 
+   Billy Biggs]
+* GtkEntry
+ - Fix cursor movement with combining marks [Theppitak Karoonboonyanan]
+ - Protect passwords better [Morten Welinder]
+* Win32 fixes
+ - Fix build without wintab [J. Ali Harlow]
+ - Improve Clipboard handling [Tor Lillqvist, John Ehresman]
+* Gdk 
+ - Make RGBA cursors work [Michael Natterer]
+ - Work with odd XServers [Bastien Nocera]
+ - Handle _NET_WM_STATE_ABOVE/_BELOW better [Billy Biggs]
+ - Don't leak DND contexts [Alex Larsson]
+* gdk-pixbuf
+ - Make tiff loader work with libtiff 3.6.1 [Marco Ghirlanda]
+ - Fix math for GDK_INTERP_HYPER [Brian Cameron]
+ - Fix Win32 exported symbols [Tor Lillqvist]
+* Documentation improvements [Billy Biggs, Matthias Clasen,
+  Oliver Andrieu]
+* Other bug fixes [Federico, Michael, Matthias, Philip Kendall, 
+  Jean-François Wauthy, John Finlay, Jeff Franks, Tim Janik,  
+  Nickolay V. Shmyrev, Sampo Nurmentaus, William Jon McCann, 
+  Jan-Marek Glogowski, Yevgen Muntyan, Pawel Salek, 
+  Jonathan Blandford, Sunil, Dimitiry. M Shatrov]
+* Updated translations (bg,he,hu,ne,sq)
+
+Overview of Changes from GTK+ 2.4.2 to GTK+ 2.4.3
+=================================================
+* GtkButton
+ - Give extra space to children of !CAN_FOCUS buttons [Matthias Clasen]
+* GtkFileChooser
+ - Make DND work when the dialog is modal [Federico Mena Quintero]
+* GtkToolbar
+ - Don't show empty overflow menu [Soeren Sandmann]
+ - Don't show initial separator in overflow menu [Soeren]
+ - Handle dynamic changes to overflow menu [Soeren]
+* Documentation improvements [Bastien Nocera, Matthias]
+* Other bug fixes [Matthias, Soeren, Sven Neumann]
+* Updated translations (hu,ne)
+
+Overview of Changes from GTK+ 2.4.1 to GTK+ 2.4.2
+=================================================
+* GtkUIManager
+ - Install signals correctly [Michael Natterer]
+ - Make the output of gtk_ui_manager_get_ui() parsable. [Michael]
+ - Add a way to suppress stock accelerators. [David A Knight]
+* GtkClipboard
+ - Fix INCRemental transfer of MULTIPLE targets [Matthias Clasen]
+ - Increase the chunk size for INCRemental transfers [Matthias]
+* GtkFileChooser
+ - Hide the combo box when appropriate [Christian Neumair]
+ - bug fixes [Federico Mena Quintero]
+* GtkComboBox
+ - add mouse/wheel bindings on the cellview [Matthias]
+ - improve positioning of popup [Matthias]
+ - make the selection follow the mouse [Matthias]
+* GtkEntryCompletion
+ - make the selection follow the mouse [Matthias]
+ - restrict popup size to monitor size [Matthias, DmD Ljungmark]
+ - don't complete on paste [Anders Carlsson]
+* Win32
+ - bug fixes [Benoît Carpentier, Hans Breuer, John Ehresman, 
+   Tor Lillqvist, Robert Ögren]
+* GtkButton/GtkArrow
+ - Don't draw the focus over the button child [Matthias]
+ - Increase default arrow size to compensate [Matthias]
+* Documentation improvements [Doug Quale, Matthias, 
+  Steffen Röcker, Steve Chaplin, Tommi Komulainen]
+* Other bug fixes [Billy Biggs, Crispin Flowerday, 
+  David Hawthorne, Federico, Havoc Pennington, John Finlay, 
+  Kouichirou Hiratsuka, Mark McLoughlin, Matthias, Michael, 
+  Michal Pasternak, Morten Welinder, Olivier Andrieu, 
+  Owen Taylor, Padraig O'Briain, Sam Stevenson, Scott Tsai, 
+  Soeren Sandmann, Sven Neumann]
+* Updated translations (bg,it,nl,tk,wa,zh_CN)
+
+Overview of Changes from GTK+ 2.4.0 to GTK+ 2.4.1
+=================================================
+* GtkFileChooser
+ - bug fixes [Morten Welinder, Federico Mena Quintero]
+ - pre-fill the location entry [Federico]
+ - internal api changes to allow setting a busy cursor
+   while loading [Federico]
+ - improve pathbar button sizing [Owen Taylor]
+ - add keybindings for removing bookmarks [Federico]
+* GtkComboBox, GtkEntryCompletion
+ - fix repositioning logic [Niklas Knutsson]
+ - make keynav wrap around [Matthias]
+ - improve theme compliance [Matthias, Brian Cameron]
+* GtkUIManager
+ - accept unnamed <separator>s [Anders Carlsson]
+ - robustify against gtk_widget_show_all() [Murray Cumming]
+ - warn if an accelerator cannot be parsed  [Jody Goldberg]
+* Win32
+ - fix DND positioning [Hans Breuer]
+ - update gtkfilesystemwin32 [Tor Lillqvist, J. Ali Harlow]
+ - make filechooser work on Windows [Tor]
+ - draw arcs more correctly [Tor]
+ - disable tables support by support, add --use-wintab to
+   get it back  [Tor]
+* Make color wheel accessible [Padraig O'Briain]
+* Support _NET_WM_USER_TIME [Elijah Newren, Soeren Sandmann]
+* Doc improvements [Federico, Matthias, Christian Persch]
+  Olexiy Avramchenko, Tim-Philipp Müller]
+* Misc bug fixes [Alex Converse, Owen, Jacques Garrigue,
+  Jonathan Blandford, Anders Carlsson, Christian, Hans,
+  Matthias, Morten, Philip Langdale, Brian, Pedro Rodriguez,
+  Soeren, Torsten Schoenfield, Dongho Shin, Andrew E. Makeev,
+  Todd Goyen, Tim Gerla, John Finlay, Theppitak Karoonboonyanan,
+  John Ehresman, Chris Sherlock, Jody]
+* Updated translations (af,ar,az,bn,br,ca,cs,cy,da,de,el,en_CA,
+  en_GB,es,et,eu,fi,fr,ga,gu,he,hr,hu,id,is,it,ja,ko,lt,mi,ml,
+  mn,mr,ms,ne,nl,nn,no,pa,pl,pt,pt_BR,sk,ru,sq,sr,sr@ije,sr@Latn,
+  sv,tr,uk,uz,wa,zh_CN)
+
+Overview of Changes from GTK+ 2.3.6 to GTK+ 2.4.0
+=================================================
+* GtkFileChooser
+ - Handle icon theme changes [Federico, Jonathan]
+ - Add reordering bookmarks via DND [Federico]
+ - Cache filesystem data inside GtkFileSystemUnix backend [Morten Welinder]
+ - Implement local-only mode so that apps don't get remote paths
+   they don't expect [Owen Taylor]
+ - Add Alt-Down keybinding [Mark McLoughlin, Owen]
+ - Major rewrite of location dialog completion code [Jonathan]
+ - Bug fixes [Federico, Jonathan, Morten, Mark, Owen, Anders Carlsson, 
+   Soeren Sandmann, Olivier Andrieu]
+* GtkComboBox [Matthias Clasen]
+ - Handle the case of no-active-row properly
+ - Improve positioning of popup
+ - Miscellaneous bug fixes
+* Win32 [Tor]
+ - Handle different install locations for gdk-pixbuf loaders
+ - Bug fixes [John Ehresman, Bruce Hochstetler, Dave Neary]
+* Improve handling of foreign GdkWindows on destruction [Soeren, Owen]
+* Require Control-Tab to focus labels [Owen]
+* RTL flipping for GtkArrow [Semion Chichelnitsky]
+* Support justifcation with wrapping off in GtkTextView [Owen, Felipe Heidrich]
+* Change layout algorithm for mixed gridded/non-gridded menus
+  to fix performance problems [Soeren, Owen, Christian Persch]
+* Doc improvements [Matthias, Owen]
+* Misc bug fixes
+* Updated translations (ar,az,ca,cs,da,de,es,fr,ga,hr,it,ja,lt,no,nl,pt,ro,
+  ru,sq,uk,zh_CN)
+
+Other contributors: Dave Bordoley, Hans Breuer, David L. Cooper II, 
+  Dennis Cranston, Dov Grobgeld, Niklas Knuttson, Kjartan Maraas, 
+  Michael Natterer, Nils O. Selåsdal, Philip K Warren, Dan Winship
+
+Overview of Changes from GTK+ 2.3.5 to GTK+ 2.3.6
+=================================================
+* GtkComboBox
+ - Make menu positioning more like GtkOptionMenu [Matthias Clasen]
+ - Improve keybindings [Matthias]
+ - Bug fixes [Matthias, Owen, Damon Chaplin]
+* GtkFileChooser
+ - Keep child directories in pathbar when changing to a parent
+ - Reroot pathbar inside home directory, use icons [Jonathan]
+ - Make the user actually select a file before hitting OK [Federico]
+ - Fix folder mode to not have tree [Jonathan]
+ - Add gboolean return values to operations that can fail [Federico]
+ - Improve internal error handling [Morten Welinder, Federico]
+ - Bug fixes [Federico, Jonathan, Morten, Anders Carlsson, Damon,
+   Alex Larsson]
+* GtkTextView bug fixes [Paolo Borelli]
+* Win32 
+ - Implement/stub missing GDK functions [Tor]
+ - .defs file updates [Tor, J Ali Harlow]
+ - Misc fixes [Hans Breuer]
+* Fix problem with excess symbol exports on Linux [James Henstridge]
+* Fix problem with 32-bit BMPs [Matthias]
+* Include config.h first everywhere [Morten]
+* Fix performance problem destroying menus [Soeren, Marco Pesenti Gritti]
+* Doc fixes and improvements [Matthias, Murray Cumming, Henning Nielsen Lund, 
+  Vitaly Tishkov]
+* Updated translations (az,cs,cy,da,de,el,en_CA,es,fi,fr,ga,hu,ja,ko,lt,mn,
+  nl,no,pl,pt,sq,sr,sr@ije,sr@Latn,sv,th,zh_CN)
+* Misc bug fixes
+
+Other contributors: Crispin Flowerday, Mark McLoughlin, Michael Meeks, 
+  Michael Natterer,Christian Neumair, Padraig O'Briain, Geoff Reedy, 
+  Olivier Ripoll
+
+Overview of Changes from GTK+ 2.3.4 to GTK+ 2.3.5
+=================================================
+* GtkFileChooser [Federico Mena Quintero]:
+ - Enable DND in the shortcuts list [Federico]
+ - More folder modes [Jonathan R Blandford]
+ - Resizing toplevel as contents change [Jonathan] 
+ - Make the backend settable via GtkSetting [Alex Larsson, Owen Taylor]
+ - Miscellaneous fixes.  [Jonathan, Morten Welinder, Alexander Larsson]
+ - Add combo box to pick folder in Save mode. [Jonathan, Federico]
+* GtkComboBox
+ - Memory leak/crash fixes [Damon Chaplin, Matthias Clasen]
+ - Always grab when popping the list up [Damon, Matthias]
+ - Fixes for dynamic changes to the model [Owen]
+ - Improve popup positioning [Matthias]
+* Implement computation of bidi-base direction from text
+  in GtkEntry, GtkTextView, GtkLabel [Dov Grobgeld, Owen Taylor]
+* Add gtk_entry_set_alignment() [Egon Andersen, Steffen Gutmann,
+  Owen]
+* Fix wrong interpretation of new_order array for
+  gtk_tree/list_store_reorder() [Owen]
+* Improve space allocation in menubars [Soeren Sandmann]
+* Improve key bindings in GtkEntryCompletion [Matthias]
+* Hide XCursor dependency [Soeren]
+* Make mouse wheel scrolling usable [Soeren]
+* Use resize cursors for resize grips [Soeren]
+* Set the right window group for menu and combo popups [Frederic Crozat,
+  Jean-Philippe Chancelier, Soeren]
+* Add a way to list the mnemonic labels of a widget [Owen]
+* Add a group-changed signal to GtkRadioButton [Owen, Padraig O'Briain]
+* Export insertion cursor drawing functionality [Alexander Larsson, Owen]
+* Support squiggly red underlines in text views [Nicolas Setton, Owen]
+* Export GtkWindow key-press-event internals to allow 
+  custom implementations [Tim Janik]
+* Add gtk_drag_source_set/get_target_list() [Mitch Natterer]
+* Fix drag-and-drop in GtkTextView to move [Paolo Borelli, Paolo Maggi]
+* Memory leak fixes [Owen]
+* Win32 fixes [Hans Breuer]
+* Misc. fixes [George Bronnikov, Simon Budig, J. Ali Harlow, David Hawthorne, Tim,
+  Tomasz Lloczko, Mitch, Manish Singh, Owen]
+* Documentation improvements [Matthias, Federico, Torsten Schoenfeld]
+* Updated translations (ar,cs,da,de,en_CA,es,et,fi,fr,it,ja,ko,nl,pt,ru,sr,sr@ije,
+  sr@Latn,sq,sv,th,zh_CN)
+
+Overview of Changes from GTK+ 2.3.3 to GTK+ 2.3.4
+=================================================
+* Fix broken gtk_binary_age setting causing wrong soname [Owen Taylor]
+* Add some extra GtkExpander docs [Federico Mena Quintero]
+* Misc bug fixes [Matthias Clasen, Damon Chaplin, Owen, Uwe Zeisberger]
+* Updated translation (ga)
+
+Overview of Changes from GTK+ 2.3.2 to GTK+ 2.3.3
+=================================================
+* GtkFileChooser [Federico Mena Quintero]:
+ - Support bookmarks in GtkFileSystemUnix. [Jan Arne Petersen]
+ - Correctly handle typed-in filenames in save mode, folder mode, and
+   multiple-selection mode in all combinations.
+ - Don't erase the filename in the entry when changing folders.
+ - Support icons in GtkFileSystemUnix.
+ - GtkFileChooserDialog now comes up at a reasonable size.
+ - GtkFileSystemUnix now notifies correctly on ::create_folder().
+ - Slight GUI reorganization.
+ - File system module support. [Alexander Larsson]
+ - Pathbar widget. [Jonathan R. Blandford]
+ - Miscellaneous fixes. [Christian Persch, Jan Arne Petersen, Anders Carlsson,
+   Padraig O'Briain, Alexander, Jonathan]
+ - Win32 fixes, GtkFileSystemWin32 work. [Hans Breuer]
+ - Memory leak fixes [Morten Welinder]
+* GtkTreeView:
+ - Fix return values. [Federico, R. McFarland]
+ - Properly cancel the arrow animation. [Michael Zucchi]
+ - Allow custom icon sizes in pixbuf cell renderer. [Erik Grinaker]
+ - Don't darken the sort column unless there are three visible columns
+   [Jonathan]
+* GtkToolbar:
+ - Improve the sliding implementation. [Soeren Sandmann]
+ - Add writeonly ::group property to GtkRadioToolButton. [Soeren, 
+   Olivier Andrieu]
+ - Misc fixes. [Morten, Jeroen Zwartepoorte, Michel Meeks, Soeren]
+* Menus:
+ - Make menus work better on Xinerama [Matthias]
+ - Fix keynav in RTL mode. [Matthias]
+ - Fix grid mode, removing of items. [Matthias, Vincent Noel]
+ - Make tearoff menu items work anywhere in menus. [Matthias]
+ - Improve popup/popdown behaviour. [Soeren]
+* gdk-pixbuf:
+ - Fix some problems with indexed BMPs [Kazuho Okui, Matthias]
+ - Work around some libjpeg header file craziness [Manish Singh]
+* Assume gravity works. [Soeren]
+* Cache GCs for drawing. [Brian Cameron, Soeren]
+* Handle focus adjustment correctly for deeply nested focus locations. 
+  [Matthias, Owen Taylor]
+* Use reference counting for shared data in GtkActionGroup. 
+  [Matthias, Adam Hooper]
+* Add a "use-separator" style property to GtkMessageDialog, and make
+  it not resizable. [Federico]
+* Add 'const' to uses of GdkColor that need it. [Federico]
+* Put focusable labels in the focus chain. [Federico]
+* Make destroying widgets in focus-out-event work. [Owen, Grant Gayed]
+* Add properties to GtkAdjustment [Murray Cumming]
+* Add change notification to GtkAccelMap [Matthias, Owen]
+* Add settings to suppress icons in buttons and menus. [Matthias]
+* Add Xft settings for hinting and antialiasing. [Federico, Owen]
+* Make size of indicator in menu items themeable. [Bill Hanemann, 
+  Narayana Pattipati, Matthias]
+* Fixes to GtkIconTheme [Torsten Schoenfeld]
+* Improve drawing of GtkExpander. [Mark McLoughlin]
+* Improve drawing of paned handles. [Soeren]
+* Remove broken hangul input module. [Changwoo Ryu]
+* Remove C++-style comments. [Damien Carbery]
+* Memory leak fixes. [Christian Persch, Richard Hult, Morten, Matthias]
+* RTL mode (flipping) fixes. [Mitsuru Chinen, Semion Chichelnitsky]
+* Accessibility improvements for tooltips, GtkScale. [Padraig]
+* Make the ZOOM_100 and ZOOM_FIT labels HIG-compliant. [Mariano Suarez-Alvarez]
+* Win32 fixes. [Tor Lillqvist]
+* Documentation:
+ - New section on how to check for modifier keys correctly. [Federico]
+ - Miscellaneous improvements.  [Pascal Haakmat, Jan Huelsbergen,
+   Tim-Philipp Müller, Matthias]
+* New and updated translations (ar,az,cs,da,de,en_CA,el,es,fi,fr,ga,hr,it,ja,
+  ko,mi,mn,ms,nl,nn,no,pl,pt,ru,sq,sr,sr@Latn,sv,ta,th,uz,uz@Latn)
+* Other contributors: Christian Biere, Christopher Blizzard, Paolo Borelli, 
+  Dan Damian, Rodney Dawes, John Ellis, David Hawthorne, Marco Pesenti Gritti,
+  Felipe Heidrich, Jonas Jonsson, Theppitak Karoonboonyanan, Tommi Komulainen,
+  Julio M. Merino Vidal, Gregory Merchan, Benjamin Otte, Joshua N. Pritikin,
+  Yu Shao, Yao Zhang
+
+Overview of Changes from GTK+ 2.3.1 to GTK+ 2.3.2
+=================================================
+* GdkPixbuf
+ - Add functions to save pixbufs to non-file locations.  [Tim Evans]
+ - Add a function to determine the type and size of a file without
+   loading it completely.  [Matthias Clasen]
+ - Turn pixbuf attributes into construct-only properties. [Matthias]
+ - Fix building gdk-pixbuf with --disable-modules --with-included-loaders.
+   [Matthias, Owen Taylor]
+* Fix the logic for changing the toplevelness of a window.  [Soeren Sandmann]
+* Do not interpret distant clicks as double clicks, using a
+  new double-click-distance setting.  [Matthias]
+* Improve the GDK API for dealing with group leaders. [Matthias]
+* Utility function for application launching in multi-screen scenarios.
+  [Mark McLoughlin]
+* Support big and small and alpha-blended icons under Win32. [Tim Evans]
+* Misc Win32 improvements [Tor Lillqvist, Hans]
+* GtkFileChooser [Federico]
+ - Fix new filename entry in Save mode [Jan Arne Petersen]
+ - Improved the look of GtkFileChooserDefault. [Tuomas Kuosmanen]
+ - Added support for file system volumes such as CD-ROMs, 
+   floppies, and network shares.
+ - Add a "New Folder" button for Save mode in GtkFileChooser.
+ - Better support for Folder mode.
+* GtkTreeView
+ - Speed up by adding a fixed height mode.  [Kristian Rietveld]
+ - Add a single-paragraph mode and a language property to 
+   GtkCellRendererText [Kristian Rietveld]
+ - Add a editing-canceled signal to GtkCellRenderer [Federico Mena Quintero]
+ - Misc GtkTreeView bug fixes [Kristian, Soeren, Jonathan Blandford]
+* Add a way to list the supported targets of a clipboard. [Dom Lachowicz]
+* Add stock icons: harddisk, indent, unindent.  [Hans Breuer, Jody Goldberg]
+* Improve the GtkCalendar drawing code.  [Matthias]
+* GtkCalendar supports starting the week on any day [Matthias]
+* Make GtkToolbar compatible with 2.2 again [Soeren]
+* Misc GtkToolbar fixes and API improvements [Christian Persch, 
+  Olexiy Avramchenko, Jody, Soeren]
+* Misc GtkUIManager fixes and API improvements.  [Jody, Matthias, Jeff Franks]
+* Add a way to lock individual accelerator paths  [Matthias]
+* Add gtk_menu_shell_cancel() to emit the "cancel" signal on 
+  a menu shell.  [Matthias]
+* Fix dynamic menus. [Matthias, Michael Meeks]
+* Add xalign, yalign properties to GtkButton. [Jody]
+* Implement or improve RTL support in GtkComboBox, GtkCellView, 
+  GtkViewport [Semion Chichelnitsky, Matthias, Kristian]
+* Support for "no focus" windows. [Matthias]
+* Documentation improvements [Matthias, Federico, Manish, Murray Cumming, 
+  Theppitak Karoonboonyanan]
+* FAQ updates [Tony Gale]
+* Split the translations into two domains: ui strings and
+  error messages go to gtk20, property nicks and blurbs to 
+  gtk20-properties. [Matthias]
+* New and updated translations (af,ar,bn,br,cs,cy,da,de,es,et,fa,fr,ga,hr,
+  it,ja,ko,lt,mn,ms,nl,nn,no,pl,pt,pt_BR,ru,sr,sr@Latn,sv,sq,wa)
+Other contributors: Olivier Andrieu, Herman Bloggs, Anders Carlsson,
+  Marco Pesenti Gritti, Bill Haneman, Alexander Larsson, Noah Levitt, 
+  Kjartan Maraas, Evan Martin, Tim-Philipp Müller, Christian Neumair, 
+  Joshua N Pritikin, Sebastian Rittau, Daniel Rogers, Manish Singh, 
+  Torsten Schoenfeld, Alexander Winston, Johannes Weißl,  Morten Welinder, 
+  Adam Wright
+
+Overview of Changes in GTK+-2.3.1
+=================================
+* Improve sanity checks on gdk-pixbuf loaders [Matthias Clasen]
+* GDK
+ - Add GDK_DEBUG=xinerama that fakes a 2x2 Xinerama mode [Matthias]
+ - Make gdk_drawable_copy_to_image public [Matthias, Peter Zelezny]
+* Misc Win32 bug fixes [Tor Lillqvist, John Ehresman, Tim Evans]
+* Action-based menu/toolbar API [Matthias]
+ - Add "name" construct-only parameter to GtkActionGroup
+ - Bug fixes [Marco Pesenti Gritti, Christian Persch]
+* Change ranges for Saturation/Value to be 0-100 in GtkColorSelection
+  [Gregory Merchan, Matthias]
+* GtkComboBox [Kristian Rietveld]
+ - Make model and text_column properties not construct-only [Murray Cumming]
+ - Fix sizing
+ - Add mouse wheel support [Matthias]
+* Various GtkEntryCompletion bug fixes [Kristian, Piers Cornwell, Marco]
+* GtkExpander
+ - Add a "use_markup" property, gtk_expander_set/get_use_markup
+ - Fix bugs when unrealizing/destroying [Mark McLoughlin]
+* GtkFileChooser [Federico Mena Quintero]
+ - Add a GtkFileSystemWin32 [Hans]
+ - Use GtkEntryCompletion in GtkFileChooserEntry 
+ - Add a render_icon to GtkFileSystemIface to allow the 
+   GnomeVFS backend to supply appropriate icons
+ - Improve selection handling in bookmarks list [Federico, Owen Taylor]
+ - Support drops on the bookmarks list
+ - Display error dialogs on failed operations
+ - Many UI tweaks [Federico, Iain Holmes,Hans-Petter Jansson]
+ - Ignore filters for folders [Dave Malcom]
+ - Misc file chooser bug fixes [Owen, Christian Persch, Taavi Talvik]
+* Menus
+ - Make torn-off menus transient-for the window they were torn from
+   [Matthias, Jon-Kare Hellan]
+ - Fix menu positioning for Xinerama, add gtk_menu_set_monitor()
+   for use by position functions [Matthias]
+ - Tweak menu delay parameters, add a default width [Soeren Sandmann]
+* Make g_message_dialog_new_with_markup() automatically escape
+  arguments, add g_message_dialog_set_markup() [Owen]
+* Add read-only min-position/max-position properties to GtkPaned
+* GtkToolbar [Soeren]
+ - Support gaps in the toolbar with expand=true/draw=false separators
+ - Improve drop-location preview handling
+ - Take a GtkRadioToolButton as the parameter to
+   gtk_radio_tool_button_new_from_widget [Murray Cumming]
+ - Many misc toolbar bug fixes [Soeren, Marco]
+* GtkTreeView bug fixes [Morten Welinder, David Hampton]
+* Add gtk_window_is_active()/gtk_has_toplevel_focus() getters
+  to go along with properties [Owen Taylor]
+* Add gtk_widget_can_activate_accel() / ::can-activate-accel
+  signal to fix handling of accelerators on insensitive parent
+  menu-items. [Tim Janik]. (*Note*: the details here will probably
+  change, since similar problems for mnemonics aren't handled.)
+* Implement or improve RTL support in GtkAlignment, GtkCombo, 
+  GtkNotebook, GtkScrolledWindow, GtkTreeView, GtkViewport.
+  [IBM L3 NLS Support Team]
+* Fix string setters for self-assignment [Matthias, Soeren]
+* Finish multi-head handling in gtk-demo [Matthias]
+* Fix install rules for generating gdk-pixbuf.loaders [Manish Singh]
+* Reference doc improvements [Matthias, Soeren,
+  Federico Mena Quintero, Michael Natterer, Owen Taylor, Olexiy Avramchenko]
+* FAQ updates [Tony Gale]
+* New and updated translations (ca,cs,cy,de,el,es,ja,mn,nl,nn,no,pl,pt,sr,
+  sr@Latn,sv,th)
+
+Other contributors: Jorn Baayen,Damon Chaplin, Jeff Franks, Diego Gonzalez,
+  Richard Hult, Egmont Koblinger, Thomas Leonard, Ross McFarland, 
+  Padraig O'Briain, Tomas Ögren, Danilo Segan
+
+Overview of Changes from GTK+-2.2.x to GTK+-2.3.0
+=================================================
+
+* New Widgets
+ - GtkFileChooser: a replacement for GtkFileSelection with 
+   replaceable backends, many new API features, better user
+   interface (UI is still a work in progress) [Owen Taylor, 
+   Federico Mena Quintero]
+ - New combo box widgets: GtkComboBox, GtkComboBoxEntry [Kristian Rietveld]
+ - New "disclosure triangle" widget: GtkExpander [Mark McLoughlin]
+ - "Picker button" widgets based on code from libgnomeui: 
+   GtkFontButton, GtkColorButton [Matthias Clasen]
+
+* Widget improvements:
+ - Autocompletion for entries: GtkEntryCompletion [Kristian]
+ - Add separate padding for all 4 sides of GtkAlignment [Murray Cumming]
+ - Add input-only event boxes for trapping events [Alex Larsson]
+ - Support RTL flipping for GtkHPaned, tab navigation [Soeren, Matthias]
+ - Support up to four scroll arrows on GtkNotebook and make which
+   ones are displayed themeable. [Matthias]
+ - GtkCalendar improvements: make the arrows spin, support RTL flipping,
+   automatic week start selection, DND support, improve API 
+   for setting options [Matthias]; mousewheel support [Abigail Brady]
+ - New properties: GtkButton::focus_on_click, GtkCheckMenuItem::draw_as_radio
+   [Soeren, Matthias]
+ - New functions: gtk_window_set_default_icon(), 
+   gtk_message_dialog_add_buttons(), gtk_button_box_get_child_secondary()
+   [Matthias]
+ - Add missing "role", "decorated", "gravity" properties for GtkWindow,
+   "has_resize_grip" for GtkStatusBar. [Matthias]
+ - Add child properties for GtkPaned [Matthias, Soeren]
+
+* Menus
+ - New action-based menu API: GtkUIManager, GtkActionGroup, 
+   GtkAction, etc. [James Henstridge, Matthias, Soeren Sandmann,
+   Marco Pesenti Gritti, Philip Langdale]
+ - Support for tabular menus [Kristian]
+ - New positioning algorithm for popup menus [Soeren]
+
+* GtkTextView [Matthias]
+ - Add properties "accepts_tab" [Soeren], "overwrite" property 
+   [Jeroen Zwartepoorte], "buffer"
+ - Add gtk_text_buffer_select_range()
+ - Implement drag-selection by words/lines (also for Gtkentry)
+ - Some fixes to invisible text handling
+ - Add support for GTK_WRAP_WORD_CHAR [David Brigada]
+ - Clean up handling of horizontal paging
+ - Fix scrolling with non-visible cursor
+ - Add internals documentation [Havoc Pennington]
+
+* GtkToolbar [Soeren]
+ - Add a more constistent and extensible toolbar API; preserve
+   old API for backwards compatibility [James, Anders Carlsson, Owen]
+ - Support for sliding buttons like OS X
+ - Keyboard navigation
+ - Support "priority text"
+ - Overflow menu
+ - Better handling of really wide buttons [David Bordoley]
+ - Drawing improvements
+ - Support context menu
+
+* GtkTreeView [Kristian Rietveld]
+ - Handle RTL [Matthias, Jonathan]
+ - Add expand flag to column packing parameters [Jonathan, Kristian]
+ - gtk_tree_path_free now silently returns on NULL paths
+ - Move row reference updating code to closures
+ - Fix TreeView DnD: make TreeStore DnD work, make drops on empty views work,
+   get rid of gtk-tree-model-drop-append.
+ - Add a filtering tree model: GtkTreeModelFilter [Kristian]
+
+* gdk-pixbuf
+ - Add a loader for PCX files [Josh Beam]
+ - Improve calculation of filter weights for scaling [Brian Cameron, Owen]
+ - Support TGA files with arbitrary origins [Matthias]
+ - Add gdk_pixbuf_loader_new_with_mime_type() [Dom Lachowicz]
+   gdk_pixbuf_new_from_file_at_size() [Dom, Owen, Matthias]
+ - Add saving support for ICO and CUR
+ - Improve handling of GIFs with oversized frames [Matthias]
+
+* GDK:
+ - Support for full-color / alpha-channel cursors [Matthias]
+ - Remove support for non-X fonts and for pango-1.0; always require Xft2 [Owen]
+ - Fix handling of recursive calls to gdk_window_begin_paint() [Soeren]
+ - Many small changes to reduce round trips on startup; 
+   add gdk_display_flush() [Owen]
+ - Use Xlib asynchronous APIs to reduce roundtrips on startup
+   and during DND [Owen]
+ - Other changes to improve DND for large-latency connections [Owen]
+ - Add support for EWMH "above" and "below" states [Manuel Clos] (also
+   in GtkWindow)
+ - Add Add GDK_MOUSE_DEVICE envvar for linux-fb backend [Marc Welz]
+ - Other small linux-fb fixes [Eric Warmenhoven]
+
+* Miscellaneous
+ - Add support for named themable icons; use this facility to 
+   provide the default stock icon images [Owen Taylor, based
+   on code by Alex Larsson]
+ - Add gtk_widget_queue_resize_no_redraw() for more efficient
+   resizing; use for GtkTextView. Redraw less on focus changes. [Soeren]
+ - Add gtk_widget_queue_resize_no_redraw() [Soeren]
+ - Default theme improvements, especially for menus. Add some
+   more style properties. [Soeren]
+ - Add authentication stock icon [Matthias, art by Jakub Steiner]
+ - Allow "none" to be set for input method GtkSettings [Hidetoshi Tajima]
+ - Convert build system to automake-1.7; many cleanups and
+   improvements. [James Henstridge, Owen]
+ - Win32 fixes for new widgets [Hans]
+ - Add right-to-left variants of some stock icons [Matthias]
+
+* Documentation
+ - Use XML source for man pages; add man pages for tools that didn't
+   have them before [Matthias]
+ - Tutorial improvements [Sebastian Rittau, Tony Gale, Roger Leigh, Matthias]
+ - FAQ improvements [Tony, Gonzalo Odiard, Owen]
+ - Misc documentation improvements [Matthias, Frederic Lespez, Tomas Ogren, 
+   Martin Pool, Mariano Suarez-Alvarez]
+
+* Deprecations
+ - GtkItemFactory [Replaced by GtkUIManager]
+ - GtkCombo, GtkOptionMenu [Replaced by GtkComboBox]
+ - Miscellaneous functions that were renamed in 
+   GTK+-2.0 and GTK+-2.2 [Matthias, Manish Singh, Soeren]
+
+Other contributors: Krasimir Angelov, Archit Baweja, Sebastien Bacher,
+  Steve Chaplin, John Darrington, Daniel Elstner, Marco Pesenti Gritti, 
+  Jody Goldberg, David Hampton, Richard Kinder, Christian Persch, 
+  Roozbeh Pournader, Christian Reis, Christian Rose, Joe Shaw, 
+  Vasilis Vasaitis, Morten Welinder
+
+----------------------------------------------------------------------
+
+Overview of Changes in GTK+ 2.2.4
+=================================
+* Revert TreeView fix which broke context menus in different applications
+  [Kristian Rietveld]
+* Typo fixes [Kjartan Maraas]
+* Make pressing END not put the menu in scrolling mode [Kris]
+* Misc bug fixes [Tor Lillqvist, Bruce Hochstetler, Kjartan, Tony Gale]
+* New and updated translations (sq, cy, hi, nl, de, es, zh_CN, ja, no, el)
+
+Overview of Changes in GTK+ 2.2.3
+=================================
+* GdkPixbuf [Matthias Clasen]
+ - Fix some problems with overflows when scaling down [Tomas Ögren]
+ - Many GIF bug fixes [Matthias, Federico Mena Quintero]
+ - Prefer 32-bpp ICOs, fix bugs with them
+ - Fix problem with absolute filenames and gdk-pixbuf-query-loaders
+   [Jens Elker]
+ - Make gdk-pixbuf-csource include alignment magic [Brian Cameron]
+* Win32 [Tor Lillqvist]
+ - Add multiple monitor support
+ - Major event and key handling rewrite, including IME fixes
+ - Fix handling of toplevel window positions
+ - Add support for all window geometry hints (gridded geometry, etc.)
+ - Fix DND to ignore drag window [Tony M Brown, Herman Bloggs]
+ - Fix GdkImage memory leak [J. Ali Harlow]
+ - Remove leftover OwnerGrabButtonMask emulation (fixes lots)
+ - Misc bug fixes [Many from Hans Breuer, Tim Evans]
+ - Build fixes and improvements [Peter Zelezny]
+* X11
+ - Fix extremely common crash where we interpreted the timestamp
+   field of a XKB event as a window ID and found a pixmap that matched.
+   [Owen Taylor, with essential backtrace from Kjartan Maraas]
+ - Fix CapsLock and NumLock for non-XKB [Robert Basch]
+ - Fix problems with, eg. Ctrl-Alt-Backspace hiding Cntrl-Backspace [Owen]
+ - Workaround Xinerama servers reporting wrong depths [Owen]
+* GtkTreeView [Kristian Rietveld]
+ - Fix scrolling once more [Pedro Gimeno, Michael Natterer, Timo Sirainen]
+ - Don't get confused by the Control key when handling selection
+   from an accelerator like <Control>B [Michael Natterer]
+ - Many misc fixes [Matthias, Marco Pesenti Gritti, Tim Janik, Alex Larsson, 
+   Tim-Philipp Müller, Michael Natterer, Josh Parsons, Yann Rouillard,
+   Rene Seindel, Owen Taylor, Alp Toker, Morten Welinder]
+* Input methods
+ - Handle input methods exiting and starting while the 
+   app is running [Hidetoshi Tajima]
+ - Fix infinite loop when closing input methods [Owen,
+   Takuro Ashie, Hidetoshi]
+ - Add a 'cedilla' input method with c+acute => cedilla and use
+   as the default for languages that use cedilla. [Gustavo De Nardin,
+   Owen, Fco. Javier F. Serrador]
+ - Fix status window for multihead [Owen, James Su]
+ - Remember imcontext attributes when switching methods [Owen, 
+   Botond Botyanszki]
+* GtkFileSelection [Owen]
+ - Fix selection of "UntitledN" on initial map [Mark Finlay]
+ - Fix an annoying bug with cursor positioning on failed completion
+ - Misc Fixes [Owen, Tor]
+* Other widgets
+ - Fix problem with GtkOptionMenus coming up in the wrong place [Kristian]
+ - Fix problem with spinbuttons not getting enough space [Morten Welinder,
+   Kristian]
+ - Fix an infinite loop when resizing GtkTextView [Owen, Frederic Crozat]
+ - Don't include menu labels in gtk_notebook_forall [Owen]
+ - Fix problem with XEMBED (GtkPlug) clients that don't take focus stealing
+   focus [Owen]
+ - Accept color drops with wrong format from KDE [Matthias]
+* Fix problem from gnome-theme-manager playing tricks and
+  making event->window a pixmap. [Anders Carlsson]
+* Ignore Caps-lock when matching accelerators
+* Fix 5-year-old bug where toplevels didn't fully refresh properly
+  on theme change [Owen, Rajkumar Siva]
+* Don't require precompiled gdk-pixbuf-csource when cross-compiling
+  from a tarball [Owen]
+* Documentation improvements [Matthias, Noah Levitt, Tor, Doug Quale, 
+  Morten Welinder]
+* Misc bug fixes [Keith Bissett, Botond Botyanszki, Damien Carbery,
+  Arno Charlet, Felipe Heidrich, Charles Kerr, George Lebl, Noah, Tor, 
+  Callum McKenzie, Michael Meeks, Denis Mikhalkin, Thomas Mirlacher,
+  Kristian, Masahiro Sakai, Soeren Sandmann, Benedikt Spranger, Owen, 
+  Luis Villa]
+* New and updated translations (ar,az,cs,cy,be,de,es,fi,fr,he,hi,hu,id,is,it,
+  ko,lt,ml,mn,nl,ne,no,pl,pt,pt_BR,ru,sk,sr,sr@Latn,ta,wa,zh_TW,zh_CN)
+
+Overview of Changes in GTK+ 2.2.2
+=================================
+
+* GdkPixbuf [Matthias Clasen]
+ - Fix animation of slow-loading progressive GIFS
+ - Fix long-standing animated GIF display bug with transparency
+ - Misc bug and portability fixes [Rick Jones, Tim Mooney, Marijn Ross]
+* GDK [Owen Taylor]
+ - Draw continuous underlines between Pango layout runs when 
+   possible [Kang Jeong-Hee]
+ - Fix gdk_pixbuf_from_drawable() for big endian [Christian Petig]
+   Major rewrite of 16-bit handling for pixbuf_from_drawable()
+* X11 backend [Owen]
+ - Fix build on X11R5 [Albert Chin]
+ - Fix switching keyboard layouts while running [Egmont Koblinger]
+ - Work around RENDER extension bugs on certain Sun X servers [Morten Welinder]
+ - Zero unused fields in client messages we send Lubos Lunak]
+ - Fix occasional segfault when drawing pixbufs [Hans Petter Jansson]
+ - Fix wrong initializaiton that was keeping XShm from being used.
+* Win32 backend [Tor Lillqvist]
+ - Tweak line drawing
+ - Mouse/cursor fixes [Allin Cottrell]
+ - Better handling of floppy drives in GtkFileSelection
+ - Misc fixes [Arnaud Charlet, Cedric Gustin, Martyn Russell]
+* Input methods [Hidetoshi Tajima]
+ - Add rules for Greek accents to GtkIMContextSimple [Vasilis Vasaitis]
+ - Fix sorting of rules in GtkIMContextSimple [Vasilis]
+ - Miscellaneous GtkIMContextXIM fixes 
+ - Fix translation of input context names
+* Fix keyboard accelerators/bindings on Numeric Keypad [Owen, Olivier Ripoll]
+* Add Delete to GtkEntry context menu, Delete/Select All 
+  to GtkTextView context menu [Matthias]
+* Keynav tweaks in GtkFileSelection, GtkColorSel [Matthias]
+* Add C-A-PgUp/Down as alternative notebook page switching keys [Matthias]
+* GtkTextView
+ - Fix redrawing on color-only changes [Owen, Gustavo Giráldez]
+ - Don't scroll to cursor on focus in [Paolo Maggi]
+ - Fix spot location reported to input method [Owen, TOKUNAGA Hiroyuki, 
+   Yao Zhang]
+ - Miscellaneous bug fixes [Torbjörn Andersson, Matthias, Manual Clos,
+   Padraig O'Briain, Owen]
+* GtkTreeView [Kristian Rietveld]
+ - Fix prelighting [Sven Neumann]
+ - Set drag cursor earlier to allow apps to override [Daniel Elstner]
+ - Speed up insertions into GtkTreeModelSort [Owen, Jonathan Blandford]
+ - Get background/cell area handling right in GtkTreeViewColumn [Vasco
+   Alexandre da Silva Costa]
+ - Bug fixes [Benjamin Bayart, Jonathan Blandford, Peter Bloomfield, 
+   Dave Cook, Felipe Heidrich, Richard Hult, Markus Lausser, Michael Natterer,
+   Mariano Suarez-Alvarez, Owen]
+* Fix handling of border width for GtkToolbar [Rodney Dawes]
+* Rewrite adjustment handling of GtkViewport, fixing many bugs
+  [Owen, Thomas Leonard, Michael]
+* Misc bug fixes [Dennis Björklund, Jonathan, Dave Bordoley, Rich Burridge, 
+  Anders Carlsson, Arnaud, Matthias, Vasco Alexandre da Silva Costa, 
+  Tim Evans, Larry Ewing, John Finlay, Jeff Franks, Jody Goldberg, 
+  Jason D. Hildebrand, Charles Kerr, Alex Larsson, Noah Levitt, Xan Lopez, 
+  Loban Rahman, Richard Reich, Soeren Sandmann, Charles Schmidt, 
+  Rajkumar Siva, Owen, Sergey V. Udaltsov, Morten Welinder, Michael Zucchi]
+* Code cleanups [Matthias, Glynn Foster, Britton Kerin, Sven Neumann, 
+  Doug Quale, Manish Singh, Morten Welinder]
+* Switch to using libtool-1.5
+* Build fixes [Matthias, J. Ali Harlow, Rich Kinder, Jon Nall, Sven, 
+  Christian Rose]
+* Documentation improvements [Matthias, Noah Levitt, Sven Neumann]
+* New and updated translations (am,az,be,ca,cs,cy,da,de,el,es,fa,fi,fr,id,
+  it,ko,li,ml,mn,ms,nl,no,pl,pt,sr,sr@Latn,sv,ta,uk,yi,zh_TW)
+
 Overview of Changes in GTK+ 2.2.1
 =================================
 * Win32 [Tor Lillqvist]
@@ -30,6 +833,8 @@ Overview of Changes in GTK+ 2.2.1
 * Miscellaneous bug fixes [Matthias, Daniel, Martin Gansser, Louis Garcia, 
   Tommi Komulainen, Thomas Leonard, Ian Peters, Arvind Samptur, 
   Soeren Sandmann, Hidetoshi Tajima, Owen]
+
+----------------------------------------------------------------------
 
 Overview of Changes in GTK+ 2.2.0
 =================================

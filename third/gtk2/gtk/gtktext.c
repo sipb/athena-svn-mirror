@@ -27,6 +27,7 @@
 #undef GDK_DISABLE_DEPRECATED
 #undef GTK_DISABLE_DEPRECATED
 
+#include <config.h>
 #include <ctype.h>
 #include <string.h>
 #include "gdk/gdkkeysyms.h"
@@ -267,9 +268,9 @@ static GtkTextFont* get_text_font (GdkFont* gfont);
 static void         text_font_unref (GtkTextFont *text_font);
 
 static void insert_text_property (GtkText* text, GdkFont* font,
-				  GdkColor *fore, GdkColor* back, guint len);
+				  const GdkColor *fore, const GdkColor* back, guint len);
 static TextProperty* new_text_property (GtkText *text, GdkFont* font, 
-					GdkColor* fore, GdkColor* back, guint length);
+					const GdkColor* fore, const GdkColor* back, guint length);
 static void destroy_text_property (TextProperty *prop);
 static void init_properties      (GtkText *text);
 static void realize_property     (GtkText *text, TextProperty *prop);
@@ -598,32 +599,32 @@ gtk_text_class_init (GtkTextClass *class)
   g_object_class_install_property (gobject_class,
                                    PROP_HADJUSTMENT,
                                    g_param_spec_object ("hadjustment",
-                                                        _("Horizontal Adjustment"),
-                                                        _("Horizontal adjustment for the text widget"),
+                                                        P_("Horizontal Adjustment"),
+                                                        P_("Horizontal adjustment for the text widget"),
                                                         GTK_TYPE_ADJUSTMENT,
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_VADJUSTMENT,
                                    g_param_spec_object ("vadjustment",
-                                                        _("Vertical Adjustment"),
-                                                        _("Vertical adjustment for the text widget"),
+                                                        P_("Vertical Adjustment"),
+                                                        P_("Vertical adjustment for the text widget"),
                                                         GTK_TYPE_ADJUSTMENT,
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_LINE_WRAP,
                                    g_param_spec_boolean ("line_wrap",
-							 _("Line Wrap"),
-							 _("Whether lines are wrapped at widget edges"),
+							 P_("Line Wrap"),
+							 P_("Whether lines are wrapped at widget edges"),
 							 TRUE,
 							 G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
                                    PROP_WORD_WRAP,
                                    g_param_spec_boolean ("word_wrap",
-							 _("Word Wrap"),
-							 _("Whether words are wrapped at widget edges"),
+							 P_("Word Wrap"),
+							 P_("Whether words are wrapped at widget edges"),
 							 FALSE,
 							 G_PARAM_READWRITE));
 
@@ -958,12 +959,12 @@ gtk_text_thaw (GtkText *text)
 }
 
 void
-gtk_text_insert (GtkText    *text,
-		 GdkFont    *font,
-		 GdkColor   *fore,
-		 GdkColor   *back,
-		 const char *chars,
-		 gint        nchars)
+gtk_text_insert (GtkText        *text,
+		 GdkFont        *font,
+		 const GdkColor *fore,
+		 const GdkColor *back,
+		 const char     *chars,
+		 gint            nchars)
 {
   GtkOldEditable *old_editable = GTK_OLD_EDITABLE (text);
   gboolean frozen = FALSE;
@@ -1255,7 +1256,7 @@ gtk_text_destroy (GtkObject *object)
 
   if (text->timer)
     {
-      gtk_timeout_remove (text->timer);
+      g_source_remove (text->timer);
       text->timer = 0;
     }
   
@@ -1795,7 +1796,7 @@ gtk_text_button_release (GtkWidget      *widget,
   
   if (text->timer)
     {
-      gtk_timeout_remove (text->timer);
+      g_source_remove (text->timer);
       text->timer = 0;
     }
   
@@ -1873,9 +1874,9 @@ gtk_text_motion_notify (GtkWidget      *widget,
     {
       if (text->timer == 0)
 	{
-	  text->timer = gtk_timeout_add (SCROLL_TIME, 
-					 gtk_text_scroll_timeout,
-					 text);
+	  text->timer = g_timeout_add (SCROLL_TIME, 
+				       gtk_text_scroll_timeout,
+				       text);
 	  
 	  if (y < 0)
 	    scroll_int (text, y/2);
@@ -2876,7 +2877,7 @@ text_font_unref (GtkTextFont *text_font)
 }
 
 static gint
-text_properties_equal (TextProperty* prop, GdkFont* font, GdkColor *fore, GdkColor *back)
+text_properties_equal (TextProperty* prop, GdkFont* font, const GdkColor *fore, const GdkColor *back)
 {
   if (prop->flags & PROPERTY_FONT)
     {
@@ -2970,8 +2971,8 @@ unrealize_properties (GtkText *text)
 }
 
 static TextProperty*
-new_text_property (GtkText *text, GdkFont *font, GdkColor* fore, 
-		   GdkColor* back, guint length)
+new_text_property (GtkText *text, GdkFont *font, const GdkColor* fore,
+		   const GdkColor* back, guint length)
 {
   TextProperty *prop;
   
@@ -3104,7 +3105,7 @@ make_forward_space (GtkText* text, guint len)
  * point. */
 static void
 insert_text_property (GtkText* text, GdkFont* font,
-		      GdkColor *fore, GdkColor* back, guint len)
+		      const GdkColor *fore, const GdkColor* back, guint len)
 {
   GtkPropertyMark *mark = &text->point;
   TextProperty* forward_prop = MARK_CURRENT_PROPERTY(mark);

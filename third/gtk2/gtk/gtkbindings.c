@@ -27,6 +27,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <string.h>
 #include <stdarg.h>
 #include <gdkkeysyms.h>
@@ -1102,7 +1103,7 @@ gtk_bindings_activate (GtkObject      *object,
 }
 
 /**
- * _gtk_bindings_activate_event:
+ * gtk_bindings_activate_event:
  * @object: a #GtkObject (generally must be a widget)
  * @event: a #GdkEventKey
  * 
@@ -1112,8 +1113,8 @@ gtk_bindings_activate (GtkObject      *object,
  * Return value: %TRUE if a matching key binding was found
  **/
 gboolean
-_gtk_bindings_activate_event (GtkObject      *object,
-			      GdkEventKey    *event)
+gtk_bindings_activate_event (GtkObject      *object,
+                             GdkEventKey    *event)
 {
   GSList *entries = NULL;
   GdkDisplay *display;
@@ -1130,7 +1131,8 @@ _gtk_bindings_activate_event (GtkObject      *object,
 
   entries = _gtk_key_hash_lookup (key_hash,
 				  event->hardware_keycode,
-				  event->state & BINDING_MOD_MASK () & ~GDK_RELEASE_MASK,
+				  event->state,
+				  BINDING_MOD_MASK () & ~GDK_RELEASE_MASK,
 				  event->group);
   
   handled = gtk_bindings_activate_list (object, entries,

@@ -5,8 +5,7 @@
 >Stepping Through Hello World</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-STEPPINGTHROUGHHELLOWORLD">Stepping Through Hello World</H1
+NAME="SEC-STEPPINGTHROUGHHELLOWORLD"
+>Stepping Through Hello World</A
+></H1
 ><P
 >Now that we know the theory behind this, let's clarify by walking
 through the example <I
@@ -94,8 +95,8 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void hello( GtkWidget *widget,
-            gpointer   data )
+>static void hello( GtkWidget *widget,
+                   gpointer   data )
 {
     g_print ("Hello World\n");
 }</PRE
@@ -121,9 +122,9 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->gint delete_event( GtkWidget *widget,
-                   GdkEvent  *event,
-		   gpointer   data )
+>static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent  *event,
+                              gpointer   data )
 {
     g_print ("delete event occurred\n");
 
@@ -144,8 +145,8 @@ WIDTH="100%"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->void destroy( GtkWidget *widget,
-              gpointer   data )
+>static void destroy( GtkWidget *widget,
+                     gpointer   data )
 {
     gtk_main_quit ();
 }</PRE
@@ -258,7 +259,7 @@ This just sets the window so it has a blank area along the inside of
 it 10 pixels wide where no widgets will go. There are other similar
 functions which we will look at in the section on
 <A
-HREF="c1773.html"
+HREF="c1774.html"
 >Setting Widget Attributes</A
 ></P
 ><P

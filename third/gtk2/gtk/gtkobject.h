@@ -76,11 +76,6 @@ typedef enum
 typedef struct _GtkObjectClass	GtkObjectClass;
 
 
-/* The GtkObject structure is the base of the Gtk+ objects hierarchy,
- * it ``inherits'' from the GtkTypeObject by mirroring its fields,
- * which must always be kept in sync completely. The GtkObject defines
- * the few basic items that all derived classes contain.
- */
 struct _GtkObject
 {
   GObject parent_instance;
@@ -93,11 +88,6 @@ struct _GtkObject
   guint32 flags;
 };
 
-/* The GtkObjectClass is the base of the Gtk+ objects classes hierarchy,
- * it ``inherits'' from the GtkTypeClass by mirroring its fields, which
- * must always be kept in sync completely. The GtkObjectClass defines
- * the basic necessities for the object inheritance mechanism to work.
- */
 struct _GtkObjectClass
 {
   GObjectClass parent_class;
@@ -110,13 +100,13 @@ struct _GtkObjectClass
 		   GtkArg    *arg,
 		   guint      arg_id);
   
-  /* The function that will end an objects life time. In one way ore
-   *  another all three of them are defined for all objects. If an
-   *  object class overrides one of the methods in order to perform class
+  /* Default signal handler for the ::destroy signal, which is
+   *  invoked to request that references to the widget be dropped.
+   *  If an object class overrides destroy() in order to perform class
    *  specific destruction then it must still invoke its superclass'
    *  implementation of the method after it is finished with its
-   *  own cleanup. (See the destroy function for GtkWidget for
-   *  an example of how to do this).
+   *  own cleanup. (See gtk_widget_real_destroy() for an example of
+   *  how to do this).
    */
   void (*destroy)  (GtkObject *object);
 };
@@ -127,10 +117,6 @@ struct _GtkObjectClass
 
 GtkType	gtk_object_get_type		(void) G_GNUC_CONST;
 
-GtkObject*	gtk_object_new		  (GtkType	       type,
-					   const gchar	      *first_property_name,
-					   ...);
-
 void gtk_object_sink	  (GtkObject *object);
 void gtk_object_destroy	  (GtkObject *object);
 
@@ -138,6 +124,9 @@ void gtk_object_destroy	  (GtkObject *object);
 
 #ifndef GTK_DISABLE_DEPRECATED 
 
+GtkObject*	gtk_object_new		  (GtkType	       type,
+					   const gchar	      *first_property_name,
+					   ...);
 GtkObject*	gtk_object_ref		  (GtkObject	      *object);
 void		gtk_object_unref	  (GtkObject	      *object);
 void gtk_object_weakref	  (GtkObject	    *object,

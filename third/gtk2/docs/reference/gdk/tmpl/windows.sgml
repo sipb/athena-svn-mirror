@@ -155,7 +155,7 @@ ratio.
 Defines the reference point of a window and the meaning of coordinates
 passed to gtk_window_move(). See gtk_window_move() and the "implementation 
 notes" section of the 
-<ulink url="http://www.freedesktop.org/standards/wm-spec.html">extended 
+<ulink url="http://www.freedesktop.org/standards/wm-spec">extended 
 window manager hints</ulink> specification for more details.
 </para>
 
@@ -414,6 +414,24 @@ Deprecated equivalent of g_object_unref()
 </para>
 
 @window: 
+
+
+<!-- ##### FUNCTION gdk_window_set_keep_above ##### -->
+<para>
+
+</para>
+
+@window: 
+@setting: 
+
+
+<!-- ##### FUNCTION gdk_window_set_keep_below ##### -->
+<para>
+
+</para>
+
+@window: 
+@setting: 
 
 
 <!-- ##### FUNCTION gdk_window_move ##### -->
@@ -723,6 +741,15 @@ Registers a window as a potential drop destination.
 @override_redirect: 
 
 
+<!-- ##### FUNCTION gdk_window_set_accept_focus ##### -->
+<para>
+
+</para>
+
+@window: 
+@accept_focus: 
+
+
 <!-- ##### FUNCTION gdk_window_add_filter ##### -->
 <para>
 
@@ -746,8 +773,15 @@ Registers a window as a potential drop destination.
 <!-- ##### USER_FUNCTION GdkFilterFunc ##### -->
 <para>
 Specifies the type of function used to filter native events before they are
-converted to GDK events. A filter may translate the native event to a GDK
-event or handle it without translation.
+converted to GDK events. 
+</para>
+
+<para>
+When a filter is called, @event is unpopulated, except for
+<literal>event-&gt;window</literal>. The filter may translate the native
+event to a GDK event and store the result in @event, or handle it without
+translation. If the filter translates the event and processing should
+continue, it should return <literal>GDK_FILTER_TRANSLATE</literal>.
 </para>
 
 @xevent: the native event to filter.
@@ -762,7 +796,8 @@ Specifies the result of applying a #GdkFilterFunc to a native event.
 </para>
 
 @GDK_FILTER_CONTINUE: event not handled, continue processing.
-@GDK_FILTER_TRANSLATE: translated event stored.
+@GDK_FILTER_TRANSLATE: native event translated into a GDK event and stored
+                       in the <literal>event</literal> structure that was passed in.
 @GDK_FILTER_REMOVE: event handled, terminate processing.
 
 <!-- ##### TYPEDEF GdkXEvent ##### -->
@@ -1194,6 +1229,15 @@ Like the X Window System, GDK supports 8 modifier keys and 5 mouse buttons.
 @leader: 
 
 
+<!-- ##### FUNCTION gdk_window_get_group ##### -->
+<para>
+
+</para>
+
+@window: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gdk_window_set_decorations ##### -->
 <para>
 
@@ -1294,5 +1338,13 @@ Applications should never have any reason to use this facility
 
 @new_hooks: 
 @Returns: 
+
+
+<!--
+Local variables:
+mode: sgml
+sgml-parent-document: ("../gdk-docs.sgml" "book" "refsect2" "")
+End:
+-->
 
 

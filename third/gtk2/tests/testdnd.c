@@ -1,4 +1,4 @@
-#include <stdlib.h> /* putenv */
+#include <config.h>
 #include "gtk/gtk.h"
 
 /* Target side drag signals */
@@ -281,7 +281,7 @@ enum {
 static GtkTargetEntry target_table[] = {
   { "STRING",     0, TARGET_STRING },
   { "text/plain", 0, TARGET_STRING },
-  { "application/x-rootwin-drop", 0, TARGET_ROOTWIN }
+  { "application/x-rootwindow-drop", 0, TARGET_ROOTWIN }
 };
 
 static guint n_targets = sizeof(target_table) / sizeof(target_table[0]);
@@ -311,7 +311,7 @@ target_drag_motion	   (GtkWidget	       *widget,
     {
       have_drag = TRUE;
       gtk_image_set_from_pixmap (GTK_IMAGE (widget),
-				 trashcan_closed, trashcan_closed_mask);
+				 trashcan_open, trashcan_open_mask);
     }
 
   source_widget = gtk_drag_get_source_widget (context);
@@ -446,7 +446,7 @@ popup_motion	   (GtkWidget	       *widget,
       if (popdown_timer)
 	{
 	  g_print ("removed popdown\n");
-	  gtk_timeout_remove (popdown_timer);
+	  g_source_remove (popdown_timer);
 	  popdown_timer = 0;
 	}
     }
@@ -465,7 +465,7 @@ popup_leave	   (GtkWidget	       *widget,
       if (!popdown_timer)
 	{
 	  g_print ("added popdown\n");
-	  popdown_timer = gtk_timeout_add (500, popdown_cb, NULL);
+	  popdown_timer = g_timeout_add (500, popdown_cb, NULL);
 	}
     }
 }
@@ -514,7 +514,7 @@ popup_cb (gpointer data)
       popped_up = TRUE;
     }
 
-  popdown_timer = gtk_timeout_add (500, popdown_cb, NULL);
+  popdown_timer = g_timeout_add (500, popdown_cb, NULL);
   g_print ("added popdown\n");
 
   popup_timer = FALSE;
@@ -530,7 +530,7 @@ popsite_motion	   (GtkWidget	       *widget,
 		    guint               time)
 {
   if (!popup_timer)
-    popup_timer = gtk_timeout_add (500, popup_cb, NULL);
+    popup_timer = g_timeout_add (500, popup_cb, NULL);
 
   return TRUE;
 }
@@ -542,7 +542,7 @@ popsite_leave	   (GtkWidget	       *widget,
 {
   if (popup_timer)
     {
-      gtk_timeout_remove (popup_timer);
+      g_source_remove (popup_timer);
       popup_timer = 0;
     }
 }
@@ -561,8 +561,8 @@ test_init ()
   if (g_file_test ("../gdk-pixbuf/libpixbufloader-pnm.la",
 		   G_FILE_TEST_EXISTS))
     {
-      putenv ("GDK_PIXBUF_MODULE_FILE=../gdk-pixbuf/gdk-pixbuf.loaders");
-      putenv ("GTK_IM_MODULE_FILE=../modules/input/gtk.immodules");
+      g_setenv ("GDK_PIXBUF_MODULE_FILE", "../gdk-pixbuf/gdk-pixbuf.loaders", TRUE);
+      g_setenv ("GTK_IM_MODULE_FILE", "../modules/input/gtk.immodules", TRUE);
     }
 }
 

@@ -29,24 +29,13 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <math.h>
-
-#if HAVE_CONFIG_H
-#  include <config.h>
-#  if STDC_HEADERS
-#    include <stdio.h>
-#    include <stdlib.h>
-#    include <string.h>
-#  endif
-#else
-#  include <stdio.h>
-#  include <stdlib.h>
-#endif
-
+#include <stdlib.h>
+#include <string.h>
 
 #define ENABLE_GRAYSCALE
 
-#include "config.h"
 #include "gdkprivate.h"
 #include "gdkinternals.h"	/* _gdk_windowing_get_bits_for_depth() */
 
@@ -207,7 +196,7 @@ gdk_rgb_make_colorcube_d (GdkRgbInfo *image_info, gulong *pixels,
 
 /* Try installing a color cube of the specified size.
    Make the colorcube and return TRUE on success */
-static gint
+static gboolean
 gdk_rgb_try_colormap (GdkRgbInfo *image_info, gboolean force,
 		      gint nr, gint ng, gint nb)
 {
@@ -217,7 +206,6 @@ gdk_rgb_try_colormap (GdkRgbInfo *image_info, gboolean force,
   GdkColormap *cmap;
   GdkColor color;
   gulong pixels[256];
-  gulong junk[256];
   gint i;
   gint d2;
   gint colors_needed;

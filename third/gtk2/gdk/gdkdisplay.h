@@ -40,7 +40,6 @@ typedef struct _GdkDisplayPointerHooks GdkDisplayPointerHooks;
 #define GDK_IS_DISPLAY_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), GDK_TYPE_DISPLAY))
 #define GDK_DISPLAY_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), GDK_TYPE_DISPLAY, GdkDisplayClass))
 
-
 struct _GdkDisplay
 {
   GObject parent_instance;
@@ -62,6 +61,10 @@ struct _GdkDisplay
   const GdkDisplayPointerHooks *pointer_hooks; /* Current hooks for querying pointer */
   
   guint closed : 1;		/* Whether this display has been closed */
+
+  guint double_click_distance;	/* Maximum distance between clicks in pixels */
+  gint button_x[2];             /* The last 2 button click positions. */
+  gint button_y[2];
 };
 
 struct _GdkDisplayClass
@@ -113,6 +116,8 @@ void        gdk_display_keyboard_ungrab    (GdkDisplay  *display,
 gboolean    gdk_display_pointer_is_grabbed (GdkDisplay  *display);
 void        gdk_display_beep               (GdkDisplay  *display);
 void        gdk_display_sync               (GdkDisplay  *display);
+void        gdk_display_flush              (GdkDisplay  *display);
+
 void	    gdk_display_close		   (GdkDisplay  *display);
 
 GList *     gdk_display_list_devices       (GdkDisplay  *display);
@@ -127,8 +132,10 @@ void gdk_display_add_client_message_filter (GdkDisplay   *display,
 					    GdkFilterFunc func,
 					    gpointer      data);
 
-void gdk_display_set_double_click_time (GdkDisplay  *display,
-					guint        msec);
+void gdk_display_set_double_click_time     (GdkDisplay   *display,
+					    guint         msec);
+void gdk_display_set_double_click_distance (GdkDisplay   *display,
+					    guint         distance);
 
 GdkDisplay *gdk_display_get_default (void);
 
@@ -147,6 +154,15 @@ GdkDisplayPointerHooks *gdk_display_set_pointer_hooks (GdkDisplay               
 						       const GdkDisplayPointerHooks *new_hooks);
 
 GdkDisplay *gdk_display_open_default_libgtk_only (void);
+
+gboolean gdk_display_supports_cursor_alpha     (GdkDisplay    *display);
+gboolean gdk_display_supports_cursor_color     (GdkDisplay    *display);
+guint    gdk_display_get_default_cursor_size   (GdkDisplay    *display);
+void     gdk_display_get_maximal_cursor_size   (GdkDisplay    *display,
+						guint         *width,
+						guint         *height);
+
+GdkWindow *gdk_display_get_default_group       (GdkDisplay *display); 
 
 G_END_DECLS
 

@@ -6,6 +6,7 @@
  *
  */
 
+#include <config.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdlib.h>
@@ -152,13 +153,11 @@ cell_edited (GtkCellRendererText *cell,
   GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
   GtkTreeIter iter;
 
-  gint *column;
-
-  column = g_object_get_data (G_OBJECT (cell), "column");
+  gint column = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (cell), "column"));
 
   gtk_tree_model_get_iter (model, &iter, path);
 
-  switch (GPOINTER_TO_INT (column))
+  switch (column)
     {
     case COLUMN_NUMBER:
       {
@@ -225,7 +224,7 @@ add_columns (GtkTreeView *treeview)
 }
 
 GtkWidget *
-do_editable_cells (void)
+do_editable_cells (GtkWidget *do_widget)
 {
   if (!window)
     {
@@ -238,6 +237,8 @@ do_editable_cells (void)
 
       /* create window, etc */
       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      gtk_window_set_screen (GTK_WINDOW (window),
+			     gtk_widget_get_screen (do_widget));
       gtk_window_set_title (GTK_WINDOW (window), "Shopping list");
       gtk_container_set_border_width (GTK_CONTAINER (window), 5);
       g_signal_connect (window, "destroy",

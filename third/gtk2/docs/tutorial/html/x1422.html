@@ -5,8 +5,7 @@
 >Toolbar</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-TOOLBAR">Toolbar</H1
+NAME="SEC-TOOLBAR"
+>Toolbar</A
+></H1
 ><P
 >Toolbars are usually used to group some number of widgets in order to
 simplify customization of their look and layout. Typically a toolbar
@@ -238,7 +239,9 @@ CLASS="PROGRAMLISTING"
 
 /* This function is connected to the Close button or
  * closing the window from the WM */
-gint delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
+static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent *event,
+                              gpointer data )
 {
   gtk_main_quit ();
   return FALSE;
@@ -284,7 +287,8 @@ CLASS="PROGRAMLISTING"
  * check which one is active and set the style of the toolbar
  * accordingly
  * ATTENTION: our toolbar is passed as data to callback ! */
-void radio_event (GtkWidget *widget, gpointer data)
+static void radio_event( GtkWidget *widget,
+                         gpointer data )
 {
   if (GTK_TOGGLE_BUTTON (text_button)-&#62;active) 
     gtk_toolbar_set_style (GTK_TOOLBAR (data), GTK_TOOLBAR_TEXT);
@@ -296,7 +300,8 @@ void radio_event (GtkWidget *widget, gpointer data)
 
 /* even easier, just check given toggle button and enable/disable 
  * tooltips */
-void toggle_event (GtkWidget *widget, gpointer data)
+static void toggle_event( GtkWidget *widget,
+                          gpointer   data )
 {
   gtk_toolbar_set_tooltips (GTK_TOOLBAR (data),
                             GTK_TOGGLE_BUTTON (widget)-&#62;active );

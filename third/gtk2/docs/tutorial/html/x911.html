@@ -5,8 +5,7 @@
 >Rulers</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="GTK+ 2.0 Tutorial"
 HREF="book1.html"><LINK
@@ -74,7 +73,9 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SEC-RULERS">Rulers</H1
+NAME="SEC-RULERS"
+>Rulers</A
+></H1
 ><P
 >Ruler widgets are used to indicate the location of the mouse pointer
 in a given window. A window can have a vertical ruler spanning across
@@ -247,9 +248,9 @@ CLASS="PROGRAMLISTING"
 #define YSIZE  400
 
 /* This routine gets control when the close button is clicked */
-gint close_application( GtkWidget *widget,
-                        GdkEvent  *event,
-                        gpointer   data )
+static gboolean close_application( GtkWidget *widget,
+                                   GdkEvent  *event,
+                                   gpointer   data )
 {
     gtk_main_quit ();
     return FALSE;

@@ -1,4 +1,5 @@
 
+#include <config.h>
 #include <gtk/gtk.h>
 
 /* Create a Button Box with the specified parameters */
@@ -43,7 +44,7 @@ GtkWidget *create_bbox( gint  horizontal,
 int main( int   argc,
           char *argv[] )
 {
-  GtkWidget *window;
+  static GtkWidget* window = NULL;
   GtkWidget *main_vbox;
   GtkWidget *vbox;
   GtkWidget *hbox;

@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -397,7 +398,7 @@ gdk_visual_get_best_with_depth (gint depth)
   for (i = 0; i < screen_x11->nvisuals; i++)
     if (depth == screen_x11->visuals[i]->visual.depth)
       {
-	return_val = (GdkVisual *) & (screen_x11->visuals[i]);
+	return_val = (GdkVisual *) screen_x11->visuals[i];
 	break;
       }
 

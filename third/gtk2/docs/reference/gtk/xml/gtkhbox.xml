@@ -34,15 +34,20 @@ struct      <link linkend="GtkHBox-struct">GtkHBox</link>;
                +----<link linkend="GtkContainer">GtkContainer</link>
                      +----<link linkend="GtkBox">GtkBox</link>
                            +----GtkHBox
+                                 +----<link linkend="GtkCombo">GtkCombo</link>
+                                 +----<link linkend="GtkStatusbar">GtkStatusbar</link>
 </synopsis>
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Implemented Interfaces</title>
 <para>
-GtkHBox implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
+GtkHBox implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
 </refsect1>
 
 
@@ -56,7 +61,7 @@ GtkHBox is a container that organizes child widgets into a single row.
 </para>
 
 <para>
-Use the <link linkend="GtkBox">GtkBox</link> packing interface to determine the arrangement,
+Use the <link linkend="GtkBox"><type>GtkBox</type></link> packing interface to determine the arrangement,
 spacing, width, and alignment of GtkHBox children.
 </para>
 
@@ -69,11 +74,11 @@ All children are allocated the same height.
 <title>Details</title>
 <refsect2>
 <title><anchor id="GtkHBox-struct"/>struct GtkHBox</title>
-<programlisting>struct GtkHBox;</programlisting>
+<indexterm><primary>GtkHBox</primary></indexterm><programlisting>struct GtkHBox;</programlisting>
 </refsect2>
 <refsect2>
 <title><anchor id="gtk-hbox-new"/>gtk_hbox_new ()</title>
-<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hbox_new                    (<link linkend="gboolean">gboolean</link> homogeneous,
+<indexterm><primary>gtk_hbox_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_hbox_new                    (<link linkend="gboolean">gboolean</link> homogeneous,
                                              <link linkend="gint">gint</link> spacing);</programlisting>
 <para>
 Creates a new GtkHBox.
@@ -100,7 +105,7 @@ Creates a new GtkHBox.
 <variablelist>
 
 <varlistentry>
-<term><link linkend="GtkVBox">GtkVBox</link></term>
+<term><link linkend="GtkVBox"><type>GtkVBox</type></link></term>
 <listitem><para>a sister class that organizes widgets into a column.</para></listitem>
 </varlistentry>
 

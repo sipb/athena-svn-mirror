@@ -49,7 +49,7 @@ typedef     <link linkend="GdkTarget">GdkTarget</link>;
 <link linkend="GdkWindow">GdkWindow</link>*  <link linkend="gdk-selection-owner-get-for-display">gdk_selection_owner_get_for_display</link>
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="GdkAtom">GdkAtom</link> selection);
-void        <link linkend="gdk-selection-convert">gdk_selection_convert</link>           (<link linkend="GdkWindow">GdkWindow</link> *requestor,
+<link linkend="void">void</link>        <link linkend="gdk-selection-convert">gdk_selection_convert</link>           (<link linkend="GdkWindow">GdkWindow</link> *requestor,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
                                              <link linkend="GdkAtom">GdkAtom</link> target,
                                              <link linkend="guint32">guint32</link> time_);
@@ -57,12 +57,12 @@ void        <link linkend="gdk-selection-convert">gdk_selection_convert</link>  
                                              <link linkend="guchar">guchar</link> **data,
                                              <link linkend="GdkAtom">GdkAtom</link> *prop_type,
                                              <link linkend="gint">gint</link> *prop_format);
-void        <link linkend="gdk-selection-send-notify">gdk_selection_send_notify</link>       (<link linkend="guint32">guint32</link> requestor,
+<link linkend="void">void</link>        <link linkend="gdk-selection-send-notify">gdk_selection_send_notify</link>       (<link linkend="guint32">guint32</link> requestor,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
                                              <link linkend="GdkAtom">GdkAtom</link> target,
                                              <link linkend="GdkAtom">GdkAtom</link> property,
                                              <link linkend="guint32">guint32</link> time_);
-void        <link linkend="gdk-selection-send-notify-for-display">gdk_selection_send_notify_for_display</link>
+<link linkend="void">void</link>        <link linkend="gdk-selection-send-notify-for-display">gdk_selection_send_notify_for_display</link>
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="guint32">guint32</link> requestor,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
@@ -78,6 +78,8 @@ void        <link linkend="gdk-selection-send-notify-for-display">gdk_selection_
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -85,7 +87,7 @@ The X selection mechanism provides a way to transfer
 arbitrary chunks of data between programs. 
 A <firstterm>selection</firstterm> is a essentially 
 a named clipboard, identified by a string interned
-as a <link linkend="GdkAtom">GdkAtom</link>. By claiming ownership of a selection,
+as a <link linkend="GdkAtom"><type>GdkAtom</type></link>. By claiming ownership of a selection,
 an application indicates that it will be responsible
 for supplying its contents. The most common 
 selections are <literal>PRIMARY</literal> and 
@@ -122,20 +124,20 @@ to the X Inter-client Communication Conventions Manual
 <title>Details</title>
 <refsect2>
 <title><anchor id="GdkSelection"/>GdkSelection</title>
-<programlisting>typedef GdkAtom GdkSelection;
+<indexterm role="deprecated"><primary>GdkSelection</primary></indexterm><programlisting>typedef GdkAtom GdkSelection;
 </programlisting>
 <warning><para><literal>GdkSelection</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-The <link linkend="GdkSelection">GdkSelection</link> enumeration contains predefined 
+The <link linkend="GdkSelection"><type>GdkSelection</type></link> enumeration contains predefined 
 atom values for several common selections.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkSelectionType"/>GdkSelectionType</title>
-<programlisting>typedef GdkAtom GdkSelectionType;
+<indexterm role="deprecated"><primary>GdkSelectionType</primary></indexterm><programlisting>typedef GdkAtom GdkSelectionType;
 </programlisting>
 <warning><para><literal>GdkSelectionType</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-The <link linkend="GdkSelectionType">GdkSelectionType</link> enumeration contains predefined
+The <link linkend="GdkSelectionType"><type>GdkSelectionType</type></link> enumeration contains predefined
 atom values used to represent the types of data transferred
 in response to a request for a target. See the
 ICCCM for details about what data should be transferred
@@ -146,11 +148,11 @@ may be useful for compatibility with older programs.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GdkTarget"/>GdkTarget</title>
-<programlisting>typedef GdkAtom GdkTarget;
+<indexterm role="deprecated"><primary>GdkTarget</primary></indexterm><programlisting>typedef GdkAtom GdkTarget;
 </programlisting>
 <warning><para><literal>GdkTarget</literal> is deprecated and should not be used in newly-written code.</para></warning>
 <para>
-The <link linkend="GdkTarget">GdkTarget</link> enumeration contains predefined atom values which are
+The <link linkend="GdkTarget"><type>GdkTarget</type></link> enumeration contains predefined atom values which are
 used to describe possible targets for a selection. Other atoms can be
 used, and the recommended practice for GTK+ is to to use mime types
 for this purpose. However, supporting these types may be useful for
@@ -158,119 +160,119 @@ compatibility with older programs.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-PRIMARY-CAPS"/>GDK_SELECTION_PRIMARY</title>
-<programlisting>#define GDK_SELECTION_PRIMARY 		_GDK_MAKE_ATOM (1)
+<indexterm><primary>GDK_SELECTION_PRIMARY</primary></indexterm><programlisting>#define GDK_SELECTION_PRIMARY 		_GDK_MAKE_ATOM (1)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>PRIMARY</literal> selection.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>PRIMARY</literal> selection.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-SECONDARY-CAPS"/>GDK_SELECTION_SECONDARY</title>
-<programlisting>#define GDK_SELECTION_SECONDARY 	_GDK_MAKE_ATOM (2)
+<indexterm><primary>GDK_SELECTION_SECONDARY</primary></indexterm><programlisting>#define GDK_SELECTION_SECONDARY 	_GDK_MAKE_ATOM (2)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>SECONDARY</literal> selection.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>SECONDARY</literal> selection.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-CLIPBOARD-CAPS"/>GDK_SELECTION_CLIPBOARD</title>
-<programlisting>#define GDK_SELECTION_CLIPBOARD 	_GDK_MAKE_ATOM (69)
+<indexterm><primary>GDK_SELECTION_CLIPBOARD</primary></indexterm><programlisting>#define GDK_SELECTION_CLIPBOARD 	_GDK_MAKE_ATOM (69)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>CLIPBOARD</literal> selection.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>CLIPBOARD</literal> selection.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-TARGET-BITMAP-CAPS"/>GDK_TARGET_BITMAP</title>
-<programlisting>#define GDK_TARGET_BITMAP 		_GDK_MAKE_ATOM (5)
+<indexterm><primary>GDK_TARGET_BITMAP</primary></indexterm><programlisting>#define GDK_TARGET_BITMAP 		_GDK_MAKE_ATOM (5)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>BITMAP</literal> selection target.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>BITMAP</literal> selection target.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-TARGET-COLORMAP-CAPS"/>GDK_TARGET_COLORMAP</title>
-<programlisting>#define GDK_TARGET_COLORMAP 		_GDK_MAKE_ATOM (7)
+<indexterm><primary>GDK_TARGET_COLORMAP</primary></indexterm><programlisting>#define GDK_TARGET_COLORMAP 		_GDK_MAKE_ATOM (7)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>COLORMAP</literal> selection target.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>COLORMAP</literal> selection target.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-TARGET-DRAWABLE-CAPS"/>GDK_TARGET_DRAWABLE</title>
-<programlisting>#define GDK_TARGET_DRAWABLE 		_GDK_MAKE_ATOM (17)
+<indexterm><primary>GDK_TARGET_DRAWABLE</primary></indexterm><programlisting>#define GDK_TARGET_DRAWABLE 		_GDK_MAKE_ATOM (17)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>DRAWABLE</literal> selection target.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>DRAWABLE</literal> selection target.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-TARGET-PIXMAP-CAPS"/>GDK_TARGET_PIXMAP</title>
-<programlisting>#define GDK_TARGET_PIXMAP 		_GDK_MAKE_ATOM (20)
+<indexterm><primary>GDK_TARGET_PIXMAP</primary></indexterm><programlisting>#define GDK_TARGET_PIXMAP 		_GDK_MAKE_ATOM (20)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>PIXMAP</literal> selection target.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>PIXMAP</literal> selection target.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-TARGET-STRING-CAPS"/>GDK_TARGET_STRING</title>
-<programlisting>#define GDK_TARGET_STRING 		_GDK_MAKE_ATOM (31)
+<indexterm><primary>GDK_TARGET_STRING</primary></indexterm><programlisting>#define GDK_TARGET_STRING 		_GDK_MAKE_ATOM (31)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>STRING</literal> selection target.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>STRING</literal> selection target.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-ATOM-CAPS"/>GDK_SELECTION_TYPE_ATOM</title>
-<programlisting>#define GDK_SELECTION_TYPE_ATOM 	_GDK_MAKE_ATOM (4)
+<indexterm><primary>GDK_SELECTION_TYPE_ATOM</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_ATOM 	_GDK_MAKE_ATOM (4)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>ATOM</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>ATOM</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-BITMAP-CAPS"/>GDK_SELECTION_TYPE_BITMAP</title>
-<programlisting>#define GDK_SELECTION_TYPE_BITMAP 	_GDK_MAKE_ATOM (5)
+<indexterm><primary>GDK_SELECTION_TYPE_BITMAP</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_BITMAP 	_GDK_MAKE_ATOM (5)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>BITMAP</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>BITMAP</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-COLORMAP-CAPS"/>GDK_SELECTION_TYPE_COLORMAP</title>
-<programlisting>#define GDK_SELECTION_TYPE_COLORMAP 	_GDK_MAKE_ATOM (7)
+<indexterm><primary>GDK_SELECTION_TYPE_COLORMAP</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_COLORMAP 	_GDK_MAKE_ATOM (7)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>COLORMAP</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>COLORMAP</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-DRAWABLE-CAPS"/>GDK_SELECTION_TYPE_DRAWABLE</title>
-<programlisting>#define GDK_SELECTION_TYPE_DRAWABLE 	_GDK_MAKE_ATOM (17)
+<indexterm><primary>GDK_SELECTION_TYPE_DRAWABLE</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_DRAWABLE 	_GDK_MAKE_ATOM (17)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>DRAWABLE</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>DRAWABLE</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-INTEGER-CAPS"/>GDK_SELECTION_TYPE_INTEGER</title>
-<programlisting>#define GDK_SELECTION_TYPE_INTEGER 	_GDK_MAKE_ATOM (19)
+<indexterm><primary>GDK_SELECTION_TYPE_INTEGER</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_INTEGER 	_GDK_MAKE_ATOM (19)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>INTEGER</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>INTEGER</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-PIXMAP-CAPS"/>GDK_SELECTION_TYPE_PIXMAP</title>
-<programlisting>#define GDK_SELECTION_TYPE_PIXMAP 	_GDK_MAKE_ATOM (20)
+<indexterm><primary>GDK_SELECTION_TYPE_PIXMAP</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_PIXMAP 	_GDK_MAKE_ATOM (20)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>PIXMAP</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>PIXMAP</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-WINDOW-CAPS"/>GDK_SELECTION_TYPE_WINDOW</title>
-<programlisting>#define GDK_SELECTION_TYPE_WINDOW 	_GDK_MAKE_ATOM (33)
+<indexterm><primary>GDK_SELECTION_TYPE_WINDOW</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_WINDOW 	_GDK_MAKE_ATOM (33)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>WINDOW</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>WINDOW</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GDK-SELECTION-TYPE-STRING-CAPS"/>GDK_SELECTION_TYPE_STRING</title>
-<programlisting>#define GDK_SELECTION_TYPE_STRING 	_GDK_MAKE_ATOM (31)
+<indexterm><primary>GDK_SELECTION_TYPE_STRING</primary></indexterm><programlisting>#define GDK_SELECTION_TYPE_STRING 	_GDK_MAKE_ATOM (31)
 </programlisting>
 <para>
-A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>STRING</literal> selection type.
+A <link linkend="GdkAtom"><type>GdkAtom</type></link> representing the <literal>STRING</literal> selection type.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-owner-set"/>gdk_selection_owner_set ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_selection_owner_set         (<link linkend="GdkWindow">GdkWindow</link> *owner,
+<indexterm><primary>gdk_selection_owner_set</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_selection_owner_set         (<link linkend="GdkWindow">GdkWindow</link> *owner,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
                                              <link linkend="guint32">guint32</link> time_,
                                              <link linkend="gboolean">gboolean</link> send_event);</programlisting>
@@ -278,7 +280,7 @@ A <link linkend="GdkAtom">GdkAtom</link> representing the <literal>STRING</liter
 Sets the owner of the given selection.
 </para><variablelist role="params">
 <varlistentry><term><parameter>owner</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GdkWindow">GdkWindow</link> or <literal>NULL</literal> to indicate that the
+<listitem><simpara>a <link linkend="GdkWindow"><type>GdkWindow</type></link> or <literal>NULL</literal> to indicate that the
         the owner for the given should be unset.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
@@ -303,22 +305,22 @@ Sets the owner of the given selection.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-owner-set-for-display"/>gdk_selection_owner_set_for_display ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_selection_owner_set_for_display
+<indexterm role="2.2"><primary>gdk_selection_owner_set_for_display</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_selection_owner_set_for_display
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="GdkWindow">GdkWindow</link> *owner,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
                                              <link linkend="guint32">guint32</link> time_,
                                              <link linkend="gboolean">gboolean</link> send_event);</programlisting>
 <para>
-Sets the <link linkend="GdkWindow">GdkWindow</link> <parameter>owner</parameter> as the current owner of the selection <parameter>selection</parameter>.</para>
+Sets the <link linkend="GdkWindow"><type>GdkWindow</type></link> <parameter>owner</parameter> as the current owner of the selection <parameter>selection</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GdkDisplay">GdkDisplay</link>.
+<listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>owner</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkWindow">GdkWindow</link> or <literal>NULL</literal> to indicate that the the owner for
+<listitem><simpara> a <link linkend="GdkWindow"><type>GdkWindow</type></link> or <literal>NULL</literal> to indicate that the the owner for
         the given should be unset.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
@@ -341,7 +343,7 @@ Sets the <link linkend="GdkWindow">GdkWindow</link> <parameter>owner</parameter>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-owner-get"/>gdk_selection_owner_get ()</title>
-<programlisting><link linkend="GdkWindow">GdkWindow</link>*  gdk_selection_owner_get         (<link linkend="GdkAtom">GdkAtom</link> selection);</programlisting>
+<indexterm><primary>gdk_selection_owner_get</primary></indexterm><programlisting><link linkend="GdkWindow">GdkWindow</link>*  gdk_selection_owner_get         (<link linkend="GdkAtom">GdkAtom</link> selection);</programlisting>
 <para>
 Determines the owner of the given selection.
 </para><variablelist role="params">
@@ -350,7 +352,7 @@ Determines the owner of the given selection.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>if there is a selection owner for this window,
           and it is a window known to the current process,
-          the <link linkend="GdkWindow">GdkWindow</link> that owns the selection, otherwise
+          the <link linkend="GdkWindow"><type>GdkWindow</type></link> that owns the selection, otherwise
           <literal>NULL</literal>. Note that the return value may be owned
           by a different process if a foreign window
           was previously created for that window, but
@@ -362,7 +364,7 @@ Determines the owner of the given selection.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-owner-get-for-display"/>gdk_selection_owner_get_for_display ()</title>
-<programlisting><link linkend="GdkWindow">GdkWindow</link>*  gdk_selection_owner_get_for_display
+<indexterm role="2.2"><primary>gdk_selection_owner_get_for_display</primary></indexterm><programlisting><link linkend="GdkWindow">GdkWindow</link>*  gdk_selection_owner_get_for_display
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="GdkAtom">GdkAtom</link> selection);</programlisting>
 <para>
@@ -376,13 +378,13 @@ window, but a new foreign window will never be created by this call.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> a <link linkend="GdkDisplay">GdkDisplay</link>.
+<listitem><simpara> a <link linkend="GdkDisplay"><type>GdkDisplay</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
 <listitem><simpara> an atom indentifying a selection.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> if there is a selection owner for this window, and it is a 
-   window known to the current process, the <link linkend="GdkWindow">GdkWindow</link> that owns the 
+   window known to the current process, the <link linkend="GdkWindow"><type>GdkWindow</type></link> that owns the 
    selection, otherwise <literal>NULL</literal>.
 
 </simpara></listitem></varlistentry>
@@ -390,7 +392,7 @@ window, but a new foreign window will never be created by this call.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-convert"/>gdk_selection_convert ()</title>
-<programlisting>void        gdk_selection_convert           (<link linkend="GdkWindow">GdkWindow</link> *requestor,
+<indexterm><primary>gdk_selection_convert</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_selection_convert           (<link linkend="GdkWindow">GdkWindow</link> *requestor,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
                                              <link linkend="GdkAtom">GdkAtom</link> target,
                                              <link linkend="guint32">guint32</link> time_);</programlisting>
@@ -399,7 +401,7 @@ Retrieves the contents of a selection in a given
 form.
 </para><variablelist role="params">
 <varlistentry><term><parameter>requestor</parameter>&nbsp;:</term>
-<listitem><simpara>a <link linkend="GdkWindow">GdkWindow</link>.
+<listitem><simpara>a <link linkend="GdkWindow"><type>GdkWindow</type></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>selection</parameter>&nbsp;:</term>
 <listitem><simpara>an atom identifying the selection to get the
@@ -419,14 +421,14 @@ form.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-property-get"/>gdk_selection_property_get ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gdk_selection_property_get      (<link linkend="GdkWindow">GdkWindow</link> *requestor,
+<indexterm><primary>gdk_selection_property_get</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gdk_selection_property_get      (<link linkend="GdkWindow">GdkWindow</link> *requestor,
                                              <link linkend="guchar">guchar</link> **data,
                                              <link linkend="GdkAtom">GdkAtom</link> *prop_type,
                                              <link linkend="gint">gint</link> *prop_format);</programlisting>
 <para>
 Retrieves selection data that was stored by the selection
-data in response to a call to <link linkend="gdk-selection-convert">gdk_selection_convert</link>(). This function
-will not be used by applications, who should use the <link linkend="GtkClipboard">GtkClipboard</link>
+data in response to a call to <link linkend="gdk-selection-convert"><function>gdk_selection_convert()</function></link>. This function
+will not be used by applications, who should use the <link linkend="GtkClipboard"><type>GtkClipboard</type></link>
 API instead.</para>
 <para>
 </para><variablelist role="params">
@@ -436,7 +438,7 @@ API instead.</para>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
 <listitem><simpara> location to store a pointer to the retrieved data.
        If the retrieval failed, <literal>NULL</literal> we be stored here, otherwise, it
-       will be non-<literal>NULL</literal> and the returned data should be freed with <link linkend="g-free">g_free</link>()
+       will be non-<literal>NULL</literal> and the returned data should be freed with <link linkend="g-free"><function>g_free()</function></link>
        when you are finished using it. The length of the
        allocated memory is one more than the the length
        of the returned data, and the final byte will always
@@ -453,7 +455,7 @@ API instead.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-send-notify"/>gdk_selection_send_notify ()</title>
-<programlisting>void        gdk_selection_send_notify       (<link linkend="guint32">guint32</link> requestor,
+<indexterm><primary>gdk_selection_send_notify</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_selection_send_notify       (<link linkend="guint32">guint32</link> requestor,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
                                              <link linkend="GdkAtom">GdkAtom</link> target,
                                              <link linkend="GdkAtom">GdkAtom</link> property,
@@ -483,7 +485,7 @@ Sends a response to SelectionRequest event.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gdk-selection-send-notify-for-display"/>gdk_selection_send_notify_for_display ()</title>
-<programlisting>void        gdk_selection_send_notify_for_display
+<indexterm role="2.2"><primary>gdk_selection_send_notify_for_display</primary></indexterm><programlisting><link linkend="void">void</link>        gdk_selection_send_notify_for_display
                                             (<link linkend="GdkDisplay">GdkDisplay</link> *display,
                                              <link linkend="guint32">guint32</link> requestor,
                                              <link linkend="GdkAtom">GdkAtom</link> selection,
@@ -496,7 +498,7 @@ Send a response to SelectionRequest event.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>display</parameter>&nbsp;:</term>
-<listitem><simpara> the <link linkend="GdkDisplay">GdkDisplay</link> where <parameter>requestor</parameter> is realized
+<listitem><simpara> the <link linkend="GdkDisplay"><type>GdkDisplay</type></link> where <parameter>requestor</parameter> is realized
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>requestor</parameter>&nbsp;:</term>
 <listitem><simpara> window to which to deliver response.

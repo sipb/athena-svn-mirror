@@ -24,6 +24,7 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#include <config.h>
 #include "gdk.h"
 #include "gdkprivate-fb.h"
 #include "gdkinternals.h"
@@ -223,5 +224,10 @@ gdk_screen_get_setting (GdkScreen   *screen,
 
 void
 gdk_display_sync (GdkDisplay *display)
+{
+}
+
+void
+gdk_display_flush (GdkDisplay * display)
 {
 }

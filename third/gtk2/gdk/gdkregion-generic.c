@@ -68,6 +68,7 @@ SOFTWARE.
  * the y-x-banding that's so nice to have...
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gdkregion.h>
@@ -1714,10 +1715,6 @@ gdk_region_spans_intersect_foreach (GdkRegion  *region,
   
   if ((!region->numRects) || (n_spans == 0))
     return;
-
-  y = span->y;
-  left = span->x;
-  right = span->x + span->width; /* right is not in the span! */
 
   /* The main method here is to step along the
    * sorted rectangles and spans in lock step, and

@@ -1,7 +1,5 @@
-#include <locale.h>
-
+#include <config.h>
 #include "gdk.h"
-#include "gdkkeysyms.h"
 
 /* Thanks to Markus G. Kuhn <mkuhn@acm.org> for the ksysym<->Unicode
  * mapping functions, from the xterm sources.
@@ -253,6 +251,7 @@ static struct {
   { 0x06aa, 0x045a }, /*                Cyrillic_nje њ CYRILLIC SMALL LETTER NJE */
   { 0x06ab, 0x045b }, /*                Serbian_tshe ћ CYRILLIC SMALL LETTER TSHE */
   { 0x06ac, 0x045c }, /*               Macedonia_kje ќ CYRILLIC SMALL LETTER KJE */
+  { 0x06ad, 0x0491 }, /*   Ukrainian_ghe_with_upturn ґ CYRILLIC SMALL LETTER GHE WITH UPTURN */
   { 0x06ae, 0x045e }, /*         Byelorussian_shortu ў CYRILLIC SMALL LETTER SHORT U */
   { 0x06af, 0x045f }, /*               Cyrillic_dzhe џ CYRILLIC SMALL LETTER DZHE */
   { 0x06b0, 0x2116 }, /*                  numerosign № NUMERO SIGN */
@@ -268,6 +267,7 @@ static struct {
   { 0x06ba, 0x040a }, /*                Cyrillic_NJE Њ CYRILLIC CAPITAL LETTER NJE */
   { 0x06bb, 0x040b }, /*                Serbian_TSHE Ћ CYRILLIC CAPITAL LETTER TSHE */
   { 0x06bc, 0x040c }, /*               Macedonia_KJE Ќ CYRILLIC CAPITAL LETTER KJE */
+  { 0x06bd, 0x0490 }, /*   Ukrainian_GHE_WITH_UPTURN Ґ CYRILLIC CAPITAL LETTER GHE WITH UPTURN */
   { 0x06be, 0x040e }, /*         Byelorussian_SHORTU Ў CYRILLIC CAPITAL LETTER SHORT U */
   { 0x06bf, 0x040f }, /*               Cyrillic_DZHE Џ CYRILLIC CAPITAL LETTER DZHE */
   { 0x06c0, 0x044e }, /*                 Cyrillic_yu ю CYRILLIC SMALL LETTER YU */
@@ -338,7 +338,7 @@ static struct {
   { 0x07a2, 0x0388 }, /*         Greek_EPSILONaccent Έ GREEK CAPITAL LETTER EPSILON WITH TONOS */
   { 0x07a3, 0x0389 }, /*             Greek_ETAaccent Ή GREEK CAPITAL LETTER ETA WITH TONOS */
   { 0x07a4, 0x038a }, /*            Greek_IOTAaccent Ί GREEK CAPITAL LETTER IOTA WITH TONOS */
-  { 0x07a5, 0x03aa }, /*         Greek_IOTAdiaeresis Ϊ GREEK CAPITAL LETTER IOTA WITH DIALYTIKA */
+  { 0x07a5, 0x03aa }, /*          Greek_IOTAdieresis Ϊ GREEK CAPITAL LETTER IOTA WITH DIALYTIKA */
   { 0x07a7, 0x038c }, /*         Greek_OMICRONaccent Ό GREEK CAPITAL LETTER OMICRON WITH TONOS */
   { 0x07a8, 0x038e }, /*         Greek_UPSILONaccent Ύ GREEK CAPITAL LETTER UPSILON WITH TONOS */
   { 0x07a9, 0x03ab }, /*       Greek_UPSILONdieresis Ϋ GREEK CAPITAL LETTER UPSILON WITH DIALYTIKA */
@@ -808,6 +808,7 @@ static struct {
   { 0xFF80 /* Space */, ' ' },
   { 0xFFAA /* Multiply */, '*' },
   { 0xFFAB /* Add */, '+' },
+  { 0xFFAC /* Separator */, ',' },
   { 0xFFAD /* Subtract */, '-' },
   { 0xFFAE /* Decimal */, '.' },
   { 0xFFAF /* Divide */, '/' },
@@ -825,25 +826,6 @@ static struct {
 
   /* End numeric keypad */
 };
-
-static gunichar
-get_decimal_char (void)
-{
-  struct lconv *locale_data;
-  gunichar result = '.';
-  gchar *utf8;
-
-  locale_data = localeconv ();
-  utf8 = g_locale_to_utf8 (locale_data->decimal_point, -1, NULL, NULL, NULL);
-  if (utf8)
-    {
-      if (g_utf8_strlen (utf8, -1) == 1)
-	result = g_utf8_get_char (utf8);
-      g_free (utf8);
-    }
-
-  return result;
-}
 
 /**
  * gdk_keyval_to_unicode:
@@ -871,11 +853,6 @@ gdk_keyval_to_unicode (guint keyval)
    */
   if ((keyval & 0xff000000) == 0x01000000)
     return keyval & 0x00ffffff;
-
-  /* Translation of KP_Decimal depends on locale.
-   */
-  if (keyval == GDK_KP_Decimal)
-    return get_decimal_char ();
 
   /* binary search in table */
   while (max >= min) {
@@ -1054,7 +1031,7 @@ static struct {
   { 0x07d7, 0x03a7 }, /*                   Greek_CHI Χ GREEK CAPITAL LETTER CHI */
   { 0x07d8, 0x03a8 }, /*                   Greek_PSI Ψ GREEK CAPITAL LETTER PSI */
   { 0x07d9, 0x03a9 }, /*                 Greek_OMEGA Ω GREEK CAPITAL LETTER OMEGA */
-  { 0x07a5, 0x03aa }, /*         Greek_IOTAdiaeresis Ϊ GREEK CAPITAL LETTER IOTA WITH DIALYTIKA */
+  { 0x07a5, 0x03aa }, /*          Greek_IOTAdieresis Ϊ GREEK CAPITAL LETTER IOTA WITH DIALYTIKA */
   { 0x07a9, 0x03ab }, /*       Greek_UPSILONdieresis Ϋ GREEK CAPITAL LETTER UPSILON WITH DIALYTIKA */
   { 0x07b1, 0x03ac }, /*           Greek_alphaaccent ά GREEK SMALL LETTER ALPHA WITH TONOS */
   { 0x07b2, 0x03ad }, /*         Greek_epsilonaccent έ GREEK SMALL LETTER EPSILON WITH TONOS */

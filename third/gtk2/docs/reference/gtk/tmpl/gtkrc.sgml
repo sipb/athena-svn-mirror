@@ -22,7 +22,8 @@ and <filename>.gtkrc-2.0</filename> in the users home directory.
 (<filename>&lt;SYSCONFDIR&gt;</filename> defaults to 
 <filename>/usr/local/etc</filename>. It can be changed with the
 <option>--prefix</option> or <option>--sysconfdir</option> options when 
-configuring GTK+.)
+configuring GTK+.) Note that although the filenames contain the version 
+number 2.0, all 2.x versions of GTK+ look for these files.  
 </para>
 <para>
 The set of these <firstterm>default</firstterm> files
@@ -72,7 +73,7 @@ outermost to innermost. The difference is that in
 the widget path, the name assigned by
 gtk_widget_set_name() is used
 if present, otherwise the class name of the widget, while
-for the widget path, the class name is always used.
+for the class path, the class name is always used.
 </para>
 <para>
 So, if you have a #GtkEntry named
@@ -94,6 +95,28 @@ but also #GtkToggleButton and
 #GtkCheckButton widgets, since
 those classes derive from #GtkButton.
 </para>
+<para>
+Additionally, a priority can be specified for each pattern, and styles 
+override other styles first by priority, then by pattern type and then 
+by order of specification (later overrides earlier). The priorities 
+that can be specified are (highest to lowest):
+<simplelist>
+<member><literal>highest</literal></member>
+<member><literal>rc</literal></member>
+<member><literal>theme</literal></member>
+<member><literal>application</literal></member>
+<member><literal>gtk</literal></member>
+<member><literal>lowest</literal></member>
+</simplelist>
+<literal>rc</literal> is the default for styles
+read from an RC file, <literal>theme</literal>
+is the default for styles read from theme RC files,
+<literal>application</literal> 
+should be used for styles an application sets
+up, and <literal>gtk</literal> is used for styles
+that GTK+ creates internally.
+</para>
+
 </refsect2>
 
 <refsect2><title>Toplevel declarations</title>
@@ -117,7 +140,7 @@ The possible toplevel declarations are:
   </varlistentry>
   <varlistentry>
     <term><literal>class <replaceable>pattern</replaceable> 
-          [ style | binding [ : <replaceable>priority</replaceable> ]]
+          [ style | binding ][ : <replaceable>priority</replaceable> ]
           <replaceable>name</replaceable></literal></term>
     <listitem>
      <para>Specifies a style or binding set for a particular
@@ -162,7 +185,7 @@ The possible toplevel declarations are:
   </varlistentry>
   <varlistentry>
     <term><literal>widget <replaceable>pattern</replaceable> 
-          [ style | binding [ : <replaceable>priority</replaceable> ]]
+          [ style | binding ][ : <replaceable>priority</replaceable> ]
           <replaceable>name</replaceable></literal></term>
     <listitem>
      <para>Specifies a style or binding set for a particular
@@ -171,7 +194,7 @@ The possible toplevel declarations are:
   </varlistentry>
   <varlistentry>
     <term><literal>widget_class <replaceable>pattern</replaceable> 
-          [ style | binding [ : <replaceable>priority</replaceable> ]]
+          [ style | binding ][ : <replaceable>priority</replaceable> ]
           <replaceable>name</replaceable></literal></term>
     <listitem>
      <para>Specifies a style or binding set for a particular
@@ -241,6 +264,27 @@ elements are:
      </listitem>
   </varlistentry>
   <varlistentry>
+    <term><literal>xthickness =
+      <replaceable>number</replaceable></literal></term>
+     <listitem>
+       <para>
+         Sets the xthickness, which is used for various horizontal padding
+         values in GTK+.
+       </para>
+     </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>ythickness =
+      <replaceable>number</replaceable></literal></term>
+     <listitem>
+       <para>
+         Sets the ythickness, which is used for various vertical padding
+         values in GTK+.
+       </para>
+     </listitem>
+  </varlistentry>
+
+  <varlistentry>
     <term><literal>bg_pixmap[<replaceable>state</replaceable>] =
       <replaceable>pixmap</replaceable></literal></term>
      <listitem>
@@ -258,9 +302,8 @@ elements are:
     <term><literal>font = <replaceable>font</replaceable></literal></term>
      <listitem>
        <para>
-         Sets the font for a widget. <replaceable>font</replaceable> must be
-         a XLFD font description, e.g. 
-         <literal>"-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*"</literal>.
+         Starting with GTK+ 2.0, the "font" and "fontset"
+         declarations are ignored; use "font_name" declarations instead.
        </para>
      </listitem>
   </varlistentry>
@@ -268,13 +311,8 @@ elements are:
     <term><literal>fontset = <replaceable>font</replaceable></literal></term>
      <listitem>
        <para>
-         Sets the fontset for a widget. Overrides any
-         <literal>font</literal> declarations. <replaceable>font</replaceable> 
-         must be a comma-separated list of XLFD font descriptions, e.g.
-         <literal>"-JIS-Fixed-Medium-R-Normal--26-180-100-100-C-240,
-                   -JIS-Fixed-Medium-R-Normal--26-180-100-100-C-120,
-                   -GB-Fixed-Medium-R-Normal--26-180-100-100-C-240,
-                   -Adobe-Courier-Bold-R-Normal--25-180-100-100-M-150"</literal>.
+         Starting with GTK+ 2.0, the "font" and "fontset"
+         declarations are ignored; use "font_name" declarations instead.
        </para>
      </listitem>
   </varlistentry>
@@ -282,10 +320,10 @@ elements are:
     <term><literal>font_name = <replaceable>font</replaceable></literal></term>
      <listitem>
        <para>
-         Sets the font for a widget. Overrides any
-         <literal>font</literal> or <literal>fontset</literal> declarations. 
-         <replaceable>font</replaceable> must be a Pango font name, e.g.
-         <literal>"Sans Italic 10"</literal>.
+         Sets the font for a widget. <replaceable>font</replaceable> must be 
+         a Pango font name, e.g. <literal>"Sans Italic 10"</literal>. 
+         For details about Pango font names, see 
+         pango_font_description_from_string().
        </para>
      </listitem>   
   </varlistentry>
@@ -387,14 +425,18 @@ hex digits, or they can be specified as a triplet
 <literal>{ <replaceable>r</replaceable>, <replaceable>g</replaceable>,
 <replaceable>b</replaceable>}</literal>, where <literal>r</literal>,
 <literal>g</literal> and <literal>b</literal> are either integers in 
-the range 0-65635 or floats in the range 0.0-1.0.
+the range 0-65535 or floats in the range 0.0-1.0.
 </para>
 
 <para>
 In a <literal>stock</literal> definition, icon sources are specified as a
-4-tuple of image filename, text direction, widget state, and size, in that
-order.  Each icon source specifies an image filename to use with a given
-direction, state, and size. The <literal>*</literal> character can be used as a
+4-tuple of image filename or icon name, text direction, widget state, and size, in that
+order.  Each icon source specifies an image filename or icon name to use with a given
+direction, state, and size. Filenames are specified as a string such
+as <literal>"itemltr.png"</literal>, while icon names (looked up
+in the current icon theme), are specified with a leading
+<literal>@</literal>, such as <literal>@"item-ltr"</literal>.
+The <literal>*</literal> character can be used as a
 wildcard, and if direction/state/size are omitted they default to
 <literal>*</literal>. So for example, the following specifies different icons to
 use for left-to-right and right-to-left languages:
@@ -505,29 +547,11 @@ parameters of the signal.
 </para>
 
 <para>
-Binding sets are connected to widgets in the
-same manner as styles, with one addition. 
-A priority can be specified for each pattern,
-and within each type of pattern, binding sets
-override other binding sets first by priority,
-and only then by order of specification. (Later
-overrides earlier). The priorities that can
-be specified are (highest to lowest):
-<simplelist>
-<member><literal>highest</literal></member>
-<member><literal>rc</literal></member>
-<member><literal>theme</literal></member>
-<member><literal>application</literal></member>
-<member><literal>gtk</literal></member>
-<member><literal>lowest</literal></member>
-</simplelist>
-<literal>rc</literal> is the default for bindings
-read from an RC file, <literal>theme</literal>
-is the default for bindings read from theme RC files,
-<literal>application</literal> 
-should be used for bindings an application sets
-up, and <literal>gtk</literal> is used for bindings
-that GTK+ creates internally.
+Binding sets are connected to widgets in the same manner as styles, 
+with one difference: Binding sets override other binding sets first 
+by pattern type, then by priority and then by order of specification.
+The priorities that can be specified and their default values are the 
+same as for styles.
 </para>
 </refsect2>
 
@@ -716,6 +740,14 @@ Parses resource information directly from a string.
 @settings: 
 @force_load: 
 @Returns: 
+
+
+<!-- ##### FUNCTION gtk_rc_reset_styles ##### -->
+<para>
+
+</para>
+
+@settings: 
 
 
 <!-- ##### FUNCTION gtk_rc_add_default_file ##### -->

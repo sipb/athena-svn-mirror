@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the GTK+ Team and others 1997-2000.  See the AUTHORS
+ * Modified by the GTK+ Team and others 1997-2003.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
@@ -91,9 +91,17 @@ GtkWidget* gtk_message_dialog_new      (GtkWindow      *parent,
                                         GtkButtonsType  buttons,
                                         const gchar    *message_format,
                                         ...) G_GNUC_PRINTF (5, 6);
- 
+
+GtkWidget* gtk_message_dialog_new_with_markup   (GtkWindow      *parent,
+                                                 GtkDialogFlags  flags,
+                                                 GtkMessageType  type,
+                                                 GtkButtonsType  buttons,
+                                                 const gchar    *message_format,
+                                                 ...) G_GNUC_PRINTF (5, 6);
 
 
+void       gtk_message_dialog_set_markup  (GtkMessageDialog *message_dialog,
+					   const gchar      *str);
 
 #ifdef __cplusplus
 }
