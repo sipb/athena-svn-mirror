@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.28 1998-04-18 16:59:47 danw Exp $
+# $Id: cshrc,v 1.29 1998-05-11 17:02:30 danw Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -191,7 +191,7 @@ alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) set extendyes && \\
 	unset extendyes'
 
 set add_flags
-alias add 'eval "`/bin/athena/attach -Padd $add_flags \!:*`"'
+alias add 'eval `/bin/athena/attach -Padd $add_flags \!:*`'
 
 #   aliases dealing with subjects
 alias setup_X '( setenv SUBJECT \!:1 ; ( xterm -title \!* & ) )'
