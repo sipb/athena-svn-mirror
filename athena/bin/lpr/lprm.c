@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)lprm.c	5.2 (Berkeley) 11/17/85";
 
 #include "lp.h"
 
-#if defined(KERBEROS) && !defined(SERVER)
+#if defined(KERBEROS)
 int use_kerberos;
 int kerberos_override = -1;
 #endif /* KERBEROS */
@@ -99,7 +99,7 @@ main(argc, argv)
 					printer = *++argv;
 				}
 				break;
-#if defined(KERBEROS) && !defined(SERVER)
+#if defined(KERBEROS)
 			case 'u':
 				kerberos_override = 0;
 				break;
