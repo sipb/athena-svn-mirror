@@ -120,7 +120,7 @@ though.
 
 Test expressions in shell scripts can be a mine field of ungraceful
 failures if the variables being tested are empty, contain spaces or
-glob characters, or begin with a dash.  To handle all such corner
+glob characters, or have a value of "!".  To handle all such corner
 cases gracefully without adding unnecessary hair, use the following
 test expressions:
 
@@ -128,8 +128,8 @@ test expressions:
 	---------------------------	-----
 	empty				-z "$varname"
 	non-empty			-n "$varname"
-	equal to a literal		"$varname" = literal
-	equal to another variable	"$varname" = "$othervarname"
+	equal to a literal		literal = "$varname"
+	equal to another variable	"x$varname" = "x$othervarname"
 	set				"${varname+set}" = set
 	not set				"${varname+set}" != set
 
