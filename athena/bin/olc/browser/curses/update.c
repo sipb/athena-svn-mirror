@@ -27,8 +27,8 @@
  * the functions in this file.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
- *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.12 1992-02-04 22:06:47 lwvanels Exp $
+ *	$Author: vrt $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.13 1994-03-14 15:01:41 vrt Exp $
  */
 
 #ifndef lint
@@ -45,6 +45,7 @@ static char *rcsid_update_c = "$Header: ";
 #include <sys/types.h>
 #include <sys/file.h>			/* System file defs. */
 #include <strings.h>			/* For string functions. */
+#include <fcntl.h>
 #include <ctype.h>			/* Character type macros. */
 
 #include "cref.h"			/* Finder defs. */
