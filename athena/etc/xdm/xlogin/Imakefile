@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.25 1993-07-17 00:08:59 cfields Exp $
+# $Id: Imakefile,v 1.26 1994-04-30 13:24:06 vrt Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -11,6 +11,9 @@ AFSLIBS = $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.
 #else
 AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
 #endif
+#ifdef ultrix
+MACHLIBS = -lnsyslog
+#endif
 DEFINES = $(MACHDEFS)
 
 SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
@@ -19,8 +22,8 @@ OBJS = xlogin.o AriRegAll.o verify.o SmeBSB.o StringToPixel.o
 LIBS = -lXaw  ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
 	 $(AFSLIBS) $(MACHLIBS) -lm
 #else
-LIBS = ../../../../third/common/X11R4/lib/Xaw/libXaw.a  ../wcl/libWc.a \
-      ../../../../third/common/X11R4/lib/Xmu/libXmu.a -lXt -lXext -lX11 -lkrb\
+LIBS = /usr/athena/lib/libXaw.a  ../wcl/libWc.a \
+      /usr/athena/lib/libXmu.a -lXt -lXext -lX11 -lkrb\
         -ldes -lhesiod  $(AFSLIBS) $(MACHLIBS) -lm
 #endif
 create_dir(/etc/athena/login)
