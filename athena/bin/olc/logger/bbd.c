@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.7 1991-04-23 16:09:47 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.8 1991-09-25 11:41:30 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,12 +12,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.7 1991-04-23 16:09:47 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.8 1991-09-25 11:41:30 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
+#include <stdio.h>
+#include <signal.h>
 #include <syslog.h>
 #include <sys/types.h>
 #include <sys/errno.h>
@@ -25,13 +27,19 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 #include <sys/ioctl.h>
 #include <sys/param.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <stdio.h>
+#if defined(__STDC__) && !defined(__HIGHC__)
+/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+#include <stdlib.h>
+#endif
 
 #define SERVICE_NAME "ols"
 
+char *logfile=NULL;
 int log_fd;
+int tick=0;
 
 #ifdef NEEDS_ERRNO_DEFS
 extern int      errno;
@@ -98,11 +106,44 @@ handle_startup(s,msg,len,from,logfile)
   write(log_fd,buf,strlen(buf));
 }
 
+#ifdef VOID_SIGRET
+void
+#else
+int
+#endif
+do_tick(sig)
+     int sig;
+{
+  char *buf;
+  long now;
+
+  signal(SIGALRM,do_tick);
+  alarm(tick);
+  now = time(0);
+  write(log_fd,"TICK ",5);
+  write(log_fd,ctime(&now),25);
+}
+
+#ifdef VOID_SIGRET
+void
+#else
+int
+#endif
+handle_hup(sig)
+     int sig;
+{
+  signal(SIGHUP,handle_hup);
+  close(log_fd);
+  if ((log_fd = open(logfile,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
+    syslog(LOG_ERR,"opening %s: %m");
+    exit(1);
+  }
+}
+
 main(argc, argv)
      int argc;
      char *argv[];
 {
-  char *logfile=NULL;
   int nofork = 0;
   int fd;
   struct sockaddr_in name,from;
@@ -111,6 +152,7 @@ main(argc, argv)
   int onoff;
   int len,rlen,i;
   int port=0;
+  int oldmask,alarmmask;
 
   for (i=1;i<argc;i++) {
     if (!strcmp(argv[i], "-nofork")) {
@@ -125,11 +167,19 @@ main(argc, argv)
       port = atoi(argv[++i]);
       continue;
     }
+    if (!strcmp(argv[i], "-tick")) {
+      if (i+1 == argc) {
+	fprintf(stderr,"Must specify number of minutes with -tick\n");
+	break;
+      }
+      tick = atoi(argv[++i]);
+      continue;
+    }
     logfile = argv[i];
   }
 
   if (logfile == NULL) {
-    fprintf(stderr,"usage: bbd [-nofork] [-port portno] logfile\n");
+    fprintf(stderr,"usage: bbd [-nofork] [-port portno] [-tick interval] logfile\n");
     exit(1);
   }
 
@@ -218,12 +268,22 @@ main(argc, argv)
     exit(1);
   }
   
+  signal(SIGHUP,handle_hup);
+
+  if (tick != 0) {
+    do_tick();
+    alarm(tick);
+    signal(SIGALRM,do_tick);
+  }
+
+  alarmmask = sigmask(SIGALRM);
   while (1) {
     len = sizeof(struct sockaddr_in);
     if ((rlen = recvfrom(fd,buf,1024,0,&from,&len)) < 0) {
       syslog(LOG_ERR,"recvfrom: %m");
       continue;
     }
+    oldmask = sigblock(alarmmask);
     if (buf[0] == 'S')
       handle_startup(fd,&buf[1],(rlen-1),from,logfile);
     else {
@@ -231,6 +291,7 @@ main(argc, argv)
       write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
+    (void) sigblock(oldmask);
   }
 }
 
