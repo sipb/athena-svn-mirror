@@ -1,7 +1,7 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v $
- *	$Author: jfc $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
@@ -11,7 +11,7 @@
  * is probably still protected under standard Berkeley copyright agreements.
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.3 1990-07-06 10:01:24 jfc Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.4 1991-03-04 12:58:13 epeisach Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -19,7 +19,12 @@ static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena
 #ifndef ultrix
 #include <mntent.h>
 #endif
+#if defined(_AIX) && (AIXV < 30)
+#include <rpc/nfsmount.h>
+#include <rpc/rpcmount.h>
+#else
 #include <rpcsvc/mount.h>
+#endif
 #ifdef AIX
 #define unmount(x) umount(x)
 #endif
@@ -27,9 +32,10 @@ static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena
  * Unmount a filesystem.
  */
 
-unmount_42(errname, mntpt)
+unmount_42(errname, mntpt, dev)
     char *errname;
     char *mntpt;
+    char *dev;
 {
     FILE *tmpmnt, *mnted;
     char *tmpname;
@@ -58,8 +64,12 @@ unmount_42(errname, mntpt)
 #define unmount(x) umount(fsdata.fd_dev)
 #endif /* ultrix */
 
-    if (unmount(mntpt) < 0) {
-	if (errno == EINVAL || errno == ENOENT) {
+    if (unmount(dev ? dev : mntpt) < 0) {
+	if (errno == EINVAL || errno == ENOENT
+#ifdef _AIX
+	    || errno == ENOTBLK
+#endif
+	    ) {
 		fprintf(stderr,
 			"%s: Directory %s appears to already be unmounted\n",
 			errname, mntpt);
@@ -135,7 +145,7 @@ nfs_unmount(errname, host, hostaddr, mntpt, rmntpt)
     CLIENT *client;
     enum clnt_stat rpc_stat;
 
-    if (unmount_42(errname, mntpt) == FAILURE)
+    if (unmount_42(errname, mntpt, NULL) == FAILURE)
 	return (FAILURE);
 
     /*
