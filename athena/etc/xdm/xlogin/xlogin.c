@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.83 1999-04-13 23:53:52 jweiss Exp $ */
+/* $Id: xlogin.c,v 1.84 1999-05-06 16:05:50 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -78,8 +78,8 @@ static Boolean auxConditions();
 extern pid_t fork_and_store(pid_t *var);
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
-void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
-void windowShutdownACT(), windowShutdownCB();
+void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB(), commandCB();
+void restartCB(), windowShutdownACT(), windowShutdownCB();
 extern void add_converter ();
 
 
@@ -243,7 +243,7 @@ int netspy = FALSE;
 
 static struct sigaction sigact, osigact;
 
-void main(argc, argv)
+int main(argc, argv)
      int argc;
      char* argv[];
 {
@@ -408,6 +408,8 @@ void main(argc, argv)
   WcRegisterCallback(app, "signalConsoleCB", sigconsCB, NULL);
   WcRegisterCallback(app, "idleResetCB", idleReset, NULL);
   WcRegisterCallback(app, "attachAndRunCB", attachandrunCB, NULL);
+  WcRegisterCallback(app, "commandCB", commandCB, NULL);
+  WcRegisterCallback(app, "restartCB", restartCB, NULL);
   WcRegisterCallback(app, "windowShutdownCB", windowShutdownCB, NULL);
 
   /* Register all Athena widget classes. */
@@ -1212,6 +1214,22 @@ void attachandrunCB(w, s, unused)
     }
 
   runACT(w, NULL, &cmd, &i);
+}
+
+void commandCB(w, s, unused)
+     Widget w;
+     char *s;
+     caddr_t unused;
+{
+  system(s);
+}
+
+void restartCB(w, s, unused)
+     Widget w;
+     char *s;
+     caddr_t unused;
+{
+  exit(0);
 }
 
 void windowShutdownCB(w, s, unused)
