@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.4 1990-07-04 22:59:44 jfc Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.5 1990-11-14 13:26:01 probe Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -383,7 +383,7 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 		error_status = ERR_HOST;
 		break;
 	    case RPC_PROCUNAVAIL:
-		fprintf(stderr, "%s: Warning: mount daemon on %s doesn't understand UID maps\n\t(filesystem %s)",
+		fprintf(stderr, "%s: Warning: mount daemon on %s doesn't understand UID maps\n\t(filesystem %s)\n",
 		       progname, host, errname);
 		return(SUCCESS);
 	    default:
