@@ -3,9 +3,6 @@
 # Build a standard Athena package into an RPM.
 # Currently this is hardwired for Linux.
 
-# We regard the "Athena source directory" as the "pristine source"
-# of the RPM model, and other modifications are handled as patches.
-
 usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release] source rpmname"
 
 sourcedir=/mit/source
