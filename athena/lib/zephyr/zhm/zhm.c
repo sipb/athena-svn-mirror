@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.33 1988-06-25 17:15:48 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.34 1988-08-08 13:13:56 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -151,8 +151,9 @@ char *argv[];
 	       if ((zcluster = malloc((unsigned)(strlen("zephyr")+1))) != NULL)
 		    (void)strcpy(zcluster, "zephyr");
 	  }
+#ifdef HESIOD
      }
-    
+#endif HESIOD    
      init_hm();
 
      DPR2 ("zephyr server port: %u\n", ntohs(serv_sin.sin_port));
