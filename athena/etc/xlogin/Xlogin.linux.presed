@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.4 2000-04-27 15:22:33 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.5 2000-04-28 14:25:10 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -87,7 +87,7 @@ xlogin.Geometry: 		580x325+205+105
 				is2.xbm \
 				is3.xbm \
 				is4.xbm \
-				is5.xbm \
+				is5.xbm
 
 *eyes.wcClassName:		Label
 *eyes.bitmap:			owleyes0.xbm
