@@ -1,12 +1,13 @@
-# $Id: packages,v 1.32 1997-12-02 01:13:43 ghudson Exp $
+# $Id: packages,v 1.33 1997-12-11 23:13:59 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
 # for.  Each line gives a package name and, optionally, a
 # comma-separated list of hosttypes to build the package on.  If the
 # list of hosttypes is omitted or contains the word "all", the package
-# is built for all platforms.  Blank lines and lines beginning with
-# '#' are ignored.
+# is built for all platforms; platforms can be explicitly exluded by
+# prefacing them by a minus sign.  Blank lines and lines beginning
+# with '#' are ignored.
 
 # These tools are critical to the build process and need to be built
 # first, even before the packs are set up.  They have Makefile.athena
