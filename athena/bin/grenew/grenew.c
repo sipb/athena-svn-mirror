@@ -1,7 +1,7 @@
 /* Renew a credentials cache using a graphical interface. Much of the source
  * is modified from that of kinit.
  *
- * $Id: grenew.c,v 1.5 2004-04-27 22:25:21 mwhitson Exp $
+ * $Id: grenew.c,v 1.6 2004-05-27 18:38:46 ghudson Exp $
  */
 
 #include <gtk/gtk.h>
@@ -47,7 +47,6 @@ static void do_error_dialog(char *msg)
 		   G_CALLBACK(gtk_widget_destroy), NULL);
   g_signal_connect(G_OBJECT(window), "destroy",
 		   G_CALLBACK(gtk_widget_destroyed), &window);
-  g_object_set(G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_widget_show(window);
 }
@@ -63,7 +62,6 @@ static void do_fatal_dialog(char *msg)
 				  GTK_BUTTONS_OK, msg);
   g_signal_connect(G_OBJECT(window), "response",
 		   G_CALLBACK(quit), NULL);
-  g_object_set(G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_widget_show(window);
 }
@@ -191,7 +189,6 @@ static void create_window()
 				       GTK_RESPONSE_CANCEL,
 				       NULL);
 
-  g_object_set(G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
   label = gtk_label_new("Type your password now to renew your authentication "
