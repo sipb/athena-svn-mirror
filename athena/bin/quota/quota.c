@@ -17,10 +17,11 @@
  * various types of lockers.
  */
 
-static const char rcsid[] = "$Id: quota.c,v 1.25 1999-09-17 15:10:03 danw Exp $";
+static const char rcsid[] = "$Id: quota.c,v 1.26 1999-10-19 20:27:46 danw Exp $";
 
 #include <ctype.h>
 #include <pwd.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,6 +49,7 @@ int main(int argc, char **argv)
   int fsind = 0, fssize = 0, heading_printed = 0;
   int verbose = 0;
   struct quota_fs *fslist = NULL;
+  sigset_t mask;
 
   myuid = getuid();
   if (locker_init(&context, myuid, NULL, NULL) != LOCKER_SUCCESS)
@@ -55,6 +57,13 @@ int main(int argc, char **argv)
       fprintf(stderr, "quota: Could not initialize locker library.\n");
       exit(1);
     }
+
+  /* Block ^Z to prevent holding locks on the attachtab. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGTSTP);
+  sigaddset(&mask, SIGTTOU);
+  sigaddset(&mask, SIGTTIN);
+  sigprocmask(SIG_BLOCK, &mask, NULL);
 
   while ((opt = getopt(argc, argv, "af:guv")) != -1)
     {
