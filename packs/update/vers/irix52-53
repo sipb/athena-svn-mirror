@@ -6,7 +6,7 @@
 /usr/Cadmin/bin/copenremote
 /usr/CaseVision/usr/lib/onlineHelp/CaseVision
 /usr/WorkShop/usr/lib/NCC/edgcpfe
-/usr/WorkShop/usr/lib/WorkShop
+/usr/WorkShop/usr/lib/onlineHelp
 /usr/adobe
 /usr/bin/X11/exterm
 /usr/bin/X11/fs
@@ -72,8 +72,6 @@
 /usr/explorer/modules/RenderRemote.credit
 /usr/explorer/modules/RenderRemote.help
 /usr/explorer/modules/RenderRemote.mres
-/usr/gfx/arch/IP22NG1/gl/feed.h
-/usr/gfx/arch/IP22NG1/libgd.so
 /usr/include/Vk/VkScrolledBox.h
 /usr/include/X11/Compose.h
 /usr/include/X11/ComposeInt.h
@@ -3537,11 +3535,6 @@
 /var/inst/x_books.idb
 /var/inst/x_dev.idb
 /var/inst/x_eoe.idb
-/var/spool/lp/CMDSOCK
-/var/spool/lp/PSTATLOCK
-/var/spool/lp/Tpstatus
-/var/spool/lp/default
-/var/spool/lp/log
 /var/spool/lp/model/OBSOLETE/1640
 /var/spool/lp/model/OBSOLETE/5310
 /var/spool/lp/model/OBSOLETE/centface
@@ -3552,8 +3545,6 @@
 /var/spool/lp/model/OBSOLETE/ph.daps
 /var/spool/lp/model/OBSOLETE/pprx
 /var/spool/lp/model/OBSOLETE/prx
-/var/spool/lp/oldlog
-/var/spool/lp/outputq
 /var/sysadmdesktop/rsysmanapps/README-remote
 /var/sysadmdesktop/rsysmanapps/copenremote
 /var/sysadmdesktop/sysmanapps/README-local
