@@ -22,7 +22,7 @@
 #include	<X11/Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.10 1991-03-12 16:36:27 sao Exp $";
+static char rcsid[] = "";
 
 /*
 ** Globals
@@ -271,24 +271,32 @@ SetUpEdsc()
 	int	retval;
 	char	commandtorun[50];
 	char	machtype[20];
+	char	*envcommand;
+	
+	envcommand = getenv("EDSC");
+
+	if (envcommand) {
+		strcpy (commandtorun, envcommand);
+	}
+	else {
 
 #if defined (mips) && defined (ultrix)
-	strcpy (machtype, "decmips");
+		strcpy (machtype, "decmips");
 #else
 #ifdef vax
-	strcpy (machtype, "vax");
+		strcpy (machtype, "vax");
 #else
 #ifdef ibm032
-	strcpy (machtype, "rt");
+		strcpy (machtype, "rt");
 #else
-	Need to define for this machine
+		Need to define for this machine
 #endif
 #endif
 #endif
-
-	sprintf (	commandtorun, 
-			"/mit/StaffTools/%sbin/edsc",
-			machtype);
+		sprintf (	commandtorun, 
+				"/mit/StaffTools/%sbin/edsc",
+				machtype);
+	}
 
 	close (filedesparent[0]);
 	close (filedeschild[1]);
