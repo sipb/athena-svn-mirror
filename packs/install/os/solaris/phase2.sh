@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/os/solaris/phase2.sh,v 1.1 1998-12-25 19:33:39 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/os/solaris/phase2.sh,v 1.2 1999-01-07 00:38:37 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -214,8 +214,13 @@ Y)
        cat /util/format.input.SUN4.2G | \
 		format ${drive} >/dev/null 2>&1
        ;;
+    ST34321A)
+       echo "formatting ST34321A"
+       cat /util/format.input.ST34321A | \
+		format ${drive} >/dev/null 2>&1
+       ;;
     ST34342A)
-       echo "formaatting ST34342A"
+       echo "formatting ST34342A"
        cat /util/format.input.ST34342A | \
 		format ${drive} >/dev/null 2>&1
        ;;
