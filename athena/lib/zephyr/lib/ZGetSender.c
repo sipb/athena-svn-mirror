@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.3 1987-07-02 10:45:33 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.4 1987-07-09 01:52:03 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -41,15 +41,15 @@ char *ZGetSender()
 		(void) sprintf(sender,"%s@UNAUTH",pw->pw_name);
 		return (sender);
 	} 
-	getst(fp,pname,ANAME_SZ);
-	getst(fp,pinst,INST_SZ);
+        readstr(fp,pname,ANAME_SZ);
+	readstr(fp,pinst,INST_SZ);
 	(void) sprintf(sender,"%s%s%s@%s",pname,(pinst[0]?".":""),pinst,
 		__Zephyr_realm);
 	
 	return (sender);
 }
 
-static getst(fp,s,n)
+static readstr(fp,s,n)
 	FILE *fp;
 	char *s;
 	int n;
