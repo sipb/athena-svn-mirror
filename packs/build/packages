@@ -1,4 +1,4 @@
-# $Id: packages,v 1.195 2003-01-25 19:06:55 ghudson Exp $
+# $Id: packages,v 1.196 2003-01-25 23:16:38 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -133,7 +133,7 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 third/afsbin			on irix
 third/at-spi			requires libbonobo,atk,gtk2,gail,bonobo-activation,popt
 third/atk			requires glib2,gettext
-third/audiofile			except linux
+third/audiofile
 third/bash
 third/bind
 third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
