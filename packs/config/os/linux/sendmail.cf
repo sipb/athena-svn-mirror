@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.17 2003-04-08 18:18:57 zacheiss Exp $
+# $Id: sendmail.cf,v 1.18 2003-04-08 21:29:00 zacheiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -8,7 +8,7 @@
 #############################
 
 # Configuration syntax version (8 = Sendmail 8.9)
-V8/Berkeley
+V10/Berkeley
 
 # our domain
 DDMIT.EDU
