@@ -34,11 +34,14 @@
 
 #define FILSYS ("filsys")
 #define NFS    ("NFS")
+#define AFS    ("AFS")
 
 static void ParseHesiodInfo();
 static void GetUserFilsys();
 
 Info info;			/* external for action proc only. */
+
+int homeIsAFS = 0;
 
 /*	Function Name: main
  *	Description: main driver for the quota check program.
@@ -81,7 +84,7 @@ Info * info;
  * 
  * o Get users filsys entries from hesiod.
  * o Use first entry only.
- * o If it is not an NFS filsys or hesiod failed the give up.
+ * o If it is not an NFS or AFS filsys or hesiod failed the give up.
  */
 
   info->uid = getuid();
@@ -89,9 +92,13 @@ Info * info;
   hesinfo = hes_resolve(user_info->pw_name, FILSYS);
   if ( hesinfo != NULL ) {
     ParseHesiodInfo(*hesinfo, &type, &(info->host), &(info->path) );
-    if ( !streq(type, NFS) ) {
-      printf("Your home filesystem is not NFS, giving up.\n");
+    if ( !streq(type, NFS) && !streq(type, AFS) ) {
+      printf("Your home filesystem is not NFS or AFS, giving up.\n");
       exit(0);
+    }
+    if (streq(type, AFS)) {
+	homeIsAFS = 1;
+	info->host = "AFS cell";
     }
   }
   else {

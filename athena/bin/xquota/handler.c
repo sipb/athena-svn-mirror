@@ -48,10 +48,15 @@ Info * info;
 {
   struct dqblk quota_info;
   int ret_val;
+  extern int homeIsAFS;
+  int (*qfunc)();
+  int getnfsquota();
+  int getafsquota();
 
   SetTimeOut(info);
 
-  ret_val = getnfsquota(info->host, info->path, info->uid, &quota_info);
+  qfunc = homeIsAFS ? getafsquota : getnfsquota;
+  ret_val = (*qfunc)(info->host, info->path, info->uid, &quota_info);
   if (ret_val == QUOTA_NONE) {
     printf("You do not have a quota on your home file system.\n");
     printf("Filesystem: %s:%s\n", info->host, info->path);
@@ -66,7 +71,7 @@ Info * info;
 
   if (ret_val == QUOTA_ERROR) {
     printf("Error in quota checking, trying again.\n");
-    ret_val = getnfsquota(info->host, info->path, info->uid, &quota_info);
+      ret_val = (*qfunc)(info->host, info->path, info->uid, &quota_info);
     if (ret_val != QUOTA_OK) {
       printf("Quota check failed twice in a row, giving up.\n");
       exit(1);
