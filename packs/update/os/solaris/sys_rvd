@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.8 1999-07-06 16:44:51 mwhitson Exp $
+## $Id: sys_rvd,v 1.9 2002-04-05 18:10:01 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -57,7 +57,9 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		-> prototype_user
 		-> afsws
 		-> openwin/lib/app-defaults/XTerm
+		vice
 		:
+	/usr/vice/etc::::
 	/var:::
 		spool
 		:
