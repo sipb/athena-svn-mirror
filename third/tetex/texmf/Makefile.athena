@@ -1,0 +1,28 @@
+# $Id: Makefile.athena,v 1.1 2000-03-17 21:54:24 ghudson Exp $
+
+TEXMFDIR=/usr/athena/share/texmf
+
+prepare:
+
+clean:
+
+all:
+
+check:
+
+install:
+	${MAKE} -f Makefile.instfiles install DESTDIR="$$SRVD"
+	mkdir -p $$SRVD${TEXMFDIR}/doc/fonts/marvosym
+	mkdir -p $$SRVD${TEXMFDIR}/doc/help/faq/uktug-faq
+	mkdir -p $$SRVD${TEXMFDIR}/dvips/base
+	rm -f $$SRVD${TEXMFDIR}/doc/index.html
+	ln -s newhelpindex.html $$SRVD${TEXMFDIR}/doc/index.html
+	rm -f $$SRVD${TEXMFDIR}/doc/fonts/marvosym/astro.README
+	ln -s README.1st $$SRVD${TEXMFDIR}/doc/fonts/marvosym/astro.README
+	rm -f $$SRVD${TEXMFDIR}/doc/fonts/marvosym/euro.README
+	ln -s README.1st $$SRVD${TEXMFDIR}/doc/fonts/marvosym/euro.README
+	rm -f $$SRVD${TEXMFDIR}/doc/help/faq/uktug-faq/index.html
+	ln -s texfaq_toc.html \
+		$$SRVD${TEXMFDIR}/doc/help/faq/uktug-faq/index.html
+	rm -f $$SRVD${TEXMFDIR}/dvips/base/psfonts.map
+	ln -s ../config/psfonts.map $$SRVD${TEXMFDIR}/dvips/base/psfonts.map
