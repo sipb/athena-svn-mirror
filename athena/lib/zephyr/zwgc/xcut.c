@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.4 1989-11-14 00:55:27 marc Exp $";
+static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.5 1989-11-15 23:51:09 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -50,6 +50,7 @@ char *getSelectedText()
    return(selected_text);
 }
 
+#ifdef notdef
 static string x_gram_to_string(gram)
      x_gram *gram;
 {
@@ -74,6 +75,7 @@ static string x_gram_to_string(gram)
     text_so_far = string_Concat2(text_so_far, "\n");
     return(text_so_far);
 }
+#endif
 
 /*
  *
@@ -176,7 +178,8 @@ void xcut(dpy,event,desc_context)
       case ButtonPress:
 	if ( (event->xbutton.state)&ShiftMask ) {
 	   if (event->xbutton.button==Button1) {
-	      xunmark(dpy,selecting_in,NULL,desc_context);
+	      if (selecting_in)
+		xunmark(dpy,selecting_in,NULL,desc_context);
 	      if (selected_text) free(selected_text);
 	      selected_text = NULL;
 	      if (! xselGetOwnership(dpy,w,event->xbutton.time)) {

@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.h,v $
  *      $Author: marc $
- *	$Id: X_gram.h,v 1.4 1989-11-14 00:55:19 marc Exp $
+ *	$Id: X_gram.h,v 1.5 1989-11-15 23:49:20 marc Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -52,7 +52,10 @@ typedef struct _xmode {
    int italic;
    int size;
    int align;
+   int expcolor;
+   unsigned long color;
    char *substyle;
+   char *font;
 } xmode;
 
 typedef struct _xlinedesc {

@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.5 1989-11-15 16:35:08 jtkohl Exp $";
+static char rcsid_formatter_c[] = "$Id: formatter.c,v 1.6 1989-11-15 23:50:29 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -315,43 +315,41 @@ int length_of_block(str)
  * or \0 if there are no open environments.
  */
 
-int close_bracket(str,terminator)
+char close_bracket(str)
      string str;
-     char terminator;
 {
    int len=0,temp;
-   char ch;
+   char ch,close;
 
-   while (str[len]) {
-      if (temp=pure_text_length(str+len,terminator)) {
-	 if (str[len+temp])
-	    len+=temp;
-	 else
-	    return(terminator);
-      } else if (str[len+temp] == terminator) {
-	 len++;
-	 terminator=0;
+   while (*str) {
+      if (temp=pure_text_length(str,0)) {
+	 str+=temp;
       } else {
-	 temp=env_length(str+len+1);
-	 if (ch=close_bracket(str+len+temp+2,otherside(str[len+temp+1])))
+	 temp = env_length(str+1)+2;
+	 close = otherside(str[temp-1]);
+	 if (ch=close_bracket(str+temp))
 	    return(ch);
+	 temp = length_of_block(str);
+	 if (str[temp-1] != close)
+	   return(close);
 	 else
-	    len+=length_of_block(str+len);
+	   str+=temp;
       }
    }
-
-   return(str[len]?'\0':terminator);
+   return('\0');
 }
 
 string protect(str)
      string str;
 {
    string temp,temp2,temp3;
-   int len,len2,ch;
+   int len,len2;
+   char ch;
 
    /* verbatim all top-level strings */
 
    temp=string_Copy("");
+   len = 0;
    while(*str) {
       if ((len=length_of_block(str)) == -1) {
 	 temp2=string_CreateFromData(str,len=pure_text_length(str,0));
@@ -369,7 +367,7 @@ string protect(str)
    len2=string_Length(temp);
    len=len2-len;
    temp2=temp+len;
-   while (ch=close_bracket(temp2,0)>0) {
+   while (ch=close_bracket(temp2)>0) {
       temp=(char *) realloc(temp,++len2);
       temp[len2-2]=ch;
       temp[len2-1]='\0';
