@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xshow.c,v $
- *      $Author: raeburn $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.11 1990-11-13 20:41:09 raeburn Exp $";
+static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.12 1992-08-26 04:22:34 lwvanels Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -366,6 +366,7 @@ void xshow(dpy, desc, numstr, numnl)
     int nextblock=0;
     int line=0,linestart=0;
     char *style;
+    int free_style = 0;
     int beepcount = 0;
 
     lines = (xlinedesc *)malloc(sizeof(xlinedesc)*(numnl+1));
@@ -388,6 +389,7 @@ void xshow(dpy, desc, numstr, numnl)
        style = string_Concat2(style,".");
        style = string_Concat2(style,no_dots_downcase_var("sender"));
        string_Downcase(style);
+       free_style = 1;
     }
 
     for (; desc->code!=DT_EOF; desc=desc->next) {
@@ -526,6 +528,8 @@ void xshow(dpy, desc, numstr, numnl)
 		   beepcount);
     free(lines);
     free(auxblocks);
+    if (free_style)
+      free(style);
 }
 
 static void xhandleevent(dpy, w, event)
