@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,31 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -224,6 +247,16 @@ IDLS = \
 	$(top_srcdir)/calendar/idl/evolution-calendar.idl						\
 	$(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
+
+CALENDAR_IDL_GENERATED_H = \
+	evolution-calendar.h
+
+CALENDAR_IDL_GENERATED_C = \
+	evolution-calendar-common.c	\
+	evolution-calendar-skels.c	\
+	evolution-calendar-stubs.c
+
+CALENDAR_IDL_GENERATED = $(CALENDAR_IDL_GENERATED_C) $(CALENDAR_IDL_GENERATED_H)
 
 
 # Message composer IDL files
@@ -249,7 +282,10 @@ SELECT_NAMES_IDL_GENERATED_C = \
 
 SELECT_NAMES_IDL_GENERATED = $(SELECT_NAMES_IDL_GENERATED_C) $(SELECT_NAMES_IDL_GENERATED_H)
 
-IDL_GENERATED = $(COMPOSER_IDL_GENERATED) $(SELECT_NAMES_IDL_GENERATED)
+IDL_GENERATED = $(CALENDAR_IDL_GENERATED) $(COMPOSER_IDL_GENERATED) $(SELECT_NAMES_IDL_GENERATED)
+
+# The marshallers
+MARSHAL_GENERATED = e-calendar-marshal.c e-calendar-marshal.h
 
 SUBDIRS = alarm-notify dialogs
 
@@ -261,13 +297,9 @@ INCLUDES = \
 	-I$(top_srcdir)/shell				\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/calendar			\
-	-I$(top_srcdir)/calendar/cal-client		\
-	-I$(top_builddir)/calendar/cal-client		\
-	-I$(top_srcdir)/libical/src/libical		\
-	-I$(top_builddir)/libical/src/libical		\
-	-I$(top_srcdir)/addressbook/backend		\
-	-I$(top_builddir)/addressbook/backend		\
 	-I$(top_srcdir)/widgets				\
+	-I$(top_srcdir)/widgets/misc			\
+	-I$(top_srcdir)/a11y/calendar			\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
@@ -275,6 +307,7 @@ INCLUDES = \
 	-DEVOLUTION_GALVIEWSDIR=\""$(viewsdir)"\"	\
 	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"	\
 	-DPREFIX=\""$(prefix)"\"			\
+	$(LIBSOUP_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 
@@ -283,20 +316,24 @@ glade_DATA = \
 	goto-dialog.glade
 
 
-etspec_DATA = e-calendar-table.etspec e-meeting-time-sel.etspec
+etspec_DATA = \
+	e-calendar-table.etspec		\
+	e-meeting-time-sel.etspec	\
+	e-cal-list-view.etspec
+
 
 libevolution_calendar_la_SOURCES = \
 	$(IDL_GENERATED)			\
+	$(MARSHAL_GENERATED)			\
 	cal-search-bar.c			\
 	cal-search-bar.h			\
 	calendar-config.c			\
 	calendar-config.h			\
+	calendar-config-keys.h			\
 	calendar-commands.c			\
 	calendar-commands.h			\
 	calendar-component.c			\
 	calendar-component.h			\
-	calendar-model.c			\
-	calendar-model.h			\
 	calendar-offline-handler.c		\
 	calendar-offline-handler.h		\
 	calendar-view.c				\
@@ -311,14 +348,37 @@ libevolution_calendar_la_SOURCES = \
 	control-factory.h			\
 	e-alarm-list.c				\
 	e-alarm-list.h				\
-	e-calendar-table.h			\
+	e-cal-component-preview.c		\
+	e-cal-component-preview.h		\
+	e-cal-model-calendar.h			\
+	e-cal-model-calendar.c			\
+	e-cal-model-calendar.h			\
+	e-cal-model-tasks.c			\
+	e-cal-model-tasks.h			\
+	e-cal-model.c				\
+	e-cal-model.h				\
+	e-calendar-view.c			\
+	e-calendar-view.h			\
+	e-cal-list-view.c			\
+	e-cal-list-view.h			\
+	e-cal-list-view-config.c		\
+	e-cal-list-view-config.h		\
 	e-calendar-table.c			\
+	e-calendar-table.h			\
+	e-calendar-table-config.c		\
+	e-calendar-table-config.h		\
+	e-cell-date-edit-config.c		\
+	e-cell-date-edit-config.h		\
 	e-cell-date-edit-text.h			\
 	e-cell-date-edit-text.c			\
 	e-comp-editor-registry.c		\
 	e-comp-editor-registry.h		\
+	e-date-edit-config.c			\
+	e-date-edit-config.h			\
 	e-date-time-list.c                      \
 	e-date-time-list.h                      \
+	e-day-view-config.c			\
+	e-day-view-config.h			\
 	e-day-view-layout.c			\
 	e-day-view-layout.h			\
 	e-day-view-main-item.c			\
@@ -333,8 +393,10 @@ libevolution_calendar_la_SOURCES = \
 	e-itip-control.c			\
 	e-meeting-attendee.c			\
 	e-meeting-attendee.h			\
-	e-meeting-model.c			\
-	e-meeting-model.h			\
+	e-meeting-list-view.c			\
+	e-meeting-list-view.h			\
+	e-meeting-store.c			\
+	e-meeting-store.h			\
 	e-meeting-time-sel.c			\
 	e-meeting-time-sel.h			\
 	e-meeting-time-sel-item.c		\
@@ -342,6 +404,16 @@ libevolution_calendar_la_SOURCES = \
 	e-meeting-types.h			\
 	e-meeting-utils.c			\
 	e-meeting-utils.h			\
+	e-mini-calendar-config.c		\
+	e-mini-calendar-config.h		\
+	e-pub-utils.c				\
+	e-pub-utils.h				\
+	e-select-names-editable.c		\
+	e-select-names-editable.h		\
+	e-select-names-renderer.c		\
+	e-select-names-renderer.h		\
+	e-week-view-config.c			\
+	e-week-view-config.h			\
 	e-week-view-event-item.c		\
 	e-week-view-event-item.h		\
 	e-week-view-layout.c			\
@@ -365,12 +437,16 @@ libevolution_calendar_la_SOURCES = \
 	itip-utils.c				\
 	itip-utils.h				\
 	main.c					\
+	migration.c				\
+	migration.h				\
 	misc.c					\
 	misc.h					\
 	print.c					\
 	print.h					\
 	tag-calendar.c				\
 	tag-calendar.h				\
+	tasks-component.c			\
+	tasks-component.h			\
 	tasks-control.c				\
 	tasks-control.h				\
 	weekday-picker.c			\
@@ -378,31 +454,33 @@ libevolution_calendar_la_SOURCES = \
 
 
 libevolution_calendar_la_LIBADD = \
-	$(DB3_LDADD)							\
 	$(top_builddir)/widgets/menus/libmenus.la			\
 	$(top_builddir)/shell/libeshell.la				\
-	$(top_builddir)/calendar/cal-client/libcal-client.la		\
-	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
+	$(top_builddir)/calendar/common/libevolution-calendarprivate.la	\
 	$(top_builddir)/calendar/gui/dialogs/libcal-dialogs.la		\
 	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.la	\
 	$(top_builddir)/widgets/misc/libemiscwidgets.la			\
+	$(top_builddir)/e-util/libeutil.la				\
+	$(top_builddir)/a11y/calendar/libevolution-calendar-a11y.la	\
+	$(LIBSOUP_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 
 libevolution_calendar_la_LDFLAGS = -avoid-version -module
 
 server_in_files = GNOME_Evolution_Calendar.server.in.in
-
-server_DATA = $(server_in_files:.server.in.in=.server)
+server_DATA = $(server_in_files:.server.in.in=_$(BASE_VERSION).server)
 
 
 # GConf schemas
 schemadir = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = apps_evolution_calendar.schemas
+schema_in_files = apps_evolution_calendar.schemas.in.in
+schema_DATA = $(schema_in_files:.schemas.in.in=-$(BASE_VERSION).schemas)
 
 EXTRA_DIST = \
+	e-calendar-marshal.list		\
 	$(glade_DATA)			\
-	$(schema_DATA)                  \
+	$(schema_in_files)              \
 	$(etspec_DATA)			\
 	$(server_in_files)
 
@@ -418,36 +496,50 @@ LTLIBRARIES = $(component_LTLIBRARIES)
 libevolution_calendar_la_DEPENDENCIES = \
 	$(top_builddir)/widgets/menus/libmenus.la \
 	$(top_builddir)/shell/libeshell.la \
-	$(top_builddir)/calendar/cal-client/libcal-client.la \
-	$(top_builddir)/addressbook/backend/ebook/libebook.la \
+	$(top_builddir)/calendar/common/libevolution-calendarprivate.la \
 	$(top_builddir)/calendar/gui/dialogs/libcal-dialogs.la \
 	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.la \
-	$(top_builddir)/widgets/misc/libemiscwidgets.la
-am__objects_1 = Evolution-Composer-common.lo Evolution-Composer-skels.lo \
-	Evolution-Composer-stubs.lo
+	$(top_builddir)/widgets/misc/libemiscwidgets.la \
+	$(top_builddir)/e-util/libeutil.la \
+	$(top_builddir)/a11y/calendar/libevolution-calendar-a11y.la
+am__objects_1 = evolution-calendar-common.lo evolution-calendar-skels.lo \
+	evolution-calendar-stubs.lo
 am__objects_2 =
 am__objects_3 = $(am__objects_1) $(am__objects_2)
-am__objects_4 = Evolution-Addressbook-SelectNames-common.lo \
+am__objects_4 = Evolution-Composer-common.lo Evolution-Composer-skels.lo \
+	Evolution-Composer-stubs.lo
+am__objects_5 = $(am__objects_4) $(am__objects_2)
+am__objects_6 = Evolution-Addressbook-SelectNames-common.lo \
 	Evolution-Addressbook-SelectNames-skels.lo \
 	Evolution-Addressbook-SelectNames-stubs.lo
-am__objects_5 = $(am__objects_4) $(am__objects_2)
-am__objects_6 = $(am__objects_3) $(am__objects_5)
-am_libevolution_calendar_la_OBJECTS = $(am__objects_6) cal-search-bar.lo \
-	calendar-config.lo calendar-commands.lo calendar-component.lo \
-	calendar-model.lo calendar-offline-handler.lo calendar-view.lo \
-	calendar-view-factory.lo comp-editor-factory.lo comp-util.lo \
-	control-factory.lo e-alarm-list.lo e-calendar-table.lo \
-	e-cell-date-edit-text.lo e-comp-editor-registry.lo \
-	e-date-time-list.lo e-day-view-layout.lo \
+am__objects_7 = $(am__objects_6) $(am__objects_2)
+am__objects_8 = $(am__objects_3) $(am__objects_5) $(am__objects_7)
+am__objects_9 = e-calendar-marshal.lo
+am_libevolution_calendar_la_OBJECTS = $(am__objects_8) $(am__objects_9) \
+	cal-search-bar.lo calendar-config.lo calendar-commands.lo \
+	calendar-component.lo calendar-offline-handler.lo \
+	calendar-view.lo calendar-view-factory.lo \
+	comp-editor-factory.lo comp-util.lo control-factory.lo \
+	e-alarm-list.lo e-cal-component-preview.lo \
+	e-cal-model-calendar.lo e-cal-model-tasks.lo e-cal-model.lo \
+	e-calendar-view.lo e-cal-list-view.lo e-cal-list-view-config.lo \
+	e-calendar-table.lo e-calendar-table-config.lo \
+	e-cell-date-edit-config.lo e-cell-date-edit-text.lo \
+	e-comp-editor-registry.lo e-date-edit-config.lo \
+	e-date-time-list.lo e-day-view-config.lo e-day-view-layout.lo \
 	e-day-view-main-item.lo e-day-view-time-item.lo \
 	e-day-view-top-item.lo e-day-view.lo e-itip-control.lo \
-	e-meeting-attendee.lo e-meeting-model.lo e-meeting-time-sel.lo \
-	e-meeting-time-sel-item.lo e-meeting-utils.lo \
-	e-week-view-event-item.lo e-week-view-layout.lo \
-	e-week-view-main-item.lo e-week-view-titles-item.lo \
-	e-week-view.lo e-tasks.lo e-timezone-entry.lo gnome-cal.lo \
-	goto.lo itip-bonobo-control.lo itip-utils.lo main.lo misc.lo \
-	print.lo tag-calendar.lo tasks-control.lo weekday-picker.lo
+	e-meeting-attendee.lo e-meeting-list-view.lo e-meeting-store.lo \
+	e-meeting-time-sel.lo e-meeting-time-sel-item.lo \
+	e-meeting-utils.lo e-mini-calendar-config.lo e-pub-utils.lo \
+	e-select-names-editable.lo e-select-names-renderer.lo \
+	e-week-view-config.lo e-week-view-event-item.lo \
+	e-week-view-layout.lo e-week-view-main-item.lo \
+	e-week-view-titles-item.lo e-week-view.lo e-tasks.lo \
+	e-timezone-entry.lo gnome-cal.lo goto.lo itip-bonobo-control.lo \
+	itip-utils.lo main.lo migration.lo misc.lo print.lo \
+	tag-calendar.lo tasks-component.lo tasks-control.lo \
+	weekday-picker.lo
 libevolution_calendar_la_OBJECTS = \
 	$(am_libevolution_calendar_la_OBJECTS)
 
@@ -469,7 +561,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/calendar-commands.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/calendar-component.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/calendar-config.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/calendar-model.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/calendar-offline-handler.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/calendar-view-factory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/calendar-view.Plo \
@@ -477,10 +568,22 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/comp-util.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/control-factory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-alarm-list.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cal-component-preview.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cal-list-view-config.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cal-list-view.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cal-model-calendar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cal-model-tasks.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cal-model.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-calendar-marshal.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-calendar-table-config.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-calendar-table.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-calendar-view.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-cell-date-edit-config.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-cell-date-edit-text.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-comp-editor-registry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-date-edit-config.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-date-time-list.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-day-view-config.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-day-view-layout.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-day-view-main-item.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-day-view-time-item.Plo \
@@ -488,22 +591,32 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/e-day-view.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-itip-control.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-meeting-attendee.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-meeting-model.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-meeting-list-view.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-meeting-store.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-meeting-time-sel-item.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-meeting-time-sel.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-meeting-utils.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-mini-calendar-config.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-pub-utils.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-select-names-editable.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-select-names-renderer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-tasks.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-timezone-entry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-week-view-config.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-week-view-event-item.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-week-view-layout.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-week-view-main-item.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-week-view-titles-item.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-week-view.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/evolution-calendar-common.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/evolution-calendar-skels.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/evolution-calendar-stubs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/gnome-cal.Plo ./$(DEPDIR)/goto.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/itip-bonobo-control.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/itip-utils.Plo ./$(DEPDIR)/main.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/misc.Plo ./$(DEPDIR)/print.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tag-calendar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/migration.Plo ./$(DEPDIR)/misc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/print.Plo ./$(DEPDIR)/tag-calendar.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tasks-component.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/tasks-control.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/weekday-picker.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -583,7 +696,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-commands.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-component.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-config.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-model.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-offline-handler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-view-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar-view.Plo@am__quote@
@@ -591,10 +703,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/comp-util.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/control-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-alarm-list.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cal-component-preview.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cal-list-view-config.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cal-list-view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cal-model-calendar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cal-model-tasks.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cal-model.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-calendar-marshal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-calendar-table-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-calendar-table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-calendar-view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cell-date-edit-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-cell-date-edit-text.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-comp-editor-registry.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-date-edit-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-date-time-list.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-day-view-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-day-view-layout.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-day-view-main-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-day-view-time-item.Plo@am__quote@
@@ -602,25 +726,36 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-day-view.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-itip-control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-attendee.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-model.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-list-view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-store.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-time-sel-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-time-sel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meeting-utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-mini-calendar-config.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-pub-utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-select-names-editable.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-select-names-renderer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-tasks.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-timezone-entry.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-week-view-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-week-view-event-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-week-view-layout.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-week-view-main-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-week-view-titles-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-week-view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-calendar-common.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-calendar-skels.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/evolution-calendar-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gnome-cal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/goto.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/itip-bonobo-control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/itip-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/migration.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tag-calendar.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tasks-component.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tasks-control.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/weekday-picker.Plo@am__quote@
 
@@ -965,6 +1100,11 @@ uninstall-info: uninstall-info-recursive
 	uninstall-schemaDATA uninstall-serverDATA
 
 
+$(CALENDAR_IDL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES)   \
+                $(top_srcdir)/calendar/idl/evolution-calendar.idl
+$(CALENDAR_IDL_GENERATED_C): $(CALENDAR_IDL_GENERATED_H)
+
 $(COMPOSER_IDL_GENERATED_H): $(IDLS)
 	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES)   \
                 $(srcdir)/../../composer/Evolution-Composer.idl
@@ -974,13 +1114,15 @@ $(SELECT_NAMES_IDL_GENERATED_H): $(IDLS)
 	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES)   \
                 $(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 $(SELECT_NAMES_IDL_GENERATED_C): $(SELECT_NAMES_IDL_GENERATED_H)
-%.server.in: %.server.in.in
-	sed -e "s|\@COMPONENTDIR\@|$(componentdir)|" $< > $@
-
+@EVO_MARSHAL_RULE@
+@EVO_SERVER_RULE@
 @INTLTOOL_SERVER_RULE@
+%-$(BASE_VERSION).schemas.in: %.schemas.in.in
+	cp $< $@
+
+@INTLTOOL_SCHEMAS_RULE@
 
 install-data-local:
-	$(mkinstalldirs) $(Conduitsdir); \
 	if test -z "$(DESTDIR)"; then \
 		for p in $(schema_DATA); do \
 			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \

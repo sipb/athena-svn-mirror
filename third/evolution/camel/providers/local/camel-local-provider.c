@@ -50,7 +50,7 @@ static CamelProvider mh_provider = {
 	N_("For storing local mail in MH-like mail directories."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
+	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 	mh_conf_entries,
 	/* ... */
 };
@@ -65,8 +65,8 @@ static CamelProvider mbox_provider = {
 	N_("Local delivery"),
 	N_("For retrieving (moving) local mail from standard mbox formated spools into folders managed by Evolution."),
 	"mail",
-	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
+	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
+	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 	mbox_conf_entries,
 	/* ... */
 };
@@ -84,7 +84,7 @@ static CamelProvider maildir_provider = {
 	N_("For storing local mail in maildir directories."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
+	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 	maildir_conf_entries,
 	/* ... */
 };
@@ -102,7 +102,7 @@ static CamelProvider spool_provider = {
 	N_("For reading and storing local mail in external standard mbox spool files.\nMay also be used to read a tree of Elm, Pine, or Mutt style folders."),
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE,
-	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE,
+	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
 	spool_conf_entries,
 	/* ... */
 };
@@ -189,15 +189,20 @@ local_url_equal(const void *v, const void *v2)
 		&& u1->port == u2->port;
 }
 
-void camel_provider_module_init(CamelSession * session)
+void camel_provider_module_init(void)
 {
 	char *path;
-	
+	static int init = 0;
+
+	if (init)
+		abort();
+	init = 1;
+
 	mh_conf_entries[0].value = "";  /* default path */
 	mh_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mh_store_get_type ();
 	mh_provider.url_hash = local_url_hash;
 	mh_provider.url_equal = local_url_equal;
-	camel_session_register_provider(session, &mh_provider);
+	camel_provider_register(&mh_provider);
 	
 	if (!(path = getenv ("MAIL")))
 		path = g_strdup_printf (SYSTEM_MAIL_DIR "/%s", g_get_user_name ());
@@ -205,18 +210,18 @@ void camel_provider_module_init(CamelSession * session)
 	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = camel_mbox_store_get_type ();
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
-	camel_session_register_provider(session, &mbox_provider);
+	camel_provider_register(&mbox_provider);
 	
 	spool_conf_entries[0].value = path;  /* default path - same as mbox */
 	spool_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
 	spool_provider.url_hash = local_url_hash;
 	spool_provider.url_equal = local_url_equal;
-	camel_session_register_provider(session, &spool_provider);
+	camel_provider_register(&spool_provider);
 	
-	path = getenv ("MAILDIR");
+	path = getenv("MAILDIR");
 	maildir_conf_entries[0].value = path ? path : "";  /* default path */
 	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type ();
 	maildir_provider.url_hash = local_url_hash;
 	maildir_provider.url_equal = local_url_equal;
-	camel_session_register_provider(session, &maildir_provider);
+	camel_provider_register(&maildir_provider);
 }

@@ -31,7 +31,7 @@
 
 #include "e-timezone-dialog/e-timezone-dialog.h"
 #include "e-util/e-gtk-utils.h"
-
+#include <e-util/e-icon-factory.h>
 #include <gconf/gconf-client.h>
 
 #include <evolution-wizard.h>
@@ -142,10 +142,14 @@ start_wizard (void)
 	Bonobo_ServerInfoList *info;
 	CORBA_Environment ev;
 	GNOME_Evolution_Wizard wizard;
+	char *query;
 	int i;
 
 	CORBA_exception_init (&ev);
-	info = bonobo_activation_query ("repo_ids.has ('IDL:GNOME/Evolution/StartupWizard:1.0')", selection_order, &ev);
+	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/StartupWizard:%s')", BASE_VERSION);
+	info = bonobo_activation_query (query, selection_order, &ev);
+	g_free (query);
+
 	if (BONOBO_EX (&ev) || info == CORBA_OBJECT_NIL) {
 		g_warning ("Cannot find startup wizard -- %s", BONOBO_EX_REPOID (&ev));
 		CORBA_exception_free (&ev);
@@ -489,12 +493,17 @@ make_timezone_page (SWData *data)
 {
 	TimezoneDialogPage *page;
 	ETimezoneDialog *etd;
+	GdkPixbuf *pixbuf;
 	
 	g_return_val_if_fail (data != NULL, NULL);
 
 	page = g_new0 (TimezoneDialogPage, 1);
 	page->page = glade_xml_get_widget (data->wizard, "timezone-page");
 	g_return_val_if_fail (page->page != NULL, NULL);
+
+	pixbuf = e_icon_factory_get_icon ("stock_timezone", E_ICON_SIZE_DIALOG);
+	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page->page), pixbuf);
+	g_object_unref (pixbuf);
 
 	g_signal_connect_after (page->page, "prepare",
 				G_CALLBACK (prepare_timezone_page), data);
@@ -513,10 +522,19 @@ get_intelligent_importers (void)
 	Bonobo_ServerInfoList *info_list;
 	GList *iids_ret = NULL;
 	CORBA_Environment ev;
+	char *query;
 	int i;
 
 	CORBA_exception_init (&ev);
-	info_list = bonobo_activation_query ("repo_ids.has ('IDL:GNOME/Evolution/IntelligentImporter:1.0')", NULL, &ev);
+	query = g_strdup_printf ("repo_ids.has ('IDL:GNOME/Evolution/IntelligentImporter:%s')", BASE_VERSION);
+	info_list = bonobo_activation_query (query, NULL, &ev);
+	g_free (query);
+
+	if (BONOBO_EX (&ev) || info_list == CORBA_OBJECT_NIL) {
+		g_warning ("Cannot find importers -- %s", BONOBO_EX_REPOID (&ev));
+		CORBA_exception_free (&ev);
+		return NULL;
+	}
 	CORBA_exception_free (&ev);
 
 	for (i = 0; i < info_list->_length; i++) {
@@ -551,6 +569,9 @@ prepare_importer_page (GnomeDruidPage *page,
 	dialog = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_INFO,
 					 GTK_BUTTONS_NONE,
 					 _("Please wait...\nScanning for existing setups"));
+#if !GTK_CHECK_VERSION (2,4,0)
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+#endif
 	e_make_widget_backing_stored (dialog);
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Starting import"));
@@ -709,12 +730,17 @@ make_importer_page (SWData *data)
 {
 	ImportDialogPage *page;
 	GtkWidget *label, *sep;
+	GdkPixbuf *pixbuf;
 	
 	g_return_val_if_fail (data != NULL, NULL);
 
 	page = g_new0 (ImportDialogPage, 1);
 	page->page = glade_xml_get_widget (data->wizard, "import-page");
 	g_return_val_if_fail (page->page != NULL, NULL);
+
+	pixbuf = e_icon_factory_get_icon ("stock_mail-import", E_ICON_SIZE_DIALOG);
+	gnome_druid_page_standard_set_logo (GNOME_DRUID_PAGE_STANDARD (page->page), pixbuf);
+	g_object_unref (pixbuf);
 
 	g_signal_connect_after (page->page, "prepare",
 				G_CALLBACK (prepare_importer_page), data);
@@ -755,6 +781,42 @@ startup_wizard_delete (GnomeDruid *druid,
 	       	       SWData *data)
 {
 	startup_wizard_cancel(druid, data);
+	return FALSE;
+}
+
+static gboolean
+key_press_event_callback (GtkWidget   *widget,
+			  GdkEventKey *keyev,
+			  SWData      *data)
+{
+	if (keyev->keyval == GDK_Escape) {
+		GtkWidget *confirm_dialog;
+		int returnvalue;
+		char *confirmations;
+
+		confirmations = _("If you quit the Evolution Setup Assistant now, all of the information that "
+				  "you have entered will be forgotten. You will need to run this assistant again "
+				  "before using Evolution.\n\nDo you want to quit using the Assistant now?");
+ 
+		confirm_dialog = gtk_message_dialog_new (GTK_WINDOW (data->dialog),
+							 GTK_DIALOG_MODAL,
+							 GTK_MESSAGE_WARNING,
+							 GTK_BUTTONS_NONE,
+							 confirmations);
+
+		gtk_dialog_add_button (GTK_DIALOG (confirm_dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+		gtk_dialog_add_button (GTK_DIALOG (confirm_dialog), GTK_STOCK_QUIT, GTK_RESPONSE_OK);
+		gtk_dialog_set_has_separator (GTK_DIALOG (confirm_dialog),
+					      FALSE);
+
+		returnvalue = gtk_dialog_run (GTK_DIALOG (confirm_dialog));
+		gtk_widget_destroy (confirm_dialog);
+ 
+		if (returnvalue == GTK_RESPONSE_OK) {
+		        startup_wizard_cancel ((GnomeDruid *)data->druid, data);
+			return TRUE;
+		}
+	}
 	return FALSE;
 }
 
@@ -805,6 +867,9 @@ e_shell_startup_wizard_create (void)
 
 	g_signal_connect (data->druid, "cancel",
 			  G_CALLBACK (startup_wizard_cancel), data);
+
+	g_signal_connect (data->dialog, "key_press_event",
+			  G_CALLBACK (key_press_event_callback), data);
 
 	data->start = glade_xml_get_widget (data->wizard, "start-page");
 	data->finish = glade_xml_get_widget (data->wizard, "done-page");

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "string-utils.h"
+#include <camel/camel-string-utils.h>
 
 #include "camel-mime-filter-enriched.h"
 
@@ -141,7 +141,7 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *klass)
 	filter_class->complete = filter_complete;
 	
 	if (!enriched_hash) {
-		enriched_hash = g_hash_table_new (g_strcase_hash, g_strcase_equal);
+		enriched_hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 		for (i = 0; i < NUM_ENRICHED_TAGS; i++)
 			g_hash_table_insert (enriched_hash, enriched_tags[i].enriched,
 					     enriched_tags[i].html);
@@ -319,8 +319,19 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 			if (!(enriched->flags & IS_RICHTEXT)) {
 				/* text/enriched */
 				if (enriched->nofill > 0) {
-					*outptr++ = '\n';
+					if ((outptr + 4) < outend) {
+						memcpy (outptr, "<br>", 4);
+						outptr += 4;
+					} else {
+						inptr--;
+						goto backup;
+					}
 				} else if (*inptr == '\n') {
+					if ((outptr + 4) >= outend) {
+						inptr--;
+						goto backup;
+					}
+					
 					while (inptr < inend && (outptr + 4) < outend && *inptr == '\n') {
 						memcpy (outptr, "<br>", 4);
 						outptr += 4;
@@ -397,18 +408,14 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 			
 			if (!strncasecmp (tag, "nofill>", 7)) {
 				if ((outptr + 5) < outend) {
-					memcpy (outptr, "<pre>", 5);
 					enriched->nofill++;
-					outptr += 5;
 				} else {
 					inptr = tag - 1;
 					goto backup;
 				}
 			} else if (!strncasecmp (tag, "/nofill>", 8)) {
 				if ((outptr + 6) < outend) {
-					memcpy (outptr, "</pre>", 6);
 					enriched->nofill--;
-					outptr += 6;
 				} else {
 					inptr = tag - 1;
 					goto backup;
@@ -433,8 +440,7 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 						while (inptr < inend && *inptr != '<')
 							inptr++;
 						
-#define PARAM_TAG_MIN_LEN  (sizeof ("<param>") + sizeof ("</param>") - 1)
-						if (inptr == inend || (inend - inptr) <= PARAM_TAG_MIN_LEN) {
+						if (inptr == inend || (inend - inptr) <= 15) {
 							inptr = tag - 1;
 							goto need_input;
 						}

@@ -65,25 +65,36 @@ host_triplet = @host@
 EXEEXT = @EXEEXT@
 OBJEXT = @OBJEXT@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+A11Y_CFLAGS = @A11Y_CFLAGS@
+A11Y_LIBS = @A11Y_LIBS@
 AMTAR = @AMTAR@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 BASE_VERSION = @BASE_VERSION@
+BONOBOUI_REQUIRED = @BONOBOUI_REQUIRED@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_GROUPWISE_CFLAGS = @CAMEL_GROUPWISE_CFLAGS@
+CAMEL_GROUPWISE_LIBS = @CAMEL_GROUPWISE_LIBS@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CERT_UI_CFLAGS = @CERT_UI_CFLAGS@
+CERT_UI_LIBS = @CERT_UI_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
-DB3_CFLAGS = @DB3_CFLAGS@
-DB3_LDADD = @DB3_LDADD@
+DATASERVER_IDL = @DATASERVER_IDL@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EDS_REQUIRED = @EDS_REQUIRED@
+EGREP = @EGREP@
 EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
 EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
@@ -93,15 +104,18 @@ EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
 EVOLUTION_DIR = @EVOLUTION_DIR@
-EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
-EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
+EVOLUTION_TEST_CFLAGS = @EVOLUTION_TEST_CFLAGS@
+EVOLUTION_TEST_LIBS = @EVOLUTION_TEST_LIBS@
 E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
+F77 = @F77@
 GAL_REQUIRED = @GAL_REQUIRED@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -129,11 +143,13 @@ IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INSTOBJEXT = @INSTOBJEXT@
+INTERFACE_VERSION = @INTERFACE_VERSION@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -162,6 +178,8 @@ LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
 LIBFILTER_LIBS = @LIBFILTER_LIBS@
+LIBSOUP_CFLAGS = @LIBSOUP_CFLAGS@
+LIBSOUP_LIBS = @LIBSOUP_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -171,8 +189,6 @@ MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
 MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -186,32 +202,38 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-RESOLV_LIBS = @RESOLV_LIBS@
+RC = @RC@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
+SOURCE_SEL_CFLAGS = @SOURCE_SEL_CFLAGS@
+SOURCE_SEL_LIBS = @SOURCE_SEL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
+TZDIALOG_CFLAGS = @TZDIALOG_CFLAGS@
+TZDIALOG_LIBS = @TZDIALOG_LIBS@
+UPGRADE_REVISION = @UPGRADE_REVISION@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
-WOMBAT_LIBS = @WOMBAT_LIBS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 YACC = @YACC@
 am__include = @am__include@
 am__quote = @am__quote@
-buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
 componentdir = @componentdir@
-cxxflags_set = @cxxflags_set@
 etspecdir = @etspecdir@
+evolutionhelpdir = @evolutionhelpdir@
 evolutionuidir = @evolutionuidir@
 gladedir = @gladedir@
 idldir = @idldir@
+images16dir = @images16dir@
+images48dir = @images48dir@
 imagesdir = @imagesdir@
 install_sh = @install_sh@
 localedir = @localedir@
+privconduitdir = @privconduitdir@
 privdatadir = @privdatadir@
 privincludedir = @privincludedir@
 privlibdir = @privlibdir@
@@ -219,30 +241,25 @@ privlibexecdir = @privlibexecdir@
 serverdir = @serverdir@
 soundsdir = @soundsdir@
 viewsdir = @viewsdir@
-SUBDIRS = . ename
-
 eutilincludedir = $(privincludedir)/e-util
 econdincludedir = $(privincludedir)/e-conduit
-edb3includedir = $(privincludedir)/e-db3util
 
 INCLUDES = \
 	-I$(top_srcdir)							\
 	-DEVOLUTION_IMAGES=\""$(imagesdir)"\"				\
+	-DEVOLUTION_ICONSDIR=\""$(imagesdir)"\"				\
 	-DEVOLUTION_CATEGORY_ICONS=\""$(imagesdir)/categories"\"	\
 	-DG_LOG_DOMAIN=\"e-utils\"					\
-	-DG_DISABLE_DEPRECATED						\
-	-DGTK_DISABLE_DEPRECATED					\
-	$(DB3_CFLAGS)							\
 	$(GNOME_PILOT_CFLAGS)						\
 	$(E_UTIL_CFLAGS)
 
 
-privlib_LTLIBRARIES = libeutil.la libedb3util.la libeconduit.la
-noinst_LTLIBRARIES = libeutil-static.la
+privlib_LTLIBRARIES = libeutil.la libeconduit.la
 
 eutilinclude_HEADERS = \
 	e-account-list.h			\
 	e-account.h				\
+	e-bconf-map.h				\
 	e-categories-config.h			\
 	e-categories-master-list-wombat.h	\
 	e-component-listener.h			\
@@ -250,34 +267,38 @@ eutilinclude_HEADERS = \
 	e-corba-utils.h				\
 	e-dialog-utils.h			\
 	e-dialog-widgets.h			\
+	e-folder-map.h				\
+	e-fsutils.h				\
 	e-gtk-utils.h				\
 	e-gui-utils.h				\
 	e-host-utils.h				\
 	e-html-utils.h				\
+	e-icon-factory.h			\
 	e-iterator.h				\
-	e-lang-utils.h				\
 	e-list-iterator.h			\
 	e-list.h				\
 	e-memory.h				\
-	e-meta.h				\
 	e-mktemp.h				\
 	e-msgport.h				\
 	e-passwords.h				\
 	e-path.h				\
-	e-proxy.h				\
 	e-request.h				\
 	e-sexp.h				\
+	e-signature.h				\
+	e-signature-list.h			\
 	e-time-utils.h				\
 	e-trie.h				\
+	e-uid.h					\
 	e-url.h					\
-	e-xml-hash-utils.h			\
 	md5-utils.h
 
 
 libeutil_la_SOURCES = \
+	$(MARSHAL_GENERATED)			\
 	$(eutilinclude_HEADERS)			\
 	e-account-list.c			\
 	e-account.c				\
+	e-bconf-map.c				\
 	e-categories-config.c			\
 	e-categories-master-list-wombat.c	\
 	e-component-listener.c			\
@@ -285,79 +306,72 @@ libeutil_la_SOURCES = \
 	e-corba-utils.c				\
 	e-dialog-utils.c			\
 	e-dialog-widgets.c			\
+	e-folder-map.c				\
+	e-fsutils.c				\
 	e-gtk-utils.c				\
 	e-gui-utils.c				\
 	e-host-utils.c				\
 	e-html-utils.c				\
+	e-icon-factory.c			\
 	e-iterator.c				\
-	e-lang-utils.c				\
 	e-list-iterator.c			\
 	e-list.c				\
 	e-memory.c				\
-	e-meta.c				\
 	e-mktemp.c				\
 	e-msgport.c				\
 	e-passwords.c				\
 	e-path.c				\
-	e-proxy.c				\
 	e-request.c				\
 	e-sexp.c				\
+	e-signature.c				\
+	e-signature-list.c			\
 	e-time-utils.c				\
 	e-trie.c				\
+	e-uid.c					\
 	e-url.c					\
-	e-util-marshal.c			\
-	e-xml-hash-utils.c			\
+	eggtrayicon.c				\
+	eggtrayicon.h				\
 	md5-utils.c
 
 
 MARSHAL_GENERATED = e-util-marshal.c e-util-marshal.h
 
-
-# FIXME TODO
-#	e-passwords.c
-#       bonobo-factory-util.[ch]
 libeutil_la_LIBADD = $(E_UTIL_LIBS)
-
-libeutil_static_la_SOURCES = $(libeutil_la_SOURCES)
-libeutil_static_la_LIBADD = $(libeutil_la_LIBADD)
-libeutil_static_la_LDFLAGS = -all-static
-# Make sure libeutil.la and libeutil-static.la are not built in
-# parallel when using a parallel make; libtool can't handle that.
-libeutil_static_la_DEPENDENCIES = libeutil.la
 
 econdinclude_HEADERS = \
 	e-pilot-map.h		\
-	e-pilot-settings.h	\
 	e-pilot-util.h
 
 
 pilot_sources = \
 	$(econdinclude_HEADERS)	\
 	e-pilot-map.c		\
-	e-pilot-settings.c	\
 	e-pilot-util.c
 
 
 @ENABLE_PILOT_CONDUITS_TRUE@pilot_compile = $(pilot_sources)
-@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = empty.c
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = md5-utils.c
 
 libeconduit_la_SOURCES = $(pilot_compile)
+
+
+# e-error-tool
+e_error_tool_SOURCES = \
+	e-error-tool.c
+
+
+e_error_tool_LDADD = \
+	$(GNOME_FULL_LIBS)
+
+
+noinst_PROGRAMS = \
+	e-error-tool
+
 
 EXTRA_DIST = \
 	$(pilot_sources)		\
 	ChangeLog.pre-1-4		\
 	e-util-marshal.list
-
-
-edb3include_HEADERS = \
-	e-db3-utils.h			\
-	e-dbhash.h
-
-
-libedb3util_la_SOURCES = \
-	$(edb3include_HEADERS)		\
-	e-db3-utils.c			\
-	e-dbhash.c
 
 
 BUILT_SOURCES = $(MARSHAL_GENERATED)
@@ -366,44 +380,38 @@ subdir = e-util
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LTLIBRARIES = $(noinst_LTLIBRARIES) $(privlib_LTLIBRARIES)
+LTLIBRARIES = $(privlib_LTLIBRARIES)
 
 libeconduit_la_LDFLAGS =
 libeconduit_la_LIBADD =
 am__objects_1 =
-am__objects_2 = $(am__objects_1) e-pilot-map.lo e-pilot-settings.lo \
-	e-pilot-util.lo
+am__objects_2 = $(am__objects_1) e-pilot-map.lo e-pilot-util.lo
 @ENABLE_PILOT_CONDUITS_TRUE@am__objects_3 = $(am__objects_2)
-@ENABLE_PILOT_CONDUITS_FALSE@am__objects_3 = empty.lo
+@ENABLE_PILOT_CONDUITS_FALSE@am__objects_3 = md5-utils.lo
 am_libeconduit_la_OBJECTS = $(am__objects_3)
 libeconduit_la_OBJECTS = $(am_libeconduit_la_OBJECTS)
-libedb3util_la_LDFLAGS =
-libedb3util_la_LIBADD =
-am_libedb3util_la_OBJECTS = $(am__objects_1) e-db3-utils.lo e-dbhash.lo
-libedb3util_la_OBJECTS = $(am_libedb3util_la_OBJECTS)
-am__objects_4 = $(am__objects_1) e-account-list.lo e-account.lo \
-	e-categories-config.lo e-categories-master-list-wombat.lo \
-	e-component-listener.lo e-config-listener.lo e-corba-utils.lo \
-	e-dialog-utils.lo e-dialog-widgets.lo e-gtk-utils.lo \
-	e-gui-utils.lo e-host-utils.lo e-html-utils.lo e-iterator.lo \
-	e-lang-utils.lo e-list-iterator.lo e-list.lo e-memory.lo \
-	e-meta.lo e-mktemp.lo e-msgport.lo e-passwords.lo e-path.lo \
-	e-proxy.lo e-request.lo e-sexp.lo e-time-utils.lo e-trie.lo \
-	e-url.lo e-util-marshal.lo e-xml-hash-utils.lo md5-utils.lo
-am_libeutil_static_la_OBJECTS = $(am__objects_4)
-libeutil_static_la_OBJECTS = $(am_libeutil_static_la_OBJECTS)
 libeutil_la_LDFLAGS =
 libeutil_la_DEPENDENCIES =
-am_libeutil_la_OBJECTS = $(am__objects_1) e-account-list.lo e-account.lo \
+am__objects_4 = e-util-marshal.lo
+am_libeutil_la_OBJECTS = $(am__objects_4) $(am__objects_1) \
+	e-account-list.lo e-account.lo e-bconf-map.lo \
 	e-categories-config.lo e-categories-master-list-wombat.lo \
 	e-component-listener.lo e-config-listener.lo e-corba-utils.lo \
-	e-dialog-utils.lo e-dialog-widgets.lo e-gtk-utils.lo \
-	e-gui-utils.lo e-host-utils.lo e-html-utils.lo e-iterator.lo \
-	e-lang-utils.lo e-list-iterator.lo e-list.lo e-memory.lo \
-	e-meta.lo e-mktemp.lo e-msgport.lo e-passwords.lo e-path.lo \
-	e-proxy.lo e-request.lo e-sexp.lo e-time-utils.lo e-trie.lo \
-	e-url.lo e-util-marshal.lo e-xml-hash-utils.lo md5-utils.lo
+	e-dialog-utils.lo e-dialog-widgets.lo e-folder-map.lo \
+	e-fsutils.lo e-gtk-utils.lo e-gui-utils.lo e-host-utils.lo \
+	e-html-utils.lo e-icon-factory.lo e-iterator.lo \
+	e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo \
+	e-msgport.lo e-passwords.lo e-path.lo e-request.lo e-sexp.lo \
+	e-signature.lo e-signature-list.lo e-time-utils.lo e-trie.lo \
+	e-uid.lo e-url.lo eggtrayicon.lo md5-utils.lo
 libeutil_la_OBJECTS = $(am_libeutil_la_OBJECTS)
+noinst_PROGRAMS = e-error-tool$(EXEEXT)
+PROGRAMS = $(noinst_PROGRAMS)
+
+am_e_error_tool_OBJECTS = e-error-tool.$(OBJEXT)
+e_error_tool_OBJECTS = $(am_e_error_tool_OBJECTS)
+e_error_tool_DEPENDENCIES =
+e_error_tool_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -414,35 +422,37 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/e-account-list.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-account.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-bconf-map.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-categories-config.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-categories-master-list-wombat.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-component-listener.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-config-listener.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-corba-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-db3-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-dbhash.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-dialog-utils.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-dialog-widgets.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-error-tool.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/e-folder-map.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-fsutils.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-gtk-utils.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-gui-utils.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-host-utils.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-html-utils.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-icon-factory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-iterator.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-lang-utils.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-list-iterator.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-list.Plo ./$(DEPDIR)/e-memory.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-meta.Plo ./$(DEPDIR)/e-mktemp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-msgport.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-mktemp.Plo ./$(DEPDIR)/e-msgport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-passwords.Plo ./$(DEPDIR)/e-path.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-pilot-map.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-pilot-settings.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-pilot-util.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-proxy.Plo ./$(DEPDIR)/e-request.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-sexp.Plo ./$(DEPDIR)/e-time-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-trie.Plo ./$(DEPDIR)/e-url.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-request.Plo ./$(DEPDIR)/e-sexp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-signature-list.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-signature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-time-utils.Plo ./$(DEPDIR)/e-trie.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/e-uid.Plo ./$(DEPDIR)/e-url.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-util-marshal.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/e-xml-hash-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/empty.Plo ./$(DEPDIR)/md5-utils.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/eggtrayicon.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/md5-utils.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -451,23 +461,16 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libeconduit_la_SOURCES) $(libedb3util_la_SOURCES) \
-	$(libeutil_static_la_SOURCES) $(libeutil_la_SOURCES)
-HEADERS = $(econdinclude_HEADERS) $(edb3include_HEADERS) \
-	$(eutilinclude_HEADERS)
+DIST_SOURCES = $(libeconduit_la_SOURCES) $(libeutil_la_SOURCES) \
+	$(e_error_tool_SOURCES)
+HEADERS = $(econdinclude_HEADERS) $(eutilinclude_HEADERS)
 
-
-RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
-	uninstall-info-recursive all-recursive install-data-recursive \
-	install-exec-recursive installdirs-recursive install-recursive \
-	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = $(econdinclude_HEADERS) $(edb3include_HEADERS) \
-	$(eutilinclude_HEADERS) ChangeLog Makefile.am Makefile.in
-DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libeconduit_la_SOURCES) $(libedb3util_la_SOURCES) $(libeutil_static_la_SOURCES) $(libeutil_la_SOURCES)
+DIST_COMMON = $(econdinclude_HEADERS) $(eutilinclude_HEADERS) ChangeLog \
+	Makefile.am Makefile.in
+SOURCES = $(libeconduit_la_SOURCES) $(libeutil_la_SOURCES) $(e_error_tool_SOURCES)
 
 all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -476,15 +479,6 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --gnu  e-util/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
-	@list='$(noinst_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test -z "$dir" && dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
 privlibLTLIBRARIES_INSTALL = $(INSTALL)
 install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -515,12 +509,18 @@ clean-privlibLTLIBRARIES:
 	done
 libeconduit.la: $(libeconduit_la_OBJECTS) $(libeconduit_la_DEPENDENCIES) 
 	$(LINK) -rpath $(privlibdir) $(libeconduit_la_LDFLAGS) $(libeconduit_la_OBJECTS) $(libeconduit_la_LIBADD) $(LIBS)
-libedb3util.la: $(libedb3util_la_OBJECTS) $(libedb3util_la_DEPENDENCIES) 
-	$(LINK) -rpath $(privlibdir) $(libedb3util_la_LDFLAGS) $(libedb3util_la_OBJECTS) $(libedb3util_la_LIBADD) $(LIBS)
-libeutil-static.la: $(libeutil_static_la_OBJECTS) $(libeutil_static_la_DEPENDENCIES) 
-	$(LINK)  $(libeutil_static_la_LDFLAGS) $(libeutil_static_la_OBJECTS) $(libeutil_static_la_LIBADD) $(LIBS)
 libeutil.la: $(libeutil_la_OBJECTS) $(libeutil_la_DEPENDENCIES) 
 	$(LINK) -rpath $(privlibdir) $(libeutil_la_LDFLAGS) $(libeutil_la_OBJECTS) $(libeutil_la_LIBADD) $(LIBS)
+
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
+e-error-tool$(EXEEXT): $(e_error_tool_OBJECTS) $(e_error_tool_DEPENDENCIES) 
+	@rm -f e-error-tool$(EXEEXT)
+	$(LINK) $(e_error_tool_LDFLAGS) $(e_error_tool_OBJECTS) $(e_error_tool_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -530,41 +530,42 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-account-list.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-account.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-bconf-map.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-categories-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-categories-master-list-wombat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-component-listener.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-config-listener.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-corba-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-db3-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-dbhash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-dialog-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-dialog-widgets.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-error-tool.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-folder-map.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-fsutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-gtk-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-gui-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-host-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-html-utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-icon-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-iterator.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-lang-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-list-iterator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-list.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-memory.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-meta.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-mktemp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-msgport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-passwords.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-path.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-pilot-map.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-pilot-settings.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-pilot-util.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-proxy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-request.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-sexp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-signature-list.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-signature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-time-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-trie.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-uid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-url.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-util-marshal.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-xml-hash-utils.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/empty.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eggtrayicon.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5-utils.Plo@am__quote@
 
 distclean-depend:
@@ -616,24 +617,6 @@ uninstall-econdincludeHEADERS:
 	  echo " rm -f $(DESTDIR)$(econdincludedir)/$$f"; \
 	  rm -f $(DESTDIR)$(econdincludedir)/$$f; \
 	done
-edb3includeHEADERS_INSTALL = $(INSTALL_HEADER)
-install-edb3includeHEADERS: $(edb3include_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(edb3includedir)
-	@list='$(edb3include_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(edb3includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(edb3includedir)/$$f"; \
-	  $(edb3includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(edb3includedir)/$$f; \
-	done
-
-uninstall-edb3includeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(edb3include_HEADERS)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(edb3includedir)/$$f"; \
-	  rm -f $(DESTDIR)$(edb3includedir)/$$f; \
-	done
 eutilincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 install-eutilincludeHEADERS: $(eutilinclude_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -653,61 +636,6 @@ uninstall-eutilincludeHEADERS:
 	  rm -f $(DESTDIR)$(eutilincludedir)/$$f; \
 	done
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@set fnord $$MAKEFLAGS; amf=$$2; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-mostlyclean-recursive clean-recursive distclean-recursive \
-maintainer-clean-recursive:
-	@set fnord $$MAKEFLAGS; amf=$$2; \
-	dot_seen=no; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	  if test "$$subdir" = "."; then :; else \
-	    rev="$$subdir $$rev"; \
-	  fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-
 ETAGS = etags
 ETAGSFLAGS =
 
@@ -722,15 +650,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -774,35 +697,25 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d $(distdir)/$$subdir \
-	    || mkdir $(distdir)/$$subdir \
-	    || exit 1; \
-	    (cd $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$(top_distdir)" \
-	        distdir=../$(distdir)/$$subdir \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="${top_distdir}" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
-check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
-installdirs: installdirs-recursive
-installdirs-am:
-	$(mkinstalldirs) $(DESTDIR)$(privlibdir) $(DESTDIR)$(econdincludedir) $(DESTDIR)$(edb3includedir) $(DESTDIR)$(eutilincludedir)
+check: check-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 
-install: install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(privlibdir) $(DESTDIR)$(econdincludedir) $(DESTDIR)$(eutilincludedir)
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  INSTALL_STRIP_FLAG=-s \
@@ -820,86 +733,67 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-clean: clean-recursive
+clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
 	clean-privlibLTLIBRARIES mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
 
 distclean-am: clean-am distclean-compile distclean-depend \
 	distclean-generic distclean-libtool distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
-install-data-am: install-econdincludeHEADERS install-edb3includeHEADERS \
-	install-eutilincludeHEADERS install-privlibLTLIBRARIES
+install-data-am: install-econdincludeHEADERS install-eutilincludeHEADERS \
+	install-privlibLTLIBRARIES
 
 install-exec-am:
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-man:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool
 
-uninstall-am: uninstall-econdincludeHEADERS uninstall-edb3includeHEADERS \
+uninstall-am: uninstall-econdincludeHEADERS \
 	uninstall-eutilincludeHEADERS uninstall-info-am \
 	uninstall-privlibLTLIBRARIES
 
-uninstall-info: uninstall-info-recursive
-
-.PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
-	clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	clean-privlibLTLIBRARIES clean-recursive distclean \
-	distclean-compile distclean-depend distclean-generic \
-	distclean-libtool distclean-recursive distclean-tags distdir \
-	dvi dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-recursive \
-	install-econdincludeHEADERS install-edb3includeHEADERS \
-	install-eutilincludeHEADERS install-exec install-exec-am \
-	install-exec-recursive install-info install-info-am \
-	install-info-recursive install-man install-privlibLTLIBRARIES \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
-	tags tags-recursive uninstall uninstall-am \
-	uninstall-econdincludeHEADERS uninstall-edb3includeHEADERS \
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-noinstPROGRAMS clean-privlibLTLIBRARIES \
+	distclean distclean-compile distclean-depend distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am info \
+	info-am install install-am install-data install-data-am \
+	install-econdincludeHEADERS install-eutilincludeHEADERS \
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-privlibLTLIBRARIES install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool tags uninstall \
+	uninstall-am uninstall-econdincludeHEADERS \
 	uninstall-eutilincludeHEADERS uninstall-info-am \
-	uninstall-info-recursive uninstall-privlibLTLIBRARIES \
-	uninstall-recursive
+	uninstall-privlibLTLIBRARIES
 
+@EVO_MARSHAL_RULE@
 
-# GLib marshalling cruft
-
-e-util-marshal.h: e-util-marshal.list
-	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --header > e-util-marshal.h.tmp \
-	&& mv e-util-marshal.h.tmp e-util-marshal.h ) \
-	|| ( rm -f e-util-marshal.h.tmp && exit 1 )
-
-e-util-marshal.c: e-util-marshal.h
-	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --body > e-util-marshal.c.tmp \
-	&& mv e-util-marshal.c.tmp e-util-marshal.c ) \
-	|| ( rm -f e-util-marshal.c.tmp && exit 1 )
-@ENABLE_PILOT_CONDUITS_FALSE@empty.c:
-@ENABLE_PILOT_CONDUITS_FALSE@	cp /dev/null $@
+dist-hook: e-error-tool
+	cd $(distdir); rm -f $(BUILT_SOURCES)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
