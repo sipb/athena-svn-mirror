@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Explicitly link against libiconv on Solaris.  The default is to prefer
+# the libc iconv, which causes a compilation failure because we put
+# /usr/athena/include in the include path, causing the libiconv header
+# to be used even though configure thinks it's using the libc iconv.
+case $ATHENA_HOSTTYPE in
+sun4)
+  opts="--with-libiconv=gnu"
+  ;;
+*)
+  opts=
+  ;;
+esac
+
+exec ./configure $opts "$@"
