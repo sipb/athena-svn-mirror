@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.14 1990-12-13 12:40:13 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.15 1991-03-07 12:28:19 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.14 1990-12-13 12:40:13 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.15 1991-03-07 12:28:19 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -597,7 +597,7 @@ void shutdown()
 }
 
 
-/* Kill children, remove password entry, kdestroy */
+/* Kill children, remove password entry */
 
 cleanup(tty)
 char *tty;
@@ -605,7 +605,6 @@ char *tty;
     int file, found;
     struct utmp utmp;    
     char login[9];
-    char tkt_file[64];
 
     if (login_running == RUNNING)
       kill(loginpid, SIGHUP);
@@ -613,10 +612,6 @@ char *tty;
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
       kill(xpid, SIGTERM);
-
-    strcpy(tkt_file, "/tmp/tkt_");
-    strcat(tkt_file, tty);
-    kdestroy(tkt_file);
 
     found = 0;
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
@@ -753,32 +748,6 @@ void die()
 #endif
     cleanup(logintty);
     _exit(0);
-}
-
-
-kdestroy(file)
-char *file;
-{
-    int i, fd;
-    struct stat statb;
-    char buf[BUFSIZ];
-
-    if (lstat(file,&statb) < 0) return;
-    if (!(statb.st_mode & S_IFREG)) return;
-    bzero(buf, BUFSIZ);
-
-    if ((fd = open(file, O_RDWR, 0)) < 0) return;
-
-    for (i = 0; i < statb.st_size; i += BUFSIZ)
-	if (write(fd, buf, BUFSIZ) != BUFSIZ) {
-	    (void) fsync(fd);
-	    (void) close(fd);
-	    return;
-	}
-
-    (void) fsync(fd);
-    (void) close(fd);
-    (void) unlink(file);
 }
 
 
