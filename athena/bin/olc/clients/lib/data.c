@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v $
- *	$Id: data.c,v 1.8 1990-11-13 14:26:57 lwvanels Exp $
+ *	$Id: data.c,v 1.9 1990-11-17 15:10:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.8 1990-11-13 14:26:57 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.9 1990-11-17 15:10:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -49,12 +49,12 @@ STATUS Status_Table[] =
   {NOT_SEEN,      "unseen"},
   {DONE,          "done"},
   {CANCEL,        "cancel"},
-  {SERVICED,      "active"},
   {PICKUP,        "pickup"},
   {REFERRED,      "refer"},
   {LOGGED_OUT,    "logout"},
   {MACHINE_DOWN,  "mach down"},
   {ACTIVE,        "active"},
+  {SERVICED,      "active"},
   {UNKNOWN_STATUS,"unknown"},
 };
 
