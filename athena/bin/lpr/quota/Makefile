@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.9 1990-08-25 18:20:47 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.11 1990-08-29 10:16:02 epeisach Exp $
 #
 #
 #     Copyright 1990 Massachusetts Institute of Technology.
@@ -76,7 +76,7 @@ all:	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a ${ALL}
 
 Makefile: Imakefile
 	-mv -f Makefile Makefile.bak
-	/lib/cpp -E Imakefile Makefile 
+	cc -E Imakefile > Makefile 
 
 ./ncs/cpp/cpp:
 	(cd ncs/cpp; make MFLAGS=$(MFLAGS) )
