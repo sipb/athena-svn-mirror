@@ -2,7 +2,7 @@ AC_INIT(ChangeLog)
 
 GNOME_SPEECH_MAJOR_VERSION=0
 GNOME_SPEECH_MINOR_VERSION=3
-GNOME_SPEECH_MICRO_VERSION=5
+GNOME_SPEECH_MICRO_VERSION=6
 GNOME_SPEECH_INTERFACE_AGE=0
 GNOME_SPEECH_BINARY_AGE=0
 GNOME_SPEECH_VERSION="$GNOME_SPEECH_MAJOR_VERSION.$GNOME_SPEECH_MINOR_VERSION.$GNOME_SPEECH_MICRO_VERSION"
@@ -68,9 +68,17 @@ AC_SUBST(LDFLAGS)
 
 # Check to see if we should build the Viavoice driver
 
-AC_CHECK_LIB(ibmeci50, eciNew, viavoice_LIBS=-libmeci50)
+AC_ARG_WITH(viavoice_dir, {   --with-viavoice-dir=PATH	Specify path to Viavoice})
+if test x$with_viavoice_dir != x ; then
+        viavoice_LIBS="-L$with_viavoice_dir/lib -libmeci"
+        viavoice_INCLUDES="-I$with_viavoice_dir/inc"
+else
+	AC_CHECK_LIB(ibmeci, eciNew, viavoice_LIBS=-libmeci)
+	viavoice_INCLUDES="-I/opt/IBM/ibmtts/inc"
+fi
 AC_SUBST(viavoice_LIBS)
-AM_CONDITIONAL(BUILD_VIAVOICE_DRIVER, test "x$viavoice_LIBS" = "x-libmeci50")
+AC_SUBST(viavoice_INCLUDES)
+AM_CONDITIONAL(BUILD_VIAVOICE_DRIVER, test "x$viavoice_LIBS" != "x")
 
 # Check to see if we should build the Dectalk driver
 AC_ARG_WITH(dectalk_dir, {   --with-dectalk-dir=PATH	Specify path to DECTalk})
@@ -96,7 +104,7 @@ fi
 AC_CHECK_FILE("$with_theta_dir/bin/theta-config", theta_config="$with_theta_dir/bin/theta-config")
 if test x$theta_config != x ; then
    theta_LIBS=`$theta_config --libs`
-   theta_INCLUDES=`$theta_config --cflags`
+   theta_INCLUDES=`$theta_config --cflags`/swift
 fi
 
 AC_SUBST(theta_LIBS)
@@ -128,7 +136,8 @@ fi
 
 if test "x$JAVA_HOME" != "x" ; then
   AC_CHECK_FILE("$JAVA_HOME/bin/java", JAVA="$JAVA_HOME/bin/java",
-	[Java executeable not found])
+	[JAVA="no"
+	 AC_MSG_NOTICE([Java executeable not found])])
 else
   AC_CHECK_PROG(JAVA, java, java, no)
 fi
@@ -137,7 +146,8 @@ fi
 
 if test "x$JAVA_HOME" != "x" ; then
   AC_CHECK_FILE("$JAVA_HOME/bin/javac", JAVAC="$JAVA_HOME/bin/javac",
-	[Java Compiler not found])
+	[JAVAC="no"
+	 AC_MSG_NOTICE([Java Compiler not found])])
 else
   AC_CHECK_PROG(JAVAC, javac, javac, no)
 fi
@@ -146,7 +156,8 @@ fi
 
 if test "x$JAVA_HOME" != "x" ; then
   AC_CHECK_FILE("$JAVA_HOME/bin/javah", JAVAH="$JAVA_HOME/bin/javah",
-	[Java Header Generator not found])
+	[JAVAH="no"
+	 AC_MSG_NOTICE([Java Header Generator not found])])
 else
   AC_CHECK_PROG(JAVAH, javah, javah, no)
 fi
@@ -155,7 +166,8 @@ fi
 
 if test "x$JAVA_HOME" != "x" ; then
   AC_CHECK_FILE("$JAVA_HOME/bin/idlj", IDLJ="$JAVA_HOME/bin/idlj",
-	[Java IDL Code Generator not found])
+	[IDLJ="no"
+	 AC_MSG_NOTICE([Java IDL Code Generator not found])])
 else
   AC_CHECK_PROG(IDLJ, idlj, idlj, no)
 fi
@@ -164,7 +176,8 @@ fi
 
 if test "x$JAVA_HOME" != "x" ; then
   AC_CHECK_FILE("$JAVA_HOME/bin/jar", JAR="$JAVA_HOME/bin/jar",
-	[Jar utility not found])
+	[JAR="no"
+	 AC_MSG_NOTICE([Jar utility not found])])
 else
   AC_CHECK_PROG(JAR, jar, jar, no)
 fi
@@ -177,7 +190,7 @@ if test "x$with_jab_dir" != "x" ; then
 	[AC_MSG_NOTICE([Java Access Bridge not found])])
 else
   AC_CHECK_FILE("$prefix/share/jar/gnome-java-bridge.jar", JAB="$prefix/share/jar/gnome-java-bridge.jar",
-	[AC_MSG_NOTICE([echo Java Access Bridge not found])])
+	[AC_MSG_NOTICE([Java Access Bridge not found])])
 fi
 
 AC_SUBST(JAVA_HOME)

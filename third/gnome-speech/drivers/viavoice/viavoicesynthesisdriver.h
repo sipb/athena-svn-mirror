@@ -30,6 +30,7 @@
 #define __VIAVOICE_SYNTHESIS_DRIVER_H_
 
 #include <bonobo/bonobo-object.h>
+#include <glib/gthread.h>
 #include <gnome-speech/gnome-speech.h>
 #include "viavoicespeaker.h"
 
@@ -42,6 +43,8 @@
 
 typedef struct {
 	BonoboObject parent;
+
+	GMutex *mutex;
 
 	ECIHand handle;
 
@@ -74,7 +77,7 @@ gboolean
 viavoice_synthesis_driver_is_speaking (ViavoiceSynthesisDriver *d);
 void
 viavoice_synthesis_driver_set_voice_param (const ViavoiceSynthesisDriver *d,
-					   ECIVoiceParam param,
+					   enum ECIVoiceParam param,
 					   gint new_value);
 gboolean
 viavoice_synthesis_driver_set_voice (const ViavoiceSynthesisDriver *d,

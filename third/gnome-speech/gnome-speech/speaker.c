@@ -1,7 +1,7 @@
 /*
  * GNOME Speech - Speech services for the GNOME desktop
  *
- * Copyright 2002 Sun Microsystems Inc.
+ * Copyright 2002 Sun Microsystems Inc. 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -229,15 +229,13 @@ impl_setParameterValue (PortableServer_Servant servant,
 }
 
 
-
 static void
 speaker_init (Speaker *s)
 {
-	s->cb = CORBA_OBJECT_NIL;
+	s->clb_list = NULL;
 	s->parameters = NULL;
 	s->parameter_refresh = FALSE;
 }
-
 
 
 static void
@@ -246,10 +244,9 @@ speaker_finalize(GObject *obj)
 	Speaker *s = SPEAKER (obj);
 	GSList *tmp;
 
-	/* Unref the callback */
-
-	if (s->cb != CORBA_OBJECT_NIL)
-		bonobo_object_release_unref (s->cb, NULL);
+	/* Unref the callbacks list */
+	
+	clb_list_free (s->clb_list);
 
 	/* Destroy all the parameters */
 
@@ -259,6 +256,38 @@ speaker_finalize(GObject *obj)
 		g_slist_free (s->parameters);
 	if (parent_class->finalize)
 		parent_class->finalize (obj);
+}
+
+
+GSList*
+speaker_get_clb_list (Speaker *s)
+{
+    return clb_list_duplicate (s->clb_list);
+}
+
+
+void
+clb_list_free (GSList *list)
+{
+	GSList *tmp;
+
+	for (tmp = list; tmp; tmp = tmp->next)
+	    CORBA_Object_release ((GNOME_Speech_SpeechCallback) tmp->data, NULL);
+
+	g_slist_free (list);
+}
+
+
+GSList*
+clb_list_duplicate (GSList *dup_list)
+{
+	GSList *list = NULL;
+	GSList *tmp = list;  
+
+	for (tmp = dup_list; tmp; tmp = tmp->next)
+		list = g_slist_append (list, CORBA_Object_duplicate (tmp->data, NULL));
+	
+	return list;
 }
 
 

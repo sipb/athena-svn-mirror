@@ -1,6 +1,6 @@
 <oaf_info>
 	<oaf_server iid="OAFIID:GNOME_Speech_SynthesisDriver_FreeTTS:proto0.3"
-        	    type="exe" location="/usr/local/bin/freetts-synthesis-driver">
+        	    type="exe" location="/usr/bin/freetts-synthesis-driver">
 		<oaf_attribute name="repo_ids" type="stringv">
 			<item value="IDL:GNOME/Speech/SynthesisDriver:0.3"/>
 			<item value="IDL:GNOME/Speech/SpeechCallback:0.2"/>

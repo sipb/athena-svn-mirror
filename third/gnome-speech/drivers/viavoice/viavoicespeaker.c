@@ -46,7 +46,7 @@ viavoice_speaker_from_servant (PortableServer_Servant *servant)
 static void
 viavoice_add_parameter (ECIHand handle,
 			ViavoiceSpeaker *viavoice_speaker,
-			ECIVoiceParam param,
+			enum ECIVoiceParam param,
 			const gchar *parameter_name,
 			gdouble min,
 			gdouble max,

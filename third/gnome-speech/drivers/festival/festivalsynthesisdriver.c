@@ -25,22 +25,112 @@
  *
  */
 
-#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <libbonobo.h>
+#include <netdb.h>
 #include "festivalsynthesisdriver.h"
 #include "festivalspeaker.h"
- 
 
 
-static gint text_id = 0;
-static GObjectClass *parent_class;
+#undef FESTIVAL_DEBUG_QUEUE
+#undef FESTIVAL_DEBUG_MARKERS
+#undef FESTIVAL_DEBUG_CONTROL
+#undef FESTIVAL_DEBUG_SEND
+#undef FESTIVAL_DEBUG_TEXT
 
-static gboolean festival_server_exists = FALSE;
+static gint 		text_id   = 0;
+static GObjectClass 	*parent_class;
+static gboolean 	festival_server_exists = FALSE;
+static GSList		*driver_list = NULL;
+static GSList		*markers_list = NULL;
+
+typedef struct
+{
+    gint text_id;
+    GSList *callbacks;
+    GNOME_Speech_speech_callback_type type;
+} FestivalTextMarker;
+
+typedef struct 
+{
+    FestivalSynthesisDriver *driver;
+    FestivalSpeaker 	    *speaker;
+    gchar 	*text;
+    gint 	text_id;
+} FestivalTextOut;
+
+static int festival_socket (const char *host, 
+			    int port);
+static gboolean festival_response_sock (GIOChannel *source, 
+					GIOCondition condition, 
+					gpointer data);
+static gboolean festival_response_pipe (GIOChannel *source, 
+					GIOCondition condition, 
+					gpointer data);
+static void festival_synthesis_driver_read_raw_line_sock (FestivalSynthesisDriver *d, 
+			               		          gchar **ack);
+static void festival_synthesis_driver_read_raw_line_pipe (FestivalSynthesisDriver *d, 
+							  gchar **ack);
+
+static gboolean festival_querying_queue (gpointer data);
+
+static FestivalTextOut* festival_text_out_new (void);
+static void 		festival_text_out_terminate (FestivalTextOut *text_out);
+
+static void 	festival_add_driver	    	(FestivalSynthesisDriver *d);
+static void 	festival_remove_driver 		(FestivalSynthesisDriver *d);
+static gboolean festival_driver_is_alive 	(FestivalSynthesisDriver *d);
+static gboolean festival_is_any_driver_alive 	(void);
+static gboolean festival_synthesis_driver_say_ 	(FestivalSynthesisDriver *d,
+			    			 FestivalSpeaker *s,
+			    			 gchar *text);
+static gboolean festival_synthesis_driver_process_list_idle 	(gpointer data);
+static void     festival_synthesis_driver_process_list 		(FestivalSynthesisDriver *driver);
+static void 	festival_process_text_out 			(FestivalTextOut *text_out);
+static void 	festival_free_list 				(FestivalSynthesisDriver *d);
+
+
+static FestivalTextMarker *
+festival_text_marker_new ()
+{
+	return g_new0 (FestivalTextMarker, 1);
+} 
+
+
+static void
+festival_text_marker_terminate (FestivalTextMarker *text_marker)
+{
+	g_assert (text_marker);
+
+	clb_list_free (text_marker->callbacks);
+	g_free (text_marker);
+}
+
+
+FestivalTextOut *
+festival_text_out_new (void)
+{
+	return  g_new0 (FestivalTextOut, 1);
+}
+
+
+void
+festival_text_out_terminate (FestivalTextOut *text_out)
+{
+        g_assert (text_out);
+	
+	g_free (text_out->text);
+        bonobo_object_unref (BONOBO_OBJECT (text_out->driver));
+        bonobo_object_unref (BONOBO_OBJECT (text_out->speaker));
+    
+	g_free (text_out);
+}
+
 
 static gchar *
 festival_get_version (void)
@@ -65,68 +155,367 @@ festival_get_version (void)
 
 
 static gboolean
+festival_synthesis_driver_process_list_idle (gpointer data)
+{
+        FestivalSynthesisDriver *driver = data;    
+    
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (driver));
+
+        if (driver->list && !driver->is_shutting_up  && !driver->is_speaking)
+	{
+    	    FestivalTextOut *text_out;
+	    GSList *tmp;
+
+	    text_out = driver->list->data;
+	    tmp = driver->list;
+	    driver->list = driver->list->next;
+#ifdef FESTIVAL_DEBUG_QUEUE
+	    {
+		FestivalTextOut *text_out = tmp->data;
+		fprintf (stderr, "\n PROCESS QUEUE ELEMENT: %d---\"%s\"",text_out->text_id, text_out->text);
+	    }
+#endif
+	    festival_process_text_out (tmp->data);
+	    festival_text_out_terminate(tmp->data);
+	    g_slist_free_1 (tmp);
+	}
+    
+	bonobo_object_unref (BONOBO_OBJECT (driver));
+	return FALSE;
+}
+
+
+static void
+festival_synthesis_driver_process_list (FestivalSynthesisDriver *driver)
+{
+	g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (driver));
+
+        if (driver->list)
+	{
+    	    bonobo_object_ref (BONOBO_OBJECT (driver));
+	    g_idle_add (festival_synthesis_driver_process_list_idle, driver);
+	}
+}
+
+
+static gboolean
+festival_generate_callback (FestivalTextMarker *text_marker)
+{
+	GSList *tmp = NULL;
+	CORBA_Environment  ev;
+#ifdef FESTIVAL_DEBUG_MARKERS	
+	static gint old_text_id = -1;
+	static GNOME_Speech_speech_callback_type old_type = GNOME_Speech_speech_callback_speech_started;
+#endif
+    
+	g_assert (text_marker && text_marker->callbacks);
+
+#ifdef FESTIVAL_DEBUG_MARKERS
+	g_assert (old_text_id == -1 || old_text_id <= text_marker->text_id);
+	g_assert (old_text_id == -1 || old_text_id != text_marker->text_id ||
+		    (old_text_id == text_marker->text_id &&
+		     old_type == GNOME_Speech_speech_callback_speech_started &&
+		     text_marker->type == GNOME_Speech_speech_callback_speech_ended));
+	g_assert (old_text_id == -1 || old_text_id == text_marker->text_id ||
+		    (old_text_id != text_marker->text_id &&
+		     text_marker->type == GNOME_Speech_speech_callback_speech_started));    
+		     
+	old_text_id = text_marker->text_id;
+	old_type = text_marker->type;
+#endif
+
+#ifdef FESTIVAL_DEBUG_MARKERS
+	fprintf (stderr, "\n MARKER %d ---%s", text_marker->text_id, 
+	    	    text_marker->type == GNOME_Speech_speech_callback_speech_started ? "started" :
+		    text_marker->type == GNOME_Speech_speech_callback_speech_ended ? "ended" : "unknown");
+#endif    
+
+	CORBA_exception_init (&ev);
+	for (tmp = text_marker->callbacks; tmp; tmp = tmp->next)
+		GNOME_Speech_SpeechCallback_notify (tmp->data,
+	    					    			text_marker->type,  
+						    				text_marker->text_id, 
+						    				-1, 
+						    				&ev);
+	 
+	CORBA_exception_free (&ev);
+
+	return FALSE;
+} 
+
+static void
+generate_callbacks ()
+{
+    static gint busy = FALSE;
+
+    if (busy)
+	return;
+    busy  = TRUE;
+
+    while (markers_list)
+    {
+	FestivalTextMarker *marker = markers_list->data;
+	markers_list = g_slist_remove_link (markers_list, markers_list);
+	festival_generate_callback (marker);
+        festival_text_marker_terminate (marker);
+    }
+
+    busy = FALSE;
+}
+
+static void 
+add_callback (GSList *callbacks, 
+	      gint text_id,
+	      GNOME_Speech_speech_callback_type type)
+{
+	FestivalTextMarker *text_marker;
+
+	g_assert (callbacks);
+    
+	text_marker = festival_text_marker_new ();
+
+	text_marker->callbacks = clb_list_duplicate (callbacks); 
+	text_marker->text_id = text_id;
+	text_marker->type = type;
+
+	markers_list = g_slist_append (markers_list, text_marker);
+}
+
+static gboolean
+festival_response_sock (GIOChannel   *source, 
+			GIOCondition  condition,
+			gpointer      data)
+{
+	gchar *ack = NULL;
+	FestivalSynthesisDriver *driver = data;
+
+        g_return_val_if_fail (festival_driver_is_alive (driver), FALSE);
+	g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (driver));
+
+        festival_synthesis_driver_read_raw_line_sock (driver, &ack);
+    
+	if (ack && strncmp (ack, "shutup", 6) == 0)
+	{
+#ifdef FESTIVAL_DEBUG_CONTROL
+    	    fprintf (stderr, "\nRECEIVE SHUTUP");
+#endif
+	    driver->is_shutting_up = FALSE;
+	    driver->is_speaking = FALSE;
+	    festival_synthesis_driver_process_list (driver);
+	}
+        else if (ack && strncmp (ack, "query", 5) == 0)
+	{
+#ifdef FESTIVAL_DEBUG_CONTROL
+    	    fprintf (stderr, "\nRECEIVE QUERY");
+#endif
+	    driver->is_querying = FALSE;
+        }
+    
+	g_free (ack);
+
+	return TRUE;
+}
+
+gboolean
+festival_response_pipe (GIOChannel   *source,
+			GIOCondition  condition,
+			gpointer      data)
+{
+        gchar *ack = NULL;
+        FestivalSynthesisDriver *driver = data;
+
+        g_return_val_if_fail (festival_driver_is_alive (driver), FALSE);
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (driver));
+
+	festival_synthesis_driver_read_raw_line_pipe (driver, &ack);
+
+        if (ack && strncmp(ack,"Command_queue:",14) == 0)
+	{
+    	    gint cnt;
+	    
+	    cnt = atoi (ack+14);
+	    g_assert (cnt >=0 || cnt <= 2);
+	    if (driver->queue_length != 0 && cnt == 0)
+	    {
+		if (driver->is_speaking && driver->crt_clbs)
+	    	    add_callback (driver->crt_clbs, driver->crt_id, GNOME_Speech_speech_callback_speech_ended);
+		driver->is_speaking = FALSE;
+		festival_synthesis_driver_process_list (driver);
+		generate_callbacks ();
+	    }
+	    driver->queue_length = cnt;
+
+	}
+	g_free (ack);
+
+	return TRUE;
+}
+
+
+int
+festival_socket (const char *host, 
+		 int port)
+{
+        struct sockaddr_in	serv_addr;
+	struct hostent 		*serverhost;
+	gint fd;
+
+	serverhost = gethostbyname (host);
+	if (!serverhost)
+	{
+    	    fprintf (stderr,"\n gethostbyname failed");
+    	    return -1;
+	}
+
+	fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (fd<0)
+        {
+	    fprintf (stderr,"\n socket failed");
+    	    return -1;
+	}
+
+	memset (&serv_addr, 0, sizeof (serv_addr));
+	memmove (&serv_addr.sin_addr, serverhost->h_addr, serverhost->h_length);
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_port = htons (port);
+	
+        if (connect (fd, (struct sockaddr *)&serv_addr, sizeof (serv_addr)) != 0)
+        {
+            fprintf (stderr,"\n connect failed");
+            close (fd);
+	    return -1;
+        }
+	return fd;
+}
+
+static gboolean
 festival_start (FestivalSynthesisDriver *d)
 {
-	int festival_input[2];
-	int festival_output[2];
-	gchar *s = NULL;
-	
+        gchar *s 	= NULL;
+	gchar *args[]	= {"festival", "--server", NULL};
+    
 	if ((s = g_find_program_in_path ("festival")) != NULL)
 	{
 	    g_free (s);
 	    festival_server_exists = TRUE;
-	}
+        }
 	else
 	{
 	    festival_server_exists = FALSE;
+	    return FALSE;	
+	}
+    
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (d));
+
+	if (!g_spawn_async_with_pipes (	NULL,		args,
+					NULL,		G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+					NULL,		NULL,
+					&d->pid,	NULL,
+					NULL,		&d->pipe,
+					NULL))
+	{
+		d->pid = -1;
+		d->pipe = -1;
+	}
+	
+	if (d->pipe < 0)
+		return FALSE;
+        usleep(2000000);
+	d->sock = festival_socket ("localhost",1314);
+	
+        if (d->sock < 0)
 	    return FALSE;
-	}
-
-	/* Create pipes */
-
-	pipe (festival_input);
-	pipe (festival_output);
-
-        /* Fork festival process */
-
-	d->pid = fork ();
-	if (!d->pid) {
-		close (0);
-		close (1);
-		close (2);
-		dup (festival_input[0]);
-		close (festival_input[1]);
-		dup (festival_output[1]);
-		dup (festival_output[1]);
-		close (festival_output[0]);
-		execlp ("festival", "festival",  "--pipe", NULL);
-	}
 	
-	close (festival_input[0]);
-	close (festival_output[1]);
-
-	d->festival_output = festival_output[0];
-	d->festival_input = festival_input[1];
+        d->channel_pipe = g_io_channel_unix_new(d->pipe);
+        g_io_add_watch (d->channel_pipe, G_IO_IN , festival_response_pipe, d);
 	
-	/* Set things up for async mode */
+	d->channel_sock = g_io_channel_unix_new(d->sock);
+        g_io_add_watch (d->channel_sock, G_IO_IN, festival_response_sock, d);
 
 	if (festival_server_exists)
-	    festival_synthesis_driver_say_raw (d, "(audio_mode 'async)\n");
+    	    festival_synthesis_driver_say_raw (d, "(audio_mode 'async)\n");
+	
+        g_timeout_add (50,festival_querying_queue, d);
 
-	return festival_server_exists;
+        return festival_server_exists;
 }
 
 
 static void
 festival_stop (FestivalSynthesisDriver *d)
 {
-	close (d->festival_input);
-	close (d->festival_output);
-	d->festival_input = d->festival_output = -1;
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (d));
 
-	kill (d->pid, SIGTERM);
-	waitpid (d->pid, NULL, 0);
-	d->pid = 0;
+	if (d->pid > 0)
+        {
+	    kill (d->pid, SIGTERM);
+	    waitpid (d->pid, NULL, 0);
+        }
+	d->pid = -1;
+
+        g_free (d->version);
+        d->version = NULL;
+
+	d->initialized = FALSE;
+
+        d->last_speaker = NULL;
+    
+
+	if (d->channel_sock)
+	{
+	    g_io_channel_shutdown (d->channel_sock, FALSE, NULL);
+	    g_io_channel_unref (d->channel_sock);
+        }
+	d->channel_sock = NULL;
+
+	if (d->channel_pipe)
+	{
+	    g_io_channel_shutdown (d->channel_pipe, FALSE, NULL);
+	    g_io_channel_unref (d->channel_pipe);
+	}
+	d->channel_pipe = NULL;
+
+	if (d->sock > 0)
+    	    close(d->sock);
+	d->sock = -1;
+
+        if (d->pipe > 0)
+	    close (d->pipe);
+        d->pipe = -1;
+
+	festival_free_list (d);
+
+	clb_list_free (d->crt_clbs);
+	d->crt_clbs = NULL;
+
+}
+
+
+static void 
+festival_add_driver (FestivalSynthesisDriver *d)
+{
+	driver_list = g_slist_append (driver_list, d);
+}
+
+
+static void 
+festival_remove_driver (FestivalSynthesisDriver *d)
+{
+	driver_list = g_slist_remove (driver_list, d);
+}
+
+
+static gboolean 
+festival_driver_is_alive (FestivalSynthesisDriver *d)
+{
+	return g_slist_find (driver_list, d) != NULL;    
+}
+
+
+static gboolean 
+festival_is_any_driver_alive ()
+{
+	return driver_list != NULL;    
 }
 
 
@@ -199,15 +588,16 @@ get_voice_list (void)
 }
 
 
-
 static void
 voice_list_free (GSList *l)
 {
+	g_assert (l);
 	GSList *tmp = l;
 	
-	while (tmp) {
-		CORBA_free (tmp->data);
-		tmp = tmp->next;
+	while (tmp)
+	{
+    	    CORBA_free (tmp->data);
+	    tmp = tmp->next;
 	}
 	g_slist_free (l);
 }
@@ -365,36 +755,42 @@ festival_isInitialized (PortableServer_Servant servant,
 static void
 festival_synthesis_driver_init (FestivalSynthesisDriver *d)
 {
-	d->festival_input  = d->festival_output = -1;
-	d->version = NULL;
-	d->last_speaker = NULL;
-	d->initialized = FALSE;
+        d->version = NULL;
+        d->last_speaker = NULL;
+        d->initialized = FALSE;
+        d->sock = -1;
+	d->pipe = -1;
+        d->channel_sock = NULL;
+        d->channel_pipe = NULL;	
+        d->crt_clbs = NULL;
+        d->is_shutting_up = FALSE;
+	d->is_speaking = FALSE;
+        d->is_querying = FALSE;
+        d->list = NULL;
+        d->crt_id = 0;
+        d->queue_length = 0;	
 }
-
-
 
 
 static void
 festival_synthesis_driver_finalize (GObject *obj)
 {
-	FestivalSynthesisDriver *d = FESTIVAL_SYNTHESIS_DRIVER (obj);
+        FestivalSynthesisDriver *d = FESTIVAL_SYNTHESIS_DRIVER (obj);
+    
+#ifdef FESTIVAL_DEBUG_CONTROL
+	fprintf (stderr, "\nSEND EXIT");
+#endif
+	festival_synthesis_driver_say_raw (d, "(exit)\n");
 
-	if (d->version)
-		g_free (d->version);
-	if (d->festival_input) {
-
-		/* Tell the festival binary we're done */
-
-		festival_synthesis_driver_say_raw (d, "(exit)\n");
-		
-		close (d->festival_input);
-		close (d->festival_output);
-	}
-	waitpid (d->pid, NULL, 0);
+	festival_stop (d);
 	if (parent_class->finalize)
-		parent_class->finalize (obj);
-	printf ("Festival driver finalized.\n");
-	bonobo_main_quit ();
+    	    parent_class->finalize (obj);
+		
+        printf ("Festival driver finalized.\n");
+	festival_remove_driver (d);
+	
+        if (!festival_is_any_driver_alive ())
+	    bonobo_main_quit ();
 }
 
 
@@ -420,55 +816,219 @@ festival_synthesis_driver_class_init (FestivalSynthesisDriverClass *klass)
 }
 
 
-
 void
 festival_synthesis_driver_say_raw (FestivalSynthesisDriver *d,
-			       gchar *text)
+			    	   gchar 		   *text)
 {
-	int l = strlen (text);
-	write (d->festival_input, text, l);
+        int l, written;
+
+	g_assert (text && IS_FESTIVAL_SYNTHESIS_DRIVER (d) && d->channel_sock);
+#ifdef FESTIVAL_DEBUG_SEND
+        fprintf (stderr, "\nRAW SEND :\"%s\"", text);
+#endif
+	l = strlen (text);
+        g_io_channel_write_chars (d->channel_sock, text, l, &written, NULL);
+        g_io_channel_flush (d->channel_sock, NULL);
+}
+
+
+void
+festival_synthesis_driver_read_raw_line_sock (FestivalSynthesisDriver 	*d,
+			    		      gchar 			**ack)
+{
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (d) && ack && d->channel_sock);
+
+	g_io_channel_read_line (d->channel_sock, ack, NULL, NULL, NULL);
+}
+
+
+void
+festival_synthesis_driver_read_raw_line_pipe (FestivalSynthesisDriver 	*d,
+			    		      gchar 			**ack)
+{
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (d) && ack && d->channel_pipe);
+
+	g_io_channel_read_line (d->channel_pipe, ack, NULL, NULL, NULL);
+}
+
+
+static gboolean
+festival_querying_queue (gpointer data)
+{
+        FestivalSynthesisDriver *driver = data;
+
+	g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (driver));
+
+        if (!driver->is_querying && !driver->is_shutting_up && driver->is_speaking)
+	{	
+#ifdef FESTIVAL_DEBUG_CONTROL
+	    fprintf (stderr, "\nSENT QUERY");
+#endif
+	    festival_synthesis_driver_say_raw (driver, "(audio_mode 'query)\n");
+	    driver->is_querying = TRUE;
+	}
+    
+        return TRUE;
+}
+
+
+static gboolean
+festival_synthesis_driver_say_ (FestivalSynthesisDriver *d,
+			        FestivalSpeaker 	*s,
+			        gchar 			*text)
+{
+        gchar *escaped_string;
+	gchar *ptr1, *ptr2;
+
+	g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (d) && IS_FESTIVALSPEAKER (s) && text);
+    
+    
+        escaped_string = g_malloc (strlen (text)*2+1);
+        ptr1 = text;
+        ptr2 = escaped_string;
+        while (ptr1 && *ptr1)
+        {
+        	if (*ptr1 == '\"')
+		    *ptr2++ = '\\';
+		*ptr2++ = *ptr1++;
+        }
+	*ptr2 = 0;
+
+        /* Refresh if needded */ 
+        if (d->last_speaker != s || speaker_needs_parameter_refresh (SPEAKER(s)))
+	{
+	    /* if (!d->last_speaker || strcmp (d->last_speaker->voice, s->voice))*/
+	    festival_synthesis_driver_say_raw (d, s->voice);
+	    speaker_refresh_parameters (SPEAKER(s));
+	    d->last_speaker = s;
+	}
+
+	clb_list_free (d->crt_clbs);
+	d->crt_clbs = speaker_get_clb_list (SPEAKER (s));
+
+#ifdef FESTIVAL_DEBUG_TEXT
+	fprintf (stderr, "\nSENT:\"%s\" from \"%s\"", escaped_string, text);
+#endif
+	d->is_speaking = TRUE;
+	d->queue_length = 1;
+	festival_synthesis_driver_say_raw (d, "(SayText \"");
+	festival_synthesis_driver_say_raw (d, escaped_string);
+	festival_synthesis_driver_say_raw (d, "\")\r\n");
+
+	festival_synthesis_driver_say_raw (d, "(SayText \"\")\r\n");
+
+        if (escaped_string)
+		g_free (escaped_string);
+    
+	return TRUE;
+}
+
+
+static void
+festival_process_text_out (FestivalTextOut *text_out)
+{
+	g_assert (text_out);
+
+#ifdef FESTIVAL_DEBUG_TEXT
+        fprintf (stderr, "\nPROCESS: %d ---\"%s\"", text_out->text_id, text_out->text);
+#endif
+	festival_synthesis_driver_say_ (text_out->driver, text_out->speaker, text_out->text);
+	     
+        text_out->driver->crt_id = text_out->text_id;
+	if (text_out->driver->crt_clbs)
+	{
+	    add_callback (text_out->driver->crt_clbs, text_out->driver->crt_id, GNOME_Speech_speech_callback_speech_started);
+	    generate_callbacks ();
+	}
+}
+
+
+static void
+festival_free_text_out_list (GSList *list)
+{
+
+        GSList *crt;
+
+#ifdef FESTIVAL_DEBUG_QUEUE
+	fprintf (stderr, "\nQUEUE DISCARDING");
+#endif
+	for (crt = list; crt; crt = crt->next)
+	{
+#if defined (FESTIVAL_DEBUG_QUEUE) || defined (FESTIVAL_DEBUG_TEXT)
+	    FestivalTextOut *text_out = crt->data;
+	    fprintf (stderr, "\n DISCARD QUEUE ELEMENT: %d---\"%s\"",text_out->text_id, text_out->text);
+#endif
+	    festival_text_out_terminate(crt->data);
+	}	
+	
+	g_slist_free (list);
+	list = NULL;
+}
+
+
+static void 
+festival_free_list (FestivalSynthesisDriver *driver)
+{
+        GSList *tmp;
+    
+	g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (driver));
+    
+	tmp = driver->list;
+	driver->list = NULL;
+	festival_free_text_out_list (tmp);
 }
 
 
 gint
-festival_synthesis_driver_say (FestivalSynthesisDriver *d,
-			       FestivalSpeaker *s,
-			       gchar *text)
+festival_synthesis_driver_say (FestivalSynthesisDriver  *d,
+			       FestivalSpeaker 		*s,
+			       gchar 			*text)
 {
-	gchar *escaped_string;
-	gchar *ptr1, *ptr2;
-	
-	escaped_string = g_malloc (strlen (text)*2+1);
-	ptr1 = text;
-	ptr2 = escaped_string;
-	while (ptr1 && *ptr1) {
-		if (*ptr1 == '\"')
-			*ptr2++ = '\\';
-		*ptr2++ = *ptr1++;
-	}
-	*ptr2 = 0;
+        FestivalTextOut *text_out;
 
-	/* Refresh if needded */
+        g_assert (IS_FESTIVAL_SYNTHESIS_DRIVER (d) && IS_FESTIVALSPEAKER (s) && text);
 
-	if (d->last_speaker != s || speaker_needs_parameter_refresh (SPEAKER(s))) {
-		if (!d->last_speaker || strcmp (d->last_speaker->voice, s->voice))
-			festival_synthesis_driver_say_raw (d, s->voice);
-		speaker_refresh_parameters (SPEAKER(s));
-		d->last_speaker = s;
-	}
-	festival_synthesis_driver_say_raw (d, "(SayText \"");
-	festival_synthesis_driver_say_raw (d, escaped_string);
-	festival_synthesis_driver_say_raw (d, "\")\r\n");
-	if (escaped_string)
-		g_free (escaped_string);
-	return text_id++;
+	text_out = festival_text_out_new ();
+        text_out->text = g_strdup (text);           
+        text_out->driver = bonobo_object_ref (BONOBO_OBJECT (d)); 
+        text_out->speaker = bonobo_object_ref (BONOBO_OBJECT (s));
+        text_out->text_id = text_id++;
+    
+#if defined (FESTIVAL_DEBUG_QUEUE) || defined (FESTIVAL_DEBUG_TEXT)
+	fprintf (stderr, "\nQUEUE ADD %d---\"%s\"",text_out->text_id, text_out->text);
+#endif    
+        d->list = g_slist_append (d->list, text_out);  
+
+	festival_synthesis_driver_process_list (d);
+    
+        return text_out->text_id;
 }
 
 
 gboolean
+festival_synthesis_driver_is_speaking (FestivalSynthesisDriver *d)
+{
+	g_assert (d);
+	
+	return d->is_speaking;
+}
+
+gboolean
 festival_synthesis_driver_stop (FestivalSynthesisDriver *d)
 {
-	festival_synthesis_driver_say_raw (d, "(audio_mode 'shutup)\n");
+        g_assert (d);
+
+	d->queue_length = 0;
+        festival_free_list (d);
+        if (!d->is_shutting_up)
+	{
+#ifdef FESTIVAL_DEBUG_CONTROL
+	    fprintf (stderr, "\nSEND SHUTUP");
+#endif
+	    festival_synthesis_driver_say_raw (d, "(audio_mode 'shutup)\n");
+	    d->is_shutting_up = TRUE;
+	}
+    
 	return TRUE;
 }
 
@@ -479,48 +1039,52 @@ BONOBO_TYPE_FUNC_FULL (FestivalSynthesisDriver,
 		       festival_synthesis_driver);
 
 
-
-FestivalSynthesisDriver *
+FestivalSynthesisDriver * 
 festival_synthesis_driver_new (void)
 {
-	FestivalSynthesisDriver *driver;
+        FestivalSynthesisDriver *driver;
+	
 	driver = g_object_new (FESTIVAL_SYNTHESIS_DRIVER_TYPE, NULL);
+	festival_add_driver (driver);
+    
 	return driver;
 }
 
 
-
-
 int
-main (int argc,
+main (int  argc,
       char **argv)
 {
-	FestivalSynthesisDriver *driver;
-	char *obj_id;
-	int ret;
+        FestivalSynthesisDriver *driver;
+	char 	*obj_id;
+	int 	ret;
+
+        driver_list = NULL;
+	markers_list = NULL;
 
 	if (!bonobo_init (&argc, argv))
-	{
-		g_error ("Could not initialize Bonobo Activation / Bonobo");
+        {
+    	    g_error ("Could not initialize Bonobo Activation / Bonobo");
 	}
 
-	obj_id = "OAFIID:GNOME_Speech_SynthesisDriver_Festival:proto0.3";
+        obj_id = "OAFIID:GNOME_Speech_SynthesisDriver_Festival:proto0.3";
 
 	driver = festival_synthesis_driver_new ();
-
+	
 	if (!driver)
-		g_error ("Error creating speech synthesis driver object.\n");
+    	    g_error ("Error creating speech synthesis driver object.\n");
 
-	ret = bonobo_activation_active_server_register (
-                obj_id,
-                bonobo_object_corba_objref (bonobo_object (driver)));
+        ret = bonobo_activation_active_server_register (obj_id,
+					                bonobo_object_corba_objref (bonobo_object (driver)));
 
-	if (ret != Bonobo_ACTIVATION_REG_SUCCESS)
-		g_error ("Error registering speech synthesis driver.\n");
+        if (ret != Bonobo_ACTIVATION_REG_SUCCESS)
+	    g_error ("Error registering speech synthesis driver.\n");
 	else
-		bonobo_main ();
-	return 0;
+	    bonobo_main ();
+	
+        g_assert (driver_list == NULL);
+	g_assert (markers_list == NULL);
+	bonobo_debug_shutdown ();	
+
+        return 0;
 }
-
-
-

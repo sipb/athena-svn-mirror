@@ -57,7 +57,7 @@ typedef struct {
 
 	GObject *driver;
 	GNOME_Speech_SpeechCallback cb;
-
+	GSList *clb_list;
 	/* Speech Parameters */
 
 	GSList *parameters;
@@ -95,5 +95,13 @@ gboolean
 speaker_refresh_parameters (Speaker *s);
 gboolean
 speaker_needs_parameter_refresh (Speaker *s);
+
+GSList*
+clb_list_duplicate (GSList *list);
+
+GSList*
+speaker_get_clb_list (Speaker *s); 
+void
+clb_list_free (GSList *list);
 
 #endif /* _SPEAKER_H_ */

@@ -9,8 +9,8 @@ gnome-speech requires the following packages:
 Simple install procedure
 ========================
 
-  % gzip -cd gnome-speech-0.3.5.tar.gz | tar xvf - # unpack the sources
-  % cd gnome-speech-0.3.5
+  % gzip -cd gnome-speech-0.3.6.tar.gz | tar xvf - # unpack the sources
+  % cd gnome-speech-0.3.6
   % ./configure				   # run the `configure' script
   % make				   # build GTK
   [ Become root if necessary ]

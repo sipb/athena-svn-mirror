@@ -42,10 +42,20 @@ typedef struct {
 	BonoboObject parent;
 
 	pid_t pid;
-	int festival_input, festival_output;
 	gchar *version;
 	gboolean initialized;
 	FestivalSpeaker *last_speaker;
+	int sock;
+	int pipe;
+	GIOChannel *channel_sock;
+	GIOChannel *channel_pipe;
+	gboolean is_shutting_up; 
+	gboolean is_speaking;
+	GSList *list;
+	gboolean is_querying; 
+	gint crt_id;
+	GSList *crt_clbs;
+	int queue_length;
 } FestivalSynthesisDriver;
 
 typedef struct {
@@ -64,6 +74,8 @@ festival_synthesis_driver_say (FestivalSynthesisDriver *d,
 			       gchar *text);
 gboolean
 festival_synthesis_driver_stop (FestivalSynthesisDriver *d);
+gboolean
+festival_synthesis_driver_is_speaking (FestivalSynthesisDriver *d);
 void
 festival_synthesis_driver_say_raw (FestivalSynthesisDriver *d,
 				   gchar *text);

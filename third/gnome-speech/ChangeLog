@@ -1,3 +1,43 @@
+2005-01-10 Bill Haneman <bill.haneman@sun.com>
+
+	* configure,in, README, NEWS: Updated for 0.3.6 version.
+
+2005-01-10 Remus Draica <rd@baum.ro> (patch from Oana Serb <os@baum.ro>)
+
+	* drivers/festival/festivalspeaker.c:
+	* drivers/festival/festivalsynthesidriver.[c,h]:
+	* gnome-speech/speaker.[c,h]:
+	Add support for markers to festival driver (bug #158442).
+
+2004-10-25  Callum McKenzie  <callum@physics.otago.ac.nz>
+
+	* configure.in: Rework java environment checks to do the right
+	thing with an incomplete java environment.
+
+2004-10-05  Marc Mulcahy  <marc@plbb.net>
+
+	* drivers/viavoice/viavoicesynthesisdriver.c
+	drivers/viavoice/viavoicesynthesisdriver.h
+	drivers/viavoice/viavoicespeaker.c
+	drivers/viavoice/viavoicespeaker.h: Driver for new IBM ViaVoice
+	Linux runtime.
+
+	* drivers/viavoice/Makefile.am: Updated for build of new ViaVoice
+	driver.
+
+	* configure.in: Updated checks to work with new ViaVoice.
+
+2004-09-10  Marc Mulcahy  <marc.mulcahy@sun.com>
+
+	* drivers/freetts/java/org/GNOME/Speech/FreeTTSSynthesisDriver.java:
+	Read the "ft_audio_player" system property to determine whether to
+	use the clip or streaming audio player.
+
+	* drivers/freetts/freetts-synthesis-driver.in: Support using
+	either streaming or clip audio player.  Check the
+	FT_STREAMING_AUDIO environment variable, and pass the
+	"ft_audio_player" property to the VM accordingly.
+
 2004-08-30  Marc Mulcahy  <marc.mulcahy@sun.com>
 
 	* drivers/dectalk/dectalksynthesisdriver.c: Fix the build.

@@ -1,9 +1,9 @@
-GNOME Speech 0.3.4
+GNOME Speech 0.3.6
 
 1. Introduction
 ===============================================================================
 
-This is GNOME Speech version 0.2.  It's purpose is to provide a
+This is GNOME Speech version 0.3.6.  It's purpose is to provide a
 simple general API for producing text-to-speech output.
 
 The GNOME Speech 1.0 API is currently under development, and it will
@@ -16,7 +16,7 @@ under development.
 2. Overview
 ===============================================================================
 
-GNOME Speech 0.2 is made up of three basic parts:
+GNOME Speech 0.3 is made up of three basic parts:
 
 	* IDL interface definitions
 	* libgnomespeech - Convenience library for speech driver
@@ -62,7 +62,7 @@ drivers written in the Java(tm) language.
 2.4: Sample Driver Implementations
 ===============================================================================
 
-GNOME Speech 0.2 ships with the following drivers:
+GNOME Speech 0.3 ships with source code for the following drivers:
 
 	* Festival Speech Synthesis System 1.4.2
 	* FreeTTS 1.2

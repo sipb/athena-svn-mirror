@@ -13,4 +13,8 @@ else
 	JAVA="`which java`"
 fi
 
-$JAVA org.GNOME.Speech.FreeTTSSynthesisDriver $1 $2
+if test "x$FT_STREAMING_AUDIO" != "x";  then
+    $JAVA -Dft_audio_player=streaming org.GNOME.Speech.FreeTTSSynthesisDriver $1 $2
+else
+    $JAVA -Dft_audio_player=clip org.GNOME.Speech.FreeTTSSynthesisDriver $1 $2
+fi
