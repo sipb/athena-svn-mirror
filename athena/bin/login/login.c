@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.78 1996-06-26 20:44:11 cfields Exp $
+ * $Id: login.c,v 1.79 1996-06-26 20:47:31 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.78 1996-06-26 20:44:11 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.79 1996-06-26 20:47:31 ghudson Exp $";
 #endif
 
 /*
@@ -183,8 +183,6 @@ typedef int sigtype;
 
 #define START_UID	200	/* start assigning arbitrary UID's here */
 #define MIT_GID		101	/* standard primary group "mit" */
-
-extern char *krb_err_txt[];	/* From libkrb */
 
 char	nolog[] =	"/etc/nologin";
 char	qlog[]  =	".hushlogin";
