@@ -7,7 +7,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/system.h,v $
- *	$Id: system.h,v 1.5 1991-04-15 17:24:40 lwvanels Exp $
+ *	$Id: system.h,v 1.6 1991-06-30 10:37:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -54,7 +54,6 @@ off_t lseek P((int d, off_t offset, int whence));
 int open P((char *path, int flags, int mode));
 int open P((char *path, int flags, int mode));
 void openlog P((char *ident, int logopt, int facility));
-int perror P((char *s));
 int psignal P((unsigned sig, char *s));
 int read P((int d, void *buf, int nbytes));
 struct servent *getservbyname P((char *name, char *proto));
@@ -62,7 +61,6 @@ int setsockopt P((int s, int level, int optname, void *optval, int optlen));
 int shutdown P((int s, int how));
 int socket P((int domain, int type, int protocol));
 int strcmp P((char *s1, char *s2));
-int strlen P((char *s));
 void syslog P((int priority, char *message, ...));
 int write P((int d, void *buf, int nbytes));
 
