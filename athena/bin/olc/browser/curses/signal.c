@@ -4,7 +4,7 @@
  *	MIT Project Athena
  *
  *	Lucien Van Elsen
- *	Project Athena
+ *	MIT Project Athena
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
@@ -25,13 +25,15 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.5 1991-04-10 00:54:14 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.6 1991-09-10 15:13:49 lwvanels Exp $
  */
 
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.5 1991-04-10 00:54:14 lwvanels Exp $";
-#endif	lint
+#ifndef SABER
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.6 1991-09-10 15:13:49 lwvanels Exp $";
+#endif
+#endif
 
 #include <mit-copyright.h>
 
@@ -40,9 +42,22 @@ static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #include "cref.h"
 #include "globals.h"
 
-static  int handle_resize_event();
-static  int handle_interrupt_event();
-void init_signals();
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
+#endif
+
+#ifdef VOID_SIGRET
+static  void handle_resize_event P((int sig));
+static  void handle_interrupt_event P((int sig));
+#else
+static  int handle_resize_event P((int sig));
+static  int handle_interrupt_event P((int sig));
+#endif
+void init_signals P((void));
+
+#undef P
 
 void
 init_signals()
@@ -51,7 +66,13 @@ init_signals()
   signal(SIGWINCH, handle_resize_event);
 }
 
-static int handle_resize_event()
+#ifdef VOID_SIGRET
+static void
+#else
+static int
+#endif
+handle_resize_event(sig)
+     int sig;
 {
     struct winsize ws;
     int lines;
@@ -63,7 +84,11 @@ static int handle_resize_event()
 
     if (ioctl(fileno(stdout), TIOCGWINSZ, &ws) == -1) {
       perror("cref: finding out new screen size");
+#ifdef VOID_SIGRET
+      return;
+#else
       return(-1);
+#endif
     }
     else {
       if (ws.ws_row != 0)
@@ -97,12 +122,22 @@ static int handle_resize_event()
     refresh();
 
     signal(SIGWINCH, handle_resize_event);
+#ifdef VOID_SIGRET
+    return;
+#else
     return(0);
+#endif
 }
 
 
 
-static int handle_interrupt_event( )
+#ifdef VOID_SIGRET
+static void
+#else
+static int
+#endif
+handle_interrupt_event(sig)
+     int sig;
 {
     signal(SIGINT, SIG_IGN);
 
