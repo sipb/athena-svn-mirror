@@ -1,9 +1,9 @@
 /*
- *	$Id: track.c,v 4.21 1999-01-22 23:16:03 ghudson Exp $
+ *	$Id: track.c,v 4.22 1999-02-16 15:06:58 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: track.c,v 4.21 1999-01-22 23:16:03 ghudson Exp $";
+static char *rcsid_header_h = "$Id: track.c,v 4.22 1999-02-16 15:06:58 danw Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -30,7 +30,7 @@ char subfilename[LINELEN] = DEF_SUB;	/* default subscription file */
 char subfilepath[LINELEN] = "";		/* alternate subscription file */
 char statfilepath[LINELEN];		/* pathname to statfile */
 FILE *statfile;				/* the statfile! */
-Statline *statfilebufs;			/* array of line buffers for sort() */
+char **statfilebufs;			/* array of lines for sort() */
 int cur_line;				/* index into statfilebufs	*/
 unsigned maxlines = 0;			/* max # lines in statfile buf array.
 					 * write_statline maintains maxlines */
@@ -541,6 +541,7 @@ struct currentness *currency;
 				 /* fall through to poppath() calls */
 		case DONT_TRACK: poppath( f);
 				 poppath( c);
+				 fprintf(stderr, "not tracking %s\n", dp->d_name);
 				 continue;
 		default:	 sprintf(errmsg,"bad value from gettail\n");
 				 do_panic();

@@ -1,9 +1,9 @@
 /*
- *	$Id: stamp.c,v 4.12 1999-01-22 23:16:02 ghudson Exp $
+ *	$Id: stamp.c,v 4.13 1999-02-16 15:06:57 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Id: stamp.c,v 4.12 1999-01-22 23:16:02 ghudson Exp $";
+static char *rcsid_header_h = "$Id: stamp.c,v 4.13 1999-02-16 15:06:57 danw Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -27,15 +27,14 @@ char **path; struct currentness *c;
 	int same_name;
 	unsigned int type;
 	struct stat fromstat, *s;
-	unsigned size, curr1 = 0, extra = 0;
+	unsigned size, curr1 = 0, extra = 0, len = 0;
 
 	if ( cur_line >= maxlines) {
 		maxlines += MAXLINES;
 		size = maxlines * sizeof statfilebufs[0];
-		statfilebufs =
-			(Statline *) ( cur_line ?
-				       realloc( (char *) statfilebufs, size)
-				      : malloc( size));
+		statfilebufs = ( cur_line ?
+				 realloc( statfilebufs, size) :
+				 malloc( size));
 		if ( ! statfilebufs) {
 			sprintf( errmsg, "alloc failed: %d statfile lines\n",
 				 cur_line);
@@ -55,6 +54,7 @@ char **path; struct currentness *c;
 		break;
 	case S_IFLNK:
 		curr1 = (unsigned int) c->link;
+		len = strlen(c->link);
 		break;
 	case S_IFDIR:
 		curr1 = 0;
@@ -83,9 +83,12 @@ char **path; struct currentness *c;
 	name = path[ NAME];
 	if ( !*name) name = "/";
 
-	KEYCPY( statfilebufs[ cur_line].sortkey, name);
-
-	linebuf = statfilebufs[ cur_line].line;
+	linebuf = statfilebufs[ cur_line] = malloc( strlen( name) + len + 100);
+	if ( !linebuf) {
+		sprintf( errmsg, "malloc failed: %d statfile lines\n",
+			 cur_line);
+		do_panic();
+	}
 
 	/* if this entry's fromfile != cmpfile,
 	 * the subscribing machine needs to know:
@@ -138,17 +141,33 @@ fake_link( root, name, c) char *root, *name; struct currentness *c; {
 	c->sbuf.st_mode = S_IFLNK;
 }
 
+int stat_cmp( ain, bin) 
+char **ain, **bin;
+{
+	char *a, *b, c, d;
+
+	a = *ain;
+	b = *bin;
+	/* Skip over first character which refers to file type */
+	a++; b++;
+	while ( *a != ' ' && *b != ' ') {
+		c = (*a == '/') ? '\001' : *a; a++;
+		d = (*b == '/') ? '\001' : *b; b++;
+		if ( c != d)
+			return( c - d);
+	}
+	return( *a == ' ' ? -1 : 1);
+}
+
+
 sort_stat() {
 	int i;
 
-	/* NOTE: this qsort call assumes that each statfilebufs[] element
-	 * begins with a sortkey as its first field.
-	 */
         qsort( (char *) statfilebufs, cur_line,
-		sizeof( statfilebufs[ 0]), strcmp);
+		sizeof( statfilebufs[ 0]), stat_cmp);
 
         for ( i = 0; i < cur_line; i++) {
-                fputs( statfilebufs[ i].line, statfile);
+                fputs( statfilebufs[ i], statfile);
 	}
 }
 

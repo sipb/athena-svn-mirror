@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.16 1998-12-18 13:34:55 rbasch Exp $
+ * $Id: track.h,v 4.17 1999-02-16 15:06:58 danw Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -83,12 +83,7 @@ typedef struct currentness {
 	struct stat sbuf;
 } Currentness;
 
-typedef struct statline {
-	char sortkey[ LINELEN];
-	char line[ LINELEN];
-} Statline ;
-
-extern Statline *statfilebufs;
+extern char **statfilebufs;
 extern int cur_line;
 extern FILE *statfile;
 
