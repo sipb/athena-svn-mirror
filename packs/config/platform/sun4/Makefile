@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 1997-12-06 21:04:56 ghudson Exp $
+# $Id: Makefile,v 1.15 1997-12-06 21:13:01 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -39,11 +39,9 @@ install:
 	install -c -m 0644 Athena5.kt ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 AthenaModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 AthenaType5Keypad ${DESTDIR}${KEYMAPS}
-	install -c -m 0644 AthenaType5Rubout ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 SunModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 SunType5Keypad ${DESTDIR}${KEYMAPS}
-	install -c -m 0644 SunType5Rubout ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 XTerm.ad ${DESTDIR}${APPDEFS}/XTerm
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 cron ${DESTDIR}${DEFAULT}
