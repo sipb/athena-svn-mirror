@@ -90,26 +90,19 @@ serves to shorten and make more readable the user's PATH. In addition,
 if a path element is using compatibility, such as a sun4x_56 system
 having a sun4x_55 directory in its path, an asterisk will be added, as
 in {add foo*}.
-.TP
+.TP 9
 .B \-P athena_path
-.br
-.ns
-.HP 9
-.B \-M athena_manpath
-.br
-These options are used for supporting the use of \fIadd\fR in the
-user's ~/.environment file. The user normally need never specify these
-options as that is taken care of by a special version of the alias
-that is in effect when the .environment file is run. These options are
-used to pass the \fIathena_path\fR and \fIathena_manpath\fR shell
-variables to \fIadd\fR on the command line, and cause \fIadd\fR to
-modify those variables in its output instead of the environment
-variables PATH and MANPATH as it normally does. Note that if one of
-these options is specified, the other must also be. In the C shell
+This option is used for supporting the use of \fIadd\fR in the user's
+~/.environment file. The user normally need never specify this option
+as that is taken care of by a special version of the alias that is in
+effect when the .environment file is run. This option is used to pass
+the \fIathena_path\fR shell variable to \fIadd\fR on the command line,
+and cause \fIadd\fR to modify that variable in its output instead of
+the environment variable PATH as it normally does. In the C shell
 case, \fIathena_path\fR is space-separated, and so must be quoted in
-the shell in order to be passed to \fIadd\fR as a single argument. In the
-Bourne shell case, \fIathena_path\fR is colon-separated, so this isn't
-necessary.
+the shell in order to be passed to \fIadd\fR as a single argument. In
+the Bourne shell case, \fIathena_path\fR is colon-separated, so this
+isn't necessary.
 .TP 9
 .B \-a
 This option causes \fIadd\fR to pass all remaining options on the command

@@ -17,7 +17,7 @@
  * for attach.
  */
 
-static char rcsid[] = "$Id: add.c,v 1.4 1998-05-31 15:46:30 ghudson Exp $";
+static char rcsid[] = "$Id: add.c,v 1.5 1998-06-09 17:07:06 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,8 +39,7 @@ char *debug_strings[5] = {
   NULL,
   "$PATH",
   "$athena_path",
-  "$MANPATH",
-  "$athena_manpath"
+  "$MANPATH"
 };
 
 char *shell_templates[2][2] =
@@ -50,17 +49,16 @@ char *shell_templates[2][2] =
     "PATH=%s; export PATH; MANPATH=%s; export MANPATH\n"
   },
   {
-    "set athena_path=(%s); set athena_manpath=%s\n",
-    "athena_path=%s;athena_manpath=%s\n"
+    "set athena_path=(%s); setenv MANPATH %s\n",
+    "athena_path=%s; MANPATH=%s; export MANPATH\n"
   }
 };
 
 void usage()
 {
-  fprintf(stderr, "Usage: add [-vdfrpwbq] [-P $athena_path] "
-	  "[-M $athena_manpath] [-a attachflags]\n"
-	  "           [lockername] [lockername] ...\n");
-  fprintf(stderr, "   or: add [-dfrb] [pathname] [pathname] ...\n");
+  fprintf(stderr, "Usage: add [-vdfrpwbq] [-P $athena_path] [-a attachflags] "
+	  "[lockername ...]\n");
+  fprintf(stderr, "   or: add [-dfrb] [-P $athena_path] pathname ...\n");
   exit(1);
 }
 
@@ -194,7 +192,7 @@ int addcmd(int argc, char **argv)
   int c;
   int verbose = 0, debug = 0, add_to_front = 0,
     remove_from_path = 0, print_path = 0, give_warnings = 0,
-    use_athena_paths = 0, bourne_shell = 0, end_args = 0, quiet = 0;
+    use_athena_path = 0, bourne_shell = 0, end_args = 0, quiet = 0;
   string_list *path = NULL, *manpath = NULL;
   string_list *delta_path = NULL, *delta_manpath = NULL;
   string_list *mountpoint_list = NULL;
@@ -264,20 +262,9 @@ int addcmd(int argc, char **argv)
 	    usage();
 	  }
 
-	use_athena_paths = 1;
+	use_athena_path = 1;
 	path_string = optarg;
-	break;
 
-      case 'M':
-	/* Wait to parse manpath_string until we parse path_string. */
-	if (optarg[0] == '-')
-	  {
-	    fprintf(stderr, "%s: -M requires an argument\n", progname);
-	    usage();
-	  }
-
-	use_athena_paths = 1;
-	manpath_string = optarg;
 	break;
 
       case 'a':
@@ -292,28 +279,17 @@ int addcmd(int argc, char **argv)
 	break;
       }
 
-  /* Set up path/manpath_string to point to the paths we wish to
-   * manipulate. If use_athena_paths, -M and -P should have been
-   * specified, and path/manpath_string are already set. Otherwise,
-   * we want the search paths specified in the environment.
+  /* Set up path_string and manpath_string to point to the paths we wish
+   * to manipulate.  path_string may have already been set by the -P
+   * option.
    */
-  if (use_athena_paths)
-    {
-      if (path_string == NULL || manpath_string == NULL)
-	{
-	  fprintf(stderr, "%s: -P and -M must both be specified\n", progname);
-	  usage();
-	}
+  if (!path_string)
+    path_string = getenv("PATH");
+  manpath_string = getenv("MANPATH");
 
-      /* The C shell delimiter for $athena_path is a space. */
-      if (!bourne_shell)
-	path_delimiter = ' ';
-    }
-  else
-    {
-      path_string = getenv("PATH");
-      manpath_string = getenv("MANPATH");
-    }
+  /* The C shell delimiter for $athena_path is a space. */
+  if (use_athena_path && !bourne_shell)
+    path_delimiter = ' ';
 
   if (sl_parse_string(&path, path_string, path_delimiter) ||
       sl_parse_string(&manpath, manpath_string, ':'))
@@ -437,11 +413,11 @@ int addcmd(int argc, char **argv)
 
   /* Make the changes to the path lists. */
   path = modify_path(path, delta_path, add_to_front, remove_from_path,
-		     debug_strings[debug * (use_athena_paths + 1)]);
+		     debug_strings[debug * (use_athena_path + 1)]);
   sl_free(&delta_path);
 
   manpath = modify_path(manpath, delta_manpath,	add_to_front, remove_from_path,
-			debug_strings[debug * (use_athena_paths + 3)]);
+			debug_strings[debug * 3]);
   sl_free(&delta_manpath);
 
   /* Output the shell commands needed to modify the user's path. */
@@ -453,7 +429,7 @@ int addcmd(int argc, char **argv)
   if (manpath_string == NULL)
     manpath_string = empty_string;
 
-  fprintf(shell, shell_templates[use_athena_paths][bourne_shell], path_string,
+  fprintf(shell, shell_templates[use_athena_path][bourne_shell], path_string,
 	  manpath_string);
 
   if (path_string != empty_string)
