@@ -235,6 +235,30 @@ EOF
 	success gconf
 	echo
 
+	# Ensure all /usr/share/pixmaps files are accessible under
+	# /usr/athena/share/pixmaps.
+	echo -n Making pixmap symlinks:
+	# Ensure all subdirectories exist in /usr/athena/share/pixmaps.
+	(cd /usr/share/pixmaps && find . -type d -print0) | \
+	  (cd /usr/athena/share/pixmaps && xargs -0 mkdir -p -m 755)
+	# Make a symlink for each file in /usr/share/pixmaps which isn't
+	# already present in /usr/athena/share/pixmaps.
+	(cd /usr/share/pixmaps && find . -type f -print0) | xargs -0 sh -c '
+	  for f; do
+	    if [ ! -e "/usr/athena/share/pixmaps/$f" ]; then
+	      ln -s "/usr/share/pixmaps/$f" "/usr/athena/share/pixmaps/$f"
+	    fi
+	  done' sh
+	# Remove stale symlinks in /usr/athena/share/pixmaps.
+	find /usr/athena/share/pixmaps -type l -print0 | xargs -0 sh -c '
+	  for f; do
+	    [ -r "$f" ] || rm -f "$f"
+	  done' sh
+	# Remove empty directories in /usr/athena/share/pixmaps.
+	find /usr/athena/share/pixmaps -type d -depth -print | \
+	  xargs rmdir 2>/dev/null
+	success pixmaps
+
 	;;
   stop)
 	;;
