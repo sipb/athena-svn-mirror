@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.1 1988-06-15 17:22:06 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.2 1988-06-15 22:41:36 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.1 1988-06-15 17:22:06 jtkohl Exp $";
+static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtSmRLst.c,v 1.2 1988-06-15 22:41:36 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -29,7 +29,8 @@ Code_t ZFormatSmallRawNoticeList(notice, list, nitems, buffer, ret_len)
 {
     Code_t retval;
     int hdrlen, i, size;
-    
+    char *ptr;
+
     if ((retval = Z_FormatRawHeader(notice, buffer, Z_MAXHEADERLEN, &hdrlen))
 	!= ZERR_NONE)
 	return (retval);
