@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.3 1988-06-21 19:45:53 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.4 1988-09-19 18:07:33 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.3  88/06/21  19:45:53  don
+ * fixed a bug in store(), and made gettail() NOT delete hash-table matches,
+ * to support link-first updates.
+ * 
  * Revision 4.2  88/06/10  14:43:55  don
  * moved incl_devs (-d option) control to gettail() from update_files();
  * 
@@ -55,10 +59,11 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.3 1988-06-21 19:45:53 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.4 1988-09-19 18:07:33 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
+#include "bellcore-copyright.h"
 
 #include "track.h"
 
