@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.64 2001-04-03 16:06:43 ghudson Exp $
+# $Id: do.sh,v 1.65 2001-04-24 22:13:56 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -137,6 +137,7 @@ case `uname -s` in
 SunOS)
   OS=solaris
   LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
+  LD_RUN_PATH=/usr/athena/lib:/usr/openwin/lib export LD_RUN_PATH
   PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin:/usr/gcc/bin
   CC=gcc
   CXX=g++
@@ -153,6 +154,7 @@ IRIX)
   ;;
 Linux)
   OS=linux
+  LD_RUN_PATH=/usr/athena/lib export LD_RUN_PATH
   PATH=/usr/bin:/bin:/usr/X11R6/bin
   CC=cc
   CXX=g++
