@@ -8,7 +8,7 @@ to CVS.  Areas covered in this file are:
 	Preparing changes for review
 	Reviewing changes
 	Early checkins
-	Updating third-party sources
+	Third-party sources
 
 You should use cvs from the gnu locker with the source repository.
 People without write access to the repository can use "cvs -u" (a
@@ -64,14 +64,13 @@ following steps while preparing your changes for review:
 
 Ideally, at least one person will respond to your mail within a day or
 two, either expressing concerns or signing onto your change.  You
-should wait at least one full working day for people to voice their
-objections.  If you receive objections or requests for further
-information from staff members, you must either satisfy those concerns
-or resolve the issue with the release team before committing your
-change.  If after one day, you have received no objections and someone
-has signed onto your change, you may commit your change.  You may also
-commit your change if no one objects within five days, even if no one
-has signed onto it.
+should wait at least one day for people to voice their objections.  If
+you receive objections or requests for further information from staff
+members, you must either satisfy those concerns or resolve the issue
+with the release team before committing your change.  If after one
+day, you have received no objections and someone has signed onto your
+change, you may commit your change.  You may also commit your change
+if no one objects within five days, even if no one has signed onto it.
 
 When you check in your change, be sure to include a clear log message.
 Explain why you are making the change you are making if it's not
@@ -122,8 +121,8 @@ and I want the next wash to work," then it is good to get a positive
 review of the change before checking it in.  Close to a release cycle,
 though, that can be ignored.
 
-Updating third-party sources
-----------------------------
+Third-party sources
+-------------------
 
 For modules in the third hierarchy, we generally use the "cvs import"
 command to track development from outside.  (To find out if this
@@ -146,3 +145,42 @@ If you add a new piece of third-party software or import a new
 version, you should look over doc/third-party and see if any notes
 should be added or modified.  This file is instrumental in locating
 new versions of software.
+
+Here are some things to pay attention to when adding or updating a
+piece of third-party software:
+
+	* If the package's build system does not use autoconf, you
+	  will probably need to write a Makefile.athena file telling
+	  the build system how to build it.
+
+	* If the package's build system does use autoconf, you may
+	  need to write a configure.athena giving special options to
+	  pass to the configure script.
+
+	* Most packages will need to be taught how to use DESTDIR.
+	  Make sure that DESTDIR references don't make it into the
+	  installed program.
+
+	* If the package installs a file setuid, it needs to specify
+	  the owner (probably "-o root" if it didn't specify one
+	  before).  Likewise, a setgid program needs a specified group
+	  owner, although this is usually done already.  Other than
+	  that, our fix_owners program will coerce unspecified owners
+	  and groups to 0.
+
+	* The package should create directories before installing
+	  files in them.
+
+	* Test your package's build and install.  Preferrably, use the
+	  "do" command, something like:
+
+		do prepare
+		do clean
+		do
+		do check
+		do -d /var/tmp/inst install
+
+	  (Replace "do" with "sh /mit/source/packs/build/do.sh" or use
+	  a shell alias).  If the package relies on libraries, you can
+	  use "-c -d /afs/dev.mit.edu/system/<sysname>/srvd-current"
+	  in the non-install steps to point at them.
