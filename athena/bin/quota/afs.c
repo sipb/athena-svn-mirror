@@ -10,7 +10,8 @@
 #include <afs/venus.h>
 #include <afs/afsint.h>
 
-extern int uflag,gflag;
+extern int uflag,gflag,fsind;
+extern char *fslist[];
 extern int heading_printed;
 
 #define user_and_groups (!uflag && !gflag)
@@ -91,15 +92,36 @@ afswarn(ap,foo,name)
     uid_t uid=getuid();
 
     vs = (struct VolumeStatus *) foo;
-    if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)) {
-	/* Only print a warning if the user attached the locker */
-	for (i = 0; i < ap->nowners; i++) {
-	    if (uid != ap->owners[i])
-		continue;
-	    sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
-		    ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
-	    putwarning(buf);
-	    break;
+/*
+ * Some sort of heuristic is need to avoid printing quota warnings for
+ * lockers the user has no control over.  For now, only print warnings if
+ * the locker was attached with mode "w"; it is (somewhat) unlikely that a
+ * user will be writing to a locker they do not have write permission to,
+ * Additionally, only warn the user if if it was they who attached it, or if
+ * they are explicitly asking for information on that locker.
+ */
+
+  if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)) {
+    if (fsind) {
+      for(i=0;i<fsind;i++) {
+	if(!strcmp(fslist[i],ap->mntpt)) {
+	  sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
+		  ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
+	  putwarning(buf);
+	  return;
 	}
+      }
     }
-}  
+    else if (ap->mode == 'w') {
+      for (i = 0; i < ap->nowners; i++) {
+	if (uid != ap->owners[i])
+	  continue;
+	sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
+		ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
+	putwarning(buf);
+	return;
+      }
+    }
+  }
+  return;
+}
