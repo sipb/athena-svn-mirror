@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.15 1999-04-30 19:24:28 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.16 1999-05-15 19:51:39 jweiss Exp $
  */
 
 #include <stdio.h>
@@ -177,6 +177,7 @@ void do_dpy(int verbose)
   int done = 0;
 
   if (verbose) {
+    fflush(stdout);
     switch(fork()) {
     case -1:
       fprintf (stderr,
