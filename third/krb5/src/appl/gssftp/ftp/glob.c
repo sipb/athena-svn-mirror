@@ -79,6 +79,7 @@ char	*home;
 extern	int errno;
 static	char *strspl(), *strend();
 char	**copyblk();
+static	char **dupblk();
 
 static void acollect(), addpath(), collect(), expand(), Gcat();
 static void ginit(), matchdir(), rscan(), sort();
@@ -105,7 +106,7 @@ ftpglob(v)
 	gflag = 0;
 	rscan(vv, tglob);
 	if (gflag == 0)
-		return (copyblk(vv));
+		return (dupblk(vv));
 
 	globerr = 0;
 	gpath = agpath; gpathp = gpath; *gpathp = 0;
@@ -663,11 +664,33 @@ copyblk(v)
 	register char **v;
 {
 	register char **nv = (char **)malloc((unsigned)((blklen(v) + 1) *
-						sizeof(char **)));
+						sizeof(char *)));
 	if (nv == (char **)0)
 		fatal("Out of memory");
 
 	return (blkcpy(nv, v));
+}
+
+static
+char **
+dupblk(v)
+	register char **v;
+{
+	register char **nvp;
+	register char **nv = (char **)malloc((unsigned)((blklen(v) + 1) *
+						sizeof(char *)));
+	if (nv == (char **)0)
+		fatal("Out of memory");
+
+	nvp = nv;
+	while (*v) {
+		*nvp = malloc((unsigned)(strlen(*v) + 1));
+		if (*nvp == (char *)0)
+			fatal("Out of memory");
+		strcpy(*nvp++, *v++);
+	}
+	*nvp = 0;
+	return (nv);
 }
 
 static
