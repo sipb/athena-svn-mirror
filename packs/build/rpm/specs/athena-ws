@@ -68,6 +68,13 @@ cp /etc/syslog.conf.athena /etc/syslog.conf
 %triggerin -- XFree86
 cp /usr/X11R6/lib/X11/app-defaults/XTerm.athena /usr/X11R6/lib/X11/app-defaults/XTerm
 
+%triggerin -- chkfontpath
+# This font directory causes problems for the Star Office help system.
+if grep -q /usr/X11R6/lib/X11/fonts/latin2/Type1 /etc/X11/fs/config; then
+  chkfontpath -r /usr/X11R6/lib/X11/fonts/latin2/Type1
+fi
+exit 0
+
 %triggerin -- initscripts
 # Add warnings on disabled consoles pointing people at tty7.
 for i in 1 2 3 4 5 6; do
