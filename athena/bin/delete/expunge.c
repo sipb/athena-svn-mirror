@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v $
- * $Author: probe $
+ * $Author: danw $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,25 +11,15 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.22 1993-02-09 00:35:58 probe Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.23 1997-12-31 22:35:59 danw Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/param.h>
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
 #include <com_err.h>
 #include <errno.h>
 #include "col.h"
@@ -42,9 +32,7 @@
 #include "delete_errs.h"
 #include "errors.h"
 
-extern char *realloc();
 extern time_t current_time;
-extern int errno;
 
 char *whoami;
 

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v $
- * $Author: miki $
+ * $Author: danw $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.30 1993-05-20 12:54:43 miki Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.31 1997-12-31 22:35:58 danw Exp $";
 #endif
 
 #include <sys/types.h>
@@ -19,24 +19,11 @@
 #include <sys/time.h>
 #endif
 #include <stdio.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
-#ifdef SOLARIS
 #include <unistd.h>
-#endif
 
 #include <sys/param.h>
-#include <sys/file.h>
 #include <errno.h>
 #include "errors.h"
 #include "delete_errs.h"
@@ -84,7 +71,6 @@
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 int emulate_rm, linked_to_rm, linked_to_rmdir;
-extern int errno;
 #ifdef AFS_MOUNTPOINTS
 struct timeval tvp[2];
 #endif
@@ -333,11 +319,7 @@ empty_directory(filename)
 char *filename;
 {
      DIR *dirp;
-#ifdef POSIX
      struct dirent *dp;
-#else
-     struct direct *dp;
-#endif
 
      dirp = Opendir(filename);
      if (! dirp) {
@@ -368,11 +350,7 @@ struct stat stat_buf;
 int recursed;
 {
      DIR *dirp;
-#ifdef POSIX
      struct dirent *dp;
-#else
-     struct direct *dp;
-#endif
      int status = 0;
      char newfile[MAXPATHLEN];
      int retval = 0;
@@ -547,11 +525,7 @@ char *filename;
      char buf[MAXPATHLEN];
      struct stat stat_buf;
      DIR *dirp;
-#ifdef POSIX
      struct dirent *dp;
-#else
-     struct direct *dp;
-#endif
      int status = 0;
      int retval;
      

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v $
- * $Author: jik $
+ * $Author: danw $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.10 1991-06-04 22:05:49 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.11 1997-12-31 22:36:01 danw Exp $";
 #endif
 
 #include <sys/types.h>
@@ -22,9 +22,6 @@
 #include "errors.h"
 #include "mit-copying.h"
 #include "util.h"
-
-extern char *realloc();
-extern int errno;
 
 #define STACK_INC 	25
 
@@ -81,11 +78,7 @@ int op, bytes;
 #ifdef STACK_DEBUG
 	  fprintf(stderr, "Pushing %d bytes at %d offset.\n", bytes, count);
 #endif
-#if defined(SYSV) || (defined(__STDC__) && !defined(__HIGHC__))
 	  memcpy(stack + count, data, bytes);
-#else
-	  bcopy(data, stack + count, bytes);
-#endif
 	  count += bytes;
 #ifdef STACK_DEBUG
 	  fprintf(stderr, "dostack: return 4 (STACK_PUSH).\n");
@@ -114,11 +107,7 @@ int op, bytes;
 	       fprintf(stderr, "Popping %d bytes at %d offset.\n", bytes,
 		       count);
 #endif
-#if defined(SYSV) || (defined(__STDC__) && !defined(__HIGHC__))
 	       memcpy(data, stack + count, bytes);
-#else
-	       bcopy(stack + count, data, bytes);
-#endif
 	       newblocks = count / STACK_INC + ((count % STACK_INC) ? 1 : 0);
 	       newsize = newblocks * STACK_INC;
 	       if (newsize < size) {

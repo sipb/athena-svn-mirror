@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v $
- * $Author: jik $
+ * $Author: danw $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,24 +11,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.25 1991-06-25 16:15:14 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.26 1997-12-31 22:36:01 danw Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/param.h>
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
 #include <com_err.h>
 #include <errno.h>
 #include "delete_errs.h"
@@ -39,9 +29,6 @@
 #include "shell_regexp.h"
 #include "mit-copying.h"
 #include "errors.h"
-
-extern char *realloc();
-extern int errno;
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
 
@@ -133,7 +120,7 @@ interactive_mode()
 	       printf("\n");
 	       return status;
 	  }
-	  ptr = index(buf, '\n');  /* fgets breakage */
+	  ptr = strchr(buf, '\n');  /* fgets breakage */
 	  if (ptr)
 	       *ptr = '\0';
 	  if (! *buf)
@@ -544,11 +531,7 @@ char *filename;
      char buf[MAXPATHLEN];
      struct stat stat_buf;
      DIR *dirp;
-#ifdef POSIX
      struct dirent *dp;
-#else
-     struct direct *dp;
-#endif
      int retval;
      int status = 0;
      

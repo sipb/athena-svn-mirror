@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v $
- * $Author: probe $
+ * $Author: danw $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,24 +11,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.25 1993-02-09 00:36:01 probe Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.26 1997-12-31 22:36:00 danw Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/param.h>
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
 #include <errno.h>
 #include <com_err.h>
 #include "pattern.h"
@@ -41,8 +31,6 @@
 #include "errors.h"
 #include "stack.h"
 
-extern char *realloc();
-extern int errno;
 extern char *whoami;
 
 void free_list();
@@ -421,11 +409,7 @@ char ***found;
 Boolean match_undeleted, match_deleted;
 {
      char base[MAXPATHLEN];
-#ifdef POSIX
      struct dirent *dp;
-#else
-     struct direct *dp;
-#endif
      DIR *dirp;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      int retval;
@@ -777,11 +761,7 @@ char ***found;
 int options;
 {
      char base[MAXPATHLEN];
-#ifdef POSIX
      struct dirent *dp;
-#else
-     struct direct *dp;
-#endif
      DIR *dirp;
      int retval;
      int strsize;

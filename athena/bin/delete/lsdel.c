@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v $
- * $Author: jik $
+ * $Author: danw $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,27 +11,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.20 1991-06-25 16:14:38 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.21 1997-12-31 22:35:59 danw Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/param.h>
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
-#ifdef _AUX_SOURCE
-extern char *strcmp();
-#endif
 #include <errno.h>
 #include <com_err.h>
 #include "col.h"
@@ -44,9 +31,7 @@ extern char *strcmp();
 #include "delete_errs.h"
 #include "errors.h"
 
-extern char *realloc();
 extern time_t current_time;
-extern int errno;
 
 int space_total = 0;
 int dirsonly, recursive, yield, f_links, f_mounts, singlecolumn;

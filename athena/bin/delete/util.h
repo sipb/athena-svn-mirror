@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
- * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.12 1991-02-28 18:44:15 jik Exp $
+ * $Author: danw $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.13 1997-12-31 22:36:02 danw Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -17,6 +17,8 @@
 #define lstat stat
 #endif
 
+#include <stdlib.h>
+
 char *append();
 char *convert_to_user_name();
 char *firstpart();
@@ -27,7 +29,6 @@ char *strrindex();
 char *Malloc();
 #else
 #define Malloc(a) malloc(a)
-extern char *malloc();
 #endif
 
 int is_mountpoint(), is_link();

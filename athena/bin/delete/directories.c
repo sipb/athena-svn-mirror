@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v $
- * $Author: cfields $
+ * $Author: danw $
  * 
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,24 +11,15 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.25 1995-07-31 23:29:31 cfields Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.26 1997-12-31 22:35:58 danw Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
+#include <time.h>
 #include <errno.h>
 #include <com_err.h>
 #include "delete_errs.h"
@@ -36,10 +27,6 @@
 #include "directories.h"
 #include "mit-copying.h"
 #include "errors.h"
-
-extern char *realloc();
-extern long time();
-extern int errno;
 
 static filerec root_tree;
 static filerec cwd_tree;

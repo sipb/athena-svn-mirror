@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v $
- * $Author: cfields $
+ * $Author: danw $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,24 +11,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.29 1995-07-31 23:26:54 cfields Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.30 1997-12-31 22:36:02 danw Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
-#ifdef POSIX
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
 #include <pwd.h>
 #include <errno.h>
 #ifdef AFS_MOUNTPOINTS
@@ -40,22 +30,12 @@
 #endif
 #ifdef SOLARIS
 #include <sys/ioccom.h>
-#include <sys/stat.h>
 #endif
 #include "delete_errs.h"
 #include "util.h"
 #include "directories.h"
 #include "mit-copying.h"
 #include "errors.h"
-
-extern char *getenv();
-extern int errno;
-
-#ifdef UTEK
-extern int getuid();
-#else /* ! UTEK */
-extern uid_t getuid();
-#endif /* UTEK */
 
 char *convert_to_user_name(real_name, user_name)
 char real_name[];
@@ -80,7 +60,7 @@ char *strindex(str, sub_str)
 char *str, *sub_str;
 {
      char *ptr = str;
-     while (ptr = index(ptr, *sub_str)) {
+     while (ptr = strchr(ptr, *sub_str)) {
 	  if (! strncmp(ptr, sub_str, strlen(sub_str)))
 	       return(ptr);
 	  ptr++;
@@ -154,9 +134,9 @@ yes() {
 	  printf("\n");
 	  exit(1);
      }
-     if (! index(buf, '\n')) do
+     if (! strchr(buf, '\n')) do
 	  (void) fgets(buf + 1, BUFSIZ - 1, stdin);
-     while (! index(buf + 1, '\n'));
+     while (! strchr(buf + 1, '\n'));
      return(*buf == 'y');
 }
 
@@ -168,14 +148,14 @@ char *filename;
 {
      char *part;
 
-     part = rindex(filename, '/');
+     part = strrchr(filename, '/');
 
      if (! part)
 	  part = filename;
      else if (part == filename)
 	  part++;
      else if (part - filename + 1 == strlen(filename)) {
-	  part = rindex(--part, '/');
+	  part = strrchr(--part, '/');
 	  if (! part)
 	       part = filename;
 	  else
@@ -198,7 +178,7 @@ char *rest; /* RETURN */
      static char buf[MAXPATHLEN];
 
      (void) strcpy(buf, filename);
-     part = index(buf, '/');
+     part = strchr(buf, '/');
      if (! part) {
 	  *rest = '\0';
 	  return(buf);

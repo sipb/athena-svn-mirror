@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v $
- * $Author: jik $
+ * $Author: danw $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.8 1991-02-28 18:42:09 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.9 1997-12-31 22:35:57 danw Exp $";
 #endif
 
 /*
@@ -21,13 +21,7 @@
  */
 
 #include <stdio.h>
-#ifdef SYSV
 #include <string.h>
-#define index strchr
-#define rindex strrchr
-#else
-#include <strings.h>
-#endif /* SYSV */
 #include "errors.h"
 #include "delete_errs.h"
 #include "col.h"
