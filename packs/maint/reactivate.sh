@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.26 1996-06-06 19:19:13 ghudson Exp $
+# $Id: reactivate.sh,v 1.27 1997-04-01 00:56:17 ghudson Exp $
 
 trap "" 1 15
 
@@ -51,8 +51,8 @@ if [ "${MACHINE}" = "SUN4" ]; then
 fi
 
 # Tell the Zephyr hostmanager to reset state
-if [ -f /etc/athena/zhm.pid -a "${ZCLIENT}" = "true" ] ; then 
-	/bin/kill -HUP `/bin/cat /etc/athena/zhm.pid`
+if [ -f /var/athena/zhm.pid -a "${ZCLIENT}" = "true" ] ; then 
+	/bin/kill -HUP `/bin/cat /var/athena/zhm.pid`
 fi
 
 case "${MACHINE}" in
@@ -142,8 +142,8 @@ if [ $full ]; then		# START time-consuming stuff
 # Now start activate again
 /etc/athena/save_cluster_info
 
-if [ -f /etc/athena/clusterinfo.bsh ] ; then
-	. /etc/athena/clusterinfo.bsh
+if [ -f /var/athena/clusterinfo.bsh ] ; then
+	. /var/athena/clusterinfo.bsh
 else
 	if [ "${RVDCLIENT}" = "true" ]; then
 		echo "Can't find library servers."
