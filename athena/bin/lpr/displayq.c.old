@@ -38,7 +38,6 @@ displayq(format)
 	int format;
 {
 	register int i, fd;
-	struct queue **queue;
 	int rem_fils;
 	char *tmpptr;
 	struct hostent	*hp;
