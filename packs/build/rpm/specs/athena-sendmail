@@ -21,6 +21,7 @@ cp aliases $RPM_BUILD_ROOT/etc/aliases
 cp sendmail.cf $RPM_BUILD_ROOT/etc/sendmail.cf
 mkdir -p $RPM_BUILD_ROOT/var/spool/mqueue
 %ifos linux
+mkdir -p $RPM_BUILD_ROOT/usr/lib
 ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 %endif
 
