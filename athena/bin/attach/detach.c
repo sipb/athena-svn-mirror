@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.10 1992-01-06 15:53:36 probe Exp $";
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.11 1992-01-27 03:09:15 probe Exp $";
 
 #include "attach.h"
 #include <string.h>
@@ -105,7 +105,7 @@ detach(name)
 	    }
 	    if (!override && atp->flags & FLAG_LOCKED) {
 		    error_status = ERR_DETACHNOTALLOWED;
-		    if(trusted_user(real_uid))
+		    if (trusted_user(real_uid))
 		      fprintf(stderr,
 			      "%s: Filesystem \"%s\" locked, use -override to detach it.\n", 
 			      progname, name);
@@ -202,9 +202,20 @@ void detach_all()
 	    explicit = atp->explicit;
 	    if ((override || !owner_check || clean_detach
 		 || is_an_owner(atp,owner_uid)) &&
-		(!filsys_type || fs_type == atp->fs) &&
-		!(atp->flags & FLAG_LOCKED))
-		    detach(atp->hesiodname);
+		(!filsys_type || fs_type == atp->fs)) {
+		    if (atp->flags & FLAG_LOCKED) {
+			del_an_owner(atp, owner_uid);
+			lock_attachtab();
+			get_attachtab();
+			attachtab_replace(atp);
+			put_attachtab();
+			unlock_attachtab();
+			fprintf(stderr,
+				"%s: Filesystem \"%s\" locked, not unmounted.\n", 
+				progname, atp->hesiodname);
+		    } else
+			detach(atp->hesiodname);
+	    }
 	    free(atp);
 	    atp = next;
     }
@@ -257,11 +268,21 @@ void detach_host(host)
 	explicit = atp->explicit;
 	if ((override || !owner_check || clean_detach
 	     || is_an_owner(atp,owner_uid)) &&
-	    (!filsys_type || fs_type == atp->fs) &&
-	    !(atp->flags & FLAG_LOCKED)) {
+	    (!filsys_type || fs_type == atp->fs)) {
 	    for (i=0; i<MAXHOSTS && atp->hostaddr[i].s_addr; i++)
 		if (host_compare(host, inet_ntoa(atp->hostaddr[i]))) {
-		    detach(atp->hesiodname);
+		    if (atp->flags & FLAG_LOCKED) {
+			del_an_owner(atp, owner_uid);
+			lock_attachtab();
+			get_attachtab();
+			attachtab_replace(atp);
+			put_attachtab();
+			unlock_attachtab();
+			fprintf(stderr,
+				"%s: Filesystem \"%s\" locked, not unmounted.\n", 
+				progname, atp->hesiodname);
+		    } else
+			detach(atp->hesiodname);
 		    break;
 		}
 	}
