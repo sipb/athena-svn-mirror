@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static char rcsid[] = "$Id: athdir.c,v 1.3 1998-03-17 03:46:02 cfields Exp $";
+static const char rcsid[] = "$Id: athdir.c,v 1.4 1999-09-15 23:57:14 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,31 +25,17 @@ static char rcsid[] = "$Id: athdir.c,v 1.3 1998-03-17 03:46:02 cfields Exp $";
 
 char *progName;
 
-usage()
-{
-  fprintf(stderr, "usage: %s path [type]\n", progName);
-  fprintf(stderr,
-	  "   or: %s [-t type] [-p path ...] [-e] [-c] [-l] [-d | -i]\n",
-	  progName);
-  fprintf(stderr,
-	  "       [-r recsep] [-f format] [-s sysname] [-m machtype]\n");
-  exit(1);
-}
+void usage(void);
+void repeatflag(char *option);
 
-void repeatflag(char *option)
+int main(int argc, char **argv)
 {
-  fprintf(stderr, "%s: %s already specified.\n", progName, *option);
-  usage();
-}
-
-main(int argc, char **argv)
-{
-  int num_dirs = 0, flags = 0, mflag = 0;
+  int num_dirs = 0, flags = 0;
   char **dir_list, *type = NULL, *athsys = NULL, *hosttype = NULL;
   char *auxconvention = NULL, *recsep = NULL, **ptr;
   char **path_list;
-  int i, j, t;
-  int failed, match = 0;
+  int i;
+  int match = 0;
 
   progName = strrchr(argv[0], '/');
   if (progName != NULL)
@@ -246,5 +232,22 @@ main(int argc, char **argv)
   fprintf(stdout, "\n");
 #endif
 
-  exit(match == 0);
+  return match == 0;
+}
+
+void usage(void)
+{
+  fprintf(stderr, "usage: %s path [type]\n", progName);
+  fprintf(stderr,
+	  "   or: %s [-t type] [-p path ...] [-e] [-c] [-l] [-d | -i]\n",
+	  progName);
+  fprintf(stderr,
+	  "       [-r recsep] [-f format] [-s sysname] [-m machtype]\n");
+  exit(1);
+}
+
+void repeatflag(char *option)
+{
+  fprintf(stderr, "%s: %s already specified.\n", progName, option);
+  usage();
 }
