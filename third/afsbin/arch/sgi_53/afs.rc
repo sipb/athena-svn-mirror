@@ -71,7 +71,7 @@ case "$1" in
 		if echo $CPU | fgrep R3000 >/dev/null
 		then
 			CPU=R3000
-		elif echo $CPU | egrep 'R4000|R4400|4600' >/dev/null
+		elif echo $CPU | egrep 'R4000|R4400|4600|5000' >/dev/null
 		then
 			CPU=R4000
 		elif echo $CPU | egrep R8000 >/dev/null
