@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.21 2001-07-18 14:22:23 ghudson Exp $
+/* $Id: dm.c,v 1.22 2001-11-16 15:35:38 zacheiss Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -27,13 +27,32 @@
 #include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
-#include <utmp.h>
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-#ifdef HAVE_UTMPX_H
+/* If we have getutxent(), just use that.  Otherwise, try to guess where
+ * our utmp file is.
+ */
+#ifdef HAVE_GETUTXENT
 #include <utmpx.h>
+#if defined(WTMPX_FILE)
+#define WTFILE WTMPX_FILE
+#else
+#define WTFILE "/var/adm/wtmpx"
 #endif
+#else /* HAVE_GETUTXENT */
+#include <utmp.h>
+#if defined(_PATH_UTMP)
+#define UTFILE _PATH_UTMP
+#define WTFILE _PATH_WTMP
+#elif defined(UTMP_FILE)
+#define UTFILE UTMP_FILE
+#define WTFILE WTMP_FILE
+#else
+#define UTFILE "/var/adm/utmp"
+#define UTFILE "/var/adm/wtmp"
+#endif
+#endif /* HAVE_GETUTXENT */
 #include <termios.h>
 #include <syslog.h>
 #ifdef HAVE_UTIL_H
@@ -47,7 +66,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.21 2001-07-18 14:22:23 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.22 2001-11-16 15:35:38 zacheiss Exp $";
 #endif
 
 /* Process states */
@@ -75,16 +94,6 @@ volatile int login_running = NONEXISTENT;
 char *logintty;
 int console_tty = 0;
 
-#if defined(UTMP_FILE)
-char *utmpf = UTMP_FILE;
-char *wtmpf = WTMP_FILE;
-#elif defined(_PATH_UTMP)
-char *utmpf = _PATH_UTMP;
-char *wtmpf = _PATH_WTMP;
-#else
-char *utmpf = "/var/adm/utmp";
-char *wtmpf = "/var/adm/wtmp";
-#endif
 char *xpids = "/var/athena/X%d.pid";
 char *xhosts = "/etc/X%d.hosts";
 char *consolepidf = "/var/athena/console.pid";
@@ -746,10 +755,15 @@ static void shutdown(int signo)
 
 static void cleanup(char *tty)
 {
-  int file, ret;
-  struct utmp utmp;
-  char login[sizeof(utmp.ut_name) + 1];
-  char *errr;
+  int ret;
+#ifdef HAVE_GETUTXENT
+  struct utmpx *utx;
+#else
+  int file;
+  struct utmp ut;
+#endif /* HAVE_GETUTXENT */
+  char *errr, *login;
+  
 
   if (login_running == RUNNING)
     kill(loginpid, SIGHUP);
@@ -761,25 +775,40 @@ static void cleanup(char *tty)
       x_stop_wait();
     }
 
-  /* Find out what the login name was, so we can feed it to libal. */
-  login[0] = '\0';
-  if ((file = open(utmpf, O_RDWR, 0)) >= 0)
+  /* Find out what the login name was, so we can feed it to libAL. */
+#ifdef HAVE_GETUTXENT
+  while ((utx = getutxent()) != NULL)
     {
-      while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
+      if (utx->ut_type != USER_PROCESS || utx->ut_user[0] == 0)
+	continue;
+      if (!strncmp(utx->ut_line, tty, sizeof(utx->ut_line)))
 	{
-	  if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line)))
+	  login = malloc(sizeof(utx->ut_user) + 1);
+	  strncpy(login, utx->ut_user, sizeof(utx->ut_user));
+	  login[sizeof(utx->ut_user)] = '\0';
+	}
+    }
+  endutxent();
+
+#else /* HAVE_GETUTXENT */
+  if ((file = open(UTFILE, O_RDWR, 0)) >= 0)
+    {
+      while (read(file, (char *) &ut, sizeof(utmp)) > 0)
+	{
+	  if (!strncmp(ut.ut_line, tty, sizeof(ut.ut_line)))
 	    {
-	      strncpy(login, utmp.ut_name, sizeof(utmp.ut_name));
-	      login[sizeof(utmp.ut_name)] = '\0';
+	      login = malloc(sizeof(ut.ut_name) + 1);
+	      strncpy(login, ut.ut_name, sizeof(ut.ut_name));
+	      login[sizeof(ut.ut_name)] = '\0';
 	    }
 	}
       close(file);
     }
-
+#endif
   /* Update the utmp & wtmp. */
 
   logout(tty);
-  
+
   if (login[0])
     {
       ret = al_acct_revert(login, loginpid);
@@ -1031,18 +1060,34 @@ static void writepid(char *file, pid_t pid)
 }
 
 #ifndef HAVE_LOGOUT
-#ifdef HAVE_PUTUTLINE
 static void logout(const char *line)
 {
+#ifdef HAVE_GETUTXENT
+  struct utmpx utx, *putx;
+  pid_t pid;
+
+  strcpy(utx.ut_line, line);
+  setutxent();
+  putx = getutxline(&utx);
+  if (putx != NULL)
+    {
+      gettimeofday(&utx.ut_tv, NULL);
+      strncpy(utx.ut_line, putx->ut_line, sizeof(utx.ut_line));
+      strncpy(utx.ut_user, putx->ut_name, sizeof(utx.ut_name));
+      pid = getpid();
+      utx.ut_pid = pid;
+      strncpy(utx.ut_id, putx->ut_id, sizeof(utx.ut_id));
+      utx.ut_type = DEAD_PROCESS;
+      pututxline(&utx);
+
+      updwtmpx(WTFILE, &utx);
+    }
+  endutxent();
+#else /* HAVE_GETUTXENT */
+
   struct utmp utmp;
   struct utmp *putmp;
   pid_t pid;
-#ifdef HAVE_PUTUTXLINE
-  struct utmpx utmpx;
-#endif
-#ifndef HAVE_UPDWTMP
-  int file;
-#endif
 
   strcpy(utmp.ut_line, line);
   setutent();
@@ -1057,20 +1102,13 @@ static void logout(const char *line)
       strncpy(utmp.ut_id, putmp->ut_id, sizeof(utmp.ut_id));
       utmp.ut_type = DEAD_PROCESS;
       pututline(&utmp);
-#ifdef HAVE_PUTUTXLINE
-      getutmpx(&utmp, &utmpx);
-      utmpx.ut_pid = pid;
-      setutxent();
-      pututxline(&utmpx);
-      endutxent();
-#endif /* HAVE_PUTUTXLINE */
 
-      updwtmp(wtmpf, &utmp);
+      updwtmp(WTFILE, &utmp);
     }
   endutent();
+#endif /* HAVE_GETUTXENT */
 }
-#endif
-#endif
+#endif /* HAVE_LOGOUT */
 
 #ifndef HAVE_LOGIN_TTY
 static int login_tty(int fd)
