@@ -28,7 +28,7 @@
  * taking into account the various preprocessor variables (also see below).
  */
 
-/************************** Preprocessor variables *************************/ 
+/************************** Preprocessor variables *************************/
 
 /* 
  * These variables are used BOTH in this file and in NCK source files.
@@ -137,7 +137,7 @@
  *       you want to build the Dialog-based "lb_admin".
  */
 
-/*************************** System Configuration **************************/ 
+/*************************** System Configuration **************************/
 
 /*
  * The following are "default" values.  Some systems change the values below.
@@ -150,7 +150,7 @@ ALIGNDEF    = -DCONVENTIONAL_ALIGNMENT
 NCKLIBS     = libnck.a
 OPTFLAG     = -O
 
-/***************************************************************************/ 
+/***************************************************************************/
 
 #ifdef apollo
 #undef m68000
@@ -266,11 +266,17 @@ CC          = cc -q -B../cpp/
 #define BSD
 #endif
 
+#if defined(_IBMR2) && defined(_AIX)
+DEFS        = -DBSD -DINET
+/*#define MAKECPP*/
+#define BSD
+#endif
+
 #ifndef compile_file_to
 #define compile_file_to(from,to) $(CC) $(CFLAGS) -c from; mv `basename from .c`.o to
 #endif
 
-/***************************************************************************/ 
+/***************************************************************************/
 
 /*
  * The following names used by the "install" target.
@@ -280,7 +286,7 @@ INCLDIR     = /usr/include
 ETCDIR      = /etc/ncs
 LIBDIR      = /usr/lib
 
-/***************************************************************************/ 
+/***************************************************************************/
 
 #ifdef SYS5
 SYSLIB      = sys5.o ${EXTRASYS}
@@ -288,20 +294,20 @@ SYSLIB      = sys5.o ${EXTRASYS}
 SYSLIB      = ${EXTRASYS}
 #endif
 
-/***************************************************************************/ 
+/***************************************************************************/
 
 SHELL       = /bin/sh
 DEBUGFLAGS  = -DDEBUG
 IDLDIR      = ../idl
 CFLAGS      = -DNCK -I${IDLDIR} ${DEFS} ${ALIGNDEF} ${OPTFLAG} ${DEBUGFLAGS} ${EXTRACFLAGS}
 
-/***************************************************************************/ 
+/***************************************************************************/
 
 #ifdef MAKECPP
 call: makecpp all
 #endif
 
-/***************************************************************************/ 
+/***************************************************************************/
 
 all: libnck.a /* llbd lb_admin uuid_gen stcode nrglbd */
 	@echo done
