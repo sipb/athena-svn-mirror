@@ -4,7 +4,7 @@ echo "OSCHANGES=true"					>> $CONFVARS
 
 # We forgot to clear the patches list in 9.2.0, so some small number
 # of machines didn't get 9.2 patches.  Reapply them here to make sure.
-# Also apply 112879-09.
+# Also apply 112817-09.
 echo "112233-04"					> $PATCHES
 echo "112540-09"					>> $PATCHES
 echo "112620-03"					>> $PATCHES
@@ -12,7 +12,7 @@ echo "112621-05"					>> $PATCHES
 echo "112622-08"					>> $PATCHES
 echo "112764-04"					>> $PATCHES
 echo "112785-17"					>> $PATCHES
-echo "112879-09"					>> $PATCHES
+echo "112817-09"					>> $PATCHES
 echo "112902-11"					>> $PATCHES
 echo "112908-07"					>> $PATCHES
 echo "112963-09"					>> $PATCHES
