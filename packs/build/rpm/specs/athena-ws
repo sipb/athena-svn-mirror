@@ -100,7 +100,7 @@ ADDR=$ADDR;		export ADDR		#* Internet address
 EOF
 fi
 
-grep -q NETDEV /dev/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+grep -q NETDEV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 NETDEV=eth0;		export NETDEV		# Network interface
 EOF
 
