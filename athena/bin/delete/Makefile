@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.20 1990-06-07 22:30:42 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.21 1990-06-07 23:23:14 jik Exp $
 #
 
 DESTDIR=
@@ -159,7 +159,7 @@ tar: $(ARCHIVE)
 	tar cvf - $(ARCHIVE) $(ETLIBSRCS) | compress > delete.tar.Z
 
 shar: $(ARCHIVE)
-	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETLIBSRCS)
+	makekit -oMANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETLIBSRCS)
 
 patch: $(ARCHIVE)
 	makepatch $(ARCHIVE)

@@ -4,7 +4,7 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.5 1990-06-07 23:19:08 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.6 1990-06-07 23:23:03 jik Exp $
 #	$Locker:  $
 #
 
@@ -134,7 +134,7 @@ patch: $(FILES)
 	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
 
 shar: $(FILES)
-	makekit -oMANIFEST -h2 MANIFEST $(FILES)
+	makekit -oMANIFEST $(FILES)
 
 tar: $(ARCHIVE)
 	tar cvf - $(ARCHIVE) | compress > com_err.tar.Z
