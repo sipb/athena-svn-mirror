@@ -17,7 +17,7 @@
  * functions to poll and receive notifications of workstation status.
  */
 
-static const char rcsid[] = "$Id: ws.c,v 1.2 1998-10-13 17:12:59 ghudson Exp $";
+static const char rcsid[] = "$Id: ws.c,v 1.3 1998-10-22 18:23:28 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -243,7 +243,7 @@ static int ws_searchcomp(const void *key, const void *elem)
   const char *s = (const char *) key;
   const struct machine *m = (const struct machine *) elem;
 
-  return strcmp(s, m->name);
+  return strcasecmp(s, m->name);
 }
 
 static int ws_sortcomp(const void *elem1, const void *elem2)
@@ -251,5 +251,5 @@ static int ws_sortcomp(const void *elem1, const void *elem2)
   const struct machine *m1 = (const struct machine *) elem1;
   const struct machine *m2 = (const struct machine *) elem2;
 
-  return strcmp(m1->name, m2->name);
+  return strcasecmp(m1->name, m2->name);
 }
