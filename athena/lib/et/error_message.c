@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.1 1989-01-25 09:02:30 shanzer Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.2 1989-01-25 09:08:57 shanzer Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v $
  * $Locker:  $
  *
@@ -15,7 +15,7 @@
 #include "internal.h"
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.1 1989-01-25 09:02:30 shanzer Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_message.c,v 1.2 1989-01-25 09:08:57 shanzer Exp $";
 static const char copyright[] =
     "Copyright 1986, 1987, 1988 by the Student Information Processing Board\nand the department of Information Systems\nof the Massachusetts Institute of Technology";
 
@@ -23,7 +23,8 @@ static char buffer[25];
 
 struct et_list * _et_list = (struct et_list *) NULL;
 
-const char * error_message (int code)
+const char * error_message (code)
+long	code;
 {
     int offset;
     struct et_list *et;
