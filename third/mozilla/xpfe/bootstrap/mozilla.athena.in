@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.3 2003-04-30 02:43:57 zacheiss Exp $
+# $Id: mozilla.athena.in,v 1.4 2003-05-06 22:38:55 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -31,13 +31,22 @@ moz_lib_path=$MOZILLA_FIVE_HOME:$MOZILLA_FIVE_HOME/plugins
 LD_LIBRARY_PATH=$moz_lib_path${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}
 export LD_LIBRARY_PATH
 
-# On Solaris, use the X server's shared memory transport for better
-# performance.
-if [ "`uname`" = SunOS -a -z "$XSUNTRANSPORT" ]; then
-  XSUNTRANSPORT=shmem
-  XSUNSMESIZE=512
-  export XSUNTRANSPORT XSUNSMESIZE
-fi
+case `uname` in
+SunOS)
+  # On Solaris, use the X server's shared memory transport for better
+  # performance.
+  if [ -z "$XSUNTRANSPORT" ]; then
+    XSUNTRANSPORT=shmem
+    XSUNSMESIZE=512
+    export XSUNTRANSPORT XSUNSMESIZE
+  fi
+  ;;
+Linux)
+  # Set LD_ASSUME_KERNEL to avoid a java crash upon exit.
+  LD_ASSUME_KERNEL=2.4.1
+  export LD_ASSUME_KERNEL
+  ;;
+esac
 
 # Append our plugins directory to the plugin path.
 MOZ_PLUGIN_PATH=${MOZ_PLUGIN_PATH:+"$MOZ_PLUGIN_PATH:"}$plugin_dir
