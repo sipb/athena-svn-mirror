@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.34 1991-03-28 14:56:47 lwvanels Exp $
+ *	$Id: log.c,v 1.35 1991-03-28 16:03:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.34 1991-03-28 14:56:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.35 1991-03-28 16:03:53 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,7 +36,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>		/* File status definitions. */
 #include <sys/file.h>
 #include <string.h>		/* Defs. for string functions. */
-#include <com_err.h>
 #ifdef DISCUSS
 #include <lumberjack.h>
 #endif
