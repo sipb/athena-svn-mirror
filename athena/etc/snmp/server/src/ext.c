@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.4 1990-04-25 00:19:55 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.5 1990-04-26 16:30:03 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  90/04/25  00:19:55  tom
+ * backward compat. for relversion
+ * 
  * Revision 1.3  90/04/24  23:41:35  tom
  * decided to keep athena 1
  * 
@@ -30,7 +33,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.4 1990-04-25 00:19:55 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.5 1990-04-26 16:30:03 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -482,6 +485,7 @@ objident egpOutErrors = {
 
 /***************** MIT ******************/
 
+#ifdef MIT
 #ifdef ATHENA
 objident machType = {
         10,					/* Length of variable */
@@ -697,6 +701,8 @@ objident statOVersion = {
         10,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 1
 };
+
+#endif ATHENA
 
 objident statTime = {
         10,					/* Length of variable */
@@ -1708,7 +1714,7 @@ objident mAliasUtDir = {
         11,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 11, 2, 3
 };
-#endif ATHENA
+#endif MIT
 
 /*
  *  Structure which helps us build the SNMP variable tree.
@@ -1842,15 +1848,15 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &egpOutErrors,  	 NULL,    NULL, 0, 	   NULL_OBJINST|VAL_CNTR },
 
 /*********************** MIT *************************/
+#ifdef MIT
 #ifdef ATHENA
-
 { &machType,     lu_machtype, NULL, N_MACHTYPE,     NULL_OBJINST|VAL_STR  },
 { &machNDisplay, lu_machtype, NULL, N_MACHNDISPLAY, NULL_OBJINST|VAL_INT  },
 { &machDisplay,  lu_machtype, NULL, N_MACHDISPLAY,  NULL_OBJINST|VAL_STR  },
 { &machNDisks,   lu_machtype, NULL, N_MACHNDISK,    NULL_OBJINST|VAL_INT  },
 { &machDisks,    lu_machtype, NULL, N_MACHDISK,     NULL_OBJINST|VAL_STR  },
 { &machMemory,   lu_machtype, NULL, N_MACHMEMORY,   NULL_OBJINST|VAL_INT  },
-		 				  
+
 { &rcHOST,       lu_rcvar,    NULL, N_RCHOST,       NULL_OBJINST|VAL_STR  },
 { &rcADDR,       lu_rcvar,    NULL, N_RCADDR,       NULL_OBJINST|VAL_STR  },
 { &rcMACHINE,    lu_rcvar,    NULL, N_RCMACHINE,    NULL_OBJINST|VAL_STR  },
@@ -1886,11 +1892,15 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &rcNOATTACH,   lu_rcvar,    NULL, N_RCNOATTACH,   NULL_OBJINST|VAL_STR  },
 { &relVersion,   lu_relvers,  NULL, N_RELVERSION,   NULL_OBJINST|VAL_STR  },
 { &statOVersion, lu_relvers,  NULL, N_RELVERSION,   NULL_OBJINST|VAL_STR  },
+#endif ATHENA
+
 { &statTime,     lu_status,   NULL, N_STATTIME,     NULL_OBJINST|VAL_INT },
 { &statLoad,     lu_status,   NULL, N_STATLOAD,     NULL_OBJINST|VAL_INT  },
+
 #ifdef LOGIN
 { &statLogin, 	 lu_status,   NULL, N_STATLOGIN,    NULL_OBJINST|VAL_INT  },
 #endif LOGIN
+
 { &statDkNParts, lu_ndparts,  NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &statDkTotal,  lu_disk,     NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &statDkUsed,   lu_disk,     NULL, N_PTUSED,       NULL_OBJINST|VAL_INT  },
@@ -1899,7 +1909,6 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &statDkITotal, lu_disk,     NULL, N_PITOTAL,      NULL_OBJINST|VAL_INT  },
 { &statDkIUsed,  lu_disk,     NULL, N_PIUSED,       NULL_OBJINST|VAL_INT  },
 { &statDkIFree,  lu_disk,     NULL, N_PIFREE,       NULL_OBJINST|VAL_INT  },
-
 
 { &vpR,          lu_vmstat,   NULL, N_VMPROCR,      NULL_OBJINST|VAL_INT  },
 { &vpB,          lu_vmstat,   NULL, N_VMPROCB,      NULL_OBJINST|VAL_INT  },
@@ -2124,7 +2133,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &mAliasUt,     lu_tuchtime, NULL, N_MAILALIAS,    NULL_OBJINST|VAL_INT  },
 { &mAliasUtPag,  lu_tuchtime, NULL, N_MAILALIASPAG, NULL_OBJINST|VAL_INT  },
 { &mAliasUtDir,  lu_tuchtime, NULL, N_MAILALIASDIR, NULL_OBJINST|VAL_INT  },
-#endif ATHENA
+#endif MIT
 
 /*
  *  NULL termination
@@ -2160,7 +2169,7 @@ struct nlist nl[] =
    * so we do get too contorted with the indices.
    */
 
-#ifdef ATHENA
+#ifdef MIT
   { "_avenrun" },       /* N_AVENRUN  - 15 */
   { "_hz" },            /* N_HZ       - 16 */
   { "_cp_time" },       /* N_CPTIME   - 17 */
@@ -2231,7 +2240,7 @@ struct nlist nl[] =
   { "_psp" },           /* N_PSP      - 65 */
   { "_npsp" },          /* N_NPSP     - 66 */
 #endif 
-#endif ATHENA
+#endif MIT
     "",
 };
 
