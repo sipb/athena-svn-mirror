@@ -18,10 +18,18 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/athena
 cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
 chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
+%ifos linux
 cp CellAlias $RPM_BUILD_ROOT/usr/vice/etc/CellAlias
 cp CellServDB $RPM_BUILD_ROOT/usr/vice/etc/CellServDB
 cp ThisCell $RPM_BUILD_ROOT/usr/vice/etc/ThisCell
 cp cacheinfo $RPM_BUILD_ROOT/usr/vice/etc/cacheinfo
+%endif
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-afs.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
+%endif
 
 mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
 cp system-afs.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
@@ -49,14 +57,18 @@ grep -q ^AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
 EOF
 
+%ifos linux
 chkconfig --add openafs
 # Force a reset to what's specified in the rc file; we changed it to
 # run after afs in 9.0.
 chkconfig --level 345 openafs reset
+%endif
 
 [ -d /afs ] || mkdir -p /afs
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del openafs
 fi
+%endif

@@ -4,7 +4,7 @@ Copyright: LGPL
 Group: System Environment/Base
 Provides: gnome-print = 0.35
 
-Requires: athena-gnome-libs athena-libxml athena-gdk-pixbuf
+Requires: athena-gnome-libs athena-libxml athena-gdk-pixbuf athena-perl
 
 %description
 The gnome-print package contains libraries and fonts that are needed
@@ -15,15 +15,15 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
-# Adapted from gnome-print's spec file.  Only works on Linux systems.
-install -m 644 run-gnome-font-install $RPM_BUILD_ROOT/usr/athena/share/fonts
-(cd fonts && install -m 644 *.font $RPM_BUILD_ROOT/usr/athena/share/fonts)
+# Adapted from gnome-print's spec file.
+cp run-gnome-font-install $RPM_BUILD_ROOT/usr/athena/share/fonts
+(cd fonts && cp *.font $RPM_BUILD_ROOT/usr/athena/share/fonts)
 
 find $RPM_BUILD_ROOT -type f -or -type l |
     sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
 %post
-# Adapted from gnome-print's spec file.  Only works on Linux systems.
+# Adapted from gnome-print's spec file.
 perl /usr/athena/share/fonts/run-gnome-font-install \
   /usr/athena/bin/gnome-font-install /usr/athena/share /usr/athena/share \
   /etc/athena > /dev/null

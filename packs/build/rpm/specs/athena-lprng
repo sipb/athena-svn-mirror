@@ -14,16 +14,29 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra files
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp lpd.conf.athena $RPM_BUILD_ROOT/etc/lpd.conf
 cp lpd.perms $RPM_BUILD_ROOT/etc/lpd.perms
-cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
-chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
+%ifos linux
 mkdir -p $RPM_BUILD_ROOT/usr/bin $RPM_BUILD_ROOT/usr/sbin
 ln -s ../athena/bin/lpr $RPM_BUILD_ROOT/usr/bin/lpr
 ln -s ../athena/bin/lpq $RPM_BUILD_ROOT/usr/bin/lpq
 ln -s ../athena/bin/lprm $RPM_BUILD_ROOT/usr/bin/lprm
 ln -s ../athena/etc/lpc $RPM_BUILD_ROOT/usr/sbin/lpc
+%endif
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp athena-lpd.rc $RPM_BUILD_ROOT/etc/init.d/athena-lpd
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-lpd
+ln -s ../init.d/athena-lpd $RPM_BUILD_ROOT/etc/rc2.d/S91athena-lpd
+ln -s ../init.d/athena-lpd $RPM_BUILD_ROOT/etc/rc0.d/K91athena-lpd
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
@@ -37,9 +50,13 @@ grep -q ^LPD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 LPD=false;		export LPD		#  Run line printer daemon?
 EOF
 
+%ifos linux
 chkconfig --add athena-lpd
+%endif
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-lpd
 fi
+%endif

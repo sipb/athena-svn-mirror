@@ -13,14 +13,27 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra files
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
-cp athena-ntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
-chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
 
+%ifos linux
 mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
 cp system-time.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/25time
 chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/25time
+%endif
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp athena-ntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-ntp
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp athena-ntp.rc $RPM_BUILD_ROOT/etc/init.d/athena-ntp
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-ntp
+ln -s ../init.d/athena-ntp $RPM_BUILD_ROOT/etc/rc2.d/S91athena-ntp
+ln -s ../init.d/athena-ntp $RPM_BUILD_ROOT/etc/rc0.d/K91athena-ntp
+%endif
 
 # It will need this to run.
 mkdir -p $RPM_BUILD_ROOT/var/athena
@@ -44,9 +57,13 @@ grep -q ^TIMEHUB /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMEHUB=time.MIT.EDU;	export TIMEHUB		#  Authoritative time source
 EOF
 
+%ifos linux
 chkconfig --add athena-ntp
+%endif
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-ntp
 fi
+%endif

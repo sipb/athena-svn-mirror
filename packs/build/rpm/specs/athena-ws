@@ -25,7 +25,7 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 #Extra stuff
-mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena,/etc/cron.d}
+mkdir -p $RPM_BUILD_ROOT/{usr/athena/man,etc/athena}
 mkdir -p $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults
 cp masks $RPM_BUILD_ROOT/etc/athena/masks
 cp local-lockers.conf $RPM_BUILD_ROOT/etc/athena/local-lockers.conf
@@ -34,10 +34,17 @@ cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp update_ws.8 $RPM_BUILD_ROOT/usr/athena/man/man8/update_ws.8
-cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
 cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
 cp os/linux/vortex-diag $RPM_BUILD_ROOT/etc/athena/vortex-diag
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/cron.d
+cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
+%else
+mkdir -p $RPM_BUILD_ROOT/var/spool/cron/crontabs
+cp crontab.root $RPM_BUILD_ROOT/var/spool/cron/crontabs/root
+%endif
 
 # This file actually goes in the athena-afs package.
 rm $RPM_BUILD_ROOT/etc/athena/config_afs

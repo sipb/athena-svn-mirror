@@ -15,13 +15,29 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra files; see prep/athena-zephyr
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp zephyr.vars $RPM_BUILD_ROOT/etc/athena/zephyr.vars
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp zhm.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm
 cp zephyrd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm 
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp zhm.rc $RPM_BUILD_ROOT/etc/init.d/zhm
+cp zephyrd.rc $RPM_BUILD_ROOT/etc/init.d/zephyrd
+chmod +x $RPM_BUILD_ROOT/etc/init.d/zhm
+chmod +x $RPM_BUILD_ROOT/etc/init.d/zephyrd
+ln -s ../init.d/zhm $RPM_BUILD_ROOT/etc/rc2.d/S91zhm
+ln -s ../init.d/zhm $RPM_BUILD_ROOT/etc/rc0.d/K91zhm
+ln -s ../init.d/zephyrd $RPM_BUILD_ROOT/etc/rc2.d/S91zephyrd
+ln -s ../init.d/zephyrd $RPM_BUILD_ROOT/etc/rc0.d/K91zephyrd
+%endif
 
+%ifos linux
 mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
 cp system-zephyr.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/50zephyr
 chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/50zephyr
@@ -29,6 +45,7 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/50zephyr
 mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/user
 cp user-zephyr.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user/50zephyr
 chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user/50zephyr
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
@@ -44,11 +61,15 @@ grep -q ^ZSERVER /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ZSERVER=false;		export ZSERVER		#  Zephyr server
 EOF
 
+%ifos linux
 chkconfig --add zhm
 chkconfig --add zephyrd
+%endif
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del zhm
   chkconfig --del zephyrd
 fi
+%endif

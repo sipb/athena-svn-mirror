@@ -13,20 +13,25 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra files
-mkdir -p $RPM_BUILD_ROOT/etc/athena $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/athena
 cp inetd.conf.athena $RPM_BUILD_ROOT/etc/athena/inetd.conf
-cp inetd.conf $RPM_BUILD_ROOT/etc/inetd.conf.minimal
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp athena-inetd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-inetd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-inetd
-
-# Rename the program
-mv $RPM_BUILD_ROOT/etc/athena/inetd $RPM_BUILD_ROOT/etc/athena/athena-inetd
-mv $RPM_BUILD_ROOT/usr/athena/man/man8/inetd.8 \
-	$RPM_BUILD_ROOT/usr/athena/man/man8/athena-inetd.8
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp athena-inetd.rc $RPM_BUILD_ROOT/etc/init.d/athena-inetd
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-inetd
+ln -s ../init.d/athena-inetd $RPM_BUILD_ROOT/etc/rc2.d/S91athena-inetd
+ln -s ../init.d/athena-inetd $RPM_BUILD_ROOT/etc/rc0.d/K91athena-inetd
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
-      -e "s|^/etc/inetd.conf.minimal$|%config \0|" \
       -e "s|^/etc/athena/inetd.conf$|%config \0|" |
   sort > rpm.filelist
 
@@ -37,11 +42,11 @@ grep -q ^ACCESSON /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ACCESSON=false;		export ACCESSON		#  Access on by default
 EOF
 
+%ifos linux
 chkconfig --add athena-inetd
+%endif
 
-%triggerin -- inetd
-cp /etc/inetd.conf.minimal /etc/inetd.conf
-
+%ifos linux
 %triggerin -- setup
 ( grep -s -q ^rkinit /etc/services \
 	|| echo "rkinit	2108/tcp	rkinitd	# Remote ticket granting svc."
@@ -54,9 +59,12 @@ cp /etc/inetd.conf.minimal /etc/inetd.conf
  grep -s -q ^gshell /etc/services \
 	|| echo "gshell		3715/tcp	# gsh service"
 ) >> /etc/services
+%endif
 
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-inetd
 fi
+%endif

@@ -13,13 +13,26 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra file
+%ifos linux
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp athena-update_server.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-update_server
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-update_server
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp athena-update_server.rc $RPM_BUILD_ROOT/etc/init.d/athena-update_server
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-update_server
+ln -s ../init.d/athena-update_server \
+  $RPM_BUILD_ROOT/etc/rc2.d/S91athena-update_server
+ln -s ../init.d/athena-update_server \
+  $RPM_BUILD_ROOT/etc/rc0.d/K91athena-update_server
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l | 
     sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
 
+%ifos linux
 %triggerin -- setup
 ( grep -s -q ^moira_db /etc/services \
 	|| echo "moira_db	775/tcp		# Moira database"
@@ -35,16 +48,21 @@ find $RPM_BUILD_ROOT -type f -or -type l |
  grep -s -q ^sms_ureg /etc/services \
 	|| echo "sms_ureg	779/udp		# Moira user registration"
 ) >> /etc/services
+%endif
 
 %post
 grep -q ^MRUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 MRUPDATE=false;		export MRUPDATE		# Moira update daemon
 EOF
 
+%ifos linux
 chkconfig --del athena-update_server
 chkconfig --add athena-update_server
+%endif
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-update_server
 fi
+%endif

@@ -15,11 +15,14 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files; see prep/athena-locker
 mkdir -p $RPM_BUILD_ROOT/etc/athena
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 mkdir -p $RPM_BUILD_ROOT/var/athena/attachtab/{directory,locker,mountpoint}
 cp attach.conf $RPM_BUILD_ROOT/etc/athena/attach.conf
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp attach.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
@@ -35,10 +38,13 @@ EOF
 
 %post
 mkdir -p -m 755 /mit
+%ifos linux
 chkconfig --add attach
+%endif
 
-
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del attach
 fi
+%endif

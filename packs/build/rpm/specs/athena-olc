@@ -12,9 +12,19 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra file
+%ifos linux
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp olc.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp olc.rc $RPM_BUILD_ROOT/etc/init.d/olc
+chmod +x $RPM_BUILD_ROOT/etc/init.d/olc
+ln -s ../init.d/athena-olc $RPM_BUILD_ROOT/etc/rc2.d/S91athena-olc
+ln -s ../init.d/athena-olc $RPM_BUILD_ROOT/etc/rc0.d/K91athena-olc
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
     sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
@@ -24,13 +34,17 @@ grep -q ^OLC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 OLC=false;		export OLC		#  OLC daemon?
 EOF
 
+%ifos linux
 chkconfig --add olc
+%endif
 
 %description
 The Online Consultant system enables a variety of styles of
 interaction with the Athena Online Consultants.
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del olc
 fi
+%endif

@@ -15,11 +15,22 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra file
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp ssh_config $RPM_BUILD_ROOT/etc/ssh_config
 cp sshd_config $RPM_BUILD_ROOT/etc/sshd_config
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp athena-opensshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-opensshd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-opensshd
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
+mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
+cp athena-opensshd.rc $RPM_BUILD_ROOT/etc/init.d/athena-opensshd
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-opensshd
+ln -s ../init.d/athena-opensshd $RPM_BUILD_ROOT/etc/rc2.d/S91athena-opensshd
+ln -s ../init.d/athena-opensshd $RPM_BUILD_ROOT/etc/rc0.d/K91athena-opensshd
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
@@ -49,9 +60,13 @@ if [ ! -f /etc/ssh_host_dsa_key ]; then
 	    -N ''
 fi
 
+%ifos linux
 chkconfig --add athena-opensshd
+%endif
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-opensshd
 fi
+%endif

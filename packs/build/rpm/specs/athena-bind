@@ -14,14 +14,22 @@ mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
 # Extra files
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 cp named.conf 			$RPM_BUILD_ROOT/etc/named.conf
 cp named.localhost		$RPM_BUILD_ROOT/etc/named.localhost
 cp named.localhost.rev		$RPM_BUILD_ROOT/etc/named.localhost.rev
 cp named.root			$RPM_BUILD_ROOT/etc/named.root
 cp resolv.conf			$RPM_BUILD_ROOT/etc/resolv.conf
-cp athena-bind.rc		$RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
+
+%ifos linux
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp athena-bind.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
+%else
+mkdir -p $RPM_BUILD_ROOT/etc/init.d $RPM_BUILD_ROOT/etc/rc2.d
+cp athena-bind.rc $RPM_BUILD_ROOT/etc/init.d
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-bind
+ln -s ../init.d/athena-bind $RPM_BUILD_ROOT/etc/rc2.d/S72athena-bind
+%endif
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
@@ -32,6 +40,7 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/etc/resolv.conf$|%config \0|" |
   sort > rpm.filelist
 
+%ifos linux
 %post
 chkconfig --add athena-bind
 # Force a reset to what's specified in the rc file since we had to
@@ -53,8 +62,11 @@ if [ $? = "0" ]; then
   ln /etc/resolv.conf /etc/resolv.conf.old
   test -s /etc/resolv.conf.new && mv /etc/resolv.conf.new /etc/resolv.conf
 fi
+%endif
 
+%ifos linux
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-bind
 fi
+%endif

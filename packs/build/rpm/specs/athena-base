@@ -21,6 +21,7 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/etc/athena/rc.conf$|%config(noreplace) \0|" |
   sort > rpm.filelist
 
+%ifos linux
 %post
 
 grep -s -q :101: /etc/group \
@@ -31,4 +32,4 @@ if [ ! -f /etc/athena/version ]; then
 	echo Athena Workstation '(linux)' Version Layered `date` >> \
 		 /etc/athena/version
 fi
-
+%endif
