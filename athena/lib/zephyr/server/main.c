@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_main_c[] =
-    "$Id: main.c,v 1.57 1994-03-15 12:41:00 probe Exp $";
+    "$Id: main.c,v 1.58 1994-03-15 12:48:13 probe Exp $";
 #endif
 #endif
 
@@ -139,6 +139,8 @@ unsigned long m_size;
 #ifdef DEBUG
 int zalone;
 #endif
+
+struct timeval t_local;			/* store current time for other uses */
 
 u_long npackets;			/* number of packets processed */
 long uptime;				/* when we started operations */
