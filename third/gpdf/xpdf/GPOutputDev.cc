@@ -224,7 +224,8 @@ GnomeFontFace *GPOFontMap::getFontFaceEmbedded(GfxFont *font)
 
   strObj.streamReset();
   if (!getStreamContents(strObj.getStream(), &contents, &length))
-    g_assert_not_reached(); /* FIXME */
+    return getFontFaceFallback(font);
+
   strObj.free();
 
   switch (font->getType()) {
@@ -262,7 +263,9 @@ GnomeFontFace *GPOFontMap::getFontFaceEmbedded(GfxFont *font)
     FILE *f;
     gushort *code_to_gid;
 
-    ff = FoFiTrueType::make((char *)contents, length); // FIXME error handling
+    ff = FoFiTrueType::make((char *)contents, length);
+    if (!ff)
+      return getFontFaceFallback(font);
 
     code_to_gid = ((Gfx8BitFont *)font)->getCodeToGIDMap(ff); // this is g(oo)malloc'd
 
@@ -300,10 +303,17 @@ GnomeFontFace *GPOFontMap::getFontFaceEmbedded(GfxFont *font)
   case fontCIDType0C: {
     FoFiType1C *ff;
     gint n_cids;
+#if HAVE_FREETYPE_217_OR_OLDER
     gushort *code_to_gid;
+#endif
     
     ff = FoFiType1C::make((char *)contents, length);
+    if (!ff)
+      return getFontFaceFallback(font);
+
+#if HAVE_FREETYPE_217_OR_OLDER
     code_to_gid = ff->getCIDToGIDMap(&n_cids); // this is g(oo)malloc'd
+#endif
     delete ff;
 
     gff = gpdf_font_face_download((const guchar *)font_name,
@@ -311,10 +321,13 @@ GnomeFontFace *GPOFontMap::getFontFaceEmbedded(GfxFont *font)
 				  GNOME_FONT_REGULAR, FALSE,
 				  contents, length);
 
+#if HAVE_FREETYPE_217_OR_OLDER
+    /* freetype >= 2.1.8 can handle Type1C fonts fine without this */
     g_object_set_data((GObject *)gff, "code-to-gid-len",
 		      GINT_TO_POINTER(n_cids));
     g_object_set_data_full((GObject *)gff, "code-to-gid", code_to_gid,
 			   (GDestroyNotify)gfree);
+#endif
     break;
   }
   case fontCIDType2: {
@@ -325,7 +338,9 @@ GnomeFontFace *GPOFontMap::getFontFaceEmbedded(GfxFont *font)
     gint n_cids;    
     gushort *code_to_gid;
 
-    ff = FoFiTrueType::make((char *)contents, length); // FIXME error handling
+    ff = FoFiTrueType::make((char *)contents, length);
+    if (!ff)
+      return getFontFaceFallback(font);
 
     fd = g_file_open_tmp("gpdf-ttf-XXXXXX", &temp_name, NULL);
     f = fdopen(fd, "wb");

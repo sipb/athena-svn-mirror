@@ -1,42 +1,40 @@
 # Persian translation of gpdf.
-# Copyright (C) 2004 Free Software Foundation, Inc.
 # Copyright (C) 2004 Sharif FarsiWeb, Inc.
 # This file is distributed under the same license as the gpdf package.
 # Roozbeh Pournader <roozbeh@sharif.edu>, 2004.
+# Meelad Zakaria <meelad@bamdad.org>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gpdf 0.121\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
-"PO-Revision-Date: 2004-01-03 19:51+0330\n"
-"Last-Translator: Roozbeh Pournader <roozbeh@sharif.edu>\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
+"PO-Revision-Date: 2004-08-17 11:51+0330\n"
+"Last-Translator: Meelad Zakaria <meelad@bamdad.org>\n"
 "Language-Team: Persian <farsi@lists.sharif.edu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
-#, fuzzy
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
-msgstr "نمایشگر PDF گنوم"
+msgstr "نمایشگر PDF"
 
 #: gpdf.desktop.in.h:2
-#, fuzzy
 msgid "View PDF files"
-msgstr "ابزار دیدن پرونده‌های PDF"
+msgstr "نمایش پرونده‌های PDF"
 
 #: gpdf.schemas.in.h:1
 msgid "Default sidebar page"
-msgstr ""
+msgstr "صفحه‌ی نوار کناری پیش‌فرض"
 
 #: gpdf.schemas.in.h:2
 msgid "Default sidebar size"
-msgstr ""
+msgstr "اندازه‌ی نوار کناری پیش‌فرض"
 
 #: gpdf.schemas.in.h:3
 msgid "Show sidebar by default"
-msgstr ""
+msgstr "نمایش نوار کناری به طور پیش‌فرض"
 
 #: shell/eel-vfs-extensions.c:691
 msgid " (invalid Unicode)"
@@ -60,7 +58,7 @@ msgstr "بستن پنجره"
 
 #: shell/gpdf-window-ui.xml.h:3
 msgid "Online manual for this application"
-msgstr ""
+msgstr "راهنمای متصل برای این برنامه"
 
 #: shell/gpdf-window-ui.xml.h:4
 msgid "Open"
@@ -72,7 +70,7 @@ msgstr "باز کردن پرونده"
 
 #: shell/gpdf-window-ui.xml.h:6
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "ضامن حالت تمام صفحه"
 
 #: shell/gpdf-window-ui.xml.h:7
 msgid "_About"
@@ -92,7 +90,7 @@ msgstr "_پرونده"
 
 #: shell/gpdf-window-ui.xml.h:11
 msgid "_Full Screen"
-msgstr ""
+msgstr "تمام صفحه"
 
 #: shell/gpdf-window-ui.xml.h:12
 msgid "_Help"
@@ -111,78 +109,80 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "نمی‌توان بونوبو را راه‌اندازی کرد!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
-msgstr "پرونده‌ی PDF"
+msgstr "نوشتار PDF"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
-msgstr ""
+msgstr "خروج از حالت تمام صفحه"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "بار کردن پرونده"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
-#, fuzzy
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
-msgstr "پرونده‌ی PDF"
+msgstr "نوشتارهای PDF"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
-msgstr ""
+msgstr "تمام پرونده‌ها"
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "درک ب. نونبرگ، مؤلف Xpdf."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "مارتین کرتسشمار، نگهدارنده‌ی حمل به گنوم."
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "مایکل میکس، ایجادکننده‌ی حمل به گنوم."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "رمی کوهن-اسکالی."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "میگل د ایکاسا."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "نت فریدمن"
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "راوی پراتاپ."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "چی بن هوه <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "بردا مکالگن <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
-msgstr "روزبه پورنادر"
-
-#: shell/gpdf.c:701
-msgid "Glyph & Cog, LLC and authors"
 msgstr ""
+"ترجمه‌ی:\n"
+"روزبه پورنادر\n"
+"میلاد زکریا"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:730
+msgid "Glyph & Cog, LLC and authors"
+msgstr "گلیف و کوگ، LLC‌ و مؤلفان"
+
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "نمایشگر PDF گنوم"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "نمایشگر PDF مبتنی بر Xpdf"
 
@@ -192,16 +192,15 @@ msgstr "کارخانه‌ی نمایشگر PDF گنوم"
 
 #: xpdf/GNOME_PDF.server.in.in.h:3
 msgid "Nautilus PDF Property Page"
-msgstr ""
+msgstr "صفحه‌ی مشخصه‌ی PDF ناتیلوس"
 
 #: xpdf/GNOME_PDF.server.in.in.h:6
 msgid "PDF document viewer factory"
-msgstr ""
+msgstr "کارخانه‌ی نمایش‌ نوشتار PDF"
 
 #: xpdf/GNOME_PDF.server.in.in.h:7
-#, fuzzy
 msgid "View as PDF Document"
-msgstr "پرونده‌ی PDF"
+msgstr "نمایش به صورت نوشتار PDF"
 
 #: xpdf/eel-gconf-extensions.c:74
 msgid ""
@@ -209,6 +208,8 @@ msgid ""
 "Check your gconf setup, look at gpdf FAQ for \n"
 "more info"
 msgstr ""
+"شمایی برای ترجیحات gpdf یافت نشد.\n"
+"برپاسازی gpdf خود را امتحان کنید، برای اطلاعات بیشتر به FAQ gpdf نگاه کنید"
 
 #: xpdf/eel-gconf-extensions.c:101
 #, c-format
@@ -216,44 +217,44 @@ msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
+"خطای GConf:\n"
+" %s"
 
 #: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
 msgid "Parent control"
-msgstr ""
+msgstr "کنترل پدر"
 
 #: xpdf/gpdf-annots-view.cc:916
 msgid "Owner/Title"
-msgstr ""
+msgstr "مالک/عنوان"
 
 #: xpdf/gpdf-annots-view.cc:925
-#, fuzzy
 msgid "Opened"
-msgstr "باز کردن"
+msgstr "باز شد"
 
 #: xpdf/gpdf-annots-view.cc:1070 xpdf/gpdf-annots-view.cc:1086
 #: xpdf/gpdf-thumbnails-view.cc:1466 xpdf/gpdf-thumbnails-view.cc:1482
 msgid "Not yet implemented!"
-msgstr ""
+msgstr "‏هنوز پیاده‌سازی نشده است!"
 
 #: xpdf/gpdf-annots-view.cc:1071
 msgid "Annotations Filter feature not yet implemented... Sorry."
-msgstr ""
+msgstr "امکانات صافی حاشیه‌ها هنوز پیاده‌سازی نشده است... ببخشید."
 
 #: xpdf/gpdf-annots-view.cc:1087
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
-msgstr ""
+msgstr "متصل‌شونده‌های امکانات مدیریت حاشیه‌ها هنوز پیاده‌سازی نشده است... ببخشید."
 
-#: xpdf/gpdf-bookmarks-view.cc:924
-#, fuzzy, c-format
+#: xpdf/gpdf-bookmarks-view.cc:877
+#, c-format
 msgid "** Unknown %s **"
-msgstr "نامعلوم"
+msgstr "**%s نامعلوم **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
-#, fuzzy
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "عنوان:"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "صفحه"
 
@@ -263,31 +264,31 @@ msgstr "عقب"
 
 #: xpdf/gpdf-control-ui.xml.h:2
 msgid "Best Fit"
-msgstr ""
+msgstr "بهترین اندازه"
 
 #: xpdf/gpdf-control-ui.xml.h:3
 msgid "Best _Fit"
-msgstr ""
+msgstr "بهترین اندازه"
 
 #: xpdf/gpdf-control-ui.xml.h:4
 msgid "Change the visibility of the sidebar"
-msgstr ""
+msgstr "تغییر مرئی بودن نوار کناری"
 
 #: xpdf/gpdf-control-ui.xml.h:5
 msgid "Expand to a larger size"
-msgstr ""
+msgstr "اندازه‌ی بزرگتر"
 
 #: xpdf/gpdf-control-ui.xml.h:6
 msgid "First"
-msgstr "اولین"
+msgstr "اول"
 
 #: xpdf/gpdf-control-ui.xml.h:7
 msgid "Fit Width"
-msgstr "تنظیم عرض"
+msgstr "اندازه کردن با عرض"
 
 #: xpdf/gpdf-control-ui.xml.h:8
 msgid "Fit page _width"
-msgstr ""
+msgstr "اندازه کردن با عرض صفحه"
 
 #: xpdf/gpdf-control-ui.xml.h:9
 msgid "Fo_rward"
@@ -311,7 +312,7 @@ msgstr "داخل"
 
 #: xpdf/gpdf-control-ui.xml.h:14
 msgid "Last"
-msgstr "آخرین"
+msgstr "آخر"
 
 #: xpdf/gpdf-control-ui.xml.h:15
 msgid "Next"
@@ -335,7 +336,7 @@ msgstr "چاپ پرونده‌ی فعلی"
 
 #: xpdf/gpdf-control-ui.xml.h:20
 msgid "Proper_ties"
-msgstr "_ویژگی‌ها"
+msgstr "_مشخصه‌ها"
 
 #: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
 msgid "Save a Copy"
@@ -343,23 +344,23 @@ msgstr "ذخیره‌ی یک نسخه"
 
 #: xpdf/gpdf-control-ui.xml.h:22
 msgid "Save the current PDF document with a new filename"
-msgstr ""
+msgstr "ذخیره‌ی نوشتار PDF جاری با یک نام پرونده‌ی جدید"
 
 #: xpdf/gpdf-control-ui.xml.h:23
 msgid "Shrink to a smaller size"
-msgstr ""
+msgstr "اندازه‌ی کوچکتر"
 
 #: xpdf/gpdf-control-ui.xml.h:24
 msgid "Size to fit the page"
-msgstr ""
+msgstr "تغییر اندازه طوری که در صفحه جا بگیرد"
 
 #: xpdf/gpdf-control-ui.xml.h:25
 msgid "Size to fit the page width"
-msgstr ""
+msgstr "تغییر اندازه طوری که در عرض صفحه جا بگیرد"
 
 #: xpdf/gpdf-control-ui.xml.h:26
 msgid "View properties of the displayed document"
-msgstr ""
+msgstr "نمایش مشخصه‌های نوشتار نمایش‌داده شده"
 
 #: xpdf/gpdf-control-ui.xml.h:27
 msgid "View the first page"
@@ -371,11 +372,11 @@ msgstr "نمایش آخرین صفحه"
 
 #: xpdf/gpdf-control-ui.xml.h:29
 msgid "View the next page"
-msgstr "نمایش صفحه‌ی بعدی"
+msgstr "نمایش صفحه‌ی بعد"
 
 #: xpdf/gpdf-control-ui.xml.h:30
 msgid "View the previous page"
-msgstr "نمایش صفحه‌ی قبلی"
+msgstr "نمایش صفحه‌ی قبل"
 
 #: xpdf/gpdf-control-ui.xml.h:31
 msgid "Zoom _In"
@@ -395,7 +396,7 @@ msgstr "صفحه‌ی _اول"
 
 #: xpdf/gpdf-control-ui.xml.h:36
 msgid "_Go"
-msgstr ""
+msgstr "رفتن"
 
 #: xpdf/gpdf-control-ui.xml.h:37
 msgid "_Last Page"
@@ -415,11 +416,11 @@ msgstr "_چاپ..."
 
 #: xpdf/gpdf-control-ui.xml.h:41
 msgid "_Save a Copy..."
-msgstr ""
+msgstr "ذخیره‌ی یک نسخه"
 
 #: xpdf/gpdf-control-ui.xml.h:42
 msgid "_Sidebar"
-msgstr ""
+msgstr "نوار کناری"
 
 #: xpdf/gpdf-control.cc:559
 msgid "Documentation Error"
@@ -436,12 +437,16 @@ msgid ""
 "You were trying to print to a printer using the \"%s\" driver. This program "
 "requires a PostScript printer driver."
 msgstr ""
+"شما سعی می‌کردید با استفاده از درایور \"%s\" روی چاپ‌گر چاپ کنید. این برنامه "
+"به یک درایور چاپ‌گر پست‌اسکریپت نیاز دارد."
 
 #: xpdf/gpdf-control.cc:894
 msgid ""
 "You were trying to print to a printer that does not use PostScript. This "
 "program requires a PostScript printer driver."
 msgstr ""
+"شما سعی می‌کردید روی چاپ‌گری چاپ کنید که از پست‌اسکریپت استفاده نمی‌کند. این "
+"برنامه به یک درایور چاپ‌گر پست‌اسکریپت نیاز دارد."
 
 #: xpdf/gpdf-control.cc:898
 msgid "Printing is not supported on this printer."
@@ -477,23 +482,22 @@ msgstr ""
 msgid "PDF Properties"
 msgstr "ویژگی‌های PDF"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "بار کردن %s شکست خورد."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
-msgstr ""
+msgstr "کتاب‌نما"
 
-#: xpdf/gpdf-control.cc:2377
-#, fuzzy
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "_صفحات"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
-msgstr ""
+msgstr "حاشیه‌ها"
 
 #: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
 msgid "Link"
@@ -509,23 +513,23 @@ msgstr "پیوندها"
 
 #: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
 msgid "_Open Document"
-msgstr ""
+msgstr "باز کردن نوشتار"
 
 #: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
 msgid "Enter document password:"
-msgstr ""
+msgstr "کلمه‌ی عبور نوشتار را وارد کنید:"
 
 #: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
 msgid ""
 "This document is encrypted and this operation requires the document's "
 "password"
-msgstr ""
+msgstr "این نوشتار رمز شده است و این عملیات به کلمه‌ی عبور نوشتار نیاز دارد."
 
 #. translators: page catalog is a part of the PDF file
 #. The last period (.) is missing on purpose
 #: xpdf/gpdf-persist-file.cc:337
 msgid "The PDF file is damaged. Its page catalog could not be read"
-msgstr ""
+msgstr "پرونده‌ی PDF آسیب دیده است. صفحه‌ی فهرست آن قابل خواندن نیست."
 
 #: xpdf/gpdf-persist-file.cc:341
 msgid ""
@@ -534,7 +538,7 @@ msgstr "پرونده‌ی PDF خراب شده است یا پرونده‌ی PDF 
 
 #: xpdf/gpdf-persist-file.cc:345
 msgid "The PDF document is encrypted and you didn't enter the correct password"
-msgstr ""
+msgstr "نوشتار PDF رمز شده است و شما کلمه‌ی عبور درست را وارد نکردید."
 
 #: xpdf/gpdf-print-progress-dialog.glade.h:1
 msgid "Printing"
@@ -542,7 +546,7 @@ msgstr "در حال چاپ"
 
 #: xpdf/gpdf-print-progress-dialog.glade.h:2
 msgid "Printing: Preparing."
-msgstr ""
+msgstr "در حال چاپ: آماده سازی"
 
 #: xpdf/gpdf-properties-dialog.glade.h:1
 msgid "Author:"
@@ -570,7 +574,7 @@ msgstr "تعداد صفحات:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:7
 msgid "Optimized:"
-msgstr ""
+msgstr "بهینه سازی شده:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:8
 msgid "PDF Version:"
@@ -582,7 +586,7 @@ msgstr "تولیدکننده:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:10
 msgid "Security:"
-msgstr ""
+msgstr "امنیت:"
 
 #: xpdf/gpdf-properties-dialog.glade.h:11
 msgid "Subject:"
@@ -602,30 +606,29 @@ msgstr "عنوان:"
 msgid "Unknown"
 msgstr "نامعلوم"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
-msgstr ""
+msgstr "صفحه‌ی نوار کناری را با عنوان نمایش آن انتخاب کنید"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
-msgstr ""
+msgstr "برای باز کردن منوی ابزارهای باز کردن صفحه کلیک کنید"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
-msgstr ""
+msgstr "صفحه را اگر حذف شدنی است حذف کنید"
 
-#: xpdf/gpdf-sidebar.c:434
-#, fuzzy
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
-msgstr "بستن پنجره"
+msgstr "بستن نوار کناری"
 
 #: xpdf/gpdf-thumbnails-view.cc:1467
 msgid "Thumbnail Generation feature not yet implemented... Sorry."
-msgstr ""
+msgstr "امکانات تولید ناخن‌شستی هنوز پیاده‌سازی نشده است... ببخشید."
 
 #: xpdf/gpdf-thumbnails-view.cc:1483
 msgid "All Thumbnails Generation feature not yet implemented... Sorry."
-msgstr ""
+msgstr "همه‌ی امکانات تولید ناخن‌شستی هنوز پیاده‌سازی نشده است... ببخشید."
 
 #: xpdf/gpdf-view.cc:378
 #, c-format
@@ -634,55 +637,55 @@ msgstr ""
 
 #: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
 msgid "Application Launch Failure!"
-msgstr ""
+msgstr "شکست در راه‌اندازی برنامه!"
 
 #: xpdf/gpdf-view.cc:388
 #, c-format
 msgid "Failed to launch %s for URI: %s"
-msgstr ""
+msgstr "راه اندازی %s برای URI شکست خورد: %s"
 
 #: xpdf/gpdf-view.cc:404
 msgid "Application Launch notification!"
-msgstr ""
+msgstr "اخطار راه‌اندازی برنامه!"
 
 #: xpdf/gpdf-view.cc:514
 #, c-format
 msgid "Go to page #%d"
-msgstr ""
+msgstr "رفتن به صفحه‌ی #%Id"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
-msgstr ""
+msgstr "رفتن به پرونده‌ی %s:#%Id"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
-msgstr ""
+msgstr "راه‌اندازی: %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
-msgstr ""
+msgstr "مرور %s"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
-msgstr ""
+msgstr "عمل: %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
-msgstr ""
+msgstr "فیلم:%s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
-msgstr ""
+msgstr "عمل ناشناخته: %s !"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
-msgstr ""
+msgstr "نمایش نوشتار"
 
 #: xpdf/nautilus-pdf-property-page.cc:146
 msgid "URI currently displayed"
@@ -691,7 +694,7 @@ msgstr "URIی که فعلاٌ نمایش یافته"
 #: xpdf/page-control.c:101
 #, c-format
 msgid " of %d"
-msgstr " از %d"
+msgstr " از %Id"
 
 #: xpdf/page-control.c:219 xpdf/page-control.c:233
 msgid "Current page"
@@ -707,11 +710,11 @@ msgstr ""
 
 #: xpdf/pdf-info-dict-util.cc:203
 msgid "Encrypted"
-msgstr ""
+msgstr "رمز دار"
 
 #: xpdf/pdf-info-dict-util.cc:203
 msgid "None"
-msgstr ""
+msgstr "هیچ کدام"
 
 #. Yes/No will be displayed in the pdf properties dialog
 #. in a table as "Optimized: No"

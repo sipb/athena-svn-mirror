@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpdf.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2004-08-21 13:53+0300\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "Программа просмотра PDF"
 
@@ -113,80 +113,80 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Не удалось инициализировать Bonobo!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "Документ в формате PDF"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr "Выйти из полноэкранного режима"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "Загрузить файл"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
 msgstr "Документы в формате PDF"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr "Все файлы"
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Derek B. Noonburg, автор Xpdf."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "Martin Kretzschmar, руководитель переноса в GNOME."
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Michael Meeks, инициатор переноса в GNOME."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Remi Cohen-Scali."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Chee Bin HOH <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Breda McColgan <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 "Valek Filippov <frob@df.ru>\n"
 "Andrew W. Nosenko <awn@bcs.zp.ua>\n"
 "Леонид Кантер <leon@asplinux.ru>"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC и авторы"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "Gpdf -- программа просмотра PDF для GNOME"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr ""
 "Программа просмотра документов в формате PDF, базирующаяся на программе Xpdf"
@@ -252,16 +252,16 @@ msgstr "Функция фильтра аннотаций еще не реали�
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr "Функция управления модулями аннотации еще не реализована... Извините."
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, c-format
 msgid "** Unknown %s **"
 msgstr "** Неизв. %s **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "Заголовок"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "Страница"
 
@@ -489,20 +489,20 @@ msgstr "Файл не может быть сохранен как \"%s\"."
 msgid "PDF Properties"
 msgstr "Свойства документа PDF"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "Ошибка загрузки %s."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "Закладки"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "Страницы"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "Аннотации"
 
@@ -615,19 +615,19 @@ msgstr "Заголовок:"
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "Выберите боковую панель для отображения по ее заголовку"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "Нажмите, чтобы открыть меню свойств страницы"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "Удалить страницу, если это возможно"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "Закрыть боковую панель"
 
@@ -662,37 +662,37 @@ msgstr "Уведомление о запуске приложения!"
 msgid "Go to page #%d"
 msgstr "Перейти к странице #%d"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr "Перейти к файлу %s:#%d"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr "Запустить: %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr "Просмотреть %s"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr "Действие: %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr "Фильм: %s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr "Неизвестное действие: %s !"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "Просмотр документа"
 

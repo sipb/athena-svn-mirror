@@ -33,6 +33,9 @@
 /* Define to 1 if `gnome-font-private.h' is usable. */
 #undef HAVE_FONT_EMBEDDING
 
+/* Define to 1 if your system has the freetype library 2.1.7 or older */
+#undef HAVE_FREETYPE_217_OR_OLDER
+
 /* Have fseek64(). */
 #undef HAVE_FSEEK64
 

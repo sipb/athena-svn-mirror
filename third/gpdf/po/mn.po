@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2004-02-18 22:54+0100\n"
 "Last-Translator: Sanlig Badral <badral@openmn.org>\n"
 "Language-Team: Mongolian <openmn-gnome@lists.sf.net>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "PDF харагч"
 
@@ -113,80 +113,80 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Bonobo ачааллаж чадахгүй байна\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "PDF баримт"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr "Дүүрэн дэлгэцээс гарах"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "Файлыг ачаалах"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 #, fuzzy
 msgid "PDF Documents"
 msgstr "PDF баримт"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr ""
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Derek B. Noonburg, Xpdf-н зохиогч"
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "Martin Kretzschmar, GNOME удирдагч"
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Michael Meeks, GNOME үүсгэгч"
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Remi Cohen-Scali."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Miguel de Icaza."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Nat Friedman."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Chee Bin HOH <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Breda McColgan <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 "Сүхбаатарын Дөлмандах \n"
 "Санлигийн Бадрал <badral@openmn.org>"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC болон зохиогчид"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "GNOME PDF үзэгч"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "Xpdf-д суурилсан PDF үзэгч"
 
@@ -250,16 +250,16 @@ msgstr "Тайлбарын шүүлтүүр хараахан хийгдээгү�
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr "Тайлбарын Плугинс хараахан хийгдээгүй байна... Уучилан соёрх."
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, fuzzy, c-format
 msgid "** Unknown %s **"
 msgstr "Үл мэдэгдэх"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "Гарчиг:"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "Хуудас"
 
@@ -487,20 +487,20 @@ msgstr ""
 msgid "PDF Properties"
 msgstr "PDF шинж чанарууд"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "%s-г ачааллаж чадсангүй"
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "Хавчуурга"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "Хуудаснууд"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "Тайлбарлалт"
 
@@ -614,19 +614,19 @@ msgstr "Нэр:"
 msgid "Unknown"
 msgstr "Үл мэдэгдэх"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "Хуудсын самбарын хуудасыг харуулах гарчигаар тэмдэглэ"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "Хуудасын хэрэгслийн цэсийг нээхдээ товш"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "Хэрэв хуудсыг устгаж болох бол устгах"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "Хуудсын самбарыг хаа"
 
@@ -664,37 +664,37 @@ msgstr "Програмын ажиллагааны сонордуулга!"
 msgid "Go to page #%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "Баримтын үзэмж"
 

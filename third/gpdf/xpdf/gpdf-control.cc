@@ -1725,15 +1725,6 @@ gpdf_control_read_sidebar_state (GPdfControl *gpdf_control)
 			 NULL,
 			 gpdf_control);
 
-#ifndef USE_ANNOTS_VIEW
-	/*
-	 * If annots view is disabled and saved page id
-	 * is GPDF_ANNOTS_VIEW_PAGE_ID,  change it to Bookmarks page.
-	 */
-	if (!strncmp(page_id, GPDF_ANNOTS_VIEW_PAGE_ID, strlen(GPDF_ANNOTS_VIEW_PAGE_ID)))
-		page_id = GPDF_BOOKMARKS_VIEW_PAGE_ID;
-#endif
-	
 	/* Select sidebar page saved in gconf value sidebar_page */
 	gpdf_control_sidebar_page_changed_cb
 		(GPDF_SIDEBAR (gpdf_control->priv->gpdf_sidebar),
@@ -2334,6 +2325,8 @@ gpdf_control_sidebar_page_changed_cb (GPdfSidebar *sidebar,
 	else if (!strncmp (page_id, GPDF_ANNOTS_VIEW_PAGE_ID, strlen(GPDF_ANNOTS_VIEW_PAGE_ID)))
 		page = control->priv->gpdf_annots_view;
 #endif
+	else /* Invalid page setting: use fallback*/
+		page = control->priv->gpdf_bookmarks_view; 
 	
 	if (page)
 		gpdf_sidebar_set_content

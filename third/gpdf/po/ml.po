@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:gpdf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2003-07-05 10:29+0530\n"
 "Last-Translator: FSF-India <locale@gnu.org.in>\n"
 "Language-Team: Malayalam <locale@gnu.org.in>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 #, fuzzy
 msgid "PDF Viewer"
 msgstr " ഗ്നോം PDF ഫയല് ദര്ശിനി"
@@ -111,79 +111,79 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Bonobo ആരംഭിക്കാന്‌ കഴിയുന്നില്ല!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "PDF രേഖ"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr ""
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "രചനകള് നിറയ‌്ക്കുക"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 #, fuzzy
 msgid "PDF Documents"
 msgstr "PDF രേഖ"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr ""
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "ഡെറക്ക് ബി നൂന്ബര്ഗ്, Xpdf രചയിതാവ്"
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "മാര്ട്ടിന് കെ. ഗ്നോം പതിപ്പ് കാര്യസ്ഥന് "
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "എം. മീക്സ്. ഗ്നോം പതിപ്പ് രചയിതാവ്"
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr ""
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "മിഗുവല് ഡി കെ."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "നാറ്റ് ഫ്രഡ്മാന്"
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "രവി പ്രതാപ്"
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr ""
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr ""
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr "മ ഗ് ലി"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 #, fuzzy
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC and authors"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr " ഗ്നോം PDF ഫയല് ദര്ശിനി"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "ഒരു PDF ദര്ശിനി"
 
@@ -244,17 +244,17 @@ msgstr ""
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr ""
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, fuzzy, c-format
 msgid "** Unknown %s **"
 msgstr "അറിയപ്പെടാത്ത"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 #, fuzzy
 msgid "Title"
 msgstr "തലക്കെട്ട്:"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr ""
 
@@ -479,20 +479,20 @@ msgstr ""
 msgid "PDF Properties"
 msgstr "PDF ഗുണഗണങ്ങള്"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr ""
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr ""
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr ""
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr ""
 
@@ -604,19 +604,19 @@ msgstr "തലക്കെട്ട്:"
 msgid "Unknown"
 msgstr "അറിയപ്പെടാത്ത"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr ""
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr ""
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr ""
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 #, fuzzy
 msgid "Close sidebar"
 msgstr "ജാലകം അടയ്‍ക്കുക"
@@ -652,37 +652,37 @@ msgstr ""
 msgid "Go to page #%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr ""
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 #, fuzzy
 msgid "Document View"
 msgstr "PDF രേഖ"

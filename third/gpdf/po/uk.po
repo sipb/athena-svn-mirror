@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpdf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"POT-Creation-Date: 2005-01-07 20:06+0100\n"
 "PO-Revision-Date: 2004-08-31 23:44+0200\n"
 "Last-Translator: Maxim Dzumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+#: gpdf.desktop.in.h:1 shell/gpdf.c:956 xpdf/GNOME_PDF.server.in.in.h:5
 msgid "PDF Viewer"
 msgstr "Перегляд файлів PDF"
 
@@ -109,79 +109,79 @@ msgid "Could not initialize Bonobo!\n"
 msgstr "Не вдалось ініціалізувати Bonobo!\n"
 
 #: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
-#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
-#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+#: xpdf/gpdf-control.cc:1970 xpdf/gpdf-control.cc:2002
+#: xpdf/gpdf-control.cc:2021 xpdf/gpdf-control.cc:2517
 msgid "PDF Document"
 msgstr "Документ PDF"
 
-#: shell/gpdf.c:457
+#: shell/gpdf.c:462
 msgid "Exit Full Screen"
 msgstr "Вийти з повноекранного режиму"
 
-#: shell/gpdf.c:530
+#: shell/gpdf.c:559
 msgid "Load file"
 msgstr "Завантажити файл"
 
-#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+#: shell/gpdf.c:568 xpdf/gpdf-control.cc:1117
 msgid "PDF Documents"
 msgstr "Документи PDF"
 
-#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+#: shell/gpdf.c:572 xpdf/gpdf-control.cc:1123
 msgid "All Files"
 msgstr "Усі файли"
 
-#: shell/gpdf.c:671
+#: shell/gpdf.c:700
 msgid "Derek B. Noonburg, Xpdf author."
 msgstr "Дерек Нунбурґ, автор Xpdf."
 
-#: shell/gpdf.c:672
+#: shell/gpdf.c:701
 msgid "Martin Kretzschmar, GNOME port maintainer."
 msgstr "Мартін Крецхмар, відповідальний за gpdf."
 
-#: shell/gpdf.c:673
+#: shell/gpdf.c:702
 msgid "Michael Meeks, GNOME port creator."
 msgstr "Майкл Мікс, створення gpdf."
 
 #. please localize as R&eacute;mi (R\303\251mi)
-#: shell/gpdf.c:675
+#: shell/gpdf.c:704
 msgid "Remi Cohen-Scali."
 msgstr "Ремі Колген-Скалі."
 
-#: shell/gpdf.c:676
+#: shell/gpdf.c:705
 msgid "Miguel de Icaza."
 msgstr "Міґель Де Іказа."
 
-#: shell/gpdf.c:677
+#: shell/gpdf.c:706
 msgid "Nat Friedman."
 msgstr "Нет Фрідман."
 
-#: shell/gpdf.c:678
+#: shell/gpdf.c:707
 msgid "Ravi Pratap."
 msgstr "Ravi Pratap."
 
-#: shell/gpdf.c:683
+#: shell/gpdf.c:712
 msgid "Chee Bin HOH <cbhoh@mimos.my>"
 msgstr "Чі бін Хох <cbhoh@mimos.my>"
 
-#: shell/gpdf.c:684
+#: shell/gpdf.c:713
 msgid "Breda McColgan <BredaMcColgan@sun.com>"
 msgstr "Бреда Макколґан <BredaMcColgan@sun.com>"
 
-#: shell/gpdf.c:698
+#: shell/gpdf.c:727
 msgid "translator-credits"
 msgstr ""
 "Юрій Сирота <yuriy@beer.com>\n"
 "Максим Дзюманенко <mvd@mylinux.com.ua>"
 
-#: shell/gpdf.c:701
+#: shell/gpdf.c:730
 msgid "Glyph & Cog, LLC and authors"
 msgstr "Glyph & Cog, LLC і автори"
 
-#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+#: shell/gpdf.c:734 xpdf/GNOME_PDF.server.in.in.h:1
 msgid "GNOME PDF Viewer"
 msgstr "Перегляд файлів PDF"
 
-#: shell/gpdf.c:708
+#: shell/gpdf.c:737
 msgid "A PDF viewer based on Xpdf"
 msgstr "Програма перегляду файлів у форматі PDF, що ґрунтується на Xpdf"
 
@@ -245,16 +245,16 @@ msgstr "Вибачте, можливість фільтрування примі
 msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
 msgstr "Вибачте, керування доповненнями приміток ще не реалізовано."
 
-#: xpdf/gpdf-bookmarks-view.cc:924
+#: xpdf/gpdf-bookmarks-view.cc:877
 #, c-format
 msgid "** Unknown %s **"
 msgstr "** Невідомо %s **"
 
-#: xpdf/gpdf-bookmarks-view.cc:1061
+#: xpdf/gpdf-bookmarks-view.cc:1009
 msgid "Title"
 msgstr "Заголовок"
 
-#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+#: xpdf/gpdf-bookmarks-view.cc:1015 xpdf/page-control.c:230
 msgid "Page"
 msgstr "Сторінка"
 
@@ -482,20 +482,20 @@ msgstr "Файл не може бути збережений як \"%s\"."
 msgid "PDF Properties"
 msgstr "Властивості PDF"
 
-#: xpdf/gpdf-control.cc:2034
+#: xpdf/gpdf-control.cc:2025
 #, c-format
 msgid "Loading of %s failed."
 msgstr "Не вдалось завантажити %s."
 
-#: xpdf/gpdf-control.cc:2373
+#: xpdf/gpdf-control.cc:2366
 msgid "Bookmarks"
 msgstr "Закладки"
 
-#: xpdf/gpdf-control.cc:2377
+#: xpdf/gpdf-control.cc:2370
 msgid "Pages"
 msgstr "Сторінки"
 
-#: xpdf/gpdf-control.cc:2382
+#: xpdf/gpdf-control.cc:2375
 msgid "Annotations"
 msgstr "Примітки"
 
@@ -607,19 +607,19 @@ msgstr "Заголовок:"
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+#: xpdf/gpdf-sidebar.c:350 xpdf/gpdf-sidebar.c:373
 msgid "Select sidebar page by title for displaying it"
 msgstr "Виберіть сторінку для відображення у бічній панелі"
 
-#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+#: xpdf/gpdf-sidebar.c:405 xpdf/gpdf-sidebar.c:422
 msgid "Click to open page tools menu"
 msgstr "Клацніть, щоб відкрити меню інструментів сторінки"
 
-#: xpdf/gpdf-sidebar.c:407
+#: xpdf/gpdf-sidebar.c:441
 msgid "Remove page if it is removeable"
 msgstr "Вилучити сторінку, якщо це можливо"
 
-#: xpdf/gpdf-sidebar.c:434
+#: xpdf/gpdf-sidebar.c:468
 msgid "Close sidebar"
 msgstr "Закрити бічну панель"
 
@@ -654,37 +654,37 @@ msgstr "Повідомлення запуску додатка!"
 msgid "Go to page #%d"
 msgstr "Перейти до сторінки #%d"
 
-#: xpdf/gpdf-view.cc:547
+#: xpdf/gpdf-view.cc:548 xpdf/gpdf-view.cc:550
 #, c-format
 msgid "Go to file %s:#%d"
 msgstr "Перейти на файл %s:#%d"
 
-#: xpdf/gpdf-view.cc:555
+#: xpdf/gpdf-view.cc:570
 #, c-format
 msgid "Launch: %s %s"
 msgstr "Запустити: %s %s"
 
-#: xpdf/gpdf-view.cc:565
+#: xpdf/gpdf-view.cc:578
 #, c-format
 msgid "Browse %s"
 msgstr "Оглянути %s"
 
-#: xpdf/gpdf-view.cc:573
+#: xpdf/gpdf-view.cc:586
 #, c-format
 msgid "Action: %s"
 msgstr "Дія: %s"
 
-#: xpdf/gpdf-view.cc:581
+#: xpdf/gpdf-view.cc:594
 #, c-format
 msgid "Movie: %s"
 msgstr "Фільм: %s"
 
-#: xpdf/gpdf-view.cc:592
+#: xpdf/gpdf-view.cc:605
 #, c-format
 msgid "Unknown action: %s !"
 msgstr "Невідома дія: %s !"
 
-#: xpdf/gpdf-view.cc:1623
+#: xpdf/gpdf-view.cc:1636
 msgid "Document View"
 msgstr "Перегляд документа"
 
