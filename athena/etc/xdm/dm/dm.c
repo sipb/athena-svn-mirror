@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.6 1990-11-15 18:30:26 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.7 1990-11-16 14:41:50 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.6 1990-11-15 18:30:26 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.7 1990-11-16 14:41:50 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -69,9 +69,6 @@ char *consolef ="/dev/console";
 char *consolelog = "/usr/tmp/console.log";
 char *mousedev = "/dev/mouse";
 char *displaydev = "/dev/cons";
-#ifdef ultrix
-char *ultrixcons = "/dev/xcons";
-#endif
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -108,25 +105,21 @@ char **argv;
 
     /* parse argument lists */
     conf = argv[1];
-#ifndef ultrix
     logintty = argv[2];
-#else
-    logintty = "console";
-#endif /* ultrix */
     consoletty = argv[argc-1];
     p = getconf(conf, "X");
     if (p == NULL)
-      console_login("dm: Can't find X command line\n");
+      console_login("\ndm: Can't find X command line\n");
     xargv = parseargs(p, NULL);
     if (console) {
 	p = getconf(conf, "console");
 	if (p == NULL)
-	  console_login("dm: Can't find console command line\n");
+	  console_login("\ndm: Can't find console command line\n");
 	consoleargv = parseargs(p, NULL);
     }
     p = getconf(conf, "login");
     if (p == NULL)
-      console_login("dm: Can't find login command line\n");
+      console_login("\ndm: Can't find login command line\n");
     loginargv = parseargs(p, logintty);
 
     /* Signal Setup */
@@ -216,7 +209,7 @@ char **argv;
     }
     alarm(0);
     if (x_running != RUNNING)
-      console_login("Unable to start X, doing console login instead.\n");
+      console_login("\nUnable to start X, doing console login instead.\n");
 
     /* start up console */
     strcpy(line, "/dev/");
@@ -252,6 +245,7 @@ char **argv;
 	    /* chase away anyone else using this tty */
 	    signal(SIGHUP, SIG_IGN);
 	    vhangup();
+
 	    sigsetmask(0);
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
@@ -281,7 +275,7 @@ char **argv;
     signal(SIGUSR1, SIG_IGN);
     alarm(0);
     if (login_running != RUNNING)
-      console_login("Unable to start xlogin, doing console login instead.\n");
+      console_login("\nUnable to start xlogin, doing console login instead.\n");
 
     /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
     sigblock(sigmask(SIGCHLD));
@@ -311,7 +305,7 @@ char **argv;
 
 	if (login_running == STARTUP) {
 	    sigsetmask(0);
-	    console_login("Console login requested.\n");
+	    console_login("\nConsole login requested.\n");
 	}
 	if (console && console_running == NONEXISTANT)
 	  start_console(line, consoleargv);
@@ -398,6 +392,8 @@ char *msg;
     mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
     ioctl(0, TIOCSETP, &mode);
     sigsetmask(0);
+    for (i = 3; i < getdtablesize(); i++)
+      close(i);
 
     if (msg)
       message(msg);
@@ -428,13 +424,9 @@ char **argv;
 #endif
 
     if (console_tty == 0) {
-#ifndef ultrix
 	/* Open master side of pty */
 	line[5] = 'p';
 	console_tty = open(line, O_RDWR, 0);
-#else
-	console_tty = open(ultrixcons, O_RDWR, 0);
-#endif /* ultrix */
 	if (console_tty < 0) {
 	    /* failed to open this tty, find another one */
 	    for (c = 'p'; c <= 's'; c++) {
@@ -561,10 +553,13 @@ char *tty;
 	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))) {
 		strncpy(login, utmp.ut_name, 8);
 		login[8] = 0;
-		utmp.ut_name[0] = 0;
-		lseek(file, (long) -sizeof(utmp), L_INCR);
-		write(file, (char *) &utmp, sizeof(utmp));
-		found = 1;
+		if (utmp.ut_name[0]) {
+		    utmp.ut_name[0] = 0;
+		    lseek(file, (long) -sizeof(utmp), L_INCR);
+		    write(file, (char *) &utmp, sizeof(utmp));
+		    found = 1;
+		}
+		break;
 	    }
 	}
 	close(file);
