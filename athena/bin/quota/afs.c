@@ -15,7 +15,7 @@
 
 /* This contains the AFS quota-checking routines. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.16 1999-09-22 22:19:03 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.17 2004-12-16 17:19:21 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -32,16 +32,18 @@ static const char rcsid[] = "$Id: afs.c,v 1.16 1999-09-22 22:19:03 danw Exp $";
 
 #include "quota.h"
 
+#define MAXSIZE 2048
+
 int get_afs_quota(struct quota_fs *fs, uid_t uid, int verbose)
 {
-  static struct VolumeStatus vs;
+  static struct VolumeStatus *vs;
   struct ViceIoctl ibuf;
   int code;
   uid_t euid = geteuid();
 
-  ibuf.out_size = sizeof(struct VolumeStatus);
+  ibuf.out_size = MAXSIZE;
   ibuf.in_size = 0;
-  ibuf.out = (caddr_t)&vs;
+  ibuf.out = malloc(MAXSIZE);
   seteuid(getuid());
   code = pioctl(fs->device, VIOCGETVOLSTAT, &ibuf, 1);
   seteuid(euid);
@@ -52,6 +54,7 @@ int get_afs_quota(struct quota_fs *fs, uid_t uid, int verbose)
 	  fprintf(stderr, "Error getting AFS quota: ");
 	  perror(fs->device);
 	}
+      free(ibuf.out);
       return -1;
     }
   else
@@ -60,12 +63,15 @@ int get_afs_quota(struct quota_fs *fs, uid_t uid, int verbose)
       fs->have_files = 0;
       memset(&fs->dqb, 0, sizeof(fs->dqb));
 
-      /* Need to multiply by 2 to get 512 byte blocks instead of 1k */
-      fs->dqb.dqb_curblocks = vs.BlocksInUse * 2;
-      fs->dqb.dqb_bsoftlimit = fs->dqb.dqb_bhardlimit = vs.MaxQuota * 2;
+      vs = (VolumeStatus *) ibuf.out;
 
-      if (vs.MaxQuota && (vs.BlocksInUse >= vs.MaxQuota * 9 / 10))
+      /* Need to multiply by 2 to get 512 byte blocks instead of 1k */
+      fs->dqb.dqb_curblocks = vs->BlocksInUse * 2;
+      fs->dqb.dqb_bsoftlimit = fs->dqb.dqb_bhardlimit = vs->MaxQuota * 2;
+
+      if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota * 9 / 10))
 	fs->warn_blocks = 1;
+      free(ibuf.out);
       return 0;
     }
 }
