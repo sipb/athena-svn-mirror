@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.28 2003-08-28 13:46:48 rbasch Exp $
+/* $Id: dm.c,v 1.29 2004-09-24 21:56:47 rbasch Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -68,7 +68,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.28 2003-08-28 13:46:48 rbasch Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.29 2004-09-24 21:56:47 rbasch Exp $";
 #endif
 
 /* Process states */
@@ -93,8 +93,8 @@ volatile int x_running = NONEXISTENT;
 volatile int console_running = NONEXISTENT;
 volatile int console_failed = FALSE;
 volatile int login_running = NONEXISTENT;
-char *logintty;
-int console_tty = 0;
+char dpyname[10];
+int console_master_fd = -1;
 
 char *xpids = "/var/athena/X%d.pid";
 char *xhosts = "/etc/X%d.hosts";
@@ -111,8 +111,8 @@ static void loginready(int signo);
 static char *getconf(char *file, char *name);
 static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
 static void console_login(char *conf, char *msg);
-static void start_console(int fd, char **argv, int redir);
-static void cleanup(char *tty);
+static void start_console(int master_fd, int aux_fd, char **argv);
+static void cleanup(char *dpyname);
 static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
 static void writepid(char *file, pid_t pid);
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
   char xpidf[256], line[16], buf[256];
   fd_set readfds;
   int pgrp, file, tries, count, redir = TRUE;
-  char dpyname[10], dpyacl[40];
+  char dpyacl[40];
   Display *dpy;
   XHostAddress *hosts, localhost;
   int nhosts, dpynum = 0;
@@ -165,11 +165,9 @@ int main(int argc, char **argv)
   int on;
 #endif
   int fd;
-  char loginttyname[256];
-  int ttyfd;
+  int conspipe[2];
+  int console_slave_fd;
   XIOErrorHandler xioerror_handler;
-
-  logintty = &loginttyname[5]; /* skip over the /dev/ */
 
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
@@ -291,12 +289,15 @@ int main(int argc, char **argv)
   if (p == NULL)
     console_login(conf, "\ndm: Can't find console command line\n");
 
-  consoleargv = parseargs(p, NULL, NULL, NULL);
+  /* We will pass the read side of the pipe created below to console
+   * on descriptor 3.
+   */
+  consoleargv = parseargs(p, "-inputfd", "3", NULL);
 
   p = getconf(conf, "login");
   if (p == NULL)
     console_login(conf, "\ndm: Can't find login command line\n");
-  loginargv = parseargs(p, logintty, "-tty", logintty);
+  loginargv = parseargs(p, NULL, NULL, NULL);
 
   /* Signal Setup */
   sigact.sa_handler = SIG_IGN;
@@ -465,11 +466,33 @@ int main(int argc, char **argv)
    */
 
   /* set up the console pty */
-  if (openpty(&console_tty, &ttyfd, loginttyname, NULL, NULL)==-1)
+  if (openpty(&console_master_fd, &console_slave_fd, NULL, NULL, NULL) == -1)
     console_login(conf, "Cannot allocate pseudo-terminal\n");
 
+  if (redir)
+    {
+      /* Redirect /dev/console output to the pty slave. */
+#ifdef SRIOCSREDIR
+      on = open("/dev/console", O_RDONLY);
+      if (on >= 0)
+	{
+	  ioctl(on, SRIOCSREDIR, console_slave_fd);
+	  close(on);
+	}
+#else
+#ifdef TIOCCONS
+      on = 1;
+      ioctl(console_slave_fd, TIOCCONS, &on);
+#endif
+#endif
+    }
+
+  /* Set up the console pipe. */
+  if (pipe(conspipe) == -1)
+    console_login(conf, "Cannot create pipe for console\n");
+
   /* start up console */
-  start_console(console_tty, consoleargv, redir);
+  start_console(console_master_fd, conspipe[0], consoleargv);
 
   /* Fire up the X login */
   for (tries = 0; tries < 3; tries++)
@@ -482,13 +505,13 @@ int main(int argc, char **argv)
 	{
 	case 0:
 	  max_fd = sysconf(_SC_OPEN_MAX);
-	  for (file = 0; file < max_fd; file++)
+	  for (file = 3; file < max_fd; file++)
 	    {
-	      if (file != ttyfd)
+	      if (file != conspipe[1])
 		close(file);
 	    }
 
-	  login_tty(ttyfd);
+	  setsid();
 	  
 	  file = open("/dev/null", O_RDONLY);
 	  if (file >= 0)
@@ -498,23 +521,19 @@ int main(int argc, char **argv)
 		close(file);
 	    }
 	  
-	  if (redir)
+	  file = conspipe[1];
+	  if (file == -1)
+	    file = open("/dev/null", O_WRONLY);
+	  if (file >= 0)
 	    {
-	      /* really ought to check the return status of these */
-#ifdef SRIOCSREDIR
-	      on = open("/dev/console", O_RDONLY);
-	      if (on >= 0)
-		{
-		  ioctl(on, SRIOCSREDIR, 1);
-		  close(on);
-		}
-#else
-#ifdef TIOCCONS
-	      on = 1;
-	      ioctl(1, TIOCCONS, &on);
-#endif
-#endif
+	      if (file != 1)
+		dup2(file, 1);
+	      if (file != 2)
+		dup2(file, 2);
+	      if (file != 1 && file != 2)
+		close(file);
 	    }
+
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *) 0);
 	  /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	   * when it is ready
@@ -551,7 +570,6 @@ int main(int argc, char **argv)
       if (login_running == RUNNING)
 	break;
     }
-  close(ttyfd);
   sigact.sa_handler = SIG_IGN;
   sigaction(SIGUSR1, &sigact, NULL);
   alarm(0);
@@ -576,13 +594,13 @@ int main(int argc, char **argv)
 	   * bar messages.
 	   */
 	  FD_ZERO(&readfds);
-	  FD_SET(console_tty, &readfds);
+	  FD_SET(console_master_fd, &readfds);
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, &mask);
-	  count = select(console_tty + 1, &readfds, NULL, NULL, NULL);
+	  count = select(console_master_fd + 1, &readfds, NULL, NULL, NULL);
 	  (void) sigprocmask(SIG_BLOCK, &mask, NULL);
-	  if (count > 0 && FD_ISSET(console_tty, &readfds))
+	  if (count > 0 && FD_ISSET(console_master_fd, &readfds))
 	    {
-	      file = read(console_tty, buf, sizeof(buf));
+	      file = read(console_master_fd, buf, sizeof(buf));
 	      if (file != -1)
 		write(1, buf, file);
 	    }
@@ -615,13 +633,13 @@ int main(int argc, char **argv)
 	    last_console_failure = now;
 	}
       if (console_running == NONEXISTENT && !console_failed)
-	start_console(console_tty, consoleargv, redir);
+	start_console(console_master_fd, conspipe[0], consoleargv);
       if (login_running == NONEXISTENT || x_running == NONEXISTENT)
 	{
 	  syslog(LOG_DEBUG, "login_running=%d, x_running=%d, quitting",
 		 login_running, x_running);
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-	  cleanup(logintty);
+	  cleanup(dpyname);
 	  _exit(0);
 	}
     }
@@ -696,12 +714,13 @@ static void console_login(char *conf, char *msg)
 }
 
 
-/* Start the console program.  It will have stdin set to the controling
- * side of the console pty, and stdout set to /dev/console inherited 
- * from the display manager.
+/* Start the console program.  It will have stdin set to the controlling
+ * side of the console pty, stdout/stderr set to /dev/console inherited 
+ * from the display manager, and descriptor 3 (auxiliary input) set to
+ * the read side of the pipe used for output by the session children.
  */
 
-static void start_console(int fd, char **argv, int redir)
+static void start_console(int master_fd, int aux_fd, char **argv)
 {
   int file;
 
@@ -723,11 +742,16 @@ static void start_console(int fd, char **argv, int redir)
       close(0);
       max_fd = sysconf(_SC_OPEN_MAX);
       for (file = 3; file < max_fd; file++)
-	if (file != fd)
+	if (file != master_fd && file != aux_fd)
 	  close(file);
       setsid();
-      dup2(fd, 0);
-      close(fd);
+      dup2(master_fd, 0);
+      close(master_fd);
+      if (aux_fd != 3)
+	{
+	  dup2(aux_fd, 3);
+	  close(aux_fd);
+	}
 
       setgid(DAEMON);
       setuid(DAEMON);
@@ -767,7 +791,7 @@ static void shutdown(int signo)
 
   (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *) 0);
 
-  close(console_tty);
+  close(console_master_fd);
   while (1)
     pause();
 }
@@ -775,7 +799,7 @@ static void shutdown(int signo)
 
 /* Kill children, remove password entry */
 
-static void cleanup(char *tty)
+static void cleanup(char *display)
 {
   int ret;
 #ifdef HAVE_GETUTXENT
@@ -803,7 +827,7 @@ static void cleanup(char *tty)
     {
       if (utx->ut_type != USER_PROCESS || utx->ut_user[0] == 0)
 	continue;
-      if (!strncmp(utx->ut_line, tty, sizeof(utx->ut_line)))
+      if (!strncmp(utx->ut_line, display, sizeof(utx->ut_line)))
 	{
 	  login = malloc(sizeof(utx->ut_user) + 1);
 	  strncpy(login, utx->ut_user, sizeof(utx->ut_user));
@@ -817,7 +841,7 @@ static void cleanup(char *tty)
     {
       while (read(file, (char *) &ut, sizeof(utmp)) > 0)
 	{
-	  if (!strncmp(ut.ut_line, tty, sizeof(ut.ut_line)))
+	  if (!strncmp(ut.ut_line, display, sizeof(ut.ut_line)))
 	    {
 	      login = malloc(sizeof(ut.ut_name) + 1);
 	      strncpy(login, ut.ut_name, sizeof(ut.ut_name));
@@ -829,7 +853,7 @@ static void cleanup(char *tty)
 #endif
   /* Update the utmp & wtmp. */
 
-  logout(tty);
+  logout(display);
 
   if (login != NULL)
     {
@@ -840,6 +864,7 @@ static void cleanup(char *tty)
 		 al_strerror(ret, &errr));
 	  al_free_errmem(errr);
 	}
+      free(login);
     }
 
   tcflush(0, TCIOFLUSH);
@@ -914,7 +939,7 @@ static void catchalarm(int signo)
 
 static void die(int signo)
 {
-  cleanup(logintty);
+  cleanup(dpyname);
   _exit(0);
 }
 

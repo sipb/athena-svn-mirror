@@ -1,4 +1,4 @@
-.\" $Id: dm.8,v 1.2 2001-03-19 20:12:01 rbasch Exp $
+.\" $Id: dm.8,v 1.3 2004-09-24 21:56:47 rbasch Exp $
 .TH DM 8 "30 April 1994"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -22,13 +22,15 @@ The X server will be started first, using the SIGUSR1 handshake
 present in X11R4.  \fIDm\fR will keep a connection open to prevent the
 X server from inadvertently resetting should the user at some point
 have closed all X connections temporarily.  Next the console will be
-started, reading from the master side of the pseudo-tty specified as
-the \fIlogintty\fR.  If \fIlogintty\fR is already in use, another
-pseudo-tty will be chosen.  Then the login will be started, with stdin
-set to \fI/dev/null\fR and stdout and stderr set to \fIlogintty\fR.
-The display manager then waits for a change in the status of its
-children or a signal to arrive.  If the display manager encounters
-errors while starting up, it will initiate a console login.
+started, reading from the master side of a pseudo-terminal, as well
+as a pipe.  Then the X login will be started, with stdin set to
+\fI/dev/null\fR and stdout and stderr set to the write side of the
+console pipe.  (The \fIlogintty\fR command line argument is ignored;
+it specified a pseudo-terminal to use as the controlling terminal for
+X login in previous Athena releases). The display manager then waits
+for a change in the status of its children or a signal to arrive.  If
+the display manager encounters errors while starting up, it will
+initiate a console login.
 .PP
 If the console exits, another one will be started.  If the X server or
 xlogin exit, the display manager will clean up and exit.  This
