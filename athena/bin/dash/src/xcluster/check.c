@@ -18,8 +18,8 @@
 #include <hesiod.h>		/* hesiod lookup functions */
 #include "net.h"
 
-#include <X11/Xj/Jets.h>
-#include <X11/Xj/Drawing.h>
+#include <Jets.h>
+#include <Drawing.h>
 
 
 /*

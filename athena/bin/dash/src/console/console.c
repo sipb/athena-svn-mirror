@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v $
- * $Author: cfields $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.10 1995-08-14 21:30:28 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.11 1996-08-29 07:00:27 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -24,14 +24,14 @@ static char rcsid[] =
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
-#include <X11/Xj/Jets.h>
-#include <X11/Xj/Window.h>
-#include <X11/Xj/Button.h>
-#include <X11/Xj/Label.h>
-#include <X11/Xj/Form.h>
-#include <X11/Xj/ScrollBar.h>
-#include <X11/Xj/TextDisplay.h>
-#include <X11/Xj/Arrow.h>
+#include <Jets.h>
+#include <Window.h>
+#include <Button.h>
+#include <Label.h>
+#include <Form.h>
+#include <ScrollBar.h>
+#include <TextDisplay.h>
+#include <Arrow.h>
 #include <X11/Xresource.h>
 
 #ifndef CONSOLEDEFAULTS

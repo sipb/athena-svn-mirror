@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.7 1996-06-26 20:00:50 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.8 1996-08-29 07:00:37 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -22,9 +22,9 @@ static char *rcsid =
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <krb.h>
-#include <X11/Xj/Jets.h>
-#include <X11/Xj/Button.h>
-#include <X11/Xj/warn.h>
+#include <Jets.h>
+#include <Button.h>
+#include <warn.h>
 
 
 #if defined(NEED_ERRNO_DEFS)

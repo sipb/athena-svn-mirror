@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v 1.5 1993-07-02 17:20:34 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/compile_menu.c,v 1.6 1996-08-29 07:00:35 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -25,11 +25,11 @@ static char rcsid[] =
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <X11/Xj/Jets.h>
-#include <X11/Xj/Window.h>
-#include <X11/Xj/Menu.h>
-#include <X11/Xj/Button.h>
-#include <X11/Xj/warn.h>
+#include <Jets.h>
+#include <Window.h>
+#include <Menu.h>
+#include <Button.h>
+#include <warn.h>
 
 #include <sys/time.h>
 

@@ -61,7 +61,7 @@ M_LIB		=
 #endif
 
 DEFINES		=	${G_DEFINES} ${K_DEF} ${A_DEF}
-INCLUDES	=	-I.. ${LOCAL_INCLUDES}
+INCLUDES	=	-I../lib ${LOCAL_INCLUDES}
 
 
 AllTarget(${COMPILE})

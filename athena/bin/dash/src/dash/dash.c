@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.14 1996-05-01 21:28:27 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.15 1996-08-29 07:00:36 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -28,21 +28,21 @@ static char *rcsid =
 #include <sys/param.h>
 #include <fcntl.h>
 #include <X11/Xos.h>
-#include <X11/Xj/Jets.h>
+#include <Jets.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/Xmu/WinUtil.h>
-#include <X11/Xj/Window.h>
-#include <X11/Xj/Button.h>
-#include <X11/Xj/Label.h>
-#include <X11/Xj/Menu.h>
-#include <X11/Xj/DClock.h>
-#include <X11/Xj/AClock.h>
-#include <X11/Xj/Form.h>
-#include <X11/Xj/Tree.h>
-/* #include <X11/Xj/StripChart.h> */
-/* #include <X11/Xj/List.h> */
-#include <X11/Xj/warn.h>
+#include <Window.h>
+#include <Button.h>
+#include <Label.h>
+#include <Menu.h>
+#include <DClock.h>
+#include <AClock.h>
+#include <Form.h>
+#include <Tree.h>
+/* #include <StripChart.h> */
+/* #include <List.h> */
+#include <warn.h>
 #include "dash.h"
 
 

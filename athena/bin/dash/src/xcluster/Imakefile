@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -34,7 +34,7 @@ OBJS		=	cview.o net.o
 
 SRCS		=	xcluster.c read.c net.c check.c cview.c
 
-INCLUDES	=	-I.. ${LOCAL_INCLUDES}
+INCLUDES	=	-I../lib ${LOCAL_INCLUDES}
 
 XLIB		=	-lX11
 XJLIB		=	../lib/libXj.a
