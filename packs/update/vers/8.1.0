@@ -7,6 +7,7 @@ sun4)
 	echo "/etc/athena/solaris_reconf"	>> "$DEADFILES"
 	echo "/usr/bin/csh.sun"			>> "$DEADFILES"
 	echo "/usr/lib/sendmail.nomx"		>> "$DEADFILES"
+	echo "/etc/mail/sendmail.fc"		>> "$DEADFILES"
 
 	echo "/etc/mail/sendmail.cf"		>> "$CONFCHG"
 	echo "/etc/inet/services"		>> "$CONFCHG"
