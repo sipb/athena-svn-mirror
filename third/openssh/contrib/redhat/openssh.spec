@@ -1,8 +1,8 @@
 # Version of OpenSSH
-%define oversion 2.9.9p2
+%define oversion 3.0.2p1
 
 # Version of ssh-askpass
-%define aversion 1.2.4
+%define aversion 1.2.4.1
 
 # Do we want to disable building of x11-askpass? (1=yes 0=no)
 %define no_x11_askpass 0
@@ -18,6 +18,9 @@
 
 # Use Redhat 7.0 pam control file
 %define redhat7 0
+
+# Disable IPv6 (avoids DNS hangs on some glibc versions)
+%define noip6 0
 
 # Reserve options to override askpass settings with:
 # rpm -ba|--rebuild --define 'skip_xxx 1'
@@ -36,9 +39,13 @@
 # rpm -ba|--rebuild --define "smartcard 1"
 %{?smartcard:%define scard 1}
 
+# Option to disable ipv6
+# rpm -ba|--rebuild --define "noipv6 1"
+%{?noipv6:%define noip6 1}
+
 %define exact_openssl_version   %(rpm -q openssl | cut -d - -f 2)
 
-Summary: The OpenSSH implementation of SSH.
+Summary: The OpenSSH implementation of SSH protocol versions 1 and 2
 Name: openssh
 Version: %{oversion}
 Release: 1
@@ -150,12 +157,15 @@ EXTRA_OPTS=""
 	EXTRA_OPTS="$EXTRA_OPTS --with-smartcard"
 %endif
 
+%if %{noip6}
+	EXTRA_OPTS="$EXTRA_OPTS --with-ipv4-default "
+%endif
+
 %configure \
 	--libexecdir=%{_libexecdir}/openssh \
 	--datadir=%{_datadir}/openssh \
 	--with-pam \
 	--with-tcp-wrappers \
-	--with-ipv4-default \
 	--with-rsh=/usr/bin/rsh \
 	--with-default-path=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin \
 	$EXTRA_OPTS
@@ -265,7 +275,7 @@ fi
 %attr(0644,root,root) %{_mandir}/man8/sshd.8*
 %attr(0644,root,root) %{_mandir}/man8/sftp-server.8*
 #%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/sshd_config
-%attr(0600,root,root) %config %{_sysconfdir}/sshd_config
+%attr(0600,root,root) %config(noreplace) %{_sysconfdir}/sshd_config
 %attr(0600,root,root) %config(noreplace) /etc/pam.d/sshd
 %attr(0755,root,root) %config /etc/rc.d/init.d/sshd
 

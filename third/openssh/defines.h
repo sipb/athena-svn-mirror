@@ -1,7 +1,7 @@
 #ifndef _DEFINES_H
 #define _DEFINES_H
 
-/* $Id: defines.h,v 1.1.1.1 2001-11-15 19:23:25 ghudson Exp $ */
+/* $Id: defines.h,v 1.1.1.2 2002-02-13 00:08:00 zacheiss Exp $ */
 
 /* Necessary headers */
 
@@ -45,6 +45,7 @@
 #include <unistd.h> /* For STDIN_FILENO, etc */
 #include <termios.h> /* Struct winsize */
 #include <fcntl.h> /* For O_NONBLOCK */
+#include <openssl/opensslv.h> /* For OPENSSL_VERSION_NUMBER */
 
 /* *-*-nto-qnx needs these headers for strcasecmp and LASTLOG_FILE respectively */
 #ifdef HAVE_STRINGS_H
@@ -242,11 +243,6 @@ typedef unsigned long long int u_int64_t;
 typedef unsigned char u_char;
 # define HAVE_U_CHAR
 #endif /* HAVE_U_CHAR */
-
-#ifndef HAVE_SOCKLEN_T
-typedef unsigned int socklen_t;
-# define HAVE_SOCKLEN_T
-#endif /* HAVE_SOCKLEN_T */
 
 #ifndef HAVE_SIZE_T
 typedef unsigned int size_t;
@@ -455,11 +451,16 @@ struct winsize {
 # define getpgrp() getpgrp(0)
 #endif
 
+/* OPENSSL_free() is Free() in versions before OpenSSL 0.9.6 */
+#if !defined(OPENSSL_VERSION_NUMBER) || (OPENSSL_VERSION_NUMBER < 0x0090600f)
+# define OPENSSL_free(x) Free(x)
+#endif
+
 /*
  * Define this to use pipes instead of socketpairs for communicating with the
  * client program.  Socketpairs do not seem to work on all systems.
  *
- * configure.in sets this for a few OS's which are known to have problems
+ * configure.ac sets this for a few OS's which are known to have problems
  * but you may need to set it yourself
  */
 /* #define USE_PIPES 1 */

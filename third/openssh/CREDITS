@@ -54,6 +54,7 @@ Kiyokazu SUTO <suto@ks-and-ks.ne.jp> - Bugfixes
 Larry Jones <larry.jones@sdrc.com> - Bugfixes
 Lutz Jaenicke <Lutz.Jaenicke@aet.TU-Cottbus.DE> - Bugfixes
 Marc G. Fournier <marc.fournier@acadiau.ca> - Solaris patches
+Mark D. Baushke <mdb@juniper.net> - bug fixes
 Martin Johansson <fatbob@acc.umu.se> - Linux fixes
 Mark D. Roth <roth+openssh@feep.net> - Features, bug fixes
 Mark Miller <markm@swoon.net> - Bugfixes
@@ -88,5 +89,5 @@ Apologies to anyone I have missed.
 
 Damien Miller <djm@mindrot.org>
 
-$Id: CREDITS,v 1.1.1.1 2001-11-15 19:24:43 ghudson Exp $
+$Id: CREDITS,v 1.1.1.2 2002-02-13 00:08:03 zacheiss Exp $
 

@@ -23,7 +23,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth.c,v 1.27 2001/07/11 18:26:15 markus Exp $");
+RCSID("$OpenBSD: auth.c,v 1.29 2001/11/08 20:02:24 markus Exp $");
 
 #ifdef HAVE_LOGIN_H
 #include <login.h>
@@ -208,7 +208,7 @@ auth_log(Authctxt *authctxt, int authenticated, char *method, char *info)
 	    authmsg,
 	    method,
 	    authctxt->valid ? "" : "illegal user ",
-	    authctxt->valid && authctxt->pw->pw_uid == 0 ? "ROOT" : authctxt->user,
+	    authctxt->user,
 	    get_remote_ipaddr(),
 	    get_remote_port(),
 	    info);
@@ -363,12 +363,17 @@ secure_filename(FILE *f, const char *file, struct passwd *pw,
     char *err, size_t errlen)
 {
 	uid_t uid = pw->pw_uid;
-	char buf[MAXPATHLEN];
+	char buf[MAXPATHLEN], homedir[MAXPATHLEN];
 	char *cp;
 	struct stat st;
 
 	if (realpath(file, buf) == NULL) {
 		snprintf(err, errlen, "realpath %s failed: %s", file,
+		    strerror(errno));
+		return -1;
+	}
+	if (realpath(pw->pw_dir, homedir) == NULL) {
+		snprintf(err, errlen, "realpath %s failed: %s", pw->pw_dir,
 		    strerror(errno));
 		return -1;
 	}
@@ -400,7 +405,7 @@ secure_filename(FILE *f, const char *file, struct passwd *pw,
 		}
 
 		/* If are passed the homedir then we can stop */
-		if (strcmp(pw->pw_dir, buf) == 0) {
+		if (strcmp(homedir, buf) == 0) {
 			debug3("secure_filename: terminating check at '%s'",
 			    buf);
 			break;

@@ -23,10 +23,8 @@
  */
 
 #include "includes.h"
-#include "xmalloc.h"
-#include "ssh.h"
 
-RCSID("$Id: bsd-misc.c,v 1.1.1.1 2001-11-15 19:24:38 ghudson Exp $");
+RCSID("$Id: bsd-misc.c,v 1.1.1.2 2002-02-13 00:07:49 zacheiss Exp $");
 
 char *get_progname(char *argv0)
 {

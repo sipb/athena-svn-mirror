@@ -40,7 +40,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: sshd.c,v 1.204 2001/08/23 17:59:31 camield Exp $");
+RCSID("$OpenBSD: sshd.c,v 1.209 2001/11/10 13:19:45 markus Exp $");
 
 #include <openssl/dh.h>
 #include <openssl/bn.h>
@@ -71,6 +71,7 @@ RCSID("$OpenBSD: sshd.c,v 1.204 2001/08/23 17:59:31 camield Exp $");
 #include "auth.h"
 #include "misc.h"
 #include "dispatch.h"
+#include "channels.h"
 
 #ifdef LIBWRAP
 #include <tcpd.h>
@@ -336,7 +337,7 @@ sshd_exchange_identification(int sock_in, int sock_out)
 		/* Send our protocol version identification. */
 		if (atomicio(write, sock_out, server_version_string, strlen(server_version_string))
 		    != strlen(server_version_string)) {
-			log("Could not write ident string to %s.", get_remote_ipaddr());
+			log("Could not write ident string to %s", get_remote_ipaddr());
 			fatal_cleanup();
 		}
 
@@ -344,7 +345,7 @@ sshd_exchange_identification(int sock_in, int sock_out)
 		memset(buf, 0, sizeof(buf));
 		for (i = 0; i < sizeof(buf) - 1; i++) {
 			if (atomicio(read, sock_in, &buf[i], 1) != 1) {
-				log("Did not receive identification string from %s.",
+				log("Did not receive identification string from %s",
 				    get_remote_ipaddr());
 				fatal_cleanup();
 			}
@@ -669,6 +670,7 @@ main(int ac, char **av)
 		}
 	}
 	SSLeay_add_all_algorithms();
+	channel_set_af(IPv4or6);
 
 	/*
 	 * Force logging to stderr until we have loaded the private host
@@ -1132,9 +1134,8 @@ main(int ac, char **av)
 	remote_port = get_remote_port();
 	remote_ip = get_remote_ipaddr();
 
-	/* Check whether logins are denied from this host. */
 #ifdef LIBWRAP
-	/* XXX LIBWRAP noes not know about IPv6 */
+	/* Check whether logins are denied from this host. */
 	{
 		struct request_info req;
 
@@ -1142,13 +1143,14 @@ main(int ac, char **av)
 		fromhost(&req);
 
 		if (!hosts_access(&req)) {
+			debug("Connection refused by tcp wrapper");
 			refuse(&req);
-			close(sock_in);
-			close(sock_out);
+			/* NOTREACHED */
+			fatal("libwrap refuse returns");
 		}
-/*XXX IPv6 verbose("Connection from %.500s port %d", eval_client(&req), remote_port); */
 	}
 #endif /* LIBWRAP */
+
 	/* Log the connection. */
 	verbose("Connection from %.500s port %d", remote_ip, remote_port);
 
@@ -1175,7 +1177,7 @@ main(int ac, char **av)
 	if (remote_port >= IPPORT_RESERVED ||
 	    remote_port < IPPORT_RESERVED / 2) {
 		debug("Rhosts Authentication disabled, "
-		    "originating port not trusted.");
+		    "originating port %d not trusted.", remote_port);
 		options.rhosts_authentication = 0;
 	}
 #if defined(KRB4) && !defined(KRB5)

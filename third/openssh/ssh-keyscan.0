@@ -1,12 +1,11 @@
-
-SSH-KEYSCAN(1)              System Reference Manual             SSH-KEYSCAN(1)
+SSH-KEYSCAN(1)          System General Commands Manual          SSH-KEYSCAN(1)
 
 NAME
      ssh-keyscan - gather ssh public keys
 
 SYNOPSIS
-     ssh-keyscan [-v46] [-p port] [-T timeout] [-t type] [-f file] [host |
-                 addrlist namelist] [...]
+     ssh-keyscan [-v46] [-p port] [-T timeout] [-t type] [-f file]
+                 [host | addrlist namelist] [...]
 
 DESCRIPTION
      ssh-keyscan is a utility for gathering the public ssh host keys of a numM--
@@ -30,8 +29,8 @@ DESCRIPTION
              Set the timeout for connection attempts.  If timeout seconds have
              elapsed since a connection was initiated to a host or since the
              last time anything was read from that host, then the connection
-             is closed and the host in question considered unavailable.  DeM--
-             fault is 5 seconds.
+             is closed and the host in question considered unavailable.
+             Default is 5 seconds.
 
      -t type
              Specifies the type of the key to fetch from the scanned hosts.
@@ -55,9 +54,9 @@ DESCRIPTION
 SECURITY
      If a ssh_known_hosts file is constructed using ssh-keyscan without veriM--
      fying the keys, users will be vulnerable to attacks.  On the other hand,
-     if the security model allows such a risk, ssh-keyscan can help in the deM--
-     tection of tampered keyfiles or man in the middle attacks which have beM--
-     gun after the ssh_known_hosts file was created.
+     if the security model allows such a risk, ssh-keyscan can help in the
+     detection of tampered keyfiles or man in the middle attacks which have
+     begun after the ssh_known_hosts file was created.
 
 EXAMPLES
      Print the rsa1 host key for machine hostname:
@@ -94,11 +93,11 @@ BUGS
      key, and drops the connection as soon as it gets the key.
 
 SEE ALSO
-     ssh(1),  sshd(8)
+     ssh(1), sshd(8)
 
 AUTHORS
      David Mazieres <dm@lcs.mit.edu> wrote the initial version, and Wayne
      Davison <wayned@users.sourceforge.net> added support for protocol version
      2.
 
-BSD Experimental                January 1, 1996                              2
+BSD                             January 1, 1996                            BSD
