@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.2 1990-04-25 11:47:21 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.3 1990-07-10 20:38:27 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v $ */
 /* $Author: epeisach $ */
 
@@ -8,6 +8,7 @@
  */
 
 #include "mit-copyright.h"
+#include "config.h"
 
 /*
  * Some useful defenitions for the Quota Server code
@@ -22,19 +23,13 @@
 #include <krb.h>
 #endif
 
-#if 0
-char *jourFile;				/* File for journal */
-char *stringFile;                       /* File for strings database */
-char *userFile;                       	/* File prefix for used db */
-#endif
 
 extern char *logString;
 extern char *savestr();
 
-#define LOGGER_VERSION	1	/* Version number of data format in files */
+#define LOGGER_VERSION	2	/* Version number of data format in files */
 
 
-#ifndef CLIENT
 typedef u_long 	Time;		/* Time in seconds since Jan 1, 1970 */
 typedef u_short String_num; 	/* Compressed ref number */
 typedef u_long  Pointer;	/* Pointer to dbase record number */
@@ -69,7 +64,7 @@ typedef struct  {
 
 typedef struct {
 	Time		time;		/* Quota server time stamp */
-	User_str	user;		/* User who is referred to */
+	User_str	user;		/* User who is referred to (can be __group# as well) */
 	String_num	service;	/* Printer service type */
 	Pointer		next;		/* Pointer in db to user next record*/
 	Pointer		prev;	/* 0 indicates none */
@@ -86,7 +81,18 @@ typedef struct {
 			Num		npages; 	/* Number pages */
 			Num		med_cost;	/* media cost/page */
 			String_num	where;		/* Server name */
-			} charge;		/* For charge */
+			String_num      name;	        /* Who charged */
+			String_num      inst;	        /* keberos inst of charger */
+			String_num      realm;	        /* Realm of charger */
+		        } charge;		        /* For charge */
+		struct {
+			String_num aname;	/* Who did change */
+			String_num ainst;	/* keberos inst of changer */
+			String_num arealm;	/* Realm of changer */
+			String_num uname;       /* Which user */
+			String_num uinst;       /* keberos inst of user */
+			String_num urealm;	/* Realm of changer */
+		        } group;                /* for {ADD,DELETE}_{USER,ADMIN} */
 	} trans;
 	char 		extra[7];	/* Reserved for future work */
 } log_entity;
@@ -97,6 +103,11 @@ typedef struct {
 /* The following was taken from the Kerberos Distribution for dealing
    with NDBM/DBM incompatibilities 
 */
+
+#if defined(ultrix) && defined(NULL)
+/* The idiots redefine NULL in dbm.h */
+#undef NULL
+#endif
 
 #ifdef NDBM
 #include <ndbm.h>
@@ -143,12 +154,5 @@ int logger_parse_quota(), logger_cvt_line();
 extern int logger_debug;
 #endif
 
-#endif
-#define STR_DB_MODE	0755	/* Mode for opening the strings database */
-#define USER_DB_MODE	0755	/* Mode for opening the user database */
-#define JOUR_DB_MODE	0755	/* Mode for opening the journal database */
-
-#define PERIODICTIME	1	/* # sec's between checks on Quota DB. */
-#define SAVETIME	3600	/* # sec's before deleting trans. log */
 
 
