@@ -12,14 +12,14 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/misc/Makefile,v $
 #	$Author: shanzer $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/misc/Makefile,v 1.1 1987-10-29 12:38:53 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/misc/Makefile,v 1.2 1987-10-29 12:39:43 shanzer Exp $
 #
 ###########################################################################
 
 .SUFFIXES: .el .elc
 
-FORMSINSTDIR=/usr/unsupported
-MACROINSTDIR=/usr/unsupported
+FORMSINSTDIR=/usr/athena
+MACROINSTDIR=/usr/athena
 
 BLANKFORMS= bulkpost.longform bulkpost.shortform
 EMACSMACROS= postit.el
