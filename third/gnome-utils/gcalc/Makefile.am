@@ -1,34 +1,30 @@
-Utilitiesdir = $(datadir)/gnome/apps/Utilities
+Utilitiesdir = $(datadir)/applications
 
-SUBDIRS = doc
+SUBDIRS = help
 
 INCLUDES = \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DLOCALEDIR=\"$(datadir)/locale\" \
-	-I$(includedir) \
-	$(GNOME_INCLUDEDIR)	\
-	@PIXBUF_CFLAGS@
+	@GNOME_UTILS_CFLAGS@ \
+	-DDATADIR=\""$(datadir)"\" \
+	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\" 
 
-bin_PROGRAMS = gcalc 
+bin_PROGRAMS = gnome-calculator 
 
-gcalc_SOURCES = \
+gnome_calculator_SOURCES = \
 	gcalc.c		\
 	gnome-calc.c	\
 	gnome-calc.h	\
 	sr.h		\
 	sr.c
 
-gcalc_LDADD = \
-	$(GNOME_LIBDIR) \
-	$(GNOMEUI_LIBS) \
-	$(INTLLIBS) \
-	@PIXBUF_LIBS@
+gnome_calculator_LDADD = \
+	@GNOME_UTILS_LIBS@	\
+	$(X_LIBS)
 
-man_MANS = gcalc.1
+man_MANS = gnome-calculator.1
 
-Utilities_in_files = gcalc.desktop.in 
+Utilities_in_files = gnome-calculator.desktop.in 
 Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
+@INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = \
 	$(man_MANS) \

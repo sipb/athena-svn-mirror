@@ -1,4 +1,4 @@
-/* $Id: gdict-defbox.c,v 1.1.1.2 2002-03-25 21:56:39 ghudson Exp $ */
+/* $Id: gdict-defbox.c,v 1.1.1.3 2003-01-04 21:13:18 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -22,6 +22,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#define GTK_ENABLE_BROKEN
 #include <gnome.h>
 
 #include "gdict-defbox.h"
@@ -29,7 +30,6 @@
 #include "gdict-pref.h"
 
 #ifdef HAVE_GNOME_PRINT
-#  include <libgnomeprint/gnome-printer-profile.h>
 #  include <math.h>
 #endif /* HAVE_GNOME_PRINT */
 
@@ -70,23 +70,26 @@ static GnomeTextLine *get_line (const char *fontlist, const char *string,
  * return the type identifier code
  */
 
-guint 
+GType 
 gdict_defbox_get_type (void) {
-    static guint gdict_defbox_type = 0;
+    static GType gdict_defbox_type = 0;
     
     if (!gdict_defbox_type) {
-        GtkTypeInfo gdict_defbox_info = {
-            "GDictDefbox",
-            sizeof (GDictDefbox),
+        static const GTypeInfo gdict_defbox_info = {
             sizeof (GDictDefboxClass),
-            (GtkClassInitFunc) gdict_defbox_class_init,
-            (GtkObjectInitFunc) gdict_defbox_init,
-            (GtkArgSetFunc) NULL,
-            (GtkArgGetFunc) NULL
+            NULL,
+            NULL,
+            (GClassInitFunc) gdict_defbox_class_init,
+            NULL,
+            NULL,
+	    sizeof (GDictDefbox),
+	    0,
+            (GInstanceInitFunc) gdict_defbox_init
         };
         
         gdict_defbox_type = 
-            gtk_type_unique (gtk_text_get_type (), &gdict_defbox_info);
+            g_type_register_static (GTK_TYPE_TEXT_VIEW, "GDictDefboxClass", &gdict_defbox_info, 0);
+
     }
     
     return gdict_defbox_type;
@@ -116,34 +119,34 @@ gdict_defbox_class_init (GDictDefboxClass *class) {
     object_class = (GtkObjectClass *) class;
     
     gdict_defbox_signals[WORD_LOOKUP_START_SIGNAL] =
-        gtk_signal_new ("word_lookup_start", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("word_lookup_start", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictDefboxClass, word_lookup_start),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_defbox_signals[WORD_LOOKUP_DONE_SIGNAL] =
-        gtk_signal_new ("word_lookup_done", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("word_lookup_done", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictDefboxClass, word_lookup_done),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_defbox_signals[WORD_NOT_FOUND_SIGNAL] =
-        gtk_signal_new ("word_not_found", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("word_not_found", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictDefboxClass, word_not_found),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_defbox_signals[SUBSTR_NOT_FOUND_SIGNAL] =
-        gtk_signal_new ("substr_not_found", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("substr_not_found", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictDefboxClass, substr_not_found),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_defbox_signals[SOCKET_ERROR_SIGNAL] =
-        gtk_signal_new ("socket_error", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("socket_error", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictDefboxClass, socket_error),
-                        gtk_marshal_NONE__STRING, GTK_TYPE_NONE, 1,
+                        gtk_marshal_VOID__STRING, GTK_TYPE_NONE, 1,
                         GTK_TYPE_STRING);
-    
+ /*   
     gtk_object_class_add_signals (object_class, gdict_defbox_signals,
                                   LAST_SIGNAL);
-    
+ */  
     class->word_lookup_start = NULL;
     class->word_lookup_done = NULL;
     class->word_not_found = NULL;
@@ -161,6 +164,22 @@ gdict_defbox_new (void) {
     
     defbox = GDICT_DEFBOX (gtk_type_new (gdict_defbox_get_type ()));
     return GTK_WIDGET (defbox);
+}
+
+/* Setup textview tags
+ */
+void
+defbox_setup_tags (GDictDefbox *defbox) {
+    GtkTextBuffer *buffer;
+	
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
+	
+    gtk_text_buffer_create_tag (buffer, "italic",
+			        "style", PANGO_STYLE_ITALIC, NULL);
+    gtk_text_buffer_create_tag (buffer, "bold",
+			        "weight", PANGO_WEIGHT_BOLD, NULL);
+    gtk_text_buffer_create_tag (buffer, "underline",
+			        "underline", PANGO_UNDERLINE_SINGLE, NULL);
 }
 
 /* gdict_defbox_destroy
@@ -222,13 +241,17 @@ gdict_defbox_lookup (GDictDefbox *defbox, gchar *text) {
 
 void 
 gdict_defbox_clear (GDictDefbox *defbox) {
+    GtkTextBuffer *buffer;
+    GtkTextIter start, end;
+    
     g_return_if_fail (defbox != NULL);
     g_return_if_fail (IS_GDICT_DEFBOX (defbox));
     
-    gtk_text_set_point (GTK_TEXT(defbox), 0);
-    gtk_text_forward_delete (GTK_TEXT(defbox), 
-                             gtk_text_get_length (GTK_TEXT (defbox)));
-
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
+    gtk_text_buffer_get_start_iter (buffer, &start);
+    gtk_text_buffer_get_end_iter (buffer, &end);
+    gtk_text_buffer_delete (buffer, &start, &end);
+  
     if (defbox->def_cmd) {
         dict_command_destroy (defbox->def_cmd);
         defbox->def_cmd = NULL;
@@ -240,35 +263,57 @@ gdict_defbox_clear (GDictDefbox *defbox) {
  * Finds a string of text in the current definition
  */
 
-void 
-gdict_defbox_find (GDictDefbox *defbox, gchar *text, gboolean start) {
+gboolean 
+gdict_defbox_find (GDictDefbox *defbox, const gchar *text, gboolean start) {
+    GtkTextBuffer *buffer;
+    GtkTextIter start_iter, end_iter, iter;
+    GtkTextIter match_start, match_end;
+    GtkTextMark *mark = NULL;
     static gchar *lastp = NULL;
     static gchar *deftext = NULL;
     gchar *findp;
+    gint i = 0;
 
     g_return_if_fail (defbox != NULL);
     g_return_if_fail (IS_GDICT_DEFBOX (defbox));
     
-    if (!lastp || start) {
-        g_free (deftext);
-        deftext = gtk_editable_get_chars (GTK_EDITABLE (defbox), 0, 
-                                	  gtk_text_get_length (GTK_TEXT (defbox)));
-        lastp = deftext;
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
+    
+    gtk_text_buffer_get_bounds (buffer, &start_iter, &end_iter);
+    	
+    if (start) 
+    	iter = start_iter;
+    else {
+        mark = gtk_text_buffer_get_mark (buffer, "last_search");
+    	
+    	if (mark)
+    	    gtk_text_buffer_get_iter_at_mark (buffer, &iter, mark);
+    	else
+    	    iter = start_iter;
     }
+    
+    if (gtk_text_iter_forward_search (&iter, text,
+                                      GTK_TEXT_SEARCH_VISIBLE_ONLY |
+                                      GTK_TEXT_SEARCH_TEXT_ONLY,
+                                      &match_start, &match_end,
+                                      NULL))
+    {
+        gtk_text_view_scroll_to_iter (GTK_TEXT_VIEW (defbox), &match_start,
+        			      0.0, TRUE, 0.5, 0.5);
+        gtk_text_buffer_place_cursor (buffer, &match_end);
+        gtk_text_buffer_move_mark (buffer,
+                               gtk_text_buffer_get_mark (buffer, "selection_bound"),
+                               &match_start);     
+        gtk_text_buffer_create_mark (buffer, "last_search", &match_end, FALSE);
 
-    if (deftext == NULL)
-        return;
-
-    findp = strstr(lastp, text);
-
-    if (findp) {
-        gtk_editable_select_region (GTK_EDITABLE(defbox),
-				    (findp - deftext),
-				    (findp - deftext) + strlen(text));
-        lastp = findp + 1;
-    } else {
+	return TRUE;
+    }
+    else
+    {
         gtk_signal_emit (GTK_OBJECT (defbox), 
                          gdict_defbox_signals[SUBSTR_NOT_FOUND_SIGNAL]);
+
+	return FALSE;
     }
 }
 
@@ -389,11 +434,11 @@ static gboolean
 is_number (gchar *str, int len) {
     gint i;
 
-    if (str[len-1] != ':')
+    if (str[len-1] != '.')
         return FALSE;
-
+        
     for (i = 0;  i < len - 1;  i++)
-        if (!islower(str[i]) && !isdigit(str[i]))
+        if (!isdigit(str[i]))
             return FALSE;
 
     return TRUE;
@@ -422,6 +467,26 @@ is_part (gchar *str, int len) {
            (strcmp(buf, "av") == 0);
 }
 
+static void
+insert_text_with_tags (GtkTextBuffer *buffer, GtkTextIter *iter, gchar *p, gint len,
+		       gboolean bold, gboolean italic, gboolean underline) {
+	
+	GtkTextMark *mark;
+	GtkTextIter start;
+	
+	mark = gtk_text_buffer_create_mark (buffer, "start_insert", iter, TRUE);
+	gtk_text_buffer_insert (buffer, iter, p, len);
+	gtk_text_buffer_get_iter_at_mark (buffer, &start, mark);
+	gtk_text_buffer_delete_mark (buffer, mark);
+	if (bold)
+		gtk_text_buffer_apply_tag_by_name (buffer, "bold", &start, iter);
+	if (italic)
+		gtk_text_buffer_apply_tag_by_name (buffer, "italic", &start, iter);
+	if (underline)
+		gtk_text_buffer_apply_tag_by_name (buffer, "underline", &start, iter);
+			       
+}
+
 /* defbox_add
  *
  * Adds a definition to the defbox, performing all necessary formatting
@@ -429,21 +494,38 @@ is_part (gchar *str, int len) {
 
 static void 
 defbox_add (GDictDefbox *defbox, gchar *def) {
+    GtkTextBuffer *buffer;
+    GtkTextIter iter, prev_iter;
     gchar *p;
     gint len;
     GdkFont *font;
     GdkColor *color;
+    gboolean italic, bold, underline;
 
-    gtk_text_freeze (GTK_TEXT (defbox));
-
+    buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
+    gtk_text_buffer_get_end_iter (buffer, &iter);
+    
+    gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+         
     font = gdict_pref.typefaces[TYPEFACE_HEADWORD].font;
     color = gdict_pref.typefaces[TYPEFACE_HEADWORD].color;
+
+    p = defbox->def_cmd->db_full_name;
+    len = strlen(p);
+
+    gtk_text_buffer_insert (buffer, &iter, p, len);
+
     p = def;
     len = strcspn(def, " ");
+    
+    bold = TRUE;
+    italic = FALSE;
+    underline = TRUE; /* only for the header */
 
     while (*p) {
         /* Handle word token */
-        gtk_text_insert (GTK_TEXT (defbox), font, color, NULL, p, len);
+        insert_text_with_tags (buffer, &iter, p, len, bold, italic, underline);
+        
         if ((font == gdict_pref.typefaces[TYPEFACE_HEADWORD].font) || \
             (font == gdict_pref.typefaces[TYPEFACE_NUMBER].font) || \
             (font == gdict_pref.typefaces[TYPEFACE_PART].font) || \
@@ -451,35 +533,65 @@ defbox_add (GDictDefbox *defbox, gchar *def) {
         {
             font = gdict_pref.typefaces[TYPEFACE_BODY].font;
             color = gdict_pref.typefaces[TYPEFACE_BODY].color;
+            bold = FALSE;
+            italic = FALSE;
+            underline = FALSE;
         }
         p += len;
         
         /* ... then handle spaces ... */
         len = strspn(p, " ");
+        
+        if (len > 0) {
+            insert_text_with_tags (buffer, &iter, p, len, bold, italic, underline);
+        }
+#if 0
         if (len > 0)
             gtk_text_insert (GTK_TEXT (defbox),  font, color, NULL, p, len);
+#endif
         p += len;
 
         /* ... handle special characters ... */
         if (*p == '\\') {
-            font = (font == gdict_pref.typefaces[TYPEFACE_BODY].font) ? \
+            /*font = (font == gdict_pref.typefaces[TYPEFACE_BODY].font) ? \
                 gdict_pref.typefaces[TYPEFACE_PRONUNCIATION].font : \
-                gdict_pref.typefaces[TYPEFACE_BODY].font;
+                gdict_pref.typefaces[TYPEFACE_BODY].font;*/
             color = (color == gdict_pref.typefaces[TYPEFACE_BODY].color) ? \
                 gdict_pref.typefaces[TYPEFACE_PRONUNCIATION].color : \
                 gdict_pref.typefaces[TYPEFACE_BODY].color;
+            if (font == gdict_pref.typefaces[TYPEFACE_BODY].font) {
+                font = gdict_pref.typefaces[TYPEFACE_PRONUNCIATION].font;
+                bold = FALSE;
+                italic = TRUE;
+                underline = FALSE;
+            }
+            else {
+            	font = gdict_pref.typefaces[TYPEFACE_BODY].font;
+            	bold = FALSE;
+            	italic = FALSE;
+            	underline = FALSE;
+            }
             ++p;
         } else if (*p == '[') {
             font = gdict_pref.typefaces[TYPEFACE_ETYMOLOGY].font;
             color = gdict_pref.typefaces[TYPEFACE_ETYMOLOGY].color;
+            bold = FALSE;
+            italic = TRUE;
+            underline = FALSE;
             ++p;
         } else if (*p == '{') {
             font = gdict_pref.typefaces[TYPEFACE_EXAMPLE].font;
             color = gdict_pref.typefaces[TYPEFACE_EXAMPLE].color;
+            bold = FALSE;
+            italic = TRUE;
+            underline = FALSE;
             ++p;
         } else if ((*p == ']') || (*p == '}')) {
             font = gdict_pref.typefaces[TYPEFACE_BODY].font;
             color = gdict_pref.typefaces[TYPEFACE_BODY].color;
+            bold = FALSE;
+            italic = FALSE;
+            underline = FALSE;
             ++p;
         }
         
@@ -489,20 +601,25 @@ defbox_add (GDictDefbox *defbox, gchar *def) {
             if (is_xref(p, len)) {
                 font = gdict_pref.typefaces[TYPEFACE_XREF].font;
                 color = gdict_pref.typefaces[TYPEFACE_XREF].color;
+                bold = FALSE;
+                italic = FALSE;
+                underline = FALSE;
             } else if (is_number(p, len)) {
                 font = gdict_pref.typefaces[TYPEFACE_NUMBER].font;
                 color = gdict_pref.typefaces[TYPEFACE_NUMBER].color;
+                bold = TRUE;
+                italic = FALSE;
+                underline = FALSE;
             } else if (is_part(p, len)) {
                 font = gdict_pref.typefaces[TYPEFACE_PART].font;
                 color = gdict_pref.typefaces[TYPEFACE_PART].color;
+                bold = FALSE;
+                italic = FALSE;
+                underline = FALSE;
             }
         }
-    }
-
-    gtk_text_insert (GTK_TEXT (defbox), 
-                     gdict_pref.typefaces[TYPEFACE_BODY].font, 
-                     gdict_pref.typefaces[TYPEFACE_BODY].color, NULL, "\n", 1);
-    gtk_text_thaw (GTK_TEXT (defbox));
+    }    
+   
 }
 
 /* def_error_cb
@@ -521,8 +638,16 @@ def_error_cb (dict_command_t *command, DictStatusCode code,
     defbox = GTK_OBJECT (data);
     
     if (code != DICT_SOCKET_ERROR) {
+        GtkWidget *dialog;
+        
         string = g_strdup_printf (_("Error invoking query: %s"), message);
-        gnome_error_dialog (string);
+        dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  	 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+                                  	 "%s", string, NULL); 
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	
+	g_free (string);
         sec_cmd = dict_disconnect_command_new ();
         dict_command_invoke (sec_cmd, command->context);
         

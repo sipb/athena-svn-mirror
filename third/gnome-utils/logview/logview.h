@@ -71,7 +71,7 @@ typedef struct __menu_item MenuItem;
 typedef struct
 {
   /* Fonts ----------------------------------------------------- */
-  GdkFont *heading, *headingb, *fixed, *fixedb, *small;
+   PangoFontDescription *heading, *headingb, *fixed, *fixedb, *small;
 
   /* Colors ---------------------------------------------------- */
   GdkColor black, green, blue, blue1, blue3, gray25, gray50;
@@ -157,11 +157,11 @@ typedef struct
   char message[MAX_WIDTH];
   char process[MAX_PROC_WIDTH];
   char hostname[MAX_HOSTNAME_WIDTH];
-  char month;
-  char date;
-  char hour;
-  char min;
-  char sec;
+  signed char month;
+  signed char date;
+  signed char hour;
+  signed char min;
+  signed char sec;
   Description *description;
 } LogLine;
 
@@ -184,6 +184,11 @@ typedef struct
 	int process_column_width;
 	int hostname_column_width;
 	int message_column_width;
+	/* FIXME: This should perhaps be a glist of logfiles to
+	** open on startup. Also one should be able to set the value in
+	** the prefs dialog
+	*/
+	gchar *logfile;
 } UserPrefsStruct;
 
 typedef struct
@@ -201,7 +206,7 @@ typedef struct
   CalendarData *caldata;
 
   /* Monitor info */
-  GtkCList *mon_lines;
+  GtkWidget *mon_lines;
   MonActions alert;
   long offset_end;
   int mon_on;		/* Flag set if we are monitoring this log          */
@@ -235,6 +240,9 @@ int find_tag_in_db (LogLine *line, GList *db);
 int IsLeapYear (int year);
 void SetDefaultUserPrefs(UserPrefsStruct *prefs);
 int exec_action_in_db (Log *log, LogLine *line, GList *db);
+
+PangoFont * LoadFont (PangoContext *context, PangoFontDescription *fontd);
+char *LocaleToUTF8 (const char *in);
 
 #define sure_string ((x)?(x):"")
 

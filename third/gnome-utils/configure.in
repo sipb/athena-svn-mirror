@@ -1,77 +1,117 @@
-dnl 
-dnl configure.in for gnome-utils, process with autoconf >= 2.13
-dnl
-
-AC_INIT(gtt)
-
-dnl
-dnl Due to the sed scripts being split on 90 line
-dnl blocks, this macro needs to be right at the beggining.
-dnl
-AM_PROG_XML_I18N_TOOLS
-
-dnl
-dnl a start of some nicer configure.in stuff
-dnl
-GDK_PIXBUF_REQUIRED=0.7.0
-GCONF_REQUIRED=0.12
-OAF_REQUIRED=0.6.5
-
-
+AC_INIT(gcalc)
 AM_CONFIG_HEADER(config.h)
-AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(gnome-utils, 2.0.6)
 
-AM_INIT_AUTOMAKE(gnome-utils, 1.4.1.2)
-
-dnl 
-dnl only useful for maintainers
-dnl
 AM_MAINTAINER_MODE
 
-AM_ACLOCAL_INCLUDE(macros)
+AC_PROG_INTLTOOL([0.21])
 
-# find the actual value for $prefix that we'll end up with
-REAL_PREFIX=
-if test "x$prefix" = "xNONE"; then
-  REAL_PREFIX=$ac_default_prefix
-else
-  REAL_PREFIX=$prefix
+AC_ISC_POSIX
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_CPP
+AC_STDC_HEADERS
+AC_PROG_YACC
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+GNOME_COMPILE_WARNINGS
+
+AC_PATH_XTRA
+
+dnl *****************************************
+dnl pkg-config check time
+dnl *****************************************
+
+LIBGNOME_REQUIRED=2.0.0
+LIBGNOMEUI_REQUIRED=2.0.0
+LIBGLADE_REQUIRED=2.0.0
+LIBBONOBOUI_REQUIRED=2.0.0
+GNOMEVFS_REQUIRED=1.9.16
+GNOMEVFSMODULE_REQUIRED=1.9.16
+LIBPANEL_APPLET_REQUIRED=2.0.0
+
+dnl *****************************************
+dnl libgnome, libgnomeui needed for all utils
+dnl *****************************************
+
+PKG_CHECK_MODULES(GNOME_UTILS, libgnome-2.0 >= $LIBGNOME_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED)
+AC_SUBST(GNOME_UTILS_CFLAGS)
+AC_SUBST(GNOME_UTILS_LIBS)
+
+dnl *****************************************
+dnl floppy-buddy needs libglade
+dnl *****************************************
+PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= $LIBGLADE_REQUIRED)
+AC_SUBST(LIBGLADE_CFLAGS)
+AC_SUBST(LIBGLADE_LIBS)
+
+dnl *****************************
+dnl popt is needed for most utils
+dnl *****************************
+
+AC_CHECK_LIB(popt, poptHelpOptions,, AC_MSG_ERROR([popt is required to build gnome-utils. You can download the latest version from ftp://people.redhat.com/sopwith/popt/]))
+
+dnl *********************************************
+dnl gnome-vfs/mime-data is need for gsearchtool
+dnl *********************************************
+
+PKG_CHECK_MODULES(GNOMEVFS, gnome-vfs-2.0 >= $GNOMEVFS_REQUIRED gnome-vfs-module-2.0 >= $GNOMEVFS_REQUIRED)
+AC_SUBST(GNOMEVFS_CFLAGS)
+AC_SUBST(GNOMEVFS_LIBS)
+
+dnl *********************************************
+dnl libbonobui is needed for gcharmap
+dnl *********************************************
+
+PKG_CHECK_MODULES(LIBBONOBOUI, libbonoboui-2.0 >= $LIBBONOBOUI_REQUIRED)
+AC_SUBST(LIBBONOBOUI_CFLAGS)
+AC_SUBST(LIBBONOBOUI_LIBS)
+
+dnl *********************************************
+dnl for anything which calls gconftool-2 correctly
+dnl *********************************************
+
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+
+if test x"$GCONFTOOL" = xno; then
+  AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
 fi
-old_prefix=$prefix
-prefix=$REAL_PREFIX
 
-REAL_EXEC_PREFIX=
-if test "x$exec_prefix" = "xNONE"; then
-  REAL_EXEC_PREFIX=$prefix
-else
-  REAL_EXEC_PREFIX=$exec_prefix
-fi
-old_exec_prefix=$exec_prefix
-exec_prefix=$REAL_EXEC_PREFIX
+AM_GCONF_SOURCE_2
 
 
-dnl
-dnl Console helper
-dnl
+dnl *******************************
+dnl Applet checks
+dnl *******************************
+
+PKG_CHECK_MODULES(APPLET, libpanelapplet-2.0 >= $LIBPANEL_APPLET_REQUIRED)
+AC_SUBST(APPLET_LIBS)
+AC_SUBST(APPLET_CFLAGS)
+
+dnl ***************************************************************
+dnl Other miscellaneous checks 
+dnl ***************************************************************
+
+dnl Check to see if the user wants gdialog. Turn it off by default
+dnl due to lack of maintainance and somewhat bad documentation
+
+AC_ARG_ENABLE(gdialog, 
+  [  --enable-gdialog=[no/yes]		Build gdialog [ default=no ]],
+   enable_gdialog="$enableval", enable_gdialog=no)
+
+AM_CONDITIONAL(BUILD_GDIALOG, test "$enable_gdialog" = yes)
+
 AC_ARG_ENABLE(console-helper,
-  [  --enable-console-helper=[no/yes]  Enable PAM console helper [default =no]],,
+  [  --enable-console-helper=[no/yes]  	Enable PAM console helper [ default=no ]],,
   enable_console_helper=no)
 
-dnl 
-dnl  Test whether jw is installed
-dnl
-AC_PATH_PROG(JW,jw,no)
-if test x$JW = xno; then
-  HAVE_JW="no"
-else
-  HAVE_JW="yes"
-fi
-AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
-AC_SUBST(HAVE_JW)
-
-dnl
+dnl ***********
 dnl PAM prefix
-dnl
+dnl ***********
+
 withval=""
 AC_ARG_WITH(pam-prefix,
 [      --with-pam-prefix=<prefix>   specify where pam files go],[
@@ -91,53 +131,10 @@ if test "x$CONSOLE_HELPER" = "xno" -a "x$enable_console_helper" = "xyes" ; then
 	AC_MSG_ERROR(Console helper requested but consolehelper binary not found)
 fi
 
-GNOME_INIT(applets)
-
-AC_ISC_POSIX
-AC_PROG_CXX
-AC_PROG_CC
-AC_PROG_CPP
-AC_STDC_HEADERS
-AC_ARG_PROGRAM
-dnl AM_PROG_LIBTOOL
-AM_PROG_LEX
-AC_PROG_YACC
-dnl AC_DECL_YYTEXT
-AC_PROG_INSTALL
-AC_PROG_LN_S
-AC_PROG_MAKE_SET
-GNOME_COMPILE_WARNINGS
-
-GNOME_X_CHECKS
-
-# so that people on places like solaris can set where the rgb.txt file is
-XLIBDIR=$x_libraries
-if test x$XLIBDIR = xNONE ; then
-	XLIBDIR="/usr/X11R6/lib/"
-fi
-AC_SUBST(XLIBDIR)
-
-dnl Check for new enough gnome-libs
-CFLAGS_save=$CFLAGS
-LIBS_save=$LIBS
-CFLAGS=`gnome-config --cflags gnomeui`
-LIBS=`gnome-config --libs gnomeui`
-
-AC_CHECK_LIB(gnomeui, gnome_window_icon_set_default_from_file, ,[
-AC_MSG_ERROR(gnome-libs 1.0.59 or higher is required.)])
-
-CFLAGS=$CFLAGS_save
-LIBS=$LIBS_save
-
-dnl PROGRAMS_GNCAL="gncal"
-dnl AC_SUBST(PROGRAMS_GNCAL)
-
-GNOME_CHECK_OBJC
-if test "$OBJECTIVE_C" = yes; then
-  GNOME_INIT_OBJC
-fi
-
+dnl **************************************************************
 dnl Checks for typedefs, structures, and compiler characteristics.
+dnl **************************************************************
+
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_OFF_T
@@ -148,137 +145,65 @@ AC_HEADER_TIME
 AC_STRUCT_TM
 AC_TYPE_UID_T
 
+dnl *****************************
 dnl Checks for library functions.
+dnl *****************************
+
 AC_FUNC_ALLOCA
 AC_FUNC_MMAP
 AC_TYPE_SIGNAL
 AC_FUNC_STRFTIME
-AC_CHECK_FUNCS(getcwd gettimeofday getwd putenv strdup strtoul uname)
+AC_CHECK_FUNCS(getcwd gettimeofday getwd putenv strdup strtoul uname logf)
 
-dnl nl_langinfo used for printing i18n time string formats
-dnl check for nl_langinfo(D_FMT) which is missing on FreeBSD
-LANGINFO_D_FMT_CHECK
-
-dnl Allow users to run logview and gshutdown using the console helper 
+dnl *****************************************************************
+dnl Allow users to run logview using the console helper 
 dnl PAM stuff.
+dnl *****************************************************************
+
 if test "x$enable_console_helper" = "xyes"; then
   AM_CONDITIONAL(CONSOLE_HELPER, true)
 else
   AM_CONDITIONAL(CONSOLE_HELPER, false)
 fi
 
-dnl
-dnl GdkPixBuf
-dnl
-AC_MSG_CHECKING(for GdkPixbuf library >= $GDK_PIXBUF_REQUIRED)
-PIXBUF_CFLAGS=`$GNOME_CONFIG --cflags gdk_pixbuf`
-PIXBUF_LIBS=`$GNOME_CONFIG --libs gdk_pixbuf`
-if test "x$PIXBUF_CFLAGS" != x ; then
-    vers=`gdk-pixbuf-config --version | awk 'BEGIN { FS = "."; } { printf "%d", ($1 * 1000 + $2) * 1000 + $3;}'`
-    if test "$vers" -ge 0007000; then
-        AC_MSG_RESULT(found)
-    else
-       AC_MSG_ERROR(You need at least GdkPixbuf version 0.7.0 for gnome-utils)
-    fi
+dnl ************************************************
+dnl X development libraries check
+dnl ************************************************
+
+if $PKG_CONFIG --exists pangoxft ; then
+  PANGO_PACKAGES="pangox pangoxft"
 else
-    AC_MSG_ERROR(Did not find GdkPixbuf installed)
-fi
-AC_SUBST(PIXBUF_CFLAGS)
-AC_SUBST(PIXBUF_LIBS)
-AC_SUBST(GDK_PIXBUF_REQUIRED)
-
-dnl *******************************
-dnl Internationalization
-dnl ******************************* 
-ALL_LINGUAS="az ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk wa zh_TW zh_CN.GB2312"
-AM_GNOME_GETTEXT
-
-dnl *******************************
-dnl Guile checks
-dnl *******************************
-GNOME_CHECK_GUILE
-
-dnl *******************************
-dnl gnome-print checks
-dnl *******************************
-if test "x$enable_gnome_print" = "xyes"; then
-  AM_PATH_GNOME_PRINT(0.12.0)
-  AC_DEFINE(HAVE_GNOME_PRINT)
+  PANGO_PACKAGES="pangox"
 fi
 
-build_gtt=true
+x_libs="`$PKG_CONFIG --libs $PANGO_PACKAGES`"
+case x_libs in
+  *-lX11*) pango_omitted_x_deps=no ;;
+  *)       pango_omitted_x_deps=yes ;;
+esac
 
-dnl *******************************
-dnl LibGlade
-dnl glade is needed to build gtt
-dnl *******************************
-AC_MSG_CHECKING(for Glade libraries >= 0.11)
-if gnome-config --libs libglade > /dev/null 2>&1; then
-    vers=`gnome-config --modversion libglade | awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-    if test "$vers" -ge 11; then
-        AC_MSG_RESULT(found)
-    else
-	AC_MSG_ERROR(You need at least libglade 0.11 for this version of gnome-utils)
-    fi
-else
-    AC_MSG_ERROR(Did not find libGlade installed)
-fi
-GLADE_LIBS=`gnome-config --libs libglade`
-GLADE_CFLAGS=`gnome-config --cflags libglade`
-AC_SUBST(GLADE_LIBS)
-AC_SUBST(GLADE_CFLAGS)
+if test $pango_omitted_x_deps = yes ; then
+  AC_PATH_XTRA
 
-dnl *******************************
-dnl gtkhtml
-dnl gtkhtml is needed to build gtt
-dnl *******************************
-GTKHTML_LIBS=`$GNOME_CONFIG --libs gtkhtml`
-GTKHTML_CFLAGS=`$GNOME_CONFIG --cflags gtkhtml`
-
-AC_MSG_CHECKING(for GtkHTML)
-if gnome-config --libs gtkhtml > /dev/null 2>&1; then
-    AC_MSG_RESULT(found)
-else
-    AC_MSG_WARN([Cannot find gtkhtml. See config.log for more info.])
-    AC_MSG_WARN([*** gtt will not be built.])
-    build_gtt=false
+  if test x$no_x = xyes ; then
+    AC_MSG_ERROR([X development libraries not found])
+  else
+    X_LIBS="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
+  fi
 fi
 
-# check for gtkhtml and enable it via HAVE_LIBGTKHTML
-# if found
-# AC_CHECK_LIB(gtkhtml, gtk_html_new,
-#             GNOMEBUILDLIBS="${GNOMEBUILDLIBS} gtkhtml"
-#             AC_DEFINE(HAVE_LIBGTKHTML),
-#             AC_MSG_WARN([Cannot find gtkhtml. See config.log for more info.])
-#	     AC_MSG_WARN([*** gtt will not be built.]),
-#             $GTKHTML_LIBS)
+AC_SUBST(X_LIBS)
 
-AC_SUBST(GTKHTML_LIBS)
-AC_SUBST(GTKHTML_CFLAGS)
 
-dnl *******************************
-dnl sched.h
-dnl sched.h is needed to build gtt
-dnl *******************************
+dnl *************************************************
+dnl Individual gnome-utils checks 
+dnl *************************************************
 
-AC_CHECK_HEADER(sched.h,,build_gtt=false
-                AC_MSG_WARN([*** gtt will not be built.]))
-
-AM_CONDITIONAL(BUILD_GTT, test "$build_gtt" = true)
 
 dnl ******************** 
-dnl libxml
-dnl The gnome-xml library is required to build the stripchart and 
-dnl gtt programs.
+dnl gfloppy checks
 dnl ********************
 
-GNOME_XML_CHECK
-AM_CONDITIONAL(HAVE_LIBXML, test "x$GNOME_XML_LIB" != "x")
-AC_SUBST(HAVE_LIBXML)
-
-dnl ******************** 
-dnl gfloppy
-dnl ********************
 build_gfloppy=true
 AC_CHECK_HEADER(linux/fd.h, AC_DEFINE(HAVE_LINUX_FD_H),
 		build_gfloppy=false
@@ -295,40 +220,10 @@ AC_CHECK_HEADER(ext2fs/ext2_io.h, ,
 *** ext2fs/ext2_io.h not found.  You need e2fsprogs-devel installed.]))
 AM_CONDITIONAL(BUILD_GFLOPPY, test "$build_gfloppy" = true)
 
+
 dnl ********************
-dnl logview
+dnl logview checks
 dnl ********************
-withval=""
-
-AC_ARG_WITH(messages,
-[      --with-messages=<filename>   specify messages log file],[
-if test x$withval != x; then
-   AC_MSG_RESULT("Setting messages logfile as specified $withval.")
-   AC_DEFINE_UNQUOTED(PATH_MESSAGES, "$withval")
-fi])
-
-messages_file="$withval"
-
-if test x$withval = x; then
-AC_MSG_CHECKING([for /var/adm/messages])
-if test -f /var/adm/messages; then
-  AC_MSG_RESULT([found])
-  AC_DEFINE(PATH_MESSAGES, "/var/adm/messages")
-  messages_file="/var/adm/messages"
-else
-  AC_MSG_RESULT([not found])
-  AC_MSG_CHECKING([for /var/log/messages])
-  if test -f /var/log/messages; then
-    AC_MSG_RESULT([found])
-    AC_DEFINE(PATH_MESSAGES, "/var/log/messages")
-    messages_file="/var/log/messages"
-  else
-    AC_MSG_RESULT([not found])
-    AC_MSG_ERROR([Cannot find messages log file, you should specify one in --wit
-h-messages=<filename>.])
-  fi
-fi
-fi
 
 dnl This is where the binary actually resides,
 dnl not the console helper link
@@ -340,205 +235,84 @@ fi
 EXPANDED_LOGVIEWDIR=`eval echo $LOGVIEWDIR_TMP`
 AC_SUBST(EXPANDED_LOGVIEWDIR)
 
-dnl ********************
-dnl gshutdown
-dnl ********************
 
-dnl This is where the binary actually resides,
-dnl not the console helper link
-if test "x$enable_console_helper" = "xyes"; then
-	GSHUTDOWNDIR_TMP="$sbindir"
-else
-	GSHUTDOWNDIR_TMP="$bindir"
-fi
-EXPANDED_GSHUTDOWNDIR=`eval echo $GSHUTDOWNDIR_TMP`
-AC_SUBST(EXPANDED_GSHUTDOWNDIR)
+dnl ******************
+dnl gdialog checks
+dnl ******************
 
-dnl ******************** 
-dnl gsu
-dnl ********************
-AC_CHECK_LIB(pam, pam_authenticate, [
-	AC_DEFINE(USE_PAM)
-	AC_CHECK_LIB(pam_misc, pam_misc_setenv,
-	[PAM_LIBS="-ldl -lpam -lpam_misc"], [PAM_LIBS="-ldl -lpam"],
-	-ldl -lpam)
-], [PAM_LIBS=], -ldl)
-AC_SUBST(PAM_LIBS)
-
-AC_CHECK_FUNCS(endgrent endpwent)
-dnl ********************
-dnl idetool
-dnl ********************
-mu_idetool=
-AC_CHECK_HEADERS(linux/hdreg.h,[mu_idetool=idetool])
-AM_CONDITIONAL(MU_IDETOOL,test "$mu_idetool" = idetool)
-
-dnl Needed on SysV for shadow passwords.
-AC_CHECK_LIB(sec, main)
-
-dnl Needed on Linux for shadow passwords.
-AC_CHECK_LIB(shadow, main)
-
-AC_EGREP_HEADER(sp_pwdp, shadow.h,
-		AC_CHECK_FUNC(getspnam, AC_DEFINE(HAVE_SHADOW_H)))
-
-AC_CHECK_FUNCS(crypt)
-if test $ac_cv_func_crypt = no; then
-  # SCO-ODT-3.0 is reported to need this library for crypt.
-  AC_CHECK_LIB(ufc, crypt, LIBS="$LIBS -lufc",
-    [# NetBSD needs this library for crypt.
-    AC_CHECK_LIB(crypt, crypt)])
+if test "x$enable_gdialog" = "xyes"; then
+  AC_CHECK_CURSES
+  AC_SUBST(CURSES_INCLUDEDIR)
+  AC_SUBST(CURSES_LIBS)
 fi
 
-dnl gsu end.
 
-dnl Some nice conditional
-AM_CONDITIONAL(FALSE, test x = y)
+dnl ********************
+dnl scrollkeeper checks 
+dnl ********************
 
-dnl Check for libgtop
-GNOME_INIT_LIBGTOP
+AC_PATH_PROG(SCROLLKEEPER_CONFIG, scrollkeeper-config,no)
+if test x$SCROLLKEEPER_CONFIG = xno; then
+  AC_MSG_ERROR(Couldn't find scrollkeeper-config. Please install the scrollkeeper package)
+fi
 
-dnl gdialog
-AC_CHECK_CURSES
-dnl gdialog end
 
-AM_PATH_OAF($OAF_REQUIRED)
-AC_SUBST(OAF_REQUIRED)
+dnl *******************************
+dnl Internationalization
+dnl ******************************* 
 
-AM_PATH_GCONF($GCONF_REQUIRED,,,gconf-gtk)
-AC_SUBST(GCONF_REQUIRED)
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
+GETTEXT_PACKAGE=gnome-utils-2.0
+AC_SUBST(GETTEXT_PACKAGE)
+AM_GLIB_GNU_GETTEXT
+
+# AM_GLIB_GNU_GETTEXT above substs $DATADIRNAME
+# this is the directory where the *.{mo,gmo} files are installed
+gnomeutilslocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(gnomeutilslocaledir)
+
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
+
+AC_DEFINE_UNQUOTED(GNOME_ICONDIR, "${prefix}/share/pixmaps")
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-dnl guname
-AC_ARG_ENABLE(guname-capplet,
-[  --disable-guname-capplet  Use guname-capplet to build guname with control center applet support[default=yes]], enable_guname_capplet="$enableval", enable_guname_capplet=yes)
-
-AM_CONDITIONAL(GUNAME_CAPPLET, test x$enable_guname_capplet = xno)
-dnl guname end
-
-dnl If logf() is available, stripchart will use it in preference 
-dnl to the presumably slower log() function.
-AC_CHECK_FUNCS(logf)
-
-dnl If the Gnome applet libraries are available, define HAVE_GNOME_APPLET.
-dnl This will allow both an applet and an application version of          
-dnl stripchart and gcolorsel to be built.
-AM_CONDITIONAL(HAVE_GNOME_APPLET, test "x$GNOME_APPLETS_LIBS" != "x")
-
-if test "x$GNOME_APPLETS_LIBS" != "x"; then
-  AC_ARG_ENABLE(stripchart-applet,
-  [  --enable-stripchart-applet  Build a stripchart applet [default=yes]],
-  enable_stripchart_applet="$enableval", enable_stripchart_applet=yes)
-
-  AC_ARG_ENABLE(gcolorsel-applet,
-  [  --enable-gcolorsel-applet  Build a gcolorsel applet [default=yes]],
-  enable_gcolorsel_applet="$enableval", enable_gcolorsel_applet=yes) 
-fi
-AM_CONDITIONAL(BUILD_STRIPCHART_APPLET, test $enable_stripchart_applet = yes)
-AM_CONDITIONAL(BUILD_GCOLORSEL_APPLET, test $enable_gcolorsel_applet = yes)
-
-AC_DEFINE_UNQUOTED(GNOME_ICONDIR, "${prefix}/share/pixmaps")
-
 AC_OUTPUT([
 Makefile
 gnome-utils.spec
 po/Makefile.in
-intl/Makefile
-macros/Makefile
-idl/Makefile
-cromagnon/Makefile
 gcalc/Makefile
-gcalc/doc/Makefile
-gcalc/doc/C/Makefile
-gcalc/doc/it/Makefile
-gcalc/doc/es/Makefile
-gcalc/doc/de/Makefile
-gdiskfree/Makefile
-gdiskfree/doc/Makefile
-gdiskfree/doc/C/Makefile
-gdiskfree/doc/es/Makefile
-gdiskfree/doc/it/Makefile
+gcalc/help/Makefile
+gcalc/help/C/Makefile
 logview/Makefile
-logview/logview-security
+logview/gnome-system-log-security
 logview/pixmaps/Makefile
-logview/doc/Makefile
-logview/doc/C/Makefile
+logview/help/Makefile
+logview/help/C/Makefile
 gcharmap/Makefile
 gcharmap/src/Makefile
 gcharmap/pixmaps/Makefile
-gcharmap/doc/Makefile
-gcharmap/doc/C/Makefile
+gcharmap/help/Makefile
+gcharmap/help/C/Makefile
 gsearchtool/Makefile
 gsearchtool/help/Makefile
 gsearchtool/help/C/Makefile
-gsearchtool/help/it/Makefile
-gsearchtool/help/es/Makefile
-gtt/Makefile
-gtt/doc/Makefile
-gtt/doc/C/Makefile
-gtt/doc/C/man/Makefile
-gtt/doc/de/Makefile
-gtt/doc/es/Makefile
-gtt/glade/Makefile
-gtt/ghtml/Makefile
-gtt/ghtml/C/Makefile
 gdialog/Makefile
-gdialog/doc/Makefile
-gdialog/doc/C/Makefile
-splash/Makefile
-stripchart/Makefile
-stripchart/doc/Makefile
-stripchart/doc/C/Makefile
-stripchart/doc/es/Makefile
+gdialog/help/Makefile
+gdialog/help/C/Makefile
 gdictsrc/Makefile
-gdictsrc/doc/Makefile
-gdictsrc/doc/C/Makefile
-gdictsrc/doc/es/Makefile
-mini-utils/Makefile
-mini-utils/gless/Makefile
-mini-utils/gless/doc/Makefile
-mini-utils/gless/doc/C/Makefile
-mini-utils/gshutdown/Makefile
-mini-utils/gshutdown/gshutdown-security
-mini-utils/gshutdown/doc/Makefile
-mini-utils/gshutdown/doc/C/Makefile
-mini-utils/gshutdown/doc/es/Makefile
-mini-utils/guname/Makefile
-mini-utils/guname/doc/Makefile
-mini-utils/guname/doc/C/Makefile
-mini-utils/gw/Makefile
-mini-utils/gw/doc/Makefile
-mini-utils/gw/doc/C/Makefile
-mini-utils/idetool/Makefile
-mini-utils/idetool/doc/Makefile
-mini-utils/idetool/doc/C/Makefile
-mini-utils/gfontsel/Makefile
-mini-utils/gfontsel/help/Makefile
-mini-utils/gfontsel/help/C/Makefile
-mini-utils/gfontsel/help/es/Makefile
-mini-utils/gcolorsel/Makefile
-mini-utils/gcolorsel/glade/Makefile
-mini-utils/gcolorsel/doc/Makefile
-mini-utils/gcolorsel/doc/C/Makefile
+gdictsrc/help/Makefile
+gdictsrc/help/C/Makefile
 gfloppy/Makefile
 gfloppy/doc/Makefile
 gfloppy/doc/C/Makefile
-gfloppy/doc/es/Makefile
-gfloppy/doc/ja/Makefile
 gfloppy/src/Makefile
 meat-grinder/Makefile
 meat-grinder/help/Makefile
 meat-grinder/help/C/Makefile
-exe-handler/Makefile
-exe-handler/help/Makefile
-exe-handler/help/C/Makefile
-omf-install/Makefile])
-
-#mini-utils/gsu/Makefile
-#mini-utils/gpenguin/Makefile
+])
 
 dnl <= Configuration summary =>
 
@@ -550,6 +324,7 @@ echo ""
 dnl <= CFLAGS and LDFLAGS =>
 echo "CFLAGS : $CFLAGS"
 echo "LDFLAGS : $LDFLAGS"
+echo "X_LIBS : $X_LIBS"
 echo ""
 
 dnl <= Prefixes =>
@@ -559,9 +334,12 @@ echo "bin dir : "`eval echo $bindir`
 echo "sbin dir : "`eval echo $sbindir`
 echo "PAM prefix : $PAM_PREFIX"
 echo "data dir : "`eval echo $datadir`
-echo "X libraries dir : $XLIBDIR"
 echo ""
 
+echo ""
+echo "The following will be built -"
+echo "============================="
+echo ""
 dnl <= Console Helper =>
 if test "x$enable_console_helper" = "xyes"; then
 	echo "Console helper (logview)          : YES"
@@ -579,41 +357,12 @@ else
 	echo "Build gfloppy                     : NO"
 fi
 
-dnl <= gfloppy =>
-if test "x$build_gtt" = "xtrue"; then
-	echo "Build gtt                         : YES"
+dnl <= gdialog =>
+if test "x$enable_gdialog" = "xyes"; then
+	echo "Build gdialog                     : YES"
 else
-	echo "Build gtt                         : NO"
-fi
-
-dnl <= idetool =>
-if test "x$mu_idetool" = "xidetool"; then
-	echo "Build idetool                     : YES"
-else
-	echo "Build idetool                     : NO"
-fi
-
-dnl <= guname capplet =>
-if test "x$enable_guname_capplet" = "xyes"; then
-	echo "guname capplet                    : YES"
-else
-	echo "guname capplet                    : NO"
-fi
-
-dnl <= gcolorsel applet =>
-if test "x$enable_gcolorsel_applet" = "xyes"; then
-	echo "gcolorsel applet                  : YES"
-else
-	echo "gcolorsel applet                  : NO"
-fi
-
-dnl <= stripchart applet =>
-if test "x$enable_stripchart_applet" = "xyes"; then
-	echo "stripchart applet                 : YES"
-else
-	echo "stripchart applet                 : NO"
+	echo "Build gdialog                     : NO"
 fi
 
 echo ""
 dnl <= End of configuration summary =>
-

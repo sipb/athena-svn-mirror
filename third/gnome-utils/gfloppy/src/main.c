@@ -38,25 +38,10 @@ extern int errno;
 static GFloppy floppy;
 static GladeXML *xml;
 static GtkWidget *toplevel = NULL;
+static GtkWidget *type_option;
 
 /* Only needed if more then one device exists */
 static GList *valid_devices = NULL;
-
-static gint
-option_menu_get_history (GtkOptionMenu *option_menu)
-{
-	GtkWidget *active_widget;
-
-	g_return_val_if_fail (GTK_IS_OPTION_MENU (option_menu), -1);
-
-	active_widget = gtk_menu_get_active (GTK_MENU (option_menu->menu));
-
-	if (active_widget)
-		return g_list_index (GTK_MENU_SHELL (option_menu->menu)->children,
-				     active_widget);
-	else
-		return -1;
-}
 
 static void
 devices_option_activated (GtkWidget *menu_item, gchar *device)
@@ -102,14 +87,25 @@ start_format (void)
 static void
 init_commands (void)
 {
+	const char *path;
+	char *newpath;
+
 	floppy.mke2fs_cmd = NULL;
 	floppy.mformat_cmd = NULL;
 	floppy.badblocks_cmd = NULL;
 
-	putenv ("PATH=$PATH:/sbin:/usr/sbin:/usr:/usr/bin");
-	floppy.mke2fs_cmd    = gnome_is_program_in_path ("mke2fs");
-	floppy.mformat_cmd   = gnome_is_program_in_path ("mformat");
-	floppy.badblocks_cmd = gnome_is_program_in_path ("mbadblocks");
+	path = g_getenv ("PATH");
+
+	if (path)
+		newpath = g_strconcat ("PATH=", path, ":/sbin:/usr/sbin:/usr:/usr/bin", NULL);
+	else
+		newpath = g_strdup ("PATH=/sbin:/usr/sbin:/usr:/usr/bin");
+
+	putenv (newpath); /* Sigh, we have to leak it */
+
+	floppy.mke2fs_cmd    = g_find_program_in_path ("mke2fs");
+	floppy.mformat_cmd   = g_find_program_in_path ("mformat");
+	floppy.badblocks_cmd = g_find_program_in_path ("mbadblocks");
 
 	if (floppy.mke2fs_cmd == NULL) {
 		g_print ("Warning:  Unable to locate mke2fs.  Please confirm it is installed and try again\n");
@@ -145,8 +141,14 @@ init_devices (void)
 		}
 		if (msg) {
 			GtkWidget *toplevel = glade_xml_get_widget (xml, "toplevel");
+			GtkWidget *dialog;
+
 			gtk_widget_set_sensitive (toplevel, FALSE);
-			gnome_dialog_run_and_close (GNOME_DIALOG (gnome_error_dialog (msg)));
+			dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), 0,
+							 GTK_MESSAGE_ERROR,
+							 GTK_BUTTONS_CLOSE,
+							 msg);
+			gtk_dialog_run (GTK_DIALOG (dialog));
 			exit (1);
 		}
 		/* Device is okay */
@@ -164,6 +166,7 @@ init_devices (void)
 		}
 		if (ok_devices_present == 0) {
 			GtkWidget *toplevel;
+			GtkWidget *dialog;
 
 			/* Lets assume that there's only a problem with /dev/fd0 */
 			switch (status[0]) {
@@ -181,7 +184,11 @@ init_devices (void)
 			}
 			toplevel = glade_xml_get_widget (xml, "toplevel");
 			gtk_widget_set_sensitive (toplevel, FALSE);
-			gnome_dialog_run_and_close (GNOME_DIALOG (gnome_error_dialog (msg)));
+			dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), 0,
+							 GTK_MESSAGE_ERROR,
+							 GTK_BUTTONS_CLOSE,
+							 msg);
+			gtk_dialog_run (GTK_DIALOG (dialog));
 			exit (1);
 		} else if (ok_devices_present == 1) {
 			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
@@ -258,22 +265,89 @@ set_floppy_extended_device (void)
 }
 
 gint
-on_toplevel_delete_event (GtkWidget *w, GdkEventAny *e, gpointer data)
+on_toplevel_delete_event (GtkWidget *w, GdkEventKey *e)
 {
-	toplevel = NULL;
+	gtk_main_quit ();
 	return TRUE;
+}
+
+void
+on_close_button_clicked (GtkWidget *widget, gpointer user_data)
+{
+	gtk_main_quit ();
+}
+
+void
+on_help_button_clicked (GtkWidget *widget, gpointer user_data)
+{
+	GError *error = NULL;
+
+	gnome_help_display ("gfloppy", "intro", &error);
+	if (error) {
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+						 _("Could not display help for the "
+						   "floppy formatter.\n"
+						   "%s"),
+						 error->message);
+
+		g_signal_connect (dialog, "response",
+				  G_CALLBACK (gtk_widget_destroy), NULL);
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+
+		g_error_free (error);
+	}
+}
+
+void
+on_format_button_clicked (GtkWidget *widget, gpointer user_data)
+{
+	GtkWidget *dialog;
+	GtkWidget *density_option;
+	GtkWidget *quick_format_button;
+
+        density_option = glade_xml_get_widget (xml, "density_option");
+	quick_format_button = glade_xml_get_widget (xml, "quick_format_button");
+
+        g_assert (density_option != NULL);
+        g_assert (quick_format_button != NULL);
+
+        gtk_widget_set_sensitive (toplevel, FALSE);
+
+        if (floppy.mformat_cmd) {
+        	/* Check to see which one is selected. */
+                floppy.type = gtk_option_menu_get_history (GTK_OPTION_MENU (type_option));
+        } else {
+                floppy.type = GFLOPPY_E2FS;
+        }
+        floppy.size = gtk_option_menu_get_history (GTK_OPTION_MENU (density_option));
+        set_floppy_extended_device ();
+        floppy.quick_format = GTK_TOGGLE_BUTTON (quick_format_button)->active;
+
+        start_format ();
+        if (!toplevel)
+        	return;
+        gtk_widget_set_sensitive (toplevel, TRUE); /*
+        dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel),
+                                         GTK_DIALOG_MODAL,
+                                         GTK_MESSAGE_QUESTION,
+                                         GTK_BUTTONS_YES_NO,
+                                         _("Format another floppy?"));
+        if (gtk_dialog_run (GTK_DIALOG (dialog)) != GTK_RESPONSE_YES)
+        	exit (0);
+        gtk_widget_destroy (dialog); */
 }
 
 int
 main (int argc, char *argv[])
 {
 	GtkWidget *ext2_entry;
-	GtkWidget *type_option;
 	GtkWidget *icon_frame;
 	GtkWidget *icon;
-	GtkWidget *quick_format_button;
-	GtkWidget *device_combo;
-	gint button;
+	gchar *image;
 
 	struct poptOption gfloppy_opts[] = {
 		{"device", '\0', POPT_ARG_STRING, NULL, 0, NULL, NULL},
@@ -285,39 +359,41 @@ main (int argc, char *argv[])
 	gfloppy_opts[0].descrip = _("The device to format");
 	gfloppy_opts[0].argDescrip = _("DEVICE");
 
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
+	bindtextdomain(GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain(GETTEXT_PACKAGE);
 
-	gnome_init_with_popt_table ("gfloppy", VERSION, argc, argv,
-				    gfloppy_opts, 0, NULL);
-	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/mc/i-floppy.png");
+	gnome_program_init ("gfloppy",VERSION, LIBGNOMEUI_MODULE,
+			    argc, argv, GNOME_PARAM_POPT_TABLE, gfloppy_opts,
+                            GNOME_PARAM_POPT_FLAGS, 0,
+                            GNOME_PARAM_APP_DATADIR,DATADIR,NULL);
+	/* FIXME: get the right icon */
+	image = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP,
+                                           "document-icons/i-floppy.png", TRUE, NULL);
+
+	
+	gnome_window_icon_set_default_from_file (image);
+	g_free (image);
+
 	init_commands ();
 
 	/* Now we can set up glade */
 	glade_gnome_init();
-        xml = glade_xml_new (GLADEDIR "/gfloppy.glade", NULL);
+        xml = glade_xml_new (GLADEDIR "/gfloppy2.glade", NULL, NULL);
 	if (xml == NULL)
-		xml = glade_xml_new ("gfloppy.glade", NULL);
-	if (xml == NULL)
-		g_error ("Cannot load/find floppy.glade");
+		g_error ("Cannot load/find gfloppy2.glade");
+
 	init_devices ();
 	toplevel = glade_xml_get_widget (xml, "toplevel");
-	quick_format_button = glade_xml_get_widget (xml, "quick_format_button");
+
 	icon_frame = glade_xml_get_widget (xml, "icon_frame");
 	type_option = glade_xml_get_widget (xml, "type_option");
 	toplevel = glade_xml_get_widget (xml, "toplevel");
-	device_combo = glade_xml_get_widget (xml, "device_combo");
 	glade_xml_signal_autoconnect (xml);
 	
-	icon = gnome_pixmap_new_from_file (GNOME_ICONDIR"/mc/i-floppy.png");
+	icon = gtk_image_new_from_stock (GTK_STOCK_FLOPPY, GTK_ICON_SIZE_DIALOG);
 	gtk_container_add (GTK_CONTAINER (icon_frame), icon);
 	gtk_widget_show (icon);
-	/* We do this to get around a bug in libglade.  Ideally we won't need
-	 * to do this in the future. */
-	gnome_dialog_append_button_with_pixmap (GNOME_DIALOG (toplevel), _("Format"), GNOME_STOCK_PIXMAP_SAVE);
-	gnome_dialog_append_button (GNOME_DIALOG (toplevel), GNOME_STOCK_BUTTON_CLOSE);
-	gnome_dialog_append_button (GNOME_DIALOG (toplevel), GNOME_STOCK_BUTTON_HELP);
-
 
 	if (floppy.mformat_cmd == NULL) {
 		/* We don't have mtools.  Allow ext2 only. */
@@ -327,40 +403,9 @@ main (int argc, char *argv[])
 		gtk_widget_show (ext2_entry);
 	}
 
-	while ((button = gnome_dialog_run (GNOME_DIALOG (toplevel))) >= 0) {
-		GtkWidget *density_option;
-		if (button == 1 ) 
-			break;
+	gtk_widget_show (GTK_WIDGET (toplevel));
+	gtk_main ();
 
-		if (button == 2) {
-			GnomeHelpMenuEntry ref = {"gfloppy", "index.html"};
-			gnome_help_display (NULL, &ref);
-			continue;
-		}
-		density_option = glade_xml_get_widget (xml, "density_option");
-		g_assert (density_option != NULL);
-		g_assert (quick_format_button != NULL);
-
-		gtk_widget_set_sensitive (toplevel, FALSE);
-
-		if (floppy.mformat_cmd) {
-			/* Check to see which one is selected. */
-			floppy.type = option_menu_get_history (GTK_OPTION_MENU (type_option));
-		} else {
-			floppy.type = GFLOPPY_E2FS;
-		}
-		floppy.size = option_menu_get_history (GTK_OPTION_MENU (density_option));
-		set_floppy_extended_device ();
-		floppy.quick_format = GTK_TOGGLE_BUTTON (quick_format_button)->active;
-
-		start_format ();
-		if (!toplevel)
-			break;
-		gtk_widget_set_sensitive (toplevel, TRUE);
-		if (gnome_dialog_run (GNOME_DIALOG (gnome_question_dialog_parented (_("Format another floppy?"),
-										    NULL, NULL,
-										    GTK_WINDOW (toplevel)))) == 1)
-			break;
-	}
 	return 0;
 }
+

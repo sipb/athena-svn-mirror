@@ -1,68 +1,619 @@
-Thu Jan 31 20:43:45 2002  George Lebl <jirka@5z.com>
+2002-11-18  Glynn Foster <glynn.foster@sun.com>
+	
+	* configure.in: release 2.0.6 " A translation is for life, not 
+	  just for 2.0.3 "
+	* NEWS, README: Updates for new release.
 
-	* Release 1.4.1.2
+2002-11-10  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
-2002-01-04  Pablo Saratxaga <pablo@mandrakesoft.com>
+	* configure.in: Added Belarusian to ALL_LINGUAS
 
-	* configure,in (ALL_LINGUAS): Added "eu".
+2002-11-07  Glynn Foster <glynn.foster@sun.com>
 
-Mon Dec 17 18:55:10 2001  Yukihiro Nakai  <nakai@gnome.gr.jp>
+	* configure.in: release 2.0.5 " <subliminal> Vote Gman </subliminal> "
+	* NEWS, README: Updates for new release.
 
-	* Add Japanese help files of gfloppy
-	* Add gfloppy/doc/ja/Makefile to configure.in
+2002-08-28  Glynn Foster <glynn.foster@sun.com>
 
-Wed Nov 21 06:49:49 2001  Abel Cheung  <maddog@linux.org.hk>
+	* configure.in: release 2.0.4 " Amygdala "
+	* NEWS, README: Updates for new release.
 
-	* mini-utils/gshutdown/Makefile.am:
-	* logview/Makefile.am:
-	Added missing DESTDIR in install-data-local.
+2002-08-20  Glynn Foster <glynn.foster@sun.com>
 
-Sat Oct 20 11:42:00 2001  George Lebl <jirka@5z.com>
+	* configure.in: release 2.0.3 " Start hacking or the goat gets it"
+	* NEWS, README, HACKING: Updates for new release.
 
-	* Release 1.4.1.1
+2002-08-12  Glynn Foster <glynn.foster@sun.com>
 
-	* gnome-utils.spec.in: further tweak the %files list
+	* Makefile.am: Dist omf.make and xmldocs.make.
 
-Sat Oct 20 11:33:50 2001  George Lebl <jirka@5z.com>
+2002-08-11  Ross Burton  <ross@burtonini.com>
 
-	* configure.in: raise version to 1.4.1.1, add cromagnon back
+        * **/*.desktop.in: Added GNOME to the Categories keywords, and
+        changed 'Terminal=0' to 'Terminal=false' as per the spec.
 
-	* Makefile.am: make sure that cromagnon is part of the distribution
+2002-08-05  Glynn Foster <glynn.foster@sun.com>
 
-Sat Oct 20 11:23:03 2001  George Lebl <jirka@5z.com>
+	* configure.in: release 2.0.2 " Obsession "
+	* NEWS, README: Updates for new release.
 
-	* configure.in: fixes from bunk@fs.tum.de (Adrian Bunk)
+2002-08-05  Irene Ryan  <irene.ryan@sun.com>
+	
+	* **/help: Updates for documentation.
 
-	* gnome-utils.spec.in:  Fix the file list so that the rpm
-	  doesn't want to own directories that are not it's own
+2002-07-25  Glynn Foster  <glynn.foster@sun.com>
 
-Sun Oct 14 21:03:16 2001  Abel Cheung <maddog@linux.org.hk>
+	* configure.in: release 2.0.1 " Will you take me where I want to go? "
+	* NEWS, README: Updates for new release.
 
-	* configure.in (GLADE_CFLAGS): Fix typo.
+2002-07-22  Glynn Foster  <glynn.foster@sun.com>
+	
+	* README: note to explain why gdialog isn't being built by 
+	default.
 
-Fri Oct 05 11:31:04 2001  George Lebl <jirka@5z.com>
+Fri Jul 12 10:18:22 2002  George Lebl <jirka@5z.com>
 
-	* Release 1.4.1
+	* **/*.desktop.in:  Add "Encoding=UTF-8" as per the standard,
+	  the standards police kicked in my door and forced me to do this
+	  I swear!
 
-Thu Oct 04 21:21:53 2001  George Lebl <jirka@5z.com>
+2002-07-08  Glynn Foster  <glynn.foster@sun.com>
 
-	* logview/doc/C/Makefile.am: fix figures distribution
+	* configure.in: Add X checks.
 
-	* Makefile.am, configure.in: gtkhtml is optional, if
-	  not found gtt will not be built.  Also make all the optional
-	  directories always dist
+2002-06-17  Glynn Foster <glynn.foster@sun.com>
 
-Wed Oct 03 20:34:01 2001  George Lebl <jirka@5z.com>
+	* HACKING: Add Kjartan as contact for 1.4 hacking.
 
-	* logview/logview.c, logview/doc/C/topic.dat: add help menu
+2002-06-17  Glynn Foster <glynn.foster@sun.com>
 
-2001-10-02 - John Fleck <jfleck@inkstain.net>
-	add logview docs to the build
+	* mini-utils/idetool, splash: Really remove.
 
-2001-09-30  Glynn Foster  <glynn.foster@sun.com>
+2002-06-17  Glynn Foster <glynn.foster@sun.com>
 
-	* Makefile.am: Make gtt conditionally compile depending 
-	  on the GUILE checks.
+	* configure.in: release 2.0.0 " Zivot je jinde"
+	* NEWS, README, THANKS, HACKING, AUTHORS: Updates for new release.
+
+2002-06-10  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: release 1.109.0 " Oh so nearly, but not quite "
+	* NEWS, README, THANKS: Updates for new release.
+	* ChangeLog: George & Malcolm are lazy asses. Move stuff around.
+
+2002-06-05  Yanko Kaneti <yaneti@declera.com>
+
+	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
+
+2002-06-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 1.108.0 " This ain't no disco "
+	* NEWS, README: Updates for new release.
+
+2002-06-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* splash/*, gpenguin/*, gsu/*, idetool/*: Cruft Removal - Part III.
+
+2002-06-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* idl/*: Cruft Removal - Part II.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* configure.in: update for #83627.
+
+2002-05-31  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: Enable logview/help.
+
+2002-05-28  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: release 1.107.0 " 69036' 45030' N - mmm "
+	* NEWS, README, MAINTAINERS: Updates for new release.
+
+2002-05-27  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* THANKS: Added Mohamad Afifi Omar (App) <mr_mohd_afifi@yahoo.com>
+	  (original translator for ms)
+
+2002-05-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Remove idl.
+	* Makefile.am: Remove building of idl.
+
+2002-05-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Remove logview/help.
+
+2002-05-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 1.106.0 'Not yet a Plaything'.
+	NEWS, README: Updates for new release.
+
+2002-05-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* README: Update for the 1.105.0 release.
+
+2002-05-14  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 1.105.0 'I'm just a Toy'.
+	  NEWS: Updates for new release.
+
+2002-05-09  Glynn Foster  <glynn.foster@sun.com>
+
+	* cromagnon/*, edit-menus/*: Cruft Removal - Part I.
+
+2002-05-08  Jacob Berkman  <jacob@ximian.com>
+
+	* omf.make (install-data-hook-omf): builddir is always . and is
+	never defined, so this would look for the file in /
+
+2002-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* omf.make: Update from what drake suggested on #docs.
+
+2002-05-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* NEWS: Updates for 1.5.0 that never existed.
+
+2002-05-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* THANKS: Add Sam Stringham to list.
+
+2002-05-07  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (AM_INIT_AUTOMAKE): put the version back to 1.104.0
+	this broke the snapshots, and there's really no reason to do this
+	at this point, sorry glynn.  if you're really upset, mail me and
+	we can talk it out - i'm guessing you'll not be too upset.
+
+2002-05-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* THANKS: Add Josh Lucas for a great patch to meat-grinder.
+
+2002-05-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* THANKS: Update for forgotten documentation people.
+
+2002-05-06  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in:  release 1.5.0 'A Brave New World'.
+
+2002-05-06  Glynn Foster <glynn.foster@sun.com>
+
+	* omf.make: Fix to try and get gnome-utils to 
+	distcheck.
+
+2002-05-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Fix for the CURSES check. Thanks to 	
+	Gennaro Oliva for pointing this out.
+
+2002-05-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* README: Update from prompting on gnome-love
+	* THANKS: Update as above.
+	* configure.in: little string change
+
+2002-05-02  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am (DIST_SUBDIRS): always dist gfloppy and gdialog,
+	even if we aren't building them
+
+	* configure.in (AC_OUTPUT): axe exe-handler
+
+2002-05-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Update for conditional compile of gdialog.
+	* configure.in: As above.
+
+2002-05-02  Jacob Berkman  <jacob@ximian.com>
+
+	* configure.in: add back libglade checks as things need them
+
+2002-05-01  Glynn Foster  <glynn.foster@sun.com>
+
+	* MAINTAINERS: Update
+	* Makefile.am: Update
+	* configure.in: Clean up some cruft. Bump libgnome[ui] & 
+	libbonobui requirements.
+
+2002-04-29  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in: Added Basque (eu) and Vietnamese (vi) to ALL_LINGUAS
+
+2002-04-28  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 1.104.0
+
+2002-04-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Make nice.
+
+2002-04-24  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Cleanup.
+
+2002-04-18  Satyajit Kanungo <satyajit.kanungo@wipro.com>
+	* configure.in Makefile.am : got help to work.
+	  Added Makefile.am under help/, moved logview.xml to gnome-system-log.xml
+
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: really do 1.103.0
+
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: check for gconftool-2
+
+2002-04-14  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 1.103.0
+
+2002-04-07 John Fleck <jfleck@inkstain.net>
+
+	* removing gsearchtool Spanish and Italian docs, which
+	are out of date
+
+2002-04-04 John Fleck <jfleck@inkstain.net>
+
+	* configure.in
+	removing gfloppy Spanish docs - they're out of date and
+	were firing off errors during the build
+
+2002-03-28 John Fleck <jfleck@inkstain.net>
+	* configure.in
+	fixing bug #76612
+
+2002-03-28  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: add AC_PATH_XTRA for gcalc
+	
+	* configure.in: add some "'s around a var to fix stupid test
+	things
+
+2002-03-25 John Fleck <jfleck@inkstain.net>
+
+	* Makefile.am
+	* configure.in
+	* xmldocs.make
+	* omf.make
+	* gcalc/help/C/Makefile.am
+	* gcharmap/help/C/Makefile.am
+	* gsearchtool/help/C/Makefile.am
+	* meat-grinder/help/C/Makefile.am
+	* gdictsrc/help/C/Makefile.am
+	add Dan Muet's new help build system
+
+2002-03-23  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 1.102.0
+
+2002-03-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: release 1.101.0
+
+2002-03-05  jacob berkman  <jacob@ximian.com>
+
+	* configure.in (AC_OUTPUT): remove non-shipped gcalc docs
+
+2002-02-24  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: 1.100.0
+
+2002-02-17  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump version
+	
+	* release 1.99.2
+
+2002-02-11  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump version and bump required gnome-core
+	version due to applet API changes
+
+	* release 1.99.1
+
+2002-02-10  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump version
+
+	* release 1.99.0
+
+2002-02-05  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: add AM_GCONF_SOURCE_2 for gdict
+
+2002-01-29  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bumb version to 1.98.0
+
+	* release 1.98.0
+
+2002-01-30  Anders Carlsson  <andersca@gnu.org>
+
+	* Makefile.am:
+	* configure.in:
+	Remove gtt from build.
+	
+2002-01-28  Seth Nickell  <snickell@stanford.edu>
+
+	* configure.in:
+
+	Change generated file name.
+
+2002-01-21  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.in: Added ms at ALL_LINGUAS.
+	* po/POTFILES.in: removed 'gsearchtool/outdlg.c' .
+	* po/ms.po: Added Malay Translation.
+
+Mon Jan 21 01:22:47 2002  George Lebl <jirka@5z.com>
+
+	* configure.in: add gnome-vfs-module-2.0 to the gnome-vfs pkg-config
+	  check
+
+2002-01-17  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: check for popt so it builds on Solaris. Patch from
+	Laszlo Peter <Laszlo.Peter@ireland.sun.com>
+
+2002-01-13  Kevin Vandersloot <kfv101@psu.edu>
+
+	* Release 1.97.0
+
+2002-01-13  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): Renamed zh_CN.GB2312 to zh_CN.
+
+2002-01-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: bump version to 1.97.0. Clean up and remove gtt
+	for a release
+
+2002-01-08 John Fleck <jfleck@inkstain.net>
+
+	* remove *.sgml - old sgml files no longer needed
+	for help files
+
+2002-01-07 John Fleck <jfleck@inkstain.net>
+
+	* configure.in - changing gdict, gdialog docs to help directory
+
+2002-01-06 John Fleck <jfleck@inkstain.net>
+
+	* configure.in - changing gcharmap docs to "help" directory
+
+2001-12-31  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: remove the logview check that caused failure for
+	setups where the messages file can't be found
+
+	* logview/logview.c: make the log file be a pref. Some FIXMES
+	are left to improve the behavior but the app works as well as
+	it did before these changes. 
+
+2001-12-23 John Fleck <jfleck@inkstain.net>
+
+	* configure.in - switching gcalc docs build to new help
+	directory.
+
+2001-12-20 John Fleck <jfleck@inkstain.net>
+
+	* adding xmldocs.make, for docs make system
+
+2001-12-13  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: Add in the proper gconf checks so the
+	schemas get installed
+
+2001-12-08  Kevin Vandersloot <kfv101@psu.edu>
+
+	* release 1.96.1
+
+2001-12-08  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* Makefile.am (in all subdirs), configure.in: switch from
+	xml-i18n-tools to intltool, remove INTLLIBS from something_LDADD
+	and intl from INCLUDES
+
+2001-12-07  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: removed duplicated dnl'd check for 
+	libpanelapplet. Bump version to 1.96.1. Update 
+	requirements
+
+	* meat-grinder/meat-grinder.c: update for gnome_icon_list
+	changes
+
+2001-12-06  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: remove splash and mini-utils for now
+
+	* Makefile.am: need to EXTRA_DIST some xml-i18n files
+
+	* exe-handler/Makefile.am: EXTRA_DIST the keys.in file
+
+	* po/POTFILES.in: comment out the files from the modules
+	not being compiled
+
+2001-12-06  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* sgmldocs.make: put this back, as it's still necessary, until I
+	write the docs on using xmldocs.make, and we get the docs converted.
+
+2001-12-06  Kevin Vandersloot <kfv101@psu.edu>
+
+	* configure.in: link to libpanel-applet-2 for gdict applet. 
+	Comment out gtt since I can't get it to compile for now :(
+	Comment out zh_TW po file since it gives me errors
+
+	* acinclude.m4: add the curses.m4 needed by gdialog
+
+	* logview/Makefile.am: change includes ordering so this will
+	compile on my machine
+	* gcalc/Makefile.am: ditto
+	* gsearchtool/Makefile.am: ditto
+	* gdialog/Makefile.am: ditto
+
+	* release 1.96.0
+
+2001-11-28  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* Makefile.am: don't build stripchart nor splash.
+	* acconfig.h, configure.in: define GETTEXT_PACKAGE
+	* all modules (main): replace PACKAGE with GETEXT_PACKAGE, and set
+	codeset to UTF-8 to make translations work.
+
+2001-11-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gdictsrc/ChangeLog: start a gdict ChangeLog
+
+2001-11-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gdictsrc/gdict-defbox.c: get search working. Not quite
+	complete though
+
+	* gdictsrc/gdict-app.c: make the default size smaller
+
+2001-11-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gdictsrc/gdict-pref-dialog.h: somehow a GTK_OBJECT_TYPE
+	was put in instead of GTK_CLASS_TYPE. Prefs dialog no longer
+	crashes
+
+	* TODO: update for porting status
+
+2001-11-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gdictsrc/gdict-defbox.c: set up textview tags. Add attributes
+	to definitions like italic and bold. No colors yet - maybe there's
+	no big reason to add the colors at all
+
+	* gdictsrc/gdict-app.c: create the tags
+
+2001-11-19  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gdictsrc/gdict-defbox.c: some portage to GtkTextView. Displays
+	stuff now, but none of the text attributes are added
+
+	* gdictsrc/gdict-app.c: Remove the evil text widget tooltip. Also
+	put the text widget in a proper scrolled window
+
+	* main.c: don't do applet by default
+
+2001-11-19  Kevin Vandersloot <kfv101@psu.edu>
+
+	Make gdict compile. 
+
+	* gdictsrc/gdict-applet.c: #ifdef most of the stuff
+	so gdict can compile
+
+	* gdictsrc/main.c: #ifdef any applet stuff
+
+	* gdictsrc/defbox.[c,h]: text box is now a gtktextview. Doesn't
+	work yet but it displays something :) Comment out any GtkText
+	for now until textview is working 
+
+2001-11-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in:
+	* gcalc/gnome-calc.c: 
+	* gdictsrc/Makefile.am:
+	* gdictsrc/gdict-app.h:
+	* gdictsrc/gdict-defbox.c:
+	* gdictsrc/gdict-defbox.h:
+	* gdictsrc/gdict-speller.c: 
+	* gdictsrc/gdict-speller.h:
+	* gsearchtool/Makefile.am:
+	* gsearchtool/outdlg.c:
+
+	Various porting to get something to compile to make Sander's 
+	day. It still doesn't but hey, life sucks.
+
+2001-10-24  Bastien Nocera  <hadess@hadess.net>
+
+	* gdictsrc/gdict-app.c, gdictsrc/gdict-defbox.c,
+	gdictsrc/gdict-pref-dialog.c, gdictsrc/gdict-pref.c:
+	some GTK_ENABLE_BROKEN porting done, needs applet stuff
+	ported to compile fully
+
+Sat Oct 20 11:27:10 2001  George Lebl <jirka@5z.com>
+
+	* gnome-utils.spec.in: apply a file list patch from stable
+
+2001-10-18  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: fixed typo that would cause ./configure to fail
+
+2001-10-16  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am, configure.in: stripchart is back
+
+2001-10-15  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: fixed the AC_CHECK_CURSES, gdialog compiles
+	properly again. You need to update your gnome-common for this
+	to work
+
+2001-10-15  Bastien Nocera  <hadess@hadess.net>
+
+	* logview/about.c: (AboutShowWindow), logview/actions.c:
+	(mon_edit_actions), (edit_action_entry), logview/config.c:
+	(CreateConfig), logview/monitor.c: (MonitorMenu):
+	ported to gnome2, needs decrackification.
+
+2001-10-15  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in, Makefile.am: Oops, so gtt needs guile,
+	restore check and alter Makefile.am
+
+2001-10-15  Glynn Foster <glynn.foster@sun.com>
+
+	* Makefile.am, configure.in: Remove guile checks and 
+	traces of cromagnon 
+
+2001-10-15  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: Add check for scrollkeeper. Is this going 
+	to be pkg-config'd in the future?
+
+2001-10-15  Bastien Nocera  <hadess@hadess.net>
+	
+	* configure.in: remove dnl's from the AC_OUTPUT
+
+2001-10-15  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am, configure.in: removed mini-utils, and the
+	top-level utils, disabled idetool, removed libgtop's tests
+	* gstripchart/, notepad/, stripchart/, gdiskfree: removed
+
+2001-10-14  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: * gtt/Makefile.am: * stripchart/Makefile.am:
+
+	Still lots of broken stuff, but fixed some build stuff.
+
+2001-10-14  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: * autogen.sh: * configure.in:
+	* gcharmap/src/Makefile.am: * gtt/Makefile.am:
+	* mini-utils/gcolorsel/Makefile.am: * stripchart/Makefile.am:
+
+	Okay, a general first sweep. Lots of things won't work and this
+	will probably make Bastien very pissed indeed.
+
+2001-10-13  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in, gdictsrc/Makefile.am,gdictsrc/gdict-about.c:
+	Loads of fixoring, ported a gfontsel, and the meat-grinder to
+	gnome2
+
+2001-10-12  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am, configure.in, sgmldocs.make:
+	  Couple of changes and hacks to get the ball
+	  running. Only gcalc is ported so far to Gnome2
+	  deal with the apps on a case by case basis
 
 Tue Sep 04 01:15:54 2001  George Lebl <jirka@5z.com>
 

@@ -1,21 +1,20 @@
 ## Process this file with automake to produce Makefile.in
 
-CFLAGS=-g
+CFLAGS=-g ${LIBGLADE_CFLAGS}
 
 INCLUDES = \
-	-I$(top_srcdir)/intl 			\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"	\
         -DGLADEDIR=\""$(gladedir)"\"           	\
-	$(GNOME_INCLUDEDIR)			\
-	$(GLADE_CFLAGS)
+        -DDATADIR=\""$(datadir)"\"		\
+	$(GNOME_UTILS_CFLAGS)
 
 bin_PROGRAMS = gfloppy
 
 gladedir = $(pkgdatadir)/glade
-glade_DATA = gfloppy.glade
+glade_DATA = gfloppy2.glade
 
-gfloppy-strings.c: gfloppy.glade
-	libglade-xgettext -c -o $(srcdir)/gfloppy-strings.c $(srcdir)/gfloppy.glade
+gfloppy-strings.c: gfloppy2.glade
+	libglade-xgettext -c -o $(srcdir)/gfloppy-strings.c $(srcdir)/gfloppy2.glade
 
 gfloppy_SOURCES = \
 	main.c \
@@ -24,17 +23,18 @@ gfloppy_SOURCES = \
 	fdformat.c \
 	badblocks.c
 
-gfloppy_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) -lxml -lglade -lglade-gnome -lext2fs
+gfloppy_LDADD = $(GNOME_UTILS_LIBS) ${LIBGLADE_LIBS} -lext2fs
+
+gfloppy_LDFLAGS = -export-dynamic
 
 man_MANS = gfloppy.1
 
 EXTRA_DIST = 		     \
-	gfloppy.glade		\
+	gfloppy2.glade		\
 	gfloppy.h		\
 	progress.h		\
 	fdformat.h		\
 	badblocks.h             \
-	gfloppy-i18n.h		\
 	gfloppy.1
 
 

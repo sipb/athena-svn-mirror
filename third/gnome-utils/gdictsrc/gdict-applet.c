@@ -1,4 +1,4 @@
-/* $Id: gdict-applet.c,v 1.1.1.2 2002-03-25 21:49:46 ghudson Exp $ */
+/* $Id: gdict-applet.c,v 1.1.1.3 2003-01-04 21:13:50 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -19,7 +19,8 @@
 #include <assert.h>
 
 #include <gnome.h>
-#include <applet-widget.h>
+#include <libbonoboui.h>
+#include <panel-applet.h>
 
 #include "gdict-app.h"
 #include "gdict-about.h"
@@ -27,359 +28,308 @@
 #include "gdict-applet.h"
 #include "gdict-pref-dialog.h"
 
-gboolean gdict_applet_toggle = TRUE;
+
 
 #define DOCKED_APPLET_WIDTH 74
 #define FLOATING_APPLET_WIDTH 14
 #define SHORT_APPLET_HEIGHT 22
 #define TALL_APPLET_HEIGHT 44
 
-/* Returns the ideal vertical applet size based on panel width and
- * orientation. */
-static gint 
-gdict_applet_determine_height(GDictApplet *applet)
-{
-	int ideal_panel_size = 0;
-	PanelOrientType orientation = ORIENT_UP;
 
-	ideal_panel_size = applet_widget_get_panel_pixel_size(
-		APPLET_WIDGET(applet->applet_widget));
-	orientation = applet_widget_get_panel_orient(
-		APPLET_WIDGET(applet->applet_widget));
-
-	if ((orientation == ORIENT_UP || orientation == ORIENT_DOWN) && 
-	    ideal_panel_size < PIXEL_SIZE_STANDARD)
-
-		return SHORT_APPLET_HEIGHT;
-	else
-		return TALL_APPLET_HEIGHT;
-}
-
-/* Returns the ideal horizontal applet size based on panel width and
- * orientation. */
-static gint
-gdict_applet_determine_width(GDictApplet *applet)
-{
-	if (applet->handlebox_widget != NULL && 
-		GTK_HANDLE_BOX(applet->handlebox_widget)->child_detached)
-
-		return FLOATING_APPLET_WIDTH;
-	else
-		return DOCKED_APPLET_WIDTH;
-}
-
-/* Configures and displays the applet as appropriate for the panel
- * width, orientation, and handlebox state. */
 static void
-gdict_applet_render (GDictApplet * applet)
+change_size_cb (PanelApplet *widget, gint size, GDictApplet *applet)
 {
-	gint applet_height = 0;
-	gint applet_width = 0;
+	applet->panel_size = size;
 
-	applet_height = gdict_applet_determine_height(applet);
-	applet_width = gdict_applet_determine_width(applet);
+}
 
-	if (applet_height == TALL_APPLET_HEIGHT) {
-		gtk_widget_show(applet->button_widget);
+static void
+change_orient_cb (PanelApplet *widget, PanelAppletOrient orient, GDictApplet *applet)
+{
+	applet->orient = orient;
+	
+}
+
+static void
+entry_activate_cb (GtkEntry *entry, gpointer data)
+{
+    	gchar *text = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+    
+    	if (!context)
+		gdict_init_context ();
+    	if (!GTK_WIDGET_VISIBLE (gdict_app))
+        	gtk_widget_show (gdict_app);
+    
+    	gtk_window_present (GTK_WINDOW (gdict_app));
+    
+    	if (!text || *text == 0)
+        	return;
+        
+    	g_strdown (text);
+	gtk_editable_delete_text (GTK_EDITABLE (entry), 0, -1);
+    	gdict_app_do_lookup (text);
+    	g_free (text);
+ 
+
+}
+
+static void
+lookup_button_drag_cb (GtkWidget *widget, GdkDragContext *context, gint x, gint y,
+		       GtkSelectionData *sd, guint info, guint t, gpointer data)
+{
+	GDictApplet *applet = data;
+	gchar *text;
+	
+	text = gtk_selection_data_get_text (sd);
+	
+	if (text) {		
+    		gtk_entry_set_text (GTK_ENTRY (applet->entry_widget), text);
+		entry_activate_cb (GTK_ENTRY (applet->entry_widget), applet);
+    		g_free (text);
 	}
-	else {
-		gtk_widget_hide(applet->button_widget);
-	}
-
-	gtk_container_set_border_width (GTK_CONTAINER(applet->vbox_widget), 2);
-	gtk_widget_show(applet->vbox_widget);
-	gtk_widget_show(applet->entry_widget);
-	if (applet->handle) {
-		g_return_if_fail(applet->handlebox_widget);
-		gtk_handle_box_set_shadow_type(
-			GTK_HANDLE_BOX(applet->handlebox_widget), GTK_SHADOW_IN);
-		gtk_widget_set_usize(applet->handlebox_widget, applet_width, 
-							 applet_height);
-		gtk_widget_show(applet->handlebox_widget);
-	}
-	else {
-		gtk_widget_set_usize(applet->vbox_widget, applet_width, applet_height);
-	}
-	gtk_widget_show (applet->applet_widget);
+	
 }
 
-/* Signal handler that gets called when the user re-attaches the
- * handlebox's float window to its ghost. */
-static gint
-applet_attach_cb (GtkHandleBox * handlebox, AppletWidget *widget, 
-				  gpointer data)
-{
-	gdict_applet_render((GDictApplet *) data);
-	return FALSE;
-}
-
-/* Signal handler that gets called when the user detaches the
- * handlebox's float window. */
-static gint
-applet_detach_cb (GtkHandleBox * handlebox, AppletWidget *widget, 
-				  gpointer data)
-{
-	gdict_applet_render((GDictApplet *) data);
-	return FALSE;
-}
-
-/* Signal handler that gets called when the user changes the
- * orientation of his panel. */
-static gint
-applet_change_orient_cb (AppletWidget *widget, PanelOrientType orientation, 
-						 gpointer data)
-{
-	GDictApplet * applet = (GDictApplet *) data;
-
-	/* Note: Technically we could use the orientation parameter to
-	 * resize the applet in a slightly more efficient fashion, but for
-	 * now I decided to reuse gdict_applet_render for the sake of
-	 * simplicity. */ 
-	gdict_applet_render((GDictApplet *) applet);
-	return FALSE;
-}
-
-/* Signal handler that gets called when the user changes the pixel
- * width of his panel. */
-static gint
-applet_change_pixel_size_cb (AppletWidget *widget, int size, gpointer data)
-{
-	GDictApplet * applet = (GDictApplet *) data;
-
-	/* Note: Technically we could use the size parameter to
-	 * resize the applet in a slightly more efficient fashion, but for
-	 * now I decided to reuse this gdict_applet_render for the sake of
-	 * simplicity. */ 
-	gdict_applet_render((GDictApplet *) applet);
-	return FALSE;
-}
-
-/* Signal handler for the "Help" menu item */
 static void
-cb_help (GtkWidget *w, gpointer data)
+text_received (GtkClipboard *clipboard, const gchar *text, gpointer data)
 {
-	GnomeHelpMenuEntry help_entry = { "gdict", "index.html" };
-	gnome_help_display(NULL, &help_entry);
-}
-
-/* Signal handler for the "Show/Hide Definition Window" menu item */
-static void
-applet_show_hide_defbox_cb (AppletWidget *widget, gpointer data) 
-{
-    if (!GTK_WIDGET_VISIBLE (gdict_app))
-        gtk_widget_show (gdict_app);
-    else
-        gtk_widget_hide (gdict_app);
-}
-
-/* Signal handler for "Spell Check" menu item */
-static void
-applet_spell_cb (AppletWidget *widget, gpointer data) 
-{
-    gchar *text;
-	GDictApplet * applet = (GDictApplet *) data;
-
-    text = gtk_entry_get_text (GTK_ENTRY (applet->entry_widget));
-    gdict_spell (text, FALSE);
-    gtk_entry_set_text (GTK_ENTRY (applet->entry_widget), "");
-}
-
-/* Signal handler to process mouse clicks on the applet */
-static void
-applet_clicked_cb (GtkWidget *widget, GdkEventButton *ev, gpointer data)
-{
-    if ((ev == NULL) || (ev->button != 1) || (ev->type != GDK_2BUTTON_PRESS ))
-        return;
-
-    applet_show_hide_defbox_cb (APPLET_WIDGET (widget), data);
-}
-
-/* Signal handler for the "About" menu item */
-static void
-applet_about_cb (AppletWidget *widget, gpointer data)
-{
-    gdict_about();
-}
-
-/* Signal handler for the "Preferences" menu item */
-static void
-applet_pref_cb (AppletWidget *widget, gpointer data) 
-{
-    gdict_app_show_preferences ();
-}
-
-/* Signal handler for any event that should trigger a lookup */
-static void
-applet_lookup_cb (GtkWidget *widget, gpointer data)
-{
-	GDictApplet * applet = (GDictApplet *) data;
-
-    gchar *text = gtk_entry_get_text(GTK_ENTRY(applet->entry_widget));
-    if (*text == 0)
-        return;
-    g_strdown (text);
-    if (!GTK_WIDGET_VISIBLE (gdict_app))
-        gtk_widget_show (gdict_app);
-    gtk_entry_set_text (GTK_ENTRY (applet->entry_widget), "");
-    gtk_entry_set_text (GTK_ENTRY (word_entry), text);
-    gtk_editable_select_region (GTK_EDITABLE (word_entry), 0, strlen (text));
-    gdict_app_do_lookup (text);
-}
-
-/* Establishes explicit associations between wigets and events that
- * aren't enabled by default. */
-static void 
-gdict_applet_set_events (GDictApplet * applet)
-{
-    gtk_widget_set_events (applet->applet_widget, 
-						   gtk_widget_get_events(applet->applet_widget) |
-                           GDK_BUTTON_PRESS_MASK | GDK_EXPOSURE_MASK );
-}
-
-/* Connects any signal handlers needed for the applet to function. */
-static void
-gdict_applet_connect_signals (GDictApplet * applet)
-{
-    gtk_signal_connect (GTK_OBJECT(applet->applet_widget), 
-						"button_press_event",
-                        GTK_SIGNAL_FUNC(applet_clicked_cb), 
-						(gpointer) applet);
-    gtk_signal_connect (GTK_OBJECT(applet->applet_widget), "destroy",
-                        GTK_SIGNAL_FUNC(gtk_main_quit), 
-						(gpointer) applet);
-    gtk_signal_connect (GTK_OBJECT(applet->button_widget), "clicked",
-						GTK_SIGNAL_FUNC(applet_lookup_cb), 
-						(gpointer) applet);
-    gtk_signal_connect (GTK_OBJECT(applet->entry_widget), "activate",
-                        GTK_SIGNAL_FUNC(applet_lookup_cb), 
-						(gpointer) applet);
-	gtk_signal_connect (GTK_OBJECT(applet->applet_widget), "change_orient",
-						GTK_SIGNAL_FUNC(applet_change_orient_cb),
-						(gpointer) applet);
-	gtk_signal_connect (GTK_OBJECT(applet->applet_widget), "change_pixel_size",
-						GTK_SIGNAL_FUNC(applet_change_pixel_size_cb),
-						(gpointer) applet);
-	if (applet->handle) {
-        gtk_signal_connect (GTK_OBJECT(applet->handlebox_widget), 
-							"child_detached",
-                            GTK_SIGNAL_FUNC(applet_detach_cb), 
-							(gpointer) applet);
-        gtk_signal_connect (GTK_OBJECT(applet->handlebox_widget), 
-							"child_attached",
-                            GTK_SIGNAL_FUNC(applet_attach_cb), 
-							(gpointer) applet);
-	}
-}
-
-/* Sets up the applet's context menu */
-static void
-gdict_applet_populate_menu (GDictApplet * applet)
-{
-    applet_widget_register_stock_callback 
-		(APPLET_WIDGET (applet->applet_widget), "about",
-		 GNOME_STOCK_MENU_ABOUT, _("About..."),
-		 applet_about_cb, NULL);
-    applet_widget_register_stock_callback
-        (APPLET_WIDGET (applet->applet_widget), "help",
-		 GNOME_STOCK_PIXMAP_HELP, _("Help"),
-		 (AppletCallbackFunc) cb_help,
-		 NULL);
-    applet_widget_register_stock_callback 
-		(APPLET_WIDGET (applet->applet_widget), "preferences",
-		 GNOME_STOCK_MENU_PREF, _("Preferences..."),
-		 applet_pref_cb, NULL);
-    applet_widget_register_callback
-		(APPLET_WIDGET (applet->applet_widget), "show_hide_window", 
-		 _("Show/Hide Definition Window..."), applet_show_hide_defbox_cb,
-		 NULL);
-    applet_widget_register_callback
-		(APPLET_WIDGET (applet->applet_widget), "spell_check", 
-		 _("Spell Check..."), applet_spell_cb, (gpointer) applet);
-}
-
-/* Constructs an applet object, containing all its necessary widgets */
-static GDictApplet * 
-gdict_applet_new ()
-{
-	GDictApplet *applet = NULL;
-
-	applet = g_malloc (sizeof(GDictApplet));
-
-    if ((applet->applet_widget = applet_widget_new("gdict")) == NULL)
-        g_error(_("Cannot create applet!\n"));
-
-    applet->vbox_widget = gtk_vbox_new(FALSE, 2);
-    applet->entry_widget = gtk_entry_new();
-    applet->button_widget = gtk_button_new_with_label(_("Look up"));
-
-    applet->handle = gdict_pref.applet_handle;
-
-    if (gdict_applet_determine_height (applet) != TALL_APPLET_HEIGHT)
-	    applet->handle = TRUE;
-
-    if (applet->handle) {
-        applet->handlebox_widget = gtk_handle_box_new();
-    } else {
-		applet->handlebox_widget = NULL;
-    }
-
-	return applet;
-}
-
-/* Deletes the GDictApplet structure returned by gdict_applet_new */
-void gdict_applet_delete (GDictApplet * applet)
-{
-	g_return_if_fail (applet);
-	/* Can I safely assume that GTK will clean up my widgets for me? */
-	g_free (applet);
-}
-
-/* Packs and adds widgets inside container widgets, as needed for the
- * applet.  When this call is finished, the interface for the applet
- * should be all set up and ready to display using gdict_applet_render. */
-static void
-gdict_applet_pack_widgets (GDictApplet * applet)
-{
-    gtk_box_pack_end(GTK_BOX(applet->vbox_widget), applet->button_widget, 
-					 TRUE, TRUE, 0);
-
-    if (applet->handle) {
-        gtk_container_add(GTK_CONTAINER(applet->handlebox_widget), 
-						  applet->vbox_widget);
-        applet_widget_add(APPLET_WIDGET(applet->applet_widget), 
-						  applet->handlebox_widget);
-	}
-	else {
-        applet_widget_add(APPLET_WIDGET(applet->applet_widget), 
-						  applet->vbox_widget);
-	}
-
-    /* We want to allow pasting into the input box so we pack it after */
-    /* applet_widdget_add has bound the middle button -- thanks to webcontrol applet! :-) */
-    gtk_box_pack_end(GTK_BOX(applet->vbox_widget), applet->entry_widget, TRUE, 
-					 TRUE, 0);
-}
-
-/* Creates and displays the applet.  Returns a structure containing
- * the state of the applet.  After applet_widget_gtk_main exits, this
- * structure may be safely deleted using gdict_applet_delete */
-GDictApplet * gdict_applet_create (void)
-{
-	GDictApplet *applet = NULL;
-
-#if 0
-    GtkWidget *frame_in, *frame_out;
+	GDictApplet *applet = data;
+	gchar *lookup_text;
+	
+	if (!text)
+		return;
+	
+	lookup_text = g_strdup (text);
+	g_strstrip (lookup_text);
+	
+	if (*lookup_text == 0)
+        	return;
+    	g_strdown (lookup_text);
+    	gtk_entry_set_text (GTK_ENTRY (applet->entry_widget), text);
+    	entry_activate_cb (GTK_ENTRY (applet->entry_widget), applet);
+#if 0    	
+    	gdict_app_do_lookup (lookup_text);
+    	gtk_entry_set_text (GTK_ENTRY (word_entry), lookup_text);
 #endif
-
-    g_assert(gdict_applet_toggle);
-
-	applet = gdict_applet_new();
-
-	gdict_applet_set_events (applet);
-	gdict_applet_connect_signals (applet);
-	gdict_applet_populate_menu (applet);
-	gdict_applet_pack_widgets (applet);
-	gdict_applet_render (applet);
-
-	return applet;
+    	g_free (lookup_text);
+ 
+	
 }
+
+static void
+button_press_cb (GtkButton *button, gpointer data)
+{
+	GDictApplet *applet = data;
+	
+	entry_activate_cb (GTK_ENTRY (applet->entry_widget), applet);
+	
+}
+
+/* This is a hack around the fact that gtk+ doesn't
+ * propogate button presses on button2/3.
+ */
+static gboolean 
+button_press_hack (GtkWidget *w, GdkEventButton *event, gpointer data)
+{
+    GtkWidget *applet = GTK_WIDGET (data);
+    
+    if (event->button == 3 || event->button == 2) {
+	gtk_propagate_event (applet, (GdkEvent *) event);
+
+	return TRUE;
+    }
+    
+    return FALSE;
+    
+}
+
+static void
+lookup_selected_text (BonoboUIComponent *uic, gpointer data, const gchar *verbname)
+{
+	GDictApplet *applet = data;
+	GtkClipboard *clipboard;
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
+ 	gtk_clipboard_request_text (clipboard, text_received, applet);
+ 	
+}
+static void
+about_cb (BonoboUIComponent *uic,
+          gpointer           user_data,
+          const gchar       *verbname)
+{
+	gdict_about(NULL);
+}
+
+static void
+help_cb (BonoboUIComponent *uic,
+          gpointer           user_data,
+          const gchar       *verbname)
+{
+	GError *error = NULL;
+	gnome_help_display("gnome-dictionary",NULL,&error);
+
+	if (error)
+	{
+		GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new (NULL,
+						 GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_CLOSE,
+						 ("There was an error displaying help: \n%s"),
+						 error->message);
+
+		g_signal_connect (G_OBJECT (dialog), "response",
+				  G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+		g_error_free (error);
+	}
+}
+
+static void
+prefs_cb (BonoboUIComponent *uic,
+          gpointer           user_data,
+          const gchar       *verbname)
+{
+	if (!context)
+		gdict_init_context ();
+	gdict_app_show_preferences ();
+}
+
+static void
+show_hide_defbox_cb (BonoboUIComponent *uic,
+          gpointer           user_data,
+          const gchar       *verbname)
+{
+	if (!context)
+		gdict_init_context ();
+	if (!GTK_WIDGET_VISIBLE (gdict_app)) 
+        	gtk_widget_show (gdict_app);
+    	else
+        	gtk_widget_hide (gdict_app);
+}
+
+static void
+spell_cb (BonoboUIComponent *uic,
+          gpointer           user_data,
+          const gchar       *verbname)
+{
+	GDictApplet *applet = user_data;
+	gchar *text;
+	
+	if (!context)
+		gdict_init_context ();
+#ifdef FIXME
+	text = gtk_editable_get_chars (GTK_EDITABLE (applet->entry_widget), 0, -1);
+    	gdict_spell (text, FALSE);
+        g_free (text);
+#endif
+}
+
+static const BonoboUIVerb gdict_applet_menu_verbs [] = {
+	BONOBO_UI_VERB ("def win", show_hide_defbox_cb),
+	BONOBO_UI_VERB ("sel", lookup_selected_text),
+        BONOBO_UI_VERB ("prefs", prefs_cb),
+        BONOBO_UI_VERB ("help", help_cb),
+        BONOBO_UI_VERB ("about", about_cb),
+       
+        BONOBO_UI_VERB_END
+};
+
+static gboolean
+gdict_applet_new (PanelApplet *parent_applet)
+{
+	GDictApplet *applet;
+ 	GtkWidget *hbox;
+
+ 	static GtkTargetEntry drop_targets [] = {
+    		{ "UTF8_STRING", 0, 0 },
+  		{ "COMPOUND_TEXT", 0, 0 },
+  		{ "TEXT", 0, 0 },
+  		{ "text/plain", 0, 0 },
+  		{ "STRING",     0, 0 }
+    	};
+ 	
+ 	applet = g_new0 (GDictApplet, 1);
+ 	
+ 	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gdict.png");
+ 	
+	hbox = gtk_hbox_new (FALSE, 0);
+
+	applet->button_widget = gtk_button_new_with_mnemonic (_("_Lookup"));
+
+	gtk_drag_dest_set (applet->button_widget, GTK_DEST_DEFAULT_ALL, drop_targets, 
+    		           G_N_ELEMENTS (drop_targets), GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	gtk_box_pack_end (GTK_BOX (hbox), applet->button_widget, FALSE, FALSE, 2);
+	
+        if (GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (applet->button_widget)))          
+        add_atk_namedesc (GTK_WIDGET (applet->button_widget), _("Dictionary Lookup"), NULL);
+
+	applet->entry_widget = gtk_entry_new ();
+	gtk_entry_set_width_chars (GTK_ENTRY (applet->entry_widget), 12);
+ 	gtk_box_pack_start (GTK_BOX (hbox), applet->entry_widget, TRUE, TRUE, 0);
+ 	
+ 	gtk_widget_show_all (hbox);
+	  	
+ 	applet->applet_widget = GTK_WIDGET(parent_applet);
+ 	gtk_container_add(GTK_CONTAINER(parent_applet), hbox);
+ 	applet->panel_size = panel_applet_get_size (PANEL_APPLET (applet->applet_widget));
+ 	applet->orient = panel_applet_get_orient (PANEL_APPLET (applet->applet_widget));
+ 	
+ 	gdict_app_create (TRUE);
+ 	
+ 	panel_applet_setup_menu_from_file (PANEL_APPLET (applet->applet_widget),
+					   NULL,
+                            		   "GNOME_GDictApplet.xml",
+					   NULL,
+                            		   gdict_applet_menu_verbs,
+                            		   applet);                               
+
+ 	gtk_widget_show (applet->applet_widget);
+ 	gdict_pref_load ();
+ 	
+ 	/* server will be contacted when an action is performed */
+ 	context = NULL;
+	
+ 	g_signal_connect (G_OBJECT (applet->entry_widget), "activate",
+ 			  G_CALLBACK (entry_activate_cb), applet);
+
+	g_signal_connect (G_OBJECT (applet->button_widget), "button_press_event",
+			  G_CALLBACK (button_press_hack), parent_applet);
+ 	g_signal_connect (G_OBJECT (applet->button_widget), "clicked",
+ 			  G_CALLBACK (button_press_cb), applet);
+ 	g_signal_connect (G_OBJECT (applet->button_widget), "drag_data_received",
+    		          G_CALLBACK (lookup_button_drag_cb), applet);
+
+ 	g_signal_connect (G_OBJECT (applet->applet_widget), "change_size",
+ 			  G_CALLBACK (change_size_cb), applet);
+ 	g_signal_connect (G_OBJECT (applet->applet_widget), "change_orient",
+ 			  G_CALLBACK (change_orient_cb), applet);
+ 	
+	return TRUE;
+}
+
+static gboolean
+gdict_applet_factory (PanelApplet *applet,
+                     const gchar          *iid,
+                     gpointer              data)
+{
+        gboolean retval = FALSE;
+
+        if (!strcmp (iid, "OAFIID:GNOME_GDictApplet"))
+                retval = gdict_applet_new (applet);
+
+        return retval;
+}
+
+PANEL_APPLET_BONOBO_FACTORY ("OAFIID:GNOME_GDictApplet_Factory",
+			     PANEL_TYPE_APPLET,
+                             "gnome-dictionary",
+                             "0",
+                             gdict_applet_factory,
+                             NULL)
+ 	

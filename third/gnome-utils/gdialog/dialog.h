@@ -22,8 +22,6 @@
 #define WITH_GNOME		/* Gnome support */
 #undef WITH_GPM			/* Gpm mouse support */
 
-#define VERSION	"0.6gnome1"
-
 #include "config.h"
 #include <sys/types.h>
 #include <fcntl.h>
@@ -197,6 +195,14 @@ int dialog_inputbox (const char *title, const char *prompt, int height,
 		int width, const char *init);
 int dialog_guage (const char *title, const char *prompt, int height, int width,
 		int percent);
+
+void add_atk_namedesc (GtkWidget *widget, const gchar *name, const gchar *desc);
+void add_atk_relation (GtkWidget *obj1, GtkWidget *obj2, AtkRelationType type);
+
+#ifdef WITH_GNOME
+gboolean callback_progress_bar (GIOChannel *giochannel, GIOCondition condition,
+		gpointer p);
+#endif
 
 /*
  * The following stuff is needed for mouse support

@@ -61,20 +61,48 @@ static struct Mode *modePtr;
 
 int gnome_mode;
 
-#ifdef LOCALE
-#include <locale.h>
-#endif
+void add_atk_namedesc(GtkWidget *widget, const gchar *name, const gchar *desc)
+{
+	AtkObject *atk_widget;
+
+	g_return_if_fail (GTK_IS_WIDGET(widget));
+	atk_widget = gtk_widget_get_accessible(widget);
+
+	if (name)
+		atk_object_set_name(atk_widget, name);
+	if (desc)
+		atk_object_set_description(atk_widget, desc);
+}
+
+void add_atk_relation(GtkWidget *obj1, GtkWidget *obj2, AtkRelationType type)
+{
+
+	AtkObject *atk_obj1, *atk_obj2;
+	AtkRelationSet *relation_set;
+	AtkRelation *relation;
+
+	g_return_if_fail (GTK_IS_WIDGET(obj1));
+	g_return_if_fail (GTK_IS_WIDGET(obj2));
+
+	atk_obj1 = gtk_widget_get_accessible(obj1);
+	atk_obj2 = gtk_widget_get_accessible(obj2);
+
+	relation_set = atk_object_ref_relation_set (atk_obj1);
+	relation = atk_relation_new(&atk_obj2, 1, type);
+	atk_relation_set_add(relation_set, relation);
+	g_object_unref(G_OBJECT (relation));
+
+}
+
 
 int main(int argc, char *argv[])
 {
 	int offset = 0, clear_screen = 0, end_common_opts = 0, retval;
 	const char *title = NULL;
 
-#ifdef LOCALE
-	(void) setlocale(LC_ALL, "");
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
+	bindtextdomain(GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+	textdomain(GETTEXT_PACKAGE);
 
 	if (argc < 2) {
 		Usage(argv[0]);
@@ -83,9 +111,9 @@ int main(int argc, char *argv[])
 	
 	if(getenv("DISPLAY"))
 	{
-		gtk_init(&argc, &argv);
-		gdk_imlib_init();
-		gnomelib_init(argv[0], VERSION);
+		gnome_program_init ("gdialog", VERSION, LIBGNOMEUI_MODULE,
+					argc, argv,NULL);
+
 		gnome_mode=1;
 	}
 	
@@ -165,6 +193,14 @@ int main(int argc, char *argv[])
 	if ((argc - offset) % modePtr->argmod)
 		Usage(argv[0]);
 
+/*
+ * Check the range of values for height & width of dialog box for text mode.
+ */
+	if (((atoi(argv[offset+3]) <= 0) || (atoi(argv[offset+3]) > 25) && !gnome_mode )
+            || ((atoi(argv[offset+4]) <= 0) || (atoi(argv[offset+4]) > 80) && !gnome_mode)) {
+		fprintf(stderr, "\nError, values for height (1..25) & width (1..80) \n");
+		exit(-1);
+	}
 	init_dialog();
 	retval = (*(modePtr->jumper)) (title, argc - offset, (const char * const *)argv + offset);
 

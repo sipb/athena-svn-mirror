@@ -1,7 +1,7 @@
 #ifndef __GDICT_SPELLER_H_
 #define __GDICT_SPELLER_H_
 
-/* $Id: gdict-speller.h,v 1.1.1.1 2001-05-02 20:42:34 ghudson Exp $ */
+/* $Id: gdict-speller.h,v 1.1.1.2 2003-01-04 21:12:51 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -32,7 +32,7 @@ typedef struct _GDictSpeller        GDictSpeller;
 typedef struct _GDictSpellerClass   GDictSpellerClass;
 
 struct _GDictSpeller {
-    GnomeDialog     dialog;
+    GtkDialog      dialog;
     
     dict_context_t *context;
     dict_command_t *get_strat_cmd;
@@ -40,18 +40,18 @@ struct _GDictSpeller {
     gchar          *database;
     gchar          *strat;
     
-    GtkTable       *table;
-    GtkEntry       *word_entry;
+    GtkWidget      *hbox;
+    GtkEntry       *word_entry;    
     GtkOptionMenu  *strat_sel;
     GtkMenu        *strat_list;
     guint           strat_idx;
-    GtkCList       *word_sel;
+    GtkWidget	   *word_list;
     
     gchar          *current_word;
 };
 
 struct _GDictSpellerClass {
-    GnomeDialogClass  parent_class;
+    GtkDialogClass  parent_class;
     
     void (*word_lookup_start) (GDictSpeller *);
     void (*word_lookup_done)  (GDictSpeller *);
@@ -59,7 +59,7 @@ struct _GDictSpellerClass {
     void (*socket_error)      (GDictSpeller *, gchar *);
 };
 
-guint      gdict_speller_get_type    (void);
+GType      gdict_speller_get_type    (void);
 
 GtkWidget *gdict_speller_new         (dict_context_t *context);
 void       gdict_speller_destroy     (GDictSpeller *speller);

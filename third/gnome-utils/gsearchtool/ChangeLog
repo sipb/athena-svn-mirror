@@ -1,3 +1,353 @@
+2002-09-19  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* help/C/gnome-search-tool.xml:  Change 'Enable' to 
+	'Enabled'.  Bug #91143.
+	
+2002-09-18  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Substitute "-xdev" for "-mount" as the 
+	xdev option is compatible with the current versions of 
+	the GNU, Solaris, HP, and AIX find commands.
+	
+2002-08-09  Glynn Foster <glynn.foster@sun.com>
+
+	* gnome-search-tool.1: Update man page.
+
+2002-07-29  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* Makefile.am: don't add -I$(includedir), it causes
+	gcc 3.1.x warning when prefix=/usr
+
+2002-07-05  Glynn Foster  <glynn.foster@sun.com>
+
+        * gnome-search-tool.desktop.in: s/DocPath/X-GNOME-DocPath. Now
+        conforms to spec.
+
+2002-06-19  Aruna Pourohit <aruna.pou@wipro.com>
+
+        * gsearchtool.c: instead of just running search command, doing exec of
+        the search command. Completely fixes #85131.
+
+2002-06-13  Aruna Pourhit <aruna.pou@wipro.co>
+
+	* gsearchtool.c (stop_search): Don't break if status of 
+	child process is returned, since we want to kill the 
+	child process. Fixes #85131.
+
+2002-06-13  Glynn Foster  <glynn.foster@sun.com>
+
+	* gsearchtool.c: (stop_search): Don't run a search when
+	we just want to stop the search. Fixes part of #85131.
+
+2002-06-01  Ross Burton  <ross@burtonini.com>
+
+	* gsearchtool.c: Set the dialogs as a transient for the
+	parent window.  Also pass a reference to the main window as the
+	user data to the menu bar callbacks. Fixes #83799.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* Makefile.am: Fix GNOMELOCALEDIR to point to correct
+	location. Fixes #83627.
+
+2002-05-28 Yogeesh MB <yogeeshappa.mathighatta@wipro.com>
+
+        * gsearchtool.c: Patch for the bug#82555 (exit before search
+        completion results in crash)
+
+2002-05-26 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-search-tool.xml
+	* help/C/figures/gnome-search-tool_window.png
+	quick update of doc and screenshot to fix #79366
+	The docs may be updated yet again by the Sun team, but this
+	gives us something shippable.
+
+2002-05-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Fix handling of searches for '*filename' 
+	and 'filename' as this is not the same search criteria. This 
+	is specific to simple searches that use the locate command.
+	
+2002-05-20  Glynn Foster <glynn.foster@sun.com>
+
+	* gsearchtool.c: Remove mnemonics from tabs.
+
+2002-05-16  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: UTF-8->locale corrections.  Should fix 
+	bug #80780.
+	  
+2002-05-09  Paolo Maggi <maggi@athena.polito.it>
+
+	* gsearchtool.c: added a status bar with an activity
+	bar
+
+2002-05-08 Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix pattern matching bug introduced
+	with patch for bug #78865.  Thanks to Gman for spotting it.  
+
+2002-05-08  Paolo Maggi <maggi@athena.polito.it>
+
+	* gsearchtool.c: now you cannot double click on 
+	"No Files Found."
+
+2002-05-07 Rajeev Karale <rajeev.karale@wipro.com>
+
+	* gsearchtool/gsearchtool.c: Added "Matches regular expression"
+	  option to gsearchtool advance search.
+
+2002-05-06 Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Fix memory leaks and remove an
+	unused variable. Fixes #80528.
+
+2002-05-06 Gaute Lindkvist <lindkvis@stud.ntnu.no>
+
+	* gsearchtool.c: surpress the results that are found
+	that are only due to the fact of a match in the 
+	basename. Modified by Dennis Cranston. Fixes #78865.
+
+2002-05-07 Satyajit Kanungo  <satyajit.kanungo@wipro.com>
+
+	* gnome-search-tool.desktop.in: Added DocPath in the 
+	desktop.in file. Fixes #80921.
+
+2002-05-03  Paolo Maggi <maggi@athena.polito.it>
+
+	* gsearchtool.c: fixed an accellerator conflict
+	(_Search <-> _Stop)
+
+2002-05-03  Paolo Maggi <maggi@athena.polito.it>
+
+	* gsearchtool.c: little UI changes to improve HIG
+	compliance (bug #76313)
+
+2002-05-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* gsearchtool.c: (make_locate_cmd), (run_command),
+	(run_cmd_dialog): s/directory/folder as per documentation
+	style guide. Part fixes #70827 - the never ending saga. Thanks
+	to John for pointing this out.
+
+2002-05-03  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Add a "Starting in folder" field to the
+	simple tab.  Fixes solaris slow search problem in bug #70827.  
+	
+	* gsearchtool.c: Filter out the annoying "Permission denied" 
+	error messages.  Users do not want to see these errors. 
+	
+	* gsearchtool.c: Commented out code that connects the 
+	activate signal on the gnome_file_entry_gnome_entry widget.  
+	This was causing a search to begin when clicking on the 
+	OK button in the Browse dialog.
+	
+2002-04-09  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c Implement one of the UI suggestions
+	to improve HIG compliance.  Display "No files found."
+	message in the results list when there are no matches.
+	(bug 76313)
+
+Mon Apr 29 12:41:50 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* gsearchtool.c: Fix GNOMEUIINFO_MENU_EXIT_ITEM
+	to GNOMEUIINFO_MENU_EXIT_ITEM, since the former
+	has been deprecated.
+
+2002-04-29 Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: About dialog fixes #80109.
+
+2002-04-24 Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c: Change OAFIID for Nautilus_Factory 
+	to match a recent nautilus code change.
+
+2002-04-24 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-search-tool-C.omf
+	updating OMF file to match that required by
+	ScrollKeeper >= 0.3.8
+
+2002-04-16 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-search-tool.xml
+	change reference to old bugs web site
+
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+
+        * Makefile.am, gsearchtool.c: get help working
+
+2002-04-01  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c Replace the get_file_base_name(),
+	get_file_dir_name(), and get_file_full_path_name()
+	hacks with the appropriate built-in glib functions.
+	(may resolve bug 75219)
+
+2002-04-06  Narayana Pattipati  <narayana.pattipati@wipro.com>
+
+        * gsearchtool.c   Added code for stopping search with 
+        Escape, and for starting search by pressing Enter/Return
+        on the advanced search page. Bug#77699.
+
+2002-04-05  Narayana Pattipati  <narayana.pattipati@wipro.com>
+
+	* gsearchtool.c   Added accessibility code changes like
+	accessible names/descriptions, Atk relations etc.
+
+2002-04-03  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c For simple searches, if the locate
+	command is not installed fallback to the find command.
+	(bug 70827)
+
+2002-04-03  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c Fix arguments passed to the find command
+	for advanced rules.  (partial fix for bug 70827)
+	  
+2002-04-07 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-search-tool.xml
+	* help/C/gnome-search-gool.xml
+	editing doc, adding info to omf file
+	* removing help/C/gsearchtool.xml and 
+	gsearchtool-C.omf (replaced by newly named
+	versions)
+	
+2002-03-20  Kevin Vandersloot <kfv101@psu.edu>
+
+	* gsearchtool.c Apply patch from Dennis Cranston 
+	<dennis_cranston@yahoo.com> adding session management. 
+	Fixes bug 75082
+
+2002-03-14 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-search-tool.xml, gnome-search-tool-C.omf,
+	Makefile.am
+	Change docs to reflect new executable name
+	fixes bug #70081
+
+2002-02-22 Yogeesh MB <yogeeshappa.mathighatta@wipro.com>
+
+	* Patch for the bug#71555 (saving results before search
+	completion)
+
+2002-02-26  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gsearchtool.c (main): s/gsearchtool/gnome-search-tool/ to match
+	actual program name
+
+2002-02-21  Bastien Nocera  <hadess@hadess.net>
+
+	* gsearchtool.c: (make_find_cmd): make it work with folders
+	with spaces in their name (patch by dennis_cranston@yahoo.com)
+
+2002-02-21  Bastien Nocera  <hadess@hadess.net>
+
+	* gsearchtool.c: (save_results): ask the user if we should
+	overwrite (patch by dennis_cranston@yahoo.com)
+
+2002-02-21  Bastien Nocera  <hadess@hadess.net>
+
+	* gsearchtool.c: (make_find_cmd), (run_command): use -print
+	instead of -print0 (patch by dennis_cranston@yahoo.com)
+	Should fix problems on Solaris, still works on Linux
+
+2002-02-21  Bastien Nocera  <hadess@hadess.net>
+
+	* gsearchtool.c: (add_file_to_list_store), (really_run_command):
+	cast the filesize to gdouble to avoid warnings, and look for sh
+	in the path rather than using hardcoded /bin/sh path
+	(adapted from patch by <dennis_cranston@yahoo.com>, Closes:70827)
+
+2002-02-10 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gsearchtool.xml, figures/*.png
+	* updated screenshots and docs to new UI
+
+Sun Feb 03 23:54:40 2002  George Lebl <jirka@5z.com>
+
+	* gsearchtool.c: applied a patch from "Dennis M. Cranston"
+	  <dennis_cranston@yahoo.com> which does a bunch of things to
+	  improve usability based on feedback from the usability
+	  list.  Also add Dennis to the authors list.
+
+2002-01-31  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* gsearchtool.c (about_cb): Don't try to translate empty string.
+
+2001-02-02  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* .cvsignore: s/gsearchtool/gnome-search-tool/
+
+2002-01-31 John Fleck <jfleck@inkstain.net>
+
+	* help/C/Makefile.am - adding legal.xml to build
+
+2002-01-30 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gsearchtool.xml, help/C/figures/*.png
+	updating docs based on editing comments from Kevin Breit
+
+2002-01-29 John Fleck <jfleck@inkstain.net>
+
+	* updated docs to reflect new UI
+	* help/C/gsearchtool.xml, help/C/figures/gsearchtool_advanced.png
+	* help/C/figures/gsearchtool_simple.png
+
+2002-01-28  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-searchtool.png:
+
+	Add newer nicer icon.
+
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+	* gnome-search-tool.1:
+	* gnome-search-tool.desktop.in:
+	* gsearchtool.1:
+	* gsearchtool.desktop.in:
+
+	Change to new binary name based on the menu name.
+	
+Mon Jan 21 01:21:32 2002  George Lebl <jirka@5z.com>
+
+	* gsearchtool.c, Makefile.am: Apply patch from "Dennis M. Cranston"
+	  <dennis_cranston@yahoo.com> and massage it a bit to compile
+	  cleanly.  Makes the searchtool more 'nice' in gnome2 terms and
+	  removes use of deprecated widgets etc...
+
+2002-02-07 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gsearchtool.xml, gsearchtool-C.omf, Makefile.am
+	xmlizing the documentation
+
+2001-11-27  Seth Nickell  <snickell@stanford.edu>
+
+	* Makefile.am:
+
+	Install .desktop file into datadir/applications
+	
+	* gsearchtool.desktop.in:
+
+	Rename "Search Tool", add Categories field.
+
+2001-10-13  Bastien Nocera  <hadess@hadess.net>
+
+	* outdlg.c: (save_ok), (outdlg_double_click): ported to Gnome2
+
+2001-10-13  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am, gsearchtool.c: (entry_changed), (run_locate_command),
+	(about_cb), outdlg.c: (outdlg_additem): nearly finished porting
+	to Gnome2
+
 2001-08-08  Abel Cheung  <maddog@linux.org.hk>
 
 	* \*.desktop: Added zh_TW.Big5 (traditional Chinese) strings.

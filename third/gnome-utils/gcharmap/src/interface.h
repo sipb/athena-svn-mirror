@@ -23,39 +23,45 @@
 #define _INTERFACE_H_
 
 #include <gtk/gtk.h>
+#include <gconf/gconf-client.h>
+#include <gnome.h>
+#include <bonobo/bonobo-dock-layout.h>
 
 
 #define MAIN_APP_TYPE             (main_app_get_type ())
-#define MAIN_APP(obj)             GTK_CHECK_CAST (obj, MAIN_APP_TYPE, MainApp)
-#define MAIN_APP_CLASS(klass)     GTK_CHECK_CLASS_CAST ((klass), MAIN_APP_TYPE, MainAppClass)
-#define MAIN_IS_APP(obj)          GTK_CHECK_TYPE (obj, MAIN_APP_TYPE)
-#define MAIN_IS_APP_CLASS(klass)  GTK_CHECK_TYPE ((klass), MAIN_APP_TYPE)
+#define MAIN_APP(obj)             G_TYPE_CHECK_INSTANCE_CAST (obj, MAIN_APP_TYPE, MainApp)
+#define MAIN_APP_CLASS(klass)     G_TYPE_CHECK_CLASS_CAST ((klass), MAIN_APP_TYPE, MainAppClass)
+#define MAIN_IS_APP(obj)          G_TYPE_CHECK_INSTANCE_TYPE (obj, MAIN_APP_TYPE)
+#define MAIN_IS_APP_CLASS(klass)  G_TYPE_CHECK_CLASS_TYPE ((klass), MAIN_APP_TYPE)
 
 typedef struct _MainApp
 {
-    GtkObject parent_struct;
+    GObject parent_struct;
     GtkWidget *window;
     GtkWidget *entry;
-    GtkWidget *actionbar, *textbar;
+    GtkWidget *textbar;
     GtkWidget *preview_label;
     GtkWidget *fontpicker;
     GtkWidget *chartable;
-    gboolean insert_at_end;
     GList *buttons;
-    GtkStyle *btnstyle;
+    GConfClient *conf;
 } MainApp;
 
 typedef struct _MainAppClass
 {
-    GtkObjectClass parent_klass;
+    GObjectClass parent_klass;
 } MainAppClass;
 
 
 extern MainApp *mainapp;
 
-guint main_app_get_type (void);
+GType main_app_get_type (void);
 MainApp *main_app_new (void);
 void main_app_destroy (MainApp *obj);
 
+gboolean check_gail(GtkWidget *widget);
+void add_atk_namedesc(GtkWidget *widget, const gchar *name, const gchar *desc);
+void add_atk_relation(GtkWidget *obj1, GtkWidget *obj2, AtkRelationType type);
+void edit_menu_set_sensitivity (gboolean flag);
 
 #endif /* _INTERFACE_H_ */

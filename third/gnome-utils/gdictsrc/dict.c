@@ -1,4 +1,4 @@
-/* $Id: dict.c,v 1.1.1.2 2002-03-25 21:56:39 ghudson Exp $ */
+/* $Id: dict.c,v 1.1.1.3 2003-01-04 21:13:21 ghudson Exp $ */
 /* -*- mode: c; style: k&r; c-basic-offset: 4 -*- */
 
 /*
@@ -77,7 +77,7 @@ void dict_res_destroy (dict_res_t *res)
 static int dict_write (dict_context_t *context, GString *str) 
 {
     int res, amt;
-    
+  
     res = g_io_channel_write(context->channel, str->str, str->len, &amt);
     
     if (res != G_IO_ERROR_NONE)
@@ -98,7 +98,7 @@ dict_command_done (dict_command_t *command)
 
     command->context = NULL;
     command->state = S_DONE;
-    
+  
     if (context) {
         context->command = NULL;
         if (command->temp_context) {
@@ -124,6 +124,10 @@ static int
 cycle_buffer (dict_context_t *context) 
 {
     int amt_read, res;
+    GIOChannelError chanerr;
+
+    if (!context->channel)
+	return -1;
     
     if (!context->read_cycle_done) {
         if (context->write_ptr > context->read_ptr)
@@ -139,7 +143,12 @@ cycle_buffer (dict_context_t *context)
         
         if (res == G_IO_ERROR_AGAIN)
 	    context->read_cycle_done = TRUE;
-        else if (res != G_IO_ERROR_NONE)
+	else if (res == G_IO_ERROR_UNKNOWN) {
+		chanerr = g_io_channel_error_from_errno(errno);
+		if (chanerr == G_IO_CHANNEL_ERROR_PIPE || G_IO_CHANNEL_ERROR_FAILED)
+			context->channel = NULL;
+		return -1;
+        } else if (res != G_IO_ERROR_NONE)
 	    return -1;
         
         context->write_ptr += amt_read;
@@ -161,7 +170,7 @@ static char *dict_read_line (dict_context_t *context) {
     char *start_ptr, *end_ptr;
     
     if (!context->channel) return NULL;
-    
+   
     while (1) {
         end_ptr = strchr (context->read_ptr, '\r');
         
@@ -196,7 +205,7 @@ static void data_notify_match (dict_context_t *context, char *line)
     dict_command_t *command;
     
     command = context->command;
-    
+   
     switch (command->state) {
     case S_GROUND:      /* Uh oh... problem */
     case S_DONE:
@@ -289,7 +298,7 @@ static void data_notify_define (dict_context_t *context, char *line)
     dict_command_t *command;
     
     command = context->command;
-    
+   
     switch (command->state) {
     case S_GROUND:      /* Uh oh... problem */
     case S_DONE:
@@ -319,7 +328,9 @@ static void data_notify_define (dict_context_t *context, char *line)
             buf = line;
             while (!isspace (*buf)) buf++;
             *buf = '\0';
-            
+	    ++buf;
+           
+	    command->db_full_name = g_strdup (buf); 
             command->db_name = g_strdup (line);
             command->def = g_string_new (NULL);
             command->state = S_DATA;
@@ -386,7 +397,7 @@ static void data_notify_show_db (dict_context_t *context, char *line)
     dict_command_t *command;
     
     command = context->command;
-    
+   
     switch (command->state) {
     case S_GROUND:      /* Uh oh... problem */
     case S_DONE:
@@ -468,7 +479,7 @@ static void data_notify_show_strat (dict_context_t *context,
     dict_command_t *command;
     
     command = context->command;
-    
+   
     switch (command->state) {
     case S_GROUND:      /* Uh oh... problem */
     case S_DONE:
@@ -546,7 +557,7 @@ static void data_notify_connect (dict_context_t *context, char *line)
     dict_command_t *command;
     
     command = context->command;
-    
+   
     switch (command->state) {
     case S_GROUND:      /* Uh oh... problem */
     case S_DATA:
@@ -581,7 +592,7 @@ static void data_notify_quit (dict_context_t *context, char *line)
     dict_command_t *command;
     
     command = context->command;
-    
+   
     switch (command->state) {
     case S_GROUND:      /* Uh oh... problem */
     case S_DATA:
@@ -618,7 +629,7 @@ static gboolean dict_data_notify (GIOChannel *channel, GIOCondition cond,
      * even after connection was closed */
     if (context->channel == NULL)
 	    return FALSE;
-    
+  
     if (cond == G_IO_IN) {
         context->read_cycle_done = FALSE;
         
@@ -630,13 +641,28 @@ static gboolean dict_data_notify (GIOChannel *channel, GIOCondition cond,
 	    g_free (line);
         }
     }
-    else if (cond == G_IO_ERR) {
+    else if (cond & G_IO_ERR) {
         if (context->command->error_notify_cb)
 	    context->command->error_notify_cb (context->command, 
 					       DICT_SOCKET_ERROR,
 					       _("Cannot connect to server"),
 					       context->command->user_data);
         dict_disconnect (context);
+	return FALSE;
+    }
+    else {
+        GtkWidget *dialog;
+        /* Strange error here */
+        
+        dict_disconnect (context);
+        dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                         GTK_MESSAGE_ERROR,
+                                         GTK_BUTTONS_CLOSE,
+                                         _("A serious error occured. Please check that your server and port are correct. For reference the default server is dict.org and the port 2628"));
+        g_signal_connect_swapped (GTK_OBJECT (dialog), "response",
+                                  G_CALLBACK (gtk_widget_destroy),
+                                  GTK_OBJECT (dialog));
+	gtk_widget_show_all (dialog);
 	return FALSE;
     }
     
@@ -748,9 +774,8 @@ int dict_connect (dict_context_t *context)
 
 /* dict_disconnect (context)
  *
- * Opens a connection to the DICT server.
+ * Closes a connection to the DICT server.
  *
- * Returns 0 on success, -1 on connection error
  */
 
 void dict_disconnect (dict_context_t *context) 
@@ -1005,7 +1030,7 @@ int dict_command_invoke (dict_command_t *command,
         dict_disconnect (context);
         return 0;
     }
-    
+   
     /* Otherwise, the context is free, so just assign it as the context we
      * are going to use
      */
@@ -1014,12 +1039,12 @@ int dict_command_invoke (dict_command_t *command,
         command->context = context;
     }
     
-    
+   
     /* If this context is not already connected to the server, initiate
      * a command to connect it and set the given command to be triggered
      * when the connection is established
      */
-    
+   
     if (!command->context->channel && command->cmd != C_CONNECT) {
         sec_cmd = dict_connect_command_new ();
         sec_cmd->trigger_cmd = command;
@@ -1029,7 +1054,7 @@ int dict_command_invoke (dict_command_t *command,
         sec_cmd->user_data = command->user_data;
         return dict_command_invoke (sec_cmd, command->context);
     }
-    
+  
     /* If this is a connect command, then go ahead and connect to the server */
     
     else if (command->cmd == C_CONNECT) {
@@ -1045,7 +1070,7 @@ int dict_command_invoke (dict_command_t *command,
         command->state = S_STATUS;
         if (dict_write (command->context, command->cmd_string)) return -1;
     }
-    
+  
     return 0;
 }
 

@@ -1,4 +1,4 @@
-/* $Id: gdict-about.c,v 1.1.1.1 2001-05-02 20:42:24 ghudson Exp $ */
+/* $Id: gdict-about.c,v 1.1.1.2 2003-01-04 21:13:48 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -26,27 +26,57 @@
 
 static GtkWidget *gdict_about_new (void)
 {
+    GdkPixbuf   *pixbuf;
+    GError  	*error = NULL;
+    gchar 	*file;
+    
     const gchar *authors[] = {
         "Mike Hughes <mfh@psilord.com>",
         "Spiros Papadimitriou <spapadim+@cs.cmu.edu>",
         "Bradford Hovinen <hovinen@udel.edu>",
         NULL
     };
+    gchar *documenters[] = {
+	    NULL
+    };
+    /* Translator credits */
+    gchar *translator_credits = _("translator_credits");
     GtkWidget *about;
     
-    about = gnome_about_new ("GDict", VERSION,
-                             "Copyright 1999 by Mike Hughes",
-                             authors,
-                             _("Client for MIT dictionary server.\nWeb: http://gdict.dhs.org/, http://www.psilord.com/code/"),
-                             NULL);
-    gtk_window_set_modal (GTK_WINDOW (about), TRUE);
+    file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gdict.png", FALSE, NULL);
+    pixbuf = gdk_pixbuf_new_from_file (file, &error);
+    
+    if (error) {
+    	   g_warning (G_STRLOC ": cannot open %s: %s", file, error->message);
+	   g_error_free (error);	
+    }
+    
+    g_free (file);    
+    
+    about = gnome_about_new (_("GNOME Dictionary"), VERSION,
+                            _("Copyright 1999 by Mike Hughes"),
+                            _("Client for MIT dictionary server.\n"
+			      "Web: http://gdict.dhs.org/, "
+			      "http://www.psilord.com/code/"),
+			     (const char **)authors,
+			     (const char **)documenters,
+			     strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,
+                             pixbuf);
+    if (pixbuf) {
+    	   gdk_pixbuf_unref (pixbuf);
+    }
+
+    gnome_window_icon_set_from_file (GTK_WINDOW (about), GNOME_ICONDIR"/gdict.png");				     
+			     
     return about;
 }
 
-void gdict_about (void)
+void gdict_about (GtkWindow *parent)
 {
     GtkWidget *about = gdict_about_new();
-
+    if (parent) {
+      gtk_window_set_transient_for (GTK_WINDOW (about), parent) ;
+    }
     gtk_widget_show(about);
 }
 

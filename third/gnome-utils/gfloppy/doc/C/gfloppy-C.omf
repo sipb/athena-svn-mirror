@@ -1,14 +1,19 @@
-<?xml version="1.0" standalone="no"?>
+<?xml version="1.0"?>
 <omf>
-  <resource>
-    <title>
+       <resource>
+	<creator>
+	Kenny Graunke
+	</creator>
+       <title>
       The Gfloppy Manual
     </title>
-    <subject>
-      <category>GNOME|Utilities</category>
-    </subject>
-    <format mime="text/sgml"/>
-    <identifier url="gfloppy.sgml"/>
-    <language code="C"/>
-  </resource>
-</omf>
+    <date>
+	April 23, 2002
+    </date>
+     <subject category="GNOME|Utilities"/>
+     <format mime="text/xml" dtd=""/>
+     <identifier url="gfloppy.xml"/>
+     <language code="C"/>
+     <relation seriesid="c13ed0ce-5731-11d6-86cc-c769addc7b88"/>
+     </resource>
+     </omf>

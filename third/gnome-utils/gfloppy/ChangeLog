@@ -1,7 +1,153 @@
-Sun Oct 14 21:04:04 2001 Abel Cheung <maddog@linux.org.hk>
+2002-08-09  Glynn Foster  <glynn.foster@sun.com>
 
-	* src/Makefile.am: GLADE_CFLAGS needed because libglade header
-	  is moved to another location.
+	* src/gfloppy.1: Update man page.
+
+2002-07-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/gfloppy2.glade, src/main.c: Re-structure the code a little
+	so that the help button now 'works'..ahem, sorta ;)
+
+2002-06-06 John Fleck <jfleck@inkstain.net>
+
+	* doc/C/gfloppy.xml
+	* doc/C/legal.xml
+	removed many old *.png's from doc/C/figures
+	updating docs to GNOME2-ness
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* src/Makefile.am: Update for #83627.
+
+2002-05-31  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* src/Makefile.am: Fix GNOMELOCALEDIR to point to correct 
+	location. Fixes #83627.
+
+2002-05-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/Makefile.am: Add -export-dynamic flags for libglade stuff
+	* src/gfloppy2.glade: Fix up mnemonics and order of buttons.
+	* src/main.c: (on_toplevel_delete_event): Change signal prototype.
+
+2002-05-30  Glynn Foster  <glynn.foster@sun.com>
+	
+	* src/gfloppy.glade: Remove old file.
+
+2002-05-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* gfloppy.desktop.in: Correct icon. Fixes #83356.
+	* src/main.c: (main): Make sure we get the correct window icon.
+
+2002-05-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/main.c (init_commands): Ahem, putenv() does NOT do variable
+	substitutions.  Made it actually expand the path by itself.  Fixes
+	#79911.
+
+2002-05-25  Stephane Demurget <demurgets@free.fr>
+
+	* src/progress.c: changed dialog tyep to be an info when 
+	the floppy is successfully formatted. Fixes #82375.
+
+2002-05-20  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/main.c (main): Added an error dialog in case we cannot
+	display help.  Fixes bug #79911.
+
+2002-05-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Fix up install of .desktop files. Fixes
+	#81091.
+	* src/progress.c: (setup_progress_and_run): Get rid 
+	of a few warnings - which is as far as my ppc goes
+	for this build.
+
+2002-04-24 John Fleck <jfleck@inkstain.net>
+
+	* doc/C/gfloppy-C.omf
+	updating OMF file to match that required by
+	ScrollKeeper >= 0.3.8
+
+2002-04-20  Jacob Berkman  <jacob@ximian.com>
+
+	* src/Makefile.am (EXTRA_DIST): kill gfloppy-i18n.h
+
+2002-04-20  Abel Cheung  <maddog@linux.org.hk>
+
+	* gfloppy-i18n.h: Removed.
+
+2002-04-16  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/Makefile.am, main.c: make help work
+
+2002-04-04 John Fleck <jfleck@inkstain.net>
+
+	* doc/Makefile.am
+	removing gfloppy Spanish docs, they are out of date for GNOME2 and
+	were firing off errors
+
+2002-01-27  Seth Nickell  <snickell@stanford.edu>
+
+	* gfloppy.desktop.in:
+
+	Renname and add Categories field.
+
+2002-01-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/Makefile.am: one more gfloppy.glade -> gfloppy2.glade
+	
+	* src/main.c: get the installed glade file
+
+2002-01-12  Kevin Vandersloot <kfv101@psu.edu>
+
+	* src/Makefile.am: install gfloppy2.glade
+	
+	* src/main.c: make error message indicate the gfloppy2.glade file is not
+	found
+
+Thu Dec 20 21:39:23 MST 2001 John Fleck <jfleck@inkstain.net>
+
+	doc/C/Makefile.am - changing over to use xmldocs.make for docs
+	installation
+
+Tue Nov 27 16:02:54 2001  George Lebl <jirka@5z.com>
+
+	* src/main.c: use g_find_program_in_path instead of
+	  gnome_is_program_in_path
+
+Tue Nov 20 19:47:21 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* src/fdformat.c: Remove include of gnome-defs.h which
+	no longer exists and is no longer needed.
+
+Sun Oct 28 21:20:26 MST 2001 John Fleck <jfleck@inkstain.net>
+
+	* doc/C/gfloppy.xml, gfloppy-C.omf
+	updated gfloppy.xml to comply with style guide, added new figure
+	DocBook coding, updated the omf file to point to the xml
+
+
+Sun Oct 21 11:10:54 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/gfloppy2.glade: didn't notice jamesh changed libglade.
+	Follow suite.
+
+Sun Oct 21 01:48:00 2001  Bill Haneman <bill.haneman@sun.com>
+
+        * src/gfloppy2.glade: added a little more accessibility stuff.
+
+Fri Oct 19 15:17:02 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/gfloppy2.glade: validate.
+
+Fri Oct 19 13:06:57 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/gfloppy2.glade: clean up a bunch.  Add some accessibility
+	stuff.  Port fully from GnomeDialog to GtkDialog.
+
+Tue Oct 16 02:35:40 2001  Jonathan Blandford  <jrb@alum.mit.edu>
+
+	* src/main.c (main): massive initial port to GTK 2.
 
 2001-08-08  Abel Cheung  <maddog@linux.org.hk>
 

@@ -1,4 +1,4 @@
-/* $Id: gdict-speller.c,v 1.1.1.2 2002-03-25 21:49:46 ghudson Exp $ */
+/* $Id: gdict-speller.c,v 1.1.1.3 2003-01-04 21:13:23 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -26,13 +26,12 @@
 #ifdef HAVE_GNOME_PRINT
 #  include <libgnomeprint/gnome-print.h>
 #  include <libgnomeprint/gnome-printer-dialog.h>
-#  include <libgnomeprint/gnome-printer-profile.h>
 #  include <math.h>
 #endif
 
 #include "gdict-speller.h"
-#include "gdict-app.h"
 #include "gdict-pref.h"
+#include "gdict-app.h"
 
 enum {
     WORD_LOOKUP_START_SIGNAL,
@@ -41,6 +40,10 @@ enum {
     SOCKET_ERROR_SIGNAL,
     LAST_SIGNAL
 };
+
+#define GDICT_SPELL 100
+
+GtkWidget *ss_label;
 
 static gint gdict_speller_signals[LAST_SIGNAL] = { 0, 0, 0 };
 
@@ -63,11 +66,14 @@ static void spell_word_data_cb    (dict_command_t *command, dict_res_t *res,
                                    gpointer data);
 static void spell_strat_data_cb   (dict_command_t *command, dict_res_t *res,
                                    gpointer data);
-static void speller_spell_cb      (GtkWidget *widget, gpointer data);
-static void speller_lookup_cb     (GtkWidget *widget, gpointer data);
-static void speller_close_cb      (GtkWidget *widget, gpointer data);
-static void word_select_cb        (GtkCList *clist, gint row, gint column,
-                                   GdkEventButton *event, gpointer data);
+static void spell_response_cb	  (GtkDialog *dialog, gint id, gpointer data);
+static void spell_button_pressed  (GtkButton *button, gpointer data);
+static void row_selected_cb       (GtkTreeSelection *selection, gpointer data);
+static void row_activated_cb      (GtkTreeView *tree, GtkTreePath *path, 
+				   GtkTreeViewColumn *column, gpointer data);
+static void spell_entry_cb	  (GtkEntry *entry, gpointer data);
+static void speller_lookup        (GDictSpeller *speller);
+
 
 /* gdict_speller_get_type
  *
@@ -75,23 +81,25 @@ static void word_select_cb        (GtkCList *clist, gint row, gint column,
  * return the type identifier code
  */
 
-guint 
+GType
 gdict_speller_get_type (void) {
-    static guint gdict_speller_type = 0;
+    static GType gdict_speller_type = 0;
     
     if (!gdict_speller_type) {
-        GtkTypeInfo gdict_speller_info = {
-            "GDictSpeller",
-            sizeof (GDictSpeller),
+        static const GTypeInfo gdict_speller_info = {
             sizeof (GDictSpellerClass),
-            (GtkClassInitFunc) gdict_speller_class_init,
-            (GtkObjectInitFunc) gdict_speller_init,
-            (GtkArgSetFunc) NULL,
-            (GtkArgGetFunc) NULL
+            NULL,
+            NULL,
+            (GClassInitFunc) gdict_speller_class_init,
+	    NULL,
+	    NULL,
+ 	    sizeof (GDictSpeller),
+	    0,
+            (GInstanceInitFunc) gdict_speller_init
         };
         
         gdict_speller_type = 
-            gtk_type_unique (gnome_dialog_get_type (), &gdict_speller_info);
+            g_type_register_static (GTK_TYPE_DIALOG, "GDictSpeller", &gdict_speller_info, 0);
     }
     
     return gdict_speller_type;
@@ -104,67 +112,130 @@ gdict_speller_get_type (void) {
 
 static void 
 gdict_speller_init (GDictSpeller *speller) {
-    GtkWidget *label, *scrolled_win;
+    GtkWidget *label, *button, *scrolled_win;
+    GtkWidget *hbox;
+    GtkWidget *vbox;
+    GtkWidget *frame;
+    GtkListStore *model;
+    GtkTreeViewColumn *column;
+    GtkTreeSelection *selection;
+    GtkCellRenderer *cell;
     
     speller->context = NULL;
     speller->get_strat_cmd = NULL;
     speller->spell_cmd = NULL;
     speller->strat = gdict_pref.dfl_strat;
     
-    speller->table = GTK_TABLE (gtk_table_new (2, 3, FALSE));
-    gtk_table_set_row_spacings (speller->table, 5);
-    gtk_table_set_col_spacings (speller->table, 5);
+    vbox = gtk_vbox_new (FALSE, 8);
+    g_object_set (G_OBJECT (vbox), "border_width", 6, NULL);
     
-    label = gtk_label_new (_("Word:"));
-    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
-    gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-    gtk_table_attach_defaults (speller->table, label, 0, 1, 0, 1);
+    hbox = gtk_hbox_new (FALSE, 8);
+    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+    
+    label = gtk_label_new_with_mnemonic (_("_Word:"));
+    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
     
     speller->word_entry = GTK_ENTRY (gtk_entry_new ());
-    gtk_table_attach_defaults (speller->table, 
-		               GTK_WIDGET (speller->word_entry), 1, 2, 0, 1);
+    gtk_label_set_mnemonic_widget (GTK_LABEL (label), GTK_WIDGET (speller->word_entry));
+
+    gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (speller->word_entry), TRUE, TRUE, 0);
+    g_signal_connect (G_OBJECT (speller->word_entry), "activate",
+    	  	      G_CALLBACK (spell_entry_cb), speller);
+
+    if (gail_loaded)
+    {
+        add_atk_namedesc (label, _("Word"), _("Word"));
+        add_atk_namedesc (GTK_WIDGET(speller->word_entry), _("Word Entry"), _("Enter a word to know the spelling"));
+        add_atk_relation (GTK_WIDGET(speller->word_entry), label, ATK_RELATION_LABELLED_BY);
+    }
+  
+    if (gail_loaded)
+        add_atk_namedesc (GTK_WIDGET (button), NULL, _("Click to do the spell check"));
     
-    label = gtk_label_new (_("Search Strategy:"));
-    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
-    gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-    gtk_table_attach_defaults (speller->table, label, 0, 1, 1, 2);
+    speller->hbox = gtk_hbox_new (FALSE, 8);
+    gtk_box_pack_start (GTK_BOX (vbox), speller->hbox, FALSE, FALSE, 0);
+    
+    ss_label = gtk_label_new_with_mnemonic (_("Search S_trategy:"));
+    gtk_box_pack_start (GTK_BOX (speller->hbox), ss_label, FALSE, FALSE, 0);
+        
+    
+    hbox = gtk_hbutton_box_new ();
+    gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox), GTK_BUTTONBOX_END);
+		    
+    button = gdict_button_new_with_stock_image (_("Check _Spelling"), GTK_STOCK_SPELL_CHECK);
+    gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+    g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (spell_button_pressed),
+    		      speller);
+
+    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+    frame = gtk_frame_new (NULL);
+    
+    label = gtk_label_new_with_mnemonic (_("Search _Results"));
+    gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+    g_object_set (G_OBJECT (label), "xalign", 0.0, NULL);
+   
+    gtk_frame_set_label_widget (GTK_FRAME (frame), label);
+    gtk_box_pack_start (GTK_BOX (vbox), frame, TRUE, TRUE, 0);
     
     scrolled_win = gtk_scrolled_window_new (NULL, NULL);
+    g_object_set (G_OBJECT (scrolled_win), "border_width", 6, NULL);
+
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
                                     GTK_POLICY_NEVER,
                                     GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_usize (scrolled_win, 400, 250);
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_win),
+					 GTK_SHADOW_ETCHED_IN);
+    gtk_widget_set_size_request (scrolled_win, 400, 250);
     
-    gtk_table_attach (speller->table, scrolled_win, 0, 2, 2, 3, 
-                      GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 5);
+    model = gtk_list_store_new (1, G_TYPE_STRING);
     
-    speller->word_sel = GTK_CLIST (gtk_clist_new (1));
-    gtk_clist_column_titles_hide (speller->word_sel);
-    gtk_clist_set_selection_mode (speller->word_sel, GTK_SELECTION_SINGLE);
-    gtk_signal_connect (GTK_OBJECT (speller->word_sel), "select-row",
-                        GTK_SIGNAL_FUNC (word_select_cb), speller);
-    gtk_container_add (GTK_CONTAINER (scrolled_win), 
-                       GTK_WIDGET (speller->word_sel));
+    speller->word_list = gtk_tree_view_new_with_model (GTK_TREE_MODEL (model));
+    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (speller->word_list), FALSE);
+    g_object_unref (G_OBJECT (model));
     
-    gnome_dialog_append_buttons (GNOME_DIALOG (speller),
-                                 _("Find Words..."),
-                                 _("Look up Word..."),
-                                 GNOME_STOCK_BUTTON_CLOSE,
-                                 NULL);
+    gtk_label_set_mnemonic_widget (GTK_LABEL (label), GTK_WIDGET (speller->word_list));
+
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (speller->word_list));
+    g_signal_connect (G_OBJECT (selection), "changed", G_CALLBACK (row_selected_cb),
+    		      speller);
     
-    gnome_dialog_set_default (GNOME_DIALOG (speller), 0);
+    cell = gtk_cell_renderer_text_new ();
+    column = gtk_tree_view_column_new_with_attributes ("words", 
+    						       cell,
+    						       "text", 0,
+    						       NULL);
+    gtk_tree_view_column_set_sort_column_id (column, 0);
     
-    gnome_dialog_button_connect (GNOME_DIALOG (speller), 0,
-                        GTK_SIGNAL_FUNC (speller_spell_cb), speller);
-    gnome_dialog_button_connect (GNOME_DIALOG (speller), 1,
-                        GTK_SIGNAL_FUNC (speller_lookup_cb), speller);
-    gnome_dialog_button_connect (GNOME_DIALOG (speller), 2,
-                        GTK_SIGNAL_FUNC (speller_close_cb), speller);
-    gtk_window_set_title (GTK_WINDOW (speller), _("Spell checker"));
-    
-    gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (speller)->vbox),
-                        GTK_WIDGET (speller->table), 5, TRUE, TRUE);
-    gtk_widget_show_all (GTK_WIDGET (speller->table));
+    /*gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (model),
+                                          0,GTK_SORT_ASCENDING); */
+                                          
+    gtk_tree_view_append_column (GTK_TREE_VIEW (speller->word_list), column);
+
+    gtk_container_add (GTK_CONTAINER (scrolled_win), speller->word_list);
+    gtk_container_add (GTK_CONTAINER (frame), scrolled_win);
+   
+    gtk_container_add (GTK_CONTAINER (GTK_DIALOG (speller)->vbox), vbox);
+		    
+    gtk_dialog_add_button (GTK_DIALOG (speller), GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
+    gdict_dialog_add_button (GTK_DIALOG (speller), _("_Look Up Word"), GTK_STOCK_FIND, GDICT_SPELL);
+	   
+    gtk_dialog_set_default_response (GTK_DIALOG (speller), GDICT_SPELL);
+    g_signal_connect (G_OBJECT (speller->word_list), "row_activated",
+    		      G_CALLBACK (row_activated_cb), speller);
+    		      
+    g_signal_connect (G_OBJECT (speller), "response", 
+		      G_CALLBACK (spell_response_cb),
+    		      speller);
+
+    /* To prevent dialog destruction when pressing ESC */
+    g_signal_connect (G_OBJECT (speller), "delete_event", 
+		      G_CALLBACK (gtk_true), NULL);
+
+
+    gtk_window_set_title (GTK_WINDOW (speller), _("Check Spelling"));
+                           
+    gtk_widget_show_all (GTK_WIDGET (GTK_DIALOG (speller)->vbox));
 }
 
 /* gdict_speller_class_init
@@ -180,31 +251,27 @@ gdict_speller_class_init (GDictSpellerClass *class) {
     object_class = GTK_OBJECT_CLASS (class);
 
     gdict_speller_signals[WORD_LOOKUP_START_SIGNAL] =
-        gtk_signal_new ("word_lookup_start", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("word_lookup_start", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictSpellerClass, word_lookup_start),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_speller_signals[WORD_LOOKUP_DONE_SIGNAL] =
-        gtk_signal_new ("word_lookup_done", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("word_lookup_done", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictSpellerClass, word_lookup_done),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_speller_signals[WORD_NOT_FOUND_SIGNAL] =
-        gtk_signal_new ("word_not_found", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("word_not_found", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictSpellerClass, word_not_found),
                         gtk_signal_default_marshaller, GTK_TYPE_NONE, 0);
     
     gdict_speller_signals[SOCKET_ERROR_SIGNAL] =
-        gtk_signal_new ("socket_error", GTK_RUN_FIRST, object_class->type,
+        gtk_signal_new ("socket_error", GTK_RUN_FIRST, GTK_CLASS_TYPE (object_class),
                         GTK_SIGNAL_OFFSET (GDictSpellerClass, socket_error),
-                        gtk_marshal_NONE__STRING, GTK_TYPE_NONE, 1,
+                        gtk_marshal_VOID__STRING, GTK_TYPE_NONE, 1,
                         GTK_TYPE_STRING);
     
-    gtk_object_class_add_signals (object_class, gdict_speller_signals,
-                                  LAST_SIGNAL);
-    
-    parent_class = gtk_type_class (gnome_dialog_get_type ());
-
+    parent_class = g_type_class_peek_parent (class);
     class->word_lookup_done = NULL;
     class->word_not_found = NULL;
 
@@ -237,10 +304,11 @@ gdict_speller_new (dict_context_t *context) {
 
 void
 gdict_speller_destroy (GDictSpeller *speller) {
+
     g_free (speller->database);
     dict_command_destroy (speller->get_strat_cmd);
     dict_command_destroy (speller->spell_cmd);
-    GTK_OBJECT_CLASS (parent_class)->destroy (GTK_OBJECT (speller));
+    
 }
 
 /* gdict_speller_lookup
@@ -296,11 +364,13 @@ gdict_speller_lookup (GDictSpeller *speller, gchar *text) {
 
 void 
 gdict_speller_clear (GDictSpeller *speller) {
+    GtkTreeModel *model;
     g_return_if_fail (speller != NULL);
     g_return_if_fail (IS_GDICT_SPELLER (speller));
     
     gtk_entry_set_text (speller->word_entry, "");
-    gtk_clist_clear (speller->word_sel);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (speller->word_list));
+    gtk_list_store_clear (GTK_LIST_STORE (model));
     speller->current_word = NULL;
     
     if (speller->spell_cmd) {
@@ -371,7 +441,7 @@ gdict_speller_reset_strat (GDictSpeller *speller) {
     if (speller->strat_sel) {
         gtk_option_menu_remove_menu (speller->strat_sel);
         gtk_widget_destroy (GTK_WIDGET (speller->strat_sel));
-        gtk_widget_show_all (GTK_WIDGET (speller->table));
+        gtk_widget_show_all (GTK_WIDGET (speller->hbox));
         speller->strat_sel = NULL;
     }
     
@@ -394,8 +464,8 @@ gdict_speller_reset_strat (GDictSpeller *speller) {
         alignment = gtk_alignment_new (0, 0.5, 0, 0);
         gtk_container_add (GTK_CONTAINER (alignment), 
                            GTK_WIDGET (error_label));
-        gtk_table_attach_defaults (speller->table, alignment, 1, 2, 1, 2);
-        gtk_widget_show_all (GTK_WIDGET (speller->table));
+        gtk_box_pack_start (GTK_BOX (speller->hbox), alignment, TRUE, TRUE, 0);
+        gtk_widget_show_all (GTK_WIDGET (speller->hbox));
     }
 }
 
@@ -414,9 +484,14 @@ spell_error_cb (dict_command_t *command, DictStatusCode code,
     speller = GTK_WINDOW (data);
     
     if (code != DICT_SOCKET_ERROR) {
+        GtkWidget *dialog;
         string = g_strdup_printf (_("Error invoking query: %s"), message);
-        gnome_error_dialog_parented (string, speller);
-        
+        dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                  	 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+                                  	 "%s", string, NULL); 
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+        g_free (string);
         if (command->cmd == C_MATCH)
           gtk_signal_emit (GTK_OBJECT (speller), 
                            gdict_speller_signals[WORD_LOOKUP_DONE_SIGNAL]);
@@ -434,7 +509,13 @@ spell_error_cb (dict_command_t *command, DictStatusCode code,
 
 static void 
 speller_add_word (GDictSpeller *speller, gchar *word) {
-    gtk_clist_append (speller->word_sel, &word);
+    GtkTreeIter iter;
+    GtkTreeModel *model;
+    
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (speller->word_list));
+    
+    gtk_list_store_insert (GTK_LIST_STORE (model), &iter, 0);
+    gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, word, -1);
     
     if (!speller->current_word) speller->current_word = word;
 }
@@ -447,11 +528,19 @@ speller_add_word (GDictSpeller *speller, gchar *word) {
 static void
 speller_set_strat_cb (GtkWidget *widget, gpointer data) {
     GDictSpeller *speller;
+    gchar *text;
     gchar *strat;
     
     speller = GDICT_SPELLER (data);
     strat = gtk_object_get_data (GTK_OBJECT (widget), "strat_name");
     speller->strat = strat;
+
+    text = gtk_editable_get_chars (GTK_EDITABLE (speller->word_entry), 0, -1);
+    gtk_editable_select_region (GTK_EDITABLE (speller->word_entry), 0,
+                                strlen (text));
+    gdict_speller_lookup (speller, text);
+    if (text)
+    	g_free (text);
 }
 
 /* speller_add_strat
@@ -462,12 +551,18 @@ speller_set_strat_cb (GtkWidget *widget, gpointer data) {
 static void
 speller_add_strat (GDictSpeller *speller, gchar *strat, gchar *desc) {
     GtkWidget *menu_item;
+    GtkWidget *label;
     
-    menu_item = gtk_menu_item_new_with_label (desc);
+    label = gtk_label_new (desc);
+    gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    
+    menu_item = gtk_menu_item_new ();
     gtk_signal_connect (GTK_OBJECT (menu_item), "activate", 
                         GTK_SIGNAL_FUNC (speller_set_strat_cb), speller);
     gtk_object_set_data (GTK_OBJECT (menu_item), "strat_name", strat);
-    gtk_widget_show (menu_item);
+    gtk_container_add (GTK_CONTAINER (menu_item), label);
+    gtk_widget_show_all (menu_item);
     gtk_menu_append (speller->strat_list, menu_item);
     
     if (!strcmp (speller->strat, strat))
@@ -549,28 +644,96 @@ spell_strat_status_cb (dict_command_t *command, DictStatusCode code,
         alignment = gtk_alignment_new (0, 0.5, 0, 0);
         gtk_container_add (GTK_CONTAINER (alignment), 
                            GTK_WIDGET (speller->strat_sel));
-        gtk_table_attach_defaults (speller->table, alignment, 1, 2, 1, 2);
-        gtk_widget_show_all (GTK_WIDGET (speller->table));
+        gtk_box_pack_start (GTK_BOX (speller->hbox), alignment, TRUE, TRUE, 0);
+        gtk_widget_show_all (GTK_WIDGET (speller->hbox));
+
+        gtk_label_set_mnemonic_widget (GTK_LABEL (ss_label), GTK_WIDGET (speller->strat_sel));        
+
+        if ( gail_loaded )
+        {
+            add_atk_namedesc(ss_label, _("Search Strategy"), _("Search Strategy"));
+            add_atk_relation( GTK_WIDGET (speller->strat_sel), ss_label, ATK_RELATION_LABELLED_BY);
+        }
+ 
     }
 }
 
-/* speller_spell_cb
- *
- * Looks up the currently selected word
- */
+static void
+spell_response_cb (GtkDialog *dialog, gint id, gpointer data) {
+	GDictSpeller *speller;
+        
+	g_return_if_fail (data);
+	speller = GDICT_SPELLER (data);
+	
+	switch (id) {
+	case GTK_RESPONSE_DELETE_EVENT:
+	case GTK_RESPONSE_CLOSE:
+		gtk_widget_hide (GTK_WIDGET (dialog));
+		break;
+	case GDICT_SPELL:
+		speller_lookup (speller);
+		break;
+	default:
+		break;
+	}
+	
+}
 
 static void
-speller_spell_cb (GtkWidget *widget, gpointer data) {
+spell_button_pressed (GtkButton *button, gpointer data) {
     GDictSpeller *speller;
     gchar *text;
     
     g_return_if_fail (data != NULL);
     
     speller = GDICT_SPELLER (data);
-    text = gtk_entry_get_text (speller->word_entry);
+    text = gtk_editable_get_chars (GTK_EDITABLE (speller->word_entry), 0, -1);
     gtk_editable_select_region (GTK_EDITABLE (speller->word_entry), 0,
                                 strlen (text));
     gdict_speller_lookup (speller, text);
+    if (text)
+    	g_free (text);
+
+}
+
+static void
+row_selected_cb (GtkTreeSelection *selection, gpointer data) {
+    GDictSpeller *speller;
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    gchar *word;
+    g_return_if_fail (data != NULL);
+    
+    speller = GDICT_SPELLER (data);
+    
+    if (!gtk_tree_selection_get_selected (selection, NULL, &iter))
+    	return;
+    
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (speller->word_list));
+    gtk_tree_model_get (model, &iter, 0, &word, -1);
+    speller->current_word = g_strdup (word);
+
+}    
+
+static void
+row_activated_cb (GtkTreeView *tree, GtkTreePath *path, GtkTreeViewColumn *column,
+		  gpointer data) {
+    GDictSpeller *speller;
+    
+    g_return_if_fail (data != NULL);
+    speller = GDICT_SPELLER (data);
+    
+    speller_lookup (speller);
+    
+}
+
+static void
+spell_entry_cb (GtkEntry *entry, gpointer data) {
+        
+    g_return_if_fail (data != NULL);
+    
+    spell_button_pressed (NULL, data);
+    
 }
 
 /* speller_lookup_cb
@@ -579,12 +742,7 @@ speller_spell_cb (GtkWidget *widget, gpointer data) {
  */
 
 static void
-speller_lookup_cb (GtkWidget *widget, gpointer data) {
-    GDictSpeller *speller;
-    
-    g_return_if_fail (data != NULL);
-    
-    speller = GDICT_SPELLER (data);
+speller_lookup (GDictSpeller *speller) {
     
     if (!speller->current_word) return;
     
@@ -594,36 +752,3 @@ speller_lookup_cb (GtkWidget *widget, gpointer data) {
     gdict_app_do_lookup (speller->current_word);
 }
 
-/* speller_close_cb
- *
- * Closes the speller dialog
- */
-
-static void
-speller_close_cb (GtkWidget *widget, gpointer data) {
-    GDictSpeller *speller;
-    
-    g_return_if_fail (data != NULL);
-    
-    speller = GDICT_SPELLER (data);
-    gnome_dialog_close (GNOME_DIALOG (speller));
-}
-
-/* word_select_cb
- *
- * Callback invoked when a word is selected in the speller
- */
-
-static void
-word_select_cb (GtkCList *clist, gint row, gint column, GdkEventButton *event,
-                gpointer data)
-{
-    GDictSpeller *speller;
-    GList *current_row;
-    
-    if (event->button == 1) {
-        speller = GDICT_SPELLER (data);
-        current_row = g_list_nth (speller->spell_cmd->res_list, row);
-        speller->current_word = ((dict_res_t *) current_row->data)->desc;
-    }
-}

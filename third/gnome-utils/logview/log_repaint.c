@@ -72,6 +72,7 @@ extern UserPrefsStruct *user_prefs;
 
 GdkGC *gc;
 GdkDrawable *canvas;
+PangoLayout *log_layout;
 
 Log *loglist[MAX_NUM_LOGS];
 Log *curlog;
@@ -79,14 +80,12 @@ int numlogs, curlognum;
 int log_line_sep;
 int cursor_visible;
 int canvas_width, canvas_height;
-char *deflognames[] =
-{PATH_MESSAGES};
-
 char *month[12] =
 {N_("January"), N_("February"), N_("March"), N_("April"), N_("May"),
  N_("June"), N_("July"), N_("August"), N_("September"), N_("October"),
  N_("November"), N_("December")};
 extern GtkWidget *main_win_scrollbar;
+extern 
 
 /*
  * -------------------
@@ -114,8 +113,8 @@ void Draw3DBox (GdkDrawable *win, GdkGC *gc, int x, int y, int w, int h, GdkColo
 void CloseApp (void);
 void UpdateStatusArea (void);
 void change_log (int direction);
-void create_zoom_view (GtkWidget * widget, gpointer user_data);
-void close_zoom_view (GtkWidget * widget, GtkWindow ** window);
+void create_zoom_view (GtkWidget *widget, gpointer data);
+void close_zoom_view (GtkWidget *widget, gpointer data);
 gboolean handle_log_mouse_button (GtkWidget * win, GdkEventButton * event_key);
 Page *GetPageAtCursor (int y);
 
@@ -192,26 +191,45 @@ NumTextLines (int l)
 gboolean
 handle_log_mouse_button (GtkWidget * win, GdkEventButton *event)
 {
-  static guint32 lasttime;
-  static int clicked_before = FALSE;
 
-  if (event->type == GDK_BUTTON_PRESS && !clicked_before)
-    {
-      lasttime = event->time;
-      clicked_before = TRUE;
+  if (event->type == GDK_2BUTTON_PRESS) {
+    if (!zoom_visible)
+      create_zoom_view (NULL, NULL);
+  }
+  else if (event->button == 1) {
+    int cursory, nl;
+    Page *np;
+    if (curlog == NULL)
       return FALSE;
-    }
-  
-  clicked_before = FALSE;
-  if (event->time - lasttime < 100 ||
-      event->time - lasttime > 200)
-    return FALSE;
 
-  /* If zoom is already visible ignore */
-  if (!zoom_visible)
-    create_zoom_view (NULL, NULL);
+     cursory = event->y;
+     cursor_visible = TRUE;
+     if ((nl = GetLineAtCursor (cursory)) != -1 && nl != curlog->pointerln)
+     {
+       np = GetPageAtCursor (cursory);
+       log_redrawcursor (curlog->pointerln, nl, np);
+       curlog->pointerln = nl;
+       curlog->pointerpg = np;
+       log_redrawdetail ();
+     }
+  } 
 
   return FALSE;
+}
+
+gboolean
+handle_log_mouse_scroll (GtkWidget * win, GdkEventScroll *event)
+{
+  GtkAdjustment *adj;
+  adj = GTK_ADJUSTMENT (GTK_RANGE (main_win_scrollbar)->adjustment);
+
+  if (event->direction == GDK_SCROLL_UP)
+    gtk_adjustment_set_value (adj, (adj->value - 5.0));
+  else if (event->direction == GDK_SCROLL_DOWN)
+    gtk_adjustment_set_value (adj, (adj->value + 5.0));
+    
+  return FALSE;
+
 }
 
 /* ----------------------------------------------------------------------
@@ -397,15 +415,27 @@ log_repaint (GtkWidget * win, GdkEventExpose * event)
    Page *pg;
    LogLine *line;
    GdkRectangle *area;
+   PangoContext *context;
+   PangoFontMetrics *metrics;
+   PangoFont *font;
 
    if (firsttime)
    {
       if (win == NULL)
 	 return FALSE;
       firsttime = FALSE;
+      log_layout = gtk_widget_create_pango_layout (main_win_scrollbar, "");
+      context = gdk_pango_context_get ();
+      pango_context_set_language (context, gtk_get_default_language ());
+      font = LoadFont (context, cfg->fixedb);
+      metrics = pango_font_get_metrics
+                (font, pango_context_get_language (context));
       canvas = win->window;
       gc = gdk_gc_new (canvas);
-      log_line_sep = cfg->fixedb->ascent + 3;
+      log_line_sep = PANGO_PIXELS (pango_font_metrics_get_ascent (metrics)) + 3;
+      pango_font_metrics_unref (metrics);
+      g_object_unref (G_OBJECT (context));
+      g_object_unref (G_OBJECT (font));
    }
    offset = LOG_TITLEY;
 
@@ -422,7 +452,10 @@ log_repaint (GtkWidget * win, GdkEventExpose * event)
 
    /* Check that there is at least one log */
    if (curlog == NULL)
+   {
+      UpdateStatusArea ();	   
       return FALSE;
+   }
 
    pg = curlog->currentpg;
    ln = curlog->firstline;
@@ -472,12 +505,17 @@ UpdateStatusArea ()
 {
   struct tm *tdm;
   char status_text[255];
+  char *utf8;
   char *buffer;
   /* Translators: Date only format, %x should well do really */
   const char *time_fmt = _("%x"); /* an evil way to avoid warning */
 
   if (curlog == NULL)
-    return;
+  {
+      gtk_label_set_text (filename_label, "");
+      gtk_label_set_text (date_label, "");    
+      return;
+  }
 
   if (curlog->name != NULL)
     {
@@ -491,12 +529,20 @@ UpdateStatusArea ()
 
   if (strftime (status_text, sizeof (status_text), time_fmt, tdm) <= 0) {
 	  /* as a backup print in US style */
-	  g_snprintf (status_text, sizeof (status_text), "%02d/%02d/%02d", 
-		      tdm->tm_mday, tdm->tm_mon, tdm->tm_year % 100);
+	  utf8 = g_strdup_printf ("%02d/%02d/%02d", 
+				  tdm->tm_mday, tdm->tm_mon,
+				  tdm->tm_year % 100);
+  } else {
+	  utf8 = LocaleToUTF8 (status_text);
   }
   gtk_label_get ( date_label, (char **)&buffer);
-  if (strcmp (status_text, buffer) != 0)
-    gtk_label_set_text (date_label, status_text);
+/* FIXME: is this if statement needed?  would it make sense 
+   to set the text every time?  doesn't gtk test for it in 
+   a more efficient manner? */
+   if (strcmp (utf8, buffer) != 0)
+	   gtk_label_set_text (date_label, utf8);
+
+   g_free (utf8);
 }
 
 /* ----------------------------------------------------------------------
@@ -563,13 +609,18 @@ log_redrawcursor (int ol, int nl, Page * np)
 void
 DrawLogLine (LogLine *line, int y)
 {
-  char tmp[1024];
+  char tmp[4096];
+  char *utf8;
   int num_chars, max_num_chars;
   int col_pos = 0;
   int char_width;
+  PangoRectangle logical_rect;
   
-  char_width = gdk_char_width (cfg->fixed, 'A');
-  
+  pango_layout_set_text (log_layout, "A", 1);
+  pango_layout_set_font_description (log_layout, cfg->fixed);
+  pango_layout_get_pixel_extents (log_layout, NULL, &logical_rect);
+  char_width = logical_rect.width; 
+
   /*gdk_gc_set_foreground (gc, &cfg->white); */
   gdk_gc_set_foreground (gc, &cfg->black);
 
@@ -586,59 +637,79 @@ DrawLogLine (LogLine *line, int y)
 	  /* Translators: should be only the time, date could be bogus */
 	  if (strftime (tmp, sizeof (tmp), _("%X"), &date) <= 0) {
 		  /* as a backup print in 24 hours style */
-		  g_snprintf (tmp, sizeof (tmp), "%02d:%02d:%02d", line->hour, line->min, line->sec);
+		  utf8 = g_strdup_printf ("%02d:%02d:%02d", line->hour, line->min, line->sec);
+	  } else {
+		  utf8 = LocaleToUTF8 (tmp);
 	  }
 
   } else {
-	  strcpy (tmp, " ");
+	  utf8 = g_strdup (" ");
   }
-  gdk_draw_string (canvas, cfg->fixedb, gc, LOG_COL1, y, tmp);
+  pango_layout_set_font_description (log_layout, cfg->fixed);
+  pango_layout_set_text (log_layout, utf8, -1);
+  gdk_draw_layout (canvas, gc, LOG_COL1, y-10, log_layout);
 
   /* Print four spaces */
-  col_pos = LOG_COL1 + strlen(tmp)*char_width;
+  col_pos = LOG_COL1 + g_utf8_strlen(utf8, 1023)*char_width;
+  g_free (utf8);
+
   strcpy (tmp, "    ");
-  gdk_draw_string (canvas, cfg->fixedb, gc, col_pos, y, tmp);
+  pango_layout_set_text (log_layout, tmp, -1);
+  gdk_draw_layout (canvas, gc, col_pos, y-10, log_layout);
   col_pos = col_pos + 4*char_width;
 
   strcpy (tmp, " ");
   if(user_prefs->hostname_column_width > 0)
   {
-  	g_snprintf (tmp, sizeof (tmp), "%s", line->hostname);
-  	if (strlen (tmp) > user_prefs->hostname_column_width)
-    		tmp[user_prefs->hostname_column_width+1] = '\0';
+	  utf8 = LocaleToUTF8 (line->hostname);
+	  /* FIXME: check we really do have enough room in tmp, we should */
+	  g_utf8_strncpy (tmp, utf8, user_prefs->hostname_column_width);
+	  g_free (utf8);
   }
-  gdk_draw_string (canvas, cfg->fixed, gc, col_pos, y, tmp);
+  pango_layout_set_text (log_layout, tmp, -1);
+  pango_layout_set_font_description (log_layout, cfg->fixed);
+  gdk_draw_layout (canvas, gc, col_pos, y-10, log_layout);
 
   /* Print four spaces */
   col_pos = col_pos + user_prefs->hostname_column_width*char_width;
   strcpy (tmp, "    ");
-  gdk_draw_string (canvas, cfg->fixedb, gc, col_pos, y, tmp);
+  pango_layout_set_text (log_layout, tmp, -1);
+  pango_layout_set_font_description (log_layout, cfg->fixedb);
+  gdk_draw_layout (canvas, gc, col_pos, y-10, log_layout);
   col_pos = col_pos + 4*char_width;
 
   strcpy (tmp, " ");
   if(user_prefs->process_column_width > 0)
   {
-  	g_snprintf (tmp, sizeof (tmp), "%s", line->process);
-  	if (strlen (tmp) > user_prefs->process_column_width)
-    		tmp[user_prefs->process_column_width+1] = '\0';
+	  utf8 = LocaleToUTF8 (line->process);
+	  /* FIXME: check we really do have enough room in tmp, we should */
+	  g_utf8_strncpy (tmp, utf8, user_prefs->process_column_width);
+	  g_free (utf8);
   }
-  gdk_draw_string (canvas, cfg->fixed, gc, col_pos, y, tmp);
+  pango_layout_set_text (log_layout, tmp, -1);
+  pango_layout_set_font_description (log_layout, cfg->fixed);
+  gdk_draw_layout (canvas, gc, col_pos, y-10, log_layout);
 
   /* Print four spaces */
   col_pos = col_pos + user_prefs->process_column_width*char_width;
   strcpy (tmp, "    ");
-  gdk_draw_string (canvas, cfg->fixedb, gc, col_pos, y, tmp);
+  pango_layout_set_text (log_layout, tmp, -1);
+  pango_layout_set_font_description (log_layout, cfg->fixedb);
+  gdk_draw_layout (canvas, gc, col_pos, y-10, log_layout);
   col_pos = col_pos + 4*char_width;
 
   /* For now max string length is ignored */
   num_chars = MAX (strlen (line->message), 1023);
-  tmp[1023] = '\0';
-  strncpy (tmp, line->message, 1023);
-  max_num_chars = (canvas_width - 10 - col_pos) / gdk_char_width (cfg->fixed, 'A');
+  max_num_chars = (canvas_width - 10 - col_pos) / char_width;
   if (max_num_chars < num_chars)
     max_num_chars = num_chars;
-  tmp[max_num_chars] = '\0';
-  gdk_draw_string (canvas, cfg->fixed, gc, col_pos, y, tmp);
+  utf8 = LocaleToUTF8 (line->message);
+  /* FIXME: check we really do have enough room in tmp, we should */
+  g_utf8_strncpy (tmp, utf8, max_num_chars);
+  g_free (utf8);
+  pango_layout_set_text (log_layout, tmp, -1);
+  pango_layout_set_font_description (log_layout, cfg->fixed);
+  gdk_draw_layout (canvas, gc, col_pos, y-10, log_layout);
 }
 
 
@@ -650,35 +721,64 @@ DrawLogLine (LogLine *line, int y)
 void
 DrawMonthHeader (LogLine * line, int y)
 {
-   char buf[100];
+   char buf[256];
+   char *utf8;
    int  h, centery, skip;
    GdkColor color[3];
+   PangoContext *context;
+   PangoFontMetrics *metrics;
+   PangoFont *font;
 
    color[0] = cfg->blue1;
    color[1] = cfg->blue;
    color[2] = cfg->blue3;
 
-   h = cfg->headingb->ascent - cfg->headingb->descent;
-   skip = (log_line_sep - cfg->fixed->ascent + cfg->fixed->descent);
+   context = gdk_pango_context_get ();
+   pango_context_set_language (context, gtk_get_default_language ());
+   font = LoadFont (context, cfg->headingb);
+   metrics = pango_font_get_metrics
+	     (font, pango_context_get_language (context));
+   h = PANGO_PIXELS (pango_font_metrics_get_ascent (metrics)) -
+       PANGO_PIXELS (pango_font_metrics_get_descent (metrics));
+   font = LoadFont (context, cfg->fixed);	
+   metrics = pango_font_get_metrics
+	     (font, pango_context_get_language (context));
+   skip = (log_line_sep - PANGO_PIXELS (pango_font_metrics_get_ascent (metrics))
+	   + PANGO_PIXELS (pango_font_metrics_get_descent (metrics)));
    centery = y + log_line_sep - ((2 * log_line_sep - skip - h) >> 1);
    Draw3DBox (canvas, gc, 5, y - log_line_sep + skip , canvas_width - 10, 2*log_line_sep-skip, color);
 
    gdk_gc_set_foreground (gc, &cfg->black);
    if (line->month >= 0 && line->month < 12) {
-	   GDate *date = g_date_new_dmy (line->date, line->month+1, 2000 /* bogus */);
+	   struct tm tm = {0};
+
+	   tm.tm_mday = line->date;
+	   tm.tm_year = 2000 /* bogus */;
+	   tm.tm_mon = line->month;
 	   /* Translators: Make sure this is only Month and Day format, year
 	    * will be bogus here */
-	   if (g_date_strftime (buf, sizeof (buf), _("%B %e"), date) <= 0) {
+	   if (strftime (buf, sizeof (buf), _("%B %e"), &tm) <= 0) {
 		   /* If we fail just use the US format */
-		   g_snprintf (buf, sizeof (buf), "%s %d", _(month[(int) line->month]), line->date);
+		   utf8 = g_strdup_printf ("%s %d", _(month[(int) line->month]), line->date);
+	   } else {
+		   utf8 = LocaleToUTF8 (buf);
 	   }
-	   g_date_free (date);
    } else {
-	   g_snprintf (buf, sizeof (buf), "?%d? %d", (int) line->month, line->date);
+	   utf8 = g_strdup_printf ("?%d? %d", (int) line->month, line->date);
    }
-   gdk_draw_string (canvas, cfg->headingb, gc, LOG_COL1 - 1, centery + 1, buf);
+   pango_layout_set_text (log_layout, utf8, -1);
+   pango_layout_set_font_description (log_layout, cfg->headingb);
+   gdk_draw_layout (canvas, gc, LOG_COL1 - 1, centery + 1 - 12, log_layout);
    gdk_gc_set_foreground (gc, &cfg->white);
-   gdk_draw_string (canvas, cfg->headingb, gc, LOG_COL1, centery, buf);
+   pango_layout_set_text (log_layout, utf8, -1);
+   pango_layout_set_font_description (log_layout, cfg->headingb);
+   gdk_draw_layout (canvas, gc, LOG_COL1, centery -12, log_layout);
+
+   g_free (utf8);
+
+   g_object_unref (G_OBJECT (font));
+   pango_font_metrics_unref (metrics);
+   g_object_unref (G_OBJECT (context));
 
 }
 
@@ -761,7 +861,7 @@ InitPages ()
    numlogs = 0;
    for (i = 0; i < DEF_NUM_LOGS; i++)
      {
-       curlog = OpenLogFile (deflognames[i]);
+       curlog = OpenLogFile (user_prefs->logfile);
        if (curlog == NULL)
 	 continue;
        loglist[numlogs] = curlog;

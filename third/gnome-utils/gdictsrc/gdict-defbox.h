@@ -1,7 +1,7 @@
 #ifndef __GDICT_DEFBOX_H_
 #define __GDICT_DEFBOX_H_
 
-/* $Id: gdict-defbox.h,v 1.1.1.1 2001-05-02 20:43:12 ghudson Exp $ */
+/* $Id: gdict-defbox.h,v 1.1.1.2 2003-01-04 21:13:18 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -30,16 +30,18 @@ extern "C" {
 typedef struct _GDictDefbox        GDictDefbox;
 typedef struct _GDictDefboxClass   GDictDefboxClass;
 
-struct _GDictDefbox {
-    GtkText         text;
+struct _GDictDefbox 
+{
+    GtkTextView         text;
     
     dict_context_t *context;
     dict_command_t *def_cmd;
     gchar          *database;
 };
 
-struct _GDictDefboxClass {
-    GtkTextClass    parent_class;
+struct _GDictDefboxClass 
+{
+    GtkTextViewClass    parent_class;
     
     void (*word_lookup_start) (GDictDefbox *);
     void (*word_lookup_done)  (GDictDefbox *);
@@ -48,15 +50,15 @@ struct _GDictDefboxClass {
     void (*socket_error)      (GDictDefbox *, gchar *);
 };
 
-guint      gdict_defbox_get_type   (void);
+GType	   gdict_defbox_get_type   (void);
 
 GtkWidget *gdict_defbox_new        (void);
-
+void 	   defbox_setup_tags 	   (GDictDefbox *defbox);
 void       gdict_defbox_destroy    (GDictDefbox *defbox);
 
 gint       gdict_defbox_lookup     (GDictDefbox *defbox, gchar *text);
 void       gdict_defbox_clear      (GDictDefbox *defbox);
-void       gdict_defbox_find       (GDictDefbox *defbox, gchar *text,
+gboolean   gdict_defbox_find       (GDictDefbox *defbox, const gchar *text,
                                     gboolean start);
 void       gdict_defbox_reset      (GDictDefbox *defbox,
                                     dict_context_t *context);

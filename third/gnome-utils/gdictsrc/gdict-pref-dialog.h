@@ -1,7 +1,7 @@
 #ifndef __GDICT_PREF_DIALOG_H_
 #define __GDICT_PREF_DIALOG_H_
 
-/* $Id: gdict-pref-dialog.h,v 1.1.1.1 2001-05-02 20:42:34 ghudson Exp $ */
+/* $Id: gdict-pref-dialog.h,v 1.1.1.2 2003-01-04 21:12:44 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -32,7 +32,7 @@ typedef struct _GDictPrefDialog        GDictPrefDialog;
 typedef struct _GDictPrefDialogClass   GDictPrefDialogClass;
 
 struct _GDictPrefDialog {
-    GnomeDialog       dialog;
+    GtkDialog       dialog;
     
     GtkTable         *table;
     GtkEntry         *server_entry;
@@ -58,13 +58,13 @@ struct _GDictPrefDialog {
 };
 
 struct _GDictPrefDialogClass {
-    GnomeDialogClass parent_class;
+    GtkDialogClass parent_class;
     
     void (*apply_changes) (GDictPrefDialog *);
     void (*socket_error)  (GDictPrefDialog *, gchar *);
 };
 
-guint      gdict_pref_dialog_get_type   (void);
+GType      gdict_pref_dialog_get_type   (void);
 
 GtkWidget *gdict_pref_dialog_new        (dict_context_t *context);
 void gdict_pref_dialog_destroy          (GDictPrefDialog *dialog);

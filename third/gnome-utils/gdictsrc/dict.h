@@ -1,7 +1,7 @@
 #ifndef __DICT_H_
 #define __DICT_H_
 
-/* $Id: dict.h,v 1.1.1.1 2001-05-02 20:43:27 ghudson Exp $ */
+/* $Id: dict.h,v 1.1.1.2 2003-01-04 21:13:09 ghudson Exp $ */
 
 /*
  *  Bradford Hovinen <hovinen@udel.edu>
@@ -95,6 +95,7 @@ typedef struct _dict_command_t {
 				     gpointer data);
     
     gchar        *db_name;
+    gchar	 *db_full_name;
     GString      *def;
     
     gchar        *search_term;          /* Parameters used in current search */

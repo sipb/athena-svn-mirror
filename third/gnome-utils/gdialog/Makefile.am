@@ -1,4 +1,4 @@
-SUBDIRS = doc
+SUBDIRS = help
 
 bin_PROGRAMS = gdialog
 
@@ -17,13 +17,14 @@ gdialog_SOURCES =	\
 	util.c 		\
 	yesno.c
 
-INCLUDES=-I. $(GNOME_INCLUDEDIR) $(CURSES_INCLUDEDIR) 
+INCLUDES = \
+	$(GNOME_UTILS_CFLAGS)	\
+	-I$(includedir)	\
+	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"	\
+	$(CURSES_INCLUDEDIR)
 
 gdialog_LDADD = \
-	$(GNOME_LIBDIR) \
-	$(GNOMEUI_LIBS) \
-	$(GTKXMHTML_LIBS) \
-	$(INTLLIBS) \
+	$(GNOME_UTILS_LIBS) \
 	$(CURSES_LIBS)
 
 man_MANS = gdialog.1

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+_Name=Character Map
+_Comment=Insert special characters into documents
+Exec=gnome-character-map
+Icon=gnome-character-map.png
+Terminal=false
+Type=Application
+X-GNOME-DocPath=gnome-character-map/gnome-character-map.xml
+Categories=GNOME;Application;Utility;

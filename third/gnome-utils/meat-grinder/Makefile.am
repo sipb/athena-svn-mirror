@@ -1,27 +1,31 @@
-bin_PROGRAMS = meat-grinder
+bin_PROGRAMS = archive-generator
 
 SUBDIRS = help
 
 INCLUDES = \
 	-I$(top_srcdir) 				\
 	-DG_LOG_DOMAIN=\"MeatGrinder\" 			\
-	$(GNOME_INCLUDEDIR)				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
+	-DDATADIR=\""$(datadir)"\"			\
+	$(GNOME_UTILS_CFLAGS)				\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DGNOME_DISABLE_DEPRECATED			\
+	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"
 
-meat_grinder_SOURCES = 	\
+archive_generator_SOURCES = 	\
 	meat-grinder.c
 
-meat_grinder_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOMEUI_LIBS) 	\
-	$(INTLLIBS)
+archive_generator_LDADD = \
+	$(GNOME_UTILS_LIBS)
 
-man_MANS = meat-grinder.1
+man_MANS = archive-generator.1
 
-Utilitiesdir = $(datadir)/gnome/apps/Utilities
-Utilities_in_files = meat-grinder.desktop.in
+Utilitiesdir = $(datadir)/applications
+Utilities_in_files = archive-generator.desktop.in
 Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
+@INTLTOOL_DESKTOP_RULE@
 
 EXTRA_DIST = \
 	$(man_MANS) \
