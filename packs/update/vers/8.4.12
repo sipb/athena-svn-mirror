@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  chmod 644 /usr/vice/etc/CellServDB /usr/vice/etc/CellServDB.public
+  chown 644 /usr/vice/etc/SuidCells /usr/vice/etc/SuidCells.public
+  chown 644 /usr/vice/etc/ThisCell
+  ;;
+
+sgi)
+  ;;
+
+esac
