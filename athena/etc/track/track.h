@@ -1,4 +1,13 @@
-/* Copyright (c) 1987, Massachusetts Institute of Technology */
+/*
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.2 1987-03-02 07:50:13 rfrench Exp $
+ */
+
+#ifndef lint
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.2 1987-03-02 07:50:13 rfrench Exp $";
+#endif lint
+
+#include "mit-copyright.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -16,16 +25,16 @@
 #define DEF_TOROOT	""
 
 /* Default from working directory - under from root */
-#define	DEF_FROMWDIR	"/../site/track"
+#define	DEF_FROMWDIR	"/etc/athena/lib"
 
 /* Default to working directory - under to root */
-#define DEF_TOWDIR	"/site/track"
+#define DEF_TOWDIR	"/etc/athena/lib"
 
 /* Default binary directory - under real root */
-#define DEF_BINDIR	"/site/track/bin"
+#define DEF_BINDIR	"/bin"
 
 /* Default administrator */
-#define DEF_ADM		"rfrench"
+#define DEF_ADM		"treese"
 
 /* Default subscription list */
 #define DEF_SUB 	"sys_rvd"
