@@ -46,14 +46,14 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.c,v 1.1 1989-11-07 17:06:30 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/com_err.c,v 1.2 1989-11-07 18:57:42 jik Exp $";
 #endif	/* ! lint */
 
 static void
 #ifdef __STDC__
-    default_com_err_proc (const char *whoami, long code, const char *fmt, va_list args)
+default_com_err_proc (const char *whoami, long code, const char *fmt, va_list args)
 #else
-    default_com_err_proc (whoami, code, fmt, args)
+default_com_err_proc (whoami, code, fmt, args)
     const char *whoami;
     long code;
     const char *fmt;
@@ -76,12 +76,6 @@ static void
     putc('\r', stderr);
     fflush(stderr);
 }
-
-#ifdef __STDC__
-typedef void (*errf) (const char *, long, const char *, va_list);
-#else
-typedef void (*errf) ();
-#endif
 
 errf com_err_hook = default_com_err_proc;
 
@@ -122,11 +116,15 @@ void com_err (va_alist)
     va_end(pvar);
 }
 
+#ifdef __STDC__
+errf set_com_err_hook (errf new_proc)
+#else
 errf set_com_err_hook (new_proc)
     errf new_proc;
+#endif
 {
     errf x = com_err_hook;
-    com_err_hook = new_proc ? new_proc : default_com_err_proc;
+    com_err_hook = new_proc ? new_proc : (errf) default_com_err_proc;
     return x;
 }
 
