@@ -2,6 +2,7 @@
 /*  This file is part of the GtkHTML library.
 
     Copyright (C) 2000 Jonas Borgström <jonas_b@bitsmart.com>.
+    Copyright (C) 2000, 2001, 2002 Ximian, Inc.
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -26,6 +27,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include "htmlselect.h"
 #include <string.h>
+#include <gal/widgets/e-unicode.h>
 
 
 HTMLSelectClass html_select_class;
@@ -84,6 +86,25 @@ copy (HTMLObject *self,
 	d->clist = NULL;
 }
 
+static void
+draw (HTMLObject *o,
+      HTMLPainter *p,
+      gint x, gint y,
+      gint width, gint height,
+      gint tx, gint ty)
+{
+	HTMLSelect *select = HTML_SELECT (o);
+
+	if (select->needs_update) {
+		if (GTK_IS_COMBO (HTML_EMBEDDED (select)->widget))
+			gtk_combo_set_popdown_strings (GTK_COMBO (HTML_EMBEDDED (o)->widget), select->strings);
+	}
+
+	select->needs_update = FALSE;	
+
+	(* HTML_OBJECT_CLASS (parent_class)->draw) (o, p, x, y, width, height, tx, ty);
+}
+
 
 static void
 reset (HTMLEmbedded *e)
@@ -103,9 +124,9 @@ reset (HTMLEmbedded *e)
 			row++;
 		}		
 	} else if (s->size > 1) {
-				gtk_clist_select_row (GTK_CLIST(s->clist), s->default_selected, 0);
+		gtk_clist_select_row (GTK_CLIST(s->clist), s->default_selected, 0);
 	} else {
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(e->widget)->entry), (gchar *)g_list_nth(s->strings, s->default_selected)->data);
+		e_utf8_gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(e->widget)->entry), (gchar *)g_list_nth(s->strings, s->default_selected)->data);
 	}
 }
 
@@ -149,7 +170,7 @@ encode (HTMLEmbedded *e)
 			g_free (ptr);
 			encoding = g_string_append_c (encoding, '=');
 
-			txt = gtk_entry_get_text (GTK_ENTRY(GTK_COMBO(e->widget)->entry));
+			txt = e_utf8_gtk_entry_get_text (GTK_ENTRY(GTK_COMBO(e->widget)->entry));
 			i = s->strings;
 			item = 0;
 
@@ -201,6 +222,7 @@ html_select_class_init (HTMLSelectClass *klass,
 	/* HTMLObject methods.   */
 	object_class->destroy = destroy;
 	object_class->copy = copy;
+	object_class->draw = draw;
 
 	parent_class = &html_embedded_class;
 }
@@ -253,6 +275,7 @@ html_select_init (HTMLSelect *select,
 	select->values = NULL;
 	select->strings = NULL;
 	select->default_selection = NULL;
+	select->needs_update = TRUE;
 }
 
 HTMLObject *
@@ -294,17 +317,13 @@ void html_select_add_option (HTMLSelect *select,
 	} else {
 		w = HTML_EMBEDDED (select)->widget;
 		select->strings = g_list_append (select->strings, g_strdup (""));
-		gtk_combo_set_popdown_strings (GTK_COMBO(w), select->strings);
 
-		if (selected || g_list_length (select->strings) == 1) {
-
+		select->needs_update = TRUE;
+		if (selected || g_list_length (select->strings) == 1)
 			select->default_selected = g_list_length (select->strings) - 1;
-		}
 	}
-	if (value)
-		select->values = g_list_append (select->values, g_strdup (value));
-	else
-		select->values = g_list_append (select->values, NULL);
+
+	select->values = g_list_append (select->values, g_strdup (value));
 
 	if(select->multi)
 		select->default_selection = g_list_append (select->default_selection, GINT_TO_POINTER(selected));
@@ -334,8 +353,12 @@ html_select_set_text (HTMLSelect *select, gchar *text)
 	gint item;
 
 	if (select->size > 1 || select->multi) {
+		char *gtk_text;
 		item = GTK_CLIST(select->clist)->rows - 1;
-		gtk_clist_set_text (GTK_CLIST(select->clist), item, 0, text);
+
+		gtk_text = e_utf8_from_gtk_string (select->clist, text);
+		gtk_clist_set_text (GTK_CLIST(select->clist), item, 0, gtk_text);
+		g_free (gtk_text);
 
 		HTML_OBJECT(select)->width = gtk_clist_optimal_column_width (GTK_CLIST (select->clist), 0) + 12;
 		/* Add width of scrollbar */
@@ -350,12 +373,14 @@ html_select_set_text (HTMLSelect *select, gchar *text)
 	} else {
 		w = HTML_EMBEDDED (select)->widget;
 		item = g_list_length (select->strings) - 1;
-		if (select->strings) {
-			g_list_last (select->strings)->data = g_strdup (text);
-			gtk_combo_set_popdown_strings (GTK_COMBO(w), select->strings);
 
+		if (select->strings) {
+			g_list_last (select->strings)->data = e_utf8_to_gtk_string (w, text);
+
+			select->needs_update = TRUE;
 			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(w)->entry), 
 					   g_list_nth(select->strings, select->default_selected)->data);
+
 			HTML_OBJECT(select)->width = gdk_string_width(w->style->font, 
 								      longest_string(select)) + 30;
 		}
@@ -365,3 +390,5 @@ html_select_set_text (HTMLSelect *select, gchar *text)
 	if (item >= 0 && g_list_nth (select->values, item)->data == NULL)
 		g_list_nth (select->values, item)->data = g_strdup(text);
 }
+
+

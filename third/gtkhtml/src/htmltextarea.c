@@ -26,6 +26,7 @@
 #include <gtk/gtktext.h>
 #include "htmltextarea.h"
 #include <string.h>
+#include <gal/widgets/e-unicode.h>
 
 
 HTMLTextAreaClass html_textarea_class;
@@ -70,27 +71,30 @@ static gchar *
 encode (HTMLEmbedded *e)
 {
 	GString *encoding = g_string_new ("");
-	gchar *ptr, *ptr2;
+	gchar *encoded_str, *utf8_str, *gtk_text;
 
 	if(strlen (e->name)) {
-		ptr = html_embedded_encode_string (e->name);
-		encoding = g_string_append (encoding, ptr);
-		g_free (ptr);
+		utf8_str = html_embedded_encode_string (e->name);
+		encoding = g_string_append (encoding, utf8_str);
+		g_free (utf8_str);
 
 		encoding = g_string_append_c (encoding, '=');
 
-		ptr2 = gtk_editable_get_chars (GTK_EDITABLE (HTML_TEXTAREA(e)->text), 0, -1);
+		gtk_text = gtk_editable_get_chars (GTK_EDITABLE (HTML_TEXTAREA(e)->text), 0, -1);
+	        utf8_str = e_utf8_from_gtk_string (HTML_TEXTAREA(e)->text, gtk_text);
 
-		ptr = html_embedded_encode_string ( ptr2 );
-		encoding = g_string_append (encoding, ptr);
-		g_free (ptr);
-		g_free (ptr2);
+		encoded_str = html_embedded_encode_string (utf8_str);
+		encoding = g_string_append (encoding, encoded_str);
+
+		g_free (encoded_str);
+		g_free (utf8_str);
+		g_free (gtk_text);
 	}
 
-	ptr = encoding->str;
+	utf8_str = encoding->str;
 	g_string_free(encoding, FALSE);
 
-	return ptr;
+	return utf8_str;
 }
 
 static int
@@ -191,9 +195,16 @@ html_textarea_new (GtkWidget *parent,
 void html_textarea_set_text (HTMLTextArea *ta, 
 			   gchar *text) 
 {
+	char *gtk_text;
+
 	if (!ta->default_text)
 		ta->default_text = g_strdup (text);
 
+	gtk_text = e_utf8_to_gtk_string (ta->text, text);
 	gtk_editable_delete_text (GTK_EDITABLE (ta->text), 0, -1);
-	gtk_text_insert (GTK_TEXT (ta->text), NULL, NULL, NULL, text, strlen (text));
+	gtk_text_insert (GTK_TEXT (ta->text), NULL, NULL, NULL, gtk_text, strlen (gtk_text));
+	g_free (gtk_text);
 }
+
+
+

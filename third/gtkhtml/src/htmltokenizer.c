@@ -705,13 +705,8 @@ in_script_or_style (HTMLTokenizer *t, const gchar **src)
 	struct _HTMLTokenizerPrivate *p = t->priv;
 	
 	/* Allocate memory to store the script or style */
-	if (p->scriptCodeSize + 11 > p->scriptCodeMaxSize) {
-		gchar *newbuf = g_malloc (p->scriptCodeSize + 1024);
-		memcpy (newbuf, p->scriptCode, p->scriptCodeSize);
-		g_free (p->scriptCode);
-
-		p->scriptCodeMaxSize += 1024;
-	}
+	if (p->scriptCodeSize + 11 > p->scriptCodeMaxSize)
+		p->scriptCode = g_realloc (p->scriptCode, p->scriptCodeMaxSize += 1024);
 			
 	if ((**src == '>' ) && ( p->searchFor [p->searchCount] == '>')) {
 		(*src)++;

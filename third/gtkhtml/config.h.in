@@ -53,6 +53,9 @@
 /* Define if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#undef HAVE_LC_MESSAGES
+
 /* Define if you have the `i' library (-li). */
 #undef HAVE_LIBI
 
@@ -147,9 +150,6 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* Define if you need to in order for stat and other things to work. */
-#undef _POSIX_SOURCE
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

@@ -38,6 +38,7 @@ struct _HTMLSelect {
 	GList *default_selection;
 
 	GtkWidget *clist;
+	gboolean needs_update;
 };
 
 struct _HTMLSelectClass {

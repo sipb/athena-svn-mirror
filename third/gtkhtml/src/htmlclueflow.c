@@ -62,6 +62,7 @@ static HTMLClueClass *parent_class = NULL;
 
 inline HTMLHAlignType html_clueflow_get_halignment (HTMLClueFlow *flow);
 static gchar * get_item_number_str (HTMLClueFlow *flow);
+static gchar * get_end_tag_item (HTMLObject *self);
 
 
 static void
@@ -1406,6 +1407,33 @@ get_level (HTMLClueFlow *cf)
 	return cf->level;
 }
 
+static gint
+write_list_finish_tags (HTMLEngineSaveState *state, HTMLClueFlow *prev, gint end_level)
+{
+	HTMLClueFlow *flow;
+	gint i;
+	gchar *tag;
+
+	g_assert (prev);
+
+	flow = HTML_CLUEFLOW (HTML_OBJECT (prev)->prev);
+	for (i = prev->level - 1; i > end_level; i --) {
+		while (flow && flow->level > i)
+			flow = HTML_CLUEFLOW (HTML_OBJECT (flow)->prev);
+		tag = NULL;
+		if (! write_indent (state, i)
+		    || ! html_engine_save_output_string (state, "</%s>\n",
+							 flow && is_item (flow) ? (tag = get_end_tag_item (HTML_OBJECT (flow)))
+							 : "BLOCKQUOTE")) {
+			g_free (tag);
+			return FALSE;
+		}
+		g_free (tag);
+	}
+
+	return TRUE;
+}
+
 static gboolean
 write_pre_tags (HTMLClueFlow *self,
 		HTMLEngineSaveState *state)
@@ -1414,14 +1442,21 @@ write_pre_tags (HTMLClueFlow *self,
 	const char *prev_tag, *curr_tag;
 
 	prev = HTML_CLUEFLOW (HTML_OBJECT (self)->prev);
-	if (prev != NULL && !HTML_IS_TABLE (HTML_CLUE (self)->head)
-	    && prev->level == self->level && prev->style == self->style) {
-		if (!is_item (self) && self->style != HTML_CLUEFLOW_STYLE_PRE) {
-			if (! write_indent (state, self->level))
+	if (prev != NULL && !HTML_IS_TABLE (HTML_CLUE (self)->head)) {
+		if (is_item (self) && html_clueflow_is_empty (prev)) {
+			if (! write_indent (state, prev->level))
 				return FALSE;
 			return html_engine_save_output_string (state, "<BR>\n");
-		} else
-			return TRUE;
+		} else {
+			if (prev->level == self->level && prev->style == self->style) {
+				if (!is_item (self) && self->style != HTML_CLUEFLOW_STYLE_PRE) {
+					if (! write_indent (state, self->level))
+						return FALSE;
+					return html_engine_save_output_string (state, "<BR>\n");
+				} else
+					return TRUE;
+			}
+		}
 	}
 
 	prev_tag = get_tag (prev);
@@ -1440,18 +1475,20 @@ write_pre_tags (HTMLClueFlow *self,
 		}
 		if (curr_tag != NULL) {
 			if (prev && is_item (prev)) {
-				write_indentation_tags (state, prev->level > 0 ? prev->level - 1 : 0,
-							get_level (self), curr_tag);
+				write_list_finish_tags (state, prev, get_level (self));
 			} else {
 				write_indentation_tags (state, 0, get_level (self), curr_tag);
 			}
 		}
 		if (curr_tag == NULL && prev_tag == NULL && prev && is_item (prev) && is_item (self)
 		    && abs (prev->level - self->level) > 1) {
-			write_indentation_tags (state,
-						prev->level < self->level ? prev->level : prev->level - 1,
-						prev->level < self->level ? self->level - 1 : self->level,
-						"BLOCKQUOTE");
+			if (prev->level > self->level)
+				write_list_finish_tags (state, prev, self->level);
+			else
+				write_indentation_tags (state,
+							prev->level < self->level ? prev->level : prev->level - 1,
+							prev->level < self->level ? self->level - 1 : self->level,
+							"BLOCKQUOTE");
 		}
 	}
 
@@ -1471,7 +1508,7 @@ write_post_tags (HTMLClueFlow *self,
 	if (tag)
 		write_indentation_tags (state, get_level (self), 0, tag);
 	else if (is_item (self) && self->level > 0)
-		write_indentation_tags (state, self->level - 1, 0, "BLOCKQUOTE");
+		write_list_finish_tags (state, self, 0);
 
 	return TRUE;
 }
@@ -1577,6 +1614,19 @@ get_start_tag (HTMLObject *self)
 }
 
 static gchar *
+get_end_tag_item (HTMLObject *self)
+{
+	switch (HTML_CLUEFLOW (self)->item_type) {
+	case HTML_LIST_TYPE_UNORDERED:
+	case HTML_LIST_TYPE_MENU:
+	case HTML_LIST_TYPE_DIR:
+		return g_strdup ("UL");
+	default:
+		return g_strdup ("OL");
+	}
+}
+
+static gchar *
 get_end_tag (HTMLObject *self)
 {
 	switch (HTML_CLUEFLOW (self)->style) {
@@ -1597,14 +1647,7 @@ get_end_tag (HTMLObject *self)
 	case HTML_CLUEFLOW_STYLE_PRE:
 		return g_strdup ("PRE");
 	case HTML_CLUEFLOW_STYLE_LIST_ITEM:
-		switch (HTML_CLUEFLOW (self)->item_type) {
-		case HTML_LIST_TYPE_UNORDERED:
-		case HTML_LIST_TYPE_MENU:
-		case HTML_LIST_TYPE_DIR:
-			return need_list_end (self) ? g_strdup ("UL") : NULL;
-		default:
-			return need_list_end (self) ? g_strdup ("OL") : NULL;
-		}
+		return need_list_end (self) ? get_end_tag_item (self) : NULL;
 	default:
 		return NULL;
 	}
