@@ -14,7 +14,6 @@ SHLIB_EXPDEPS=\
 	$(TOPLIBD)/libkdb5$(SHLIBEXT) \
 	$(TOPLIBD)/libkrb5$(SHLIBEXT) \
 	$(TOPLIBD)/libk5crypto$(SHLIBEXT) \
-	$(TOPLIBD)/libcom_err$(SHLIBEXT) \
 	$(TOPLIBD)/libdyn$(SHLIBEXT)
 SHLIB_EXPLIBS=-lgssrpc -lgssapi_krb5 -lkdb5 -lkrb5 -lk5crypto -lcom_err -ldyn
 SHLIB_DIRS=-L$(TOPLIBD)
