@@ -1,10 +1,12 @@
-# $Id: Makefile.in,v 1.2 2001-07-18 14:20:11 ghudson Exp $
+# $Id: Makefile.in,v 1.3 2002-02-11 22:56:34 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 RANLIB=@RANLIB@
+LIBTOOL=@LIBTOOL@
+top_builddir=.
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
@@ -23,22 +25,26 @@ LDFLAGS=@LDFLAGS@
 LIBS=@LIBS@
 ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS}
 
-LIBOBJS=data.o error.o execute_cmd.o help.o invocation.o list_rqs.o \
-	listen.o pager.o parse.o prompt.o request_tbl.o requests.o \
-	ss_err.o std_rqs.o
+LIBOBJS=data.lo error.lo execute_cmd.lo help.lo invocation.lo list_rqs.lo \
+	listen.lo pager.lo parse.lo prompt.lo request_tbl.lo requests.lo \
+	ss_err.lo std_rqs.lo
 BINOBJS=cmd_tbl.o ct.o mk_cmds.o options.o utils.o
 
-all: libss.a
+all: libss.la mk_cmds
 
-libss.a: ${LIBOBJS}
-	ar cru $@ ${LIBOBJS}
-	${RANLIB} $@
+.SUFFIXES: .lo
+
+libss.la: ${LIBOBJS}
+	${LIBTOOL} ${CC} -rpath ${libdir} -version-info 1:0:0 -o $@ ${LIBOBJS}
 
 mk_cmds: ${BINOBJS}
 	${CC} ${LDFLAGS} -o mk_cmds ${BINOBJS} ${LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
+
+.c.lo:
+	${LIBTOOL} ${CC} -c ${ALL_CFLAGS} $<
 
 cmd_tbl.o: y.tab.h cmd_tbl.c
 
@@ -68,7 +74,7 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}/ss
 	${INSTALL_PROGRAM} -m 555 mk_cmds ${DESTDIR}${bindir}
-	${INSTALL} -m 444 libss.a ${DESTDIR}${libdir}
+	${LIBTOOL} ${INSTALL} -m 444 libss.la ${DESTDIR}${libdir}
 	${INSTALL} -m 444 ss.h ${DESTDIR}${includedir}/ss
 	${INSTALL} -m 444 ss_err.h ${DESTDIR}${includedir}/ss
 	${INSTALL} -m 444 ss_internal.h ${DESTDIR}${includedir}/ss
@@ -76,8 +82,8 @@ install:
 	${INSTALL} -m 444 mit-sipb-copyright.h ${DESTDIR}${includedir}/ss
 
 clean:
-	rm -f ${LIBOBJS} ${BINOBJS} compile_et libcom_err.a et_lex.lex.c
-	rm -f y.tab.c y.tab.h
+	${LIBTOOL} rm -f ${LIBOBJS}
+	rm -f ${BINOBJS} compile_et libcom_err.a et_lex.lex.c y.tab.c y.tab.h
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile
