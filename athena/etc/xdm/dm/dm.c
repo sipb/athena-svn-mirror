@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.1 1990-10-18 18:58:14 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.2 1990-10-19 18:51:05 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -9,24 +9,28 @@
  */
 
 #include <mit-copyright.h>
-#include <stdio.h>
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <sys/file.h>
 #include <utmp.h>
 #include <ctype.h>
+#include <strings.h>
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.1 1990-10-18 18:58:14 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.2 1990-10-19 18:51:05 mar Exp $";
+#endif
+
+#ifndef NULL
+#define NULL 0
 #endif
 
 /* Process states */
 #define NONEXISTANT	0
 #define RUNNING		1
 #define STARTUP		2
-#define CONSOLELOGIN	7
+#define CONSOLELOGIN	3
 
 /* flags used by signal handlers */
 int alarm_running = NONEXISTANT;
@@ -43,6 +47,8 @@ char login_prog[]="/bin/login";
 char utmpf[]="/etc/utmp";
 char wtmpf[]="/usr/adm/wtmp";
 char xpidf[]="/usr/tmp/X0.pid";
+char consolepidf[]="/usr/tmp/console.pid";
+char consolef[] ="/dev/console";
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
 
@@ -52,21 +58,38 @@ int argc;
 char **argv;
 {
     void die(), child(), alarm(), xready();
-    char *tty, *prog;
+    char *tty, *conf, *p, *number(), *getconf();
     char **xargv, **consoleargv, **loginargv, **parseargs();
     char line[16];
-    int pgrp;
-    FILE *pidfile;
+    int pgrp, file;
+    struct sgttyb mode;
 
-    if (argc != 5) {
-	fprintf(stderr, "usage: %s tty Xserver Console-prog Login-prog\n",
-		argv[0]);
+    if (argc != 3) {
+	message("usage: ");
+	message(argv[0]);
+	message(" configfile tty\n");
 	exit(1);
     }
-    tty = argv[1];
-    xargv = parseargs(argv[2], NULL);
-    consoleargv = parseargs(argv[3], NULL);
-    loginargv = parseargs(argv[4], tty);
+    conf = argv[1];
+    tty = argv[2];
+    p = getconf(conf, "X");
+    if (p == NULL) {
+	message("Can't find X command line\n");
+	exit(1);
+    }
+    xargv = parseargs(p, NULL);
+    p = getconf(conf, "console");
+    if (p == NULL) {
+	message("Can't find console command line\n");
+	exit(1);
+    }
+    consoleargv = parseargs(p, NULL);
+    p = getconf(conf, "login");
+    if (p == NULL) {
+	message("Can't find login command line\n");
+	exit(1);
+    }
+    loginargv = parseargs(p, tty);
 
     /* Signal Setup */
     signal(SIGTSTP, SIG_IGN);
@@ -80,7 +103,10 @@ char **argv;
     signal(SIGALRM, alarm);
 
     close(0);
-    sprintf(line, "/dev/%s", tty);
+    close(1);
+    close(2);
+    strcpy(line, "/dev/");
+    strcat(line, tty);
     open(line, O_RDWR, 0622);
     dup2(0, 1);
     dup2(1, 2);
@@ -95,69 +121,66 @@ char **argv;
 
     /* Fire up X */
 #ifdef DEBUG
-    fprintf(stderr, "Starting X\n");
+    message("Starting X\n");
 #endif
     xpid = fork();
     switch (xpid) {
     case 0:
-	/* Since stderr is unbuffered, close-on-exec will do the right
-	   thing with the stdio library */
-        if(fcntl(fileno(stderr), F_SETFD, 1) == -1)
-	    fclose(stderr);
+        if(fcntl(2, F_SETFD, 1) == -1)
+	  close(2);
 	sigsetmask(0);
 	/* ignoring SIGUSR1 will cause the server to send us a SIGUSR1
 	 * when it is ready to accept connections
 	 */
 	signal(SIGUSR1, SIG_IGN);
-	prog = *xargv;
+	p = *xargv;
 	*xargv = "-";
-	execv(prog, xargv);
-	perror("executing X server");
+	execv(p, xargv);
+	message("X server failed exec\n");
 	exit(1);
     case -1:
-	perror("Unable to start X server");
+	message("Unable to start X server\n");
 	exit(1);
     default:
 	x_running = STARTUP;
 	signal(SIGUSR1, xready);
-	if ((pidfile = fopen(xpidf, "w")) != NULL) {
-	    fprintf(pidfile, "%d\n", xpid);
-	    fclose(pidfile);
+	if ((file = open(xpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
+	    write(file, number(xpid), strlen(number(xpid)));
+	    close(file);
 	}
 	alarm(X_START_WAIT);
 	alarm_running = RUNNING;
 #ifdef DEBUG
-	fprintf(stderr, "waiting for X\n");
+	message("waiting for X\n");
 #endif
 	sigpause(0);
 	if (x_running != RUNNING) {
 	    if (alarm_running == NONEXISTANT)
-	      fprintf(stderr, "X failed to become ready\n");
+	      message("X failed to become ready\n");
 	    else
-	      fprintf(stderr, "Unable to start X\n");
+	      message("Unable to start X\n");
 	    exit(1);
 	}
+	signal(SIGUSR1, SIG_IGN);
     }
 
     start_console(consoleargv);
 
     /* Fire up the X login */
 #ifdef DEBUG
-    fprintf(stderr, "Starting X Login\n");
+    message("Starting X Login\n");
 #endif
     loginpid = fork();
     switch (loginpid) {
     case 0:
-	/* Since stderr is unbuffered, close-on-exec will do the right
-	   thing with the stdio library */
-        if(fcntl(fileno(stderr), F_SETFD, 1) == -1)
-	    fclose(stderr);
+        if(fcntl(2, F_SETFD, 1) == -1)
+	  close(2);
 	sigsetmask(0);
 	execv(loginargv[0], loginargv);
-	perror("executing login");
+	message("X login failed exec\n");
 	exit(1);
     case -1:
-	perror("Unable to start login");
+	message("Unable to start X login\n");
 	exit(1);
     default:
 	login_running = RUNNING;
@@ -165,22 +188,25 @@ char **argv;
 
     while (1) {
 #ifdef DEBUG
-	fprintf(stderr, "waiting...\n");
+	message("waiting...\n");
 #endif
 	/* Wait for something to hapen */
 	sigpause(0);
 
 	if (login_running == STARTUP) {
 #ifdef DEBUG
-	    fprintf(stderr, "starting console login\n");
+	    message("starting console login\n");
 #endif
-	    kill(xpid, SIGHUP);
+	    kill(xpid, SIGKILL);
 #ifndef BROKEN_CONSOLE_DRIVER
 	    setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
 	    ioctl(0, TIOCSPGRP, &pgrp);
 #endif
+	    ioctl(0, TIOCGETP, &mode);
+	    mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
+	    ioctl(0, TIOCSETP, &mode);
 	    execl(login_prog, login_prog, 0);
-	    fprintf(stderr, "Unable to start console login\n");
+	    message("Unable to start console login\n");
 	}
 	if (console_running == NONEXISTANT)
 	  start_console(consoleargv);
@@ -197,31 +223,29 @@ char **argv;
 start_console(argv)
 char **argv;
 {
+    int file;
+
 #ifdef DEBUG
-    fprintf(stderr, "Starting Console: ");
-    {
-	int i;
-	for (i = 0; argv[i]; i++)
-	  fprintf(stderr, "\"%s\" ", argv[i]);
-	fprintf(stderr, "\n");
-    }
+    message("Starting Console\n");
 #endif
     consolepid = fork();
     switch (consolepid) {
     case 0:
-	/* Since stderr is unbuffered, close-on-exec will do the right
-	   thing with the stdio library */
-        if(fcntl(fileno(stderr), F_SETFD, 1) == -1)
-	    fclose(stderr);
+        if(fcntl(2, F_SETFD, 1) == -1)
+	  close(2);
 	sigsetmask(0);
 	execv(argv[0], argv);
-	perror("executing console");
+	message("Failed to exec console\n");
 	exit(1);
     case -1:
-	perror("Unable to start console");
+	message("Unable to start console\n");
 	exit(1);
     default:
 	console_running = RUNNING;
+	if ((file = open(consolepidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
+	    write(file, number(consolepid), strlen(number(consolepid)));
+	    close(file);
+	}
     }
 }
 
@@ -239,7 +263,7 @@ char *tty;
     if (console_running == RUNNING)
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
-      kill(xpid, SIGHUP);
+      kill(xpid, SIGKILL);
 
     found = in_use = 0;
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
@@ -277,32 +301,33 @@ void child()
 {
     int pid;
     union wait status;
+    char *number();
 
     pid = wait3(&status, WNOHANG, 0);
 
 #ifdef DEBUG
-    fprintf(stderr, "Child %d exited\n", pid);
+    message("Child exited "); message(number(pid));
 #endif
     if (pid == xpid) {
 #ifdef DEBUG
-	fprintf(stderr, "X Server exited\n");
+	message("X Server exited\n");
 #endif
 	x_running = NONEXISTANT;
     } else if (pid == consolepid) {
 #ifdef DEBUG
-	fprintf(stderr, "Console exited\n");
+	message("Console exited\n");
 #endif
 	console_running = NONEXISTANT;
     } else if (pid == loginpid) {
 #ifdef DEBUG
-	fprintf(stderr, "X Login exited\n");
+	message("X Login exited\n");
 #endif
 	if (status.w_retcode == CONSOLELOGIN)
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTANT;
     } else {
-	fprintf(stderr, "Unexpected SIGCHLD from pid %d\n", pid);
+	message("Unexpected SIGCHLD from pid ");message(number(pid));
     }
 }
 
@@ -310,7 +335,7 @@ void child()
 void xready()
 {
 #ifdef DEBUG
-    fprintf(stderr, "X Server ready\n");
+    message("X Server ready\n");
 #endif
     x_running = RUNNING;
 }
@@ -321,7 +346,7 @@ void xready()
 void alarm()
 {
 #ifdef DEBUG
-    fprintf(stderr, "Alarm!\n");
+    message("Alarm!\n");
 #endif
     alarm_running = NONEXISTANT;
 }
@@ -332,14 +357,14 @@ void alarm()
 void die()
 {
 #ifdef DEBUG
-    fprintf(stderr, "Killing children and exiting\n");
+    message("Killing children and exiting\n");
 #endif
     if (login_running == RUNNING)
       kill(loginpid, SIGHUP);
     if (console_running == RUNNING)
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
-      kill(xpid, SIGHUP);
+      kill(xpid, SIGKILL);
     exit(0);
 }
 
@@ -378,4 +403,81 @@ char *extra;
       ret[i++] = extra;
     ret[i] = NULL;
     return(ret);
+}
+
+
+/* Used for logging errors and other messages so we don't need to link
+ * against the stdio library.
+ */
+
+message(s)
+char *s;
+{
+    int i = strlen(s);
+    write(2, s, i);
+}
+
+
+/* Convert an int to a string, and return a pointer to this string in a
+ * static buffer.  The string will be newline and null terminated.
+ */
+
+char *number(x)
+int x;
+{
+#define NDIGITS 16
+    static char buffer[NDIGITS];
+    char *p = &buffer[NDIGITS-1];
+
+    *p-- = 0;
+    *p-- = '\n';
+    while (x) {
+	*p-- = x % 10 + '0';
+	x = x / 10;
+    }
+    if (p == &buffer[NDIGITS-3])
+      *p-- = '0';
+    return(p+1);
+}
+
+
+char *getconf(file, name)
+char *file;
+char *name;
+{
+    static char buf[1024];
+    static int inited = 0;
+    char *p, *ret;
+    int i;
+
+    if (!inited) {
+	int fd;
+
+	fd = open(file, O_RDONLY, 0644);
+	if (fd < 0) return(NULL);
+	i = read(fd, buf, sizeof(buf));
+	buf[i] = 0;
+	close(fd);
+	inited = 1;
+    }
+
+    for (p = &buf[0]; p && *p; p = index(p, '\n')) {
+	if (*p == '\n') p++;
+	if (p == NULL || *p == 0) return(NULL);
+	if (*p == '#') continue;
+	if (strncmp(p, name, strlen(name))) continue;
+	p += strlen(name);
+	if (*p && !isspace(*p)) continue;
+	while (*p && isspace(*p)) p++;
+	if (*p == 0) return(NULL);
+	ret = index(p, '\n');
+	if (ret)
+	  i = ret - p;
+	else
+	  i = strlen(p);
+	ret = malloc(i+1);
+	bcopy(p, ret, i+1);
+	return(ret);
+    }
+    return(NULL);
 }
