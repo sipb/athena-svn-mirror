@@ -1,4 +1,4 @@
-# $Id: athena,v 1.59 1998-04-16 22:13:02 ghudson Exp $
+# $Id: athena,v 1.60 1998-05-08 15:57:00 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -126,7 +126,6 @@ if [ "$PUBLIC" = true ]; then
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 
-	cp /dev/null /etc/named.local
 	cp -p /srvd/etc/netspy /etc/netspy
 	cp /dev/null /etc/X0.hosts
 	cp -p /etc/inet/hosts /etc/inet/hosts.save
