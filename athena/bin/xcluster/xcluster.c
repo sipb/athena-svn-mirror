@@ -1,5 +1,5 @@
 /*
- * $Id: xcluster.c,v 1.2 1999-01-22 23:15:36 ghudson Exp $
+ * $Id: xcluster.c,v 1.3 1999-02-14 17:11:02 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Id: xcluster.c,v 1.2 1999-01-22 23:15:36 ghudson Exp $";
+"$Id: xcluster.c,v 1.3 1999-02-14 17:11:02 danw Exp $";
 #endif	/* lint */
 
 #include "mit-copyright.h"
@@ -98,6 +98,7 @@ static XrmOptionDescRec opTable[] = {
 {"-changetime",	".changetime",	XrmoptionSepArg,	(caddr_t) NULL}, /* s*/
 {"-steps",	".steps",	XrmoptionSepArg,	(caddr_t) NULL},
 {"-steptime",	".steptime",	XrmoptionSepArg,	(caddr_t) NULL}, /*ms*/
+{"-warp",	".warp",	XrmoptionNoArg,		(caddr_t) "on"},
 };
 
 typedef struct _MyResources
@@ -109,6 +110,7 @@ typedef struct _MyResources
   char *colors[3];
   int changetime;
   int steps, steptime;
+  Boolean warp;
 } MyResources;
 
 typedef struct _MyResources *MyResourcesPtr;
@@ -139,6 +141,8 @@ static XjResource appResources[] =
       offset(steps), XjRInt, (caddr_t) 256 },
   { "steptime", "Steptime", XjRInt, sizeof(int),
       offset(steptime), XjRInt, (caddr_t) 50 },
+  { "warp", "Warp", XjRBoolean, sizeof(Boolean),
+      offset(warp), XjRBoolean, (caddr_t) 0 },
 };
 
 #undef offset
@@ -804,6 +808,9 @@ char **argv;
 		      appResources,
 		      XjNumber(appResources),
 		      (caddr_t) &parms);
+
+  if (parms.warp)
+    XWarpPointer(XjDisplay(root), None, XjWindow(root), 0, 0, 0, 0, 0, 0);
 
   progname = programName;
 
