@@ -630,10 +630,11 @@ run_service(ctrl, sep)
 {
 	struct passwd *pwd;
 	struct group *grp = NULL;	/* XXX gcc */
+	char buf[7];
 #ifdef LIBWRAP
 	struct request_info req;
 	int denied;
-	char buf[7], *service = NULL;	/* XXX gcc */
+	char *service = NULL;	/* XXX gcc */
 #endif
 
 #ifdef LIBWRAP
