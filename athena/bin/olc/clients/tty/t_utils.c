@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.18 1990-11-15 08:36:43 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.19 1990-11-15 13:38:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.18 1990-11-15 08:36:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.19 1990-11-15 13:38:51 lwvanels Exp $";
 #endif
 #endif
 
@@ -621,7 +621,7 @@ mail_message(user, consultant, msgfile, args)
       return(ERROR);
     }
 
-  msgbuf = malloc((unsigned) nbytes);
+  msgbuf = (char *)malloc((unsigned) nbytes);
   if ((filedes = open(msgfile, O_RDONLY, 0)) <= 0) 
     {
       perror("mail");
