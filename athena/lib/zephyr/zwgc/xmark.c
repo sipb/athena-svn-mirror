@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.3 1989-11-09 14:56:15 jtkohl Exp $";
+static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.4 1989-11-15 22:46:43 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -222,14 +222,14 @@ void xmarkRedraw(dpy,w,gram,range)
      x_gram *gram;
      int range;
 {
-#define ob1 (oldblock[XMARK_START_BOUND])
-#define ob2 (oldblock[XMARK_END_BOUND])
-#define nb1 (markblock[XMARK_START_BOUND])
-#define nb2 (markblock[XMARK_END_BOUND])
-#define op1 (oldpixel[XMARK_START_BOUND])
-#define op2 (oldpixel[XMARK_END_BOUND])
-#define np1 (markpixel[XMARK_START_BOUND])
-#define np2 (markpixel[XMARK_END_BOUND])
+#define ob1 ((unsigned int) oldblock[XMARK_START_BOUND])
+#define ob2 ((unsigned int) oldblock[XMARK_END_BOUND])
+#define nb1 ((unsigned int) markblock[XMARK_START_BOUND])
+#define nb2 ((unsigned int) markblock[XMARK_END_BOUND])
+#define op1 ((unsigned int) oldpixel[XMARK_START_BOUND])
+#define op2 ((unsigned int) oldpixel[XMARK_END_BOUND])
+#define np1 ((unsigned int) markpixel[XMARK_START_BOUND])
+#define np2 ((unsigned int) markpixel[XMARK_END_BOUND])
 
    if (range==XMARK_REDRAW_CURRENT) {
       if (!markgram) return;

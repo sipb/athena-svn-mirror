@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.h,v $
- *      $Author: jtkohl $
- *	$Id: xmark.h,v 1.3 1989-11-08 14:36:38 jtkohl Exp $
+ *      $Author: marc $
+ *	$Id: xmark.h,v 1.4 1989-11-15 22:46:37 marc Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -43,6 +43,7 @@ extern x_gram *markgram;
 #define STARTPIXEL (markpixel[XMARK_START_BOUND])
 #define ENDPIXEL   (markpixel[XMARK_END_BOUND])
 
+extern void xmarkSetBound();
 extern int xmarkSecond();
 extern void xmarkRedraw();
 extern void xmarkClear();

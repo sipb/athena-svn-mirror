@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/standard_ports.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.6 1989-11-15 22:01:01 jtkohl Exp $";
+static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.7 1989-11-15 22:46:23 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -29,12 +29,15 @@ static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.6 1989-11-15 2
 #include "port.h"
 #include "variables.h"
 #include "error.h"
+#include <zephyr/zephyr.h>
 
 extern string tty_filter();
 extern char *X_driver();
 
 extern int X_driver_init();
 extern int tty_filter_init();
+
+extern void usage();
 
 /*
  *

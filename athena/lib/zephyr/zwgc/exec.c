@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/exec.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_exec_c[] = "$Id: exec.c,v 1.4 1989-11-15 18:21:46 jtkohl Exp $";
+static char rcsid_exec_c[] = "$Id: exec.c,v 1.5 1989-11-15 22:46:15 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -348,9 +348,6 @@ static int exec_exec(node)
     free_args(argv);
     return(NOBREAK);
 }
-
-/* <<<>>> */
-extern int exec_fields();
 
 static struct _Opstuff {
     int (*exec)();

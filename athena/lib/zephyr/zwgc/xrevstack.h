@@ -16,7 +16,7 @@
 #define _XREVSTACK_H_
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xrevstack_h[] = "$Id: xrevstack.h,v 1.1 1989-11-14 00:56:14 marc Exp $";
+static char rcsid_xrevstack_h[] = "$Id: xrevstack.h,v 1.2 1989-11-15 22:46:51 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -24,9 +24,9 @@ static char rcsid_xrevstack_h[] = "$Id: xrevstack.h,v 1.1 1989-11-14 00:56:14 ma
 extern x_gram *bottom_gram; /* for testing against NULL */
 extern int reverse_stack; /* is reverse stack on? */
 
-void add_to_bottom(/* x_gram */);
-void delete_from_list(/* x_gram */);
-void pull_to_top(/* x_gram */);
-void push_to_bottom(/* x_gram */);
+extern void add_to_bottom(/* x_gram */);
+extern void delete_gram(/* x_gram */);
+extern void pull_to_top(/* x_gram */);
+extern void push_to_bottom(/* x_gram */);
 
 #endif /* _XREVSTACK_H_ */

@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xerror_c[] = "$Id: xerror.c,v 1.1 1989-11-14 00:55:48 marc Exp $";
+static char rcsid_xerror_c[] = "$Id: xerror.c,v 1.2 1989-11-15 22:46:56 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -32,6 +32,7 @@ static int xerrortrap(dpy,xerrev)
    xerror_happened = 1;
 }
 
+/*ARGSUSED*/
 void begin_xerror_trap(dpy)
      Display *dpy;
 {

@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.4 1989-11-14 00:56:09 marc Exp $";
+static char rcsid_xrevstack_c[] = "$Id: xrevstack.c,v 1.5 1989-11-15 22:46:47 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -42,10 +42,12 @@ void add_to_bottom(gram)
    }
 }
 
+/*ARGSUSED*/
 void pull_to_top(gram)
      x_gram *gram;
 {}
 
+/*ARGSUSED*/
 void push_to_bottom(gram)
      x_gram *gram;
 {}

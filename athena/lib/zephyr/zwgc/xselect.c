@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.5 1989-11-14 15:30:52 jtkohl Exp $";
+static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.6 1989-11-15 22:46:33 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -157,9 +157,6 @@ int xselProcessSelection(dpy,w,event)
      XEvent *event;
 {
    XSelectionRequestEvent *selreq = &(event->xselectionrequest);
-   int (*syncfunc)();
-   Atom targetprop;
-   char *selvalue;
 
 #ifdef DEBUG
    if ((selreq->owner != w) || (selreq->selection != XA_PRIMARY))
@@ -171,7 +168,7 @@ int xselProcessSelection(dpy,w,event)
        ((ownership_end != CurrentTime) &&
 	(ownership_end > ownership_start) &&
 	(selreq->time > ownership_end)))
-     xselNotify(dpy,event,None);
+     xselNotify(dpy,selreq,None);
 
    xselSetProperties(dpy,selreq->requestor,selreq->property,selreq->target,
 		     selreq);
@@ -185,6 +182,7 @@ void xselOwnershipLost(time)
    ownership_end = time;
 }
 
+/*ARGSUSED*/
 void xselGiveUpOwnership(dpy,w)
      Display *dpy;
      Window w;
