@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_status.c,v 1.2 1999-05-04 19:24:26 danw Exp $";
+"$Id: lpd_status.c,v 1.2.2.1 1999-06-28 19:32:13 ghudson Exp $";
 
 
 #include "lp.h"
@@ -302,10 +302,8 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 	Add_line_list(done_list,Printer_DYN,Value_sep,1,1);
 
-	if( displayformat != REQ_DSHORT ){
-		plp_snprintf( header, sizeof(header), "%s: ",
-			Server_queue_name_DYN?"Server Printer":"Printer" );
-	}
+	plp_snprintf( header, sizeof(header), "%s: ",
+		      Server_queue_name_DYN?"Server Printer":"Printer" );
 	len = strlen(header);
 	plp_snprintf( header+len, sizeof(header)-len, "%s@%s ",
 		Printer_DYN, Report_server_as_DYN?Report_server_as_DYN:ShortHost_FQDN );
@@ -374,7 +372,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 
 	/* set up the short format for folks */
 
-	if( displayformat == REQ_DLONG && Sort_order.count > 0 ){
+	if( (displayformat == REQ_DLONG || displayformat == REQ_DSHORT) && Sort_order.count > 0 ){
 		/*
 		 Rank  Owner/ID  Class Job Files   Size Time
 		*/
@@ -385,7 +383,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	error[0] = 0;
 
 	for( count = 0;
-		displayformat != REQ_DSHORT && count < Sort_order.count;
+		count < Sort_order.count;
 		++count ){
 
 		Free_job(&job);
@@ -445,7 +443,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 			priority = class;
 		}
 
-		if( displayformat == REQ_DLONG ){
+		if( displayformat == REQ_DLONG || displayformat == REQ_DSHORT ){
 			plp_snprintf( msg, sizeof(msg),
 				"%-*s %-*s ", RANKW-1, number, OWNERW-1, identifier );
 			while( (len = strlen(msg)) > (RANKW+OWNERW)
@@ -634,7 +632,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 		}
 	}
 
-	if( displayformat != REQ_DSHORT ){
+	{
 		s = 0;
 		if( (s = Comment_tag_DYN) == 0 ){
 			if( (nx = PC_alias_line_list.count) > 1 ){
