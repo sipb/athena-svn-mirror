@@ -22,9 +22,12 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp ntp.conf $RPM_BUILD_ROOT/etc/ntp.conf
 cp athena-xntp.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
+cp athena-xntp.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-xntp
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-xntp
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-xntp
 
 # It will need this to run.
 mkdir -p $RPM_BUILD_ROOT/var/athena
@@ -38,3 +41,4 @@ chkconfig --add athena-xntp
 /usr
 %dir /var/athena
 %config /etc/ntp.conf
+%config /etc/sysconfig/athena-xntp

@@ -25,9 +25,11 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files; see prep/athena-zephyr
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig/zhm
 cp zephyr.vars $RPM_BUILD_ROOT/etc/athena/zephyr.vars
 cp zhm.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm
 cp zephyrd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
+cp zhm.conf $RPM_BUILD_ROOT/etc/sysconfig/zhm
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm 
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 
@@ -43,3 +45,4 @@ chkconfig --add zephyrd
 /etc/athena/zshutdown_notify
 /usr
 %config /etc/athena/zephyr.vars
+%config /etc/sysconfig/zhm

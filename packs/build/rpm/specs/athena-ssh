@@ -3,7 +3,7 @@ Summary: The Secure remote Shell program
 Copyright: SSH Communications Security, Ltd.
 Group: Applications/Internet
 
-Requires: athena-krb5
+Requires: athena-krb5 athena-inetd
 
 %description
 The ssh secure shell system, as configured for Athena. 
@@ -23,9 +23,12 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 cp sshd_config $RPM_BUILD_ROOT/etc/sshd_config
 cp athena-sshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
+cp athena-sshd.conf $RPM_BUILD_ROOT/etc/sysconfig/athena-sshd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/athena-sshd
 
 %post
 if [ ! -f /etc/ssh_host_key ]; then
@@ -39,3 +42,4 @@ chkconfig --add athena-sshd
 /etc/athena
 /usr/athena
 %config /etc/sshd_config
+%config /etc/sysconfig/athena-sshd

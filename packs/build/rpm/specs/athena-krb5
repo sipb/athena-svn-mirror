@@ -3,6 +3,8 @@ Summary: Version 5 of the Kerberos system
 Copyright: MIT
 Group: System Environment/Base
 
+Requires: getty_ps
+
 %description
 The Kerberos secure net authentication system.
 
@@ -63,6 +65,12 @@ if [ -e /etc/conf.getty ] && grep -s -q LOGIN /etc/conf.getty ; then
 else
   echo LOGIN=/usr/athena/etc/login.krb5 >> /etc/conf.getty
 fi
+
+# Force use of getty instead of mingetty
+sed -e s/mingetty/getty/ < /etc/inittab > /tmp/sedout
+mv /tmp/sedout /etc/inittab
+kill -1 1
+
 
 %preun
 sed -e s@LOGIN=/usr/athena/etc/login.krb5@@ /etc/conf.getty > /tmp/sedout

@@ -1,11 +1,10 @@
 Name: athena-base
-Summary: Base files required for any Athena workstation
+Summary: A few base files needed by any Athena package
 Copyright: MIT
 Group: System Environment/Base
 
 %description
-Various maintenanance and configuration files required for any
-Athena workstation.
+A few base files needed by any Athena package
 
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
@@ -23,21 +22,11 @@ mkdir $RPM_BUILD_ROOT
 #Extra stuff
 mkdir -p $RPM_BUILD_ROOT{/usr/athena/man,/etc/athena}
 cp mandesc $RPM_BUILD_ROOT/usr/athena/man/mandesc
-cp masks $RPM_BUILD_ROOT/etc/athena/masks
-cp shells $RPM_BUILD_ROOT/etc/shells
-cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
-cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
-cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
-
-# This file actually goes in the athena-afs package.
-rm $RPM_BUILD_ROOT/etc/athena/config_afs
 
 %post
-cp /etc/syslog.conf.athena /etc/syslog.conf
-chkconfig --add athena-base
 
 # Inaugurate /etc/athena/version
 if [ ! -f /etc/athena/version ]; then
-	echo Athena Workstation '(linux)' Layered Version `date` >> \
+	echo Athena Workstation '(linux)' Version Layered `date` >> \
 		 /etc/athena/version
 fi

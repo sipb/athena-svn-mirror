@@ -39,7 +39,7 @@ rm -f /etc/X11/prefdm
 
 cat > /etc/X11/prefdm << EOF
 #!/bin/sh
-/etc/athena/dm /etc/athena/login/config ttyp0 console
+exec /etc/athena/dm /etc/athena/login/config ttyp0 console
 EOF
 chmod +x /etc/X11/prefdm
 

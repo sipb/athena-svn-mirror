@@ -31,7 +31,9 @@ cp attach.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 
 %post
+mkdir -p /mit
 chkconfig --add attach
+
 
 %files
 /etc/rc.d

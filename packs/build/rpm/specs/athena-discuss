@@ -9,12 +9,14 @@ Requires: athena-krb5 athena-zephyr athena-libet
 grep -s -q ^discuss /etc/services \
 	|| echo "discuss	2100/tcp	# Networked conferencing." \
 		>> /etc/services
+mkdir -p /var/spool/discuss
 grep -s -q ^discuss /etc/passwd \
-	useradd	-d /var/spool-discuss \
-		-g 101 \
-		-u 32000 \
-		-s /dev/null \
-		discuss
+	|| useradd	-d /var/spool/discuss \
+			-g 101 \
+			-u 32000 \
+			-s /dev/null \
+			-M \
+			discuss
 
 %description
 Discuss is a user-interface front end to a networked conferencing system.  
