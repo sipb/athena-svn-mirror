@@ -162,7 +162,10 @@ gnome_settings_keyboard_xkb_analyze_sysconfig (void)
 	isConfigChanged = g_slist_length (gswicWas.layouts) &&
 	    !GSwitchItXkbConfigEquals (pgswicNow, &gswicWas);
 	/* config was changed!!! */
-	if (isConfigChanged) {
+	/* Athena local mod: settings are likely to be different from
+	   machine to machine (particularly across platforms), so this
+	   check doesn't make much sense for us. */
+	if (0 && isConfigChanged) {
 		GtkWidget *msg = gtk_message_dialog_new_with_markup (NULL,
 								     0,
 								     GTK_MESSAGE_INFO,
