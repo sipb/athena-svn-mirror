@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/third/transcript/Makefile.in,v 1.2 1996-11-21 00:50:35 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/transcript/Makefile.in,v 1.2.2.1 1997-05-24 21:37:44 ghudson Exp $
 #
 # This is the global Makefile template for TranScript on Athena.
 # It does, roughly, the same things as the original build scripts, but
@@ -58,14 +58,13 @@ MAN7=afm.7 postscript.7
 MAN8=pscatmap.8 psdman.8 psint.8
 # no:	pscomm.8 psinterface.8 ascomm.8 capcomm.8 fpcomm.8 lpcomm.8 qmscomm.8
 
-# lib/ files to install
-# NOTE: bogusmsg.ps and banner.pro (from Transcript2.1) are built and installed
-#       from /source/athena/ucb/lpr/transcript-v2.1, so we don't do them here.
-LIBFILES=enscript.pro ps4014.pro ps630.pro pscat.pro psdit.pro psdraft.pro \
-	psnup.pro psplot.pro pstext.pro ehandler.ps Notice
+# lib/ files to install.  Omit banner.pro for the moment, since it comes from
+# athena/bin/lpr.
+LIBFILES=bogusmsg.ps enscript.pro ps4014.pro ps630.pro pscat.pro psdit.pro \
+	psdraft.pro psnup.pro psplot.pro pstext.pro ehandler.ps Notice
 LIBEXECS=psint.sh psbad.sh
 
-# NOTE: curntely, we're building DITROFF fonts, but not old TROFF fonts.
+# NOTE: currently, we're building DITROFF fonts, but not old TROFF fonts.
 #       It's unclear TROFF fonts are useful.
 #       If you have good reason to think we do need them, uncomment this:
 #CLEANTROFF=cleantroff
