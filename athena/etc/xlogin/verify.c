@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.6 1999-12-22 17:27:48 danw Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.7 1999-12-27 14:13:08 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -120,6 +120,23 @@ static krb5_error_code do_v5_kdestroy(const char *cachename);
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
+
+#if defined(HAVE_AFS) && !defined(NANNY) && defined(SIGSYS)
+/* If we call setpag() when AFS is not loaded, we will get a SIGSYS,
+ * at least on systems which have SIGSYS.
+ */
+static void try_setpag()
+{
+  struct sigaction sa, osa;
+
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = SIG_IGN;
+  sigaction(SIGSYS, &sa, &osa);
+  setpag();
+  sigaction(SIGSYS, &osa, NULL);
+}
+#endif
 
 #ifdef HAVE_GETSPNAM
 static struct passwd *get_pwnam(char *usr)
@@ -342,7 +359,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	}
     }
 #if defined(HAVE_AFS) && !defined(NANNY) /* not appropriate for SGI system */
-  setpag();
+  try_setpag();
 #endif
 
 #ifdef NANNY
