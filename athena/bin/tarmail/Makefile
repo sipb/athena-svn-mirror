@@ -2,9 +2,8 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v $
 #	$Author: builder $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.4 1985-06-17 14:33:16 builder Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.5 1985-11-13 21:31:55 builder Exp $
 #
-PHYSLOC=/u1
 DESTDIR=
 INCDIR=/usr/include
 CFLAGS=-O -I${INCDIR}
@@ -12,9 +11,9 @@ CFLAGS=-O -I${INCDIR}
 all:	btoa atob
 
 install:	atob btoa tarmail untarmail
-	install -c -s btoa ${DESTDIR}${PHYSLOC}/usr/athena
-	install -c -s atob ${DESTDIR}${PHYSLOC}/usr/athena
-	cp tarmail untarmail ${DESTDIR}${PHYSLOC}/usr/athena
+	install -c -s btoa ${DESTDIR}/usr/athena
+	install -c -s atob ${DESTDIR}/usr/athena
+	cp tarmail untarmail ${DESTDIR}/usr/athena
 
 btoa:
 	cc ${CFLAGS} btoa.c -o btoa
