@@ -1,4 +1,4 @@
-# $Id: packages,v 1.286 2004-10-04 20:55:35 ghudson Exp $
+# $Id: packages,v 1.287 2004-10-04 22:35:49 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -85,7 +85,6 @@ athena/bin/mitmailmove		requires cyrus-imapd,perl
 athena/bin/mitmailrename	requires cyrus-imapd,perl
 athena/bin/mitmailscan		requires cyrus-imapd,perl
 athena/bin/mitmailshow		requires cyrus-imapd,perl
-athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires openafs
 athena/bin/olc			requires krb5,hesiod,zephyr,et,Mu,wcl
 athena/bin/passwd		requires krb5,al
@@ -108,7 +107,6 @@ athena/etc/console		requires Xj
 athena/etc/cviewd		requires larv
 athena/etc/desync
 athena/etc/dm			requires al
-athena/etc/fxserver		requires fxcl,krb5,hesiod
 athena/etc/gettime
 athena/etc/ktconvert
 athena/etc/larvnetd		requires larv,ares,hesiod
@@ -130,7 +128,6 @@ athena/lib/ares
 athena/lib/athdir		package libathdir
 athena/lib/et			package libet
 athena/lib/gms			requires et
-athena/lib/fxcl			requires krb5,hesiod package libfxcl
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,openafs,et
