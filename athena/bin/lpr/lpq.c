@@ -65,7 +65,11 @@ main(argc, argv)
 	name = argv[0];
 	gethostname(host, sizeof(host));
 	if (hp = gethostbyname(host)) strcpy(host, hp -> h_name);
+#ifdef LOG_LPR
 	openlog("lpd", 0, LOG_LPR);
+#else
+	openlog("lpd", 0);
+#endif
 
 	while (--argc) {
 		if ((arg = *++argv)[0] == '+') {
