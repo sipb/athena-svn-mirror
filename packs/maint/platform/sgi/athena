@@ -1,5 +1,5 @@
-# /etc/init.d/athena - Start/Stop the athena daemons
 #
+# /etc/init.d/athena - Start/Stop the athena daemons
 #
 
 # First, set up some useful variables.
@@ -45,17 +45,6 @@ fi
 
 # Remove old cruft and locks
 rm -rf /.deleted
-
-# Reset time with the time hub
-if [ "${TIMECLIENT}" = "true" ]; then
-	$ECHO ""
-	$ECHO  "Setting time: \c"
-	if [ -f /etc/athena/gettime ]; then
-        	/etc/athena/gettime -s ${TIMEHUB}
-	else
-		$ECHO "Can't set time! gettime not found!"
-	fi
-fi
 
 if [ "${AFSSRV}" = "true" ]; then
 	$ECHO ""
@@ -141,7 +130,11 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
 	cp -p /srvd/etc/inetd.conf /etc/inetd.conf
 	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
-	cp -p /srvd/etc/passwd /etc/passwd.local
+	if [ -r /srvd/etc/passwd ]; then
+	    cp -p /srvd/etc/passwd /etc/passwd.local
+	    chmod 644 /etc/passwd.local
+	    chown root /etc/passwd.local
+	fi
 	cp -p /etc/passwd.local /etc/passwd
 	rm -f /etc/shadow
 	cp -p /srvd/etc/group /etc/group.local
@@ -255,21 +248,23 @@ $ECHO " done!"
 	;;
 
 'stop')
-	pid=`cat /etc/athena/zhm.pid`
-	if test "$pid"
-	then
-		kill $pid
+	if [ -f /etc/athena/zhm.pid ]; then
+		pid=`cat /etc/athena/zhm.pid`
+		if test "$pid"
+		then
+			kill $pid
+		fi
+	fi
+
+	if [ -f /etc/athena/inetd.pid ]; then
+		pid=`cat /etc/athena/inetd.pid`
+		if test "$pid"
+		then
+			kill $pid
+		fi
 	fi
 	;;
 *)
-	$ECHO "usage: /etc/rc2.d/S90athena {start|stop}"
+	$ECHO "usage: /etc/rc2.d/S93athena {start|stop}"
 	;;
 esac
-
-
-
-
-
-
-
-
