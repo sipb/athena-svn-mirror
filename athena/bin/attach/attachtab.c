@@ -1,7 +1,7 @@
 /*	Created by:	Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *
@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.8 1992-07-31 19:18:30 probe Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.9 1994-03-25 15:58:05 miki Exp $";
 #endif
 
 #include "attach.h"
@@ -307,7 +307,7 @@ static int parse_attach(bfr, at, lintflag)
     for (i=0; cp && i < MAXHOSTS; i++) {
 	    register char *dp;
 
-	    if (dp = index(cp, ','))
+	    if (dp = strchr(cp, ','))
 		    *dp++ = '\0';
 	    at->hostaddr[i].s_addr = inet_addr(cp);
 	    cp = dp;
@@ -335,7 +335,7 @@ static int parse_attach(bfr, at, lintflag)
     while (cp) {
 	    register char *dp;
 	    
-	    if (dp = index(cp, ','))
+	    if (dp = strchr(cp, ','))
 		    *dp++ = '\0';
 	    at->owners[at->nowners++] = atoi(cp);
 	    cp = dp;
@@ -350,7 +350,7 @@ static int parse_attach(bfr, at, lintflag)
 	    goto bad_line;
     at->mode = *cp;
     if (at->fs->good_flags) {
-	    if (!index(at->fs->good_flags, at->mode))
+	    if (!strchr(at->fs->good_flags, at->mode))
 		    goto bad_line;	/* Bad attach mode */
     }
     
