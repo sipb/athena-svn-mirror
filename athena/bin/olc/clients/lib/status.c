@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v $
- *	$Id: status.c,v 1.12 1990-11-13 14:30:26 lwvanels Exp $
+ *	$Id: status.c,v 1.13 1990-11-17 15:09:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.12 1990-11-13 14:30:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.13 1990-11-17 15:09:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -142,8 +142,6 @@ OGetStatusCode(string,status)
 		       strlen(string)))
 	if (*status == -2)
 	  *status = Status_Table[index].status;
-	else
-	  *status = -1;
     }
 
   if ((*status == UNKNOWN_STATUS) || (*status == -2))
