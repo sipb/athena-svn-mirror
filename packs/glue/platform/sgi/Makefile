@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.10 1998-09-24 13:50:55 ghudson Exp $
+# $Id: Makefile,v 1.11 1998-11-03 17:21:10 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 USRBINDIR=/usr/bin
 NSBINDIR=/usr/bin/X11
+IAFLIBDIR=/usr/lib/iaf
 ATTACHRUN=netscape
 ATTRUNTEMPLATE=../../template.sh
 
@@ -21,6 +22,7 @@ install:
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
 	-mkdir -p ${DESTDIR}${USRBINDIR}
 	-mkdir -p ${DESTDIR}${NSBINDIR}
+	-mkdir -p ${DESTDIR}${IAFLIBDIR}
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	install -c -m 555 netscape ${DESTDIR}${NSBINDIR}
 	rm -f ${DESTDIR}${USRBINDIR}/lp
@@ -29,6 +31,8 @@ install:
 	ln -s /usr/freeware/bin/perl ${DESTDIR}${ATHBINDIR}/perl
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
 	ln -s /usr/bin/X11/xlock ${DESTDIR}${ATHBINDIR}/xlock.real
+	rm -f ${DESTDIR}${IAFLIBDIR}/scheme
+	ln -s /bin/login ${DESTDIR}${IAFLIBDIR}/scheme
 
 clean:
 	rm -f ${ATTACHRUN}
