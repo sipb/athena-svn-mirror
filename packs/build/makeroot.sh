@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.8 2002-03-15 18:03:16 ghudson Exp $
+# $Id: makeroot.sh,v 1.9 2002-03-28 20:30:53 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -87,9 +87,6 @@ sgi)
   instopts="$instopts -Vdelay_idb_read:on -Voverlay_mode:silent"
   instopts="$instopts -Vskip_rqs:true -Vverbosity:0"
 
-  # Copy the /os symlink.
-  (cd / && tar cf - os) | (cd "$root" && tar xf -)
-
   # Install local packages.
   for dist in $dists ; do
     selfile=$seldir/default.$dist.local
@@ -101,6 +98,9 @@ sgi)
   # Hack to skip the repeated rebuilding of the file type database.
   ftmakefile="$root/usr/lib/filetype/Makefile"
   mv "$ftmakefile" "$ftmakefile.hold"
+
+  # Copy the /os symlink.
+  (cd / && tar cf - os) | (cd "$root" && tar xf -)
 
   # Install symlink packages, skipping all man and relnotes packages.
   for dist in $dists ; do
