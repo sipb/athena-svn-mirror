@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.20 1992-01-07 18:38:39 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.21 1992-03-16 15:29:43 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -594,6 +594,9 @@ olc_motd (w, tag, callback_data)
       break;
     }
     
+  XtSetArg(args[0], XmNsensitive, TRUE);
+  XtSetValues(w_motd_btn, args, 1);
+
   unlink(file);  
   XtManageChild(w_motd_dlg);
   STANDARD_CURSOR;
@@ -650,7 +653,7 @@ olc_help (w, tag, callback_data)
     return;
   }
   
-  if ((help = malloc((1 + statbuf.st_size) * sizeof(char)))
+  if ((help = (char *) malloc((1 + statbuf.st_size) * sizeof(char)))
       == (char *) NULL)
     {
       fprintf(stderr, "help: unable to malloc space for help.\n");
