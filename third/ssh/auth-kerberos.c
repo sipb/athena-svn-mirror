@@ -9,8 +9,15 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.5.2.2 1998-07-15 22:49:55 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.5.2.3 1998-07-28 03:16:51 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5.2.2  1998/07/15 22:49:55  ghudson
+ * Pull up change from rev 1.7 to Athena 8.2 branch.
+ *
+ * Revision 1.8  1998/07/28 03:15:50  ghudson
+ * Dan didn't actually just leave out a right paren; he put in a
+ * semicolon instead.  Nuke the semicolon.
+ *
  * Revision 1.7  1998/07/15 22:48:53  ghudson
  * Dan left out a right paren.
  *
@@ -277,7 +284,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   if (retval = krb5_build_principal_ext(ssh_context, &(increds.server),
 					realm->length, realm->data, 6,
 					"krbtgt", realm->length, realm->data,
-					NULL));
+					NULL))
     goto errout2;
 
   increds.client = (*creds)->client;
