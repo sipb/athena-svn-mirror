@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.67 1998-07-05 05:32:11 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.68 1998-10-21 16:08:53 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.67 1998-07-05 05:32:11 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.68 1998-10-21 16:08:53 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -1083,13 +1083,15 @@ static char *getconf(char *file, char *name)
 static pid_t fork_and_store(pid_t *var)
 {
   sigset_t mask, omask;
+  pid_t pid;
 
   sigemptyset(&mask);
   sigaddset(&mask, SIGCHLD);
   sigprocmask(SIG_BLOCK, &mask, &omask);
-  *var = fork();
+  pid = fork();
+  *var = pid;
   sigprocmask(SIG_SETMASK, &omask, NULL);
-  return *var;
+  return pid;
 }
 
 static void x_stop_wait(void)
