@@ -24,9 +24,8 @@ returns an exit status of 1 if any errors were encountered.
 
 In some cases there may be several Hesiod variable definitions for the
 same variable, all or all but one of which is tagged with a distinct
-version number in the third field.  In this case,
-.I Getcluster
-if the environment variable AUTOUPDATE does not have the value "true",
+version number in the third field.  In this case, if the environment
+variable AUTOUPDATE does not have the value "true",
 .I Getcluster
 takes the value matching the major and minor number of the version
 number passed on the command line.  If the environment variable
