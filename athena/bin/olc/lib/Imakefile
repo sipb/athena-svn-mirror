@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1991-04-18 22:17:04 lwvanels Exp $
+# $Id: Imakefile,v 1.5 1997-04-30 18:17:51 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/Imakefile,v $
 #
 # Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -13,3 +13,12 @@ SUBDIRS=olc_help olcr_help motif_help
 #else
 SUBDIRS=olc_help olcr_help
 #endif
+
+CFG= olc.cfg olcr.cfg xolc.cfg olc_browser.cfg
+
+install::
+	-if [ ! -d $(DESTDIR)/usr/athena/lib/olc ]; \
+		then mkdir $(DESTDIR)/usr/athena/lib/olc; \
+		else exit 0; fi
+
+InstallMultipleFlags($(CFG), $(DESTDIR)/usr/athena/lib/olc,$(INSTDATAFLAGS))
