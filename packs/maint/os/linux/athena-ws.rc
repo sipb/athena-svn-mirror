@@ -97,6 +97,7 @@ case "$1" in
 				success rebuild || failure rebuild
 			;;
 		esac
+		echo
 	fi
 
 	if [ "$PUBLIC" = true ]; then
@@ -167,12 +168,13 @@ EOF
 		fi
 		if grep -q '^/dev/sda4[	 ]*/zip[	 ]' /etc/fstab; then
 			chmod 666 /dev/sda
-		fi
-	fi && success ZIP250
+		fi && success ZIP250
+	fi
 	echo
 
 	echo -n Updating panel menus:
 	local-menus && success local-menus || failure local-menus
+	echo
 	;;
   stop)
 	;;

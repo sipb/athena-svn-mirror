@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.20.2.1 2001-07-10 16:39:53 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.20.2.2 2001-08-01 14:17:00 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -133,6 +133,7 @@ static void ensure_process_capabilities(void);
 
 static int is_reactivating(void);
 static int wait_for_reactivate(void);
+static void set_background(Display *dpy);
 
 /* Definition of the Application resources structure. */
 
@@ -291,18 +292,14 @@ static struct sigaction sigact, osigact;
 int main(int argc, char **argv)
 {
   XtAppContext app;
-  XColor bgcolor;
   XEvent e;
   Widget hitanykey, namew;
   Display *dpy1;
   Position xPos, yPos;
   Dimension width, height;
-  Atom prop, type;
   char hname[1024], *c;
   Arg args[2];
-  int i, format;
-  unsigned long length, after;
-  unsigned char *data;
+  int i;
   long acc = 0;
   int pid;
   extern char **environ;
@@ -387,27 +384,7 @@ int main(int argc, char **argv)
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal)0);
 
-  /* Moire begone!  We'll use the same pale blue as the new default gnome
-   * desktop background.
-   */
-  if (XParseColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)),
-		  BACKGROUND_COLOR, &bgcolor)
-      && XAllocColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)), &bgcolor))
-    {
-      XSetWindowBackground(dpy, DefaultRootWindow(dpy), bgcolor.pixel);
-      XClearWindow(dpy, DefaultRootWindow(dpy));
-      prop = XInternAtom(dpy, "_XSETROOT_ID", False);
-      if (DefaultVisual(dpy, DefaultScreen(dpy))->class & 1)
-	{
-	  XGetWindowProperty(dpy, DefaultRootWindow(dpy), prop, 0L, 1L, True,
-			     AnyPropertyType, &type, &format, &length, &after,
-			     &data);
-	  if ((type == XA_PIXMAP) && (format == 32) && (length == 1)
-	      && (after == 0))
-	    XKillClient(dpy, *((Pixmap *)data));
-	}
-      XSetCloseDownMode(dpy, RetainPermanent);
-    }
+  set_background(dpy);
 
 #ifndef NANNY
   /* Tell the display manager we're ready, just like the X server
@@ -603,6 +580,8 @@ int main(int argc, char **argv)
 						 root, NULL, 0);
 		      XtAddEventHandler(savershell[i], MASK,
 					FALSE, unsave, (XtPointer)TRUE);
+
+		      set_background(dpy1);
 		    }
 		}
 	    }
@@ -2060,4 +2039,36 @@ static int is_reactivating()
   struct stat sb;
 
   return (stat(reactivate_file, &sb) == 0);
+}
+
+/* Set the proper background on a given display. */
+static void set_background(Display *dpy)
+{
+  XColor bgcolor;
+  Atom prop, type;
+  int format;
+  unsigned long length, after;
+  unsigned char *data;
+
+  /* Moire begone!  We'll use the same pale blue as the new default gnome
+   * desktop background.
+   */
+  if (XParseColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)),
+		  BACKGROUND_COLOR, &bgcolor) &&
+      XAllocColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)), &bgcolor))
+    {
+      XSetWindowBackground(dpy, DefaultRootWindow(dpy), bgcolor.pixel);
+      XClearWindow(dpy, DefaultRootWindow(dpy));
+      prop = XInternAtom(dpy, "_XSETROOT_ID", False);
+      if (DefaultVisual(dpy, DefaultScreen(dpy))->class & 1)
+	{
+	  XGetWindowProperty(dpy, DefaultRootWindow(dpy), prop, 0L, 1L, True,
+			     AnyPropertyType, &type, &format, &length, &after,
+			     &data);
+	  if ((type == XA_PIXMAP) && (format == 32) && (length == 1)
+	      && (after == 0))
+	    XKillClient(dpy, *((Pixmap *)data));
+	}
+      XSetCloseDownMode(dpy, RetainPermanent);
+    }
 }
