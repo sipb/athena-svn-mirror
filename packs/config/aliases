@@ -1,3 +1,5 @@
+# $Id $
+
 #########################################################################
 #
 #  Aliases in this file will NOT be expanded in the header from
@@ -9,7 +11,19 @@
 #
 #########################################################################
 
+# Note for Athena machines:
+# Since sendmail.cf rewrites unqualified addresses to be `@MIT.EDU',
+# you need to alias addresses `@localhost'
+
 # start of common aliases--do not remove this line
+
+# RFC 822 requires a `postmaster' alias to exist
+postmaster@localhost: root
+
+# We don't care about root's mail on cluster workstations
+root@localhost: /dev/null
+daemon@localhost: /dev/null
+MAILER-DAEMON@localhost: /dev/null
 
 # Add the following alias to enable NIS aliases.  If enabled, the
 #	NIS database defines anything not defined in this file.
