@@ -1,6 +1,6 @@
-dnl aclocal.m4 generated automatically by aclocal 1.4-p4
+dnl aclocal.m4 generated automatically by aclocal 1.4-p6
 
-dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+dnl Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
@@ -19,8 +19,9 @@ dnl PARTICULAR PURPOSE.
 dnl Usage:
 dnl AM_INIT_AUTOMAKE(package,version, [no-define])
 
-AC_DEFUN(AM_INIT_AUTOMAKE,
-[AC_REQUIRE([AC_PROG_INSTALL])
+AC_DEFUN([AM_INIT_AUTOMAKE],
+[AC_REQUIRE([AM_SET_CURRENT_AUTOMAKE_VERSION])dnl
+AC_REQUIRE([AC_PROG_INSTALL])
 PACKAGE=[$1]
 AC_SUBST(PACKAGE)
 VERSION=[$2]
@@ -36,18 +37,47 @@ AC_REQUIRE([AM_SANITY_CHECK])
 AC_REQUIRE([AC_ARG_PROGRAM])
 dnl FIXME This is truly gross.
 missing_dir=`cd $ac_aux_dir && pwd`
-AM_MISSING_PROG(ACLOCAL, aclocal, $missing_dir)
+AM_MISSING_PROG(ACLOCAL, aclocal-${am__api_version}, $missing_dir)
 AM_MISSING_PROG(AUTOCONF, autoconf, $missing_dir)
-AM_MISSING_PROG(AUTOMAKE, automake, $missing_dir)
+AM_MISSING_PROG(AUTOMAKE, automake-${am__api_version}, $missing_dir)
 AM_MISSING_PROG(AUTOHEADER, autoheader, $missing_dir)
 AM_MISSING_PROG(MAKEINFO, makeinfo, $missing_dir)
 AC_REQUIRE([AC_PROG_MAKE_SET])])
+
+# Copyright 2002  Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+
+# AM_AUTOMAKE_VERSION(VERSION)
+# ----------------------------
+# Automake X.Y traces this macro to ensure aclocal.m4 has been
+# generated from the m4 files accompanying Automake X.Y.
+AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.4"])
+
+# AM_SET_CURRENT_AUTOMAKE_VERSION
+# -------------------------------
+# Call AM_AUTOMAKE_VERSION so it can be traced.
+# This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
+AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
+	 [AM_AUTOMAKE_VERSION([1.4-p6])])
 
 #
 # Check to make sure that the build environment is sane.
 #
 
-AC_DEFUN(AM_SANITY_CHECK,
+AC_DEFUN([AM_SANITY_CHECK],
 [AC_MSG_CHECKING([whether build environment is sane])
 # Just in case
 sleep 1
@@ -88,7 +118,7 @@ AC_MSG_RESULT(yes)])
 
 dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
 dnl The program must properly implement --version.
-AC_DEFUN(AM_MISSING_PROG,
+AC_DEFUN([AM_MISSING_PROG],
 [AC_MSG_CHECKING(for working $2)
 # Run test in a subshell; some versions of sh will print an error if
 # an executable is not found, even if stderr is redirected.
@@ -104,7 +134,7 @@ AC_SUBST($1)])
 
 # Like AC_CONFIG_HEADER, but automatically create stamp file.
 
-AC_DEFUN(AM_CONFIG_HEADER,
+AC_DEFUN([AM_CONFIG_HEADER],
 [AC_PREREQ([2.12])
 AC_CONFIG_HEADER([$1])
 dnl When config.status generates a header, we must update the stamp-h file.
@@ -130,7 +160,7 @@ changequote([,]))])
 
 # serial 1
 
-AC_DEFUN(AM_MAINTAINER_MODE,
+AC_DEFUN([AM_MAINTAINER_MODE],
 [AC_MSG_CHECKING([whether to enable maintainer-specific portions of Makefiles])
   dnl maintainer-mode is disabled by default
   AC_ARG_ENABLE(maintainer-mode,
@@ -147,7 +177,7 @@ AC_DEFUN(AM_MAINTAINER_MODE,
 
 # Define a conditional.
 
-AC_DEFUN(AM_CONDITIONAL,
+AC_DEFUN([AM_CONDITIONAL],
 [AC_SUBST($1_TRUE)
 AC_SUBST($1_FALSE)
 if $2; then
@@ -158,11 +188,27 @@ else
   $1_FALSE=
 fi])
 
+#serial 1
+# This test replaces the one in autoconf.
+# Currently this macro should have the same name as the autoconf macro
+# because gettext's gettext.m4 (distributed in the automake package)
+# still uses it.  Otherwise, the use in gettext.m4 makes autoheader
+# give these diagnostics:
+#   configure.in:556: AC_TRY_COMPILE was called before AC_ISC_POSIX
+#   configure.in:556: AC_TRY_RUN was called before AC_ISC_POSIX
+
+undefine([AC_ISC_POSIX])
+
+AC_DEFUN([AC_ISC_POSIX],
+  [
+    dnl This test replaces the obsolescent AC_ISC_POSIX kludge.
+    AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
+  ]
+)
+
 # libtool.m4 - Configure libtool for the host system. -*-Shell-script-*-
 
 # serial 46 AC_PROG_LIBTOOL
-
-builtin([undefine],[symbols])
 
 AC_DEFUN([AC_PROG_LIBTOOL],
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
@@ -289,9 +335,30 @@ _LT_AC_LTCONFIG_HACK
 
 ])
 
+# AC_LIBTOOL_HEADER_ASSERT
+# ------------------------
+AC_DEFUN([AC_LIBTOOL_HEADER_ASSERT],
+[AC_CACHE_CHECK([whether $CC supports assert without backlinking],
+    [lt_cv_func_assert_works],
+    [case $host in
+    *-*-solaris*)
+      if test "$GCC" = yes && test "$with_gnu_ld" != yes; then
+        case `$CC --version 2>/dev/null` in
+        [[12]].*) lt_cv_func_assert_works=no ;;
+        *)        lt_cv_func_assert_works=yes ;;
+        esac
+      fi
+      ;;
+    esac])
+
+if test "x$lt_cv_func_assert_works" = xyes; then
+  AC_CHECK_HEADERS(assert.h)
+fi
+])# AC_LIBTOOL_HEADER_ASSERT
+
 # _LT_AC_CHECK_DLFCN
 # --------------------
-AC_DEFUN(_LT_AC_CHECK_DLFCN,
+AC_DEFUN([_LT_AC_CHECK_DLFCN],
 [AC_CHECK_HEADERS(dlfcn.h)
 ])# _LT_AC_CHECK_DLFCN
 
@@ -309,10 +376,10 @@ AC_CACHE_VAL([lt_cv_sys_global_symbol_pipe], [dnl
 # [They come from Ultrix.  What could be older than Ultrix?!! ;)]
 
 # Character class describing NM global symbol codes.
-[symcode='[BCDEGRST]']
+symcode='[[BCDEGRST]]'
 
 # Regexp to match symbols that can be accessed directly from C.
-[sympat='\([_A-Za-z][_A-Za-z0-9]*\)']
+sympat='\([[_A-Za-z]][[_A-Za-z0-9]]*\)'
 
 # Transform the above into a raw symbol and a C symbol.
 symxfrm='\1 \2\3 \3'
@@ -326,23 +393,23 @@ lt_cv_global_symbol_to_c_name_address="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\
 # Define system-specific variables.
 case $host_os in
 aix*)
-  [symcode='[BCDT]']
+  symcode='[[BCDT]]'
   ;;
 cygwin* | mingw* | pw32*)
-  [symcode='[ABCDGISTW]']
+  symcode='[[ABCDGISTW]]'
   ;;
 hpux*) # Its linker distinguishes data from code symbols
   lt_cv_global_symbol_to_cdecl="sed -n -e 's/^T .* \(.*\)$/extern char \1();/p' -e 's/^$symcode* .* \(.*\)$/extern char \1;/p'"
   lt_cv_global_symbol_to_c_name_address="sed -n -e 's/^: \([[^ ]]*\) $/  {\\\"\1\\\", (lt_ptr) 0},/p' -e 's/^$symcode* \([[^ ]]*\) \([[^ ]]*\)$/  {\"\2\", (lt_ptr) \&\2},/p'"
   ;;
 irix*)
-  [symcode='[BCDEGRST]']
+  symcode='[[BCDEGRST]]'
   ;;
 solaris* | sysv5*)
-  [symcode='[BDT]']
+  symcode='[[BDT]]'
   ;;
 sysv4)
-  [symcode='[DFNSTU]']
+  symcode='[[DFNSTU]]'
   ;;
 esac
 
@@ -356,14 +423,14 @@ esac
 
 # If we're using GNU nm, then use its standard symbol codes.
 if $NM -V 2>&1 | egrep '(GNU|with BFD)' > /dev/null; then
-  [symcode='[ABCDGISTW]']
+  symcode='[[ABCDGISTW]]'
 fi
 
 # Try without a prefix undercore, then with it.
 for ac_symprfx in "" "_"; do
 
   # Write the raw and C identifiers.
-[lt_cv_sys_global_symbol_pipe="sed -n -e 's/^.*[ 	]\($symcode$symcode*\)[ 	][ 	]*\($ac_symprfx\)$sympat$opt_cr$/$symxfrm/p'"]
+lt_cv_sys_global_symbol_pipe="sed -n -e 's/^.*[[ 	]]\($symcode$symcode*\)[[ 	]][[ 	]]*\($ac_symprfx\)$sympat$opt_cr$/$symxfrm/p'"
 
   # Check to see that the pipe works correctly.
   pipe_works=no
@@ -416,7 +483,7 @@ const struct {
   const char *name;
   lt_ptr address;
 }
-[lt_preloaded_symbols[] =]
+lt_preloaded_symbols[[]] =
 {
 EOF
 	  sed "s/^$symcode$symcode* \(.*\) \(.*\)$/  {\"\2\", (lt_ptr) \&\2},/" < "$nlist" >> conftest.$ac_ext
@@ -489,13 +556,14 @@ if test "X${PATH_SEPARATOR+set}" != Xset; then
     *-DOS) lt_cv_sys_path_separator=';' ;;
     *)     lt_cv_sys_path_separator=':' ;;
   esac
+  PATH_SEPARATOR=$lt_cv_sys_path_separator
 fi
 ])# _LT_AC_LIBTOOL_SYS_PATH_SEPARATOR
 
 # _LT_AC_PROG_ECHO_BACKSLASH
 # --------------------------
 # Add some code to the start of the generated configure script which
-# will find an echo command which doesn;t interpret backslashes.
+# will find an echo command which doesn't interpret backslashes.
 AC_DEFUN([_LT_AC_PROG_ECHO_BACKSLASH],
 [ifdef([AC_DIVERSION_NOTICE], [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
 			      [AC_DIVERT_PUSH(NOTICE)])
@@ -564,7 +632,7 @@ else
   #
   # So, first we look for a working echo in the user's PATH.
 
-  IFS="${IFS= 	}"; save_ifs="$IFS"; IFS="${IFS}${PATH_SEPARATOR}"
+  IFS="${IFS= 	}"; save_ifs="$IFS"; IFS=$PATH_SEPARATOR
   for dir in $PATH /usr/ucb; do
     if (test -f $dir/echo || test -f $dir/echo$ac_exeext) &&
        test "X`($dir/echo '\t') 2>/dev/null`" = 'X\t' &&
@@ -653,7 +721,7 @@ AC_DIVERT_POP
 # _LT_AC_TRY_DLOPEN_SELF (ACTION-IF-TRUE, ACTION-IF-TRUE-W-USCORE,
 #                           ACTION-IF-FALSE, ACTION-IF-CROSS-COMPILING)
 # ------------------------------------------------------------------
-AC_DEFUN(_LT_AC_TRY_DLOPEN_SELF,
+AC_DEFUN([_LT_AC_TRY_DLOPEN_SELF],
 [if test "$cross_compiling" = yes; then :
   [$4]
 else
@@ -740,7 +808,7 @@ rm -fr conftest*
 
 # AC_LIBTOOL_DLOPEN_SELF
 # -------------------
-AC_DEFUN(AC_LIBTOOL_DLOPEN_SELF,
+AC_DEFUN([AC_LIBTOOL_DLOPEN_SELF],
 [if test "x$enable_dlopen" != xyes; then
   enable_dlopen=unknown
   enable_dlopen_self=unknown
@@ -840,10 +908,10 @@ AC_DEFUN([_LT_AC_LTCONFIG_HACK],
 # Sed substitution that helps us do robust quoting.  It backslashifies
 # metacharacters that are still active within double-quoted strings.
 Xsed='sed -e s/^X//'
-[sed_quote_subst='s/\([\\"\\`$\\\\]\)/\\\1/g']
+sed_quote_subst='s/\([[\\"\\`$\\\\]]\)/\\\1/g'
 
 # Same as above, but do not quote variable references.
-[double_quote_subst='s/\([\\"\\`\\\\]\)/\\\1/g']
+double_quote_subst='s/\([[\\"\\`\\\\]]\)/\\\1/g'
 
 # Sed substitution to delay expansion of an escaped shell variable in a
 # double_quote_subst'ed string.
@@ -1134,7 +1202,7 @@ fi
 # Check for any special shared library compilation flags.
 if test -n "$lt_cv_prog_cc_shlib"; then
   AC_MSG_WARN([\`$CC' requires \`$lt_cv_prog_cc_shlib' to build shared libraries])
-  if echo "$old_CC $old_CFLAGS " | [egrep -e "[ 	]$lt_cv_prog_cc_shlib[ 	]"] >/dev/null; then :
+  if echo "$old_CC $old_CFLAGS " | egrep -e "[[ 	]]$lt_cv_prog_cc_shlib[[ 	]]" >/dev/null; then :
   else
    AC_MSG_WARN([add \`$lt_cv_prog_cc_shlib' to the CC or CFLAGS env variable and reconfigure])
     lt_cv_prog_cc_can_build_shared=no
@@ -1415,7 +1483,7 @@ EOF
     # can override, but on older systems we have to supply one (in ltdll.c)
     if test "x$lt_cv_need_dllmain" = "xyes"; then
       ltdll_obj='$output_objdir/$soname-ltdll.'"$ac_objext "
-      ltdll_cmds='test -f $output_objdir/$soname-ltdll.c || sed -e "/^# \/\* ltdll\.c starts here \*\//,/^# \/\* ltdll.c ends here \*\// { s/^# //; p; }" -e d < [$]0 > $output_objdir/$soname-ltdll.c~
+      ltdll_cmds='test -f $output_objdir/$soname-ltdll.c || sed -e "/^# \/\* ltdll\.c starts here \*\//,/^# \/\* ltdll.c ends here \*\// { s/^# //; p; }" -e d < $''0 > $output_objdir/$soname-ltdll.c~
 	test -f $output_objdir/$soname-ltdll.$ac_objext || (cd $output_objdir && $CC -c $soname-ltdll.c)~'
     else
       ltdll_obj=
@@ -1428,7 +1496,7 @@ EOF
     # Be careful not to strip the DATA tag left be newer dlltools.
     export_symbols_cmds="$ltdll_cmds"'
       $DLLTOOL --export-all --exclude-symbols '$dll_exclude_symbols' --output-def $output_objdir/$soname-def '$ltdll_obj'$libobjs $convenience~
-      [sed -e "1,/EXPORTS/d" -e "s/ @ [0-9]*//" -e "s/ *;.*$//"] < $output_objdir/$soname-def > $export_symbols'
+      sed -e "1,/EXPORTS/d" -e "s/ @ [[0-9]]*//" -e "s/ *;.*$//" < $output_objdir/$soname-def > $export_symbols'
 
     # If the export-symbols file already is a .def file (1st line
     # is EXPORTS), use it as is.
@@ -1821,7 +1889,35 @@ else
     ;;
 
   solaris*)
+    # gcc --version < 3.0 without binutils cannot create self contained
+    # shared libraries reliably, requiring libgcc.a to resolve some of
+    # the object symbols generated in some cases.  Libraries that use
+    # assert need libgcc.a to resolve __eprintf, for example.  Linking
+    # a copy of libgcc.a into every shared library to guarantee resolving
+    # such symbols causes other problems:  According to Tim Van Holder
+    # <tim.van.holder@pandora.be>, C++ libraries end up with a separate
+    # (to the application) exception stack for one thing.
     no_undefined_flag=' -z defs'
+    if test "$GCC" = yes; then
+      case `$CC --version 2>/dev/null` in
+      [[12]].*)
+	cat <<EOF 1>&2
+
+*** Warning: Releases of GCC earlier than version 3.0 cannot reliably
+*** create self contained shared libraries on Solaris systems, without
+*** introducing a dependency on libgcc.a.  Therefore, libtool is disabling
+*** -no-undefined support, which will at least allow you to build shared
+*** libraries.  However, you may find that when you link such libraries
+*** into an application without using GCC, you have to manually add
+*** \`gcc --print-libgcc-file-name\` to the link command.  We urge you to
+*** upgrade to a newer version of GCC.  Another option is to rebuild your
+*** current GCC to use the GNU linker from GNU binutils 2.9.1 or newer.
+
+EOF
+        no_undefined_flag=
+	;;
+      esac
+    fi
     # $CC -shared without GNU ld will not create a library from C++
     # object files and a static libstdc++, better avoid it by now
     archive_cmds='$LD -G${allow_undefined_flag} -h $soname -o $lib $libobjs $deplibs $linker_flags'
@@ -1830,7 +1926,7 @@ else
     hardcode_libdir_flag_spec='-R$libdir'
     hardcode_shlibpath_var=no
     case $host_os in
-    [solaris2.[0-5] | solaris2.[0-5].*]) ;;
+    solaris2.[[0-5]] | solaris2.[[0-5]].*) ;;
     *) # Supported since Solaris 2.6 (maybe 2.5.1?)
       whole_archive_flag_spec='-z allextract$convenience -z defaultextract' ;;
     esac
@@ -2010,15 +2106,15 @@ aix4* | aix5*)
     # depend on `.', always an invalid library.  This was fixed in
     # development snapshots of GCC prior to 3.0.
     case $host_os in
-      [ aix4 | aix4.[01] | aix4.[01].*)]
-      if { echo '#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)'
-	   echo ' yes '
-	   echo '#endif'; } | ${CC} -E - | grep yes > /dev/null; then
-	:
-      else
-	can_build_shared=no
-      fi
-      ;;
+      aix4 | aix4.[[01]] | aix4.[[01]].*)
+	if { echo '#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 97)'
+	     echo ' yes '
+	     echo '#endif'; } | ${CC} -E - | grep yes > /dev/null; then
+	  :
+	else
+	  can_build_shared=no
+	fi
+	;;
     esac
     # AIX (on Power*) has no versioning support, so currently we can
     # not hardcode correct soname into executable. Probably we can
@@ -2042,7 +2138,7 @@ aix4* | aix5*)
 amigaos*)
   library_names_spec='$libname.ixlibrary $libname.a'
   # Create ${libname}_ixlibrary.a entries in /sys/libs.
-  finish_eval='for lib in `ls $libdir/*.ixlibrary 2>/dev/null`; do libname=`$echo "X$lib" | [$Xsed -e '\''s%^.*/\([^/]*\)\.ixlibrary$%\1%'\'']`; test $rm /sys/libs/${libname}_ixlibrary.a; $show "(cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a)"; (cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a) || exit 1; done'
+  finish_eval='for lib in `ls $libdir/*.ixlibrary 2>/dev/null`; do libname=`$echo "X$lib" | $Xsed -e '\''s%^.*/\([[^/]]*\)\.ixlibrary$%\1%'\''`; test $rm /sys/libs/${libname}_ixlibrary.a; $show "(cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a)"; (cd /sys/libs && $LN_S $lib ${libname}_ixlibrary.a) || exit 1; done'
   ;;
 
 beos*)
@@ -2073,7 +2169,7 @@ cygwin* | mingw* | pw32*)
   case $GCC,$host_os in
   yes,cygwin*)
     library_names_spec='$libname.dll.a'
-    soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | [sed -e 's/[.]/-/g']`${versuffix}.dll'
+    soname_spec='`echo ${libname} | sed -e 's/^lib/cyg/'``echo ${release} | sed -e 's/[[.]]/-/g'`${versuffix}.dll'
     postinstall_cmds='dlpath=`bash 2>&1 -c '\''. $dir/${file}i;echo \$dlname'\''`~
       dldir=$destdir/`dirname \$dlpath`~
       test -d \$dldir || mkdir -p \$dldir~
@@ -2083,14 +2179,14 @@ cygwin* | mingw* | pw32*)
        $rm \$dlpath'
     ;;
   yes,mingw*)
-    library_names_spec='${libname}`echo ${release} | [sed -e 's/[.]/-/g']`${versuffix}.dll'
+    library_names_spec='${libname}`echo ${release} | sed -e 's/[[.]]/-/g'`${versuffix}.dll'
     sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | sed -e "s/^libraries://" -e "s/;/ /g"`
     ;;
   yes,pw32*)
     library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | sed -e 's/[.]/-/g'`${versuffix}.dll'
     ;;
   *)
-    library_names_spec='${libname}`echo ${release} | [sed -e 's/[.]/-/g']`${versuffix}.dll $libname.lib'
+    library_names_spec='${libname}`echo ${release} | sed -e 's/[[.]]/-/g'`${versuffix}.dll $libname.lib'
     ;;
   esac
   dynamic_linker='Win32 ld.exe'
@@ -3211,6 +3307,7 @@ test "$withval" = no || with_gnu_ld=yes, with_gnu_ld=no)
 AC_REQUIRE([AC_PROG_CC])dnl
 AC_REQUIRE([AC_CANONICAL_HOST])dnl
 AC_REQUIRE([AC_CANONICAL_BUILD])dnl
+AC_REQUIRE([_LT_AC_LIBTOOL_SYS_PATH_SEPARATOR])dnl
 ac_prog=ld
 if test "$GCC" = yes; then
   # Check if gcc -print-prog-name=ld gives a path.
@@ -3224,8 +3321,8 @@ if test "$GCC" = yes; then
   esac
   case $ac_prog in
     # Accept absolute paths.
-    [[\\/]* | [A-Za-z]:[\\/]*)]
-      [re_direlt='/[^/][^/]*/\.\./']
+    [[\\/]]* | [[A-Za-z]]:[[\\/]]*)
+      re_direlt='/[[^/]][[^/]]*/\.\./'
       # Canonicalize the path of ld
       ac_prog=`echo $ac_prog| sed 's%\\\\%/%g'`
       while echo $ac_prog | grep "$re_direlt" > /dev/null 2>&1; do
@@ -3249,7 +3346,7 @@ else
 fi
 AC_CACHE_VAL(lt_cv_path_LD,
 [if test -z "$LD"; then
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATH_SEPARATOR-:}"
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=$PATH_SEPARATOR
   for ac_dir in $PATH; do
     test -z "$ac_dir" && ac_dir=.
     if test -f "$ac_dir/$ac_prog" || test -f "$ac_dir/$ac_prog$ac_exeext"; then
@@ -3313,7 +3410,7 @@ lt_cv_deplibs_check_method='unknown'
 # `unknown' -- same as none, but documents that we really don't know.
 # 'pass_all' -- all dependencies passed with no checks.
 # 'test_compile' -- check by making test program.
-# ['file_magic [regex]'] -- check by looking for files in library path
+# 'file_magic [[regex]]' -- check by looking for files in library path
 # which responds to the $file_magic_cmd with a given egrep regex.
 # If you have `file' or equivalent on your system and you're not sure
 # whether `pass_all' will *always* work, you probably want this one.
@@ -3328,7 +3425,7 @@ beos*)
   ;;
 
 bsdi4*)
-  [lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [ML]SB (shared object|dynamic lib)']
+  lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[ML]]SB (shared object|dynamic lib)'
   lt_cv_file_magic_cmd='/usr/bin/file -L'
   lt_cv_file_magic_test_file=/shlib/libc.so
   ;;
@@ -3357,7 +3454,7 @@ freebsd*)
     i*86 )
       # Not sure whether the presence of OpenBSD here was a mistake.
       # Let's accept both of them until this is cleared up.
-      [lt_cv_deplibs_check_method='file_magic (FreeBSD|OpenBSD)/i[3-9]86 (compact )?demand paged shared library']
+      lt_cv_deplibs_check_method='file_magic (FreeBSD|OpenBSD)/i[[3-9]]86 (compact )?demand paged shared library'
       lt_cv_file_magic_cmd=/usr/bin/file
       lt_cv_file_magic_test_file=`echo /usr/lib/libc.so.*`
       ;;
@@ -3372,7 +3469,7 @@ gnu*)
   ;;
 
 hpux10.20*|hpux11*)
-  [lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|PA-RISC[0-9].[0-9]) shared library']
+  lt_cv_deplibs_check_method='file_magic (s[[0-9]][[0-9]][[0-9]]|PA-RISC[[0-9]].[[0-9]]) shared library'
   lt_cv_file_magic_cmd=/usr/bin/file
   lt_cv_file_magic_test_file=/usr/lib/libc.sl
   ;;
@@ -3391,7 +3488,7 @@ irix5* | irix6*)
     *) libmagic=never-match;;
     esac
     # this will be overridden with pass_all, but let us keep it just in case
-    [lt_cv_deplibs_check_method="file_magic ELF ${libmagic} MSB mips-[1234] dynamic lib MIPS - version 1"]
+    lt_cv_deplibs_check_method="file_magic ELF ${libmagic} MSB mips-[[1234]] dynamic lib MIPS - version 1"
     ;;
   esac
   lt_cv_file_magic_test_file=`echo /lib${libsuff}/libc.so*`
@@ -3405,21 +3502,21 @@ linux-gnu*)
     lt_cv_deplibs_check_method=pass_all ;;
   *)
     # glibc up to 2.1.1 does not perform some relocations on ARM
-    [lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )' ;;]
+    lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB (shared object|dynamic lib )' ;;
   esac
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
   ;;
 
 netbsd*)
   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
-    [lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$']
+    lt_cv_deplibs_check_method='match_pattern /lib[[^/\.]]+\.so\.[[0-9]]+\.[[0-9]]+$'
   else
-    [lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so$']
+    lt_cv_deplibs_check_method='match_pattern /lib[[^/\.]]+\.so$'
   fi
   ;;
 
 newos6*)
-  [lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [ML]SB (executable|dynamic lib)']
+  lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[ML]]SB (executable|dynamic lib)'
   lt_cv_file_magic_cmd=/usr/bin/file
   lt_cv_file_magic_test_file=/usr/lib/libnls.so
   ;;
@@ -3450,14 +3547,14 @@ solaris*)
   lt_cv_file_magic_test_file=/lib/libc.so
   ;;
 
-[sysv5uw[78]* | sysv4*uw2*)]
+sysv5uw[[78]]* | sysv4*uw2*)
   lt_cv_deplibs_check_method=pass_all
   ;;
 
 sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
   case $host_vendor in
   motorola)
-    [lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [ML]SB (shared object|dynamic lib) M[0-9][0-9]* Version [0-9]']
+    lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[ML]]SB (shared object|dynamic lib) M[[0-9]][[0-9]]* Version [[0-9]]'
     lt_cv_file_magic_test_file=`echo /usr/lib/libc.so*`
     ;;
   ncr)
@@ -3465,11 +3562,11 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
     ;;
   sequent)
     lt_cv_file_magic_cmd='/bin/file'
-    [lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )']
+    lt_cv_deplibs_check_method='file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB (shared object|dynamic lib )'
     ;;
   sni)
     lt_cv_file_magic_cmd='/bin/file'
-    [lt_cv_deplibs_check_method="file_magic ELF [0-9][0-9]*-bit [LM]SB dynamic lib"]
+    lt_cv_deplibs_check_method="file_magic ELF [[0-9]][[0-9]]*-bit [[LM]]SB dynamic lib"
     lt_cv_file_magic_test_file=/lib/libc.so
     ;;
   esac
@@ -3483,13 +3580,14 @@ deplibs_check_method=$lt_cv_deplibs_check_method
 
 # AC_PROG_NM - find the path to a BSD-compatible name lister
 AC_DEFUN([AC_PROG_NM],
-[AC_MSG_CHECKING([for BSD-compatible nm])
+[AC_REQUIRE([_LT_AC_LIBTOOL_SYS_PATH_SEPARATOR])dnl
+AC_MSG_CHECKING([for BSD-compatible nm])
 AC_CACHE_VAL(lt_cv_path_NM,
 [if test -n "$NM"; then
   # Let the user override the test.
   lt_cv_path_NM="$NM"
 else
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS="${IFS}${PATH_SEPARATOR-:}"
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=$PATH_SEPARATOR
   for ac_dir in $PATH /usr/ccs/bin /usr/ucb /bin; do
     test -z "$ac_dir" && ac_dir=.
     tmp_nm=$ac_dir/${ac_tool_prefix}nm
@@ -3601,900 +3699,65 @@ AC_DEFUN([AM_PROG_NM],        [AC_PROG_NM])
 ifelse([AC_DISABLE_FAST_INSTALL])
 
 
-AC_DEFUN(XML_I18N_TOOLS_NEWER_THAN_0_9,[ true ])
+dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
+dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
+dnl also defines GSTUFF_PKG_ERRORS on error
+AC_DEFUN(PKG_CHECK_MODULES, [
+  succeeded=no
 
-dnl AC_PROG_XML_I18N_TOOLS([MINIMUM-VERSION [,"G2" if always using --utf8] ])
-# serial 1 AC_PROG_XML_I18N_TOOLS
-AC_DEFUN(AC_PROG_XML_I18N_TOOLS,
-[
-  AC_DEFUN(X18T_PFORG1,  dnl and -u for G2
-        ifelse([$2],[G2],[ -u ], [ -p ]))
-  AC_DEFUN(X18T_XML_KIND, 
-        ifelse([$2],[G2],[ -u ],[ $(XML_I18N_XML_KIND) ]))
-  AC_DEFUN(X18T_KEYS_KIND, 
-        ifelse([$2],[G2],[ -u ],[ $(XML_I18N_KEYS_KIND) ]))
-
-  XML_I18N_MERGE_DESKTOP_RULE='%.desktop:   %.desktop.in   $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
-XML_I18N_MERGE_DIRECTORY_RULE='%.directory: %.directory.in $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
-     XML_I18N_MERGE_KEYS_RULE='%.keys:      %.keys.in      $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -k X18T_KEYS_KIND'
-      XML_I18N_MERGE_OAF_RULE='%.oaf:       %.oaf.in       $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -o -p'
-     XML_I18N_MERGE_PONG_RULE='%.pong:      %.pong.in      $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x X18T_PFORG1'
-   XML_I18N_MERGE_SERVER_RULE='%.server:    %.server.in    $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -o -u'
-    XML_I18N_MERGE_SHEET_RULE='%.sheet:     %.sheet.in     $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x -u'
-XML_I18N_MERGE_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -d X18T_PFORG1'
-      XML_I18N_MERGE_XML_RULE='%.xml:       %.xml.in       $(top_builddir)/xml-i18n-merge $(wildcard $(top_srcdir)/po/*.po) ; $(top_builddir)/xml-i18n-merge $(top_srcdir)/po $< [$]@ -x X18T_XML_KIND'
-
-AC_SUBST(XML_I18N_MERGE_DESKTOP_RULE)
-AC_SUBST(XML_I18N_MERGE_DIRECTORY_RULE)
-AC_SUBST(XML_I18N_MERGE_KEYS_RULE)
-AC_SUBST(XML_I18N_MERGE_OAF_RULE)
-AC_SUBST(XML_I18N_MERGE_PONG_RULE)
-AC_SUBST(XML_I18N_MERGE_SERVER_RULE)
-AC_SUBST(XML_I18N_MERGE_SHEET_RULE)
-AC_SUBST(XML_I18N_MERGE_SOUNDLIST_RULE)
-AC_SUBST(XML_I18N_MERGE_XML_RULE)
-
-# Use the tools built into the package, not the ones that are installed.
-
-XML_I18N_EXTRACT='$(top_builddir)/xml-i18n-extract'
-AC_SUBST(XML_I18N_EXTRACT)dnl
-
-XML_I18N_MERGE='$(top_builddir)/xml-i18n-merge'
-AC_SUBST(XML_I18N_MERGE)dnl
-
-XML_I18N_UPDATE='$(top_builddir)/xml-i18n-update'
-AC_SUBST(XML_I18N_UPDATE)dnl
-
-AC_PATH_PROG(INTLTOOL_PERL, perl)
-if test -z "$INTLTOOL_PERL"; then
-   AC_MSG_ERROR([perl not found; required for xml-i18n-tools])
-fi
-if test -z "`$INTLTOOL_PERL -v | fgrep '5.' 2> /dev/null`"; then
-   AC_MSG_ERROR([perl 5.x required for xml-i18n-tools])
-fi
-
-dnl  manually sed perl in so people don't have to put the xml-i18n-tools scripts in their 
-dnl  AC_OUTPUT
-AC_OUTPUT_COMMANDS([
-sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-extract.in > xml-i18n-extract.out
-if cmp -s xml-i18n-extract xml-i18n-extract.out 2>/dev/null; then
-  rm -f xml-i18n-extract.out
-else
-  mv -f xml-i18n-extract.out xml-i18n-extract
-fi
-chmod ugo+x xml-i18n-extract
-chmod u+w xml-i18n-extract
-
-sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-merge.in > xml-i18n-merge.out
-if cmp -s xml-i18n-merge xml-i18n-merge.out 2>/dev/null; then
-  rm -f xml-i18n-merge.out
-else
-  mv -f xml-i18n-merge.out xml-i18n-merge
-fi
-chmod ugo+x xml-i18n-merge
-chmod u+w xml-i18n-merge
-
-sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/xml-i18n-update.in > xml-i18n-update.out
-if cmp -s xml-i18n-update xml-i18n-update.out 2>/dev/null; then
-  rm -f xml-i18n-update.out
-else
-  mv -f xml-i18n-update.out xml-i18n-update
-fi
-chmod ugo+x xml-i18n-update
-chmod u+w xml-i18n-update
-], INTLTOOL_PERL=${INTLTOOL_PERL})
-
-# Redirect the config.log output again, so that the ltconfig log is not
-# clobbered by the next message.
-exec 5>>./config.log
-])
-
-dnl old names
-AC_DEFUN(AM_PROG_XML_I18N_TOOLS, [indir([AC_PROG_XML_I18N_TOOLS])])dnl
-
-#serial 1
-# This test replaces the one in autoconf.
-# Currently this macro should have the same name as the autoconf macro
-# because gettext's gettext.m4 (distributed in the automake package)
-# still uses it.  Otherwise, the use in gettext.m4 makes autoheader
-# give these diagnostics:
-#   configure.in:556: AC_TRY_COMPILE was called before AC_ISC_POSIX
-#   configure.in:556: AC_TRY_RUN was called before AC_ISC_POSIX
-
-undefine([AC_ISC_POSIX])
-
-AC_DEFUN([AC_ISC_POSIX],
-  [
-    dnl This test replaces the obsolescent AC_ISC_POSIX kludge.
-    AC_CHECK_LIB(cposix, strerror, [LIBS="$LIBS -lcposix"])
-  ]
-)
-
-dnl ===========================================================================
-
-dnl NAUTILUS_VERSION_CANON(version)
-dnl                     1
-
-AC_DEFUN(NAUTILUS_VERSION_CANON, [`
-
-	dnl Assumes that there are no more than 999 revisions at a level,
-	dnl no more than three levels of revision.
-	dnl
-	dnl Any more than that, and test starts messing up the numeric
-	dnl comparisons because its integers overflow, and there's no
-	dnl way to do string comparisons in the shell.  Grr.
-	dnl
-	dnl Must come up with some way to fix this.
-
-	echo "$1" |
-	tr . '\012' |
-	sed -e 's/^/000/' -e 's/^.*\(...\)/\1/' |
-	tr -d '\012' |
-	sed 's/$/000000000/
-	     s/^\(.........\).*/\1/'
-`])
-
-dnl NAUTILUS_VERSION_INSIST(package, get-version-cmd, operator, want-version-var)
-dnl                      1        2                3         4
-
-AC_DEFUN(NAUTILUS_VERSION_INSIST, [
-	ez_want_version=[$]$4
-
-	case "$3" in
-		">")	ez_operator=-gt ;;
-		">=")	ez_operator=-ge ;;
-		"<")	ez_operator=-lt ;;
-		"<=")	ez_operator=-le ;;
-		"=")	ez_operator=-eq ;;
-		"!=")	ez_operator=-ne ;;
-		*)	AC_ERROR(Unknown operator $3 in configure script) ;;
-	esac
-
-	AC_MSG_CHECKING(for $1 $3 [$ez_want_version])
-
-	if ez_installed_version="`$2`"
-	then
-		AC_MSG_RESULT([$ez_installed_version])
-	else
-		AC_ERROR($2 failed)
-	fi
-
-	if test "NAUTILUS_VERSION_CANON([$ez_installed_version])" "$ez_operator" \
-		"NAUTILUS_VERSION_CANON([$ez_want_version])"
-	then
-		:
-		AC_SUBST($4)
-	else
-		AC_ERROR($1 version [$ez_want_version] is required.)
-	fi
-])
-
-dnl NAUTILUS_PATH_FREETYPE2([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for FreeType2, and define FREETYPE2_CFLAGS and FREETYPE2_LIBS
-dnl
-dnl Shamelessly cut-n-pasted from AM_PATH_LIBART
-dnl
-AC_DEFUN(NAUTILUS_PATH_FREETYPE2,
-[dnl 
-dnl Get the cflags and libraries from the freetype-config script
-dnl
-AC_ARG_WITH(freetype2-prefix,[  --with-freetype2-prefix=PFX   Prefix where FREETYPE2 is installed (optional)],
-            freetype2_prefix="$withval", freetype2_prefix="")
-AC_ARG_WITH(freetype2-exec-prefix,[  --with-freetype2-exec-prefix=PFX Exec prefix where FREETYPE2 is installed (optional)],
-            freetype2_exec_prefix="$withval", freetype2_exec_prefix="")
-AC_ARG_ENABLE(freetype2test, [  --disable-freetype2test       Do not try to compile and run a test FREETYPE2 program],
-		    , enable_freetype2test=yes)
-
-  if test x$freetype2_exec_prefix != x ; then
-     freetype2_args="$freetype2_args --exec-prefix=$freetype2_exec_prefix"
-     if test x${FREETYPE2_CONFIG+set} != xset ; then
-        FREETYPE2_CONFIG=$freetype2_exec_prefix/bin/freetype-config
-     fi
-  fi
-  if test x$freetype2_prefix != x ; then
-     freetype2_args="$freetype2_args --prefix=$freetype2_prefix"
-     if test x${FREETYPE2_CONFIG+set} != xset ; then
-        FREETYPE2_CONFIG=$freetype2_prefix/bin/freetype-config
-     fi
+  if test -z "$PKG_CONFIG"; then
+    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
   fi
 
-  AC_PATH_PROG(FREETYPE2_CONFIG, freetype-config, no)
-  min_freetype2_version=ifelse([$1], ,0.2.5,$1)
-  AC_MSG_CHECKING(for FREETYPE2 - version >= $min_freetype2_version)
-  no_freetype2=""
-  if test "$FREETYPE2_CONFIG" = "no" ; then
-    no_freetype2=yes
+  if test "$PKG_CONFIG" = "no" ; then
+     echo "*** The pkg-config script could not be found. Make sure it is"
+     echo "*** in your path, or set the PKG_CONFIG environment variable"
+     echo "*** to the full path to pkg-config."
+     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
   else
-    FREETYPE2_CFLAGS=`$FREETYPE2_CONFIG $freetype2conf_args --cflags`
-    FREETYPE2_LIBS=`$FREETYPE2_CONFIG $freetype2conf_args --libs`
+     PKG_CONFIG_MIN_VERSION=0.9.0
+     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+        AC_MSG_CHECKING(for $2)
 
-    freetype2_major_version=`$FREETYPE2_CONFIG $freetype2_args --version | \
-	sed 's/\([[0-9]]*\)[[:.]]\([[0-9]]*\)[[:.]]\([[0-9]]*\)/\1/'`
-    freetype2_minor_version=`$FREETYPE2_CONFIG $freetype2_args --version | \
-	sed 's/\([[0-9]]*\)[[:.]]\([[0-9]]*\)[[:.]]\([[0-9]]*\)/\2/'`
-    freetype2_micro_version=`$FREETYPE2_CONFIG $freetype2_args --version | \
-	sed 's/\([[0-9]]*\)[[:.]]\([[0-9]]*\)[[:.]]\([[0-9]]*\)/\3/'`
+        if $PKG_CONFIG --exists "$2" ; then
+            AC_MSG_RESULT(yes)
+            succeeded=yes
 
-    if test "x$enable_freetype2test" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CFLAGS="$CFLAGS $FREETYPE2_CFLAGS"
-      LIBS="$LIBS $FREETYPE2_LIBS"
-dnl
-dnl Now check if the installed FREETYPE2 is sufficiently new. (Also sanity
-dnl checks the results of freetype-config to some extent
-dnl
-      rm -f conf.freetype2test
-      AC_TRY_RUN([
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <freetype/freetype.h>
+            AC_MSG_CHECKING($1_CFLAGS)
+            $1_CFLAGS=`$PKG_CONFIG --cflags "$2"`
+            AC_MSG_RESULT($$1_CFLAGS)
 
-char*
-my_strdup (char *str)
-{
-  char *new_str;
-  
-  if (str)
-    {
-      new_str = malloc ((strlen (str) + 1) * sizeof(char));
-      strcpy (new_str, str);
-    }
-  else
-    new_str = NULL;
-  
-  return new_str;
-}
+            AC_MSG_CHECKING($1_LIBS)
+            $1_LIBS=`$PKG_CONFIG --libs "$2"`
+            AC_MSG_RESULT($$1_LIBS)
+        else
+            $1_CFLAGS=""
+            $1_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but 
+            ## do set a variable so people can do so.
+            $1_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
+            ifelse([$4], ,echo $$1_PKG_ERRORS,)
+        fi
 
-int main ()
-{
-  int major, minor, micro;
-  char *tmp_version;
-
-  system ("touch conf.freetype2test");
-
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = my_strdup("$min_freetype2_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_freetype2_version");
-     exit(1);
-   }
-
-   if (($freetype2_major_version > major) ||
-      (($freetype2_major_version == major) && ($freetype2_minor_version > minor)) ||
-      (($freetype2_major_version == major) && ($freetype2_minor_version == minor) && ($freetype2_micro_version >= micro)))
-    {
-      return 0;
-    }
-  else
-    {
-      printf("\n");
-      printf("*** \n");
-      printf("*** 'freetype-config --version' returned %d.%d.%d, but the minimum version\n", $freetype2_major_version, $freetype2_minor_version, $freetype2_micro_version);
-      printf("*** of FREETYPE2 required is %d.%d.%d. If freetype-config is correct, then it is\n", major, minor, micro);
-      printf("*** best to upgrade to the required version.\n");
-      printf("*** If freetype-config was wrong, set the environment variable FREETYPE2_CONFIG\n");
-      printf("*** to point to the correct copy of freetype-config, and remove the file\n");
-      printf("*** config.cache before re-running configure\n");
-      printf("*** \n");
-
-      return 1;
-    }
-}
-
-],, no_freetype2=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
-     fi
-  fi
-  if test "x$no_freetype2" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$FREETYPE2_CONFIG" = "no" ; then
-       echo "*** The freetype-config script installed by FREETYPE2 could not be found"
-       echo "*** If FREETYPE2 was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the FREETYPE2_CONFIG environment variable to the"
-       echo "*** full path to freetype-config."
+        AC_SUBST($1_CFLAGS)
+        AC_SUBST($1_LIBS)
      else
-       if test -f conf.freetype2test ; then
-        :
-       else
-          echo "*** Could not run FREETYPE2 test program, checking why..."
-          CFLAGS="$CFLAGS $FREETYPE2_CFLAGS"
-          LIBS="$LIBS $FREETYPE2_LIBS"
-          AC_TRY_LINK([
-#include <stdio.h>
-#include <freetype/freetype.h>
-],      [ return 0; ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding FREETYPE2 or finding the wrong"
-          echo "*** version of FREETYPE2. If it is not finding FREETYPE2, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means FREETYPE2 was incorrectly installed"
-          echo "*** or that you have moved FREETYPE2 since it was installed. In the latter case, you"
-          echo "*** may want to edit the freetype-config script: $FREETYPE2_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
+        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
+        echo "*** See http://www.freedesktop.org/software/pkgconfig"
      fi
-     FREETYPE2_CFLAGS=""
-     FREETYPE2_LIBS=""
+  fi
+
+  if test $succeeded = yes; then
      ifelse([$3], , :, [$3])
+  else
+     ifelse([$4], , AC_MSG_ERROR([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
   fi
-  AC_SUBST(FREETYPE2_CFLAGS)
-  AC_SUBST(FREETYPE2_LIBS)
-  rm -f conf.freetype2test
 ])
 
-# Configure paths for LIBART
-# Raph Levien 98-11-18
-# stolen from Manish Singh    98-9-30
-# stolen back from Frank Belew
-# stolen from Manish Singh
-# Shamelessly stolen from Owen Taylor
 
-dnl AM_PATH_LIBART([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for LIBART, and define LIBART_CFLAGS and LIBART_LIBS
-dnl
-AC_DEFUN(AM_PATH_LIBART,
-[dnl 
-dnl Get the cflags and libraries from the libart-config script
-dnl
-AC_ARG_WITH(libart-prefix,[  --with-libart-prefix=PFX   Prefix where LIBART is installed (optional)],
-            libart_prefix="$withval", libart_prefix="")
-AC_ARG_WITH(libart-exec-prefix,[  --with-libart-exec-prefix=PFX Exec prefix where LIBART is installed (optional)],
-            libart_exec_prefix="$withval", libart_exec_prefix="")
-AC_ARG_ENABLE(libarttest, [  --disable-libarttest       Do not try to compile and run a test LIBART program],
-		    , enable_libarttest=yes)
-
-  if test x$libart_exec_prefix != x ; then
-     libart_args="$libart_args --exec-prefix=$libart_exec_prefix"
-     if test x${LIBART_CONFIG+set} != xset ; then
-        LIBART_CONFIG=$libart_exec_prefix/bin/libart-config
-     fi
-  fi
-  if test x$libart_prefix != x ; then
-     libart_args="$libart_args --prefix=$libart_prefix"
-     if test x${LIBART_CONFIG+set} != xset ; then
-        LIBART_CONFIG=$libart_prefix/bin/libart-config
-     fi
-  fi
-
-  AC_PATH_PROG(LIBART_CONFIG, libart-config, no)
-  min_libart_version=ifelse([$1], ,0.2.5,$1)
-  AC_MSG_CHECKING(for LIBART - version >= $min_libart_version)
-  no_libart=""
-  if test "$LIBART_CONFIG" = "no" ; then
-    no_libart=yes
-  else
-    LIBART_CFLAGS=`$LIBART_CONFIG $libartconf_args --cflags`
-    LIBART_LIBS=`$LIBART_CONFIG $libartconf_args --libs`
-
-    libart_major_version=`$LIBART_CONFIG $libart_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    libart_minor_version=`$LIBART_CONFIG $libart_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    libart_micro_version=`$LIBART_CONFIG $libart_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_libarttest" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CFLAGS="$CFLAGS $LIBART_CFLAGS"
-      LIBS="$LIBS $LIBART_LIBS"
-dnl
-dnl Now check if the installed LIBART is sufficiently new. (Also sanity
-dnl checks the results of libart-config to some extent
-dnl
-      rm -f conf.libarttest
-      AC_TRY_RUN([
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <libart_lgpl/libart.h>
-
-char*
-my_strdup (char *str)
-{
-  char *new_str;
-  
-  if (str)
-    {
-      new_str = malloc ((strlen (str) + 1) * sizeof(char));
-      strcpy (new_str, str);
-    }
-  else
-    new_str = NULL;
-  
-  return new_str;
-}
-
-int main ()
-{
-  int major, minor, micro;
-  char *tmp_version;
-
-  system ("touch conf.libarttest");
-
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = my_strdup("$min_libart_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_libart_version");
-     exit(1);
-   }
-
-   if (($libart_major_version > major) ||
-      (($libart_major_version == major) && ($libart_minor_version > minor)) ||
-      (($libart_major_version == major) && ($libart_minor_version == minor) && ($libart_micro_version >= micro)))
-    {
-      return 0;
-    }
-  else
-    {
-      printf("\n*** 'libart-config --version' returned %d.%d.%d, but the minimum version\n", $libart_major_version, $libart_minor_version, $libart_micro_version);
-      printf("*** of LIBART required is %d.%d.%d. If libart-config is correct, then it is\n", major, minor, micro);
-      printf("*** best to upgrade to the required version.\n");
-      printf("*** If libart-config was wrong, set the environment variable LIBART_CONFIG\n");
-      printf("*** to point to the correct copy of libart-config, and remove the file\n");
-      printf("*** config.cache before re-running configure\n");
-      return 1;
-    }
-}
-
-],, no_libart=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
-     fi
-  fi
-  if test "x$no_libart" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$LIBART_CONFIG" = "no" ; then
-       echo "*** The libart-config script installed by LIBART could not be found"
-       echo "*** If LIBART was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the LIBART_CONFIG environment variable to the"
-       echo "*** full path to libart-config."
-     else
-       if test -f conf.libarttest ; then
-        :
-       else
-          echo "*** Could not run LIBART test program, checking why..."
-          CFLAGS="$CFLAGS $LIBART_CFLAGS"
-          LIBS="$LIBS $LIBART_LIBS"
-          AC_TRY_LINK([
-#include <stdio.h>
-#include <libart_lgpl/libart.h>
-],      [ return 0; ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding LIBART or finding the wrong"
-          echo "*** version of LIBART. If it is not finding LIBART, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means LIBART was incorrectly installed"
-          echo "*** or that you have moved LIBART since it was installed. In the latter case, you"
-          echo "*** may want to edit the libart-config script: $LIBART_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
-     fi
-     LIBART_CFLAGS=""
-     LIBART_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(LIBART_CFLAGS)
-  AC_SUBST(LIBART_LIBS)
-  rm -f conf.libarttest
-])
-
-# Configure paths for GLIB
-# Owen Taylor     97-11-3
-
-dnl AM_PATH_GLIB([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
-dnl Test for GLIB, and define GLIB_CFLAGS and GLIB_LIBS, if "gmodule" or 
-dnl gthread is specified in MODULES, pass to glib-config
-dnl
-AC_DEFUN(AM_PATH_GLIB,
-[dnl 
-dnl Get the cflags and libraries from the glib-config script
-dnl
-AC_ARG_WITH(glib-prefix,[  --with-glib-prefix=PFX   Prefix where GLIB is installed (optional)],
-            glib_config_prefix="$withval", glib_config_prefix="")
-AC_ARG_WITH(glib-exec-prefix,[  --with-glib-exec-prefix=PFX Exec prefix where GLIB is installed (optional)],
-            glib_config_exec_prefix="$withval", glib_config_exec_prefix="")
-AC_ARG_ENABLE(glibtest, [  --disable-glibtest       Do not try to compile and run a test GLIB program],
-		    , enable_glibtest=yes)
-
-  if test x$glib_config_exec_prefix != x ; then
-     glib_config_args="$glib_config_args --exec-prefix=$glib_config_exec_prefix"
-     if test x${GLIB_CONFIG+set} != xset ; then
-        GLIB_CONFIG=$glib_config_exec_prefix/bin/glib-config
-     fi
-  fi
-  if test x$glib_config_prefix != x ; then
-     glib_config_args="$glib_config_args --prefix=$glib_config_prefix"
-     if test x${GLIB_CONFIG+set} != xset ; then
-        GLIB_CONFIG=$glib_config_prefix/bin/glib-config
-     fi
-  fi
-
-  for module in . $4
-  do
-      case "$module" in
-         gmodule) 
-             glib_config_args="$glib_config_args gmodule"
-         ;;
-         gthread) 
-             glib_config_args="$glib_config_args gthread"
-         ;;
-      esac
-  done
-
-  AC_PATH_PROG(GLIB_CONFIG, glib-config, no)
-  min_glib_version=ifelse([$1], ,0.99.7,$1)
-  AC_MSG_CHECKING(for GLIB - version >= $min_glib_version)
-  no_glib=""
-  if test "$GLIB_CONFIG" = "no" ; then
-    no_glib=yes
-  else
-    GLIB_CFLAGS=`$GLIB_CONFIG $glib_config_args --cflags`
-    GLIB_LIBS=`$GLIB_CONFIG $glib_config_args --libs`
-    glib_config_major_version=`$GLIB_CONFIG $glib_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    glib_config_minor_version=`$GLIB_CONFIG $glib_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    glib_config_micro_version=`$GLIB_CONFIG $glib_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_glibtest" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CFLAGS="$CFLAGS $GLIB_CFLAGS"
-      LIBS="$GLIB_LIBS $LIBS"
-dnl
-dnl Now check if the installed GLIB is sufficiently new. (Also sanity
-dnl checks the results of glib-config to some extent
-dnl
-      rm -f conf.glibtest
-      AC_TRY_RUN([
-#include <glib.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-int 
-main ()
-{
-  int major, minor, micro;
-  char *tmp_version;
-
-  system ("touch conf.glibtest");
-
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = g_strdup("$min_glib_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_glib_version");
-     exit(1);
-   }
-
-  if ((glib_major_version != $glib_config_major_version) ||
-      (glib_minor_version != $glib_config_minor_version) ||
-      (glib_micro_version != $glib_config_micro_version))
-    {
-      printf("\n*** 'glib-config --version' returned %d.%d.%d, but GLIB (%d.%d.%d)\n", 
-             $glib_config_major_version, $glib_config_minor_version, $glib_config_micro_version,
-             glib_major_version, glib_minor_version, glib_micro_version);
-      printf ("*** was found! If glib-config was correct, then it is best\n");
-      printf ("*** to remove the old version of GLIB. You may also be able to fix the error\n");
-      printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
-      printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
-      printf("*** required on your system.\n");
-      printf("*** If glib-config was wrong, set the environment variable GLIB_CONFIG\n");
-      printf("*** to point to the correct copy of glib-config, and remove the file config.cache\n");
-      printf("*** before re-running configure\n");
-    } 
-  else if ((glib_major_version != GLIB_MAJOR_VERSION) ||
-	   (glib_minor_version != GLIB_MINOR_VERSION) ||
-           (glib_micro_version != GLIB_MICRO_VERSION))
-    {
-      printf("*** GLIB header files (version %d.%d.%d) do not match\n",
-	     GLIB_MAJOR_VERSION, GLIB_MINOR_VERSION, GLIB_MICRO_VERSION);
-      printf("*** library (version %d.%d.%d)\n",
-	     glib_major_version, glib_minor_version, glib_micro_version);
-    }
-  else
-    {
-      if ((glib_major_version > major) ||
-        ((glib_major_version == major) && (glib_minor_version > minor)) ||
-        ((glib_major_version == major) && (glib_minor_version == minor) && (glib_micro_version >= micro)))
-      {
-        return 0;
-       }
-     else
-      {
-        printf("\n*** An old version of GLIB (%d.%d.%d) was found.\n",
-               glib_major_version, glib_minor_version, glib_micro_version);
-        printf("*** You need a version of GLIB newer than %d.%d.%d. The latest version of\n",
-	       major, minor, micro);
-        printf("*** GLIB is always available from ftp://ftp.gtk.org.\n");
-        printf("***\n");
-        printf("*** If you have already installed a sufficiently new version, this error\n");
-        printf("*** probably means that the wrong copy of the glib-config shell script is\n");
-        printf("*** being found. The easiest way to fix this is to remove the old version\n");
-        printf("*** of GLIB, but you can also set the GLIB_CONFIG environment to point to the\n");
-        printf("*** correct copy of glib-config. (In this case, you will have to\n");
-        printf("*** modify your LD_LIBRARY_PATH enviroment variable, or edit /etc/ld.so.conf\n");
-        printf("*** so that the correct libraries are found at run-time))\n");
-      }
-    }
-  return 1;
-}
-],, no_glib=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
-     fi
-  fi
-  if test "x$no_glib" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$GLIB_CONFIG" = "no" ; then
-       echo "*** The glib-config script installed by GLIB could not be found"
-       echo "*** If GLIB was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the GLIB_CONFIG environment variable to the"
-       echo "*** full path to glib-config."
-     else
-       if test -f conf.glibtest ; then
-        :
-       else
-          echo "*** Could not run GLIB test program, checking why..."
-          CFLAGS="$CFLAGS $GLIB_CFLAGS"
-          LIBS="$LIBS $GLIB_LIBS"
-          AC_TRY_LINK([
-#include <glib.h>
-#include <stdio.h>
-],      [ return ((glib_major_version) || (glib_minor_version) || (glib_micro_version)); ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding GLIB or finding the wrong"
-          echo "*** version of GLIB. If it is not finding GLIB, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
-          echo "***"
-          echo "*** If you have a RedHat 5.0 system, you should remove the GTK package that"
-          echo "*** came with the system with the command"
-          echo "***"
-          echo "***    rpm --erase --nodeps gtk gtk-devel" ],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means GLIB was incorrectly installed"
-          echo "*** or that you have moved GLIB since it was installed. In the latter case, you"
-          echo "*** may want to edit the glib-config script: $GLIB_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
-     fi
-     GLIB_CFLAGS=""
-     GLIB_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(GLIB_CFLAGS)
-  AC_SUBST(GLIB_LIBS)
-  rm -f conf.glibtest
-])
-
-# Configure paths for GTK+
-# Owen Taylor     97-11-3
-
-dnl AM_PATH_GTK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
-dnl Test for GTK, and define GTK_CFLAGS and GTK_LIBS
-dnl
-AC_DEFUN(AM_PATH_GTK,
-[dnl 
-dnl Get the cflags and libraries from the gtk-config script
-dnl
-AC_ARG_WITH(gtk-prefix,[  --with-gtk-prefix=PFX   Prefix where GTK is installed (optional)],
-            gtk_config_prefix="$withval", gtk_config_prefix="")
-AC_ARG_WITH(gtk-exec-prefix,[  --with-gtk-exec-prefix=PFX Exec prefix where GTK is installed (optional)],
-            gtk_config_exec_prefix="$withval", gtk_config_exec_prefix="")
-AC_ARG_ENABLE(gtktest, [  --disable-gtktest       Do not try to compile and run a test GTK program],
-		    , enable_gtktest=yes)
-
-  for module in . $4
-  do
-      case "$module" in
-         gthread) 
-             gtk_config_args="$gtk_config_args gthread"
-         ;;
-      esac
-  done
-
-  if test x$gtk_config_exec_prefix != x ; then
-     gtk_config_args="$gtk_config_args --exec-prefix=$gtk_config_exec_prefix"
-     if test x${GTK_CONFIG+set} != xset ; then
-        GTK_CONFIG=$gtk_config_exec_prefix/bin/gtk-config
-     fi
-  fi
-  if test x$gtk_config_prefix != x ; then
-     gtk_config_args="$gtk_config_args --prefix=$gtk_config_prefix"
-     if test x${GTK_CONFIG+set} != xset ; then
-        GTK_CONFIG=$gtk_config_prefix/bin/gtk-config
-     fi
-  fi
-
-  AC_PATH_PROG(GTK_CONFIG, gtk-config, no)
-  min_gtk_version=ifelse([$1], ,0.99.7,$1)
-  AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
-  no_gtk=""
-  if test "$GTK_CONFIG" = "no" ; then
-    no_gtk=yes
-  else
-    GTK_CFLAGS=`$GTK_CONFIG $gtk_config_args --cflags`
-    GTK_LIBS=`$GTK_CONFIG $gtk_config_args --libs`
-    gtk_config_major_version=`$GTK_CONFIG $gtk_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    gtk_config_minor_version=`$GTK_CONFIG $gtk_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    gtk_config_micro_version=`$GTK_CONFIG $gtk_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_gtktest" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CFLAGS="$CFLAGS $GTK_CFLAGS"
-      LIBS="$GTK_LIBS $LIBS"
-dnl
-dnl Now check if the installed GTK is sufficiently new. (Also sanity
-dnl checks the results of gtk-config to some extent
-dnl
-      rm -f conf.gtktest
-      AC_TRY_RUN([
-#include <gtk/gtk.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-int 
-main ()
-{
-  int major, minor, micro;
-  char *tmp_version;
-
-  system ("touch conf.gtktest");
-
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = g_strdup("$min_gtk_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_gtk_version");
-     exit(1);
-   }
-
-  if ((gtk_major_version != $gtk_config_major_version) ||
-      (gtk_minor_version != $gtk_config_minor_version) ||
-      (gtk_micro_version != $gtk_config_micro_version))
-    {
-      printf("\n*** 'gtk-config --version' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
-             $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
-             gtk_major_version, gtk_minor_version, gtk_micro_version);
-      printf ("*** was found! If gtk-config was correct, then it is best\n");
-      printf ("*** to remove the old version of GTK+. You may also be able to fix the error\n");
-      printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
-      printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
-      printf("*** required on your system.\n");
-      printf("*** If gtk-config was wrong, set the environment variable GTK_CONFIG\n");
-      printf("*** to point to the correct copy of gtk-config, and remove the file config.cache\n");
-      printf("*** before re-running configure\n");
-    } 
-#if defined (GTK_MAJOR_VERSION) && defined (GTK_MINOR_VERSION) && defined (GTK_MICRO_VERSION)
-  else if ((gtk_major_version != GTK_MAJOR_VERSION) ||
-	   (gtk_minor_version != GTK_MINOR_VERSION) ||
-           (gtk_micro_version != GTK_MICRO_VERSION))
-    {
-      printf("*** GTK+ header files (version %d.%d.%d) do not match\n",
-	     GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
-      printf("*** library (version %d.%d.%d)\n",
-	     gtk_major_version, gtk_minor_version, gtk_micro_version);
-    }
-#endif /* defined (GTK_MAJOR_VERSION) ... */
-  else
-    {
-      if ((gtk_major_version > major) ||
-        ((gtk_major_version == major) && (gtk_minor_version > minor)) ||
-        ((gtk_major_version == major) && (gtk_minor_version == minor) && (gtk_micro_version >= micro)))
-      {
-        return 0;
-       }
-     else
-      {
-        printf("\n*** An old version of GTK+ (%d.%d.%d) was found.\n",
-               gtk_major_version, gtk_minor_version, gtk_micro_version);
-        printf("*** You need a version of GTK+ newer than %d.%d.%d. The latest version of\n",
-	       major, minor, micro);
-        printf("*** GTK+ is always available from ftp://ftp.gtk.org.\n");
-        printf("***\n");
-        printf("*** If you have already installed a sufficiently new version, this error\n");
-        printf("*** probably means that the wrong copy of the gtk-config shell script is\n");
-        printf("*** being found. The easiest way to fix this is to remove the old version\n");
-        printf("*** of GTK+, but you can also set the GTK_CONFIG environment to point to the\n");
-        printf("*** correct copy of gtk-config. (In this case, you will have to\n");
-        printf("*** modify your LD_LIBRARY_PATH enviroment variable, or edit /etc/ld.so.conf\n");
-        printf("*** so that the correct libraries are found at run-time))\n");
-      }
-    }
-  return 1;
-}
-],, no_gtk=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
-     fi
-  fi
-  if test "x$no_gtk" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$GTK_CONFIG" = "no" ; then
-       echo "*** The gtk-config script installed by GTK could not be found"
-       echo "*** If GTK was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the GTK_CONFIG environment variable to the"
-       echo "*** full path to gtk-config."
-     else
-       if test -f conf.gtktest ; then
-        :
-       else
-          echo "*** Could not run GTK test program, checking why..."
-          CFLAGS="$CFLAGS $GTK_CFLAGS"
-          LIBS="$LIBS $GTK_LIBS"
-          AC_TRY_LINK([
-#include <gtk/gtk.h>
-#include <stdio.h>
-],      [ return ((gtk_major_version) || (gtk_minor_version) || (gtk_micro_version)); ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding GTK or finding the wrong"
-          echo "*** version of GTK. If it is not finding GTK, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
-          echo "***"
-          echo "*** If you have a RedHat 5.0 system, you should remove the GTK package that"
-          echo "*** came with the system with the command"
-          echo "***"
-          echo "***    rpm --erase --nodeps gtk gtk-devel" ],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means GTK was incorrectly installed"
-          echo "*** or that you have moved GTK since it was installed. In the latter case, you"
-          echo "*** may want to edit the gtk-config script: $GTK_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
-     fi
-     GTK_CFLAGS=""
-     GTK_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(GTK_CFLAGS)
-  AC_SUBST(GTK_LIBS)
-  rm -f conf.gtktest
-])
 
 # Macro to add for using GNU gettext.
-# Ulrich Drepper <drepper@cygnus.com>, 1995.
+# Ulrich Drepper <drepper@cygnus.com>, 1995, 1996
 #
 # Modified to never use included libintl. 
 # Owen Taylor <otaylor@redhat.com>, 12/15/1998
@@ -4505,486 +3768,27 @@ main ()
 # but which still want to provide support for the GNU gettext functionality.
 # Please note that the actual code is *not* freely available.
 #
-
-# serial 5
-
-AC_DEFUN(AM_GNOME_WITH_NLS,
-  [AC_MSG_CHECKING([whether NLS is requested])
-    dnl Default is enabled NLS
-    AC_ARG_ENABLE(nls,
-      [  --disable-nls           do not use Native Language Support],
-      USE_NLS=$enableval, USE_NLS=yes)
-    AC_MSG_RESULT($USE_NLS)
-    AC_SUBST(USE_NLS)
-
-    BUILD_INCLUDED_LIBINTL=no
-    USE_INCLUDED_LIBINTL=no
-
-    dnl If we use NLS figure out what method
-    if test "$USE_NLS" = "yes"; then
-      AC_DEFINE(ENABLE_NLS)
-#      AC_MSG_CHECKING([whether included gettext is requested])
-#      AC_ARG_WITH(included-gettext,
-#        [  --with-included-gettext use the GNU gettext library included here],
-#        nls_cv_force_use_gnu_gettext=$withval,
-#        nls_cv_force_use_gnu_gettext=no)
-#      AC_MSG_RESULT($nls_cv_force_use_gnu_gettext)
-      nls_cv_force_use_gnu_gettext="no"
-
-      nls_cv_use_gnu_gettext="$nls_cv_force_use_gnu_gettext"
-      if test "$nls_cv_force_use_gnu_gettext" != "yes"; then
-        dnl User does not insist on using GNU NLS library.  Figure out what
-        dnl to use.  If gettext or catgets are available (in this order) we
-        dnl use this.  Else we have to fall back to GNU NLS library.
-	dnl catgets is only used if permitted by option --with-catgets.
-	nls_cv_header_intl=
-	nls_cv_header_libgt=
-	CATOBJEXT=NONE
-
-	AC_CHECK_HEADER(libintl.h,
-	  [AC_CACHE_CHECK([for gettext in libc], gt_cv_func_gettext_libc,
-	    [AC_TRY_LINK([#include <libintl.h>], [return (int) gettext ("")],
-	       gt_cv_func_gettext_libc=yes, gt_cv_func_gettext_libc=no)])
-
-	   if test "$gt_cv_func_gettext_libc" != "yes"; then
-	     AC_CHECK_LIB(intl, bindtextdomain,
-	       [AC_CACHE_CHECK([for gettext in libintl],
-		 gt_cv_func_gettext_libintl,
-		 [AC_CHECK_LIB(intl, gettext,
-		  gt_cv_func_gettext_libintl=yes,
-		  gt_cv_func_gettext_libintl=no)],
-		 gt_cv_func_gettext_libintl=no)])
-	   fi
-
-	   if test "$gt_cv_func_gettext_libc" = "yes" \
-	      || test "$gt_cv_func_gettext_libintl" = "yes"; then
-	      AC_DEFINE(HAVE_GETTEXT)
-	      AM_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
-		[test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)dnl
-	      if test "$MSGFMT" != "no"; then
-		AC_CHECK_FUNCS(dcgettext)
-		AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-		AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-		  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-		AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
-			       return _nl_msg_cat_cntr],
-		  [CATOBJEXT=.gmo
-		   DATADIRNAME=share],
-		  [CATOBJEXT=.mo
-		   DATADIRNAME=lib])
-		INSTOBJEXT=.mo
-	      fi
-	    fi
-
-	    # Added by Martin Baulig 12/15/98 for libc5 systems
-	    if test "$gt_cv_func_gettext_libc" != "yes" \
-	       && test "$gt_cv_func_gettext_libintl" = "yes"; then
-	       INTLLIBS=-lintl
-	       LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-	    fi
-	])
-
-        if test "$CATOBJEXT" = "NONE"; then
-	  AC_MSG_CHECKING([whether catgets can be used])
-	  AC_ARG_WITH(catgets,
-	    [  --with-catgets          use catgets functions if available],
-	    nls_cv_use_catgets=$withval, nls_cv_use_catgets=no)
-	  AC_MSG_RESULT($nls_cv_use_catgets)
-
-	  if test "$nls_cv_use_catgets" = "yes"; then
-	    dnl No gettext in C library.  Try catgets next.
-	    AC_CHECK_LIB(i, main)
-	    AC_CHECK_FUNC(catgets,
-	      [AC_DEFINE(HAVE_CATGETS)
-	       INTLOBJS="\$(CATOBJS)"
-	       AC_PATH_PROG(GENCAT, gencat, no)dnl
-#	       if test "$GENCAT" != "no"; then
-#		 AC_PATH_PROG(GMSGFMT, gmsgfmt, no)
-#		 if test "$GMSGFMT" = "no"; then
-#		   AM_PATH_PROG_WITH_TEST(GMSGFMT, msgfmt,
-#		    [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)
-#		 fi
-#		 AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-#		   [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-#		 USE_INCLUDED_LIBINTL=yes
-#		 CATOBJEXT=.cat
-#		 INSTOBJEXT=.cat
-#		 DATADIRNAME=lib
-#		 INTLDEPS='$(top_builddir)/intl/libintl.a'
-#		 INTLLIBS=$INTLDEPS
-#		 LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-#		 nls_cv_header_intl=intl/libintl.h
-#		 nls_cv_header_libgt=intl/libgettext.h
-#              fi
-            ])
-	  fi
-        fi
-
-        if test "$CATOBJEXT" = "NONE"; then
-	  dnl Neither gettext nor catgets in included in the C library.
-	  dnl Fall back on GNU gettext library.
-	  nls_cv_use_gnu_gettext=yes
-        fi
-      fi
-
-      if test "$nls_cv_use_gnu_gettext" != "yes"; then
-        AC_DEFINE(ENABLE_NLS)
-      else
-         # Unset this variable since we use the non-zero value as a flag.
-         CATOBJEXT=
-#        dnl Mark actions used to generate GNU NLS library.
-#        INTLOBJS="\$(GETTOBJS)"
-#        AM_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
-#	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], msgfmt)
-#        AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-#        AM_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-#	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-#        AC_SUBST(MSGFMT)
-#	USE_INCLUDED_LIBINTL=yes
-#        CATOBJEXT=.gmo
-#        INSTOBJEXT=.mo
-#        DATADIRNAME=share
-#	INTLDEPS='$(top_builddir)/intl/libintl.a'
-#	INTLLIBS=$INTLDEPS
-#	LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-#        nls_cv_header_intl=intl/libintl.h
-#        nls_cv_header_libgt=intl/libgettext.h
-      fi
-
-      dnl Test whether we really found GNU xgettext.
-      if test "$XGETTEXT" != ":"; then
-	dnl If it is no GNU xgettext we define it as : so that the
-	dnl Makefiles still can work.
-	if $XGETTEXT --omit-header /dev/null 2> /dev/null; then
-	  : ;
-	else
-	  AC_MSG_RESULT(
-	    [found xgettext program is not GNU xgettext; ignore it])
-	  XGETTEXT=":"
-	fi
-      fi
-
-      # We need to process the po/ directory.
-      POSUB=po
-    else
-      DATADIRNAME=share
-      nls_cv_header_intl=intl/libintl.h
-      nls_cv_header_libgt=intl/libgettext.h
-    fi
-    AC_LINK_FILES($nls_cv_header_libgt, $nls_cv_header_intl)
-    AC_OUTPUT_COMMANDS(
-     [case "$CONFIG_FILES" in *po/Makefile.in*)
-        sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile
-      esac])
-
-
-#    # If this is used in GNU gettext we have to set USE_NLS to `yes'
-#    # because some of the sources are only built for this goal.
-#    if test "$PACKAGE" = gettext; then
-#      USE_NLS=yes
-#      USE_INCLUDED_LIBINTL=yes
-#    fi
-
-    dnl These rules are solely for the distribution goal.  While doing this
-    dnl we only have to keep exactly one list of the available catalogs
-    dnl in configure.in.
-    for lang in $ALL_LINGUAS; do
-      GMOFILES="$GMOFILES $lang.gmo"
-      POFILES="$POFILES $lang.po"
-    done
-
-    dnl Make all variables we use known to autoconf.
-    AC_SUBST(BUILD_INCLUDED_LIBINTL)
-    AC_SUBST(USE_INCLUDED_LIBINTL)
-    AC_SUBST(CATALOGS)
-    AC_SUBST(CATOBJEXT)
-    AC_SUBST(DATADIRNAME)
-    AC_SUBST(GMOFILES)
-    AC_SUBST(INSTOBJEXT)
-    AC_SUBST(INTLDEPS)
-    AC_SUBST(INTLLIBS)
-    AC_SUBST(INTLOBJS)
-    AC_SUBST(POFILES)
-    AC_SUBST(POSUB)
-  ])
-
-AC_DEFUN(AM_GNOME_GETTEXT,
-  [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
-   AC_REQUIRE([AC_PROG_CC])dnl
-   AC_REQUIRE([AC_PROG_RANLIB])dnl
-   AC_REQUIRE([AC_ISC_POSIX])dnl
-   AC_REQUIRE([AC_HEADER_STDC])dnl
-   AC_REQUIRE([AC_C_CONST])dnl
-   AC_REQUIRE([AC_C_INLINE])dnl
-   AC_REQUIRE([AC_TYPE_OFF_T])dnl
-   AC_REQUIRE([AC_TYPE_SIZE_T])dnl
-   AC_REQUIRE([AC_FUNC_ALLOCA])dnl
-   AC_REQUIRE([AC_FUNC_MMAP])dnl
-
-   AC_CHECK_HEADERS([argz.h limits.h locale.h nl_types.h malloc.h string.h \
-unistd.h sys/param.h])
-   AC_CHECK_FUNCS([getcwd munmap putenv setenv setlocale strchr strcasecmp \
-strdup __argz_count __argz_stringify __argz_next])
-
-   if test "${ac_cv_func_stpcpy+set}" != "set"; then
-     AC_CHECK_FUNCS(stpcpy)
-   fi
-   if test "${ac_cv_func_stpcpy}" = "yes"; then
-     AC_DEFINE(HAVE_STPCPY)
-   fi
-
-   AM_LC_MESSAGES
-   AM_GNOME_WITH_NLS
-
-   if test "x$CATOBJEXT" != "x"; then
-     if test "x$ALL_LINGUAS" = "x"; then
-       LINGUAS=
-     else
-       AC_MSG_CHECKING(for catalogs to be installed)
-       NEW_LINGUAS=
-       if test "x$LINGUAS" = "x"; then
-           LINGUAS=$ALL_LINGUAS
-       fi
-       for lang in $LINGUAS; do
-         case "$ALL_LINGUAS" in
-          *$lang*) NEW_LINGUAS="$NEW_LINGUAS $lang" ;;
-         esac
-       done
-       LINGUAS=$NEW_LINGUAS
-       AC_MSG_RESULT($LINGUAS)
-     fi
-
-     dnl Construct list of names of catalog files to be constructed.
-     if test -n "$LINGUAS"; then
-       for lang in $LINGUAS; do CATALOGS="$CATALOGS $lang$CATOBJEXT"; done
-     fi
-   fi
-
-   dnl The reference to <locale.h> in the installed <libintl.h> file
-   dnl must be resolved because we cannot expect the users of this
-   dnl to define HAVE_LOCALE_H.
-   if test $ac_cv_header_locale_h = yes; then
-     INCLUDE_LOCALE_H="#include <locale.h>"
-   else
-     INCLUDE_LOCALE_H="\
-/* The system does not provide the header <locale.h>.  Take care yourself.  */"
-   fi
-   AC_SUBST(INCLUDE_LOCALE_H)
-
-   dnl Determine which catalog format we have (if any is needed)
-   dnl For now we know about two different formats:
-   dnl   Linux libc-5 and the normal X/Open format
-   test -d intl || mkdir intl
-   if test "$CATOBJEXT" = ".cat"; then
-     AC_CHECK_HEADER(linux/version.h, msgformat=linux, msgformat=xopen)
-
-     dnl Transform the SED scripts while copying because some dumb SEDs
-     dnl cannot handle comments.
-     sed -e '/^#/d' $srcdir/intl/$msgformat-msg.sed > intl/po2msg.sed
-   fi
-   dnl po2tbl.sed is always needed.
-   sed -e '/^#.*[^\\]$/d' -e '/^#$/d' \
-     $srcdir/intl/po2tbl.sed.in > intl/po2tbl.sed
-
-   dnl In the intl/Makefile.in we have a special dependency which makes
-   dnl only sense for gettext.  We comment this out for non-gettext
-   dnl packages.
-   if test "$PACKAGE" = "gettext"; then
-     GT_NO="#NO#"
-     GT_YES=
-   else
-     GT_NO=
-     GT_YES="#YES#"
-   fi
-   AC_SUBST(GT_NO)
-   AC_SUBST(GT_YES)
-
-   dnl If the AC_CONFIG_AUX_DIR macro for autoconf is used we possibly
-   dnl find the mkinstalldirs script in another subdir but ($top_srcdir).
-   dnl Try to locate is.
-   MKINSTALLDIRS=
-   if test -n "$ac_aux_dir"; then
-     MKINSTALLDIRS="$ac_aux_dir/mkinstalldirs"
-   fi
-   if test -z "$MKINSTALLDIRS"; then
-     MKINSTALLDIRS="\$(top_srcdir)/mkinstalldirs"
-   fi
-   AC_SUBST(MKINSTALLDIRS)
-
-   dnl *** For now the libtool support in intl/Makefile is not for real.
-   l=
-   AC_SUBST(l)
-
-   dnl Generate list of files to be processed by xgettext which will
-   dnl be included in po/Makefile.
-   test -d po || mkdir po
-   if test "x$srcdir" != "x."; then
-     if test "x`echo $srcdir | sed 's@/.*@@'`" = "x"; then
-       posrcprefix="$srcdir/"
-     else
-       posrcprefix="../$srcdir/"
-     fi
-   else
-     posrcprefix="../"
-   fi
-   rm -f po/POTFILES
-   sed -e "/^#/d" -e "/^\$/d" -e "s,.*,	$posrcprefix& \\\\," -e "\$s/\(.*\) \\\\/\1/" \
-	< $srcdir/po/POTFILES.in > po/POTFILES
-  ])
-
-
-AC_DEFUN(AM_PATH_GNOME,
-[dnl 
-dnl Get the cflags and libraries from the gnome-config script
-dnl
-AC_ARG_WITH(gnome-prefix,[  --with-gnome-prefix=PFX   Prefix where GNOME is installed (optional)],
-            gnome_config_prefix="$withval", gnome_config_prefix="")
-AC_ARG_WITH(gnome-exec-prefix,[  --with-gnome-exec-prefix=PFX Exec prefix where GNOME is installed (optional)],
-            gnome_config_exec_prefix="$withval", gnome_config_exec_prefix="")
-
-  if test x$gnome_config_exec_prefix != x ; then
-     gnome_config_args="$gnome_config_args --exec-prefix=$gnome_config_exec_prefix"
-     if test x${GNOME_CONFIG+set} != xset ; then
-        GNOME_CONFIG=$gnome_config_exec_prefix/bin/gnome-config
-     fi
-  fi
-  if test x$gnome_config_prefix != x ; then
-     gnome_config_args="$gnome_config_args --prefix=$gnome_config_prefix"
-     if test x${GNOME_CONFIG+set} != xset ; then
-        GNOME_CONFIG=$gnome_config_prefix/bin/gnome-config
-     fi
-  fi
-
-  AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
-  min_gnome_version=ifelse([$1], , 1.1.0, $1)
-
-  AC_MSG_CHECKING(for GNOME - version >= $min_gnome_version)
-  no_gnome=""
-  if test "$GNOME_CONFIG" = "no" ; then
-    no_gnome=yes
-  else
-    GNOME_CFLAGS="`$GNOME_CONFIG $gnome_config_args --cflags gnome`"
-    GNOME_LIBS="`$GNOME_CONFIG $gnome_config_args --libs gnome`"
-    GNOMEUI_CFLAGS="`$GNOME_CONFIG $gnome_config_args --cflags gnomeui`"
-    GNOMEUI_LIBS="`$GNOME_CONFIG $gnome_config_args --libs gnomeui`"
-
-    gnome_config_major_version=`$GNOME_CONFIG $gnome_config_args --version | \
-           sed 's/[[^0-9]]*\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\1/'`
-    gnome_config_minor_version=`$GNOME_CONFIG $gnome_config_args --version | \
-           sed 's/[[^0-9]]*\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\2/'`
-    gnome_config_micro_version=`$GNOME_CONFIG $gnome_config_args --version | \
-           sed 's/[[^0-9]]*\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\3/'`
-    needed_major_version=`echo $min_gnome_version | \
-           sed 's/[[^0-9]]*\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\1/'`
-    needed_minor_version=`echo $min_gnome_version | \
-           sed 's/[[^0-9]]*\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\2/'`
-    needed_micro_version=`echo $min_gnome_version | \
-           sed 's/[[^0-9]]*\([[0-9]]*\)\.\([[0-9]]*\)\.\([[0-9]]*\)/\3/'`
-
-    if test $gnome_config_major_version -lt $needed_major_version; then
-	ifelse([$3], , :, [$3])
-	no_gnome=yes
-    elif test $gnome_config_major_version = $needed_major_version; then
-	if test -n "$needed_minor_version" -a $gnome_config_minor_version -lt $needed_minor_version; then
-		ifelse([$3], , :, [$3])
-		no_gnome=yes
-	elif test -n "$needed_minor_version" -a $gnome_config_minor_version = $needed_minor_version; then
-		if test -n "$needed_micro_version" -a $gnome_config_micro_version -lt $needed_micro_version; then
-			ifelse([$3], , :, [$3])
-			no_gnome=yes
-		fi
-	fi
-    fi
-  fi
-  AC_SUBST(GNOME_CFLAGS)
-  AC_SUBST(GNOME_LIBS)
-  AC_SUBST(GNOMEUI_CFLAGS)
-  AC_SUBST(GNOMEUI_LIBS)
-
-  if test "x$no_gnome" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$GNOME_CONFIG" = "no" ; then
-       echo "*** The gnome-config script installed by GNOME could not be found"
-       echo "*** If GNOME was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the GNOME_CONFIG environment variable to the"
-       echo "*** full path to gnome-config."
-     else
-	:
-     fi
-     GNOME_CFLAGS=""
-     GNOME_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-
-  tmp_gnome_libdir=`$GNOME_CONFIG $gnome_config_args --libdir`
-  if test -n "$4"; then
-	AC_MSG_CHECKING([for additional GNOME modules])
-  fi
-  for module in $4 ""; do
-	gnome_m4_notfound=no
-	if test "$module" = zvt; then
-	  ZVT_LIBS="`$GNOME_CONFIG $gnome_config_args --libs zvt`"
-	  AC_SUBST(ZVT_LIBS)
-	elif test "$module" = gtk; then
-	  GTK_CFLAGS="`$GNOME_CONFIG $gnome_config_args --cflags gtk`"
-	  GTK_LIBS="`$GNOME_CONFIG $gnome_config_args --libs gtk`"
-	  AC_SUBST(GTK_CFLAGS)
-	  AC_SUBST(GTK_LIBS)
-	elif test "$module" = "glib"; then
-	  GLIB_CFLAGS="`$GNOME_CONFIG $gnome_config_args --cflags glib`"
-	  GLIB_LIBS="`$GNOME_CONFIG $gnome_config_args --libs glib`"
-	  AC_SUBST(GLIB_CFLAGS)
-	  AC_SUBST(GLIB_LIBS)
-	elif test "$module" = "oaf"; then
-	  OAF_CFLAGS="`$GNOME_CONFIG $gnome_config_args --cflags oaf`"
-	  OAF_LIBS="`$GNOME_CONFIG $gnome_config_args --libs oaf`"
-	  AC_SUBST(OAF_CFLAGS)
-	  AC_SUBST(OAF_LIBS)
-	elif test "$module" = "gnorba"; then
-	  GNORBA_CFLAGS="`$GNOME_CONFIG $gnome_config_args --cflags gnorba`"
-	  GNORBA_LIBS="`$GNOME_CONFIG $gnome_config_args --libs gnorba`"
-	  AC_SUBST(GNORBA_CFLAGS)
-	  AC_SUBST(GNORBA_LIBS)
-	elif test -n "$module"; then
-	  if $GNOME_CONFIG $gnome_config_args --cflags $module >/dev/null 2>&1; then
-changequote(<<, >>)dnl
-                tmp_bsnom=`echo $module | tr '[a-z]' '[A-Z]'`
-changequote([, ])dnl
-		eval $tmp_bsnom'_CFLAGS'=\"`$GNOME_CONFIG $gnome_config_args --cflags $module`\"
-		eval $tmp_bsnom'_LIBS'=\"`$GNOME_CONFIG $gnome_config_args --libs $module`\"
-	  else
-	  	AC_MSG_RESULT([*** $module library is not installed])
-	  	ifelse([$3], , :, [$3])
-		gnome_m4_notfound=yes
-	  fi
-	fi
-	if test "$gnome_m4_notfound" = no; then
-	  echo $ac_n " $module" 1>&6
-	fi
-  done
-  if test -n "$4"; then
-	AC_MSG_RESULT([])
-  fi
-])
-
-# Search path for a program which passes the given test.
-# Ulrich Drepper <drepper@cygnus.com>, 1996.
 #
-# This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU General Public
-# License but which still want to provide support for the GNU gettext
-# functionality.
-# Please note that the actual code of GNU gettext is covered by the GNU
-# General Public License and is *not* in the public domain.
+# If you make changes to this file, you MUST update the copy in
+# acinclude.m4. [ aclocal dies on duplicate macros, so if
+# we run 'aclocal -I macros/' then we'll run into problems
+# once we've installed glib-gettext.m4 :-( ]
+#
 
-# serial 2
+AC_DEFUN([AM_GLIB_LC_MESSAGES],
+  [if test $ac_cv_header_locale_h = yes; then
+    AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
+      [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
+       am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
+    if test $am_cv_val_LC_MESSAGES = yes; then
+      AC_DEFINE(HAVE_LC_MESSAGES, 1,
+        [Define if your <locale.h> file defines LC_MESSAGES.])
+    fi
+  fi])
 
-dnl AM_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
+dnl AM_GLIB_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
 dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
-AC_DEFUN([AM_PATH_PROG_WITH_TEST],
+AC_DEFUN([AM_GLIB_PATH_PROG_WITH_TEST],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
 AC_MSG_CHECKING([for $ac_word])
@@ -5020,475 +3824,220 @@ fi
 AC_SUBST($1)dnl
 ])
 
-# Check whether LC_MESSAGES is available in <locale.h>.
-# Ulrich Drepper <drepper@cygnus.com>, 1995.
-#
-# This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU General Public
-# License but which still want to provide support for the GNU gettext
-# functionality.
-# Please note that the actual code of GNU gettext is covered by the GNU
-# General Public License and is *not* in the public domain.
+# serial 5
 
-# serial 2
+AC_DEFUN(AM_GLIB_WITH_NLS,
+  dnl NLS is obligatory
+  [USE_NLS=yes
+    AC_SUBST(USE_NLS)
 
-AC_DEFUN([AM_LC_MESSAGES],
-  [if test $ac_cv_header_locale_h = yes; then
-    AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
-      [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
-       am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
-    if test $am_cv_val_LC_MESSAGES = yes; then
-      AC_DEFINE(HAVE_LC_MESSAGES, 1,
-        [Define if your <locale.h> file defines LC_MESSAGES.])
+    dnl Figure out what method
+    nls_cv_force_use_gnu_gettext="no"
+
+    nls_cv_use_gnu_gettext="$nls_cv_force_use_gnu_gettext"
+    if test "$nls_cv_force_use_gnu_gettext" != "yes"; then
+      dnl User does not insist on using GNU NLS library.  Figure out what
+      dnl to use.  If gettext or catgets are available (in this order) we
+      dnl use this.  Else we have to fall back to GNU NLS library.
+      dnl catgets is only used if permitted by option --with-catgets.
+      nls_cv_header_intl=
+      nls_cv_header_libgt=
+      CATOBJEXT=NONE
+      XGETTEXT=:
+
+      AC_CHECK_HEADER(libintl.h,
+        [AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
+	  [AC_TRY_LINK([#include <libintl.h>], [return (int) dgettext ("","")],
+	    gt_cv_func_dgettext_libc=yes, gt_cv_func_dgettext_libc=no)])
+
+          gt_cv_func_dgettext_libintl="no"
+          libintl_extra_libs=""
+
+	  if test "$gt_cv_func_dgettext_libc" != "yes" ; then
+	    AC_CHECK_LIB(intl, bindtextdomain,
+              [AC_CHECK_LIB(intl, dgettext,
+                            gt_cv_func_dgettext_libintl=yes)])
+
+	    if test "$gt_cv_func_dgettext_libc" != "yes" ; then
+              AC_MSG_CHECKING([if -liconv is needed to use gettext])
+              AC_MSG_RESULT([])
+              AC_CHECK_LIB(intl, dcgettext,
+                           [gt_cv_func_dgettext_libintl=yes
+                            libintl_extra_libs=-liconv],
+                           :,-liconv)
+            fi
+          fi
+
+          if test "$gt_cv_func_dgettext_libintl" = "yes"; then
+	    LIBS="$LIBS -lintl $libintl_extra_libs";
+          fi
+
+	  if test "$gt_cv_func_dgettext_libc" = "yes" \
+	    || test "$gt_cv_func_dgettext_libintl" = "yes"; then
+	    AC_DEFINE(HAVE_GETTEXT,1,
+              [Define if the GNU gettext() function is already present or preinstalled.])
+	    AM_GLIB_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
+ 	      [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)dnl
+	    if test "$MSGFMT" != "no"; then
+	      AC_CHECK_FUNCS(dcgettext)
+	      AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
+	      AM_GLIB_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
+	        [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
+	      AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
+		 	     return _nl_msg_cat_cntr],
+	        [CATOBJEXT=.gmo
+	         DATADIRNAME=share],
+	        [CATOBJEXT=.mo
+	         DATADIRNAME=lib])
+	      INSTOBJEXT=.mo
+	    fi
+	  fi
+
+	  # Added by Martin Baulig 12/15/98 for libc5 systems
+	  if test "$gt_cv_func_dgettext_libc" != "yes" \
+	    && test "$gt_cv_func_dgettext_libintl" = "yes"; then
+	    INTLLIBS="-lintl $libintl_extra_libs"
+	    LIBS=`echo $LIBS | sed -e 's/-lintl//'`
+	  fi
+      ])
+
+      if test "$CATOBJEXT" = "NONE"; then
+        dnl Neither gettext nor catgets in included in the C library.
+        dnl Fall back on GNU gettext library.
+        nls_cv_use_gnu_gettext=yes
+      fi
     fi
-  fi])
 
-dnl AM_PATH_OAF([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
-dnl Test for OAF, and define OAF_CFLAGS and OAF_LIBS
-dnl
-AC_DEFUN(AM_PATH_OAF,
-[dnl 
-dnl Get the cflags and libraries from the oaf-config script
-dnl
-AC_ARG_WITH(oaf-prefix,[  --with-oaf-prefix=PFX   Prefix where OAF is installed (optional)],
-            oaf_config_prefix="$withval", oaf_config_prefix="")
-AC_ARG_WITH(oaf-exec-prefix,[  --with-oaf-exec-prefix=PFX Exec prefix where OAF is installed (optional)],
-            oaf_config_exec_prefix="$withval", oaf_config_exec_prefix="")
-AC_ARG_ENABLE(oaftest, [  --disable-oaftest       Do not try to compile and run a test OAF program],
-		    , enable_oaftest=yes)
+    if test "$nls_cv_use_gnu_gettext" != "yes"; then
+      AC_DEFINE(ENABLE_NLS, 1,
+        [always defined to indicate that i18n is enabled])
+    else
+      dnl Unset this variable since we use the non-zero value as a flag.
+      CATOBJEXT=
+    fi
 
-  oaf_config_args="$oaf_config_args $4"
+    dnl Test whether we really found GNU xgettext.
+    if test "$XGETTEXT" != ":"; then
+      dnl If it is no GNU xgettext we define it as : so that the
+      dnl Makefiles still can work.
+      if $XGETTEXT --omit-header /dev/null 2> /dev/null; then
+        : ;
+      else
+        AC_MSG_RESULT(
+	  [found xgettext program is not GNU xgettext; ignore it])
+        XGETTEXT=":"
+      fi
+    fi
 
-  if test x$oaf_config_exec_prefix != x ; then
-     oaf_config_args="$oaf_config_args --exec-prefix=$oaf_config_exec_prefix"
-     if test x${OAF_CONFIG+set} != xset ; then
-        OAF_CONFIG=$oaf_config_exec_prefix/bin/oaf-config
-     fi
-  fi
-  if test x$oaf_config_prefix != x ; then
-     oaf_config_args="$oaf_config_args --prefix=$oaf_config_prefix"
-     if test x${OAF_CONFIG+set} != xset ; then
-        OAF_CONFIG=$oaf_config_prefix/bin/oaf-config
-     fi
-  fi
+    # We need to process the po/ directory.
+    POSUB=po
 
-  AC_PATH_PROG(OAF_CONFIG, oaf-config, no)
-  min_oaf_version=ifelse([$1], , 0.1, $1)
-  AC_MSG_CHECKING(for OAF - version >= $min_oaf_version)
-  no_oaf=""
-  if test "$OAF_CONFIG" = "no" ; then
-    no_oaf=yes
-  else
-    OAF_CFLAGS="`$OAF_CONFIG $oaf_config_args --cflags`"
-    OAF_LIBS="`$OAF_CONFIG $oaf_config_args --libs`"
-    oaf_config_major_version=`$OAF_CONFIG $oaf_config_args --version | \
-	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    oaf_config_minor_version=`$OAF_CONFIG $oaf_config_args --version | \
-	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    oaf_config_micro_version=`$OAF_CONFIG $oaf_config_args --version | \
-	   sed -e 's,^[[^0-9\.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_oaftest" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CFLAGS="$CFLAGS $OAF_CFLAGS"
-      LIBS="$OAF_LIBS $LIBS"
-dnl
-dnl Now check if the installed OAF is sufficiently new. (Also sanity
-dnl checks the results of oaf-config to some extent
-dnl
-      rm -f conf.oaftest
-      AC_TRY_RUN([
-#include <liboaf/liboaf.h>
-#include <stdio.h>
-#include <stdlib.h>
+    AC_OUTPUT_COMMANDS(
+      [case "$CONFIG_FILES" in *po/Makefile.in*)
+        sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile
+      esac])
 
-int 
-main ()
-{
-  int major, minor, micro;
-  char *tmp_version;
+    dnl These rules are solely for the distribution goal.  While doing this
+    dnl we only have to keep exactly one list of the available catalogs
+    dnl in configure.in.
+    for lang in $ALL_LINGUAS; do
+      GMOFILES="$GMOFILES $lang.gmo"
+      POFILES="$POFILES $lang.po"
+    done
 
-  system ("touch conf.oaftest");
+    dnl Make all variables we use known to autoconf.
+    AC_SUBST(CATALOGS)
+    AC_SUBST(CATOBJEXT)
+    AC_SUBST(DATADIRNAME)
+    AC_SUBST(GMOFILES)
+    AC_SUBST(INSTOBJEXT)
+    AC_SUBST(INTLDEPS)
+    AC_SUBST(INTLLIBS)
+    AC_SUBST(INTLOBJS)
+    AC_SUBST(POFILES)
+    AC_SUBST(POSUB)
+  ])
 
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = g_strdup("$min_oaf_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_oaf_version");
-     exit(1);
-   }
+AC_DEFUN(AM_GLIB_GNU_GETTEXT,
+  [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
+   AC_REQUIRE([AC_PROG_CC])dnl
+   AC_REQUIRE([AC_PROG_RANLIB])dnl
+   AC_REQUIRE([AC_HEADER_STDC])dnl
+   AC_REQUIRE([AC_C_CONST])dnl
+   AC_REQUIRE([AC_C_INLINE])dnl
+   AC_REQUIRE([AC_TYPE_OFF_T])dnl
+   AC_REQUIRE([AC_TYPE_SIZE_T])dnl
+   AC_REQUIRE([AC_FUNC_ALLOCA])dnl
+   AC_REQUIRE([AC_FUNC_MMAP])dnl
 
-  if ((liboaf_major_version != $oaf_config_major_version) ||
-      (liboaf_minor_version != $oaf_config_minor_version) ||
-      (liboaf_micro_version != $oaf_config_micro_version))
-    {
-      printf("\n*** 'oaf-config --version' returned %d.%d.%d, but OAF (%d.%d.%d)\n", 
-             $oaf_config_major_version, $oaf_config_minor_version, $oaf_config_micro_version,
-             liboaf_major_version, liboaf_minor_version, liboaf_micro_version);
-      printf ("*** was found! If oaf-config was correct, then it is best\n");
-      printf ("*** to remove the old version of OAF. You may also be able to fix the error\n");
-      printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
-      printf("*** /etc/ld.so.conf. Make sure you have run ldconfig if that is\n");
-      printf("*** required on your system.\n");
-      printf("*** If oaf-config was wrong, set the environment variable OAF_CONFIG\n");
-      printf("*** to point to the correct copy of oaf-config, and remove the file config.cache\n");
-      printf("*** before re-running configure\n");
-    } 
-#if defined (OAF_MAJOR_VERSION) && defined (OAF_MINOR_VERSION) && defined (OAF_MICRO_VERSION)
-  else if ((liboaf_major_version != OAF_MAJOR_VERSION) ||
-	   (liboaf_minor_version != OAF_MINOR_VERSION) ||
-           (liboaf_micro_version != OAF_MICRO_VERSION))
-    {
-      printf("*** OAF header files (version %d.%d.%d) do not match\n",
-	     OAF_MAJOR_VERSION, OAF_MINOR_VERSION, OAF_MICRO_VERSION);
-      printf("*** library (version %d.%d.%d)\n",
-	     liboaf_major_version, liboaf_minor_version, liboaf_micro_version);
-    }
-#endif /* defined (OAF_MAJOR_VERSION) ... */
-  else
-    {
-      if ((liboaf_major_version > major) ||
-        ((liboaf_major_version == major) && (liboaf_minor_version > minor)) ||
-        ((liboaf_major_version == major) && (liboaf_minor_version == minor) && (liboaf_micro_version >= micro)))
-      {
-        return 0;
-       }
+   AC_CHECK_HEADERS([argz.h limits.h locale.h nl_types.h malloc.h string.h \
+unistd.h sys/param.h])
+   AC_CHECK_FUNCS([getcwd munmap putenv setenv setlocale strchr strcasecmp \
+strdup __argz_count __argz_stringify __argz_next])
+
+   AM_GLIB_LC_MESSAGES
+   AM_GLIB_WITH_NLS
+
+   if test "x$CATOBJEXT" != "x"; then
+     if test "x$ALL_LINGUAS" = "x"; then
+       LINGUAS=
      else
-      {
-        printf("\n*** An old version of OAF (%d.%d.%d) was found.\n",
-               liboaf_major_version, liboaf_minor_version, liboaf_micro_version);
-        printf("*** You need a version of OAF newer than %d.%d.%d. The latest version of\n",
-	       major, minor, micro);
-        printf("*** OAF is always available from ftp://ftp.gnome.org/pub/GNOME/sources/oaf/.\n");
-        printf("***\n");
-        printf("*** If you have already installed a sufficiently new version, this error\n");
-        printf("*** probably means that the wrong copy of the oaf-config shell script is\n");
-        printf("*** being found. The easiest way to fix this is to remove the old version\n");
-        printf("*** of OAF, but you can also set the OAF_CONFIG environment to point to the\n");
-        printf("*** correct copy of oaf-config. (In this case, you will have to\n");
-        printf("*** modify your LD_LIBRARY_PATH enviroment variable, or edit /etc/ld.so.conf\n");
-        printf("*** so that the correct libraries are found at run-time))\n");
-      }
-    }
-  return 1;
-}
-],, no_oaf=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
+       AC_MSG_CHECKING(for catalogs to be installed)
+       NEW_LINGUAS=
+       for lang in ${LINGUAS=$ALL_LINGUAS}; do
+         case "$ALL_LINGUAS" in
+          *$lang*) NEW_LINGUAS="$NEW_LINGUAS $lang" ;;
+         esac
+       done
+       LINGUAS=$NEW_LINGUAS
+       AC_MSG_RESULT($LINGUAS)
      fi
-  fi
-  if test "x$no_oaf" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$OAF_CONFIG" = "no" ; then
-       echo "*** The oaf-config script installed by OAF could not be found"
-       echo "*** If OAF was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the OAF_CONFIG environment variable to the"
-       echo "*** full path to oaf-config."
+
+     dnl Construct list of names of catalog files to be constructed.
+     if test -n "$LINGUAS"; then
+       for lang in $LINGUAS; do CATALOGS="$CATALOGS $lang$CATOBJEXT"; done
+     fi
+   fi
+
+   dnl Determine which catalog format we have (if any is needed)
+   dnl For now we know about two different formats:
+   dnl   Linux libc-5 and the normal X/Open format
+   test -d po || mkdir po
+   if test "$CATOBJEXT" = ".cat"; then
+     AC_CHECK_HEADER(linux/version.h, msgformat=linux, msgformat=xopen)
+
+     dnl Transform the SED scripts while copying because some dumb SEDs
+     dnl cannot handle comments.
+     sed -e '/^#/d' $srcdir/po/$msgformat-msg.sed > po/po2msg.sed
+   fi
+
+   dnl If the AC_CONFIG_AUX_DIR macro for autoconf is used we possibly
+   dnl find the mkinstalldirs script in another subdir but ($top_srcdir).
+   dnl Try to locate is.
+   MKINSTALLDIRS=
+   if test -n "$ac_aux_dir"; then
+     MKINSTALLDIRS="$ac_aux_dir/mkinstalldirs"
+   fi
+   if test -z "$MKINSTALLDIRS"; then
+     MKINSTALLDIRS="\$(top_srcdir)/mkinstalldirs"
+   fi
+   AC_SUBST(MKINSTALLDIRS)
+
+   dnl Generate list of files to be processed by xgettext which will
+   dnl be included in po/Makefile.
+   test -d po || mkdir po
+   if test "x$srcdir" != "x."; then
+     if test "x`echo $srcdir | sed 's@/.*@@'`" = "x"; then
+       posrcprefix="$srcdir/"
      else
-       if test -f conf.oaftest ; then
-        :
-       else
-          echo "*** Could not run OAF test program, checking why..."
-          CFLAGS="$CFLAGS $OAF_CFLAGS"
-          LIBS="$LIBS $OAF_LIBS"
-          AC_TRY_LINK([
-#include <liboaf/liboaf.h>
-#include <stdio.h>
-],      [ return ((liboaf_major_version) || (liboaf_minor_version) || (liboaf_micro_version)); ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding OAF or finding the wrong"
-          echo "*** version of OAF. If it is not finding OAF, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
-          echo "***"
-          echo "*** If you have a RedHat 5.0 system, you should remove the OAF package that"
-          echo "*** came with the system with the command"
-          echo "***"
-          echo "***    rpm --erase --nodeps oaf oaf-devel" ],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means OAF was incorrectly installed"
-          echo "*** or that you have moved OAF since it was installed. In the latter case, you"
-          echo "*** may want to edit the oaf-config script: $OAF_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
+       posrcprefix="../$srcdir/"
      fi
-     OAF_CFLAGS=""
-     OAF_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(OAF_CFLAGS)
-  AC_SUBST(OAF_LIBS)
-  rm -f conf.oaftest
-])
+   else
+     posrcprefix="../"
+   fi
+   rm -f po/POTFILES
+   sed -e "/^#/d" -e "/^\$/d" -e "s,.*,	$posrcprefix& \\\\," -e "\$s/\(.*\) \\\\/\1/" \
+	< $srcdir/po/POTFILES.in > po/POTFILES
+  ])
 
-dnl AM_PATH_GCONF([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
-dnl Test for GCONF, and define GCONF_CFLAGS and GCONF_LIBS
-dnl
-AC_DEFUN(AM_PATH_GCONF,
-[dnl 
-dnl Get the cflags and libraries from the gconf-config script
-dnl
-AC_ARG_WITH(gconf-prefix,[  --with-gconf-prefix=PFX   Prefix where GCONF is installed (optional)],
-            gconf_config_prefix="$withval", gconf_config_prefix="")
-AC_ARG_WITH(gconf-exec-prefix,[  --with-gconf-exec-prefix=PFX Exec prefix where GCONF is installed (optional)],
-            gconf_config_exec_prefix="$withval", gconf_config_exec_prefix="")
-AC_ARG_ENABLE(gconftest, [  --disable-gconftest       Do not try to compile and run a test GCONF program],
-		    , enable_gconftest=yes)
-
-  gconf_config_args="$gconf_config_args"
-
-  if test x$gconf_config_exec_prefix != x ; then
-     gconf_config_args="$gconf_config_args --exec-prefix=$gconf_config_exec_prefix"
-     if test x${GCONF_CONFIG+set} != xset ; then
-        GCONF_CONFIG=$gconf_config_exec_prefix/bin/gconf-config
-     fi
-  fi
-  if test x$gconf_config_prefix != x ; then
-     gconf_config_args="$gconf_config_args --prefix=$gconf_config_prefix"
-     if test x${GCONF_CONFIG+set} != xset ; then
-        GCONF_CONFIG=$gconf_config_prefix/bin/gconf-config
-     fi
-  fi
-
-  AC_PATH_PROG(GCONF_CONFIG, gconf-config, no)
-  min_gconf_version=ifelse([$1], , 0.5, $1)
-  AC_MSG_CHECKING(for GCONF - version >= $min_gconf_version)
-  no_gconf=""
-  if test "$GCONF_CONFIG" = "no" ; then
-    no_gconf=yes
-  else
-    GCONF_CFLAGS="`$GCONF_CONFIG  $gconf_config_args --cflags $4`"
-    GCONF_LIBS="`$GCONF_CONFIG  $gconf_config_args --libs $4`"
-    gconf_config_major_version=`$GCONF_CONFIG $gconf_config_args --version | \
-	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    gconf_config_minor_version=`$GCONF_CONFIG $gconf_config_args --version | \
-	   sed -e 's,^[[^0-9.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    gconf_config_micro_version=`$GCONF_CONFIG $gconf_config_args --version | \
-	   sed -e 's,^[[^0-9\.]]*,,g' -e 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-  fi
-  if test "x$no_gconf" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$GCONF_CONFIG" = "no" ; then
-       echo "*** The gconf-config script installed by GCONF could not be found"
-       echo "*** If GCONF was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the GCONF_CONFIG environment variable to the"
-       echo "*** full path to gconf-config."
-     else
-	:
-     fi
-     GCONF_CFLAGS=""
-     GCONF_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(GCONF_CFLAGS)
-  AC_SUBST(GCONF_LIBS)
-  rm -f conf.gconftest
-])
-
-dnl AM_GCONF_SOURCE
-dnl Define GCONF_SCHEMA_CONFIG_SOURCE
-dnl
-AC_DEFUN(AM_GCONF_SOURCE,
-[
-  if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
-    GCONF_SCHEMA_CONFIG_SOURCE=`gconftool --get-default-source`
-  else
-    GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
-  fi
-
-  AC_ARG_WITH(gconf-source, 
-  [  --with-gconf-source=sourceaddress      Config database for installing schema files.],GCONF_SCHEMA_CONFIG_SOURCE="$withval",)
-
-  AC_SUBST(GCONF_SCHEMA_CONFIG_SOURCE)
-  AC_MSG_RESULT("Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation")
-
-  if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
-    GCONF_SCHEMA_FILE_DIR=$sysconfdir/gconf/schemas/
-  else
-    GCONF_SCHEMA_FILE_DIR=$GCONF_SCHEMA_FILE_DIR
-  fi
-
-  AC_ARG_WITH(gconf-schema-file-dir, 
-  [  --with-gconf-schema-file-dir=dir        Directory for installing schema files.],GCONF_SCHEMA_FILE_DIR="$withval",)
-
-  AC_SUBST(GCONF_SCHEMA_FILE_DIR)
-  AC_MSG_RESULT("Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files")
-])
-
-# Configure paths for gdk-pixbuf
-# Elliot Lee 2000-01-10
-# stolen from Raph Levien 98-11-18
-# stolen from Manish Singh    98-9-30
-# stolen back from Frank Belew
-# stolen from Manish Singh
-# Shamelessly stolen from Owen Taylor
-
-dnl AM_PATH_GDK_PIXBUF([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for GDK_PIXBUF, and define GDK_PIXBUF_CFLAGS and GDK_PIXBUF_LIBS
-dnl
-AC_DEFUN(AM_PATH_GDK_PIXBUF,
-[dnl 
-dnl Get the cflags and libraries from the gdk-pixbuf-config script
-dnl
-AC_ARG_WITH(gdk-pixbuf-prefix,[  --with-gdk-pixbuf-prefix=PFX   Prefix where GDK_PIXBUF is installed (optional)],
-            gdk_pixbuf_prefix="$withval", gdk_pixbuf_prefix="")
-AC_ARG_WITH(gdk-pixbuf-exec-prefix,[  --with-gdk-pixbuf-exec-prefix=PFX Exec prefix where GDK_PIXBUF is installed (optional)],
-            gdk_pixbuf_exec_prefix="$withval", gdk_pixbuf_exec_prefix="")
-AC_ARG_ENABLE(gdk_pixbuftest, [  --disable-gdk_pixbuftest       Do not try to compile and run a test GDK_PIXBUF program],
-		    , enable_gdk_pixbuftest=yes)
-
-  if test x$gdk_pixbuf_exec_prefix != x ; then
-     gdk_pixbuf_args="$gdk_pixbuf_args --exec-prefix=$gdk_pixbuf_exec_prefix"
-     if test x${GDK_PIXBUF_CONFIG+set} = xset ; then
-        GDK_PIXBUF_CONFIG=$gdk_pixbuf_exec_prefix/gdk-pixbuf-config
-     fi
-  fi
-  if test x$gdk_pixbuf_prefix != x ; then
-     gdk_pixbuf_args="$gdk_pixbuf_args --prefix=$gdk_pixbuf_prefix"
-     if test x${GDK_PIXBUF_CONFIG+set} = xset ; then
-        GDK_PIXBUF_CONFIG=$gdk_pixbuf_prefix/bin/gdk-pixbuf-config
-     fi
-  fi
-
-  AC_PATH_PROG(GDK_PIXBUF_CONFIG, gdk-pixbuf-config, no)
-  min_gdk_pixbuf_version=ifelse([$1], ,0.2.5,$1)
-  AC_MSG_CHECKING(for GDK_PIXBUF - version >= $min_gdk_pixbuf_version)
-  no_gdk_pixbuf=""
-  if test "$GDK_PIXBUF_CONFIG" = "no" ; then
-    no_gdk_pixbuf=yes
-  else
-    GDK_PIXBUF_CFLAGS=`$GDK_PIXBUF_CONFIG $gdk_pixbufconf_args --cflags`
-    GDK_PIXBUF_LIBS=`$GDK_PIXBUF_CONFIG $gdk_pixbufconf_args --libs`
-
-    gdk_pixbuf_major_version=`$GDK_PIXBUF_CONFIG $gdk_pixbuf_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    gdk_pixbuf_minor_version=`$GDK_PIXBUF_CONFIG $gdk_pixbuf_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    gdk_pixbuf_micro_version=`$GDK_PIXBUF_CONFIG $gdk_pixbuf_config_args --version | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test "x$enable_gdk_pixbuftest" = "xyes" ; then
-      ac_save_CFLAGS="$CFLAGS"
-      ac_save_LIBS="$LIBS"
-      CFLAGS="$CFLAGS $GDK_PIXBUF_CFLAGS"
-      LIBS="$LIBS $GDK_PIXBUF_LIBS"
-dnl
-dnl Now check if the installed GDK_PIXBUF is sufficiently new. (Also sanity
-dnl checks the results of gdk-pixbuf-config to some extent
-dnl
-      rm -f conf.gdk_pixbuftest
-      AC_TRY_RUN([
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-
-char*
-my_strdup (char *str)
-{
-  char *new_str;
-  
-  if (str)
-    {
-      new_str = malloc ((strlen (str) + 1) * sizeof(char));
-      strcpy (new_str, str);
-    }
-  else
-    new_str = NULL;
-  
-  return new_str;
-}
-
-int main ()
-{
-  int major, minor, micro;
-  char *tmp_version;
-
-  system ("touch conf.gdk_pixbuftest");
-
-  /* HP/UX 9 (%@#!) writes to sscanf strings */
-  tmp_version = my_strdup("$min_gdk_pixbuf_version");
-  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
-     printf("%s, bad version string\n", "$min_gdk_pixbuf_version");
-     exit(1);
-   }
-
-   if (($gdk_pixbuf_major_version > major) ||
-      (($gdk_pixbuf_major_version == major) && ($gdk_pixbuf_minor_version > minor)) ||
-      (($gdk_pixbuf_major_version == major) && ($gdk_pixbuf_minor_version == minor) && ($gdk_pixbuf_micro_version >= micro)))
-    {
-      return 0;
-    }
-  else
-    {
-      printf("\n*** 'gdk-pixbuf-config --version' returned %d.%d.%d, but the minimum version\n", $gdk_pixbuf_major_version, $gdk_pixbuf_minor_version, $gdk_pixbuf_micro_version);
-      printf("*** of GDK_PIXBUF required is %d.%d.%d. If gdk-pixbuf-config is correct, then it is\n", major, minor, micro);
-      printf("*** best to upgrade to the required version.\n");
-      printf("*** If gdk-pixbuf-config was wrong, set the environment variable GDK_PIXBUF_CONFIG\n");
-      printf("*** to point to the correct copy of gdk-pixbuf-config, and remove the file\n");
-      printf("*** config.cache before re-running configure\n");
-      return 1;
-    }
-}
-
-],, no_gdk_pixbuf=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-       CFLAGS="$ac_save_CFLAGS"
-       LIBS="$ac_save_LIBS"
-     fi
-  fi
-  if test "x$no_gdk_pixbuf" = x ; then
-     AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
-  else
-     AC_MSG_RESULT(no)
-     if test "$GDK_PIXBUF_CONFIG" = "no" ; then
-       echo "*** The gdk-pixbuf-config script installed by GDK_PIXBUF could not be found"
-       echo "*** If GDK_PIXBUF was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the GDK_PIXBUF_CONFIG environment variable to the"
-       echo "*** full path to gdk-pixbuf-config."
-     else
-       if test -f conf.gdk_pixbuftest ; then
-        :
-       else
-          echo "*** Could not run GDK_PIXBUF test program, checking why..."
-          CFLAGS="$CFLAGS $GDK_PIXBUF_CFLAGS"
-          LIBS="$LIBS $GDK_PIXBUF_LIBS"
-          AC_TRY_LINK([
-#include <stdio.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-],      [ return 0; ],
-        [ echo "*** The test program compiled, but did not run. This usually means"
-          echo "*** that the run-time linker is not finding GDK_PIXBUF or finding the wrong"
-          echo "*** version of GDK_PIXBUF. If it is not finding GDK_PIXBUF, you'll need to set your"
-          echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
-          echo "*** to the installed location  Also, make sure you have run ldconfig if that"
-          echo "*** is required on your system"
-	  echo "***"
-          echo "*** If you have an old version installed, it is best to remove it, although"
-          echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"],
-        [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means GDK_PIXBUF was incorrectly installed"
-          echo "*** or that you have moved GDK_PIXBUF since it was installed. In the latter case, you"
-          echo "*** may want to edit the gdk-pixbuf-config script: $GDK_PIXBUF_CONFIG" ])
-          CFLAGS="$ac_save_CFLAGS"
-          LIBS="$ac_save_LIBS"
-       fi
-     fi
-     GDK_PIXBUF_CFLAGS=""
-     GDK_PIXBUF_LIBS=""
-     ifelse([$3], , :, [$3])
-  fi
-  AC_SUBST(GDK_PIXBUF_CFLAGS)
-  AC_SUBST(GDK_PIXBUF_LIBS)
-  rm -f conf.gdk_pixbuftest
-])
 
