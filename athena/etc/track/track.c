@@ -1,8 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.1 1988-05-04 18:11:38 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.2 1988-06-10 12:27:18 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.1  88/05/04  18:11:38  shanzer
+ * made sort_entries() run before justshow(), so that the augmented
+ * entrylist gets dumped.
+ * -don
+ * 
  * Revision 4.0  88/04/14  16:43:19  don
  * this version is not compatible with prior versions.
  * it offers, chiefly, link-exporting, i.e., "->" systax in exception-lists.
@@ -94,7 +99,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.1 1988-05-04 18:11:38 shanzer Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.2 1988-06-10 12:27:18 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -140,6 +145,7 @@ int quietflag = 0;	/* if set, don't print non-fatal error messages */
 int interactive = 1;	/* if set, don't send errors via mail, print them */
 int uflag = NO_CLOBBER;	/* if set, copy a older file on top of a newer one */
 int debug = 0;		/* if set, print debugging information */
+int ignore_prots = 0;	/* if set, don't use or set uid/gid/mode-bits */
 int incl_devs = 0;	/* if set, include devices in update */
 
 /* initialize the global entry-counters with bad values,
@@ -187,6 +193,15 @@ char **argv;
 			}
 			else strcpy( fromroot, scratch);
 			break;
+
+		/* -I
+		 *    Ignore protections (uid,gid,mode) when tracking,
+		 *    except when creating a file: then, use remote prots.
+		 */
+		case 'I':
+			ignore_prots = 1;
+			break;
+
 		/* -S stackmax
 		 *    Specify deeper path stacks
 		 */ 
@@ -194,6 +209,7 @@ char **argv;
 			get_arg(scratch,argv,&i);
 			sscanf( scratch, "%d", &stackmax);
 			break;
+
 		/* -T dirname
 		 *    Specify destination "root" directory.
 		 */ 
@@ -205,6 +221,14 @@ char **argv;
 			}
 			else strcpy( toroot, scratch);
 			break;
+
+		/* -W dirname
+		 *    Specify the working directory for
+		 *    accessing the subscription-list and statfile.
+		 */
+		case 'W':
+			get_arg(workdir,argv,&i);
+			break;
 		/* -c
 		 *    compare checksums of regular files, when updating.
 		 *    the checksums are used to detect file-system
@@ -213,13 +237,11 @@ char **argv;
 		case 'c':
 			cksumflag = 1;
 			break;
-
-		/* -d dirname
-		 *    Specify the working directory for
-		 *    accessing the subscription-list and statfile.
+		/* -d
+		 *    Include devices in an update.
 		 */
 		case 'd':
-			get_arg(workdir,argv,&i);
+			incl_devs = 1;
 			break;
 		/* -f
 		 *    Force updating regardless of locks.
@@ -227,12 +249,7 @@ char **argv;
 		case 'f':
 			forceflag = 1;
 			break;
-		/* -i
-		 *    Include devices in an update.
-		 */
-		case 'i':
-			incl_devs = 1;
-			break;
+
 		/* -m {user}
 		 *    Send mail to root/user instead of
 		 * displaying messages on the terminal.
@@ -323,25 +340,8 @@ char **argv;
 			toroot);
 		do_panic();
 	}
-	/*
-	 * Get the proper working directory,
-	 * where the subscription-list & statfile are.
-	 */
-	switch  ( (unsigned) *workdir) {
-	case '\0': sprintf( workdir, "%s%s", fromroot, DEF_WORKDIR);
-	case '.':
-	case '/':  break;
-	default:   strcpy( scratch, workdir);
-		   sprintf( workdir, "%s/%s", fromroot, scratch);
-	}
-
-        if ( ! *subfilepath)
-		sprintf( subfilepath, "%s/%s/%s",
-			 workdir, DEF_SLISTDIR, subfilename);
-
-        if ( ! *statfilepath)
-		sprintf( statfilepath, "%s/%s/%s",
-			 workdir, DEF_STATDIR, subfilename);
+	build_path( fromroot, workdir, DEF_SLISTDIR, subfilepath);
+	build_path( fromroot, workdir, DEF_STATDIR, statfilepath);
 
 	fprintf( stderr, "using %s as subscription-list\n", subfilepath);
 	fprintf( stderr, "using %s as statfile\n",         statfilepath);
@@ -455,6 +455,11 @@ readstat() {
 		poppath( to);
 		poppath( from);
 	}
+	/* track is often used just before a reboot;
+	 * make sure that the file-systems' superblocks are up-to-date.
+	 */
+	sync();
+	sleep(2);
 }
 
 /*
@@ -541,11 +546,12 @@ writestat()
 		else    walk_trees( from, cmp,   entry_currency);
 
 		/* WARNING: walk_trees alters ALL of its arguments */
+		/* sort the statfile, and write it out
+		 * to the correct directory:
+		 */
+		sort_stat();
+		cur_line = 0;
 	}
-	/* sort the statfile, and write it out
-	 * to the correct directory:
-	 */
-	sort_stat();
 }
 
 /* if the current entry's fromfile is a directory, but its cmpfile isn't,
@@ -719,7 +725,9 @@ justshow()
 			e->cmpfile,
 			e->tofile);
 		for( p = e->patterns; p ; p = NEXT( p))
-		    fprintf(stderr,"\t\t%s\n", TEXT( p));
+		    fprintf(stderr,"\t\t%s%s\n",
+			    FLAG( p) == FORCE_LINK ? "-> " : "",
+			    TEXT( p));
 		fprintf( stderr, "\texceptions--\n");
 		switch( SIGN( e->names.shift)) {
 		case -1:
@@ -784,6 +792,25 @@ setuperr()
 		system(msg); */
 		exit(1);
 	}
+}
+
+build_path( f, w, d, p) char *f, *w, *d, *p; {
+	static char buf[ LINELEN];
+
+	if ( ! strcmp( p, "-")) return;
+	/*
+	 * Get the proper working directory,
+	 * where the subscription-list & statfile are.
+	 */
+	if ( *w) f = "";  /* don't add root-qualification to user's workdir */
+	else if ( *p) f = "."; /* don't use default workdir with user's filen */
+	else w = DEF_WORKDIR; /* default workdir, default filename */
+
+	if ( *p) d = "";
+	else strcpy( p, subfilename);
+
+	sprintf( buf, "%s%s%s%s/%s", f, w, *d ? "/" : "", d, p);
+	strcpy( p, buf);
 }
 
 FILE *
