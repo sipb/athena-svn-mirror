@@ -16,7 +16,7 @@ mandir		= @mandir@
 man1dir		= $(mandir)/man1
 mansuffix	= 1
 
-GNOME_DATADIR	= @GNOME_DATADIR@
+GNOME_DATADIR	= /usr/athena/share
 GNOME_CCDIR	= $(GNOME_DATADIR)/control-center/Desktop
 GNOME_PANELDIR	= $(GNOME_DATADIR)/gnome/apps/Settings/Desktop
 GNOME_ICONDIR	= $(GNOME_DATADIR)/pixmaps
