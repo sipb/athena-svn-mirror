@@ -206,11 +206,11 @@ static XrmOptionDescRec options [] = {
 
   /* Athena additions */
   { "-start-locked",	   ".startLocked",	XrmoptionNoArg, "on" },
+  { "-no-start-locked",	   ".startLocked",	XrmoptionNoArg, "off" },
 #if 0
   /* Former Athena additions which don't seem to fit in now that most
      command-line options have been removed.
    */
-  { "-no-start-locked",	   ".startLocked",	XrmoptionNoArg, "off" },
   { "-lock-command",	   ".lockCommand",	XrmoptionSepArg, 0 },
   { "-unlock-command",	   ".unlockCommand",	XrmoptionSepArg, 0 },
   { "-passwd",		   ".passwd",		XrmoptionSepArg, 0 },
