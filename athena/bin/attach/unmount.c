@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.11 1996-12-11 21:59:59 ghudson Exp $
+ * $Id: unmount.c,v 1.12 1996-12-11 22:02:48 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.11 1996-12-11 21:59:59 ghudson Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.12 1996-12-11 22:02:48 ghudson Exp $";
 
 #include "attach.h"
 
@@ -207,6 +207,41 @@ unmount_42(errname, mntpt, dev)
 #endif /* !UMOUNT_CMD */
 }
 
+#ifdef SOLARIS
+bool_t
+xdr_path(xdrs, pathp)
+        XDR *xdrs;
+        char **pathp;
+{
+        if (xdr_string(xdrs, pathp, 1024)) {
+                return(TRUE);
+        }
+        return(FALSE);
+}
+
+xdr_fhstatus(xdrs, fhsp)
+        XDR *xdrs;
+        struct fhstatus *fhsp;
+{
+        if (!xdr_int(xdrs, &fhsp->fhs_status))
+                return FALSE;
+        if (fhsp->fhs_status == 0) {
+                if (!xdr_fhandle(xdrs, &fhsp->fhs_fh))
+                        return FALSE;
+        }
+}
+xdr_fhandle(xdrs, fhp)
+        XDR *xdrs;
+        fhandle_t *fhp;
+{
+        if (xdr_opaque(xdrs, fhp, NFS_FHSIZE)) {
+                return (TRUE);
+        }
+        return (FALSE);
+}
+
+#endif
+
 #ifdef NFS
 /*
  * Unmount an NFS filesystem
@@ -278,41 +313,6 @@ nfs_unmount(errname, host, hostaddr, mntpt, rmntpt)
 
     return (SUCCESS);
 }
-#endif
-
-#ifdef SOLARIS
-bool_t
-xdr_path(xdrs, pathp)
-        XDR *xdrs;
-        char **pathp;
-{
-        if (xdr_string(xdrs, pathp, 1024)) {
-                return(TRUE);
-        }
-        return(FALSE);
-}
-
-xdr_fhstatus(xdrs, fhsp)
-        XDR *xdrs;
-        struct fhstatus *fhsp;
-{
-        if (!xdr_int(xdrs, &fhsp->fhs_status))
-                return FALSE;
-        if (fhsp->fhs_status == 0) {
-                if (!xdr_fhandle(xdrs, &fhsp->fhs_fh))
-                        return FALSE;
-        }
-}
-xdr_fhandle(xdrs, fhp)
-        XDR *xdrs;
-        fhandle_t *fhp;
-{
-        if (xdr_opaque(xdrs, fhp, NFS_FHSIZE)) {
-                return (TRUE);
-        }
-        return (FALSE);
-}
-
 #endif
 
 #if defined(SOLARIS) || defined(linux)
