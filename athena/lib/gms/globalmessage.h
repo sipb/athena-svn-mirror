@@ -1,4 +1,4 @@
-/* $Id: globalmessage.h,v 1.1 1999-12-08 22:05:02 danw Exp $ */
+/* $Id: globalmessage.h,v 1.2 2004-05-21 19:42:23 zacheiss Exp $ */
 
 /* Copyright 1988, 1998 by the Massachusetts Institute of Technology.
  *
@@ -48,8 +48,6 @@ typedef int Code_t;
 
 /* log_10(2^32) >= 10, plus a NL, plus a NUL */
 #define GMS_TIMESTAMP_LEN 12
-
-#define BFSZ 1024
 
 void view_message_by_zephyr(char *message);
 void view_message_by_tty(char *message);
