@@ -9,11 +9,13 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.2 1988-09-27 00:52:39 eichin Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.3 1988-09-28 19:03:50 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
-#define GMS_SERVER_MESSAGE "/mit/eichin/Message"
+#ifndef GMS_SERVER_MESSAGE
+#define GMS_SERVER_MESSAGE "/site/Message"
+#endif /* GMS_SERVER_MESSAGE */
 
 #include <fcntl.h>
 #include <errno.h>
