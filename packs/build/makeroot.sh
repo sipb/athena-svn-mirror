@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.9 2002-03-28 20:30:53 rbasch Exp $
+# $Id: makeroot.sh,v 1.10 2002-04-13 22:01:54 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -34,6 +34,12 @@ linux)
   # Make links into destination area.
   ln -s ../build/athtools/usr/athena "$root/usr/athena"
   ln -s ../build/athtools/usr/afsws "$root/usr/afsws"
+
+  # So packages can figure out where sendmail is.  (sendmail normally
+  # comes from athena-sendmail, which we don't install; this is simpler
+  # than installing either the athena-sendmail or a native sendmail RPM.)
+  touch "$root/usr/sbin/sendmail"
+  chmod a+x "$root/usr/sbin/sendmail"
   ;;
 
 sun4)
