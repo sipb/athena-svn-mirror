@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.10 1990-11-13 19:23:43 raeburn Exp $";
+static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.11 1990-11-13 20:41:09 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -21,6 +21,7 @@ static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.10 1990-11-13 19:23:43 raeburn E
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xresource.h>
 #include "pointer_dictionary.h"
 #include "new_memory.h"
 #include "formatter.h"
@@ -189,7 +190,7 @@ void fixup_and_draw(dpy, style, auxblocks, blocks, num, lines, numlines,
 	lines[line].rsize = rsize;
 	
 	/* get width of line and see if it is bigger than the max width */
-	
+
 	switch ((lsize?1:0)+(csize?2:0)+(rsize?4:0)) {
 #ifdef DEBUG
 	  default:
