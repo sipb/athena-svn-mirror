@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.69 1996-03-08 21:56:23 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.70 1996-05-16 03:40:20 cfields Exp $
  */
 
 #include <stdio.h>
@@ -386,7 +386,7 @@ char *display;
 	}
     }
 
-#ifdef SETPAG
+#if defined(SETPAG) && !defined(sgi) /* not appropriate for SGI system */
     setpag();
 #endif
 
