@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.16 1990-12-17 08:30:12 lwvanels Exp $
+ *	$Id: data.c,v 1.17 1991-01-01 13:53:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.16 1990-12-17 08:30:12 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.17 1991-01-01 13:53:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -94,8 +94,6 @@ PROC Proc_List[] =
   OLC_VERIFY_INSTANCE, olc_verify_instance,  "olc verify",
   OLC_DEFAULT_INSTANCE,olc_default_instance, "olc default instance",
   OLC_DUMP,            olc_dump,             "olc dump",
-  OLC_DUMP_REQ_STATS,  olc_dump_req_stats,   "olc request stats",
-  OLC_DUMP_QUES_STATS, olc_dump_ques_stats,  "olc question stats",
   OLC_LOAD_USER,       olc_load_user,        "olc load user",
   OLC_CHANGE_MOTD,     olc_change_motd,      "olc change motd",
   OLC_CHANGE_ACL,      olc_change_acl,       "olc change acl",
