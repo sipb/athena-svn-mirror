@@ -4,33 +4,36 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.4 1990-06-07 22:53:45 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.5 1990-06-07 23:19:08 jik Exp $
 #	$Locker:  $
 #
 
-RANLIB= ranlib
+RANLIB= 	ranlib
 
 DEFINES= 
-CFLAGS=	-O $(DEFINES)
-LINTFLAGS= -uhvpb
-LINTFILES= error_message.c et_name.c init_et.c com_err.c # perror.c
-LIBOBJS= error_message.o et_name.o init_et.o com_err.o # perror.o
+CFLAGS=		-O $(DEFINES)
+LINTFLAGS= 	-uhvpb
+LINTFILES= 	error_message.c et_name.c init_et.c com_err.c
+LIBOBJS= 	error_message.o et_name.o init_et.o com_err.o
 
-BINDIR=/usr/athena
-INCDIR=/usr/include
-LIBDIR=/usr/athena/lib
-DOCDIR=/usr/doc/athena
+BINDIR=		/usr/athena
+INCDIR=		/usr/include
+LIBDIR=		/usr/athena/lib
+DOCDIR=		/usr/doc/athena
 DESTDIR=
 
-FILES=	Makefile et_name.c error_message.c compile_et.c \
-		error_table.y et_lex.lex.l init_et.c \
-		com_err.c com_err.h \
-		error_table.h mit-sipb-copyright.h \
-		test.c test1.et test2.et \
-		compiler.h internal.h \
-		com_err.texinfo texinfo.tex strcasecmp.c
-CFILES=	compile_et.c error_table.c error_message.c et_name.c \
-	init_et.c com_err.c strcasecmp.c
+CFILES=		com_err.c compile_et.c error_message.c et_name.c\
+		init_et.c strcasecmp.c test.c
+HFILES=		com_err.h compiler.h error_table.h internal.h\
+		mit-sipb-copyright.h 
+MANS=		com_err.3 compile_et.1
+YACCS=		error_table.y
+LEXS=		et_lex.lex.l
+ETS=		test1.et test2.et
+FILES=		MANIFEST Makefile PATCHLEVEL README\
+		com_err.texinfo.Z.uu profiled texinfo.tex.Z.uu\
+		$(CFILES) $(HFILES) $(MANS) $(YACCS) $(LEXS) $(ETS)
+
 
 #
 # what to build...
@@ -73,10 +76,6 @@ doc:	com_err.dvi
 compile_et:	compile_et.o error_table.o strcasecmp.o
 	${CC} ${CFLAGS} -o compile_et compile_et.o error_table.o\
 		strcasecmp.o -ll
-
-et.tar:	${FILES}
-	rm -f et.tar
-	tar cfrlv et.tar ${FILES}
 
 tags:	TAGS
 
@@ -128,6 +127,17 @@ clean:
 		et_lex.lex.c \
 		test1.h test1.c test2.h test2.c test \
 		eddep makedep
+
+patch: $(FILES)
+	makepatch $(ARCHIVE)
+	mv patch delete.patch`cat PATCHLEVEL`
+	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
+
+shar: $(FILES)
+	makekit -oMANIFEST -h2 MANIFEST $(FILES)
+
+tar: $(ARCHIVE)
+	tar cvf - $(ARCHIVE) | compress > com_err.tar.Z
 
 # for testing
 test:	test.o test1.o test2.o libcom_err.a
