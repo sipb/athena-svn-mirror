@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.30 1991-01-01 13:57:31 lwvanels Exp $
+ *	$Id: log.c,v 1.31 1991-01-03 16:32:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.30 1991-01-01 13:57:31 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.31 1991-01-03 16:32:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -49,7 +49,7 @@ extern int errno;
 # define P(s) ()
 #endif
 
-static ERRCODE log_log P((KNUCKLE *knuckle , char *message , char *header ));
+static ERRCODE log_log P((KNUCKLE *knuckle , char *message , char *header , int is_private ));
 static ERRCODE terminate_log_crash P((KNUCKLE *knuckle ));
 static ERRCODE dispose_of_log P((KNUCKLE *knuckle ));
 static char *trans_m_i P((char *os ));
@@ -114,24 +114,16 @@ format_line_to_user_log (log, line)
  */
 
 static ERRCODE
-log_log (knuckle, message, header)
+log_log (knuckle, message, header, is_private)
      KNUCKLE *knuckle;
      char *message;
      char *header;
+     int is_private;
 {
   FILE *log;
-  char *log_path;
   char error[DB_LINE];
+  char censored_filename[NAME_SIZE];
 
-  log_path = knuckle->question->logfile;
-  {
-      /* verify that the file exists */
-      if (access (log_path, R_OK|W_OK) < 0) {
-	  log_error (fmt ("Can't access log file %s: %s",
-			  log_path, error_message (errno)));
-	  return ERROR;
-      }
-  }
   if ((log = fopen(knuckle->question->logfile, "a")) == (FILE *)NULL) 
     {
       (void) sprintf(error, "log_log: can't open log %s\n",
@@ -141,8 +133,22 @@ log_log (knuckle, message, header)
     }
   fprintf(log, "\n%s",header);
   format_line_to_user_log(log,message);
-
   fclose(log);
+
+  if (!is_private) {
+    sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
+    if ((log = fopen(censored_filename, "a")) == (FILE *)NULL) 
+      {
+	(void) sprintf(error, "log_log: can't open log %s\n",
+		       knuckle->question->logfile);
+	log_error(error);
+	return(ERROR);
+      }
+    fprintf(log, "\n%s",header);
+    format_line_to_user_log(log,message);
+    fclose(log);
+  }
+
   return(SUCCESS);
 }
 
@@ -196,7 +202,7 @@ log_daemon(knuckle, message)
   
   time_now(time);
   (void) sprintf(header,"--- %s\n    [%s]\n ",message,time);
-  (void) log_log(knuckle,"",header);
+  (void) log_log(knuckle,"",header,0);
 }
 
 
@@ -212,7 +218,7 @@ log_message (owner, sender, message)
   (void) sprintf(header, "*** Reply from %s %s@%s [%d].\n    [%s]\n",
 	  sender->title, sender->user->username, 
 	  sender->user->machine, sender->instance, time);
-  (void) log_log(owner,message,header);
+  (void) log_log(owner,message,header,0);
 }
 
 
@@ -228,24 +234,26 @@ log_mail(owner,sender,message)
   (void) sprintf(header, "*** Mail from %s %s@%s [%d].\n    [%s]\n",
 	  sender->title, sender->user->username, 
 	  sender->user->machine, sender->instance, time);
-  (void) log_log(owner,message,header);
+  (void) log_log(owner,message,header,0);
 }
 
 
 void
-log_comment(owner,sender,message)
+log_comment(owner,sender,message,is_private)
      KNUCKLE *owner,*sender;
      char *message;
+     int is_private;
 {
   char time[TIME_SIZE];
   char header[DB_LINE];
 
   time_now(time);
-  (void) sprintf(header, "--- Comment by %s %s@%s [%d].\n    [%s]\n",
+  (void) sprintf(header, "--- %sComment by %s %s@%s [%d].\n    [%s]\n",
+		 (is_private ? "Private " : ""),
 		 sender->title, sender->user->username,
 		 sender->user->machine, sender->instance, time);
 
-  (void) log_log(owner,message,header);
+  (void) log_log(owner,message,header,is_private);
 }
 
 
@@ -265,7 +273,7 @@ log_description(owner,sender,message)
 		 sender->user->machine, sender->instance, time);
 
   sprintf(msgbuf, "%s\n", message);
-  (void) log_log(owner,msgbuf,header);
+  (void) log_log(owner,msgbuf,header,0);
 }
 
 
@@ -283,7 +291,7 @@ log_long_description(owner,sender,message)
 		 sender->title, sender->user->username,
 		 sender->user->machine, sender->instance, time);
 
-  (void) log_log(owner,message,header);
+  (void) log_log(owner,message,header,0);
 }
 
 
@@ -309,10 +317,12 @@ init_log(knuckle, question, machinfo)
      char *machinfo;
 {
   FILE *logfile;		/* Ptr. to user's log file. */
+  FILE *clogfile;		/* Ptr. to censored user's log file. */
+  char censored_filename[NAME_SIZE]; /* Censored user log */
   char error[ERROR_SIZE];	        /* Error message. */
   char current_time[32];	/* Current time value. */
   char topic[TOPIC_SIZE];	/* Real topic. */
-	
+
 #ifdef TEST
   log_status (fmt ("init_log: %s (%d)\n",knuckle->user->username,
 		   knuckle->instance));
@@ -320,13 +330,13 @@ init_log(knuckle, question, machinfo)
 
   (void) sprintf(knuckle->question->logfile, "%s/%s_%d.log", LOG_DIR, 
 	  knuckle->user->username,knuckle->instance);
-  if ((logfile = fopen(knuckle->question->logfile, "r")) != (FILE *) NULL) 
+  (void) sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
+  if (access(knuckle->question->logfile,F_OK) == 0)
     {
       (void) sprintf(error, 
 		     "init_log: already a log file %s, moving it to log.",
 			knuckle->question->logfile);
       log_error(error);
-      (void) fclose(logfile);
       (void) strcpy(topic, knuckle->question->topic);
       (void) strcpy(knuckle->question->topic, "crash");
       terminate_log_crash(knuckle);
@@ -334,6 +344,14 @@ init_log(knuckle, question, machinfo)
     }
 
   if ((logfile = fopen(knuckle->question->logfile, "w")) == (FILE *)NULL) 
+    {
+      (void) sprintf(error, "init_log: can't open log file %s",
+	      knuckle->question->logfile);
+      log_error(error);
+      return(ERROR);
+    }
+
+  if ((clogfile = fopen(censored_filename, "w+")) == (FILE *)NULL) 
     {
       (void) sprintf(error, "init_log: can't open log file %s",
 	      knuckle->question->logfile);
@@ -349,15 +367,28 @@ init_log(knuckle, question, machinfo)
 	  knuckle->user->machine,
 	  knuckle->instance,
 	  current_time);
+  fprintf(clogfile, "Log Initiated for %s %s (%s@%s [%d]).\n    [%s]\n\n",
+	  knuckle->title,
+	  knuckle->user->realname, 
+	  knuckle->user->username,
+	  knuckle->user->machine,
+	  knuckle->instance,
+	  current_time);
 
   fprintf(logfile, "Topic:\t\t%s\n\n", knuckle->question->topic);
   fprintf(logfile, "Question:\n");
+  fprintf(clogfile, "Topic:\t\t%s\n\n", knuckle->question->topic);
+  fprintf(clogfile, "Question:\n");
   write_line_to_log(logfile, question);
-  if (machinfo != NULL)
+  write_line_to_log(clogfile, question);
+  if (machinfo != NULL) 
     fprintf(logfile, "\nMachine info:%s\n", trans_m_i(machinfo));
   write_line_to_log(logfile,"___________________________________________________________\n\n");
+  write_line_to_log(clogfile,"___________________________________________________________\n\n");
   fprintf(logfile, "\n");
+  fprintf(clogfile, "\n");
   (void) fclose(logfile);
+  (void) fclose(clogfile);
   return(SUCCESS);
 }
 
@@ -508,16 +539,25 @@ dispose_of_log(knuckle)
   int pid;			/* Process ID for fork. */
   char msgbuf[BUF_SIZE];	/* Construct messages to be logged. */
   long time_now;		/* time now, in seconds (a unique number) */
+  char censored_filename[NAME_SIZE];
   
 #ifdef TEST
   printf("dispose title: %s\n",knuckle->question->title);
 #endif
+
+  sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
+  unlink(censored_filename);
 
   time_now = NOW;
 
   question = knuckle->question;
 
   (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
+  if (access(ctrlfile,F_OK) == 0) {
+    /* Whups, processed that last done too fast... */
+    time_now++;
+    (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
+  }
   (void) sprintf(newfile, "%s/log%d", DONE_DIR, time_now);
 
   if (rename(question->logfile, newfile) == -1) 
@@ -538,7 +578,7 @@ dispose_of_log(knuckle)
       
   if ((pid = vfork()) == -1) 
     {
-      perror("dispose_of_log: fork");
+      perror("dispose_of_log: vfork");
       log_error("Can't fork to dispose of log.");
       return(ERROR);
     }
@@ -589,12 +629,16 @@ char *os;
       for (i=0;i<n_mach;i++) {
 	fgets(mach[i].orig,80,trans_file);
 	fgets(mach[i].trans,80,trans_file);
+	size = strlen(mach[i].trans);
+	mach[i].trans[size-1] = '\0';
       }
       fscanf(trans_file,"%d\n",&n_disp);
       disp = calloc(n_disp,sizeof(TRANS));
       for (i=0;i<n_disp;i++) {
 	fgets(disp[i].orig,80,trans_file);
 	fgets(disp[i].trans,80,trans_file);
+	size = strlen(disp[i].trans);
+	disp[i].trans[size-1] = '\0';
       }
       fclose(trans_file);
     }
@@ -637,7 +681,7 @@ char *os;
       o_mach = mach[i].trans;
       break;
     }
-  sprintf(stuff,"\nProcessor: %s",o_mach);
+  sprintf(stuff,"\nProcessor: %s\n",o_mach);
   
   while (o_disp != NULL) {
     p = index(o_disp,',');
@@ -653,7 +697,7 @@ char *os;
 	o_disp = disp[i].trans;
 	break;
       }
-    sprintf(tmp_buf,"Display  : %s",o_disp);
+    sprintf(tmp_buf,"Display  : %s\n",o_disp);
     strcat(stuff,tmp_buf);
     o_disp = p;
   }
