@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.9 1992-11-08 19:29:37 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.10 1994-06-03 17:44:39 cfields Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -16,6 +16,8 @@ OSLIBS = -lm
 #ifdef _IBMR2
 OSLIBS = -ls -lodm -lcfg
 #endif
+#ifdef ultrix
+OSLIBS = -lnsyslog
 LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(AFSLIBS) $(OSLIBS)
 
 OBJS = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \
