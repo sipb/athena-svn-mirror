@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.4 1999-10-16 01:40:33 kcr Exp $
+/* $Id: dm.c,v 1.5 1999-10-20 01:59:14 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -41,7 +41,7 @@
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.4 1999-10-16 01:40:33 kcr Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.5 1999-10-20 01:59:14 kcr Exp $";
 #endif
 
 /* Process states */
@@ -103,6 +103,9 @@ static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
 static void writepid(char *file, pid_t pid);
 
+#ifndef HAVE_LIBUTIL
+void logout(const char *line);
+#endif
 /* the console process will run as daemon */
 #define DAEMON 1
 
@@ -741,13 +744,13 @@ static void cleanup(char *tty)
 {
   int file, found;
   struct utmp utmp;
-#ifdef HAVE_UTMPX_H
-  struct utmpx utmpx;
-  struct utmpx *utx_tmp;
-  char new_id[20];
-  char *p;
+#ifdef HAVE_PUTUTLINE
+  struct utmp *putmp;
 #endif
-  char login[9];
+#ifdef HAVE_PUTUTXLINE
+  struct utmpx utmpx;
+#endif
+  char login[sizeof(utmp.ut_name) + 1];
 
   if (login_running == RUNNING)
     kill(loginpid, SIGHUP);
@@ -757,87 +760,37 @@ static void cleanup(char *tty)
     kill(xpid, SIGTERM);
 
   found = 0;
-#ifndef HAVE_UTMPX_H
+
+  /* Find out what the login name was, so we can feed it to libal. */
+#ifdef HAVE_PUTUTLINE
+  strcpy(utmp.ut_line, tty);
+  setutent();
+  putmp = getutline(&utmp);
+  if (putmp != NULL)
+    {
+      strncpy(login, putmp->ut_name, sizeof(utmp.ut_name));
+      login[8] = '\0';
+    }
+  endutent();
+#else /* HAVE_PUTUTLINE */
   if ((file = open(utmpf, O_RDWR, 0)) >= 0)
     {
       while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
 	{
 	  if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line)))
 	    {
-	      strncpy(login, utmp.ut_name, 8);
-	      login[8] = '\0';
-#ifdef USER_PROCESS
-	      if (utmp.ut_type == USER_PROCESS)
-		{
-		  utmp.ut_type = DEAD_PROCESS;
-		  lseek(file, (long) -sizeof(utmp), SEEK_CUR);
-		  write(file, (char *) &utmp, sizeof(utmp));
-		  found = 1;
-		}
-#else
-	      if (utmp.ut_name[0] != '\0')
-		{
-		  strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-		  lseek(file, (long) -sizeof(utmp), SEEK_CUR);
-		  write(file, (char *) &utmp, sizeof(utmp));
-		  found = 1;
-		}
-#endif
-	      break;
+	      strncpy(login, utmp.ut_name, sizeof(utmp.ut_name));
+	      login[sizeof(utmp.ut_name)] = '\0';
 	    }
 	}
       close(file);
     }
-  if (found)
-    {
-      if ((file = open(wtmpf, O_WRONLY | O_APPEND, 0644)) >= 0)
-	{
-	  strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
-#ifndef USER_PROCESS
-	  strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-	  strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
-#endif
-	  time(&utmp.ut_time);
-	  write(file, (char *) &utmp, sizeof(utmp));
-	  close(file);
-	}
-    }
-#else /* HAVE_UTMPX_H */
-  gettimeofday(&utmpx.ut_tv, NULL);
-  utmpx.ut_type = 8;
-  strcpy(utmpx.ut_line, tty);
-  setutxent();
-  utx_tmp = getutxline(&utmpx);
-  if (utx_tmp != NULL)
-    {
-      strncpy(login, utx_tmp->ut_name, 8);
-      login[8] = '\0';
-      strcpy(utmpx.ut_line, utx_tmp->ut_line);
-      strcpy(utmpx.ut_user, utx_tmp->ut_name);
-      utmpx.ut_pid = getpid();
-      if (utx_tmp)
-	strcpy(new_id, utx_tmp->ut_id);
-      p = strchr(new_id, '/');
-      if (p)
-	strcpy(p, "\0");
-      strcpy(utmpx.ut_id, new_id);
-      pututxline(&utmpx);
-      getutmp(&utmpx, &utmp);
-      setutent();
-      pututline(&utmp);
-      if ((file = open(wtmpf, O_WRONLY | O_APPEND)) >= 0)
-	{
-	  write(file, (char *) &utmp, sizeof(utmp));
-	  close(file);
-	}
-      if ((file = open("/usr/adm/wtmpx", O_WRONLY | O_APPEND)) >= 0)
-	{
-	  write(file, (char *) &utmpx, sizeof(utmpx));
-	  close(file);
-	}
-    }
-#endif /* HAVE_UTMPX_H */
+#endif /* HAVE_PUTUTLINE */
 
+  /* Update the utmp & wtmp. */
+
+  logout(tty);
+  
   al_acct_revert(login, loginpid);
 
   tcflush(0, TCIOFLUSH);
@@ -1079,3 +1032,89 @@ static void writepid(char *file, pid_t pid)
   fprintf(fp, "%d\n", pid);
   fclose(fp);
 }
+
+#ifndef HAVE_LIBUTIL
+#ifdef HAVE_PUTUTLINE
+void logout(const char *line)
+{
+  struct utmp utmp;
+  struct utmp *putmp;
+#ifdef HAVE_PUTUTXLINE
+  struct utmpx utmpx;
+#endif
+#ifndef HAVE_UPDWTMP
+  int file;
+#endif
+
+  strcpy(utmp.ut_line, line);
+  setutent();
+  putmp=getutline(&utmp);
+  if (putmp != NULL)
+    {
+      time(&utmp.ut_time);
+      strncpy(utmp.ut_line, putmp->ut_line, sizeof(utmp.ut_line));
+      strncpy(utmp.ut_user, putmp->ut_name, sizeof(utmp.ut_name));
+      utmp.ut_pid = getpid();
+      strncpy(utmp.ut_id, putmp->ut_id, sizeof(utmp.ut_id));
+      utmp.ut_type = DEAD_PROCESS;
+      pututline(&utmp);
+#ifdef HAVE_PUTUTXLINE
+      getutmpx(&utmp, &utmpx);
+      setutxent();
+      pututxline(&utmpx);
+      endutxent();
+#endif /* HAVE_PUTUTXLINE */
+#ifdef HAVE_UPDWTMP
+      updwtmp(wtmpf, &utmp);
+#else /* HAVE_UPDWTMP */
+      if ((file = open(wtmpf, O_WRONLY | O_APPEND)) >= 0)
+	{
+	  write(file, (char *) &utmp, sizeof(utmp));
+	  close(file);
+	}
+#endif /* HAVE_UPDWTMP */
+    }
+  endutent();
+}
+#else
+void logout(const char *line)
+{
+  struct utmp utmp;
+  int file;
+  int found;
+
+  if ((file = open(utmpf, O_RDWR, 0)) >= 0)
+    {
+      while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
+	{
+	  if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line)))
+	    {
+	      strncpy(login, utmp.ut_name, 8);
+	      login[8] = '\0';
+	      if (utmp.ut_name[0] != '\0')
+		{
+		  strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
+		  lseek(file, (long) -sizeof(utmp), SEEK_CUR);
+		  write(file, (char *) &utmp, sizeof(utmp));
+		  found = 1;
+		}
+	      break;
+	    }
+	}
+      close(file);
+    }
+  if (found)
+    {
+      if ((file = open(wtmpf, O_WRONLY | O_APPEND, 0644)) >= 0)
+	{
+	  strncpy(utmp.ut_line, tty, sizeof(utmp.ut_line));
+	  strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
+	  strncpy(utmp.ut_host, "", sizeof(utmp.ut_host));
+	  time(&utmp.ut_time);
+	  write(file, (char *) &utmp, sizeof(utmp));
+	  close(file);
+	}
+    }
+}
+#endif
+#endif
