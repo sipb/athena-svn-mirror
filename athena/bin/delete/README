@@ -63,6 +63,10 @@ make the Makefile work for you.
    to you, then uncomment the variables starting with "AFS" and set
    them appropriately.
 
+6. See the comment in the Makefile about USE_BLOCKS.  If you do not
+   know whether or not you have st_blocks or if it represents 512-byte
+   blocks, run "make block-test" and you should be told what to do.
+
 
 			   COM_ERR LIBRARY
 
@@ -77,6 +81,25 @@ the delete Makefile so that it knows where they are.  The delete
 Makefile does not compile them by default, since they are already
 compiled and installed at Athena, so you should compile and install
 them separately from delete.
+
+
+				 BUGS
+
+It is not clear to me that the USE_BLOCKS code is going to do the
+right thing on all systems.  If you define USE_BLOCKS and discover
+that lsdel, expunge or purge gives you bogus values for file sizes or
+total amount of space, please let me know, because it will help me to
+tighten up the code to work on a variety of different systems.
+
+
+		     I'M LOOKING FOR BETA-TESTERS
+
+I try to make this package run on as many different platforms as
+possible.  However, I do not have access to a large variety of
+platforms, so I can't effectively test all of the changes I make.  I'm
+therefore looking for people who are willing to beta-test changes
+before I release them to the general public.  If you are interested in
+doing this, please let me know.
 
 
 			     FINAL NOTES
