@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/polld.h,v $
- *	$Id: polld.h,v 1.1 1991-01-08 15:55:56 lwvanels Exp $
+ *	$Id: polld.h,v 1.2 1991-01-16 13:05:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -42,8 +42,8 @@ typedef struct tPTF {
 #define LOC_CHANGED	1
 #define LOC_ERROR	-1
 
-#define FINGER_TIMEOUT	10  /* seconds */
-#define CYCLE_TIME	15  /* minutes */
+#define FINGER_TIMEOUT	60  /* seconds */
+#define CYCLE_TIME	10  /* minutes */
 
 /* POLLD functions */
 
