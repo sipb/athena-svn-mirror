@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.55 1993-08-09 11:34:49 thorne Exp $
- *	$Author: thorne $
+ *	$Id: requests_olc.c,v 1.56 1995-05-14 01:11:29 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.55 1993-08-09 11:34:49 thorne Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.56 1995-05-14 01:11:29 cfields Exp $";
 #endif
 #endif
 
@@ -363,7 +363,7 @@ olc_who(fd,request)
 	{
 	  if (owns_question(requester))
 	    {
-	      sprintf(message,"A %s has sent you a response in %s.\nTo see it, type 'show' at the %s prompt.\n",
+	      sprintf(message,"A %s has sent you a response in %s.\nTo see it, type 'show' at the %s prompt,\nor click on the 'show' button.\n",
 		      DEFAULT_TITLE2,DaemonInst,DaemonInst);
 	    }
 	  else
@@ -1288,7 +1288,8 @@ olc_send(fd, request)
   
   if(owns_question(target)) {
     sprintf(mesg,
-	    "New message from %s %s.\nTo see it, type 'show' within %s.\n",
+	    "New message from %s %s.\nTo see it, type 'show' within %s, \nor\
+ click on the 'show' button.\n",
 	    requester->title, requester->user->username,DaemonInst);
   }
   else {
@@ -2020,6 +2021,35 @@ olc_list_topics(fd, request)
 
   send_response(fd,SUCCESS);
   status = write_file_to_fd(fd,TOPIC_FILE);    
+  return(status);
+}
+ERRCODE
+olc_list_services(fd, request)
+     int fd;
+     REQUEST *request;
+{
+  KNUCKLE *requester;
+  int status;
+
+#ifdef LOG
+  char mesg[BUFSIZ];
+#endif /* LOG */
+
+  status = find_knuckle(&(request->requester), &requester);
+  if(status)
+    return(send_response(fd,status));
+
+  if(!is_allowed(requester->user,OLC_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+
+#ifdef LOG
+  sprintf(mesg,"%s [%d] lists services",
+	  requester->user->username, requester->instance);
+  log_status(mesg);
+#endif /* LOG */
+
+  send_response(fd,SUCCESS);
+  status = write_file_to_fd(fd,SERVICES_FILE);    
   return(status);
 }
 
