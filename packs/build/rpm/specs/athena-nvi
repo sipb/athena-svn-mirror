@@ -23,5 +23,5 @@ mkdir $RPM_BUILD_ROOT
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
-      -e "s|^/usr/man/.*[0-9]$|\0.gz|" |
+      -e "s|^/usr/share/man/.*[0-9]$|\0.gz|" |
   sort > rpm.filelist

@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7 2000-03-15 20:51:48 ghudson Exp $
+# $Id: cshrc,v 1.8 2001-04-30 15:23:46 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -17,7 +17,7 @@ set athena_path=( /srvd/patch /usr/athena/bin /bin/athena  \
 		/usr/athena/etc /usr/sbin /sbin )
 
 # Set standard path of directories for man command to search:
-set athena_manpath=/usr/athena/man:/usr/man:/usr/X11R6/man
+set athena_manpath=/usr/athena/man:/usr/share/man:/usr/X11R6/man
 
 # Compatibility with older versions of Athena tcsh
 set hosttype=linux
