@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.13 1997-04-01 01:12:59 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.14 1997-12-03 21:43:18 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -666,28 +666,19 @@ main(argc, argv)
   int auxinput = -1;
   int size=0;
   struct stat buf;
-#ifndef ultrix
   struct sigaction act;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
-#endif
 
 
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
 
-#ifndef ultrix /* s.b. ifdef POSIX but need to test on ultrix */
   act.sa_handler= (void (*)()) sighandler;
   (void) sigaction(SIGHUP, &act, NULL);
   (void) sigaction(SIGFPE, &act, NULL);
   (void) sigaction(SIGUSR1, &act, NULL);
   (void) sigaction(SIGUSR2, &act, NULL);
-#else
-  (void) signal(SIGHUP, sighandler);
-  (void) signal(SIGFPE, sighandler);
-  (void) signal(SIGUSR1, sighandler);
-  (void) signal(SIGUSR2, sighandler);
-#endif
 
 #if defined(HAS_PUTENV)
 /*
