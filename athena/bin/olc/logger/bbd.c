@@ -3,14 +3,14 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.2 1991-04-08 23:41:41 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.3 1991-04-10 09:30:58 lwvanels Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.2 1991-04-08 23:41:41 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.3 1991-04-10 09:30:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -26,6 +26,11 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 
 int log_fd;
 
+#ifdef NEEDS_ERRNO_DEFS
+extern int      errno;
+extern char     *sys_errlist[];
+extern int      sys_nerr;
+#endif
 
 void
 handle_startup(s,msg,len,from,logfile)
