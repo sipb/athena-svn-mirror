@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.3 1989-01-23 08:32:34 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.4 1989-01-23 09:22:10 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -21,6 +21,9 @@
 #include <strings.h>
 #include <sys/param.h>
 #include <sys/file.h>
+
+#define ERROR_MASK 1
+#define NO_DELETE_MASK 2
 
 /*
  * ALGORITHM:
@@ -130,10 +133,10 @@ char *argv[];
 	  exit(1);
      }
      while (optind < argc) {
-	  status = status || delete(argv[optind], 0);
+	  status = status | delete(argv[optind], 0);
 	  optind++;
      }
-     exit(status);
+     exit(status | ERROR_MASK);
 }
 
 
@@ -169,7 +172,7 @@ int recursed;
      if (lstat(filename, &stat_buf) == -1) {
 	  if (! force)
 	       fprintf(stderr, "%s: %s nonexistent\n", whoami, filename);
-	  return(1);
+	  return(ERROR_MASK);
      }
      
      /* is the file a directory? */
@@ -178,20 +181,20 @@ int recursed;
 	  if (filesonly) {
 	       /* is the recursive option specified? */
 	       if (recursive) {
-		    /* so we continue */
+		    return(recursive_delete(filename, stat_buf, recursed));
 	       }
 	       else {
 		    if (! force)
 			 fprintf(stderr, "%s: %s directory\n", whoami,
 				 filename);
-		    return(1);
+		    return(ERROR_MASK);
 	       }
 	  }
 	  else {
 	       /* is the directory empty? */
 	       if (empty_directory(filename)) {
 		    /* remove it */
-		    return(do_move(filename, stat_buf));
+		    return(do_move(filename, stat_buf, 0));
 	       }
 	       else {
 		    /* is the directoriesonly option set? */
@@ -199,18 +202,19 @@ int recursed;
 			 if (! force)
 			      fprintf(stderr, "%s: %s: Directory not empty\n",
 				     whoami, filename);
-			 return(1);
+			 return(ERROR_MASK);
 		    }
 		    else {
 			 /* is the recursive option specified? */
 			 if (recursive) {
-			      return(recursive_delete(filename, recursed));
+			      return(recursive_delete(filename, stat_buf,
+						      recursed));
 			 }
 			 else {
 			      if (! force)
 				   fprintf(stderr, "%s: %s directory\n",
 					   whoami, filename);
-			      return(1);
+			      return(ERROR_MASK);
 			 }
 		    }
 	       }
@@ -222,7 +226,7 @@ int recursed;
 	       if (! force)
 		    fprintf(stderr, "%s: %s: Not a directory\n", whoami,
 			    filename);
-	       return(1);
+	       return(ERROR_MASK);
 	  }
 	  else {
 	       /* is the file a dot file? */
@@ -230,12 +234,13 @@ int recursed;
 		    if (! force)
 			 fprintf(stderr, "%s: cannot remove `.' or `..'\n",
 				 whoami);
-		    return(1);
+		    return(ERROR_MASK);
 	       }
 	       else
-		    return(do_move(filename, stat_buf));
+		    return(do_move(filename, stat_buf, 0));
 	  }
      }
+     return(0);
 }
 
 		 
@@ -291,8 +296,9 @@ char *filename;
 
 
 
-recursive_delete(filename, recursed)
+recursive_delete(filename, stat_buf, recursed)
 char *filename;
+struct stat stat_buf;
 int recursed;
 {
      DIR *dirp;
@@ -303,13 +309,13 @@ int recursed;
      if (interactive && recursed) {
 	  printf("%s: remove directory %s? ", whoami, filename);
 	  if (! yes())
-	       return(0);
+	       return(NO_DELETE_MASK);
      }
      dirp = opendir(filename);
      if (! dirp) {
 	  if (! force)
 	       fprintf(stderr, "%s: %s not changed\n", whoami, filename);
-	  return(1);
+	  return(ERROR_MASK);
      }
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
@@ -317,13 +323,13 @@ int recursed;
 	  else {
 	       strcpy(newfile, append(filename, dp->d_name, !force));
 	       if (*newfile)
-		    status = status || delete(newfile, 1);
+		    status = status | delete(newfile, 1);
 	       else
-		    status = 1;
+		    status = ERROR_MASK;
 	  }
      }
      closedir(dirp);
-     status = status || do_move(filename);
+     status = status | do_move(filename, stat_buf, status | NO_DELETE_MASK);
      return(status);
 }
 
@@ -382,9 +388,10 @@ char *filename;
 
 
 
-do_move(filename, stat_buf)
+do_move(filename, stat_buf, no_delete_mask)
 char *filename;
 struct stat stat_buf;
+int no_delete_mask;
 {
      char *last;
      char buf[MAXPATHLEN];
@@ -397,14 +404,14 @@ struct stat stat_buf;
 	  if (! force)
 	       fprintf(stderr, "%s: %s: filename too long\n", whoami,
 		       filename);
-	  return(1);
+	  return(ERROR_MASK);
      }
      strcpy(name, last);
      if (strlen(buf) + 3 > MAXPATHLEN) {
 	  if (! force)
 	       fprintf(stderr, "%s: %s: pathname too long\n", whoami,
 		       filename);
-	  return(1);
+	  return(ERROR_MASK);
      }
      *last = '\0';
      strcat(buf, ".#");
@@ -412,25 +419,32 @@ struct stat stat_buf;
      if (interactive) {
 	  printf("%s: remove %s? ", whoami, filename);
 	  if (! yes())
-	       return(0);
+	       return(NO_DELETE_MASK);
      }
      else if ((! force) && access(filename, W_OK)) {
 	  printf("%s: override protection %o for %s? ", whoami,
 		 stat_buf.st_mode & 0777, filename);
 	  if (! yes())
-	       return(0);
+	       return(NO_DELETE_MASK);
      }
-     if (noop || verbose)
-	  printf("%s: %s removed\n", whoami, filename);
-     if (noop)
+     if (no_delete_mask) {
+	  if ((! force) || noop)
+	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
+	  return(ERROR_MASK);
+     }
+     if (noop) {
+	  fprintf(stderr, "%s: %s would be removed\n", whoami, filename);
 	  return(0);
+     }
+     if (verbose)
+	  fprintf(stderr, "%s: %s removed\n", whoami, filename);
      
      if (! lstat(buf, &deleted_buf))
 	  unlink_completely(buf);
      if (rename(filename, buf)) {
 	  if (! force)
 	       fprintf(stderr, "%s: %s not removed\n", whoami, filename);
-	  return(1);
+	  return(ERROR_MASK);
      }
      else
 	  return(0);
@@ -462,12 +476,13 @@ char *filename;
 		    status = 1;
 		    continue;
 	       }
-	       status = status || unlink_completely(buf);
+	       status = status | unlink_completely(buf);
 	  }
 	  closedir(dirp);
      }
      else
 	  return(unlink(filename) == -1);
+     return(0);
 }
 
 	  
