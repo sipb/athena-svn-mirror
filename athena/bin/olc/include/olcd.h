@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.25 1990-12-17 08:32:57 lwvanels Exp $
+ *	$Id: olcd.h,v 1.26 1991-01-03 15:28:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -49,30 +49,35 @@
 
 /* Important files. */
 
-extern char *LOG_DIR;
-extern char *BACKUP_FILE;
-extern char *BACKUP_TEMP;
-extern char *ERROR_LOG;
-extern char *REQ_STATS_LOG;
-extern char *QUES_STATS_LOG;
-extern char *STATUS_LOG;
-extern char *ADMIN_LOG;
-extern char *STDERR_LOG;
-extern char *DATABASE_FILE;
-extern char *TOPIC_FILE;
-extern char *MOTD_FILE;
-extern char *MOTD_TIMEOUT_FILE;
-extern char *MOTD_HOLD_FILE;
-extern char *MACH_TRANS_FILE;
-extern char *LIST_FILE_NAME;
-extern char *LIST_TMP_NAME;
-extern char *SPECIALTY_DIR;
-extern char *ACL_DIR;
+#define DATABASE_FILE 		"/usr/lib/olc/database"
+#define SPECIALTY_DIR 		"/usr/lib/olc/specialties"
+#define ACL_DIR 		"/usr/lib/olc/acls"
+#define LOG_DIR 		"/usr/spool/olc"
+#define BACKUP_FILE 		"/usr/spool/olc/backup.dat"
+#define BACKUP_TEMP 		"/usr/spool/olc/backup.temp"
+#define ERROR_LOG 		"/usr/adm/olc/errors"
+#define REQ_STATS_LOG 		"/usr/adm/olc/requests.stats"
+#define QUES_STATS_LOG 		"/usr/adm/olc/question.stats"
+#define STATUS_LOG 		"/usr/adm/olc/status"
+#define ADMIN_LOG 		"/usr/adm/olc/admin"
+#define STDERR_LOG 		"/usr/adm/olc/errors"
+#define TOPIC_FILE 		"/usr/lib/olc/topics"
+#define MOTD_FILE 		"/usr/lib/olc/motd"
+#define MOTD_TIMEOUT_FILE	"/usr/lib/olc/motd_timeout"
+#define MOTD_HOLD_FILE 		"/usr/lib/olc/motd_hold"
+#define MACH_TRANS_FILE 	"/usr/lib/olc/translations"
+#define LIST_FILE_NAME 		"/usr/spool/olc/qlist_-1.log"
+#define LIST_TMP_NAME 		"/usr/spool/olc/queue.tmp"
+#define HOURS_FILE		"/usr/lib/olc/hours"
 
 #ifdef KERBEROS
-extern char K_INSTANCEbuf[];
-extern char *SRVTAB_FILE;
+#define TICKET_FILE		"/usr/spool/olc/tkt.olc"
+#define SRVTAB_FILE		"/usr/lib/olc/srvtab"
+#ifdef ATHENA
+#define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
+#endif /* ATHENA */
 #endif /* KERBEROS */
+
 
 /* system defines */
 
@@ -123,7 +128,6 @@ extern char *SRVTAB_FILE;
 #define DEFAULT_TITLE   "user"
 #define DEFAULT_TITLE2  "consultant"
 #endif
-
 
 /* OLCD data definitions */
 
@@ -368,7 +372,7 @@ char *fmt P(());
 void log_daemon P((KNUCKLE *knuckle , char *message ));
 void log_message P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
 void log_mail P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
-void log_comment P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
+void log_comment P((KNUCKLE *owner , KNUCKLE *sender , char *message , int is_private ));
 void log_description P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
 void log_long_description P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
 ERRCODE init_log P((KNUCKLE *knuckle , char *question , char *machinfo ));
@@ -396,11 +400,13 @@ ERRCODE olc_dump P((int fd , REQUEST *request ));
 ERRCODE olc_dump_req_stats P((int fd , REQUEST *request ));
 ERRCODE olc_dump_ques_stats P((int fd , REQUEST *request ));
 ERRCODE olc_change_motd P((int fd , REQUEST *request ));
+ERRCODE olc_change_hours P((int fd , REQUEST *request ));
 ERRCODE olc_change_acl P((int fd , REQUEST *request ));
 ERRCODE olc_list_acl P((int fd , REQUEST *request ));
 ERRCODE olc_get_accesses P((int fd , REQUEST *request ));
 ERRCODE olc_get_dbinfo P((int fd , REQUEST *request ));
 ERRCODE olc_change_dbinfo P((int fd , REQUEST *request ));
+ERRCODE olc_set_user_status P((int fd , REQUEST *request ));
 
 /* requests_olc.c */
 ERRCODE olc_on P((int fd , REQUEST *request ));
@@ -428,6 +434,7 @@ ERRCODE olc_motd P((int fd , REQUEST *request ));
 ERRCODE olc_mail P((int fd , REQUEST *request ));
 ERRCODE olc_startup P((int fd , REQUEST *request ));
 ERRCODE olc_grab P((int fd , REQUEST *request ));
+ERRCODE olc_get_hours P((int fd , REQUEST *request ));
 
 /* statistics.c */
 void dump_request_stats P((char *file ));
