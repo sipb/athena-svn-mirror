@@ -9,11 +9,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Cursor.c,v $
- *      $Id: Cursor.c,v 1.2 1991-09-10 14:45:33 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: Cursor.c,v 1.3 1996-08-10 21:28:10 cfields Exp $
+ *      $Author: cfields $
  */
 
-#include <Xm/Mu.h>
+#include <Mu.h>
 
 extern Widget xolc, w_send_form;
 

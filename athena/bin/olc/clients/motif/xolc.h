@@ -10,8 +10,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
- *      $Id: xolc.h,v 1.12 1992-04-23 21:38:54 lwvanels Exp $
- *      $Author: lwvanels $
+ *      $Id: xolc.h,v 1.13 1996-08-10 21:27:53 cfields Exp $
+ *      $Author: cfields $
  */
 
 #include <mit-copyright.h>
@@ -20,7 +20,7 @@
 #include <olc/olc_tty.h>
 #include <olc/olc_parser.h>
 
-#include <Xm/Mu.h>
+#include <Mu.h>
 
 /*  All the widget pointers that have been created  */
 
