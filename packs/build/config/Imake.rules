@@ -143,10 +143,10 @@ name:: FRC								@@\
 	done
 
 #define do_subdirs(subdirs)						@@\
+	foreach_subdirs(all, subdirs)					@@\
 	foreach_subdirs(install, subdirs)				@@\
 	foreach_subdirs(clean, subdirs)					@@\
 	foreach_subdirs(depend, subdirs)				@@\
-all:: subdirs FRC							@@\
 subdirs:: FRC								@@\
 	@(cd $@; echo "### Making" all "in" `pwd`;	\		@@\
 		make $(FLAGS) $(MFLAGS) DESTDIR=$(DESTDIR) all ; \	@@\
