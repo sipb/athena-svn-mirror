@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
-#	$Author: shanzer $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.2 1989-05-31 11:45:11 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.3 1989-10-20 09:26:07 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -161,3 +161,6 @@ print:
 	@pr makefile
 	@${CXREF} *.c | pr -h XREF
 	@pr *.h *.c
+
+depend:
+	mkdep ${CFLAGS} ${SRCS}

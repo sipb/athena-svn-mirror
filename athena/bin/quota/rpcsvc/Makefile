@@ -6,6 +6,8 @@ DESTDIR=
 CFLAGS=-O
 TAGSFILE=tags
 
+SRCS= etherxdr.c mountxdr.c rquotaxdr.c rstatxdr.c rusersxdr.c rwallxdr.c \
+      sprayxdr.c util.c yppasswdxdr.c
 OBJS= etherxdr.o mountxdr.o rquotaxdr.o rstatxdr.o rusersxdr.o rwallxdr.o \
       sprayxdr.o util.o yppasswdxdr.o
 HDRS= ether.h mount.h rwall.h rquota.h rstat.h rusers.h spray.h yppasswd.h
@@ -25,3 +27,7 @@ tags:
 	done
 clean:
 	rm -f *.o librpcsvc.a
+
+depend:
+	mkdep ${CFLAGS} ${SRCS}
+
