@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 1999-10-15 21:26:23 rbasch Exp $
+# $Id: Makefile,v 1.15 1999-11-10 03:49:52 kcr Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -42,6 +42,7 @@ install:
 	install -c -m 0644 4DWm ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Console ${DESTDIR}${ATHLOGINDIR}
+	install -c -m 0644 config ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
 	install -c -m 0644 Mwm ${DESTDIR}${X11APPDEFS}
