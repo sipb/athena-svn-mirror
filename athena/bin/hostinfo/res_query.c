@@ -249,11 +249,7 @@ local_hostalias(name)
 {
 	register char *C1, *C2;
 	FILE *fp;
-#ifndef _IBMR2
-        char *file, *getenv(), *strcpy(), *strncpy();
-#else
         char *file;
-#endif
 	char buf[BUFSIZ];
 	static char abuf[MAXDNAME];
 
