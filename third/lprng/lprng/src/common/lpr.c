@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.4 1999-05-12 18:28:23 danw Exp $";
+"$Id: lpr.c,v 1.5 1999-05-20 19:57:56 danw Exp $";
 
 
 #include "lp.h"
@@ -295,9 +295,11 @@ void Get_parms(int argc, char *argv[] )
 			nargv[++n] = p;
 			while( *p && !isspace(*p) )
 				p++;
-			*p++ = '\0';
-			while( isspace(*p) )
-				p++;
+			if( *p ){
+				*p++ = '\0';
+				while( isspace(*p) )
+					p++;
+			}
 		}
 		for( i = 1; i < argc; i++ )
 			nargv[n + i] = argv[i];
