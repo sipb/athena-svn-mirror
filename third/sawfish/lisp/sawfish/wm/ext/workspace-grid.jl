@@ -1,6 +1,6 @@
 #| workspace-grid.jl -- Workspace Grid
 
-   $Id: workspace-grid.jl,v 1.1.1.1 2003-01-05 00:33:07 ghudson Exp $
+   $Id: workspace-grid.jl,v 1.2 2003-07-24 18:52:54 ghudson Exp $
 
    This file is part of sawfish.
 
@@ -221,9 +221,6 @@ the pager, or nil of none exists."
   	      (when (= (aref (caddr layout-property) 0) 1)
   		(swap cols rows))
 
-	      ;; Swap layout again because of libwnck bug
-	      (swap cols rows)
-	      
 	      (if (= rows 0)
 		  ;; Compute rows from colums and num-workspaces
 		  (let ((total (num-workspaces)))
