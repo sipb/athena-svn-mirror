@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_client_c[] =
-    "$Id: client.c,v 1.22 1991-12-04 13:25:23 lwvanels Exp $";
+    "$Id: client.c,v 1.23 1992-01-17 07:45:10 lwvanels Exp $";
 #endif
 
 /*
@@ -53,16 +53,6 @@ static char rcsid_client_c[] =
  * This routine assumes that the client has not been registered yet.
  * The caller should check by calling client_which_client
  */
-
-#ifdef __STDC__
-# define        P(s) s
-#else
-# define P(s) ()
-#endif
-
-static void clt_free P((ZClient_t *client));
-
-#undef P
 
 Code_t
 client_register(notice, who, client, server, wantdefaults)
@@ -181,8 +171,10 @@ client_deregister(client, host, flush)
 		     clients = clients->q_forw)
 			if (clients->zclt_client == client) {
 				xremque(clients);
-				clt_free(client);
+				free_zstring(client->zct_principal);
+				client = NULLZCNT;
 				xfree(clients);
+				clients = NULLZCLT;
 				(void) sigsetmask(omask);
 				return;
 			}
@@ -204,7 +196,7 @@ client_which_client(who, notice)
 	register ZClientList_t *clients;
 
 	if (!(hlt = hostm_find_host(&who->sin_addr))) {
-#if 1
+#if 0
 		zdbug((LOG_DEBUG,"cl_wh_clt: host not found"));
 #endif
 		return(NULLZCNT);
@@ -250,12 +242,4 @@ client_dump_clients(fp, clist)
 		subscr_dump_subs(fp, ptr->zclt_client->zct_subs);
 	}
 	return;
-}
-
-static void
-clt_free(client)
-     ZClient_t *client;
-{
-  free_zstring(client->zct_principal);
-  xfree(client);
 }
