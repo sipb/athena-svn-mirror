@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.3 1986-01-22 18:02:27 treese Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.4 1986-01-23 18:07:06 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -54,7 +54,6 @@ command_loop()
   int index;				/* Index in command table. */
   int command;				/* Input command. */
   int entry_index;			/* Index of entry. */
-  char read_msg[LINE_LENGTH];		/* Secondary prompt. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   
   while (1)
@@ -69,16 +68,19 @@ command_loop()
 	  move(LINES - 3, strlen(CREF_PROMPT) + 3);
 	  clrtoeol();
 	  message(1, "");
-	  sprintf(read_msg, "Read section? %c", (char) command);
-	  mvaddstr(LINES-2, 3, read_msg);
+	  mvaddstr(LINES-2, 3, "Read section? ");
 	  refresh();
 	  *inbuf = (char) command;
-	  getstr(inbuf+1);
-	  move(LINES-2, 0);
-	  clrtoeol();
-	  refresh();
-	  entry_index = atoi(inbuf);
-	  display_entry(entry_index - 1);
+	  *(inbuf+1) = (char) NULL;
+	  get_input(inbuf);
+	  if (*inbuf != (char) NULL)
+	    {
+	      move(LINES-2, 0);
+	      clrtoeol();
+	      refresh();
+	      entry_index = atoi(inbuf);
+	      display_entry(entry_index - 1);
+	    }
 	}
       else if (command == '\n')
 	continue;

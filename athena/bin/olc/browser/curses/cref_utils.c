@@ -11,12 +11,14 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.2 1986-01-22 18:02:34 treese Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.3 1986-01-23 18:07:23 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
+#include <ctype.h>			/* Character type macros. */
 #include <sys/param.h>			/* System parameters file. */
+#include <sgtty.h>			/* TTY definitions. */
 #include <grp.h>			/* System group defs. */
 
 #include "cref.h"			/* Finder defs. */
@@ -113,3 +115,70 @@ char *argument;				/* Argument to be passed to program. */
 		}
 }
 	
+/* Function:	get_input() gets an input string from the terminal.  It
+ *			handles line editing even in CBREAK mode.
+ * Arguments:	buffer:	Buffer to hold input string.  It may also be
+ *			initialized with an a string to print at the
+ *			beginning.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+get_input(buffer)
+     char *buffer;
+{
+  struct sgttyb tty;			/* Terminal description structure. */
+  char c;				/* Input character. */
+  int x,y;				/* X,Y coordinates. */
+  int x_start;				/* Starting X coordinate. */
+  int length;				/* Length of input string.  */
+  char *ptr;				/* Current character in buffer. */
+
+  if ( ioctl(fileno(stdin), TIOCGETP, &tty) < 0 )
+    {
+      message(1, "Cannot access terminal.");
+      *buffer = (char) NULL;
+      return;
+    }
+
+  length = strlen(buffer);
+  ptr = buffer + length - 1;
+  noecho();
+  getyx(stdscr, y, x);
+  x++;
+  x_start = x - length;
+  addstr(buffer);
+  refresh();
+  while ( (c = getch()) != '\n')
+    {
+      if (c == tty.sg_erase)
+	{
+	  x--;
+	  move(y, x);
+	  clrtoeol();
+	  refresh();
+	  *ptr = (char) NULL;
+	  ptr--;
+	}
+      else if (c == tty.sg_kill)
+	{
+	  x = x_start;
+	  move(y,x);
+	  clrtoeol();
+	  refresh();
+	  ptr = buffer;
+	  *buffer = (char) NULL;
+	}
+      else if (isalnum(c) || ispunct(c) || isspace(c))
+	{
+	  ptr++;
+	  *ptr = c;
+	  addch(c);
+	  x++;
+	  refresh();
+	}
+      else
+	putchar('\007');
+    }
+  return;
+}

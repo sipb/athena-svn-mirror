@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.3 1986-01-22 21:15:34 treese Exp $";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.4 1986-01-23 18:07:46 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -142,8 +142,11 @@ save_to_file()
   char msg[LINE_LENGTH];		/* Message for saving file. */
   char filename[FILENAME_SIZE];		/* Name of file to use. */
 
+  inbuf[0] = (char) NULL;
   message(1, "Save entry? ");
-  getstr(inbuf);
+  get_input(inbuf);
+  if (inbuf[0] == (char) NULL)
+    return;
   save_index = atoi(inbuf);
   if ( (save_entry = get_entry(save_index)) == NULL)
     {
@@ -164,8 +167,9 @@ save_to_file()
       return;
     }
   sprintf(msg, "Filename (default %s)? ", Save_File);
-  message(1, "Filename? ");
-  getstr(inbuf);
+  message(1, msg);
+  inbuf[0] = (char) NULL;
+  get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     strcpy(filename, Save_File);
   else
