@@ -25,17 +25,55 @@ substituted for, as is possible for
 .IR termcap ,
 because it may allow accounting to be bypassed.
 .PP
-The default printer is normally 
-.IR lp ,
-though the environment variable PRINTER
-may be used to override this.  Each spooling utility supports an option,
-.BI \-P printer,
+option may be used to force output to a specific printer. 
+The printer name and capability used in
+.IR lpq (1),
+.IR lpr (1), 
+and
+.IR lprm (1)
+are determined as follows.  If the
+.B \-P
+option is given in the command line, the specified printer name is used. 
+Otherwise, if the environment variable 
+.B PRINTER 
+is set, its value is taken.
+If neither of these are exist the name "default" is used.
+.PP
+The file /etc/printcap on the local machine is searched for an entry
+for the printer name determined as described above.  If found, the
+printer capability in the entry is used.  If an entry for the printer
+name was not found (including in the case when the file /etc/printcap
+is missing), the Hesiod name server is queried for an alias for the
+given printer name (see
+.IR hesiod (3)).
+.PP
+The cluster name is used in looking up the alias (see
+.IR getcluster (8)).
+The "cluster" name is determined as follows.  If a \-P argument is of the
+form "printer.cluster" , the cluster name is obtained from the
+argument.  If not, the value of the environment variable 
+.B LPR 
+is used
+if it exists.  Otherwise, the cluster name of the local machine is
+used.
+.PP
+Finally, Hesiod is queried once more, this time for the printer
+capability of the printername (or the capability of the printer's
+alias, if an alias exists).  If this query fails , the lpr command
+fails, with the error message "unknown printer".
+.PP
+The other commands 
+.IR lpc (8), lpd (8),
+and
+.IR pac (8)
+run only off of the /etc/printcap database.  They do not query Hesiod
+for printer aliases or capabilities.
 to allow explicit naming of a destination printer.
 .PP
 Refer to the
 .ul
 4.3BSD Line Printer Spooler Manual
-for a complete discussion on how setup the database for a given printer.
+for a complete discussion on how to set up the database for a given printer.
 .SH CAPABILITIES
 Refer to
 .IR termcap (5)
@@ -54,7 +92,7 @@ fo	bool	false	print a form feed when device is opened
 fs	num	0	like `fc' but set bits
 gf	str	NULL	graph data filter (plot (3X) format)
 hl	bool	false	print the burst header page last
-ic	bool	false	driver supports (non standard) ioctl to indent printout
+ic	bool	false	driver supports (non-standard) ioctl to indent printout
 if	str	NULL	name of text filter which does accounting
 lf	str	``/dev/console''	error logging file name
 lo	str	``lock''	name of lock file
@@ -149,21 +187,21 @@ is passed from the
 entry.
 .PP
 If no
-.B if
+.I if
 is specified,
-.B of
+.I of
 is used instead,
 with the distinction that
-.B of
+.I of
 is opened only once,
 while
-.B if
+.I if
 is opened for every individual job.
 Thus,
-.B if
+.I if
 is better suited to performing accounting.
 The
-.B of
+.I of
 is only given the
 .I width
 and
@@ -210,7 +248,7 @@ Messages printed on
 .I stderr
 of one of the filters
 are sent to the corresponding
-.B lf
+.I lf
 file.
 The filters may, of course, use
 .I syslog
