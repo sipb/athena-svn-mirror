@@ -82,6 +82,9 @@ for failure in $failures; do
   case $failure in
 
     # These are all config files that we handle below in STEP 3.
+    /etc/passwd | \
+    /etc/shadow | \
+    /etc/group | \
     /etc/services  | \
     /etc/syslog.conf | \
     /etc/inittab | \
@@ -89,7 +92,8 @@ for failure in $failures; do
     /etc/X11/fs/config | \
     /etc/info-dir | \
     /usr/X11R6/lib/X11/app-defaults/XTerm | \
-    /etc/inetd.conf | \
+    /etc/xinetd.conf | \
+    /etc/xinetd.d/* | \
     /etc/athena/rc.conf | \
     /etc/conf.linuxconf )
         ;;
@@ -99,10 +103,14 @@ for failure in $failures; do
     /etc/motd | \
     /usr/vice/etc/CellServDB | \
     /usr/lib/umb-scheme/slibcat | \
-    /etc/sysconfig/afs |\
-    /usr/vice/etc/cacheinfo |\
+    /etc/sysconfig/openafs | \
+    /usr/vice/etc/cacheinfo | \
+    /usr/vice/cache | \
     /boot/kernel.h | \
-    /var/spool/at/.SEQ )
+    /var/spool/at/.SEQ | \
+    /etc/DIR_COLORS | \
+    /etc/X11/XF86Config-4 | \
+    /var/lib/rpm/__db.* )
         ;;
 
     # These are all files that we simply tolerate changes in without
@@ -113,7 +121,36 @@ for failure in $failures; do
     /var/log/* | \
     /var/state/* | \
     /usr/vice/cache | \
-    */fonts.dir )
+    /usr/X11R6/lib/X11/fonts/*/fonts.dir | \
+    /usr/X11R6/lib/X11/fonts/*/encodings.dir | \
+    /usr/share/fonts/default/Type1/fonts.dir | \
+    /usr/share/fonts/default/Type1/fonts.scale | \
+    /etc/bashrc | \
+    /etc/profile | \
+    /etc/csh.cshrc | \
+    /etc/csh.login | \
+    /etc/filesystems | \
+    /etc/X11/XftConfig | \
+    /etc/skel/.bash* | \
+    /etc/pwdb.conf | \
+    /usr/share/ssl/openssl.cnf | \
+    /usr/lib/libglide3.so.3 | \
+    /var/lock | \
+    /usr/sbin/lockdev | \
+    /etc/rc.d/rc.local | \
+    /etc/sysconfig/apmd | \
+    /etc/sysconfig/arpwatch | \
+    /etc/sysconfig/init | \
+    /etc/sysconfig/kudzu | \
+    /etc/sysconfig/syslog | \
+    /etc/sysctl.conf | \
+    /etc/pcmcia/*.opts | \
+    /usr/lib/mc/bin/cons.saver | \
+    /etc/pam.d/system-auth | \
+    /etc/issue | \
+    /etc/issue.net | \
+    /etc/X11/xinit/xinitrc.d/xinput | \
+    /etc/logrotate.conf )
 	;;
 
     *)
