@@ -21,18 +21,26 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <errno.h>
+#include <rx/rx.h>
+#include <afs/auth.h>
+#include <syslog.h>
 
 #define DELAY 5
 #define ROOT (uid_t)0
 #define N_ROOT "root"
 
+static unsigned int check_tokens(void);
+static void empty_alarm_handler(int signo);
+
 char *session = "/etc/athena/login/Xsession";
 
 char *defargs[2] = { "1", "" };
 
-main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
+  struct sigaction action;
   char **env, **args, *tty;
   char **ptr, *name;
   char *prelogin;
@@ -49,6 +57,8 @@ main(int argc, char **argv, char **envp)
     }
   else
     name = "elmer";
+
+  openlog("elmer", 0, LOG_USER);
 
   /* xdm needed AFS tokens to stat the user's home directory.  We don't want
    * them any more; we're going to make a pag and get new ones. */
@@ -134,7 +144,18 @@ main(int argc, char **argv, char **envp)
 	  sleep(DELAY);
 	}
       else
-	waitpid(c, NULL, 0);
+	{
+	  sigemptyset(&action.sa_mask);
+	  action.sa_handler = empty_alarm_handler;
+	  action.sa_flags = 0;
+	  sigaction(SIGALRM, &action, NULL);
+	  while (1)
+	    {
+	      alarm(check_tokens());
+	      if (waitpid(c, NULL, 0) != -1 || errno != EINTR)
+		break;
+	    }
+	}
 
       if (nannyKnows)
 	nanny_logoutUser();
@@ -144,4 +165,51 @@ main(int argc, char **argv, char **envp)
       fprintf(stderr, "%s: loginUser request failed\n", name);
       sleep(DELAY);
     }
+}
+
+/* If tokens are within one minute of expiry, destroy them.  Otherwise
+ * return a timeout at which time we should check again.  If there are
+ * no tokens, check every half hour.
+ *
+ * Why are we doing this?  Sometimes when a netscape-using user lets
+ * their tokens expire, the client starts spewing rapidly to an AFS
+ * server, forcing a reboot of the server (which can be a long
+ * outage).  We can't reproduce the bug and we can't tolerate it, so
+ * this is a hack to keep it from happening.
+ */
+static unsigned int check_tokens(void)
+{
+  int cell = 0;
+  struct ktc_principal service, client;
+  struct ktc_token token;
+  time_t now, expiry = 0;
+
+  /* Find the maximum token expire time.  (Generally they're all the
+   * same; if they're not, we don't want to destroy tokens which
+   * aren't about to expire.)
+   */
+  while (ktc_ListTokens(cell, &cell, &service) == 0)
+    {
+      if (ktc_GetToken(&service, &token, sizeof(token), &client) != 0)
+	break;
+      if (token.endTime > expiry)
+	expiry = token.endTime;
+    }
+
+  if (expiry == 0)
+    return 30 * 60;
+
+  time(&now);
+  if (expiry <= now + 60)
+    {
+      syslog(LOG_NOTICE, "Tokens near expiry; destroying");
+      ktc_ForgetAllTokens();
+      return 30 * 60;
+    }
+  else
+    return expiry - now - 60;
+}
+
+static void empty_alarm_handler(int signo)
+{
 }
