@@ -1,0 +1,10 @@
+Name: athena-gurlview
+Summary: Display a URL in an appropriate viewer
+Copyright: MIT
+Group: User Interface/Desktops
+
+Requires: athena-gnome-libs
+
+%description
+This program loads a URL into an appropriate viewer, as determined by
+the user's GNOME preferences and the protocol specified in the URL.
