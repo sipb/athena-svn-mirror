@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.10 1995-05-03 11:39:03 miki Exp $
+ * $Id: Imakefile,v 1.11 1995-06-23 20:01:18 cfields Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -19,7 +19,7 @@
 # SPGRP		the group id of the spooling programs
 #
 
-#define ISUBDIRS filters quota transcript-v2.1 man
+#define ISUBDIRS filters transcript-v2.1 man
 
 DEFINES= -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -DLACL -Iquota
 LIBS= -L/usr/athena/lib -lhesiod -lzephyr -lcom_err -lkrb -ldes
@@ -74,6 +74,8 @@ install_script(makespools,,/etc/makespools)
 #else
 install_script(makespools,,$(USRETCDIR)/makespools)
 #endif
+
+install_script(lpquota,,/usr/athena/bin/lpquota)
 
 install::
 	@echo  To build spooling directories:
