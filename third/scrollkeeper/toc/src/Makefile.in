@@ -59,15 +59,18 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
-CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 GENCAT = @GENCAT@
@@ -90,6 +93,7 @@ PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+SCROLLKEEPER_PARTIAL_DB_DIR = @SCROLLKEEPER_PARTIAL_DB_DIR@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -98,10 +102,10 @@ XML_CONFIG = @XML_CONFIG@
 XML_LIBS = @XML_LIBS@
 l = @l@
 
-INCLUDES =  	$(XML_CFLAGS)
+INCLUDES =  	-I$(top_srcdir)/libs 	$(XML_CFLAGS)
 
 
-LDADD =  	$(XML_LIBS)
+LDADD =  	$(XML_LIBS) 	$(top_builddir)/libs/libscrollkeeper.la
 
 
 bin_PROGRAMS = scrollkeeper_toc 
@@ -120,7 +124,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 scrollkeeper_toc_OBJECTS =  toc.o toc-extract.o
 scrollkeeper_toc_LDADD = $(LDADD)
-scrollkeeper_toc_DEPENDENCIES = 
+scrollkeeper_toc_DEPENDENCIES =  $(top_builddir)/libs/libscrollkeeper.la
 scrollkeeper_toc_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -259,6 +263,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+toc-extract.o: toc-extract.c ../../config.h toc-extract.h toc.h
+toc.o: toc.c ../../config.h toc.h toc-extract.h \
+	../../libs/scrollkeeper.h
 
 info-am:
 info: info-am

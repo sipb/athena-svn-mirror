@@ -28,24 +28,15 @@
 #include <locale.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <scrollkeeper.h>
 
 #define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
-
-#define _(String) gettext (String)
 
 #define PATHLEN	256
 
 char **av;
 
-static void
-check_ptr (void *p)
-{
-    if (p == NULL)
-    {
-	fprintf (stderr, _("%s: out of memory: %s\n"), *av, strerror (errno));
-	exit (EXIT_FAILURE);
-    }
-}
+static int verbose = 0;
 
 static void add_element(char ***elem_tab, int *elem_num, char *elem)
 {
@@ -65,7 +56,7 @@ static void add_element(char ***elem_tab, int *elem_num, char *elem)
     else
         tab = (char **)calloc(1, sizeof(char *));
 
-    check_ptr (tab);
+    check_ptr (tab, *av);
     tab[*elem_num] = strdup(elem);
     (*elem_num) += 1;
     *elem_tab = tab;
@@ -117,11 +108,10 @@ bn_compare (const void *elem1, const void *elem2)
 }
 
 static void
-usage ()
+usage (char **argv)
 {
-    fprintf(stderr,
-	    _("Usage: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"),
-	    *av);
+    printf(_("Usage: %s [-v] [-p <SCROLLKEEPER_DB_DIR>] [-o <OMF_DIR>]\n"),
+	    *argv);
 }
 
 static int parse_omf_dir(char *path, char **name_tab, int name_num, 
@@ -145,7 +135,7 @@ static int parse_omf_dir(char *path, char **name_tab, int name_num,
 	    continue;
 	    
 	fullname = malloc (strlen (path) + strlen (dir_ent->d_name) + 2);
-	check_ptr (fullname);
+	check_ptr (fullname, *av);
 	sprintf(fullname, "%s/%s", path, dir_ent->d_name);
     
         if (stat(fullname, &buf) != 0)
@@ -232,15 +222,8 @@ static int parse_omf_dir(char *path, char **name_tab, int name_num,
 
 	if (i != *install_num)
 	{
-	    /*
-	     * Commenting out because these warnings should go in
-	     * a log file for an admin to watch, not on the screen for
-	     * the user to see and worry about.  Plus, in some cases
-	     * it makes RPM think things are broken and that the
-	     * upgrade or install failed.
-	    fprintf (stderr, _("%s: warning: %s overrides %s\n"), *av,
-		     (*install_tab)[i], fullname);
-	    */
+	    sk_warning (verbose, _("%s: warning: %s overrides %s\n"), *av,
+		     	(*install_tab)[i], fullname);
 	}
 	else
 	{
@@ -272,10 +255,10 @@ colon_split (char *s)
 	    end = s + strlen (s);
 
 	ret = realloc (ret, (nret + 1) * sizeof (char *));
-	check_ptr (ret);
+	check_ptr (ret, *av);
 
 	ret[nret] = malloc (end - s + 1);
-	check_ptr (ret[nret]);
+	check_ptr (ret[nret], *av);
 
 	strncpy (ret[nret], s, end - s);
 	ret[nret][end - s] = '\0';
@@ -287,7 +270,7 @@ colon_split (char *s)
     }
 	
     ret = realloc (ret, (nret + 1) * sizeof (char *));
-    check_ptr (ret);
+    check_ptr (ret, *av);
 
     ret[nret] = NULL;
     nret++;
@@ -310,10 +293,7 @@ int main(int argc, char **argv)
     char scrollkeeper_docs[PATHLEN], command[1024];
     char **upgrade_tab = NULL;
     char *s, **cpp;
-    int verbose = 0;
-
-    /*extern int optind;
-    extern char *optarg;*/
+    char verbose_flag[5];
 
     av = argv;
     
@@ -359,7 +339,7 @@ int main(int argc, char **argv)
     if (stat (scrollkeeper_dir, &buf) != 0)
     {
         if (mkdir (scrollkeeper_dir,0755)) {
-            fprintf(stderr,"Unable to create database directory: %s\n",scrollkeeper_dir);
+            sk_warning(verbose, _("Unable to create database directory: %s\n"), scrollkeeper_dir);
         }
     }
 
@@ -382,21 +362,6 @@ int main(int argc, char **argv)
     }
 
     omf_dirs = colon_split (omf_dir);
-
-    for (cpp = omf_dirs; cpp && *cpp; cpp++)
-    {
-	if (stat (*cpp, &buf) != 0)
-	{
-	   fprintf (stderr, "%s: %s: %s\n", *av, *cpp, strerror (errno));
-	   exit (EXIT_FAILURE);
-	}
-
-	if (! S_ISDIR (buf.st_mode))
-	{
-	   fprintf (stderr, _("%s: %s: is not a directory\n"), *av, *cpp);
-	   exit (EXIT_FAILURE);
-	}
-    }
     
     sprintf(scrollkeeper_docs, "%s/scrollkeeper_docs", scrollkeeper_dir); 
     if (stat(scrollkeeper_docs, &buf) == 0 &&
@@ -407,7 +372,7 @@ int main(int argc, char **argv)
         fid1 = fopen(scrollkeeper_docs, "r");
 	if (!fid1)
 	{
-	    fprintf (stderr, "%s: %s: %s\n", *av, scrollkeeper_docs,
+	    sk_warning(verbose, "%s: %s: %s\n", *av, scrollkeeper_docs,
 		     strerror (errno));
 	    exit (EXIT_FAILURE);
 	}
@@ -416,7 +381,7 @@ int main(int argc, char **argv)
              line_num++;
         
         name_tab = (char **)calloc(line_num, sizeof(char *));
-	check_ptr (name_tab);
+	check_ptr (name_tab, *av);
     
         i = 0;
     
@@ -431,7 +396,7 @@ int main(int argc, char **argv)
         while (fscanf(fid1, "%s%*d%*s%ld%*s", name, &t) != EOF)
         {            
             name_tab[i] = strdup(name);
-	    check_ptr (name_tab[i]);
+	    check_ptr (name_tab[i], *av);
                  
             if (stat(name, &buf) == 0)
             {
@@ -456,20 +421,38 @@ int main(int argc, char **argv)
     }
     
     for (cpp = omf_dirs; cpp && *cpp; cpp++)
+    {
+	if (stat (*cpp, &buf) != 0)
+	{
+	   sk_warning (verbose, "%s: %s: %s\n", *av, *cpp, strerror (errno));
+	   continue;
+	}
+
+	if (! S_ISDIR (buf.st_mode))
+	{
+	   sk_warning (verbose, _("%s: %s: is not a directory\n"), *av, *cpp);
+	   continue;
+	}
+	
 	parse_omf_dir(*cpp, name_tab, line_num, &install_tab, &install_num,
 		      &uninstall_tab, &uninstall_num, omf_dirs);
-       
+    }
+           
     for(i = 0; i < line_num; i++)
         free((void *)name_tab[i]);
         
     if (name_tab != NULL)
         free((void *)name_tab);
     
+    if (verbose)
+    	strcpy(verbose_flag, "-v");
+    else
+	verbose_flag[0] = '\0';
     
     for(i = 0; i < install_num; i++)
     {
-	sprintf(command, "scrollkeeper-install -p %s %s", scrollkeeper_dir,
-		install_tab[i]);
+	sprintf(command, "scrollkeeper-install %s -p %s %s", verbose_flag,
+		scrollkeeper_dir, install_tab[i]);
 	if (verbose)
 	    puts (command);
         system(command);
@@ -477,14 +460,14 @@ int main(int argc, char **argv)
     
     for(i = 0; i < upgrade_num; i++)
     {
-	sprintf(command, "scrollkeeper-uninstall -p %s %s", scrollkeeper_dir,
-		upgrade_tab[i]);
+	sprintf(command, "scrollkeeper-uninstall %s -p %s %s", verbose_flag, 
+		scrollkeeper_dir, upgrade_tab[i]);
 	if (verbose)
 	    puts (command);
         system(command);
 
-	sprintf(command, "scrollkeeper-install -p %s %s", scrollkeeper_dir,
-		upgrade_tab[i]);
+	sprintf(command, "scrollkeeper-install %s -p %s %s", verbose_flag,
+		scrollkeeper_dir, upgrade_tab[i]);
 	if (verbose)
 	    puts (command);
         system(command);
@@ -492,8 +475,8 @@ int main(int argc, char **argv)
     
     for(i = 0; i < uninstall_num; i++)
     {
-	sprintf(command, "scrollkeeper-uninstall -p %s %s", scrollkeeper_dir,
-		uninstall_tab[i]);
+	sprintf(command, "scrollkeeper-uninstall %s -p %s %s", verbose_flag,
+		scrollkeeper_dir, uninstall_tab[i]);
 	if (verbose)
 	    puts (command);
         system(command);

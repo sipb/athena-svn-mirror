@@ -2,7 +2,6 @@
 
 prefix=@prefix@
 localstatedir=@localstatedir@
-scrollkeeper_dir=${localstatedir}/lib/scrollkeeper
 
 usage()
 {
@@ -16,6 +15,8 @@ EOF
 if test $# -ne 1; then
     usage 1
 fi
+
+scrollkeeper_dir=`scrollkeeper-config --pkglocalstatedir`
 
 if test -f $scrollkeeper_dir/TOC/$1; then
     echo $scrollkeeper_dir/TOC/$1

@@ -1,288 +1,353 @@
 <?xml version="1.0"?>
 <ScrollKeeperContentsList>
 
+<!--
+    ScrollKeeper Category Tree
+    Maintained by the ScrollKeeper project
+    http://scrollkeeper.sourceforge.net
+    Version: 0.1.0
+    Last Modified: Feb 14, 2001
+-->
+
   <sect>
-    <title>Applications</title>
+    <title>Приложения</title>
     <sect>
-      <title>Amusement</title>
+      <title>Приколы</title>
     </sect>
     <sect>
-      <title>Education</title>
+      <title>Обучение</title>
       <sect>
-        <title>Arts</title>
+        <title>Искусство</title>
       </sect>
       <sect>
-        <title>English</title>
+        <title>Компьютерное дело</title>
       </sect>
       <sect>
-        <title>Maths</title>
+        <title>Английский</title>
       </sect>
       <sect>
-        <title>Music</title>
+        <title>Язык</title>
       </sect>
       <sect>
-        <title>Science</title>
+        <title>Математика</title>
       </sect>
       <sect>
-        <title>Technology</title>
+        <title>Музыка</title>
       </sect>
       <sect>
-        <title>Testing</title>
+        <title>Наука</title>
       </sect>
       <sect>
-        <title>Other</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Games</title>
-      <sect>
-        <title>Arcade</title>
+        <title>Технологии</title>
       </sect>
       <sect>
-        <title>Board</title>
+        <title>Тестирование</title>
       </sect>
       <sect>
-        <title>First Person Shooters</title>
-      </sect>
-      <sect>
-        <title>Puzzles</title>
-      </sect>
-      <sect>
-        <title>Fighting</title>
-      </sect>
-      <sect>
-        <title>Role-Playing</title>
-      </sect>
-      <sect>
-        <title>Strategy</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Internet</title>
+      <title>Игры</title>
       <sect>
-        <title>Chat</title>
+        <title>Аркадные</title>
       </sect>
       <sect>
-        <title>Email</title>
+        <title>Настольные</title>
       </sect>
       <sect>
-        <title>Fax</title>
+        <title>Стрелялки</title>
       </sect>
       <sect>
-        <title>File Sharing</title>
+        <title>Головоломки</title>
+      </sect>
+      <sect>
+        <title>Сражения</title>
+      </sect>
+      <sect>
+        <title>Модели</title>
+      </sect>
+      <sect>
+        <title>Ролевые</title>
+      </sect>
+      <sect>
+        <title>Стратегии</title>
+      </sect>
+      <sect>
+        <title>Прочие</title>
+      </sect>
+    </sect>
+    <sect>
+      <title>Интернет</title>
+      <sect>
+        <title>Чат</title>
+      </sect>
+      <sect>
+        <title>Почта</title>
+      </sect>
+      <sect>
+        <title>Факс</title>
+      </sect>
+      <sect>
+        <title>Совместный доступ к файлам</title>
       </sect>
       <sect>
         <title>FTP</title>
       </sect>
       <sect>
-        <title>Internet Phone</title>
+        <title>Интернет-телефония</title>
       </sect>
       <sect>
-        <title>Messaging</title>
+        <title>Сообщения</title>
       </sect>
       <sect>
-        <title>News</title>
+        <title>Новости</title>
       </sect>
       <sect>
-        <title>Video Conferencing</title>
+        <title>Видео-конференции</title>
       </sect>
       <sect>
         <title>Web</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Мультимедиа</title>
       <sect>
-        <title>Graphics</title>
+        <title>Графика</title>
         <sect>
-          <title>3D Modelling</title>
+          <title>3D Моделирование</title>
         </sect>
         <sect>
-          <title>3D Modelling</title>
+          <title>3D Моделирование</title>
         </sect>
         <sect>
-          <title>3D Rendering</title>
+          <title>3D Рендеринг</title>
         </sect>
         <sect>
-          <title>CAD</title>
+          <title>САПР</title>
         </sect>
         <sect>
-          <title>Capture</title>
+          <title>Снимки</title>
         </sect>
         <sect>
-          <title>Conversion</title>
+          <title>Преобразование</title>
         </sect>
         <sect>
-          <title>Drawing</title>
+          <title>Рисование</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Редактирование</title>
         </sect>
         <sect>
-          <title>Viewing</title>
+          <title>Просмотр</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Прочее</title>
         </sect>
       </sect>
       <sect>
-        <title>Sound</title>
+        <title>Звук</title>
         <sect>
-          <title>Analysis</title>
+          <title>Анализ</title>
         </sect>
         <sect>
-          <title>CD Mastering</title>
+          <title>Создание CD</title>
         </sect>
         <sect>
-          <title>Conversion</title>
+          <title>Преобразование</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Редактирование</title>
         </sect>
         <sect>
           <title>MIDI</title>
         </sect>
         <sect>
-          <title>Mixers</title>
+          <title>Микшеры</title>
         </sect>
         <sect>
-          <title>Players</title>
+          <title>Проигрыватели</title>
         </sect>
         <sect>
-          <title>Recording</title>
+          <title>Запись</title>
         </sect>
         <sect>
-          <title>Speech</title>
+          <title>Речь</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Прочее</title>
         </sect>
       </sect>
       <sect>
-        <title>Video</title>
+        <title>Видео</title>
         <sect>
-          <title>Capture</title>
+          <title>Захват</title>
         </sect>
         <sect>
-          <title>Conversion</title>
+          <title>Преобразование</title>
         </sect>
         <sect>
-          <title>Display</title>
+          <title>Воспроизведение</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Редактирование</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Прочее</title>
         </sect>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Office</title>
+      <title>Офис</title>
       <sect>
-        <title>Calendar</title>
+        <title>Календарь</title>
       </sect>
       <sect>
-        <title>Data Processing</title>
+        <title>Обработка данных</title>
       </sect>
       <sect>
-        <title>Database</title>
+        <title>Базы данных</title>
       </sect>
       <sect>
-        <title>Email</title>
+        <title>Почта</title>
       </sect>
       <sect>
-        <title>Finantial</title>
+        <title>Финансы</title>
       </sect>
       <sect>
-        <title>PIM</title>
+        <title>Персональный информ. менеджер</title>
       </sect>
       <sect>
-        <title>Plotting</title>
+        <title>Графики</title>
       </sect>
       <sect>
-        <title>Presentation</title>
+        <title>Презентации</title>
       </sect>
       <sect>
-        <title>Publication</title>
+        <title>Публикации</title>
+        <sect>
+        <title>Публикации</title>
+        </sect>
       </sect>
       <sect>
-        <title>Word Processing</title>
+        <title>Редактирование документов</title>
       </sect>
       <sect>
-        <title>Other</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Scientific</title>
-      <sect>
-        <title>Astronomy</title>
-      </sect>
-      <sect>
-        <title>EDA</title>
-      </sect>
-      <sect>
-        <title>Math</title>
-      </sect>
-      <sect>
-        <title>Visualisation</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Security</title>
+      <title>Наука</title>
       <sect>
-        <title>Cryptography</title>
+        <title>Астрономия</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Астрофизика</title>
+      </sect>
+      <sect>
+        <title>Биология</title>
+      </sect>
+      <sect>
+        <title>Химия</title>
+      </sect>
+      <sect>
+        <title>Автоматизация проектирования электроники</title>
+      </sect>
+      <sect>
+        <title>Генетика</title>
+      </sect>
+      <sect>
+        <title>Математика</title>
+      </sect>
+      <sect>
+        <title>Физика</title>
+      </sect>
+      <sect>
+        <title>Визуализация</title>
+      </sect>
+      <sect>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Text Editors</title>
+      <title>Безопасность</title>
       <sect>
-        <title>CLI</title>
+        <title>Криптография</title>
       </sect>
       <sect>
-        <title>GUI</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Utilities</title>
+      <title>Текстовые редакторы</title>
       <sect>
-        <title>Compression</title>
+        <title>Символьные</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Графические</title>
+      </sect>
+      <sect>
+        <title>Прочие</title>
+      </sect>
+    </sect>
+    <sect>
+      <title>Утилиты</title>
+      <sect>
+        <title>Архивирование</title>
+      </sect>
+      <sect>
+        <title>Калькуляторы</title>
+      </sect>
+      <sect>
+        <title>Часы</title>
+      </sect>
+      <sect>
+        <title>Файловые утилиты</title>
+      </sect>
+      <sect>
+        <title>Мониторы</title>
+      </sect>
+      <sect>
+        <title>Сжатие</title>
+      </sect>
+      <sect>
+        <title>Печать</title>
+      </sect>
+      <sect>
+        <title>Терминалы</title>
+      </sect>
+      <sect>
+        <title>Текстовые утилиты</title>
+      </sect>
+      <sect>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
       <title>X</title>
       <sect>
-        <title>Configuration</title>
+        <title>Конфигурация</title>
       </sect>
       <sect>
-        <title>Screensavers</title>
+        <title>Шрифты</title>
       </sect>
       <sect>
-        <title>Window Managers</title>
+        <title>Диспетчеры регистрационных имён</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Хранители экрана</title>
+      </sect>
+      <sect>
+        <title>Оконные менеджеры</title>
+      </sect>
+      <sect>
+        <title>Прочее</title>
       </sect>
     </sect>
   </sect>
@@ -292,45 +357,45 @@
   </sect>
 
   <sect>
-    <title>Development</title>
+    <title>Разработка</title>
     <sect>
-      <title>Databases</title>
+      <title>Базы данных</title>
     </sect>
     <sect>
-      <title>Development Tools</title>
+      <title>Средства разработки</title>
       <sect>
-        <title>Build Tools</title>
+        <title>Средства сборки</title>
       </sect>
       <sect>
-        <title>Code Generators</title>
+        <title>Генераторы кода</title>
       </sect>
       <sect>
-        <title>Configuration</title>
+        <title>Конфигурация</title>
       </sect>
       <sect>
-        <title>Debuggers</title>
+        <title>Отладчики</title>
       </sect>
       <sect>
-        <title>IDEs</title>
+        <title>Интегрированные среды разработки</title>
       </sect>
       <sect>
-        <title>Packaging</title>
+        <title>Пакетизация</title>
       </sect>
       <sect>
-        <title>Profiling</title>
+        <title>Профилирование</title>
       </sect>
       <sect>
-        <title>RAD</title>
+        <title>Средства быстрой разработки</title>
       </sect>
       <sect>
-        <title>Version Control</title>
+        <title>Контроль версий</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Environments</title>
+      <title>Окружения</title>
       <sect>
         <title>ADA</title>
       </sect>
@@ -350,10 +415,16 @@
         <title>gtk++</title>
       </sect>
       <sect>
+        <title>Java</title>
+      </sect>
+      <sect>
         <title>KDE</title>
       </sect>
       <sect>
         <title>Perl</title>
+      </sect>
+      <sect>
+        <title>Python</title>
       </sect>
       <sect>
         <title>Qt</title>
@@ -365,11 +436,11 @@
         <title>WebML</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Kernels</title>
+      <title>Ядра</title>
       <sect>
         <title>FreeBSD</title>
       </sect>
@@ -380,28 +451,28 @@
         <title>NetBSD</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Libraries</title>
+      <title>Библиотеки</title>
     </sect>
     <sect>
-      <title>System Calls</title>
+      <title>Системные вызовы</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Прочее</title>
     </sect>
   </sect>
   <sect>
-    <title>General</title>
+    <title>Общее</title>
     <sect>
-      <title>Licenses</title>
+      <title>Лицензии</title>
     </sect>
     <sect>
       <title>Linux</title>
       <sect>
-        <title>Distributions</title>
+        <title>Дистрибутивы</title>
         <sect>
           <title>Caldera</title>
         </sect>
@@ -424,146 +495,146 @@
           <title>SuSE</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Прочее</title>
         </sect>
       </sect>
       <sect>
-        <title>General</title>
+        <title>Общее</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Прочее</title>
     </sect>
   </sect>
 
   <sect>
     <title>GNOME</title>
     <sect>
-      <title>Core Desktop</title>
+      <title>Ядро среды</title>
     </sect>
     <sect>
-      <title>Applets</title>
+      <title>Апплеты</title>
       <sect>
-        <title>Amusement</title>
+        <title>Приколы</title>
       </sect>
       <sect>
-        <title>Clock</title>
+        <title>Часы</title>
       </sect>
       <sect>
-        <title>Monitors</title>
+        <title>Индикаторы</title>
       </sect>
       <sect>
-        <title>Multimedia</title>
+        <title>Мультимедиа</title>
       </sect>
       <sect>
-        <title>Network</title>
+        <title>Сеть</title>
       </sect>
       <sect>
-        <title>Utility</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Applications</title>
-    </sect>
-    <sect>
-      <title>Utilities</title>
-    </sect>
-    <sect>
-      <title>Development</title>
-      <sect>
-        <title>Applications</title>
-      </sect>
-      <sect>
-        <title>Introductory</title>
-      </sect>
-      <sect>
-        <title>Tutorials</title>
-      </sect>
-      <sect>
-        <title>White Papers</title>
+        <title>Утилиты</title>
       </sect>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Приложения</title>
     </sect>
     <sect>
-      <title>Graphics</title>
+      <title>Утилиты</title>
     </sect>
     <sect>
-      <title>Internet</title>
+      <title>Разработка</title>
+      <sect>
+        <title>Приложения</title>
+      </sect>
+      <sect>
+        <title>Ознакомление</title>
+      </sect>
+      <sect>
+        <title>Обучение</title>
+      </sect>
+      <sect>
+        <title>Публикации</title>
+      </sect>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Игры</title>
     </sect>
     <sect>
-      <title>Settings</title>
+      <title>Графика</title>
     </sect>
     <sect>
-      <title>System</title>
+      <title>Интернет</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Мультимедиа</title>
+    </sect>
+    <sect>
+      <title>Установки</title>
+    </sect>
+    <sect>
+      <title>Система</title>
+    </sect>
+    <sect>
+      <title>Прочее</title>
     </sect>
   </sect>
 
   <sect>
     <title>KDE</title>
     <sect>
-      <title>Utilities</title>
+      <title>Утилиты</title>
     </sect>
     <sect>
-      <title>Applications</title>
+      <title>Приложения</title>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Игры</title>
     </sect>
     <sect>
-      <title>Graphics</title>
+      <title>Графика</title>
     </sect>
     <sect>
-      <title>Internet</title>
+      <title>Интернет</title>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Мультимедиа</title>
     </sect>
     <sect>
-      <title>Settings</title>
+      <title>Установки</title>
     </sect>
     <sect>
-      <title>System</title>
+      <title>Система</title>
     </sect>
     <sect>
-      <title>Programs</title>
+      <title>Программы</title>
     </sect>
     <sect>
-      <title>Development</title>
+      <title>Разработка</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Прочее</title>
     </sect>
   </sect>
 
   <sect>
-    <title>System</title>
+    <title>Система</title>
     <sect>
-      <title>Administration</title>
+      <title>Администрирование</title>
       <sect>
-        <title>Backups</title>
+        <title>Резервное копирование</title>
         <sect>
-          <title>Local</title>
+          <title>Локальное</title>
         </sect>
         <sect>
-          <title>Remote</title>
+          <title>Удалённое</title>
         </sect>
       </sect>
       <sect>
-        <title>Filesystems</title>
+        <title>Файловые системы</title>
       </sect>
       <sect>
-        <title>Networking</title>
+        <title>Сетевые технологии</title>
         <sect>
           <title>AppleTalk</title>
         </sect>
@@ -580,69 +651,72 @@
           <title>DNS</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Прочее</title>
         </sect>
       </sect>
       <sect>
-        <title>Users</title>
+        <title>Пользователи</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Configuration</title>
+      <title>Конфигурация</title>
       <sect>
-        <title>Config Files</title>
+        <title>Конфигурационные файлы</title>
       </sect>
       <sect>
-        <title>Configuration Tools</title>
+        <title>Средства конфигурации</title>
       </sect>
       <sect>
-        <title>Other</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Hardware</title>
-      <sect>
-        <title>Processor</title>
-      </sect>
-      <sect>
-        <title>Hard Disk</title>
-      </sect>
-      <sect>
-        <title>Removable Storage</title>
-      </sect>
-      <sect>
-        <title>Memory</title>
-      </sect>
-      <sect>
-        <title>Ethernet/Modem</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Installation</title>
+      <title>Аппаратура</title>
+      <sect>
+        <title>Процессор</title>
+      </sect>
+      <sect>
+        <title>Жёсткий диск</title>
+      </sect>
+      <sect>
+        <title>Видеокарта</title>
+      </sect>
+      <sect>
+        <title>Устройства ввода</title>
+      </sect>
+      <sect>
+        <title>Сеть</title>
+      </sect>
+      <sect>
+        <title>PCI/ISA/PCMCIA</title>
+      </sect>
+      <sect>
+        <title>Прочее</title>
+      </sect>
     </sect>
     <sect>
-      <title>Security</title>
+      <title>Управление пакетами</title>
+    </sect>
+    <sect>
+      <title>Безопасность</title>
       <sect>
-        <title>Firewall</title>
+        <title>Межсетевой экран</title>
       </sect>
       <sect>
-        <title>Intrusion Detection</title>
+        <title>Обнаружение проникновения</title>
       </sect>
       <sect>
-        <title>Virus</title>
+        <title>Вирусы</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Services</title>
+      <title>Сервисы</title>
       <sect>
         <title>HTTP</title>
       </sect>
@@ -665,15 +739,16 @@
         <title>BIND</title>
       </sect>
       <sect>
-        <title>Printing</title>
+        <title>Печать</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Прочее</title>
       </sect>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Прочее</title>
     </sect>
   </sect>
 </ScrollKeeperContentsList>
     
+

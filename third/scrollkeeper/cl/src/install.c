@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <libintl.h>
 #include <dirent.h>
+#include <scrollkeeper.h>
 
 #define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
 
@@ -34,6 +35,8 @@
 
 #define SEP		"|"
 #define PATHLEN		256
+
+static int verbose = 0;
 
 static int get_unique_doc_id(char *);
 static void add_doc_to_scrollkeeper_docs(char *, char *, char *, int, char *);
@@ -45,23 +48,13 @@ static char* remove_leading_and_trailing_white_spaces(char *);
 static int is_file(char *);
 static int is_dir(char *);
 
-static void
-check_ptr (void *p)
-{
-    if (p == NULL)
-    {
-	fprintf (stderr, _("scrollkeeper-install: out of memory: %s\n"), strerror (errno));
-	exit (EXIT_FAILURE);
-    }
-}
-
 static int get_best_locale_dir(char *locale_dir, char *locale_name, 
 				char *scrollkeeper_dir, char *locale)
 {
     char *loc, *dest_dir, *ptr;
         
     dest_dir = malloc (strlen (scrollkeeper_dir) + strlen (locale) + 2);
-    check_ptr(dest_dir);
+    check_ptr(dest_dir, "scrollkeeper-install");
     sprintf(dest_dir, "%s/%s", scrollkeeper_dir, locale);
     
     if (is_dir(dest_dir))
@@ -73,7 +66,7 @@ static int get_best_locale_dir(char *locale_dir, char *locale_name,
     }
     
     loc = strdup(locale);
-    check_ptr(loc);
+    check_ptr(loc, "scrollkeeper-install");
 
     ptr = strrchr(loc, '.');
     if (ptr != NULL)
@@ -188,14 +181,14 @@ static void insert_docs_in_content_list(char *omf_name, xmlDocPtr omf_doc,
 	    cl_doc = xmlParseFile(cl_filename);
     	    if (cl_doc == NULL)
     	    {
-        	fprintf(stderr, _("wrong content list file %s\n"), cl_filename);
+        	sk_warning(verbose, _("wrong content list file %s\n"), cl_filename);
         	continue;
     	    }
 	    
 	    cl_ext_doc = xmlParseFile(cl_ext_filename);
     	    if (cl_ext_doc == NULL)
     	    {
-        	fprintf(stderr, _("wrong extended content list file %s\n"), cl_ext_filename);
+        	sk_warning(verbose, _("wrong extended content list file %s\n"), cl_ext_filename);
         	continue;
     	    }
 
@@ -472,24 +465,20 @@ static void add_doc_to_content_list(xmlNodePtr sect_node, char *cat_token, char 
    making sure that the links have similar structure in
    $localstatedir as in $datadir/Templates
 */
-static void create_content_list_files()
+static void create_content_list_files(char *scrollkeeper_dir)
 {
     FILE *fid;
-    char data_dir[PATHLEN], var_dir[PATHLEN], command[1024];
+    char data_dir[PATHLEN], command[1024];
     DIR *dir;
     char source_path[PATHLEN], target_path[PATHLEN]; 
     struct dirent *dir_ent;
     struct stat buf;
     int empty;
-    
-    fid = popen("scrollkeeper-config --pkglocalstatedir", "r");
-    fscanf(fid, "%s", var_dir);
-    pclose(fid);
-    
+        
     /* check if it's empty */
     
     empty = 1;
-    dir = opendir(var_dir);
+    dir = opendir(scrollkeeper_dir);
     while((dir_ent = readdir(dir)) != NULL && empty)
     {
         if (dir_ent->d_name[0] == '.')
@@ -523,15 +512,15 @@ static void create_content_list_files()
 	{
 	    char source_file[PATHLEN], target_file[PATHLEN];
 	
-	    sprintf(command, "mkdir %s/%s", var_dir, dir_ent->d_name);
+	    sprintf(command, "mkdir %s/%s", scrollkeeper_dir, dir_ent->d_name);
 	    system(command);
 	    sprintf(source_file, "%s/scrollkeeper_cl.xml", source_path);
 	    sprintf(target_file, "%s/%s/scrollkeeper_cl.xml", 
-	    		var_dir, dir_ent->d_name);
+	    		scrollkeeper_dir, dir_ent->d_name);
 	    sprintf(command, "cp %s %s", source_file, target_file);
 	    system(command);
 	    sprintf(target_file, "%s/%s/scrollkeeper_extended_cl.xml", 
-	    		var_dir, dir_ent->d_name);
+	    		scrollkeeper_dir, dir_ent->d_name);
 	    sprintf(command, "cp %s %s", source_file, target_file);	
 	    system(command);
 	}
@@ -547,8 +536,8 @@ static void create_content_list_files()
 	    target_locale = strrchr(aux_path, '/');
 	    target_locale++;
 	    	    
-	    sprintf(source_path, "%s/%s", var_dir, dir_ent->d_name);
-	    sprintf(target_path, "%s/%s", var_dir, target_locale);
+	    sprintf(source_path, "%s/%s", scrollkeeper_dir, dir_ent->d_name);
+	    sprintf(target_path, "%s/%s", scrollkeeper_dir, target_locale);
 	    	   
 	    symlink(target_path, source_path); 
 	}
@@ -557,13 +546,10 @@ static void create_content_list_files()
     closedir(dir);
 }
 
-static int validate_args(int argc)
+static void usage()
 {
-    if (argc == 2 || argc == 4)
-	return 1;
-	
-    printf(_("Usage: scrollkeeper_install [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"));
-    return 0;
+    printf(_("Usage: scrollkeeper_install [-v] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"));
+    exit(EXIT_FAILURE);
 }
 
 int
@@ -574,22 +560,38 @@ main (int argc, char *argv[])
     char scrollkeeper_dir[PATHLEN], toc_dir[PATHLEN], command[1024];
     struct stat buf;
     FILE *fid;
+    int i;
     
     setlocale (LC_ALL, "");
     bindtextdomain (PACKAGE, SCROLLKEEPERLOCALEDIR);
     textdomain (PACKAGE);
+
+    if (argc == 1)
+	usage();
     
-    if (!validate_args(argc))
-        return 1;
-        
-    if (argc == 4)
+    scrollkeeper_dir[0] = '\0';
+    while ((i = getopt (argc, argv, "p:v")) != -1)
     {
-        omf_name = argv[3];
-	strcpy(scrollkeeper_dir, argv[2]);
+        switch (i)
+        {
+        case 'p':
+            strcpy (scrollkeeper_dir, optarg);  /* XXX buffer overflow */
+            break;
+
+        case 'v':
+            verbose = 1;
+            break;
+
+        default:
+            usage (argv);
+            exit (EXIT_FAILURE);
+        }
     }
-    else
+
+    omf_name = argv[argc - 1];
+        
+    if (scrollkeeper_dir[0] == '\0')
     {
-        omf_name = argv[1];
 	fid = popen("scrollkeeper-config --pkglocalstatedir", "r");
     	fscanf(fid, "%s", scrollkeeper_dir);
     	pclose(fid);
@@ -598,11 +600,11 @@ main (int argc, char *argv[])
     omf_doc = xmlParseFile(omf_name);
     if (omf_doc == NULL)
     {
-        fprintf(stderr, _("wrong omf file %s\n"), omf_name);
+        sk_warning(verbose, _("wrong omf file %s\n"), omf_name);
         return 0;
     }
     
-    create_content_list_files();
+    create_content_list_files(scrollkeeper_dir);
     
     sprintf(toc_dir, "%s/TOC", scrollkeeper_dir);
     stat(toc_dir, &buf);

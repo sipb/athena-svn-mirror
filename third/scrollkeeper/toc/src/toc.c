@@ -27,8 +27,7 @@
 #include "toc-extract.h"
 #include <stdarg.h>
 #include <libintl.h>
-
-#define _(String) gettext (String)
+#include <scrollkeeper.h>
 
 #if 0
 #define ERROR_OUTPUT
@@ -488,7 +487,7 @@ parse_file (char *filename)
  	context->base_file = strdup (filename);
  	if (xmlSAXUserParseFile (&parser, 
 				context, context->base_file) < 0) {
- 		fprintf(stderr, _("error while parsing %s\n"), filename);
+ 		sk_warning(0, _("error while parsing %s\n"), filename);
  	}
 	
 	free(context);

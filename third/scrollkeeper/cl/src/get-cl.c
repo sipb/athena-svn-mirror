@@ -25,10 +25,9 @@
 #include <errno.h>
 #include <string.h>
 #include <locale.h>
+#include <scrollkeeper.h>
 
 #define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
-
-#define _(String) gettext (String)
 
 #define PATHLEN	256
 
@@ -36,16 +35,6 @@ static char **av;
 
 static int is_file(char *);
 static int is_dir(char *);
-
-static void
-check_ptr (void *p)
-{
-    if (p == NULL)
-    {
-	fprintf (stderr, _("%s: out of memory: %s\n"), *av, strerror (errno));
-	exit (EXIT_FAILURE);
-    }
-}
 
 static int is_file(char *filename)
 {
@@ -73,7 +62,7 @@ static int get_best_locale_dir(char *locale_dir, char *locale_name,
     char *loc, *dest_dir, *ptr;
 
     dest_dir = malloc (strlen (scrollkeeper_dir) + strlen (locale) + 2);
-    check_ptr(dest_dir);
+    check_ptr(dest_dir, *av);
     sprintf(dest_dir, "%s/%s", scrollkeeper_dir, locale);
 
     if (is_dir(dest_dir))
@@ -85,7 +74,7 @@ static int get_best_locale_dir(char *locale_dir, char *locale_name,
     }
 
     loc = strdup(locale);
-    check_ptr(loc);
+    check_ptr(loc, *av);
 
     ptr = strrchr(loc, '.');
     if (ptr != NULL)
@@ -135,9 +124,9 @@ static int get_best_locale_dir(char *locale_dir, char *locale_name,
 static void
 usage (int argc, char **argv)
 {
-    if (argc != 3) {
-    	fprintf(stderr,
-	    _("Usage: %s <LOCALE> <CATEGORY TREE FILE NAME>\n"), *argv);
+    if (argc != 3 && argc != 4) {
+    	printf(
+	    _("Usage: %s [-v] <LOCALE> <CATEGORY TREE FILE NAME>\n"), *argv);
 	exit(EXIT_SUCCESS);
     }
 }
@@ -147,6 +136,7 @@ int main(int argc, char **argv)
     FILE *config_fid;
     char scrollkeeper_dir[PATHLEN], *locale_dir, *locale, *locale_name;
     char *full_name, *base_name;
+    int verbose;
 
     setlocale (LC_ALL, "");
     bindtextdomain (PACKAGE, SCROLLKEEPERLOCALEDIR);
@@ -156,8 +146,18 @@ int main(int argc, char **argv)
 
     usage(argc, argv);
 
-    locale = argv[1];
-    base_name = argv[2];
+    if (argc == 3)
+    {
+	verbose = 0;
+    	locale = argv[1];
+    	base_name = argv[2];
+    }
+    else /* argc == 4 */
+    {
+	verbose = 1;
+	locale = argv[2];
+	base_name = argv[3];
+    }
 
     config_fid = popen("scrollkeeper-config --pkglocalstatedir", "r");
     fscanf(config_fid, "%s", scrollkeeper_dir);  /* XXX buffer overflow */
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 
     if (!get_best_locale_dir(locale_dir, locale_name, scrollkeeper_dir, locale))
     {
-	fprintf(stderr, _("No Content List for this locale!!!\n"));
+	sk_warning(verbose, _("No Content List for this locale!!!\n"));
 	return 1;
     }
 
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
     }
     else
     {
-	fprintf(stderr, _("No Content List for this locale!!!\n"));
+	sk_warning(verbose, _("No Content List for this locale!!!\n"));
     	free(locale_dir);
     	free(locale_name);
     	free(full_name);

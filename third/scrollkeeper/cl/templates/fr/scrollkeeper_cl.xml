@@ -1,63 +1,80 @@
 <?xml version="1.0"?>
 <ScrollKeeperContentsList>
 
+<!--
+    ScrollKeeper Category Tree
+    Maintained by the ScrollKeeper project
+    http://scrollkeeper.sourceforge.net
+    Version: 0.1.0
+    Last Modified: Feb 14, 2001
+-->
+
   <sect>
     <title>Applications</title>
     <sect>
-      <title>Amusement</title>
+      <title>Divertissements</title>
     </sect>
     <sect>
-      <title>Education</title>
+      <title>Éducation</title>
       <sect>
         <title>Arts</title>
       </sect>
       <sect>
-        <title>English</title>
+        <title>Informatique</title>
+      </sect>
+      <sect>
+        <title>Anglais</title>
+      </sect>
+      <sect>
+        <title>Langue</title>
       </sect>
       <sect>
         <title>Maths</title>
       </sect>
       <sect>
-        <title>Music</title>
+        <title>Musique</title>
       </sect>
       <sect>
         <title>Science</title>
       </sect>
       <sect>
-        <title>Technology</title>
+        <title>Technologie</title>
       </sect>
       <sect>
-        <title>Testing</title>
+        <title>Test</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Jeux</title>
       <sect>
         <title>Arcade</title>
       </sect>
       <sect>
-        <title>Board</title>
+        <title>Damier</title>
       </sect>
       <sect>
-        <title>First Person Shooters</title>
+        <title>Tir</title>
       </sect>
       <sect>
         <title>Puzzles</title>
       </sect>
       <sect>
-        <title>Fighting</title>
+        <title>Baston</title>
       </sect>
       <sect>
-        <title>Role-Playing</title>
+        <title>Jeux de role</title>
       </sect>
       <sect>
-        <title>Strategy</title>
+        <title>Simulation</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Stratégie</title>
+      </sect>
+      <sect>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
@@ -66,51 +83,48 @@
         <title>Chat</title>
       </sect>
       <sect>
-        <title>Email</title>
+        <title>Courrier électronique</title>
       </sect>
       <sect>
         <title>Fax</title>
       </sect>
       <sect>
-        <title>File Sharing</title>
+        <title>Partage de fichiers</title>
       </sect>
       <sect>
         <title>FTP</title>
       </sect>
       <sect>
-        <title>Internet Phone</title>
+        <title>Téléphone Internet</title>
       </sect>
       <sect>
-        <title>Messaging</title>
+        <title>Message</title>
       </sect>
       <sect>
-        <title>News</title>
+        <title>Nouvelles</title>
       </sect>
       <sect>
-        <title>Video Conferencing</title>
+        <title>Vidéo Conférence</title>
       </sect>
       <sect>
         <title>Web</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Multimédia</title>
       <sect>
-        <title>Graphics</title>
+        <title>Graphisme</title>
         <sect>
-          <title>3D Modelling</title>
+          <title>Modèle 3D</title>
         </sect>
         <sect>
-          <title>3D Modelling</title>
+          <title>Rendu 3D</title>
         </sect>
         <sect>
-          <title>3D Rendering</title>
-        </sect>
-        <sect>
-          <title>CAD</title>
+          <title>DAO</title>
         </sect>
         <sect>
           <title>Capture</title>
@@ -119,31 +133,31 @@
           <title>Conversion</title>
         </sect>
         <sect>
-          <title>Drawing</title>
+          <title>Dessin</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Édition</title>
         </sect>
         <sect>
-          <title>Viewing</title>
+          <title>Visualisation</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Autres</title>
         </sect>
       </sect>
       <sect>
-        <title>Sound</title>
+        <title>Son</title>
         <sect>
-          <title>Analysis</title>
+          <title>Analyse</title>
         </sect>
         <sect>
-          <title>CD Mastering</title>
+          <title>Master CD</title>
         </sect>
         <sect>
           <title>Conversion</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Édition</title>
         </sect>
         <sect>
           <title>MIDI</title>
@@ -152,20 +166,20 @@
           <title>Mixers</title>
         </sect>
         <sect>
-          <title>Players</title>
+          <title>Lecteurs</title>
         </sect>
         <sect>
-          <title>Recording</title>
+          <title>Enregisteurs</title>
         </sect>
         <sect>
-          <title>Speech</title>
+          <title>Voix</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Autres</title>
         </sect>
       </sect>
       <sect>
-        <title>Video</title>
+        <title>Vidéo</title>
         <sect>
           <title>Capture</title>
         </sect>
@@ -173,84 +187,102 @@
           <title>Conversion</title>
         </sect>
         <sect>
-          <title>Display</title>
+          <title>Affichage</title>
         </sect>
         <sect>
-          <title>Editing</title>
+          <title>Édition</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Autres</title>
         </sect>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
       <title>Office</title>
       <sect>
-        <title>Calendar</title>
+        <title>Calendrier</title>
       </sect>
       <sect>
-        <title>Data Processing</title>
+        <title>Traitement de données</title>
       </sect>
       <sect>
-        <title>Database</title>
+        <title>Base de données</title>
       </sect>
       <sect>
-        <title>Email</title>
+        <title>Courrier électronique</title>
       </sect>
       <sect>
-        <title>Finantial</title>
+        <title>Finance</title>
       </sect>
       <sect>
         <title>PIM</title>
       </sect>
       <sect>
-        <title>Plotting</title>
+        <title>Graphique</title>
       </sect>
       <sect>
-        <title>Presentation</title>
+        <title>Présentation</title>
       </sect>
       <sect>
         <title>Publication</title>
+        <sect>
+          <title>Publication Web</title>
+        </sect>
       </sect>
       <sect>
-        <title>Word Processing</title>
+        <title>Traitement de texte</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Scientific</title>
+      <title>Scientifique</title>
       <sect>
-        <title>Astronomy</title>
+        <title>Astronomie</title>
+      </sect>
+      <sect>
+        <title>Astrophysique</title>
+      </sect>
+      <sect>
+        <title>Biologie</title>
+      </sect>
+      <sect>
+        <title>Chimie</title>
       </sect>
       <sect>
         <title>EDA</title>
       </sect>
       <sect>
+        <title>Génétique</title>
+      </sect>
+      <sect>
         <title>Math</title>
+      </sect>
+      <sect>
+        <title>Physique</title>
       </sect>
       <sect>
         <title>Visualisation</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Security</title>
+      <title>Sécurité</title>
       <sect>
-        <title>Cryptography</title>
+        <title>Cryptographie</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Text Editors</title>
+      <title>Éditeurs de texte</title>
       <sect>
         <title>CLI</title>
       </sect>
@@ -258,16 +290,40 @@
         <title>GUI</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Utilities</title>
+      <title>Utilitaires</title>
+      <sect>
+        <title>Archivage</title>
+      </sect>
+      <sect>
+        <title>Calculatrices</title>
+      </sect>
+      <sect>
+        <title>Horloges</title>
+      </sect>
       <sect>
         <title>Compression</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Utilitaires de fichiers</title>
+      </sect>
+      <sect>
+        <title>Moniteurs</title>
+      </sect>
+      <sect>
+        <title>Impression</title>
+      </sect>
+      <sect>
+        <title>Terminaux</title>
+      </sect>
+      <sect>
+        <title>Utilitaires texte</title>
+      </sect>
+      <sect>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
@@ -276,61 +332,67 @@
         <title>Configuration</title>
       </sect>
       <sect>
-        <title>Screensavers</title>
+        <title>Polices</title>
       </sect>
       <sect>
-        <title>Window Managers</title>
+        <title>Gestionnaires de connexions</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Économiseurs d'écrans</title>
+      </sect>
+      <sect>
+        <title>Gestionnaires de fenêtres</title>
+      </sect>
+      <sect>
+        <title>Autres</title>
       </sect>
     </sect>
   </sect>
 
   <sect>
-        <title>CDE</title>
+    <title>CDE</title>
   </sect>
 
   <sect>
-    <title>Development</title>
+    <title>Développement</title>
     <sect>
-      <title>Databases</title>
+      <title>Bases de données</title>
     </sect>
     <sect>
-      <title>Development Tools</title>
+      <title>Outils de développement</title>
       <sect>
-        <title>Build Tools</title>
+        <title>Outils de construction</title>
       </sect>
       <sect>
-        <title>Code Generators</title>
+        <title>Générateurs de code</title>
       </sect>
       <sect>
         <title>Configuration</title>
       </sect>
       <sect>
-        <title>Debuggers</title>
+        <title>Débogueurs</title>
       </sect>
       <sect>
-        <title>IDEs</title>
+        <title>EDIs</title>
       </sect>
       <sect>
-        <title>Packaging</title>
+        <title>Empaquetage</title>
       </sect>
       <sect>
-        <title>Profiling</title>
+        <title>Profilage</title>
       </sect>
       <sect>
-        <title>RAD</title>
+        <title>DRA</title>
       </sect>
       <sect>
-        <title>Version Control</title>
+        <title>Controle de version</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Environments</title>
+      <title>Environements</title>
       <sect>
         <title>ADA</title>
       </sect>
@@ -350,10 +412,16 @@
         <title>gtk++</title>
       </sect>
       <sect>
+        <title>Java</title>
+      </sect>
+      <sect>
         <title>KDE</title>
       </sect>
       <sect>
         <title>Perl</title>
+      </sect>
+      <sect>
+        <title>Python</title>
       </sect>
       <sect>
         <title>Qt</title>
@@ -369,7 +437,7 @@
       </sect>
     </sect>
     <sect>
-      <title>Kernels</title>
+      <title>Noyaux</title>
       <sect>
         <title>FreeBSD</title>
       </sect>
@@ -380,23 +448,23 @@
         <title>NetBSD</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Libraries</title>
+      <title>Bibliothèques</title>
     </sect>
     <sect>
-      <title>System Calls</title>
+      <title>Appels système</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Autres</title>
     </sect>
   </sect>
   <sect>
-    <title>General</title>
+    <title>Général</title>
     <sect>
-      <title>Licenses</title>
+      <title>Licences</title>
     </sect>
     <sect>
       <title>Linux</title>
@@ -428,142 +496,142 @@
         </sect>
       </sect>
       <sect>
-        <title>General</title>
+        <title>Général</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Autres</title>
     </sect>
   </sect>
 
   <sect>
     <title>GNOME</title>
     <sect>
-      <title>Core Desktop</title>
+      <title>Bureau</title>
     </sect>
     <sect>
       <title>Applets</title>
       <sect>
-        <title>Amusement</title>
+        <title>Amusements</title>
       </sect>
       <sect>
-        <title>Clock</title>
+        <title>Horloge</title>
       </sect>
       <sect>
-        <title>Monitors</title>
+        <title>Moniteurs</title>
       </sect>
       <sect>
-        <title>Multimedia</title>
+        <title>Multimédia</title>
       </sect>
       <sect>
-        <title>Network</title>
+        <title>Réseau</title>
       </sect>
       <sect>
-        <title>Utility</title>
+        <title>Utilitaire</title>
       </sect>
     </sect>
     <sect>
       <title>Applications</title>
     </sect>
     <sect>
-      <title>Utilities</title>
+      <title>Utilitaires</title>
     </sect>
     <sect>
-      <title>Development</title>
+      <title>Développement</title>
       <sect>
         <title>Applications</title>
       </sect>
       <sect>
-        <title>Introductory</title>
+        <title>Introduction</title>
       </sect>
       <sect>
-        <title>Tutorials</title>
+        <title>Tutoriels</title>
       </sect>
       <sect>
-        <title>White Papers</title>
+        <title>Papiers blancs</title>
       </sect>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Jeux</title>
     </sect>
     <sect>
-      <title>Graphics</title>
+      <title>Graphisme</title>
     </sect>
     <sect>
       <title>Internet</title>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Multimédia</title>
     </sect>
     <sect>
-      <title>Settings</title>
+      <title>Paramètres</title>
     </sect>
     <sect>
-      <title>System</title>
+      <title>Système</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Autres</title>
     </sect>
   </sect>
 
   <sect>
     <title>KDE</title>
     <sect>
-      <title>Utilities</title>
+      <title>Utilitaires</title>
     </sect>
     <sect>
       <title>Applications</title>
     </sect>
     <sect>
-      <title>Games</title>
+      <title>Jeux</title>
     </sect>
     <sect>
-      <title>Graphics</title>
+      <title>Graphisme</title>
     </sect>
     <sect>
       <title>Internet</title>
     </sect>
     <sect>
-      <title>Multimedia</title>
+      <title>Multimédia</title>
     </sect>
     <sect>
-      <title>Settings</title>
+      <title>paramètres</title>
     </sect>
     <sect>
-      <title>System</title>
+      <title>Système</title>
     </sect>
     <sect>
-      <title>Programs</title>
+      <title>Programmes</title>
     </sect>
     <sect>
-      <title>Development</title>
+      <title>Développement</title>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Autres</title>
     </sect>
   </sect>
 
   <sect>
-    <title>System</title>
+    <title>Système</title>
     <sect>
       <title>Administration</title>
       <sect>
-        <title>Backups</title>
+        <title>Sauvegardes</title>
         <sect>
           <title>Local</title>
         </sect>
         <sect>
-          <title>Remote</title>
+          <title>Distant</title>
         </sect>
       </sect>
       <sect>
-        <title>Filesystems</title>
+        <title>Systèmes de fichiers</title>
       </sect>
       <sect>
-        <title>Networking</title>
+        <title>Réseau</title>
         <sect>
           <title>AppleTalk</title>
         </sect>
@@ -580,65 +648,68 @@
           <title>DNS</title>
         </sect>
         <sect>
-          <title>Other</title>
+          <title>Autres</title>
         </sect>
       </sect>
       <sect>
-        <title>Users</title>
+        <title>Utilisateurs</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
       <title>Configuration</title>
       <sect>
-        <title>Config Files</title>
+        <title>Fichiers de configuration</title>
       </sect>
       <sect>
-        <title>Configuration Tools</title>
+        <title>Outils de configuration</title>
       </sect>
       <sect>
-        <title>Other</title>
-      </sect>
-    </sect>
-    <sect>
-      <title>Hardware</title>
-      <sect>
-        <title>Processor</title>
-      </sect>
-      <sect>
-        <title>Hard Disk</title>
-      </sect>
-      <sect>
-        <title>Removable Storage</title>
-      </sect>
-      <sect>
-        <title>Memory</title>
-      </sect>
-      <sect>
-        <title>Ethernet/Modem</title>
-      </sect>
-      <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Installation</title>
-    </sect>
-    <sect>
-      <title>Security</title>
+      <title>Matériel</title>
       <sect>
-        <title>Firewall</title>
+        <title>Processeur</title>
       </sect>
       <sect>
-        <title>Intrusion Detection</title>
+        <title>Stockage</title>
+      </sect>
+      <sect>
+        <title>Vidéo</title>
+      </sect>
+      <sect>
+        <title>Périphériques d'entrée</title>
+      </sect>
+      <sect>
+        <title>Réseau</title>
+      </sect>
+      <sect>
+        <title>PCI/ISA/PCMCIA</title>
+      </sect>
+      <sect>
+        <title>Autres</title>
+      </sect>
+    </sect>
+    <sect>
+      <title>Gestionnaire de paquets</title>
+    </sect>
+    <sect>
+      <title>Securité</title>
+      <sect>
+        <title>Pare-feu</title>
+      </sect>
+      <sect>
+        <title>Détection d'intrusion</title>
       </sect>
       <sect>
         <title>Virus</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
@@ -665,14 +736,14 @@
         <title>BIND</title>
       </sect>
       <sect>
-        <title>Printing</title>
+        <title>Impression</title>
       </sect>
       <sect>
-        <title>Other</title>
+        <title>Autres</title>
       </sect>
     </sect>
     <sect>
-      <title>Other</title>
+      <title>Autres</title>
     </sect>
   </sect>
 </ScrollKeeperContentsList>

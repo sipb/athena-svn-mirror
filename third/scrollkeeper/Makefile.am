@@ -1,6 +1,6 @@
 # copyright (C) 2000 Sun Microsystems, Inc.
 
-SUBDIRS = cl toc scripts man doc intl po omf-install
+SUBDIRS = libs cl toc scripts man doc intl po omf-install
 
 EXTRA_DIST = scrollkeeper.spec COPYING-DOCS
 

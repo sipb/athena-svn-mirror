@@ -4,20 +4,16 @@
 >ScrollKeeper Manual</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.44"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
 REL="NEXT"
 TITLE="Introduction"
 HREF="intro.html"></HEAD
 ><BODY
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
+CLASS="BOOK"
 ><DIV
 CLASS="BOOK"
 ><A
-NAME="INDEX"
+NAME="index"
 ></A
 ><DIV
 CLASS="TITLEPAGE"
@@ -27,9 +23,22 @@ CLASS="TITLE"
 NAME="AEN2"
 >ScrollKeeper Manual</A
 ></H1
-><H3
+>   <H3
 CLASS="AUTHOR"
->Dan Mueth</H3
+><A
+NAME="AEN6"
+>Dan Mueth</A
+></H3
+>
+  <P
+CLASS="COPYRIGHT"
+><A
+HREF="ln15.html"
+>Copyright</A
+> &copy; 2000 by <SPAN
+CLASS="HOLDER"
+>Dan Mueth</SPAN
+></P
 ><HR></DIV
 ><DIV
 CLASS="TOC"
@@ -39,7 +48,7 @@ CLASS="TOC"
 >Table of Contents</B
 ></DT
 ><DT
-><A
+>1. <A
 HREF="intro.html"
 >Introduction</A
 ></DT
@@ -47,7 +56,7 @@ HREF="intro.html"
 ><DL
 ><DT
 ><A
-HREF="intro.html#WHATISSCROLLKEEPER"
+HREF="intro.html#whatisscrollkeeper"
 >What is ScrollKeeper?</A
 ></DT
 ><DT
@@ -68,7 +77,7 @@ HREF="scrollkeeperlicense.html"
 ></DL
 ></DD
 ><DT
-><A
+>2. <A
 HREF="theomf.html"
 >The Open Metadata Framework (OMF)</A
 ></DT
@@ -76,7 +85,7 @@ HREF="theomf.html"
 ><DL
 ><DT
 ><A
-HREF="theomf.html#WHATISTHEOMF"
+HREF="theomf.html#whatistheomf"
 >What is the OMF?</A
 ></DT
 ><DT
@@ -102,7 +111,7 @@ HREF="exampleomffiles.html"
 ></DL
 ></DD
 ><DT
-><A
+>3. <A
 HREF="administration.html"
 >ScrollKeeper Administration</A
 ></DT
@@ -110,7 +119,7 @@ HREF="administration.html"
 ><DL
 ><DT
 ><A
-HREF="administration.html#REBUILDINGDB"
+HREF="administration.html#rebuildingdb"
 >Rebuilding the ScrollKeeper Database</A
 ></DT
 ><DT
@@ -126,7 +135,7 @@ HREF="uninstallbyhand.html"
 ></DL
 ></DD
 ><DT
-><A
+>4. <A
 HREF="packaging.html"
 >How to Make Your Packages Use ScrollKeeper</A
 ></DT
@@ -134,7 +143,7 @@ HREF="packaging.html"
 ><DL
 ><DT
 ><A
-HREF="packaging.html#PREINSTALLATIONSCRIPT"
+HREF="packaging.html#preinstallationscript"
 >The Pre-Installation Script</A
 ></DT
 ><DT
@@ -165,7 +174,7 @@ HREF="packagingdeb.html"
 ></DL
 ></DD
 ><DT
-><A
+>5. <A
 HREF="scrollkeeperapi.html"
 >The ScrollKeeper API</A
 ></DT
@@ -173,19 +182,19 @@ HREF="scrollkeeperapi.html"
 ><DL
 ><DT
 ><A
-HREF="scrollkeeperapi.html#CONTENTSLISTAPI"
+HREF="scrollkeeperapi.html#contentslistapi"
 >The Contents List API</A
 ></DT
 ><DD
 ><DL
 ><DT
 ><A
-HREF="scrollkeeperapi.html#DEWEY-GET-CONTENTS-LIST"
+HREF="scrollkeeperapi.html#dewey-get-contents-list"
 >dewey-get-contents-list</A
 ></DT
 ><DT
 ><A
-HREF="scrollkeeperapi.html#DEWEY-GET-EXTENDED-CONTENTS-LIST"
+HREF="scrollkeeperapi.html#dewey-get-extended-contents-list"
 >dewey-get-extended-contents-list</A
 ></DT
 ></DL
@@ -199,7 +208,7 @@ HREF="tableofcontentsapi.html"
 ><DL
 ><DT
 ><A
-HREF="tableofcontentsapi.html#DEWEY-GET-TOC-FROM-DOCPATH"
+HREF="tableofcontentsapi.html#dewey-get-toc-from-docpath"
 >dewey-get-toc-from-docpath</A
 ></DT
 ></DL
@@ -212,7 +221,7 @@ HREF="indexapi.html"
 ></DL
 ></DD
 ><DT
-><A
+>6. <A
 HREF="scrollkeeperfiles.html"
 >ScrollKeeper's Internal Files</A
 ></DT
@@ -220,7 +229,7 @@ HREF="scrollkeeperfiles.html"
 ><DL
 ><DT
 ><A
-HREF="scrollkeeperfiles.html#SCROLLKEEPERSHOME"
+HREF="scrollkeeperfiles.html#scrollkeepershome"
 >ScrollKeeper's Home</A
 ></DT
 ><DT
@@ -256,77 +265,43 @@ HREF="glossary.html"
 >Glossary</A
 ></DT
 ><DT
-><A
+>A. <A
 HREF="fdl.html"
->GNU Free Documentation License</A
-></DT
-><DD
-><DL
-><DT
-><A
-HREF="fdl.html#FDL-PREAMBLE"
->0. PREAMBLE</A
-></DT
-><DT
-><A
-HREF="fdl-section1.html"
->1. APPLICABILITY AND DEFINITIONS</A
-></DT
-><DT
-><A
-HREF="fdl-section2.html"
->2. VERBATIM COPYING</A
-></DT
-><DT
-><A
-HREF="fdl-section3.html"
->3. COPYING IN QUANTITY</A
-></DT
-><DT
-><A
-HREF="fdl-section4.html"
->4. MODIFICATIONS</A
-></DT
-><DT
-><A
-HREF="fdl-section5.html"
->5. COMBINING DOCUMENTS</A
-></DT
-><DT
-><A
-HREF="fdl-section6.html"
->6. COLLECTIONS OF DOCUMENTS</A
-></DT
-><DT
-><A
-HREF="fdl-section7.html"
->7. AGGREGATION WITH INDEPENDENT WORKS</A
-></DT
-><DT
-><A
-HREF="fdl-section8.html"
->8. TRANSLATION</A
-></DT
-><DT
-><A
-HREF="fdl-section9.html"
->9. TERMINATION</A
-></DT
-><DT
-><A
-HREF="fdl-section10.html"
->10. FUTURE REVISIONS OF THIS LICENSE</A
-></DT
-><DT
-><A
-HREF="fdl-using.html"
->Addendum</A
+></A
 ></DT
 ></DL
-></DD
-></DL
 ></DIV
-></DIV
+>
+ 
+
+ 
+
+ 
+ 
+
+ 
+ 
+
+
+ 
+ 
+
+
+ 
+ 
+
+ 
+ 
+
+
+ 
+ 
+
+ 
+ 
+
+
+</DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR
@@ -353,7 +328,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="intro.html"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ><TR

@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <libintl.h>
 #include <locale.h>
+#include <scrollkeeper.h>
 
 #define SCROLLKEEPERLOCALEDIR "/usr/share/locale"
 
@@ -36,6 +37,8 @@ struct IdTab {
     int id;
     char *locale;
 };
+
+static int verbose = 0;
 
 static void remove_doc_from_content_list(xmlNodePtr, struct IdTab *, int, int);
 
@@ -91,14 +94,14 @@ static void remove_docs_from_content_list(struct IdTab *id_tab, int id_num, char
 	cl_doc = xmlParseFile(cl_filename);
     	if (cl_doc == NULL)
     	{
-            fprintf(stderr, _("wrong content list file %s\n"), cl_filename);
+            sk_warning(verbose, _("wrong content list file %s\n"), cl_filename);
             continue;
     	}
 	
 	cl_ext_doc = xmlParseFile(cl_ext_filename);
     	if (cl_ext_doc == NULL)
     	{
-            fprintf(stderr, _("wrong extended content list file %s\n"), cl_ext_filename);
+            sk_warning(verbose, _("wrong extended content list file %s\n"), cl_ext_filename);
             continue;
     	}
 
@@ -164,7 +167,7 @@ static void remove_doc_from_scrollkeeper_docs(char *omf_name,
     fid = fopen(scrollkeeper_docs, "r");
     if (fid == NULL)
     {
-        fprintf(stderr, _("%s missing\n"), scrollkeeper_docs);
+        sk_warning(verbose, _("%s missing\n"), scrollkeeper_docs);
         return;
     }
     
@@ -215,13 +218,10 @@ static void remove_doc_from_scrollkeeper_docs(char *omf_name,
     *id_num = count;
 }
 
-static int validate_args(int argc)
+static void usage()
 {
-    if (argc == 2 || argc == 4)
-	return 1;
-	    
-    printf(_("Usage: scrollkeeper_uninstall [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"));
-    return 0;
+    printf(_("Usage: scrollkeeper_uninstall [-v] [-p <SCROLLKEEPER_DB_DIR>] <OMF FILE>\n"));
+    exit(EXIT_FAILURE);
 }
 
 int
@@ -236,17 +236,33 @@ main (int argc, char *argv[])
     bindtextdomain (PACKAGE, SCROLLKEEPERLOCALEDIR);
     textdomain (PACKAGE);
     
-    if (!validate_args(argc))
-        return 1;
-        
-    if (argc == 4)
+    if (argc == 1)
+	usage();
+
+    scrollkeeper_dir[0] = '\0';
+
+    while ((i = getopt (argc, argv, "p:v")) != -1)
     {
-        omf_name = argv[3];
-	strcpy(scrollkeeper_dir, argv[2]);
+        switch (i)
+        {
+        case 'p':
+            strcpy (scrollkeeper_dir, optarg);  /* XXX buffer overflow */
+            break;
+
+        case 'v':
+            verbose = 1;
+            break;
+
+        default:
+            usage (argv);
+            exit (EXIT_FAILURE);
+        }
     }
-    else
+
+    omf_name = argv[argc - 1];
+
+    if (scrollkeeper_dir[0] == '\0')
     {
-        omf_name = argv[1];
 	fid = popen("scrollkeeper-config --pkglocalstatedir", "r");
     	fscanf(fid, "%s", scrollkeeper_dir);
     	pclose(fid);

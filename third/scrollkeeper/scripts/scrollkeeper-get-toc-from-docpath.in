@@ -3,7 +3,6 @@
 prefix=@prefix@
 BIN=${prefix}/bin
 localstatedir=@localstatedir@
-scrollkeeper_dir=${localstatedir}/lib/scrollkeeper
 
 usage()
 {
@@ -17,6 +16,8 @@ EOF
 if test $# -eq 0; then
     usage 1
 fi
+
+scrollkeeper_dir=`scrollkeeper-config --pkglocalstatedir`
 
 docids=`grep $1 ${scrollkeeper_dir}/scrollkeeper_docs | \
           awk 'BEGIN { FS="	"} {print $2}'`
