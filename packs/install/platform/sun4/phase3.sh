@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.27 1998-03-31 22:01:11 miki Exp $
+# $Id: phase3.sh,v 1.28 1998-05-08 16:52:26 miki Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -101,8 +101,10 @@ for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
 		cp -p /os$i /root$i
 	fi
 done
-cp -p /os/etc/name_to_major etc/name_to_major
-cp -p /os/etc/driver_aliases etc/driver_aliases
+cp -p "/srvd/etc/name_to_major.$platform" etc/name_to_major
+cp -p "/srvd/etc/driver_aliases.$platform" etc/driver_aliases
+cp -p "/srvd/etc/driver_classes.$platform" etc/driver_classes
+cp -p "/srvd/etc/minor_perm.$platform" etc/minor_perm
 cp -p /os/etc/device.tab etc/device.tab
 cp -p /os/etc/dgroup.tab etc/dgroup.tab
 
