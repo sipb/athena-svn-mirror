@@ -1,24 +1,27 @@
 #!/bin/sh
-# $Id: do.sh,v 1.14 1997-07-30 16:10:29 ghudson Exp $
+# $Id: do.sh,v 1.15 1997-09-24 06:53:31 ghudson Exp $
 
+source="/mit/source"
+srvd="/srvd"
+contained=false
 n=""
 maybe=""
-source="/mit/source"
-build="/build"
-srvd="/srvd"
 usage="do [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
 
-while getopts ns:b:d: opt; do
+while getopts cd:ns: opt; do
 	case "$opt" in
+	c)
+		contained=true
+		;;
+	d)
+		srvd="$OPTARG"
+		;;
 	n)
 		n="-n"
 		maybe="echo"
 		;;
 	s)
 		source="$OPTARG"
-		;;
-	d)
-		srvd="$OPTARG"
 		;;
 	\?)
 		echo "$usage"
@@ -28,6 +31,15 @@ while getopts ns:b:d: opt; do
 done
 shift `expr $OPTIND - 1`
 operation=${1-all}
+
+case "$contained" in
+true)
+	athtoolroot="$srvd"
+	;;
+false)
+	athtoolroot=""
+	;;
+esac
 
 # Set up the build environment.
 umask 022
@@ -49,25 +61,29 @@ case "`uname -a`" in
 SunOS*sun4*)
 	HOSTTYPE=sun4
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-	PATH=/usr/ccs/bin:/usr/athena/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
+	PATH=/usr/ccs/bin:$athtoolroot/usr/athena/bin:/usr/bin:/usr/ucb
+	PATH=${PATH}:/usr/openwin/bin
 	compiler="/usr/gcc/bin/gcc -DSOLARIS"
 	;;
 IRIX*)
 	HOSTTYPE=sgi
-	PATH=/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
+	PATH=$athtoolroot/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
 	compiler=cc
 	;;
 esac
 
 if [ -r Makefile.athena ]; then
-	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR
+	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR ATHTOOLROOT
 	SRVD="$srvd"
 	SOURCE="$source"
 	COMPILER="$compiler"
 	CONFIGDIR="$source/packs/build/config"
 	XCONFIGDIR="$source/packs/build/xconfig"
+	ATHTOOLROOT="$athtoolroot"
 	make $n -f Makefile.athena "$operation"
 elif [ -x ./configure ]; then
+	export ATHTOOLROOT
+	ATHTOOLROOT="$athtoolroot"
 	case "$operation" in
 		prepare)	$maybe rm -f config.cache
 				$maybe ./configure ;;
@@ -80,7 +96,8 @@ elif [ -r Imakefile ]; then
 	case "$operation" in
 		prepare)
 			$maybe imake "-I$source/packs/build/config" \
-				-DUseInstalled "-DTOPDIR=$source/packs/build"
+				-DUseInstalled "-DTOPDIR=$source/packs/build" \
+				"-DTOOLROOT=$athtoolroot"
 			$maybe make Makefiles
 			$maybe make depend
 			;;
@@ -92,9 +109,11 @@ elif [ -r Imakefile ]; then
 elif [ -r Makefile ]; then
 	case "$operation" in
 		prepare)	;;
-		clean)		make $n clean ;;
-		all)		make $n all CC="$compiler" ;;
+		clean)		make $n clean "ATHTOOLROOT=$athtoolroot";;
+		all)		make $n all CC="$compiler" \
+					"ATHTOOLROOT=$athtoolroot";;
 		check)		;;
-		install)	make $n install "DESTDIR=$srvd" ;;
+		install)	make $n install "DESTDIR=$srvd" \
+					"ATHTOOLROOT=$athtoolroot";;
 	esac
 fi
