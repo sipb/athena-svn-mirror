@@ -6,14 +6,14 @@
 # For copying and distribution information, see the file "mit-copyright.h."
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/Imakefile,v $
-#	$Id: Imakefile,v 1.4 1990-11-15 08:42:13 lwvanels Exp $
+#	$Id: Imakefile,v 1.5 1990-12-12 13:57:09 lwvanels Exp $
 #	$Author: lwvanels $
 #
 
 /* #define Profiling */
 
-SRCS=	string_utils.c io.c perror.c
-OBJS=	string_utils.o io.o perror.o
+SRCS=	string_utils.c io.c perror.c status.c
+OBJS=	string_utils.o io.o perror.o status.o
 
 NormalLibraryTarget(common,$(OBJS))
 SaberLibraryTarget(common,$(SRCS),$(OBJS))
