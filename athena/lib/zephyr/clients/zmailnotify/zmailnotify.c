@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zmailnotify.c,v 1.20 1993-11-21 04:12:03 probe Exp $
+ *	$Id: zmailnotify.c,v 1.21 1994-02-17 16:08:43 probe Exp $
  *
  *	Copyright (c) 1987,1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 static char rcsid_zmailnotify_c[] =
-    "$Id: zmailnotify.c,v 1.20 1993-11-21 04:12:03 probe Exp $";
+    "$Id: zmailnotify.c,v 1.21 1994-02-17 16:08:43 probe Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -117,7 +117,7 @@ main(argc, argv)
 	exit(1);
     }
 
-    lock = fopen(lockfile,"w");
+    lock = fopen(lockfile,"r+");
 #ifdef POSIX
     if (lock) {
 	struct flock fl;
