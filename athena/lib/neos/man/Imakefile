@@ -1,7 +1,7 @@
 
 
 install_man(collect.1,collect.1)
-install_man(fxblanche.1,fxblance.1)
+install_man(fxblanche.1,fxblanche.1)
 install_man(fxcreate.1,fxcreate.1)
 install_man(fxdestroy.1,fxdestroy.1)
 install_man(fxls.1,fxls.1)
