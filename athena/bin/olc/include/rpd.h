@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.4 1990-11-27 14:09:55 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.5 1990-11-28 22:25:07 lwvanels Exp $
  */
 
 #include <sys/types.h>
@@ -25,6 +25,7 @@ struct 	entry {
   int instance;
   char filename[128];
   time_t last_mod;	/* Time log last modified */
+  ino_t inode;		/* Inode of the file */
   int length;		/* Length of the question */
   char *question;	/* pointer to buffer containing question */
   short int use;	/* mark for the clock hand */
