@@ -4,11 +4,11 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.30 1998-03-17 15:17:11 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.31 1998-03-18 19:04:32 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
-PATH=/sbin:/os/usr/bin:/srvd/bin/athena:/os/etc:/os/usr/sbin:/bin:/etc:/sbin:/usr/sbin
+PATH=/sbin:/usr/bin:/usr/sbin
 export PATH
 umask 2
 
@@ -110,8 +110,8 @@ Y)
        ;;
    8.1)
        echo "installing 8.1"
-       ln -s /afs/athena.mit.edu/system/sun4m_55/srvd-8.1 /tmp/srvd
-       ln -s /afs/athena.mit.edu/system/sun4m_55/os /tmp/os 
+       ln -s /afs/athena.mit.edu/system/sun4x_55/srvd-8.1 /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_55/os /tmp/os 
        ;;
    *)
        echo "installing 8.2"
