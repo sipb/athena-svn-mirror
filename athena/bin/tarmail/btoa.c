@@ -1,22 +1,18 @@
-/*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/btoa.c,v $
- *	$Author: jtkohl $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/btoa.c,v 1.1 1985-04-25 20:34:37 jtkohl Exp $
+/* btoa: version 4.0
+ * stream filter to change 8 bit bytes into printable ascii
+ * computes the number of bytes, and three kinds of simple checksums
+ * incoming bytes are collected into 32-bit words, then printed in base 85
+ *  exp(85,5) > exp(2,32)
+ * the ASCII characters used are between '!' and 'u'
+ * 'z' encodes 32-bit zero; 'x' is used to mark the end of encoded data.
+ *
+ *  Paul Rutter		Joe Orost
+ *  philabs!per		petsd!joe
+ *
+ *  WARNING: this version is not compatible with the original as sent out
+ *  on the net.  The original encoded from ' ' to 't'; which cause problems
+ *  with some mailers (stripping off trailing blanks).
  */
-
-#ifndef lint
-static char *rcsid_btoa_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/btoa.c,v 1.1 1985-04-25 20:34:37 jtkohl Exp $";
-#endif	lint
-
-/*stream filter to change 8 bit bytes into printable ascii*/
-/*computes the number of bytes, and three kinds of simple checksums*/
-/*assumes that int is 32 bits*/
-
-/*incoming bytes are collected into 32-bit words, then printed in base 85*/
-/* exp(85,5) > exp(2,32) */
-/*the characters used are between ' ' and 't'*/
-/*'z' encodes 32-bit zero; 'x' is used to mark the end of encoded data.*/
 
 #include <stdio.h>
 
@@ -24,17 +20,18 @@ static char *rcsid_btoa_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 
 #define MAXPERLINE 78
 
-int Ceor = 0;
-int Csum = 0;
-int Crot = 0;
+long int Ceor = 0;
+long int Csum = 0;
+long int Crot = 0;
 
-int ccount = 0;
-int bcount = 0;
-int word;
+long int ccount = 0;
+long int bcount = 0;
+long int word;
 
-#define EN(c) ((c) + ' ')
+#define EN(c)	(int) ((c) + '!')
 
-encode(c) reg c;
+encode(c) 
+  reg c;
 {
   Ceor ^= c;
   Csum += c;
@@ -42,8 +39,7 @@ encode(c) reg c;
   if ((Crot & 0x80000000)) {
     Crot <<= 1;
     Crot += 1;
-  }
-  else{
+  } else {
     Crot <<= 1;
   }
   Crot += c;
@@ -53,21 +49,29 @@ encode(c) reg c;
   if (bcount == 3) {
     wordout(word);
     bcount = 0;
-  }
-  else{
+  } else {
     bcount += 1;
   }
 }
 
-wordout(word) reg word;
+wordout(word) 
+  reg long int word;
 {
   if (word == 0) {
     charout('z');
-  }
-  else{
-    /*first division must be unsigned*/;
-    charout(EN((unsigned) word / (unsigned)(85 * 85 * 85 * 85)));
-    word = (unsigned) word % (unsigned)(85 * 85 * 85 * 85);
+  } else {
+    reg int tmp = 0;
+    
+    if(word < 0) {	/* Because some don't support unsigned long */
+      tmp = 32;
+      word = word - (long)(85 * 85 * 85 * 85 * 32);
+    }
+    if(word < 0) {
+      tmp = 64;
+      word = word - (long)(85 * 85 * 85 * 85 * 32);
+    }
+    charout(EN((word / (long)(85 * 85 * 85 * 85)) + tmp));
+    word %= (long)(85 * 85 * 85 * 85);
     charout(EN(word / (85 * 85 * 85)));
     word %= (85 * 85 * 85);
     charout(EN(word / (85 * 85)));
@@ -84,13 +88,15 @@ charout(c) {
   if (ccount == MAXPERLINE) {
     putchar('\n');
     ccount = 0;
-
   }
 }
 
-main(argc,argv) char **argv;
+main(argc,argv) 
+  char **argv;
 {
-  reg c, n;
+  reg c;
+  reg long int n;
+
   if (argc != 1) {
     fprintf(stderr,"bad args to %s\n", argv[0]);
     exit(2);
@@ -105,5 +111,6 @@ main(argc,argv) char **argv;
     encode(0);
   }
   /* n is written twice as crude cross check*/
-  printf("\nxbtoa End N %d %x E %x S %x R %x\n", n, n, Ceor, Csum, Crot);
+  printf("\nxbtoa End N %ld %lx E %lx S %lx R %lx\n", n, n, Ceor, Csum, Crot);
+  exit(0);
 }
