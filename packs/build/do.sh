@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.23 1999-01-31 17:48:14 ghudson Exp $
+# $Id: do.sh,v 1.24 1999-01-31 21:51:29 danw Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -105,6 +105,7 @@ IRIX)
 	OS=irix
 	PATH=$athtoolroot/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
 	compiler=cc
+	;;
 Linux)
 	OS=linux
 	PATH=$athtoolroot/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
