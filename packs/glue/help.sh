@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: help.sh,v 1.1 2002-10-08 23:28:13 ghudson Exp $
+# $Id: help.sh,v 1.1.4.1 2003-10-03 19:08:13 ghudson Exp $
 
 url=file://localhost/afs/athena.mit.edu/astaff/project/olh/index.html
 
@@ -14,4 +14,4 @@ if [ -t 1 ]; then
   echo "Starting web browser..."
 fi
 
-htmlview "$url" &
+exec htmlview "$url"
