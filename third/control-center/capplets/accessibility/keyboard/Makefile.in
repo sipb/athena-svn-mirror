@@ -75,10 +75,13 @@ ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
+FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -108,12 +111,10 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
-INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -122,6 +123,8 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+METACITY_CFLAGS = @METACITY_CFLAGS@
+METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -138,22 +141,32 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
-WARN_CFLAGS = @WARN_CFLAGS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-cxxflags_set = @cxxflags_set@
 
 noinst_LIBRARIES = libaccessibility-keyboard.a
+
+libaccessibility_keyboard_a_SOURCES = \
+    accessibility-keyboard.c			\
+    accessibility-keyboard.h
+
+
+# in case we need to forward port the sun accessX extension
+#    AccessXcomm.c
+
 bin_PROGRAMS = gnome-accessibility-keyboard-properties
 
-libaccessibility_keyboard_a_SOURCES =      accessibility-keyboard.c			    accessibility-keyboard.h
-
-
 gnome_accessibility_keyboard_properties_SOURCES = gnome-accessibility-keyboard-properties.c
-gnome_accessibility_keyboard_properties_LDADD =  	libaccessibility-keyboard.a $(GNOMECC_CAPPLETS_LIBS)
+gnome_accessibility_keyboard_properties_LDADD = \
+	libaccessibility-keyboard.a $(GNOMECC_CAPPLETS_LIBS)
 
 
 pixmapdir = $(GNOMECC_PIXMAPS_DIR)
-pixmap_DATA =  	accessibility-keyboard-togglekey.png 	accessibility-keyboard-mousekey.png 	accessibility-keyboard-slowkey.png 	accessibility-keyboard-stickykey.png 	accessibility-keyboard-bouncekey.png
+pixmap_DATA = \
+	accessibility-keyboard-togglekey.png \
+	accessibility-keyboard-mousekey.png \
+	accessibility-keyboard-slowkey.png \
+	accessibility-keyboard-stickykey.png \
+	accessibility-keyboard-bouncekey.png
 
 
 Gladedir = $(GNOMECC_GLADE_DIR)
@@ -210,7 +223,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libaccessibility_keyboard_a_SOURCES) $(gnome_accessibility_keyboard_properties_SOURCES)
 OBJECTS = $(libaccessibility_keyboard_a_OBJECTS) $(gnome_accessibility_keyboard_properties_OBJECTS)
@@ -426,7 +439,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -454,6 +467,7 @@ distdir: $(DISTFILES)
 	done
 accessibility-keyboard.o: accessibility-keyboard.c ../../../config.h \
 	../../../capplets/common/capplet-util.h \
+	../../../capplets/common/capplet-stock-icons.h \
 	../../../capplets/common/gconf-property-editor.h \
 	../../../capplets/common/activate-settings-daemon.h
 gnome-accessibility-keyboard-properties.o: \

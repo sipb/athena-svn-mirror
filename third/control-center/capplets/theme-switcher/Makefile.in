@@ -75,10 +75,13 @@ ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
+FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -108,12 +111,10 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
-INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -122,6 +123,8 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+METACITY_CFLAGS = @METACITY_CFLAGS@
+METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -138,16 +141,35 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
-WARN_CFLAGS = @WARN_CFLAGS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-cxxflags_set = @cxxflags_set@
 
-bin_PROGRAMS = gnome-theme-properties
+bin_PROGRAMS = gnome-theme-manager
 
-gnome_theme_properties_LDADD = $(GNOMECC_CAPPLETS_LIBS)
-gnome_theme_properties_SOURCES =  	theme-switcher.c
+pixmapdir = $(GNOMECC_PIXMAPS_DIR)
+pixmap_DATA = \
+	theme-thumbnailing.png
 
-gnome_theme_properties_LDFLAGS = -export-dynamic
+
+gnome_theme_manager_LDADD = \
+	$(GNOMECC_CAPPLETS_LIBS) 					\
+	$(METACITY_LIBS)						\
+	$(top_builddir)/libwindow-settings/libgnome-window-settings.la
+
+
+gnome_theme_manager_SOURCES = \
+	gnome-theme-save.c	\
+	gnome-theme-save.h	\
+	gnome-theme-manager.c	\
+	gnome-theme-manager.h	\
+	gnome-theme-details.c	\
+	gnome-theme-details.h	\
+	theme-thumbnail.c	\
+	theme-thumbnail.h	\
+	gnome-theme-installer.c	\
+	gnome-theme-installer.h
+
+
+gnome_theme_manager_LDFLAGS = -export-dynamic
 
 desktopdir = $(GNOMECC_DESKTOP_DIR)
 Desktop_in_files = gtk-theme-selector.desktop.in
@@ -156,15 +178,19 @@ desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
 gladedir = $(GNOMECC_GLADE_DIR)
 glade_DATA = theme-properties.glade theme-install.glade
 
-INCLUDES =  	$(GNOMECC_CAPPLETS_CFLAGS)		-DGLADEDIR=\""$(gladedir)"\"
+INCLUDES = \
+	-I$(top_srcdir)			\
+	$(METACITY_CFLAGS)		\
+	$(GNOMECC_CAPPLETS_CFLAGS)	\
+	-DGLADEDIR=\""$(gladedir)"\"
 
 
 CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
-EXTRA_DIST = $(Desktop_in_files) $(glade_DATA)
+EXTRA_DIST = $(Desktop_in_files) $(glade_DATA) gnome-theme-save-data.c $(pixmap_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  gnome-theme-properties$(EXEEXT)
+bin_PROGRAMS =  gnome-theme-manager$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -176,24 +202,27 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-gnome_theme_properties_OBJECTS =  theme-switcher.$(OBJEXT)
-gnome_theme_properties_DEPENDENCIES = 
+gnome_theme_manager_OBJECTS =  gnome-theme-save.$(OBJEXT) \
+gnome-theme-manager.$(OBJEXT) gnome-theme-details.$(OBJEXT) \
+theme-thumbnail.$(OBJEXT) gnome-theme-installer.$(OBJEXT)
+gnome_theme_manager_DEPENDENCIES =  \
+$(top_builddir)/libwindow-settings/libgnome-window-settings.la
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(desktop_DATA) $(glade_DATA)
+DATA =  $(desktop_DATA) $(glade_DATA) $(pixmap_DATA)
 
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in TODO
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(gnome_theme_properties_SOURCES)
-OBJECTS = $(gnome_theme_properties_OBJECTS)
+SOURCES = $(gnome_theme_manager_SOURCES)
+OBJECTS = $(gnome_theme_manager_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -275,9 +304,9 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-gnome-theme-properties$(EXEEXT): $(gnome_theme_properties_OBJECTS) $(gnome_theme_properties_DEPENDENCIES)
-	@rm -f gnome-theme-properties$(EXEEXT)
-	$(LINK) $(gnome_theme_properties_LDFLAGS) $(gnome_theme_properties_OBJECTS) $(gnome_theme_properties_LDADD) $(LIBS)
+gnome-theme-manager$(EXEEXT): $(gnome_theme_manager_OBJECTS) $(gnome_theme_manager_DEPENDENCIES)
+	@rm -f gnome-theme-manager$(EXEEXT)
+	$(LINK) $(gnome_theme_manager_LDFLAGS) $(gnome_theme_manager_OBJECTS) $(gnome_theme_manager_LDADD) $(LIBS)
 
 install-desktopDATA: $(desktop_DATA)
 	@$(NORMAL_INSTALL)
@@ -317,6 +346,25 @@ uninstall-gladeDATA:
 	  rm -f $(DESTDIR)$(gladedir)/$$p; \
 	done
 
+install-pixmapDATA: $(pixmap_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pixmapdir)
+	@list='$(pixmap_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pixmapdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pixmapDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pixmap_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pixmapdir)/$$p; \
+	done
+
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -335,7 +383,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -361,12 +409,46 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-theme-switcher.o: theme-switcher.c ../../config.h \
-	../../capplets/common/theme-common.h \
+gnome-theme-details.o: gnome-theme-details.c ../../config.h \
+	../../libwindow-settings/gnome-wm-manager.h \
+	../../libwindow-settings/gnome-window-manager.h \
+	../../capplets/common/capplet-util.h gnome-theme-manager.h \
+	gnome-theme-details.h gnome-theme-installer.h \
+	../../capplets/common/gnome-theme-info.h
+gnome-theme-installer.o: gnome-theme-installer.c ../../config.h \
+	../../libwindow-settings/gnome-wm-manager.h \
+	../../libwindow-settings/gnome-window-manager.h \
+	gnome-theme-installer.h \
+	../../capplets/common/gnome-theme-info.h \
 	../../capplets/common/capplet-util.h \
 	../../capplets/common/activate-settings-daemon.h \
 	../../capplets/common/gconf-property-editor.h \
 	../../capplets/common/file-transfer-dialog.h
+gnome-theme-manager.o: gnome-theme-manager.c ../../config.h \
+	../../libwindow-settings/gnome-wm-manager.h \
+	../../libwindow-settings/gnome-window-manager.h \
+	../../capplets/common/gnome-theme-info.h gnome-theme-save.h \
+	../../capplets/common/capplet-util.h \
+	../../capplets/common/activate-settings-daemon.h \
+	../../capplets/common/gconf-property-editor.h \
+	../../capplets/common/file-transfer-dialog.h \
+	gnome-theme-manager.h gnome-theme-details.h \
+	gnome-theme-installer.h theme-thumbnail.h
+gnome-theme-save.o: gnome-theme-save.c \
+	../../capplets/common/gnome-theme-info.h gnome-theme-save.h \
+	gnome-theme-manager.h ../../capplets/common/capplet-util.h \
+	gnome-theme-save-data.c
+theme-switcher.o: theme-switcher.c ../../config.h \
+	../../libwindow-settings/gnome-wm-manager.h \
+	../../libwindow-settings/gnome-window-manager.h \
+	../../capplets/common/gnome-theme-info.h \
+	../../capplets/common/capplet-util.h \
+	../../capplets/common/activate-settings-daemon.h \
+	../../capplets/common/gconf-property-editor.h \
+	../../capplets/common/file-transfer-dialog.h
+theme-thumbnail.o: theme-thumbnail.c ../../config.h theme-thumbnail.h \
+	../../capplets/common/gnome-theme-info.h \
+	../../capplets/common/capplet-util.h
 
 info-am:
 info: info-am
@@ -379,14 +461,15 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-desktopDATA install-gladeDATA
+install-data-am: install-desktopDATA install-gladeDATA \
+		install-pixmapDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
-		uninstall-gladeDATA
+		uninstall-gladeDATA uninstall-pixmapDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
@@ -394,7 +477,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(desktopdir) \
-		$(DESTDIR)$(gladedir)
+		$(DESTDIR)$(gladedir) $(DESTDIR)$(pixmapdir)
 
 
 mostlyclean-generic:
@@ -438,12 +521,13 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-desktopDATA \
-install-desktopDATA uninstall-gladeDATA install-gladeDATA tags \
-mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-am install-data \
-install-am install uninstall-am uninstall all-redirect all-am all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
+install-desktopDATA uninstall-gladeDATA install-gladeDATA \
+uninstall-pixmapDATA install-pixmapDATA tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 

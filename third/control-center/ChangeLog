@@ -1,68 +1,285 @@
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.2
+	* Release 2.2.0
 
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* Release 2.1.7
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : Post release bump
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.6
+
+2003-01-08  Rajkumar Sivasamy  <rajkumar.siva@wipro.com>
+
+	* capplets/common/capplet-stock-icons.[ch]: Utility file to register 
+	the images used by capplets as stock-icons
+
+	* capplets/common/Makefile.am: Changes to include the above file
+
+	* capplets/keyboard/gnome-keyboard-properties.c:
+	* capplets/accessibility/keyboard/accessibility-keyboard.c:
+	Use stock-icons
+
+	* capplets/mouse/Makefile.am:
+	* capplets/mouse/gnome-mouse-properties.c:
+	Use stock-icons. Also register the icons through capplet-stock-icons.[ch]
+	instead of doing it here.
+
+	Fixes Bug 101977
+
+2002-11-29  Remi Cohen-Scali  <remi@cohen-scali.com>
+
+	Reviewed by: Jody Goldberg <jody@gnome.org>
+
+	* capplets/theme-switcher/gnome-theme-manager.c (drag_data_received_cb):
+	Add a test to detect is uri is local. If not use full URI instead
+	of just the path in order to be able to download remote tarballs.
+	Fixes #97983.
+
+2003-01-05  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am) and Macedonian (mk) to ALL_LINGUAS
+
+2002-12-30  Jody Goldberg <jody@gnome.org>
+
+	* README : http://bugzilla.gnome.org/show_bug.cgi?id=100916
+
+2002-12-18  Jody Goldberg <jody@gnome.org>
 
 	* configure.in : post release version bump
 
-2002-12-19  Jody Goldberg <jody@gnome.org>
+2002-12-18  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.3.1
+	* Release 2.1.5
+
+2002-12-17  Alex Duggan  <aldug@gnome.org>
+
+	* schemas/desktop_gnome_font_rendering.schemas.in: fixed more typos
+
+2002-12-15  Andrew Sobala  <andrew@sobala.net>
+
+	* schemas/desktop_gnome_font_rendering.schemas.in: fixed typos
+
+2002-12-10  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: remove autoheader warnings, remove acconfig.h
+
+2002-12-10  Dennis Cranston  <dennis_cranston@yahoo.com>
+ 
+	* capplets/accessibility/keyboard/*.desktop.in:
+	* capplets/background/*.desktop.in:
+	* capplets/default-applications/*.desktop.in:
+	* capplets/desktop-links/*.desktop.in:
+	* capplets/file-types/*.desktop.in:
+	* capplets/font/*.desktop.in:
+	* capplets/keybindings/*.desktop.in:
+	* capplets/keyboard/*.desktop.in:
+	* capplets/mouse/*.desktop.in:
+	* capplets/network/*.desktop.in:
+	* capplets/sound/*.desktop.in:
+	* capplets/theme-switcher/*.desktop.in:
+	* capplets/ui-properties/*.desktop.in:
+	* capplets/url-properties/*.desktop.in:
+	* capplets/windows/*.desktop.in:
+	* control-center/*.desktop.in: Add StartupNotify support to 
+	the .desktop files.
+	
+2002-12-09  Jody Goldberg <jody@gnome.org>
+
+	* configure.in (dnl) : bump the gtk req t ohandle havoc's metacity
+	  changes.
+
+Wed Dec  4 14:34:27 2002  Jonathan Blandford  <jrb@redhat.com>
+ 
+	* capplets/accessibility/keyboard/*.desktop.in:
+	* capplets/background/*.desktop.in:
+	* capplets/default-applications/*.desktop.in:
+	* capplets/desktop-links/*.desktop.in:
+	* capplets/file-types/*.desktop.in:
+	* capplets/font/*.desktop.in:
+	* capplets/keybindings/*.desktop.in:
+	* capplets/keyboard/*.desktop.in:
+	* capplets/mouse/*.desktop.in:
+	* capplets/network/*.desktop.in:
+	* capplets/sound/*.desktop.in:
+	* capplets/theme-switcher/*.desktop.in:
+	* capplets/ui-properties/*.desktop.in:
+	* capplets/url-properties/*.desktop.in:
+	* capplets/windows/*.desktop.in:
+	* control-center/*.desktop.in: Patch from Fernando Herrera
+	<fherrera@onirica.com> to add X-GNOME-BUGZILLA stuff to all the
+	.desktop files.
+
+2002-12-02  Christian Neumair  <chris@gnome-de.org>
+
+	* schemas/*.schemas: Removed
+	* schemas/*.schemas.in: Added
+	* schemas/Makefile.am: Various fixes (#89361).
 
 2002-11-26  Fatih Demir <kabalak@gtranslator.org>
 
 	* configure.in: Added Tamil ("ta") to ALL_LINGUAS.
 
+2002-11-24  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release bump
+
 2002-11-23  Jody Goldberg <jody@gnome.org>
 
-	* configure.in : post release version bump
-
-2002-11-23  Jody Goldberg <jody@gnome.org>
-
-	* Release 2.0.3
+	* Release 2.1.3
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-09-24  Jody Goldberg <jody@gnome.org>
+2002-11-02  Jody Goldberg <jody@gnome.org>
 
-	* configure.in : post release bump.
+	* configure.in : post release version bump
 
-2002-09-24  Jody Goldber <jody@gnome.org>
+2002-11-02  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.2.91
+	* Release 2.1.2
 
-2002-09-24  Jody Goldberg <jody@gnome.org>
+2002-10-25  Rajkumar Sivasamy <rajkumar.siva@wipro.com>
 
-	* configure.in : bump again since we missed 2.0.2 and do a release
+	* configure.in: Check for GDK_PIXBUF_CSOURCE
 
-2002-09-16  Alex Graveley  <alex@ximian.com>
+2002-10-25  Marco Pesenti Gritti  <marco@it.gnome.org>
+            Jorn Baayen  <jorn@nl.linux.org>
 
-	* configure.in (GNOMECC_ICONS_DIR): Make the icons dir
-	'$(datadir)/pixmaps', so .desktop icons can be found without
-	explicit paths (also required by accessibility).
+	* capplets/network/gnome-network-preferences.c:
+	(cb_details_dialog_response), (cb_use_auth_toggled),
+	(cb_http_details_button_clicked),
+	(proxy_mode_radiobutton_clicked_cb), (connect_sensitivity_signals),
+	(setup_dialog):
+	* capplets/network/gnome-network-preferences.glade:
 
-2002-09-11  Jody Goldberg <jody@gnome.org>
+	Improve proxy capplet.
 
-	* configure.in : bump release number in preparation.
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-10-16  Yanko Kaneti <yaneti@declera.com>
+
+	* schemas/apps_gnome_settings_daemon_default_editor.schemas: reorder
+	"key" and "applyto" elements so that it validates aginst the gconf dtd.
+
+2002-10-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.0.1
+
+Fri Aug 23 00:15:47 2002  Jonathan Blandford  <jrb@gnome.org>
+
+    * gnome-keybinding-properties.c (setup_dialog): use new X mode of
+      the eggcellrendererkeys.
+      
+    * eggcellrendererkeys.[ch]: update from libegg.
+	  
+2002-08-21  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Don't put dnl's in AC_OUTPUT.
 
 2002-08-21  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.1.1
+	* Release 2.1.0
+
+2002-08-21  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : work around an intltool bug by having autoconf expand
+	  something from the rootdir last.
+
+2002-08-19  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-daemon/gnome-settings-gtk1theme.h : fix cut-n-paste-o
+
+2002-08-19  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-daemon/gnome-settings-gtk1theme.c : new
+	  file from owen to manage gtk1 themes.
+
+2002-08-15  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : set the version number to something sane
+	  we branched.
 
 2002-08-07  Jody Goldberg <jody@gnome.org>
 
 	* po/POTFILES.in : remove bogus file.
 
-2002-08-06  Jody Goldberg <jody@gnome.org>
+2002-08-09  Yanko Kaneti <yaneti@declera.com>
 
-	* configure.in : post release version bump
+	* capplets/common/capplet-util.h: handle different cases of
+	preprocessor macro varargs support.
 
-2002-08-06  Jody Goldberg <jody@gnome.org>
+2002-08-08  Seth Nickell  <snickell@stanford.edu>
 
-	* Release 2.0.1
+	* capplets/Makefile.am:
+
+	Actually hook the windows capplet into the build. Though
+	its sort of ass right now.
+
+2002-08-08  Seth Nickell <snickell@stanford.edu>
+
+	Try my best to throw a monkey wrench in things. Checkin
+	Windows capplet, and add window related settings to
+	the font capplet and theme capplet.
+
+	Also fix button alignments on all capplets.
+
+2002-07-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add check for gtk+ with multihead
+	support and define HAVE_GTK_MULTIHEAD if found.
+
+2002-07-24  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: only #define HAVE_XFT2 if we actually have xft2
+
+	* configure.in: fixup x11 checks when x11 include path is not in
+	the default include path for the compiler
+
+Tue Jul 23 23:31:17 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* capplets/font/main.c: Fix stupid typo.
+
+Tue Jul 23 23:29:51 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* capplets/fonts/subpixel-{rgb,bgr,vrgb,vbgr}.c: Add
+	some pixmaps for font rendering.
+
+Tue Jul 23 22:35:10 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* acconfig.h configure.in: Check for Xft2.
+
+	* capplets/font/main.c capplets/font/Makefile.am
+	capplets/font/font-properties.glade: If XFt2 is present, 
+	allow the user to control various font rendering attributes.
+
+	* gnome-settings-daemon/gnome-settings-xsettings.c:
+	Mirror the Xft rendering attributes from the font
+	capplet to XSETTINGS and Xrdb.
+
+	* schemas/Makefile.am schemas/desktop_gnome_font_rendering.schemas:
+	Add schemas for the new GConf settings.
+
+Tue Jul 23 22:06:08 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* capplets/keyboard/gnome-keyboard-properties.c: Fix 
+	unterminated GConfEnumStringPair array.
+
+	* gnome-settings-daemon/gnome-settings-default-editor.c:
+	Fix some comments that had embedded /* which was causing
+	GCC warnings.
 
 2002-07-10  Jody Goldberg <jody@gnome.org>
 	patch from Brian Cameron

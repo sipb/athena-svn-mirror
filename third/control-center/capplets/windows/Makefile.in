@@ -75,10 +75,13 @@ ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
+FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -108,12 +111,10 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
-INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -122,6 +123,8 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+METACITY_CFLAGS = @METACITY_CFLAGS@
+METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -138,34 +141,23 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
-WARN_CFLAGS = @WARN_CFLAGS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-cxxflags_set = @cxxflags_set@
 
 bin_PROGRAMS = gnome-window-properties
 
-gnome_window_properties_LDADD = $(GNOMECC_CAPPLETS_LIBS) 		-L$(top_builddir)/libwindow-settings/ -lgnome-window-settings
+gnome_window_properties_LDADD = $(GNOMECC_CAPPLETS_LIBS) 	\
+	$(top_builddir)/libwindow-settings/libgnome-window-settings.la
 
 
-gnome_window_properties_SOURCES =  	gnome-window-properties.c
+gnome_window_properties_SOURCES = \
+	gnome-window-properties.c
 
-
-wms_flags = -export_dynamic -avoid-version
-wmsdir = $(libdir)/window-manager-settings/
-
-wms_LTLIBRARIES =  	libmetacity.la
-
-
-libmetacity_la_SOURCES =  	metacity-window-manager.c		metacity-window-manager.h
-
-
-libmetacity_la_LDFLAGS = $(wms_flags)
 
 pixmapdir = $(GNOMECC_PIXMAPS_DIR)
 pixmap_DATA = 
 
-Gladedir = $(GNOMECC_GLADE_DIR)
-Glade_DATA = gnome-window-properties.glade
+gladedir = $(GNOMECC_GLADE_DIR)
+glade_DATA = gnome-window-properties.glade
 
 iconsdir = $(GNOMECC_ICONS_DIR)
 icons_DATA = window-capplet.png
@@ -177,14 +169,20 @@ desktopdir = $(GNOMECC_DESKTOP_DIR)
 Desktop_in_files = window-properties.desktop.in
 desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
 
-INCLUDES = $(GNOMECC_CAPPLETS_CFLAGS)						     -I $(top_builddir)/libwindow-settings 	     -DGNOME_WINDOW_MANAGER_MODULE_PATH=\""$(libdir)/window-manager-settings"\" 	     -DMETACITY_THEME_DIR=\""$(datadir)/metacity/themes"\"
+INCLUDES = $(GNOMECC_CAPPLETS_CFLAGS)					\
+	     -I $(top_srcdir)/libwindow-settings \
+	     -DGNOME_WINDOW_MANAGER_MODULE_PATH=\""$(libdir)/window-manager-settings"\" \
+	     -DGLADEDIR=\""$(gladedir)"\"  	\
+	     -DPIXMAPDIR=\""$(pixmapdir)"\"
+
 
 CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
-EXTRA_DIST = $(Glade_DATA) $(icons_DATA) $(Desktop_in_files) $(pixmap_DATA)
+EXTRA_DIST = $(glade_DATA) $(icons_DATA) $(Desktop_in_files) $(pixmap_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(wms_LTLIBRARIES)
+bin_PROGRAMS =  gnome-window-properties$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
@@ -195,20 +193,16 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
-libmetacity_la_LIBADD = 
-libmetacity_la_OBJECTS =  metacity-window-manager.lo
-bin_PROGRAMS =  gnome-window-properties$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
-
 gnome_window_properties_OBJECTS =  gnome-window-properties.$(OBJEXT)
-gnome_window_properties_DEPENDENCIES = 
+gnome_window_properties_DEPENDENCIES =  \
+$(top_builddir)/libwindow-settings/libgnome-window-settings.la
 gnome_window_properties_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(Glade_DATA) $(desktop_DATA) $(desktop_icons_DATA) \
+DATA =  $(desktop_DATA) $(desktop_icons_DATA) $(glade_DATA) \
 $(icons_DATA) $(pixmap_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
@@ -216,10 +210,10 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libmetacity_la_SOURCES) $(gnome_window_properties_SOURCES)
-OBJECTS = $(libmetacity_la_OBJECTS) $(gnome_window_properties_OBJECTS)
+SOURCES = $(gnome_window_properties_SOURCES)
+OBJECTS = $(gnome_window_properties_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -232,29 +226,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-wmsLTLIBRARIES:
+mostlyclean-binPROGRAMS:
 
-clean-wmsLTLIBRARIES:
-	-test -z "$(wms_LTLIBRARIES)" || rm -f $(wms_LTLIBRARIES)
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-distclean-wmsLTLIBRARIES:
+distclean-binPROGRAMS:
 
-maintainer-clean-wmsLTLIBRARIES:
+maintainer-clean-binPROGRAMS:
 
-install-wmsLTLIBRARIES: $(wms_LTLIBRARIES)
+install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(wmsdir)
-	@list='$(wms_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(wmsdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(wmsdir)/$$p; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
-uninstall-wmsLTLIBRARIES:
+uninstall-binPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(wms_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(wmsdir)/$$p; \
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 .c.o:
@@ -301,56 +295,9 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libmetacity.la: $(libmetacity_la_OBJECTS) $(libmetacity_la_DEPENDENCIES)
-	$(LINK) -rpath $(wmsdir) $(libmetacity_la_LDFLAGS) $(libmetacity_la_OBJECTS) $(libmetacity_la_LIBADD) $(LIBS)
-
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
-
 gnome-window-properties$(EXEEXT): $(gnome_window_properties_OBJECTS) $(gnome_window_properties_DEPENDENCIES)
 	@rm -f gnome-window-properties$(EXEEXT)
 	$(LINK) $(gnome_window_properties_LDFLAGS) $(gnome_window_properties_OBJECTS) $(gnome_window_properties_LDADD) $(LIBS)
-
-install-GladeDATA: $(Glade_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(Gladedir)
-	@list='$(Glade_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Gladedir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Gladedir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(Gladedir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(Gladedir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-GladeDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(Glade_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(Gladedir)/$$p; \
-	done
 
 install-desktopDATA: $(desktop_DATA)
 	@$(NORMAL_INSTALL)
@@ -388,6 +335,25 @@ uninstall-desktop_iconsDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(desktop_icons_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(desktop_iconsdir)/$$p; \
+	done
+
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
 	done
 
 install-iconsDATA: $(icons_DATA)
@@ -446,7 +412,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -472,6 +438,15 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gnome-window-properties.o: gnome-window-properties.c ../../config.h \
+	../../libwindow-settings/gnome-wm-manager.h \
+	../../libwindow-settings/gnome-window-manager.h \
+	../../capplets/common/capplet-util.h \
+	../../capplets/common/gconf-property-editor.h
+metacity-window-manager.lo metacity-window-manager.o : \
+	metacity-window-manager.c ../../config.h \
+	metacity-window-manager.h \
+	../../libwindow-settings/gnome-window-manager.h
 
 info-am:
 info: info-am
@@ -484,28 +459,25 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-wmsLTLIBRARIES install-GladeDATA \
-		install-desktopDATA install-desktop_iconsDATA \
-		install-iconsDATA install-pixmapDATA
+install-data-am: install-desktopDATA install-desktop_iconsDATA \
+		install-gladeDATA install-iconsDATA install-pixmapDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-wmsLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-GladeDATA uninstall-desktopDATA \
-		uninstall-desktop_iconsDATA uninstall-iconsDATA \
-		uninstall-pixmapDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
+		uninstall-desktop_iconsDATA uninstall-gladeDATA \
+		uninstall-iconsDATA uninstall-pixmapDATA
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(wmsdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(Gladedir) $(DESTDIR)$(desktopdir) \
-		$(DESTDIR)$(desktop_iconsdir) $(DESTDIR)$(iconsdir) \
-		$(DESTDIR)$(pixmapdir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(desktopdir) \
+		$(DESTDIR)$(desktop_iconsdir) $(DESTDIR)$(gladedir) \
+		$(DESTDIR)$(iconsdir) $(DESTDIR)$(pixmapdir)
 
 
 mostlyclean-generic:
@@ -518,53 +490,48 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-wmsLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-binPROGRAMS \
-		mostlyclean-tags mostlyclean-generic
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-wmsLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-tags clean-generic \
-		mostlyclean-am
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-wmsLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-binPROGRAMS distclean-tags \
-		distclean-generic clean-am
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-wmsLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS maintainer-clean-tags \
-		maintainer-clean-generic distclean-am
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-wmsLTLIBRARIES distclean-wmsLTLIBRARIES \
-clean-wmsLTLIBRARIES maintainer-clean-wmsLTLIBRARIES \
-uninstall-wmsLTLIBRARIES install-wmsLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS uninstall-GladeDATA install-GladeDATA \
-uninstall-desktopDATA install-desktopDATA uninstall-desktop_iconsDATA \
-install-desktop_iconsDATA uninstall-iconsDATA install-iconsDATA \
-uninstall-pixmapDATA install-pixmapDATA tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool uninstall-desktopDATA \
+install-desktopDATA uninstall-desktop_iconsDATA \
+install-desktop_iconsDATA uninstall-gladeDATA install-gladeDATA \
+uninstall-iconsDATA install-iconsDATA uninstall-pixmapDATA \
+install-pixmapDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
-#libmetacity_la_LIBADD = $(top_builddir)/libwindow-settings/libwindow-settings.la
 
 @INTLTOOL_DESKTOP_RULE@
 

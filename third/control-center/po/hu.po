@@ -6,27 +6,26 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 2.1.0\n"
-"POT-Creation-Date: 2002-12-19 10:01-0500\n"
-"PO-Revision-Date: 2002-10-12 16:21+0200\n"
+"POT-Creation-Date: 2003-01-10 10:20-0500\n"
+"PO-Revision-Date: 2003-01-08 08:09+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:229
-#: capplets/keyboard/gnome-keyboard-properties.c:159
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:238
 #, c-format
-msgid "There was an error launching the keyboard capplet : %s"
-msgstr "Hiba történt a billentyűzet capplet indításakor: %s"
+msgid "There was an error launching the mouse preferences dialog: %s"
+msgstr "Hiba történt az egér beállításai párbeszédablak indításakor: %s"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:321
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:379
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:334
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:392
 #, c-format
 msgid "Unable to import AccessX settings from file '%s'"
 msgstr "Nem sikerült betölteni az AccessX beállításokat a '%s' fájlból"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:452
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:465
 msgid "Select CDE AccessX file"
 msgstr "CDE AccessX fájl kiválasztása"
 
@@ -40,51 +39,93 @@ msgstr "Billentyűzet"
 msgid "Set your keyboard accessibility preferences"
 msgstr "Billentyűzet kisegítő lehetőségeinek beállításai"
 
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
+msgid ""
+"This system does not seem to have the XKB extension.  The keyboard "
+"accessibility features will not operate without it."
+msgstr ""
+"A rendszer nem rendelkezik az XKB-kiterjesztéssel. A billentyűzet kisegítő "
+"lehetőségeit nem lehet enélkül használni. "
+
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
+#: capplets/file-types/file-types-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/network/gnome-network-preferences.glade.h:2
+#: capplets/theme-switcher/theme-properties.glade.h:1
+#: capplets/theme-switcher/theme-install.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
+msgid "Basic"
+msgstr "Alap"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
+msgid "Beep if key is re_jected"
+msgstr "Hangjelzés a billentyű _elutasításakor"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
+msgid "Beep when _features turned on or off from keyboard"
+msgstr "Hangjelzés a sajátosságok ki- vagy bekapcsolásakor a billentyűzeten"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+msgid "Beep when _modifier is pressed"
+msgstr "Hangjelzés egy _módosító billentyű lenyomásakor"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
 msgid "Beep when an LED is turned on and two beeps when one is turned off."
 msgstr "Egy csengetés, ha egy LED ki vagy be lett kapcsolva."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
-msgid "Beep when enabling/disabling _keyboard accessibility features"
-msgstr "_Csengetés a kisegítő lehetőségek bekapcsolásakor/kikapcsolásakor"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+msgid "Beep when key is:"
+msgstr "Hangjelzés, ha a billentyű:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
-msgid "Beep when key is re_jected"
-msgstr "billentyű _elutasításakor"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+msgid "Del_ay:"
+msgstr "_Késleltetés:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
-msgid "Beep when:"
-msgstr "Csengetés:"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+msgid "Delay between keypress and pointer mo_vement:"
+msgstr "Késleltetés a billentyű lenyomása és az egérmutató _mozdítása között:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
+msgid "Disa_ble if two keys pressed together"
+msgstr "Letiltás _két billentyű egyidejű lenyomásakor"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
 msgid "E_nable Toggle Keys"
 msgstr "_Váltóbillentyűk figyelése"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
 msgid "Enable Bo_unce Keys"
 msgstr "_Billentyűszűrés engedélyezése"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
 msgid "Enable Slo_w Keys"
 msgstr "_Lassú billentyűk engedélyezése"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
 msgid "Enable _Mouse Keys"
 msgstr "_Egérbillentyűk engedélyezése"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
 msgid "Enable _Sticky Keys"
 msgstr "_Ragadós billentyűk engedélyezése"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
-msgid "General"
-msgstr "Alap"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+msgid "Features"
+msgstr "Sajátosságok"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
-msgid "I_gnore keypresses within  :"
-msgstr "_Leütések figyelmen kívül hagyása ezen belül:"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
+msgid "Filters"
+msgstr "Szűrők"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
+msgid "I_gnore duplicate keypresses within:"
+msgstr "Ismételt _leütések figyelmen kívül hagyása ezen belül:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
 msgid ""
 "Ignore all subsequent presses of the SAME key if they happen within a user "
 "selectable period of time."
@@ -92,15 +133,24 @@ msgstr ""
 "Hagyja figyelmen kívül UGYANAZON billentyű többszöri lenyomását a "
 "felhasználó által meghatározható időszakon belül."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
-msgid "Keyboard Accessibility Configuration (AccessX)"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
+msgid "Keyboard Accessibility Preferences (AccessX)"
 msgstr "Billentyűzet kisegítő lehetőségeinek beállításai (AccessX)"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
-msgid "Ma_ximum pointer speed :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
+msgid "Ma_ximum pointer speed:"
 msgstr "Egérmutató max_imális sebessége:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/mouse/mouse.desktop.in.h:1
+msgid "Mouse"
+msgstr "Egér"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+msgid "Mouse _Preferences..."
+msgstr "_Egér tulajdonságai..."
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
 msgid ""
 "Only accept keys after they have been pressed and held for a user adjustable "
 "amount of time."
@@ -108,7 +158,7 @@ msgstr ""
 "Csak a lenyomott és a felhasználó által beállítható ideig nyomva tartott "
 "billentyűleütéseket fogadja el."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
 msgid ""
 "Perform multiple simultaneous key press operations by pressing modifier keys "
 "in sequence."
@@ -116,79 +166,73 @@ msgstr ""
 "Szimultán billentyűlenyomások elvégzése a módosító billentyűk egymás utáni "
 "lenyomásával."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
-msgid "Repeat Key Pre_ferences"
-msgstr "_Billentyűk ismétlésének beállításai"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+msgid "S_peed:"
+msgstr "_Sebesség:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
-msgid "Start mo_ving this long after keypress :"
-msgstr "Billentyűlenyomás után ennyi idővel kezd _mozogni:"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
-msgid "Testing Area"
-msgstr "Tesztterület"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
-msgid "Time to acce_lerate to max speed :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
+msgid "Time to acce_lerate to maximum speed:"
 msgstr "Maximális sebességre _gyorsítás ideje:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
-msgid "Toggle and Repeat Keys"
-msgstr "Váltóbillentyűk és ismétlődés"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
+msgid "Toggle Keys"
+msgstr "Váltóbillentyűk"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
 msgid "Turn the numeric keypad into a mouse control pad."
 msgstr "A numerikus billentyűzet egérvezérlővé alakítása."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
-msgid "_Beep when modifier is pressed"
-msgstr "Cs_engetés, ha módosító le lett nyomva"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
-msgid "_Disable if unused for "
-msgstr "_Letiltás, ha ennyi ideig használaton kívül van"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
-msgid "_Enable keyboard accessibility"
-msgstr "Billentyűzet kisegítő lehetőségeinek _engedélyezése"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
-msgid "_Import CDE AccessX file"
-msgstr "CDE AccessX fájl _importálása"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
-msgid "_Only accept keypress after :"
-msgstr "Leütések _elfogadása ez után:"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
-msgid ""
-"_Turn off Sticky Keys when\n"
-"two keys pressed simultaneously"
-msgstr ""
-"Ragadós billentyűk _kikapcsolása ha \n"
-"két billentyű egyszerre le lett nyomva"
-
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
-msgid "key is _accepted"
-msgstr "billentyű _elfogadásakor"
+msgid "_Disable if unused for:"
+msgstr "_Letiltás, ha ennyi ideig használaton kívül van:"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
-msgid "key is _pressed"
-msgstr "billentyűle_nyomáskor"
+msgid "_Enable keyboard accessibility features"
+msgstr "Billentyűzet kisegítő lehetőségeinek _engedélyezése"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
-msgid "key is _rejected"
-msgstr "billentyű _visszautasításakor"
+msgid "_Import Feature Settings..."
+msgstr "_Sajátosságok importálása..."
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
-msgid "msecs"
-msgstr "ms"
+msgid "_Only accept keys held for:"
+msgstr "_Csak a legalább ennyi ideig lenyomott billentyűk elfogadása:"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
-msgid "pixels/sec"
-msgstr "pixel/sec"
+msgid "_Repeat Keys"
+msgstr "_Billentyűk ismétlése"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
+msgid "_Type to test settings:"
+msgstr "_Beállítások kipróbálása:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:36
+msgid "_accepted"
+msgstr "billentyű _elfogadásakor"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
+msgid "_pressed"
+msgstr "billentyűle_nyomáskor"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
+msgid "_rejected"
+msgstr "billentyű _visszautasításakor"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
+msgid "characters/second"
+msgstr "karakter/másodperc"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
+msgid "milliseconds"
+msgstr "ezredmásodperc"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
+msgid "pixels/second"
+msgstr "képpont/másodperc"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
+#: capplets/windows/gnome-window-properties.glade.h:7
 msgid "seconds"
 msgstr "másodperc"
 
@@ -242,8 +286,8 @@ msgstr "_Kép kiválasztása:"
 #: capplets/background/background-properties-capplet.c:567
 #: capplets/common/capplet-util.c:243
 #: capplets/default-applications/gnome-default-applications-properties.c:712
-#: capplets/keyboard/gnome-keyboard-properties.c:293
-#: capplets/mouse/gnome-mouse-properties.c:752
+#: capplets/keyboard/gnome-keyboard-properties.c:290
+#: capplets/mouse/gnome-mouse-properties.c:712
 #: capplets/sound/sound-properties-capplet.c:149
 msgid "Retrieve and store legacy settings"
 msgstr "Az örökölt beállítások betöltése és tárolása"
@@ -278,7 +322,7 @@ msgid "Picture Options:"
 msgstr "Kép beállításai:"
 
 #: capplets/background/background-properties.glade.h:8
-#: libbackground/preview-file-selection.c:198
+#: libbackground/preview-file-selection.c:212
 msgid "Preview"
 msgstr "Előnézet"
 
@@ -526,14 +570,6 @@ msgstr "Alapértelmezett alkalmazások kiválasztása"
 msgid "Please specify a name and a command for this editor."
 msgstr "Adj meg egy nevet és parancsot ehhez a szerkesztőhöz."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
-#: capplets/file-types/file-types-properties.glade.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
-#: capplets/network/gnome-network-preferences.glade.h:1
-#: capplets/theme-switcher/theme-install.glade.h:1
-msgid "*"
-msgstr "*"
-
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:2
 msgid "Acce_pts URLs"
 msgstr "_Elfogad URL-t"
@@ -653,6 +689,7 @@ msgid "Window Manager"
 msgstr "Ablakkezelő"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:31
+#: capplets/file-types/file-types-properties.glade.h:22
 msgid "_Name:"
 msgstr "_Név:"
 
@@ -741,6 +778,7 @@ msgid "Minimizing and Maximizing"
 msgstr "Ablakok minimalizálása/maximalizálása"
 
 #: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:1
+#: capplets/windows/gnome-window-properties.c:649
 msgid "Meta"
 msgstr "Meta"
 
@@ -798,17 +836,16 @@ msgstr "Örökölt alkalmazások"
 msgid "Legacy applications settings (grdb)"
 msgstr "Örökölt alkalmazások beállításai (grdb)"
 
-#: capplets/file-types/file-types-capplet.c:194
+#: capplets/file-types/file-types-capplet.c:196
 msgid "Description"
 msgstr "Leírás"
 
-#: capplets/file-types/file-types-capplet.c:216
+#: capplets/file-types/file-types-capplet.c:218
 msgid "Extensions"
 msgstr "Kiterjesztések"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
-#: capplets/file-types/file-types-properties.glade.h:8
-#: capplets/file-types/file-types.desktop.in.h:2
+#: capplets/file-types/file-types-properties.glade.h:10
 msgid "File Types and Programs"
 msgstr "Fájltípusok és programok"
 
@@ -831,89 +868,95 @@ msgid "Add _Service..."
 msgstr "_Szolgáltatás hozzáadása..."
 
 #: capplets/file-types/file-types-properties.glade.h:5
-msgid "Add:"
-msgstr "Hozzáadás:"
+msgid "C_hoose..."
+msgstr "_Kiválasztás..."
 
 #: capplets/file-types/file-types-properties.glade.h:6
-msgid "Default action"
-msgstr "Alapértelmezett művelet"
+msgid "Cate_gory:"
+msgstr "_Kategória:"
 
 #: capplets/file-types/file-types-properties.glade.h:7
+msgid "D_efault action:"
+msgstr "_Alapértelmezett művelet:"
+
+#: capplets/file-types/file-types-properties.glade.h:8
+msgid "Default _action:"
+msgstr "_Alapértelmezett művelet:"
+
+#: capplets/file-types/file-types-properties.glade.h:9
 #: capplets/file-types/mime-edit-dialog.c:208
 msgid "Edit file type"
 msgstr "Fájltípus szerkesztése"
 
-#: capplets/file-types/file-types-properties.glade.h:9
-msgid "Filename Extensions"
-msgstr "Fájlnév kiterjesztései"
+#: capplets/file-types/file-types-properties.glade.h:11
+msgid "Filename extensions:"
+msgstr "Fájlnév kiterjesztései:"
 
-#: capplets/file-types/file-types-properties.glade.h:10
+#: capplets/file-types/file-types-properties.glade.h:12
 msgid "Look at content"
 msgstr "Tartalom megtekintése"
 
-#: capplets/file-types/file-types-properties.glade.h:11
+#: capplets/file-types/file-types-properties.glade.h:13
+msgid "P_rogram:"
+msgstr "_Program:"
+
+#: capplets/file-types/file-types-properties.glade.h:14
 msgid "Program to Run"
 msgstr "Futtatandó program"
 
-#: capplets/file-types/file-types-properties.glade.h:12
+#: capplets/file-types/file-types-properties.glade.h:15
 msgid "Run a program"
 msgstr "Program futtatása"
 
-#: capplets/file-types/file-types-properties.glade.h:13
+#: capplets/file-types/file-types-properties.glade.h:16
 msgid "Run in _Terminal"
 msgstr "_Futtatás terminálban"
 
-#: capplets/file-types/file-types-properties.glade.h:14
+#: capplets/file-types/file-types-properties.glade.h:17
 msgid "Use parent category _defaults"
 msgstr "_Szülőkategória alapértékeinek használata"
 
-#: capplets/file-types/file-types-properties.glade.h:15
-msgid "Viewer Component"
-msgstr "Nézőkomponens"
-
-#: capplets/file-types/file-types-properties.glade.h:16
-msgid "_Category"
-msgstr "_Kategória"
-
-#: capplets/file-types/file-types-properties.glade.h:17
-msgid "_Choose..."
-msgstr "_Kiválasztás..."
-
 #: capplets/file-types/file-types-properties.glade.h:18
-msgid "_Delete"
-msgstr "_Törlés"
+msgid "_Add:"
+msgstr "_Hozzáadás:"
 
 #: capplets/file-types/file-types-properties.glade.h:19
-msgid "_Description"
-msgstr "_Leírás"
+msgid "_Description:"
+msgstr "_Leírás:"
 
 #: capplets/file-types/file-types-properties.glade.h:20
 msgid "_Edit..."
 msgstr "_Szerkesztés..."
 
 #: capplets/file-types/file-types-properties.glade.h:21
-msgid "_MIME Type"
+msgid "_MIME type:"
 msgstr "_MIME-típus:"
 
-#: capplets/file-types/file-types-properties.glade.h:22
-msgid "_Name"
-msgstr "_Név"
-
 #: capplets/file-types/file-types-properties.glade.h:23
-msgid "_Program"
-msgstr "_Program"
+msgid "_Program to run:"
+msgstr "_Futtatandó program:"
 
 #: capplets/file-types/file-types-properties.glade.h:24
-msgid "_Program to Run"
-msgstr "_Futtatandó program"
+msgid "_Protocol:"
+msgstr "_Protokoll:"
 
 #: capplets/file-types/file-types-properties.glade.h:25
-msgid "_Protocol"
-msgstr "_Protokoll"
+msgid "_Remove"
+msgstr "_Törlés"
+
+#: capplets/file-types/file-types-properties.glade.h:26
+msgid "_Viewer component:"
+msgstr "_Nézőkomponens:"
 
 #: capplets/file-types/file-types.desktop.in.h:1
-msgid "Associate applications with file types"
-msgstr "Fájltípusok programokhoz rendelése"
+msgid "File types and programs"
+msgstr "Fájltípusok és programok"
+
+#: capplets/file-types/file-types.desktop.in.h:2
+msgid "Specify which programs are used to open or view each type of file"
+msgstr ""
+"Az egyes fájltípusok megtekintéséhez vagy megnyitásához használt programok "
+"megadása"
 
 #: capplets/file-types/mime-category-edit-dialog.c:138
 msgid "Edit file category"
@@ -1102,24 +1145,125 @@ msgid "Select fonts for the desktop"
 msgstr "Az asztalon levő ikonok betűkészletének beállítása"
 
 #: capplets/font/font-properties.glade.h:1
+msgid "Best _shapes"
+msgstr "A legszebb _betűforma"
+
+#: capplets/font/font-properties.glade.h:2
+msgid "Best co_ntrast"
+msgstr "A legjobb _kontraszt"
+
+#: capplets/font/font-properties.glade.h:3
+msgid "De_tails..."
+msgstr "_Részletek..."
+
+#: capplets/font/font-properties.glade.h:4
 msgid "Font Preferences"
 msgstr "Betűk tulajdonságai"
 
-#: capplets/font/font-properties.glade.h:2
+#: capplets/font/font-properties.glade.h:5
+msgid "Font Rendering"
+msgstr "Betűmegjelenítés"
+
+#: capplets/font/font-properties.glade.h:6
+msgid "Font Rendering Details"
+msgstr "Betűmegjelenítés részletei"
+
+#: capplets/font/font-properties.glade.h:7
+msgid "G_rayscale"
+msgstr "_Szürkeárnyalatos"
+
+#: capplets/font/font-properties.glade.h:8
+msgid "Hinting:"
+msgstr "Hinting:"
+
+#: capplets/font/font-properties.glade.h:9
+msgid "N_one"
+msgstr "_Nincs"
+
+#: capplets/font/font-properties.glade.h:10
+msgid "Resolution (_dots per inch):"
+msgstr "F_elbontás (pont/hüvelyk)"
+
+#: capplets/font/font-properties.glade.h:11
 msgid "Set the font for applications"
 msgstr "Programok betűkészletének beállítása"
 
-#: capplets/font/font-properties.glade.h:3
+#: capplets/font/font-properties.glade.h:12
 msgid "Set the font for the icons on the desktop"
 msgstr "Az asztalon levő ikonok betűkészletének beállítása"
 
-#: capplets/font/font-properties.glade.h:4
+#: capplets/font/font-properties.glade.h:13
+msgid "Set the monospace font for terminals and similar applications"
+msgstr ""
+"A fix szélességű betű beállítása a terminálhoz és más hasonló alkalmazásokhoz"
+
+#: capplets/font/font-properties.glade.h:14
+msgid "Smoothing:"
+msgstr "Simítás:"
+
+#: capplets/font/font-properties.glade.h:15
+msgid "Sub_pixel (LCDs)"
+msgstr "_Képponton belül (LCD)"
+
+#: capplets/font/font-properties.glade.h:16
+msgid "Sub_pixel smoothing (LCDs)"
+msgstr "Simítás a _képponton belül (LCD)"
+
+#: capplets/font/font-properties.glade.h:17
+msgid "Subpixel order:"
+msgstr "Sorrend a képponton belül:"
+
+#: capplets/font/font-properties.glade.h:18
+msgid "VB_GR"
+msgstr "VB_GR"
+
+#: capplets/font/font-properties.glade.h:19
 msgid "_Application font:"
 msgstr "_Alkalmazás betűkészlete:"
 
-#: capplets/font/font-properties.glade.h:5
+#: capplets/font/font-properties.glade.h:20
+msgid "_BGR"
+msgstr "_BGR"
+
+#: capplets/font/font-properties.glade.h:21
 msgid "_Desktop font:"
 msgstr "_Asztal betűkészlete:"
+
+#: capplets/font/font-properties.glade.h:22
+msgid "_Full"
+msgstr "_Teljes"
+
+#: capplets/font/font-properties.glade.h:23
+msgid "_Medium"
+msgstr "_Közepes"
+
+#: capplets/font/font-properties.glade.h:24
+msgid "_Monochrome"
+msgstr "_Fekete-fehér"
+
+#: capplets/font/font-properties.glade.h:25
+msgid "_None"
+msgstr "_Nincs"
+
+#: capplets/font/font-properties.glade.h:26
+msgid "_RGB"
+msgstr "_RGB"
+
+#: capplets/font/font-properties.glade.h:27
+msgid "_Slight"
+msgstr "_Enyhe"
+
+#: capplets/font/font-properties.glade.h:28
+msgid "_Terminal font:"
+msgstr "_Terminál betűkészlete:"
+
+#: capplets/font/font-properties.glade.h:29
+msgid "_VRGB"
+msgstr "_VRGB"
+
+#: capplets/font/font-properties.glade.h:30
+msgid "_Window title font:"
+msgstr "_Ablak címsorának betűkészlete:"
 
 #: capplets/keybindings/eggcellrendererkeys.c:160
 #: capplets/keybindings/eggcellrendererkeys.c:161
@@ -1140,8 +1284,8 @@ msgid "The type of accelerator."
 msgstr "A gyorsítás típusa"
 
 #: capplets/keybindings/eggcellrendererkeys.c:219
-#: capplets/keybindings/gnome-keybinding-properties.c:202
-#: libbackground/applier.c:521
+#: capplets/keybindings/gnome-keybinding-properties.c:204
+#: libbackground/applier.c:588
 msgid "Disabled"
 msgstr "Tiltott"
 
@@ -1154,40 +1298,44 @@ msgstr "Nyomd le az új gyorsbillentyűt, vagy a Backspace-t a törléshez"
 msgid "Type a new accelerator"
 msgstr "Nyomd le az új gyorsbillentyűt"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:538
+#: capplets/keybindings/gnome-keybinding-properties.c:540
 msgid "<Unknown Action>"
 msgstr "<Ismeretlen művelet>"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:557
+#: capplets/keybindings/gnome-keybinding-properties.c:559
 msgid "Desktop"
 msgstr "Munkaasztal"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:561
+#: capplets/keybindings/gnome-keybinding-properties.c:563
 msgid "Window Management"
 msgstr "Ablakkezelés"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:695
+#: capplets/keybindings/gnome-keybinding-properties.c:698
 #, c-format
-msgid "That accelerator key is already in use by: %s\n"
+msgid ""
+"The shortcut \"%s\" is already used for:\n"
+" \"%s\"\n"
 msgstr ""
+"A \"%s\" gyorsbillentyű már le van foglalva erre:\n"
+"\"%s\"\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:725
+#: capplets/keybindings/gnome-keybinding-properties.c:729
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr ""
 "Hiba történt a %s gyorsbillentyű beállításakor a konfigurációs adatbázisban\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:876
+#: capplets/keybindings/gnome-keybinding-properties.c:880
 msgid ""
 "Unable to find any keyboard themes.  This means your GTK+ installation has "
 "been incompletely installed."
 msgstr "Nem találhatóak a billentyűtémák. A GTK+ helytelenül lett telepítve."
 
-#: capplets/keybindings/gnome-keybinding-properties.c:898
+#: capplets/keybindings/gnome-keybinding-properties.c:902
 msgid "Action"
 msgstr "Esemény"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:917
+#: capplets/keybindings/gnome-keybinding-properties.c:921
 msgid "Shortcut"
 msgstr "Gyorsbillentyű"
 
@@ -1212,12 +1360,17 @@ msgstr "_Szövegszerkesztő gyorsbillentyűi:"
 msgid "Assign shortcut keys to commands"
 msgstr "Gyorsbillentyűk parancsokhoz rendelése"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:272
+#: capplets/keyboard/gnome-keyboard-properties.c:162
+#, c-format
+msgid "There was an error launching the keyboard capplet : %s"
+msgstr "Hiba történt a billentyűzet capplet indításakor: %s"
+
+#: capplets/keyboard/gnome-keyboard-properties.c:269
 msgid "_Accessibility"
 msgstr "_Kisegítő lehetőségek"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:289
-#: capplets/keyboard/gnome-keyboard-properties.c:291
+#: capplets/keyboard/gnome-keyboard-properties.c:286
+#: capplets/keyboard/gnome-keyboard-properties.c:288
 #: capplets/sound/sound-properties-capplet.c:145
 #: capplets/sound/sound-properties-capplet.c:147
 msgid ""
@@ -1278,10 +1431,6 @@ msgstr "Kattanás billentyűlenyomáskor"
 msgid "Repeat Keys"
 msgstr "Billentyűk ismétlése"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
-msgid "S_peed:"
-msgstr "_Sebesség:"
-
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:18
 msgid "_Accessibility..."
 msgstr "_Kisegítő lehetőségek..."
@@ -1318,7 +1467,7 @@ msgstr "csendes"
 msgid "Set your keyboard preferences"
 msgstr "Billentyűzet beállításai"
 
-#: capplets/mouse/gnome-mouse-properties.c:477
+#: capplets/mouse/gnome-mouse-properties.c:437
 #, c-format
 msgid ""
 "<b>Unknown Cursor</b>\n"
@@ -1327,7 +1476,7 @@ msgstr ""
 "<b>Ismeretlen kurzor</b>\n"
 "%s"
 
-#: capplets/mouse/gnome-mouse-properties.c:578
+#: capplets/mouse/gnome-mouse-properties.c:538
 msgid ""
 "<b>Default Cursor - Current</b>\n"
 "The default cursor that ships with X"
@@ -1335,7 +1484,7 @@ msgstr ""
 "<b>Alapértelmezett kurzor - Jelenlegi</b>\n"
 "Az X-ben található alapértelmezett kurzor"
 
-#: capplets/mouse/gnome-mouse-properties.c:581
+#: capplets/mouse/gnome-mouse-properties.c:541
 msgid ""
 "<b>Default Cursor</b>\n"
 "The default cursor that ships with X"
@@ -1343,7 +1492,7 @@ msgstr ""
 "<b>Alapértelmezett kurzor</b>\n"
 "Az X-ben található alapértelmezett kurzor"
 
-#: capplets/mouse/gnome-mouse-properties.c:599
+#: capplets/mouse/gnome-mouse-properties.c:559
 msgid ""
 "<b>White Cursor - Current</b>\n"
 "The default cursor inverted"
@@ -1351,7 +1500,7 @@ msgstr ""
 "<b>Fehér kurzor - Jelenlegi</b>\n"
 "Az alapértelmezett kurzor invertálva"
 
-#: capplets/mouse/gnome-mouse-properties.c:602
+#: capplets/mouse/gnome-mouse-properties.c:562
 msgid ""
 "<b>White Cursor</b>\n"
 "The default cursor inverted"
@@ -1359,7 +1508,7 @@ msgstr ""
 "<b>Fehér kurzor</b>\n"
 "Az alapértelmezett kurzor invertálva"
 
-#: capplets/mouse/gnome-mouse-properties.c:620
+#: capplets/mouse/gnome-mouse-properties.c:580
 msgid ""
 "<b>Large Cursor - Current</b>\n"
 "Large version of normal cursor"
@@ -1367,7 +1516,7 @@ msgstr ""
 "<b>Nagy kurzor - Jelenlegi</b>\n"
 "Az alapértelmezett kurzor nagyobb verziója"
 
-#: capplets/mouse/gnome-mouse-properties.c:623
+#: capplets/mouse/gnome-mouse-properties.c:583
 msgid ""
 "<b>Large Cursor</b>\n"
 "Large version of normal cursor"
@@ -1375,21 +1524,21 @@ msgstr ""
 "<b>Nagy kurzor</b>\n"
 "Az alapértelmezett kurzor nagyobb verziója"
 
-#: capplets/mouse/gnome-mouse-properties.c:641
+#: capplets/mouse/gnome-mouse-properties.c:601
 msgid ""
 "<b>Large White Cursor - Current</b>\n"
 "Large version of white cursor"
 msgstr ""
 "<b>Nagy fehér kurzor - Jelenlegi</b>\n"
-"Az fehér kurzor nagyobb verziója"
+"A fehér kurzor nagyobb verziója"
 
-#: capplets/mouse/gnome-mouse-properties.c:644
+#: capplets/mouse/gnome-mouse-properties.c:604
 msgid ""
 "<b>Large White Cursor</b>\n"
 "Large version of white cursor"
 msgstr ""
 "<b>Nagy fehér kurzor</b>\n"
-"Az fehér kurzor nagyobb verziója"
+"A fehér kurzor nagyobb verziója"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:1
 msgid ""
@@ -1498,7 +1647,7 @@ msgstr "_Gyorsítás:"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:24
 msgid "_Delay (sec):"
-msgstr "_Késleltetés(mp):"
+msgstr "_Késleltetés (mp):"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:25
 msgid "_Left-handed mouse"
@@ -1516,10 +1665,6 @@ msgstr "A _kurzor pozíciójának megjelenítése a Control billentyű lenyomás
 msgid "_Threshold:"
 msgstr "_Küszöbszint:"
 
-#: capplets/mouse/mouse.desktop.in.h:1
-msgid "Mouse"
-msgstr "Egér"
-
 #: capplets/mouse/mouse.desktop.in.h:2
 msgid "Set your mouse preferences"
 msgstr "Egér beállításai"
@@ -1532,37 +1677,69 @@ msgstr "Proxy"
 msgid "Network proxy preferences"
 msgstr "Proxy tulajdonságai"
 
-#: capplets/network/gnome-network-preferences.glade.h:2
-msgid "Network Preferences"
-msgstr "Hálózat tulajdonságai"
+#: capplets/network/gnome-network-preferences.glade.h:1
+msgid "      "
+msgstr "      "
 
 #: capplets/network/gnome-network-preferences.glade.h:3
-msgid "Network Proxy Preferences"
-msgstr "Proxy tulajdonságai"
+msgid "<b>_Automatic proxy configuration</b>"
+msgstr "<b>_Automatikus proxybeállítás</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:4
-msgid "P_ort:"
-msgstr "P_ort:"
+msgid "<b>_Direct internet connection</b>"
+msgstr "<b>_Közvetlen internetkapcsolat</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:5
-msgid "Pass_word:"
-msgstr "_Jelszó:"
+msgid "<b>_Manual proxy configuration</b>"
+msgstr "<b>Ké_zi proxybeállítás</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:6
-msgid "Pro_xy requires username and password"
-msgstr "A pro_xy használatához felhasználónévre és jelszóra van szükség"
+msgid "<b>_Use authentication</b>"
+msgstr "<b>_Hitelesítés használata</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:7
-msgid "User_name:"
-msgstr "Felhasználó_név:"
+msgid "Autoconfiguration _URL:"
+msgstr "Autokonfigurációs _URL:"
 
 #: capplets/network/gnome-network-preferences.glade.h:8
-msgid "_Location:"
-msgstr "_Hely:"
+msgid "HTTP Proxy Details"
+msgstr "HTTP-proxy beállításai"
 
 #: capplets/network/gnome-network-preferences.glade.h:9
-msgid "_Use HTTP proxy"
-msgstr "HTTP-proxy _használata"
+msgid "Network Proxy Configuration"
+msgstr "Hálózati proxy tulajdonságai"
+
+#: capplets/network/gnome-network-preferences.glade.h:10
+msgid "Port:"
+msgstr "Port:"
+
+#: capplets/network/gnome-network-preferences.glade.h:11
+msgid "S_ocks host:"
+msgstr "S_ocks kiszolgáló:"
+
+#: capplets/network/gnome-network-preferences.glade.h:12
+msgid "_Details"
+msgstr "_Részletek"
+
+#: capplets/network/gnome-network-preferences.glade.h:13
+msgid "_FTP proxy:"
+msgstr "_FTP-proxy:"
+
+#: capplets/network/gnome-network-preferences.glade.h:14
+msgid "_HTTP proxy:"
+msgstr "_HTTP-proxy:"
+
+#: capplets/network/gnome-network-preferences.glade.h:15
+msgid "_Password:"
+msgstr "_Jelszó:"
+
+#: capplets/network/gnome-network-preferences.glade.h:16
+msgid "_Secure HTTP proxy:"
+msgstr "_Biztonságos HTTP-proxy:"
+
+#: capplets/network/gnome-network-preferences.glade.h:17
+msgid "_Username:"
+msgstr "_Felhasználói név:"
 
 #: capplets/sound/sound-properties-capplet.c:180
 msgid "Sound preferences"
@@ -1573,16 +1750,16 @@ msgid "E_nable sound server startup"
 msgstr "Ha_ngszerver elindításának engedélyezése"
 
 #: capplets/sound/sound-properties.glade.h:2
-msgid "Sound Preferences"
-msgstr "Hangok tulajdonságai"
+msgid "General"
+msgstr "Alap"
 
 #: capplets/sound/sound-properties.glade.h:3
-msgid "Sound _Events"
-msgstr "_Események hangjai"
+msgid "Sound Events"
+msgstr "Események hangjai"
 
 #: capplets/sound/sound-properties.glade.h:4
-msgid "_General"
-msgstr "_Alap"
+msgid "Sound Preferences"
+msgstr "Hangok tulajdonságai"
 
 #: capplets/sound/sound-properties.glade.h:5
 msgid "_Sounds for events"
@@ -1649,29 +1826,89 @@ msgstr "Az asztal különböző részeihez témák kiválasztása"
 msgid "Theme"
 msgstr "Téma"
 
-#: capplets/theme-switcher/theme-properties.glade.h:1
-msgid "Installed Themes"
-msgstr "Telepített témák"
-
 #: capplets/theme-switcher/theme-properties.glade.h:2
-msgid "List of available GTK+ themes"
-msgstr "Rendelkezésre álló GTK+ témák listája"
+msgid "<span size=\"larger\" weight=\"bold\">Save theme to disk</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Téma mentése a lemezre</span>"
 
 #: capplets/theme-switcher/theme-properties.glade.h:3
+msgid "Apply _Background"
+msgstr "_Háttér alkalmazása"
+
+#: capplets/theme-switcher/theme-properties.glade.h:4
+msgid "Apply _Font"
+msgstr "_Betűkészlet alkalmazása"
+
+#: capplets/theme-switcher/theme-properties.glade.h:5
+msgid "Controls"
+msgstr "Felhasználói felület elemei"
+
+#: capplets/theme-switcher/theme-properties.glade.h:6
+msgid "Icons"
+msgstr "Ikonok"
+
+#: capplets/theme-switcher/theme-properties.glade.h:7
 msgid "New themes can also be installed by dragging them into the window."
 msgstr "Új témák úgy is telepíthetők, ha az ablakba dobjuk őket."
 
-#: capplets/theme-switcher/theme-properties.glade.h:4
+#: capplets/theme-switcher/theme-properties.glade.h:8
+msgid "Short _Description:"
+msgstr "Rövid _leírás:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:9
+msgid "Theme Details"
+msgstr "Téma beállítása"
+
+#: capplets/theme-switcher/theme-properties.glade.h:10
 msgid "Theme Preferences"
 msgstr "Témák beállításai"
 
-#: capplets/theme-switcher/theme-properties.glade.h:5
+#: capplets/theme-switcher/theme-properties.glade.h:11
+msgid ""
+"This theme suggests a\n"
+"background:"
+msgstr ""
+"Ez a téma javasol\n"
+"hátteret:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:13
+msgid ""
+"This theme suggests a\n"
+"font and background"
+msgstr ""
+"Ez a téma javasol\n"
+"betűkészletet és hátteret"
+
+#: capplets/theme-switcher/theme-properties.glade.h:15
+msgid ""
+"This theme suggests a\n"
+"font:"
+msgstr ""
+"Ez a téma javasol\n"
+"betűkészletet:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:17
+msgid "Window Border"
+msgstr "Ablakkeret"
+
+#: capplets/theme-switcher/theme-properties.glade.h:18
+msgid "_Details..."
+msgstr "_Részletek..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:19
 msgid "_Go to theme folder"
 msgstr "_Témák mappájának böngészése"
 
-#: capplets/theme-switcher/theme-properties.glade.h:6
-msgid "_Install New Theme..."
-msgstr "Új téma _telepítése..."
+#: capplets/theme-switcher/theme-properties.glade.h:20
+msgid "_Install theme..."
+msgstr "Téma _telepítése..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:21
+msgid "_Save theme"
+msgstr "Téma _mentése"
+
+#: capplets/theme-switcher/theme-properties.glade.h:22
+msgid "_Theme name:"
+msgstr "_Téma neve:"
 
 #: capplets/theme-switcher/theme-install.glade.h:2
 msgid "Install new theme"
@@ -1684,6 +1921,27 @@ msgstr "_Telepítés"
 #: capplets/theme-switcher/theme-install.glade.h:4
 msgid "_Location of new theme:"
 msgstr "Az új téma _helye:"
+
+#: capplets/theme-switcher/gnome-theme-details.c:329
+#: capplets/theme-switcher/gnome-theme-manager.c:606
+msgid ""
+"No themes could be found on your system.  This probably means that your "
+"\"Theme Preferences\" dialog was improperly installed, or you haven't "
+"installed the \"gnome-themes\" package."
+msgstr ""
+"A rendszereden nem találhatóak témák. Ez valószínűleg azért van, mert a "
+"\"Témabeállítások\" alkalmazás nem megfelelően lett telepítve, vagy nem "
+"telepítetted a \"gnome-themes\" csomagot."
+
+#: capplets/theme-switcher/gnome-theme-manager.c:662
+#: capplets/theme-switcher/gnome-theme-manager.c:722
+msgid "Custom theme"
+msgstr "Egyéni téma"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:662
+#: capplets/theme-switcher/gnome-theme-manager.c:722
+msgid "You can save this theme by pressing the Save Theme button."
+msgstr "A témát mentheted a Téma mentése gomb segítségével."
 
 #: capplets/ui-properties/behavior.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
@@ -1814,30 +2072,59 @@ msgstr "_Kilépés"
 msgid "_Save"
 msgstr "_Mentés"
 
-#: capplets/windows/gnome-window-properties.c:282
-#: capplets/windows/gnome-window-properties.glade.h:6
+#: capplets/windows/gnome-window-properties.c:378
+#, c-format
+msgid ""
+"<b>Cannot start the preferences application for your window manager</b>\n"
+"\n"
+"%s"
+msgstr ""
+"<b>Nem sikerült elindítani az ablakkezelődhöz tartozó beállítóalkalmazást.</"
+"b>\n"
+"\n"
+"%s"
+
+#: capplets/windows/gnome-window-properties.c:624
+msgid "Control"
+msgstr "Control"
+
+#: capplets/windows/gnome-window-properties.c:629
+msgid "Alt"
+msgstr "Alt"
+
+#: capplets/windows/gnome-window-properties.c:635
+msgid "Hyper"
+msgstr "Hyper"
+
+#: capplets/windows/gnome-window-properties.c:642
+msgid "Super (or \"Windows logo\")"
+msgstr "Super (vagy \"Windows logó\")"
+
+#: capplets/windows/gnome-window-properties.glade.h:1
+msgid "To _move a window, press-and-hold this key then grab the window:"
+msgstr ""
+"Az ablak á_thelyezéséhez tartsd lenyomva ezt a billentyűt, és húzd el az "
+"ablakot:"
+
+#: capplets/windows/gnome-window-properties.glade.h:2
 msgid "Window Preferences"
 msgstr "Az ablak beállításai"
 
-#: capplets/windows/gnome-window-properties.glade.h:1
-msgid "Apply Now"
-msgstr "Alkalmazás most"
-
-#: capplets/windows/gnome-window-properties.glade.h:2
-msgid "Select windows when the mouse moves over them"
-msgstr "Ablakok kiválasztása, ha az egér föléjük ér"
-
 #: capplets/windows/gnome-window-properties.glade.h:3
-msgid "Titlebar Font"
-msgstr "Címsor betűkészlete"
+msgid "_Double-click titlebar to perform this action:"
+msgstr "_Kattints duplán a címsoron a művelet végrehajtásához:"
 
 #: capplets/windows/gnome-window-properties.glade.h:4
-msgid "Window Border Appearance"
-msgstr "Ablakkeret megjelenése"
+msgid "_Interval before raising:"
+msgstr "_Késleltetés az előtérbe hozás előtt:"
 
 #: capplets/windows/gnome-window-properties.glade.h:5
-msgid "Window Manager:"
-msgstr "Ablakkezelő:"
+msgid "_Raise selected windows after an interval"
+msgstr "_Kijelölt ablakok előtérbe hozásának késleltetése"
+
+#: capplets/windows/gnome-window-properties.glade.h:6
+msgid "_Select windows when the mouse moves over them"
+msgstr "_Ablakok kiválasztása, ha az egér föléjük ér"
 
 #: capplets/windows/window-properties.desktop.in.h:1
 msgid "Window Properties"
@@ -1897,12 +2184,12 @@ msgid "Overview of the control center"
 msgstr "A vezérlőpult áttekintése"
 
 #: control-center/gnomecc-ui.xml.h:3
-msgid "_About..."
-msgstr "_Névjegy..."
+msgid "_About"
+msgstr "_Névjegy"
 
 #: control-center/gnomecc-ui.xml.h:4
-msgid "_Contents..."
-msgstr "_Tartalom..."
+msgid "_Contents"
+msgstr "_Tartalom"
 
 #: control-center/gnomecc-ui.xml.h:6
 msgid "_Help"
@@ -1929,32 +2216,32 @@ msgstr ""
 "Nem lehet létrehozni a könyvtárat: \"%s\". Ez szükséges a kurzor "
 "változtatásához."
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:106
+#: gnome-settings-daemon/gnome-settings-keybindings.c:146
 #, c-format
 msgid "Key Binding (%s) has its action defined multiple times\n"
 msgstr "A (%s) billentyűparancs akciója többször lett definiálva\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:119
+#: gnome-settings-daemon/gnome-settings-keybindings.c:159
 #, c-format
 msgid "Key Binding (%s) has its binding defined multiple times\n"
 msgstr "A (%s) billentyűparancs billentyűje többször lett definiálva\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:125
+#: gnome-settings-daemon/gnome-settings-keybindings.c:165
 #, c-format
 msgid "Key Binding (%s) is incomplete\n"
 msgstr "A (%s) billentyűparancs befejezetlen\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:153
+#: gnome-settings-daemon/gnome-settings-keybindings.c:193
 #, c-format
 msgid "Key Binding (%s) is invalid\n"
 msgstr "A (%s) billentyűparancs érvénytelen\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:241
+#: gnome-settings-daemon/gnome-settings-keybindings.c:281
 #, c-format
 msgid "Key Binding (%s) is already in use\n"
 msgstr "A (%s) billentyűparancs már használatban van\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:292
+#: gnome-settings-daemon/gnome-settings-keybindings.c:357
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -1985,16 +2272,16 @@ msgstr "_Ne mutassa ezt többet"
 msgid "Couldn't load sound file %s as sample %s"
 msgstr "Nem sikerült betölteni a %s fájlt a %s hangmintához"
 
-#: gnome-settings-daemon/gnome-settings-xsettings.c:150
+#: gnome-settings-daemon/gnome-settings-xsettings.c:184
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr "A GConf kulcs (%s) típusa %s, de a várt típusa %s volt\n"
 
-#: libbackground/applier.c:239
+#: libbackground/applier.c:254
 msgid "Type"
 msgstr "Típus"
 
-#: libbackground/applier.c:240
+#: libbackground/applier.c:255
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
@@ -2002,23 +2289,31 @@ msgstr ""
 "A bg_applier típusa: BG_APPLIER_ROOT a háttérnek vagy BG_APPLIER_PREVIEW az "
 "előnézetnek"
 
-#: libbackground/applier.c:247
+#: libbackground/applier.c:262
 msgid "Preview Width"
 msgstr "Előnézet szélessége"
 
-#: libbackground/applier.c:248
+#: libbackground/applier.c:263
 msgid "Width if applier is a preview: Defaults to 64."
 msgstr "Szélesség, ha az applier előnézet: Alapértelmezetten 64."
 
-#: libbackground/applier.c:255
+#: libbackground/applier.c:270
 msgid "Preview Height"
 msgstr "Előnézet magassága"
 
-#: libbackground/applier.c:256
+#: libbackground/applier.c:271
 msgid "Height if applier is a preview: Defaults to 48."
 msgstr "Magasság, ha az applier előnézet: Alapértelmezetten 48."
 
-#: libbackground/preview-file-selection.c:193
+#: libbackground/applier.c:279
+msgid "Screen"
+msgstr "Képernyő"
+
+#: libbackground/applier.c:280
+msgid "Screen on which BGApplier is to draw"
+msgstr "Az a képernyő, amelyre a BGApplier rajzolhat"
+
+#: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Nem találtam hbox-t, normál fájlkiválasztót használok"
 
@@ -2056,1651 +2351,97 @@ msgstr "_Lejátszás"
 msgid "Select sound file"
 msgstr "Hangfájl kiválasztása"
 
-#: libwindow-settings/gnome-wm-manager.c:171
+#: libwindow-settings/gnome-wm-manager.c:320
 #, c-format
+msgid "Window manager \"%s\" has not registered a configuration tool\n"
+msgstr "A(z) \"%s\" ablakkezelő nem regisztrálta a  beállítóeszközét.\n"
+
+#: libwindow-settings/metacity-window-manager.c:373
+msgid "Maximize"
+msgstr "Maximalizálás"
+
+#: libwindow-settings/metacity-window-manager.c:374
+msgid "Roll up"
+msgstr "Felgördítés"
+
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:1
 msgid ""
-"Starting %s\n"
-"(%d seconds left before operation times out)"
+"If true, the mime handlers for text/plain and text/* will be kept in sync"
 msgstr ""
-"Indítom %s-t\n"
-"(%d másodperc telt el az előző művelet out)"
+"Ha ez be van állítva, a text/plain és a text/* MIME-kezelője szinkronban "
+"lesz."
 
-#: libwindow-settings/gnome-wm-manager.c:325
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
+msgid "Sync text/plain and text/* handlers"
+msgstr "A text/plain és a text/* kezelőjének szinkronizálása"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:1
+msgid "Display a dialog when there are errors running XScreenSaver"
+msgstr "Párbeszédablak megjelenítése a képernyővédő hibája esetén"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:2
+msgid "Run XScreenSaver at login"
+msgstr "Képernyővédő futtatása a bejelentkezéskor"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:3
+msgid "Show Startup Errors"
+msgstr "Indulás közben történő hibák megjelenítése"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:4
+msgid "Start XScreenSaver"
+msgstr "Képernyővédő indítása"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:1
+msgid "Antialiasing"
+msgstr "Élsimítás"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:2
+msgid "DPI"
+msgstr "DPI"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:3
+msgid "Hinting"
+msgstr "Hinting"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:4
+msgid "RGBA Order"
+msgstr "RGBA-sorrend"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:5
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\tAnother window manager is already running and could not be killed\n"
+"Resolution used for converting font sizes to pixel sizes, in dots per inch"
 msgstr ""
-"wm-properties-capplet: Nem sikerült elindítani az ablakkezelőt.\n"
-"\tMásik ablakkezelő fut, és nem lehet kilőni.\n"
+"A felbontás a betűméret és a képpontok közötti átváltáshoz kell, pont/"
+"hüvelyk a mértékegysége."
 
-#: libwindow-settings/gnome-wm-manager.c:329
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:6
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\t'%s' didn't start\n"
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" - red on left, most common. "
+"\"bgr\" - blue on left. \"vrgb\" - red on top. \"vbgr\" - red on bottom."
 msgstr ""
-"wm-properties-capplet: Nem sikerült elindítani az ablakkezelőt.\n"
-"\t'%s' nem indul.\n"
+"A szubpixelek sorrendje az LCD-képernyőn; csak akkor használatos, ha az "
+"élsimítás \"RGBA\"-ra ven állítva. A lehetséges értékek: \"RGB\" - a piros a "
+"bal oldalon, ez a leggyakoribb. \"BGR\" - kék a bal oldalon. \"VRGB\" - "
+"piros a tetején. \"VBGR\" - piros az alján."
 
-#: libwindow-settings/gnome-wm-manager.c:378
-msgid "Previous window manager did not die\n"
-msgstr "Az előző ablakkezelő nem halt meg.\n"
-
-#: libwindow-settings/gnome-wm-manager.c:411
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:7
 msgid ""
-"Could not start '%s'.\n"
-"Falling back to previous window manager '%s'\n"
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" - no antialiasing. \"grayscale\" - standard grayscale antialiasing. "
+"\"rgba\" - subpixel antialiasing. (LCD screens only)."
 msgstr ""
-"Nem sikerült indítani '%s'-t.\n"
-"Visszatérés az előző ablakkezelőhöz: '%s'.\n"
+"A betűk megjelenítésénél használt élsimítás típusa. A lehetséges értékek: "
+"\"Nincs\" - nincs élsimítás. \"Szürkeárnyalatos\" - szabványos "
+"szürkeárnyalatos élsimítás. \"RGBA\" - szubpixeles élsimítás (csak LCD-"
+"képernyőkön)."
 
-#: libwindow-settings/gnome-wm-manager.c:442
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:8
 msgid ""
-"Could not start fallback window manager.\n"
-"Please run a window manager manually. You can\n"
-"do this by selecting \"Run Program\" in the\n"
-"foot menu\n"
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" - no hinting, \"slight\", \"medium\", and \"full\" - as much hinting as "
+"possible; may cause distortion of letter forms."
 msgstr ""
-"Nem sikerült elindítani az előző ablakkezelőt.\n"
-"Kérlek futtass manuálisan egy ablakkezelőt. \n"
-"Megteheted ezt a 'Program futtatása' menüpont\n"
-"segítségével.\n"
-
-#: libwindow-settings/gnome-wm-manager.c:467
-msgid "OK"
-msgstr "OK"
-
-#~ msgid ""
-#~ "This system does not seem to have the XKB extension.  The keyboard "
-#~ "accessibility features will not operate with it."
-#~ msgstr ""
-#~ "A rendszer nem rendelkezik az XKB-kiterjesztéssel. A billentyűzet "
-#~ "kisegítő lehetőségeit nem lehet használni. "
-
-#~ msgid "Cate_gory:"
-#~ msgstr "_Kategória:"
-
-#~ msgid "Default _action:"
-#~ msgstr "_Alapértelmezett művelet:"
-
-#~ msgid "_Program to run:"
-#~ msgstr "_Futtatandó program:"
-
-#~ msgid "_Remove"
-#~ msgstr "_Törlés"
-
-#~ msgid "File types and programs"
-#~ msgstr "Fájltípusok és programok"
-
-#~ msgid "Specify which programs are used to open or view each type of file"
-#~ msgstr ""
-#~ "Az egyes fájltípusok megtekintéséhez vagy megnyitásához használt "
-#~ "programok megadása"
-
-#~ msgid "Best _shapes"
-#~ msgstr "A legszebb _betűforma"
-
-#~ msgid "Best co_ntrast"
-#~ msgstr "A legjobb _kontraszt"
-
-#~ msgid "De_tails..."
-#~ msgstr "_Részletek..."
-
-#~ msgid "Font Rendering"
-#~ msgstr "Betűmegjelenítés"
-
-#~ msgid "Font Rendering Details"
-#~ msgstr "Betűmegjelenítés részletei"
-
-#~ msgid "G_rayscale"
-#~ msgstr "_Szürkeárnyalatos"
-
-#~ msgid "Hinting:"
-#~ msgstr "Hinting:"
-
-#~ msgid "N_one"
-#~ msgstr "_Nincs"
-
-#~ msgid "Resolution (_dots per inch):"
-#~ msgstr "F_elbontás (pont/hüvelyk)"
-
-#~ msgid "Set the monospace font for terminals and similar applications"
-#~ msgstr ""
-#~ "A fix szélességű betű beállítása a terminálhoz és más hasonló "
-#~ "alkalmazásokhoz"
-
-#~ msgid "Smoothing:"
-#~ msgstr "Simítás:"
-
-#~ msgid "Sub_pixel (LCDs)"
-#~ msgstr "_Képponton belül (LCD)"
-
-#~ msgid "Sub_pixel smoothing (LCDs)"
-#~ msgstr "Simítás a _képponton belül (LCD)"
-
-#~ msgid "Subpixel order:"
-#~ msgstr "Sorrend a képponton belül:"
-
-#~ msgid "VB_GR"
-#~ msgstr "VB_GR"
-
-#~ msgid "_BGR"
-#~ msgstr "_BGR"
-
-#~ msgid "_Full"
-#~ msgstr "_Teljes"
-
-#~ msgid "_Medium"
-#~ msgstr "_Közepes"
-
-#~ msgid "_Monochrome"
-#~ msgstr "_Fekete-fehér"
-
-#~ msgid "_None"
-#~ msgstr "_Nincs"
-
-#~ msgid "_RGB"
-#~ msgstr "_RGB"
-
-#~ msgid "_Slight"
-#~ msgstr "_Enyhe"
-
-#~ msgid "_Terminal font:"
-#~ msgstr "_Terminál betűkészlete:"
-
-#~ msgid "_VRGB"
-#~ msgstr "_VRGB"
-
-#~ msgid "_Window title font:"
-#~ msgstr "_Ablak címsorának betűkészlete:"
-
-#~ msgid "Widget Theme"
-#~ msgstr "Widget-téma"
-
-#~ msgid "Window Border Theme"
-#~ msgstr "Ablakkeret témája"
-
-#~ msgid "Screen"
-#~ msgstr "Képernyő"
-
-#~ msgid "Screen on which BGApplier is to draw"
-#~ msgstr "Az a képernyő, amelyre a BGApplier rajzolhat"
-
-#~ msgid "Edit Menu"
-#~ msgstr "Menü Szerkesztése"
-
-#~ msgid "_Keyboard"
-#~ msgstr "_Billentyűzet"
-
-#~ msgid "Configure window appearance"
-#~ msgstr "Ablakok kinézetének beállítása"
-
-#~ msgid "Configure key shortcuts"
-#~ msgstr "Gyorsbillenyűk beállítása"
-
-#~ msgid "Configure window properties"
-#~ msgstr "Ablakcsoportok beállításai"
-
-#~ msgid "Configure window manager configuration properties"
-#~ msgstr "A Sawfish beállítóprogramjának beállításai"
-
-#~ msgid "Configure window placement"
-#~ msgstr "Ablakok elhelyezésének beállításai"
-
-#~ msgid "Spreadsheet"
-#~ msgstr "Munkafüzet"
-
-#~ msgid "TeX"
-#~ msgstr "TeX"
-
-#~ msgid "Information"
-#~ msgstr "Információ"
-
-#~ msgid "Needs _terminal"
-#~ msgstr "Szüksége van _terminálra"
-
-#, fuzzy
-#~ msgid "_Add"
-#~ msgstr "Hozzáadás:"
-
-#, fuzzy
-#~ msgid "_Protocol name"
-#~ msgstr "_Protokoll"
-
-#, fuzzy
-#~ msgid "Add file type"
-#~ msgstr "_Fájltípus hozzáadása..."
-
-#~ msgid "Fast"
-#~ msgstr "Gyors"
-
-#~ msgid "Keyboard bell _enabled"
-#~ msgstr "Billentyűzet hang _bekapcsolása"
-
-#~ msgid "Keyboard bell _off"
-#~ msgstr "Billentyűzet hang _kikapcsolása"
-
-#~ msgid "Keyclick Volume"
-#~ msgstr "Billentyű hangereje"
-
-#~ msgid "Long"
-#~ msgstr "Hosszú"
-
-#~ msgid "Repeat s_peed:"
-#~ msgstr "Ismétlési _sebesség:"
-
-#~ msgid "Short"
-#~ msgstr "Rövid"
-
-#~ msgid "Slow"
-#~ msgstr "Lassú"
-
-#~ msgid "Very Fast"
-#~ msgstr "Nagyon gyors"
-
-#~ msgid "Very Short"
-#~ msgstr "Nagyon rövid"
-
-#~ msgid "_Custom keyboard bell:"
-#~ msgstr "_Egyedi billentyűzethang:"
-
-#~ msgid "Keyboard Properties"
-#~ msgstr "Billentyűzet beállításai"
-
-#~ msgid "Mouse Properties"
-#~ msgstr "Az egér beállítása"
-
-#~ msgid "Configure GNOME's use of sound"
-#~ msgstr "A GNOME hangjai"
-
-#~ msgid "Toolbars & Menus"
-#~ msgstr "Eszköztárak és menük"
-
-#~ msgid "Item 2"
-#~ msgstr "Második elem"
-
-#~ msgid "Item 3"
-#~ msgstr "Harmadik elem"
-
-#~ msgid "Menu Item 1"
-#~ msgstr "1. Menüpont"
-
-#~ msgid "Menu items can have _icons"
-#~ msgstr "A menüelemeknek lehet _ikonuk"
-
-#~ msgid "_Toolbars have: "
-#~ msgstr "Az _eszköztároknál:"
-
-#, fuzzy
-#~ msgid "radiobutton1"
-#~ msgstr "Rádiógomb 1"
-
-#, fuzzy
-#~ msgid "radiobutton2"
-#~ msgstr "Rádiógomb 2"
-
-#, fuzzy
-#~ msgid "radiobutton3"
-#~ msgstr "Rádiógomb 1"
-
-#, fuzzy
-#~ msgid "radiobutton4"
-#~ msgstr "Rádiógomb 1"
-
-#, fuzzy
-#~ msgid "radiobutton5"
-#~ msgstr "Rádiógomb 1"
-
-#, fuzzy
-#~ msgid "CD Properties"
-#~ msgstr "Az egér beállítása"
-
-#, fuzzy
-#~ msgid "Configure handling of CD devices"
-#~ msgstr "Ablakcsoportok beállításai"
-
-#, fuzzy
-#~ msgid "Global panel properties"
-#~ msgstr "Az egér beállítása"
-
-#, fuzzy
-#~ msgid "Panel"
-#~ msgstr "Mégsem"
-
-#, fuzzy
-#~ msgid "Startup Programs"
-#~ msgstr "Induló program hozzáadása"
-
-#, fuzzy
-#~ msgid "Select an icon..."
-#~ msgstr "_Válassz ki egy szerkesztőt:"
-
-#~ msgid "Mime Type: "
-#~ msgstr "Mime típus: "
-
-#, fuzzy
-#~ msgid "Remove"
-#~ msgstr "_Törlés "
-
-#~ msgid "First Regular Expression: "
-#~ msgstr "Első reguláris kifejezés: "
-
-#~ msgid "Second Regular Expression: "
-#~ msgstr "Második reguláris kifejezés: "
-
-#~ msgid "Mime Type Actions"
-#~ msgstr "Mime-típus akciók"
-
-#~ msgid "Example: emacs %f"
-#~ msgstr "Példa: emacs %f"
-
-#, fuzzy
-#~ msgid "Select a file..."
-#~ msgstr "Válassz ki egy hang"
-
-#, fuzzy
-#~ msgid "View"
-#~ msgstr "Videó"
-
-#~ msgid "Set actions for %s"
-#~ msgstr "Akciók beállítása %s-hez"
-
-#, fuzzy
-#~ msgid "Mime Type"
-#~ msgstr "Fájltípus hozzáadása"
-
-#~ msgid "You must enter a mime-type"
-#~ msgstr "Egy mime típust kell megadnod"
-
-#~ msgid ""
-#~ "You must add either a regular-expression or\n"
-#~ "a file-name extension"
-#~ msgstr ""
-#~ "Vagy egy reguláris kifejezést, vagy\n"
-#~ "egy fájlnév-kiterjesztést adj meg"
-
-#~ msgid ""
-#~ "Please put your mime-type in the format:\n"
-#~ "CATEGORY/TYPE\n"
-#~ "\n"
-#~ "For Example:\n"
-#~ "image/png"
-#~ msgstr ""
-#~ "Kérlek a mime típusodat ebben a formátumban add meg:\n"
-#~ "KATEGÓRIA/TÍPUS\n"
-#~ "\n"
-#~ "Például:\n"
-#~ "image/png"
-
-#~ msgid "This mime-type already exists"
-#~ msgstr "Ez a mime típus már létezik"
-
-#~ msgid ""
-#~ "We are unable to create the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Nem sikerült létrehozni a könyvtárat:\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Nem tudjuk elmenteni az állást."
-
-#~ msgid ""
-#~ "We are unable to access the directory\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Nem sikerült elérni a könyvtárat\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Nem tudjuk elmenteni az állást."
-
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "Nem sikerült létrehozni a fájlt\n"
-#~ "~/.gnome/mime-info/user.mime\n"
-#~ "\n"
-#~ "Nem tudjuk elmenteni az állást"
-
-#, fuzzy
-#~ msgid ""
-#~ "Cannot create the file\n"
-#~ "~/.gnome/mime-info/user.keys.\n"
-#~ "\n"
-#~ "We will not be able to save the state"
-#~ msgstr ""
-#~ "Nem sikerült létrehozni a fájlt\n"
-#~ "~/.gnome/mime-info/user.keys\n"
-#~ "\n"
-#~ "Nem tudjuk elmenteni az állást"
-
-#, fuzzy
-#~ msgid "Mime Types"
-#~ msgstr "Fájltípus hozzáadása"
-
-#~ msgid ""
-#~ "Add a new Mime Type\n"
-#~ "For example:  image/tiff; text/x-scheme"
-#~ msgstr ""
-#~ "Adj meg egy új mime típust\n"
-#~ "Például: image/tiff; text/x-scheme"
-
-#~ msgid ""
-#~ "Type in the extensions for this mime-type.\n"
-#~ "For example:  .html, .htm"
-#~ msgstr ""
-#~ "Írd be a mime típus kiterjesztését.\n"
-#~ "Például: .html, .htm"
-
-#, fuzzy
-#~ msgid "Extension:"
-#~ msgstr "Kiterjesztés"
-
-#~ msgid "Regular Expressions"
-#~ msgstr "Reguláris kifejezések"
-
-#~ msgid ""
-#~ "You can set up two regular expressions here to identify the Mime Type\n"
-#~ "by.  These fields are optional."
-#~ msgstr ""
-#~ "Két reguláris kifejezést adhatsz meg itt, a mime típus meghatározására.\n"
-#~ "Ezek opcionálisak."
-
-#, fuzzy
-#~ msgid "Command"
-#~ msgstr "_Parancs:"
-
-#, fuzzy
-#~ msgid "URL Handlers"
-#~ msgstr "kezelő:"
-
-#~ msgid "handler:"
-#~ msgstr "kezelő:"
-
-#~ msgid "Netscape (new window)"
-#~ msgstr "Netscape (új ablak)"
-
-#, fuzzy
-#~ msgid "Help browser"
-#~ msgstr "Súgó böngésző"
-
-#~ msgid "Help browser (new window)"
-#~ msgstr "Súgó böngésző (új ablakban)"
-
-#~ msgid "Set"
-#~ msgstr "Beállít"
-
-#, fuzzy
-#~ msgid "Window Maker"
-#~ msgstr "Ablakkezelő"
-
-#~ msgid "Initialize session settings"
-#~ msgstr "Szezon beállítások alkalmazása"
-
-#~ msgid "%s (Current)"
-#~ msgstr "%s (jelenlegi)"
-
-#~ msgid "Run Configuration Tool for %s"
-#~ msgstr "%s konfigurációs eszköz indítása: "
-
-#~ msgid " (Not found)"
-#~ msgstr " (Nem találtam)"
-
-#, fuzzy
-#~ msgid ""
-#~ "Your current window manager has been changed. In order for\n"
-#~ "this change to be saved, you will need to save your current\n"
-#~ "session. You can do so immediately by selecting the \"Save session\n"
-#~ "now\" below, or you can save your session later.  This can be\n"
-#~ "done either selecting \"Save Current Session\" under \"Settings\"\n"
-#~ "in the main menu, or by turning on \"Save Current Setup\" when\n"
-#~ "you log out.\n"
-#~ msgstr ""
-#~ "A jelenlegi ablakkezelőd le lett cserélve. Ahhoz, hogy ez a változás\n"
-#~ "el legyen mentve, a jelenlegi beállításokat (szezont) el kell mentened.\n"
-#~ "Ez történhet a \"Szezon (session) elmentése\"\n"
-#~ "menüpont kiválasztásával a \"Beállítások\" menüpontból, vagy kapcsold be\n"
-#~ "a \"Beállítások mentése\" opciót kilépésnél.\n"
-
-#, fuzzy
-#~ msgid "Save Session Later"
-#~ msgstr "Indítás"
-
-#, fuzzy
-#~ msgid "Save Session Now"
-#~ msgstr "Indítás"
-
-#, fuzzy
-#~ msgid ""
-#~ "Your current window manager has been changed. In order for\n"
-#~ "this change to be saved, you will need to save your current\n"
-#~ "session. This can be done by either selecting \"Save Current Session\"\n"
-#~ "under \"Settings\" in the main menu, or by turning on\n"
-#~ "\"Save Current Setup\" when you log out.\n"
-#~ msgstr ""
-#~ "A jelenlegi ablakkezelőd le lett cserélve. Ahhoz, hogy ez a változás\n"
-#~ "el legyen mentve, a jelenlegi beállításokat (szezont) el kell mentened.\n"
-#~ "Ez történhet a \"Szezon (session) elmentése\"\n"
-#~ "menüpont kiválasztásával a \"Beállítások\" menüpontból, vagy kapcsold be\n"
-#~ "a \"Beállítások mentése\" opciót kilépésnél.\n"
-
-#, fuzzy
-#~ msgid "Add New Window Manager"
-#~ msgstr "Ablakkezelő"
-
-#~ msgid "Cancel"
-#~ msgstr "Mégsem"
-
-#, fuzzy
-#~ msgid "Name:"
-#~ msgstr "_Név:"
-
-#, fuzzy
-#~ msgid "Command:"
-#~ msgstr "_Parancs:"
-
-#~ msgid "Configuration Command:"
-#~ msgstr "Konfigurációs parancs:"
-
-#~ msgid "Window manager is session managed"
-#~ msgstr "Az ablakkezelő munkamenet-vezérelt"
-
-#~ msgid "Name cannot be empty"
-#~ msgstr "Nem lehet a név üres"
-
-#~ msgid "Command cannot be empty"
-#~ msgstr "Nem lehet a parancs üres"
-
-#, fuzzy
-#~ msgid "Edit Window Manager"
-#~ msgstr "Ablakkezelő"
-
-#~ msgid "You cannot delete the current Window Manager"
-#~ msgstr "Nem törölheted a futó ablakkezelőt"
-
-#, fuzzy
-#~ msgid "Window Manager Selector"
-#~ msgstr "Ablakkezelő"
-
-#, fuzzy
-#~ msgid "_Add..."
-#~ msgstr "Hozzáadás..."
-
-#, fuzzy
-#~ msgid "_Action"
-#~ msgstr "Esemény"
-
-#, fuzzy
-#~ msgid "_Sound"
-#~ msgstr "_Hangok"
-
-#, fuzzy
-#~ msgid "Theme Properties"
-#~ msgstr "Az egér beállítása"
-
-#, fuzzy
-#~ msgid "At the center of the screen"
-#~ msgstr "A képernyő közepére"
-
-#~ msgid "At the mouse pointer"
-#~ msgstr "Az egérhez"
-
-#, fuzzy
-#~ msgid "Bottom"
-#~ msgstr "Gombok"
-
-#, fuzzy
-#~ msgid "Dialog Buttons"
-#~ msgstr "Gombok"
-
-#~ msgid "Dialog buttons have icons"
-#~ msgstr "Párbeszédablak gombokon ikonok legyenek"
-
-#, fuzzy
-#~ msgid "Dialogs"
-#~ msgstr "Párbeszédablak hintszövegek"
-
-#, fuzzy
-#~ msgid "Dialogs are treated"
-#~ msgstr "A párbeszédablakok olyanok, mint más ablak"
-
-#, fuzzy
-#~ msgid "Dialogs open"
-#~ msgstr "Párbeszédablak gombok"
-
-#~ msgid "Left"
-#~ msgstr "Jobb"
-
-#, fuzzy
-#~ msgid "Left aligned"
-#~ msgstr "balkezes"
-
-#, fuzzy
-#~ msgid "Like any other window"
-#~ msgstr "A párbeszédablakok olyanok, mint más ablak"
-
-#, fuzzy
-#~ msgid "Menu bars are detachable"
-#~ msgstr "A menünek kerete legyen"
-
-#, fuzzy
-#~ msgid "Menu bars have a border"
-#~ msgstr "A menünek kerete legyen"
-
-#, fuzzy
-#~ msgid "Menu items have icons"
-#~ msgstr "A menüelemeknek lehet ikonuk"
-
-#, fuzzy
-#~ msgid "Menus can be torn off"
-#~ msgstr "Az almenüket le lehessen szakítani"
-
-#, fuzzy
-#~ msgid "Multiple Documents"
-#~ msgstr "Dokumentumok"
-
-#, fuzzy
-#~ msgid "Notebook tabs"
-#~ msgstr "Notesz"
-
-#~ msgid "Place dialogs over application window when possible"
-#~ msgstr "A párbeszédablakokat az alkalmazások fölé tedd, ha lehet"
-
-#, fuzzy
-#~ msgid "Progress bar is on the left"
-#~ msgstr "Állapotsor folyamatjelző sáv jobb oldalon legyen"
-
-#, fuzzy
-#~ msgid "Progress bar is on the right"
-#~ msgstr "Állapotsor folyamatjelző sáv jobb oldalon legyen"
-
-#, fuzzy
-#~ msgid "Right aligned"
-#~ msgstr "jobbkezes"
-
-#, fuzzy
-#~ msgid "Seperate windows"
-#~ msgstr "Ablakcsoportok"
-
-#, fuzzy
-#~ msgid "Specially by the window manager"
-#~ msgstr "Sawfish ablakkezelő"
-
-#, fuzzy
-#~ msgid "Spread out"
-#~ msgstr "Munkafüzet"
-
-#, fuzzy
-#~ msgid "Status bar is interactive when possible"
-#~ msgstr "Az állapotsor interaktív legyen, ha lehet"
-
-#, fuzzy
-#~ msgid "The same window"
-#~ msgstr "Netscape (új ablak)"
-
-#, fuzzy
-#~ msgid "Tool Bars"
-#~ msgstr "Eszköztár"
-
-#, fuzzy
-#~ msgid "Tool bar buttons are icons only"
-#~ msgstr "Az eszközsor gomboknak kerete legyen"
-
-#, fuzzy
-#~ msgid "Tool bar buttons are text below icons"
-#~ msgstr "Feliratos eszközsor gombok legyenek"
-
-#, fuzzy
-#~ msgid "Tool bar buttons pop up on mouse over"
-#~ msgstr "Az eszközsor gomboknak kerete legyen"
-
-#, fuzzy
-#~ msgid "Tool bars are detachable"
-#~ msgstr "Az eszköztárakat lehessen _lecsatlakoztatni és mozgatni"
-
-#, fuzzy
-#~ msgid "Tool bars have a border"
-#~ msgstr "Az _eszköztároknál:"
-
-#, fuzzy
-#~ msgid "Tool bars have line separators"
-#~ msgstr "Az _eszköztároknál:"
-
-#, fuzzy
-#~ msgid "Top"
-#~ msgstr "Kettő"
-
-#, fuzzy
-#~ msgid "Use status bar instead of dialog when possible"
-#~ msgstr "Állapotsor használata párbeszédablak helyett, ha lehet"
-
-#, fuzzy
-#~ msgid "Starting esd\n"
-#~ msgstr "Indítás"
-
-#, fuzzy
-#~ msgid "Themes"
-#~ msgstr "Téma"
-
-#, fuzzy
-#~ msgid "_Program to execute"
-#~ msgstr "_Futtatandó program"
-
-#, fuzzy
-#~ msgid "Use a custom font."
-#~ msgstr "Beállított betűtípust használj."
-
-#, fuzzy
-#~ msgid "Select which gtk+ theme to use"
-#~ msgstr "Válassz ki egy témát a telepítéshez"
-
-#~ msgid "Eenie"
-#~ msgstr "Ecc"
-
-#~ msgid "Mynie"
-#~ msgstr "Kimehetsz"
-
-#~ msgid "Catcha"
-#~ msgstr "Után"
-
-#~ msgid "By Its"
-#~ msgstr "Cérnára"
-
-#~ msgid "Meenie"
-#~ msgstr "Pecc"
-
-#, fuzzy
-#~ msgid "Moe"
-#~ msgstr "Modell"
-
-#~ msgid "Tiger"
-#~ msgstr "Bejöhetsz"
-
-#, fuzzy
-#~ msgid "Toe"
-#~ msgstr "TeX"
-
-#, fuzzy
-#~ msgid "Keybinding Properties"
-#~ msgstr "Billentyűzet beállításai"
-
-#~ msgid "Configure the settings of the screensaver"
-#~ msgstr "Képernyővédő beállítások"
-
-#, fuzzy
-#~ msgid "Wallpaper Selection"
-#~ msgstr "_Háttérkép"
-
-#, fuzzy
-#~ msgid "Use GNOME for setting background"
-#~ msgstr "Használj egyszínű feltöltést a háttérhez"
-
-#, fuzzy
-#~ msgid "Tiled"
-#~ msgstr "Tiltott"
-
-#, fuzzy
-#~ msgid "Scaled (keep aspect ratio)"
-#~ msgstr "A kép formáját megtartva feszített"
-
-#, fuzzy
-#~ msgid "More Solid"
-#~ msgstr "Egyszínű"
-
-#, fuzzy
-#~ msgid "Enable Keyboard Repeat"
-#~ msgstr "Billentyűzet kisegítő lehetőségeinek _engedélyezése"
-
-#, fuzzy
-#~ msgid "...a"
-#~ msgstr "Hozzáadás..."
-
-#, fuzzy
-#~ msgid "Type here to test setting"
-#~ msgstr "Beállítások kipróbálása"
-
-#, fuzzy
-#~ msgid "Mouse Configuration"
-#~ msgstr "Egér helyezkedése"
-
-#~ msgid "Right handed"
-#~ msgstr "jobbkezes"
-
-#, fuzzy
-#~ msgid "Low"
-#~ msgstr "Alacsony "
-
-#, fuzzy
-#~ msgid "High"
-#~ msgstr "Bal"
-
-#, fuzzy
-#~ msgid "Settings"
-#~ msgstr "Haladó beállítások"
-
-#, fuzzy
-#~ msgid "Demo"
-#~ msgstr "Töröl"
-
-#, fuzzy
-#~ msgid "Twist:"
-#~ msgstr "Teszt"
-
-#~ msgid "Small"
-#~ msgstr "Rövid"
-
-#~ msgid "Large"
-#~ msgstr "Hosszú"
-
-#, fuzzy
-#~ msgid "Full Color"
-#~ msgstr "Szín"
-
-#, fuzzy
-#~ msgid "Balls"
-#~ msgstr "Rövid"
-
-#, fuzzy
-#~ msgid "Lines"
-#~ msgstr " perccel."
-
-#, fuzzy
-#~ msgid "Tails"
-#~ msgstr "Csempézett"
-
-#, fuzzy
-#~ msgid "Slower"
-#~ msgstr "Lassú"
-
-#, fuzzy
-#~ msgid "Display screensaver in monochrome."
-#~ msgstr "Nincs képernyővédő"
-
-#, fuzzy
-#~ msgid "Colors:"
-#~ msgstr "_Szín:"
-
-#, fuzzy
-#~ msgid "Denser"
-#~ msgstr "Alap"
-
-#, fuzzy
-#~ msgid "Thinner"
-#~ msgstr "Bejöhetsz"
-
-#, fuzzy
-#~ msgid "Center image."
-#~ msgstr "_Középre helyezett"
-
-#, fuzzy
-#~ msgid "Cell"
-#~ msgstr "Mégsem"
-
-#, fuzzy
-#~ msgid "Seconds"
-#~ msgstr "másodperc"
-
-#, fuzzy
-#~ msgid "Use a gradient of colors between circles."
-#~ msgstr "Használj gradiens feltöltést a háttérhez"
-
-#, fuzzy
-#~ msgid "Closer"
-#~ msgstr "_Szín:"
-
-#, fuzzy
-#~ msgid "Smaller"
-#~ msgstr "Rövid"
-
-#, fuzzy
-#~ msgid "Larger"
-#~ msgstr "Hosszú"
-
-#, fuzzy
-#~ msgid "Length"
-#~ msgstr "Jobb"
-
-#, fuzzy
-#~ msgid "Speed to clear the screen"
-#~ msgstr "A képernyő közepére"
-
-#, fuzzy
-#~ msgid "Slim"
-#~ msgstr "Egyszínű"
-
-#, fuzzy
-#~ msgid "Add a new screensaver"
-#~ msgstr "Véletlenszerű képernyővédő"
-
-#, fuzzy
-#~ msgid "New screensaver"
-#~ msgstr "Nincs képernyővédő"
-
-#~ msgid "Enable"
-#~ msgstr "Engedélyez"
-
-#~ msgid ""
-#~ "No help is available/installed. Please make sure you\n"
-#~ "have the GNOME User's Guide installed on your system."
-#~ msgstr ""
-#~ "Nincs súgó ebben a témában. Kérlek győződj meg arról,\n"
-#~ "hogy a GNOME felhasználók kézikönyvét telepítetted."
-
-#~ msgid "Close"
-#~ msgstr "Bezár"
-
-#, fuzzy
-#~ msgid "Browse with single window"
-#~ msgstr "Súgó böngésző (új ablakban)"
-
-#, fuzzy
-#~ msgid "New-control-center"
-#~ msgstr "GNOME vezérlőpult"
-
-#, fuzzy
-#~ msgid "Unknown error."
-#~ msgstr "Ismeretlen"
-
-#, fuzzy
-#~ msgid "PARENT"
-#~ msgstr "ORIENT"
-
-#, fuzzy
-#~ msgid "Partial containment"
-#~ msgstr "Függőleges színátmenet"
-
-#, fuzzy
-#~ msgid "About \"<Screensaver name>\""
-#~ msgstr " perccel a képernyővédő indulása után."
-
-#, fuzzy
-#~ msgid "Configure Power Management"
-#~ msgstr "Ablakok elhelyezésének beállításai"
-
-#, fuzzy
-#~ msgid "Shut down monitor after"
-#~ msgstr "Kapcsold le a monitort "
-
-#, fuzzy
-#~ msgid "minutes"
-#~ msgstr " perccel."
-
-#, fuzzy
-#~ msgid "Settings for \"<Screensaver name>\""
-#~ msgstr " perccel a képernyővédő indulása után."
-
-#, fuzzy
-#~ msgid "_Settings"
-#~ msgstr "Haladó beállítások"
-
-#, fuzzy
-#~ msgid "_About this screensaver..."
-#~ msgstr "Nincs képernyővédő"
-
-#, fuzzy
-#~ msgid "S_tart screensaver after "
-#~ msgstr " perccel a képernyővédő indulása után."
-
-#, fuzzy
-#~ msgid "S_witch screensavers after "
-#~ msgstr " perccel a képernyővédő indulása után."
-
-#, fuzzy
-#~ msgid "R_equire password to unlock screen"
-#~ msgstr "Jelszót kér"
-
-#, fuzzy
-#~ msgid "Enable _power management"
-#~ msgstr "Ablakkezelés"
-
-#, fuzzy
-#~ msgid "_Mode:"
-#~ msgstr "Modell"
-
-#, fuzzy
-#~ msgid "Disable screensaver"
-#~ msgstr "Nincs képernyővédő"
-
-#, fuzzy
-#~ msgid "Random (checked screensavers)"
-#~ msgstr "Véletlenszerű képernyővédő"
-
-#, fuzzy
-#~ msgid "Random (all screensavers)"
-#~ msgstr "Véletlenszerű képernyővédő"
-
-#~ msgid ""
-#~ "No help is available/installed for these settings. Please make sure you\n"
-#~ "have the GNOME User's Guide installed on your system."
-#~ msgstr ""
-#~ "Erről a témáról nem érhető el a súgó. Ellenőrizd, hogy\n"
-#~ "a GNOME Felhasználói Kézikönyv telepítve van-e"
-
-#, fuzzy
-#~ msgid ""
-#~ "We are unable to create the directory\n"
-#~ "~/.gnome/mime-info.\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Nem sikerült létrehozni a könyvtárat:\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Nem tudjuk elmenteni az állást."
-
-#, fuzzy
-#~ msgid ""
-#~ "We are unable to access the directory\n"
-#~ "~/.gnome/mime-info.\n"
-#~ "\n"
-#~ "We will not be able to save the state."
-#~ msgstr ""
-#~ "Nem sikerült elérni a könyvtárat\n"
-#~ "~/.gnome/mime-info\n"
-#~ "\n"
-#~ "Nem tudjuk elmenteni az állást."
-
-#~ msgid "Pitch (Hz)"
-#~ msgstr "Hangmagasság (Hz)"
-
-#~ msgid "Duration (ms)"
-#~ msgstr "Hossz (ms)"
-
-#, fuzzy
-#~ msgid "Selection"
-#~ msgstr "Esemény"
-
-#, fuzzy
-#~ msgid "Screensaver Selection"
-#~ msgstr "Képernyővédő beállítások"
-
-#, fuzzy
-#~ msgid "Only after the screensaver has run for"
-#~ msgstr " perccel a képernyővédő indulása után."
-
-#~ msgid "Priority"
-#~ msgstr "Prioritás"
-
-#, fuzzy
-#~ msgid "Fade Duration"
-#~ msgstr "Hossz (ms)"
-
-#, fuzzy
-#~ msgid "Session"
-#~ msgstr "Kiterjesztés"
-
-#, fuzzy
-#~ msgid "Cancel Login"
-#~ msgstr "Mégsem"
-
-#~ msgid "Order: "
-#~ msgstr "Sorrend: "
-
-#~ msgid "Style: "
-#~ msgstr "Stílus: "
-
-#~ msgid "This button sets the start order of the selected programs.\n"
-#~ msgstr "Ezek a gombok beállítják a kiválasztott programok sorrendjét.\n"
-
-#~ msgid ""
-#~ "This button sets the restart style of the selected programs:\n"
-#~ "Normal programs are unaffected by logouts but can die;\n"
-#~ "Respawn programs are never allowed to die;\n"
-#~ "Trash programs are discarded on logout and can die;\n"
-#~ "Settings programs are always started on every login."
-#~ msgstr ""
-#~ "Ez a gomb állítja be az újraindítás stílusát a kiválasztott "
-#~ "programoknál:\n"
-#~ "Normális programok: kilépés után visszatöltődnek, kilövődhetnek \n"
-#~ "Respawn programok: nem lövődhetnek ki \n"
-#~ "Trash programok: kilépéskor elfelejtődnek, kilövődhetnek \n"
-#~ "Settings programok: minden belépéskor elindulnak."
-
-#~ msgid ""
-#~ "This button produces a key to the program states below:\n"
-#~ "Inactive programs are waiting to start or have finished;\n"
-#~ "Starting programs are being given time to get running;\n"
-#~ "Running programs are normal members of the session;\n"
-#~ "Saving programs are saving their session details;\n"
-#~ "Programs which make no contact have Unknown states.\n"
-#~ msgstr ""
-#~ "Ez a gomb a következő programállapotok között vált:\n"
-#~ "Nem aktív: indításra vár, vagy befejeződött\n"
-#~ "Induló: épp indul\n"
-#~ "Futó: ez a normális állapot\n"
-#~ "Mentődő: a program menti állapotát\n"
-#~ "Ismeretlen: nincs kapcsolat a programmal\n"
-
-#~ msgid "This column gives the command used to start a program."
-#~ msgstr "Ez az oszlop a program indításához szükséges parancsot adja meg."
-
-#~ msgid "Order"
-#~ msgstr "Sorrend"
-
-#~ msgid "Style"
-#~ msgstr "Stílus"
-
-#~ msgid "State"
-#~ msgstr "Állapot"
-
-#~ msgid "Inactive"
-#~ msgstr "Nem aktív"
-
-#~ msgid "Waiting to start or already finished."
-#~ msgstr "Indításra vár, vagy végzett."
-
-#~ msgid "Started but has not yet reported state."
-#~ msgstr "El lett indítva, de állapotáról nem tudunk."
-
-#~ msgid "Running"
-#~ msgstr "Futó"
-
-#~ msgid "A normal member of the session."
-#~ msgstr "Normális futó program."
-
-#~ msgid "Saving"
-#~ msgstr "Mentődő"
-
-#~ msgid "Saving session details."
-#~ msgstr "Mentődik a munkamenet állapota."
-
-#~ msgid "State not reported within timeout."
-#~ msgstr "Az állapotát nem közli a program."
-
-#~ msgid "Normal"
-#~ msgstr " Normális"
-
-#~ msgid "Unaffected by logouts but can die."
-#~ msgstr "Belépéskor újratöltődik, de megállhat."
-
-#~ msgid "Respawn"
-#~ msgstr "Újraindul"
-
-#~ msgid "Never allowed to die."
-#~ msgstr "Nem lövődhet ki."
-
-#~ msgid "Trash"
-#~ msgstr "Kuka"
-
-#~ msgid "Discarded on logout and can die."
-#~ msgstr "Kilövődhet, nem fog belépéskor elindulni."
-
-#~ msgid "Always started on every login."
-#~ msgstr "Minden belépéskor elindul."
-
-#, fuzzy
-#~ msgid "Remove Program"
-#~ msgstr "_Program"
-
-#~ msgid "Prompt on logout"
-#~ msgstr "Kilépésnél kérdezzen"
-
-#~ msgid "Automatically save changes to session"
-#~ msgstr "Automatikusan mentsd a szezon beállításait"
-
-#~ msgid "Non-session-managed Startup Programs"
-#~ msgstr "Nem szezonvezérelt programindítások"
-
-#~ msgid "Browse Currently Running Programs..."
-#~ msgstr "Az épp futó programok megtekintése..."
-
-#~ msgid "Only display warnings."
-#~ msgstr "Csak a figyelmeztetéseket mutasd."
-
-#~ msgid "Startup Command"
-#~ msgstr "Indítási parancs"
-
-#~ msgid ""
-#~ "Programs with smaller values are started before programs with higher "
-#~ "values. The default value should be OK"
-#~ msgstr ""
-#~ "A kisebb értékekkel rendelkező programok indulnak hamarabb. Az "
-#~ "alapértéknek OK-nek kell lennie"
-
-#~ msgid "The startup command cannot be empty"
-#~ msgstr "Nem lehet a parancs üres"
-
-#~ msgid "Edit Startup Program"
-#~ msgstr "Induló program szerkeszése"
-
-#~ msgid ""
-#~ "Error installing theme:\n"
-#~ "'%s'\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Hiba a téma telepítésekor:\n"
-#~ "'%s'\n"
-#~ "%s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Auto\n"
-#~ "Preview"
-#~ msgstr "Előnézet"
-
-#~ msgid "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-*-*"
-
-#~ msgid "Home directory doesn't exist!\n"
-#~ msgstr "A saját könyvtár nem létezik!\n"
-
-#~ msgid "Theme does not exist"
-#~ msgstr "Nincs ilyen téma"
-
-#~ msgid "Command '%s' failed"
-#~ msgstr "%s parancs nem sikerült"
-
-#~ msgid "Unknown file format"
-#~ msgstr "Ismeretlen fájlformátum"
-
-#~ msgid "Error initializing the `url-properties' capplet."
-#~ msgstr "Hiba az 'url-properties' capplet indítása közben"
-
-#~ msgid ""
-#~ "an initialization error occurred while starting 'wm-properties-capplet'.\n"
-#~ "aborting...\n"
-#~ msgstr ""
-#~ "a wm-properties-capplet futtatása közben hiba történt,\n"
-#~ "kilépek....\n"
-
-#, fuzzy
-#~ msgid "Color 1"
-#~ msgstr "_Szín:"
-
-#, fuzzy
-#~ msgid "Color 2"
-#~ msgstr "_Szín:"
-
-#, fuzzy
-#~ msgid "Vertical"
-#~ msgstr "Függőleges színátmenet"
-
-#~ msgid "Disable background selection"
-#~ msgstr "Háttérválasztás tiltása"
-
-#~ msgid "Auto-repeat"
-#~ msgstr "Automatikus újrajátszás"
-
-#, fuzzy
-#~ msgid "Menu Options"
-#~ msgstr "Kép beállításai:"
-
-#~ msgid "Can detach and move menus"
-#~ msgstr "Lehessen a menüt lecsatlakoztatni és mozgatni"
-
-#~ msgid "Can detach and move toolbars"
-#~ msgstr "Le lehessen szedni az eszközsort"
-
-#, fuzzy
-#~ msgid "Dialog position:"
-#~ msgstr "Párbeszédablak pozíció"
-
-#, fuzzy
-#~ msgid ""
-#~ "Dialogs are like other windows\n"
-#~ "Dialogs are treated specially by the window manager\n"
-#~ msgstr "A párbeszédablakokat az ablakkezelő lekezeli"
-
-#~ msgid "GNOME MDI Options"
-#~ msgstr "GNOME MDI beállítások"
-
-#, fuzzy
-#~ msgid "Default MDI Mode:"
-#~ msgstr "Alapértelmezett web böngésző"
-
-#, fuzzy
-#~ msgid "MDI notebook tab position:"
-#~ msgstr "MDI noteszfül pozíciója"
-
-#~ msgid "id of the capplet -- assigned by the control-center"
-#~ msgstr "capplet azonosító -- a control-center által adva"
-
-#~ msgid "ID"
-#~ msgstr "ID"
-
-#~ msgid "Multi-capplet id."
-#~ msgstr "Multi-capplet id."
-
-#~ msgid "CAPID"
-#~ msgstr "CAPID"
-
-#~ msgid "X ID of the socket it's plugged into"
-#~ msgstr "X ID of the socket it's plugged into"
-
-#~ msgid "XID"
-#~ msgstr "XID"
-
-#~ msgid "IOR"
-#~ msgstr "IOR"
-
-#~ msgid "Ignore default action.  Used for custom init-session cases"
-#~ msgstr "Az alapértelmezett akció figyelmen kívül hagyása"
-
-#, fuzzy
-#~ msgid "Help with the GNOME control-center."
-#~ msgstr "GNOME vezérlőpult"
-
-#, fuzzy
-#~ msgid "About the GNOME control-center."
-#~ msgstr "GNOME vezérlőpult"
-
-#~ msgid "IMAGE-FILE"
-#~ msgstr "IMAGE-FILE"
-
-#~ msgid ""
-#~ "an initialization error occurred while starting 'background-properties-"
-#~ "capplet'.\n"
-#~ "aborting...\n"
-#~ msgstr ""
-#~ "a background-properties-capplet futtatása közben hiba történt,\n"
-#~ "kilépek....\n"
-
-#~ msgid "Set parameters from saved state and exit"
-#~ msgstr "Állítsd be a paramétereket az elmentett állapotból és lépj ki"
-
-#~ msgid "IMAGE"
-#~ msgstr "IMAGE"
-
-#~ msgid "Sets the wallpaper to the value specified"
-#~ msgstr "Beállítja a háttérképet a kiválasztottra"
-
-#~ msgid "COLOR"
-#~ msgstr "COLOR"
-
-#~ msgid "Specifies end background color for gradient"
-#~ msgstr "Megadja a háttérgradiens végszinét"
-
-#~ msgid "Gradient orientation: vertical or horizontal"
-#~ msgstr "Gradiens elhelyezkedés: függőleges vagy vizszintes"
-
-#~ msgid "MODE"
-#~ msgstr "MODE"
-
-#~ msgid "Display wallpaper: tiled, centered, scaled or ratio"
-#~ msgstr "Háttérkép berakása. tapétázott, középre helyezett, skálázott..."
-
-#~ msgid ""
-#~ "an initialization error occurred while starting 'bell-properties-"
-#~ "capplet'.\n"
-#~ "aborting...\n"
-#~ msgstr ""
-#~ "a bell-properties-capplet futtatása közben hiba történt,\n"
-#~ "kilépek....\n"
-
-#~ msgid ""
-#~ "an initialization error occurred while starting 'mouse-properties-"
-#~ "capplet'.\n"
-#~ "aborting...\n"
-#~ msgstr ""
-#~ "a mouse-properties-capplet futtatása közben hiba történt,\n"
-#~ "kilépek....\n"
-
-#~ msgid ""
-#~ "an initialization error occurred while starting 'sound-properties-"
-#~ "capplet'."
-#~ msgstr "a sound-properties-capplet futtatása közben hiba történt."
-
-#~ msgid ""
-#~ "This copy of the GNOME control center was not compiled with sound support"
-#~ msgstr "Nem lett hangtámogatással fordítva ez a control-center."
-
-#~ msgid "Put buttons on edges"
-#~ msgstr "Rakd a gombokat az élekre"
-
-#~ msgid "Left-justify buttons"
-#~ msgstr "Igazítsd a gombokat balra"
-
-#~ msgid "Right-justify buttons"
-#~ msgstr "Igazítsd a gombokat jobbra"
-
-#~ msgid "Toplevel"
-#~ msgstr "Felső szint"
-
-#~ msgid ""
-#~ "an initialization error occurred while starting 'keyboard-properties-"
-#~ "capplet'.\n"
-#~ "aborting...\n"
-#~ msgstr ""
-#~ "a keyboard-properties-capplet futtatása közben hiba történt,\n"
-#~ "kilépek....\n"
-
-#~ msgid "%s Settings..."
-#~ msgstr "%s beállítások..."
-
-#~ msgid "Author:"
-#~ msgstr "Szerző:"
-
-#~ msgid "Author: UNKNOWN"
-#~ msgstr "Szerző: Ismeretlen"
-
-#~ msgid "RANDOM SCREENSAVER"
-#~ msgstr "VÉLETLEN KÉPERNYŐVÉDŐ"
-
-#~ msgid ""
-#~ "Pressing this button will popup a dialogbox that will help you setup the "
-#~ "current screensaver."
-#~ msgstr ""
-#~ "Ezt a gombot megnyomva feljön egy párbeszédablak amely segít neked "
-#~ "beállítani a kiválasztott képernyővédőt."
-
-#~ msgid "Start After "
-#~ msgstr "Ez után indítsd "
-
-#~ msgid " Normal"
-#~ msgstr " Normális"
-
-#~ msgid "Screen Saver Demo"
-#~ msgstr "Képernyővédő bemutató"
-
-#~ msgid "Try"
-#~ msgstr "Kipróbál"
-
-#, fuzzy
-#~ msgid "Revert"
-#~ msgstr "_Törlés "
-
-#~ msgid "Sorry, no help is available for these settings."
-#~ msgstr "Bocs, nincs súgó ezekről a beállításokról."
-
-#~ msgid "capplet-command to be run."
-#~ msgstr "capplet-parancs futtatáshoz."
-
-#~ msgid "CAPPLET"
-#~ msgstr "CAPPLET"
-
-#~ msgid "Discard all changes"
-#~ msgstr "Nem változtat semmit"
-
-#~ msgid ""
-#~ "The following modules have had changes made, but not committed.  If you "
-#~ "would like to edit them, please double click on the appropriate entry."
-#~ msgstr ""
-#~ "A következő modulok változtak, de nem lettek elfogadva. Ha szeretnéd "
-#~ "szerkeszteni őket, duplán kattints a megfelelő bejegyzésre."
-
-#, fuzzy
-#~ msgid "Extension: "
-#~ msgstr "Kiterjesztés"
-
-#~ msgid "Startup Hint"
-#~ msgstr "Indítási segédszövegek"
-
-#~ msgid "Options for the startup hint dialog"
-#~ msgstr "Segédüzenet-ablak, indításkor megjelenik"
-
-#~ msgid "Word Processor"
-#~ msgstr "Szövegszerkesztő"
-
-#~ msgid "Published Materials"
-#~ msgstr "Publikált anyagok"
-
-#~ msgid "Presentation"
-#~ msgstr "Bemutató"
-
-#~ msgid "Diagram"
-#~ msgstr "Diagramm"
-
-#~ msgid "Vector Graphics"
-#~ msgstr "Vektorgrafika"
-
-#~ msgid "World Wide Web"
-#~ msgstr "World Wide Web"
-
-#~ msgid "Plain Text"
-#~ msgstr "Sima szöveg"
-
-#~ msgid "Extended Markup Language (XML)"
-#~ msgstr "Extended Markup Language (XML)"
-
-#~ msgid "Financial"
-#~ msgstr "Pénzügyi"
-
-#~ msgid "Calendar"
-#~ msgstr "Naptár"
-
-#~ msgid "Contacts"
-#~ msgstr "Névjegykártyák"
-
-#~ msgid "Packages"
-#~ msgstr "Csomagok"
-
-#~ msgid "Software Development"
-#~ msgstr "Szoftverfejlesztés"
-
-#~ msgid "Source Code"
-#~ msgstr "Forráskód"
-
-#~ msgid "Set the font for window titlebars"
-#~ msgstr "Az ablakok címsorának betűtípusa"
-
-#~ msgid "faster"
-#~ msgstr "gyorsabb"
-
-#~ msgid "Application"
-#~ msgstr "Alkalmazás"
-
-#~ msgid "_Menu"
-#~ msgstr "_Menü"
-
-#~ msgid "<b>Test</b>"
-#~ msgstr "<b>Teszt</b>"
-
-#~ msgid "_Misc"
-#~ msgstr "_Egyéb"
-
-#~ msgid "_Picture"
-#~ msgstr "_Kép"
-
-#~ msgid "Bor_der the picture with a:"
-#~ msgstr "_Keretezze a képet a kövekezővel:"
-
-#~ msgid "Choose the applications used by default"
-#~ msgstr "Alapértelmezett programok kiválasztása"
-
-#~ msgid "File types and Internet Services"
-#~ msgstr "Fájltípusok és Internetes szolgáltatások"
-
-#~ msgid "Use category _defaults"
-#~ msgstr "Kategória _alapértékeinek használata"
-
-#~ msgid ""
-#~ "Invalid MIME type. Please enter a valid MIME type, or leave the field "
-#~ "blank to have one generated for you."
-#~ msgstr ""
-#~ "Hibás MIME típus. Valós MIME típust adj meg, vagy hagyd üresen a mezőt, "
-#~ "hogy a program adja meg."
-
-#~ msgid "There already exists a MIME type of that name."
-#~ msgstr "Már van ilyen nevű MIME típus."
-
-#~ msgid "Change the default fonts used by the desktop and applications"
-#~ msgstr ""
-#~ "Az asztal és az alkalmazások alapértelmezett betűtípusainak beállítása"
-
-#~ msgid "Keyboard _Navigation scheme for use in applications:"
-#~ msgstr "Az alkalmazásokban használt _navigációs séma:"
-
-#~ msgid ""
-#~ "To assign a shortcut to an action, click in the shortcut column and press "
-#~ "the key combination you want to associate with it."
-#~ msgstr ""
-#~ "Hozzárendeléshez kattints a gyorsbillentyű oszlopára és nyomd le a kívánt "
-#~ "billentyűkombinációt."
-
-#~ msgid "Associate keyboard shortcuts with panel actions"
-#~ msgstr "Gyorsbillentyűk használata a panel eseményeihez"
-
-#~ msgid "<i>fast</i>"
-#~ msgstr "<i>gyors</i>"
-
-#~ msgid "<i>loud</i>"
-#~ msgstr "<i>hangos</i>"
-
-#~ msgid "<i>quiet</i>"
-#~ msgstr "<i>csendes</i>"
-
-#~ msgid "<i>slow</i>"
-#~ msgstr "<i>lassú</i>"
-
-#~ msgid "Cursor"
-#~ msgstr "Kurzor"
-
-#~ msgid "Key_press makes sound"
-#~ msgstr "Billentyű_lenyomás hangot ad"
-
-#~ msgid "Set the speed the cursor blinks in text fields."
-#~ msgstr "A kurzor villogási sebességének beállítása a beviteli mezőkben."
-
-#~ msgid "Set the volume of the clicking sound made when pressing a key"
-#~ msgstr "A billentyűlenyomáskor megszólaló hang hangerejének beállítása"
-
-#~ msgid ""
-#~ "The keyboard bell is the <i>beep</i> sound heard when the system wants to "
-#~ "get your attention."
-#~ msgstr ""
-#~ "A billentyűzetcsengő az a <i>csengő</i> hang, ami akkor hallható, ha a "
-#~ "rendszer fel akarja hívni a figyelmed valamire."
-
-#~ msgid ""
-#~ "You can configure the keyboards accessibility features by bringing up the "
-#~ "'Accessibility Settings' property dialog, or pressing the button on the "
-#~ "right."
-#~ msgstr ""
-#~ "A billentyűzet kisegítő lehetőségeit \n"
-#~ "vagy a 'Kisegítő lehetőségek' ablakban \n"
-#~ "állíthatod be, vagy a jobb oldali gomb \n"
-#~ "megnyomásával."
-
-#~ msgid "_Blink speed:"
-#~ msgstr "_Villogási sebesség:"
-
-#~ msgid "_Delay before repeating:"
-#~ msgstr "_Késleltetés ismétlés előtt:"
-
-#~ msgid "HTTP Proxy Settings"
-#~ msgstr "HTTP Proxy beállítások"
-
-#~ msgid "Change the appearance of buttons, scrollbars, etc"
-#~ msgstr "A gombok, görgetősávok, stb. megjelenésének cseréje"
-
-#~ msgid "Change how toolbars and menus are displayed"
-#~ msgstr "Az eszköztárak és menük megjelenítésének változtatása"
-
-#~ msgid "Menu Item 2"
-#~ msgstr "2. Menüpont"
-
-#~ msgid "Menu Item 3"
-#~ msgstr "3. Menüpont"
-
-#~ msgid "Menu Item 4"
-#~ msgstr "4. Menüpont"
-
-#~ msgid "Menu Item 5"
-#~ msgstr "5. Menüpont"
+"A betűk megjelenítéséhez használt hinting típusa. A lehetséges értékek: "
+"\"Nincs\" - nincs hinting, \"Enyhe\", \"Közepes\" és \"Teljes\" - akkora "
+"hinting, amennyi csak lehetséges; eltorzíthatja a betűk alakját."

@@ -35,7 +35,9 @@
 #include "capplet-util.h"
 #include "gconf-property-editor.h"
 #include "activate-settings-daemon.h"
+#include "capplet-stock-icons.h"
 #include <../accessibility/keyboard/accessibility-keyboard.h>
+
 
 enum
 {
@@ -72,7 +74,8 @@ create_dialog (void)
 static GConfEnumStringPair bell_enums[] = {
 	{ 0, "off" },
 	{ 1, "on" },
-	{ 2, "custom" }
+	{ 2, "custom" },
+	{ -1, NULL }
 };
 
 static GConfValue *
@@ -154,7 +157,7 @@ accessibility_button_clicked (GtkWidget *widget,
 			      gpointer   data)
 {
 	GError *err = NULL;
-	if (!g_spawn_command_line_async ("gnome-accessibility-keyboard-properties", NULL))
+	if (!g_spawn_command_line_async ("gnome-accessibility-keyboard-properties", &err))
 		capplet_error_dialog (GTK_WINDOW (gtk_widget_get_toplevel (widget)), 
 			_("There was an error launching the keyboard capplet : %s"),
 			err);
@@ -185,19 +188,13 @@ setup_dialog (GladeXML       *dialog,
 
 	/* load all the images */
 	program = gnome_program_get ();
-	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "keyboard-repeat.png", TRUE, NULL);
-	gtk_image_set_from_file (GTK_IMAGE (WID ("repeat_image")), filename);
-	g_free (filename);
-	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "keyboard-cursor.png", TRUE, NULL);
-	gtk_image_set_from_file (GTK_IMAGE (WID ("cursor_image")), filename);
-	g_free (filename);
-	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "keyboard-volume.png", TRUE, NULL);
-	gtk_image_set_from_file (GTK_IMAGE (WID ("volume_image")), filename);
-	g_free (filename);
-	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "keyboard-bell.png", TRUE, NULL);
-	gtk_image_set_from_file (GTK_IMAGE (WID ("bell_image")), filename);
-	g_free (filename);
 
+	capplet_init_stock_icons ();
+        gtk_image_set_from_stock (GTK_IMAGE (WID ("repeat_image")), KEYBOARD_REPEAT, keyboard_capplet_icon_get_size());
+        gtk_image_set_from_stock (GTK_IMAGE (WID ("cursor_image")), KEYBOARD_CURSOR, keyboard_capplet_icon_get_size());
+        gtk_image_set_from_stock (GTK_IMAGE (WID ("volume_image")), KEYBOARD_VOLUME, keyboard_capplet_icon_get_size());
+        gtk_image_set_from_stock (GTK_IMAGE (WID ("bell_image")), KEYBOARD_BELL, keyboard_capplet_icon_get_size());
+	
 	peditor = gconf_peditor_new_boolean
 		(changeset, "/desktop/gnome/peripherals/keyboard/repeat", WID ("repeat_toggle"), NULL);
 	gconf_peditor_widget_set_guard (GCONF_PROPERTY_EDITOR (peditor), WID ("repeat_table"));

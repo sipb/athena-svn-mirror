@@ -4,6 +4,7 @@ INCLUDES = \
         -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 		\
 	-DGNOME_ICONDIR=\""${prefix}/share/pixmaps"\"			\
 	-DG_LOG_DOMAIN=\"capplet-common\"				\
+	-DINSTALL_PREFIX=\"$(prefix)\"					\
 	-I$(top_srcdir)/						\
 	-I$(top_srcdir)/libbackground					\
 	@VFS_CAPPLET_CFLAGS@
@@ -17,7 +18,17 @@ libcommon_la_SOURCES = \
 	gconf-property-editor.c		gconf-property-editor.h		\
 	gconf-property-editor-marshal.c	gconf-property-editor-marshal.h \
 	file-transfer-dialog.c		file-transfer-dialog.h		\
-	theme-common.c			theme-common.h			\
-	wm-common.c			wm-common.h
+	gnome-theme-info.c		gnome-theme-info.h		\
+	wm-common.c			wm-common.h			\
+	capplet-stock-icons.c		capplet-stock-icons.h
 
 libcommon_la_LIBADD = $(top_builddir)/libbackground/libbackground.la
+
+gnome_theme_test_SOURCES = \
+	gnome-theme-test.c
+
+gnome_theme_test_LDADD = 						\
+	$(GNOMECC_CAPPLETS_LIBS)
+
+noinst_PROGRAMS = \
+	gnome-theme-test

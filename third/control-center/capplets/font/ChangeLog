@@ -1,26 +1,79 @@
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.2
+	* Release 2.2.0
 
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.1
+	* Release 2.1.7
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.6
+
+2002-12-18  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.5
 
 2002-11-23  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.3
+	* Release 2.1.3
 
-2002-09-24  Jody Goldber <jody@gnome.org>
+2002-11-13  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
 
-	* Release 2.0.2.91
+	* main.c: Added the "desktop_font" key directory to the list
+	of directories GConfClient will watch for changes.
+	Fixes Bug #94766.
+
+2002-11-02  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.2
+
+Fri Nov  1 18:21:22 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* main.c: remove the duplicate #defined key.
+
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-10-16  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=95807
+	From  sylvain_pasche@yahoo.fr
+	* main.c (open_pattern) : Add a safety check.
+
+2002-10-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.0.1
 
 2002-08-21  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.1.1
+	* Release 2.1.0
 
-2002-08-06  Jody Goldberg <jody@gnome.org>
+2002-08-19  Ross Burton  <ross@burtonini.com>
 
-	* Release 2.0.1
+	* font-properties.desktop.in: Fix the desktop file so that it
+	validates.
+
+2002-08-19  Jody Goldberg <jody@gnome.org>
+
+	* font-properties.glade :
+	* main.c: (setup_dialog): merge in owen's patch to configure the
+	  window title font and the font to use for terminals.  This patch
+	  uses a metacity specific key for the window title.  Owen ? Seth ?
+	  Can you folk choose please.
+
+2002-06-24  Seth Nickell  <snickell@stanford.edu>
+
+	* font-properties.glade:
+	* main.c: (setup_dialog):
+
+	Add a font picker for controlling the window title font (and size).
+	Set border widths nicely so things align.
+	
+2002-07-24  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am (EXTRA_DIST): dist the pixel icons
 
 2002-07-02  Jody Goldberg <jody@gnome.org>
 

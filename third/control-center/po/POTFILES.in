@@ -9,6 +9,7 @@ capplets/background/background-properties.glade
 capplets/background/background.desktop.in
 capplets/common/activate-settings-daemon.c
 capplets/common/capplet-util.c
+capplets/common/capplet-stock-icons.c
 capplets/common/file-transfer-dialog.c
 capplets/common/gconf-property-editor.c
 capplets/default-applications/default-applications.desktop.in
@@ -63,6 +64,9 @@ capplets/theme-switcher/gtk-theme-selector.desktop.in
 capplets/theme-switcher/theme-properties.glade
 capplets/theme-switcher/theme-install.glade
 capplets/theme-switcher/theme-switcher.c
+capplets/theme-switcher/gnome-theme-details.c
+capplets/theme-switcher/gnome-theme-save.c
+capplets/theme-switcher/gnome-theme-manager.c
 capplets/ui-properties/behavior.desktop.in
 capplets/ui-properties/behavior.desktop.in.in
 capplets/ui-properties/gnome-ui-properties.c
@@ -88,3 +92,7 @@ libbackground/preferences.c
 libbackground/preview-file-selection.c
 libsounds/sound-view.c
 libwindow-settings/gnome-wm-manager.c
+libwindow-settings/metacity-window-manager.c
+schemas/apps_gnome_settings_daemon_default_editor.schemas.in
+schemas/apps_gnome_settings_daemon_screensaver.schemas.in
+schemas/desktop_gnome_font_rendering.schemas.in

@@ -1,27 +1,103 @@
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.2
+	* Release 2.2.0
 
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.1
+	* Release 2.1.7
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.6
+
+2002-12-18  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.5
+
+2002-12-01  Havoc Pennington  <hp@pobox.com>
+
+	* gnome-window-properties.c: modify to use slider/radio instead of 
+	spinbutton/optionmenu.
+
+	* gnome-window-properties.glade: make UI review changes
 
 2002-11-23  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.3
+	* Release 2.1.3
 
-2002-09-24  Jody Goldber <jody@gnome.org>
+2002-11-02  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.2.91
+	* Release 2.1.2
+
+2002-10-26  Havoc Pennington  <hp@pobox.com>
+
+	* gnome-window-properties.c: rewrite
+
+	* Makefile.am (bin_PROGRAMS): remove metacity module, move to 
+	libwindow-settings
+	(gnome_window_properties_LDADD): properly link to .la file for 
+	libgnome-window-settings, not the installed copy
+
+2002-10-21  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-window-properties.c: (setup_appearance_option_menu):
+
+	Fix potential segfault.
+	
+2002-10-21  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-window-properties.c: (update_gui):
+
+	Fix segfault caused by a WM where the settings module
+	wasn't found.
+	
+2002-10-21  Seth Nickell  <snickell@stanford.edu>
+
+        Patch from sylvain_pasche@yahoo.fr
+	
+	* gnome-window-properties.c: (setup_appearance_option_menu):
+
+	Fix bug that caused a segfault when the GConf theme key
+	was missing.
+
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-10-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.0.1
+
+2002-08-31  Jacob Berkman  <jacob@ximian.com>
+
+	* metacity-window-manager.c: include sys/types.h before dirent.h
+	and string.h
 
 2002-08-21  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.1.1
+	* Release 2.1.0
 
-2002-08-06  Jody Goldberg <jody@gnome.org>
+2002-08-19  Ross Burton  <ross@burtonini.com>
 
-	* Release 2.0.1
+	* window-properties.desktop.in: Fix the desktop file so it
+	validates.
 
+2002-08-08  jacob berkman  <jacob@ximian.com>
+
+	* metacity-window-manager.c (_MetacityWindowManagerPrivate): add
+	padding so that it builds on non-gcc
+
+2002-08-08  Seth Nickell  <snickell@stanford.edu>
+
+	* metacity-window-manager.c: (metacity_set_theme),
+	(add_themes_from_dir), (metacity_get_theme_list),
+	(metacity_set_font), (metacity_set_focus_follows_mouse),
+	(metacity_get_user_theme_folder),
+	(metacity_window_manager_class_init):
+
+	Implement all calls for metacity, and check more error
+	stuff.
+	
 2002-06-17  Jody Goldberg <jody@gnome.org>
 
 	* Release 2.0.0

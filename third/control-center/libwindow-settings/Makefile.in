@@ -75,10 +75,13 @@ ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
+FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -108,12 +111,10 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
-INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -122,6 +123,8 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+METACITY_CFLAGS = @METACITY_CFLAGS@
+METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -138,35 +141,69 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
-WARN_CFLAGS = @WARN_CFLAGS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-cxxflags_set = @cxxflags_set@
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 			-DGNOME_ICONDIR=\""${prefix}/share/pixmaps"\"				-DG_LOG_DOMAIN=\"capplet-common\"					-DGNOME_WINDOW_MANAGER_MODULE_PATH=\""$(libdir)/window-manager-settings"\" 	-I$(top_srcdir)/							@CAPPLET_CFLAGS@
+WM_MODULE_DIR = $(libdir)/window-manager-settings
+
+INCLUDES = \
+        -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 		\
+	-DGNOME_ICONDIR=\""${prefix}/share/pixmaps"\"			\
+	-DG_LOG_DOMAIN=\"capplet-common\"				\
+	-DGNOME_WINDOW_MANAGER_MODULE_PATH=\""$(WM_MODULE_DIR)"\" \
+	-I$(top_srcdir)/						\
+	@CAPPLET_CFLAGS@						\
+	-DMETACITY_THEME_DIR=\""$(datadir)/themes"\"
 
 
 lib_LTLIBRARIES = libgnome-window-settings.la
 
-libgnome_window_settings_la_LDFLAGS =  	-export_dynamic			        -version-info 1:0:0
+libgnome_window_settings_la_LDFLAGS = \
+	-export_dynamic			\
+        -version-info 1:0:0
 
 
-libgnome_window_settings_la_SOURCES =  	gnome-window-manager.c		gnome-window-manager.h		gnome-wm-manager.c		gnome-wm-manager.h		wm-exec.c			wm-list.c			wm-properties.h
+libgnome_window_settings_la_SOURCES = \
+	gnome-window-manager.c	\
+	gnome-window-manager.h	\
+	gnome-wm-manager.c	\
+	gnome-wm-manager.h
 
 
 libgnome_window_settingsincludedir = $(includedir)/gnome-window-settings-2.0
 
-libgnome_window_settingsinclude_HEADERS =  	gnome-window-manager.h				gnome-wm-manager.h
+libgnome_window_settingsinclude_HEADERS = \
+	gnome-window-manager.h			\
+	gnome-wm-manager.h
 
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-window-settings-2.0.pc
 
-EXTRA_DIST =  	gnome-window-settings-2.0.pc.in			ChangeLog
+EXTRA_DIST = \
+	gnome-window-settings-2.0.pc.in		\
+	ChangeLog				\
+	wm-exec.c				\
+	wm-list.c				\
+	wm-properties.h
 
+
+wms_flags = -export_dynamic -avoid-version
+wmsdir = $(WM_MODULE_DIR)
+
+wms_LTLIBRARIES = \
+	libmetacity.la
+
+
+libmetacity_la_SOURCES = \
+	metacity-window-manager.c	\
+	metacity-window-manager.h
+
+
+libmetacity_la_LDFLAGS = $(wms_flags)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  gnome-window-settings-2.0.pc
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES) $(wms_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
@@ -179,7 +216,9 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libgnome_window_settings_la_LIBADD = 
 libgnome_window_settings_la_OBJECTS =  gnome-window-manager.lo \
-gnome-wm-manager.lo wm-exec.lo wm-list.lo
+gnome-wm-manager.lo
+libmetacity_la_LIBADD = 
+libmetacity_la_OBJECTS =  metacity-window-manager.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -195,10 +234,10 @@ gnome-window-settings-2.0.pc.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libgnome_window_settings_la_SOURCES)
-OBJECTS = $(libgnome_window_settings_la_OBJECTS)
+SOURCES = $(libgnome_window_settings_la_SOURCES) $(libmetacity_la_SOURCES)
+OBJECTS = $(libgnome_window_settings_la_OBJECTS) $(libmetacity_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -236,6 +275,31 @@ uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
 	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+mostlyclean-wmsLTLIBRARIES:
+
+clean-wmsLTLIBRARIES:
+	-test -z "$(wms_LTLIBRARIES)" || rm -f $(wms_LTLIBRARIES)
+
+distclean-wmsLTLIBRARIES:
+
+maintainer-clean-wmsLTLIBRARIES:
+
+install-wmsLTLIBRARIES: $(wms_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(wmsdir)
+	@list='$(wms_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(wmsdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(wmsdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-wmsLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(wms_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(wmsdir)/$$p; \
 	done
 
 .c.o:
@@ -284,6 +348,9 @@ maintainer-clean-libtool:
 
 libgnome-window-settings.la: $(libgnome_window_settings_la_OBJECTS) $(libgnome_window_settings_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libgnome_window_settings_la_LDFLAGS) $(libgnome_window_settings_la_OBJECTS) $(libgnome_window_settings_la_LIBADD) $(LIBS)
+
+libmetacity.la: $(libmetacity_la_OBJECTS) $(libmetacity_la_DEPENDENCIES)
+	$(LINK) -rpath $(wmsdir) $(libmetacity_la_LDFLAGS) $(libmetacity_la_OBJECTS) $(libmetacity_la_LIBADD) $(LIBS)
 
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
@@ -337,7 +404,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -366,7 +433,10 @@ distdir: $(DISTFILES)
 gnome-window-manager.lo gnome-window-manager.o : gnome-window-manager.c \
 	gnome-window-manager.h
 gnome-wm-manager.lo gnome-wm-manager.o : gnome-wm-manager.c ../config.h \
-	gnome-wm-manager.h gnome-window-manager.h wm-properties.h
+	gnome-wm-manager.h gnome-window-manager.h
+metacity-window-manager.lo metacity-window-manager.o : \
+	metacity-window-manager.c ../config.h metacity-window-manager.h \
+	gnome-window-manager.h
 wm-exec.lo wm-exec.o : wm-exec.c wm-properties.h
 wm-list.lo wm-list.o : wm-list.c wm-properties.h
 
@@ -381,14 +451,15 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am: install-pkgconfigDATA \
+install-data-am: install-wmsLTLIBRARIES install-pkgconfigDATA \
 		install-libgnome_window_settingsincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
+uninstall-am: uninstall-libLTLIBRARIES uninstall-wmsLTLIBRARIES \
+		uninstall-pkgconfigDATA \
 		uninstall-libgnome_window_settingsincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
@@ -396,7 +467,8 @@ all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgconfigdir) \
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(wmsdir) \
+		$(DESTDIR)$(pkgconfigdir) \
 		$(DESTDIR)$(libgnome_window_settingsincludedir)
 
 
@@ -409,25 +481,26 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
-		mostlyclean-generic
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-wmsLTLIBRARIES \
+		mostlyclean-compile mostlyclean-libtool \
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-libLTLIBRARIES clean-wmsLTLIBRARIES clean-compile \
+		clean-libtool clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-generic \
-		clean-am
+distclean-am:  distclean-libLTLIBRARIES distclean-wmsLTLIBRARIES \
+		distclean-compile distclean-libtool distclean-tags \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-wmsLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -438,7 +511,10 @@ maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
 clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES \
+mostlyclean-wmsLTLIBRARIES distclean-wmsLTLIBRARIES \
+clean-wmsLTLIBRARIES maintainer-clean-wmsLTLIBRARIES \
+uninstall-wmsLTLIBRARIES install-wmsLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-pkgconfigDATA install-pkgconfigDATA \
@@ -451,6 +527,7 @@ uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+#libmetacity_la_LIBADD = $(top_builddir)/libwindow-settings/libwindow-settings.la
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

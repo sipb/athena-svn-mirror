@@ -132,7 +132,9 @@ static void
 selection_changed_cb (GtkTreeSelection *selection, GladeXML *dialog) 
 {
 	gint count = 0;
+
 	gtk_tree_selection_selected_foreach (selection, (GtkTreeSelectionForeachFunc) selection_count_cb, &count);
+
 	gtk_widget_set_sensitive (WID ("edit_button"), count != 0);
 	gtk_widget_set_sensitive (WID ("remove_button"), count != 0);
 }

@@ -186,8 +186,8 @@ set_server_from_gconf (GConfEntry *ignored)
 	}
 
 	desc->ctrls->ax_options = set_clear (enable_accessX &&
-			gconf_client_get_bool (client, CONFIG_ROOT "/feature_state_change_beep", NULL),
-			desc->ctrls->ax_options, XkbAX_FeatureFBMask | XkbAX_SlowWarnFBMask);
+		gconf_client_get_bool (client, CONFIG_ROOT "/feature_state_change_beep", NULL),
+		desc->ctrls->ax_options, XkbAX_FeatureFBMask | XkbAX_SlowWarnFBMask);
 
 	/* bounce keys */
 	if (set_ctrl_from_gconf (desc, client, CONFIG_ROOT "/bouncekeys_enable",
@@ -364,8 +364,8 @@ set_gconf_from_server (GConfEntry *ignored)
 		desc->ctrls->ax_options & XkbAX_IndicatorFBMask);
 
 	if (changed) {
-		gconf_client_commit_change_set (client, cs, FALSE, NULL);
-		gconf_client_suggest_sync (client, NULL);
+	gconf_client_commit_change_set (client, cs, FALSE, NULL);
+	gconf_client_suggest_sync (client, NULL);
 	}
 	gconf_change_set_unref (cs);
 	we_are_changing_xkb_state = FALSE;
@@ -412,12 +412,12 @@ gnome_settings_accessibility_keyboard_load (GConfClient *client)
 	gdk_window_add_filter (NULL, &cb_xkb_event_filter, NULL);
 }
 
+
 void
 gnome_settings_accessibility_keyboard_init (GConfClient *client)
 {
 	gnome_settings_daemon_register_callback (CONFIG_ROOT, &set_server_from_gconf);
 }
-
 #else
 
 void
@@ -425,7 +425,6 @@ gnome_settings_accessibility_keyboard_load (GConfClient *client)
 {
 	g_warning ("Unsupported in this build");
 }
-
 void
 gnome_settings_accessibility_keyboard_init (GConfClient *client)
 {

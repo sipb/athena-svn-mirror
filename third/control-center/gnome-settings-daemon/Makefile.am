@@ -1,7 +1,7 @@
 INCLUDES=$(GNOME_SETTINGS_DAEMON_CFLAGS) -I$(top_srcdir)/libbackground -I$(top_srcdir) \
   -DGNOMELOCALEDIR="\"$(datadir)/locale\"" \
-  -DESD_SERVER="\"$(ESD_SERVER)\""
-
+  -DESD_SERVER="\"$(ESD_SERVER)\""	\
+  -DDATADIR="\"$(datadir)\""
 bin_PROGRAMS=gnome-settings-daemon
 
 gnome_settings_daemon_SOURCES =	\
@@ -18,8 +18,6 @@ gnome_settings_daemon_SOURCES =	\
 	gnome-settings-background.c	\
 	gnome-settings-xsettings.c	\
 	gnome-settings-xsettings.h	\
-	gnome-settings-wm.c		\
-	gnome-settings-wm.h		\
 	gnome-settings-locate-pointer.c	\
 	gnome-settings-locate-pointer.h	\
 	gnome-settings-sound.c		\
@@ -30,6 +28,8 @@ gnome_settings_daemon_SOURCES =	\
 	gnome-settings-screensaver.c	\
 	gnome-settings-default-editor.c	\
 	gnome-settings-default-editor.h	\
+	gnome-settings-gtk1theme.c      \
+	gnome-settings-gtk1theme.h	\
 	xsettings-common.c		\
 	xsettings-manager.c		\
 	xsettings-common.h		\
@@ -41,9 +41,10 @@ gnome_settings_daemon_SOURCES =	\
 #	$(AccessX_files)		
 
 gnome_settings_daemon_LDADD = \
-	$(GNOME_SETTINGS_DAEMON_LIBS)			\
-	$(top_builddir)/libbackground/libbackground.la	\
-	$(top_builddir)/libsounds/libsounds.a		\
+	$(GNOME_SETTINGS_DAEMON_LIBS)					\
+	$(top_builddir)/libbackground/libbackground.la			\
+	$(top_builddir)/libsounds/libsounds.a				\
+	-L$(top_builddir)/libwindow-settings/ -lgnome-window-settings 	\
 	$(XF86MISC_LIBS)
 
 #AccessX_files = \

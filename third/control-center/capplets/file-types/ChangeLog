@@ -1,10 +1,24 @@
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.2
+	* Release 2.2.0
 
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.1
+	* Release 2.1.7
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.6
+
+2002-12-30  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=101128
+	* mime-types-model.c (mime_types_model_iter_children) : apply patch
+	  from padraig.
+
+2002-12-18  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.5
 
 2002-12-09  Rajkumar Sivasamy <rajkumar.siva@wipro.com>
 
@@ -15,27 +29,53 @@
 
 2002-11-23  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.3
+	* Release 2.1.3
+
+2002-11-02  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.2
+
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
 
 2002-10-03  Jody Goldberg <jody@gnome.org>
 
+	http://bugzilla.gnome.org/show_bug.cgi?id=93279
+	* file-types-properties.glade : missing & conflicting accerators.
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=93211
 	* file-types-capplet.c (edit_count_cb) : delete.
 	(selection_count_cb) : rename from remove_count_cb.
 	(selection_changed_cb) : simplify code, disable edit button for
 	  catagories.
 
-2002-09-24  Jody Goldber <jody@gnome.org>
+2002-10-01  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.2.91
+	* Release 2.1.0.1
 
 2002-09-09  Jody Goldberg <jody@gnome.org>
 
 	* mime-edit-dialog.c (update_sensitivity) : As FCrozat points out
 	  use category default has been lobotomized.
 
+2002-08-31  Jacob Berkman  <jacob@krunk.local.>
+
+	* Makefile.am (gnome_file_types_properties_LDADD): link against -lpopt
+
 2002-08-21  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.1.1
+	* Release 2.1.0
+
+2002-08-19  Ross Burton  <ross@burtonini.com>
+
+	* file-types.desktop.in: Fix the desktop file so that it
+	validates.
+
+2002-08-19  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=88354
+	* file-types.desktop.in : minor update
 
 2002-08-10  Jody Goldberg <jody@gnome.org>
 
@@ -46,16 +86,6 @@
 
 	* mime-edit-dialog.c (mime_edit_dialog_get_app) : Be extra anal, just
 	  in case the db is corrupt.
-
-2002-08-06  Jody Goldberg <jody@gnome.org>
-
-	* Release 2.0.1
-
-2002-08-06  Jody Goldberg <jody@gnome.org>
-
-	http://bugzilla.gnome.org/show_bug.cgi?id=87056
-	* mime-edit-dialog.c (mime_edit_dialog_get_app) : remove bogus extra
-	  semicolon.
 
 2002-08-05  Jody Goldberg <jody@gnome.org>
 

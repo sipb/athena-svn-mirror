@@ -1,50 +1,323 @@
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Tue Jan 21 01:15:14 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.2
+	* Release 2.2.0
 
-2002-12-19  Jody Goldberg <jody@gnome.org>
+Tue Jan 21 00:44:03 2003  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.3.1
+	* gnome-theme-save.c (escape_string_and_dup): correctly escape the
+	file we're saving.
+
+Thu Jan 16 02:41:09 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* Release 2.1.7
+
+Thu Jan 16 02:32:39 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-details.c (gnome_theme_details_update_from_gconf):
+	make sure we're initted, as this function can be run
+	asynchronously.
+
+	* gnome-theme-manager.c (gnome_meta_theme_installer_run_cb): hook
+	up the installer.
+
+	* gnome-theme-installer.c: Try to handle icon themes.
+
+Wed Jan 15 20:15:31 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-theme-manager.c (gnome_theme_manager_tree_sort_func): 
+	remove this unneeded sort func.
+
+	* gnome-theme-details.c (setup_tree_view): use the right sort
+	function.
+
+2003-01-14  Jody Goldberg <jody@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes) : yet another place to
+	handle NULL window manager.
+
+2003-01-14  Alex Duggan  <aldug@gnome.org>
+	
+	* gnome-theme-manager.c (main): 
+	s/gnome-theme-properties/gnome-theme-manager/  Fixes #103525
+
+Tue Jan 14 02:16:22 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes): set the correct row to
+	the new data.  This was messing a lot up.  Saving now works, so
+	long as you don't type bad data.
+
+	* TODO: update.
+
+2003-01-13  Jody Goldberg <jody@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes) : handle yet another place
+	  where gnome_wm_manager_get_current may be NULL.
+
+Mon Jan 13 15:20:17 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-theme-manager.c (main): gnome_theme_init ()
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.6
+
+2003-01-10  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am (EXTRA_DIST) : dist the pixmaps too.
+
+2003-01-08  Anders Carlsson  <andersca@codefactory.se>
+
+	* gnome-theme-manager.c: (update_font_button_state),
+	(font_key_changed), (apply_font_clicked), (setup_dialog):
+	* gnome-theme-manager.h:
+	Add support for applying fonts.
+	
+	* theme-thumbnail.c: (create_image):
+	Allow SVG files as icons.
+	
+2003-01-08  Jody Goldberg <jody@gnome.org>
+
+	* gnome-theme-details.c (gnome_theme_details_update_from_gconf) :
+	  handle lack of metacity.
+	(window_theme_selection_changed) : ditto.
+	(gnome_theme_details_reread_themes_from_disk) : ditto.
+
+Wed Jan  8 01:57:09 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (add_initial_row_to_meta_theme): handle
+	initial theme as custom.
+
+	* TODO: update
+
+Tue Jan  7 03:10:36 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-save.c (save_dialog_response): add a description
+	entry.  Still needs escaping.
+
+	* theme-thumbnail.c (generate_theme_thumbnail): read the thumbnail
+	back from the child correctly.  I think thumbnailing fully works.
+
+	* TODO: Update
+
+2003-01-06  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-theme-manager.c: (load_meta_themes):
+	* theme-properties.glade:
+
+	Removed #if 0'd code for hard-coding minimuum height
+	of the tree view. Use glade properties to set minimuum
+	height to a more reasonable value. Its hard to find
+	items when you only see two in the scroll-view at
+	any given time, and many people do not think to
+	resize windows (nor should they have to :-)
+	
+2003-01-06  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-theme-manager.c: (add_custom_row_to_meta_theme):
+
+	Don't mark internal string for translation so we don't
+	break string freeze.
+	
+Mon Jan  6 10:55:39 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (setup_dialog): fix default image.
+	Remove debugging g_prints.
+
+2003-01-05  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-theme-manager.c: (setup_dialog), (main):
+	* Makefile.am:
+	* theme-thumbnailing.png:
+
+	Add a default image for when theme's are being
+	thumbnailed.
+	
+	* theme-properties.glade:
+
+	Hide dialog by default so it doesn't come
+	up undrawn.
+	
+2003-01-05  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-theme-manager.c: (add_custom_row_to_meta_theme),
+	(remove_custom_row_from_meta_theme):
+	* theme-thumbnail.c: (theme_thumbnail_invalidate_cache):
+	* theme-thumbnail.h:
+	
+	Generate thumbnails for the custom theme.
+
+Thu Jan  2 08:57:54 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c: correctly merge disk updates and the
+	current setup.
+
+	* TODO: Add a TODO
+
+2002-12-31  Seth Nickell  <snickell@stanford.edu>
+
+	* theme-thumbnail.c: (create_image):
+
+	Change the order of priority between folder icon names,
+	since gnome-fs-directory is in the backup theme and will
+	otherwise take precedence. This fix is a hack.
+
+2002-12-31  Seth Nickell  <snickell@stanford.edu>
+
+	* theme-thumbnail.c: (create_image):
+
+	Thumbnail for themes (most currently) that use
+	"gnome-fs-directory" as the icon name for folders rather
+	than "folder".
+
+2002-12-30  Jody Goldberg <jody@gnome.org>
+
+	Apply
+	http://bugzilla.gnome.org/show_bug.cgi?id=101752
+
+	* gnome-theme-details.c : Merge in Frederic's patch.
+	* gnome-theme-details.c : ditto.
+
+2002-12-28  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-theme-details.c: (path_to_theme_id), (load_theme_names),
+	(gnome_theme_details_reread_themes_from_disk):
+
+	Use the theme directory name rather than the "printable" name
+	for icon themes. Does this need to be done for WM themes and
+	GTK themes as well?
+	
+2002-12-28  Seth Nickell  <snickell@stanford.edu>
+
+	* gnome-theme-manager.c: (update_themes_from_disk):
+
+	Fix crash when current WM isn't detected.
+
+2002-12-18  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.5
+
+Fri Dec  6 16:54:14 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-theme-save-data.c: New file.  Really saves now.  Doesn't
+	notice when a new metatheme is added, though.
+
+Tue Dec  3 20:45:17 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-theme-save.c: Add saving support.  Almost to a working
+	point w/ this capplet...
+
+Tue Dec  3 14:26:05 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-theme-details.c (window_theme_selection_changed): Fix
+	g_assert_not_reached() that can be reached.
+
+Tue Dec  3 00:40:13 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* .cvsignore: shut up, CVS
+
+	* Makefile.am: build new objects
+
+	* gnome-theme-details.[ch]: New file to encapsulate the details
+	dialog.
+
+	* gnome-theme-manager.c: Restructure code.  Less love, more work.
+	Prolly an improvement.
 
 2002-11-23  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.3
+	* Release 2.1.3
 
-2002-09-24  Jody Goldber <jody@gnome.org>
+Sat Nov 16 00:55:58 2002  Jonathan Blandford  <jrb@gnome.org>
 
-	* Release 2.0.2.91
+	* gnome-theme-manager.c (meta_theme_selection_changed): actually
+	set the theme.
 
-2002-09-13  Calum Benson  <calum.benson@sun.com>
+Thu Nov 14 19:30:02 2002  Jonathan Blandford  <jrb@gnome.org>
 
-	* theme-switcher.c: (gtk_theme_selection_changed):
+	* theme-thumbnail.c (setup_theme_thumbnail_factory): add G_IO_HUP
+	so the child can actually exit when the parent does.
 
-	Set icon theme when user switches gtk theme.
+Thu Nov 14 17:14:00 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c: Use new theme system.  Handle other
+	themes better.
+
+	* theme-thumbnail.c: new file to draw themes.  Currently
+	synchronous -- needs to be made async.
+
+Thu Nov  7 15:24:33 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* gtk-theme-selector.desktop.in (Exec): change binary name.
+
+Tue Nov  5 15:48:20 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (read_themes): make more robust.
+
+2002-11-02  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.2
+
+2002-11-02  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am : Add missing file
+
+Fri Nov  1 11:01:16 2002  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c: Rewrote to handle metathemes and icon
+	themes.  The WM stuff was previously broken, too.
+
+	* gnome-theme-installer.[ch]: Extract this code out to it's own
+	file.
+
+2002-10-26  Havoc Pennington  <hp@pobox.com>
+
+	* theme-switcher.c (window_read_themes): adapt to gnome-wm-manager
+	API changes
+
+2002-10-21  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-10-01  Yanko Kaneti <yaneti@declera.com>
+
+	* gtk-theme-switcher.schemas: reorder elements so that it validates.
+
+2002-10-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.0.1
 
 2002-08-26  Jody Goldberg <jody@gnome.org>
 
 	* theme-switcher.c (drag_data_received_cb) : unescape the string.
 
+2002-09-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use ../../libwindow-settings/libgnome-window-settings.la
+	instead of -L../../libwindow-settings -lgnome-window-settings.
+	Fixeds build breakage.
+
 2002-08-21  Jody Goldberg <jody@gnome.org>
 
-	* Release 2.0.1.1
+	* Release 2.1.0
 
 2002-08-01  Christophe Fergeau  <teuf@users.sourceforge.net>
 
- 	* capplets/theme-switcher/theme-switcher.c: correctly deal with bzip2
+	* theme-switcher.c : correctly deal with bzip2
  	  compressed theme files
+
+2002-08-19  Ross Burton  <ross@burtonini.com>
+
+	* gtk-theme-selector.desktop.in: Fix the desktop file so that it
+	validates.
 
 2002-08-07  Jody Goldberg <jody@gnome.org>
 	Patch from JRB for 88443
 
 	* theme-switcher.c (read_themes) : store the current cursor
 
-2002-08-06  Jody Goldberg <jody@gnome.org>
-
-	* Release 2.0.1
-
 2002-07-31  Federico Mena Quintero  <federico@ximian.com>
 
-	* theme-install.glade: Made the file entry modal.  Fixes #89410.
+	* theme-install.glade: Make the file entry modal.  Fixes #89410.
 
 2002-07-10  Jody Goldberg <jody@gnome.org>
 

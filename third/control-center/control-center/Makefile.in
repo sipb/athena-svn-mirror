@@ -75,10 +75,13 @@ ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
+FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -108,12 +111,10 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
-INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -122,6 +123,8 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+METACITY_CFLAGS = @METACITY_CFLAGS@
+METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -138,12 +141,14 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
-WARN_CFLAGS = @WARN_CFLAGS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
-cxxflags_set = @cxxflags_set@
 
 splashdir = $(datadir)/pixmaps/gnomecc-2
-splash_DATA =  	bcg_top.png 	title.png 	blank.png 	active.png
+splash_DATA = \
+	bcg_top.png \
+	title.png \
+	blank.png \
+	active.png
 
 
 sysdir = $(datadir)/applications
@@ -153,12 +158,23 @@ sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = gnomecc-ui.xml
 
-INCLUDES =  	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 		-DSETTINGS_DIR=\""$(GNOMECC_DESKTOP_DIR)"\"			-DGNOMECC_ICONS_DIR=\""$(GNOMECC_ICONS_DIR)"\"			-DPIXMAP_DIR=\""$(datadir)/pixmaps"\"				-DART_DIR=\""$(splashdir)"\"					-DGNOME_SBINDIR=\""$(sbindir)"\"				$(GNOMECC_CFLAGS)
+INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
+	-DSETTINGS_DIR=\""$(GNOMECC_DESKTOP_DIR)"\"		\
+	-DGNOMECC_ICONS_DIR=\""$(GNOMECC_ICONS_DIR)"\"		\
+	-DPIXMAP_DIR=\""$(datadir)/pixmaps"\"			\
+	-DART_DIR=\""$(splashdir)"\"				\
+	-DGNOME_SBINDIR=\""$(sbindir)"\"			\
+	$(GNOMECC_CFLAGS)
 
 
 bin_PROGRAMS = gnome-control-center
 
-gnome_control_center_SOURCES =  	main.c							capplet-dir.c 		capplet-dir.h 			capplet-dir-view.c	capplet-dir-view.h		capplet-dir-view-list.c
+gnome_control_center_SOURCES = \
+	main.c						\
+	capplet-dir.c 		capplet-dir.h 		\
+	capplet-dir-view.c	capplet-dir-view.h	\
+	capplet-dir-view-list.c
 
 
 gnome_control_center_LDADD = $(GNOMECC_LIBS)
@@ -197,7 +213,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_control_center_SOURCES)
 OBJECTS = $(gnome_control_center_OBJECTS)
@@ -361,7 +377,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 

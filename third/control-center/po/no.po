@@ -5,27 +5,26 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.5.8\n"
-"POT-Creation-Date: 2002-12-19 10:01-0500\n"
-"PO-Revision-Date: 2002-10-02 21:28+0200\n"
+"POT-Creation-Date: 2003-01-20 19:35+0100\n"
+"PO-Revision-Date: 2003-01-20 19:42+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:229
-#: capplets/keyboard/gnome-keyboard-properties.c:159
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:238
 #, c-format
-msgid "There was an error launching the keyboard capplet : %s"
-msgstr "Det oppsto en feil under oppstart av tastaturdialogen : %s"
+msgid "There was an error launching the mouse preferences dialog: %s"
+msgstr "Det oppsto en feil under oppstart av brukervalgdialogen for mus: %s"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:321
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:379
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:334
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:392
 #, c-format
 msgid "Unable to import AccessX settings from file '%s'"
 msgstr "Kan ikke importere innstillinger for AccessX fra fil «%s»"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:452
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:465
 msgid "Select CDE AccessX file"
 msgstr "Velg AccessX-fil for CDE"
 
@@ -39,51 +38,93 @@ msgstr "Tastatur"
 msgid "Set your keyboard accessibility preferences"
 msgstr "Brukervalg for tilgjengelighet for tastatur"
 
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
+msgid ""
+"This system does not seem to have the XKB extension.  The keyboard "
+"accessibility features will not operate without it."
+msgstr ""
+"Dette systemet ser ikke ut til å ha XKB-utvidelsen. Funksjoner for "
+"tastaturtilgjengelighet vil ikke virke uten denne."
+
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
+#: capplets/file-types/file-types-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/network/gnome-network-preferences.glade.h:2
+#: capplets/theme-switcher/theme-install.glade.h:1
+#: capplets/theme-switcher/theme-properties.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
+msgid "Basic"
+msgstr "Grunnleggende"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
+msgid "Beep if key is re_jected"
+msgstr "Pip når tast a_vvises"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
+msgid "Beep when _features turned on or off from keyboard"
+msgstr "Pip når _funksjoner slås av eller på fra tastaturet"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+msgid "Beep when _modifier is pressed"
+msgstr "Pip når _endringstast trykkes ned"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
 msgid "Beep when an LED is turned on and two beeps when one is turned off."
 msgstr "Pip en gang når en LED slås på og to ganger når en slås av."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
-msgid "Beep when enabling/disabling _keyboard accessibility features"
-msgstr "_Pip ved aktivering/deaktivering av tilgjengelighet for tastatur"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+msgid "Beep when key is:"
+msgstr "Pip når tast er:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
-msgid "Beep when key is re_jected"
-msgstr "Pip når tast er a_vvist"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+msgid "Del_ay:"
+msgstr "_Pause:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
-msgid "Beep when:"
-msgstr "Pip når:"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+msgid "Delay between keypress and pointer mo_vement:"
+msgstr "Pause mellom tastetrykk og be_vegelse av mus:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
+msgid "Disa_ble if two keys pressed together"
+msgstr "Dea_ktiver hvis to taster trykkes ned samtidig"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
 msgid "E_nable Toggle Keys"
 msgstr "Aktiver _BryterTaster"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
 msgid "Enable Bo_unce Keys"
 msgstr "Aktiver B_ounce Keys"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
 msgid "Enable Slo_w Keys"
 msgstr "Aktiver tre_ge taster"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
 msgid "Enable _Mouse Keys"
 msgstr "Aktiver _mustaster"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
 msgid "Enable _Sticky Keys"
 msgstr "Aktiver _klebrige taster"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
-msgid "General"
-msgstr "Generelt"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+msgid "Features"
+msgstr "Funksjoner"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
-msgid "I_gnore keypresses within  :"
-msgstr "I_gnorer tastaturtrykk innen:"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
+msgid "Filters"
+msgstr "Filtre"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
+msgid "I_gnore duplicate keypresses within:"
+msgstr "I_gnorer dupliserte tastaturtrykk innen:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
 msgid ""
 "Ignore all subsequent presses of the SAME key if they happen within a user "
 "selectable period of time."
@@ -91,15 +132,24 @@ msgstr ""
 "Ignorer alle etterfølgende trykk på SAMME tast hvis de skjer innenfor en "
 "tidsramme som kan bestemmes av brukeren."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
-msgid "Keyboard Accessibility Configuration (AccessX)"
-msgstr "Konfigurasjon av tilgjengelighet for tastatur (AccessX)"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
+msgid "Keyboard Accessibility Preferences (AccessX)"
+msgstr "Brukervalg for tastaturtilgjengelighet (AccessX)"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
-msgid "Ma_ximum pointer speed :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
+msgid "Ma_ximum pointer speed:"
 msgstr "Ma_ksimal pekerhastighet:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/mouse/mouse.desktop.in.h:1
+msgid "Mouse"
+msgstr "Mus"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+msgid "Mouse _Preferences..."
+msgstr "_Brukervalg for mus..."
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
 msgid ""
 "Only accept keys after they have been pressed and held for a user adjustable "
 "amount of time."
@@ -107,86 +157,80 @@ msgstr ""
 "Aksepterer bare taster etter at de trykkes og holdes nede i et "
 "brukerjusterbart intervall."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
 msgid ""
 "Perform multiple simultaneous key press operations by pressing modifier keys "
 "in sequence."
 msgstr ""
 "Utfør flere samtidige tastetrykk ved å holde nede endringstaster i sekvens."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
-msgid "Repeat Key Pre_ferences"
-msgstr "Br_ukervalg for tasterepetering"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+msgid "S_peed:"
+msgstr "_Hastighet:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
-msgid "Start mo_ving this long after keypress :"
-msgstr "Tid etter tastetrykk før be_vegelse starter: "
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
+msgid "Time to acce_lerate to maximum speed:"
+msgstr "Tid før akse_llerasjon til maks hastighet:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
-msgid "Testing Area"
-msgstr "Testområde"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
+msgid "Toggle Keys"
+msgstr "BryterTaster"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
-msgid "Time to acce_lerate to max speed :"
-msgstr "Tid før akse_llerasjon til maks hastighet: "
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
-msgid "Toggle and Repeat Keys"
-msgstr "Slå av/på repetering av tastetrykk"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
 msgid "Turn the numeric keypad into a mouse control pad."
 msgstr "Endre det numeriske tastaturet til å kontrollere musen."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
-msgid "_Beep when modifier is pressed"
-msgstr "_Pip når endringstast trykkes ned"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
-msgid "_Disable if unused for "
-msgstr "_Deaktiver hvis ubrukt i "
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
-msgid "_Enable keyboard accessibility"
-msgstr "Aktiv_er tilgjengelighet for tastatur"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
-msgid "_Import CDE AccessX file"
-msgstr "_Importer AccessX-fil fra CDE"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
-msgid "_Only accept keypress after :"
-msgstr "_Bare aksepter tastetrykk etter:"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
-msgid ""
-"_Turn off Sticky Keys when\n"
-"two keys pressed simultaneously"
-msgstr ""
-"Slå av klebrige taster når\n"
-"to taster trykkes samtidig"
-
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
-msgid "key is _accepted"
-msgstr "tast er _akseptert"
+msgid "_Disable if unused for:"
+msgstr "_Deaktiver hvis ubrukt i:"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
-msgid "key is _pressed"
-msgstr "tast er _nedtrykt"
+msgid "_Enable keyboard accessibility features"
+msgstr "Aktiv_er tilgjengelighetsfunksjoner for tastatur"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
-msgid "key is _rejected"
-msgstr "tast er _avvist"
+msgid "_Import Feature Settings..."
+msgstr "_Importer innstillinger for funksjoner..."
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
-msgid "msecs"
-msgstr "millisekunder"
+msgid "_Only accept keys held for:"
+msgstr "_Kun aksepter tastetrykk etter:"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
-msgid "pixels/sec"
-msgstr "piksler/sek"
+msgid "_Repeat Keys"
+msgstr "_Repeteringstaster"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
+msgid "_Type to test settings:"
+msgstr "_Skriv for å prøve ut innstillinger:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:36
+msgid "_accepted"
+msgstr "_akseptert"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
+msgid "_pressed"
+msgstr "_nedtrykt"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
+msgid "_rejected"
+msgstr "_avvist"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
+msgid "characters/second"
+msgstr "tegn per sekund"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
+msgid "milliseconds"
+msgstr "millisekunder"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
+msgid "pixels/second"
+msgstr "piksler per sekund"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
+#: capplets/windows/gnome-window-properties.glade.h:7
 msgid "seconds"
 msgstr "sekunder"
 
@@ -240,8 +284,8 @@ msgstr "Velg _bilde:"
 #: capplets/background/background-properties-capplet.c:567
 #: capplets/common/capplet-util.c:243
 #: capplets/default-applications/gnome-default-applications-properties.c:712
-#: capplets/keyboard/gnome-keyboard-properties.c:293
-#: capplets/mouse/gnome-mouse-properties.c:752
+#: capplets/keyboard/gnome-keyboard-properties.c:290
+#: capplets/mouse/gnome-mouse-properties.c:712
 #: capplets/sound/sound-properties-capplet.c:149
 msgid "Retrieve and store legacy settings"
 msgstr "Hent og lagre gamle innstillinger"
@@ -276,7 +320,7 @@ msgid "Picture Options:"
 msgstr "Alternativer for bilde:"
 
 #: capplets/background/background-properties.glade.h:8
-#: libbackground/preview-file-selection.c:198
+#: libbackground/preview-file-selection.c:212
 msgid "Preview"
 msgstr "Forhåndsvisning"
 
@@ -537,14 +581,6 @@ msgid "Please specify a name and a command for this editor."
 msgstr ""
 "Vennligst spesifiser et navn og en kommando for dette redigeringsprogrammet."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
-#: capplets/file-types/file-types-properties.glade.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
-#: capplets/network/gnome-network-preferences.glade.h:1
-#: capplets/theme-switcher/theme-install.glade.h:1
-msgid "*"
-msgstr "*"
-
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:2
 msgid "Acce_pts URLs"
 msgstr "Go_dtar URLer"
@@ -663,6 +699,7 @@ msgid "Window Manager"
 msgstr "Vindushåndterer"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:31
+#: capplets/file-types/file-types-properties.glade.h:22
 msgid "_Name:"
 msgstr "_Navn:"
 
@@ -751,6 +788,7 @@ msgid "Minimizing and Maximizing"
 msgstr "Minimering og maksimering"
 
 #: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:1
+#: capplets/windows/gnome-window-properties.c:649
 msgid "Meta"
 msgstr "Meta"
 
@@ -808,17 +846,16 @@ msgstr "Eldre applikasjoner"
 msgid "Legacy applications settings (grdb)"
 msgstr "Innstillinger for eldre applikasjoner (grdb)"
 
-#: capplets/file-types/file-types-capplet.c:194
+#: capplets/file-types/file-types-capplet.c:196
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: capplets/file-types/file-types-capplet.c:216
+#: capplets/file-types/file-types-capplet.c:218
 msgid "Extensions"
 msgstr "Filtyper"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
-#: capplets/file-types/file-types-properties.glade.h:8
-#: capplets/file-types/file-types.desktop.in.h:2
+#: capplets/file-types/file-types-properties.glade.h:10
 msgid "File Types and Programs"
 msgstr "Filtyper og programmer"
 
@@ -840,89 +877,95 @@ msgid "Add _Service..."
 msgstr "Legg til _tjeneste..."
 
 #: capplets/file-types/file-types-properties.glade.h:5
-msgid "Add:"
-msgstr "Legg til:"
+msgid "C_hoose..."
+msgstr "_Velg..."
 
 #: capplets/file-types/file-types-properties.glade.h:6
-msgid "Default action"
-msgstr "Standard handling"
+msgid "Cate_gory:"
+msgstr "Kate_gori:"
 
 #: capplets/file-types/file-types-properties.glade.h:7
+msgid "D_efault action:"
+msgstr "_Forvalgt handling:"
+
+#: capplets/file-types/file-types-properties.glade.h:8
+msgid "Default _action:"
+msgstr "Forv_algt handling:"
+
+#: capplets/file-types/file-types-properties.glade.h:9
 #: capplets/file-types/mime-edit-dialog.c:208
 msgid "Edit file type"
 msgstr "Rediger filtype"
 
-#: capplets/file-types/file-types-properties.glade.h:9
-msgid "Filename Extensions"
-msgstr "Filtyper"
+#: capplets/file-types/file-types-properties.glade.h:11
+msgid "Filename extensions:"
+msgstr "Filtyper:"
 
-#: capplets/file-types/file-types-properties.glade.h:10
+#: capplets/file-types/file-types-properties.glade.h:12
 msgid "Look at content"
 msgstr "Se på innhold"
 
-#: capplets/file-types/file-types-properties.glade.h:11
+#: capplets/file-types/file-types-properties.glade.h:13
+msgid "P_rogram:"
+msgstr "P_rogram:"
+
+#: capplets/file-types/file-types-properties.glade.h:14
 msgid "Program to Run"
 msgstr "Program som skal kjøres"
 
-#: capplets/file-types/file-types-properties.glade.h:12
+#: capplets/file-types/file-types-properties.glade.h:15
 msgid "Run a program"
 msgstr "Kjør et program"
 
-#: capplets/file-types/file-types-properties.glade.h:13
+#: capplets/file-types/file-types-properties.glade.h:16
 msgid "Run in _Terminal"
 msgstr "Kjør i _terminal"
 
-#: capplets/file-types/file-types-properties.glade.h:14
+#: capplets/file-types/file-types-properties.glade.h:17
 msgid "Use parent category _defaults"
 msgstr "Bruk forvalg fra _opphavskategori"
 
-#: capplets/file-types/file-types-properties.glade.h:15
-msgid "Viewer Component"
-msgstr "Visningskomponent"
-
-#: capplets/file-types/file-types-properties.glade.h:16
-msgid "_Category"
-msgstr "_Kategori"
-
-#: capplets/file-types/file-types-properties.glade.h:17
-msgid "_Choose..."
-msgstr "_Velg..."
-
 #: capplets/file-types/file-types-properties.glade.h:18
-msgid "_Delete"
-msgstr "_Slett"
+msgid "_Add:"
+msgstr "_Legg til:"
 
 #: capplets/file-types/file-types-properties.glade.h:19
-msgid "_Description"
-msgstr "_Beskrivelse"
+msgid "_Description:"
+msgstr "_Beskrivelse:"
 
 #: capplets/file-types/file-types-properties.glade.h:20
 msgid "_Edit..."
 msgstr "R_ediger..."
 
 #: capplets/file-types/file-types-properties.glade.h:21
-msgid "_MIME Type"
-msgstr "_MIME-type"
-
-#: capplets/file-types/file-types-properties.glade.h:22
-msgid "_Name"
-msgstr "_Navn"
+msgid "_MIME type:"
+msgstr "_MIME-type:"
 
 #: capplets/file-types/file-types-properties.glade.h:23
-msgid "_Program"
-msgstr "_Program"
+msgid "_Program to run:"
+msgstr "_Program som skal kjøres:"
 
 #: capplets/file-types/file-types-properties.glade.h:24
-msgid "_Program to Run"
-msgstr "_Program som skal kjøres"
+msgid "_Protocol:"
+msgstr "_Protokoll:"
 
 #: capplets/file-types/file-types-properties.glade.h:25
-msgid "_Protocol"
-msgstr "_Protokoll"
+msgid "_Remove"
+msgstr "Fje_rn"
+
+#: capplets/file-types/file-types-properties.glade.h:26
+msgid "_Viewer component:"
+msgstr "_Visningskomponent:"
 
 #: capplets/file-types/file-types.desktop.in.h:1
-msgid "Associate applications with file types"
-msgstr "Koble applikasjoner med filtyper"
+msgid "File types and programs"
+msgstr "Filtyper og programmer"
+
+#: capplets/file-types/file-types.desktop.in.h:2
+msgid "Specify which programs are used to open or view each type of file"
+msgstr ""
+"Spesifiser hvilke programmer som skal brukes for å åpne eller vise hver "
+"filtype"
 
 #: capplets/file-types/mime-category-edit-dialog.c:138
 msgid "Edit file category"
@@ -1111,24 +1154,125 @@ msgid "Select fonts for the desktop"
 msgstr "Velg skrifter for skrivebordet"
 
 #: capplets/font/font-properties.glade.h:1
+msgid "Best _shapes"
+msgstr "Beste _former"
+
+#: capplets/font/font-properties.glade.h:2
+msgid "Best co_ntrast"
+msgstr "Best ko_ntrast"
+
+#: capplets/font/font-properties.glade.h:3
+msgid "De_tails..."
+msgstr "De_taljer..."
+
+#: capplets/font/font-properties.glade.h:4
 msgid "Font Preferences"
 msgstr "Brukervalg for skrift"
 
-#: capplets/font/font-properties.glade.h:2
+#: capplets/font/font-properties.glade.h:5
+msgid "Font Rendering"
+msgstr "Rendring av skrift"
+
+#: capplets/font/font-properties.glade.h:6
+msgid "Font Rendering Details"
+msgstr "Detaljer om rendring av skrift"
+
+#: capplets/font/font-properties.glade.h:7
+msgid "G_rayscale"
+msgstr "G_råtone"
+
+#: capplets/font/font-properties.glade.h:8
+msgid "Hinting:"
+msgstr "Hinting:"
+
+#: capplets/font/font-properties.glade.h:9
+msgid "N_one"
+msgstr "_Ingen"
+
+#: capplets/font/font-properties.glade.h:10
+msgid "Resolution (_dots per inch):"
+msgstr "Oppløsning (_punkter per tomme):"
+
+#: capplets/font/font-properties.glade.h:11
 msgid "Set the font for applications"
 msgstr "Sett skrift for applikasjoner"
 
-#: capplets/font/font-properties.glade.h:3
+#: capplets/font/font-properties.glade.h:12
 msgid "Set the font for the icons on the desktop"
 msgstr "Sett skrift for ikoner på skrivebordet"
 
-#: capplets/font/font-properties.glade.h:4
+#: capplets/font/font-properties.glade.h:13
+msgid "Set the monospace font for terminals and similar applications"
+msgstr ""
+"Sett skrift med lik bostavstørrelse for terminaler og lignende applikasjoner"
+
+#: capplets/font/font-properties.glade.h:14
+msgid "Smoothing:"
+msgstr "Utjevning:"
+
+#: capplets/font/font-properties.glade.h:15
+msgid "Sub_pixel (LCDs)"
+msgstr "Under_piksel (LCDer)"
+
+#: capplets/font/font-properties.glade.h:16
+msgid "Sub_pixel smoothing (LCDs)"
+msgstr "Utjevning under pikselnivå (LCDer)"
+
+#: capplets/font/font-properties.glade.h:17
+msgid "Subpixel order:"
+msgstr "Underpikselrekkefølge:"
+
+#: capplets/font/font-properties.glade.h:18
+msgid "VB_GR"
+msgstr "VB_GR"
+
+#: capplets/font/font-properties.glade.h:19
 msgid "_Application font:"
 msgstr "Skrift for _applikasjoner:"
 
-#: capplets/font/font-properties.glade.h:5
+#: capplets/font/font-properties.glade.h:20
+msgid "_BGR"
+msgstr "_BGR"
+
+#: capplets/font/font-properties.glade.h:21
 msgid "_Desktop font:"
 msgstr "S_krift for skrivebord:"
+
+#: capplets/font/font-properties.glade.h:22
+msgid "_Full"
+msgstr "_Full"
+
+#: capplets/font/font-properties.glade.h:23
+msgid "_Medium"
+msgstr "_Middels"
+
+#: capplets/font/font-properties.glade.h:24
+msgid "_Monochrome"
+msgstr "_Monokrom"
+
+#: capplets/font/font-properties.glade.h:25
+msgid "_None"
+msgstr "I_ngen"
+
+#: capplets/font/font-properties.glade.h:26
+msgid "_RGB"
+msgstr "_RGB"
+
+#: capplets/font/font-properties.glade.h:27
+msgid "_Slight"
+msgstr "_Litt"
+
+#: capplets/font/font-properties.glade.h:28
+msgid "_Terminal font:"
+msgstr "Terminalskrift:"
+
+#: capplets/font/font-properties.glade.h:29
+msgid "_VRGB"
+msgstr "_VRGB"
+
+#: capplets/font/font-properties.glade.h:30
+msgid "_Window title font:"
+msgstr "Skrift for _vindutittel:"
 
 #: capplets/keybindings/eggcellrendererkeys.c:160
 #: capplets/keybindings/eggcellrendererkeys.c:161
@@ -1149,8 +1293,8 @@ msgid "The type of accelerator."
 msgstr "Type aksellerator."
 
 #: capplets/keybindings/eggcellrendererkeys.c:219
-#: capplets/keybindings/gnome-keybinding-properties.c:202
-#: libbackground/applier.c:521
+#: capplets/keybindings/gnome-keybinding-properties.c:204
+#: libbackground/applier.c:588
 msgid "Disabled"
 msgstr "Slått av"
 
@@ -1163,29 +1307,33 @@ msgstr "Skriv inn en ny aksellerator, eller trykk slett for å tømme"
 msgid "Type a new accelerator"
 msgstr "Skriv inn en ny aksellerator"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:538
+#: capplets/keybindings/gnome-keybinding-properties.c:540
 msgid "<Unknown Action>"
 msgstr "<Ukjent handling>"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:557
+#: capplets/keybindings/gnome-keybinding-properties.c:559
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:561
+#: capplets/keybindings/gnome-keybinding-properties.c:563
 msgid "Window Management"
 msgstr "Vindushåndtering"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:695
+#: capplets/keybindings/gnome-keybinding-properties.c:698
 #, c-format
-msgid "That accelerator key is already in use by: %s\n"
+msgid ""
+"The shortcut \"%s\" is already used for:\n"
+" \"%s\"\n"
 msgstr ""
+"Snarveien «%s» er allerede brukt for:\n"
+" «%s»\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:725
+#: capplets/keybindings/gnome-keybinding-properties.c:729
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr "Feil under setting av ny snarvei i konfigurasjonsdatabasen: %s\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:876
+#: capplets/keybindings/gnome-keybinding-properties.c:880
 msgid ""
 "Unable to find any keyboard themes.  This means your GTK+ installation has "
 "been incompletely installed."
@@ -1193,11 +1341,11 @@ msgstr ""
 "Kan ikke finne tastaturtema. Dette betyr at din GTK+-installasjon ikke er "
 "komplett."
 
-#: capplets/keybindings/gnome-keybinding-properties.c:898
+#: capplets/keybindings/gnome-keybinding-properties.c:902
 msgid "Action"
 msgstr "Handling"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:917
+#: capplets/keybindings/gnome-keybinding-properties.c:921
 msgid "Shortcut"
 msgstr "Snarvei"
 
@@ -1222,12 +1370,17 @@ msgstr "_Snarveier for redigering av tekst:"
 msgid "Assign shortcut keys to commands"
 msgstr "Tilegn snarveitaster til kommandoer"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:272
+#: capplets/keyboard/gnome-keyboard-properties.c:162
+#, c-format
+msgid "There was an error launching the keyboard capplet : %s"
+msgstr "Det oppsto en feil under oppstart av tastaturdialogen : %s"
+
+#: capplets/keyboard/gnome-keyboard-properties.c:269
 msgid "_Accessibility"
 msgstr "_Tilgjengelighet"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:289
-#: capplets/keyboard/gnome-keyboard-properties.c:291
+#: capplets/keyboard/gnome-keyboard-properties.c:286
+#: capplets/keyboard/gnome-keyboard-properties.c:288
 #: capplets/sound/sound-properties-capplet.c:145
 #: capplets/sound/sound-properties-capplet.c:147
 msgid ""
@@ -1288,10 +1441,6 @@ msgstr "Klikk ved tastetrykk"
 msgid "Repeat Keys"
 msgstr "Repeteringstaster"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
-msgid "S_peed:"
-msgstr "_Hastighet:"
-
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:18
 msgid "_Accessibility..."
 msgstr "_Tilgjengelighet..."
@@ -1328,7 +1477,7 @@ msgstr "stille"
 msgid "Set your keyboard preferences"
 msgstr "Sett dine brukervalg for tastatur"
 
-#: capplets/mouse/gnome-mouse-properties.c:477
+#: capplets/mouse/gnome-mouse-properties.c:437
 #, c-format
 msgid ""
 "<b>Unknown Cursor</b>\n"
@@ -1337,7 +1486,7 @@ msgstr ""
 "<b>Ukjent markør</b>\n"
 "%s"
 
-#: capplets/mouse/gnome-mouse-properties.c:578
+#: capplets/mouse/gnome-mouse-properties.c:538
 msgid ""
 "<b>Default Cursor - Current</b>\n"
 "The default cursor that ships with X"
@@ -1345,7 +1494,7 @@ msgstr ""
 "<b>Forvalgt markør - Aktiv</b>\n"
 "Standardmarkør som følger med X"
 
-#: capplets/mouse/gnome-mouse-properties.c:581
+#: capplets/mouse/gnome-mouse-properties.c:541
 msgid ""
 "<b>Default Cursor</b>\n"
 "The default cursor that ships with X"
@@ -1353,7 +1502,7 @@ msgstr ""
 "<b>Forvalgt markør</b>\n"
 "Standardmarkør som følger med X"
 
-#: capplets/mouse/gnome-mouse-properties.c:599
+#: capplets/mouse/gnome-mouse-properties.c:559
 msgid ""
 "<b>White Cursor - Current</b>\n"
 "The default cursor inverted"
@@ -1361,7 +1510,7 @@ msgstr ""
 "<b>Hvit markør - Aktiv</b>\n"
 "Omvendt versjon av standardmarkør"
 
-#: capplets/mouse/gnome-mouse-properties.c:602
+#: capplets/mouse/gnome-mouse-properties.c:562
 msgid ""
 "<b>White Cursor</b>\n"
 "The default cursor inverted"
@@ -1369,7 +1518,7 @@ msgstr ""
 "<b>Hvit markør</b>\n"
 "Omvendt standardmarkør"
 
-#: capplets/mouse/gnome-mouse-properties.c:620
+#: capplets/mouse/gnome-mouse-properties.c:580
 msgid ""
 "<b>Large Cursor - Current</b>\n"
 "Large version of normal cursor"
@@ -1377,7 +1526,7 @@ msgstr ""
 "<b>Stor markør - Aktiv</b>\n"
 "Stor versjon av standardmarkør"
 
-#: capplets/mouse/gnome-mouse-properties.c:623
+#: capplets/mouse/gnome-mouse-properties.c:583
 msgid ""
 "<b>Large Cursor</b>\n"
 "Large version of normal cursor"
@@ -1385,7 +1534,7 @@ msgstr ""
 "<b>Stor markør</b>\n"
 "Stor versjon av standardmarkør"
 
-#: capplets/mouse/gnome-mouse-properties.c:641
+#: capplets/mouse/gnome-mouse-properties.c:601
 msgid ""
 "<b>Large White Cursor - Current</b>\n"
 "Large version of white cursor"
@@ -1393,7 +1542,7 @@ msgstr ""
 "<b>Stor hvit markør - Aktiv</b>\n"
 "Stor versjon av hvit markør"
 
-#: capplets/mouse/gnome-mouse-properties.c:644
+#: capplets/mouse/gnome-mouse-properties.c:604
 msgid ""
 "<b>Large White Cursor</b>\n"
 "Large version of white cursor"
@@ -1526,10 +1675,6 @@ msgstr "Vi_s markørposisjonen når Ctrl-tasten trykkes ned"
 msgid "_Threshold:"
 msgstr "_Terskel:"
 
-#: capplets/mouse/mouse.desktop.in.h:1
-msgid "Mouse"
-msgstr "Mus"
-
 #: capplets/mouse/mouse.desktop.in.h:2
 msgid "Set your mouse preferences"
 msgstr "Sett dine brukervalg for mus"
@@ -1542,37 +1687,69 @@ msgstr "Nettverksproxy"
 msgid "Network proxy preferences"
 msgstr "Brukervalg for nettverksproxy"
 
-#: capplets/network/gnome-network-preferences.glade.h:2
-msgid "Network Preferences"
-msgstr "Brukervalg for nettverk"
+#: capplets/network/gnome-network-preferences.glade.h:1
+msgid "      "
+msgstr "      "
 
 #: capplets/network/gnome-network-preferences.glade.h:3
-msgid "Network Proxy Preferences"
-msgstr "Brukervalg for nettverksproxy"
+msgid "<b>_Automatic proxy configuration</b>"
+msgstr "<b>_Automatisk konfigurasjon av proxy</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:4
-msgid "P_ort:"
-msgstr "P_ort:"
+msgid "<b>_Direct internet connection</b>"
+msgstr "<b>_Direkte internettforbindelse</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:5
-msgid "Pass_word:"
-msgstr "Pass_ord:"
+msgid "<b>_Manual proxy configuration</b>"
+msgstr "<b>_Manuell konfigurasjon av proxy</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:6
-msgid "Pro_xy requires username and password"
-msgstr "Pro_xy krever brukernavn og passord"
+msgid "<b>_Use authentication</b>"
+msgstr "<b>Br_uk autentisering</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:7
-msgid "User_name:"
-msgstr "Bruker_navn:"
+msgid "Autoconfiguration _URL:"
+msgstr "_URL for automatisk konfigurasjon:"
 
 #: capplets/network/gnome-network-preferences.glade.h:8
-msgid "_Location:"
-msgstr "P_lassering"
+msgid "HTTP Proxy Details"
+msgstr "Detaljer for HTTP-proxy"
 
 #: capplets/network/gnome-network-preferences.glade.h:9
-msgid "_Use HTTP proxy"
-msgstr "Br_uk HTTP-proxy"
+msgid "Network Proxy Configuration"
+msgstr "Konfigurasjon av nettverksproxy"
+
+#: capplets/network/gnome-network-preferences.glade.h:10
+msgid "Port:"
+msgstr "Port:"
+
+#: capplets/network/gnome-network-preferences.glade.h:11
+msgid "S_ocks host:"
+msgstr "S_ocks-vert:"
+
+#: capplets/network/gnome-network-preferences.glade.h:12
+msgid "_Details"
+msgstr "_Detaljer"
+
+#: capplets/network/gnome-network-preferences.glade.h:13
+msgid "_FTP proxy:"
+msgstr "_FTP-proxy:"
+
+#: capplets/network/gnome-network-preferences.glade.h:14
+msgid "_HTTP proxy:"
+msgstr "_HTTP-proxy:"
+
+#: capplets/network/gnome-network-preferences.glade.h:15
+msgid "_Password:"
+msgstr "_Passord:"
+
+#: capplets/network/gnome-network-preferences.glade.h:16
+msgid "_Secure HTTP proxy:"
+msgstr "_Sikker HTTP-proxy:"
+
+#: capplets/network/gnome-network-preferences.glade.h:17
+msgid "_Username:"
+msgstr "Br_ukernavn:"
 
 #: capplets/sound/sound-properties-capplet.c:180
 msgid "Sound preferences"
@@ -1583,16 +1760,16 @@ msgid "E_nable sound server startup"
 msgstr "Slå på oppstart av lydtje_ner"
 
 #: capplets/sound/sound-properties.glade.h:2
-msgid "Sound Preferences"
-msgstr "Brukervalg for lyd"
+msgid "General"
+msgstr "Generelt"
 
 #: capplets/sound/sound-properties.glade.h:3
-msgid "Sound _Events"
-msgstr "Lydh_endelser"
+msgid "Sound Events"
+msgstr "Lydhendelser"
 
 #: capplets/sound/sound-properties.glade.h:4
-msgid "_General"
-msgstr "_Generelt"
+msgid "Sound Preferences"
+msgstr "Brukervalg for lyd"
 
 #: capplets/sound/sound-properties.glade.h:5
 msgid "_Sounds for events"
@@ -1659,29 +1836,89 @@ msgstr "Velg tema for forskjellige deler av skrivebordet"
 msgid "Theme"
 msgstr "Tema"
 
-#: capplets/theme-switcher/theme-properties.glade.h:1
-msgid "Installed Themes"
-msgstr "Installerte tema"
-
 #: capplets/theme-switcher/theme-properties.glade.h:2
-msgid "List of available GTK+ themes"
-msgstr "Liste over tilgjengelige GTK+ tema"
+msgid "<span size=\"larger\" weight=\"bold\">Save theme to disk</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Lagre tema til disk</span>"
 
 #: capplets/theme-switcher/theme-properties.glade.h:3
+msgid "Apply _Background"
+msgstr "Bruk _bakgrunn"
+
+#: capplets/theme-switcher/theme-properties.glade.h:4
+msgid "Apply _Font"
+msgstr "Bruk _skrift"
+
+#: capplets/theme-switcher/theme-properties.glade.h:5
+msgid "Controls"
+msgstr "Kontroller"
+
+#: capplets/theme-switcher/theme-properties.glade.h:6
+msgid "Icons"
+msgstr "Ikoner"
+
+#: capplets/theme-switcher/theme-properties.glade.h:7
 msgid "New themes can also be installed by dragging them into the window."
 msgstr "Nye tema kan også installeres ved å dra dem inn i vinduet."
 
-#: capplets/theme-switcher/theme-properties.glade.h:4
+#: capplets/theme-switcher/theme-properties.glade.h:8
+msgid "Short _Description:"
+msgstr "Kort _beskrivelse:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:9
+msgid "Theme Details"
+msgstr "Detaljer for tema"
+
+#: capplets/theme-switcher/theme-properties.glade.h:10
 msgid "Theme Preferences"
 msgstr "Brukervalg for tema"
 
-#: capplets/theme-switcher/theme-properties.glade.h:5
+#: capplets/theme-switcher/theme-properties.glade.h:11
+msgid ""
+"This theme suggests a\n"
+"background:"
+msgstr ""
+"Dette temaet foreslår en\n"
+"bakgrunn:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:13
+msgid ""
+"This theme suggests a\n"
+"font and background"
+msgstr ""
+"Dette temaet foreslår en\n"
+"skrift og en bakgrunn"
+
+#: capplets/theme-switcher/theme-properties.glade.h:15
+msgid ""
+"This theme suggests a\n"
+"font:"
+msgstr ""
+"Dette temaet foreslår en\n"
+"skrift:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:17
+msgid "Window Border"
+msgstr "Vinduskant"
+
+#: capplets/theme-switcher/theme-properties.glade.h:18
+msgid "_Details..."
+msgstr "_Detaljer..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:19
 msgid "_Go to theme folder"
 msgstr "_Gå til temamappen"
 
-#: capplets/theme-switcher/theme-properties.glade.h:6
-msgid "_Install New Theme..."
-msgstr "_Installer nytt tema..."
+#: capplets/theme-switcher/theme-properties.glade.h:20
+msgid "_Install theme..."
+msgstr "_Installer tema..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:21
+msgid "_Save theme"
+msgstr "_Lagre tema"
+
+#: capplets/theme-switcher/theme-properties.glade.h:22
+msgid "_Theme name:"
+msgstr "_Temanavn:"
 
 #: capplets/theme-switcher/theme-install.glade.h:2
 msgid "Install new theme"
@@ -1694,6 +1931,27 @@ msgstr "_Installer"
 #: capplets/theme-switcher/theme-install.glade.h:4
 msgid "_Location of new theme:"
 msgstr "P_lassering for det nye temaet:"
+
+#: capplets/theme-switcher/gnome-theme-details.c:372
+#: capplets/theme-switcher/gnome-theme-manager.c:609
+msgid ""
+"No themes could be found on your system.  This probably means that your "
+"\"Theme Preferences\" dialog was improperly installed, or you haven't "
+"installed the \"gnome-themes\" package."
+msgstr ""
+"Ingen tema ble funnet på ditt system. Dette betyr sannsynligvis at dialogen "
+"«Brukervalg for tema» ikke er korrekt installert, eller at du ikke har "
+"installert pakken «gnome-themes»."
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
+msgid "Custom theme"
+msgstr "Egendefinert tema"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
+msgid "You can save this theme by pressing the Save Theme button."
+msgstr "Du kan lagre dette temaet ved å klikke på «Lagre tema»-knappen."
 
 #: capplets/ui-properties/behavior.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
@@ -1825,30 +2083,56 @@ msgstr "A_vslutt"
 msgid "_Save"
 msgstr "_Lagre"
 
-#: capplets/windows/gnome-window-properties.c:282
-#: capplets/windows/gnome-window-properties.glade.h:6
+#: capplets/windows/gnome-window-properties.c:378
+#, c-format
+msgid ""
+"<b>Cannot start the preferences application for your window manager</b>\n"
+"\n"
+"%s"
+msgstr ""
+"<b>Kan ikke starte brukervalg for din vindushåndterer</b>\n"
+"\n"
+"%s"
+
+#: capplets/windows/gnome-window-properties.c:624
+msgid "Control"
+msgstr "Kontroll"
+
+#: capplets/windows/gnome-window-properties.c:629
+msgid "Alt"
+msgstr "Alt"
+
+#: capplets/windows/gnome-window-properties.c:635
+msgid "Hyper"
+msgstr "Hyper"
+
+#: capplets/windows/gnome-window-properties.c:642
+msgid "Super (or \"Windows logo\")"
+msgstr "Super (eller «Windows-tast»)"
+
+#: capplets/windows/gnome-window-properties.glade.h:1
+msgid "To _move a window, press-and-hold this key then grab the window:"
+msgstr "For å _flytte et vindu trykk og hold denne tasten og ta tak i vinduet:"
+
+#: capplets/windows/gnome-window-properties.glade.h:2
 msgid "Window Preferences"
 msgstr "Brukervalg for vinduer"
 
-#: capplets/windows/gnome-window-properties.glade.h:1
-msgid "Apply Now"
-msgstr "Aktiver nå"
-
-#: capplets/windows/gnome-window-properties.glade.h:2
-msgid "Select windows when the mouse moves over them"
-msgstr "Velg vinduer når musen beveger seg over dem"
-
 #: capplets/windows/gnome-window-properties.glade.h:3
-msgid "Titlebar Font"
-msgstr "Skrift for tittellinjen"
+msgid "_Double-click titlebar to perform this action:"
+msgstr "_Dobbeltklikk tittellinjen for å utføre denne handlingen:"
 
 #: capplets/windows/gnome-window-properties.glade.h:4
-msgid "Window Border Appearance"
-msgstr "Utseende for vinduskant"
+msgid "_Interval before raising:"
+msgstr "_Pause før heving:"
 
 #: capplets/windows/gnome-window-properties.glade.h:5
-msgid "Window Manager:"
-msgstr "Vindushåndterer:"
+msgid "_Raise selected windows after an interval"
+msgstr "_Hev valgte vinduer etter en pause"
+
+#: capplets/windows/gnome-window-properties.glade.h:6
+msgid "_Select windows when the mouse moves over them"
+msgstr "_Aktiver vinduer når musen beveger seg over dem"
 
 #: capplets/windows/window-properties.desktop.in.h:1
 msgid "Window Properties"
@@ -1905,12 +2189,12 @@ msgid "Overview of the control center"
 msgstr "Oversikt over kontrollsenteret"
 
 #: control-center/gnomecc-ui.xml.h:3
-msgid "_About..."
-msgstr "_Om..."
+msgid "_About"
+msgstr "_Om"
 
 #: control-center/gnomecc-ui.xml.h:4
-msgid "_Contents..."
-msgstr "_Innhold..."
+msgid "_Contents"
+msgstr "_Innhold"
 
 #: control-center/gnomecc-ui.xml.h:6
 msgid "_Help"
@@ -1937,32 +2221,32 @@ msgstr ""
 "Kan ikke opprette katalog «%s».\n"
 "Dette kreves for å tillate endring av markører."
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:106
+#: gnome-settings-daemon/gnome-settings-keybindings.c:146
 #, c-format
 msgid "Key Binding (%s) has its action defined multiple times\n"
 msgstr "Handling for tastaturbinding (%s) er definert flere ganger\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:119
+#: gnome-settings-daemon/gnome-settings-keybindings.c:159
 #, c-format
 msgid "Key Binding (%s) has its binding defined multiple times\n"
 msgstr "Tastaturbinding (%s) er definert flere ganger\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:125
+#: gnome-settings-daemon/gnome-settings-keybindings.c:165
 #, c-format
 msgid "Key Binding (%s) is incomplete\n"
 msgstr "Tastaturbinding (%s) er ikke komplett\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:153
+#: gnome-settings-daemon/gnome-settings-keybindings.c:193
 #, c-format
 msgid "Key Binding (%s) is invalid\n"
 msgstr "Tastaturbinding (%s) er ugyldig\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:241
+#: gnome-settings-daemon/gnome-settings-keybindings.c:281
 #, c-format
 msgid "Key Binding (%s) is already in use\n"
 msgstr "Tastaturbinding (%s) er allerede i bruk\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:292
+#: gnome-settings-daemon/gnome-settings-keybindings.c:357
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -1995,16 +2279,16 @@ msgstr "_Ikke vis denne meldingen igjen"
 msgid "Couldn't load sound file %s as sample %s"
 msgstr "Kunne ikke laste lydfil %s som sample %s"
 
-#: gnome-settings-daemon/gnome-settings-xsettings.c:150
+#: gnome-settings-daemon/gnome-settings-xsettings.c:184
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr "GConf-nøkkel %s satt til type %s men forventet type var %s\n"
 
-#: libbackground/applier.c:239
+#: libbackground/applier.c:254
 msgid "Type"
 msgstr "Type"
 
-#: libbackground/applier.c:240
+#: libbackground/applier.c:255
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
@@ -2012,23 +2296,31 @@ msgstr ""
 "Type bg_applier: BG_APPLIER_ROOT for rotvinduet eller BG_APPLIER_PREVIEW for "
 "forhåndsvisning"
 
-#: libbackground/applier.c:247
+#: libbackground/applier.c:262
 msgid "Preview Width"
 msgstr "Forhåndsvisningsbredde"
 
-#: libbackground/applier.c:248
+#: libbackground/applier.c:263
 msgid "Width if applier is a preview: Defaults to 64."
 msgstr "Bredde hvis påføringen er en forhåndsvisning. Forvalgt til 64."
 
-#: libbackground/applier.c:255
+#: libbackground/applier.c:270
 msgid "Preview Height"
 msgstr "Forhåndsvisningshøyde"
 
-#: libbackground/applier.c:256
+#: libbackground/applier.c:271
 msgid "Height if applier is a preview: Defaults to 48."
 msgstr "Høyde hvis påføringen er en forhåndsvisning. Forvalgt til 48."
 
-#: libbackground/preview-file-selection.c:193
+#: libbackground/applier.c:279
+msgid "Screen"
+msgstr "Skjerm"
+
+#: libbackground/applier.c:280
+msgid "Screen on which BGApplier is to draw"
+msgstr "Skjerm hvor BGApplier skal tegne"
+
+#: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Kan ikke finne en hbox, bruker vanlig filvalg"
 
@@ -2066,60 +2358,231 @@ msgstr "S_pill"
 msgid "Select sound file"
 msgstr "Velg lydfil"
 
-#: libwindow-settings/gnome-wm-manager.c:171
+#: libwindow-settings/gnome-wm-manager.c:320
 #, c-format
+msgid "Window manager \"%s\" has not registered a configuration tool\n"
+msgstr "Vindushåndterer «%s» har ikke registrert et konfigurasjonsverktøy\n"
+
+#: libwindow-settings/metacity-window-manager.c:374
+msgid "Maximize"
+msgstr "Maksimer"
+
+#: libwindow-settings/metacity-window-manager.c:375
+msgid "Roll up"
+msgstr "Rull opp"
+
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:1
 msgid ""
-"Starting %s\n"
-"(%d seconds left before operation times out)"
+"If true, the mime handlers for text/plain and text/* will be kept in sync"
 msgstr ""
-"Starter %s\n"
-"(%d sekunder gjenstår før tidsavbrudd for operasjonen)"
+"Hvis satt til sann vil MIME-håndtererene for text/plain og text/* holdes "
+"synkronisert"
 
-#: libwindow-settings/gnome-wm-manager.c:325
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
+msgid "Sync text/plain and text/* handlers"
+msgstr "Synkroniser håndterere for text/plain og text/*"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:1
+msgid "Display a dialog when there are errors running XScreenSaver"
+msgstr "Vis en dialog når det oppstår problemer med å kjøre XScreenSaver"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:2
+msgid "Run XScreenSaver at login"
+msgstr "Kjøre XScreenSaver ved pålogging"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:3
+msgid "Show Startup Errors"
+msgstr "Vis feil ved oppstart"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:4
+msgid "Start XScreenSaver"
+msgstr "Start XScreenSaver"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:1
+msgid "Antialiasing"
+msgstr "Antialiasing"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:2
+msgid "DPI"
+msgstr "DPI"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:3
+msgid "Hinting"
+msgstr "Hinting"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:4
+msgid "RGBA Order"
+msgstr "RGBA-rekkefølge"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:5
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\tAnother window manager is already running and could not be killed\n"
+"Resolution used for converting font sizes to pixel sizes, in dots per inch"
 msgstr ""
-"wm-properties-capplet: Kan ikke initiere vindushåndterer.\n"
-"\tEn annen vindushåndterer kjørere allerede og kunne ikke termineres\n"
+"Oppløsning som brukes for å konvertere skriftstørrelser til pikselstørrelser "
+"i punkter per tomme"
 
-#: libwindow-settings/gnome-wm-manager.c:329
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:6
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\t'%s' didn't start\n"
-msgstr ""
-"wm-properties-capplet: Kan ikke initiere vindushåndterer.\n"
-"\t«%s» startet ikke\n"
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" - red on left, most common. "
+"\"bgr\" - blue on left. \"vrgb\" - red on top. \"vbgr\" - red on bottom."
+msgstr "Rekkefølgen på elementer under pikselnivå på en LCD-skjerm; brukes kun når antialiasing er satt til «rgba». Mulige verdier er: «rgb» - rød til venstre, mest vanlig. «bgr» - blå til venstre. «vrgb» - rød øverst. «vbgr» - rød nederst."
 
-#: libwindow-settings/gnome-wm-manager.c:378
-msgid "Previous window manager did not die\n"
-msgstr "Tidligere vindushåndterer terminerte ikke\n"
-
-#: libwindow-settings/gnome-wm-manager.c:411
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:7
 msgid ""
-"Could not start '%s'.\n"
-"Falling back to previous window manager '%s'\n"
-msgstr ""
-"Kunne ikke starte «%s».\n"
-"Faller tilbake til tidligere vindushåndterer «%s»\n"
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" - no antialiasing. \"grayscale\" - standard grayscale antialiasing. "
+"\"rgba\" - subpixel antialiasing. (LCD screens only)."
+msgstr "Type antialiasing som skal brukes ved rendring av skrifter. Mulige verdier er: «none» - ingen antialiasing. «greyscale» - standard antialiasing med gråtoner. «rgba» - antialiasing under pikselnivå (Kun LCD-skjermer)"
 
-#: libwindow-settings/gnome-wm-manager.c:442
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:8
 msgid ""
-"Could not start fallback window manager.\n"
-"Please run a window manager manually. You can\n"
-"do this by selecting \"Run Program\" in the\n"
-"foot menu\n"
-msgstr ""
-"Kunne ikke starte gammel vindushåndterer.\n"
-"Vennligst start en vindushåndterer manuelt. Du kan\n"
-"gjøre dette ved å velge «Kjør program» fra menyen\n"
-"«Handlinger»\n"
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" - no hinting, \"slight\", \"medium\", and \"full\" - as much hinting as "
+"possible; may cause distortion of letter forms."
+msgstr "Type hinting som skal brukes ved rendring av skrifter. Mulige verdier er «none» - ingen hinting, «slight», «medium» og «full» - så mye hinting som mulig; kan forårsake forvrengning av bokstavenes form."
 
-#: libwindow-settings/gnome-wm-manager.c:467
-msgid "OK"
-msgstr "OK"
+#~ msgid "That accelerator key is already in use by: %s\n"
+#~ msgstr "Denne akselleratortasten er allerede i bruk av: %s\n"
+
+#~ msgid "Current modified"
+#~ msgstr "Aktivt tema endret"
+
+#~ msgid "Super"
+#~ msgstr "Super"
+
+#~ msgid "To _move windows, click while holding down:"
+#~ msgstr "Hold nede denne tasten og klikk med musen for å _flytte vinduer:"
+
+#~ msgid "_Tenths of a second before raising the window:"
+#~ msgstr "_Tidelssekunder før vinduet heves:"
+
+#~ msgid "Use _Font"
+#~ msgstr "Bruk _skrift"
+
+#~ msgid "Use _Font "
+#~ msgstr "Bruk _skrift "
+
+#~ msgid "Use _background"
+#~ msgstr "Bruk _bakgrunn"
+
+#~ msgid "Beep when enabling/disabling _keyboard accessibility features"
+#~ msgstr "_Pip ved aktivering/deaktivering av tilgjengelighet for tastatur"
+
+#~ msgid "Beep when:"
+#~ msgstr "Pip når:"
+
+#~ msgid "Repeat Key Pre_ferences..."
+#~ msgstr "Bruker_valg for tasterepetering..."
+
+#~ msgid "Start mo_ving this long after keypress:"
+#~ msgstr "Tid før be_vegelse starter etter tastetrykk:"
+
+#~ msgid "Testing Area"
+#~ msgstr "Testområde"
+
+#~ msgid "Toggle and Repeat Keys"
+#~ msgstr "Slå av/på repetering av tastetrykk"
+
+#~ msgid "_Import CDE AccessX file..."
+#~ msgstr "_Importer AccessX-fil fra CDE..."
+
+#~ msgid ""
+#~ "_Turn off Sticky Keys when\n"
+#~ "two keys pressed simultaneously"
+#~ msgstr ""
+#~ "Slå av klebrige taster når\n"
+#~ "to taster trykkes samtidig"
+
+#~ msgid "msecs"
+#~ msgstr "millisekunder"
+
+#~ msgid "Network Preferences"
+#~ msgstr "Brukervalg for nettverk"
+
+#~ msgid "Pro_xy requires username and password"
+#~ msgstr "Pro_xy krever brukernavn og passord"
+
+#~ msgid "_Location:"
+#~ msgstr "P_lassering"
+
+#~ msgid "Widget Theme"
+#~ msgstr "Tema for widget"
+
+#~ msgid "Titlebar Font"
+#~ msgstr "Skrift for tittellinjen"
+
+#~ msgid "Window Border Appearance"
+#~ msgstr "Utseende for vinduskant"
+
+#~ msgid "Window Manager:"
+#~ msgstr "Vindushåndterer:"
+
+#~ msgid ""
+#~ "Starting %s\n"
+#~ "(%d seconds left before operation times out)"
+#~ msgstr ""
+#~ "Starter %s\n"
+#~ "(%d sekunder gjenstår før tidsavbrudd for operasjonen)"
+
+#~ msgid ""
+#~ "wm-properties-capplet: Unable to initialize window manager.\n"
+#~ "\tAnother window manager is already running and could not be killed\n"
+#~ msgstr ""
+#~ "wm-properties-capplet: Kan ikke initiere vindushåndterer.\n"
+#~ "\tEn annen vindushåndterer kjørere allerede og kunne ikke termineres\n"
+
+#~ msgid ""
+#~ "wm-properties-capplet: Unable to initialize window manager.\n"
+#~ "\t'%s' didn't start\n"
+#~ msgstr ""
+#~ "wm-properties-capplet: Kan ikke initiere vindushåndterer.\n"
+#~ "\t«%s» startet ikke\n"
+
+#~ msgid "Previous window manager did not die\n"
+#~ msgstr "Tidligere vindushåndterer terminerte ikke\n"
+
+#~ msgid ""
+#~ "Could not start '%s'.\n"
+#~ "Falling back to previous window manager '%s'\n"
+#~ msgstr ""
+#~ "Kunne ikke starte «%s».\n"
+#~ "Faller tilbake til tidligere vindushåndterer «%s»\n"
+
+#~ msgid ""
+#~ "Could not start fallback window manager.\n"
+#~ "Please run a window manager manually. You can\n"
+#~ "do this by selecting \"Run Program\" in the\n"
+#~ "foot menu\n"
+#~ msgstr ""
+#~ "Kunne ikke starte gammel vindushåndterer.\n"
+#~ "Vennligst start en vindushåndterer manuelt. Du kan\n"
+#~ "gjøre dette ved å velge «Kjør program» fra menyen\n"
+#~ "«Handlinger»\n"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "_General"
+#~ msgstr "_Generelt"
+
+#~ msgid "_Category"
+#~ msgstr "_Kategori"
+
+#~ msgid "_Delete"
+#~ msgstr "_Slett"
+
+#~ msgid "_Name"
+#~ msgstr "_Navn"
+
+#~ msgid "Associate applications with file types"
+#~ msgstr "Koble applikasjoner med filtyper"
+
+#~ msgid "Installed Themes"
+#~ msgstr "Installerte tema"
+
+#~ msgid "List of available GTK+ themes"
+#~ msgstr "Liste over tilgjengelige GTK+ tema"
 
 #~ msgid "Edit Menu"
 #~ msgstr "Rediger meny"
@@ -2220,9 +2683,6 @@ msgstr "OK"
 #~ msgid "Long"
 #~ msgstr "Lang"
 
-#~ msgid "Medium"
-#~ msgstr "Middels"
-
 #~ msgid "Repeat s_peed:"
 #~ msgstr "Repeteringshastighet:"
 
@@ -2265,9 +2725,6 @@ msgstr "OK"
 
 #~ msgid "_Custom keyboard bell:"
 #~ msgstr "_Egendefinert tastaturpip:"
-
-#~ msgid "_Delay before repeating:"
-#~ msgstr "_Pause før repetering:"
 
 #~ msgid "Toolbars & Menus"
 #~ msgstr "Verktøylinjer og menyer"
@@ -2350,9 +2807,6 @@ msgstr "OK"
 #~ msgid "_Protocol name"
 #~ msgstr "_Protokollnavn"
 
-#~ msgid "_Remove"
-#~ msgstr "Fje_rn"
-
 #~ msgid ""
 #~ "Invalid MIME type. Please enter a valid MIME type, or leave the field "
 #~ "blank to have one generated for you."
@@ -2384,9 +2838,6 @@ msgstr "OK"
 
 #~ msgid "Mouse Properties"
 #~ msgstr "Egenskaper for mus"
-
-#~ msgid "HTTP Proxy Settings"
-#~ msgstr "Innstillinger for HTTP-proxy"
 
 #~ msgid "Configure GNOME's use of sound"
 #~ msgstr "Konfigurér bruk av lyd i GNOME."
@@ -2430,9 +2881,6 @@ msgstr "OK"
 #~ msgid "Configure which non-session aware programs are started up"
 #~ msgstr ""
 #~ "Konfigurer oppstart av programmer som ikke støtter sesjonshåndtering"
-
-#~ msgid "Startup Programs"
-#~ msgstr "Oppstartsprogrammer"
 
 #~ msgid "Select an icon..."
 #~ msgstr "Velg et ikon..."
@@ -2675,9 +3123,6 @@ msgstr "OK"
 #~ msgid "Command:"
 #~ msgstr "Kommando:"
 
-#~ msgid "Configuration Command:"
-#~ msgstr "Konfigurasjonskommando:"
-
 #~ msgid "Window manager is session managed"
 #~ msgstr "Vindushåndtereren er sesjonshåndtert"
 
@@ -2716,9 +3161,6 @@ msgstr "OK"
 
 #~ msgid "Icons and Text"
 #~ msgstr "Ikoner og tekst"
-
-#~ msgid "Only Icons"
-#~ msgstr "Kun ikoner"
 
 #~ msgid "Only Text"
 #~ msgstr "Kun tekst"
@@ -2788,9 +3230,6 @@ msgstr "OK"
 
 #~ msgid "Progress bar is on the right"
 #~ msgstr "Fremgangsmåler plassert til høyre"
-
-#~ msgid "Right"
-#~ msgstr "Høyre"
 
 #~ msgid "Right aligned"
 #~ msgstr "Høyrejustert"
@@ -2864,9 +3303,6 @@ msgstr "OK"
 
 #~ msgid "_Sound"
 #~ msgstr "_Lyd"
-
-#~ msgid "Theme Properties"
-#~ msgstr "Egenskaper for tema"
 
 #~ msgid "Starting esd\n"
 #~ msgstr "Starter esd\n"

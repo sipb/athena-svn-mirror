@@ -3,35 +3,31 @@
 # Original Translator: Ivan Passos <ivan@cyclades.com>
 # Original Revision: Sandro Nunes Henrique <sandro@conectiva.com.br>
 # Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000-2001.
-# Alexandre Folle de Menezes <afmenez@terra.com.br>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center 1.5.6\n"
-"POT-Creation-Date: 2002-12-19 10:01-0500\n"
-"PO-Revision-Date: 2002-11-30 15:05-0200\n"
-"Last-Translator: Alexandre Folle de Menezes <afmenez@terra.com.br>\n"
-"Language-Team: Debian-BR <debian-l10n-portuguese@lists.debian.org>, "
-"Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>, Sun G11n "
-"<gnome_int_l10n@ireland.sun.com>\n"
+"POT-Creation-Date: 2003-01-16 19:25-0200\n"
+"PO-Revision-Date: 2003-01-17 00:46-0200\n"
+"Last-Translator: Gustavo Noronha Silva <kov@debian.org>\n"
+"Language-Team: GNOME-BR <gnome-l10n-br@listas.cipsga.org.br>, Debian-BR <debian-l10n-portuguese@lists.debian.org>, Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>, Sun G11n <gnome_int_l10n@ireland.sun.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:229
-#: capplets/keyboard/gnome-keyboard-properties.c:159
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:238
 #, c-format
-msgid "There was an error launching the keyboard capplet : %s"
-msgstr "Houve um erro ao lançar o capplet de teclado: %s"
+msgid "There was an error launching the mouse preferences dialog: %s"
+msgstr "Houve um erro ao lançar o diálogo de preferências do mouse: %s"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:321
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:379
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:334
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:392
 #, c-format
 msgid "Unable to import AccessX settings from file '%s'"
 msgstr "Não é possível importar as configurações do AccessX do arquivo '%s'"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:452
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:465
 msgid "Select CDE AccessX file"
 msgstr "Selecione o arquivo CDE AccessX"
 
@@ -45,66 +41,106 @@ msgstr "Teclado"
 msgid "Set your keyboard accessibility preferences"
 msgstr "Defina suas preferências de acessibilidade ao teclado"
 
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
+msgid ""
+"This system does not seem to have the XKB extension.  The keyboard "
+"accessibility features will not operate without it."
+msgstr "O sistema não parece ter uma extensão XKB. As funções de acessibilidade do teclado não irão funcionar sem ela."
+
 # SUN NEW TRANSLATION
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
+#: capplets/file-types/file-types-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/network/gnome-network-preferences.glade.h:2
+#: capplets/theme-switcher/theme-properties.glade.h:1
+#: capplets/theme-switcher/theme-install.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
+msgid "Basic"
+msgstr "Básico"
+
+# MODIFIED SUN TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
+msgid "Beep if key is re_jected"
+msgstr "Bipar se a tecla for re_jeitada"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
+msgid "Beep when _features turned on or off from keyboard"
+msgstr "Bipar quando _funções forem ligadas ou desligadas pelo teclado"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+msgid "Beep when _modifier is pressed"
+msgstr "Bipar quando o _modificador for pressionado"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
 msgid "Beep when an LED is turned on and two beeps when one is turned off."
 msgstr ""
 "Emitir um aviso sonoro quando um LED está ligado e dois quando está "
 "desligado."
 
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
-msgid "Beep when enabling/disabling _keyboard accessibility features"
-msgstr ""
-"_Emitir aviso sonoro ao habilitar/desabilitar os recursos de acessibilidade "
-"do teclado"
-
 # MODIFIED SUN TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
-msgid "Beep when key is re_jected"
-msgstr "Bipar quando a tecla for re_jeitada"
-
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
-msgid "Beep when:"
-msgstr "Emitir aviso sonoro quando:"
-
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
-msgid "E_nable Toggle Keys"
-msgstr "Habilitar Teclas de Al_ternância"
-
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
-msgid "Enable Bo_unce Keys"
-msgstr "Habilitar Teclas de _Repercussão"
-
-# SUN NEW TRANSLATION
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+msgid "Beep when key is:"
+msgstr "Bipar quando a tecla for:"
+
+# MODIFIED SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+msgid "Del_ay:"
+msgstr "Esper_a:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+msgid "Delay between keypress and pointer mo_vement:"
+msgstr "Espera entre cada pressionamento de teclas e mo_vimento do ponteiro:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
+msgid "Disa_ble if two keys pressed together"
+msgstr "Desligar se duas teclas forem pressionadas _juntas"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
+msgid "E_nable Toggle Keys"
+msgstr "Habilitar Teclas de Alter_nância"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
+msgid "Enable Bo_unce Keys"
+msgstr "Habilitar Teclas de Reperc_ussão"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
 msgid "Enable Slo_w Keys"
 msgstr "Habilitar Teclas Len_tas"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
 msgid "Enable _Mouse Keys"
 msgstr "Habilitar Teclas do _Mouse"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
 msgid "Enable _Sticky Keys"
 msgstr "Habilitar Teclas de _Aderência"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
-msgid "General"
-msgstr "Geral"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+msgid "Features"
+msgstr "Funções"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
+msgid "Filters"
+msgstr "Filtros"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
-msgid "I_gnore keypresses within  :"
-msgstr "_Ignorar pressionamentos de teclas em :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
+msgid "I_gnore duplicate keypresses within:"
+msgstr "I_gnorar pressionamentos duplicados de teclas dentro de:"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
 msgid ""
 "Ignore all subsequent presses of the SAME key if they happen within a user "
 "selectable period of time."
@@ -112,17 +148,26 @@ msgstr ""
 "Ignora todos os pressionamentos subseqüentes da MESMA tecla se eles "
 "ocorrerem em um período de tempo selecionável pelo usuário."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
-msgid "Keyboard Accessibility Configuration (AccessX)"
-msgstr "Configuração de Acessibilidade do Teclado (AccessX)"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
+msgid "Keyboard Accessibility Preferences (AccessX)"
+msgstr "Preferências de Acessibilidade do Teclado (AccessX)"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
-msgid "Ma_ximum pointer speed :"
-msgstr "Velocidade má_xima do ponteiro :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
+msgid "Ma_ximum pointer speed:"
+msgstr "Velocidade má_xima do ponteiro:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/mouse/mouse.desktop.in.h:1
+msgid "Mouse"
+msgstr "Mouse"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+msgid "Mouse _Preferences..."
+msgstr "_Preferências do Mouse..."
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
 msgid ""
 "Only accept keys after they have been pressed and held for a user adjustable "
 "amount of time."
@@ -131,7 +176,7 @@ msgstr ""
 "pressionadas por um período de tempo ajustável pelo usuário."
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
 msgid ""
 "Perform multiple simultaneous key press operations by pressing modifier keys "
 "in sequence."
@@ -139,93 +184,84 @@ msgstr ""
 "Executar várias operações simultâneas de pressionamento de teclas, "
 "pressionando as teclas modificadoras em seqüência."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
-msgid "Repeat Key Pre_ferences"
-msgstr "Pre_ferências de Repetição da Tecla"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+msgid "S_peed:"
+msgstr "_Velocidade:"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
-msgid "Start mo_ving this long after keypress :"
-msgstr "Começar a mo_ver muito tempo depois do pressionamento da tecla :"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
-msgid "Testing Area"
-msgstr "Área de Testes"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
+msgid "Time to acce_lerate to maximum speed:"
+msgstr "Tempo para ace_lerar até a velocidade máxima:"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
-msgid "Time to acce_lerate to max speed :"
-msgstr "Tempo para _acelerar até a velocidade máxima :"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
-msgid "Toggle and Repeat Keys"
-msgstr "Teclas de Alternância e Repetição"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
+msgid "Toggle Keys"
+msgstr "Teclas de Alternância"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
 msgid "Turn the numeric keypad into a mouse control pad."
 msgstr "Transformar o teclado numérico em um teclado de controle do mouse."
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
-msgid "_Beep when modifier is pressed"
-msgstr "_Emitir aviso sonoro quando o modificador for pressionado"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
+msgid "_Disable if unused for:"
+msgstr "_Desabilitar se não for usado por:"
 
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
-msgid "_Disable if unused for "
-msgstr "_Desabilitar se não for usado por "
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
-msgid "_Enable keyboard accessibility"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
+msgid "_Enable keyboard accessibility features"
 msgstr "_Habilitar acessibilidade do teclado"
 
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
-msgid "_Import CDE AccessX file"
-msgstr "_Importar arquivo CDE do AccessX"
-
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
-msgid "_Only accept keypress after :"
-msgstr "_Aceitar o pressionamento de tecla somente após :"
-
-# SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
-msgid ""
-"_Turn off Sticky Keys when\n"
-"two keys pressed simultaneously"
-msgstr ""
-"_Desativar as teclas de aderência quando\n"
-"duas teclas são pressionadas simultaneamente"
-
-# MODIFIED SUN TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
-msgid "key is _accepted"
-msgstr "a tecla for _aceita"
-
-# MODIFIED SUN TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
-msgid "key is _pressed"
-msgstr "a tecla for _pressionada"
-
-# MODIFIED SUN TRANSLATION
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
-msgid "key is _rejected"
-msgstr "a tecla for _rejeitada"
+msgid "_Import Feature Settings..."
+msgstr "_Importar Configurações de Funções..."
 
 # SUN NEW TRANSLATION
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
-msgid "msecs"
-msgstr "ms"
+msgid "_Only accept keys held for:"
+msgstr "S_omente aceitar teclas pressionadas por:"
 
-# SUN NEW TRANSLATION
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
-msgid "pixels/sec"
-msgstr "pixels/s"
+msgid "_Repeat Keys"
+msgstr "Teclas de _Repetição"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
+msgid "_Type to test settings:"
+msgstr "_Tecle para testar as configurações:"
+
+# MODIFIED SUN TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:36
+msgid "_accepted"
+msgstr "_aceita"
+
+# MODIFIED SUN TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
+msgid "_pressed"
+msgstr "_pressionada"
+
+# MODIFIED SUN TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
+msgid "_rejected"
+msgstr "_rejeitada"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
+msgid "characters/second"
+msgstr "caracteres/segundo"
 
 # SUN NEW TRANSLATION
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
+msgid "milliseconds"
+msgstr "milisegundos"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
+msgid "pixels/second"
+msgstr "pixels/segundo"
+
+# SUN NEW TRANSLATION
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
+#: capplets/windows/gnome-window-properties.glade.h:7
 msgid "seconds"
 msgstr "segundos"
 
@@ -286,8 +322,8 @@ msgstr "Selecione _foto:"
 #: capplets/background/background-properties-capplet.c:567
 #: capplets/common/capplet-util.c:243
 #: capplets/default-applications/gnome-default-applications-properties.c:712
-#: capplets/keyboard/gnome-keyboard-properties.c:293
-#: capplets/mouse/gnome-mouse-properties.c:752
+#: capplets/keyboard/gnome-keyboard-properties.c:290
+#: capplets/mouse/gnome-mouse-properties.c:712
 #: capplets/sound/sound-properties-capplet.c:149
 msgid "Retrieve and store legacy settings"
 msgstr "Recuperar e armazenar as configurações legadas"
@@ -326,7 +362,7 @@ msgid "Picture Options:"
 msgstr "Opções de Figura:"
 
 #: capplets/background/background-properties.glade.h:8
-#: libbackground/preview-file-selection.c:198
+#: libbackground/preview-file-selection.c:212
 msgid "Preview"
 msgstr "Visualização prévia"
 
@@ -616,15 +652,6 @@ msgid "Please specify a name and a command for this editor."
 msgstr "Por favor entre um nome e um comando para esse editor."
 
 # SUN NEW TRANSLATION
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
-#: capplets/file-types/file-types-properties.glade.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
-#: capplets/network/gnome-network-preferences.glade.h:1
-#: capplets/theme-switcher/theme-install.glade.h:1
-msgid "*"
-msgstr "*"
-
-# SUN NEW TRANSLATION
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:2
 msgid "Acce_pts URLs"
 msgstr "Ace_ita URLs"
@@ -751,6 +778,7 @@ msgid "Window Manager"
 msgstr "Gerenciador de Janelas"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:31
+#: capplets/file-types/file-types-properties.glade.h:22
 msgid "_Name:"
 msgstr "_Nome:"
 
@@ -851,6 +879,7 @@ msgstr "Minimizando e Maximizando"
 
 # SUN NEW TRANSLATION
 #: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:1
+#: capplets/windows/gnome-window-properties.c:649
 msgid "Meta"
 msgstr "Meta"
 
@@ -917,18 +946,17 @@ msgstr "Aplicações Legadas"
 msgid "Legacy applications settings (grdb)"
 msgstr "Configurações das aplicações legadas (grdb)"
 
-#: capplets/file-types/file-types-capplet.c:194
+#: capplets/file-types/file-types-capplet.c:196
 msgid "Description"
 msgstr "Descrição"
 
-#: capplets/file-types/file-types-capplet.c:216
+#: capplets/file-types/file-types-capplet.c:218
 msgid "Extensions"
 msgstr "Extensões"
 
 # SUN NEW TRANSLATION
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
-#: capplets/file-types/file-types-properties.glade.h:8
-#: capplets/file-types/file-types.desktop.in.h:2
+#: capplets/file-types/file-types-properties.glade.h:10
 msgid "File Types and Programs"
 msgstr "Programas e Tipos de Arquivo"
 
@@ -948,76 +976,75 @@ msgstr "Ações"
 msgid "Add _File Type..."
 msgstr "Adicionar Tipo de _Arquivo..."
 
-# SUN NEW TRANSLATION
+# MODIFIED SUN NEW TRANSLATION
 #: capplets/file-types/file-types-properties.glade.h:4
 msgid "Add _Service..."
 msgstr "Adicionar _Serviço..."
 
 # SUN NEW TRANSLATION
 #: capplets/file-types/file-types-properties.glade.h:5
-msgid "Add:"
-msgstr "Adicionar:"
-
-#: capplets/file-types/file-types-properties.glade.h:6
-msgid "Default action"
-msgstr "Ação padrão"
+msgid "C_hoose..."
+msgstr "Escol_her..."
 
 # SUN NEW TRANSLATION
+#: capplets/file-types/file-types-properties.glade.h:6
+msgid "Cate_gory:"
+msgstr "Cate_goria:"
+
 #: capplets/file-types/file-types-properties.glade.h:7
+msgid "D_efault action:"
+msgstr "Ação _padrão:"
+
+#: capplets/file-types/file-types-properties.glade.h:8
+msgid "Default _action:"
+msgstr "Ação _padrão:"
+
+# SUN NEW TRANSLATION
+#: capplets/file-types/file-types-properties.glade.h:9
 #: capplets/file-types/mime-edit-dialog.c:208
 msgid "Edit file type"
 msgstr "Editar tipo de arquivo"
 
-#: capplets/file-types/file-types-properties.glade.h:9
-msgid "Filename Extensions"
-msgstr "Extensões de Arquivos"
+#: capplets/file-types/file-types-properties.glade.h:11
+msgid "Filename extensions:"
+msgstr "Extensões de arquivos:"
 
 # SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:10
+#: capplets/file-types/file-types-properties.glade.h:12
 msgid "Look at content"
 msgstr "Examinar o conteúdo"
 
+#: capplets/file-types/file-types-properties.glade.h:13
+msgid "P_rogram:"
+msgstr "P_rograma:"
+
 # MODIFIED SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:11
+#: capplets/file-types/file-types-properties.glade.h:14
 msgid "Program to Run"
 msgstr "Programa a ser Executado"
 
 # SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:12
+#: capplets/file-types/file-types-properties.glade.h:15
 msgid "Run a program"
 msgstr "Executar um programa"
 
-#: capplets/file-types/file-types-properties.glade.h:13
+#: capplets/file-types/file-types-properties.glade.h:16
 msgid "Run in _Terminal"
 msgstr "Executar em um T_erminal"
 
 # SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:14
+#: capplets/file-types/file-types-properties.glade.h:17
 msgid "Use parent category _defaults"
 msgstr "Usar pa_drões da categoria pai"
 
-# MODIFIED SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:15
-msgid "Viewer Component"
-msgstr "Componente de Visualização"
-
 # SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:16
-msgid "_Category"
-msgstr "_Categoria"
-
-# SUN NEW TRANSLATION
-#: capplets/file-types/file-types-properties.glade.h:17
-msgid "_Choose..."
-msgstr "_Escolher..."
-
 #: capplets/file-types/file-types-properties.glade.h:18
-msgid "_Delete"
-msgstr "_Excluir"
+msgid "_Add:"
+msgstr "_Adicionar:"
 
 #: capplets/file-types/file-types-properties.glade.h:19
-msgid "_Description"
-msgstr "_Descrição"
+msgid "_Description:"
+msgstr "_Descrição:"
 
 # SUN NEW TRANSLATION
 #: capplets/file-types/file-types-properties.glade.h:20
@@ -1026,28 +1053,36 @@ msgstr "_Editar..."
 
 # SUN NEW TRANSLATION
 #: capplets/file-types/file-types-properties.glade.h:21
-msgid "_MIME Type"
-msgstr "Tipo _MIME"
-
-#: capplets/file-types/file-types-properties.glade.h:22
-msgid "_Name"
-msgstr "_Nome:"
+msgid "_MIME type:"
+msgstr "Tipo _MIME:"
 
 #: capplets/file-types/file-types-properties.glade.h:23
-msgid "_Program"
-msgstr "_Programa"
+msgid "_Program to run:"
+msgstr "_Programa:"
 
 #: capplets/file-types/file-types-properties.glade.h:24
-msgid "_Program to Run"
-msgstr "_Programa a ser Executado"
+msgid "_Protocol:"
+msgstr "_Protocolo:"
 
 #: capplets/file-types/file-types-properties.glade.h:25
-msgid "_Protocol"
-msgstr "_Protocolo"
+msgid "_Remove"
+msgstr "_Remover"
 
+# MODIFIED SUN NEW TRANSLATION
+#: capplets/file-types/file-types-properties.glade.h:26
+msgid "_Viewer component:"
+msgstr "Componente de _visualização:"
+
+# MODIFIED SUN NEW TRANSLATION
 #: capplets/file-types/file-types.desktop.in.h:1
-msgid "Associate applications with file types"
-msgstr "Associar aplicações a tipos de arquivos"
+msgid "File types and programs"
+msgstr "Programas e tipos de arquivo"
+
+# SUN NEW TRANSLATION
+#: capplets/file-types/file-types.desktop.in.h:2
+msgid "Specify which programs are used to open or view each type of file"
+msgstr ""
+"Especifique quais programas são usados para abrir ou ver cada tipo de arquivo"
 
 # SUN NEW TRANSLATION
 #: capplets/file-types/mime-category-edit-dialog.c:138
@@ -1264,50 +1299,151 @@ msgstr "Fonte"
 msgid "Select fonts for the desktop"
 msgstr "Selecionar fontes para o desktop"
 
+# MODIFIED SUN NEW TRANSLATION
 #: capplets/font/font-properties.glade.h:1
+msgid "Best _shapes"
+msgstr "Melhores _formas"
+
+#: capplets/font/font-properties.glade.h:2
+msgid "Best co_ntrast"
+msgstr "Melhor co_ntraste"
+
+#: capplets/font/font-properties.glade.h:3
+msgid "De_tails..."
+msgstr "De_talhes..."
+
+#: capplets/font/font-properties.glade.h:4
 msgid "Font Preferences"
 msgstr "Preferências da Fonte"
 
+#: capplets/font/font-properties.glade.h:5
+msgid "Font Rendering"
+msgstr "Renderização de Fontes"
+
+#: capplets/font/font-properties.glade.h:6
+msgid "Font Rendering Details"
+msgstr "Detalhes de Renderização de Fontes"
+
+#: capplets/font/font-properties.glade.h:7
+msgid "G_rayscale"
+msgstr "Escala de Cin_za"
+
+#: capplets/font/font-properties.glade.h:8
+msgid "Hinting:"
+msgstr "Dicas:"
+
+#: capplets/font/font-properties.glade.h:9
+msgid "N_one"
+msgstr "N_enhum"
+
+#: capplets/font/font-properties.glade.h:10
+msgid "Resolution (_dots per inch):"
+msgstr "Resolução (_pontos por polegada):"
+
 # SUN NEW TRANSLATION
-#: capplets/font/font-properties.glade.h:2
+#: capplets/font/font-properties.glade.h:11
 msgid "Set the font for applications"
 msgstr "Define a fonte para as aplicações"
 
-#: capplets/font/font-properties.glade.h:3
+#: capplets/font/font-properties.glade.h:12
 msgid "Set the font for the icons on the desktop"
 msgstr "Define a fonte para os ícones no desktop"
 
-#: capplets/font/font-properties.glade.h:4
+#: capplets/font/font-properties.glade.h:13
+msgid "Set the monospace font for terminals and similar applications"
+msgstr "Define a fonte monoespaçada para terminais e aplicações similares"
+
+#: capplets/font/font-properties.glade.h:14
+msgid "Smoothing:"
+msgstr "Suavização:"
+
+#: capplets/font/font-properties.glade.h:15
+msgid "Sub_pixel (LCDs)"
+msgstr "Sub_pixel (LCDs)"
+
+#: capplets/font/font-properties.glade.h:16
+msgid "Sub_pixel smoothing (LCDs)"
+msgstr "Suavização de Sub_pixel (LCDs)"
+
+#: capplets/font/font-properties.glade.h:17
+msgid "Subpixel order:"
+msgstr "Ordem de Subpixel:"
+
+#: capplets/font/font-properties.glade.h:18
+msgid "VB_GR"
+msgstr "VB_GR"
+
+#: capplets/font/font-properties.glade.h:19
 msgid "_Application font:"
 msgstr "Fonte das _Aplicações:"
 
-#: capplets/font/font-properties.glade.h:5
+#: capplets/font/font-properties.glade.h:20
+msgid "_BGR"
+msgstr "_BGR"
+
+#: capplets/font/font-properties.glade.h:21
 msgid "_Desktop font:"
 msgstr "Fonte do _Desktop:"
+
+#: capplets/font/font-properties.glade.h:22
+msgid "_Full"
+msgstr "_Completa"
+
+#: capplets/font/font-properties.glade.h:23
+msgid "_Medium"
+msgstr "_Médio"
+
+#: capplets/font/font-properties.glade.h:24
+msgid "_Monochrome"
+msgstr "_Monocromático"
+
+#: capplets/font/font-properties.glade.h:25
+msgid "_None"
+msgstr "_Nenhum"
+
+#: capplets/font/font-properties.glade.h:26
+msgid "_RGB"
+msgstr "_RGB"
+
+#: capplets/font/font-properties.glade.h:27
+msgid "_Slight"
+msgstr "_Discreto"
+
+#: capplets/font/font-properties.glade.h:28
+msgid "_Terminal font:"
+msgstr "Fonte do _Terminal:"
+
+#: capplets/font/font-properties.glade.h:29
+msgid "_VRGB"
+msgstr "_VRGB"
+
+#: capplets/font/font-properties.glade.h:30
+msgid "_Window title font:"
+msgstr "Fonte do Título da _Janela:"
 
 # SUN NEW TRANSLATION
 #: capplets/keybindings/eggcellrendererkeys.c:160
 #: capplets/keybindings/eggcellrendererkeys.c:161
 msgid "Accelerator key"
-msgstr "Tecla aceleradora"
+msgstr "Tecla de atalho"
 
 # SUN NEW TRANSLATION
 #: capplets/keybindings/eggcellrendererkeys.c:170
 #: capplets/keybindings/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr "Modificadores de acelerador"
+msgstr "Modificadores de atalhos"
 
 #: capplets/keybindings/eggcellrendererkeys.c:180
 msgid "Accel Mode"
-msgstr "Modo de Acelerador"
+msgstr "Modo de Atalho"
 
 #: capplets/keybindings/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr "O tipo do acelerador"
+msgstr "O tipo de atalho."
 
 #: capplets/keybindings/eggcellrendererkeys.c:219
-#: capplets/keybindings/gnome-keybinding-properties.c:202
-#: libbackground/applier.c:521
+#: capplets/keybindings/gnome-keybinding-properties.c:204
+#: libbackground/applier.c:588
 msgid "Disabled"
 msgstr "Desativado"
 
@@ -1315,38 +1451,42 @@ msgstr "Desativado"
 #: capplets/keybindings/eggcellrendererkeys.c:330
 #: capplets/keybindings/eggcellrendererkeys.c:563
 msgid "Type a new accelerator, or press Backspace to clear"
-msgstr "Digite um novo acelerador, ou pressione Backspace para limpar"
+msgstr "Digite um novo atalho ou pressione Backspace para limpar"
 
 # MODIFIED SUN NEW TRANSLATION
 #: capplets/keybindings/eggcellrendererkeys.c:566
 msgid "Type a new accelerator"
-msgstr "Digite um novo acelerador"
+msgstr "Digite um novo atalho"
 
 # SUN NEW TRANSLATION
-#: capplets/keybindings/gnome-keybinding-properties.c:538
+#: capplets/keybindings/gnome-keybinding-properties.c:540
 msgid "<Unknown Action>"
 msgstr "<Ação Desconhecida>"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:557
+#: capplets/keybindings/gnome-keybinding-properties.c:559
 msgid "Desktop"
 msgstr "Desktop"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:561
+#: capplets/keybindings/gnome-keybinding-properties.c:563
 msgid "Window Management"
 msgstr "Gerenciamento de Janelas"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:695
+#: capplets/keybindings/gnome-keybinding-properties.c:698
 #, c-format
-msgid "That accelerator key is already in use by: %s\n"
-msgstr "Esta tecla aceleradora já está em uso por: %s\n"
+msgid ""
+"The shortcut \"%s\" is already used for:\n"
+" \"%s\"\n"
+msgstr ""
+"O atalho \"%s\" já está sendo usando por:\n"
+"\"%s\"\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:725
+#: capplets/keybindings/gnome-keybinding-properties.c:729
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
-msgstr "Erro definindo novo acelerador na base de dados de configuração: %s\n"
+msgstr "Erro definindo novo atalho na base de dados de configuração: %s\n"
 
 # SUN NEW TRANSLATION
-#: capplets/keybindings/gnome-keybinding-properties.c:876
+#: capplets/keybindings/gnome-keybinding-properties.c:880
 msgid ""
 "Unable to find any keyboard themes.  This means your GTK+ installation has "
 "been incompletely installed."
@@ -1355,11 +1495,11 @@ msgstr ""
 "instalação do GTK+ está incompleta."
 
 # SUN NEW TRANSLATION
-#: capplets/keybindings/gnome-keybinding-properties.c:898
+#: capplets/keybindings/gnome-keybinding-properties.c:902
 msgid "Action"
 msgstr "Ação"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:917
+#: capplets/keybindings/gnome-keybinding-properties.c:921
 msgid "Shortcut"
 msgstr "Atalho"
 
@@ -1384,13 +1524,18 @@ msgstr "Atalhos de edição de _texto:"
 msgid "Assign shortcut keys to commands"
 msgstr "Designar teclas de atalhos a comandos"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:272
+#: capplets/keyboard/gnome-keyboard-properties.c:162
+#, c-format
+msgid "There was an error launching the keyboard capplet : %s"
+msgstr "Houve um erro ao lançar o capplet de teclado: %s"
+
+#: capplets/keyboard/gnome-keyboard-properties.c:269
 msgid "_Accessibility"
 msgstr "_Acessibilidade"
 
 # SUN NEW TRANSLATION
-#: capplets/keyboard/gnome-keyboard-properties.c:289
-#: capplets/keyboard/gnome-keyboard-properties.c:291
+#: capplets/keyboard/gnome-keyboard-properties.c:286
+#: capplets/keyboard/gnome-keyboard-properties.c:288
 #: capplets/sound/sound-properties-capplet.c:145
 #: capplets/sound/sound-properties-capplet.c:147
 msgid ""
@@ -1413,7 +1558,7 @@ msgstr "<small><i>Curto</i></small>"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:5
 msgid "<small><i>Slow</i></small>"
-msgstr "<small><i>Devagar</i></small>"
+msgstr "<small><i>Lento</i></small>"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:6
 msgid "Bee_p"
@@ -1452,10 +1597,6 @@ msgstr "Clique no Pressionamento de Teclas"
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:15
 msgid "Repeat Keys"
 msgstr "Repetição de Teclas"
-
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
-msgid "S_peed:"
-msgstr "_Velocidade:"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:18
 msgid "_Accessibility..."
@@ -1497,7 +1638,7 @@ msgid "Set your keyboard preferences"
 msgstr "Definir suas preferências de teclado"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:477
+#: capplets/mouse/gnome-mouse-properties.c:437
 #, c-format
 msgid ""
 "<b>Unknown Cursor</b>\n"
@@ -1507,7 +1648,7 @@ msgstr ""
 "%s"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:578
+#: capplets/mouse/gnome-mouse-properties.c:538
 msgid ""
 "<b>Default Cursor - Current</b>\n"
 "The default cursor that ships with X"
@@ -1516,7 +1657,7 @@ msgstr ""
 "O cursor padrão fornecido com X"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:581
+#: capplets/mouse/gnome-mouse-properties.c:541
 msgid ""
 "<b>Default Cursor</b>\n"
 "The default cursor that ships with X"
@@ -1525,7 +1666,7 @@ msgstr ""
 "O cursor padrão fornecido com X"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:599
+#: capplets/mouse/gnome-mouse-properties.c:559
 msgid ""
 "<b>White Cursor - Current</b>\n"
 "The default cursor inverted"
@@ -1534,7 +1675,7 @@ msgstr ""
 "O cursor padrão invertido"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:602
+#: capplets/mouse/gnome-mouse-properties.c:562
 msgid ""
 "<b>White Cursor</b>\n"
 "The default cursor inverted"
@@ -1543,7 +1684,7 @@ msgstr ""
 "O cursor padrão invertido"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:620
+#: capplets/mouse/gnome-mouse-properties.c:580
 msgid ""
 "<b>Large Cursor - Current</b>\n"
 "Large version of normal cursor"
@@ -1552,7 +1693,7 @@ msgstr ""
 "Versão grande do cursor normal"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:623
+#: capplets/mouse/gnome-mouse-properties.c:583
 msgid ""
 "<b>Large Cursor</b>\n"
 "Large version of normal cursor"
@@ -1561,7 +1702,7 @@ msgstr ""
 "Versão grande do cursor normal"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:641
+#: capplets/mouse/gnome-mouse-properties.c:601
 msgid ""
 "<b>Large White Cursor - Current</b>\n"
 "Large version of white cursor"
@@ -1570,7 +1711,7 @@ msgstr ""
 "Versão grande do cursor branco"
 
 # SUN NEW TRANSLATION
-#: capplets/mouse/gnome-mouse-properties.c:644
+#: capplets/mouse/gnome-mouse-properties.c:604
 msgid ""
 "<b>Large White Cursor</b>\n"
 "Large version of white cursor"
@@ -1724,53 +1865,82 @@ msgstr "_Mostrar a posição do cursor quando a tecla Control é pressionada"
 msgid "_Threshold:"
 msgstr "_Limiar:"
 
-#: capplets/mouse/mouse.desktop.in.h:1
-msgid "Mouse"
-msgstr "Mouse"
-
 #: capplets/mouse/mouse.desktop.in.h:2
 msgid "Set your mouse preferences"
 msgstr "Definir suas preferências de mouse"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:1
 msgid "Network proxy"
-msgstr "Proxy da Rede"
+msgstr "Proxy da rede"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:2
 msgid "Network proxy preferences"
-msgstr "Preferências do Proxy da Rede"
+msgstr "Preferências do proxy da rede"
 
-#: capplets/network/gnome-network-preferences.glade.h:2
-msgid "Network Preferences"
-msgstr "Preferências de Rede"
+#: capplets/network/gnome-network-preferences.glade.h:1
+msgid "      "
+msgstr "      "
 
 #: capplets/network/gnome-network-preferences.glade.h:3
-msgid "Network Proxy Preferences"
-msgstr "Preferências do Proxy da Rede"
+msgid "<b>_Automatic proxy configuration</b>"
+msgstr "<b>Configuração _automática de proxy</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:4
-msgid "P_ort:"
-msgstr "P_orta:"
+msgid "<b>_Direct internet connection</b>"
+msgstr "<b>_Conexão direta à Internet</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:5
-msgid "Pass_word:"
-msgstr "_Senha:"
+msgid "<b>_Manual proxy configuration</b>"
+msgstr "<b>Configuração _manual de proxy</b>"
 
 #: capplets/network/gnome-network-preferences.glade.h:6
-msgid "Pro_xy requires username and password"
-msgstr "O Pro_xy precisa de usuário e senha"
+msgid "<b>_Use authentication</b>"
+msgstr "<b>Usar _autenticação</b>"
 
+# MODIFIED SUN TRANSLATION
 #: capplets/network/gnome-network-preferences.glade.h:7
-msgid "User_name:"
-msgstr "_Nome de Usuário:"
+msgid "Autoconfiguration _URL:"
+msgstr "_URL de Autoconfiguração:"
 
 #: capplets/network/gnome-network-preferences.glade.h:8
-msgid "_Location:"
-msgstr "_Localização:"
+msgid "HTTP Proxy Details"
+msgstr "Detalhes de Proxy HTTP"
 
 #: capplets/network/gnome-network-preferences.glade.h:9
-msgid "_Use HTTP proxy"
-msgstr "_Usar proxy HTTP"
+msgid "Network Proxy Configuration"
+msgstr "Configuração do Proxy da Rede"
+
+#: capplets/network/gnome-network-preferences.glade.h:10
+msgid "Port:"
+msgstr "Porta:"
+
+#: capplets/network/gnome-network-preferences.glade.h:11
+msgid "S_ocks host:"
+msgstr "Host S_ocks:"
+
+#: capplets/network/gnome-network-preferences.glade.h:12
+msgid "_Details"
+msgstr "_Detalhes"
+
+#: capplets/network/gnome-network-preferences.glade.h:13
+msgid "_FTP proxy:"
+msgstr "Proxy _FTP:"
+
+#: capplets/network/gnome-network-preferences.glade.h:14
+msgid "_HTTP proxy:"
+msgstr "Proxy _HTTP:"
+
+#: capplets/network/gnome-network-preferences.glade.h:15
+msgid "_Password:"
+msgstr "_Senha:"
+
+#: capplets/network/gnome-network-preferences.glade.h:16
+msgid "_Secure HTTP proxy:"
+msgstr "Proxy HTTP _Seguro:"
+
+#: capplets/network/gnome-network-preferences.glade.h:17
+msgid "_Username:"
+msgstr "Nome de _Usuário:"
 
 #: capplets/sound/sound-properties-capplet.c:180
 msgid "Sound preferences"
@@ -1782,17 +1952,16 @@ msgid "E_nable sound server startup"
 msgstr "_Habilitar a inicialização do servidor de som"
 
 #: capplets/sound/sound-properties.glade.h:2
-msgid "Sound Preferences"
-msgstr "Preferências de Som"
+msgid "General"
+msgstr "Geral"
 
 #: capplets/sound/sound-properties.glade.h:3
-msgid "Sound _Events"
-msgstr "_Eventos de Som"
+msgid "Sound Events"
+msgstr "Eventos de Som"
 
-# SUN NEW TRANSLATION
 #: capplets/sound/sound-properties.glade.h:4
-msgid "_General"
-msgstr "_Geral"
+msgid "Sound Preferences"
+msgstr "Preferências de Som"
 
 #: capplets/sound/sound-properties.glade.h:5
 msgid "_Sounds for events"
@@ -1873,30 +2042,93 @@ msgstr "Selecionar temas para várias partes do desktop"
 msgid "Theme"
 msgstr "Tema"
 
-#: capplets/theme-switcher/theme-properties.glade.h:1
-msgid "Installed Themes"
-msgstr "Temas Instalados"
-
 #: capplets/theme-switcher/theme-properties.glade.h:2
-msgid "List of available GTK+ themes"
-msgstr "Lista de temas GTK+ disponíveis"
+msgid "<span size=\"larger\" weight=\"bold\">Save theme to disk</span>"
+msgstr "<span size=\"larger\" weight=\"bold\">Salvar tema para o disco</span>"
 
+# SUN NEW TRANSLATION
 #: capplets/theme-switcher/theme-properties.glade.h:3
+msgid "Apply _Background"
+msgstr "Aplicar _Fundo de Tela"
+
+#: capplets/theme-switcher/theme-properties.glade.h:4
+msgid "Apply _Font"
+msgstr "Aplicar _Fonte"
+
+# SUN NEW TRANSLATION
+#: capplets/theme-switcher/theme-properties.glade.h:5
+msgid "Controls"
+msgstr "Controles"
+
+# SUN NEW TRANSLATION
+#: capplets/theme-switcher/theme-properties.glade.h:6
+msgid "Icons"
+msgstr "Ícones"
+
+#: capplets/theme-switcher/theme-properties.glade.h:7
 msgid "New themes can also be installed by dragging them into the window."
 msgstr ""
 "Novos temas podem também ser instalados arrastando-os para esta janela."
 
-#: capplets/theme-switcher/theme-properties.glade.h:4
+#: capplets/theme-switcher/theme-properties.glade.h:8
+msgid "Short _Description:"
+msgstr "_Descrição Curta:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:9
+msgid "Theme Details"
+msgstr "Detalhes do Tema"
+
+#: capplets/theme-switcher/theme-properties.glade.h:10
 msgid "Theme Preferences"
 msgstr "Preferências do Tema"
 
-#: capplets/theme-switcher/theme-properties.glade.h:5
+#: capplets/theme-switcher/theme-properties.glade.h:11
+msgid ""
+"This theme suggests a\n"
+"background:"
+msgstr ""
+"Esse tema sugere um\n"
+"fundo de tela:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:13
+msgid ""
+"This theme suggests a\n"
+"font and background"
+msgstr ""
+"Esse tema sugere uma\n"
+"fonte e um fundo de tela"
+
+#: capplets/theme-switcher/theme-properties.glade.h:15
+msgid ""
+"This theme suggests a\n"
+"font:"
+msgstr ""
+"Esse tema sugere uma\n"
+"fonte:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:17
+msgid "Window Border"
+msgstr "Borda da Janela"
+
+#: capplets/theme-switcher/theme-properties.glade.h:18
+msgid "_Details..."
+msgstr "_Detalhes..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:19
 msgid "_Go to theme folder"
 msgstr "_Ir para a pasta de temas"
 
-#: capplets/theme-switcher/theme-properties.glade.h:6
-msgid "_Install New Theme..."
-msgstr "_Instalar Novo Tema..."
+#: capplets/theme-switcher/theme-properties.glade.h:20
+msgid "_Install theme..."
+msgstr "_Instalar tema..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:21
+msgid "_Save theme"
+msgstr "_Salvar tema"
+
+#: capplets/theme-switcher/theme-properties.glade.h:22
+msgid "_Theme name:"
+msgstr "Nome do _tema:"
 
 #: capplets/theme-switcher/theme-install.glade.h:2
 msgid "Install new theme"
@@ -1909,6 +2141,25 @@ msgstr "_Instalar"
 #: capplets/theme-switcher/theme-install.glade.h:4
 msgid "_Location of new theme:"
 msgstr "_Localização do novo tema:"
+
+#: capplets/theme-switcher/gnome-theme-details.c:357
+#: capplets/theme-switcher/gnome-theme-manager.c:609
+msgid ""
+"No themes could be found on your system.  This probably means that your "
+"\"Theme Preferences\" dialog was improperly installed, or you haven't "
+"installed the \"gnome-themes\" package."
+msgstr "Nenhum tema pôde ser encontrado no seu sistema. Isso pode significar que seu diálogo \"Preferência de Temas\" foi instalado de maneira imprópria, ou que você não instalou o pacote \"gnome-themes\"."
+
+# SUN NEW TRANSLATION
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
+msgid "Custom theme"
+msgstr "Tema personalizado"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:665
+#: capplets/theme-switcher/gnome-theme-manager.c:725
+msgid "You can save this theme by pressing the Save Theme button."
+msgstr "Você pode salvar esse tema clicando o botão \"Salvar Tema\"."
 
 #: capplets/ui-properties/behavior.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
@@ -1988,7 +2239,7 @@ msgstr "Selecionar estilo da barra de ferramentas."
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:13
 msgid "Show _icons in menus"
-msgstr "M_ostrar ícones nos menus"
+msgstr "Mostrar _ícones nos menus"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:14
 msgid "Text Below Icons"
@@ -2056,31 +2307,58 @@ msgstr "_Sair"
 msgid "_Save"
 msgstr "_Salvar"
 
-#: capplets/windows/gnome-window-properties.c:282
-#: capplets/windows/gnome-window-properties.glade.h:6
+#: capplets/windows/gnome-window-properties.c:378
+#, c-format
+msgid ""
+"<b>Cannot start the preferences application for your window manager</b>\n"
+"\n"
+"%s"
+msgstr ""
+"<b>Não foi possível iniciar a aplicação de preferências do seu gerenciador de janelas</b>\n"
+"\n"
+"%s"
+
+# SUN NEW TRANSLATION
+#: capplets/windows/gnome-window-properties.c:624
+msgid "Control"
+msgstr "Controle"
+
+#: capplets/windows/gnome-window-properties.c:629
+msgid "Alt"
+msgstr "Alt"
+
+# SUN NEW TRANSLATION
+#: capplets/windows/gnome-window-properties.c:635
+msgid "Hyper"
+msgstr "Hyper"
+
+#: capplets/windows/gnome-window-properties.c:642
+msgid "Super (or \"Windows logo\")"
+msgstr "Super (ou \"logotipo do Windows\")"
+
+#: capplets/windows/gnome-window-properties.glade.h:1
+msgid "To _move a window, press-and-hold this key then grab the window:"
+msgstr "Para _mover uma janela, pressione e segure essa tecla enquanto arrasta a janela:"
+
+#: capplets/windows/gnome-window-properties.glade.h:2
 msgid "Window Preferences"
 msgstr "Preferências de Janelas"
 
-#: capplets/windows/gnome-window-properties.glade.h:1
-msgid "Apply Now"
-msgstr "Aplicar Agora"
-
-#: capplets/windows/gnome-window-properties.glade.h:2
-msgid "Select windows when the mouse moves over them"
-msgstr "Selecionar janela quando o mouse passa para cima dela"
-
 #: capplets/windows/gnome-window-properties.glade.h:3
-msgid "Titlebar Font"
-msgstr "Fonte do Título"
+msgid "_Double-click titlebar to perform this action:"
+msgstr "Dê um clique _duplo na barra de título para executar essa ação:"
 
 #: capplets/windows/gnome-window-properties.glade.h:4
-msgid "Window Border Appearance"
-msgstr "Aparência da Borda da Janela"
+msgid "_Interval before raising:"
+msgstr "_Espera antes de levantar:"
 
-# SUN NEW TRANSLATION
 #: capplets/windows/gnome-window-properties.glade.h:5
-msgid "Window Manager:"
-msgstr "Gerenciador de Janelas:"
+msgid "_Raise selected windows after an interval"
+msgstr "_Levantar janelas selecionadas depois de um intervalo"
+
+#: capplets/windows/gnome-window-properties.glade.h:6
+msgid "_Select windows when the mouse moves over them"
+msgstr "_Selecionar janelas quando o mouse passar por cima delas"
 
 #: capplets/windows/window-properties.desktop.in.h:1
 msgid "Window Properties"
@@ -2148,13 +2426,13 @@ msgstr "Visão geral da central de controle"
 
 # SUN NEW TRANSLATION
 #: control-center/gnomecc-ui.xml.h:3
-msgid "_About..."
-msgstr "_Sobre..."
+msgid "_About"
+msgstr "_Sobre"
 
 # SUN NEW TRANSLATION
 #: control-center/gnomecc-ui.xml.h:4
-msgid "_Contents..."
-msgstr "_Conteúdo..."
+msgid "_Contents"
+msgstr "_Conteúdo"
 
 # SUN NEW TRANSLATION
 #: control-center/gnomecc-ui.xml.h:6
@@ -2185,32 +2463,32 @@ msgstr ""
 "Não é possível criar o diretório \"%s\".\n"
 "Ele é necessário para a mudança de cursores."
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:106
+#: gnome-settings-daemon/gnome-settings-keybindings.c:146
 #, c-format
 msgid "Key Binding (%s) has its action defined multiple times\n"
 msgstr "Tecla de Atalho (%s) tem múltiplas ações definidas\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:119
+#: gnome-settings-daemon/gnome-settings-keybindings.c:159
 #, c-format
 msgid "Key Binding (%s) has its binding defined multiple times\n"
 msgstr "Tecla de Atalho (%s) tem múltiplos atalhos definidos\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:125
+#: gnome-settings-daemon/gnome-settings-keybindings.c:165
 #, c-format
 msgid "Key Binding (%s) is incomplete\n"
 msgstr "Tecla de Atalho (%s) está incompleta\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:153
+#: gnome-settings-daemon/gnome-settings-keybindings.c:193
 #, c-format
 msgid "Key Binding (%s) is invalid\n"
 msgstr "Tecla de Atalho (%s) é inválida\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:241
+#: gnome-settings-daemon/gnome-settings-keybindings.c:281
 #, c-format
 msgid "Key Binding (%s) is already in use\n"
 msgstr "Tecla de Atalho (%s) já está em uso\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:292
+#: gnome-settings-daemon/gnome-settings-keybindings.c:357
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -2243,18 +2521,18 @@ msgstr "_Não mostrar esta mensagem novamente"
 msgid "Couldn't load sound file %s as sample %s"
 msgstr "Não foi possível carregar o arquivo de som %s como exemplo %s"
 
-#: gnome-settings-daemon/gnome-settings-xsettings.c:150
+#: gnome-settings-daemon/gnome-settings-xsettings.c:184
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr "Chave GConf %s definida para o tipo %s mas o tipo esperado era %s\n"
 
 # SUN NEW TRANSLATION
-#: libbackground/applier.c:239
+#: libbackground/applier.c:254
 msgid "Type"
 msgstr "Tipo"
 
 # SUN NEW TRANSLATION
-#: libbackground/applier.c:240
+#: libbackground/applier.c:255
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
@@ -2262,25 +2540,33 @@ msgstr ""
 "Tipo de bg_applier: BG_APPLIER_ROOT para a janela raiz ou BG_APPLIER_PREVIEW "
 "para visualização"
 
-#: libbackground/applier.c:247
+#: libbackground/applier.c:262
 msgid "Preview Width"
 msgstr "Largura da Visualização prévia"
 
 # SUN NEW TRANSLATION
-#: libbackground/applier.c:248
+#: libbackground/applier.c:263
 msgid "Width if applier is a preview: Defaults to 64."
 msgstr "Largura se o aplicador for uma visualização: O padrão é 64."
 
-#: libbackground/applier.c:255
+#: libbackground/applier.c:270
 msgid "Preview Height"
 msgstr "Altura da Visualização prévia"
 
 # SUN NEW TRANSLATION
-#: libbackground/applier.c:256
+#: libbackground/applier.c:271
 msgid "Height if applier is a preview: Defaults to 48."
 msgstr "Altura se o aplicador for uma visualização: O padrão é 48."
 
-#: libbackground/preview-file-selection.c:193
+#: libbackground/applier.c:279
+msgid "Screen"
+msgstr "Tela"
+
+#: libbackground/applier.c:280
+msgid "Screen on which BGApplier is to draw"
+msgstr "Tela em que o BGApplier deve desenhar"
+
+#: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Não é possível achar um `hbox', usando o seletor normal de arquivos"
 
@@ -2322,64 +2608,1716 @@ msgstr "_Tocar"
 msgid "Select sound file"
 msgstr "Selecionar arquivo de som"
 
-# SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:171
+#: libwindow-settings/gnome-wm-manager.c:320
 #, c-format
+msgid "Window manager \"%s\" has not registered a configuration tool\n"
+msgstr "O gerenciador de janelas \"%s\" não registrou uma ferramenta de configurações\n"
+
+#: libwindow-settings/metacity-window-manager.c:373
+msgid "Maximize"
+msgstr "Maximizar"
+
+#: libwindow-settings/metacity-window-manager.c:374
+msgid "Roll up"
+msgstr "Enrolar"
+
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:1
 msgid ""
-"Starting %s\n"
-"(%d seconds left before operation times out)"
-msgstr ""
-"Iniciando %s\n"
-"(restam %d segundos para o tempo limite da operação)"
+"If true, the mime handlers for text/plain and text/* will be kept in sync"
+msgstr "Se verdadeiro, os aplicativos que cuidam de text/plain e text/* serão sempre sincronizados"
 
-# SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:325
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
+msgid "Sync text/plain and text/* handlers"
+msgstr "Sincronizar aplicativos que cuidam de text/plain e text/*"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:1
+msgid "Display a dialog when there are errors running XScreenSaver"
+msgstr "Exibir um diálogo quando houver erros ao executar o XScreenSaver"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:2
+msgid "Run XScreenSaver at login"
+msgstr "Executar o XScreenSaver no login"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:3
+msgid "Show Startup Errors"
+msgstr "Exibir Erros de Inicialização"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:4
+msgid "Start XScreenSaver"
+msgstr "Iniciar o XScreeSaver"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:1
+msgid "Antialiasing"
+msgstr "Antialiasing"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:2
+msgid "DPI"
+msgstr "DPI"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:3
+msgid "Hinting"
+msgstr "Dicas"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:4
+msgid "RGBA Order"
+msgstr "Ordem RGBA"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:5
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\tAnother window manager is already running and could not be killed\n"
-msgstr ""
-"wm-properties-capplet: Não é possível inicializar o gerenciador de janelas.\n"
-"\tOutro gerenciador de janelas já está em execução e não pode ser morto\n"
+"Resolution used for converting font sizes to pixel sizes, in dots per inch"
+msgstr "Resolução usada para converter tamanhos de fontes para tamanhos de pixel, em pontos por polegada"
 
-# SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:329
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:6
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\t'%s' didn't start\n"
-msgstr ""
-"wm-properties-capplet: Não é possível inicializar o gerenciador de janelas.\n"
-"\t'%s' não foi iniciado\n"
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" - red on left, most common. "
+"\"bgr\" - blue on left. \"vrgb\" - red on top. \"vbgr\" - red on bottom."
+msgstr "A ordem de elementos de subpixel em uma tela LCD; somente usado quando o antialiasing está definido para \"rgba\". Valores possíveis são: \"rgb\" - vermelho à esquerda, mais comum. \"bgr\" - azul à esquerda. \"vrgb\" - vermelho no topo. \"vbgr\" - vermelho no fundo."
 
-# SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:378
-msgid "Previous window manager did not die\n"
-msgstr "O gerenciador de janelas anterior não morreu\n"
-
-# SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:411
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:7
 msgid ""
-"Could not start '%s'.\n"
-"Falling back to previous window manager '%s'\n"
-msgstr ""
-"Não foi possível iniciar '%s'.\n"
-"Retornando ao gerenciador de janelas anterior '%s'\n"
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" - no antialiasing. \"grayscale\" - standard grayscale antialiasing. "
+"\"rgba\" - subpixel antialiasing. (LCD screens only)."
+msgstr "O tipo de antialiasing a usar ao renderizar fontes. Valores possíveis são: \"none\" - sem antialiasing. \"grayscale\" - antialiasing padrão de escala de cinzas. \"rgba\" - antialiasing de subpixel. (telas de LCD apenas)."
 
-# SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:442
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:8
 msgid ""
-"Could not start fallback window manager.\n"
-"Please run a window manager manually. You can\n"
-"do this by selecting \"Run Program\" in the\n"
-"foot menu\n"
-msgstr ""
-"Não foi possível iniciar o último gerenciador de janelas usado.\n"
-"Execute um gerenciador de janelas manualmente. Para fazer isso,\n"
-"selecione \"Executar Programa\" no\n"
-"menu do rodapé\n"
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" - no hinting, \"slight\", \"medium\", and \"full\" - as much hinting as "
+"possible; may cause distortion of letter forms."
+msgstr "O tipo de dicas a usar ao renderizar fontes. Os valores possíveis são: \"none\" - sem dicas, \"slight\", \"medium\" e \"full\" - tantas dicas quanto possíveis; isso pode causar distorções nas formas das letras."
 
 # SUN NEW TRANSLATION
-#: libwindow-settings/gnome-wm-manager.c:467
-msgid "OK"
-msgstr "OK"
+#, fuzzy
+#~ msgid "Use _Background"
+#~ msgstr "Plano de Fundo"
+
+#, fuzzy
+#~ msgid "Use _Font"
+#~ msgstr "Fonte"
+
+# SUN NEW TRANSLATION
+#, fuzzy
+#~ msgid "Use _background"
+#~ msgstr "Plano de Fundo"
+
+#, fuzzy
+#~ msgid "Current modified"
+#~ msgstr "Índice URI atual."
+
+#, fuzzy
+#~ msgid "Super"
+#~ msgstr "Velocidade"
+
+# SUN NEW TRANSLATION
+#, fuzzy
+#~ msgid "Beep when enabling/disabling _keyboard accessibility features"
+#~ msgstr ""
+#~ "_Emitir aviso sonoro ao habilitar/desabilitar os recursos de "
+#~ "acessibilidade do teclado"
+
+# SUN NEW TRANSLATION
+#~ msgid "Beep when:"
+#~ msgstr "Emitir aviso sonoro quando:"
+
+#, fuzzy
+#~ msgid "Repeat Key Pre_ferences..."
+#~ msgstr "Preferências de Repetição da Tecla"
+
+# SUN NEW TRANSLATION
+#, fuzzy
+#~ msgid "Start mo_ving this long after keypress:"
+#~ msgstr "Começar a mo_ver muito tempo depois do pressionamento da tecla :"
+
+#~ msgid "Testing Area"
+#~ msgstr "Área de Testes"
+
+#~ msgid "Toggle and Repeat Keys"
+#~ msgstr "Teclas de Alternância e Repetição"
+
+# SUN NEW TRANSLATION
+#, fuzzy
+#~ msgid "_Import CDE AccessX file..."
+#~ msgstr "_Importar arquivo CDE do AccessX"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "_Turn off Sticky Keys when\n"
+#~ "two keys pressed simultaneously"
+#~ msgstr ""
+#~ "_Desativar as teclas de aderência quando\n"
+#~ "duas teclas são pressionadas simultaneamente"
+
+# SUN NEW TRANSLATION
+#~ msgid "msecs"
+#~ msgstr "ms"
+
+#~ msgid "Network Preferences"
+#~ msgstr "Preferências de Rede"
+
+#~ msgid "Pro_xy requires username and password"
+#~ msgstr "O Pro_xy precisa de usuário e senha"
+
+#~ msgid "_Location:"
+#~ msgstr "_Localização:"
+
+#~ msgid "Widget Theme"
+#~ msgstr "Tema dos Widgets"
+
+#~ msgid "Titlebar Font"
+#~ msgstr "Fonte do Título"
+
+#~ msgid "Window Border Appearance"
+#~ msgstr "Aparência da Borda da Janela"
+
+# SUN NEW TRANSLATION
+#~ msgid "Window Manager:"
+#~ msgstr "Gerenciador de Janelas:"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Starting %s\n"
+#~ "(%d seconds left before operation times out)"
+#~ msgstr ""
+#~ "Iniciando %s\n"
+#~ "(restam %d segundos para o tempo limite da operação)"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "wm-properties-capplet: Unable to initialize window manager.\n"
+#~ "\tAnother window manager is already running and could not be killed\n"
+#~ msgstr ""
+#~ "wm-properties-capplet: Não é possível inicializar o gerenciador de "
+#~ "janelas.\n"
+#~ "\tOutro gerenciador de janelas já está em execução e não pode ser morto\n"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "wm-properties-capplet: Unable to initialize window manager.\n"
+#~ "\t'%s' didn't start\n"
+#~ msgstr ""
+#~ "wm-properties-capplet: Não é possível inicializar o gerenciador de "
+#~ "janelas.\n"
+#~ "\t'%s' não foi iniciado\n"
+
+# SUN NEW TRANSLATION
+#~ msgid "Previous window manager did not die\n"
+#~ msgstr "O gerenciador de janelas anterior não morreu\n"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Could not start '%s'.\n"
+#~ "Falling back to previous window manager '%s'\n"
+#~ msgstr ""
+#~ "Não foi possível iniciar '%s'.\n"
+#~ "Retornando ao gerenciador de janelas anterior '%s'\n"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Could not start fallback window manager.\n"
+#~ "Please run a window manager manually. You can\n"
+#~ "do this by selecting \"Run Program\" in the\n"
+#~ "foot menu\n"
+#~ msgstr ""
+#~ "Não foi possível iniciar o último gerenciador de janelas usado.\n"
+#~ "Execute um gerenciador de janelas manualmente. Para fazer isso,\n"
+#~ "selecione \"Executar Programa\" no\n"
+#~ "menu do rodapé\n"
+
+# SUN NEW TRANSLATION
+#~ msgid "OK"
+#~ msgstr "OK"
+
+# SUN NEW TRANSLATION
+#~ msgid "Add:"
+#~ msgstr "Adicionar:"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Category"
+#~ msgstr "_Categoria"
+
+#~ msgid "_Delete"
+#~ msgstr "_Excluir"
+
+#~ msgid "_Name"
+#~ msgstr "_Nome:"
+
+# SUN NEW TRANSLATION
+#~ msgid "_General"
+#~ msgstr "_Geral"
+
+# MODIFIED SUN NEW TRANSLATION
+#~ msgid "Edit Menu"
+#~ msgstr "Editar Menu"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Menu"
+#~ msgstr "_Menu"
+
+# SUN NEW TRANSLATION
+#~ msgid "Documents"
+#~ msgstr "Documentos"
+
+# SUN NEW TRANSLATION
+#~ msgid "Word Processor"
+#~ msgstr "Processador de Texto"
+
+# SUN NEW TRANSLATION
+#~ msgid "Published Materials"
+#~ msgstr "Material Publicado"
+
+# SUN NEW TRANSLATION
+#~ msgid "Spreadsheet"
+#~ msgstr "Planilha"
+
+# SUN NEW TRANSLATION
+#~ msgid "Presentation"
+#~ msgstr "Apresentação"
+
+# SUN NEW TRANSLATION
+#~ msgid "Diagram"
+#~ msgstr "Diagrama"
+
+# SUN NEW TRANSLATION
+#~ msgid "TeX"
+#~ msgstr "TeX"
+
+# SUN NEW TRANSLATION
+#~ msgid "Vector Graphics"
+#~ msgstr "Gráficos Vetoriais"
+
+# SUN NEW TRANSLATION
+#~ msgid "World Wide Web"
+#~ msgstr "World Wide Web"
+
+# SUN NEW TRANSLATION
+#~ msgid "Plain Text"
+#~ msgstr "Texto Simples"
+
+# SUN NEW TRANSLATION
+#~ msgid "Extended Markup Language (XML)"
+#~ msgstr "Extended Markup Language (XML)"
+
+#~ msgid "Information"
+#~ msgstr "Informação"
+
+# SUN NEW TRANSLATION
+#~ msgid "Financial"
+#~ msgstr "Financeiro"
+
+# SUN NEW TRANSLATION
+#~ msgid "Calendar"
+#~ msgstr "Calendário"
+
+# SUN NEW TRANSLATION
+#~ msgid "Contacts"
+#~ msgstr "Contatos"
+
+# SUN NEW TRANSLATION
+#~ msgid "Packages"
+#~ msgstr "Pacotes"
+
+# SUN NEW TRANSLATION
+#~ msgid "Software Development"
+#~ msgstr "Desenvolvimento de Software"
+
+# SUN NEW TRANSLATION
+#~ msgid "Source Code"
+#~ msgstr "Código Fonte"
+
+#~ msgid "Associate applications with file types"
+#~ msgstr "Associar aplicações a tipos de arquivos"
+
+#~ msgid "faster"
+#~ msgstr "mais rápido"
+
+#~ msgid "Installed Themes"
+#~ msgstr "Temas Instalados"
+
+#~ msgid "List of available GTK+ themes"
+#~ msgstr "Lista de temas GTK+ disponíveis"
+
+#~ msgid "<b>Test</b>"
+#~ msgstr "<b>Teste</b>"
+
+#~ msgid "_Keyboard"
+#~ msgstr "_Teclado"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Misc"
+#~ msgstr "_Diversos"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Picture"
+#~ msgstr "_Figura"
+
+# SUN NEW TRANSLATION
+#~ msgid "Bor_der the picture with a:"
+#~ msgstr "Con_tornar a figura com um:"
+
+# SUN NEW TRANSLATION
+#~ msgid "Choose the applications used by default"
+#~ msgstr "Escolha as aplicações usadas por padrão"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure window appearance"
+#~ msgstr "Configurar a aparência da janela"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure key shortcuts"
+#~ msgstr "Configurar as teclas de atalho"
+
+#~ msgid "Configure window properties"
+#~ msgstr "Configurar propriedades de janelas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure window manager configuration properties"
+#~ msgstr ""
+#~ "Configurar as propriedades de configuração do gerenciador de janelas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure window placement"
+#~ msgstr "Configurar o posicionamento da janela"
+
+#~ msgid "File types and Internet Services"
+#~ msgstr "Tipos de arquivos e Serviços de Internet"
+
+#~ msgid "Needs _terminal"
+#~ msgstr "Precisa de um _terminal"
+
+# SUN NEW TRANSLATION
+#~ msgid "Use category _defaults"
+#~ msgstr "Usar pa_drões da categoria"
+
+#~ msgid "_Protocol name"
+#~ msgstr "Nome do _protocolo"
+
+#~ msgid "Add file type"
+#~ msgstr "Adicionar tipo de arquivo"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Invalid MIME type. Please enter a valid MIME type, or leave the field "
+#~ "blank to have one generated for you."
+#~ msgstr ""
+#~ "Tipo MIME inválido. Insira um tipo MIME válido ou deixe o campo em branco "
+#~ "para que um tipo seja gerado para você."
+
+# SUN NEW TRANSLATION
+#~ msgid "There already exists a MIME type of that name."
+#~ msgstr "Já existe um tipo MIME com este nome."
+
+#~ msgid "Change the default fonts used by the desktop and applications"
+#~ msgstr "Mudar as fontes padrão usadas pelas aplicações e pelo desktop"
+
+# SUN NEW TRANSLATION
+#~ msgid "Keyboard _Navigation scheme for use in applications:"
+#~ msgstr "Esquema de _Navegação do teclado para uso em aplicações:"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "To assign a shortcut to an action, click in the shortcut column and press "
+#~ "the key combination you want to associate with it."
+#~ msgstr ""
+#~ "Para atribuir um atalho a uma ação, clique na coluna de atalho e "
+#~ "pressione a combinação de teclas que deseja associar a ela."
+
+# SUN NEW TRANSLATION
+#~ msgid "Associate keyboard shortcuts with panel actions"
+#~ msgstr "Associar atalhos do teclado a ações do painel"
+
+#~ msgid "<i>fast</i>"
+#~ msgstr "<i>rápido</i>"
+
+#~ msgid "<i>loud</i>"
+#~ msgstr "<i>alto</i>"
+
+#~ msgid "<i>quiet</i>"
+#~ msgstr "<i>quieto</i>"
+
+#~ msgid "<i>slow</i>"
+#~ msgstr "<i>lento</i>"
+
+#~ msgid "Cursor"
+#~ msgstr "Cursor"
+
+#~ msgid "Fast"
+#~ msgstr "Rápido"
+
+# SUN NEW TRANSLATION
+#~ msgid "Key_press makes sound"
+#~ msgstr "O _pressionamento da tecla emite um som"
+
+# SUN NEW TRANSLATION
+#~ msgid "Keyboard bell _enabled"
+#~ msgstr "Sinal sonoro do teclado _habilitado"
+
+#~ msgid "Keyboard bell _off"
+#~ msgstr "_Desligar Sinal Sonoro do Teclado"
+
+# SUN NEW TRANSLATION
+#~ msgid "Keyclick Volume"
+#~ msgstr "Volume do clique da tecla"
+
+#~ msgid "Long"
+#~ msgstr "Longo"
+
+#~ msgid "Repeat s_peed:"
+#~ msgstr "Velocidade de _repetição:"
+
+# SUN NEW TRANSLATION
+#~ msgid "Set the speed the cursor blinks in text fields."
+#~ msgstr "Definir a velocidade com que o cursor pisca nos campos de texto."
+
+# SUN NEW TRANSLATION
+#~ msgid "Set the volume of the clicking sound made when pressing a key"
+#~ msgstr "Definir o volume do clique ouvido quando uma tecla é pressionada"
+
+#~ msgid "Short"
+#~ msgstr "Curto"
+
+#~ msgid "Slow"
+#~ msgstr "Lento"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "The keyboard bell is the <i>beep</i> sound heard when the system wants to "
+#~ "get your attention."
+#~ msgstr ""
+#~ "O sinal sonoro do teclado é o <i>som</i> ouvido quando o sistema deseja "
+#~ "chamar sua atenção."
+
+#~ msgid "Very Fast"
+#~ msgstr "Muito Rápido"
+
+#~ msgid "Very Short"
+#~ msgstr "Muito Curto"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "You can configure the keyboards accessibility features by bringing up the "
+#~ "'Accessibility Settings' property dialog, or pressing the button on the "
+#~ "right."
+#~ msgstr ""
+#~ "Você pode configurar os recursos de acessibilidade do teclado usando a "
+#~ "caixa de diálogo de propriedades 'Configurações de Acessibilidade' ou "
+#~ "pressionando o botão à direita."
+
+#~ msgid "_Blink speed:"
+#~ msgstr "Velocidade com que _pisca:"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Custom keyboard bell:"
+#~ msgstr "Sinal sonoro do teclado _personalizado:"
+
+#~ msgid "Keyboard Properties"
+#~ msgstr "Propriedades do Teclado"
+
+#~ msgid "Mouse Properties"
+#~ msgstr "Propriedades do Mouse"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure GNOME's use of sound"
+#~ msgstr "Configurar o uso de som pelo GNOME"
+
+#~ msgid "Change the appearance of buttons, scrollbars, etc"
+#~ msgstr "Mudar a aparência dos botões, barras de rolagem, etc"
+
+#~ msgid "Change how toolbars and menus are displayed"
+#~ msgstr "Mudar como as barras de ferramentas e os menus são mostrados"
+
+# SUN NEW TRANSLATION
+#~ msgid "Toolbars & Menus"
+#~ msgstr "Barras de Ferramentas e Menus"
+
+# SUN NEW TRANSLATION
+#~ msgid "Item 2"
+#~ msgstr "Item 2"
+
+# SUN NEW TRANSLATION
+#~ msgid "Item 3"
+#~ msgstr "Item 3"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu Item 1"
+#~ msgstr "Item de Menu 1"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu Item 2"
+#~ msgstr "Item de Menu 2"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu Item 3"
+#~ msgstr "Item de Menu 3"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu Item 4"
+#~ msgstr "Item de Menu 4"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu Item 5"
+#~ msgstr "Item de Menu 5"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu items can have _icons"
+#~ msgstr "Os itens de menu podem ter _ícones"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Toolbars have: "
+#~ msgstr "As barras de ferra_mentas têm: "
+
+#~ msgid "E-Mail"
+#~ msgstr "E-Mail"
+
+# SUN NEW TRANSLATION
+#~ msgid "radiobutton1"
+#~ msgstr "botão de opção1"
+
+# SUN NEW TRANSLATION
+#~ msgid "radiobutton2"
+#~ msgstr "botão de opção2"
+
+# SUN NEW TRANSLATION
+#~ msgid "radiobutton3"
+#~ msgstr "botão de opção3"
+
+# SUN NEW TRANSLATION
+#~ msgid "radiobutton4"
+#~ msgstr "botão de opção4"
+
+# SUN NEW TRANSLATION
+#~ msgid "radiobutton5"
+#~ msgstr "botão de opção5"
+
+#~ msgid "CD Properties"
+#~ msgstr "Propriedades do CD"
+
+#~ msgid "Configure handling of CD devices"
+#~ msgstr "Configurar manejo de aparelhos de CD"
+
+#~ msgid "Global panel properties"
+#~ msgstr "Propriedades Globais do Painel"
+
+# SUN NEW TRANSLATION
+#~ msgid "Panel"
+#~ msgstr "Painel"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure which non-session aware programs are started up"
+#~ msgstr ""
+#~ "Configurar quais programas que não reconhecem sessões são inicializados"
+
+#~ msgid "Select an icon..."
+#~ msgstr "Selecione um ícone..."
+
+# SUN NEW TRANSLATION
+#~ msgid "Mime Type: "
+#~ msgstr "Tipo Mime: "
+
+#~ msgid "Remove"
+#~ msgstr "Remover"
+
+# SUN NEW TRANSLATION
+#~ msgid "First Regular Expression: "
+#~ msgstr "Primeira Expressão Regular: "
+
+# SUN NEW TRANSLATION
+#~ msgid "Second Regular Expression: "
+#~ msgstr "Segunda Expressão Regular: "
+
+# SUN NEW TRANSLATION
+#~ msgid "Mime Type Actions"
+#~ msgstr "Ações do Tipo Mime"
+
+# SUN NEW TRANSLATION
+#~ msgid "Example: emacs %f"
+#~ msgstr "Exemplo: emacs %f"
+
+#~ msgid "Select a file..."
+#~ msgstr "Selecione um arquivo..."
+
+#~ msgid "View"
+#~ msgstr "Exibir"
+
+# SUN NEW TRANSLATION
+#~ msgid "Set actions for %s"
+#~ msgstr "Definir ações para %s"
+
+# SUN NEW TRANSLATION
+#~ msgid "Mime Type"
+#~ msgstr "Tipo Mime"
+
+# SUN NEW TRANSLATION
+#~ msgid "You must enter a mime-type"
+#~ msgstr "Você deve inserir um tipo mime"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "You must add either a regular-expression or\n"
+#~ "a file-name extension"
+#~ msgstr ""
+#~ "Você deve adicionar uma expressão regular ou\n"
+#~ "uma extensão de nome de arquivo"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Please put your mime-type in the format:\n"
+#~ "CATEGORY/TYPE\n"
+#~ "\n"
+#~ "For Example:\n"
+#~ "image/png"
+#~ msgstr ""
+#~ "Coloque o tipo mime no formato:\n"
+#~ "CATEGORIA/TIPO\n"
+#~ "\n"
+#~ "Por exemplo:\n"
+#~ "imagem/png"
+
+# SUN NEW TRANSLATION
+#~ msgid "This mime-type already exists"
+#~ msgstr "Este tipo mime já existe"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "We are unable to create the directory\n"
+#~ "~/.gnome/mime-info\n"
+#~ "\n"
+#~ "We will not be able to save the state."
+#~ msgstr ""
+#~ "Não é possível criar o diretório\n"
+#~ "˜/.gnome/mime-info\n"
+#~ "\n"
+#~ "Não será possível salvar o estado."
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "We are unable to access the directory\n"
+#~ "~/.gnome/mime-info\n"
+#~ "\n"
+#~ "We will not be able to save the state."
+#~ msgstr ""
+#~ "Não é possível acessar o diretório\n"
+#~ "˜/.gnome/mime-info\n"
+#~ "\n"
+#~ "Não será possível salvar o estado."
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Cannot create the file\n"
+#~ "~/.gnome/mime-info/user.mime\n"
+#~ "\n"
+#~ "We will not be able to save the state"
+#~ msgstr ""
+#~ "Não é possível criar o arquivo\n"
+#~ "˜/.gnome/mime-info/user.mime\n"
+#~ "\n"
+#~ "Não será possível salvar o estado"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Cannot create the file\n"
+#~ "~/.gnome/mime-info/user.keys.\n"
+#~ "\n"
+#~ "We will not be able to save the state"
+#~ msgstr ""
+#~ "Não é possível criar o arquivo\n"
+#~ "˜/.gnome/mime-info/user.keys.\n"
+#~ "\n"
+#~ "Não será possível salvar o estado"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure how files are associated and started"
+#~ msgstr "Configurar o modo como os arquivos são associados e iniciados"
+
+# SUN NEW TRANSLATION
+#~ msgid "Mime Types"
+#~ msgstr "Tipos Mime"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Add a new Mime Type\n"
+#~ "For example:  image/tiff; text/x-scheme"
+#~ msgstr ""
+#~ "Adicione um novo Tipo Mime\n"
+#~ "Por exemplo:  image/tiff; text/x-scheme"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Type in the extensions for this mime-type.\n"
+#~ "For example:  .html, .htm"
+#~ msgstr ""
+#~ "Digite as extensões deste tipo mime.\n"
+#~ "Por exemplo:  .html, .htm"
+
+#~ msgid "Extension:"
+#~ msgstr "Extensão:"
+
+# SUN NEW TRANSLATION
+#~ msgid "Regular Expressions"
+#~ msgstr "Expressões Regulares"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "You can set up two regular expressions here to identify the Mime Type\n"
+#~ "by.  These fields are optional."
+#~ msgstr ""
+#~ "Você pode configurar duas expressões regulares aqui para identificar por "
+#~ "tipo Mime\n"
+#~ ".  Estes campos são opcionais."
+
+#~ msgid "Command"
+#~ msgstr "Comando"
+
+# SUN NEW TRANSLATION
+#~ msgid "URL Handlers"
+#~ msgstr "Manipuladores de URL"
+
+#~ msgid "handler:"
+#~ msgstr "aplicação:"
+
+# SUN NEW TRANSLATION
+#~ msgid "Netscape (new window)"
+#~ msgstr "Netscape (nova janela)"
+
+#~ msgid "Help browser"
+#~ msgstr "Navegador de Ajuda"
+
+# SUN NEW TRANSLATION
+#~ msgid "Help browser (new window)"
+#~ msgstr "Navegador de Ajuda (nova janela)"
+
+# SUN NEW TRANSLATION
+#~ msgid "Set"
+#~ msgstr "Definir"
+
+# SUN NEW TRANSLATION
+#~ msgid "Configure which programs are used to display URLs"
+#~ msgstr "Configurar os programas que são usados para exibir URLs"
+
+# SUN NEW TRANSLATION
+#~ msgid "Initialize session settings"
+#~ msgstr "Inicializar as configurações de sessão"
+
+# SUN NEW TRANSLATION
+#~ msgid " (Not found)"
+#~ msgstr " (Não encontrado)"
+
+# SUN NEW TRANSLATION
+#~ msgid "Enlightenment"
+#~ msgstr "Enlightenment"
+
+# SUN NEW TRANSLATION
+#~ msgid "Ice WM"
+#~ msgstr "Ice WM"
+
+# SUN NEW TRANSLATION
+#~ msgid "Scwm"
+#~ msgstr "Scwm"
+
+# SUN NEW TRANSLATION
+#~ msgid "Window Maker"
+#~ msgstr "Window Maker"
+
+# SUN NEW TRANSLATION
+#~ msgid "twm"
+#~ msgstr "twm"
+
+# SUN NEW TRANSLATION
+#~ msgid "%s (Current)"
+#~ msgstr "%s (Atual)"
+
+# SUN NEW TRANSLATION
+#~ msgid "Run Configuration Tool for %s"
+#~ msgstr "Executar ferramenta de configuração para %s"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Your current window manager has been changed. In order for\n"
+#~ "this change to be saved, you will need to save your current\n"
+#~ "session. You can do so immediately by selecting the \"Save session\n"
+#~ "now\" below, or you can save your session later.  This can be\n"
+#~ "done either selecting \"Save Current Session\" under \"Settings\"\n"
+#~ "in the main menu, or by turning on \"Save Current Setup\" when\n"
+#~ "you log out.\n"
+#~ msgstr ""
+#~ "O gerenciador de janelas atual foi alterado. Para que\n"
+#~ "essa alteração seja salva, você precisará salvar a\n"
+#~ "sessão atual. Para fazer isso imediatamente, selecione \"Salvar sessão\n"
+#~ "agora\" abaixo ou salve a sessão posteriormente.  Você pode fazer\n"
+#~ "isso selecionando \"Salvar Sessão Atual\" em \"Configurações\"\n"
+#~ "no menu principal ou ativando \"Salvar Configuração Atual\" ao\n"
+#~ "efetuar logoff.\n"
+
+# SUN NEW TRANSLATION
+#~ msgid "Save Session Later"
+#~ msgstr "Salvar Sessão Posteriormente"
+
+# SUN NEW TRANSLATION
+#~ msgid "Save Session Now"
+#~ msgstr "Salvar Sessão Agora"
+
+# SUN NEW TRANSLATION
+#~ msgid ""
+#~ "Your current window manager has been changed. In order for\n"
+#~ "this change to be saved, you will need to save your current\n"
+#~ "session. This can be done by either selecting \"Save Current Session\"\n"
+#~ "under \"Settings\" in the main menu, or by turning on\n"
+#~ "\"Save Current Setup\" when you log out.\n"
+#~ msgstr ""
+#~ "O gerenciador de janelas atual foi alterado. Para que\n"
+#~ "essa alteração seja salva, você precisará salvar a\n"
+#~ "sessão atual. Para fazer isso, selecione \"Salvar Sessão Atual\"\n"
+#~ "em \"Configurações\" no menu principal ou ative\n"
+#~ "\"Salvar Configuração Atual\" ao efetuar logoff.\n"
+
+# SUN NEW TRANSLATION
+#~ msgid "Add New Window Manager"
+#~ msgstr "Adicionar Novo Gerenciador de Janelas"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
+
+#~ msgid "Name:"
+#~ msgstr "Nome:"
+
+#~ msgid "Command:"
+#~ msgstr "Comando:"
+
+# SUN NEW TRANSLATION
+#~ msgid "Window manager is session managed"
+#~ msgstr "O gerenciador de janelas é gerenciado pela sessão"
+
+# SUN NEW TRANSLATION
+#~ msgid "Name cannot be empty"
+#~ msgstr "O nome não pode estar vazio"
+
+# SUN NEW TRANSLATION
+#~ msgid "Command cannot be empty"
+#~ msgstr "O comando não pode estar vazio"
+
+# SUN NEW TRANSLATION
+#~ msgid "Edit Window Manager"
+#~ msgstr "Editar Gerenciador de Janelas"
+
+# SUN NEW TRANSLATION
+#~ msgid "You cannot delete the current Window Manager"
+#~ msgstr "Não é possível excluir o gerenciador de janelas atual"
+
+# SUN NEW TRANSLATION
+#~ msgid "Window Manager Selector"
+#~ msgstr "Seletor de Gerenciador de Janelas"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;b&gt;Test&lt;/b&gt;"
+#~ msgstr "&lt;b&gt;Testar&lt;/b&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "Accepts Line _Number"
+#~ msgstr "Aceita _Número de Linha"
+
+# SUN NEW TRANSLATION
+#~ msgid "_Add..."
+#~ msgstr "_Adicionar..."
+
+# SUN NEW TRANSLATION
+#~ msgid "_Action"
+#~ msgstr "_Ação"
+
+#, fuzzy
+#~ msgid "_Shortcut"
+#~ msgstr "Curto"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;fast&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;rápido&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;loud&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;alto&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;quiet&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;silencioso&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;slow&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;lento&lt;/i&gt;"
+
+#, fuzzy
+#~ msgid "_Sound"
+#~ msgstr "Segundos"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;Fast&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;Rápido&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;High&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;Alto&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;Large&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;Grande&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;Low&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;Baixo&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;Slow&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;Lento&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "&lt;i&gt;Small&lt;/i&gt;"
+#~ msgstr "&lt;i&gt;Pequeno&lt;/i&gt;"
+
+# SUN NEW TRANSLATION
+#~ msgid "Icons and Text"
+#~ msgstr "Ícones e Texto"
+
+# SUN NEW TRANSLATION
+#~ msgid "Only Text"
+#~ msgstr "Somente Texto"
+
+#, fuzzy
+#~ msgid "At the center of the screen"
+#~ msgstr "Velocidade da limpeza da tela"
+
+# SUN NEW TRANSLATION
+#~ msgid "At the mouse pointer"
+#~ msgstr "No ponteiro do mouse"
+
+# SUN NEW TRANSLATION
+#~ msgid "Bottom"
+#~ msgstr "Inferior"
+
+# SUN NEW TRANSLATION
+#~ msgid "Dialogs"
+#~ msgstr "Caixas de Diálogo"
+
+# SUN NEW TRANSLATION
+#~ msgid "Dialogs are treated"
+#~ msgstr "As caixas de diálogo são tratadas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Dialogs open"
+#~ msgstr "Caixas de diálogo abertas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Interface"
+#~ msgstr "Interface"
+
+#, fuzzy
+#~ msgid "Left"
+#~ msgstr "Largura"
+
+# SUN NEW TRANSLATION
+#~ msgid "Like any other window"
+#~ msgstr "Como qualquer outra janela"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu bars are detachable"
+#~ msgstr "As barras de menus podem ser desanexadas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu bars have a border"
+#~ msgstr "As barras de menus têm uma borda"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menu items have icons"
+#~ msgstr "Os itens de menu têm ícones"
+
+# SUN NEW TRANSLATION
+#~ msgid "Menus can be torn off"
+#~ msgstr "Os menus podem ser removidos"
+
+#, fuzzy
+#~ msgid "Multiple Documents"
+#~ msgstr "Executar em um terminal"
+
+# SUN NEW TRANSLATION
+#~ msgid "Notebook tabs"
+#~ msgstr "Guias do Bloco de Notas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Place dialogs over application window when possible"
+#~ msgstr ""
+#~ "Coloque as caixas de diálogo sobre a janela da aplicação quando possível"
+
+# SUN NEW TRANSLATION
+#~ msgid "Progress bar is on the left"
+#~ msgstr "A barra de progresso está à esquerda"
+
+# SUN NEW TRANSLATION
+#~ msgid "Progress bar is on the right"
+#~ msgstr "A barra de progresso está à direita"
+
+# SUN NEW TRANSLATION
+#~ msgid "Seperate windows"
+#~ msgstr "Janelas separadas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Settings will not take effect until applications restart"
+#~ msgstr ""
+#~ "As configurações só terão efeito depois que as aplicações forem "
+#~ "reiniciadas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Specially by the window manager"
+#~ msgstr "Especialmente pelo gerenciador de janelas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Status Bar"
+#~ msgstr "Barra de Status"
+
+# SUN NEW TRANSLATION
+#~ msgid "Status bar is interactive when possible"
+#~ msgstr "A barra de status é interativa quando possível"
+
+# SUN NEW TRANSLATION
+#~ msgid "The same window"
+#~ msgstr "A mesma janela"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool Bars"
+#~ msgstr "Barras de Ferramentas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool bar buttons are icons only"
+#~ msgstr "Os botões das barras de ferramentas são somente ícones"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool bar buttons are text below icons"
+#~ msgstr "Os botões das barras de ferramentas são texto abaixo de ícones"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool bar buttons pop up on mouse over"
+#~ msgstr ""
+#~ "Os botões das barras de ferramentas aparecem quando o mouse está sobre "
+#~ "eles"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool bars are detachable"
+#~ msgstr "As barras de ferramentas podem ser desanexadas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool bars have a border"
+#~ msgstr "As barras de ferramentas têm uma borda"
+
+# SUN NEW TRANSLATION
+#~ msgid "Tool bars have line separators"
+#~ msgstr "As barras de ferramentas têm separadores de linhas"
+
+# SUN NEW TRANSLATION
+#~ msgid "Top"
+#~ msgstr "Superior"
+
+# SUN NEW TRANSLATION
+#~ msgid "Use status bar instead of dialog when possible"
+#~ msgstr "Use a barra de status, em vez da caixa de diálogo, quando possível"
+
+# SUN NEW TRANSLATION
+#~ msgid "When opening Multiple documents, use"
+#~ msgstr "Ao abrir vários documentos, use"
+
+# SUN NEW TRANSLATION
+#~ msgid "When using Notebook tabs, place the tabs on the"
+#~ msgstr "Ao usar as guias do Bloco de Notas, coloque-as no"
+
+# SUN NEW TRANSLATION
+#~ msgid "Wherever the Window Manager places them"
+#~ msgstr "Onde o Gerenciador de Janelas as coloca"
+
+#~ msgid "Could not load pixbuf \"%s\"; disabling wallpaper."
+#~ msgstr ""
+#~ "Não foi possível carregar imagem \"%s\"; desativando papel de parede."
+
+#, fuzzy
+#~ msgid "Starting esd\n"
+#~ msgstr "Configurações"
+
+#, fuzzy
+#~ msgid "Stopping esd\n"
+#~ msgstr "Splines"
+
+#, fuzzy
+#~ msgid "Mynie"
+#~ msgstr "Mais"
+
+#, fuzzy
+#~ msgid "Moe"
+#~ msgstr "IV"
+
+#, fuzzy
+#~ msgid "Tiger"
+#~ msgstr "Mosaico"
+
+#, fuzzy
+#~ msgid "Keybinding Properties"
+#~ msgstr "Sinal sonoro do teclado"
+
+#, fuzzy
+#~ msgid "Configure the settings of the screensaver"
+#~ msgstr "Não há parâmetros configuráveis para esta proteção de tela."
+
+#~ msgid ""
+#~ "No help is available/installed. Please make sure you\n"
+#~ "have the GNOME User's Guide installed on your system."
+#~ msgstr ""
+#~ "Ajuda não disponível/instalada. Por favor, verifique se\n"
+#~ "o Guia do Usuário Gnome está instalado no seu sistema."
+
+#~ msgid "Close"
+#~ msgstr "Fechar"
+
+#, fuzzy
+#~ msgid "Main Settings"
+#~ msgstr "Configurações"
+
+#, fuzzy
+#~ msgid "Full containment"
+#~ msgstr "Gradiente vertical"
+
+#, fuzzy
+#~ msgid "Gnome Default Editor"
+#~ msgstr "Editor Gnome"
+
+#, fuzzy
+#~ msgid "Please enter the command line used to start this web browser"
+#~ msgstr "Por favor entre uma linha de comando abaixo."
+
+#, fuzzy
+#~ msgid "Please enter the command line used to start this help viewer"
+#~ msgstr "Por favor entre uma linha de comando abaixo."
+
+#, fuzzy
+#~ msgid "Help Viewer"
+#~ msgstr "Navegador de ajuda"
+
+#, fuzzy
+#~ msgid "Please enter the command line used to start this terminal"
+#~ msgstr "Por favor entre uma linha de comando abaixo."
+
+#, fuzzy
+#~ msgid "30 minutes ago"
+#~ msgstr "Linhas"
+
+#, fuzzy
+#~ msgid "10 minutes ago"
+#~ msgstr "Linhas"
+
+#, fuzzy
+#~ msgid "5 minutes ago"
+#~ msgstr "Linhas"
+
+#, fuzzy
+#~ msgid "1 minute ago"
+#~ msgstr "Linhas"
+
+#~ msgid "Custom screensaver. No description available"
+#~ msgstr "Protetor de tela personalizado. Não há descrição disponível"
+
+#~ msgid "label1"
+#~ msgstr "label1"
+
+#~ msgid ""
+#~ "Cannot find the data to configure this screensaver. Please edit the "
+#~ "command line below."
+#~ msgstr ""
+#~ "Não é possível localizar os dados para configurar este protetor de tela. "
+#~ "Por favor edite a linha de comando abaixo."
+
+#~ msgid "Visual:"
+#~ msgstr "Visual:"
+
+#~ msgid "Any"
+#~ msgstr "Qualquer"
+
+#, fuzzy
+#~ msgid "Large"
+#~ msgstr "Grande"
+
+#~ msgid "Low"
+#~ msgstr "Baixo"
+
+#~ msgid "Size:"
+#~ msgstr "Tamanho:"
+
+#, fuzzy
+#~ msgid "Small"
+#~ msgstr "Bolas"
+
+#~ msgid "Twist:"
+#~ msgstr "Rotação:"
+
+#~ msgid "Wobble:"
+#~ msgstr "Pulsação"
+
+#~ msgid "Four Sided cells"
+#~ msgstr "Células com quatro lados"
+
+#, fuzzy
+#~ msgid "Many"
+#~ msgstr "Vários"
+
+#~ msgid "Nine Sided cells"
+#~ msgstr "Células com nove lados"
+
+#~ msgid "Number of colours"
+#~ msgstr "Número de cores"
+
+#~ msgid "Random"
+#~ msgstr "Aleatório"
+
+#~ msgid "Random size upto"
+#~ msgstr "Tamanho aleatório até"
+
+#~ msgid "Randomize"
+#~ msgstr "Aleatorizar"
+
+#~ msgid "Sharp turns"
+#~ msgstr "Curvas acentuadas"
+
+#~ msgid "Six Sided cells"
+#~ msgstr "Células com seis lados"
+
+#~ msgid "Specific"
+#~ msgstr "Específico"
+
+#~ msgid "Specific size of"
+#~ msgstr "Tamanho específico de"
+
+#~ msgid "Three Sided cells"
+#~ msgstr "Células com três lados"
+
+#~ msgid "Timeout"
+#~ msgstr "Tempo limite"
+
+#~ msgid "Truchet lines"
+#~ msgstr "Linhas de Truchet"
+
+#~ msgid "Twelve Sided cells"
+#~ msgstr "Células com doze lados"
+
+#, fuzzy
+#~ msgid "Attraction (balls)"
+#~ msgstr "Duração (ms)"
+
+#~ msgid "Color Contrast"
+#~ msgstr "Contraste das cores"
+
+#~ msgid "Length of Trail"
+#~ msgstr "Comprimento do rastro"
+
+#~ msgid "Lines"
+#~ msgstr "Linhas"
+
+#~ msgid "Number of Colors"
+#~ msgstr "Número de cores"
+
+#~ msgid "Polygons"
+#~ msgstr "Polígonos"
+
+#~ msgid "Splines"
+#~ msgstr "Splines"
+
+#~ msgid "Tails"
+#~ msgstr "Rastros"
+
+#~ msgid "Threshold of repulsion"
+#~ msgstr "Limite de repulsão"
+
+#, fuzzy
+#~ msgid "Blaster"
+#~ msgstr "Rápido"
+
+#~ msgid "Display screensaver in monochrome."
+#~ msgstr "Exibir proteção de tela monocromático."
+
+#, fuzzy
+#~ msgid "Slower"
+#~ msgstr "Lento"
+
+#~ msgid "Speed of rotation."
+#~ msgstr "Velocidade de rotação."
+
+#~ msgid "Speed of the 90 degree rotation."
+#~ msgstr "Velocidade da rotação de 90 graus."
+
+#~ msgid "Number of Colors."
+#~ msgstr "Número de cores."
+
+#~ msgid "Number of bubbles to use."
+#~ msgstr "Número de bolhas a serem usadas."
+
+#~ msgid "Speed of Motion."
+#~ msgstr "Velocidade de movimento."
+
+#~ msgid "Use red/blue 3d seperation."
+#~ msgstr "Usar separação vermelho/azul 3d."
+
+#~ msgid "Bubbles exist in three dimensions."
+#~ msgstr "As bolhas existem em três dimensões."
+
+#~ msgid "Don't hide bubbles when they pop."
+#~ msgstr "Não esconder as bolhas quando elas estouram."
+
+#~ msgid "Draw circles instead of pixmap bubbles."
+#~ msgstr "Desenhar círculos no lugar de imagens de bolhas."
+
+#~ msgid "Don't use double bufferinge"
+#~ msgstr "Não usar double buffering"
+
+#~ msgid "Use double buffering"
+#~ msgstr "Usar double buffering"
+
+#, fuzzy
+#~ msgid "Coral"
+#~ msgstr "Normal"
+
+#, fuzzy
+#~ msgid "Denser"
+#~ msgstr "Densidade"
+
+#~ msgid "Number of seeds"
+#~ msgstr "Número de sementes"
+
+#, fuzzy
+#~ msgid "Seeds"
+#~ msgstr "Velocidade"
+
+#, fuzzy
+#~ msgid "Cosmos"
+#~ msgstr "Cores"
+
+#~ msgid "Have at maximum size"
+#~ msgstr "Possuem no tamanho máximo"
+
+#~ msgid "Number of polygons to use."
+#~ msgstr "Número de polígonos a serem usados."
+
+#, fuzzy
+#~ msgid "Cynosure"
+#~ msgstr "Fechar"
+
+#, fuzzy
+#~ msgid "Less"
+#~ msgstr "Linhas"
+
+#~ msgid "Number of iterations."
+#~ msgstr "Número de iterações."
+
+#~ msgid "Cycle through colors."
+#~ msgstr "Circular através das cores."
+
+#, fuzzy
+#~ msgid "Deco"
+#~ msgstr "Demonstração"
+
+#, fuzzy
+#~ msgid "Time between redraws:"
+#~ msgstr "Tempo entre desenhos."
+
+#~ msgid "Use color when drawing."
+#~ msgstr "Usar cor ao desenhar."
+
+#, fuzzy
+#~ msgid "Demon"
+#~ msgstr "Demonstração"
+
+#, fuzzy
+#~ msgid "Discrete"
+#~ msgstr "Linhas discretas"
+
+#~ msgid "Number to use."
+#~ msgstr "Número a usar."
+
+#~ msgid "Fractals should grow."
+#~ msgstr "Fractais devem crescer."
+
+#~ msgid "Number of pixels to use."
+#~ msgstr "Número de pixels a serem usados."
+
+#~ msgid "Use lissajous figures to get points."
+#~ msgstr "Usar figuras de lissajous para obter pontos."
+
+#~ msgid "Time finished product is shown."
+#~ msgstr "Tempo o produto final é exibido."
+
+#~ msgid "Number"
+#~ msgstr "Número"
+
+#~ msgid "Number of cycles"
+#~ msgstr "Número de ciclos"
+
+#~ msgid "Speed of Motion"
+#~ msgstr "Velocidade de movimento"
+
+#~ msgid "Bitmap for flag"
+#~ msgstr "Imagem para bandeira"
+
+#~ msgid "Random size up to"
+#~ msgstr "Tamanho aleatório até"
+
+#~ msgid "Text for flag"
+#~ msgstr "Texto para bandeira"
+
+#~ msgid "Number of fractals to generate."
+#~ msgstr "Número de fractais a serem gerados."
+
+#~ msgid "Pixels per fractal."
+#~ msgstr "Pixels por fractal."
+
+#, fuzzy
+#~ msgid "Flow"
+#~ msgstr "Lento"
+
+#~ msgid "Delay between redraws."
+#~ msgstr "Espera entre desenhos."
+
+#~ msgid "Number of trees to use."
+#~ msgstr "Número de árvores a serem usadas."
+
+#, fuzzy
+#~ msgid "Galaxy"
+#~ msgstr "Tocar"
+
+#, fuzzy
+#~ msgid "GLText"
+#~ msgstr "Testar"
+
+#~ msgid "Have transparent bubbles."
+#~ msgstr "Possui bolhas transparentes."
+
+#~ msgid "Use additive color model."
+#~ msgstr "Usar modelo de cores aditivo."
+
+#~ msgid "Number of planets to use."
+#~ msgstr "Número de planetas a serem usados."
+
+#~ msgid "Objects should leave trails behind them."
+#~ msgstr "Objetos deixam rastros por onde passam."
+
+#~ msgid "Orbit should decay."
+#~ msgstr "A órbita deve decair."
+
+#~ msgid "Animate circles."
+#~ msgstr "Animar círculos."
+
+#~ msgid "Cycle through colormap."
+#~ msgstr "Circular pelo mapa de cores."
+
+#~ msgid "Number of circles to use."
+#~ msgstr "Número de círculos a serem usados."
+
+#~ msgid "Use a gradient of colors between circles."
+#~ msgstr "Usar um gradiente de cores entre os círculos."
+
+#~ msgid "Time between redraws."
+#~ msgstr "Tempo entre desenhos."
+
+#~ msgid "Number of pixels before a color change."
+#~ msgstr "Número de pixels antes de uma mudança de cor."
+
+#, fuzzy
+#~ msgid "Closer"
+#~ msgstr "Fechar"
+
+#~ msgid "Distance from center of cube"
+#~ msgstr "Distância do centro do cubo"
+
+#, fuzzy
+#~ msgid "Farther"
+#~ msgstr "Distante"
+
+#~ msgid "Number of segments."
+#~ msgstr "Número de segmentos."
+
+#~ msgid "Number of trails."
+#~ msgstr "Número de rastros."
+
+#~ msgid "Duration of laser burst."
+#~ msgstr "Duração da descarga de laser."
+
+#, fuzzy
+#~ msgid "Laser"
+#~ msgstr "Rápido"
+
+#, fuzzy
+#~ msgid "Longer"
+#~ msgstr "Longo"
+
+#~ msgid "Size of burst."
+#~ msgstr "Tamanho da descarga."
+
+#, fuzzy
+#~ msgid "Larger"
+#~ msgstr "Rápido"
+
+#, fuzzy
+#~ msgid "Lisa"
+#~ msgstr "Linhas"
+
+#~ msgid "Size of object."
+#~ msgstr "Tamanho do objeto."
+
+#, fuzzy
+#~ msgid "Lissie"
+#~ msgstr "Menos"
+
+#, fuzzy
+#~ msgid "LMorph"
+#~ msgstr "Mais"
+
+#~ msgid "Number of interpolation steps."
+#~ msgstr "Número de passos de interpolação."
+
+#~ msgid "Number of points."
+#~ msgstr "Número de pontos."
+
+#~ msgid "Delay between drawing the maze and starting the solution."
+#~ msgstr "Espera entre o desenho do labirinto e o começo da solução."
+
+#~ msgid "Delay between finishing the maze and starting a new one."
+#~ msgstr "Espera entre o término e o começo de um novo labirinto."
+
+#~ msgid "Put a bridge over the logo?"
+#~ msgstr "Colocar uma ponte sobre o logo?"
+
+#~ msgid "Maximum radius increment"
+#~ msgstr "Incremento máximo do raio"
+
+#, fuzzy
+#~ msgid "Moire2"
+#~ msgstr "Mais"
+
+#~ msgid "Draw square at weird starting points."
+#~ msgstr "Desenhar quadrado em pontos iniciais estranhos."
+
+#~ msgid "Use XOR drawing function."
+#~ msgstr "Usar função de desenho XOR."
+
+#~ msgid "Maximum number of lines."
+#~ msgstr "Número máximo de linhas."
+
+#~ msgid "Time to fade away."
+#~ msgstr "Tempo para desaparecer."
+
+#~ msgid "Time to show each picture."
+#~ msgstr "Tempo para exibir cada imagem."
+
+#, fuzzy
+#~ msgid "Penrose"
+#~ msgstr "Denso"
+
+#, fuzzy
+#~ msgid "Pipes"
+#~ msgstr "Linhas"
+
+#, fuzzy
+#~ msgid "Pulsar"
+#~ msgstr "Tocar"
+
+#~ msgid "Frequency of missile launch"
+#~ msgstr "Freqüência de lançamento de mísseis"
+
+#~ msgid "Number of particles"
+#~ msgstr "Número de partículas"
+
+#~ msgid "Particles on screen"
+#~ msgstr "Partículas na tela"
+
+#~ msgid "Discrete Lines"
+#~ msgstr "Linhas discretas"
+
+#~ msgid "Number of points:"
+#~ msgstr "Número de pontos:"
+
+#~ msgid "Number of trails:"
+#~ msgstr "Número de rastros:"
+
+#~ msgid "Spread between lines"
+#~ msgstr "Distância entre linhas"
+
+#~ msgid "Trails attract each other"
+#~ msgstr "Rastros se atraem"
+
+#~ msgid "Transparent Trails"
+#~ msgstr "Rastros transparentes"
+
+#~ msgid "Width"
+#~ msgstr "Comprimento"
+
+#~ msgid "XOR Trails"
+#~ msgstr "Rastros XOR"
+
+#~ msgid "Number of Iterations"
+#~ msgstr "Número de iterações"
+
+#~ msgid "With X-axis Symmetry"
+#~ msgstr "Com simetria no eixo X"
+
+#~ msgid "With Y-axis Symmetry"
+#~ msgstr "Com simetria no eixo Y"
+
+#, fuzzy
+#~ msgid "Slip"
+#~ msgstr "Fino"
+
+#, fuzzy
+#~ msgid "Sonar"
+#~ msgstr "Curto"
+
+#, fuzzy
+#~ msgid "SpeedMine"
+#~ msgstr "Velocidade"
+
+#~ msgid "Change to display in monochrome."
+#~ msgstr "Alterar a exibição para monocromático."
+
+#~ msgid "Quickness of rotation at each step (0 = Random)"
+#~ msgstr "Velocidade de rotação a cada passo (0 = Aleatória)"
+
+#, fuzzy
+#~ msgid "Slim"
+#~ msgstr "Fino"
+
+#~ msgid "Speed of animation."
+#~ msgstr "Velocidade da animação."
+
+#, fuzzy
+#~ msgid "Starfish"
+#~ msgstr "Iniciando"
+
+#~ msgid "Thickness of color bands (0 = Random)"
+#~ msgstr "Grossura da faixas de cor (0 = Aleatória)"
+
+#~ msgid "Use raw shapes "
+#~ msgstr "Usar formas cruas "
+
+#, fuzzy
+#~ msgid "Strange"
+#~ msgstr "Estado"
+
+#, fuzzy
+#~ msgid "Truchet"
+#~ msgstr "Linhas de Truchet"
+
+#, fuzzy
+#~ msgid "Worm"
+#~ msgstr "Normal"
+
+#, fuzzy
+#~ msgid "Xearth"
+#~ msgstr "Distante"
+
+#~ msgid "Add a new screensaver"
+#~ msgstr "Adicionar um novo protetor de tela"
+
+#~ msgid "Select the screensaver to run from the list below:"
+#~ msgstr "Selecione o protetor de tela da lista abaixo:"
+
+#, fuzzy
+#~ msgid "GNOME Control Center:"
+#~ msgstr "Central de Controle GNOME"
