@@ -1,11 +1,11 @@
 /* 
- * $Id: aklog_main.c,v 1.29 1997-11-17 16:23:49 ghudson Exp $
+ * $Id: aklog_main.c,v 1.30 1998-01-20 23:19:43 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog_main.c,v 1.29 1997-11-17 16:23:49 ghudson Exp $";
+static const char rcsid[] = "$Id: aklog_main.c,v 1.30 1998-01-20 23:19:43 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,6 +78,30 @@ static linked_list zsublist;	/* List of zephyr subscriptions */
 static linked_list hostlist;	/* List of host addresses */
 static linked_list authedcells;	/* List of cells already logged to */
 
+
+static char *afs_realm_of_cell(cellconfig)
+    struct afsconf_cell *cellconfig;
+{
+    char krbhst[MAX_HSTNM];
+    static char krbrlm[REALM_SZ+1];
+
+    if (!cellconfig)
+	return 0;
+    
+    strcpy(krbrlm, (char *)krb_realmofhost(cellconfig->hostName[0]));
+    if (krb_get_admhst(krbhst, krbrlm, 1) != KSUCCESS) {
+	char *s = krbrlm;
+	char *t = cellconfig->name;
+	int c;
+
+	while (c = *t++) {
+	    if (islower(c)) c=toupper(c);
+	    *s++ = c;
+	}
+	*s++ = 0;
+    }
+    return krbrlm;
+}
 
 static char *copy_cellinfo(cellinfo_t *cellinfo)
 {

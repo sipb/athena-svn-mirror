@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 1997-12-13 18:40:35 ghudson Exp $
+# $Id: Makefile.in,v 1.3 1998-01-20 23:19:42 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -22,7 +22,7 @@ ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
 
 AFS_LIBS=-lprot -lauth -lrxkad -lubik @AFS_DIR@/lib/afs/util.a -laudit \
 	 -lsys -lrx -llwp -lsys @AFS_DIR@/lib/libdes.a
-OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o
+OBJS=aklog.o aklog_main.o aklog_param.o linked_list.o
 
 all: aklog
 
