@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sunLib.tmpl,v 1.15 92/01/25 16:46:49 rws Exp $
+XCOMM $XConsortium: sunLib.tmpl,v 1.16 92/02/16 12:52:34 rws Exp $
 
 /*
  * SunOS shared library template
@@ -51,7 +51,7 @@ PICFLAGS = PositionIndependentCFlags
 /* Sun shared libraries are deficient in link semantics */
         DEPXMULIB = _UseCat($(USRLIBDIR),$(XMUSRC),/libXmu.sa.$(SOXMUREV))
        XMULIBONLY = _Use(-lXmu,-L$(XMUSRC) -lXmu)
-           XMULIB = _Use(-lXmu,-L$(XMUSRC) -lXmu -L$(TOOLKITSRC))
+           XMULIB = _Use(-lXmu,-L$(XMUSRC) -lXmu -L$(TOOLKITSRC) -L$(EXTENSIONSRC)/lib -L$(XLIBSRC))
 #if !defined(UseInstalled) && !defined(XawClientLibs)
 #define XawClientLibs $(XAWLIB) $(XMULIBONLY) $(XTOOLLIB) $(XLIB)
 #endif
