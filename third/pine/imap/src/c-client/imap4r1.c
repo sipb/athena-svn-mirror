@@ -602,13 +602,9 @@ MAILSTREAM *imap_open (MAILSTREAM *stream)
      * If the session is anonymous, a specific port is given, or if alt is
      * set, do net_open() since those conditions override everything else.
      */
-
-    /* Athena hack: ignore that last comment; we're going to try regular
-     * IMAP first.  If it fails, then we can try IMAP tunneled over
-     * whatever the hell else.  Stupid pine.
-     */
-    if ((LOCAL->netstream = net_open (&mb,NIL,defprt,altd,alts,altp)))
-      reply = imap_reply (stream,NIL);
+    if (stream->anonymous || mb.port || mb.altflag)
+      reply = (LOCAL->netstream = net_open (&mb,NIL,defprt,altd,alts,altp)) ?
+	imap_reply (stream,NIL) : NIL;
     /* 
      * No overriding conditions, so get the best connection that we can.  In
      * order, attempt to open via simap, tryalt, rimap, and finally TCP.
@@ -622,8 +618,9 @@ MAILSTREAM *imap_open (MAILSTREAM *stream)
 			     NET_SILENT | (mb.altopt ? NET_ALTOPT : 0))) &&
 	     (reply = imap_reply (stream,NIL))) mb.altflag = T;
 				/* no alt, try rimap first, then TCP */
-    else
-      reply = imap_rimap (stream,"imap",&mb,usr,tmp);
+    else if (!(reply = imap_rimap (stream,"imap",&mb,usr,tmp)) &&
+	     (LOCAL->netstream = net_open (&mb,NIL,defprt,NIL,NIL,NIL)))
+      reply = imap_reply (stream,NIL);
 
 				/* if have a connection */
     if (LOCAL->netstream && reply && imap_OK (stream,reply)) {
