@@ -1,13 +1,13 @@
-# Disk geometry: <ST34342A                       >
+# Disk geometry: <ST34342A cyl 3880 alt 2 hd 16 sec 135>
 #
 # Part      Tag    Flag     Cylinders        Size            Blocks
-#   0       root    wm       0 -  216       97.03MB    (92/0/0)    198720
-#   1       swap    wu     335 -  820      512.58MB    (486/0/0)  1049760
+#   0       root    wm       0 - 3291        3.39GB    (3292/0/0) 7110720
+#   1       swap    wu    3292 - 3777      512.58MB    (486/0/0)  1049760
 #   2     backup    wu       0 - 3879        4.00GB    (3880/0/0) 8380800
-#   3 unassigned    wm     821 -  915      100.20MB    (95/0/0)    205200
+#   3 unassigned    wm    3778 - 3879      107.58MB    (102/0/0)   220320
 #   4 unassigned    wm       0               0         (0/0/0)          0
-#   5        usr    wm      217 -  334      256.29MB    (243/0/0)   524880
-#   6        var    wm     916 - 3879        3.05GB    (2964/0/0) 6402240
+#   5 unassigned    wm       0               0         (0/0/0)          0
+#   6 unassigned    wm       0               0         (0/0/0)          0
 #   7 unassigned    wm       0               0         (0/0/0)          0
 #   next few CR (12) are here for a good reason, do not remove them
 #   ST34342A comes without a standard label in the first bytes, so the format
@@ -31,19 +31,25 @@ partition
 root
 wm
 0
-100mb
+3292c
 
 1
 swap
 wu
-772
-100mb
+3292
+486c
+
+2
+backup
+wu
+0
+3880c
 
 3
 unassigned
 wm
-1882
-100mb
+3778c
+102c
 
 4
 unassigned
@@ -52,16 +58,16 @@ wm
 0c
 
 5
-usr
+unassigned
 wm
-217
-256mb
+0
+0c
 
 6
-var
+unassigned
 wm
-2099
-6793c
+0
+0c
 
 7
 unassigned

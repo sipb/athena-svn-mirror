@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.9 2001-03-01 20:49:06 miki Exp $
+### $Id: install1.sh,v 1.10 2001-04-01 05:42:41 zacheiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -248,19 +248,19 @@ Y)
        ;;
     SUN4.2G)
        echo "formatting SUN4.2G"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.SUN4.2G | \
 		format ${drive} >/dev/null 2>&1
        ;;
     SUN9.0G)
        echo "formatting SUN9.0G"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.SUN9.0G | \
                 format ${drive} >/dev/null 2>&1
        ;;
     SUN18G)
        echo "formatting SUN18G"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.SUN18G | \
                 format ${drive} >/dev/null 2>&1
        ;;
@@ -272,13 +272,13 @@ Y)
        ;;
     ST34321A)
        echo "formatting ST34321A"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.ST34321A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST34342A)
        echo "formatting ST34342A"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.ST34342A | \
 		format ${drive} >/dev/null 2>&1
        ;;
@@ -290,19 +290,19 @@ Y)
        ;;
     ST39120A|ST39111A)
        echo "formating ST39120A"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.ST39120A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST39140A)
        echo "formatting ST39140A"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.ST39140A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     Seagate*)
        echo "formatting Segate Medalist"
-       partitioning=many
+       partitioning=one
        cat /util/format.input.Seagate.medalist | \
 		format ${drive} >/dev/null 2>&1
        ;;

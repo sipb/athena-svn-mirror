@@ -1,14 +1,15 @@
 # Disk geometry: <ST39120A cyl 17660 alt 2 hd 16 sec 63>
 #
 # Part      Tag    Flag     Cylinders         Size            Blocks
-#   0       root    wm       0 -   406      200.32MB    (407/0/0)     410256
-#   1       swap    wm    1131 -  2171      512.37MB    (1041/0/0)   1049328
-#   2     backup    wm       0 - 17659        8.49GB    (17660/0/0) 17801280
-#   3 unassigned    wm    2172 -  2375      100.41MB    (204/0/0)     205632
-#   4 unassigned    wu       0                0         (0/0/0)            0
-#   5        usr    wm     407 -  1130      356.34MB    (724/0/0)     729792
-#   6        var    wm    2376 - 17659        7.35GB    (15284/0/0) 15406272
+#   0       root    wm       0 - 15083        7.25GB    (15084/0/0) 15204672
+#   1       swap    wu   15084 - 17164        1.00GB    (2081/0/0)   2097648
+#   2     backup    wu       0 - 17659        8.49GB    (17660/0/0) 17801280
+#   3 unassigned    wm   17165 - 17659      243.63MB    (495/0/0)     498960
+#   4 unassigned    wm       0                0         (0/0/0)            0
+#   5 unassigned    wm       0                0         (0/0/0)            0
+#   6 unassigned    wm       0                0         (0/0/0)            0
 #   7 unassigned    wm       0                0         (0/0/0)            0
+
 
 partition
 
@@ -16,13 +17,13 @@ partition
 root
 wm
 0
-407c
+15084c
 
 1
 swap
 wu
-1131
-1041c
+15085
+2081c
 
 2
 backup
@@ -33,8 +34,8 @@ wu
 3
 unassigned
 wm
-2172
-204c
+17165
+494c
 
 4
 unassigned
@@ -43,16 +44,16 @@ wm
 0c
 
 5
-usr
+unassigned
 wm
-407
-724c
+0
+0c
 
 6
-var
+unassigned
 wm
-2376
-15284c
+0
+0c
 
 7
 unassigned
