@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.77 2004-04-05 16:40:20 rbasch Exp $
+# $Id: reactivate.sh,v 1.78 2004-04-24 14:06:52 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -328,7 +328,7 @@ if [ "$full" = true ]; then
 		if [ "$NEWVERS" = "$THISVERS" ]; then
 			case "$HOSTTYPE" in
 			sun4)
-				/srvd/usr/athena/lib/update/verify-pkgs
+				/srvd/usr/athena/etc/verify-pkgs
 				;;
 			*)
 				/usr/athena/etc/track -q
