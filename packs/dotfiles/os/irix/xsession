@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.14 2001-05-04 14:52:19 ghudson Exp $
+# $Id: xsession,v 1.15 2001-05-08 03:27:50 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -165,7 +165,7 @@ else if (! $?skip_xlogout) then
 	(dash -logout &)
 endif
 
-if ( $?skip_sgi )
+if ( $?skip_sgi ) then
 
   # Start window manager.  To change your default window manager, set the 
   # WINDOW_MANAGER environment variable in your ~/.environment file.
