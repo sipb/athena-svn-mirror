@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: root $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.24 1988-09-09 14:08:47 root Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.25 1989-04-26 15:46:33 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.24 1988-09-09 14:08:47 root Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.25 1989-04-26 15:46:33 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -62,7 +62,10 @@ Z_SendLocation(class, opcode, auth, format)
     long ourtime;
     ZNotice_t notice, retnotice;
     char *bptr[3];
-    char *display, *ttyp;
+#ifdef X11
+    char *display;
+#endif /* X11 */
+    char *ttyp;
     struct hostent *hent;
     short wg_port = ZGetWGPort();
     int gotone = 0;
@@ -96,10 +99,12 @@ Z_SendLocation(class, opcode, auth, format)
 	    else
 		    (void) strcpy(host, hent->h_name);
 	    bptr[0] = host;
+#ifdef X11
 	    if ((display = getenv("DISPLAY")) && *display) {
 		    (void) strcpy(mytty, display);
 		    bptr[2] = mytty;
 	    } else {
+#endif /* X11 */
 		    ttyp = ttyname(0);
 		    bptr[2] = rindex(ttyp, '/');
 		    if (bptr[2])
@@ -107,7 +112,9 @@ Z_SendLocation(class, opcode, auth, format)
 		    else
 			    bptr[2] = ttyp;
 		    (void) strcpy(mytty, bptr[2]);
+#ifdef X11
 	    }
+#endif /* X11 */
 	    reenter = 1;
     } else {
 	    bptr[0] = host;
