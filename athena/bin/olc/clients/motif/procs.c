@@ -11,11 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
- *      $Author: cfields $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.25 1994-08-21 18:17:59 cfields Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.26 1996-07-26 21:06:09 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,10 +37,6 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include "xolc.h"
 #include "data.h"
 #include "buttons.h"
-
-#ifdef SOLARIS
-#define _POSIX_SOURCE
-#endif
 
 char current_topic[TOPIC_SIZE] = "unknown";
 int sa_pid = 0;
@@ -79,7 +75,7 @@ static int
 #endif
 reaper(sig)
 {
-#ifdef _POSIX_SOURCE
+#ifdef POSIX
   int foo;
 #else
   union wait foo;
@@ -87,7 +83,7 @@ reaper(sig)
   int pid;
   Arg args[1];
 
-#ifndef _POSIX_SOURCE
+#ifndef POSIX
   signal(SIGCHLD, reaper);
 #endif
 
@@ -538,7 +534,7 @@ olc_stock (w, tag, callback_data)
 {
   Arg args[1];
   char pidascii[7];
-#ifdef _POSIX_SOURCE
+#ifdef POSIX
   struct sigaction action;
 #endif
 
@@ -562,7 +558,7 @@ olc_stock (w, tag, callback_data)
       _exit(1);
     }
   }
-#ifdef _POSIX_SOURCE
+#ifdef POSIX
   action.sa_flags = 0;
   sigemptyset(&action.sa_mask);
 
