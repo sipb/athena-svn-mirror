@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.8.2.1 1998-07-30 17:25:07 ghudson Exp $
+# $Id: Makefile,v 1.8.2.2 1998-09-24 14:51:41 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
+USRBINDIR=/usr/bin
 NSBINDIR=/usr/bin/X11
 ATTACHRUN=netscape
 ATTRUNTEMPLATE=../../template.sh
@@ -18,9 +19,12 @@ check:
 
 install:
 	-mkdir -p ${DESTDIR}${ATHBINDIR}
+	-mkdir -p ${DESTDIR}${USRBINDIR}
 	-mkdir -p ${DESTDIR}${NSBINDIR}
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	install -c -m 555 netscape ${DESTDIR}${NSBINDIR}
+	rm -f ${DESTDIR}${USRBINDIR}/lp
+	ln -s ${ATHBINDIR}/lp ${DESTDIR}${USRBINDIR}/lp
 	rm -f ${DESTDIR}${ATHBINDIR}/perl
 	ln -s /usr/freeware/bin/perl ${DESTDIR}${ATHBINDIR}/perl
 	rm -f ${DESTDIR}${ATHBINDIR}/xlock.real
