@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.66 2001-04-24 22:14:32 ghudson Exp $
+# $Id: do.sh,v 1.67 2001-05-04 14:46:13 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -189,7 +189,9 @@ fi
 . $source/packs/build/version
 ATHENA_MAJOR_VERSION=$major
 ATHENA_MINOR_VERSION=$minor
-ATHENA_PATCH_VERSION=$patch
+if [ -z "$ATHENA_PATCH_VERSION" ]; then
+  ATHENA_PATCH_VERSION=$patch
+fi
 export ATHENA_MAJOR_VERSION ATHENA_MINOR_VERSION ATHENA_PATCH_VERSION
 
 # Determine if gmake is available. (It should be, unless this is a
