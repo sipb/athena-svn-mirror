@@ -1,4 +1,4 @@
-# $Id: packages,v 1.5 1996-10-06 21:12:49 ghudson Exp $
+# $Id: packages,v 1.6 1996-10-10 17:27:55 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -29,19 +29,17 @@ third/tcsh
 third/emacs
 #third/tex
 #third/top			sun4
-#third/sysinfo			all,-sgi
+#third/sysinfo
 third/rcs			sun4
 #third/patch			sun4
-#third/tac
-#third/tools
+third/jot
+third/lam
+third/rs
 #third/mh
 #third/x3270
 #third/transcript
 #third/talk			sun4
-#third/ansi			sun4
-#third/jove			sun4
-#third/learn			sun4
-#third/mae-2.0			sun4
+#third/talkd			sun4
 #third/look			sgi
 #third/whois			sgi
 athena/lib/AL
