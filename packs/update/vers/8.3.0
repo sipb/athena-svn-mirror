@@ -1,0 +1,258 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	# Boot up 6.5 miniroot to upgrade the OS.
+	echo "NEWOS=true"				>> "$CONFVARS"
+	echo "MINIROOT=true"				>> "$CONFVARS"
+
+	# Hack to prevent inst from doing multiple make's
+	# of the filetype database.
+	echo "DELAYFTMAKE=true"				>> "$CONFVARS"
+
+	# Clean up any old selections files.
+	rm -f "$LOCALPACKAGES" "$LINKPACKAGES"
+
+	# Remove all currently installed packages, and install
+	# all desired "foundation" local packages.
+	foundlocal=$LOCALPACKAGES.foundation
+	echo "remove I"					>> "$foundlocal"
+	echo "i c++_eoe.sw.lib"				>> "$foundlocal"
+	echo "i compiler_eoe.sw.cpp"			>> "$foundlocal"
+	echo "i compiler_eoe.sw.lboot"			>> "$foundlocal"
+	echo "i compiler_eoe.sw.lib"			>> "$foundlocal"
+	echo "i compiler_eoe.sw.unix"			>> "$foundlocal"
+	echo "i dmedia_eoe.sw.base"			>> "$foundlocal"
+	echo "i eoe.sw.base"				>> "$foundlocal"
+	echo "i eoe.sw.efs"				>> "$foundlocal"
+	echo "i eoe.sw.gfx"				>> "$foundlocal"
+	echo "i x_eoe.sw.Server"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xfonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.eoe"				>> "$foundlocal"
+	echo "i dmedia_eoe.sw.audio"			>> "$foundlocal"
+	echo "i dmedia_eoe.sw.lib"			>> "$foundlocal"
+	echo "i eoe.sw.named"				>> "$foundlocal"
+	echo "i nfs.sw.nfs"				>> "$foundlocal"
+	echo "i eoe.sw.terminfo"			>> "$foundlocal"
+	echo "i eoe.sw.termbase"			>> "$foundlocal"
+	echo "i x_eoe.sw.Server"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xapps"				>> "$foundlocal"
+	echo "i x_eoe.sw.Xfonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xgifts"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xoptfonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xopttype1"			>> "$foundlocal"
+	echo "i x_eoe.sw.Xunicodefonts"			>> "$foundlocal"
+	echo "i x_eoe.sw.eoe"				>> "$foundlocal"
+	echo "i x_eoe.sw.pex"				>> "$foundlocal"
+	echo "i x_eoe.sw.plugin"			>> "$foundlocal"
+	echo "i x_eoe.sw.xfwp"				>> "$foundlocal"
+	echo "i desktop_base.sw.FileTypingRules"	>> "$foundlocal"
+	echo "i desktop_base.sw.dso"			>> "$foundlocal"
+	echo "i desktop_base.sw.ftrdso6_2"		>> "$foundlocal"
+	echo "i desktop_base.sw.utilities"		>> "$foundlocal"
+	echo "i ViewKit_eoe.sw.base"			>> "$foundlocal"
+	echo "i 4Dwm.sw.4Dwm"				>> "$foundlocal"
+	echo "i motif_eoe.sw.eoe"			>> "$foundlocal"
+	echo "i websupport_eoe.sw.lib"			>> "$foundlocal"
+	echo "i ifl_eoe.sw.c++"				>> "$foundlocal"
+	echo "i il_eoe.sw.c++"				>> "$foundlocal"
+	echo "i insight_base.sw.eoe"			>> "$foundlocal"
+	echo "i insight_base.sw.base"			>> "$foundlocal"
+	echo "i isdn_eoe.sw.isdn"			>> "$foundlocal"
+	echo "i eoe.sw.ppp"				>> "$foundlocal"
+	echo "i eoe.sw.uucp"				>> "$foundlocal"
+	# This is required on O2, but not installable on Indy.
+	echo "i A ip32prom.sw.prom"			>> "$foundlocal"
+
+	# Install all desired "applications" local packages.
+	applocal=$LOCALPACKAGES.applications
+	echo "i x_eoe.sw.xdps"				>> "$applocal"
+	echo "i dps_eoe.sw.dpsfonts"			>> "$applocal"
+	echo "i desktop_eoe.sw.Confidence"		>> "$applocal"
+	echo "i desktop_eoe.sw.Desks"			>> "$applocal"
+	echo "i desktop_eoe.sw.control_panels"		>> "$applocal"
+	echo "i desktop_eoe.sw.envm"			>> "$applocal"
+	echo "i desktop_eoe.sw.share"			>> "$applocal"
+	echo "i desktop_eoe.sw.toolchest"		>> "$applocal"
+	echo "i desktop_base.sw.dso6_2"			>> "$applocal"
+	echo "i media_warehouse.sw.viewers"		>> "$applocal"
+	echo "i webviewer.sw.eoe"			>> "$applocal"
+
+	# Install all other packages from all distributions in
+	# symlink mode, keeping all local packages unchanged.
+	for dist in foundation applications dev dwb performer mineset \
+		cosmo snmp freeware softwindows95 ; do
+	    linkpkgs=$LINKPACKAGES.$dist
+	    echo "i A"					>> "$linkpkgs"
+	    echo "di c++_eoe.sw.lib"			>> "$linkpkgs"
+	    echo "di compiler_eoe.sw.cpp"		>> "$linkpkgs"
+	    echo "di compiler_eoe.sw.lboot"		>> "$linkpkgs"
+	    echo "di compiler_eoe.sw.lib"		>> "$linkpkgs"
+	    echo "di compiler_eoe.sw.unix"		>> "$linkpkgs"
+	    echo "di dmedia_eoe.sw.base"		>> "$linkpkgs"
+	    echo "di eoe.sw.base"			>> "$linkpkgs"
+	    echo "di eoe.sw.efs"			>> "$linkpkgs"
+	    echo "di eoe.sw.gfx"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Server"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xfonts"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.eoe"			>> "$linkpkgs"
+	    echo "di dmedia_eoe.sw.audio"		>> "$linkpkgs"
+	    echo "di dmedia_eoe.sw.lib"			>> "$linkpkgs"
+	    echo "di eoe.sw.named"			>> "$linkpkgs"
+	    echo "di nfs.sw.nfs"			>> "$linkpkgs"
+	    echo "di eoe.sw.terminfo"			>> "$linkpkgs"
+	    echo "di eoe.sw.termbase"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Server"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xapps"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xfonts"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xgifts"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xoptfonts"		>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xopttype1"		>> "$linkpkgs"
+	    echo "di x_eoe.sw.Xunicodefonts"		>> "$linkpkgs"
+	    echo "di x_eoe.sw.eoe"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.pex"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.plugin"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.xfwp"			>> "$linkpkgs"
+	    echo "di desktop_base.sw.FileTypingRules"	>> "$linkpkgs"
+	    echo "di desktop_base.sw.dso"		>> "$linkpkgs"
+	    echo "di desktop_base.sw.ftrdso6_2"		>> "$linkpkgs"
+	    echo "di desktop_base.sw.utilities"		>> "$linkpkgs"
+	    echo "di ViewKit_eoe.sw.base"		>> "$linkpkgs"
+	    echo "di 4Dwm.sw.4Dwm"			>> "$linkpkgs"
+	    echo "di motif_eoe.sw.eoe"			>> "$linkpkgs"
+	    echo "di websupport_eoe.sw.lib"		>> "$linkpkgs"
+	    echo "di ifl_eoe.sw.c++"			>> "$linkpkgs"
+	    echo "di il_eoe.sw.c++"			>> "$linkpkgs"
+	    echo "di insight_base.sw.eoe"		>> "$linkpkgs"
+	    echo "di insight_base.sw.base"		>> "$linkpkgs"
+	    echo "di isdn_eoe.sw.isdn"			>> "$linkpkgs"
+	    echo "di eoe.sw.ppp"			>> "$linkpkgs"
+	    echo "di eoe.sw.uucp"			>> "$linkpkgs"
+	    echo "di ip32prom.sw.prom"			>> "$linkpkgs"
+	    echo "di x_eoe.sw.xdps"			>> "$linkpkgs"
+	    echo "di dps_eoe.sw.dpsfonts"		>> "$linkpkgs"
+	    echo "di desktop_eoe.sw.Confidence"		>> "$linkpkgs"
+	    echo "di desktop_eoe.sw.Desks"		>> "$linkpkgs"
+	    echo "di desktop_eoe.sw.control_panels"	>> "$linkpkgs"
+	    echo "di desktop_eoe.sw.envm"		>> "$linkpkgs"
+	    echo "di desktop_eoe.sw.share"		>> "$linkpkgs"
+	    echo "di desktop_eoe.sw.toolchest"		>> "$linkpkgs"
+	    echo "di desktop_base.sw.dso6_2"		>> "$linkpkgs"
+	    echo "di media_warehouse.sw.viewers"	>> "$linkpkgs"
+	    echo "di webviewer.sw.eoe"			>> "$linkpkgs"
+
+	    # Don't reinstall any package which is already installed
+	    # at the same or higher version number.
+	    echo "di same"				>> "$linkpkgs"
+	    echo "di D"					>> "$linkpkgs"
+
+	    # This avoids conflicts arising from selecting overlays to
+	    # packages not currently selected.
+	    echo "di incompleteoverlays"		>> "$linkpkgs"
+
+	    # Deselect packages causing conflicts, or that we just
+	    # don't want.
+	    echo "di java_plugin.sw.swing101"		>> "$linkpkgs"
+	    echo "di java_plugin.sw.swing102"		>> "$linkpkgs"
+	    echo "di fw_turn.sw.pict"			>> "$linkpkgs"
+	    echo "di fw_turn.man.pict"			>> "$linkpkgs"
+	    echo "di fw_exmh"				>> "$linkpkgs"
+	    echo "di annotator.sw.japanese"		>> "$linkpkgs"
+	    echo "di InPerson.sw.japanese"		>> "$linkpkgs"
+	    echo "di MineSet_korean_examples.sw.korean"	>> "$linkpkgs"
+	    echo "di MineSet_japanese_examples.sw.japanese" \
+							>> "$linkpkgs"
+	    echo "di MineSet_chinese_t_examples.sw.tchinese" \
+							>> "$linkpkgs"
+	    echo "di MineSet_chinese_s_examples.sw.schinese" \
+							>> "$linkpkgs"
+
+	    # The following lets us install the most recent Open Inventor
+	    # eoe and dev packages from the Open Inventor 2.1.5 distribution
+	    # during the foundation and dev passes, respectively.
+	    # The inventor_games packages in that distribution seem to be
+	    # an older version, incompatible with the 6.5.3 eoe.sw.base.
+	    echo "di conflicting inventor_eoe"		>> "$linkpkgs"
+	    echo "di conflicting inventor_dev"		>> "$linkpkgs"
+	    echo "di conflicting inventor_games"	>> "$linkpkgs"
+
+	    # These are in foundation, but have dependencies in applications.
+	    echo "di conflicting x_eoe.sw.xdps"		>> "$linkpkgs"
+	    echo "di conflicting desktop_base.sw.dso6_2" \
+							>> "$linkpkgs"
+
+	    # Don't want the following.
+	    echo "di gnu"				>> "$linkpkgs"
+	    echo "di fw*"				>> "$linkpkgs"
+	    echo "di gnat_*"				>> "$linkpkgs"
+	    echo "di eoe.src.gnutools"			>> "$linkpkgs"
+	    echo "di Register"				>> "$linkpkgs"
+	    echo "di *.books.*"				>> "$linkpkgs"
+	    echo "di MineSet_addendum_books.addendum.MineSet_UG_A" \
+							>> "$linkpkgs"
+	    echo "di MineSet_addendum_tutorial.addendum.MineSet_T_A" \
+							>> "$linkpkgs"
+	    echo "di MineSet_tutorial.tutorial.MineSet_T" \
+							>> "$linkpkgs"
+	    echo "di inventor_eoe.sw.help"		>> "$linkpkgs"
+	    echo "di SoftWindows95.sw.help"		>> "$linkpkgs"
+	    echo "di infosearch.index"			>> "$linkpkgs"
+	done
+
+	# New or old versions of configuration files left by inst.
+	# These get removed on PUBLIC workstations.
+	# $CONFCHG files that are similarly versioned are handled
+	# separately, in update-os.
+	echo "/etc/aliases.N"				>> "$CONFIGVERS"
+	echo "/etc/default/su.N"			>> "$CONFIGVERS"
+	echo "/etc/group.O"				>> "$CONFIGVERS"
+	echo "/etc/inetd.conf.O"			>> "$CONFIGVERS"
+	echo "/etc/init.d/network.O"			>> "$CONFIGVERS"
+	echo "/etc/passwd.N"				>> "$CONFIGVERS"
+	echo "/etc/sendmail.cf.N"			>> "$CONFIGVERS"
+	echo "/etc/services.N"				>> "$CONFIGVERS"
+	echo "/etc/syslog.conf.N"			>> "$CONFIGVERS"
+	echo "/usr/lib/X11/app-defaults/Mwm.N"		>> "$CONFIGVERS"
+	echo "/usr/lib/X11/system.chestrc.O"		>> "$CONFIGVERS"
+	echo "/var/spool/cron/crontabs/root.N"		>> "$CONFIGVERS"
+
+	echo "/etc/config/firsttimeprograms"		>> "$DEADFILES"
+	echo "/etc/config/ns_fasttrack"			>> "$DEADFILES"
+	echo "/etc/config/outbox"			>> "$DEADFILES"
+
+	# We want to create new documentation trees.
+	echo "UPDATEDOC=true"				>> "$CONFVARS"
+
+	# inst will not remove everything in the on-line books
+	# directory, so just nuke it now.  Similarly remove the
+	# old whatis database.
+	rm -rf /usr/share/Insight/library
+	rm -f /usr/share/catman/whatis
+
+	# The following is excluded from the install, so make sure
+	# it's cleaned up.
+	rm -f /usr/lib/infosearch/bin/sgindexAdmin
+
+	# We're using the shadow passwd file for IRIX 6.5, so ensure
+	# it exists now.
+	if [ -f /etc/passwd.local ]; then
+		cp /etc/passwd.local /etc/passwd
+	fi
+	/sbin/pwconv
+	if [ "$PUBLIC" != true ]; then
+	    if [ -f /etc/passwd.local -a ! -f /etc/shadow.local ]; then
+		cp -p /etc/shadow /etc/shadow.local
+		chmod 600 /etc/shadow.local
+	    fi
+	fi
+	rm -f /etc/opasswd /etc/oshadow
+	;;
+esac
+
+if [ -f /var/athena/attachtab ]; then
+	mv /var/athena/attachtab /var/athena/attachtab.old
+	/srvd/usr/athena/etc/atconvert /var/athena/attachtab.old
+fi
