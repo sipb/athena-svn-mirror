@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.6 1998-03-27 17:56:12 ghudson Exp $
+# $Id: Makefile.athena,v 1.7 1998-05-27 19:52:10 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -9,7 +9,7 @@ compiler.sun4:
 # We can't use the Athena config.site file because it specifies
 # cc to be gcc.
 prepare:
-	CC=`${MAKE} -f Makefile.athena "compiler.$${HOSTTYPE}"` CONFIG_SITE= \
+	CC=`${MAKE} -f Makefile.athena "compiler.$$HOSTTYPE"` CONFIG_SITE= \
 		./configure --prefix=/usr/gcc
 
 clean:
@@ -18,9 +18,11 @@ clean:
 all:
 	${MAKE} all LANGUAGES=c
 	${MAKE} stage1
-	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=C
+	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=c
 
 check:
 
 install:
-	${MAKE} install "prefix=$$SRVD/usr/gcc" LANGUAGES=c
+	mkdir -p "$$SRVD/usr"
+	${MAKE} install "prefix=$$SRVD/usr/gcc" CC="stage1/xgcc -Bstage1/" \
+		CFLAGS=-O2 LANGUAGES=c
