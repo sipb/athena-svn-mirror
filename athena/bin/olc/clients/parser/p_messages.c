@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v $
- *	$Id: p_messages.c,v 1.11 1990-11-14 12:25:53 lwvanels Exp $
+ *	$Id: p_messages.c,v 1.12 1992-01-10 20:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.11 1990-11-14 12:25:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.12 1992-01-10 20:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -86,7 +86,7 @@ do_olc_replay(arguments)
 	  if (*arguments == (char *)NULL) 
 	    {
 	      file[0] = '\0';
-	      get_prompted_input("Enter a file name: ",file);
+	      get_prompted_input("Enter a file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
 		return(ERROR);
 	    }
@@ -255,7 +255,7 @@ do_olc_show(arguments)
 	  if (*arguments == (char *)NULL)
 	    {
 	      file[0] = '\0';
-  	      get_prompted_input("Enter a filename: ",file);
+  	      get_prompted_input("Enter a filename: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
 		return(ERROR);
 	    }

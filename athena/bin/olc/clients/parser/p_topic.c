@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v $
- *	$Id: p_topic.c,v 1.12 1990-11-14 12:27:09 lwvanels Exp $
+ *	$Id: p_topic.c,v 1.13 1992-01-10 20:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.12 1990-11-14 12:27:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.13 1992-01-10 20:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -93,7 +93,7 @@ do_olc_topic(arguments)
 	  if (*arguments == (char *)NULL)
             {
               file[0] = '\0';
-              get_prompted_input("Enter a file name: ",file);
+              get_prompted_input("Enter a file name: ",file,NAME_SIZE,0);
               if(file[0] == '\0')
                 return(ERROR);
             }

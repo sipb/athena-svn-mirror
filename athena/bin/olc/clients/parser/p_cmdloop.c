@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.16 1991-09-10 11:27:40 lwvanels Exp $
+ *	$Id: p_cmdloop.c,v 1.17 1992-01-10 20:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.16 1991-09-10 11:27:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.17 1992-01-10 20:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -86,7 +86,7 @@ command_loop(Command_Table, prompt)
       fill_request(&Request);
       comm_ptr = command_line;
       set_prompt(&Request,buf,prompt);
-      get_prompted_input(buf, command_line);
+      get_prompted_input(buf, command_line, COMMAND_LENGTH,1);
       while (isspace(*comm_ptr) && (*comm_ptr != '\0'))
 	comm_ptr++;
       if (*comm_ptr == '\0')

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v $
- *	$Id: p_motd.c,v 1.15 1991-09-10 11:30:50 lwvanels Exp $
+ *	$Id: p_motd.c,v 1.16 1992-01-10 20:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.15 1991-09-10 11:30:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.16 1992-01-10 20:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -66,7 +66,7 @@ do_olc_motd(arguments)
 	  if(*arguments == NULL)
             {
 	      file[0] = '\0';
-              get_prompted_input("Enter file name: ",file);
+              get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
 		return(ERROR);
             }
@@ -156,7 +156,7 @@ do_olc_hours(arguments)
 	  if(*arguments == NULL)
             {
 	      file[0] = '\0';
-              get_prompted_input("Enter file name: ",file);
+              get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
 		return(ERROR);
             }

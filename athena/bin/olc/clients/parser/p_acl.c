@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v $
- *	$Id: p_acl.c,v 1.5 1990-11-14 12:22:30 lwvanels Exp $
+ *	$Id: p_acl.c,v 1.6 1992-01-10 20:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v 1.5 1990-11-14 12:22:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v 1.6 1992-01-10 20:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -94,7 +94,7 @@ do_olc_acl(arguments)
           if (*arguments == (char *)NULL)
             {
               file[0] = '\0';
-              get_prompted_input("Enter a file name: ",file);
+              get_prompted_input("Enter a file name: ",file, NAME_SIZE,0);
               if(file[0] == '\0')
                 return(ERROR);
             }
@@ -123,7 +123,7 @@ do_olc_acl(arguments)
 
   if((*acl == '\0') && !list_flag)
     {
-      get_prompted_input("Enter access control list: ",acl);
+      get_prompted_input("Enter access control list: ",acl, NAME_SIZE,0);
       if(acl[0] == '\0')
 	return(ERROR);
     }

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v $
- *	$Id: p_resolve.c,v 1.11 1991-01-21 01:16:33 lwvanels Exp $
+ *	$Id: p_resolve.c,v 1.12 1992-01-10 20:00:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v 1.11 1991-01-21 01:16:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_resolve.c,v 1.12 1992-01-10 20:00:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -96,7 +96,7 @@ do_olc_done(arguments)
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
-	    (void) get_prompted_input("Title: ", title);
+	    (void) get_prompted_input("Title: ", title,LINE_SIZE,0);
 	  else
 	    strncpy(title,*arguments,LINE_SIZE);
 	  continue;
@@ -167,7 +167,7 @@ do_olc_cancel(arguments)
 	{
 	  ++arguments;
 	  if(*arguments == (char *) NULL)
-	    (void) get_prompted_input("Title: ", title);
+	    (void) get_prompted_input("Title: ", title, LINE_SIZE,0);
 	  else
 	    strncpy(title,*arguments,LINE_SIZE);
 	  continue;
