@@ -1,9 +1,9 @@
-# $Id: Makefile.athena,v 1.22 2000-03-31 14:59:37 ghudson Exp $
+# $Id: Makefile.athena,v 1.23 2000-04-02 00:57:58 ghudson Exp $
 
 SHELL=/bin/sh
 
 dist:
-	cp "$CONFIG_SITE" config.site.athena
+	cp "$$CONFIG_SITE" config.site.athena
 
 prepare:
 	rm -f src/config.cache
