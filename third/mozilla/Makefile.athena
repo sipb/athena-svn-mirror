@@ -1,7 +1,8 @@
-# $Id: Makefile.athena,v 1.2 2004-04-15 20:29:18 rbasch Exp $
+# $Id: Makefile.athena,v 1.3 2004-07-02 16:36:08 rbasch Exp $
 
 SHELL=/bin/sh
-common_options=--enable-crypto --disable-debug --disable-tests
+common_options=--enable-crypto --disable-debug --disable-tests \
+	       --with-gssapi=/usr/athena
 forte_bindir=/afs/athena.mit.edu/software/sunsoft_v7/SUNWspro/bin
 
 dist:
