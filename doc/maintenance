@@ -138,10 +138,13 @@ To set up a build machine, follow these instructions after installing:
   * Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where X.Y is
     the full release this build is for.
   * Run "/mit/source/packs/build/makeroot.sh /rel/wash".
-  * Make a symlink from /rel/.srvd to the AFS srvd volume, and from
-    /rel/build to the AFS build volume.  (These steps can be ommitted
-    if the release cycle hasn't progressed far enough for those
-    volumes to exist.)
+  * Make a symlink from /rel/.srvd to the AFS srvd volume, if you're
+    at that stage.
+  * On Solaris, install the Sun compiler locally.  Run:
+      pkgadd -R /rel -d /afs/dev.mit.edu/reference/sunpro8/packages \
+        -a /usr/athena/lib/update/noask `cat ../installed-packages`
+    and follow the directions in
+    /afs/dev.mit.edu/reference/sunpro8/README.  Repeat for /rel/wash.
 
 The wash process
 ----------------
