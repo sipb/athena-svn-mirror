@@ -1,4 +1,4 @@
-# $Id: packages,v 1.37 1998-04-02 03:28:38 cfields Exp $
+# $Id: packages,v 1.38 1998-04-27 16:56:25 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -26,7 +26,6 @@ third/krb5
 athena/etc/synctree
 athena/lib/Mu
 third/wcl
-third/rx			sgi
 third/tcsh
 third/emacs
 third/tex
