@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.40 1993-11-19 15:36:13 probe Exp $";
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.41 1993-11-21 03:34:27 probe Exp $";
 #endif /* lint */
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -36,7 +36,6 @@ char *whoami, *inst, *class, *opcode, *recips[MAXRECIPS];
 int (*auth)();
 void un_tabify();
 
-extern char *malloc(), *realloc();
 char *fix_filsrv_inst();
 
 main(argc, argv)
