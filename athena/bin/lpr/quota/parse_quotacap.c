@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parse_quotacap.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parse_quotacap.c,v 1.1 1991-09-25 10:24:18 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parse_quotacap.c,v 1.2 1991-09-25 10:46:42 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char parse_quotacap_rcsid[] = "$Id: parse_quotacap.c,v 1.1 1991-09-25 10:24:18 epeisach Exp $";
+static char parse_quotacap_rcsid[] = "$Id: parse_quotacap.c,v 1.2 1991-09-25 10:46:42 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -27,8 +27,10 @@ char *GF;    /* Group quota file */
 char *RF;    /* Report file for logger to grok thru */
 char *QC;    /* Quota currency */
 char *SA;    /* SAcl File */
-int  QD;    /* Quota server "down" (i.e. allow to print) */
-
+int   QD;    /* Quota server "down" (i.e. allow to print) */
+int   AN;    /* Account numerator factor */
+int   AD;    /* Account denomenator factor */
+ 
 char aclname[MAXPATHLEN];       /* Acl filename */
 char saclname[MAXPATHLEN];      /* Service Acl filename */
 char qfilename[MAXPATHLEN];     /* Master quota database */
@@ -89,6 +91,17 @@ read_quotacap()
     QD = qgetnum("qd");
     if (QD == -1)
 	QD = 0;
+
+    AN = qgetnum("an");
+    AD = qgetnum("ad");
+    if (AN == -1 && AD == -1) {
+	    AN = 1;
+	    AD = 1;
+    }
+    if (AN == -1 || AD == -1 || AD == 0 || AN == 0) {
+	    syslog(LOG_ERR, "Either account numerator or denomentaor not set %d/%d", AN, AD);
+	    return(1);
+    }
 
     if ((AF = (char *)qgetstr("af", &bp)) == NULL) {
 	AF = aclname;
