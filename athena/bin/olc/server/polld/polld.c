@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.8 1991-04-11 13:20:26 lwvanels Exp $
+ *	$Id: polld.c,v 1.9 1991-09-22 11:40:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.8 1991-04-11 13:20:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.9 1991-09-22 11:40:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -42,7 +42,11 @@ char DaemonInst[20];
 # define P(s) ()
 #endif
 
+#ifdef VOID_SIGRET
+static void clean_up P(( int sig ));
+#else
 static int clean_up P(( int sig ));
+#endif
 
 #undef P
 
@@ -50,14 +54,22 @@ static int clean_up P(( int sig ));
 
 static int listening_fd;
 
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 clean_up(sig)
      int sig;
 {
   close(listening_fd);
   syslog(LOG_INFO,"Exiting on signal %d",sig);
   exit(1);
+#ifdef VOID_SIGRET
+  return;
+#else
   return(0);
+#endif
 }
 
 /*

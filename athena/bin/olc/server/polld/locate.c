@@ -22,7 +22,11 @@
 
 
 /* locate.c */
-static int do_timeout P((void ));
+#ifdef VOID_SIGRET
+static void do_timeout P((int sig ));
+#else
+static int do_timeout P((int sig ));
+#endif
 static int find_finger P((PTF *person ));
 static int find_zephyr P((PTF *person ));
 
@@ -32,8 +36,13 @@ static jmp_buf env;		/* for longjmp in finger timeout */
 static int fd;			/* Socket for fingering */
 static FILE *f;			/* Associated FILE * */
 
+#ifdef VOID_SIGRET
+static void
+#else
 static int
-  do_timeout()
+#endif
+  do_timeout(sig)
+    int sig;
 {
   if (f != NULL)
     fclose(f);
@@ -201,4 +210,4 @@ find_zephyr(person)
   }
   return(new_status);
 }
-#endif ZEPHYR
+#endif /* ZEPHYR */
