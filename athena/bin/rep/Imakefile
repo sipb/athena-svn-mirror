@@ -1,0 +1,6 @@
+/*
+ * $Id: Imakefile,v 1.1 1991-06-09 02:27:12 probe Exp $
+ */
+
+SimpleProgram(rep,rep.c,-lcurses -ltermlib,$(ATHBINDIR))
+install_man(rep.1,rep.n)
