@@ -24,6 +24,13 @@
 <!-- Font directory list configured on @FC_FONTDATE@ -->
 
 	<dir>/usr/athena/share/fonts/redhat</dir>
+	<dir>/usr/openwin/lib/locale/hi_IN.UTF-8/X11/fonts/TrueType</dir>
+	<dir>/usr/openwin/lib/locale/ja/X11/fonts/TT</dir>
+	<dir>/usr/openwin/lib/locale/ko.UTF-8/X11/fonts/TrueType</dir>
+	<dir>/usr/openwin/lib/locale/ko/X11/fonts/TrueType</dir>
+	<dir>/usr/openwin/lib/locale/zh/X11/fonts/TrueType</dir>
+	<dir>/usr/openwin/lib/locale/zh_CN.GB18030/X11/fonts/TrueType</dir>
+	<dir>/usr/openwin/lib/locale/zh_TW.BIG5/X11/fonts/TT</dir>
 	<dir>~/.fonts</dir>
 
 <!--
