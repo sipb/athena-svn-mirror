@@ -5,7 +5,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.9 1991-04-18 22:25:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.10 1991-09-22 11:32:42 lwvanels Exp $";
 #endif
 #endif
 
@@ -32,6 +32,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/errno.h>
 #include <ctype.h>
 #include <strings.h>
+#if defined(_AIX) && defined(_IBMR2)
+#include <sys/select.h>
+#endif
 
 #include "system.h"
 
