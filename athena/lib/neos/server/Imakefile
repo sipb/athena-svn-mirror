@@ -1,8 +1,8 @@
 /* 
- * Iakefile for the FX (file exchange) server
+ * Imakefile for the FX (file exchange) server
  *
  * $Author: cfields $
- * $Id: Imakefile,v 1.1 1992-05-04 17:07:55 cfields Exp $
+ * $Id: Imakefile,v 1.2 1992-05-04 17:10:27 cfields Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -74,7 +74,7 @@ FXSRVSRCS = \
 	multi.c \
 	util.c
 
-SimpleProgram(fxserver,${FXSRVOBJS},${LIBS},$(ATHBINDIR))
+SimpleProgram(fxserver,${FXSRVOBJS},${LIBS},$(ATHETCDIR))
 
 saber_src:
 	/**/#suppress 223
