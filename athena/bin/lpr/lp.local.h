@@ -18,7 +18,7 @@
 #include <a.out.h>
 #include <ar.h>
 
-#if defined(AIX) && defined(i386) && !defined(OMAGIC)
+#if defined(AIX) && defined(_I386) && !defined(OMAGIC)
 #	define OMAGIC	MAG_OVERLAY
 #	define NMAGIC	MAG_NSHWRT
 #	define ZMAGIC	MAG_SHROT
