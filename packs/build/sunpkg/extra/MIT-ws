@@ -28,6 +28,8 @@ cp $1/packs/config/local-lockers.conf $2$athretcdir
 chmod 644 $2$athretcdir/local-lockers.conf
 cp $1/packs/config/masks $2$athretcdir
 chmod 444 $2$athretcdir/masks
+cp $1/packs/config/shells $2$etcdir
+chmod 644 $2$etcdir/shells
 cp $1/packs/config/system.mwmrc $2$athx11lib
 chmod 644 $2$athx11lib/system.mwmrc
 
