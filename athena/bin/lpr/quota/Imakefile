@@ -1,30 +1,52 @@
-#	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v $
-#	$Author: epeisach $
-#	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v 1.1 1990-08-25 18:10:04 epeisach Exp $
-#
-#
-#     Copyright 1990 Massachusetts Institute of Technology.
-#
-#     For copying and distribution information, see the file
-#     "mit-copyright.h".
+/* #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v $
+  #	$Author: epeisach $
+  #	$Locker:  $
+  #	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Imakefile,v 1.2 1990-11-08 09:47:50 epeisach Exp $
+  #
+  #
+  #     Copyright 1990 Massachusetts Institute of Technology.
+  #
+  #     For copying and distribution information, see the file
+  #     "mit-copyright.h".
+*/
 
 DESTDIR=
 
-# NDBM is now in config.h
-CFLAGS=-O -DHESIOD -DKERBEROS -DZEPHYR -DV1COMPAT \
+/* NDBM is now in config.h */
+CFLAGS=-O -DHESIOD -DKERBEROS -DZEPHYR -DV1COMPAT ${OCFLAGS}\
 		-I./ncs/include/idl -I. -I..
-LIBS= ./ncs/nck/libnck.a  -lhesiod \
-	-lzephyr -lacl -lkrb -ldes -lcom_err
-DBLIBS            = -lkrb
+LIBS= ${OPTLIBFLAGS} ./ncs/nck/libnck.a  -lhesiod -lzephyr -lacl -lkrb \
+	-ldes -lcom_err ${DBMLIB} ${POSTLIBFLAGS}
+DBLIBS            = ${OPTLIBFLAGS} -lkrb ${DBMLIB} ${POSTLIBFLAGS}
+
+#if defined(ultrix)
+#if defined(ULTRIX40)
+OCFLAGS=-DUltrix40
+#else
+DBMLIB=-ldbm
+#endif
+#endif
+
+#ifdef i386
+OPTLIBFLAGS=-L/usr/athena/lib 
+POSTLIBFLAGS=-lbsd
+#endif
 
 NIDL=./ncs/nidl/nidl
 NIDLOPTS=-idir ./ncs/include/idl -m
 .SUFFIXES: .idl .h
-CPP=./ncs/cpp/cpp
+COMPILE_ET=/usr/athena/compile_et
 
+
+#if defined(_AUX_SOURCE) 
 .c.o:
-	 ${CPP} $(CFLAGS) $*.c x.c; $(CC) -c $(CFLAGS) x.c; mv x.o $*.o
+	 $(CC) -tp -Bncs/cpp/ -c $(CFLAGS) $*.c
+#endif
+#if defined(i386)
+.c.o:
+	 $(CC) -q -Bncs/cpp/ -c $(CFLAGS) $*.c
+#endif
+
 
 .idl.h:
 	$(NIDL) $*.idl $(NIDLOPTS)
@@ -55,12 +77,13 @@ COBJS=	lpquota.o quota_ncs_cstub.o quota_ncs_cswtch.o quota_err.o \
 LSRCS=  quota_dba.c gquota_dba.c qdb_create.c
 LOBJS=  quota_dba.o gquota_dba.o qdb_create.o
 
-SSRCS=  s_chkaf.c quota_ncs_cstub.c quota_ncs_cswtch.c printcap.c 
-SOBJS=  s_chkaf.o quota_ncs_cstub.o quota_ncs_cswtch.o printcap.o
+SSRCS=  s_chkaf.c quota_ncs_cstub.c quota_ncs_cswtch.c printcap.c  
+SOBJS=  s_chkaf.o quota_ncs_cstub.o quota_ncs_cswtch.o printcap.o quota_err.o
 
 DBPROGS         = dump_db restore_db bill_db
 DBGPROGS        = gdump_db grestore_db gbill_db
-DBPROGRAMS      = $(DBPROGS) $(DBGPROGS)
+DBLPROGS	= dump_logs consist
+DBPROGRAMS      = $(DBPROGS) $(DBGPROGS) ${DBLPROGS}
 
 DBSRCS          = dump_db.c restore_db.c bill_db.c \
                   gdump_db.c grestore_db.c gbill_db.c \
@@ -70,9 +93,13 @@ DBOBJS          = dump_db.o restore_db.o bill_db.o \
                   quota_dba.o gquota_dba.o
 
 
-ALL=	lpqd lpquota qdb_create s_chkaf $(DBPROGRAMS) dump_logs
+ALL=	lpqd lpquota qdb_create s_chkaf $(DBPROGRAMS) 
 
 all:	./ncs/cpp/cpp ./ncs/nidl/nidl ./ncs/nck/libnck.a ${ALL} 
+
+Makefile: Imakefile ../cppflags
+	-mv -f Makefile Makefile.bak
+	/lib/cpp `../cppflags` Imakefile Makefile 
 
 ./ncs/cpp/cpp:
 	(cd ncs/cpp; make MFLAGS=$(MFLAGS) )
@@ -87,26 +114,26 @@ s_chkaf: ${SOBJS}
 	${CC} -o s_chkaf ${SOBJS} ${LIBS}
 
 lpqd:	${OBJS}
-	if [ `/bin/athena/machtype` = "decmips" ]; then \
-		${CC} -o lpqd ${OBJS} ${LIBS} -ldbm ; \
-	else \
-		${CC} -o lpqd ${OBJS} ${LIBS} ; \
-	fi
+	${CC} -o lpqd ${OBJS} ${LIBS} 
 
 lint_lpqd: ${SRCS}
 	lint -u ${CFLAGS}  ${SRCS}
 
 saber_lpqd:
-	#load ${CFLAGS} ${SRCS} ${LIBS}
+	\#load ${CFLAGS} ${SRCS} ${LIBS}
 
 saber_lpquota:
-	#load ${CFLAGS} ${CSRCS} ${LIBS}
+	\#load ${CFLAGS} ${CSRCS} ${LIBS}
 
 lpquota: ${COBJS}
 	${CC} -o lpquota ${COBJS} ${LIBS}
 
-dump_logs: consist.o journal.o user.o parser.o strings.o
-	${CC} -o dump_logs consist.o journal.o user.o parser.o strings.o ${LIBS}
+dump_logs: dump_logs.o journal.o user.o parser.o strings.o
+	${CC} -o dump_logs dump_logs.o journal.o user.o parser.o strings.o \
+			${LIBS}
+
+consist: consist.o journal.o user.o strings.o
+	${CC} -o consist consist.o journal.o user.o strings.o ${LIBS}
 
 dump_user: dump_user.o user.o strings.o
 	${CC} -o dump_user dump_user.o user.o strings.o ${LIBS}
@@ -121,14 +148,23 @@ qdb_create: ${LOBJS}
 	${CC} -o qdb_create ${LOBJS} ${LIBS}
 
 
-$(DBOBJS):
-	$(CC) $(CFLAGS) -c $*.c
+dump_db: quota_dba.o dump_db.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o dump_db dump_db.o quota_dba.o $(DBLIBS)
+restore_db: quota_dba.o restore_db.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o restore_db \
+		restore_db.o quota_dba.o $(DBLIBS)
+bill_db: quota_dba.o bill_db.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o bill_db bill_db.o quota_dba.o $(DBLIBS)
 
-$(DBPROGS): quota_dba.o
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $* $*.o quota_dba.o $(DBLIBS)
-
-$(DBGPROGS): gquota_dba.o
-	$(CC) $(LDFLAGS) $(CFLAGS) -o $* $*.o gquota_dba.o $(DBLIBS)
+gdump_db: gquota_dba.o gdump_db.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o gdump_db \
+		gdump_db.o gquota_dba.o $(DBLIBS)
+grestore_db: gquota_dba.o grestore_db.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o grestore_db \
+		grestore_db.o gquota_dba.o $(DBLIBS)
+gbill_db: gquota_dba.o gbill_db.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o gbill_db \
+		gbill_db.o gquota_dba.o $(DBLIBS)
 
 dump_db: dump_db.o
 gdump_db: gdump_db.o
@@ -167,22 +203,22 @@ quota_ncs_cstub.c: quota_ncs.h
 quota_ncs_cswtch.c: quota_ncs.h
 quota_ncs.h: quota_ncs.idl
 
+lpquota.o: quota_ncs.h logger_ncs.h nidl_structs.h quota_err.h
 logger_ncs_sstub.c: logger_ncs.h
 logger_ncs_cstub.c: logger_ncs.h
 logger_ncs_cswtch.c: logger_ncs.h
 logger_ncs.h: logger_ncs.idl logger.h
 
 quota_err.h quota_err.c:quota_err.et
-	compile_et quota_err.et
+	${COMPILE_ET} quota_err.et
 
 qmain.o: quota_ncs.h logger_ncs.h quota_ncs_v1.h logger_ncs_v1.h  
-#qmain.o: quota_ncs.h logger_ncs.h
 quota_server.o: quota_err.h
 parser.o: logger_ncs.h logger_ncs_v1.h
-#parser.o: logger_ncs.h
+s_chkaf.o: quota_err.h quota_ncs.h
 
 $(OBJS): config.h
-####### For version_1 compatibility ########
+/*####### For version_1 compatibility ########*/
 
 quota_ncs_v1_sstub.c: quota_ncs_v1.h nidl_structs.h
 quota_ncs_v1_cstub.c: quota_ncs_v1.h nidl_structs.h
@@ -190,10 +226,15 @@ quota_ncs_v1_cswtch.c: quota_ncs_v1.h nidl_structs.h
 quota_ncs_v1.h: quota_ncs_v1.idl nidl_structs.h
 
 logger_ncs_v1_sstub.c: logger_ncs_v1.h logger_ncs_v1_sstub.c.save
+	rm -f logger_ncs_v1_sstub.c
 	cp logger_ncs_v1_sstub.c.save logger_ncs_v1_sstub.c
 logger_ncs_v1_cstub.c: logger_ncs_v1.h logger_ncs_v1_cstub.c.save
+	rm -f logger_ncs_v1_cstub.c
 	cp logger_v1_ncs_cstub.c.save logger_ncs_v1_cstub.c
 logger_ncs_v1_cswtch.c: logger_ncs_v1.h logger_ncs_v1_cswtch.c.save
+	rm -f logger_ncs_v1_cswtch.c
 	cp logger_ncs_v1_cswtch.c.save logger_ncs_v1_cswtch.c
 logger_ncs_v1.h: logger_ncs_v1.idl logger_ncs_v1.h.save logger.h
+	rm -f logger_ncs_v1.h
 	cp logger_ncs_v1.h.save logger_ncs_v1.h
+
