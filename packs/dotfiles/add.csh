@@ -18,7 +18,8 @@
 # MANPATH search too
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
-              add_opts add_attach add_dirs add_bin add_item add_i)
+              add_opts add_attach add_dirs add_bin add_bindir \
+              add_man add_mandir add_i)
 
 set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
@@ -77,53 +78,84 @@ set add_dirs = `attach -p $add_attach`
 
 set ATHENA_SYS = `fs sysname | awk -F\' '{ print $2 }'`
 
-set add_bin = arch/$ATHENA_SYS/bin
+set add_bindir = arch/$ATHENA_SYS/bin
+set add_mandir = arch/$ATHENA_SYS/man
 
 foreach add_i ($add_dirs)
-  unset add_item
-  if ( -d $add_i/$add_bin ) then
-    set add_item = $add_i/$add_bin
+  unset add_bin
+  unset add_man
+
+  if ( -d $add_i/$add_bindir ) then
+    set add_bin = $add_i/$add_bindir
   else
     if ( -d $add_i/$bindir ) then
-      set add_item = $bindir
+      set add_bin = $add_i/$bindir
     endif
   endif
 
-  if ( $?add_item ) then
+  if ( -d $add_i/$add_mandir ) then
+    set add_man = $add_i/$add_mandir
+  else
+    if ( -d $add_i/man ) then
+      set add_man = $add_i/man
+    endif
+  endif
+
+  if ( $?add_bin || $?add_man ) then
      switch ($?add_env$?add_front)
 
        case 00:
-         if ( "$PATH" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to end of $PATH
-           setenv PATH $PATH:$add_item
+         if ( $?add_bin && "$PATH" !~ *"$add_bin"* ) then
+           if ($?add_verbose) echo $add_bin added to end of \$PATH
+           setenv PATH ${PATH}:$add_bin
+         endif
+
+         if ( $?add_man && "$MANPATH" !~ *"$add_man"* ) then
+           if ($?add_verbose) echo $add_man added to end of \$MANPATH
+           setenv MANPATH ${MANPATH}:$add_man
          endif
          breaksw
 
        case 01:
-         if ( "$PATH" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to front of $PATH
-           setenv PATH $add_item:$PATH
+         if ( $?add_bin && "$PATH" !~ *"$add_bin"* ) then
+           if ($?add_verbose) echo $add_bin added to front of \$PATH
+           setenv PATH ${add_bin}:$PATH
+         endif
+
+         if ( $?add_man && "$MANPATH" !~ *"$add_man"* ) then
+           if ($?add_verbose) echo $add_man added to front of \$MANPATH
+           setenv MANPATH ${add_man}:$MANPATH
          endif
          breaksw
 
        case 10:
-         if ( "$athena_path" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to end of $athena_path
-           set athena_path ($athena_path $add_item)
+         if ( $?add_bin && "$athena_path" !~ *"$add_bin"* ) then
+           if ($?add_verbose) echo $add_bin added to end of \$athena_path
+           set athena_path = ($athena_path $add_bin)
+         endif
+
+         if ( $?add_man && "$athena_manpath" !~ *"$add_man"* ) then
+           if ($?add_verbose) echo $add_man added to end of \$athena_manpath
+           set athena_manpath = ${athena_manpath}:$add_man
          endif
          breaksw
 
        case 11:
-         if ( "$athena_path" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to front of $athena_path
-           set athena_path ($add_item $athena_path)
+         if ( $?add_bin && "$athena_path" !~ *"$add_bin"* ) then
+           if ($?add_verbose) echo $add_bin added to front of \$athena_path
+           set athena_path = ($add_bin $athena_path)
+         endif
+
+         if ( $?add_man && "$athena_manpath" !~ *"$add_man"* ) then
+           if ($?add_verbose) echo $add_man added to front of \$athena_manpath
+           set athena_manpath = ${add_man}:$athena_manpath
          endif
          breaksw
      endsw
-  else
-    if ( $?add_warn ) then
-      echo add: warning: $add_i has no binaries
-    endif
+   endif
+
+  if ( ! $?add_bin && $?add_warn ) then
+    echo add: warning: $add_i has no binary directory
   endif
 end
 
