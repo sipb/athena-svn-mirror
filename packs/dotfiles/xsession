@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.14 2003-07-24 18:52:05 ghudson Exp $
+# $Id: xsession,v 1.15 2003-10-14 15:47:46 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -243,6 +243,7 @@ if (! $?skip_x_startup) then
   else
     $ZEPHYR_CLIENT && get_message -new -zephyr
   endif
+  mailquota -n			# Check quota on post office server
   from -t -n			# Check for mail
   (olc who &) >& /dev/null	# Ping the OLC server
   if (! $?skip_xss) then

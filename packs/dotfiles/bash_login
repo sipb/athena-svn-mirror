@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.8 2003-02-19 23:55:27 rbasch Exp $
+# $Id: bash_login,v 1.9 2003-10-14 15:47:40 rbasch Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -133,6 +133,7 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	IGNOREEOF=			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -login		# Display current motd
+	mailquota -n			# Check quota on post office server
 	from -t -n			# Check for mail
 	(olc who &) > /dev/null 2>&1	# Ping the OLC server
 fi

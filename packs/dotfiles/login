@@ -1,5 +1,5 @@
 # Prototype global .login file
-# $Id: login,v 1.11 2003-02-19 23:55:27 rbasch Exp $
+# $Id: login,v 1.12 2003-10-14 15:47:46 rbasch Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -113,6 +113,7 @@ if (! $?skip_tty_startup) then
 	set ignoreeof			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -new -login		# Display current motd
+	mailquota -n			# Check quota on post office server
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 endif
