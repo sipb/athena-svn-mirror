@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.16 1996-08-28 00:03:37 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.17 1997-10-13 21:50:44 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.16 1996-08-28 00:03:37 ghudson Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.17 1997-10-13 21:50:44 ghudson Exp $";
 #endif lint
 
 /*
@@ -103,7 +103,7 @@ char	*person;		/* user name */
 char	*title;			/* pr'ing title */
 char	*fonts[4];		/* troff font names */
 char	*width;			/* width for versatec printing */
-char	host[32];		/* host name */
+char	host[MAXHOSTNAMELEN + 1];		/* host name */
 char	*class = host;		/* class title on header page */
 char    *jobname;		/* job name on header page */
 char	*name;			/* program name */

@@ -78,7 +78,7 @@ char	pbuf[BUFSIZ/2];	/* buffer for printcap strings */
 char	*bp = pbuf;	/* pointer into pbuf for pgetent() */
 char	*name;		/* program name */
 char	*printer;	/* printer name */
-char	host[32]="";	/* host machine name */
+char	host[MAXHOSTNAMELEN + 1]="";	/* host machine name */
 char	*from = host;	/* client's machine name */
 #ifdef HESIOD
 char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
@@ -267,7 +267,7 @@ getport(rhost)
 	if (sp == NULL)
 		fatal("printer/tcp: unknown service");
 	memset((char *)&sin, 0, sizeof(sin));
-	memcpy((caddr_t)&sin.sin_addr, hp->h_addr, hp->h_length);
+	memcpy((caddr_t)&sin.sin_addr, hp->h_addr, sizeof(sin.sin_addr));
 	sin.sin_family = hp->h_addrtype;
 	sin.sin_port = sp->s_port;
 
@@ -310,7 +310,7 @@ getline(cfp)
 	register char *lp = line;
 	register c;
 
-	while ((c = getc(cfp)) != '\n') {
+	while ((c = getc(cfp)) != '\n' && linel < BUFSIZ-8) {
 		if (c == EOF)
 			return(0);
 		if (c == '\t') {
