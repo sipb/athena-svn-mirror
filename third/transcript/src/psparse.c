@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1990,1991,1992 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psparse.c,v 1.1.1.1 1996-10-07 20:25:51 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psparse.c,v 1.2 1996-10-14 05:00:53 ghudson Exp $";
 #endif
 /* psparse.c
  *
@@ -14,7 +14,7 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  *
  *
  *
- * $Log: not supported by cvs2svn $
+ * $/Log: psparse.c,v/$
  * Revision 3.20  1994/05/03  23:01:32  snichols
  * Handle null in name of resource, and handle files with neither prolog
  * nor setup comments.
@@ -386,6 +386,13 @@ static void InitPrinterInfo(printer)
     char ppdfile[255];
 
     ppd = GetPPD(printer);
+    /* On Athena, we want to have a default printer description, so we
+     * don't have to maintain a file for every single printer...
+     * "default.ppd" is as good a name as any.
+     * --bert 15apr1996
+     */
+    if (ppd == NULL)  ppd = GetPPD("default");
+
     if (ppd == NULL)
 	noppd = TRUE;
     else
