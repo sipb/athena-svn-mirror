@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.6 1988-05-13 15:03:04 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.7 1988-05-13 15:05:07 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZGetSender_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.6 1988-05-13 15:03:04 rfrench Exp $";
+static char rcsid_ZGetSender_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZGetSender.c,v 1.7 1988-05-13 15:05:07 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -26,7 +26,6 @@ uid_t getuid();
 
 char *ZGetSender()
 {
-
     struct passwd *pw;
 #ifdef KERBEROS
     char pname[ANAME_SZ], pinst[INST_SZ];
