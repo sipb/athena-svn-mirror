@@ -1,17 +1,18 @@
 /* 
- * $Id: aklog_param.c,v 1.4 1990-07-23 09:52:32 qjb Exp $
+ * $Id: aklog_param.c,v 1.5 1990-07-24 14:46:14 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_param.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.4 1990-07-23 09:52:32 qjb Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.5 1990-07-24 14:46:14 qjb Exp $";
 #endif /* lint || SABER */
 
 #include "aklog.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <krb.h>
 
 #ifndef TRUE
 #define TRUE 1
@@ -72,6 +73,17 @@ static int get_cred(name, inst, realm, c)
 
 
 #ifdef __STDC__
+static int get_user_realm(char *realm)
+#else
+static int get_user_realm(realm)
+  char *realm;
+#endif /* __STDC__ */
+{
+    return (krb_get_tf_realm(TKT_FILE, realm));
+}
+
+
+#ifdef __STDC__
 static void pstderr(char *string)
 #else
 static void pstderr(string)
@@ -115,6 +127,7 @@ void aklog_init_params(params)
     params->isdir = isdir;
     params->getwd = getwd;
     params->get_cred = get_cred;
+    params->get_user_realm = get_user_realm;
     params->pstderr = pstderr;
     params->pstdout = pstdout;
     params->exitprog = exitprog;
