@@ -22,12 +22,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.24 1990-07-16 10:26:23 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: olcd.c,v 1.25 1990-08-02 15:35:38 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.24 1990-07-16 10:26:23 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.25 1990-08-02 15:35:38 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -104,8 +104,10 @@ static int got_signal;
 static int listening_fd;
 #if __STDC__
 int punt(int sig);
+int reap_child(int sig);
 #else
 int punt();
+int reap_child();
 #endif
 
 
@@ -429,9 +431,10 @@ restart:
     processing_request = 0;
     got_signal = 0;
 
-    signal(SIGINT, punt);	        /* ^C on control tty (for test mode) */
-    signal(SIGHUP, punt);	        /* kill -1 $$ */
+    signal(SIGINT, punt);	/* ^C on control tty (for test mode) */
+    signal(SIGHUP, punt);	/* kill -1 $$ */
     signal(SIGTERM, punt);	/* kill $$ */
+    signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
     signal(SIGPIPE, SIG_IGN);
 
     get_kerberos_ticket ();
@@ -661,6 +664,33 @@ punt(sig)
 	exit(1);
     }
 }
+
+
+/*
+ * Function:	reap_child() gets rid of forked children.
+ * Arguments:	none
+ * Returns:	nothing
+ * Notes:
+ *		loop while there are any children waiting to report status.
+ */
+
+int
+#if __STDC__
+reap_child(int sig)
+#else
+reap_child(sig)
+     int sig;
+#endif
+{
+  union wait status;
+  int pid;
+
+  signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
+  pid = wait3(&status,WNOHANG,0);
+  while(pid > 0)
+    pid = wait3(&status,WNOHANG,0);
+}
+
 
 
 /*
