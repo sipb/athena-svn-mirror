@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.2 1990-12-12 15:18:56 lwvanels Exp $
+ *	$Id: motd.c,v 1.3 1990-12-17 08:31:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.2 1990-12-12 15:18:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.3 1990-12-17 08:31:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,10 +36,12 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #endif
 
 static int gethm P((char *cp , long *hp , long *mp ));
+static long parse_time P((char *buf ));
 
 #undef P
 
 static long expire_time = -1;   /* In seconds past Jan. 1, 1970 */
+static long in_time = -1;
 
 void
   check_motd_timeout()
@@ -47,8 +49,9 @@ void
   struct timeval now;
   int fd;
   char buf[128];
+  char *p;
 
-  if (expire_time == 0)
+  if ((expire_time == 0) && (in_time == 0))
     return;
 
   if (expire_time == -1) {
@@ -56,21 +59,50 @@ void
     if (fd < 0) {
       log_error("check_motd_timeout: Couldn't open motd timeout file");
       expire_time = 0;
+      in_time = 0;
       return;
     }
     read(fd,buf,128);
     close(fd);
     expire_time = atol(buf);
+
+    p = index(buf,'\n');
+    if (p == NULL) {
+      log_error("check_motd_timeout: improperly formatted timeout file");
+      in_time = 0;
+      return;
+    }
+    p = p+1;
+    in_time = atol(p);
+
     strcpy(buf,"MOTD timeout set to: ");
     if (expire_time == 0)
       strcat(buf,"infinite.");
     else
       strcat(buf,ctime(&expire_time));
     log_status(buf);
+
+    strcpy(buf,"  timein set to    : ");
+    if (in_time == 0)
+      strcat(buf,"Never.");
+    else
+      strcat(buf,ctime(&in_time));
+    log_status(buf);
+    
   }
 
   gettimeofday(&now,0);
-  if (now.tv_sec > expire_time) {
+
+  if ((now.tv_sec > in_time) && (in_time != 0)) {
+    in_time = 0;
+    if (rename(MOTD_HOLD_FILE,MOTD_FILE) < 0) {
+      log_error("check_motd_timeout:rename %m");
+      return;
+    }
+    log_status("MOTD automatically invoked");
+  }    
+
+  if ((now.tv_sec > expire_time) && (expire_time != 0)) {
     fd = open(MOTD_FILE,O_TRUNC|O_CREAT, 0644);
     if (fd < 0)
       log_error("check_motd_timeout: Couldn't create/truncate motd file");
@@ -83,7 +115,8 @@ void
       expire_time = 0;
       return;
     }
-    write(fd,"0\n",2);
+    sprintf(buf,"0\n%ld\n",in_time);
+    write(fd,buf,strlen(buf)+1);
     close(fd);
   }
 }
@@ -95,90 +128,80 @@ KNUCKLE *requester;
   FILE *f;		/* motd file */
   FILE *new_motd;		/* altered motd file fd */
   char line[BUF_SIZE];	/* buffer to read in to parse possible timeout */
-  char *p;
-  struct timeval tv;
-  struct tm *now;
-  long minutes, hours, diff;
   char msgbuf[BUF_SIZE];
+  char *time;
+  int which;
 
   expire_time = 0;
+  in_time = 0;
   f = fopen(MOTD_FILE,"r+");
   if (f == NULL) {
     log_error("set_motd_timeout: Couldn't create/truncate motd file");
     return;
   }
-  fgets(line,BUF_SIZE,f);
-  if(strncasecmp(line,"timeout:",8) != 0) {
-    fclose(f);
+  new_motd = fopen("/tmp/new_motd","w+");
+  /* strip out the timeout line and write it to a new file */
+  if (new_motd == NULL) { 
+    log_error("change_motd_timeout: opening /tmp/new_motd: %m");
     return;
   }
-  line[BUF_SIZE-1] = '\0';
 
-/* parse the timeout time */
-  gettimeofday(&tv,0);
-  now = localtime(&tv.tv_sec);
+/* Search for timeout and timein strings */
+  while (fgets(line,BUF_SIZE,f) != NULL) {
+    line[BUF_SIZE-1] = '\0';
+    if (strncasecmp(line,"timeout:",8) == 0) {
+      which = 1;
+      time = &line[8];
+    }
+    else if (strncasecmp(line,"timein:",7) == 0) {
+      which = 2;
+      time = &line[7];
+    }
+    else {
+      fputs(line,new_motd);
+      continue;
+    }
 
-  p = index(line,'\n');
-  if (p != NULL) *p = '\0';
-  p = &line[8];  /* start right after the colon */
+    if (which == 1)
+      expire_time = parse_time(time);
+    else
+      in_time = parse_time(time);
 
-  while (*p == ' ')
-    p++;
-
-  if (*p == '+') {
-    p++;
-    if (!gethm(p, &hours, &minutes))
-      goto done;
-    if (minutes < 0 || minutes > 59)
-      goto done;
-    expire_time = tv.tv_sec + 60*((60*hours) + minutes);
   }
-  else {
-    if (!gethm(p, &hours, &minutes))
-      goto done;
-    if (hours > 12)
-      hours -= 12;
-    if (hours == 12)
-      hours = 0;
-    if (hours < 0 || hours > 12 || minutes < 0 || minutes > 59)
-      goto done;
-    if (now->tm_hour > 12)
-      now->tm_hour -= 12;      /* do am/pm bit */
-    diff = 60*(hours - now->tm_hour) + minutes - now->tm_min;
-    while (diff < 0)
-      diff += 12 * 60;
-    expire_time = tv.tv_sec + 60*diff;
-  }
+  fclose(f);
+  fclose(new_motd);
 
- done:
   strcpy(msgbuf,"MOTD set to time out at: ");
   if (expire_time == 0)
     strcat(msgbuf,"Never");
   else
     strcat(msgbuf,ctime(&expire_time));
+  strcat(msgbuf,"            start at   : ");
+  if (in_time == 0)
+    strcat(msgbuf,"Immediately");
+  else
+    strcat(msgbuf,ctime(&in_time));
+
   write_message_to_user(requester,msgbuf,0);
-
-  /* strip out the timeout line and write it to a new file */
-  new_motd = fopen("/tmp/new_motd","w+");
-  if (new_motd == NULL)
-    log_error("change_motd_timeout: opening /tmp/new_motd: %%m");
-  else {
-    while (fgets(line,BUF_SIZE,f) != NULL)
-      fputs(line,new_motd);
-    fclose(new_motd);
+  
+  if (in_time == 0) {
+    if (rename("/tmp/new_motd",MOTD_FILE) != 0)
+      log_error("change_motd_timeout: rename: %m");
   }
-  fclose(f);
-
-  if (rename("/tmp/new_motd",MOTD_FILE) != 0)
-    log_error("change_motd_timeout: rename: %%m");
+  else {
+    expire_time = 1;
+    check_motd_timeout();
+    if (rename("/tmp/new_motd",MOTD_HOLD_FILE) != 0)
+      log_error("change_motd_timeout: rename: %m");
+  }  
 
   /* write new timeout to timeout file */
   new_motd = fopen(MOTD_TIMEOUT_FILE,"w+");
   if (new_motd == NULL) {
-    log_error("change_motd_timeout: couldn't create/open timeout file: %%m");
+    log_error("change_motd_timeout: couldn't create/open timeout file: %m");
     return;
   }
-  fprintf(new_motd,"%ld\n",expire_time);
+  fprintf(new_motd,"%ld\n%ld\n",expire_time,in_time);
   fclose(new_motd);
 }
 
@@ -199,4 +222,51 @@ long *hp, *mp;
   *hp = tod / 100;
   *mp = tod % 100;
   return(1);
+}
+
+static long 
+  parse_time(buf)
+char *buf;
+{
+  struct timeval tv;
+  struct tm *now;
+  long minutes, hours, diff;
+  long when;
+  char *p;
+
+  when = -1;
+  gettimeofday(&tv,0);
+  now = localtime(&tv.tv_sec);
+  
+  p = index(buf,'\n');
+  if (p != NULL) *p = '\0';
+
+  while (*buf == ' ')
+    buf++;
+
+  if (*buf == '+') {
+    buf++;
+    if (!gethm(buf, &hours, &minutes))
+      return(when);
+    if (minutes < 0 || minutes > 59)
+      return(when);
+    when = tv.tv_sec + 60*((60*hours) + minutes);
+  }
+  else {
+    if (!gethm(buf, &hours, &minutes))
+      return(when);
+    if (hours > 12)
+      hours -= 12;
+    if (hours == 12)
+      hours = 0;
+    if (hours < 0 || hours > 12 || minutes < 0 || minutes > 59)
+      return(when);
+    if (now->tm_hour > 12)
+      now->tm_hour -= 12;      /* do am/pm bit */
+    diff = 60*(hours - now->tm_hour) + minutes - now->tm_min;
+    while (diff < 0)
+      diff += 12 * 60;
+    when = tv.tv_sec + 60*diff;
+  }
+  return(when);
 }
