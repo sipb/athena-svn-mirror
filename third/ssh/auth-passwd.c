@@ -15,8 +15,12 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.12 1998-08-03 21:49:57 danw Exp $
+ * $Id: auth-passwd.c,v 1.13 1998-12-31 23:53:20 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  1998/08/03 21:49:57  danw
+ * don't free saved_pw_name and saved_pw_passwd until krb4 auth has
+ * succeeded.
+ *
  * Revision 1.11  1998/05/14 19:23:39  danw
  * Deal with potential krb5/krb4 password skew (by ignoring errors when
  * getting krb5 tickets)
@@ -609,7 +613,7 @@ int auth_password(const char *server_user, const char *password)
       krb5_free_principal(ssh_context, server);
       server = 0;
       if (problem)
-	goto trykrb4;
+	goto errout;
       else
 	{
 	  /* Verify tgt just obtained */
@@ -645,7 +649,6 @@ int auth_password(const char *server_user, const char *password)
                     ticket = NULL;
 		}
 	      
-	    trykrb4:
 	      ticket = xmalloc(strlen(ccname) + 1);
 	      (void) sprintf(ticket, "%s", ccname);
 	      
