@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.8 1992-04-30 12:46:26 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.9 1992-04-30 16:48:22 epeisach Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -35,13 +35,13 @@ install_program(xlogin,,$(ATHRETCDIR))
 all::	Xlogin
 
 #if defined(_IBMR2)
-Xlogin:	Xlogin.rios.presed
+Xlogin:	Xlogin.aix.presed
 	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.rios.presed > Xlogin
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV /" Xlogin.rios.presed > Xlogin
 #else
 Xlogin:	Xlogin.presed
 	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.presed > Xlogin
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV /" Xlogin.presed > Xlogin
 #endif
 	
 install_file(bitmaps/check,/etc/athena/login/bitmaps/check)
