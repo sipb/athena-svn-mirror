@@ -2,7 +2,7 @@
  * generic imake template
  */
 
-/* Usefull ifdef constrints - 	ultrix, mips -> decmips
+/* Useful ifdef constrints - 	ultrix, mips -> decmips
  *			      	vax & !ultrix -> bsd vax
  *				ibm - ibm architecture
  *				ibm032 - RT
@@ -12,11 +12,8 @@
 
 #include <site.def>
 
-#ifndef TOPDIR
-#define TOPDIR .
-#endif
-#ifndef CURDIR
-#define CURDIR .
+#ifndef NEWTOP
+#define NEWTOP .
 #endif
 #ifndef CONFDIR
 #define CONFDIR ${TOP}/imake
@@ -24,34 +21,87 @@
 #ifndef ALibDir
 #define ALibDir /usr/athena/lib
 #endif
+#ifndef ABinDir
+#define ABinDir /usr/athena
+#endif
 #ifndef AIncDir
 #define AIncDir /usr/include
 #endif
 #ifndef LintCFlag
 #define LintCFlag -C
 #endif
+#ifndef CcCmd
+#define CcCmd cc
+#endif
+#ifndef LdCmd
+#define LdCmd cc
+#endif
+#ifndef AsCmd
+#define AsCmd as
+#endif
 #ifndef RanLibCmd
 #define RanLibCmd ranlib
 #endif
+#ifndef InstallCmd
+#define InstallCmd install -c
+#endif
+#ifndef InstPgmFlags
+#define InstPgmFlags -s
+#endif
+#ifndef CcFlags
+#define CcFlags
+#endif
+#ifndef CDebugFlags
+#define CDebugFlags -O
+#endif
+#ifndef LdFlags
+#define LdFlags
+#endif
+#ifndef LdLibs
+#define LdLibs
+#endif
+#ifndef LintCmd
+#define LintCmd lint
+#endif
+#ifndef LintFlags
+#define LintFlags $(DEFINES) -I$(ATHINCDIR)
+#endif
 
-TOP = TOPDIR
-CURRENT_DIR = CURDIR
+SHELL=/bin/sh
+MAKESHELL=/bin/sh
+
+TOP = NEWTOP
 DESTDIR=
 CONFIGSRC = CONFDIR
 
 IRULESRC = $(CONFIGSRC)		
-IMAKE= ${IRULESRC}/imake -I${IRULESRC}
+IMAKE= ${IRULESRC}/imake
+IFLAGS= -I${IRULESRC}
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
-	${IRULESRC}/site.def ${IRULESRC}/imake Imakefile
-MKDIRHIER= $(CONFIGSRC)/mkdirhier.sh
+	${IRULESRC}/site.def Imakefile
+MKDIRHIER= sh $(CONFIGSRC)/mkdirhier.sh
 ATHLIBDIR=ALibDir
+ATHBINDIR=ABinDir
 ATHINCDIR=AIncDir
 LINTCFLAG=LintCFlag
+LINTFLAGS=
+INSTALL=InstallCmd
 RANLIB=RanLibCmd
+CC=CcCmd
+LD=LdCmd
+AS=AsCmd
+CFLAGS=CDebugFlags CcFlags $(DEFINES) -I$(ATHINCDIR)
+LDFLAGS=LdFlags -L$(ATHLIBDIR)
+LDLIBS=LdLibs
 
 #include "Imake.rules"
 
 all::
+install:: install_dirs
+install_dirs::
+
+clean::
+depend::
 
 /**/###########################################################################
 /**/# start of Imakefile
@@ -60,20 +110,25 @@ all::
 
 makefile_target()
 
+clean::
+	rm -f *~ *.o *.a core a.out
+
 #if defined(SUBDIRS) || defined(ISUBDIRS)
 /**/###########################################################################
 /**/# rules for building in SUBDIRS - do not edit
 
 FRC::
 
-#ifdef SUBDIRS
-do_subdirs(SUBDIRS)
-#endif SUBDIRS
 #ifdef ISUBDIRS
 do_subdirs_imakefile(ISUBDIRS)
+do_subdirs(ISUBDIRS)
 #else
 Makefiles::
 #endif
+
+#ifdef SUBDIRS
+do_subdirs(SUBDIRS)
+#endif SUBDIRS
 
 #else
 /**/###########################################################################
