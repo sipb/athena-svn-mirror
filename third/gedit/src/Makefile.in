@@ -1,0 +1,659 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+BONOBO_ACTIVATION_IDL = @BONOBO_ACTIVATION_IDL@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GCONFTOOL = @GCONFTOOL@
+GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
+GEDIT_CFLAGS = @GEDIT_CFLAGS@
+GEDIT_LIBS = @GEDIT_LIBS@
+GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GT_NO = @GT_NO@
+GT_YES = @GT_YES@
+INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIBBONOBO_IDL = @LIBBONOBO_IDL@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+PLUGIN_LIBTOOL_FLAGS = @PLUGIN_LIBTOOL_FLAGS@
+POFILES = @POFILES@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+l = @l@
+pixmapsdir = @pixmapsdir@
+
+SUBDIRS = dialogs
+
+bin_PROGRAMS = gedit
+
+uidir = $(datadir)/gedit-2/ui/
+
+INCLUDES =  	-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/dialogs						$(GEDIT_CFLAGS)							-DDATADIR=\""$(datadir)"\"					-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\"			-DGEDIT_LOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DGEDIT_UI_DIR=\""$(datadir)/gedit-2/ui/"\"			-DGEDIT_PLUGINDIR=\""$(libdir)/gedit-2/plugins"\"		-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"		-DG_DISABLE_DEPRECATED						-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED					-DGNOME_DISABLE_DEPRECATED
+
+
+gedit_LDFLAGS = -export-dynamic
+
+gedit_LDADD =  	dialogs/libdialogs.a			$(GEDIT_LIBS)			
+
+
+IDL_FILE = GNOME_Gedit.idl
+
+IDL_SOURCES =  	GNOME_Gedit-stubs.c				GNOME_Gedit-common.c				GNOME_Gedit-skels.c				GNOME_Gedit.h		
+
+
+BUILT_SOURCES =  	gedit-marshal.c				gedit-marshal.h				gnome-recent-marshal.c			gnome-recent-marshal.h
+
+
+gedit_SOURCES =  	$(IDL_SOURCES)				gedit2.c				gedit2.h				gedit-mdi.c				gedit-mdi.h				gedit-mdi-child.c			gedit-mdi-child.h			gedit-document.c 			gedit-document.h 			gedit-view.c 				gedit-view.h 				gedit-menus.h				gedit-menus.c				gedit-debug.c 				gedit-debug.h 				gedit-utils.c 				gedit-utils.h 				gedit-commands.h			gedit-commands.c			gedit-file.h				gedit-file.c				gedit-undo-manager.h			gedit-undo-manager.c			gedit-print.h				gedit-print.c				gedit-session.c				gedit-session.h				bonobo-mdi.c				bonobo-mdi.h				bonobo-mdi-child.c			bonobo-mdi-child.h			bonobo-mdi-session.c			bonobo-mdi-session.h			gedit-file-selector-util.h 		gedit-file-selector-util.c 		gedit-plugins-engine.h			gedit-plugins-engine.c			gedit-plugin.h				gedit-plugin.c				gedit-prefs-manager.c			gedit-prefs-manager.h			gnome-recent-model.c			gnome-recent-model.h			gnome-recent-view.c			gnome-recent-view.h			gnome-recent-view-bonobo.c		gnome-recent-view-bonobo.h		gnome-recent-util.c			gnome-recent-util.h			gedit-recent.c				gedit-recent.h				gedit-application-server.c		gedit-application-server.h		gedit-document-server.c			gedit-document-server.h			gedit-window-server.c			gedit-window-server.h			$(BUILT_SOURCES)
+
+
+ui_DATA = gedit-ui.xml
+
+idl_DATA = $(IDL_FILE)
+idldir = $(datadir)/idl
+
+EXTRA_DIST =  	$(ui_DATA)				gedit-marshal.list			gnome-recent-marshal.list		$(IDL_FILE)
+
+
+CLEANFILES = $(BUILT_SOURCES) $(IDL_SOURCES)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  gedit$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+gedit_OBJECTS =  GNOME_Gedit-stubs.$(OBJEXT) \
+GNOME_Gedit-common.$(OBJEXT) GNOME_Gedit-skels.$(OBJEXT) \
+gedit2.$(OBJEXT) gedit-mdi.$(OBJEXT) gedit-mdi-child.$(OBJEXT) \
+gedit-document.$(OBJEXT) gedit-view.$(OBJEXT) gedit-menus.$(OBJEXT) \
+gedit-debug.$(OBJEXT) gedit-utils.$(OBJEXT) gedit-commands.$(OBJEXT) \
+gedit-file.$(OBJEXT) gedit-undo-manager.$(OBJEXT) gedit-print.$(OBJEXT) \
+gedit-session.$(OBJEXT) bonobo-mdi.$(OBJEXT) bonobo-mdi-child.$(OBJEXT) \
+bonobo-mdi-session.$(OBJEXT) gedit-file-selector-util.$(OBJEXT) \
+gedit-plugins-engine.$(OBJEXT) gedit-plugin.$(OBJEXT) \
+gedit-prefs-manager.$(OBJEXT) gnome-recent-model.$(OBJEXT) \
+gnome-recent-view.$(OBJEXT) gnome-recent-view-bonobo.$(OBJEXT) \
+gnome-recent-util.$(OBJEXT) gedit-recent.$(OBJEXT) \
+gedit-application-server.$(OBJEXT) gedit-document-server.$(OBJEXT) \
+gedit-window-server.$(OBJEXT) gedit-marshal.$(OBJEXT) \
+gnome-recent-marshal.$(OBJEXT)
+gedit_DEPENDENCIES =  dialogs/libdialogs.a
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(idl_DATA) $(ui_DATA)
+
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(gedit_SOURCES)
+OBJECTS = $(gedit_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+gedit$(EXEEXT): $(gedit_OBJECTS) $(gedit_DEPENDENCIES)
+	@rm -f gedit$(EXEEXT)
+	$(LINK) $(gedit_LDFLAGS) $(gedit_OBJECTS) $(gedit_LDADD) $(LIBS)
+
+install-idlDATA: $(idl_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(idldir)
+	@list='$(idl_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-idlDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(idl_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(idldir)/$$p; \
+	done
+
+install-uiDATA: $(ui_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uidir)
+	@list='$(ui_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-uiDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(ui_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uidir)/$$p; \
+	done
+
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
+
+@SET_MAKE@
+
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	  test "$$subdir" != "." || dot_seen=yes; \
+	done; \
+	test "$$dot_seen" = "no" && rev=". $$rev"; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+   if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+   fi; \
+	done; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	for subdir in $(SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    chmod 777 $(distdir)/$$subdir; \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
+	      || exit 1; \
+	  fi; \
+	done
+bonobo-mdi-child.o: bonobo-mdi-child.c bonobo-mdi-child.h
+bonobo-mdi-session.o: bonobo-mdi-session.c ../config.h \
+	bonobo-mdi-session.h bonobo-mdi.h bonobo-mdi-child.h
+bonobo-mdi.o: bonobo-mdi.c ../config.h bonobo-mdi.h bonobo-mdi-child.h \
+	gedit-marshal.h gedit-debug.h
+gedit-application-server.o: gedit-application-server.c \
+	gedit-application-server.h GNOME_Gedit.h \
+	gedit-document-server.h gedit-document.h gedit-window-server.h \
+	gedit-file.h gedit-mdi-child.h bonobo-mdi.h bonobo-mdi-child.h \
+	gnome-recent-view.h gnome-recent-model.h gedit-mdi.h \
+	gedit-recent.h gedit2.h gedit-view.h
+gedit-commands.o: gedit-commands.c ../config.h gedit-commands.h gedit2.h \
+	gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
+	gedit-view.h gedit-mdi-child.h gedit-debug.h gedit-file.h \
+	gedit-print.h dialogs/gedit-dialogs.h \
+	dialogs/gedit-preferences-dialog.h
+gedit-debug.o: gedit-debug.c gedit-debug.h
+gedit-document-server.o: gedit-document-server.c gedit-document-server.h \
+	gedit-document.h GNOME_Gedit.h gedit-file.h gedit-mdi-child.h \
+	bonobo-mdi.h bonobo-mdi-child.h gnome-recent-view.h \
+	gnome-recent-model.h gedit-mdi.h gedit-recent.h gedit2.h \
+	gedit-view.h
+gedit-document.o: gedit-document.c ../config.h gedit-prefs-manager.h \
+	gedit-document.h gedit-debug.h gedit-utils.h \
+	gedit-undo-manager.h gedit-marshal.h
+gedit-file-selector-util.o: gedit-file-selector-util.c ../config.h \
+	gedit-file-selector-util.h gedit-utils.h
+gedit-file.o: gedit-file.c ../config.h gedit2.h gedit-mdi.h bonobo-mdi.h \
+	bonobo-mdi-child.h gedit-recent.h gnome-recent-model.h \
+	gnome-recent-view.h gedit-document.h gedit-view.h gedit-file.h \
+	gedit-mdi-child.h gedit-debug.h gedit-utils.h \
+	gedit-file-selector-util.h gedit-plugins-engine.h \
+	gedit-plugin.h gedit-prefs-manager.h
+gedit-marshal.o: gedit-marshal.c gedit-marshal.h
+gedit-mdi-child.o: gedit-mdi-child.c gedit-mdi-child.h bonobo-mdi.h \
+	bonobo-mdi-child.h gedit-document.h gedit-debug.h gedit-view.h \
+	gedit-marshal.h
+gedit-mdi.o: gedit-mdi.c ../config.h gedit-mdi.h bonobo-mdi.h \
+	bonobo-mdi-child.h gedit-recent.h gnome-recent-model.h \
+	gnome-recent-view.h gedit-mdi-child.h gedit-document.h gedit2.h \
+	gedit-view.h gedit-menus.h gedit-debug.h gedit-prefs-manager.h \
+	gedit-file.h gedit-utils.h gedit-plugins-engine.h \
+	gedit-plugin.h gnome-recent-view-bonobo.h
+gedit-menus.o: gedit-menus.c ../config.h gedit-menus.h gedit-commands.h \
+	gedit2.h gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h \
+	gedit-recent.h gnome-recent-model.h gnome-recent-view.h \
+	gedit-document.h gedit-view.h
+gedit-plugin.o: gedit-plugin.c gedit-plugin.h gedit2.h gedit-mdi.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
+	gedit-view.h dialogs/gedit-dialogs.h
+gedit-plugins-engine.o: gedit-plugins-engine.c ../config.h \
+	gedit-plugins-engine.h gedit-plugin.h gedit2.h gedit-mdi.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
+	gedit-view.h gedit-debug.h
+gedit-prefs-manager.o: gedit-prefs-manager.c gedit-prefs-manager.h \
+	gedit-debug.h gedit-view.h gedit-document.h gedit-mdi.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	gnome-recent-model.h gnome-recent-view.h gedit2.h
+gedit-print.o: gedit-print.c ../config.h gedit2.h gedit-mdi.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
+	gedit-view.h gedit-print.h gedit-mdi-child.h gedit-debug.h \
+	gedit-prefs-manager.h
+gedit-recent.o: gedit-recent.c ../config.h gedit-recent.h \
+	gnome-recent-model.h gedit-prefs-manager.h
+gedit-session.o: gedit-session.c ../config.h bonobo-mdi-session.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit2.h gedit-mdi.h \
+	gedit-recent.h gnome-recent-model.h gnome-recent-view.h \
+	gedit-document.h gedit-view.h gedit-mdi-child.h gedit-session.h \
+	gedit-file.h gedit-debug.h gedit-plugins-engine.h \
+	gedit-plugin.h gedit-prefs-manager.h
+gedit-undo-manager.o: gedit-undo-manager.c gedit-undo-manager.h \
+	gedit-document.h gedit-debug.h gedit-prefs-manager.h \
+	gedit-marshal.h
+gedit-utils.o: gedit-utils.c gedit-utils.h gedit2.h gedit-mdi.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
+	gedit-view.h gedit-debug.h
+gedit-view.o: gedit-view.c ../config.h gedit-view.h gedit-document.h \
+	gedit-debug.h gedit-menus.h gedit-prefs-manager.h
+gedit-window-server.o: gedit-window-server.c gedit-window-server.h \
+	GNOME_Gedit.h gedit-document-server.h gedit-document.h \
+	gedit-file.h gedit-mdi-child.h bonobo-mdi.h bonobo-mdi-child.h \
+	gnome-recent-view.h gnome-recent-model.h gedit-mdi.h \
+	gedit-recent.h gedit2.h gedit-view.h
+gedit2.o: gedit2.c ../config.h gedit2.h gedit-mdi.h bonobo-mdi.h \
+	bonobo-mdi-child.h gedit-recent.h gnome-recent-model.h \
+	gnome-recent-view.h gedit-document.h gedit-view.h \
+	gedit-prefs-manager.h gedit-debug.h gedit-file.h \
+	gedit-mdi-child.h gedit-utils.h gedit-session.h \
+	gedit-plugins-engine.h gedit-plugin.h \
+	gedit-application-server.h GNOME_Gedit.h
+gnome-recent-marshal.o: gnome-recent-marshal.c gnome-recent-marshal.h
+gnome-recent-model.o: gnome-recent-model.c ../config.h \
+	gnome-recent-model.h gnome-recent-view.h
+gnome-recent-util.o: gnome-recent-util.c gnome-recent-util.h
+gnome-recent-view-bonobo.o: gnome-recent-view-bonobo.c ../config.h \
+	gnome-recent-model.h gnome-recent-view.h \
+	gnome-recent-view-bonobo.h gnome-recent-util.h \
+	gnome-recent-marshal.h
+gnome-recent-view.o: gnome-recent-view.c gnome-recent-view.h \
+	gnome-recent-model.h
+GNOME_Gedit-common.o: GNOME_Gedit-common.c GNOME_Gedit.h
+GNOME_Gedit-skels.o: GNOME_Gedit-skels.c GNOME_Gedit.h
+GNOME_Gedit-stubs.o: GNOME_Gedit-stubs.c GNOME_Gedit.h
+
+info-am:
+info: info-recursive
+dvi-am:
+dvi: dvi-recursive
+check-am: all-am
+check: check-recursive
+installcheck-am:
+installcheck: installcheck-recursive
+install-exec-am: install-binPROGRAMS install-exec-local
+install-exec: install-exec-recursive
+
+install-data-am: install-idlDATA install-uiDATA
+install-data: install-data-recursive
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-recursive
+uninstall-am: uninstall-binPROGRAMS uninstall-idlDATA uninstall-uiDATA
+uninstall: uninstall-recursive
+all-am: Makefile $(PROGRAMS) $(DATA)
+all-redirect: all-recursive
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs: installdirs-recursive
+installdirs-am:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(idldir) \
+		$(DESTDIR)$(uidir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-recursive
+
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-recursive
+
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-recursive
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-recursive
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool uninstall-idlDATA \
+install-idlDATA uninstall-uiDATA install-uiDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-local install-exec-am install-exec install-data-am \
+install-data install-am install uninstall-am uninstall all-redirect \
+all-am all installdirs-am installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+gedit-marshal.h: gedit-marshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=gedit_marshal > $@
+
+gedit-marshal.c: gedit-marshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gedit-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=gedit_marshal >> $@
+
+gnome-recent-marshal.h: gnome-recent-marshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=gnome_recent > $@
+
+gnome-recent-marshal.c: gnome-recent-marshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gnome-recent-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=gnome_recent >> $@
+
+$(IDL_SOURCES): $(IDL_FILE)
+	$(ORBIT_IDL) -I $(LIBBONOBO_IDL) -I $(BONOBO_ACTIVATION_IDL) $(IDL_FILE)
+
+install-exec-local:
+	rm -f $(DESTDIR)$(bindir)/gnome-text-editor
+	ln -s gedit $(DESTDIR)$(bindir)/gnome-text-editor
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
