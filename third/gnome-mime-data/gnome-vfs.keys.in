@@ -29,9 +29,10 @@ application/mime-type-test
 application/msword
 	_description=Microsoft Word document
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=abiword,staroffice,applix,frame,mswordview
-	short_list_application_ids_for_intermediate_user_level=abiword,staroffice,applix,frame,mswordview
-	short_list_application_ids_for_advanced_user_level=abiword,staroffice,applix,frame,mswordview
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=abiword,openoffice,staroffice,applix,frame,mswordview
+	short_list_application_ids_for_intermediate_user_level=abiword,openoffice,staroffice,applix,frame,mswordview
+	short_list_application_ids_for_advanced_user_level=abiword,openoffice,staroffice,applix,frame,mswordview
 	_category=Documents/Word Processor
 	use_category_default=yes
 
@@ -46,6 +47,7 @@ application/oda
 application/pdf
 	_description=PDF document
 	default_action_type=application
+	default_application_id=acroread
 	short_list_component_iids_for_novice_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
 	short_list_component_iids_for_intermediate_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
 	short_list_component_iids_for_advanced_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
@@ -104,6 +106,7 @@ application/qif
 application/rtf
 	_description=rich text document
 	default_action_type=application
+	default_application_id=staroffice
 	short_list_application_ids_for_novice_user_level=abiword,openoffice,staroffice,applix
 	short_list_application_ids_for_intermediate_user_level=abiword,openoffice,staroffice,applix
 	short_list_application_ids_for_advanced_user_level=abiword,openoffice,staroffice,applix
@@ -124,15 +127,17 @@ application/vnd.ms-excel
 	_description=Microsoft Excel spreadsheet
 	icon_filename=i-spreadsheet
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xess,gnumeric,staroffice,applix
-	short_list_application_ids_for_intermediate_user_level=xess,gnumeric,staroffice,applix
-	short_list_application_ids_for_advanced_user_level=xess,gnumeric,staroffice,applix
+	default_application_id=staroffice
+	short_list_application_ids_for_novice_user_level=xess,gnumeric,openoffice,staroffice,applix
+	short_list_application_ids_for_intermediate_user_level=xess,gnumeric,openoffice,staroffice,applix
+	short_list_application_ids_for_advanced_user_level=xess,gnumeric,openoffice,staroffice,applix
 	_category=Documents/Spreadsheet
 	use_category_default=yes
 
 application/vnd.ms-powerpoint
 	_description=Microsoft PowerPoint document
 	default_action_type=application
+	default_application_id=staroffice
 	short_list_application_ids_for_novice_user_level=openoffice,staroffice
 	short_list_application_ids_for_intermediate_user_level=openoffice,staroffice
 	short_list_application_ids_for_advanced_user_level=openoffice,staroffice
@@ -1166,6 +1171,7 @@ image/g3fax
 image/gif
 	_description=GIF image
 	default_action_type=component
+	default_application_id=eog
 	short_list_component_iids=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
@@ -1182,6 +1188,7 @@ image/ief
 image/jpeg
 	_description=JPEG image
 	default_action_type=component
+	default_application_id=eog
 	short_list_component_iids=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
@@ -1195,6 +1202,7 @@ image/jpeg
 image/png
 	_description=PNG image
 	default_action_type=component
+	default_application_id=eog
 	short_list_component_iids=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
@@ -1215,6 +1223,7 @@ image/svg
 image/tiff
 	_description=TIFF image
 	default_action_type=component
+	default_application_id=eog
 	short_list_component_iids=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
 	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
@@ -1490,6 +1499,7 @@ image/x-wmf
 image/x-xbitmap
 	_description=X bitmap image
 	default_action_type=application
+	default_application_id=eog
 	short_list_application_ids_for_novice_user_level=eog,gimp,xv
 	short_list_application_ids_for_intermediate_user_level=eog,gimp,xv
 	short_list_application_ids_for_advanced_user_level=eog,gimp,xv
@@ -1640,13 +1650,14 @@ text/enriched
 text/html
 	_description=HTML page
 	default_action_type=application
+	default_application_id=htmlview
 	short_list_component_iids=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:Nautilus_Text_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
-	short_list_application_ids_for_novice_user_level=mozilla,netscape,galeon
-	short_list_application_ids_for_intermediate_user_level=mozilla,netscape,galeon
-	short_list_application_ids_for_advanced_user_level=mozilla,netscape,lynx,galeon
+	short_list_application_ids_for_novice_user_level=htmlview,mozilla,netscape,galeon
+	short_list_application_ids_for_intermediate_user_level=htmlview,mozilla,netscape,galeon
+	short_list_application_ids_for_advanced_user_level=htmlview,mozilla,netscape,lynx,galeon
 	_category=Documents/World Wide Web
 	use_category_default=yes
 
