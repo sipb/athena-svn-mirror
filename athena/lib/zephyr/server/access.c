@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/access.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_access_c[] =
-    "$Id: access.c,v 1.15 1992-08-26 04:36:25 lwvanels Exp $";
+    "$Id: access.c,v 1.16 1993-09-24 16:09:31 probe Exp $";
 #endif
 
 /*
@@ -40,7 +40,9 @@ static char rcsid_access_c[] =
  */
 
 #include <sys/param.h>
-
+#ifdef SOLARIS
+#include <sys/filio.h>
+#endif
 #include "zserver.h"
 
 /*
@@ -202,7 +204,7 @@ access_setup(first)
 		return;
 	}
 	while (fgets(class_name, 512, registry) != NULL) {
-		if ((colon_idx = (char *) index(class_name, ':')) != NULL)
+		if ((colon_idx = (char *) strchr(class_name, ':')) != NULL)
 		    *colon_idx = '\0';
 		else if ((len = strlen(class_name)) != 0)
 		    class_name[len - 1] = '\0';
