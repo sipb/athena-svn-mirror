@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.16 1996-09-20 03:38:59 ghudson Exp $
+/* $Id: cleanup.c,v 2.17 1996-12-11 21:23:22 ghudson Exp $
  *
  * Cleanup program for stray processes
  *
@@ -44,7 +44,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.16 1996-09-20 03:38:59 ghudson Exp $";
+char *version = "$Id: cleanup.c,v 2.17 1996-12-11 21:23:22 ghudson Exp $";
 
 
 
@@ -459,7 +459,7 @@ struct cl_proc *get_processes()
                               continue;
                       else {
                               procs[i].pid = pid_buf.pid_id;
-			      procs[i].uid = p->p_uid;
+			      procs[i].uid = p->p_cred->cr_uid;
                               i++;
                       }
               }
