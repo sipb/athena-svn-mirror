@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.20 1990-06-06 19:06:43 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.21 1990-12-16 19:53:26 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -217,26 +217,29 @@ filerec *leaf;
 	  retval = do_undelete(leaf);
 	  if (retval) {
 	       error("do_undelete");
-	       return retval;
-	  }
-     }
-
-     if (leaf->dirs) {
-	  retval = recurs_and_undelete(leaf->dirs);
-	  if (retval) {
-	       error("recurs_and_undelete");
 	       status = retval;
 	  }
      }
 
-     if (leaf->files) {
-	  retval = recurs_and_undelete(leaf->files);
-	  if (retval) {
-	       error("recurs_and_undelete");
-	       status = retval;
+     if (! status) { /* recurse only if if top-level undelete */
+		     /* succeeded or was not requested        */
+	  if (leaf->dirs) {
+	       retval = recurs_and_undelete(leaf->dirs);
+	       if (retval) {
+		    error("recurs_and_undelete");
+		    status = retval;
+	       }
+	  }
+
+	  if (leaf->files) {
+	       retval = recurs_and_undelete(leaf->files);
+	       if (retval) {
+		    error("recurs_and_undelete");
+		    status = retval;
+	       }
 	  }
      }
-     
+
      if (leaf->next) {
 	  retval = recurs_and_undelete(leaf->next);
 	  if (retval) {
@@ -244,7 +247,7 @@ filerec *leaf;
 	       status = retval;
 	  }
      }
-     
+
      free_leaf(leaf);
 
      return status;
