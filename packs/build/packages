@@ -1,134 +1,149 @@
-# $Id: packages,v 1.80 1999-07-20 13:41:36 ghudson Exp $
+# $Id: packages,v 1.81 1999-08-16 22:24:22 danw Exp $
 
-# This file gives the list of packages to build for the release, the
-# order they will be built in, and which platforms they will be built
-# for.  Each line gives a package name and, optionally, a
-# comma-separated list of hosttypes to build the package on.  If the
-# list of hosttypes is omitted or contains the word "all", the package
-# is built for all platforms; platforms can be explicitly exluded by
-# prefacing them by a minus sign.  Blank lines and lines beginning
-# with '#' are ignored.
+# This file gives the list of packages to build for the release.
+# Each line gives a package name and, optionally, additional
+# information about when and on what platforms to build the package.
+# The possible options are:
+#
+#	early		build the package early in the build
+#	late		build the package late in the build
+#	on platform	build the package only on the named platforms
+#	except platform	built the package only on platforms not named
+#	requires pkg	must be built after the named package
+#
+#
+# The "early" packages will be built first, in the order they appear
+# in the file. The "late" packages will be built last, also in the
+# order they appear in the file. Other packages may be reordered,
+# within the constraints imposed by the "requires" clauses. The "on",
+# and "except" options take a comma-separated list of platforms. The
+# "requires" option takes a comma-separated list of package names,
+# which can be abbreviated to the final pathname component if it is
+# unique among packages
+#
+# Blank lines and lines beginning with '#' are ignored.
 
 # These tools are critical to the build process and need to be built
 # first, even before the packs are set up.  They have build systems
 # which don't assume that much of anything is ready.
-third/gcc			solaris
-third/gmake
-third/m4
-third/autoconf
-athena/bin/install		solaris,irix
-athena/bin/imake		solaris
+third/gcc			on solaris early
+third/gmake			early
+third/m4			early
+third/autoconf			early
+athena/bin/install		on solaris,irix early
+athena/bin/imake		on solaris early
 
-packs/build/setup
+packs/build/setup		early
 third/afsbin
 athena/lib/et
 third/readline
-athena/lib/ss
+athena/lib/ss			requires readline,et
 athena/lib/hesiod
 athena/lib/ares
 third/krb5
-athena/lib/zephyr
-athena/lib/locker
-athena/lib/al
+athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
+athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
+athena/lib/al			requires hesiod,afsbin
 athena/etc/synctree
-third/motif			linux
-third/motif/clients/mwm		solaris
+third/motif			on linux
+third/motif/clients/mwm		on solaris
 athena/lib/Mu
 athena/lib/Xj
-third/krb5/src/appl
-third/wcl
-third/tcp_wrappers		all,-linux
-third/tcsh
-third/emacs
-third/tex
-third/top			all,-irix,-linux
-third/sysinfo			solaris,irix,linux
-third/rcs			solaris
-third/patch			solaris
+third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod
+third/wcl			requires motif
+third/tcp_wrappers		except linux
+third/tcsh			requires hesiod
+third/emacs			requires hesiod,krb5
+third/tex			late
+third/top			except irix,linux
+third/sysinfo			on solaris,irix,linux
+third/rcs			on solaris
+third/patch			on solaris
 third/jot
 third/lam
 third/rs
-third/nmh
+third/nmh			requires krb5,hesiod
 third/x3270
 third/xmh
-third/talk			solaris,irix
-third/traceroute		solaris
-third/look			irix
-third/whois			irix
-third/ispell			all,-linux
-third/ssh
+third/talk			on solaris,irix
+third/traceroute		on solaris
+third/look			on irix
+third/whois			on irix
+third/ispell			except linux
+third/ssh			requires krb5,tcp_wrappers
 third/kermit
 third/xntp
 third/bind
-third/kpasswd
-third/ksrvutil
-third/inetd
+third/kpasswd			requires krb5
+third/ksrvutil			requires krb5
+third/inetd			requires tcp_wrappers
 third/mdoc
 third/lprng/ifhp
-third/lprng/lprng
+third/lprng/lprng		requires krb5,zephyr,hesiod
 third/lprng/athena
-third/xscreensaver
-third/intlfonts
-third/sendmail
+third/xscreensaver		requires krb5
+third/intlfonts			requires emacs
+third/sendmail			requires hesiod,tcp_wrappers
 third/bash
 athena/lib/acl
-athena/lib/neos
+athena/lib/neos			requires krb5,hesiod
 athena/lib/athdir
 athena/lib/larv
 athena/etc/track
 athena/etc/newsyslog
-athena/etc/cleanup
-athena/etc/listsuidcells
+athena/etc/cleanup		requires al
+athena/etc/listsuidcells	requires afsbin
 athena/etc/gettime
-athena/etc/xdm
+athena/etc/xdm			requires krb5,al,wcl,larv,Mu
 athena/etc/desync
-athena/etc/busyd
-athena/etc/larvnetd
+athena/etc/busyd		requires larv
+athena/etc/larvnetd		requires larv,ares,hesiod
 athena/etc/cviewd
 athena/etc/athinfod
-athena/etc/console
+athena/etc/console		requires Xj
 athena/etc/mkcred
-athena/bin/aklog
-athena/bin/newpag
-athena/bin/voldump
+athena/bin/aklog		requires krb5,afsbin,et
+athena/bin/newpag		requires afsbin
+athena/bin/voldump		requires afsbin,hesiod
 athena/bin/session
-athena/bin/olc
-athena/bin/finger
+athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu
+athena/bin/finger		requires hesiod,zephyr
 athena/bin/sendbug
 athena/bin/just
 athena/bin/rep
 athena/bin/cxref
 athena/bin/access
 athena/bin/dent
-athena/bin/attach
-athena/bin/dash
-athena/bin/xcluster
-athena/bin/bugme
+athena/bin/attach		requires locker
+athena/bin/dash			requires Xj,krb5
+athena/bin/xcluster		requires Xj,hesiod
+athena/bin/bugme		requires Xj
 athena/bin/xmore
-athena/bin/xdsc
-athena/bin/rkinit
-athena/bin/discuss
-athena/bin/from
-athena/bin/delete
-athena/bin/getcluster
-athena/bin/gms
-athena/bin/hostinfo
-athena/bin/lert
+athena/bin/xdsc			requires discuss
+athena/bin/rkinit		requires krb5
+athena/bin/discuss		requires krb5,zephyr,ss,et
+athena/bin/from			requires hesiod,krb5
+athena/bin/delete		requires afsbin,et
+athena/bin/getcluster		requires hesiod
+athena/bin/gms			requires hesiod,et
+athena/bin/hostinfo		requires bind,perl
+athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
 athena/bin/write
-athena/bin/athdir
-athena/bin/quota
+athena/bin/athdir		requires athena/lib/athdir
+athena/bin/quota		requires locker,afsbin
 athena/bin/saferm
-athena/bin/passwd
-athena/bin/hesinfo
+athena/bin/passwd		requires krb5,al
+athena/bin/hesinfo		requires hesiod
 athena/bin/athinfo
 third/perl
-third/transcript
-packs/config
-packs/dotfiles
-packs/glue
-packs/install
-packs/maint
-packs/update
-packs/build/config
-packs/build/finish
+third/transcript		requires perl
+
+packs/config			late
+packs/dotfiles			late
+packs/glue			late
+packs/install			late
+packs/maint			late
+packs/update			late
+packs/build/config		late
+packs/build/finish		late

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.26 1999-06-30 22:42:16 ghudson Exp $
+# $Id: build.sh,v 1.27 1999-08-16 22:24:22 danw Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -52,35 +52,6 @@ case `uname -s` in
 	Linux)		os=linux ;;
 esac
 
-# Read in the list of packages, filtering for operating system.
-packages=`awk '
-	/^#|^$/		{ next; }
-	start == $1	{ start = ""; }
-	start != ""	{ next; }
-	/[ \t]/ {
-		split($2, p, ",");
-		build = 0;
-		for (i = 1; p[i]; i++) {
-			if (p[i] == os || p[i] == "all")
-				build = 1;
-			if (p[i] == ("-" os))
-				build = 0;
-		}
-		if (build)
-			print $1;
-		next;
-	}
-			{ print; }
-	end == $1	{ exit; }' os="$os" start="$start" end="$end" \
-		$source/packs/build/packages`
-
-case $nobuild in
-	true)
-		echo $packages
-		exit
-		;;
-esac
-
 # Send all output from this point on to the build log file.
 if [ true = "$log" ]; then
 	mkdir -p "$build/logs" 2>/dev/null
@@ -90,6 +61,18 @@ if [ true = "$log" ]; then
 	ln -s "washlog.$now" "$build/logs/current"
 	exec >> "$logfile" 2>&1
 fi
+
+# Read in the list of packages, filtering for operating system.
+packages=`nawk -f $source/packs/build/getpackages.awk \
+	os="$os" start="$start" end="$end" $source/packs/build/packages` \
+	|| exit 1
+
+case $nobuild in
+	true)
+		echo $packages
+		exit
+		;;
+esac
 
 echo ========
 echo Starting at `date` on $os
