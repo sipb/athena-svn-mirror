@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char *rcsid_update_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.2 1986-01-22 18:03:41 treese Exp $";
+static char *rcsid_update_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.3 1986-01-23 20:34:24 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -39,10 +39,13 @@ ERRCODE
 set_current_dir(dir)
 char *dir;
 {
-	strcpy(Current_Dir, dir);
-	Current_Index = 0;
-	parse_contents();
-	return(SUCCESS);
+  char temp[FILENAME_SIZE];		/* Temporary space. */
+
+  strcpy(temp, dir);
+  strcpy(Current_Dir, temp);
+  Current_Index = 0;
+  parse_contents();
+  return(SUCCESS);
 }
 
 /* Function:	parse_contents() parses the contents file of the current
