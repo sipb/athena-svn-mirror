@@ -31,7 +31,7 @@ SUN*)
 	rm -rf /var/spool/cron/crontabs/sysadm /var/uucp/.Workspace
 	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
 	rm -rf /etc/group.std /etc/passwd.std /etc/shadow.std
-	rm -rf /auto_update /patch /.cshrc.mine /.tcshrc
+	rm -rf /auto_update /patch /sun4 /.cshrc.mine /.tcshrc
 	rm -rf /usr/lib/learn /usr/lib/lint /usr/etc /usr/new
 
 	# Create new directories and files, make /var/sadm local (otherwise
