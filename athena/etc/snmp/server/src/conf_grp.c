@@ -15,6 +15,12 @@
  *    $Author: ghudson $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.2  1998/06/30 02:56:21  jweiss
+ *    SMSUPDATE became MRUPDATE years ago
+ *
+ *    Revision 2.1  1997/02/27 06:47:21  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 2.0  1992/04/22 02:04:04  tom
  *    release 7.4
  *
@@ -35,7 +41,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/conf_grp.c,v 2.1 1997-02-27 06:47:21 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/conf_grp.c,v 2.1.4.1 1998-07-05 05:48:28 ghudson Exp $";
 #endif
 
 
@@ -141,7 +147,7 @@ lu_rcvar(varnode, repl, instptr, reqflg)
     case N_RCZSERVER:
       return(get_rc_variable("ZSERVER",   &(repl->val.value.str)));
     case N_RCSMSUPDATE:
-      return(get_rc_variable("SMSUPDATE", &(repl->val.value.str)));
+      return(get_rc_variable("MRUPDATE", &(repl->val.value.str)));
     case N_RCINETD:
       return(get_rc_variable("INETD",     &(repl->val.value.str)));
     case N_RCNOCREATE:
