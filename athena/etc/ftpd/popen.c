@@ -35,6 +35,10 @@ static char sccsid[] = "@(#)popen.c	5.3 (Berkeley) 11/30/88";
  */
 static unsigned int *pids;
 static int fds;
+#ifdef ATHENA
+uid_t athena_setuid = 0;
+gid_t athena_setgid = 0;
+#endif
 
 FILE *
 ftpd_popen(program, type)
@@ -87,6 +91,20 @@ ftpd_popen(program, type)
 		goto free;
 		/* NOTREACHED */
 	case 0:				/* child */
+#ifdef ATHENA
+		if (athena_setgid)
+#ifdef _IBMR2
+		  setgid_rios(athena_setgid);
+#else
+		  setgid(athena_setgid);
+#endif
+		if (athena_setuid)
+#ifdef _IBMR2
+		  setuid_rios(athena_setuid);
+#else
+		  setuid(athena_setuid);
+#endif
+#endif
 		if (*type == 'r') {
 			if (pdes[1] != 1) {
 				dup2(pdes[1], 1);
@@ -134,7 +152,14 @@ pclose(iop)
 		return(-1);
 	(void)fclose(iop);
 	omask = sigblock(sigmask(SIGINT)|sigmask(SIGQUIT)|sigmask(SIGHUP));
+#ifdef _IBMR2
+	signal(SIGCHLD, SIG_DFL);
+	while ((pid = waitpid(pids[fdes], &stat_loc, 0))
+	       != pids[fdes] && pid != -1);
+	signal(SIGCHLD, SIG_IGN);
+#else
 	while ((pid = wait(&stat_loc)) != pids[fdes] && pid != -1);
+#endif
 	(void)sigsetmask(omask);
 	pids[fdes] = 0;
 	return(stat_loc);
