@@ -22,6 +22,7 @@ clusterinfo.bsh	test -r /var/athena/clusterinfo.bsh && cat /var/athena/clusterin
 update.desync	test -r /var/athena/update.desync && cat /var/athena/update.desync
 services	test -r /var/server/.services && cat /var/server/.services
 update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.log && cat /var/athena/update.log
+install.log	test -r /var/athena/install.log && cat /var/athena/install.log
 date		date
 uptime		uptime
 partitions	fdisk -l `mount | sed -n -e 's/^\([^ ]*\)[0-9] on \/ .*$/\1/p'`
