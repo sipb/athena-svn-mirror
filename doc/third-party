@@ -135,7 +135,7 @@ Distribution sites for software under third
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	libghttp	ftp.gnome.org:pub/GNOME/stable/sources/libghttp
 	libglade	ftp.gnome.org:pub/GNOME/stable/sources/libglade
-	libpng		http://www.libpng.org/pub/png/libpng.html
+	libpng		swrinde.nde.swri.edu:pub/png/src
 	librep		librep.sourceforge.net:pub/librep
 	librsvg		ftp.gnome.org:pub/GNOME/stable/sources/librsvg
 	libungif	prtr-13.ucsc.edu:pub/libungif
