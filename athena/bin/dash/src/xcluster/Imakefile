@@ -50,13 +50,13 @@ DEFINES		=	-DSHAPE
 AllTarget(${XCLUSTER} ${CVIEW})
 
 NormalProgramTarget(${XCLUSTER},${X_OBJS},,${LOCAL_LIBS},${LIBS})
-InstallProgram(${XCLUSTER},${DESTDIR}${ATHBINDIR})
+InstallProgram(${XCLUSTER},${XCLUSTER_BIN_DIR})
 
 NormalProgramTarget(${CVIEW},${OBJS},,${LOCAL_LIBS},${HLIB})
-InstallProgram(${CVIEW},${DESTDIR}${ATHBINDIR})
+InstallProgram(${CVIEW},${XCLUSTER_BIN_DIR})
 
-InstallNonExec(${CVIEW}.1,${DESTDIR}${MAN_DIR}/man1/${CVIEW}.1)
-InstallNonExec(${XCLUSTER}.1,${DESTDIR}${MAN_DIR}/man1/${XCLUSTER}.1)
-InstallNonExec(${RESOURCES},${DESTDIR}${ATHXAPPDIR}/${RESOURCES})
+InstallNonExec(${CVIEW}.1,${MAN_DIR}/man1/${CVIEW}.1)
+InstallNonExec(${XCLUSTER}.1,${MAN_DIR}/man1/${XCLUSTER}.1)
+InstallNonExec(${RESOURCES},${XCLUSTER_APP_DIR}/${RESOURCES})
 
 DependTarget()
