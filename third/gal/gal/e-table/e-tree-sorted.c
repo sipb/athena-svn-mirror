@@ -38,8 +38,8 @@
 #include <fcntl.h>
 #include <string.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <parser.h>
+#include <xmlmemory.h>
 
 #include <gtk/gtksignal.h>
 #include "gal/util/e-util.h"

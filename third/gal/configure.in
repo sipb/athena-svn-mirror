@@ -1,26 +1,26 @@
 AC_INIT(README)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gal,0.19.1)
+AM_INIT_AUTOMAKE(gal,0.19.2)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
 
 dnl libtool versioning
 
-dnl gal-0.19.1 = 0
+dnl gal-0.19.2 = 0
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
 dnl  precedence over adding, so set to 0 if both happened.
 dnl AKA Micro
 GAL_AGE=0
 
-dnl gal-0.19.1 = 1
+dnl gal-0.19.2 = 1
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
 dnl AKA Minor
-GAL_REVISION=1
+GAL_REVISION=2
 
-dnl gal-0.19.1 = 19
+dnl gal-0.19.2 = 19
 dnl increment if the interface has additions, changes, removals.
 dnl AKA Major
 GAL_CURRENT=19
@@ -157,14 +157,34 @@ int main (int argc, char **argv)
 	exit (0);
 }], ac_cv_libiconv_utf8=yes, [ac_cv_libiconv_utf8=no; have_iconv=no], [ac_cv_libiconv_utf8=no; have_iconv=no]))
 fi
-CFLAGS="$save_CFLAGS"
-LDFLAGS="$save_LDFLAGS"
 
 if test "$have_iconv" = no; then
 	AC_MSG_ERROR([You need to install a working iconv implementation, such as http://clisp.cons.org/~haible/packages-libiconv.html])
 fi
 AC_SUBST(ICONV_CFLAGS)
 AC_SUBST(ICONV_LIBS)
+
+CFLAGS="$CFLAGS -I$srcdir"
+
+AC_MSG_CHECKING(preferred charset formats for system iconv)
+AC_TRY_RUN([
+#define CONFIGURE_IN
+#include "iconv-detect.c"
+],[
+	AC_MSG_RESULT(found)
+],[
+	AC_MSG_RESULT(not found)
+	AC_ERROR([
+	*** The iconv-detect program was unable to determine the
+	*** preferred charset formats recognized by your system
+	*** iconv library. It is suggested that you install a
+	*** working iconv library such as the one found at
+	*** ftp://ftp.gnu.org/pub/gnu/libiconv
+	])
+])
+
+CFLAGS="$save_CFLAGS"
+LDFLAGS="$save_LDFLAGS"
 
 dnl Check to see if strftime supports the use of %l and %k
 
@@ -317,8 +337,8 @@ AC_SUBST(GAL_LIBDIR)
 AC_SUBST(GAL_INCLUDEDIR)
 AC_SUBST(GAL_LIBS)
 
-EXTRA_GNOME_LIBS=`gnome-config --libs gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf`
-EXTRA_GNOME_CFLAGS=`gnome-config --cflags gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf`
+EXTRA_GNOME_LIBS="`gnome-config --libs gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf` `imlib-config --libs-gdk`"
+EXTRA_GNOME_CFLAGS="`gnome-config --cflags gnomeui print libart libglade gdk_pixbuf gnomecanvaspixbuf` `imlib-config --cflags-gdk`"
 AC_SUBST(EXTRA_GNOME_LIBS)
 AC_SUBST(EXTRA_GNOME_CFLAGS)
 

@@ -28,7 +28,7 @@
 #include <gal/e-table/e-table.h>
 #include <gal/e-table/e-tree.h>
 #include <libgnomeui/gnome-canvas.h>
-#include <gnome-xml/tree.h>
+#include <tree.h>
 #include <gal/e-table/e-table-header.h>
 #include <gal/e-table/e-table-sort-info.h>
 

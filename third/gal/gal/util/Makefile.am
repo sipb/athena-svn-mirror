@@ -3,6 +3,7 @@ INCLUDES =					\
 	$(GNOME_INCLUDEDIR)			\
 	$(ICONV_CFLAGS)				\
 	-I$(top_srcdir)                         \
+	-I$(top_builddir)                       \
         -DG_LOG_DOMAIN=\"widgets\"
 
 noinst_LTLIBRARIES = libutil.la

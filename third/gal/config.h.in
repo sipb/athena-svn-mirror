@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define if using alloca.c.  */
 #undef C_ALLOCA
@@ -103,6 +103,9 @@
 
 /* Define if you have the <argz.h> header file.  */
 #undef HAVE_ARGZ_H
+
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
 
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H

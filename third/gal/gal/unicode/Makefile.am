@@ -23,5 +23,5 @@ noinst_HEADERS =			\
 
 INCLUDES = 				\
 	-I$(top_srcdir)			\
-	$(GNOME_INCLUDEDIR)		\
+	$(EXTRA_GNOME_CFLAGS)		\
 	$(ICONV_CFLAGS)

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.13.99.1\n"
-"POT-Creation-Date: 2002-03-18 13:27-0500\n"
+"POT-Creation-Date: 2002-04-18 17:59-0400\n"
 "PO-Revision-Date: 2001-10-06 20:17+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"

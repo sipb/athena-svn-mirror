@@ -25,7 +25,7 @@
 #define _E_TREE_H_
 
 #include <gtk/gtktable.h>
-#include <gnome-xml/tree.h>
+#include <tree.h>
 #include <libgnomeui/gnome-canvas.h>
 
 #include <gal/widgets/e-printable.h>
