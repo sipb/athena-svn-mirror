@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #include <olc/lang.h>
@@ -57,7 +57,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.11 1990-01-10 15:11:53 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.12 1990-01-16 11:08:39 vanharen Exp $";
 
 /* Global variables. */
 
@@ -125,7 +125,9 @@ int punt();
 #if __STDC__
 int main(int argc, char **argv)
 #else
-    main (argc, argv) char **argv;
+main (argc, argv)
+     int argc;
+     char **argv;
 #endif
 {
   struct sockaddr_in from;           /* Socket address for input. */
@@ -431,7 +433,9 @@ static void
 #if __STDC__
 process_request(int fd, struct sockaddr_in *from)
 #else
-    process_request (fd, from) struct sockaddr_in *from;
+process_request (fd, from)
+     int fd;
+     struct sockaddr_in *from;
 #endif
 {
   REQUEST request;	/* Request structure from client. */
@@ -560,10 +564,12 @@ static void flush_olc_userlogs()
  *	processing the current request.
  */
 
+int
 #if __STDC__
-int punt(int sig)
+punt(int sig)
 #else
-    punt(sig)
+punt(sig)
+     int sig;
 #endif
 {
   olc_broadcast_message("syslog",
@@ -597,7 +603,9 @@ int punt(int sig)
 #if __STDC__
 authenticate(REQUEST *request, long unsigned int addr)
 #else
-    authenticate(request, addr) REQUEST*request; unsigned long addr;
+authenticate(request, addr)
+     REQUEST *request;
+     unsigned long addr;
 #endif
 {
 
