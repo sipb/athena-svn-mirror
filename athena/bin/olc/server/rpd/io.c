@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.5 1991-03-28 13:31:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.6 1991-03-28 22:01:22 lwvanels Exp $";
 #endif
 #endif
 
@@ -28,7 +28,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include "system.h"
 
-#ifdef i386
+#if defined(i386) || defined(sun)
 extern int errno;
 #endif
 
