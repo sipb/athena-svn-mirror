@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.17 1987-09-15 10:46:57 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.18 1987-09-28 16:39:21 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -61,7 +61,9 @@ typedef struct _ZAcl_t {
 
 typedef	enum _ZAccess_t {
 	TRANSMIT,			/* use transmission acl */
-	SUBSCRIBE			/* use subscription acl */
+	SUBSCRIBE,			/* use subscription acl */
+	INSTWILD,			/* use instance wildcard acl */
+	INSTUID				/* use instance UID identity acl */
 } ZAccess_t;
 
 typedef struct _ZClass_t {
@@ -286,10 +288,7 @@ extern char *pktypes[];			/* names of the packet types */
 
 /* ACL's for pre-registered classes */
 #define	ZEPHYR_ACL_DIR	"/usr/athena/lib/zephyr/"
-#define	ZEPHYR_CTL_ACL	"zctl.acl"
-#define	LOGIN_ACL	"login.acl"
-#define	LOCATE_ACL	"locate.acl"
-#define	MATCH_ALL_ACL	"matchall.acl"
+#define	ZEPHYR_CLASS_REGISTRY	"class-registry.acl"
 /* SERVER_SRVTAB is defined in zephyr.h */
 #define	ZEPHYR_SRVTAB	SERVER_SRVTAB
 #define	ZEPHYR_TKFILE	"/usr/athena/lib/zephyr/ztkts"
