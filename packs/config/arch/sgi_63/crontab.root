@@ -1,4 +1,4 @@
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 #
 # The root crontab can be used to perform accounting data collection
 #	and cleanup.
@@ -59,6 +59,6 @@
 # Athena additions
 #
 05	3	*	*	*	/etc/athena/desync; /etc/athena/newsyslog
-20	4	*	*	*	/etc/athena/clean_tmp_areas
+20	4	*	*	*	/etc/athena/clean_tmp_areas > /dev/null
 37	*	*	*	*	/etc/athena/desync; /usr/lib/sendmail -q
 45	0,12	*	*	*	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -g 60 -s $TIMEHUB > /dev/null
