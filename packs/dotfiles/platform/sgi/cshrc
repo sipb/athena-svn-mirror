@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.2 1996-05-07 17:45:46 cfields Exp $
+# $Id: cshrc,v 1.3 1996-06-06 16:47:09 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -123,6 +123,24 @@ if (! $?ENV_SET) then
 		set path=($HOME/$bindir $athena_path .)	# Standard Athena path
 	endif
 
+	# Make sure applications can properly find their appdefs, etc.
+
+	if ($?skip_sgi) then
+	  set x="/usr/athena/lib/X11/app-defaults/%N"
+	else
+	  if ($?NOCALLS) then
+	    set x="/usr/athena/lib/X11/app-defaults/%N:`/usr/bin/X11/appdefpath`"
+	  else
+	    set x="$HOME/.desktop-$host/%N:$HOME/%N:/usr/athena/lib/X11/app-defaults/%N:`/usr/bin/X11/appdefpath`"
+	  endif
+	endif
+
+	if (! $?XUSERFILESEARCHPATH) then
+	  setenv XUSERFILESEARCHPATH $x
+	else
+	  setenv XUSERFILESEARCHPATH "${XUSERFILESEARCHPATH}:${x}"
+	endif
+	unset x
 endif
 	
 # Set appropriate bin directory variable for this platform
