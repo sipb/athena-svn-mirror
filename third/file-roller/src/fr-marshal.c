@@ -36,8 +36,8 @@
 #define g_marshal_value_peek_ulong(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_int64(v)    (v)->data[0].v_int64
 #define g_marshal_value_peek_uint64(v)   (v)->data[0].v_uint64
-#define g_marshal_value_peek_enum(v)     (v)->data[0].v_int
-#define g_marshal_value_peek_flags(v)    (v)->data[0].v_uint
+#define g_marshal_value_peek_enum(v)     (v)->data[0].v_long
+#define g_marshal_value_peek_flags(v)    (v)->data[0].v_ulong
 #define g_marshal_value_peek_float(v)    (v)->data[0].v_float
 #define g_marshal_value_peek_double(v)   (v)->data[0].v_double
 #define g_marshal_value_peek_string(v)   (v)->data[0].v_pointer
@@ -90,4 +90,10 @@ fr_marshal_VOID__INT_POINTER (GClosure     *closure,
 /* VOID:POINTER (fr-marshal.list:3) */
 
 /* VOID:VOID (fr-marshal.list:4) */
+
+/* VOID:DOUBLE (fr-marshal.list:5) */
+
+/* VOID:STRING (fr-marshal.list:6) */
+
+/* VOID:BOOL (fr-marshal.list:7) */
 

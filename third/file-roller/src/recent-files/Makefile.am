@@ -1,10 +1,12 @@
+if ENABLE_DEPRECATIONS
+DISABLE_DEPRECATED = -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGNOME_VFS_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED -DBONOBO_DISABLE_DEPRECATED
+else
+DISABLE_DEPRECATED =
+endif
+
 INCLUDES = \
-	$(FR_CFLAGS) 						\
-	-DG_DISABLE_DEPRECATED					\
-	-DGDK_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED				\
-	-DGNOME_DISABLE_DEPRECATED			
+	$(FR_CFLAGS) 		\
+	$(DISABLE_DEPRECATED)				
 
 EGG_FILES =				\
 	egg-recent.h			\
@@ -18,6 +20,8 @@ EGG_FILES =				\
         egg-recent-view-bonobo.h	\
         egg-recent-view-gtk.c		\
         egg-recent-view-gtk.h		\
+        egg-recent-view-uimanager.c	\
+        egg-recent-view-uimanager.h	\
         egg-recent-util.c		\
 	egg-recent-util.h
 

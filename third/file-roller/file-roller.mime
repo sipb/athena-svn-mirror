@@ -15,8 +15,14 @@ application/x-lzop-compressed-tar
 	regex,2: \.tar\.lzo$
 	ext: tzo
 
+application/x-arj
+	ext: arj
+
 application/zip
-	ext: zip jar ear war
+	ext: zip
+
+application/x-java-archive
+	ext: jar ear war
 
 application/x-lha
 	ext: lzh
@@ -26,6 +32,9 @@ application/x-rar
 
 application/x-rar-compressed
 	ext: rar
+
+application/x-stuffit
+	ext: bin sit
 
 application/x-gzip
 	ext: gz
@@ -38,3 +47,6 @@ application/x-compress
 
 application/x-lzop
 	ext: lzo
+
+application/x-zoo
+        ext: zoo

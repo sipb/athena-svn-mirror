@@ -1,17 +1,10 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
-#undef ENABLE_NLS
-#undef HAVE_CATGETS
-#undef HAVE_GETTEXT
-#undef HAVE_LC_MESSAGES
-#undef HAVE_STPCPY
-#undef HAVE_LIBSM
-#undef PACKAGE
-#undef VERSION
-#undef LOCALEDIR
-#undef GETTEXT_PACKAGE
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
+
+/* GetText Package */
+#undef GETTEXT_PACKAGE
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
@@ -21,9 +14,6 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
-
-/* Define if you have the `fnmatch' function. */
-#undef HAVE_FNMATCH
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
@@ -60,6 +50,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Locale dir */
+#undef LOCALEDIR
 
 /* Name of package */
 #undef PACKAGE

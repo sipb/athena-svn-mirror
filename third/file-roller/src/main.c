@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <glade/glade.h>
 #include "file-utils.h"
 #include "fr-process.h"
+#include "fr-stock.h"
 #include "gconf-utils.h"
 #include "window.h"
 #include "typedefs.h"
@@ -103,7 +104,6 @@ int main (int argc, char **argv)
                                       GNOME_PARAM_APP_SYSCONFDIR, FR_SYSCONFDIR,
                                       GNOME_PARAM_APP_DATADIR, FR_DATADIR,
                                       GNOME_PARAM_APP_LIBDIR, FR_LIBDIR,
-
 				      NULL);
 
 	g_object_get_property (G_OBJECT (program),
@@ -115,11 +115,9 @@ int main (int argc, char **argv)
                 g_error ("Cannot initialize the Virtual File System.");
 
 	glade_gnome_init ();
-
+	fr_stock_init ();
 	init_session (argv);
-
 	initialize_data ();
-
 	prepare_app (pctx);
 	poptFreeContext (pctx);
 
@@ -138,7 +136,7 @@ initialize_data ()
 {
 	char *icon_path = PIXMAPSDIR "/file-roller.png";
 
-	if (! g_file_test (icon_path, G_FILE_TEST_EXISTS))
+	if (! path_is_file (icon_path))
                 g_warning ("Could not find %s", icon_path);
 	else
 		gnome_window_icon_set_default_from_file (icon_path);
@@ -240,13 +238,6 @@ get_path_from_url (char *url)
 	path = gnome_vfs_unescape_string (escaped, NULL);
 	g_free (escaped);
 
-	{
-		char *line = g_strdup_printf ("echo \"[1] %s\" >> /home/gino/fr_log", path);
-		system (line);
-		g_free (line);
-	}
-
-
 	return path;
 }
 
@@ -341,7 +332,7 @@ prepare_app (poptContext pctx)
 	ensure_dir_exists (path, 0700);
 	g_free (path);
 
-	if (eel_gconf_get_boolean (PREF_MIGRATE_DIRECTORIES))
+	if (eel_gconf_get_boolean (PREF_MIGRATE_DIRECTORIES, TRUE))
                 migrate_to_new_directories ();
 
 	if (session_is_restored ()) {
@@ -359,18 +350,30 @@ prepare_app (poptContext pctx)
 	} 
 
 	default_dir = get_path_from_url (default_url);
-	extract_to_path = get_path_from_url (extract_to);
+	
+	if ((extract_to != NULL) && g_path_is_absolute (extract_to))
+		extract_to_path = get_path_from_url (extract_to);
+	else {
+		char *full_path;
+		char *current_dir = g_get_current_dir ();
+
+		full_path = g_build_filename (current_dir, extract_to, NULL);
+		g_free (current_dir);
+		extract_to_path = get_path_from_url (full_path);
+		g_free (full_path);
+	}
+
         add_to_path = get_path_from_url (add_to);
 
 	if ((add_to != NULL) || (add == 1)) { /* Add files to an archive */
 		FRWindow    *window;
 		GList       *file_list = NULL;
 		const char  *filename;
-		
+
 		window = window_new ();
 		if (default_dir != NULL)
 			window_set_default_dir (window, default_dir);
-		gtk_widget_show (window->app);
+		/*gtk_widget_show (window->app);*/
 		
 		while ((filename = poptGetArg (pctx)) != NULL) {
 			char *path;
@@ -390,7 +393,7 @@ prepare_app (poptContext pctx)
 		file_list = g_list_reverse (file_list);
 		
 		window_archive__open_add (window, add_to_path, file_list);
-		window_archive__close (window);
+		window_archive__quit (window);
 		window_batch_mode_start (window);
 
 	} else if ((extract_to != NULL) || (extract == 1)) { /* Extract all archives. */
@@ -400,13 +403,13 @@ prepare_app (poptContext pctx)
 		window = window_new ();
 		if (default_dir != NULL)
 			window_set_default_dir (window, default_dir);
-		gtk_widget_show (window->app);
+		/*gtk_widget_show (window->app);*/
 		
 		while ((archive = poptGetArg (pctx)) != NULL) 
 			window_archive__open_extract (window, 
 						      archive, 
 						      extract_to_path);
-		window_archive__close (window);
+		window_archive__quit (window);
 		window_batch_mode_start (window);
 
 	} else { /* Open each archives in a window */
@@ -417,7 +420,7 @@ prepare_app (poptContext pctx)
 			
 			window = window_new ();
 			gtk_widget_show (window->app);
-			window_archive_open (window, archive);
+			window_archive_open (window, archive, GTK_WINDOW (window->app));
 		}
 	}
 	
@@ -451,12 +454,13 @@ save_session (GnomeClient *client)
 		FRWindow *window = scan->data;
 		char     *key;
 
+		key = g_strdup_printf ("Session/archive%d", i);
+
 		if ((window->archive == NULL) 
 		    || (window->archive->filename == NULL))
-			continue;
-
-		key = g_strdup_printf ("Session/archive%d", i);
-		gnome_config_set_string (key, window->archive->filename);
+			gnome_config_set_string (key, "");
+		else
+			gnome_config_set_string (key, window->archive->filename);
 		g_free (key);
 
 		i++;
@@ -569,7 +573,8 @@ load_session (void)
 
 		window = window_new ();
 		gtk_widget_show (window->app);
-		window_archive_open (window, filename);
+		if (strlen (filename) != 0)
+			window_archive_open (window, filename, GTK_WINDOW (window->app));
 
 		g_free (filename);
 	}

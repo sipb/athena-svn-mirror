@@ -42,7 +42,8 @@ typedef enum {
 	FR_ACTION_ADD,
 	FR_ACTION_DELETE,
 	FR_ACTION_EXTRACT,
-	FR_ACTION_TEST
+	FR_ACTION_TEST,
+	FR_ACTION_GET_LIST
 } FRAction;
 
 struct _FRCommand
@@ -53,15 +54,22 @@ struct _FRCommand
 
 	/*<protected>*/
 
-	/* properties the command support. */
+	/* properties the command supports. */
 
-	uint propAddCanUpdate : 1;
-	uint propAddCanReplace : 1;
-	uint propExtractCanAvoidOverwrite : 1;
-	uint propExtractCanSkipOlder : 1;
-	uint propExtractCanJunkPaths : 1;
-	uint propPassword : 1;
-	uint propTest : 1;
+	guint propCanModify : 1;
+	guint propAddCanUpdate : 1;
+	guint propAddCanReplace : 1;
+	guint propExtractCanAvoidOverwrite : 1;
+	guint propExtractCanSkipOlder : 1;
+	guint propExtractCanJunkPaths : 1;
+	guint propPassword : 1;
+	guint propTest : 1;
+	guint propCanExtractAll : 1;
+
+	/* used by the progress signal */
+
+	int     n_file;
+	int     n_files;         /* used by the progress signal */
 
 	/*<private>*/
 
@@ -121,6 +129,12 @@ struct _FRCommandClass
 	void        (*done)           (FRCommand   *comm,
 				       FRAction     action,
 				       FRProcError *error);
+
+        void        (*progress)       (FRCommand   *comm,
+				       double       fraction);
+
+        void        (*message)        (FRCommand   *comm,
+				       const char  *msg);
 };
 
 GType          fr_command_get_type           (void);
@@ -159,6 +173,17 @@ void           fr_command_uncompress         (FRCommand     *comm);
 
 void           fr_command_recompress         (FRCommand     *comm,
 					      FRCompression  compression);
+
+/* protected functions */
+
+void           fr_command_progress           (FRCommand     *comm,
+					      double         fraction);
+
+void           fr_command_message            (FRCommand     *comm,
+					      const char    *msg);
+
+void           fr_command_set_n_files        (FRCommand     *comm,
+					      int            n_files);
 
 /* private functions */
 

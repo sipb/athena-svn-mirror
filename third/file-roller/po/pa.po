@@ -1,0 +1,1120 @@
+# translation of file-roller.HEAD.pa.po to Punjabi
+# translation of pa.po to Punjabi
+# Copyright (C) 2004 THE file-roller.HEAD'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the file-roller.HEAD package.
+# Amanpreet Singh Alam <amanlinux@netscape.net>, 2004.
+# Amanpreet Singh Alam <aalam@redhat.com>, 2004.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: file-roller.HEAD.pa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"PO-Revision-Date: 2004-08-05 19:20+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
+"Language-Team: Punjabi <pa@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
+
+#: component/File_Roller_Component.server.in.in.h:1
+msgid "Create Archive..."
+msgstr "ਸੁਕੰਚਿਤ ਬਣਾਉ..."
+
+#: component/File_Roller_Component.server.in.in.h:2
+msgid "Extract Here"
+msgstr "ਇਥੇ ਖੋਲ੍ਹੋ"
+
+#: component/File_Roller_Component.server.in.in.h:3
+msgid "File Roller Component add operations"
+msgstr "ਫਾਇਲ ਰੋਲਰ ਭਾਗ ਜੋੜਨ ਕਾਰਵਾਈ"
+
+#: component/File_Roller_Component.server.in.in.h:4
+msgid "File Roller Component extract operations"
+msgstr "ਫਾਇਲ ਰੋਲਰ ਭਾਗ ਖੋਲ੍ਹਣ ਕਾਰਵਾਈ"
+
+#: component/File_Roller_Component.server.in.in.h:5
+msgid "File roller component"
+msgstr "ਫਾਇਲ ਰੋਲਰ ਭਾਗ"
+
+#: file-roller.desktop.in.h:1
+msgid "Archive Manager"
+msgstr "ਸੁਕੰਚਿਤ ਪ੍ਰਬੰਧਕ"
+
+#: file-roller.desktop.in.h:2
+msgid "Create and modify an archive"
+msgstr "ਇੱਕ ਸੁਕੰਚਿਤ ਬਣਾਉ ਅਤੇ ਸੋਧੋ"
+
+#: src/actions.c:97
+msgid "Automatic"
+msgstr "ਸਵੈ-ਚਾਲਤ"
+
+#: src/actions.c:98
+msgid "Arj (.arj)"
+msgstr "Arj (.arj)"
+
+#: src/actions.c:99
+msgid "Ear (.ear)"
+msgstr "Ear (.ear)"
+
+#: src/actions.c:100
+msgid "Jar (.jar)"
+msgstr "Jar (.jar)"
+
+#: src/actions.c:101
+msgid "Lha (.lzh)"
+msgstr "Lha (.lzh)"
+
+#: src/actions.c:102
+msgid "Rar (.rar)"
+msgstr "Rar (.rar)"
+
+#: src/actions.c:103
+msgid "Tar uncompressed (.tar)"
+msgstr "Tar ਨਾ-ਸੁਕੰਚਿਤ (.tar)"
+
+#: src/actions.c:104
+msgid "Tar compressed with bzip (.tar.bz)"
+msgstr "Tar ਸੁਕੰਚਿਤ bzip ਨਾਲ (.tar.bz)"
+
+#: src/actions.c:105
+msgid "Tar compressed with bzip2 (.tar.bz2)"
+msgstr "Tar ਸੁਕੰਚਿਤ bzip2 ਨਾਲ (.tar.bz2)"
+
+#: src/actions.c:106
+msgid "Tar compressed with gzip (.tar.gz)"
+msgstr "Tar ਸੁਕੰਚਿਤ gzip ਨਾਲ (.tar.gz)"
+
+#: src/actions.c:107
+msgid "Tar compressed with lzop (.tar.lzo)"
+msgstr "Tar ਸੁਕੰਚਿਤ lzop ਨਾਲ (.tar.lzo)"
+
+#: src/actions.c:108
+msgid "Tar compressed with compress (.tar.Z)"
+msgstr "Tar ਸੁਕੰਚਿਤ compress ਨਾਲ (.tar.Z)"
+
+#: src/actions.c:109
+msgid "War (.war)"
+msgstr "War (.war)"
+
+#: src/actions.c:110
+msgid "Zip (.zip)"
+msgstr "ਜ਼ਿਪ (.zip)"
+
+#: src/actions.c:111
+msgid "Zoo (.zoo)"
+msgstr "ਜ਼ੂ (.zoo)"
+
+#: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+msgid "Could not create the archive"
+msgstr "ਸੁਕੰਚਿਤ ਬਣਾ ਨਹੀ ਸਕਿਆ"
+
+#: src/actions.c:177 src/actions.c:501 src/dlg-batch-add.c:102
+msgid "You have to specify an archive name."
+msgstr "ਤੁਹਾਨੂੰ ਇੱਕ ਸੁਕੰਚਿਤ ਨਾਂ ਦੇਣਾ ਚਾਹੀਦਾ ਹੈ "
+
+#: src/actions.c:197 src/actions.c:521
+msgid "You don't have permission to create an archive in this folder"
+msgstr "ਤੁਹਾਡੇ ਕੋਲ ਇਸ ਫੋਲਡਰ ਵਿੱਚ ਸੁਕੰਚਿਤ ਬਣਾਉਣ ਦਾ ਅਧਿਕਾਰ ਨਹੀ ਹੈ"
+
+#: src/actions.c:227 src/actions.c:542 src/actions.c:725 src/actions.c:906
+msgid "The archive already exists.  Do you want to overwrite it?"
+msgstr "ਸੁਕੰਚਿਤ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ | ਕੀ ਇਸ ਉਪੱਰ ਲਿਖ ਦਿੱਤਾ ਜਾਵੇ ?"
+
+#: src/actions.c:230 src/actions.c:545 src/actions.c:728 src/actions.c:909
+msgid "Overwrite"
+msgstr "ਉਪੱਰ ਲਿਖੋ"
+
+#: src/actions.c:247 src/actions.c:562
+msgid "Could not delete the old archive."
+msgstr "ਪੁਰਾਣੇ ਸੁਕੰਚਿਤ ਨੂੰ ਹਟਾਇਆ ਨਹੀ ਜਾ ਸਕਿਆ"
+
+#: src/actions.c:293
+msgid "New"
+msgstr "ਨਵਾਂ"
+
+#: src/actions.c:305 src/actions.c:434 src/actions.c:621
+msgid "All archives"
+msgstr "ਸਾਰੇ ਸੁਕੰਚਿਤ"
+
+#: src/actions.c:312 src/actions.c:441 src/actions.c:628
+msgid "All files"
+msgstr "ਸਾਰੀਆਂ ਫਾਇਲਾਂ"
+
+#: src/actions.c:322 src/actions.c:636
+msgid "Archive type:"
+msgstr "ਸੁਕੰਚਿਤ ਕਿਸਮ:"
+
+#: src/actions.c:422 src/ui.h:114
+msgid "Open"
+msgstr "ਖੋਲ੍ਹੋ"
+
+#: src/actions.c:500 src/actions.c:520
+msgid "Could not save the archive"
+msgstr "ਸੁਕੰਚਿਤ ਨੂੰ ਸੰਭਾਲਿਆ ਨਹੀ ਜਾ ਸਕਿਆ "
+
+#: src/actions.c:609
+msgid "Save"
+msgstr "ਸੰਭਾਲੋ"
+
+#: src/actions.c:751
+msgid "Could not copy the archive"
+msgstr "ਸੁਕੰਚਿਤ ਦੀ ਨਕਲ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕੀ"
+
+#: src/actions.c:771
+msgid "Could not move the archive"
+msgstr "ਸੁਕੰਚਿਤ ਨੂੰ ਭੇਜਿਆ ਨਹੀ ਜਾ ਸਕਿਆ"
+
+#: src/actions.c:800
+msgid "Copy"
+msgstr "ਨਕਲ"
+
+#: src/actions.c:800
+msgid "Move"
+msgstr "ਭੇਜੋ"
+
+#: src/actions.c:805 src/ui.h:66
+msgid "_Copy"
+msgstr "ਨਕਲ"
+
+#: src/actions.c:805
+msgid "_Move"
+msgstr "ਭੇਜੋ"
+
+#: src/actions.c:876 src/window.c:4924
+msgid "Rename"
+msgstr "ਨਾਂ ਤਬਦੀਲ"
+
+#: src/actions.c:877
+msgid "New archive name (without extension)"
+msgstr "ਨਵੇ ਸੁਕੰਚਿਤ ਦਾ ਨਾਂ(ਐਕਸ਼ਟੇਸ਼ਨ ਬਿਨਾਂ)"
+
+#: src/actions.c:881 src/window.c:4929
+msgid "_Rename"
+msgstr "ਨਾਂ-ਤਬਦੀਲ"
+
+#: src/actions.c:982
+msgid ""
+"The archive cannot be moved to the Trash. Do you want to delete it "
+"permanently?"
+msgstr "ਸੁਕੰਚਿਤ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜਿਆ ਜਾ ਸਕਦਾ ਹੈ  ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਹਮੇਸ਼ਾ ਲਈ ਹਟਾਉਣਾ ਚਾਹੋਗੇ ?"
+
+#: src/actions.c:1219 src/window.c:4643
+msgid "Last Output"
+msgstr "ਅਖੀਰੀ ਆਉਟਪੁੱਟ"
+
+#: src/actions.c:1239 src/dlg-extract.c:87
+msgid "Could not display help"
+msgstr "ਸਹਾਇਤਾ ਨਹੀ ਵੇਖਾ ਸਕਦਾ"
+
+#: src/actions.c:1272
+msgid "translator_credits"
+msgstr "ਅਮਨਪ੍ਰੀਤ ਸਿੰਘ ਆਲਮ <aalam@redhat.com> "
+
+#. Create the application.
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
+#: src/window.c:1286 src/window.c:3111
+msgid "File Roller"
+msgstr "ਫਾਇਲ ਰੋਲਰ"
+
+#: src/actions.c:1283
+msgid "An archive manager for GNOME."
+msgstr "ਗਨੋਮ ਲਈ ਸੁਕੰਚਿਤ ਪ੍ਰਬੰਧਕ "
+
+#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
+#: src/dlg-add-folder.c:247
+#, c-format
+msgid "You don't have the right permissions to read files from folder \"%s\""
+msgstr "ਤੁਹਾਡੇ ਕੋਲ ਫੋਲਡਰ \"%s\"ਵਿੱਚੋ ਫਾਇਲਾਂ ਨੂੰ ਵੇਖਣ ਲਈ ਠੀਕ ਅਧਿਕਾਰ ਨਹੀ ਹਨ "
+
+#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
+#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+msgid "Could not add the files to the archive"
+msgstr "ਫਾਇਲਾਂ ਨੂੰ ਸੁਕੰਚਿਤ ਵਿੱਚ ਜੋੜਿਿਆ ਨਹੀ ਜਾ ਸਕਦਾ"
+
+#: src/dlg-add-files.c:179
+msgid "Add Files"
+msgstr "ਫਾਇਲਾਂ ਸ਼ਾਮਿਲ "
+
+#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
+msgid "_Add only if newer"
+msgstr "ਜੋੜੋ ਤਾਂ ਹੀ ਜੇ ਨਵੀ ਹੈ(_A)"
+
+#: src/dlg-add-folder.c:309
+msgid "Add a Folder"
+msgstr "ਇੱਕ ਫੋਲਡਰ ਸ਼ਾਮਿਲ"
+
+#: src/dlg-add-folder.c:322
+msgid "_Include subfolders"
+msgstr "ਸਬ-ਫੋਲਡਰ ਵੀ ਜੋੜੋ(_I)"
+
+#: src/dlg-add-folder.c:323
+msgid "Exclude folders that are symbolic lin_ks"
+msgstr "ਫੋਲਡਰ ਛੱਡ ਦਿਉ, ਜੋ ਕਿ ਨਿਸ਼ਾਨ ਸੰਬੰਧ ਹੀ ਹਨ"
+
+#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
+msgid "example: *.o; *.bak"
+msgstr "ਉਦਾਹਰਨ ਲਈ: *.o; *.bak"
+
+#: src/dlg-add-folder.c:327
+msgid "_Include files:"
+msgstr "ਫਾਇਲਾਂ ਸ਼ਾਮਿਲ:(_I)"
+
+#: src/dlg-add-folder.c:332
+msgid "E_xclude files:"
+msgstr "ਫਾਇਲਾਂ ਖਾਰਿਜ:"
+
+#: src/dlg-add-folder.c:335
+msgid "_Load Options"
+msgstr "ਲੋਡ ਚੋਣ(_L)"
+
+#: src/dlg-add-folder.c:336
+msgid "Sa_ve Options"
+msgstr "ਸੰਭਾਲ ਚੋਣ"
+
+#: src/dlg-add-folder.c:796
+msgid "Save Options"
+msgstr "ਸੰਭਾਲ ਚੋਣ"
+
+#: src/dlg-add-folder.c:797
+msgid "Options Name:"
+msgstr "ਚੋਣ ਨਾਂ"
+
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
+#: src/window.c:3969
+msgid "Archive type not supported."
+msgstr "ਸੁਕੰਚਿਤ ਕਿਸਮ ਸਹਾਇਕ ਨਹੀ ਹੈ"
+
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+msgid "Destination folder does not exist.  Do you want to create it?"
+msgstr "ਨਿਯਤ ਫੋਲਡਰ ਮੌਜੂਦ ਨਹੀ ਹੈ  ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਬਣਾਉਣਾ ਚਾਹੋਗੇ ?"
+
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+msgid "Create _Folder"
+msgstr "ਫੋਲਡਰ ਬਣਾਉ"
+
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#, c-format
+msgid "Could not create the destination folder: %s."
+msgstr "ਨਿਯਤ ਫੋਲਡਰ ਬਣ ਨਹੀ ਸਕਿਆ: %s."
+
+#: src/dlg-batch-add.c:189
+msgid "Archive not created"
+msgstr "ਸੁਕੰਚਿਤ ਨਹੀ ਬਣਿਆ"
+
+#: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
+#: src/window.c:4234 src/window.c:4254
+msgid "Extraction not performed"
+msgstr "ਖੋਲਣਾ ਸਫਲ ਨਹੀ ਹੈ"
+
+#: src/dlg-extract.c:216
+#, c-format
+msgid ""
+"You don't have the right permissions to extract archives in the folder \"%s\""
+msgstr "ਤੁਹਾਨੂੰ ਫੋਲਡਰ \"%s\" ਵਿੱਚ ਸੁਕੰਚਿਤ ਖੋਲਣ ਲਈ ਠੀਕ ਅਧਿਕਾਰ ਨਹੀ ਹਨ "
+
+#: src/dlg-extract.c:380
+msgid "Files"
+msgstr "ਫਾਇਲਾਂ"
+
+#: src/dlg-extract.c:388 src/dlg-extract.c:438
+msgid "    "
+msgstr "    "
+
+#: src/dlg-extract.c:397 src/file_roller.glade.h:17
+msgid "_Files:"
+msgstr "ਫਾਇਲਾਂ:"
+
+#: src/dlg-extract.c:408 src/file_roller.glade.h:20
+msgid "example: *.txt; *.doc"
+msgstr "ਉਦਾਹਰਨ ਲਈ: *.txt; *.doc"
+
+#: src/dlg-extract.c:411 src/file_roller.glade.h:14
+msgid "_All files"
+msgstr "ਸਾਰੀਆਂ  ਫਾਇਲਾਂ(_A)"
+
+#: src/dlg-extract.c:418 src/file_roller.glade.h:19
+msgid "_Selected files"
+msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ"
+
+#: src/dlg-extract.c:429
+msgid "Actions"
+msgstr "ਕਾਰਵਾਈਆਂ"
+
+#: src/dlg-extract.c:445
+msgid "R_e-create folders"
+msgstr "ਮੁੜ ਫੋਲਡਰ ਬਣਾਉ"
+
+#: src/dlg-extract.c:449
+msgid "Over_write existing files"
+msgstr "ਮੌਜੂਦਾ ਫਾਇਲਾਂ ਉਪੱਰ ਲਿਖ ਦਿਉ"
+
+#: src/dlg-extract.c:453
+msgid "Do not e_xtract older files"
+msgstr "ਪੁਰਾਣੀਆਂ ਫਾਇਲਾਂ ਨਾ ਖੋਲ੍ਹੋ"
+
+#: src/dlg-extract.c:459 src/file_roller.glade.h:18
+msgid "_Password:"
+msgstr "ਗੁਪਤ-ਕੋਡ:"
+
+#: src/dlg-extract.c:467
+msgid "_Open destination folder after extraction"
+msgstr "ਖੋਲਣ ਮਗਰੋ ਨਿਯਤ ਫੋਲਡਰ ਖੋਲ੍ਹੋ"
+
+#: src/dlg-extract.c:494 src/ui.h:94
+msgid "Extract"
+msgstr "ਖੋਲ੍ਹੋ"
+
+#: src/dlg-prop.c:105
+msgid "Path:"
+msgstr "ਰਾਹ:"
+
+#: src/dlg-prop.c:118
+msgid "Name:"
+msgstr "ਨਾਂ:"
+
+#: src/dlg-prop.c:125
+#, c-format
+msgid "%s Properties"
+msgstr "%s ਵਿਸ਼ੇਸਤਾ"
+
+#: src/dlg-prop.c:134
+msgid "Modified on:"
+msgstr "ਸੋਧ ਮਿਤੀ:"
+
+#: src/dlg-prop.c:140 src/window.c:425
+msgid "%d %B %Y, %H:%M"
+msgstr "%d %B %Y, %H:%M"
+
+#: src/dlg-prop.c:148
+msgid "Archive size:"
+msgstr "ਸੁਕੰਚਿਤ ਆਕਾਰ:"
+
+#: src/dlg-prop.c:159
+msgid "Content size:"
+msgstr "ਭਾਗ ਆਕਾਰ:"
+
+#: src/dlg-prop.c:178
+msgid "Compression ratio:"
+msgstr "ਸੁਕੰਚਿਤ ਅਨੁਪਾਤ:"
+
+#: src/dlg-prop.c:193
+msgid "Number of files:"
+msgstr "ਫਾਇਲਾਂ ਦੀ ਗਿਣਤੀ:"
+
+#: src/file-data.c:28
+msgid "Unknown type"
+msgstr "ਅਣਪਛਾਤੀ ਕਿਸਮ"
+
+#: src/file-data.c:29
+msgid "Symbolic link"
+msgstr "ਨਿਸ਼ਾਨ ਸੰਬੰਧ"
+
+#: src/file-utils.c:558
+msgid "Cannot find a terminal, using xterm, even if it may not work"
+msgstr "ਟਰਮੀਨਲ ਨਹੀ ਲੱਭਾ, xterm ਵਰਤ ਕੇ, ਵੀ ਇਹ ਕੰਮ ਨਹੀ ਕਰਦਾ"
+
+#: src/file_roller.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: src/file_roller.glade.h:2
+msgid ""
+"<i><b>Note:</b> the password will be used to encrypt files you add to the "
+"current archive, and to decrypt files you extract from the current archive. "
+"When the archive is closed the password will be deleted.</i>"
+msgstr ""
+"<i><b>ਟਿੱਪਣੀ:</b>ਗੁਪਤ-ਕੋਡ, ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਵਿੱਚ ਫਾਇਲਾਂ ਨੂੰ ਉਲਝਾਉਣ ਲਈ ਅਤੇ ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਤੋ "
+"ਫਾਇਲ ਨੂੰ ਸੁਲਝਾ ਕੇ ਖੋਲਣ ਲਈ ਵਰਤਿਆ ਜਾਦਾ ਹੈ ਜਦੋ ਇਹ ਸੁਕੰਚਿਤ ਨੂੰ ਬੰਦ ਕੀਤਾ ਜਾਵੇਗਾ ਤਾਂ ਗੁਪਤ-ਕੋਡ ਖਤਮ "
+"ਹੋ ਜਾਵੇਗਾ</i>"
+
+#: src/file_roller.glade.h:3
+msgid "A_vailable application:"
+msgstr "ਉਪਲੱਬਧ ਕਾਰਜ:"
+
+#: src/file_roller.glade.h:4
+msgid "C_reate"
+msgstr "ਬਣਾਉ"
+
+#: src/file_roller.glade.h:5
+msgid "Create Archive"
+msgstr "ਸੁਕੰਚਿਤ ਬਣਾਉ "
+
+#: src/file_roller.glade.h:6
+msgid "Delete"
+msgstr "ਹਟਾਉ"
+
+#: src/file_roller.glade.h:7
+msgid "Load Options"
+msgstr "ਚੋਣ ਲੋਡ ਕਰੋ"
+
+#: src/file_roller.glade.h:8
+msgid "Open Files"
+msgstr "ਫਾਇਲਾਂ ਖੋਲ੍ਹੋ"
+
+#: src/file_roller.glade.h:9
+msgid "Open with an _application"
+msgstr "ਕਾਰਜ ਨਾਲ ਖੋਲ੍ਹੋ"
+
+#: src/file_roller.glade.h:10
+msgid "Password"
+msgstr "ਗੁਪਤ-ਕੋਡ"
+
+#: src/file_roller.glade.h:11
+msgid "R_ecent applications:"
+msgstr "ਤਾਜ਼ੇ ਕਾਰਜ:"
+
+#: src/file_roller.glade.h:12
+msgid "View File"
+msgstr "ਫਾਇਲ ਵੇਖੋ"
+
+#: src/file_roller.glade.h:13
+msgid "View with internal _viewer"
+msgstr "ਅੰਦਰੂਨੀ ਦਰਸ਼ਕ ਨਾਲ ਵੇਖੋ"
+
+#: src/file_roller.glade.h:15
+msgid "_Application:"
+msgstr "ਕਾਰਜ:"
+
+#: src/file_roller.glade.h:16
+msgid "_Archive:"
+msgstr "ਸੁਕੰਚਿਤ:"
+
+#: src/fr-archive.c:606
+msgid "The file does not exist."
+msgstr "ਫਾਇਲ ਮੌਜੂਦ ਨਹੀ ਹੈ "
+
+#: src/fr-command-tar.c:396
+msgid "Adding file: "
+msgstr "ਫਾਇਲ ਜੋੜੋ:"
+
+#: src/fr-command-tar.c:442
+msgid "Removing file: "
+msgstr "ਫਾਇਲ ਹਟਾਉ:"
+
+#: src/fr-command-tar.c:451 src/window.c:1388
+msgid "Deleting files from archive"
+msgstr "ਸੁਕੰਚਿਤ ਵਿੱਚੋ ਫਾਇਲਾਂ ਹਟਾਇਆ ਜਾ ਰਹੀਆਂ ਹਨ"
+
+#: src/fr-command-tar.c:484
+msgid "Extracting file: "
+msgstr "ਫਾਇਲ ਖੋਲ੍ਹੋ:"
+
+#: src/fr-command-tar.c:529
+msgid "Recompressing archive"
+msgstr "ਸੁਕੰਚਿਤ ਨੂੰ ਮੁੜ ਸੁੰਘੜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: src/fr-command-tar.c:663
+msgid "Decompressing archive"
+msgstr "ਸੁਕੰਚਿਤ ਨੂੰ ਮੁੜ ਖੋਲਿਆ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: src/fr-stock.c:44
+msgid "_Add"
+msgstr "ਜੋੜੋ"
+
+#: src/fr-stock.c:45
+msgid "_Extract"
+msgstr "ਖੋਲ੍ਹੋ"
+
+#: src/fr-stock.c:46 src/ui.h:36 src/ui.h:170
+msgid "_View"
+msgstr "ਵੇਖੋ"
+
+#. Button
+#: src/gtk-utils.c:421
+msgid "Command _Line Output"
+msgstr "ਕਮਾਂਡ ਲਾਈਨ ਆਉਟਪੁੱਟ"
+
+#: src/main.c:60
+msgid "Add files to the specified archive and quit the program"
+msgstr "ਨਿਰਧਾਰਿਤ ਸੁਕੰਚਿਤ ਵਿੱਚ ਫਾਇਲਾਂ ਜੋੜੋ ਅਤੇ ਕਾਰਜ ਵਿੱਚੋ ਬਾਹਰ"
+
+#: src/main.c:61
+msgid "ARCHIVE"
+msgstr "ਸੁਕੰਚਿਤ"
+
+#: src/main.c:64
+msgid "Add files asking the name of the archive and quit the program"
+msgstr "ਸੁਕੰਚਿਤ ਦਾ ਨਾਂ ਪੁੱਛ ਕੇ, ਵਿੱਚ ਫਾਇਲਾਂ ਜੋੜੋ ਅਤੇ ਕਾਰਜ ਵਿੱਚੋ ਬਾਹਰ"
+
+#: src/main.c:68
+msgid "Extract archives to the specified folder and quit the program"
+msgstr "ਨਿਰਧਾਰਿਤ ਫੋਲਡਰ ਵਿੱਚ ਸੁਕੰਚਿਤ ਖੋਲ੍ਹੋ ਅਤੇ ਕਾਰਜ ਵਿੱਚੋ ਬਾਹਰ"
+
+#: src/main.c:69 src/main.c:77
+msgid "FOLDER"
+msgstr "ਫੋਲਡਰ"
+
+#: src/main.c:72
+msgid "Extract archives asking the destination folder and quit the program"
+msgstr "ਨਿਯਤ ਫੋਲਡਰ ਬਾਰੇ ਪੁੱਛੋ, ਸੁਕੰਚਿਤ ਖੋਲ੍ਹੋ ਅਤੇ ਕਾਰਜ ਵਿੱਚੋ ਬਾਹਰ"
+
+#: src/main.c:76
+msgid "Default folder to use for the '--add' and '--extract' commands"
+msgstr "ਮੂਲ ਫੋਲਡਰ, '--add' ਅਤੇ '--extract'  ਕਮਾਂਡਾਂ ਦੇ ਵਰਤਣ ਲਈ"
+
+#: src/main.c:80
+msgid "Create destination folder without asking confirmation"
+msgstr "ਨਿਯਤ ਫੋਲਡਰ ਬਿਨਾਂ ਪੁੱਛੇ ਹੀ ਬਣਾਉ"
+
+#: src/ui.h:34
+msgid "_Archive"
+msgstr "ਸੁਕੰਚਿਤ"
+
+#: src/ui.h:35
+msgid "_Edit"
+msgstr "ਸੋਧ"
+
+#: src/ui.h:37
+msgid "_Help"
+msgstr "ਸਹਾਇਕਾ(_H)"
+
+#: src/ui.h:38
+msgid "_Arrange Files"
+msgstr "ਫਾਇਲ ਤਰਤੀਬਵਾਰ"
+
+#: src/ui.h:39
+msgid "Open R_ecent"
+msgstr "ਤਾਜ਼ਾ ਖੋਲ੍ਹੋ(_e)"
+
+#: src/ui.h:42
+msgid "_About"
+msgstr "ਇਸ ਬਾਰੇ"
+
+#: src/ui.h:43
+msgid "Information about the program"
+msgstr "ਕਾਰਜ ਬਾਰੇ ਜਾਣਕਾਰੀ"
+
+#: src/ui.h:46
+msgid "_Add Files..."
+msgstr "ਫਾਇਲ਼ਾਂ ਜੋੜੋ(_A)...."
+
+#: src/ui.h:47 src/ui.h:51
+msgid "Add files to the archive"
+msgstr "ਫਾਇਲਾਂ ਸੁਕੰਚਿਤ ਵਿੱਚ ਜੋੜੋ"
+
+#: src/ui.h:50
+msgid "Add"
+msgstr "ਜੋੜੋ"
+
+#: src/ui.h:54
+msgid "Add a _Folder..."
+msgstr "ਫੋਲਡਰ ਸ਼ਾਮਿਲ ਕਰੋ..."
+
+#: src/ui.h:55
+msgid "Add a folder to the archive"
+msgstr "ਫੋਲਡਰ ਸੁਕੰਚਿਤ ਵਿੱਚ ਜੋੜੋ"
+
+#: src/ui.h:58
+msgid "_Close"
+msgstr "ਬੰਦ(_C)"
+
+#: src/ui.h:59
+msgid "Close the current archive"
+msgstr "ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਬੰਦ ਕਰੋ"
+
+#: src/ui.h:62
+msgid "_Contents"
+msgstr "ਭਾਗ"
+
+#: src/ui.h:63
+msgid "Display the File Roller Manual"
+msgstr "ਫਾਇਲ ਰੋਲਰ ਦਸਤਾਵੇਜ਼ ਵੇਖਾਉ"
+
+#: src/ui.h:67
+msgid "Copy the selection"
+msgstr "ਚੋਣਵੇ ਦੀ ਨਕਲ"
+
+#: src/ui.h:70
+msgid "Cop_y..."
+msgstr "ਨਕਲ(_y)..."
+
+#: src/ui.h:71
+msgid "Copy current archive to another folder"
+msgstr "ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਨੂੰ ਹੋਰ ਫੋਲਡਰ ਨਕਲ ਕਰ ਦਿਉ"
+
+#: src/ui.h:74
+msgid "Cu_t"
+msgstr "ਕੱਟੋ(_t)"
+
+#: src/ui.h:75
+msgid "Cut the selection"
+msgstr "ਚੋਣਵੇਂ ਨੂੰ ਕੱਟੋ"
+
+#: src/ui.h:78
+msgid "_Delete..."
+msgstr "ਹਟਾਉ(_D)..."
+
+#: src/ui.h:79
+msgid "Delete the selection from the archive"
+msgstr "ਸੁਕੰਚਿਤ ਵਿੱਚੋਂ ਚੋਣੀਵੀਂ ਫਾਇਲਾਂ ਨੂੰ ਹਟਾਉ"
+
+#: src/ui.h:82
+msgid "Move to _Trash"
+msgstr "ਰੱਦੀ ਵਿੱਚ ਭੇਜੋ(_T)"
+
+#: src/ui.h:83
+msgid "Move current archive to trash"
+msgstr "ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਨੂੰ ਰੱਦੀ ਵਿੱਚ ਭੇਜ ਦਿਉ"
+
+#: src/ui.h:86
+msgid "Dese_lect All"
+msgstr "ਸਾਰੀ ਚੋਣ ਰੱਦ(_l)"
+
+#: src/ui.h:87
+msgid "Deselect all files"
+msgstr "ਸਾਰੀਆਂ ਫਾਇਲਾਂ ਦੀ ਚੋਣ ਰੱਦ"
+
+#: src/ui.h:90
+msgid "_Extract..."
+msgstr "ਖੋਲੋ(_E)...."
+
+#: src/ui.h:91 src/ui.h:95
+msgid "Extract files from the archive"
+msgstr "ਸੁਕੰਚਿਤ ਤੋ ਫਾਇਲਾਂ ਨੂੰ ਖੋਲ੍ਹੋ"
+
+#: src/ui.h:98
+msgid "_Last Output"
+msgstr "ਅਖੀਰੀ ਆਉਟਪੁੱਟ"
+
+#: src/ui.h:99
+msgid "View the output produced by the last executed command"
+msgstr "ਅਖੀਰੀ ਚਲਾਈ ਕਮਾਂਡ ਦੀ ਆਈ ਆਉਟਪੁੱਟ ਵੇਖੋ"
+
+#: src/ui.h:102
+msgid "_Move..."
+msgstr "ਭੇਜੋ(_M)..."
+
+#: src/ui.h:103
+msgid "Move current archive to another folder"
+msgstr "ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਨੂੰ ਕਿਸੇ ਫੋਲਡਰ ਵਿੱਚ ਭੇਜ ਦਿਉ"
+
+#: src/ui.h:106
+msgid "_New"
+msgstr "ਨਵਾਂ(_N)"
+
+#: src/ui.h:107
+msgid "Create a new archive"
+msgstr "ਨਵਾਂ ਸੁਕੰਚਿਤ ਬਣਾਉ"
+
+#: src/ui.h:110
+msgid "_Open..."
+msgstr "ਖੋਲੋ..."
+
+#: src/ui.h:111 src/ui.h:115
+msgid "Open archive"
+msgstr "ਸੁਕੰਚਿਤ ਖੋਲ੍ਹੋ"
+
+#: src/ui.h:118
+msgid "Open Fi_les..."
+msgstr "ਫਾਇਲਾਂ ਖੋਲੋ(_l)...."
+
+#: src/ui.h:119
+msgid "Open selected files with an application"
+msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਨੂੰ ਇੱਕ ਕਾਰਜ ਨਾਲ ਖੋਲ੍ਹੋ"
+
+#: src/ui.h:122
+msgid "Pass_word..."
+msgstr "ਗੁਪਤ-ਕੋਡ(_w)..."
+
+#: src/ui.h:123
+msgid "Specify a password for this archive"
+msgstr "ਇਸ ਸੁਕੰਚਿਤ ਲਈ ਗੁਪਤ-ਕੋਡ ਨਿਰਧਾਰਿਤ ਕਰੋ"
+
+#: src/ui.h:126 src/window.c:5036
+msgid "_Paste"
+msgstr "ਚਿਪਕਾਓ(_P)"
+
+#: src/ui.h:127
+msgid "Paste the clipboard"
+msgstr "ਕਲਿੱਪਬੋਰਡ ਵਿੱਚੋਂ ਚਿਪਕਾਓ"
+
+#: src/ui.h:130
+msgid "_Properties"
+msgstr "ਵਿਸ਼ੇਸਤਾ(_P)"
+
+#: src/ui.h:131
+msgid "Show archive properties"
+msgstr "ਸੁਕੰਚਿਤ ਦੀਆ ਵਿਸ਼ੇਸਤਾ"
+
+#: src/ui.h:134
+msgid "_Quit"
+msgstr "ਬੰਦ(_Q)"
+
+#: src/ui.h:135
+msgid "Quit the application"
+msgstr "ਕਾਰਜ ਬੰਦ ਕਰੋ"
+
+#: src/ui.h:138
+msgid "_Reload"
+msgstr "ਮੁੜ ਲੋਡ"
+
+#: src/ui.h:139
+msgid "Reload current archive"
+msgstr "ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਮੁੜ ਲੋਡ ਕਰੋ"
+
+#: src/ui.h:142 src/ui.h:146
+msgid "_Rename..."
+msgstr "ਨਾਂ-ਤਬਦੀਲ਼(_R)..."
+
+#: src/ui.h:143
+msgid "Rename the selection"
+msgstr "ਚੋਣਵੇਂ ਦਾ ਨਾ-ਤਬਦੀਲ"
+
+#: src/ui.h:147
+msgid "Rename current archive"
+msgstr "ਮੌਜੂਦ ਸੁਕੰਚਿਤ ਦਾ ਨਾਂ-ਤਬਦੀਲ"
+
+#: src/ui.h:150
+msgid "Save _As..."
+msgstr "ਇਸ ਤਰਾਂ ਸੰਭਾਲੋ(_A)..."
+
+#: src/ui.h:151
+msgid "Save the current archive with a different name"
+msgstr "ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਨੂੰ ਵੱਖਰੇ ਨਾਂ ਨਾਲ ਸੰਭਾਲੋ"
+
+#: src/ui.h:154
+msgid "Select _All"
+msgstr "ਸਾਰਾ ਚੁਣੋ( _A)"
+
+#: src/ui.h:155
+msgid "Select all files"
+msgstr "ਸਾਰੀਆ ਫਾਇਲਾਂ ਚੁਣੋ"
+
+#: src/ui.h:158
+msgid "_Stop"
+msgstr "ਰੋਕੋ"
+
+#: src/ui.h:159
+msgid "Stop current operation"
+msgstr "ਮੌਜੂਦਾ ਕਾਰਵਾਈ ਰੋਕੋ"
+
+#: src/ui.h:162
+msgid "_Test Integrity"
+msgstr "ਦਰਸੁਤੀ ਦੀ ਜਾਂਚ(_T)"
+
+#: src/ui.h:163
+msgid "Test whether the archive contains errors"
+msgstr "ਜਾਂਚ ਕਰੋ ਕਿ ਸੁਕੰਚਿਤ ਵਿੱਚ ਗਲਤੀਆ ਹਨ"
+
+#: src/ui.h:166
+msgid "_View File"
+msgstr "ਫਾਇਲ ਵੇਖੋ(_V)"
+
+#: src/ui.h:167 src/ui.h:171
+msgid "View the selected file"
+msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਵੇਖੋ"
+
+#: src/ui.h:179
+msgid "_Toolbar"
+msgstr "ਸੰਦਖਾਨਾ"
+
+#: src/ui.h:180
+msgid "View the main toolbar"
+msgstr "ਮੁੱਲ਼ ਸੰਦਖਾਨਾ ਵੇਖੋ"
+
+#: src/ui.h:184
+msgid "Stat_usbar"
+msgstr "ਸਥਿਤੀ-ਪੱਟੀ"
+
+#: src/ui.h:185
+msgid "View the statusbar"
+msgstr "ਸਥਿਤੀ-ਪੱਟੀ ਵੇਖੋ"
+
+#: src/ui.h:189
+msgid "_Reversed Order"
+msgstr "ਉਲਟ ਕ੍ਰਮ"
+
+#: src/ui.h:190
+msgid "Reverse the list order"
+msgstr "ਸੂਚੀ ਦਾ ਕ੍ਰਮ ਉਲਟ"
+
+#: src/ui.h:199
+msgid "View All _Files"
+msgstr "ਸਾਰੀਆਂ ਫਾਇਲਾਂ ਵੇਖੋ"
+
+#: src/ui.h:202
+msgid "View as a F_older"
+msgstr "ਫੋਲਡਰ ਵਾਂਗ ਵੇਖੋ"
+
+#: src/ui.h:210
+msgid "by _Name"
+msgstr "ਨਾਂ (_N)"
+
+#: src/ui.h:211
+msgid "Sort file list by name"
+msgstr "ਨਾਂ ਨਾਲ ਕ੍ਰਮਬੱਧ ਕਰੋ"
+
+#: src/ui.h:213
+msgid "by _Size"
+msgstr "ਅਕਾਰ(_S)"
+
+#: src/ui.h:214
+msgid "Sort file list by file size"
+msgstr "ਅਕਾਰ ਨਾਲ ਕ੍ਰਮਬੱਧ ਕਰੋ"
+
+#: src/ui.h:216
+msgid "by T_ype"
+msgstr "ਕਿਸਮ"
+
+#: src/ui.h:217
+msgid "Sort file list by type"
+msgstr "ਕਿਸਮ ਨਾਲ ਕ੍ਰਮਬੱਧ ਕਰੋ"
+
+#: src/ui.h:219
+msgid "by _Date modified"
+msgstr "ਸੋਧ ਮਿਤੀ"
+
+#: src/ui.h:220
+msgid "Sort file list by modification time"
+msgstr "ਸੋਧ ਸਮੇਂ ਨਾਲ ਕ੍ਰਮਬੱਧ ਕਰੋ"
+
+#: src/ui.h:222
+msgid "by _Location"
+msgstr "ਸਥਿਤੀ"
+
+#: src/ui.h:223
+msgid "Sort file list by location"
+msgstr "ਸਥਿਤੀ ਨਾਲ ਕ੍ਰਮਬੱਧ ਕਰੋ"
+
+#: src/window.c:698
+msgid "Folder"
+msgstr "ਫੋਲਡਰ"
+
+#: src/window.c:863
+msgid "[read only]"
+msgstr "[ਵੇਖਣ ਲਈ]"
+
+#: src/window.c:957
+#, c-format
+msgid "%d file (%s)"
+msgid_plural "%d files (%s)"
+msgstr[0] "%d ਫਾਇਲ (%s) "
+msgstr[1] "%d ਫਾਇਲਾਂ (%s) "
+
+#: src/window.c:962
+#, c-format
+msgid "%d file selected (%s)"
+msgid_plural "%d files selected (%s)"
+msgstr[0] "%d ਫਾਇਲ਼ ਚੁਣੀ (%s)"
+msgstr[1] "%d ਫਾਇਲ਼ਾਂ ਚੁਣੀ (%s)"
+
+#: src/window.c:1385
+msgid "Reading archive"
+msgstr "ਸੁਕੰਚਿਤ ਨੂੰ ਵੇਖਿਆ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: src/window.c:1391
+msgid "Adding files to archive"
+msgstr "ਸੁਕੰਚਿਤ ਵਿੱਚ ਫਾਇਲ ਜੋੜੀਆਂ ਜਾ ਰਹੀ ਹਨ"
+
+#: src/window.c:1394
+msgid "Extracting files from archive"
+msgstr "ਸੁਕੰਚਿਤ ਤੋ ਫਾਇਲ਼ਾਂ ਨੂੰ ਖੋਲਿਆ ਜਾ ਰਿਹਾ ਹੈ"
+
+#: src/window.c:1397
+msgid "Testing archive"
+msgstr "ਸੁਕੰਚਿਤ ਦੀ ਜਾਂਚ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+#: src/window.c:1400
+msgid "Getting the file list"
+msgstr "ਫਾਇਲ ਸੂਚੀ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+
+#: src/window.c:1407
+msgid "wait please..."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ..."
+
+#: src/window.c:1484
+#, c-format
+msgid "Could not display the folder \"%s\""
+msgstr "ਫੋਲਡਰ \"%s\" ਵੇਖਾ ਨਹੀ ਸਕਦਾ"
+
+#: src/window.c:1543
+msgid ""
+"This archive is password protected.\n"
+"Please specify a password with the command: Edit->Password"
+msgstr ""
+"ਇਹ ਸੁਕੰਚਿਤ ਗੁਪਤ-ਕੋਡ ਨਾਲ ਸੁਰਖਿਅਤ ਹੈ\n"
+"ਕਿਰਪਾ ਕਰਕੇ ਗੁਪਤ-ਕੋਡ ਕਮਾਂਡ ਨਾਲ ਨਿਰਧਾਰਿਤ ਕਰੋ: ਸੋਧ->ਗੁਪਤ-ਕੋਡ"
+
+#: src/window.c:1545
+msgid ""
+"The specified password is not valid, please specify a new password with the "
+"command: Edit->Password"
+msgstr ""
+"ਨਿਰਧਾਰਿਤ ਗੁਪਤ-ਕੋਡ ਠੀਕ ਨਹੀ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ ਨਵਾਂ ਗੁਪਤ-ਕੋਡ ਕਮਾਂਡ ਨਾਲ ਨਿਰਧਾਰਿਤ ਕਰੋ: ਸੋਧ-"
+">ਗੁਪਤ-ਕੋਡ"
+
+#: src/window.c:1550 src/window.c:2169
+msgid "Could not perform the operation"
+msgstr "ਕਾਰਵਾਈ ਨਹੀ ਕੀਤੀ ਜਾ ਸਕਦੀ"
+
+#: src/window.c:1575
+msgid "An error occurred while extracting files."
+msgstr "ਫਾਇਲਾਂ ਨੂੰ ਖੋਲਣ ਦੌਰਾਨ ਗਲਤੀ ਹੈ"
+
+#: src/window.c:1579
+msgid "An error occurred while loading the archive."
+msgstr "ਸੁਕੰਚਿਤ ਦੀ ਲੋਡਿੰਗ ਦੌਰਾਨ ਗਲਤੀ ਹੈ"
+
+#: src/window.c:1583
+msgid "An error occurred while deleting files from the archive."
+msgstr "ਸੁਕੰਚਿਤ ਵਿੱਚੋ ਫਾਇਲਾਂ ਹਟਾਉਣ ਦੌਰਾਨ ਗਲਤੀ ਹੈ"
+
+#: src/window.c:1587
+msgid "An error occurred while adding files to the archive."
+msgstr "ਸੁਕੰਚਿਤ ਵਿੱਚੋ ਫਾਇਲਾਂ ਜੋੜਨ ਦੌਰਾਨ ਗਲਤੀ ਹੈ"
+
+#: src/window.c:1591
+msgid "An error occurred while testing archive."
+msgstr "ਸੁਕੰਚਿਤ ਦੀ ਜਾਂਚ ਦੌਰਾਨ ਗਲਤੀ ਹੈ"
+
+#: src/window.c:1600
+msgid "Command not found."
+msgstr "ਕਮਾਂਡ ਨਹੀ ਲੱਭੀ"
+
+#: src/window.c:1603
+msgid "Command exited abnormally."
+msgstr "ਕਮਾਂਡ ਅਸਧਾਰਨ ਤਰੀਕੇ ਨਾਲ ਬੰਦ ਹੋ ਗਈ"
+
+#: src/window.c:1732
+msgid "Test Result"
+msgstr "ਨਤੀਜੇ ਦੀ ਜਾਂਚ"
+
+#: src/window.c:1968
+msgid "You don't have the right permissions."
+msgstr "ਤੁਹਾਡੇ ਕੋਲ ਠੀਕ ਅਧਿਕਾਰ ਨਹੀ ਹਨ"
+
+#: src/window.c:2006
+msgid "You can't add an archive to itself."
+msgstr "ਤੁਸੀ ਸੁਕੰਚਿਤ ਨੂੰ ਉਸ ਵਿੱਚ ਨਹੀ ਜੋੜ ਸਕਦੇ"
+
+#: src/window.c:2203
+msgid ""
+"Do you want to add this file to the current archive or open it as a new "
+"archive?"
+msgstr ""
+"ਕੀ ਤੁਸੀ ਇਸ ਫਾਇਲ ਨੂੰ ਮੌਜੂਦਾ ਸੁਕੰਚਿਤ ਵਿੱਚ ਹੀ ਜੋੜਨਾ ਚਾਹੋਗੇ ਜਾਂ ਇਸ ਨੂੰ ਨਵੇ ਸੁਕੰਚਿਤ ਵਿੱਚ ਖੋਲਣਾ ਚਾਹੋਗੇ ?"
+
+#: src/window.c:2240
+msgid "Do you want to create a new archive with these files?"
+msgstr "ਕੀ ਤੁਸੀ ਇਹਨਾਂ ਫਾਇਲਾਂ ਨਾਲ ਨਵਾਂ ਸੁਕੰਚਿਤ ਬਣਾਉਣਾ ਚਾਹੋਗੇ ?"
+
+#: src/window.c:2243
+msgid "Create _Archive"
+msgstr "ਸੁਕੰਚਿਤ ਬਣਾਉ"
+
+#: src/window.c:2564
+msgid "Size"
+msgstr "ਅਕਾਰ"
+
+#: src/window.c:2565
+msgid "Type"
+msgstr "ਕਿਸਮ"
+
+#: src/window.c:2566
+msgid "Date Modified"
+msgstr "ਸੋਧ ਮਿਤੀ"
+
+#: src/window.c:2567
+msgid "Location"
+msgstr "ਸਥਿਤੀ"
+
+#: src/window.c:2574
+msgid "Name"
+msgstr "ਨਾਂ"
+
+#: src/window.c:3031
+#, c-format
+msgid "Open '%s'"
+msgstr "'%s' ਖੋਲੋ"
+
+#: src/window.c:3350
+msgid "Go to the previous visited location"
+msgstr "ਪਹਿਲਾਂ ਜਾ ਚੁੱਕੇ ਸਥਿਤੀ ਤੇ ਜਾਉ"
+
+#: src/window.c:3358
+msgid "Go to the next visited location"
+msgstr "ਅਗਲੀ ਜਾ ਚੁੱਕੇ ਸਥਿਤੀ ਤੇ ਜਾਉ"
+
+#: src/window.c:3366
+msgid "Go up one level"
+msgstr "ਇੱਕ ਪਗ ਉਪੱਰ ਜਾਉ"
+
+#: src/window.c:3374
+msgid "Go to the home location"
+msgstr "ਘਰ ਸਥਿਤੀ ਤੇ ਜਾਉ"
+
+#. current location
+#: src/window.c:3393
+msgid "Location:"
+msgstr "ਸਥਿਤੀ:"
+
+#: src/window.c:3904
+#, c-format
+msgid "Could not open \"%s\""
+msgstr "\"%s\" ਨੂੰ ਖੋਲਿਆ ਨਹੀ ਜਾ ਸਕਿਆ"
+
+#: src/window.c:3962
+#, c-format
+msgid "Could not save the archive \"%s\""
+msgstr "ਸੁਕੰਚਿਤ \"%s\" ਨੂੰ ਸੰਭਾਲਿਆ ਨਹੀ ਜਾ ਸਕਿਆ"
+
+#: src/window.c:4856
+msgid "The new name is void."
+msgstr "ਨਵਾਂ ਨਾਂ ਖਾਲੀ ਹੈ"
+
+#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+msgid "Please use a different name."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਵੱਖਰਾ ਨਾਂ ਚੁਣੋ"
+
+#: src/window.c:4860
+msgid "The new name is equal to the old one."
+msgstr "ਇਹ ਨਾਂ ਤਾਂ ਪੁਰਾਣੇ ਵਰਗਾ ਹੀ ਹੈ"
+
+#: src/window.c:4869
+#, c-format
+msgid ""
+"The name \"%s\" is not valid because it cannot contain the characters: %s\n"
+"\n"
+"%s"
+msgstr ""
+"ਨਾਂ \"%s\" ਠੀਕ ਨਹੀ ਹੈ ਕਿਉਕਿ ਇਹ ਇਹ ਅੱਖਰ ਰੱਖਦਾ ਹੈ:%s\n"
+"\n"
+"%s"
+
+#: src/window.c:4925
+msgid "New folder name"
+msgstr "ਨਵਾਂ ਫੋਲਡਰ ਨਾਂ"
+
+#: src/window.c:4925
+msgid "New file name"
+msgstr "ਨਵੀ ਫਾਇਲ ਨਾਂ"
+
+#: src/window.c:4946
+msgid "Could not rename the folder"
+msgstr "ਫੋਲਡਰ ਦਾ ਨਾਂ-ਤਬਦੀਲ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
+
+#: src/window.c:4946
+msgid "Could not rename the file"
+msgstr "ਫਾਇਲ ਦਾ ਨਾਂ-ਤਬਦੀਲ ਨਹੀ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ"
+
+#: src/window.c:5031
+msgid "Paste Selection"
+msgstr "ਚੋਣਵਾਂ ਚਿਪਕਾਓ"
+
+#: src/window.c:5032
+msgid "Destination folder"
+msgstr "ਨਿਯਤ ਫੋਲਡਰ"
+
+#: src/window.c:5614
+msgid "Add files to an archive"
+msgstr "ਫਾਇਲਾਂ ਨੂੰ ਸੁਕੰਚਿਤ ਵਿੱਚ ਜੋੜੋ"
+
+#: src/window.c:5641
+msgid "Extract archive"
+msgstr "ਸੁਕੰਚਿਤ ਖੋਲ੍ਹੋ"

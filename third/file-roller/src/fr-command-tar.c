@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003, 2004 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,13 +20,17 @@
  *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 
 #include <glib.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
+#include <gnome.h>
 
 #include "file-data.h"
 #include "file-utils.h"
@@ -81,52 +85,145 @@ mktime_from_string (char *date_s,
 }
 
 
-static char *
-eat_spaces (char *line)
+static gboolean
+_match_pattern (const char *line, 
+		const char *pattern)
 {
-	while ((*line == ' ') && (*line != 0))
-		line++;
-	return line;
+	const char *l = line, *p = pattern;
+
+	for (; (*p != 0) && (*l != 0); p++, l++) {
+		if (*p != '%') {
+			if (*p != *l)
+				return FALSE;
+		} else {
+			p++;
+			switch (*p) {
+			case 'a':
+				break;
+			case 'n':
+				if (!isdigit (*l)) 
+					return FALSE;
+				break;
+			case 'c':
+				if (!isalpha (*l)) 
+					return FALSE;
+				break;
+			default:
+				return FALSE;
+			}
+		}
+	}
+	
+	return (*p == 0);
 }
 
 
-static char **
-split_line (char *line, 
-	    int   n_fields)
+static int
+get_index_from_pattern (const char *line, 
+			const char *pattern)
 {
-	char **fields;
-	char  *scan, *field_end;
-	int    i;
+	int         line_l, pattern_l;
+	const char *l;
 
-	fields = g_new0 (char *, n_fields + 1);
-	fields[n_fields + 1] = NULL;
+	line_l = strlen (line);
+	pattern_l = strlen (pattern);
 
-	scan = eat_spaces (line);
-	for (i = 0; i < n_fields; i++) {
-		field_end = strchr (scan, ' ');
-		fields[i] = g_strndup (scan, field_end - scan);
-		scan = eat_spaces (field_end);
-	}
+	if ((pattern_l == 0) || (line_l == 0))
+		return -1;
 
-	return fields;
+	for (l = line; *l != 0; l++) 
+		if (_match_pattern (l, pattern))
+			return (l - line);
+	
+	return -1;
 }
 
 
-static char *
-get_last_field (char *line)
+static char*
+get_next_field (const char *line,
+		int         start_from,
+		int         field_n)
 {
-	int   i;
-	char *field;
-	int   n = 6;
+	const char *f_start, *f_end;
+	
+	line = line + start_from;
 
-	n--;
-	field = eat_spaces (line);
-	for (i = 0; i < n; i++) {
-		field = strchr (field, ' ');
-		field = eat_spaces (field);
+	f_start = line;
+	while ((*f_start == ' ') && (*f_start != *line))
+		f_start++;
+	f_end = f_start;
+
+	while ((field_n > 0) && (*f_end != 0)) {
+		if (*f_end == ' ') {
+			field_n--;
+			if (field_n != 0) {
+				while ((*f_end == ' ') && (*f_end != *line))
+					f_end++;
+				f_start = f_end;
+			}
+		} else
+			f_end++;
+	}
+	
+	return g_strndup (f_start, f_end - f_start);
+}
+
+
+static char*
+get_prev_field (const char *line,
+		int         start_from,
+		int         field_n)
+{
+	const char *f_start, *f_end;
+
+	f_start = line + start_from - 1;
+	while ((*f_start == ' ') && (*f_start != *line))
+		f_start--;
+	f_end = f_start;
+
+	while ((field_n > 0) && (*f_start != *line)) {
+		if (*f_start == ' ') {
+			field_n--;
+			if (field_n != 0) {
+				while ((*f_start == ' ') && (*f_start != *line))
+					f_start--;
+				f_end = f_start;
+			}
+		} else
+			f_start--;
 	}
 
-	return field;
+	return g_strndup (f_start + 1, f_end - f_start);
+}
+
+
+static char*
+tar_get_last_field (const char *line,
+		    int         start_from,
+		    int         field_n)
+{
+	const char *f_start, *f_end;
+	
+	line = line + start_from;
+        
+	f_start = line;
+	while ((*f_start == ' ') && (*f_start != *line))
+		f_start++;
+	f_end = f_start;
+
+	while ((field_n > 0) && (*f_end != 0)) {
+		if (*f_end == ' ') {
+			field_n--;
+			if (field_n != 0) {
+				while ((*f_end == ' ') && (*f_end != *line))
+					f_end++;
+				f_start = f_end;
+			}
+		} else
+			f_end++;
+	}
+	
+	return g_strdup (f_start);
 }
 
 
@@ -134,28 +231,36 @@ static void
 process_line (char     *line, 
 	      gpointer  data)
 {
-	FileData   *fdata;
-	FRCommand  *comm = FR_COMMAND (data);
-	char      **fields;
-	char       *name_field;
+	FileData    *fdata;
+	FRCommand   *comm = FR_COMMAND (data);
+	char       **fields;
+	int          date_idx;
+	char        *field_date, *field_time, *field_size, *field_name;
 
 	g_return_if_fail (line != NULL);
 
 	fdata = file_data_new ();
 
-	fields = split_line (line, 5);
-	fdata->size = atol (fields[2]);
-	fdata->modified = mktime_from_string (fields[3], fields[4]);
-	g_strfreev (fields);
+	date_idx = get_index_from_pattern (line, "%n%n%n%n-%n%n-%n%n %n%n:%n%n");
+
+	field_size = get_prev_field (line, date_idx, 1);
+	fdata->size = atol (field_size);
+	g_free (field_size);
+
+	field_date = get_next_field (line, date_idx, 1);
+	field_time = get_next_field (line, date_idx, 2);
+	fdata->modified = mktime_from_string (field_date, field_time);
+	g_free (field_date);
+	g_free (field_time);
 
 	/* Full path */
 
-	name_field = get_last_field (line);
-	fields = g_strsplit (name_field, " -> ", 2);
+	field_name = tar_get_last_field (line, date_idx, 3);
+	fields = g_strsplit (field_name, " -> ", 2);
 
 	if (fields[1] == NULL) {
 		g_strfreev (fields);
-		fields = g_strsplit (name_field, " link to ", 2);
+		fields = g_strsplit (field_name, " link to ", 2);
 	}
 
 	if (*(fields[0]) == '/') {
@@ -169,6 +274,7 @@ process_line (char     *line,
 	if (fields[1] != NULL)
 		fdata->link = g_strdup (fields[1]);
 	g_strfreev (fields);
+	g_free (field_name);
 
 	fdata->name = g_strdup (file_name_from_path (fdata->full_path));
 	fdata->path = remove_level_from_path (fdata->full_path);
@@ -176,7 +282,7 @@ process_line (char     *line,
 
 	if (*fdata->name == 0)
 		file_data_free (fdata);
-	else
+	else 
 		comm->file_list = g_list_prepend (comm->file_list, fdata);
 }
 
@@ -216,19 +322,78 @@ add_compress_arg (FRCommand *comm)
 
 
 static void
+begin_tar_command (FRCommand *comm)
+{
+	char       *path = NULL;
+	const char *prev_path = NULL;
+	char       *temp = NULL;
+
+	/* In solaris gtar is present under /usr/sfw/bin */
+
+	prev_path = g_getenv ("PATH");
+	temp = g_strdup_printf ("PATH=%s:%s", prev_path, "/usr/sfw/bin");
+	putenv (temp);
+
+	path = g_find_program_in_path ("gtar");
+	if (path != NULL)
+		fr_process_begin_command (comm->process, path);
+	else
+		fr_process_begin_command (comm->process, "tar");
+
+	temp = g_strdup_printf ("PATH=%s", prev_path);
+	putenv (temp);
+
+	g_free (path);
+}
+
+
+static void
 fr_command_tar_list (FRCommand *comm)
 {
 	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
 				      process_line,
 				      comm);
 
-	fr_process_clear (comm->process);
-	fr_process_begin_command (comm->process, "tar");
+	begin_tar_command (comm);
+	fr_process_add_arg (comm->process, "--force-local");
 	fr_process_add_arg (comm->process, "-tvf");
 	fr_process_add_arg (comm->process, comm->e_filename);
 	add_compress_arg (comm);
 	fr_process_end_command (comm->process);
 	fr_process_start (comm->process);
+}
+
+
+static void
+process_line__generic (char     *line, 
+		       gpointer  data,
+		       char     *action_msg)
+{
+	FRCommand  *comm = FR_COMMAND (data);
+	char       *msg;
+
+	if (line == NULL)
+		return;
+
+	if (line[strlen (line) - 1] == '/') /* ignore directories */
+		return;
+
+	msg = g_strconcat (action_msg, line, NULL);
+	fr_command_message (comm, msg);
+	g_free (msg);
+
+	if (comm->n_files != 0) {
+		double fraction = (double) comm->n_file++ / comm->n_files;
+		fr_command_progress (comm, fraction);
+	}
+}
+
+
+static void
+process_line__add (char     *line, 
+		   gpointer  data)
+{
+	process_line__generic (line, data, _("Adding file: "));
 }
 
 
@@ -243,9 +408,13 @@ fr_command_tar_add (FRCommand     *comm,
 	FRCommandTar *c_tar = FR_COMMAND_TAR (comm);
 	GList        *scan;
 
-	/* Add files. */
+	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
+				      process_line__add,
+				      comm);
 
-	fr_process_begin_command (comm->process, "tar");
+	begin_tar_command (comm);
+	fr_process_add_arg (comm->process, "--force-local");
+	fr_process_add_arg (comm->process, "-v");
 
 	if (base_dir != NULL) {
 		gchar *e_base_dir = shell_escape (base_dir);
@@ -267,15 +436,37 @@ fr_command_tar_add (FRCommand     *comm,
 
 
 static void
+process_line__delete (char     *line, 
+		      gpointer  data)
+{
+	process_line__generic (line, data, _("Removing file: "));
+}
+
+
+static void
+begin_func__delete (gpointer data)
+{
+	FRCommand *comm = data;
+	fr_command_progress (comm, -1.0);
+	fr_command_message (comm, _("Deleting files from archive"));
+}
+
+
+static void
 fr_command_tar_delete (FRCommand *comm,
 		       GList     *file_list)
 {
 	FRCommandTar *c_tar = FR_COMMAND_TAR (comm);
 	GList        *scan;
 
-	/* Delete files. */
+	fr_process_set_out_line_func (comm->process, 
+				      process_line__delete,
+				      comm);
 
-	fr_process_begin_command (comm->process, "tar");
+	begin_tar_command (comm);
+	fr_process_set_begin_func (comm->process, begin_func__delete, comm);
+	fr_process_add_arg (comm->process, "--force-local");
+	fr_process_add_arg (comm->process, "-v");
 	fr_process_add_arg (comm->process, "--delete");
 	fr_process_add_arg (comm->process, "-f");
 	fr_process_add_arg (comm->process, c_tar->uncomp_filename);
@@ -283,6 +474,14 @@ fr_command_tar_delete (FRCommand *comm,
 	for (scan = file_list; scan; scan = scan->next)
 		fr_process_add_arg (comm->process, scan->data);
 	fr_process_end_command (comm->process);
+}
+
+
+static void
+process_line__extract (char     *line, 
+		       gpointer  data)
+{
+	process_line__generic (line, data, _("Extracting file: "));
 }
 
 
@@ -297,14 +496,19 @@ fr_command_tar_extract (FRCommand  *comm,
 {
 	GList *scan;
 
-	fr_process_begin_command (comm->process, "tar");
-	
+	fr_process_set_out_line_func (FR_COMMAND (comm)->process, 
+				      process_line__extract,
+				      comm);
+
+	begin_tar_command (comm);
+	fr_process_add_arg (comm->process, "--force-local");
+	fr_process_add_arg (comm->process, "-v");
 	fr_process_add_arg (comm->process, "-xf");
 	fr_process_add_arg (comm->process, comm->e_filename);
 	add_compress_arg (comm);
 
 	if (dest_dir != NULL) {
-		gchar *e_dest_dir = shell_escape (dest_dir);
+		char *e_dest_dir = shell_escape (dest_dir);
 		fr_process_add_arg (comm->process, "-C");
 		fr_process_add_arg (comm->process, e_dest_dir);
 		g_free (e_dest_dir);
@@ -318,11 +522,20 @@ fr_command_tar_extract (FRCommand  *comm,
 
 
 static void
+begin_func__recompress (gpointer data)
+{
+	FRCommand *comm = data;
+	fr_command_progress (comm, -1.0);
+	fr_command_message (comm, _("Recompressing archive"));
+}
+
+
+static void
 fr_command_tar_recompress (FRCommand     *comm,
 			   FRCompression  compression)
 {
 	FRCommandTar *c_tar = FR_COMMAND_TAR (comm);
-	gchar        *new_name = NULL;
+	char         *new_name = NULL;
 
 	switch (c_tar->compress_prog) {
 	case FR_COMPRESS_PROGRAM_NONE:
@@ -331,6 +544,7 @@ fr_command_tar_recompress (FRCommand     *comm,
 	case FR_COMPRESS_PROGRAM_GZIP:
 		fr_process_begin_command (comm->process, "gzip");
 		fr_process_set_sticky (comm->process, TRUE);
+		fr_process_set_begin_func (comm->process, begin_func__recompress, comm);
 		switch (compression) {
 		case FR_COMPRESSION_VERY_FAST:
 			fr_process_add_arg (comm->process, "-1"); break;
@@ -351,6 +565,7 @@ fr_command_tar_recompress (FRCommand     *comm,
 	case FR_COMPRESS_PROGRAM_BZIP:
 		fr_process_begin_command (comm->process, "bzip");
 		fr_process_set_sticky (comm->process, TRUE);
+		fr_process_set_begin_func (comm->process, begin_func__recompress, comm);
 		switch (compression) {
 		case FR_COMPRESSION_VERY_FAST:
 			fr_process_add_arg (comm->process, "-1"); break;
@@ -371,6 +586,7 @@ fr_command_tar_recompress (FRCommand     *comm,
 	case FR_COMPRESS_PROGRAM_BZIP2:
 		fr_process_begin_command (comm->process, "bzip2");
 		fr_process_set_sticky (comm->process, TRUE);
+		fr_process_set_begin_func (comm->process, begin_func__recompress, comm);
 		switch (compression) {
 		case FR_COMPRESSION_VERY_FAST:
 			fr_process_add_arg (comm->process, "-1"); break;
@@ -391,6 +607,7 @@ fr_command_tar_recompress (FRCommand     *comm,
 	case FR_COMPRESS_PROGRAM_COMPRESS: 
 		fr_process_begin_command (comm->process, "compress");
 		fr_process_set_sticky (comm->process, TRUE);
+		fr_process_set_begin_func (comm->process, begin_func__recompress, comm);
 		fr_process_add_arg (comm->process, "-f");
 		fr_process_add_arg (comm->process, c_tar->uncomp_filename);
 		fr_process_end_command (comm->process);
@@ -401,6 +618,7 @@ fr_command_tar_recompress (FRCommand     *comm,
 	case FR_COMPRESS_PROGRAM_LZOP:
 		fr_process_begin_command (comm->process, "lzop");
 		fr_process_set_sticky (comm->process, TRUE);
+		fr_process_set_begin_func (comm->process, begin_func__recompress, comm);
 		switch (compression) {
 		case FR_COMPRESSION_VERY_FAST:
 			fr_process_add_arg (comm->process, "-1"); break;
@@ -420,9 +638,9 @@ fr_command_tar_recompress (FRCommand     *comm,
 		break;
 	}
 
-	/* Restore original name. */
-
 	if (c_tar->name_modified) {
+		/* Restore original name. */
+		
 		fr_process_begin_command (comm->process, "mv");
 		fr_process_set_sticky (comm->process, TRUE);
 		fr_process_add_arg (comm->process, "-f");
@@ -438,20 +656,143 @@ fr_command_tar_recompress (FRCommand     *comm,
 
 
 static void
+begin_func__uncompress (gpointer data)
+{
+	FRCommand *comm = data;
+	fr_command_progress (comm, -1.0);
+	fr_command_message (comm, _("Decompressing archive"));
+}
+
+
+static char *
+get_uncompressed_name (FRCommandTar *c_tar,
+		       const char   *e_filename) 
+{
+	char *new_name = g_strdup (e_filename);
+	int   l = strlen (new_name);
+ 
+	switch (c_tar->compress_prog) {
+	case FR_COMPRESS_PROGRAM_NONE:
+		break;
+
+	case FR_COMPRESS_PROGRAM_GZIP:
+		/* X.tgz     -->  X.tar 
+		 * X.tar.gz  -->  X.tar */
+		if (file_extension_is (e_filename, ".tgz")) {
+			new_name[l - 2] = 'a';
+			new_name[l - 1] = 'r';
+		} else if (file_extension_is (e_filename, ".tar.gz")) 
+			new_name[l - 3] = 0;
+		break;
+
+	case FR_COMPRESS_PROGRAM_BZIP:
+		/* X.tbz     -->  X.tar 
+		 * X.tar.bz  -->  X.tar */
+		if (file_extension_is (e_filename, ".tbz")) {
+			new_name[l - 2] = 'a';
+			new_name[l - 1] = 'r';
+		} else if (file_extension_is (e_filename, ".tar.bz")) 
+			new_name[l - 3] = 0;
+		break;
+
+	case FR_COMPRESS_PROGRAM_BZIP2:
+		/* X.tbz2    -->  X.tar 
+		 * X.tar.bz2 -->  X.tar */
+		if (file_extension_is (e_filename, ".tbz2")) {
+			new_name[l - 3] = 'a';
+			new_name[l - 2] = 'r';
+			new_name[l - 1] = 0;
+		} else if (file_extension_is (e_filename, ".tar.bz2")) 
+			new_name[l - 4] = 0;
+		break;
+
+	case FR_COMPRESS_PROGRAM_COMPRESS: 
+		/* X.taz   -->  X.tar 
+		 * X.tar.Z -->  X.tar */
+		if (file_extension_is (e_filename, ".taz")) 
+			new_name[l - 1] = 'r';
+		else if (file_extension_is (e_filename, ".tar.Z")) 
+			new_name[l - 2] = 0;
+		break;
+
+	case FR_COMPRESS_PROGRAM_LZOP:
+		/* X.tzo     -->  X.tar 
+		 * X.tar.lzo -->  X.tar */
+		if (file_extension_is (e_filename, ".tzo")) {
+			new_name[l - 2] = 'a';
+			new_name[l - 1] = 'r';
+		} else if (file_extension_is (e_filename, ".tar.lzo")) 
+			new_name[l - 4] = 0;
+		break;
+	}
+	
+	return new_name;
+}
+
+
+#define MAX_TRIES 50
+
+
+static char *
+get_temp_name (FRCommandTar *c_tar,
+	       const char   *filepath) 
+{
+	char       *dirname = remove_level_from_path (filepath);
+	const char *filename = file_name_from_path (filepath);
+	char       *temp_name = NULL;
+	char       *e_temp_name = NULL;
+	char       *uncomp_temp_name = NULL;
+	static int  count = 0;
+	int         try = 0;
+
+	do {
+		char *tmp_file_name;
+		g_free (temp_name);
+		g_free (uncomp_temp_name);
+		tmp_file_name = g_strdup_printf ("fr.%d.%d.%s", 
+						 getpid (), 
+						 count++, 
+						 filename);
+		temp_name = g_build_filename (dirname, tmp_file_name, NULL);
+		g_free (tmp_file_name);
+		uncomp_temp_name = get_uncompressed_name (c_tar, temp_name);
+	} while ((path_is_file (temp_name)
+		  || path_is_file (uncomp_temp_name))
+		 && (try++ < MAX_TRIES));
+
+	g_free (uncomp_temp_name);
+	g_free (dirname);
+
+	e_temp_name = shell_escape (temp_name);
+	g_free (temp_name);
+
+	return e_temp_name;
+}
+
+
+static void
 fr_command_tar_uncompress (FRCommand *comm)
 {
 	FRCommandTar *c_tar = FR_COMMAND_TAR (comm);
-	gchar        *new_name;
-	gint          l;
+	char         *tmp_name;
 
 	if (c_tar->uncomp_filename != NULL) {
 		g_free (c_tar->uncomp_filename);
 		c_tar->uncomp_filename = NULL;
 	}
-	c_tar->name_modified = FALSE;
 
-	new_name = g_strdup (comm->e_filename);
-	l = strlen (new_name);
+	c_tar->name_modified = c_tar->compress_prog != FR_COMPRESS_PROGRAM_NONE;
+	if (c_tar->name_modified) {
+		tmp_name = get_temp_name (c_tar, comm->filename);
+		if (path_is_file (comm->filename)) {
+			fr_process_begin_command (comm->process, "mv");
+			fr_process_add_arg (comm->process, "-f");
+			fr_process_add_arg (comm->process, comm->e_filename);
+			fr_process_add_arg (comm->process, tmp_name);
+			fr_process_end_command (comm->process);
+		}
+	} else
+		tmp_name = g_strdup (comm->e_filename);
 
 	switch (c_tar->compress_prog) {
 	case FR_COMPRESS_PROGRAM_NONE:
@@ -460,99 +801,60 @@ fr_command_tar_uncompress (FRCommand *comm)
 	case FR_COMPRESS_PROGRAM_GZIP:
 		if (path_is_file (comm->filename)) {
 			fr_process_begin_command (comm->process, "gzip");
+			fr_process_set_begin_func (comm->process, begin_func__uncompress, comm);
 			fr_process_add_arg (comm->process, "-f");
 			fr_process_add_arg (comm->process, "-d");
-			fr_process_add_arg (comm->process, comm->e_filename);
+			fr_process_add_arg (comm->process, tmp_name);
 			fr_process_end_command (comm->process);
 		}
-
-		/* X.tgz     -->  X.tar 
-		 * X.tar.gz  -->  X.tar */
-		if (file_extension_is (comm->e_filename, ".tgz")) {
-			c_tar->name_modified = TRUE;
-			new_name[l - 2] = 'a';
-			new_name[l - 1] = 'r';
-		} else if (file_extension_is (comm->e_filename, ".tar.gz")) 
-			new_name[l - 3] = 0;
 		break;
 
 	case FR_COMPRESS_PROGRAM_BZIP:
 		if (path_is_file (comm->filename)) {
 			fr_process_begin_command (comm->process, "bzip");
+			fr_process_set_begin_func (comm->process, begin_func__uncompress, comm);
 			fr_process_add_arg (comm->process, "-f");
 			fr_process_add_arg (comm->process, "-d");
-			fr_process_add_arg (comm->process, comm->e_filename);
+			fr_process_add_arg (comm->process, tmp_name);
 			fr_process_end_command (comm->process);
 		}
-
-		/* X.tbz     -->  X.tar 
-		 * X.tar.bz  -->  X.tar */
-		if (file_extension_is (comm->e_filename, ".tbz")) {
-			c_tar->name_modified = TRUE;
-			new_name[l - 2] = 'a';
-			new_name[l - 1] = 'r';
-		} else if (file_extension_is (comm->e_filename, ".tar.bz")) 
-			new_name[l - 3] = 0;
 		break;
 
 	case FR_COMPRESS_PROGRAM_BZIP2:
 		if (path_is_file (comm->filename)) {
 			fr_process_begin_command (comm->process, "bzip2");
+			fr_process_set_begin_func (comm->process, begin_func__uncompress, comm);
 			fr_process_add_arg (comm->process, "-f");
 			fr_process_add_arg (comm->process, "-d");
-			fr_process_add_arg (comm->process, comm->e_filename);
+			fr_process_add_arg (comm->process, tmp_name);
 			fr_process_end_command (comm->process);
 		}
-
-		/* X.tbz2    -->  X.tar 
-		 * X.tar.bz2 -->  X.tar */
-		if (file_extension_is (comm->e_filename, ".tbz2")) {
-			c_tar->name_modified = TRUE;
-			new_name[l - 3] = 'a';
-			new_name[l - 2] = 'r';
-			new_name[l - 1] = 0;
-		} else if (file_extension_is (comm->e_filename, ".tar.bz2")) 
-			new_name[l - 4] = 0;
 		break;
 
 	case FR_COMPRESS_PROGRAM_COMPRESS: 
 		if (path_is_file (comm->filename)) {
 			fr_process_begin_command (comm->process, "uncompress");
+			fr_process_set_begin_func (comm->process, begin_func__uncompress, comm);
 			fr_process_add_arg (comm->process, "-f");
-			fr_process_add_arg (comm->process, comm->e_filename);
+			fr_process_add_arg (comm->process, tmp_name);
 			fr_process_end_command (comm->process);
 		}
-
-		/* X.taz   -->  X.tar 
-		 * X.tar.Z -->  X.tar */
-		if (file_extension_is (comm->e_filename, ".taz")) {
-			c_tar->name_modified = TRUE;
-			new_name[l - 1] = 'r';
-		} else if (file_extension_is (comm->e_filename, ".tar.Z")) 
-			new_name[l - 2] = 0;
 		break;
 
 	case FR_COMPRESS_PROGRAM_LZOP:
 		if (path_is_file (comm->filename)) {
 			fr_process_begin_command (comm->process, "lzop");
+			fr_process_set_begin_func (comm->process, begin_func__uncompress, comm);
 			fr_process_add_arg (comm->process, "-dfU");
 			fr_process_add_arg (comm->process, "--no-stdin");
-			fr_process_add_arg (comm->process, comm->e_filename);
+			fr_process_add_arg (comm->process, tmp_name);
 			fr_process_end_command (comm->process);
 		}
-
-		/* X.tzo     -->  X.tar 
-		 * X.tar.lzo -->  X.tar */
-		if (file_extension_is (comm->e_filename, ".tzo")) {
-			c_tar->name_modified = TRUE;
-			new_name[l - 2] = 'a';
-			new_name[l - 1] = 'r';
-		} else if (file_extension_is (comm->e_filename, ".tar.lzo")) 
-			new_name[l - 4] = 0;
 		break;
 	}
 
-	c_tar->uncomp_filename = new_name;
+	c_tar->uncomp_filename = get_uncompressed_name (c_tar, tmp_name);
+	g_free (tmp_name);
 }
 
 
@@ -580,6 +882,7 @@ fr_command_tar_class_init (FRCommandTarClass *class)
 static void 
 fr_command_tar_init (FRCommand *comm)
 {
+	comm->propCanModify                = TRUE;
 	comm->propAddCanUpdate             = TRUE;
 	comm->propAddCanReplace            = FALSE; 
 	comm->propExtractCanAvoidOverwrite = FALSE;
@@ -614,7 +917,7 @@ fr_command_tar_finalize (GObject *object)
 GType
 fr_command_tar_get_type ()
 {
-        static guint type = 0;
+        static GType type = 0;
 
         if (! type) {
                 GTypeInfo type_info = {

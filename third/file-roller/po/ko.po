@@ -1,20 +1,23 @@
 # ko.po for File Roller.
-# Copyright (C) YEAR Free Software Foundation, Inc.
 # Kang Joeng-Hee <Keizi@mail.co.kr>, 2001.
+# Young-Ho Cha <ganadist@mizi.com>, 2003.
+# Changwoo Ryu <cwryu@debian.org>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: AC_PACKAGE_NAME AC_PACKAGE_VERSION\n"
-"POT-Creation-Date: 2003-01-25 23:04+0900\n"
-"PO-Revision-Date: 2003-01-25 14:07+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
-"Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
+"Project-Id-Version: file-roller 2.5.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"PO-Revision-Date: 2004-08-01 01:42+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: Gnome Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: component/File_Roller_Component.server.in.in.h:1
-msgid "Add To Archive..."
+msgid "Create Archive..."
 msgstr "압축 파일 만들기..."
 
 #: component/File_Roller_Component.server.in.in.h:2
@@ -22,22 +25,14 @@ msgid "Extract Here"
 msgstr "여기에 풀기"
 
 #: component/File_Roller_Component.server.in.in.h:3
-msgid "Extract In A Sub-Folder"
-msgstr "아래 폴더에 풀기"
-
-#: component/File_Roller_Component.server.in.in.h:4
-msgid "Extract To..."
-msgstr "다른 곳에 풀기..."
-
-#: component/File_Roller_Component.server.in.in.h:5
 msgid "File Roller Component add operations"
 msgstr "파일 롤러 컴포넌트 만들기 동작"
 
-#: component/File_Roller_Component.server.in.in.h:6
+#: component/File_Roller_Component.server.in.in.h:4
 msgid "File Roller Component extract operations"
 msgstr "파일 롤러 컴포넌트 풀기 동작"
 
-#: component/File_Roller_Component.server.in.in.h:7
+#: component/File_Roller_Component.server.in.in.h:5
 msgid "File roller component"
 msgstr "파일 롤러 컴포넌트"
 
@@ -45,181 +40,371 @@ msgstr "파일 롤러 컴포넌트"
 msgid "Archive Manager"
 msgstr "압축 관리자"
 
+#: file-roller.desktop.in.h:2
+msgid "Create and modify an archive"
+msgstr "압축 파일을 만들고 고칩니다"
+
+#: src/actions.c:97
+msgid "Automatic"
+msgstr "자동"
+
+#: src/actions.c:98
+msgid "Arj (.arj)"
+msgstr "Arj (.arj)"
+
+#: src/actions.c:99
+msgid "Ear (.ear)"
+msgstr "Ear (.ear)"
+
+#: src/actions.c:100
+msgid "Jar (.jar)"
+msgstr "Jar (.jar)"
+
+#: src/actions.c:101
+msgid "Lha (.lzh)"
+msgstr "Lha (.lzh)"
+
+#: src/actions.c:102
+msgid "Rar (.rar)"
+msgstr "Rar (.rar)"
+
+#: src/actions.c:103
+msgid "Tar uncompressed (.tar)"
+msgstr "압축되지 않은 Tar (.tar)"
+
+#: src/actions.c:104
+msgid "Tar compressed with bzip (.tar.bz)"
+msgstr "bzip으로 압축된 Tar (.tar.bz)"
+
+#: src/actions.c:105
+msgid "Tar compressed with bzip2 (.tar.bz2)"
+msgstr "bzip2로 압축된 Tar (.tar.bz2)"
+
+#: src/actions.c:106
+msgid "Tar compressed with gzip (.tar.gz)"
+msgstr "gzip으로 압축된 Tar (.tar.gz)"
+
+#: src/actions.c:107
+msgid "Tar compressed with lzop (.tar.lzo)"
+msgstr "lzop로 압축된 Tar (.tar.lzo)"
+
+#: src/actions.c:108
+msgid "Tar compressed with compress (.tar.Z)"
+msgstr "compress로 압축된 Tar (.tar.Z)"
+
+#: src/actions.c:109
+msgid "War (.war)"
+msgstr "War (.war)"
+
+#: src/actions.c:110
+msgid "Zip (.zip)"
+msgstr "Zip (.zip)"
+
+#: src/actions.c:111
+msgid "Zoo (.zoo)"
+msgstr "Zoo (.zoo)"
+
+#: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+msgid "Could not create the archive"
+msgstr "압축 파일을 만들 수 없습니다"
+
+#: src/actions.c:177 src/actions.c:501 src/dlg-batch-add.c:102
+msgid "You have to specify an archive name."
+msgstr "압축 파일 이름을 지정해야 합니다."
+
+#: src/actions.c:197 src/actions.c:521
+msgid "You don't have permission to create an archive in this folder"
+msgstr "이 폴더에 압축 파일을 만들 허가권이 없습니다"
+
+#: src/actions.c:227 src/actions.c:542 src/actions.c:725 src/actions.c:906
+msgid "The archive already exists.  Do you want to overwrite it?"
+msgstr "이미 압축 파일이 있습니다. 덮어쓰겠습니까?"
+
+#: src/actions.c:230 src/actions.c:545 src/actions.c:728 src/actions.c:909
+msgid "Overwrite"
+msgstr "덮어 쓰기"
+
+#: src/actions.c:247 src/actions.c:562
+msgid "Could not delete the old archive."
+msgstr "이전 압축 파일을 지울 수 없습니다."
+
+#: src/actions.c:293
+msgid "New"
+msgstr "새로 만들기"
+
+#: src/actions.c:305 src/actions.c:434 src/actions.c:621
+msgid "All archives"
+msgstr "모든 압축 파일"
+
+#: src/actions.c:312 src/actions.c:441 src/actions.c:628
+msgid "All files"
+msgstr "모든 파일"
+
+#: src/actions.c:322 src/actions.c:636
+msgid "Archive type:"
+msgstr "압축 형식:"
+
+#: src/actions.c:422 src/ui.h:114
+msgid "Open"
+msgstr "열기"
+
+#: src/actions.c:500 src/actions.c:520
+msgid "Could not save the archive"
+msgstr "압축 파일을 저장할 수 없습니다"
+
+#: src/actions.c:609
+msgid "Save"
+msgstr "저장"
+
+#: src/actions.c:751
+msgid "Could not copy the archive"
+msgstr "압축 파일을 복사할 수 없습니다"
+
+#: src/actions.c:771
+msgid "Could not move the archive"
+msgstr "압축 파일을 옮길 수 없습니다"
+
+#: src/actions.c:800
+msgid "Copy"
+msgstr "복사"
+
+#: src/actions.c:800
+msgid "Move"
+msgstr "옮기기"
+
+#: src/actions.c:805 src/ui.h:66
+msgid "_Copy"
+msgstr "복사(_C)"
+
+#: src/actions.c:805
+msgid "_Move"
+msgstr "옮기기(_M)"
+
+#: src/actions.c:876 src/window.c:4924
+msgid "Rename"
+msgstr "이름 바꾸기"
+
+#: src/actions.c:877
+msgid "New archive name (without extension)"
+msgstr "새 압축 파일 이름 (확장자 없이)"
+
+#: src/actions.c:881 src/window.c:4929
+msgid "_Rename"
+msgstr "이름 바꾸기(_R)"
+
+#: src/actions.c:982
+msgid ""
+"The archive cannot be moved to the Trash. Do you want to delete it "
+"permanently?"
+msgstr ""
+"압축 파일을 휴지통에 옮길 수 없습니다. 압축 파일을 영구적으로 지우시겠습니까?"
+
+#: src/actions.c:1219 src/window.c:4643
+msgid "Last Output"
+msgstr "지난 출력"
+
+#: src/actions.c:1239 src/dlg-extract.c:87
+msgid "Could not display help"
+msgstr "도움말을 보여줄 수 없습니다"
+
+#: src/actions.c:1272
+msgid "translator_credits"
+msgstr ""
+"강정희 <Keizi@mail.co.kr>\n"
+"차영호 <ganadist@mizi.com>\n"
+"류창우 <cwryu@debian.org>"
+
 #. Create the application.
-#: file-roller.desktop.in.h:2 src/gtk-utils.c:76 src/gtk-utils.c:158
-#: src/gtk-utils.c:266 src/main.c:101 src/menu-callbacks.c:788
-#: src/window.c:704 src/window.c:713 src/window.c:2382 src/window.c:4084
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
+#: src/window.c:1286 src/window.c:3111
 msgid "File Roller"
 msgstr "파일 롤러"
 
-#: file-roller.desktop.in.h:3
-msgid "Handle compressed archives"
-msgstr "압축된 파일 처리"
+#: src/actions.c:1283
+msgid "An archive manager for GNOME."
+msgstr "그놈용 압축 관리자."
 
-#: src/dlg-add.c:118
+#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
+#: src/dlg-add-folder.c:247
 #, c-format
 msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "\"%s\" 폴더에 압축 파일을 만들 허가권이 없습니다"
 
-#: src/dlg-add.c:343 src/file_roller.glade.h:5
-msgid "Add Files and Folders"
-msgstr "파일과 디렉토리 압축"
+#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
+#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+msgid "Could not add the files to the archive"
+msgstr "압축 파일에 파일을 더할 수 없습니다"
 
-#: src/dlg-add.c:348
+#: src/dlg-add-files.c:179
+msgid "Add Files"
+msgstr "파일 더하기"
+
+#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
 msgid "_Add only if newer"
 msgstr "새 파일만 압축(_A)"
 
-#: src/dlg-add.c:349
-msgid "_Include sub-folders"
+#: src/dlg-add-folder.c:309
+msgid "Add a Folder"
+msgstr "폴더 더하기"
+
+#: src/dlg-add-folder.c:322
+msgid "_Include subfolders"
 msgstr "아래 폴더까지 포함(_I)"
 
-#: src/dlg-add.c:350
+#: src/dlg-add-folder.c:323
 msgid "Exclude folders that are symbolic lin_ks"
 msgstr "심볼릭 연결인 폴더 제외(_K)"
 
-#: src/dlg-add.c:351
-msgid "Exclude o_ther file systems"
-msgstr "다른 파일시스템 제외(_T)"
-
-#: src/dlg-add.c:352
-msgid "Exclude _backup files (*~)"
-msgstr "백업 파일 제외 (*~)(_B)"
-
-#: src/dlg-add.c:353
-msgid "Exclude _hidden files (.*)"
-msgstr "숨김 파일 제외 (.*)(_H)"
-
-#: src/dlg-add.c:354
-msgid "E_xclude files:"
-msgstr "파일 제외(_X):"
-
-#: src/dlg-add.c:356
+#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
 msgid "example: *.o; *.bak"
 msgstr "예: *.o; *.bak"
 
-#: src/dlg-add.c:357
-msgid "Igno_re case"
-msgstr "대소문자 구분 안함(_R)"
+#: src/dlg-add-folder.c:327
+msgid "_Include files:"
+msgstr "파일 포함(_I):"
 
-#: src/dlg-add.c:358
+#: src/dlg-add-folder.c:332
+msgid "E_xclude files:"
+msgstr "파일 제외(_X):"
+
+#: src/dlg-add-folder.c:335
 msgid "_Load Options"
 msgstr "옵션 읽기(_L)"
 
-#: src/dlg-add.c:359
+#: src/dlg-add-folder.c:336
 msgid "Sa_ve Options"
 msgstr "옵션 저장(_V)"
 
-#: src/dlg-add.c:614
-msgid "Load Options"
-msgstr "옵션 읽기"
-
-#: src/dlg-add.c:763
+#: src/dlg-add-folder.c:796
 msgid "Save Options"
 msgstr "옵션 저장"
 
-#: src/dlg-batch-add.c:99 src/dlg-extract.c:120 src/window.c:3144
-msgid "Destination folder does not exist.  Do you want to create it?"
-msgstr "목표 폴더가 없습니다. 만들까요?"
+#: src/dlg-add-folder.c:797
+msgid "Options Name:"
+msgstr "옵션 이름:"
 
-#: src/dlg-batch-add.c:101 src/dlg-extract.c:122 src/window.c:3146
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
+#: src/window.c:3969
+msgid "Archive type not supported."
+msgstr "지원하지 않는 압축 파일 형식입니다."
+
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+msgid "Destination folder does not exist.  Do you want to create it?"
+msgstr "목표 폴더가 없습니다. 만드시겠습니까?"
+
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
 msgid "Create _Folder"
 msgstr "폴더 만들기(_F)"
 
-#: src/dlg-batch-add.c:121
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
 #, c-format
-msgid ""
-"Could not create the destination folder: %s.\n"
-"Addition not performed."
-msgstr ""
-"목표 폴더를 만들 수 없습니다: %s.\n"
-"압축할 수 없습니다."
+msgid "Could not create the destination folder: %s."
+msgstr "목표 폴더를 만들 수 없습니다: %s."
 
-#: src/dlg-batch-add.c:138
-msgid "Addition not performed."
-msgstr "압축할 수 없습니다."
+#: src/dlg-batch-add.c:189
+msgid "Archive not created"
+msgstr "압축파일을 만들지 않았습니다"
 
-#. Set widgets data.
-#: src/dlg-batch-add.c:202
-#, c-format
-msgid "Adding %u files"
-msgstr "%u 파일 더하는 중"
+#: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
+#: src/window.c:4234 src/window.c:4254
+msgid "Extraction not performed"
+msgstr "풀 수 없었습니다"
 
-#: src/dlg-extract.c:142 src/window.c:3166
-#, c-format
-msgid ""
-"Could not create the destination folder: %s.\n"
-"Extraction not performed."
-msgstr ""
-"목표 폴더를 만들 수 없습니다: %s.\n"
-"압축을 풀 수 없습니다."
-
-#: src/dlg-extract.c:157 src/window.c:3181
-msgid "Extraction not performed."
-msgstr "압축을 풀 수 없습니다."
-
-#: src/dlg-extract.c:176
+#: src/dlg-extract.c:216
 #, c-format
 msgid ""
 "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "\"%s\" 폴더에서 압축을 풀 수 있는 허가권이 없습니다."
 
-#: src/dlg-extract.c:397 src/dlg-preferences.c:128 src/menu-callbacks.c:751
-#, c-format
-msgid "Could not display help: %s"
-msgstr "도움말을 보여줄 수 없습니다: %s"
-
-#: src/dlg-extract.c:474
-msgid "Actions"
-msgstr "동작"
-
-#: src/dlg-extract.c:475
-msgid "Destination folder"
-msgstr "목표 폴더"
-
-#: src/dlg-extract.c:476
+#: src/dlg-extract.c:380
 msgid "Files"
 msgstr "파일"
 
-#: src/dlg-extract.c:505
-msgid "Bookmarks"
-msgstr "책갈피"
+#: src/dlg-extract.c:388 src/dlg-extract.c:438
+msgid "    "
+msgstr "    "
 
-#: src/dlg-preferences.c:186
-msgid "General"
-msgstr "일반"
+#: src/dlg-extract.c:397 src/file_roller.glade.h:17
+msgid "_Files:"
+msgstr "파일(_F):"
 
-#: src/dlg-preferences.c:191
-msgid "Visible columns"
-msgstr "보여지는 속성"
+#: src/dlg-extract.c:408 src/file_roller.glade.h:20
+msgid "example: *.txt; *.doc"
+msgstr "예: *.txt; *.doc"
 
-#: src/dlg-prop.c:99
+#: src/dlg-extract.c:411 src/file_roller.glade.h:14
+msgid "_All files"
+msgstr "모든 파일(_A)"
+
+#: src/dlg-extract.c:418 src/file_roller.glade.h:19
+msgid "_Selected files"
+msgstr "선택된 파일(_S)"
+
+#: src/dlg-extract.c:429
+msgid "Actions"
+msgstr "동작"
+
+#: src/dlg-extract.c:445
+msgid "R_e-create folders"
+msgstr "폴더 다시 만들기(_E)"
+
+#: src/dlg-extract.c:449
+msgid "Over_write existing files"
+msgstr "파일 덮어쓰기(_W)"
+
+#: src/dlg-extract.c:453
+msgid "Do not e_xtract older files"
+msgstr "오래된 파일은 풀지 않기(_X)"
+
+#: src/dlg-extract.c:459 src/file_roller.glade.h:18
+msgid "_Password:"
+msgstr "열쇠글(_P):"
+
+#: src/dlg-extract.c:467
+msgid "_Open destination folder after extraction"
+msgstr "풀고난 뒤에 압축을 푼 폴더 열기(_V)"
+
+#: src/dlg-extract.c:494 src/ui.h:94
+msgid "Extract"
+msgstr "풀기"
+
+#: src/dlg-prop.c:105
 msgid "Path:"
 msgstr "경로:"
 
-#: src/dlg-prop.c:112
+#: src/dlg-prop.c:118
 msgid "Name:"
 msgstr "이름:"
 
-#: src/dlg-prop.c:119
+#: src/dlg-prop.c:125
 #, c-format
 msgid "%s Properties"
-msgstr "%s 등록정보"
+msgstr "%s 등록 정보"
 
-#: src/dlg-prop.c:128
-msgid "File size:"
-msgstr "파일 크기:"
+#: src/dlg-prop.c:134
+msgid "Modified on:"
+msgstr "바뀐 시간:"
 
-#: src/dlg-prop.c:139
+#: src/dlg-prop.c:140 src/window.c:425
+msgid "%d %B %Y, %H:%M"
+msgstr "%Y년 %b %e일, %H:%M"
+
+#: src/dlg-prop.c:148
+msgid "Archive size:"
+msgstr "압축 크기:"
+
+#: src/dlg-prop.c:159
+msgid "Content size:"
+msgstr "내용 크기:"
+
+#: src/dlg-prop.c:178
+msgid "Compression ratio:"
+msgstr "압축 정도:"
+
+#: src/dlg-prop.c:193
 msgid "Number of files:"
 msgstr "파일 개수:"
-
-#: src/dlg-prop.c:149
-msgid "Date and time:"
-msgstr "날짜와 시간:"
-
-#: src/dlg-prop.c:155
-msgid "%d %B %Y, %H:%M"
-msgstr "%Y %B %d, %H:%M"
 
 #: src/file-data.c:28
 msgid "Unknown type"
@@ -229,814 +414,703 @@ msgstr "알 수 없는 형식"
 msgid "Symbolic link"
 msgstr "심볼릭 연결"
 
-#: src/file-utils.c:534
+#: src/file-utils.c:558
 msgid "Cannot find a terminal, using xterm, even if it may not work"
 msgstr "터미널을 찾을 수 없습니다. xterm을 사용합니다."
 
-#: src/file_roller.glade.h:1 src/file_roller_prop.glade.h:1
-msgid "    "
-msgstr "    "
-
-#: src/file_roller.glade.h:2
+#: src/file_roller.glade.h:1
 msgid "*"
 msgstr "*"
 
-#: src/file_roller.glade.h:3
-msgid "A_dd to Bookmarks"
-msgstr "책갈피에 더하기(_D)"
+#: src/file_roller.glade.h:2
+msgid ""
+"<i><b>Note:</b> the password will be used to encrypt files you add to the "
+"current archive, and to decrypt files you extract from the current archive. "
+"When the archive is closed the password will be deleted.</i>"
+msgstr ""
+"<i><b>알림:</b> 열쇠글은 압축 파일에 더할 파일을 암호화할 때 쓰이고, 현재 압"
+"축 파일에서 파일을 풀면서 암호화를 해제할 때 쓰입니다 쓰입니다. 압축 파일을 "
+"닫으면 열쇠글은 지워집니다.</i>"
 
-#: src/file_roller.glade.h:4
+#: src/file_roller.glade.h:3
 msgid "A_vailable application:"
 msgstr "쓸 수 있는 프로그램(_A):"
 
+#: src/file_roller.glade.h:4
+msgid "C_reate"
+msgstr "만들기(_R)"
+
+#: src/file_roller.glade.h:5
+msgid "Create Archive"
+msgstr "압축 파일 만들기"
+
 #: src/file_roller.glade.h:6
-msgid "Add _to archive:"
-msgstr "압축 파일에 더하기(_T):"
+msgid "Delete"
+msgstr "지우기"
 
 #: src/file_roller.glade.h:7
-msgid "Add only if _newer"
-msgstr "새 파일만 더하기(_N)"
+msgid "Load Options"
+msgstr "옵션 읽기"
 
-#: src/file_roller.glade.h:8 src/menu.h:464
-msgid "Delete Files"
-msgstr "파일 지우기"
-
-#: src/file_roller.glade.h:9
-msgid "Do not e_xtract older files"
-msgstr "오래된 파일은 풀지 않기(_X)"
-
-#: src/file_roller.glade.h:10 src/window.c:2603
-msgid "Extract"
-msgstr "풀기"
-
-#: src/file_roller.glade.h:11
-msgid "Extract to"
-msgstr "다른 곳에 풀기"
-
-#: src/file_roller.glade.h:12
-msgid ""
-"Note: the password will be used to encrypt files you add to the current "
-"archive, and to decrypt files you extract from the current archive. When the "
-"archive is closed the password will be deleted."
-msgstr ""
-"알림: 열쇠글은 현재 압축 파일을 만들거나 풀 때 쓰입니다. 압축 파일이 닫히면 "
-"열쇠글은 지워질 것입니다."
-
-#: src/file_roller.glade.h:13
+#: src/file_roller.glade.h:8
 msgid "Open Files"
 msgstr "파일 열기"
 
-#: src/file_roller.glade.h:14
+#: src/file_roller.glade.h:9
 msgid "Open with an _application"
 msgstr "프로그램으로 열기(_A)"
 
-#: src/file_roller.glade.h:15
-msgid "Over_write existing files"
-msgstr "파일 덮어쓰기(_W)"
-
-#: src/file_roller.glade.h:16
+#: src/file_roller.glade.h:10
 msgid "Password"
 msgstr "열쇠글"
 
-#: src/file_roller.glade.h:17
+#: src/file_roller.glade.h:11
 msgid "R_ecent applications:"
 msgstr "최근에 쓰인 프로그램(_E):"
 
-#: src/file_roller.glade.h:18
-msgid "R_ecreate folders"
-msgstr "폴더 다시 만들기(_E)"
-
-#: src/file_roller.glade.h:19
-msgid "Select archive"
-msgstr "압축 파일 선택"
-
-#: src/file_roller.glade.h:20 src/menu.h:450
+#: src/file_roller.glade.h:12
 msgid "View File"
 msgstr "파일 보기"
 
-#: src/file_roller.glade.h:21
+#: src/file_roller.glade.h:13
 msgid "View with internal _viewer"
 msgstr "내장 뷰어로 파일 보기(_V)"
 
-#: src/file_roller.glade.h:22
-msgid "_All files"
-msgstr "모든 파일(_A)"
-
-#: src/file_roller.glade.h:23
+#: src/file_roller.glade.h:15
 msgid "_Application:"
 msgstr "프로그램(_A):"
 
-#: src/file_roller.glade.h:24
-msgid "_Files:"
-msgstr "파일(_F):"
-
-#: src/file_roller.glade.h:25
-msgid "_Password:"
-msgstr "열쇠글(_P):"
-
-#: src/file_roller.glade.h:26
-msgid "_Selected files"
-msgstr "선택된 파일(_S)"
-
-#: src/file_roller.glade.h:27
-msgid "_View destination folder after extraction"
-msgstr "풀고난 뒤 목표 폴더 보기(_V)"
-
-#: src/file_roller.glade.h:28
-msgid "example: *.txt; *.doc"
-msgstr "예: *.txt; *.doc"
-
-#: src/file_roller_prop.glade.h:2
-msgid "Compression _level:"
-msgstr "압축 수준(_L):"
-
-#: src/file_roller_prop.glade.h:3
-msgid "Date _modified"
-msgstr "바뀐 시간(_M)"
-
-#: src/file_roller_prop.glade.h:4
-msgid "File Roller Preferences"
-msgstr "파일 롤러 기본 설정"
-
-#: src/file_roller_prop.glade.h:5
-msgid "Low"
-msgstr "낮음"
-
-#: src/file_roller_prop.glade.h:6
-msgid "Maximum (slow)"
-msgstr "최대(느림)"
-
-#: src/file_roller_prop.glade.h:7
-msgid "Minimum (fast)"
-msgstr "최소(빠름)"
-
-#: src/file_roller_prop.glade.h:8
-msgid "Normal"
-msgstr "보통"
-
-#: src/file_roller_prop.glade.h:9
-msgid "_Name"
-msgstr "이름(_N)"
-
-#: src/file_roller_prop.glade.h:10
-msgid "_Path"
-msgstr "경로(_P)"
-
-#: src/file_roller_prop.glade.h:11
-msgid "_Recent archives:"
-msgstr "최근 압축 파일(_R):"
-
-#: src/file_roller_prop.glade.h:12
-msgid "_Size"
-msgstr "크기(_S)"
-
-#: src/file_roller_prop.glade.h:13
-msgid "_Type"
-msgstr "형식(_T)"
-
-#: src/gconf-utils.c:98
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-"GConf 오류:\n"
-"  %s"
-
-#. Button
-#: src/gtk-utils.c:297
-msgid "Command _Line Output"
-msgstr "명령행 출력(_L)"
-
-#: src/main.c:59
-msgid "Add files to the specified archive and quit the program"
-msgstr "지정한 압축 파일에 파일을 더하고 프로그램을 마칩니다"
-
-#: src/main.c:60
-msgid "ARCHIVE"
-msgstr "압축파일"
-
-#: src/main.c:63
-msgid "Add files asking the name of the archive and quit the program"
-msgstr "압축 파일의 이름을 물어본 뒤 프로그램을 마칩니다"
-
-#: src/main.c:67
-msgid "Extract archives to the specified folder and quit the program"
-msgstr "압축 파일이 풀릴 폴더를 지정한 뒤 프로그램을 마칩니다"
-
-#: src/main.c:68 src/main.c:76
-msgid "FOLDER"
-msgstr "폴더"
-
-#: src/main.c:71
-msgid "Extract archives asking the destination folder and quit the program"
-msgstr "압축을 풀 위치를 물어서 푼다음 프로그램을 마칩니다"
-
-#: src/main.c:75
-msgid "Default folder to use for the '--add' and '--extract' commands"
-msgstr "'--add'와 '--extract' 명령에 쓰이는 기본 폴더"
-
-#: src/main.c:79
-msgid "Create destination folder without asking confirmation"
-msgstr "물어보지 않고 목표 폴더를 만듭니다"
-
-#: src/menu-callbacks.c:107
-msgid "Automatic"
-msgstr "자동"
-
-#: src/menu-callbacks.c:108
-msgid "Ear (.ear)"
-msgstr "Ear (.ear)"
-
-#: src/menu-callbacks.c:109
-msgid "Jar (.jar)"
-msgstr "Jar (.jar)"
-
-#: src/menu-callbacks.c:110
-msgid "Lha (.lzh)"
-msgstr "Lha (.lzh)"
-
-#: src/menu-callbacks.c:111
-msgid "Rar (.rar)"
-msgstr "Rar (.rar)"
-
-#: src/menu-callbacks.c:112
-msgid "Tar uncompressed (.tar)"
-msgstr "압축되지 않은 Tar (.tar)"
-
-#: src/menu-callbacks.c:113
-msgid "Tar compressed with bzip (.tar.bz)"
-msgstr "bzip으로 압축된 Tar (.tar.bz)"
-
-#: src/menu-callbacks.c:114
-msgid "Tar compressed with bzip2 (.tar.bz2)"
-msgstr "bzip2로 압축된 Tar (.tar.bz2)"
-
-#: src/menu-callbacks.c:115
-msgid "Tar compressed with gzip (.tar.gz)"
-msgstr "gzip으로 압축된 Tar (.tar.gz)"
-
-#: src/menu-callbacks.c:116
-msgid "Tar compressed with lzop (.tar.lzo)"
-msgstr "lzop로 압축된 Tar (.tar.lzo)"
-
-#: src/menu-callbacks.c:117
-msgid "Tar compressed with compress (.tar.Z)"
-msgstr "compress로 압축된 Tar (.tar.Z)"
-
-#: src/menu-callbacks.c:118
-msgid "War (.war)"
-msgstr "War (.war)"
-
-#: src/menu-callbacks.c:119
-msgid "Zip (.zip)"
-msgstr "Zip (.zip)"
-
-#: src/menu-callbacks.c:175
-msgid "You don't have permission to create an archive in this folder"
-msgstr "이 폴더에 압축 파일을 만들 허가권이 없습니다"
-
-#: src/menu-callbacks.c:193 src/menu-callbacks.c:420 src/menu-callbacks.c:590
-msgid "Archive already exists.  Do you want to overwrite it?"
-msgstr "이미 압축 파일이 있습니다. 덮어쓰겠습니까?"
-
-#: src/menu-callbacks.c:195 src/menu-callbacks.c:422 src/menu-callbacks.c:592
-msgid "Overwrite"
-msgstr "덮어 쓰기"
-
-#: src/menu-callbacks.c:212
-msgid "Could not delete old archive."
-msgstr "이전 압축 파일을 지울 수 없음."
-
-#: src/menu-callbacks.c:253
-msgid "New Archive"
-msgstr "새 압축 파일"
-
-#: src/menu-callbacks.c:265
-msgid "Archive type:"
-msgstr "압축 형식"
-
-#: src/menu-callbacks.c:336
-msgid "Open Archive"
-msgstr "압축 파일 열기"
-
-#: src/menu-callbacks.c:445
-msgid "Could not copy archive"
-msgstr "압축 파일을 복사할 수 없음"
-
-#: src/menu-callbacks.c:461
-msgid "Could not move archive"
-msgstr "압축 파일을 옮길 수 없음"
-
-#: src/menu-callbacks.c:483
-msgid "Copy archive"
-msgstr "압축 파일 복사"
-
-#: src/menu-callbacks.c:483
-msgid "Move archive"
-msgstr "압축 파일 옮김"
-
-#: src/menu-callbacks.c:561
-msgid "New archive name (without extension)"
-msgstr "새 압축 파일 이름 (확장자 없이)"
-
-#: src/menu-callbacks.c:565 src/menu.h:97
-msgid "_Rename"
-msgstr "이름 바꾸기(_R)"
-
-#: src/menu-callbacks.c:629
-msgid "Archive will be deleted, are you sure?"
-msgstr "압축 파일이 지워질 것입니다. 정말로 지우겠습니까?"
-
-#: src/menu-callbacks.c:780
-msgid "translator_credits"
-msgstr ""
-"강정희 <Keizi@mail.co.kr>, 2001\n"
-"차영호 <ganadist@mizi.com>, 2003"
-
-#: src/menu-callbacks.c:791
-msgid "An archive manager for GNOME."
-msgstr "그놈용 압축 관리자."
-
-#: src/menu.h:67
-msgid "_New"
-msgstr "새로 만들기(_N)"
-
-#: src/menu.h:67 src/toolbar.h:39
-msgid "Create a new archive"
-msgstr "새 압축 파일을 만듭니다"
-
-#: src/menu.h:73
-msgid "_Open..."
-msgstr "열기(_O)..."
-
-#: src/menu.h:73
-msgid "Open an existing archive"
-msgstr "압축 파일을 엽니다"
-
-#: src/menu.h:78
-msgid "Open R_ecent"
-msgstr "최근 파일 열기(_E)"
-
-#: src/menu.h:83
-msgid "Open Fi_les..."
-msgstr "...로 파일 열기(_I)"
-
-#: src/menu.h:83
-msgid "Open selected files with an application"
-msgstr "선택한 파일을 다른 프로그램으로 엽니다"
-
-#: src/menu.h:89
-msgid "_View File"
-msgstr "파일 보기(_V)"
-
-#: src/menu.h:89 src/menu.h:450
-msgid "View file with internal viewer"
-msgstr "내장 뷰어로 파일을 봅니다"
-
-#: src/menu.h:97
-msgid "Rename current archive"
-msgstr "현재 압축 파일의 이름을 바꿉니다"
-
-#: src/menu.h:103
-msgid "Cop_y"
-msgstr "복사(_Y)"
-
-#: src/menu.h:103
-msgid "Copy current archive to another folder"
-msgstr "현재 압축 파일을 다른 폴더로 복사합니다"
-
-#: src/menu.h:109
-msgid "_Move"
-msgstr "옮기기(_M)"
-
-#: src/menu.h:109
-msgid "Move current archive to another folder"
-msgstr "현재 압축 파일을 다른 폴더로 옮깁니다"
-
-#: src/menu.h:115 src/menu.h:170
-msgid "_Delete"
-msgstr "지우기(_D)"
-
-#: src/menu.h:115
-msgid "Delete current archive from disk"
-msgstr "현재 압축 파일을 디스크에서 지웁니다"
-
-#: src/menu.h:123
-msgid "_Properties"
-msgstr "등록 정보(_P)"
-
-#: src/menu.h:123
-msgid "Show archive properties"
-msgstr "압축 파일의 등록 정보를 봅니다"
-
-#: src/menu.h:131
-msgid "_Close"
-msgstr "닫기(_C)"
-
-#: src/menu.h:131
-msgid "Close current archive"
-msgstr "현재 압축 파일을 닫습니다"
-
-#: src/menu.h:137
-msgid "E_xit"
-msgstr "나가기(_X)"
-
-#: src/menu.h:137
-msgid "Exit"
-msgstr "나갑니다"
-
-#: src/menu.h:164
-msgid "Add _Files..."
-msgstr "파일 더하기(_F)..."
-
-#: src/menu.h:164 src/menu.h:458 src/window.c:2593
-msgid "Add files to the archive"
-msgstr "압축 파일에 파일을 추가합니다"
-
-#: src/menu.h:170
-msgid "Delete selected files and folders from the archive"
-msgstr "압축 파일에서 선택한 파일과 폴더를 지웁니다"
-
-#: src/menu.h:176
-msgid "_Extract to..."
-msgstr "파일 풀기(_E)"
-
-#: src/menu.h:176 src/menu.h:470 src/window.c:2604
-msgid "Extract files from the archive"
-msgstr "압축 파일에서 파일을 풀어냅니다"
-
-#: src/menu.h:190
-msgid "_Test Archive"
-msgstr "압축 파일 검사(_T)"
-
-#: src/menu.h:206
-msgid "Select _All"
-msgstr "전체 선택"
-
-#: src/menu.h:206
-msgid "Select all files"
-msgstr "모든 파일을 선택합니다"
-
-#: src/menu.h:212
-msgid "Dese_lect All"
-msgstr "전체 선택 해제(_L)"
-
-#: src/menu.h:212
-msgid "Deselect all files"
-msgstr "모든 파일을 선택을 해제합니다"
-
-#: src/menu.h:220
-msgid "Pass_word..."
-msgstr "열쇠글(_W)..."
-
-#: src/menu.h:228
-msgid "_Preferences"
-msgstr "기본 설정(_P)"
-
-#: src/menu.h:239
-msgid "by _Name"
-msgstr "이름순(_N)"
-
-#: src/menu.h:239
-msgid "Sort file list by name"
-msgstr "이름에 따라 정렬합니다"
-
-#: src/menu.h:245
-msgid "by _Size"
-msgstr "크기순(_S)"
-
-#: src/menu.h:245
-msgid "Sort file list by file size"
-msgstr "크기에 따라 정렬합니다"
-
-#: src/menu.h:251
-msgid "by T_ype"
-msgstr "형식순(_Y)"
-
-#: src/menu.h:251
-msgid "Sort file list by type"
-msgstr "형식에 따라 정렬합니다"
-
-#: src/menu.h:257
-msgid "by _Time"
-msgstr "시간순(_T)"
-
-#: src/menu.h:257
-msgid "Sort file list by modification time"
-msgstr "바뀐 시간에 따라 정렬합니다"
-
-#: src/menu.h:263
-msgid "by _Path"
-msgstr "경로순(_P)"
-
-#: src/menu.h:263
-msgid "Sort file list by path"
-msgstr "경로에 따라 정렬합니다"
-
-#: src/menu.h:280
-msgid "View All _Files"
-msgstr "모든 파일 보기(_F)"
-
-#: src/menu.h:286
-msgid "View as a F_older"
-msgstr "폴더로 보기(_O)"
-
-#: src/menu.h:308
-msgid "_Reversed Order"
-msgstr "역순(_R)"
-
-#: src/menu.h:308
-msgid "Reverse the list order"
-msgstr "거꾸로 정렬합니다"
-
-#: src/menu.h:332
-msgid "_Toolbar"
-msgstr "도구 막대(_T)"
-
-#: src/menu.h:332
-msgid "View the main toolbar"
-msgstr "기본 도구막대를 봅니다"
-
-#: src/menu.h:338
-msgid "Stat_usbar"
-msgstr "상태 막대(_U)"
-
-#: src/menu.h:338
-msgid "View the statusbar"
-msgstr "상태 막대를 봅니다"
-
-#: src/menu.h:346
-msgid "_Stop"
-msgstr "멈춤(_S)"
-
-#: src/menu.h:346 src/toolbar.h:55
-msgid "Stop current operation"
-msgstr "현재 진행중인 작업을 멈춥니다"
-
-#: src/menu.h:352
-msgid "_Reload"
-msgstr "다시 읽기(_R)"
-
-#: src/menu.h:352
-msgid "Reload current archive"
-msgstr "현재 압축 파일을 다시 읽습니다"
-
-#: src/menu.h:363
-msgid "_Arrange Files"
-msgstr "파일 정렬(_A)"
-
-#: src/menu.h:368
-msgid "_Last Output"
-msgstr "최근 출력(_L)"
-
-#: src/menu.h:381
-msgid "New _Window"
-msgstr "새 창(_W)"
-
-#: src/menu.h:381
-msgid "Open a new window"
-msgstr "새 창을 엽니다"
-
-#: src/menu.h:387
-msgid "Clo_se Window"
-msgstr "창 닫기(_S)"
-
-#: src/menu.h:387
-msgid "Close this window"
-msgstr "이 창을 닫습니다"
-
-#: src/menu.h:400
-msgid "_Contents"
-msgstr "차례(_C)"
-
-#: src/menu.h:400
-msgid "Display the File Roller Manual"
-msgstr "파일 롤러 설명설르 보여줍니다"
-
-#: src/menu.h:406
-msgid "_About"
-msgstr "정보(_A)"
-
-#: src/menu.h:406
-msgid "Information about the program"
-msgstr "프로그램 정보"
-
-#: src/menu.h:418
-msgid "_Archive"
-msgstr "압축 파일(_A)"
-
-#: src/menu.h:419
-msgid "_Edit"
-msgstr "고치기(_E)"
-
-#: src/menu.h:420
-msgid "_View"
-msgstr "보기(_V)"
-
-#: src/menu.h:421
-msgid "_Windows"
-msgstr "창(_W)"
-
-#: src/menu.h:444
-msgid "Open Files..."
-msgstr "프로그램으로 파일 열기..."
-
-#: src/menu.h:458
-msgid "Add Files..."
-msgstr "파일 더하기..."
-
-#: src/menu.h:464
-msgid "Delete files from the archive"
-msgstr "압축 파일에서 파일을 지웁니다"
-
-#: src/menu.h:470
-msgid "Extract to..."
-msgstr "다른 위치에 파일 풀기..."
-
-#: src/menu.h:478
-msgid "Select All"
-msgstr "모두 선택"
-
-#: src/toolbar.h:39
-msgid "New"
-msgstr "압축"
-
-#: src/toolbar.h:45
-msgid "Open"
-msgstr "열기"
-
-#: src/toolbar.h:45
-msgid "Open archive"
-msgstr "압축 파일을 엽니다"
-
-#: src/toolbar.h:55
-msgid "Stop"
-msgstr "중지"
-
-#: src/window.c:568
-msgid "Folder"
-msgstr "폴더"
-
-#: src/window.c:712
-msgid "[read only]"
-msgstr "[읽기전용]"
-
-#: src/window.c:806
-#, c-format
-msgid "1 file (%s)"
-msgstr "1개 파일 (%s)"
-
-#: src/window.c:809
-#, c-format
-msgid "%d files (%s)"
-msgstr "%d개 파일 (%s)"
-
-#: src/window.c:817
-#, c-format
-msgid "1 file selected (%s)"
-msgstr "1개 파일 선택됨 (%s)"
-
-#: src/window.c:820
-#, c-format
-msgid "%d files selected (%s)"
-msgstr "%d개 파일 선택됨 (%s)"
-
-#: src/window.c:1109
-msgid "Reading archive"
-msgstr "압축파일 읽는 중"
-
-#: src/window.c:1112
+#: src/file_roller.glade.h:16
+msgid "_Archive:"
+msgstr "압축 파일(_A):"
+
+#: src/fr-archive.c:606
+msgid "The file does not exist."
+msgstr "파일이 없습니다."
+
+#: src/fr-command-tar.c:396
+msgid "Adding file: "
+msgstr "파일 더하는 중: "
+
+#: src/fr-command-tar.c:442
+msgid "Removing file: "
+msgstr "파일 지우는 중: "
+
+#: src/fr-command-tar.c:451 src/window.c:1388
 msgid "Deleting files from archive"
 msgstr "압축 파일에서 파일을 지웁니다"
 
-#: src/window.c:1115
+#: src/fr-command-tar.c:484
+msgid "Extracting file: "
+msgstr "파일을 풀어내는 중: "
+
+#: src/fr-command-tar.c:529
+msgid "Recompressing archive"
+msgstr "압축 파일 다시 압축하는 중"
+
+#: src/fr-command-tar.c:663
+msgid "Decompressing archive"
+msgstr "압축 파일 푸는 중"
+
+#: src/fr-stock.c:44
+msgid "_Add"
+msgstr "더하기(_A)"
+
+#: src/fr-stock.c:45
+msgid "_Extract"
+msgstr "풀기(_E)"
+
+#: src/fr-stock.c:46 src/ui.h:36 src/ui.h:170
+msgid "_View"
+msgstr "보기(_V)"
+
+#. Button
+#: src/gtk-utils.c:421
+msgid "Command _Line Output"
+msgstr "명령행 출력(_L)"
+
+#: src/main.c:60
+msgid "Add files to the specified archive and quit the program"
+msgstr "지정한 압축 파일에 파일을 더하고 프로그램을 마칩니다"
+
+#: src/main.c:61
+msgid "ARCHIVE"
+msgstr "압축파일"
+
+#: src/main.c:64
+msgid "Add files asking the name of the archive and quit the program"
+msgstr "압축 파일의 이름을 물어본 뒤 프로그램을 마칩니다"
+
+#: src/main.c:68
+msgid "Extract archives to the specified folder and quit the program"
+msgstr "압축 파일이 풀릴 폴더를 지정한 뒤 프로그램을 마칩니다"
+
+#: src/main.c:69 src/main.c:77
+msgid "FOLDER"
+msgstr "폴더"
+
+#: src/main.c:72
+msgid "Extract archives asking the destination folder and quit the program"
+msgstr "풀 폴더를 물어보고 압축을 푼 다음 프로그램을 끝냅니다"
+
+#: src/main.c:76
+msgid "Default folder to use for the '--add' and '--extract' commands"
+msgstr "'--add'와 '--extract' 명령에 쓰이는 기본 폴더"
+
+#: src/main.c:80
+msgid "Create destination folder without asking confirmation"
+msgstr "물어보지 않고 목표 폴더를 만듭니다"
+
+#: src/ui.h:34
+msgid "_Archive"
+msgstr "압축 파일(_A)"
+
+#: src/ui.h:35
+msgid "_Edit"
+msgstr "편집(_E)"
+
+#: src/ui.h:37
+msgid "_Help"
+msgstr "도움말(_H)"
+
+#: src/ui.h:38
+msgid "_Arrange Files"
+msgstr "파일 정렬(_A)"
+
+#: src/ui.h:39
+msgid "Open R_ecent"
+msgstr "최근 파일 열기(_E)"
+
+#: src/ui.h:42
+msgid "_About"
+msgstr "정보(_A)"
+
+#: src/ui.h:43
+msgid "Information about the program"
+msgstr "프로그램 정보"
+
+#: src/ui.h:46
+msgid "_Add Files..."
+msgstr "파일 더하기(_A)..."
+
+#: src/ui.h:47 src/ui.h:51
+msgid "Add files to the archive"
+msgstr "압축 파일에 파일을 더합니다"
+
+#: src/ui.h:50
+msgid "Add"
+msgstr "더하기"
+
+#: src/ui.h:54
+msgid "Add a _Folder..."
+msgstr "폴더 더하기(_F)..."
+
+#: src/ui.h:55
+msgid "Add a folder to the archive"
+msgstr "압축 파일에 폴더를 더합니다"
+
+#: src/ui.h:58
+msgid "_Close"
+msgstr "닫기(_C)"
+
+#: src/ui.h:59
+msgid "Close the current archive"
+msgstr "현재 압축 파일을 닫습니다"
+
+#: src/ui.h:62
+msgid "_Contents"
+msgstr "차례(_C)"
+
+#: src/ui.h:63
+msgid "Display the File Roller Manual"
+msgstr "파일 롤러 설명서를 보여줍니다"
+
+#: src/ui.h:67
+msgid "Copy the selection"
+msgstr "선택한 파일을 복사합니다"
+
+#: src/ui.h:70
+msgid "Cop_y..."
+msgstr "복사(_Y)..."
+
+#: src/ui.h:71
+msgid "Copy current archive to another folder"
+msgstr "현재 압축 파일을 다른 폴더로 복사합니다"
+
+#: src/ui.h:74
+msgid "Cu_t"
+msgstr "잘라내기(_T)"
+
+#: src/ui.h:75
+msgid "Cut the selection"
+msgstr "선택한 파일을 잘라냅니다"
+
+#: src/ui.h:78
+msgid "_Delete..."
+msgstr "지우기(_D)..."
+
+#: src/ui.h:79
+msgid "Delete the selection from the archive"
+msgstr "선택한 파일을 아카이브에서 지웁니다"
+
+#: src/ui.h:82
+msgid "Move to _Trash"
+msgstr "휴지통으로 옮기기(_T)"
+
+#: src/ui.h:83
+msgid "Move current archive to trash"
+msgstr "현재 압축 파일을 휴지통으로 옮깁니다"
+
+#: src/ui.h:86
+msgid "Dese_lect All"
+msgstr "모두 선택 해제(_L)"
+
+#: src/ui.h:87
+msgid "Deselect all files"
+msgstr "모든 파일을 선택을 해제합니다"
+
+#: src/ui.h:90
+msgid "_Extract..."
+msgstr "풀기(_E)..."
+
+#: src/ui.h:91 src/ui.h:95
+msgid "Extract files from the archive"
+msgstr "압축 파일에서 파일을 풀어냅니다"
+
+#: src/ui.h:98
+msgid "_Last Output"
+msgstr "최근 출력(_L)"
+
+#: src/ui.h:99
+msgid "View the output produced by the last executed command"
+msgstr "마지막에 실행한 명령의 출력을 봅니다"
+
+#: src/ui.h:102
+msgid "_Move..."
+msgstr "옮기기(_M)..."
+
+#: src/ui.h:103
+msgid "Move current archive to another folder"
+msgstr "현재 압축 파일을 다른 폴더로 옮깁니다"
+
+#: src/ui.h:106
+msgid "_New"
+msgstr "새로 만들기(_N)"
+
+#: src/ui.h:107
+msgid "Create a new archive"
+msgstr "새 압축 파일을 만듭니다"
+
+#: src/ui.h:110
+msgid "_Open..."
+msgstr "열기(_O)..."
+
+#: src/ui.h:111 src/ui.h:115
+msgid "Open archive"
+msgstr "압축 파일을 엽니다"
+
+#: src/ui.h:118
+msgid "Open Fi_les..."
+msgstr "파일 열기(_I)..."
+
+#: src/ui.h:119
+msgid "Open selected files with an application"
+msgstr "선택한 파일을 다른 프로그램으로 엽니다"
+
+#: src/ui.h:122
+msgid "Pass_word..."
+msgstr "열쇠글(_W)..."
+
+#: src/ui.h:123
+msgid "Specify a password for this archive"
+msgstr "이 압축 파일의 열쇠글을 지정합니다"
+
+#: src/ui.h:126 src/window.c:5036
+msgid "_Paste"
+msgstr "붙여 넣기(_P)"
+
+#: src/ui.h:127
+msgid "Paste the clipboard"
+msgstr "클립보드를 붙여 넣습니다"
+
+#: src/ui.h:130
+msgid "_Properties"
+msgstr "등록 정보(_P)"
+
+#: src/ui.h:131
+msgid "Show archive properties"
+msgstr "압축 파일의 등록 정보를 봅니다"
+
+#: src/ui.h:134
+msgid "_Quit"
+msgstr "끝내기(_Q)"
+
+#: src/ui.h:135
+msgid "Quit the application"
+msgstr "프로그램을 끝냅니다"
+
+#: src/ui.h:138
+msgid "_Reload"
+msgstr "다시 읽기(_R)"
+
+#: src/ui.h:139
+msgid "Reload current archive"
+msgstr "현재 압축 파일을 다시 읽습니다"
+
+#: src/ui.h:142 src/ui.h:146
+msgid "_Rename..."
+msgstr "이름 바꾸기(_R)..."
+
+#: src/ui.h:143
+msgid "Rename the selection"
+msgstr "선택한 파일의 이름을 바꿉니다"
+
+#: src/ui.h:147
+msgid "Rename current archive"
+msgstr "현재 압축 파일의 이름을 바꿉니다"
+
+#: src/ui.h:150
+msgid "Save _As..."
+msgstr "다른 이름으로 저장(_A)..."
+
+#: src/ui.h:151
+msgid "Save the current archive with a different name"
+msgstr "현재 압축 파일을 다른 이름으로 저장합니다"
+
+#: src/ui.h:154
+msgid "Select _All"
+msgstr "모두 선택(_A)"
+
+#: src/ui.h:155
+msgid "Select all files"
+msgstr "모든 파일을 선택합니다"
+
+#: src/ui.h:158
+msgid "_Stop"
+msgstr "멈춤(_S)"
+
+#: src/ui.h:159
+msgid "Stop current operation"
+msgstr "현재 진행중인 작업을 멈춥니다"
+
+#: src/ui.h:162
+msgid "_Test Integrity"
+msgstr "올바른지 테스트(_T)"
+
+#: src/ui.h:163
+msgid "Test whether the archive contains errors"
+msgstr "압축 파일에 오류가 있는 지 검사합니다"
+
+#: src/ui.h:166
+msgid "_View File"
+msgstr "파일 보기(_V)"
+
+#: src/ui.h:167 src/ui.h:171
+msgid "View the selected file"
+msgstr "선택한 파일을 봅니다"
+
+#: src/ui.h:179
+msgid "_Toolbar"
+msgstr "도구 모음(_T)"
+
+#: src/ui.h:180
+msgid "View the main toolbar"
+msgstr "기본 도구 모음을 봅니다"
+
+#: src/ui.h:184
+msgid "Stat_usbar"
+msgstr "상태 표시줄(_U)"
+
+#: src/ui.h:185
+msgid "View the statusbar"
+msgstr "상태 표시줄을 봅니다"
+
+#: src/ui.h:189
+msgid "_Reversed Order"
+msgstr "역순(_R)"
+
+#: src/ui.h:190
+msgid "Reverse the list order"
+msgstr "거꾸로 정렬합니다"
+
+#: src/ui.h:199
+msgid "View All _Files"
+msgstr "모든 파일 보기(_F)"
+
+#: src/ui.h:202
+msgid "View as a F_older"
+msgstr "폴더로 보기(_O)"
+
+#: src/ui.h:210
+msgid "by _Name"
+msgstr "이름순(_N)"
+
+#: src/ui.h:211
+msgid "Sort file list by name"
+msgstr "이름에 따라 정렬합니다"
+
+#: src/ui.h:213
+msgid "by _Size"
+msgstr "크기순(_S)"
+
+#: src/ui.h:214
+msgid "Sort file list by file size"
+msgstr "크기에 따라 정렬합니다"
+
+#: src/ui.h:216
+msgid "by T_ype"
+msgstr "형식순(_Y)"
+
+#: src/ui.h:217
+msgid "Sort file list by type"
+msgstr "형식에 따라 정렬합니다"
+
+#: src/ui.h:219
+msgid "by _Date modified"
+msgstr "바뀐 시각(_D)"
+
+#: src/ui.h:220
+msgid "Sort file list by modification time"
+msgstr "바뀐 시각에 따라 정렬합니다"
+
+#: src/ui.h:222
+msgid "by _Location"
+msgstr "위치에 따라(_L)"
+
+#: src/ui.h:223
+msgid "Sort file list by location"
+msgstr "위치에 따라 파일을 정렬합니다"
+
+#: src/window.c:698
+msgid "Folder"
+msgstr "폴더"
+
+#: src/window.c:863
+msgid "[read only]"
+msgstr "[읽기전용]"
+
+#: src/window.c:957
+#, c-format
+msgid "%d file (%s)"
+msgid_plural "%d files (%s)"
+msgstr[0] "%d개 파일 (%s)"
+
+#: src/window.c:962
+#, c-format
+msgid "%d file selected (%s)"
+msgid_plural "%d files selected (%s)"
+msgstr[0] "%d개 파일 선택 (%s)"
+
+#: src/window.c:1385
+msgid "Reading archive"
+msgstr "압축파일 읽는 중"
+
+#: src/window.c:1391
 msgid "Adding files to archive"
 msgstr "압축 파일에 파일을 더하는 중"
 
-#: src/window.c:1118
+#: src/window.c:1394
 msgid "Extracting files from archive"
 msgstr "압축 파일에서 파일을 풀어내는 중"
 
-#: src/window.c:1121
+#: src/window.c:1397
 msgid "Testing archive"
 msgstr "압축 파일을 검사합니다"
 
-#: src/window.c:1127
+#: src/window.c:1400
+msgid "Getting the file list"
+msgstr "파일 목록 가져오는 중"
+
+#: src/window.c:1407
 msgid "wait please..."
 msgstr "잠시만 기다리십시오..."
 
-#: src/window.c:1213
-msgid "Operation stopped"
-msgstr "동작 멈춤"
+#: src/window.c:1484
+#, c-format
+msgid "Could not display the folder \"%s\""
+msgstr "\"%s\" 폴더를 보여줄 수 없습니다"
 
-#: src/window.c:1231
+#: src/window.c:1543
+msgid ""
+"This archive is password protected.\n"
+"Please specify a password with the command: Edit->Password"
+msgstr ""
+"이 압축 파일은 열쇠글로 보호되고 있습니다.\n"
+"다음 명령으로 열쇠글을 지정하십시오: 편집->열쇠글"
+
+#: src/window.c:1545
+msgid ""
+"The specified password is not valid, please specify a new password with the "
+"command: Edit->Password"
+msgstr ""
+"지정한 열쇠글이 올바르지 않습니다. 다음 명령으로 새 열쇠글을 지정하십시오: 편"
+"집->열쇠글"
+
+#: src/window.c:1550 src/window.c:2169
+msgid "Could not perform the operation"
+msgstr "작업을 수행할 수 없습니다"
+
+#: src/window.c:1575
 msgid "An error occurred while extracting files."
 msgstr "파일을 푸는 중 오류가 생겼습니다."
 
-#: src/window.c:1235
+#: src/window.c:1579
 msgid "An error occurred while loading the archive."
 msgstr "압축 파일을 읽는 중 오류가 생겼습니다."
 
-#: src/window.c:1239
+#: src/window.c:1583
 msgid "An error occurred while deleting files from the archive."
 msgstr "압축 파일에 파일을 지우는 중 오류가 생겼습니다."
 
-#: src/window.c:1243
+#: src/window.c:1587
 msgid "An error occurred while adding files to the archive."
 msgstr "압축 파일에 파일을 더하는 중 오류가 생겼습니다."
 
-#: src/window.c:1247
+#: src/window.c:1591
 msgid "An error occurred while testing archive."
 msgstr "압축 파일을 검사하는 중 오류가 생겼습니다."
 
-#: src/window.c:1253
+#: src/window.c:1600
 msgid "Command not found."
 msgstr "명령을 찾을 수 없습니다."
 
-#: src/window.c:1256
+#: src/window.c:1603
 msgid "Command exited abnormally."
 msgstr "명령이 비정상적으로 마쳤습니다."
 
-#: src/window.c:1548
-msgid "You don't have permissions to add files to this archive."
-msgstr "이 압축 파일에 파일을 추가할 권한이 없습니다."
+#: src/window.c:1732
+msgid "Test Result"
+msgstr "검사 결과"
 
-#: src/window.c:1570
+#: src/window.c:1968
+msgid "You don't have the right permissions."
+msgstr "작업을 할 수 있는 권한이 없습니다."
+
+#: src/window.c:2006
 msgid "You can't add an archive to itself."
 msgstr "압축 파일 자신을 더할 수 없습니다."
 
-#: src/window.c:1730
+#: src/window.c:2203
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
 msgstr "이 파일을 현재 압축 파일이나 새로운 압축 파일에 더하겠습니까?"
 
-#: src/window.c:1773
+#: src/window.c:2240
 msgid "Do you want to create a new archive with these files?"
 msgstr "이 파일들로 새로운 압축 파일을 만들겠습니까?"
 
-#: src/window.c:1775
+#: src/window.c:2243
 msgid "Create _Archive"
 msgstr "압축 파일 만들기(_A)"
 
-#: src/window.c:2108
+#: src/window.c:2564
 msgid "Size"
 msgstr "크기"
 
-#: src/window.c:2109
+#: src/window.c:2565
 msgid "Type"
 msgstr "형식"
 
-#: src/window.c:2110
-msgid "Date modified"
+#: src/window.c:2566
+msgid "Date Modified"
 msgstr "바뀐 시간"
 
-#: src/window.c:2111
+#: src/window.c:2567
 msgid "Location"
 msgstr "위치"
 
-#: src/window.c:2118
+#: src/window.c:2574
 msgid "Name"
 msgstr "이름"
 
-#: src/window.c:2538
-msgid "_Up"
-msgstr "위로(_U)"
+#: src/window.c:3031
+#, c-format
+msgid "Open '%s'"
+msgstr "'%s' 열기"
+
+#: src/window.c:3350
+msgid "Go to the previous visited location"
+msgstr "이전에 있었던 위치로 이동합니다"
+
+#: src/window.c:3358
+msgid "Go to the next visited location"
+msgstr "다음에 있었던 위치로 이동합니다"
+
+#: src/window.c:3366
+msgid "Go up one level"
+msgstr "한 단계 위로 이동합니다"
+
+#: src/window.c:3374
+msgid "Go to the home location"
+msgstr "홈으로 이동합니다"
 
 #. current location
-#: src/window.c:2560
-msgid "Current Location:"
-msgstr "현재 위치:"
+#: src/window.c:3393
+msgid "Location:"
+msgstr "위치:"
 
-#: src/window.c:2592
-msgid "Add"
-msgstr "더하기"
+#: src/window.c:3904
+#, c-format
+msgid "Could not open \"%s\""
+msgstr "\"%s\"을(를) 열 수 없습니다"
 
-#: src/window.c:2614
-msgid "View"
-msgstr "보기"
+#: src/window.c:3962
+#, c-format
+msgid "Could not save the archive \"%s\""
+msgstr "\"%s\" 압축 파일을 저장할 수 없습니다"
 
-#: src/window.c:2615
-msgid "View selected file"
-msgstr "선택된 파일 보기"
+#: src/window.c:4856
+msgid "The new name is void."
+msgstr "새 이름이 올바르지 않습니다."
 
-#: src/window.c:3010
-msgid "File type not supported."
-msgstr "지원되지 않는 파일 형식입니다."
+#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+msgid "Please use a different name."
+msgstr "다른 이름을 사용하십시오."
 
-#: src/window.c:3079
-msgid "Cannot load archive."
-msgstr "압축 파일을 읽어올 수 없습니다."
+#: src/window.c:4860
+msgid "The new name is equal to the old one."
+msgstr "새 이름이 옛날 이름과 똑같습니다."
 
-#: src/window.c:3493
-msgid "Last Output"
-msgstr "지난 출력"
+#: src/window.c:4869
+#, c-format
+msgid ""
+"The name \"%s\" is not valid because it cannot contain the characters: %s\n"
+"\n"
+"%s"
+msgstr ""
+"\"%s\" 이름은 올바르지 않습니다. 다음 문자가 들어 있으면 안 됩니다: %s\n"
+"\n"
+"%s"
 
-#: src/window.c:4019
+#: src/window.c:4925
+msgid "New folder name"
+msgstr "새 폴더 이름"
+
+#: src/window.c:4925
+msgid "New file name"
+msgstr "새 파일 이름"
+
+#: src/window.c:4946
+msgid "Could not rename the folder"
+msgstr "폴더 이름을 바꿀 수 없습니다"
+
+#: src/window.c:4946
+msgid "Could not rename the file"
+msgstr "파일의 이름을 바꿀 수 없습니다"
+
+#: src/window.c:5031
+msgid "Paste Selection"
+msgstr "선택한 파일을 붙여 넣기"
+
+#: src/window.c:5032
+msgid "Destination folder"
+msgstr "대상 폴더"
+
+#: src/window.c:5614
 msgid "Add files to an archive"
 msgstr "압축 파일에 파일을 더합니다"
 
-#: src/window.c:4044
+#: src/window.c:5641
 msgid "Extract archive"
 msgstr "압축 파일을 풉니다"

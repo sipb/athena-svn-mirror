@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,14 +31,22 @@ GtkWidget*  _gtk_message_dialog_new   (GtkWindow        *parent,
 				       GtkDialogFlags    flags,
 				       const char       *stock_id,
 				       const char       *message,
+				       const char       *secondary_message,
 				       const char       *first_button_text,
 				       ...);
 
 gchar*      _gtk_request_dialog_run   (GtkWindow        *parent,
 				       GtkDialogFlags    flags,
+				       const char       *title,
 				       const char       *message,
 				       const char       *default_value,
 				       int               max_length,
+				       const char       *no_button_text,
+				       const char       *yes_button_text);
+
+GtkWidget*  _gtk_yesno_dialog_new     (GtkWindow        *parent,
+				       GtkDialogFlags    flags,
+				       const char       *message,
 				       const char       *no_button_text,
 				       const char       *yes_button_text);
 
@@ -57,5 +65,15 @@ void        _gtk_label_set_locale_text   (GtkLabel   *label,
 					  const char *text);
 
 char *      _gtk_label_get_locale_text   (GtkLabel   *label);
+
+void        _gtk_entry_set_filename_text (GtkEntry   *entry,
+					  const char *text);
+
+char *      _gtk_entry_get_filename_text (GtkEntry   *entry);
+
+void        _gtk_label_set_filename_text (GtkLabel   *label,
+					  const char *text);
+
+char *      _gtk_label_get_filename_text (GtkLabel   *label);
 
 #endif

@@ -54,6 +54,7 @@ _gtk_message_dialog_new (GtkWindow        *parent,
 			 GtkDialogFlags    flags,
 			 const char       *stock_id,
 			 const char       *message,
+			 const char       *secondary_message,
 			 const gchar      *first_button_text,
 			 ...)
 {
@@ -64,18 +65,12 @@ _gtk_message_dialog_new (GtkWindow        *parent,
 	va_list       args;
 	const gchar  *text;
 	int           response_id;
-	GtkStockItem  item;
-	char         *title;
+	char         *escaped_message, *markup_text;
 
 	if (stock_id == NULL)
 		stock_id = GTK_STOCK_DIALOG_INFO;
 
-	if (gtk_stock_lookup (stock_id, &item))
-		title = item.label;
-	else
-		title = _("File Roller");
-
-	dialog = gtk_dialog_new_with_buttons (title, parent, flags, NULL);
+	dialog = gtk_dialog_new_with_buttons ("", parent, flags, NULL);
 
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
         gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
@@ -87,11 +82,25 @@ _gtk_message_dialog_new (GtkWindow        *parent,
 	image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_DIALOG);
 	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
 
-	label = gtk_label_new (message);
+	label = gtk_label_new ("");
+
+	escaped_message = g_markup_escape_text (message, -1);
+	if (secondary_message != NULL) {
+		char *escaped_secondary_message = g_markup_escape_text (secondary_message, -1);
+		markup_text = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s", 
+					       escaped_message,
+					       escaped_secondary_message);
+		g_free (escaped_secondary_message);
+	} else 
+		markup_text = g_strdup (escaped_message);
+	gtk_label_set_markup (GTK_LABEL (label), markup_text);
+	g_free (markup_text);
+	g_free (escaped_message);
+
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
 	
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 24);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	
 	gtk_box_pack_start (GTK_BOX (hbox), image,
@@ -131,9 +140,55 @@ _gtk_message_dialog_new (GtkWindow        *parent,
 }
 
 
+static GtkWidget *
+create_button (const char *stock_id, 
+	       const char *text)
+{
+	GtkWidget    *button;
+	GtkWidget    *hbox;
+	GtkWidget    *image;
+	GtkWidget    *label;
+	GtkWidget    *align;
+	const char   *label_text;
+	gboolean      text_is_stock;
+	GtkStockItem  stock_item;
+
+	button = gtk_button_new ();
+
+	if (gtk_stock_lookup (text, &stock_item)) {
+		label_text = stock_item.label;
+		text_is_stock = TRUE;
+	} else {
+		label_text = text;
+		text_is_stock = FALSE;
+	}
+
+	if (text_is_stock)
+		image = gtk_image_new_from_stock (text, GTK_ICON_SIZE_BUTTON);
+	else
+		image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_BUTTON);
+	label = gtk_label_new_with_mnemonic (label_text);
+	hbox = gtk_hbox_new (FALSE, 2);
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), GTK_WIDGET (button));
+
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (button), align);
+	gtk_container_add (GTK_CONTAINER (align), hbox);
+
+	gtk_widget_show_all (button);
+
+	return button;
+}
+
+
 char *
 _gtk_request_dialog_run (GtkWindow        *parent,
 			 GtkDialogFlags    flags,
+			 const char       *title,
 			 const char       *message,
 			 const char       *default_value,
 			 int               max_length,
@@ -146,16 +201,11 @@ _gtk_request_dialog_run (GtkWindow        *parent,
 	GtkWidget    *hbox;
 	GtkWidget    *vbox;
 	GtkWidget    *entry;
-	GtkStockItem  item;
-	char         *title;
+	GtkWidget    *button;
 	char         *stock_id;
 	char         *result;
 
 	stock_id = GTK_STOCK_DIALOG_QUESTION;
-	if (gtk_stock_lookup (stock_id, &item))
-		title = item.label;
-	else
-		title = _("File Roller");
 
 	dialog = gtk_dialog_new_with_buttons (title, parent, flags, NULL);
 
@@ -171,14 +221,16 @@ _gtk_request_dialog_run (GtkWindow        *parent,
 
 	label = gtk_label_new (message);	
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+	gtk_label_set_selectable (GTK_LABEL (label), FALSE);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
 
 	entry = gtk_entry_new ();
+	gtk_widget_set_size_request (entry, 250, -1);
 	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
 	gtk_entry_set_max_length (GTK_ENTRY (entry), max_length);
 	gtk_entry_set_text (GTK_ENTRY (entry), default_value);
 	
-	hbox = gtk_hbox_new (FALSE, 6);
+	hbox = gtk_hbox_new (FALSE, 24);
 	vbox = gtk_vbox_new (FALSE, 6);
 
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
@@ -202,12 +254,16 @@ _gtk_request_dialog_run (GtkWindow        *parent,
 	
 	/* Add buttons */
 
-	gtk_dialog_add_button (GTK_DIALOG (dialog), 
-			       no_button_text, 
-			       GTK_RESPONSE_CANCEL);
-	gtk_dialog_add_button (GTK_DIALOG (dialog), 
-			       yes_button_text, 
-			       GTK_RESPONSE_YES);
+	button = create_button (GTK_STOCK_CANCEL, no_button_text);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), 
+				      button, 
+				      GTK_RESPONSE_CANCEL);
+
+	button = create_button (GTK_STOCK_OK, yes_button_text);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), 
+				      button,
+				      GTK_RESPONSE_YES);
+
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 
 	/* Run dialog */
@@ -222,6 +278,74 @@ _gtk_request_dialog_run (GtkWindow        *parent,
 	gtk_widget_destroy (dialog);
 
 	return result;
+}
+
+
+GtkWidget*
+_gtk_yesno_dialog_new (GtkWindow        *parent,
+		       GtkDialogFlags    flags,
+		       const char       *message,
+		       const char       *no_button_text,
+		       const char       *yes_button_text)
+{
+	GtkWidget    *d;
+	GtkWidget    *label;
+	GtkWidget    *image;
+	GtkWidget    *hbox;
+	GtkWidget    *button;
+	char         *stock_id = GTK_STOCK_DIALOG_WARNING;
+
+	d = gtk_dialog_new_with_buttons ("", parent, flags, NULL);
+	gtk_window_set_resizable (GTK_WINDOW (d), FALSE);
+
+	gtk_dialog_set_has_separator (GTK_DIALOG (d), FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (d), 6);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (d)->vbox), 6);
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (d)->vbox), 8);
+
+	/* Add label and image */
+
+	image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_DIALOG);
+	gtk_misc_set_alignment (GTK_MISC (image), 0.5, 0.0);
+
+	label = gtk_label_new (message);	
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+	
+	hbox = gtk_hbox_new (FALSE, 24);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
+	
+	gtk_box_pack_start (GTK_BOX (hbox), image,
+			    FALSE, FALSE, 0);
+	
+	gtk_box_pack_start (GTK_BOX (hbox), label,
+			    TRUE, TRUE, 0);
+	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (d)->vbox),
+			    hbox,
+			    FALSE, FALSE, 0);
+	
+	gtk_widget_show_all (hbox);
+
+	/* Add buttons */
+
+	button = create_button (GTK_STOCK_CANCEL, no_button_text);
+	gtk_dialog_add_action_widget (GTK_DIALOG (d), 
+				      button, 
+				      GTK_RESPONSE_CANCEL);
+
+	/**/
+
+	button = create_button (GTK_STOCK_OK, yes_button_text);
+	gtk_dialog_add_action_widget (GTK_DIALOG (d), 
+				      button, 
+				      GTK_RESPONSE_YES);
+
+	/**/
+
+	gtk_dialog_set_default_response (GTK_DIALOG (d), GTK_RESPONSE_YES);
+	
+	return d;
 }
 
 
@@ -423,6 +547,62 @@ _gtk_label_get_locale_text (GtkLabel *label)
 		return NULL;
 
 	text = g_locale_from_utf8 (utf8_text, -1, NULL, NULL, NULL);
+
+	return text;
+}
+
+
+void
+_gtk_entry_set_filename_text (GtkEntry   *entry,
+			      const char *text)
+{
+	char *utf8_text;
+
+	utf8_text = g_filename_to_utf8 (text, -1, NULL, NULL, NULL);
+	gtk_entry_set_text (entry, utf8_text);
+	g_free (utf8_text);
+}
+
+
+char *
+_gtk_entry_get_filename_text (GtkEntry   *entry)
+{
+	const char *utf8_text;
+	char       *text;
+
+	utf8_text = gtk_entry_get_text (entry);
+	if (utf8_text == NULL)
+		return NULL;
+
+	text = g_filename_from_utf8 (utf8_text, -1, NULL, NULL, NULL);
+
+	return text;
+}
+
+
+void
+_gtk_label_set_filename_text (GtkLabel   *label,
+			      const char *text)
+{
+	char *utf8_text;
+
+	utf8_text = g_filename_to_utf8 (text, -1, NULL, NULL, NULL);
+	gtk_label_set_text (label, utf8_text);
+	g_free (utf8_text);
+}
+
+
+char *
+_gtk_label_get_filename_text (GtkLabel   *label)
+{
+	const char *utf8_text;
+	char       *text;
+
+	utf8_text = gtk_label_get_text (label);
+	if (utf8_text == NULL)
+		return NULL;
+
+	text = g_filename_from_utf8 (utf8_text, -1, NULL, NULL, NULL);
 
 	return text;
 }

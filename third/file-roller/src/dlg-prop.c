@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2004 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,34 +52,40 @@ destroy_cb (GtkWidget  *widget,
 
 
 static void
-set_label (GtkWidget *label, const char *text)
+set_label_type (GtkWidget *label, const char *text, const char *type)
 {
 	char *t;
 
-	t = g_strdup_printf ("<b>%s</b>", text);
+	t = g_strdup_printf ("<%s>%s</%s>", type, text, type);
 	gtk_label_set_markup (GTK_LABEL (label), t);
 	g_free (t);
 }
 
 
+static void
+set_label (GtkWidget *label, const char *text)
+{
+	set_label_type (label, text, "b");
+}
+
+
 void
-dlg_prop (GtkWidget *widget,
-	  gpointer   callback_data)
+dlg_prop (FRWindow *window)
 {
         DialogData       *data;
-	FRWindow         *window = callback_data;
 	GtkWidget        *ok_button;
 	GtkWidget        *label_label;
 	GtkWidget        *label;
 	char             *s;
 	const char       *s1;
-	GnomeVFSFileSize  size;
+	GnomeVFSFileSize  size, uncompressed_size;
 	struct tm        *tm;
 	time_t            timer;
 	char              time_txt[50];
 	char             *utf8_name;
 	char             *title_txt;
-
+	double            ratio;
+	
         data = g_new (DialogData, 1);
 
 	data->gui = glade_xml_new (GLADEDIR "/" PROP_GLADE_FILE , NULL, NULL);
@@ -101,7 +107,7 @@ dlg_prop (GtkWidget *widget,
 	label = glade_xml_get_widget (data->gui, "p_path_label");
 	/* window->archive_filename is unescaped. */
 	s = remove_level_from_path (window->archive_filename); 
-	utf8_name = g_locale_to_utf8 (s, -1, NULL, NULL, NULL);
+	utf8_name = g_filename_to_utf8 (s, -1, NULL, NULL, NULL);
 	gtk_label_set_text (GTK_LABEL (label), utf8_name);
 	g_free (utf8_name);
 	g_free (s);
@@ -113,7 +119,7 @@ dlg_prop (GtkWidget *widget,
 
 	label = glade_xml_get_widget (data->gui, "p_name_label");
 	s1 = file_name_from_path (window->archive_filename);
-	utf8_name = g_locale_to_utf8 (s1, -1, NULL, NULL, NULL);
+	utf8_name = g_filename_to_utf8 (s1, -1, NULL, NULL, NULL);
 	gtk_label_set_text (GTK_LABEL (label), utf8_name);
 
 	title_txt = g_strdup_printf (_("%s Properties"), utf8_name);
@@ -124,12 +130,60 @@ dlg_prop (GtkWidget *widget,
 
 	/**/
 
+	label_label = glade_xml_get_widget (data->gui, "p_date_label_label");
+	set_label (label_label, _("Modified on:"));
+
+	label = glade_xml_get_widget (data->gui, "p_date_label");
+
+	timer = get_file_mtime (window->archive->filename);
+	tm = localtime (&timer);
+	strftime (time_txt, 50, _("%d %B %Y, %H:%M"), tm);
+	s = g_locale_to_utf8 (time_txt, -1, 0, 0, 0);
+	gtk_label_set_text (GTK_LABEL (label), s);
+	g_free (s);
+
+	/**/
+
 	label_label = glade_xml_get_widget (data->gui, "p_size_label_label");
-	set_label (label_label, _("File size:"));
+	set_label (label_label, _("Archive size:"));
 
 	label = glade_xml_get_widget (data->gui, "p_size_label");
 	size = get_file_size (window->archive_filename);
 	s = gnome_vfs_format_file_size_for_display (size);
+	gtk_label_set_text (GTK_LABEL (label), s);
+	g_free (s);
+
+	/**/
+
+	label_label = glade_xml_get_widget (data->gui, "p_uncomp_size_label_label");
+	set_label (label_label, _("Content size:"));
+
+	uncompressed_size = 0;
+	if (window->archive_present) {
+		GList *scan = window->archive->command->file_list;
+		for (; scan; scan = scan->next) {
+			FileData *fd = scan->data;
+			uncompressed_size += fd->size;
+		}
+	}
+
+	label = glade_xml_get_widget (data->gui, "p_uncomp_size_label");
+	s = gnome_vfs_format_file_size_for_display (uncompressed_size);
+	gtk_label_set_text (GTK_LABEL (label), s);
+	g_free (s);
+
+	/**/
+
+	label_label = glade_xml_get_widget (data->gui, "p_cratio_label_label");
+	set_label (label_label, _("Compression ratio:"));
+
+	label = glade_xml_get_widget (data->gui, "p_cratio_label");
+
+	if (uncompressed_size != 0) 
+		ratio = (double) uncompressed_size / size;
+	else
+		ratio = 0.0;
+	s = g_strdup_printf ("%0.2f", ratio);
 	gtk_label_set_text (GTK_LABEL (label), s);
 	g_free (s);
 
@@ -140,20 +194,6 @@ dlg_prop (GtkWidget *widget,
 
 	label = glade_xml_get_widget (data->gui, "p_files_label");
 	s = g_strdup_printf ("%d", g_list_length (window->archive->command->file_list));
-	gtk_label_set_text (GTK_LABEL (label), s);
-	g_free (s);
-
-	/**/
-
-	label_label = glade_xml_get_widget (data->gui, "p_date_label_label");
-	set_label (label_label, _("Date and time:"));
-
-	label = glade_xml_get_widget (data->gui, "p_date_label");
-
-	timer = get_file_mtime (window->archive->filename);
-	tm = localtime (&timer);
-	strftime (time_txt, 50, _("%d %B %Y, %H:%M"), tm);
-	s = g_locale_to_utf8 (time_txt, -1, 0, 0, 0);
 	gtk_label_set_text (GTK_LABEL (label), s);
 	g_free (s);
 
@@ -170,7 +210,7 @@ dlg_prop (GtkWidget *widget,
 
 	/* Run dialog. */
 
-        gtk_window_set_transient_for (GTK_WINDOW (data->dialog), 
+	gtk_window_set_transient_for (GTK_WINDOW (data->dialog), 
 				      GTK_WINDOW (window->app));
         gtk_window_set_modal         (GTK_WINDOW (data->dialog), TRUE);
 

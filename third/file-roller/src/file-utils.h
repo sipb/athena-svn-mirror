@@ -3,7 +3,7 @@
 /*
  *  File-Roller
  *
- *  Copyright (C) 2001 The Free Software Foundation, Inc.
+ *  Copyright (C) 2001, 2003 Free Software Foundation, Inc.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,16 +23,28 @@
 #ifndef FILE_UTILS_H
 #define FILE_UTILS_H
 
+#include <sys/types.h>
 #include <time.h>
 #include <libgnomevfs/gnome-vfs-file-size.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
+
+#define FILENAME_MAX_LENGTH 30 /* FIXME: find out the best value */
+
+#define get_home_relative_dir(x)        \
+        g_strconcat (g_get_home_dir (), \
+                     "/",               \
+                     (x),               \
+                     NULL)
 
 gboolean            path_is_file                 (const gchar *s);
 
 gboolean            path_is_dir                  (const gchar *s);
 
 gboolean            dir_is_empty                 (const gchar *s);
+
+gboolean            path_in_path                 (const char  *path_src,
+						  const char  *path_dest);
 
 GnomeVFSFileSize    get_file_size                (const gchar *s);
 
@@ -71,19 +83,37 @@ GList *             path_list_dup                (GList *path_list);
 gboolean            is_mime_type                 (const char* type, 
 						  const char* pattern);
 
+char*               escape_str                   (const char  *str, 
+						  const char  *meta_chars);
+
 gchar *             shell_escape                 (const gchar *filename);
 
 gchar *             application_get_command      (const GnomeVFSMimeApplication *app);
 
 gboolean            match_patterns               (char       **patterns, 
-						  const char  *string);
+						  const char  *string,
+						  int          flags);
 
 char **             search_util_get_patterns     (const char  *pattern_string);
 
-#define get_home_relative_dir(x)        \
-        g_strconcat (g_get_home_dir (), \
-                     "/",               \
-                     (x),               \
-                     NULL)
+GnomeVFSFileSize    get_dest_free_space          (const char  *path);
+
+gboolean            rmdir_recursive              (const gchar *directory);
+
+char *              _g_strdup_with_max_size      (const char *s,
+						  int         max_size);
+
+const char *        eat_spaces                   (const char *line);
+
+char **             split_line                   (const char *line, 
+						  int   n_fields);
+
+const char *        get_last_field               (const char *line,
+						  int         last_field);
+
+char *              get_temp_work_dir            (void);
+
+char *              get_temp_work_dir_name       (void);
+
 
 #endif /* FILE_UTILS_H */
