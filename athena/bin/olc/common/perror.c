@@ -9,19 +9,21 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v $
- *	$Id: perror.c,v 1.4 1991-09-10 11:03:23 lwvanels Exp $
+ *	$Id: perror.c,v 1.5 1992-02-04 19:53:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.4 1991-09-10 11:03:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.5 1992-02-04 19:53:50 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
-#if defined(__STDC__) && !defined(ibm032)
+#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
+/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+/* Ditto for saber */
 #include <stdlib.h>
 #endif
 

@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.22 1991-09-11 10:48:56 lwvanels Exp $
+ *	$Id: olc.h,v 1.23 1992-02-04 19:55:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -29,8 +29,9 @@
 #define __olc_olc_h
 
 #include <stdio.h>
-#if defined(__STDC__) && !defined(__HIGHC__)
+#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
 /* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+/* Ditto for saber */
 #include <stdlib.h>
 #endif
 #include <string.h>

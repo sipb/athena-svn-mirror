@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.39 1991-11-05 13:59:29 lwvanels Exp $
+ *	$Id: olcd.h,v 1.40 1992-02-04 19:55:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -40,11 +40,11 @@
  * doesn't provide stdarg.h.
  */
 
-#ifdef __STDC__
-#ifndef __HIGHC__
+#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
+/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+/* Ditto for saber */
 #include <stdarg.h>
 #define HAS_STDARG
-#endif
 #else
 #include <varargs.h>
 #endif
