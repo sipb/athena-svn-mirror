@@ -1,4 +1,4 @@
-# $Id: packages,v 1.29 1997-11-11 15:38:54 ghudson Exp $
+# $Id: packages,v 1.30 1997-11-18 18:26:32 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -46,6 +46,7 @@ third/look			sgi
 third/whois			sgi
 third/appletalk			sun4
 third/ispell
+third/ssh
 athena/lib/acl
 athena/lib/zephyr
 athena/lib/neos
