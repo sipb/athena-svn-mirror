@@ -1,22 +1,20 @@
-# translation of tr.po to Turkish
 # Turkish translation of Nautilus.
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000-2003 Free Software Foundation, Inc.
 # Ömer Fadıl USTA <omer_fad@hotmail.com>, 2002
-# Fatih Demir <kabalak@gmx.net>, 2000.
-# Görkem Cetin <gorkem@gelecek.com.tr>, 2001.
-# Görkem Çetin <gorkem@gelecek.com.tr>, 2002
+# Fatih Demir <kabalak@gtranslator.org>, 2000.
+# Görkem Cetin <gorkem@gelecek.com.tr>, 2001, 2002.
+# Arman Aksoy <armish@linux-sevenler.de>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: tr\n"
-"POT-Creation-Date: 2003-01-27 21:43-0500\n"
-"PO-Revision-Date: 2002-07-28 19:57+0000\n"
-"Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
+"Project-Id-Version: Nautilus\n"
+"POT-Creation-Date: 2003-03-10 19:46+0100\n"
+"PO-Revision-Date: 2003-02-10 19:47+0200\n"
+"Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
 
 # components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
@@ -34,6 +32,8 @@ msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
 msgstr ""
+"Bonobo Kontrolleri ve Yerleştirilebilir sıra ile kaydırılmış nesneler için "
+"Nautilus Görünümü gibi görünmeleri için üretici"
 
 # components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
@@ -42,7 +42,7 @@ msgstr "Nautilus bileşen denetleyici mimarisi"
 
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
-msgstr ""
+msgstr "bonobo_ui_init() hatası."
 
 # data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1376
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
@@ -53,15 +53,13 @@ msgstr "Logolar"
 
 # components/tree/Nautilus_View_tree.oaf.in.h:1
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
-#, fuzzy
 msgid "Nautilus Emblem side pane"
-msgstr "Nautilus yan paneli"
+msgstr "Nautilus Amblem kenarı paneli"
 
 # components/sample/Nautilus_View_sample.oaf.in.h:1
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Emblem view"
-msgstr "Nautilus Örnek Görünüm"
+msgstr "Nautilus Amblem görünümü"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -69,12 +67,13 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
+"Amblem '%s' adıyla kaldırılamıyor. Bunun nedeni bu amblemi sizin eklememiş "
+"olmanız veya geçici olması olabilir."
 
 # src/nautilus-theme-selector.c:616
 #: components/emblem/nautilus-emblem-view.c:203
-#, fuzzy
 msgid "Couldn't remove emblem"
-msgstr "Tema silinemedi"
+msgstr "Amblem silinemedi"
 
 #: components/emblem/nautilus-emblem-view.c:237
 #, c-format
@@ -82,25 +81,24 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
+"Amblem  adı '%s' yapılamadı. Bunun nedeni bu amblemi sizin eklememiş olmanız "
+"veya geçici olması olabilir."
 
 # src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
 # src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
 #: components/emblem/nautilus-emblem-view.c:238
-#, fuzzy
 msgid "Couldn't rename emblem"
-msgstr "Logolar kurulamadı"
+msgstr "Amblem yeniden adlandırılamadı"
 
 # src/nautilus-property-browser.c:2255
 #: components/emblem/nautilus-emblem-view.c:257
-#, fuzzy
 msgid "Rename Emblem"
-msgstr "Bir Logoyu Sil..."
+msgstr "Amblemi Yeniden Adlandır"
 
 # src/nautilus-property-browser.c:1033
 #: components/emblem/nautilus-emblem-view.c:276
-#, fuzzy
 msgid "Enter a new name for the displayed emblem:"
-msgstr "Yeni logo için bir resim dosyası belirleyin:"
+msgstr "Gösterilen amblem için yeni bir ad giriniz:"
 
 # libnautilus-private/nautilus-icon-text-item.c:1546
 # src/file-manager/nautilus-icon-view-ui.xml.h:14
@@ -110,65 +108,71 @@ msgstr "Yeniden adlandır"
 
 # src/nautilus-property-browser.c:2187
 #: components/emblem/nautilus-emblem-view.c:497
-#, fuzzy
 msgid "Add Emblems..."
-msgstr "Yeni Bir Logo Ekle..."
+msgstr "Yeni Amblem ekle..."
 
 #: components/emblem/nautilus-emblem-view.c:513
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Her amblemin yanına bir açıklama giriniz.  Bu isim başka yerlerde bu amblemi "
+"tanımak için kullanılacaktır."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Amblemin yanına bir açıklama giriniz.  Bu isim başka yerlerde bu amblemi "
+"tanımak için kullanılacaktır."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Bazı dosyalar düzgün bir resim olarak görüntülenemediğinden amblem olarak "
+"eklenemiyor."
 
 # src/nautilus-theme-selector.c:397
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
-#, fuzzy
 msgid "Couldn't add emblems"
-msgstr "Tema eklenemiyor"
+msgstr "Amblem eklenemedi"
 
 #: components/emblem/nautilus-emblem-view.c:720
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
 msgstr ""
+"Hiçbir dosya düzgün bir resim olarak görüntülenemediğinden amblem olarak "
+"eklenemiyor."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
-msgstr ""
+msgstr "Sürüklenen metin doğru bir dosya konumu değil."
 
 # src/nautilus-theme-selector.c:397
 #: components/emblem/nautilus-emblem-view.c:741
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:814
-#, fuzzy
 msgid "Couldn't add emblem"
-msgstr "Tema eklenemiyor"
+msgstr "Amblem eklenemiyor"
 
 #: components/emblem/nautilus-emblem-view.c:760
 #: components/emblem/nautilus-emblem-view.c:813
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "'%s' dosyası düzgün bir resim gibi görünmüyor."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Sürüklenen dosya düzgün bir resim gibi görünmüyor."
 
 # data/browser.xml.h:36
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
+#: src/nautilus-property-browser.c:1728
 msgid "Erase"
 msgstr "Sil"
 
@@ -255,7 +259,7 @@ msgstr "%lu MB"
 #: components/hardware/nautilus-hardware-view.c:483
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
-msgstr ""
+msgstr "Başlatılma zamanı %d gün, %d saat, %d dakika"
 
 # components/hardware/nautilus-hardware-view.c:407
 #. set up the title
@@ -282,38 +286,32 @@ msgstr "Geçmiş"
 
 # components/history/Nautilus_View_history.oaf.in.h:3
 #: components/history/Nautilus_View_history.server.in.in.h:2
-#, fuzzy
 msgid "History side pane"
 msgstr "Geçmiş yan çubuk paneli"
 
 # components/history/Nautilus_View_history.oaf.in.h:4
 #: components/history/Nautilus_View_history.server.in.in.h:3
-#, fuzzy
 msgid "History side pane for Nautilus"
 msgstr "Nautilus için geçmiş yan çubuk paneli"
 
 # components/image-viewer/Nautilus_View_image.oaf.in.h:3
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
-#, fuzzy
 msgid "Image"
-msgstr "Resim:"
+msgstr "Resim"
 
 # components/sample/Nautilus_View_sample.oaf.in.h:4
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
-#, fuzzy
 msgid "Image Properties content view component"
-msgstr "Örnek içerik görünüm bileşeni"
+msgstr "Resim Tercihleri içerik görünüm bileşeni"
 
 # components/tree/Nautilus_View_tree.oaf.in.h:2
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Image Properties view"
-msgstr "Nautilus Ağaç görünümü"
+msgstr "Nautilus Resim Tercihleri görünümü"
 
 #: components/image_properties/nautilus-image-properties-view.c:92
-#, fuzzy
 msgid "Failed to load image information"
-msgstr "Başlatıcı bilgisini düzenle"
+msgstr "Resim bilgisi yüklenirken hata oluştu"
 
 #: components/image_properties/nautilus-image-properties-view.c:144
 #, c-format
@@ -321,16 +319,17 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
+"<b>Resim Türü:</b> %s (%s)\n"
+"<B>Çözünürlük:</b>%dx%d benek\n"
 
 # src/nautilus-bookmarks-window.c:177
 #: components/image_properties/nautilus-image-properties-view.c:243
-#, fuzzy
 msgid "loading..."
-msgstr "Yükleniyor..."
+msgstr "yükleniyor..."
 
 #: components/image_properties/nautilus-image-properties-view.c:256
 msgid "URI currently displayed"
-msgstr ""
+msgstr "URI görüntüleniyor"
 
 # components/help/converters/gnome-db2html2/sect-elements.c:254
 # components/notes/Nautilus_View_notes.oaf.in.h:2
@@ -340,15 +339,13 @@ msgstr "Notlar"
 
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: components/notes/Nautilus_View_notes.server.in.in.h:2
-#, fuzzy
 msgid "Notes side pane"
-msgstr "Not paneli"
+msgstr "Not yan paneli"
 
 # components/notes/Nautilus_View_notes.oaf.in.h:4
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
-#, fuzzy
 msgid "Notes side pane for Nautilus"
-msgstr "Nautilus için not paneli"
+msgstr "Nautilus için not yan paneli"
 
 # components/text/Nautilus_View_text.oaf.in.h:1
 #: components/text/Nautilus_View_text.server.in.in.h:1
@@ -367,7 +364,6 @@ msgstr "Metin Görüntüleyici"
 
 # components/text/Nautilus_View_text.oaf.in.h:3
 #: components/text/Nautilus_View_text.server.in.in.h:4
-#: components/text/nautilus-text-view-ui.xml.h:4
 msgid "Text view"
 msgstr "Metin görünüm"
 
@@ -382,78 +378,17 @@ msgstr "Metin görünüm mimarisi"
 msgid "View as Text"
 msgstr "Metin Olarak Göster"
 
-# libnautilus-private/nautilus-global-preferences.c:564
+# libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:15
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "F_onts"
-msgstr "_Yazıtipleri"
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Copy the selected text to the clipboard"
+msgstr "Seçili metni panoya kopyala"
 
-# components/text/nautilus-text-view-ui.xml.h:1
+# libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
 #: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Lucida"
-msgstr "Lucida"
-
-# src/nautilus-service-ui.xml.h:5
-#: components/text/nautilus-text-view-ui.xml.h:3
-msgid "Services"
-msgstr "Servisler"
-
-# components/text/nautilus-text-view-ui.xml.h:2
-#: components/text/nautilus-text-view-ui.xml.h:5
-msgid "Use the Courier Font"
-msgstr "Courier Yazıtipi kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:5
-#: components/text/nautilus-text-view-ui.xml.h:6
-msgid "Use the Fixed Font"
-msgstr "Fixed Yazıtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:5
-#: components/text/nautilus-text-view-ui.xml.h:7
-msgid "Use the GTK System Font"
-msgstr "GTK Sistem Yazıtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:3
-#: components/text/nautilus-text-view-ui.xml.h:8
-msgid "Use the Helvetica Font"
-msgstr "Helvetica Yazıtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:4
-#: components/text/nautilus-text-view-ui.xml.h:9
-msgid "Use the Lucida Font"
-msgstr "Lucida Yazıtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:5
-#: components/text/nautilus-text-view-ui.xml.h:10
-msgid "Use the Times Font"
-msgstr "Times Yazıtipi Kullan"
-
-# components/text/nautilus-text-view-ui.xml.h:6
-#: components/text/nautilus-text-view-ui.xml.h:11
-msgid "_Courier"
-msgstr "_Courier"
-
-# components/loser/content/nautilus-content-loser-ui.xml.h:3
-# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
-# components/mozilla/nautilus-mozilla-ui.xml.h:4
-# components/sample/nautilus-sample-content-view-ui.xml.h:4
-# src/nautilus-shell-ui.xml.h:78
-#: components/text/nautilus-text-view-ui.xml.h:12
-msgid "_Fixed"
-msgstr "_Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:13
-msgid "_GTK System Font"
-msgstr "_GTK Sistem Yazıtipi"
-
-# components/text/nautilus-text-view-ui.xml.h:8
-#: components/text/nautilus-text-view-ui.xml.h:14
-msgid "_Helvetica"
-msgstr "_Helvetica"
-
-# components/text/nautilus-text-view-ui.xml.h:9
-#: components/text/nautilus-text-view-ui.xml.h:15
-msgid "_Times"
-msgstr "_Times"
+#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
+msgid "_Copy Text"
+msgstr "Metni K_opyala"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -478,28 +413,27 @@ msgstr "etkinliği gösteren animasyon"
 
 # components/music/mpg123.c:32
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:579
+#: components/throbber/nautilus-throbber.c:576
 msgid "throbber"
-msgstr ""
+msgstr "çarpıcı"
 
 # components/text/Nautilus_View_text.oaf.in.h:4
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:3
 msgid "throbber factory"
-msgstr ""
+msgstr "çarpım üreticisi"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:4
 msgid "throbber object factory"
-msgstr ""
+msgstr "çarpım nesnesi üreticisi"
 
-#: components/throbber/nautilus-throbber.c:580
+#: components/throbber/nautilus-throbber.c:577
 msgid "provides visual status"
-msgstr ""
+msgstr "grafiksel durum sağlar"
 
 # components/tree/Nautilus_View_tree.oaf.in.h:1
 #: components/tree/Nautilus_View_tree.server.in.in.h:1
-#, fuzzy
 msgid "Nautilus Tree side pane"
-msgstr "Nautilus yan paneli"
+msgstr "Nautilus ağacı yan paneli"
 
 # components/tree/Nautilus_View_tree.oaf.in.h:2
 #: components/tree/Nautilus_View_tree.server.in.in.h:2
@@ -1262,32 +1196,32 @@ msgstr "Bu tema gerçek görünümlü dizinler kullanır."
 
 #: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
-msgstr ""
+msgstr "hbox bulunamadı, normal dosya seçimi yapılacak"
 
 # components/help/converters/gnome-db2html2/gdb3html.c:708
 # components/music/nautilus-music-view.c:1536
 #: libbackground/preview-file-selection.c:212
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview"
 msgstr "Önİzleme"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
-msgstr ""
+msgstr "AFFS Dosya Sistemi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:2
 msgid "AFS Network Volume"
-msgstr "AFS Ağ Biçimi"
+msgstr "AFS Ağ Dosya Sistemi"
 
 #: libnautilus-private/filesystem-attributes.xml.h:3
 msgid "Auto-detected Volume"
-msgstr ""
+msgstr "Otomatik bulunan sistem"
 
 #: libnautilus-private/filesystem-attributes.xml.h:4
 msgid "CD Digital Audio"
-msgstr ""
+msgstr "CD Sayısal Ses"
 
 #: libnautilus-private/filesystem-attributes.xml.h:5
 msgid "CD-ROM Drive"
@@ -1325,9 +1259,8 @@ msgstr "Donanım Aygıt Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1300
 #: libnautilus-private/filesystem-attributes.xml.h:12
-#, fuzzy
 msgid "Hsfs CDROM Volume"
-msgstr "CDROM Biçimi"
+msgstr "Hsfs CDROM Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:13
@@ -1341,9 +1274,8 @@ msgstr "MSDOS Formatı"
 
 # libnautilus-private/nautilus-volume-monitor.c:1300
 #: libnautilus-private/filesystem-attributes.xml.h:15
-#, fuzzy
 msgid "MacOS Volume"
-msgstr "MSDOS Formatı"
+msgstr "MSDOS Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1286
 #: libnautilus-private/filesystem-attributes.xml.h:16
@@ -1357,9 +1289,8 @@ msgstr "NFS Ağ Bölümü"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:18
-#, fuzzy
 msgid "Pcfs Solaris Volume"
-msgstr "Solaris/BSD Biçimi"
+msgstr "Pcfs Solaris Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:19
@@ -1373,9 +1304,8 @@ msgstr "Solaris/BSD Biçimi"
 
 # src/file-manager/fm-desktop-icon-view.c:1113
 #: libnautilus-private/filesystem-attributes.xml.h:21
-#, fuzzy
 msgid "SuperMount Volume"
-msgstr "Diski Ayır"
+msgstr "Supermount Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:22
@@ -1384,9 +1314,8 @@ msgstr "Sistem Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1314
 #: libnautilus-private/filesystem-attributes.xml.h:23
-#, fuzzy
 msgid "Udfs Solaris Volume"
-msgstr "Solaris/BSD Biçimi"
+msgstr "Udfs Solaris Biçimi"
 
 # libnautilus-private/nautilus-volume-monitor.c:1342
 #: libnautilus-private/filesystem-attributes.xml.h:24
@@ -1419,7 +1348,7 @@ msgstr "Xenix Biçimi"
 
 #: libnautilus-private/nautilus-authn-manager.c:60
 msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr ""
+msgstr "HTTP vekil sunucunuz bir giriş istiyor.\n"
 
 #: libnautilus-private/nautilus-authn-manager.c:61
 #, c-format
@@ -1428,10 +1357,13 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"\"%s\" erişimi yapmak için giriş yapmalısınız.\n"
+"\n"
+"%s"
 
 #: libnautilus-private/nautilus-authn-manager.c:64
 msgid "Your password will be transmitted unencrypted."
-msgstr ""
+msgstr "Parolanız şifrelenmemiş bir şekilde gönderilecektir."
 
 #: libnautilus-private/nautilus-authn-manager.c:65
 msgid "Your password will be transmitted encrypted."
@@ -1443,48 +1375,46 @@ msgid "Authentication Required"
 msgstr "Kimlik Sınama Gerekli"
 
 # components/tree/Nautilus_View_tree.oaf.in.h:3
-#: libnautilus-private/nautilus-customization-data.c:374
+#: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "sıfırla"
 
 # libnautilus-private/nautilus-program-chooser.c:1317
-#: libnautilus-private/nautilus-dnd.c:565
+#: libnautilus-private/nautilus-dnd.c:567
 msgid "_Move here"
 msgstr "_Buraya taşı"
 
 # libnautilus-private/nautilus-program-chooser.c:1317
-#: libnautilus-private/nautilus-dnd.c:570
+#: libnautilus-private/nautilus-dnd.c:572
 msgid "_Copy here"
 msgstr "_Oraya kopyala"
 
 # src/nautilus-link-set-window.c:191
-#: libnautilus-private/nautilus-dnd.c:575
+#: libnautilus-private/nautilus-dnd.c:577
 msgid "_Link here"
 msgstr "Buraya _bağlantı koy"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:482
-#: libnautilus-private/nautilus-dnd.c:580
+#: libnautilus-private/nautilus-dnd.c:582
 msgid "Set as _Background"
 msgstr "_Arkaplan Olarak Tanımla"
 
 # components/music/mpg123.c:29
-#: libnautilus-private/nautilus-dnd.c:589
-#: libnautilus-private/nautilus-dnd.c:642
+#: libnautilus-private/nautilus-dnd.c:591
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "Cancel"
 msgstr "İptal"
 
 # src/nautilus-shell-ui.xml.h:41
-#: libnautilus-private/nautilus-dnd.c:628
-#, fuzzy
+#: libnautilus-private/nautilus-dnd.c:632
 msgid "Set as background for _all folders"
-msgstr "Görüntülenen konum için başka bir Nautilus penceresi aç"
+msgstr "_Tüm dizinler için arkaplan resmi olarak tanımla"
 
 # src/nautilus-shell-ui.xml.h:41
-#: libnautilus-private/nautilus-dnd.c:633
-#, fuzzy
+#: libnautilus-private/nautilus-dnd.c:637
 msgid "Set as background for _this folder"
-msgstr "Görüntülenen konum için başka bir Nautilus penceresi aç"
+msgstr "_Bu dizin için arkaplan resmi olarak tanımla"
 
 # src/nautilus-property-browser.c:1420
 #: libnautilus-private/nautilus-emblem-utils.c:194
@@ -1516,20 +1446,20 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:206
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
 msgstr ""
-"\"%s\" anahtar kelimesi daha önce kullanılmış. Lütfen farklı bir isim seçin."
+"\"%s\" isimli bir logo daha önce kullanılmış. Lütfen farklı bir isim seçin."
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
 msgid "Sorry, unable to save custom emblem."
-msgstr ""
+msgstr "Özel logo kaydedilemedi."
 
 #: libnautilus-private/nautilus-emblem-utils.c:244
 msgid "Sorry, unable to save custom emblem name."
-msgstr ""
+msgstr "Özel logo ismi kaydedilemedi."
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:734
 #: libnautilus-private/nautilus-file-operations-progress.c:456
@@ -1602,7 +1532,7 @@ msgstr ""
 
 # libnautilus-private/nautilus-file-operations.c:538
 #: libnautilus-private/nautilus-file-operations.c:595
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Error while moving.\n"
 "\n"
@@ -1611,7 +1541,7 @@ msgid ""
 msgstr ""
 "Taşıma sırasında hata\n"
 "\n"
-"\"%s\" dosyası, salt-oku bir disk üzerinde bulunduğu için taşınamadı."
+"\"%s\" dosyasının ana dizini hedefta bulunduğu için taşınamadı."
 
 # libnautilus-private/nautilus-file-operations.c:593
 #: libnautilus-private/nautilus-file-operations.c:605
@@ -1863,18 +1793,6 @@ msgstr "Bağlantı yapılırken hata oluştu"
 msgid "Error while deleting."
 msgstr "Silinirken hata oluştu."
 
-# components/music/nautilus-music-view.c:1580
-# libnautilus-private/nautilus-file-operations.c:895
-# libnautilus-private/nautilus-file-operations.c:910
-# libnautilus-private/nautilus-file-operations.c:929
-# src/nautilus-shell-ui.xml.h:55
-#: libnautilus-private/nautilus-file-operations.c:914
-#: libnautilus-private/nautilus-file-operations.c:929
-#: libnautilus-private/nautilus-file-operations.c:949
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Stop"
-msgstr "Dur"
-
 # libnautilus-private/nautilus-file-operations.c:910
 # libnautilus-private/nautilus-file-operations.c:929
 # libnautilus-private/nautilus-file-operations.c:1043
@@ -1961,7 +1879,7 @@ msgstr "Hepsinin üstüne yaz"
 # libnautilus-private/nautilus-file.c:3699
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1136
-#: libnautilus-private/nautilus-file.c:4285
+#: libnautilus-private/nautilus-file.c:4325
 #, c-format
 msgid "link to %s"
 msgstr "%s'e bağlantı yap"
@@ -1981,7 +1899,7 @@ msgstr "%s'e diğer bağlantı"
 #: libnautilus-private/nautilus-file-operations.c:1156
 #, c-format
 msgid "%dst link to %s"
-msgstr ""
+msgstr "%d. %s'e bağlantı"
 
 # libnautilus-private/nautilus-file-operations.c:1130
 #. appended to new link file
@@ -2368,7 +2286,7 @@ msgstr "Çöp kutusunu boşaltmaya hazırlanıyorum..."
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
 #: libnautilus-private/nautilus-file-operations.c:2265
-#: src/file-manager/fm-desktop-icon-view.c:1275
+#: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Çöpü Boşalt"
@@ -2741,36 +2659,36 @@ msgstr "dosya (124. kopya).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2569
 msgid "today at 00:00:00 PM"
 msgstr "bugün, 00:00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2570
 msgid "today at %-I:%M:%S %p"
 msgstr "bugün, %-I:%M %S %p"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2572
 msgid "today at 00:00 PM"
 msgstr "bugün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2573
 msgid "today at %-I:%M %p"
 msgstr "bugün, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2535
+#: libnautilus-private/nautilus-file.c:2575
 msgid "today, 00:00 PM"
 msgstr "bugün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2576
 msgid "today, %-I:%M %p"
 msgstr "bugün, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2538
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2579
 msgid "today"
 msgstr "bugün"
 
@@ -2778,37 +2696,37 @@ msgstr "bugün"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2548
+#: libnautilus-private/nautilus-file.c:2588
 msgid "yesterday at 00:00:00 PM"
 msgstr "dün, 00:00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2589
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dün, %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2551
+#: libnautilus-private/nautilus-file.c:2591
 msgid "yesterday at 00:00 PM"
 msgstr "dün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2592
 msgid "yesterday at %-I:%M %p"
 msgstr "dün saat %-H:%M'de %p"
 
-#: libnautilus-private/nautilus-file.c:2554
+#: libnautilus-private/nautilus-file.c:2594
 msgid "yesterday, 00:00 PM"
 msgstr "dün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2595
 msgid "yesterday, %-I:%M %p"
 msgstr "dün, %-I:%M %p"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:118
-#: libnautilus-private/nautilus-file.c:2557
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2597
+#: libnautilus-private/nautilus-file.c:2598
 msgid "yesterday"
 msgstr "dün"
 
@@ -2817,112 +2735,112 @@ msgstr "dün"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2609
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr ""
+msgstr "Çarşamba, Eylül 00 0000  00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2610
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %B %Y %A, saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2612
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr ""
+msgstr "Pazartesi, Ekim 00 0000 00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2613
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %b %Y %a, saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2615
 msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr ""
+msgstr "Pazartesi, Ekim 00 0000 00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2616
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y %a, saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2618
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Eki 00 0000 saat 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2619
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %m %Y saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2581
+#: libnautilus-private/nautilus-file.c:2621
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Eki 00 0000, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2622
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2584
+#: libnautilus-private/nautilus-file.c:2624
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2585
+#: libnautilus-private/nautilus-file.c:2625
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2587
+#: libnautilus-private/nautilus-file.c:2627
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2588
+#: libnautilus-private/nautilus-file.c:2628
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # libnautilus-private/nautilus-file.c:3294
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3910
 msgid "0 items"
 msgstr "0 öğe"
 
 # libnautilus-private/nautilus-file.c:3294
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3910
 msgid "0 folders"
 msgstr "0 dosya"
 
 # libnautilus-private/nautilus-file.c:3295
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3911
 msgid "0 files"
 msgstr "0 dosya"
 
 # libnautilus-private/nautilus-file.c:3299
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3915
 msgid "1 item"
 msgstr "1 öğe"
 
 # libnautilus-private/nautilus-file.c:3299
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3915
 msgid "1 folder"
 msgstr "1 dizin"
 
 # libnautilus-private/nautilus-file.c:3300
-#: libnautilus-private/nautilus-file.c:3876
+#: libnautilus-private/nautilus-file.c:3916
 msgid "1 file"
 msgstr "1 dosya"
 
 # libnautilus-private/nautilus-file.c:3303
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3919
 #, c-format
 msgid "%u items"
 msgstr "Toplam %u"
 
 # libnautilus-private/nautilus-file.c:3303
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3919
 #, c-format
 msgid "%u folders"
 msgstr "%u dizin"
 
 # libnautilus-private/nautilus-file.c:3304
-#: libnautilus-private/nautilus-file.c:3880
+#: libnautilus-private/nautilus-file.c:3920
 #, c-format
 msgid "%u files"
 msgstr "%u dosya"
@@ -2930,25 +2848,25 @@ msgstr "%u dosya"
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4187
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4227
+#: libnautilus-private/nautilus-file.c:4243
 msgid "? items"
 msgstr "? öğe"
 
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4193
+#: libnautilus-private/nautilus-file.c:4233
 msgid "? bytes"
 msgstr "? bayt"
 
 # libnautilus-private/nautilus-file.c:3622
-#: libnautilus-private/nautilus-file.c:4208
+#: libnautilus-private/nautilus-file.c:4248
 msgid "unknown type"
 msgstr "bilinmeyen tip"
 
 # libnautilus-private/nautilus-file.c:3624
-#: libnautilus-private/nautilus-file.c:4211
+#: libnautilus-private/nautilus-file.c:4251
 msgid "unknown MIME type"
 msgstr "bilinmeyen MIME türü"
 
@@ -2956,16 +2874,16 @@ msgstr "bilinmeyen MIME türü"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4217
+#: libnautilus-private/nautilus-file.c:4257
 msgid "unknown"
 msgstr "bilinmiyor"
 
 # libnautilus-private/nautilus-file.c:3664
-#: libnautilus-private/nautilus-file.c:4249
+#: libnautilus-private/nautilus-file.c:4289
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4261
+#: libnautilus-private/nautilus-file.c:4301
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2974,7 +2892,7 @@ msgstr ""
 "\"x-directory/normal\" için bir açıklama bulunamadı. Bunun anlamı, gnome-vfs."
 "keys dosyasının bulunamaması ya da hatalı bir yerde bulunmasıdır."
 
-#: libnautilus-private/nautilus-file.c:4265
+#: libnautilus-private/nautilus-file.c:4305
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2984,19 +2902,19 @@ msgstr ""
 "gnome-vfs posta listesine iletin."
 
 # libnautilus-private/nautilus-file.c:3693
-#: libnautilus-private/nautilus-file.c:4279
+#: libnautilus-private/nautilus-file.c:4319
 msgid "link"
 msgstr "bağlantı"
 
 # libnautilus-private/nautilus-file.c:3713
-#: libnautilus-private/nautilus-file.c:4299
+#: libnautilus-private/nautilus-file.c:4339
 msgid "link (broken)"
 msgstr "link (kırık)"
 
 # data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:66
-#: libnautilus-private/nautilus-file.c:5366
+#: libnautilus-private/nautilus-file.c:5414
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -3018,43 +2936,43 @@ msgid "_Never"
 msgstr "H_iç bir zaman"
 
 #: libnautilus-private/nautilus-global-preferences.c:107
-#: src/nautilus-file-management-properties.glade.h:13
+#: src/nautilus-file-management-properties.glade.h:14
 #, no-c-format
 msgid "25%"
 msgstr "%%25"
 
 #: libnautilus-private/nautilus-global-preferences.c:109
-#: src/nautilus-file-management-properties.glade.h:19
+#: src/nautilus-file-management-properties.glade.h:20
 #, no-c-format
 msgid "50%"
 msgstr "%%50"
 
 #: libnautilus-private/nautilus-global-preferences.c:111
-#: src/nautilus-file-management-properties.glade.h:22
+#: src/nautilus-file-management-properties.glade.h:23
 #, no-c-format
 msgid "75%"
 msgstr "%%75"
 
 #: libnautilus-private/nautilus-global-preferences.c:113
-#: src/nautilus-file-management-properties.glade.h:7
+#: src/nautilus-file-management-properties.glade.h:8
 #, no-c-format
 msgid "100%"
 msgstr "%%100"
 
 #: libnautilus-private/nautilus-global-preferences.c:115
-#: src/nautilus-file-management-properties.glade.h:9
+#: src/nautilus-file-management-properties.glade.h:10
 #, no-c-format
 msgid "150%"
 msgstr "%%150"
 
 #: libnautilus-private/nautilus-global-preferences.c:117
-#: src/nautilus-file-management-properties.glade.h:11
+#: src/nautilus-file-management-properties.glade.h:12
 #, no-c-format
 msgid "200%"
 msgstr "%%200"
 
 #: libnautilus-private/nautilus-global-preferences.c:119
-#: src/nautilus-file-management-properties.glade.h:16
+#: src/nautilus-file-management-properties.glade.h:17
 #, no-c-format
 msgid "400%"
 msgstr "%%400"
@@ -3069,29 +2987,29 @@ msgstr "500 K"
 
 # components/hardware/nautilus-hardware-view.c:326
 #: libnautilus-private/nautilus-global-preferences.c:126
-#: src/nautilus-file-management-properties.glade.h:2
+#: src/nautilus-file-management-properties.glade.h:3
 msgid "1 MB"
 msgstr "1 MB"
 
 # components/hardware/nautilus-hardware-view.c:326
 #: libnautilus-private/nautilus-global-preferences.c:127
-#: src/nautilus-file-management-properties.glade.h:14
+#: src/nautilus-file-management-properties.glade.h:15
 msgid "3 MB"
 msgstr "3 MB"
 
 # components/hardware/nautilus-hardware-view.c:326
 #: libnautilus-private/nautilus-global-preferences.c:128
-#: src/nautilus-file-management-properties.glade.h:17
+#: src/nautilus-file-management-properties.glade.h:18
 msgid "5 MB"
 msgstr "5 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:129
-#: src/nautilus-file-management-properties.glade.h:3
+#: src/nautilus-file-management-properties.glade.h:4
 msgid "10 MB"
 msgstr "10 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:130
-#: src/nautilus-file-management-properties.glade.h:5
+#: src/nautilus-file-management-properties.glade.h:6
 msgid "100 MB"
 msgstr "100 MB"
 
@@ -3114,7 +3032,7 @@ msgid "Display _files when they are clicked"
 msgstr "Tı_klandığında dosyaların içeriğini göster"
 
 #: libnautilus-private/nautilus-global-preferences.c:156
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Ask each time"
 msgstr "_Her zaman sor"
 
@@ -3130,13 +3048,13 @@ msgstr "Dosyaları isme ve dosya özelliklerine göre ara"
 
 # src/file-manager/fm-directory-view.c:2961
 #: libnautilus-private/nautilus-global-preferences.c:175
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "Simge Görünümü"
 
 # src/file-manager/fm-directory-view.c:2961
 #: libnautilus-private/nautilus-global-preferences.c:176
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
 msgstr "Liste Görünümü"
 
@@ -3148,35 +3066,35 @@ msgstr "Elle"
 # src/file-manager/nautilus-icon-view-ui.xml.h:34
 #: libnautilus-private/nautilus-global-preferences.c:183
 #: libnautilus-private/nautilus-global-preferences.c:192
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
 msgstr "İsme Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:35
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Size"
 msgstr "Boya Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:36
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
 msgstr "Türe Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:32
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "By Modification Date"
 msgstr "Değişim Tarihine Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:31
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
-#: src/nautilus-file-management-properties.glade.h:38
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
 msgstr "Logoya Göre"
 
@@ -3218,19 +3136,19 @@ msgstr "24"
 
 # src/file-manager/fm-icon-text-window.c:77
 #: libnautilus-private/nautilus-global-preferences.c:214
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "size"
 msgstr "boyut"
 
 # src/file-manager/fm-icon-text-window.c:78
 #: libnautilus-private/nautilus-global-preferences.c:215
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:84
 msgid "type"
 msgstr "tür"
 
 # src/file-manager/fm-icon-text-window.c:79
 #: libnautilus-private/nautilus-global-preferences.c:216
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "date modified"
 msgstr "düzenleme tarihi"
 
@@ -3241,157 +3159,152 @@ msgstr "değiştirme tarihi"
 
 # src/file-manager/fm-icon-text-window.c:81
 #: libnautilus-private/nautilus-global-preferences.c:218
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "date accessed"
 msgstr "erişim tarihi"
 
 # src/file-manager/fm-icon-text-window.c:82
 #: libnautilus-private/nautilus-global-preferences.c:219
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "owner"
 msgstr "sahibi"
 
 # src/file-manager/fm-icon-text-window.c:83
 #: libnautilus-private/nautilus-global-preferences.c:220
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "group"
 msgstr "grup"
 
 # src/file-manager/fm-icon-text-window.c:84
 #: libnautilus-private/nautilus-global-preferences.c:221
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "permissions"
 msgstr "erişim hakları"
 
 # src/file-manager/fm-icon-text-window.c:85
 #: libnautilus-private/nautilus-global-preferences.c:222
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "octal permissions"
 msgstr "onaltılı erişim hakları"
 
 # src/file-manager/fm-icon-text-window.c:86
 #: libnautilus-private/nautilus-global-preferences.c:223
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "MIME type"
 msgstr "MIME türü"
 
 # src/file-manager/fm-icon-text-window.c:87
 #: libnautilus-private/nautilus-global-preferences.c:224
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "none"
 msgstr "yok"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1884
+#: libnautilus-private/nautilus-icon-canvas-item.c:1968
 msgid "file icon"
 msgstr "dosya simgesi"
 
 # components/music/mpg123.c:40
-#: libnautilus-private/nautilus-icon-canvas-item.c:2031
+#: libnautilus-private/nautilus-icon-canvas-item.c:2341
 msgid "editable text"
 msgstr "Düzenlenebilir Metin"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2032
+#: libnautilus-private/nautilus-icon-canvas-item.c:2342
 msgid "the editable label"
-msgstr ""
+msgstr "düzenlenebilir etiket"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2039
+#: libnautilus-private/nautilus-icon-canvas-item.c:2349
 msgid "additional text"
 msgstr "ek metin"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2040
+#: libnautilus-private/nautilus-icon-canvas-item.c:2350
 msgid "some more text"
-msgstr ""
+msgstr "daha fazla metin"
 
 # components/help/converters/gnome-db2html2/sect-elements.c:1029
-#: libnautilus-private/nautilus-icon-canvas-item.c:2047
+#: libnautilus-private/nautilus-icon-canvas-item.c:2357
 msgid "highlighted for selection"
-msgstr ""
+msgstr "seçim için gösterildi"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2048
+#: libnautilus-private/nautilus-icon-canvas-item.c:2358
 msgid "whether we are highlighted for a selection"
-msgstr ""
+msgstr "seçim için gösterilelim"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2055
+#: libnautilus-private/nautilus-icon-canvas-item.c:2365
 msgid "highlighted as keyboard focus"
-msgstr ""
+msgstr "klavye odaklaması için gösterildi"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2056
+#: libnautilus-private/nautilus-icon-canvas-item.c:2366
 msgid "whether we are highlighted to render keyboard focus"
-msgstr ""
+msgstr "klavye odaklaması sunumu için gösterilelim"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2064
+#: libnautilus-private/nautilus-icon-canvas-item.c:2374
 msgid "highlighted for drop"
-msgstr ""
+msgstr "düşme için gösterildi"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2065
+#: libnautilus-private/nautilus-icon-canvas-item.c:2375
 msgid "whether we are highlighted for a D&D drop"
-msgstr ""
+msgstr "bir D&D için gösterilelim"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:12
-#: libnautilus-private/nautilus-icon-container.c:1711
+#: libnautilus-private/nautilus-icon-container.c:1722
 msgid "The selection rectangle"
-msgstr ""
+msgstr "Seçim dörgeni"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#: libnautilus-private/nautilus-icon-container.c:3503
-#, fuzzy
+#: libnautilus-private/nautilus-icon-container.c:3520
 msgid "Frame Text"
-msgstr "Metni Yapıştır"
+msgstr "Ek Pencere Metni"
 
-#: libnautilus-private/nautilus-icon-container.c:3504
+#: libnautilus-private/nautilus-icon-container.c:3521
 msgid "Draw a frame around unselected text"
-msgstr ""
+msgstr "Seçili olmayan metnin etrafına çerçeve çiz"
 
 # src/nautilus-property-browser.c:1319
-#: libnautilus-private/nautilus-icon-container.c:3510
-#, fuzzy
+#: libnautilus-private/nautilus-icon-container.c:3527
 msgid "Selection Box Color"
-msgstr "Eklenecek rengi belirleyin:"
+msgstr "Seçim Kutusu Rengi"
 
 # src/nautilus-shell-ui.xml.h:29
-#: libnautilus-private/nautilus-icon-container.c:3511
-#, fuzzy
+#: libnautilus-private/nautilus-icon-container.c:3528
 msgid "Color of the selection box"
-msgstr "Başlangıç dizinine gidin"
+msgstr "Seçim kutusunun rengi"
 
 # src/nautilus-shell-ui.xml.h:92
-#: libnautilus-private/nautilus-icon-container.c:3516
-#, fuzzy
+#: libnautilus-private/nautilus-icon-container.c:3533
 msgid "Selection Box Alpha"
-msgstr "Hepsini Seç"
+msgstr "Seçim Kutusu Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:3517
+#: libnautilus-private/nautilus-icon-container.c:3534
 msgid "Opacity of the selection box"
-msgstr ""
+msgstr "Seçim kutusunun şeffaflığı"
 
-#: libnautilus-private/nautilus-icon-container.c:3524
+#: libnautilus-private/nautilus-icon-container.c:3541
 msgid "Highlight Alpha"
-msgstr ""
+msgstr "Transparan Göster"
 
-#: libnautilus-private/nautilus-icon-container.c:3525
+#: libnautilus-private/nautilus-icon-container.c:3542
 msgid "Opacity of the highlight for selected icons"
-msgstr ""
+msgstr "Seçili simgelerin şeffaflığı"
 
-#: libnautilus-private/nautilus-icon-container.c:3531
+#: libnautilus-private/nautilus-icon-container.c:3548
 msgid "Light Info Color"
-msgstr ""
+msgstr "Açık Bilgi Rengi"
 
-#: libnautilus-private/nautilus-icon-container.c:3532
+#: libnautilus-private/nautilus-icon-container.c:3549
 msgid "Color used for information text against a dark background"
-msgstr ""
+msgstr "Koyu arkaplanda bilgi metni için kullanılacak renk"
 
 # data/browser.xml.h:25
-#: libnautilus-private/nautilus-icon-container.c:3537
-#, fuzzy
+#: libnautilus-private/nautilus-icon-container.c:3554
 msgid "Dark Info Color"
-msgstr "Mantar"
+msgstr "Koyu Bilgi Rengi"
 
-#: libnautilus-private/nautilus-icon-container.c:3538
+#: libnautilus-private/nautilus-icon-container.c:3555
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Açık arkaplanda gösterilecek bilgi yazısı için renk"
 
 # libnautilus-private/nautilus-icon-dnd.c:720
-#: libnautilus-private/nautilus-icon-dnd.c:726
+#: libnautilus-private/nautilus-icon-dnd.c:728
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -3401,7 +3314,7 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:724
-#: libnautilus-private/nautilus-icon-dnd.c:730
+#: libnautilus-private/nautilus-icon-dnd.c:732
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -3411,7 +3324,7 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:730
-#: libnautilus-private/nautilus-icon-dnd.c:736
+#: libnautilus-private/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -3420,7 +3333,7 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:733
-#: libnautilus-private/nautilus-icon-dnd.c:739
+#: libnautilus-private/nautilus-icon-dnd.c:741
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -3429,12 +3342,12 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:738
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "Switch to Manual Layout?"
 msgstr "Elle Düzenlemeye Geçeyim Mi?"
 
 # libnautilus-private/nautilus-icon-dnd.c:739
-#: libnautilus-private/nautilus-icon-dnd.c:745
+#: libnautilus-private/nautilus-icon-dnd.c:747
 msgid "Switch"
 msgstr "Geç"
 
@@ -3452,6 +3365,17 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
+"Eğer hızlı aramaları açmak istiyorsanız, %s dosyasını root ile "
+"düzenlemelisiniz. Belirtilen işareti \"evet\" yapmak medusa sevislerini "
+"açacaktır.\n"
+"Şu anda servisleri aramak ve indekslemek için ayrıca bu komutları root "
+"olarak girmeniz gerekmektedir:\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"Dosyalarınızın bir indeksi yaratılana kadar hızlı aramalar etkin "
+"olmayacaktır.  Bu işlem uzun zaman alabilir."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 msgid ""
@@ -3462,12 +3386,18 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
+"Arama işlemlerini gerçekleştiren bir uygulamala olan medusa, sisteminizde "
+"bulunamadı.  Eğer nautilus'u kendiniz derlediyseniz, medusa'nın bir "
+"kopyasını yükleyerek nautilus'u yeniden derlemelisiniz.  (Medusa'nın bir "
+"kopyasını ftp://ftp.gnome.org adresinde bulabilirsiniz\n"
+"Eğer Nautilus'un paket verisyonunu kullanıyorsanız, hızlı aramayı "
+"kullanamazsınız.\n"
 
 # components/music/nautilus-music-view.c:1709
 #: libnautilus-private/nautilus-program-chooser.c:193
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error displaying help: %s"
-msgstr "%s okunurken bir hata oluştu."
+msgstr "Yardım metni görüntülenirken bir hata oluştu: %s"
 
 # libnautilus-private/nautilus-program-chooser.c:216
 #: libnautilus-private/nautilus-program-chooser.c:333
@@ -3565,14 +3495,14 @@ msgstr "Tüm \"%s\" için öntanımlı olsun"
 # libnautilus-private/nautilus-program-chooser.c:974
 #. Radio button for adding to short list for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1081
-#, fuzzy, c-format
+#, c-format
 msgid "Include in the menu for \"%s\" only"
-msgstr "\"%s\" öğeleri için menüye ekle"
+msgstr "Sadece \"%s\" için menüde bulundur"
 
 # libnautilus-private/nautilus-program-chooser.c:981
 #. Radio button for setting default for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1087
-#, fuzzy, c-format
+#, c-format
 msgid "Use as default for \"%s\" only"
 msgstr "Tüm \"%s\" için öntanımlı olsun"
 
@@ -3599,9 +3529,8 @@ msgstr "Durum"
 
 # libnautilus-private/nautilus-program-chooser.c:1229
 #: libnautilus-private/nautilus-program-chooser.c:1352
-#, fuzzy
 msgid "C_hoose"
-msgstr "Seç"
+msgstr "_Seç"
 
 # libnautilus-private/nautilus-program-chooser.c:1231
 # src/nautilus-property-browser.c:365
@@ -3627,13 +3556,12 @@ msgstr "Oraya _Git"
 
 # libnautilus-private/nautilus-program-chooser.c:1326
 #: libnautilus-private/nautilus-program-chooser.c:1456
-#, fuzzy
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
 msgstr ""
-"GNOME Denetim Merkezi tarafından hangi dosya türlerine hangi programların "
-"karşılık geleceğini buradan yapılandırabilirsiniz."
+"Hangi dosya türlerine hangi programların karşılık geleceğini Dosya Türleri "
+"ve Programlar penceresinden yapılandırabilirsiniz."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:22
 #: libnautilus-private/nautilus-program-chooser.c:1490
@@ -3653,9 +3581,9 @@ msgstr "Başka Bir İzleyici ile Aç"
 
 # libnautilus-private/nautilus-program-chooser.c:1222
 #: libnautilus-private/nautilus-program-chooser.c:1496
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a view for \"%s\":"
-msgstr "\"%s\" için bir görüntüleyici belirle."
+msgstr "\"%s\" için bir görüntüleyici belirleyin."
 
 # src/nautilus-theme-selector.c:720
 #: libnautilus-private/nautilus-program-chooser.c:1598
@@ -3669,9 +3597,9 @@ msgstr "Görüntüleyici Yok"
 
 # libnautilus-private/nautilus-program-chooser.c:1217
 #: libnautilus-private/nautilus-program-chooser.c:1602
-#, fuzzy, c-format
+#, c-format
 msgid "There is no application associated with \"%s\"."
-msgstr "\"%s\"yi açacak başka bir uygulamayı seç."
+msgstr "\"%s\" dosyasını açacak bir uygulama bulunamadı."
 
 # components/help/hyperbola-filefmt.c:470
 # components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
@@ -3691,6 +3619,10 @@ msgid ""
 "You can configure GNOME to associate applications with file types.  Do you "
 "want to associate an application with this file type now?"
 msgstr ""
+"%s\n"
+"\n"
+"Dosya türleri ile bu dosyaları açacak olan uygulamaları buradan "
+"tanımlayabilirsiniz. Şimdi bu ilişkilendirmeyi yapmak istiyor musunuz?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1616
 msgid "Associate Application"
@@ -3702,6 +3634,8 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
 msgstr ""
+"\"%s\", \"%s\"i açamıyor çünkü \"%s\", \"%s\" konumundaki dosyalara "
+"erişemiyor. Başka bir uygulama seçmek ister misiniz?"
 
 # src/nautilus-window-manage-views.c:1397
 #: libnautilus-private/nautilus-program-choosing.c:500
@@ -3716,6 +3650,9 @@ msgid ""
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
 msgstr ""
+"\"%s\", \"%s\"i açamıyor çünkü \"%s\", \"%s\" konumundaki dosyalara "
+"erişemiyor. Bu dosyayı görüntülemek için başka bir uygulama bulunmuyor.  "
+"Eğer bu dosyayı kendi bilgisayarınıza kopyalarsanız, açabilirsiniz."
 
 # src/file-manager/fm-directory-view.c:3456
 #: libnautilus-private/nautilus-program-choosing.c:670
@@ -3734,12 +3671,14 @@ msgstr "Uzaktaki bağlantılar çalıştırılamaz"
 # components/music/nautilus-music-view.c:1709
 #: libnautilus-private/nautilus-program-choosing.c:682
 #: libnautilus-private/nautilus-program-choosing.c:748
-#, fuzzy
 msgid ""
 "There was an error launching the application.\n"
 "\n"
 "Details: "
-msgstr "%s okunurken bir hata oluştu."
+msgstr ""
+"Uygulama çalıştırılırken bir hata oluştu.\n"
+"\n"
+"Ayrıntılar: "
 
 #: libnautilus-private/nautilus-program-choosing.c:686
 #: libnautilus-private/nautilus-program-choosing.c:752
@@ -3752,11 +3691,15 @@ msgid ""
 "\n"
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
+"Bu işlem sadece yerel dosyaları destekler.\n"
+"\n"
+"Yerel olmayan dosyaları açmak için bunları önce yerel bir dizine aktarmanız "
+"gerekmektedir."
 
 #: libnautilus-private/nautilus-program-choosing.c:717
 #: libnautilus-private/nautilus-program-choosing.c:729
 msgid "Drop target only supports local files"
-msgstr ""
+msgstr "Sürükle-bırak işlemi sadece yerel dosyaları destekler"
 
 #: libnautilus-private/nautilus-program-choosing.c:726
 msgid ""
@@ -3765,6 +3708,11 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
+"Bu işlem sadece yerel dosyaları destekler.\n"
+"\n"
+"Yerel olmayan dosyaları açmak için bunları önce yerel bir dizine aktarmanız "
+"gerekmektedir. Yerel dizine aktardığınız dosyalar halen açılmış bir "
+"durumdadır."
 
 # libnautilus-private/nautilus-search-uri.c:825
 #. Human readable description for a criterion in a search for
@@ -4200,11 +4148,6 @@ msgstr "ISO 9660 Formatı"
 msgid "C_lear Text"
 msgstr "Metni _Temizle"
 
-# libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:15
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Copy the selected text to the clipboard"
-msgstr "Seçili metni panoya kopyala"
-
 # src/nautilus-shell-ui.xml.h:16
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
@@ -4240,11 +4183,6 @@ msgstr "_Hepsini Seç"
 msgid "Select all the text in a text field"
 msgstr "Bu satırdaki tüm metni seç"
 
-# libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
-#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
-msgid "_Copy Text"
-msgstr "Metni K_opyala"
-
 # libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:70
 msgid "_Paste Text"
@@ -4262,13 +4200,12 @@ msgstr "Nautilus dosya yöneticisinde başlangıç dizinini görün"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
-msgstr ""
+msgstr "Dosyaların yönetimini değiştir"
 
 # src/file-manager/fm-properties-window.c:1677
 #: nautilus-file-management-properties.desktop.in.h:2
-#, fuzzy
 msgid "File Management"
-msgstr "Dosya adı"
+msgstr "Dosya Yönetimi"
 
 # src/Nautilus_shell.oaf.in.h:1
 #: src/Nautilus_shell.server.in.h:1
@@ -4372,49 +4309,45 @@ msgstr "Arama Listesi"
 # libnautilus-private/nautilus-program-chooser.c:186
 # src/nautilus-window.c:860 src/nautilus-window.c:1096
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as Icons"
 msgstr "Simge olarak göster"
 
 # libnautilus-private/nautilus-program-chooser.c:186
 # src/nautilus-window.c:860 src/nautilus-window.c:1096
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as List"
 msgstr "Liste olarak göster"
 
 # libnautilus-private/nautilus-program-chooser.c:186
 # src/nautilus-window.c:860 src/nautilus-window.c:1096
 #: src/Nautilus_shell.server.in.h:22
-#, fuzzy
 msgid "View as _Icons"
-msgstr "Simge olarak göster"
+msgstr "_Simge olarak göster"
 
 # libnautilus-private/nautilus-program-chooser.c:186
 # src/nautilus-window.c:860 src/nautilus-window.c:1096
 #: src/Nautilus_shell.server.in.h:23
-#, fuzzy
 msgid "View as _List"
-msgstr "Liste olarak göster"
+msgstr "_Liste olarak göster"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:482
-#: src/file-manager/fm-desktop-icon-view.c:785
+#: src/file-manager/fm-desktop-icon-view.c:778
 msgid "Background"
 msgstr "Arkaplan"
 
-#: src/file-manager/fm-desktop-icon-view.c:962
+#: src/file-manager/fm-desktop-icon-view.c:955
 #, c-format
 msgid "Error executing utility program '%s': %s"
-msgstr ""
+msgstr "'%s' programı çalıştırılamadı: %s"
 
 # src/file-manager/fm-properties-window.c:1733
-#: src/file-manager/fm-desktop-icon-view.c:1293
+#: src/file-manager/fm-desktop-icon-view.c:1286
 msgid "E_ject"
 msgstr "Çı_kart"
 
 # src/file-manager/fm-desktop-icon-view.c:1113
-#: src/file-manager/fm-desktop-icon-view.c:1393
+#: src/file-manager/fm-desktop-icon-view.c:1386
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Diski Ayır"
@@ -4428,7 +4361,7 @@ msgstr "_Diski Ayır"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1517
+#: src/file-manager/fm-desktop-icon-view.c:1510
 #, c-format
 msgid "%s's Home"
 msgstr "%.0s Başlangıç"
@@ -4652,20 +4585,20 @@ msgstr "Bir İ_zleyici..."
 #: src/file-manager/fm-directory-view.c:3573
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr ""
+msgstr "Belirtilen işlem tamamlanamadı: %s"
 
 #: src/file-manager/fm-directory-view.c:3597
 msgid "Could not complete specified action."
-msgstr ""
+msgstr "Belirtilen işlem tamamlanamadı."
 
 # src/file-manager/fm-directory-view.c:2922
 # src/file-manager/fm-directory-view.c:2963
-#: src/file-manager/fm-directory-view.c:4042
+#: src/file-manager/fm-directory-view.c:4067
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Herhangi bir seçili öğe üzerinde \"%s\" çalıştır"
 
-#: src/file-manager/fm-directory-view.c:4252
+#: src/file-manager/fm-directory-view.c:4277
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4675,11 +4608,11 @@ msgstr ""
 "Menüden seçılen herhangi bir program, girdi olarak seçilen öğelerle "
 "çalıştırılacaktır."
 
-#: src/file-manager/fm-directory-view.c:4255
+#: src/file-manager/fm-directory-view.c:4280
 msgid "About Scripts"
 msgstr "Betikler Hakkında"
 
-#: src/file-manager/fm-directory-view.c:4256
+#: src/file-manager/fm-directory-view.c:4281
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4700,96 +4633,115 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
+"Bu dizindeki tüm çalıştırılabilir dosyalar Scripts menüde görünüt. Bu "
+"menüden bir program seçerek çalıştırabilirsiniz.\n"
+"\n"
+"Yerel bir dizinden çalıştırıldığında, scriptler seçilen dosya adlarını "
+"geçerler. Uzak bir dizinden çalıştırıldığında (örn web veya ftp'de bulunan "
+"bir içerik), scriptler argüman almayacaklardır.\n"
+"\n"
+"Tüm koşullarda, bu çevresel değerler Nautilus tarafından scriptlerin "
+"kullanması için atanacaktır:\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: Seçilen dosyalar için satır sonu "
+"çıkarılmış konumlar (sadece yerel ise)\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: Seçilen dosyalar için sayır sonu çıkarılmış "
+"URI'ler.\n"
+"\n"
+"NAUTILUS_SCRIPT_CURRENT_URI: Geçerli konum için URI\n"
+"\n"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: geçerli pencerenin konumu ve boyutu"
 
-#: src/file-manager/fm-directory-view.c:4369
+#: src/file-manager/fm-directory-view.c:4394
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "Dosyaları Yapıştır komutu verirseniz \"%s\" taşınacaktır"
 
-#: src/file-manager/fm-directory-view.c:4373
+#: src/file-manager/fm-directory-view.c:4398
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "Dosyaları Yapıştır komutu verirseniz \"%s\" kopyalanacaktır."
 
 # src/file-manager/fm-directory-view.c:2596
-#: src/file-manager/fm-directory-view.c:4380
+#: src/file-manager/fm-directory-view.c:4405
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr "Dosyaları Yapıştır komutu verirseniz \"%d\" seçili öğe taşınacaktır"
 
-#: src/file-manager/fm-directory-view.c:4384
+#: src/file-manager/fm-directory-view.c:4409
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "Dosyaları Yapıştır komutu verirseniz \"%d\" seçili öğe kopyalanacaktır."
 
-#: src/file-manager/fm-directory-view.c:4469
+#: src/file-manager/fm-directory-view.c:4494
 msgid "There is nothing on the clipboard to paste."
 msgstr "Panoda yapıştırılacak hiç bir şey yok."
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:20
-#: src/file-manager/fm-directory-view.c:4648
+#: src/file-manager/fm-directory-view.c:4673
 msgid "Open _in This Window"
 msgstr "_Bu Pencerede Aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:20
-#: src/file-manager/fm-directory-view.c:4651
+#: src/file-manager/fm-directory-view.c:4676
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open _in New Window"
 msgstr "_Yeni Pencerede Aç"
 
 # src/file-manager/fm-directory-view.c:3150
-#: src/file-manager/fm-directory-view.c:4653
+#: src/file-manager/fm-directory-view.c:4678
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "%d Yeni _Pencerede Aç"
 
 # src/file-manager/fm-directory-view.c:3182
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4696
 msgid "_Delete from Trash"
 msgstr "Çöp Kutusundan _Sil"
 
 # src/file-manager/fm-directory-view.c:3176
-#: src/file-manager/fm-directory-view.c:4673
+#: src/file-manager/fm-directory-view.c:4698
 msgid "Delete all selected items permanently"
 msgstr "Seçili öğeleri tamamen sil"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:13
-#: src/file-manager/fm-directory-view.c:4676
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4701
+#: src/file-manager/fm-directory-view.c:4976
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Mo_ve to Trash"
 msgstr "Çöpe _Taşı"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: src/file-manager/fm-directory-view.c:4678
+#: src/file-manager/fm-directory-view.c:4703
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Move each selected item to the Trash"
 msgstr "Tüm seçilenleri çöp kutusuna taşı"
 
 # src/file-manager/fm-directory-view.c:2609
 # src/file-manager/fm-directory-view.c:2650
-#: src/file-manager/fm-directory-view.c:4702
+#: src/file-manager/fm-directory-view.c:4727
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "_Delete"
 msgstr "_Sil"
 
 # src/file-manager/fm-directory-view.c:3219
-#: src/file-manager/fm-directory-view.c:4722
+#: src/file-manager/fm-directory-view.c:4747
 msgid "Ma_ke Links"
 msgstr "_Bağlantıları Oluştur"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:4
-#: src/file-manager/fm-directory-view.c:4723
+#: src/file-manager/fm-directory-view.c:4748
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "B_ağlantı Oluştur"
 
 # src/file-manager/fm-directory-view.c:3239
 # src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:4736
+#: src/file-manager/fm-directory-view.c:4761
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "Çöp _Kutusunu Boşalt"
@@ -4799,30 +4751,29 @@ msgstr "Çöp _Kutusunu Boşalt"
 # components/mozilla/nautilus-mozilla-ui.xml.h:4
 # components/sample/nautilus-sample-content-view-ui.xml.h:4
 # src/nautilus-shell-ui.xml.h:78
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4774
 msgid "Cu_t File"
 msgstr "_Dosyayı Kes"
 
 # libnautilus-private/nautilus-file.c:3304
-#: src/file-manager/fm-directory-view.c:4750
+#: src/file-manager/fm-directory-view.c:4775
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_Dosyaları Kes"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:74
-#: src/file-manager/fm-directory-view.c:4759
+#: src/file-manager/fm-directory-view.c:4784
 msgid "_Copy File"
 msgstr "Dosyayı K_opyala"
 
 # libnautilus-private/nautilus-file-operations.c:1782
-#: src/file-manager/fm-directory-view.c:4760
+#: src/file-manager/fm-directory-view.c:4785
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "_Copy Files"
 msgstr "Dosyaları K_opyala"
 
 # src/file-manager/fm-directory-view.c:3390
-#: src/file-manager/fm-directory-view.c:4942
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:4967
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4831,21 +4782,21 @@ msgstr ""
 "ister misiniz?"
 
 # src/file-manager/fm-directory-view.c:3393
-#: src/file-manager/fm-directory-view.c:4945
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:4970
+#, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
 msgstr ""
-"Bu bağlantı kullanılamaz, çünkü hedefi (%s) bulunmuyor. Bağlantıyı çöpe "
+"Bu bağlantı kullanılamaz, çünkü hedefi (%s) bulunamıyor. Bağlantıyı çöpe "
 "göndermek ister misiniz?"
 
 # src/file-manager/fm-directory-view.c:3399
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4976
 msgid "Broken Link"
 msgstr "Kırık Bağlantı"
 
-#: src/file-manager/fm-directory-view.c:5008
+#: src/file-manager/fm-directory-view.c:5033
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4855,32 +4806,32 @@ msgstr ""
 "içindekileri görmek mi istiyorsunuz?"
 
 # libnautilus-private/nautilus-global-preferences.c:488
-#: src/file-manager/fm-directory-view.c:5014
+#: src/file-manager/fm-directory-view.c:5039
 msgid "Run or Display?"
 msgstr "Çalıştır / Göster?"
 
 # libnautilus-private/nautilus-global-preferences.c:488
-#: src/file-manager/fm-directory-view.c:5015
+#: src/file-manager/fm-directory-view.c:5040
 msgid "_Display"
 msgstr "_Göster"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-#: src/file-manager/fm-directory-view.c:5016
+#: src/file-manager/fm-directory-view.c:5041
 msgid "Run in _Terminal"
 msgstr "_Terminalde Çalıştır"
 
-#: src/file-manager/fm-directory-view.c:5019
+#: src/file-manager/fm-directory-view.c:5044
 msgid "_Run"
 msgstr "Ç_alıştır"
 
 # src/file-manager/fm-directory-view.c:3577
-#: src/file-manager/fm-directory-view.c:5201
+#: src/file-manager/fm-directory-view.c:5226
 #, c-format
 msgid "Opening \"%s\""
 msgstr "\"%s\" açılıyor"
 
 # src/file-manager/fm-directory-view.c:3583
-#: src/file-manager/fm-directory-view.c:5207
+#: src/file-manager/fm-directory-view.c:5232
 msgid "Cancel Open?"
 msgstr "Açma İşlemi İptal Edilsin mi?"
 
@@ -5044,107 +4995,107 @@ msgstr "Yeniden adlandırmayı iptal edeyim mi ?"
 
 # src/file-manager/fm-icon-view.c:156
 # src/file-manager/nautilus-icon-view-ui.xml.h:38
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Name"
 msgstr "İ_sme göre"
 
 # src/file-manager/fm-icon-view.c:157
 # src/file-manager/nautilus-icon-view-ui.xml.h:7
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:155
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by name in rows"
 msgstr "Simgeleri isimlerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:163
 # src/file-manager/nautilus-icon-view-ui.xml.h:39
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Size"
 msgstr "_Büyüklüğe göre"
 
 # src/file-manager/fm-icon-view.c:164
 # src/file-manager/nautilus-icon-view-ui.xml.h:8
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by size in rows"
 msgstr "Simgeleri büyüklüklerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:170
 # src/file-manager/nautilus-icon-view-ui.xml.h:40
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Type"
 msgstr "_Türe göre"
 
 # src/file-manager/fm-icon-view.c:171
 # src/file-manager/nautilus-icon-view-ui.xml.h:9
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by type in rows"
 msgstr "Simgeleri tiplerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:177
 # src/file-manager/nautilus-icon-view-ui.xml.h:33
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:175
 msgid "by Modification _Date"
 msgstr "_Değişim tarihine göre"
 
 # src/file-manager/fm-icon-view.c:178
 # src/file-manager/nautilus-icon-view-ui.xml.h:6
-#: src/file-manager/fm-icon-view.c:173
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Simgeleri değişim tarihlerine göre sırala"
 
 # src/file-manager/fm-icon-view.c:184
 # src/file-manager/nautilus-icon-view-ui.xml.h:37
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:182
 msgid "by _Emblems"
 msgstr "_Logolara Göre"
 
 # src/file-manager/fm-icon-view.c:185
 # src/file-manager/nautilus-icon-view-ui.xml.h:5
-#: src/file-manager/fm-icon-view.c:180
+#: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Simgeleri logolara göre sırala"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:17
-#: src/file-manager/fm-icon-view.c:1439
+#: src/file-manager/fm-icon-view.c:1456
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "_Simgeleri Asıl Boyutlarına Getir"
 
 # src/file-manager/fm-icon-view.c:1242
-#: src/file-manager/fm-icon-view.c:1440
+#: src/file-manager/fm-icon-view.c:1457
 msgid "Restore Icon's Original Si_ze"
 msgstr "S_imgeyi Asıl Boyutlarına Getir"
 
 # src/file-manager/fm-icon-view.c:1457
-#: src/file-manager/fm-icon-view.c:1775
+#: src/file-manager/fm-icon-view.c:1792
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" gösteriliyor"
 
-#: src/file-manager/fm-icon-view.c:2303
+#: src/file-manager/fm-icon-view.c:2320
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Sürükle ve bırak sadece yerel dosya sistemlerinde destekleniyor."
 
-#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2322
+#: src/file-manager/fm-icon-view.c:2321 src/file-manager/fm-icon-view.c:2340
 msgid "Drag and Drop error"
 msgstr "Sürükle ve bırak hatası"
 
-#: src/file-manager/fm-icon-view.c:2321
+#: src/file-manager/fm-icon-view.c:2339
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "Geçersiz bir sürükleme türü kullanıldı."
 
 # src/file-manager/fm-properties-window.c:1677
-#: src/file-manager/fm-list-view.c:408
+#: src/file-manager/fm-list-view.c:412
 msgid "File name"
 msgstr "Dosya adı"
 
 # src/file-manager/fm-list-view.c:1924
 # src/file-manager/fm-search-list-view.c:346
 # src/nautilus-search-bar-criterion.c:73
-#: src/file-manager/fm-list-view.c:432
+#: src/file-manager/fm-list-view.c:436
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Boyut"
@@ -5152,14 +5103,14 @@ msgstr "Boyut"
 # src/file-manager/fm-list-view.c:1930
 # src/file-manager/fm-search-list-view.c:352
 # src/nautilus-search-bar-criterion.c:71
-#: src/file-manager/fm-list-view.c:443
+#: src/file-manager/fm-list-view.c:447
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tip"
 
 # src/file-manager/fm-list-view.c:1936
 # src/file-manager/fm-search-list-view.c:358
-#: src/file-manager/fm-list-view.c:454
+#: src/file-manager/fm-list-view.c:458
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Değişim tarihi"
@@ -5434,19 +5385,20 @@ msgstr "\"%s\"nin erişim hakları belirlenemedi."
 # components/music/nautilus-music-view.c:1709
 #: src/file-manager/fm-properties-window.c:2357
 #: src/nautilus-bookmarks-window.c:138
-#: src/nautilus-file-management-properties.c:237
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:714
-#, fuzzy, c-format
+#: src/nautilus-file-management-properties.c:238
+#: src/nautilus-property-browser.c:1444 src/nautilus-window-menus.c:714
+#, c-format
 msgid ""
 "There was an error displaying help: \n"
 "%s"
-msgstr "%s okunurken bir hata oluştu."
+msgstr ""
+"Yardım görüntülenirken bir hata oluştu: \n"
+"%s"
 
 # src/nautilus-theme-selector.c:397
 #: src/file-manager/fm-properties-window.c:2359
-#, fuzzy
 msgid "Couldn't show help"
-msgstr "Tema eklenemiyor"
+msgstr "Yardım görüntülenemiyor"
 
 # src/file-manager/fm-properties-window.c:2043
 #: src/file-manager/fm-properties-window.c:2623
@@ -5772,9 +5724,8 @@ msgstr "Masaüstü arkaplanı rengi ya da desenini ayarlayacak pencere aç"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:37
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:15
-#, fuzzy
 msgid "Show media properties for the selected volume"
-msgstr "Seçili her öğenin özelliklerini göster ya da değiştir"
+msgstr "Seçilen disk için özellikleri göster"
 
 # libnautilus-private/nautilus-volume-monitor.c:1177
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
@@ -5913,9 +5864,8 @@ msgstr "Bu menüde görüntülenen betikleri içeren dizini göster"
 
 # src/nautilus-shell-ui.xml.h:41
 #: src/file-manager/nautilus-directory-view-ui.xml.h:35
-#, fuzzy
 msgid "Use the default background for this location"
-msgstr "Görüntülenen konum için başka bir Nautilus penceresi aç"
+msgstr "Bu konum için öntanımlı arkaplanı kullan"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:37
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
@@ -6183,6 +6133,9 @@ msgid ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
+"Nautilus kullanılamıyor. Konsoldan \"bonobo-slay\" komutunun işletilmesi bu "
+"problemi çözebilir. Eğer sorun hala giderilemiyorsa bilgisayarı yeniden açıp "
+"kapatın, ya da Nautilus'u yeniden kurun."
 
 # src/nautilus-application.c:400
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
@@ -6206,6 +6159,22 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
+"Nautilus şuanda kullanılamıyor. \"bonobo-slay\" komutunu konsoldan "
+"kullanarak sorunu giderebilirsiniz. Eğer olmazsa bilgisayarı yeniden "
+"başlatabilir veya Nautilus'u yeniden yükleyebilirsiniz.\n"
+"\n"
+"Bonobo Nautilus_shell.server dosyasını bulamadı. Bunun nedeni "
+"LD_LIBRARY_PATH'in bonobo-etkinleştirme kütüphanelerinin bulunduğu dizini "
+"içermemesi olabilir. Bir diğer neden ise eksik Nautilus_shell.server "
+"kurulumu olabilir.\n"
+"\n"
+"\"bonobo-slay\" i çalıştırıarak başka uygulamalar tarafından ihtiyaç duyulan "
+"tüm Bonobo Etkinleştirme ve Gconf süreçlerini kapatabilirsiniz.\n"
+"\n"
+"Bazen bonobo-activation-server ve gconfd'nin kapatılması hatayı giderir, "
+"fakat nedeni bilinmemektedir.\n"
+"\n"
+"Ayrıca bu hata hatalı bir bonobo-activation yüklemesi sonrası oluşabilir."
 
 # src/nautilus-application.c:425 src/nautilus-application.c:443
 #. Some misc. error (can never happen with current
@@ -6227,6 +6196,8 @@ msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
+"Dosya yönetici görüntüsü sunucusuna kaydolunmaya çalışırken oluşan bir "
+"Bonobo hatası yüzünden, Nautilus şuanda kullanılamıyor."
 
 # src/nautilus-application.c:444
 #: src/nautilus-application.c:498
@@ -6235,6 +6206,9 @@ msgid ""
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+"Üretici konumu algılanmaya çalışılırken oluşan bir Bonobo hatası yüzünden "
+"Nautilus şu anda kullanılamıyor. bonobo-activation-server kapatılması ve "
+"Nautilius'un yeniden başlatılması problemin çözümüne yardımcı olabilir."
 
 # src/nautilus-application.c:444
 #: src/nautilus-application.c:505
@@ -6243,6 +6217,9 @@ msgid ""
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+"Kabuk nesnesinin konumu alınmaya çalışırken oluşan bir Bonobo hatası "
+"yüzünden Nautilus şuanda kullanılamıyor. Bonobo-activation-server'ı kapatmak "
+"ve Nautilus'u yeninden başlatmak problemin çözümüne yardımcı olabilir."
 
 #: src/nautilus-bookmarks-window.c:171
 msgid "No bookmarks defined"
@@ -6281,229 +6258,210 @@ msgstr "Hepsini Bul!"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
-#: src/nautilus-file-management-properties.glade.h:4
+# components/hardware/nautilus-hardware-view.c:326
+#: src/nautilus-file-management-properties.glade.h:2
 #, fuzzy
+msgid "1 GB"
+msgstr "1 MB"
+
+#: src/nautilus-file-management-properties.glade.h:5
 msgid "100 KB"
-msgstr "100 K"
+msgstr "100 KB"
 
-#: src/nautilus-file-management-properties.glade.h:20
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:21
 msgid "500 KB"
-msgstr "500 K"
-
-#: src/nautilus-file-management-properties.glade.h:23
-msgid "<span weight=\"bold\">Behaviour</span>"
-msgstr ""
+msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-msgid "<span weight=\"bold\">Default View</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Behaviour</span>"
+msgstr "<span weight=\"bold\">Davranış</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
-msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr "Çalıştırılabilir Metin Dosyaları"
+msgid "<span weight=\"bold\">Default View</span>"
+msgstr "<span weight=\"bold\">Öntanımlı Görünüm</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
-msgid "<span weight=\"bold\">Folders</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Executable Text Files</span>"
+msgstr "<span weight=\"bold\">Çalıştırılabilir Metin Dosyaları</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
-msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Folders</span>"
+msgstr "<span weight=\"bold\">Dizinler</span>"
 
 #: src/nautilus-file-management-properties.glade.h:28
-msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Icon Captions</span>"
+msgstr "<span weight=\"bold\">Simgeler</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
-msgid "<span weight=\"bold\">Image Files</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Icon View Defaults</span>"
+msgstr "<span weight=\"bold\">Öntanımlı Simge Görünümü</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Öntanımlı Liste Görünümü</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
-msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr ""
+#, fuzzy
+msgid "<span weight=\"bold\">Other Previewable Files</span>"
+msgstr "<span weight=\"bold\">Resim Dosyaları</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
-msgid "<span weight=\"bold\">Text Files</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Sound Files</span>"
+msgstr "<span weight=\"bold\">Ses Dosyaları</span>"
 
 #: src/nautilus-file-management-properties.glade.h:33
-msgid "<span weight=\"bold\">Trash</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Text Files</span>"
+msgstr "<span weight=\"bold\">Metin Dosyaları</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
+msgid "<span weight=\"bold\">Trash</span>"
+msgstr "<span weight=\"bold\">Çöp</span>"
+
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Öntanımlı Ağaç Görünümü</span>"
 
 # libnautilus-private/nautilus-global-preferences.c:886
-#: src/nautilus-file-management-properties.glade.h:35
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Always"
-msgstr "_Her zaman"
+msgstr "Her zaman"
 
 # libnautilus-private/nautilus-global-preferences.c:96
-#: src/nautilus-file-management-properties.glade.h:36
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Çö_p kutusunu boşaltmadan, ya da dosyaları silmeden önce sor"
 
 # libnautilus-private/nautilus-global-preferences.c:481
-#: src/nautilus-file-management-properties.glade.h:37
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
-msgstr "Çöp Davranışı"
+msgstr "Davranış"
 
 # src/file-manager/fm-icon-text-window.c:271
-#: src/nautilus-file-management-properties.glade.h:43
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Simge altındaki bilgilerin sırasını seçin. Simgelere yaklaştıkça\n"
+"Simge altındaki bilgilerin sırasını seçin. Simgelere yaklaştıkça "
 "görüntülenecek bilgi miktarı artacaktır."
 
-#: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
-msgid "Count _number of items:"
-msgstr "Dizinlerdeki Öğe Sayısını Göster"
-
 #: src/nautilus-file-management-properties.glade.h:45
+msgid "Count _number of items:"
+msgstr "Öğ_e sayısı:"
+
+#: src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
 msgstr "Ön_tanımlı odaklama oranı:"
 
 # components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
-#: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
-msgid "File Management Preferences"
-msgstr "Tercihleri Yüklemek İçin Görünümü Yenileyin"
-
 #: src/nautilus-file-management-properties.glade.h:47
-#, fuzzy
+msgid "File Management Preferences"
+msgstr "Dosya Yöneticisi Tercihleri"
+
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "Çö_pü kullanmayacak bir Silme komutunu içer"
 
 # src/file-manager/fm-icon-text-window.c:263
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon Captions"
 msgstr "Simge Metinleri"
 
 # libnautilus-private/nautilus-global-preferences.c:890
-#: src/nautilus-file-management-properties.glade.h:51
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "Local Files Only"
-msgstr "_Sadece Yerel Dosyalar"
+msgstr "Sadece Yerel Dosyalar"
 
 # libnautilus-private/nautilus-global-preferences.c:894
-#: src/nautilus-file-management-properties.glade.h:53
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "Never"
-msgstr "H_iç bir zaman"
+msgstr "Hiç bir zaman"
 
 # libnautilus-private/nautilus-global-preferences.c:616
-#: src/nautilus-file-management-properties.glade.h:55
-#, fuzzy
-msgid "Preview _sound files:"
-msgstr "Ses Dosyaları Önizleme"
-
 #: src/nautilus-file-management-properties.glade.h:56
+msgid "Preview _sound files:"
+msgstr "_Ses dosyaları önizleme:"
+
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _only folders"
-msgstr ""
+msgstr "_Sadece dizinleri göster"
 
 # libnautilus-private/nautilus-global-preferences.c:609
-#: src/nautilus-file-management-properties.glade.h:57
-#, fuzzy
-msgid "Show _thumbnails:"
-msgstr "Resim Dosyaları İçin Küçükleri Göster"
-
 #: src/nautilus-file-management-properties.glade.h:58
+msgid "Show _thumbnails:"
+msgstr "_Küçük resimleri göster:"
+
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Show hidden and _backup files"
-msgstr ""
+msgstr "_Gizli ve yedek dosyaları göster"
 
 # libnautilus-private/nautilus-global-preferences.c:602
-#: src/nautilus-file-management-properties.glade.h:59
-#, fuzzy
-msgid "Show te_xt in icons:"
-msgstr "Simgelerde Metni Göster"
-
 #: src/nautilus-file-management-properties.glade.h:60
-#, fuzzy
+msgid "Show te_xt in icons:"
+msgstr "S_imgelerde metni göster"
+
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Sort _folders before files"
-msgstr "Dizinleri dosyalardan önce göster"
+msgstr "_Dizinleri dosyalardan önce sırala"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:19
-#: src/nautilus-file-management-properties.glade.h:61
-#, fuzzy
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Sort in _reverse"
-msgstr "Ters sırala"
+msgstr "_Ters sırala"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:21
-#: src/nautilus-file-management-properties.glade.h:62
-#, fuzzy
-msgid "Use _manual layout"
-msgstr "_Daha sıkışık görünüm kullan"
-
 #: src/nautilus-file-management-properties.glade.h:63
-#, fuzzy
+msgid "Use _manual layout"
+msgstr "_Elle yerleşim kullan"
+
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "View _new folders using:"
-msgstr "Yeni dizinleri bunu kullanarak görüntüle:"
+msgstr "_Yeni dizinleri bunu kullanarak görüntüle:"
 
 # src/nautilus-shell-ui.xml.h:97
-#: src/nautilus-file-management-properties.glade.h:64
-#, fuzzy
-msgid "Views"
-msgstr "_Bakış"
-
 #: src/nautilus-file-management-properties.glade.h:65
-#, fuzzy
-msgid "_Arrange items:"
-msgstr "Öğ_eleri Düzenle"
+msgid "Views"
+msgstr "Görünümler"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:66
+msgid "_Arrange items:"
+msgstr "Öğ_eleri düzenle:"
+
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Default zoom level:"
 msgstr "Ö_ntanımlı odaklama oranı:"
 
-#: src/nautilus-file-management-properties.glade.h:68
-msgid "_Double click to activate items"
-msgstr ""
-
 #: src/nautilus-file-management-properties.glade.h:69
-#, fuzzy
+msgid "_Double click to activate items"
+msgstr "_Simgeleri etkinleştirmek için çift tıkla"
+
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Only for files smaller than:"
-msgstr "Daha büyük dosyaların küçüklerini oluşturma:"
+msgstr "_Sadece bundan daha küçük dosyalar:"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:19
-#: src/nautilus-file-management-properties.glade.h:70
-#, fuzzy
-msgid "_Open activated item in a new window"
-msgstr "Seçili her dosyayı yeni pencerede aç"
-
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
-msgid "_Run executable text files when they are clicked"
-msgstr "_Tıklandığında dosyaları çalıştır"
+msgid "_Open activated item in a new window"
+msgstr "S_eçili dosyayı yeni pencerede aç"
 
 #: src/nautilus-file-management-properties.glade.h:72
+msgid "_Run executable text files when they are clicked"
+msgstr "_Tıklandığında çalıştırılabilir metin dosyalarını çalıştır"
+
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_Single click to activate items"
-msgstr ""
+msgstr "_Simgeleri etkinleştirmek için tek tıkla"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:21
-#: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
-msgid "_Use compact layout"
-msgstr "_Daha sıkışık görünüm kullan"
-
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
+msgid "_Use compact layout"
+msgstr "_Sıkışık görünüm kullan"
+
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "_View executable text files when they are clicked"
-msgstr "_Tıklandığında dosyaları çalıştır"
+msgstr "_Tıklandığında çalıştırılabilir metin dosyalarını görüntüle"
 
 # src/nautilus-first-time-druid.c:160
 #: src/nautilus-first-time-druid.c:40
@@ -6513,6 +6471,9 @@ msgid ""
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
+"Bu dosyanın var olması Nautilus ayar aracının sunulmasını etkiliyor\n"
+"\n"
+"Bu dosyayı elle silerek aracın yeniden sunulmasını sağlayabilirsiniz.\n"
 
 # src/nautilus-sidebar.c:1237
 #: src/nautilus-information-panel.c:882
@@ -6531,9 +6492,8 @@ msgstr "Birlikte aç..."
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1018
-#, fuzzy
 msgid "Empty _Trash"
-msgstr "Çöpü Boşalt"
+msgstr "Çöpü _Boşalt"
 
 # src/nautilus-location-bar.c:61
 #: src/nautilus-location-bar.c:62
@@ -6590,33 +6550,33 @@ msgstr "Nautilus'u yeniden başlat"
 # data/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
 # src/nautilus-window-menus.c:552
 #. Set initial window title
-#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:232
 #: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
 # src/nautilus-main.c:205
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:201
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check URI'lerle beraber kullanılamaz.\n"
 
 # src/nautilus-main.c:209
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:205
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check diğer seçeneklerle beraber kullanılamaz.\n"
 
 # src/nautilus-main.c:213
-#: src/nautilus-main.c:204
+#: src/nautilus-main.c:209
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit URI'lerle beraber kullanılamaz.\n"
 
 # src/nautilus-main.c:217
-#: src/nautilus-main.c:208
+#: src/nautilus-main.c:213
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart URI'lerle beraber kullanılamaz.\n"
 
 # src/nautilus-main.c:221
-#: src/nautilus-main.c:212
+#: src/nautilus-main.c:217
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry bir URI'den fazla beraber kullanılamaz.\n"
 
@@ -6652,82 +6612,78 @@ msgid "_Add new..."
 msgstr "_Yeni ekle..."
 
 # src/nautilus-property-browser.c:886
-#: src/nautilus-property-browser.c:907
+#: src/nautilus-property-browser.c:913
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Üzgünüm, ancak %s deseni silinemedi."
 
 # src/nautilus-property-browser.c:887 src/nautilus-property-browser.c:916
-#: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
+#: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
 msgstr "Desen silinemedi"
 
 # src/nautilus-property-browser.c:915
-#: src/nautilus-property-browser.c:936
+#: src/nautilus-property-browser.c:942
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Üzgünüm, ancak %s logosu silinemez."
 
 # src/nautilus-property-browser.c:1011
-#: src/nautilus-property-browser.c:975
+#: src/nautilus-property-browser.c:981
 msgid "Create a New Emblem:"
 msgstr "Yeni Bir Logo Oluştur:"
 
 # src/nautilus-property-browser.c:1016
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:988
-#, fuzzy
+#: src/nautilus-property-browser.c:994
 msgid "_Keyword:"
-msgstr "Anahtar sözcük:"
+msgstr "_Anahtar sözcük:"
 
 # components/image-viewer/Nautilus_View_image.oaf.in.h:3
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1006
-#, fuzzy
+#: src/nautilus-property-browser.c:1012
 msgid "_Image:"
-msgstr "Resim:"
+msgstr "_Resim:"
 
 # src/nautilus-property-browser.c:1033
-#: src/nautilus-property-browser.c:1010
+#: src/nautilus-property-browser.c:1016
 msgid "Select an image file for the new emblem:"
 msgstr "Yeni logo için bir resim dosyası belirleyin:"
 
 # src/nautilus-property-browser.c:1061
-#: src/nautilus-property-browser.c:1034
+#: src/nautilus-property-browser.c:1040
 msgid "Create a New Color:"
 msgstr "Yeni Bir Renk Oluştur:"
 
 # src/nautilus-property-browser.c:1066
 #. make the name label and field
-#: src/nautilus-property-browser.c:1048
-#, fuzzy
+#: src/nautilus-property-browser.c:1054
 msgid "Color _name:"
-msgstr "Renk adı:"
+msgstr "Renk _adı:"
 
 # src/nautilus-property-browser.c:1077
-#: src/nautilus-property-browser.c:1064
-#, fuzzy
+#: src/nautilus-property-browser.c:1070
 msgid "Color _value:"
-msgstr "Renk değeri:"
+msgstr "Renk _değeri:"
 
 # src/nautilus-theme-selector.c:396
-#: src/nautilus-property-browser.c:1095
+#: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Üzgünüm, fakat \"%s\" geçerli bir dosya adı değil."
 
 # src/nautilus-theme-selector.c:396
-#: src/nautilus-property-browser.c:1097
+#: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Üzgünüm, ancak geçerli bir dosya adı vermediniz."
 
 # src/nautilus-property-browser.c:1164
-#: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
+#: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
 msgstr "Desen kurulamadı"
 
 # src/nautilus-property-browser.c:1122
-#: src/nautilus-property-browser.c:1110
+#: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Sıfırlama resminin üzerine alamazsınız."
 
@@ -6735,122 +6691,114 @@ msgstr "Sıfırlama resminin üzerine alamazsınız."
 # src/file-manager/fm-properties-window.c:2140
 # src/nautilus-property-browser.c:986 src/nautilus-property-browser.c:1122
 # src/nautilus-property-browser.c:1135 src/nautilus-property-browser.c:1403
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1319
+#: src/nautilus-property-browser.c:1335
 msgid "Not an Image"
 msgstr "Resim Dosyası Değil"
 
 # src/nautilus-property-browser.c:1163
-#: src/nautilus-property-browser.c:1141
+#: src/nautilus-property-browser.c:1147
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Üzgünüm, ancak %s deseni kurulamadı."
 
 # src/nautilus-property-browser.c:1189
-#: src/nautilus-property-browser.c:1161
-#, fuzzy
+#: src/nautilus-property-browser.c:1167
 msgid "Select an image file to add as a pattern"
 msgstr "Desen olarak eklenecek bir resim dosyası seçin:"
 
 # src/nautilus-property-browser.c:1261
-#: src/nautilus-property-browser.c:1222
+#: src/nautilus-property-browser.c:1228
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Yeni rengin adı boş olamaz."
 
 # src/nautilus-property-browser.c:1262
-#: src/nautilus-property-browser.c:1223
+#: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
 msgstr "Renkler kurulamadı"
 
 # src/nautilus-property-browser.c:1319
-#: src/nautilus-property-browser.c:1275
-#, fuzzy
+#: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
-msgstr "Eklenecek rengi belirleyin:"
+msgstr "Eklenecek rengi seçin"
 
 # src/file-manager/fm-properties-window.c:2139
 # src/nautilus-property-browser.c:984 src/nautilus-property-browser.c:1134
 # src/nautilus-property-browser.c:1402
-#: src/nautilus-property-browser.c:1312 src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "`%s' bir resim dosyası değil!"
 
 # src/nautilus-property-browser.c:2169
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2037
 msgid "Select A Category:"
 msgstr "Bir Kategori Seçin:"
 
 # src/nautilus-property-browser.c:2177 src/nautilus-theme-selector.c:503
-#: src/nautilus-property-browser.c:2044
-#, fuzzy
+#: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
-msgstr "Silmeyi İptal Et"
+msgstr "_Silmeyi İptal Et"
 
 # src/nautilus-property-browser.c:2181
-#: src/nautilus-property-browser.c:2050
+#: src/nautilus-property-browser.c:2052
 msgid "_Add a New Pattern..."
 msgstr "_Yeni Bir Desen Ekle..."
 
 # src/nautilus-property-browser.c:2184
-#: src/nautilus-property-browser.c:2053
-#, fuzzy
+#: src/nautilus-property-browser.c:2055
 msgid "_Add a New Color..."
-msgstr "Yeni Bir Renk Ekle..."
+msgstr "_Yeni Bir Renk Ekle..."
 
 # src/nautilus-property-browser.c:2187
-#: src/nautilus-property-browser.c:2056
-#, fuzzy
+#: src/nautilus-property-browser.c:2058
 msgid "_Add a New Emblem..."
-msgstr "Yeni Bir Logo Ekle..."
+msgstr "_Yeni Bir Logo Ekle..."
 
 # src/nautilus-property-browser.c:2210
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2081
 msgid "Click on a pattern to remove it"
 msgstr "Silmek için bir desenin üzerine tıklayın"
 
 # src/nautilus-property-browser.c:2213
-#: src/nautilus-property-browser.c:2082
+#: src/nautilus-property-browser.c:2084
 msgid "Click on a color to remove it"
 msgstr "Silmek için bir rengin üzerine tıklayın"
 
 # src/nautilus-property-browser.c:2216
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2087
 msgid "Click on an emblem to remove it"
 msgstr "Silmek için bir logonun üzerine tıklayın"
 
 # src/nautilus-property-browser.c:2225
-#: src/nautilus-property-browser.c:2094
+#: src/nautilus-property-browser.c:2096
 msgid "Patterns:"
 msgstr "Desenler:"
 
 # src/nautilus-property-browser.c:2228
-#: src/nautilus-property-browser.c:2097
+#: src/nautilus-property-browser.c:2099
 msgid "Colors:"
 msgstr "Renkler:"
 
 # src/nautilus-property-browser.c:2231
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2102
 msgid "Emblems:"
 msgstr "Logolar:"
 
 # src/nautilus-property-browser.c:2249
-#: src/nautilus-property-browser.c:2120
-#, fuzzy
+#: src/nautilus-property-browser.c:2122
 msgid "_Remove a Pattern..."
-msgstr "Bir Deseni Sil..."
+msgstr "_Bir Deseni Sil..."
 
 # src/nautilus-property-browser.c:2252
-#: src/nautilus-property-browser.c:2123
-#, fuzzy
+#: src/nautilus-property-browser.c:2125
 msgid "_Remove a Color..."
-msgstr "Bir Rengi Sil..."
+msgstr "B_ir Rengi Sil..."
 
 # src/nautilus-property-browser.c:2255
-#: src/nautilus-property-browser.c:2126
-#, fuzzy
+#: src/nautilus-property-browser.c:2128
 msgid "_Remove an Emblem..."
-msgstr "Bir Logoyu Sil..."
+msgstr "Bir _Logoyu Sil..."
 
 #. Menu item in the search bar.
 #. Bracketed items are context, and are message
@@ -6861,7 +6809,7 @@ msgstr "Bir Logoyu Sil..."
 #. will not be used.
 #: src/nautilus-search-bar-criterion.c:73
 msgid "[Search for] Name [contains \"fish\"]"
-msgstr ""
+msgstr "[\"balık\" içeren] Adları [Ara]"
 
 #: src/nautilus-search-bar-criterion.c:74
 msgid "[Search for] Content [includes all of \"fish tree\"]"
@@ -6877,7 +6825,7 @@ msgstr "Boy"
 
 #: src/nautilus-search-bar-criterion.c:77
 msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "Ambleme göre"
+msgstr "[\"önemli\" içeren] Amblemlerle [Ara]"
 
 #: src/nautilus-search-bar-criterion.c:78
 msgid "[Search for] Last Modified [before yesterday]"
@@ -7013,40 +6961,46 @@ msgstr " "
 msgid "[File owner] is not [root]"
 msgstr "değil"
 
-#: src/nautilus-server-connect.c:129
+#: src/nautilus-server-connect.c:130
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"Nautilus çalıştırılamadı\n"
+"Nautilus'un dosya sisteminde bulunduğuna emin olun."
 
-#: src/nautilus-server-connect.c:392
+#: src/nautilus-server-connect.c:393
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
+"%s URI'sine bağlanılamadı\n"
+"Adresin doğru olduğundan emin olun veya alternatif olarak, bu adresi direk "
+"dosya yöneticisine yazın"
 
-#: src/nautilus-server-connect.c:457
+#: src/nautilus-server-connect.c:458
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
 msgstr ""
+"Sunucu programına bağlantı için gerekli Galde dosyası bulunamıyor.\n"
+"Nautilus yüklemesini kontrol edin"
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
+msgstr "Ağ Sunucularınıza yeni bir sunucu ekleyin ve ona bağlanın"
 
 # components/music/mpg123.c:47
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
-#, fuzzy
 msgid "New Server"
-msgstr "New Wave"
+msgstr "Yeni Sunucu"
 
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 # src/nautilus-shell-ui.xml.h:4
 #: src/nautilus-shell-ui.xml.h:1
@@ -7071,7 +7025,7 @@ msgstr "Bu pencerenin yan çubuğunun görüntüsünü değiştir"
 # src/nautilus-shell-ui.xml.h:9
 #: src/nautilus-shell-ui.xml.h:6
 msgid "Change the visibility of this window's statusbar"
-msgstr ""
+msgstr "Pencere durum çubuğunun görünümünü değiştir"
 
 # src/nautilus-shell-ui.xml.h:10
 #: src/nautilus-shell-ui.xml.h:7
@@ -7106,9 +7060,8 @@ msgstr "Bu pencereyi kapat"
 
 # src/Nautilus_shell.oaf.in.h:13
 #: src/nautilus-shell-ui.xml.h:14
-#, fuzzy
 msgid "Display Nautilus help"
-msgstr "Nautilus kabuğu"
+msgstr "Nautilus yardımını göster"
 
 # src/nautilus-shell-ui.xml.h:18
 #: src/nautilus-shell-ui.xml.h:15
@@ -7160,7 +7113,7 @@ msgstr "Başlangıç dizinine gidin"
 # src/nautilus-shell-ui.xml.h:31
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go to the next visited location"
-msgstr ""
+msgstr "Sonraki ziyaret edilen konuma git"
 
 # src/nautilus-shell-ui.xml.h:32
 #: src/nautilus-shell-ui.xml.h:25
@@ -7169,13 +7122,12 @@ msgstr "Önceki yere gidin"
 
 # libnautilus-private/nautilus-search-uri.c:249
 #: src/nautilus-shell-ui.xml.h:26
-#, fuzzy
 msgid "Go to the trash folder"
-msgstr "Buradan Başla dizinine gidin"
+msgstr "Çöp dizinine git"
 
 #: src/nautilus-shell-ui.xml.h:27
 msgid "Go up one level"
-msgstr ""
+msgstr "Bir seviye yukarı"
 
 # components/help/converters/gnome-db2html2/gdb3html.c:717
 # src/nautilus-shell-ui.xml.h:37
@@ -7185,9 +7137,8 @@ msgstr "Başlangıç"
 
 # src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:433
 #: src/nautilus-shell-ui.xml.h:29
-#, fuzzy
 msgid "Location _Bar"
-msgstr "_Konum Çubuğunu Gizle"
+msgstr "_Konum Çubuğu"
 
 # src/nautilus-shell-ui.xml.h:39
 #: src/nautilus-shell-ui.xml.h:30
@@ -7196,9 +7147,8 @@ msgstr "Yeni _Pencere"
 
 # src/nautilus-shell-ui.xml.h:40
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "Normal Si_ze"
-msgstr "Normal Boyut"
+msgstr "Normal _Boyut"
 
 # src/nautilus-shell-ui.xml.h:41
 #: src/nautilus-shell-ui.xml.h:32
@@ -7207,9 +7157,8 @@ msgstr "Görüntülenen konum için başka bir Nautilus penceresi aç"
 
 # src/nautilus-window-menus.c:483
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "Prefere_nces"
-msgstr "Tercihler"
+msgstr "_Tercihler"
 
 # src/file-manager/fm-properties-window.c:1725
 #: src/nautilus-shell-ui.xml.h:34
@@ -7248,14 +7197,22 @@ msgstr "İçeriği detaylı göster"
 
 # src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:415
 #: src/nautilus-shell-ui.xml.h:42
-#, fuzzy
 msgid "St_atusbar"
-msgstr "Durum Çubuğunu _Gizle"
+msgstr "_Durum Çubuğu"
 
 # src/nautilus-shell-ui.xml.h:54
 #: src/nautilus-shell-ui.xml.h:43
 msgid "Start Profiling"
 msgstr "Profili Kapat"
+
+# components/music/nautilus-music-view.c:1580
+# libnautilus-private/nautilus-file-operations.c:895
+# libnautilus-private/nautilus-file-operations.c:910
+# libnautilus-private/nautilus-file-operations.c:929
+# src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Stop"
+msgstr "Dur"
 
 # src/nautilus-shell-ui.xml.h:56
 #: src/nautilus-shell-ui.xml.h:45
@@ -7280,7 +7237,7 @@ msgstr "Yukarı"
 # src/nautilus-window.c:1118
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
-#: src/nautilus-window.c:1465
+#: src/nautilus-window.c:1489
 msgid "View as..."
 msgstr "Farklı görüntüle..."
 
@@ -7296,7 +7253,7 @@ msgstr "_Uzaklaş"
 
 #: src/nautilus-shell-ui.xml.h:52
 msgid "_About"
-msgstr ""
+msgstr "_Hakkında"
 
 # src/nautilus-shell-ui.xml.h:69
 #: src/nautilus-shell-ui.xml.h:53
@@ -7310,9 +7267,8 @@ msgstr "_Geri"
 
 # src/nautilus-property-browser.c:260
 #: src/nautilus-shell-ui.xml.h:55
-#, fuzzy
 msgid "_Backgrounds and Emblems"
-msgstr "Arkaplanlar ve Logolar"
+msgstr "_Arkaplanlar ve Logolar"
 
 # src/nautilus-shell-ui.xml.h:27
 #: src/nautilus-shell-ui.xml.h:57
@@ -7400,9 +7356,8 @@ msgstr "Profillleri _Sıfırla"
 
 # libnautilus-private/nautilus-global-preferences.c:514
 #: src/nautilus-shell-ui.xml.h:75
-#, fuzzy
 msgid "_Side Pane"
-msgstr "Yan Paneller"
+msgstr "_Yan Panel"
 
 # libnautilus-private/nautilus-program-chooser.c:1168
 #: src/nautilus-shell-ui.xml.h:76
@@ -7420,9 +7375,8 @@ msgstr "Profile _Başlat"
 # libnautilus-private/nautilus-file-operations.c:929
 # src/nautilus-shell-ui.xml.h:55
 #: src/nautilus-shell-ui.xml.h:78
-#, fuzzy
 msgid "_Stop"
-msgstr "Dur"
+msgstr "_Dur"
 
 # src/nautilus-shell-ui.xml.h:94
 #: src/nautilus-shell-ui.xml.h:79
@@ -7431,17 +7385,15 @@ msgstr "Profil _Durdur"
 
 # src/nautilus-window-menus.c:428
 #: src/nautilus-shell-ui.xml.h:80
-#, fuzzy
 msgid "_Toolbar"
-msgstr "_Araç Çubuğunu Göster"
+msgstr "_Araç Çubuğu"
 
 # data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:66
 #: src/nautilus-shell-ui.xml.h:81
-#, fuzzy
 msgid "_Trash"
-msgstr "Çöp"
+msgstr "Çö_p"
 
 # src/nautilus-shell-ui.xml.h:95
 #: src/nautilus-shell-ui.xml.h:82
@@ -7450,9 +7402,8 @@ msgstr "_Geri Al"
 
 # src/nautilus-shell-ui.xml.h:59
 #: src/nautilus-shell-ui.xml.h:83
-#, fuzzy
 msgid "_Up"
-msgstr "Yukarı"
+msgstr "_Yukarı"
 
 # src/nautilus-shell-ui.xml.h:97
 #: src/nautilus-shell-ui.xml.h:84
@@ -7466,15 +7417,14 @@ msgstr "_Farklı görüntüle..."
 
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: src/nautilus-side-pane.c:395
-#, fuzzy
 msgid "Close the side pane"
-msgstr "Not paneli"
+msgstr "Yan paneli kapat"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:34
 #: src/nautilus-side-pane.c:566
-#, fuzzy, c-format
+#, c-format
 msgid "Show %s"
-msgstr "Çöpü Göster"
+msgstr "Göster: %s"
 
 # src/nautilus-shell-ui.xml.h:26
 #: src/nautilus-switchable-search-bar.c:129
@@ -7482,33 +7432,33 @@ msgid "Find:"
 msgstr "Bul:"
 
 # components/music/nautilus-music-view.c:233
-#: src/nautilus-view-frame.c:549
+#: src/nautilus-view-frame.c:557
 msgid "a title"
 msgstr "bir başlık"
 
-#: src/nautilus-view-frame.c:558
+#: src/nautilus-view-frame.c:566
 msgid "the browse history"
-msgstr ""
+msgstr "gözatma geçmişi"
 
 # components/help/converters/gnome-db2html2/sect-elements.c:1029
-#: src/nautilus-view-frame.c:567
+#: src/nautilus-view-frame.c:575
 msgid "the current selection"
 msgstr "güncel seçim"
 
 # data/linksets/desktop.xml.h:1
 # libnautilus-private/nautilus-global-preferences.c:588
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
-#: src/nautilus-window-manage-views.c:191
+#: src/nautilus-window-manage-views.c:192
 msgid "Desktop"
 msgstr "Masaüstü"
 
 # src/nautilus-window-manage-views.c:777
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:850
 msgid "View Failed"
 msgstr "İzleme Başarısız"
 
 # src/nautilus-window-manage-views.c:788
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:861
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7518,32 +7468,30 @@ msgstr ""
 "seçebilir, ya da başka bir konuma gidebilirsiniz."
 
 # src/nautilus-window-manage-views.c:799
-#: src/nautilus-window-manage-views.c:871
+#: src/nautilus-window-manage-views.c:872
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Başlatılırken %s görünümü bir hata saptadı."
 
 # src/file-manager/fm-properties-window.c:983
-#: src/nautilus-window-manage-views.c:1028
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1029
 msgid "Content View"
-msgstr "İç_indekiler"
+msgstr "İçerik Görünümü"
 
 # libnautilus-private/nautilus-search-uri.c:249
-#: src/nautilus-window-manage-views.c:1029
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1030
 msgid "View of the current file or folder"
-msgstr "Buradan Başla dizinine gidin"
+msgstr "Güncel dosya ya da dizin görünümü"
 
 # src/nautilus-window-manage-views.c:899
-#: src/nautilus-window-manage-views.c:1052
+#: src/nautilus-window-manage-views.c:1053
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr "Yan çubuk panellerinden birisinde hata oluştu ve devam edilemiyor. "
 
 # src/nautilus-window-manage-views.c:903
-#: src/nautilus-window-manage-views.c:1056
+#: src/nautilus-window-manage-views.c:1057
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -7553,25 +7501,25 @@ msgstr ""
 "yinelenirse paneli tamamen kapatmanızda fayda var."
 
 # src/nautilus-window-manage-views.c:908
-#: src/nautilus-window-manage-views.c:1061
+#: src/nautilus-window-manage-views.c:1062
 msgid "Sidebar Panel Failed"
 msgstr "Kenar Çubuğu Hatası"
 
 # src/nautilus-window-manage-views.c:1302
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "\"%s\" bulunamadı. Lütfen yazdığınızı yeniden gözden geçirin."
 
 # src/nautilus-window-manage-views.c:1308
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1322
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" geçerli bir konum değil. Yazdıklarınızı yeniden gözden geçirin."
 
 # src/nautilus-window-manage-views.c:1322
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1336
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7580,32 +7528,32 @@ msgstr ""
 "\"%s\" gösterilemedi, Nautilus bunun ne tür bir dosya olduğunu bulamadı."
 
 # src/nautilus-window-manage-views.c:1330
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1344
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "\"%s\" Nautilus tarafından gösterilemiyor."
 
 # src/nautilus-window-manage-views.c:1342
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1344
+#: src/nautilus-window-manage-views.c:1356
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr "\"%s\" gösterilemiyor, çünkü Nautilus %s: konumunu tanıyamıyor."
 
 # src/nautilus-window-manage-views.c:1348
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "\"%s\" gösterilemiyor, çünkü giriş işleminde hata var."
 
 # src/nautilus-window-manage-views.c:1353
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1367
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "\"%s\" gösterilemedi, çünkü erişim engellendi"
 
 # src/nautilus-window-manage-views.c:1358
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1378
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7615,7 +7563,7 @@ msgstr ""
 "doğru yapıldığına emin misiniz?"
 
 # src/nautilus-window-manage-views.c:1364
-#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -7625,16 +7573,18 @@ msgstr ""
 "yapıldığına emin misiniz?"
 
 # src/nautilus-window-manage-views.c:1322
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1393
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
+"\"%s\" gösterilemiyor, çünkü Nautilus SMB ana tarayıcısına bağlanmıyor.\n"
+"Bir SMB sunucusunun yerel ağda çalıştığından emin olun."
 
 # src/nautilus-window-manage-views.c:1376
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1405
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7646,30 +7596,29 @@ msgstr ""
 "oluşturmadıysanız şimdi Medusa Indexer'ı çalıştırın."
 
 # src/nautilus-window-manage-views.c:1380
-#: src/nautilus-window-manage-views.c:1397
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "Arama Yapılamaz"
 
 # src/nautilus-window-manage-views.c:1384
-#: src/nautilus-window-manage-views.c:1402
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "\"%s\" Nautilus tarafından gösterilemiyor."
 
 # src/nautilus-window-manage-views.c:1397
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1419
 msgid "Can't Display Location"
 msgstr "Adres Gösterilemiyor"
 
 # libnautilus-private/nautilus-global-preferences.c:514
-#: src/nautilus-window-manage-views.c:1643
-#, fuzzy
+#: src/nautilus-window-manage-views.c:1673
 msgid "Side Pane"
-msgstr "Yan Paneller"
+msgstr "Yan Panel"
 
-#: src/nautilus-window-manage-views.c:1645
+#: src/nautilus-window-manage-views.c:1675
 msgid "Contains a side pane view"
-msgstr ""
+msgstr "Bir kenar paneli görünümü içerir"
 
 # src/nautilus-window-menus.c:306
 #. This is a little joke, shows up occasionally. I only
@@ -7685,15 +7634,13 @@ msgstr ""
 
 # src/nautilus-window-menus.c:309
 #: src/nautilus-window-menus.c:365
-#, fuzzy
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "Daha önce ziyaret edilen konumları silmek istediğinize emin misiniz?"
 
 # src/nautilus-window-menus.c:314
 #: src/nautilus-window-menus.c:370
-#, fuzzy
 msgid "Clear History"
-msgstr "Geçmiş Silinsin mi?"
+msgstr "Geçmişi Sil"
 
 # src/nautilus-window-menus.c:560
 #. Localize to deal with issues in the copyright
@@ -7721,6 +7668,8 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
+"Nautilus, dosya ve dizinlere kolayca ulaşmanızı sağlayacak bir GNOME "
+"uygulamasıdır."
 
 # src/nautilus-window-menus.c:716
 #: src/nautilus-window-menus.c:754
@@ -7758,45 +7707,44 @@ msgstr "Bulunmayan Adrese Git"
 msgid "Go to the location specified by this bookmark"
 msgstr "Bu yer imi tarafından belirtilen konuma git"
 
-#: src/nautilus-window-toolbars.c:422
+#: src/nautilus-window-toolbars.c:367
 msgid "Go back a few pages"
 msgstr "Bir kaç sayfa geri git"
 
-#: src/nautilus-window-toolbars.c:425
+#: src/nautilus-window-toolbars.c:370
 msgid "Go forward a number of pages"
 msgstr "Bir kaç sayfa ileri git"
 
 # components/help/Nautilus_View_help.oaf.in.h:8
-#: src/nautilus-window.c:661
-#, fuzzy
+#: src/nautilus-window.c:668
 msgid "Information"
-msgstr "Uluslararası"
+msgstr "Bilgi"
 
 # libnautilus-private/nautilus-global-preferences.c:139
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1195
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Bu konumu \"%s\" ile göster"
 
 # components/help/hyperbola-filefmt.c:470
 # components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
-#: src/nautilus-window.c:2198
+#: src/nautilus-window.c:2237
 msgid "Application ID"
-msgstr "Uygulama IDsi"
+msgstr "Uygulama No"
 
-#: src/nautilus-window.c:2199
+#: src/nautilus-window.c:2238
 msgid "The application ID of the window."
-msgstr ""
+msgstr "Pencerenin uygulama numarası"
 
 # components/help/hyperbola-filefmt.c:470
 # components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
-#: src/nautilus-window.c:2205
+#: src/nautilus-window.c:2244
 msgid "Application"
 msgstr "Uygulama"
 
-#: src/nautilus-window.c:2206
+#: src/nautilus-window.c:2245
 msgid "The NautilusApplication associated with this window."
-msgstr ""
+msgstr "Bu pencereyle eşleşmiş Nautilus Uygulaması"
 
 # src/nautilus-shell-ui.xml.h:64
 #: src/nautilus-zoom-control.c:95
@@ -7810,9 +7758,8 @@ msgstr "Uzaklaş"
 
 # src/nautilus-shell-ui.xml.h:65
 #: src/nautilus-zoom-control.c:97
-#, fuzzy
 msgid "Zoom to Fit"
-msgstr "Uzaklaş"
+msgstr "Pencereye Uydur"
 
 # libnautilus-private/nautilus-global-preferences.c:136
 #: src/nautilus-zoom-control.c:109
@@ -7826,19 +7773,76 @@ msgstr "Odaklan"
 
 #: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
-msgstr ""
+msgstr "Güncel görünümün odaklama seviyesini ayarla"
 
 # libnautilus-private/nautilus-global-preferences.c:894
 #: src/network-scheme.desktop.in.h:1
-#, fuzzy
 msgid "Network Servers"
-msgstr "Netraverse"
+msgstr "Ağ Sunucuları"
 
 # src/Nautilus_shell.oaf.in.h:1
 #: src/network-scheme.desktop.in.h:2
-#, fuzzy
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Nautilus dosya yöneticisinde başlangıç dizinini görün"
+msgstr "Nautilus dosya yöneticisinde ağ sunucularını görüntüle"
+
+# libnautilus-private/nautilus-global-preferences.c:564
+#~ msgid "F_onts"
+#~ msgstr "_Yazıtipleri"
+
+# components/text/nautilus-text-view-ui.xml.h:1
+#~ msgid "Lucida"
+#~ msgstr "Lucida"
+
+# src/nautilus-service-ui.xml.h:5
+#~ msgid "Services"
+#~ msgstr "Servisler"
+
+# components/text/nautilus-text-view-ui.xml.h:2
+#~ msgid "Use the Courier Font"
+#~ msgstr "Courier Yazıtipi kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:5
+#~ msgid "Use the Fixed Font"
+#~ msgstr "Fixed Yazıtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:5
+#~ msgid "Use the GTK System Font"
+#~ msgstr "GTK Sistem Yazıtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:3
+#~ msgid "Use the Helvetica Font"
+#~ msgstr "Helvetica Yazıtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:4
+#~ msgid "Use the Lucida Font"
+#~ msgstr "Lucida Yazıtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:5
+#~ msgid "Use the Times Font"
+#~ msgstr "Times Yazıtipi Kullan"
+
+# components/text/nautilus-text-view-ui.xml.h:6
+#~ msgid "_Courier"
+#~ msgstr "_Courier"
+
+# components/loser/content/nautilus-content-loser-ui.xml.h:3
+# components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+# components/mozilla/nautilus-mozilla-ui.xml.h:4
+# components/sample/nautilus-sample-content-view-ui.xml.h:4
+# src/nautilus-shell-ui.xml.h:78
+#~ msgid "_Fixed"
+#~ msgstr "_Fixed"
+
+#~ msgid "_GTK System Font"
+#~ msgstr "_GTK Sistem Yazıtipi"
+
+# components/text/nautilus-text-view-ui.xml.h:8
+#~ msgid "_Helvetica"
+#~ msgstr "_Helvetica"
+
+# components/text/nautilus-text-view-ui.xml.h:9
+#~ msgid "_Times"
+#~ msgstr "_Times"
 
 #, fuzzy
 #~ msgid "E_xecute scripts when they are clicked"

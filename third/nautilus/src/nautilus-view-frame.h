@@ -96,7 +96,7 @@ typedef struct {
 } NautilusViewFrameClass;
 
 /* basic view management */
-GtkType            nautilus_view_frame_get_type                  (void);
+GType              nautilus_view_frame_get_type                  (void);
 NautilusViewFrame *nautilus_view_frame_new                       (BonoboUIContainer   *ui_container,
                                                                   NautilusUndoManager *undo_manager);
 Bonobo_Control	   nautilus_view_frame_get_control		 (NautilusViewFrame   *view);
@@ -127,6 +127,11 @@ GList *            nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFr
 void               nautilus_view_frame_zoom_in                   (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_to_fit               (NautilusViewFrame   *view);
+
+/* calls to Nautilus::ScrollPositionable */
+char *             nautilus_view_frame_get_first_visible_file    (NautilusViewFrame   *view);
+void               nautilus_view_frame_scroll_to_file            (NautilusViewFrame   *view,
+                                                                  const char          *uri);
 
 /* Other. */
 gboolean           nautilus_view_frame_get_is_view_loaded        (NautilusViewFrame   *view);

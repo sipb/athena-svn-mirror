@@ -22,8 +22,8 @@ nautilus_text_view_LDADD =			\
 	$(COMPONENT_LIBS)			\
 	$(NULL)
 
-#uidir = $(datadir)/gnome-2.0/ui
-#ui_DATA = nautilus-text-view-ui.xml
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = nautilus-text-view-ui.xml
 
 server_in_files = Nautilus_View_text.server.in.in
 
@@ -33,5 +33,5 @@ $(server_in_files:.server.in.in=.server.in): $(server_in_files)
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES)
+EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES) $(ui_DATA)
 CLEANFILES = $(server_DATA) $(server_DATA).in

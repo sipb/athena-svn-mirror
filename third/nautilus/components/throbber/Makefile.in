@@ -351,6 +351,17 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+main.o: main.c ../../config.h nautilus-throbber.h \
+	../../libnautilus-private/nautilus-global-preferences.h \
+	../../libnautilus/nautilus-view-standard-main.h
+nautilus-throbber.o: nautilus-throbber.c ../../config.h \
+	nautilus-throbber.h \
+	../../libnautilus/nautilus-view-standard-main.h \
+	../../libnautilus-private/nautilus-file-utilities.h \
+	../../libnautilus-private/nautilus-global-preferences.h \
+	../../libnautilus-private/nautilus-icon-factory.h \
+	../../libnautilus-private/nautilus-file.h \
+	../../libnautilus-private/nautilus-theme.h
 
 info-am:
 info: info-am

@@ -95,10 +95,13 @@ struct NautilusViewFrameDetails {
 	BonoboEventSource *event_source;
 	BonoboControlFrame *control_frame;
         BonoboZoomableFrame *zoomable_frame;
-        
+
         /* The view CORBA object. */
         Nautilus_View view;
 
+	/* The positionable CORBA object. */
+	Nautilus_ScrollPositionable positionable;
+	
 	/* A container to connect our clients to. */
 	BonoboUIContainer *ui_container;
         NautilusUndoManager *undo_manager;
@@ -182,6 +185,11 @@ destroy_view (NautilusViewFrame *view)
 	g_free (view->details->view_iid);
 	view->details->view_iid = NULL;
 
+	if (view->details->positionable != CORBA_OBJECT_NIL) {
+		bonobo_object_release_unref (view->details->positionable, NULL);
+		view->details->positionable = CORBA_OBJECT_NIL;
+	}
+	
 	CORBA_Object_release (view->details->view, NULL);
 	view->details->view = CORBA_OBJECT_NIL;
 
@@ -216,11 +224,11 @@ shut_down (NautilusViewFrame *view)
 	}
 
 	if (view->details->failed_idle_id != 0) {
-		gtk_idle_remove (view->details->failed_idle_id);
+		g_source_remove (view->details->failed_idle_id);
 		view->details->failed_idle_id = 0;
 	}
 	if (view->details->socket_gone_idle_id != 0) {
-		gtk_idle_remove (view->details->socket_gone_idle_id);
+		g_source_remove (view->details->socket_gone_idle_id);
 		view->details->socket_gone_idle_id = 0;
 	}
 }
@@ -578,6 +586,7 @@ create_corba_objects (NautilusViewFrame *view)
 	CORBA_Environment ev;
 	Bonobo_Control control;
 	Bonobo_Zoomable zoomable;
+	Nautilus_ScrollPositionable positionable;
 	BonoboPropertyBag *bag;
 
 	CORBA_exception_init (&ev);
@@ -615,6 +624,18 @@ create_corba_objects (NautilusViewFrame *view)
 
 	CORBA_exception_free (&ev);
 
+	CORBA_exception_init (&ev);
+	
+	positionable = Bonobo_Unknown_queryInterface
+		(view->details->view, "IDL:Nautilus/ScrollPositionable:1.0", &ev);
+	if (!BONOBO_EX (&ev)
+	    && !CORBA_Object_is_nil (positionable, &ev)
+	    && !BONOBO_EX (&ev)) {
+		view->details->positionable = positionable;
+	}
+
+	CORBA_exception_free (&ev);
+	
 	/* Aggregate all the interfaces into one object. */
 	bonobo_object_add_interface (BONOBO_OBJECT (view->details->view_frame), 
 	                             BONOBO_OBJECT (view->details->control_frame));
@@ -645,7 +666,7 @@ queue_view_frame_failed (NautilusViewFrame *view)
 
 	if (view->details->failed_idle_id == 0) {
 		view->details->failed_idle_id =
-			gtk_idle_add (view_frame_failed_callback, view);
+			g_idle_add (view_frame_failed_callback, view);
 	}
 }
 
@@ -699,7 +720,7 @@ check_socket_gone_callback (GtkContainer *container,
 	 * widget in there.
 	 */
 	if (frame->details->socket_gone_idle_id == 0) {
-		frame->details->socket_gone_idle_id = gtk_idle_add
+		frame->details->socket_gone_idle_id = g_idle_add
 			(check_socket_gone_idle_callback, callback_data);
 	}
 }
@@ -1053,6 +1074,33 @@ nautilus_view_frame_zoom_to_fit (NautilusViewFrame *view)
 
 	bonobo_zoomable_frame_zoom_to_fit (view->details->zoomable_frame);
 }
+
+char *
+nautilus_view_frame_get_first_visible_file (NautilusViewFrame *view)
+{
+	Nautilus_URI uri;
+	char *ret;
+
+	ret = NULL;
+	if (view->details->positionable) {
+		uri = Nautilus_ScrollPositionable_get_first_visible_file (view->details->positionable, NULL);
+		ret = g_strdup (uri);
+		CORBA_free (uri);
+	}
+	return ret;
+}
+
+void
+nautilus_view_frame_scroll_to_file (NautilusViewFrame *view,
+				    const char        *uri)
+{
+	if (view->details->positionable) {
+		Nautilus_ScrollPositionable_scroll_to_file (view->details->positionable,
+							    uri,
+							    NULL);
+	}
+}
+
 
 const char *
 nautilus_view_frame_get_view_iid (NautilusViewFrame *view)

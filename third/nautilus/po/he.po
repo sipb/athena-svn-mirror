@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.he\n"
-"POT-Creation-Date: 2003-01-27 21:43-0500\n"
-"PO-Revision-Date: 2003-01-15 14:47+0200\n"
+"POT-Creation-Date: 2003-03-10 19:46+0100\n"
+"PO-Revision-Date: 2003-03-08 12:47+0200\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,21 +17,23 @@ msgstr ""
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
-msgstr ""
+msgstr "יצרן למתאם יצרני הרכיבים של נאוטילוס"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:2
 msgid "Factory for Nautilus component adapter factories "
-msgstr ""
+msgstr "יצרן למתאם יצרני הרכיבים של נאוטילוס "
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:3
 msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
 msgstr ""
+"יצרן לאובייקטים שעוטפים בקרי Bonobo רגילים או מוטבעים כדי שיראו כמו תצוגות "
+"נאוטילוס"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr ""
+msgstr "יצרן מתאם רכיבי נאוטילוס"
 
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
@@ -143,12 +145,13 @@ msgid "The dragged file does not appear to be a valid image."
 msgstr "הקובץ הנגרר איננו תמונה תקנית."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
+#: src/nautilus-property-browser.c:1728
 msgid "Erase"
 msgstr "מחק"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:1
 msgid "Factory for hardware view"
-msgstr ""
+msgstr "יצרן לתצוגת החומרה"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:2
 #: components/hardware/nautilus-hardware-view.c:754
@@ -292,7 +295,7 @@ msgstr "חלונית צד הערות לנאוטילוס"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
-msgstr ""
+msgstr "יצרן לתצוגת המלל"
 
 #: components/text/Nautilus_View_text.server.in.in.h:2
 msgid "Text"
@@ -303,73 +306,26 @@ msgid "Text Viewer"
 msgstr "מציג מלל"
 
 #: components/text/Nautilus_View_text.server.in.in.h:4
-#: components/text/nautilus-text-view-ui.xml.h:4
 msgid "Text view"
 msgstr "תצוגת מלל"
 
 #: components/text/Nautilus_View_text.server.in.in.h:5
 msgid "Text view factory"
-msgstr ""
+msgstr "יצרן תצוגת מלל"
 
 #: components/text/Nautilus_View_text.server.in.in.h:6
 msgid "View as Text"
 msgstr "הצג כמלל"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "F_onts"
-msgstr "_גופנים"
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Copy the selected text to the clipboard"
+msgstr "העתק את המלל הנבחר ללוח"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Lucida"
-msgstr "Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:3
-msgid "Services"
-msgstr "שירותים"
-
-#: components/text/nautilus-text-view-ui.xml.h:5
-msgid "Use the Courier Font"
-msgstr "השתמש בגופן Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:6
-msgid "Use the Fixed Font"
-msgstr "השתמש בגופן Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:7
-msgid "Use the GTK System Font"
-msgstr "השתמש במערכת הגופנים של GTK"
-
-#: components/text/nautilus-text-view-ui.xml.h:8
-msgid "Use the Helvetica Font"
-msgstr "השתמש בגופן Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:9
-msgid "Use the Lucida Font"
-msgstr "השתמש בגופן Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:10
-msgid "Use the Times Font"
-msgstr "השתמש בגופן Times"
-
-#: components/text/nautilus-text-view-ui.xml.h:11
-msgid "_Courier"
-msgstr "_Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:12
-msgid "_Fixed"
-msgstr "_Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:13
-msgid "_GTK System Font"
-msgstr "מערכת הגופנים של _GTK"
-
-#: components/text/nautilus-text-view-ui.xml.h:14
-msgid "_Helvetica"
-msgstr "_Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:15
-msgid "_Times"
-msgstr "_Times"
+#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
+msgid "_Copy Text"
+msgstr "ה_עתק מלל"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -392,7 +348,7 @@ msgid "animation to indicate on-going activity"
 msgstr "אנימציה לציון פעילות"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:579
+#: components/throbber/nautilus-throbber.c:576
 msgid "throbber"
 msgstr ""
 
@@ -404,7 +360,7 @@ msgstr ""
 msgid "throbber object factory"
 msgstr ""
 
-#: components/throbber/nautilus-throbber.c:580
+#: components/throbber/nautilus-throbber.c:577
 msgid "provides visual status"
 msgstr "מספק מצב ויזואלי"
 
@@ -1058,7 +1014,7 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "לא ניתן למצוא את hbox, משתמש בבחירת קובץ רגיךה"
 
 #: libbackground/preview-file-selection.c:212
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview"
 msgstr "תצוגה מקדימה"
 
@@ -1205,36 +1161,36 @@ msgstr "סיסמתך תשלח מוצפנת."
 msgid "Authentication Required"
 msgstr "הזדהות דרושה"
 
-#: libnautilus-private/nautilus-customization-data.c:374
+#: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "הפעל מחדש"
 
-#: libnautilus-private/nautilus-dnd.c:565
+#: libnautilus-private/nautilus-dnd.c:567
 msgid "_Move here"
 msgstr "ה_זז לכאן"
 
-#: libnautilus-private/nautilus-dnd.c:570
+#: libnautilus-private/nautilus-dnd.c:572
 msgid "_Copy here"
 msgstr "ה_עתק לכאן"
 
-#: libnautilus-private/nautilus-dnd.c:575
+#: libnautilus-private/nautilus-dnd.c:577
 msgid "_Link here"
 msgstr "_קשר לכאן"
 
-#: libnautilus-private/nautilus-dnd.c:580
+#: libnautilus-private/nautilus-dnd.c:582
 msgid "Set as _Background"
 msgstr "קבע כ_רקע"
 
-#: libnautilus-private/nautilus-dnd.c:589
-#: libnautilus-private/nautilus-dnd.c:642
+#: libnautilus-private/nautilus-dnd.c:591
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "Cancel"
 msgstr "ביטול"
 
-#: libnautilus-private/nautilus-dnd.c:628
+#: libnautilus-private/nautilus-dnd.c:632
 msgid "Set as background for _all folders"
 msgstr "קבע כרקע ל_כל התיקיות"
 
-#: libnautilus-private/nautilus-dnd.c:633
+#: libnautilus-private/nautilus-dnd.c:637
 msgid "Set as background for _this folder"
 msgstr "קבע כרקע לתיקייה _זו"
 
@@ -1574,13 +1530,6 @@ msgstr "שגיאה במהלך קישור."
 msgid "Error while deleting."
 msgstr "שגיאה במהלך מחיקה."
 
-#: libnautilus-private/nautilus-file-operations.c:914
-#: libnautilus-private/nautilus-file-operations.c:929
-#: libnautilus-private/nautilus-file-operations.c:949
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Stop"
-msgstr "עצור"
-
 #: libnautilus-private/nautilus-file-operations.c:929
 #: libnautilus-private/nautilus-file-operations.c:949
 #: libnautilus-private/nautilus-file-operations.c:1062
@@ -1649,7 +1598,7 @@ msgstr "החלף הכל"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1136
-#: libnautilus-private/nautilus-file.c:4285
+#: libnautilus-private/nautilus-file.c:4325
 #, c-format
 msgid "link to %s"
 msgstr "קישור ל %s"
@@ -1983,7 +1932,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "מתכונן לרוקן את האשפה..."
 
 #: libnautilus-private/nautilus-file-operations.c:2265
-#: src/file-manager/fm-desktop-icon-view.c:1275
+#: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "רוקן אשפה"
@@ -2275,64 +2224,64 @@ msgstr "ניסיון (העתק מספר 124).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2569
 msgid "today at 00:00:00 PM"
 msgstr "היום ב 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2570
 msgid "today at %-I:%M:%S %p"
 msgstr "היום ב %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2572
 msgid "today at 00:00 PM"
 msgstr "היום ב 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2573
 msgid "today at %-I:%M %p"
 msgstr "היום ב %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2535
+#: libnautilus-private/nautilus-file.c:2575
 msgid "today, 00:00 PM"
 msgstr "היום, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2576
 msgid "today, %-I:%M %p"
 msgstr "היום, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2538
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2579
 msgid "today"
 msgstr "היום"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2548
+#: libnautilus-private/nautilus-file.c:2588
 msgid "yesterday at 00:00:00 PM"
 msgstr "אתמול ב 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2589
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "אתמול ב %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2551
+#: libnautilus-private/nautilus-file.c:2591
 msgid "yesterday at 00:00 PM"
 msgstr "אתמול ב 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2592
 msgid "yesterday at %-I:%M %p"
 msgstr "אתמול ב %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2554
+#: libnautilus-private/nautilus-file.c:2594
 msgid "yesterday, 00:00 PM"
 msgstr "אתמול, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2595
 msgid "yesterday, %-I:%M %p"
 msgstr "אתמול, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2557
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2597
+#: libnautilus-private/nautilus-file.c:2598
 msgid "yesterday"
 msgstr "אתמול"
 
@@ -2341,132 +2290,132 @@ msgstr "אתמול"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2609
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "רביעי, ספטמבר 00 0000 ב 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2610
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y ב %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2612
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "ב', אוק' 00 0000 ב 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2613
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y ב %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2615
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ב', אוק' 00 0000 ב 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2616
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y ב %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2618
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "אוק' 00 0000 ב 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2619
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y ב %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2581
+#: libnautilus-private/nautilus-file.c:2621
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "אוק' 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2622
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2584
+#: libnautilus-private/nautilus-file.c:2624
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2585
+#: libnautilus-private/nautilus-file.c:2625
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2587
+#: libnautilus-private/nautilus-file.c:2627
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2588
+#: libnautilus-private/nautilus-file.c:2628
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3910
 msgid "0 items"
 msgstr "0 פריטים"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3910
 msgid "0 folders"
 msgstr "0 תיקיות"
 
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3911
 msgid "0 files"
 msgstr "0 קבצים"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3915
 msgid "1 item"
 msgstr "פריט אחד"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3915
 msgid "1 folder"
 msgstr "תיקייה אחת"
 
-#: libnautilus-private/nautilus-file.c:3876
+#: libnautilus-private/nautilus-file.c:3916
 msgid "1 file"
 msgstr "קובץ אחד"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3919
 #, c-format
 msgid "%u items"
 msgstr "%u פריטים"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3919
 #, c-format
 msgid "%u folders"
 msgstr "%u תיקיות"
 
-#: libnautilus-private/nautilus-file.c:3880
+#: libnautilus-private/nautilus-file.c:3920
 #, c-format
 msgid "%u files"
 msgstr "%u קבצים"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4187
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4227
+#: libnautilus-private/nautilus-file.c:4243
 msgid "? items"
 msgstr "? פריטים"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4193
+#: libnautilus-private/nautilus-file.c:4233
 msgid "? bytes"
 msgstr "? בתים"
 
-#: libnautilus-private/nautilus-file.c:4208
+#: libnautilus-private/nautilus-file.c:4248
 msgid "unknown type"
 msgstr "סוג לא ידוע"
 
-#: libnautilus-private/nautilus-file.c:4211
+#: libnautilus-private/nautilus-file.c:4251
 msgid "unknown MIME type"
 msgstr "סוג MIME לא ידוע"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4217
+#: libnautilus-private/nautilus-file.c:4257
 msgid "unknown"
 msgstr "לא ידוע"
 
-#: libnautilus-private/nautilus-file.c:4249
+#: libnautilus-private/nautilus-file.c:4289
 msgid "program"
 msgstr "תוכנית"
 
-#: libnautilus-private/nautilus-file.c:4261
+#: libnautilus-private/nautilus-file.c:4301
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2475,7 +2424,7 @@ msgstr ""
 "לא הצלחתי למצוא הגדרה אפילו עבור \"x-directory/normal\". זה ככל הנראה אומר "
 "שהקובץ gnome-vfs.keys נמצא במקום הלא נכון או לא נמצא בכלל מסיבה אחרת."
 
-#: libnautilus-private/nautilus-file.c:4265
+#: libnautilus-private/nautilus-file.c:4305
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2484,15 +2433,15 @@ msgstr ""
 "לא נמצא תיאור לטיפוס ה MIME \"%s\" (הקובץ הוא \"%s\"), אנא הודע לרשימת "
 "הדיוור של gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4279
+#: libnautilus-private/nautilus-file.c:4319
 msgid "link"
 msgstr "קישור"
 
-#: libnautilus-private/nautilus-file.c:4299
+#: libnautilus-private/nautilus-file.c:4339
 msgid "link (broken)"
 msgstr "קישור (שבור)"
 
-#: libnautilus-private/nautilus-file.c:5366
+#: libnautilus-private/nautilus-file.c:5414
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -2511,43 +2460,43 @@ msgid "_Never"
 msgstr "_לעולם לא"
 
 #: libnautilus-private/nautilus-global-preferences.c:107
-#: src/nautilus-file-management-properties.glade.h:13
+#: src/nautilus-file-management-properties.glade.h:14
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
 #: libnautilus-private/nautilus-global-preferences.c:109
-#: src/nautilus-file-management-properties.glade.h:19
+#: src/nautilus-file-management-properties.glade.h:20
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
 #: libnautilus-private/nautilus-global-preferences.c:111
-#: src/nautilus-file-management-properties.glade.h:22
+#: src/nautilus-file-management-properties.glade.h:23
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
 #: libnautilus-private/nautilus-global-preferences.c:113
-#: src/nautilus-file-management-properties.glade.h:7
+#: src/nautilus-file-management-properties.glade.h:8
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: libnautilus-private/nautilus-global-preferences.c:115
-#: src/nautilus-file-management-properties.glade.h:9
+#: src/nautilus-file-management-properties.glade.h:10
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: libnautilus-private/nautilus-global-preferences.c:117
-#: src/nautilus-file-management-properties.glade.h:11
+#: src/nautilus-file-management-properties.glade.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: libnautilus-private/nautilus-global-preferences.c:119
-#: src/nautilus-file-management-properties.glade.h:16
+#: src/nautilus-file-management-properties.glade.h:17
 #, no-c-format
 msgid "400%"
 msgstr "400%"
@@ -2561,27 +2510,27 @@ msgid "500 K"
 msgstr "500 K"
 
 #: libnautilus-private/nautilus-global-preferences.c:126
-#: src/nautilus-file-management-properties.glade.h:2
+#: src/nautilus-file-management-properties.glade.h:3
 msgid "1 MB"
 msgstr "1 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:127
-#: src/nautilus-file-management-properties.glade.h:14
+#: src/nautilus-file-management-properties.glade.h:15
 msgid "3 MB"
 msgstr "3 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:128
-#: src/nautilus-file-management-properties.glade.h:17
+#: src/nautilus-file-management-properties.glade.h:18
 msgid "5 MB"
 msgstr "5 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:129
-#: src/nautilus-file-management-properties.glade.h:3
+#: src/nautilus-file-management-properties.glade.h:4
 msgid "10 MB"
 msgstr "10 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:130
-#: src/nautilus-file-management-properties.glade.h:5
+#: src/nautilus-file-management-properties.glade.h:6
 msgid "100 MB"
 msgstr "100 MB"
 
@@ -2602,7 +2551,7 @@ msgid "Display _files when they are clicked"
 msgstr "הצג _קבצים כשלוחצים עליהם"
 
 #: libnautilus-private/nautilus-global-preferences.c:156
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Ask each time"
 msgstr "_שאל בכל פעם"
 
@@ -2615,12 +2564,12 @@ msgid "Search for files by file name and file properties"
 msgstr "חפש קבצים לפי שם הקובץ ומאפייניו"
 
 #: libnautilus-private/nautilus-global-preferences.c:175
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "תצוגת סמל"
 
 #: libnautilus-private/nautilus-global-preferences.c:176
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
 msgstr "תצוגת רשימה"
 
@@ -2630,31 +2579,31 @@ msgstr "ידנית"
 
 #: libnautilus-private/nautilus-global-preferences.c:183
 #: libnautilus-private/nautilus-global-preferences.c:192
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
 msgstr "לפי שם"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Size"
 msgstr "לפי גודל"
 
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
 msgstr "לפי סוג"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "By Modification Date"
 msgstr "לפי תאריך שינוי"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
-#: src/nautilus-file-management-properties.glade.h:38
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
 msgstr "לפי סמלים"
 
@@ -2695,17 +2644,17 @@ msgid "24"
 msgstr "24"
 
 #: libnautilus-private/nautilus-global-preferences.c:214
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "size"
 msgstr "גודל"
 
 #: libnautilus-private/nautilus-global-preferences.c:215
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:84
 msgid "type"
 msgstr "סוג"
 
 #: libnautilus-private/nautilus-global-preferences.c:216
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "date modified"
 msgstr "תאריך שינוי"
 
@@ -2714,137 +2663,137 @@ msgid "date changed"
 msgstr "תאריך שונה"
 
 #: libnautilus-private/nautilus-global-preferences.c:218
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "date accessed"
 msgstr "תאריך גישה"
 
 #: libnautilus-private/nautilus-global-preferences.c:219
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "owner"
 msgstr "בעלים"
 
 #: libnautilus-private/nautilus-global-preferences.c:220
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "group"
 msgstr "קבוצה"
 
 #: libnautilus-private/nautilus-global-preferences.c:221
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "permissions"
 msgstr "הרשאות"
 
 #: libnautilus-private/nautilus-global-preferences.c:222
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "octal permissions"
 msgstr "הרשאות אוקטליות"
 
 #: libnautilus-private/nautilus-global-preferences.c:223
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "MIME type"
 msgstr "סוג MIME"
 
 #: libnautilus-private/nautilus-global-preferences.c:224
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "none"
 msgstr "ללא"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1884
+#: libnautilus-private/nautilus-icon-canvas-item.c:1968
 msgid "file icon"
 msgstr "סמל-קובץ"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2031
+#: libnautilus-private/nautilus-icon-canvas-item.c:2341
 msgid "editable text"
 msgstr "מלל לעריכה"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2032
+#: libnautilus-private/nautilus-icon-canvas-item.c:2342
 msgid "the editable label"
 msgstr "התוית לעריכה"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2039
+#: libnautilus-private/nautilus-icon-canvas-item.c:2349
 msgid "additional text"
 msgstr "מלל נוסף"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2040
+#: libnautilus-private/nautilus-icon-canvas-item.c:2350
 msgid "some more text"
 msgstr "ועוד מלל"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2047
+#: libnautilus-private/nautilus-icon-canvas-item.c:2357
 msgid "highlighted for selection"
 msgstr "סומן לבחירה"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2048
+#: libnautilus-private/nautilus-icon-canvas-item.c:2358
 msgid "whether we are highlighted for a selection"
 msgstr "מה שאנו מסמנים לבחירה"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2055
+#: libnautilus-private/nautilus-icon-canvas-item.c:2365
 msgid "highlighted as keyboard focus"
 msgstr "מודגש כמוקד מקלדת"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2056
+#: libnautilus-private/nautilus-icon-canvas-item.c:2366
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "האם אנו מדגישים כדי לחולל מוקד מקלדת"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2064
+#: libnautilus-private/nautilus-icon-canvas-item.c:2374
 msgid "highlighted for drop"
 msgstr "הדגשה לזריקה"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2065
+#: libnautilus-private/nautilus-icon-canvas-item.c:2375
 msgid "whether we are highlighted for a D&D drop"
 msgstr "האם אנו מדגישים לזריקת גרור וזרוק"
 
-#: libnautilus-private/nautilus-icon-container.c:1711
+#: libnautilus-private/nautilus-icon-container.c:1722
 msgid "The selection rectangle"
 msgstr "ריבוע הבחירה"
 
-#: libnautilus-private/nautilus-icon-container.c:3503
+#: libnautilus-private/nautilus-icon-container.c:3520
 msgid "Frame Text"
 msgstr "מסגרת מלל"
 
-#: libnautilus-private/nautilus-icon-container.c:3504
+#: libnautilus-private/nautilus-icon-container.c:3521
 msgid "Draw a frame around unselected text"
 msgstr "צייר מסגרת סביב מלל שלא נבחר"
 
-#: libnautilus-private/nautilus-icon-container.c:3510
+#: libnautilus-private/nautilus-icon-container.c:3527
 msgid "Selection Box Color"
 msgstr "צבע תיבת הבחירה"
 
-#: libnautilus-private/nautilus-icon-container.c:3511
+#: libnautilus-private/nautilus-icon-container.c:3528
 msgid "Color of the selection box"
 msgstr "צבע תיבת הבחירה"
 
-#: libnautilus-private/nautilus-icon-container.c:3516
+#: libnautilus-private/nautilus-icon-container.c:3533
 msgid "Selection Box Alpha"
 msgstr "אלפא תיבת הבחירה"
 
-#: libnautilus-private/nautilus-icon-container.c:3517
+#: libnautilus-private/nautilus-icon-container.c:3534
 msgid "Opacity of the selection box"
 msgstr "שקיפות תיבת הבחירה"
 
-#: libnautilus-private/nautilus-icon-container.c:3524
+#: libnautilus-private/nautilus-icon-container.c:3541
 msgid "Highlight Alpha"
 msgstr "אלפא ההדגשה"
 
-#: libnautilus-private/nautilus-icon-container.c:3525
+#: libnautilus-private/nautilus-icon-container.c:3542
 msgid "Opacity of the highlight for selected icons"
 msgstr "שקיפות להדגשה של סמלים נבחרים"
 
-#: libnautilus-private/nautilus-icon-container.c:3531
+#: libnautilus-private/nautilus-icon-container.c:3548
 msgid "Light Info Color"
 msgstr "צבע מידע בהיר"
 
-#: libnautilus-private/nautilus-icon-container.c:3532
+#: libnautilus-private/nautilus-icon-container.c:3549
 msgid "Color used for information text against a dark background"
 msgstr "הצבע המשמש למלל המידע מול רקע כהה"
 
-#: libnautilus-private/nautilus-icon-container.c:3537
+#: libnautilus-private/nautilus-icon-container.c:3554
 msgid "Dark Info Color"
 msgstr "צבע מידע כהה"
 
-#: libnautilus-private/nautilus-icon-container.c:3538
+#: libnautilus-private/nautilus-icon-container.c:3555
 msgid "Color used for information text against a light background"
 msgstr "הצבע המשמש למלל המידע מול רקע בהיר"
 
-#: libnautilus-private/nautilus-icon-dnd.c:726
+#: libnautilus-private/nautilus-icon-dnd.c:728
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -2853,7 +2802,7 @@ msgstr ""
 "תיקייה זו משתמשת בסידור אוטמטי. אתה רוצה להחליף לסידור ידני ולהשאיר את הפריט "
 "במקום שזרקת אותו? זה יחליף את המיקום הידני השמור."
 
-#: libnautilus-private/nautilus-icon-dnd.c:730
+#: libnautilus-private/nautilus-icon-dnd.c:732
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -2862,7 +2811,7 @@ msgstr ""
 "תיקייה זו משתמשת בסידור אוטמטי. אתה רוצה להחליף לסידור ידני ולהשאיר את "
 "הפריטים במקום שזרקת אותם? זה יחליף את המיקום הידני השמור."
 
-#: libnautilus-private/nautilus-icon-dnd.c:736
+#: libnautilus-private/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -2870,7 +2819,7 @@ msgstr ""
 "תיקייה זו משתמשת בסידור אוטמטי. אתה רוצה להחליף לסידור ידני ולהשאיר את הפריט "
 "במקום שזרקת אותו?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:739
+#: libnautilus-private/nautilus-icon-dnd.c:741
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -2878,11 +2827,11 @@ msgstr ""
 "תיקייה זו משתמשת בסידור אוטמטי. אתה רוצה להחליף לסידור ידני ולהשאיר את "
 "הפריטים במקום שזרקת אותם?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "Switch to Manual Layout?"
 msgstr "להחליף לסידור ידני?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:745
+#: libnautilus-private/nautilus-icon-dnd.c:747
 msgid "Switch"
 msgstr "החלף"
 
@@ -3565,10 +3514,6 @@ msgstr "כרך ISO 9660"
 msgid "C_lear Text"
 msgstr "_נקה מלל"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Copy the selected text to the clipboard"
-msgstr "העתק את המלל הנבחר ללוח"
-
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
 msgstr "חתוך מלל"
@@ -3597,10 +3542,6 @@ msgstr "בחר _הכל"
 msgid "Select all the text in a text field"
 msgstr "בחר את כל המלל בשדה המלל"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
-msgid "_Copy Text"
-msgstr "ה_עתק מלל"
-
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:70
 msgid "_Paste Text"
 msgstr "ה_דבק מלל"
@@ -3623,7 +3564,7 @@ msgstr "ניהול קבצים"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
-msgstr ""
+msgstr "יצרן למעטפת נאוטילוס ולמנהל הקבצים"
 
 #: src/Nautilus_shell.server.in.h:2
 msgid "Icons"
@@ -3643,7 +3584,7 @@ msgstr "מציג רשימה"
 
 #: src/Nautilus_shell.server.in.h:6
 msgid "Nautilus factory"
-msgstr ""
+msgstr "יצרן נאוטילוס"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
@@ -3681,7 +3622,7 @@ msgstr "מנהל הקבצים של נאוטילוס תצוגת סמלים של �
 
 #: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus metafile factory"
-msgstr ""
+msgstr "יצרן קבצי META של נאוטילוס"
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus shell"
@@ -3717,20 +3658,20 @@ msgstr "הצג כ_סמלים"
 msgid "View as _List"
 msgstr "הצג כ_רשימה"
 
-#: src/file-manager/fm-desktop-icon-view.c:785
+#: src/file-manager/fm-desktop-icon-view.c:778
 msgid "Background"
 msgstr "רקע"
 
-#: src/file-manager/fm-desktop-icon-view.c:962
+#: src/file-manager/fm-desktop-icon-view.c:955
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "שגיאה בהפעלת תוכנית עזר '%s': %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1293
+#: src/file-manager/fm-desktop-icon-view.c:1286
 msgid "E_ject"
 msgstr "הו_צא"
 
-#: src/file-manager/fm-desktop-icon-view.c:1393
+#: src/file-manager/fm-desktop-icon-view.c:1386
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_נתק כרך"
@@ -3743,7 +3684,7 @@ msgstr "_נתק כרך"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1517
+#: src/file-manager/fm-desktop-icon-view.c:1510
 #, c-format
 msgid "%s's Home"
 msgstr "הבית של %s"
@@ -3936,12 +3877,12 @@ msgstr "לא ניתן להשלים את הפעולה המצויינת:  %s"
 msgid "Could not complete specified action."
 msgstr "לא ניתן להשלים את הפעולה המצויינת."
 
-#: src/file-manager/fm-directory-view.c:4042
+#: src/file-manager/fm-directory-view.c:4067
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "הרץ \"%s\" על כל הפריטים שנבחרו"
 
-#: src/file-manager/fm-directory-view.c:4252
+#: src/file-manager/fm-directory-view.c:4277
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -3950,11 +3891,11 @@ msgstr ""
 "כל קבצי ההרצה בתיקייה זו יופיעו בתפריט התסריטים. בחירת תסריט מהתפריט תריץ את "
 "התסריט עם כל קובץ נבחר כקלט."
 
-#: src/file-manager/fm-directory-view.c:4255
+#: src/file-manager/fm-directory-view.c:4280
 msgid "About Scripts"
 msgstr "אודות תסריטים"
 
-#: src/file-manager/fm-directory-view.c:4256
+#: src/file-manager/fm-directory-view.c:4281
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3994,110 +3935,110 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: מיקום וגודל של החלון הנוכחי"
 
-#: src/file-manager/fm-directory-view.c:4369
+#: src/file-manager/fm-directory-view.c:4394
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" יוזז אם תבחר בפקודת הדבק קבצים"
 
-#: src/file-manager/fm-directory-view.c:4373
+#: src/file-manager/fm-directory-view.c:4398
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" יועתק אם תבחר בפקודת הדבק קבצים"
 
-#: src/file-manager/fm-directory-view.c:4380
+#: src/file-manager/fm-directory-view.c:4405
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr "%d הפריטים הנבחרים יוזזו אם תבחר בפקודת הדבק קבצים"
 
-#: src/file-manager/fm-directory-view.c:4384
+#: src/file-manager/fm-directory-view.c:4409
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr "%d הפריטים הנבחרים יועתקו אם תבחר בפקודת הדבק קבצים"
 
-#: src/file-manager/fm-directory-view.c:4469
+#: src/file-manager/fm-directory-view.c:4494
 msgid "There is nothing on the clipboard to paste."
 msgstr "אין שום דבר בלוח כדי להדביק."
 
-#: src/file-manager/fm-directory-view.c:4648
+#: src/file-manager/fm-directory-view.c:4673
 msgid "Open _in This Window"
 msgstr "פתח בחלון ה_זה"
 
-#: src/file-manager/fm-directory-view.c:4651
+#: src/file-manager/fm-directory-view.c:4676
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open _in New Window"
 msgstr "פתח בחלון _חדש"
 
-#: src/file-manager/fm-directory-view.c:4653
+#: src/file-manager/fm-directory-view.c:4678
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "פתח _ב %d חלונות"
 
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4696
 msgid "_Delete from Trash"
 msgstr "_מחק מהאשפה"
 
-#: src/file-manager/fm-directory-view.c:4673
+#: src/file-manager/fm-directory-view.c:4698
 msgid "Delete all selected items permanently"
 msgstr "מחק את כל הפריטים הנבחרים לצמיתות"
 
-#: src/file-manager/fm-directory-view.c:4676
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4701
+#: src/file-manager/fm-directory-view.c:4976
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Mo_ve to Trash"
 msgstr "ה_זז לאשפה"
 
-#: src/file-manager/fm-directory-view.c:4678
+#: src/file-manager/fm-directory-view.c:4703
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Move each selected item to the Trash"
 msgstr "הזז כל אחד מהפריטים הנבחרים לאשפה"
 
-#: src/file-manager/fm-directory-view.c:4702
+#: src/file-manager/fm-directory-view.c:4727
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "_Delete"
 msgstr "_מחק"
 
-#: src/file-manager/fm-directory-view.c:4722
+#: src/file-manager/fm-directory-view.c:4747
 msgid "Ma_ke Links"
 msgstr "_צור קישורים"
 
-#: src/file-manager/fm-directory-view.c:4723
+#: src/file-manager/fm-directory-view.c:4748
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "_צור קישור"
 
-#: src/file-manager/fm-directory-view.c:4736
+#: src/file-manager/fm-directory-view.c:4761
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "_רוקן אשפה"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4774
 msgid "Cu_t File"
 msgstr "_גזור קובץ"
 
-#: src/file-manager/fm-directory-view.c:4750
+#: src/file-manager/fm-directory-view.c:4775
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_גזור קבצים"
 
-#: src/file-manager/fm-directory-view.c:4759
+#: src/file-manager/fm-directory-view.c:4784
 msgid "_Copy File"
 msgstr "ה_עתק קובץ"
 
-#: src/file-manager/fm-directory-view.c:4760
+#: src/file-manager/fm-directory-view.c:4785
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "_Copy Files"
 msgstr "ה_עתק קבצים"
 
-#: src/file-manager/fm-directory-view.c:4942
+#: src/file-manager/fm-directory-view.c:4967
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
 msgstr ""
 "לא ניתן להשתמש בקישור זה, כיוון שאין לו מטרה. האם ברצונך לשים קישור זה באשפה?"
 
-#: src/file-manager/fm-directory-view.c:4945
+#: src/file-manager/fm-directory-view.c:4970
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4106,11 +4047,11 @@ msgstr ""
 "לא ניתן להשתמש בקישור זה, כיוון שמטרתו \"%s\" אינה קיימת. האם ברצונך לשים "
 "קישור זה באשפה?"
 
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4976
 msgid "Broken Link"
 msgstr "קישור שבור"
 
-#: src/file-manager/fm-directory-view.c:5008
+#: src/file-manager/fm-directory-view.c:5033
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4118,28 +4059,28 @@ msgid ""
 msgstr ""
 "\"%s\" הוא קובץ מלל הניתן להרצה. האם ברצונך להריץ אותו, או להציג את תוכנו?"
 
-#: src/file-manager/fm-directory-view.c:5014
+#: src/file-manager/fm-directory-view.c:5039
 msgid "Run or Display?"
 msgstr "הרץ או הצג?"
 
-#: src/file-manager/fm-directory-view.c:5015
+#: src/file-manager/fm-directory-view.c:5040
 msgid "_Display"
 msgstr "_הצג"
 
-#: src/file-manager/fm-directory-view.c:5016
+#: src/file-manager/fm-directory-view.c:5041
 msgid "Run in _Terminal"
 msgstr "הרץ ב_מסוף"
 
-#: src/file-manager/fm-directory-view.c:5019
+#: src/file-manager/fm-directory-view.c:5044
 msgid "_Run"
 msgstr "_הרץ"
 
-#: src/file-manager/fm-directory-view.c:5201
+#: src/file-manager/fm-directory-view.c:5226
 #, c-format
 msgid "Opening \"%s\""
 msgstr "פותח \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5207
+#: src/file-manager/fm-directory-view.c:5232
 msgid "Cancel Open?"
 msgstr "בטל פתיחה?"
 
@@ -4264,92 +4205,92 @@ msgstr "משנה שם מ \"%s\" ל \"%s\"."
 msgid "Cancel Rename?"
 msgstr "בטל שינוי שם?"
 
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Name"
 msgstr "לפי _שם"
 
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:155
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by name in rows"
 msgstr "משאיר סמלים ממויינים לפי שם בשורות"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Size"
 msgstr "לפי _גודל"
 
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by size in rows"
 msgstr "משאיר סמלים ממויינים לפי גודל בשורות"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Type"
 msgstr "לפי _סוג"
 
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by type in rows"
 msgstr "משאיר סמלים ממויינים לפי סוג בשורות"
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:175
 msgid "by Modification _Date"
 msgstr "לפי _תאריך שינוי"
 
-#: src/file-manager/fm-icon-view.c:173
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by modification date in rows"
 msgstr "משאיר סמלים ממויינים לפי תאריך שינוי בשורות"
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:182
 msgid "by _Emblems"
 msgstr "לפי _סמלים"
 
-#: src/file-manager/fm-icon-view.c:180
+#: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons sorted by emblems in rows"
 msgstr "משאיר סמלים ממויינים לפי סמלים בשורות"
 
-#: src/file-manager/fm-icon-view.c:1439
+#: src/file-manager/fm-icon-view.c:1456
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "החזר את ה_גדלים הרגילים של הסמלים"
 
-#: src/file-manager/fm-icon-view.c:1440
+#: src/file-manager/fm-icon-view.c:1457
 msgid "Restore Icon's Original Si_ze"
 msgstr "החזר את ה_גודל הרגיל של הסמל"
 
-#: src/file-manager/fm-icon-view.c:1775
+#: src/file-manager/fm-icon-view.c:1792
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "מצביע ל \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2303
+#: src/file-manager/fm-icon-view.c:2320
 msgid "Drag and drop is only supported to local file systems."
 msgstr "גרור וזרוק תומך רק במערכות קבצים מקומיות."
 
-#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2322
+#: src/file-manager/fm-icon-view.c:2321 src/file-manager/fm-icon-view.c:2340
 msgid "Drag and Drop error"
 msgstr "שגיאת גרור וזרוק"
 
-#: src/file-manager/fm-icon-view.c:2321
+#: src/file-manager/fm-icon-view.c:2339
 msgid "An invalid drag type was used."
 msgstr "שימוש בסוג גרירה לא תקני."
 
-#: src/file-manager/fm-list-view.c:408
+#: src/file-manager/fm-list-view.c:412
 msgid "File name"
 msgstr "שם קובץ"
 
-#: src/file-manager/fm-list-view.c:432
+#: src/file-manager/fm-list-view.c:436
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "גודל"
 
-#: src/file-manager/fm-list-view.c:443
+#: src/file-manager/fm-list-view.c:447
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "סוג"
 
-#: src/file-manager/fm-list-view.c:454
+#: src/file-manager/fm-list-view.c:458
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "תאריך שינוי"
@@ -4571,8 +4512,8 @@ msgstr "לא ניתן לזהות את ההרשאות של \"%s\"."
 
 #: src/file-manager/fm-properties-window.c:2357
 #: src/nautilus-bookmarks-window.c:138
-#: src/nautilus-file-management-properties.c:237
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:714
+#: src/nautilus-file-management-properties.c:238
+#: src/nautilus-property-browser.c:1444 src/nautilus-window-menus.c:714
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5320,75 +5261,79 @@ msgstr "מצא אותם!"
 msgid "    "
 msgstr "    "
 
-#: src/nautilus-file-management-properties.glade.h:4
+#: src/nautilus-file-management-properties.glade.h:2
+msgid "1 GB"
+msgstr "1 GB"
+
+#: src/nautilus-file-management-properties.glade.h:5
 msgid "100 KB"
 msgstr "100 KB"
 
-#: src/nautilus-file-management-properties.glade.h:20
+#: src/nautilus-file-management-properties.glade.h:21
 msgid "500 KB"
 msgstr "500 KB"
 
-#: src/nautilus-file-management-properties.glade.h:23
+#: src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Behaviour</span>"
 msgstr "<span weight=\"bold\">התנהגות</span>"
 
-#: src/nautilus-file-management-properties.glade.h:24
+#: src/nautilus-file-management-properties.glade.h:25
 msgid "<span weight=\"bold\">Default View</span>"
 msgstr "<span weight=\"bold\">תצוגה ברירת מחדל</span>"
 
-#: src/nautilus-file-management-properties.glade.h:25
+#: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Executable Text Files</span>"
 msgstr "<span weight=\"bold\">קבצי מלל הניתנים להפעלה</span>"
 
-#: src/nautilus-file-management-properties.glade.h:26
+#: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Folders</span>"
 msgstr "<span weight=\"bold\">תיקיות</span>"
 
-#: src/nautilus-file-management-properties.glade.h:27
+#: src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Icon Captions</span>"
 msgstr "<span weight=\"bold\">כותרות הסמלים</span>"
 
-#: src/nautilus-file-management-properties.glade.h:28
+#: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">ברירות המחדל של תצוגת הסמלים</span>"
-
-#: src/nautilus-file-management-properties.glade.h:29
-msgid "<span weight=\"bold\">Image Files</span>"
-msgstr "<span weight=\"bold\">קבצי תמונה</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
 msgstr "<span weight=\"bold\">ברירות המחדל של תצוגת רשימה</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
+msgid "<span weight=\"bold\">Other Previewable Files</span>"
+msgstr "<span weight=\"bold\">קבצים אחרים הניתנים להצגה מקדימה</span>"
+
+#: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Sound Files</span>"
 msgstr "<span weight=\"bold\">קבצי קול</span>"
 
-#: src/nautilus-file-management-properties.glade.h:32
+#: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Text Files</span>"
 msgstr "<span weight=\"bold\">קבצי מלל</span>"
 
-#: src/nautilus-file-management-properties.glade.h:33
+#: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Trash</span>"
 msgstr "<span weight=\"bold\">אשפה</span>"
 
-#: src/nautilus-file-management-properties.glade.h:34
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
 msgstr "<span weight=\"bold\">ברירות המחדל של תצוגת עץ</span>"
 
-#: src/nautilus-file-management-properties.glade.h:35
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Always"
 msgstr "תמיד"
 
-#: src/nautilus-file-management-properties.glade.h:36
+#: src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "שאל לפני _ריקון האשפה או מחיקת קבצים"
 
-#: src/nautilus-file-management-properties.glade.h:37
+#: src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
 msgstr "התנהגות"
 
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5396,107 +5341,107 @@ msgstr ""
 "בחר את סדר המידע שיופיע מתחת לשמות הסמלים.\n"
 "יותר מידע יופיע ככל שתתקרב יותר."
 
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:45
 msgid "Count _number of items:"
 msgstr "מנה _מספר פריטים:"
 
-#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
 msgstr "רמת קירוב ברירת מחדל:"
 
-#: src/nautilus-file-management-properties.glade.h:46
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "File Management Preferences"
 msgstr "העדפות ניהול הקבצים"
 
-#: src/nautilus-file-management-properties.glade.h:47
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "_כלול פקודת מחיקה העוקפת את האשפה"
 
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon Captions"
 msgstr "תויות סמל"
 
-#: src/nautilus-file-management-properties.glade.h:51
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "Local Files Only"
 msgstr "קבצים מקומיים בלבד"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "Never"
 msgstr "לעולם לא"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Preview _sound files:"
 msgstr "תצוגה מקדימה של קבצי _קול:"
 
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _only folders"
 msgstr "הצג תיקיות _בלבד"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Show _thumbnails:"
 msgstr "הצג _תצוגות מקדימות:"
 
-#: src/nautilus-file-management-properties.glade.h:58
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Show hidden and _backup files"
 msgstr "הצג קבצים נוסתרים וקבצי _גיבוי"
 
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Show te_xt in icons:"
 msgstr "הצג מ_לל בסמלים:"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Sort _folders before files"
 msgstr "סדר _תיקיות לפני קבצים"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Sort in _reverse"
 msgstr "סדר _הפוך"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "Use _manual layout"
 msgstr "השתמש בסידור _ידני"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "View _new folders using:"
 msgstr "הצג תיקיות _חדשות באמצעות:"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "Views"
 msgstr "תצוגות"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "_Arrange items:"
 msgstr "_סדר פריטים:"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Default zoom level:"
 msgstr "רמת קירוב _ברירת מחדל:"
 
-#: src/nautilus-file-management-properties.glade.h:68
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Double click to activate items"
 msgstr "_לחיצה כפולה להפעלת פריטים"
 
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Only for files smaller than:"
 msgstr "_רק לקבצים הקטנים מ:"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:71
 msgid "_Open activated item in a new window"
 msgstr "_פתח פריט פעיל בחלון חדש"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:72
 msgid "_Run executable text files when they are clicked"
 msgstr "ה_פעל קבצי מלל כשלוחצים עליהם"
 
-#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_Single click to activate items"
 msgstr "לחיצה _בודדת להפעלת פריטים"
 
-#: src/nautilus-file-management-properties.glade.h:73
+#: src/nautilus-file-management-properties.glade.h:74
 msgid "_Use compact layout"
 msgstr "_השתמש בסידור מכווץ"
 
-#: src/nautilus-file-management-properties.glade.h:74
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "_View executable text files when they are clicked"
 msgstr "ה_צג קבצי מלל הניתנים להפעלה כאשר לוחצים עליהם"
 
@@ -5571,28 +5516,28 @@ msgid "Restart Nautilus."
 msgstr "הפעל מחדש את נאוטילוס."
 
 #. Set initial window title
-#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:232
 #: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "נאוטילוס"
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:201
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "נאוטילוס: לא ניתן להשתמש בבדיקה עם כתובת.\n"
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:205
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "נאוטילוס: לא ניתן להשתמש בבדיקה עם יישומים אחרים.\n"
 
-#: src/nautilus-main.c:204
+#: src/nautilus-main.c:209
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "נאוטילוס: לא ניתן להשתמש ביציאה עם כתובת.\n"
 
-#: src/nautilus-main.c:208
+#: src/nautilus-main.c:213
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "נאוטילוס: לא ניתן להשתמש בהתחלה מחדש עם כתובת.\n"
 
-#: src/nautilus-main.c:212
+#: src/nautilus-main.c:217
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "נאוטילוס: לא ניתן להשתמש בגיאומטריה ביותר מכתובת אחת.\n"
 
@@ -5621,152 +5566,152 @@ msgstr "_הסר..."
 msgid "_Add new..."
 msgstr "_הוסף חדש..."
 
-#: src/nautilus-property-browser.c:907
+#: src/nautilus-property-browser.c:913
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "מצטער, אך הדוגמה %s לא יכולה להמחק."
 
-#: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
+#: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
 msgstr "לא יכול למחוק דוגמה"
 
-#: src/nautilus-property-browser.c:936
+#: src/nautilus-property-browser.c:942
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "מצטער, אך הסמל %s לא יכול להמחק."
 
-#: src/nautilus-property-browser.c:975
+#: src/nautilus-property-browser.c:981
 msgid "Create a New Emblem:"
 msgstr "צור סמל חדש:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:988
+#: src/nautilus-property-browser.c:994
 msgid "_Keyword:"
 msgstr "_מילת מפתח:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1006
+#: src/nautilus-property-browser.c:1012
 msgid "_Image:"
 msgstr "_תמונה:"
 
-#: src/nautilus-property-browser.c:1010
+#: src/nautilus-property-browser.c:1016
 msgid "Select an image file for the new emblem:"
 msgstr "בחר קובץ תמונה לסמל החדש:"
 
-#: src/nautilus-property-browser.c:1034
+#: src/nautilus-property-browser.c:1040
 msgid "Create a New Color:"
 msgstr "צור צבע חדש:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1048
+#: src/nautilus-property-browser.c:1054
 msgid "Color _name:"
 msgstr "_שם הצבע:"
 
-#: src/nautilus-property-browser.c:1064
+#: src/nautilus-property-browser.c:1070
 msgid "Color _value:"
 msgstr "_ערך הצבע:"
 
-#: src/nautilus-property-browser.c:1095
+#: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "מצטער, אך \"%s\" אינו שם תקני."
 
-#: src/nautilus-property-browser.c:1097
+#: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "מצטער, אך לא סיפקת שם תקני."
 
-#: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
+#: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
 msgstr "לא יכול להתקין דוגמה"
 
-#: src/nautilus-property-browser.c:1110
+#: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
 msgstr "מצטער, אך אינך יכול להחליף את תמונת האיפוס."
 
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1319
+#: src/nautilus-property-browser.c:1335
 msgid "Not an Image"
 msgstr "לא תמונה"
 
-#: src/nautilus-property-browser.c:1141
+#: src/nautilus-property-browser.c:1147
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "מצטער, אך הדוגמה %s לא יכולה להיות מותקנת."
 
-#: src/nautilus-property-browser.c:1161
+#: src/nautilus-property-browser.c:1167
 msgid "Select an image file to add as a pattern"
 msgstr "בחר תמונה להוספה כדוגמה"
 
-#: src/nautilus-property-browser.c:1222
+#: src/nautilus-property-browser.c:1228
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "מצטער, אך אתה חייב לציין שם לא ריק לצבע החדש."
 
-#: src/nautilus-property-browser.c:1223
+#: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
 msgstr "לא הצליח להתקין צבע"
 
-#: src/nautilus-property-browser.c:1275
+#: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
 msgstr "בחר צבע להוספה"
 
-#: src/nautilus-property-browser.c:1312 src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "מצטער, אך '%s' הוא אינו קובץ תמונה שימושי."
 
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2037
 msgid "Select A Category:"
 msgstr "בחר קטגוריה:"
 
-#: src/nautilus-property-browser.c:2044
+#: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
 msgstr "_בטל הסרה"
 
-#: src/nautilus-property-browser.c:2050
+#: src/nautilus-property-browser.c:2052
 msgid "_Add a New Pattern..."
 msgstr "_הוסף דוגמה חדשה..."
 
-#: src/nautilus-property-browser.c:2053
+#: src/nautilus-property-browser.c:2055
 msgid "_Add a New Color..."
 msgstr "_הוסף צבע חדש..."
 
-#: src/nautilus-property-browser.c:2056
+#: src/nautilus-property-browser.c:2058
 msgid "_Add a New Emblem..."
 msgstr "_הוסף סמל חדש..."
 
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2081
 msgid "Click on a pattern to remove it"
 msgstr "לחץ על דוגמה כדי להסירה"
 
-#: src/nautilus-property-browser.c:2082
+#: src/nautilus-property-browser.c:2084
 msgid "Click on a color to remove it"
 msgstr "לחץ על צבע כדי להסירו"
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2087
 msgid "Click on an emblem to remove it"
 msgstr "לחץ על סמל כדי להסירו"
 
-#: src/nautilus-property-browser.c:2094
+#: src/nautilus-property-browser.c:2096
 msgid "Patterns:"
 msgstr "דוגמאות:"
 
-#: src/nautilus-property-browser.c:2097
+#: src/nautilus-property-browser.c:2099
 msgid "Colors:"
 msgstr "צבעים:"
 
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2102
 msgid "Emblems:"
 msgstr "סמלים:"
 
-#: src/nautilus-property-browser.c:2120
+#: src/nautilus-property-browser.c:2122
 msgid "_Remove a Pattern..."
 msgstr "_הסר דוגמה..."
 
-#: src/nautilus-property-browser.c:2123
+#: src/nautilus-property-browser.c:2125
 msgid "_Remove a Color..."
 msgstr "_הסר צבע..."
 
-#: src/nautilus-property-browser.c:2126
+#: src/nautilus-property-browser.c:2128
 msgid "_Remove an Emblem..."
 msgstr "_הסר סמל..."
 
@@ -5925,7 +5870,7 @@ msgstr "[File owner] הוא [root]"
 msgid "[File owner] is not [root]"
 msgstr "[File owner] הוא לא [root]"
 
-#: src/nautilus-server-connect.c:129
+#: src/nautilus-server-connect.c:130
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
@@ -5933,7 +5878,7 @@ msgstr ""
 "לא ניתן להפעיל את נאוטילוס\n"
 "אנא ודא כי נאוטילוס בנתיב שלך ומותקן כראוי"
 
-#: src/nautilus-server-connect.c:392
+#: src/nautilus-server-connect.c:393
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
@@ -5943,7 +5888,7 @@ msgstr ""
 "לא ניתן להתחבר לכתובת %s\n"
 "אנא ודא כי הכתובת נכונה ולחילופין, כתוב את כתובת זו ישירות למנהל הקבצים"
 
-#: src/nautilus-server-connect.c:457
+#: src/nautilus-server-connect.c:458
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
@@ -6126,6 +6071,10 @@ msgstr "_סרגל מצב"
 msgid "Start Profiling"
 msgstr ""
 
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Stop"
+msgstr "עצור"
+
 #: src/nautilus-shell-ui.xml.h:45
 msgid "Stop Profiling"
 msgstr ""
@@ -6144,7 +6093,7 @@ msgstr "מעלה"
 
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
-#: src/nautilus-window.c:1465
+#: src/nautilus-window.c:1489
 msgid "View as..."
 msgstr "הצג כ..."
 
@@ -6293,28 +6242,28 @@ msgstr "הצג %s"
 msgid "Find:"
 msgstr "מצא:"
 
-#: src/nautilus-view-frame.c:549
+#: src/nautilus-view-frame.c:557
 msgid "a title"
 msgstr "כותרת"
 
-#: src/nautilus-view-frame.c:558
+#: src/nautilus-view-frame.c:566
 msgid "the browse history"
 msgstr "היסטוריית הדפדפן"
 
-#: src/nautilus-view-frame.c:567
+#: src/nautilus-view-frame.c:575
 msgid "the current selection"
 msgstr "הבחירה הנוכחית"
 
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
-#: src/nautilus-window-manage-views.c:191
+#: src/nautilus-window-manage-views.c:192
 msgid "Desktop"
 msgstr "שולחן עבודה"
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:850
 msgid "View Failed"
 msgstr "תצוגה נכשלה"
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:861
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -6323,20 +6272,20 @@ msgstr ""
 "תצוגת ה%s נתקלה בשגיאה ולא יכולה להמשיך. אתה יכול לבחור תצוגה אחרת או ללכת "
 "למיקום אחר."
 
-#: src/nautilus-window-manage-views.c:871
+#: src/nautilus-window-manage-views.c:872
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "תצוגת ה%s נתקלה בשגיאה בזמן הטעינה."
 
-#: src/nautilus-window-manage-views.c:1028
+#: src/nautilus-window-manage-views.c:1029
 msgid "Content View"
 msgstr "תצוגה נוכחית"
 
-#: src/nautilus-window-manage-views.c:1029
+#: src/nautilus-window-manage-views.c:1030
 msgid "View of the current file or folder"
 msgstr "תצוגה של הקובץ הנוכחי או התיקייה"
 
-#: src/nautilus-window-manage-views.c:1052
+#: src/nautilus-window-manage-views.c:1053
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -6344,7 +6293,7 @@ msgstr ""
 "אחד מלוחות הצד שלך נתקל בשגיאה ולא יכול להמשיך. לצערי, לא יכלתי להגיד איזה "
 "מהם."
 
-#: src/nautilus-window-manage-views.c:1056
+#: src/nautilus-window-manage-views.c:1057
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -6353,22 +6302,22 @@ msgstr ""
 "לוח הצד %s נתקל בשגיאה ולא יכול להמשיך. אם זה ממשיך לקרות, ייתכן ותרצה לכבות "
 "את הלוח הזה."
 
-#: src/nautilus-window-manage-views.c:1061
+#: src/nautilus-window-manage-views.c:1062
 msgid "Sidebar Panel Failed"
 msgstr "לוח צד נכשל"
 
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "לא ניתן למצוא את \"%s\". אנא בדוק את האיות ונסה שנית."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1322
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" איננו מקום תיקני. אנא בדוק את האיות ונסה שוב."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1336
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -6376,29 +6325,29 @@ msgid ""
 msgstr ""
 "לא יכול להציג את \"%s\", כיוון שנאוטילוס לא הצליח לזהות איזה סוג קובץ זה."
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1344
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "לנאוטילוס אין מציד מותקן המסוגל להציג את \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1344
+#: src/nautilus-window-manage-views.c:1356
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "לא יכול להציג את \"%s\", כיוון שנאוטילוס לא יכולה להתמודד עם מיקומים %s:"
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "לא יכול להציג את \"%s\", כיוון שהניסיון להתחבר נכשל."
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1367
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "לא יכול להציג את \"%s\", כיוון שהגישה נדחתה."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1378
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -6407,7 +6356,7 @@ msgstr ""
 "לא יכול להציג את \"%s\", כיוון שהמארח \"%s\" לא נמצא. בדוק שהאיות נכון "
 "ושהגדרות המתווך נכונות."
 
-#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -6415,7 +6364,7 @@ msgid ""
 msgstr ""
 "לא יכול להציג את \"%s\", כיוון ששם המארח היה ריק. בדוק שהגדרות המתווך נכונות."
 
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1393
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6426,7 +6375,7 @@ msgstr ""
 "של SMB.\n"
 "בדוק ששרת SMB מופעל ברשת המקומית."
 
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1405
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6437,24 +6386,24 @@ msgstr ""
 "וודא שהפעלת את שירות החיפוש מדוזה, ואם אין לך אינדקס, שבונה האינדקסים של "
 "מדוזה מופעל."
 
-#: src/nautilus-window-manage-views.c:1397
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "חיפוש אינו זמין"
 
-#: src/nautilus-window-manage-views.c:1402
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "נאוטילוס לא יכול להציג את \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1419
 msgid "Can't Display Location"
 msgstr "לא ניתן להציג מיקום"
 
-#: src/nautilus-window-manage-views.c:1643
+#: src/nautilus-window-manage-views.c:1673
 msgid "Side Pane"
 msgstr "חלונית צד"
 
-#: src/nautilus-window-manage-views.c:1645
+#: src/nautilus-window-manage-views.c:1675
 msgid "Contains a side pane view"
 msgstr "מכיל תצוגת חלונית צד"
 
@@ -6531,36 +6480,36 @@ msgstr "לך למיקום לא קיים"
 msgid "Go to the location specified by this bookmark"
 msgstr "לך למיקום המצויין על-ידי הסימנייה"
 
-#: src/nautilus-window-toolbars.c:422
+#: src/nautilus-window-toolbars.c:367
 msgid "Go back a few pages"
 msgstr "לך אחורה מספר עמודים"
 
-#: src/nautilus-window-toolbars.c:425
+#: src/nautilus-window-toolbars.c:370
 msgid "Go forward a number of pages"
 msgstr "לך קדימה מספר עמודים"
 
-#: src/nautilus-window.c:661
+#: src/nautilus-window.c:668
 msgid "Information"
 msgstr "מידע"
 
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1195
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "הצג את מיקום זה עם \"%s\""
 
-#: src/nautilus-window.c:2198
+#: src/nautilus-window.c:2237
 msgid "Application ID"
 msgstr "זיהוי יישום"
 
-#: src/nautilus-window.c:2199
+#: src/nautilus-window.c:2238
 msgid "The application ID of the window."
 msgstr "זיהוי היישום של חלון זה."
 
-#: src/nautilus-window.c:2205
+#: src/nautilus-window.c:2244
 msgid "Application"
 msgstr "יישום"
 
-#: src/nautilus-window.c:2206
+#: src/nautilus-window.c:2245
 msgid "The NautilusApplication associated with this window."
 msgstr "יישום הנאוטילוס משוייך לחלון זה."
 
@@ -6596,6 +6545,54 @@ msgstr "שרתי רשת"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "ראה את שרתי הרשת שלך במנהל הקבצים של נאוטילוס"
 
+#~ msgid "Copy Text"
+#~ msgstr "העתק מלל"
+
+#~ msgid "Copy selected text to the clipboard"
+#~ msgstr "העתק את המלל הנבחר ללוח"
+
+#~ msgid "F_onts"
+#~ msgstr "_גופנים"
+
+#~ msgid "Lucida"
+#~ msgstr "Lucida"
+
+#~ msgid "Services"
+#~ msgstr "שירותים"
+
+#~ msgid "Use the Courier Font"
+#~ msgstr "השתמש בגופן Courier"
+
+#~ msgid "Use the Fixed Font"
+#~ msgstr "השתמש בגופן Fixed"
+
+#~ msgid "Use the GTK System Font"
+#~ msgstr "השתמש במערכת הגופנים של GTK"
+
+#~ msgid "Use the Helvetica Font"
+#~ msgstr "השתמש בגופן Helvetica"
+
+#~ msgid "Use the Lucida Font"
+#~ msgstr "השתמש בגופן Lucida"
+
+#~ msgid "Use the Times Font"
+#~ msgstr "השתמש בגופן Times"
+
+#~ msgid "_Courier"
+#~ msgstr "_Courier"
+
+#~ msgid "_Fixed"
+#~ msgstr "_Fixed"
+
+#~ msgid "_GTK System Font"
+#~ msgstr "מערכת הגופנים של _GTK"
+
+#~ msgid "_Helvetica"
+#~ msgstr "_Helvetica"
+
+#~ msgid "_Times"
+#~ msgstr "_Times"
+
 #~ msgid "E_xecute scripts when they are clicked"
 #~ msgstr "ה_פעל תסריטים כשלוחצים עליהם"
 
@@ -6610,9 +6607,6 @@ msgstr "ראה את שרתי הרשת שלך במנהל הקבצים של נאו
 
 #~ msgid "Clear Text"
 #~ msgstr "נקה מלל"
-
-#~ msgid "Copy Text"
-#~ msgstr "העתק מלל"
 
 #~ msgid "Paste Text"
 #~ msgstr "הדבק מלל"

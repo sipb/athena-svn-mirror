@@ -1,16 +1,16 @@
 # Nautilus in Vietnamese.
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # Hoang Ngoc Tu <hntu@gmx.de>, 2001-2002.
 # Joern v. Kattchee <kattchee@gmx.net>, 2001-2002.
 # Nguyen Thai Ngoc Duy <pclouds@gmx.net>, 2002.
-# Trinh Minh Thanh <tmthanh@yahoo.com>, 2002.
+# Trinh Minh Thanh <tmthanh@yahoo.com>, 2002-2003.
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus v- 2.x.x\n"
-"POT-Creation-Date: 2003-01-27 21:43-0500\n"
-"PO-Revision-Date: 2003-01-19 21:04+0700\n"
-"Last-Translator: Trinh Minh Thanh <tmthanh@linuxmail.org>\n"
-"Language-Team: Gnome-Vi Team <Gnomevi-list@lists.sourceforge.net>\n"
+"Project-Id-Version: Nautilus v- 2.1.x\n"
+"POT-Creation-Date: 2003-03-10 19:46+0100\n"
+"PO-Revision-Date: 2003-01-18 12:55+0700\n"
+"Last-Translator: Trinh Minh Thanh <tmthanh@yahoo.com>\n"
+"Language-Team: Gnome-Vi <Gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -43,15 +43,15 @@ msgstr "bonobo_ui_init() thất bại."
 #: src/file-manager/fm-properties-window.c:1761
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
-msgstr "Biểu tượng"
+msgstr "Hình Tượng"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
 msgid "Nautilus Emblem side pane"
-msgstr "Ô bên cho Biểu tượng Nautilus"
+msgstr "Ô bên lề chứa hình tượng của Nautilus"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
 msgid "Nautilus Emblem view"
-msgstr "Khung xem biểu tượng của Nautilus"
+msgstr "Khung xem hình tượng của Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -59,12 +59,12 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
-"Không thể bỏ biểu tượng tên '%s'. Có lẽ là đây là biểu tượng vĩnh viễn, và "
-"không được thêm vào bởi bạn."
+"Không thể gỡ bỏ hình tượng có tên '%s'.  Có thể vì đây là hình tượng vĩnh "
+"viễn và không phải do bạn tự thêm vào."
 
 #: components/emblem/nautilus-emblem-view.c:203
 msgid "Couldn't remove emblem"
-msgstr "Không thể gỡ bỏ biểu tượng"
+msgstr "Không thể gỡ bỏ hình tượng"
 
 #: components/emblem/nautilus-emblem-view.c:237
 #, c-format
@@ -72,20 +72,20 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
-"Không thể đổi tên biểu tượng tên '%s'. Có lẽ vì đây là biểu tượng vĩnh viễn, "
-"va không được thêm vào bởi bạn."
+"Không thể đổi tên hình tượng có tên '%s'.  Có thể vì đây là hình tượng vĩnh "
+"viễn và không phải do bạn tự thêm vào."
 
 #: components/emblem/nautilus-emblem-view.c:238
 msgid "Couldn't rename emblem"
-msgstr "Không thể đổi tên biểu tượng"
+msgstr "Không thể đổi tên hình tượng"
 
 #: components/emblem/nautilus-emblem-view.c:257
 msgid "Rename Emblem"
-msgstr "Đổi tên biểu tượng"
+msgstr "Đổi tên hình tượng"
 
 #: components/emblem/nautilus-emblem-view.c:276
 msgid "Enter a new name for the displayed emblem:"
-msgstr "Nhập tên mới cho biểu tượng hiển thị:"
+msgstr "Nhập tên mới cho hình tượng được hiển thị:"
 
 #: components/emblem/nautilus-emblem-view.c:330
 msgid "Rename"
@@ -93,41 +93,44 @@ msgstr "Đổi tên"
 
 #: components/emblem/nautilus-emblem-view.c:497
 msgid "Add Emblems..."
-msgstr "Thêm biểu tượng..."
+msgstr "Thêm hình tượng..."
 
 #: components/emblem/nautilus-emblem-view.c:513
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
-"Nhập tên mô tả cho mỗi biểu tượng. Tên này sẽ được dùng ở những nơi khác để "
-"xác định biểu tượng."
+"Nhập tên mô tả cạnh từng hình tượng. Tên này sẽ được dùng tại nơi khác để "
+"nhận biết hình tượng."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
-"Nhập tên mô tả cho biểu tượng. Tên này sẽ được dùng để xác định đối tượng."
+"Nhập tên mô tả cạnh hình tượng. Tên này sẽ được dùng tại nơi khác để nhận "
+"biết hình tượng."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
-msgstr "Không thể thêm vài tập tin vì chúng có vẻ không phải là ảnh hợp lệ."
+msgstr ""
+"Không thể thêm một số tập tin làm hình tượng vì chúng không phải là ảnh hợp "
+"lệ."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
 msgid "Couldn't add emblems"
-msgstr "Không thể thêm biểu tượng"
+msgstr "Không thể thêm hình tượng"
 
 #: components/emblem/nautilus-emblem-view.c:720
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
 msgstr ""
-"Không có tập tin nào được thêm để làm biểu tượng vì chúng có vẻ không phải "
-"là ảnh hợp lệ."
+"Không có tập tin nào có thể thêm để làm hình tượng vì chúng không phải là "
+"ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
@@ -137,7 +140,7 @@ msgstr "Văn bản được kéo không phải vị trí tập tin hợp lệ."
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:814
 msgid "Couldn't add emblem"
-msgstr "Không thể thêm biểu tượng"
+msgstr "Không thể thêm hình tượng"
 
 #: components/emblem/nautilus-emblem-view.c:760
 #: components/emblem/nautilus-emblem-view.c:813
@@ -147,9 +150,10 @@ msgstr "Tập tin '%s' không phải là ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr "Tập tin được kéo có vẻ không phải là ảnh hợp lệ."
+msgstr "Tập tin được kéo không phải là ảnh hợp lệ."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
+#: src/nautilus-property-browser.c:1728
 msgid "Erase"
 msgstr "Xóa"
 
@@ -295,7 +299,7 @@ msgstr "Panel vạch lề của ghi chú"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
 msgid "Notes side pane for Nautilus"
-msgstr "Ô vạch lề của ghi chú cho Nautilus"
+msgstr "Ô bên lề ghi chú cho Nautilus"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
@@ -310,7 +314,6 @@ msgid "Text Viewer"
 msgstr "Bộ quan sát văn bản"
 
 #: components/text/Nautilus_View_text.server.in.in.h:4
-#: components/text/nautilus-text-view-ui.xml.h:4
 msgid "Text view"
 msgstr "Xem văn bản"
 
@@ -323,60 +326,14 @@ msgid "View as Text"
 msgstr "Xem theo văn bản"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "F_onts"
-msgstr "Các Phông"
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Copy the selected text to the clipboard"
+msgstr "Sao chép văn bản được chọn vào clipboard"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Lucida"
-msgstr "Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:3
-msgid "Services"
-msgstr "Dịch vụ"
-
-#: components/text/nautilus-text-view-ui.xml.h:5
-msgid "Use the Courier Font"
-msgstr "Sử dụng phông Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:6
-msgid "Use the Fixed Font"
-msgstr "Sử dụng phông Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:7
-msgid "Use the GTK System Font"
-msgstr "Sử dụng phông hệ thống GTK"
-
-#: components/text/nautilus-text-view-ui.xml.h:8
-msgid "Use the Helvetica Font"
-msgstr "Sử dụng phông Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:9
-msgid "Use the Lucida Font"
-msgstr "Sử dụng phông Lucida"
-
-#: components/text/nautilus-text-view-ui.xml.h:10
-msgid "Use the Times Font"
-msgstr "Sử dụng phông Times"
-
-#: components/text/nautilus-text-view-ui.xml.h:11
-msgid "_Courier"
-msgstr "_Courier"
-
-#: components/text/nautilus-text-view-ui.xml.h:12
-msgid "_Fixed"
-msgstr "_Fixed"
-
-#: components/text/nautilus-text-view-ui.xml.h:13
-msgid "_GTK System Font"
-msgstr "Phông hệ thống GTK"
-
-#: components/text/nautilus-text-view-ui.xml.h:14
-msgid "_Helvetica"
-msgstr "_Helvetica"
-
-#: components/text/nautilus-text-view-ui.xml.h:15
-msgid "_Times"
-msgstr "_Times"
+#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
+msgid "_Copy Text"
+msgstr "Sao văn bản"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -399,7 +356,7 @@ msgid "animation to indicate on-going activity"
 msgstr "hoạt hình chỉ các hành động chuyển động"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:579
+#: components/throbber/nautilus-throbber.c:576
 msgid "throbber"
 msgstr "nhịp họat hình"
 
@@ -411,7 +368,7 @@ msgstr "factory của nhịp hoạt hình"
 msgid "throbber object factory"
 msgstr "factory của đối tưọng nhịp hoạt hình"
 
-#: components/throbber/nautilus-throbber.c:580
+#: components/throbber/nautilus-throbber.c:577
 msgid "provides visual status"
 msgstr "cung cấp trạng thái trực quan"
 
@@ -569,7 +526,7 @@ msgstr "Kéo một viên đá mẫu vào đối tượng để thay đổi mẫu
 
 #: data/browser.xml.h:32
 msgid "Drag an emblem to an object to add it to the object"
-msgstr "Kéo một vật tượng trưng vào đối tượng để thêm nó vào đối tượng đó"
+msgstr "Kéo một hình tượng vào đối tượng để thêm vào đối tượng đó"
 
 #: data/browser.xml.h:33
 msgid "Eclipse"
@@ -793,7 +750,7 @@ msgstr "White Ribs"
 
 #: data/browser.xml.h:89
 msgid "_Emblems"
-msgstr "_Biểu tượng"
+msgstr "_Hình tượng"
 
 #: data/browser.xml.h:90
 msgid "_Patterns"
@@ -1065,7 +1022,7 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "Không tìm thấy hbox, sùng một lựa chọn tập tin bình thường"
 
 #: libbackground/preview-file-selection.c:212
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "Preview"
 msgstr "Xem trước"
 
@@ -1212,42 +1169,42 @@ msgstr "Mật khẩu của bạn sẽ được chuyển đi ở dạng mã hóa"
 msgid "Authentication Required"
 msgstr "Cần phải kiểm tra đặc tính"
 
-#: libnautilus-private/nautilus-customization-data.c:374
+#: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "Đặt lại"
 
-#: libnautilus-private/nautilus-dnd.c:565
+#: libnautilus-private/nautilus-dnd.c:567
 msgid "_Move here"
 msgstr "Chuyển vào đây"
 
-#: libnautilus-private/nautilus-dnd.c:570
+#: libnautilus-private/nautilus-dnd.c:572
 msgid "_Copy here"
 msgstr "Sao vào đây"
 
-#: libnautilus-private/nautilus-dnd.c:575
+#: libnautilus-private/nautilus-dnd.c:577
 msgid "_Link here"
 msgstr "Nối liên kết vào đây"
 
-#: libnautilus-private/nautilus-dnd.c:580
+#: libnautilus-private/nautilus-dnd.c:582
 msgid "Set as _Background"
 msgstr "Đặt như nền sau"
 
-#: libnautilus-private/nautilus-dnd.c:589
-#: libnautilus-private/nautilus-dnd.c:642
+#: libnautilus-private/nautilus-dnd.c:591
+#: libnautilus-private/nautilus-dnd.c:646
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: libnautilus-private/nautilus-dnd.c:628
+#: libnautilus-private/nautilus-dnd.c:632
 msgid "Set as background for _all folders"
 msgstr "Đặt làm nền cho _mọi thư mục"
 
-#: libnautilus-private/nautilus-dnd.c:633
+#: libnautilus-private/nautilus-dnd.c:637
 msgid "Set as background for _this folder"
-msgstr "Đặt làm nền cho thư mục n_ày"
+msgstr "Đặt làm nền cho thư mục _này"
 
 #: libnautilus-private/nautilus-emblem-utils.c:194
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr "Xin lỗi, bạn phải dùng từ khóa không có dấu cách cho biểu tượng mới."
+msgstr "Xin lỗi, bạn phải dùng từ khóa không có dấu cách cho hình tượng mới."
 
 #: libnautilus-private/nautilus-emblem-utils.c:195
 #: libnautilus-private/nautilus-emblem-utils.c:199
@@ -1255,14 +1212,14 @@ msgstr "Xin lỗi, bạn phải dùng từ khóa không có dấu cách cho bi�
 #: libnautilus-private/nautilus-emblem-utils.c:230
 #: libnautilus-private/nautilus-emblem-utils.c:245
 msgid "Couldn't install emblem"
-msgstr "Không thể cài đặt biểu tượng"
+msgstr "Không thể cài đặt hình tượng"
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
-"Xin lỗi, nhưng từ khóa cho biểu tượng chỉ có thể bao gồm các chữ cái, khoảng "
-"trắng và con số."
+"Xin lỗi, từ khóa cho hình tượng chỉ có thể bao gồm các chữ cái, khoảng trắng "
+"và con số."
 
 #. this really should never happen, as a user has no idea
 #. * what a keyword is, and people should be passing a unique
@@ -1273,15 +1230,15 @@ msgstr ""
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
-msgstr "Xin lỗi, đã có biểu tượng tên là \"%s\" rồi. Hãy chọn tên khác cho nó."
+msgstr "Xin lỗi, đã có hình tượng tên là \"%s\" rồi. Hãy chọn tên khác cho nó."
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
 msgid "Sorry, unable to save custom emblem."
-msgstr "Xin lỗi, không thể lưu biểu tượng tùy chọn."
+msgstr "Xin lỗi, không thể lưu hình tượng tùy chọn."
 
 #: libnautilus-private/nautilus-emblem-utils.c:244
 msgid "Sorry, unable to save custom emblem name."
-msgstr "Xin lỗi, không thể lưu tên biểu tượng tùy chọn."
+msgstr "Xin lỗi, không thể lưu tên hình tượng tùy chọn."
 
 #: libnautilus-private/nautilus-file-operations-progress.c:456
 #, c-format
@@ -1354,9 +1311,10 @@ msgid ""
 "\"%s\" cannot be moved because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"Lỗi trong khi chuyển.\n"
+"Lỗi khi chuyển.\n"
 "\n"
-"\"%s\" không thể chuyển được vì hoặc cha nó nằm trong đích đến."
+"\"%s\" không thể chuyển được vì nó hoặc thư mục cha của nó được chứa trong "
+"đích đến."
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -1585,13 +1543,6 @@ msgstr "Lỗi trong khi liên kết."
 msgid "Error while deleting."
 msgstr "Lỗi trong khi xóa."
 
-#: libnautilus-private/nautilus-file-operations.c:914
-#: libnautilus-private/nautilus-file-operations.c:929
-#: libnautilus-private/nautilus-file-operations.c:949
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Stop"
-msgstr "Ngừng"
-
 #: libnautilus-private/nautilus-file-operations.c:929
 #: libnautilus-private/nautilus-file-operations.c:949
 #: libnautilus-private/nautilus-file-operations.c:1062
@@ -1660,7 +1611,7 @@ msgstr "Thay thế tất cả"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1136
-#: libnautilus-private/nautilus-file.c:4285
+#: libnautilus-private/nautilus-file.c:4325
 #, c-format
 msgid "link to %s"
 msgstr "Liên kết tới %s"
@@ -1994,7 +1945,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Chuẩn bị đổ rác..."
 
 #: libnautilus-private/nautilus-file-operations.c:2265
-#: src/file-manager/fm-desktop-icon-view.c:1275
+#: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Đổ rác"
@@ -2288,64 +2239,64 @@ msgstr "foo (bản sao thứ 124).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2569
 msgid "today at 00:00:00 PM"
 msgstr "hôm nay vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2570
 msgid "today at %-I:%M:%S %p"
 msgstr "hôm nay vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2572
 msgid "today at 00:00 PM"
 msgstr "hôm nay vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2573
 msgid "today at %-I:%M %p"
 msgstr "hôm nay vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2535
+#: libnautilus-private/nautilus-file.c:2575
 msgid "today, 00:00 PM"
 msgstr "hôm nay, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2576
 msgid "today, %-I:%M %p"
 msgstr "hôm nay, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2538
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2579
 msgid "today"
 msgstr "hôm nay"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2548
+#: libnautilus-private/nautilus-file.c:2588
 msgid "yesterday at 00:00:00 PM"
 msgstr "hôm qua vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2589
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "hôm qua vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2551
+#: libnautilus-private/nautilus-file.c:2591
 msgid "yesterday at 00:00 PM"
 msgstr "hôm qua vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2592
 msgid "yesterday at %-I:%M %p"
 msgstr "hôm qua vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2554
+#: libnautilus-private/nautilus-file.c:2594
 msgid "yesterday, 00:00 PM"
 msgstr "hôm qua, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2595
 msgid "yesterday, %-I:%M %p"
 msgstr "hôm qua, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2557
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2597
+#: libnautilus-private/nautilus-file.c:2598
 msgid "yesterday"
 msgstr "hôm qua"
 
@@ -2354,132 +2305,132 @@ msgstr "hôm qua"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2609
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Thứ tư, 00 tháng chín 0000 vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2610
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2612
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2613
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d %b %Y vào lúc %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2615
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Thứ hai, 00 T10 0000 vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2616
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d %b %Y vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2618
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 T10 0000 vào 00:00"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2619
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y vào lúc %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2581
+#: libnautilus-private/nautilus-file.c:2621
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 T10 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2622
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2584
+#: libnautilus-private/nautilus-file.c:2624
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2585
+#: libnautilus-private/nautilus-file.c:2625
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2587
+#: libnautilus-private/nautilus-file.c:2627
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2588
+#: libnautilus-private/nautilus-file.c:2628
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3910
 msgid "0 items"
 msgstr "0 mục"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3910
 msgid "0 folders"
 msgstr "0 thư mục"
 
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3911
 msgid "0 files"
 msgstr "0 tập tin"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3915
 msgid "1 item"
 msgstr "1 mục"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3915
 msgid "1 folder"
 msgstr "1 thư mục"
 
-#: libnautilus-private/nautilus-file.c:3876
+#: libnautilus-private/nautilus-file.c:3916
 msgid "1 file"
 msgstr "1 tập tin"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3919
 #, c-format
 msgid "%u items"
 msgstr "%u mục"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3919
 #, c-format
 msgid "%u folders"
 msgstr "%u thư mục"
 
-#: libnautilus-private/nautilus-file.c:3880
+#: libnautilus-private/nautilus-file.c:3920
 #, c-format
 msgid "%u files"
 msgstr "%u tập tin"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4187
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4227
+#: libnautilus-private/nautilus-file.c:4243
 msgid "? items"
 msgstr "? mục"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4193
+#: libnautilus-private/nautilus-file.c:4233
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4208
+#: libnautilus-private/nautilus-file.c:4248
 msgid "unknown type"
 msgstr "dạng không rõ"
 
-#: libnautilus-private/nautilus-file.c:4211
+#: libnautilus-private/nautilus-file.c:4251
 msgid "unknown MIME type"
 msgstr "dạng MIME không rõ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4217
+#: libnautilus-private/nautilus-file.c:4257
 msgid "unknown"
 msgstr "không rõ"
 
-#: libnautilus-private/nautilus-file.c:4249
+#: libnautilus-private/nautilus-file.c:4289
 msgid "program"
 msgstr "chương trình"
 
-#: libnautilus-private/nautilus-file.c:4261
+#: libnautilus-private/nautilus-file.c:4301
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2489,7 +2440,7 @@ msgstr ""
 "do tập tin gnome-vfs.keys của bạn nằm ở vùng không đúng hoặc vì một lý do "
 "nào đó mà không thể tìm thấy được."
 
-#: libnautilus-private/nautilus-file.c:4265
+#: libnautilus-private/nautilus-file.c:4305
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2498,15 +2449,15 @@ msgstr ""
 "Không tìm thấy mô tả cho \"%s\" dạng mime (tập tin là \"%s\"), xin hãy thông "
 "báo cho gnome-vfs mailing list."
 
-#: libnautilus-private/nautilus-file.c:4279
+#: libnautilus-private/nautilus-file.c:4319
 msgid "link"
 msgstr "liên kết"
 
-#: libnautilus-private/nautilus-file.c:4299
+#: libnautilus-private/nautilus-file.c:4339
 msgid "link (broken)"
 msgstr "liên kết (vỡ)"
 
-#: libnautilus-private/nautilus-file.c:5366
+#: libnautilus-private/nautilus-file.c:5414
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -2525,43 +2476,43 @@ msgid "_Never"
 msgstr "Không bao giờ"
 
 #: libnautilus-private/nautilus-global-preferences.c:107
-#: src/nautilus-file-management-properties.glade.h:13
+#: src/nautilus-file-management-properties.glade.h:14
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
 #: libnautilus-private/nautilus-global-preferences.c:109
-#: src/nautilus-file-management-properties.glade.h:19
+#: src/nautilus-file-management-properties.glade.h:20
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
 #: libnautilus-private/nautilus-global-preferences.c:111
-#: src/nautilus-file-management-properties.glade.h:22
+#: src/nautilus-file-management-properties.glade.h:23
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
 #: libnautilus-private/nautilus-global-preferences.c:113
-#: src/nautilus-file-management-properties.glade.h:7
+#: src/nautilus-file-management-properties.glade.h:8
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: libnautilus-private/nautilus-global-preferences.c:115
-#: src/nautilus-file-management-properties.glade.h:9
+#: src/nautilus-file-management-properties.glade.h:10
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: libnautilus-private/nautilus-global-preferences.c:117
-#: src/nautilus-file-management-properties.glade.h:11
+#: src/nautilus-file-management-properties.glade.h:12
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: libnautilus-private/nautilus-global-preferences.c:119
-#: src/nautilus-file-management-properties.glade.h:16
+#: src/nautilus-file-management-properties.glade.h:17
 #, no-c-format
 msgid "400%"
 msgstr "400%"
@@ -2575,27 +2526,27 @@ msgid "500 K"
 msgstr "500 K"
 
 #: libnautilus-private/nautilus-global-preferences.c:126
-#: src/nautilus-file-management-properties.glade.h:2
+#: src/nautilus-file-management-properties.glade.h:3
 msgid "1 MB"
 msgstr "1 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:127
-#: src/nautilus-file-management-properties.glade.h:14
+#: src/nautilus-file-management-properties.glade.h:15
 msgid "3 MB"
 msgstr "3 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:128
-#: src/nautilus-file-management-properties.glade.h:17
+#: src/nautilus-file-management-properties.glade.h:18
 msgid "5 MB"
 msgstr "5 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:129
-#: src/nautilus-file-management-properties.glade.h:3
+#: src/nautilus-file-management-properties.glade.h:4
 msgid "10 MB"
 msgstr "10 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:130
-#: src/nautilus-file-management-properties.glade.h:5
+#: src/nautilus-file-management-properties.glade.h:6
 msgid "100 MB"
 msgstr "100 MB"
 
@@ -2616,7 +2567,7 @@ msgid "Display _files when they are clicked"
 msgstr "Hiển thị các tập tin khi chúng được ấn"
 
 #: libnautilus-private/nautilus-global-preferences.c:156
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "_Ask each time"
 msgstr "Mỗi lần đều hỏi"
 
@@ -2629,12 +2580,12 @@ msgid "Search for files by file name and file properties"
 msgstr "Tìm các tập tin theo tên và tính chất của nó"
 
 #: libnautilus-private/nautilus-global-preferences.c:175
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "Icon View"
 msgstr "Xem Biểu tượng"
 
 #: libnautilus-private/nautilus-global-preferences.c:176
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
 msgstr "Xem danh sách"
 
@@ -2644,33 +2595,33 @@ msgstr "Sách hướng dẫn"
 
 #: libnautilus-private/nautilus-global-preferences.c:183
 #: libnautilus-private/nautilus-global-preferences.c:192
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
 msgstr "theo tên"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Size"
 msgstr "Theo kích thước"
 
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
 msgstr "Theo Dạng"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "By Modification Date"
 msgstr "Theo sự sửa đổi của ngày"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
-#: src/nautilus-file-management-properties.glade.h:38
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
-msgstr "Theo biểu tượng"
+msgstr "Theo hình tượng"
 
 #: libnautilus-private/nautilus-global-preferences.c:201
 msgid "8"
@@ -2709,17 +2660,17 @@ msgid "24"
 msgstr "24"
 
 #: libnautilus-private/nautilus-global-preferences.c:214
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "size"
 msgstr "kích thước"
 
 #: libnautilus-private/nautilus-global-preferences.c:215
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:84
 msgid "type"
 msgstr "dạng"
 
 #: libnautilus-private/nautilus-global-preferences.c:216
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "date modified"
 msgstr "thay đổi ngày"
 
@@ -2728,137 +2679,137 @@ msgid "date changed"
 msgstr "ngày đã thay đổi"
 
 #: libnautilus-private/nautilus-global-preferences.c:218
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "date accessed"
 msgstr "ngày truy cập"
 
 #: libnautilus-private/nautilus-global-preferences.c:219
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "owner"
 msgstr "chủ"
 
 #: libnautilus-private/nautilus-global-preferences.c:220
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "group"
 msgstr "nhóm"
 
 #: libnautilus-private/nautilus-global-preferences.c:221
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "permissions"
 msgstr "quyền"
 
 #: libnautilus-private/nautilus-global-preferences.c:222
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "octal permissions"
 msgstr "quyền bát phân"
 
 #: libnautilus-private/nautilus-global-preferences.c:223
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "MIME type"
 msgstr "Dạng MIME"
 
 #: libnautilus-private/nautilus-global-preferences.c:224
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "none"
 msgstr "không"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1884
+#: libnautilus-private/nautilus-icon-canvas-item.c:1968
 msgid "file icon"
 msgstr "biểu tượng tập tin"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2031
+#: libnautilus-private/nautilus-icon-canvas-item.c:2341
 msgid "editable text"
 msgstr "văn bản thay đổi được"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2032
+#: libnautilus-private/nautilus-icon-canvas-item.c:2342
 msgid "the editable label"
 msgstr "Nhãn biên soạn được"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2039
+#: libnautilus-private/nautilus-icon-canvas-item.c:2349
 msgid "additional text"
 msgstr "văn bản thêm"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2040
+#: libnautilus-private/nautilus-icon-canvas-item.c:2350
 msgid "some more text"
 msgstr "Thêm vài văn bản"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2047
+#: libnautilus-private/nautilus-icon-canvas-item.c:2357
 msgid "highlighted for selection"
 msgstr "Điểm sáng để chọn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2048
+#: libnautilus-private/nautilus-icon-canvas-item.c:2358
 msgid "whether we are highlighted for a selection"
 msgstr "có phải chúng ta đã đánh dấu một lựa chọn"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2055
+#: libnautilus-private/nautilus-icon-canvas-item.c:2365
 msgid "highlighted as keyboard focus"
 msgstr "đánh dấu theo tiêu điểm bàn phím"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2056
+#: libnautilus-private/nautilus-icon-canvas-item.c:2366
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "có phải chúng ta đã dánh dấu để trình tiêu điểm bàn phím"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2064
+#: libnautilus-private/nautilus-icon-canvas-item.c:2374
 msgid "highlighted for drop"
 msgstr "đánh dấu cho thả rơi"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2065
+#: libnautilus-private/nautilus-icon-canvas-item.c:2375
 msgid "whether we are highlighted for a D&D drop"
 msgstr "có phải chúng ta đã dánh dấu cho một thả D&D"
 
-#: libnautilus-private/nautilus-icon-container.c:1711
+#: libnautilus-private/nautilus-icon-container.c:1722
 msgid "The selection rectangle"
 msgstr "Lựa chọn chữ nhật"
 
-#: libnautilus-private/nautilus-icon-container.c:3503
+#: libnautilus-private/nautilus-icon-container.c:3520
 msgid "Frame Text"
 msgstr "Khung Văn Bản"
 
-#: libnautilus-private/nautilus-icon-container.c:3504
+#: libnautilus-private/nautilus-icon-container.c:3521
 msgid "Draw a frame around unselected text"
 msgstr "Vẽ khung quanh văn bản không được chọn"
 
-#: libnautilus-private/nautilus-icon-container.c:3510
+#: libnautilus-private/nautilus-icon-container.c:3527
 msgid "Selection Box Color"
 msgstr "Màu hộp chọn"
 
-#: libnautilus-private/nautilus-icon-container.c:3511
+#: libnautilus-private/nautilus-icon-container.c:3528
 msgid "Color of the selection box"
 msgstr "Màu của hộp chọn"
 
-#: libnautilus-private/nautilus-icon-container.c:3516
+#: libnautilus-private/nautilus-icon-container.c:3533
 msgid "Selection Box Alpha"
 msgstr "Alpha hộp chọn"
 
-#: libnautilus-private/nautilus-icon-container.c:3517
+#: libnautilus-private/nautilus-icon-container.c:3534
 msgid "Opacity of the selection box"
-msgstr "Độ đục của ô chọn"
+msgstr "Độ đục của hộp chọn"
 
-#: libnautilus-private/nautilus-icon-container.c:3524
+#: libnautilus-private/nautilus-icon-container.c:3541
 msgid "Highlight Alpha"
 msgstr "Alpha điểm sáng"
 
-#: libnautilus-private/nautilus-icon-container.c:3525
+#: libnautilus-private/nautilus-icon-container.c:3542
 msgid "Opacity of the highlight for selected icons"
-msgstr "Độ đục của tô sáng biểu tượng được chọn"
+msgstr "Độ đục của nổi bật cho các biểu tượng được chọn"
 
-#: libnautilus-private/nautilus-icon-container.c:3531
+#: libnautilus-private/nautilus-icon-container.c:3548
 msgid "Light Info Color"
 msgstr "Màu thông tin nhạt"
 
-#: libnautilus-private/nautilus-icon-container.c:3532
+#: libnautilus-private/nautilus-icon-container.c:3549
 msgid "Color used for information text against a dark background"
-msgstr "Màu dùng cho chuỗi thông tin trên nền tối"
+msgstr "Màu dùng cho text thông tin tương phản lại nền tối."
 
-#: libnautilus-private/nautilus-icon-container.c:3537
+#: libnautilus-private/nautilus-icon-container.c:3554
 msgid "Dark Info Color"
 msgstr "Màu thông tin đậm"
 
-#: libnautilus-private/nautilus-icon-container.c:3538
+#: libnautilus-private/nautilus-icon-container.c:3555
 msgid "Color used for information text against a light background"
-msgstr "Màu dùng cho chuỗi thông tin trên nền sáng"
+msgstr "Màu dùng cho text thông tin tương phản lại nền sáng."
 
-#: libnautilus-private/nautilus-icon-dnd.c:726
+#: libnautilus-private/nautilus-icon-dnd.c:728
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -2867,7 +2818,7 @@ msgstr ""
 "Thư mục này dùng xếp đặt tự động. Bạn có muốn chuyển sang xếp đặt tay và rời "
 "khỏi mục này, nơi nào bạn đã  bỏ nó? Ở đây sẽ được thay bằng xếp đặt tay."
 
-#: libnautilus-private/nautilus-icon-dnd.c:730
+#: libnautilus-private/nautilus-icon-dnd.c:732
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -2878,7 +2829,7 @@ msgstr ""
 "tay."
 
 # libnautilus-p
-#: libnautilus-private/nautilus-icon-dnd.c:736
+#: libnautilus-private/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -2886,7 +2837,7 @@ msgstr ""
 "Thư mục này dùng xếp đặt tự động. Bạn có muốn chuyển sang xếp đặt tay và rời "
 "khỏi mục này, nơi nào bạn đã thả nó?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:739
+#: libnautilus-private/nautilus-icon-dnd.c:741
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -2894,11 +2845,11 @@ msgstr ""
 "Thư mục này dùng xếp đặt tự động. Bạn có muốn chuyển sang xếp đặt tay và rời "
 "khỏi các mục này, nơi nào bạn đã thả chúng?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:744
+#: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "Switch to Manual Layout?"
 msgstr "Có bật xắp xếp tay không?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:745
+#: libnautilus-private/nautilus-icon-dnd.c:747
 msgid "Switch"
 msgstr "Bật"
 
@@ -2936,9 +2887,11 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Không thể tìm thấy Medusa, ứng dụng thực hiện tìm kiếm, trên hệ thống. Nếu "
-"bạn tự biên dịch Nautilus, bạn cần cài đặt Medusa và biên dịch lại Nautilus. "
-"(Medusa có tại ftp://ftp.gnome.org)\n"
+"Không thấy trên hệ thống của bạn ứng dụng thực hiện tìm kiếm Medusa. Nếu bạn "
+"tự biên dịch Nautilus, bạn cần cài đặt một bản sao của Medusa rồi biên dịch "
+"lại Nautilus. (Bản sao của Medusa có thể có tại: ftp://ftp.gnome.org)\n"
+"Nếu đang dùng phiên bản đóng gói của Nautilus, chức năng tìm kiếm nhanh là "
+"không có sẵn.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
@@ -3589,10 +3542,6 @@ msgstr "Khối ISO 9660"
 msgid "C_lear Text"
 msgstr "Xóa văn bản"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Copy the selected text to the clipboard"
-msgstr "Sao chép văn bản được chọn vào clipboard"
-
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
 msgstr "Cắt văn bản"
@@ -3620,10 +3569,6 @@ msgstr "Chọn tất cả"
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
 msgstr "Chọn tất cả các văn bản trong một vùng văn bản"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
-msgid "_Copy Text"
-msgstr "Sao văn bản"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:70
 msgid "_Paste Text"
@@ -3732,11 +3677,11 @@ msgstr "Tìm danh sách"
 
 #: src/Nautilus_shell.server.in.h:20
 msgid "View as Icons"
-msgstr "Xem theo Biểu tượng"
+msgstr "Xem theo biểu tượng"
 
 #: src/Nautilus_shell.server.in.h:21
 msgid "View as List"
-msgstr "Xem theo Danh sách"
+msgstr "Xem theo danh sách"
 
 #: src/Nautilus_shell.server.in.h:22
 msgid "View as _Icons"
@@ -3746,20 +3691,20 @@ msgstr "Xem theo Biểu t_ượng"
 msgid "View as _List"
 msgstr "Xem theo Danh s_ách"
 
-#: src/file-manager/fm-desktop-icon-view.c:785
+#: src/file-manager/fm-desktop-icon-view.c:778
 msgid "Background"
 msgstr "Nền sau"
 
-#: src/file-manager/fm-desktop-icon-view.c:962
+#: src/file-manager/fm-desktop-icon-view.c:955
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Lỗi khi thực thi chương trình tiện ích '%s': %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1293
+#: src/file-manager/fm-desktop-icon-view.c:1286
 msgid "E_ject"
 msgstr "Nhả R_a"
 
-#: src/file-manager/fm-desktop-icon-view.c:1393
+#: src/file-manager/fm-desktop-icon-view.c:1386
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Bỏ Gắn Kết Khối Tin"
@@ -3772,7 +3717,7 @@ msgstr "_Bỏ Gắn Kết Khối Tin"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1517
+#: src/file-manager/fm-desktop-icon-view.c:1510
 #, c-format
 msgid "%s's Home"
 msgstr "Nhà của %s"
@@ -3971,12 +3916,12 @@ msgstr "Không thể hoàn thành hàng động chỉ định:  %s"
 msgid "Could not complete specified action."
 msgstr "Không thể hoàn thành hàng động chỉ định."
 
-#: src/file-manager/fm-directory-view.c:4042
+#: src/file-manager/fm-directory-view.c:4067
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Thực hiện \"%s\" trên tất cả các mục đã chọn"
 
-#: src/file-manager/fm-directory-view.c:4252
+#: src/file-manager/fm-directory-view.c:4277
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -3986,11 +3931,11 @@ msgstr ""
 "Script. Khi chọn một script trong các thực đơn này, script này sẽ thực thi "
 "với tất cả các mục được chọn theo tư cách của nhập"
 
-#: src/file-manager/fm-directory-view.c:4255
+#: src/file-manager/fm-directory-view.c:4280
 msgid "About Scripts"
 msgstr "Về Scripts"
 
-#: src/file-manager/fm-directory-view.c:4256
+#: src/file-manager/fm-directory-view.c:4281
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4011,105 +3956,123 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
+"Mọi tập tin có thể thực thi trong thư mục này sẽ xuất hiện trong Scripts "
+"menu. Việc chọn một script từ menu sẽ chạy script đó.\n"
+"\n"
+"Khi được thực thi từ thư mục cục bộ, các script sẽ bỏ qua tên các tập tin "
+"được chọn. Khi được thực thi từ thư mục ở xa (vd: thư mục hiển thị web hay "
+"nội dung ftp), các script sẽ được bỏ qua các tham số.\n"
+"\n"
+"Trong mọi trường hợp, Nautilus sẽ lập các biến môi trường sau đây, để các "
+"script có thể dùng:\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: newline-delimited paths cho các tập tin "
+"được chọn (nếu là cục bộ)\n"
+"\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS: newline-delimited URIs cho tập tin được chọn\n"
+"\n"
+"NAUTILUS_SCRIPT_CURRENT_URI: URI cho vị trí hiện thời\n"
+"\n"
+"NAUTILUS_SCRIPT_WINDOW_GEOMETRY: vị trí và kích cỡ cửa sổ hiện thời"
 
-#: src/file-manager/fm-directory-view.c:4369
+#: src/file-manager/fm-directory-view.c:4394
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr "\"%s\" sẽ được chuyển đi nếu bạn dùng lệnh \"ghép tập tin\""
+msgstr "\"%s\" sẽ được chuyển đi nếu bạn dùng lệnh »ghép tập tin«"
 
-#: src/file-manager/fm-directory-view.c:4373
+#: src/file-manager/fm-directory-view.c:4398
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr "\"%s\" sẽ được sao nếu bạn dùng lệnh \"ghép tập tin\""
+msgstr "\"%s\" sẽ được sao nếu bạn dùng lệnh »ghép tập tin«"
 
-#: src/file-manager/fm-directory-view.c:4380
+#: src/file-manager/fm-directory-view.c:4405
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
-"%d các mục đưọc chọn sẽ được chuyển đi nếu bạn dùng lệnh \"ghép tập tin\""
+"%d các mục đưọc chọn sẽ được chuyển đi nếu bạn dùng lệnh »ghép tập tin«"
 
-#: src/file-manager/fm-directory-view.c:4384
+#: src/file-manager/fm-directory-view.c:4409
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr "%d các mục đưọc chọn sẽ được sao nếu bạn dùng lệnh \"ghép tập tin\""
+msgstr "%d các mục đưọc chọn sẽ được sao nếu bạn dùng lệnh »ghép tập tin«"
 
-#: src/file-manager/fm-directory-view.c:4469
+#: src/file-manager/fm-directory-view.c:4494
 msgid "There is nothing on the clipboard to paste."
 msgstr "Không có gì trong bảng trích giữ để ghép được."
 
-#: src/file-manager/fm-directory-view.c:4648
+#: src/file-manager/fm-directory-view.c:4673
 msgid "Open _in This Window"
 msgstr "Mở trong cửa sổ này"
 
-#: src/file-manager/fm-directory-view.c:4651
+#: src/file-manager/fm-directory-view.c:4676
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open _in New Window"
 msgstr "Mở trong của sổ mới"
 
-#: src/file-manager/fm-directory-view.c:4653
+#: src/file-manager/fm-directory-view.c:4678
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Mở trong %d cửa sổ mới"
 
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4696
 msgid "_Delete from Trash"
 msgstr "Xóa khỏi sọt rác"
 
-#: src/file-manager/fm-directory-view.c:4673
+#: src/file-manager/fm-directory-view.c:4698
 msgid "Delete all selected items permanently"
 msgstr "Xóa vĩnh viễn mọi mục được chọn"
 
-#: src/file-manager/fm-directory-view.c:4676
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4701
+#: src/file-manager/fm-directory-view.c:4976
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Mo_ve to Trash"
 msgstr "Chuyển vào sọt rác"
 
-#: src/file-manager/fm-directory-view.c:4678
+#: src/file-manager/fm-directory-view.c:4703
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
 msgid "Move each selected item to the Trash"
 msgstr "Di chuyển các mục được chọn vào Thùng rác"
 
-#: src/file-manager/fm-directory-view.c:4702
+#: src/file-manager/fm-directory-view.c:4727
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "_Delete"
 msgstr "Xóa"
 
-#: src/file-manager/fm-directory-view.c:4722
+#: src/file-manager/fm-directory-view.c:4747
 msgid "Ma_ke Links"
 msgstr "Thiết lập các liên kết"
 
-#: src/file-manager/fm-directory-view.c:4723
+#: src/file-manager/fm-directory-view.c:4748
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "Thiết đặt liên kết"
 
-#: src/file-manager/fm-directory-view.c:4736
+#: src/file-manager/fm-directory-view.c:4761
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "Đổ sọt rác"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4774
 msgid "Cu_t File"
 msgstr "Cắt tập tin"
 
-#: src/file-manager/fm-directory-view.c:4750
+#: src/file-manager/fm-directory-view.c:4775
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Cắt tập tin"
 
-#: src/file-manager/fm-directory-view.c:4759
+#: src/file-manager/fm-directory-view.c:4784
 msgid "_Copy File"
 msgstr "Sao tập tin"
 
-#: src/file-manager/fm-directory-view.c:4760
+#: src/file-manager/fm-directory-view.c:4785
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "_Copy Files"
 msgstr "_Sao chép Tập tin"
 
-#: src/file-manager/fm-directory-view.c:4942
+#: src/file-manager/fm-directory-view.c:4967
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
@@ -4117,7 +4080,7 @@ msgstr ""
 "Không thể dùng liên kết này vì nó không có đích. Bạn có muốn xóa nó vào sọt "
 "rác không?"
 
-#: src/file-manager/fm-directory-view.c:4945
+#: src/file-manager/fm-directory-view.c:4970
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4126,11 +4089,11 @@ msgstr ""
 "Không thể dùng liên kết này vì đối tượng liên kết của nó là \"%s\" không tồn "
 "tại. Bạn muốn xóa nó vào sọt rác không?"
 
-#: src/file-manager/fm-directory-view.c:4951
+#: src/file-manager/fm-directory-view.c:4976
 msgid "Broken Link"
 msgstr "Liên kết bị phá vỡ"
 
-#: src/file-manager/fm-directory-view.c:5008
+#: src/file-manager/fm-directory-view.c:5033
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4139,28 +4102,28 @@ msgstr ""
 "\"%s\" là tập tin text có thể thực thi. Bạn có muốn thực thi nó, hay hiển "
 "thị nội dung của nó?"
 
-#: src/file-manager/fm-directory-view.c:5014
+#: src/file-manager/fm-directory-view.c:5039
 msgid "Run or Display?"
 msgstr "Thực thi hoặc hiển thị?"
 
-#: src/file-manager/fm-directory-view.c:5015
+#: src/file-manager/fm-directory-view.c:5040
 msgid "_Display"
 msgstr "Hiển thị"
 
-#: src/file-manager/fm-directory-view.c:5016
+#: src/file-manager/fm-directory-view.c:5041
 msgid "Run in _Terminal"
 msgstr "Thực hiện trên thiết bị đầu cuối mới"
 
-#: src/file-manager/fm-directory-view.c:5019
+#: src/file-manager/fm-directory-view.c:5044
 msgid "_Run"
 msgstr "Thực thi"
 
-#: src/file-manager/fm-directory-view.c:5201
+#: src/file-manager/fm-directory-view.c:5226
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Đang mở \"%s\""
 
-#: src/file-manager/fm-directory-view.c:5207
+#: src/file-manager/fm-directory-view.c:5232
 msgid "Cancel Open?"
 msgstr "Có hủy mở không?"
 
@@ -4290,92 +4253,92 @@ msgstr "Đổi tên \"%s\" thành \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Có hủy đổi tên không?"
 
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Name"
 msgstr "theo tên"
 
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:155
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by name in rows"
 msgstr "Sắp xếp các biểu tượng theo tên với biểu diễn hàng"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Size"
 msgstr "theo kích thước"
 
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by size in rows"
 msgstr "Sắp xếp các biểu tượng theo kích thước với biểu diễn hàng"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Type"
 msgstr "theo dạng"
 
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by type in rows"
 msgstr "Sắp xếp các biểu tượng theo dạng với biểu diễn hàng"
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:175
 msgid "by Modification _Date"
 msgstr "theo sự sửa đổi ngày"
 
-#: src/file-manager/fm-icon-view.c:173
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Sắp xếp các biểu tượng theo sự sửa đổi ngày với biểu diễn hàng"
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:182
 msgid "by _Emblems"
-msgstr "theo bi_ểu tượng"
+msgstr "theo _hình tượng"
 
-#: src/file-manager/fm-icon-view.c:180
+#: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons sorted by emblems in rows"
-msgstr "Giữ phân loại biểu tượng theo biểu tượng theo hàng"
+msgstr "Giữ biểu tượng được xếp theo từng hàng hình tượng"
 
-#: src/file-manager/fm-icon-view.c:1439
+#: src/file-manager/fm-icon-view.c:1456
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "Đưa biểu tượng về kích thước nguyên dạng"
 
-#: src/file-manager/fm-icon-view.c:1440
+#: src/file-manager/fm-icon-view.c:1457
 msgid "Restore Icon's Original Si_ze"
 msgstr "Đưa về kích thước nguyên dạng của biểu tượng"
 
-#: src/file-manager/fm-icon-view.c:1775
+#: src/file-manager/fm-icon-view.c:1792
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "Chỉ vào \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2303
+#: src/file-manager/fm-icon-view.c:2320
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Tính năng kéo và thả chỉ được hỗ trợ trên hệ thống tập tin cục bộ "
 
-#: src/file-manager/fm-icon-view.c:2304 src/file-manager/fm-icon-view.c:2322
+#: src/file-manager/fm-icon-view.c:2321 src/file-manager/fm-icon-view.c:2340
 msgid "Drag and Drop error"
 msgstr "Lỗi kéo và thả"
 
-#: src/file-manager/fm-icon-view.c:2321
+#: src/file-manager/fm-icon-view.c:2339
 msgid "An invalid drag type was used."
 msgstr "Đã dùng một dạng kéo không hợp lệ"
 
-#: src/file-manager/fm-list-view.c:408
+#: src/file-manager/fm-list-view.c:412
 msgid "File name"
 msgstr "Tên tập tin"
 
-#: src/file-manager/fm-list-view.c:432
+#: src/file-manager/fm-list-view.c:436
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Kích thước"
 
-#: src/file-manager/fm-list-view.c:443
+#: src/file-manager/fm-list-view.c:447
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Dạng"
 
-#: src/file-manager/fm-list-view.c:454
+#: src/file-manager/fm-list-view.c:458
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Ngày được sửa đổi"
@@ -4599,8 +4562,8 @@ msgstr "Không thể xác định quyền truy cập của \"%s\"."
 
 #: src/file-manager/fm-properties-window.c:2357
 #: src/nautilus-bookmarks-window.c:138
-#: src/nautilus-file-management-properties.c:237
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:714
+#: src/nautilus-file-management-properties.c:238
+#: src/nautilus-property-browser.c:1444 src/nautilus-window-menus.c:714
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4631,6 +4594,8 @@ msgid ""
 "Search results may not include items modified after %s, when your drive was "
 "last indexed."
 msgstr ""
+"Kết quả tìm kiếm có thể không gồm các mục đã biến đổi sau %s, khi drive của "
+"bạn được tạo chỉ mục lần cuối."
 
 #: src/file-manager/fm-search-list-view.c:144
 msgid "Search Results"
@@ -4641,6 +4606,7 @@ msgid ""
 "Sorry, but the Medusa search service is not available because it is not "
 "installed."
 msgstr ""
+"Xin lỗi, hiện không có dịch vụ tìm kiếm Medusa vì nó chưa được cài đặt."
 
 #: src/file-manager/fm-search-list-view.c:167
 #: src/file-manager/nautilus-indexing-info.c:303
@@ -4653,6 +4619,9 @@ msgid ""
 "search will return no results right now.  You can create a new  index by "
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
+"Việc tìm kiếm mà bạn chọn mới hơn phụ lục của hệ thống. Việc tìm kiếm sẽ "
+"không trả lại kết quả. Bạn cần tạo một phụ lục mới bằng cách chạy \"medusa-"
+"indexd\" trong dòng lệnh của root."
 
 #: src/file-manager/fm-search-list-view.c:196
 msgid "Search for items that are too new"
@@ -4664,6 +4633,9 @@ msgid ""
 "can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
+"Mọi tập tin có phụ lục trên hệ thống khớp với kịch bản được chọn. Bạn có thể "
+"kiểm tra chính tả trên các phần chọn của bạn hay thêm kịch bản để thu hẹp "
+"kết quả."
 
 #: src/file-manager/fm-search-list-view.c:204
 #: src/file-manager/fm-search-list-view.c:225
@@ -4678,6 +4650,9 @@ msgid ""
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
 msgstr ""
+"Tìm kiếm không thể mở phụ lục hệ thống tập tin. Phụ lục của bạn có thể bị "
+"thiếu hay hỏng. Bạn có thể tạo phụ lục mới bằng việc chạy \"medusa-indexd\" "
+"trong dòng lệnh của root."
 
 #: src/file-manager/fm-search-list-view.c:214
 msgid "Error reading file index"
@@ -4694,12 +4669,17 @@ msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
+"Để thực hiện tìm kiếm nhanh, cần có phụ lục các tập tin trên hệ thống. Tìm "
+"kiếm không thể truy cập phụ lục lúc này do vậy sẽ thực hiện tìm kiếm chậm và "
+"không cần dùng phụ lục."
 
 #: src/file-manager/fm-search-list-view.c:249
 msgid ""
 "To do a content search, Find requires an index of the files on your system.  "
 "Find can't access your index right now. "
 msgstr ""
+"Để thực hiện tìm kiếm nội dung, tìm kiếm cần có phụ lục các tập tin trên hệ "
+"thống. Tìm kiếm không thể truy cập phụ lục của bạn lúc này."
 
 #: src/file-manager/fm-search-list-view.c:253
 msgid "Fast searches are not available"
@@ -4719,6 +4699,10 @@ msgid ""
 "\n"
 "medusa-searchd"
 msgstr ""
+"Hiện đang có các tập tin phụ lục nhưng daemon tìm kiếm của Medusa chưa chạy. "
+"Để chạy chương trình này, hãy đăng nhập vào root và gõ dòng lệnh:\n"
+"\n"
+"medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:271
 msgid ""
@@ -4726,6 +4710,9 @@ msgid ""
 "Your computer is currently creating that index.   Because Find cannot use an "
 "index, this search may take several minutes."
 msgstr ""
+"Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
+"thống. Máy tính hiện đang tạo phụ lục đó. Vì Tìm kiếm không thể dùng phụ "
+"lục, việc tìm kiếm này sẽ kéo dài vài phút."
 
 #: src/file-manager/fm-search-list-view.c:277
 msgid ""
@@ -4733,6 +4720,9 @@ msgid ""
 "system.  Your computer is currently creating that index.  Content searches "
 "will be available when the index is complete."
 msgstr ""
+"Để thực hiện tìm kiếm nội dung, Tìm kiếm cần có phụ lục nội dung trên hệ "
+"thống. Máy tíng hiện đang tạo phụ lục đó. Tìm kiếm nội dung sẽ sẵn sàng khi "
+"hoàn thành phụ lục."
 
 #: src/file-manager/fm-search-list-view.c:283
 #: src/file-manager/fm-search-list-view.c:306
@@ -4746,6 +4736,10 @@ msgid ""
 "indexd\" as root on the command line.  Until a complete index is available, "
 "searches will take several minutes."
 msgstr ""
+"Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
+"thống. Hiện thời không có phụ lục. Bạn có thể tạo phụ lục bằng cách chạy "
+"\"medusa-indexd\" trong dòng lệnh của root. Tới khi hoàn thành phụ lục, việc "
+"tìm kiếm sẽ kéo dài chừng vài phút."
 
 #: src/file-manager/fm-search-list-view.c:298
 msgid ""
@@ -4754,6 +4748,10 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line.  Until a complete "
 "index is available, content searches cannot be performed."
 msgstr ""
+"Để thực hiện tìm kiếm nội dung, Tìm kiếm cần có phụ lục nội dung trên hệ "
+"thống. Hiện chưa có phụ lục. Bạn có thể tạo phụ lục bằng cách chạy \"medusa-"
+"indexd\" trong dòng lệnh của root. Tới khi hoàn thành phụ lục, việc tìm kiếm "
+"nội dung mới có thể thực hiện được."
 
 #: src/file-manager/fm-search-list-view.c:323
 msgid ""
@@ -4761,6 +4759,9 @@ msgid ""
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
 msgstr ""
+"Để thực hiện tìm kiếm nhanh, Tìm kiếm cần có phụ lục các tập tin trên hệ "
+"thống. Người quản trị hệ thống đã tắt chức năng này, do vậy mà không có phụ "
+"lục."
 
 #: src/file-manager/fm-search-list-view.c:327
 msgid "Fast searches are not enabled on your computer"
@@ -5029,7 +5030,7 @@ msgstr "Theo sự thay đổi ngày"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:3
 msgid "By _Emblems"
-msgstr "Theo Bi_ểu tượng"
+msgstr "Theo _Hình tượng"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By _Name"
@@ -5126,6 +5127,8 @@ msgid ""
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
 msgstr ""
+"Khi bật chạy tìm kiếm nhanh, Tìm kiếm tạo một phụ lục để tăng tốc tìm kiếm. "
+"Tìm kiếm nhanh không được chạy trên máy của bạn, vì bạn chưa có phụ lục."
 
 #: src/file-manager/nautilus-indexing-info.c:265
 msgid "There is no index of your files right now."
@@ -5170,6 +5173,8 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
+"Nautilus đã không tạo được thư mục theo yêu cầu \"%s\". Trước khi chạy "
+"Nautilus, hãy tạo thư mục này, hay đặt quyền hạn để Nautilus có thể tạo nó."
 
 #: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
@@ -5233,6 +5238,23 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
+"Hiện không thể dùng Nautilus. Chạy lệnh \"bonobo-slay\" từ console có thể "
+"giải quyết vấn đề. Nếu không được, bạn cần khởi động lại máy hay cài đặt lại "
+"Nautilus.\n"
+"\n"
+"Bonobo không thể định vị tập tin Nautilus_shell.server. Một nguyên nhân có "
+"thể do LD_LIBRARY_PATH không bao hàm  thư mục chứa thư viện bonobo-"
+"activation. Nguyên nhân khác có thể là do việc cài đặt sai làm thiếu tập tin "
+"Nautilus_Shell.server.\n"
+"\n"
+"Chạy \"bonobo-slay\" sẽ giệt mọi Bonobo Activation và GConf processes, những "
+"cái cần cho các ứng dụng khác.\n"
+"\n"
+"Đôi khi, giệt bonobo-activation-server và gconfd giúp giải quyết trục trặc, "
+"nhưng chúng tôi không biết là vì sao.\n"
+"\n"
+"Chúng tôi cũng đã gặp lỗi này khi cài đặt một phiên bản không đúng của "
+"bonobo-activation."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -5261,6 +5283,9 @@ msgid ""
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+"Hiện thời không thể dùng Nautilus do lỗi không mong muốn từ Bonobo khi cố "
+"gắng định vị factory. Việc giệt bonobo-activation-server và khởi chạy lại "
+"Nautilus có thể giúp khắc phục trục trặc này."
 
 #: src/nautilus-application.c:505
 msgid ""
@@ -5268,6 +5293,9 @@ msgid ""
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
+"Hiện thời không thể dùng Nautilus do lỗi không mong muốn từ Bonobo khi cố "
+"gắng định vị một đối tượng shell. Việc giệt bonobo-activation-server và khởi "
+"chạy lại Nautilus có thể giúp khắc phục trục trặc này."
 
 #: src/nautilus-bookmarks-window.c:171
 msgid "No bookmarks defined"
@@ -5302,75 +5330,81 @@ msgstr "Tìm chúng!"
 msgid "    "
 msgstr "    "
 
-#: src/nautilus-file-management-properties.glade.h:4
+#: src/nautilus-file-management-properties.glade.h:2
+#, fuzzy
+msgid "1 GB"
+msgstr "1 MB"
+
+#: src/nautilus-file-management-properties.glade.h:5
 msgid "100 KB"
 msgstr "100 KB"
 
-#: src/nautilus-file-management-properties.glade.h:20
+#: src/nautilus-file-management-properties.glade.h:21
 msgid "500 KB"
 msgstr "500 KB"
 
-#: src/nautilus-file-management-properties.glade.h:23
+#: src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Behaviour</span>"
 msgstr "<span weight=\"bold\">Ứng xử</span>"
 
-#: src/nautilus-file-management-properties.glade.h:24
+#: src/nautilus-file-management-properties.glade.h:25
 msgid "<span weight=\"bold\">Default View</span>"
 msgstr "<span weight=\"bold\">Khung xem mặc định</span>"
 
-#: src/nautilus-file-management-properties.glade.h:25
+#: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Executable Text Files</span>"
 msgstr "<span weight=\"bold\">Tập tin văn bản thực thi được</span>"
 
-#: src/nautilus-file-management-properties.glade.h:26
+#: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Folders</span>"
 msgstr "<span weight=\"bold\">Thư mục</span>"
 
-#: src/nautilus-file-management-properties.glade.h:27
-msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
-
 #: src/nautilus-file-management-properties.glade.h:28
-msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr "<span weight=\"bold\">Mặc định khung xem biểu tượng</span>"
+msgid "<span weight=\"bold\">Icon Captions</span>"
+msgstr "<span weight=\"bold\">Chú giải biểu tượng</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
-msgid "<span weight=\"bold\">Image Files</span>"
-msgstr "<span weight=\"bold\">Tập tin ảnh</span>"
+msgid "<span weight=\"bold\">Icon View Defaults</span>"
+msgstr "<span weight=\"bold\">Mặc định khung xem biểu tượng</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
 msgstr "<span weight=\"bold\">Mặc định khung xem danh sách</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
+#, fuzzy
+msgid "<span weight=\"bold\">Other Previewable Files</span>"
+msgstr "<span weight=\"bold\">Tập tin ảnh</span>"
+
+#: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Sound Files</span>"
 msgstr "<span weight=\"bold\">Tập tin âm thanh</span>"
 
-#: src/nautilus-file-management-properties.glade.h:32
+#: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Text Files</span>"
 msgstr "<span weight=\"bold\">Tập tin văn bản</span>"
 
-#: src/nautilus-file-management-properties.glade.h:33
+#: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Trash</span>"
 msgstr "<span weight=\"bold\">Sọt rác</span>"
 
-#: src/nautilus-file-management-properties.glade.h:34
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
 msgstr "<span weight=\"bold\">Mặc Định của Khung Xem theo cây</span>"
 
-#: src/nautilus-file-management-properties.glade.h:35
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Always"
 msgstr "Luôn luôn"
 
-#: src/nautilus-file-management-properties.glade.h:36
+#: src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Hỏi trước khi đ_ổ rác hoặc xóa tập tin"
 
-#: src/nautilus-file-management-properties.glade.h:37
+#: src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
-msgstr "Hành vi"
+msgstr "Ứng xử"
 
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:44
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5378,109 +5412,109 @@ msgstr ""
 "Chọn thứ tự thông tin hiển thị dưới tên biểu tượng. Hiển thị nhiều thông tin "
 "hơn khi phóng to trong closer."
 
-#: src/nautilus-file-management-properties.glade.h:44
-msgid "Count _number of items:"
-msgstr "Đếm s_ố mục:"
-
 #: src/nautilus-file-management-properties.glade.h:45
+msgid "Count _number of items:"
+msgstr "Đếm _số lượng các mục:"
+
+#: src/nautilus-file-management-properties.glade.h:46
 msgid "Default _zoom level:"
 msgstr "Cấp phóng mặc định"
 
-#: src/nautilus-file-management-properties.glade.h:46
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "File Management Preferences"
 msgstr "Tùy Thích Quản Lý Tập Tin"
 
-#: src/nautilus-file-management-properties.glade.h:47
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "K_ể cả lệnh xóa không đưa vào sọt rác"
 
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon Captions"
 msgstr "Tiêu đề biểu tượng"
 
-#: src/nautilus-file-management-properties.glade.h:51
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "Local Files Only"
 msgstr "Chỉ cho tập tin cục bộ"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "Never"
 msgstr "Không bao giờ"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Preview _sound files:"
 msgstr "Nghe thử tập tin _âm thanh:"
 
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "Show _only folders"
 msgstr "Ch_ỉ hiển thị thư mục"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Show _thumbnails:"
 msgstr "Hiển thị _thumbnails:"
 
-#: src/nautilus-file-management-properties.glade.h:58
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Show hidden and _backup files"
 msgstr "Hiển thị tập tin sao lưu và tập tin ẩn"
 
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Show te_xt in icons:"
 msgstr "Hiển thị v_ăn bản theo biểu tượng:"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Sort _folders before files"
 msgstr "Xếp thư mục trước tập tin"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Sort in _reverse"
 msgstr "Xắp xếp theo thứ tự ngược"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "Use _manual layout"
 msgstr "Dùng cách trình bày thủ công"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "View _new folders using:"
 msgstr "Xem thư mục m_ới bằng:"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "Views"
 msgstr "Xem"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "_Arrange items:"
 msgstr "Chỉnh đốn các mục:"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Default zoom level:"
 msgstr "Cỡ phóng mặc định"
 
-#: src/nautilus-file-management-properties.glade.h:68
-msgid "_Double click to activate items"
-msgstr ""
-
 #: src/nautilus-file-management-properties.glade.h:69
+msgid "_Double click to activate items"
+msgstr "Nhấn _kép để kích hoạt các mục"
+
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Only for files smaller than:"
 msgstr "Ch_ỉ cho tập tin nhỏ hơn:"
 
-#: src/nautilus-file-management-properties.glade.h:70
-msgid "_Open activated item in a new window"
-msgstr "_Mở mục được kích hoạt trong một cửa sổ mới"
-
 #: src/nautilus-file-management-properties.glade.h:71
-msgid "_Run executable text files when they are clicked"
-msgstr "_Thực thi các tập tin văn bản chạy được khi chúng được ấn"
+msgid "_Open activated item in a new window"
+msgstr "M_ở mục đã kích hoạt trong cửa sổ mới"
 
 #: src/nautilus-file-management-properties.glade.h:72
-msgid "_Single click to activate items"
-msgstr ""
+msgid "_Run executable text files when they are clicked"
+msgstr "_Chạy các tập tin text thực thi được khi chúng được nhấn"
 
 #: src/nautilus-file-management-properties.glade.h:73
+msgid "_Single click to activate items"
+msgstr "Nhấn _đơn để kích hoạt các mục"
+
+#: src/nautilus-file-management-properties.glade.h:74
 msgid "_Use compact layout"
 msgstr "D_ùng cách trình bày gọn"
 
-#: src/nautilus-file-management-properties.glade.h:74
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "_View executable text files when they are clicked"
-msgstr "_Xem các tập tin văn bản chạy được khi chúng được nhấn"
+msgstr "_Xem các tập tin text thực thi được khi chúng được nhấn"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -5489,6 +5523,10 @@ msgid ""
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
+"Việc tồn tại tập tin này cho thấy đồ thuật cấu hình Nautilus\n"
+"đang được hiện diện.\n"
+"\n"
+"Bạn có thể tự xóa tập tin này để hiện lại đồ thuật.\n"
 
 #: src/nautilus-information-panel.c:882
 #, c-format
@@ -5550,28 +5588,28 @@ msgid "Restart Nautilus."
 msgstr "Khởi động lại Nautilus"
 
 #. Set initial window title
-#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:232
 #: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:201
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check không thể dùng được với URIs.\n"
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:205
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: không thể dùng được -- check với các lựa chọn khác.\n"
 
-#: src/nautilus-main.c:204
+#: src/nautilus-main.c:209
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus:  không thể dùng --quit được với URIs.\n"
 
-#: src/nautilus-main.c:208
+#: src/nautilus-main.c:213
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: không thể dùng --restart với URIs.\n"
 
-#: src/nautilus-main.c:212
+#: src/nautilus-main.c:217
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: không thể dùng --geometry với nhiều hơn một URI.\n"
 
@@ -5590,7 +5628,7 @@ msgstr "Profile Dump"
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:270
 msgid "Backgrounds and Emblems"
-msgstr "Nền và Biểu tượng"
+msgstr "Nền và Hình tượng"
 
 #: src/nautilus-property-browser.c:386
 msgid "_Remove..."
@@ -5600,154 +5638,154 @@ msgstr "Loại bỏ..."
 msgid "_Add new..."
 msgstr "Thêm mới..."
 
-#: src/nautilus-property-browser.c:907
+#: src/nautilus-property-browser.c:913
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Xin lỗi, nhưng mẫu %s không xóa được."
 
-#: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
+#: src/nautilus-property-browser.c:914 src/nautilus-property-browser.c:943
 msgid "Couldn't delete pattern"
 msgstr "Không xóa được mẫu"
 
-#: src/nautilus-property-browser.c:936
+#: src/nautilus-property-browser.c:942
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr "Xin lỗi, biểu tượng %s không xóa được."
+msgstr "Xin lỗi, không thể xóa hình tượng %s."
 
-#: src/nautilus-property-browser.c:975
+#: src/nautilus-property-browser.c:981
 msgid "Create a New Emblem:"
-msgstr "Tạo biểu tượng mới:"
+msgstr "Tạo hình tượng mới:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:988
+#: src/nautilus-property-browser.c:994
 msgid "_Keyword:"
 msgstr "Từ khóa:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:1006
+#: src/nautilus-property-browser.c:1012
 msgid "_Image:"
 msgstr "Ảnh:"
 
-#: src/nautilus-property-browser.c:1010
+#: src/nautilus-property-browser.c:1016
 msgid "Select an image file for the new emblem:"
-msgstr "Chọn tập tin ảnh cho biểu tượng mới:"
+msgstr "Chọn tập tin ảnh cho hình tượng mới:"
 
-#: src/nautilus-property-browser.c:1034
+#: src/nautilus-property-browser.c:1040
 msgid "Create a New Color:"
 msgstr "Tạo một mầu mới:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1048
+#: src/nautilus-property-browser.c:1054
 msgid "Color _name:"
 msgstr "Tên màu:"
 
-#: src/nautilus-property-browser.c:1064
+#: src/nautilus-property-browser.c:1070
 msgid "Color _value:"
 msgstr "Giá trị mầu:"
 
-#: src/nautilus-property-browser.c:1095
+#: src/nautilus-property-browser.c:1101
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Xin lỗi, nhưng '%s' không phải là một tập tin hợp lệ."
 
-#: src/nautilus-property-browser.c:1097
+#: src/nautilus-property-browser.c:1103
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Xin lỗi, nhưng bạn đã không cung cấp một tập tin hợp lệ."
 
-#: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
+#: src/nautilus-property-browser.c:1105 src/nautilus-property-browser.c:1148
 msgid "Couldn't install pattern"
 msgstr "Mẫu không thể cài đặt"
 
-#: src/nautilus-property-browser.c:1110
+#: src/nautilus-property-browser.c:1116
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Xin lỗi, nhưng bạn không thể thay thế ảnh gốc."
 
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1116 src/nautilus-property-browser.c:1319
+#: src/nautilus-property-browser.c:1335
 msgid "Not an Image"
 msgstr "Không phải là một ảnh"
 
-#: src/nautilus-property-browser.c:1141
+#: src/nautilus-property-browser.c:1147
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Xin lỗi, nhưng không thể cài đặt mẫu %s."
 
-#: src/nautilus-property-browser.c:1161
+#: src/nautilus-property-browser.c:1167
 msgid "Select an image file to add as a pattern"
 msgstr "Hãy chọn một tập tin để thêm mẫu"
 
-#: src/nautilus-property-browser.c:1222
+#: src/nautilus-property-browser.c:1228
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Xin lỗi, nhưng bạn phải dùng tên không có khoảng trắng cho màu mới."
 
-#: src/nautilus-property-browser.c:1223
+#: src/nautilus-property-browser.c:1229
 msgid "Couldn't install color"
 msgstr "Không thể cài đặt màu"
 
-#: src/nautilus-property-browser.c:1275
+#: src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
 msgstr "Chọn một màu để thêm vào:"
 
-#: src/nautilus-property-browser.c:1312 src/nautilus-property-browser.c:1328
+#: src/nautilus-property-browser.c:1318 src/nautilus-property-browser.c:1334
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Xin lỗi, nhưng không thể dùng tập tin ảnh %s!"
 
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2037
 msgid "Select A Category:"
 msgstr "Chọn một hạng mục"
 
-#: src/nautilus-property-browser.c:2044
+#: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
 msgstr "Hủy Loại bỏ"
 
-#: src/nautilus-property-browser.c:2050
+#: src/nautilus-property-browser.c:2052
 msgid "_Add a New Pattern..."
 msgstr "Thêm một mẫu mới:"
 
-#: src/nautilus-property-browser.c:2053
+#: src/nautilus-property-browser.c:2055
 msgid "_Add a New Color..."
 msgstr "Thêm một mầu mới..."
 
-#: src/nautilus-property-browser.c:2056
+#: src/nautilus-property-browser.c:2058
 msgid "_Add a New Emblem..."
-msgstr "Th_êm biểu tượng mới..."
+msgstr "Thê_m hình tượng mới..."
 
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2081
 msgid "Click on a pattern to remove it"
 msgstr "Ấn vào mẫu để loại bỏ nó"
 
-#: src/nautilus-property-browser.c:2082
+#: src/nautilus-property-browser.c:2084
 msgid "Click on a color to remove it"
 msgstr "Ấn vào mầu để loại bỏ nó"
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2087
 msgid "Click on an emblem to remove it"
-msgstr "Nhấn lên biểu tượng để gỡ bỏ nó"
+msgstr "Nhấn lên hình tượng muốn gỡ bỏ"
 
-#: src/nautilus-property-browser.c:2094
+#: src/nautilus-property-browser.c:2096
 msgid "Patterns:"
 msgstr "Mẫu:"
 
-#: src/nautilus-property-browser.c:2097
+#: src/nautilus-property-browser.c:2099
 msgid "Colors:"
 msgstr "Mầu:"
 
-#: src/nautilus-property-browser.c:2100
+#: src/nautilus-property-browser.c:2102
 msgid "Emblems:"
-msgstr "Biểu tượng:"
+msgstr "Hình tượng:"
 
-#: src/nautilus-property-browser.c:2120
+#: src/nautilus-property-browser.c:2122
 msgid "_Remove a Pattern..."
 msgstr "Loại bỏ một mẫu..."
 
-#: src/nautilus-property-browser.c:2123
+#: src/nautilus-property-browser.c:2125
 msgid "_Remove a Color..."
 msgstr "Loại bỏ một mầu..."
 
-#: src/nautilus-property-browser.c:2126
+#: src/nautilus-property-browser.c:2128
 msgid "_Remove an Emblem..."
-msgstr "X_óa bỏ biểu tượng..."
+msgstr "_Gỡ bỏ hình tượng..."
 
 #. Menu item in the search bar.
 #. Bracketed items are context, and are message
@@ -5774,7 +5812,7 @@ msgstr "[Tìm kiếm cho] Kích thước [lớn hơn 400K]"
 
 #: src/nautilus-search-bar-criterion.c:77
 msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr "[Tìm kiếm cho] với Biểu tượng [bao gồm \"Quan Trọng\"]"
+msgstr "[Tìm kiếm cho] với hình tượng [bao gồm \"Quan Trọng\"]"
 
 #: src/nautilus-search-bar-criterion.c:78
 msgid "[Search for] Last Modified [before yesterday]"
@@ -5858,11 +5896,11 @@ msgstr "[Kích thước tập tin là] nhỏ hơn [300K]"
 
 #: src/nautilus-search-bar-criterion.c:124
 msgid "[With emblem] marked with [Important]"
-msgstr "[Với biểu tượng] được đánh dấu với [Quan Trọng]"
+msgstr "[Với hình tượng] được đánh dấu với [Quan Trọng]"
 
 #: src/nautilus-search-bar-criterion.c:125
 msgid "[With emblem] not marked with [Important]"
-msgstr "[Với biểu tượng] không được đánh dấu với [Quan Trọng]"
+msgstr "[Với hình tượng] không được đánh dấu với [Quan Trọng]"
 
 #: src/nautilus-search-bar-criterion.c:130
 msgid "[Last modified date] is [1/24/00]"
@@ -5904,7 +5942,7 @@ msgstr "[Sở hữu Tập tin] là [root]"
 msgid "[File owner] is not [root]"
 msgstr "[sở hữu tập tin] không phải là [root]"
 
-#: src/nautilus-server-connect.c:129
+#: src/nautilus-server-connect.c:130
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
@@ -5912,7 +5950,7 @@ msgstr ""
 "Không thể thực thi nautilus\n"
 "Hãy đảm bảo là nautilus nằm trong đường dẫn và được cài đặt đúng"
 
-#: src/nautilus-server-connect.c:392
+#: src/nautilus-server-connect.c:393
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
@@ -5923,7 +5961,7 @@ msgstr ""
 "Hãy bảo đảm là địa chỉ đúng và luân phiên, kiểu trong địa chỉ này trực tiếp "
 "trong trình quản lý tập tin"
 
-#: src/nautilus-server-connect.c:457
+#: src/nautilus-server-connect.c:458
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
@@ -6004,7 +6042,7 @@ msgstr "Hiển thị sự đánh giá cho những nhà khám phá Nautilus"
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr "Hiển thị mẫu, màu và biểu tượng có thể được dùng để tùy chỉnh diệm mạo"
+msgstr "Hiển thị mẫu, màu và hình tượng có thể được dùng để tùy chỉnh diệm mạo"
 
 #: src/nautilus-shell-ui.xml.h:18
 msgid "Display the latest contents of the current location"
@@ -6106,6 +6144,10 @@ msgstr "Thanh trạng thái"
 msgid "Start Profiling"
 msgstr "Khởi động Profiling"
 
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Stop"
+msgstr "Ngừng"
+
 #: src/nautilus-shell-ui.xml.h:45
 msgid "Stop Profiling"
 msgstr "Dừng Profiling"
@@ -6124,7 +6166,7 @@ msgstr "Lên"
 
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
-#: src/nautilus-window.c:1465
+#: src/nautilus-window.c:1489
 msgid "View as..."
 msgstr "Xem theo..."
 
@@ -6150,7 +6192,7 @@ msgstr "Quay lại"
 
 #: src/nautilus-shell-ui.xml.h:55
 msgid "_Backgrounds and Emblems"
-msgstr "N_ền và Biểu tượng"
+msgstr "N_ền và Hình tượng"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "_Clear History"
@@ -6273,28 +6315,28 @@ msgstr "Hiển thị %s"
 msgid "Find:"
 msgstr "Tìm:"
 
-#: src/nautilus-view-frame.c:549
+#: src/nautilus-view-frame.c:557
 msgid "a title"
 msgstr "một tựa đề"
 
-#: src/nautilus-view-frame.c:558
+#: src/nautilus-view-frame.c:566
 msgid "the browse history"
 msgstr "biên sử duyệt qua"
 
-#: src/nautilus-view-frame.c:567
+#: src/nautilus-view-frame.c:575
 msgid "the current selection"
 msgstr "lựa chọn hiện thời"
 
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
-#: src/nautilus-window-manage-views.c:191
+#: src/nautilus-window-manage-views.c:192
 msgid "Desktop"
 msgstr "Cửa sổ Desktop"
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:850
 msgid "View Failed"
 msgstr "Cảnh xem bị sai"
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:861
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -6303,20 +6345,20 @@ msgstr ""
 "Cảnh xem %s gặp một lỗi và không tiếp tục được. Bạn có thể chọn cảnh xem "
 "khác hoặc đi tới một vị trí khác."
 
-#: src/nautilus-window-manage-views.c:871
+#: src/nautilus-window-manage-views.c:872
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Cảnh xem %s gặp một lỗi trong khi khởi động."
 
-#: src/nautilus-window-manage-views.c:1028
+#: src/nautilus-window-manage-views.c:1029
 msgid "Content View"
 msgstr "Xem Nội dung"
 
-#: src/nautilus-window-manage-views.c:1029
+#: src/nautilus-window-manage-views.c:1030
 msgid "View of the current file or folder"
 msgstr "Cảnh xem của tập tin hin hay thư mục hiện thời"
 
-#: src/nautilus-window-manage-views.c:1052
+#: src/nautilus-window-manage-views.c:1053
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -6324,7 +6366,7 @@ msgstr ""
 "Một trong những panel vạch lề gặp một lỗi và không thể tiếp tục được. Đáng "
 "tiếc tôi không thể nói cho bạn biết đó là lỗi gì được."
 
-#: src/nautilus-window-manage-views.c:1056
+#: src/nautilus-window-manage-views.c:1057
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -6333,18 +6375,18 @@ msgstr ""
 "Panel của thanh bên %s gặp lỗi và không tiếp tục được. Nếu vẫn còn xảy ra, "
 "bạn có thể cần tắt panel đi."
 
-#: src/nautilus-window-manage-views.c:1061
+#: src/nautilus-window-manage-views.c:1062
 msgid "Sidebar Panel Failed"
 msgstr "Panel thanh vạch lề Hỏng"
 
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Không tìm thấy \"%s\". Xin hãy kiểm tra lại lỗi chính tả và thử lại một lần "
 "nữa."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1322
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -6352,7 +6394,7 @@ msgstr ""
 " \"%s\" không phải là một địa điểm hợp lệ.Xin hãy kiểm tra lại lỗi chính tả "
 "và thử lại một lần nữa."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1336
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -6361,32 +6403,32 @@ msgstr ""
 "Không thể hiển thị được \"%s\" vì Nautilus không xác định được dạng tập tin "
 "của nó."
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1344
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus đã không cài đặt bộ quan sát để có hể hiển thị được \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1344
+#: src/nautilus-window-manage-views.c:1356
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Không thể hiển thị được \"%s\" vì Nautilus không thể liên hệ đuợc với %s: "
 "địa điểm."
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "Không hiển thị được \"%s\" vì đã không thành công khi thử thực hiện truy "
 "nhập."
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1367
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Không hiển thị được \"%s\" vì truy cập bị từ chối."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1378
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -6396,7 +6438,7 @@ msgstr ""
 "kiểm tra lại lỗi chính tả tên của máy hoặc là bạn đã thiết đặt không đúng "
 "proxy của bạn."
 
-#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -6405,7 +6447,7 @@ msgstr ""
 "Không hiển thị được \"%s\" vì tên của máy chủ bị trống. Xin hãy kiểm tra lại "
 "sự thiết đặt proxy của bạn xem chúng có đúng không"
 
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1393
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6416,7 +6458,7 @@ msgstr ""
 "master.\n"
 "Chắc chắn rằng một trạm dịch vụ SMB đang chạc trên mạng cục bộ."
 
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1405
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6427,24 +6469,24 @@ msgstr ""
 "dịch vụ tìm không hoạt động. Hãy chắc chắn là bạn đã khởi động dịch vụ tìm "
 "Medusa đồng thời nếu bạn chưa có một chỉ số để bộ chỉ số Medusa hoạt động."
 
-#: src/nautilus-window-manage-views.c:1397
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "Tìm kiếm không sử dụng được"
 
-#: src/nautilus-window-manage-views.c:1402
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus không thể hiển thị được \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1419
 msgid "Can't Display Location"
 msgstr "Không thể hiển thị được địa điểm."
 
-#: src/nautilus-window-manage-views.c:1643
+#: src/nautilus-window-manage-views.c:1673
 msgid "Side Pane"
 msgstr "Ô vạch lề"
 
-#: src/nautilus-window-manage-views.c:1645
+#: src/nautilus-window-manage-views.c:1675
 msgid "Contains a side pane view"
 msgstr "Có chứa một cảnh xem của ô vạch lề"
 
@@ -6526,36 +6568,36 @@ msgstr "Đi tới địa điểm không tồn tại"
 msgid "Go to the location specified by this bookmark"
 msgstr "Đi đến vị trí được chỉ ra bởi Đánh Dấu này"
 
-#: src/nautilus-window-toolbars.c:422
+#: src/nautilus-window-toolbars.c:367
 msgid "Go back a few pages"
 msgstr "Quay lại một vài trang"
 
-#: src/nautilus-window-toolbars.c:425
+#: src/nautilus-window-toolbars.c:370
 msgid "Go forward a number of pages"
 msgstr "Tiến lên một vài trang tiếp theo"
 
-#: src/nautilus-window.c:661
+#: src/nautilus-window.c:668
 msgid "Information"
 msgstr "Thông tin"
 
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1195
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Hiển thị địa điểm này với \"%s\""
 
-#: src/nautilus-window.c:2198
+#: src/nautilus-window.c:2237
 msgid "Application ID"
 msgstr "Bộ nhận diện ứng dụng "
 
-#: src/nautilus-window.c:2199
+#: src/nautilus-window.c:2238
 msgid "The application ID of the window."
 msgstr "Bộ nhận diện ứng dụng của của sổ"
 
-#: src/nautilus-window.c:2205
+#: src/nautilus-window.c:2244
 msgid "Application"
 msgstr "Ứng dụng"
 
-#: src/nautilus-window.c:2206
+#: src/nautilus-window.c:2245
 msgid "The NautilusApplication associated with this window."
 msgstr "Bộ ứng dụng Nautilus có liên hệ với của sổ này."
 
@@ -6590,6 +6632,48 @@ msgstr "Máy chủ mạng"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Xem máy chủ mạng trong trình quản lý tập tin của Nautilus"
+
+#~ msgid "F_onts"
+#~ msgstr "Các Phông"
+
+#~ msgid "Lucida"
+#~ msgstr "Lucida"
+
+#~ msgid "Services"
+#~ msgstr "Dịch vụ"
+
+#~ msgid "Use the Courier Font"
+#~ msgstr "Sử dụng phông Courier"
+
+#~ msgid "Use the Fixed Font"
+#~ msgstr "Sử dụng phông Fixed"
+
+#~ msgid "Use the GTK System Font"
+#~ msgstr "Sử dụng phông hệ thống GTK"
+
+#~ msgid "Use the Helvetica Font"
+#~ msgstr "Sử dụng phông Helvetica"
+
+#~ msgid "Use the Lucida Font"
+#~ msgstr "Sử dụng phông Lucida"
+
+#~ msgid "Use the Times Font"
+#~ msgstr "Sử dụng phông Times"
+
+#~ msgid "_Courier"
+#~ msgstr "_Courier"
+
+#~ msgid "_Fixed"
+#~ msgstr "_Fixed"
+
+#~ msgid "_GTK System Font"
+#~ msgstr "Phông hệ thống GTK"
+
+#~ msgid "_Helvetica"
+#~ msgstr "_Helvetica"
+
+#~ msgid "_Times"
+#~ msgstr "_Times"
 
 #~ msgid "E_xecute scripts when they are clicked"
 #~ msgstr "Thực th_i script khi chúng được nhấn chuột"
@@ -7448,8 +7532,8 @@ msgstr "Xem máy chủ mạng trong trình quản lý tập tin của Nautilus"
 #~ "the Control Center is turned off."
 #~ msgstr ""
 #~ "Xin lỗi, nhưng bộ xem âm nhạc không thể chơi lại âm thanh lúc này. Nguyên "
-#~ "nhân là do trong môđun \"Âm thanh\" lựa chọn khởi động \"Bật server âm "
-#~ "thanh\" của trung tâm điều khiển bị tắt."
+#~ "nhân là do trong môđun »Âm thanh« lựa chọn khởi động »Bật server âm "
+#~ "thanh« của trung tâm điều khiển bị tắt."
 
 #~ msgid "Unable to Play File"
 #~ msgstr "Tập tin không thể chơi được"

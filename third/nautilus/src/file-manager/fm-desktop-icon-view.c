@@ -263,7 +263,7 @@ fm_desktop_icon_view_finalize (GObject *object)
 
 	/* Remove desktop rescan timeout. */
 	if (icon_view->details->reload_desktop_timeout != 0) {
-		gtk_timeout_remove (icon_view->details->reload_desktop_timeout);
+		g_source_remove (icon_view->details->reload_desktop_timeout);
 	}
 
 	/* Delete all of the link files. */
@@ -463,7 +463,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
-		icon_name = "gome-fs-zipdisk";
+		icon_name = "gnome-dev-zipdisk";
 		break;
 
 	case NAUTILUS_DEVICE_APPLE:
@@ -489,11 +489,6 @@ create_one_mount_link (const NautilusVolume *volume, gpointer callback_data)
 {
 	create_mount_link (FM_DESKTOP_ICON_VIEW (callback_data), volume);
 	return TRUE;
-}
-
-static void
-event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_icon_view)
-{
 }
 
 static void
@@ -618,7 +613,7 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
-		gtk_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
+		g_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
 
 	g_signal_handler_disconnect (desktop_icon_view,
 				     desktop_icon_view->details->delayed_init_signal);
@@ -719,8 +714,6 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	g_signal_connect_object (icon_container, "middle_click",
 				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
-	g_signal_connect_object (desktop_icon_view, "event",
-				 G_CALLBACK (event_callback), desktop_icon_view, 0);
 	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 				 G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback), desktop_icon_view, 0);	
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",

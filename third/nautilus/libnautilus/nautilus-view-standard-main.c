@@ -298,13 +298,11 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	gnome_program_init (executable_name, version,
 			    LIBGNOMEUI_MODULE,
 			    argc, argv,
+			    /* Disable session manager connection */
+			    GNOME_CLIENT_PARAM_SM_CONNECT, FALSE,
 			    NULL);
 	
 	bonobo_ui_init (executable_name, version, &argc, argv);
-
-	/* Disable session manager connection */
-	g_object_set (G_OBJECT (gnome_program_get()),
-	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 
 	if (post_initialize_callback != NULL) {
 		(* post_initialize_callback) ();
@@ -415,7 +413,7 @@ nautilus_view_standard_main (const char *executable_name,
 						  user_data);
 }
 
-typedef GtkType (* TypeFunc) (void);
+typedef GType (* TypeFunc) (void);
 
 BonoboObject *
 nautilus_view_create_from_get_type_function (const char *iid, void *user_data)

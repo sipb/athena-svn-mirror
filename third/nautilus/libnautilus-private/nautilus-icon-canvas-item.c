@@ -99,6 +99,9 @@ struct NautilusIconCanvasItemDetails {
 	PangoLayout *editable_text_layout;
 	PangoLayout *additional_text_layout;
 	
+	GdkRectangle embedded_text_rect;
+	PangoLayout *embedded_text_layout;
+
 	/* Cached rectangle in canvas coordinates */
 	ArtIRect canvas_rect;
 	ArtIRect text_rect;
@@ -181,6 +184,10 @@ static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem    
 static void     clear_rounded_corners                (GdkPixbuf                     *destination_pixbuf,
 						      GdkPixbuf                     *corner_pixbuf,
 						      int                            corner_size);
+static void      draw_embedded_text                  (NautilusIconCanvasItem        *icon_item,
+						      GdkDrawable                   *drawable,
+						      int                            x,
+						      int                            y);
 
 
 static NautilusIconCanvasItemClass *parent_class = NULL;
@@ -238,6 +245,11 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	if (details->additional_text_layout != NULL) {
 		g_object_unref (details->additional_text_layout);
 	}
+
+	if (details->embedded_text_layout != NULL) {
+		g_object_unref (details->embedded_text_layout);
+	}
+
 	
 	g_free (details);
 
@@ -391,16 +403,25 @@ nautilus_icon_canvas_item_get_property (GObject        *object,
 	}
 }
 
-GdkPixbuf *
-nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item)
+GdkPixmap *
+nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
+				     GdkBitmap **mask)
 {
-	NautilusIconCanvasItemDetails *details;
-
+	GdkPixmap *pixmap;
+	EelCanvas *canvas;
+	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
 
-	details = item->details;
+	canvas = EEL_CANVAS_ITEM (item)->canvas;
+	gdk_pixbuf_render_pixmap_and_mask_for_colormap (item->details->pixbuf,
+							gtk_widget_get_colormap (GTK_WIDGET (canvas)),
+							&pixmap,
+							mask,
+							128);
+	
+	draw_embedded_text (item, GDK_DRAWABLE (pixmap), 0,0);
 
-	return details->pixbuf;
+	return pixmap;
 }
 
 void
@@ -474,6 +495,43 @@ nautilus_icon_canvas_item_set_attach_points (NautilusIconCanvasItem *item,
 		*item->details->attach_points = *attach_points;
 	}
 }
+
+void
+nautilus_icon_canvas_item_set_embedded_text_rect (NautilusIconCanvasItem       *item,
+						  const GdkRectangle           *text_rect)
+{
+	item->details->embedded_text_rect = *text_rect;
+
+	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+}
+
+void
+nautilus_icon_canvas_item_set_embedded_text (NautilusIconCanvasItem       *item,
+					     const char                   *text)
+{
+	PangoContext *context;
+	PangoFontDescription *desc;
+	
+	if (item->details->embedded_text_layout == NULL && text != NULL) {
+		context = gtk_widget_get_pango_context (GTK_WIDGET (EEL_CANVAS_ITEM(item)->canvas));
+		item->details->embedded_text_layout = pango_layout_new (context);
+		
+		desc = pango_font_description_from_string ("monospace 6");
+		pango_layout_set_font_description (item->details->embedded_text_layout, desc);
+		pango_font_description_free (desc);
+	}
+	
+	if (item->details->embedded_text_layout != NULL) {
+		if (text != NULL) {
+			pango_layout_set_text (item->details->embedded_text_layout, text, -1);
+		} else {
+			pango_layout_set_text (item->details->embedded_text_layout, "", -1);
+		}
+			
+		eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+	}
+}
+
 
 /* Recomputes the bounding box of a icon canvas item.
  * This is a generic implementation that could be used for any canvas item
@@ -1106,11 +1164,10 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 	/* FIXME bugzilla.gnome.org 40703: 
 	 * Dither would be better if we passed dither values. 
 	 */
-	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
-					     gdk_pixbuf_get_width (pixbuf),
-					     gdk_pixbuf_get_height (pixbuf),
-					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_NORMAL,
-					     0, 0);
+	gdk_draw_pixbuf (drawable, NULL, pixbuf, 0, 0, x, y,
+			 gdk_pixbuf_get_width (pixbuf),
+			 gdk_pixbuf_get_height (pixbuf),
+			 GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */
@@ -1203,6 +1260,37 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	return icon_item->details->rendered_pixbuf;
 }
 
+static void
+draw_embedded_text (NautilusIconCanvasItem *icon_item,
+		    GdkDrawable *drawable,
+		    int x, int y)
+{
+	GdkGC *gc;
+	GdkRectangle clip_rect;
+	
+	if (icon_item->details->embedded_text_layout == NULL ||
+	    icon_item->details->embedded_text_rect.width == 0 ||
+	    icon_item->details->embedded_text_rect.height == 0) {
+		return;
+	}
+
+	gc = gdk_gc_new (drawable);
+
+	clip_rect.x = x + icon_item->details->embedded_text_rect.x;
+	clip_rect.y = y + icon_item->details->embedded_text_rect.y;
+	clip_rect.width = icon_item->details->embedded_text_rect.width;
+	clip_rect.height = icon_item->details->embedded_text_rect.height;
+	
+	gdk_gc_set_clip_rectangle  (gc, &clip_rect);
+
+	gdk_draw_layout (drawable, gc,
+			 x + icon_item->details->embedded_text_rect.x,
+			 y + icon_item->details->embedded_text_rect.y,
+			 icon_item->details->embedded_text_layout);
+	
+	g_object_unref (gc);
+}
+
 /* Draw the icon item for non-anti-aliased mode. */
 static void
 nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
@@ -1230,6 +1318,8 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 	g_object_unref (temp_pixbuf);
 
+	draw_embedded_text (icon_item, drawable,  icon_rect.x0, icon_rect.y0);
+	
 	/* Draw the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
@@ -1510,15 +1600,9 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 		return TRUE;
 	}
 	
-	/* Check for hit in the icon. If we're highlighted for dropping, anywhere in the rect is OK */
-	if (icon_item->details->is_highlighted_for_drop) {
-		if (eel_art_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)) {
-			return TRUE;
-		}
-	} else {
-		if (hit_test_pixbuf (details->pixbuf, icon_item->details->canvas_rect, canvas_rect)) {
-			return TRUE;
-		}
+	/* Check for hit in the icon. */
+	if (eel_art_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)) {
+		return TRUE;
 	}
 
 	/* Check for hit in the text. */
@@ -1910,12 +1994,46 @@ nautilus_icon_canvas_item_accessible_get_image_position
 	 gint	                 *y,
 	 AtkCoordType	         coord_type)
 {
-	AtkComponentIface *component_if;
+	NautilusIconCanvasItem *item;
+	gint x_offset, y_offset, itmp;
 
-	component_if = g_type_interface_peek (image, ATK_TYPE_COMPONENT);
-
-	component_if->get_position
-		(ATK_COMPONENT (image), x, y, coord_type);
+	item = eel_accessibility_get_gobject (ATK_OBJECT (image));
+	if (!item) {
+		return;
+	}
+	if (!item->details->canvas_rect.x0 && !item->details->canvas_rect.x1) {
+		return;
+	} else {
+		x_offset = 0;
+		y_offset = 0;
+		if (item->details->text_width) {
+			itmp = item->details->canvas_rect.x0 -
+			       item->details->text_rect.x0;
+			if (itmp > x_offset) {
+				x_offset = itmp;
+			}
+			itmp = item->details->canvas_rect.y0 -
+			       item->details->text_rect.y0;
+			if (itmp > y_offset) {
+				y_offset = itmp;
+			}
+		}
+		if (item->details->emblem_pixbufs) {
+			itmp = item->details->canvas_rect.x0 -
+			       item->details->emblem_rect.x0;
+			if (itmp > x_offset) {
+				x_offset = itmp;
+			}
+			itmp = item->details->canvas_rect.y0 -
+			       item->details->emblem_rect.y0;
+			if (itmp > y_offset) {
+				y_offset = itmp;
+			}
+		}
+	}
+	atk_component_get_position (ATK_COMPONENT (image), x, y, coord_type);
+	*x += x_offset;
+	*y += y_offset;
 }
 
 static gboolean
@@ -1936,6 +2054,178 @@ nautilus_icon_canvas_item_accessible_image_interface_init (AtkImageIface *iface)
 	iface->get_image_position    = nautilus_icon_canvas_item_accessible_get_image_position;
 }
 
+static gint
+nautilus_icon_canvas_item_accessible_get_offset_at_point (AtkText	 *text,
+                                                          gint           x,
+                                                          gint           y,
+                                                          AtkCoordType coords)
+{
+	gint real_x, real_y, real_width, real_height;
+	NautilusIconCanvasItem *item;
+	gint editable_height;
+	gint offset = 0;
+	gint index;
+	PangoLayout *layout;
+	PangoRectangle rect0;
+	char *icon_text;
+	gboolean have_editable;
+	gboolean have_additional;
+	gint text_offset;
+
+	atk_component_get_extents (ATK_COMPONENT (text), &real_x, &real_y,
+                                   &real_width, &real_height, coords);
+
+	x -= real_x;
+	y -= real_y; 
+
+	item = eel_accessibility_get_gobject (ATK_OBJECT (text));
+
+	if (item->details->pixbuf) {
+		y -= gdk_pixbuf_get_height (item->details->pixbuf);
+	}
+	have_editable = item->details->editable_text != NULL &&
+			item->details->editable_text[0] != '\0';
+	have_additional = item->details->additional_text != NULL &&item->details->additional_text[0] != '\0';
+	if (have_editable) {
+		pango_layout_get_pixel_size (item->details->editable_text_layout, NULL, &editable_height);
+		if (y >= editable_height &&
+                    have_additional) {
+			layout = item->details->additional_text_layout;
+			icon_text = item->details->additional_text;
+			y -= editable_height + LABEL_LINE_SPACING;
+		} else {
+			layout = item->details->editable_text_layout;
+			icon_text = item->details->editable_text;
+		}
+	} else if (have_additional) {
+		layout = item->details->additional_text_layout;
+		icon_text = item->details->additional_text;
+	} else {
+		return 0;
+	}
+
+	text_offset = 0;
+	if (have_editable) {
+		pango_layout_index_to_pos (item->details->editable_text_layout, 0, &rect0);
+		text_offset = PANGO_PIXELS (rect0.x);
+	}
+	if (have_additional) {
+		gint itmp;
+
+		pango_layout_index_to_pos (item->details->additional_text_layout, 0, &rect0);
+		itmp = PANGO_PIXELS (rect0.x);
+		if (itmp < text_offset) {
+			text_offset = itmp;
+		}
+	}
+	pango_layout_index_to_pos (layout, 0, &rect0);
+	x += text_offset;
+	if (!pango_layout_xy_to_index (layout, 
+                                       x * PANGO_SCALE, 
+                                       y * PANGO_SCALE, 
+                                       &index, NULL)) {
+		if (x < 0 || y < 0) {
+			index = 0;
+		} else {
+			index = -1;
+		}
+	}
+	if (index == -1) {
+		offset = g_utf8_strlen (icon_text, -1);
+	} else {
+		offset = g_utf8_pointer_to_offset (icon_text, icon_text + index);
+	}
+	if (layout == item->details->additional_text_layout) {
+		offset += g_utf8_strlen (item->details->editable_text, -1);	
+	}
+	return offset;
+}
+
+static void
+nautilus_icon_canvas_item_accessible_get_character_extents (AtkText	   *text,
+                                                            gint	   offset,
+                                                            gint	   *x,
+                                                            gint	   *y,
+                                                            gint	   *width,
+                                                            gint	   *height,
+                                                            AtkCoordType coords)
+{
+	gint pos_x, pos_y;
+	gint len, byte_offset;
+	gint editable_height;
+	gchar *icon_text;
+	NautilusIconCanvasItem *item;
+	PangoLayout *layout;
+	PangoRectangle rect;
+	PangoRectangle rect0;
+	gboolean have_editable;
+	gint text_offset;
+
+	atk_component_get_position (ATK_COMPONENT (text), &pos_x, &pos_y, coords);
+	item = eel_accessibility_get_gobject (ATK_OBJECT (text));
+
+	if (item->details->pixbuf) {
+		pos_y += gdk_pixbuf_get_height (item->details->pixbuf);
+	}
+
+	have_editable = item->details->editable_text != NULL &&
+			item->details->editable_text[0] != '\0';
+	if (have_editable) {
+		len = g_utf8_strlen (item->details->editable_text, -1);
+	} else {
+		len = 0;
+	}
+
+	if (offset < len) {
+		icon_text = item->details->editable_text;
+		layout = item->details->editable_text_layout;
+	} else {
+		offset -= len;
+		icon_text = item->details->additional_text;
+		layout = item->details->additional_text_layout;
+		pos_y += LABEL_LINE_SPACING;
+		if (have_editable) {
+			pango_layout_get_pixel_size (item->details->editable_text_layout, NULL, &editable_height);
+			pos_y += editable_height;
+		}
+	}
+	byte_offset = g_utf8_offset_to_pointer (icon_text, offset) - icon_text;
+	pango_layout_index_to_pos (layout, byte_offset, &rect);
+	text_offset = 0;
+	if (have_editable) {
+		pango_layout_index_to_pos (item->details->editable_text_layout, 0, &rect0);
+		text_offset = PANGO_PIXELS (rect0.x);
+	}
+	if (item->details->additional_text != NULL &&
+	    item->details->additional_text[0] != '\0') {
+		gint itmp;
+
+		pango_layout_index_to_pos (item->details->additional_text_layout, 0, &rect0);
+		itmp = PANGO_PIXELS (rect0.x);
+		if (itmp < text_offset) {
+			text_offset = itmp;
+		}
+	}
+
+	*x = pos_x + PANGO_PIXELS (rect.x) - text_offset;
+	*y = pos_y + PANGO_PIXELS (rect.y);
+	*width = PANGO_PIXELS (rect.width);
+	*height = PANGO_PIXELS (rect.height);
+}
+
+static void
+nautilus_icon_canvas_item_accessible_text_interface_init (AtkTextIface *iface)
+{
+ 	iface->get_text                = eel_accessibility_text_get_text;
+	iface->get_character_at_offset = eel_accessibility_text_get_character_at_offset;
+        iface->get_text_before_offset  = eel_accessibility_text_get_text_before_offset;
+        iface->get_text_at_offset      = eel_accessibility_text_get_text_at_offset;
+   	iface->get_text_after_offset   = eel_accessibility_text_get_text_after_offset;
+      	iface->get_character_count     = eel_accessibility_text_get_character_count;
+	iface->get_character_extents   = nautilus_icon_canvas_item_accessible_get_character_extents;
+	iface->get_offset_at_point     = nautilus_icon_canvas_item_accessible_get_offset_at_point;
+}
+
 static GType
 nautilus_icon_canvas_item_accessible_get_type (void)
 {
@@ -1948,6 +2238,14 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 			(GInterfaceFinalizeFunc) NULL,
 			NULL
 		};
+
+		static const GInterfaceInfo atk_text_info = {
+			(GInterfaceInitFunc)
+			nautilus_icon_canvas_item_accessible_text_interface_init,
+			(GInterfaceFinalizeFunc) NULL,
+			NULL
+		};
+
 		type = eel_accessibility_create_derived_type (
 			"NautilusIconCanvasItemAccessibility",
 			EEL_TYPE_CANVAS_ITEM,
@@ -1957,7 +2255,9 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 			g_type_add_interface_static (
 				type, ATK_TYPE_IMAGE, &atk_image_info);
 
-			eel_accessibility_add_simple_text (type);
+			g_type_add_interface_static (
+				type, ATK_TYPE_TEXT, &atk_text_info);
+
 		}
 	}
 
@@ -1970,6 +2270,7 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 	GType type;
 	AtkObject *accessible;
 	NautilusIconCanvasItem *item;
+	GString *item_text;
 
 	item = NAUTILUS_ICON_CANVAS_ITEM (for_object);
 	g_return_val_if_fail (item != NULL, NULL);
@@ -1980,11 +2281,20 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 		return atk_no_op_object_new (for_object);
 	}
 
+	item_text = g_string_new (NULL);
+	if (item->details->editable_text) {
+        	g_string_append (item_text, item->details->editable_text);
+	}
+	if (item->details->additional_text) {
+        	g_string_append (item_text, item->details->additional_text);
+	}
 	item->details->text_util = gail_text_util_new ();
 	gail_text_util_text_setup (item->details->text_util,
-				   item->details->editable_text);
+				   item_text->str);
+	g_string_free (item_text, TRUE);
 
 	accessible = g_object_new (type, NULL);
+	atk_object_set_role (accessible, ATK_ROLE_LABEL);
 
 	return eel_accessibility_set_atk_object_return
 		(for_object, accessible);

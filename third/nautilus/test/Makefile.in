@@ -354,6 +354,32 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+test-nautilus-async-activation.o: test-nautilus-async-activation.c \
+	../config.h ../libnautilus-private/nautilus-bonobo-extensions.h
+test-nautilus-mime-actions-set.o: test-nautilus-mime-actions-set.c \
+	../config.h ../libnautilus-private/nautilus-mime-actions.h \
+	../libnautilus-private/nautilus-file.h
+test-nautilus-mime-actions.o: test-nautilus-mime-actions.c ../config.h \
+	../libnautilus-private/nautilus-mime-actions.h \
+	../libnautilus-private/nautilus-file.h
+test-nautilus-preferences-change.o: test-nautilus-preferences-change.c \
+	test.h ../config.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h
+test-nautilus-preferences-display.o: test-nautilus-preferences-display.c \
+	test.h ../config.h \
+	../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-global-preferences.h
+test-nautilus-smooth-graphics.o: test-nautilus-smooth-graphics.c \
+	../config.h \
+	../libnautilus-private/nautilus-global-preferences.h
+test-nautilus-wrap-table.o: test-nautilus-wrap-table.c test.h \
+	../config.h ../libnautilus-private/nautilus-file-utilities.h \
+	../libnautilus-private/nautilus-customization-data.h \
+	../libnautilus-private/nautilus-icon-factory.h \
+	../libnautilus-private/nautilus-file.h
+test.o: test.c test.h ../config.h \
+	../libnautilus-private/nautilus-file-utilities.h
 
 info-am:
 info: info-am

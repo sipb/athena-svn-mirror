@@ -535,7 +535,8 @@ get_background_drag_action (NautilusIconContainer *container,
 			valid_actions |= NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
 		}
 
-		action = nautilus_drag_drop_background_ask (valid_actions);
+		action = nautilus_drag_drop_background_ask 
+			(GTK_WIDGET (container), valid_actions);
 	}
 
 	return action;
@@ -712,6 +713,7 @@ stop_auto_scroll (NautilusIconContainer *container)
 static gboolean
 confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
+#if 0
 	const char *message;
 	GtkDialog *dialog;
 	int response;
@@ -743,13 +745,15 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 
 	dialog = eel_show_yes_no_dialog (message, _("Switch to Manual Layout?"),
 					 _("Switch"), GTK_STOCK_CANCEL,
-					 GTK_WINDOW (gtk_widget_get_ancestor 
-						     (GTK_WIDGET (container), GTK_TYPE_WINDOW)));
-	
+					 GTK_WINDOW (gtk_widget_get_toplevel(GTK_WIDGET(container))));
+
 	response = gtk_dialog_run (dialog);
 	gtk_object_destroy (GTK_OBJECT (dialog));
 
 	return response == GTK_RESPONSE_YES;
+#else
+	return FALSE;
+#endif
 }
 
 static void
@@ -979,7 +983,8 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 				action |= NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
 			}
 		}
-		context->action = nautilus_drag_drop_action_ask (action);
+		context->action = nautilus_drag_drop_action_ask
+			(GTK_WIDGET (container), action);
 	}
 	
 	if (context->action == NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {
@@ -1196,7 +1201,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	NautilusIconDndInfo *dnd_info;
 	EelCanvas *canvas;
 	GdkDragContext *context;
-	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	int x_offset, y_offset;
 	ArtDRect world_rect;
 	ArtIRect widget_rect;
@@ -1215,7 +1221,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
         /* create a pixmap and mask to drag with */
-        pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
+        pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask);
     
     	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
 	   stippled masks, so we had to remove the code; this comment is left as a memorial
@@ -1240,7 +1246,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 
 	if (context) {
 		/* set the icon for dragging */
-		gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+		gtk_drag_set_icon_pixmap (context,
+					  gtk_widget_get_colormap (GTK_WIDGET (container)),
+					  pixmap, mask,
+					  x_offset, y_offset);
 	}
 }
 

@@ -175,6 +175,7 @@ libnautilusinclude_HEADERS = \
 	nautilus-clipboard.h			\
 	nautilus-distributed-undo.h		\
 	nautilus-idle-queue.h			\
+	nautilus-scroll-positionable.h		\
 	nautilus-view-component.h		\
 	nautilus-view.h				\
 	nautilus-view-standard-main.h		\
@@ -188,6 +189,7 @@ libnautilus_la_SOURCES = \
 	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus-clipboard.c				\
 	nautilus-idle-queue.c				\
+	nautilus-scroll-positionable.c			\
 	nautilus-undo-transaction.c			\
 	nautilus-undo-transaction.h			\
 	nautilus-undo.c					\
@@ -251,8 +253,9 @@ libnautilus_la_OBJECTS =  nautilus-view-component-stubs.lo \
 nautilus-view-component-skels.lo nautilus-view-component-common.lo \
 nautilus-distributed-undo-stubs.lo nautilus-distributed-undo-skels.lo \
 nautilus-distributed-undo-common.lo nautilus-clipboard.lo \
-nautilus-idle-queue.lo nautilus-undo-transaction.lo nautilus-undo.lo \
-nautilus-view.lo nautilus-view-standard-main.lo
+nautilus-idle-queue.lo nautilus-scroll-positionable.lo \
+nautilus-undo-transaction.lo nautilus-undo.lo nautilus-view.lo \
+nautilus-view-standard-main.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -474,6 +477,39 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+nautilus-clipboard.lo nautilus-clipboard.o : nautilus-clipboard.c \
+	../config.h nautilus-clipboard.h nautilus-bonobo-ui.h
+nautilus-distributed-undo-common.lo nautilus-distributed-undo-common.o : \
+	nautilus-distributed-undo-common.c nautilus-distributed-undo.h
+nautilus-distributed-undo-skels.lo nautilus-distributed-undo-skels.o : \
+	nautilus-distributed-undo-skels.c nautilus-distributed-undo.h
+nautilus-distributed-undo-stubs.lo nautilus-distributed-undo-stubs.o : \
+	nautilus-distributed-undo-stubs.c nautilus-distributed-undo.h
+nautilus-idle-queue.lo nautilus-idle-queue.o : nautilus-idle-queue.c \
+	../config.h nautilus-idle-queue.h
+nautilus-scroll-positionable.lo nautilus-scroll-positionable.o : \
+	nautilus-scroll-positionable.c nautilus-scroll-positionable.h \
+	nautilus-view-component.h ../config.h
+nautilus-undo-transaction.lo nautilus-undo-transaction.o : \
+	nautilus-undo-transaction.c ../config.h \
+	nautilus-undo-transaction.h nautilus-undo.h \
+	nautilus-distributed-undo.h nautilus-undo-private.h
+nautilus-undo.lo nautilus-undo.o : nautilus-undo.c ../config.h \
+	nautilus-undo.h nautilus-undo-private.h \
+	nautilus-distributed-undo.h nautilus-undo-transaction.h \
+	nautilus-undo.h
+nautilus-view-component-common.lo nautilus-view-component-common.o : \
+	nautilus-view-component-common.c nautilus-view-component.h
+nautilus-view-component-skels.lo nautilus-view-component-skels.o : \
+	nautilus-view-component-skels.c nautilus-view-component.h
+nautilus-view-component-stubs.lo nautilus-view-component-stubs.o : \
+	nautilus-view-component-stubs.c nautilus-view-component.h
+nautilus-view-standard-main.lo nautilus-view-standard-main.o : \
+	nautilus-view-standard-main.c ../config.h \
+	nautilus-view-standard-main.h
+nautilus-view.lo nautilus-view.o : nautilus-view.c ../config.h \
+	nautilus-view.h nautilus-view-component.h nautilus-idle-queue.h \
+	nautilus-undo.h
 
 info-am:
 info: info-am

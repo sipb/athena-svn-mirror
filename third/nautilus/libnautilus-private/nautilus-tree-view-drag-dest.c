@@ -126,7 +126,7 @@ static void
 remove_scroll_timeout (NautilusTreeViewDragDest *dest)
 {
 	if (dest->details->scroll_id) {
-		gtk_timeout_remove (dest->details->scroll_id);
+		g_source_remove (dest->details->scroll_id);
 		dest->details->scroll_id = 0;
 	}
 }
@@ -388,9 +388,9 @@ drag_motion_callback (GtkWidget *widget,
 	
 	if (dest->details->scroll_id == 0) {
 		dest->details->scroll_id = 
-			gtk_timeout_add (150, 
-					 scroll_timeout, 
-					 dest->details->tree_view);
+			g_timeout_add (150, 
+				       scroll_timeout, 
+				       dest->details->tree_view);
 	}
 
 	gdk_drag_status (context, action, time);
@@ -441,7 +441,8 @@ receive_uris (NautilusTreeViewDragDest *dest,
 		} else {
 			action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
 		}
-		context->action = nautilus_drag_drop_action_ask (action);
+		context->action = nautilus_drag_drop_action_ask
+			(GTK_WIDGET (dest->details->tree_view), action);
 	}
 
 	/* We only want to copy external uris */

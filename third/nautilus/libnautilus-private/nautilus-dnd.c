@@ -551,7 +551,8 @@ append_drop_action_menu_item (GtkWidget          *menu,
 
 /* Pops up a menu of actions to perform on dropped files */
 GdkDragAction
-nautilus_drag_drop_action_ask (GdkDragAction actions)
+nautilus_drag_drop_action_ask (GtkWidget *widget,
+			       GdkDragAction actions)
 {
 	GtkWidget *menu;
 	GtkWidget *menu_item;
@@ -561,6 +562,7 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	 * allowed actions.
 	 */
 	menu = gtk_menu_new ();
+	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
 	
 	append_drop_action_menu_item (menu, _("_Move here"),
 				      GDK_ACTION_MOVE,
@@ -614,7 +616,8 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 }
 
 GdkDragAction
-nautilus_drag_drop_background_ask (GdkDragAction actions)
+nautilus_drag_drop_background_ask (GtkWidget *widget, 
+				   GdkDragAction actions)
 {
 	GtkWidget *menu;
 	GtkWidget *menu_item;
@@ -624,6 +627,7 @@ nautilus_drag_drop_background_ask (GdkDragAction actions)
 	 * allowed actions.
 	 */
 	menu = gtk_menu_new ();
+	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
 	
 	append_drop_action_menu_item (menu, _("Set as background for _all folders"),
 				      NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND,
@@ -760,14 +764,14 @@ nautilus_drag_autoscroll_start (NautilusDragInfo *drag_info,
 			drag_info->start_auto_scroll_in = eel_get_system_time() 
 				+ AUTOSCROLL_INITIAL_DELAY;
 			
-			drag_info->auto_scroll_timeout_id = gtk_timeout_add
+			drag_info->auto_scroll_timeout_id = g_timeout_add
 				(AUTOSCROLL_TIMEOUT_INTERVAL,
 				 callback,
 			 	 user_data);
 		}
 	} else {
 		if (drag_info->auto_scroll_timeout_id != 0) {
-			gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
+			g_source_remove (drag_info->auto_scroll_timeout_id);
 			drag_info->auto_scroll_timeout_id = 0;
 		}
 	}
@@ -777,7 +781,7 @@ void
 nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
 {
 	if (drag_info->auto_scroll_timeout_id != 0) {
-		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
+		g_source_remove (drag_info->auto_scroll_timeout_id);
 		drag_info->auto_scroll_timeout_id = 0;
 	}
 }

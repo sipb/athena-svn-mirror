@@ -62,8 +62,8 @@ struct NautilusWindowDetails
 
 	/* Toolbar. */
         GtkTooltips *tooltips;
-	BonoboUIToolbarItem *back_button_item;
-	BonoboUIToolbarItem *forward_button_item;
+	GtkWidget *back_button_item;
+	GtkWidget *forward_button_item;
 
         /* Current location. */
         char *location;
@@ -76,6 +76,7 @@ struct NautilusWindowDetails
         NautilusLocationChangeType location_change_type;
         guint location_change_distance;
         char *pending_location;
+        char *pending_scroll_to;
         GList *pending_selection;
         NautilusDetermineViewHandle *determine_view_handle;
 
