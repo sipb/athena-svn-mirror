@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.53 2002-10-08 23:28:06 ghudson Exp $
+# $Id: Makefile,v 1.54 2003-02-19 20:39:35 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -7,8 +7,8 @@ ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
 ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs lastlog listmaint \
-	mailmaint moira mrcheck namespace stanley stella usermaint xinfo \
-	show-application show-audio show-binhex show-excel show-image \
+	mailmaint mitch moira mrcheck namespace stanley stella usermaint \
+	xinfo show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
 	psrev psroff
@@ -35,6 +35,8 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MOIRA}/man/cat1/listmaint.1	${ATHMANDIR}/cat1/listmaint.1 \
 		${MOIRA}/man/man1/mailmaint.1	${ATHMANDIR}/man1/mailmaint.1 \
 		${MOIRA}/man/cat1/mailmaint.1	${ATHMANDIR}/cat1/mailmaint.1 \
+		${MOIRA}/man/man1/mitch.1	${ATHMANDIR}/man1/mitch.1 \
+		${MOIRA}/man/cat1/mitch.1	${ATHMANDIR}/cat1/mitch.1 \
 		${MOIRA}/man/man1/moira.1	${ATHMANDIR}/man1/moira.1 \
 		${MOIRA}/man/cat1/moira.1	${ATHMANDIR}/cat1/moira.1 \
 		${MOIRA}/man/man1/mrcheck.1	${ATHMANDIR}/man1/mrcheck.1 \
@@ -124,6 +126,7 @@ install:
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mailmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 mh.1 ${DESTDIR}${ATHMANDIR}/man1
+	install -c -m 555 mitch ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 moira ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 mozilla.sh ${DESTDIR}${ATHBINDIR}/mozilla
 	install -c -m 555 mrcheck ${DESTDIR}${ATHBINDIR}

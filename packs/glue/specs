@@ -8,6 +8,7 @@ gs		ghostscript
 lastlog		consult
 listmaint	moira
 mailmaint	moira
+mitch		moira
 moira		moira
 mrcheck		moira
 namespace	moira
