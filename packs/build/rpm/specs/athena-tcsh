@@ -8,3 +8,12 @@ Requires: athena-hesiod
 %description
 The standard user shell on Athena
 
+%post
+if [ ! -f /etc/shells ] || ! grep -q '^/bin/athena/tcsh$' /etc/shells; then
+  echo "/bin/athena/tcsh" >> /etc/shells
+fi
+
+%postun
+[ $1 = 0 ] || exit 0
+grep -v '^/bin/athena/tcsh$' < /etc/shells > /etc/shells.rpm
+mv /etc/shells.rpm /etc/shells
