@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.9 1999-03-14 17:16:07 ghudson Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.10 1999-03-18 22:58:44 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -50,12 +50,12 @@ struct agetopt_option add_options[] = {
 char *shell_templates[2][2] =
 {
   {
-    "setenv PATH %s; setenv MANPATH %s\n",
-    "PATH=%s; export PATH; MANPATH=%s; export MANPATH\n"
+    "setenv PATH %s; setenv MANPATH %s; setenv INFOPATH %s\n",
+    "PATH=%s; export PATH; MANPATH=%s; export MANPATH; INFOPATH=%s; export INFOPATH\n"
   },
   {
-    "set athena_path=(%s); setenv MANPATH %s\n",
-    "athena_path=%s; MANPATH=%s; export MANPATH\n"
+    "set athena_path=(%s); setenv MANPATH %s; setenv INFOPATH %s\n",
+    "athena_path=%s; MANPATH=%s; export MANPATH; INFOPATH=%s; export INFOPATH\n"
   }
 };
 
@@ -66,7 +66,7 @@ int add_main(int argc, char **argv);
 
 static int quiet = 0, give_warnings = 0, remove_from_path = 0;
 static int add_to_front = 0, bourne_shell = 0, use_athena_path = 0;
-static char *path, *manpath;
+static char *path, *manpath, *infopath;
 
 int add_main(int argc, char **argv)
 {
@@ -152,6 +152,12 @@ int add_main(int argc, char **argv)
     manpath = strdup(manpath);
   else
     manpath = strdup("");
+
+  infopath = getenv("INFOPATH");
+  if (infopath)
+    infopath = strdup(infopath);
+  else
+    infopath = strdup("");
 
   /* If no arguments have been directed to attach, or -p was
    * specified, we output the path in an easier-to-read format and
@@ -241,9 +247,11 @@ int add_main(int argc, char **argv)
 	}
     }
 
-  printf(shell_templates[use_athena_path][bourne_shell], path, manpath);
+  printf(shell_templates[use_athena_path][bourne_shell],
+	 path, manpath, infopath);
   free(path);
   free(manpath);
+  free(infopath);
   exit(0);
 }
 
@@ -281,6 +289,15 @@ int add_callback(locker_context context, locker_attachent *at, void *arg)
     {
       for (ptr = found; *ptr; ptr++)
 	modify_path(&manpath, *ptr);
+      athdir_free_paths(found);
+    }
+
+  /* Find the info directories we want to add to/remove from the infopath. */
+  found = athdir_get_paths(at->mountpoint, "info", NULL, NULL, NULL, NULL, 0);
+  if (found)
+    {
+      for (ptr = found; *ptr; ptr++)
+	modify_path(&infopath, *ptr);
       athdir_free_paths(found);
     }
 
