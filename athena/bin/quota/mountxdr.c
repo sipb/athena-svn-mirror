@@ -11,7 +11,11 @@ static	char sccsid[] = "@(#)mountxdr.c 1.1 86/02/05 Copyr 1984 Sun Micro";
 #include <rpc/rpc.h>
 #include <sys/time.h>
 #include <sys/errno.h>
+#ifndef sgi
 #include <nfs/nfs.h>
+#else
+#include <sys/fs/nfs.h>
+#endif
 #include <rpcsvc/mount.h>
 
 #define xdr_dev_t xdr_short
