@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.10 1993-10-14 12:47:23 probe Exp $
+ * $Id: Imakefile,v 1.11 1993-10-19 03:38:40 probe Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
@@ -34,7 +34,6 @@ SimpleProgram(psrv,psrv.o psutil.o config.o,,$(PSLIBDIR))
 SimpleProgram(duplex2,duplex2.o,,$(PSLIBDIR))
 
 /* Printer-specific filters */
-SimpleProgram(lps40comm,lps40comm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
 SimpleProgram(hpcomm,hpcomm.o psutil.o config.o hpquery.o snmplib/libsnmp.a,$(LIBS),$(PSLIBDIR))
 
 all install:: psif
@@ -46,7 +45,7 @@ install::
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		ln -s psif $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
-	-for i in pstext.pro banner.pro lps40banner.pro; do \
+	-for i in pstext.pro banner.pro; do \
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		$(INSTALL) -c -m 0444 $$i $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
@@ -77,4 +76,4 @@ pscomm.o psutil.o: transcript.h
 pscat.o pscatmap.o: action.h 
 
 clean::
-	$(RM) config.c hpcomm.c hpbanner.c lps40banner.c psif
+	$(RM) config.c hpcomm.c psif
