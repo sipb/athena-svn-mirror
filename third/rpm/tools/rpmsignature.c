@@ -2,6 +2,7 @@
 
 #include "system.h"
 
+#include <rpmlib.h>
 #include "rpmlead.h"
 #include "signature.h"
 #include "debug.h"
@@ -24,16 +25,11 @@ int main(int argc, char **argv)
 	exit(1);
     }
 
-    readLead(fdi, &lead);
-    rpmReadSignature(fdi, &sig, lead.signature_type);
-    switch (lead.signature_type) {
-    case RPMSIGTYPE_NONE:
-	fprintf(stderr, _("No signature available.\n"));
-	break;
-    default:
+    if (readLead(fdi, &lead) != RPMRC_OK)
+	exit(1);
+    if (rpmReadSignature(fdi, &sig, lead.signature_type, NULL) !=  RPMRC_OK) {
 	fdo = Fopen("-", "w.ufdio");
 	rpmWriteSignature(fdo, sig);
-	break;
     }
     
     return 0;

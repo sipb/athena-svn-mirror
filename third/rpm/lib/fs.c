@@ -1,4 +1,3 @@
-/*@-mods@*/
 /**
  * \file lib/fs.c
  */
@@ -24,19 +23,19 @@ struct fsinfo {
 static int numFilesystems = 0;
 
 void freeFilesystems(void)
+	/*@globals filesystems, fsnames, numFilesystems @*/
+	/*@modifies filesystems, fsnames, numFilesystems @*/
 {
-    if (filesystems) {
-	int i;
-	for (i = 0; i < numFilesystems; i++)
-	    filesystems[i].mntPoint = _free(filesystems[i].mntPoint);
-	filesystems = _free(filesystems);
-    }
-    if (fsnames) {
-#if 0	/* XXX leak/segfault on exit of "rpm -qp --qf '%{#fsnames}' pkg" */
-	free(fsnames);
-#endif
-	fsnames = NULL;
-    }
+    int i;
+
+/*@-boundswrite@*/
+    if (filesystems)
+    for (i = 0; i < numFilesystems; i++)
+	filesystems[i].mntPoint = _free(filesystems[i].mntPoint);
+/*@=boundswrite@*/
+
+    filesystems = _free(filesystems);
+    fsnames = _free(fsnames);
     numFilesystems = 0;
 }
 
@@ -135,8 +134,10 @@ static int getFilesystemList(void)
  * @return		0 on success, 1 on error
  */
 static int getFilesystemList(void)
-	/*@globals fileSystem, internalState@*/
-	/*@modifies fileSystem, internalState@*/
+	/*@globals filesystems, fsnames, numFilesystems,
+		fileSystem, internalState @*/
+	/*@modifies filesystems, fsnames, numFilesystems,
+		fileSystem, internalState @*/
 {
     int numAlloced = 10;
     struct stat sb;
@@ -171,7 +172,9 @@ static int getFilesystemList(void)
 	    /*@-modunconnomods -moduncon @*/
 	    our_mntent * itemptr = getmntent(mtab);
 	    if (!itemptr) break;
+/*@-boundsread@*/
 	    item = *itemptr;	/* structure assignment */
+/*@=boundsread@*/
 	    mntdir = item.our_mntdir;
 #if defined(MNTOPT_RO)
 	    /*@-compdef@*/
@@ -197,16 +200,23 @@ static int getFilesystemList(void)
 	    return 1;
 	}
 
-	numFilesystems++;
-	if ((numFilesystems + 1) == numAlloced) {
+	if ((numFilesystems + 2) == numAlloced) {
 	    numAlloced += 10;
 	    filesystems = xrealloc(filesystems, 
 				  sizeof(*filesystems) * (numAlloced + 1));
 	}
 
-	filesystems[numFilesystems-1].dev = sb.st_dev;
-	filesystems[numFilesystems-1].mntPoint = xstrdup(mntdir);
-	filesystems[numFilesystems-1].rdonly = rdonly;
+	filesystems[numFilesystems].dev = sb.st_dev;
+	filesystems[numFilesystems].mntPoint = xstrdup(mntdir);
+	filesystems[numFilesystems].rdonly = rdonly;
+#if 0
+	rpmMessage(RPMMESS_DEBUG, _("%5d 0x%04x %s %s\n"),
+		numFilesystems,
+		(unsigned) filesystems[numFilesystems].dev,
+		(filesystems[numFilesystems].rdonly ? "ro" : "rw"),
+		filesystems[numFilesystems].mntPoint);
+#endif
+	numFilesystems++;
     }
 
 #   if GETMNTENT_ONE || GETMNTENT_TWO
@@ -219,10 +229,12 @@ static int getFilesystemList(void)
     filesystems[numFilesystems].mntPoint = NULL;
     filesystems[numFilesystems].rdonly = 0;
 
+/*@-boundswrite@*/
     fsnames = xcalloc((numFilesystems + 1), sizeof(*fsnames));
     for (i = 0; i < numFilesystems; i++)
 	fsnames[i] = filesystems[i].mntPoint;
     fsnames[numFilesystems] = NULL;
+/*@=boundswrite@*/
 
     return 0; 
 }
@@ -234,8 +246,10 @@ int rpmGetFilesystemList(const char *** listptr, int * num)
 	if (getFilesystemList())
 	    return 1;
 
+/*@-boundswrite@*/
     if (listptr) *listptr = fsnames;
     if (num) *num = numFilesystems;
+/*@=boundswrite@*/
 
     return 0;
 }
@@ -263,11 +277,14 @@ int rpmGetFilesystemUsage(const char ** fileList, int_32 * fssizes, int numFiles
     sourceDir = rpmGetPath("%{_sourcedir}", NULL);
 
     maxLen = strlen(sourceDir);
+/*@-boundsread@*/
     for (i = 0; i < numFiles; i++) {
 	len = strlen(fileList[i]);
 	if (maxLen < len) maxLen = len;
     }
+/*@=boundsread@*/
     
+/*@-boundswrite@*/
     buf = alloca(maxLen + 1);
     lastDir = alloca(maxLen + 1);
     dirName = alloca(maxLen + 1);
@@ -330,17 +347,19 @@ int rpmGetFilesystemUsage(const char ** fileList, int_32 * fssizes, int numFiles
 	strcpy(lastDir, buf);
 	usages[lastfs] += fssizes[i];
     }
+/*@=boundswrite@*/
 
     sourceDir = _free(sourceDir);
 
+/*@-boundswrite@*/
     /*@-branchstate@*/
     if (usagesPtr)
 	*usagesPtr = usages;
     else
 	usages = _free(usages);
     /*@=branchstate@*/
+/*@=boundswrite@*/
 
     return 0;
 }
 /*@=usereleased =onlytrans@*/
-/*@=mods@*/

@@ -88,6 +88,7 @@ int parseRCPOT(Spec spec, Package pkg, const char *field, int tag,
 	break;
     }
 
+/*@-boundsread@*/
     for (r = field; *r != '\0'; r = re) {
 	SKIPWHITE(r);
 	if (*r == '\0')
@@ -152,7 +153,7 @@ int parseRCPOT(Spec spec, Package pkg, const char *field, int tag,
 	    case RPMTAG_PROVIDEFLAGS:
 	    case RPMTAG_OBSOLETEFLAGS:
 		/* Add prereq on rpmlib that has versioned dependencies. */
-		if (!rpmExpandNumeric("%{_noVersionedDependencies}"))
+		if (!rpmExpandNumeric("%{?_noVersionedDependencies}"))
 		    (void) rpmlibNeedsFeature(h, "VersionedDependencies", "3.0.3-1");
 		/*@switchbreak@*/ break;
 	    default:
@@ -190,6 +191,7 @@ int parseRCPOT(Spec spec, Package pkg, const char *field, int tag,
 	version = _free(version);
 
     }
+/*@=boundsread@*/
 
     return 0;
 }

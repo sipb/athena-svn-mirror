@@ -423,11 +423,11 @@ headerInject(Header *hdrp, cmd_t *cmds[], int ncmds)
 	
 	addChangelogEntry(h, *getBuildTime(), name, text);
 	headerCopyTags(*hdrp, h, cltags);
-	headerFree(*hdrp);
 	headerSort(h);
+	*hdrp = headerFree(*hdrp);
 	*hdrp = h;
     } else {
-	headerFree(h);
+	h = headerFree(h);
     }
 
     return ec;
@@ -460,10 +460,10 @@ rewriteRPM(const char *fni, const char *fno, cmd_t *cmds[], int ncmds)
 
     /* Rewrite the rpm */
     if (lead.type == RPMLEAD_SOURCE) {
-	rc = writeRPM(&spec->packages->header, fno, (int)lead.type,
+	rc = writeRPM(&spec->packages->header, NULL, fno, (int)lead.type,
 		csa, spec->passPhrase, &(spec->cookie));
     } else {
-	rc = writeRPM(&spec->packages->header, fno, (int)lead.type,
+	rc = writeRPM(&spec->packages->header, NULL, fno, (int)lead.type,
 		csa, spec->passPhrase, NULL);
     }
 

@@ -55,7 +55,7 @@ int addReqProv(/*@unused@*/ Spec spec, Header h,
 	extra = depFlags & _ALL_REQUIRES_MASK;
     }
 
-    depFlags = (depFlags & (RPMSENSE_SENSEMASK | RPMSENSE_MULTILIB)) | extra;
+    depFlags = (depFlags & RPMSENSE_SENSEMASK) | extra;
 
     /*@-branchstate@*/
     if (depEVR == NULL)
@@ -77,13 +77,13 @@ int addReqProv(/*@unused@*/ Spec spec, Header h,
 	if (indextag)
 	    xx = hge(h, indextag, NULL, (void **) &indexes, NULL);
 
+/*@-boundsread@*/
 	while (len > 0) {
 	    len--;
 	    if (strcmp(names[len], depName))
 		continue;
 	    if (flagtag && versions != NULL &&
-		(strcmp(versions[len], depEVR) ||
-	((flags[len] | RPMSENSE_MULTILIB) != (depFlags | RPMSENSE_MULTILIB))))
+		(strcmp(versions[len], depEVR) || flags[len] != depFlags))
 		continue;
 	    if (indextag && indexes != NULL && indexes[len] != index)
 		continue;
@@ -91,12 +91,9 @@ int addReqProv(/*@unused@*/ Spec spec, Header h,
 	    /* This is a duplicate dependency. */
 	    duplicate = 1;
 
-	    if (flagtag && isDependsMULTILIB(depFlags) &&
-		!isDependsMULTILIB(flags[len]))
-		    flags[len] |= RPMSENSE_MULTILIB;
-
 	    break;
 	}
+/*@=boundsread@*/
 	names = hfd(names, dnt);
 	versions = hfd(versions, dvt);
 	if (duplicate)
@@ -117,6 +114,7 @@ int addReqProv(/*@unused@*/ Spec spec, Header h,
     return 0;
 }
 
+/*@-boundswrite@*/
 int rpmlibNeedsFeature(Header h, const char * feature, const char * featureEVR)
 {
     char * reqname = alloca(sizeof("rpmlib()") + strlen(feature));
@@ -127,3 +125,4 @@ int rpmlibNeedsFeature(Header h, const char * feature, const char * featureEVR)
    return addReqProv(NULL, h, RPMSENSE_RPMLIB|(RPMSENSE_LESS|RPMSENSE_EQUAL),
 	reqname, featureEVR, 0);
 }
+/*@=boundswrite@*/

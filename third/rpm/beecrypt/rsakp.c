@@ -27,22 +27,13 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "rsakp.h"
 #include "mp32prime.h"
 #include "mp32.h"
+#include "debug.h"
 
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-#if HAVE_STRING_H
-# include <string.h>
-#endif
-
+/*@-boundswrite@*/
 int rsakpMake(rsakp* kp, randomGeneratorContext* rgc, int nsize)
 {
 	/* 
@@ -162,7 +153,9 @@ int rsakpMake(rsakp* kp, randomGeneratorContext* rgc, int nsize)
 	}
 	return -1;
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 int rsakpInit(rsakp* kp)
 {
 	memset(kp, 0, sizeof(*kp));
@@ -179,6 +172,7 @@ int rsakpInit(rsakp* kp)
 
 	return 0;
 }
+/*@=boundswrite@*/
 
 int rsakpFree(rsakp* kp)
 {

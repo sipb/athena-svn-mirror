@@ -25,20 +25,11 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "blockpad.h"
+#include "debug.h"
 
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-#if HAVE_STRING_H
-# include <string.h>
-#endif
-
+/*@-boundswrite@*/
 memchunk* pkcs5Pad(int blockbytes, memchunk* tmp)
 {
 	if (tmp)
@@ -53,7 +44,9 @@ memchunk* pkcs5Pad(int blockbytes, memchunk* tmp)
 
 	return tmp;
 }
+/*@=boundswrite@*/
 
+/*@-boundsread@*/
 memchunk* pkcs5Unpad(int blockbytes, memchunk* tmp)
 {
 	if (tmp)
@@ -77,11 +70,13 @@ memchunk* pkcs5Unpad(int blockbytes, memchunk* tmp)
 /*		tmp->data = (byte*) realloc(tmp->data, tmp->size; */
 	}
 
-	/*@-temptrans@*/
+	/*@-temptrans -compdef @*/
 	return tmp;
-	/*@=temptrans@*/
+	/*@=temptrans =compdef @*/
 }
+/*@=boundsread@*/
 
+/*@-boundswrite@*/
 memchunk* pkcs5PadCopy(int blockbytes, const memchunk* src)
 {
 	memchunk* tmp;
@@ -100,7 +95,9 @@ memchunk* pkcs5PadCopy(int blockbytes, const memchunk* src)
 
 	return tmp;
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 memchunk* pkcs5UnpadCopy(/*@unused@*/ int blockbytes, const memchunk* src)
 {
 	memchunk* tmp;
@@ -127,3 +124,4 @@ memchunk* pkcs5UnpadCopy(/*@unused@*/ int blockbytes, const memchunk* src)
 
 	return tmp;
 }
+/*@=boundswrite@*/

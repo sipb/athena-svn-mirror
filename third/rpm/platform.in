@@ -3,7 +3,7 @@
 #==============================================================================
 # ---- per-platform macros.
 #
-%_arch			@RPMRC_ARCH@
+%_arch			@RPMCANONARCH@
 %_vendor		@RPMCANONVENDOR@
 %_os			@RPMCANONOS@
 %_gnu			@RPMRC_GNU@
@@ -32,45 +32,6 @@
 
 %_defaultdocdir		@DEFAULTDOCDIR@
 
-#==============================================================================
-# ---- configure and makeinstall.
-#
-%configure \
-  CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
-  CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ; \
-  FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS ; \
-  ./configure %{_target_platform} \\\
- 	--prefix=%{_prefix} \\\
-	--exec-prefix=%{_exec_prefix} \\\
-	--bindir=%{_bindir} \\\
-	--sbindir=%{_sbindir} \\\
-	--sysconfdir=%{_sysconfdir} \\\
-	--datadir=%{_datadir} \\\
-	--includedir=%{_includedir} \\\
-	--libdir=%{_libdir} \\\
-	--libexecdir=%{_libexecdir} \\\
-	--localstatedir=%{_localstatedir} \\\
-	--sharedstatedir=%{_sharedstatedir} \\\
-	--mandir=%{_mandir} \\\
-	--infodir=%{_infodir}
-
-%makeinstall \
-  make \\\
-	prefix=%{?buildroot:%{buildroot}}%{_prefix} \\\
-	exec_prefix=%{?buildroot:%{buildroot}}%{_exec_prefix} \\\
-	bindir=%{?buildroot:%{buildroot}}%{_bindir} \\\
-	sbindir=%{?buildroot:%{buildroot}}%{_sbindir} \\\
-	sysconfdir=%{?buildroot:%{buildroot}}%{_sysconfdir} \\\
-	datadir=%{?buildroot:%{buildroot}}%{_datadir} \\\
-	includedir=%{?buildroot:%{buildroot}}%{_includedir} \\\
-	libdir=%{?buildroot:%{buildroot}}%{_libdir} \\\
-	libexecdir=%{?buildroot:%{buildroot}}%{_libexecdir} \\\
-	localstatedir=%{?buildroot:%{buildroot}}%{_localstatedir} \\\
-	sharedstatedir=%{?buildroot:%{buildroot}}%{_sharedstatedir} \\\
-	mandir=%{?buildroot:%{buildroot}}%{_mandir} \\\
-	infodir=%{?buildroot:%{buildroot}}%{_infodir} \\\
-  install
-
 %_smp_mflags %([ -z "$RPM_BUILD_NCPUS" ] \\\
 	&& RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"; \\\
 	[ "$RPM_BUILD_NCPUS" -gt 1 ] && echo "-j$RPM_BUILD_NCPUS")
@@ -92,12 +53,14 @@
 %__arch_install_post   @ARCH_INSTALL_POST@
 
 %__os_install_post    \
-    @prefix@/lib/rpm/brp-compress \
-    @prefix@/lib/rpm/brp-strip \
-    @prefix@/lib/rpm/brp-strip-comment-note \
+    @RPMCONFIGDIR@/brp-compress \
+    @RPMCONFIGDIR@/brp-strip \
+    @RPMCONFIGDIR@/brp-strip-static-archive \
+    @RPMCONFIGDIR@/brp-strip-comment-note \
 %{nil}
 
 %__spec_install_post\
+    %{?__debug_package:%{__debug_install_post}}\
     %{__arch_install_post}\
     %{__os_install_post}\
 %{nil}
@@ -136,7 +99,7 @@
 @mandrake@# XXX A copy of brp-mandrake, please. I'd suggest break down by
 @mandrake@#     functionality rather than vendor <shrug>.
 @mandrake@%__os_install_post    \
-@mandrake@    /usr/lib/rpm/brp-mandrake \
+@mandrake@    @RPMCONFIGDIR@/brp-mandrake \
 @mandrake@%{nil}
 @mandrake@
 @mandrake@# make

@@ -10,6 +10,18 @@
 #endif
 
 #include <sys/types.h>
+
+#if defined(__LCLINT__)
+/*@-redef@*/
+typedef unsigned int u_int32_t;
+typedef unsigned short u_int16_t;
+typedef unsigned char u_int8_t;
+/*@-incondefs@*/        /* LCLint 3.0.0.15 */
+typedef int int32_t;
+/*@=incondefs@*/
+/*@=redef@*/
+#endif
+
 #include <sys/stat.h>
 #include <stdio.h>
 
@@ -27,6 +39,9 @@ extern int chroot (const char *__path)
 	/*@globals errno, systemState @*/
 	/*@modifies errno, systemState @*/;
 /*@=superuser =declundef =incondefs @*/
+#endif
+#if !defined(__GLIBC__) && !defined(__LCLINT__)
+extern char ** environ;
 #endif
 #endif
 
@@ -159,8 +174,8 @@ char *realpath(const char *path, char resolved_path []);
 
 #if defined(__LCLINT__)
 /*@-declundef -incondefs @*/ /* LCL: missing annotation */
-/*@only@*/ void * alloca (size_t __size)
-	/*@ensures MaxSet(result) == (__size - 1) @*/
+/*@only@*/ /*@out@*/ void * alloca (size_t __size)
+	/*@ensures maxSet(result) == (__size - 1) @*/
 	/*@*/;
 /*@=declundef =incondefs @*/
 #endif
@@ -186,8 +201,11 @@ extern __const __int32_t *__ctype_tolower;
 /*@unchecked@*/
 extern __const __int32_t *__ctype_toupper;
 /*@=declundef@*/
+#endif
+
 #include <ctype.h>
 
+#if defined (__GLIBC__) && defined(__LCLINT__)
 /*@-exportlocal@*/
 extern int isalnum(int) __THROW	/*@*/;
 extern int iscntrl(int) __THROW	/*@*/;
@@ -247,13 +265,13 @@ extern int _tolower(int) __THROW	/*@*/;
  */
 /*@mayexit@*/ /*@only@*/ /*@out@*/ void * xmalloc (size_t size)
 	/*@globals errno @*/
-	/*@ensures MaxSet(result) == (size - 1) @*/
+	/*@ensures maxSet(result) == (size - 1) @*/
 	/*@modifies errno @*/;
 
 /**
  */
 /*@mayexit@*/ /*@only@*/ void * xcalloc (size_t nmemb, size_t size)
-	/*@ensures MaxSet(result) == (nmemb - 1) @*/
+	/*@ensures maxSet(result) == (nmemb - 1) @*/
 	/*@*/;
 
 /**
@@ -261,7 +279,7 @@ extern int _tolower(int) __THROW	/*@*/;
  */
 /*@mayexit@*/ /*@only@*/ void * xrealloc (/*@null@*/ /*@only@*/ void * ptr,
 					size_t size)
-	/*@ensures MaxSet(result) == (size - 1) @*/
+	/*@ensures maxSet(result) == (size - 1) @*/
 	/*@modifies *ptr @*/;
 
 /**
@@ -333,6 +351,7 @@ extern void muntrace (void)
     else __progname = pn;		\
   }
 #endif
+/*@unchecked@*/
 const char *__progname;
 
 #if HAVE_NETDB_H
@@ -581,4 +600,14 @@ extern void unsetenv(const char *name);
 #ifndef MOUNTED
 #define MOUNTED "/etc/mnttab"
 #endif
+
+#if defined(__LCLINT__)
+#define FILE_RCSID(id)
+#else
+#define FILE_RCSID(id) \
+static inline const char *rcsid(const char *p) { \
+        return rcsid(p = id); \
+}
+#endif
+
 #endif	/* H_SYSTEM */

@@ -112,6 +112,9 @@ extern int _noDirTokens;
 extern int _useDbiMajor;
 
 static int showVersion;
+extern const char * rpmNAME;
+extern const char * rpmEVR;
+extern int rpmFLAGS;
 
 extern struct MacroContext_s rpmCLIMacroContext;
 
@@ -580,12 +583,12 @@ int main(int argc, const char ** argv)
     enum modes bigMode = MODE_UNKNOWN;
     QVA_t qva = &rpmQVArgs;
     int arg;
-    rpmtransFlags transFlags = RPMTRANS_FLAG_NONE;
+    rpmtsFlags transFlags = RPMTRANS_FLAG_NONE;
     rpmInstallInterfaceFlags installInterfaceFlags = INSTALL_NONE;
     rpmEraseInterfaceFlags eraseInterfaceFlags = UNINSTALL_NONE;
     int verifyFlags;
     int checksigFlags = 0;
-    rpmResignFlags addSign = RESIGN_NEW_SIGNATURE;
+    rpmSignFlags addSign = RESIGN_NEW_SIGNATURE;
     char * passPhrase = "";
     const char * optArg;
     pid_t pipeChild = 0;

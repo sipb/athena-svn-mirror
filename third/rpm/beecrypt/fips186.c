@@ -25,18 +25,12 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
+#include "beecrypt.h"
 #include "fips186.h"
-#include "mp32.h"
 #include "mp32opt.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
+#include "mp32.h"
+#include "debug.h"
 
 /**
  */
@@ -49,12 +43,14 @@ const randomGenerator fips186prng = { "FIPS 186", sizeof(fips186Param), (const r
 
 /**
  */
+/*@-boundswrite@*/
 static int fips186init(register sha1Param* p)
 	/*@modifies p @*/
 {
 	mp32copy(5, p->h, fips186hinit);
 	return 0;
 }
+/*@=boundswrite@*/
 
 int fips186Setup(fips186Param* fp)
 {
@@ -65,10 +61,10 @@ int fips186Setup(fips186Param* fp)
 		if (!(fp->lock = CreateMutex(NULL, FALSE, NULL)))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_init(&fp->lock, USYNC_THREAD, (void *) 0))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-nullpass@*/
 		/*@-moduncon@*/
 		if (pthread_mutex_init(&fp->lock, (pthread_mutexattr_t *) 0))
@@ -95,10 +91,10 @@ int fips186Seed(fips186Param* fp, const uint32* data, int size)
 		if (WaitForSingleObject(fp->lock, INFINITE) != WAIT_OBJECT_0)
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_lock(&fp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_lock(&fp->lock))
 			return -1;
@@ -113,10 +109,10 @@ int fips186Seed(fips186Param* fp, const uint32* data, int size)
 		if (!ReleaseMutex(fp->lock))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_unlock(&fp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_unlock(&fp->lock))
 			return -1;
@@ -129,6 +125,7 @@ int fips186Seed(fips186Param* fp, const uint32* data, int size)
 	return -1;
 }
 
+/*@-boundswrite@*/
 int fips186Next(fips186Param* fp, uint32* data, int size)
 {
 	if (fp)
@@ -138,10 +135,10 @@ int fips186Next(fips186Param* fp, uint32* data, int size)
 		if (WaitForSingleObject(fp->lock, INFINITE) != WAIT_OBJECT_0)
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_lock(&fp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_lock(&fp->lock))
 			return -1;
@@ -178,10 +175,10 @@ int fips186Next(fips186Param* fp, uint32* data, int size)
 		if (!ReleaseMutex(fp->lock))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_unlock(&fp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_unlock(&fp->lock))
 			return -1;
@@ -193,6 +190,7 @@ int fips186Next(fips186Param* fp, uint32* data, int size)
 	}
 	return -1;
 }
+/*@=boundswrite@*/
 
 int fips186Cleanup(fips186Param* fp)
 {
@@ -203,10 +201,10 @@ int fips186Cleanup(fips186Param* fp)
 		if (!CloseHandle(fp->lock))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_destroy(&fp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_destroy(&fp->lock))
 			return -1;

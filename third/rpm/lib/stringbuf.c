@@ -10,8 +10,10 @@
 #define BUF_CHUNK 1024
 
 struct StringBufRec {
-    /*@owned@*/ char *buf;
-    /*@dependent@*/ char *tail;     /* Points to first "free" char */
+/*@owned@*/
+    char *buf;
+/*@dependent@*/
+    char *tail;     /* Points to first "free" char */
     int allocated;
     int free;
 };
@@ -19,7 +21,7 @@ struct StringBufRec {
 /**
  * Locale insensitive isspace(3).
  */
-/*@unused@*/ static inline int xisspace(int c) {
+/*@unused@*/ static inline int xisspace(int c) /*@*/ {
     return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v');
 }
 
@@ -29,7 +31,7 @@ struct StringBufRec {
  * @return		NULL always
  */
 /*@unused@*/ static inline /*@null@*/ void *
-_free(/*@only@*/ /*@null@*/ const void * p) /*@modifies *p @*/
+_free(/*@only@*/ /*@null@*/ /*@out@*/ const void * p) /*@modifies *p @*/
 {
     if (p != NULL)	free((void *)p);
     return NULL;
@@ -37,7 +39,7 @@ _free(/*@only@*/ /*@null@*/ const void * p) /*@modifies *p @*/
 
 StringBuf newStringBuf(void)
 {
-    StringBuf sb = xmalloc(sizeof(struct StringBufRec));
+    StringBuf sb = xmalloc(sizeof(*sb));
 
     sb->free = sb->allocated = BUF_CHUNK;
     sb->buf = xcalloc(sb->allocated, sizeof(*sb->buf));
@@ -58,21 +60,24 @@ StringBuf freeStringBuf(StringBuf sb)
 
 void truncStringBuf(StringBuf sb)
 {
+/*@-boundswrite@*/
     sb->buf[0] = '\0';
+/*@=boundswrite@*/
     sb->tail = sb->buf;
     sb->free = sb->allocated;
 }
 
 void stripTrailingBlanksStringBuf(StringBuf sb)
 {
+/*@-bounds@*/
     while (sb->free != sb->allocated) {
-	if (! xisspace(*(sb->tail - 1))) {
+	if (! xisspace(*(sb->tail - 1)))
 	    break;
-	}
 	sb->free++;
 	sb->tail--;
     }
     sb->tail[0] = '\0';
+/*@=bounds@*/
 }
 
 char * getStringBuf(StringBuf sb)
@@ -93,7 +98,8 @@ void appendStringBufAux(StringBuf sb, const char *s, int nl)
 	sb->tail = sb->buf + (sb->allocated - sb->free);
     }
     
-    /*@-mayaliasunique@*/
+/*@-boundswrite@*/
+    /*@-mayaliasunique@*/ /* FIX: shrug */
     strcpy(sb->tail, s);
     /*@=mayaliasunique@*/
     sb->tail += l;
@@ -104,4 +110,5 @@ void appendStringBufAux(StringBuf sb, const char *s, int nl)
 	sb->tail++;
 	sb->free--;
     }
+/*@=boundswrite@*/
 }

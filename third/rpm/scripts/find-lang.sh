@@ -80,7 +80,7 @@ find $TOP_DIR -type f|sed '
 1i\
 %defattr (644, root, root, 755)
 s:'"$TOP_DIR"'::
-'"$MO"'s:\(.*/share/locale/\)\([^/_]\+\)\(.*'"$NAME"'\.mo$\):%lang(\2) \1\2\3:
+'"$MO"'s:\(.*/share/locale/\)\([^/_]\+\)\(.*/'"$NAME"'\.mo$\):%lang(\2) \1\2\3:
 '"$GNOME"'s:\(.*/gnome/help/'"$NAME"'/\)\([^/_]\+\):%lang(\2) \1\2:
 s:^\([^%].*\)::
 s:%lang(C) ::
@@ -93,3 +93,9 @@ s:'"$TOP_DIR"'::
 s:^\([^%].*\)::
 s:%lang(C) ::
 ' >> $MO_NAME
+
+if ! grep -q / $MO_NAME; then
+	echo "No translations found for ${NAME} in ${TOP_DIR}"
+	exit 1
+fi
+exit 0

@@ -25,20 +25,11 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "mp32prime.h"
 #include "mp32.h"
 #include "mp32barrett.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-
-#include <stdio.h>
+#include "debug.h"
 
 /**
  * A word of explanation here on what these tables accomplish:
@@ -1061,6 +1052,7 @@ int mp32ptrials(uint32 bits)
 
 /**
  */
+/*@-boundsread@*/
 static void mp32prndbits(mp32barrett* p, uint8 msbclr, uint8 lsbset, randomGeneratorContext* rc)
 	/*@modifies p @*/
 {
@@ -1084,11 +1076,13 @@ static void mp32prndbits(mp32barrett* p, uint8 msbclr, uint8 lsbset, randomGener
 		p->modl[size] |= (((uint32)0xffffffff) >> (32 - lsbset));
 	/*@=shiftnegative@*/
 }
+/*@=boundsread@*/
 
 /**
  * mp32psppdiv_w
  *  needs workspace of (3*size) words
  */
+/*@-boundsread@*/
 static int mp32psppdiv_w(const mp32barrett* p, /*@out@*/ uint32* wksp)
 	/*@globals mp32spprod @*/
 	/*@modifies wksp @*/
@@ -1110,6 +1104,7 @@ static int mp32psppdiv_w(const mp32barrett* p, /*@out@*/ uint32* wksp)
 
 	return mp32isone(size, wksp);
 }
+/*@=boundsread@*/
 
 /**
  * mp32pmilrabtwo_w
@@ -1168,6 +1163,7 @@ static int mp32pmilraba_w(const mp32barrett* p, const uint32* adata, uint32 s, c
 /**
  * needs workspace of (8*size+2) words
  */
+/*@-boundswrite@*/
 int mp32pmilrab_w(const mp32barrett* p, randomGeneratorContext* rc, int t, uint32* wksp)
 {
 	/*
@@ -1195,7 +1191,7 @@ int mp32pmilrab_w(const mp32barrett* p, randomGeneratorContext* rc, int t, uint3
 	(void) mp32subw(size, ndata, 1);
 	mp32copy(size, rdata, ndata);
 
-	s = mp32divpowtwo(size, rdata); /* we've split p-1 into (2^s)*r */
+	s = mp32rshiftlsz(size, rdata); /* we've split p-1 into (2^s)*r */
 
 	/* should do an assert that s != 0 */
 
@@ -1217,10 +1213,12 @@ int mp32pmilrab_w(const mp32barrett* p, randomGeneratorContext* rc, int t, uint3
 
     return 1;
 }
+/*@=boundswrite@*/
 
 /**
  * needs workspace of (7*size+2) words
  */
+/*@-boundswrite@*/
 void mp32prnd_w(mp32barrett* p, randomGeneratorContext* rc, uint32 size, int t, const mp32number* f, uint32* wksp)
 {
 	/*
@@ -1268,10 +1266,12 @@ void mp32prnd_w(mp32barrett* p, randomGeneratorContext* rc, uint32 size, int t, 
 		}
 	}
 }
+/*@=boundswrite@*/
 
 /**
  * needs workspace of (7*size+2) words
  */
+/*@-boundswrite@*/
 void mp32prndconone_w(mp32barrett* p, randomGeneratorContext* rc, uint32 size, int t, const mp32barrett* q, const mp32number* f, mp32number* r, int cofactor, uint32* wksp)
 {
 	/*
@@ -1376,7 +1376,9 @@ void mp32prndconone_w(mp32barrett* p, randomGeneratorContext* rc, uint32 size, i
 		}
 	}
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 void mp32prndsafe_w(mp32barrett* p, randomGeneratorContext* rc, uint32 size, int t, uint32* wksp)
 {
 	/*
@@ -1434,3 +1436,4 @@ void mp32prndsafe_w(mp32barrett* p, randomGeneratorContext* rc, uint32 size, int
 		/*@=usedef@*/
 	}
 }
+/*@=boundswrite@*/

@@ -27,14 +27,11 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "rsapk.h"
+#include "debug.h"
 
-#if HAVE_STRING_H
-# include <string.h>
-#endif
-
+/*@-boundswrite@*/
 int rsapkInit(rsapk* pk)
 {
 	memset(pk, 0, sizeof(*pk));
@@ -45,6 +42,7 @@ int rsapkInit(rsapk* pk)
 
 	return 0;
 }
+/*@=boundswrite@*/
 
 int rsapkFree(rsapk* pk)
 {

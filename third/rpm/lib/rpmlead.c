@@ -12,53 +12,60 @@
 
 #include <rpmlib.h>
 
+#include "signature.h"
 #include "rpmlead.h"
 #include "debug.h"
 
+/*@unchecked@*/ /*@observer@*/
+static unsigned char lead_magic[] = {
+    RPMLEAD_MAGIC0, RPMLEAD_MAGIC1, RPMLEAD_MAGIC2, RPMLEAD_MAGIC3
+};
+
 /* The lead needs to be 8 byte aligned */
 
-int writeLead(FD_t fd, const struct rpmlead *lead)
+rpmRC writeLead(FD_t fd, const struct rpmlead *lead)
 {
     struct rpmlead l;
 
-    memcpy(&l, lead, sizeof(*lead));
+/*@-boundswrite@*/
+    memcpy(&l, lead, sizeof(l));
     
-    l.magic[0] = RPMLEAD_MAGIC0;
-    l.magic[1] = RPMLEAD_MAGIC1;
-    l.magic[2] = RPMLEAD_MAGIC2;
-    l.magic[3] = RPMLEAD_MAGIC3;
-
+    memcpy(&l.magic, lead_magic, sizeof(l.magic));
+/*@=boundswrite@*/
     l.type = htons(l.type);
     l.archnum = htons(l.archnum);
     l.osnum = htons(l.osnum);
     l.signature_type = htons(l.signature_type);
 	
-    /*@-sizeoftype@*/
-    if (Fwrite(&l, sizeof(char), sizeof(l), fd) != sizeof(l)) {
-	return 1;
-    }
-    /*@=sizeoftype@*/
+/*@-boundswrite@*/
+    if (Fwrite(&l, 1, sizeof(l), fd) != sizeof(l))
+	return RPMRC_FAIL;
+/*@=boundswrite@*/
 
-    return 0;
+    return RPMRC_OK;
 }
 
-int readLead(FD_t fd, struct rpmlead *lead)
+rpmRC readLead(FD_t fd, struct rpmlead *lead)
 {
+/*@-boundswrite@*/
     memset(lead, 0, sizeof(*lead));
+/*@=boundswrite@*/
     /*@-type@*/ /* FIX: remove timed read */
     if (timedRead(fd, (char *)lead, sizeof(*lead)) != sizeof(*lead)) {
 	rpmError(RPMERR_READ, _("read failed: %s (%d)\n"), Fstrerror(fd), 
 	      errno);
-	return 1;
+	return RPMRC_FAIL;
     }
     /*@=type@*/
 
+    if (memcmp(lead->magic, lead_magic, sizeof(lead_magic)))
+	return RPMRC_FAIL;
     lead->type = ntohs(lead->type);
     lead->archnum = ntohs(lead->archnum);
     lead->osnum = ntohs(lead->osnum);
+    lead->signature_type = ntohs(lead->signature_type);
+    if (lead->signature_type != RPMSIGTYPE_HEADERSIG)
+	return RPMRC_FAIL;
 
-    if (lead->major >= 2)
-	lead->signature_type = ntohs(lead->signature_type);
-
-    return 0;
+    return RPMRC_OK;
 }

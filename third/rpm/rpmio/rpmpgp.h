@@ -10,15 +10,11 @@
  *	Copyright (C) The Internet Society (1998).  All Rights Reserved.
  */
 
-#undef	PACKAGE
-#undef	VERSION
-#include "base64.h"
-#include "dsa.h"
-#include "endianness.h"
-#include "mp32.h"
-#include "rsa.h"
-#include "rsapk.h"
-
+#if !defined(_BEECRYPT_TYPES_H)
+/*@-redef@*/
+typedef unsigned char byte;
+/*@=redef@*/
+#endif	/* _BEECRYPT_TYPES_H */
 
 /**
  */
@@ -61,7 +57,7 @@ typedef enum pgpTag_e {
     PGPTAG_PRIVATE_60		= 60, /*!< Private or Experimental Values */
     PGPTAG_COMMENT		= 61, /*!< Comment */
     PGPTAG_PRIVATE_62		= 62, /*!< Private or Experimental Values */
-    PGPTAG_CONTROL		= 63, /*!< Control (GPG) */
+    PGPTAG_CONTROL		= 63  /*!< Control (GPG) */
 } pgpTag;
 
 /**
@@ -171,12 +167,12 @@ typedef enum pgpPubkeyAlgo_e {
     PGPPUBKEYALGO_RSA		=  1,	/*!< RSA */
     PGPPUBKEYALGO_RSA_ENCRYPT	=  2,	/*!< RSA(Encrypt-Only) */
     PGPPUBKEYALGO_RSA_SIGN	=  3,	/*!< RSA(Sign-Only) */
-    PGPPUBKEYALGO_ELGAMAL_ENCRYPT= 16,	/*!< Elgamal(Encrypt-Only) */
+    PGPPUBKEYALGO_ELGAMAL_ENCRYPT = 16,	/*!< Elgamal(Encrypt-Only) */
     PGPPUBKEYALGO_DSA		= 17,	/*!< DSA */
     PGPPUBKEYALGO_EC		= 18,	/*!< Elliptic Curve */
     PGPPUBKEYALGO_ECDSA		= 19,	/*!< ECDSA */
     PGPPUBKEYALGO_ELGAMAL	= 20,	/*!< Elgamal */
-    PGPPUBKEYALGO_DH		= 21,	/*!< Diffie-Hellman (X9.42) */
+    PGPPUBKEYALGO_DH		= 21	/*!< Diffie-Hellman (X9.42) */
 } pgpPubkeyAlgo;
 /*@=typeuse@*/
 
@@ -226,6 +222,7 @@ typedef enum pgpSymkeyAlgo_e {
 /*@=typeuse@*/
 
 /**
+ * Symmetric key (string, value) pairs.
  */
 /*@observer@*/ /*@unchecked@*/ /*@unused@*/
 extern struct pgpValTbl_s pgpSymkeyTbl[];
@@ -254,6 +251,7 @@ typedef enum pgpCompressAlgo_e {
 /*@=typeuse@*/
 
 /**
+ * Compression (string, value) pairs.
  */
 /*@observer@*/ /*@unchecked@*/ /*@unused@*/
 extern struct pgpValTbl_s pgpCompressionTbl[];
@@ -289,6 +287,7 @@ typedef enum pgpHashAlgo_e {
 } pgpHashAlgo;
 
 /**
+ * Hash (string, value) pairs.
  */
 /*@observer@*/ /*@unchecked@*/ /*@unused@*/
 extern struct pgpValTbl_s pgpHashTbl[];
@@ -453,11 +452,12 @@ typedef enum pgpSubType_e {
     PGPSUBTYPE_INTERNAL_107	= 107, /*!< internal or user-defined */
     PGPSUBTYPE_INTERNAL_108	= 108, /*!< internal or user-defined */
     PGPSUBTYPE_INTERNAL_109	= 109, /*!< internal or user-defined */
-    PGPSUBTYPE_INTERNAL_110	= 110, /*!< internal or user-defined */
+    PGPSUBTYPE_INTERNAL_110	= 110 /*!< internal or user-defined */
 } pgpSubType;
 /*@=typeuse@*/
 
 /**
+ * Subtype (string, value) pairs.
  */
 /*@observer@*/ /*@unchecked@*/ /*@unused@*/
 extern struct pgpValTbl_s pgpSubTypeTbl[];
@@ -923,11 +923,12 @@ typedef enum pgpArmor_e {
     PGPARMOR_SIGNED_MESSAGE	=  4, /*!< SIGNED MESSAGE */
     PGPARMOR_FILE		=  5, /*!< ARMORED FILE */
     PGPARMOR_PRIVKEY		=  6, /*!< PRIVATE KEY BLOCK */
-    PGPARMOR_SECKEY		=  7, /*!< SECRET KEY BLOCK */
+    PGPARMOR_SECKEY		=  7  /*!< SECRET KEY BLOCK */
 } pgpArmor;
 /*@=typeuse@*/
 
 /**
+ * Armor (string, value) pairs.
  */
 /*@observer@*/ /*@unchecked@*/ /*@unused@*/
 extern struct pgpValTbl_s pgpArmorTbl[];
@@ -940,67 +941,22 @@ typedef enum pgpArmorKey_e {
     PGPARMORKEY_COMMENT		= 2, /*!< Comment: */
     PGPARMORKEY_MESSAGEID	= 3, /*!< MessageID: */
     PGPARMORKEY_HASH		= 4, /*!< Hash: */
-    PGPARMORKEY_CHARSET		= 5, /*!< Charset: */
+    PGPARMORKEY_CHARSET		= 5  /*!< Charset: */
 } pgpArmorKey;
 /*@=typeuse@*/
 
 /**
+ * Armor key (string, value) pairs.
  */
 /*@observer@*/ /*@unchecked@*/ /*@unused@*/
 extern struct pgpValTbl_s pgpArmorKeyTbl[];
 
-/**
+/** \ingroup rpmio
+ * Bit(s) to control digest operation.
  */
-struct pgpDigParams_s {
-/*@only@*/ /*@null@*/
-    const char * userid;
-/*@only@*/ /*@null@*/
-    const byte * hash;
-    const char * params[4];
-    byte tag;
-
-    byte version;       /*!< version number. */
-    byte time[4];       /*!< time that the key was created. */
-    byte pubkey_algo;   /*!< public key algorithm. */
-
-    byte hash_algo;
-    byte sigtype;
-    byte hashlen;
-    byte signhash16[2];
-    byte signid[8];
-};
-
-/**
- */
-struct pgpDig_s {
-    struct pgpDigParams_s signature;
-    struct pgpDigParams_s pubkey;
-
-    size_t nbytes;			/*!< No. bytes of plain text. */
-
-/*@only@*/ /*@null@*/ DIGEST_CTX sha1ctx;/*!< (dsa) sha1 hash context. */
-/*@only@*/ /*@null@*/ void * sha1;	/*!< (dsa) V3 signature hash. */
-    size_t sha1len;			/*!< (dsa) V3 signature hash length. */
-
-/*@only@*/ /*@null@*/ DIGEST_CTX md5ctx;/*!< (rsa) md5 hash context. */
-/*@only@*/ /*@null@*/ void * md5;	/*!< (rsa) V3 signature hash. */
-    size_t md5len;			/*!< (rsa) V3 signature hash length. */
-
-    /* DSA parameters. */
-    mp32barrett p;
-    mp32barrett q;
-    mp32number g;
-    mp32number y;
-    mp32number hm;
-    mp32number r;
-    mp32number s;
-
-    /* RSA parameters. */
-    rsapk rsa_pk;
-    mp32number m;
-    mp32number c;
-    mp32number rsahm;
-};
+typedef enum rpmDigestFlags_e {
+    RPMDIGEST_NONE	= 0
+} rpmDigestFlags;
 
 
 /*@-fcnuse@*/
@@ -1009,6 +965,10 @@ extern "C" {
 #endif
 
 /**
+ * Return (native-endian) integer from big-endian representation.
+ * @param s		pointer to big-endian integer
+ * @param nbytes	no. of bytes
+ * @return		native-endian integer
  */
 /*@unused@*/ static inline
 unsigned int pgpGrab(const byte *s, int nbytes)
@@ -1016,17 +976,24 @@ unsigned int pgpGrab(const byte *s, int nbytes)
 {
     unsigned int i = 0;
     int nb = (nbytes <= sizeof(i) ? nbytes : sizeof(i));
+/*@-boundsread@*/
     while (nb--)
 	i = (i << 8) | *s++;
+/*@=boundsread@*/
     return i;
 }
 
 /**
+ * Return length of an OpenPGP packet.
+ * @param s		pointer to packet
+ * @retval *lenp	no. of bytes in packet
+ * @return		no. of bytes in length prefix
  */
 /*@unused@*/ static inline
 int pgpLen(const byte *s, /*@out@*/ unsigned int *lenp)
 	/*@modifies *lenp @*/
 {
+/*@-boundswrite@*/
     if (*s < 192) {
 	(*lenp) = *s++;
 	return 1;
@@ -1037,33 +1004,48 @@ int pgpLen(const byte *s, /*@out@*/ unsigned int *lenp)
 	(*lenp) = pgpGrab(s+1, 4);
 	return 5;
     }
+/*@=boundswrite@*/
 }
 
 /**
+ * Return no. of bits in a multiprecision integer.
+ * @param p		pointer to multiprecision integer
+ * @return		no. of bits
  */
 /*@unused@*/ static inline
 unsigned int pgpMpiBits(const byte *p)
+	/*@requires maxRead(p) >= 1 @*/
 	/*@*/
 {
     return ((p[0] << 8) | p[1]);
 }
 
 /**
+ * Return no. of bytes in a multiprecision integer.
+ * @param p		pointer to multiprecision integer
+ * @return		no. of bytes
  */
 /*@unused@*/ static inline
 unsigned int pgpMpiLen(const byte *p)
+	/*@requires maxRead(p) >= 1 @*/
 	/*@*/
 {
     return (2 + ((pgpMpiBits(p)+7)>>3));
 }
 	
 /**
+ * Convert to hex.
+ * @param t		target buffer (returned)
+ * @param s		source bytes
+ * @param nbytes	no. of bytes
+ * @return		target buffer
  */
 /*@unused@*/ static inline
 char * pgpHexCvt(/*@returned@*/ char *t, const byte *s, int nbytes)
 	/*@modifies *t @*/
 {
     static char hex[] = "0123456789abcdef";
+/*@-boundswrite@*/
     while (nbytes-- > 0) {
 	unsigned int i;
 	i = *s++;
@@ -1071,10 +1053,16 @@ char * pgpHexCvt(/*@returned@*/ char *t, const byte *s, int nbytes)
 	*t++ = hex[ (i     ) & 0xf ];
     }
     *t = '\0';
+/*@=boundswrite@*/
     return t;
 }
 
 /**
+ * Return hex formatted representation of bytes.
+ * @todo Remove static buffer. 
+ * @param p		bytes
+ * @param plen		no. of bytes
+ * @return		hex formatted string
  */
 /*@unused@*/ static inline /*@observer@*/
 char * pgpHexStr(const byte *p, unsigned int plen)
@@ -1087,9 +1075,14 @@ char * pgpHexStr(const byte *p, unsigned int plen)
 }
 
 /**
+ * Return hex formatted representation of a multiprecision integer.
+ * @todo Remove static buffer. 
+ * @param p		bytes
+ * @return		hex formatted string
  */
 /*@unused@*/ static inline /*@observer@*/
 const char * pgpMpiStr(const byte *p)
+	/*@requires maxRead(p) >= 3 @*/
 	/*@*/
 {
     static char prbuf[2048];
@@ -1101,6 +1094,10 @@ const char * pgpMpiStr(const byte *p)
 }
 
 /**
+ * Return string representation of am OpenPGP value.
+ * @param vs		table of (string,value) pairs
+ * @param val		byte value to lookup
+ * @return		string value of byte
  */
 /*@unused@*/ static inline /*@observer@*/
 const char * pgpValStr(pgpValTbl vs, byte val)
@@ -1114,6 +1111,11 @@ const char * pgpValStr(pgpValTbl vs, byte val)
 }
 
 /**
+ * Return value of an OpenPGP string.
+ * @param vs		table of (string,value) pairs
+ * @param s		string token to lookup
+ * @param se		end-of-string address
+ * @return		byte value
  */
 /*@unused@*/ static inline
 int pgpValTok(pgpValTbl vs, const char * s, const char * se)
@@ -1129,80 +1131,151 @@ int pgpValTok(pgpValTbl vs, const char * s, const char * se)
 
 /*@-exportlocal@*/
 /**
+ * Print an OpenPGP value.
+ * @param pre		output prefix
+ * @param vs		table of (string,value) pairs
+ * @param val		byte value to print
  */
 void pgpPrtVal(const char * pre, pgpValTbl vs, byte val)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Print/parse an OpenPGP subtype packet.
+ * @param h		packet
+ * @param hlen		packet length (no. of bytes)
+ * @param sigtype	signature type
+ * @return		0 on success
  */
-int pgpPrtSubType(const byte *h, unsigned int hlen)
+int pgpPrtSubType(const byte *h, unsigned int hlen, pgpSigType sigtype)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Print/parse an OpenPGP signature packet.
+ * @param tag		packet tag
+ * @param h		packet contents
+ * @param hlen		packet length (no. of bytes)
+ * @return		0 on success
  */
 int pgpPrtSig(pgpTag tag, const byte *h, unsigned int hlen)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Print/parse an OpenPGP key packet.
+ * @param tag		packet tag
+ * @param h		packet contents
+ * @param hlen		packet length (no. of bytes)
+ * @return		0 on success
  */
 int pgpPrtKey(pgpTag tag, const byte *h, unsigned int hlen)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Print/parse an OpenPGP userid packet.
+ * @param tag		packet tag
+ * @param h		packet contents
+ * @param hlen		packet length (no. of bytes)
+ * @return		0 on success
  */
 int pgpPrtUserID(pgpTag tag, const byte *h, unsigned int hlen)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Print/parse an OpenPGP comment packet.
+ * @param tag		packet tag
+ * @param h		packet contents
+ * @param hlen		packet length (no. of bytes)
+ * @return		0 on success
  */
 int pgpPrtComment(pgpTag tag, const byte *h, unsigned int hlen)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Print/parse next OpenPGP packet.
+ * @param pkt		OpenPGP packet
+ * @param pleft		no. bytes remaining
+ * @return		-1 on error, otherwise this packet length
  */
-int pgpPrtPkt(const byte *pkt)
+int pgpPrtPkt(const byte *pkt, unsigned int pleft)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 /*@=exportlocal@*/
 
 /**
+ * Print/parse a OpenPGP packet(s).
+ * @param pkts		OpenPGP packet(s)
+ * @param pktlen	OpenPGP packet(s) length (no. of bytes)
+ * @retval dig		parsed output of signature/pubkey packet parameters
+ * @param printing	should packets be printed?
+ * @return		-1 on error, 0 on success
  */
-int pgpPrtPkts(const byte *pkts, unsigned int plen, struct pgpDig_s *dig, int printing)
+int pgpPrtPkts(const byte *pkts, unsigned int pktlen, pgpDig dig, int printing)
 	/*@globals fileSystem @*/
 	/*@modifies fileSystem @*/;
 
 /**
+ * Parse armored OpenPGP packets from a file.
+ * @param fn		file name
+ * @retval pkt		dearmored OpenPGP packet(s)
+ * @retval pktlen	dearmored OpenPGP packet(s) length in bytes
+ * @return		type of armor found
  */
 pgpArmor pgpReadPkts(const char * fn,
 		/*@out@*/ const byte ** pkt, /*@out@*/ size_t * pktlen)
-	/*@globals fileSystem @*/
-	/*@modifies *pkt, *pktlen, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies *pkt, *pktlen, fileSystem, internalState @*/;
 
 /**
+ * Wrap a OpenPGP packets in ascii armor for transport.
+ * @param atype		type of armor
+ * @param s		binary pkt data
+ * @param ns		binary pkt data length
+ * @return		formatted string
  */
-/*@only@*/
-struct pgpDig_s * pgpNewDig(void)
+char * pgpArmorWrap(int atype, const unsigned char * s, size_t ns)
 	/*@*/;
 
 /**
+ * Create a container for parsed OpenPGP packates.
+ * @return		container
  */
-/*@only@*/ /*@null@*/
-struct pgpDig_s * pgpFreeDig(/*@only@*/ /*@null@*/ struct pgpDig_s * dig)
+/*@only@*/
+pgpDig pgpNewDig(void)
+	/*@*/;
+
+/**
+ * Release (malloc'd) data from container.
+ * @param dig		container
+ */
+void pgpCleanDig(/*@null@*/ pgpDig dig)
 	/*@modifies dig @*/;
 
 /**
+ * Destroy a container for parsed OpenPGP packates.
+ * @param dig		container
+ * @return		NULL always
+ */
+/*@only@*/ /*@null@*/
+pgpDig pgpFreeDig(/*@only@*/ /*@null@*/ pgpDig dig)
+	/*@modifies dig @*/;
+
+/**
+ * Is buffer at beginning of an OpenPGP packet?
+ * @param p		buffer
+ * @return		1 if an OpenPGP packet, 0 otherwise
  */
 /*@unused@*/ static inline
 int pgpIsPkt(const byte * p)
 	/*@*/
 {
+/*@-boundsread@*/
     unsigned int val = *p++;
+/*@=boundsread@*/
     pgpTag tag;
     int rc;
 
@@ -1253,16 +1326,22 @@ int pgpIsPkt(const byte * p)
 #define CRC24_POLY	0x1864cfb
 
 /**
+ * Return CRC of a buffer.
+ * @param octets	bytes
+ * @param len		no. of bytes
+ * @return		crc of buffer
  */
 /*@unused@*/ static inline
-uint32 pgpCRC(const byte *octets, size_t len)
+unsigned int pgpCRC(const byte *octets, size_t len)
 	/*@*/
 {
-    uint32 crc = CRC24_INIT;
+    unsigned int crc = CRC24_INIT;
     int i;
 
     while (len--) {
+/*@-boundsread@*/
 	crc ^= (*octets++) << 16;
+/*@=boundsread@*/
 	for (i = 0; i < 8; i++) {
 	    crc <<= 1;
 	    if (crc & 0x1000000)
@@ -1271,6 +1350,52 @@ uint32 pgpCRC(const byte *octets, size_t len)
     }
     return crc & 0xffffff;
 }
+
+/** \ingroup rpmio
+ * Duplicate a digest context.
+ * @param octx		existing digest context
+ * @return		duplicated digest context
+ */
+/*@only@*/
+DIGEST_CTX rpmDigestDup(DIGEST_CTX octx)
+	/*@*/;
+
+/** \ingroup rpmio
+ * Initialize digest.
+ * Set bit count to 0 and buffer to mysterious initialization constants.
+ * @param hashalgo	type of digest
+ * @param flags		bit(s) to control digest operation
+ * @return		digest context
+ */
+/*@only@*/
+DIGEST_CTX rpmDigestInit(pgpHashAlgo hashalgo, rpmDigestFlags flags)
+	/*@*/;
+
+/** \ingroup rpmio
+ * Update context with next plain text buffer.
+ * @param ctx		digest context
+ * @param data		next data buffer
+ * @param len		no. bytes of data
+ * @return		0 on success
+ */
+int rpmDigestUpdate(DIGEST_CTX ctx, const void * data, size_t len)
+	/*@modifies ctx @*/;
+
+/** \ingroup rpmio
+ * Return digest and destroy context.
+ * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * 1 0* (64-bit count of bits processed, MSB-first)
+ *
+ * @param ctx		digest context
+ * @retval datap	address of returned digest
+ * @retval lenp		address of digest length
+ * @param asAscii	return digest as ascii string?
+ * @return		0 on success
+ */
+int rpmDigestFinal(/*@only@*/ DIGEST_CTX ctx,
+	/*@null@*/ /*@out@*/ void ** datap,
+	/*@null@*/ /*@out@*/ size_t * lenp, int asAscii)
+		/*@modifies *datap, *lenp @*/;
 
 #ifdef __cplusplus
 }

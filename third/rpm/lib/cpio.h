@@ -12,11 +12,6 @@
  *
  */
 
-#include <sys/types.h>
-
-#include <rpmio_internal.h>
-#include <rpmlib.h>
-
 /** \ingroup payload
  * @note CPIO_CHECK_ERRNO bit is set only if errno is valid.
  */
@@ -66,8 +61,7 @@ typedef enum cpioMapFlags_e {
     CPIO_MAP_ABSOLUTE	= (1 << 5),
     CPIO_MAP_ADDDOT	= (1 << 6),
     CPIO_ALL_HARDLINKS	= (1 << 7), /*!< fail if hardlinks are missing. */
-    CPIO_MAP_TYPE	= (1 << 8), /*!< only for building. */
-    CPIO_MULTILIB	= (1 << 31) /*!< internal, only for building. */
+    CPIO_MAP_TYPE	= (1 << 8)  /*!< only for building. */
 } cpioMapFlags;
 
 #define CPIO_NEWC_MAGIC	"070701"
@@ -106,30 +100,36 @@ extern "C" {
  * @return		0 on success
  */
 int cpioTrailerWrite(FSM_t fsm)
-	/*@modifies fsm, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fsm, fileSystem, internalState @*/;
 
 /**
  * Write cpio header.
  * @retval fsm		file path and stat info
+ * @param st
  * @return		0 on success
  */
 int cpioHeaderWrite(FSM_t fsm, struct stat * st)
-	/*@modifies fsm, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fsm, fileSystem, internalState @*/;
 
 /**
  * Read cpio header.
  * @retval fsm		file path and stat info
+ * @retval st
  * @return		0 on success
  */
 int cpioHeaderRead(FSM_t fsm, struct stat * st)
-	/*@modifies fsm, *st @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fsm, *st, fileSystem, internalState @*/;
 
 /** \ingroup payload
  * Return formatted error message on payload handling failure.
- * @param		error code
+ * @param rc		error code
  * @return		formatted error string
  */
-/*@observer@*/ const char *const cpioStrerror(int rc)		/*@*/;
+/*@observer@*/ const char *const cpioStrerror(int rc)
+	/*@*/;
 
 #ifdef __cplusplus
 }

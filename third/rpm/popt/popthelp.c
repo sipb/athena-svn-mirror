@@ -5,7 +5,7 @@
  * \file popt/popthelp.c
  */
 
-/* (C) 1998-2000 Red Hat, Inc. -- Licensing details are in the COPYING
+/* (C) 1998-2002 Red Hat, Inc. -- Licensing details are in the COPYING
    file accompanying popt source distributions, available from 
    ftp://ftp.rpm.org/pub/rpm/dist. */
 
@@ -13,8 +13,12 @@
 #include "poptint.h"
 
 /**
+ * Display arguments.
  * @param con		context
+ * @param foo		(unused)
  * @param key		option(s)
+ * @param arg		(unused)
+ * @param data		(unused)
  */
 static void displayArgs(poptContext con,
 		/*@unused@*/ enum poptCallbackReason foo,
@@ -83,7 +87,7 @@ getTableTranslationDomain(/*@null@*/ const struct poptOption *table)
  */
 /*@observer@*/ /*@null@*/ static const char *const
 getArgDescrip(const struct poptOption * opt,
-		/*@-paramuse@*/		/* FIX: wazzup? */
+		/*@-paramuse@*/ /* FIX: i18n macros disabled with lclint */
 		/*@null@*/ const char * translation_domain)
 		/*@=paramuse@*/
 	/*@*/
@@ -97,7 +101,11 @@ getArgDescrip(const struct poptOption * opt,
 
     switch (opt->argInfo & POPT_ARG_MASK) {
     case POPT_ARG_NONE:		return POPT_("NONE");
+#ifdef	DYING
     case POPT_ARG_VAL:		return POPT_("VAL");
+#else
+    case POPT_ARG_VAL:		return NULL;
+#endif
     case POPT_ARG_INT:		return POPT_("INT");
     case POPT_ARG_LONG:		return POPT_("LONG");
     case POPT_ARG_STRING:	return POPT_("STRING");
@@ -108,13 +116,16 @@ getArgDescrip(const struct poptOption * opt,
 }
 
 /**
+ * Display default value for an option.
+ * @param lineLength
  * @param opt		option(s)
  * @param translation_domain	translation domain
+ * @return
  */
 static /*@only@*/ /*@null@*/ char *
 singleOptionDefaultValue(int lineLength,
 		const struct poptOption * opt,
-		/*@-paramuse@*/	/* FIX: i18n macros disable with lclint */
+		/*@-paramuse@*/ /* FIX: i18n macros disabled with lclint */
 		/*@null@*/ const char * translation_domain)
 		/*@=paramuse@*/
 	/*@*/
@@ -124,6 +135,7 @@ singleOptionDefaultValue(int lineLength,
     char * l = le;
 
     if (le == NULL) return NULL;	/* XXX can't happen */
+/*@-boundswrite@*/
     *le = '\0';
     *le++ = '(';
     strcpy(le, defstr);	le += strlen(le);
@@ -170,12 +182,15 @@ singleOptionDefaultValue(int lineLength,
     }
     *le++ = ')';
     *le = '\0';
+/*@=boundswrite@*/
 
     return l;
 }
 
 /**
+ * Display help text for an option.
  * @param fp		output file handle
+ * @param maxLeftCol
  * @param opt		option(s)
  * @param translation_domain	translation domain
  */
@@ -198,6 +213,7 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
     if (opt->longName)	nb += strlen(opt->longName);
     if (argDescrip)	nb += strlen(argDescrip);
 
+/*@-boundswrite@*/
     left = malloc(nb);
     if (left == NULL) return;	/* XXX can't happen */
     left[0] = '\0';
@@ -214,6 +230,7 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
 		((opt->argInfo & POPT_ARGFLAG_ONEDASH) ? "-" : "--"),
 		opt->longName);
     if (!*left) goto out;
+
     if (argDescrip) {
 	char * le = left + strlen(left);
 
@@ -247,6 +264,7 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
 	    case POPT_ARG_NONE:
 		break;
 	    case POPT_ARG_VAL:
+#ifdef	NOTNOW	/* XXX pug ugly nerdy output */
 	    {	long aLong = opt->val;
 		int ops = (opt->argInfo & POPT_ARGFLAG_LOGICALOPS);
 		int negate = (opt->argInfo & POPT_ARGFLAG_NOT);
@@ -274,7 +292,9 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
 		le += sprintf(le, (ops ? "0x%lx" : "%ld"), aLong);
 		/*@=formatconst@*/
 		*le++ = ']';
-	    }	break;
+	    }
+#endif
+		break;
 	    case POPT_ARG_INT:
 	    case POPT_ARG_LONG:
 	    case POPT_ARG_FLOAT:
@@ -294,6 +314,7 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
 	    *le++ = ']';
 	*le = '\0';
     }
+/*@=boundswrite@*/
 
     if (help)
 	fprintf(fp,"  %-*s   ", maxLeftCol, left);
@@ -308,9 +329,10 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
     }
 
     helpLength = strlen(help);
+/*@-boundsread@*/
     while (helpLength > lineLength) {
 	const char * ch;
-	char format[10];
+	char format[16];
 
 	ch = help + lineLength - 1;
 	while (ch > help && !isspace(*ch)) ch--;
@@ -326,6 +348,7 @@ static void singleOptionHelp(FILE * fp, int maxLeftCol,
 	while (isspace(*help) && *help) help++;
 	helpLength = strlen(help);
     }
+/*@=boundsread@*/
 
     if (helpLength) fprintf(fp, "%s\n", help);
 
@@ -382,6 +405,7 @@ static int maxArgWidth(const struct poptOption * opt,
  * @param fp		output file handle
  * @param items		alias/exec array
  * @param nitems	no. of alias/exec entries
+ * @param left
  * @param translation_domain	translation domain
  */
 static void itemHelp(FILE * fp,
@@ -404,8 +428,11 @@ static void itemHelp(FILE * fp,
 }
 
 /**
+ * Display help text for a table of options.
+ * @param con		context
  * @param fp		output file handle
  * @param table		option(s)
+ * @param left
  * @param translation_domain	translation domain
  */
 static void singleTableHelp(poptContext con, FILE * fp,
@@ -458,9 +485,11 @@ static int showHelpIntro(poptContext con, FILE * fp)
 
     fprintf(fp, POPT_("Usage:"));
     if (!(con->flags & POPT_CONTEXT_KEEP_FIRST)) {
+/*@-boundsread@*/
 	/*@-nullderef@*/	/* LCL: wazzup? */
 	fn = con->optionStack->argv[0];
 	/*@=nullderef@*/
+/*@=boundsread@*/
 	if (fn == NULL) return len;
 	if (strchr(fn, '/')) fn = strrchr(fn, '/') + 1;
 	fprintf(fp, " %s", fn);
@@ -486,6 +515,7 @@ void poptPrintHelp(poptContext con, FILE * fp, /*@unused@*/ int flags)
 
 /**
  * @param fp		output file handle
+ * @param cursor
  * @param opt		option(s)
  * @param translation_domain	translation domain
  */
@@ -495,23 +525,26 @@ static int singleOptionUsage(FILE * fp, int cursor,
 	/*@globals fileSystem @*/
 	/*@modifies *fp, fileSystem @*/
 {
-    int len = 3;
+    int len = 4;
     char shortStr[2] = { '\0', '\0' };
     const char * item = shortStr;
     const char * argDescrip = getArgDescrip(opt, translation_domain);
 
-    if (opt->shortName!= '\0' ) {
-	if (!(opt->argInfo & POPT_ARG_MASK)) 
-	    return cursor;	/* we did these already */
+    if (opt->shortName != '\0' && opt->longName != NULL) {
+	len += 2;
+	if (!(opt->argInfo & POPT_ARGFLAG_ONEDASH)) len++;
+	len += strlen(opt->longName);
+    } else if (opt->shortName != '\0') {
 	len++;
 	shortStr[0] = opt->shortName;
 	shortStr[1] = '\0';
     } else if (opt->longName) {
-	len += 1 + strlen(opt->longName);
+	len += strlen(opt->longName);
+	if (!(opt->argInfo & POPT_ARGFLAG_ONEDASH)) len++;
 	item = opt->longName;
     }
 
-    if (len == 3) return cursor;
+    if (len == 4) return cursor;
 
     if (argDescrip) 
 	len += strlen(argDescrip) + 1;
@@ -521,11 +554,19 @@ static int singleOptionUsage(FILE * fp, int cursor,
 	cursor = 7;
     } 
 
-    fprintf(fp, " [-%s%s%s%s]",
-	((opt->shortName || (opt->argInfo & POPT_ARGFLAG_ONEDASH)) ? "" : "-"),
-	item,
-	(argDescrip ? (opt->shortName != '\0' ? " " : "=") : ""),
-	(argDescrip ? argDescrip : ""));
+    if (opt->longName && opt->shortName) {
+	fprintf(fp, " [-%c|-%s%s%s%s]",
+	    opt->shortName, ((opt->argInfo & POPT_ARGFLAG_ONEDASH) ? "" : "-"),
+	    opt->longName,
+	    (argDescrip ? " " : ""),
+	    (argDescrip ? argDescrip : ""));
+    } else {
+	fprintf(fp, " [-%s%s%s%s]",
+	    ((opt->shortName || (opt->argInfo & POPT_ARGFLAG_ONEDASH)) ? "" : "-"),
+	    item,
+	    (argDescrip ? (opt->shortName != '\0' ? " " : "=") : ""),
+	    (argDescrip ? argDescrip : ""));
+    }
 
     return cursor + len + 1;
 }
@@ -533,6 +574,7 @@ static int singleOptionUsage(FILE * fp, int cursor,
 /**
  * Display popt alias and exec usage.
  * @param fp		output file handle
+ * @param cursor
  * @param item		alias/exec array
  * @param nitems	no. of ara/exec entries
  * @param translation_domain	translation domain
@@ -562,15 +604,30 @@ static int itemUsage(FILE * fp, int cursor, poptItem item, int nitems,
 }
 
 /**
+ * Keep track of option tables already processed.
+ */
+typedef struct poptDone_s {
+    int nopts;
+    int maxopts;
+    const void ** opts;
+} * poptDone;
+
+/**
+ * Display usage text for a table of options.
+ * @param con		context
  * @param fp		output file handle
+ * @param cursor
  * @param opt		option(s)
  * @param translation_domain	translation domain
+ * @param done		tables already processed
+ * @return
  */
-static int singleTableUsage(poptContext con, FILE * fp,
-		int cursor, const struct poptOption * opt,
-		/*@null@*/ const char * translation_domain)
+static int singleTableUsage(poptContext con, FILE * fp, int cursor,
+		/*@null@*/ const struct poptOption * opt,
+		/*@null@*/ const char * translation_domain,
+		/*@null@*/ poptDone done)
 	/*@globals fileSystem @*/
-	/*@modifies *fp, fileSystem @*/
+	/*@modifies *fp, done, fileSystem @*/
 {
     /*@-branchstate@*/		/* FIX: W2DO? */
     if (opt != NULL)
@@ -578,9 +635,26 @@ static int singleTableUsage(poptContext con, FILE * fp,
         if ((opt->argInfo & POPT_ARG_MASK) == POPT_ARG_INTL_DOMAIN) {
 	    translation_domain = (const char *)opt->arg;
 	} else if ((opt->argInfo & POPT_ARG_MASK) == POPT_ARG_INCLUDE_TABLE) {
-	    if (opt->arg)	/* XXX program error */
+	    if (done) {
+		int i = 0;
+		for (i = 0; i < done->nopts; i++) {
+/*@-boundsread@*/
+		    const void * that = done->opts[i];
+/*@=boundsread@*/
+		    if (that == NULL || that != opt->arg)
+			/*@innercontinue@*/ continue;
+		    /*@innerbreak@*/ break;
+		}
+		/* Skip if this table has already been processed. */
+		if (opt->arg == NULL || i < done->nopts)
+		    continue;
+/*@-boundswrite@*/
+		if (done->nopts < done->maxopts)
+		    done->opts[done->nopts++] = (const void *) opt->arg;
+/*@=boundswrite@*/
+	    }
 	    cursor = singleTableUsage(con, fp, cursor, opt->arg,
-			translation_domain);
+			translation_domain, done);
 	} else if ((opt->longName || opt->shortName) &&
 		 !(opt->argInfo & POPT_ARGFLAG_DOC_HIDDEN)) {
 	    cursor = singleOptionUsage(fp, cursor, opt, translation_domain);
@@ -593,6 +667,7 @@ static int singleTableUsage(poptContext con, FILE * fp,
 
 /**
  * Return concatenated short options for display.
+ * @todo Sub-tables should be recursed.
  * @param opt		option(s)
  * @param fp		output file handle
  * @retval str		concatenation of short options
@@ -602,42 +677,49 @@ static int showShortOptions(const struct poptOption * opt, FILE * fp,
 		/*@null@*/ char * str)
 	/*@globals fileSystem @*/
 	/*@modifies *str, *fp, fileSystem @*/
+	/*@requires maxRead(str) >= 0 @*/
 {
-    char * s = alloca(300);	/* larger then the ascii set */
+    /* bufsize larger then the ascii set, lazy alloca on top level call. */
+    char * s = (str != NULL ? str : memset(alloca(300), 0, 300));
+    int len = 0;
 
-    s[0] = '\0';
-    /*@-branchstate@*/		/* FIX: W2DO? */
-    if (str == NULL) {
-	memset(s, 0, sizeof(s));
-	str = s;
-    }
-    /*@=branchstate@*/
-
+/*@-boundswrite@*/
     if (opt != NULL)
     for (; (opt->longName || opt->shortName || opt->arg); opt++) {
 	if (opt->shortName && !(opt->argInfo & POPT_ARG_MASK))
-	    str[strlen(str)] = opt->shortName;
+	    s[strlen(s)] = opt->shortName;
 	else if ((opt->argInfo & POPT_ARG_MASK) == POPT_ARG_INCLUDE_TABLE)
 	    if (opt->arg)	/* XXX program error */
-		(void) showShortOptions(opt->arg, fp, str);
+		len = showShortOptions(opt->arg, fp, s);
     } 
+/*@=boundswrite@*/
 
-    if (s != str || *s != '\0')
-	return 0;
-
-    fprintf(fp, " [-%s]", s);
-    return strlen(s) + 4;
+    /* On return to top level, print the short options, return print length. */
+    if (s == str && *s != '\0') {
+	fprintf(fp, " [-%s]", s);
+	len = strlen(s) + sizeof(" [-]")-1;
+    }
+    return len;
 }
 
 void poptPrintUsage(poptContext con, FILE * fp, /*@unused@*/ int flags)
 {
+    poptDone done = memset(alloca(sizeof(*done)), 0, sizeof(*done));
     int cursor;
+
+    done->nopts = 0;
+    done->maxopts = 64;
+    cursor = done->maxopts * sizeof(*done->opts);
+/*@-boundswrite@*/
+    done->opts = memset(alloca(cursor), 0, cursor);
+    done->opts[done->nopts++] = (const void *) con->options;
+/*@=boundswrite@*/
 
     cursor = showHelpIntro(con, fp);
     cursor += showShortOptions(con->options, fp, NULL);
-    (void) singleTableUsage(con, fp, cursor, con->options, NULL);
-    (void) itemUsage(fp, cursor, con->aliases, con->numAliases, NULL);
-    (void) itemUsage(fp, cursor, con->execs, con->numExecs, NULL);
+    cursor = singleTableUsage(con, fp, cursor, con->options, NULL, done);
+    cursor = itemUsage(fp, cursor, con->aliases, con->numAliases, NULL);
+    cursor = itemUsage(fp, cursor, con->execs, con->numExecs, NULL);
 
     if (con->otherHelp) {
 	cursor += strlen(con->otherHelp) + 1;

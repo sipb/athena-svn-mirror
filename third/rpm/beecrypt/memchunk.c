@@ -23,16 +23,9 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "memchunk.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
+#include "debug.h"
 
 /*@-compdef@*/	/* tmp->data is undefined */
 memchunk* memchunkAlloc(int size)
@@ -99,6 +92,7 @@ memchunk* memchunkResize(memchunk* m, int size)
 	/*@=nullret =compdef@*/
 }
 
+/*@-boundswrite@*/
 memchunk* memchunkClone(const memchunk* m)
 {
 	if (m)
@@ -113,3 +107,4 @@ memchunk* memchunkClone(const memchunk* m)
 
 	return (memchunk*) 0;
 }
+/*@=boundswrite@*/

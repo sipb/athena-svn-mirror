@@ -1,5 +1,5 @@
 /** \ingroup rpmcli
- * \file lib/poptBT.c
+ * \file build/poptBT.c
  *  Popt tables for build modes.
  */
 
@@ -9,23 +9,22 @@
 #include <rpmbuild.h>
 
 #include "build.h"
+#include "legacy.h"	/* XXX _noDirTokens */
 #include "debug.h"
 
 /*@unchecked@*/
 struct rpmBuildArguments_s         rpmBTArgs;
 
-#define	POPT_USECATALOG		-1000
-#define	POPT_NOLANG		-1001
-#define	POPT_RMSOURCE		-1002
-#define	POPT_RMBUILD		-1003
-#define	POPT_BUILDROOT		-1004
-#define	POPT_TARGETPLATFORM	-1007
-#define	POPT_NOBUILD		-1008
-#define	POPT_SHORTCIRCUIT	-1009
-#define	POPT_RMSPEC		-1010
-#define	POPT_NODEPS		-1011
-#define	POPT_SIGN		-1012
-#define	POPT_FORCE		-1013
+#define	POPT_USECATALOG		-1011
+#define	POPT_NOLANG		-1012
+#define	POPT_RMSOURCE		-1013
+#define	POPT_RMBUILD		-1014
+#define	POPT_BUILDROOT		-1015
+#define	POPT_TARGETPLATFORM	-1016
+#define	POPT_NOBUILD		-1017
+#define	POPT_SHORTCIRCUIT	-1018
+#define	POPT_RMSPEC		-1019
+#define	POPT_SIGN		-1020
 
 #define	POPT_REBUILD		0x4220
 #define	POPT_RECOMPILE		0x4320
@@ -46,13 +45,8 @@ struct rpmBuildArguments_s         rpmBTArgs;
 
 /*@-redecl@*/
 /*@unchecked@*/
-extern int _noDirTokens;
-/*@unchecked@*/
 extern int _fsm_debug;
 /*@=redecl@*/
-
-/*@unchecked@*/
-static int force = 0;
 
 /*@-exportlocal@*/
 /*@unchecked@*/
@@ -63,9 +57,6 @@ int noLang = 0;
 static int noBuild = 0;
 
 /*@unchecked@*/
-static int noDeps = 0;
-
-/*@unchecked@*/
 static int signIt = 0;
 
 /*@unchecked@*/
@@ -73,6 +64,7 @@ static int useCatalog = 0;
 
 /**
  */
+/*@-boundswrite@*/
 static void buildArgCallback( /*@unused@*/ poptContext con,
 	/*@unused@*/ enum poptCallbackReason reason,
 	const struct poptOption * opt, const char * arg,
@@ -97,14 +89,13 @@ static void buildArgCallback( /*@unused@*/ poptContext con,
     case POPT_TL:
     case POPT_TP:
     case POPT_TS:
-	if (rba->buildMode == ' ') {
+	if (rba->buildMode == '\0' && rba->buildChar == '\0') {
 	    rba->buildMode = (((unsigned)opt->val) >> 8) & 0xff;
 	    rba->buildChar = (opt->val     ) & 0xff;
 	}
 	break;
-    case POPT_FORCE: rba->force = 1; break;
+
     case POPT_NOBUILD: rba->noBuild = 1; break;
-    case POPT_NODEPS: rba->noDeps = 1; break;
     case POPT_NOLANG: rba->noLang = 1; break;
     case POPT_SHORTCIRCUIT: rba->shortCircuit = 1; break;
     case POPT_SIGN: rba->sign = 1; break;
@@ -130,8 +121,30 @@ static void buildArgCallback( /*@unused@*/ poptContext con,
 	}
 	strcat(rba->targets, arg);
 	break;
+
+    case RPMCLI_POPT_NODIGEST:
+	rba->qva_flags |= VERIFY_DIGEST;
+	break;
+
+    case RPMCLI_POPT_NOSIGNATURE:
+	rba->qva_flags |= VERIFY_SIGNATURE;
+	break;
+
+    case RPMCLI_POPT_NOHDRCHK:
+	rba->qva_flags |= VERIFY_HDRCHK;
+	break;
+
+    case RPMCLI_POPT_NODEPS:
+	rba->noDeps = 1;
+	break;
+
+    case RPMCLI_POPT_FORCE:
+	rba->force = 1;
+	break;
+
     }
 }
+/*@=boundswrite@*/
 
 /**
  */
@@ -139,7 +152,7 @@ static void buildArgCallback( /*@unused@*/ poptContext con,
 /*@unchecked@*/
 struct poptOption rpmBuildPoptTable[] = {
 /*@-type@*/ /* FIX: cast? */
- { NULL, '\0', POPT_ARG_CALLBACK | POPT_CBFLAG_INC_DATA,
+ { NULL, '\0', POPT_ARG_CALLBACK | POPT_CBFLAG_INC_DATA | POPT_CBFLAG_CONTINUE,
 	buildArgCallback, 0, NULL, NULL },
 /*@=type@*/
 
@@ -190,7 +203,7 @@ struct poptOption rpmBuildPoptTable[] = {
  { "rebuild", '\0', 0, 0, POPT_REBUILD,
 	N_("build binary package from <source package>"),
 	N_("<source package>") },
- { "recompile", '\0', 0, 0, POPT_REBUILD,
+ { "recompile", '\0', 0, 0, POPT_RECOMPILE,
 	N_("build through %install (%prep, %build, then install) from <source package>"),
 	N_("<source package>") },
 
@@ -200,17 +213,25 @@ struct poptOption rpmBuildPoptTable[] = {
 	N_("remove build tree when done"), NULL},
  { "dirtokens", '\0', POPT_ARG_VAL|POPT_ARGFLAG_DOC_HIDDEN, &_noDirTokens, 0,
 	N_("generate headers compatible with rpm4 packaging"), NULL},
- { "force", '\0', POPT_ARGFLAG_DOC_HIDDEN, &force, POPT_FORCE,
+ { "force", '\0', POPT_ARGFLAG_DOC_HIDDEN, &rpmBTArgs.force, RPMCLI_POPT_FORCE,
         N_("ignore ExcludeArch: directives from spec file"), NULL},
  { "fsmdebug", '\0', (POPT_ARG_VAL|POPT_ARGFLAG_DOC_HIDDEN), &_fsm_debug, -1,
 	N_("debug file state machine"), NULL},
  { "nobuild", '\0', 0, &noBuild,  POPT_NOBUILD,
 	N_("do not execute any stages of the build"), NULL },
- { "nodeps", '\0', 0, &noDeps, POPT_NODEPS,
+ { "nodeps", '\0', 0, NULL, RPMCLI_POPT_NODEPS,
 	N_("do not verify build dependencies"), NULL },
  { "nodirtokens", '\0', POPT_ARG_VAL, &_noDirTokens, 1,
 	N_("generate package header(s) compatible with (legacy) rpm[23] packaging"),
 	NULL},
+
+ { "nodigest", '\0', POPT_ARGFLAG_DOC_HIDDEN, 0, RPMCLI_POPT_NODIGEST,
+        N_("don't verify package digest(s)"), NULL },
+ { "nohdrchk", '\0', POPT_ARGFLAG_DOC_HIDDEN, 0, RPMCLI_POPT_NOHDRCHK,
+        N_("don't verify database header(s) when retrieved"), NULL },
+ { "nosignature", '\0', POPT_ARGFLAG_DOC_HIDDEN, 0, RPMCLI_POPT_NOSIGNATURE,
+        N_("don't verify package signature(s)"), NULL },
+
  { "nolang", '\0', POPT_ARGFLAG_DOC_HIDDEN, &noLang, POPT_NOLANG,
 	N_("do not accept i18N msgstr's from specfile"), NULL},
  { "rmsource", '\0', 0, 0, POPT_RMSOURCE,

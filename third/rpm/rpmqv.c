@@ -13,10 +13,9 @@
 #include <rpmcli.h>
 #include <rpmbuild.h>
 
-#define	POPT_NODEPS		1025
-#define	POPT_FORCE		1026
-#define	POPT_NOMD5		1027
-#define	POPT_NOSCRIPTS		1028
+#include "rpmdb.h"
+#include "rpmps.h"
+#include "rpmts.h"
 
 #ifdef	IAM_RPMBT
 #include "build.h"
@@ -30,19 +29,10 @@
 
 #include "debug.h"
 
-#define GETOPT_DBPATH		1010
-#define GETOPT_SHOWRC		1018
-#define	GETOPT_DEFINEMACRO	1020
-#define	GETOPT_EVALMACRO	1021
-#ifdef	NOTYET
-#define	GETOPT_RCFILE		1022
-#endif
-
 enum modes {
 
     MODE_QUERY		= (1 <<  0),
     MODE_VERIFY		= (1 <<  3),
-    MODE_QUERYTAGS	= (1 <<  9),
 #define	MODES_QV (MODE_QUERY | MODE_VERIFY)
 
     MODE_INSTALL	= (1 <<  1),
@@ -71,104 +61,11 @@ enum modes {
 #define	MODES_FOR_DBPATH	(MODES_BT | MODES_IE | MODES_QV | MODES_DB)
 #define	MODES_FOR_NODEPS	(MODES_BT | MODES_IE | MODE_VERIFY)
 #define	MODES_FOR_TEST		(MODES_BT | MODES_IE)
-#define	MODES_FOR_ROOT		(MODES_BT | MODES_IE | MODES_QV | MODES_DB)
-
-/*@-exportheadervar@*/
-/*@unchecked@*/
-extern int _ftp_debug;
-/*@unchecked@*/
-extern int noLibio;
-/*@unchecked@*/
-extern int _rpmio_debug;
-/*@-redecl@*/
-/*@unchecked@*/
-extern int _url_debug;
-/*@=redecl@*/
-
-/*@=exportheadervar@*/
-
-/* options for all executables */
-
-/*@unchecked@*/
-static int help = 0;
-/*@unchecked@*/
-static int noUsageMsg = 0;
-/*@unchecked@*/ /*@observer@*/ /*@null@*/
-static const char * pipeOutput = NULL;
-/*@unchecked@*/
-static int quiet = 0;
-/*@unchecked@*/ /*@observer@*/ /*@null@*/
-static const char * rcfile = NULL;
-/*@unchecked@*/ /*@observer@*/ /*@null@*/
-static char * rootdir = "/";
-/*@unchecked@*/
-static int showrc = 0;
-/*@unchecked@*/
-static int showVersion = 0;
-
-/*@unchecked@*/
-static struct poptOption rpmAllPoptTable[] = {
- { "version", '\0', 0, &showVersion, 0,
-	N_("print the version of rpm being used"),
-	NULL },
- { "quiet", '\0', 0, &quiet, 0,
-	N_("provide less detailed output"), NULL},
- { "verbose", 'v', 0, 0, 'v',
-	N_("provide more detailed output"), NULL},
- { "define", '\0', POPT_ARG_STRING, 0, GETOPT_DEFINEMACRO,
-	N_("define macro <name> with value <body>"),
-	N_("'<name> <body>'") },
- { "eval", '\0', POPT_ARG_STRING, 0, GETOPT_EVALMACRO,
-	N_("print macro expansion of <expr>+"),
-	N_("<expr>+") },
- { "pipe", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &pipeOutput, 0,
-	N_("send stdout to <cmd>"),
-	N_("<cmd>") },
- { "root", 'r', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &rootdir, 0,
-	N_("use <dir> as the top level directory"),
-	N_("<dir>") },
- { "macros", '\0', POPT_ARG_STRING, &macrofiles, 0,
-	N_("read <file:...> instead of default macro file(s)"),
-	N_("<file:...>") },
-#if !defined(GETOPT_RCFILE)
- { "rcfile", '\0', POPT_ARG_STRING, &rcfile, 0,
-	N_("read <file:...> instead of default rpmrc file(s)"),
-	N_("<file:...>") },
-#else
- { "rcfile", '\0', 0, 0, GETOPT_RCFILE,	
-	N_("read <file:...> instead of default rpmrc file(s)"),
-	N_("<file:...>") },
-#endif
- { "showrc", '\0', 0, &showrc, GETOPT_SHOWRC,
-	N_("display final rpmrc and macro configuration"),
-	NULL },
-
-#if HAVE_LIBIO_H && defined(_G_IO_IO_FILE_VERSION)
- { "nolibio", '\0', POPT_ARG_VAL|POPT_ARGFLAG_DOC_HIDDEN, &noLibio, 1,
-	N_("disable use of libio(3) API"), NULL},
-#endif
- { "ftpdebug", '\0', POPT_ARG_VAL|POPT_ARGFLAG_DOC_HIDDEN, &_ftp_debug, -1,
-	N_("debug protocol data stream"), NULL},
- { "rpmiodebug", '\0', POPT_ARG_VAL|POPT_ARGFLAG_DOC_HIDDEN, &_rpmio_debug, -1,
-	N_("debug rpmio I/O"), NULL},
- { "urldebug", '\0', POPT_ARG_VAL|POPT_ARGFLAG_DOC_HIDDEN, &_url_debug, -1,
-	N_("debug URL cache handling"), NULL},
-
-   POPT_TABLEEND
-};
+#define	MODES_FOR_ROOT		(MODES_BT | MODES_IE | MODES_QV | MODES_DB | MODES_K)
 
 /* the structure describing the options we take and the defaults */
 /*@unchecked@*/
 static struct poptOption optionsTable[] = {
-
- /* XXX colliding options */
-#if defined(IAM_RPMQV) || defined(IAM_RPMEIU) || defined(IAM_RPMBT)
- {  NULL, 'i', POPT_ARGFLAG_DOC_HIDDEN, 0, 'i',			NULL, NULL},
- {  "nodeps", 0, POPT_ARGFLAG_DOC_HIDDEN, 0, POPT_NODEPS,	NULL, NULL},
- {  "noscripts", 0, POPT_ARGFLAG_DOC_HIDDEN, 0, POPT_NOSCRIPTS,	NULL, NULL},
- {  "nomd5", 0, POPT_ARGFLAG_DOC_HIDDEN, 0, POPT_NOMD5,		NULL, NULL},
- {  "force", 0, POPT_ARGFLAG_DOC_HIDDEN, 0, POPT_FORCE,		NULL, NULL},
-#endif
 
 #ifdef	IAM_RPMQV
  { NULL, '\0', POPT_ARG_INCLUDE_TABLE, rpmQueryPoptTable, 0,
@@ -203,7 +100,7 @@ static struct poptOption optionsTable[] = {
 	NULL },
 #endif	/* IAM_RPMEIU */
 
- { NULL, '\0', POPT_ARG_INCLUDE_TABLE, rpmAllPoptTable, 0,
+ { NULL, '\0', POPT_ARG_INCLUDE_TABLE, rpmcliAllPoptTable, 0,
 	N_("Common options for all rpm modes:"),
 	NULL },
 
@@ -218,75 +115,60 @@ long _stksize = 64 * 1024L;
 #endif
 
 /*@exits@*/ static void argerror(const char * desc)
-	/*@globals fileSystem @*/
+	/*@globals __assert_program_name, fileSystem @*/
 	/*@modifies fileSystem @*/
 {
     fprintf(stderr, _("%s: %s\n"), __progname, desc);
     exit(EXIT_FAILURE);
 }
 
-static void printVersion(void)
+static void printVersion(FILE * fp)
 	/*@globals rpmEVR, fileSystem @*/
-	/*@modifies fileSystem @*/
+	/*@modifies *fp, fileSystem @*/
 {
-    fprintf(stdout, _("RPM version %s\n"), rpmEVR);
+    fprintf(fp, _("RPM version %s\n"), rpmEVR);
 }
 
-static void printBanner(void)
+static void printBanner(FILE * fp)
 	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/
+	/*@modifies *fp, fileSystem @*/
 {
-    (void) puts(_("Copyright (C) 1998-2000 - Red Hat, Inc."));
-    (void) puts(_("This program may be freely redistributed under the terms of the GNU GPL"));
+    fprintf(fp, _("Copyright (C) 1998-2002 - Red Hat, Inc.\n"));
+    fprintf(fp, _("This program may be freely redistributed under the terms of the GNU GPL\n"));
 }
 
-static void printUsage(void)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/
+static void printUsage(poptContext con, FILE * fp, int flags)
+	/*@globals rpmEVR, fileSystem, internalState @*/
+	/*@modifies *fp, fileSystem, internalState @*/
 {
-    FILE * fp = stdout;
-    printVersion();
-    printBanner();
-    (void) puts("");
+    printVersion(fp);
+    printBanner(fp);
+    fprintf(fp, "\n");
 
-    fprintf(fp, _("Usage: %s {--help}\n"), __progname);
-    fprintf(fp,   "       %s {--version}\n" , __progname);
-
-#ifdef	IAM_RPMEIU
-#ifdef	DYING
---dbpath	all
---ftpproxy etc	all
---force		alias for --replacepkgs --replacefiles
---includedocs	handle as option in table
-		--erase forbids many options
-#endif	/* DYING */
-#endif	/* IAM_RPMEIU */
-
-#ifdef	IAM_RPMQV
-#ifdef	DYING	/* XXX popt glue needing --help doco. */
---dbpath	all
---ftpproxy etc	all
--i,--info	Q
--R,--requires	Q
--P,--provides	Q
---scripts	Q
---triggeredby	Q
---changelog	Q
---triggers	Q
---querytags	!V
---setperms	V
---setugids	V
-#endif	/* DYING */
-#endif	/* IAM_RPMQV */
-
+    if (rpmIsVerbose())
+	poptPrintHelp(con, fp, flags);
+    else
+	poptPrintUsage(con, fp, flags);
 }
 
+/*@-bounds@*/ /* LCL: segfault */
+/*@-mods@*/ /* FIX: shrug */
+#if !defined(__GLIBC__) && !defined(__LCLINT__)
+int main(int argc, const char ** argv, /*@unused@*/ char ** envp)
+#else
 int main(int argc, const char ** argv)
+#endif
+	/*@globals __assert_program_name, rpmEVR, RPMVERSION,
+		rpmGlobalMacroContext, rpmCLIMacroContext,
+		fileSystem, internalState@*/
+	/*@modifies __assert_program_name,
+		fileSystem, internalState@*/
 {
+    rpmts ts = NULL;
     enum modes bigMode = MODE_UNKNOWN;
 
-#ifdef	IAM_RPMQV
-    QVA_t qva = &rpmQVArgs;
+#if defined(IAM_RPMQV)
+    QVA_t qva = &rpmQVKArgs;
 #endif
 
 #ifdef	IAM_RPMBT
@@ -302,7 +184,7 @@ int main(int argc, const char ** argv)
 #endif
 
 #if defined(IAM_RPMK)
-   struct rpmSignArguments_s * ka = &rpmKArgs;
+   QVA_t ka = &rpmQVKArgs;
 #endif
 
 #if defined(IAM_RPMBT) || defined(IAM_RPMK)
@@ -310,7 +192,6 @@ int main(int argc, const char ** argv)
 #endif
 
     int arg;
-    int gotDbpath = 0;
 
     const char * optArg;
     pid_t pipeChild = 0;
@@ -318,11 +199,20 @@ int main(int argc, const char ** argv)
     int ec = 0;
     int status;
     int p[2];
+#ifdef	IAM_RPMEIU
+    int i;
+#endif
 	
 #if HAVE_MCHECK_H && HAVE_MTRACE
+    /*@-noeffect@*/
     mtrace();	/* Trace malloc only if MALLOC_TRACE=mtrace-output-file. */
+    /*@=noeffect@*/
 #endif
     setprogname(argv[0]);	/* Retrofit glibc __progname */
+
+#if !defined(__GLIBC__) && !defined(__LCLINT__)
+    environ = envp;
+#endif  
 
     /* XXX glibc churn sanity */
     if (__progname == NULL) {
@@ -334,11 +224,13 @@ int main(int argc, const char ** argv)
     /*@-nullpass@*/
 #ifdef	IAM_RPMBT
     if (!strcmp(__progname, "rpmb"))	bigMode = MODE_BUILD;
+    if (!strcmp(__progname, "lt-rpmb"))	bigMode = MODE_BUILD;
     if (!strcmp(__progname, "rpmt"))	bigMode = MODE_TARBUILD;
     if (!strcmp(__progname, "rpmbuild"))	bigMode = MODE_BUILD;
 #endif
 #ifdef	IAM_RPMQV
     if (!strcmp(__progname, "rpmq"))	bigMode = MODE_QUERY;
+    if (!strcmp(__progname, "lt-rpmq"))	bigMode = MODE_QUERY;
     if (!strcmp(__progname, "rpmv"))	bigMode = MODE_VERIFY;
     if (!strcmp(__progname, "rpmquery"))	bigMode = MODE_QUERY;
     if (!strcmp(__progname, "rpmverify"))	bigMode = MODE_VERIFY;
@@ -346,26 +238,34 @@ int main(int argc, const char ** argv)
 #ifdef	RPMEIU
     if (!strcmp(__progname, "rpme"))	bigMode = MODE_ERASE;
     if (!strcmp(__progname, "rpmi"))	bigMode = MODE_INSTALL;
+    if (!strcmp(__progname, "lt-rpmi"))	bigMode = MODE_INSTALL;
     if (!strcmp(__progname, "rpmu"))	bigMode = MODE_INSTALL;
 #endif
     /*@=nullpass@*/
 
-    /* set the defaults for the various command line options */
-    _ftp_debug = 0;
-
-#if HAVE_LIBIO_H && defined(_G_IO_IO_FILE_VERSION)
-    noLibio = 0;
-#else
-    noLibio = 1;
+#if defined(IAM_RPMQV)
+    /* Jumpstart option from argv[0] if necessary. */
+    switch (bigMode) {
+    case MODE_QUERY:	qva->qva_mode = 'q';	break;
+    case MODE_VERIFY:	qva->qva_mode = 'V';	break;
+    case MODE_CHECKSIG:	qva->qva_mode = 'K';	break;
+    case MODE_RESIGN:	qva->qva_mode = 'R';	break;
+    case MODE_INSTALL:
+    case MODE_ERASE:
+    case MODE_BUILD:
+    case MODE_REBUILD:
+    case MODE_RECOMPILE:
+    case MODE_TARBUILD:
+    case MODE_INITDB:
+    case MODE_REBUILDDB:
+    case MODE_VERIFYDB:
+    case MODE_UNKNOWN:
+    default:
+	break;
+    }
 #endif
-    _rpmio_debug = 0;
-    _url_debug = 0;
 
-    /* XXX Eliminate query linkage loop */
-    specedit = 0;
-    parseSpecVec = parseSpec;
-    freeSpecVec = freeSpec;
-
+#if defined(ENABLE_NLS)
     /* set up the correct locale */
     (void) setlocale(LC_ALL, "" );
 
@@ -374,6 +274,7 @@ int main(int argc, const char ** argv)
 #endif
     bindtextdomain(PACKAGE, LOCALEDIR);
     textdomain(PACKAGE);
+#endif
 
     rpmSetVerbosity(RPMMESS_NORMAL);	/* XXX silly use by showrc */
 
@@ -386,217 +287,15 @@ int main(int argc, const char ** argv)
     (void) poptReadDefaultConfig(optCon, 1);
     poptSetExecPath(optCon, RPMCONFIGDIR, 1);
 
-    /* reading rcfile early makes it easy to override */
-    /* XXX only --rcfile (and --showrc) need this pre-parse */
-
-    while ((arg = poptGetNextOpt(optCon)) > 0) {
-	switch(arg) {
-	case 'v':
-	    rpmIncreaseVerbosity();	/* XXX silly use by showrc */
-	    break;
-        default:
-	    break;
-      }
-    }
-
-    if (rpmReadConfigFiles(rcfile, NULL))  
-	exit(EXIT_FAILURE);
-
-    if (showrc) {
-	(void) rpmShowRC(stdout);
-	exit(EXIT_SUCCESS);
-    }
-
-    rpmSetVerbosity(RPMMESS_NORMAL);	/* XXX silly use by showrc */
-
-    poptResetContext(optCon);
-
-#ifdef	IAM_RPMQV
-    qva->qva_queryFormat = _free(qva->qva_queryFormat);
-    memset(qva, 0, sizeof(*qva));
-    qva->qva_source = RPMQV_PACKAGE;
-    qva->qva_fflags = RPMFILE_ALL;
-    qva->qva_mode = ' ';
-    qva->qva_char = ' ';
-#endif
-
-#ifdef	IAM_RPMBT
-    ba->buildRootOverride = _free(ba->buildRootOverride);
-    ba->targets = _free(ba->targets);
-    memset(ba, 0, sizeof(*ba));
-    ba->buildMode = ' ';
-    ba->buildChar = ' ';
-#endif
-
-#ifdef	IAM_RPMDB
-    memset(da, 0, sizeof(*da));
-#endif
-
-#ifdef	IAM_RPMK
-    memset(ka, 0, sizeof(*ka));
-    ka->addSign = RESIGN_NONE;
-    ka->checksigFlags = CHECKSIG_ALL;
-#endif
-
-#ifdef	IAM_RPMEIU
-    ia->relocations = _free(ia->relocations);
-    memset(ia, 0, sizeof(*ia));
-    ia->transFlags = RPMTRANS_FLAG_NONE;
-    ia->probFilter = RPMPROB_FILTER_NONE;
-    ia->installInterfaceFlags = INSTALL_NONE;
-    ia->eraseInterfaceFlags = UNINSTALL_NONE;
-#endif
-
     while ((arg = poptGetNextOpt(optCon)) > 0) {
 	optArg = poptGetOptArg(optCon);
 
 	switch (arg) {
-	    
-	case 'v':
-	    rpmIncreaseVerbosity();
-	    break;
-
-/* XXX options used in multiple rpm modes */
-#if defined(IAM_RPMQV) || defined(IAM_RPMK)
-	case POPT_NOMD5:
-#ifdef	IAM_RPMQV
-	    if (bigMode == MODE_VERIFY || qva->qva_mode == 'V')
-		qva->qva_flags |= VERIFY_MD5;
-	    else
-#endif
-#ifdef	IAM_RPMK
-	    if (bigMode & MODES_K)
-		ka->checksigFlags &= ~CHECKSIG_MD5;
-	    else
-#endif
-#ifdef	IAM_RPMEIU
-	    if (bigMode & MODES_IE)
-		ia->transFlags |= RPMTRANS_FLAG_NOMD5;
-	    else
-#endif
-		{};
-	    break;
-#endif	/* IAM_RPMQV || IAM_RPMK */
-
-#if defined(IAM_RPMQV) || defined(IAM_RPMEIU) || defined(IAM_RPMBT)
-	case POPT_NODEPS:
-#ifdef	IAM_RPMQV
-	    if (bigMode == MODE_VERIFY || qva->qva_mode == 'V')
-		qva->qva_flags |= VERIFY_DEPS;
-	    else
-#endif
-#ifdef	IAM_RPMEIU
-	    if ((bigMode & MODES_IE) ||
-		(ia->installInterfaceFlags &
-	    (INSTALL_UPGRADE|INSTALL_FRESHEN|INSTALL_INSTALL|INSTALL_ERASE)))
-		ia->noDeps = 1;
-	    else
-#endif
-#ifdef	IAM_RPMBT
-	    if ((bigMode & MODES_BT) || ba->buildMode != ' ')
-		ba->noDeps = 1;
-	    else
-#endif
-		/*@-ifempty@*/ ;
-	    break;
-
-	case POPT_FORCE:
-#ifdef	IAM_RPMEIU
-	    if ((bigMode & MODES_IE) ||
-		(ia->installInterfaceFlags &
-	    (INSTALL_UPGRADE|INSTALL_FRESHEN|INSTALL_INSTALL|INSTALL_ERASE)))
-		ia->probFilter |=
-			( RPMPROB_FILTER_REPLACEPKG
-			| RPMPROB_FILTER_REPLACEOLDFILES
-			| RPMPROB_FILTER_REPLACENEWFILES
-			| RPMPROB_FILTER_OLDPACKAGE);
-	    else
-#endif
-#ifdef	IAM_RPMBT
-	    if ((bigMode & MODES_BT) || ba->buildMode != ' ')
-		ba->force = 1;
-	    else
-#endif
-		/*@-ifempty@*/ ;
-	    break;
-
-	case 'i':
-#ifdef	IAM_RPMQV
-	    if (bigMode == MODE_QUERY || qva->qva_mode == 'q') {
-		/*@-nullassign -readonlytrans@*/
-		const char * infoCommand[] = { "--info", NULL };
-		/*@=nullassign =readonlytrans@*/
-		(void) poptStuffArgs(optCon, infoCommand);
-	    } else
-#endif
-#ifdef	IAM_RPMEIU
-	    if (bigMode == MODE_INSTALL ||
-		(ia->installInterfaceFlags &
-		    (INSTALL_UPGRADE|INSTALL_FRESHEN|INSTALL_INSTALL)))
-		/*@-ifempty@*/ ;
-	    else if (bigMode == MODE_UNKNOWN) {
-		/*@-nullassign -readonlytrans@*/
-		const char * installCommand[] = { "--install", NULL };
-		/*@=nullassign =readonlytrans@*/
-		(void) poptStuffArgs(optCon, installCommand);
-	    } else
-#endif
-		/*@-ifempty@*/ ;
-	    break;
-
-	case POPT_NOSCRIPTS:
-#ifdef	IAM_RPMQV
-	    if (bigMode == MODE_VERIFY || qva->qva_mode == 'V')
-		qva->qva_flags |= VERIFY_SCRIPT;
-	    else
-#endif
-#ifdef	IAM_RPMEIU
-	    if ((bigMode & MODES_IE) ||
-		(ia->installInterfaceFlags &
-	    (INSTALL_UPGRADE|INSTALL_FRESHEN|INSTALL_INSTALL|INSTALL_ERASE)))
-		ia->transFlags |= (_noTransScripts | _noTransTriggers);
-	    else
-#endif
-		/*@-ifempty@*/ ;
-	    break;
-
-#endif	/* IAM_RPMQV || IAM_RPMEIU || IAM_RPMBT */
-
-	case GETOPT_DEFINEMACRO:
-	    if (optArg) {
-		(void) rpmDefineMacro(NULL, optArg, RMIL_CMDLINE);
-		(void) rpmDefineMacro(rpmCLIMacroContext, optArg,RMIL_CMDLINE);
-	    }
-	    noUsageMsg = 1;
-	    break;
-
-	case GETOPT_EVALMACRO:
-	    if (optArg) {
-		const char *val = rpmExpand(optArg, NULL);
-		fprintf(stdout, "%s\n", val);
-		val = _free(val);
-	    }
-	    noUsageMsg = 1;
-	    break;
-
-#if defined(GETOPT_RCFILE)
-	case GETOPT_RCFILE:
-	    fprintf(stderr, _("The --rcfile option has been eliminated.\n"));
-	    fprintf(stderr, _("Use \"--macros <file:...>\" instead.\n"));
-	    exit(EXIT_FAILURE);
-	    /*@notreached@*/ break;
-#endif
-
 	default:
 	    fprintf(stderr, _("Internal error in argument processing (%d) :-(\n"), arg);
 	    exit(EXIT_FAILURE);
 	}
     }
-
-    if (quiet)
-	rpmSetVerbosity(RPMMESS_QUIET);
-
-    if (showVersion) printVersion();
 
     if (arg < -1) {
 	fprintf(stderr, "%s: %s\n", 
@@ -604,6 +303,8 @@ int main(int argc, const char ** argv)
 		poptStrerror(arg));
 	exit(EXIT_FAILURE);
     }
+
+    rpmcliConfigured();
 
 #ifdef	IAM_RPMBT
     switch (ba->buildMode) {
@@ -653,7 +354,6 @@ int main(int argc, const char ** argv)
     switch (qva->qva_mode) {
     case 'q':	bigMode = MODE_QUERY;		break;
     case 'V':	bigMode = MODE_VERIFY;		break;
-    case 'Q':	bigMode = MODE_QUERYTAGS;	break;
     }
 
     if (qva->qva_sourceCount) {
@@ -685,29 +385,27 @@ int main(int argc, const char ** argv)
 	else if (eflags)
 	    bigMode = MODE_ERASE;
     }
-#endif	/* IAM_RPMQV */
+#endif	/* IAM_RPMEIU */
 
 #ifdef	IAM_RPMK
   if (bigMode == MODE_UNKNOWN || (bigMode & MODES_K)) {
-	switch (ka->addSign) {
-	case RESIGN_NONE:
+	switch (ka->qva_mode) {
+	case RPMSIGN_NONE:
+	    ka->sign = 0;
 	    break;
-	case RESIGN_CHK_SIGNATURE:
+	case RPMSIGN_IMPORT_PUBKEY:
+	case RPMSIGN_CHK_SIGNATURE:
 	    bigMode = MODE_CHECKSIG;
+	    ka->sign = 0;
 	    break;
-	case RESIGN_ADD_SIGNATURE:
-	case RESIGN_NEW_SIGNATURE:
+	case RPMSIGN_ADD_SIGNATURE:
+	case RPMSIGN_NEW_SIGNATURE:
 	    bigMode = MODE_RESIGN;
+	    ka->sign = 1;
 	    break;
-
 	}
   }
 #endif	/* IAM_RPMK */
-
-    /* XXX TODO: never happens. */
-    if (gotDbpath && (bigMode & ~MODES_FOR_DBPATH))
-	argerror(_("--dbpath given for operation that does not use a "
-			"database"));
 
 #if defined(IAM_RPMEIU)
     if (!( bigMode == MODE_INSTALL ) &&
@@ -717,7 +415,7 @@ int main(int argc, const char ** argv)
 	argerror(_("files may only be relocated during package installation"));
 
     if (ia->relocations && ia->prefix)
-	argerror(_("only one of --prefix or --relocate may be used"));
+	argerror(_("cannot use --prefix with --relocate or --excludepath"));
 
     if (bigMode != MODE_INSTALL && ia->relocations)
 	argerror(_("--relocate and --excludepath may only be used when installing new packages"));
@@ -803,19 +501,19 @@ int main(int argc, const char ** argv)
 		 "erasure, and building"));
 #endif	/* IAM_RPMEIU */
 
-    if (rootdir && rootdir[1] && (bigMode & ~MODES_FOR_ROOT))
+    if (rpmcliRootDir && rpmcliRootDir[1] && (bigMode & ~MODES_FOR_ROOT))
 	argerror(_("--root (-r) may only be specified during "
 		 "installation, erasure, querying, and "
 		 "database rebuilds"));
 
-    if (rootdir) {
-	switch (urlIsURL(rootdir)) {
+    if (rpmcliRootDir) {
+	switch (urlIsURL(rpmcliRootDir)) {
 	default:
 	    if (bigMode & MODES_FOR_ROOT)
 		break;
 	    /*@fallthrough@*/
 	case URL_IS_UNKNOWN:
-	    if (rootdir[0] != '/')
+	    if (rpmcliRootDir[0] != '/')
 		argerror(_("arguments to --root (-r) must begin with a /"));
 	    break;
 	}
@@ -829,9 +527,12 @@ int main(int argc, const char ** argv)
 #if defined(IAM_RPMK)
     || ka->sign
 #endif
-    ) {
+    )
+    /*@-branchstate@*/
+    {
         if (bigMode == MODE_REBUILD || bigMode == MODE_BUILD ||
-	    bigMode == MODE_RESIGN || bigMode == MODE_TARBUILD) {
+	    bigMode == MODE_RESIGN || bigMode == MODE_TARBUILD)
+	{
 	    const char ** av;
 	    struct stat sb;
 	    int errors = 0;
@@ -890,16 +591,17 @@ int main(int argc, const char ** argv)
     	/* Make rpmLookupSignatureType() return 0 ("none") from now on */
         (void) rpmLookupSignatureType(RPMLOOKUPSIG_DISABLE);
     }
+    /*@=branchstate@*/
 #endif	/* IAM_RPMBT || IAM_RPMK */
 
-    if (pipeOutput) {
+    if (rpmcliPipeOutput) {
 	(void) pipe(p);
 
 	if (!(pipeChild = fork())) {
 	    (void) close(p[1]);
 	    (void) dup2(p[0], STDIN_FILENO);
 	    (void) close(p[0]);
-	    (void) execl("/bin/sh", "/bin/sh", "-c", pipeOutput, NULL);
+	    (void) execl("/bin/sh", "/bin/sh", "-c", rpmcliPipeOutput, NULL);
 	    fprintf(stderr, _("exec failed\n"));
 	}
 
@@ -908,31 +610,38 @@ int main(int argc, const char ** argv)
 	(void) close(p[1]);
     }
 	
+    ts = rpmtsCreate();
+    (void) rpmtsSetRootDir(ts, rpmcliRootDir);
     switch (bigMode) {
 #ifdef	IAM_RPMDB
     case MODE_INITDB:
-	(void) rpmdbInit(rootdir, 0644);
+	(void) rpmtsInitDB(ts, 0644);
 	break;
 
     case MODE_REBUILDDB:
-	ec = rpmdbRebuild(rootdir);
-	break;
+    {   rpmVSFlags vsflags = rpmExpandNumeric("%{_vsflags_rebuilddb}");
+	rpmVSFlags ovsflags = rpmtsSetVSFlags(ts, vsflags);
+	ec = rpmtsRebuildDB(ts);
+	vsflags = rpmtsSetVSFlags(ts, ovsflags);
+    }	break;
     case MODE_VERIFYDB:
-	ec = rpmdbVerify(rootdir);
+	ec = rpmtsVerifyDB(ts);
 	break;
 #endif	/* IAM_RPMDB */
 
 #ifdef	IAM_RPMBT
     case MODE_REBUILD:
     case MODE_RECOMPILE:
-      { const char * pkg;
+    {	const char * pkg;
+
         while (!rpmIsVerbose())
 	    rpmIncreaseVerbosity();
 
 	if (!poptPeekArg(optCon))
 	    argerror(_("no packages files given for rebuild"));
 
-	ba->buildAmount = RPMBUILD_PREP | RPMBUILD_BUILD | RPMBUILD_INSTALL;
+	ba->buildAmount =
+	    RPMBUILD_PREP | RPMBUILD_BUILD | RPMBUILD_INSTALL | RPMBUILD_CHECK;
 	if (bigMode == MODE_REBUILD) {
 	    ba->buildAmount |= RPMBUILD_PACKAGEBINARY;
 	    ba->buildAmount |= RPMBUILD_RMSOURCE;
@@ -943,27 +652,26 @@ int main(int argc, const char ** argv)
 
 	while ((pkg = poptGetArg(optCon))) {
 	    const char * specFile = NULL;
-	    char * cookie = NULL;
 
-	    ec = rpmInstallSource("", pkg, &specFile, &cookie);
-	    if (ec)
-		/*@loopbreak@*/ break;
-
-	    ba->rootdir = rootdir;
-	    ec = build(specFile, ba, passPhrase, cookie, rcfile);
-	    free(cookie);
-	    cookie = NULL;
-	    free((void *)specFile);
-	    specFile = NULL;
+	    ba->cookie = NULL;
+	    ec = rpmInstallSource(ts, pkg, &specFile, &ba->cookie);
+	    if (ec == 0) {
+		ba->rootdir = rpmcliRootDir;
+		ba->passPhrase = passPhrase;
+		ec = build(ts, specFile, ba, rpmcliRcfile);
+	    }
+	    ba->cookie = _free(ba->cookie);
+	    specFile = _free(specFile);
 
 	    if (ec)
 		/*@loopbreak@*/ break;
 	}
-      }	break;
 
-      case MODE_BUILD:
-      case MODE_TARBUILD:
-      { const char * pkg;
+    }	break;
+
+    case MODE_BUILD:
+    case MODE_TARBUILD:
+    {	const char * pkg;
         while (!rpmIsVerbose())
 	    rpmIncreaseVerbosity();
        
@@ -977,24 +685,25 @@ int main(int argc, const char ** argv)
 	    /*@fallthrough@*/
 	case 'i':
 	    ba->buildAmount |= RPMBUILD_INSTALL;
+	    ba->buildAmount |= RPMBUILD_CHECK;
 	    if ((ba->buildChar == 'i') && ba->shortCircuit)
-		break;
+		/*@innerbreak@*/ break;
 	    /*@fallthrough@*/
 	case 'c':
 	    ba->buildAmount |= RPMBUILD_BUILD;
 	    if ((ba->buildChar == 'c') && ba->shortCircuit)
-		break;
+		/*@innerbreak@*/ break;
 	    /*@fallthrough@*/
 	case 'p':
 	    ba->buildAmount |= RPMBUILD_PREP;
-	    break;
+	    /*@innerbreak@*/ break;
 	    
 	case 'l':
 	    ba->buildAmount |= RPMBUILD_FILECHECK;
-	    break;
+	    /*@innerbreak@*/ break;
 	case 's':
 	    ba->buildAmount |= RPMBUILD_PACKAGESOURCE;
-	    break;
+	    /*@innerbreak@*/ break;
 	}
 
 	if (!poptPeekArg(optCon)) {
@@ -1005,19 +714,20 @@ int main(int argc, const char ** argv)
 	}
 
 	while ((pkg = poptGetArg(optCon))) {
-	    ba->rootdir = rootdir;
-	    ec = build(pkg, ba, passPhrase, NULL, rcfile);
+	    ba->rootdir = rpmcliRootDir;
+	    ba->passPhrase = passPhrase;
+	    ba->cookie = NULL;
+	    ec = build(ts, pkg, ba, rpmcliRcfile);
 	    if (ec)
 		/*@loopbreak@*/ break;
 	    rpmFreeMacros(NULL);
-	    (void) rpmReadConfigFiles(rcfile, NULL);
+	    (void) rpmReadConfigFiles(rpmcliRcfile, NULL);
 	}
-      }	break;
+    }	break;
 #endif	/* IAM_RPMBT */
 
 #ifdef	IAM_RPMEIU
     case MODE_ERASE:
-	ia->rootdir = rootdir;
 	if (ia->noDeps) ia->eraseInterfaceFlags |= UNINSTALL_NODEPS;
 
 	if (!poptPeekArg(optCon)) {
@@ -1025,131 +735,97 @@ int main(int argc, const char ** argv)
 		argerror(_("no packages given for erase"));
 ia->transFlags |= RPMTRANS_FLAG_NOMD5;
 ia->probFilter |= RPMPROB_FILTER_OLDPACKAGE;
-	    ec += rpmRollback(ia, NULL);
+	    ec += rpmRollback(ts, ia, NULL);
 	} else {
-	    ec += rpmErase(rootdir, (const char **)poptGetArgs(optCon), 
-			 ia->transFlags, ia->eraseInterfaceFlags);
+	    ec += rpmErase(ts, ia, (const char **) poptGetArgs(optCon));
 	}
 	break;
 
     case MODE_INSTALL:
-	/* RPMTRANS_FLAG_BUILD_PROBS */
+
 	/* RPMTRANS_FLAG_KEEPOBSOLETE */
-	ia->rootdir = rootdir;
+
 	if (!ia->incldocs) {
-	    if (ia->transFlags & RPMTRANS_FLAG_NODOCS)
+	    if (ia->transFlags & RPMTRANS_FLAG_NODOCS) {
 		;
-	    else if (rpmExpandNumeric("%{_excludedocs}"))
+	    } else if (rpmExpandNumeric("%{_excludedocs}"))
 		ia->transFlags |= RPMTRANS_FLAG_NODOCS;
 	}
 
 	if (ia->noDeps) ia->installInterfaceFlags |= INSTALL_NODEPS;
 
 	/* we've already ensured !(!ia->prefix && !ia->relocations) */
+	/*@-branchstate@*/
 	if (ia->prefix) {
 	    ia->relocations = xmalloc(2 * sizeof(*ia->relocations));
 	    ia->relocations[0].oldPath = NULL;   /* special case magic */
 	    ia->relocations[0].newPath = ia->prefix;
-	    ia->relocations[1].oldPath = ia->relocations[1].newPath = NULL;
+	    ia->relocations[1].oldPath = NULL;
+	    ia->relocations[1].newPath = NULL;
 	} else if (ia->relocations) {
 	    ia->relocations = xrealloc(ia->relocations, 
 			sizeof(*ia->relocations) * (ia->numRelocations + 1));
 	    ia->relocations[ia->numRelocations].oldPath = NULL;
 	    ia->relocations[ia->numRelocations].newPath = NULL;
 	}
+	/*@=branchstate@*/
 
 	if (!poptPeekArg(optCon)) {
 	    if (ia->rbtid == 0)
 		argerror(_("no packages given for install"));
 ia->transFlags |= RPMTRANS_FLAG_NOMD5;
 ia->probFilter |= RPMPROB_FILTER_OLDPACKAGE;
-	    ec += rpmRollback(ia, NULL);
+/*@i@*/	    ec += rpmRollback(ts, ia, NULL);
 	} else {
-
-	    /*@-compdef@*/ /* FIX: ia->relocations[0].newPath undefined */
-	    ec += rpmInstall(rootdir, (const char **)poptGetArgs(optCon), 
-			ia->transFlags, ia->installInterfaceFlags,
-			ia->probFilter, ia->relocations);
+	    /*@-compdef -compmempass@*/ /* FIX: ia->relocations[0].newPath undefined */
+	    ec += rpmInstall(ts, ia, (const char **)poptGetArgs(optCon));
+	    /*@=compdef =compmempass@*/
 	}
-	/*@=compdef@*/
 	break;
+
 #endif	/* IAM_RPMEIU */
 
 #ifdef	IAM_RPMQV
     case MODE_QUERY:
-      { const char * pkg;
+	if (qva->qva_source != RPMQV_ALL && !poptPeekArg(optCon))
+	    argerror(_("no arguments given for query"));
 
-	qva->qva_prefix = rootdir;
-	if (qva->qva_source == RPMQV_ALL) {
-#ifdef	DYING
-	    if (poptPeekArg(optCon))
-		argerror(_("extra arguments given for query of all packages"));
-#else
-	    const char ** av = poptGetArgs(optCon);
-#endif
-	    /*@-nullpass@*/	/* FIX: av can be NULL */
-	    ec = rpmQuery(qva, RPMQV_ALL, (const char *) av);
-	    /*@=nullpass@*/
-	} else {
-	    if (!poptPeekArg(optCon))
-		argerror(_("no arguments given for query"));
-	    while ((pkg = poptGetArg(optCon)))
-		ec += rpmQuery(qva, qva->qva_source, pkg);
-	}
-      }	break;
+	qva->qva_specQuery = rpmspecQuery;
+	ec = rpmcliQuery(ts, qva, (const char **) poptGetArgs(optCon));
+	qva->qva_specQuery = NULL;
+	break;
 
     case MODE_VERIFY:
-      { const char * pkg;
-	rpmVerifyFlags verifyFlags = VERIFY_ALL;
+    {	rpmVerifyFlags verifyFlags = VERIFY_ALL;
 
 	verifyFlags &= ~qva->qva_flags;
 	qva->qva_flags = (rpmQueryFlags) verifyFlags;
-	qva->qva_prefix = rootdir;
 
-	if (qva->qva_source == RPMQV_ALL) {
-	    if (poptPeekArg(optCon))
-		argerror(_("extra arguments given for verify of all packages"));
-	    ec = rpmVerify(qva, RPMQV_ALL, NULL);
-	} else {
-	    if (!poptPeekArg(optCon))
-		argerror(_("no arguments given for verify"));
-	    while ((pkg = poptGetArg(optCon)))
-		ec += rpmVerify(qva, qva->qva_source, pkg);
-	}
-      }	break;
-
-    case MODE_QUERYTAGS:
-	if (argc != 2)
-	    argerror(_("unexpected arguments to --querytags "));
-
-	rpmDisplayQueryTags(stdout);
-	break;
+	if (qva->qva_source != RPMQV_ALL && !poptPeekArg(optCon))
+	    argerror(_("no arguments given for verify"));
+	ec = rpmcliVerify(ts, qva, (const char **) poptGetArgs(optCon));
+    }	break;
 #endif	/* IAM_RPMQV */
 
 #ifdef IAM_RPMK
     case MODE_CHECKSIG:
-	if (!poptPeekArg(optCon))
-	    argerror(_("no packages given for signature check"));
-	ec = rpmCheckSig(ka->checksigFlags,
-			(const char **)poptGetArgs(optCon));
-	/* XXX don't overflow single byte exit status */
-	if (ec > 255) ec = 255;
-	break;
+    {	rpmVerifyFlags verifyFlags =
+		(VERIFY_MD5|VERIFY_DIGEST|VERIFY_SIGNATURE);
 
+	verifyFlags &= ~ka->qva_flags;
+	ka->qva_flags = (rpmQueryFlags) verifyFlags;
+    }   /*@fallthrough@*/
     case MODE_RESIGN:
 	if (!poptPeekArg(optCon))
-	    argerror(_("no packages given for signing"));
-	ec = rpmReSign(ka->addSign, passPhrase,
-			(const char **)poptGetArgs(optCon));
-	/* XXX don't overflow single byte exit status */
-	if (ec > 255) ec = 255;
-	break;
+	    argerror(_("no arguments given"));
+	ka->passPhrase = passPhrase;
+	ec = rpmcliSign(ts, ka, (const char **)poptGetArgs(optCon));
+    	break;
 #endif	/* IAM_RPMK */
 	
 #if !defined(IAM_RPMQV)
     case MODE_QUERY:
     case MODE_VERIFY:
-    case MODE_QUERYTAGS:
 #endif
 #if !defined(IAM_RPMK)
     case MODE_CHECKSIG:
@@ -1171,16 +847,22 @@ ia->probFilter |= RPMPROB_FILTER_OLDPACKAGE;
     case MODE_ERASE:
 #endif
     case MODE_UNKNOWN:
-	if (!showVersion && !help && !noUsageMsg) printUsage();
+	if (poptPeekArg(optCon) != NULL || argc <= 1 || rpmIsVerbose()) {
+	    printUsage(optCon, stdout, 0);
+	    ec = argc;
+	}
 	break;
     }
 
 #if defined(IAM_RPMBT) || defined(IAM_RPMK)
 exit:
 #endif	/* IAM_RPMBT || IAM_RPMK */
+
+    ts = rpmtsFree(ts);
+
     optCon = poptFreeContext(optCon);
     rpmFreeMacros(NULL);
-    rpmFreeMacros(rpmCLIMacroContext);
+/*@i@*/	rpmFreeMacros(rpmCLIMacroContext);
     rpmFreeRpmrc();
 
     if (pipeChild) {
@@ -1189,9 +871,8 @@ exit:
     }
 
     /* keeps memory leak checkers quiet */
-    freeNames();
     freeFilesystems();
-    urlFreeCache();
+/*@i@*/	urlFreeCache();
     rpmlogClose();
     dbiTags = _free(dbiTags);
 
@@ -1200,18 +881,30 @@ exit:
 #endif
 
 #ifdef	IAM_RPMBT
+    freeNames();
     ba->buildRootOverride = _free(ba->buildRootOverride);
     ba->targets = _free(ba->targets);
 #endif
 
 #ifdef	IAM_RPMEIU
+    if (ia->relocations != NULL)
+    for (i = 0; i < ia->numRelocations; i++)
+	ia->relocations[i].oldPath = _free(ia->relocations[i].oldPath);
     ia->relocations = _free(ia->relocations);
 #endif
 
 #if HAVE_MCHECK_H && HAVE_MTRACE
+    /*@-noeffect@*/
     muntrace();   /* Trace malloc only if MALLOC_TRACE=mtrace-output-file. */
+    /*@=noeffect@*/
 #endif
+
+    /* XXX don't overflow single byte exit status */
+    if (ec > 255) ec = 255;
+
     /*@-globstate@*/
     return ec;
     /*@=globstate@*/
 }
+/*@=mods@*/
+/*@=bounds@*/

@@ -27,18 +27,11 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "dldp.h"
 #include "mp32.h"
 #include "mp32prime.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC
-# include <malloc.h>
-#endif
+#include "debug.h"
 
 /**
  */
@@ -214,6 +207,7 @@ int dldp_pgoqMake(dldp_p* dp, randomGeneratorContext* rgc, uint32 psize, uint32 
 	return -1;
 }
 
+/*@-bounds@*/
 int dldp_pgoqMakeSafe(dldp_p* dp, randomGeneratorContext* rgc, uint32 psize)
 {
 	/*
@@ -249,6 +243,7 @@ int dldp_pgoqMakeSafe(dldp_p* dp, randomGeneratorContext* rgc, uint32 psize)
 	}
 	return -1;
 }
+/*@=bounds@*/
 
 int dldp_pgoqGenerator_w(dldp_p* dp, randomGeneratorContext* rgc, uint32* wksp)
 {

@@ -6,7 +6,7 @@
  */
 
 /*
- * Copyright (c) 1999, 2000, 2001 Virtual Unlimited B.V.
+ * Copyright (c) 1999, 2000, 2001, 2002 Virtual Unlimited B.V.
  *
  * Author: Bob Deblier <bob@virtualunlimited.com>
  *
@@ -26,22 +26,8 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "beecrypt.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-#if HAVE_STRING_H
-# include <string.h>
-#endif
-#if WIN32
-# include <windows.h>
-#endif
 
 #if defined(__LCLINT__)
 /* XXX from /usr/include/bits/sigest.h in glibc-2.2.4 */
@@ -54,7 +40,6 @@ typedef struct
 
 #include "endianness.h"
 #include "entropy.h"
-#include "fips180.h"
 #include "fips186.h"
 #include "hmacmd5.h"
 #include "hmacsha1.h"
@@ -62,10 +47,14 @@ typedef struct
 #include "md5.h"
 #include "mp32.h"
 #include "mtprng.h"
+#include "sha1.h"
 #include "sha256.h"
 
+#include "aes.h"
 #include "blowfish.h"
 #include "blockmode.h"
+
+#include "debug.h"
 
 /*@-type@*/ /* FIX: cast? */
 /*@observer@*/ /*@unchecked@*/
@@ -110,6 +99,7 @@ const entropySource* entropySourceGet(int index)
 	return entropySourceList+index;
 }
 
+/*@-boundsread@*/
 const entropySource* entropySourceFind(const char* name)
 {
 	register int index;
@@ -121,6 +111,7 @@ const entropySource* entropySourceFind(const char* name)
 	}
 	return (const entropySource*) 0;
 }
+/*@=boundsread@*/
 
 const entropySource* entropySourceDefault()
 {
@@ -134,6 +125,7 @@ const entropySource* entropySourceDefault()
 		return (const entropySource*) 0;
 }
 
+/*@-boundsread@*/
 int entropyGatherNext(uint32* data, int size)
 {
 	const char* selection = getenv("BEECRYPT_ENTROPY");
@@ -157,6 +149,7 @@ int entropyGatherNext(uint32* data, int size)
 	}
 	return -1;
 }
+/*@=boundsread@*/
 
 /*@-type@*/ /* FIX: cast? */
 /*@observer@*/ /*@unchecked@*/
@@ -179,11 +172,14 @@ const randomGenerator* randomGeneratorGet(int index)
 	if ((index < 0) || (index >= RANDOMGENERATORS))
 		return (const randomGenerator*) 0;
 
+/*@-boundsread@*/
 	/*@-compmempass@*/
 	return randomGeneratorList[index];
 	/*@=compmempass@*/
+/*@=boundsread@*/
 }
 
+/*@-boundsread@*/
 const randomGenerator* randomGeneratorFind(const char* name)
 {
 	register int index;
@@ -197,6 +193,7 @@ const randomGenerator* randomGeneratorFind(const char* name)
 	}
 	return (const randomGenerator*) 0;
 }
+/*@=boundsread@*/
 
 const randomGenerator* randomGeneratorDefault()
 {
@@ -296,11 +293,14 @@ const hashFunction* hashFunctionGet(int index)
 	if ((index < 0) || (index >= HASHFUNCTIONS))
 		return (const hashFunction*) 0;
 
+/*@-boundsread@*/
 	/*@-compmempass@*/
 	return hashFunctionList[index];
 	/*@=compmempass@*/
+/*@=boundsread@*/
 }
 
+/*@-boundsread@*/
 const hashFunction* hashFunctionFind(const char* name)
 {
 	register int index;
@@ -314,6 +314,7 @@ const hashFunction* hashFunctionFind(const char* name)
 	}
 	return (const hashFunction*) 0;
 }
+/*@=boundsread@*/
 
 int hashFunctionContextInit(hashFunctionContext* ctxt, const hashFunction* hash)
 {
@@ -403,6 +404,7 @@ int hashFunctionContextUpdateMC(hashFunctionContext* ctxt, const memchunk* m)
 	return ctxt->algo->update(ctxt->param, m->data, m->size);
 }
 
+/*@-boundswrite@*/
 int hashFunctionContextUpdateMP32(hashFunctionContext* ctxt, const mp32number* n)
 {
 	if (ctxt == (hashFunctionContext*) 0)
@@ -438,6 +440,7 @@ int hashFunctionContextUpdateMP32(hashFunctionContext* ctxt, const mp32number* n
 	}
 	return -1;
 }
+/*@=boundswrite@*/
 
 int hashFunctionContextDigest(hashFunctionContext* ctxt, mp32number* dig)
 {
@@ -512,11 +515,14 @@ const keyedHashFunction* keyedHashFunctionGet(int index)
 	if ((index < 0) || (index >= KEYEDHASHFUNCTIONS))
 		return (const keyedHashFunction*) 0;
 
+/*@-boundsread@*/
 	/*@-compmempass@*/
 	return keyedHashFunctionList[index];
 	/*@=compmempass@*/
+/*@=boundsread@*/
 }
 
+/*@-boundsread@*/
 const keyedHashFunction* keyedHashFunctionFind(const char* name)
 {
 	register int index;
@@ -530,6 +536,7 @@ const keyedHashFunction* keyedHashFunctionFind(const char* name)
 	}
 	return (const keyedHashFunction*) 0;
 }
+/*@=boundsread@*/
 
 int keyedHashFunctionContextInit(keyedHashFunctionContext* ctxt, const keyedHashFunction* mac)
 {
@@ -639,6 +646,7 @@ int keyedHashFunctionContextUpdateMC(keyedHashFunctionContext* ctxt, const memch
 	return ctxt->algo->update(ctxt->param, m->data, m->size);
 }
 
+/*@-boundswrite@*/
 int keyedHashFunctionContextUpdateMP32(keyedHashFunctionContext* ctxt, const mp32number* n)
 {
 	if (ctxt == (keyedHashFunctionContext*) 0)
@@ -674,6 +682,7 @@ int keyedHashFunctionContextUpdateMP32(keyedHashFunctionContext* ctxt, const mp3
 	}
 	return -1;
 }
+/*@=boundswrite@*/
 
 int keyedHashFunctionContextDigest(keyedHashFunctionContext* ctxt, mp32number* dig)
 {
@@ -720,6 +729,7 @@ int keyedHashFunctionContextDigestMatch(keyedHashFunctionContext* ctxt, const mp
 /*@observer@*/ /*@unchecked@*/
 static const blockCipher* blockCipherList[] =
 {
+	&aes,
 	&blowfish
 };
 /*@=type@*/
@@ -748,11 +758,14 @@ const blockCipher* blockCipherGet(int index)
 	if ((index < 0) || (index >= BLOCKCIPHERS))
 		return (const blockCipher*) 0;
 
+/*@-boundsread@*/
 	/*@-compmempass@*/
 	return blockCipherList[index];
 	/*@=compmempass@*/
+/*@=boundsread@*/
 }
 
+/*@-boundsread@*/
 const blockCipher* blockCipherFind(const char* name)
 {
 	register int index;
@@ -767,6 +780,7 @@ const blockCipher* blockCipherFind(const char* name)
 
 	return (const blockCipher*) 0;
 }
+/*@=boundsread@*/
 
 int blockCipherContextInit(blockCipherContext* ctxt, const blockCipher* ciph)
 {

@@ -31,20 +31,11 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "mp32.h"
 #include "mp32prime.h"
 #include "mp32barrett.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-
-#include <stdio.h>
+#include "debug.h"
 
 /**
  * mp32bzero
@@ -89,6 +80,7 @@ void mp32bfree(mp32barrett* b)
 	b->size = 0;
 }
 
+/*@-boundswrite@*/
 /*@-nullstate -compdef @*/	/* b->modl may be null @*/
 void mp32bcopy(mp32barrett* b, const mp32barrett* copy)
 {
@@ -127,7 +119,9 @@ void mp32bcopy(mp32barrett* b, const mp32barrett* copy)
 		{};
 }
 /*@=nullstate =compdef @*/
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 /*@-nullstate -compdef @*/	/* b->modl may be null @*/
 /**
  * mp32bset
@@ -165,7 +159,9 @@ void mp32bset(mp32barrett* b, uint32 size, const uint32 *data)
 	}
 }
 /*@=nullstate =compdef @*/
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 /*@-nullstate -compdef @*/	/* b->modl may be null @*/
 void mp32bsethex(mp32barrett* b, const char* hex)
 {
@@ -226,11 +222,13 @@ void mp32bsethex(mp32barrett* b, const char* hex)
 	}
 }
 /*@=nullstate =compdef @*/
+/*@=boundswrite@*/
 
 /**
  *  Computes the Barrett 'mu' coefficient.
  *  needs workspace of (6*size+4) words
  */
+/*@-boundswrite@*/
 void mp32bmu_w(mp32barrett* b, uint32* wksp)
 {
 	register uint32  size = b->size;
@@ -251,11 +249,13 @@ void mp32bmu_w(mp32barrett* b, uint32* wksp)
 	/* de-normalize */
 	mp32rshift(size, b->modl, shift);
 }
+/*@=boundswrite@*/
 
 /**
  *  Generates a random number in the range 1 < r < b-1.
  *  need workspace of (size) words
  */
+/*@-boundswrite@*/
 void mp32brnd_w(const mp32barrett* b, randomGeneratorContext* rc, uint32* result, uint32* wksp)
 {
 	uint32 msz = mp32mszcnt(b->size, b->modl);
@@ -277,11 +277,13 @@ void mp32brnd_w(const mp32barrett* b, randomGeneratorContext* rc, uint32* result
 			(void) mp32sub(b->size, result, wksp);
 	} while (mp32leone(b->size, result));
 }
+/*@=boundswrite@*/
 
 /**
  *  Generates a random odd number in the range 1 < r < b-1.
  *  needs workspace of (size) words
  */
+/*@-boundswrite@*/
 void mp32brndodd_w(const mp32barrett* b, randomGeneratorContext* rc, uint32* result, uint32* wksp)
 {
 	uint32 msz = mp32mszcnt(b->size, b->modl);
@@ -307,6 +309,7 @@ void mp32brndodd_w(const mp32barrett* b, randomGeneratorContext* rc, uint32* res
 		}
 	} while (mp32leone(b->size, result));
 }
+/*@=boundswrite@*/
 
 /**
  *  Generates a random invertible (modulo b) in the range 1 < r < b-1.
@@ -330,6 +333,7 @@ void mp32brndinv_w(const mp32barrett* b, randomGeneratorContext* rc, uint32* res
  *  Computes the barrett modular reduction of a number x, which has twice the size of b.
  *  needs workspace of (2*size+2) words
  */
+/*@-boundswrite@*/
 void mp32bmod_w(const mp32barrett* b, const uint32* xdata, uint32* result, uint32* wksp)
 {
 	register uint32 rc;
@@ -388,10 +392,12 @@ void mp32bmod_w(const mp32barrett* b, const uint32* xdata, uint32* result, uint3
 	}
 	mp32copy(b->size, result, wksp+1);
 }
+/*@=boundswrite@*/
 
 /**
  *  Copies (b-1) into result.
  */
+/*@-boundswrite@*/
 void mp32bsubone(const mp32barrett* b, uint32* result)
 {
 	register uint32 size = b->size;
@@ -399,10 +405,12 @@ void mp32bsubone(const mp32barrett* b, uint32* result)
 	mp32copy(size, result, b->modl);
 	(void) mp32subw(size, result, 1);
 }
+/*@=boundswrite@*/
 
 /**
  *  Computes the negative (modulo b) of x, where x must contain a value between 0 and b-1.
  */
+/*@-boundswrite@*/
 void mp32bneg(const mp32barrett* b, const uint32* xdata, uint32* result)
 {
 	register uint32  size = b->size;
@@ -411,6 +419,7 @@ void mp32bneg(const mp32barrett* b, const uint32* xdata, uint32* result)
 	mp32neg(size, result);
 	(void) mp32add(size, result, b->modl);
 }
+/*@=boundswrite@*/
 
 /**
  *  Computes the sum (modulo b) of x and y.
@@ -553,6 +562,7 @@ static byte mp32bslide_postsq[16] =
  * mp32bpowmod_w
  * needs workspace of 4*size+2 words
  */
+/*@-boundsread@*/
 void mp32bpowmod_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32 psize, const uint32* pdata, uint32* result, uint32* wksp)
 {
 	/*
@@ -590,7 +600,9 @@ void mp32bpowmod_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint
 		/*@=nullpass@*/
 	}
 }
+/*@=boundsread@*/
 
+/*@-boundsread@*/
 void mp32bpowmodsld_w(const mp32barrett* b, const uint32* slide, uint32 psize, const uint32* pdata, uint32* result, uint32* wksp)
 {
 	/*
@@ -689,11 +701,13 @@ void mp32bpowmodsld_w(const mp32barrett* b, const uint32* slide, uint32 psize, c
 	}	
 	/*@=charindex@*/
 }
+/*@=boundsread@*/
 
 /**
  * mp32btwopowmod_w
  *  needs workspace of (4*size+2) words
  */
+/*@-boundsread@*/
 void mp32btwopowmod_w(const mp32barrett* b, uint32 psize, const uint32* pdata, uint32* result, uint32* wksp)
 {
 	/*
@@ -756,7 +770,9 @@ void mp32btwopowmod_w(const mp32barrett* b, uint32 psize, const uint32* pdata, u
 		}
 	}
 }
+/*@=boundsread@*/
 
+#ifdef	DYING
 /**
  *  Computes the inverse (modulo b) of x, and returns 1 if x was invertible.
  *  needs workspace of (6*size+6) words
@@ -780,13 +796,14 @@ int mp32binv_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32* 
 	uint32* cdata = bdata+size+1;
 	uint32* ddata = cdata+size+1;
 
-	if (mp32odd(b->size, b->modl) && mp32even(xsize, xdata))
+	mp32setx(size+1, udata, size, b->modl);
+	mp32setx(size+1, vdata, xsize, xdata);
+	mp32zero(size+1, bdata);
+	mp32setw(size+1, ddata, 1);
+
+	if (mp32odd(size, b->modl))
 	{
 		/* use simplified binary extended gcd algorithm */
-		mp32setx(size+1, udata, size, b->modl);
-		mp32setx(size+1, vdata, xsize, xdata);
-		mp32zero(size+1, bdata);
-		mp32setw(size+1, ddata, 1);
 
 		while (1)
 		{
@@ -828,7 +845,10 @@ int mp32binv_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32* 
 						mp32setx(size, result, size+1, ddata);
 						/*@-usedef@*/
 						if (*ddata & 0x80000000)
-							(void) mp32add(size, result, b->modl);
+						{
+							/* keep adding the modulus until we get a carry */
+							while (!mp32add(size, result, b->modl));
+						}
 						/*@=usedef@*/
 					}
 					return 1;
@@ -840,12 +860,8 @@ int mp32binv_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32* 
 	else
 	{
 		/* use full binary extended gcd algorithm */
-		mp32setx(size+1, udata, size, b->modl);
-		mp32setx(size+1, vdata, xsize, xdata);
 		mp32setw(size+1, adata, 1);
-		mp32zero(size+1, bdata);
 		mp32zero(size+1, cdata);
-		mp32setw(size+1, ddata, 1);
 
 		while (1)
 		{
@@ -897,7 +913,10 @@ int mp32binv_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32* 
 						mp32setx(size, result, size+1, ddata);
 						/*@-usedef@*/
 						if (*ddata & 0x80000000)
-							(void) mp32add(size, result, b->modl);
+						{
+							/* keep adding the modulus until we get a carry */
+							while (!mp32add(size, result, b->modl));
+						}
 						/*@=usedef@*/
 					}
 					return 1;
@@ -907,10 +926,228 @@ int mp32binv_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32* 
 		}
 	}
 }
+#else
+
+/*@unchecked@*/
+static int _debug = 0;
+
+#undef	FULL_BINARY_EXTENDED_GCD
+
+/**
+ *  Computes the inverse (modulo b) of x, and returns 1 if x was invertible.
+ */
+/*@-boundsread@*/
+int mp32binv_w(const mp32barrett* b, uint32 xsize, const uint32* xdata, uint32* result, uint32* wksp)
+{
+	uint32  ysize = b->size+1;
+ 	int k;
+	uint32* u  = wksp;
+	uint32* v  =  u+ysize;
+	uint32* u1 =  v+ysize;
+	uint32* v1 = u1+ysize;
+	uint32* t1 = v1+ysize;
+	uint32* u3 = t1+ysize;
+	uint32* v3 = u3+ysize;
+	uint32* t3 = v3+ysize;
+
+#ifdef	FULL_BINARY_EXTENDED_GCD
+	uint32* u2 = t3+ysize;
+	uint32* v2 = u2+ysize;
+	uint32* t2 = v2+ysize;
+#endif
+
+	mp32setx(ysize, u, xsize, xdata);
+	mp32setx(ysize, v, b->size, b->modl);
+
+	/* Y1. Find power of 2. */
+	for (k = 0; mp32even(ysize, u) && mp32even(ysize, v); k++) {
+		mp32divtwo(ysize, u);
+		mp32divtwo(ysize, v);
+	}
+
+	/* Y2. Initialize. */
+	mp32setw(ysize, u1, 1);
+	mp32setx(ysize, v1, ysize, v);
+	mp32setx(ysize, u3, ysize, u);
+	mp32setx(ysize, v3, ysize, v);
+
+#ifdef	FULL_BINARY_EXTENDED_GCD
+	mp32zero(ysize, u2);
+	mp32setw(ysize, v2, 1);
+	(void) mp32sub(ysize, v2, u);
+#endif
+
+if (_debug < 0) {
+/*@-modfilesys@*/
+fprintf(stderr, "       u: "), mp32println(stderr, ysize, u);
+fprintf(stderr, "       v: "), mp32println(stderr, ysize, v);
+fprintf(stderr, "      u1: "), mp32println(stderr, ysize, u1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      u2: "), mp32println(stderr, ysize, u2);
+#endif
+fprintf(stderr, "      u3: "), mp32println(stderr, ysize, u3);
+fprintf(stderr, "      v1: "), mp32println(stderr, ysize, v1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      v2: "), mp32println(stderr, ysize, v2);
+#endif
+fprintf(stderr, "      v3: "), mp32println(stderr, ysize, v3);
+/*@=modfilesys@*/
+}
+
+	if (mp32odd(ysize, u)) {
+		mp32zero(ysize, t1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		mp32zero(ysize, t2);
+		mp32subw(ysize, t2, 1);
+#endif
+		mp32zero(ysize, t3);
+		(void) mp32sub(ysize, t3, v);
+		goto Y4;
+	} else {
+		mp32setw(ysize, t1, 1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		mp32zero(ysize, t2);
+#endif
+		mp32setx(ysize, t3, ysize, u);
+	}
+
+	do {
+	    do {
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		if (mp32odd(ysize, t1) ||  mp32odd(ysize, t2)) {
+			(void) mp32add(ysize, t1, v);
+			(void) mp32sub(ysize, t2, u);
+		}
+#else
+		/* XXX this assumes v is odd, true for DSA inversion. */
+		if (mp32odd(ysize, t1))
+			(void) mp32add(ysize, t1, v);
+#endif
+
+		mp32sdivtwo(ysize, t1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		mp32sdivtwo(ysize, t2);
+#endif
+		mp32sdivtwo(ysize, t3);
+Y4:
+if (_debug < 0) {
+/*@-modfilesys@*/
+fprintf(stderr, "-->Y4 t3: "), mp32println(stderr, ysize, t3);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      t2: "), mp32println(stderr, ysize, t2);
+#endif
+fprintf(stderr, "      t1: "), mp32println(stderr, ysize, t1);
+/*@=modfilesys@*/
+}
+	    } while (mp32even(ysize, t3));
+
+	    /* Y5. Reset max(u3,v3). */
+	    if (!(*t3 & 0x80000000)) {
+		mp32setx(ysize, u1, ysize, t1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		mp32setx(ysize, u2, ysize, t2);
+#endif
+		mp32setx(ysize, u3, ysize, t3);
+if (_debug < 0) {
+/*@-modfilesys@*/
+fprintf(stderr, "-->Y5 u1: "), mp32println(stderr, ysize, u1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      u2: "), mp32println(stderr, ysize, u2);
+#endif
+fprintf(stderr, "      u3: "), mp32println(stderr, ysize, u3);
+/*@=modfilesys@*/
+}
+	    } else {
+		mp32setx(ysize, v1, ysize, v);
+		(void) mp32sub(ysize, v1, t1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		mp32setx(ysize, v2, ysize, u);
+		mp32neg(ysize, v2);
+		(void) mp32sub(ysize, v2, t2);
+#endif
+		mp32zero(ysize, v3);
+		(void) mp32sub(ysize, v3, t3);
+if (_debug < 0) {
+/*@-modfilesys@*/
+fprintf(stderr, "-->Y5 v1: "), mp32println(stderr, ysize, v1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      v2: "), mp32println(stderr, ysize, v2);
+#endif
+fprintf(stderr, "      v3: "), mp32println(stderr, ysize, v3);
+/*@=modfilesys@*/
+}
+	    }
+
+	    /* Y6. Subtract. */
+	    mp32setx(ysize, t1, ysize, u1);
+	    (void) mp32sub(ysize, t1, v1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+	    mp32setx(ysize, t2, ysize, u2);
+	    (void) mp32sub(ysize, t2, v2);
+#endif
+	    mp32setx(ysize, t3, ysize, u3);
+	    (void) mp32sub(ysize, t3, v3);
+
+	    if (*t1 & 0x80000000) {
+		(void) mp32add(ysize, t1, v);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+		(void) mp32sub(ysize, t2, u);
+#endif
+	    }
+
+if (_debug < 0) {
+/*@-modfilesys@*/
+fprintf(stderr, "-->Y6 t1: "), mp32println(stderr, ysize, t1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      t2: "), mp32println(stderr, ysize, t2);
+#endif
+fprintf(stderr, "      t3: "), mp32println(stderr, ysize, t3);
+/*@=modfilesys@*/
+}
+
+	} while (mp32nz(ysize, t3));
+
+	if (!mp32isone(ysize, u3) || !mp32isone(ysize, v3))
+		return 0;
+
+	if (result) {
+		while (--k > 0)
+			(void) mp32add(ysize, u1, u1);
+		mp32setx(b->size, result, ysize, u1);
+	}
+
+if (_debug) {
+/*@-modfilesys@*/
+if (result)
+fprintf(stderr, "=== EXIT: "), mp32println(stderr, b->size, result);
+fprintf(stderr, "      u1: "), mp32println(stderr, ysize, u1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      u2: "), mp32println(stderr, ysize, u2);
+#endif
+fprintf(stderr, "      u3: "), mp32println(stderr, ysize, u3);
+fprintf(stderr, "      v1: "), mp32println(stderr, ysize, v1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      v2: "), mp32println(stderr, ysize, v2);
+#endif
+fprintf(stderr, "      v3: "), mp32println(stderr, ysize, v3);
+fprintf(stderr, "      t1: "), mp32println(stderr, ysize, t1);
+#ifdef	FULL_BINARY_EXTENDED_GCD
+fprintf(stderr, "      t2: "), mp32println(stderr, ysize, t2);
+#endif
+fprintf(stderr, "      t3: "), mp32println(stderr, ysize, t3);
+/*@=modfilesys@*/
+}
+
+	return 1;
+}
+/*@=boundsread@*/
+
+#endif
 
 /**
  * needs workspace of (7*size+2) words
  */
+/*@-boundsread@*/
 int mp32bpprime_w(const mp32barrett* b, randomGeneratorContext* rc, int t, uint32* wksp)
 {
 	/*
@@ -960,6 +1197,7 @@ int mp32bpprime_w(const mp32barrett* b, randomGeneratorContext* rc, int t, uint3
 
 	return 0;
 }
+/*@=boundsread@*/
 
 void mp32bnrnd(const mp32barrett* b, randomGeneratorContext* rc, mp32number* result)
 {

@@ -1,4 +1,3 @@
-/*@-type@*/ /* LCL: function typedefs */
 /** \ingroup rpmio
  * \file rpmio/url.c
  */
@@ -40,14 +39,18 @@ int _url_debug = 0;
 
 /**
  */
+/*@-incondefs@*/
 /*@unchecked@*/
 /*@only@*/ /*@null@*/
 urlinfo *_url_cache = NULL;
+/*@=incondefs@*/
 
 /**
  */
+/*@-incondefs@*/
 /*@unchecked@*/
 int _url_count = 0;
+/*@=incondefs@*/
 
 /**
  * Wrapper to free(3), hides const compilation noise, permit NULL, return NULL.
@@ -155,6 +158,7 @@ URLDBGREFS(0, (stderr, "--> url %p -- %d %s at %s:%u\n", u, u->nrefs, msg, file,
     return NULL;
 }
 
+/*@-boundswrite@*/
 void urlFreeCache(void)
 {
     if (_url_cache) {
@@ -173,25 +177,24 @@ void urlFreeCache(void)
     _url_cache = _free(_url_cache);
     _url_count = 0;
 }
+/*@=boundswrite@*/
 
 static int urlStrcmp(/*@null@*/ const char * str1, /*@null@*/ const char * str2)
 	/*@*/
 {
-    if (str1 && str2)
-	/*@-nullpass@*/		/* LCL: 2nd arg claims to be NULL */
-	return strcmp(str1, str2);
-	/*@=nullpass@*/
+    if (str1)
+	if (str2)
+	    return strcmp(str1, str2);
     if (str1 != str2)
 	return -1;
     return 0;
 }
 
+/*@-boundswrite@*/
 /*@-mods@*/
 static void urlFind(/*@null@*/ /*@in@*/ /*@out@*/ urlinfo * uret, int mustAsk)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies *uret, rpmGlobalMacroContext,
-		fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies *uret, rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     urlinfo u;
     int ucx;
@@ -263,8 +266,11 @@ static void urlFind(/*@null@*/ /*@in@*/ /*@out@*/ urlinfo * uret, int mustAsk)
 	    prompt = alloca(strlen(host) + strlen(user) + 256);
 	    sprintf(prompt, _("Password for %s@%s: "), user, host);
 	    u->password = _free(u->password);
+/*@-dependenttrans -moduncon @*/
 	    u->password = /*@-unrecog@*/ getpass(prompt) /*@=unrecog@*/;
-	    u->password = xstrdup(u->password);	/* XXX xstrdup has side effects. */
+/*@=dependenttrans =moduncon @*/
+	    if (u->password)
+		u->password = xstrdup(u->password);
 	}
 
 	if (u->proxyh == NULL) {
@@ -326,12 +332,14 @@ static void urlFind(/*@null@*/ /*@in@*/ /*@out@*/ urlinfo * uret, int mustAsk)
     return;
 }
 /*@=mods@*/
+/*@=boundswrite@*/
 
 /**
  */
 /*@observer@*/ /*@unchecked@*/
 static struct urlstring {
-/*@observer@*/ /*@null@*/ const char * leadin;
+/*@observer@*/ /*@null@*/
+    const char * leadin;
     urltype	ret;
 } urlstrings[] = {
     { "file://",	URL_IS_PATH },
@@ -345,6 +353,7 @@ urltype urlIsURL(const char * url)
 {
     struct urlstring *us;
 
+/*@-boundsread@*/
     if (url && *url) {
 	for (us = urlstrings; us->leadin != NULL; us++) {
 	    if (strncmp(url, us->leadin, strlen(us->leadin)))
@@ -352,10 +361,12 @@ urltype urlIsURL(const char * url)
 	    return us->ret;
 	}
     }
+/*@=boundsread@*/
 
     return URL_IS_UNKNOWN;
 }
 
+/*@-boundswrite@*/
 /* Return path portion of url (or pointer to NUL if url == NULL) */
 urltype urlPath(const char * url, const char ** pathp)
 {
@@ -391,11 +402,13 @@ urltype urlPath(const char * url, const char ** pathp)
 	/*@=observertrans@*/
     return urltype;
 }
+/*@=boundswrite@*/
 
 /*
  * Split URL into components. The URL can look like
  *	service://user:password@host:port/path
  */
+/*@-bounds@*/
 /*@-modfilesys@*/
 int urlSplit(const char * url, urlinfo *uret)
 {
@@ -471,9 +484,9 @@ int urlSplit(const char * url, urlinfo *uret)
 
     if (u->port < 0 && u->service != NULL) {
 	struct servent *serv;
-	/*@-unrecog -multithreaded -moduncon @*/
+	/*@-multithreaded -moduncon @*/
 	serv = getservbyname(u->service, "tcp");
-	/*@=unrecog =multithreaded =moduncon @*/
+	/*@=multithreaded =moduncon @*/
 	if (serv != NULL)
 	    u->port = ntohs(serv->s_port);
 	else if (u->urltype == URL_IS_FTP)
@@ -492,6 +505,7 @@ int urlSplit(const char * url, urlinfo *uret)
     return 0;
 }
 /*@=modfilesys@*/
+/*@=bounds@*/
 
 int urlGetFile(const char * url, const char * dest)
 {
@@ -557,4 +571,3 @@ exit:
 
     return rc;
 }
-/*@=type@*/

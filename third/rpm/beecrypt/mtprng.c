@@ -35,18 +35,12 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
+#include "beecrypt.h"
 #include "mtprng.h"
-#include "mp32.h"
 #include "mp32opt.h"
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
+#include "mp32.h"
+#include "debug.h"
 
 #define hiBit(a)		((a) & 0x80000000)
 #define loBit(a)		((a) & 0x1)
@@ -59,6 +53,7 @@ const randomGenerator mtprng = { "Mersenne Twister", sizeof(mtprngParam), (rando
 
 /**
  */
+/*@-boundsread@*/
 static void mtprngReload(mtprngParam* mp)
 	/*@modifies mp @*/
 {
@@ -77,6 +72,7 @@ static void mtprngReload(mtprngParam* mp)
     mp->left = N;
     mp->nextw = mp->state;
 }
+/*@=boundsread@*/
 
 int mtprngSetup(mtprngParam* mp)
 {
@@ -87,10 +83,10 @@ int mtprngSetup(mtprngParam* mp)
 		if (!(mp->lock = CreateMutex(NULL, FALSE, NULL)))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_init(&mp->lock, USYNC_THREAD, (void *) 0))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-nullpass@*/
 		/*@-moduncon@*/
 		if (pthread_mutex_init(&mp->lock, (pthread_mutexattr_t *) 0))
@@ -108,6 +104,7 @@ int mtprngSetup(mtprngParam* mp)
 	return -1;
 }
 
+/*@-boundswrite@*/
 int mtprngSeed(mtprngParam* mp, const uint32* data, int size)
 {
 	if (mp)
@@ -120,10 +117,10 @@ int mtprngSeed(mtprngParam* mp, const uint32* data, int size)
 		if (WaitForSingleObject(mp->lock, INFINITE) != WAIT_OBJECT_0)
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_lock(&mp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_lock(&mp->lock))
 			return -1;
@@ -143,10 +140,10 @@ int mtprngSeed(mtprngParam* mp, const uint32* data, int size)
 		if (!ReleaseMutex(mp->lock))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_unlock(&mp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_unlock(&mp->lock))
 			return -1;
@@ -158,7 +155,9 @@ int mtprngSeed(mtprngParam* mp, const uint32* data, int size)
 	}
 	return -1;
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 int mtprngNext(mtprngParam* mp, uint32* data, int size)
 {
 	if (mp)
@@ -170,10 +169,10 @@ int mtprngNext(mtprngParam* mp, uint32* data, int size)
 		if (WaitForSingleObject(mp->lock, INFINITE) != WAIT_OBJECT_0)
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_lock(&mp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_lock(&mp->lock))
 			return -1;
@@ -201,10 +200,10 @@ int mtprngNext(mtprngParam* mp, uint32* data, int size)
 		if (!ReleaseMutex(mp->lock))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_unlock(&mp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_unlock(&mp->lock))
 			return -1;
@@ -216,6 +215,7 @@ int mtprngNext(mtprngParam* mp, uint32* data, int size)
 	}
 	return -1;
 }
+/*@=boundswrite@*/
 
 int mtprngCleanup(mtprngParam* mp)
 {
@@ -226,10 +226,10 @@ int mtprngCleanup(mtprngParam* mp)
 		if (!CloseHandle(mp->lock))
 			return -1;
 		# else
-		#  if defined(HAVE_SYNCH_H)
+		#  if HAVE_THREAD_H && HAVE_SYNCH_H
 		if (mutex_destroy(&mp->lock))
 			return -1;
-		#  elif defined(HAVE_PTHREAD_H)
+		#  elif HAVE_PTHREAD_H
 		/*@-moduncon@*/
 		if (pthread_mutex_destroy(&mp->lock))
 			return -1;

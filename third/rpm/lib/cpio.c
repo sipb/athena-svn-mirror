@@ -9,26 +9,28 @@
 
 #include "system.h"
 
+#include <rpmio_internal.h>
+#include <rpmlib.h>
+
+#include "cpio.h"
 #include "fsm.h"
+
 #include "rpmerr.h"
 #include "debug.h"
 
 /*@access FSM_t @*/
 
-/*@-exportheadervar@*/
-extern int _fsm_debug;
-/*@=exportheadervar@*/
-
 /**
  * Convert string to unsigned integer (with buffer size check).
- * @param		input string
- * @retval		address of 1st character not processed
+ * @param str		input string
+ * @retval endptr	address of 1st character not processed
  * @param base		numerical conversion base
  * @param num		max no. of bytes to read
  * @return		converted integer
  */
 static int strntoul(const char *str, /*@out@*/char **endptr, int base, int num)
 	/*@modifies *endptr @*/
+	/*@requires maxSet(endptr) >= 0 @*/
 {
     char * buf, * end;
     unsigned long ret;
@@ -38,20 +40,26 @@ static int strntoul(const char *str, /*@out@*/char **endptr, int base, int num)
     buf[num] = '\0';
 
     ret = strtoul(buf, &end, base);
+/*@-boundsread@*/ /* LCL: strtoul annotations */
     if (*end != '\0')
 	*endptr = ((char *)str) + (end - buf);	/* XXX discards const */
     else
 	*endptr = ((char *)str) + strlen(buf);
+/*@=boundsread@*/
 
     return ret;
 }
 
 #define GET_NUM_FIELD(phys, log) \
+	/*@-boundswrite@*/ \
 	log = strntoul(phys, &end, 16, sizeof(phys)); \
+	/*@=boundswrite@*/ \
 	if ( (end - phys) != sizeof(phys) ) return CPIOERR_BAD_HEADER;
 #define SET_NUM_FIELD(phys, val, space) \
 	sprintf(space, "%8.8lx", (unsigned long) (val)); \
-	memcpy(phys, space, 8);
+	/*@-boundsread@*/ \
+	memcpy(phys, space, 8) \
+	/*@=boundsread@*/
 
 int cpioTrailerWrite(FSM_t fsm)
 {
@@ -59,11 +67,13 @@ int cpioTrailerWrite(FSM_t fsm)
 	(struct cpioCrcPhysicalHeader *)fsm->rdbuf;
     int rc;
 
+/*@-boundswrite@*/
     memset(hdr, '0', PHYS_HDR_SIZE);
     memcpy(hdr->magic, CPIO_NEWC_MAGIC, sizeof(hdr->magic));
     memcpy(hdr->nlink, "00000001", 8);
     memcpy(hdr->namesize, "0000000b", 8);
     memcpy(fsm->rdbuf + PHYS_HDR_SIZE, CPIO_TRAILER, sizeof(CPIO_TRAILER));
+/*@=boundswrite@*/
 
     /* XXX DWRITE uses rdnb for I/O length. */
     fsm->rdnb = PHYS_HDR_SIZE + sizeof(CPIO_TRAILER);
@@ -103,7 +113,9 @@ int cpioHeaderWrite(FSM_t fsm, struct stat * st)
 
     len = strlen(fsm->path) + 1; SET_NUM_FIELD(hdr->namesize, len, field);
     memcpy(hdr->checksum, "00000000", 8);
+/*@-boundswrite@*/
     memcpy(fsm->rdbuf + PHYS_HDR_SIZE, fsm->path, len);
+/*@=boundswrite@*/
 
     /* XXX DWRITE uses rdnb for I/O length. */
     fsm->rdnb = PHYS_HDR_SIZE + len;
@@ -129,7 +141,9 @@ int cpioHeaderRead(FSM_t fsm, struct stat * st)
     if (!rc && fsm->rdnb != fsm->wrlen)
 	rc = CPIOERR_READ_FAILED;
     if (rc) return rc;
+/*@-boundswrite@*/
     memcpy(&hdr, fsm->wrbuf, fsm->rdnb);
+/*@=boundswrite@*/
 
     if (strncmp(CPIO_CRC_MAGIC, hdr.magic, sizeof(CPIO_CRC_MAGIC)-1) &&
 	strncmp(CPIO_NEWC_MAGIC, hdr.magic, sizeof(CPIO_NEWC_MAGIC)-1))
@@ -169,8 +183,10 @@ int cpioHeaderRead(FSM_t fsm, struct stat * st)
 	    fsm->path = NULL;
 	    return rc;
 	}
+/*@-boundswrite@*/
 	memcpy(t, fsm->wrbuf, fsm->rdnb);
 	t[nameSize] = '\0';
+/*@=boundswrite@*/
 	fsm->path = t;
     }
 

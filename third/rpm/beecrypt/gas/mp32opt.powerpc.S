@@ -25,27 +25,12 @@
  *
  */
 
-#include "config.gas.h"
+#include "beecrypt.gas.h"
 
 	.file "mp32opt.powerpc.S"
 
 	.text
 
-#if !DARWIN
-# define r0	%r0
-# define r3	%r3
-# define r4	%r4
-# define r5	%r5
-# define r6	%r6
-# define r7	%r7
-# define r8	%r8
-# define r9	%r9
-# define r10	%r10
-# define r11	%r11
-# define r12	%r12
-#else
-# define L(label) L##label
-#endif
 
 C_FUNCTION_BEGIN(mp32addw)
 LABEL(mp32addw)

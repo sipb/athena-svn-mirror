@@ -6,106 +6,10 @@
  * Package state machine to handle a package from a transaction set.
  */
 
-#include "fsm.h"
-#include "depends.h"
-
-/**
- */
-struct sharedFileInfo {
-    int pkgFileNum;
-    int otherFileNum;
-    int otherPkg;
-    int isRemoved;
-};
-
-/**
- */
-struct transactionFileInfo_s {
-  /* for all packages */
-    enum rpmTransactionType type;
-    fileAction action;		/*!< File disposition default. */
-/*@owned@*/
-    fileAction * actions;	/*!< File disposition(s) */
-/*@owned@*/
-    struct fingerPrint_s * fps;	/*!< File fingerprint(s) */
-    HGE_t hge;			/*!< Vector to headerGetEntry() */
-    HAE_t hae;			/*!< Vector to headerAddEntry() */
-    HME_t hme;			/*!< Vector to headerModifyEntry() */
-    HRE_t hre;			/*!< Vector to headerRemoveEntry() */
-    HFD_t hfd;			/*!< Vector to headerFreeData() */
-    Header h;			/*!< Package header */
-/*@owned@*/
-    const char * name;
-/*@owned@*/
-    const char * version;
-/*@owned@*/
-    const char * release;
-    int_32 epoch;
-    uint_32 flags;		/*!< File flag default. */
-    const uint_32 * fflags;	/*!< File flag(s) (from header) */
-    const uint_32 * fsizes;	/*!< File size(s) (from header) */
-    const uint_32 * fmtimes;	/*!< File modification time(s) (from header) */
-/*@owned@*/
-    const char ** bnl;		/*!< Base name(s) (from header) */
-/*@owned@*/
-    const char ** dnl;		/*!< Directory name(s) (from header) */
-    int_32 * dil;		/*!< Directory indice(s) (from header) */
-/*@owned@*/
-    const char ** obnl;		/*!< Original base name(s) (from header) */
-/*@owned@*/
-    const char ** odnl;		/*!< Original directory name(s) (from header) */
-/*@unused@*/
-    int_32 * odil;		/*!< Original directory indice(s) (from header) */
-/*@owned@*/ const char ** fmd5s;/*!< File MD5 sum(s) (from header) */
-/*@owned@*/
-    const char ** flinks;	/*!< File link(s) (from header) */
-/* XXX setuid/setgid bits are turned off if fuser/fgroup doesn't map. */
-    uint_16 * fmodes;		/*!< File mode(s) (from header) */
-    uint_16 * frdevs;		/*!< File rdev(s) (from header) */
-/*@only@*/ /*@null@*/
-    char * fstates;		/*!< File state(s) (from header) */
-/*@owned@*/
-    const char ** fuser;	/*!< File owner(s) */
-/*@owned@*/
-    const char ** fgroup;	/*!< File group(s) */
-/*@owned@*/
-    const char ** flangs;	/*!< File lang(s) */
-    int fc;			/*!< No. of files. */
-    int dc;			/*!< No. of directories. */
-    int bnlmax;			/*!< Length (in bytes) of longest base name. */
-    int dnlmax;			/*!< Length (in bytes) of longest dir name. */
-    int astriplen;
-    int striplen;
-    unsigned int archiveSize;
-    mode_t dperms;		/*!< Directory perms (0755) if not mapped. */
-    mode_t fperms;		/*!< File perms (0644) if not mapped. */
-/*@only@*/ /*@null@*/
-    const char ** apath;
-    int mapflags;
-/*@owned@*/ /*@null@*/
-    int * fmapflags;
-    uid_t uid;
-/*@owned@*/ /*@null@*/
-    uid_t * fuids;	/*!< File uid(s) */
-    gid_t gid;
-/*@owned@*/ /*@null@*/
-    gid_t * fgids;	/*!< File gid(s) */
-    int magic;
-#define	TFIMAGIC	0x09697923
-/*@owned@*/
-    FSM_t fsm;		/*!< File state machine data. */
-
-  /* these are for TR_ADDED packages */
-/*@dependent@*/
-    struct availablePackage * ap;
-/*@owned@*/
-    struct sharedFileInfo * replaced;
-/*@owned@*/
-    uint_32 * replacedSizes;
-
-  /* for TR_REMOVED packages */
-    unsigned int record;
-};
+/*@-exportlocal@*/
+/*@unchecked@*/
+extern int _psm_debug;
+/*@=exportlocal@*/
 
 /**
  */
@@ -155,11 +59,13 @@ typedef enum pkgStage_e {
 
 /**
  */
-struct psm_s {
-/*@kept@*/
-    rpmTransactionSet ts;	/*!< transaction set */
-/*@kept@*/
-    TFI_t fi;			/*!< transaction element file info */
+struct rpmpsm_s {
+/*@refcounted@*/
+    rpmts ts;			/*!< transaction set */
+/*@dependent@*/ /*@null@*/
+    rpmte te;			/*!< current transaction element */
+/*@refcounted@*/
+    rpmfi fi;			/*!< transaction element file info */
     FD_t cfd;			/*!< Payload file handle. */
     FD_t fd;			/*!< Repackage file handle. */
     Header oh;			/*!< Repackage/multilib header. */
@@ -182,6 +88,11 @@ struct psm_s {
     int sense;			/*!< One of RPMSENSE_TRIGGER{IN,UN,POSTUN}. */
     int countCorrection;	/*!< 0 if installing, -1 if removing. */
     int chrootDone;		/*!< Was chroot(2) done by pkgStage? */
+    int unorderedSuccessor;	/*!< Can the PSM be run asynchronously? */
+    int reaper;			/*!< Register SIGCHLD handler? */
+    pid_t reaped;		/*!< Reaped waitpid return. */
+    pid_t child;		/*!< Currently running process. */
+    int status;			/*!< Reaped waitpid status. */
     rpmCallbackType what;	/*!< Callback type. */
     unsigned long amount;	/*!< Callback amount. */
     unsigned long total;	/*!< Callback total. */
@@ -189,6 +100,9 @@ struct psm_s {
     pkgStage goal;
 /*@unused@*/
     pkgStage stage;
+
+/*@refs@*/
+    int nrefs;			/*!< Reference count. */
 };
 
 #ifdef __cplusplus
@@ -196,27 +110,63 @@ extern "C" {
 #endif
 
 /**
- * Load data from header into transaction file element info.
- * @param h		header
- * @param fi		transaction element file info
+ * Unreference a package state machine instance.
+ * @param psm		package state machine
+ * @param msg
+ * @return		NULL always
  */
-void loadFi(Header h, TFI_t fi)
-	/*@modifies h, fi @*/;
+/*@unused@*/ /*@null@*/
+rpmpsm rpmpsmUnlink (/*@killref@*/ /*@only@*/ /*@null@*/ rpmpsm psm,
+		/*@null@*/ const char * msg)
+	/*@modifies psm @*/;
+
+/** @todo Remove debugging entry from the ABI. */
+/*@-exportlocal@*/
+/*@null@*/
+rpmpsm XrpmpsmUnlink (/*@killref@*/ /*@only@*/ /*@null@*/ rpmpsm psm,
+		/*@null@*/ const char * msg, const char * fn, unsigned ln)
+	/*@modifies psm @*/;
+/*@=exportlocal@*/
+#define	rpmpsmUnlink(_psm, _msg)	XrpmpsmUnlink(_psm, _msg, __FILE__, __LINE__)
 
 /**
- * Destroy transaction element file info.
- * @param fi		transaction element file info
+ * Reference a package state machine instance.
+ * @param psm		package state machine
+ * @param msg
+ * @return		new package state machine reference
  */
-void freeFi(TFI_t fi)
-	/*@modifies fi @*/;
+/*@unused@*/ /*@newref@*/
+rpmpsm rpmpsmLink (/*@null@*/ rpmpsm psm, /*@null@*/ const char * msg)
+	/*@modifies psm @*/;
+
+/** @todo Remove debugging entry from the ABI. */
+/*@-exportlocal@*/
+/*@newref@*/
+rpmpsm XrpmpsmLink (/*@null@*/ rpmpsm psm, /*@null@*/ const char * msg,
+		const char * fn, unsigned ln)
+        /*@modifies psm @*/;
+/*@=exportlocal@*/
+#define	rpmpsmLink(_psm, _msg)	XrpmpsmLink(_psm, _msg, __FILE__, __LINE__)
 
 /**
- * Return formatted string representation of package disposition.
- * @param a		package dispostion
- * @return		formatted string
+ * Destroy a package state machine.
+ * @param psm		package state machine
+ * @return		NULL always
  */
-/*@observer@*/ const char *const fiTypeString(/*@partial@*/TFI_t fi)
-	/*@*/;
+/*@null@*/
+rpmpsm rpmpsmFree(/*@killref@*/ /*@only@*/ /*@null@*/ rpmpsm psm)
+	/*@globals fileSystem @*/
+	/*@modifies psm, fileSystem @*/;
+
+/**
+ * Create and load a package state machine.
+ * @param ts		transaction set
+ * @param te		transaction set element
+ * @param fi		file info set
+ * @return		new package state machine
+ */
+rpmpsm rpmpsmNew(rpmts ts, /*@null@*/ rpmte te, rpmfi fi)
+	/*@modifies ts, fi @*/;
 
 /**
  * Package state machine driver.
@@ -224,11 +174,9 @@ void freeFi(TFI_t fi)
  * @param stage		next stage
  * @return		0 on success
  */
-int psmStage(PSM_t psm, pkgStage stage)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies psm, rpmGlobalMacroContext,
-		fileSystem, internalState @*/;
+rpmRC rpmpsmStage(rpmpsm psm, pkgStage stage)
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies psm, rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 #ifdef __cplusplus
 }

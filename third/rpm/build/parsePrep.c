@@ -36,8 +36,8 @@
  * @return		0 on success
  */
 static int checkOwners(const char * urlfn)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fileSystem, internalState @*/
 {
     struct stat sb;
 
@@ -64,11 +64,11 @@ static int checkOwners(const char * urlfn)
  * @param removeEmpties	include -E?
  * @return		expanded %patch macro (NULL on error)
  */
+/*@-boundswrite@*/
 /*@observer@*/ static char *doPatch(Spec spec, int c, int strip, const char *db,
 		     int reverse, int removeEmpties)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     const char *fn, *urlfn;
     static char buf[BUFSIZ];
@@ -150,6 +150,7 @@ static int checkOwners(const char * urlfn)
     urlfn = _free(urlfn);
     return buf;
 }
+/*@=boundswrite@*/
 
 /**
  * Expand %setup macro into %prep scriptlet.
@@ -158,10 +159,10 @@ static int checkOwners(const char * urlfn)
  * @param quietly	should -vv be omitted from tar?
  * @return		expanded %setup macro (NULL on error)
  */
+/*@-boundswrite@*/
 /*@observer@*/ static const char *doUntar(Spec spec, int c, int quietly)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     const char *fn, *urlfn;
     static char buf[BUFSIZ];
@@ -240,7 +241,10 @@ static int checkOwners(const char * urlfn)
 	    t = "%{_bzip2bin} -dc";
 	    break;
 	case COMPRESSED_ZIP:
-	    t = "%{_unzipbin}";
+	    if (rpmIsVerbose() && !quietly)
+		t = "%{_unzipbin}";
+	    else
+		t = "%{_unzipbin} -qq";
 	    needtar = 0;
 	    break;
 	}
@@ -268,6 +272,7 @@ static int checkOwners(const char * urlfn)
     urlfn = _free(urlfn);
     return buf;
 }
+/*@=boundswrite@*/
 
 /**
  * Parse %setup macro.
@@ -277,10 +282,9 @@ static int checkOwners(const char * urlfn)
  * @return		0 on success
  */
 static int doSetupMacro(Spec spec, char *line)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->buildSubdir, spec->macros, spec->prep,
-		rpmGlobalMacroContext, fileSystem @*/
+		rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     char buf[BUFSIZ];
     StringBuf before;
@@ -414,12 +418,12 @@ static int doSetupMacro(Spec spec, char *line)
 
 	for (fm = fixmacs; *fm; fm++) {
 	    const char *fix;
-	    /*@-nullpass@*/
+/*@-boundsread@*/
 	    fix = rpmExpand(*fm, " .", NULL);
-	    /*@=nullpass@*/
 	    if (fix && *fix != '%')
 		appendLineStringBuf(spec->prep, fix);
 	    fix = _free(fix);
+/*@=boundsread@*/
 	}
     }
     
@@ -432,10 +436,12 @@ static int doSetupMacro(Spec spec, char *line)
  * @param line		current line from spec file
  * @return		0 on success
  */
+/*@-boundswrite@*/
 static int doPatchMacro(Spec spec, char *line)
 	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies spec->prep, rpmGlobalMacroContext, fileSystem @*/
+		fileSystem, internalState @*/
+	/*@modifies spec->prep, rpmGlobalMacroContext,
+		fileSystem, internalState  @*/
 {
     char *opt_b;
     int opt_P, opt_p, opt_R, opt_E;
@@ -539,6 +545,7 @@ static int doPatchMacro(Spec spec, char *line)
     
     return 0;
 }
+/*@=boundswrite@*/
 
 int parsePrep(Spec spec)
 {
@@ -578,6 +585,7 @@ int parsePrep(Spec spec)
     /*@-usereleased@*/
     for (lines = saveLines; *lines; lines++) {
 	res = 0;
+/*@-boundsread@*/
 	if (! strncmp(*lines, "%setup", sizeof("%setup")-1)) {
 	    res = doSetupMacro(spec, *lines);
 	} else if (! strncmp(*lines, "%patch", sizeof("%patch")-1)) {
@@ -585,6 +593,7 @@ int parsePrep(Spec spec)
 	} else {
 	    appendLineStringBuf(spec->prep, *lines);
 	}
+/*@=boundsread@*/
 	if (res && !spec->force) {
 	    freeSplitString(saveLines);
 	    sb = freeStringBuf(sb);

@@ -2,14 +2,19 @@
 
 AUTOMAKE_OPTIONS = 1.4 foreign
 
+LINT = splint
+
 EXTRA_DIST = CHANGES CREDITS Doxyheader GROUPS README.amiga INSTALL \
-	RPM-GPG-KEY RPM-PGP-KEY \
+	RPM-GPG-KEY RPM-PGP-KEY BETA-GPG-KEY \
 	autodeps/none autodeps/*.prov autodeps/*.req autogen.sh \
 	config.site db db3/configure gendiff installplatform platform* \
-	Perl-RPM po/*.in po/*.po po/rpm.pot \
+	xmlspec/Makefile xmlspec/*.c xmlspec/*.h \
+	xmlspec/examples/*.sh xmlspec/examples/*.lst \
+	xmlspec/examples/*.xmlspec \
+	po/*.in po/*.po po/rpm.pot \
 	rpm.magic rpmpopt-$(VERSION) rpmqv.c rpm.c
 
-SUBDIRS = intl po @WITH_ZLIB_SUBDIR@ @WITH_DB_SUBDIR@ popt beecrypt rpmio rpmdb lib build misc @WITH_PYTHON_SUBDIR@ tools scripts tests doc .
+SUBDIRS = intl po @WITH_ZLIB_SUBDIR@ @WITH_ELFUTILS_SUBDIR@ file @WITH_DB_SUBDIR@ popt beecrypt rpmio rpmdb lib build misc @WITH_PYTHON_SUBDIR@ tools scripts tests doc .
 
 INCLUDES = \
 	-I$(top_srcdir)/build \
@@ -18,24 +23,21 @@ INCLUDES = \
 	-I$(top_srcdir)/rpmio \
 	-I$(top_srcdir)/beecrypt \
 	-I$(top_srcdir)/popt \
-	@WITH_ZLIB_INCLUDE@ \
+	@WITH_LIBELF_INCLUDE@ \
 	@INCPATH@
 
-LIBS = -lrt -lpthread
+staticLDFLAGS = @LDFLAGS_STATIC@ @LDFLAGS_NPTL@
 
-myLDFLAGS = @LDFLAGS_STATIC@
+myLDFLAGS = @WITH_LIBELF_LIB@
 
-# XXX libtool can/should generate dependent libs.
-# XXX solaris2.6 cannot use *.la with --all-static (downrev binutils/egcs?)
-# XXX top_builddir ldpaths are wrong building in tree
 myLDADD = \
-	$(top_builddir)/build/librpmbuild.la \
 	$(top_builddir)/lib/librpm.la \
 	$(top_builddir)/rpmdb/librpmdb.la \
 	$(top_builddir)/rpmio/librpmio.la \
 	$(top_builddir)/popt/libpopt.la \
 	@WITH_ZLIB_LIB@ \
-	@INTLLIBS@ @LIBMISC@
+	@INTLLIBS@ \
+	@LIBMISC@
 
 rpmbindir = `echo $(bindir) | sed -e s,usr/bin,bin,`
 rpmbin_PROGRAMS = rpm
@@ -52,22 +54,17 @@ pkglib_SCRIPTS =	find-provides find-requires mkinstalldirs \
 rpmpopt-$(VERSION): rpmpopt
 	cp rpmpopt $@
 
-noinst_HEADERS = \
-	acconfig.h	build.h		debug.h		system.h
+noinst_HEADERS = build.h debug.h system.h
 
 rpm_SOURCES =
-rpm_LDFLAGS =		@LDFLAGS_STATIC@ $(myLDFLAGS)
-rpm_LDADD =		rpm.o $(myLDADD)
+rpm_LDFLAGS =		$(myLDFLAGS)
+rpm_LDADD =		rpm.o $(top_builddir)/build/.libs/librpmbuild.a $(myLDADD)
 rpm.o:	rpmqv.c
 	$(COMPILE) -DIAM_RPMDB -DIAM_RPMEIU -DIAM_RPMK -DIAM_RPMQV -o $@ -c rpmqv.c
 
-#rpm_SOURCES =		rpm.c
-#rpm_LDFLAGS =		@LDFLAGS_STATIC@ $(myLDFLAGS)
-#rpm_LDADD =		$(myLDADD)
-
 rpmb_SOURCES =		build.c
 rpmb_LDFLAGS =		$(myLDFLAGS)
-rpmb_LDADD =		rpmb.o $(myLDADD)
+rpmb_LDADD =		rpmb.o $(top_builddir)/build/librpmbuild.la $(myLDADD)
 rpmb.o:	rpmqv.c
 	$(COMPILE) -DIAM_RPMBT -o $@ -c rpmqv.c
 
@@ -78,8 +75,8 @@ rpmd.o:	rpmqv.c
 	$(COMPILE) -DIAM_RPMDB -o $@ -c rpmqv.c
 
 rpmi_SOURCES =
-rpmi_LDFLAGS =		$(myLDFLAGS)
-rpmi_LDADD =		rpmi.o $(myLDADD)
+rpmi_LDFLAGS =		$(myLDFLAGS) $(staticLDFLAGS)
+rpmi_LDADD =		rpmi.o $(myLDADD) @WITH_LIBELF_LIB@
 rpmi.o:	rpmqv.c
 	$(COMPILE) -DIAM_RPMEIU -o $@ -c rpmqv.c
 
@@ -91,7 +88,7 @@ rpmk.o:	rpmqv.c
 
 rpmq_SOURCES =
 rpmq_LDFLAGS =		$(myLDFLAGS)
-rpmq_LDADD =		rpmq.o $(myLDADD)
+rpmq_LDADD =		rpmq.o $(top_builddir)/build/librpmbuild.la $(myLDADD)
 rpmq.o:	rpmqv.c
 	$(COMPILE) -DIAM_RPMQV -o $@ -c rpmqv.c
 
@@ -101,14 +98,25 @@ rpm2cpio_LDADD =	$(myLDADD) @LIBMISC@
 
 $(PROGRAMS): 		$(myLDADD) @WITH_APIDOCS_TARGET@
 
-.PHONY:	lclint
-lclint:
-	lclint $(DEFS) $(INCLUDES) rpmqv.c $(rpmb_SOURCES) \
+.PHONY:	splint
+splint:
+	splint \
+	    -load build/rpmbuild.lcd \
+	    -load lib/rpmlib.lcd \
+	    -load rpmdb/rpmdb.lcd \
+	    -load rpmio/rpmio.lcd \
+	    -load popt/popt.lcd \
+		$(DEFS) $(INCLUDES) rpmqv.c $(rpmb_SOURCES)
+
+.PHONY:	lint
+lint:
+	$(LINT) -Dlint $(DEFS) $(INCLUDES) rpmqv.c $(rpmb_SOURCES) \
 		`make -s sources -C build` \
 		`make -s sources -C lib` \
 		`make -s sources -C rpmdb` \
 		`make -s sources -C rpmio` \
 		`make -s sources -C beecrypt` \
+		`make -s sources -C file` \
 		`make -s sources -C popt`
 
 CVSTAG = r$(subst .,-,$(VERSION))
@@ -236,7 +244,7 @@ nextsrpm: all archive
 	@sudo ./rpm -ta rpm-$(VERSION).tar.gz
 
 .PHONY:	doxygen
-doxygen @WITH_APIDOCS_TARGET@: Doxyfile
+doxygen @WITH_APIDOCS_TARGET@: Doxyfile rpmpopt-@VERSION@
 	rm -rf $@
 	mkdir -p $@
 	- [ X"@__DOXYGEN@" != Xno ] && @__DOXYGEN@

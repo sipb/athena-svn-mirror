@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-03-10 14:16-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libasm/asm_end.c:98 libasm/asm_end.c:136 libasm/asm_end.c:152
+#: libasm/asm_end.c:280
+#, c-format
+msgid "cannot create section for output file: %s"
+msgstr ""
+
+#: libasm/asm_end.c:216
+#, c-format
+msgid "cannot create extended section index table: %s"
+msgstr ""
+
+#: libasm/asm_end.c:317
+#, c-format
+msgid "cannot create section group for output file: %s"
+msgstr ""
+
+#: libasm/asm_error.c:108
+msgid "no error"
+msgstr ""
+
+#: libasm/asm_error.c:109
+msgid "out of memory"
+msgstr ""
+
+#: libasm/asm_error.c:110
+msgid "cannot create output file"
+msgstr ""
+
+#: libasm/asm_error.c:111
+msgid "invalid parameter"
+msgstr ""
+
+#: libasm/asm_error.c:112
+msgid "cannot change mode of output file"
+msgstr ""
+
+#: libasm/asm_error.c:113
+msgid "cannot rename output file"
+msgstr ""
+
+#: libasm/asm_error.c:114
+msgid "duplicate symbol"
+msgstr ""
+
+#: libasm/asm_error.c:115
+msgid "invalid section type for operation"
+msgstr ""
+
+#: libasm/asm_error.c:149
+msgid "Unknown error"
+msgstr ""

@@ -8,7 +8,6 @@
  * @todo Eliminate, merge into rpmlib.
  */
 
-#include "psm.h"
 #include "rpmbuild.h"
 
 /**
@@ -16,8 +15,10 @@
 typedef /*@abstract@*/ struct cpioSourceArchive_s {
     unsigned int cpioArchiveSize;
     FD_t	cpioFdIn;
-/*@dependent@*/ TFI_t cpioList;
-/*@only@*/ struct rpmlead * lead;	/* XXX FIXME: exorcize lead/arch/os */
+/*@refcounted@*/
+    rpmfi	cpioList;
+/*@only@*/
+    struct rpmlead * lead;	/* XXX FIXME: exorcize lead/arch/os */
 } * CSA_t;
 
 #ifdef __cplusplus
@@ -26,7 +27,7 @@ extern "C" {
 
 /**
  * Read rpm package components from file.
- * @param filename	file name of package (or NULL to use stdin)
+ * @param fileName	file name of package (or NULL to use stdin)
  * @retval specp	spec structure to carry package header (or NULL)
  * @retval lead		package lead
  * @retval sigs		package signature
@@ -49,15 +50,16 @@ extern "C" {
  * @warning The first argument (header) is now passed by reference in order to
  * return a reloaded contiguous header to the caller.
  *
- * @retval hdrp		header to write (final header is returned).
- * @param filename	file name of package
+ * @retval *hdrp	header to write (final header is returned).
+ * @retval *pkgidp	header+payload MD5 of package (NULL to disable).
+ * @param fileName	file name of package
  * @param type		RPMLEAD_SOURCE/RPMLEAD_BINARY
  * @param csa
  * @param passPhrase
  * @retval cookie	generated cookie (i.e build host/time)
  * @return		0 on success
  */
-int writeRPM(Header * hdrp,
+int writeRPM(Header * hdrp, /*@null@*/ unsigned char ** pkgidp,
 		const char * fileName,
 		int type,
 		CSA_t csa,
@@ -65,7 +67,7 @@ int writeRPM(Header * hdrp,
 		/*@out@*/ const char ** cookie)
 	/*@globals rpmGlobalMacroContext,
 		fileSystem, internalState @*/
-	/*@modifies *hdrp, *cookie, csa, csa->cpioArchiveSize,
+	/*@modifies *hdrp, *pkgidp, *cookie, csa, csa->cpioArchiveSize,
 		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 #ifdef __cplusplus

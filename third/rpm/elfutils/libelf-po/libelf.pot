@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-03-04 20:08-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libelf/elf_error.c:88
+msgid "no error"
+msgstr ""
+
+#: libelf/elf_error.c:91
+msgid "unknown error"
+msgstr ""
+
+#: libelf/elf_error.c:95
+msgid "unknown version"
+msgstr ""
+
+#: libelf/elf_error.c:99
+msgid "unknown type"
+msgstr ""
+
+#: libelf/elf_error.c:103
+msgid "invalid `Elf' handle"
+msgstr ""
+
+#: libelf/elf_error.c:107
+msgid "invalid size of source operand"
+msgstr ""
+
+#: libelf/elf_error.c:111
+msgid "invalid size of destination operand"
+msgstr ""
+
+#: libelf/elf_error.c:115
+msgid "invalid encoding"
+msgstr ""
+
+#: libelf/elf_error.c:119
+msgid "out of memory"
+msgstr ""
+
+#: libelf/elf_error.c:123
+msgid "invalid file descriptor"
+msgstr ""
+
+#: libelf/elf_error.c:127
+msgid "invalid operation"
+msgstr ""
+
+#: libelf/elf_error.c:131
+msgid "ELF version not set"
+msgstr ""
+
+#: libelf/elf_error.c:135 libelf/elf_error.c:183
+msgid "invalid command"
+msgstr ""
+
+#: libelf/elf_error.c:139 libelf/elf_error.c:199
+msgid "offset out of range"
+msgstr ""
+
+#: libelf/elf_error.c:143
+msgid "invalid fmag field in archive header"
+msgstr ""
+
+#: libelf/elf_error.c:147
+msgid "invalid archive file"
+msgstr ""
+
+#: libelf/elf_error.c:151
+msgid "descriptor is not for an archive"
+msgstr ""
+
+#: libelf/elf_error.c:155
+msgid "no index available"
+msgstr ""
+
+#: libelf/elf_error.c:159
+msgid "cannot read data from file"
+msgstr ""
+
+#: libelf/elf_error.c:163
+msgid "cannot write data to file"
+msgstr ""
+
+#: libelf/elf_error.c:167
+msgid "invalid binary class"
+msgstr ""
+
+#: libelf/elf_error.c:171
+msgid "invalid section index"
+msgstr ""
+
+#: libelf/elf_error.c:175
+msgid "invalid operand"
+msgstr ""
+
+#: libelf/elf_error.c:179
+msgid "invalid section"
+msgstr ""
+
+#: libelf/elf_error.c:187
+msgid "executable header not created first"
+msgstr ""
+
+#: libelf/elf_error.c:191
+msgid "file descriptor disabled"
+msgstr ""
+
+#: libelf/elf_error.c:195
+msgid "archive/member fildes mismatch"
+msgstr ""
+
+#: libelf/elf_error.c:203
+msgid "cannot manipulate null section"
+msgstr ""
+
+#: libelf/elf_error.c:207
+msgid "data/scn mismatch"
+msgstr ""
+
+#: libelf/elf_error.c:211
+msgid "invalid section header"
+msgstr ""
+
+#: libelf/elf_error.c:215
+msgid "invalid data"
+msgstr ""
+
+#: libelf/elf_error.c:219
+msgid "unknown data encoding"
+msgstr ""
+
+#: libelf/elf_error.c:223
+msgid "section `sh_size' too small for data"
+msgstr ""
+
+#: libelf/elf_error.c:227
+msgid "invalid section alignment"
+msgstr ""
+
+#: libelf/elf_error.c:231
+msgid "invalid section entry size"
+msgstr ""
+
+#: libelf/elf_error.c:235
+msgid "update() for write on read-only file"
+msgstr ""
+
+#: libelf/elf_error.c:239
+msgid "no such file"
+msgstr ""
+
+#: libelf/elf_error.c:243
+msgid "only relocatable files can contain section groups"
+msgstr ""
+
+#: libelf/elf_error.c:248
+msgid "program header only allowed in executables and shared objects"
+msgstr ""

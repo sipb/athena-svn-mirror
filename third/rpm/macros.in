@@ -1,7 +1,7 @@
-#/*! \page config_macros Default configuration: /usr/lib/rpm/macros
+#/*! \page config_macros Default configuration: @RPMCONFIGDIR@/macros
 # \verbatim
 #
-# $Id: macros.in,v 1.1.1.1 2002-09-14 23:09:00 ghudson Exp $
+# $Id: macros.in,v 1.1.1.2 2003-03-23 06:36:56 ghudson Exp $
 #
 # This is a global RPM configuration file. All changes made here will
 # be lost when the rpm package is upgraded. Any per-system configuration
@@ -107,26 +107,31 @@
 #	The location of the rpm database file(s) after "rpm --rebuilddb".
 %_dbpath_rebuild	%{_dbpath}
 
+#
+#	Path to script that creates debug symbols in a /usr/lib/debug
+#	shadow tree.
+%__debug_install_post   \
+   @RPMCONFIGDIR@/find-debuginfo.sh %{_builddir}/%{?buildsubdir}\
+%{nil}
+
+#	Template for debug information sub-package.
+%debug_package \
+%ifnarch noarch\
+%global __debug_package 1\
+%package debug\
+Summary: Debug information for package %{name}\
+Group: Development/Debug\
+AutoReqProv: 0\
+%description debug\
+This package provides debug information for package %{name}.\
+Debug information is useful when developing applications that use this\
+package or when debugging this package.\
+%files debug -f debugfiles.list\
+%defattr(-,root,root)\
+%endif\
+%{nil}
+
 %_defaultdocdir		%{_usr}/doc
-
-#
-%__find_provides	@FINDPROVIDES@
-%__find_requires	@FINDREQUIRES@
-#%__find_prereq		???
-#%__find_conflicts	???
-#%__find_obsoletes	???
-
-#
-# fixowner, fixgroup, and fixperms are run at the end of hardcoded setup
-# These macros are necessary only for legacy compatibility, and have moved
-# to per-platform macro configuration (i.e. /usr/lib/rpm/<arch>-<os>/macros)
-#%__id_u		@__ID_U@
-#%__chown_Rhf		@__CHOWN_RHF@
-#%__chgrp_Rhf		@__CHGRP_RHF@
-#%_fixowner		[ `%{__id_u}` = '0' ] && %{__chown_Rhf} root
-#%_fixgroup		[ `%{__id_u}` = '0' ] && %{__chgrp_Rhf} @ROOT_GROUP@
-#%_fixperms		%{__chmod} -Rf @FIXPERMS@
-#
 
 #	The path to the gzip executable (legacy, use %{__gzip} instead).
 %_gzipbin		%{__gzip}
@@ -228,6 +233,16 @@
 #	
 %_install_langs	all
 
+#	The value of CLASSPATH in build scriptlets (iff configured).
+#	
+#%_javaclasspath	all
+
+#	Import packaging conventions from jpackage.org (prefixed with _
+#	to avoid name collisions).
+#	
+%_javadir      %{_datadir}/java
+%_javadocdir   %{_datadir}/javadoc
+
 #
 #	Deprecated.
 #
@@ -266,21 +281,14 @@
 #%_pgp_name
 #%_pgp_path
 
-#	Configurable virtual provides (unimplemented, use Provides: ...
-#	in an rpmrc file).
-#
-#%_provides
-
-#	Deprecated.
-#
-#%_timecheck
-
 #	Configurable vendor information, same as Vendor: in a specfile.
 #
 #%vendor
 
 #==============================================================================
-# ---- Package version macro.
+# ---- Build configuration macros.
+#
+# Package version macro.
 #	The type of package to produce, for compatibility with legacy
 #	versions of rpm.
 #
@@ -291,6 +299,64 @@
 # rpmlead, so there's little need to use any value greater than 30005.
 #
 %_package_version	30005
+
+#
+# Script gets packaged file list on input and buildroot as first parameter.
+# Returns list of unpackaged files, i.e. files in $RPM_BUILD_ROOT not packaged.
+#
+# Note: Disable (by commenting out) for legacy compatibility.
+%__check_files         @RPMCONFIGDIR@/check-files %{buildroot}
+
+#
+# Should unpackaged files in a build root terminate a build?
+#
+# Note: The default value should be 0 for legacy compatibility.
+%_unpackaged_files_terminate_build	1
+
+#
+# Should missing %doc files in the build directory terminate a build?
+#
+# Note: The default value should be 0 for legacy compatibility.
+%_missing_doc_files_terminate_build	1
+
+#
+# Use internal dependency generator rather than external helpers?
+%_use_internal_dependency_generator	1
+
+#
+# Path to scripts to autogenerate package dependencies,
+#
+# Note: Used iff _use_internal_dependency_generator is zero.
+#%__find_provides	@RPMCONFIGDIR@/rpmdeps --provides
+#%__find_requires	@RPMCONFIGDIR@/rpmdeps --requires
+%__find_provides	@RPMCONFIGDIR@/find-provides
+%__find_requires	@RPMCONFIGDIR@/find-requires
+#%__find_conflicts	???
+#%__find_obsoletes	???
+
+#
+# Path to scripts to autogenerate per-interpreter package dependencies,
+#
+# Note: Used iff _use_internal_dependency_generator is non-zero. The
+# helpers are also used by @RPMCONFIGDIR@/rpmdeps {--provides|--requires).
+#%__perl_provides	/usr/lib/rpm/perldeps --provides
+#%__perl_requires	/usr/lib/rpm/perldeps --requires
+%__perl_provides	@RPMCONFIGDIR@/perl.prov
+%__perl_requires	@RPMCONFIGDIR@/perl.req
+
+#
+# fixowner, fixgroup, and fixperms are run at the end of hardcoded setup
+# These macros are necessary only for legacy compatibility, and have moved
+# to per-platform macro configuration (i.e. @RPMCONFIGDIR@/<arch>-<os>/macros)
+#
+# Note: These are no longer enabled by default.
+#%__id_u		@__ID_U@
+#%__chown_Rhf		@__CHOWN_RHF@
+#%__chgrp_Rhf		@__CHGRP_RHF@
+#%_fixowner		[ `%{__id_u}` = '0' ] && %{__chown_Rhf} root
+#%_fixgroup		[ `%{__id_u}` = '0' ] && %{__chgrp_Rhf} @ROOT_GROUP@
+#%_fixperms		%{__chmod} -Rf @FIXPERMS@
+#
 
 #==============================================================================
 # ---- Database configuration macros.
@@ -333,8 +399,8 @@
 #   token	works?	Berkeley db flag or value
 #==================================================
 #---------------------- DBENV->open parameters and tunable values:
-#   mp_mmapsize=8Mb	DBENV->set_mp_mmapsize
-#   mp_size=512Kb	DBENV->set_cachesize
+#   mmapsize=16Mb	DBENV->set_mp_mmapsize
+#   cachesize=1Mb	DBENV->set_cachesize, DB->set_cachesize
 #---------------------- DBENV->open and DB->open common bits:
 #   create		DB_CREATE
 #   thread	???	DB_THREAD	(useless w/o posix mutexes on linux)
@@ -353,7 +419,6 @@
 #   lockdown	???	DB_LOCKDOWN
 #   shared	+++	DB_SYSTEM_MEM
 #---------------------- DB->open parameters and tunable values:
-#   cachesize=512Kb +++	DB->set_cachesize	(meaningless if mp_size is used)
 #   pagesize=512 +++	DB->set_pagesize
 #---------------------- DB->open bits:
 #   excl	???	DB_EXCL
@@ -371,27 +436,22 @@
 #   ht_dup	+++	(hash only) DB_DUP
 #   ht_dupsort	+++	(hash only) DB_DUPSORT
 #----------------------- rpmdb specific configuration:
-#   usecursors		(always on) Use db3 cursors in get/put/del ?
 #   usedbenv		(always on) Use db3 environment?
-#   verify		(always on, db3 only) Verify db after close?
+#   verify		(db3 only) Verify Packages db after RW close?
 #   lockdbfd		(always on for Packages) Use fcntl(2) locking ?
 #   nofsync		Disable fsync(2) call performed after db3 writes?
 #   temporary		Unlink file when closing.
 #
-# XXX Use a CDB database model for concurrent access (under development,
-# cursor teardown with signals needs work, much more besides.)
-#%__dbi_other			usedbenv create joinenv cdb mpool \
-#				mp_mmapsize=8Mb mp_size=512Kb verify
 
 # XXX Use transactions and logs for rpmdb durability (no clue yet):
-#%__dbi_other			usedbenv create joinenv mpool txn log \
-#				mp_mmapsize=8Mb mp_size=512Kb verify
+#%__dbi_other			create joinenv mpool txn log \
+#				mp_mmapsize=8Mb mp_size=512Kb
 
-# XXX enable at your own risk, CDB access to rpmdb isn't cooked yet.
-#%__dbi_cdb			create joinenv cdb mpool
+# Use a CDB database model for concurrent access.
+# XXX Add "private" here for legacy interoperation transiting to glibc+nptl.
+%__dbi_cdb			create cdb mpool mp_mmapsize=16Mb mp_size=1Mb
 
-# XXX The "traditional" rpmdb shared/exclusive fcntl(2) lock on Packages model:
-%__dbi_other			verify %{?_tmppath:tmpdir=%{_tmppath}} %{?__dbi_cdb}
+%__dbi_other			%{?_tmppath:tmpdir=%{_tmppath}} %{?__dbi_cdb}
 
 # Note: adding nofsync here speeds up --rebuilddb a lot.
 %__dbi_rebuild			nofsync !log !txn !cdb
@@ -431,7 +491,7 @@
 %{nil}
 
 # The list of tags for which indices will be built.
-%_dbi_tags	Packages:Name:Basenames:Group:Requirename:Providename:Conflictname:Triggername:Dirnames:Requireversion:Provideversion:Installtid:Sigmd5:Sha1header:Filemd5s:Depends
+%_dbi_tags	Packages:Name:Basenames:Group:Requirename:Providename:Conflictname:Triggername:Dirnames:Requireversion:Provideversion:Installtid:Sigmd5:Sha1header:Filemd5s:Depends:Pubkeys
 
 # "Packages" should have shared/exclusive fcntl(2) lock using "lockdbfd".
 %_dbi_config_Packages		%{_dbi_htconfig} lockdbfd
@@ -469,7 +529,7 @@
 	pgps +batchmode=on +verbose=0 +armor=off "%{_pgp_name}" -f
 
 %__gpg_sign_cmd			%{__gpg} \
-	gpg --batch --no-verbose --no-armor --passphrase-fd 3 \
+	gpg --batch --no-verbose --no-armor --passphrase-fd 3 --no-secmem-warning \
 	-u "%{_gpg_name}" -sbo %{__signature_filename} %{__plaintext_filename}
 %__pgp_sign_cmd			%{__pgp} \
 	pgp +batchmode=on +verbose=0 +armor=off \
@@ -478,16 +538,29 @@
 	pgps +batchmode=on +verbose=0 +armor=off \
 	"+myname=%{_pgp_name}" -b %{__plaintext_filename} -o %{__signature_filename}
 
-%__gpg_verify_cmd		%{__gpg} \
-	gpg --batch --no-verbose --verify \
-	%{__signature_filename} %{__plaintext_filename}
-%__pgp_verify_cmd		%{__pgp} \
-	pgp +batchmode=on +verbose=0 \
-	%{__signature_filename} %{__plaintext_filename}
-%__pgp5_verify_cmd		%{__pgp} \
-	pgpv +batchmode=on +verbose=0 \
-	+OutputInformationFD=1 +OutputWarningFD=1 \
-	-o %{__signature_filename} %{__plaintext_filename}
+# XXX rpm-4.1 verifies signatures using beecrypt.
+#%__gpg_verify_cmd		%{__gpg} \
+#	gpg --batch --no-verbose --verify --no-secmem-warning \
+#	%{__signature_filename} %{__plaintext_filename}
+#%__pgp_verify_cmd		%{__pgp} \
+#	pgp +batchmode=on +verbose=0 \
+#	%{__signature_filename} %{__plaintext_filename}
+#%__pgp5_verify_cmd		%{__pgp} \
+#	pgpv +batchmode=on +verbose=0 \
+#	+OutputInformationFD=1 +OutputWarningFD=1 \
+#	-o %{__signature_filename} %{__plaintext_filename}
+
+#
+# XXX rpm-4.1 verifies prelinked libraries using a prelink undo helper.
+#	Normally this macro is defined in /etc/rpm/macros.prelink, installed
+#	with the prelink package. If the macro is undefined, then prelinked
+#	shared libraries contents are MD5 digest verified (as usual), rather
+#	than MD5 verifying the output of the prelink undo helper.
+#
+#	Note: The 2nd token is used as argv[0] and "library" is a
+#	placeholder that will be deleted and replaced with the appropriate
+#	library file path.
+#%__prelink_undo_cmd     /usr/sbin/prelink prelink -y library
 
 #==============================================================================
 # ---- Transaction macros.
@@ -499,6 +572,29 @@
 # XXX	Note: escaped %% for use in headerSprintf()
 %_build_name_fmt	%%{ARCH}/%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 
+#	The default transaction color. This value is a set of bits to
+#	determine file and dependency affinity for this arch.
+#		0	uncolored (i.e. use only arch as install hint)
+#		1	Elf32 permitted
+#		2	Elf64 permitted
+%_transaction_color	@RPMCANONCOLOR@
+
+#	The path to the dependency universe database. The default value
+#	is the rpmdb-redhat location. The macro is usually defined in
+#	/etc/rpm/macros.solve, installed with the rpmdb-redhat package.
+#%_solve_dbpath	/usr/lib/rpmdb/%{_arch}-%{_vendor}-%{_os}/redhat
+
+#	The path to the dependency universe packages. This should
+#	be a path to the packages contained in the solve database.
+#%_solve_pkgsdir	/mnt/redhat/test/latest-i386/RedHat/RPMS/
+
+#	The output binary package file name template used when suggesting
+#	binary packages that solve a dependency. The macro is usually defined
+#	in /etc/rpm/macros.solve, installed with the rpmdb-redhat package.
+#
+# XXX	Note: escaped %% for use in headerSprintf()
+#%_solve_name_fmt	%{?_solve_pkgsdir}%%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
+
 #	The output binary package file name template used when repackaging
 #	erased packages.
 #
@@ -507,8 +603,32 @@
 
 #	The directory in which erased packages will be saved when using
 #	the --repackage option.
-%_repackage_dir		/var/spool/up2date
+%_repackage_dir		/var/spool/repackage
+
+#	A path (i.e. URL) prefix that is pre-pended to %{_repackage_dir}.
 %_repackage_root	%{nil}
+
+#	If non-zero, all erasures will be automagically repackaged.
+%_repackage_all_erasures	0
+
+#	Verify digest/signature flags for various rpm modes:
+#	     1	--nohdrchk	if set, don't check rpmdb headers
+#
+#	The checking overhead is ~11ms per header for digests/signatures;
+#	each header from the database is checked only when first encountered
+#	for each database open.
+#
+#	Note: the %_vsflags_erase applies to --upgrade/--freshen modes as
+#	well as --erase.
+#
+%__vsflags		0
+%_vsflags_build		%{__vsflags}
+%_vsflags_erase		%{__vsflags}
+%_vsflags_install	%{__vsflags}
+%_vsflags_query		%{__vsflags}
+%_vsflags_rebuilddb	%{__vsflags}
+%_vsflags_up2date	%{__vsflags}
+%_vsflags_verify	%{__vsflags}
 
 #	Relations between package names that cause dependency loops
 #	with legacy packages that cannot be fixed. Relations are
@@ -538,12 +658,24 @@
 	libgnomeprint15>gnome-print	\
 	nautilus>nautilus-mozilla	\
 	tcl>postgresql-tcl
+#%_dependency_whiteout_8_0		\
+#	perl>perl-Parse-RecDescent	\
+#	XFree86-libs>XFree86-Mesa-libGL	\
+#	perl>perl-Filter		\
+#	perl>mrtg			\
+#	perl>mod_perl			\
+#	mysql>perl-DBD-MySQL		\
+#	ghostscript>gimp-print		\
+#	arts>kde2-compat		\
+#	perl-Date-Calc>perl-Bit-Vector	\
+#	glibc-debug>glibc-devel
 
 %_dependency_whiteout			\
 	libtermcap>bash			\
 	modutils>vixie-cron		\
 	ypbind>yp-tools			\
 	ghostscript-fonts>ghostscript	\
+	%{?_dependency_whiteout_8_0}	\
 	%{?_dependency_whiteout_7_2}	\
 	%{?_dependency_whiteout_7_1}	\
 	%{?_dependency_whiteout_7_0}	\
@@ -551,6 +683,29 @@
 	%{?_dependency_whiteout_6_1}	\
 	%{?_dependency_whiteout_5_2}	\
 	%{nil}
+
+#
+# Default headerSprintf() output format string for rpm -qa
+#
+# XXX	Note: escaped %% for use in headerSprintf()
+%_query_all_fmt		%%{name}-%%{version}-%%{release}
+
+#==============================================================================
+# ---- Cache configuration macros.
+#	Macro(s) used to configure the universe of headers used to
+#	solve dependencies using rpmcache(8).
+#
+#	Note: These values are specific to my machine, and most certainly
+#	are incorrect for any non-redhat.com machine. The macros are
+#	included here only to document the macro names and usage.
+%_bhpath        file://localhost/mnt/dist
+%_bhcoll        @(7.3|7.2|7.1|7.1sbe|7.1k|7.0|7.01j|7.0j|7.0sbe|7.0tc|6.2|6.2ha|6.2ee|6.1|6.0|5.2|5.1|5.0)
+%_bhN           @(SRPMS|i386|alpha|sparc|s390|ia64)
+%_bhVR          RedHat
+%_bhA           RPMS
+
+#	The cache database directory.
+%_cache_dbpath		/var/spool/up2date/cache
 
 #==============================================================================
 # ---- per-platform macros.
@@ -596,6 +751,8 @@
   export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE\
   %{?buildroot:RPM_BUILD_ROOT=\"%{u2p:%{buildroot}}\"\
   export RPM_BUILD_ROOT}\
+  %{?_javaclasspath:CLASSPATH=\"%{_javaclasspath}\"\
+  export CLASSPATH}\
   \
   %{verbose:set -x}%{!verbose:exec > /dev/null}\
   umask 022\
@@ -652,6 +809,7 @@
 %__spec_install_pre	%{___build_pre}
 %__spec_install_body	%{___build_body}
 %__spec_install_post\
+%{?__debug_package:%{__debug_install_post}}\
 %{__arch_install_post}\
 %{__os_install_post}\
 %{nil}
@@ -661,6 +819,20 @@
 
 #%{__spec_install_body}\
 #%{__spec_install_post}\
+#%{nil}
+
+%__spec_check_shell	%{___build_shell}
+%__spec_check_args	%{___build_args}
+%__spec_check_cmd	%{___build_cmd}
+%__spec_check_pre	%{___build_pre}
+%__spec_check_body	%{___build_body}
+%__spec_check_post	%{___build_post}
+%__spec_check_template	#!%{__spec_check_shell}\
+%{__spec_check_pre}\
+%{nil}
+
+#%{__spec_check_body}\
+#%{__spec_check_post}\
 #%{nil}
 
 #%__spec_autodep_shell	%{___build_shell}
@@ -785,10 +957,9 @@
   CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
   CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ; \
   FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS ; \
-  %{?__libtoolize:[ -f configure.in ] && %{__libtoolize} --copy --force ;} \
-  ./configure \\\
-	%{?_gnu: --host=%{_host} --target=%{_target_platform}} \\\
-	%{!?_gnu: %{_target_platform}} \\\
+  ./configure --host=%{_host} --build=%{_build} \\\
+	--target=%{_target_platform} \\\
+	--program-prefix=%{?_program_prefix} \\\
  	--prefix=%{_prefix} \\\
 	--exec-prefix=%{_exec_prefix} \\\
 	--bindir=%{_bindir} \\\

@@ -1,37 +1,51 @@
-/** \ingroup rpmtrans payload
+/** \ingroup rpmts payload
  * \file lib/psm.c
  * Package state machine to handle a package from a transaction set.
  */
 
 #include "system.h"
 
-#include "psm.h"
+#include <signal.h>
+#include <sys/signal.h>
+
+#include <rpmio_internal.h>
+#include <rpmlib.h>
 #include <rpmmacro.h>
 #include <rpmurl.h>
 
-#include "depends.h"
+#include "cpio.h"
+#include "fsm.h"		/* XXX CPIO_FOO/FSM_FOO constants */
+#include "psm.h"
+
+#include "rpmds.h"
+
+#define _RPMFI_INTERNAL
+#include "rpmfi.h"
+
+#define	_RPMTE_INTERNAL
+#include "rpmte.h"
+
+#define	_RPMTS_INTERNAL		/* XXX ts->notify */
+#include "rpmts.h"
 
 #include "rpmlead.h"		/* writeLead proto */
 #include "signature.h"		/* signature constants */
-#include "ugid.h"
-#include "misc.h"
+#include "legacy.h"		/* XXX rpmfiBuildFNames() */
+#include "ugid.h"		/* XXX unameToUid() and gnameToGid() */
+#include "misc.h"		/* XXX stripTrailingChar() */
 #include "rpmdb.h"		/* XXX for db_chrootDone */
 #include "debug.h"
 
-/*@access Header @*/		/* compared with NULL */
-/*@access rpmTransactionSet @*/	/* compared with NULL */
-/*@access rpmdbMatchIterator @*/ /* compared with NULL */
-/*@access TFI_t @*/		/* compared with NULL */
-/*@access FSM_t @*/		/* compared with NULL */
-/*@access PSM_t @*/		/* compared with NULL */
-/*@access FD_t @*/		/* compared with NULL */
-/*@access rpmdb @*/		/* compared with NULL */
+#define	_PSM_DEBUG	0
+/*@unchecked@*/
+int _psm_debug = _PSM_DEBUG;
 
-#ifdef	DYING
-/*@-redecl -declundef -exportheadervar@*/
-extern const char * chroot_prefix;
-/*@=redecl =declundef =exportheadervar@*/
-#endif
+/*@access FD_t @*/		/* XXX void ptr args */
+/*@access rpmpsm @*/
+
+/*@access rpmfi @*/
+/*@access rpmte @*/	/* XXX rpmInstallSourcePackage */
+/*@access rpmts @*/	/* XXX ts->notify */
 
 int rpmVersionCompare(Header first, Header second)
 {
@@ -50,10 +64,12 @@ int rpmVersionCompare(Header first, Header second)
     else if (!epochOne && epochTwo)
 	return -1;
     else if (epochOne && epochTwo) {
+/*@-boundsread@*/
 	if (*epochOne < *epochTwo)
 	    return -1;
 	else if (*epochOne > *epochTwo)
 	    return 1;
+/*@=boundsread@*/
     }
 
     rc = headerGetEntry(first, RPMTAG_VERSION, NULL, (void **) &one, NULL);
@@ -63,183 +79,10 @@ int rpmVersionCompare(Header first, Header second)
     if (rc)
 	return rc;
 
-    (void) headerGetEntry(first, RPMTAG_RELEASE, NULL, (void **) &one, NULL);
-    (void) headerGetEntry(second, RPMTAG_RELEASE, NULL, (void **) &two, NULL);
+    rc = headerGetEntry(first, RPMTAG_RELEASE, NULL, (void **) &one, NULL);
+    rc = headerGetEntry(second, RPMTAG_RELEASE, NULL, (void **) &two, NULL);
 
     return rpmvercmp(one, two);
-}
-
-void loadFi(Header h, TFI_t fi)
-{
-    HGE_t hge;
-    HFD_t hfd;
-    uint_32 * uip;
-    int len;
-    int rc;
-    int i;
-    
-    if (fi->fsm == NULL)
-	fi->fsm = newFSM();
-
-    /* XXX avoid gcc noise on pointer (4th arg) cast(s) */
-    hge = (fi->type == TR_ADDED)
-	? (HGE_t) headerGetEntryMinMemory : (HGE_t) headerGetEntry;
-    fi->hge = hge;
-    fi->hae = (HAE_t) headerAddEntry;
-    fi->hme = (HME_t) headerModifyEntry;
-    fi->hre = (HRE_t) headerRemoveEntry;
-    fi->hfd = hfd = headerFreeData;
-
-    if (h && fi->h == NULL)	fi->h = headerLink(h);
-
-    /* Duplicate name-version-release so that headers can be free'd. */
-    rc = hge(fi->h, RPMTAG_NAME, NULL, (void **) &fi->name, NULL);
-    fi->name = xstrdup(fi->name);
-    rc = hge(fi->h, RPMTAG_VERSION, NULL, (void **) &fi->version, NULL);
-    fi->version = xstrdup(fi->version);
-    rc = hge(fi->h, RPMTAG_RELEASE, NULL, (void **) &fi->release, NULL);
-    fi->release = xstrdup(fi->release);
-
-    /* -1 means not found */
-    rc = hge(fi->h, RPMTAG_EPOCH, NULL, (void **) &uip, NULL);
-    fi->epoch = (rc ? *uip : -1);
-    /* 0 means unknown */
-    rc = hge(fi->h, RPMTAG_ARCHIVESIZE, NULL, (void **) &uip, NULL);
-    fi->archiveSize = (rc ? *uip : 0);
-
-    if (!hge(fi->h, RPMTAG_BASENAMES, NULL, (void **) &fi->bnl, &fi->fc)) {
-	fi->dc = 0;
-	fi->fc = 0;
-	return;
-    }
-
-    rc = hge(fi->h, RPMTAG_DIRINDEXES, NULL, (void **) &fi->dil, NULL);
-    rc = hge(fi->h, RPMTAG_DIRNAMES, NULL, (void **) &fi->dnl, &fi->dc);
-    rc = hge(fi->h, RPMTAG_FILEMODES, NULL, (void **) &fi->fmodes, NULL);
-    rc = hge(fi->h, RPMTAG_FILEFLAGS, NULL, (void **) &fi->fflags, NULL);
-    rc = hge(fi->h, RPMTAG_FILESIZES, NULL, (void **) &fi->fsizes, NULL);
-    rc = hge(fi->h, RPMTAG_FILESTATES, NULL, (void **) &fi->fstates, NULL);
-
-    fi->action = FA_UNKNOWN;
-    fi->flags = 0;
-
-    /* actions is initialized earlier for added packages */
-    if (fi->actions == NULL)
-	fi->actions = xcalloc(fi->fc, sizeof(*fi->actions));
-
-    switch (fi->type) {
-    case TR_ADDED:
-	fi->mapflags =
-		CPIO_MAP_PATH | CPIO_MAP_MODE | CPIO_MAP_UID | CPIO_MAP_GID;
-	rc = hge(fi->h, RPMTAG_FILEMD5S, NULL, (void **) &fi->fmd5s, NULL);
-	rc = hge(fi->h, RPMTAG_FILELINKTOS, NULL, (void **) &fi->flinks, NULL);
-	rc = hge(fi->h, RPMTAG_FILELANGS, NULL, (void **) &fi->flangs, NULL);
-	rc = hge(fi->h, RPMTAG_FILEMTIMES, NULL, (void **) &fi->fmtimes, NULL);
-	rc = hge(fi->h, RPMTAG_FILERDEVS, NULL, (void **) &fi->frdevs, NULL);
-
-	/* 0 makes for noops */
-	fi->replacedSizes = xcalloc(fi->fc, sizeof(*fi->replacedSizes));
-
-	break;
-    case TR_REMOVED:
-	fi->mapflags = 
-		CPIO_MAP_ABSOLUTE | CPIO_MAP_ADDDOT | CPIO_ALL_HARDLINKS |
-		CPIO_MAP_PATH | CPIO_MAP_MODE | CPIO_MAP_UID | CPIO_MAP_GID;
-	rc = hge(fi->h, RPMTAG_FILEMD5S, NULL, (void **) &fi->fmd5s, NULL);
-	rc = hge(fi->h, RPMTAG_FILELINKTOS, NULL, (void **) &fi->flinks, NULL);
-	fi->fsizes = memcpy(xmalloc(fi->fc * sizeof(*fi->fsizes)),
-				fi->fsizes, fi->fc * sizeof(*fi->fsizes));
-	fi->fflags = memcpy(xmalloc(fi->fc * sizeof(*fi->fflags)),
-				fi->fflags, fi->fc * sizeof(*fi->fflags));
-	fi->fmodes = memcpy(xmalloc(fi->fc * sizeof(*fi->fmodes)),
-				fi->fmodes, fi->fc * sizeof(*fi->fmodes));
-	/* XXX there's a tedious segfault here for some version(s) of rpm */
-	if (fi->fstates)
-	    fi->fstates = memcpy(xmalloc(fi->fc * sizeof(*fi->fstates)),
-				fi->fstates, fi->fc * sizeof(*fi->fstates));
-	else
-	    fi->fstates = xcalloc(1, fi->fc * sizeof(*fi->fstates));
-	fi->dil = memcpy(xmalloc(fi->fc * sizeof(*fi->dil)),
-				fi->dil, fi->fc * sizeof(*fi->dil));
-	fi->h = headerFree(fi->h);
-	break;
-    }
-
-    fi->dnlmax = -1;
-    for (i = 0; i < fi->dc; i++) {
-	if ((len = strlen(fi->dnl[i])) > fi->dnlmax)
-	    fi->dnlmax = len;
-    }
-
-    fi->bnlmax = -1;
-    for (i = 0; i < fi->fc; i++) {
-	if ((len = strlen(fi->bnl[i])) > fi->bnlmax)
-	    fi->bnlmax = len;
-    }
-
-    fi->dperms = 0755;
-    fi->fperms = 0644;
-
-    /*@-nullstate@*/	/* FIX: fi->h is NULL for TR_REMOVED */
-    return;
-    /*@=nullstate@*/
-}
-
-void freeFi(TFI_t fi)
-{
-    HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
-
-    fi->name = _free(fi->name);
-    fi->version = _free(fi->version);
-    fi->release = _free(fi->release);
-    fi->actions = _free(fi->actions);
-    fi->replacedSizes = _free(fi->replacedSizes);
-    fi->replaced = _free(fi->replaced);
-
-    fi->bnl = hfd(fi->bnl, -1);
-    fi->dnl = hfd(fi->dnl, -1);
-    fi->obnl = hfd(fi->obnl, -1);
-    fi->odnl = hfd(fi->odnl, -1);
-    fi->flinks = hfd(fi->flinks, -1);
-    fi->fmd5s = hfd(fi->fmd5s, -1);
-    fi->fuser = hfd(fi->fuser, -1);
-    fi->fgroup = hfd(fi->fgroup, -1);
-    fi->flangs = hfd(fi->flangs, -1);
-
-    fi->apath = _free(fi->apath);
-    fi->fuids = _free(fi->fuids);
-    fi->fgids = _free(fi->fgids);
-    fi->fmapflags = _free(fi->fmapflags);
-
-    fi->fsm = freeFSM(fi->fsm);
-
-    switch (fi->type) {
-    case TR_ADDED:
-	    break;
-    case TR_REMOVED:
-	fi->fsizes = hfd(fi->fsizes, -1);
-	fi->fflags = hfd(fi->fflags, -1);
-	fi->fmodes = hfd(fi->fmodes, -1);
-	fi->fstates = hfd(fi->fstates, -1);
-	fi->dil = hfd(fi->dil, -1);
-	break;
-    }
-
-    fi->h = headerFree(fi->h);
-
-    /*@-nullstate@*/
-    return;
-    /*@=nullstate@*/
-}
-
-/*@observer@*/ const char *const fiTypeString(TFI_t fi)
-{
-    switch(fi->type) {
-    case TR_ADDED:	return " install";
-    case TR_REMOVED:	return "   erase";
-    default:		return "???";
-    }
-    /*@noteached@*/
 }
 
 /**
@@ -264,9 +107,9 @@ static struct tagMacro {
  * @param h		header
  * @return		0 always
  */
-static int rpmInstallLoadMacros(TFI_t fi, Header h)
-	/*@globals rpmGlobalMacroContext, internalState @*/
-	/*@modifies rpmGlobalMacroContext, internalState @*/
+static int rpmInstallLoadMacros(rpmfi fi, Header h)
+	/*@globals rpmGlobalMacroContext @*/
+	/*@modifies rpmGlobalMacroContext @*/
 {
     HGE_t hge = (HGE_t) fi->hge;
     struct tagMacro * tagm;
@@ -284,7 +127,9 @@ static int rpmInstallLoadMacros(TFI_t fi, Header h)
 	    continue;
 	switch (type) {
 	case RPM_INT32_TYPE:
+/*@-boundsread@*/
 	    sprintf(numbuf, "%d", *body.i32p);
+/*@=boundsread@*/
 	    addMacro(NULL, tagm->macroname, NULL, numbuf, -1);
 	    /*@switchbreak@*/ break;
 	case RPM_STRING_TYPE:
@@ -305,212 +150,28 @@ static int rpmInstallLoadMacros(TFI_t fi, Header h)
 }
 
 /**
- * Copy file data from h to newH.
- * @param h		header from
- * @param newH		header to
- * @param actions	array of file dispositions
- * @return		0 on success, 1 on failure
- */
-static int mergeFiles(TFI_t fi, Header h, Header newH)
-	/*@modifies h @*/
-{
-    HGE_t hge = (HGE_t)fi->hge;
-    HME_t hme = (HME_t)fi->hme;
-    HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
-    fileAction * actions = fi->actions;
-    int i, j, k, fc, xx;
-    rpmTagType type = 0;
-    int_32 count = 0;
-    int_32 dirNamesCount, dirCount;
-    void * data, * newdata;
-    int_32 * dirIndexes, * newDirIndexes;
-    uint_32 * fileSizes, fileSize;
-    const char ** dirNames;
-    const char ** newDirNames;
-    static rpmTag mergeTags[] = {
-	RPMTAG_FILESIZES,
-	RPMTAG_FILESTATES,
-	RPMTAG_FILEMODES,
-	RPMTAG_FILERDEVS,
-	RPMTAG_FILEMTIMES,
-	RPMTAG_FILEMD5S,
-	RPMTAG_FILELINKTOS,
-	RPMTAG_FILEFLAGS,
-	RPMTAG_FILEUSERNAME,
-	RPMTAG_FILEGROUPNAME,
-	RPMTAG_FILEVERIFYFLAGS,
-	RPMTAG_FILEDEVICES,
-	RPMTAG_FILEINODES,
-	RPMTAG_FILELANGS,
-	RPMTAG_BASENAMES,
-	0,
-    };
-    static rpmTag requireTags[] = {
-	RPMTAG_REQUIRENAME, RPMTAG_REQUIREVERSION, RPMTAG_REQUIREFLAGS,
-	RPMTAG_PROVIDENAME, RPMTAG_PROVIDEVERSION, RPMTAG_PROVIDEFLAGS,
-	RPMTAG_CONFLICTNAME, RPMTAG_CONFLICTVERSION, RPMTAG_CONFLICTFLAGS
-    };
-
-    xx = hge(h, RPMTAG_SIZE, NULL, (void **) &fileSizes, NULL);
-    fileSize = *fileSizes;
-    xx = hge(newH, RPMTAG_FILESIZES, NULL, (void **) &fileSizes, &count);
-    for (i = 0, fc = 0; i < count; i++)
-	if (actions[i] != FA_SKIPMULTILIB) {
-	    fc++;
-	    fileSize += fileSizes[i];
-	}
-    xx = hme(h, RPMTAG_SIZE, RPM_INT32_TYPE, &fileSize, 1);
-
-    /*@-sizeoftype@*/
-    for (i = 0; mergeTags[i]; i++) {
-        if (!hge(newH, mergeTags[i], &type, (void **) &data, &count))
-	    continue;
-	switch (type) {
-	case RPM_CHAR_TYPE:
-	case RPM_INT8_TYPE:
-	    newdata = xcalloc(fc, sizeof(int_8));
-	    for (j = 0, k = 0; j < count; j++)
-		if (actions[j] != FA_SKIPMULTILIB)
-			((int_8 *) newdata)[k++] = ((int_8 *) data)[j];
-	    xx = headerAddOrAppendEntry(h, mergeTags[i], type, newdata, fc);
-	    free (newdata);
-	    /*@switchbreak@*/ break;
-	case RPM_INT16_TYPE:
-	    newdata = xcalloc(fc, sizeof(int_16));
-	    for (j = 0, k = 0; j < count; j++)
-		if (actions[j] != FA_SKIPMULTILIB)
-		    ((int_16 *) newdata)[k++] = ((int_16 *) data)[j];
-	    xx = headerAddOrAppendEntry(h, mergeTags[i], type, newdata, fc);
-	    free (newdata);
-	    /*@switchbreak@*/ break;
-	case RPM_INT32_TYPE:
-	    newdata = xcalloc(fc, sizeof(int_32));
-	    for (j = 0, k = 0; j < count; j++)
-		if (actions[j] != FA_SKIPMULTILIB)
-		    ((int_32 *) newdata)[k++] = ((int_32 *) data)[j];
-	    xx = headerAddOrAppendEntry(h, mergeTags[i], type, newdata, fc);
-	    free (newdata);
-	    /*@switchbreak@*/ break;
-	case RPM_STRING_ARRAY_TYPE:
-	    newdata = xcalloc(fc, sizeof(char *));
-	    for (j = 0, k = 0; j < count; j++)
-		if (actions[j] != FA_SKIPMULTILIB)
-		    ((char **) newdata)[k++] = ((char **) data)[j];
-	    xx = headerAddOrAppendEntry(h, mergeTags[i], type, newdata, fc);
-	    free (newdata);
-	    /*@switchbreak@*/ break;
-	default:
-	    rpmError(RPMERR_DATATYPE, _("Data type %d not supported\n"),
-			(int) type);
-	    return 1;
-	    /*@notreached@*/ /*@switchbreak@*/ break;
-	}
-	data = hfd(data, type);
-    }
-    /*@=sizeoftype@*/
-    xx = hge(newH, RPMTAG_DIRINDEXES, NULL, (void **) &newDirIndexes, &count);
-    xx = hge(newH, RPMTAG_DIRNAMES, NULL, (void **) &newDirNames, NULL);
-    xx = hge(h, RPMTAG_DIRINDEXES, NULL, (void **) &dirIndexes, NULL);
-    xx = hge(h, RPMTAG_DIRNAMES, NULL, (void **) &data, &dirNamesCount);
-
-    dirNames = xcalloc(dirNamesCount + fc, sizeof(*dirNames));
-    for (i = 0; i < dirNamesCount; i++)
-	dirNames[i] = ((char **) data)[i];
-    dirCount = dirNamesCount;
-    newdata = xcalloc(fc, sizeof(*newDirIndexes));
-    for (i = 0, k = 0; i < count; i++) {
-	if (actions[i] == FA_SKIPMULTILIB)
-	    continue;
-	for (j = 0; j < dirCount; j++)
-	    if (!strcmp(dirNames[j], newDirNames[newDirIndexes[i]]))
-		/*@innerbreak@*/ break;
-	if (j == dirCount)
-	    dirNames[dirCount++] = newDirNames[newDirIndexes[i]];
-	((int_32 *) newdata)[k++] = j;
-    }
-    xx = headerAddOrAppendEntry(h, RPMTAG_DIRINDEXES, RPM_INT32_TYPE, newdata, fc);
-    if (dirCount > dirNamesCount)
-	xx = headerAddOrAppendEntry(h, RPMTAG_DIRNAMES, RPM_STRING_ARRAY_TYPE,
-			       dirNames + dirNamesCount,
-			       dirCount - dirNamesCount);
-    data = hfd(data, -1);
-    newDirNames = hfd(newDirNames, -1);
-    free (newdata);
-    free (dirNames);
-
-    for (i = 0; i < 9; i += 3) {
-	const char **Names, **EVR, **newNames, **newEVR;
-	rpmTagType nnt, nvt, rnt;
-	uint_32 *Flags, *newFlags;
-	int Count = 0, newCount = 0;
-
-	if (!hge(newH, requireTags[i], &nnt, (void **) &newNames, &newCount))
-	    continue;
-
-	xx = hge(newH, requireTags[i+1], &nvt, (void **) &newEVR, NULL);
-	xx = hge(newH, requireTags[i+2], NULL, (void **) &newFlags, NULL);
-	if (hge(h, requireTags[i], &rnt, (void **) &Names, &Count))
-	{
-	    (void) hge(h, requireTags[i+1], NULL, (void **) &EVR, NULL);
-	    (void) hge(h, requireTags[i+2], NULL, (void **) &Flags, NULL);
-	    for (j = 0; j < newCount; j++)
-		for (k = 0; k < Count; k++)
-		    if (!strcmp (newNames[j], Names[k])
-			&& !strcmp (newEVR[j], EVR[k])
-			&& (newFlags[j] & RPMSENSE_SENSEMASK) ==
-			   (Flags[k] & RPMSENSE_SENSEMASK))
-		    {
-			newNames[j] = NULL;
-			/*@innerbreak@*/ break;
-		    }
-	}
-	for (j = 0, k = 0; j < newCount; j++) {
-	    if (!newNames[j] || !isDependsMULTILIB(newFlags[j]))
-		/*@innercontinue@*/ continue;
-	    if (j != k) {
-		newNames[k] = newNames[j];
-		newEVR[k] = newEVR[j];
-		newFlags[k] = newFlags[j];
-	    }
-	    k++;
-	}
-	if (k) {
-	    xx = headerAddOrAppendEntry(h, requireTags[i],
-				       RPM_STRING_ARRAY_TYPE, newNames, k);
-	    xx = headerAddOrAppendEntry(h, requireTags[i+1],
-				       RPM_STRING_ARRAY_TYPE, newEVR, k);
-	    xx = headerAddOrAppendEntry(h, requireTags[i+2], RPM_INT32_TYPE,
-				       newFlags, k);
-	}
-	newNames = hfd(newNames, nnt);
-	newEVR = hfd(newEVR, nvt);
-	Names = hfd(Names, rnt);
-    }
-    return 0;
-}
-
-/**
  * Mark files in database shared with this package as "replaced".
  * @param psm		package state machine data
  * @return		0 always
  */
-static int markReplacedFiles(PSM_t psm)
-	/*@globals fileSystem @*/
-	/*@modifies psm, fileSystem @*/
+/*@-bounds@*/
+static rpmRC markReplacedFiles(const rpmpsm psm)
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies psm, rpmGlobalMacroContext, fileSystem, internalState @*/
 {
-    const rpmTransactionSet ts = psm->ts;
-    TFI_t fi = psm->fi;
+    const rpmts ts = psm->ts;
+    rpmfi fi = psm->fi;
     HGE_t hge = (HGE_t)fi->hge;
-    const struct sharedFileInfo * replaced = fi->replaced;
-    const struct sharedFileInfo * sfi;
+    sharedFileInfo replaced = fi->replaced;
+    sharedFileInfo sfi;
     rpmdbMatchIterator mi;
     Header h;
     unsigned int * offsets;
     unsigned int prev;
     int num, xx;
 
-    if (!(fi->fc > 0 && fi->replaced))
-	return 0;
+    if (!(rpmfiFC(fi) > 0 && fi->replaced))
+	return RPMRC_OK;
 
     num = prev = 0;
     for (sfi = replaced; sfi->otherPkg; sfi++) {
@@ -520,9 +181,10 @@ static int markReplacedFiles(PSM_t psm)
 	num++;
     }
     if (num == 0)
-	return 0;
+	return RPMRC_OK;
 
     offsets = alloca(num * sizeof(*offsets));
+    offsets[0] = 0;
     num = prev = 0;
     for (sfi = replaced; sfi->otherPkg; sfi++) {
 	if (prev && prev == sfi->otherPkg)
@@ -531,7 +193,7 @@ static int markReplacedFiles(PSM_t psm)
 	offsets[num++] = sfi->otherPkg;
     }
 
-    mi = rpmdbInitIterator(ts->rpmdb, RPMDBI_PACKAGES, NULL, 0);
+    mi = rpmtsInitIterator(ts, RPMDBI_PACKAGES, NULL, 0);
     xx = rpmdbAppendIterator(mi, offsets, num);
     xx = rpmdbSetIteratorRewrite(mi, 1);
 
@@ -564,81 +226,46 @@ static int markReplacedFiles(PSM_t psm)
     }
     mi = rpmdbFreeIterator(mi);
 
-    return 0;
-}
-
-/**
- * Create directory if it does not exist, make sure path is writable.
- * @note This will only create last component of directory path.
- * @param dpath		directory path
- * @param dname		directory use
- * @return		rpmRC return code
- */
-static rpmRC chkdir (const char * dpath, const char * dname)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/
-{
-    struct stat st;
-    int rc;
-
-    if ((rc = Stat(dpath, &st)) < 0) {
-	int ut = urlPath(dpath, NULL);
-	switch (ut) {
-	case URL_IS_PATH:
-	case URL_IS_UNKNOWN:
-	    if (errno != ENOENT)
-		break;
-	    /*@fallthrough@*/
-	case URL_IS_FTP:
-	case URL_IS_HTTP:
-	    rc = Mkdir(dpath, 0755);
-	    break;
-	case URL_IS_DASH:
-	    break;
-	}
-	if (rc < 0) {
-	    rpmError(RPMERR_CREATE, _("cannot create %%%s %s\n"),
-			dname, dpath);
-	    return RPMRC_FAIL;
-	}
-    }
-    if ((rc = Access(dpath, W_OK))) {
-	rpmError(RPMERR_CREATE, _("cannot write to %%%s %s\n"), dname, dpath);
-	return RPMRC_FAIL;
-    }
     return RPMRC_OK;
 }
+/*@=bounds@*/
 
-rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
-			const char ** specFilePtr,
-			rpmCallbackFunction notify, rpmCallbackData notifyData,
-			char ** cookie)
+rpmRC rpmInstallSourcePackage(rpmts ts, FD_t fd,
+		const char ** specFilePtr, const char ** cookie)
 {
-    rpmdb rpmdb = NULL;
-    rpmTransactionSet ts = rpmtransCreateSet(rpmdb, rootDir);
-    TFI_t fi = xcalloc(sizeof(*fi), 1);
+    int scareMem = 1;
+    rpmfi fi = NULL;
     const char * _sourcedir = NULL;
     const char * _specdir = NULL;
     const char * specFile = NULL;
     HGE_t hge;
     HFD_t hfd;
     Header h = NULL;
-    struct psm_s psmbuf;
-    PSM_t psm = &psmbuf;
+    struct rpmpsm_s psmbuf;
+    rpmpsm psm = &psmbuf;
     int isSource;
     rpmRC rc;
     int i;
 
-    ts->notify = notify;
-    /*@-temptrans -assignexpose@*/
-    ts->notifyData = notifyData;
-    /*@=temptrans =assignexpose@*/
+    memset(psm, 0, sizeof(*psm));
+    psm->ts = rpmtsLink(ts, "InstallSourcePackage");
 
-    /*@-mustmod@*/	/* LCL: segfault */
-    rc = rpmReadPackageHeader(fd, &h, &isSource, NULL, NULL);
-    /*@=mustmod@*/
-    if (rc)
+    rc = rpmReadPackageFile(ts, fd, "InstallSourcePackage", &h);
+    switch (rc) {
+    case RPMRC_NOTTRUSTED:
+    case RPMRC_NOKEY:
+    case RPMRC_OK:
+	break;
+    default:
 	goto exit;
+	/*@notreached@*/ break;
+    }
+    if (h == NULL)
+	goto exit;
+
+    rc = RPMRC_OK;
+
+    isSource = headerIsEntry(h, RPMTAG_SOURCEPACKAGE);
 
     if (!isSource) {
 	rpmError(RPMERR_NOTSRPM, _("source package expected, binary found\n"));
@@ -646,24 +273,32 @@ rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
 	goto exit;
     }
 
-    (void) rpmtransAddPackage(ts, h, fd, NULL, 0, NULL);
-    if (ts->addedPackages.list == NULL) {	/* XXX can't happen */
+    (void) rpmtsAddInstallElement(ts, h, NULL, 0, NULL);
+
+    fi = rpmfiNew(ts, h, RPMTAG_BASENAMES, scareMem);
+    h = headerFree(h);
+
+    if (fi == NULL) {	/* XXX can't happen */
 	rc = RPMRC_FAIL;
 	goto exit;
     }
 
-    fi->type = TR_ADDED;
-    fi->ap = ts->addedPackages.list;
-    loadFi(h, fi);
+/*@-onlytrans@*/	/* FIX: te reference */
+    fi->te = rpmtsElement(ts, 0);
+/*@=onlytrans@*/
+/*@-nullpass@*/		/* FIX fi->h may be null */
+    fi->te->h = headerLink(fi->h);
+/*@=nullpass@*/
+    fi->te->fd = fdLink(fd, "installSourcePackage");
     hge = fi->hge;
-    hfd = (fi->hfd ? fi->hfd : headerFreeData);
-    h = headerFree(h);	/* XXX reference held by transaction set */
+    hfd = fi->hfd;
 
-    (void) rpmInstallLoadMacros(fi, fi->h);
+/*@i@*/ (void) rpmInstallLoadMacros(fi, fi->h);
 
-    memset(psm, 0, sizeof(*psm));
-    psm->ts = ts;
-    psm->fi = fi;
+    psm->fi = rpmfiLink(fi, NULL);
+    /*@-assignexpose -usereleased @*/
+    psm->te = fi->te;
+    /*@=assignexpose =usereleased @*/
 
     if (cookie) {
 	*cookie = NULL;
@@ -672,7 +307,7 @@ rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
     }
 
     /* XXX FIXME: can't do endian neutral MD5 verification yet. */
-    fi->fmd5s = hfd(fi->fmd5s, -1);
+/*@i@*/ fi->fmd5s = hfd(fi->fmd5s, -1);
 
     /* XXX FIXME: don't do per-file mapping, force global flags. */
     fi->fmapflags = _free(fi->fmapflags);
@@ -693,12 +328,15 @@ rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
     for (i = 0; i < fi->fc; i++)
 	fi->actions[i] = FA_CREATE;
 
-    rpmBuildFileList(fi->h, &fi->apath, NULL);
-
     i = fi->fc;
-    if (headerIsEntry(fi->h, RPMTAG_COOKIE))
-	for (i = 0; i < fi->fc; i++)
+
+    if (fi->h != NULL) {	/* XXX can't happen */
+	rpmfiBuildFNames(fi->h, RPMTAG_BASENAMES, &fi->apath, NULL);
+
+	if (headerIsEntry(fi->h, RPMTAG_COOKIE))
+	    for (i = 0; i < fi->fc; i++)
 		if (fi->fflags[i] & RPMFILE_SPECFILE) break;
+    }
 
     if (i == fi->fc) {
 	/* Find the spec file by name. */
@@ -709,15 +347,15 @@ rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
 	}
     }
 
-    _sourcedir = rpmGenPath(ts->rootDir, "%{_sourcedir}", "");
-    rc = chkdir(_sourcedir, "sourcedir");
+    _sourcedir = rpmGenPath(rpmtsRootDir(ts), "%{_sourcedir}", "");
+    rc = rpmMkdirPath(_sourcedir, "sourcedir");
     if (rc) {
 	rc = RPMRC_FAIL;
 	goto exit;
     }
 
-    _specdir = rpmGenPath(ts->rootDir, "%{_specdir}", "");
-    rc = chkdir(_specdir, "specdir");
+    _specdir = rpmGenPath(rpmtsRootDir(ts), "%{_specdir}", "");
+    rc = rpmMkdirPath(_specdir, "specdir");
     if (rc) {
 	rc = RPMRC_FAIL;
 	goto exit;
@@ -729,12 +367,15 @@ rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
 	int sourcelen = strlen(_sourcedir) + 2;
 	char * t;
 
-	fi->dnl = hfd(fi->dnl, -1);
+/*@i@*/	fi->dnl = hfd(fi->dnl, -1);
 
 	fi->dc = 2;
-	fi->dnl = xmalloc(fi->dc * sizeof(*fi->dnl) + fi->fc * sizeof(*fi->dil) +
-			speclen + sourcelen);
+	fi->dnl = xmalloc(fi->dc * sizeof(*fi->dnl)
+			+ fi->fc * sizeof(*fi->dil)
+			+ speclen + sourcelen);
+	/*@-dependenttrans@*/
 	fi->dil = (int *)(fi->dnl + fi->dc);
+	/*@=dependenttrans@*/
 	memset(fi->dil, 0, fi->fc * sizeof(*fi->dil));
 	fi->dil[i] = 1;
 	/*@-dependenttrans@*/
@@ -755,9 +396,9 @@ rpmRC rpmInstallSourcePackage(const char * rootDir, FD_t fd,
     psm->goal = PSM_PKGINSTALL;
 
     /*@-compmempass@*/	/* FIX: psm->fi->dnl should be owned. */
-    rc = psmStage(psm, PSM_PROCESS);
+    rc = rpmpsmStage(psm, PSM_PROCESS);
 
-    (void) psmStage(psm, PSM_FINI);
+    (void) rpmpsmStage(psm, PSM_FINI);
     /*@=compmempass@*/
 
     if (rc) rc = RPMRC_FAIL;
@@ -771,20 +412,32 @@ exit:
     _specdir = _free(_specdir);
     _sourcedir = _free(_sourcedir);
 
-    if (h) h = headerFree(h);
+    psm->fi = rpmfiFree(psm->fi);
+    psm->te = NULL;
 
-    if (fi) {
-	freeFi(fi);
-	fi = _free(fi);
+    if (h != NULL) h = headerFree(h);
+
+    /*@-branchstate@*/
+    if (fi != NULL) {
+	fi->te->h = headerFree(fi->te->h);
+	if (fi->te->fd != NULL)
+	    (void) Fclose(fi->te->fd);
+	fi->te->fd = NULL;
+	fi->te = NULL;
+	fi = rpmfiFree(fi);
     }
-    ts = rpmtransFree(ts);
+    /*@=branchstate@*/
+
+    /* XXX nuke the added package(s). */
+    rpmtsClean(ts);
+
+    psm->ts = rpmtsFree(psm->ts);
 
     return rc;
 }
 
 /*@observer@*/ /*@unchecked@*/
-static char * SCRIPT_PATH =
-	"PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin";
+static char * SCRIPT_PATH = "PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/X11R6/bin";
 
 /**
  * Return scriptlet name from tag.
@@ -805,6 +458,291 @@ static /*@observer@*/ const char * const tag2sln(int tag)
 }
 
 /**
+ */
+/*@unchecked@*/
+static sigset_t caught;
+
+/**
+ */
+/*@unchecked@*/
+static struct psmtbl_s {
+    int nalloced;
+    int npsms;
+/*@null@*/
+    rpmpsm * psms;
+} psmtbl = { 0, 0, NULL };
+
+/* forward ref */
+static void handler(int signum)
+	/*@globals caught, psmtbl, fileSystem @*/
+	/*@modifies caught, psmtbl, fileSystem @*/;
+
+/**
+ */
+/*@unchecked@*/
+/*@-fullinitblock@*/
+static struct sigtbl_s {
+    int signum;
+    int active;
+    void (*handler) (int signum);
+    struct sigaction oact;
+} satbl[] = {
+    { SIGCHLD,	0, handler },
+    { -1,	0, NULL },
+};
+/*@=fullinitblock@*/
+
+/**
+ */
+/*@-incondefs@*/
+static void handler(int signum)
+{
+    struct sigtbl_s * tbl;
+
+    for(tbl = satbl; tbl->signum >= 0; tbl++) {
+	if (tbl->signum != signum)
+	    continue;
+	if (!tbl->active)
+	    continue;
+	(void) sigaddset(&caught, signum);
+	switch (signum) {
+	case SIGCHLD:
+	    while (1) {
+		int status = 0;
+		pid_t reaped = waitpid(0, &status, WNOHANG);
+		int i;
+
+		if (reaped <= 0)
+		    /*@innerbreak@*/ break;
+
+		if (psmtbl.psms)
+		for (i = 0; i < psmtbl.npsms; i++) {
+		    rpmpsm psm = psmtbl.psms[i];
+		    if (psm->child != reaped)
+			/*@innercontinue@*/ continue;
+
+#if _PSM_DEBUG
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "      Reap: %p[%d:%d:%d] = %p child %d\n", psmtbl.psms, i, psmtbl.npsms, psmtbl.nalloced, psm, psm->child);
+/*@=modfilesys@*/
+#endif
+
+		    psm->reaped = reaped;
+		    psm->status = status;
+		    /*@innerbreak@*/ break;
+		}
+	    }
+	    /*@switchbreak@*/ break;
+	default:
+	    /*@switchbreak@*/ break;
+	}
+	break;
+    }
+}
+/*@=incondefs@*/
+
+/**
+ * Enable a signal handler.
+ */
+static int enableSignal(int signum)
+	/*@globals caught, satbl, fileSystem @*/
+	/*@modifies caught, satbl, fileSystem @*/
+{
+    sigset_t newMask, oldMask;
+    struct sigtbl_s * tbl;
+    struct sigaction act;
+
+    (void) sigfillset(&newMask);		/* block all signals */
+    (void) sigprocmask(SIG_BLOCK, &newMask, &oldMask);
+    for (tbl = satbl; tbl->signum >= 0; tbl++) {
+	if (signum >= 0 && signum != tbl->signum)
+	    continue;
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "    Enable: %p[0:%d:%d] active %d\n", psmtbl.psms, psmtbl.npsms, psmtbl.nalloced, tbl->active);
+/*@=modfilesys@*/
+	if (tbl->active++ <= 0) {
+	    (void) sigdelset(&caught, tbl->signum);
+	    memset(&act, 0, sizeof(act));
+	    act.sa_handler = tbl->handler;
+	    (void) sigaction(tbl->signum, &act, &tbl->oact);
+	}
+	break;
+    }
+    return sigprocmask(SIG_SETMASK, &oldMask, NULL);
+}
+
+/**
+ * Disable a signal handler.
+ */
+static int disableSignal(int signum)
+	/*@globals satbl, fileSystem @*/
+	/*@modifies satbl, fileSystem @*/
+{
+    sigset_t newMask, oldMask;
+    struct sigtbl_s * tbl;
+
+    (void) sigfillset(&newMask);		/* block all signals */
+    (void) sigprocmask(SIG_BLOCK, &newMask, &oldMask);
+    for (tbl = satbl; tbl->signum >= 0; tbl++) {
+	if (signum >= 0 && signum != tbl->signum)
+	    continue;
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "   Disable: %p[0:%d:%d] active %d\n", psmtbl.psms, psmtbl.npsms, psmtbl.nalloced, tbl->active);
+/*@=modfilesys@*/
+	if (--tbl->active <= 0) {
+	    tbl->active = 0;		/* XXX just in case */
+	    (void) sigaction(tbl->signum, &tbl->oact, NULL);
+	}
+	break;
+    }
+    return sigprocmask(SIG_SETMASK, &oldMask, NULL);
+}
+
+/**
+ * Register a child reaper, then fork a child.
+ * @param psm		package state machine data
+ * @return		fork(2) pid
+ */
+static pid_t psmRegisterFork(rpmpsm psm)
+	/*@globals psmtbl, fileSystem, internalState @*/
+	/*@modifies psm, psmtbl, fileSystem, internalState @*/
+{
+    sigset_t newMask, oldMask;
+    int empty = -1;
+    int i = psmtbl.npsms;
+
+    (void) sigfillset(&newMask);		/* block all signals */
+    (void) sigprocmask(SIG_BLOCK, &newMask, &oldMask);
+
+    if (psmtbl.psms)
+    for (i = 0; i < psmtbl.npsms; i++) {
+	if (empty == -1 && psmtbl.psms[i] == NULL)
+	    empty = i;
+	if (psm != psmtbl.psms[i])
+	    continue;
+	break;
+    }
+    if (i == psmtbl.npsms) {
+	if (i >= psmtbl.nalloced) {
+	    if (psmtbl.nalloced == 0) psmtbl.nalloced = 5;
+	    while (psmtbl.nalloced < i)
+		psmtbl.nalloced += psmtbl.nalloced;
+	    psmtbl.psms = xrealloc(psmtbl.psms,
+			psmtbl.nalloced * sizeof(*psmtbl.psms));
+	}
+	empty = psmtbl.npsms++;
+    }
+    if (psmtbl.psms)	/* XXX can't happen */
+	psmtbl.psms[empty] = rpmpsmLink(psm, "psmRegister");
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "  Register: %p[%d:%d:%d] = %p\n", psmtbl.psms, empty, psmtbl.npsms, psmtbl.nalloced, psm);
+/*@=modfilesys@*/
+
+    (void) enableSignal(SIGCHLD);
+
+    psm->reaped = 0;
+    if ((psm->child = fork()) != 0) {
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "      Fork: %p[%d:%d:%d] = %p child %d\n", psmtbl.psms, 0, psmtbl.npsms, psmtbl.nalloced, psm, psm->child);
+/*@=modfilesys@*/
+    }
+
+    (void) sigprocmask(SIG_SETMASK, &oldMask, NULL);
+
+    return psm->child;
+}
+
+/**
+ * Unregister a child reaper.
+ */
+static int psmWaitUnregister(rpmpsm psm, pid_t child)
+	/*@globals psmtbl, fileSystem, internalState @*/
+	/*@modifies psmtbl, fileSystem, internalState @*/
+{
+    sigset_t newMask, oldMask;
+    int i = 0;
+
+    (void) sigfillset(&newMask);		/* block all signals */
+    (void) sigprocmask(SIG_BLOCK, &newMask, &oldMask);
+    
+    /*@-infloops@*/
+    while (psm->reaped != psm->child)
+	(void) sigsuspend(&oldMask);
+    /*@=infloops@*/
+
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "      Wait: %p[%d:%d:%d] = %p child %d\n", psmtbl.psms, 0, psmtbl.npsms, psmtbl.nalloced, psm, psm->child);
+/*@=modfilesys@*/
+
+    if (psmtbl.psms)
+    for (i = 0; i < psmtbl.npsms; i++) {
+	if (psmtbl.psms[i] == NULL)
+	    continue;
+	if (psm != psmtbl.psms[i])
+	    continue;
+	if (child != psm->child)
+	    continue;
+	break;
+    }
+
+    if (i < psmtbl.npsms) {
+	(void) disableSignal(SIGCHLD);
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "Unregister: %p[%d:%d:%d] = %p child %d\n", psmtbl.psms, i, psmtbl.npsms, psmtbl.nalloced, psm, child);
+/*@=modfilesys@*/
+	if (psmtbl.psms)	/* XXX can't happen */
+	    psmtbl.psms[i] = rpmpsmFree(psmtbl.psms[i]);
+	if (psmtbl.npsms == (i+1))
+	    psmtbl.npsms--;
+	if (psmtbl.npsms == 0) {
+	    psmtbl.psms = _free(psmtbl.psms);
+	    psmtbl.nalloced = 0;
+	}
+    }
+
+    return sigprocmask(SIG_SETMASK, &oldMask, NULL);
+}
+
+/**
+ * Wait for child process to be reaped.
+ * @param psm		package state machine data
+ * @return		
+ */
+static pid_t psmWait(rpmpsm psm)
+	/*@globals fileSystem, internalState @*/
+	/*@modifies psm, fileSystem, internalState @*/
+{
+    if (psm->reaper) {
+	(void) psmWaitUnregister(psm, psm->child);
+    } else {
+	do {
+	    psm->reaped = waitpid(psm->child, &psm->status, 0);
+	} while (psm->reaped >= 0 && psm->reaped != psm->child);
+    }
+
+    rpmMessage(RPMMESS_DEBUG, _("%s: waitpid(%d) rc %d status %x\n"),
+	psm->stepName, (unsigned)psm->child,
+	(unsigned)psm->reaped, psm->status);
+
+    return psm->reaped;
+}
+
+/**
+ */
+/*@unchecked@*/
+static int ldconfig_done = 0;
+
+/*@unchecked@*/ /*@observer@*/ /*@null@*/
+static const char * ldconfig_path = "/sbin/ldconfig";
+
+/**
  * Run scriptlet with args.
  *
  * Run a script with an interpreter. If the interpreter is not specified,
@@ -820,18 +758,18 @@ static /*@observer@*/ const char * const tag2sln(int tag)
  * @param arg1		no. instances of package installed after scriptlet exec
  *			(-1 is no arg)
  * @param arg2		ditto, but for the target package
- * @return		0 on success, 1 on error
+ * @return		0 on success
  */
-static int runScript(PSM_t psm, Header h,
-		const char * sln,
+static rpmRC runScript(rpmpsm psm, Header h, const char * sln,
 		int progArgc, const char ** progArgv, 
 		const char * script, int arg1, int arg2)
-	/*@globals rpmGlobalMacroContext,
+	/*@globals ldconfig_done, rpmGlobalMacroContext,
 		fileSystem, internalState@*/
-	/*@modifies psm, rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies psm, ldconfig_done, rpmGlobalMacroContext,
+		fileSystem, internalState @*/
 {
-    const rpmTransactionSet ts = psm->ts;
-    TFI_t fi = psm->fi;
+    const rpmts ts = psm->ts;
+    rpmfi fi = psm->fi;
     HGE_t hge = fi->hge;
     HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
     const char ** argv = NULL;
@@ -843,29 +781,60 @@ static int runScript(PSM_t psm, Header h,
     int maxPrefixLength;
     int len;
     char * prefixBuf = NULL;
-    pid_t child;
-    int status = 0;
     const char * fn = NULL;
     int i, xx;
     int freePrefixes = 0;
+    FD_t scriptFd;
     FD_t out;
     rpmRC rc = RPMRC_OK;
     const char *n, *v, *r;
 
-    if (!progArgv && !script)
-	return 0;
+    if (progArgv == NULL && script == NULL)
+	return rc;
+
+    psm->child = 0;
+    psm->reaped = 0;
+    psm->status = 0;
+    psm->reaper = 1;
+
+    /* XXX FIXME: except for %verifyscript, rpmteNEVR can be used. */
+    xx = headerNVR(h, &n, &v, &r);
+
+    /* XXX bash must have functional libtermcap.so.2 */
+    if (!strcmp(n, "libtermcap"))
+	ldconfig_done = 0;
+
+    /*
+     * If a successor node, and ldconfig was just run, don't bother.
+     */
+    if (ldconfig_path && progArgv && psm->unorderedSuccessor) {
+ 	if (ldconfig_done && !strcmp(progArgv[0], ldconfig_path)) {
+	    rpmMessage(RPMMESS_DEBUG,
+		_("%s: %s(%s-%s-%s) skipping redundant \"%s\".\n"),
+		psm->stepName, tag2sln(psm->scriptTag), n, v, r,
+		progArgv[0]);
+	    return rc;
+	}
+    }
+
+    rpmMessage(RPMMESS_DEBUG,
+		_("%s: %s(%s-%s-%s) %ssynchronous scriptlet start\n"),
+		psm->stepName, tag2sln(psm->scriptTag), n, v, r,
+		(psm->unorderedSuccessor ? "a" : ""));
 
     if (!progArgv) {
 	argv = alloca(5 * sizeof(*argv));
 	argv[0] = "/bin/sh";
 	argc = 1;
+	ldconfig_done = 0;
     } else {
 	argv = alloca((progArgc + 4) * sizeof(*argv));
 	memcpy(argv, progArgv, progArgc * sizeof(*argv));
 	argc = progArgc;
+	ldconfig_done = (ldconfig_path && !strcmp(argv[0], ldconfig_path)
+		? 1 : 0);
     }
 
-    xx = headerNVR(h, &n, &v, &r);
     if (hge(h, RPMTAG_INSTPREFIXES, &ipt, (void **) &prefixes, &numPrefixes)) {
 	freePrefixes = 1;
     } else if (hge(h, RPMTAG_INSTALLPREFIX, NULL, (void **) &oldPrefix, NULL)) {
@@ -883,26 +852,34 @@ static int runScript(PSM_t psm, Header h,
     prefixBuf = alloca(maxPrefixLength + 50);
 
     if (script) {
+	const char * rootDir = rpmtsRootDir(ts);
 	FD_t fd;
+
 	/*@-branchstate@*/
-	if (makeTempFile((!ts->chrootDone ? ts->rootDir : "/"), &fn, &fd)) {
+	if (makeTempFile((!rpmtsChrootDone(ts) ? rootDir : "/"), &fn, &fd)) {
 	    if (freePrefixes) free(prefixes);
-	    return 1;
+	    return RPMRC_FAIL;
 	}
 	/*@=branchstate@*/
 
 	if (rpmIsDebug() &&
 	    (!strcmp(argv[0], "/bin/sh") || !strcmp(argv[0], "/bin/bash")))
-	    xx = Fwrite("set -x\n", sizeof(char), 7, fd);
+	{
+	    static const char set_x[] = "set -x\n";
+	    xx = Fwrite(set_x, sizeof(set_x[0]), sizeof(set_x)-1, fd);
+	}
+
+	if (ldconfig_path && strstr(script, ldconfig_path) != NULL)
+	    ldconfig_done = 1;
 
 	xx = Fwrite(script, sizeof(script[0]), strlen(script), fd);
 	xx = Fclose(fd);
 
 	{   const char * sn = fn;
-	    if (!ts->chrootDone &&
-		!(ts->rootDir[0] == '/' && ts->rootDir[1] == '\0'))
+	    if (!rpmtsChrootDone(ts) && rootDir != NULL &&
+		!(rootDir[0] == '/' && rootDir[1] == '\0'))
 	    {
-		sn += strlen(ts->rootDir)-1;
+		sn += strlen(rootDir)-1;
 	    }
 	    argv[argc++] = sn;
 	}
@@ -921,25 +898,24 @@ static int runScript(PSM_t psm, Header h,
 
     argv[argc] = NULL;
 
-    if (ts->scriptFd != NULL) {
+    scriptFd = rpmtsScriptFd(ts);
+    if (scriptFd != NULL) {
 	if (rpmIsVerbose()) {
-	    out = fdDup(Fileno(ts->scriptFd));
+	    out = fdDup(Fileno(scriptFd));
 	} else {
 	    out = Fopen("/dev/null", "w.fdio");
 	    if (Ferror(out)) {
-		out = fdDup(Fileno(ts->scriptFd));
+		out = fdDup(Fileno(scriptFd));
 	    }
 	}
     } else {
 	out = fdDup(STDOUT_FILENO);
-#ifdef	DYING
-	out = fdLink(out, "runScript persist");
-#endif
     }
-    if (out == NULL) return 1;	/* XXX can't happen */
+    if (out == NULL) return RPMRC_FAIL;	/* XXX can't happen */
     
     /*@-branchstate@*/
-    if (!(child = fork())) {
+    (void) psmRegisterFork(psm);
+    if (psm->child == 0) {
 	const char * rootDir;
 	int pipes[2];
 
@@ -950,17 +926,19 @@ static int runScript(PSM_t psm, Header h,
 	xx = dup2(pipes[0], STDIN_FILENO);
 	xx = close(pipes[0]);
 
-	if (ts->scriptFd != NULL) {
-	    if (Fileno(ts->scriptFd) != STDERR_FILENO)
-		xx = dup2(Fileno(ts->scriptFd), STDERR_FILENO);
-	    if (Fileno(out) != STDOUT_FILENO)
-		xx = dup2(Fileno(out), STDOUT_FILENO);
+	if (scriptFd != NULL) {
+	    int sfdno = Fileno(scriptFd);
+	    int ofdno = Fileno(out);
+	    if (sfdno != STDERR_FILENO)
+		xx = dup2(sfdno, STDERR_FILENO);
+	    if (ofdno != STDOUT_FILENO)
+		xx = dup2(ofdno, STDOUT_FILENO);
 	    /* make sure we don't close stdin/stderr/stdout by mistake! */
-	    if (Fileno(out) > STDERR_FILENO && Fileno(out) != Fileno(ts->scriptFd)) {
+	    if (ofdno > STDERR_FILENO && ofdno != sfdno) {
 		xx = Fclose (out);
 	    }
-	    if (Fileno(ts->scriptFd) > STDERR_FILENO) {
-		xx = Fclose (ts->scriptFd);
+	    if (sfdno > STDERR_FILENO) {
+		xx = Fclose (scriptFd);
 	    }
 	}
 
@@ -969,6 +947,7 @@ static int runScript(PSM_t psm, Header h,
 
 	    if (ipath && ipath[5] != '%')
 		path = ipath;
+
 	    xx = doputenv(path);
 	    /*@-modobserver@*/
 	    ipath = _free(ipath);
@@ -986,19 +965,30 @@ static int runScript(PSM_t psm, Header h,
 	    }
 	}
 
-	if ((rootDir = ts->rootDir) != NULL)	/* XXX can't happen */
+	rootDir = rpmtsRootDir(ts);
+	if (rootDir  != NULL)	/* XXX can't happen */
 	switch(urlIsURL(rootDir)) {
 	case URL_IS_PATH:
 	    rootDir += sizeof("file://") - 1;
 	    rootDir = strchr(rootDir, '/');
 	    /*@fallthrough@*/
 	case URL_IS_UNKNOWN:
-	    if (!ts->chrootDone && !(rootDir[0] == '/' && rootDir[1] == '\0')) {
-		/*@-unrecog -superuser @*/
+	    if (!rpmtsChrootDone(ts) &&
+		!(rootDir[0] == '/' && rootDir[1] == '\0'))
+	    {
+		/*@-superuser -noeffect @*/
 		xx = chroot(rootDir);
-		/*@=unrecog =superuser @*/
+		/*@=superuser =noeffect @*/
 	    }
 	    xx = chdir("/");
+	    rpmMessage(RPMMESS_DEBUG, _("%s: %s(%s-%s-%s)\texecv(%s) pid %d\n"),
+			psm->stepName, sln, n, v, r,
+			argv[0], (unsigned)getpid());
+/*@-modfilesys@*/
+if (_psm_debug)
+fprintf(stderr, "      Exec: %s \"%s\"\n", sln, argv[0]);
+/*@=modfilesys@*/
+	    unsetenv("MALLOC_CHECK_");
 	    xx = execv(argv[0], (char *const *)argv);
 	    break;
 	default:
@@ -1010,30 +1000,32 @@ static int runScript(PSM_t psm, Header h,
     }
     /*@=branchstate@*/
 
-    if (waitpid(child, &status, 0) < 0) {
+    (void) psmWait(psm);
+
+    if (psm->reaped < 0) {
 	rpmError(RPMERR_SCRIPT,
-     _("execution of %s scriptlet from %s-%s-%s failed, waitpid returned %s\n"),
-		 sln, n, v, r, strerror (errno));
-	/* XXX what to do here? */
-	rc = RPMRC_OK;
-    } else {
-	if (!WIFEXITED(status) || WEXITSTATUS(status)) {
-	    rpmError(RPMERR_SCRIPT,
-     _("execution of %s scriptlet from %s-%s-%s failed, exit status %d\n"),
-		     sln, n, v, r, WEXITSTATUS(status));
-	    rc = RPMRC_FAIL;
-	}
+		_("%s(%s-%s-%s) scriptlet failed, waitpid(%d) rc %d: %s\n"),
+		 sln, n, v, r, psm->child, psm->reaped, strerror(errno));
+	rc = RPMRC_FAIL;
+    } else
+    if (!WIFEXITED(psm->status) || WEXITSTATUS(psm->status)) {
+	rpmError(RPMERR_SCRIPT,
+		_("%s(%s-%s-%s) scriptlet failed, exit status %d\n"),
+		sln, n, v, r, WEXITSTATUS(psm->status));
+	rc = RPMRC_FAIL;
     }
 
     if (freePrefixes) prefixes = hfd(prefixes, ipt);
 
     xx = Fclose(out);	/* XXX dup'd STDOUT_FILENO */
     
+    /*@-branchstate@*/
     if (script) {
 	if (!rpmIsDebug())
 	    xx = unlink(fn);
 	fn = _free(fn);
     }
+    /*@=branchstate@*/
 
     return rc;
 }
@@ -1043,17 +1035,15 @@ static int runScript(PSM_t psm, Header h,
  * @param psm		package state machine data
  * @return		rpmRC return code
  */
-static rpmRC runInstScript(PSM_t psm)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies psm, rpmGlobalMacroContext,
-		fileSystem, internalState @*/
+static rpmRC runInstScript(rpmpsm psm)
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies psm, rpmGlobalMacroContext, fileSystem, internalState @*/
 {
-    TFI_t fi = psm->fi;
+    rpmfi fi = psm->fi;
     HGE_t hge = fi->hge;
     HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
-    void ** programArgv;
-    int programArgc;
+    void ** progArgv;
+    int progArgc;
     const char ** argv;
     rpmTagType ptt, stt;
     const char * script;
@@ -1064,25 +1054,33 @@ static rpmRC runInstScript(PSM_t psm)
      * headerGetEntry() sets the data pointer to NULL if the entry does
      * not exist.
      */
-    xx = hge(fi->h, psm->progTag, &ptt, (void **) &programArgv, &programArgc);
     xx = hge(fi->h, psm->scriptTag, &stt, (void **) &script, NULL);
+    xx = hge(fi->h, psm->progTag, &ptt, (void **) &progArgv, &progArgc);
+    if (progArgv == NULL && script == NULL)
+	goto exit;
 
-    if (programArgv && ptt == RPM_STRING_TYPE) {
-	argv = alloca(sizeof(char *));
-	*argv = (const char *) programArgv;
+    /*@-branchstate@*/
+    if (progArgv && ptt == RPM_STRING_TYPE) {
+	argv = alloca(sizeof(*argv));
+	*argv = (const char *) progArgv;
     } else {
-	argv = (const char **) programArgv;
+	argv = (const char **) progArgv;
     }
+    /*@=branchstate@*/
 
-    rc = runScript(psm, fi->h, tag2sln(psm->scriptTag), programArgc, argv,
+    if (fi->h != NULL)	/* XXX can't happen */
+    rc = runScript(psm, fi->h, tag2sln(psm->scriptTag), progArgc, argv,
 		script, psm->scriptArg, -1);
 
-    programArgv = hfd(programArgv, ptt);
+exit:
+    progArgv = hfd(progArgv, ptt);
     script = hfd(script, stt);
     return rc;
 }
 
 /**
+ * Execute triggers.
+ * @todo Trigger on any provides, not just package NVR.
  * @param psm		package state machine data
  * @param sourceH
  * @param triggeredH
@@ -1090,64 +1088,52 @@ static rpmRC runInstScript(PSM_t psm)
  * @param triggersAlreadyRun
  * @return
  */
-static int handleOneTrigger(PSM_t psm, Header sourceH, Header triggeredH,
+static rpmRC handleOneTrigger(const rpmpsm psm,
+			Header sourceH, Header triggeredH,
 			int arg2, unsigned char * triggersAlreadyRun)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState@*/
-	/*@modifies psm, triggeredH, *triggersAlreadyRun, rpmGlobalMacroContext,
-		fileSystem, internalState @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState@*/
+	/*@modifies psm, sourceH, triggeredH, *triggersAlreadyRun,
+		rpmGlobalMacroContext, fileSystem, internalState @*/
 {
-    const rpmTransactionSet ts = psm->ts;
-    TFI_t fi = psm->fi;
+    int scareMem = 1;
+    const rpmts ts = psm->ts;
+    rpmfi fi = psm->fi;
     HGE_t hge = fi->hge;
     HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
-    const char ** triggerNames;
-    const char ** triggerEVR;
+    rpmds trigger = NULL;
     const char ** triggerScripts;
     const char ** triggerProgs;
-    int_32 * triggerFlags;
     int_32 * triggerIndices;
-    rpmTagType tnt, tvt, tft;
-    const char * triggerPackageName;
     const char * sourceName;
-    int numTriggers;
     rpmRC rc = RPMRC_OK;
-    int i;
-    int skip;
     int xx;
-
-    if (!(	hge(triggeredH, RPMTAG_TRIGGERNAME, &tnt, 
-			(void **) &triggerNames, &numTriggers) &&
-		hge(triggeredH, RPMTAG_TRIGGERFLAGS, &tft,
-			(void **) &triggerFlags, NULL) &&
-		hge(triggeredH, RPMTAG_TRIGGERVERSION, &tvt,
-			(void **) &triggerEVR, NULL))
-	)
-	return 0;
+    int i;
 
     xx = headerNVR(sourceH, &sourceName, NULL, NULL);
 
-    for (i = 0; i < numTriggers; i++) {
-	rpmTagType tit, tst, tpt;
+    trigger = rpmdsInit(rpmdsNew(triggeredH, RPMTAG_TRIGGERNAME, scareMem));
+    if (trigger == NULL)
+	return rc;
 
-	if (!(triggerFlags[i] & psm->sense)) continue;
-	if (strcmp(triggerNames[i], sourceName)) continue;
+    (void) rpmdsSetNoPromote(trigger, 1);
+
+    while ((i = rpmdsNext(trigger)) >= 0) {
+	rpmTagType tit, tst, tpt;
+	const char * Name;
+	int_32 Flags = rpmdsFlags(trigger);
+
+	if ((Name = rpmdsN(trigger)) == NULL)
+	    continue;   /* XXX can't happen */
+
+	if (strcmp(Name, sourceName))
+	    continue;
+	if (!(Flags & psm->sense))
+	    continue;
 
 	/*
-	 * For some reason, the TRIGGERVERSION stuff includes the name of
-	 * the package which the trigger is based on. We need to skip
-	 * over that here. I suspect that we'll change our minds on this
-	 * and remove that, so I'm going to just 'do the right thing'.
+	 * XXX Trigger on any provided dependency, not just the package NEVR.
 	 */
-	skip = strlen(triggerNames[i]);
-	if (!strncmp(triggerEVR[i], triggerNames[i], skip) &&
-	    (triggerEVR[i][skip] == '-'))
-	    skip++;
-	else
-	    skip = 0;
-
-	if (!headerMatchesDepFlags(sourceH, triggerNames[i],
-		triggerEVR[i] + skip, triggerFlags[i]))
+	if (!rpmdsAnyMatchesDep(sourceH, trigger, 1))
 	    continue;
 
 	if (!(	hge(triggeredH, RPMTAG_TRIGGERINDEX, &tit,
@@ -1159,14 +1145,12 @@ static int handleOneTrigger(PSM_t psm, Header sourceH, Header triggeredH,
 	    )
 	    continue;
 
-	xx = headerNVR(triggeredH, &triggerPackageName, NULL, NULL);
-
 	{   int arg1;
 	    int index;
 
-	    arg1 = rpmdbCountPackages(ts->rpmdb, triggerPackageName);
+	    arg1 = rpmdbCountPackages(rpmtsGetRdb(ts), Name);
 	    if (arg1 < 0) {
-		/* XXX W2DO? same as "execution of script failed" */
+		/* XXX W2DO? fails as "execution of script failed" */
 		rc = RPMRC_FAIL;
 	    } else {
 		arg1 += psm->countCorrection;
@@ -1194,9 +1178,7 @@ static int handleOneTrigger(PSM_t psm, Header sourceH, Header triggeredH,
 	break;
     }
 
-    triggerNames = hfd(triggerNames, tnt);
-    triggerFlags = hfd(triggerFlags, tft);
-    triggerEVR = hfd(triggerEVR, tvt);
+    trigger = rpmdsFree(trigger);
 
     return rc;
 }
@@ -1204,33 +1186,37 @@ static int handleOneTrigger(PSM_t psm, Header sourceH, Header triggeredH,
 /**
  * Run trigger scripts in the database that are fired by this header.
  * @param psm		package state machine data
- * @return		0 on success, 1 on error
+ * @return		0 on success
  */
-static int runTriggers(PSM_t psm)
+static rpmRC runTriggers(rpmpsm psm)
 	/*@globals rpmGlobalMacroContext,
 		fileSystem, internalState @*/
 	/*@modifies psm, rpmGlobalMacroContext,
 		fileSystem, internalState @*/
 {
-    const rpmTransactionSet ts = psm->ts;
-    TFI_t fi = psm->fi;
-    int numPackage;
+    const rpmts ts = psm->ts;
+    rpmfi fi = psm->fi;
+    int numPackage = -1;
     rpmRC rc = RPMRC_OK;
+    const char * N = NULL;
 
-    numPackage = rpmdbCountPackages(ts->rpmdb, fi->name) + psm->countCorrection;
+    if (psm->te) 	/* XXX can't happen */
+	N = rpmteN(psm->te);
+    if (N) 		/* XXX can't happen */
+	numPackage = rpmdbCountPackages(rpmtsGetRdb(ts), N)
+				+ psm->countCorrection;
     if (numPackage < 0)
-	return 1;
+	return RPMRC_NOTFOUND;
 
+    if (fi->h != NULL)	/* XXX can't happen */
     {	Header triggeredH;
 	rpmdbMatchIterator mi;
 	int countCorrection = psm->countCorrection;
 
 	psm->countCorrection = 0;
-	mi = rpmdbInitIterator(ts->rpmdb, RPMTAG_TRIGGERNAME, fi->name, 0);
-	while((triggeredH = rpmdbNextIterator(mi)) != NULL) {
+	mi = rpmtsInitIterator(ts, RPMTAG_TRIGGERNAME, N, 0);
+	while((triggeredH = rpmdbNextIterator(mi)) != NULL)
 	    rc |= handleOneTrigger(psm, fi->h, triggeredH, numPackage, NULL);
-	}
-
 	mi = rpmdbFreeIterator(mi);
 	psm->countCorrection = countCorrection;
     }
@@ -1241,16 +1227,16 @@ static int runTriggers(PSM_t psm)
 /**
  * Run triggers from this header that are fired by headers in the database.
  * @param psm		package state machine data
- * @return		0 on success, 1 on error
+ * @return		0 on success
  */
-static int runImmedTriggers(PSM_t psm)
+static rpmRC runImmedTriggers(rpmpsm psm)
 	/*@globals rpmGlobalMacroContext,
 		fileSystem, internalState @*/
 	/*@modifies psm, rpmGlobalMacroContext,
 		fileSystem, internalState @*/
 {
-    const rpmTransactionSet ts = psm->ts;
-    TFI_t fi = psm->fi;
+    const rpmts ts = psm->ts;
+    rpmfi fi = psm->fi;
     HGE_t hge = fi->hge;
     HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
     const char ** triggerNames;
@@ -1261,12 +1247,14 @@ static int runImmedTriggers(PSM_t psm)
     unsigned char * triggersRun;
     rpmRC rc = RPMRC_OK;
 
+    if (fi->h == NULL)	return rc;	/* XXX can't happen */
+
     if (!(	hge(fi->h, RPMTAG_TRIGGERNAME, &tnt,
 			(void **) &triggerNames, &numTriggers) &&
 		hge(fi->h, RPMTAG_TRIGGERINDEX, &tit,
 			(void **) &triggerIndices, &numTriggerIndices))
 	)
-	return 0;
+	return rc;
 
     triggersRun = alloca(sizeof(*triggersRun) * numTriggerIndices);
     memset(triggersRun, 0, sizeof(*triggersRun) * numTriggerIndices);
@@ -1279,7 +1267,7 @@ static int runImmedTriggers(PSM_t psm)
 
 	    if (triggersRun[triggerIndices[i]] != 0) continue;
 	
-	    mi = rpmdbInitIterator(ts->rpmdb, RPMTAG_NAME, triggerNames[i], 0);
+	    mi = rpmtsInitIterator(ts, RPMTAG_NAME, triggerNames[i], 0);
 
 	    while((sourceH = rpmdbNextIterator(mi)) != NULL) {
 		rc |= handleOneTrigger(psm, sourceH, fi->h, 
@@ -1335,16 +1323,90 @@ static int runImmedTriggers(PSM_t psm)
     /*@noteached@*/
 }
 
+rpmpsm XrpmpsmUnlink(rpmpsm psm, const char * msg, const char * fn, unsigned ln)
+{
+    if (psm == NULL) return NULL;
+/*@-modfilesys@*/
+if (_psm_debug && msg != NULL)
+fprintf(stderr, "--> psm %p -- %d %s at %s:%u\n", psm, psm->nrefs, msg, fn, ln);
+/*@=modfilesys@*/
+    psm->nrefs--;
+    return NULL;
+}
+
+rpmpsm XrpmpsmLink(rpmpsm psm, const char * msg, const char * fn, unsigned ln)
+{
+    if (psm == NULL) return NULL;
+    psm->nrefs++;
+
+/*@-modfilesys@*/
+if (_psm_debug && msg != NULL)
+fprintf(stderr, "--> psm %p ++ %d %s at %s:%u\n", psm, psm->nrefs, msg, fn, ln);
+/*@=modfilesys@*/
+
+    /*@-refcounttrans@*/ return psm; /*@=refcounttrans@*/
+}
+
+rpmpsm rpmpsmFree(rpmpsm psm)
+{
+    const char * msg = "rpmpsmFree";
+    if (psm == NULL)
+	return NULL;
+
+    if (psm->nrefs > 1)
+	return rpmpsmUnlink(psm, msg);
+
+/*@-nullstate@*/
+    psm->fi = rpmfiFree(psm->fi);
+#ifdef	NOTYET
+    psm->te = rpmteFree(psm->te);
+#else
+    psm->te = NULL;
+#endif
+    psm->ts = rpmtsFree(psm->ts);
+
+    (void) rpmpsmUnlink(psm, msg);
+
+    /*@-refcounttrans -usereleased@*/
+/*@-boundswrite@*/
+    memset(psm, 0, sizeof(*psm));		/* XXX trash and burn */
+/*@=boundswrite@*/
+    psm = _free(psm);
+    /*@=refcounttrans =usereleased@*/
+
+    return NULL;
+/*@=nullstate@*/
+}
+
+rpmpsm rpmpsmNew(rpmts ts, rpmte te, rpmfi fi)
+{
+    const char * msg = "rpmpsmNew";
+    rpmpsm psm = xcalloc(1, sizeof(*psm));
+
+    if (ts)	psm->ts = rpmtsLink(ts, msg);
+#ifdef	NOTYET
+    if (te)	psm->te = rpmteLink(te, msg);
+#else
+/*@-assignexpose -temptrans @*/
+    if (te)	psm->te = te;
+/*@=assignexpose =temptrans @*/
+#endif
+    if (fi)	psm->fi = rpmfiLink(fi, msg);
+
+    return rpmpsmLink(psm, msg);
+}
+
 /**
  * @todo Packages w/o files never get a callback, hence don't get displayed
  * on install with -v.
  */
-int psmStage(PSM_t psm, pkgStage stage)
+/*@-bounds -nullpass@*/ /* FIX: testing null annotation for fi->h */
+rpmRC rpmpsmStage(rpmpsm psm, pkgStage stage)
 {
-    const rpmTransactionSet ts = psm->ts;
-    TFI_t fi = psm->fi;
+    const rpmts ts = psm->ts;
+    uint_32 tscolor = rpmtsColor(ts);
+    rpmfi fi = psm->fi;
     HGE_t hge = fi->hge;
-    HME_t hme = fi->hme;
     HFD_t hfd = (fi->hfd ? fi->hfd : headerFreeData);
     rpmRC rc = psm->rc;
     int saveerrno;
@@ -1355,49 +1417,57 @@ int psmStage(PSM_t psm, pkgStage stage)
     case PSM_UNKNOWN:
 	break;
     case PSM_INIT:
-	rpmMessage(RPMMESS_DEBUG, _("%s: %s-%s-%s has %d files, test = %d\n"),
-		psm->stepName, fi->name, fi->version, fi->release,
-		fi->fc, (ts->transFlags & RPMTRANS_FLAG_TEST));
+	rpmMessage(RPMMESS_DEBUG, _("%s: %s has %d files, test = %d\n"),
+		psm->stepName, rpmteNEVR(psm->te),
+		rpmfiFC(fi), (rpmtsFlags(ts) & RPMTRANS_FLAG_TEST));
 
 	/*
 	 * When we run scripts, we pass an argument which is the number of 
 	 * versions of this package that will be installed when we are
 	 * finished.
 	 */
-	psm->npkgs_installed = rpmdbCountPackages(ts->rpmdb, fi->name);
+	psm->npkgs_installed = rpmdbCountPackages(rpmtsGetRdb(ts), rpmteN(psm->te));
 	if (psm->npkgs_installed < 0) {
 	    rc = RPMRC_FAIL;
 	    break;
 	}
 
 	if (psm->goal == PSM_PKGINSTALL) {
+	    int fc = rpmfiFC(fi);
+
 	    psm->scriptArg = psm->npkgs_installed + 1;
 
 assert(psm->mi == NULL);
-	    psm->mi = rpmdbInitIterator(ts->rpmdb, RPMTAG_NAME, fi->name, 0);
-	    xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_VERSION,
-			RPMMIRE_DEFAULT, fi->version);
-	    xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_RELEASE,
-			RPMMIRE_DEFAULT, fi->release);
+	    psm->mi = rpmtsInitIterator(ts, RPMTAG_NAME, rpmteN(psm->te), 0);
+	    xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_EPOCH, RPMMIRE_DEFAULT,
+			rpmteE(psm->te));
+	    xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_VERSION, RPMMIRE_DEFAULT,
+			rpmteV(psm->te));
+	    xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_RELEASE, RPMMIRE_DEFAULT,
+			rpmteR(psm->te));
+	    if (tscolor) {
+		xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_ARCH, RPMMIRE_DEFAULT,
+			rpmteA(psm->te));
+		xx = rpmdbSetIteratorRE(psm->mi, RPMTAG_OS, RPMMIRE_DEFAULT,
+			rpmteO(psm->te));
+	    }
 
-	    while ((psm->oh = rpmdbNextIterator(psm->mi))) {
+	    while ((psm->oh = rpmdbNextIterator(psm->mi)) != NULL) {
 		fi->record = rpmdbGetIteratorOffset(psm->mi);
-		if (ts->transFlags & RPMTRANS_FLAG_MULTILIB)
-		    psm->oh = headerCopy(psm->oh);
-		else
-		    psm->oh = NULL;
+		psm->oh = NULL;
 		/*@loopbreak@*/ break;
 	    }
 	    psm->mi = rpmdbFreeIterator(psm->mi);
 	    rc = RPMRC_OK;
 
-	    if (fi->fc > 0 && fi->fstates == NULL) {
-		fi->fstates = xmalloc(sizeof(*fi->fstates) * fi->fc);
-		memset(fi->fstates, RPMFILE_STATE_NORMAL, fi->fc);
+	    /* XXX lazy alloc here may need to be done elsewhere. */
+	    if (fi->fstates == NULL && fc > 0) {
+		fi->fstates = xmalloc(sizeof(*fi->fstates) * fc);
+		memset(fi->fstates, RPMFILE_STATE_NORMAL, fc);
 	    }
 
-	    if (fi->fc <= 0)				break;
-	    if (ts->transFlags & RPMTRANS_FLAG_JUSTDB)	break;
+	    if (rpmtsFlags(ts) & RPMTRANS_FLAG_JUSTDB)	break;
+	    if (fc <= 0)				break;
 	
 	    /*
 	     * Old format relocateable packages need the entire default
@@ -1405,16 +1475,16 @@ assert(psm->mi == NULL);
 	     * need the leading / stripped.
 	     */
 	    {   const char * p;
-		rc = hge(fi->h, RPMTAG_DEFAULTPREFIX, NULL, (void **) &p, NULL);
-		fi->striplen = (rc ? strlen(p) + 1 : 1); 
+		xx = hge(fi->h, RPMTAG_DEFAULTPREFIX, NULL, (void **) &p, NULL);
+		fi->striplen = (xx ? strlen(p) + 1 : 1); 
 	    }
 	    fi->mapflags =
 		CPIO_MAP_PATH | CPIO_MAP_MODE | CPIO_MAP_UID | CPIO_MAP_GID;
 	
 	    if (headerIsEntry(fi->h, RPMTAG_ORIGBASENAMES))
-		buildOrigFileList(fi->h, &fi->apath, NULL);
+		rpmfiBuildFNames(fi->h, RPMTAG_ORIGBASENAMES, &fi->apath, NULL);
 	    else
-		rpmBuildFileList(fi->h, &fi->apath, NULL);
+		rpmfiBuildFNames(fi->h, RPMTAG_BASENAMES, &fi->apath, NULL);
 	
 	    if (fi->fuser == NULL)
 		xx = hge(fi->h, RPMTAG_FILEUSERNAME, NULL,
@@ -1423,16 +1493,19 @@ assert(psm->mi == NULL);
 		xx = hge(fi->h, RPMTAG_FILEGROUPNAME, NULL,
 				(void **) &fi->fgroup, NULL);
 	    if (fi->fuids == NULL)
-		fi->fuids = xcalloc(sizeof(*fi->fuids), fi->fc);
+		fi->fuids = xcalloc(sizeof(*fi->fuids), fc);
 	    if (fi->fgids == NULL)
-		fi->fgids = xcalloc(sizeof(*fi->fgids), fi->fc);
+		fi->fgids = xcalloc(sizeof(*fi->fgids), fc);
 	    rc = RPMRC_OK;
 	}
 	if (psm->goal == PSM_PKGERASE || psm->goal == PSM_PKGSAVE) {
 	    psm->scriptArg = psm->npkgs_installed - 1;
 	
 	    /* Retrieve installed header. */
-	    rc = psmStage(psm, PSM_RPMDB_LOAD);
+	    rc = rpmpsmStage(psm, PSM_RPMDB_LOAD);
+if (rc == RPMRC_OK)
+if (psm->te)
+psm->te->h = headerLink(fi->h);
 	}
 	if (psm->goal == PSM_PKGSAVE) {
 	    /* Open output package for writing. */
@@ -1441,8 +1514,8 @@ assert(psm->mi == NULL);
 			headerSprintf(fi->h, bfmt, rpmTagTable, rpmHeaderFormats, NULL);
 
 		bfmt = _free(bfmt);
-		psm->pkgURL = rpmGenPath("%{?_repackage_root:%{_repackage_root}}",
-					 "%{?_repackage_dir:%{_repackage_dir}}",
+		psm->pkgURL = rpmGenPath("%{?_repackage_root}",
+					 "%{?_repackage_dir}",
 					pkgbn);
 		pkgbn = _free(pkgbn);
 		(void) urlPath(psm->pkgURL, &psm->pkgfn);
@@ -1455,26 +1528,37 @@ assert(psm->mi == NULL);
 	}
 	break;
     case PSM_PRE:
-	if (ts->transFlags & RPMTRANS_FLAG_TEST)	break;
+	if (rpmtsFlags(ts) & RPMTRANS_FLAG_TEST)	break;
+
+/* XXX insure that trigger index is opened before entering chroot. */
+#ifdef	NOTYET
+ { static int oneshot = 0;
+   dbiIndex dbi;
+   if (!oneshot) {
+     dbi = dbiOpen(rpmtsGetRdb(ts), RPMTAG_TRIGGERNAME, 0);
+     oneshot++;
+   }
+ }
+#endif
 
 	/* Change root directory if requested and not already done. */
-	rc = psmStage(psm, PSM_CHROOT_IN);
+	rc = rpmpsmStage(psm, PSM_CHROOT_IN);
 
 	if (psm->goal == PSM_PKGINSTALL) {
 	    psm->scriptTag = RPMTAG_PREIN;
 	    psm->progTag = RPMTAG_PREINPROG;
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOTRIGGERPREIN)) {
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOTRIGGERPREIN)) {
 		/* XXX FIXME: implement %triggerprein. */
 	    }
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOPRE)) {
-		rc = psmStage(psm, PSM_SCRIPT);
-		if (rc) {
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOPRE)) {
+		rc = rpmpsmStage(psm, PSM_SCRIPT);
+		if (rc != RPMRC_OK) {
 		    rpmError(RPMERR_SCRIPT,
-			_("%s: %s scriptlet failed (%d), skipping %s-%s-%s\n"),
+			_("%s: %s scriptlet failed (%d), skipping %s\n"),
 			psm->stepName, tag2sln(psm->scriptTag), rc,
-			fi->name, fi->version, fi->release);
+			rpmteNEVR(psm->te));
 		    break;
 		}
 	    }
@@ -1486,26 +1570,27 @@ assert(psm->mi == NULL);
 	    psm->sense = RPMSENSE_TRIGGERUN;
 	    psm->countCorrection = -1;
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOTRIGGERUN)) {
-		/* Run triggers in other package(s) this package sets off. */
-		rc = psmStage(psm, PSM_TRIGGERS);
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOTRIGGERUN)) {
+		/* Run triggers in this package other package(s) set off. */
+		rc = rpmpsmStage(psm, PSM_IMMED_TRIGGERS);
 		if (rc) break;
 
-		/* Run triggers in this package other package(s) set off. */
-		rc = psmStage(psm, PSM_IMMED_TRIGGERS);
+		/* Run triggers in other package(s) this package sets off. */
+		rc = rpmpsmStage(psm, PSM_TRIGGERS);
 		if (rc) break;
 	    }
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOPREUN))
-		rc = psmStage(psm, PSM_SCRIPT);
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOPREUN))
+		rc = rpmpsmStage(psm, PSM_SCRIPT);
 	}
 	if (psm->goal == PSM_PKGSAVE) {
+	    int noArchiveSize = 0;
+
 	    /* Regenerate original header. */
 	    {	void * uh = NULL;
 		int_32 uht, uhc;
 
-		if (headerGetEntry(fi->h, RPMTAG_HEADERIMMUTABLE, &uht, &uh, &uhc))
-		{
+		if (headerGetEntry(fi->h, RPMTAG_HEADERIMMUTABLE, &uht, &uh, &uhc)) {
 		    psm->oh = headerCopyLoad(uh);
 		    uh = hfd(uh, uht);
 		} else
@@ -1527,21 +1612,22 @@ assert(psm->mi == NULL);
 		        headerNextIterator(hi, &tag, &type, &ptr, &count);
 		        ptr = headerFreeData((void *)ptr, type))
 		    {
+			if (tag == RPMTAG_ARCHIVESIZE)
+			    noArchiveSize = 1;
 		        if (ptr) (void) headerAddEntry(psm->oh, tag, type, ptr, count);
 		    }
 		    hi = headerFreeIterator(hi);
 		    /*@=branchstate@*/
 
-		    headerFree(oh);
+		    oh = headerFree(oh);
 		    uh = hfd(uh, uht);
-		} else {
-		    break;
-		}
+		} else
+		    break;	/* XXX shouldn't ever happen */
 	    }
 
 	    /* Retrieve type of payload compression. */
 	    /*@-nullstate@*/	/* FIX: psm->oh may be NULL */
-	    rc = psmStage(psm, PSM_RPMIO_FLAGS);
+	    rc = rpmpsmStage(psm, PSM_RPMIO_FLAGS);
 	    /*@=nullstate@*/
 
 	    /* Write the lead section into the package. */
@@ -1563,30 +1649,34 @@ assert(psm->mi == NULL);
 		lead.osnum = osnum;
 		lead.signature_type = RPMSIGTYPE_HEADERSIG;
 
-		{   char buf[256];
-		    sprintf(buf, "%s-%s-%s", fi->name, fi->version, fi->release);
-		    strncpy(lead.name, buf, sizeof(lead.name));
-		}
+		strncpy(lead.name, rpmteNEVR(psm->te), sizeof(lead.name));
 
 		rc = writeLead(psm->fd, &lead);
-		if (rc) {
+		if (rc != RPMRC_OK) {
 		    rpmError(RPMERR_NOSPACE, _("Unable to write package: %s\n"),
 			 Fstrerror(psm->fd));
-		    rc = RPMRC_FAIL;
 		    break;
 		}
 	    }
 
 	    /* Write the signature section into the package. */
-	    {	Header sig = headerRegenSigHeader(fi->h);
-		rc = rpmWriteSignature(psm->fd, sig);
-		sig = rpmFreeSignature(sig);
+	    /* XXX rpm-4.1 and later has archive size in signature header. */
+	    {	Header sigh = headerRegenSigHeader(fi->h, noArchiveSize);
+		/* Reallocate the signature into one contiguous region. */
+		sigh = headerReload(sigh, RPMTAG_HEADERSIGNATURES);
+		if (sigh == NULL) {
+		    rpmError(RPMERR_NOSPACE, _("Unable to reload signature header\n"));
+		    rc = RPMRC_FAIL;
+		    break;
+		}
+		rc = rpmWriteSignature(psm->fd, sigh);
+		sigh = rpmFreeSignature(sigh);
 		if (rc) break;
 	    }
 
 	    /* Add remove transaction id to header. */
-	    if (psm->oh)
-	    {	int_32 tid = ts->id;
+	    if (psm->oh != NULL)
+	    {	int_32 tid = rpmtsGetTid(ts);
 		xx = headerAddEntry(psm->oh, RPMTAG_REMOVETID,
 			RPM_INT32_TYPE, &tid, 1);
 	    }
@@ -1597,16 +1687,23 @@ assert(psm->mi == NULL);
 	}
 	break;
     case PSM_PROCESS:
-	if (ts->transFlags & RPMTRANS_FLAG_TEST)	break;
+	if (rpmtsFlags(ts) & RPMTRANS_FLAG_TEST)	break;
 
 	if (psm->goal == PSM_PKGINSTALL) {
-	    struct availablePackage * alp = fi->ap;
 	    int i;
 
-	    if (fi->fc <= 0)				break;
-	    if (ts->transFlags & RPMTRANS_FLAG_JUSTDB)	break;
+	    if (rpmtsFlags(ts) & RPMTRANS_FLAG_JUSTDB)	break;
 
-	    for (i = 0; i < fi->fc; i++) {
+	    /* XXX Synthesize callbacks for packages with no files. */
+	    if (rpmfiFC(fi) <= 0) {
+		void * ptr;
+		ptr = rpmtsNotify(ts, fi->te, RPMCALLBACK_INST_START, 0, 100);
+		ptr = rpmtsNotify(ts, fi->te, RPMCALLBACK_INST_PROGRESS, 100, 100);
+		break;
+	    }
+
+	    (void) rpmfiInit(fi, 0);
+	    while ((i = rpmfiNext(fi)) >= 0) {
 		uid_t uid;
 		gid_t gid;
 
@@ -1634,14 +1731,15 @@ assert(psm->mi == NULL);
 	    }
 
 	    /* Retrieve type of payload compression. */
-	    rc = psmStage(psm, PSM_RPMIO_FLAGS);
+	    rc = rpmpsmStage(psm, PSM_RPMIO_FLAGS);
 
-	    if (alp->fd == NULL) {	/* XXX can't happen */
+	    if (rpmteFd(fi->te) == NULL) {	/* XXX can't happen */
 		rc = RPMRC_FAIL;
 		break;
 	    }
-	    /*@-nullpass@*/	/* LCL: alp->fd != NULL here. */
-	    psm->cfd = Fdopen(fdDup(Fileno(alp->fd)), psm->rpmio_flags);
+
+	    /*@-nullpass@*/	/* LCL: fi->fd != NULL here. */
+	    psm->cfd = Fdopen(fdDup(Fileno(rpmteFd(fi->te))), psm->rpmio_flags);
 	    /*@=nullpass@*/
 	    if (psm->cfd == NULL) {	/* XXX can't happen */
 		rc = RPMRC_FAIL;
@@ -1660,7 +1758,13 @@ assert(psm->mi == NULL);
 	    /*@=mods@*/
 
 	    if (!rc)
-		rc = psmStage(psm, PSM_COMMIT);
+		rc = rpmpsmStage(psm, PSM_COMMIT);
+
+	    /* XXX make sure progress is closed out */
+	    psm->what = RPMCALLBACK_INST_PROGRESS;
+	    psm->amount = (fi->archiveSize ? fi->archiveSize : 100);
+	    psm->total = psm->amount;
+	    xx = rpmpsmStage(psm, PSM_NOTIFY);
 
 	    if (rc) {
 		rpmError(RPMERR_CPIO,
@@ -1669,23 +1773,27 @@ assert(psm->mi == NULL);
 			(psm->failedFile != NULL ? psm->failedFile : ""),
 			cpioStrerror(rc));
 		rc = RPMRC_FAIL;
+
+		/* XXX notify callback on error. */
+		psm->what = RPMCALLBACK_UNPACK_ERROR;
+		psm->amount = 0;
+		psm->total = 0;
+		xx = rpmpsmStage(psm, PSM_NOTIFY);
+
 		break;
 	    }
-	    psm->what = RPMCALLBACK_INST_PROGRESS;
-	    psm->amount = (fi->archiveSize ? fi->archiveSize : 100);
-	    psm->total = psm->amount;
-	    xx = psmStage(psm, PSM_NOTIFY);
 	}
 	if (psm->goal == PSM_PKGERASE) {
+	    int fc = rpmfiFC(fi);
 
-	    if (fi->fc <= 0)				break;
-	    if (ts->transFlags & RPMTRANS_FLAG_JUSTDB)	break;
-	    if (ts->transFlags & RPMTRANS_FLAG_APPLYONLY)	break;
+	    if (rpmtsFlags(ts) & RPMTRANS_FLAG_JUSTDB)	break;
+	    if (rpmtsFlags(ts) & RPMTRANS_FLAG_APPLYONLY)	break;
+	    if (fc <= 0)				break;
 
 	    psm->what = RPMCALLBACK_UNINST_START;
-	    psm->amount = fi->fc;	/* XXX W2DO? looks wrong. */
-	    psm->total = fi->fc;
-	    xx = psmStage(psm, PSM_NOTIFY);
+	    psm->amount = fc;		/* XXX W2DO? looks wrong. */
+	    psm->total = fc;
+	    xx = rpmpsmStage(psm, PSM_NOTIFY);
 
 	    rc = fsmSetup(fi->fsm, FSM_PKGERASE, ts, fi,
 			NULL, NULL, &psm->failedFile);
@@ -1693,8 +1801,8 @@ assert(psm->mi == NULL);
 
 	    psm->what = RPMCALLBACK_UNINST_STOP;
 	    psm->amount = 0;		/* XXX W2DO? looks wrong. */
-	    psm->total = fi->fc;
-	    xx = psmStage(psm, PSM_NOTIFY);
+	    psm->total = fc;
+	    xx = rpmpsmStage(psm, PSM_NOTIFY);
 
 	}
 	if (psm->goal == PSM_PKGSAVE) {
@@ -1708,7 +1816,7 @@ assert(psm->mi == NULL);
 		rc = RPMRC_FAIL;
 		break;
 	    }
-	    /*@-nullpass@*/	/* LCL: psm->fd != NULL here. */
+	    /*@-nullpass@*/	/* FIX: fdDup mey return NULL. */
 	    xx = Fflush(psm->fd);
 	    psm->cfd = Fdopen(fdDup(Fileno(psm->fd)), psm->rpmio_flags);
 	    /*@=nullpass@*/
@@ -1728,51 +1836,44 @@ assert(psm->mi == NULL);
 	    errno = saveerrno;
 	    /*@=mods@*/
 
+	    /* XXX make sure progress is closed out */
+	    psm->what = RPMCALLBACK_INST_PROGRESS;
+	    psm->amount = (fi->archiveSize ? fi->archiveSize : 100);
+	    psm->total = psm->amount;
+	    xx = rpmpsmStage(psm, PSM_NOTIFY);
+
 	    fi->action = action;
 	    fi->actions = actions;
 	}
 	break;
     case PSM_POST:
-	if (ts->transFlags & RPMTRANS_FLAG_TEST)	break;
+	if (rpmtsFlags(ts) & RPMTRANS_FLAG_TEST)	break;
 
 	if (psm->goal == PSM_PKGINSTALL) {
 	    int_32 installTime = (int_32) time(NULL);
+	    int fc = rpmfiFC(fi);
 
-	    if (fi->fstates != NULL && fi->fc > 0)
+	    if (fi->h == NULL) break;	/* XXX can't happen */
+	    if (fi->fstates != NULL && fc > 0)
 		xx = headerAddEntry(fi->h, RPMTAG_FILESTATES, RPM_CHAR_TYPE,
-				fi->fstates, fi->fc);
+				fi->fstates, fc);
 
 	    xx = headerAddEntry(fi->h, RPMTAG_INSTALLTIME, RPM_INT32_TYPE,
 				&installTime, 1);
 
-	    if (ts->transFlags & RPMTRANS_FLAG_MULTILIB) {
-		uint_32 multiLib, * newMultiLib, * p;
-
-		if (hge(fi->h, RPMTAG_MULTILIBS, NULL,
-				(void **) &newMultiLib, NULL) &&
-		    hge(psm->oh, RPMTAG_MULTILIBS, NULL,
-				(void **) &p, NULL))
-		{
-		    multiLib = *p;
-		    multiLib |= *newMultiLib;
-		    xx = hme(psm->oh, RPMTAG_MULTILIBS, RPM_INT32_TYPE,
-				      &multiLib, 1);
-		}
-		rc = mergeFiles(fi, psm->oh, fi->h);
-		if (rc) break;
-	    }
-
+	    xx = headerAddEntry(fi->h, RPMTAG_INSTALLCOLOR, RPM_INT32_TYPE,
+				&tscolor, 1);
 
 	    /*
 	     * If this package has already been installed, remove it from
 	     * the database before adding the new one.
 	     */
-	    if (fi->record && !(ts->transFlags & RPMTRANS_FLAG_APPLYONLY)) {
-		rc = psmStage(psm, PSM_RPMDB_REMOVE);
+	    if (fi->record && !(rpmtsFlags(ts) & RPMTRANS_FLAG_APPLYONLY)) {
+		rc = rpmpsmStage(psm, PSM_RPMDB_REMOVE);
 		if (rc) break;
 	    }
 
-	    rc = psmStage(psm, PSM_RPMDB_ADD);
+	    rc = rpmpsmStage(psm, PSM_RPMDB_ADD);
 	    if (rc) break;
 
 	    psm->scriptTag = RPMTAG_POSTIN;
@@ -1780,21 +1881,21 @@ assert(psm->mi == NULL);
 	    psm->sense = RPMSENSE_TRIGGERIN;
 	    psm->countCorrection = 0;
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOPOST)) {
-		rc = psmStage(psm, PSM_SCRIPT);
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOPOST)) {
+		rc = rpmpsmStage(psm, PSM_SCRIPT);
 		if (rc) break;
 	    }
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOTRIGGERIN)) {
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOTRIGGERIN)) {
 		/* Run triggers in other package(s) this package sets off. */
-		rc = psmStage(psm, PSM_TRIGGERS);
+		rc = rpmpsmStage(psm, PSM_TRIGGERS);
 		if (rc) break;
 
 		/* Run triggers in this package other package(s) set off. */
-		rc = psmStage(psm, PSM_IMMED_TRIGGERS);
+		rc = rpmpsmStage(psm, PSM_IMMED_TRIGGERS);
 		if (rc) break;
 	    }
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_APPLYONLY))
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_APPLYONLY))
 		rc = markReplacedFiles(psm);
 
 	}
@@ -1805,33 +1906,33 @@ assert(psm->mi == NULL);
 	    psm->sense = RPMSENSE_TRIGGERPOSTUN;
 	    psm->countCorrection = -1;
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOPOSTUN)) {
-		rc = psmStage(psm, PSM_SCRIPT);
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOPOSTUN)) {
+		rc = rpmpsmStage(psm, PSM_SCRIPT);
 		/* XXX WTFO? postun failures don't cause erasure failure. */
 	    }
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_NOTRIGGERPOSTUN)) {
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_NOTRIGGERPOSTUN)) {
 		/* Run triggers in other package(s) this package sets off. */
-		rc = psmStage(psm, PSM_TRIGGERS);
+		rc = rpmpsmStage(psm, PSM_TRIGGERS);
 		if (rc) break;
 	    }
 
-	    if (!(ts->transFlags & RPMTRANS_FLAG_APPLYONLY))
-		rc = psmStage(psm, PSM_RPMDB_REMOVE);
+	    if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_APPLYONLY))
+		rc = rpmpsmStage(psm, PSM_RPMDB_REMOVE);
 	}
 	if (psm->goal == PSM_PKGSAVE) {
 	}
 
 	/* Restore root directory if changed. */
-	xx = psmStage(psm, PSM_CHROOT_OUT);
+	xx = rpmpsmStage(psm, PSM_CHROOT_OUT);
 	break;
     case PSM_UNDO:
 	break;
     case PSM_FINI:
 	/* Restore root directory if changed. */
-	xx = psmStage(psm, PSM_CHROOT_OUT);
+	xx = rpmpsmStage(psm, PSM_CHROOT_OUT);
 
-	if (psm->fd) {
+	if (psm->fd != NULL) {
 	    saveerrno = errno; /* XXX FIXME: Fclose with libio destroys errno */
 	    xx = Fclose(psm->fd);
 	    psm->fd = NULL;
@@ -1841,7 +1942,7 @@ assert(psm->mi == NULL);
 	}
 
 	if (psm->goal == PSM_PKGSAVE) {
-	    if (!rc) {
+	    if (!rc && ts && ts->notify == NULL) {
 		rpmMessage(RPMMESS_VERBOSE, _("Wrote: %s\n"),
 			(psm->pkgURL ? psm->pkgURL : "???"));
 	    }
@@ -1855,10 +1956,25 @@ assert(psm->mi == NULL);
 	    else
 		rpmError(RPMERR_CPIO, _("%s failed: %s\n"),
 			psm->stepName, cpioStrerror(rc));
+
+	    /* XXX notify callback on error. */
+	    psm->what = RPMCALLBACK_CPIO_ERROR;
+	    psm->amount = 0;
+	    psm->total = 0;
+	    /*@-nullstate@*/ /* FIX: psm->fd may be NULL. */
+	    xx = rpmpsmStage(psm, PSM_NOTIFY);
+	    /*@=nullstate@*/
 	}
 
-	if (fi->h && (psm->goal == PSM_PKGERASE || psm->goal == PSM_PKGSAVE))
-	    fi->h = headerFree(fi->h);
+/*@-branchstate@*/
+	if (psm->goal == PSM_PKGERASE || psm->goal == PSM_PKGSAVE) {
+if (psm->te != NULL)
+if (psm->te->h != NULL)
+psm->te->h = headerFree(psm->te->h);
+	    if (fi->h != NULL)
+		fi->h = headerFree(fi->h);
+ 	}
+/*@=branchstate@*/
 	psm->oh = headerFree(psm->oh);
 	psm->pkgURL = _free(psm->pkgURL);
 	psm->rpmio_flags = _free(psm->rpmio_flags);
@@ -1879,11 +1995,11 @@ assert(psm->mi == NULL);
 	psm->rc = RPMRC_OK;
 	psm->stepName = pkgStageString(stage);
 
-	rc = psmStage(psm, PSM_INIT);
-	if (!rc) rc = psmStage(psm, PSM_PRE);
-	if (!rc) rc = psmStage(psm, PSM_PROCESS);
-	if (!rc) rc = psmStage(psm, PSM_POST);
-	xx = psmStage(psm, PSM_FINI);
+	rc = rpmpsmStage(psm, PSM_INIT);
+	if (!rc) rc = rpmpsmStage(psm, PSM_PRE);
+	if (!rc) rc = rpmpsmStage(psm, PSM_PROCESS);
+	if (!rc) rc = rpmpsmStage(psm, PSM_POST);
+	xx = rpmpsmStage(psm, PSM_FINI);
 	break;
     case PSM_PKGCOMMIT:
 	break;
@@ -1891,18 +2007,16 @@ assert(psm->mi == NULL);
     case PSM_CREATE:
 	break;
     case PSM_NOTIFY:
-	if (ts && ts->notify) {
-	    /*@-noeffectuncon @*/ /* FIX: check rc */
-	    (void) ts->notify(fi->h, psm->what, psm->amount, psm->total,
-		(fi->ap ? fi->ap->key : NULL), ts->notifyData);
-	    /*@=noeffectuncon @*/
-	}
-	break;
+    {	void * ptr;
+/*@-nullpass@*/ /* FIX: psm->te may be NULL */
+	ptr = rpmtsNotify(ts, psm->te, psm->what, psm->amount, psm->total);
+/*@-nullpass@*/
+    }	break;
     case PSM_DESTROY:
 	break;
     case PSM_COMMIT:
-	if (!(ts->transFlags & RPMTRANS_FLAG_PKGCOMMIT)) break;
-	if (ts->transFlags & RPMTRANS_FLAG_APPLYONLY) break;
+	if (!(rpmtsFlags(ts) & RPMTRANS_FLAG_PKGCOMMIT)) break;
+	if (rpmtsFlags(ts) & RPMTRANS_FLAG_APPLYONLY) break;
 
 	rc = fsmSetup(fi->fsm, FSM_PKGCOMMIT, ts, fi,
 			NULL, NULL, &psm->failedFile);
@@ -1910,8 +2024,9 @@ assert(psm->mi == NULL);
 	break;
 
     case PSM_CHROOT_IN:
+    {	const char * rootDir = rpmtsRootDir(ts);
 	/* Change root directory if requested and not already done. */
-	if (ts->rootDir && !ts->chrootDone && !psm->chrootDone) {
+	if (rootDir != NULL && !rpmtsChrootDone(ts) && !psm->chrootDone) {
 	    static int _loaded = 0;
 
 	    /*
@@ -1925,35 +2040,27 @@ assert(psm->mi == NULL);
 	    }
 
 	    xx = chdir("/");
-	    /*@-unrecog -superuser @*/
-	    rc = chroot(ts->rootDir);
-	    /*@=unrecog =superuser @*/
-	    psm->chrootDone = ts->chrootDone = 1;
-	    if (ts->rpmdb != NULL) ts->rpmdb->db_chrootDone = 1;
-#ifdef	DYING
-	    /*@-onlytrans@*/
-	    chroot_prefix = ts->rootDir;
-	    /*@=onlytrans@*/
-#endif
+	    /*@-superuser@*/
+	    rc = chroot(rootDir);
+	    /*@=superuser@*/
+	    psm->chrootDone = 1;
+	    (void) rpmtsSetChrootDone(ts, 1);
 	}
-	break;
+    }	break;
     case PSM_CHROOT_OUT:
 	/* Restore root directory if changed. */
 	if (psm->chrootDone) {
-	    /*@-superuser @*/
+	    const char * currDir = rpmtsCurrDir(ts);
+	    /*@-superuser@*/
 	    rc = chroot(".");
-	    /*@=superuser @*/
-	    psm->chrootDone = ts->chrootDone = 0;
-	    if (ts->rpmdb != NULL) ts->rpmdb->db_chrootDone = 0;
-#ifdef	DYING
-	    chroot_prefix = NULL;
-#endif
-	    xx = chdir(ts->currDir);
+	    /*@=superuser@*/
+	    psm->chrootDone = 0;
+	    (void) rpmtsSetChrootDone(ts, 0);
+	    if (currDir != NULL)	/* XXX can't happen */
+		xx = chdir(currDir);
 	}
 	break;
-    case PSM_SCRIPT:
-	rpmMessage(RPMMESS_DEBUG, _("%s: running %s script(s) (if any)\n"),
-		psm->stepName, tag2sln(psm->scriptTag));
+    case PSM_SCRIPT:	/* Run current package scriptlets. */
 	rc = runInstScript(psm);
 	break;
     case PSM_TRIGGERS:
@@ -1969,9 +2076,11 @@ assert(psm->mi == NULL);
     {	const char * payload_compressor = NULL;
 	char * t;
 
+	/*@-branchstate@*/
 	if (!hge(fi->h, RPMTAG_PAYLOADCOMPRESSOR, NULL,
 			    (void **) &payload_compressor, NULL))
 	    payload_compressor = "gzip";
+	/*@=branchstate@*/
 	psm->rpmio_flags = t = xmalloc(sizeof("w9.gzdio"));
 	*t = '\0';
 	t = stpcpy(t, ((psm->goal == PSM_PKGSAVE) ? "w9" : "r"));
@@ -1984,34 +2093,39 @@ assert(psm->mi == NULL);
 
     case PSM_RPMDB_LOAD:
 assert(psm->mi == NULL);
-	psm->mi = rpmdbInitIterator(ts->rpmdb, RPMDBI_PACKAGES,
+	psm->mi = rpmtsInitIterator(ts, RPMDBI_PACKAGES,
 				&fi->record, sizeof(fi->record));
 
 	fi->h = rpmdbNextIterator(psm->mi);
-	if (fi->h)
+	if (fi->h != NULL)
 	    fi->h = headerLink(fi->h);
-else {
-fprintf(stderr, "*** PSM_RDB_LOAD: header #%u not found\n", fi->record);
-}
+
 	psm->mi = rpmdbFreeIterator(psm->mi);
-	rc = (fi->h ? RPMRC_OK : RPMRC_FAIL);
+	rc = (fi->h != NULL ? RPMRC_OK : RPMRC_FAIL);
 	break;
     case PSM_RPMDB_ADD:
-	if (ts->transFlags & RPMTRANS_FLAG_TEST)	break;
-	if (fi->h != NULL)	/* XXX can't happen */
-	rc = rpmdbAdd(ts->rpmdb, ts->id, fi->h);
+	if (rpmtsFlags(ts) & RPMTRANS_FLAG_TEST)	break;
+	if (fi->h == NULL)	break;	/* XXX can't happen */
+	if (!(rpmtsVSFlags(ts) & RPMVSF_NOHDRCHK))
+	    rc = rpmdbAdd(rpmtsGetRdb(ts), rpmtsGetTid(ts), fi->h,
+				ts, headerCheck);
+	else
+	    rc = rpmdbAdd(rpmtsGetRdb(ts), rpmtsGetTid(ts), fi->h,
+				NULL, NULL);
 	break;
     case PSM_RPMDB_REMOVE:
-	if (ts->transFlags & RPMTRANS_FLAG_TEST)	break;
-	rc = rpmdbRemove(ts->rpmdb, ts->id, fi->record);
+	if (rpmtsFlags(ts) & RPMTRANS_FLAG_TEST)	break;
+	rc = rpmdbRemove(rpmtsGetRdb(ts), rpmtsGetTid(ts), fi->record,
+				NULL, NULL);
 	break;
 
     default:
 	break;
-    }
+/*@i@*/    }
     /*@=branchstate@*/
 
     /*@-nullstate@*/	/* FIX: psm->oh and psm->fi->h may be NULL. */
     return rc;
     /*@=nullstate@*/
 }
+/*@=bounds =nullpass@*/
