@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.1 1991-05-29 10:04:04 akajerry Exp $
+ * $Id: from.c,v 1.2 1991-05-31 10:48:33 akajerry Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: akajerry $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && defined(RCS_HDRS)
-static char *rcsid = "$Id: from.c,v 1.1 1991-05-29 10:04:04 akajerry Exp $";
+static char *rcsid = "$Id: from.c,v 1.2 1991-05-31 10:48:33 akajerry Exp $";
 #endif /* lint || SABER || RCS_HDRS */
 
 #include <stdio.h>
@@ -30,8 +30,9 @@ static char *rcsid = "$Id: from.c,v 1.1 1991-05-29 10:04:04 akajerry Exp $";
 
 FILE 	*sfi, *sfo;
 char 	Errmsg[80];
-char	*optarg, *malloc(), *getlogin(), *strdup(), *parse_from_field();
-int	optind;
+char	*malloc(), *getlogin(), *strdup(), *parse_from_field();
+extern int	optind;
+extern char     *optarg;
 struct	passwd *getpwuid();
 uid_t	getuid();
 
