@@ -1,0 +1,11 @@
+#!/bin/sh
+# buildcns4 host
+# given a kerberos dir, configure, make, and check a cns4 tree.
+if [ ! -d kerberos ]; then
+   echo "run this script above the kerberos directory"
+   echo "or run cvs -d cvs-ma.cygnus.com:/local/cvsfiles co -rcns-95q4 cns"
+   exit 1
+fi
+host=$1
+mkdir $host
+(cd $host; (time ../kerberos/configure ; time make all; time make check) 2>&1 |  tee all-log-`date +%y%m%d%H%M` )

@@ -1,0 +1,7 @@
+Wed Feb  8 16:58:10 1995  John Gilmore  (gnu at toad.com)
+
+	* %CNS Telnet:  New file, a binary copy of the NCSA Telnet that
+	works, into CVS.  We do not have matching sources (NCSA never
+	released them).  Its original name was "Telnet 2.6.1d1".
+	* README:  New file, a short explanation, followed by the
+	original 'Telnet 2.6.1d1 README'.

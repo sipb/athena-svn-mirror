@@ -1,0 +1,165 @@
+.TH KPROPD 8 "Kerberos Version 4.0" "MIT Project Athena"
+.UC 5
+.SH NAME
+kpropd \- Kerberos database slave server daemon
+.br
+in.kpropd \- shell script to start kpropd
+.SH SYNOPSIS
+.br
+.B kpropd
+[
+.B \-r
+realm ] [
+.B \-s
+srvtab ] [
+.B \-d
+database ] [
+.B \-u
+port ] [
+.B \-l
+logfile ] [
+.B \-i
+] [
+.B \-c
+command ] [
+.B \-C
+arg ] filename
+.br
+.B in.kpropd
+.SH DESCRIPTION
+The
+.I kpropd
+daemon runs on a Kerberos slave server.  A Kerberos slave server holds
+a copy of the master Kerberos database.  Any slave server may serve as
+a Key Distribution Center just as the master server does, permitting
+people to use Kerberos programs even if the master server is
+inaccessible.
+
+The
+.IR kprop (8)
+program running on the master server contacts the
+.I kpropd
+daemon running on the slave server in order to copy over the Kerberos
+database.
+
+The
+.I kpropd
+daemon is normally started by arranging for
+.IR inetd(8)
+to run the
+.I in.kpropd
+shell script.  Normally, a line like this would be added to the
+.IR /etc/inetd.conf
+file:
+.br
+.in +0.5i
+.nf
+krb_prop	stream	tcp	nowait	root	/usr/kerberos/etc/in.kpropd in.kpropd
+.fi
+.in -0.5i
+The
+.I kpropd
+daemon may also be run directly as a server.
+
+The
+.I kpropd
+daemon has a single required argument, which is the name of a file in
+which to store the database received from
+.IR kprop(8)
+running on the master server (the
+.I in.kpropd
+script passes
+.IR /usr/kerberos/database/slavedb).
+After
+.I kpropd
+receives the database information, it runs
+.IR kdb_util(8)
+to load it into the local Kerberos database.
+
+The
+.I kpropd
+daemon will only accept data from machines which are listed in
+.IR krb.conf
+as an admin server.  (Note that this is different than the
+original MIT implementation which only accepted data from machines
+with a primary DNS name of 
+.IR kerberos;
+this constraint is gone, as the
+.IR krb.conf
+entry is sufficient.)
+.SH OPTIONS
+.TP 5
+.B \-r realm
+Set the Kerberos realm name.  The default realm is obtained using
+.IR krb_get_lrealm(3).
+.TP
+.B \-s srvtab
+Set the name of the srvtab file to use when authenticating the ticket
+received from
+.IR kprop(8).
+The default is
+.IR /etc/krb-srvtab.
+.TP
+.B \-d database
+Set the name of the Kerberos database.  This is a prefix used to name
+three files.  The default is
+.IR /usr/kerberos/database/principal.
+.TP
+.B \-u port
+Set the port to accept connections on.  This is only meaningful if the
+.B \-i
+option is not used.  The default is to use 
+.IR getservbyname(3)
+to look up the
+.I krb_prop
+service.  If that is not defined,
+.I kpropd
+uses 754.
+.TP
+.B \-l logfile
+Set the name of the log file.  The default is
+.IR /usr/kerberos/database/kpropd.log.
+.TP
+.B \-i
+Assume
+.I kpropd
+was run from
+.IR inetd(8).
+The default is for
+.I kpropd
+to open a socket and to loop accepting connections.
+.TP
+.B \-c command
+Specify the path of the
+.IR kdb_util(8)
+command which
+.I kpropd
+should run after receiving the database.  The default is to just run
+.IR kdb_util,
+assuming it is on
+.IR PATH.
+.TP
+.B \-C arg
+Set the argument to pass to
+.IR kdb_util(8).
+The default argument is 
+.I load.
+.SH FILES
+.TP 5
+/usr/kerberos/database/principal
+The default Kerberos database name.
+.TP
+/usr/kerberos/database/kpropd.log
+The default log file name.
+.TP
+/usr/kerberos/database/slavedb
+Default file name passed to
+.I kpropd
+by
+.I in.kpropd.
+.TP
+/etc/krb-srvtab
+The default srvtab file.
+.SH SEE ALSO
+.PP
+kprop(8), kdb_util(8), inetd(8), getservbyname(3)

@@ -1,0 +1,17 @@
+all:
+	@echo "nothing for $@ here"
+
+depend:
+	@echo "nothing for $@ here"
+
+install:
+	@echo "nothing for $@ here"
+
+clean:
+	@echo "nothing for $@ here"
+
+distclean:
+	$(RM) *~
+	$(RM) Makefile config.status
+
+# NOPOSTFIX

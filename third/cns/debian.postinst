@@ -1,0 +1,12 @@
+#!/bin/sh
+/usr/kerberos/install/configure
+for i in \
+ 	developer-notes.info \
+	install.info \
+	kerbapi.info \
+	kerbman.info \
+	mac.info \
+	windows.info; do
+install-info --description='Cygnus Network Security version 4.' \
+	     --quiet /usr/info/$i
+done

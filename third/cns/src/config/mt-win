@@ -1,0 +1,131 @@
+# Microsoft Windows configuration file for Cygnus Kerberos
+
+# Directory syntax:
+R=\		# root
+C=.		# current
+S=\		# seperator
+U=..\		# up one level
+
+srcdir=.	# source directory
+# We shouldn't have to do this, but it fixes "arg list too long"
+# in building the DLL.
+SRCTOP=$(BUILDTOP)
+
+# Host support files
+DES_TIME_SRCS=win_time.c
+DES_TIME_OBJS=win_time.$(OBJEXT)
+LIB_KRB_HOSTSRCS=win_glue.c
+LIB_KRB_HOSTOBJS=win_glue.$(OBJEXT)
+
+# Ticket cacheing files
+# For now, store in the file system like Unix.
+CACHESRCS=memcache.c
+CACHEOBJS=memcache.$(OBJEXT)
+
+#
+# These objects implement Kerberos realm<->host database lookup.
+# They read config files and/or network databases in various ways
+# on various platforms.
+#
+REALMDBSRCS= win_stor.c g_krbhst.c g_krbrlm.c g_admhst.c realmofhost.c 
+REALMDBOBJS= win_stor.$(OBJEXT) g_krbhst.$(OBJEXT) g_krbrlm.$(OBJEXT) \
+	g_admhst.$(OBJEXT) realmofhost.$(OBJEXT) 
+
+# We need strcasecmp
+STRCASESRCS=strcasecmp.c
+STRCASEOBJS=strcasecmp.$(OBJEXT)
+
+# Avoid compiling things that are only needed on servers; we're client only
+SERVER_KRB_SRCS=
+SERVER_KRB_OBJS=
+SERVER_DES_SRCS=
+SERVER_DES_OBJS=
+SERVER_KADM_SRCS=
+SERVER_KADM_OBJS=
+SETENVSRCS=
+SETENVOBJS=
+
+# Override library name for the Kerberos library on MS-Windows
+# User programs link with kerberos.lib; at runtime, need kerberos.dll.
+# Nobody needs to link with the DES library since it's in kerberos.{lib,dll}.
+KRB_LIB=$(BUILDTOP)lib\krb\kerberos.$(LIBEXT)
+KRB_LIBDEP=$(KRB_LIB)
+# DES_LIB_FOR_DLL=$(BUILDTOP)lib\des\libdes.$(LIBEXT)
+DES_LIB_FOR_DLL=$(U)des\libdes.$(LIBEXT)
+KADM_LIB_FOR_DLL=$(U)kadm\libkadm.$(LIBEXT)
+KSTREAM_LIB_FOR_DLL=$(U)kstream\libkstre.$(LIBEXT)
+DES_LIB=
+DES_LIBDEP=
+
+# 
+# The usual deliverables are overridden on the MS-Windows
+# port to give us kerberos.lib, kerberos.dll, etc.
+#
+WHAT=windows
+
+# Compiler command line setup
+TARGET_CDEFS=
+# Ignore for now -- not used where we care:
+# -DATHENA -DHAS_STRDUP -DNEED_SYS_ERRLIST
+BSDLIB=
+
+# /* The name of the C compiler for the target */
+CC=cl
+CL=
+
+# /Zi gives debug info in each object file.
+# /Zp packs structures: Required for Windows API (but is not default!!!)
+# /ALw memory model:  Large model for Windows DLL (SS != DS)
+# /GD DLL code generation for Windows 3.0 and up, and defines _WINDOWS
+# /Gs Avoid stack probes (they don't seem to work anyway)
+# /Os optimize for space.  FIXME:  Do not use /Ox; it miscompiles the DES lib!
+# /G2 generate 286 instructions (it complains if you ask for 386!)
+					 	# /Zi /Od
+DBG_LIB=/nologo /Zp /ALw /GD /Gs /Os /G2
+# /Zi gives debug info in each object file.
+# /Zp packs structures: Required for Windows API (but is not default!!!)
+# /AL large memory model
+# /Mq quickwin ascii stdio window, and defines _WINDOWS
+DBG=/nologo /Zp /AL /Os /Mq
+
+# Need to be able to get to krb_err.h
+LOCALINCLUDE=/I$(SRCTOP)lib$(S)krb
+
+# /* delete one or more files (note: directories and links are not handled) */
+RM=del
+
+# /* rename/more a files (note:doesn't go accross directories) */
+MV=ren
+
+# /* copy a file */
+CP=copy
+
+#
+# Archive handling
+#
+# First, the linker requires that libraries have extension .LIB!
+LIBEXT=lib
+OBJEXT=obj
+EXEEXT=.exe
+
+#
+# no ranlib
+RMLIB=rem
+RANLIB=rem
+ARCHIVE=rem
+ARCHIVEARGS=
+
+#
+# System libraries needed to link executable programs
+#
+SYS_LIBS=$(BUILDTOP)lib\krb\winsock.lib
+
+.c.obj:
+	$(CC) $(CFLAGS) /c $*.c
+!if defined(LIBNAME)
+	lib /nologo $(LIBNAME) -+$@;
+!endif
+
+#
+# End of Microsoft Windows config lines
+#

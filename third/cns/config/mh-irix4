@@ -1,0 +1,3 @@
+#define NOINSTALL
+# WARNING! Cheating!
+#CC=cc -cckr

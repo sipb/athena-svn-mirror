@@ -1,0 +1,39 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)
+
+
+SRCS=check-install.c
+CODE=${SRCS} 
+
+all:: check-install fixprot.sh configure.sh ask-config.sh check-inetd.sh fixsvc.sh \
+	svr4-postinst.sh svr4-request.sh
+
+clean::
+	$(RM) check-install *.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+# program(check-install,check-install.o,,BSDLIB,${INSTDIR})
+check-install: check-install.o
+	$(CC) $(CCFLAGS) -o $@ check-install.o $(BSDLIB)
+
+install:: 
+	$(INSTALLPROG) check-install ${DESTDIR}${INSTDIR}/check-install
+	$(INSTALLPROG) $(srcdir)/fixprot.sh ${DESTDIR}${INSTDIR}/fixprot
+	chmod a+x ${DESTDIR}${INSTDIR}/fixprot
+	$(INSTALLPROG) $(srcdir)/configure.sh ${DESTDIR}${INSTDIR}/configure
+	chmod a+x ${DESTDIR}${INSTDIR}/configure
+	$(INSTALLPROG) $(srcdir)/ask-config.sh ${DESTDIR}${INSTDIR}/ask-config
+	chmod a+x ${DESTDIR}${INSTDIR}/ask-config
+	$(INSTALLPROG) $(srcdir)/check-inetd.sh ${DESTDIR}${INSTDIR}/check-inetd
+	chmod a+x ${DESTDIR}${INSTDIR}/check-inetd
+	$(INSTALLPROG) $(srcdir)/fixsvc.sh ${DESTDIR}${INSTDIR}/fixsvc
+	chmod a+x ${DESTDIR}${INSTDIR}/fixsvc
+	$(INSTALLPROG) $(srcdir)/svr4-postinst.sh ${DESTDIR}${INSTDIR}/svr4-postinst
+	chmod a+x ${DESTDIR}${INSTDIR}/svr4-postinst
+	$(INSTALLPROG) $(srcdir)/svr4-request.sh ${DESTDIR}${INSTDIR}/svr4-request
+	chmod a+x ${DESTDIR}${INSTDIR}/svr4-request
+
+depend:: ${CODE}

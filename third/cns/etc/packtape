@@ -1,0 +1,164 @@
+#!/bin/sh
+#
+# Usage: ./packtape host device
+#
+usage="Usage: $0 host device
+       where host is one of the following tar-based installations
+           linux alpha-osf3 alpha-osf2 hppa-hpux9 m68k-hpux9
+           unixware ultrix irix4 irix5 aix4 aix3 solaris2.5
+           sunos4.1.3 sunos4.1.4
+       or the following pkgadd-based installations
+           sco solaris2.4
+       and device is a non-rewinding tape device such as
+           /dev/rmt/0mn (HP/UX 4mm DAT)
+           /dev/nrst0 (Sun)
+           /dev/rmt/0n (Solaris)"
+if [ $# -ne 2 ]; then
+	echo "$usage"; exit 1
+fi
+host="$1"
+device="$2"
+src=cns4-src.taz
+imageext=taz
+case "$host" in
+source-only)	host= ;;
+src)		host= ;;
+alpha*3*)	host=alpha-dec-osf3.2-cns4-bin.taz ;;
+alpha*2*)	host=alpha-dec-osf2.0-cns4-bin.taz ;;
+linux*)		host=i486-unknown-linux-cns4-bin.taz ;;
+hppa*-hpux9*)	host=hppa1.1-hp-hpux9.05-cns4-bin.taz ;;
+unixware*)	host=i386-unknown-sysv4.2-cns4-bin.taz ;;
+m68k-hpux9*)	host=m68k-hp-hpux9.00-cns4-bin.taz ;;
+ultrix*)	host=mips-dec-ultrix4.4-cns4-bin.taz ;;
+irix4*)		host=mips-sgi-irix4.0.5H-cns4-bin.taz ;;
+irix5*)		host=mips-sgi-irix5.3-cns4-bin.taz ;;
+aix4*)		host=powerpc-ibm-aix4.1.1-cns4-bin.taz ;;
+aix3*)		host=rs6000-ibm-aix3.2.5-cns4-bin.taz ;;
+solaris2.5*)	host=sparc-sun-solaris2.5-cns4-bin.taz ;;
+sunos4.1.3*)	host=sparc-sun-sunos4.1.3-cns4-bin.taz ;;
+sunos4.1.4*)	host=sparc-sun-sunos4.1.4-cns4-bin.taz ;;
+solaris2.4*)	src=sparc-sun-solaris2.4-CNS4-SRC.pkg
+		host=sparc-sun-solaris2.4-CNS4.pkg
+		imageext=pkg
+		# sparc-sun-solaris2.4-cns4-bin.taz
+		;;
+sco*)		src=i486-unknown-sco3.2v4.2-CNS4-SRC.pkg
+		host=i486-unknown-sco3.2v4.2-CNS4.pkg
+		imageext=pkg
+		# i486-unknown-sco3.2v4.2-cns4-bin.taz
+		;;
+*) echo "bad host <$host>"
+	   echo "$usage"; exit 2;
+	;;
+esac
+images="${host} ${src}"
+case "$device" in
+	# both /dev and /devices are legitmate
+	/dev*) ;;
+	*) echo "bad device <$device> should be in /dev or /devices"
+	   echo "$usage"; exit 3;
+	;;
+esac
+if [ ! -w "$device" ]; then
+	echo "Tape device <$device> not found or not writable"
+	echo "$usage"; exit 4;
+fi
+if [ ! -c "$device" ]; then
+	echo "Tape not a character special device <$device>"
+	echo "$usage"; exit 5;
+fi
+vault=/usr/cygnus/release-vault
+if [ ! -d ${vault} ]; then
+	echo "release vault <$vault> missing"
+	echo "$usage"; exit 6;
+fi
+release=cns-95q4
+if [ ! -d ${vault}/${release} ]; then
+	echo "release <$release> missing from vault <$vault>"
+	echo "$usage"; exit 7;
+fi
+missing=false
+# mustn't quote images here, so it breaks up into words
+for i in ${images}; do
+	f=${vault}/${release}/${i}
+	if [ ! -f ${f} ]; then
+		echo "Can't find $i ($f)"
+		missing=true
+	fi
+done
+if [ $missing = true ]; then
+	echo "some files were missing, dump aborted"
+	echo "$usage" ; exit 8;
+fi
+BLOCKSIZE=62k
+# at this point, we can actually make the tape...
+if mt -f ${device} rew ; then
+	echo "rewind succeeded"
+	mtflag=-f
+else
+	echo "trying mt -t..."
+	if mt -t ${device} rew ; then
+		echo "rewind succeeded"
+		mtflag=-t
+	else
+		echo "rewind failed, aborting dump" ; exit 10
+	fi
+fi
+
+# mustn't quote images here, so it breaks up into words
+for i in ${images}; do
+	f=${vault}/${release}/${i}
+	if [ ${imageext} = pkg ]; then
+		if dd conv=sync if=${f} of=${device} obs=${BLOCKSIZE}; then
+			echo "succeeded writing <$i>"
+		else
+			echo "failed writing <$i> aborting dump"; exit 11
+		fi
+	elif [ ${imageext} = taz ]; then
+		if zcat < ${f} | dd conv=sync of=${device} obs=${BLOCKSIZE}; then
+			echo "succeeded writing <$i>"
+		else
+			echo "failed writing <$i> aborting dump"; exit 11
+		fi
+	else
+		echo "internal failure: bad imageext <${imageext}>"; exit 11
+	fi
+done
+echo "all images written. testing tar indices..."
+	if mt $mtflag $device rew ; then
+		echo "rewind succeeded"
+	else
+		echo "rewind for testing failed"; exit 12
+	fi
+	# mustn't quote images here, so it breaks up into words
+	for i in ${images}; do
+		if [ ${imageext} = pkg ]; then
+			echo "testing pkg ${i} with dd only"
+			if dd if=${device} ibs=${BLOCKSIZE} of=/dev/null; then
+				echo "image ${i} passed dd scan"
+				echo "please check that count wasn't 0+0"
+			else
+				echo "image ${i} failed dd scan"
+				echo "aborting dump"; exit 13
+			fi
+		elif [ ${imageext} = taz ]; then
+			echo "testing image ${i} with /bin/tar"
+			if dd if=${device} ibs=${BLOCKSIZE} | /bin/tar tvvf - >/dev/null; then
+				echo "image ${i} passed tar scan"
+			else
+				echo "image ${i} failed tar scan"
+				echo "aborting dump"; exit 13
+			fi
+		else
+			echo "internal failure: bad imageext <${imageext}>"; exit 13
+		fi
+		if mt $mtflag $device fsf 1 ; then
+			echo "skipped to next image successfully"
+		else
+echo "failed to skip to next image. If this is the last image, the tape is ok"
+		fi
+	done
+echo "tape re-read testing passed."
+echo "this tape for <$host> is written"
+
+exit 0

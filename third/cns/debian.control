@@ -1,0 +1,9 @@
+Package: cns4
+Version: =
+Maintainer: Cygnus Support <bugs@cygnus.com>
+OPTIONAL: xntp
+Description: Cygnus Network Security Version 4
+  CNS is based on MIT Kerberos V4 but has many additions and
+  improvements over the MIT V4 patchlevel 10 release, including the
+  use of GNU-style configure, much better portability, and the
+  inclusion of several new "kerberized" packages (rdist, ftp, telnet.)

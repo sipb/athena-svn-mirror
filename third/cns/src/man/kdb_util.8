@@ -1,0 +1,112 @@
+.\" Copyright 1989 by the Massachusetts Institute of Technology.
+.\"
+.\" For copying and distribution information,
+.\" please see the file <mit-copyright.h>.
+.\"
+.TH KDB_UTIL 8 "Kerberos Version 4.0" "MIT Project Athena"
+.SH NAME
+kdb_util \-  Kerberos key distribution center database utility
+.SH SYNOPSIS
+kdb_util 
+.B operation filename
+.SH DESCRIPTION
+.I kdb_util
+allows the Kerberos key distribution center (KDC) database administrator to
+perform utility functions on the database.
+.PP
+.I Operation
+must be one of the following:
+.TP 10n
+.I load
+initializes the KDC database with the records described by the
+text contained in the file
+.IR filename .
+Any existing database is overwritten.
+.TP
+.I dump
+dumps the KDC database into a text representation in the file
+.IR filename .
+.TP
+.I slave_dump
+performs a database dump like the
+.I dump
+operation, and additionally creates a semaphore file signalling the
+propagation software that an update is available for distribution to
+slave KDC databases.
+.TP
+.I new_master_key
+prompts for the old and new master key strings, and then dumps the KDC
+database into a text representation in the file
+.IR filename .
+The keys in the text representation are encrypted in the new master key.
+.TP
+.I convert_old_db
+prompts for the master key string, and then dumps the KDC database into
+a text representation in the file
+.IR filename .
+The existing database is assumed to be encrypted using the old format
+(encrypted by the key schedule of the master key); the dumped database
+is encrypted using the new format (encrypted directly with master key).
+.PP
+A dump file is a simple text file.  Each principal in the database is
+printed on a separate line.  Each line has 12 fields.  The fields are
+as follows:
+.TP
+.I name
+The name of the principal.
+.TP
+.I instance
+The instance of the principal.  A 
+.I *
+is used for an empty instance.
+.TP
+.I max_life
+The maximum lifetime of a ticket issued for the principal.  This is an
+integer in units of five minutes.  The maximum value is 255.
+.TP
+.I kdc_key_ver
+This must match the version number of the Kerberos master key (the
+Kerberos master key appears in the database with a name of
+.I K
+and an instance of
+.I M.)
+.TP
+.I key_version
+The version number of the key.
+.TP
+.I attributes
+The attributes of the key.  No attributes are currently defined.
+.TP
+.I key_low
+The low order four bytes of the key derived from the password, in
+network byte order (big endian), encrypted by the master key.
+.TP
+.I key_high
+The high order four bytes of the key, in network byte order (big
+endian), encrypted by the master key.
+.TP
+.I exp_date
+The expiration date of the principal, printed as YYYYMMDDHHMM.
+.TP
+.I mod_date
+The date the principal was last modified, printed as YYYYMMDDHHMM.
+.TP
+.I mod_name
+The name of the Kerberos principal which last modified this principal.
+.TP
+.I mod_instance
+The instance of the Kerberos principal which last modified this
+principal.
+.PP
+.SH DIAGNOSTICS
+.TP 20n
+"verify_master_key: Invalid master key, does not match database."
+The master key string entered was incorrect.
+.SH FILES
+.TP 20n
+/kerberos/principal.pag, /kerberos/principal.dir
+DBM files containing database
+.TP
+.IR filename .ok
+semaphore file created by
+.IR slave_dump.

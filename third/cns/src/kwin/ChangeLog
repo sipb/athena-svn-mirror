@@ -1,0 +1,44 @@
+Wed Feb 1 12:00:00 1995  John Rivlin  (jrivlin@cygnus.com)
+
+	* makefile: Changed the program name to cns.
+	Modify install-windows and clean-windows targets to 
+	install cns.exe into src/windows directory.
+
+	* kwin.rc: Name changed to cns.rc
+
+	* kwin.ico: Name changed to cns.ico
+
+	* kwin.def: Name changed to cns.def
+
+	* kwin.c: Name changed to cns.c
+
+	* kwin.h: Name changed to cns.h
+
+	* tktlist.c: kwin.h changed to cns.h
+
+Mon Jan 31 12:00:00 1995  John Rivlin  (jrivlin@cygnus.com)
+
+	* kwin.rc: Removed redundant loading of "kwin.ico"
+
+Wed Nov 23 00:20:20 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kwin.c:  Change icon titling to avoid problems on 
+	varying backgrounds.
+
+Fri Nov  4 02:25:01 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kwin.h:  Avoid including mit-copyright.h; this avoids a build
+	error.  But also, avoid claiming copyright; make it PD.
+	* kwin.c:  Avoid <0 test of strlen result.
+	* makefile (RFLAGS):  There's no /nologo for "rc".
+	(LFLAGS):  Skip /nologo, for shorter command line.
+	(kwin.exe):  Avoid line-too-long crap by copying long-named
+	libraries, and linking them under very short names.
+
+Tue Aug 9 12:00:00 1994  John Rivlin  (jrivlin@fusion.com)
+
+	* Directory contains a Windows program for controlling the
+	Kerberos functions.
+
+	* makefile, kwin.c, kwin.h, tktlist.c, tktlist.h, kwin.def,
+	kwin.ico, kwin.def, kwin.rc, ren.msg, ChangeLog: Added

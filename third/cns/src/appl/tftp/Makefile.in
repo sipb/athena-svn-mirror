@@ -1,0 +1,43 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)$(U)
+
+SRCS= conn.c resolve_host.c srvr_cmds.c srvr_log.c tcom.c \
+	tftp.c tftpd.c tmpnam.c udp.c user_cmds.c user_log.c \
+	notice.h tftp.h conn.h srvr_cmds.h
+
+CODE=${SRCS} 
+SOBJS=tftpd.o conn.o srvr_log.o srvr_cmds.o tmpnam.o udp.o
+COBJS=tftp.o conn.o user_log.o user_cmds.o udp.o resolve_host.o
+
+all:: tftp tcom tftpd
+
+clean::
+	$(RM) tftp tcom tftpd
+	$(RM) ${SOBJS} ${COBJS} tcom.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+# should run as "nobody" on target machine
+# program(tftpd,${SOBJS},${KRB_LIBDEP} ${DES_LIBDEP}, \
+#	${KRB_LIB} ${DES_LIB},${DAEMDIR})
+tftpd: ${SOBJS} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ ${SOBJS} ${KRB_LIB} ${DES_LIB}
+
+# program(tftp,${COBJS},${KRB_LIBDEP} ${DES_LIBDEP}, \
+#	${KRB_LIB} ${DES_LIB},${PROGDIR})
+tftp: ${COBJS} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ ${COBJS} ${KRB_LIB} ${DES_LIB}
+
+# should run as "nobody" on target machine
+# program(tcom,tcom.o,${KRB_LIBDEP} ${DES_LIBDEP}, \
+# 	${KRB_LIB} ${DES_LIB},${PROGDIR})
+tcom: tcom.o ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ tcom.o ${KRB_LIB} ${DES_LIB}
+
+install::
+	$(INSTALLPROG) tftpd ${DESTDIR}$(DAEMDIR)/tftpd
+	$(INSTALLPROG) tftp ${DESTDIR}$(PROGDIR)/tftp
+	$(INSTALLPROG) tcom ${DESTDIR}$(PROGDIR)/tcom
+

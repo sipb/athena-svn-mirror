@@ -1,0 +1,430 @@
+Fri Feb 16 23:01:54 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* kerbapi.texi (des_random_key): document as deprecated and
+	suggest the use of the correct routine. Point to ksrvutil as an
+	example.
+	(des_init_random_number_generator, des_new_random_key): initial
+	documentation.
+	
+	* developer-notes.texinfo (Oddities): Correct references to random
+	number generator routines.
+
+Mon Jan  1 16:20:58 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install-info): tentative definition that needs more
+	configury to actually work.
+	(clean-info): same as clean, referenced from top level makefile so
+	it should work.
+
+Mon Jan  1 14:25:05 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* kerbman.texinfo, kerbapi.texi: add @bullet parameter to the
+	@itemize that were missing it.
+
+Tue Oct  3 19:01:03 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* windows.texi (Installing CNS): document the need to set TZ.
+
+Fri Aug 11 14:35:47 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kerbapi.texi (krb_mk_auth): add documentation for options parm.
+
+Fri Aug 11 14:31:21 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kerbapi.texi (node krb.h): table syntax was wrong, causing bad
+	typesetting.
+
+Wed Jul 19 16:15:33 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* Makefile.in (clean): Get rid of *.fns.
+
+	* developer-notes.texinfo: Add @bye.  Added lots of formatting
+	commands.
+	(rlogind): Delete contents, which were inside "@ifset NOTSET" and
+	didn't format right anyways under texi2dvi.
+	(gnu-tools): Capitalize "GNU".  Maybe it should be in @sc.
+	(Unix): Ditto.  Also document --disable-ip-address-validation.
+
+Thu Jun 29 00:06:37 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* install.texinfo (Configuring the KDC): Added special note about
+	Solaris native kinit, and improve documentation of kinit
+	failures. Also mention the admin_acl.del file.	
+
+Wed Jun 28 18:41:29 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* install.texinfo (Configuring the KDC): Added special note about
+	HP/UX localrc problem.
+
+Thu Apr 27 13:04:53 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* install.texinfo (Application server configuration): put in
+	reminder that the REALM really needs to be uppercase (in response
+	to user confusion over common use of uppercase for emphasis.)
+	Also document how to recognize and deal with that particular failure.
+
+Thu Feb  9 19:21:47 1995  John Gilmore  <gnu@cygnus.com>
+
+	* mac.texi:  It's getting almost usable now, after some user
+	testing.
+
+Thu Feb  9 01:36:24 1995  John Gilmore  (gnu at toad.com)
+
+	* developer-notes.texinfo:  Document the Unix, Mac, and Windows
+	release building processes.  Info cadged from my head, kerberos/README,
+	and a John Rivlin email message.
+
+	* mac.texi:  Further improvements.
+
+Wed Feb  8 14:23:08 1995  John Gilmore  (gnu at toad.com)
+
+	* mac.texi:  Slight improvements.
+
+Wed Feb  8 11:37:27 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kerbman.texinfo: Replace /.klogin with ~root/.klogin throughout.
+
+	* kerbman.texinfo (Remote access): Clarify documentation, and
+	relationship of this section to Replacements section.
+	(General Configuration): Added pointer to installation document
+	when discussing the /etc/rc file.
+	(CNS Configuration): Renamed node from Client Configuration, since
+	it describes krb.conf and krb.realms which are relevant on all
+	machines, not just clients.
+	(Admin Tools): Add pointers to information about kdb_util,
+	kdb_edit, and ACL files.  Add a pointer to the install notes for
+	an example of using kdb_edit.  Explain what is meant by access
+	control lists in the discussion about deleting principals.
+	(kadmind): Document the default for -a.  Document the names and
+	format of ACL files.
+	(kstash): Explain why somebody might want to use kstash, and
+	mention some potential hazards.
+	(ksrvutil): Use the word `srvtab' to describe the file, rather
+	than the word `keyfile'.
+	(kadmin): Document get_entry and delete_principal commands.
+	(ksrvtgt): Give an example of how this might be used.
+
+	* Makefile.in (DVI, PS): Remove developer-notes, at least until
+	such time as TeX can parse it.
+
+Tue Feb  7 14:38:21 1995  John Gilmore  <gnu@cygnus.com>
+
+	* install.texinfo: Various updates based on doing an install.  Add
+	text about IP spoofing in two places.  Stop calling this release
+	preliminary software.  Add more detail about what to do when
+	upgrading from previous releases (turn on new telnet&ftp).  Fix
+	thinko in krb.conf instructions.  Fix names of Berkeley rlogin and
+	rsh services in /etc/inetd.conf.  Explain more about FTP and telnet
+	support for both non-Kerb and Kerb services.  Remark that telnet
+	line in inetd.conf should be typed all on one line.
+
+Tue Feb  7 11:48:50 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* install.texinfo (Instructions): Fix notes on how to load the
+	source code.
+
+	* install.texinfo (Instructions): Update to match modified
+	configure script.  Clarify when an update, as opposed to a new
+	installation, is complete.
+
+Mon Feb  6 23:03:11 1995  John Gilmore  <gnu@cygnus.com>
+
+	* install.texinfo:  Improve doc on shutting off non-Kerb
+	services (fix typos, expand explanation).
+
+Fri Feb  3 21:08:19 1995  John Gilmore  <gnu@cacophony.cygnus.com>
+
+	Make it work to generate TXT and HTML documents for Mac & Windows.
+
+	* Makefile.in (.texi.html):  Pass right options to texi2html.
+	(windoc, macdoc):  Don't make Unix install manuals; don't make
+	user's manual for the other platform.
+	(clean):  Clean up .txt .html .info* etc.
+
+	* new-realm.txt:  Removed; incorporated into developer-notes.texinfo.
+	* winkerb.txt:  Removed; it became windows.texi.
+
+	* developer-notes.texinfo, kerbapi.texi: Clean up some table
+	formatting to make it work better with texi2html.  Add new-realm.txt
+	discussion of multiple realms to developer-notes.texinfo.
+
+	* kerbman.texinfo:  Remove DRAFT indication.  Fix typo.
+	Remove "Multiple Realm" node from this manual.  Remove
+	misunderstandings about multiple realms.
+
+	* windows.texi:  Remove @-sign in node name.  Avoids numerous
+	bugs in TeX and texi2html.
+
+Fri Feb  3 16:29:59 1995  Sandy Sandfort  <sandy@rtl.cygnus.com>
+
+	* snk4-extensions.texinfo:  merged into 
+	* kerabman.texinfo:  added snk4 appendix and added snk4 
+        options to kinit and kadmin.
+
+Fri Feb  3 15:16:27 1995  John Gilmore  <gnu@cygnus.com>
+
+	* Makefile.in:  Add support for generating .TXT and .HTML files.
+	Remove separate kstream doc (it's been folded into the API manual).
+	(windoc):  Build all doc files needed for the Windows binary release.
+	(macdoc):  Build all doc files needed for the Mac binary release.
+	* kstream.texinfo:  Removed.
+
+Fri Feb  3 14:05:53 1995  John Gilmore  <gnu@cygnus.com>
+
+	* windows.texi:  Back out John Rivlin's changes that document
+	a `SETUP' program -- which Microsoft's copyrights won't let
+	us distribute freely.  Minor other changes.
+
+Fri Feb  3 15:13:29 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kerbman.texinfo: Rewrite documentation about installing slave
+	servers.  Incorporate new kprop and kpropd man pages.
+
+	* install.texinfo (Configuring the KDC): Add some comments about
+	how to update the /etc/rc2.d/* files on System V based systems.
+
+Wed Feb  1 01:39:21 1995  John Gilmore  (gnu at toad.com)
+
+	* developer-notes.texinfo:  Rename the Mac driver to "CNS Kerberos",
+	which is how it will appear in the Extensions folder.
+
+Tue Jan 31 18:58:56 1995  John Gilmore  (gnu at toad.com)
+
+	* kerbapi.texi:  Remove low-level Mac driver info.  Update
+	MS-Windows info.  Correct formatting and FIXMEs in various places.
+	Improve common API information in a few areas.
+
+Tue Jan 31 13:03:56 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* install.texinfo: Clarify tape installation instructions
+	somewhat.
+
+	* install.texinfo: Document conventions for choosing a realm name.
+
+Mon Jan 30 17:00:43 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kerbapi.texi: Various cleanups.  Rearranged some of the library
+	function documentation to make sense in info format.  Added a
+	function index.
+
+Tue Jan 24 18:34:46 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerbapi.texi: A few random cleanups and clarifications.
+
+	* install.readme: Remove obsolete file.
+
+	* install.texinfo: Update and overhaul.
+
+Mon Jan 23 16:21:44 1995  John Gilmore  <gnu@cygnus.com>
+
+	* kerbapi.texi:  Remove bibliography (it's in the user's manual)
+	and most references to Stan Zanarotti (he didn't really write
+	anything but the Mac stuff; the rest was from the user's manual
+	which came from the man pages).
+
+	* windows.texi:  Updated by Sandy to match our current software
+        (first draft).
+
+	* kguide.doc:  Remove it, now that a copy is stashed in CVS.
+
+	* kguide,doc, windows.texi:  Microloss Word, and Texinfo,
+	versions of Pat's original Windows Kerberos user's guide.
+ 
+	* install.texinfo:  Sandy's changes.
+
+	* kerbapi.texi:  Merge changes from Jan 16th into Sandy's version.
+	Now all changes are incorporated.
+
+	* kerbapi.texi:  Edit pass by John Gilmore.  Fixed some problems
+	in Sandy's wording, revised some material.  No work done yet
+	on the Mac section, which badly needs it.
+
+	* kerbapi.texi:  Edit pass by Sandy Sandfort.  Mostly wording
+	changes around FIXME's, and reformatting text.
+
+Mon Jan 23 16:32:50 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* tse.readme: Remove obsolete file.
+
+Mon Jan 23 15:46:44 1995  Jim Kingdon  <kingdon@tweedledumb.cygnus.com>
+
+	* kerbman.texinfo (Bibliography): RFC1510 is now an RFC, not an
+	internet draft.  Cite it as such.
+
+Wed Jan 18 13:07:00 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerbman.texinfo: klogind and Klogind are now essentially the
+	same.
+
+Mon Jan 16 14:43:20 1995  John Gilmore  <gnu@cygnus.com>
+
+	* kerbapi.texi:  Update copyrights, make it work in Cygnus
+	house style, remove Glossary and Daemons sections that leaked
+	in from the main Kerberos manual, clean up in minor ways.
+
+	* Makefile.in (PS, ps):  Make PostScript manuals.
+
+Fri Jan 13 19:17:21 1995  John Gilmore  <gnu@cygnus.com>
+
+	* kerbman.texinfo:  Resolve many FIXME's, and comment out
+	the rest so they don't appear in the printed or online manual.
+	Some more should still be addressed in this release.
+
+Fri Jan 13 18:45:49 1995  John Gilmore  <gnu@cygnus.com>
+
+	* kerbman.texinfo:  Check in Sandy Sandfort's massive improvements
+	to the Kerberos manual.  Still needs some cleanup to remove
+	FIXME's and such.
+
+Tue Jan 10 21:52:45 1995  Mark Eichin  (eichin@cygnus.com)
+
+	* kerbman.texinfo: fixed incorrect use of @item in @enumerate.
+	Renamed duplicate "Ticket Management" node to "Ticket Management
+	Commands".
+
+Fri Dec 30 18:59:41 1994  John Gilmore  <gnu@cygnus.com>
+
+	* snk4-extensions.texinfo (new file created by Mark Eichin):
+	Update for clean "makeinfo"; add end-user usage example.
+
+Wed Dec 21 18:36:54 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerbman.texinfo: Document new options for klogind and kshd.
+
+Tue Dec 13 15:28:28 1994  John Gilmore  (gnu at toad.com)
+
+	* developer-notes.texinfo:  Update Mac (MPW and Think C) build process
+	to match config changes, and for clarity.
+
+Wed Nov 23 01:56:53 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kerbapi.texi:  Slight improvements.
+
+Fri Nov 18 14:59:53 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (check): New dummy target.
+
+Thu Nov 17 14:12:47 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerbman.texinfo: Document new options for klogind, kshd, rcp and
+	rsh.
+
+Tue Nov 15 16:57:31 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerbman.texinfo (kdb_edit): Document -k option to set name of
+	master key cache file.
+
+Sat Nov 12 00:40:26 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes.texinfo (MS-Windows):  Update for beta release.
+
+Fri Nov  4 02:54:36 1994  John Gilmore  (gnu@rtl.cygnus.com)
+
+	* developer-notes.texinfo (MS-Windows):  Update Windows doc, from
+	winkerb.txt and from trying to build it.
+	* kerbapi.texi (MS-Windows):  Update API doc to include Windows-
+	unique call doc, from winkerb.txt.
+	* winkerb.txt:  Remove text that's been moved to other files.
+
+Thu Nov  3 14:10:23 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerberos.texinfo: Remove; obsolete.
+	* Makefile.in: Change accordingly.
+	* configure.in: Change srctrigger to kerbman.texinfo.
+
+Fri Oct 28 15:06:00 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in, configure.in: New files; use standard Cygnus
+	configury.
+	* Makefile: Remove.
+	* kerberos.texinfo, kstream.texinfo: Fix some @node commands to
+	work with makeinfo program.
+	* kstream.texinfo: Add @end titlepage.  Change code to @code after
+	@table.
+
+Wed Oct 12 00:42:30 1994  Julia Menapace  (jcm at toad.com)
+
+	* developer-notes.texinfo: Elaborate on mac build instructions.
+	Add description of build and installation process for KConfig.
+
+Fri Sep 30 19:39:34 1994  John Gilmore  (gnu@cygnus.com)
+
+	* install.texinfo:  Document how `ksrvutil change' will fix up
+	wrong key version numbers.  Probably needs more improvement.
+
+	* developer-notes.texinfo (Kinit internals):  Incorporate
+	the minimal information from src/kadmin/Design.txt.
+
+Fri Sep 16 14:20:23 1994  Julia Menapace  (jcmm@majipoor.cygnus.com)
+
+	* developer-notes.texinfo: Source tree configured to use Mac file
+	path seperators but about to do a make step on unix to build
+	header files.  Document: feed next make step the preconfig (unix) 
+	version (Makefile.in). 
+
+Fri Sep  2 15:38:26 1994  John Gilmore  (gnu at toad.com)
+
+	* kerbapi.texi:  Reindent a few things, mostly as a test
+	of remote CVS.
+
+Fri Jul  8 20:34:27 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kerbapi.texi:  Another checkpoint.  Cleaned up a bit more
+	of the Common and Unix API sections.  Mac API section has had
+	most of the redundant info gutted.  It formats cleanly with
+	makeinfo, tex, and texi2html.
+
+Fri Jul  1 05:49:04 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes.texinfo:  Add Mac Think C build info.
+	* Makefile:  New.
+	* kerbapi.texi:  Severely hacked, certainly not done yet.
+	About 1/3 done with its rework, I would guess.
+
+Wed Jun 22 20:15:38 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* developer-notes.texinfo: Add chapter for Cygnus Extensions.
+	Add Section on Preauthentication within that chapter.
+
+Tue Jun 21 02:21:06 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes-texinfo:  Update Windows notes for working
+	top-level makefile.  Fix thinkos in Mac cookbook.  Update
+	isinst description, now that it allows periods.
+
+Fri Jun 17 05:13:49 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes.texinfo:  Add Mac build cookbook.
+
+Wed Jun  8 23:19:28 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes.texinfo:  Use "microsoft" as the environment name,
+	so that we can also support "borland" later.
+
+Wed June 8 12:00:00 1994  Pat McGregor  (pat@cygnus.com)
+
+        * kerbapi.texi:  This is a new document, combining the 
+          original  API section and the new draft Macintosh API.
+          at the moment it runs under Texinfo but the Info nodes
+  	  are still incomplete.
+
+Wed May 25 07:50:23 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes.texinfo:  Add info on build environment.
+
+Fri May 20 20:19:36 1994  John Gilmore  (gnu@cygnus.com)
+
+	* developer-notes.texinfo:  Add section on configuration for
+	Microsoft Windows.  Make it format with makeinfo, though tex
+	still barfs on the embedded diffs.
+
+Fri May  6 05:53:06 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* kerberos.texinfo:  Update krb_rd_priv, krb_mk_priv, krb_rd_safe,
+	krb_mk_safe `key' argument type to match reality.
+
+Tue Apr 26 21:29:10 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* developer-notes.texinfo:  Update file names after file renaming
+	for DOS in src/lib/krb.
+

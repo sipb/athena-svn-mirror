@@ -1,0 +1,139 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)
+
+CODE=kerberos.1 klist.1 kdestroy.1 kinit.1 ksrvtgt.1 kpasswd.1 \
+	kerberos.3 krb_sendauth.3 \
+	des_crypt.3 kadmin.8 kadmind.8 ksrvutil.8 get_srvtab.8 \
+	kerberos.point des.point ksend.point \
+	realm.point krb_realmofhost.3 krb_set_tkt_string.3 Makefile.in \
+	krb.conf.5 krb.realms.5 \
+	rlogin.1 rsh.1 rcp.1 ksu.1 klogind.8 kshd.8 \
+	tftpd.8 tcom.8 tftp.1 tf_util.3 tf_util.point
+
+install:: install-des install-ksend install-realm install-tf install-krb
+	$(INSTALLFILE) $(srcdir)/kerberos.1 ${DESTDIR}${MANDIR}/man1/kerberos.1
+	$(INSTALLFILE) $(srcdir)/klist.1 ${DESTDIR}${MANDIR}/man1/klist.1
+	$(INSTALLFILE) $(srcdir)/kdestroy.1 ${DESTDIR}${MANDIR}/man1/kdestroy.1
+	$(INSTALLFILE) $(srcdir)/kinit.1 ${DESTDIR}${MANDIR}/man1/kinit.1
+	$(INSTALLFILE) $(srcdir)/ksrvtgt.1 ${DESTDIR}${MANDIR}/man1/ksrvtgt.1
+	$(INSTALLFILE) $(srcdir)/kpasswd.1 ${DESTDIR}${MANDIR}/man1/kpasswd.1
+	$(INSTALLFILE) $(srcdir)/kerberos.3 ${DESTDIR}${MANDIR}/man3/kerberos.3
+	$(INSTALLFILE) $(srcdir)/des_crypt.3 ${DESTDIR}${MANDIR}/man3/des_crypt.3
+	$(INSTALLFILE) $(srcdir)/krb_sendauth.3 ${DESTDIR}${MANDIR}/man3/krb_sendauth.3
+	$(INSTALLFILE) $(srcdir)/krb_realmofhost.3 ${DESTDIR}${MANDIR}/man3/krb_realmofhost.3
+	$(INSTALLFILE) $(srcdir)/krb_set_tkt_string.3 ${DESTDIR}${MANDIR}/man3/krb_set_tkt_string.3
+	$(INSTALLFILE) $(srcdir)/tf_util.3 ${DESTDIR}${MANDIR}/man3/tf_util.3
+	$(INSTALLFILE) $(srcdir)/kadmin.8 ${DESTDIR}${MANDIR}/man8/kadmin.8
+	$(INSTALLFILE) $(srcdir)/kadmind.8 ${DESTDIR}${MANDIR}/man8/kadmind.8
+	$(INSTALLFILE) $(srcdir)/ksrvutil.8 ${DESTDIR}${MANDIR}/man8/ksrvutil.8
+	$(INSTALLFILE) $(srcdir)/get_srvtab.8 ${DESTDIR}${MANDIR}/man8/get_srvtab.8
+	$(INSTALLFILE) $(srcdir)/krb.conf.5 ${DESTDIR}${MANDIR}/man5/krb.conf.5
+	$(INSTALLFILE) $(srcdir)/krb.realms.5 ${DESTDIR}${MANDIR}/man5/krb.realms.5
+	$(INSTALLFILE) $(srcdir)/kdb_destroy.8 ${DESTDIR}${MANDIR}/man8/kdb_destroy.8
+	$(INSTALLFILE) $(srcdir)/kdb_edit.8 ${DESTDIR}${MANDIR}/man8/kdb_edit.8
+	$(INSTALLFILE) $(srcdir)/kdb_init.8 ${DESTDIR}${MANDIR}/man8/kdb_init.8
+	$(INSTALLFILE) $(srcdir)/kdb_util.8 ${DESTDIR}${MANDIR}/man8/kdb_util.8
+	$(INSTALLFILE) $(srcdir)/kstash.8 ${DESTDIR}${MANDIR}/man8/kstash.8
+	$(INSTALLFILE) $(srcdir)/tftpd.8 ${DESTDIR}${MANDIR}/man8/tftpd.8
+	$(INSTALLFILE) $(srcdir)/tcom.8 ${DESTDIR}${MANDIR}/man8/tcom.8
+	$(INSTALLFILE) $(srcdir)/tftp.1 ${DESTDIR}${MANDIR}/man1/tftp.1
+	$(INSTALLFILE) $(srcdir)/acl_check.3 ${DESTDIR}${MANDIR}/man3/acl_check.3
+	$(INSTALLFILE) $(srcdir)/rlogin.1 ${DESTDIR}${MANDIR}/man1/rlogin.1
+	$(INSTALLFILE) $(srcdir)/cygin.1 ${DESTDIR}${MANDIR}/man1/cygin.1
+	$(INSTALLFILE) $(srcdir)/rsh.1 ${DESTDIR}${MANDIR}/man1/rsh.1
+	$(INSTALLFILE) $(srcdir)/rcp.1 ${DESTDIR}${MANDIR}/man1/rcp.1
+	$(INSTALLFILE) $(srcdir)/ksu.1 ${DESTDIR}${MANDIR}/man1/ksu.1
+	$(INSTALLFILE) $(srcdir)/kuserok.3 ${DESTDIR}${MANDIR}/man3/kuserok.3
+	$(INSTALLFILE) $(srcdir)/klogind.8 ${DESTDIR}${MANDIR}/man8/klogind.8
+	$(INSTALLFILE) $(srcdir)/kshd.8 ${DESTDIR}${MANDIR}/man8/kshd.8
+	$(INSTALLFILE) $(srcdir)/kprop.8 ${DESTDIR}${MANDIR}/man8/kprop.8
+	$(INSTALLFILE) $(srcdir)/push-kprop.8 ${DESTDIR}${MANDIR}/man8/push-kprop.8
+	$(INSTALLFILE) $(srcdir)/kpropd.8 ${DESTDIR}${MANDIR}/man8/kpropd.8
+	$(INSTALLFILE) $(srcdir)/in.kpropd.8 ${DESTDIR}${MANDIR}/man8/in.kpropd.8
+
+# Set up "pointers" to the section 3 manpages.
+
+DES	= des_read_password \
+	des_string_to_key \
+	des_random_key \
+	des_set_key \
+	des_ecb_encrypt \
+	des_cbc_encrypt \
+	des_pcbc_encrypt \
+	des_cbc_cksum \
+	quad_cksum
+
+install-des:: des.point
+	for i in ${DES} ; do \
+		${INSTALLFILE} $(srcdir)/des.point ${DESTDIR}${MANDIR}/man3/$$i.3; \
+		done
+
+KSEND	= \
+	krb_recvauth \
+	krb_net_write \
+	krb_net_read
+
+install-ksend:: ksend.point
+	for i in ${KSEND} ; do \
+		${INSTALLFILE} $(srcdir)/ksend.point ${DESTDIR}${MANDIR}/man3/$$i.3; \
+		done
+
+REALM = \
+	krb_get_phost \
+	krb_get_krbhst \
+	krb_get_admhst \
+	krb_get_lrealm
+
+install-realm:: realm.point
+	for i in ${REALM} ; do \
+		${INSTALLFILE} $(srcdir)/realm.point ${DESTDIR}${MANDIR}/man3/$$i.3; \
+		done
+TF	= \
+	tf_init \
+	tf_get_pname \
+	tf_get_pinst \
+	tf_get_cred \
+	tf_close
+
+install-tf:: tf_util.point
+	for i in ${TF} ; do \
+		${INSTALLFILE} $(srcdir)/tf_util.point ${DESTDIR}${MANDIR}/man3/$$i.3; \
+		done
+
+KRB	= \
+	krb_mk_req \
+	krb_rd_req \
+	krb_kntoln \
+	krb_set_key \
+	krb_get_cred \
+	krb_mk_priv \
+	krb_rd_priv \
+	krb_mk_safe \
+	krb_rd_safe \
+	krb_mk_err \
+	krb_rd_err \
+	krb_ck_repl
+
+install-krb:: kerberos.point
+	for i in ${KRB} ; do \
+		${INSTALLFILE} $(srcdir)/kerberos.point ${DESTDIR}${MANDIR}/man3/$$i.3; \
+		done
+	@echo "Don't forget to execute makewhatis or catman" >&2
+	@echo "Also beware that older systems have man pages for" >&2
+	@echo "rsh.1c, rlogin.1c and rcp.1c which should be removed" >&2
+
+	
+all:
+	echo "nothing for $@ here"
+
+depend:
+	echo "nothing for $@ here"
+
+clean:
+	echo "nothing for $@ here"
+
+distclean:
+	$(RM) *~
+	$(RM) Makefile config.status
+
+# NOPOSTFIX

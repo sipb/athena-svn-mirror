@@ -1,0 +1,74 @@
+Sat Feb 17 19:47:22 1996  Mark W. Eichin  <eichin@cygnus.com>
+
+	* packageme4: invoke packagecns4 with sh and explicit path.
+	* buildme4: invoke buildcns4 with sh and explicit path.
+	* hostloop: invoke buildme4 and packageme4 with sh and explicit
+	paths. Fix quoting on $MNT. 
+
+Sat Feb 17 17:07:41 1996  Mark W. Eichin  <eichin@cygnus.com>
+
+	* hostloop: factor out some variables to command line arguments.
+	Check for existance of hosts file.
+
+Sat Dec  2 01:12:32 1995  Mark W. Eichin  <eichin@cygnus.com>
+
+	* packtape: Change image-skipping logic to use mt fsf 1 after each
+	read, which should be portable (or at least should work at all!)
+
+Fri Dec  1 17:42:55 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: assume BSD tape semantics and skip EOF on verify.
+
+Fri Dec  1 16:42:03 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: redirect zcat input, some zcat's aren't smart enough
+	to check the raw file without appending .Z.
+
+Fri Dec  1 14:41:20 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: don't use reblock afterall, conv=sync seems right
+	inspite of documentation.
+
+Thu Nov 30 17:07:48 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: support source-only or src for source only tapes.
+
+Thu Nov 30 16:59:30 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: different tests for tar vs. pkg.
+
+Thu Nov 30 16:51:50 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: reblock only takes bs, not obs.
+
+Thu Nov 30 16:47:33 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: test for $device writable, since existence is a gnu
+	test extension.
+
+Thu Nov 30 16:39:54 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: set and use REBLOCK when taking output from zcat,
+	since dd may only read small (stdio-sized) blocks from zcat.
+
+Thu Nov 30 16:11:32 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* packtape: new file, script for releng to dump tapes from vault.
+	* packtape.M: man page for packtape.
+	* packtape.test: crude shell test cases for all error branches.
+
+Wed Nov  1 20:32:34 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* buildcns4: new file. script. given a kerberos dir, configure,
+	make, and check a cns4 tree.
+	* packagecns4: new file. script. make all of the packages and
+	clean out the tree.
+	* buildme4: new file. script. Construct a name from host and
+	config.guess and run buildcns4.
+	* packageme4: ditto for packagecns4.
+	* getpackagecns4: interim script for renaming packages after
+	manual "make taz-bin". Will eventually be deleted.
+	* hostloop: script. hardcoded for Mountain View site, reads a list
+	of hostnames, and if there's enough diskpace on /deneb/offsite,
+	uses rsh to build and packge on each.
+

@@ -1,0 +1,34 @@
+		How to make a 'bones' version of cns.
+
+This procedure is pretty mechanical.  For V5 we should use a
+mechanism more like Sanitize, but for now this will suffice.
+
+
+1> Check out 'bones'.  That's just like cns, only without certain
+   files (like all of lib/des or lib/kstream/kstream-des.*).
+2> run the script kerberos/dounifdef over the whole tree (including
+   doc) with a command something like:
+   find  . -type f \( -name '*akefile*' -o -name '*.c' \) -exec `pwd`/dounifdef {} \;
+
+3> unifdef is pretty lame; you have to fix the following files by hand:
+   src/lib/krb/cr_ciph.c:26:#ifndef NOENCRYPTION
+   src/lib/krb/cr_tkt.c:29:#ifndef NOENCRYPTION
+   src/lib/krb/cr_tkt.c:50:#ifdef NOENCRYPTION
+   src/lib/krb/decomp_tkt.c:23:#ifndef NOENCRYPTION
+   src/lib/krb/mk_priv.c:78:#ifdef NOENCRYPTION
+   src/lib/krb/mk_priv.c:95:#ifndef NOENCRYPTION
+   src/lib/krb/mk_req.c:57:#ifdef NOENCRYPTION
+   src/lib/krb/rd_priv.c:58:#ifdef NOENCRYPTION
+   src/lib/krb/rd_priv.c:67:#ifdef NOENCRYPTION
+
+   src/tests/fixprot.sh
+
+   Modify src/util/imake.includes/config.Imakefile and src/config/common:
+      make sure NOENCFLAG=-DNOENCRYPTION.
+      Check for #ifdef NOENCRYPTION
+
+4> modify src/lib/Makefile to remove reference to 'des' from subdirs.
+   ditto src/tools/makeconfig, src/Makefile, src/configure.in for lib/des.
+
+5> rebuild normally; make sure it builds.  The software should work
+   after this process, although it will be ppretty useless!

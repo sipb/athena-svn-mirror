@@ -1,0 +1,45 @@
+
+
+The copyright information (listed in doc/kerbman.texinfo) is as follows.
+
+CNS includes man pages and software developed at the Massachusetts
+Institute of Technology, which includes this copyright information:
+
+Copyright @copyright{} 1989 by the Massachusetts Institute of Technology
+ 
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United
+States Government.  It is the responsibility of any person or
+organization contemplating export to obtain such a license before
+exporting.
+ 
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+distribute this software and its documentation for any purpose and
+without fee is hereby granted, provided that the above copyright
+notice appear in all copies and that both that copyright notice and
+this permission notice appear in supporting documentation, and that
+the name of M.I.T. not be used in advertising or publicity pertaining
+to distribution of the software without specific, written prior
+permission.  M.I.T. makes no representations about the suitability of
+this software for any purpose.  It is provided ``as is'' without express
+or implied warranty.
+
+Copyright @copyright{} 1991, 1992, 1994, 1995 Cygnus Support
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission 
+notice are preserved on all copies.
+
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+

@@ -1,0 +1,2173 @@
+\input texinfo    @c -*-texinfo-*-
+@c @smallbook @c COMMENT THIS OUT w/CYGNUS FORMAT
+@finalout
+@setfilename kerb-API
+@ifinfo
+@emph{Cygnus Network Security Programmer's Guide---Applications
+Interface for Unix and PC's} by Cygnus Support.  CNS includes
+documentation and software developed at the Massachusetts Institute of
+Technology, which includes this copyright information: Copyright
+@copyright{} 1989 by the Massachusetts Institute of Technology
+@quotation
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United States
+Government.  It is the responsibility of any person or organization
+contemplating export to obtain such a license before exporting.
+@end quotation
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and distribute
+this software and its documentation for any purpose and without fee is
+hereby granted, provided that the above copyright notice appear in all
+copies and that both that copyright notice and this permission notice
+appear in supporting documentation, and that the name of M.I.T.  not be
+used in advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.  M.I.T. makes no
+representations about the suitability of this software for any purpose.
+It is provided ``as is'' without express or implied warranty.  Copyright
+@copyright{} 1991, 1992, 1994, 1995 Cygnus Support.  Permission is granted
+to make and distribute verbatim copies of this manual provided the
+copyright notice and this permission notice are preserved on all copies.
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.  Permission is granted to copy
+and distribute translations of this manual into another language, under
+the above conditions for modified versions.
+@end ifinfo
+@setchapternewpage odd
+@settitle CNS Programmer's Guide
+@titlepage
+@finalout
+@title Cygnus Network Security
+@subtitle Application Programmer's Interface
+@sp 2
+@subtitle January 1995
+@vfill
+@author John Gilmore -- Cygnus Support
+@page
+@vskip 0pt plus 1filll
+@emph{Cygnus Network Security Programmer's Guide---Applications
+Interface for Unix and PC's} by Cygnus Support.
+
+@emph{Cygnus Editor:  John Gilmore}
+
+CNS includes man pages and software developed at the Massachusetts
+Institute of Technology, which includes this copyright information:
+
+Copyright @copyright{} 1989 by the Massachusetts Institute of Technology
+
+@quotation
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United States
+Government.  It is the responsibility of any person or organization
+contemplating export to obtain such a license before exporting.
+@end quotation
+
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and distribute
+this software and its documentation for any purpose and without fee is
+hereby granted, provided that the above copyright notice appear in all
+copies and that both that copyright notice and this permission notice
+appear in supporting documentation, and that the name of M.I.T.  not be
+used in advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.  M.I.T. makes no
+representations about the suitability of this software for any purpose.
+It is provided ``as is'' without express or implied warranty.
+
+Copyright @copyright{} 1992, 1994, 1995 Cygnus Support.  Permission is
+granted to make and distribute verbatim copies of this manual provided
+the copyright notice and this permission notice are preserved on all
+copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+
+@end titlepage
+
+
+@ifinfo
+@node Top
+@top CNS Programmer's Guide
+@menu
+* Introduction::                A brief introduction to CNS
+
+* Common Kerberos Library API:: Kerberos Library API for portability
+* Unix Library API::            Kerberos Library API for Unix
+* Macintosh Library API::       Kerberos Library API for Macintosh
+* MS-Windows Library API::      Kerberos Library API for MS-Windows
+* Function Index::              Index to functions
+@end menu
+@end ifinfo
+
+@node Introduction
+@chapter Introduction
+
+Cygnus Support developed Cygnus Network Security (CNS) to provide strong
+system access security, with minimal impact on users' ease of access.
+Using Kerberos Version 4 encryption and client-server technology, CNS
+assures that user identities can be checked securely without
+transmitting unencrypted passwords over the Net.
+
+This document describes the application programmer interface for CNS.
+The interface is identical on Unix, the MacOS, and MS-Windows.  Some
+facilities beyond the common subset are available on some of these
+operating systems.  These are documented in separate chapters.
+
+The reader is hereby warned that the U.S. Government may impose
+limits on the export of the software described herein.  Check with
+a good lawyer before exporting the software or making it available
+to non-citizens.
+
+
+@node Common Kerberos Library API
+@chapter CNS Common Kerberos Library API
+
+@menu
+* Kerberos Principals::	     How authenticatable things are named
+* krb.h---include file::     How to call Kerberos from your programs
+* Generic Operations::       Overall control and error handling
+* Configuration Suite::      Configuration functions
+* Credential Suite::         Credential functions
+* High-level Suite::         High-Level Kerberos functions
+* Transformation Suite::     Message Transformation functions
+* Encryption Suite::         Encryption functions
+* Stream Suite::             Stream functions   
+@end menu
+
+This section describes the standard application programmer interface to
+Kerberos.  It provides facilities for configuration, shared credentials,
+high-level operations, and transformation routines.  Though most of the
+suites in this section are available on all platforms, there are a few
+that have not yet been ported to particular machines.  This is noted
+where applicable.
+
+@node Kerberos Principals
+@section Kerberos Principals
+
+Kerberos @dfn{principals} are the users and application servers that act
+within Kerberos.  Each principal has a Kerberos principal name.  A
+Kerberos principal name contains three parts: name, instance and realm.
+
+For a user, the principal @dfn{name} is the user name.  For an
+application server, the principal name is the name of the service being
+provided (e.g., the CNS @code{rlogin}, @code{rsh} and @code{rcp}
+programs use the principal name @code{rcmd}).
+
+A principal @dfn{instance} is usually null for users, though some users
+may have privileged instances such as @samp{root} or @samp{admin}.  For
+an application server, the instance is the name of the machine on which
+it runs (e.g., the @code{rlogin} service running on the machine
+@samp{abc} uses the name @samp{rcmd.abc}, while on the machine
+@samp{xyz} it uses @samp{rcmd.xyz}).  The instance name for an
+application server is not the complete domain name, but just the first
+element (that is, the machine @samp{abc.company.org} uses an instance
+name of just @samp{abc}).
+
+A principal @dfn{realm} is simply the Kerberos realm in which the
+principal is defined.
+
+The Kerberos principal name is separated from the instance (if not null)
+by a period.  The realm (if not the local realm) follows the principal
+name and instance and is preceded by an `@@' sign.  The following are
+examples of valid Kerberos names:
+
+@smallexample
+gumby
+ambar.admin
+eichin@@CYGNUS.COM
+raeburn.root@@CYGNUS.COM
+rcmd.oursun@@CYGNUS.COM
+@end smallexample
+
+It is possible for principals to be under-specified.  If an
+@var{instance} is missing, it is assumed to be null.  If @var{realm} is
+missing, it is assumed to be the local realm as determined by
+@ref{krb_realmofhost,,krb_get_lrealm}.  The canonical form is a complete
+@var{name}[.@var{instance}][@@@var{realm}].
+
+Principal names may not contain the `.' or `@@' characters.  Instance
+names may not contain the `@@' character.
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item kdestroy
+@item kinit
+@item klist
+@item kpasswd
+@item des_crypt
+@item Kerberos
+@item kadmin
+@end table
+@subsubheading BUGS
+@end ignore
+
+@node krb.h---include file
+@section krb.h---include file
+@smallexample
+#include "krb.h"
+@end smallexample
+
+This include file declares data structures and function prototypes for
+all Kerberos operations.  Any program module that uses Kerberos
+facilities should @code{#include} this file.
+
+To provide application portability among Unix, Macintosh, and MS-Windows,
+@file{krb.h} can declare various other system interfaces in addition to
+the minimal Kerberos V4 interface.  These interfaces are controlled by
+@code{#ifdef}s, which must be set in the application source code before
+the @code{#include "krb.h"}.  They are:
+
+@table @code
+@item DEFINE_SOCKADDR
+Defines symbols necessary for network programming using sockets,
+including @code{struct sockaddr_in}.
+@item NEED_TIME_H
+Defines symbols necessary for getting time-of-day from the C library.
+@end table
+
+The network programming interface uses ordinary sockets on Unix, WinSock
+1.1 on MS-Windows, and a fake socket implementation on Macintosh built
+on top of MacTCP.  We defined some of our own infrastructure where
+putting the WinSock coding into a Unix program would not be appropriate.
+They are as follows:
+
+@table @code
+@item SOCKET_INITIALIZE()	
+Must be called before any other socket calls.
+@item SOCKET_CLEANUP()
+Must be called after finishing socket calls.
+@item SOCKET_ERRNO
+Returns the error code from the last socket call.
+@item SOCKET_SET_ERRNO(x)
+Sets the error code to be returned by @code{SOCKET_ERRNO}.
+@item SOCKET_NFDS(f)
+Returns a suitable first argument for @code{select()}, given a file
+descriptor to be selected upon.
+@item SOCKET_READ(fd, b, l)
+Equivalent to Unix @code{read} on a socket.
+@item SOCKET_WRITE(fd, b, l)
+Equivalent to Unix @code{write} on a socket.
+@item SOCKET_EINTR
+The error code returned when an I/O operation was interrupted (equivalent
+to EINTR on Unix).
+@end table
+
+
+@node Generic Operations
+@section Generic Operations
+
+These operations deal with the overall operation of Kerberos,
+or with error handling.
+
+@menu
+* krb_start_session::           Begin Kerberos library operations
+* krb_end_session::             End Kerberos library operations
+* kname_parse::			Parse Kerberos names
+* krb_get_err_text::		Interpret errors for humans
+@end menu
+
+@node krb_start_session
+@subsection krb_start_session
+@findex krb_start_session
+@code{int
+krb_start_session(char *cache_name);}
+
+Begins a Kerberos session (an interaction with the ticket cache).
+In some implementations, the Kerberos support may destroy the tickets
+obtained by various applications when all the applications exit,
+for improved security on single-user machines.  Applications should
+neither depend on this behavior nor depend on its absence.
+
+If @code{cache_name} is a null pointer, the default shared ticket cache
+is used (the usual case).  If @code{cache_name} is non-null, then a
+named-ticket cache may be used.  If an implementation
+does not implemented named
+caches, then the @code{cache_name} parameter is ignored.
+
+In some environments, krb_start_session also locates and initializes the
+Kerberos driver or library as well as preparing an interaction with the
+ticket cache.
+
+Each application should call @code{krb_start_session} once, and should
+also call @code{krb_end_session} before it ends.
+
+@node krb_end_session
+@subsection krb_end_session
+@findex krb_end_session
+@code{int
+krb_end_session(char *cache_name);}
+
+Ends a Kerberos session (an interaction with the ticket cache).
+In some implementations, the Kerberos support may destroy the tickets
+obtained by various applications when all the applications exit,
+for improved security on single-user machines.  Applications should
+neither depend on this behavior nor depend on its absence.
+
+If @code{cache_name} is a null pointer, the default shared ticket cache
+session is ended (the usual case).  If @code{cache_name} is non-null,
+then a named ticket cache session may be ended.  If a driver does not
+implement named caches, then the @code{cache_name} parameter is
+ignored.
+
+@code{krb_end_session} must be called if and only if the
+application previously called @code{krb_start_session}.
+@code{krb_start_session} and @code{krb_end_session} must be called in
+pairs.
+
+@node kname_parse
+@subsection kname_parse
+@findex kname_parse
+@code{int
+kname_parse (char *name, char *instance, char *realm, char *fullname);}
+
+This routine parses @var{fullname} into the three fields @var{name},
+@var{instance}, and @var{realm}, which should point to memory of sizes
+@code{ANAME_SZ}, @code{INST_SZ}, and @code{REALM_SZ} bytes respectively.
+These fields must be initialized by the caller, since each remains
+unchanged if @var{fullname} does not include that field.  Callers
+typically initialize them to null strings or to the local realm name.
+
+It returns an error code based on the parse.  Only the syntax of the
+name is checked, not its validity in a database or on the network.
+
+
+@node krb_get_err_text
+@subsection krb_get_err_text
+@findex krb_get_err_text
+@code{char *
+krb_get_err_text (int error_code);}
+
+This returns the ASCII text string description
+associated with a Kerberos error code,
+as returned by many Kerberos functions.
+
+
+
+
+@node Configuration Suite
+@section Configuration suite
+
+These routines deal with extracting configuration information stored
+in the system.  This includes the default realm, Key Distribution Center
+(KDC) servers (@file{krb.conf}) and host/realm mappings (@file{krb.realms}).
+
+@menu
+* krb_get_lrealm::
+* krb_realmofhost::
+* krb_get_krbhst::
+* krb_get_admhst::
+* krb_get_default_user::
+* krb_set_default_user::
+
+@end menu
+
+
+@node krb_get_lrealm
+@subsection krb_get_lrealm
+@findex krb_get_lrealm
+@code{int
+krb_get_lrealm(char *realm, int n);}
+
+This operation fills in the name of the default or local realm.
+@var{realm} must be at least @code{REALM_SZ} (40) bytes long.  The value
+of @var{n} must always be `1', for historical reasons.
+
+On Unix machines, this information is currently stored in a file called
+@file{/usr/kerberos/lib/krb.conf}.  In MS-Windows, it is in
+@file{krb.conf}, in the directory @file{\windows\krb.rea}.  On the
+Macintosh, it is stored in the ``Kerberos Client'' Preferences file.
+
+@node krb_realmofhost
+@subsection krb_realmofhost
+@findex krb_realmofhost
+@code{char *
+krb_realmofhost(char *host);}
+
+Returns the Kerberos realm of the host @var{host}.
+@var{host} should be the fully-qualified domain-style primary
+host name of the host in question.
+
+@var{realm} must be at least @code{REALM_SZ} (40) bytes long.
+
+On Unix machines, this information is currently stored in a file called
+@file{/usr/kerberos/lib/krb.realms}.  In MS-Windows, it is stored in a
+file called @file{krb.rea}, whose name is contained in the
+@file{kerberos.ini} file.  In Macintosh, it is stored in the ``Kerberos
+Client'' Preferences file.  In order to prevent certain security
+attacks, this routine must either have @emph{a priori} knowledge of a
+host's realm, or obtain such information securely.
+
+The format of the translation file on Unix is described in the
+@emph{Cygnus Network Security---User and Administrator Documentation for
+CNS Version 1,} manual.  If @var{host} exactly matches a host_name line,
+the corresponding realm is returned.  Otherwise, if the domain portion
+of @var{host} matches a domain_name line, the corresponding realm is
+returned.  If @var{host} contains a domain, but no translation is found,
+@var{host's} domain is converted to upper-case and returned.  If
+@var{host} contains no discernible domain, or an error occurs, the local
+realm name, as supplied by @ref{krb_realmofhost,,krb_get_lrealm}, is
+returned.
+
+@node krb_get_krbhst
+@subsection krb_get_krbhst
+@findex krb_get_krbhst
+@code{int
+krb_get_krbhst(char *host, char *realm, int n);}
+
+@code{krb_get_krbhst} fills in @var{host} with the hostname of the
+@var{n}th host running a Kerberos key distribution center (KDC) for
+realm @var{realm}.  @var{host} must be large enough to hold any hostname.
+(You can get a portable definition of @code{MAXHOSTNAMELEN} by using
+@code{#define DEFINE_SOCKADDR} before including @file{"krb.h"}).
+
+If the host is successfully filled in, the routine returns
+@code{KSUCCESS}.  If the configuration information is unavailable, and
+@var{n} equals `1', then the routine fills in @var{host} with
+@samp{kerberos.@var{realm}} and returns @code{KSUCCESS}.  If there are
+fewer than @var{n} hosts running a Kerberos KDC for the requested realm,
+or the configuration information is malformed, the routine returns
+@code{KFAILURE}.
+
+To locate all key distribution centers, the application
+can re-call with a larger @var{n} as long as the result continues to
+be @code{KSUCCESS}.
+
+On Unix machines, this information is currently stored in an ASCII
+configuration file called @file{/usr/kerberos/lib/krb.conf} and
+described in the @emph{Cygnus Network Security---User and Administrator
+Documentation for CNS Version 1,} manual.  In MS-Windows, it is
+@file{krb.conf}.  The default location for @file{krb.conf} is in
+@file{\windows\krb.rea}.  Macintosh, it is stored in the ``Kerberos
+Client'' Preferences file.
+
+@node krb_get_admhst
+@subsection krb_get_admhst
+@findex krb_get_admhst
+@code{extern int
+krb_get_admhst(char *host, char *realm, int n);}
+
+@code{krb_get_admhst} fills in @var{host} with the hostname of the
+@var{n}th host running a Kerberos KDC database administration server
+for realm @var{realm}.  If the configuration information is unavailable
+or is malformed, or there are fewer than @var{n} hosts running a
+Kerberos KDC database administration server, the routine returns
+@code{KFAILURE}.
+
+@var{host} must be large enough to hold any hostname
+(@code{MAXHOSTNAMELEN} from @file{<sys/param.h>}).
+
+On Unix machines, this information is currently stored in a file called
+@file{/usr/kerberos/lib/krb.conf}.  In MS-Windows, it is
+@file{krb.conf}.  The default location for @file{krb.conf} is in
+@file{\windows\krb.rea}.  Macintosh, it is stored in the ``Kerberos
+Client'' Preferences file.
+
+@node krb_get_default_user
+@subsection krb_get_default_user
+@findex krb_get_default_user
+@code{char *
+krb_get_default_user(void);}
+
+Returns the default @var{user} as configured, if the Kerberos
+implementation has the concept of a default @var{user name}.  The
+result may include a user name, an instance field, and possibly a
+realm name.
+
+On Unix machines, the result is the current logged-in user name.
+In MS-Windows and Macintosh, it is the last name set with
+@code{krb_set_default_user}.
+
+
+@node krb_set_default_user
+@subsection krb_set_default_user
+@findex krb_set_default_user
+@code{int
+krb_set_default_user(char *user);}
+
+Sets the default @var{user} name to be used in future Kerberos
+interactions with the user.  This call can be used by applications to
+override the default @var{user} configured in the Kerberos
+implementation.  On some platforms, this setting persists after
+reboots.
+
+
+@node Credential Suite
+@section Credential suite
+
+These routines give access to credentials which are saved for the
+duration of the user's interaction with their computer.  The storage
+for these credentials is called the @samp{credentials cache}, or in
+older parlance inherited from the first implementation, a @samp{ticket file}.
+
+@menu
+* krb_get_cred::		Get a credential by matching service names.
+* krb_save_credentials::	Save a new credential in the cache
+* krb_get_num_cred::		Count how many credentials there are.
+* krb_get_nth_cred::		Get one credential, by number.
+* krb_get_tf_fullname::		Get the principal name of the current user.
+* dest_tkt::			Destroy all tickets in the cache.
+@end menu
+
+@node krb_get_cred
+@subsection krb_get_cred
+@findex krb_get_cred
+@code{int krb_get_cred (char *service, char *instance, char *realm,
+struct credentials *credp);}
+
+Retrieves a given credential (specified by the triple of @var{service},
+@var{instance}, and @var{realm}) from the current ticket cache.  The
+resulting credential is stored through the argument pointer @var{credp}.
+
+The result is an error code.
+
+@code{krb_get_cred} searches the caller's ticket cache for a ticket for
+the given service, instance, and realm; and, if a ticket is found,
+fills in the given @code{CREDENTIALS} structure with the ticket
+information.  If the ticket is found, @code{krb_get_cred} returns
+@code{GC_OK}. If the ticket file cannot be found, cannot be read, does not
+belong to the user (other than @samp{root}), is not a regular file, or
+is in the wrong mode, the error @code{GC_TKFIL} is returned.
+
+
+@node krb_save_credentials
+@subsection krb_save_credentials
+@findex krb_save_credentials
+@code{
+int 
+krb_save_credentials ((char *service, char *instance, char *realm, 
+	C_Block session, int lifetime, int kvno, KTEXT ticket,
+	long issue_date))}
+
+Saves the given credential into the current ticket cache.
+
+@node krb_get_num_cred
+@subsection krb_get_num_cred
+@findex krb_get_num_cred
+@code{int
+krb_get_num_cred(void)} 
+
+Returns the number of credentials in the current ticket cache, or `-1'
+if an error occurs.
+
+@node krb_get_nth_cred
+@subsection krb_get_nth_cred
+@findex krb_get_nth_cred
+@code{int
+krb_get_nth_cred(char *name, char *instance, char *realm, int n)} 
+
+Retrieves the @var{n}th (where @var{n} starts at zero) credential from
+the current ticket cache and returns its name, instance and realm
+through the supplied @samp{char *}s, which must point to memory areas at
+least @samp{NAME_SZ}, @samp{INST_SZ}, and @samp{REALM_SZ} bytes long.
+The result is a Kerberos error code or KSUCCESS.  The full credential
+may then be obtained by using krb_get_cred.
+
+@node krb_get_tf_fullname
+@subsection krb_get_tf_fullname
+@findex krb_get_tf_fullname
+@code{int
+krb_get_tf_fullname (char *tktfile, char *name, char *instance, char *realm)}
+
+Returns the name, instance, and realm of the principal in the current
+credential cache (also known as a ticket file).  The ticket file name
+is the first parameter.  The default name is used if the argument
+is a null pointer.  Name, instance, and realm must point to areas
+of memory at least
+@samp{NAME_SZ}, @samp{INST_SZ}, and @samp{REALM_SZ} bytes long.
+The result is KSUCCESS or a Kerberos error code.
+
+@node dest_tkt
+@subsection dest_tkt
+@findex dest_tkt
+@code{int
+dest_tkt(void);}
+
+Destroys all the credentials in the current ticket cache.
+The result is KSUCCESS or a Kerberos error code.
+
+
+
+@node High-level Suite
+@section High-level Suite
+
+This library supports network authentication and various related operations.
+The following calls form the high-level Kerberos suite.  
+
+@menu
+* krb_mk_auth::         
+@end menu
+
+@node krb_mk_auth
+@subsection krb_mk_auth
+@findex krb_mk_auth
+
+@code{int krb_mk_auth(long options, KTEXT ticket, char *service, char
+*instance, char *realm, unsigned KRBINT32 checksum, char *version, KTEXT
+buf);}
+
+Generates an authenticator that is equivalent to that used by
+the standard Kerberos V4 @var{krb_sendauth} routine. 
+
+Using initial tickets stored in the current ticket cache, it gets a
+ticket (authenticator) for the service @var{service} on the host
+@var{instance}, in the realm @var{realm}.  @var{service} should be the
+single component name for the service (@code{pop}, @code{rcmd}, etc).
+@var{instance} should be the name of the application server host;
+@code{krb_mk_auth} normally canonicalizes it using @code{krb_get_phost}.
+
+The @var{options} available are
+@table @code
+@item KOPT_DONT_CANON
+Don't canonicalize instance as a hostname.  (If this option is not
+chosen, @code{krb_get_phost} is called to canonicalize it.)
+@item KOPT_DONT_MK_REQ
+Don't request server ticket from Kerberos.  A ticket must be supplied in
+the @var{ticket} argument.  (If this option is not chosen, and there is no
+ticket for the given server in the ticket cache, one will be fetched
+using @code{krb_mk_req} and returned in @var{ticket}.)
+@item KOPT_DO_MUTUAL
+Do mutual authentication, requiring that the receiving server return the
+@var{checksum}@code{+1} encrypted in the session key.  The mutual
+authentication is done using @code{krb_mk_priv} on the other side (see
+@file{recvauth.c}) and @code{krb_rd_priv} on this side.
+@end table
+
+@var{checksum} is an application-provided checksum that is cryptographically
+transmitted in the authenticator; if the application needs no checksum
+securely transferred, use zero.  The @var{version} argument allows the
+client program to pass an application-specific version string that the
+server program can then match against its own version string.  The
+resulting byte string, which should be transmitted to the application's
+server, is placed into the buffer @file{buf}.
+
+If doing mutual authentication, the application should then read a
+response from the application server, using application-dependent
+means, and call @code{krb_check_auth} to check its validity.
+
+To make a call that is compatible with the Unix @code{sendauth} and
+@code{recvauth} calls requires some work.  See the source code in
+@file{lib/krb/sendauth.c} for full details.  @code{sendauth}
+compatibility is deprecated because it involves sending binary data
+across an otherwise application-controlled TCP socket.  Instead, the
+application should control the manner in which the authenticator gets
+from the client to the server, using a protocol harmonious with the rest
+of the traffic on that socket.
+
+@node Transformation Suite
+@section Transformation Suite
+
+These routines create authenticated messages which can be
+passed between clients and servers.
+
+The @code{KTEXT} structure is used to pass around text of varying
+lengths.  It consists of a buffer for the data, and a length.
+@code{krb_rd_req} takes an argument of this type containing the
+authenticator, and @code{krb_mk_req} returns the authenticator in a
+structure of this type.  @code{KTEXT} itself is really a pointer to the
+structure.  The actual structure is of type @code{KTEXT_ST}.
+
+The @code{AUTH_DAT} structure is filled in by @code{krb_rd_req}.  It
+must be allocated before calling @code{krb_rd_req}, and a pointer to it
+is passed.  The structure is filled in with data obtained from
+Kerberos. The @code{MSG_DAT} structure is filled in by either
+@code{krb_rd_priv}, @code{krb_rd_safe}, or @code{krb_rd_err}.  It must
+be allocated before the call and a pointer to it is passed. The
+structure is filled in with data obtained from Kerberos.
+
+Note that the caller of @code{krb_rd_req}, @code{krb_rd_priv}, and
+@code{krb_rd_safe} must check time order and for replay attempts.
+
+@menu
+* krb_mk_req::
+* krb_rd_req::
+* krb_mk_priv::
+* krb_rd_priv::
+* krb_mk_safe::
+* krb_rd_safe::
+@end menu
+
+@node krb_mk_req
+@subsection krb_mk_req
+@findex krb_mk_req
+
+@code{int
+krb_mk_req(KTEXT authent, char *service_name,
+char *instance, char *realm, long int xsum);}
+
+Generates an authenticator for the service @var{service_name} on the
+host @var{instance}, in realm @var{realm}.  Using initial tickets stored
+in the default ticket cache, it connects to the Key Distribution Center
+to retrieve a service ticket.  @var{service_name} should be the single
+component name for the service (@code{pop}, @code{discuss}, etc).
+@var{instance} should be the unqualified name of the application server
+host, perhaps as obtained by a call to @code{krb_get_phost}.  @var{xsum}
+is a checksum that is cryptographically transmitted in the
+authenticator.
+
+@code{krb_mk_req} takes a pointer to a text structure in which an
+authenticator is to be built.  It also takes the name, instance, and
+realm of the service to be used and an optional checksum.  It is up to
+the application to decide how to generate the checksum.
+@code{krb_mk_req} then retrieves a ticket for the desired service and
+creates an authenticator.  The authenticator is built in @var{authent}
+and is accessible to the calling procedure.  It is up to the application
+to get the authenticator to the service where it is read by
+@code{krb_rd_req}.  Unless an attacker possesses the session key
+contained in the ticket, it cannot modify the authenticator.  Thus, the
+checksum can be used to verify the authenticity of the other data that
+pass through a connection.
+
+
+@node krb_rd_req
+@subsection krb_rd_req
+@findex krb_rd_req
+
+@code{int krb_rd_req(KTEXT @var{authent},char *@var{service}, 
+		char *@var{instance}, long @var{from_addr},
+		AUTH_DAT *@var{ad}, char *@var{filename})}
+
+@code{krb_rd_req} takes an authenticator of type @code{KTEXT}, a service
+name, an instance, the address of the host originating the request, and
+a pointer to a structure of type @code{AUTH_DAT} which is filled in with
+information obtained from the authenticator.  Optionally, it also takes
+the name of the file in which it finds the secret key(s) for the
+service.  If the supplied instance contains @samp{*}, then the first
+service key with the same service name found in the service key file is
+used, and the @var{instance} argument is filled in with the chosen
+instance.  This means that the caller must provide space for such an
+instance name.
+
+If the last argument is an empty string, @code{krb_rd_req} uses the file
+@file{/etc/krb-srvtab} to find its keys.  If the last argument is
+@code{NULL}, it assumes that the key in the authenticator has been set
+by @code{krb_set_key} and does not look further.
+
+This routine is used to find out information about the principal when a
+request has been made to a service.  It is up to the application
+protocol to get the authenticator from the client to the service.  The
+routine then passes the authenticator to @code{krb_rd_req} to extract
+the desired information.
+
+@code{krb_rd_req} returns zero (@code{RD_AP_OK}) upon successful
+authentication.  If a packet were forged, modified, or replayed,
+authentication fails.  If authentication fails, a non-zero value is
+returned indicating the particular problem encountered.  See
+@file{krb.h} for the list of error codes.
+
+
+@node krb_mk_priv
+@subsection krb_mk_priv
+@findex krb_mk_priv
+@code{krb_mk_priv(char *in, char *out, unsigned KRB_INT32 in_length,
+Key_schedule schedule, C_Block *key, struct sockaddr_in *sender, struct
+sockaddr_in *receiver);}
+
+long krb_mk_priv(u_char *@var{in}, u_char *@var{out}, u_long 
+@var{in_length},
+des_cblock @var{key}, des_key_schedule @var{schedule}; struct 
+sockaddr_in *@var{sender},
+		struct sockaddr_in *@var{receiver});
+
+@code{krb_mk_priv} creates an encrypted, authenticated message from any
+arbitrary application data, pointed to by @var{in} and @var{in_length}
+bytes long.  The private session key, pointed to by @var{key} and the
+key schedule, @var{schedule}, are used to encrypt the data and some
+header information using PCBC encryption.  @var{sender} and
+@var{receiver} point to the Internet address of the two parties.  In
+addition to providing privacy, this protocol message protects against
+modifications, insertions or replays.  The encapsulated message and
+header are placed in the area pointed to by @var{out}, which should be
+able to hold @code{in_length + 32} bytes.  The routine returns the
+length of the output, or `-1' indicating an error.
+
+
+@node krb_rd_priv
+@subsection krb_rd_priv
+@findex krb_rd_priv
+@code{int krb_rd_priv(char *in, unsigned KRB_INT32 in_length, char
+*schedule, char *key, struct sockaddr *sender, struct sockaddr
+*receiver, MSG_DAT *msg_data);}
+
+long krb_rd_priv(u_char *@var{in}, u_long @var{in_length}, 
+Key_schedule @var{schedule}, des_cblock @var{key}, struct 
+sockaddr_in *@var{sender},
+		struct sockaddr_in *@var{receiver},
+		MSG_DAT *@var{msg_data});
+
+This routine is used to decrypt and authenticate a message created by
+@code{krb_mk_priv}.  @var{in} points to the beginning of the received
+message, the length of which is specified in @var{in_length}.  The
+private session key, pointed to by @var{key}, is used to decrypt and
+verify the received message.  If @var{schedule} is non-null,
+@var{schedule} points to the calculated key schedule for the key.  The
+routine fills in fields in the @var{msg_data} structure with information
+retrieved from the message.
+
+@code{krb_rd_priv} decrypts and authenticates a received
+@code{krb_mk_priv} message.  The private session key, pointed to by
+@var{key}, and the key schedule, @var{schedule}, are used to decrypt and
+verify the received message.  @var{msg_data} is a pointer to a
+@code{MSG_DAT} struct.  The routine fills in the @code{app_data} field
+with a pointer to the decrypted application data, @code{app_length} with
+the length of the @code{app_data} field, @code{time_sec} and
+@code{time_5ms} with the timestamps in the message, and @code{swap} with
+a `1' if the byte order of the receiver is different than that of the
+sender.  (The application must still determine if it is appropriate to
+byte-swap application data; the Kerberos protocol fields are already
+taken care of).  The routine returns zero if okay, or a Kerberos error
+code.  Modified messages and old messages cause errors, but the caller
+must check the time sequence of messages.
+
+
+@node krb_mk_safe
+@subsection krb_mk_safe
+@findex krb_mk_safe
+@code{krb_mk_safe(unsigned char *in, unsigned char *out,
+unsigned KRB_INT32 in_length, C_Block *key, struct sockaddr_in *sender,
+struct sockaddr_in *receiver);}
+
+long krb_mk_safe(u_char *@var{in}, u_char *@var{out}, u_long 
+@var{in_length},
+		des_cblock @var{key},
+		struct sockaddr_in *@var{sender},
+		struct sockaddr_in *@var{receiver});
+
+This routine makes an authenticated, but unencrypted message from any
+arbitrary application data, pointed to by @var{in} and @var{in_length}
+bytes long.  The private session key, pointed to by @var{key}, is used
+to seed the @var{quad_cksum} checksum algorithm used as part of the
+authentication. @var{sender} and @var{receiver} point to the Internet
+addresses of the two parties.  The encapsulated message and header are
+placed in the area pointed to by @var{out}.  This area should be to hold
+@var{in_length + 32} bytes.  The routine returns the length of the
+output, or `-1' indicating an error.
+
+This message does
+not provide privacy, but does protect (via detection) against
+modifications, insertions or replays.  The
+authentication provided by this routine is not as strong as that
+provided by @code{krb_mk_priv} or by computing the checksum using
+@code{cbc_cksum} instead, both of which authenticate via DES.
+
+
+@node krb_rd_safe
+@subsection krb_rd_safe
+@findex krb_rd_safe
+@code{long krb_rd_safe(u_char *@var{in}, u_long @var{in_length}, 
+		des_cblock @var{key},
+		struct sockaddr_in *@var{sender},
+		struct sockaddr_in *@var{receiver},
+		MSG_DAT *@var{msg_data})}
+
+This routine is used to authenticate a message created by
+@code{krb_mk_safe}.  @var{in} points to the beginning of the received
+message, whose length is specified in @var{in_length}.  The private
+session key, pointed to by @var{key}, is used to verify the
+authentication checksum of the received message.
+
+@var{msg_data} is a pointer to a @code{MSG_DAT} struct, defined in
+@file{krb.h}. The routine fills in these @code{MSG_DAT} fields: the
+@code{app_data} field with a pointer to the application data,
+@code{app_length} with the length of the @code{app_data} field,
+@code{time_sec} and @code{time_5ms} with the timestamps in the message,
+and @code{swap} with a `1' if the byte order of the receiver is
+different than that of the sender.  (The application must still
+determine if it is appropriate to byteswap application data; the
+Kerberos protocol fields are already taken care of).
+
+The routine returns zero if okay, or a Kerberos error code.  Modified
+messages and old messages cause errors, but the caller must check the
+time sequence of messages.
+
+
+@node Encryption Suite
+@section Encryption suite
+
+The Kerberos library supports various DES encryption related
+operations.  It differs from the @code{crypt}, @code{setkey}, and
+@code{encrypt} library routines in that it provides a true DES
+encryption, without modifying the algorithm, and executes much faster.
+
+For each key that may be simultaneously active, create a
+@code{des_key_schedule} struct.  Next, create key schedules (from the
+8-byte keys) as needed, via @code{des_key_sched}, prior to using the
+encryption or checksum routines.  Then set up the input and output areas
+(lengths are restricted to be multiples of eight bytes).  Finally,
+invoke the encryption/decryption routine, @code{des_cbc_encrypt} or
+@code{des_pcbc_encrypt}.
+
+A @code{des_cblock} struct is an 8-byte block used as the fundamental
+unit for DES data and keys, and is defined as:
+@smallexample
+typedef unsigned char des_cblock[8];
+@end smallexample
+@noindent
+and a @code{des_key_schedule} is defined as: 
+@smallexample
+typedef struct des_ks_struct
+	@{des_cblock _;@} 
+des_key_schedule[16];
+@end smallexample
+
+@menu
+* des_key_sched::
+* des_cbc_encrypt::
+* des_string_to_key::
+@end menu
+
+@node des_key_sched
+@subsection des_key_sched
+@findex des_key_sched
+@code{des_key_sched(des_cblock *key, des_key_schedule *schedule);}
+
+This routine calculates a key schedule from the input @var{key},
+and outputs the schedule into @var{schedule}.  The key schedule may then be
+used in subsequent encryption/decryption operations.
+The user must overwrite or clear all keys and
+schedules as soon as no longer needed, to discourage their disclosure
+in memory dumps.
+
+@node des_cbc_encrypt
+@subsection des_cbc_encrypt
+@findex des_cbc_encrypt
+
+@code{int des_cbc_encrypt(des_cblock *@var{input},des_cblock
+*@var{output}, long @var{length}, des_key_schedule @var{schedule},
+des_cblock *@var{ivec}, int @var{encrypt})}
+
+This routine encrypts or decrypts data using @code{DES CBC} mode.  The
+data pointed to by @var{data}, of length @var{data_len}, are encrypted
+with the pre-calculated key schedule @var{schedule} and initialization
+vector @var{ivec}, and placed in @var{data_out}.  If @var{encrypt_flag}
+is zero, then decryption is performed.  If @var{encrypt_flag} is
+`1', then encryption is performed.
+
+This routine encrypts or decrypts a block of data using the
+cipher-block-chaining (CBC) mode of DES.
+
+If the @var{encrypt} argument is non-zero, the routine CBC-encrypts the
+cleartext data pointed to by the @var{input} argument.  This is done
+into the ciphertext pointed to by the @var{output} argument, using the
+key schedule provided by the @var{schedule} argument, and initialization
+vector provided by the @var{ivec} argument. If the @var{length} argument
+is not an integral multiple of eight bytes, the last block is zero
+filled (highest addresses).  The output is always an integral multiple
+of eight bytes.
+
+If @var{encrypt} is zero, the routine CBC decrypts the ciphertext data
+pointed to by the @var{input} argument.  The result is put into
+cleartext pointed to by the @var{output} argument.  This is done using
+the key schedule provided by the @var{schedule} argument, and
+initialization vector provided by the @var{ivec} argument.  Decryption
+always operates on integral multiples of 8 bytes, so it rounds the
+length provided up to the appropriate multiple.  Consequently, it always
+produces the rounded-up number of bytes of output cleartext. The
+application must determine if the output cleartext was zero-padded due
+to original cleartext lengths that were not integral multiples of 8.
+
+No errors or meaningful values are returned.  @code{void} is not used
+for compatibility with older compilers.
+
+A characteristic of CBC mode is that changing even a single bit of the
+cleartext affects all the subsequent ciphertext.  This makes
+cryptanalysis much more difficult.  However, modifying a single bit of
+the ciphertext, then decrypting, only affects the resulting cleartext
+from the modified block and the succeeding block.  The
+@code{des_pcbc_encrypt} routine was designed to detect modifications.
+However, because of problems, CBC mode in no longer recommended.
+
+@node des_string_to_key
+@subsection des_string_to_key
+@findex des_string_to_key
+@code{int des_string_to_key (char *string, char *key);}
+
+This routine converts an arbitrary length null-terminated @var{string}
+to an 8-byte DES key @var{key}, with odd byte parity.  A one-way
+function is used to convert the string to a key, making it very
+difficult to reconstruct the string from the key.  No meaningful value
+is returned. @code{void} is not used for compatibility with older
+compilers.
+
+@c If options is @var{krb_afs_flag}, then a Transarc string to key
+@c algorithm is used, and @var{realm} should be the realm name to be used
+@c in the transformation.
+
+@node Stream Suite
+@section Stream functions
+
+@menu
+* Kstream Overview::            Overview
+* Kstream implementation::      sample stream implementation
+@end menu
+
+@node Kstream Overview
+@subsection Kstream Overview
+
+The @code{kstream} suite provides similar functions to the Standard I/O
+Library (@file{stdio}).  It permits you to create encrypted and
+plaintext (unencrypted) I/O streams.  You can create a @code{kstream},
+read from it or write to it, and destroy it.  You also have some control
+of buffering.  At this time, the @code{kstream} suite is not available
+for the Mac.
+
+The encryption system used (if any) is determined at the time of
+creation.  There are several create routines provided.
+@table @samp
+@findex kstream_create_rlogin_from_fd
+@item kstream_create_rlogin_from_fd
+creates a @code{kstream} using the same encryption mechanism that the
+CNS @code{rlogin} program uses on a file descriptor
+passed as an argument
+@findex kstream_create_rcp_from_fd
+@item kstream_create_rcp_from_fd
+is the same as the @code{rlogin} version except that @code{rcp} pads
+short blocks in a different way than @code{rlogin}.
+@findex kstream_create_from_fd
+@item kstream_create_from_fd
+is a generic creation routine which takes a
+@samp{kstream_crypt_ctl_block} which is simply a vector of pointers to
+functions for encryption, decryption, initialization, and cleanup. 
+
+@end table
+
+After creating a @code{kstream}, you simply call @code{kstream_read} or
+@code{kstream_write} just as you would normally call @code{read} or
+@code{write}.  @code{kstream_flush} explicitly flushes any buffered data
+out to the underlying file descriptor.  @code{kstream_set_buffer_mode}
+is used to turn buffering on or off; it defaults to on, but interactive
+applications such as @code{rlogin} explicitly turn it off.
+
+@example
+kstream kstream_create_from_fd (int fd,
+				const struct kstream_crypt_ctl_block *ctl,
+				kstream_ptr data);
+
+ kstream_create_rlogin_from_fd (int fd, void* sched,
+				       unsigned char (*ivec)[8]);
+kstream kstream_create_rcp_from_fd (int fd, void* sched,
+				    unsigned char (*ivec)[8]);
+
+int kstream_write (kstream, void*, size_t);
+int kstream_read (kstream, void*, size_t);
+int kstream_flush (kstream);
+int kstream_destroy (kstream);
+void kstream_set_buffer_mode (kstream, int);
+@end example
+
+@node Kstream implementation
+@subsection Sample implementation of a stream encryption package
+
+First, a brief description of the stream protocols in use. 
+
+The data stream consists of four bytes representing a net-order (MSB
+first) integer, followed by enough data to produce that many cleartext
+bytes.  This means the size of those data must be rounded up to a
+multiple of 8.  For blocks of less than eight bytes, most software pads
+on the @var{left} with random values.
+
+
+There are some internal routines whose behavior should be considered
+carefully.  Start from the top, in the @code{kstream_crypt_ctl_block}
+entries.
+
+@table @code
+@item init
+simply takes a @code{kstream} and @code{kstream_des_init_block} (which
+is just a key and an 8 byte initialization vector) and stuffs them into
+the private data of the @code{kstream}. The buffers and lengths are
+initialized to zero, and @code{no_right_justify} is cleared.
+@item rcp_init
+is the same as @code{init} except @code{no_right_justify} is set, since
+@code{rcp} and @code{rlogin} use subtly different protocols.
+@item encrypt
+gets a pair of @code{kstream_data_block}s (just a pointer and length)
+for output and input. Since we can always encrypt and send the
+data we have, this routine just comes up with padding and then calls
+@code{do_encrypt} to put the data into the outgoing stream.  It returns
+the number of successfully encrypted bytes (in this case, all of them.)
+@item decrypt
+also gets a pair of @code{kstream_data_block}s. Here, we do not
+necessarily have enough data to decrypt the block.  We need at least
+four bytes even to read the length (and if we do not get that, we ask
+for at least 12 total just so we have a chance).  If we are doing an
+@code{rlogin}, we also filter out extra characters that can slip in
+before the length.
+@item destroy
+frees the output buffer, wipes the private data and then frees that
+memory also.
+@item do_encrypt
+is not in the vector.  It does the actual encryption work.  This routine
+handles blocks of any size up to 16 bytes, or any multiple of 8 over
+that.  It makes the padding a little easier to write it this way.
+Handling sizes between 8 and 16 is an annoyance, but @code{rlogin}
+actually relies on being able to send 12 bytes in one block.
+@end table
+
+@node Unix Library API
+@chapter CNS Unix Applications Programming Interface 
+
+On Unix systems, the full set of Common API functions are available.
+In addition, the following Unix-specific (or server-specific)
+functions are also available.
+
+These application programming interfaces are only available on
+Unix.  They are typically used to write servers, or have not yet
+been ported to other platforms.
+
+@menu
+* Access Control Lists::        
+* Error Reporting::             
+* Encryption::                  
+* Authentication::              
+* Realms::                      
+* Ticket Files::                
+* Other::                       
+@end menu
+
+@node Access Control Lists
+@section Access Control Lists
+@menu
+* ACL overview::                
+* acl_canonicalize_principal::  
+* acl_check::
+* acl_exact_match::             
+* acl_add::                     
+* acl_delete::                  
+* acl_initialize::              
+* ACL concurrency note::        
+@end menu
+@node ACL overview
+@subsection ACL overview
+@smallexample
+cc @var{files} -lacl -lkrb
+#include "krb.h"
+acl_canonicalize_principal(char *@var{principal}, char *@file{buf}) 
+acl_check(char *@var{acl}, char *@var{principal})
+acl_exact_match(char *@var{acl}, char *@var{principal})
+acl_add(char *@var{acl}, char *@var{principal})
+acl_delete(char *@var{acl}, char *@var{principal}) 
+acl_initialize(char *@var{acl_file}, int @var{mode}) 
+@end smallexample
+@c @subsubheading DESCRIPTION
+An access control list (ACL) is a list of principals.  Each principal is
+represented by a text string which cannot contain whitespace.  The
+library allows application programs to refer to named access control
+lists to test membership and to atomically add and delete principals
+using a natural and intuitive interface.  At present, the names of
+access control lists are required to be Unix filenames, and refer to
+human-readable Unix files. @c ; in the future, when a
+@c networked ACL server is implemented, the names may refer to a different
+@c namespace specific to the ACL service.
+
+@node acl_canonicalize_principal
+@subsection acl_canonicalize_principal
+@findex acl_canonicalize_principal
+@code{acl_canonicalize_principal}
+stores the canonical form of principal in @file{buf}.  @file{buf} must
+contain enough space to store a principal, given the limits on the sizes
+of @var{name}, @var{instance}, and @var{realm} specified as
+@code{ANAME_SZ}, @code{INST_SZ}, and @code{REALM_SZ}, respectively, in
+@file{/usr/kerberos/include/krb.h}.
+
+@node acl_check
+@subsection acl_check
+@findex acl_check
+@code{acl_check} returns nonzero if @var{principal} appears in the ACL.
+Returns zero if @var{principal} does not appear in ACL, or if an error
+occurs.  Canonicalizes @var{principal} before checking, and allows the
+ACL to contain wildcards.  The only supported wildcards are entries of
+the form @samp{@var{name}.*@@@var{realm}}, @samp{*.*@@@var{realm}}, and
+@samp{*.*@@*}.  An asterisk matches any value in the component field.
+For example, @samp{jtkohl.*@@*} would match principal @samp{jtkohl},
+with any @var{instance} and any @var{realm}.
+
+@node acl_exact_match
+@subsection acl_exact_match
+@findex acl_exact_match
+@code{acl_exact_match}
+performs like @code{acl_check}, but does no canonicalization or wildcard
+matching.
+
+@node acl_add
+@subsection acl_add
+@findex acl_add
+@code{acl_add} atomically adds @var{principal} to the ACL.  Returns zero
+if successful, nonzero if unsuccessful.  It is considered a failure if
+@var{principal} is already in the ACL.  This routine canonicalizes
+@var{principal}, but treats wildcards literally.
+
+@node acl_delete
+@subsection acl_delete
+@findex acl_delete
+@code{acl_delete} atomically deletes @var{principal} from the ACL.
+Returns zero if successful, nonzero if unsuccessful.  It is considered a
+failure if @var{principal} is not already in the ACL.  This routine
+canonicalizes @var{principal}, but treats wildcards literally.
+
+@node acl_initialize
+@subsection acl_initialize
+@findex acl_initialize
+@code{acl_initialize}
+initializes @var{acl_file}.  If the file @var{acl_file} does not exist,
+@code{acl_initialize} creates it with mode mode.  If the file
+@var{acl_file} exists, @code{acl_initialize} removes all
+members. Returns zero if successful, nonzero unsuccessful.
+@strong{WARNING:} @var{mode} argument is likely to change with the
+eventual introduction of an ACL service.
+
+@node ACL concurrency note
+@subsection ACL concurrency note
+@c @subsubheading NOTES
+If there is concurrency (two or more people using these functions),
+there is a very small chance of @code{acl_add} or @code{acl_delete}
+erroneously reporting an error.  This is an unavoidable side effect when
+using lock files for concurrency control rather than @code{flock}(2),
+which is not supported by NFS.  The current implementation caches ACLs
+in memory in a hash table for increased efficiency in checking
+membership; one effect of the caching scheme is that one file descriptor
+is kept open for each ACL cached, up to a maximum of 8.
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos
+@item krb_realmofhost,,krb_get_lrealm
+@end table
+@end ignore
+@node Error Reporting
+@section Error Reporting
+@menu
+* com_err::             com_err
+* compile_et::          compile_et
+@end menu
+@node com_err
+@subsection com_err
+@findex com_err
+@c @subsubheading SYNOPSIS
+@smallexample
+#include <com_err.h>
+void com_err (const char @var{whoami}, long @var{code}, 
+	const char *@var{format}, @dots{});
+@var{proc} = set_com_err_hook (@var{proc});
+void (* @var{proc} ) (const char *, long, const char *, 
+	va_list);
+@var{proc} = reset_com_err_hook ();
+void initialize_@var{XXXX}_error_table ();
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{com_err} displays an error message on the standard error stream
+@code{stderr} (see @samp{stdio}(3S)) composed of the @var{whoami}
+string, which should specify the program name or some sub-portion of a
+program, followed by an error message generated from the code value
+(derived from @ref{compile_et}), and a string produced using the string
+and any following arguments, in the same style as @samp{fprintf}(3).
+The behavior of @code{com_err} can be modified using
+@code{set_com_err_hook}; this defines a procedure which is called with
+the arguments passed to @code{com_err}, instead of the default internal
+procedure which sends the formatted text to error output.  Thus the
+error messages from a program can all easily be diverted to another form
+of diagnostic logging, such as @samp{syslog}(3).
+@code{reset_com_err_hook} may be used to restore the behavior of
+@code{com_err} to its default form.  Both procedures return the previous
+hook value.  These hook procedures must have the declaration given for
+@var{proc} above.  The @code{initialize_@var{XXXX}_error_table} routine
+is generated mechanically by @code{compile_et} (see @ref{compile_et})
+from a source file containing names and associated strings.  Each table
+has a name of up to four characters, which is used in place of the
+@var{XXXX} in the name of the routine. These routines should be called
+before any of the corresponding error codes are used, so that the
+@file{com_err} library recognizes error codes from these tables when
+they are used.  The @file{com_err.h} header file should be included in
+any source file that uses routines from the @file{com_err} library;
+executable files must be linked using @code{-lcom_err} in order to cause
+the @file{com_err} library to be included.
+@ignore
+@subsubheading SEE ALSO
+@c @xref{compile_et}, @samp{syslog}(3).
+Ken Raeburn, "A Common Error Description Library for UNIX". 
+@end ignore
+@node compile_et
+@subsection compile_et
+@ignore
+@c @subsubheading SYNOPSIS
+@smallexample
+compile_et @var{file}
+@end smallexample
+@c @subsubheading DESCRIPTION
+@end ignore
+@code{compile_et} converts a table listing error-code names and
+associated messages into a C source file suitable for use with the
+@file{com_err} library (see @ref{com_err}).  The source file name must
+end with a suffix of @file{.et}; the file consists of a declaration
+supplying the name (up to four characters long) of the error-code table:
+@smallexample
+error_table @var{name}
+@end smallexample
+@noindent
+followed by up to 256 entries of the form:
+@smallexample
+error_code @var{name}, "@var{string}"
+@end smallexample
+@noindent
+and a final
+@smallexample
+end
+@end smallexample
+@noindent
+to indicate the end of the table.  The name of the table is used to
+construct the name of a subroutine
+@code{initialize_@var{XXXX}_error_table} which must be called in order
+for the @file{com_err} library to recognize the error table.  The
+various error codes defined are assigned sequentially increasing numbers
+(starting with a large number computed as a hash function of the name of
+the table); thus for compatibility it is suggested that new codes be
+added only to the end of an existing table, and that no codes be removed
+from tables.  The names defined in the table are placed into a C header
+file with preprocessor directives defining them as integer constants of
+up to 32 bits in magnitude.  A C source file is also generated which
+should be compiled and linked with the object files which reference
+these error codes; it contains the text of the messages and the
+initialization subroutine.  Both C files have names derived from that of
+the original source file, with the @file{.et} suffix replaced by
+@file{.c} and @file{.h}.  A @samp{#} in the source file is treated as a
+comment character, and all remaining text to the end of the source line
+is ignored.
+@ignore 
+@subsubheading BUGS
+Since @code{compile_et} uses a very simple parser based on
+@code{yacc}(1), its error recovery leaves much to be desired.
+@subsubheading SEE ALSO
+@xref{com_err}.
+Ken Raeburn, "A Common Error Description Library for UNIX". 
+@end ignore
+
+@node Encryption
+@section Encryption
+@menu
+* Encryption overview::         
+* des_read_password::           
+* des_random_key::              
+* des_set_key::                 
+* des_ecb_encrypt::             
+* des_pcbc_encrypt::            
+* des_cbc_cksum::               
+* quad_cksum::                  
+* des_init_random_number_generator::
+* des_new_random_key::
+@end menu
+
+@node Encryption overview
+@subsection Encryption overview
+This library supports various DES encryption related operations.  It
+differs from the Unix @code{crypt}, @code{setkey}, and @code{encrypt}
+library routines in that it provides a true DES encryption, without
+modifying the algorithm, and executes much faster.  To use, create a
+@code{des_key_schedule} struct, defined in @file{des.h} for each key
+that may be simultaneously active.  Next, create key schedules (from the
+8-byte keys) as needed, via @code{des_set_key}, prior to using the
+encryption or checksum routines. Then setup the input and output areas
+(note that lengths are restricted to be multiples of eight
+bytes). Finally, invoke the encryption/decryption routines,
+@code{des_ecb_encrypt} or @code{des_cbc_encrypt} or
+@code{des_pcbc_encrypt}, or, to generate a cryptographic checksum, use
+@code{quad_cksum} (fast) or @code{des_cbc_cksum} (slow).
+@smallexample
+#include "des.h"
+int des_read_password(des_cblock *@var{key}, char *@var{prompt}, int 
+        @var{verify})
+int des_string_to_key(char *@var{str}, des_cblock @var{key})
+int des_random_key(des_cblock *@var{key})
+int des_set_key(des_cblock *@var{key}, des_key_schedule @var{schedule})
+int des_ecb_encrypt(des_cblock *@var{input},des_cblock *@var{output}, 
+        des_key_schedule @var{schedule},int @var{encrypt})
+int des_pcbc_encrypt(des_cblock *@var{input},des_cblock *@var{output}, long 
+        @var{length}, des_key_schedule @var{schedule},
+	des_cblock *@var{ivec}, int @var{encrypt})
+unsigned long quad_cksum(des_cblock *@var{input},des_cblock *@var{output},
+	long @var{length}, int @var{out_count},
+	des_cblock *@var{seed})
+@end smallexample
+
+@node des_read_password
+@subsection des_read_password
+@findex des_read_password
+@code{des_read_password} writes the string specified by @var{prompt} to
+the standard output, turns off echo (if possible) and reads an input
+string from standard input until terminated with a newline.  If
+@var{verify} is non-zero, it prompts and reads input again, for use in
+applications such as changing a password; both versions are compared,
+and the input is requested repeatedly until they match.  Then
+@code{des_read_password} converts the input string into a valid DES key,
+internally using the @code{des_string_to_key} routine.  The newly
+created key is copied to the area pointed to by the @var{key} argument.
+@code{des_read_password} returns a zero if no errors occurred, or a `-1'
+indicating that an error occurred trying to manipulate the terminal
+echo.
+
+@node des_random_key
+@subsection des_random_key
+@findex des_random_key
+@code{des_random_key} generates a random DES encryption key (eight
+bytes), set to odd parity per FIPS specifications.  This routine uses
+the current time, process ID, and a counter as a seed for the random
+number generator.  The caller must supply space for the output key,
+pointed to by argument @var{key}, then after calling
+@code{des_random_key} should call the @code{des_set_key} routine when
+needed.  No meaningful value is returned.  @code{void} is not used for
+historical reasons.
+
+This function is deprecated. @code{des_init_random_number_generator}
+should be used to set a key for the @code{des_new_random_key} generator,
+which is much stronger due to the use of DES and the use of a secret
+key. (Programs that operate directly on the database can use the master
+key; for client programs like @samp{ksrvutil} it may be sufficient to
+use a current session key.)
+
+@node des_set_key
+@subsection des_set_key
+@findex des_set_key
+@code{des_set_key} calculates a key schedule from all eight bytes of the
+input key, pointed to by the @var{key} argument, and outputs the
+schedule into the @code{des_key_schedule} indicated by the
+@var{schedule} argument. You must pass a valid eight byte key; no
+padding is done.  The key schedule may then be used in subsequent
+encryption/decryption/checksum operations.  Many key schedules may be
+cached for later use.  The user must clear keys and schedules as soon as
+no longer needed, to prevent their disclosure.  The routine also checks
+the key parity, and returns a zero if the key parity is correct (odd), a
+`-1' indicating a key parity error, or a `-2' indicating use of a weak
+key. If an error is returned, the key schedule was not created.
+
+@node des_ecb_encrypt
+@subsection des_ecb_encrypt
+@findex des_ecb_encrypt
+@code{des_ecb_encrypt} is the basic DES encryption routine that
+encrypts or decrypts a single 8-byte block in electronic code book
+mode.  It always transforms the input data, pointed to by @var{input},
+into the output data, pointed to by the @var{output} argument.  If the
+@var{encrypt} argument is non-zero, the input (cleartext) is encrypted
+into the output (ciphertext) using the @code{key_schedule} specified by
+the @var{schedule} argument, previously set via @code{des_set_key}.  If
+@var{encrypt} is zero, the input (now ciphertext) is decrypted into the
+output (now cleartext).  Input and output may overlap.  No meaningful
+value is returned.  @code{void} is not used for historical reasons.
+
+@node des_pcbc_encrypt
+@subsection des_pcbc_encrypt
+@findex des_pcbc_encrypt
+@code{des_pcbc_encrypt} encrypts/decrypts using a modified block
+chaining mode.  Its calling sequence is identical to
+@code{des_cbc_encrypt}. It differs in its error propagation
+characteristics.  @code{des_pcbc_encrypt} is not recommended for most
+encryption purposes.  Modification of a single bit of the ciphertext
+affects all the subsequent (decrypted) cleartext.  Similarly, modifying
+a single bit of the cleartext affects all the subsequent (encrypted)
+ciphertext.  `PCBC' mode, on encryption, `XORs' both the cleartext of
+block @var{N} and the ciphertext resulting from block @var{N} with the
+cleartext for block @var{N}+1 prior to encrypting block @var{N}+1.
+However, this mode has been shown to have inherent weaknesses.
+
+@node des_cbc_cksum
+@subsection des_cbc_cksum
+@findex des_cbc_cksum
+@code{des_cbc_cksum} produces an 8-byte cryptographic checksum by
+cipher-block-chain encrypting the cleartext data pointed to by the
+@var{input} argument. All of the ciphertext output is discarded, except
+the last 8-byte ciphertext block, which is written into the area pointed
+to by the @var{output} argument.  It uses the key schedule, provided by
+the @var{schedule} argument and initialization vector provided by the
+@var{ivec} argument.  If the @var{length} argument is not an integral
+multiple of eight bytes, the last cleartext block is copied to a temp
+and zero filled at the highest addresses.  The output is ALWAYS eight
+bytes.  The routine also returns an @code{unsigned long}, which is the
+last (highest address) half of the 8 byte checksum computed.  This
+result is probably byte-order dependent.
+
+@node quad_cksum
+@subsection quad_cksum
+@findex quad_cksum
+@code{quad_cksum} produces a checksum by chaining quadratic operations
+on the cleartext data pointed to by the @var{input} argument. The
+@var{length} argument specifies the length of the input---only exactly
+that many bytes are included for the checksum, without any padding.  The
+algorithm may be iterated over the same input data, if the
+@var{out_count} argument is `2', `3' or `4', and the optional
+@var{output} argument is a non-null pointer.  The default is one
+iteration, and it does not run more than four times.  Multiple
+iterations run more slowly, but provide a longer checksum, if desired.
+The @var{seed} argument provides an 8-byte seed for the first
+iteration. If multiple iterations are requested, the results of one
+iteration are automatically used as the seed for the next iteration.  It
+returns both an @code{unsigned long} checksum value, and if the
+@var{output} argument is not a null pointer, up to 16 bytes of the
+computed checksum are written into the output.
+
+@node des_init_random_number_generator
+@subsection des_init_random_number_generator
+@findex des_init_random_number_generator
+@code{des_init_random_number_generator} sets the key for the new random
+number generator. It also sets the initial sequence number from a
+microsecond clock, the host id, and process id if available.
+
+@node des_new_random_key
+@subsection des_new_random_key
+@findex des_new_random_key
+@code{des_new_random_key} encrypts the sequence number with the
+previously selected key and advances the sequence number. This produces
+a key with strong unpredictablity (due to the use of DES and a secret
+key.) This function will only generate valid non-weak keys.
+
+@node Authentication
+@section Authentication
+@menu
+* Authentication overview::     
+* krb_kntoln::                  
+* krb_set_key::                 
+* krb_mk_err::                  
+* krb_rd_err::                  
+* krb_sendauth::                
+* krb_recvauth::                
+* krb_net_write and krb_net_read::  
+@end menu
+@node Authentication overview
+@subsection Authentication overview
+@smallexample
+#include "krb.h"
+int krb_kntoln(AUTH_DAT *@var{ad}, char *@var{lname});
+int krb_set_key(char *@var{key}, int @var{cvt});
+int krb_get_cred(char *@var{service}, char *@var{instance}, char 
+*@var{realm}, CREDENTIALS *@var{c});
+long krb_mk_err(u_char *@var{out}, long @var{code}, char *@var{string});
+long krb_rd_err(u_char *@var{in}, u_long @var{length},
+		long @var{code}, MSG_DAT *@var{msg_data});
+@end smallexample
+
+The following functions, which are built on top of the core Kerberos
+library, provide a convenient means for client and server programs to
+send authentication messages to one another through network connections.
+
+@smallexample
+#define DEFINE_SOCKADDR
+#include "krb.h"
+int krb_sendauth(long @var{options}, int @var{fd}, KTEXT @var{ktext}, char 
+*@var{service}, char *@var{inst}, char *@var{realm}, u_long @var{checksum}, 
+MSG_DAT *msg_@var{data},
+	CREDENTIALS *@var{cred},
+	Key_schedule @var{schedule},
+	struct sockaddr_in *@var{laddr},
+	struct sockaddr_in *@var{faddr},
+	char *@var{version});
+int krb_recvauth(long @var{options}, int @var{fd}, KTEXT @var{ktext}, char 
+*@var{service}, char *@var{inst},
+	struct sockaddr_in *@var{laddr},
+	struct sockaddr_in *@var{faddr},
+	AUTH_DAT *@var{auth_data},
+	char *@var{filename},
+	Key_schedule @var{schedule},
+	char *@var{version});
+int krb_net_write(int @var{fd}, char *@file{buf}, int @var{format});
+int krb_net_read(int @var{fd}, char *@file{buf}, int @var{format}); 
+@end smallexample
+
+@node krb_kntoln
+@subsection krb_kntoln
+@findex krb_kntoln
+@code{krb_kntoln} converts a Kerberos name (supplied in an
+@code{AUTH_DAT} structure) to a local Unix username.  If the instance is
+the null string and the realm is the local realm, then the name is
+copied to the @var{lname} argument.  If the realm is not the local realm
+or the instance is non-null, or some error occurs, @code{KFAILURE} is
+returned, otherwise @code{KSUCCESS} is returned.  The local name
+returned might be used by an application to change user IDs,
+directories, or other parameters.  This function is not an integral part
+of Kerberos, but is instead provided to support the use of Kerberos in
+existing utilities.
+
+@node krb_set_key
+@subsection krb_set_key
+@findex krb_set_key
+@code{krb_set_key} takes as an argument a DES key.  It then creates a
+key schedule from it and saves the original key to be used as an
+initialization vector.  It is used to set the server's key which must be
+used to decrypt tickets.  If called with a non-zero second argument,
+@code{krb_set_key} first converts the input from a string of arbitrary
+length to a DES key by encrypting it with a one-way function.  In most
+cases it should not be necessary to call @code{krb_set_key}. The
+necessary keys are usually obtained and set inside
+@code{krb_rd_req}. @code{krb_set_key} is provided for those applications
+that do not wish to place the application keys on disk.
+
+@node krb_mk_err
+@subsection krb_mk_err
+@findex krb_mk_err
+@code{krb_mk_err} constructs an application level error message that
+may be used along with @code{krb_mk_priv} or @code{krb_mk_safe}.
+@var{out} is a pointer to the output buffer, @var{code} is an
+application specific error code, and @var{string} is an application
+specific error string.
+
+@node krb_rd_err
+@subsection krb_rd_err
+@findex krb_rd_err
+@code{krb_rd_err} unpacks a received @code{krb_mk_err} message.
+@var{in} points to the beginning of the received message, whose length
+is specified in @var{in_length}.  @var{code} is a pointer to a value to
+be filled in with the error value provided by the application.
+@var{msg_data} is a pointer to a @code{MSG_DAT} struct, defined in
+@file{krb.h}. The routine fills in these @code{MSG_DAT} fields: the
+@code{app_data} field with a pointer to the application error text,
+@code{app_length} with the length of the @code{app_data} field, and
+@code{swap} with a `1' if the byte order of the receiver is different
+than that of the sender.  (The application must still determine if it is
+appropriate to byte-swap application data; the Kerberos protocol fields
+are already taken care of).  The routine returns zero if the error
+message has been successfully received, or a Kerberos error code.
+
+@node krb_sendauth
+
+@subsection krb_sendauth
+@findex krb_sendauth
+
+The @code{krb_sendauth} function sends an authenticated ticket from the
+client program to the server program by writing the ticket to a network
+socket.  The @code{krb_recvauth} function receives the ticket from the
+client by reading from a network socket.
+
+@code{krb_sendauth}
+writes the ticket to the network socket specified by the file
+descriptor @var{fd}, returning @code{KSUCCESS} if the write proceeds
+successfully, and an error code if it does not.  The @var{ktext}
+argument should point to an allocated @code{KTEXT_ST} structure.  The
+@var{service}, @var{inst}, and @var{realm} arguments specify the server
+program's Kerberos principal name, instance, and realm.  If you are
+writing a client that uses the local realm exclusively, you can set the
+@var{realm} argument to NULL.  The @var{version} argument allows the
+client program to pass an application-specific version string that the
+server program can then match against its own version string.  The
+version string can be up to @code{KSEND_VNO_LEN} (see @file{krb.h})
+characters in length.  The @var{checksum} argument can be used to pass
+checksum information to the server program. The client program is
+responsible for specifying this information. This checksum information
+is difficult to corrupt because @code{krb_sendauth} passes it over the
+network in encrypted form.  The checksum argument is passed as the
+checksum argument to @code{krb_mk_req}.  You can set
+@code{krb_sendauth}'s other arguments to NULL unless you want the
+client and server programs to mutually authenticate themselves. In the
+case of mutual authentication, the client authenticates itself to the
+server program, and demands that the server in turn authenticate itself
+to the client.
+
+If you want mutual authentication, make sure that you read all pending
+data from the local socket before calling @code{krb_sendauth}.  Set
+@code{krb_sendauth}'s options argument to @code{KOPT_DO_MUTUAL} (this
+macro is defined in the @file{krb.h} file); make sure that the
+@var{laddr} argument points to the address of the local socket, and that
+@var{faddr} points to the foreign socket's network address.
+@code{krb_sendauth} fills in the other arguments---@var{msg_data},
+@var{cred}, and @var{schedule}---before sending the ticket to the server
+program. You must, however, allocate space for these arguments before
+calling the function.  @code{krb_sendauth} supports two other options:
+@code{KOPT_DONT_MK_REQ}, and @code{KOPT_DONT_CANON}.  If called with
+options set as @code{KOPT_DONT_MK_REQ}, @code{krb_sendauth} does not use
+the @code{krb_mk_req} function to retrieve the ticket from the Kerberos
+server.  The @var{ktext} argument must point to an existing ticket and
+authenticator (such as would be created by @code{krb_mk_req}), and the
+@var{service}, @var{inst}, and @var{realm} arguments can be set to NULL.
+
+@code{krb_sendauth} does not convert the service's instance to canonical
+form using @ref{krb_realmofhost,,krb_get_phost}, if called with options
+set as @code{KOPT_DONT_CANON}.  If you want to call @code{krb_sendauth}
+with a multiple options specification, construct options as a bitwise-OR
+of the options you want to specify.
+
+Note that @code{krb_sendauth}, @code{krb_recvauth},
+@code{krb_net_write}, and @code{krb_net_read} do not work properly on
+sockets set to non-blocking I/O mode.
+
+@node krb_recvauth
+@subsection krb_recvauth
+@findex krb_recvauth
+The @code{krb_recvauth} function reads a
+ticket/authenticator pair from the socket pointed to by the @var{fd}
+argument.  Set the @var{options} argument as a bitwise-OR of the options
+desired.  Currently only @code{KOPT_DO_MUTUAL} is useful to the
+receiver.
+
+The @code{ktext} argument should point to an allocated @code{KTEXT_ST}
+structure.  @code{krb_recvauth} fills @code{ktext} with the
+ticket/authenticator pair read from @var{fd}, then passes it to
+@code{krb_rd_req}.  The @var{service} and @var{inst} arguments specify
+the expected service and instance for which the ticket was generated.
+They are also passed to @code{krb_rd_req}. The @var{inst} argument may
+be set to @samp{*} if the caller wishes @code{krb_mk_req} to fill in the
+instance used (note that there must be space in the @var{inst} argument
+to hold a full instance name, see @xref{krb_mk_req}.)  The
+@var{faddr} argument should point to the address of the peer which is
+presenting the ticket.  It is also passed to @code{krb_rd_req}.  If the
+client and server plan to mutually authenticate one another, the
+@var{laddr} argument should point to the local address of the file
+descriptor.  Otherwise you can set this argument to NULL.
+
+The @var{auth_data} argument should point to an allocated
+@code{AUTH_DAT} area. It is passed to and filled in by
+@code{krb_rd_req}.  The checksum passed to the corresponding
+@code{krb_sendauth} is available as part of the filled-in
+@code{AUTH_DAT} area.  The @var{filename} argument specifies the
+filename which the service program should use to obtain its service key.
+@code{krb_recvauth} passes filename to the @code{krb_rd_req} function.
+If you set this argument to null, @code{krb_rd_req} looks for the
+service key in the file @file{/etc/krb-srvtab}.  If the client and
+server are performing mutual authentication, the schedule argument should
+point to an allocated @code{Key_schedule}.  Otherwise it is ignored and
+may be NULL.  The @var{version} argument should point to a character
+array of at least @code{KSEND_VNO_LEN} characters. It is filled in with
+the version string passed by the client to @code{krb_sendauth}.
+
+Note that @code{krb_sendauth}, @code{krb_recvauth},
+@code{krb_net_write}, and @code{krb_net_read} do not work properly on
+sockets set to non-blocking I/O mode.
+
+@c
+@c krb_rd_auth was never implmented, since it was used only by servers,
+@c and all servers were done on Unix where sockets are file descriptors.
+@c For completeness it should be done, but we ran out of time.
+@c
+@c @item krb_rd_auth
+@c @smallexample
+@c csCode= krbReadSendauthCode (2025)
+@c transform.data      = data      [input]
+@c transform.data_len  = data_len  [input]
+@c transform.principal = service   [input]
+@c transform.instance  = instance  [input]
+@c transform.from_addr = from_addr [input]
+@c transform.key       = service_key [input]
+@c transform.auth_data = auth_data [output by ref]
+@c transform.version   = version   [output by ref]
+@c @end smallexample
+@c 
+@c This routine is used to interpret and authenticate an authenticator that
+@c is sent over the network using the @code{krb_sendauth}
+@c routine. @var{data} points to the beginning of the received message,
+@c whose length is specified by @var{data_len}.  @var{service name} and
+@c @var{instance} specify the Kerberos service being authenticated;
+@c @var{from_addr} is the Internet address of the host originating the
+@c request.  This routine fills information obtained from the
+@c authenticator, fills in the session key in @var{key}, and returns the
+@c version information in @var{version}.  @var{version} must point to an
+@c area @code{KSEND_VNO_LEN} bytes long.
+@c 
+@c This routine is similar to the original @code{krb_recvauth} routine,
+@c except that it takes the authenticator as an argument instead of reading
+@c a file descriptor, and @var{service key} as an argument instead of
+@c reading a @file{srvtab} file.  If mutual authentication is requested,
+@c the application is responsible to use @code{KrbMakePrivate} to send back
+@c the checksum + 1 in network byte order.
+@node krb_net_write and krb_net_read
+@subsection krb_net_write and krb_net_read
+@findex krb_net_write
+@findex krb_net_read
+The @code{krb_net_write} function emulates the @code{write}(2) system
+call, but guarantees that all data specified is written to @var{fd}
+before returning, unless an error condition occurs.  The
+@code{krb_net_read} function emulates the @code{read}(2) system call,
+but guarantees that the requested amount of data is read from @var{fd}
+before returning, unless an error condition occurs.
+
+@c @subsubheading BUGS
+Note that @code{krb_sendauth}, @code{krb_recvauth},
+@code{krb_net_write}, and @code{krb_net_read} do not work properly on
+sockets set to non-blocking I/O mode.
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos,,krb_mk_req
+@item Kerberos,,krb_rd_req
+@item krb_realmofhost,,krb_get_phost
+@end table
+
+@subsubheading RESTRICTIONS
+Copyright 1988, Massachusetts Institute of Technology.  For copying and 
+distribution information, please see the file @file{<mit-copyright.h>}.
+@end ignore
+
+
+@node Realms
+@section Realms
+@subsection krb_get_phost
+@findex krb_get_phost
+
+@code{char *krb_get_phost(char *@var{alias})}
+
+@code{krb_get_phost} converts the hostname @var{alias} (which can be
+either an official name or an alias) into the instance name to be used
+in obtaining Kerberos tickets for most services, including the Berkeley
+@code{rcmd} suite (@code{rlogin}, @code{rcp}, @code{rsh}).  The current
+convention is to return the first segment of the official domain-style
+name after conversion to lower case.
+
+@node Ticket Files
+@section Ticket Files
+
+These routines are the original interface to the credentials cache.
+This interface worked poorly on non-Unix platforms, so it has been
+superseded by the routines described in the Common API section.
+
+This group of routines is provided to manipulate a Kerberos ticket
+file.  A @dfn{ticket file} has the following layout:
+
+@itemize @bullet
+@item          principal's name (a null-terminated string)
+@item          principal's instance (a null-terminated string)
+@item          @var{CREDENTIAL_1}
+@item          @var{CREDENTIAL_2}
+@item            @dots{}
+@item          @var{CREDENTIAL_n}
+@item          EOF
+@end itemize
+
+@var{CREDENTIAL_x} consists of the following fixed-length fields
+from the @code{CREDENTIALS} structure (defined in @file{"krb.h"}):
+
+@smallexample
+char service[ANAME_SZ]
+char instance[INST_SZ]
+char realm[REALM_SZ]
+des_cblock session
+int lifetime
+int kvno
+KTEXT_ST ticket_st
+long issue_date
+@end smallexample
+
+@menu
+* tf_init::                     
+* tf_get_pname::                
+* tf_get_pinst::                
+* tf_get_cred::                 
+* tf_close::                    
+@end menu
+
+
+@node tf_init
+@subsection tf_init
+@findex tf_init
+@code{tf_init} must be called before the other ticket file routines.  It
+takes the name of the ticket file to use, and a read/write flag as an
+argument.  It tries to open the ticket file, checks the mode and if
+everything is okay, locks the file. If it is opened for reading, the
+lock is shared.  If it is opened for writing, the lock is exclusive.
+@code{KSUCCESS} is returned if all goes well, otherwise one of the
+following messages is returned:
+@table @code
+@item NO_TKT_FIL
+- file was not there
+@item TKT_FIL_ACC 
+- file was in wrong mode, etc.
+@item TKT_FIL_LCK 
+- could not lock the file, even after a retry
+@end table
+
+@node tf_get_pname
+@subsection tf_get_pname
+@findex tf_get_pname
+The @code{tf_get_pname} function reads the principal's name from a ticket
+file. It should only be called after @code{tf_init} has been called.
+The principal's name is filled into the @var{pname} parameter.  If all
+goes well, @code{KSUCCESS} is returned.  If @code{tf_init} is not
+called, @code{TKT_FIL_INI} is returned.  If the principal's name is
+null, or @code{EOF} is encountered, or the name is longer than
+@code{ANAME_SZ}, @code{TKT_FIL_FMT} is returned.  
+
+@node tf_get_pinst
+@subsection tf_get_pinst
+@findex tf_get_pinst
+The
+@code{tf_get_pinst} reads the principal's instance from a ticket file.
+It should only be called after @code{tf_init} and @code{tf_get_pname}
+are called.  The principal's instance is filled into the
+@var{pinst} parameter.  If all goes well, @code{KSUCCESS} is returned.
+If @code{tf_init} is not called, @code{TKT_FIL_INI} is returned.  If
+@code{EOF} is encountered, or the name is longer than @code{INST_SZ},
+@code{TKT_FIL_FMT} is returned.  Note that, unlike the principal name,
+the instance name may be null.  
+
+@node tf_get_cred
+@subsection tf_get_cred
+@findex tf_get_cred
+The @code{tf_get_cred} routine reads a
+@var{CREDENTIALS} record from a ticket file and fills in the given
+structure.  It should only be called after @code{tf_init},
+@code{tf_get_pname}, and @code{tf_get_pinst} are called.  If all
+goes well, @code{KSUCCESS} is returned.  Possible error codes are:
+@table @code
+@item TKT_FIL_INI
+- @code{tf_init} was not called first
+@item TKT_FIL_FMT 
+- bad format
+@item EOF 
+- end of file encountered
+@end table
+
+@node tf_close
+@subsection tf_close
+@findex tf_close
+@code{tf_close} closes the ticket file and releases the lock on it.
+@ignore
+@subsubheading SEE ALSO
+@xref{Kerberos}.
+@subsubheading BUGS
+The ticket file routines have to be called in a certain order.
+@subsubheading RESTRICTIONS
+Copyright 1987 Massachusetts Institute of Technology
+@end ignore
+
+
+@node Other
+@section Other
+@menu
+* krb_set_tkt_string::  krb_set_tkt_string
+* kuserok::             kuserok
+@end menu
+
+
+@node krb_set_tkt_string
+@subsection krb_set_tkt_string
+@findex krb_set_tkt_string
+
+@smallexample
+#include "krb.h"
+void krb_set_tkt_string(char *@var{filename});
+@end smallexample
+
+@code{krb_set_tkt_string} sets the name of the file that holds the
+user's cache of Kerberos server tickets and associated session keys.
+The string @var{filename} passed in is copied into local storage.  Only
+@code{MAXPATHLEN-1} characters of the filename are copied in for use as
+the cache file name.  This routine should be called during
+initialization, before other Kerberos routines are called; otherwise the
+routines which fetch the ticket cache file name may be called and return
+an undesired ticket file name until this routine is called.  The default
+ticket file name (unless the environment variable @code{KRBTKFILE} is
+set) is @file{/tmp/tkt@var{uid}}), where @var{uid} denotes the user's
+ID, in decimal.
+
+
+@node kuserok
+@subsection kuserok
+@findex kuserok
+
+@smallexample
+#include "krb.h"
+kuserok(AUTH_DAT *@var{auth_data}, char *@var{localuser});
+@end smallexample
+
+@code{kuserok} determines whether a Kerberos principal described by the
+structure @var{auth_data} is authorized to login as user @var{localuser}
+according to the authorization file (@file{~localuser/.klogin} by
+default).  It returns zero if authorized, `1' if not authorized.  If
+there is no account for @var{localuser} on the local machine,
+authorization is not granted.  If there is no authorization file, and
+the Kerberos principal described by @var{auth_data} translates to
+@var{localuser} (using @pxref{krb_kntoln}), authorization is granted.
+If the authorization file can not be accessed, or the file is not owned
+by @var{localuser}, authorization is denied.  Otherwise, the file is
+searched for a matching principal name, and realm.  If a match is found,
+authorization is granted, else authorization is denied.  The file
+entries are in the format:
+@smallexample
+@var{name}.@var{instance}@@@var{realm}
+@end smallexample
+@noindent 
+with one entry per line.
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos
+@item Kerberos,,krb_kntoln
+@end table
+@code{ruserok}(3)
+
+@subsubheading FILES
+@table @file
+@item ~localuser/.klogin
+authorization list
+@end table
+@end ignore
+
+
+@node Macintosh Library API
+@chapter CNS Macintosh Library API
+
+This chapter documents Macintosh-specific aspects of the Cygnus Network
+Support Kerberos programming interface.
+ 
+On the Macintosh, the standard Kerberos API is available, as
+documented in the common API section.  These standard
+routines are implemented as
+glue code which in turn calls a driver.  In the driver is more glue code
+which then calls the real routines.
+
+@emph{We STRONGLY recommend that you write your programs to use the
+ordinary Kerberos subroutine call API.  The low-level Macintosh
+interface is not
+guaranteed to remain stable.  It's a lot easier to program with
+simple subroutine calls instead of I/O traps too.}
+
+Application programs which have unusual requirements can call the
+driver directly, though this is discouraged.  To call the driver
+directly, examine the file @file{mac_stubs.c} in the source code
+distribution of Cygnus Network Security, in the @file{src/lib/krb}
+directory.
+
+The low-level Kerberos interface is designed to be compatible with the
+@code{kclient} program from Cornell, and borrows some code from the
+@code{kclient} and @code{kconfig} programs.  Programs written to work
+with the @code{kclient} Mac Kerberos driver will probably work with
+Cygnus Network Security's driver as well.  One feature of the @code{kclient}
+program that is not implemented by CNS is multiple named credential caches.
+Supporting this feature would have required changing the basic
+API for several Kerberos functions.
+
+None of the CNS driver operations work asynchronously; the driver must
+be called synchronously.
+
+
+@menu
+* Compiling and Linking your Macintosh Program::
+@end menu
+
+@node Compiling and Linking your Macintosh Program
+@section Compiling and Linking your Macintosh Program
+
+The Macintosh Kerberos driver is installed into the @samp{Extensions}
+folder in the @samp{System Folder} on the disk drive from which you boot.
+It installs itself into the system at boot time, putting a small icon
+along the bottom of the screen for a short time.  By the time the system
+comes up, the driver is ready for use.
+
+The preferred way to use the driver is to @code{#include "krb.h"}
+in all of your source modules that call Kerberos routines.  Make
+sure that your program calls @code{krb_start_session} before calling any
+other Kerberos routines.  Compile and link your code with the
+@file{mac_stubs.c} file, which provides the short `stub' routines
+which translate the Common Kerberos Library API into the arcane calling
+conventions of Macintosh drivers.
+
+If @code{krb_start_session} does not return @code{KSUCCESS}, it is
+unable to locate or initialize a Kerberos driver in your Macintosh.
+Check your Extensions folder to make sure that the driver is being
+installed on each reboot.  You must reboot after putting the driver in
+the Extensions folder as well.
+
+@node MS-Windows Library API
+@chapter MS-Windows Application Programmer Interface
+
+This chapter documents Microsoft Windows-specific aspects of the
+Cygnus Network Support Kerberos programming interface.
+ 
+On MS-Windows, the standard Kerberos API is available, as
+documented in the common API section.  These standard
+routines are implemented in a Dynamic Link Library called
+@file{KERBEROS.DLL}.
+
+Due to the standard DLL calling conventions,
+all pointers passed to or returned from the MS-Windows Kerberos
+implementation are
+FAR pointers.  The interface file @file{kerberos.h}, which is included 
+by the usual @file{krb.h} include file, provides function 
+prototypes that cause any pointers arguments to be converted to
+FAR pointers.  You must ensure that any result values which are pointers
+are handled properly as FAR pointers.
+
+Values which are specified as @code{int} are 16 bit numbers using
+MS-Windows compilers.
+
+@menu
+* Compiling and Linking your MS-Windows Program::
+* Password changing calls::	Interface for changing a user's password
+* Ticket cache notification::	Finding out when the cache changes
+* Timekeeping::			Time epochs and clock access
+@end menu
+
+@node Compiling and Linking your MS-Windows Program
+@section Compiling and Linking your MS-Windows Program
+
+The @file{KERBEROS.DLL} file can be installed anywhere on
+the search path.
+
+The preferred way to use the driver is to @code{#include "krb.h"} in all
+of your source modules that call Kerberos routines.  Make sure that your
+program calls @code{krb_start_session} before calling any other Kerberos
+routines.  Link your code with the @file{KERBEROS.LIB} file, which
+causes calls to @file{KERBEROS.DLL} to occur when running the program.
+
+@node Password changing calls
+@section Password changing calls
+
+Due to the need to formally externalize calls from a DLL, a number of
+routines which are only used in @code{kpasswd} on UNIX are visible in
+the MS-Windows interface.  The routines are used by the @code{CNS} user
+interface program on Windows.  On Unix, these routines reside within the
+@code{kadm} library; they are not usually called by users.
+
+@smallexample
+int kadm_change_pw (des_cblock key);
+
+int kadm_change_pw2 (des_cblock key, char *password, 
+unsigned char **ret_st);
+
+int kadm_init_link (char *pwserv_name, char *krb_master, 
+char *realm);
+@end smallexample
+
+@node Ticket cache notification
+@section Ticket cache notification
+
+This MS-Windows-specific API call gives an interactive application
+notification when the contents of the ticket cache change.  The call
+returns the number of the unique message which are sent to all top level
+windows after the ticket cache changes.  The @code{CNS} program uses
+this message to keep its display current.  The prototype is as follows:
+
+@smallexample
+int krb_get_notification_message(void)
+@end smallexample
+
+
+@node Timekeeping
+@section Timekeeping
+
+The Kerberos protocol uses timestamps based on an epoch
+in which time begins at 
+00:00 January 1, 1970.  All times expected and returned by the
+Kerberos API are in these 
+units, independent of what the C library returns.  Note that Microsoft C 7.0 
+starts time at January 1, 1900, though they backed that change out in
+version 7.0.1.  Our code can run in either environment.
+
+Kerberos reads time from the hardware clock using BIOS interrupt 
+0x1A.  This avoids problems with the software clock drifting as the 
+system runs. 
+
+The local time zone is set by the @code{TZ} environment variable.
+
+@node Function Index
+@chapter Function Index
+
+@printindex fn
+
+@contents
+@c end of texinfo file
+@bye
+@c (modify-syntax-entry ?_ "w" para-mode-syntax-table)
+@c (modify-syntax-entry ?- "w" para-mode-syntax-table) 
+@c (modify-syntax-entry ?/ "w" para-mode-syntax-table)

@@ -1,0 +1,20 @@
+# /*  sgi */
+
+# Host support files
+DES_TIME_SRCS=unix_time.c
+DES_TIME_OBJS=unix_time.o
+LIB_KRB_HOSTSRCS=unix_glue.c
+LIB_KRB_HOSTOBJS=unix_glue.o
+
+RPROGS=-DRPROGS_IN_USR_BSD
+# /* noone else puts them there... */
+SHELL=/bin/sh
+TARGET_CDEFS= -DBSD42 -DATHENA -DHAVE_VSPRINTF \
+	-DNOTTYENT -DPOSIX -DNOSTBLKSIZE -DNOVFORK -DNOUTHOST \
+	-DNO_GETUSERSHELL -DHAS_STRDUP -DHAS_SETUPTERM -Dyywrap=yywrap
+#define NOINSTALL
+RANLIB=true
+# WARNING! Cheating!
+#CC=cc -cckr
+# makedepend can't grok irix system headers...
+DEPEND=true

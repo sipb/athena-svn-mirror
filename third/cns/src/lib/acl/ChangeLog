@@ -1,0 +1,25 @@
+Tue Sep 26 23:48:23 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* acl_files.c (acl_check): Rewrite to do more wildcard checks.
+
+Wed Nov  2 19:31:05 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* acl_files.c (acl_add): fputs returns EOF on error, not NULL.
+
+Mon Oct 31 19:40:08 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (CODE): Use Makefile.in instead of Imakefile.
+
+Fri May 20 01:25:50 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Don't keep backup files of libraries.  Use LIBEXT.
+
+Fri May 13 01:57:40 1994  John Gilmore  (gnu@cygnus.com)
+
+	* acl_files.c:  Don't depend on KERBEROS.  Put krb.h up top
+	where it can control #if's for other includes.  Remove RCS crud.
+
+Thu Feb 24 03:54:58 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* acl_files.c (acl_abort):  Lint.
+

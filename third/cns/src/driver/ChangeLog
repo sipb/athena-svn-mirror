@@ -1,0 +1,67 @@
+Fri Feb 10 14:34:52 1995  John Gilmore  <gnu@cygnus.com>
+
+	* %Kerberos Client Preferences:  Check in a default Preferences
+	file, which matches the src/prototypes config files.
+
+Wed Feb  8 14:34:15 1995  John Gilmore  (gnu at toad.com)
+
+	* MakeFile (all):  Build "CNS Kerberos".
+
+Wed Feb  1 01:36:05 1995  John Gilmore  (gnu at toad.com)
+
+	* MakeFile:  Add rule to build the driver as "CNS Kerberos" as
+	well as the existing name "DriverShellAll.think" from Julia.
+	"CNS Kerberos" is now what the documentation in
+	doc/developer-notes.texinfo says to build.
+
+Wed Oct 12 00:41:19 1994  Julia Menapace  (jcm at toad.com)
+
+	* driverInstall.a: Fixed typo in ReturnA4.
+
+Tue Oct 11 10:36:30 1994  Julia Menapace  (jcm at toad.com)
+
+	* Driver.c (main): Remove old function prototypes for DES routines.
+	Include Des.h, Comment memory allocation scheme.  Remove Sysbeep
+	and debugger trap debugging code. Add code to process driver
+	control calls for setting local realm, getting name instance
+	and realm of the principal in the current ticket file,
+	cKrbCacheInitialTicket, cKrbGetAuthForService, getting number
+	of and nth sessions, deleting one or all sessions, setting the
+	password, and returning DES pointers to calling applications.
+	* Driver.h: Use correct C comments.
+	* driverInstall.a (ReturnA4): Return value of register that
+	points to driver globals for use by applications calling the DES
+	routine pointers.
+	* driverInstall.c (main): Remove superfluous comments.
+
+Wed Sep 14 12:15:48 1994  Julia Menapace  (jcm@cygnus.com) 
+
+	* Driver.c (main): Casts for stricter type checking.
+	Process additional driver control calls, to add and delete realm
+	maps and server maps, and to return nth server or realm map.
+
+	* Makefile: Fix typo in instructions output to user while building
+	the driver.
+
+Tue Sep 13 17:20:42 1994  Julia Menapace  (jcm@cygnus.com)
+
+	* c_mac.h (MULTIDIMENSIONAL_ERR_TXT): Added placeholder for
+	compile time flag set in mac binary project file.
+
+Fri Jul  1 08:22:13 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Driver.c:  Remove references to isname, isinst, isrealm.
+	Remove non-ASCII (C) symbol so file will appear to be text.
+	* MakeFile:  Put header on it so Intercon NFS won't think the file
+	is non-text.  Add "assembly" target.  Lowercase "kerberos.r".
+	Avoid deleting the driver and LoadDriver when building the final
+	object.  Add "echo" to remind to copy to Extensions folder.
+	* kerberos.r:  Include "Kerberos.rsrc", not "kerberos.rsrc".
+	* ShowINIT.a:  Add missing assembler language file.
+
+Fri Jul  1 05:37:23 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* Create driver directory and populate it with initial working
+	Macintosh Kerberos driver.  Pieces from KClient,  the rest by Julia
+	Menapace and John Gilmore.
+

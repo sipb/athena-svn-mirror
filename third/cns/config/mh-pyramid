@@ -1,0 +1,3 @@
+#define LD_X_BROKEN
+CC=/usr/ucb/cc
+# /usr/ucb needed to get at dbm at all...

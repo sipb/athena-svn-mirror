@@ -1,0 +1,242 @@
+# Standalone Kerberos test.
+# This is a DejaGnu test script.
+# This script tests that the Kerberos tools can talk to each other.
+
+# This mostly just calls procedures in testsuite/config/default.exp.
+
+if ![info exists KLIST] {
+    set KLIST [findfile $objdir/kuser/klist]
+}
+
+if ![info exists KDESTROY] {
+    set KDESTROY [findfile $objdir/kuser/kdestroy]
+}
+
+if ![info exists KDB_UTIL] {
+    set KDB_UTIL [findfile $objdir/admin/kdb_util]
+}
+
+# Set up the Kerberos files and environment.
+if {![get_hostname] || ![setup_kerberos_files] || ![setup_kerberos_env]} {
+    return
+}
+
+# Initialize the Kerberos database.  The argument tells
+# setup_kerberos_db that it is being called from here.
+if ![setup_kerberos_db 1] {
+    return
+}
+
+# Try changing the master key.
+spawn $KDB_UTIL new_master_key tmpdir/dump $tmppwd/db
+expect_after {
+    timeout {
+	fail "kdb_util new_master_key"
+	catch "expect_after"
+	return
+    }
+    eof {
+	fail "kdb_util new_master_key"
+	catch "expect_after"
+	return
+    }
+}
+expect "Enter the CURRENT master key."
+expect "Kerberos master key:"
+send "masterkey$KEY\r"
+expect "Now enter the NEW master key."
+expect "Kerberos master key:"
+send "newmaster$KEY\r"
+expect "re-enter Kerberos master key:"
+send "newmaster$KEY\r"
+expect -re "Don't forget.*to reload the database!\r"
+expect_after
+if ![check_exit_status "kdb_util new_master_key"] {
+    return
+}
+pass "kdb_util new_master_key"
+
+# Reload the database with the new key.
+spawn $KDB_UTIL load tmpdir/dump $tmppwd/db
+expect {
+    eof { }
+    timeout {
+	fail "kdb_util load"
+	return
+    }
+}
+if ![check_exit_status "kdb_util load"] {
+    return
+}
+pass "kdb_util load"
+
+# Try running kstash using the old master key, to confirm that it
+# fails.
+spawn $KSTASH -k $tmppwd/stash -d $tmppwd/db
+expect_after {
+    timeout {
+	fail "kstash with old master key"
+	catch "expect_after"
+	return
+    }
+    eof {
+	fail "kstash with old master key"
+	catch "expect_after"
+	return
+    }
+}
+expect "Kerberos master key:"
+send "masterkey$KEY\r"
+expect "verify_master_key: Invalid master key; does not match database.\r"
+expect_after
+# We can't use check_exit_status, because we expect a non-zero exit
+# status.
+set status_list [wait -i $spawn_id]
+verbose "wait -i $spawn_id returned $status_list (kstash)"
+if { [lindex $status_list 2] != 0 } {
+    fail "kstash with old master key (bad exit status) $status_list"
+    return
+} else { if { [lindex $status_list 3] == 0 } {
+    fail "kstash with old master key (bad exit status) $status_list"
+    return
+} else {
+    pass "kstash with old master key"
+} }
+
+# Run kstash with the new master key, so we can run the daemons.
+spawn $KSTASH -k $tmppwd/stash -d $tmppwd/db
+expect_after {
+    timeout {
+	fail "kstash"
+	catch "expect_after"
+	return 0
+    }
+    eof {
+	fail "kstash"
+	catch "expect_after"
+	return 0
+    }
+}
+expect "Kerberos master key:"
+send "newmaster$KEY\r"
+expect "Master key entered"
+if ![check_exit_status kstash] {
+    return 0
+}
+pass "kstash"
+
+# We are about to start up a couple of daemon processes.  We do all
+# the rest of the tests inside a proc, so that we can easily kill the
+# processes when the procedure ends.
+
+proc doit { } {
+    global KLIST
+    global KDESTROY
+    global KEY
+    global localhostname
+    global tmppwd
+    global spawn_id
+
+    # Start up the kerberos and kadmind daemons.
+    if ![start_kerberos_daemons 1] {
+	return
+    }
+
+    # Use kadmin to add an rcmd key.
+    if ![add_kerberos_key rcmd.$localhostname 1] {
+	return
+    }
+
+    # Use ksrvutil to create a srvtab entry.
+    if ![setup_srvtab 1] {
+	return
+    }
+
+    # Use kinit to get a ticket.
+    if ![kinit krbtest.admin adminpass$KEY 1] {
+	return
+    }
+
+    # Make sure that klist can see the ticket.
+    spawn $KLIST
+    expect {
+	-re "Ticket file:\[ 	\]*$tmppwd/tkt.*Principal:\[ 	\]*krbtest.admin@KRBTEST.COM.*krbtgt.KRBTEST.COM@KRBTEST.COM" {
+	    verbose "klist started"
+	}
+	timeout {
+	    fail "klist"
+	    return
+	}
+	eof {
+	    fail "klist"
+	    return
+	}
+    }
+    if ![check_exit_status "klist"] {
+	return
+    }
+    pass "klist"
+
+    # Destroy the ticket.
+    spawn $KDESTROY
+    expect {
+	"Tickets destroyed" {
+	    verbose "kdestroy started"
+	}
+	timeout {
+	    fail "kdestroy"
+	    return
+	}
+	eof {
+	    fail "kdestroy"
+	    return
+	}
+    }
+    if ![check_exit_status "kdestroy"] {
+	return
+    }
+    pass "kdestroy"
+
+    # Double check that the ticket was destroyed.
+    # Note that the klist error message changed.
+    spawn $KLIST
+    expect {
+	"klist: No ticket file" {
+	    verbose "klist started"
+	}
+	"klist: You have no tickets cached" {
+	    verbose "klist started"
+	}
+	timeout {
+	    fail "klist after kdestroy"
+	    return
+	}
+	eof {
+	    fail "klist after kdestroy"
+	    return
+	}
+    }
+    # We can't use check_exit_status, because we expect an exit status
+    # of 1.
+    set status_list [wait -i $spawn_id]
+    verbose "wait -i $spawn_id returned $status_list (klist)"
+    if { [lindex $status_list 2] != 0 } {
+	fail "klist (bad exit status) $status_list"
+	return
+    } else { if { [lindex $status_list 3] != 1 } {
+	fail "klist (bad exit status) $status_list"
+	return
+    } else {
+	pass klist
+    } }
+}
+
+set status [catch doit msg]
+
+stop_kerberos_daemons
+
+if { $status != 0 } {
+    send_error "ERROR: error in standalone.exp\n"
+    send_error "$msg\n"
+    exit 1
+}

@@ -1,0 +1,6 @@
+PKG=CNS4
+NAME=Cygnus Network Security (version 4)
+CATEGORY=application
+VENDOR=Cygnus Support
+HOTLINE=Please use send-pr to report problems or questions.
+EMAIL=bugs@cygnus.com

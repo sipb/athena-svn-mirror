@@ -1,0 +1,106 @@
+Wed Jul 26 20:46:43 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* enc_des.c: Include string.h.
+
+Tue Feb  7 13:27:39 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kerberos.c (kerberos4_available): New function.
+
+Tue Dec 20 18:14:48 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kerberos.c (keyfile): New variable, initialized to KEYFILE.
+	(kerberos4_init): Use keyfile instead of KEYFILE.
+	(kerberos4_is): Pass keyfile to krb_rd_req instead of "".
+	* krb4encpwd.c (krb4encpwd_init): Use keyfile instead of KEYFILE.
+
+Wed Nov 23 14:03:10 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in: Add dependencies required for SunOS make VPATH
+	support.
+	* encrypt.c (genget): Declare.
+	* forward.c: If file is not compiled, add a dummy declaration to
+	keep strict ANSI C compilers happy.
+	* kerberos5.c, krb4encpwd.c, read_password.c: Likewise.
+	* rsaencpwd.c, spx.c: Likewise.
+	* strdup.c: Avoid confusion if strdup is declare incompatibly in
+	<string.h>.
+	* strftime.c: If NEED_TIME_H is defined, include <time.h>.
+
+Tue Nov 22 19:20:12 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	Merged into V4 distribution, using Cygnus configure instead of
+	autoconf.
+
+Fri Nov 18 15:19:26 1994  Theodore Y. Ts'o  (tytso@dcl)
+
+	* kerberos5.c (kerberos5_init): Initialize magic variable and
+		encryption type.  
+
+Fri Nov 18 00:37:13 1994  Mark Eichin  <eichin@cygnus.com>
+
+	* configure.in: use WITH_KRB4. (from epeisach)
+
+Mon Nov 14 16:27:29 1994  Theodore Y. Ts'o  (tytso@dcl)
+
+	* kerberos.c (kerberos4_is): Initialize random number generator on
+		the server side so that the encryption routines later on
+		can use it. 
+
+	* kerberos.c (kerberos4_send): Fix bug in how we pick the
+		challenge for the challenge/response mutual
+		authentication.
+
+Fri Nov 11 00:55:36 1994  Theodore Y. Ts'o  (tytso@dcl)
+
+	* forward.c (mk_cred, rd_cred): Move these routines to libkrb.a.
+
+Tue Nov  8 01:39:50 1994  Theodore Y. Ts'o  (tytso@dcl)
+
+	* kerberos.c (kerberos4_is): Fix bug in logic of incrementing the
+		received challenge.  A ++/-- mixup means there's a 1 in
+		256 chance the server will get it wrong.
+
+	* kerberos.c: Use des_init_random_number_genator(), since that
+		will result in different subsession keys on successive
+		runs of telnet.
+
+Mon Nov  7 22:36:20 1994  Theodore Y. Ts'o  (tytso@dcl)
+
+	* auth.c (auth_status): Only print each possible authentication
+		type once in the status report.
+
+	* auth.c (auth_onoff): Remove excess call to getauthmask() which
+		stomped the mask field.  Only print each possible
+		authentication type once in the help message.
+
+	* auth.c (getauthmask): Fix reversed sense of strcasecmp
+		comparison.
+
+	* auth.c (auth_enable, auth_disable): Change the input type to be
+		a char *, which is what auth_onoff wants anyway.
+
+Mon Aug  8 22:16:54 1994  Theodore Y. Ts'o  (tytso at tsx-11)
+
+	* kerberos5.c (kerberos5_send): Whoops, mispelled
+	krb5_copy_keyblock_contents().  (It was inside #ifdef
+	ENCRYPTION)
+
+Thu Aug  4 03:36:29 1994  Tom Yu  (tlyu@dragons-lair)
+
+	* Makefile.in: add blank target for install
+
+Tue Jul 26 18:21:29 1994  Tom Yu  (tlyu@dragons-lair)
+
+	* Makefile.in: whoops left out some $(srcdir) stuff
+
+Mon Jul 25 01:05:31 1994  Tom Yu  (tlyu@dragons-lair)
+
+	* Makefile.in: remove reference to lorder (linux doesn't have
+	lorder, it seems)
+
+Fri Jul 15 23:36:50 1994  Theodore Y. Ts'o  (tytso at tsx-11)
+
+	* kerberos5.c (kerberos5_is): Avoid coredump caused by freeing of
+	an unitialized variable.  Also make sure we don't try to free name
+	if it is NULL.
+

@@ -1,0 +1,32 @@
+# /* SPARC solaris 2.x */
+
+# Host support files
+DES_TIME_SRCS=unix_time.c
+DES_TIME_OBJS=unix_time.o
+LIB_KRB_HOSTSRCS=unix_glue.c
+LIB_KRB_HOSTOBJS=unix_glue.o
+
+RPROGS=-DRPROGS_IN_USR_UCB
+# /* sunos and solaris */
+TARGET_CDEFS= -DBSD42 -DATHENA -DHAVE_VSPRINTF \
+	-DPOSIX -DUSE_DIRENT_H -DNOTTYENT -DNEED_SYS_FCNTL_H\
+	-Dsolaris20 -DWAIT_USES_INT -DUSE_SIGPROCMASK\
+	-DNO_SIGCONTEXT -DHAS_DIRENT\
+	-DNOUTHOST -DUIDGID_T -DHAS_STRDUP \
+	-DHAS_CUSERID -DNEED_SYS_ERRLIST -DNO_YYLINENO -D__svr4__ \
+	-DNO_GETHOSTID -DHAS_SETUPTERM -DHIDE_RUSEROK -DHAVE_FGETPWENT
+X5DMDEFS= -DSTREAMSCONN -DSYSV -DSVR4
+#define HAVE_PUTENV
+SETENVSRCS = fakeenv.c
+SETENVOBJS = fakeenv.o
+#define NO_FLOCK
+FLOCK=
+#define LD_X_BROKEN
+#define _got_globals
+BSDLIB=-lsocket -lnsl
+RANLIB=true
+#define NEED_REGEX3
+REGEX3SRC=regex.c
+REGEX3OBJ=regex.o
+# resolv_lib is only called in by athena site file, for hesiod.
+RESOLV_LIB=/usr/lib/libresolv.a

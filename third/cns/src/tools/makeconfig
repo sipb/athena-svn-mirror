@@ -1,0 +1,49 @@
+#  Copyright 1989 by the Massachusetts Institute of Technology.
+# 
+#  For copying and distribution information,
+#  please see the file <mit-copyright.h>.
+#
+# Makefile for creating a Kerberos configuration
+#
+# This Makefile creates the directories needed to hold Kerberos
+# object files and executables.  It also installs the Imakefiles.
+# This also copies in the Imake and make depend program and Imake macros.
+# By default, the Imakefiles are copied into the configuration
+# and made writeable.  If a link is preferred, change LN to "ln".
+#
+# The default distination for the configuration is the current
+# directory; defaults for destination and source directories may be
+# specified, e.g.:
+#
+# make -f makeconfig SRCDIR=/u2/lockers/kerberos DESTDIR=myconfig
+
+DESTDIR	= .
+SRCDIR 	= /mit/kerberos/src
+
+LN	= cp
+SYMLINK = ln -s
+
+SUBDIR	= include lib lib/krb lib/kdb lib/kadm lib/des lib/knet \
+	  lib/acl admin appl appl/bsd appl/knetd appl/sample \
+	  appl/tftp appl/erlogin kuser kadmin man server slave \
+	  util
+
+# Empty directories which also need to be built.
+MTDIR	= lib/krb/profiled lib/kdb/profiled lib/kadm/profiled \
+	  lib/des/profiled lib/knet/profiled lib/acl/profiled
+
+all:
+	rm -f ${DESTDIR}/Makefile
+	${LN} ${SRCDIR}/Makefile ${DESTDIR}/Makefile
+	rm -f ${DESTDIR}/Imakefile
+	${SYMLINK} ${SRCDIR}/Imakefile ${DESTDIR}/Imakefile
+	chmod +w ${DESTDIR}/Makefile
+	-for i in ${SUBDIR}; do \
+		mkdir ${DESTDIR}/$$i; \
+		rm -f ${DESTDIR}/$$i/Imakefile; \
+		${SYMLINK} ${SRCDIR}/$$i/Imakefile ${DESTDIR}/$$i/Imakefile; \
+	done
+	-for i in ${MTDIR}; do mkdir ${DESTDIR}/$$i; done
+	for i in imake makedepend imake.includes et ss; do \
+		make ${MFLAGS} -f ${SRCDIR}/util/$$i/Makefile SRCDIR=${SRCDIR} DESTDIR=${DESTDIR} config; \
+	done

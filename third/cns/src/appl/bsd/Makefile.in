@@ -1,0 +1,59 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)$(U)
+SRCS=rcp.c rlogin.c rlogind.c rsh.c rshd.c kcmd.c login.c logutil.c
+CODE=${SRCS} 
+
+all:: rsh rcp rlogin cygin kshd klogind login.krb
+
+clean::
+	$(RM) rsh rcp rlogin cygin kshd klogind login.krb
+	$(RM) *.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+RSH=	-DKRB_RLOGIN=\"$(PROGDIR)/rlogin\"
+
+DEFINES= $(RSH) $(RPROGS) \
+ 	-DLOGIN_PROGRAM=\"$(DAEMDIR)/login.krb\" -DKPROGDIR=\"$(PROGDIR)\"
+
+
+#program(rsh,rsh.o kcmd.o,${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
+rsh: rsh.o kcmd.o  ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ rsh.o kcmd.o ${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB}
+
+#program(rcp,rcp.o kcmd.o,${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
+rcp: rcp.o kcmd.o  ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ rcp.o kcmd.o ${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB}
+
+#program(rlogin,rlogin.o kcmd.o,${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
+rlogin: rlogin.o kcmd.o  ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ rlogin.o kcmd.o ${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB}
+
+#program(kshd,rshd.o,${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB},${DAEMDIR})
+kshd: rshd.o  ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ rshd.o ${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB}
+
+#program(klogind,rlogind.o logutil.o,${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB},${DAEMDIR})
+klogind: rlogind.o logutil.o ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP} ${COM_ERRDEP}
+	$(CC) $(CFLAGS) -o $@ rlogind.o logutil.o ${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB} ${COM_ERR}
+
+#program(login.krb,login.o logutil.o,${KRB_LIBDEP} ${DES_LIBDEP},${KRB_LIB} ${DES_LIB},${DAEMDIR})
+login.krb: login.o logutil.o ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ login.o logutil.o ${KRB_LIB} ${DES_LIB} ${LOGINLIBS}
+
+memcache.o: $(SRCTOP)lib$(S)krb$(S)memcache.c
+	$(CC) -I$(SRCTOP)lib$(S)krb $(CFLAGS) -c $(SRCTOP)lib$(S)krb$(S)memcache.c
+
+cygin: rlogin.o kcmd.o memcache.o ${KSTREAM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CFLAGS) -o $@ rlogin.o kcmd.o memcache.o ${KSTREAM_LIB} ${KRB_LIB} ${DES_LIB}
+
+install::
+	$(INSTALLPROG) rsh ${DESTDIR}$(PROGDIR)/rsh
+	$(INSTALLPROG) rcp ${DESTDIR}$(PROGDIR)/rcp
+	$(INSTALLPROG) rlogin ${DESTDIR}$(PROGDIR)/rlogin
+	$(INSTALLPROG) cygin ${DESTDIR}$(PROGDIR)/cygin
+	$(INSTALLPROG) kshd ${DESTDIR}$(DAEMDIR)/kshd
+	$(INSTALLPROG) klogind ${DESTDIR}$(DAEMDIR)/klogind
+	$(INSTALLPROG) login.krb ${DESTDIR}$(DAEMDIR)/login.krb

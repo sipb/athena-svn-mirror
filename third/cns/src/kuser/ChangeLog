@@ -1,0 +1,239 @@
+Thu Sep 28 21:26:45 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* ksu.c (svr4_log): New function.
+	(main): Call it to log success or failure.
+
+Mon Sep 25 15:18:12 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* ksu.c (main): Go the Kerberos route for all users, not just
+ 	those with uid 0.  Use instance name that matches the target user
+ 	name in all cases.  Delete crypt support.  Adjust printed
+ 	messages.
+	(koktologin): Add new argument for target username.
+
+Mon Jan 23 23:53:36 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kinit.c (main): avoid printing period in diagnostic messages if
+	instance is blank.
+
+Mon Jan 23 23:35:35 1995  Ian Lance Taylor  <ian@tweedledumb.cygnus.com>
+
+	* kinit.c (main): Don't bother to prompt for password here on a
+	Unix host.  Just let krb_get_pw_in_tkt handle it.
+
+Fri Jan 20 22:25:59 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kinit.c (main): add input checking (and simple retry loop) to
+	SNK4 response code. Added some comments about further improvements.
+	(hex_scan_four_bytes, hex_scan_nybble): hex input parsing routines
+	to read the response from the user and actually validate it,
+	unlike the previous sscanf code.
+
+Fri Jan 13 03:27:27 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kinit.c (main): improve error messages by including the
+	principal actually requested.
+
+Tue Jan  3 01:11:29 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (clean): move rm *.$(OBJEXT) to generic clean from
+	clean-windows, since it is portable.
+
+Mon Jan  2 13:06:30 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kinit.c (main): Make version static; Classic C can not
+	initialize an automatic array.
+
+Fri Dec 30 12:35:38 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kinit.c (main): Pass addresses to des_ecb_encrypt.
+
+Fri Dec 30 00:06:37 1994  Mark Eichin  <eichin@cygnus.com>
+
+	* kinit.c (main): new flag -s for snk4 support. Calls
+	krb_mk_in_tkt_preauth and krb_parse_in_tkt directly. Supports both
+	single and double challenges. Should use sscanf less.
+
+Thu Dec 29 16:29:05 1994  Mark Eichin  <eichin@cygnus.com>
+
+	* klist.c (usage): document -version.
+
+Tue Nov  8 13:59:30 1994  Ken Raeburn  <raeburn@cujo.cygnus.com>
+
+	* kinit.c (main): Don't print organization.  Print hostname after
+	"kerberos initialization".  Don't print principal name.  If
+	krb_get_lrealm fails, print a vaguely informative error message.
+
+Tue Nov  1 16:47:23 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ksu.c (main): Don't declare strcpy.
+
+Mon Oct 31 19:39:56 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (CODE): Remove Imakefile.
+
+Fri Oct 28 15:19:56 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kinit.c: Include <org.h> again.
+
+Mon Oct 10 19:11:12 1994  Julia Menapace  (jcm at toad.com)
+
+	* kinit.c (main):  In testing code for micro ports, restore
+	username to saved username (leave mac config resources as they
+	were found).  Add test for krb_get_tf_fullname. 
+
+Tue Aug 9 12:00:00 1994 John Rivlin (jrivlin@fusion.com)
+
+	* Makefile.in: Updated clean target to not do useless
+	deletes on Windows.
+
+Tue Sep 27 22:14:57 1994  Ken Raeburn  (raeburn@kr-pc.cygnus.com)
+
+	* kinit.c: "//" is not a line-comment sequence for C.
+
+Wed Sep 14 12:51:24 1994  Julia Menapace  (jcm@cygnus.com)
+
+	* kinit.c: Stop including <org.h>
+	  kinit.c (main) make GETHOSTNAME a system specific macro.
+
+Fri Aug  5 15:26:34 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* ksu.c (main): GETOPTARGs defined in wrong branches.
+
+Thu Jul 21 18:00:54 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* ksrvtgt.c (main): support -p for preauthentication, add central
+	usage message function.
+
+	* ksu.c (main): support -p option to use preauthentication.
+
+Tue Jul 19 17:14:12 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* ksu.c (krb_err_txt): Declaration deleted.
+	(main): Call krb_get_err_text instead of referencing krb_err_txt.
+
+Tue Jul 19 12:00:00 1994  John Rivlin  (jrivlin@fusion.com)
+
+	* klist.c: can't include sys/file.h under Windows
+
+Mon Jul 18 19:02:41 1994  Julia Menapace (jcm@cygnus.com)
+
+	* kinit.c (main): add some debugging messages for mac port. 
+
+Fri Jul 15 16:03:03 1994  John Rivlin  (jrivlin@fusion.com)
+
+	* ren.msg: updated to handle all files (changelogs, makefiles etc)
+
+	* Makefile.in: added "-" on clean: to avoid stupid messages
+
+Fri Jul 15 16:03:03 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* klist.c (krb_err_txt): Deleted declaration.
+	(display_tktfile): Indent arg decls to make emacs add-log code
+	happy.  Call krb_get_err_text instead of referencing krb_err_txt
+	directly.
+
+Fri Jul 8 02:40:54 1994  John Rivlin  (jrivlin@fusion.com)
+	* makefile.in: Updated file with portable directory syntax for PC.
+	Updated clean: target to place rm commands on seperate lines for
+	compatibility with PC DEL command.
+
+Tue Jul  5 11:20:07 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* ksu.c [USE_UNISTD_H]: Include <unistd.h>.
+
+Fri Jul  1 05:10:38 1994  John Gilmore  (gnu@cygnus.com)
+
+	* %kinit-stubs-project:  Change kinit-stubs.c to kinit.c,
+	we no longer have separate source for the Think stubs
+	version.
+
+	* ksrvtgt.c:  krb_err_txt -> krb_get_err_text.
+
+Fri Jul  1 04:35:46 1994  John Gilmore  (gnu@cygnus.com)
+
+	Make Kinit work on Macintosh under Think C and with Kerb driver.
+
+	* %kinit-project:  Think C "Project" file (like a Makefile,
+	but all binary) for linking kinit with ../lib/krb/KrbLib-project
+	and ../lib/des/DesLib-project.
+	* %kinit-stubs-project:  Think C "Project" file for linking
+	kinit with ../lib/krb/mac_stubs.c so it will talk to a Kerberos
+	device driver.
+
+	* kinit.c:  Eliminate k_gethostname in favor of Unix gethostname
+	(which gets stubbed out on Mac on Windows).  Eliminate k_isname,
+	k_isinst, k_isrealm as largely useless and broken.  Check _WINDOWS
+	rather than WINDOWS.  Add test code for micro ports, under #if 0.
+
+	* kdestroy.c, klist.c:  Pull RCS crud.
+
+Thu Jun 30 23:17:07 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* *.c:  Use #include "..." rather than #include <...> for
+	our own local include files, because Think C can't find them
+	when enclosed in <...>.
+
+Wed Jun 22 21:11:13 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* ksrvtgt.c: Include string.h.
+
+Wed Jun 22 20:28:32 1994  Mark Eichin  (eichin@tweedledumber.cygnus.com)
+
+	* kinit.c (main): if pflag is set (by -p argument) use
+	krb_get_pw_in_tkt_preauth instead.
+	(usage): update to mention -p argument.
+
+Sun Jun 19 20:11:34 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in (DEFINES):  Make ORGANIZATION quotes really really
+	work on Mac and Unix.
+
+Sat Jun 18 07:43:45 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kinit.c (main):  Move "ok" to local scope to avoid cc warning.
+	* klist.c:  Give ticket file name even if defaulted.
+
+Fri Jun 17 03:39:08 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in (DEFINES):  Rearrange quotes in ORGANIZATION
+	to improve life on the Mac.
+	(Links):  Add $(LDFLAGS) so mac-mf.sed will rewrite the line
+	to use "Link" rather than $(CC).
+
+	* kinit.c (password):  Set size to BUFSIZ.
+	(main):  Call krb_start_session and krb_end_session.
+	Clean up time debugging code slightly.
+	Replace krb_err_txt with krb_get_err_text.  Get password
+	via simple, echoing, routine on both MS-Windows and Mac.
+	Get password via complex, non-echoing, routine on Unix,
+	before checking validity of the principal, etc; this
+	simplifies the interface of krb_get_pw_in_tkt.
+
+Sat May 21 04:55:01 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kinit.c:  Don't print hostname if we don't know ours.
+	Improve usage message.
+	(#ifdef WINDOWS):  Scaffolding for testing; FIXME - remove later.
+	* ksu.c:  Pull NO_SETPRIORITY into header files.
+
+Fri May 20 01:00:09 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kinit.c:  Clean up includes.  If k_gethostname fails,
+	don't worry about it, print msg and keep going.  Pull RCS crud.
+
+	* Makefile.in:  Add ${SYS_LIBS} to LIBS.  Use $(CFLAGS_LINK)
+	rather than $(CFLAGS) to shorten command lines for MSC.  Tidy
+	up a bit.
+
+Fri May 13 01:54:48 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in: Don't define BSD42; we don't use it anymore.
+	* kdestroy.c, kinit.c:  Avoid checking BSD42.
+	* ksrvtgt.c:  Re-add filename that was removed with RCS crud.
+
+Fri May  6 05:28:29 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* ksrvtgt.c:  Remove dependence on MAXPATHLEN so we can avoid
+	<sys/param.h>.  Simplify.  Remove RCS crud.
+

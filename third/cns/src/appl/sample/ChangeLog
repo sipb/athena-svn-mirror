@@ -1,0 +1,16 @@
+Wed Jul 26 20:45:29 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* sample_client.c (main): Cast sockaddr_in pointer to sockaddr
+	pointer for call to connect.
+
+Fri Jul  1 06:47:15 1994  John Gilmore  (gnu@cygnus.com)
+
+	* sample_client.c, sample_server.c, simple_client.c,
+	simple_server.c:  krb_err_txt => krb_get_err_text.
+	* simple_client.c, simple_server.c:  Remove RCS crud.
+
+Wed Jun 22 21:29:38 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* sample_client.c, sample_server.c, simple_client.c,
+	simple_server.c: Include string.h.
+

@@ -1,0 +1,2 @@
+55 4,16 * * *           /usr/kerberos/etc/kprop /usr/kerberos/database/slavesave /usr/kerberos/database/slavelist
+45 4,16 * * *           /usr/kerberos/etc/kdb_util /usr/kerberos/database/slavesave

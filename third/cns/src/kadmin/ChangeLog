@@ -1,0 +1,317 @@
+Tue Jun  4 23:24:43 1996  Marc Horowitz  <marc@mit.edu>
+
+	* ksrvutil.c: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+
+Fri Feb 16 23:19:19 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* kadmin.c (add_snk_key): use new random number generator for
+	initial SNK hardware keys.
+
+Fri Feb 16 22:43:41 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* kadm_funcs.c (kadm_chg_srvtab): set default expiration date for
+	get_srvtab to 12/31/2009.
+
+Fri Feb 16 21:00:38 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* ksrvutil.c (get_svc_new_key): use des_new_random_key seeded off
+	of the changepw session key.
+
+Tue Oct 24 22:17:42 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadm_funcs.c (kadm_approve_pw): don't check password against
+	principal if we didn't get one. Need to enhance check_pw interface
+	later to take a key.
+
+Tue Sep 26 23:56:07 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* admin_server.c (main): Tweak usage message.
+
+	* kadm_server.h.sed (RESTRICT_ACL_FILE): Define.
+	* kadm_funcs.c [POSIX]: Include unistd.h.
+	(check_restrict_access): Verify that if RESTRICT_ACL_FILE exists,
+	the supplied target principal name isn't in it.
+	(kadm_add_entry, kadm_mod_entry, kadm_del_entry): Check principal
+	to be changed (*not* administrator's principal) to see if it's in
+	the restricted list.
+	(kadm_approve_pw) [HAVE_FGETPWENT]: Declare fgetpwent.
+
+Fri Sep  1 16:19:39 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* kadm_funcs.c [NO_STRERROR] (sys_errlist): Declare.
+	[NO_STRERROR] (strerror): New macro.
+	(malloc, gecos_file): Declare.
+	(sfree): New function.
+	(CLEANUP, BADPW): New macros, for optionally logging a message
+	before returning an insecure-password indication.  Changed most
+	code to use them.
+	(DEBUG_PW): New macro, controlling debugging code.  DO NOT ENABLE
+	THIS if you want your passwords to remain even vaguely secure.
+	(copy_downcase, check_substrings): New functions.
+	(str_check_gecos): Add several new checks.
+	(kadm_approve_pw): Ditto.  If gecos_file is non-null, pull the
+	GECOS field out of that file instead of the standard password
+	database.
+
+	* admin_server.c: Include unistd.h.
+	(gecos_file): New variable.
+	(main): Accept option `G' with argument.  If HAVE_FGETPWENT, set
+	gecos_file and complain if the file doesn't exist; otherwise,
+	always complain.
+
+	* kpasswd.c: Compare new and old passwords.  This check is not
+	currently enforced by the server.
+	(oldhist, newhist): New variables.
+	(get_pw_new_key): Build histograms of character frequencies in new
+	and old passwords, and reject changes that don't differ by a total
+	of at least 3.
+
+Wed Jul 26 19:33:57 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* build_pwfile.c: Include string.h.
+
+Fri Jun  2 17:48:46 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (clean): unify clean rules to avoid ::.
+
+Thu Mar 30 17:30:24 1995  Ken Raeburn  <raeburn@cujo.cygnus.com>
+
+	* kadmin.tk: Disable logging of output to control terminal.
+
+Wed Mar 29 16:27:19 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kadmin.tk: Add preliminary version of expect/TK script providing
+	a GUI for kadmin.
+
+Mon Mar 27 16:27:00 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadmin.c (get_admin_password): don't dest_tkt if we're using an
+	existing ticket file, since we didn't create it.
+
+Fri Jan 27 10:09:18 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* get_srvtab.c: Don't include <netdb.h>; it's included by
+	cc-unix.h.
+
+Tue Jan 24 00:53:40 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadm_funcs.c (kadm_check_srvtab): new function, open files for
+	get_srvtab support.
+	(kadm_chg_srvtab): process get_srvtab request, rewritten in our
+	portable style.
+	(check_access): recognize STAB_ACL.
+	* kadm_server.c (kadm_ser_stab): New function for get_srvtab
+	support from MIT V4p10.
+	* kadm_server.h.sed (STAB_ACL_DEFINES, STAB_SERVICES_FILE,
+	STAB_HOSTS_FILE): new strings for filenames to support get_srvtab.
+	* get_srvtab.c: new file, actual application to request a srvtab.
+	* Makefile.in: build and install get_srvtab.
+
+Mon Jan 16 12:08:30 1995  John Gilmore  <gnu@cygnus.com>
+
+	* ksrvutil.c (main):  Insert newline in overlong, confusing
+	error message.
+
+Fri Jan 13 06:20:52 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadmin.c (add_snk_key): fix octal input code to actually work
+	other than by accident.
+
+Tue Jan 10 01:04:32 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadm_funcs.c (failadd): fix spelling error.
+	(kadm_del_entry): new function, handle delete principal request.
+	(check_access): recognize new acl type DELACL.
+	* kadm_ser_wrap.c (kadm_ser_in): recognize DEL_ENT request and
+	call kadm_ser_del.
+	* kadm_server.c (kadm_ser_del): parse arguments and call
+	kadm_del_entry.
+	* kadm_server.h.sed (DEL_ACL_FILE): define new acl filename.
+	* kadmin.c (delete_principal): prompt the user with a warning
+	message first and indicate success status.
+	* kadmin_cmds.ct: add delete_principal request.
+
+Wed Jan  4 17:43:38 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kadm_ser_wrap.c (kadm_ser_init): Pass verify argument to
+	kdb_get_master_key_from.
+
+Fri Dec 30 12:36:29 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kadmin.c (add_snk_key): Cast arguments to des_ecb_encrypt.
+
+Fri Dec 30 00:09:49 1994  Mark Eichin  <eichin@cygnus.com>
+
+	* kadmin.c (add_snk_key): new function, creates a database entry
+	for a +SNK4 principal, optionally generates the key, and prints
+	the key checksum to verify the device is loaded correctly. (Should
+	still have a "change" function, or get "delete" working.)
+	* kadmin_cmds.ct: add add_snk_key request.
+
+Wed Dec 14 16:20:17 1994  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kadm_ser_wrap.c (kadm_ser_in): Change type of r_len from u_long
+	to unsigned KRB_INT32.  Subtract sizeof(KRB_INT32) from
+	authent.length, not sizeof(u_long).
+
+Mon Nov 28 10:11:47 1994  Ian Lance Taylor  (ian@cygnus.com)
+
+	* kadm_ser_wrap.c (kadm_ser_in): Rewrite expression to avoid HP/UX
+	9.01 compiler bug.
+
+Wed Nov 16 17:22:25 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* admin_server.c (main): initialize kfile.
+
+Tue Nov 15 16:32:23 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ksrvutil.c (main): Add krb_err_base to return value from
+	get_kvno before passing it to com_err.
+
+Wed Nov  9 15:48:27 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* admin_server.c (doexit): Add dummy argument.
+	(process_client): Cast &on to char * when passing it to
+	setsockopt.
+
+	* Makefile.in (LOCALINCLUDE): Don't use / after $(SRCTOP) or
+	$(BUILDTOP).
+
+Thu Nov  3 16:45:49 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (install): Don't install mksrvtab.
+
+	* admin_server.c: Declare error_message.
+
+	* kadmin.c (help): Pass argument to the right printf statement.
+
+Wed Nov  2 19:07:31 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* admin_server.c (kill_children): Combine both versions into one
+	using the new signal blocking macros.
+
+Tue Nov  1 16:51:19 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kadm_server.c (kadm_ser_cpw): Cast *datout to char * when
+	passing it to strcpy or strcat.
+	(kadm_ser_ckpw): Likewise.
+
+Mon Oct 31 19:39:44 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (CODE): Use Makefile.in instead of Imakefile.
+
+Fri Sep 30 21:32:11 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* kadmin.c (main): Add kadmin -t flag, which causes the existing
+	KRBTKFILE to be used for the admin ticket, and doesn't delete it
+	upon exit.  This allows kadmin to run without prompting for the
+	admin password, if a previous kadmin -t (or kinit) has left the
+	ticket in the cache.  This permits non-interactive runs of kadmin,
+	within the timeout of the cached ticket.
+
+Tue Aug 9 12:00:00 1994  John Rivlin  (jrivlin@fusion.com)
+	
+	* kadmin_ser_wrap.c: Added definitions for malloc so that
+	they may be removed from kadm.h
+	
+	* admin_server.c: Added definitions for malloc, relloc
+	so that they may be removed from kadm.h
+
+Sat Jul 30 02:28:54 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* ksrvutil.c (get_svc_new_key): cleaned up error code logic to
+	always use com_err error table values.
+	(get_kvno): new function.
+	(main): fixed error table usage after get_svc_new_key.
+	Call get_kvno, and prompt for change of kvno if necessary.
+
+Sat Jul 30 01:55:49 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* kpasswd.c (krb_get_krbhst): New function, calls krb_get_admhst,
+	just like in ksrvutil, to avoid confusing the user with an "old"
+	password from a slave KDC.
+
+Fri Jul 29 17:13:51 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* ksrvutil.c (main): init_kadm_error_table too, since we're
+	getting errors from that package as well...
+
+Fri Jul 22 20:56:51 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kpasswd.c:  Remove RCS crud.
+
+Thu Jul 21 18:07:57 1994  Mark Eichin  (eichin@tweedledumber.cygnus.com)
+
+	* admin_server.c (kill_children): If we HAVE_SIGSET, then do the
+	right thing with SIGCHLD (so that kadmind exits cleanly.) For now,
+	hpux and solaris20 HAVE_SIGSET.
+	(main): support alternate port from krb.conf, alternate stashed
+	key file.
+
+	* kadm_ser_wrap.c (kadm_ser_init): extra argument "kfile"
+	specifies the keyfile for kdb_get_master_key_from.
+
+	* kadmin.c (get_admin_password, princ_exists, do_init, usage): add
+	preauth support.
+
+	* ksrvutil.c (get_svc_new_key): add preauth support.
+	(usage): mention preauth support.
+	(main): add -p arg to enable preauth.
+
+	* kpasswd.c (main, get_pw_new_key, usage): ditto.
+
+Wed Jul 20 20:39:01 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* Makefile.in (all:): build mksrvtab, since we're installing it.
+
+Fri Jul  1 05:08:45 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadmin.c, kpasswd.c:  krb_err_txt -> krb_get_err_text.
+
+Wed Jun 22 16:00:17 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* kadm_ser_wrap.c (kadm_ser_in): Fix quad_cksum arg types.
+
+	* admin_server.c, kadm_funcs.c, kadm_ser_wrap.c, kadm_server.c,
+	kadmin.c, kpasswd.c, ksrvutil.c: Include string.h.
+
+Wed Jun 22 15:32:23 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* mksrvtab.c: new program, trivial srvtab builder (portable enough
+	to build on VMS.)
+	* Makefile.in: build mksrvtab.
+
+Sun Jun 19 20:49:21 1994  John Gilmore  (gnu@cygnus.com)
+
+	* admin_server.c, kadm_ser_wrap.c:  Avoid dup inclusion
+	of <sys/socket.h> and <netdb.h>.
+
+Fri May 13 01:48:47 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  build kadm_server.h as part of `all',
+	so `make depend' is not required.
+	* build_pwfile.c, kadm_funcs.c, ksrvutil.c:  Move kadm.h and
+	friends above system includes to allow #if's around system includes.
+
+Mon May  9 00:11:20 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Move "all:" line to first place.
+	* admin_server.c:  Eliminate attempt to return; or return(0) based
+	on guessed type of signal handler functions.
+	* kadm_ser_wrap.c:  Lint.
+
+Fri May  6 02:26:31 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadm_ser_wrap.c:  Lint, remove RCS crud.
+
+Wed Feb 16 20:54:18 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadm_ser_wrap.c (kadm_ser_in):  Pass correct length field
+	(after subtracting the byte used specify what operation is
+	occurring) to the operation routines.  Avoid examining the
+	garbage byte just after the stream ends.  Fixes problem with
+	password change from Mac failing due to "mismatched password".
+	See also zero-length string fix in ../lib/kadm/kadm_stream.c.
+
+

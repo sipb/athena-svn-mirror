@@ -1,0 +1,57 @@
+Tue Jun  4 23:22:31 1996  Marc Horowitz  <marc@mit.edu>
+
+	* popper.h: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+	* pop_dropinfo.c: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+	* pop_dropcopy.c: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+
+Fri Jun  2 19:15:40 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install): unify install rules to avoid ::.
+
+Tue Nov  1 15:31:02 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* pop_updt.c: Include popper.h after unconditionally included
+	header files.
+
+	* pop_log.c: If using <varargs.h>, and VARARGS is not already
+	defined, then define it.
+	* pop_msg.c: Likewise.
+
+Fri Oct 28 16:40:10 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* pop_updt.c: Only include <sys/types.h> once.
+
+Wed Aug 10 13:27:13 1994  Mark Eichin  (eichin@tweedledumber.cygnus.com)
+
+	* pop_updt.c: include sys/types.h before sys/file.h (UnixWare)
+
+Fri Jul  1 05:58:31 1994  John Gilmore  (gnu@cygnus.com)
+
+	* pop_pass.c, pop_init.c:  krb_err_txt => krb_get_err_text.
+
+Wed Jun 22 16:13:56 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* pop_updt.c: Include sys/file.h before popper.h, to get system
+	definition of MAXHOSTNAMELEN.
+	* pop_dropcopy.c: Move popper.h include down.
+	* popper.h (MAXHOSTNAMELEN): Don't define it if it's already been
+	defined by system header files.
+
+	* pop_get_command.c (pop_get_command): Rewrote to avoid casting
+	non-constant int values to pointers.
+	* pop_get_subcommand.c (pop_get_subcommand): Ditto.
+
+	* pop_dropinfo.c (calloc, realloc): Declare.
+
+	* pop_init.c, pop_xmit.c: Include string.h.
+
+Fri May 13 01:44:22 1994  John Gilmore  (gnu@cygnus.com)
+
+	* pop_dropcopy.c, pop_log.c, pop_msg.c, pop_updt.c:  Rearrange
+	includes so popper.h comes before #if tests.
+	* popper.h:  Include conf.h rather than osconf.h, to get
+	a few global definitions.
+

@@ -1,0 +1,73 @@
+Fri Jun  2 17:35:11 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install): unify rules to eliminate dependencies and
+	avoid ::.
+
+Wed Feb  8 15:20:58 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kadmin.8: Document get_entry and delete_principal commands.
+
+Fri Feb  3 15:11:25 1995  John Gilmore  <gnu@cygnus.com>
+
+	* kinit.1, kadmin.8:  Document SNK-4 support.
+
+Fri Feb  3 13:30:25 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* rlogin.1: Document cygin.
+	* cygin.1: New man page which just includes rlogin.1.
+	* Makefile.in (install): Install cygin.1.
+
+	* kprop.8: New man page.
+	* push-kprop.8: New man page which just includes kprop.8.
+	* kpropd.8: New man page.
+	* in.kpropd.8: New man page which just includes kpropd.8.
+	* Makefile.in (install): Install new man pages.
+
+Tue Jan 24 01:20:14 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* get_srvtab.8: new file, describes get_srvtab from MIT V4p10.
+	* Makefile.in: install it.
+
+Wed Jan 18 11:12:28 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kdb_util.8: Describe format of dump file.
+
+	* klogind.8: klogind and Klogind are now essentially the same.
+
+Wed Dec 21 18:38:22 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* klogind.8: Document new -k, -K, -x, and -p options.
+	* kshd.8: Document new -k, -x, -a, and -p options.
+
+Thu Nov 17 14:10:37 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* klogind.8: Document new -l, -r, and -s options.
+	* kshd.8: Document new -p, -r, and -s options.
+	* rcp.1: Document new -N and -P options.
+	* rsh.1: Document new -p option.
+
+Tue Nov 15 16:56:34 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kdb_edit.8: Document -k option to set name of master key cache
+	file.
+
+Mon Oct 31 19:41:36 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (CODE): Use Makefile.in instead of Imakefile.
+
+Fri Sep 30 19:00:31 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadmin.8:  Document -t for ticket cacheing.
+	Document -p for preauth (poorly).
+
+	* ksrvutil.8:  Document key version number checking and
+	correction in the `change' option.
+
+Fri May  6 05:45:48 1994  John Gilmore  (gnu@tweedledumb.cygnus.com)
+
+	* kerberos.3 (krb_rd_priv, krb_mk_priv, krb_rd_safe, krb_mk_safe):
+	Fix doc for `key' argument, which is a pointer to a des_cblock.
+	(It's safe to pass either a des_cblock or a des_clock *, since a
+	des_cblock is an array; the address is right, only the type is
+	wrong.  Lint.)
+

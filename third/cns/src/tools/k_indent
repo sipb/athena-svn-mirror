@@ -1,0 +1,33 @@
+#!/bin/csh -f
+#
+#  Copyright 1989 by the Massachusetts Institute of Technology.
+# 
+#  For copying and distribution information,
+#  please see the file <mit-copyright.h>.
+# 
+
+set file=()
+set prog=/usr/ucb/indent
+set args=(-l72 -i4 -di8)
+
+foreach i ($*)
+   if ("$i" =~ -*) then
+      set args=($args "$i")
+   else
+      set file=($file "$i")
+   endif
+end
+
+if ($#file < 2) set args=($args -st)
+
+switch ($#file)
+case 0:
+   $prog $args
+   breaksw
+case 1:
+   cat $file[1] | $prog $args
+   breaksw
+default:
+   $prog $args $file
+   breaksw
+endsw
