@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.15 1990-02-23 20:00:31 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.16 1990-02-26 16:14:08 vanharen Exp $";
 #endif
 
 
@@ -293,19 +293,15 @@ write_message_to_user(k, message, flags)
   return(status);
 }
 
-#define FUDGEFACTOR 20
 #define MESSAGE_CLASS "MESSAGE"
 #define PERSONAL_INSTANCE "PERSONAL"
-#define OLC_INSTANCE "OLC"
 
-#ifdef TEST
-#define OLC_CLASS    "OLCTEST"
-#else
+#define OLC_CLASS    "OLC"
 #ifdef OLZ
 #define OLC_CLASS    "OLZ"
-#else
-#define OLC_CLASS    "OLC"
 #endif
+#ifdef OLTA
+#define OLC_CLASS    "OLTA"
 #endif
 
 ERRCODE
