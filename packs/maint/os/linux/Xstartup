@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Xstartup,v 1.1 2000-04-25 13:51:40 rbasch Exp $
+# $Id: Xstartup,v 1.2 2002-09-17 22:11:45 zacheiss Exp $
 
 # Xstartup
 #
@@ -12,5 +12,9 @@ cd /dev
 # Claim the audio devices.
 chown $USER dsp* audio* midi* mixer* sequencer
 chmod   600 dsp* audio* midi* mixer* sequencer
+
+# Claim the cdrom and floppy devices
+chown --dereference $USER cdrom fd0*
+chmod 600 cdrom fd0*
 
 exit 0
