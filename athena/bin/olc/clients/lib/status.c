@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.5 1989-08-15 03:14:05 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.6 1989-08-22 13:57:23 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -57,7 +57,7 @@ OListPerson(Request,data)
      LIST **data;
 {
   int status;
-  
+
   Request->options = LIST_PERSONAL;
   status = OListQueue(Request,data,"","",0);
   return(status);

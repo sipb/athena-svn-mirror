@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.2 1989-08-04 11:13:36 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.3 1989-08-22 13:55:55 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -125,7 +125,7 @@ t_list_topics(Request, file, display)
     {
     case SUCCESS:
       if(display)
-	display_file(file);
+	display_file(file,TRUE);
       break;
 
     case ERROR:

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.5 1989-08-08 10:38:27 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.6 1989-08-22 13:54:13 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -49,6 +49,7 @@ t_instance(Request,instance)
       }
 
   Request->requester.instance = 0;
+  Request->target.instance = 0;
   while(1)
     {
       status = OVerifyInstance(Request,instance);

@@ -25,6 +25,7 @@ extern char *OLC_DATABASE;
 extern char *NF_PREFIX;
 extern char *LOG_DIR;
 extern char *BACKUP_FILE;
+extern char *BACKUP_TEMP;
 extern char *ERROR_LOG;
 extern char *STATUS_LOG;
 extern char *STDERR_LOG;

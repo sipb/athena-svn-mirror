@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.3 1989-08-08 10:46:31 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.4 1989-08-22 13:59:16 tjcoppet Exp $
  */
 
 /* request structure */
@@ -136,7 +136,7 @@ typedef struct tIO_REQUEST
 #define MAIL_SEND          1<<5	/* OLCR_MAIL -- Send the mail message. */
 #define MAIL_COMPOSE       1<<6	
 #define UNANS_OPT          1<<7	/* OLCR_FORWARD -- Send to unanswered log. */
-#define FORWARD_OFF        1<<8	/* OLCR_OFF et al -- Sign off forcibly. */
+
 #define VERIFY             1<<9
 #define FORWARD_UNANSWERED 1<<10
 #define ON_FIRST           1<<11

@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.7 1989-08-10 23:35:14 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.8 1989-08-22 13:56:10 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -461,7 +461,7 @@ what_now(file, edit_first, editor)
       else if (*inbuf == 's')
 	return(SUCCESS);
       else if (*inbuf == 'l')
-	display_file(file);
+	display_file(file,TRUE);
       else if (*inbuf == 'a')
 	printf("hello!\n");
 	  

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.6 1989-08-15 00:32:18 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.7 1989-08-22 13:55:35 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -296,7 +296,7 @@ t_input_status(Request,string)
       printf("\t\treferred\n");
       printf("\t\tpickup\n");
       
-      get_prompted_input("enter new status (<return> to exit): \n",buf);
+      get_prompted_input("enter new status (<return> to exit): ",buf);
       if(buf == '\0')
 	return(ERROR);
     }
