@@ -1,9 +1,0 @@
-libgnomeprint/gnome-font-face.c
-libgnomeprint/gnome-print-paper.c
-libgnomeprint/gnome-print-unit.c
-libgnomeprint/gpa/gpa-key.c
-libgnomeprint/gpa/gpa-printer.c
-libgnomeprint/gpa/gpa-settings.c
-data/globals.xml.in
-data/printers/GENERIC.xml.in
-data/printers/PDF-WRITER.xml.in

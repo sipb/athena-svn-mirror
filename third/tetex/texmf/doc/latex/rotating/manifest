@@ -1,6 +1,0 @@
-cat.eps		PostScript file used in examples
-examples.tex	long test file
-makefile
-manifest
-rotating.dtx	commented source
-rotating.ins	TeX script to strip source
