@@ -5,7 +5,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v $
 #	$Author: vrt $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v 1.1 1994-04-02 13:25:01 vrt Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v 1.2 1994-04-02 13:25:53 vrt Exp $
 #
 # Copyright (c) 1980 Regents of the University of California.
 # All rights reserved.  The Berkeley software License Agreement
@@ -35,6 +35,8 @@ install:
 clean:
 	rm -f a.out core *.s *.o *~
 	rm -f ${STD}
+
+depend::
 
 
 
