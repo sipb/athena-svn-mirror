@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/debug.c,v 1.1 1990-04-26 15:48:46 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/debug.c,v 1.2 1990-04-26 16:35:47 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  15:48:46  tom
+ * Initial revision
+ * 
  * Revision 1.1  89/11/03  15:42:32  snmpdev
  * Initial revision
  * 
@@ -24,7 +27,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/debug.c,v 1.1 1990-04-26 15:48:46 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/debug.c,v 1.2 1990-04-26 16:35:47 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -68,9 +71,9 @@ ptreeinfo(theinfo)
 		(void) fflush(stdout);
 		cnt++;
 	}
-#ifdef TIDY
+#ifdef MIT
 	return(0);
-#endif TIDY
+#endif MIT
 }
 
 /*
@@ -95,11 +98,11 @@ pvartree(head)
 			if (head->var_code == NULL) {
 				(void) printf("NULL\n\n\n");
 				(void) fflush(stdout);
-#ifndef TIDY
+#ifndef MIT
 				return;
-#else   TIDY
+#else   MIT
 				return(0);
-#endif  TIDY
+#endif  MIT
 			}
 			c = head->var_code->cmp;
 			if ((c == NULL) || (head->var_code->ncmp == 0))
@@ -118,11 +121,11 @@ pvartree(head)
 			}
 			(void) printf("\n\n");
 			(void) fflush(stdout);
-#ifndef TIDY
+#ifndef MIT
 			return;
-#else   TIDY
+#else   MIT
 			return(0);
-#endif  TIDY
+#endif  MIT
 		}
 		/*
 		 *  recurse! recurse! recurse!
@@ -132,9 +135,9 @@ pvartree(head)
 		}
 	}
 	(void) fflush(stdout);
-#ifdef TIDY
+#ifdef MIT
 	return(0);
-#endif TIDY
+#endif MIT
 }
 
 /*
@@ -307,8 +310,8 @@ pr_var_list(vlt, msgstr)
 		cnt++;
 		cnt1 = 0;
 	}
-#ifdef TIDY
+#ifdef MIT
 	return(0);
-#endif TIDY
+#endif MIT
 }
 
