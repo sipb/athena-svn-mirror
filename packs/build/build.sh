@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: build.sh,v 1.13 1997-01-30 09:27:19 ghudson Exp $
+# $Id: build.sh,v 1.13.2.1 1997-05-11 17:54:10 ghudson Exp $
 
-source="/source"
+source="/mit/source-8.1"
 build="/build"
 srvd="/srvd"
 usage="build [-s srcdir] [-b builddir] [-d destdir] [package [endpackage]]"
