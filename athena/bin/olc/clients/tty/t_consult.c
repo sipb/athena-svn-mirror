@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.2 1989-08-04 11:11:43 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.3 1989-08-15 00:24:48 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -66,7 +66,7 @@ t_sign_on(Request)
 
     case ALREADY_CONNECTED: 
       if(isme(Request))
-	printf("You have signed on to OLC. You are already connected.");
+	printf("You have signed on to OLC. You are already connected.\n");
       else
 	printf("%s (%d) is signed on and connected.\n",
 	        Request->target.username,Request->target.instance);
