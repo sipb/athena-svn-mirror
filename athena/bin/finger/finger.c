@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.24 1994-08-24 03:31:01 cfields Exp $
+ * $Id: finger.c,v 1.25 1995-06-27 22:08:44 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.24 1994-08-24 03:31:01 cfields Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.25 1995-06-27 22:08:44 cfields Exp $";
 #endif /*lint*/
 
 /*
@@ -74,7 +74,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
-#ifdef SOLARIS
+#ifdef SYSV
 #include <utmpx.h>
 #endif
 #include <strings.h>
@@ -114,7 +114,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #define TALKABLE	0220	/* tty is writable if 220 mode */
 #define MAILDIR 	"/usr/spool/mail/"	/* default mail directory */
 
-#ifdef SOLARIS
+#ifdef SYSV
 struct utmpx user;
 #else
 struct utmp user;
@@ -156,7 +156,7 @@ struct person {			/* one for each person fingered */
 };
 
 char LASTLOG[] = "/usr/adm/lastlog";	/* last login info */
-#ifdef SOLARIS
+#ifdef SYSV
 char USERLOG[] = "/etc/utmpx";	/* who is logged in */
 char ACCTLOG[] = "/usr/adm/wtmpx";	/* Accounting file */
 #else
@@ -299,14 +299,7 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
-#if defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(SOLARIS)
 		setpwent();
-#else
-		extern _pw_stayopen;
-
-		setpwent();
-		_pw_stayopen = 1;
-#endif
 		fwopen();
 	}
 	while (read(uf, (char *) &user, sizeof user) == sizeof user) {
@@ -329,7 +322,7 @@ doall()
 		bcopy(user.ut_host, p->host, HMAX);
 		p->host[HMAX] = 0;
 		p->loginout = 0;
-#ifndef SOLARIS
+#ifndef SYSV
 		p->loginat = user.ut_time;
 #else
 		p->loginat = user.ut_tv.tv_sec;
@@ -486,7 +479,7 @@ donames(argv)
 				p->tty[LMAX] = 0;
 				bcopy(user.ut_host, p->host, HMAX);
 				p->host[HMAX] = 0;
-#ifndef SOLARIS
+#ifndef SYSV
 				p->loginat = user.ut_time;
 #else
 				p->loginat = user.ut_tv.tv_sec;
@@ -502,7 +495,7 @@ donames(argv)
 				new->tty[LMAX] = 0;
 				bcopy(user.ut_host, new->host, HMAX);
 				new->host[HMAX] = 0;
-#ifndef SOLARIS
+#ifndef SYSV
 				new->loginat = user.ut_time;
 #else
 				p->loginat = user.ut_tv.tv_sec;
@@ -583,13 +576,13 @@ print(personn)
 		if (unquick) {
 			if (!unshort)
 				if (wide)
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
 					printf("Login       Name              TTY  Idle    When     Office\n");
 #else
 					printf("Login       Name              TTY Idle    When            Office\n");
 #endif
 				else
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
 					printf("Login    TTY Idle    When     Office\n");
 #else
 					printf("Login    TTY Idle    When            Office\n");
@@ -725,7 +718,7 @@ quickprint(pers)
 	if (pers->loggedin) {
 		if (idle) {
 			findidle(pers);
-#ifndef SOLARIS
+#ifndef SYSV
 			printf("%c%-*s %-16.16s", pers->writable ? ' ' : '*',
 			       LMAX, pers->tty, ctime(&pers->loginat));
 #else
@@ -754,14 +747,14 @@ shortprint(pers)
 	char dialup;
 
 	if (pers->pwd == 0) {
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
 		printf("%-8s       ???\n", pers->name);
 #else
 		printf("%-15s       ???\n", pers->name);
 #endif
 		return;
 	}
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
 	printf("%-8s",  pers->pwd->pw_name);
 #else
 	printf("%-*s", NMAX, pers->pwd->pw_name);
@@ -1153,7 +1146,7 @@ findwhen(pers)
 	struct lastlog ll;
 #endif
 	struct stat stb;
-#ifndef SOLARIS
+#ifndef SYSV
 	struct utmp *bp;
 	struct utmp buf[128];
 #else
@@ -1197,7 +1190,7 @@ findwhen(pers)
 							(void) strncpy(ttnames[i],
 								bp->ut_line,
 							sizeof(bp->ut_line));
-#ifndef SOLARIS
+#ifndef SYSV
 							logouts[i] = bp->ut_time;
 #else
 							logouts[i] = bp->ut_tv.tv_sec;
@@ -1207,7 +1200,7 @@ findwhen(pers)
 						if (!strncmp(ttnames[i],
 							     bp->ut_line,
 						     sizeof(bp->ut_line))) {
-#ifndef SOLARIS
+#ifndef SYSV
 							logouts[i] = bp->ut_time;
 #else
 							logouts[i] = bp->ut_tv.tv_sec;
