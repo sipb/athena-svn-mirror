@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -63,8 +63,6 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
-ECHO = @ECHO@
-EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -83,7 +81,6 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
 ORBIT_HAVE_ALLOCA_H = @ORBIT_HAVE_ALLOCA_H@
 ORBIT_MAJOR_VERSION = @ORBIT_MAJOR_VERSION@
 ORBIT_MICRO_VERSION = @ORBIT_MICRO_VERSION@
@@ -92,20 +89,13 @@ ORBIT_SERIAL = @ORBIT_SERIAL@
 ORBIT_VERSION = @ORBIT_VERSION@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
-STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
 
-libORBitservicesincludedir = $(includedir)/orbit-1.0/ORBitservices
-
-libORBitservicesinclude_HEADERS =  	CosEventComm.idl							CosEventChannel.idl							CosTypedEventComm.idl							CosTypedEventChannel.idl
-
-
 INCLUDES = -I$(top_srcdir)/src -I. -I$(top_builddir)/src -I$(top_builddir)/src/ORBitutil 	-I$(top_srcdir)/src/orb -I$(top_builddir)/src/orb @GLIB_CFLAGS@
 
 
-#IDL = $(top_builddir)/src/idl-compiler/orbit-idl
 IDL = $(top_builddir)/src/orbit-idl-compiler/orbit-idl
 
 CosEvent_built =  	CosEventComm.h								CosEventChannel.h							CosEventComm-skels.c	 						CosEventComm-common.c 							CosEventComm-stubs.c							CosEventChannel-skels.c 						CosEventChannel-common.c 						CosEventChannel-stubs.c
@@ -145,15 +135,16 @@ orbit_event_server_LDFLAGS = $(FLAGS)
 orbit_event_server_DEPENDENCIES = $(DEPS) CosEventChannel.h
 orbit_event_server_LDADD = $(LDADDS)
 
-EXTRA_DIST = CosEventComm.idl							CosEventChannel.idl							CosTypedEventComm.idl							CosTypedEventChannel.idl
+EXTRA_DIST = $(idl_DATA)
+
+idldir = $(datadir)/idl/orbit-1.0
+idl_DATA =  	CosEventComm.idl			CosEventChannel.idl			CosTypedEventComm.idl			CosTypedEventChannel.idl
 
 
 BUILT_SOURCES = $(CosEvent_built)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  orbit-event-server$(EXEEXT)
-noinst_PROGRAMS =  event-consumer$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
 
@@ -161,18 +152,17 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-orbit_event_server_OBJECTS =  orbit-event-server.$(OBJEXT) \
-CosEventChannel-skels.$(OBJEXT) CosEventChannel-common.$(OBJEXT) \
-CosEventChannel-stubs.$(OBJEXT)
-event_consumer_OBJECTS =  event-consumer.$(OBJEXT) \
-CosEventComm-skels.$(OBJEXT) CosEventChannel-common.$(OBJEXT) \
-CosEventChannel-stubs.$(OBJEXT)
+orbit_event_server_OBJECTS =  orbit-event-server.o \
+CosEventChannel-skels.o CosEventChannel-common.o \
+CosEventChannel-stubs.o
+event_consumer_OBJECTS =  event-consumer.o CosEventComm-skels.o \
+CosEventChannel-common.o CosEventChannel-stubs.o
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(libORBitservicesinclude_HEADERS)
+DATA =  $(idl_DATA)
 
 DIST_COMMON =  README Makefile.am Makefile.in
 
@@ -186,7 +176,7 @@ OBJECTS = $(orbit_event_server_OBJECTS) $(event_consumer_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .obj .s
+.SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/services/event/Makefile
 
@@ -232,11 +222,6 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
-# FIXME: We should only use cygpath when building on Windows,
-# and only if it is available.
-.c.obj:
-	$(COMPILE) -c `cygpath -w $<`
-
 .s.o:
 	$(COMPILE) -c $<
 
@@ -245,7 +230,6 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
-	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -273,27 +257,31 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-orbit-event-server$(EXEEXT): $(orbit_event_server_OBJECTS) $(orbit_event_server_DEPENDENCIES)
-	@rm -f orbit-event-server$(EXEEXT)
+orbit-event-server: $(orbit_event_server_OBJECTS) $(orbit_event_server_DEPENDENCIES)
+	@rm -f orbit-event-server
 	$(LINK) $(orbit_event_server_LDFLAGS) $(orbit_event_server_OBJECTS) $(orbit_event_server_LDADD) $(LIBS)
 
-event-consumer$(EXEEXT): $(event_consumer_OBJECTS) $(event_consumer_DEPENDENCIES)
-	@rm -f event-consumer$(EXEEXT)
+event-consumer: $(event_consumer_OBJECTS) $(event_consumer_DEPENDENCIES)
+	@rm -f event-consumer
 	$(LINK) $(event_consumer_LDFLAGS) $(event_consumer_OBJECTS) $(event_consumer_LDADD) $(LIBS)
 
-install-libORBitservicesincludeHEADERS: $(libORBitservicesinclude_HEADERS)
+install-idlDATA: $(idl_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libORBitservicesincludedir)
-	@list='$(libORBitservicesinclude_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libORBitservicesincludedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libORBitservicesincludedir)/$$p; \
+	$(mkinstalldirs) $(DESTDIR)$(idldir)
+	@list='$(idl_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(idldir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(idldir)/$$p; \
+	  fi; fi; \
 	done
 
-uninstall-libORBitservicesincludeHEADERS:
+uninstall-idlDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(libORBitservicesinclude_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libORBitservicesincludedir)/$$p; \
+	list='$(idl_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(idldir)/$$p; \
 	done
 
 tags: TAGS
@@ -581,22 +569,20 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-libORBitservicesincludeHEADERS
+install-data-am: install-idlDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS \
-		uninstall-libORBitservicesincludeHEADERS
+uninstall-am: uninstall-binPROGRAMS uninstall-idlDATA
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(libORBitservicesincludedir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(idldir)
 
 
 mostlyclean-generic:
@@ -644,15 +630,14 @@ mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool \
-uninstall-libORBitservicesincludeHEADERS \
-install-libORBitservicesincludeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-libtool maintainer-clean-libtool uninstall-idlDATA \
+install-idlDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 $(CosEvent_built): my_cosevent_built

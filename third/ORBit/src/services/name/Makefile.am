@@ -13,16 +13,13 @@ libORBitCosNaming_la_SOURCES = 						\
 
 libORBitservicesinclude_HEADERS = 					\
 	CosNaming.h							\
-	CosNaming_impl.h						\
-	CosNaming.idl							\
-	LName.pidl
+	CosNaming_impl.h
 
 libORBitCosNaming_la_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
 INCLUDES = -I. -I$(top_builddir)/src -I$(top_builddir)/src/ORBitutil -I$(top_srcdir)/src @GLIB_CFLAGS@
 
-#IDL = $(top_builddir)/src/idl-compiler/orbit-idl
 IDL = $(top_builddir)/src/orbit-idl-compiler/orbit-idl
 
 CosNaming_built = 							\
@@ -77,7 +74,10 @@ orbit_name_server_LDFLAGS = $(FLAGS)
 orbit_name_server_DEPENDENCIES = $(DEPS) CosNaming.h
 orbit_name_server_LDADD = libname-server.a $(LDADDS)
 
-EXTRA_DIST = CosNaming.idl LName.pidl LName.h
+EXTRA_DIST = $(idl_DATA) LName.h
+
+idldir   = $(datadir)/idl/orbit-1.0
+idl_DATA = CosNaming.idl LName.pidl
 
 BUILT_SOURCES = $(CosNaming_built)
 

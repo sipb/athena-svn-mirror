@@ -1,15 +1,6 @@
-libORBitservicesincludedir = $(includedir)/orbit-1.0/ORBitservices
-
-libORBitservicesinclude_HEADERS =  					\
-	CosEventComm.idl						\
-	CosEventChannel.idl						\
-	CosTypedEventComm.idl						\
-	CosTypedEventChannel.idl
-
 INCLUDES = -I$(top_srcdir)/src -I. -I$(top_builddir)/src -I$(top_builddir)/src/ORBitutil \
 	-I$(top_srcdir)/src/orb -I$(top_builddir)/src/orb @GLIB_CFLAGS@
 
-#IDL = $(top_builddir)/src/idl-compiler/orbit-idl
 IDL = $(top_builddir)/src/orbit-idl-compiler/orbit-idl
 
 CosEvent_built = 							\
@@ -74,9 +65,13 @@ orbit_event_server_LDFLAGS = $(FLAGS)
 orbit_event_server_DEPENDENCIES = $(DEPS) CosEventChannel.h
 orbit_event_server_LDADD = $(LDADDS)
 
-EXTRA_DIST = CosEventComm.idl						\
-	CosEventChannel.idl						\
-	CosTypedEventComm.idl						\
+EXTRA_DIST = $(idl_DATA)
+
+idldir   = $(datadir)/idl/orbit-1.0
+idl_DATA =				\
+	CosEventComm.idl		\
+	CosEventChannel.idl		\
+	CosTypedEventComm.idl		\
 	CosTypedEventChannel.idl
 
 BUILT_SOURCES = $(CosEvent_built)

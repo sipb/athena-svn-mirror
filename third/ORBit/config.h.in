@@ -91,9 +91,6 @@
 /* Define if you have the poll function.  */
 #undef HAVE_POLL
 
-/* Define if you have the <dlfcn.h> header file.  */
-#undef HAVE_DLFCN_H
-
 /* Define if you have the <endian.h> header file.  */
 #undef HAVE_ENDIAN_H
 
