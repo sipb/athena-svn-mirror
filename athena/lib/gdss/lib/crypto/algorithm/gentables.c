@@ -390,7 +390,7 @@ char *argv[];
 {
     register int i;
     union { char bytes [ sizeof(long) ];
-            long longs } testword ;
+            long longs; } testword ;
     long now;
     
     time(&now);
