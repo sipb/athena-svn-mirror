@@ -16,16 +16,23 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v 1.2 1989-08-08 10:45:28 tjcoppet Exp $
+ *      $Author: raeburn $
+ *      $Id: procs.h,v 1.3 1990-01-04 14:38:07 raeburn Exp $
  */
 
 /* Declarations of common functions. */
 
+#include <olc/lang.h>
+
+#if ! __STDC__
 char *malloc();
-char *read_text_from_fd();
-char *ttyname();
-char *getenv();
+#else
+void *malloc (unsigned int);
+#endif
+
+char *read_text_from_fd OPrototype((int));
+char *ttyname OPrototype((int));
+char *getenv OPrototype((const char *));
 char *parse_list();
 char *get_next_line();
 void expand_hostname();
