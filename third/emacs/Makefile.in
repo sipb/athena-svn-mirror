@@ -299,6 +299,8 @@ lwlib/Makefile: lwlib/Makefile.in config.status
 install: install-arch-indep install-arch-dep blessmail
 	${INSTALL_DATA} site-lisp/clu-mode.el \
 		${DESTDIR}${datadir}/emacs/site-lisp
+	rm -f ${DESTDIR}${bindir}/movemail
+	ln -s ${archlibdir}/movemail ${DESTDIR}${bindir}/movemail
 
 ### Install the executables that were compiled specifically for this machine.
 ### It would be nice to do something for a parallel make
