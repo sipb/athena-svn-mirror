@@ -6,7 +6,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
 #
-# $Id: update_ws.sh,v 1.7 1996-06-08 00:02:03 ghudson Exp $
+# $Id: update_ws.sh,v 1.8 1996-06-08 00:04:37 ghudson Exp $
 #
 
 trap "" 1 15
@@ -14,7 +14,7 @@ trap "" 1 15
 ROOT="${ROOT-}"; export ROOT
 CONFDIR="${CONFDIR-/etc/athena}"; export CONFDIR
 LIBDIR=/srvd/usr/athena/lib/update;	export LIBDIR
-PATH=/bin:/srvd/bin:/srvd/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/srvd/usr/etc:/os/usr/ucb:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
+PATH=/bin:/srvd/bin:/os/bin:/srvd/etc:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/os/usr/bin:/srvd/usr/etc:/os/usr/etc:/os/usr/ucb:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
 
 RC=nothing
 HOSTNAME=hostname
