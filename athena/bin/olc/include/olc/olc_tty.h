@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.7 1991-01-15 17:49:57 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.8 1991-01-21 01:19:10 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -90,7 +90,7 @@ ERRCODE t_change_file P((REQUEST *Request , int type , char *file , char *editor
 int t_queue P((REQUEST *Request , char *queue ));
 
 /* t_resolve.c */
-ERRCODE t_done P((REQUEST *Request , char *title ));
+ERRCODE t_done P((REQUEST *Request , char *title, int check ));
 ERRCODE t_cancel P((REQUEST *Request , char *title ));
 
 /* t_send.c */
@@ -107,6 +107,7 @@ int t_input_status P((REQUEST *Request , char *string ));
 int get_user_status_string P((int status , char *string ));
 int get_status_string P((int status , char *string ));
 int t_pp_stati P((void ));
+ERRCODE t_version P((REQUEST *Request ));
 
 /* t_topic.c */
 ERRCODE t_input_topic P((REQUEST *Request , char *topic , int flags ));
