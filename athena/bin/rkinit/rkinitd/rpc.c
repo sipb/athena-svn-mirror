@@ -1,16 +1,17 @@
 /* 
- * $Id: rpc.c,v 1.3 1994-03-30 11:03:29 miki Exp $
+ * $Id: rpc.c,v 1.4 1997-12-03 22:05:07 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rpc.c,v $
- * $Author: miki $
+ * $Author: ghudson $
  *
  * This file contains the network parts of the rkinit server.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rpc.c,v 1.3 1994-03-30 11:03:29 miki Exp $";
+static char *rcsid = "$Id: rpc.c,v 1.4 1997-12-03 22:05:07 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/time.h>
@@ -25,9 +26,6 @@ static char *rcsid = "$Id: rpc.c,v 1.3 1994-03-30 11:03:29 miki Exp $";
 #include "rkinitd.h"
 
 #define RKINITD_TIMEOUT 60
-
-extern int errno;
-extern char *sys_errlist[];
 
 static int in;			/* sockets */
 static int out;
@@ -84,7 +82,7 @@ int setup_rpc(notimeout)
 	
 	/* Start the timer. */
 	if (setitimer (ITIMER_REAL, &timer, (struct itimerval *)0) < 0) {
-	    sprintf(errbuf, "setitimer: %s", sys_errlist[errno]);
+	    sprintf(errbuf, "setitimer: %s", strerror(errno));
 	    rkinit_errmsg(errbuf);
 	    error();
 	    exit(1);
@@ -216,14 +214,14 @@ void rpc_getauth(auth, caddr, saddr)
     }
 
     if (getpeername(in, caddr, &addrlen) < 0) {
-	sprintf(errbuf, "getpeername: %s", sys_errlist[errno]);
+	sprintf(errbuf, "getpeername: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	error();
 	exit(1);
     }
 
     if (getsockname(out, saddr, &addrlen) < 0) {
-	sprintf(errbuf, "getsockname: %s", sys_errlist[errno]);
+	sprintf(errbuf, "getsockname: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	error();
 	exit(1);

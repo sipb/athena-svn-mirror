@@ -1,5 +1,5 @@
 /* 
- * $Id: krb.c,v 1.11 1996-09-20 03:16:53 ghudson Exp $
+ * $Id: krb.c,v 1.12 1997-12-03 22:02:53 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: ghudson $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.11 1996-09-20 03:16:53 ghudson Exp $";
+static char *rcsid = "$Id: krb.c,v 1.12 1997-12-03 22:02:53 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -16,12 +16,8 @@ static char *rcsid = "$Id: krb.c,v 1.11 1996-09-20 03:16:53 ghudson Exp $";
 #include <syslog.h>
 #include <netinet/in.h>
 #include <setjmp.h>
-#ifdef SYSV
 #include <netdb.h>
-#endif
-#ifdef sun
 #include <string.h>
-#endif
 #include <pwd.h>
 #include <krb.h>
 #include <des.h>
@@ -33,9 +29,6 @@ static char *rcsid = "$Id: krb.c,v 1.11 1996-09-20 03:16:53 ghudson Exp $";
 #include "rkinitd.h"
 
 #define FAILURE (!RKINIT_SUCCESS)
-
-extern int errno;
-extern char *sys_errlist[];
 
 static char errbuf[BUFSIZ];
 
@@ -143,7 +136,7 @@ static void this_phost(host, hostlen)
     BCLEAR(this_host);
     
     if (gethostname(this_host, sizeof(this_host)) < 0) {
-	sprintf(errbuf, "gethostname: %s", sys_errlist[errno]);
+	sprintf(errbuf, "gethostname: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	error();
 	exit(1);
@@ -251,7 +244,7 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 #ifdef SOLARIS    
     if (setuid(user_id) < 0) {
 	sprintf(errbuf,	"Failure setting uid to %d: %s\n", user_id,
-		sys_errlist[errno]);
+		strerror(errno));
 	rkinit_errmsg(errbuf);
 	longjmp(rii->env, RKINIT_DAEMON);
    }	
@@ -289,7 +282,7 @@ static int validate_user(aname, inst, realm, username, errmsg)
 #ifndef SOLARIS
     if (seteuid(pwnam->pw_uid) < 0) {
 	sprintf(errmsg, "Failure setting euid to %d: %s\n", pwnam->pw_uid, 
-		sys_errlist[errno]);
+		strerror(errno));
 	strcpy(errbuf, errmsg);
 	error();
 	return(FAILURE);
@@ -297,7 +290,7 @@ static int validate_user(aname, inst, realm, username, errmsg)
     kstatus = kuserok(&auth_dat, username);
     if (seteuid(0) < 0) {
 	sprintf(errmsg, "Failure setting euid to 0: %s\n", 
-		sys_errlist[errno]);
+		strerror(errno));
 	strcpy(errbuf, errmsg);
 	error();
 	return(FAILURE);
@@ -331,7 +324,7 @@ static int validate_user(aname, inst, realm, username, errmsg)
         been read  */
     if (setruid(pwnam->pw_uid) < 0) {
 	sprintf(errmsg,	"Failure setting ruid to %d: %s\n", pwnam->pw_uid,
-		sys_errlist[errno]);
+		strerror(errno));
 	strcpy(errbuf, errmsg);
 	error();
 	return(FAILURE);
