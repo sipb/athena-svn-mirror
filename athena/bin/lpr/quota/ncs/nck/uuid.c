@@ -37,6 +37,18 @@
 #  include "uuid.h"
 #endif
 
+#ifdef INET 
+#include <netinet/in.h>
+#ifdef cray
+struct sockaddr_in_ncs {
+    short   sin_family;
+    u_int   sin_port: 16;
+    u_int   sin_addr: 32;
+};
+#else
+#  define sockaddr_in_ncs sockaddr_in
+#endif
+#endif
 
 /*
  * Internal structure of UUIDs
@@ -266,7 +278,11 @@ uuid_$t *uuid;
     double usec4;       /* Floating 4-usec ticks since 1/1/80 */
 #endif
     socket_$net_addr_t naddr;
+#ifdef INET
+    struct sockaddr_in_ncs saddr;
+#else
     socket_$addr_t saddr;
+#endif
     u_long nlen, slen, hlen;
     status_$t st;
     static socket_$host_id_t host;
