@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-lockers.sh,v 1.3 2002-12-03 00:10:15 rbasch Exp $
+# $Id: local-lockers.sh,v 1.3.2.1 2002-12-09 22:13:59 ghudson Exp $
 
 # local-lockers - Bring lockers local using athlsync
 
