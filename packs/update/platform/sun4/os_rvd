@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.7 1996-12-27 22:12:59 ghudson Exp $
+## $Id: os_rvd,v 1.8 1997-02-11 19:31:28 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -109,7 +109,7 @@ GLOBAL : *.CKP *.local *.pid :
 		dt
 		-> games
 		-> include
-		kernel*
+		kernel
 		lib
 		-> net
 		-> oasys
@@ -128,6 +128,7 @@ GLOBAL : *.CKP *.local *.pid :
 		lib
 		-> man
 		-> bin
+		-> share
 		:
 	/usr/dt/lib:::
 		-> bindings
