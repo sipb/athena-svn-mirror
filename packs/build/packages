@@ -1,4 +1,4 @@
-# $Id: packages,v 1.132 2001-05-04 14:53:56 ghudson Exp $
+# $Id: packages,v 1.133 2001-05-04 21:52:43 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -128,6 +128,7 @@ third/bind
 third/bzip2			except linux
 third/db			except linux
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnome-vfs
+third/diffutils			on solaris
 third/emacs			requires hesiod,krb5
 third/esound			requires audiofile
 third/flex			on solaris
