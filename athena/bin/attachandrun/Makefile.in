@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2000-03-15 20:53:10 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2000-04-18 04:22:37 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -9,6 +9,7 @@ top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+lbindir=@lbindir@
 mandir=@mandir@
 
 CC=@CC@
@@ -30,9 +31,9 @@ attachandrun: attachandrun.o
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${INSTALL_PROGRAM} attachandrun ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} attachandrun ${DESTDIR}${lbindir}
 	${INSTALL} -m 444 ${srcdir}/attachandrun.1 ${DESTDIR}${mandir}/man1
 
 clean:
