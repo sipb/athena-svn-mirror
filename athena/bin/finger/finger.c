@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.30 1997-01-24 08:05:56 jweiss Exp $
+ * $Id: finger.c,v 1.31 1997-02-28 20:01:17 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.30 1997-01-24 08:05:56 jweiss Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.31 1997-02-28 20:01:17 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -578,22 +578,14 @@ print(personn)
 		if (unquick) {
 			if (!unshort)
 				if (wide)
-#if defined(SOLARIS) || defined(sgi)
-					printf("Login       Name                TTY  Idle    When     Office\n");
-#else
-					printf("Login       Name              TTY Idle    When            Office\n");
-#endif
+					printf("Login       Name               TTY Idle When        Office\n");
 				else
-#if defined(SOLARIS) || defined(sgi)
-					printf("Login      TTY Idle    When     Office\n");
-#else
-					printf("Login    TTY Idle    When            Office\n");
-#endif
+					printf("Login     TTY Idle When        Office\n");
 		}
 		else {
-			printf("Login      TTY            When");
+			printf("Login      TTY      When");
 			if (idle)
-				printf("             Idle");
+				printf("               Idle");
 			(void) putchar('\n');
 		}
 	}
@@ -713,22 +705,17 @@ pwdcopy(pfrom)
 quickprint(pers)
 	register struct person *pers;
 {
-	printf("%-*.*s  ", NMAX, NMAX, pers->name);
+	printf("%-8.8s  ", pers->name);
 	if (pers->loggedin) {
 		if (idle) {
 			findidle(pers);
-#ifndef SYSV
-			printf("%c%-*s %-16.16s", pers->writable ? ' ' : '*',
-			       LMAX, pers->tty, ctime(&pers->loginat));
-#else
-			printf("%c%-*s", pers->writable ? ' ' : '*',
-			       LMAX, pers->tty);
-#endif
+			printf("%c%-8s %-16.16s", pers->writable ? ' ' : '*',
+			       pers->tty, ctime(&pers->loginat));
 			(void) ltimeprint("   ", &pers->idletime, "");
 		}
 		else
-			printf(" %-*s %-16.16s", LMAX,
-			       pers->tty, ctime(&pers->loginat));
+			printf(" %-8s %-16.16s", pers->tty,
+			       ctime(&pers->loginat));
 		(void) putchar('\n');
 	}
 	else
@@ -746,18 +733,10 @@ shortprint(pers)
 	char dialup;
 
 	if (pers->pwd == 0) {
-#if defined(SOLARIS) || defined(sgi)
-		printf("%-8s       ???\n", pers->name);
-#else
 		printf("%-15s       ???\n", pers->name);
-#endif
 		return;
 	}
-#if defined(SOLARIS) || defined(sgi)
 	printf("%-8s",  pers->pwd->pw_name);
-#else
-	printf("%-*s", NMAX, pers->pwd->pw_name);
-#endif
 	dialup = 0;
 	if (wide) {
 		if (pers->realname)
@@ -775,24 +754,12 @@ shortprint(pers)
 		if (!strncmp(pers->tty, "tty", 3)) {
 			if (pers->tty[3] == 'd' && pers->loggedin)
 				dialup = 1;
-#ifdef SOLARIS
-			printf("%-5.5s ", pers->tty );
-#else
-			printf("%-2.2s ", pers->tty + 3);
-#endif
+			printf("%-3.3s ", pers->tty + 3);
 		} else
 		if (!strncmp(pers->tty, "pts/", 4)) {
-#ifdef SOLARIS
-			printf("%-5.5s ", pers->tty );
-#else
-			printf("p%-1.1s ", pers->tty + 4);
-#endif
+			printf("p%-2.2s ", pers->tty + 4);
 		} else
-#ifdef SOLARIS
-			printf("%-5.5s ", pers->tty);
-#else
-			printf("%-2.2s ", pers->tty);
-#endif
+			printf("%-3.3s ", pers->tty);
 	}
 	else
 		printf("   ");
@@ -810,9 +777,7 @@ shortprint(pers)
 	if (dialup && pers->homephone)
 		printf(" %20s", pers->homephone);
 	else {
-#ifdef SOLARIS
 		(void) putchar(' '); 
-#endif
 		if (pers->office)
 			printf(" %-12.12s", pers->office);
 		else if (pers->officephone || pers->homephone)
