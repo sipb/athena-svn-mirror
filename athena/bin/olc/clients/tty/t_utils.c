@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.16 1990-07-16 08:10:19 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.17 1990-10-22 04:16:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.16 1990-07-16 08:10:19 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.17 1990-10-22 04:16:55 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -364,7 +364,7 @@ handle_response(response, req)
     case MK_AP_TGTEXP: 
     case RD_AP_EXP:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Your Kerberos tickets has expired. ");
+      printf("Your Kerberos tickets have expired. ");
       printf(" To renew your Kerberos tickets,\n");
       printf("type:    kinit\n");
       if(OLC)
