@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Id: port.c,v 1.4 1989-11-15 15:31:13 jtkohl Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.5 1989-11-28 14:48:05 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -524,9 +524,13 @@ void create_file_output_port(name, filename)
      string filename;
 {
     FILE *out;
+    int oumask;
 
     errno = 0;
+
+    oumask = umask(077);		/* allow read/write for us only */
     out = fopen(filename, "w");
+    (void) umask(oumask);
     if (errno) {
 	var_set_variable("error", perror_to_string(errno));
 	return;
