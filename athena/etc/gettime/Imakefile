@@ -3,7 +3,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.1 1990-08-30 12:12:37 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.2 1990-08-30 12:13:03 epeisach Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR} -DX11
@@ -73,9 +73,10 @@ install::
 #	done
 
 	for i in ${BACKUP}; do \
+		/etc/chown $$USER ${DESTDIR}/etc/athena/$$i; \
 		chgrp ${OP_GID} ${DESTDIR}/etc/athena/$$i; \
-		/etc/chown backup ${DESTDIR}/etc/athena/$$i; \
 		chmod 774 ${DESTDIR}/etc/athena/$$i; \
+		/etc/chown backup ${DESTDIR}/etc/athena/$$i; \
 		done
 	for i in ${LOGSD}; do \
 		install -c -m 4755 -o root $$i ${DESTDIR}/etc/athena/; \
