@@ -60,7 +60,7 @@ char *rhost;
 	fatal("Can't get socket: %s",strerror(errno));
     retries = 0;
     while (1) {
-        if (connect(s, (caddr_t)&sin, sizeof(sin)) < 0) {
+        if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
             err = errno;
             close(s);
 	    retries = (retries > 5) ? 6 : retries+1;
