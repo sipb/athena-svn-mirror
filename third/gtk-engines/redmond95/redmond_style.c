@@ -152,7 +152,7 @@ draw_check(GtkStyle      *style,
   x -= (1 + PART_SIZE - width) / 2;
   y -= (1 + PART_SIZE - height) / 2;
       
-  if (strcmp (detail, "check") == 0)	/* Menu item */
+  if (detail && strcmp (detail, "check") == 0)	/* Menu item */
     {
       if (shadow == GTK_SHADOW_IN)
 	{
@@ -192,7 +192,7 @@ draw_option(GtkStyle      *style,
   x -= (1 + PART_SIZE - width) / 2;
   y -= (1 + PART_SIZE - height) / 2;
       
-  if (strcmp (detail, "option") == 0)	/* Menu item */
+  if (detail && strcmp (detail, "option") == 0)	/* Menu item */
     {
       if (shadow == GTK_SHADOW_IN)
 	draw_part (window, style->fg_gc[state], area, x, y, RADIO_TEXT);
@@ -481,16 +481,22 @@ draw_box (GtkStyle      *style,
     {
       GtkRequisition indicator_size;
       GtkBorder indicator_spacing;
+      gint vline_x;
 
       option_menu_get_props (widget, &indicator_size, &indicator_spacing);
 
       sanitize_size (window, &width, &height);
   
+      if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
+	vline_x = x + indicator_size.width + indicator_spacing.left + indicator_spacing.right;
+      else 
+	vline_x = x + width - (indicator_size.width + indicator_spacing.left + indicator_spacing.right) - style->xthickness;
+
       parent_class->draw_vline (style, window, state_type, area, widget,
 				detail,
 				y + style->ythickness + 1,
 				y + height - style->ythickness - 3,
-				x + width - (indicator_size.width + indicator_spacing.left + indicator_spacing.right) - style->xthickness);
+				vline_x);
     }
 }
 

@@ -1,38 +1,33 @@
-%define  ver     1.9.0
-%define  RELEASE 1
-%define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define  prefix  /usr
+%define gtk_binary_version 2.2.0
 
 Summary: Default GTK+ theme engines
-Name: gtk-engines
-Version: %ver
-Release: %rel
-Copyright: GPL
+Name: gtk2-engines
+Version: 2.2.0
+Release: 1
+License: GPL
 Group: X11/Libraries
-Source: ftp://ftp.gnome.org/pub/GNOME/source/gtk-engines/gtk-engines-%{PACKAGE_VERSION}.tar.gz
-URL: http://gtk.themes.org/
+Source: gtk-engines-%{version}.tar.gz
+URL: ftp://ftp.gnome.org/pub/GNOME/sources/gtk-engines/
 BuildRoot:/var/tmp/gtk-engines-%{PACKAGE_VERSION}-root
-Docdir: %{prefix}/doc
 
 %description
 These are the graphical engines for the various GTK+ toolkit themes.
 Included themes are:
 
-  - Notif
-  - redmond95
+  - Redmond95
   - Pixmap
   - Metal (Java swing-like)
 
 %prep
-%setup 
+%setup -n gtk-engines-%{version}
 
 %build
 # Needed for snapshot releases.
 if [ ! -f configure ]; then
- CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%prefix
-else
- CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix
+ ./autogen.sh
 fi
+
+%configure
 
 if [ "$SMP" != "" ]; then
   make -j$SMP "MAKE=make -j$SMP"
@@ -45,15 +40,22 @@ fi
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 
-#
-# makefile is broken, sets exec_prefix explicitely.
-#
-make exec_prefix=$RPM_BUILD_ROOT/%{prefix} prefix=$RPM_BUILD_ROOT/%{prefix} install 
+%makeinstall
+# Clean out files that should not be part of the rpm.
+# This is the recommended way of dealing with it for RH8
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/%{gtk_binary_version}/engines/*.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/%{gtk_binary_version}/engines/*.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %changelog
+* Fri Jan 17 2003 Owen Taylor <otaylor@redhat.com>
+- Various fixes to good RPM practice
+
+* Thu Oct 22 2002 Christian F.K. Schaller <Uraeus@gnome.org>
+- Update SPEC file to include latest stuff 
+- work on RH8
 
 * Fri Nov 20 1998 Michael Fulbright <drmike@redhat.com>
 
@@ -61,9 +63,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc COPYING README ChangeLog
-%{prefix}/lib/gtk/themes/engines/*
-%{prefix}/share/themes/Pixmap/*
-%{prefix}/share/themes/Metal/*
-%{prefix}/share/themes/Notif/*
-%{prefix}/share/themes/Redmond95/*
+%doc COPYING README NEWS ChangeLog
+%{_datadir}/themes
+%{_libdir}/gtk-2.0/%{gtk_binary_version}/engines/*.so
+%{_libdir}/pkgconfig
+

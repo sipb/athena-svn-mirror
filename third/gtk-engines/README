@@ -31,11 +31,27 @@ Installation
  make install
 
 
-If you configured GTK+ in a non-default prefix, you must
-also configure this package the same way. For instance:
+If you configured GTK+ in a non-default prefix, you should
+configure this package the same way. For instance:
 
  ./configure --prefix=/opt/gtk+
 
+If you need to install this package in a different prefix
+from GTK+, then you'll have to set your GTK_PATH environment
+variable to point to the installed prefix. For instance,
+if this package was configured with:
+
+ ./configure --prefix=/home/john.doe/gtk-engines/
+
+Then you'd set:
+
+ GTK_PATH=/home/john.doe/gtk-engines/lib/gtk-2.0/
+ export GTK_PATH
+
+This will allow GTK+ to find the newly installed theme
+engines. To use the sample themes (installed into 
+$prefix/share/themes), you'll need to copy copy or link them 
+into your  ~/.theme directory.
 
 Further Information
 ===================
