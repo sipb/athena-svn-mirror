@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:33:49 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-12-26 15:51:53 ghudson Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
@@ -10,9 +10,9 @@ all:
 check:
 
 install:
-	-mkdir -p ${DESTDIR}${INITD}
-	-mkdir -p ${DESTDIR}${RC0}
-	-mkdir -p ${DESTDIR}${RC2}
+	mkdir -p ${DESTDIR}${INITD}
+	mkdir -p ${DESTDIR}${RC0}
+	mkdir -p ${DESTDIR}${RC2}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 axdm ${DESTDIR}${INITD}

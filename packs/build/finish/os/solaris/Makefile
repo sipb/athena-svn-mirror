@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:32:38 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-12-26 15:51:25 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -10,7 +10,7 @@ all:
 check:
 
 install:
-	-mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
+	mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	${DESTDIR}${ATHETCDIR}/track -w -F/os -W${DESTDIR}${ATHLIBDIR} \
 		-s stats/os_rvd slists/os_rvd
 	${DESTDIR}${ATHETCDIR}/track -w -F/os/kernel -W${DESTDIR}${ATHLIBDIR} \

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:33:28 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-12-26 15:51:45 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -19,10 +19,10 @@ ${ATTACHRUN}: specs ${ATTRUNTEMPLATE}
 check:
 
 install:
-	-mkdir -p ${DESTDIR}${ATHBINDIR}
-	-mkdir -p ${DESTDIR}${USRBINDIR}
-	-mkdir -p ${DESTDIR}${NSBINDIR}
-	-mkdir -p ${DESTDIR}${IAFLIBDIR}
+	mkdir -p ${DESTDIR}${ATHBINDIR}
+	mkdir -p ${DESTDIR}${USRBINDIR}
+	mkdir -p ${DESTDIR}${NSBINDIR}
+	mkdir -p ${DESTDIR}${IAFLIBDIR}
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	install -c -m 555 netscape ${DESTDIR}${NSBINDIR}
 	rm -f ${DESTDIR}${USRBINDIR}/lp

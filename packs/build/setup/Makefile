@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 1998-12-25 19:37:53 ghudson Exp $
+# $Id: Makefile,v 1.8 1998-12-26 15:51:27 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -24,34 +24,34 @@ check:
 install:
 	cd os/${OS} && ${MAKE} $@
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
-	-mkdir -p ${DESTDIR}${ATHBINDIR}
-	-mkdir -p ${DESTDIR}${ATHETCDIR}
-	-mkdir -p ${DESTDIR}${ATHRBINDIR}
-	-mkdir -p ${DESTDIR}${ATHRETCDIR}
-	-mkdir -p ${DESTDIR}${ATHVARDIR}
-	-mkdir -p ${DESTDIR}${ATHCONFDIR}
-	-mkdir -p ${DESTDIR}${ATHLIBDIR}
-	-mkdir -p ${DESTDIR}${ATHINCDIR}
-	-mkdir -p ${DESTDIR}${ATHXAPPDIR}
-	-mkdir -p ${DESTDIR}${ATHXBITDIR}
-	-mkdir -p ${DESTDIR}${ATHMANDIR}
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man2
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man3
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man4
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man5
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man6
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man7
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man8
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat2
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat3
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat4
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat5
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat6
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat7
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
-	-mkdir -p -m 700 ${DESTDIR}${ATHVARDIR}/sessions
+	mkdir -p ${DESTDIR}${ATHBINDIR}
+	mkdir -p ${DESTDIR}${ATHETCDIR}
+	mkdir -p ${DESTDIR}${ATHRBINDIR}
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
+	mkdir -p ${DESTDIR}${ATHVARDIR}
+	mkdir -p ${DESTDIR}${ATHCONFDIR}
+	mkdir -p ${DESTDIR}${ATHLIBDIR}
+	mkdir -p ${DESTDIR}${ATHINCDIR}
+	mkdir -p ${DESTDIR}${ATHXAPPDIR}
+	mkdir -p ${DESTDIR}${ATHXBITDIR}
+	mkdir -p ${DESTDIR}${ATHMANDIR}
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man2
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man3
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man4
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man5
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man6
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man7
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat2
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat3
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat4
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat5
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat6
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat7
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
+	mkdir -p -m 700 ${DESTDIR}${ATHVARDIR}/sessions
 	rm -f ${DESTDIR}/usr/athena/emacs
 	ln -s bin/emacs ${DESTDIR}/usr/athena/emacs
 	rm -f ${DESTDIR}/usr/athena/zmailnotify

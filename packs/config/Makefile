@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.19 1998-12-25 19:37:54 ghudson Exp $
+# $Id: Makefile,v 1.20 1998-12-26 15:51:29 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -16,10 +16,10 @@ check:
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
-	-mkdir -p ${DESTDIR}${ETCDIR}
-	-mkdir -p ${DESTDIR}${ATHRETCDIR}
-	-mkdir -p ${DESTDIR}${ATHLIBDIR}
-	-mkdir -p ${DESTDIR}${ATHMANDIR}
+	mkdir -p ${DESTDIR}${ETCDIR}
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
+	mkdir -p ${DESTDIR}${ATHLIBDIR}
+	mkdir -p ${DESTDIR}${ATHMANDIR}
 	install -c -m 0644 Dash.fallback ${DESTDIR}${ATHLIBDIR}
 	install -c -m 0644 athinfo.access ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 ftpusers ${DESTDIR}${ETCDIR}

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.31 1998-12-25 19:37:57 ghudson Exp $
+# $Id: Makefile,v 1.32 1998-12-26 15:51:44 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -60,14 +60,14 @@ check:
 	cd os/${OS} && ${MAKE} $@
 
 install:
-	-mkdir -p ${DESTDIR}/usr
-	-mkdir -p ${DESTDIR}${ATHRBINDIR}
-	-mkdir -p ${DESTDIR}${ATHBINDIR}
-	-mkdir -p ${DESTDIR}${ATHETCDIR}
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man8
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
+	mkdir -p ${DESTDIR}/usr
+	mkdir -p ${DESTDIR}${ATHRBINDIR}
+	mkdir -p ${DESTDIR}${ATHBINDIR}
+	mkdir -p ${DESTDIR}${ATHETCDIR}
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
+	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
 	install -c -m 555 addusr ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 blanche ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 bos ${DESTDIR}${ATHRBINDIR}

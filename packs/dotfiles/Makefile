@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1998-12-25 19:37:55 ghudson Exp $
+# $Id: Makefile,v 1.7 1998-12-26 15:51:36 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -15,11 +15,11 @@ check:
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
-	-mkdir -p ${DESTDIR}${PROTOTYPE}
-	-mkdir -p ${DESTDIR}${PROTOTMP}
-	-mkdir -p ${DESTDIR}${SYSTEM}
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man1
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man7
+	mkdir -p ${DESTDIR}${PROTOTYPE}
+	mkdir -p ${DESTDIR}${PROTOTMP}
+	mkdir -p ${DESTDIR}${SYSTEM}
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTMP}
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTYPE}/.cshrc

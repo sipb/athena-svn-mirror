@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1998-02-03 19:14:59 rbasch Exp $
+# $Id: Makefile,v 1.4 1998-12-26 15:51:33 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -16,14 +16,14 @@ all:
 check:
 
 install:
-	-mkdir -p ${DESTDIR}${ETCDIR}
-	-mkdir -p ${DESTDIR}${DEFAULT}
-	-mkdir -p ${DESTDIR}${X11LIB}
-	-mkdir -p ${DESTDIR}${APPDEFS}
-	-mkdir -p ${DESTDIR}${FONTS}
-	-mkdir -p ${DESTDIR}${CRONTABS}
-	-mkdir -p ${DESTDIR}${SGICONFIG}
-	-mkdir -p ${DESTDIR}${XDMDIR}
+	mkdir -p ${DESTDIR}${ETCDIR}
+	mkdir -p ${DESTDIR}${DEFAULT}
+	mkdir -p ${DESTDIR}${X11LIB}
+	mkdir -p ${DESTDIR}${APPDEFS}
+	mkdir -p ${DESTDIR}${FONTS}
+	mkdir -p ${DESTDIR}${CRONTABS}
+	mkdir -p ${DESTDIR}${SGICONFIG}
+	mkdir -p ${DESTDIR}${XDMDIR}
 	install -c -m 0644 4DWm ${DESTDIR}${APPDEFS}
 	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
 	install -c -m 0644 Toolchest ${DESTDIR}${APPDEFS}

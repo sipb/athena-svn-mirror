@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:32:47 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-12-26 15:51:34 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -17,14 +17,14 @@ all:
 check:
 
 install:
-	-mkdir -p ${DESTDIR}${ETCDIR}
-	-mkdir -p ${DESTDIR}${ATHRETCDIR}
-	-mkdir -p ${DESTDIR}${SGICONFIG}
-	-mkdir -p ${DESTDIR}${X11LIB}
-	-mkdir -p ${DESTDIR}${APPDEFS}
-	-mkdir -p ${DESTDIR}${FONTS}
-	-mkdir -p ${DESTDIR}${FLEXLM}
-	-mkdir -p ${DESTDIR}${NCS}
+	mkdir -p ${DESTDIR}${ETCDIR}
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
+	mkdir -p ${DESTDIR}${SGICONFIG}
+	mkdir -p ${DESTDIR}${X11LIB}
+	mkdir -p ${DESTDIR}${APPDEFS}
+	mkdir -p ${DESTDIR}${FONTS}
+	mkdir -p ${DESTDIR}${FLEXLM}
+	mkdir -p ${DESTDIR}${NCS}
 	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}

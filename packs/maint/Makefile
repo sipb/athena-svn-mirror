@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1998-12-25 19:38:00 ghudson Exp $
+# $Id: Makefile,v 1.7 1998-12-26 15:51:48 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -13,8 +13,8 @@ check:
 	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
-	-mkdir -p ${DESTDIR}${ATHRETCDIR}
-	-mkdir -p ${DESTDIR}${ATHMANDIR}/man8
+	mkdir -p ${DESTDIR}${ATHRETCDIR}
+	mkdir -p ${DESTDIR}${ATHMANDIR}/man8
 	install -c -m 0555 clean_tmp_areas.sh \
 		${DESTDIR}${ATHRETCDIR}/clean_tmp_areas
 	install -c -m 0555 config_afs.sh ${DESTDIR}${ATHRETCDIR}/config_afs

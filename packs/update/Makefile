@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 1998-12-25 19:38:01 ghudson Exp $
+# $Id: Makefile,v 1.8 1998-12-26 15:51:54 ghudson Exp $
 
 SHELL=/bin/sh
 UPDATE=/usr/athena/lib/update
@@ -17,7 +17,7 @@ check:
 # scripts in vers; the alternative is editing this Makefile for every patch
 # release, which would make it very hard to track actual changes to this file.
 install:
-	-mkdir -p ${DESTDIR}${UPDATE}
+	mkdir -p ${DESTDIR}${UPDATE}
 	install -c -m 0555 do-update.sh ${DESTDIR}${UPDATE}/do-update
 	install -c -m 0555 finish-update.sh ${DESTDIR}${UPDATE}/finish-update
 	install -c -m 0555 update-environment.sh \

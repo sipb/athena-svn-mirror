@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1998-12-25 19:37:50 ghudson Exp $
+# $Id: Makefile,v 1.6 1998-12-26 15:51:23 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -34,7 +34,7 @@ install:
 		fi; \
 	fi
 	cd os/${OS} && ${MAKE} $@
-	-mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
+	mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	rm -f ${DESTDIR}/patch
 	. ../version; \
 		vers="$$major.$$minor"; \
