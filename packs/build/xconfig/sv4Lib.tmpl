@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sv4Lib.tmpl,v 1.6 92/01/25 16:46:55 rws Exp $
+XCOMM $XConsortium: sv4Lib.tmpl,v 1.7 92/05/08 09:02:55 rws Exp $
 
 /*
  * SVR4 shared library template
@@ -30,6 +30,9 @@ XCOMM $XConsortium: sv4Lib.tmpl,v 1.6 92/01/25 16:46:55 rws Exp $
 #endif
 #ifndef SharedXTrapRev
 #define SharedXTrapRev 1.0
+#endif
+#ifndef SharedPexRev
+#define SharedPexRev 1.0
 #endif
 
 SHLIBLDFLAGS = SharedLibraryLoadFlags
@@ -76,4 +79,8 @@ PICFLAGS = PositionIndependentCFlags
 #if SharedLibXTest
         DEPXTESTLIB = /* _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.sa.$(SOXTESTREV)) */
            XTESTLIB = _Use(-lXtst,-L$(XTESTLIBSRC) -lXtst)
+#endif
+#if SharedLibPex
+        DEPPEXLIB = /* _UseCat($(USRLIBDIR),$(PEXLIBSRC),/libPEX5.sa.$(SOPEXREV)) */
+         PEXLIB = _Use(-lPEX5,-L$(PEXLIBSRC) -lPEX5)
 #endif

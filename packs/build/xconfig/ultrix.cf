@@ -1,4 +1,4 @@
-XCOMM platform:  $XConsortium: ultrix.cf,v 1.45 91/07/30 12:12:11 rws Exp $
+XCOMM platform:  $XConsortium: ultrix.cf,v 1.46 92/04/08 18:04:05 mor Exp $
 
 #define OSName            Ultrix-32 4.2
 XCOMM operating system:  OSName
@@ -14,6 +14,7 @@ XCOMM operating system:  OSName
 #ifdef VaxArchitecture
 #define XqdssServer YES
 #define XqvssServer YES
+#define PexNativeFPFormat PEXDEC_F_Floating
 #define UnalignedReferencesAllowed YES	       /* if arbitrary deref is okay */
 #if HasGcc
 #define BuildPexExt XqdssServer

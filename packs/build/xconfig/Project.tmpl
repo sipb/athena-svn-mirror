@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.147 92/05/26 11:58:01 rws Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -19,11 +19,11 @@ XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
 #ifndef BuildServer
 #define BuildServer		YES
 #endif
-#ifndef BuildFonts
-#define BuildFonts		BuildServer
-#endif
 #ifndef BuildFontServer
 #define BuildFontServer		BuildServer
+#endif
+#ifndef BuildFonts
+#define BuildFonts		(BuildServer | BuildFontServer)
 #endif
 #ifndef BuildPex
 #define BuildPex		YES
@@ -49,6 +49,12 @@ XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
 #endif
 #ifndef BuildXTrapLib
 #define BuildXTrapLib		NO
+#endif
+#ifndef BuildScreenSaverExt
+#define BuildScreenSaverExt	NO	/* not released yet */
+#endif
+#ifndef BuildScreenSaverLib
+#define BuildScreenSaverLib	NO	/* not released yet */
 #endif
 #ifndef InstallLibManPages
 #define InstallLibManPages	YES
@@ -202,7 +208,11 @@ XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
 #if (SystemV || SystemV4) && !HasSockets
 #define ConnectionFlags -DSTREAMSCONN
 #else
+#if HasBSD44Sockets
+#define ConnectionFlags -DTCPCONN -DUNIXCONN -DBSD44SOCKETS
+#else
 #define ConnectionFlags -DTCPCONN -DUNIXCONN
+#endif
 #endif
 #endif
 #ifndef FontOSDefines
@@ -243,8 +253,15 @@ XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
 #define XTrapDefines /**/
 #endif
 #endif
+#ifndef ScreenSaverDefines
+#if BuildScreenSaverExt
+#define ScreenSaverDefines -DSCREENSAVER
+#else
+#define ScreenSaverDefines /**/
+#endif
+#endif
 #ifndef BaseExtensionDefines
-#define BaseExtensionDefines -DSHAPE -DMULTIBUFFER -DMITMISC -DXTEST PexDefines ShmDefines XInputDefines XTrapDefines
+#define BaseExtensionDefines -DSHAPE -DMULTIBUFFER -DMITMISC -DXTEST PexDefines ShmDefines XInputDefines XTrapDefines ScreenSaverDefines
 #endif
 #define ExtensionDefines BaseExtensionDefines ExtensionOSDefines
 #endif
@@ -477,6 +494,12 @@ XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
 #ifndef NormalLibXTrap
 #define NormalLibXTrap 	(!SharedLibXTrap | ForceNormalLib)
 #endif
+#ifndef SharedLibPex
+#define SharedLibPex HasSharedLibraries
+#endif
+#ifndef NormalLibPex
+#define NormalLibPex (!SharedLibPex | ForceNormalLib)
+#endif
 #ifndef SharedLibPhigs
 #define SharedLibPhigs NO	/* XXX - haven't made it sharable yet */
 #endif
@@ -584,6 +607,7 @@ XCOMM X Window System make variables; this need to be coordinated with rules
      EXTENSIONSRC = $(TOP)/extensions
          XILIBSRC = $(EXTENSIONSRC)/lib/xinput
       XTESTLIBSRC = $(EXTENSIONSRC)/lib/xtest
+        PEXLIBSRC = $(EXTENSIONSRC)/lib/PEXlib
       PHIGSLIBSRC = $(EXTENSIONSRC)/lib/PEX
 
 /*
@@ -634,6 +658,7 @@ XCOMM X Window System make variables; this need to be coordinated with rules
       SOXINPUTREV = SharedXinputRev
        SOXTESTREV = SharedXTestRev
        SOXTRAPREV = SharedXTrapRev
+         SOPEXREV = SharedPexRev
 #endif
 
 #if !SharedLibXext
@@ -672,6 +697,10 @@ XCOMM X Window System make variables; this need to be coordinated with rules
      DEPXTESTLIB = _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.a)
         XTESTLIB = LoaderLibPrefix _Use(-lXtst,$(DEPXTESTLIB))
 #endif
+#if !SharedLibPex
+       DEPPEXLIB = _UseCat($(USRLIBDIR),$(PEXLIBSRC),/libPEX5.a)
+          PEXLIB = LoaderLibPrefix _Use(-lPEX5,$(DEPPEXLIB))
+#endif
 #if !SharedLibPhigs
         DEPPHIGSLIB = _UseCat($(USRLIBDIR),$(PHIGSLIBSRC),/libphigs.a)
            PHIGSLIB = LoaderLibPrefix _Use(-lphigs,$(DEPPHIGSLIB))
@@ -685,6 +714,7 @@ XCOMM X Window System make variables; this need to be coordinated with rules
         LINTXTOOL = _UseCat($(LINTLIBDIR),$(TOOLKITSRC),/llib-lXt.ln)
           LINTXAW = _UseCat($(LINTLIBDIR),$(AWIDGETSRC),/llib-lXaw.ln)
            LINTXI = _UseCat($(LINTLIBDIR),$(XILIBSRC),/llib-lXi.ln)
+          LINTPEX = _UseCat($(LINTLIBDIR),$(PEXLIBSRC),/llib-lPEX5.ln)
         LINTPHIGS = _UseCat($(LINTLIBDIR),$(PHIGSLIBSRC),/llib-lphigs.ln)
 
 #ifndef XawClientDepLibs

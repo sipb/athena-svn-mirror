@@ -1,4 +1,4 @@
-XCOMM $XConsortium: ibmLib.tmpl,v 1.3 92/02/25 09:36:32 rws Exp $
+XCOMM $XConsortium: ibmLib.tmpl,v 1.5 92/05/08 09:02:58 rws Exp $
 
 /*
  * AIX shared library template
@@ -39,6 +39,10 @@ PICFLAGS = PositionIndependentCFlags
            XILIB = _Use(-lXi,-L$(XILIBSRC) -lXi)
 #endif
 #if SharedLibXTest
-        DEPXTESTLIB = /* _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.sa.$(SOXTESTREV)) */
+        DEPXTESTLIB = /* _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.a */
            XTESTLIB = _Use(-lXtst,-L$(XTESTLIBSRC) -lXtst)
+#endif
+#if SharedLibPex
+        DEPPEXLIB = /* _UseCat($(USRLIBDIR),$(PEXLIBSRC),/libPEX5.a */
+           PEXLIB = _Use(-lPEX5,-L$(PEXLIBSRC) -lPEX5)
 #endif

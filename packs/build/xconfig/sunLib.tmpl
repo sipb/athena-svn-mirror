@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sunLib.tmpl,v 1.16 92/02/16 12:52:34 rws Exp $
+XCOMM $XConsortium: sunLib.tmpl,v 1.17 92/05/08 09:02:48 rws Exp $
 
 /*
  * SunOS shared library template
@@ -31,6 +31,10 @@ XCOMM $XConsortium: sunLib.tmpl,v 1.16 92/02/16 12:52:34 rws Exp $
 #ifndef SharedXTrapRev
 #define SharedXTrapRev 1.0
 #endif
+#ifndef SharedPexRev
+#define SharedPexRev 1.0
+#endif
+
 
 SHLIBLDFLAGS = SharedLibraryLoadFlags
 PICFLAGS = PositionIndependentCFlags
@@ -75,4 +79,8 @@ PICFLAGS = PositionIndependentCFlags
 #if SharedLibXTest
         DEPXTESTLIB = /* _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.sa.$(SOXTESTREV)) */
            XTESTLIB = _Use(-lXtst,-L$(XTESTLIBSRC) -lXtst)
+#endif
+#if SharedLibPex
+        DEPPEXLIB = /* _UseCat($(USRLIBDIR),$(PEXLIBSRC),/libPEX5.sa.$(SOPEXREV)) */
+         PEXLIB = _Use(-lPEX5,-L$(PEXLIBSRC) -lPEX5)
 #endif
