@@ -1,8 +1,0 @@
-GtkObject
-  GtkWidget
-    GtkRange
-    GtkContainer
-      GtkLayout
-        GtkHTML
-  GtkData
-    GtkAdjustment
