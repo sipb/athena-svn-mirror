@@ -1580,7 +1580,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	if ( login_krb4_convert && !got_v4_tickets) {
 
 
-	    if (got_v5_tickets && !local_acct)
+	    if (got_v5_tickets)
 		try_convert524 (kcontext, me);
 
 	}
