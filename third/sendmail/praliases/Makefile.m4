@@ -97,7 +97,8 @@ install-praliases: praliases
 
 install-docs: praliases.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} praliases.${MAN8SRC} ${MAN8}/praliases.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} praliases.${MAN8SRC} ${MAN8}/praliases.${MAN8EXT}')
 
 clean:
 	rm -f ${OBJS} praliases
