@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v $
- *	$Author: zacheiss $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +18,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_dispatch_c[] =
-"$Id: dispatch.c,v 1.61 2001-02-27 04:47:10 zacheiss Exp $";
+"$Id: dispatch.c,v 1.62 2001-03-05 22:22:03 ghudson Exp $";
 #endif
 #endif
 
@@ -257,7 +257,20 @@ dispatch(notice, auth, who, from_server)
     char dbg_buf[BUFSIZ];
 #endif
 
-    authflag = (auth == ZAUTH_YES);
+    /* Set "authflag" to 1 or 0 for handler functions.  Treat
+     * ZAUTH_CKSUM_FAILED as authentic except for sendit(), which is
+     * handled below. */
+    switch (auth) {
+      case ZAUTH_YES:
+      case ZAUTH_CKSUM_FAILED:
+	authflag = 1;
+	break;
+      case ZAUTH_FAILED:
+      case ZAUTH_NO:
+      default:
+	authflag = 0;
+	break;
+    }
 
     if ((int) notice->z_kind < (int) UNSAFE ||
 	(int) notice->z_kind > (int) CLIENTACK) {
@@ -311,6 +324,8 @@ dispatch(notice, auth, who, from_server)
 	admin_notices.val++;
 	status = server_adispatch(notice, authflag, who, me_server);
     } else {
+	if (auth == ZAUTH_CKSUM_FAILED)
+	    authflag = 0;
 	if (!realm_bound_for_realm(ZGetRealm(), notice->z_recipient)) {
 	    cp = strchr(notice->z_recipient, '@');
 	    if (!cp ||
