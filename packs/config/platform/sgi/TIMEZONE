@@ -1,5 +1,0 @@
-#ident	"@(#)sadmin:etc/TIMEZONE	1.2"
-#ident	"$Revision: 1.1 $"
-#	Set timezone environment to default for the machine
-TZ=EST5EDT
-export TZ
