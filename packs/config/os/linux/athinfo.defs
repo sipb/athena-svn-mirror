@@ -32,3 +32,4 @@ listeners	netstat -an --inet --tcp | awk '$NF == "LISTEN"'
 login		test -f /etc/nologin; echo $?
 cpuspeed	grep MHz /proc/cpuinfo
 packages	rpm -qa
+modules  	lsmod
