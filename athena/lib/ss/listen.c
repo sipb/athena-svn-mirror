@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Id: listen.c,v 1.10 1999-05-06 22:01:19 kcr Exp $
+ *	$Id: listen.c,v 1.11 1999-06-04 17:35:28 ghudson Exp $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
  *
@@ -20,7 +20,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-static const char rcsid[] = "$Id: listen.c,v 1.10 1999-05-06 22:01:19 kcr Exp $";
+static const char rcsid[] = "$Id: listen.c,v 1.11 1999-06-04 17:35:28 ghudson Exp $";
 
 static ss_data *current_info;
 static jmp_buf listen_jmpb;
@@ -74,7 +74,8 @@ int ss_listen (sci_idx)
 	if (csig.sa_handler == listen_int_handler)
 	    csig = osig;
 
-	input = readline(current_info->prompt);
+	rl_readline_name = info->subsystem_name;
+	input = readline(info->prompt);
 	if (input == NULL) {
 	    code = SS_ET_EOF;
 	    goto egress;
