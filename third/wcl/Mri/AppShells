@@ -1,9 +1,0 @@
-! SCCS_data:    @(#) AppShells 1.1 92/12/04 12:26:23
-
-Mri.wcChildren:	push
-
-*push.wcClassName:	XmPushButton
-*push.activateCallback:	WcCreateRoot( appShell )
-*push.wcCallback:	XmpAddMwmCloseCallback( ~ WcTrace( OK OK ) )
-
-appShell.wcChildren:	push

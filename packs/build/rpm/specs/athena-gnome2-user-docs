@@ -1,8 +1,0 @@
-Name: athena-gnome2-user-docs
-Summary: GNOME user documentation, for Athena
-License: FDL
-Group: Documentation
-
-%description
-This package contains end user documentation for the GNOME desktop
-environment.
