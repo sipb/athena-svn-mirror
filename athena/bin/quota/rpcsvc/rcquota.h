@@ -7,8 +7,8 @@
 
 /*
  * inquire about quotas for uid (assume AUTH_UNIX)
- *	input - getquota_args			(xdr_getquota2_args)
- *	output - getquota2_rslt			(xdr_getquota2_rslt)
+ *	input - getcquota_args			(xdr_getquota2_args)
+ *	output - getcquota_rslt			(xdr_getquota2_rslt)
  */
 #define RCQUOTAPROC_GETQUOTA		1	/* get quota */
 #define RCQUOTAPROC_GETACTIVEQUOTA	2	/* get only active quotas */
@@ -16,7 +16,7 @@
 /*
  * args to RCQUOTAPROC_GETQUOTA and RCQUOTAPROC_GETACTIVEQUOTA
  */
-struct getquota_args {
+struct getcquota_args {
 	char *gqa_pathp;		/* path to filesystem of interest */
 	int gqa_uid;			/* inquire about quota for uid */
 };
@@ -36,14 +36,14 @@ struct rcquota {
   u_long rq_ftimeleft;		/* time left for excessive files */
 };	
 
-enum gqr_status {
-  Q_OK = 1,			/* quotas returned */
-  Q_NOQUOTA = 2,		/* noquota for uid */
-  Q_EPERM = 3,			/* no permission to access quota */
+enum gcqr_status {
+        QC_OK = 1,                       /* quota returned */
+        QC_NOQUOTA = 2,                  /* noquota for uid */
+        QC_EPERM = 3                     /* no permission to access quota */
 };
 
 struct getcquota_rslt {
-  enum gqr_status gqr_status;	/* discriminant */
+  enum gcqr_status gqr_status;	/* discriminant */
   bool_t rq_group;              /* inidicates group quotas instead of user */
   int  rq_ngrps;		/* number of groups */
   int rq_bsize;			/* block size for block counts */
@@ -51,6 +51,6 @@ struct getcquota_rslt {
   struct rcquota gqr_rcquota[NGROUPS+1]; /* valid if status == Q_OK */
 };
 
-extern bool_t xdr_getquota_args();
+extern bool_t xdr_getcquota_args();
 extern bool_t xdr_getcquota_rslt();
 extern bool_t xdr_rcquota();
