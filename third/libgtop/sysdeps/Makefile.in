@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -116,7 +116,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -149,9 +148,10 @@ sysdeps_suid_lib = @sysdeps_suid_lib@
 
 guile_SUBDIRS = 
 
-SUBDIRS = @sysdeps_dir@ common names $(guile_SUBDIRS)
+SUBDIRS = common @sysdeps_dir@ names $(guile_SUBDIRS)
 
-DIST_SUBDIRS = common guile linux kernel names osf1 			  stub stub_suid sun4 freebsd solaris
+DIST_SUBDIRS = common guile linux kernel names osf1 \
+			  stub stub_suid sun4 freebsd solaris aix
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -209,7 +209,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \

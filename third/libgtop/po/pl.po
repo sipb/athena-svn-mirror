@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgtop\n"
-"POT-Creation-Date: 2002-06-10 17:36-0400\n"
+"POT-Creation-Date: 2003-01-12 21:40-0500\n"
 "PO-Revision-Date: 2002-06-02 20:57+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/smp.c:68
+#: examples/smp.c:71
 #, c-format
 msgid "Ticks (%ld per second):"
 msgstr "Takty (%ld na sekundę):"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Total"
 msgstr "Łącznie"
 
-#: examples/smp.c:71 sysdeps/names/mem.c:47
+#: examples/smp.c:74 sysdeps/names/mem.c:47
 msgid "User"
 msgstr "Użytkownik"
 
-#: examples/smp.c:71 sysdeps/names/procuid.c:58
+#: examples/smp.c:74 sysdeps/names/procuid.c:58
 msgid "Nice"
 msgstr "'Nice'"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Sys"
 msgstr "System"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Idle"
 msgstr "Bezczynność"
 
-#: examples/smp.c:73
+#: examples/smp.c:76
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
@@ -51,36 +51,36 @@ msgstr ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
 "\n"
 
-#: examples/smp.c:77
+#: examples/smp.c:80
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 msgstr "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 
-#: examples/smp.c:94
+#: examples/smp.c:97
 msgid "Percent:"
 msgstr "Procentowo:"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Total (%)"
 msgstr "Łącznie (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "User (%)"
 msgstr "Użytkownik (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Nice (%)"
 msgstr "Nice (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Sys (%)"
 msgstr "System (%)"
 
-#: examples/smp.c:96
+#: examples/smp.c:99
 msgid "Idle (%)"
 msgstr "Bezczynność (%)"
 
-#: examples/smp.c:98
+#: examples/smp.c:101
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
@@ -89,12 +89,12 @@ msgstr ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 "\n"
 
-#: examples/smp.c:114
+#: examples/smp.c:117
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 msgstr "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 
-#: examples/smp.c:120
+#: examples/smp.c:123
 msgid "Spin:"
 msgstr "Odchylenie:"
 
@@ -344,8 +344,7 @@ msgstr "Ostatni PID"
 #: sysdeps/names/loadavg.c:47
 msgid "Number of jobs running simultaneously averaged over 1, 5 and 15 minutes"
 msgstr ""
-"Średnia liczba działających jednocześnie procesów w okresie 1, 5 i 15 "
-"minut"
+"Średnia liczba działających jednocześnie procesów w okresie 1, 5 i 15 minut"
 
 #: sysdeps/names/loadavg.c:48
 msgid "Number of tasks currently running"
@@ -602,8 +601,8 @@ msgstr ""
 "Obecnie na Linuksie w każdym znaczniku ustawiony jest bit koprocesora, "
 "ponieważ crt0.s sprawdza emulację koprocesora.\n"
 "\n"
-"Prawdopodobnie jest to błąd, gdyż nie każdy proces to skompilowany "
-"program w C.\n"
+"Prawdopodobnie jest to błąd, gdyż nie każdy proces to skompilowany program w "
+"C.\n"
 "\n"
 "Bit koprocesora ma dziesiętną wartość 4, a bit śledzenia - 10."
 
@@ -628,8 +627,7 @@ msgstr ""
 #. CMin_Flt
 #: sysdeps/names/prockernel.c:65
 msgid "The number of minor faults that the process and its children have made."
-msgstr ""
-"Liczba pomniejszych błędów spowodowanych przez proces i jego potomków."
+msgstr "Liczba pomniejszych błędów spowodowanych przez proces i jego potomków."
 
 #. CMaj_Flt
 #: sysdeps/names/prockernel.c:68
@@ -712,10 +710,10 @@ msgid ""
 "space. This does not include pages which have not been demand-loaded in, or "
 "which are swapped out."
 msgstr ""
-"Liczba stron, które proces posiada w pamięci rzeczywistej minus 3 dla "
-"celów administracyjnych. To są tylko strony zawierające tekst, dane lub "
-"przestrzeń stosu. Nie zawierają one stron, których nie było potrzeby "
-"wczytywania lub zostały wymienione."
+"Liczba stron, które proces posiada w pamięci rzeczywistej minus 3 dla celów "
+"administracyjnych. To są tylko strony zawierające tekst, dane lub przestrzeń "
+"stosu. Nie zawierają one stron, których nie było potrzeby wczytywania lub "
+"zostały wymienione."
 
 #: sysdeps/names/procmem.c:62
 msgid ""
@@ -902,8 +900,7 @@ msgstr "Czas startu procesu w sekundach od epoki Uniksa"
 #: sysdeps/names/proctime.c:52
 msgid "Real time accumulated by process (should be utime + stime)"
 msgstr ""
-"Czas rzeczywisty wykorzystany przez proces (powinien być równy CzasU + "
-"CzasS)"
+"Czas rzeczywisty wykorzystany przez proces (powinien być równy CzasU + CzasS)"
 
 #: sysdeps/names/proctime.c:53
 msgid "user-mode CPU time accumulated by process"
@@ -934,8 +931,8 @@ msgid ""
 "The time (in jiffies) before the next SIGALRM is sent to the process due to "
 "an interval timer."
 msgstr ""
-"Czas (w chwileczkach) przed następnym wysłaniem SIGALRM do procesu z "
-"powodu upłynięcia zadanego interwału"
+"Czas (w chwileczkach) przed następnym wysłaniem SIGALRM do procesu z powodu "
+"upłynięcia zadanego interwału"
 
 #: sysdeps/names/proctime.c:60
 msgid "Tick frequency"

@@ -4,40 +4,40 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgtop VERSION\n"
-"POT-Creation-Date: 2002-06-10 17:36-0400\n"
-"PO-Revision-Date: 2002-06-05 03:09+0700\n"
+"POT-Creation-Date: 2003-01-12 21:40-0500\n"
+"PO-Revision-Date: 2002-06-08 03:17+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/smp.c:68
+#: examples/smp.c:71
 #, c-format
 msgid "Ticks (%ld per second):"
 msgstr "Nhịp (%ld lần 1 giây):"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Total"
 msgstr "Tổng cộng"
 
-#: examples/smp.c:71 sysdeps/names/mem.c:47
+#: examples/smp.c:74 sysdeps/names/mem.c:47
 msgid "User"
 msgstr "Người dùng"
 
-#: examples/smp.c:71 sysdeps/names/procuid.c:58
+#: examples/smp.c:74 sysdeps/names/procuid.c:58
 msgid "Nice"
 msgstr "Ưu tiên"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Sys"
 msgstr "Sys"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Idle"
 msgstr "Rảnh"
 
-#: examples/smp.c:73
+#: examples/smp.c:76
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
@@ -46,36 +46,36 @@ msgstr ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
 "\n"
 
-#: examples/smp.c:77
+#: examples/smp.c:80
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 msgstr "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 
-#: examples/smp.c:94
+#: examples/smp.c:97
 msgid "Percent:"
 msgstr "Phần trăm:"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Total (%)"
 msgstr "Tổng cộng (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "User (%)"
 msgstr "Người dùng (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Nice (%)"
 msgstr "Ưu tiên (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Sys (%)"
 msgstr "Sys (%)"
 
-#: examples/smp.c:96
+#: examples/smp.c:99
 msgid "Idle (%)"
 msgstr "Rảnh (%)"
 
-#: examples/smp.c:98
+#: examples/smp.c:101
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
@@ -84,12 +84,12 @@ msgstr ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 "\n"
 
-#: examples/smp.c:114
+#: examples/smp.c:117
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 msgstr "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 
-#: examples/smp.c:120
+#: examples/smp.c:123
 msgid "Spin:"
 msgstr "Chiều:"
 
@@ -151,8 +151,7 @@ msgid ""
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 "Lỗi tùy chọn %s: %s.\n"
-"Chạy '%s --help' để xem danh sách toàn bộ các tùy chọn có "
-"thể.\n"
+"Chạy '%s --help' để xem danh sách toàn bộ các tùy chọn có thể.\n"
 
 #: support/error.c:109
 msgid "Unknown system error"
@@ -275,21 +274,15 @@ msgstr "SỐ nhịp đồng hồ kể từ khi khởi động máy"
 
 #: sysdeps/names/cpu.c:59 sysdeps/names/cpu.c:65
 msgid "Number of clock ticks the system spent in user mode"
-msgstr ""
-"Số nhịp đồng hồ trong chế độ người dùng kể từ khi "
-"khởi động máy"
+msgstr "Số nhịp đồng hồ trong chế độ người dùng kể từ khi khởi động máy"
 
 #: sysdeps/names/cpu.c:60 sysdeps/names/cpu.c:66
 msgid "Number of clock ticks the system spent in user mode (nice)"
-msgstr ""
-"Số nhịp đồng hồ trong chế độ người dùng kể từ khi "
-"khởi động máy (nice)"
+msgstr "Số nhịp đồng hồ trong chế độ người dùng kể từ khi khởi động máy (nice)"
 
 #: sysdeps/names/cpu.c:61 sysdeps/names/cpu.c:67
 msgid "Number of clock ticks the system spent in system mode"
-msgstr ""
-"Số nhịp đồng hồ trong chế độ hệ thống kể từ khi khởi "
-"động máy"
+msgstr "Số nhịp đồng hồ trong chế độ hệ thống kể từ khi khởi động máy"
 
 #: sysdeps/names/cpu.c:62 sysdeps/names/cpu.c:68
 msgid "Number of clock ticks the system spent in the idle task"
@@ -345,9 +338,7 @@ msgstr "PID cuối"
 
 #: sysdeps/names/loadavg.c:47
 msgid "Number of jobs running simultaneously averaged over 1, 5 and 15 minutes"
-msgstr ""
-"Số công việc trung bình đang thực hiện đồng thời trong 1, 5 "
-"và 15 phút"
+msgstr "Số công việc trung bình đang thực hiện đồng thời trong 1, 5 và 15 phút"
 
 #: sysdeps/names/loadavg.c:48
 msgid "Number of tasks currently running"
@@ -599,6 +590,14 @@ msgid ""
 "\n"
 "The math bit should be a decimal 4, and the traced bit is decimal 10."
 msgstr ""
+"Cờ kernel của tiến trình.\n"
+"\n"
+"Trên Linux, mỗi cờ hiện hành có đặt math bit, để crt0.s kiểm tra xem có hỗ "
+"trợ mô phỏng toán học hay không, vì thế nó không được gộp trong đầu ra.\n"
+"\n"
+"Đây có thể là lỗi, vì không phải mọi tiến trình đều được viết bằng C.\n"
+"\n"
+"Math bit là 4, và traced bit là 10."
 
 #. Min_Flt
 #: sysdeps/names/prockernel.c:59
@@ -606,17 +605,15 @@ msgid ""
 "The number of minor faults the process has made, those which have not "
 "required loading a memory page from disk."
 msgstr ""
-"Số lỗi phụ của tiến trình. Những lỗi này khôgn cần yêu "
-"cầu nạp lên bộ nhớ từ đĩa."
+"Số lỗi phụ của tiến trình. Những lỗi này khôgn cần yêu cầu nạp lên bộ nhớ từ "
+"đĩa."
 
 #. Maj_Flt
 #: sysdeps/names/prockernel.c:62
 msgid ""
 "The number of major faults the process has made, those which have required "
 "loading a memory page from disk."
-msgstr ""
-"Số lỗi chính của tiến trình. Những lỗi này cần nạp lên "
-"bộ nhớ từ đĩa."
+msgstr "Số lỗi chính của tiến trình. Những lỗi này cần nạp lên bộ nhớ từ đĩa."
 
 #. CMin_Flt
 #: sysdeps/names/prockernel.c:65
@@ -648,10 +645,9 @@ msgid ""
 "textual name.  (If you have an up-to-date /etc/psdatabase, then try ps -l to "
 "see the WCHAN field in action)"
 msgstr ""
-"Đây là \"kênh\" mà tiến trình đang đợi. Đây là địa chỉ "
-"của lệnh gọi hệ thống, và có thể được tra cứu trong danh "
-"sách tên nếu bạn cần biết tên của nó. (Nếu bạn có "
-"/etc/psdatabase đã cập nhật thì hãy thử ps -l và xem trường "
+"Đây là \"kênh\" mà tiến trình đang đợi. Đây là địa chỉ của lệnh gọi hệ "
+"thống, và có thể được tra cứu trong danh sách tên nếu bạn cần biết tên của "
+"nó. (Nếu bạn có /etc/psdatabase đã cập nhật thì hãy thử ps -l và xem trường "
 "WCHAN)"
 
 #. WChan
@@ -702,17 +698,15 @@ msgid ""
 "space. This does not include pages which have not been demand-loaded in, or "
 "which are swapped out."
 msgstr ""
-"Số trang bộ nhớ thực mà tiến trình dùng, trừ đi 3 vì mục "
-"đích quản lý. Đây chỉ là số trang đếm không gian của phân "
-"đoạn text, data, hoặc ngăn xếp. Nó không bao gồm các trang "
-"được nạp theo yêu cầu, hoặc được tráo đổi."
+"Số trang bộ nhớ thực mà tiến trình dùng, trừ đi 3 vì mục đích quản lý. Đây "
+"chỉ là số trang đếm không gian của phân đoạn text, data, hoặc ngăn xếp. Nó "
+"không bao gồm các trang được nạp theo yêu cầu, hoặc được tráo đổi."
 
 #: sysdeps/names/procmem.c:62
 msgid ""
 "Current limit in bytes on the rss of the process (usually 2,147,483,647)."
 msgstr ""
-"Giới hạn hiện thời (byte) của rss của tiến trình (thường "
-"là 2,147,483,647)."
+"Giới hạn hiện thời (byte) của rss của tiến trình (thường là 2,147,483,647)."
 
 #: sysdeps/names/procsegment.c:42
 msgid "Text_RSS"
@@ -832,8 +826,7 @@ msgstr "Tên cơ sở của tập tin thực thi trong lệnh gọi exec()"
 
 #: sysdeps/names/procstate.c:46
 msgid "Single-Char code for process state (S=sleeping)"
-msgstr ""
-"Ký tự đơn biểu thị trạng thái tiếng trình (S=sleeping (ngủ))"
+msgstr "Ký tự đơn biểu thị trạng thái tiếng trình (S=sleeping (ngủ))"
 
 #: sysdeps/names/procstate.c:47
 msgid "UID of process"
@@ -893,38 +886,39 @@ msgstr "Thời gian bắt đầu tiến trình tính theo giây từ epoch"
 
 #: sysdeps/names/proctime.c:52
 msgid "Real time accumulated by process (should be utime + stime)"
-msgstr ""
-"Giá trị thực được tích lũy bởi tiến trình (phải bằng "
-"utime + stime)"
+msgstr "Giá trị thực được tích lũy bởi tiến trình (phải bằng utime + stime)"
 
 #: sysdeps/names/proctime.c:53
 msgid "user-mode CPU time accumulated by process"
-msgstr ""
-"Thời gian CPU chế độ người dùng được tích lũy bởi tiến "
-"trình"
+msgstr "Thời gian CPU chế độ người dùng được tích lũy bởi tiến trình"
 
 #: sysdeps/names/proctime.c:54
 msgid "kernel-mode CPU time accumulated by process"
-msgstr ""
-"Thời gian CPU chế độ kerneo được tích lũy bởi tiến trình"
+msgstr "Thời gian CPU chế độ kerneo được tích lũy bởi tiến trình"
 
 #: sysdeps/names/proctime.c:55
+#, fuzzy
 msgid "cumulative utime of process and reaped children"
-msgstr ""
+msgstr "cumulative utime of process and reaped children"
 
 #: sysdeps/names/proctime.c:56
+#, fuzzy
 msgid "cumulative stime of process and reaped children"
-msgstr ""
+msgstr "cumulative stime of process and reaped children"
 
 #: sysdeps/names/proctime.c:57
+#, fuzzy
 msgid "The time (in jiffies) of the process's next timeout"
-msgstr ""
+msgstr "The time (in jiffies) of the process's next timeout"
 
 #: sysdeps/names/proctime.c:58
+#, fuzzy
 msgid ""
 "The time (in jiffies) before the next SIGALRM is sent to the process due to "
 "an interval timer."
 msgstr ""
+"The time (in jiffies) before the next SIGALRM is sent to the process due to "
+"an interval timer."
 
 #: sysdeps/names/proctime.c:60
 msgid "Tick frequency"
@@ -932,15 +926,11 @@ msgstr "Số nhịp"
 
 #: sysdeps/names/proctime.c:61
 msgid "SMP user-mode CPU time accumulated by process"
-msgstr ""
-"Thời gian CPU SMP chế độ người dùng được tích lũy bởi "
-"tiến trình"
+msgstr "Thời gian CPU SMP chế độ người dùng được tích lũy bởi tiến trình"
 
 #: sysdeps/names/proctime.c:62
 msgid "SMP kernel-mode CPU time accumulated by process"
-msgstr ""
-"Thời gian CPU SMP chế độ kernel được tích lũy bởi tiến "
-"trình"
+msgstr "Thời gian CPU SMP chế độ kernel được tích lũy bởi tiến trình"
 
 #: sysdeps/names/procuid.c:56
 msgid "Uid"
@@ -1115,12 +1105,15 @@ msgid "Page Out"
 msgstr "Trang ra"
 
 #: sysdeps/names/swap.c:51
+#, fuzzy
 msgid "Total number of swap pages that have been brought in since system boot"
-msgstr ""
+msgstr "Total number of swap pages that have been brought in since system boot"
 
 #: sysdeps/names/swap.c:53
+#, fuzzy
 msgid "Total number of swap pages that have been brought out since system boot"
 msgstr ""
+"Total number of swap pages that have been brought out since system boot"
 
 #: sysdeps/names/sysdeps.c:49 sysdeps/names/sysdeps.c:76
 msgid "Server Features"
@@ -1139,8 +1132,9 @@ msgid "Swap Usage"
 msgstr "Sử dụng tráo đổi"
 
 #: sysdeps/names/sysdeps.c:53 sysdeps/names/sysdeps.c:80
+#, fuzzy
 msgid "System Uptime"
-msgstr ""
+msgstr "System Uptime"
 
 #: sysdeps/names/sysdeps.c:54 sysdeps/names/sysdeps.c:81
 msgid "Load Averange"
@@ -1223,8 +1217,9 @@ msgid "List of currently mounted filesystems"
 msgstr "Danh sách các hệ thống tập tin được gắn kết"
 
 #: sysdeps/names/uptime.c:38
+#, fuzzy
 msgid "Uptime"
-msgstr ""
+msgstr "Uptime"
 
 #: sysdeps/names/uptime.c:39
 msgid "Idletime"
@@ -1236,9 +1231,7 @@ msgstr "Thời gian (giây) kể từ khi khởi động hệ thống"
 
 #: sysdeps/names/uptime.c:45
 msgid "Time in seconds the system spent in the idle task since system boot"
-msgstr ""
-"Thời gian (giây) hệ thống rảnh kể từ khi khởi động hệ "
-"thống"
+msgstr "Thời gian (giây) hệ thống rảnh kể từ khi khởi động hệ thống"
 
 #: sysdeps/osf1/siglist.c:28 sysdeps/sun4/siglist.c:28
 msgid "Hangup"
@@ -1281,8 +1274,9 @@ msgid "Bus error"
 msgstr "Lỗi Bus"
 
 #: sysdeps/osf1/siglist.c:38 sysdeps/sun4/siglist.c:38
+#, fuzzy
 msgid "Segmentation violation"
-msgstr ""
+msgstr "Segmentation violation"
 
 #: sysdeps/osf1/siglist.c:39 sysdeps/sun4/siglist.c:39
 msgid "Bad argument to system call"
@@ -1301,8 +1295,9 @@ msgid "Termination"
 msgstr "Kết thúc"
 
 #: sysdeps/osf1/siglist.c:43 sysdeps/sun4/siglist.c:43
+#, fuzzy
 msgid "Urgent condition on socket"
-msgstr ""
+msgstr "Urgent condition on socket"
 
 #: sysdeps/osf1/siglist.c:44 sysdeps/sun4/siglist.c:44
 msgid "Stop"
@@ -1345,8 +1340,9 @@ msgid "Virtual alarm clock"
 msgstr "Đồng hồ báo động ảo"
 
 #: sysdeps/osf1/siglist.c:54 sysdeps/sun4/siglist.c:54
+#, fuzzy
 msgid "Profiling alarm clock"
-msgstr ""
+msgstr "Profiling alarm clock"
 
 #: sysdeps/osf1/siglist.c:55 sysdeps/sun4/siglist.c:55
 msgid "Window size change"

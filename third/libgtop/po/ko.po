@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgtop 1.90.2\n"
-"POT-Creation-Date: 2002-06-10 17:36-0400\n"
+"POT-Creation-Date: 2003-01-12 21:40-0500\n"
 "PO-Revision-Date: 2002-04-25 14:16+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
@@ -13,32 +13,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/smp.c:68
+#: examples/smp.c:71
 #, c-format
 msgid "Ticks (%ld per second):"
 msgstr "틱 (초당 %ld):"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Total"
 msgstr "총"
 
-#: examples/smp.c:71 sysdeps/names/mem.c:47
+#: examples/smp.c:74 sysdeps/names/mem.c:47
 msgid "User"
 msgstr "사용자"
 
-#: examples/smp.c:71 sysdeps/names/procuid.c:58
+#: examples/smp.c:74 sysdeps/names/procuid.c:58
 msgid "Nice"
 msgstr "Nice"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Sys"
 msgstr "시스템"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Idle"
 msgstr "유휴"
 
-#: examples/smp.c:73
+#: examples/smp.c:76
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
@@ -47,36 +47,36 @@ msgstr ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
 "\n"
 
-#: examples/smp.c:77
+#: examples/smp.c:80
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 msgstr "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 
-#: examples/smp.c:94
+#: examples/smp.c:97
 msgid "Percent:"
 msgstr "백분율:"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Total (%)"
 msgstr "총 (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "User (%)"
 msgstr "사용자 (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Nice (%)"
 msgstr "Nice (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Sys (%)"
 msgstr "시스템 (%)"
 
-#: examples/smp.c:96
+#: examples/smp.c:99
 msgid "Idle (%)"
 msgstr "유휴 (%)"
 
-#: examples/smp.c:98
+#: examples/smp.c:101
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
@@ -85,12 +85,12 @@ msgstr ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 "\n"
 
-#: examples/smp.c:114
+#: examples/smp.c:117
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 msgstr "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 
-#: examples/smp.c:120
+#: examples/smp.c:123
 msgid "Spin:"
 msgstr "Spin:"
 
@@ -152,8 +152,7 @@ msgid ""
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 "옵션 %s에 에러: %s.\n"
-"'%s --help'를 실행하시면 명령행 옵션에서 사용할 수 있는 "
-"목록이 보입니다.\n"
+"'%s --help'를 실행하시면 명령행 옵션에서 사용할 수 있는 목록이 보입니다.\n"
 
 #: support/error.c:109
 msgid "Unknown system error"
@@ -340,9 +339,7 @@ msgstr "마지막 PID"
 
 #: sysdeps/names/loadavg.c:47
 msgid "Number of jobs running simultaneously averaged over 1, 5 and 15 minutes"
-msgstr ""
-"1, 5 그리고 15분 동안을 평균해서 동시에 수행중인 일의 "
-"갯수"
+msgstr "1, 5 그리고 15분 동안을 평균해서 동시에 수행중인 일의 갯수"
 
 #: sysdeps/names/loadavg.c:48
 msgid "Number of tasks currently running"
@@ -596,15 +593,13 @@ msgid ""
 msgstr ""
 "프로세스의 커널 플래그.\n"
 "\n"
-"리눅스에서는 현재 모든 플래그의 수학 비트가 "
-"켜져있습니다. crt0.s가 수학 에뮬레이션을 체크하기 "
-"때문인 데, 그래서 출력결과에는 포함되지 않습니다.\n"
+"리눅스에서는 현재 모든 플래그의 수학 비트가 켜져있습니다. crt0.s가 수학 에뮬"
+"레이션을 체크하기 때문인 데, 그래서 출력결과에는 포함되지 않습니다.\n"
 "\n"
-"이것은 버그라고 생각하는 데, 그것은 모든 프로세스가 C "
-"언어로 짜여지는 건 아니기 때문입니다.\n"
+"이것은 버그라고 생각하는 데, 그것은 모든 프로세스가 C 언어로 짜여지는 건 아니"
+"기 때문입니다.\n"
 "\n"
-"수학 비트는 십진수 4이어야 하며, 추적(trace) 비트는 "
-"십진수 10이어야 합니다."
+"수학 비트는 십진수 4이어야 하며, 추적(trace) 비트는 십진수 10이어야 합니다."
 
 #. Min_Flt
 #: sysdeps/names/prockernel.c:59
@@ -612,8 +607,8 @@ msgid ""
 "The number of minor faults the process has made, those which have not "
 "required loading a memory page from disk."
 msgstr ""
-"디스크로부터 메모리 페이지 적재를 필요로 하지 않는 "
-"프로세스로부터 발생된 사소한 폴트 갯수"
+"디스크로부터 메모리 페이지 적재를 필요로 하지 않는 프로세스로부터 발생된 사소"
+"한 폴트 갯수"
 
 #. Maj_Flt
 #: sysdeps/names/prockernel.c:62
@@ -621,22 +616,18 @@ msgid ""
 "The number of major faults the process has made, those which have required "
 "loading a memory page from disk."
 msgstr ""
-"디스크로부터 메모리 페이지 적재를 필요로 하는 "
-"프로세스로부터 발생된 중대한 폴트 갯수"
+"디스크로부터 메모리 페이지 적재를 필요로 하는 프로세스로부터 발생된 중대한 폴"
+"트 갯수"
 
 #. CMin_Flt
 #: sysdeps/names/prockernel.c:65
 msgid "The number of minor faults that the process and its children have made."
-msgstr ""
-"프로세스와 그 하위 프로세스로부터 발생된 사소한 폴트 "
-"갯수"
+msgstr "프로세스와 그 하위 프로세스로부터 발생된 사소한 폴트 갯수"
 
 #. CMaj_Flt
 #: sysdeps/names/prockernel.c:68
 msgid "The number of major faults that the process and its children have made."
-msgstr ""
-"프로세스와 그 하위 프로세스로부터 발생된 중대한 폴트 "
-"갯수"
+msgstr "프로세스와 그 하위 프로세스로부터 발생된 중대한 폴트 갯수"
 
 #. KStk_ESP
 #: sysdeps/names/prockernel.c:71
@@ -644,8 +635,7 @@ msgid ""
 "The current value of esp (32-bit stack pointer), as found in the kernel "
 "stack page for the process."
 msgstr ""
-"프로세스의 커널 스택 페이지에서 찾아진 esp (32비트 스택 "
-"포인터)의 현재 값"
+"프로세스의 커널 스택 페이지에서 찾아진 esp (32비트 스택 포인터)의 현재 값"
 
 #. KStk_EIP
 #: sysdeps/names/prockernel.c:74
@@ -660,11 +650,9 @@ msgid ""
 "textual name.  (If you have an up-to-date /etc/psdatabase, then try ps -l to "
 "see the WCHAN field in action)"
 msgstr ""
-"프로세스가 기다리고 있는 \"채널\". 시스템 콜의 "
-"주소이며, 당신의 문자로 된 이름이 필요할 경우 이름 "
-"목록으로 부터 찾아질 수도 있습니다. (만약 "
-"/etc/psdatabase가 최근에 갱신되었다면 ps -l을 통해 WCHAN "
-"필드를 볼 수 있을 겁니다."
+"프로세스가 기다리고 있는 \"채널\". 시스템 콜의 주소이며, 당신의 문자로 된 이"
+"름이 필요할 경우 이름 목록으로 부터 찾아질 수도 있습니다. (만약 /etc/"
+"psdatabase가 최근에 갱신되었다면 ps -l을 통해 WCHAN 필드를 볼 수 있을 겁니다."
 
 #. WChan
 #: sysdeps/names/prockernel.c:81
@@ -714,17 +702,15 @@ msgid ""
 "space. This does not include pages which have not been demand-loaded in, or "
 "which are swapped out."
 msgstr ""
-"프로세스가 실제 메모리에 가지고 있는 페이지 수로서 "
-"관리목적으로 3을 뺀 것입니다. 단지 코드, 데이타 혹은 "
-"스택 영역을 합한 페이지 수이며 요구에 의해 얻어지거나 "
-"스왑된 페이지는 포함되지 않았습니다."
+"프로세스가 실제 메모리에 가지고 있는 페이지 수로서 관리목적으로 3을 뺀 것입니"
+"다. 단지 코드, 데이타 혹은 스택 영역을 합한 페이지 수이며 요구에 의해 얻어지"
+"거나 스왑된 페이지는 포함되지 않았습니다."
 
 #: sysdeps/names/procmem.c:62
 msgid ""
 "Current limit in bytes on the rss of the process (usually 2,147,483,647)."
 msgstr ""
-"프로세스의 상주 세트 크기를 바이트로 나타낸 현재 "
-"제한치 (보통 2,147,483,647)."
+"프로세스의 상주 세트 크기를 바이트로 나타낸 현재 제한치 (보통 2,147,483,647)."
 
 #: sysdeps/names/procsegment.c:42
 msgid "Text_RSS"
@@ -900,8 +886,7 @@ msgstr "XCPU_STime"
 
 #: sysdeps/names/proctime.c:51
 msgid "Start time of process in seconds since the epoch"
-msgstr ""
-"시스템이 시작된 이후 초로 나타낸 프로세스의 시작 시간"
+msgstr "시스템이 시작된 이후 초로 나타낸 프로세스의 시작 시간"
 
 #: sysdeps/names/proctime.c:52
 msgid "Real time accumulated by process (should be utime + stime)"
@@ -931,9 +916,7 @@ msgstr "프로세스의 다음 타임아웃 시간 (jiffy)"
 msgid ""
 "The time (in jiffies) before the next SIGALRM is sent to the process due to "
 "an interval timer."
-msgstr ""
-"타이머때문에 프로세스에 다음 SIGALARM을 보낼 때까지의 "
-"시간 (jiffy)"
+msgstr "타이머때문에 프로세스에 다음 SIGALARM을 보낼 때까지의 시간 (jiffy)"
 
 #: sysdeps/names/proctime.c:60
 msgid "Tick frequency"
@@ -1241,8 +1224,7 @@ msgstr "시스템 시동후의 초 단위의 시간"
 
 #: sysdeps/names/uptime.c:45
 msgid "Time in seconds the system spent in the idle task since system boot"
-msgstr ""
-"시스템 시동후에 유휴 태스크가 소비한 초 단위의 시간"
+msgstr "시스템 시동후에 유휴 태스크가 소비한 초 단위의 시간"
 
 #: sysdeps/osf1/siglist.c:28 sysdeps/sun4/siglist.c:28
 msgid "Hangup"

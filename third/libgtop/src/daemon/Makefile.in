@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -148,29 +147,37 @@ sysdeps_suid_lib = @sysdeps_suid_lib@
 
 LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
-INCLUDES = $(LIBGTOP_CFLAGS) @INCLUDES@ -D_BSD 				  -DLIBGTOP_COMPILE_SYSTEM=\"`uname -s`\" 				  -DLIBGTOP_COMPILE_RELEASE=\"`uname -r`\" 				  -DLIBGTOP_COMPILE_MACHINE=\"`uname -m`\"
+INCLUDES = $(LIBGTOP_CFLAGS) @INCLUDES@ -D_BSD \
+				  -DLIBGTOP_COMPILE_SYSTEM="\"`uname -s`\"" \
+				  -DLIBGTOP_COMPILE_RELEASE="\"`uname -r`\"" \
+				  -DLIBGTOP_COMPILE_VERSION="\"`uname -v`\"" \
+				  -DLIBGTOP_COMPILE_MACHINE="\"`uname -m`\""
 
-@NEED_LIBGTOP_TRUE@suid_sysdeps = $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps_suid-2.0.la
+@NEED_LIBGTOP_TRUE@suid_sysdeps = @NEED_LIBGTOP_TRUE@$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps_suid-2.0.la
 @NEED_LIBGTOP_FALSE@suid_sysdeps = 
-@NEED_LIBGTOP_TRUE@suid_common = $(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
+@NEED_LIBGTOP_TRUE@suid_common = @NEED_LIBGTOP_TRUE@$(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
 @NEED_LIBGTOP_FALSE@suid_common = 
 
 bin_PROGRAMS = libgtop_daemon2 @server_programs@
 
 EXTRA_PROGRAMS = libgtop_server2
 
-libgtop_daemon2_SOURCES = gnuserv.c slave.c main.c io.c version.c 				  daemon.h server_config.h
+libgtop_daemon2_SOURCES = gnuserv.c slave.c main.c io.c version.c \
+				  daemon.h server_config.h
 
-libgtop_daemon2_LDADD = $(top_builddir)/lib/libgtop-2.0.la 				  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la 				  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la 				  @sysdeps_suid_lib@ 				  $(suid_sysdeps) $(suid_common) 				  $(LIBGTOP_LIBS) 				  @LIBSUPPORT@ @INTLLIBS@ @libs_xauth@
+libgtop_daemon2_LDADD = $(top_builddir)/lib/libgtop-2.0.la \
+				  $(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
+				  $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la \
+				  @sysdeps_suid_lib@ \
+				  $(suid_sysdeps) $(suid_common)\
+				  $(LIBGTOP_LIBS)\
+				  @LIBSUPPORT@ @INTLLIBS@ @libs_xauth@
 
-
-@ENABLE_STATIC_TRUE@libgtop_daemon2_LDFLAGS = -static
 
 libgtop_server2_SOURCES = server.c slave.c io.c version.c daemon.h
-libgtop_server2_LDADD = $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps_suid-2.0.la 				  $(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
+libgtop_server2_LDADD = $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps_suid-2.0.la \
+				  $(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
 
-
-@ENABLE_STATIC_TRUE@libgtop_server2_LDFLAGS = -static
 
 EXTRA_DIST = server_config.h.in server_config.pl
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -193,6 +200,7 @@ version.$(OBJEXT)
 libgtop_server2_DEPENDENCIES =  \
 $(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps_suid-2.0.la \
 $(top_builddir)/sysdeps/common/libgtop_suid_common-2.0.la
+libgtop_server2_LDFLAGS = 
 libgtop_daemon2_OBJECTS =  gnuserv.$(OBJEXT) slave.$(OBJEXT) \
 main.$(OBJEXT) io.$(OBJEXT) version.$(OBJEXT)
 @NEED_LIBGTOP_TRUE@libgtop_daemon2_DEPENDENCIES =  \
@@ -205,6 +213,7 @@ main.$(OBJEXT) io.$(OBJEXT) version.$(OBJEXT)
 @NEED_LIBGTOP_FALSE@$(top_builddir)/lib/libgtop-2.0.la \
 @NEED_LIBGTOP_FALSE@$(top_builddir)/sysdeps/common/libgtop_common-2.0.la \
 @NEED_LIBGTOP_FALSE@$(top_builddir)/sysdeps/@sysdeps_dir@/libgtop_sysdeps-2.0.la
+libgtop_daemon2_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

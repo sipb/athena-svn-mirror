@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: kcmkpanel\n"
-"POT-Creation-Date: 2002-06-10 17:36-0400\n"
+"POT-Creation-Date: 2003-01-12 21:40-0500\n"
 "PO-Revision-Date: 1999-11-11 05:04+0800\n"
 "Last-Translator: Dillion Chen <dillon.chen@turbolinux.com.cn>\n"
 "Language-Team: TLDN\n"
@@ -9,83 +9,83 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/smp.c:68
+#: examples/smp.c:71
 #, c-format
 msgid "Ticks (%ld per second):"
 msgstr ""
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Total"
 msgstr ""
 
-#: examples/smp.c:71 sysdeps/names/mem.c:47
+#: examples/smp.c:74 sysdeps/names/mem.c:47
 msgid "User"
 msgstr "用户"
 
-#: examples/smp.c:71 sysdeps/names/procuid.c:58
+#: examples/smp.c:74 sysdeps/names/procuid.c:58
 msgid "Nice"
 msgstr "nice"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Sys"
 msgstr ""
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 #, fuzzy
 msgid "Idle"
 msgstr "Idletime"
 
-#: examples/smp.c:73
+#: examples/smp.c:76
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
 "\n"
 msgstr ""
 
-#: examples/smp.c:77
+#: examples/smp.c:80
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 msgstr ""
 
-#: examples/smp.c:94
+#: examples/smp.c:97
 msgid "Percent:"
 msgstr ""
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Total (%)"
 msgstr ""
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 #, fuzzy
 msgid "User (%)"
 msgstr "用户"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 #, fuzzy
 msgid "Nice (%)"
 msgstr "nice"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Sys (%)"
 msgstr ""
 
-#: examples/smp.c:96
+#: examples/smp.c:99
 msgid "Idle (%)"
 msgstr ""
 
-#: examples/smp.c:98
+#: examples/smp.c:101
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 "\n"
 msgstr ""
 
-#: examples/smp.c:114
+#: examples/smp.c:117
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 msgstr ""
 
-#: examples/smp.c:120
+#: examples/smp.c:123
 msgid "Spin:"
 msgstr ""
 
@@ -591,8 +591,7 @@ msgid ""
 "\n"
 "The math bit should be a decimal 4, and the traced bit is decimal 10."
 msgstr ""
-"Linux进程标志当前每个标志有数学位设置,因为crt0.s要检查�"
-"�在输出中并不包括"
+"Linux进程标志当前每个标志有数学位设置,因为crt0.s要检查这在输出中并不包括"
 
 #. Min_Flt
 #: sysdeps/names/prockernel.c:59
@@ -638,9 +637,8 @@ msgid ""
 "textual name.  (If you have an up-to-date /etc/psdatabase, then try ps -l to "
 "see the WCHAN field in action)"
 msgstr ""
-"这是进程等待的通道,一个系统调用的地址并且如果你需要�"
-"��本名的话可以从名字列表中搜索到名字如果你有最新的/et"
-"c/psdatabase,那试用ps -l命令来看WCHAN域"
+"这是进程等待的通道,一个系统调用的地址并且如果你需要文本名的话可以从名字列表中"
+"搜索到名字如果你有最新的/etc/psdatabase,那试用ps -l命令来看WCHAN域"
 
 #. WChan
 #: sysdeps/names/prockernel.c:81
@@ -690,8 +688,8 @@ msgid ""
 "space. This does not include pages which have not been demand-loaded in, or "
 "which are swapped out."
 msgstr ""
-"进程在实存的页面数,为管理目的减3这里仅仅计算文本,数�"
-"�和堆栈空间页数这并不包括哪些没有被装入和交换出的页"
+"进程在实存的页面数,为管理目的减3这里仅仅计算文本,数据和堆栈空间页数这并不包括"
+"哪些没有被装入和交换出的页"
 
 #: sysdeps/names/procmem.c:62
 msgid ""
@@ -904,9 +902,7 @@ msgstr "进程下次超时的瞬间时间"
 msgid ""
 "The time (in jiffies) before the next SIGALRM is sent to the process due to "
 "an interval timer."
-msgstr ""
-"由于间隔计时器在下一个SIGALRM信号被发送到进程时的瞬间�"
-"��间"
+msgstr "由于间隔计时器在下一个SIGALRM信号被发送到进程时的瞬间时间"
 
 #: sysdeps/names/proctime.c:60
 msgid "Tick frequency"

@@ -1,11 +1,11 @@
 @c LibGTop major, minor and micro version.
 @set LIBGTOP_MAJOR_VERSION 2
 @set LIBGTOP_MINOR_VERSION 0
-@set LIBGTOP_MICRO_VERSION 0
+@set LIBGTOP_MICRO_VERSION 1
 
 @c LibGTop version and numerical version code ("1.234.567" -> 1234567).
-@set LIBGTOP_VERSION "2.0.0"
-@set LIBGTOP_VERSION_CODE 2000000
+@set LIBGTOP_VERSION "2.0.1"
+@set LIBGTOP_VERSION_CODE 2000001
 
 @c LibGTop server version, increased each time the protocol changes.
 @set LIBGTOP_SERVER_VERSION 5

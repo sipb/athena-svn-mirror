@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -149,16 +148,18 @@ sysdeps_suid_lib = @sysdeps_suid_lib@
 LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 INCLUDES = @INCLUDES@
-@INODEDB_TRUE@inodedb_SRCLIST = inodedb.c
+@INODEDB_TRUE@inodedb_SRCLIST = @INODEDB_TRUE@inodedb.c
 @INODEDB_FALSE@inodedb_SRCLIST = 
-@INODEDB_TRUE@inodedb_DEFS = -DSYSTEM_INODEDB=\"$(prefix)/var/libgtop/inodedb.db\"
+@INODEDB_TRUE@inodedb_DEFS = @INODEDB_TRUE@-DSYSTEM_INODEDB=\"$(prefix)/var/libgtop/inodedb.db\"
 @INODEDB_FALSE@inodedb_DEFS = 
 
 CFLAGS = @CFLAGS@ $(inodedb_DEFS)
 
 lib_LTLIBRARIES = libgtop_common-2.0.la libgtop_suid_common-2.0.la
 
-libgtop_common_2_0_la_SOURCES = xmalloc.c error.c gnuslib.c 				  fsusage.c fsusage.h mountlist.c mountlist.h 				  $(inodedb_SRCLIST)
+libgtop_common_2_0_la_SOURCES = xmalloc.c error.c gnuslib.c \
+				  fsusage.c fsusage.h mountlist.c mountlist.h \
+				  $(inodedb_SRCLIST)
 
 
 libgtop_common_2_0_la_LDFLAGS = $(LT_VERSION_INFO)

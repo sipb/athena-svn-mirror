@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -115,7 +115,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -158,7 +157,10 @@ supportexecinclude_DATA = gnomesupport.h
 
 # These are internal headers: they are used only when compiling and
 # should not be installed
-noinst_HEADERS = gnomesupport-fake.h 		 findme.h 		 popt-gnome.h 		 poptint.h
+noinst_HEADERS = gnomesupport-fake.h \
+		 findme.h \
+		 popt-gnome.h \
+		 poptint.h
 
 
 # Hmm... should we move `error.h' here.
@@ -172,7 +174,14 @@ libgnomesupport_2_0_la_LDFLAGS = -version-info 0:0:0
 
 BUILT_SOURCES = gnomesupport.h
 
-EXTRA_DIST = gnomesupport.awk README-gnome 	canonicalize.c easy-vsnprintf.c error.c error.h 	findme.c findme.h getopt.c getopt.h getopt1.c 	gnome-argp.c gnome-argp.h gnomesupport-fake.h 	memmove.c mkstemp.c popt-gnome.h popt.c poptconfig.c 	popthelp.c poptint.h poptparse.c scandir.c strcasecmp.c 	strerror.c strndup.c strnlen.c strtod.c strtok_r.c strtol.c 	strtoul.c vasprintf.c vsnprintf.c
+EXTRA_DIST = gnomesupport.awk README-gnome \
+	canonicalize.c easy-vsnprintf.c error.c error.h \
+	findme.c findme.h getopt.c getopt.h getopt1.c \
+	gnome-argp.c gnome-argp.h gnomesupport-fake.h \
+	memmove.c mkstemp.c popt-gnome.h popt.c poptconfig.c \
+	popthelp.c poptint.h poptparse.c scandir.c strcasecmp.c \
+	strerror.c strndup.c strnlen.c strtod.c strtok_r.c strtol.c \
+	strtoul.c vasprintf.c vsnprintf.c
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h

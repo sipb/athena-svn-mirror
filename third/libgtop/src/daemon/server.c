@@ -1,4 +1,4 @@
-/* $Id: server.c,v 1.1.1.1 2003-01-02 04:56:07 ghudson Exp $ */
+/* $Id: server.c,v 1.1.1.2 2003-01-27 03:24:12 ghudson Exp $ */
 
 /* Copyright (C) 1998-99 Martin Baulig
    This file is part of LibGTop 1.0.
@@ -70,6 +70,21 @@ main(int argc, char *argv[])
 
 	if (uname (&uts) < 0) _exit (1);
 
+#ifdef _AIX
+	/*
+	 * [FIXME]: should be in sysdeps part ?
+	 */
+
+	if ((strcmp (uts.sysname, LIBGTOP_COMPILE_SYSTEM) != 0) ||
+	    ((atol(uts.version) < atol(LIBGTOP_COMPILE_VERSION)) &&
+	     (atol(uts.release) < atol(LIBGTOP_COMPILE_RELEASE))) ) {
+		fprintf (stderr, "Can only run on %s %s.%s and upper\n",
+			 LIBGTOP_COMPILE_SYSTEM,
+			 LIBGTOP_COMPILE_VERSION,
+			 LIBGTOP_COMPILE_RELEASE);
+		_exit (1);
+	}
+#else
 	if (strcmp (uts.sysname, LIBGTOP_COMPILE_SYSTEM) ||
 	    strcmp (uts.release, LIBGTOP_COMPILE_RELEASE) ||
 	    strcmp (uts.machine, LIBGTOP_COMPILE_MACHINE)) {
@@ -79,6 +94,7 @@ main(int argc, char *argv[])
 			 LIBGTOP_COMPILE_MACHINE);
 		_exit (1);
 	}
+#endif
 	
 	glibtop_init_p (glibtop_global_server, 0, 0);
 

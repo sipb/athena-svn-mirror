@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgtop\n"
-"POT-Creation-Date: 2002-06-10 17:36-0400\n"
+"POT-Creation-Date: 2003-01-12 21:40-0500\n"
 "PO-Revision-Date: 2000-05-22 02:46+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -13,32 +13,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: examples/smp.c:68
+#: examples/smp.c:71
 #, c-format
 msgid "Ticks (%ld per second):"
 msgstr "Frekvenca merjenja (%ld na sekundo):"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Total"
 msgstr "Skupaj"
 
-#: examples/smp.c:71 sysdeps/names/mem.c:47
+#: examples/smp.c:74 sysdeps/names/mem.c:47
 msgid "User"
 msgstr "Uporabnik"
 
-#: examples/smp.c:71 sysdeps/names/procuid.c:58
+#: examples/smp.c:74 sysdeps/names/procuid.c:58
 msgid "Nice"
 msgstr "Nice"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Sys"
 msgstr "Sistem"
 
-#: examples/smp.c:71
+#: examples/smp.c:74
 msgid "Idle"
 msgstr "Prazni čas"
 
-#: examples/smp.c:73
+#: examples/smp.c:76
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
@@ -47,36 +47,36 @@ msgstr ""
 "Procesor      (0x%08lx): %12.0f %12.0f %12.0f %12.0f %12.0f\n"
 "\n"
 
-#: examples/smp.c:77
+#: examples/smp.c:80
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 msgstr "PROCESOR %3d (0x%08lx): %12lu %12lu %12lu %12lu %12lu\n"
 
-#: examples/smp.c:94
+#: examples/smp.c:97
 msgid "Percent:"
 msgstr "Procentov:"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Total (%)"
 msgstr "Skupaj (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "User (%)"
 msgstr "Uporabniki (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Nice (%)"
 msgstr "Nice (%)"
 
-#: examples/smp.c:95
+#: examples/smp.c:98
 msgid "Sys (%)"
 msgstr "Sistem (%)"
 
-#: examples/smp.c:96
+#: examples/smp.c:99
 msgid "Idle (%)"
 msgstr "Nezasedeno (%)"
 
-#: examples/smp.c:98
+#: examples/smp.c:101
 #, c-format
 msgid ""
 "CPU          (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
@@ -85,12 +85,12 @@ msgstr ""
 "PROCESOR      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 "\n"
 
-#: examples/smp.c:114
+#: examples/smp.c:117
 #, c-format
 msgid "CPU %3d      (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 msgstr "PROCESOR %3d  (0x%08lx): %12.3f %12.3f %12.3f %12.3f %12.3f\n"
 
-#: examples/smp.c:120
+#: examples/smp.c:123
 msgid "Spin:"
 msgstr "Zasuk:"
 
@@ -341,8 +341,7 @@ msgstr "Zadnji PID"
 
 #: sysdeps/names/loadavg.c:47
 msgid "Number of jobs running simultaneously averaged over 1, 5 and 15 minutes"
-msgstr ""
-"Število poslov, ki se izvaja hkrati, povprečja skozi 1, 5 in 15 minut"
+msgstr "Število poslov, ki se izvaja hkrati, povprečja skozi 1, 5 in 15 minut"
 
 #: sysdeps/names/loadavg.c:48
 msgid "Number of tasks currently running"
@@ -618,8 +617,8 @@ msgid ""
 "The number of major faults the process has made, those which have required "
 "loading a memory page from disk."
 msgstr ""
-"Število velikih spodrslajev, ki jih je proces sotril - tistih, ki "
-"povzročijo nalaganja pomnilniške strani z diska."
+"Število velikih spodrslajev, ki jih je proces sotril - tistih, ki povzročijo "
+"nalaganja pomnilniške strani z diska."
 
 #. CMin_Flt
 #: sysdeps/names/prockernel.c:65
@@ -710,8 +709,8 @@ msgid ""
 msgstr ""
 "Število strani, ki jih ima proces v real pomnilniku, minus 3 za "
 "administrativne potrebe To so le strani, ki štejejo kot prostor za text, "
-"podatke ali sklad.To ne vključuje strani, ki niso bile naložene po želji "
-"in tiste, ki sotrenutno v navideznem pomnilniku na disku."
+"podatke ali sklad.To ne vključuje strani, ki niso bile naložene po želji in "
+"tiste, ki sotrenutno v navideznem pomnilniku na disku."
 
 #: sysdeps/names/procmem.c:62
 msgid ""

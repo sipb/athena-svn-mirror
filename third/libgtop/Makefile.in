@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -116,7 +116,6 @@ LT_REVISION = @LT_REVISION@
 LT_VERSION_INFO = @LT_VERSION_INFO@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -146,18 +145,22 @@ smp_examples = @smp_examples@
 static_targets = @static_targets@
 sysdeps_dir = @sysdeps_dir@
 sysdeps_suid_lib = @sysdeps_suid_lib@
-@EXAMPLES_TRUE@examples_SUBDIRS = examples
+@EXAMPLES_TRUE@examples_SUBDIRS = @EXAMPLES_TRUE@examples
 @EXAMPLES_FALSE@examples_SUBDIRS = 
 
-@BUILD_GNOME_SUPPORT_TRUE@support = support
+@BUILD_GNOME_SUPPORT_TRUE@support = @BUILD_GNOME_SUPPORT_TRUE@support
 
-SUBDIRS = po $(support) misc include sysdeps lib src 	  $(examples_SUBDIRS) doc
+SUBDIRS = po $(support) misc include sysdeps lib src \
+	  $(examples_SUBDIRS) doc
 
 
 libgtopinclude_HEADERS = glibtop.h
 libgtopincludedir = $(includedir)/libgtop-2.0
 
-EXTRA_DIST = autogen.sh libgtop.spec.in copyright.txt libgtopConf.sh.in 	LIBGTOP-VERSION features.def libgtop-config.in RELNOTES-0.25 	RELNOTES-1.0 RELNOTES-1.0.x libgtop-sysdeps.m4 README 	libgtop-mirror.sh libgtop-2.0.pc.in acinclude.m4
+EXTRA_DIST = autogen.sh libgtop.spec.in copyright.txt libgtopConf.sh.in \
+	LIBGTOP-VERSION features.def libgtop-config.in RELNOTES-0.25 \
+	RELNOTES-1.0 RELNOTES-1.0.x libgtop-sysdeps.m4 README \
+	libgtop-mirror.sh libgtop-2.0.pc.in acinclude.m4
 
 
 pkgconfigdir = $(libdir)/pkgconfig
@@ -302,7 +305,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
