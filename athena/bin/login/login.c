@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.48 1992-05-18 16:59:12 epeisach Exp $
+ * $Id: login.c,v 1.49 1992-05-18 17:02:18 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.48 1992-05-18 16:59:12 epeisach Exp $";
+static char *rcsid = "$Id: login.c,v 1.49 1992-05-18 17:02:18 epeisach Exp $";
 #endif
 
 /*
@@ -67,6 +67,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 
 #ifdef ultrix
 #include <sys/mount.h>
+#include <sys/fs_types.h>
 #endif
 
 typedef struct in_addr inaddr_t;
@@ -1455,8 +1456,6 @@ char *dir;
 #if defined(sun)
 #define NFS_MAJOR 130
 #endif
-    int f;
-    char c;
     struct stat stbuf;
   
     if (stat(dir, &stbuf))
