@@ -6,14 +6,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 2.x\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-09-16 13:54GMT\n"
-"Last-Translator: Michal Bukovjan <bukm@centrum.cz>\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-01 16:20+0100\n"
+"Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -198,13 +197,13 @@ msgstr "stream MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Výjimka při aktivaci '%s"
+msgid "Exception activating '%s'"
+msgstr "Výjimka při aktivaci '%s'"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Selhala aktivace '%s"
+msgid "Failed to activate '%s'"
+msgstr "Selhala aktivace '%s'"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"

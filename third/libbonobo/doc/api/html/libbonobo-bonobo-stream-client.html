@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-stream-client</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="streams.html" title="Storages and Streams"><link rel="previous" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="next" href="persist.html" title="Persistency"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-storage.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="streams.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="persist.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-stream-client"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-stream-client</h2><p>bonobo-stream-client &#8212; Simplified client wrapper functions for the Stream interface</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write">bonobo_stream_client_write</a>      (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const void *buffer,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="size-t">size_t</GTKDOCLINK> size,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint8">guint8</GTKDOCLINK>*     <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read">bonobo_stream_client_read</a>       (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="size-t">size_t</GTKDOCLINK> size,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-long">CORBA_long</GTKDOCLINK> *length_read,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+void        <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write-string">bonobo_stream_client_write_string</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const char *str,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> terminate,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+void        <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-printf">bonobo_stream_client_printf</a>     (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> terminate,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             const char *fmt,
+                                             ...);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-long">CORBA_long</GTKDOCLINK>  <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read-string">bonobo_stream_client_read_string</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             char **str,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-long">CORBA_long</GTKDOCLINK>  <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-get-length">bonobo_stream_client_get_length</a> (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+</pre></div><div xmlns:ns18="" class="refsect1" lang="en"><h2>Description</h2><p>
+These interfaces are designed to make the stream interface
+slightly easier to use from client code. This is done 2 ways,
+first by make the exception environments optiional, and secondly
+by providing slightly nicer semantics.
+</p><ns18:p>
+  </ns18:p><div class="example"><a name="id2965900"></a><p class="title"><b>Example 3. Writing some simple data to a stream</b></p><pre class="programlisting">
+bonobo_stream_client_printf (stream, TRUE, ev, &quot;Hello World: <tt>d</tt>&quot;, 5);
+     </pre></div><ns18:p>
+  It is well worth using the bonobo_stream_client_write function
+for any potentialy large writes, since this blocks the data into
+sensible chunks. This is important, otherwise a single transfer is
+attempted that will cause hassles in the CORBA stubs. [ NB. ORBit
+tries to alloca a huge chunk of memory and SEGVs ].
+</ns18:p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="bonobo-stream-client-write"></a>bonobo_stream_client_write ()</h3><pre class="programlisting">void        bonobo_stream_client_write      (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const void *buffer,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="size-t">size_t</GTKDOCLINK> size,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+This is a helper routine to write <i><tt>size</tt></i> bytes from <i><tt>buffer</tt></i> to the
+<i><tt>stream</tt></i>.  It will continue to write bytes until a fatal error
+occurs. It works around serious problems in ORBit's handling of
+sequences, and makes for nicer, saner protocol usage for
+transfering huge chunks of data.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td> A CORBA Object reference to a Bonobo_Stream
+</td></tr><tr><td><span class="term"><i><tt>buffer</tt></i> :</span></td><td> the buffer to write
+</td></tr><tr><td><span class="term"><i><tt>size</tt></i> :</span></td><td> number of bytes to write
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a CORBA environment to return status information.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-stream-client-read"></a>bonobo_stream_client_read ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint8">guint8</GTKDOCLINK>*     bonobo_stream_client_read       (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="size-t">size_t</GTKDOCLINK> size,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-long">CORBA_long</GTKDOCLINK> *length_read,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+This is a helper routine to read <i><tt>size</tt></i> bytes from the <i><tt>stream</tt></i> into
+a freshly g_ allocated buffer which is returned. Whilst this
+routine may seem pointless; it reads the stream in small chunks
+avoiding possibly massive alloca's inside ORBit's stub/skel code.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td> A CORBA Object reference to a Bonobo_Stream
+</td></tr><tr><td><span class="term"><i><tt>size</tt></i> :</span></td><td> number of bytes to read or -1 for whole stream.
+</td></tr><tr><td><span class="term"><i><tt>length_read</tt></i> :</span></td><td> if non NULL will be set to the length read
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a CORBA environment to return status information.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>NULL on any sort of failure &amp; 0 size read.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-stream-client-write-string"></a>bonobo_stream_client_write_string ()</h3><pre class="programlisting">void        bonobo_stream_client_write_string
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const char *str,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> terminate,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+This is a helper routine to write the string in <i><tt>str</tt></i> to <i><tt>stream</tt></i>.
+If <i><tt>terminate</tt></i> is TRUE, a NULL character will be written out at the
+end of the string.  This function will not return until the entire
+string has been written out, unless an exception is raised.  See
+also <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write">bonobo_stream_client_write</a>(). Continues writing until finished
+or a fatal exception occurs.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td> A CORBA object reference to a <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK>.
+</td></tr><tr><td><span class="term"><i><tt>str</tt></i> :</span></td><td> A string.
+</td></tr><tr><td><span class="term"><i><tt>terminate</tt></i> :</span></td><td> Whether or not to write the \0 at the end of the
+string.
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> A pointer to a <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-stream-client-printf"></a>bonobo_stream_client_printf ()</h3><pre class="programlisting">void        bonobo_stream_client_printf     (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> terminate,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             const char *fmt,
+                                             ...);</pre><p>
+Processes <i><tt>fmt</tt></i> and the arguments which follow it to produce a
+string.  Writes this string out to <i><tt>stream</tt></i>.  This function will not
+return until the entire string is written out, unless an exception
+is raised.  See also <a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write-string">bonobo_stream_client_write_string</a>() and
+<a href="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write">bonobo_stream_client_write</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td> A CORBA object reference to a <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK>.
+</td></tr><tr><td><span class="term"><i><tt>terminate</tt></i> :</span></td><td> Whether or not to null-terminate the string when it is
+written out to the stream.
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> A CORBA_Environment pointer.
+</td></tr><tr><td><span class="term"><i><tt>fmt</tt></i> :</span></td><td> The printf format string.
+</td></tr><tr><td><span class="term"><i><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-stream-client-read-string"></a>bonobo_stream_client_read_string ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-long">CORBA_long</GTKDOCLINK>  bonobo_stream_client_read_string
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             char **str,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+Reads a NULL-terminated string from <i><tt>stream</tt></i> and stores it in a
+newly-allocated string in <i><tt>str</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td> The <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> from which the string will be read.
+</td></tr><tr><td><span class="term"><i><tt>str</tt></i> :</span></td><td> The string pointer in which the string will be stored.
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> A pointer to a <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The number of bytes read, or -1 if an error occurs.
+If an exception occurs, <i><tt>ev</tt></i> will contain the exception.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-stream-client-get-length"></a>bonobo_stream_client_get_length ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-long">CORBA_long</GTKDOCLINK>  bonobo_stream_client_get_length (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+Does the grunt work to get the length of a stream,
+returns -1 if the length is not available. Returns -1
+on exception.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td> The stream.
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> Exception environment
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Length or -1
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>See Also</h2><p>
+<a href="libbonobo-bonobo-storage.html#BonoboStream">BonoboStream</a>
+</p></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-storage.html"><b>&lt;&lt; bonobo-storage</b></a></td><td align="right"><a accesskey="n" href="persist.html"><b>Persistency &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,85 @@
+<refentry id="libbonobo-bonobo-persist-client">
+<refmeta>
+<refentrytitle>bonobo-persist-client</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-persist-client</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+void        <link linkend="bonobo-object-save-to-stream">bonobo_object_save_to_stream</link>    (<link linkend="Bonobo-Unknown">Bonobo_Unknown</link> object,
+                                             <link linkend="Bonobo-Stream">Bonobo_Stream</link> stream,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+<link linkend="Bonobo-Unknown">Bonobo_Unknown</link> <link linkend="bonobo-object-from-stream">bonobo_object_from_stream</link>    (<link linkend="Bonobo-Stream">Bonobo_Stream</link> stream,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="bonobo-object-save-to-stream"/>bonobo_object_save_to_stream ()</title>
+<programlisting>void        bonobo_object_save_to_stream    (<link linkend="Bonobo-Unknown">Bonobo_Unknown</link> object,
+                                             <link linkend="Bonobo-Stream">Bonobo_Stream</link> stream,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>stream</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-object-from-stream"/>bonobo_object_from_stream ()</title>
+<programlisting><link linkend="Bonobo-Unknown">Bonobo_Unknown</link> bonobo_object_from_stream    (<link linkend="Bonobo-Stream">Bonobo_Stream</link> stream,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>stream</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>opt_ev</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,15 +1,15 @@
-# libbonobo fr.po
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
-# maintainer: Christophe Merlet (RedFox) <christophe@merlet.net>, 2001-2002.
+# French translation of libbonobo.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
+# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2001-2003.
 # Christophe Fergeau <teuf@users.sourceforge.net> 2002.
 # Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo 2.0.0\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-07-28 10:44+0200\n"
-"Last-Translator: Christophe Merlet (RedFox) <christophe@merlet.net>\n"
+"Project-Id-Version: libbonobo 2.1.1\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-02 18:55+0100\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -198,13 +198,13 @@ msgstr "MonikerExtender de flux"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Exception lors de l'activation de %s"
+msgid "Exception activating '%s'"
+msgstr "Exception lors de l'activation de « %s »"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Impossible d'activer %s"
+msgid "Failed to activate '%s'"
+msgstr "Impossible d'activer « %s »"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"

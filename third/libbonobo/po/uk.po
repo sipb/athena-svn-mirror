@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-06-03 09:47+0200\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2002-11-06 08:50--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-exception.c:154
@@ -150,7 +150,6 @@ msgid "General activation error with no description"
 msgstr "Загальна помилка активації без опису"
 
 #: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
-#, fuzzy
 msgid "Could not initialize Bonobo"
 msgstr "Не вдалося ініціалізувати Bonobo"
 
@@ -196,13 +195,13 @@ msgid "stream MonikerExtender"
 msgstr "потоковий MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
-#, c-format
-msgid "Exception activating '%s"
+#, fuzzy, c-format
+msgid "Exception activating '%s'"
 msgstr "Вийняткова ситуація під час активації \"%s\""
 
 #: monikers/bonobo-moniker-oaf.c:60
-#, c-format
-msgid "Failed to activate '%s"
+#, fuzzy, c-format
+msgid "Failed to activate '%s'"
 msgstr "Не вдалося активувати \"%s\""
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1

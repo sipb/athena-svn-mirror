@@ -136,7 +136,7 @@ stop_animations (BrowserHTML html)
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-#GtkObject
+#GObject
 </para>
 
 <!-- ##### MACRO BONOBO_OBJECT_TYPE ##### -->

@@ -32,7 +32,7 @@ typedef CORBA_TypeCode BonoboArgType;
 #define BONOBO_ARG_CHAR     TC_CORBA_char
 #define BONOBO_ARG_STRING   TC_CORBA_string
 
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__) && !defined(__cplusplus)
 #	define BONOBO_ARG_GET_GENERAL(a,c,t,e)   (g_assert (bonobo_arg_type_is_equal ((a)->_type, c, e)),\
 					          *((t *)((a)->_value)))
 #	define BONOBO_ARG_SET_GENERAL(a,v,c,t,e) (g_assert (bonobo_arg_type_is_equal ((a)->_type, c, e)),\

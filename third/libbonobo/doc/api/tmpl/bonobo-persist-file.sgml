@@ -158,7 +158,7 @@ save_to_file (BonoboPersistFile *pf,
 </para>
 
 @persist: 
-@filename: 
+@uri: 
 @save_fn: 
 @load_fn: 
 @closure: 
@@ -170,10 +170,12 @@ save_to_file (BonoboPersistFile *pf,
 </para>
 
 @pf: 
-@filename: 
+@uri: 
 @ev: 
 @closure: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@filename: 
 
 
 <!-- ##### TYPEDEF BonoboPersistFileClass ##### -->
@@ -199,13 +201,14 @@ save_to_file (BonoboPersistFile *pf,
 
 </para>
 
-@ps: 
+@pf: 
 @load_fn: 
 @save_fn: 
 @iid: 
 @closure: 
 @Returns: 
 <!-- # Unused Parameters # -->
+@ps: 
 @corba_ps: 
 
 

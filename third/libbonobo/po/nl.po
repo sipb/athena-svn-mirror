@@ -1,0 +1,236 @@
+# Dutch translation of libbonobo.
+# Nederlandse vertalings van libbonobo
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Huib Kleinhout <huib@stack.nl>, 2002, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libbonobo 1.110.0\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-13 14:37+0100\n"
+"Last-Translator: Huib Kleinhout <huib@stack.nl>\n"
+"Language-Team: Dutch <NL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/bonobo-exception.c:154
+msgid "An unsupported action was attempted"
+msgstr "Er is geprobeerd een niet ondersteunde actie uit te voeren"
+
+#: bonobo/bonobo-exception.c:157
+msgid "IO Error"
+msgstr "I/O Fout"
+
+#: bonobo/bonobo-exception.c:160
+msgid "Invalid argument value"
+msgstr "Ongeldige argument waarde"
+
+#: bonobo/bonobo-exception.c:164
+msgid "Object not found"
+msgstr "Object niet gevonden"
+
+#: bonobo/bonobo-exception.c:167
+msgid "Syntax error in object description"
+msgstr "Syntax error in objectbeschrijving"
+
+#: bonobo/bonobo-exception.c:172
+msgid "Cannot activate object from factory"
+msgstr "Kan object uit factory niet activeren"
+
+#: bonobo/bonobo-exception.c:177
+msgid "No permission to access stream"
+msgstr "Geen toegang tot stream"
+
+#: bonobo/bonobo-exception.c:180
+msgid "An unsupported stream action was attempted"
+msgstr "Er is geprobeerd een niet ondersteunde stream actie uit te voeren"
+
+#: bonobo/bonobo-exception.c:183
+msgid "IO Error on stream"
+msgstr "I/O Fout in stream"
+
+#: bonobo/bonobo-exception.c:187
+msgid "IO Error on storage"
+msgstr "I/O Fout in storage"
+
+#: bonobo/bonobo-exception.c:190
+msgid "Name already exists in storage"
+msgstr "Naam bestaat al in storage"
+
+#: bonobo/bonobo-exception.c:193
+msgid "Object not found in storage"
+msgstr "Object niet in storage gevonden"
+
+#: bonobo/bonobo-exception.c:196
+msgid "No permission to do operation on storage"
+msgstr "Geen toegang om operaties in storage te verrichten"
+
+#: bonobo/bonobo-exception.c:198
+msgid "An unsupported storage action was attempted"
+msgstr "Er is geprobeerd een niet ondersteunde storage actie uit te voeren"
+
+#: bonobo/bonobo-exception.c:200
+msgid "Object is not a stream"
+msgstr "Object is geen stream"
+
+#: bonobo/bonobo-exception.c:203
+msgid "Object is not a storage"
+msgstr "Object is geen storage"
+
+#: bonobo/bonobo-exception.c:206
+msgid "Storage is not empty"
+msgstr "Storage is niet leeg"
+
+#: bonobo/bonobo-exception.c:210
+msgid "malformed user interface XML description"
+msgstr "incorrecte XML gebruikersinterface-omschrijving"
+
+#: bonobo/bonobo-exception.c:213
+msgid "invalid path to XML user interface element"
+msgstr "ongeldig pad naar XML gebruikersinterface-element"
+
+#: bonobo/bonobo-exception.c:216
+msgid "the requested UI attribute didn't exist"
+msgstr "het gevraagde gebruikersinterface attribuut bestaat niet"
+
+#: bonobo/bonobo-exception.c:219
+msgid "Unknown command or verb"
+msgstr "Onbekende opdracht of onbekend werkwoord"
+
+#: bonobo/bonobo-exception.c:222
+msgid "Command is insensitive"
+msgstr "De opdracht is niet ontvankelijk"
+
+#: bonobo/bonobo-exception.c:226
+msgid "incorrect data type"
+msgstr "incorrect datatype"
+
+#: bonobo/bonobo-exception.c:229
+msgid "stream not found"
+msgstr "stream niet gevonden"
+
+#: bonobo/bonobo-exception.c:233
+msgid "property not found"
+msgstr "eigenschap is niet gevonden"
+
+#: bonobo/bonobo-exception.c:236
+msgid "property has invalid type"
+msgstr "eigenschap is van een ongeldig type"
+
+#: bonobo/bonobo-exception.c:239
+msgid "property is read only"
+msgstr "eigenschap kan alleen gelezen worden"
+
+#: bonobo/bonobo-exception.c:242
+msgid "config database backend failed "
+msgstr "fout bij de configuratiedatabase backend"
+
+#: bonobo/bonobo-exception.c:246
+msgid "Moniker interface cannot be found"
+msgstr "Kan moniker interface niet vinden"
+
+#: bonobo/bonobo-exception.c:249
+msgid "Moniker activation timed out"
+msgstr "Activeren van moniker mislukt"
+
+#: bonobo/bonobo-exception.c:252
+msgid "Syntax error within moniker"
+msgstr "Syntactische fout in moniker"
+
+#: bonobo/bonobo-exception.c:255
+msgid "Moniker has an unknown moniker prefix"
+msgstr "Moniker heeft een onbekende monikerprefix"
+
+#: bonobo/bonobo-exception.c:279
+msgid "Error checking error; no exception"
+msgstr "Fout bij het nakijken van fout; geen uitzondering"
+
+#: bonobo/bonobo-exception.c:288
+msgid "General activation error with no description"
+msgstr "Algemene activeringsfout zonder omschrijving"
+
+#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+msgid "Could not initialize Bonobo"
+msgstr "Bonobo kon niet geinitialiseerd worden"
+
+#: bonobo/bonobo-moniker.c:353
+#, c-format
+msgid "Failed to resolve, or extend '%s"
+msgstr "'%s kon niet gevonden worden of het uitbreiden hiervan is mislukt"
+
+#: bonobo/bonobo-moniker-util.c:246
+msgid "Failed to activate object"
+msgstr "Kan object niet activeren"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:1
+msgid "HTTP Moniker"
+msgstr "HTTP Moniker"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:2
+msgid "ORB IOR handling moniker"
+msgstr "ORB IOR verwerkende moniker"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:3
+msgid "Standard Moniker factory"
+msgstr "Standaard Moniker factory"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:4
+msgid "generic Oaf activation moniker"
+msgstr "generieke OAF activeringsmoniker"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:5
+msgid "generic Oaf query moniker"
+msgstr "generieke OAF query moniker"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:6
+msgid "generic factory 'new' moniker"
+msgstr "generieke factory 'nieuw' moniker"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:7
+msgid "generic item moniker"
+msgstr "generieke itemmoniker"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:8
+msgid "stream MonikerExtender"
+msgstr "stream MonikerExtender"
+
+#: monikers/bonobo-moniker-oaf.c:51
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "Uitzondering bij activeren '%s'"
+
+#: monikers/bonobo-moniker-oaf.c:60
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "Het activeren van '%s' is mislukt"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
+msgid "Bonobo Echo server factory"
+msgstr "Bonobo Echo-server factory"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
+msgid "Bonobo Echo server sample program"
+msgstr "Bonobo Echo-server voorbeeldprogramma"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
+msgid "Echo component"
+msgstr "Echo component"
+
+#: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
+msgid "Echo component factory"
+msgstr "Echo component fabriek"
+
+#: samples/echo/echo-client.c:22
+msgid "I could not initialize Bonobo"
+msgstr "Bonobo kon niet geinitialiseerd worden"
+
+#: samples/echo/echo-client.c:33
+msgid "Could not create an instance of the sample echo component"
+msgstr ""
+"Er kon geen realisatie van het voorbeeld 'echo' component worden aangemaakt"
+
+#: samples/echo/echo-client.c:45
+#, c-format
+msgid "An exception occured '%s'"
+msgstr "Er is een uitzondering opgetreden '%s'"

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo VERSION\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-05-03 17:38-0400\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-10 22:11+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -197,13 +197,13 @@ msgstr "luồng MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Lỗi khi kích hoạt '%s'"
+msgid "Exception activating '%s'"
+msgstr "Lỗi (ngoại lệ) kích hoạt '%s'"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Lỗi khi kích hoạt '%s'"
+msgid "Failed to activate '%s'"
+msgstr "Kích hoạt '%s' thất bại"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"

@@ -237,6 +237,12 @@ bonobo_pbclient_getv                     (Bonobo_PropertyBag  bag,
 					  const char         *first_prop,
 					  va_list             var_args);
 
+void
+bonobo_pbclient_set_value_async          (Bonobo_PropertyBag bag,
+					  const char        *key,
+					  CORBA_any         *value,
+					  CORBA_Environment *opt_ev);
+
 /* just to be compatible */
 
 #define bonobo_property_bag_client_setv                                       \

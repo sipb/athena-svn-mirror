@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo cvs\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-08-09 19:27+0200\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-03 11:02+0100\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-exception.c:154
@@ -196,12 +196,12 @@ msgstr "stream MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
+msgid "Exception activating '%s'"
 msgstr "Kivétel '%s' aktiválásakor"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
+msgid "Failed to activate '%s'"
 msgstr "'%s' aktiválása sikertelen"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1

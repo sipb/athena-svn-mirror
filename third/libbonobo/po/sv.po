@@ -1,14 +1,14 @@
 # Swedish messages for libbonobo.
-# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
-# Christian Rose <menthos@menthos.com>, 2001, 2002.
+# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+# Christian Rose <menthos@menthos.com>, 2001, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-04 19:43:02 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-01-29 20:04:36 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-08-03 02:59+0200\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-02 19:51+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -202,13 +202,13 @@ msgstr "strömmonikerutökare"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Undantag vid aktivering av \"%s"
+msgid "Exception activating '%s'"
+msgstr "Undantag vid aktivering av \"%s\""
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Misslyckades med att aktivera \"%s"
+msgid "Failed to activate '%s'"
+msgstr "Misslyckades med att aktivera \"%s\""
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"

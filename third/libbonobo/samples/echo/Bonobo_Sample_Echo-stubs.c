@@ -15,15 +15,16 @@ Bonobo_Sample_Echo_echo(Bonobo_Sample_Echo _obj, const CORBA_char * message,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, Bonobo_Sample_Echo__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, Bonobo_Sample_Echo__classid))->echo) {
+	(POA_Bonobo_Sample_Echo__epv *) ORBIT_STUB_GetEpv(_obj,
+							  Bonobo_Sample_Echo__classid))->
+       echo) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->echo(ORBIT_STUB_GetServant(_obj), message, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & message
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & message;
       ORBit_small_invoke_stub_n(_obj, &Bonobo_Sample_Echo__iinterface.methods,
 				0, NULL, _args, NULL, ev);
 

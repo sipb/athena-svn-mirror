@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
 "PO-Revision-Date: 2002-05-15 13:22-0300\n"
 "Last-Translator: Isam Bayazidi <bayazidi@arabeyes.org>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -197,13 +197,13 @@ msgid "stream MonikerExtender"
 msgstr "MonikerExtender انسيابي"
 
 #: monikers/bonobo-moniker-oaf.c:51
-#, c-format
-msgid "Exception activating '%s"
+#, fuzzy, c-format
+msgid "Exception activating '%s'"
 msgstr "تغيل الاستثناء '%s"
 
 #: monikers/bonobo-moniker-oaf.c:60
-#, c-format
-msgid "Failed to activate '%s"
+#, fuzzy, c-format
+msgid "Failed to activate '%s'"
 msgstr "فشل تغعيل '%s"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1

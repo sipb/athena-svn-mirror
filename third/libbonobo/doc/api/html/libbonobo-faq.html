@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Common Questions</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="misc.html" title="Miscellaneous"><link rel="previous" href="debugging.html" title="Debugging"><link rel="next" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="debugging.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="misc.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-config-database.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-faq"></a><div class="titlepage"></div><div class="refnamediv"><h2>Common Questions</h2><p>Common Questions &#8212; 
+	    Find answers to common questions in the libbonobo manual
+	</p></div><div class="refsect1" lang="en"><h2>Questions and Answers</h2><p>Miguel de Icaza (miguel@helixcode.com)</p><p>This is a work in progress.  Please mail me before
+	    making any changes to this document.</p><div class="qandaset"><dl><dt>1. <a href="libbonobo-faq.html#id2975169">What is Bonobo?</a></dt><dt>2. <a href="libbonobo-faq.html#id2975276"> What is CORBA? </a></dt><dt>3. <a href="libbonobo-faq.html#id2975288"> What is a component? </a></dt><dt>4. <a href="libbonobo-faq.html#id2975310"> Is it possible to use Bonobo components in
+		    my favorite language? </a></dt><dt>5. <a href="libbonobo-faq.html#id2976326">Are there other implementations of
+		    Bonobo?</a></dt><dt>6. <a href="libbonobo-faq.html#id2976355"> Is it possible to implement Bonobo components in language X?
+		    </a></dt><dt>7. <a href="libbonobo-faq.html#id2976399">What is ORBit?</a></dt><dt>8. <a href="libbonobo-faq.html#id2976502"> I am interested in CORBA, where can I learn more?
+		    </a></dt><dt>9. <a href="libbonobo-faq.html#id2976538"> What can I do with `bonobo'? </a></dt><dt>10. <a href="libbonobo-faq.html#id2976549">What is an OAFID?</a></dt><dt>11. <a href="libbonobo-faq.html#id2976586"> What is a Factory? </a></dt><dt>12. <a href="libbonobo-faq.html#id2976608"> Where does the OAFID come from? </a></dt><dt>13. <a href="libbonobo-faq.html#id2976620"> What is a Control? </a></dt><dt>14. <a href="libbonobo-faq.html#id2976658"> What is a PropertyBag, What is a Property? </a></dt><dt>15. <a href="libbonobo-faq.html#id2976684"> What are the activation methods in Bonobo? </a></dt><dt>16. <a href="libbonobo-faq.html#id2976746"> Does Bonobo support in-proc components? </a></dt><dt>17. <a href="libbonobo-faq.html#id2977091">
+		What is that long string of identifiers.</a></dt><dt>18. <a href="libbonobo-faq.html#id2977098">
+		Can you show me a simple Bonobo component?</a></dt><dt>19. <a href="libbonobo-faq.html#id2977106">
+		How can I write user interfaces with Glade?</a></dt><dt>20. <a href="libbonobo-faq.html#id2977114">
+		I want to pack a widget using Bonobo.</a></dt><dt>21. <a href="libbonobo-faq.html#id2977127">Can I write GUI-less Bonobo components?</a></dt><dt>22. <a href="libbonobo-faq.html#id2977167"> How can I write a configure script that detects Bonobo?
+		    </a></dt><dt>23. <a href="libbonobo-faq.html#id2977204">How do I compile and link a sample Bonobo application?
+		    </a></dt><dt>24. <a href="libbonobo-faq.html#id2977281"> Where can I find examples of Bonobo use? </a></dt><dt>25. <a href="libbonobo-faq.html#id2977317"> I noticed the lack of an IDispatch-like interface in
+		    Bonobo, how do you cope with this problem? </a></dt><dt>26. <a href="libbonobo-faq.html#id2977370">Can I write components in any language?</a></dt><dt>27. <a href="libbonobo-faq.html#id2977399">Is Bonobo tied to the Gtk toolkit?</a></dt><dt>28. <a href="libbonobo-faq.html#id2977420">Is Bonobo tied to the ORBit implementation?</a></dt><dt>29. <a href="libbonobo-faq.html#id2977443">What is a Moniker?</a></dt><dt>30. <a href="libbonobo-faq.html#id2977468">Why are you so excited about Monikers?</a></dt><dt>31. <a href="libbonobo-faq.html#id2977488">
+		How can I write my own moniker? </a></dt><dt>32. <a href="libbonobo-faq.html#id2977495">
+		Show me some examples. </a></dt><dt>33. <a href="libbonobo-faq.html#id2977502">
+		What is the POA? </a></dt><dt>34. <a href="libbonobo-faq.html#id2977510">
+		Should I use the Bonobo &quot;base classes&quot;? </a></dt><dt>35. <a href="libbonobo-faq.html#id2977517"> The memory management issues seem complex.
+		What are the differences? </a></dt><dt>36. <a href="libbonobo-faq.html#id2977525">
+		What does OAF do? </a></dt><dt>37. <a href="libbonobo-faq.html#id2977533">
+		What is a name server? </a></dt><dt>38. <a href="libbonobo-faq.html#id2977540">
+		Why would I want to use a Name Server? </a></dt><dt>39. <a href="libbonobo-faq.html#id2977547">
+		I have my own needs for a name server,
+		can I use it instead of yours? </a></dt><dt>40. <a href="libbonobo-faq.html#id2977556">
+		Where are component properties stored? </a></dt><dt>41. <a href="libbonobo-faq.html#id2977563">
+		What are the component properties? </a></dt><dt>42. <a href="libbonobo-faq.html#id2977571"> What kind of authentication system does Bonobo use for
+		    its objects? </a></dt><dt>43. <a href="libbonobo-faq.html#id2977604"> I notice that a port is open in my computer
+		    for every application that creates CORBA object; is that
+		    insecure?</a></dt><dt>44. <a href="libbonobo-faq.html#id2977636"> Are communications between components in
+		    Bonobo encrypted? </a></dt><dt>45. <a href="libbonobo-faq.html#id2977669"> If communications are not encrypted, why do you support
+		    them? </a></dt><dt>46. <a href="libbonobo-faq.html#id2977693">What is the problem with the standard C++ CORBA
+		    binding?</a></dt><dt>47. <a href="libbonobo-faq.html#id2977704">What naming scheme should I use for my CORBA interfaces?
+		    </a></dt><dt>48. <a href="libbonobo-faq.html#id2979302"> How should I create unique OAFIIDs for components?
+		    </a></dt><dt>49. <a href="libbonobo-faq.html#id2979373"> What should I call my oaf / UI / IDL file ? </a></dt><dt>50. <a href="libbonobo-faq.html#id2979416">How should I name my CORBA methods ?</a></dt><dt>51. <a href="libbonobo-faq.html#id2979490"> How should I name attributes and structure members?
+		    </a></dt><dt>52. <a href="libbonobo-faq.html#id2979518"> Why when I do a gtk_widget_show_all does my Control not
+		    show up? </a></dt><dt>53. <a href="libbonobo-faq.html#id2979562"> Aren't Monikers just a re-implementation of the GNOME
+		    VFS?  Why not use the GNOME VFS? </a></dt><dt>54. <a href="libbonobo-faq.html#id2979615"> When I run my program loads of daemons start and don't
+		    stop, why? </a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id2975169"></a><a name="id2975171"></a><b>1. </b></td><td align="left" valign="top"><p>What is Bonobo?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td xmlns:ns21="" align="left" valign="top"><p> Bonobo is a component architecture for creating reusable
+		    and distributed software components.  These software components
+		    interact with each other through well defined interfaces which are
+		    specified in the CORBA Interface Definition Language. </p><p> We distinguish between `Bonobo' the name of the component
+			architecture, and `bonobo' which is the C-based easy to use
+			implemenatation of the Bonobo component architecture.</p><ns21:p>The bonobo distribution consists of the following pieces:
+			
+			</ns21:p><div class="itemizedlist"><ul type="disc"><li><p> The Bonobo interface definition files: these
+				establish the standard interfaces used by Bonobo-based
+				applications. </p></li><li><p>The core Bonobo runtime: Bonobo
+				contains a rich API for dealing Bonobo Objects
+				(activation for example).</p></li><li><p> The GObject-Based (and hence C-based) Bonobo
+				framework for creating new Bonobo::Unknown derived
+				interfaces.  These are used to simplify the development of
+				CORBA-servers using the C language binding.</p><p>Each derivative of a
+				    <tt>BonoboObject</tt> implements an
+				    interface derived from
+				    <tt>IDL:Bonobo/Unknown:1.0</tt>.</p></li><li><p>A set of ready-to-use
+				<tt>BonoboObject</tt>s derivatives that can
+				be used in a variety of situations.  These are considered
+				developer &quot;sugar&quot;, although not required, they greatly
+				simplify the development of Bonobo-based
+				applications. </p></li><li><p> A set of &quot;sugar&quot; functions for
+				manipulating client-side objects. </p></li></ul></div><ns21:p>
+		    </ns21:p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2975276"></a><a name="id2975279"></a><b>2. </b></td><td align="left" valign="top"><p> What is CORBA? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2975288"></a><a name="id2975290"></a><b>3. </b></td><td align="left" valign="top"><p> What is a component? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> A component is a ( preferably small ), re-usable piece of
+		    software, with well defined interfaces and interactions. In this
+		    context these interfaces are described in IDL and the interactions
+		    via. CORBA.  </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2975310"></a><a name="id2975312"></a><b>4. </b></td><td align="left" valign="top"><p> Is it possible to use Bonobo components in
+		    my favorite language? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td xmlns:ns22="" align="left" valign="top"><p>You will need your favorite language to support
+		    CORBA.</p><ns22:p> There are various CORBA implementations with a
+			different degree of completness that you can use:
+			</ns22:p><div class="itemizedlist"><ul type="disc"><li><p>Owen Taylor has written Perl
+				bindings for CORBA using ORBit. </p></li><li><p> James Henstridge
+				has written Python binding for CORBA. </p></li><li><p> Dan Barlow has written Common
+				Lisp bindings for CORBA. </p></li><li><p> C++ has piles of language
+				bindings. </p></li></ul></div><ns22:p>
+		    </ns22:p><p> You need your CORBA implementation to at least let you invoke
+			methods on other CORBA objects as well as allowing you to
+			implement CORBA objects.  Bonobo uses in various places callback
+			mechanisms and these require the later functionality.  For
+			instance, there is an old Emacs Lisp implementation that did not
+			allow you to create CORBA object servers. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976326"></a><a name="id2976328"></a><b>5. </b></td><td align="left" valign="top"><p>Are there other implementations of
+		    Bonobo?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> There is a work in progress to implement Bonobo in other
+		    languages, although most languages will want to reuse parts of the
+		    core runtime to avoid duplicating a large piece of code that is better
+		    kept centralized and reused.</p><p> FIXME: include a detailed list of the things that are
+			conveniently not wrapped. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976355"></a><a name="id2976358"></a><b>6. </b></td><td align="left" valign="top"><p> Is it possible to implement Bonobo components in language X?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Yes.</p><p> First of all, it is important that your language has CORBA
+			bindings, or that a suitable CORBA implementation is available for
+			you.  You want if possible to get a CORBA 2.2 implementation, but this
+			is not required. </p><p> It does not matter what language you are using, you can implement
+			Bonobo Components by implementing the interface that your component
+			wants to support. </p><p> Depending on your language, you will want to wrap
+			some bits from Bonobo (for instance, the core runtime)
+			or you will want to provide an alternate
+			implementation or no implementation at all. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976399"></a><a name="id2976402"></a><b>7. </b></td><td align="left" valign="top"><p>What is ORBit?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td xmlns:ns23="" align="left" valign="top"><p> ORBit is a CORBA implementation with a C mapping of
+		    the CORBA 2.2 specification mostly written by Elliot Lee and Dick
+		    Porter. </p><p> You can find more about ORBit <a href="http://www.labs.redhat.com/orbit" target="_top"> here </a> </p><ns23:p> ORBit is designed to be a small CORBA implementation that can
+			be embedded in most applications on the desktop.  It also happens
+			to be one of the fastest CORBA implementations in existance.  It
+			supports a number of CORBA features:
+			</ns23:p><div class="itemizedlist"><ul type="disc"><li><p> C Language mapping. </p></li><li><p> A full POA implementation. </p></li><li><p> The Dynamic Invocation Interface. </p></li><li><p> The Dynamic Skeleton Interface. </p></li><li><p> CORBA Any values. </p></li><li><p> Typecodes. </p></li></ul></div><ns23:p>
+		    </ns23:p><p> And it comes with a number of libraries that implement a few of
+			the CORBA services (Cos) </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976502"></a><a name="id2976504"></a><b>8. </b></td><td align="left" valign="top"><p> I am interested in CORBA, where can I learn more?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> CORBA is a standard published by the Object Management
+		    Group, you can download various of their specifications from their
+		    <a href="http://www.omg.org" target="_top"> web site </a> </p><p>FIXME: include pointers to relevant documents.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976538"></a><a name="id2976540"></a><b>9. </b></td><td align="left" valign="top"><p> What can I do with `bonobo'? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976549"></a><a name="id2976552"></a><b>10. </b></td><td align="left" valign="top"><p>What is an OAFID?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td xmlns:ns24="" align="left" valign="top"><p>The OAFID is a unique identifier for a specific object
+		    implementation and it is used to resolve uniquely.  This ID is used to
+		    activate CORBA servers implementations. </p><ns24:p> For example, this OAFID represents the Gnumeric workbook
+			factory object:
+			</ns24:p><p><tt>OAFIID:GNOME_Gnumeric_WorkbookFactory</tt>
+			</p><ns24:p>
+		    </ns24:p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976586"></a><a name="id2976589"></a><b>11. </b></td><td align="left" valign="top"><p> What is a Factory? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> A factory is an object that makes other
+			objects. eg. a Gnumeric factory might make Workbook
+			objects.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976608"></a><a name="id2976611"></a><b>12. </b></td><td align="left" valign="top"><p> Where does the OAFID come from? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976620"></a><a name="id2976623"></a><b>13. </b></td><td align="left" valign="top"><p> What is a Control? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> A Control is a 'componentized' version of a
+			Widget. ie. A Control is a (single view) Graphical
+			component. </p><p> In the Gtk+ implementation a Control contains a
+			GtkWidget, it also has associated 'properties',
+			providing an easy way to customize basic features of
+			the control without creating an idl interface. </p><p> A control is often used inside a BonoboWidget,
+			which acts as a container of Controls. The
+			BonoboWidget is a normal GtkWidget that can be
+			inserted into a GtkContainer. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976658"></a><a name="id2976661"></a><b>14. </b></td><td align="left" valign="top"><p> What is a PropertyBag, What is a Property? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> See <a href="properties.html" title="Properties">Properties</a>. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976684"></a><a name="id2976687"></a><b>15. </b></td><td align="left" valign="top"><p> What are the activation methods in Bonobo? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> The prefered method of activating objects is trough the
+		    <tt>bonobo_get_object</tt> function.  This one does
+		    moniker based activation.  Like this: </p><p> For example this activates gnumeric and returns a
+			<tt>GNOME::Gnumeric::Worbook</tt> CORBA
+			object reference:</p><pre class="programlisting">
+bonobo_get_object (&quot;OAFIID:GNOME_Gnumeric_Workbook&quot;, &quot;GNOME/Gnumeric/Workbook&quot;);
+		    </pre><p> The following launches an image handler: </p><pre class="programlisting">
+bonobo_get_object (&quot;file:image.jpeg&quot;, &quot;Bonobo/Control&quot;)
+		    </pre></td></tr><tr class="question"><td align="left" valign="top"><a name="id2976746"></a><a name="id2976749"></a><b>16. </b></td><td align="left" valign="top"><p> Does Bonobo support in-proc components? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> Yes, this depends on how you setup your component, however
+			currently there are very few in-proc gnome components, due to
+			various debugging problems. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977091"></a><a name="id2977092"></a><b>17. </b></td><td align="left" valign="top"><p>
+		What is that long string of identifiers.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977098"></a><a name="id2977100"></a><b>18. </b></td><td align="left" valign="top"><p>
+		Can you show me a simple Bonobo component?</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977106"></a><a name="id2977107"></a><b>19. </b></td><td align="left" valign="top"><p>
+		How can I write user interfaces with Glade?</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977114"></a><a name="id2977115"></a><b>20. </b></td><td align="left" valign="top"><p>
+		I want to pack a widget using Bonobo.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977127"></a><a name="id2977130"></a><b>21. </b></td><td align="left" valign="top"><p>Can I write GUI-less Bonobo components?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> Yes, you can.  Bonobo is in no way tied to the X11
+			environment, although it fully supports it. </p><p> The C implementation of Bonobo uses
+			<tt>GObject</tt>s as its base class, and hence you
+			need to link against the glib-object libraries
+
+			
+			.
+		    </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977167"></a><a name="id2977170"></a><b>22. </b></td><td align="left" valign="top"><p> How can I write a configure script that detects Bonobo?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><pre class="programlisting">
+PKG_CHECK_MODULES(BONOBO, libbonobo-2.0)
+		    </pre><p> See <tt>pkg-config(1)</tt> for more details.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977204"></a><a name="id2977207"></a><b>23. </b></td><td align="left" valign="top"><p>How do I compile and link a sample Bonobo application?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> If your source file is in the file component.c, you
+			can compile it by using the following command line:</p><b><tt>cc `pkg-config --cflags libbonobo-2.0` -c component.c</tt></b><p> To link, you use the command line:</p><b><tt>cc `pkg-config --libs libbonobo-2.0` component.o</tt></b><p> You would replace <tt>libbonobo-2.0</tt>
+			for <tt>libbonoboui-2.0</tt> if you are
+			using the GUI/Gtk+ features of Bonobo and include
+			<tt>libgnomeprint-2.0</tt> if you are using
+			any of the printing facilities for components.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977281"></a><a name="id2977284"></a><b>24. </b></td><td align="left" valign="top"><p> Where can I find examples of Bonobo use? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> There are various sample programs in the Bonobo distribution
+			and they are mostly intended to either excercise a part of Bonobo
+			or to show how a specific feature in Bonobo is
+			implemented. </p><p> You can find the sample programs in bonobo/samples; A few
+			simple components are in bonobo/components; There are various
+			other test programs shipped with Bonobo as well (like gshell)
+		    </p><p> For more advanced uses of Bonobo, you might want to look into
+			Gnumeric, Nautilus or Evolution. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977317"></a><a name="id2977319"></a><b>25. </b></td><td align="left" valign="top"><p> I noticed the lack of an IDispatch-like interface in
+		    Bonobo, how do you cope with this problem? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> CORBA provides a better solution to IDispatch at the CORBA
+			level which obviates the need to have something like that. </p><p> CORBA supports a mechanism on the client side called the
+			Dynamic Invocation Interface (DII) which allows programmers to
+			build their own CORBA request to a server. </p><p> On the server side CORBA supports the Dynamic Skeleton (or
+			Server? FIXME) Interface which allows applications to decode
+			arbitrary incoming CORBA requests. </p><p> Scripting languages would typically implement some sort of
+			support for DII and DSI.  This enables scripting languages to talk
+			to an arbitrary CORBA server or to implement any kind of CORBA
+			interface. </p><p> Some CORBA bindings for scripting languages (like Owen Taylor's
+			ORBit support for Perl) use the ORBs internals, as they are
+			sometime easier to use than DII/DSI. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977370"></a><a name="id2977372"></a><b>26. </b></td><td align="left" valign="top"><p>Can I write components in any language?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>You can write components in any language that has a CORBA
+			binding or a CORBA implementation.  The only requirement is that
+			your components implement one or more of the Bonobo
+			interfaces.</p><p> The runtime for your language might want to reuse some of the C
+			implementation features (like object activation, moniker
+			activation and a few other utility functions).</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977399"></a><a name="id2977402"></a><b>27. </b></td><td align="left" valign="top"><p>Is Bonobo tied to the Gtk toolkit?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>No, it is not.  The `bonobo' implementation is tied to Gtk+, but
+			another binding for another language and another toolkit should be
+			simple to write.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977420"></a><a name="id2977423"></a><b>28. </b></td><td align="left" valign="top"><p>Is Bonobo tied to the ORBit implementation?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> We do not believe that Bonobo is tied to ORBit in any aspect,
+			and there is even an implementation of Bonobo written in Java by
+			Cactus (Gergo Erdi) called Monkeybeans that uses the Java
+			ORB. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977443"></a><a name="id2977445"></a><b>29. </b></td><td align="left" valign="top"><p>What is a Moniker?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Monikers are used to name objects, they effectively
+			implement an object naming space. The naming space is
+			extremely abstract.
+			
+			Read doc/Monikers for a more in-depth explanation.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977468"></a><a name="id2977470"></a><b>30. </b></td><td align="left" valign="top"><p>Why are you so excited about Monikers?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>Please read the bonobo/doc/Monikers document while I prepare
+			the full answer.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977488"></a><a name="id2977489"></a><b>31. </b></td><td align="left" valign="top"><p>
+		How can I write my own moniker? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977495"></a><a name="id2977497"></a><b>32. </b></td><td align="left" valign="top"><p>
+		Show me some examples. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977502"></a><a name="id2977504"></a><b>33. </b></td><td align="left" valign="top"><p>
+		What is the POA? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977510"></a><a name="id2977511"></a><b>34. </b></td><td align="left" valign="top"><p>
+		Should I use the Bonobo &quot;base classes&quot;? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977517"></a><a name="id2977519"></a><b>35. </b></td><td align="left" valign="top"><p> The memory management issues seem complex.
+		What are the differences? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977525"></a><a name="id2977527"></a><b>36. </b></td><td align="left" valign="top"><p>
+		What does OAF do? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977533"></a><a name="id2977534"></a><b>37. </b></td><td align="left" valign="top"><p>
+		What is a name server? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977540"></a><a name="id2977541"></a><b>38. </b></td><td align="left" valign="top"><p>
+		Why would I want to use a Name Server? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977547"></a><a name="id2977549"></a><b>39. </b></td><td align="left" valign="top"><p>
+		I have my own needs for a name server,
+		can I use it instead of yours? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977556"></a><a name="id2977557"></a><b>40. </b></td><td align="left" valign="top"><p>
+		Where are component properties stored? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977563"></a><a name="id2977564"></a><b>41. </b></td><td align="left" valign="top"><p>
+		What are the component properties? </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977571"></a><a name="id2977573"></a><b>42. </b></td><td align="left" valign="top"><p> What kind of authentication system does Bonobo use for
+		    its objects? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> Every CORBA object created by ORBit currently has a long and
+			unique id created from a random sequence.  To contact this object
+			it is necessary to have the full object reference in order to
+			dispatch a request to it (typically the object reference is
+			obtained from the name server, or you can get it in a stringified
+			version as an IOR). </p><p> In the past, we used a cookie system that was attached to the
+			object profile list (in a fully CORBA standard way) and this was
+			used to authenticate the client and the server. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977604"></a><a name="id2977607"></a><b>43. </b></td><td align="left" valign="top"><p> I notice that a port is open in my computer
+		    for every application that creates CORBA object; is that
+		    insecure?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>That port is created by ORBit to accept CORBA requests.  Before
+			any request is processed by the ORB, the connection is
+			authenticated (either by the use of the cookie mechanism, or
+			because the IOR encodes a valid object reference). </p><p> There are no known holes or exploits known on the incoming
+			request handler in ORBit and if you know of anyone, we would love
+			to fix that problem. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977636"></a><a name="id2977638"></a><b>44. </b></td><td align="left" valign="top"><p> Are communications between components in
+		    Bonobo encrypted? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> We depend on the ORBit layer to do any kind of encryption of
+			the data.  The current version of ORBit does not use SSL or any
+			other secure transports, although patches for it are
+			available. </p><p> FIXME: where are these patches available from? </p><p> The current version of ORBit (ORBit2) uses OpenSSL to provide
+			encryption services. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977669"></a><a name="id2977672"></a><b>45. </b></td><td align="left" valign="top"><p> If communications are not encrypted, why do you support
+		    them? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> We guarantee that communications on the destkop are going to be
+			secure, as nobody on the network will be able to sniff on your
+			connections.  When you go over the network, then traffic is not
+			encrypted and it might be subject to sniffing. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977693"></a><a name="id2977696"></a><b>46. </b></td><td align="left" valign="top"><p>What is the problem with the standard C++ CORBA
+		    binding?</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2977704"></a><a name="id2979270"></a><b>47. </b></td><td align="left" valign="top"><p>What naming scheme should I use for my CORBA interfaces?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>If you are a GNOME/ project you need to register your
+			GNOME/MyProject/ namespace, see bonobo/doc/NAMESPACE to see how
+			these are allocated.</p><p>Otherwise, you should use a Java like namespacing scheme based
+			on the DNS.</p><pre class="programlisting">
+	module Com {
+		module MyCompany {
+			module MyProduct {
+				interface MyInterface {
+				};
+			};
+		};
+	};
+		    </pre></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979302"></a><a name="id2979305"></a><b>48. </b></td><td align="left" valign="top"><p> How should I create unique OAFIIDs for components?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>There are two ways to do this. Firstly, those projects with a
+			defined namespace that implement new interfaces. To create an
+			OAFIID simply take your namespace, and with delimiting '_' create
+			an IID within your own defined space eg.</p><p><tt>OAFIID:GNOME_Evolution_Calendar_iTip_Factory</tt></p><p><tt>OAFIID:Com_MyCompany_MyProduct_Control</tt></p><p> A suffix of the main function of the instance eg. _Control,
+			_Factory, _Embeddable etc. is encouraged for clarity. </p><p> The second method for generating OAFIIDs is appropriate for
+			small components that implement no new interfaces, and hence need
+			no special namespace co-ordination. Namespace the initial portion
+			as a category grouping eg. </p><p><tt>OAFIID:GNOME_Panel_Applet_yetanotherclock:</tt></p><p> and add a UUID generated from the uuidgen application at the
+			end to garentee uniqueness. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979373"></a><a name="id2979376"></a><b>49. </b></td><td align="left" valign="top"><p> What should I call my oaf / UI / IDL file ? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>The name of your oaf file should be based on your portion of the
+			namespace, eg.</p><p><tt>GNOME_Evolution_Calendar.oaf</tt></p><p><tt>Com_MyCompany_MyProduct.oaf</tt></p><p>This ensures that there will be no conflicts installing oaf
+			files into a common directory.</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979416"></a><a name="id2979419"></a><b>50. </b></td><td align="left" valign="top"><p>How should I name my CORBA methods ?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>CORBA methods should be named using mixed caps, following a
+			convention similar to that of Java convention. ie. method names
+			should be verbs or verb phrases in mixed case with the first leter
+			lowercase and the first letter of any further words
+			capitalized.</p><pre class="programlisting">
+interface MyInterface {
+
+	long  getLength ();
+	void  setLength (in long l);
+
+	/* the ByName qualifier is a useful disambiguator */
+	long  getValueByName (in string name);
+
+	/* Factory methods should be named createWhatever */
+	Bonobo::Unknown createObject ();
+
+	/* Methods that test boolean conditions */
+	boolean isDirty ();
+	boolean hasLongLegs ();
+
+	/* Mutator methods */	
+	string toString ();
+	double toDouble ();
+
+	/* Signals */
+	oneway void notifyRename ();
+
+	/* Calculate a number of types */
+	long countObjects (in Type t);
+};
+		    </pre><p> With acroyms we fully capitalize eg. <tt>getURI</tt>,
+			with abbreviations and contractions we capitalize the first letter
+			eg. <tt>setDoc</tt> <tt>setId</tt>. cf.
+			<a href="http://java.sun.com/docs/books/jls/html/6.doc.html#11186" target="_top">http://java.sun.com/docs/books/jls/html/6.doc.html#11186</a>
+		    </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979490"></a><a name="id2979492"></a><b>51. </b></td><td align="left" valign="top"><p> How should I name attributes and structure members?
+		    </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> Again, use a Java-like convention eg.</p><pre class="programlisting">
+struct MyStructure {
+	string theName;
+	long   heightInInches;
+};
+		    </pre></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979518"></a><a name="id2979520"></a><b>52. </b></td><td align="left" valign="top"><p> Why when I do a gtk_widget_show_all does my Control not
+		    show up? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> The gtk_widget_show_all should not propagate over the plug /
+			socket boundary, you need to ensure that you do a gtk_widget_show
+			on your control. You can of course do shows / hides on the
+			BonoboWidget ( the server side ) to show or hide the
+			control. </p><p> This also means that as a component author, you are protected
+			from people messing with your internal show / hide logic. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979562"></a><a name="id2979565"></a><b>53. </b></td><td align="left" valign="top"><p> Aren't Monikers just a re-implementation of the GNOME
+		    VFS?  Why not use the GNOME VFS? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> For a storage backend you can always use something like
+			bonobo_storage_new (&quot;gnome-vfs&quot;) and get away with life. </p><p> The main difference between the gnome-vfs, and monikers is that
+			monikers are used to implement an object-based name space, while
+			the gnome-vfs is a fine abstraction for naming files and
+			directories.  The moniker space goes well beyond this. </p><p> When Ettore, Nat and I designed the GNOME VFS in Paris Ettore
+			had a grander vision than Nat and I had.  Nat and I wanted exactly
+			what the GNOME VFS is: an asyncronous, pluggable virtual file
+			system implementation.  Ettore wanted something more general,
+			something that would implement an object name space.  And some of
+			the design decisions in the core of the gnome-vfs reflect some of
+			this thinking, but the API and the infrastructure was limited to
+			handling files. </p><p> Various months later, we finally understood completely the
+			moniker system, and we realized that monikers were an object
+			naming space, and that if done correctly monikers would be able to
+			implement Ettore's initial vision for having an object-based
+			naming space. </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id2979615"></a><a name="id2979618"></a><b>54. </b></td><td align="left" valign="top"><p> When I run my program loads of daemons start and don't
+		    stop, why? </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p> When you activate a Bonobo server the oaf daemon starts, this
+			parses all your oafinfo files and then can respond to activation
+			requests and queries. </p><p> The first access latency in this case is relatively high, the
+			second access is extremely quick, consequently it is advantageous
+			to leave the oafd process running on a GNOME system. Eventualy
+			many of the GNOME desktop services will be using oaf regularly,
+			making unloading it wasteful. </p><p> Most people are happy to have many daemons running on their
+			machine - kswapd for example, or perhaps umpteen idle copies of
+			mingetty - these are left running for performance reasons, and
+			have a negligable impact on system performance. </p><p> Finally, patches are welcome to add a _user configurable_
+			timeout and die option for those that begrudge the couple of Mb (
+			including all dependant shlibs ) to oafd. The command oaf-slay can
+			be used to kill all oaf servers at any time and one can profitably
+			look for memory savings elsewhere. </p></td></tr></tbody></table></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="debugging.html"><b>&lt;&lt; Debugging</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-config-database.html"><b>bonobo-config-database &gt;&gt;</b></a></td></tr></table></body></html>

@@ -9,7 +9,7 @@ simplified CORBA_Any wrappers
 The BonoboArg code, and macros are designed to make the
 use of CORBA_Any's slightly simpler by providing a glib
 like binding for them. The bonobo-arg code also provides
-mappings between Gtk Args and CORBA_anys.
+mappings between GValues and CORBA_anys.
 </para>
 
 <para>
@@ -24,7 +24,7 @@ get_prop (BonoboPropertyBag *bag,
 	  CORBA_Environment *ev,
 	  gpointer           user_data)
 {
-	GtkObject *clock = user_data;
+	GObject *clock = user_data;
 
 	switch (arg_id) {
 
@@ -152,7 +152,6 @@ the given CORBA type @t.
 @c: a BonoboArgType for checking
 @t: the C type of the value eg. for BONOBO_ARG_LONG: CORBA_long
 @e: an optional CORBA_Environment or NULL.
-</para>
 
 
 <!-- ##### MACRO BONOBO_ARG_GET_BOOLEAN ##### -->

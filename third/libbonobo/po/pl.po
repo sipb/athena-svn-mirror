@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-02-11 12:53+0100\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-02 01:59+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -200,12 +200,12 @@ msgstr "strumień MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
+msgid "Exception activating '%s'"
 msgstr "Przy uaktywnianiu \"%s\" wystąpił wyjątek"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
+msgid "Failed to activate '%s'"
 msgstr "Nie można uaktywnić \"%s\""
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
@@ -230,7 +230,7 @@ msgstr "Nie można zainicjować Bonobo"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr "Nie można stworzyć instancji przykładowego komponentu echa"
+msgstr "Nie można utworzyć instancji przykładowego komponentu echa"
 
 #: samples/echo/echo-client.c:45
 #, c-format

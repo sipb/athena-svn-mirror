@@ -1,11 +1,18 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/**
+/*
  * gnome-storage.h: Storage manipulation.
  *
  * Author:
  *   Miguel de Icaza (miguel@gnu.org).
  *
  * Copyright 1999 Helix Code, Inc.
+ */
+
+/*
+ * Deprecation Warning: this object should not be used
+ * directly. Instead, use a moniker-based approach. For example,
+ * bonobo_get_object("file:/tmp", "IDL:Bonobo/Storate:1.0", &ev) will
+ * return a Bonobo_Storage for directory /tmp.
  */
 #ifndef _BONOBO_STORAGE_H_
 #define _BONOBO_STORAGE_H_

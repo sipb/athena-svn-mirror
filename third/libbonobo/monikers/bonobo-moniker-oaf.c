@@ -9,7 +9,7 @@
 #include <config.h>
 #include <string.h>
 
-#define BONOBO_EXPLICIT_TRANSLATION_DOMAIN PACKAGE
+#define BONOBO_EXPLICIT_TRANSLATION_DOMAIN GETTEXT_PACKAGE
 #include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
@@ -48,7 +48,7 @@ bonobo_moniker_oaf_resolve (BonoboMoniker               *moniker,
 				CORBA_exception_free (ev);
 
 				bonobo_exception_general_error_set (
-					ev, NULL, _("Exception activating '%s"),
+					ev, NULL, _("Exception activating '%s'"),
 					bonobo_moniker_get_name_full (moniker));
 			}
 		}
@@ -57,7 +57,7 @@ bonobo_moniker_oaf_resolve (BonoboMoniker               *moniker,
 	} else if (object == CORBA_OBJECT_NIL) {
 
 		bonobo_exception_general_error_set (
-			ev, NULL, _("Failed to activate '%s"),
+			ev, NULL, _("Failed to activate '%s'"),
 			bonobo_moniker_get_name_full (moniker));
 
 		return CORBA_OBJECT_NIL;

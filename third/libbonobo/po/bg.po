@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-03-06 13:22EET\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-14 00:19+0200\n"
 "Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
-"Language-Team: Bulgarian <dict@linuz.zonebg.com>\n"
+"Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -125,7 +125,7 @@ msgstr "свойството е с права само за четене"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "грешка в бекенда на конфигурационната база данни"
+msgstr "грешка в същинската част на конфигурационната база данни"
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
@@ -190,7 +190,7 @@ msgstr "стандартен моникър - \"нов\" на фабрика"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:7
 msgid "generic item moniker"
-msgstr "стандартен монкър"
+msgstr "стандартен моникър"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:8
 msgid "stream MonikerExtender"
@@ -198,17 +198,17 @@ msgstr "поточен моникър-разширител"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Активира се съобщение '%s"
+msgid "Exception activating '%s'"
+msgstr "Активира се съобщение '%s'"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Не можах да активирам '%s"
+msgid "Failed to activate '%s'"
+msgstr "Не можах да активирам '%s'"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr "Сървърна фабрика за бонобо eхо"
+msgstr "Сървърна фабрика за бонобо ехо"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"

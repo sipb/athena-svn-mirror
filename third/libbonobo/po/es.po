@@ -2,17 +2,18 @@
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Héctor García Álvarez <hector@scouts-es.org>, 2001.
 # Germán Poo-Caamaño <gpoo@ubiobio.cl>, 2002.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo2 1.101.2\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-03-06 02:48-0300\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-07 09:44GMT\n"
 "Last-Translator: German Poo Caaman~o <gpoo@ubiobio.cl>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -197,13 +198,13 @@ msgstr "stream MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Activando la excepción '%s'"
+msgid "Exception activating '%s'"
+msgstr "Activando la excepción «%s»"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "No se ha podido activar '%s'"
+msgid "Failed to activate '%s'"
+msgstr "No se ha podido activar «%s»"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"

@@ -26,7 +26,7 @@ bag's listeners that it has changed with a call to
 <para>
 Here is a simple example use of the property bag:
   <example>
-     <title>Callbacks</title>
+     <title>PropertyBag Callbacks</title>
      <programlisting>
 enum {
 	PROP_RUNNING,
@@ -94,7 +94,7 @@ set_prop (BonoboPropertyBag *bag,
 Then to instantiate the property bag interface and associate it with
 a control perhaps we do:
   <example>
-     <title></title>
+     <title>Adding a PropertyBag to a control</title>
      <programlisting>
 	BonoboPropertyBag *pb;
 
@@ -117,7 +117,7 @@ a control perhaps we do:
 And finally we need to notify listeners of changes in various properties
 so we could perhaps do:
   <example>
-     <title></title>
+     <title>Notifying proterty bag listeners</title>
      <programlisting>
 static void
 signal_handler (GtkClock *clock, BonoboPropertyBag *pb)

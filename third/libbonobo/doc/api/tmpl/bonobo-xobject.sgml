@@ -13,12 +13,12 @@ Bonobo/CORBA servers.
 </para>
 
 <para>
-The CORBA methods are associated with a Gtk class in the same
-way that standard Gtk+ methods and signals are. We insert the
+The CORBA methods are associated with a GObject class in the same
+way that standard GObject methods and signals are. We insert the
 CORBA generated Entry Point Vector (epv) struct as the first
 element of the derived class eg.
   <example>
-     <title>Setting up the GtkClass data</title>
+     <title>Setting up the GObjectClass data</title>
      <programlisting>
 typedef struct {
 	BonoboXObject base;
@@ -41,31 +41,33 @@ typedef struct {
 
 <para>
 Then we set up the type using the <function>bonobo_x_type_unique</function>
-function instead of gtk_type_unique ( but otherwise in the standard Gtk+
+function instead of gtk_type_unique ( but otherwise in the standard GObject
 fashion ).
   <example>
      <title>Registering the type with bonobo</title>
      <programlisting>
-GtkType
+GType
 bonobo_control_get_type (void)
 {
-	GtkType ptype;
-	static GtkType type = 0;
+	GType ptype;
+	static GType type = 0;
 
 	if (type == 0) {
-		static GtkTypeInfo info = {
+		static GTypeInfo info = {
 			"BonoboControl",
-			sizeof (BonoboControl),
+			NULL, NULL,
 			sizeof (BonoboControlClass),
-			(GtkClassInitFunc)bonobo_control_class_init,
-			(GtkObjectInitFunc)bonobo_control_init,
-			NULL, NULL, (GtkClassInitFunc) NULL
+			(GClassInitFunc)bonobo_control_class_init,
+			NULL, NULL, 
+			sizeof (BonoboControl), 0,
+			(GObjectInitFunc)bonobo_control_init,
+			NULL
 		};
 		ptype = (parent);
 		type = bonobo_x_type_unique (ptype,
 			POA_Bonobo_Control__init, NULL,
-			GTK_STRUCT_OFFSET (BonoboControlClass, epv),
-			&amp;info);
+			G_STRUCT_OFFSET (BonoboControlClass, epv),
+			&amp;info, "BonoboControl");
 	}
 	return type;
 }
@@ -82,7 +84,7 @@ BONOBO_X_TYPE_FUNC_FULL (BonoboControl, Bonobo_Control,
   </example>
 
   The POA_Bonobo_Control__init function is used to construct the CORBA object
-and the GTK_STRUCT_OFFSET tells Bonobo where your epv structure is
+and the G_STRUCT_OFFSET tells Bonobo where your epv structure is
 in the Class data, so it can build your epv for you.
   The fini_fn function is not used in ORBit, so it is faster to use NULL here.
 </para>
@@ -98,14 +100,13 @@ the parent class.
 static void
 bonobo_control_class_init (BonoboControlClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *)klass;
+	GObjectClass *object_class = (GObjectClass *)klass;
 	POA_Bonobo_Control__epv *epv = &amp;klass->epv;
 
-	bonobo_control_parent_class = gtk_type_class (PARENT_TYPE);
+	bonobo_control_parent_class = g_type_class_peek (PARENT_TYPE);
 
 	...
 
-	object_class->destroy  = bonobo_control_destroy;
 	object_class->finalize = bonobo_control_finalize;
 
 	epv->activate       = impl_Bonobo_Control_activate;

@@ -437,7 +437,7 @@ bonobo_closure_invoke_va_list (GClosure *closure,
  *    bonobo_closure_invoke (closure, G_TYPE_NONE, G_TYPE_INT, first_arg, 0);
  *
  *    glong retval;
- *    bonobo_closure_invoke (closure, G_TYPE_LONG, &retval, 0);
+ *    bonobo_closure_invoke (closure, G_TYPE_LONG, & retval, 0);
  *
  **/
 void

@@ -1,14 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
-# This is a blank Makefile.am for using gtk-doc.
-# Copy this to your project's API docs directory and modify the variables to
-# suit your project. See the GTK+ Makefiles in gtk+/docs/reference for examples
-# of using the various options.
+SUBDIRS = figures
 
-# The name of the module, e.g. 'glib'.
+# The name of the module
 DOC_MODULE=libbonobo
 
-# The top-level SGML file. Change it if you want.
+# The top-level SGML file.
 DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 
 # The directory containing the source code. Relative to $(srcdir).
@@ -17,10 +14,10 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 DOC_SOURCE_DIR=../../bonobo
 
 # Extra options to supply to gtkdoc-scan.
-SCAN_OPTIONS=
+SCAN_OPTIONS=--deprecated-guards="G_DISABLE_DEPRECATED"
 
 # Extra options to supply to gtkdoc-mkdb.
-MKDB_OPTIONS=
+MKDB_OPTIONS=--sgml-mode --output-format=xml
 
 # Extra options to supply to gtkdoc-fixref.
 FIXXREF_OPTIONS=
@@ -33,10 +30,12 @@ CFILE_GLOB=
 IGNORE_HFILES=
 
 # Images to copy into HTML directory.
-HTML_IMAGES =
+HTML_IMAGES = figures/persist.png figures/persist-file.png\
+	      figures/persist-storage.png figures/persist-stream.png\
+              figures/stream.png figures/storage.png
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
-content_files =
+content_files = faq.xml debugging.xml properties.xml refcounting.xml
 
 # Other files to distribute.
 extra_files =
@@ -56,27 +55,35 @@ DOC_OVERRIDES =
 
 
 
-###########################################################################
-# Everything below here is generic and you shouldn't need to change it.
-###########################################################################
+####################################
+# Everything below here is generic #
+####################################
+
+# We set GPATH here; this gives us semantics for GNU make
+# which are more like other make's VPATH, when it comes to
+# whether a source that is a target of one rule is then
+# searched for in VPATH/GPATH.
+#
+GPATH = $(srcdir)
 
 TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
 
 EXTRA_DIST = 				\
 	$(content_files)		\
 	$(extra_files)			\
-	$(HTML_IMAGES)			\
 	$(DOC_MAIN_SGML_FILE)		\
 	$(DOC_MODULE).types		\
 	$(DOC_MODULE)-sections.txt	\
-	$(DOC_OVERRIDES)
+	$(DOC_MODULE)-overrides.txt
 
 DOC_STAMPS=scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \
 	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
-SCANOBJ_FILES = 		\
-	$(DOC_MODULE).args 	\
-	$(DOC_MODULE).hierarchy \
+SCANOBJ_FILES = 		 \
+	$(DOC_MODULE).args 	 \
+	$(DOC_MODULE).hierarchy  \
+	$(DOC_MODULE).interfaces \
+	$(DOC_MODULE).prerequisites \
 	$(DOC_MODULE).signals
 
 if ENABLE_GTK_DOC
@@ -87,7 +94,7 @@ all-local: html-build.stamp
 scan-build.stamp: $(HFILE_GLOB)
 	@echo '*** Scanning header files ***'
 	if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null ; then \
-	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scanobj --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
+	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scangobj --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 	else \
 	    cd $(srcdir) ; \
 	    for i in $(SCANOBJ_FILES) ; do \
@@ -103,7 +110,7 @@ $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES): scan-build.stamp
 
 #### templates ####
 
-tmpl-build.stamp: $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_OVERRIDES)
+tmpl-build.stamp: $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt
 	@echo '*** Rebuilding template files ***'
 	cd $(srcdir) && gtkdoc-mktmpl --module=$(DOC_MODULE)
 	touch tmpl-build.stamp
@@ -116,7 +123,7 @@ tmpl.stamp: tmpl-build.stamp
 sgml-build.stamp: tmpl.stamp $(CFILE_GLOB) $(srcdir)/tmpl/*.sgml
 	@echo '*** Building SGML ***'
 	cd $(srcdir) && \
-	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) --main-sgml-file=$(DOC_MAIN_SGML_FILE) $(MKDB_OPTIONS)
+	gtkdoc-mkdb --module=$(DOC_MODULE) --source-dir=$(DOC_SOURCE_DIR) $(MKDB_OPTIONS)
 	touch sgml-build.stamp
 
 sgml.stamp: sgml-build.stamp
@@ -126,12 +133,16 @@ sgml.stamp: sgml-build.stamp
 
 html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files)
 	@echo '*** Building HTML ***'
-	test -d $(srcdir)/html || mkdir $(srcdir)/html
+	rm -rf $(srcdir)/html 
+	mkdir $(srcdir)/html
 	cd $(srcdir)/html && gtkdoc-mkhtml $(DOC_MODULE) ../$(DOC_MAIN_SGML_FILE)
-	test "x$(HTML_IMAGES)" = "x" || ( cd $(srcdir) && cp $(HTML_IMAGES) html )
+	test "x$(HTML_IMAGES)" = "x" || ( cd $(srcdir) && cp $(HTML_IMAGES) html 2> /dev/null || true )
 	@echo '-- Fixing Crossreferences' 
 	cd $(srcdir) && gtkdoc-fixxref --module-dir=html --html-dir=$(HTML_DIR) $(FIXXREF_OPTIONS)
 	touch html-build.stamp
+else
+all-local:
+	@echo "*** gtk-doc not enabled: using docs in distribution file"
 endif
 
 ##############
@@ -140,12 +151,12 @@ clean-local:
 	rm -f *~ *.bak $(SCANOBJ_FILES) *-unused.txt $(DOC_STAMPS)
 
 maintainer-clean-local: clean
-	cd $(srcdir) && rm -rf sgml html $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
+	cd $(srcdir) && rm -rf sgml xml html $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR)
-	(installfiles=`echo $(srcdir)/html/*.html`; \
-	if test "$$installfiles" = '$(srcdir)/html/*.html'; \
+	(installfiles=`echo $(srcdir)/html/*`; \
+	if test "$$installfiles" = '$(srcdir)/html/*'; \
 	then echo '-- Nothing to install' ; \
 	else \
 	  for i in $$installfiles; do \
@@ -169,16 +180,12 @@ endif
 
 dist-hook: dist-check-gtkdoc dist-hook-local
 	mkdir $(distdir)/tmpl
-	mkdir $(distdir)/sgml
+	mkdir $(distdir)/xml
 	mkdir $(distdir)/html
 	-cp $(srcdir)/tmpl/*.sgml $(distdir)/tmpl
-	-cp $(srcdir)/sgml/*.sgml $(distdir)/sgml
-	-cp $(srcdir)/html/index.sgml $(distdir)/html
-	-cp $(srcdir)/html/*.html $(srcdir)/html/*.css $(distdir)/html
-
-	images=$(HTML_IMAGES) ;    	      \
-	for i in $$images ; do		      \
-	  cp $(srcdir)/$$i $(distdir)/html ;  \
-	done
+	-cp $(srcdir)/xml/*.xml $(distdir)/xml
+	-cp $(srcdir)/html/* $(distdir)/html
 
 .PHONY : dist-hook-local
+
+

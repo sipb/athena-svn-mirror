@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-types</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-macros.html" title="bonobo-macros"><link rel="next" href="libbonobo-bonobo-context.html" title="bonobo-context"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-macros.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-context.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-types"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-types</h2><p>bonobo-types &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       <a href="libbonobo-bonobo-types.html#bonobo-corba-object-type-register-static">bonobo_corba_object_type_register_static</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> is_bonobo_unknown);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       <a href="libbonobo-bonobo-types.html#bonobo-unknown-get-type">bonobo_unknown_get_type</a>         (void);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       <a href="libbonobo-bonobo-types.html#bonobo-corba-any-get-type">bonobo_corba_any_get_type</a>       (void);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       <a href="libbonobo-bonobo-types.html#bonobo-corba-object-get-type">bonobo_corba_object_get_type</a>    (void);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       <a href="libbonobo-bonobo-types.html#bonobo-corba-typecode-get-type">bonobo_corba_typecode_get_type</a>  (void);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       <a href="libbonobo-bonobo-types.html#bonobo-corba-exception-get-type">bonobo_corba_exception_get_type</a> (void);
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-UNKNOWN-CAPS">BONOBO_TYPE_UNKNOWN</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-ANY-CAPS">BONOBO_TYPE_CORBA_ANY</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-OBJECT-CAPS">BONOBO_TYPE_CORBA_OBJECT</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-TYPECODE-CAPS">BONOBO_TYPE_CORBA_TYPECODE</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-EXCEPTION-CAPS">BONOBO_TYPE_CORBA_EXCEPTION</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-UNKNOWN-CAPS">BONOBO_VALUE_HOLDS_UNKNOWN</a>      (value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-ANY-CAPS">BONOBO_VALUE_HOLDS_CORBA_ANY</a>    (value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-OBJECT-CAPS">BONOBO_VALUE_HOLDS_CORBA_OBJECT</a> (value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-TYPECODE-CAPS">BONOBO_VALUE_HOLDS_CORBA_TYPECODE</a>(value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-EXCEPTION-CAPS">BONOBO_VALUE_HOLDS_CORBA_EXCEPTION</a>(value)
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-types.html#bonobo-value-get-unknown">bonobo_value_get_unknown</a>     (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);
+<a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a>*  <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-any">bonobo_value_get_corba_any</a>      (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Object">CORBA_Object</GTKDOCLINK> <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-object">bonobo_value_get_corba_object</a>  (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-typecode">bonobo_value_get_corba_typecode</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);
+const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK>* <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-exception">bonobo_value_get_corba_exception</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-unknown">bonobo_value_set_unknown</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> unknown);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-any">bonobo_value_set_corba_any</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *any);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-typecode">bonobo_value_set_corba_typecode</a> (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> tc);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-environment">bonobo_value_set_corba_environment</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+void        <a href="libbonobo-bonobo-types.html#bonobo-closure-invoke-va-list">bonobo_closure_invoke_va_list</a>   (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *return_value,
+                                             va_list var_args);
+void        <a href="libbonobo-bonobo-types.html#bonobo-closure-invoke">bonobo_closure_invoke</a>           (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK> return_type,
+                                             ...);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK>*   <a href="libbonobo-bonobo-types.html#bonobo-closure-store">bonobo_closure_store</a>            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosureMarshal">GClosureMarshal</GTKDOCLINK> default_marshal);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="bonobo-corba-object-type-register-static"></a>bonobo_corba_object_type_register_static ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       bonobo_corba_object_type_register_static
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> is_bonobo_unknown);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>tc</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>is_bonobo_unknown</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-unknown-get-type"></a>bonobo_unknown_get_type ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       bonobo_unknown_get_type         (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-corba-any-get-type"></a>bonobo_corba_any_get_type ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       bonobo_corba_any_get_type       (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-corba-object-get-type"></a>bonobo_corba_object_get_type ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       bonobo_corba_object_get_type    (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-corba-typecode-get-type"></a>bonobo_corba_typecode_get_type ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       bonobo_corba_typecode_get_type  (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-corba-exception-get-type"></a>bonobo_corba_exception_get_type ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK>       bonobo_corba_exception_get_type (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-TYPE-UNKNOWN-CAPS"></a>BONOBO_TYPE_UNKNOWN</h3><pre class="programlisting">#define BONOBO_TYPE_UNKNOWN                         (bonobo_unknown_get_type ())
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-TYPE-CORBA-ANY-CAPS"></a>BONOBO_TYPE_CORBA_ANY</h3><pre class="programlisting">#define BONOBO_TYPE_CORBA_ANY                       (bonobo_corba_any_get_type ())
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-TYPE-CORBA-OBJECT-CAPS"></a>BONOBO_TYPE_CORBA_OBJECT</h3><pre class="programlisting">#define BONOBO_TYPE_CORBA_OBJECT                    (bonobo_corba_object_get_type ())
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-TYPE-CORBA-TYPECODE-CAPS"></a>BONOBO_TYPE_CORBA_TYPECODE</h3><pre class="programlisting">#define BONOBO_TYPE_CORBA_TYPECODE                  (bonobo_corba_typecode_get_type ())
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-TYPE-CORBA-EXCEPTION-CAPS"></a>BONOBO_TYPE_CORBA_EXCEPTION</h3><pre class="programlisting">#define BONOBO_TYPE_CORBA_EXCEPTION                 (bonobo_corba_exception_get_type ())
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-VALUE-HOLDS-UNKNOWN-CAPS"></a>BONOBO_VALUE_HOLDS_UNKNOWN()</h3><pre class="programlisting">#define BONOBO_VALUE_HOLDS_UNKNOWN(value)           (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_UNKNOWN))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-VALUE-HOLDS-CORBA-ANY-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_ANY()</h3><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_ANY(value)         (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_ANY))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-VALUE-HOLDS-CORBA-OBJECT-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_OBJECT()</h3><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_OBJECT(value)      (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_OBJECT))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-VALUE-HOLDS-CORBA-TYPECODE-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_TYPECODE()</h3><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_TYPECODE(value)    (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_TYPECODE))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-VALUE-HOLDS-CORBA-EXCEPTION-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_EXCEPTION()</h3><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_EXCEPTION(value)   (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_EXCEPTION))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-get-unknown"></a>bonobo_value_get_unknown ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_value_get_unknown     (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-get-corba-any"></a>bonobo_value_get_corba_any ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a>*  bonobo_value_get_corba_any      (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-get-corba-object"></a>bonobo_value_get_corba_object ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Object">CORBA_Object</GTKDOCLINK> bonobo_value_get_corba_object  (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-get-corba-typecode"></a>bonobo_value_get_corba_typecode ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> bonobo_value_get_corba_typecode
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-get-corba-exception"></a>bonobo_value_get_corba_exception ()</h3><pre class="programlisting">const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK>* bonobo_value_get_corba_exception
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-set-unknown"></a>bonobo_value_set_unknown ()</h3><pre class="programlisting">void        bonobo_value_set_unknown        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> unknown);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>unknown</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-set-corba-any"></a>bonobo_value_set_corba_any ()</h3><pre class="programlisting">void        bonobo_value_set_corba_any      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *any);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>any</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-set-corba-typecode"></a>bonobo_value_set_corba_typecode ()</h3><pre class="programlisting">void        bonobo_value_set_corba_typecode (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> tc);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>tc</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-value-set-corba-environment"></a>bonobo_value_set_corba_environment ()</h3><pre class="programlisting">void        bonobo_value_set_corba_environment
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *value,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-closure-invoke-va-list"></a>bonobo_closure_invoke_va_list ()</h3><pre class="programlisting">void        bonobo_closure_invoke_va_list   (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GValue">GValue</GTKDOCLINK> *return_value,
+                                             va_list var_args);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>return_value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>var_args</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-closure-invoke"></a>bonobo_closure_invoke ()</h3><pre class="programlisting">void        bonobo_closure_invoke           (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GType">GType</GTKDOCLINK> return_type,
+                                             ...);</pre><p>
+Invokes the closure with the arguments.
+</p><p>
+Example:
+</p><p>
+   bonobo_closure_invoke (closure, G_TYPE_NONE, G_TYPE_INT, first_arg, 0);
+</p><p>
+   glong retval;
+   bonobo_closure_invoke (closure, G_TYPE_LONG, &amp; retval, 0);</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td> a standard GClosure
+</td></tr><tr><td><span class="term"><i><tt>return_type</tt></i> :</span></td><td> the type of the first va_arg argument in a
+set of type / arg pairs.
+</td></tr><tr><td><span class="term"><i><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-closure-store"></a>bonobo_closure_store ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK>*   bonobo_closure_store            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosureMarshal">GClosureMarshal</GTKDOCLINK> default_marshal);</pre><p>
+Does the necessary refcounting magic and returns a directly
+storable closure</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td> a standard GClosure
+</td></tr><tr><td><span class="term"><i><tt>default_marshal</tt></i> :</span></td><td> the default marshaller to use
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-macros.html"><b>&lt;&lt; bonobo-macros</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-context.html"><b>bonobo-context &gt;&gt;</b></a></td></tr></table></body></html>

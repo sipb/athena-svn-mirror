@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
 "PO-Revision-Date: 2002-06-07 01:59+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
@@ -200,13 +200,13 @@ msgid "stream MonikerExtender"
 msgstr "fluxo MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
-#, c-format
-msgid "Exception activating '%s"
+#, fuzzy, c-format
+msgid "Exception activating '%s'"
 msgstr "Excepción activando '%s'"
 
 #: monikers/bonobo-moniker-oaf.c:60
-#, c-format
-msgid "Failed to activate '%s"
+#, fuzzy, c-format
+msgid "Failed to activate '%s'"
 msgstr "Fallo ao activar '%s'"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
