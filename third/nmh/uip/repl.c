@@ -2,7 +2,7 @@
 /*
  * repl.c -- reply to a message
  *
- * $Id: repl.c,v 1.2 1999-05-06 16:08:46 ghudson Exp $
+ * $Id: repl.c,v 1.3 1999-05-14 13:51:51 danw Exp $
  */
 
 #include <h/mh.h>
@@ -419,9 +419,6 @@ try_it_again:
 
     /* find form (components) file */
     if (!form) {
-	if (groupreply)
-	    form = etcpath (replgroupcomps);
-	else
 	    form = etcpath (replcomps);
     }
 
