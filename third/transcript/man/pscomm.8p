@@ -1,0 +1,55 @@
+.TH PSCOMM 8 "19 August 1992" "Adobe Systems"
+\" Copyright (c) 1985,1987,1992 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/pscomm.8p,v 1.1 1996-10-14 05:06:26 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
+.SH NAME
+pscomm \- TranScript serial communication filter for PostScript printers
+.SH "SYNOPSIS"
+.B XPSLIBDIRX/pscomm
+.SH "DESCRIPTION"
+This is the low-level \*(TS serial communication filter for use by the 
+4.2BSD line printer spooling system through the printer description file 
+/etc/printcap.
+It is called from the
+.I psint.sh
+shell script.  This script uses argv[0] (the name it was invoked under)
+to determine which action to take, which may involve invoking a translation
+filter or management filter before invoking the communications filter. 
+The options are as specified in the
+.I 4.2BSD Line Printer Spooler Manual.  
+The program 
+.I pscomm
+is the lowest level filter.  It manages communication with the printer,
+error handling, status reporting, etc.
+.SH ENVIRONMENT
+.IP VERBOSELOG=\fInumber\fP
+print verbose log messages
+.br
+.SH FILES
+.TP 2.2i
+\fIprinter\fP.acct
+printer accounting file
+.TP 2.2i
+\fIprinter\fP-log
+printer log file
+.TP 2.2i
+status
+printer status file (in the spool directory), shared by 
+lpd(8)
+and
+pscomm
+.SH "SEE ALSO"
+transcript(1), lpr(1), lpc(8), lpd(8), printcap(5), psint(8)
+.br
+.I 4.2BSD Line Printer Spooler Manual
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH NOTES
+\*(PS is a registered trademark of Adobe Systems Incorporated.
+.br
+\*(TS is a trademark of Adobe Systems Incorporated.
+.br
+Unix is a trademark of AT&T Bell Laboratories.
+
