@@ -21,7 +21,7 @@ if [ -f /etc/athena/no-counterlog ]; then
   exit 0
 fi
 
-if [ ! -f /var/athena/counter-id ]; then
+if [ ! -s /var/athena/counter-id ]; then
   if [ -r /dev/urandom ]; then
     dd if=/dev/urandom bs=8 count=1 2>/dev/null | od -x \
       | awk '{print $2 $3 $4 $5; exit}' > /var/athena/counter-id
