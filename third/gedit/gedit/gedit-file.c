@@ -39,7 +39,6 @@
 
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-alert-dialog.h>
-#include <eel/eel-string.h>
 
 #include "gedit2.h"
 #include "gedit-file.h"
@@ -138,29 +137,30 @@ gedit_file_new (void)
 	g_return_if_fail (ret != FALSE);
 	gedit_debug (DEBUG_COMMANDS, "View added.");
 	
-	gtk_widget_grab_focus (GTK_WIDGET (gedit_get_active_view ()));
+	gtk_widget_grab_focus (gedit_get_active_view ());
 }
 
-void 
+gboolean
 gedit_file_close (GtkWidget *view)
 {
 	BonoboMDIChild* child;
+	gboolean closed;
 
 	gedit_debug (DEBUG_FILE, "");
 
-	g_return_if_fail (view != NULL);
+	g_return_val_if_fail (view != NULL, FALSE);
 
 	child = bonobo_mdi_get_child_from_view (view);
-	g_return_if_fail (child != NULL);
+	g_return_val_if_fail (child != NULL, FALSE);
 
 	if (g_list_length (bonobo_mdi_child_get_views (child)) > 1)
 	{		
-		bonobo_mdi_remove_view (BONOBO_MDI (gedit_mdi), view, FALSE);
+		closed = bonobo_mdi_remove_view (BONOBO_MDI (gedit_mdi), view, FALSE);
 		gedit_debug (DEBUG_COMMANDS, "View removed.");
 	}
 	else
 	{
-		bonobo_mdi_remove_child (BONOBO_MDI (gedit_mdi), child, FALSE);
+		closed = bonobo_mdi_remove_child (BONOBO_MDI (gedit_mdi), child, FALSE);
 		gedit_debug (DEBUG_COMMANDS, "Child removed.");
 	}
 
@@ -172,6 +172,8 @@ gedit_file_close (GtkWidget *view)
 	}
 
 	gedit_debug (DEBUG_FILE, "END");
+
+	return closed;
 }
 
 void
@@ -417,7 +419,7 @@ gedit_file_save_as (GeditMDIChild *child)
 		uri = eel_make_uri_from_shell_arg (file);
 		g_return_val_if_fail (uri != NULL, FALSE);
 
-		file_utf8 = eel_format_uri_for_display (uri);
+		file_utf8 = gnome_vfs_format_uri_for_display (uri);
 		if (file_utf8 != NULL)
 			gedit_utils_flash_va (_("Saving document \"%s\"..."), file_utf8);
 		
@@ -561,12 +563,12 @@ void
 gedit_file_save_all (void)
 {
 	guint i = 0;
-	GeditMDIChild* child;
-	GtkWidget* view;
+	GeditMDIChild *child;
+	GtkWidget *view;
 
 	gedit_debug (DEBUG_FILE, "");
 
-	view = bonobo_mdi_get_active_view (BONOBO_MDI (gedit_mdi));
+	view = gedit_get_active_view ();
 
 	for (i = 0; i < g_list_length (bonobo_mdi_get_children (BONOBO_MDI (gedit_mdi))); i++)
 	{
@@ -576,7 +578,7 @@ gedit_file_save_all (void)
 		gedit_file_save (child, FALSE);	
 	}
 
-	if (view != bonobo_mdi_get_active_view (BONOBO_MDI (gedit_mdi)))
+	if (view != gedit_get_active_view ())
 	{
 		GtkWindow *window;
 
@@ -800,7 +802,7 @@ gboolean
 gedit_file_open_recent (EggRecentView *view, EggRecentItem *item, gpointer data)
 {
 	gboolean ret = FALSE;
-	GeditView* active_view;
+	GtkWidget *active_view;
 	gchar *uri_utf8;
 
 	if (gedit_mdi_get_state (gedit_mdi) != GEDIT_STATE_NORMAL)
@@ -830,7 +832,7 @@ gedit_file_open_recent (EggRecentView *view, EggRecentItem *item, gpointer data)
 		
 	active_view = gedit_get_active_view ();
 	if (active_view != NULL)
-		gtk_widget_grab_focus (GTK_WIDGET (active_view));
+		gtk_widget_grab_focus (active_view);
 
 	g_free (uri_utf8);
 
@@ -940,7 +942,6 @@ gedit_file_open_from_stdin (GeditMDIChild *active_child)
 	return ret;
 }
 
-
 static void 
 create_new_file (const gchar *uri)
 {
@@ -956,7 +957,7 @@ create_new_file (const gchar *uri)
 	g_return_if_fail (ret != FALSE);
 	gedit_debug (DEBUG_COMMANDS, "View added.");
 
-	gtk_widget_grab_focus (GTK_WIDGET (gedit_get_active_view ()));
+	gtk_widget_grab_focus (gedit_get_active_view ());
 }
 
 static gboolean
@@ -1014,6 +1015,7 @@ show_loading_dialog (GtkWindow *parent, gchar *uri, gboolean reverting)
 	GtkWidget *image;
 	GtkWidget *vbox;
 	GtkWidget *label;
+	GtkWidget *uri_label;
 	gchar *str;
 	gchar *uri_for_display;
 	gchar *full_formatted_uri;
@@ -1024,9 +1026,9 @@ show_loading_dialog (GtkWindow *parent, gchar *uri, gboolean reverting)
 
 	full_formatted_uri = gnome_vfs_format_uri_for_display (uri);
 
-	/* Truncate the URI so it doesn't get insanely wide.  */
-        uri_for_display = eel_str_middle_truncate (full_formatted_uri, 
-						   MAX_URI_IN_DIALOG_LENGTH);
+	/* Truncate the URI so it doesn't get insanely wide. */
+        uri_for_display = gedit_utils_str_middle_truncate (full_formatted_uri, 
+							   MAX_URI_IN_DIALOG_LENGTH);
 	g_free (full_formatted_uri);
 
 	g_return_if_fail (uri_for_display != NULL);
@@ -1054,23 +1056,23 @@ show_loading_dialog (GtkWindow *parent, gchar *uri, gboolean reverting)
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
 
-	if (reverting)
-	{
-		str = g_strdup_printf ("<b>%s</b>\n%s", _("Reverting file:"), uri_for_display);
-	}
-	else
-	{
-		str = g_strdup_printf ("<b>%s</b>\n%s", _("Loading file:"), uri_for_display);		
-	}
-	
+	str = g_strdup_printf ("<b>%s</b>",
+			reverting? _("Reverting file:") : _("Loading file:"));
+
 	label = gtk_label_new (str);
-	g_free (uri_for_display);
 	g_free (str);
-	
+
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+	uri_label = gtk_label_new (uri_for_display);
+	g_free (uri_for_display);
+
+	gtk_box_pack_start (GTK_BOX (vbox), uri_label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (uri_label), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (uri_label), 0, 0.5);
 
 	progress_bar = gtk_progress_bar_new ();
 	gtk_box_pack_start (GTK_BOX (vbox), progress_bar, FALSE, FALSE, 0);

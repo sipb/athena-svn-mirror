@@ -36,14 +36,12 @@
 
 #include <libgnome/gnome-i18n.h>
 #include <gdk/gdkkeysyms.h>
-
 #include <gtksourceview/gtksourceview.h>
 
 #include "gedit-view.h"
 #include "gedit-debug.h"
 #include "gedit-menus.h"
 #include "gedit-prefs-manager-app.h"
-
 #include "gedit-marshal.h"
 
 #define MIN_NUMBER_WINDOW_WIDTH 20
@@ -60,8 +58,6 @@ struct _GeditViewPrivate
 	GtkWidget *overwrite_mode_statusbar;
 
 	gboolean overwrite_mode;
-
-	gint old_lines;
 };
 
 enum
@@ -82,7 +78,7 @@ static void gedit_view_update_cursor_position_statusbar
 static void gedit_view_cursor_moved 	(GtkTextBuffer     *buffer,
 					 const GtkTextIter *new_location,
 					 GtkTextMark       *mark,
-					 gpointer           data);
+					 GeditView         *view);
 static void gedit_view_update_overwrite_mode_statusbar (GtkTextView* w, GeditView* view);
 static void gedit_view_doc_readonly_changed_handler (GeditDocument *document, 
 						     gboolean readonly, 
@@ -154,7 +150,6 @@ gedit_view_doc_readonly_changed_handler (GeditDocument *document, gboolean reado
 	gedit_view_set_editable (view, !readonly);	
 }
 
-
 static void
 gedit_view_class_init (GeditViewClass *klass)
 {
@@ -176,6 +171,94 @@ gedit_view_class_init (GeditViewClass *klass)
 			      G_TYPE_NONE,
 			      1,
 			      GTK_TYPE_MENU);
+}
+
+static void
+move_cursor (GtkTextView       *text_view,
+	     const GtkTextIter *new_location,
+	     gboolean           extend_selection)
+{
+	GtkTextBuffer *buffer = text_view->buffer;
+
+	if (extend_selection)
+		gtk_text_buffer_move_mark_by_name (buffer, "insert",
+						   new_location);
+	else
+		gtk_text_buffer_place_cursor (buffer, new_location);
+
+	gtk_text_view_scroll_mark_onscreen (text_view,
+					    gtk_text_buffer_get_insert (buffer));
+}
+
+/*
+ * This feature is implemented in gedit and not in gtksourceview since the latter
+ * has a similar feature called smart home/end that it is non-capatible with this 
+ * one and is more "invasive". May be in the future we will move this feature in 
+ * gtksourceview.
+ */
+static void
+gedit_view_move_cursor (GtkTextView    *text_view,
+			GtkMovementStep step,
+			gint            count,
+			gboolean        extend_selection,
+			gpointer	data)
+{
+	GtkTextBuffer *buffer = text_view->buffer;
+	GtkTextMark *mark;
+	GtkTextIter cur, iter;
+
+	if (step != GTK_MOVEMENT_DISPLAY_LINE_ENDS)
+		return;
+
+	g_return_if_fail (!gtk_source_view_get_smart_home_end (GTK_SOURCE_VIEW (text_view)));	
+			
+	mark = gtk_text_buffer_get_insert (buffer);
+	gtk_text_buffer_get_iter_at_mark (buffer, &cur, mark);
+	iter = cur;
+
+	if ((count == -1) && gtk_text_iter_starts_line (&iter))
+	{
+		/* Find the iter of the first character on the line. */
+		while (!gtk_text_iter_ends_line (&cur))
+		{
+			gunichar c = gtk_text_iter_get_char (&cur);
+			if (g_unichar_isspace (c))
+				gtk_text_iter_forward_char (&cur);
+			else
+				break;
+		}
+
+		if (!gtk_text_iter_equal (&cur, &iter))
+		{
+			move_cursor (text_view, &cur, extend_selection);
+			g_signal_stop_emission_by_name (text_view, "move-cursor");
+		}
+
+		return;
+	}
+
+	if ((count == 1) && gtk_text_iter_ends_line (&iter))
+	{
+		/* Find the iter of the last character on the line. */
+		while (!gtk_text_iter_starts_line (&cur))
+		{
+			gunichar c;
+			gtk_text_iter_backward_char (&cur);
+			c = gtk_text_iter_get_char (&cur);
+			if (!g_unichar_isspace (c))
+			{
+				/* We've gone one character too far. */
+				gtk_text_iter_forward_char (&cur);
+				break;
+			}
+		}
+
+		if (!gtk_text_iter_equal (&cur, &iter))
+		{
+			move_cursor (text_view, &cur, extend_selection);
+			g_signal_stop_emission_by_name (text_view, "move-cursor");
+		}
+	}
 }
 
 static void 
@@ -238,11 +321,8 @@ gedit_view_init (GeditView  *view)
 	
 	g_object_set (G_OBJECT (view->priv->text_view), 
 		      "show_margin", gedit_prefs_manager_get_display_right_margin (), 
-		      "margin", gedit_prefs_manager_get_right_margin_position (), 
-		      NULL);
-	
-	g_object_set (G_OBJECT (view->priv->text_view),
-		      "smart-home-end", FALSE,
+		      "margin", gedit_prefs_manager_get_right_margin_position (),
+		      "smart_home_end", FALSE, /* Never changes this */
 		      NULL);
 
 	gtk_box_pack_start (GTK_BOX (view), sw, TRUE, TRUE, 0);
@@ -252,6 +332,10 @@ gedit_view_init (GeditView  *view)
 
 	g_signal_connect (G_OBJECT (view->priv->text_view), "populate-popup",
 			  G_CALLBACK (gedit_view_populate_popup), view);
+
+	g_signal_connect (G_OBJECT (view->priv->text_view), "move-cursor",
+			  G_CALLBACK (gedit_view_move_cursor), view);
+
 	
 }
 
@@ -462,24 +546,103 @@ gedit_view_scroll_to_cursor (GeditView *view)
 				"insert"));
 }
 
-void 
-gedit_view_set_colors (GeditView* view, gboolean def, GdkColor* backgroud, GdkColor* text,
-		GdkColor* selection, GdkColor* sel_text)
+/* assign a unique name */
+static G_CONST_RETURN gchar *
+get_widget_name (GtkWidget *w)
+{
+	const gchar *name;	
+
+	name = gtk_widget_get_name (w);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	if (strcmp (name, g_type_name (GTK_WIDGET_TYPE (w))) == 0)
+	{
+		static guint d = 0;
+		gchar *n;
+
+		n = g_strdup_printf ("%s_%u_%u", name, d, (guint) g_random_int);
+		d++;
+
+		gtk_widget_set_name (w, n);
+		g_free (n);
+
+		name = gtk_widget_get_name (w);
+	}
+
+	return name;
+}
+
+/* There is no clean way to set the cursor-color, so we are stuck
+ * with the following hack: set the name of each widget and parse
+ * a gtkrc string.
+ */
+static void 
+modify_cursor_color (GtkWidget *textview, 
+		     GdkColor  *color)
+{
+	static const char cursor_color_rc[] =
+		"style \"svs-cc\"\n"
+		"{\n"
+			"GtkSourceView::cursor-color=\"#%04x%04x%04x\"\n"
+		"}\n"
+		"widget \"*.%s\" style : application \"svs-cc\"\n";
+
+	const gchar *name;
+	gchar *rc_temp;
+
+	gedit_debug (DEBUG_VIEW, "");
+
+	name = get_widget_name (textview);
+	g_return_if_fail (name != NULL);
+
+	if (color != NULL)
+	{
+		rc_temp = g_strdup_printf (cursor_color_rc,
+					   color->red, 
+					   color->green, 
+					   color->blue,
+					   name);
+	}
+	else
+	{
+		GtkRcStyle *rc_style;
+
+ 		rc_style = gtk_widget_get_modifier_style (textview);
+
+		rc_temp = g_strdup_printf (cursor_color_rc,
+					   rc_style->text [GTK_STATE_NORMAL].red,
+					   rc_style->text [GTK_STATE_NORMAL].green,
+					   rc_style->text [GTK_STATE_NORMAL].blue,
+					   name);
+	}
+
+	gtk_rc_parse_string (rc_temp);
+	gtk_widget_reset_rc_styles (textview);
+
+	g_free (rc_temp);
+}
+
+void
+gedit_view_set_colors (GeditView *view,
+		       gboolean   def,
+		       GdkColor  *backgroud,
+		       GdkColor  *text,
+		       GdkColor  *selection,
+		       GdkColor  *sel_text)
 {
 	gedit_debug (DEBUG_VIEW, "");
 
 	g_return_if_fail (GEDIT_IS_VIEW (view));
 
+	/* just a bit of paranoia */
+	gtk_widget_ensure_style (GTK_WIDGET (view->priv->text_view));
+
 	if (!def)
-	{	
+	{
 		if (backgroud != NULL)
 			gtk_widget_modify_base (GTK_WIDGET (view->priv->text_view), 
 						GTK_STATE_NORMAL, backgroud);
 
-		if (text != NULL)			
-			gtk_widget_modify_text (GTK_WIDGET (view->priv->text_view), 
-						GTK_STATE_NORMAL, text);
-	
 		if (selection != NULL)
 		{
 			gtk_widget_modify_base (GTK_WIDGET (view->priv->text_view), 
@@ -497,6 +660,13 @@ gedit_view_set_colors (GeditView* view, gboolean def, GdkColor* backgroud, GdkCo
 			gtk_widget_modify_text (GTK_WIDGET (view->priv->text_view), 
 						GTK_STATE_ACTIVE, sel_text);		
 		}
+
+		if (text != NULL)
+		{
+			gtk_widget_modify_text (GTK_WIDGET (view->priv->text_view), 
+						GTK_STATE_NORMAL, text);
+			modify_cursor_color (GTK_WIDGET (view->priv->text_view), text);
+		}
 	}
 	else
 	{
@@ -509,6 +679,9 @@ gedit_view_set_colors (GeditView* view, gboolean def, GdkColor* backgroud, GdkCo
 		rc_style->color_flags [GTK_STATE_ACTIVE] = 0;
 
 		gtk_widget_modify_style (GTK_WIDGET (view->priv->text_view), rc_style);
+
+		/* It must be called after the text color has been modified */
+		modify_cursor_color (GTK_WIDGET (view->priv->text_view), NULL);
 	}
 }
 
@@ -662,6 +835,8 @@ gedit_view_update_cursor_position_statusbar (GtkTextBuffer *buffer, GeditView* v
 		msg = g_strdup_printf (_("  Ln %d, Col %d-%d"), row + 1, chars + 1, col + 1);
 	*/
 
+	/* Translators: "Ln" is an abbreviation for "Line", Col is an abbreviation for "Column". Please,
+	use abbreviations if possible to avoid space problems. */
 	msg = g_strdup_printf (_("  Ln %d, Col %d"), row + 1, col + 1);
 	
 	gtk_statusbar_push (GTK_STATUSBAR (view->priv->cursor_position_statusbar), 
@@ -674,14 +849,12 @@ static void
 gedit_view_cursor_moved (GtkTextBuffer     *buffer,
 			 const GtkTextIter *new_location,
 			 GtkTextMark       *mark,
-			 gpointer           data)
+			 GeditView         *view)
 {
-	GeditView* view;
-
 	gedit_debug (DEBUG_VIEW, "");
 
-	view = GEDIT_VIEW (data);
-	gedit_view_update_cursor_position_statusbar (buffer, view);
+	if (mark == gtk_text_buffer_get_insert (buffer))
+		gedit_view_update_cursor_position_statusbar (buffer, view);
 }
 
 static void

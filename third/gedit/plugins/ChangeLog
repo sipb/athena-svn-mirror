@@ -1,3 +1,40 @@
+2005-02-12  Paolo Maggi  <paolo@gnome.org>
+
+	Back-ported from CVS HEAD
+	
+	Fixes bug #144894 (Ortographic corrector doesn't work in commented
+	lines): the problem was that the highlight tag had a too low priority
+	 
+	* spell/gedit-automatic-spell-checker.c (tag_table_changed): new method
+	(gedit_automatic_spell_checker_new): set the priority and connect the
+	"changed" signal.
+	(gedit_automatic_spell_checker_free)
+	(gedit_automatic_spell_checker_free_internal)
+	(gedit_automatic_spell_checker_detach_view): fixed a crash that happens
+	if you remove automatic spell checker and the press Shift+F10
+
+	* time/time.c (get_time) (create_model) (create_formats_list)
+	(time_world_cb) (get_format_from_list): fix crash when the format in 
+	gconf is not valid. 
+
+2004-11-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* taglist/gedit-taglist-plugin-window.c: do not leak tooltips.
+
+2004-10-17  Paolo Borelli  <pborelli@katamail.com>
+
+	* shell_output/shell_output.c: use proper help section.
+
+2004-09-15  Vinay M R  <vinay.mandyakoppal@wipro.com>
+
+	* time/time.c: Help invocation for "Insert date and time" is
+	implemented. Fixes bug #152686. 
+
+2004-09-14  Vinay M R  <vinay.mandyakoppal@wipro.com>
+
+	* sort/sort.c: Pass correct section-id for displaying help.
+	Fixes bug #152586.
+
 2004-08-30  Paolo Borelli  <pborelli@katamail.com>
 
 	* spell/gedit-automatic-spell-checker.c: fix suggestions list

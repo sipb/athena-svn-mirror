@@ -38,7 +38,6 @@
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <gtk/gtkeventbox.h>
-#include <eel/eel-string.h>
 
 #include <bonobo/bonobo-i18n.h>
 
@@ -52,6 +51,7 @@
 #include "recent-files/egg-recent-util.h"
 #include "gedit-encodings.h"
 #include "gedit-tooltips.h"
+#include "gedit-utils.h"
 
 struct _GeditMDIChildPrivate
 {
@@ -233,7 +233,7 @@ gedit_mdi_child_real_state_changed (GeditMDIChild* child)
 	g_return_if_fail (name != NULL);
 
 	/* Truncate the name so it doesn't get insanely wide. */
-	docname = eel_str_middle_truncate (name, MAX_DOC_NAME_LENGTH);
+	docname = gedit_utils_str_middle_truncate (name, MAX_DOC_NAME_LENGTH);
 	g_free (name);
 
 	if (gedit_document_get_modified (child->document))
@@ -457,13 +457,26 @@ gedit_mdi_child_get_config_string (BonoboMDIChild *child, gpointer data)
 static void
 gedit_mdi_child_tab_close_clicked (GtkWidget *button, GtkWidget *view)
 {
+	GtkWidget *active_view;
+	gboolean closed;
+
 	gedit_debug (DEBUG_MDI, "");
 
 	g_return_if_fail (GEDIT_IS_VIEW (view));
 
-	bonobo_mdi_set_active_view (BONOBO_MDI (gedit_mdi), view);
-	
-	gedit_file_close (view);
+	active_view = gedit_get_active_view ();
+
+	if (active_view != view)
+		bonobo_mdi_set_active_view (BONOBO_MDI (gedit_mdi), view);
+	else
+		active_view = NULL;
+
+	closed = gedit_file_close (view);
+
+	/* If a view is closed while another one is active, re-activate the previous
+	 * active view */
+	if ((active_view != NULL) && closed)
+		bonobo_mdi_set_active_view (BONOBO_MDI (gedit_mdi), active_view);
 }
 
 static void

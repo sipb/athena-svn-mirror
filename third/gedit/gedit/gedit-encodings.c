@@ -69,9 +69,13 @@ typedef enum
   GEDIT_ENCODING_ISO_8859_16,
 
   GEDIT_ENCODING_UTF_7,
+
+/* see bug #156423 */
+#if 0
   GEDIT_ENCODING_UTF_16,
   GEDIT_ENCODING_UCS_2,
   GEDIT_ENCODING_UCS_4,
+#endif
 
   GEDIT_ENCODING_ARMSCII_8,
   GEDIT_ENCODING_BIG5,
@@ -174,12 +178,15 @@ static GeditEncoding encodings [] = {
 
   { GEDIT_ENCODING_UTF_7,
     "UTF-7", N_("Unicode") },
+
+#if 0
   { GEDIT_ENCODING_UTF_16,
     "UTF-16", N_("Unicode") },
   { GEDIT_ENCODING_UCS_2,
     "UCS-2", N_("Unicode") },
   { GEDIT_ENCODING_UCS_4,
     "UCS-4", N_("Unicode") },
+#endif
 
   { GEDIT_ENCODING_ARMSCII_8,
     "ARMSCII-8", N_("Armenian") },

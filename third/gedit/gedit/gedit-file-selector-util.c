@@ -62,7 +62,6 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-string.h>
 #include <eel/eel-alert-dialog.h>
 
 #include "gedit-utils.h"
@@ -101,7 +100,7 @@ replace_dialog (GtkWindow *parent,
 	uri = eel_make_uri_from_shell_arg (file_name);
 	g_return_val_if_fail (uri != NULL, FALSE);
 
-	full_formatted_uri = eel_format_uri_for_display (uri);
+	full_formatted_uri = gnome_vfs_format_uri_for_display (uri);
 	g_return_val_if_fail (full_formatted_uri != NULL, FALSE);
 	g_free (uri);
 	
@@ -109,7 +108,7 @@ replace_dialog (GtkWindow *parent,
 	 * though the dialog uses wrapped text, if the URI doesn't contain
 	 * white space then the text-wrapping code is too stupid to wrap it.
 	 */
-        uri_for_display = eel_str_middle_truncate (full_formatted_uri, 50);
+        uri_for_display = gedit_utils_str_middle_truncate (full_formatted_uri, 50);
 	g_return_val_if_fail (uri_for_display != NULL, FALSE);
 	g_free (full_formatted_uri);
 

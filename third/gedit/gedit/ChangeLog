@@ -1,3 +1,123 @@
+2005-02-12  Paolo Maggi  <paolo@gnome.org>
+
+	* dialogs/close_all_dialog.glade2: removed from CVS since it is 
+	unused and not distributed.
+
+2005-02-12  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-mdi.c: backport leak fix and startup speedup.
+	* gedit-view.c: backport speedup and bugfixes.
+	* recent-files/*: sync to latest libegg
+
+2004-12-10  Balamurali Viswanathan  <balamurali.viswanathan@wipro.com>
+
+	Patch from Srirama Sharma  <srirama.sharma@wipro.com>
+
+	* dialogs/uri.glade2: Remove the explicit call to set AtkRelation
+	since the widget is set as mnemonic widget. Fixes the Bug #160593.
+
+2004-12-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-encodings.c: comment out UTF-16, UCS-2 e UCS-8 since
+	they are (and always have been) broken. A proper fix is being
+	worked on.
+
+2004-11-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* dialogs/gedit-preferences-dialog.c: do not leak tooltips.
+
+2004-10-02  Paolo Maggi  <paolo@gnome.org>
+
+	* gedit-document.c: fix crash when failing to load remote
+	files. bug #156992.
+
+2004-11-08  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* gedit-metadata-manager.c: (load_values):
+
+	Check if the file exists before trying to parse it
+
+2004-10-12  Chris Kelso  <ckelso@heliosphere.org>
+
+	* Makefile.am: fix linking issues.
+
+2004-10-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-command.c:
+	* gedit-file.c
+	* gedit-mdi-child.c:
+	* gedit2.[ch]:	
+
+	Fix compilers warning recently introduced and make
+	gedit_get_active_view return a GtkWidget.
+
+2004-10-02  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-document.c: do not open not regular files (as devices etc),
+	fixes crash reported in #153204.
+
+2004-10-03  James Bowes  <bowes@cs.dal.ca>
+
+	* gedit-mdi.c: (gedit_mdi_init), (gedit_mdi_drag_motion_handler),
+	(gedit_mdi_drag_drop_handler), (gedit_mdi_add_view_handler),
+	(gedit_mdi_set_state): Allow dropping of files onto the text view
+	to open the file, even when the text view is read only. Fixes bug 
+	#89881
+
+2004-10-02  Paolo Maggi  <paolo@gnome.org>
+
+	* gedit-file.[ch] (gedit_file_close): returns TRUE if the file has been
+	really closed
+
+	* gedit-mdi-child.c (gedit_mdi_child_tab_close_clicked): If a view is closed 
+	while another one is active, re-activate the previous active view (fixes
+	bug #149811: after closing a document jump to document which has been 
+	open before)
+
+2004-10-02  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-file.c: don't interpret escaped sequences in a filename
+	as markup.
+
+2004-10-02  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-file.c:
+	* gedit-file-selector-util.c:
+	* gedit-mdi.c:
+	* gedit-mdi-child.c:
+	* gedit-print.c:
+	* gedit-utils.c: use a local copy of str_middle_truncate.
+
+2004-10-02  Paolo Maggi  <paolo@gnome.org>
+
+	* gedit-mdi.c (gedit_mdi_drag_data_received_handler): always opens the 
+	dropped files in the right target gedit window (fixes bug #150485: 
+	Dragging and dropping doesn't choose the right window)
+
+2004-09-30  Paolo Borelli  <pborelli@katamail.com>
+
+	* gedit-document.c:
+	* gedit-file.c:
+	* gedit-utils.c: trivial s/eel/gnome_vfs for a couple of func
+	that have been copied verbatim to gnome-vfs
+
+2004-09-28  Paolo Borelli  <pborelli@katamail.com>
+
+	* recent-files/egg-recent-model.c: sync to latest
+	libegg.
+
+2004-09-27  Paolo Borelli  <pborelli@katamail.com>
+
+	* recent-files/egg-recent-util.c: sync to latest
+	libegg.
+	* gedit-utils.c: do not crash when gnome_vfs_uri_get_host_name
+	return NULL;
+
+2004-09-16  Paolo Borelli  <pborelli@katamail.com>
+
+	* recent-files/egg-recent-model.c: sync to latest
+	libegg.
+
 2004-08-17  Mark McLoughlin  <mark@skynet.ie>
 
 	* recent-files/egg-recent-item.c,

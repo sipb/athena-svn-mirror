@@ -1,3 +1,68 @@
+2005-02-12  Paolo Maggi  <paolo@gnome.org>
+
+	* POTFILES.in: removed unused file close_all_dialog.glade2
+
+2005-01-23  Rhys Jones  <rhys@sucs.org>
+
+	* cy.po: Merged fixes/changes from CVS HEAD into gedit-2-8 branch.
+
+2005-01-11  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation by GNOME PL Team.
+
+2004-11-30  Nikos Charonitakis  <charosn@her.forthnet.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-11-23  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-11-22  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-10-29  Jordi Mallach  <jordi@sidominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2004-10-25  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-10  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-10-06  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-09-26  Roozbeh Pournader  <roozbeh@farsiweb.info>
+
+	* fa.po: Updated Persian translation.
+
+2004-09-24  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-09-21  Žygimantas Beručka  <uid0@akl.lt>
+
+	* lt.po: Updated Lithuanian translation.
+
+2004-09-15  Roozbeh Pournader  <roozbeh@farsiweb.info>
+
+	* fa.po: Updated Persian translation by Meelad Zakaria
+	<meelad@bamdad.org>.
+
+2004-09-15  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2004-09-14  Gora Mohanty  <gmohanty@cvs.gnome.org>
+                                                                                
+        * or.po: Updated Oriya translation.
+   
 2004-09-12  Hasbullah Bin Pit <sebol@my-penguin.org>
 
         * ms.po: Updated Malay translation.
