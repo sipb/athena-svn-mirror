@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.50 1997-05-24 20:50:57 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.51 1997-12-10 20:20:33 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -9,9 +9,7 @@
  */
 
 #include <mit-copyright.h>
-#ifdef POSIX
 #include <unistd.h>
-#endif
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -31,34 +29,14 @@
 #include <sys/stropts.h>
 #include <utmpx.h>
 #endif
-#if defined(ultrix) && defined(POSIX)
-#undef POSIX
-#endif
-#ifdef POSIX
 static sigset_t sig_zero;
 static sigset_t sig_cur;
 #include <termios.h>
-#else
-#include <sgtty.h>
-#endif
 
-#ifdef _IBMR2
-#if AIXV==31
-#define USE_X11R3
-#endif
-#include <termio.h>
-#include <grp.h>
-#include <usersec.h>
-#include <sys/select.h>
-#endif /* _IBMR2 */
-#if defined(ultrix) && defined(mips)
-#include <sys/proc.h>
-#include <sys/sysinfo.h>
-#endif
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.50 1997-05-24 20:50:57 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.51 1997-12-10 20:20:33 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -92,25 +70,15 @@ volatile int xpid, x_running = NONEXISTENT;
 volatile int consolepid, console_running = NONEXISTENT;
 volatile int console_tty = 0, console_failed = FALSE;
 volatile int loginpid, login_running = NONEXISTENT;
-#ifdef _IBMR2
-volatile int swconspid;
-#endif
 volatile int clflag;
 char *logintty;
-#ifdef ultrix
-int ultrix_console;
-#endif
 
 /* Programs */
-#ifdef ultrix
-char *login_prog = "/etc/athena/console-getty";
-#else
 #ifdef SOLARIS
 char *login_prog = "/etc/athena/console-ttymon";
 #else
 char *login_prog = "/bin/login";
 #endif
-#endif /* ultrix */
 
 /* Files */
 char *utmpf =	"/etc/utmp";
@@ -133,14 +101,6 @@ char *consolef ="/dev/console";
 char *consolelog = "/var/athena/console.log";
 char *mousedev = "/dev/mouse";
 char *displaydev = "/dev/cons";
-#ifdef ultrix
-char *ultrixcons = "/dev/xcons";
-#endif
-
-#ifdef _AIX
-#define DEFAULTPATH "/bin:/usr/bin:/etc:/usr/ucb:/usr/bin/X11"
-#endif
-
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -202,33 +162,14 @@ char **argv;
     struct stat hostsinfo;
     Bool state;
 
-#ifdef ultrix
-    int login_tty;
-#ifdef mips
-    int uacbuf[2];
-#endif
-#endif
-#ifdef _AIX
-    char pathenv[1024];
-#endif
 #ifdef SOLARIS
     char openv[1024];
 #endif
-#ifdef USE_X11R3
-    fd_set rdlist;
-    int pp[2], nfd, nfound;
-    struct timeval timeout;
-    static char displayenv[256] = "DISPLAY=";
-#endif
-#ifdef POSIX
     struct sigaction sigact;
     sigset_t mask;
     sigemptyset(&sigact.sa_mask);
     sigact.sa_flags = 0;
     (void) sigemptyset(&sig_zero);
-#else
-    int mask;
-#endif
 
 /*
  * Note about setting environment variables in dm:
@@ -347,7 +288,6 @@ char **argv;
     loginargv = parseargs(p, logintty, "-tty", logintty);
 
     /* Signal Setup */
-#ifdef POSIX
     sigact.sa_handler = (void (*)())SIG_IGN;
     sigaction(SIGTSTP, &sigact, NULL);
     sigaction(SIGTTIN, &sigact, NULL);
@@ -365,19 +305,6 @@ char **argv;
     sigaction(SIGALRM, &sigact, NULL);
     sigact.sa_handler = (void (*)())setclflag;
     sigaction(SIGUSR2, &sigact, NULL);
-#else
-    signal(SIGTSTP, SIG_IGN);
-    signal(SIGTTIN, SIG_IGN);
-    signal(SIGTTOU, SIG_IGN);
-    signal(SIGPIPE, SIG_IGN);	/* so that X pipe errors don't nuke us */
-    signal(SIGFPE, shutdown);
-    signal(SIGHUP, die);
-    signal(SIGINT, die);
-    signal(SIGTERM, die);
-    signal(SIGCHLD, child);
-    signal(SIGALRM, catchalarm);
-    signal(SIGUSR2, setclflag);
-#endif
     /* setup ttys */
     if ((file = open("/dev/tty", O_RDWR, 0622)) >= 0) {
 	ioctl(file, TIOCNOTTY, 0);
@@ -386,18 +313,13 @@ char **argv;
     close(0);
     close(1);
     close(2);
-#ifdef POSIX
     setsid();
-#else
-    setpgrp(0,0);
-#endif
     strcpy(line, "/dev/");
     strcat(line, consoletty);
     open(line, O_RDWR, 0622);
     dup2(0, 1);
     dup2(1, 2);
 
-#if !defined(_AIX)
 #ifndef BROKEN_CONSOLE_DRIVER
     /* Set the console characteristics so we don't lose later */
 #ifdef TIOCCONS
@@ -407,7 +329,6 @@ char **argv;
     setpgrp(0, pgrp=getpid()); /* Reset the tty pgrp  */
     ioctl (0, TIOCSPGRP, &pgrp);
 #endif
-#endif
 
     /* save our pid file */
     if ((file = open(dmpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
@@ -415,30 +336,9 @@ char **argv;
 	close(file);
     }
 
-#if defined(_AIX)
-    /* Setup a default path */
-    strcpy(pathenv, "PATH=");
-    strcat(pathenv, DEFAULTPATH);
-    putenv(pathenv);
-#endif
-
     /* Fire up X */
     xpid = 0;
     for (tries = 0; tries < 3; tries++) {
-#ifdef USE_X11R3
-	if (xpid != 0) {
-	    kill(xpid, SIGKILL);
-	    alarm(5);
-#ifdef POSIX
-	    sigsuspend(&sig_zero);
-#else
-	    sigpause(0);
-#endif
-	}
-	if (pipe(pp) < 0) {
-	    message("Could not establish a pipe");
-	}
-#endif
 #ifdef DEBUG
 	message("Starting X\n");
 #endif
@@ -446,32 +346,15 @@ char **argv;
 	xpid = fork();
 	switch (xpid) {
 	case 0:
-#ifdef USE_X11R3
-	    close(pp[0]);
-	    dup2(pp[1],1);
-#endif
 	    if(fcntl(2, F_SETFD, 1) == -1)
 	      close(2);
-#if defined(ultrix) && defined(mips)
-	    uacbuf[0] = SSIN_UACPROC;
-	    uacbuf[1] = UAC_MSGOFF;
-	    setsysinfo((unsigned)SSI_NVPAIRS, (char *)uacbuf, (unsigned) 1,
-		       (unsigned)0, (unsigned)0);
-#endif
-#ifdef POSIX
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
-#else
-	    sigsetmask(0);
-#endif
+
 	    /* ignoring SIGUSR1 will cause the server to send us a SIGUSR1
 	     * when it is ready to accept connections
 	     */
-#ifdef POSIX
 	    sigact.sa_handler = (void (*)())SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
-#else
-	    signal(SIGUSR1, SIG_IGN);
-#endif
 	    p = *xargv;
 	    *xargv = "X";
 	    execv(p, xargv);
@@ -481,85 +364,29 @@ char **argv;
 	    message("dm: Unable to fork to start X server\n");
 	    break;
 	default:
-#ifdef POSIX
 	    sigact.sa_handler = (void (*)())xready;
 	    sigaction(SIGUSR1, &sigact, NULL);
-#else
-	    signal(SIGUSR1, xready);
-#endif
 	    sprintf(xpidf, xpids, dpynum);
 	    if ((file = open(xpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
 		write(file, number(xpid), strlen(number(xpid)));
 		close(file);
 	    }
-#ifdef USE_X11R3
-	    /* have to do it this way, since the Rios X server doesn't
-	     * send signals back when it starts up.  It does, however,
-	     * write the name of the display it started up on to stdout
-	     * when it's ready */
-	    close(pp[1]);
-	    timeout.tv_sec = X_START_WAIT;
-	    timeout.tv_usec = 0;
-	    nfd = pp[0];
-	    FD_ZERO(&rdlist);
-	    FD_SET(pp[0],&rdlist);
-	    if ((nfound = select(nfd+1,&rdlist,NULL,NULL,&timeout)) < 0) {
-		perror("select");
-		exit(1);
-	    }
-	    if (nfound == 0 || x_running == NONEXISTENT) {
-		message("dm: X failed to become ready\n");
-	    } else {
-		char buf[64];
-		(void) read(pp[0], buf, sizeof(buf));	/* flush the pipe */
-		/* Do not close the pipe otherwise the X server will not
-		 * allow remote connections.  Let the shutdown close the
-		 * pipe (an explicit close is not used as dm exits).
-		 */
-#ifdef DEBUG
-		message("X server wrote to pipe: ");
-		message(buf);
-		message("\n");
-#endif
-		if (buf[0]) {
-#ifdef DEBUG
-		    message("dm: X started\n");
-#endif
-		    strncat(displayenv, buf, sizeof(buf));
-		    putenv(displayenv);
-		    x_running = RUNNING;
-		} else {
-#ifdef DEBUG
-		    message("dm: nothing was on the pipe\n");
-#endif
-		}
-	    }
-	    close(pp[0]);
-#else /* !X11R3 */
+
 	    if (x_running == NONEXISTENT) break;
 	    alarm(X_START_WAIT);
 	    alarm_running = RUNNING;
 #ifdef DEBUG
 	    message("waiting for X\n");
 #endif
-#ifdef POSIX
 	    sigsuspend(&sig_zero);
-#else
-	    sigpause(0);
-#endif
 	    if (x_running != RUNNING) {
 		if (alarm_running == NONEXISTENT)
 		  message("dm: Unable to start X\n");
 		else
 		  message("dm: X failed to become ready\n");
 	    }
-#ifdef POSIX
 	    sigact.sa_handler = (void (*)())SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
-#else
-	    signal(SIGUSR1, SIG_IGN);
-#endif
-#endif /* ! AIX3.1 */
 	}
 	if (x_running == RUNNING) break;
     }
@@ -630,20 +457,12 @@ char **argv;
 #endif
 	clflag = FALSE;
 	login_running = STARTUP;
-#ifdef POSIX
 	sigact.sa_handler = (void (*)())loginready;
         sigaction(SIGUSR1, &sigact, NULL);
-#else
-	signal(SIGUSR1, loginready);
-#endif
 	loginpid = fork();
 	switch (loginpid) {
 	case 0:
-#ifdef POSIX
 	    max_fd = sysconf(_SC_OPEN_MAX);
-#else
-	    max_fd = getdtablesize ();
-#endif
 	    for (file = 0; file < max_fd; file++)
 	      close(file);
 	    /* lose the controlling tty */
@@ -656,38 +475,19 @@ char **argv;
 	    strcpy(line, "/dev/");
 	    strcat(line, logintty);
 	    open("/dev/null", O_RDONLY, 0);
-#ifdef POSIX
 	    (void) setsid();
-#endif
 	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
-#ifndef POSIX
-	    /* make sure we own the tty */
-	    setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
-	    ioctl(1, TIOCSPGRP, &pgrp);
-#endif
-#ifdef POSIX
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
-#else
-	    sigsetmask(0);
-#endif
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
 	     */
-#ifdef POSIX
- 	   sigact.sa_handler = (void (*)())SIG_IGN;
-           sigaction(SIGUSR1, &sigact, NULL);
-#else
-	    signal(SIGUSR1, SIG_IGN);
-#endif
+	    sigact.sa_handler = (void (*)())SIG_IGN;
+	    sigaction(SIGUSR1, &sigact, NULL);
 	    /* dm ignores sigpipe; because of this, all of the children (ie, */
 	    /* the entire session) inherit this unless we fix it now */
-#ifdef POSIX
             sigact.sa_handler = (void (*)())SIG_DFL;;
             sigaction(SIGPIPE, &sigact, NULL);
-#else
-	    signal(SIGPIPE, SIG_DFL);
-#endif
 	    execv(loginargv[0], loginargv);
 	    message("dm: X login failed exec\n");
 	    _exit(1);
@@ -698,11 +498,7 @@ char **argv;
 	    alarm(LOGIN_START_WAIT);
 	    alarm_running = RUNNING;
 	    while (login_running == STARTUP && alarm_running == RUNNING)
-#ifdef POSIX
 	      sigsuspend(&sig_zero);
-#else
-	      sigpause(0);
-#endif
 	    if (login_running != RUNNING) {
 		kill(loginpid, SIGKILL);
 		if (alarm_running != NONEXISTENT)
@@ -713,28 +509,16 @@ char **argv;
 	}
 	if (login_running == RUNNING) break;
     }
-#ifdef POSIX
     sigact.sa_handler = (void (*)())SIG_IGN;
     sigaction(SIGUSR1, &sigact, NULL);
-#else
-    signal(SIGUSR1, SIG_IGN);
-#endif
     alarm(0);
     if (login_running != RUNNING)
       console_login("\nUnable to start xlogin, doing console login instead.\n");
 
-#ifdef ultrix
-    ultrix_console = open(ultrixcons, O_RDONLY, 0);
-#endif
-
     /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
-#ifdef POSIX
     (void) sigemptyset(&sig_cur);
     (void) sigaddset(&sig_cur, SIGCHLD);
     (void) sigprocmask(SIG_BLOCK, &sig_cur, NULL);
-#else
-    sigblock(sigmask(SIGCHLD));
-#endif
     while (1) {
 #ifdef DEBUG
 	message("waiting...\n");
@@ -746,82 +530,29 @@ char **argv;
 	     * bar messages.
 	     */
 	    FD_ZERO(&readfds);
-#ifndef ultrix
 	    FD_SET(console_tty, &readfds);
-#ifdef POSIX
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, &mask);
-#else
-	    mask = sigsetmask(0);
-#endif
 	    select(console_tty + 1, &readfds, NULL, NULL, NULL);
-#ifdef POSIX
 	    (void) sigprocmask(SIG_BLOCK, &mask, NULL);
-#else
-	    sigblock(mask);
-#endif
 	    if (FD_ISSET(console_tty, &readfds)) {
 		file = read(console_tty, buf, sizeof(buf));
 		write(1, buf, file);
 	    }
-#else /* ultrix */
-	    FD_SET(ultrix_console, &readfds);
-	    FD_SET(console_tty, &readfds);
-#ifdef POSIX
-	    (void) sigprocmask(SIG_SETMASK, &sig_zero, &mask);
-#else
-	    mask = sigsetmask(0);
-#endif
-#ifndef max
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#endif
-	    select(max(ultrix_console,console_tty) + 1, &readfds, NULL, NULL, NULL);
-#ifdef POSIX
-	    (void) sigprocmask(SIG_BLOCK, &mask, NULL);
-#else
-	    sigblock(mask);
-#endif
-	    if (FD_ISSET(ultrix_console, &readfds)) {
-#ifdef DEBUG
-		message("Got something from Ultrix console\n");
-#endif
-		file = read(ultrix_console, buf, sizeof(buf));
-		write(login_tty, buf, file);
-	    }
-	    if (FD_ISSET(console_tty, &readfds)) {
-#ifdef DEBUG
-		message("Got something from console tty\n");
-#endif
-		file = read(console_tty, buf, sizeof(buf));
-		write(1, buf, file);
-	    }
-#endif /* ultrix */
 	} else {
 	    alarm(60);
-#ifdef POSIX
 	    sigsuspend(&sig_zero);
-#else
-	    sigpause(0);
-#endif
 	}
 
 	if (login_running == STARTUP) {
-#ifdef POSIX
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-#else
-	    sigsetmask(0);
-#endif
 	    console_login("\nConsole login requested.\n");
 	}
 	if (console && console_running == NONEXISTENT)
 	  start_console(line, consoleargv);
 	if (login_running == NONEXISTENT || x_running == NONEXISTENT) {
-#ifdef POSIX
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-#else
-	    sigsetmask(0);
-#endif
-	    cleanup(logintty);
-	    _exit(0);
+	  cleanup(logintty);
+	  _exit(0);
 	}
     }
 }
@@ -832,33 +563,16 @@ char **argv;
 console_login(msg)
 char *msg;
 {
-#if defined(_AIX)
-
-#ifdef DEBUG
-    message("console login is not supported; exiting\n");
-#endif
-    _exit(1);
-
-#else /* supports console login */
-
     int i, graceful = FALSE, xfirst = TRUE, cfirst = TRUE;
     char *nl = "\r\n";
-#ifdef POSIX
     struct termios ttybuf;
-#else
-    int pgrp;
-    struct sgttyb mode;
-#endif
-
 
 #ifdef DEBUG
     message("starting console login\n");
     message(msg);
 #endif
 
-#ifdef POSIX
     sigemptyset(&sig_zero);
-#endif
     for (i = 0; i < X_STOP_WAIT; i++) {
 	if (login_running != NONEXISTENT && login_running != STARTUP)
 	  kill(loginpid, SIGKILL);
@@ -906,52 +620,11 @@ char *msg;
     ioctl(0, TIOCFLUSH, &i);
 #endif
 
-#ifdef vax
-    /* attempt to reset the display head */
-    if (!graceful) {
-	i = open(mousedev, O_RDWR, 0);
-	if (i >= 0) {
-	    alarm(2);
-#ifdef POSIX
-	    sigsuspend(&sig_zero);
-#else
-	    sigpause(0);
-#endif
-	    close(i);
-
-	}
-	i = open(displaydev, O_RDWR, 0);
-	if (i >= 0) {
-	    alarm(2);
-#ifdef POSIX
-	    sigsuspend(&sig_zero);
-#else
-
-	    sigpause(0);
-#endif
-	    close(i);
-	}
-    }
-#endif /* vax */
-#ifdef POSIX
     (void) tcgetattr(0, &ttybuf);
     ttybuf.c_lflag |= (ICANON|ISIG|ECHO);
     (void) tcsetattr(0, TCSADRAIN, &ttybuf);
-#else    
-    ioctl(0, TIOCGETP, &mode);
-    mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
-    ioctl(0, TIOCSETP, &mode);
-#endif
-#ifdef POSIX
     (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
-#else
-    sigsetmask(0);
-#endif
-#ifdef POSIX
     max_fd = sysconf(_SC_OPEN_MAX);
-#else
-    max_fd = getdtablesize ();
-#endif
     
     for (i = 3; i < max_fd; i++)
       close(i);
@@ -972,7 +645,6 @@ char *msg;
 #endif
     message("dm: Unable to start console login\n");
     _exit(1);
-#endif /* supports console login */
 }
 
 
@@ -989,11 +661,7 @@ char **argv;
     struct timeval now;
     int file, pgrp, i;
     char *number(), c, buf[64], **argvp;
-#ifdef POSIX
     struct termios tc;
-#else
-    struct sgttyb mode;
-#endif
 #ifdef SOLARIS
     int fd;
 #endif
@@ -1003,9 +671,6 @@ char **argv;
 
     if (console_tty == 0) {
 	/* Open master side of pty */
-#if defined(_AIX) && defined(_IBMR2)
-	console_tty = open("/dev/ptc", O_RDONLY, 0);
-#else
 	line[5] = 'p';
 	console_tty = open(line, O_RDONLY, 0);
 	if (console_tty < 0) {
@@ -1020,7 +685,6 @@ char **argv;
 		if (console_tty >= 0) break;
 	    }
 	}
-#endif /* RIOS */
 	/* out of ptys, use stdout (/dev/console) */
 	if (console_tty < 0) console_tty = 1;
 	/* Create console log file owned by daemon */
@@ -1030,27 +694,10 @@ char **argv;
 	}
 	chown(consolelog, DAEMON, 0);
     }
-#ifdef _IBMR2
-    /* Work around, for now- should be fixed to use appropriate ioctl or */
-    /* whatever it takes (there is no simple call, however) */
-    strcpy(line,ttyname(console_tty));
-    switch (swconspid = fork()) {
-    case -1:
-	message("Unable to setup console for system messages.\n");
-	break;
-    case 0:
-	close(1);
-	open("/dev/null", O_RDWR);
-	execl("/etc/swcons", "swcons", line, NULL);
-	message("Unable to setup console for system messages.\n");
-	_exit(-1);
-    }
-#else /* _IBMR2 */
 #ifdef TIOCCONS
     ioctl (console_tty, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
     line[5] = 't';
-#endif /* _IBMR2 */
 
     gettimeofday(&now, 0);
     if (now.tv_sec <= last_try.tv_sec + 3) {
@@ -1059,22 +706,6 @@ char **argv;
 	message("Giving up on console\n");
 #endif
 	/* Set the console characteristics so we don't lose later */
-#ifdef _IBMR2
-    /* Work around, for now- should be fixed to use appropriate ioctl or */
-    /* whatever it takes */
-    strcpy(line,ttyname(console_tty));
-    switch (swconspid = fork()) {
-    case -1:
-	message("Unable to fork to setup console for system messages.\n");
-	break;
-    case 0:
-	close(1);
-	open("/dev/null", O_RDWR);
-	execl("/etc/swcons", "swcons", line, NULL);
-	message("Unable to setup console for system messages.\n");
-	_exit(-1);
-    }
-#else /* _IBMR2 */
 #ifndef BROKEN_CONSOLE_DRIVER
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
@@ -1085,7 +716,6 @@ char **argv;
     setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
 #endif
     ioctl (0, TIOCSPGRP, &pgrp);
-#endif /* _IBMR2 */
 #endif /* BROKEN_CONSOLE_DRIVER */
 	console_failed = TRUE;
 	return;
@@ -1099,11 +729,7 @@ char **argv;
     case 0:
 	/* Close all file descriptors except stdout/stderr */
 	close(0);
-#ifdef POSIX
 	max_fd = sysconf(_SC_OPEN_MAX);
-#else
-	max_fd = getdtablesize ();
-#endif
 	for (file = 3; file < max_fd; file++)
 	  if (file != console_tty)
 	    close(file);
@@ -1118,7 +744,6 @@ char **argv;
         fd = grabconsole();
 #endif
 	/* Since we are the session leader, we must initialize the tty */
-#ifdef POSIX
 	(void) tcgetattr(0, &tc);
 #ifdef IMAXBEL
 	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY|IMAXBEL;
@@ -1165,15 +790,6 @@ char **argv;
 #endif
 	tcsetattr(0, TCSANOW, &tc);
 
-#else /* ! POSIX */
-	/* BSD seems to handle the initialization by itself; we might
-	 * as well make sure that we have cooked/cbreak with echo.
-	 * Extend as REQUIRED (but avoid any numeric constants) */
-	ioctl(0, TIOCGETP, &mode);
-	mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
-	ioctl(0, TIOCSETP, &mode);
-#endif /* ! POSIX */
-	
 #ifdef DEBUG
 	close(1);
 	close(2);
@@ -1187,11 +803,7 @@ char **argv;
 	setregid(DAEMON, DAEMON);
 	setreuid(DAEMON, DAEMON);
 #endif
-#ifdef POSIX
 	(void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
-#else
-	sigsetmask(0);
-#endif
 #ifdef SOLARIS
 	/* Icky hack: last two args are "-inputfd" and "0"; change the last
 	 * one to be the console fd. */
@@ -1220,11 +832,7 @@ char **argv;
 void shutdown()
 {
     int pgrp, i;
-#ifdef POSIX
     struct termios tc;
-#else
-    struct sgttyb mode;
-#endif
     char buf[BUFSIZ];
 
     if (login_running == RUNNING)
@@ -1245,26 +853,11 @@ void shutdown()
     ioctl(0, TIOCFLUSH, &i);
 #endif
 
-#ifdef ultrix
-    if (ultrix_console >= 0)
-      close(ultrix_console);
-#endif
-
-#ifdef POSIX
     (void) tcgetattr(0, &tc);
     tc.c_lflag |= (ICANON|ISIG|ECHO);
     (void) tcsetattr(0, TCSADRAIN, &tc);
-#else
-    ioctl(0, TIOCGETP, &mode);
-    mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
-    ioctl(0, TIOCSETP, &mode);
-#endif
 
-#ifdef POSIX
     (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
-#else
-    sigsetmask(0);
-#endif
 
     while (1) {
 	i = read(console_tty, buf, sizeof(buf));
@@ -1302,17 +895,11 @@ char *tty;
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))
-#ifdef _AIX
-		&& (utmp.ut_type == USER_PROCESS)
-#endif
 		) {
 		strncpy(login, utmp.ut_name, 8);
 		login[8] = '\0';
 		if (utmp.ut_name[0] != '\0') {
 		    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
-#ifdef _AIX
-		    utmp.ut_type = EMPTY;
-#endif
 		    lseek(file, (long) -sizeof(utmp), L_INCR);
 		    write(file, (char *) &utmp, sizeof(utmp));
 		    found = 1;
@@ -1401,17 +988,11 @@ void child()
     union wait status;
 #endif
     char *number();
-#ifdef POSIX
     struct sigaction sigact;
     sigemptyset(&sigact.sa_mask);
     sigact.sa_flags = 0;
-#endif
-#ifdef POSIX
     sigact.sa_handler = (void (*)())child;
     sigaction(SIGCHLD, &sigact, NULL);
-#else
-    signal(SIGCHLD, child);
-#endif
 #ifdef SOLARIS
     pid = waitpid(-1, &status, WNOHANG);
 #else
@@ -1456,14 +1037,6 @@ void child()
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTENT;
-#ifdef _IBMR2
-    } else if (pid == swconspid) {
-#ifdef TRACE
-	trace("swcons/rmuser exited status ");
-	trace(number(status.w_retcode));
-#endif
-	swconspid = 0;
-#endif
     } else {
 	message("dm: Unexpected SIGCHLD from pid ");message(number(pid));
     }
@@ -1518,71 +1091,6 @@ void die()
 }
 
 
-#ifdef _IBMR2
-removepwent(user)
-     char *user;
-{
-    static char *empty = "\0";
-    char *grp, *glist;
-    int count;
-
-#ifdef TRACE
-    trace("Cleaning user ");
-    trace(user);
-    trace("\n");
-#endif
-
-    setuserdb(S_READ|S_WRITE);
-
-    if (getuserattr(user, S_GROUPS, (void *)&grp, SEC_LIST) == 0) {
-	/* Decrement the reference count on each of the user's groups */
-	while (*grp) {
-	    if (getgroupattr(grp, "athena_temp", (void *)&count, SEC_INT)==0) {
-		if (--count > 0) {
-		    putgroupattr(grp, "athena_temp", (void *)count, SEC_INT);
-		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
-		} else {
-		    putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
-		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
-		    rmufile(grp, 0, GROUP_TABLE);
-		}
-	    }
-	    while (*grp) grp++;
-	    grp++;
-	}
-    }
-
-    if (getuserattr(user, "athena_temp", (void *)&count, SEC_INT) == 0) {
-	if (--count > 0) {
-	    putuserattr(user, "athena_temp", (void *)count, SEC_INT);
-	    putuserattr(user, (char *)0, (void *)0, SEC_COMMIT);
-	} else {
-	    putuserattr(user, S_GROUPS, (void *)empty, SEC_LIST);
-	    putuserattr(user, (char *)0, (void *)0, SEC_COMMIT);
-	    rmufile(user, 1, USER_TABLE);
-	}
-    }
-
-    grp = nextgroup(S_LOCAL, 0);
-    while (grp) {
-	if (getgroupattr(grp, "athena_temp", (void *)&count, SEC_INT) == 0) {
-	    if (count < 1) {
-		putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
-		putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
-		rmufile(grp, 0, GROUP_TABLE);
-	    }
-	    else if (getgroupattr(grp, S_USERS, &glist, SEC_LIST) ||
-		     *glist=='\0') {
-		rmufile(grp, 0, GROUP_TABLE);
-	    }
-	}
-	grp = nextgroup(0, 0);
-    }
-    enduserdb();
-}
-
-#else /* RIOS */
-
 /* Remove a password entry.  Scans the password file for the specified
  * entry, and if found removes it.
  */
@@ -1593,9 +1101,7 @@ char *login;
     int count = 10;
     int newfile, oldfile, cc;
     char buf[BUFSIZ], *p, *start;
-#ifdef POSIX
     sigemptyset(&sig_zero);
-#endif
     if (!strcmp(login, "root")) return;
 
     for (count = 0; count < 10; count++)
@@ -1603,11 +1109,7 @@ char *login;
 	  errno == EEXIST) {
 	  alarm(1);
 
-#ifdef POSIX
 	  sigsuspend(&sig_zero);
-#else
-	  sigpause(0);
-#endif
       } else
 	break;
     if (newfile == -1) {
@@ -1638,7 +1140,7 @@ char *login;
     close(oldfile);
     rename(passwdtf, passwdf);
 }
-#endif /* RIOS */
+
 #ifdef SOLARIS
 removespwent(login)
 char *login;
@@ -1653,11 +1155,7 @@ char *login;
       if ((newfile = open(spasswdtf, O_RDWR|O_CREAT|O_EXCL, 0600)) == -1 &&
 	  errno == EEXIST) {
 	  alarm(1);
-#ifdef POSIX
 	  sigsuspend(&sig_zero);
-#else
-	  sigpause(0);
-#endif
       } else
 	break;
     if (newfile == -1) {
