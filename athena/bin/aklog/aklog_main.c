@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.8 1990-07-24 15:14:16 qjb Exp $
+ * $Id: aklog_main.c,v 1.9 1990-10-21 18:11:32 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.8 1990-07-24 15:14:16 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.9 1990-10-21 18:11:32 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -202,10 +202,33 @@ static int auth_to_cell(cell, realm)
 
     if (ll_string(&authedcells, ll_s_check, cell_to_use)) {
 	if (dflag) {
-	    sprintf(msgbuf, "Already authenticated to %s\n", cell_to_use);
+	    sprintf(msgbuf, "Already authenticated to %s (or tried to)\n", 
+		    cell_to_use);
 	    params.pstdout(msgbuf);
 	}
 	return(AKLOG_SUCCESS);
+    }
+
+    /* 
+     * Record that we have attempted to log to this cell.  We do this
+     * before we try rather than after so that we will not try
+     * and fail repeatedly for one cell.
+     */
+    (void)ll_string(&authedcells, ll_s_add, cell_to_use);
+
+    /* 
+     * Record this cell in the list of zephyr subscriptions.  We may
+     * want zephyr subscriptions even if authentication fails.
+     * If this is done after we attempt to get tokens, aklog -zsubs
+     * can return something different depending on whether or not we
+     * are in -noauth mode.
+     */
+    if (ll_string(&zsublist, ll_s_add, cell_to_use) == LL_FAILURE) {
+	sprintf(msgbuf, 
+		"%s: failure adding cell to zephyr subscriptions list.\n",
+		progname);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_MISC);
     }
 
     if (!noauth) {
@@ -359,18 +382,6 @@ static int auth_to_cell(cell, realm)
 	    params.pstdout(msgbuf);
 	}
 	
-    /* Record that we have logged to this cell */
-    (void)ll_string(&authedcells, ll_s_add, cell_to_use);
-
-    /* Record this cell in the list of zephyr subscriptions */
-    if (ll_string(&zsublist, ll_s_add, cell_to_use) == LL_FAILURE) {
-	sprintf(msgbuf, 
-		"%s: failure adding cell to zephyr subscriptions list.\n",
-		progname);
-	params.pstderr(msgbuf);
-	params.exitprog(AKLOG_MISC);
-    }
-
     return(status);
 }
 
@@ -600,6 +611,7 @@ static int auth_to_path(path)
 #endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
+    int auth_to_cell_status = AKLOG_SUCCESS;
 
     char *nextpath;
     char pathtocheck[MAXPATHLEN + 1];
@@ -652,7 +664,12 @@ static int auth_to_path(path)
 	    }
 	    if (endofcell = strchr(mountpoint, VOLMARKER)) {
 		*endofcell = NULL;
-		auth_to_cell(cell, NULL);
+		if (auth_to_cell_status = auth_to_cell(cell, NULL)) {
+		    if (status == AKLOG_SUCCESS)
+			status = auth_to_cell_status;
+		    else if (status != auth_to_cell_status)
+			status = AKLOG_SOMETHINGSWRONG;
+		}
 	    }
 	}
 	else
