@@ -3,9 +3,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,7 +37,8 @@ char      *e_charset_picker_dialog (const char *title, const char *prompt,
 				    GtkWindow *parent);
 
 /* bonobo equivalents */
-void       e_charset_picker_bonobo_ui_populate (BonoboUIComponent *uic, const char *default_charset,
+void       e_charset_picker_bonobo_ui_populate (BonoboUIComponent *uic, const char *path,
+						const char *default_charset,
 						BonoboUIListenerFn cb, gpointer user_data);
 
 #ifdef __cplusplus

@@ -34,7 +34,6 @@
 #include <camel/camel-file-utils.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-folder-thread.h>
-#include <camel/camel-vtrash-folder.h>
 #include <e-util/ename/e-name-western.h>
 #include <e-util/e-memory.h>
 
@@ -840,7 +839,7 @@ ml_tree_value_at (ETreeModel *etm, ETreePath path, int col, void *model_data)
 		child = e_tree_model_node_get_first_child(etm, path);
 		if (child && !e_tree_node_is_expanded(message_list->tree, path)
 		    && (msg_info->flags & CAMEL_MESSAGE_SEEN)) {
-			return (void *)subtree_unread(message_list, child);
+			return GINT_TO_POINTER (subtree_unread (message_list, child));
 		}
 
 		return GINT_TO_POINTER (!(msg_info->flags & CAMEL_MESSAGE_SEEN));
@@ -1053,6 +1052,10 @@ message_list_setup_etree (MessageList *message_list, gboolean outgoing)
 		char *path;
 		char *name;
 		struct stat st;
+
+		gtk_object_set (GTK_OBJECT (message_list->tree),
+				"uniform_row_height", TRUE,
+				NULL);
 		
 		name = camel_service_get_name (CAMEL_SERVICE (message_list->folder->parent_store), TRUE);
 		d(printf ("folder name is '%s'\n", name));
@@ -1117,12 +1120,15 @@ message_list_init (GtkObject *object)
 	message_list->hide_lock = g_mutex_new();
 
 	message_list->uid_nodemap = g_hash_table_new (g_str_hash, g_str_equal);
+	message_list->async_event = mail_async_event_new();
 }
 
 static void
 message_list_destroy (GtkObject *object)
 {
 	MessageList *message_list = MESSAGE_LIST (object);
+
+	mail_async_event_destroy(message_list->async_event);
 
 	if (message_list->folder) {
 		save_tree_state(message_list);
@@ -1760,7 +1766,7 @@ build_flat_diff(MessageList *ml, CamelFolderChangeInfo *changes)
 	gettimeofday(&start, NULL);
 #endif
 
-	printf("updating changes to display\n");
+	d(printf("updating changes to display\n"));
 
 	/* remove individual nodes? */
 	d(printf("Removing messages from view:\n"));
@@ -1789,8 +1795,10 @@ build_flat_diff(MessageList *ml, CamelFolderChangeInfo *changes)
 	d(printf("Changing messages to view:\n"));
 	for (i = 0; i < changes->uid_changed->len; i++) {
 		ETreePath *node = g_hash_table_lookup (ml->uid_nodemap, changes->uid_changed->pdata[i]);
-		if (node)
+		if (node) {
+			e_tree_model_pre_change (ml->model);
 			e_tree_model_node_data_changed (ml->model, node);
+		}
 	}
 
 #ifdef TIMEIT
@@ -1850,8 +1858,10 @@ main_folder_changed (CamelObject *o, gpointer event_data, gpointer user_data)
 		if (changes->uid_added->len == 0 && changes->uid_removed->len == 0 && changes->uid_changed->len < 100) {
 			for (i = 0; i < changes->uid_changed->len; i++) {
 				ETreePath node = g_hash_table_lookup (ml->uid_nodemap, changes->uid_changed->pdata[i]);
-				if (node)
+				if (node) {
+					e_tree_model_pre_change (ml->model);
 					e_tree_model_node_data_changed (ml->model, node);
+				}
 			}
 			
 			camel_folder_change_info_free (changes);
@@ -1865,9 +1875,8 @@ main_folder_changed (CamelObject *o, gpointer event_data, gpointer user_data)
 static void
 folder_changed (CamelObject *o, gpointer event_data, gpointer user_data)
 {
-	/* similarly to message_changed, copy the change list and propagate it to
-	   the main thread and free it */
 	CamelFolderChangeInfo *changes;
+	MessageList *ml = MESSAGE_LIST (user_data);
 
 	if (event_data) {
 		changes = camel_folder_change_info_new();
@@ -1875,29 +1884,20 @@ folder_changed (CamelObject *o, gpointer event_data, gpointer user_data)
 	} else {
 		changes = NULL;
 	}
-	mail_proxy_event (main_folder_changed, o, changes, user_data);
-}
 
-static void
-main_message_changed (CamelObject *o, gpointer uid, gpointer user_data)
-{
-	MessageList *ml = MESSAGE_LIST (user_data);
-	CamelFolderChangeInfo *changes;
-
-	changes = camel_folder_change_info_new();
-	camel_folder_change_info_change_uid(changes, uid);
-	main_folder_changed(o, changes, ml);
-	g_free(uid);
+	mail_async_event_emit(ml->async_event, MAIL_ASYNC_GUI, (MailAsyncFunc)main_folder_changed, o, changes, user_data);
 }
 
 static void
 message_changed (CamelObject *o, gpointer event_data, gpointer user_data)
 {
-	/* Here we copy the data because our thread may free the copy that we would reference.
-	 * The other thread would be passed a uid parameter that pointed to freed data.
-	 * We copy it and free it in the handler. 
-	 */
-	mail_proxy_event (main_message_changed, o, g_strdup ((gchar *)event_data), user_data);
+	CamelFolderChangeInfo *changes;
+	MessageList *ml = MESSAGE_LIST (user_data);
+
+	changes = camel_folder_change_info_new();
+	camel_folder_change_info_change_uid(changes, (char *)event_data);
+
+	mail_async_event_emit(ml->async_event, MAIL_ASYNC_GUI, (MailAsyncFunc)main_folder_changed, o, changes, user_data);
 }
 
 void
@@ -1933,8 +1933,8 @@ message_list_set_folder (MessageList *message_list, CamelFolder *camel_folder, g
 	}
 
 	if (camel_folder) {
-		/* Setup the strikeout effect for non-vtrash folders */
-		if (!CAMEL_IS_VTRASH_FOLDER (camel_folder)) {
+		/* Setup the strikeout effect for non-trash folders */
+		if (!(camel_folder->folder_flags & CAMEL_FOLDER_IS_TRASH)) {
 			ECell *cell;
 
 			cell = e_table_extras_get_cell (message_list->extras, "render_date");
@@ -1964,7 +1964,7 @@ message_list_set_folder (MessageList *message_list, CamelFolder *camel_folder, g
 		camel_object_ref (CAMEL_OBJECT (camel_folder));
 		
 		message_list->hidedeleted = mail_config_get_hide_deleted () &&
-			!(CAMEL_IS_VTRASH_FOLDER (camel_folder));
+			!(camel_folder->folder_flags & CAMEL_FOLDER_IS_TRASH);
 		
 		hide_load_state (message_list);
 		mail_regen_list (message_list, message_list->search, NULL, NULL);
@@ -1980,10 +1980,13 @@ on_cursor_activated_idle (gpointer data)
 	ESelectionModel *esm = e_tree_get_selection_model (message_list->tree);
 	gint selected = e_selection_model_selected_count (esm);
 	
-	if (selected == 1) {
-		printf ("emitting cursor changed signal, for uid %s\n", message_list->cursor_uid);
+	if (selected == 1 && message_list->cursor_uid) {
+		d(printf ("emitting cursor changed signal, for uid %s\n", message_list->cursor_uid));
 		gtk_signal_emit (GTK_OBJECT (message_list),
 				 message_list_signals[MESSAGE_SELECTED], message_list->cursor_uid);
+	} else {
+		gtk_signal_emit (GTK_OBJECT (message_list),
+				 message_list_signals[MESSAGE_SELECTED], NULL);
 	}
 		
 	message_list->idle_id = 0;
@@ -2102,9 +2105,6 @@ message_list_set_threaded (MessageList *ml, gboolean threaded)
 void
 message_list_set_hidedeleted (MessageList *ml, gboolean hidedeleted)
 {
-	if (ml->folder && CAMEL_IS_VTRASH_FOLDER (ml->folder))
-		hidedeleted = FALSE;
-	
 	if (ml->hidedeleted != hidedeleted) {
 		ml->hidedeleted = hidedeleted;
 		
@@ -2457,6 +2457,9 @@ static void
 regen_list_regened (struct _mail_msg *mm)
 {
 	struct _regen_list_msg *m = (struct _regen_list_msg *)mm;
+
+	if (GTK_OBJECT_DESTROYED(m->ml))
+		return;
 	
 	if (m->summary == NULL)
 		return;

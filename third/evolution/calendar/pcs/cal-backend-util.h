@@ -6,10 +6,9 @@
  *
  * Authors: Rodrigo Moya <rodrigo@ximian.com>    
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,12 +23,28 @@
 #ifndef CAL_BACKEND_UTIL_H
 #define CAL_BACKEND_UTIL_H
 
+#include <bonobo-conf/bonobo-config-database.h>
 #include <cal-backend.h>
 
 BEGIN_GNOME_DECLS
 
+/*
+ * CORBA utility functions
+ */
+
 void cal_backend_util_fill_alarm_instances_seq (
 	GNOME_Evolution_Calendar_CalAlarmInstanceSeq *seq, GSList *alarms);
+
+/*
+ * Functions for accessing mail configuration
+ */
+
+void     cal_backend_mail_account_get (Bonobo_ConfigDatabase db, gint def,
+				       char **address, char **name);
+gboolean cal_backend_mail_account_get_default (Bonobo_ConfigDatabase db,
+					       char **address, char **name);
+gboolean cal_backend_mail_account_is_valid (Bonobo_ConfigDatabase db,
+					    char *user, char **name);
 
 END_GNOME_DECLS
 

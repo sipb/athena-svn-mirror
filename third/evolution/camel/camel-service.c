@@ -9,9 +9,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,6 +46,7 @@
 #include "camel-private.h"
 
 #define d(x)
+#define w(x)
 
 static CamelObjectClass *parent_class = NULL;
 
@@ -103,8 +103,8 @@ camel_service_finalize (CamelObject *object)
 		camel_exception_init (&ex);
 		CSERV_CLASS (service)->disconnect (service, TRUE, &ex);
 		if (camel_exception_is_set (&ex)) {
-			g_warning ("camel_service_finalize: silent disconnect failure: %s",
-				   camel_exception_get_description (&ex));
+			w(g_warning ("camel_service_finalize: silent disconnect failure: %s",
+				     camel_exception_get_description (&ex)));
 		}
 		camel_exception_clear (&ex);
 	}
@@ -230,6 +230,7 @@ gboolean
 camel_service_connect (CamelService *service, CamelException *ex)
 {
 	gboolean ret = FALSE;
+	gboolean unreg = FALSE;
 	
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
 	g_return_val_if_fail (service->session != NULL, FALSE);
@@ -250,6 +251,7 @@ camel_service_connect (CamelService *service, CamelException *ex)
 	if (!service->connect_op) {
 		service->connect_op = camel_operation_new (NULL, NULL);
 		camel_operation_register (service->connect_op);
+		unreg = TRUE;
 	}
 	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
 
@@ -258,6 +260,8 @@ camel_service_connect (CamelService *service, CamelException *ex)
 	service->status = ret ? CAMEL_SERVICE_CONNECTED : CAMEL_SERVICE_DISCONNECTED;
 
 	CAMEL_SERVICE_LOCK (service, connect_op_lock);
+	if (unreg)
+		camel_operation_unregister (service->connect_op);
 	camel_operation_unref (service->connect_op);
 	service->connect_op = NULL;
 	CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
@@ -296,7 +300,8 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 			  CamelException *ex)
 {
 	gboolean res = TRUE;
-	
+	int unreg = FALSE;
+
 	CAMEL_SERVICE_LOCK (service, connect_lock);
 	
 	if (service->status == CAMEL_SERVICE_CONNECTED) {
@@ -305,6 +310,7 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 		if (!service->connect_op) {
 			service->connect_op = camel_operation_new (NULL, NULL);
 			camel_operation_register (service->connect_op);
+			unreg = TRUE;
 		}
 		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
 
@@ -313,6 +319,9 @@ camel_service_disconnect (CamelService *service, gboolean clean,
 		service->status = CAMEL_SERVICE_DISCONNECTED;
 
 		CAMEL_SERVICE_LOCK (service, connect_op_lock);
+		if (unreg)
+			camel_operation_unregister (service->connect_op);
+
 		camel_operation_unref (service->connect_op);
 		service->connect_op = NULL;
 		CAMEL_SERVICE_UNLOCK (service, connect_op_lock);
@@ -366,8 +375,8 @@ camel_service_get_url (CamelService *service)
 static char *
 get_name (CamelService *service, gboolean brief)
 {
-	g_warning ("CamelService::get_name not implemented for `%s'",
-		   camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service)));
+	w(g_warning ("CamelService::get_name not implemented for `%s'",
+		     camel_type_to_name (CAMEL_OBJECT_GET_TYPE (service))));
 	return g_strdup ("???");
 }		
 

@@ -1,16 +1,16 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
- * Author :
+ * Authors :
  *  Damon Chaplin <damon@ximian.com>
+ *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2000, Ximian, Inc.
  * Copyright 2000, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -68,6 +68,13 @@ void	  calendar_config_write_on_exit		(void);
 /*
  * Calendar Settings.
  */
+
+/* The default calendar URI to be used when no specified (~/evolution/local/Calendar) */
+gchar*    calendar_config_get_default_uri       (void);
+void      calendar_config_set_default_uri       (gchar       *default_uri);
+
+gchar*    calendar_config_get_default_tasks_uri (void);
+void      calendar_config_set_default_tasks_uri (gchar       *default_tasks_uri);
 
 /* The current timezone, e.g. "Europe/London". */
 gchar*	  calendar_config_get_timezone		(void);
@@ -148,9 +155,21 @@ void	  calendar_config_set_hide_completed_tasks_units(CalUnits	units);
 gint	  calendar_config_get_hide_completed_tasks_value(void);
 void	  calendar_config_set_hide_completed_tasks_value(gint		value);
 
+char*	  calendar_config_get_hide_completed_tasks_sexp (void);
+
 /* Confirmation options */
 gboolean  calendar_config_get_confirm_delete (void);
 void      calendar_config_set_confirm_delete (gboolean confirm);
+
+/* Default reminder options */
+gboolean calendar_config_get_use_default_reminder (void);
+void     calendar_config_set_use_default_reminder (gboolean value);
+
+int      calendar_config_get_default_reminder_interval (void);
+void     calendar_config_set_default_reminder_interval (int interval);
+
+CalUnits calendar_config_get_default_reminder_units (void);
+void     calendar_config_set_default_reminder_units (CalUnits units);
 
 
 /* Convenience functions to configure common properties of ECalendar,

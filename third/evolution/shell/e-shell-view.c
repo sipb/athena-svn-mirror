@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -52,6 +51,8 @@
 #include "widgets/misc/e-clipped-label.h"
 #include "widgets/misc/e-bonobo-widget.h"
 
+#include "e-util/e-gtk-utils.h"
+
 #include "evolution-shell-view.h"
 
 #include "e-gray-bar.h"
@@ -91,9 +92,8 @@ struct _EShellViewPrivate {
 	/* Currently displayed URI.  */
 	char *uri;
 
-	/* delayed selection, used when a path doesn't exist in an
-           EStorage.  cleared when we're signaled with
-           "folder_selected" */
+	/* Delayed selection, used when a path doesn't exist in an EStorage.
+           Cleared when we're signaled with "folder_selected".  */
 	char *delayed_selection;
 
 	/* uri to go to at timeout */
@@ -240,25 +240,6 @@ load_images (void)
 	}
 }
 
-/* FIXME this is broken.  */
-static gboolean
-bonobo_widget_is_dead (BonoboWidget *bonobo_widget)
-{
-	BonoboControlFrame *control_frame;
-	CORBA_Object corba_object;
-	CORBA_Environment ev;
-	gboolean is_dead;
-
-	control_frame = bonobo_widget_get_control_frame (bonobo_widget);
-	corba_object = bonobo_control_frame_get_control (control_frame);
-
-	CORBA_exception_init (&ev);
-	is_dead = CORBA_Object_non_existent (corba_object, &ev);
-	CORBA_exception_free (&ev);
-
-	return is_dead;
-}
-
 static void
 cleanup_delayed_selection (EShellView *shell_view)
 {
@@ -273,6 +254,27 @@ cleanup_delayed_selection (EShellView *shell_view)
 					       GTK_SIGNAL_FUNC (new_folder_cb),
 					       shell_view);
 	}
+}
+
+static GtkWidget *
+find_socket (GtkContainer *container)
+{
+	GList *children, *tmp;
+
+	children = gtk_container_children (container);
+	while (children) {
+		if (BONOBO_IS_SOCKET (children->data))
+			return children->data;
+		else if (GTK_IS_CONTAINER (children->data)) {
+			GtkWidget *socket = find_socket (children->data);
+			if (socket)
+				return socket;
+		}
+		tmp = children->next;
+		g_list_free_1 (children);
+		children = tmp;
+	}
+	return NULL;
 }
 
 static void
@@ -309,6 +311,55 @@ setup_verb_sensitivity_for_folder (EShellView *shell_view,
 }
 
 
+/* Callbacks for the EStorageSet.  */
+
+static void
+storage_set_removed_folder_callback (EStorageSet *storage_set,
+				     const char *path,
+				     void *data)
+{
+	EShellView *shell_view;
+	EShellViewPrivate *priv;
+	GtkWidget *socket;
+	View *view;
+	int destroy_connection_id;
+	int page_num;
+	char *uri;
+
+	shell_view = E_SHELL_VIEW (data);
+	priv = shell_view->priv;
+
+	uri = g_strconcat (E_SHELL_URI_PREFIX, path, NULL);
+	view = g_hash_table_lookup (priv->uri_to_view, uri);
+	g_free (uri);
+
+	if (view == NULL)
+		return;
+
+	socket = find_socket (GTK_CONTAINER (view->control));
+	priv->sockets = g_list_remove (priv->sockets, socket);
+
+	destroy_connection_id = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (socket),
+								      "e_shell_view_destroy_connection_id"));
+	gtk_signal_disconnect (GTK_OBJECT (socket), destroy_connection_id);
+
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (priv->notebook), view->control);
+
+	if (strncmp (priv->uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0
+	    && strcmp (priv->uri + E_SHELL_URI_PREFIX_LEN, path) == 0) {
+		e_shell_view_display_uri (shell_view, "evolution:/local/Inbox");
+	}
+
+	bonobo_control_frame_control_deactivate (BONOBO_CONTROL_FRAME (bonobo_widget_get_control_frame (BONOBO_WIDGET (view->control))));
+	gtk_widget_destroy (view->control);
+
+	g_hash_table_remove (priv->uri_to_view, view->uri);
+	view_destroy (view);
+
+	gtk_notebook_remove_page (GTK_NOTEBOOK (priv->notebook), page_num);
+}
+
+
 /* Folder bar pop-up handling.  */
 
 static void
@@ -328,7 +379,8 @@ reparent_storage_set_view_box_and_destroy_popup (EShellView *shell_view)
 
 	priv = shell_view->priv;
 
-	g_assert (priv->folder_bar_popup != NULL);
+	if (priv->folder_bar_popup == NULL)
+		return;
 
 	gtk_widget_ref (priv->storage_set_view_box);
 	gtk_container_remove (GTK_CONTAINER (priv->folder_bar_popup), priv->storage_set_view_box);
@@ -575,13 +627,12 @@ new_folder_cb (EStorageSet *storage_set,
 	if (delayed_path) {
 		delayed_path ++;
 		if (!strcmp(path, delayed_path)) {
-			gtk_signal_disconnect_by_func (GTK_OBJECT (e_shell_get_storage_set(priv->shell)),
-						       GTK_SIGNAL_FUNC (new_folder_cb),
-						       shell_view);
-			g_free (priv->uri);
-			priv->uri = g_strdup (priv->delayed_selection);
+			char *uri;
+
+			uri = g_strdup (priv->delayed_selection);
 			cleanup_delayed_selection (shell_view);
-			e_shell_view_display_uri (shell_view, priv->uri);
+			e_shell_view_display_uri (shell_view, uri);
+			g_free (uri);
 		}
 	}
 }
@@ -601,8 +652,7 @@ activate_shortcut_cb (EShortcutsView *shortcut_view,
 	if (in_new_window) {
 		EShellView *new_view;
 
-		new_view = e_shell_create_view (e_shell_view_get_shell (shell_view), uri);
-		gtk_widget_show (GTK_WIDGET (new_view));
+		new_view = e_shell_create_view (e_shell_view_get_shell (shell_view), uri, shell_view);
 	} else {
 		e_shell_view_display_uri (shell_view, uri);
 	}
@@ -674,6 +724,9 @@ folder_context_menu_popped_down_cb (EStorageSetView *storage_set_view,
 	shell_view = E_SHELL_VIEW (data);
 
 	setup_verb_sensitivity_for_folder (shell_view, e_shell_view_get_current_path (shell_view));
+
+	if (shell_view->priv->folder_bar_popup != NULL)
+		popdown_transient_folder_bar (shell_view);
 }
 
 /* Callback called when the button on the tree's title bar is clicked.  */
@@ -1033,6 +1086,9 @@ destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (priv->tooltips));
 
+	if (priv->shell != NULL)
+		bonobo_object_unref (BONOBO_OBJECT (priv->shell));
+
 	if (priv->corba_interface != NULL)
 		bonobo_object_unref (BONOBO_OBJECT (priv->corba_interface));
 
@@ -1056,12 +1112,12 @@ destroy (GtkObject *object)
 
 	g_free (priv->uri);
 
-	cleanup_delayed_selection (shell_view);
-
 	if (priv->set_folder_timeout != 0)
 		gtk_timeout_remove (priv->set_folder_timeout);
 
 	g_free (priv->set_folder_uri);
+
+	g_free (priv->delayed_selection);
 
 	g_free (priv);
 
@@ -1299,9 +1355,11 @@ e_shell_view_construct (EShellView *shell_view,
 		return NULL;
 	}		
 
+	priv->shell = shell;
+	bonobo_object_ref (BONOBO_OBJECT (priv->shell));
+
 	gtk_signal_connect (GTK_OBJECT (view), "delete_event",
 			    GTK_SIGNAL_FUNC (delete_event_cb), NULL);
-	priv->shell = shell;
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (e_shell_get_storage_set (priv->shell)),
 					"updated_folder", updated_folder_cb, shell_view,
@@ -1331,8 +1389,12 @@ e_shell_view_construct (EShellView *shell_view,
 	bonobo_ui_component_thaw (priv->ui_component, NULL);
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (shell), "line_status_changed",
-					GTK_SIGNAL_FUNC (shell_line_status_changed_cb), view,
-					GTK_OBJECT (view));
+					GTK_SIGNAL_FUNC (shell_line_status_changed_cb), shell_view,
+					GTK_OBJECT (shell_view));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (e_shell_get_storage_set (shell)), "removed_folder",
+					GTK_SIGNAL_FUNC (storage_set_removed_folder_callback), shell_view,
+					GTK_OBJECT (shell_view));
 
 	e_shell_user_creatable_items_handler_setup_menus (e_shell_get_user_creatable_items_handler (priv->shell),
 							  shell_view);
@@ -1516,9 +1578,9 @@ update_for_current_uri (EShellView *shell_view)
 		title = g_strdup (folder_name);
 
 	if (SUB_VERSION[0] == '\0')
-		utf8_window_title = g_strdup_printf (_("%s - Ximian Evolution %s"), title, VERSION);
+		utf8_window_title = g_strdup_printf ("%s - Ximian Evolution %s", title, VERSION);
 	else
-		utf8_window_title = g_strdup_printf (_("%s - Ximian Evolution %s [%s]"), title, VERSION, SUB_VERSION);
+		utf8_window_title = g_strdup_printf ("%s - Ximian Evolution %s [%s]", title, VERSION, SUB_VERSION);
 
 	gtk_window_title = e_utf8_to_gtk_string (GTK_WIDGET (shell_view), utf8_window_title);
 	gtk_window_set_title (GTK_WINDOW (shell_view), gtk_window_title);
@@ -1611,6 +1673,7 @@ set_current_notebook_page (EShellView *shell_view,
 		bonobo_control_frame_control_deactivate (control_frame);
 	}
 
+	e_shell_folder_title_bar_set_folder_bar_label  (E_SHELL_FOLDER_TITLE_BAR (priv->folder_title_bar), "");
 	gtk_notebook_set_page (notebook, page_num);
 
 	if (page_num == -1 || page_num == 0)
@@ -1663,27 +1726,6 @@ setup_corba_interface (EShellView *shell_view,
 
 
 /* Socket destruction handling.  */
-
-static GtkWidget *
-find_socket (GtkContainer *container)
-{
-	GList *children, *tmp;
-
-	children = gtk_container_children (container);
-	while (children) {
-		if (BONOBO_IS_SOCKET (children->data))
-			return children->data;
-		else if (GTK_IS_CONTAINER (children->data)) {
-			GtkWidget *socket = find_socket (children->data);
-			if (socket)
-				return socket;
-		}
-		tmp = children->next;
-		g_list_free_1 (children);
-		children = tmp;
-	}
-	return NULL;
-}
 
 static void
 socket_destroy_cb (GtkWidget *socket_widget, gpointer data)
@@ -1889,31 +1931,6 @@ show_existing_view (EShellView *shell_view,
 	notebook_page = gtk_notebook_page_num (GTK_NOTEBOOK (priv->notebook), view->control);
 	g_assert (notebook_page != -1);
 
-	/* A BonoboWidget can be a "zombie" in the sense that its actual
-	   control is dead; if it's zombie, we have to recreate it.  */
-	if (bonobo_widget_is_dead (BONOBO_WIDGET (view->control))) {
-		GtkWidget *parent;
-
-		parent = view->control->parent;
-
-		/* Out with the old.  */
-		gtk_container_remove (GTK_CONTAINER (parent), view->control);
-		g_hash_table_remove (priv->uri_to_view, view->uri);
-		view_destroy (view);
-
-		/* In with the new.  */
-		view = get_view_for_uri (shell_view, uri);
-		if (view == NULL)
-			return FALSE;
-
-		gtk_container_add (GTK_CONTAINER (parent), view->control);
-
-		g_hash_table_insert (priv->uri_to_view, view->uri, view);
-
-		/* Show.  */
-		gtk_widget_show (view->control);
-	}
-
 	g_free (priv->uri);
 	priv->uri = g_strdup (uri);
 
@@ -1991,8 +2008,11 @@ e_shell_view_display_uri (EShellView *shell_view,
 	} else if (! create_new_view_for_uri (shell_view, uri)) {
 		cleanup_delayed_selection (shell_view);
 		priv->delayed_selection = g_strdup (uri);
-		gtk_signal_connect_after (GTK_OBJECT (e_shell_get_storage_set (priv->shell)), "new_folder",
-					  GTK_SIGNAL_FUNC (new_folder_cb), shell_view);
+		e_gtk_signal_connect_full_while_alive (GTK_OBJECT (e_shell_get_storage_set (priv->shell)), "new_folder",
+						       GTK_SIGNAL_FUNC (new_folder_cb), NULL,
+						       shell_view, NULL,
+						       FALSE, TRUE,
+						       GTK_OBJECT (shell_view));
 		retval = FALSE;
 		goto end;
 	}
@@ -2013,49 +2033,6 @@ e_shell_view_display_uri (EShellView *shell_view,
 	bonobo_window_thaw (BONOBO_WINDOW (shell_view));
 
 	return retval;
-}
-
-gboolean
-e_shell_view_remove_control_for_uri (EShellView *shell_view,
-				     const char *uri)
-{
-	EShellViewPrivate *priv;
-	View *view;
-	GtkWidget *socket;
-	GtkWidget *control;
-	int page_num;
-	int destroy_connection_id;
-
-	g_return_val_if_fail (shell_view != NULL, FALSE);
-	g_return_val_if_fail (E_IS_SHELL_VIEW (shell_view), FALSE);
-
-	priv = shell_view->priv;
-
-	/* Get the control, remove it from our hash of controls */
-	view = g_hash_table_lookup (priv->uri_to_view, uri);
-	if (view == NULL) {
-		g_message ("Trying to remove view for non-existing URI -- %s", uri);
-		return FALSE;
-	}
-
-	control = view->control;
-	g_hash_table_remove (priv->uri_to_view, view->uri);
-	view_destroy (view);
-
-	/* Get the socket, remove it from our list of sockets */
-	socket = find_socket (GTK_CONTAINER (control));
-	priv->sockets = g_list_remove (priv->sockets, socket);
-
-	/* disconnect from the destroy signal */
-	destroy_connection_id = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (socket),
-								      "e_shell_view_destroy_connection_id"));
-	gtk_signal_disconnect (GTK_OBJECT (socket), destroy_connection_id);
-
-	/* Remove the notebook page, destroying the control and socket */
-	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (priv->notebook), control);
-	gtk_notebook_remove_page (GTK_NOTEBOOK (priv->notebook), page_num);
-
-	return TRUE;
 }
 
 
@@ -2339,11 +2316,17 @@ e_shell_view_save_settings (EShellView *shell_view,
 	g_free (key);
 
 	key = g_strconcat (prefix, "HPanedPosition", NULL);
-	bonobo_config_set_long (db, key, priv->hpaned_position, NULL);
+	if (GTK_WIDGET_VISIBLE (priv->shortcut_frame))
+		bonobo_config_set_long (db, key, E_PANED (priv->hpaned)->child1_size, NULL); 
+	else
+		bonobo_config_set_long (db, key, priv->hpaned_position, NULL);
 	g_free (key);
 
 	key = g_strconcat (prefix, "ViewHPanedPosition", NULL);
-	bonobo_config_set_long (db, key, priv->view_hpaned_position, NULL);
+	if (GTK_WIDGET_VISIBLE (priv->storage_set_view_box))
+		bonobo_config_set_long (db, key, E_PANED (priv->view_hpaned)->child1_size, NULL); 
+	else
+		bonobo_config_set_long (db, key, priv->view_hpaned_position, NULL);
 	g_free (key);
 
 	key = g_strconcat (prefix, "DisplayedURI", NULL);
@@ -2457,8 +2440,12 @@ e_shell_view_load_settings (EShellView *shell_view,
 
 	key = g_strconcat (prefix, "DisplayedURI", NULL);
 	stringval = bonobo_config_get_string (db, key, NULL);
-	if (! e_shell_view_display_uri (shell_view, stringval))
+	if (stringval) {
+		if (! e_shell_view_display_uri (shell_view, stringval))
+			e_shell_view_display_uri (shell_view, E_SHELL_VIEW_DEFAULT_URI);
+	} else
 		e_shell_view_display_uri (shell_view, E_SHELL_VIEW_DEFAULT_URI);
+
 	g_free (stringval);
 	g_free (key);
 

@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Advanced Configuration</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="Configuring the Calendar"
 HREF="config-prefs-cal.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,7 +45,7 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="config.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -53,7 +58,7 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="config-prefs-cal.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -65,44 +70,15 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="CONFIG-PREFS"
->Chapter 9. Advanced Configuration</A
+>Advanced Configuration</A
 ></H1
-><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
-><A
-HREF="config-prefs.html#CONFIG-PREFS-MAIL"
->Mail Settings</A
-></DT
-><DT
-><A
-HREF="config-prefs-cal.html"
->Configuring the Calendar</A
-></DT
-><DT
-><A
-HREF="config-prefs-contact.html"
->Managing the Contact Manager</A
-></DT
-><DT
-><A
-HREF="config-prefs-general.html"
->General Preferences</A
-></DT
-></DL
-></DIV
 ><P
 >        Perhaps your mail server has changed names.  Perhaps you've
         grown tired of a certain layout for your appointments.
         Whatever the reason, you want to change your
-        <SPAN
+        <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > settings.  This chapter
         will tell you how to do just that.
       </P
@@ -115,13 +91,13 @@ NAME="CONFIG-PREFS-MAIL"
 >Mail Settings</A
 ></H1
 ><P
->        To change your mail settings, select <SPAN
+>        To change your mail settings, select <B
 CLASS="GUIMENU"
->Tools</SPAN
->-&gt;<SPAN
+>Tools</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Mail
-        Settings</SPAN
+        Settings</B
 > in the Inbox.  This
         will open the <SPAN
 CLASS="INTERFACE"
@@ -129,7 +105,7 @@ CLASS="INTERFACE"
 >,
         illustrated in <A
 HREF="config-prefs.html#CONFIG-PREFS-MAIL-FIG"
->Figure 9-1</A
+>Figure 1</A
 >.  Mail
         preferences are separated into several categories:
         <P
@@ -138,9 +114,11 @@ HREF="config-prefs.html#CONFIG-PREFS-MAIL-FIG"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Accounts</SPAN
+><B
+>Accounts</B
+></TT
 ></DT
 ><DD
 ><P
@@ -149,37 +127,44 @@ CLASS="GUILABEL"
 	      </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Display</SPAN
+><B
+>Display</B
+></TT
 ></DT
 ><DD
 ><P
->		Allows you to edit how email is handled and displayed.
+>		Allows you to edit how email appears.
 	      </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Composer</SPAN
+><B
+>Composer</B
+></TT
 ></DT
 ><DD
 ><P
->		Customizes the composer's behavior.
+>		Customizes the behavior of the email message composer.
 	      </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Other</SPAN
+><B
+>Other</B
+></TT
 ></DT
 ><DD
 ><P
->		Configures miscellanious aspects of <SPAN
+>		Configures miscellanious aspects of
+		<TT
 CLASS="APPLICATION"
->Evolution</SPAN
->
-		such as character sets.
+>Evolution</TT
+> such as character
+		set and encryption tools.
 	      </P
 ></DD
 ></DL
@@ -192,13 +177,18 @@ CLASS="FIGURE"
 ><A
 NAME="CONFIG-PREFS-MAIL-FIG"
 ></A
-><P
-><B
->Figure 9-1. Mail Preferences Dialog</B
-></P
+><DIV
+CLASS="MEDIAOBJECT"
 ><P
 ><IMG
-SRC="figures/config-mail.png"></P
+SRC="figures/config-mail.png"
+></IMG
+></P
+></DIV
+><P
+><B
+>Figure 1. Mail Preferences Dialog</B
+></P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -206,485 +196,421 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="CONFIG-PREFS-MAIL-IDENTITY"
->Identity Settings</A
+>Working with the Accounts Tab</A
 ></H2
 ><P
->         If you have only one email account, or send email from only
-         one address, you will only need to configure one identity. If
-         you want, however, you can have multiple identities.  This
-         can be useful if you want to keep personal and professional
-         email separate, or if you wear several hats at work.
-         
+>         <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+> allows you to
+         maintain multiple accounts, or identities.  This is useful
+         want to keep personal and professional email separate, or if
+         you wear several hats at work. When you are writing an email
+         message, you can which account to use by selecting from the
+         drop-down list next to the <TT
+CLASS="GUILABEL"
+><B
+>From</B
+></TT
+> entry in
+         the message composer.
        </P
 ><P
->         To add a new identity, simply click
-         <SPAN
+>         Clicking <B
 CLASS="GUIBUTTON"
->Add</SPAN
->. To alter an existing identity,
-         click on it in the <SPAN
+>Get Mail</B
+> will refresh any
+         IMAP, <TT
+CLASS="FILENAME"
+>mh</TT
+>, or
+         <TT
+CLASS="FILENAME"
+>mbox</TT
+> listings
+         and check and download mail from all POP servers.  In other
+         words, <B
+CLASS="GUIBUTTON"
+>Get Mail</B
+> gets your mail, no
+         matter how many sources you have, or what types they are.  If
+         you don't want to check mail for a given account, select it
+         in the <TT
 CLASS="GUILABEL"
->Identity</SPAN
-> tab of the
+><B
+>Accounts</B
+></TT
+> tab and click the
+         <B
+CLASS="GUIBUTTON"
+>Disable</B
+> button.
+       </P
+><P
+>         To add a new account, simply click <B
+CLASS="GUIBUTTON"
+>Add</B
+>
+         to open the mail configuration assistant. To alter an
+         existing identity, select it in the
          <SPAN
 CLASS="INTERFACE"
 >Preferences</SPAN
 > window, and then click
-         <SPAN
+         <B
 CLASS="GUIBUTTON"
->Edit</SPAN
->.
+>Edit</B
+> to open the account editor
+         dialog.
       </P
 ><P
->         <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> will then present you
-         with a dialog box containing four fields:
+>         The account editor dialog has six sections:
           <P
-></P
-><UL
-><LI
-><P
->              <SPAN
-CLASS="GUILABEL"
->Full Name:</SPAN
-> by default, this is the
-              same name as the full name described in your user
-              account on your computer.  You can select another if you
-              wish.
-            </P
-></LI
-><LI
-><P
->              <SPAN
-CLASS="GUILABEL"
->Email address:</SPAN
-> Enter your email
-              address in this space.
-            </P
-></LI
-><LI
-><P
->              <SPAN
-CLASS="GUILABEL"
->Organization:</SPAN
-> If you send email as
-              a representative of a company or other organization,
-              enter its name here.
-            </P
-></LI
-><LI
-><P
->              <SPAN
-CLASS="GUILABEL"
->Signature file:</SPAN
-> You may choose a
-              small text file to be appended to every message that you
-              send.  Typically, signature files include address or
-              other contact information, or a favorite quotation.
-              It's good form to keep it to four lines at the maximum.
-            </P
-></LI
-></UL
->
-      </P
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="CONFIG-PREFS-MAIL-NETWORK"
->Network Settings</A
-></H2
-><P
->        In order to send mail with
-        <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
->, you need to connect to
-        your network.  To do that, you'll need to know your user name
-        and password, what sort of mail sending and receiving
-        protocols your network uses, and the names of the servers
-        you'll be using.  If you're switching from another groupware
-        or email program, you can almost certainly use the same
-        settings as you did with that program. Network-related
-        settings are in the <SPAN
-CLASS="GUILABEL"
->Mail Sources</SPAN
-> and
-        <SPAN
-CLASS="GUILABEL"
->Mail Transport</SPAN
-> tabs.
-      </P
-><DIV
-CLASS="SECT3"
-><H3
-CLASS="SECT3"
-><A
-NAME="CONFIG-PREFS-NETWORK-SOURCES"
->Mail Sources</A
-></H3
-><P
->          The <SPAN
-CLASS="INTERFACE"
->Mail Sources</SPAN
-> tab allows you to
-          add, edit, or delete methods of retrieving mail from
-          servers.  Clicking on <SPAN
-CLASS="GUIBUTTON"
->Add</SPAN
-> or
-          <SPAN
-CLASS="GUIBUTTON"
->Edit</SPAN
-> will bring up a dialog box to
-          offer you the following options:
-           <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
-CLASS="GUILABEL"
->Mail source type:</SPAN
-></DT
+>Identity:</DT
 ><DD
 ><P
->                  Select from <A
-HREF="apx-gloss.html#IMAP"
-><I
-CLASS="GLOSSTERM"
->IMAP</I
-></A
-> or <A
+>              Here, enter the name,
+              email address, and other identifying information for the
+              account.
+            </P
+></DD
+><DT
+>Receiving Mail</DT
+><DD
+><P
+>             Here, select the way you will be getting mail: you may
+             download mail from a server (<A
 HREF="apx-gloss.html#POP"
 ><I
 CLASS="GLOSSTERM"
 >POP</I
 ></A
-> servers, or Unix-style
-                  <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mbox</TT
-></SPAN
->
-                  or <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mh</TT
-></SPAN
->
-                  files.
-                </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Server:</SPAN
-></DT
-><DD
-><P
->                  Enter the name of the mail source server in this
-                  field. Your POP server may or may not be the same as your
-                  <A
-HREF="apx-gloss.html#SMTP"
+> or <A
+HREF="apx-gloss.html#IMAP"
 ><I
 CLASS="GLOSSTERM"
->SMTP</I
+>IMAP</I
 ></A
-> server.
-                </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Username:</SPAN
-></DT
-><DD
-><P
->                  Enter the user name for the account you have on the
-                  server - this should the part of your email address
-                  before the @.  If you use
-                  <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mbox</TT
-></SPAN
->
-                  or <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mh</TT
-></SPAN
->
-                  files as your mail source, you do not need to enter
-                  a username.
-                </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Authentication:</SPAN
-></DT
-><DD
-><P
->                  Tell <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> how to
-                  verify your identity with the server.  Your options
-                  vary depending upon the type of server you are
-                  using, and the ways it is configured.  Given the
-                  name of a server,
-                  <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> can detect what
-                  sorts of authentication it offers.
-               </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Test Settings</SPAN
-></DT
-><DD
-><P
->                  Click this button to have
-                  <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> check to see if
-                  mail sources are configured correctly.
-                </P
-></DD
-></DL
-></DIV
->
-          </P
-><P
->            If you have several mail sources, clicking <SPAN
+>) or access it from files
+             on your local system.  If you use a server, it may permit
+             or require you to use a Secure Socket Layer (SSL)
+             connection.  To turn SSL connections on, just click the
+             <B
 CLASS="GUIBUTTON"
->Get
-            Mail</SPAN
-> will refresh any IMAP,
-            <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mh</TT
-></SPAN
->, or
-            <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mbox</TT
-></SPAN
+>Use Secure Connection (SSL)</B
 >
-            listings and check and download mail from all POP servers.
-            In other words, <SPAN
-CLASS="GUIBUTTON"
->Get Mail</SPAN
-> gets your
-            mail, no matter how many sources you have, or what types
-            they are.  You can disable checking mail on accounts in their
-            properties.
-          </P
-><DIV
-CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
-><P
-><B
->Sharing Mailboxes with Other Mail Programs: </B
->              If you want to use <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
->
-              and another email client, such as
-              <SPAN
-CLASS="APPLICATION"
->Mutt</SPAN
->, at the same time,
-              here's how:
-              <P
-></P
-><OL
-TYPE="1"
-><LI
-><P
->                      Download your mail in the other application as
-                      you would normally.
-                   </P
-></LI
-><LI
-><P
->                      In <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
->
-                      <SPAN
-CLASS="GUIMENU"
->Tools</SPAN
->-&gt;<SPAN
-CLASS="GUIMENUITEM"
->Mail
-                      Settings</SPAN
->, and pick the account
-                      you'd like to use to share mail. You may want to
-                      create a new account just for this source of
-                      mail.
-                   </P
-></LI
-><LI
-><P
->                      Under the <SPAN
-CLASS="GUILABEL"
->Receiving Mail</SPAN
->
-                      tab, select the type of mail file that your
-                      other mail application uses, and then enter the
-                      full path to that file.
-                   </P
-></LI
-><LI
-><P
->                      Click the <SPAN
-CLASS="GUIBUTTON"
->OK</SPAN
-> button.
-                   </P
-></LI
-></OL
->
-               </P
-></BLOCKQUOTE
-></DIV
-></DIV
-><DIV
-CLASS="SECT3"
-><H3
-CLASS="SECT3"
+             button.
+
+<DIV
+CLASS="NOTE"
 ><A
-NAME="CONFIG-PREFS-MAIL-NETWORK-TRANSPORTS"
->Mail Transports</A
-></H3
+NAME="CONFIG-ARBITRARY-PORT"
+></A
 ><P
->           The <SPAN
-CLASS="INTERFACE"
->Mail Transports</SPAN
-> tab lets you choose
-           how you will send mail.  <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> currently supports two
-           mail transport options: <A
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Specifying Port Numbers</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Your system administrator may ask you to connect to a specific port on
+a mail server. To specify which port you use, just type a colon and
+the port number after the server name. For example, to connect to port
+143 on the server smtp.omniport.com, you would enter
+as
+<TT
+CLASS="USERINPUT"
+><B
+>smtp.omniport.com:143</B
+></TT
+> as the server name.</P
+></TD
+></TR
+></TABLE
+></DIV
+>
+
+	  </P
+></DD
+><DT
+>Receiving Options</DT
+><DD
+><P
+>              Here, decide whether you'd like to check for mail
+              automatically, and set other options related to the
+              behavior of your server.  If you use POP mail, you can
+              decide whether to leave mail on the server, and if you
+              use IMAP, you can set folder subscription options here.
+            </P
+></DD
+><DT
+>Sending Mail</DT
+><DD
+><P
+>              In this section, you will choose and configure a method
+              for sending mail.  You may choose <A
 HREF="apx-gloss.html#SMTP"
 ><I
 CLASS="GLOSSTERM"
 >SMTP</I
 ></A
->, which
-           uses a remote mail server, and
-           <A
+> or <A
 HREF="apx-gloss.html#SENDMAIL"
 ><I
 CLASS="GLOSSTERM"
 >sendmail</I
 ></A
->, which uses the
-           <SPAN
-CLASS="APPLICATION"
->sendmail</SPAN
-> program on your local
-           system.  <SPAN
-CLASS="APPLICATION"
->Sendmail</SPAN
-> is more
-           difficult to configure, but offers more flexibility than
-           <I
-CLASS="GLOSSTERM"
->SMTP</I
 >.
-        </P
+             </P
+></DD
+><DT
+>Special Folders</DT
+><DD
 ><P
->            To use <SPAN
-CLASS="GUILABEL"
->SMTP</SPAN
->, you'll need to enter the
-            name of your SMTP server.  It may have the same name as
-            your mail source server.
-         </P
+>              Here, you can decide where this account will store the
+              messages that it has sent, and the messages that you
+              save as drafts.
+            </P
+></DD
+><DT
+>Security</DT
+><DD
 ><P
->            <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> can attempt to
-            determine if you have entered a valid server name.  To
-            have it do so, click the <SPAN
-CLASS="GUILABEL"
->Test
-            Settings</SPAN
-> button.
-         </P
+>              In this section, you will set the security options for
+              this account. Enter your PGP Key ID and decide how
+              frequently to encrypt and sign your messages.
+            </P
+></DD
+></DL
 ></DIV
+>
+      </P
 ></DIV
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="CONFIG-PREFS-NETWORK-NEWS"
->News Servers</A
+NAME="CONFIG-PREFS-MAIL-DISPLAY"
+>Mail Display Options</A
 ></H2
 ><P
->            Newsgroups are so much like mailing lists that there's no
-            reason not to keep them right next to your mail.  When you
-            first select the <SPAN
-CLASS="GUILABEL"
->News Servers</SPAN
-> tab,
-            you will see a blank box with the three familiar buttons
-            on the right: <SPAN
-CLASS="GUIBUTTON"
->Add</SPAN
->,
-            <SPAN
-CLASS="GUIBUTTON"
->Edit</SPAN
->, and
-            <SPAN
-CLASS="GUIBUTTON"
->Delete</SPAN
->.
-          </P
+>        In this tab you can decide how you would like
+        <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+> to display your
+        mail: how to display citations, how long to wait before
+        marking a message as read, and so forth.
+      </P
 ><P
->            Click <SPAN
-CLASS="GUIBUTTON"
->Add</SPAN
-> to add a news server; you
-            will be prompted for its name.  Enter the name, click
-            <SPAN
-CLASS="GUIBUTTON"
->OK</SPAN
->, and you're done.  You can have
-            as many news servers as you like, of course.  News servers
-            will appear next to your IMAP servers in the
-            <SPAN
-CLASS="INTERFACE"
->folder bar</SPAN
+>        This is also where you can decide how you would like
+        <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+> to handle inline
+        images in HTML mail that you get. There is a detailed
+        discussion of the issues surrounding these options in <A
+HREF="usage-mail-getnsend-get.html#USAGE-MAIL-GETNSEND-GET-ATTACH-HTML"
+>the section called <I
+>Inline Images in HTML Mail</I
+> in the chapter called <I
+>Using Evolution for Email</I
+></A
 >.
-          </P
+     </P
+><P
+>       To hange the font which <TT
+CLASS="APPLICATION"
+>Ximian
+        Evolution</TT
+> uses to display mail, do the
+        following:
+       <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>              Open the Control Center by selecting <B
+CLASS="GUIMENU"
+>System</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Settings</B
+> from
+		the menu panel.
+            </P
+></LI
+><LI
+><P
+>               Select the HTML Viewer settings tool.
+            </P
+></LI
+><LI
+><P
+>Choose the font and font size you would like to use.
+            </P
+></LI
+></OL
+>
+
+       Alternately, open a terminal and run the
+       <B
+CLASS="COMMAND"
+>gtkhtml-properties-capplet</B
+> command. This
+       will open the GNOME HTML Display Properties tool, and you can
+       select a font and other attributes of your HTML display,
+       including that in <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+>.
+     </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-PREFS-MAIL-COMPOSER"
+>Message Composer Preferences</A
+></H2
+><P
+>        Mercifully, there are only four preferences you can prefer in
+        the message composer preferences dialog:
+         <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Send mail in HTML format by default</DT
+><DD
+><P
+>                 If you would like all email messages that you compose
+                 to begin in HTML format, leave this box checked. You
+                 can convert messages between HTML and plain text by
+                 selecting the <B
+CLASS="GUIMENU"
+>Format</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>HTML</B
+> toggle
+                 in the message composer.
+               </P
+></DD
+><DT
+>Default Forward style</DT
+><DD
+><P
+>                  Select from: 
+                  <P
+></P
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+><TT
+CLASS="GUILABEL"
+><B
+>Attachment:</B
+></TT
+> the
+                  message you forward appended to the message you send
+                  as a seperate file.</TD
+></TR
+><TR
+><TD
+> <TT
+CLASS="GUILABEL"
+><B
+>Inline:</B
+></TT
+> The message
+                  you forward is included at the end of the message
+                  you send.</TD
+></TR
+><TR
+><TD
+> 
+                     <TT
+CLASS="GUILABEL"
+><B
+>Quoted:</B
+></TT
+> The message
+                     you forward is included at the end of the message
+                     you send, and a greater-than symbol (&#62;) is
+                     inserted at the beginning of each line to
+                     indicate that it is quoted.
+                   </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+>
+               </P
+></DD
+><DT
+>Prompt when sending messages with an empty subject</DT
+><DD
+><P
+>                 The composer will warn you if you try to send a
+                 message without a subject.
+               </P
+></DD
+><DT
+>Prompt when sending messages with only Bcc recipients defined</DT
+><DD
+><P
+>                 The composer will warn you if you try to send a
+                 message that has only <TT
+CLASS="GUILABEL"
+><B
+>Bcc</B
+></TT
+>
+                 recipients. This is important because some mail
+                 servers will fail to honor blind carbon copy if you
+                 do not have at least one recipient that is visible to
+                 all readers.
+               </P
+></DD
+></DL
+></DIV
+>
+      </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -696,97 +622,99 @@ NAME="CONFIG-PREFS-MAIL-OTHER"
 ></H2
 ><P
 >          Not everything fits neatly into categories.  This tab
-          contains some miscellaneous configurations that don't have
-          too much to do with each other.
+          contains some miscellaneous configuration options that
+          didn't fit anywhere else.
           <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Send messages in HTML format</SPAN
+><B
+>PGP binary path</B
+></TT
 ></DT
 ><DD
 ><P
->		If you check this box, you will send
-		messages as HTML by default.  If you leave it unchecked, your
-		messages will be sent without HTML formatting unless you select 
-		<SPAN
-CLASS="GUIMENU"
->Format</SPAN
->-&gt;<SPAN
-CLASS="GUIMENUITEM"
->HTML</SPAN
-> in the message composer.
-		See <A
-HREF="usage-mail-getnsend-send.html#USAGE-MAIL-GETNSEND-SEND-HTML"
->the section called <I
->Embellish your email with HTML</I
-> in Chapter 3</A
->
-		  for more information about HTML mail.
+>                The complete path to your external encryption tool On
+                most Linux systems, this will be
+                <TT
+CLASS="FILENAME"
+>/usr/bin/gpg</TT
+>.
 	      </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Mark Messages as Read After</SPAN
+><B
+>Remember PGP Passphrase until Exit</B
+></TT
 ></DT
 ><DD
 ><P
-> 
-                    When you click on a message,
-                    <SPAN
+> Check this box if you want <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> will wait a
-                    moment before marking it as read. You can set the
-                    delay, in milliseconds, here.
-                 </P
+>Ximian
+                Evolution</TT
+> to remember your PGP
+                passphrase for as long as it is running.  You will
+                still have to enter your passphrase again each time
+                you start <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+>.
+	      </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Folder Format</SPAN
+><B
+>Default Character Encoding</B
+></TT
 ></DT
 ><DD
 ><P
-> By default,
-                   <SPAN
+> Choose a default character encoding for
+	      your messages.
+	      </P
+></DD
+><DT
+><TT
+CLASS="GUILABEL"
+><B
+>Empty Trash Folders on Exit</B
+></TT
+></DT
+><DD
+><P
+> If you would like to expunge all deleted
+	      mail when you quit <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> saves its mail
-                   in the
-                   <SPAN
-CLASS="SYSTEMITEM"
+>Ximian
+	      Evolution</TT
+>, check this box.
+	      </P
+></DD
+><DT
 ><TT
-CLASS="FILENAME"
->mbox</TT
-></SPAN
->
-                   format. You can switch to the
-                   <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->mh</TT
-></SPAN
->
-                   format if you like.  Note that this is an advanced
-                   feature and may cause you to lose some messages, so
-                   you should probably make a backup of your
-                   <SPAN
-CLASS="SYSTEMITEM"
-><TT
-CLASS="FILENAME"
->evolution</TT
-></SPAN
->
-                   directory first. In addition, it will take quite
-                   some time if you have a large mailbox.
-               </P
+CLASS="GUILABEL"
+><B
+>Log filter actions to:</B
+></TT
+></DT
+><DD
+><P
+> If you like, you can have
+	      <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+> write all
+	      its message filter actions to a log file. Select a log
+	      file here.
+	      </P
 ></DD
 ></DL
 ></DIV
@@ -811,7 +739,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="config.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -827,7 +755,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="config-prefs-cal.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

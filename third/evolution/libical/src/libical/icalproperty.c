@@ -4,7 +4,7 @@
   FILE: icalproperty.c
   CREATOR: eric 28 April 1999
   
-  $Id: icalproperty.c,v 1.1.1.1 2001-11-02 18:37:54 ghudson Exp $
+  $Id: icalproperty.c,v 1.1.1.2 2001-11-08 23:21:16 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -263,6 +263,97 @@ icalproperty_free (icalproperty* prop)
 }
 
 
+/* This returns where the start of the next line should be. chars_left does
+   not include the trailing '\0'. */
+#define MAX_LINE_LEN 75
+/*#define MAX_LINE_LEN 120*/
+
+static char*
+get_next_line_start (char *line_start, int chars_left)
+{
+    char *pos;
+
+    /* If we have 74 chars or less left, we can output all of them. 
+       we return a pointer to the '\0' at the end of the string. */
+    if (chars_left < MAX_LINE_LEN) {
+        return line_start + chars_left;
+    } 
+
+    /* Now we jump to the last possible character of the line, and step back
+       trying to find a ';' ':' or ' '. If we find one, we return the character
+       after it. If not, we break at 74 chars (the 75th char is the space at
+       the start of the line). */
+    pos = line_start + MAX_LINE_LEN - 2;
+    while (pos > line_start) {
+        if (*pos == ';' || *pos == ':' || *pos == ' ') {
+	    return pos + 1;
+	}
+	pos--;
+    }
+
+    return line_start + MAX_LINE_LEN - 1;
+}
+
+
+/* This splits the property into lines less than 75 octects long (as specified
+   in RFC2445). It tries to split after a ';' if it can.
+   It returns a tmp buffer.
+   NOTE: I'm not sure if it matters if we split a line in the middle of a
+   UTF-8 character. It probably won't look nice in a text editor. */
+static char*
+fold_property_line (char *text)
+{
+    size_t buf_size;
+    char *buf, *buf_ptr, *line_start, *next_line_start, *out_buf;
+    int len, chars_left, first_line;
+    char ch;
+
+    /* Start with a buffer twice the size of our property line, so we almost
+       certainly won't overflow it. */
+    len = strlen (text);
+    buf_size = len * 2;
+    buf = icalmemory_new_buffer (buf_size);
+    buf_ptr = buf;
+
+    /* Step through the text, finding each line to add to the output. */
+    line_start = text;
+    chars_left = len;
+    first_line = 1;
+    for (;;) {
+        if (chars_left <= 0)
+	    break;
+
+        /* This returns the first character for the next line. */
+        next_line_start = get_next_line_start (line_start, chars_left);
+
+	/* If this isn't the first line, we need to output a newline and space
+	   first. */
+	if (!first_line) {
+	    icalmemory_append_string (&buf, &buf_ptr, &buf_size, "\n ");
+	}
+	first_line = 0;
+
+	/* This adds the line to our tmp buffer. We temporarily place a '\0'
+	   in text, so we can copy the line in one go. */
+	ch = *next_line_start;
+	*next_line_start = '\0';
+	icalmemory_append_string (&buf, &buf_ptr, &buf_size, line_start);
+	*next_line_start = ch;
+
+	/* Now we move on to the next line. */
+	chars_left -= (next_line_start - line_start);
+	line_start = next_line_start;
+    }
+
+    /* Copy it to a temporary buffer, and then free it. */
+    out_buf = icalmemory_tmp_buffer (strlen (buf) + 1);
+    strcpy (out_buf, buf);
+    icalmemory_free_buffer (buf);
+
+    return out_buf;
+}
+
+
 char*
 icalproperty_as_ical_string (icalproperty* prop)
 {   
@@ -305,8 +396,8 @@ icalproperty_as_ical_string (icalproperty* prop)
 
 
     icalmemory_append_string(&buf, &buf_ptr, &buf_size, property_name);
-    icalmemory_append_string(&buf, &buf_ptr, &buf_size, newline);
-
+    /* Outlook doesn't like a newline here. */
+    /*icalmemory_append_string(&buf, &buf_ptr, &buf_size, newline);*/
 
 
     /* Determine what VALUE parameter to include. The VALUE parameters
@@ -353,10 +444,13 @@ icalproperty_as_ical_string (icalproperty* prop)
 	}
 
 	if(kind_string!=0){
-	    icalmemory_append_string(&buf, &buf_ptr, &buf_size, " ;");
-	    icalmemory_append_string(&buf, &buf_ptr, &buf_size, "VALUE=");
+	    /* We aren't outputting a newline, so we don't want a space. */
+	    /*icalmemory_append_string(&buf, &buf_ptr, &buf_size, " ;");*/
+	    /*icalmemory_append_string(&buf, &buf_ptr, &buf_size, "VALUE=");*/
+	    icalmemory_append_string(&buf, &buf_ptr, &buf_size, ";VALUE=");
 	    icalmemory_append_string(&buf, &buf_ptr, &buf_size, kind_string);
-	    icalmemory_append_string(&buf, &buf_ptr, &buf_size, newline);
+	    /* No newline again. */
+	    /*icalmemory_append_string(&buf, &buf_ptr, &buf_size, newline);*/
 	}
 	
 
@@ -381,15 +475,13 @@ icalproperty_as_ical_string (icalproperty* prop)
 	    continue;
 	}
 
-	icalmemory_append_string(&buf, &buf_ptr, &buf_size, " ;");
+	icalmemory_append_string(&buf, &buf_ptr, &buf_size, ";");
     	icalmemory_append_string(&buf, &buf_ptr, &buf_size, kind_string);
- 	icalmemory_append_string(&buf, &buf_ptr, &buf_size, newline);
-
     }    
 
     /* Append value */
 
-    icalmemory_append_string(&buf, &buf_ptr, &buf_size, " :");
+    icalmemory_append_string(&buf, &buf_ptr, &buf_size, ":");
 
     value = icalproperty_get_value(prop);
 
@@ -407,9 +499,18 @@ icalproperty_as_ical_string (icalproperty* prop)
     /* Now, copy the buffer to a tmp_buffer, which is safe to give to
        the caller without worring about de-allocating it. */
 
-    
-    out_buf = icalmemory_tmp_buffer(strlen(buf)+1);
-    strcpy(out_buf, buf);
+    /* We now use a function to fold the line properly every 75 characters. */
+    out_buf = fold_property_line (buf);
+
+    /* This is useful for testing. It outputs the property before and after
+       folding, but only if it was changed. */
+#if 0
+    if (strcmp (buf, out_buf))
+	printf ("Property:\n%sFolded:\n%s", buf, out_buf);
+#endif
+
+    /*out_buf = icalmemory_tmp_buffer(strlen(buf)+1);*/
+    /*strcpy(out_buf, buf);*/
 
     icalmemory_free_buffer(buf);
 
@@ -550,7 +651,6 @@ icalproperty_remove_parameter (icalproperty* prop, icalparameter_kind kind)
 	icalparameter* param = (icalparameter *)pvl_data (p);
         if (icalparameter_isa(param) == kind) {
             pvl_remove (impl->parameters, p);
-            icalparameter_free (param);
             break;
         }
     }                       

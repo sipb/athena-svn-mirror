@@ -6,10 +6,9 @@
  *
  * Author: Damon Chaplin <damon@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -52,6 +51,9 @@ typedef icaltimezone* (* CalRecurResolveTimezoneFn)	(const char   *tzid,
  * The tz_cb is used to resolve references to timezones. It is passed a TZID
  * and should return the icaltimezone* corresponding to that TZID. We need to
  * do this as we access timezones in different ways on the client & server.
+ *
+ * The default_timezone argument is used for DTSTART or DTEND properties that
+ * are DATE values or do not have a TZID (i.e. floating times).
  */
 void	cal_recur_generate_instances	(CalComponent		*comp,
 					 time_t			 start,
@@ -59,7 +61,8 @@ void	cal_recur_generate_instances	(CalComponent		*comp,
 					 CalRecurInstanceFn	 cb,
 					 gpointer                cb_data,
 					 CalRecurResolveTimezoneFn tz_cb,
-					 gpointer		   tz_cb_data);
+					 gpointer		   tz_cb_data,
+					 icaltimezone		*default_timezone);
 
 END_GNOME_DECLS
 

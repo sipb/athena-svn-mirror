@@ -1,3 +1,45 @@
+2001-10-29  Damon Chaplin  <damon@ximian.com>
+
+	* Makefile.am (wombat_LDADD): use libical-evolution.la
+
+2001-10-29  Chris Toshok  <toshok@ximian.com>
+
+	* wombat.c (dump_backends): new function, ifdef'ed DEBUG_BACKENDS.
+	(main): add SIGUSR2 handler for dump_backends, ifdef'ed
+	DEBUG_BACKENDS.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* wombat.c (main): Register the public ConfigDatabase interface
+	last to work around an OAF race condition.
+
+2001-10-11  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am (wombat_SOURCES): add wombat-private-moniker.[ch].
+
+	* GNOME_Evolution_WombatLDAP.oaf.in: add wombat-private
+	factory/moniker.
+
+	* GNOME_Evolution_WombatNOLDAP.oaf.in: same.
+
+	* wombat-private-moniker.[ch]: xmldb for private database -- non
+	configuration settings, basically.
+
+2001-10-02  Chris Toshok  <toshok@ximian.com>
+
+	* GNOME_Evolution_WombatNOLDAP.oaf.in: add
+	addressbook:supported_protocols containing just the file protocol.
+
+	* GNOME_Evolution_WombatLDAP.oaf.in: add
+	addressbook:supported_protocols containing both ldap and file.
+
+	* Makefile.am (OAF_IN_FILE): we have to possible files now, since
+	the addressbook looks up factories by corba interface and the
+	protocols supported by the factory (as listed in the .oaf file.)
+
+	* .cvsignore: ignore GNOME_Evolution_Wombat.oaf.in, since it's
+	generated now.
+	
 2001-09-26  Chris Toshok  <toshok@ximian.com>
 
 	* wombat.c (setup_pas): add OAFIID parameter to the call to the

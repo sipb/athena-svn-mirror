@@ -15,8 +15,10 @@
 #include <libgnomeui/gnome-init.h>
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-main.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 #include <glade/glade.h>
 #include <gal/widgets/e-cursors.h>
+#include <e-util/e-passwords.h>
 
 #include <camel/camel.h>
 
@@ -64,6 +66,9 @@ main (int argc, char **argv)
 
 	init_bonobo (argc, argv);
 
+	if (!gnome_vfs_init ())
+		g_error (_("Could not initialize gnome-vfs"));
+
 	/* FIXME: Messy names here.  This file should be `main.c'.  `addressbook.c' should
            be `addressbook-control-factory.c' and the functions should be called
            `addressbook_control_factory_something()'.  And `addressbook-component.c'
@@ -81,11 +86,13 @@ main (int argc, char **argv)
 
 	e_cursors_init();
 
+	e_passwords_init("Addressbook");
+
 #if 0
 	g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
 #endif
 
-	g_thread_init (NULL);
+	/*g_thread_init (NULL);*/
 	camel_type_init ();
 
 	bonobo_main ();

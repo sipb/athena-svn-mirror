@@ -8,9 +8,8 @@
  * Copyright 2000, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -84,7 +83,12 @@ static const int time_division_map[] = {
 	60, 30, 15, 10, 5, -1
 };
 
+/* The following two are kept separate in case we need to re-order each menu individually */
 static const int hide_completed_units_map[] = {
+	CAL_MINUTES, CAL_HOURS, CAL_DAYS, -1
+};
+
+static const int default_reminder_units_map[] = {
 	CAL_MINUTES, CAL_HOURS, CAL_DAYS, -1
 };
 
@@ -563,6 +567,14 @@ cal_prefs_dialog_show_config	(CalPrefsDialog	*prefs)
 	/* Other page */
 
 	e_dialog_toggle_set (priv->confirm_delete, calendar_config_get_confirm_delete ());
+
+	e_dialog_toggle_set (priv->default_reminder,
+			     calendar_config_get_use_default_reminder ());
+	e_dialog_spin_set (priv->default_reminder_interval,
+			   calendar_config_get_default_reminder_interval ());
+	e_dialog_option_menu_set (priv->default_reminder_units,
+				  calendar_config_get_default_reminder_units (),
+				  default_reminder_units_map);
 }
 
 /* Returns a pointer to a static string with an X color spec for the current
@@ -657,6 +669,14 @@ cal_prefs_dialog_update_config	(CalPrefsDialog	*prefs)
 	/* Other page */
 
 	calendar_config_set_confirm_delete (e_dialog_toggle_get (priv->confirm_delete));
+
+	calendar_config_set_use_default_reminder (e_dialog_toggle_get (priv->default_reminder));
+
+	calendar_config_set_default_reminder_interval (
+		e_dialog_spin_get_int (priv->default_reminder_interval));
+
+	calendar_config_set_default_reminder_units (
+		e_dialog_option_menu_get (priv->default_reminder_units, default_reminder_units_map));
 
 	/* Done */
 

@@ -21,9 +21,9 @@ _ORBIT_skel_GNOME_Evolution_MessageList_selectMessage
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (message_number))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-      } else {
+	 
+	    (*((guint32 *) & (message_number))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 message_number = *((CORBA_long *) _ORBIT_curptr);
       }
@@ -62,9 +62,9 @@ _ORBIT_skel_GNOME_Evolution_MessageList_openMessage
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (message_number))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-      } else {
+	 
+	    (*((guint32 *) & (message_number))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));} else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 message_number = *((CORBA_long *) _ORBIT_curptr);
       }
@@ -144,7 +144,8 @@ _ORBIT_skel_GNOME_Evolution_FolderInfo_getInfo(POA_GNOME_Evolution_FolderInfo
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 foldername = (void *) _ORBIT_curptr;
@@ -153,8 +154,9 @@ _ORBIT_skel_GNOME_Evolution_FolderInfo_getInfo(POA_GNOME_Evolution_FolderInfo
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
 	 listener =
 	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
 	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
@@ -166,8 +168,9 @@ _ORBIT_skel_GNOME_Evolution_FolderInfo_getInfo(POA_GNOME_Evolution_FolderInfo
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
 	 listener =
 	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
+				   (((ORBit_ObjectKey
+				      *) _ORBIT_servant->_private)->object->
+				    orb));
 	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       }
    }
@@ -230,42 +233,48 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_25))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_25))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.name = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(acc.name[_ORBIT_tmpvar_24]) * _ORBIT_tmpvar_25;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_27))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_27))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.id.name = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(acc.id.name[_ORBIT_tmpvar_26]) * _ORBIT_tmpvar_27;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_29))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_29))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.id.address = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(acc.id.address[_ORBIT_tmpvar_28]) * _ORBIT_tmpvar_29;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_31))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_31))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.id.organization = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(acc.id.organization[_ORBIT_tmpvar_30]) * _ORBIT_tmpvar_31;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_33))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_33))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.id.signature = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(acc.id.signature[_ORBIT_tmpvar_32]) * _ORBIT_tmpvar_33;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_35))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_35))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.id.html_signature = (void *) _ORBIT_curptr;
@@ -275,7 +284,8 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	 acc.id.has_html_signature = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_37))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_37))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.source.url = (void *) _ORBIT_curptr;
@@ -286,7 +296,8 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	 acc.source.auto_check = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (acc.source.auto_check_time))) =
+	 
+	    (*((guint32 *) & (acc.source.auto_check_time))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.source.save_passwd = *((CORBA_boolean *) _ORBIT_curptr);
@@ -294,7 +305,8 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	 acc.source.enabled = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_39))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_39))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.transport.url = (void *) _ORBIT_curptr;
@@ -305,7 +317,8 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	 acc.transport.auto_check = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (acc.transport.auto_check_time))) =
+	 
+	    (*((guint32 *) & (acc.transport.auto_check_time))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.transport.save_passwd = *((CORBA_boolean *) _ORBIT_curptr);
@@ -313,7 +326,8 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	 acc.transport.enabled = *((CORBA_boolean *) _ORBIT_curptr);
 	 _ORBIT_curptr += 1;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_41))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_41))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.drafts_folder_name = (void *) _ORBIT_curptr;
@@ -321,7 +335,8 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	    sizeof(acc.drafts_folder_name[_ORBIT_tmpvar_40]) *
 	    _ORBIT_tmpvar_41;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_43))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_43))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.drafts_folder_uri = (void *) _ORBIT_curptr;
@@ -329,14 +344,16 @@ _ORBIT_skel_GNOME_Evolution_MailConfig_addAccount
 	    sizeof(acc.drafts_folder_uri[_ORBIT_tmpvar_42]) *
 	    _ORBIT_tmpvar_43;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_45))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_45))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.sent_folder_name = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
 	    sizeof(acc.sent_folder_name[_ORBIT_tmpvar_44]) * _ORBIT_tmpvar_45;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_47))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_47))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 acc.sent_folder_uri = (void *) _ORBIT_curptr;
@@ -479,7 +496,8 @@ _ORBIT_skel_GNOME_Evolution_MailFilter_addFilter
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 rule = (void *) _ORBIT_curptr;
@@ -528,7 +546,8 @@ _ORBIT_skel_GNOME_Evolution_MailFilter_removeFilter
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 rule = (void *) _ORBIT_curptr;
@@ -626,7 +645,10 @@ POA_GNOME_Evolution_MessageList__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_MessageList,
-"IDL:GNOME/Evolution/MessageList:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_MessageList };
+	 "IDL:GNOME/Evolution/MessageList:1.0",
+	 (ORBit_local_objref_init) &
+
+	 init_local_objref_GNOME_Evolution_MessageList };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
@@ -703,8 +725,10 @@ POA_GNOME_Evolution_FolderBrowser__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_FolderBrowser,
-"IDL:GNOME/Evolution/FolderBrowser:1.0",
-(ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_FolderBrowser };
+	 "IDL:GNOME/Evolution/FolderBrowser:1.0",
+	 (ORBit_local_objref_init) &
+
+	 init_local_objref_GNOME_Evolution_FolderBrowser };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
@@ -778,7 +802,10 @@ POA_GNOME_Evolution_FolderInfo__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_FolderInfo,
-"IDL:GNOME/Evolution/FolderInfo:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_FolderInfo };
+	 "IDL:GNOME/Evolution/FolderInfo:1.0",
+	 (ORBit_local_objref_init) &
+
+	 init_local_objref_GNOME_Evolution_FolderInfo };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
@@ -853,7 +880,10 @@ POA_GNOME_Evolution_MailConfig__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_MailConfig,
-"IDL:GNOME/Evolution/MailConfig:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_MailConfig };
+	 "IDL:GNOME/Evolution/MailConfig:1.0",
+	 (ORBit_local_objref_init) &
+
+	 init_local_objref_GNOME_Evolution_MailConfig };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
@@ -949,7 +979,10 @@ POA_GNOME_Evolution_MailFilter__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_MailFilter,
-"IDL:GNOME/Evolution/MailFilter:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_MailFilter };
+	 "IDL:GNOME/Evolution/MailFilter:1.0",
+	 (ORBit_local_objref_init) &
+
+	 init_local_objref_GNOME_Evolution_MailFilter };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);

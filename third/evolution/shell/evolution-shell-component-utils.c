@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,8 +26,13 @@
 #include "evolution-shell-component-utils.h"
 
 #include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-exception.h>
+#include <liboaf/oaf.h>
+#include <gal/widgets/e-gui-utils.h>
 
 static void free_pixmaps (void);
 static GSList *inited_arrays = NULL;
@@ -90,3 +94,49 @@ free_pixmaps (void)
 	g_slist_free (inited_arrays);
 }
 
+
+/**
+ * e_activation_failure_dialog:
+ * @parent: parent window of the dialog, or %NULL
+ * @msg: the context-specific part of the error message
+ * @oafiid: the OAFIID of the component that failed to start
+ * @repo_id: the repo_id of the component that failed to start
+ *
+ * This puts up an error dialog about a failed component activation
+ * containing as much information as we can manage to gather about
+ * why it failed.
+ **/
+void
+e_activation_failure_dialog (GtkWindow *parent, const char *msg,
+			     const char *oafiid, const char *repo_id)
+{
+	Bonobo_Unknown object;
+	CORBA_Environment ev;
+	char *errmsg;
+
+	CORBA_exception_init (&ev);
+	object = bonobo_get_object (oafiid, repo_id, &ev);
+	if (ev._major == CORBA_NO_EXCEPTION) {
+		if (object) {
+			Bonobo_Unknown_unref (object, &ev);
+			CORBA_Object_release (object, &ev);
+		}
+		errmsg = g_strdup_printf (_("%s\n\nUnknown error."), msg);
+	} else if (strcmp (CORBA_exception_id (&ev), ex_OAF_GeneralError) != 0) {
+		char *bonobo_err = bonobo_exception_get_text (&ev);
+		errmsg = g_strdup_printf (_("%s\n\nThe error from the "
+					    "component system is:\n%s"),
+					  msg, bonobo_err);
+		g_free (bonobo_err);
+	} else {
+		OAF_GeneralError *errval = CORBA_exception_value (&ev);
+
+		errmsg = g_strdup_printf (_("%s\n\nThe error from the "
+					    "activation system is:\n%s"),
+					  msg, errval->description);
+	}
+	CORBA_exception_free (&ev);
+
+	e_notice (parent, GNOME_MESSAGE_BOX_ERROR, errmsg);
+	g_free (errmsg);
+}

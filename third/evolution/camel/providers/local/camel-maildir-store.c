@@ -5,9 +5,8 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -272,18 +271,19 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 		base = path;
 
 	/* if we have this folder open, get the real unread count */
+	unread = -1;
+
 	CAMEL_STORE_LOCK(store, cache_lock);
 	folder = g_hash_table_lookup(store->folders, path);
 	if (folder)
-		unread = camel_folder_get_message_count(folder);
-	else
-		unread = 0;
+		unread = camel_folder_get_unread_message_count(folder);
 	CAMEL_STORE_UNLOCK(store, cache_lock);
 
 	/* if we dont have a folder, then scan the directory and get the unread
 	   count from there, which is reasonably cheap (on decent filesystem) */
 	/* Well we could get this from the summary, but this is more accurate */
-	if (folder == NULL) {
+	if (folder == NULL
+	    && (flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0) {
 		unread = 0;
 		dir = opendir(new);
 		if (dir) {
@@ -400,7 +400,7 @@ get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelExcepti
 
 	visited = g_hash_table_new(inode_hash, inode_equal);
 
-	if (scan_dir(store, visited, local_store->toplevel_dir, top?top:".", flags, NULL, &fi, ex) == -1 && fi != NULL) {
+	if (scan_dir(store, visited, ((CamelService *)local_store)->url->path, top?top:".", flags, NULL, &fi, ex) == -1 && fi != NULL) {
 		camel_store_free_folder_info_full(store, fi);
 		fi = NULL;
 	}

@@ -3,19 +3,19 @@
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef _RULE_CONTEXT_H
@@ -61,9 +61,13 @@ struct _RuleContextClass {
 	int (*load)(RuleContext *f, const char *system, const char *user);
 	int (*save)(RuleContext *f, const char *user);
 
+	int (*delete_uri)(RuleContext *f, const char *uri, GCompareFunc cmp);
+	int (*rename_uri)(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
+
 	/* signals */
 	void (*rule_added)(RuleContext *f, FilterRule *rule);
 	void (*rule_removed)(RuleContext *f, FilterRule *rule);
+	void (*changed)(RuleContext *f);
 };
 
 typedef void (*RCPartFunc)(RuleContext *f, FilterPart *part);
@@ -99,6 +103,7 @@ FilterPart 	*rule_context_next_part(RuleContext *f, FilterPart *last);
 
 FilterRule 	*rule_context_next_rule(RuleContext *f, FilterRule *last, const char *source);
 FilterRule 	*rule_context_find_rule(RuleContext *f, const char *name, const char *source);
+FilterRule 	*rule_context_find_rank_rule(RuleContext *f, int rank, const char *source);
 void		rule_context_add_rule(RuleContext *f, FilterRule *new);
 void		rule_context_add_rule_gui(RuleContext *f, FilterRule *rule, const char *title, const char *path);
 void		rule_context_remove_rule(RuleContext *f, FilterRule *rule);
@@ -110,6 +115,10 @@ int		rule_context_get_rank_rule(RuleContext *f, FilterRule *rule, const char *so
 /* setup type for set parts */
 void		rule_context_add_part_set(RuleContext *f, const char *setname, int part_type, RCPartFunc append, RCNextPartFunc next);
 void		rule_context_add_rule_set(RuleContext *f, const char *setname, int rule_type, RCRuleFunc append, RCNextRuleFunc next);
+
+/* uri's disappear/renamed externally */
+int		rule_context_delete_uri(RuleContext *f, const char *uri, GCompareFunc cmp);
+int		rule_context_rename_uri(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
 
 #endif /* ! _RULE_CONTEXT_H */
 

@@ -5,10 +5,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +22,7 @@
 #ifndef COMP_UTIL_H
 #define COMP_UTIL_H
 
+#include <gtk/gtkwidget.h>
 #include <cal-util/cal-component.h>
 #include <cal-client/cal-client.h>
 
@@ -35,5 +35,17 @@ void cal_comp_util_add_exdate (CalComponent *comp, time_t t, icaltimezone *zone)
 gboolean cal_comp_util_compare_event_timezones (CalComponent *comp,
 						CalClient *client,
 						icaltimezone *zone);
+
+typedef enum {
+	EMPTY_COMP_REMOVE_LOCALLY,
+	EMPTY_COMP_REMOVED_FROM_SERVER,
+	EMPTY_COMP_DO_NOT_REMOVE
+} ConfirmDeleteEmptyCompResult;
+
+ConfirmDeleteEmptyCompResult cal_comp_confirm_delete_empty_comp (CalComponent *comp,
+								 CalClient *client,
+								 GtkWidget *widget);
+
+CalComponent *cal_comp_event_new_with_defaults (void);
 
 #endif

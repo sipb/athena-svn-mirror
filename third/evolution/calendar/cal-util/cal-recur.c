@@ -6,10 +6,9 @@
  *
  * Author: Damon Chaplin <damon@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -103,6 +102,11 @@
  *     or move the time forward or something. I'm not sure this is clear in the
  *     spec.
  */
+
+/* This is the maximum year we will go up to (inclusive). Since we use time_t
+   values we can't go past 2037 anyway, and some of our VTIMEZONEs may stop
+   at 2037 as well. */
+#define MAX_YEAR	2037
 
 /* Define this for some debugging output. */
 #if 0
@@ -264,11 +268,13 @@ static void cal_recur_generate_instances_of_rule (CalComponent	*comp,
 						  CalRecurInstanceFn cb,
 						  gpointer       cb_data,
 						  CalRecurResolveTimezoneFn  tz_cb,
-						  gpointer	 tz_cb_data);
+						  gpointer	 tz_cb_data,
+						  icaltimezone	*default_timezone);
 
 static CalRecurrence * cal_recur_from_icalproperty (icalproperty *prop,
 						    gboolean exception,
-						    icaltimezone *zone);
+						    icaltimezone *zone,
+						    gboolean convert_end_date);
 static gint cal_recur_ical_weekday_to_weekday	(enum icalrecurrencetype_weekday day);
 static void	cal_recur_free			(CalRecurrence	*r);
 
@@ -294,6 +300,7 @@ static gboolean generate_instances_for_chunk	(CalComponent		*comp,
 						 CalObjTime		*chunk_end,
 						 gint			 duration_days,
 						 gint			 duration_seconds,
+						 gboolean		 convert_end_date,
 						 CalRecurInstanceFn	 cb,
 						 gpointer		 cb_data);
 
@@ -487,7 +494,8 @@ static gboolean cal_recur_ensure_rule_end_date_cb	(CalComponent	*comp,
 							 time_t		 instance_start,
 							 time_t		 instance_end,
 							 gpointer	 data);
-static time_t cal_recur_get_rule_end_date	(icalproperty	*prop);
+static time_t cal_recur_get_rule_end_date	(icalproperty	*prop,
+						 icaltimezone	*default_timezone);
 static void cal_recur_set_rule_end_date		(icalproperty	*prop,
 						 time_t		 end_date);
 
@@ -613,7 +621,8 @@ cal_recur_generate_instances (CalComponent		*comp,
 			      CalRecurInstanceFn	 cb,
 			      gpointer                   cb_data,
 			      CalRecurResolveTimezoneFn  tz_cb,
-			      gpointer			 tz_cb_data)
+			      gpointer			 tz_cb_data,
+			      icaltimezone		*default_timezone)
 {
 #if 0
 	g_print ("In cal_recur_generate_instances comp: %p\n", comp);
@@ -621,7 +630,8 @@ cal_recur_generate_instances (CalComponent		*comp,
 	g_print ("  end  : %li - %s", end, ctime (&end));
 #endif
 	cal_recur_generate_instances_of_rule (comp, NULL, start, end,
-					      cb, cb_data, tz_cb, tz_cb_data);
+					      cb, cb_data, tz_cb, tz_cb_data,
+					      default_timezone);
 }
 
 
@@ -647,7 +657,8 @@ cal_recur_generate_instances_of_rule (CalComponent	 *comp,
 				      CalRecurInstanceFn  cb,
 				      gpointer            cb_data,
 				      CalRecurResolveTimezoneFn  tz_cb,
-				      gpointer			 tz_cb_data)
+				      gpointer		  tz_cb_data,
+				      icaltimezone	 *default_timezone)
 {
 	CalComponentDateTime dtstart, dtend;
 	time_t dtstart_time, dtend_time;
@@ -656,15 +667,18 @@ cal_recur_generate_instances_of_rule (CalComponent	 *comp,
 	CalObjTime interval_start, interval_end, event_start, event_end;
 	CalObjTime chunk_start, chunk_end;
 	gint days, seconds, year;
-	gboolean single_rule;
+	gboolean single_rule, convert_end_date = FALSE;
 	icaltimezone *start_zone = NULL, *end_zone = NULL;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (cb != NULL);
+	g_return_if_fail (tz_cb != NULL);
 	g_return_if_fail (start >= -1);
 	g_return_if_fail (end >= -1);
 
-	/* Get dtstart, dtend, recurrences, and exceptions */
+	/* Get dtstart, dtend, recurrences, and exceptions. Note that
+	   cal_component_get_dtend() will convert a DURATION property to a
+	   DTEND so we don't need to worry about that. */
 
 	cal_component_get_dtstart (comp, &dtstart);
 	cal_component_get_dtend (comp, &dtend);
@@ -675,29 +689,65 @@ cal_recur_generate_instances_of_rule (CalComponent	 *comp,
 		goto out;
 	}
 
-	/* FIXME: All floating times, including those from recurrence rules,
-	   should be converted to the current timezone, otherwise the time_t
-	   values may be outside the given range. This may also mean that
-	   we need to add a timezone argument to the IDL method. */
-
-	if (dtstart.tzid && tz_cb)
+	/* For DATE-TIME values with a TZID, we use the supplied callback to
+	   resolve the TZID. For DATE values and DATE-TIME values without a
+	   TZID (i.e. floating times) we use the default timezone. */
+	if (dtstart.tzid && !dtstart.value->is_date) {
 		start_zone = (*tz_cb) (dtstart.tzid, tz_cb_data);
-	if (dtend.tzid && tz_cb)
-		end_zone = (*tz_cb) (dtend.tzid, tz_cb_data);
+	} else {
+		start_zone = default_timezone;
+
+		/* Flag that we need to convert the saved ENDDATE property
+		   to the default timezone. */
+		convert_end_date = TRUE;
+	}
 
 	dtstart_time = icaltime_as_timet_with_zone (*dtstart.value,
 						    start_zone);
 	if (start == -1)
 		start = dtstart_time;
 
-	/* FIXME: DURATION could be used instead, couldn't it? - Damon */
-	if (!dtend.value) {
+	if (dtend.value) {
+		/* If both DTSTART and DTEND are DATE values, and they are the
+		   same day, we add 1 day to DTEND. This means that most
+		   events created with the old Evolution behavior will still
+		   work OK. I'm not sure what Outlook does in this case. */
+		if (dtstart.value->is_date && dtend.value->is_date) {
+			if (icaltime_compare_date_only (*dtstart.value,
+							*dtend.value) == 0) {
+				icaltime_adjust (dtend.value, 1, 0, 0, 0);
+			}
+		}
+	} else {
+		/* If there is no DTEND, then if DTSTART is a DATE-TIME value
+		   we use the same time (so we have a single point in time).
+		   If DTSTART is a DATE value we add 1 day. */
+		dtend.value = g_new (struct icaltimetype, 1);
 		*dtend.value = *dtstart.value;
+
+		if (dtstart.value->is_date) {
+			icaltime_adjust (dtend.value, 1, 0, 0, 0);
+		}
+	}
+
+	if (dtend.tzid && !dtend.value->is_date) {
+		end_zone = (*tz_cb) (dtend.tzid, tz_cb_data);
+	} else {
+		end_zone = default_timezone;
+	}
+
+	/* We don't do this any more, since Outlook assumes that the DTEND
+	   date is not included. */
+#if 0
+	/* If DTEND is a DATE value, we add 1 day to it so that it includes
+	   the entire day. */
+	if (dtend.value->is_date) {
 		dtend.value->hour = 0;
 		dtend.value->minute = 0;
 		dtend.value->second = 0;
 		icaltime_adjust (dtend.value, 1, 0, 0, 0);
 	}
+#endif
 	dtend_time = icaltime_as_timet_with_zone (*dtend.value, end_zone);
 
 	/* If there is no recurrence, just call the callback if the event
@@ -768,7 +818,7 @@ cal_recur_generate_instances_of_rule (CalComponent	 *comp,
 	   Though this does mean that we sometimes do a lot more work than
 	   is necessary, e.g. if COUNT is set to something quite low. */
 	for (year = interval_start.year;
-	     end == -1 || year <= interval_end.year;
+	     (end == -1 || year <= interval_end.year) && year <= MAX_YEAR;
 	     year++) {
 		chunk_start = interval_start;
 		chunk_start.year = year;
@@ -801,6 +851,7 @@ cal_recur_generate_instances_of_rule (CalComponent	 *comp,
 						   start,
 						   &chunk_start, &chunk_end,
 						   days, seconds,
+						   convert_end_date,
 						   cb, cb_data))
 			break;
 	}
@@ -833,9 +884,13 @@ array_to_list (short *array, int max_elements)
 
 /**
  * cal_recur_from_icalproperty:
- * @ir: An RRULE or EXRULE #icalproperty.
+ * @prop: An RRULE or EXRULE #icalproperty.
+ * @exception: TRUE if this is an EXRULE rather than an RRULE.
  * @zone: The DTSTART timezone, used for converting the UNTIL property if it
  * is given as a DATE value.
+ * @convert_end_date: TRUE if the saved end date needs to be converted to the
+ * given @zone timezone. This is needed if the DTSTART is a DATE or floating
+ * time.
  * 
  * Converts an #icalproperty to a #CalRecurrence.  This should be
  * freed using the cal_recur_free() function.
@@ -844,7 +899,7 @@ array_to_list (short *array, int max_elements)
  **/
 static CalRecurrence *
 cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
-			     icaltimezone *zone)
+			     icaltimezone *zone, gboolean convert_end_date)
 {
 	struct icalrecurrencetype ir;
 	CalRecurrence *r;
@@ -863,8 +918,10 @@ cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 	r->interval = ir.interval;
 
 	if (ir.count != 0) {
-		/* If COUNT is set, we use the pre-calculated enddate. */
-		r->enddate = cal_recur_get_rule_end_date (prop);
+		/* If COUNT is set, we use the pre-calculated enddate.
+		   Note that this can be 0 if the RULE doesn't actually
+		   generate COUNT instances. */
+		r->enddate = cal_recur_get_rule_end_date (prop, convert_end_date ? zone : NULL);
 	} else {
 		if (icaltime_is_null_time (ir.until)) {
 			/* If neither COUNT or UNTIL is set, the event
@@ -878,9 +935,14 @@ cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 			ir.until.hour = 23;
 			ir.until.minute = 59;
 			ir.until.second = 59;
+			ir.until.is_date = FALSE;
 
 			r->enddate = icaltime_as_timet_with_zone (ir.until,
 								  zone);
+#if 0
+			g_print ("  until: %li - %s", r->enddate, ctime (&r->enddate));
+#endif
+
 		} else {
 			/* If UNTIL is a DATE-TIME, it must be in UTC. */
 			icaltimezone *utc_zone;
@@ -1028,6 +1090,7 @@ generate_instances_for_chunk (CalComponent	*comp,
 			      CalObjTime	*chunk_end,
 			      gint		 duration_days,
 			      gint		 duration_seconds,
+			      gboolean		 convert_end_date,
 			      CalRecurInstanceFn cb,
 			      gpointer           cb_data)
 {
@@ -1074,7 +1137,8 @@ generate_instances_for_chunk (CalComponent	*comp,
 		CalRecurrence *r;
 
 		prop = elem->data;
-		r = cal_recur_from_icalproperty (prop, FALSE, zone);
+		r = cal_recur_from_icalproperty (prop, FALSE, zone,
+						 convert_end_date);
 
 		tmp_occs = cal_obj_expand_recurrence (event_start, zone, r,
 						      chunk_start,
@@ -1141,7 +1205,8 @@ generate_instances_for_chunk (CalComponent	*comp,
 		CalRecurrence *r;
 
 		prop = elem->data;
-		r = cal_recur_from_icalproperty (prop, FALSE, zone);
+		r = cal_recur_from_icalproperty (prop, FALSE, zone,
+						 convert_end_date);
 
 		tmp_occs = cal_obj_expand_recurrence (event_start, zone, r,
 						      chunk_start,
@@ -2004,6 +2069,10 @@ cal_obj_bysetpos_filter (CalRecurrence *recur,
 		/* Negative values count back from the end of the array. */
 		if (pos < 0)
 			pos += len;
+		/* Positive values need to be decremented since the array is
+		   0-based. */
+		else
+			pos--;
 
 		if (pos >= 0 && pos < len) {
 			occ = &g_array_index (occs, CalObjTime, pos);
@@ -2981,8 +3050,15 @@ cal_obj_byday_expand_monthly	(RecurData  *recur_data,
 				occ->day = time_days_in_month (occ->year,
 							       occ->month);
 				last_weekday = cal_obj_time_weekday (occ);
+
+				/* This calculates the number of days to step
+				   backwards from the last day of the month
+				   to the weekday we want. */
 				offset = (last_weekday + 7 - weekday) % 7;
-				offset += (week_num - 1) * 7;
+
+				/* This adds on the weeks. */
+				offset += (-week_num - 1) * 7;
+
 				cal_obj_time_add_days (occ, -offset);
 				if (occ->year == year && occ->month == month)
 					g_array_append_vals (new_occs, occ, 1);
@@ -3775,16 +3851,22 @@ cal_recur_ensure_rule_end_date (CalComponent			*comp,
 	/* If refresh is FALSE, we check if the enddate is already set, and
 	   if it is we just return. */
 	if (!refresh) {
-		if (cal_recur_get_rule_end_date (prop) != -1)
+		if (cal_recur_get_rule_end_date (prop, NULL) != -1)
 			return FALSE;
 	}
 
-	/* Calculate the end date. */
+	/* Calculate the end date. Note that we initialize end_date to 0, so
+	   if the RULE doesn't generate COUNT instances we save a time_t of 0.
+	   Also note that we use the UTC timezone as the default timezone.
+	   In get_end_date() if the DTSTART is a DATE or floating time, we will
+	   convert the ENDDATE to the current timezone. */
 	cb_data.count = rule.count;
 	cb_data.instances = 0;
+	cb_data.end_date = 0;
 	cal_recur_generate_instances_of_rule (comp, prop, -1, -1,
 					      cal_recur_ensure_rule_end_date_cb,
-					      &cb_data, tz_cb, tz_cb_data);
+					      &cb_data, tz_cb, tz_cb_data,
+					      icaltimezone_get_utc_timezone ());
 
 	/* Store the end date in the "X-EVOLUTION-ENDDATE" parameter of the
 	   rule. */
@@ -3815,14 +3897,19 @@ cal_recur_ensure_rule_end_date_cb	(CalComponent	*comp,
 }
 
 
+/* If default_timezone is set, the saved ENDDATE parameter is assumed to be
+   in that timezone. This is used when the DTSTART is a DATE or floating
+   value, since the RRULE end date will change depending on the timezone that
+   it is evaluated in. */
 static time_t
-cal_recur_get_rule_end_date	(icalproperty	*prop)
+cal_recur_get_rule_end_date	(icalproperty	*prop,
+				 icaltimezone	*default_timezone)
 {
 	icalparameter *param;
 	const char *xname, *xvalue;
 	icalvalue *value;
 	struct icaltimetype icaltime;
-	icaltimezone *utc_zone;
+	icaltimezone *zone;
 
 	param = icalproperty_get_first_parameter (prop, ICAL_X_PARAMETER);
 	while (param) {
@@ -3835,9 +3922,10 @@ cal_recur_get_rule_end_date	(icalproperty	*prop)
 				icaltime = icalvalue_get_datetime (value);
 				icalvalue_free (value);
 
-				utc_zone = icaltimezone_get_utc_timezone ();
+				zone = default_timezone ? default_timezone : 
+					icaltimezone_get_utc_timezone ();
 				return icaltime_as_timet_with_zone (icaltime,
-								    utc_zone);
+								    zone);
 			}
 		}
 

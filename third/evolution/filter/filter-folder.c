@@ -3,19 +3,19 @@
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #include <config.h>
@@ -134,6 +134,15 @@ filter_folder_new (void)
 	return o;
 }
 
+void
+filter_folder_set_value(FilterFolder *ff, const char *uri, const char *name)
+{
+	g_free(ff->uri);
+	ff->uri = g_strdup(uri);
+	g_free(ff->name);
+	ff->name = g_strdup(name);
+}
+
 static gboolean
 validate (FilterElement *fe)
 {
@@ -144,7 +153,7 @@ validate (FilterElement *fe)
 	} else {
 		GtkWidget *dialog;
 		
-		dialog = gnome_ok_dialog (_("Oops, you forgot to choose a folder.\n"
+		dialog = gnome_ok_dialog (_("You forgot to choose a folder.\n"
 					    "Please go back and specify a valid folder to deliver mail to."));
 		
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
@@ -229,6 +238,7 @@ button_clicked (GtkButton *button, FilterFolder *ff)
 	def = ff->uri ? ff->uri : "";
 	
 	evolution_shell_client_user_select_folder (global_shell_client,
+						   GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (button))),
 						   _("Select Folder"),
 						   def, allowed_types,
 						   &evolution_uri,
@@ -286,8 +296,9 @@ button_clicked (GtkButton *button, FilterFolder *ff)
 	case -1:
 		/* nothing */
 	}
-
 #endif
+	
+	gdk_window_raise (GTK_WIDGET (gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW))->window);
 }
 
 static GtkWidget *

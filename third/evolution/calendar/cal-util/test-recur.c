@@ -7,9 +7,8 @@
  * Copyright 2000, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -121,10 +120,31 @@ get_line		(char		*s,
 }
 
 
+/* This resolves any TZIDs in the components. The VTIMEZONEs must be in the
+   file we are reading. */
+static icaltimezone*
+resolve_tzid_cb		(const char	*tzid,
+			 gpointer	 user_data)
+{
+	icalcomponent *vcalendar_comp = user_data;
+
+        if (!tzid || !tzid[0])
+                return NULL;
+        else if (!strcmp (tzid, "UTC"))
+                return icaltimezone_get_utc_timezone ();
+
+	return icalcomponent_get_timezone (vcalendar_comp, tzid);
+}
+
+
 static void
 generate_occurrences	(icalcomponent	*icalcomp)
 {
 	icalcompiter iter;
+	icaltimezone *default_timezone;
+
+	/* This is the timezone we will use for DATE and floating values. */
+	default_timezone = icaltimezone_get_utc_timezone ();
 
 	for (iter = icalcomponent_begin_component (icalcomp, ICAL_ANY_COMPONENT);
 	     icalcompiter_deref (&iter) != NULL;
@@ -157,11 +177,13 @@ generate_occurrences	(icalcomponent	*icalcomp)
 #if 0
 		cal_recur_generate_instances (comp, 982022400, 982108800,
 					      occurrence_cb, &occurrences,
-					      NULL, NULL);
+					      resolve_tzid_cb, icalcomp,
+					      default_timezone);
 #else
 		cal_recur_generate_instances (comp, -1, -1,
 					      occurrence_cb, &occurrences,
-					      NULL, NULL);
+					      resolve_tzid_cb, icalcomp,
+					      default_timezone);
 #endif
 
 		/* Print the component again so we can see the

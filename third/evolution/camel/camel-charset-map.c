@@ -8,9 +8,8 @@
  * Copyright 2000, 2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -206,103 +205,9 @@ void main(void)
 #ifdef ENABLE_THREADS
 #include <pthread.h>
 #endif
-
-
-#ifdef ENABLE_THREADS
-static pthread_mutex_t iconv_charsets_lock = PTHREAD_MUTEX_INITIALIZER;
-#define ICONV_CHARSETS_LOCK() pthread_mutex_lock (&iconv_charsets_lock)
-#define ICONV_CHARSETS_UNLOCK() pthread_mutex_unlock (&iconv_charsets_lock)
-#else
-#define ICONV_CHARSETS_LOCK()
-#define ICONV_CHARSETS_UNLOCK()
-#endif /* ENABLE_THREADS */
-
-static GHashTable *iconv_charsets = NULL;
-static char *locale_charset = NULL;
-
-struct {
-	char *charset;
-	char *iconv_name;
-} known_iconv_charsets[] = {
-	/* charset name, iconv-friendly charset name */
-	{ "iso-8859-1",     "iso-8859-1" },
-	{ "iso8859-1",      "iso-8859-1" },
-	/* the above mostly serves as an example for iso-style charsets,
-	   but we have code that will populate the iso-*'s if/when they
-	   show up in camel_charset_map_to_iconv() so I'm
-	   not going to bother putting them all in here... */
-	{ "windows-cp1251", "cp1251"     },
-	{ "windows-1251",   "cp1251"     },
-	{ "cp1251",         "cp1251"     },
-	/* the above mostly serves as an example for windows-style
-	   charsets, but we have code that will parse and convert them
-	   to their cp#### equivalents if/when they show up in
-	   camel_charset_map_to_iconv() so I'm not going to bother
-	   putting them all in here... */
-	{ "ks_c_5601-1987", "euc-kr"     },
-	{ NULL,             NULL         }
-};
-
-
-static void
-shutdown_foreach (gpointer key, gpointer value, gpointer data)
-{
-	g_free (key);
-	g_free (value);
-}
-
-static void
-camel_charset_map_shutdown (void)
-{
-	g_hash_table_foreach (iconv_charsets, shutdown_foreach, NULL);
-	g_hash_table_destroy (iconv_charsets);
-	g_free (locale_charset);
-}
-
-void
-camel_charset_map_init (void)
-{
-	char *locale;
-	int i;
-	
-	if (iconv_charsets)
-		return;
-	
-	iconv_charsets = g_hash_table_new (g_strcase_hash, g_strcase_equal);
-	for (i = 0; known_iconv_charsets[i].charset != NULL; i++) {
-		g_hash_table_insert (iconv_charsets, g_strdup (known_iconv_charsets[i].charset),
-				     g_strdup (known_iconv_charsets[i].iconv_name));
-	}
-	
-	locale = setlocale (LC_ALL, NULL);
-	
-	if (!locale || !strcmp (locale, "C") || !strcmp (locale, "POSIX")) {
-		/* The locale "C"  or  "POSIX"  is  a  portable  locale;  its
-		 * LC_CTYPE  part  corresponds  to  the 7-bit ASCII character
-		 * set.
-		 */
-		
-		locale_charset = NULL;
-	} else {
-		/* A locale name is typically of  the  form  language[_terri-
-		 * tory][.codeset][@modifier],  where  language is an ISO 639
-		 * language code, territory is an ISO 3166 country code,  and
-		 * codeset  is  a  character  set or encoding identifier like
-		 * ISO-8859-1 or UTF-8.
-		 */
-		char *p;
-		int len;
-		
-		p = strchr (locale, '@');
-		len = p ? (p - locale) : strlen (locale);
-		if ((p = strchr (locale, '.'))) {
-			locale_charset = g_strndup (p + 1, len - (p - locale) + 1);
-			g_strdown (locale_charset);
-		}
-	}
-	
-	g_atexit (camel_charset_map_shutdown);
-}
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 
 void
 camel_charset_init (CamelCharset *c)
@@ -384,63 +289,6 @@ camel_charset_best (const char *in, int len)
 	camel_charset_init (&charset);
 	camel_charset_step (&charset, in, len);
 	return camel_charset_best_name (&charset);
-}
-
-const char *
-camel_charset_locale_name (void)
-{
-	return locale_charset;
-}
-
-const char *
-camel_charset_to_iconv (const char *name)
-{
-	const char *charset;
-	
-	if (name == NULL)
-		return NULL;
-	
-	/* special-case hack... */
-	if (!g_strcasecmp (name, "x-unknown"))
-		return locale_charset ? locale_charset : "iso-8859-1";
-	
-	ICONV_CHARSETS_LOCK ();
-	charset = g_hash_table_lookup (iconv_charsets, name);
-	if (!charset) {
-		/* Attempt to friendlyify the charset */
-		char *new_charset, *p;
-		int len;
-		
-		if (!g_strncasecmp (name, "iso", 3) && name[3] != '-' && name[3] != '_') {
-			/* Hack to convert charsets like ISO8859-1 to iconv-friendly ISO-8859-1 */
-			len = strlen (name);
-			new_charset = g_malloc (len + 2);
-			memcpy (new_charset, name, 3);
-			new_charset[3] = '-';
-			memcpy (new_charset + 4, name + 3, len - 3);
-			new_charset[len + 1] = '\0';
-		} else if (!g_strncasecmp (name, "windows-", 8)) {
-			/* Convert charsets like windows-1251 and windows-cp1251 to iconv-friendly cp1251 */
-			new_charset = (char *) name + 8;
-			if (!g_strncasecmp (new_charset, "cp", 2))
-				new_charset += 2;
-			
-			for (p = new_charset; *p && isdigit ((unsigned) *p); p++);
-			if (*p == '\0')
-				new_charset = g_strdup_printf ("cp%s", new_charset);
-			else
-				new_charset = g_strdup (name);
-		} else {
-			/* *shrug* - add it to the hash table just the way it is? */
-			new_charset = g_strdup (name);
-		}
-		
-		g_hash_table_insert (iconv_charsets, g_strdup (name), new_charset);
-		charset = new_charset;
-	}
-	ICONV_CHARSETS_UNLOCK ();
-	
-	return charset;
 }
 
 #endif /* !BUILD_MAP */

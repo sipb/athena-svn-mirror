@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -44,12 +44,13 @@
 
 #include <shell/evolution-shell-client.h>
 
+#include <gal/util/e-unicode-i18n.h>
 #include <gal/util/e-util.h>
 #include <gal/unicode/gunicode.h>
 #include <gal/widgets/e-gui-utils.h>
 #include <e-util/e-html-utils.h>
 #include <e-util/e-url.h>
-#include <e-util/e-unicode-i18n.h>
+#include <e-util/e-passwords.h>
 #include "mail.h"
 #include "mail-config.h"
 #include "mail-mt.h"
@@ -560,7 +561,7 @@ config_read (void)
 	
 	/* HTTP images */
 	config->http_mode = bonobo_config_get_long_with_default (config->db, 
-		"/Mail/Display/http_images", MAIL_CONFIG_HTTP_SOMETIMES, NULL);
+		"/Mail/Display/http_images", MAIL_CONFIG_HTTP_NEVER, NULL);
 	
 	/* Forwarding */
 	config->default_forward_style = bonobo_config_get_long_with_default (
@@ -874,31 +875,54 @@ mail_config_write_on_exit (void)
 	
 	bonobo_config_set_string_wrapper (config->db, "/Mail/Filters/log_path",
 					  config->filter_log_path, NULL);
+
+	if (config->threaded_hash)
+		g_hash_table_foreach_remove (config->threaded_hash, hash_save_state, "Threads");
 	
-	g_hash_table_foreach_remove (config->threaded_hash, 
-				     hash_save_state, "Threads");
-	
-	g_hash_table_foreach_remove (config->preview_hash, 
-				     hash_save_state, "Preview");
+	if (config->preview_hash)
+		g_hash_table_foreach_remove (config->preview_hash, hash_save_state, "Preview");
 	
 	CORBA_exception_init (&ev);
 	Bonobo_ConfigDatabase_sync (config->db, &ev);
 	CORBA_exception_free (&ev);
 	
 	/* Passwords */
-	/* fixme: still depends on gnome-config */
-	gnome_config_private_clean_section ("/Evolution/Passwords");
+
+	/* then we make sure the ones we want to remember are in the
+           session cache */
+	accounts = mail_config_get_accounts ();
+	for ( ; accounts; accounts = accounts->next) {
+		char *passwd;
+		account = accounts->data;
+		if (account->source->save_passwd && account->source->url) {
+			passwd = mail_session_get_password (account->source->url);
+			mail_session_forget_password (account->source->url);
+			mail_session_add_password (account->source->url, passwd);
+			g_free (passwd);
+		}
+		
+		if (account->transport->save_passwd && account->transport->url) {
+			passwd = mail_session_get_password (account->transport->url);
+			mail_session_forget_password (account->transport->url);
+			mail_session_add_password (account->transport->url, passwd);
+			g_free (passwd);
+		}
+	}
+
+	/* then we clear out our component passwords */
+	e_passwords_clear_component_passwords ();
+
+	/* then we remember them */
 	accounts = mail_config_get_accounts ();
 	for ( ; accounts; accounts = accounts->next) {
 		account = accounts->data;
 		if (account->source->save_passwd && account->source->url)
 			mail_session_remember_password (account->source->url);
-		
+
 		if (account->transport->save_passwd && account->transport->url)
 			mail_session_remember_password (account->transport->url);
 	}
-	gnome_config_sync ();
-	
+
 	/* now do cleanup */
 	mail_config_clear ();
 }
@@ -1609,7 +1633,8 @@ new_source_created (MailConfigAccount *account)
 	}
 
 	/* not a storage, don't bother. */
-	if (!(prov->flags & CAMEL_PROVIDER_IS_STORAGE))
+	if (!(prov->flags & CAMEL_PROVIDER_IS_STORAGE) ||
+	    (prov->flags & CAMEL_PROVIDER_IS_EXTERNAL))
 		return;
 
 	inbox = mail_tool_get_inbox (account->source->url, &ex);
@@ -1639,10 +1664,8 @@ new_source_created (MailConfigAccount *account)
 		 */
 	}
 
-	if (!(prov->flags & CAMEL_PROVIDER_IS_EXTERNAL)) {
-		/* add the storage to the folder tree */
-		add_new_storage (account->source->url, account->name);
-	}
+	/* add the storage to the folder tree */
+	add_new_storage (account->source->url, account->name);
 
 	if (inbox)
 		camel_object_unref (CAMEL_OBJECT (inbox));
@@ -1925,7 +1948,7 @@ check_cancelled (GnomeDialog *dialog, int button, gpointer data)
  * Return value: %TRUE on success or %FALSE on error.
  **/
 gboolean
-mail_config_check_service (const char *url, CamelProviderType type, GList **authtypes)
+mail_config_check_service (const char *url, CamelProviderType type, GList **authtypes, GtkWindow *window)
 {
 	gboolean ret = FALSE;
 	struct _check_msg *m;
@@ -1944,13 +1967,14 @@ mail_config_check_service (const char *url, CamelProviderType type, GList **auth
 	dialog = gnome_dialog_new (_("Connecting to server..."),
 				   GNOME_STOCK_BUTTON_CANCEL,
 				   NULL);
+	gnome_dialog_set_parent (GNOME_DIALOG (dialog), window);
 	label = gtk_label_new (_("Connecting to server..."));
 	gtk_box_pack_start (GTK_BOX(GNOME_DIALOG (dialog)->vbox),
 			    label, TRUE, TRUE, 10);
 	gnome_dialog_set_close (GNOME_DIALOG (dialog), FALSE);
 	gtk_signal_connect (GTK_OBJECT (dialog), "clicked",
 			    GTK_SIGNAL_FUNC (check_cancelled), &id);
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (dialog), FALSE);
 	gtk_widget_show_all (dialog);
 
 	mail_msg_wait(id);
@@ -2071,12 +2095,11 @@ evolution_mail_config_factory_fn (BonoboGenericFactory *factory,
 {
 	EvolutionMailConfig *config;
 
-	g_warning ("Made");
 	config = gtk_type_new (evolution_mail_config_get_type ());
 	return BONOBO_OBJECT (config);
 }
 
-void
+gboolean
 evolution_mail_config_factory_init (void)
 {
 	BonoboGenericFactory *factory;
@@ -2086,7 +2109,9 @@ evolution_mail_config_factory_init (void)
 					      NULL);
 	if (factory == NULL) {
 		g_warning ("Error starting MailConfig");
+		return FALSE;
 	}
 
 	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
+	return TRUE;
 }

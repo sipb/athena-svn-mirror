@@ -7,9 +7,8 @@
  * Copyright 1999, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +36,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include "calendar-config.h"
 #include "e-meeting-time-sel-item.h"
 #include "e-meeting-time-sel.h"
 
@@ -334,9 +334,8 @@ e_meeting_time_selector_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 		gdk_gc_set_fill (stipple_gc, GDK_OPAQUE_STIPPLED);
 		row = y / mts->row_height;
 		row_y = row * mts->row_height - y;
-		while (row < e_meeting_model_count_attendees (mts->model) && row_y < height) {
-			ETable *real_table = e_table_scrolled_get_table (E_TABLE_SCROLLED (mts->etable));
-			gint model_row = e_table_view_to_model_row (real_table, row);
+		while (row < e_meeting_model_count_actual_attendees (mts->model) && row_y < height) {
+			gint model_row = e_meeting_model_etable_view_to_model_row (mts->model, row);
 
 			ia = e_meeting_model_find_attendee_at_row (mts->model, model_row);
 
@@ -487,17 +486,22 @@ e_meeting_time_selector_item_paint_day_top (EMeetingTimeSelectorItem *mts_item,
 	clip_rect.height = mts->row_height - 2;
 	gdk_gc_set_clip_rectangle (gc, &clip_rect);
 	gdk_draw_string (drawable, font, gc,
-			 x + 4, 4 + font->ascent - scroll_y, buffer);
+			 x + 2, 4 + font->ascent - scroll_y, buffer);
 	gdk_gc_set_clip_rectangle (gc, NULL);
 
 	/* Draw the hours. */
-	hour = mts->first_hour_shown + (mts->zoomed_out ? 3 : 1);
-	hour_x = x + mts->col_width;
+	hour = mts->first_hour_shown;
+	hour_x = x + 2;
 	hour_y = mts->row_height + 4 + font->ascent - scroll_y;
 	while (hour < mts->last_hour_shown) {
-		gdk_draw_string (drawable, font, gc,
-				 hour_x - (mts->hour_widths[hour] / 2),
-				 hour_y, EMeetingTimeSelectorHours[hour]);
+		if (calendar_config_get_24_hour_format ())
+			gdk_draw_string (drawable, font, gc,
+					 hour_x, hour_y,
+					 EMeetingTimeSelectorHours[hour]);
+		else
+			gdk_draw_string (drawable, font, gc,
+					 hour_x, hour_y,
+					 EMeetingTimeSelectorHours12[hour]);
 
 		hour += mts->zoomed_out ? 3 : 1;
 		hour_x += mts->col_width;
@@ -525,8 +529,8 @@ e_meeting_time_selector_item_paint_all_attendees_busy_periods (EMeetingTimeSelec
 	y = 2 * mts->row_height - scroll_y - 1;
 
 	/* Get the first visible busy periods for all the attendees. */
-	first_periods = g_new (gint, e_meeting_model_count_attendees (mts->model));
-	for (row = 0; row < e_meeting_model_count_attendees (mts->model); row++) {
+	first_periods = g_new (gint, e_meeting_model_count_actual_attendees (mts->model));
+	for (row = 0; row < e_meeting_model_count_actual_attendees (mts->model); row++) {
 		ia = e_meeting_model_find_attendee_at_row (mts->model, row);
 		first_periods[row] = e_meeting_time_selector_item_find_first_busy_period (mts_item, date, row);
 	}
@@ -535,7 +539,7 @@ e_meeting_time_selector_item_paint_all_attendees_busy_periods (EMeetingTimeSelec
 	     busy_type < E_MEETING_FREE_BUSY_LAST;
 	     busy_type++) {
 		gdk_gc_set_foreground (gc, &mts->busy_colors[busy_type]);
-		for (row = 0; row < e_meeting_model_count_attendees (mts->model); row++) {
+		for (row = 0; row < e_meeting_model_count_actual_attendees (mts->model); row++) {
 			if (first_periods[row] == -1)
 				continue;
 			e_meeting_time_selector_item_paint_attendee_busy_periods (mts_item, drawable, x, y, width, row, first_periods[row], busy_type);
@@ -572,7 +576,7 @@ e_meeting_time_selector_item_paint_day (EMeetingTimeSelectorItem *mts_item,
 	     grid_y < height;
 	     grid_y += mts->row_height)
 	  {
-		  if (attendee_index <= e_meeting_model_count_attendees (mts->model)) {
+		  if (attendee_index <= e_meeting_model_count_actual_attendees (mts->model)) {
 			  gdk_gc_set_foreground (gc, &mts->grid_color);
 			  gdk_draw_line (drawable, gc, 0, grid_y,
 					 width, grid_y);
@@ -585,7 +589,7 @@ e_meeting_time_selector_item_paint_day (EMeetingTimeSelectorItem *mts_item,
 	  }
 
 	/* Draw the vertical grid lines. */
-	unused_y = (e_meeting_model_count_attendees (mts->model) * mts->row_height) - scroll_y;
+	unused_y = (e_meeting_model_count_actual_attendees (mts->model) * mts->row_height) - scroll_y;
 	if (unused_y >= 0) {
 		gdk_gc_set_foreground (gc, &mts->grid_color);
 		for (grid_x = mts->col_width - 1;
@@ -643,8 +647,8 @@ e_meeting_time_selector_item_paint_busy_periods (EMeetingTimeSelectorItem *mts_i
 	y = row * mts->row_height - scroll_y;
 
 	/* Step through the attendees painting the busy periods. */
-	while (y < height && row < e_meeting_model_count_attendees (mts->model)) {
-		model_row = e_table_view_to_model_row (real_table, row);
+	while (y < height && row < e_meeting_model_count_actual_attendees (mts->model)) {
+		model_row = e_meeting_model_etable_view_to_model_row (mts->model, row);
 
 		/* Find the first visible busy period. */
 		first_period = e_meeting_time_selector_item_find_first_busy_period (mts_item, date, model_row);
@@ -852,16 +856,23 @@ e_meeting_time_selector_item_button_press (EMeetingTimeSelectorItem *mts_item,
 
 	/* Find the nearest half-hour or hour interval, depending on whether
 	   zoomed_out is set. */
-	if (mts->zoomed_out) {
+	if (!mts->all_day) {
+		if (mts->zoomed_out) {
+			start_time.minute = 0;
+			end_time = start_time;
+			end_time.hour += 1;
+		} else {
+			start_time.minute -= start_time.minute % 30;
+			end_time = start_time;
+			end_time.minute += 30;
+		}
+	} else {
+		start_time.hour = 0;
 		start_time.minute = 0;
 		end_time = start_time;
-		end_time.hour += 1;
-	} else {
-		start_time.minute -= start_time.minute % 30;
-		end_time = start_time;
-		end_time.minute += 30;
+		g_date_add_days (&end_time.date, 1);
 	}
-
+	
 	/* Fix any overflows. */
 	e_meeting_time_selector_fix_time_overflows (&end_time);
 

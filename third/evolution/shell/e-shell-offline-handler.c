@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -90,7 +89,8 @@ struct _EShellOfflineHandlerPrivate {
 	int num_total_connections;
 	GHashTable *id_to_component_info;
 
-	gboolean procedure_in_progress : 1;
+	int procedure_in_progress : 1;
+	int finished : 1;
 };
 
 
@@ -206,8 +206,10 @@ impl_OfflineProgressListener_updateProgress (PortableServer_Servant servant,
 
 	update_dialog_clist (offline_handler);
 
-	if (priv->num_total_connections == 0)
+	if (priv->num_total_connections == 0 && ! priv->finished) {
 		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], TRUE);
+		priv->finished = TRUE;
+	}
 }
 
 static gboolean
@@ -362,7 +364,10 @@ cancel_offline (EShellOfflineHandler *offline_handler)
 
 	priv->num_total_connections = 0;
 
-	gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], FALSE);
+	if (! priv->finished) {
+		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], FALSE);
+		priv->finished = TRUE;
+	}
 }
 
 
@@ -408,10 +413,8 @@ prepare_for_offline (EShellOfflineHandler *offline_handler)
 
 		GNOME_Evolution_Offline_prepareForOffline (offline_interface, &active_connection_list, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
-			g_warning ("Cannot prepare component component to go offline -- %s", id);
+			g_warning ("Cannot prepare component component to go offline -- %s [%s]", id, ev._repo_id);
 
-			POA_GNOME_Evolution_OfflineProgressListener__fini
-				((POA_GNOME_Evolution_OfflineProgressListener *) progress_listener_servant, &ev);
 			progress_listener_servant_free (progress_listener_servant);
 			
 			CORBA_Object_release (progress_listener_interface, &ev);
@@ -486,12 +489,17 @@ finalize_offline (EShellOfflineHandler *offline_handler)
 
 	priv = offline_handler->priv;
 
+	gtk_object_ref (GTK_OBJECT (offline_handler));
+
 	g_hash_table_foreach (priv->id_to_component_info, finalize_offline_hash_foreach, offline_handler);
 
-	if (priv->num_total_connections == 0) {
+	if (priv->num_total_connections == 0 && ! priv->finished) {
 		/* Nothing else to do, we are all set.  */
 		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], TRUE);
+		priv->finished = TRUE;
 	}
+
+	gtk_object_unref (GTK_OBJECT (offline_handler));
 }
 
 
@@ -530,6 +538,8 @@ update_dialog_clist (EShellOfflineHandler *offline_handler)
 	GtkWidget *clist;
 
 	priv = offline_handler->priv;
+	if (priv->dialog_gui == NULL)
+		return;
 
 	clist = glade_xml_get_widget (priv->dialog_gui, "active_connection_clist");
 
@@ -721,6 +731,7 @@ init (EShellOfflineHandler *shell_offline_handler)
 	priv->id_to_component_info            = g_hash_table_new (g_str_hash, g_str_equal);
 
 	priv->procedure_in_progress           = FALSE;
+	priv->finished                        = FALSE;
 
 	shell_offline_handler->priv = priv;
 }
@@ -807,10 +818,13 @@ e_shell_offline_handler_put_components_offline (EShellOfflineHandler *offline_ha
 
 	gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_STARTED]);
 
+	priv->finished = FALSE;
+
 	if (! prepare_for_offline (offline_handler)) {
 		/* FIXME: Maybe do something smarter here.  */
 		g_warning ("Couldn't put components off-line");
 		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], FALSE);
+		priv->finished = TRUE;
 		gtk_object_unref (GTK_OBJECT (offline_handler));
 		return;
 	}

@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -353,6 +352,7 @@ open_callback (GnomeVFSAsyncHandle *handle,
 			w->html = g_strdup ("<dd> </dd>");
 		}
 
+		w->handle = NULL;
 		e_summary_draw (w->summary);
 		return;
 	}
@@ -364,15 +364,33 @@ open_callback (GnomeVFSAsyncHandle *handle,
 			      (GnomeVFSAsyncReadCallback) read_callback, w);
 }
 
-static void
+gboolean
 e_summary_weather_update (ESummary *summary)
 {
 	GList *w;
+
+	if (summary->weather->online == FALSE) {
+		g_warning ("%s: Repolling but offline", __FUNCTION__);
+		return TRUE;
+	}
 
 	summary->weather->errorshown = FALSE;
 	for (w = summary->weather->weathers; w; w = w->next) {
 		char *uri;
 		Weather *weather = w->data;
+
+		if (weather->handle != NULL) {
+			gnome_vfs_async_cancel (weather->handle);
+			weather->handle = NULL;
+		}
+		if (weather->string) {
+			g_string_free (weather->string, TRUE);
+			weather->string = NULL;
+		}
+		if (weather->buffer) {
+			g_free (weather->buffer);
+			weather->buffer = NULL;
+		}
 
 		uri = g_strdup_printf ("http://weather.noaa.gov/cgi-bin/mgetmetar.pl?cccc=%s", weather->location);
 
@@ -380,6 +398,8 @@ e_summary_weather_update (ESummary *summary)
 				      (GnomeVFSAsyncOpenCallback) open_callback, weather);
 		g_free (uri);
 	}
+
+	return TRUE;
 }
 
 static void
@@ -570,6 +590,7 @@ e_summary_weather_set_online (ESummary *summary,
 			      void *data)
 {
 	ESummaryWeather *weather;
+	GList *p;
 
 	weather = summary->weather;
 	if (weather->online == online) {
@@ -582,6 +603,16 @@ e_summary_weather_set_online (ESummary *summary,
 						    (GtkFunction) e_summary_weather_update,
 						    summary);
 	} else {
+		for (p = weather->weathers; p; p = p->next) {
+			Weather *w;
+
+			w = p->data;
+			if (w->handle) {
+				gnome_vfs_async_cancel (w->handle);
+				w->handle = NULL;
+			}
+		}
+
 		gtk_timeout_remove (weather->timeout);
 		weather->timeout = 0;
 	}
@@ -627,7 +658,7 @@ e_summary_weather_init (ESummary *summary)
 		   see in My Evolution by default. You can find the list of all
 		   stations and their codes in Evolution sources
 		   (evolution/my-evolution/Locations) */
-		char *default_stations = _("KBOS:ZSAM:EGAA"), **stations_v, **p;
+		char *default_stations = _("KBOS"), **stations_v, **p;
 
 		stations_v = g_strsplit (default_stations, ":", 0);
 		g_assert (stations_v != NULL);

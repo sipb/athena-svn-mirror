@@ -6,19 +6,19 @@
  *  Copyright 2000 Ximian, Inc. (www.ximian.com)
  *  Copyright 2001 Ximian Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -99,6 +99,8 @@ camel_search_build_match_regex (regex_t *pattern, camel_search_flags_t type, int
 	flags = REG_EXTENDED|REG_NOSUB;
 	if (type & CAMEL_SEARCH_MATCH_ICASE)
 		flags |= REG_ICASE;
+	if (type & CAMEL_SEARCH_MATCH_NEWLINE)
+		flags |= REG_NEWLINE;
 	err = regcomp (pattern, match->str, flags);
 	if (err != 0) {
 		/* regerror gets called twice to get the full error string 
@@ -197,8 +199,9 @@ utf8_get (const char **inp)
 {
 	const unsigned char *p = *inp;
 	gunichar c;
-	
-	g_return_val_if_fail (p != NULL, 0);
+
+	if (p == NULL)
+		return 0;
 	
 	c = g_utf8_get_char (p);
 	*inp = g_unichar_validate (c) ? g_utf8_next_char (p) : NULL;
@@ -394,9 +397,9 @@ gboolean
 camel_search_header_match (const char *value, const char *match, camel_search_match_t how, camel_search_t type, const char *default_charset)
 {
 	const char *name, *addr;
-	int truth = FALSE;
+	int truth = FALSE, i;
 	CamelInternetAddress *cia;
-	char *v;
+	char *v, *vdom, *mdom;
 
 	while (*value && isspace (*value))
 		value++;
@@ -407,6 +410,25 @@ camel_search_header_match (const char *value, const char *match, camel_search_ma
 		truth = header_match(v, match, how);
 		g_free(v);
 		break;
+	case CAMEL_SEARCH_TYPE_MLIST:
+		/* Special mailing list old-version domain hack
+		   If one of the mailing list names doesn't have an @ in it, its old-style, so
+		   only match against the pre-domain part, which should be common */
+
+		vdom = strchr(value, '@');
+		mdom = strchr(match, '@');
+		if (mdom == NULL && vdom != NULL) {
+			v = alloca(vdom-value+1);
+			memcpy(v, value, vdom-value);
+			v[vdom-value] = 0;
+			value = (char *)v;
+		} else if (mdom != NULL && vdom == NULL) {
+			v = alloca(mdom-match+1);
+			memcpy(v, match, mdom-match);
+			v[mdom-match] = 0;
+			match = (char *)v;
+		}
+		/* Falls through */
 	case CAMEL_SEARCH_TYPE_ASIS:
 		truth = header_match(value, match, how);
 		break;
@@ -423,11 +445,9 @@ camel_search_header_match (const char *value, const char *match, camel_search_ma
 		else
 			camel_address_unformat((CamelAddress *)cia, value);
 
-		if (camel_address_length((CamelAddress *)cia) == 1) {
-			camel_internet_address_get(cia, 0, &name, &addr);
-			truth = (name && header_match(name, match, how))
-				|| (addr && header_match(addr, match, how));
-		}
+		for (i=0; !truth && camel_internet_address_get(cia, i, &name, &addr);i++)
+			truth = (name && header_match(name, match, how)) || (addr && header_match(addr, match, how));
+
 		camel_object_unref((CamelObject *)cia);
 		break;
 	}

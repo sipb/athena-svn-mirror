@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -267,7 +268,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libecontactprint_a_SOURCES) $(contact_print_test_SOURCES) $(contact_print_style_editor_test_SOURCES)
 OBJECTS = $(libecontactprint_a_OBJECTS) $(contact_print_test_OBJECTS) $(contact_print_style_editor_test_OBJECTS)
@@ -440,6 +441,43 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+e-contact-print-envelope.o: e-contact-print-envelope.c ../../config.h \
+	e-contact-print-envelope.h \
+	../../addressbook/backend/ebook/e-card.h \
+	../../addressbook/backend/ebook/e-card-types.h \
+	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
+	../../e-util/e-iterator.h e-contact-print-types.h \
+	../../addressbook/backend/ebook/e-card-simple.h
+e-contact-print-style-editor.o: e-contact-print-style-editor.c \
+	e-contact-print-style-editor.h
+e-contact-print.o: e-contact-print.c ../../config.h e-contact-print.h \
+	../../addressbook/backend/ebook/e-book.h \
+	../../addressbook/backend/ebook/e-card.h \
+	../../addressbook/backend/ebook/e-card-types.h \
+	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
+	../../e-util/e-iterator.h \
+	../../addressbook/backend/ebook/e-card-cursor.h \
+	../../addressbook/backend/ebook/addressbook.h \
+	../../addressbook/backend/ebook/e-book-view.h \
+	../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../addressbook/backend/ebook/e-book-types.h \
+	e-contact-print-types.h \
+	../../addressbook/backend/ebook/e-card-simple.h \
+	../../addressbook/backend/ebook/e-destination.h
+test-contact-print-style-editor.o: test-contact-print-style-editor.c \
+	../../config.h e-contact-print-style-editor.h
+test-print.o: test-print.c ../../config.h e-contact-print.h \
+	../../addressbook/backend/ebook/e-book.h \
+	../../addressbook/backend/ebook/e-card.h \
+	../../addressbook/backend/ebook/e-card-types.h \
+	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
+	../../e-util/e-iterator.h \
+	../../addressbook/backend/ebook/e-card-cursor.h \
+	../../addressbook/backend/ebook/addressbook.h \
+	../../addressbook/backend/ebook/e-book-view.h \
+	../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../addressbook/backend/ebook/e-book-types.h \
+	e-contact-print-types.h
 
 info-am:
 info: info-am

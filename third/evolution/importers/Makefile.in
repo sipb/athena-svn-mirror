@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -282,7 +283,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(evolution_netscape_importer_SOURCES) $(evolution_elm_importer_SOURCES) $(evolution_pine_importer_SOURCES) $(evolution_gnomecard_importer_SOURCES)
 OBJECTS = $(evolution_netscape_importer_OBJECTS) $(evolution_elm_importer_OBJECTS) $(evolution_pine_importer_OBJECTS) $(evolution_gnomecard_importer_OBJECTS)
@@ -446,6 +447,51 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+Mail-common.o: Mail-common.c Mail.h
+Mail-skels.o: Mail-skels.c Mail.h
+Mail-stubs.o: Mail-stubs.c Mail.h
+elm-importer.o: elm-importer.c ../config.h \
+	../shell/importer/evolution-intelligent-importer.h \
+	../shell/importer/GNOME_Evolution_Importer.h \
+	../shell/importer/evolution-importer-client.h \
+	../shell/importer/evolution-importer.h \
+	../shell/importer/evolution-importer-listener.h
+evolution-gnomecard-importer.o: evolution-gnomecard-importer.c \
+	../config.h ../addressbook/backend/ebook/e-book.h \
+	../addressbook/backend/ebook/e-card.h \
+	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
+	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
+	../addressbook/backend/ebook/e-card-cursor.h \
+	../addressbook/backend/ebook/addressbook.h \
+	../addressbook/backend/ebook/e-book-view.h \
+	../addressbook/backend/ebook/e-book-view-listener.h \
+	../addressbook/backend/ebook/e-book-types.h \
+	../shell/importer/evolution-intelligent-importer.h \
+	../shell/importer/GNOME_Evolution_Importer.h \
+	../shell/importer/evolution-importer-listener.h \
+	../shell/importer/evolution-importer.h
+netscape-importer.o: netscape-importer.c ../config.h \
+	../shell/importer/evolution-intelligent-importer.h \
+	../shell/importer/GNOME_Evolution_Importer.h \
+	../shell/importer/evolution-importer-client.h \
+	../shell/importer/evolution-importer.h \
+	../shell/importer/evolution-importer-listener.h Mail.h
+pine-importer.o: pine-importer.c ../config.h \
+	../shell/importer/evolution-intelligent-importer.h \
+	../shell/importer/GNOME_Evolution_Importer.h \
+	../shell/importer/evolution-importer-client.h \
+	../shell/importer/evolution-importer.h \
+	../shell/importer/evolution-importer-listener.h \
+	../addressbook/backend/ebook/e-book.h \
+	../addressbook/backend/ebook/e-card.h \
+	../addressbook/backend/ebook/e-card-types.h ../e-util/e-list.h \
+	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
+	../addressbook/backend/ebook/e-card-cursor.h \
+	../addressbook/backend/ebook/addressbook.h \
+	../addressbook/backend/ebook/e-book-view.h \
+	../addressbook/backend/ebook/e-book-view-listener.h \
+	../addressbook/backend/ebook/e-book-types.h \
+	../addressbook/backend/ebook/e-card-simple.h
 
 info-am:
 info: info-am

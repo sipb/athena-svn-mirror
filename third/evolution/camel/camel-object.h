@@ -8,9 +8,8 @@
  * Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -116,8 +115,15 @@ const gchar *camel_type_to_name (CamelType type);
 
 CamelType camel_object_get_type (void);
 CamelObject *camel_object_new (CamelType type);
-void camel_object_ref (CamelObject * obj);
-void camel_object_unref (CamelObject * obj);
+
+void camel_object_ref (CamelObject *obj);
+void camel_object_unref (CamelObject *obj);
+
+#ifdef CAMEL_DEBUG
+#define camel_object_ref(o) (printf("%s (%s:%d):ref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_ref(o))
+#define camel_object_unref(o) (printf("%s (%s:%d):unref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_unref (o))
+#endif
+
 CamelObject *camel_object_check_cast (CamelObject * obj,
 				      CamelType ctype);
 CamelObjectClass *camel_object_class_check_cast (CamelObjectClass *

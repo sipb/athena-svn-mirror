@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,6 +23,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -49,7 +54,7 @@
 
 #define GNOME_EVOLUTION_ADDRESSBOOK_COMPONENT_ID "OAFIID:GNOME_Evolution_Addressbook_ShellComponent"
 
-EvolutionShellClient *global_shell_client;
+EvolutionShellClient *global_shell_client = NULL;
 
 EvolutionShellClient *
 addressbook_component_get_shell_client  (void)
@@ -65,8 +70,8 @@ static char *accepted_dnd_types[] = {
 static const EvolutionShellComponentFolderType folder_types[] = {
 	{ "contacts", "evolution-contacts.png", N_("Contacts"), N_("Folder containing contact information"),
 	  TRUE, accepted_dnd_types, NULL },
-	{ "ldap-contacts", "ldap-16.png", N_("LDAP Server"), N_("LDAP server containing contact information"),
-	  TRUE, accepted_dnd_types, NULL },
+	{ "ldap-contacts", "ldap.png", N_("LDAP Server"), N_("LDAP server containing contact information"),
+	  FALSE, accepted_dnd_types, NULL },
 	{ NULL }
 };
 
@@ -183,6 +188,92 @@ remove_folder (EvolutionShellComponent *shell_component,
 	CORBA_exception_free(&ev);
 }
 
+/* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
+
+/* This code is cut & pasted from calendar/gui/component-factory.c */
+
+static GNOME_Evolution_ShellComponentListener_Result
+xfer_file (GnomeVFSURI *base_src_uri,
+	   GnomeVFSURI *base_dest_uri,
+	   const char *file_name,
+	   int remove_source)
+{
+	GnomeVFSURI *src_uri, *dest_uri;
+	GnomeVFSHandle *hin, *hout;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo file_info;
+	GnomeVFSFileSize size;
+	char *buffer;
+	
+	src_uri = gnome_vfs_uri_append_file_name (base_src_uri, file_name);
+
+	result = gnome_vfs_open_uri (&hin, src_uri, GNOME_VFS_OPEN_READ);
+	if (result == GNOME_VFS_ERROR_NOT_FOUND) {
+		gnome_vfs_uri_unref (src_uri);
+		return GNOME_Evolution_ShellComponentListener_OK; /* No need to xfer anything.  */
+	}
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_uri_unref (src_uri);
+		return GNOME_Evolution_ShellComponentListener_PERMISSION_DENIED;
+	}
+
+	result = gnome_vfs_get_file_info_uri (src_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_uri_unref (src_uri);
+		return GNOME_Evolution_ShellComponentListener_PERMISSION_DENIED;
+	}
+
+	dest_uri = gnome_vfs_uri_append_file_name (base_dest_uri, file_name);
+
+	result = gnome_vfs_create_uri (&hout, dest_uri, GNOME_VFS_OPEN_WRITE, FALSE, 0600);
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_close (hin);
+		gnome_vfs_uri_unref (src_uri);
+		gnome_vfs_uri_unref (dest_uri);
+		return GNOME_Evolution_ShellComponentListener_PERMISSION_DENIED;
+	}
+
+	/* write source file to destination file */
+	buffer = g_malloc (file_info.size);
+	result = gnome_vfs_read (hin, buffer, file_info.size, &size);
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_close (hin);
+		gnome_vfs_close (hout);
+		gnome_vfs_uri_unref (src_uri);
+		gnome_vfs_uri_unref (dest_uri);
+		g_free (buffer);
+		return GNOME_Evolution_ShellComponentListener_PERMISSION_DENIED;
+	}
+
+	result = gnome_vfs_write (hout, buffer, file_info.size, &size);
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_close (hin);
+		gnome_vfs_close (hout);
+		gnome_vfs_uri_unref (src_uri);
+		gnome_vfs_uri_unref (dest_uri);
+		g_free (buffer);
+		return GNOME_Evolution_ShellComponentListener_PERMISSION_DENIED;
+	}
+
+	if (remove_source) {
+		char *text_uri;
+
+		/* Sigh, we have to do this as there is no gnome_vfs_unlink_uri(). :-(  */
+
+		text_uri = gnome_vfs_uri_to_string (src_uri, GNOME_VFS_URI_HIDE_NONE);
+		result = gnome_vfs_unlink (text_uri);
+		g_free (text_uri);
+	}
+
+	gnome_vfs_close (hin);
+	gnome_vfs_close (hout);
+	gnome_vfs_uri_unref (src_uri);
+	gnome_vfs_uri_unref (dest_uri);
+	g_free (buffer);
+
+	return GNOME_Evolution_ShellComponentListener_OK;
+}
+
 static void
 xfer_folder (EvolutionShellComponent *shell_component,
 	     const char *source_physical_uri,
@@ -193,8 +284,12 @@ xfer_folder (EvolutionShellComponent *shell_component,
 	     void *closure)
 {
 	CORBA_Environment ev;
-	char *source_path;
-	char *destination_path;
+
+	GnomeVFSURI *src_uri;
+	GnomeVFSURI *dest_uri;
+	GnomeVFSResult result;
+
+	CORBA_exception_init (&ev);
 	
 	if (!IS_CONTACT_TYPE (type)) {
 		GNOME_Evolution_ShellComponentListener_notifyResult (listener,
@@ -212,6 +307,7 @@ xfer_folder (EvolutionShellComponent *shell_component,
 		CORBA_exception_free(&ev);
 		return;
 	}
+
 	if (strncmp (source_physical_uri, "file://", 7)
 	    || strncmp (destination_physical_uri, "file://", 7)) {
 		GNOME_Evolution_ShellComponentListener_notifyResult (listener,
@@ -221,18 +317,28 @@ xfer_folder (EvolutionShellComponent *shell_component,
 		return;
 	}
 
-	/* strip the 'file://' from the beginning of each uri and add addressbook.db */
-	source_path = g_concat_dir_and_file (source_physical_uri + 7, "addressbook.db");
-	destination_path = g_concat_dir_and_file (destination_physical_uri + 7, "addressbook.db");
+	/* check URIs */
+	src_uri = gnome_vfs_uri_new (source_physical_uri);
+	dest_uri = gnome_vfs_uri_new (destination_physical_uri);
+	if (!src_uri || ! dest_uri) {
+		GNOME_Evolution_ShellComponentListener_notifyResult (
+			listener,
+			GNOME_Evolution_ShellComponentListener_INVALID_URI,
+			&ev);
+		gnome_vfs_uri_unref (src_uri);
+		gnome_vfs_uri_unref (dest_uri);
+		CORBA_exception_free (&ev);
+		return;
+	}
 
-	CORBA_exception_init (&ev);
+	result = xfer_file (src_uri, dest_uri, "addressbook.db", remove_source);
+	
+	GNOME_Evolution_ShellComponentListener_notifyResult (listener, result, &ev);
 
-	/* XXX always fail for now, until the above stuff is written */
-	GNOME_Evolution_ShellComponentListener_notifyResult (listener, GNOME_Evolution_ShellComponentListener_PERMISSION_DENIED, &ev);
+	gnome_vfs_uri_unref (src_uri);
+	gnome_vfs_uri_unref (dest_uri);
 
-	g_free (source_path);
-	g_free (destination_path);
-	CORBA_exception_free (&ev);
+        CORBA_exception_free (&ev);	
 }
 
 static char*
@@ -244,7 +350,7 @@ get_dnd_selection (EvolutionShellComponent *shell_component,
 		   int *selection_length_return,
 		   void *closure)
 {
-	g_print ("should get dnd selection for %s\n", physical_uri);
+	/* g_print ("should get dnd selection for %s\n", physical_uri); */
 	return NULL;
 }
 
@@ -264,14 +370,22 @@ owner_set_cb (EvolutionShellComponent *shell_component,
 	addressbook_storage_setup (shell_component, evolution_homedir);
 }
 
+static gboolean
+gtk_main_quit_cb (gpointer closure)
+{
+	gtk_main_quit ();
+	return TRUE;
+}
+
 static void
 owner_unset_cb (EvolutionShellComponent *shell_component,
 		GNOME_Evolution_Shell shell_interface,
 		gpointer user_data)
 {
 	owner_count --;
-	if (owner_count == 0)
-		gtk_main_quit();
+	if (owner_count == 0) {
+		g_idle_add (gtk_main_quit_cb, NULL);
+	}
 }
 
 /* FIXME We should perhaps take the time to figure out if the book is editable. */
@@ -319,7 +433,7 @@ user_create_new_item_cb (EvolutionShellComponent *shell_component,
 		book = e_book_new ();
 		uri = g_strdup_printf ("%s/addressbook.db", parent_folder_physical_uri);
 
-		if (e_book_load_uri (book, uri, nonlocal_addressbook_cb, GINT_TO_POINTER (is_contact_list)) == 0)
+		if (addressbook_load_uri (book, uri, nonlocal_addressbook_cb, GINT_TO_POINTER (is_contact_list)) == 0)
 			g_warning ("Couldn't load addressbook %s", uri);
 
 		g_free (uri);
@@ -334,11 +448,11 @@ user_create_new_item_cb (EvolutionShellComponent *shell_component,
 static CORBA_boolean
 destination_folder_handle_motion (EvolutionShellComponentDndDestinationFolder *folder,
 				  const char *physical_uri,
+				  const char *folder_type,
 				  const GNOME_Evolution_ShellComponentDnd_DestinationFolder_Context * destination_context,
 				  GNOME_Evolution_ShellComponentDnd_Action * suggested_action_return,
 				  gpointer user_data)
 {
-	g_print ("in destination_folder_handle_motion (%s)\n", physical_uri);
 	*suggested_action_return = GNOME_Evolution_ShellComponentDnd_ACTION_MOVE;
 	return TRUE;
 }
@@ -358,6 +472,7 @@ dnd_drop_book_open_cb (EBook *book, EBookStatus status, GList *card_list)
 static CORBA_boolean
 destination_folder_handle_drop (EvolutionShellComponentDndDestinationFolder *folder,
 				const char *physical_uri,
+				const char *folder_type,
 				const GNOME_Evolution_ShellComponentDnd_DestinationFolder_Context * destination_context,
 				const GNOME_Evolution_ShellComponentDnd_Action action,
 				const GNOME_Evolution_ShellComponentDnd_Data * data,
@@ -370,15 +485,15 @@ destination_folder_handle_drop (EvolutionShellComponentDndDestinationFolder *fol
 	if (action == GNOME_Evolution_ShellComponentDnd_ACTION_LINK)
 		return FALSE; /* we can't create links in our addressbook format */
 
-	g_print ("in destination_folder_handle_drop (%s)\n", physical_uri);
+	/* g_print ("in destination_folder_handle_drop (%s)\n", physical_uri); */
 
 	card_list = e_card_load_cards_from_string_with_default_charset (data->bytes._buffer, "ISO-8859-1");
 
 	expanded_uri = addressbook_expand_uri (physical_uri);
 
 	book = e_book_new ();
-	e_book_load_uri (book, expanded_uri,
-			 (EBookCallback)dnd_drop_book_open_cb, card_list);
+	addressbook_load_uri (book, expanded_uri,
+			      (EBookCallback)dnd_drop_book_open_cb, card_list);
 
 	g_free (expanded_uri);
 

@@ -4,10 +4,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -108,6 +107,12 @@ CalClient *cal_client_new (void);
 
 void cal_client_set_auth_func (CalClient *client, CalClientAuthFunc func, gpointer data);
 
+/* Sets the default timezone to use to resolve DATE and floating DATE-TIME
+   values. This will typically be from the user's timezone setting. Call this
+   before using any other functions. It will pass the default timezone on to
+   the server. Returns TRUE on success. */
+gboolean cal_client_set_default_timezone (CalClient *client, icaltimezone *zone);
+
 gboolean cal_client_open_calendar (CalClient *client, const char *str_uri, gboolean only_if_exists);
 GList *cal_client_uri_list (CalClient *client, CalMode mode);
 
@@ -161,6 +166,11 @@ CalQuery *cal_client_get_query (CalClient *client, const char *sexp);
 
 /* Resolves TZIDs for the recurrence generator. */
 icaltimezone *cal_client_resolve_tzid_cb (const char *tzid, gpointer data);
+
+/* Returns a complete VCALENDAR for a VEVENT/VTODO including all VTIMEZONEs
+   used by the component. It also includes a 'METHOD:PUBLISH' property. */
+char* cal_client_get_component_as_string (CalClient *client,
+					  CalComponent *comp);
 
 
 

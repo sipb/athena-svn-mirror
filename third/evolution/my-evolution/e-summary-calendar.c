@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,6 +37,8 @@
 #include <bonobo-conf/bonobo-config-database.h>
 
 #include <liboaf/liboaf.h>
+
+#include <ical.h>
 
 struct _ESummaryCalendar {
 	CalClient *client;
@@ -96,6 +97,14 @@ e_cal_comp_util_compare_event_timezones (CalComponent *comp,
 
         cal_component_get_dtstart (comp, &start_datetime);
         cal_component_get_dtend (comp, &end_datetime);
+
+	/* If either the DTSTART or the DTEND is a DATE value, we return TRUE.
+	   Maybe if one was a DATE-TIME we should check that, but that should
+	   not happen often. */
+	if (start_datetime.value->is_date || end_datetime.value->is_date) {
+		retval = TRUE;
+		goto out;
+	}
 
         /* FIXME: DURATION may be used instead. */
         if (cal_component_compare_tzid (tzid, start_datetime.tzid)
@@ -161,10 +170,56 @@ e_summary_calendar_event_sort_func (const void *e1,
 	return icaltime_compare (*(event1->dt.value), *(event2->dt.value));
 }
 
+struct _RecurData {
+	ESummary *summary;
+	GPtrArray *array;
+	ESummaryCalEvent *event;
+};
+
+static gboolean
+add_recurrances (CalComponent *comp,
+		 time_t start,
+		 time_t end,
+		 gpointer data)
+{
+	struct _RecurData *recur = data;
+	struct icaltimetype v, *p;
+	ESummaryCalEvent *event;
+
+	event = g_new (ESummaryCalEvent, 1);
+	v = icaltime_from_timet_with_zone (start, FALSE, recur->summary->tz);
+	p = g_new (struct icaltimetype, 1);
+
+	event->dt.value = p;
+
+	p->year = v.year;
+	p->month = v.month;
+	p->day = v.day;
+	p->hour = v.hour;
+	p->minute = v.minute;
+	p->second = v.second;
+	p->is_utc = v.is_utc;
+	p->is_date = v.is_date;
+	p->is_daylight = v.is_daylight;
+	p->zone = v.zone;
+	
+	event->dt.tzid = recur->summary->timezone;
+	event->comp = comp;
+	event->uid = g_strdup (recur->event->uid);
+	event->zone = recur->summary->tz;
+
+	gtk_object_ref (GTK_OBJECT (comp));
+
+	g_ptr_array_add (recur->array, event);
+	return TRUE;
+}
+
 static GPtrArray *
 uids_to_array (ESummary *summary,
 	       CalClient *client,
-	       GList *uids)
+	       GList *uids,
+	       time_t begin,
+	       time_t end)
 {
 	GList *p;
 	GPtrArray *array;
@@ -187,17 +242,33 @@ uids_to_array (ESummary *summary,
 			continue;
 		}
 
-		cal_component_get_dtstart (event->comp, &event->dt);
+		if (cal_component_has_recurrences (event->comp) == TRUE) {
+			struct _RecurData *recur;
 
-		status = cal_client_get_timezone (client, event->dt.tzid, &event->zone);
-		if (status != CAL_CLIENT_GET_SUCCESS) {
-			gtk_object_unref (GTK_OBJECT (event->comp));
+			recur = g_new (struct _RecurData, 1);
+			recur->event = event;
+			recur->array = array;
+			recur->summary = summary;
+			cal_recur_generate_instances (event->comp, begin, end,
+						      add_recurrances, recur,
+						      cal_client_resolve_tzid_cb, client,
+						      recur->summary->tz);
+			g_free (recur);
+			g_free (event->uid);
 			g_free (event);
-			continue;
+		} else {
+			cal_component_get_dtstart (event->comp, &event->dt);
+			
+			status = cal_client_get_timezone (client, event->dt.tzid, &event->zone);
+			if (status != CAL_CLIENT_GET_SUCCESS) {
+				gtk_object_unref (GTK_OBJECT (event->comp));
+				g_free (event);
+				continue;
+			}
+			
+			icaltimezone_convert_time (event->dt.value, event->zone, summary->tz);
+			g_ptr_array_add (array, event);
 		}
-
-		icaltimezone_convert_time (event->dt.value, event->zone, summary->tz);
-		g_ptr_array_add (array, event);
 	}
 
 	qsort (array->pdata, array->len, sizeof (ESummaryCalEvent *), e_summary_calendar_event_sort_func);
@@ -231,6 +302,12 @@ generate_html (gpointer data)
 	char *tmp;
 	time_t t, begin, end, f;
 
+	/* Set the default timezone on the server. */
+	if (summary->tz) {
+		cal_client_set_default_timezone (calendar->client,
+						 summary->tz);
+	}
+
 	t = time (NULL);
 	begin = time_day_begin_with_zone (t, summary->tz);
 	switch (summary->preferences->days) {
@@ -239,18 +316,18 @@ generate_html (gpointer data)
 		break;
 
 	case E_SUMMARY_CALENDAR_FIVE_DAYS:
-		f = time_add_day (t, 5);
+		f = time_add_day_with_zone (t, 5, summary->tz);
 		end = time_day_end_with_zone (f, summary->tz);
 		break;
 	
 	case E_SUMMARY_CALENDAR_ONE_WEEK:
-		f = time_add_week (t, 1);
+		f = time_add_week_with_zone (t, 1, summary->tz);
 		end = time_day_end_with_zone (f, summary->tz);
 		break;
 
 	case E_SUMMARY_CALENDAR_ONE_MONTH:
 	default:
-		f = time_add_month (t, 1);
+		f = time_add_month_with_zone (t, 1, summary->tz);
 		end = time_day_end_with_zone (f, summary->tz);
 		break;
 	}
@@ -283,24 +360,23 @@ generate_html (gpointer data)
 		g_free (s);
 		g_string_append (string, "</a></b></dt><dd>");
 
-		uidarray = uids_to_array (summary, calendar->client, uids);
+		uidarray = uids_to_array (summary, calendar->client, uids, begin, end);
 		for (i = 0; i < uidarray->len; i++) {
 			ESummaryCalEvent *event;
 			CalComponentText text;
 			time_t start_t;
 			struct tm *start_tm;
-			char *start_str, *img;
+			char start_str[64], *start_str_utf, *img;
 
 			event = uidarray->pdata[i];
 			cal_component_get_summary (event->comp, &text);
 			start_t = icaltime_as_timet (*event->dt.value);
 
-			start_str = g_new (char, 20);
 			start_tm = localtime (&start_t);
 			if (calendar->wants24hr == TRUE) {
-				strftime (start_str, 19, _("%k%M %d %B"), start_tm);
+				strftime (start_str, sizeof start_str, _("%k:%M %d %B"), start_tm);
 			} else {
-				strftime (start_str, 19, _("%l:%M %d %B"), start_tm);
+				strftime (start_str, sizeof start_str, _("%l:%M %d %B"), start_tm);
 			}
 
 			if (cal_component_has_alarms (event->comp)) {
@@ -313,12 +389,13 @@ generate_html (gpointer data)
 				img = "new_appointment.xpm";
 			}
 
+			start_str_utf = e_utf8_from_locale_string (start_str);
 			tmp = g_strdup_printf ("<img align=\"middle\" src=\"%s\" "
 					       "alt=\"\" width=\"16\" height=\"16\">  &#160; "
 					       "<font size=\"-1\"><a href=\"calendar:/%s\">%s, %s</a></font><br>", 
 					       img,
-					       event->uid, start_str, text.value);
-			g_free (start_str);
+					       event->uid, start_str_utf, text.value);
+			g_free (start_str_utf);
 			
 			g_string_append (string, tmp);
 			g_free (tmp);
@@ -410,6 +487,7 @@ e_summary_calendar_init (ESummary *summary)
 	ESummaryCalendar *calendar;
 	gboolean result;
 	char *uri;
+	char *default_uri;
 
 	g_return_if_fail (summary != NULL);
 
@@ -417,8 +495,19 @@ e_summary_calendar_init (ESummary *summary)
 	summary->calendar = calendar;
 	calendar->html = NULL;
 
+	CORBA_exception_init (&ev);
+	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
+	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
+		CORBA_exception_free (&ev);
+		g_warning ("Error getting Wombat. Using defaults");
+		return;
+	}
+
+	CORBA_exception_free (&ev);
+
 	calendar->client = cal_client_new ();
 	if (calendar->client == NULL) {
+		bonobo_object_release_unref (db, NULL);
 		g_warning ("Error making the client");
 		return;
 	}
@@ -430,7 +519,12 @@ e_summary_calendar_init (ESummary *summary)
 	gtk_signal_connect (GTK_OBJECT (calendar->client), "obj-removed",
 			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
 
-	uri = gnome_util_prepend_user_home ("evolution/local/Calendar/calendar.ics");
+	default_uri = bonobo_config_get_string (db, "/Calendar/DefaultUri", NULL);
+	if (!default_uri)
+		uri = gnome_util_prepend_user_home ("evolution/local/Calendar/calendar.ics");
+	else
+		uri = g_strdup (default_uri);
+
 	result = cal_client_open_calendar (calendar->client, uri, FALSE);
 	g_free (uri);
 	if (result == FALSE) {
@@ -438,18 +532,9 @@ e_summary_calendar_init (ESummary *summary)
 	}
 	
 	e_summary_add_protocol_listener (summary, "calendar", e_summary_calendar_protocol, calendar);
-	
-	CORBA_exception_init (&ev);
-	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
-		CORBA_exception_free (&ev);
-		g_warning ("Error getting Wombat. Using defaults");
-		return;
-	}
 
 	calendar->wants24hr = bonobo_config_get_boolean_with_default (db, "/Calendar/Display/Use24HourFormat", locale_uses_24h_time_format (), NULL);
 	bonobo_object_release_unref (db, NULL);
-	CORBA_exception_free (&ev);
 }
 
 void

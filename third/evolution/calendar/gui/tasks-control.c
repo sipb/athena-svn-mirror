@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -246,12 +245,10 @@ static BonoboUIVerb verbs [] = {
 
 static EPixmap pixmaps [] = {
 	E_PIXMAP ("/menu/File/New/NewFirstItem/NewTask",            "new_task-16.png"),
-	E_PIXMAP ("/menu/Edit/Cut",                                 "16_cut.png"),
-	E_PIXMAP ("/menu/Edit/Copy",                                "16_copy.png"),
-	E_PIXMAP ("/menu/Edit/Paste",                               "16_paste.png"),
-	E_PIXMAP ("/menu/Edit/Delete",                              "evolution-trash-mini.png"),
-	E_PIXMAP ("/menu/File/Print/Print",                         "print.xpm"),
-	E_PIXMAP ("/menu/File/Print/Print Preview",                 "print-preview.xpm"),
+	E_PIXMAP ("/menu/EditPlaceholder/Edit/TasksCut",            "16_cut.png"),
+	E_PIXMAP ("/menu/EditPlaceholder/Edit/TasksCopy",           "16_copy.png"),
+	E_PIXMAP ("/menu/EditPlaceholder/Edit/TasksPaste",          "16_paste.png"),
+	E_PIXMAP ("/menu/EditPlaceholder/Edit/TasksDelete",         "evolution-trash-mini.png"),
 	E_PIXMAP ("/menu/Tools/ComponentPlaceholder/TasksSettings", "configure_16_calendar.xpm"),
 	E_PIXMAP ("/Toolbar/New",                                   "buttons/new_task.png"),
 	E_PIXMAP ("/Toolbar/Cut",                                   "buttons/cut.png"),

@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-i18n.h>
 
 #include "e-shell-constants.h"
 #include "e-shell-utils.h"
@@ -103,3 +103,39 @@ e_shell_get_icon_path (const char *icon_name,
 
 	return get_icon_path (icon_name);
 }
+
+
+gboolean
+e_shell_folder_name_is_valid (const char *name,
+			      const char **reason_return)
+{
+	if (name == NULL || *name == '\0') {
+		if (reason_return != NULL)
+			*reason_return = _("No folder name specified.");
+		return FALSE;
+	}
+	
+	/* GtkEntry is broken - if you hit KP_ENTER you get a \r inserted... */
+	if (strchr (name, '\r')) {
+		if (reason_return != NULL)
+			*reason_return = _("Folder name cannot contain the Return character.");
+		return FALSE;
+	}
+	
+	if (strchr (name, G_DIR_SEPARATOR) != NULL) {
+		if (reason_return != NULL)
+			*reason_return = _("Folder name cannot contain slashes.");
+		return FALSE;
+	}
+	
+	if (strcmp (name, ".") == 0 || strcmp (name, "..") == 0) {
+		if (reason_return != NULL)
+			*reason_return = _("'.' and '..' are reserved folder names.");
+		return FALSE;
+	}
+
+	*reason_return = NULL;
+	
+	return TRUE;
+}
+

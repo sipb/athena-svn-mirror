@@ -3,19 +3,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 /* What should hopefully be a fast mail parser */
@@ -211,6 +211,8 @@ struct _header_scan_state {
 
 	int fd;			/* input for a fd input */
 	CamelStream *stream;	/* or for a stream */
+
+	int ioerrno;		/* io error state */
 
 	/* for scanning input buffers */
 	char *realbuf;		/* the real buffer, SCAN_HEAD*2 + SCAN_BUF bytes */
@@ -944,6 +946,14 @@ int camel_mime_parser_fd(CamelMimeParser *m)
 	return s->fd;
 }
 
+/* Return errno of the parser, incase any error occured during processing */
+int camel_mime_parser_errno(CamelMimeParser *m)
+{
+	struct _header_scan_state *s = _PRIVATE(m);
+
+	return s->ioerrno;
+}
+
 /* ********************************************************************** */
 /*    Implementation							  */
 /* ********************************************************************** */
@@ -978,6 +988,8 @@ folder_read(struct _header_scan_state *s)
 		s->inptr = s->inbuf;
 		s->inend = s->inbuf+len+inoffset;
 		r(printf("content = %d '%.*s'\n",s->inend - s->inptr,  s->inend - s->inptr, s->inptr));
+	} else {
+		s->ioerrno = errno?errno:EIO;
 	}
 
 	g_assert(s->inptr<=s->inend);
@@ -1035,8 +1047,12 @@ folder_seek(struct _header_scan_state *s, off_t offset, int whence)
 		if (len>=0) {
 			s->inend = s->inbuf+len;
 			s->inend[0] = '\n';
-		} else
+		} else {
 			newoffset = -1;
+			s->ioerrno = errno?errno:EIO;
+		}
+	} else {
+		s->ioerrno = errno?errno:EIO;
 	}
 #ifdef PURIFY
 	inend_id = purify_watch(&s->inend);
@@ -1474,6 +1490,7 @@ folder_scan_init(void)
 
 	s->fd = -1;
 	s->stream = NULL;
+	s->ioerrno = 0;
 
 	s->outbuf = g_malloc(1024);
 	s->outptr = s->outbuf;
@@ -1523,8 +1540,10 @@ folder_scan_init_with_fd(struct _header_scan_state *s, int fd)
 			camel_object_unref((CamelObject *)s->stream);
 			s->stream = NULL;
 		}
+		s->ioerrno = 0;
 		return 0;
 	} else {
+		s->ioerrno = errno?errno:EIO;
 		return -1;
 	}
 }
@@ -1547,8 +1566,10 @@ folder_scan_init_with_stream(struct _header_scan_state *s, CamelStream *stream)
 			close(s->fd);
 			s->fd = -1;
 		}
+		s->ioerrno = 0;
 		return 0;
 	} else {
+		s->ioerrno = errno?errno:EIO;
 		return -1;
 	}
 }

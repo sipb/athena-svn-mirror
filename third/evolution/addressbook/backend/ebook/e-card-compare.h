@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,9 +38,22 @@ typedef enum {
 	E_CARD_MATCH_EXACT          = 4
 } ECardMatchType;
 
+typedef enum {
+	E_CARD_MATCH_PART_NOT_APPLICABLE   = -1,
+	E_CARD_MATCH_PART_NONE             = 0,
+	E_CARD_MATCH_PART_GIVEN_NAME       = 1<<0,
+	E_CARD_MATCH_PART_ADDITIONAL_NAME  = 1<<2,
+	E_CARD_MATCH_PART_FAMILY_NAME      = 1<<3
+} ECardMatchPart;
+
 typedef void (*ECardMatchQueryCallback) (ECard *card, ECard *match, ECardMatchType type, gpointer closure);
 
-ECardMatchType e_card_compare_name_to_string (ECard *card, const gchar *str);
+ECardMatchType e_card_compare_name_to_string      (ECard *card, const gchar *str);
+
+ECardMatchType e_card_compare_name_to_string_full (ECard *card, const gchar *str,
+						   gboolean allow_partial_matches,
+						   gint *matched_parts, ECardMatchPart *first_matched_part,
+						   gint *matched_character_count);
 
 ECardMatchType e_card_compare_name      (ECard *card1, ECard *card2);
 ECardMatchType e_card_compare_nickname  (ECard *card1, ECard *card2);

@@ -8,9 +8,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#include <errno.h>
+
+#include <gal/util/e-iconv.h>
+
 #include "hash-table-utils.h"
 #include "camel-mime-parser.h"
 #include "camel-stream-mem.h"
@@ -213,7 +217,7 @@ process_header(CamelMedium *medium, const char *header_name, const char *header_
 	case HEADER_DESCRIPTION: /* raw header->utf8 conversion */
 		g_free (mime_part->description);
 		if (mime_part->content_type)
-			charset = camel_charset_to_iconv(header_content_type_param(mime_part->content_type, "charset"));
+			charset = e_iconv_charset_name(header_content_type_param(mime_part->content_type, "charset"));
 		else
 			charset = NULL;
 		mime_part->description = g_strstrip (header_decode_string (header_value, charset));
@@ -312,11 +316,6 @@ get_headers (CamelMedium *medium)
 static void
 free_headers (CamelMedium *medium, GArray *gheaders)
 {
-	CamelMediumHeader *headers = (CamelMediumHeader *)gheaders->data;
-	int i;
-
-	for (i = 0; i < gheaders->len; i++)
-		g_free ((gpointer)headers[i].value);
 	g_array_free (gheaders, TRUE);
 }
 
@@ -666,6 +665,7 @@ construct_from_parser(CamelMimePart *dw, CamelMimeParser *mp)
 	const char *content;
 	char *buf;
 	int len;
+	int err;
 
 	d(printf("mime_part::construct_from_parser()\n"));
 
@@ -699,6 +699,13 @@ construct_from_parser(CamelMimePart *dw, CamelMimeParser *mp)
 #ifndef NO_WARNINGS
 #warning "Need to work out how to detect a (fatally) bad parse in the parser"
 #endif
+
+	err = camel_mime_parser_errno(mp);
+	if (err != 0) {
+		errno = err;
+		return -1;
+	}
+
 	return 0;
 }
 

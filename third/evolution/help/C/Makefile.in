@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -163,6 +163,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -224,7 +225,7 @@ figs =  	figures/calendar.png				figures/config-cal.png				figures/config-mail.p
 docname = evolution
 lang = C
 omffile = evolution-C.omf
-sgml_ents =  	apx-authors.sgml		apx-bugs.sgml			apx-gloss.sgml			config-encryption.sgml		config-prefs.sgml		config-sync.sgml		evolution-faq.sgml		menuref.sgml			preface.sgml			usage-calendar.sgml		usage-contact.sgml		usage-encryption.sgml		usage-exec-summary.sgml		usage-mail-org.sgml		usage-mail.sgml			usage-mainwindow.sgml		usage-print.sgml		usage-sync.sgml
+sgml_ents =  	apx-authors.sgml		apx-bugs.sgml			apx-gloss.sgml			config-prefs.sgml		config-sync.sgml		evolution-faq.sgml		menuref.sgml			preface.sgml			usage-calendar.sgml		usage-contact.sgml		usage-exec-summary.sgml		usage-mail-org.sgml		usage-mail.sgml			usage-mainwindow.sgml		usage-print.sgml		usage-sync.sgml
 
 
 docdir = $(datadir)/gnome/help/$(docname)/$(lang)
@@ -248,7 +249,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -455,7 +456,6 @@ uninstall-local:
 	-rmdir $(DESTDIR)$(docdir)/stylesheet-images
 	-rmdir $(DESTDIR)$(docdir)/figures
 	-rmdir $(DESTDIR)$(docdir)
-
 dist-hook: app-dist-hook
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

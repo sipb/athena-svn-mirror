@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -241,7 +242,7 @@ DIST_COMMON =  COPYING.LIB ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libibex_la_SOURCES) $(dumpindex_SOURCES) $(testindex_SOURCES)
 OBJECTS = $(libibex_la_OBJECTS) $(dumpindex_OBJECTS) $(testindex_OBJECTS)
@@ -374,6 +375,18 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+block.lo block.o : block.c block.h
+disktail.lo disktail.o : disktail.c block.h index.h
+dumpindex.o: dumpindex.c ibex_internal.h ../config.h \
+	../e-util/e-msgport.h ibex.h block.h wordindex.h index.h
+hash.lo hash.o : hash.c block.h index.h
+ibex_block.lo ibex_block.o : ibex_block.c ../config.h ibex_internal.h \
+	../e-util/e-msgport.h ibex.h block.h wordindex.h index.h
+testindex.o: testindex.c ibex_internal.h ../config.h \
+	../e-util/e-msgport.h ibex.h block.h wordindex.h index.h
+wordindex.lo wordindex.o : wordindex.c block.h index.h wordindex.h
+wordindexmem.lo wordindexmem.o : wordindexmem.c block.h index.h \
+	wordindex.h
 
 info-am:
 info: info-am

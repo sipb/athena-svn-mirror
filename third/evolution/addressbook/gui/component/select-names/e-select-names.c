@@ -4,9 +4,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,12 +37,15 @@
 #include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/gui/component/addressbook-component.h>
 #include <addressbook/gui/component/addressbook-storage.h>
+#include <addressbook/gui/component/addressbook.h>
 #include <shell/evolution-shell-client.h>
 
 #include "e-select-names.h"
 #include <addressbook/backend/ebook/e-card-simple.h>
 #include "e-select-names-table-model.h"
 #include <gal/widgets/e-categories-master-list-combo.h>
+#include <gal/widgets/e-unicode.h>
+#include <gal/e-text/e-entry.h>
 #include <e-util/e-categories-master-list-wombat.h>
 
 static void e_select_names_init		(ESelectNames		 *card);
@@ -138,9 +140,18 @@ static void
 addressbook_model_set_uri(EAddressbookModel *model, char *uri)
 {
 	EBook *book;
+
+	/* If uri == the current uri, then we don't have to do anything */
+	book = e_addressbook_model_get_ebook (model);
+	if (book) {
+		const gchar *current_uri = e_book_get_uri (book);
+		if (uri && current_uri && !strcmp (uri, current_uri))
+			return;
+	}
+
 	book = e_book_new();
 	gtk_object_ref(GTK_OBJECT(model));
-	e_book_load_uri(book, uri, (EBookCallback) set_book, model);
+	addressbook_load_uri(book, uri, (EBookCallback) set_book, model);
 }
 
 static void *
@@ -198,15 +209,16 @@ real_add_address_cb (int model_row, gpointer closure)
 
 	mapped_row = e_table_subset_view_to_model_row (E_TABLE_SUBSET (names->without), model_row);
 
-	card = e_addressbook_model_get_card(E_ADDRESSBOOK_MODEL(names->model), mapped_row);
+	card = e_addressbook_model_get_card (E_ADDRESSBOOK_MODEL(names->model), mapped_row);
+	
+	if (card != NULL) {
+		e_destination_set_card (dest, card, 0);
 
+		e_select_names_model_append (child->source, dest);
+		e_select_names_model_clean (child->source);
 
-	e_destination_set_card (dest, card, 0);
-
-	e_select_names_model_append (child->source, dest);
-	e_select_names_model_clean (child->source);
-
-	gtk_object_unref(GTK_OBJECT(card));
+		gtk_object_unref(GTK_OBJECT(card));
+	}
 }
 
 static void
@@ -235,6 +247,7 @@ esn_get_key_fn (ETableModel *source, int row, void *closure)
 	EAddressbookModel *model = E_ADDRESSBOOK_MODEL (closure);
 	ECard *card = e_addressbook_model_get_card (model, row);
 	void *key = card_key (card);
+	gtk_object_unref (GTK_OBJECT (card));
 	return key;
 }
 
@@ -343,13 +356,17 @@ add_menu_item		(gpointer	key,
 	ESelectNamesFolder *e_folder;
 	NamesAndMenu *nnm;
 	ESelectNames *e_select_names;
+	gchar *label;
 
 	nnm = user_data;
 	e_folder = value;
 	menu = nnm->menu;
 	e_select_names = nnm->names;
 
-	item = gtk_menu_item_new_with_label (e_folder->display_name);
+	label = e_utf8_to_locale_string (_(e_folder->display_name));
+	item = gtk_menu_item_new_with_label (label);
+	g_free (label);
+
 	gtk_menu_append (GTK_MENU (menu), item);
 	gtk_object_set_data (GTK_OBJECT (item), "EsnChoiceFolder", e_folder);
 
@@ -392,7 +409,8 @@ new_folder      (EvolutionStorageListener *storage_listener,
 		 const GNOME_Evolution_Folder *folder,
 		 ESelectNames *e_select_names)
 {
-	if (!strcmp(folder->type, "contacts")) {
+	if (!strcmp(folder->type, "contacts")
+	    || !strcmp(folder->type, "ldap-contacts")) {
 		ESelectNamesFolder *e_folder = g_new(ESelectNamesFolder, 1);
 		e_folder->description  = g_strdup(folder->description );
 		e_folder->display_name = g_strdup(folder->displayName);
@@ -402,20 +420,6 @@ new_folder      (EvolutionStorageListener *storage_listener,
 			e_folder->uri = g_strdup(folder->physicalUri);
 		g_hash_table_insert(e_select_names->folders,
 				    g_strdup(path), e_folder);
-		update_option_menu(e_select_names);
-	}
-}
-
-static void
-update_folder   (EvolutionStorageListener *storage_listener,
-		 const char *path,
-		 const char *display_name,
-		 ESelectNames *e_select_names)
-{
-	ESelectNamesFolder *e_folder = g_hash_table_lookup(e_select_names->folders, path);
-	if (e_folder) {
-		g_free(e_folder->display_name);
-		e_folder->display_name = g_strdup(e_folder->display_name);
 		update_option_menu(e_select_names);
 	}
 }
@@ -487,8 +491,6 @@ hookup_listener (ESelectNames *e_select_names,
 
 	gtk_signal_connect(GTK_OBJECT(listener), "new_folder",
 			   GTK_SIGNAL_FUNC(new_folder), e_select_names);
-	gtk_signal_connect(GTK_OBJECT(listener), "update_folder",
-			   GTK_SIGNAL_FUNC(update_folder), e_select_names);
 	gtk_signal_connect(GTK_OBJECT(listener), "removed_folder",
 			   GTK_SIGNAL_FUNC(removed_folder), e_select_names);
 
@@ -518,11 +520,19 @@ e_select_names_hookup_shell_listeners (ESelectNames *e_select_names)
 	if (storage == CORBA_OBJECT_NIL) {
 		GtkWidget *oh_shit;
 
-		oh_shit = gnome_error_dialog (_("Evolution is unable to get the addressbook local storage. "
-						"This may have been caused by the evolution-addressbook component crashing. "
-						"To help us better understand and ultimately resolve this problem, "
-						"please send an e-mail to Jon Trowbridge <trow@ximian.com> with a detailed description of "
-						"the circumstances under which this error occurred.  Thank you."));
+#if 0
+		oh_shit = gnome_error_dialog (_("Evolution is unable to get the addressbook local storage.\n"
+						"This may have been caused by the evolution-addressbook component crashing.\n"
+						"To help us better understand and ultimately resolve this problem,\n"
+						"please send an e-mail to Jon Trowbridge <trow@ximian.com> with a\n"
+						"detailed description of the circumstances under which this error\n"
+						"occurred.  Thank you."));
+#endif
+
+		oh_shit = gnome_error_dialog (_("Evolution is unable to get the addressbook local storage.\n"
+						"Under normal circumstances, this should never happen.\n"
+						"You may need to exit and restart Evolution in order to\n"
+						"correct this problem."));
 		gtk_widget_show (oh_shit);
 		return;
 	}
@@ -647,10 +657,15 @@ e_select_names_destroy (GtkObject *object)
 {
 	ESelectNames *e_select_names = E_SELECT_NAMES(object);
 
-	gtk_signal_disconnect_by_data(GTK_OBJECT(e_select_names->local_listener), e_select_names);
-	gtk_object_unref(GTK_OBJECT(e_select_names->local_listener));
-	gtk_signal_disconnect_by_data(GTK_OBJECT(e_select_names->other_contacts_listener), e_select_names);
-	gtk_object_unref(GTK_OBJECT(e_select_names->other_contacts_listener));
+	if (e_select_names->local_listener) {
+		gtk_signal_disconnect_by_data(GTK_OBJECT(e_select_names->local_listener), e_select_names);
+		gtk_object_unref(GTK_OBJECT(e_select_names->local_listener));
+	}
+
+	if (e_select_names->other_contacts_listener) {
+		gtk_signal_disconnect_by_data(GTK_OBJECT(e_select_names->other_contacts_listener), e_select_names);
+		gtk_object_unref(GTK_OBJECT(e_select_names->other_contacts_listener));
+	}
 
 	gtk_object_unref(GTK_OBJECT(e_select_names->gui));
 	g_hash_table_foreach(e_select_names->children, (GHFunc) e_select_names_child_free, e_select_names);
@@ -702,7 +717,6 @@ button_clicked(GtkWidget *button, ESelectNamesChild *child)
 static void
 remove_address(ETable *table, int row, int col, GdkEvent *event, ESelectNamesChild *child)
 {
-	g_message ("remove row %d", row);
 	e_select_names_model_delete (child->source, row);
 }
 
@@ -720,8 +734,7 @@ etable_selection_foreach_cb (int row, void *data)
 	/* Build a list of rows in reverse order, then remove them,
            necessary because otherwise it'll start trying to delete
            rows out of index in ETableModel */
-	selected_rows = g_slist_prepend (selected_rows,
-					 GINT_TO_POINTER (row));
+	selected_rows = g_slist_prepend (selected_rows, GINT_TO_POINTER (row));
 }
 
 static void
@@ -796,7 +809,7 @@ e_select_names_add_section(ESelectNames *e_select_names, char *name, char *id, E
 	child = g_new(ESelectNamesChild, 1);
 
 	child->names = e_select_names;
-	child->title = g_strdup(_(name));
+	child->title = e_utf8_from_locale_string(_(name));
 
 	e_select_names->child_count++;
 
@@ -804,8 +817,22 @@ e_select_names_add_section(ESelectNames *e_select_names, char *name, char *id, E
 
 	button = gtk_button_new ();
 
+	label = e_entry_new ();
+	gtk_object_set(GTK_OBJECT(label),
+		       "draw_background", FALSE,
+		       "draw_borders", FALSE,
+		       "draw_button", TRUE,
+		       "editable", FALSE,
+		       "text", "",
+		       "use_ellipsis", FALSE,
+		       "justification", GTK_JUSTIFY_CENTER,
+		       NULL);
+
 	label_text = g_strconcat (child->title, " ->", NULL);
-	label = gtk_label_new (label_text);
+	gtk_object_set (GTK_OBJECT (label),
+			"text", label_text,
+			"emulate_label_resize", TRUE,
+			NULL);
 	g_free (label_text);
 	gtk_container_add (GTK_CONTAINER (button), label);
 	child->label = label;
@@ -910,7 +937,9 @@ e_select_names_set_default (ESelectNames *e_select_names,
 	if (e_select_names->def) {
 		child = g_hash_table_lookup(e_select_names->children, e_select_names->def);
 		if (child)
-			gtk_widget_restore_default_style(child->label);
+			gtk_object_set (GTK_OBJECT (E_ENTRY (child->label)->item),
+					"bold", FALSE,
+					NULL);
 	}
 
 	g_free(e_select_names->def);
@@ -918,25 +947,9 @@ e_select_names_set_default (ESelectNames *e_select_names,
 
 	if (e_select_names->def) {
 		child = g_hash_table_lookup(e_select_names->children, e_select_names->def);
-		if (child) {
-			EFont *efont;
-			GdkFont *gdkfont;
-			GtkStyle *style, *oldstyle;
-
-			oldstyle = gtk_widget_get_style(child->label);
-			style = gtk_style_copy(oldstyle);
-
-			efont = e_font_from_gdk_font(style->font);
-			gdkfont = e_font_to_gdk_font(efont, E_FONT_BOLD);
-			e_font_unref(efont);
-
-			gdk_font_ref(gdkfont);
-			gdk_font_unref(style->font);
-			style->font = gdkfont;
-
-			gtk_widget_set_style(child->label, style);
-
-			gtk_style_unref(oldstyle);
-		}
+		if (child)
+			gtk_object_set (GTK_OBJECT (E_ENTRY (child->label)->item),
+					"bold", TRUE,
+					NULL);
 	}
 }

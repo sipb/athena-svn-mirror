@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -88,6 +88,7 @@ typedef enum {
 	SEND_RECEIVE,		/* receiver */
 	SEND_SEND,		/* sender */
 	SEND_UPDATE,		/* imap-like 'just update folder info' */
+	SEND_INVALID
 } send_info_t ;
 
 typedef enum {
@@ -115,6 +116,7 @@ struct _send_info {
 };
 
 static struct _send_data *send_data = NULL;
+static GtkWidget *send_recv_dialogue = NULL;
 
 static struct _send_data *setup_send_data(void)
 {
@@ -256,6 +258,9 @@ static send_info_t get_receive_type(const char *url)
 	CamelProvider *provider;
 
 	provider = camel_session_get_provider (session, url, NULL);
+	if (!provider)
+		return SEND_INVALID;
+	
 	if (provider->flags & CAMEL_PROVIDER_IS_STORAGE)
 		return SEND_UPDATE;
 	else
@@ -278,9 +283,8 @@ build_dialogue (GSList *sources, CamelFolder *outbox, const char *destination)
 	struct _send_info *info;
 	char *pretty_url; 
 	
-	data = setup_send_data ();
-	
-	gd = (GnomeDialog *)gnome_dialog_new (_("Send & Receive Mail"), NULL);
+	gd = (GnomeDialog *)send_recv_dialogue = gnome_dialog_new (_("Send & Receive Mail"), NULL);
+	gtk_signal_connect((GtkObject *)gd, "destroy", gtk_widget_destroyed, &send_recv_dialogue);
 	gnome_dialog_append_button_with_pixmap (gd, _("Cancel All"), GNOME_STOCK_BUTTON_CANCEL);
 	
 	gtk_window_set_policy (GTK_WINDOW (gd), FALSE, FALSE, FALSE);  
@@ -288,6 +292,9 @@ build_dialogue (GSList *sources, CamelFolder *outbox, const char *destination)
 	
 	table = (GtkTable *)gtk_table_new (g_slist_length (sources), 4, FALSE);
        	gtk_box_pack_start (GTK_BOX (gd->vbox), GTK_WIDGET (table), TRUE, TRUE, 0);
+
+	/* must bet setup after send_recv_dialogue as it may re-trigger send-recv button */
+	data = setup_send_data ();
 	
 	row = 0;
 	while (sources) {
@@ -301,8 +308,16 @@ build_dialogue (GSList *sources, CamelFolder *outbox, const char *destination)
 		/* see if we have an outstanding download active */
 		info = g_hash_table_lookup (data->active, source->url);
 		if (info == NULL) {
+			send_info_t type;
+			
+			type = get_receive_type (source->url);
+			if (type == SEND_INVALID) {
+				sources = sources->next;
+				continue;
+			}
+			
 			info = g_malloc0 (sizeof (*info));
-			info->type = get_receive_type(source->url);
+			info->type = type;
 			d(printf("adding source %s\n", source->url));
 			
 			info->uri = g_strdup (source->url);
@@ -358,7 +373,7 @@ build_dialogue (GSList *sources, CamelFolder *outbox, const char *destination)
 	row++;
 	gtk_widget_show_all (GTK_WIDGET (table));
 	
-	if (outbox) {
+	if (outbox && destination) {
 		info = g_hash_table_lookup (data->active, destination);
 		if (info == NULL) {
 			info = g_malloc0 (sizeof (*info));
@@ -566,7 +581,7 @@ receive_get_folder(CamelFilterDriver *d, const char *uri, void *data, CamelExcep
 		camel_object_ref((CamelObject *)oldinfo->folder);
 		return oldinfo->folder;
 	}
-	folder = mail_tool_uri_to_folder(uri, ex);
+	folder = mail_tool_uri_to_folder (uri, 0, ex);
 	if (!folder)
 		return NULL;
 
@@ -615,15 +630,15 @@ void mail_send_receive (void)
 {
 	GSList *sources;
 	GList *scan;
-	static GtkWidget *gd = NULL;
 	struct _send_data *data;
 	extern CamelFolder *outbox_folder;
 	const MailConfigAccount *account;
 
-	if (gd != NULL) {
-		g_assert(GTK_WIDGET_REALIZED(gd));
-		gdk_window_show(gd->window);
-		gdk_window_raise(gd->window);
+	if (send_recv_dialogue != NULL) {
+		if (GTK_WIDGET_REALIZED(send_recv_dialogue)) {
+			gdk_window_show(send_recv_dialogue->window);
+			gdk_window_raise(send_recv_dialogue->window);
+		}
 		return;
 	}
 
@@ -640,8 +655,6 @@ void mail_send_receive (void)
 	   smtp one. */
 	data = build_dialogue(sources, outbox_folder, account->transport->url);
 	scan = data->infos;
-	gd = GTK_WIDGET(data->gd);
-	gtk_signal_connect((GtkObject *)gd, "destroy", gtk_widget_destroyed, &gd);
 	while (scan) {
 		struct _send_info *info = scan->data;
 
@@ -667,6 +680,8 @@ void mail_send_receive (void)
 			/* FIXME: error reporting? */
 			mail_get_store(info->uri, receive_update_got_store, info);
 			break;
+		default:
+			g_assert_not_reached ();
 		}
 		scan = scan->next;
 	}
@@ -708,11 +723,14 @@ static void auto_clean_set(void *key, struct _auto_data *info, GHashTable *set)
 
 /* call to setup initial, and after changes are made to the config */
 /* FIXME: Need a cleanup funciton for when object is deactivated */
-static void
-autoreceive_setup_list(GSList *sources, gboolean clear_absent)
+void
+mail_autoreceive_setup (void)
 {
 	GHashTable *set_hash;
-
+	GSList *sources;
+	
+	sources = mail_config_get_sources();
+	
 	if (!sources)
 		return;
 
@@ -754,26 +772,8 @@ autoreceive_setup_list(GSList *sources, gboolean clear_absent)
 		sources = sources->next;
 	}
 
-	if (clear_absent)
-		g_hash_table_foreach(set_hash, (GHFunc)auto_clean_set, auto_active);
+	g_hash_table_foreach(set_hash, (GHFunc)auto_clean_set, auto_active);
 	g_hash_table_destroy(set_hash);
-}
-
-void
-mail_autoreceive_setup (void)
-{
-	autoreceive_setup_list (mail_config_get_sources(), TRUE);
-}
-
-void
-mail_autoreceive_setup_account (MailConfigService *service)
-{
-	GSList list;
-
-	list.data = service;
-	list.next = NULL;
-
-	autoreceive_setup_list (&list, FALSE);
 }
 
 /* we setup the download info's in a hashtable, if we later need to build the gui, we insert
@@ -784,6 +784,7 @@ mail_receive_uri (const char *uri, int keep)
 	struct _send_info *info;
 	struct _send_data *data;
 	extern CamelFolder *outbox_folder;
+	send_info_t type;
 	
 	data = setup_send_data();
 	info = g_hash_table_lookup(data->active, uri);
@@ -794,8 +795,14 @@ mail_receive_uri (const char *uri, int keep)
 	
 	d(printf("starting non-interactive download of '%s'\n", uri));
 	
+	type = get_receive_type (uri);
+	if (type == SEND_INVALID) {
+		d(printf ("unsupported provider: '%s'\n", uri));
+		return;
+	}
+	
 	info = g_malloc0 (sizeof (*info));
-	info->type = get_receive_type(uri);
+	info->type = type;
 	info->bar = NULL;
 	info->status = NULL;
 	info->uri = g_strdup (uri);
@@ -832,5 +839,7 @@ mail_receive_uri (const char *uri, int keep)
 		/* FIXME: error reporting? */
 		mail_get_store (info->uri, receive_update_got_store, info);
 		break;
+	default:
+		g_assert_not_reached ();
 	}
 }

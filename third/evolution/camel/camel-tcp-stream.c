@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -25,6 +25,8 @@
 #endif
 
 #include "camel-tcp-stream.h"
+
+#define w(x)
 
 static CamelStreamClass *parent_class = NULL;
 
@@ -39,8 +41,7 @@ static gpointer tcp_get_socket (CamelTcpStream *stream);
 static void
 camel_tcp_stream_class_init (CamelTcpStreamClass *camel_tcp_stream_class)
 {
-	CamelStreamClass *camel_stream_class =
-		CAMEL_STREAM_CLASS (camel_tcp_stream_class);
+	/*CamelStreamClass *camel_stream_class = CAMEL_STREAM_CLASS (camel_tcp_stream_class);*/
 	
 	parent_class = CAMEL_STREAM_CLASS (camel_type_get_global_classfuncs (CAMEL_STREAM_TYPE));
 	
@@ -80,7 +81,7 @@ camel_tcp_stream_get_type (void)
 static int
 tcp_connect (CamelTcpStream *stream, struct hostent *host, int port)
 {
-	g_warning ("CamelTcpStream::connect called on default implementation\n");
+	w(g_warning ("CamelTcpStream::connect called on default implementation"));
 	return -1;
 }
 
@@ -106,7 +107,7 @@ camel_tcp_stream_connect (CamelTcpStream *stream, struct hostent *host, int port
 static int
 tcp_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 {
-	g_warning ("CamelTcpStream::getsockopt called on default implementation\n");
+	w(g_warning ("CamelTcpStream::getsockopt called on default implementation"));
 	return -1;
 }
 
@@ -132,7 +133,7 @@ camel_tcp_stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data)
 static int
 tcp_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 {
-	g_warning ("CamelTcpStream::setsockopt called on default implementation\n");
+	w(g_warning ("CamelTcpStream::setsockopt called on default implementation"));
 	return -1;
 }
 
@@ -158,7 +159,7 @@ camel_tcp_stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *dat
 static gpointer
 tcp_get_socket (CamelTcpStream *stream)
 {
-	g_warning ("CamelTcpStream::get_socket called on default implementation\n");
+	w(g_warning ("CamelTcpStream::get_socket called on default implementation"));
 	return NULL;
 }
 

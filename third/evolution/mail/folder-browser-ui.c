@@ -18,6 +18,7 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-ui-util.h>
 
+#include "widgets/misc/e-charset-picker.h"
 #include "widgets/menus/gal-view-menus.h" /* GalView stuff */
 #include <gal/menus/gal-view-factory-etable.h>
 #include <gal/menus/gal-view-etable.h>
@@ -28,7 +29,7 @@
 #include "folder-browser-ui.h"
 
 #include "evolution-shell-component-utils.h" /* Pixmap stuff */
-#include "camel/camel-vtrash-folder.h"       /* vtrash checking */
+
 
 /*
  * Add with 'folder_browser'
@@ -63,6 +64,9 @@ static BonoboUIVerb message_verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("MessageSearch", search_msg),
 	BONOBO_UI_UNSAFE_VERB ("MessageUndelete", undelete_msg),
 	BONOBO_UI_UNSAFE_VERB ("PrintMessage", print_msg),
+	BONOBO_UI_UNSAFE_VERB ("TextZoomIn", zoom_in),
+	BONOBO_UI_UNSAFE_VERB ("TextZoomOut", zoom_out),
+	BONOBO_UI_UNSAFE_VERB ("TextZoomReset", zoom_reset),
 	BONOBO_UI_UNSAFE_VERB ("PrintPreviewMessage", print_preview_msg),
 	BONOBO_UI_UNSAFE_VERB ("ToolsFilterMailingList", filter_mlist),
 	BONOBO_UI_UNSAFE_VERB ("ToolsFilterRecipient", filter_recipient),
@@ -170,19 +174,19 @@ static void ui_add (FolderBrowser *fb,
 		    EPixmap pixcache[])
 {
 	BonoboUIComponent *uic = fb->uicomp;
-	gchar *file;
-
+	char *file;
+	
 	bonobo_ui_component_add_verb_list_with_data (uic, verb, fb);
-
-	bonobo_ui_component_freeze (uic, NULL);
-
+	
+	/*bonobo_ui_component_freeze (uic, NULL);*/
+	
 	file = g_strconcat ("evolution-mail-", name, ".xml", NULL);
 	bonobo_ui_util_set_ui (uic, EVOLUTION_DATADIR, file, "evolution-mail");
 	g_free (file);
-
+	
 	e_pixmaps_update (uic, pixcache);
 	
-	bonobo_ui_component_thaw (uic, NULL);
+	/*bonobo_ui_component_thaw (uic, NULL);*/
 }
 
 /* more complex stuff */
@@ -253,9 +257,15 @@ folder_browser_setup_property_menu (FolderBrowser *fb,
 				    BonoboUIComponent *uic)
 {
 	char *name, *base = NULL;
+	CamelURL *url;
 
-	if (fb->uri)
-		base = g_basename (fb->uri);
+	url = camel_url_new(fb->uri, NULL);
+	if (url) {
+		if (url->fragment)
+			base = g_basename(url->fragment);
+		else
+			base = g_basename(url->path);
+	}
 
 	if (base && base [0] != 0)
 		name = g_strdup_printf (_("Properties for \"%s\""), base);
@@ -266,6 +276,11 @@ folder_browser_setup_property_menu (FolderBrowser *fb,
 		uic, "/menu/File/Folder/ComponentPlaceholder/ChangeFolderProperties",
 		"label", name, NULL);
 	g_free (name);
+
+	if (url)
+		camel_url_free(url);
+
+	fbui_sensitise_item(fb, "ChangeFolderProperties", (strncmp(fb->uri, "vfolder:", 8) == 0 || strncmp(fb->uri, "file:", 5) == 0));
 }
 
 /* Must be in the same order as MailConfigDisplayStyle */
@@ -284,11 +299,10 @@ folder_browser_ui_add_message (FolderBrowser *fb)
 	int state;
 	BonoboUIComponent *uic = fb->uicomp;
 	FolderBrowserSelectionState prev_state;
-		
+	
 	ui_add (fb, "message", message_verbs, message_pixcache);
-
+	
 	/* Display Style */
-
 	state = fb->mail_display->display_style;
 	bonobo_ui_component_set_prop (uic, message_display_styles[state],
 				      "state", "1", NULL);
@@ -298,17 +312,20 @@ folder_browser_ui_add_message (FolderBrowser *fb)
 	/* FIXME: this kind of bypasses bonobo but seems the only way when we change components */
 	folder_browser_set_message_display_style (uic, strrchr (message_display_styles[state], '/') + 1,
 						  Bonobo_UIComponent_STATE_CHANGED, "1", fb);
-
+	
 	/* Resend Message */
-
 	if (fb->folder && !folder_browser_is_sent (fb)) 
-		bonobo_ui_component_set_prop (uic, "/commands/MessageResend", "sensitive", "0", NULL);
-
+		fbui_sensitise_item(fb, "MessageResend", FALSE);
+	
 	/* sensitivity of message-specific commands */
-
 	prev_state = fb->selection_state;
 	fb->selection_state = FB_SELSTATE_UNDEFINED;
 	folder_browser_ui_set_selection_state (fb, prev_state);
+	
+	/* Charset picker */
+	e_charset_picker_bonobo_ui_populate (uic, "/menu/View", FB_DEFAULT_CHARSET,
+					     folder_browser_charset_changed,
+					     fb);
 }
 
 /*
@@ -328,8 +345,8 @@ folder_browser_ui_add_list (FolderBrowser *fb)
 	ui_add (fb, "list", list_verbs, list_pixcache);
 	
 	/* Hide Deleted */
-	if (fb->folder && CAMEL_IS_VTRASH_FOLDER (fb->folder)) {
-		bonobo_ui_component_set_prop (uic, "/commands/HideDeleted", "sensitive", "0", NULL);
+	if (fb->folder && (fb->folder->folder_flags & CAMEL_FOLDER_IS_TRASH)) {
+		fbui_sensitise_item(fb, "HideDeleted", FALSE);
 		state = FALSE;
 	} else {
 		state = mail_config_get_hide_deleted ();
@@ -379,7 +396,7 @@ folder_browser_ui_add_global (FolderBrowser *fb)
 	folder_browser_toggle_preview (uic, "", Bonobo_UIComponent_STATE_CHANGED, state ? "1" : "0", fb);
 	
 	/* Stop button */
-
+	/* TODO: Go through cache, but we can't becaus eof mail-mt.c:set_stop at the moment */
 	bonobo_ui_component_set_prop(uic, "/commands/MailStop", "sensitive", "0", NULL);
 }
 
@@ -397,6 +414,36 @@ folder_browser_ui_rm_all (FolderBrowser *fb)
 
 	bonobo_ui_component_rm (uic, "/", NULL);
  	bonobo_ui_component_unset_container (uic);
+
+	if (fb->sensitise_state) {
+		g_hash_table_destroy(fb->sensitise_state);
+		fb->sensitise_state = NULL;
+	}
+}
+
+void
+fbui_sensitise_item(FolderBrowser *fb, const char *item, int state)
+{
+	char *name;
+	int val;
+	char *key;
+
+	/* If this whole caching idea doesn't work, remove it here */
+	if (fb->sensitise_state == NULL)
+		fb->sensitise_state = g_hash_table_new(g_str_hash, g_str_equal);
+
+	if (g_hash_table_lookup_extended(fb->sensitise_state, item, (void **)&key, (void **)&val)) {
+		if (val == state)
+			return;
+	}
+
+	g_hash_table_insert(fb->sensitise_state, (char *)item, (void *)state);
+
+	if (fb->uicomp) {
+		name = alloca(strlen(item) + strlen("/commands/") + 1);
+		sprintf(name, "/commands/%s", item);
+		bonobo_ui_component_set_prop(fb->uicomp, name, "sensitive", state?"1":"0", NULL);
+	}
 }
 
 struct sensitize_data {
@@ -404,52 +451,35 @@ struct sensitize_data {
 	gboolean enable;
 };
 
-static void
-fbui_real_sensitize_items (BonoboUIComponent *uic, const char **items, gboolean enable)
-{
-	int i;
-	char name_buf[256]; /* this should really be large enough */
-	char *value;
-
-	if (enable)
-		value = "1";
-	else
-		value = "0";
-
-	for (i = 0; items[i]; i++) {
-		sprintf (name_buf, "/commands/%s", items[i]);
-		bonobo_ui_component_set_prop (uic, name_buf, "sensitive", value, NULL);
-	}
-}
-
 static gboolean
 fbui_sensitize_timeout (gpointer data)
 {
 	FolderBrowser *fb = FOLDER_BROWSER (data);
-	BonoboUIComponent *uic = fb->uicomp;
-	GSList *iter;
+	GSList *iter, *list;
 	struct sensitize_data *sd;
+	int i;
 
-	if (uic)
-		bonobo_ui_component_freeze (uic, NULL);
-	for (iter = fb->sensitize_changes; iter; iter = iter->next) {
-		sd = (struct sensitize_data *) iter->data;
-
-		/* if UIC == NULL, we could just return TRUE, but we don't
-		 * know when UIC is going to come back... when it does,
-		 * the UI stuff will be reset, so no problem.
-		 */
-
-		if (uic)
-			fbui_real_sensitize_items (uic, sd->items, sd->enable);
-		g_free (sd);
-	}
-	if (uic)
-		bonobo_ui_component_thaw (uic, NULL);
-
-	g_slist_free (fb->sensitize_changes);
+	list = fb->sensitize_changes;
 	fb->sensitize_changes = NULL;
+	iter = list;
 	fb->sensitize_timeout_id = 0;
+
+	gtk_object_ref((GtkObject *)fb);
+
+	/*bonobo_ui_component_freeze (uic, NULL);*/
+
+	for (; iter; iter = iter->next) {
+		sd = (struct sensitize_data *) iter->data;
+		for (i=0;sd->items[i];i++) {
+			if (fb->uicomp)
+				fbui_sensitise_item(fb, sd->items[i], sd->enable);
+		}
+		g_free(sd);
+	}
+
+	g_slist_free (list);
+	gtk_object_unref((GtkObject *)fb);
+
 	return FALSE;
 }
 
@@ -491,7 +521,6 @@ static const char *message_pane_enables[] = {
 	 * selected. */
 	"PrintMessage", "PrintPreviewMessage",
 	"ViewFullHeaders", "ViewLoadImages", "ViewNormal", "ViewSource",
-	
 	NULL
 };
 
@@ -543,6 +572,9 @@ folder_browser_ui_set_selection_state (FolderBrowser *fb, FolderBrowserSelection
 		NULL
 	};
 
+
+	fbui_sensitize_items (fb, message_pane_enables, state != FB_SELSTATE_NONE && fb->loaded_uid && fb->preview_shown);
+
 	/* assumes that all the appropriate XML's have been loaded */
 
 	if (state == fb->selection_state)
@@ -571,9 +603,6 @@ folder_browser_ui_set_selection_state (FolderBrowser *fb, FolderBrowserSelection
 		return;
 	}
 
-	if (fb->loaded_uid == NULL)
-		fbui_sensitize_items (fb, message_pane_enables, FALSE);
-
 	fb->selection_state = state;
 }
 
@@ -582,6 +611,6 @@ folder_browser_ui_message_loaded (FolderBrowser *fb)
 {
 	BonoboUIComponent *uic = fb->uicomp;
 
-	if (fb->loaded_uid == NULL && uic)
-		fbui_sensitize_items (fb, message_pane_enables, TRUE);
+	if (uic)
+		fbui_sensitize_items (fb, message_pane_enables, fb->loaded_uid && fb->preview_shown);
 }

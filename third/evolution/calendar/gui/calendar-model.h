@@ -5,10 +5,9 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -91,6 +90,8 @@ void		calendar_model_set_timezone	    (CalendarModel *model,
 void		calendar_model_set_default_category (CalendarModel	*model,
 						     const char		*default_category);
 
+void            calendar_model_set_status_message   (CalendarModel      *model,
+						     const char         *message);
 
 
 

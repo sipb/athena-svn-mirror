@@ -6,10 +6,9 @@
  * Authors: Miguel de Icaza <miguel@ximian.com>
  *          Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -114,7 +113,9 @@ alarm_ready_cb (gpointer data)
 	return FALSE;
 }
 
-/* Sets up a timeout for the next minute */
+/* Sets up a timeout for the next minute.  We do not need to be concerned with
+ * timezones here, as this is just a periodic check on the alarm queue.
+ */
 static void
 setup_timeout (time_t now)
 {

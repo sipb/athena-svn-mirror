@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,8 +43,11 @@ FilterRule *filter_rule_from_mlist(FilterContext *context, const char *mlist);
 
 /* easiest place to put this */
 
-void  filter_gui_add_from_message      (CamelMimeMessage *msg,
-					int               flags);
-void filter_gui_add_from_mlist (const char *mlist);
+void  filter_gui_add_from_message(CamelMimeMessage *msg, int flags);
+void filter_gui_add_from_mlist(const char *mlist);
+
+/* Also easiest place for these, we should really share a global rule context for this stuff ... */
+void mail_filter_rename_uri(CamelStore *store, const char *olduri, const char *newuri);
+void mail_filter_delete_uri(CamelStore *store, const char *uri);
 
 #endif

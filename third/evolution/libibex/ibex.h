@@ -3,18 +3,17 @@
  * Copyright (C) 2000 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public License
- * as published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with the Gnome Library; see the file COPYING.LIB.  If not,
- * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
 
@@ -43,6 +42,9 @@ int ibex_write (ibex *ib);
 
 /* only save if ibex has changed. */
 int ibex_save (ibex *ib);
+
+/* rename an ibex file to a new location */
+int ibex_move (ibex *ib, const char *newname);
 
 /* Write the ibex to disk if it has changed, and free all memory
  * associated with it.

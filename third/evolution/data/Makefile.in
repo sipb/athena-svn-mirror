@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -195,18 +196,21 @@ keys_DATA = $(keys_in_files:.keys.in=.keys)
 mimedir = $(datadir)/mime-info
 mime_DATA = evolution.mime
 
+@HAVE_KDE_APPLNK_TRUE@kdedesktopdir = $(KDE_APPLNK_DIR)/Applications
+@HAVE_KDE_APPLNK_TRUE@kdedesktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
 EXTRA_DIST = $(desktop_in_files) $(keys_in_files) $(mime_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(desktop_DATA) $(keys_DATA) $(mime_DATA)
+DATA =  $(desktop_DATA) $(kdedesktop_DATA) $(keys_DATA) $(mime_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -235,6 +239,25 @@ uninstall-desktopDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(desktop_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
+	done
+
+install-kdedesktopDATA: $(kdedesktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(kdedesktopdir)
+	@list='$(kdedesktop_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(kdedesktopdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(kdedesktopdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(kdedesktopdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(kdedesktopdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-kdedesktopDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(kdedesktop_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(kdedesktopdir)/$$p; \
 	done
 
 install-keysDATA: $(keys_DATA)
@@ -304,22 +327,23 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-desktopDATA install-keysDATA install-mimeDATA
+install-data-am: install-desktopDATA install-kdedesktopDATA \
+		install-keysDATA install-mimeDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-desktopDATA uninstall-keysDATA \
-		uninstall-mimeDATA
+uninstall-am: uninstall-desktopDATA uninstall-kdedesktopDATA \
+		uninstall-keysDATA uninstall-mimeDATA
 uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(desktopdir) $(DESTDIR)$(keysdir) \
-		$(DESTDIR)$(mimedir)
+	$(mkinstalldirs)  $(DESTDIR)$(desktopdir) $(DESTDIR)$(kdedesktopdir) \
+		$(DESTDIR)$(keysdir) $(DESTDIR)$(mimedir)
 
 
 mostlyclean-generic:
@@ -350,7 +374,8 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-desktopDATA install-desktopDATA uninstall-keysDATA \
+.PHONY: uninstall-desktopDATA install-desktopDATA \
+uninstall-kdedesktopDATA install-kdedesktopDATA uninstall-keysDATA \
 install-keysDATA uninstall-mimeDATA install-mimeDATA tags distdir \
 info-am info dvi-am dvi check check-am installcheck-am installcheck \
 install-exec-am install-exec install-data-am install-data install-am \

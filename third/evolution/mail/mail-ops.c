@@ -10,9 +10,8 @@
  * Copyright 2000,2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,6 +32,7 @@
 #include <errno.h>
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-unicode.h>
+#include <gal/util/e-unicode-i18n.h>
 #include <camel/camel-mime-filter-from.h>
 #include <camel/camel-operation.h>
 #include <camel/camel-vtrash-folder.h>
@@ -44,14 +44,14 @@
 #include "composer/e-msg-composer.h"
 #include "folder-browser.h"
 #include "e-util/e-html-utils.h"
-#include "e-util/e-unicode-i18n.h"
 
 #include "filter/filter-filter.h"
 
 #include "mail-mt.h"
 #include "mail-folder-cache.h"
 
-#define d(x) x
+#define w(x)
+#define d(x) 
 
 /* used for both just filtering a folder + uid's, and for filtering a whole folder */
 /* used both for fetching mail, and for filtering mail */
@@ -209,7 +209,8 @@ static char *
 uid_cachename_hack (CamelStore *store)
 {
 	CamelURL *url = CAMEL_SERVICE (store)->url;
-	char *encoded_url, *filename;
+	char *encoded_url, *filename, *old_location;
+	struct stat st;
 	
 	encoded_url = g_strdup_printf ("pop://%s%s%s@%s/", url->user,
 				       url->authmech ? ";auth=" : "",
@@ -217,7 +218,26 @@ uid_cachename_hack (CamelStore *store)
 				       url->host);
 	e_filename_make_safe (encoded_url);
 	
-	filename = g_strdup_printf ("%s/config/cache-%s", evolution_dir, encoded_url);
+	filename = g_strdup_printf ("%s/mail/pop3/cache-%s", evolution_dir, encoded_url);
+	
+	/* lame hack, but we can't expect user's to actually migrate
+           their cache files - brain power requirements are too
+           high. */
+	if (stat (filename, &st) == -1) {
+		/* This is either the first time the user has checked
+                   mail with this POP provider or else their cache
+                   file is in the old location... */
+		old_location = g_strdup_printf ("%s/config/cache-%s", evolution_dir, encoded_url);
+		if (stat (old_location, &st) == -1) {
+			/* old location doesn't exist either so use the new location */
+			g_free (old_location);
+		} else {
+			/* old location exists, so I guess we use the old cache file location */
+			g_free (filename);
+			filename = old_location;
+		}
+	}
+	
 	g_free (encoded_url);
 	
 	return filename;
@@ -399,14 +419,15 @@ extern CamelFolder *sent_folder;
 
 /* send 1 message to a specific transport */
 static void
-mail_send_message(CamelMimeMessage *message, const char *destination, CamelFilterDriver *driver, CamelException *ex)
+mail_send_message (CamelMimeMessage *message, const char *destination,
+		   CamelFilterDriver *driver, CamelException *ex)
 {
 	CamelMessageInfo *info;
 	CamelTransport *xport = NULL;
+	char *transport_url = NULL;
+	char *sent_folder_uri = NULL;
 	CamelFolder *folder;
-	const char *version, *header;
-	gchar *acct_header;
-	char *transport_url = NULL, *sent_folder_uri = NULL;
+	const char *version;
 	XEvolution *xev;
 	
 	if (SUB_VERSION[0] == '\0')
@@ -416,39 +437,36 @@ mail_send_message(CamelMimeMessage *message, const char *destination, CamelFilte
 	camel_medium_add_header (CAMEL_MEDIUM (message), "X-Mailer", version);
 	camel_mime_message_set_date (message, CAMEL_MESSAGE_DATE_CURRENT, 0);
 	
-	/* Get information about the account this was composed by. */
-	acct_header = g_strdup (camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Account"));
-	if (acct_header) {
+	xev = mail_tool_remove_xevolution_headers (message);
+	
+	if (xev->transport) {
+		transport_url = g_strstrip (g_strdup (xev->transport));
+	} else if (xev->account) {
 		const MailConfigAccount *account;
+		char *name;
 		
-		account = mail_config_get_account_by_name (acct_header);
-		if (account) {
+		name = g_strstrip (g_strdup (xev->account));
+		account = mail_config_get_account_by_name (name);
+		g_free (name);
+		
+		if (account && account->transport && account->transport->url)
 			transport_url = g_strdup (account->transport->url);
-			sent_folder_uri = g_strdup (account->sent_folder_uri);
-		}
 	}
 	
-	if (!transport_url) {
-		header = camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Transport");
-		if (header)
-			transport_url = g_strstrip (g_strdup (header));
-	}
-	
-	if (!sent_folder_uri) {
-		header = camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Fcc");
-		if (header)
-			sent_folder_uri = g_strstrip (g_strdup (header));
-	}
+	if (xev->fcc)
+		sent_folder_uri = g_strstrip (g_strdup (xev->fcc));
 	
 	xport = camel_session_get_transport (session, transport_url ? transport_url : destination, ex);
 	g_free (transport_url);
 	if (!xport) {
+		mail_tool_restore_xevolution_headers (message, xev);
+		mail_tool_destroy_xevolution (xev);
 		g_free (sent_folder_uri);
 		return;
 	}
 	
-	xev = mail_tool_remove_xevolution_headers (message);
 	camel_transport_send (xport, CAMEL_MEDIUM (message), ex);
+	
 	mail_tool_restore_xevolution_headers (message, xev);
 	mail_tool_destroy_xevolution (xev);
 	
@@ -462,33 +480,26 @@ mail_send_message(CamelMimeMessage *message, const char *destination, CamelFilte
 	info = camel_message_info_new ();
 	info->flags = CAMEL_MESSAGE_SEEN;
 	
-	/* Re-attach account header */
-	if (acct_header) {
-		camel_medium_add_header (CAMEL_MEDIUM (message), "X-Evolution-Account", acct_header);
-		g_free (acct_header);
-	}
-	
 	if (driver) {
 		camel_filter_driver_filter_message (driver, message, info,
 						    NULL, NULL, NULL, "", ex);
 		
 		if (camel_exception_is_set (ex)) {
-			char *description;
 			ExceptionId id;
 			
 			id = camel_exception_get_id (ex);
-			description = g_strdup (camel_exception_get_description (ex));
-			camel_exception_setv (ex, id, "%s\n%s", description,
+			camel_exception_setv (ex, id, "%s\n%s", camel_exception_get_description (ex),
 					      _("However, the message was successfully sent."));
-			g_free (description);
 			
 			camel_message_info_free (info);
+			g_free (sent_folder_uri);
+			
 			return;
 		}
 	}
 	
 	if (sent_folder_uri) {
-		folder = mail_tool_uri_to_folder (sent_folder_uri, NULL);
+		folder = mail_tool_uri_to_folder (sent_folder_uri, 0, NULL);
 		g_free (sent_folder_uri);
 		if (!folder) {
 			/* FIXME */
@@ -503,14 +514,11 @@ mail_send_message(CamelMimeMessage *message, const char *destination, CamelFilte
 	if (folder) {
 		camel_folder_append_message (folder, message, info, ex);
 		if (camel_exception_is_set (ex)) {
-			char *description;
 			ExceptionId id;
 			
 			id = camel_exception_get_id (ex);
-			description = g_strdup (camel_exception_get_description (ex));
-			camel_exception_setv (ex, id, "%s\n%s", description,
+			camel_exception_setv (ex, id, "%s\n%s", camel_exception_get_description (ex),
 					      _("However, the message was successfully sent."));
-			g_free (description);
 		}
 		
 		camel_folder_sync (folder, FALSE, NULL);
@@ -574,7 +582,8 @@ static void
 send_mail_free (struct _mail_msg *mm)
 {
 	struct _send_mail_msg *m = (struct _send_mail_msg *)mm;
-	
+
+	camel_object_unref (CAMEL_OBJECT (m->driver));
 	camel_object_unref (CAMEL_OBJECT (m->message));
 	g_free (m->destination);
 }
@@ -848,6 +857,7 @@ struct _transfer_msg {
 	GPtrArray *uids;
 	gboolean delete;
 	char *dest_uri;
+	guint32 dest_flags;
 	
 	void (*done)(gboolean ok, void *data);
 	void *data;
@@ -872,7 +882,17 @@ transfer_messages_transfer (struct _mail_msg *mm)
 	void (*func) (CamelFolder *, GPtrArray *, 
 		      CamelFolder *, 
 		      CamelException *);
-	
+
+	dest = mail_tool_uri_to_folder (m->dest_uri, m->dest_flags, &mm->ex);
+	if (camel_exception_is_set (&mm->ex))
+		return;
+
+	if (dest == m->source) {
+		camel_object_unref((CamelObject *)dest);
+		/* no-op */
+		return;
+	}
+
 	if (m->delete) {
 		func = camel_folder_move_messages_to;
 		desc = _("Moving");
@@ -880,10 +900,6 @@ transfer_messages_transfer (struct _mail_msg *mm)
 		func = camel_folder_copy_messages_to;
 		desc = _("Copying");
 	}
-	
-	dest = mail_tool_uri_to_folder (m->dest_uri, &mm->ex);
-	if (camel_exception_is_set (&mm->ex))
-		return;
 	
 	camel_folder_freeze (m->source);
 	camel_folder_freeze (dest);
@@ -951,6 +967,7 @@ void
 mail_transfer_messages (CamelFolder *source, GPtrArray *uids,
 			gboolean delete_from_source,
 			const char *dest_uri,
+			guint32 dest_flags,
 			void (*done) (gboolean ok, void *data),
 			void *data)
 {
@@ -966,6 +983,7 @@ mail_transfer_messages (CamelFolder *source, GPtrArray *uids,
 	m->uids = uids;
 	m->delete = delete_from_source;
 	m->dest_uri = g_strdup (dest_uri);
+	m->dest_flags = dest_flags;
 	m->done = done;
 	m->data = data;
 	
@@ -1014,7 +1032,10 @@ add_vtrash_info (CamelStore *store, CamelFolderInfo *info)
 	/* create our vTrash URL */
 	url = camel_url_new (info->url, NULL);
 	path = g_strdup_printf ("/%s", CAMEL_VTRASH_NAME);
-	camel_url_set_path (url, path);
+	if (url->fragment)
+		camel_url_set_fragment (url, path);
+	else
+		camel_url_set_path (url, path);
 	g_free (path);
 	uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
 	camel_url_free (url);
@@ -1086,8 +1107,8 @@ get_folderinfo_got (struct _mail_msg *mm)
 		char *url;
 		
 		url = camel_service_get_url (CAMEL_SERVICE (m->store));
-		g_warning ("Error getting folder info from store at %s: %s",
-			   url, camel_exception_get_description (&mm->ex));
+		w(g_warning ("Error getting folder info from store at %s: %s",
+			     url, camel_exception_get_description (&mm->ex)));
 		g_free (url);
 	}
 	
@@ -1202,6 +1223,7 @@ struct _get_folder_msg {
 	struct _mail_msg msg;
 
 	char *uri;
+	guint32 flags;
 	CamelFolder *folder;
 	void (*done) (char *uri, CamelFolder *folder, void *data);
 	void *data;
@@ -1220,7 +1242,7 @@ get_folder_get (struct _mail_msg *mm)
 {
 	struct _get_folder_msg *m = (struct _get_folder_msg *)mm;
 	
-	m->folder = mail_tool_uri_to_folder (m->uri, &mm->ex);
+	m->folder = mail_tool_uri_to_folder (m->uri, m->flags, &mm->ex);
 }
 
 static void
@@ -1250,13 +1272,16 @@ static struct _mail_msg_op get_folder_op = {
 };
 
 int
-mail_get_folder (const char *uri, void (*done)(char *uri, CamelFolder *folder, void *data), void *data, EThread *thread)
+mail_get_folder (const char *uri, guint32 flags,
+		 void (*done)(char *uri, CamelFolder *folder, void *data),
+		 void *data, EThread *thread)
 {
 	struct _get_folder_msg *m;
 	int id;
 	
 	m = mail_msg_new(&get_folder_op, NULL, sizeof(*m));
 	m->uri = g_strdup (uri);
+	m->flags = flags;
 	m->data = data;
 	m->done = done;
 	
@@ -1364,7 +1389,7 @@ remove_folder_get (struct _mail_msg *mm)
 	
 	m->removed = FALSE;
 	
-	folder = mail_tool_uri_to_folder (m->uri, &mm->ex);
+	folder = mail_tool_uri_to_folder (m->uri, 0, &mm->ex);
 	if (!folder)
 		return;
 	
@@ -1372,9 +1397,11 @@ remove_folder_get (struct _mail_msg *mm)
 	
 	/* Delete every message in this folder, then expunge it */
 	uids = camel_folder_get_uids (folder);
+	camel_folder_freeze(folder);
 	for (i = 0; i < uids->len; i++)
 		camel_folder_delete_message (folder, uids->pdata[i]);
 	camel_folder_sync (folder, TRUE, NULL);
+	camel_folder_thaw(folder);
 	camel_folder_free_uids (folder, uids);
 	
 	/* if the store supports subscriptions, unsubscribe from this folder... */
@@ -1558,7 +1585,7 @@ mail_expunge_folder(CamelFolder *folder, void (*done) (CamelFolder *folder, void
 	m->data = data;
 	m->done = done;
 
-	e_thread_put(mail_thread_new, (EMsg *)m);
+	e_thread_put(mail_thread_queued, (EMsg *)m);
 }
 
 /* ** GET MESSAGE(s) ***************************************************** */

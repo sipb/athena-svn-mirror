@@ -5,9 +5,8 @@
  * Copyright (C) 1999, 2000 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -62,7 +61,10 @@ static void local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex
 static void local_expunge(CamelFolder *folder, CamelException *ex);
 
 static GPtrArray *local_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
+static GPtrArray *local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 static void local_search_free(CamelFolder *folder, GPtrArray * result);
+
+static void local_rename(CamelFolder *folder, const char *newname);
 
 static void local_finalize(CamelObject * object);
 
@@ -80,7 +82,10 @@ camel_local_folder_class_init(CamelLocalFolderClass * camel_local_folder_class)
 	camel_folder_class->expunge = local_expunge;
 
 	camel_folder_class->search_by_expression = local_search_by_expression;
+	camel_folder_class->search_by_uids = local_search_by_uids;
 	camel_folder_class->search_free = local_search_free;
+
+	camel_folder_class->rename = local_rename;
 
 	camel_local_folder_class->lock = local_lock;
 	camel_local_folder_class->unlock = local_unlock;
@@ -92,8 +97,8 @@ local_init(gpointer object, gpointer klass)
 	CamelFolder *folder = object;
 	CamelLocalFolder *local_folder = object;
 
-	folder->has_summary_capability = TRUE;
-	folder->has_search_capability = TRUE;
+	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
+				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
 	    CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
@@ -224,8 +229,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 	fi = g_new0 (CamelFolderInfo, 1);
 	fi->full_name = g_strdup (full_name);
 	fi->name = g_strdup (name);
-	fi->url = g_strdup_printf("%s:%s#%s", ((CamelService *)parent_store)->url->protocol,
-				  ((CamelService *)parent_store)->url->protocol, full_name);
+	fi->url = g_strdup_printf("%s:%s#%s", ((CamelService *)parent_store)->url->protocol, ((CamelService *)parent_store)->url->path, full_name);
 	fi->unread_message_count = camel_folder_get_unread_message_count(folder);
 	camel_folder_info_build_path(fi, '/');
 
@@ -294,12 +298,6 @@ local_sync(CamelFolder *folder, gboolean expunge, CamelException *ex)
 		camel_object_trigger_event(CAMEL_OBJECT(folder), "folder_changed", lf->changes);
 		camel_folder_change_info_clear(lf->changes);
 	}
-
-	/* force save of metadata */
-	if (lf->index)
-		ibex_save(lf->index);
-	if (folder->summary)
-		camel_folder_summary_save(folder->summary);
 }
 
 static void
@@ -310,6 +308,30 @@ local_expunge(CamelFolder *folder, CamelException *ex)
 	/* Just do a sync with expunge, serves the same purpose */
 	/* call the callback directly, to avoid locking problems */
 	CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(folder))->sync(folder, TRUE, ex);
+}
+
+static void
+local_rename(CamelFolder *folder, const char *newname)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+
+	d(printf("renaming local folder paths to '%s'\n", newname));
+
+	/* Sync? */
+
+	g_free(lf->folder_path);
+	g_free(lf->summary_path);
+	g_free(lf->index_path);
+	lf->folder_path = g_strdup_printf("%s/%s", lf->base_path, newname);
+	lf->summary_path = g_strdup_printf("%s/%s.ev-summary", lf->base_path, newname);
+	lf->index_path = g_strdup_printf("%s/%s.ibex", lf->base_path, newname);
+
+	/* FIXME: Poke some internals, sigh */
+	camel_folder_summary_set_filename(folder->summary, lf->summary_path);
+	g_free(((CamelLocalSummary *)folder->summary)->folder_path);
+	((CamelLocalSummary *)folder->summary)->folder_path = g_strdup(lf->folder_path);
+
+	parent_class->rename(folder, newname);
 }
 
 static GPtrArray *
@@ -336,6 +358,48 @@ local_search_by_expression(CamelFolder *folder, const char *expression, CamelExc
 	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
 
 	camel_folder_free_summary(folder, summary);
+
+	return matches;
+}
+
+static GPtrArray *
+local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+{
+	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER(folder);
+	GPtrArray *summary, *matches;
+	int i;
+
+	/* NOTE: could get away without the search lock by creating a new
+	   search object each time */
+
+	summary = g_ptr_array_new();
+	for (i=0;i<uids->len;i++) {
+		CamelMessageInfo *info;
+
+		info = camel_folder_get_message_info(folder, uids->pdata[i]);
+		if (info)
+			g_ptr_array_add(summary, info);
+	}
+
+	if (summary->len == 0)
+		return summary;
+
+	CAMEL_LOCAL_FOLDER_LOCK(folder, search_lock);
+
+	if (local_folder->search == NULL)
+		local_folder->search = camel_folder_search_new();
+
+	camel_folder_search_set_folder(local_folder->search, folder);
+	camel_folder_search_set_body_index(local_folder->search, local_folder->index);
+	camel_folder_search_set_summary(local_folder->search, summary);
+
+	matches = camel_folder_search_execute_expression(local_folder->search, expression, ex);
+
+	CAMEL_LOCAL_FOLDER_UNLOCK(folder, search_lock);
+
+	for (i=0;i<summary->len;i++)
+		camel_folder_free_message_info(folder, summary->pdata[i]);
+	g_ptr_array_free(summary, TRUE);
 
 	return matches;
 }

@@ -14,6 +14,7 @@ INCLUDES = -I.. -I$(srcdir)/.. 			 \
 	-I$(top_srcdir)/intl			 \
 	-I$(top_srcdir)/e-util			 \
 	$(CAMEL_CFLAGS)				 \
+	$(GNOME_INCLUDEDIR)			 \
 	$(KRB4_CFLAGS)				 \
 	$(NSPR_CFLAGS)				 \
 	$(NSS_CFLAGS)				 \
@@ -54,7 +55,6 @@ libcamel_la_SOURCES = 				\
 	camel-mime-filter-index.c		\
 	camel-mime-filter-linewrap.c		\
 	camel-mime-filter-save.c		\
-	camel-mime-filter-stripheader.c		\
 	camel-mime-filter.c			\
 	camel-mime-message.c			\
 	camel-mime-parser.c			\
@@ -140,7 +140,6 @@ libcamelinclude_HEADERS =			\
 	camel-mime-filter-index.h		\
 	camel-mime-filter-linewrap.h		\
 	camel-mime-filter-save.h		\
-	camel-mime-filter-stripheader.h		\
 	camel-mime-filter.h			\
 	camel-mime-message.h			\
 	camel-mime-parser.h			\

@@ -81,87 +81,6 @@ time_add_week (time_t time, int weeks)
 	return time_add_day (time, weeks * 7);
 }
 
-time_t
-time_add_month (time_t time, int months)
-{
-	struct tm *tm = localtime (&time);
-	time_t new_time;
-	int mday;
-
-	mday = tm->tm_mday;
-	
-	tm->tm_mon += months;
-	tm->tm_isdst = -1;
-	if ((new_time = mktime (tm)) == -1) {
-		g_message ("time_add_month(): mktime() could not handling adding %d months with\n",
-			   months);
-		print_time_t (time);
-		printf ("\n");
-		return time;
-	}
-	tm = localtime (&new_time);
-	if (tm->tm_mday < mday) {
-		tm->tm_mon--;
-		tm->tm_mday = time_days_in_month (tm->tm_year+1900, tm->tm_mon);
-		return new_time = mktime (tm);
-	}
-	else
-		return new_time;
-}
-
-time_t
-time_year_begin (time_t t)
-{
-	struct tm tm;
-
-	tm = *localtime (&t);
-	tm.tm_hour = 0;
-	tm.tm_min  = 0;
-	tm.tm_sec  = 0;
-	tm.tm_mon  = 0;
-	tm.tm_mday = 1;
-	tm.tm_isdst = -1;
-
-	return mktime (&tm);
-}
-
-time_t
-time_month_begin (time_t t)
-{
-	struct tm tm;
-
-	tm = *localtime (&t);
-	tm.tm_hour = 0;
-	tm.tm_min  = 0;
-	tm.tm_sec  = 0;
-	tm.tm_mday = 1;
-	tm.tm_isdst = -1;
-
-	return mktime (&tm);
-}
-
-/* Returns the start of the week. week_start_day should use the same values
-   as mktime(), i.e. 0 (Sun) to 6 (Sat). */
-time_t
-time_week_begin (time_t t, int week_start_day)
-{
-	struct tm tm;
-	int offset;
-
-	tm = *localtime (&t);
-
-	/* Calculate the current offset from the week start day. */
-	offset = (tm.tm_wday + 7 - week_start_day) % 7;
-
-	tm.tm_hour = 0;
-	tm.tm_min  = 0;
-	tm.tm_sec  = 0;
-	tm.tm_mday -= offset;
-	tm.tm_isdst = -1;
-
-	return mktime (&tm);
-}
-
 /* Returns the start of the day, according to the local time. */
 time_t
 time_day_begin (time_t t)
@@ -238,6 +157,11 @@ time_add_week_with_zone (time_t time, int weeks, icaltimezone *zone)
 
 /* Adds or subtracts a number of months to/from the given time_t value, using
    the given timezone.
+
+   If the day would be off the end of the month (e.g. adding 1 month to
+   30th January, would lead to an invalid day, 30th February), it moves it
+   down to the last day in the month, e.g. 28th Feb (or 29th in a leap year.)
+
    NOTE: this function is only here to make the transition to the timezone
    functions easier. New code should use icaltimetype values and
    icaltime_adjust() to add or subtract days, hours, minutes & seconds. */
@@ -245,6 +169,7 @@ time_t
 time_add_month_with_zone (time_t time, int months, icaltimezone *zone)
 {
 	struct icaltimetype tt;
+	int day, days_in_month;
 
 	/* Convert to an icaltimetype. */
 	tt = icaltime_from_timet_with_zone (time, FALSE, zone);
@@ -252,8 +177,20 @@ time_add_month_with_zone (time_t time, int months, icaltimezone *zone)
 	/* Add on the number of months. */
 	tt.month += months;
 
-	/* Normalize it, fixing any overflow. */
+	/* Save the day, and set it to 1, so we don't overflow into the next
+	   month. */
+	day = tt.day;
+	tt.day = 1;
+
+	/* Normalize it, fixing any month overflow. */
 	tt = icaltime_normalize (tt);
+
+	/* If we go past the end of a month, set it to the last day. */
+	days_in_month = time_days_in_month (tt.year, tt.month - 1);
+	if (day > days_in_month)
+		day = days_in_month;
+
+	tt.day = day;
 
 	/* Convert back to a time_t. */
 	return icaltime_as_timet_with_zone (tt, zone);
@@ -581,5 +518,83 @@ time_from_isodate (const char *str)
 	utc_zone = icaltimezone_get_utc_timezone ();
 
 	return icaltime_as_timet_with_zone (tt, utc_zone);
+}
+
+struct tm
+icaltimetype_to_tm (struct icaltimetype *itt)
+{
+	struct tm tm;
+	
+	memset (&tm, 0, sizeof (struct tm));
+
+	if (!itt->is_date) {
+		tm.tm_sec = itt->second;
+		tm.tm_min = itt->minute;
+		tm.tm_hour = itt->hour;
+	}
+
+	tm.tm_mday = itt->day;
+	tm.tm_mon = itt->month - 1;
+	tm.tm_year = itt->year - 1900;
+	tm.tm_wday = time_day_of_week (itt->day, itt->month - 1, itt->year);
+	tm.tm_isdst = -1;
+	
+	return tm;
+}
+
+/**
+ * icaltimetype_to_tm_with_zone:
+ * @itt: A time value.
+ * @from_zone: Source timezone.
+ * @to_zone: Destination timezone.
+ * 
+ * Converts a time value from one timezone to another, and returns a struct tm
+ * representation of the time.
+ * 
+ * Return value: The converted time as a struct tm.  All fields will be
+ * set properly except for tm.tm_yday.
+ **/
+struct tm
+icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
+			      icaltimezone *from_zone,
+			      icaltimezone *to_zone)
+{
+	struct tm tm;
+	struct icaltimetype itt_copy;
+
+	memset (&tm, 0, sizeof (tm));
+	tm.tm_isdst = -1;
+
+	g_return_val_if_fail (itt != NULL, tm);
+
+	itt_copy = *itt;
+
+	icaltimezone_convert_time (&itt_copy, from_zone, to_zone);
+	tm = icaltimetype_to_tm (&itt_copy);
+
+	return tm;
+}
+
+struct icaltimetype
+tm_to_icaltimetype (struct tm *tm, gboolean is_date)
+{
+	struct icaltimetype itt;
+
+	memset (&itt, 0, sizeof (struct icaltimetype));
+
+	if (!is_date) {
+		itt.second = tm->tm_sec;
+		itt.minute = tm->tm_min;
+		itt.hour = tm->tm_hour;
+	}
+
+	itt.day = tm->tm_mday;
+	itt.month = tm->tm_mon + 1;
+	itt.year = tm->tm_year+ 1900;
+    
+	itt.is_utc = 0;
+	itt.is_date = is_date; 
+	
+	return itt;
 }
 

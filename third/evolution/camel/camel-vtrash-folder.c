@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -53,6 +53,14 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *klass)
 	folder_class->move_messages_to = vtrash_move_messages_to;
 }
 
+static void
+camel_vtrash_folder_init (CamelVTrashFolder *vtrash)
+{
+	CamelFolder *folder = CAMEL_FOLDER (vtrash);
+
+	folder->folder_flags |= CAMEL_FOLDER_IS_TRASH;
+}
+
 CamelType
 camel_vtrash_folder_get_type (void)
 {
@@ -65,7 +73,7 @@ camel_vtrash_folder_get_type (void)
 					    sizeof (CamelVTrashFolderClass),
 					    (CamelObjectClassInitFunc) camel_vtrash_folder_class_init,
 					    NULL,
-					    NULL,
+					    (CamelObjectInitFunc) camel_vtrash_folder_init,
 					    NULL);
 	}
 	
@@ -73,7 +81,7 @@ camel_vtrash_folder_get_type (void)
 }
 
 /**
- * camel_vee_folder_new:
+ * camel_vtrash_folder_new:
  * @parent_store: the parent CamelVeeStore
  * @name: the vfolder name
  * @ex: a CamelException
@@ -124,7 +132,7 @@ vtrash_move_messages_to (CamelFolder *source, GPtrArray *uids, CamelFolder *dest
 		
 		if (dest == mi->folder) {
 			/* Just undelete the original message */
-			CF_CLASS (dest)->set_message_flags (dest, uids->pdata[i], CAMEL_MESSAGE_DELETED, 0);
+			camel_folder_set_message_flags (source, uids->pdata[i], CAMEL_MESSAGE_DELETED, 0);
 		} else {
 			/* This means that the user is trying to move the message
 			   from the vTrash to a folder other than the original. */

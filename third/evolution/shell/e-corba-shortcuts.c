@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -179,6 +178,12 @@ impl_addGroup (PortableServer_Servant servant,
 	corba_shortcuts = E_CORBA_SHORTCUTS (bonobo_object_from_servant (servant));
 	priv = corba_shortcuts->priv;
 
+	if (position == 0) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_GNOME_Evolution_Shortcuts_InvalidPosition, NULL);
+		return;
+	}
+
 	e_shortcuts_add_group (priv->shortcuts, position, name);
 }
 
@@ -192,6 +197,12 @@ impl_removeGroup (PortableServer_Servant servant,
 
 	corba_shortcuts = E_CORBA_SHORTCUTS (bonobo_object_from_servant (servant));
 	priv = corba_shortcuts->priv;
+
+	if (group_num == 0) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_GNOME_Evolution_Shortcuts_CannotRemove, NULL);
+		return;
+	}
 
 	e_shortcuts_remove_group (priv->shortcuts, group_num);
 }

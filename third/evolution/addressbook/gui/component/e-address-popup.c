@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,7 @@
  */
 
 #include <config.h>
+#include "addressbook.h"
 #include "e-address-popup.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
@@ -385,12 +385,13 @@ email_table_to_card (EMailTable *et)
 }
 
 static void
-email_table_save_card_cb (EBook *book, gpointer closure)
+email_table_save_card_cb (EBook *book, EBookStatus status, gpointer closure)
 {
 	ECard *card = E_CARD (closure);
 
 	if (book) {
 		e_book_commit_card (book, card, NULL, NULL);
+		gtk_object_unref (GTK_OBJECT (book));
 	}
 	gtk_object_unref (GTK_OBJECT (card));
 }
@@ -402,7 +403,14 @@ email_table_save_card_cb (EBook *book, gpointer closure)
 static gint
 add_card_idle_cb (gpointer closure)
 {
-	e_book_use_local_address_book (email_table_save_card_cb, closure);
+	EBook *book;
+
+	book = e_book_new ();
+	if (!addressbook_load_default_book (book, email_table_save_card_cb, closure)) {
+		gtk_object_unref (GTK_OBJECT (book));
+		email_table_save_card_cb (NULL, E_BOOK_STATUS_OTHER_ERROR, closure);
+	}
+
 	return 0;
 }
 
@@ -677,18 +685,41 @@ e_address_popup_init (EAddressPopup *pop)
 }
 
 static void
+e_address_popup_cleanup (EAddressPopup *pop)
+{
+	if (pop->card) {
+		gtk_object_unref (GTK_OBJECT (pop->card));
+		pop->card = NULL;
+	}
+
+	if (pop->scheduled_refresh) {
+		gtk_timeout_remove (pop->scheduled_refresh);
+		pop->scheduled_refresh = 0;
+	}
+
+	if (pop->query_tag) {
+		e_book_simple_query_cancel (pop->book, pop->query_tag);
+		pop->query_tag = 0;
+	}
+
+	if (pop->book) {
+		gtk_object_unref (GTK_OBJECT (pop->book));
+		pop->book = NULL;
+	}
+
+	g_free (pop->name);
+	pop->name = NULL;
+
+	g_free (pop->email);
+	pop->email = NULL;
+}
+
+static void
 e_address_popup_destroy (GtkObject *obj)
 {
 	EAddressPopup *pop = E_ADDRESS_POPUP (obj);
 
-	if (pop->card)
-		gtk_object_unref (GTK_OBJECT (pop->card));
-
-	if (pop->scheduled_refresh)
-		gtk_idle_remove (pop->scheduled_refresh);
-
-	g_free (pop->name);
-	g_free (pop->email);
+	e_address_popup_cleanup (pop);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		GTK_OBJECT_CLASS (parent_class)->destroy (obj);
@@ -745,7 +776,7 @@ e_address_popup_refresh_names (EAddressPopup *pop)
 }
 
 static gint
-refresh_idle_cb (gpointer ptr)
+refresh_timeout_cb (gpointer ptr)
 {
 	EAddressPopup *pop = E_ADDRESS_POPUP (ptr);
 	e_address_popup_refresh_names (pop);
@@ -757,7 +788,7 @@ static void
 e_address_popup_schedule_refresh (EAddressPopup *pop)
 {
 	if (pop->scheduled_refresh == 0)
-		pop->scheduled_refresh = gtk_idle_add (refresh_idle_cb, pop);
+		pop->scheduled_refresh = gtk_timeout_add (20, refresh_timeout_cb, pop);
 }
 
 /* If we are handed something of the form "Foo <bar@bar.com>",
@@ -849,6 +880,7 @@ e_address_popup_construct (EAddressPopup *pop)
 		GtkStyle *style = gtk_style_copy (gtk_widget_get_style (GTK_WIDGET (name_holder)));
 		style->bg[0] = color;
 		gtk_widget_set_style (GTK_WIDGET (name_holder), style);
+		gtk_style_unref (style);
 	}
 
 	pop->generic_view = gtk_frame_new (NULL);
@@ -900,10 +932,11 @@ emit_event (EAddressPopup *pop, const char *event)
 }
 
 static void
-contact_editor_cb (EBook *book, gpointer closure)
+contact_editor_cb (EBook *book, EBookStatus status, gpointer closure)
 {
 	EAddressPopup *pop = E_ADDRESS_POPUP (closure);
 	EContactEditor *ce = e_addressbook_show_contact_editor (book, pop->card, FALSE, TRUE);
+	e_address_popup_cleanup (pop);
 	emit_event (pop, "Destroy");
 	e_contact_editor_raise (ce);
 }
@@ -911,8 +944,14 @@ contact_editor_cb (EBook *book, gpointer closure)
 static void
 edit_contact_info_cb (EAddressPopup *pop)
 {
+	EBook *book;
 	emit_event (pop, "Hide");
-	e_book_use_local_address_book (contact_editor_cb, pop);
+
+	book = e_book_new ();
+	if (!addressbook_load_default_book (book, contact_editor_cb, pop)) {
+		gtk_object_unref (GTK_OBJECT (book));
+		contact_editor_cb (NULL, E_BOOK_STATUS_OTHER_ERROR, pop);
+	}
 }
 
 static void
@@ -950,6 +989,7 @@ add_contacts_cb (EAddressPopup *pop)
 			e_contact_quick_add_free_form (pop->email, NULL, NULL);
 
 	}
+	e_address_popup_cleanup (pop);
 	emit_event (pop, "Destroy");
 }
 
@@ -1014,6 +1054,7 @@ e_address_popup_ambiguous_email_add (EAddressPopup *pop, const GList *cards)
 		
 	card_picker_init (wiz, cards, pop->name, pop->email);
 
+	e_address_popup_cleanup (pop);
 	emit_event (pop, "Destroy");
 
 	gtk_container_add (GTK_CONTAINER (win), wiz->body);
@@ -1087,22 +1128,39 @@ query_cb (EBook *book, EBookSimpleQueryStatus status, const GList *cards, gpoint
 }
 
 static void
-start_query (EBook *book, gpointer closure)
+start_query (EBook *book, EBookStatus status, gpointer closure)
 {
 	EAddressPopup *pop = E_ADDRESS_POPUP (closure);
-
+	
 	if (pop->query_tag)
 		e_book_simple_query_cancel (book, pop->query_tag);
 
+	if (pop->book != book) {
+		gtk_object_ref (GTK_OBJECT (book));
+		if (pop->book)
+			gtk_object_unref (GTK_OBJECT (pop->book));
+		pop->book = book;
+	}
+		
 	pop->query_tag = e_book_name_and_email_query (book, pop->name, pop->email, query_cb, pop);
+
+	gtk_object_unref (GTK_OBJECT (pop));
 }
 
 static void
 e_address_popup_query (EAddressPopup *pop)
 {
+	EBook *book;
+
 	g_return_if_fail (pop && E_IS_ADDRESS_POPUP (pop));
 
-	e_book_use_local_address_book (start_query, pop);
+	book = e_book_new ();
+	gtk_object_ref (GTK_OBJECT (pop));
+
+	if (!addressbook_load_default_book (book, start_query, pop)) {
+		gtk_object_unref (GTK_OBJECT (book));
+		start_query (NULL, E_BOOK_STATUS_OTHER_ERROR, pop);
+	}
 }
 
 /** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **/

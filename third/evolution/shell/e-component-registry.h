@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -68,6 +67,9 @@ GList                         *e_component_registry_get_id_list          (ECompo
 
 EvolutionShellComponentClient *e_component_registry_get_component_by_id  (EComponentRegistry *component_registry,
 									  const char         *id);
+
+EvolutionShellComponentClient *e_component_registry_restart_component  (EComponentRegistry *component_registry,
+									const char         *id);
 
 #ifdef __cplusplus
 }

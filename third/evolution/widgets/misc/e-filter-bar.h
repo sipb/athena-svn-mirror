@@ -4,9 +4,8 @@
  * Author: Michael Zucchi <notzed@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -53,22 +52,23 @@ typedef struct _EFilterBarClass  EFilterBarClass;
 
 typedef void (*EFilterBarConfigRule)(EFilterBar *, FilterRule *rule, int id, const char *query, void *data);
 
-struct _EFilterBar
-{
+struct _EFilterBar {
 	ESearchBar parent;
-
+	
 	int menu_base, option_base;
 	GPtrArray *menu_rules, *option_rules;
 
+	ESearchBarItem *default_items;
+	
 	GtkWidget *save_dialogue; /* current save dialogue (so we dont pop up multiple ones) */
-
+	
 	FilterRule *current_query; /* as it says */
 	int setquery;		/* true when we're setting a query directly to advanced, so dont popup the dialogue */
-
+	
 	RuleContext *context;
 	char *systemrules;
 	char *userrules;
-
+	
 	EFilterBarConfigRule config;
 	void *config_data;
 };
@@ -105,9 +105,10 @@ const char * strings[] = {
 };
 #endif
 
-
-GtkType    e_filter_bar_get_type   (void);
-EFilterBar*e_filter_bar_new        (RuleContext *, const char *sys, const char *user, EFilterBarConfigRule config, void *data);
+
+GtkType     e_filter_bar_get_type (void);
+EFilterBar *e_filter_bar_new      (RuleContext *context, const char *systemrules, const char *userrules,
+				   EFilterBarConfigRule config, void *data);
 
 #ifdef __cplusplus
 }

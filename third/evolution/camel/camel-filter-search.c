@@ -6,19 +6,19 @@
  *  Copyright 2000 Ximian, Inc. (www.ximian.com)
  *  Copyright 2001 Ximian Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -33,6 +33,12 @@
 #include <regex.h>
 #include <string.h>
 #include <ctype.h>
+
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
+
+#include <gal/util/e-iconv.h>
 
 #include "e-util/e-sexp.h"
 
@@ -121,7 +127,7 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 
 		if (strcasecmp(name, "x-camel-mlist") == 0) {
 			header = camel_message_info_mlist(fms->info);
-			type = CAMEL_SEARCH_TYPE_ASIS;
+			type = CAMEL_SEARCH_TYPE_MLIST;
 		} else {
 			header = camel_medium_get_header(CAMEL_MEDIUM(fms->message), argv[0]->value.string);
 			if (strcasecmp("to", name) == 0 || strcasecmp("cc", name) == 0 || strcasecmp("from", name) == 0)
@@ -129,15 +135,14 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 			else {
 				ct = camel_mime_part_get_content_type(CAMEL_MIME_PART(fms->message));
 				if (ct)
-					charset = camel_charset_to_iconv(header_content_type_param(ct, "charset"));
+					charset = e_iconv_charset_name(header_content_type_param(ct, "charset"));
 			}
 		}
 
 		if (header) {
 			for (i=1; i<argc && !matched; i++) {
 				if (argv[i]->type == ESEXP_RES_STRING)
-					matched = camel_search_header_match(header, argv[i]->value.string,
-									    how, type, charset);
+					matched = camel_search_header_match(header, argv[i]->value.string, how, type, charset);
 			}
 		}
 	}
@@ -206,9 +211,7 @@ header_regex (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 	
 	if (argc > 1 && argv[0]->type == ESEXP_RES_STRING
 	    && (contents = camel_medium_get_header (CAMEL_MEDIUM (fms->message), argv[0]->value.string))
-	    && camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX |
-					       CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1,
-					       fms->ex) == 0) {
+	    && camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1, fms->ex) == 0) {
 		r->value.bool = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		regfree (&pattern);
 	} else
@@ -233,6 +236,7 @@ get_full_header (CamelMimeMessage *message)
 			else
 				g_string_append (str, ": ");
 			g_string_append (str, h->value);
+			g_string_append_c(str, '\n');
 		}
 	}
 	
@@ -249,8 +253,8 @@ header_full_regex (struct _ESExp *f, int argc, struct _ESExpResult **argv, Filte
 	regex_t pattern;
 	char *contents;
 	
-	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX |
-					    CAMEL_SEARCH_MATCH_ICASE, argc-1, argv+1, fms->ex) == 0) {
+	if (camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_NEWLINE,
+					   argc, argv, fms->ex) == 0) {
 		contents = get_full_header (fms->message);
 		r->value.bool = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		g_free (contents);
@@ -297,8 +301,8 @@ body_regex (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessag
 	ESExpResult *r = e_sexp_result_new(f, ESEXP_RES_BOOL);
 	regex_t pattern;
 	
-	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_ICASE |
-					    CAMEL_SEARCH_MATCH_REGEX, argc, argv, fms->ex) == 0) {
+	if (camel_search_build_match_regex(&pattern, CAMEL_SEARCH_MATCH_ICASE|CAMEL_SEARCH_MATCH_REGEX|CAMEL_SEARCH_MATCH_NEWLINE,
+					   argc, argv, fms->ex) == 0) {
 		r->value.bool = camel_search_message_body_contains ((CamelDataWrapper *)fms->message, &pattern);
 		regfree (&pattern);
 	} else

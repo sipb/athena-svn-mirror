@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -467,6 +466,11 @@ e_storage_async_xfer_folder (EStorage *storage,
 	g_return_if_fail (destination_path != NULL);
 	g_return_if_fail (g_path_is_absolute (destination_path));
 
+	if (strcmp (source_path, destination_path) == 0) {
+		(* callback) (storage, E_STORAGE_OK, data);
+		return;
+	}
+
 	if (remove_source) {
 		int destination_len;
 		int source_len;
@@ -502,6 +506,8 @@ e_storage_result_to_string (EStorageResult result)
 		return _("I/O error");
 	case E_STORAGE_NOSPACE:
 		return _("Not enough space to create the folder");
+	case E_STORAGE_NOTEMPTY:
+		return _("The folder is not empty");
 	case E_STORAGE_NOTFOUND:
 		return _("The specified folder was not found");
 	case E_STORAGE_NOTIMPLEMENTED:
@@ -516,6 +522,8 @@ e_storage_result_to_string (EStorageResult result)
 		return _("The specified folder cannot be modified or removed");
 	case E_STORAGE_CANTMOVETODESCENDANT:
 		return _("Cannot make a folder a child of one of its descendants");
+	case E_STORAGE_INVALIDNAME:
+		return _("Cannot create a folder with that name");
 	default:
 		return _("Unknown error");
 	}

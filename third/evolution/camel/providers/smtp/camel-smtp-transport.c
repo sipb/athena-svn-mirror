@@ -7,9 +7,8 @@
  * Copyright (C) 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,7 +39,6 @@
 #undef MIN
 #undef MAX
 #include "camel-mime-filter-crlf.h"
-#include "camel-mime-filter-stripheader.h"
 #include "camel-mime-filter-linewrap.h"
 #include "camel-stream-filter.h"
 #include "camel-smtp-transport.h"
@@ -950,9 +948,12 @@ static gboolean
 smtp_data (CamelSmtpTransport *transport, CamelMedium *message, gboolean has_8bit_parts, CamelException *ex)
 {
 	/* now we can actually send what's important :p */
-	gchar *cmdbuf, *respbuf = NULL;
+	char *cmdbuf, *respbuf = NULL;
 	CamelStreamFilter *filtered_stream;
-	CamelMimeFilter *crlffilter, *bccfilter;
+	CamelMimeFilter *crlffilter;
+	struct _header_raw *header;
+	GSList *h, *bcc = NULL;
+	int ret;
 	
 	/* if the message contains 8bit mime parts and the server
            doesn't support it, encode 8bit parts to the best
@@ -996,14 +997,35 @@ smtp_data (CamelSmtpTransport *transport, CamelMedium *message, gboolean has_8bi
 	
 	/* setup stream filtering */
 	crlffilter = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
-	bccfilter = camel_mime_filter_stripheader_new ("Bcc");
 	filtered_stream = camel_stream_filter_new_with_stream (transport->ostream);
-	camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (bccfilter));
 	camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (crlffilter));
-	camel_object_unref (CAMEL_OBJECT (bccfilter));
 	camel_object_unref (CAMEL_OBJECT (crlffilter));
 	
-	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (filtered_stream)) == -1) {
+	/* copy and remove the bcc headers */
+	header = CAMEL_MIME_PART (message)->headers;
+	while (header) {
+		if (!g_strcasecmp (header->name, "Bcc"))
+			bcc = g_slist_append (bcc, g_strdup (header->value));
+		header = header->next;
+	}
+	
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
+	
+	/* write the message */
+	ret = camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (filtered_stream));
+	
+	/* add the bcc headers back */
+	if (bcc) {
+		h = bcc;
+		while (h) {
+			camel_medium_add_header (CAMEL_MEDIUM (message), "Bcc", h->data);
+			g_free (h->data);
+			h = h->next;
+		}
+		g_slist_free (bcc);
+	}
+	
+	if (ret == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("DATA send timed out: message termination: "
 					"%s: mail not sent"),

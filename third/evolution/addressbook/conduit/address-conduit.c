@@ -7,10 +7,9 @@
  * Authors: Eskil Heyn Olsen <deity@eskil.dk> 
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,6 +45,7 @@
 
 #include "address-conduit.h"
 
+static void free_local (EAddrLocalRecord *local);
 GnomePilotConduit * conduit_get_gpilot_conduit (guint32);
 void conduit_destroy_gpilot_conduit (GnomePilotConduit*);
 
@@ -83,6 +83,53 @@ typedef struct
 	ECard *card;
 	CardObjectChangeType type;
 } CardObjectChange;
+
+enum {
+	LABEL_WORK,
+	LABEL_HOME,
+	LABEL_FAX,
+	LABEL_OTHER,
+	LABEL_EMAIL,
+	LABEL_MAIN,
+	LABEL_PAGER,
+	LABEL_MOBILE
+};
+
+static ECardSimpleField priority [] = {
+	E_CARD_SIMPLE_FIELD_PHONE_BUSINESS,
+	E_CARD_SIMPLE_FIELD_PHONE_HOME,
+	E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX,
+	E_CARD_SIMPLE_FIELD_EMAIL,
+	E_CARD_SIMPLE_FIELD_PHONE_PAGER,
+	E_CARD_SIMPLE_FIELD_PHONE_MOBILE,
+	E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_2,
+	E_CARD_SIMPLE_FIELD_PHONE_HOME_2,
+	E_CARD_SIMPLE_FIELD_PHONE_HOME_FAX,
+	E_CARD_SIMPLE_FIELD_EMAIL_2,
+	E_CARD_SIMPLE_FIELD_PHONE_OTHER,
+	E_CARD_SIMPLE_FIELD_PHONE_PRIMARY,
+	E_CARD_SIMPLE_FIELD_PHONE_OTHER_FAX,
+	E_CARD_SIMPLE_FIELD_EMAIL_3,
+	E_CARD_SIMPLE_FIELD_LAST
+};
+
+static int priority_label [] = {
+	LABEL_WORK,
+	LABEL_HOME,
+	LABEL_FAX,
+	LABEL_EMAIL,
+	LABEL_PAGER,
+	LABEL_MOBILE,
+	LABEL_WORK,
+	LABEL_HOME,
+	LABEL_FAX,
+	LABEL_EMAIL,
+	LABEL_OTHER,
+	LABEL_MAIN,
+	LABEL_FAX,
+	LABEL_EMAIL,
+	-1
+};
 
 /* Debug routines */
 static char *
@@ -130,30 +177,74 @@ static char *print_remote (GnomePilotRecord *remote)
 		    addr.entry[entryCompany] ?
 		    addr.entry[entryCompany] : "");
 
+	free_Address (&addr);
+
 	return buff;
 }
 
 /* Context Routines */
-static void
-e_addr_context_new (EAddrConduitContext **ctxt, guint32 pilot_id) 
+static EAddrConduitContext *
+e_addr_context_new (guint32 pilot_id) 
 {
-	*ctxt = g_new0 (EAddrConduitContext,1);
-	g_assert (ctxt!=NULL);
+	EAddrConduitContext *ctxt = g_new0 (EAddrConduitContext, 1);
 
-	addrconduit_load_configuration (&(*ctxt)->cfg, pilot_id);
+	addrconduit_load_configuration (&ctxt->cfg, pilot_id);
+
+	ctxt->ebook = NULL;
+	ctxt->cards = NULL;
+	ctxt->changed_hash = NULL;
+	ctxt->changed = NULL;
+	ctxt->locals = NULL;
+	ctxt->map = NULL;
+
+	return ctxt;
+}
+
+static gboolean
+e_addr_context_foreach_change (gpointer key, gpointer value, gpointer data) 
+{
+	g_free (key);
+
+	return TRUE;
 }
 
 static void
-e_addr_context_destroy (EAddrConduitContext **ctxt)
+e_addr_context_destroy (EAddrConduitContext *ctxt)
 {
-	g_return_if_fail (ctxt!=NULL);
-	g_return_if_fail (*ctxt!=NULL);
+	GList *l;
+	
+	g_return_if_fail (ctxt != NULL);
 
-	if ((*ctxt)->cfg != NULL)
-		addrconduit_destroy_configuration (&(*ctxt)->cfg);
+	if (ctxt->cfg != NULL)
+		addrconduit_destroy_configuration (&ctxt->cfg);
 
-	g_free (*ctxt);
-	*ctxt = NULL;
+	if (ctxt->ebook != NULL)
+		gtk_object_unref (GTK_OBJECT (ctxt->ebook));
+
+	if (ctxt->cards != NULL) {
+		for (l = ctxt->cards; l != NULL; l = l->next)
+			gtk_object_unref (GTK_OBJECT (l->data));
+		g_list_free (ctxt->cards);
+	}
+	
+	if (ctxt->changed_hash != NULL) {
+		g_hash_table_foreach_remove (ctxt->changed_hash, e_addr_context_foreach_change, NULL);
+		g_hash_table_destroy (ctxt->changed_hash);
+	}
+	
+	if (ctxt->changed != NULL)
+		g_list_free (ctxt->changed);
+	
+	if (ctxt->locals != NULL) {
+		for (l = ctxt->locals; l != NULL; l = l->next)
+			free_local (l->data);
+		g_list_free (ctxt->locals);
+	}
+
+	if (ctxt->map != NULL)
+		e_pilot_map_destroy (ctxt->map);
+
+	g_free (ctxt);
 }
 
 /* Addressbok Server routines */
@@ -194,7 +285,6 @@ cursor_cb (EBook *book, EBookStatus status, ECardCursor *cursor, gpointer closur
 			if (e_card_evolution_list (card))
 				continue;
 
-			gtk_object_ref (GTK_OBJECT (card));
 			ctxt->cards = g_list_append (ctxt->cards, card);
 		}
 
@@ -274,6 +364,218 @@ next_changed_item (EAddrConduitContext *ctxt, GList *changes)
 	return NULL;
 }
 
+static ECardSimpleField
+get_next_mail (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_EMAIL;
+	
+	switch (*field) {
+	case E_CARD_SIMPLE_FIELD_EMAIL:
+		return E_CARD_SIMPLE_FIELD_EMAIL_2;
+	case E_CARD_SIMPLE_FIELD_EMAIL_2:
+		return E_CARD_SIMPLE_FIELD_EMAIL_3;
+	default:
+	}
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_home (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_HOME;
+	
+	switch (*field) {
+	case E_CARD_SIMPLE_FIELD_PHONE_HOME:
+		return E_CARD_SIMPLE_FIELD_PHONE_HOME_2;
+	default:
+	}
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_work (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_BUSINESS;
+	
+	switch (*field) {
+	case E_CARD_SIMPLE_FIELD_PHONE_BUSINESS:
+		return E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_2;
+	default:
+	}
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_fax (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX;
+	
+	switch (*field) {
+	case E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX:
+		return E_CARD_SIMPLE_FIELD_PHONE_HOME_FAX;
+	case E_CARD_SIMPLE_FIELD_PHONE_HOME_FAX:
+		return E_CARD_SIMPLE_FIELD_PHONE_OTHER_FAX;
+	default:
+	}
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_other (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_OTHER;
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_main (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_PRIMARY;
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_pager (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_PAGER;
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static ECardSimpleField
+get_next_mobile (ECardSimpleField *field)
+{
+	if (field == NULL)
+		return E_CARD_SIMPLE_FIELD_PHONE_MOBILE;
+
+	return E_CARD_SIMPLE_FIELD_LAST;
+}
+
+static void
+get_next_init (ECardSimpleField *next_mail,
+	       ECardSimpleField *next_home,
+	       ECardSimpleField *next_work,
+	       ECardSimpleField *next_fax,
+	       ECardSimpleField *next_other,
+	       ECardSimpleField *next_main,
+	       ECardSimpleField *next_pager,
+	       ECardSimpleField *next_mobile)
+{	
+	*next_mail = get_next_mail (NULL);
+	*next_home = get_next_home (NULL);
+	*next_work = get_next_work (NULL);
+	*next_fax = get_next_fax (NULL);
+	*next_other = get_next_other (NULL);
+	*next_main = get_next_main (NULL);
+	*next_pager = get_next_pager (NULL);
+	*next_mobile = get_next_mobile (NULL);
+}
+
+static gboolean
+is_next_done (ECardSimpleField field)
+{
+	if (field == E_CARD_SIMPLE_FIELD_LAST)
+		return TRUE;
+	
+	return FALSE;
+}
+
+static gboolean
+is_syncable (EAddrConduitContext *ctxt, EAddrLocalRecord *local) 
+{	
+	ECardSimpleField next_mail, next_home, next_work, next_fax;
+	ECardSimpleField next_other, next_main, next_pager, next_mobile;
+	gboolean syncable = TRUE;
+	int i, l = 0;
+
+	/* See if there are fields we can't sync or not in priority order */
+	get_next_init (&next_mail, &next_home, &next_work, &next_fax,
+		       &next_other, &next_main, &next_pager, &next_mobile);
+	
+	for (i = entryPhone1; i <= entryPhone5 && syncable; i++) {
+		int phonelabel = local->addr->phoneLabel[i - entryPhone1];
+		const char *phone_str = local->addr->entry[i];
+		gboolean empty = !(phone_str && *phone_str);
+		
+		if (empty)
+			continue;
+		
+		for ( ; priority_label[l] != -1; l++)
+			if (phonelabel == priority_label[l])
+				break;
+
+		if (priority_label[l] == -1) {
+			syncable = FALSE;
+			continue;
+		}
+		
+		if (phonelabel == LABEL_EMAIL) {
+			if (is_next_done (next_mail) || next_mail != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_mail = get_next_mail (&next_mail);
+		} else if (phonelabel == LABEL_HOME) {
+			if (is_next_done (next_home) || next_home != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_home = get_next_home (&next_home);
+		} else if (phonelabel == LABEL_WORK) {
+			if (is_next_done (next_work) || next_work != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_work = get_next_work (&next_work);
+		} else if (phonelabel == LABEL_FAX) {
+			if (is_next_done (next_fax) || next_fax != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_fax = get_next_fax (&next_fax);
+		} else if (phonelabel == LABEL_OTHER) {
+			if (is_next_done (next_other) || next_other != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_other = get_next_other (&next_other);
+		} else if (phonelabel == LABEL_MAIN) {
+			if (is_next_done (next_main) || next_main != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_main = get_next_main (&next_main);
+		} else if (phonelabel == LABEL_PAGER) {
+			if (is_next_done (next_pager) || next_pager != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_pager = get_next_pager (&next_pager);
+		} else if (phonelabel == LABEL_MOBILE) {
+			if (is_next_done (next_mobile) || next_mobile != priority[l]) {
+				syncable = FALSE;
+				break;
+			}
+			next_mobile = get_next_mobile (&next_mobile);
+		}
+	}
+
+	return syncable;
+}
+
 static char *
 get_entry_text (struct Address address, int field)
 {
@@ -281,6 +583,15 @@ get_entry_text (struct Address address, int field)
 		return e_pilot_utf8_from_pchar (address.entry[field]);
 	
 	return g_strdup ("");
+}
+
+static void
+clear_entry_text (struct Address address, int field) 
+{
+	if (address.entry[field]) {
+		free (address.entry[field]);
+		address.entry[field] = NULL;
+	}
 }
 
 static void
@@ -311,11 +622,21 @@ compute_status (EAddrConduitContext *ctxt, EAddrLocalRecord *local, const char *
 	}
 }
 
+static void
+free_local (EAddrLocalRecord *local) 
+{
+	gtk_object_unref (GTK_OBJECT (local->ecard));
+	free_Address (local->addr);
+	g_free (local->addr);
+	g_free (local);
+}
+
 static GnomePilotRecord
 local_record_to_pilot_record (EAddrLocalRecord *local,
 			      EAddrConduitContext *ctxt)
 {
 	GnomePilotRecord p;
+	static char record[0xffff];
 	
 	g_assert (local->addr != NULL );
 	
@@ -328,7 +649,7 @@ local_record_to_pilot_record (EAddrLocalRecord *local,
 	p.secret = local->local.secret;
 
 	/* Generate pilot record structure */
-	p.record = g_new0 (char,0xffff);
+	p.record = record;
 	p.length = pack_Address (local->addr, p.record, 0xffff);
 
 	return p;	
@@ -340,6 +661,8 @@ local_record_from_ecard (EAddrLocalRecord *local, ECard *ecard, EAddrConduitCont
 	ECardSimple *simple;
 	const ECardDeliveryAddress *delivery;
 	int phone = entryPhone1;
+
+	gboolean syncable;
 	int i;
 	
 	g_return_if_fail (local != NULL);
@@ -349,7 +672,7 @@ local_record_from_ecard (EAddrLocalRecord *local, ECard *ecard, EAddrConduitCont
 	gtk_object_ref (GTK_OBJECT (ecard));
 	simple = e_card_simple_new (ecard);
 	
-	local->local.ID = e_pilot_map_lookup_pid (ctxt->map, ecard->id);
+	local->local.ID = e_pilot_map_lookup_pid (ctxt->map, ecard->id, TRUE);
 
 	compute_status (ctxt, local, ecard->id);
 
@@ -359,6 +682,7 @@ local_record_from_ecard (EAddrLocalRecord *local, ECard *ecard, EAddrConduitCont
          * we don't overwrite them 
 	 */
 	if (local->local.ID != 0) {
+		struct Address addr;
 		char record[0xffff];
 		int cat = 0;
 		
@@ -366,21 +690,27 @@ local_record_from_ecard (EAddrLocalRecord *local, ECard *ecard, EAddrConduitCont
 					ctxt->dbi->db_handle,
 					local->local.ID, &record, 
 					NULL, NULL, NULL, &cat) > 0) {
-			local->local.category = cat;			
-			unpack_Address (local->addr, record, 0xffff);
+			local->local.category = cat;
+			memset (&addr, 0, sizeof (struct Address));
+			unpack_Address (&addr, record, 0xffff);
+			for (i = 0; i < 5; i++) {
+				if (addr.entry[entryPhone1 + i])
+					local->addr->entry[entryPhone1 + i] = 
+						strdup (addr.entry[entryPhone1 + i]);
+				local->addr->phoneLabel[i] = addr.phoneLabel[i];
+			}
+			local->addr->showPhone = addr.showPhone;
+			free_Address (&addr);
 		}
 	}
 
 	if (ecard->name) {
-		if (ecard->name->given)
-			local->addr->entry[entryFirstname] = e_pilot_utf8_to_pchar (ecard->name->given);
-		if (ecard->name->family)
-			local->addr->entry[entryLastname] = e_pilot_utf8_to_pchar (ecard->name->family);
-		if (ecard->org)
-			local->addr->entry[entryCompany] = e_pilot_utf8_to_pchar (ecard->org);
-		if (ecard->title)
-			local->addr->entry[entryTitle] = e_pilot_utf8_to_pchar (ecard->title);
+		local->addr->entry[entryFirstname] = e_pilot_utf8_to_pchar (ecard->name->given);
+		local->addr->entry[entryLastname] = e_pilot_utf8_to_pchar (ecard->name->family);
 	}
+
+	local->addr->entry[entryCompany] = e_pilot_utf8_to_pchar (ecard->org);
+	local->addr->entry[entryTitle] = e_pilot_utf8_to_pchar (ecard->title);
 
 	delivery = e_card_simple_get_delivery_address (simple, E_CARD_SIMPLE_ADDRESS_ID_BUSINESS);
 	if (delivery) {
@@ -392,36 +722,75 @@ local_record_from_ecard (EAddrLocalRecord *local, ECard *ecard, EAddrConduitCont
 	}
 
 	/* Phone numbers */
-	for (i = 0; i <= 7 && phone <= entryPhone5; i++) {
-		const char *phone_str = NULL;
-		char *phonelabel = ctxt->ai.phoneLabels[i];
-		
-		if (!strcmp (phonelabel, "E-mail"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_EMAIL);
-		else if (!strcmp (phonelabel, "Home"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_HOME);
-		else if (!strcmp (phonelabel, "Work"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_BUSINESS);
-		else if (!strcmp (phonelabel, "Fax"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX);
-		else if (!strcmp (phonelabel, "Other"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_OTHER);
-		else if (!strcmp (phonelabel, "Main"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_PRIMARY);
-		else if (!strcmp (phonelabel, "Pager"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_PAGER);
-		else if (!strcmp (phonelabel, "Mobile"))
-			phone_str = e_card_simple_get_const (simple, E_CARD_SIMPLE_FIELD_PHONE_MOBILE);
-		
-		if (phone_str) {
-			local->addr->entry[phone] = e_pilot_utf8_to_pchar (phone_str);
-			local->addr->phoneLabel[phone - entryPhone1] = i;
-			phone++;
-		}		
-	}
-	for (; phone <= entryPhone5; phone++)
-		local->addr->phoneLabel[phone - entryPhone1] = phone - entryPhone1;
 
+	/* See if everything is syncable */
+	syncable = is_syncable (ctxt, local);
+	
+	if (syncable) {
+		INFO ("Syncable");
+
+		/* Sync by priority */
+		for (i = 0, phone = entryPhone1; 
+		     priority[i] != E_CARD_SIMPLE_FIELD_LAST && phone <= entryPhone5; i++) {
+			const char *phone_str;
+			
+			phone_str = e_card_simple_get_const (simple, priority[i]);
+			if (phone_str && *phone_str) {
+				clear_entry_text (*local->addr, phone);
+				local->addr->entry[phone] = e_pilot_utf8_to_pchar (phone_str);
+				local->addr->phoneLabel[phone - entryPhone1] = priority_label[i];
+				phone++;
+			}
+		}
+		for ( ; phone <= entryPhone5; phone++)
+			      local->addr->phoneLabel[phone - entryPhone1] = phone - entryPhone1;
+		local->addr->showPhone = 0;
+	} else {
+		ECardSimpleField next_mail, next_home, next_work, next_fax;
+		ECardSimpleField next_other, next_main, next_pager, next_mobile;
+
+		INFO ("Not Syncable");
+		get_next_init (&next_mail, &next_home, &next_work, &next_fax,
+			       &next_other, &next_main, &next_pager, &next_mobile);
+
+		/* Not completely syncable, so do the best we can */
+		for (i = entryPhone1; i <= entryPhone5; i++) {
+			int phonelabel = local->addr->phoneLabel[i - entryPhone1];
+			const char *phone_str = NULL;
+			
+			if (phonelabel == LABEL_EMAIL && !is_next_done (next_mail)) {
+				phone_str = e_card_simple_get_const (simple, next_mail);
+				next_mail = get_next_mail (&next_mail);
+			} else if (phonelabel == LABEL_HOME && !is_next_done (next_home)) {
+				phone_str = e_card_simple_get_const (simple, next_home);
+				next_home = get_next_home (&next_home);
+			} else if (phonelabel == LABEL_WORK && !is_next_done (next_work)) {
+				phone_str = e_card_simple_get_const (simple, next_work);
+				next_work = get_next_work (&next_work);
+			} else if (phonelabel == LABEL_FAX && !is_next_done (next_fax)) {
+				phone_str = e_card_simple_get_const (simple, next_fax);
+				next_fax = get_next_fax (&next_fax);
+			} else if (phonelabel == LABEL_OTHER && !is_next_done (next_other)) {
+				phone_str = e_card_simple_get_const (simple, next_other);
+				next_other = get_next_other (&next_other);
+			} else if (phonelabel == LABEL_MAIN && !is_next_done (next_main)) {
+				phone_str = e_card_simple_get_const (simple, next_main);
+				next_main = get_next_main (&next_main);
+			} else if (phonelabel == LABEL_PAGER && !is_next_done (next_pager)) {
+				phone_str = e_card_simple_get_const (simple, next_pager);
+				next_pager = get_next_pager (&next_pager);
+			} else if (phonelabel == LABEL_MOBILE && !is_next_done (next_mobile)) {
+				phone_str = e_card_simple_get_const (simple, next_mobile);
+				next_mobile = get_next_mobile (&next_mobile);
+			}
+			
+			if (phone_str && *phone_str) {
+				clear_entry_text (*local->addr, i);
+				local->addr->entry[i] = e_pilot_utf8_to_pchar (phone_str);
+			}
+		}
+	}
+	
 	/* Note */
 	local->addr->entry[entryNote] = e_pilot_utf8_to_pchar (ecard->note);
 
@@ -464,13 +833,13 @@ ecard_from_remote_record(EAddrConduitContext *ctxt,
 	struct Address address;
 	ECard *ecard;
 	ECardSimple *simple;
-	ECardDeliveryAddress delivery;
-	ECardAddrLabel label;
+	ECardName *name;
+	ECardDeliveryAddress *delivery;
+	ECardAddrLabel *label;
 	char *txt;
-	char *stringparts[3];
+	ECardSimpleField next_mail, next_home, next_work, next_fax;
+	ECardSimpleField next_other, next_main, next_pager, next_mobile;
 	int i;
-	ECardSimpleEmailId last_email;
-	ECardSimpleField last_business, last_home;
 
 	g_return_val_if_fail(remote!=NULL,NULL);
 	memset (&address, 0, sizeof (struct Address));
@@ -480,20 +849,26 @@ ecard_from_remote_record(EAddrConduitContext *ctxt,
 		ecard = e_card_new("");
 	else
 		ecard = e_card_duplicate (in_card);
+
+	/* Name */
+	name = e_card_name_copy (ecard->name);
+	name->given = get_entry_text (address, entryFirstname);
+	name->family = get_entry_text (address, entryLastname);
+
 	simple = e_card_simple_new (ecard);
+	txt = e_card_name_to_string (name);	
+	e_card_simple_set (simple, E_CARD_SIMPLE_FIELD_FULL_NAME, txt);
+	e_card_simple_set_name (simple, name);
 
-	/* Name and company */
-	i = 0;
-	if (address.entry[entryFirstname] && *address.entry[entryFirstname])
-		stringparts[i++] = address.entry[entryFirstname];
-	if (address.entry[entryLastname] && *address.entry[entryLastname])
-		stringparts[i++] = address.entry[entryLastname];
-	stringparts[i] = NULL;
+	/* File as */
+	if (!(txt && *txt))
+		e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_FILE_AS, 
+				  address.entry[entryCompany]);
 
-	txt = g_strjoinv (" ", stringparts);
-	e_card_simple_set (simple, E_CARD_SIMPLE_FIELD_FULL_NAME, e_pilot_utf8_from_pchar (txt));
 	g_free (txt);
+	e_card_name_unref (name);
 
+	/* Title and Company */
 	txt = get_entry_text (address, entryTitle);
 	e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_TITLE, txt);
 	g_free (txt);
@@ -503,79 +878,57 @@ ecard_from_remote_record(EAddrConduitContext *ctxt,
 	g_free (txt);
 
 	/* Address */
-	memset (&delivery, 0, sizeof (ECardDeliveryAddress));
-	delivery.flags = E_CARD_ADDR_WORK;
-	delivery.street = get_entry_text (address, entryAddress);
-	delivery.city = get_entry_text (address, entryCity);
-	delivery.region = get_entry_text (address, entryState);
-	delivery.country = get_entry_text (address, entryCountry);
-	delivery.code = get_entry_text (address, entryZip);
+	delivery = e_card_delivery_address_new ();
+	delivery->flags = E_CARD_ADDR_WORK;
+	delivery->street = get_entry_text (address, entryAddress);
+	delivery->city = get_entry_text (address, entryCity);
+	delivery->region = get_entry_text (address, entryState);
+	delivery->country = get_entry_text (address, entryCountry);
+	delivery->code = get_entry_text (address, entryZip);
 
-	label.flags = E_CARD_ADDR_WORK;
-	label.data = e_card_delivery_address_to_string (&delivery);
+	label = e_card_address_label_new ();
+	label->flags = E_CARD_ADDR_WORK;
+	label->data = e_card_delivery_address_to_string (delivery);
 
-	e_card_simple_set_address (simple, E_CARD_SIMPLE_ADDRESS_ID_BUSINESS, &label);
-	e_card_simple_set_delivery_address (simple, E_CARD_SIMPLE_ADDRESS_ID_BUSINESS, &delivery);
+	e_card_simple_set_address (simple, E_CARD_SIMPLE_ADDRESS_ID_BUSINESS, label);
+	e_card_simple_set_delivery_address (simple, E_CARD_SIMPLE_ADDRESS_ID_BUSINESS, delivery);
 
-	free (delivery.street);
-	free (delivery.city);
-	free (delivery.region);
-	free (delivery.country);
-	free (delivery.code);
-	g_free (label.data);
-
-	last_email = E_CARD_SIMPLE_EMAIL_ID_EMAIL;
-	last_business = E_CARD_SIMPLE_FIELD_PHONE_BUSINESS;
-	last_home = E_CARD_SIMPLE_FIELD_PHONE_HOME;
-
+	e_card_delivery_address_unref (delivery);
+	e_card_address_label_unref (label);
+	
 	/* Phone numbers */
+	get_next_init (&next_mail, &next_home, &next_work, &next_fax,
+		       &next_other, &next_main, &next_pager, &next_mobile);
+
 	for (i = entryPhone1; i <= entryPhone5; i++) {
-		char *phonelabel = ctxt->ai.phoneLabels[address.phoneLabel[i - entryPhone1]];
+		int phonelabel = address.phoneLabel[i - entryPhone1];
 		char *phonenum = get_entry_text (address, i);
-
-		if (!strcmp (phonelabel, "E-mail")) {
-			e_card_simple_set_email(simple, last_email, phonenum);
-
-			switch (last_email) {
-			case E_CARD_SIMPLE_EMAIL_ID_EMAIL:
-				last_email = E_CARD_SIMPLE_EMAIL_ID_EMAIL_2;
-				break;
-			case E_CARD_SIMPLE_EMAIL_ID_EMAIL_2:
-				last_email = E_CARD_SIMPLE_EMAIL_ID_EMAIL_3;
-				break;
-			default:
-				WARN ("ran out of email fields in ecard_from_remote_record!");
-			}
-		} else if (!strcmp (phonelabel, "Home")) {
-			e_card_simple_set(simple, last_home, phonenum);
-
-			switch (last_home) {
-			case E_CARD_SIMPLE_FIELD_PHONE_HOME:
-				last_home = E_CARD_SIMPLE_FIELD_PHONE_HOME_2;
-				break;
-			default:
-				WARN ("ran out of home phone fields in ecard_from_remote_record!");
-			}
-		} else if (!strcmp (phonelabel, "Work")) {
-			e_card_simple_set(simple, last_business, phonenum);
-			
-			switch (last_business) {
-			case E_CARD_SIMPLE_FIELD_PHONE_BUSINESS:
-				last_business = E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_2;
-				break;
-			default:
-				WARN ("ran out of home phone fields in ecard_from_remote_record!");
-			}
-		} else if (!strcmp (phonelabel, "Fax"))
-			e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX, phonenum);
-		else if (!strcmp (phonelabel, "Other"))
-			e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_PHONE_OTHER, phonenum);
-		else if (!strcmp (phonelabel, "Main"))
-			e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_PHONE_PRIMARY, phonenum);
-		else if (!strcmp (phonelabel, "Pager"))
-			e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_PHONE_PAGER, phonenum);
-		else if (!strcmp (phonelabel, "Mobile"))
-			e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_PHONE_MOBILE, phonenum);
+		
+		if (phonelabel == LABEL_EMAIL && !is_next_done (next_mail)) {
+			e_card_simple_set (simple, next_mail, phonenum);
+			next_mail = get_next_mail (&next_mail);
+		} else if (phonelabel == LABEL_HOME && !is_next_done (next_home)) {
+			e_card_simple_set (simple, next_home, phonenum);
+			next_home = get_next_home (&next_home);
+		} else if (phonelabel == LABEL_WORK && !is_next_done (next_work)) {
+			e_card_simple_set (simple, next_work, phonenum);
+			next_work = get_next_work (&next_work);
+		} else if (phonelabel == LABEL_FAX && !is_next_done (next_fax)) {
+			e_card_simple_set (simple, next_fax, phonenum);
+			next_fax = get_next_fax (&next_fax);
+		} else if (phonelabel == LABEL_OTHER && !is_next_done (next_other)) {
+			e_card_simple_set (simple, next_other, phonenum);
+			next_other = get_next_other (&next_other);
+		} else if (phonelabel == LABEL_MAIN && !is_next_done (next_main)) {
+			e_card_simple_set (simple, next_main, phonenum);
+			next_main = get_next_main (&next_main);
+		} else if (phonelabel == LABEL_PAGER && !is_next_done (next_pager)) {
+			e_card_simple_set (simple, next_pager, phonenum);
+			next_pager = get_next_pager (&next_pager);
+		} else if (phonelabel == LABEL_MOBILE && !is_next_done (next_mobile)) {
+			e_card_simple_set (simple, next_mobile, phonenum);
+			next_mobile = get_next_mobile (&next_mobile);
+		}
 		
 		g_free (phonenum);
 	}
@@ -596,16 +949,16 @@ ecard_from_remote_record(EAddrConduitContext *ctxt,
 static void
 check_for_slow_setting (GnomePilotConduit *c, EAddrConduitContext *ctxt)
 {
-	int count, map_count;
+	GnomePilotConduitStandard *conduit = GNOME_PILOT_CONDUIT_STANDARD (c);
+	int map_count;
 
-  	count = g_list_length (ctxt->cards);
-	map_count = g_hash_table_size (ctxt->map->pid_map);
-	
-	if (map_count == 0) {
-		GnomePilotConduitStandard *conduit;
-		LOG ("    doing slow sync\n");
-		conduit = GNOME_PILOT_CONDUIT_STANDARD (c);
+	map_count = g_hash_table_size (ctxt->map->pid_map);	
+	if (map_count == 0)
 		gnome_pilot_conduit_standard_set_slow (conduit, TRUE);
+
+	if (gnome_pilot_conduit_standard_get_slow (conduit)) {
+		ctxt->map->write_touched_only = TRUE;
+		LOG ("    doing slow sync\n");
 	} else {
 		LOG ("    doing fast sync\n");
 	}
@@ -662,9 +1015,12 @@ static void
 card_removed (EBookView *book_view, const char *id, EAddrConduitContext *ctxt)
 {
 	CardObjectChange *coc;
-
-	/* If its deleted but not in the map its probably a list */
-	if (e_pilot_map_lookup_pid (ctxt->map, id) == 0)
+	gboolean archived;
+	
+	archived = e_pilot_map_uid_is_archived (ctxt->map, id);
+	
+	/* If its deleted, not in the archive and not in the map its a list */
+	if (!archived && e_pilot_map_lookup_pid (ctxt->map, id, FALSE) == 0)
 		return;	
 	
 	coc = g_new0 (CardObjectChange, 1);
@@ -674,8 +1030,10 @@ card_removed (EBookView *book_view, const char *id, EAddrConduitContext *ctxt)
 
 	ctxt->changed = g_list_prepend (ctxt->changed, coc);
 	
-	if (!e_pilot_map_uid_is_archived (ctxt->map, id))
+	if (!archived)
 		g_hash_table_insert (ctxt->changed_hash, (gpointer)e_card_get_id (coc->card), coc);
+	else
+		e_pilot_map_remove_by_uid (ctxt->map, id);
 }
 
 static void
@@ -722,7 +1080,7 @@ pre_sync (GnomePilotConduit *conduit,
 
 	LOG ("---------------------------------------------------------\n");
 	LOG ("pre_sync: Addressbook Conduit v.%s", CONDUIT_VERSION);
-	g_message ("Addressbook Conduit v.%s", CONDUIT_VERSION);
+	/* g_message ("Addressbook Conduit v.%s", CONDUIT_VERSION); */
 
 	ctxt->dbi = dbi;	
 	ctxt->ebook = NULL;
@@ -742,7 +1100,7 @@ pre_sync (GnomePilotConduit *conduit,
 	change_id = g_strdup_printf ("pilot-sync-evolution-addressbook-%d", ctxt->cfg->pilot_id);
 	ctxt->changed_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	e_book_get_changes (ctxt->ebook, change_id, view_cb, ctxt);
-
+	
 	/* Force the view loading to be synchronous */
 	gtk_main ();
 	g_free (change_id);
@@ -769,6 +1127,9 @@ pre_sync (GnomePilotConduit *conduit,
 	g_free (buf);
 
   	check_for_slow_setting (conduit, ctxt);
+	if (ctxt->cfg->sync_type == GnomePilotConduitSyncTypeCopyToPilot
+	    || ctxt->cfg->sync_type == GnomePilotConduitSyncTypeCopyFromPilot)
+		ctxt->map->write_touched_only = TRUE;
 
 	return 0;
 }
@@ -781,7 +1142,6 @@ post_sync (GnomePilotConduit *conduit,
 	gchar *filename, *change_id;
 	
 	LOG ("post_sync: Address Conduit v.%s", CONDUIT_VERSION);
-	LOG ("---------------------------------------------------------\n");
 
 	filename = map_name (ctxt);
 	e_pilot_map_write (filename, ctxt->map);
@@ -794,6 +1154,8 @@ post_sync (GnomePilotConduit *conduit,
 	e_book_get_changes (ctxt->ebook, change_id, view_cb, ctxt);
 	g_free (change_id);
 	gtk_main ();
+
+	LOG ("---------------------------------------------------------\n");
 	
 	return 0;
 }
@@ -844,6 +1206,7 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 
 			*local = g_new0 (EAddrLocalRecord, 1);
   			local_record_from_ecard (*local, cards->data, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 
 			iterator = cards;
 		} else {
@@ -858,6 +1221,7 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 
 			*local = g_new0 (EAddrLocalRecord, 1);
 			local_record_from_ecard (*local, iterator->data, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG ("for_each ending");
 
@@ -882,7 +1246,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 	g_return_val_if_fail (local != NULL, 0);
 
 	if (*local == NULL) {
-		LOG ("beginning for_each_modified: beginning\n");
+		LOG ("for_each_modified beginning\n");
 		
 		iterator = ctxt->changed;
 		
@@ -896,6 +1260,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 			 
 			*local = g_new0 (EAddrLocalRecord, 1);
 			local_record_from_ecard (*local, coc->card, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG ("no events");
 
@@ -909,6 +1274,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 
 			*local = g_new0 (EAddrLocalRecord, 1);
 			local_record_from_ecard (*local, coc->card, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG ("for_each_modified ending");
 
@@ -928,22 +1294,21 @@ compare (GnomePilotConduitSyncAbs *conduit,
 	 GnomePilotRecord *remote,
 	 EAddrConduitContext *ctxt)
 {
-	/* used by the quick compare */
 	GnomePilotRecord local_pilot;
 	int retval = 0;
 
 	LOG ("compare: local=%s remote=%s...\n",
 	     print_local (local), print_remote (remote));
 
-	g_return_val_if_fail (local!=NULL,-1);
-	g_return_val_if_fail (remote!=NULL,-1);
+	g_return_val_if_fail (local != NULL, -1);
+	g_return_val_if_fail (remote != NULL, -1);
 
-  	local_pilot = local_record_to_pilot_record (local, ctxt);
+	local_pilot = local_record_to_pilot_record (local, ctxt);
 
 	if (remote->length != local_pilot.length
 	    || memcmp (local_pilot.record, remote->record, remote->length))
 		retval = 1;
-
+	
 	if (retval == 0)
 		LOG ("    equal");
 	else
@@ -979,6 +1344,8 @@ add_record (GnomePilotConduitSyncAbs *conduit,
 
 	e_card_set_id (ecard, cons.id);
 	e_pilot_map_insert (ctxt->map, remote->ID, ecard->id, FALSE);
+
+	gtk_object_unref (GTK_OBJECT (ecard));
 
 	return retval;
 }
@@ -1095,7 +1462,7 @@ match (GnomePilotConduitSyncAbs *conduit,
 	g_return_val_if_fail (remote != NULL, -1);
 
 	*local = NULL;
-	uid = e_pilot_map_lookup_uid (ctxt->map, remote->ID);
+	uid = e_pilot_map_lookup_uid (ctxt->map, remote->ID, TRUE);
 	
 	if (!uid)
 		return 0;
@@ -1117,8 +1484,7 @@ free_match (GnomePilotConduitSyncAbs *conduit,
 
 	g_return_val_if_fail (local != NULL, -1);
 
-	gtk_object_unref (GTK_OBJECT (local->ecard));
-	g_free (local);
+	free_local (local);
 
 	return 0;
 }
@@ -1172,7 +1538,7 @@ conduit_get_gpilot_conduit (guint32 pilot_id)
 	retval = gnome_pilot_conduit_sync_abs_new ("AddressDB", 0x61646472);
 	g_assert (retval != NULL);
 
-	e_addr_context_new (&ctxt, pilot_id);
+	ctxt = e_addr_context_new (pilot_id);
 	gtk_object_set_data (GTK_OBJECT (retval), "addrconduit_context", ctxt);
 
 	gtk_signal_connect (retval, "pre_sync", (GtkSignalFunc) pre_sync, ctxt);
@@ -1206,7 +1572,7 @@ conduit_destroy_gpilot_conduit (GnomePilotConduit *conduit)
 	ctxt = gtk_object_get_data (GTK_OBJECT (conduit), 
 				    "addrconduit_context");
 
-	e_addr_context_destroy (&ctxt);
+	e_addr_context_destroy (ctxt);
 
 	gtk_object_destroy (GTK_OBJECT (conduit));
 }

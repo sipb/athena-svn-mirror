@@ -7,9 +7,8 @@
  * Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -595,21 +594,6 @@ netscape_can_import (EvolutionIntelligentImporter *ii,
 {
 	NetscapeImporter *importer = closure;
 	gboolean mail, settings;
-
-	mail = bonobo_config_get_boolean_with_default (importer->db,
-                "/Importer/Netscape/mail-imported", FALSE, NULL);
-	settings = bonobo_config_get_boolean_with_default (importer->db,
-                "/Importer/Netscape/settings-imported", FALSE, NULL);
-
-	if (settings && mail)
-		return FALSE;
-
-	importer->do_mail = !mail;
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (importer->mail), 
-				      importer->do_mail);
-	importer->do_settings = !settings;
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (importer->settings),
-				      importer->do_settings);
 
 	if (user_prefs == NULL) {
 		netscape_init_prefs ();

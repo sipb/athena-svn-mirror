@@ -4,10 +4,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,6 +23,7 @@
 #endif
 
 #include <gtk/gtksignal.h>
+#include <bonobo/bonobo-exception.h>
 #include "cal-query.h"
 #include "query-listener.h"
 
@@ -190,7 +190,7 @@ cal_query_destroy (GtkObject *object)
 		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (priv->corba_query, &ev);
 
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_message ("cal_query_destroy(): Could not release/unref the query");
 
 		CORBA_exception_free (&ev);
@@ -357,12 +357,10 @@ cal_query_construct (CalQuery *query,
 	CORBA_exception_init (&ev);
 	priv->corba_query = GNOME_Evolution_Calendar_Cal_getQuery (cal, sexp, corba_ql, &ev);
 
-	if (ev._major == CORBA_USER_EXCEPTION
-	    && strcmp (CORBA_exception_id (&ev),
-		       ex_GNOME_Evolution_Calendar_Cal_CouldNotCreate) == 0) {
+	if (BONOBO_USER_EX (&ev, ex_GNOME_Evolution_Calendar_Cal_CouldNotCreate)) {		
 		g_message ("cal_query_construct(): The server could not create the query");
 		goto error;
-	} else if (ev._major != CORBA_NO_EXCEPTION) {
+	} else if (BONOBO_EX (&ev)) {
 		g_message ("cal_query_construct(): Could not issue the getQuery() request");
 		goto error;
 	}
@@ -377,6 +375,7 @@ cal_query_construct (CalQuery *query,
 
 	bonobo_object_unref (BONOBO_OBJECT (priv->ql));
 	priv->ql = NULL;
+	priv->corba_query = CORBA_OBJECT_NIL;
 	return NULL;
 }
 

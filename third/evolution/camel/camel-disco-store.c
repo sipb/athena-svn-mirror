@@ -6,19 +6,19 @@
  *
  *  Copyright 2001 Ximian, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -254,7 +254,14 @@ disco_get_folder_info (CamelStore *store, const char *top,
 CamelDiscoStoreStatus
 camel_disco_store_status (CamelDiscoStore *store)
 {
+	CamelService *service = CAMEL_SERVICE (store);
+
 	g_return_val_if_fail (CAMEL_IS_DISCO_STORE (store), CAMEL_DISCO_STORE_ONLINE);
+
+	if (service->status == CAMEL_SERVICE_CONNECTING &&
+	    store->status == CAMEL_DISCO_STORE_ONLINE &&
+	    !camel_session_is_online (service->session))
+		store->status = CAMEL_DISCO_STORE_OFFLINE;
 
 	return store->status;
 }

@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -170,6 +169,7 @@ report_task_event (ActivityInfo *activity_info,
 
 /* ETaskWidget actions.  */
 
+#if 0
 static void
 task_widget_cancel_callback (GtkWidget *widget,
 			     void *data)
@@ -213,6 +213,7 @@ show_cancellation_popup (ActivityInfo *activity_info,
 
 	activity_info->menu = NULL;
 }
+#endif
 
 static int
 task_widget_button_press_event_callback (GtkWidget *widget,
@@ -229,7 +230,8 @@ task_widget_button_press_event_callback (GtkWidget *widget,
 		if (! activity_info->cancellable) {
 			return FALSE;
 		} else {
-			show_cancellation_popup (activity_info, widget, button_event);
+			/* show_cancellation_popup (activity_info, widget, button_event); */
+			/* return TRUE; */
 			return TRUE;
 		}
 	}
@@ -377,6 +379,7 @@ impl_destroy (GtkObject *object)
 	}
 
 	g_free (priv);
+	handler->priv = NULL;
 
 	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -404,7 +407,7 @@ impl_operationStarted (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler))
+	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
 		return;
 
 	priv = activity_handler->priv;
@@ -454,7 +457,7 @@ impl_operationProgressing (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler))
+	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
 		return;
 
 	priv = activity_handler->priv;
@@ -497,7 +500,7 @@ impl_operationFinished (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler))
+	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
 		return;
 
 	priv = activity_handler->priv;
@@ -525,7 +528,7 @@ impl_requestDialog (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler))
+	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
 		return GNOME_Evolution_Activity_DIALOG_ACTION_ERROR;
 
 	/* FIXME implement.  */

@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -132,7 +131,7 @@ e_uri_schema_registry_new (void)
 }
 
 
-gboolean
+void
 e_uri_schema_registry_set_handler_for_schema (EUriSchemaRegistry *registry,
 					      const char *schema,
 					      EvolutionShellComponentClient *shell_component)
@@ -141,21 +140,21 @@ e_uri_schema_registry_set_handler_for_schema (EUriSchemaRegistry *registry,
 	SchemaHandler *existing_handler;
 	SchemaHandler *new_handler;
 
-	g_return_val_if_fail (registry != NULL, FALSE);
-	g_return_val_if_fail (E_IS_URI_SCHEMA_REGISTRY (registry), FALSE);
-	g_return_val_if_fail (schema != NULL, FALSE);
-	g_return_val_if_fail (shell_component == NULL || EVOLUTION_IS_SHELL_COMPONENT_CLIENT (shell_component), FALSE);
+	g_return_if_fail (registry != NULL);
+	g_return_if_fail (E_IS_URI_SCHEMA_REGISTRY (registry));
+	g_return_if_fail (schema != NULL);
+	g_return_if_fail (shell_component == NULL || EVOLUTION_IS_SHELL_COMPONENT_CLIENT (shell_component));
 
 	priv = registry->priv;
 
 	existing_handler = g_hash_table_lookup (priv->schema_to_handler, schema);
-	if (existing_handler != NULL)
-		return FALSE;
+	if (existing_handler != NULL) {
+		g_hash_table_remove (priv->schema_to_handler, existing_handler->schema);
+		schema_handler_free (existing_handler);
+	}
 
 	new_handler = schema_handler_new (schema, shell_component);
 	g_hash_table_insert (priv->schema_to_handler, new_handler->schema, new_handler);
-
-	return TRUE;
 }
 
 EvolutionShellComponentClient *

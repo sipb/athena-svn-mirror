@@ -5,6 +5,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/widgets/shortcut-bar	\
 	$(EXTRA_GNOME_CFLAGS)			\
+	$(BONOBO_GNOME_CFLAGS)			\
 	-DMAP_DIR=\""$(datadir)/images/evolution"\"	\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
 	-DG_LOG_DOMAIN=__FILE__
@@ -21,6 +22,8 @@ libemiscwidgets_a_SOURCES = 	\
 	e-calendar-item.h	\
 	e-cell-date-edit.c	\
 	e-cell-date-edit.h	\
+	e-cell-percent.c	\
+	e-cell-percent.h	\
 	e-charset-picker.c	\
 	e-charset-picker.h	\
 	e-clipped-label.c	\

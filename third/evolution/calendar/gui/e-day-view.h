@@ -8,9 +8,8 @@
  * Copyright 1999, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,7 @@
 #include <libgnomeui/gnome-canvas.h>
 
 #include "gnome-cal.h"
+#include "evolution-activity-client.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -493,6 +493,9 @@ struct _EDayView
 
 	/* The default category for new events */
 	char *default_category;
+
+	/* The activity client used to show messages on the status bar. */
+	EvolutionActivityClient *activity;
 };
 
 struct _EDayViewClass
@@ -656,6 +659,9 @@ gint	   e_day_view_get_time_string_width	(EDayView	*day_view);
 
 gint	   e_day_view_event_sort_func		(const void	*arg1,
 						 const void	*arg2);
+
+void       e_day_view_set_status_message        (EDayView       *day_view,
+						 const char     *message);
 
 #ifdef __cplusplus
 }

@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,8 +29,6 @@
 #include "e-meeting-attendee.h"
 
 struct _EMeetingAttendeePrivate {
-	EMeetingAttendeeType type;
-	
 	gchar *address;
 	gchar *member;
 
@@ -153,8 +150,6 @@ init (EMeetingAttendee *ia)
 
 	ia->priv = priv;
 
-	priv->type = E_MEETING_ATTENDEE_REQUIRED_PERSON;
-	
 	priv->address = string_test (NULL);
 	priv->member = string_test (NULL);
 
@@ -609,19 +604,16 @@ e_meeting_attendee_get_atype (EMeetingAttendee *ia)
 	
 	priv = ia->priv;
 
-	return priv->type;
-}
+	if (priv->cutype == ICAL_CUTYPE_ROOM
+	    || priv->cutype == ICAL_CUTYPE_RESOURCE)
+		return E_MEETING_ATTENDEE_RESOURCE;
 
-void
-e_meeting_attendee_set_atype (EMeetingAttendee *ia, EMeetingAttendeeType type)
-{
-	EMeetingAttendeePrivate *priv;
+	if (priv->role == ICAL_ROLE_CHAIR
+	    || priv->role == ICAL_ROLE_REQPARTICIPANT)
+		return E_MEETING_ATTENDEE_REQUIRED_PERSON;
 	
-	priv = ia->priv;
-
-	priv->type = type;
+	return E_MEETING_ATTENDEE_OPTIONAL_PERSON;
 }
-
 
 static gint
 compare_times (EMeetingTime *time1,

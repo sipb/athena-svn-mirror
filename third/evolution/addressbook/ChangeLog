@@ -1,5 +1,1145 @@
+2001-11-04  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c: Use ordering of the pilot's phone
+	label list to find fields we sync in order to avoid strcmp'ing the
+	pilot's labels rendering phone syncing usable only for english
+	language pilots
+
+2001-11-03  Chris Toshok  <toshok@ximian.com>
+
+	[ Fixes Ximian bug #14410 ]
+	* gui/contact-editor/e-contact-editor.c (e_contact_editor_init):
+	init in_async_call to FALSE.
+	(card_added_cb): turn the UI back on and set in_async_call to
+	FALSE.
+	(card_modified_cb): same.
+	(card_deleted_cb): same.
+	(save_card): turn off the UI by setting the dialog insensitive,
+	and set in_async_call to TRUE.
+	(delete_cb): same.
+	(app_delete_event_cb): if we're in an async call don't let the
+	window get deleted.
+
+	* gui/contact-editor/e-contact-editor.h (struct _EContactEditor):
+	add in_async_call flag for when we make a wombat call and need to
+	disable the UI.
+
+	* gui/contact-list-editor/e-contact-list-editor.c
+	(e_contact_list_editor_init): init in_async_call to FALSE.
+	(list_added_cb): turn the UI back on and set in_async_call to
+	FALSE.
+	(list_modified_cb): same.
+	(list_deleted_cb): same.
+	(save_card): turn off the UI by setting the dialog insensitive,
+	and set in_async_call to TRUE.
+	(delete_cb): same.
+	(app_delete_event_cb): if we're in an async call don't let the
+	window get deleted.
+
+	* gui/contact-list-editor/e-contact-list-editor.h (struct
+	_EContactListEditor): add in_async_call flag for when we make a
+	wombat call and need to disable the UI.
+
+2001-11-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card-simple.c (e_card_simple_get): Check for
+	NULL dates before converting them to strings.  Fixes Ximian bug
+	#14394.
+
+2001-11-02  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-bonobo.c
+	(impl_destroy): Leak select-names related data structures until
+	the memory management issues get sorted out.  Fixed bug #14086.
+
+2001-10-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/e-cardlist-model.c,
+	gui/component/select-names/e-select-names-table-model.c,
+	gui/widgets/e-addressbook-table-adapter.c: Make the pre_changes
+	and changes match here.
+
+2001-10-31  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_destroy): Check that local_listener and
+	other_contacts_listener are non-NULL before
+	disconnecting/unrefing.
+
+	* gui/component/select-names/e-select-names-manager.c
+	(entry_destroyed): The entry shouldn't unref the manager.
+	(e_select_names_manager_create_entry): The entry shouldn't hold a
+	ref to the manager.  It becomes circular.
+	(e_select_names_manager_create_entry): On the other hand, we
+	should hold a ref to the entry we create.
+
+	* gui/component/select-names/e-select-names-bonobo.c
+	(impl_destroy): Remove the explicit dialog destroy hack.
+
+2001-10-30  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-bonobo.c
+	(impl_destroy): Force the select names dialog to be destroyed.
+	This is a hack to fix bug #14002 -- I'll clean up the refcounting
+	issues post-freeze.  At least now it won't crash.
+
+2001-10-30  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (ecard_from_remote_record): make sure
+	to translate the character sets of the names
+
+2001-10-30  JP Rosevear  <jpr@ximian.com>
+	
+	* gui/component/select-names/e-select-names-bonobo.c
+	(manager_ok_cb): send a null bonobo arg to prevent explosion
+
+2001-10-30  JP Rosevear  <jpr@ximian.com>
+	
+	* gui/widgets/e-addressbook-view.c: correct include typo
+
+2001-10-29  Jon Trowbridge  <trow@ximian.com.
+
+	* gui/widgets/e-minicard.c (add_field): Five characters, not four!
+	
+	* gui/widgets/e-addressbook-table-adapter.c
+	(addressbook_value_at): Convert xml-ified destinations into proper
+	addresses.
+
+2001-10-29  Jon Trowbridge  <trow@ximian.com.
+
+	* gui/component/select-names/e-select-names-bonobo.c (init):
+	Connect to manager's "ok" signal.
+	(manager_ok_cb): Emit "ok" bonobo-signal.
+
+	* gui/component/select-names/e-select-names-manager.c
+	(e_select_names_manager_class_init): Added "ok" signal.
+	(e_select_names_clicked): Emit 'ok' signal.
+
+2001-10-29  Chris Toshok  <toshok@ximian.com>
+
+	* gui/widgets/e-addressbook-util.c
+	(e_addressbook_prompt_save_dialog): new function, a "Do you want
+	to save changes?" dialog.
+
+	* gui/widgets/e-addressbook-util.h: add prototype for
+	e_addressbook_prompt_save_dialog.
+
+	* gui/contact-editor/e-contact-editor.c (prompt_to_save_changes):
+	call e_addressbook_prompt_save_dialog and save the card if they
+	select save.  return TRUE if the dialog should be closed, FALSE
+	otherwise.
+	(file_close_cb): check prompt_to_save_changes before closing the
+	dialog.
+	(app_delete_event_cb): same.
+
+	* gui/contact-list-editor/e-contact-list-editor.c
+	(prompt_to_save_changes): call e_addressbook_prompt_save_dialog
+	and save the card if they select save.  return TRUE if the dialog
+	should be closed, FALSE otherwise.
+	(file_close_cb): check prompt_to_save_changes before closing the
+	dialog.
+	(app_delete_event_cb): same.
+
+2001-10-29  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (add_objectclass_mod): overload
+	this function for modifying objectclasses too, so we can make sure
+	evolutionPerson shows up in the objectclasses of an entry if it
+	shows up in the schema for the server.
+	(create_card_handler): add @replace = FALSE in the call to
+	add_objectclass_mod.
+	(modify_card_handler): call add_objectclass_mod with @replace =
+	TRUE.
+	(anniversary_compare): fix typo - return "equal", not "TRUE".
+	(birthday_compare): same.
+
+2001-10-29  Jon Trowbridge  <trow@ximian.com>
+
+	* conduit/address-conduit.c (pre_sync): Comment out spew.
+
+	* gui/contact-list-editor/e-contact-list-editor.c (fill_in_info):
+	Comment out spew.
+
+	* gui/component/addressbook-component.c
+	(destination_folder_handle_drop): Comment out spew.
+	(get_dnd_selection): Comment out spew.
+
+	* gui/widgets/e-addressbook-table-adapter.c
+	(addressbook_set_value_at): Comment out spew.
+
+2001-10-29  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/addressbook.c (update_command_state): Check that
+	our BonoboUIComponent has a container so we don't get a lot of
+	annoying debug spew.
+
+	* printing/smallbook.ecps: Fixed fonts.
+
+	* printing/phonelist.ecps: Fixed fonts.
+
+	* printing/medbook.ecps: Fixed fonts.
+
+	* printing/e-contact-print.c (e_contact_get_card_size): Commented
+	out spew.
+
+	* gui/widgets/e-minicard.c (remodel): Check that e_minicard->card
+	!= NULL.
+
+2001-10-29  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(e_select_names_completion_destroy): We were using
+	book_data->book_view immediately after unrefing it.  Reordered the
+	code a bit to avoid this.
+
+2001-10-29  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-book-factory.h: add prototype for
+	pas_book_factory_dump_active_backends.
+
+	* backend/pas/pas-book-factory.c
+	(pas_book_factory_dump_active_backends): new function.
+	(dump_active_server_map_entry): new function.
+
+2001-10-29  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(make_match): Drop a match if either of the text fields is NULL.
+	This could happen if any of the utf-8 involved is invalid, for
+	example. (Bug #13757)
+
+2001-10-29  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (is_syncable): fix bug that allowed
+	for phone's not to be in priority order and the item to still be
+	syncable
+
+	* conduit/address-conduit-config.h
+	(addrconduit_load_configuration): get management by id
+
+2001-10-29  JP Rosevear  <jpr@ximian.com>
+	
+	* conduit/address-conduit.c (is_syncable): a card also needs to
+	have its phone nums in priority order to be "syncable"
+	
+2001-10-29  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (is_syncable): move the syncable
+	checking code to a different function
+	(ecard_from_remote_record): set the name parts individually
+	(local_record_from_ecard): use is_syncable
+
+2001-10-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card-simple.c (file_as_get_style,
+	file_as_set_style): Use the actual ECardName in the ECard instead
+	of parsing the full_name here.
+
+2001-10-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card-simple.c, backend/ebook/e-card-simple.h
+	(e_card_simple_set_name): New function to set the ECardName on
+	this card and fix the file_as if necessary.
+
+2001-10-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card-simple.c, backend/ebook/e-card-simple.h
+	(e_card_simple_get): Handle returning dates here.
+	(e_card_simple_get_allow_newlines): New function.  Returns whether
+	it makes much sense to have newlines in this string.
+
+	* gui/component/addressbook-config.c,
+	gui/component/addressbook-config.h
+	(addressbook_create_new_source): The first argument here should
+	be const.
+
+	* gui/component/addressbook-storage.c: Added #include
+	"addressbook-config.h".
+
+	* gui/widgets/e-minicard-label.c (e_minicard_label_event): On an
+	escape here, cancel editing and remove the focus from the text.
+
+	* gui/widgets/e-minicard.c (add_field): Set allow_newlines here.
+	(field_activated): Stop editing on the activate signal and remove
+	the focus from the text.  Fixes Ximian bug #12286.
+
+2001-10-28  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.h: tidy
+
+	* conduit/address-conduit-config.h: ditto
+
+	* conduit/address-conduit.c (add_record): unref ecard when done
+
+2001-10-28  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-card.c (e_card_date_from_string): Expose this
+	function.
+	(e_card_date_to_string): ...and this one.  Fixes build problem in
+	pas-backend-ldap.c.
+
+2001-10-28  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_hookup_shell_listeners): Change "this should never
+	happen" dialog to not give my name/e-mail.  Sorry translators.
+	But this really should never happen, thanks to my fix below.
+
+	* gui/component/addressbook-component.c: Initialize
+	global_shell_client to NULL. (Bug #6625)
+
+2001-10-27  Chris Toshok  <toshok@ximian.com>
+
+	[ bug #12979 ]
+	* backend/pas/pas-backend-ldap.c (anniversary_populate): new
+	function.
+	(anniversary_ber): new function.
+	(anniversary_compare): new function.
+	(birthday_populate): new function.
+	(birthday_ber): new function.
+	(birthday_compare): new function.
+
+2001-10-27  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(e_select_names_completion_destroy): free up all the book_data
+	list stuff.
+	(e_select_names_completion_got_book_view_cb): deal with book_data
+	being passed as the closure, and increment the
+	pending_completion_seq counter.
+	(e_select_names_completion_card_added_cb): deal with book_data
+	being passwd as the closure.
+	(e_select_names_completion_seq_complete_cb): same, and decrement
+	the pending_completion_seq if we haven't gotten one for this book
+	view before.
+	(e_select_names_completion_stop_query): cancel all the
+	book_data's.
+	(e_select_names_completion_start_query): use the books_not_ready
+	counter instead of book_ready.  also, do e_book_get_book_view on
+	each of the book's in our list.
+	(e_select_names_completion_do_query): change to deal with our
+	list.
+	(e_select_names_completion_book_ready): decrement the
+	book_not_ready counter.
+	(e_select_names_completion_new): add the book we're created with
+	to our list.
+	(e_select_names_completion_add_book): implement.
+
+	* gui/component/select-names/e-select-names-completion.h: add
+	prototype for e_select_names_completion_add_book.
+
+	* gui/component/select-names/e-select-names-manager.c
+	(e_select_names_manager_new): use addressbook_config_data, and
+	don't unref the db.
+	(e_select_names_manager_create_entry): always add NULL for a book
+	(which corresponds to the local book), and if the completion_book
+	is present, add it to the list of books to complete again.
+
+2001-10-27  Chris Toshok  <toshok@ximian.com>
+
+	* gui/contact-editor/e-contact-quick-add.c (merge_cb): change to
+	EBookCallback signature, and unref the book.
+	(quick_add_merge_card): use addressbook_load_default_book.
+	(ce_have_book): change to EBookCallback signature, and unref the
+	book.
+	(edit_card): use addressbook_load_default_book.
+
+	* gui/component/e-address-popup.c (email_table_save_card_cb):
+	change to EBookCallback signature, and unref the book.
+	(add_card_idle_cb): use addressbook_load_default_book, and call
+	the cb if it fails.
+	(e_address_popup_cleanup): fix type -- should be "pop->card =
+	NULL", not "pop = NULL".
+	(contact_editor_cb): change to EBookCallback signature.
+	(edit_contact_info_cb): use addressbook_load_default_book.
+	(start_query): change to EBookCallback signature.
+	(e_address_popup_query): use addressbook_load_default_book.
+
+	* gui/widgets/e-minicard-control.c (book_open_cb): change to
+	EBookCallback signature, and unref the book.
+	(save_in_addressbook): use addressbook_load_default_book instead
+	of e_book_use_local_address_book.
+
+	* gui/widgets/Makefile.am (INCLUDES): change includes since we're
+	including addressbook.h which has it's own set of funky include
+	path requirements.
+
+2001-10-27  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-book.c (activate_factories_for_uri): Don't leak
+	stuff. (Bug #13709)
+
+2001-10-27  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-destination.c (name_and_email_simple_query_cb,
+	nickname_simple_query_cb): Set book_uri when cardification occurs.
+
+2001-10-27  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_add_section): Turned off use_ellipsis (it breaks
+	emulate_label_resize) and on emulate_label_resize.  Fixes Ximian
+	bug #13693.
+
+2001-10-27  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(make_match): Doh!  We should be sorting our contacts so that the
+	most frequently used ones are at the top of the list, not the
+	bottom.
+
+	* backend/pas/pas-book.c (pas_book_check_queue): That should be a
+	bonobo_object_unref, not a gtk_object_unref.
+	(pas_book_queue_request): Likewise, we need to bonobo_object_ref
+	here.
+	(pas_book_destroy): If our pas_book_check_queue timeout is still
+	active, disable it.  This should never happen, but it never hurts
+	to be careful.
+	(pas_book_destroy): Set book->priv to NULL after we free it.
+
+2001-10-27  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (local_record_from_ecard): copy phone
+	labels and show phone as well, clear correct entry text and
+	correctly detect unsyncable cases
+
+2001-10-27  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (local_record_from_ecard): touch the
+	record on lookup
+	(check_for_slow_setting): write touched only if we are doing a
+	slow sync
+	(card_removed): don't touch on lookup
+	(match): touch on lookup
+
+2001-10-27  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/pas/pas-book.c (pas_book_check_queue): Added paranoid
+	reentrancy guards.
+	(pas_book_queue_request): Changed our idle handler into a timeout,
+	so as to work w/ reentrancy guards.
+	(pas_book_init): Explicit initialization.
+
+2001-10-26  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook.h: add prototypes for
+	addressbook_config_database, and addressbook_load_default_book.
+
+	* gui/component/addressbook.c (addressbook_config_database): new
+	function, so we aren't activating the db everywhere we need to use
+	it.
+	(addressbook_load_default_book): load the default book, after
+	getting the uri from bonobo-config.
+
+2001-10-26  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-book-util.c (simple_query_card_added_cb): Return
+	on cancellation.
+	(simple_query_sequence_complete_cb): Act if not cancelled.
+	(simple_query_book_view_cb): Free & return on cancellation.
+	(e_book_simple_query_cancel): Set cancellation flag.
+
+	* gui/component/e-address-popup.c (e_address_popup_query): Hold a
+	reference to ourselves for the duration of our addressbook fetch.
+	(start_query): Release when we've fetched our addressbook.
+	(e_address_popup_cleanup): Break out most of what we do in
+	_destroy into a separate function.
+	(e_address_popup_destroy): Class cleanup.
+	(contact_editor_cb): Paranoid clean-up.
+	(add_contacts_cb): Paranoid clean-up.
+	(e_address_popup_ambiguous_email_add): Paranoid clean-up.
+
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/e-address.conduit.in: remove the merges as valid sync
+	types
+
+	* conduit/address-conduit.c (pre_sync): write out only the touched
+	records if we are doing copies
+
+	* conduit/address-conduit-config.h
+	(addrconduit_load_configuration): get the sync type
+
+2001-10-26  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/e-address-popup.c (e_address_popup_destroy):
+	Cancel any pending queries.
+
+	* gui/contact-editor/e-contact-editor.c (close_dialog): Don't
+	assert, but check if ce->app != NULL, since this function can
+	(apparently) get called multiple times.
+
+	* gui/contact-editor/e-contact-save-as.c (file_exists): Remove bad
+	dialog ref-counting crap.
+
+	* gui/contact-editor/e-contact-editor.c (save_card): Ref our
+	EContactEditor, since we are holding a pointer to it in
+	EditorCloseStruct.
+	(card_modified_cb): Unref our EContactEditor when we free our
+	EditorCloseStruct.
+	(card_added_cb): Unref our EContactEditor when we free our
+	EditorCloseStruct.
+
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+	
+	* conduit/address-conduit.c (check_for_slow_setting): make debug
+	info more accurate
+	
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (e_addr_context_destroy): prevent
+	double unref
+	(cursor_cb): correct typo
+	(card_removed): remove the card from the map if was archived and
+	is now deleted
+
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+	
+	* conduit/address-conduit.h: new member
+
+	* conduit/address-conduit.c (print_remote): free the struct after
+	using it
+	(e_addr_context_new): make consistent with other conduits
+	(e_addr_context_destroy): properly destroy the context
+	(cursor_cb): no need to ref the card, its done for us
+	(clear_entry_text): util function to free a field
+	(free_local): free a local record
+	(local_record_to_pilot_record): use a static buffer so we don't
+	have to free it later
+	(local_record_from_ecard): only fill in the fields we might not
+	sync, clear a field before replacing the contents
+	(for_each): track locals
+	(for_each_modified): ditto
+	(free_match): use free_local
+
+2001-10-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/widgets/e-minicard.c, gui/widgets/e-minicard.h
+	(set_has_cursor): Added has_cursor argument.  Setting the argument
+	to TRUE if the minicard doesn't have focus will grab the focus.
+	Fixes Ximian bug #3024.
+
+2001-10-24  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/addressbook-factory.c (main): Initialize
+	gnome-vfs.
+
+	* gui/component/addressbook-component.c (xfer_file): Added.
+	(Copied from the calendar.)
+	(xfer_folder): Fixed to allow renaming of contact folders.
+
+2001-10-24  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/widgets/e-addressbook-view.c
+	(e_addressbook_view_class_init): Removed key_press handler here
+	since delete and backspace are now handled by keybindings.
+
+2001-10-23  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/addressbook.c: Fix command paths when we specify
+	our pixmaps, so we don't get a lot of totally useless & very ugly
+	bonobo-ui spew.
+
+	* backend/ebook/e-book-util.c (e_book_nickname_query): The empty
+	string as an arg shouldn't generate a warning.
+
+	* gui/component/select-names/e-select-names-completion.c: Removed
+	our cancelled flag and e_select_names_completion_cancel function,
+	since we were just duplicating stuff that had ended up in
+	ECompletion.
+	(match_name): Form our menu_text properly on an additional-name
+	match.
+	(e_select_names_completion_got_book_view_cb): Store handles for
+	our signals, disconnect them properly when we switch book views.
+	(e_select_names_completion_stop_query): Disconnect signals when we
+	stop our query.
+	(check_capabilities): Spew if we are using LDAP for completion.
+	(e_select_names_completion_destroy): Disconnect our signals when
+	we destroy.
+	This all should fix bug #10241.
+
+2001-10-23  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_add_section): Set "draw_button" argument to TRUE
+	on this EEntry.
+
+2001-10-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/contact-editor/e-contact-save-as.c (save_it): Put up an
+	error dialog if there's an error while saving.  If the person hits
+	cancel on the "file exists" dialog, don't close the file selection
+	dialog.  Fixes Ximian bug #7055.
+
+2001-10-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/widgets/e-addressbook-reflow-adapter.c
+	(model_and_selection_free): right_click_up here when we let go of
+	the popup.
+
+	* gui/widgets/e-minicard-view.c (e_minicard_view_selection_event):
+	right_click_up here.
+
+2001-10-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_add_section, e_select_names_set_default): Use an
+	EEntry here instead of a GtkLabel.  Fixes Ximian bug #7067.
+
+2001-10-21  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/addressbook.c (control_activate_cb): Call
+	e_addressbook_model_force_folder_bar_message when we activate the
+	component. (Fixes bug #11749)
+
+	* gui/widgets/e-addressbook-model.c
+	(e_addressbook_model_force_folder_bar_message): Added.  Forces
+	emission of a folder_bar_message.
+
+2001-10-20  Larry Ewing  <lewing@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_set_default): stick with the style font if the
+	efont bold font does not exist.	
+	(e_select_names_set_default): don't forget to unref the oldstyle.
+
+2001-10-20  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(name_style_query): Fix memory leak.
+
+	* gui/widgets/e-addressbook-view.c (jump_to_letter): Free our
+	string vector letter_v when we are done with it.
+
+	* gui/contact-editor/e-contact-quick-add.c (edit_card): Unref our
+	QuickAdd structure.
+
+	* gui/component/e-address-popup.c (e_address_popup_construct):
+	Unref our style after we are done with it.
+
+2001-10-20  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-book.c (activate_factories_for_uri): We
+	shouldn't leak the info returned by oaf_query.
+
+	* gui/contact-editor/e-contact-quick-add.c (card_added_cb): Remove
+	superfluous call to quick_add_unref.
+	(editor_closed_cb): Remove superfluous call to quick_add_unref.
+
+	* gui/component/select-names/e-select-names.c (esn_get_key_fn): We
+	need to unref the card returned by e_addressbook_model_get_card.
+
+2001-10-20  Ettore Perazzoli  <ettore@ximian.com>
+
+	* gui/component/addressbook-component.c: Make LDAP servers
+	non-user-creatable.
+
+2001-10-20  Jon Trowbridge  <trow@ximian.com>
+
+	* printing/e-contact-print.c (e_contact_print_card): Check that the
+	string we are checking for xml-ness is non-NULL.
+
+	* backend/ebook/e-destination.c (e_destination_importv): Filter
+	out empty destinations. (also Bug #13036)
+
+	* printing/e-contact-print.c (e_contact_build_style): Use
+	gnome_font_new_closest; if gnome_font_new fails and returns NULL,
+	our spacing gets all messed up. (Bug #10785)
+	
+	* gui/widgets/e-addressbook-view.c (e_addressbook_view_can_print):
+	Allow printing if there are any cards in our view.  The selection
+	has nothing to do with it.
+
+	* backend/ebook/e-destination.c (e_destination_is_empty): Check
+	for strings that contain non-whitespace, rather than just looking
+	for a non-zero first character. (Bug #13036)
+
+2001-10-20  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/widgets/e-minicard-view.c (e_minicard_view_selection_event):
+	Handle focus_change in event by selecting that contact.  Fixes
+	Ximian bug #3024.
+
+	* gui/component/addressbook-component.c (owner_unset_cb):
+	Repeatedly call gtk_main_quit here as long as there is a main loop
+	around.  This is an ugly hack around Ximian bug #11760.
+
+2001-10-20  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/select-names/e-select-names.c: Added #include
+	<gal/widgets/e-unicode.h>.
+
+	* gui/widgets/e-minicard-control.c: Made this display the number
+	of extra cards in the attachment as well as made it save them all
+	to the local addressbook if the person selects the button.  Fixes
+	Ximian bug #9507.
+
+2001-10-20  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/widgets/e-minicard.c (e_minicard_event): Changed this to not
+	grab on a right click.  Fixes Ximian bug #12660.
+
+2001-10-19  Ettore Perazzoli  <ettore@ximian.com>
+
+	* gui/component/addressbook-component.c
+	(destination_folder_handle_motion): Get @folder_type here too [to
+	match the changes in the EvolutionShellComponentDnd interface].
+	Also, remove a debugging message.
+	(destination_folder_handle_drop): Likewise.
+
+2001-10-18  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names.c (add_menu_item):
+	Translate labels in select-names option menu. (Bug #9604)
+
+	* gui/search/e-addressbook-search-dialog.c
+	(e_addressbook_search_dialog_init): Made the default window size
+	slightly wider. (Bug #7516)
+
+2001-10-18  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card.c, backend/ebook/e-card.h
+	(e_card_list_get_vcard): Made this take a const GList.
+
+2001-10-18  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(check_capabilities): Added.  Check if our book is local or
+	networked.
+	(e_select_names_completion_book_ready): Call check_capabilities.
+	(e_select_names_completion_new): Call check_capabilities.
+	(e_select_names_completion_do_query): If we have a networked book,
+	keep trying if we haven't been able to cache any cards --- our
+	earlier attempts could have failed due to too many matches. (Bug
+	#12932)
+
+	* gui/component/select-names/e-select-names-manager.c
+	(focus_out_cb): Lag our cardification on focus-out.  This seems to
+	help with the unintended cardifications that can result from the
+	weird focus-out/focus-in events that get generated when the popup
+	disappears.
+
+	* backend/ebook/e-card-compare.c: Removed some debug spew.
+
+2001-10-17  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook-config.c (addressbook_source_dialog):
+	grab focus in the Account entry when preparing the dialog, fixes
+	#10406.
+
+2001-10-17  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/select-names/e-select-names.c (new_folder): make
+	sure to also add "ldap-contacts" folders to the option menu.
+
+2001-10-17  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (ecard_from_remote_record): sync all
+	the fields we can, with out overwriting
+	(local_record_from_ecard): write the fields to the pilot in
+	priority order unless there are fields on the pilot we can't
+	store, then fill in the fields as they are on the pilot
+
+2001-10-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card.c (e_card_get_vobject): Did a bit of clean
+	up here.  Might fix some crashes, specifically Ximian bug #10164.
+
+	* gui/widgets/e-addressbook-view.c (SPEC): Updated the model
+	column numbers here.  Fixes Ximian bug #12308.
+
+2001-10-17  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-file.c (pas_backend_file_upgrade_db):
+	add upgrade from 0.1 to 0.2, where we make sure id dbt's match
+	vcard id's, fixes longstanding bug (#7406) where cards were not
+	modifiable or removable after having been created during a 1-2
+	week long window in early betas.
+	(PAS_BACKEND_FILE_VERSION): change to 0.2
+	(PAS_ID_PREFIX): #define this here.
+	(pas_backend_file_create_unique_id): use PAS_ID_PREFIX instead of
+	the string.
+
+2001-10-16  Iain Holmes  <iain@ximian.com>
+
+	* backend/ebook/evolution-ldif-importer.c (support_format_fn): Return
+	FALSE if no extension.
+
+2001-10-16  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-card.c (e_card_get_id): If card->id is NULL,
+	return an empty string.
+	(e_card_set_id): Don't allow the card id to be set to NULL; use
+	the empty string instead.
+	(e_card_get_vobject): When building our vcard, pass in the empty
+	string as the id if card->id is NULL. (Bug #10164)
+
+2001-10-16  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (local_record_from_ecard): don't set
+	the phone info if it is blank
+	(ecard_from_remote_record): save up to 3 fax numbers
+
+2001-10-15  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (pas_backend_ldap_add_client):
+	unref the book after we pass it off to evolution-addressbook.
+
+2001-10-15  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (create_card_dtor): unref
+	op->view.
+	(pas_backend_ldap_process_create_card): ref op->view.
+	(remove_card_dtor): unref op->view.
+	(pas_backend_ldap_process_remove_card): ref op->view.
+	(modify_card_dtor): unref op->view.
+	(pas_backend_ldap_process_modify_card): ref op->view.
+	(ldap_search_dtor): unref op->view.
+	(pas_backend_ldap_search): ref op->view.
+
+2001-10-15  Chris Toshok  <toshok@ximian.com>
+	
+	* backend/pas/pas-backend-ldap.c
+	(pas_backend_ldap_process_get_book_view): make sure to unref the
+	book_view here so we don't leak them.
+
+2001-10-12  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook-factory.c (main): call
+	e_passwords_init and e_passwords_shutdown.
+
+2001-10-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card.c (addPropValueQP, addPropValueSets,
+	e_card_get_vobject): Properly decide whether a property needs to
+	be marked as QP by searching for '\n'.  Fixes Ximian bug #3021.
+
+2001-10-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/contact-editor/e-contact-save-as.c (e_contact_save_as,
+	e_contact_list_save_as): Set the default file name here.  Fixes
+	Ximian bug #7053.
+
+2001-10-14  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(e_select_names_hookup_shell_listeners): Added linebreaks to our
+	"this shouldn't happen" dialog message. (Bug #12498)
+
+2001-10-12  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/addressbook-factory.c (main): Add a component name
+	to the e_passwords_init() call.
+
+2001-10-12  Chris Toshok  <toshok@ximian.com>
+
+	* backend/ebook/evolution-ldif-importer.c: commit the importer
+	originally from Michael M. Morrison, with fixups by toshok.
+
+	* backend/ebook/Makefile.am (bin_PROGRAMS): add
+	evolution-ldif-importer.
+	(oaf_in_files): add
+	GNOME_Evolution_Addressbook_LDIF_Importer.oaf.in.
+
+	* backend/ebook/e-card-simple.h: add WANTS_HTML and IS_LIST.
+
+	* backend/ebook/e-card-simple.c (field_data): add WANTS_HTML and
+	IS_LIST.
+	(e_card_simple_set): fix typo.
+
+	* backend/ebook/.cvsignore: ignore
+	GNOME_Evolution_Addressbook_LDIF_Importer.oaf and
+	evolution-ldif-importer.
+
+	* backend/ebook/GNOME_Evolution_Addressbook_LDIF_Importer.oaf.in:
+	ldif importer oafinfo.
+
+2001-10-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card-simple.c, backend/ebook/e-card-simple.h:
+	Added a boolean type here.
+
+2001-10-12  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(addressbook_model_set_uri): Check to see if the uri we are
+	setting is the same as the current uri.  If so, do nothing.
+	(Bug #11324)
+
+2001-10-11  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-destination.c
+	(e_destination_reverting_is_a_good_idea): Added.  Heuristic for
+	whether or not we want to revert to an earlier cardified state.
+	(e_destination_cardify): Don't be quite as aggressive about
+	reverting to previous cardified states. (Bug #11890)
+
+2001-10-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* backend/ebook/e-card-simple.c (e_card_simple_destroy,
+	fill_in_info, e_card_simple_sync_card, e_card_simple_set_phone,
+	e_card_simple_set_address, e_card_simple_set_delivery_address,
+	file_as_get_style, file_as_set_style, e_card_simple_set,
+	e_card_simple_set_arbitrary),
+	gui/contact-editor/e-contact-editor-address.c
+	(e_contact_editor_address_destroy,
+	e_contact_editor_address_set_arg,
+	e_contact_editor_address_get_arg),
+	gui/contact-editor/e-contact-editor-fullname.c
+	(e_contact_editor_fullname_destroy,
+	e_contact_editor_fullname_set_arg,
+	e_contact_editor_fullname_get_arg),
+	gui/contact-editor/e-contact-editor.c (phone_entry_changed,
+	address_text_changed, name_entry_changed, full_name_clicked,
+	full_addr_clicked, fill_in_info): Changed these to use the new ref
+	and unref functions for ECard auxillary types.
+
+	* backend/ebook/e-card-simple.h: Added a comment.
+
+	* backend/ebook/e-card-types.h: Added ref_count field to all the
+	types.
+
+	* backend/ebook/e-card.c, backend/ebook/e-card.h: Added ref and
+	unref functions here for all the ECard auxillary types.  Removed
+	the corresponding free functions.  Switched to using these
+	functions where appropriate.
+
+	* gui/component/addressbook-factory.c: #include
+	<e-util/e-passwords.h>
+
+	* gui/component/addressbook.c (load_uri_cb): const correctify.
+
+	* gui/component/select-names/e-select-names-manager.c,
+	gui/component/select-names/e-select-names.c: #include
+	<addressbook/gui/component/addressbook.h>
+
+	* gui/widgets/e-addressbook-model.c (modify_card): Removed an
+	unnecessary ref here.
+
+2001-10-11  Dan Winship  <danw@ximian.com>
+
+	* gui/component/select-names/e-select-names.c (update_folder):
+	Don't need this any more.
+
+2001-10-11  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/addressbook.c (new_contact_cb): Check that
+	view->view != NULL.
+	(save_contact_cb): Check that view->view != NULL.
+	(search_cb): Check that view->view != NULL.
+	(delete_contact_cb): Check that view->view != NULL.
+	(print_cb): Check that view->view != NULL.
+	(print_preview_cb): Check that view->view != NULL.
+	(stop_loading_cb): Check that view->view != NULL.
+	(cut_contacts_cb): Check that view->view != NULL.
+	(copy_contacts_cb): Check that view->view != NULL.
+	(paste_contacts_cb): Check that view->view != NULL.
+	(select_all_contacts_cb): Check that view->view != NULL.
+	(send_contact_cb): Check that view->view != NULL.
+	(send_contact_to_cb): Check that view->view != NULL.
+	(update_command_state): Check that view->view != NULL.  Hold a
+	reference to the AddressbookView for the duration of the function,
+	in case we exit during bonobo-reentrancy.
+	(addressbook_view_ref): Added.
+	(addressbook_view_unref): Added.  Simple ref counting for
+	AddressbookView objects.
+	(addressbook_view_clear): Zero out an AddressbookView.  This is
+	now separated from the deallocation of the AddressbookView object,
+	so that we don't leave a dangling pointer if we exit during
+	bonobo-reentrancy in update_command_state. (Which often seems to
+	happen if we exit while addressbook operations are going on.)
+	(destroy_callback): Replace previous call to addressbook_view_free
+	with addressbook_view_clear/addressbook_view_unref calls.
+	(addressbook_factory_new_control): Initialize the reference count
+	in the AddressbookView object.
+
+	* gui/widgets/e-addressbook-view.c (e_addressbook_view_destroy):
+	Carefully zero out our destroyed object.
+	(command_state_change): Hold a reference to ourselves during the
+	signal emission.
+	(get_selected_cards): Ref cards as we add them to the list.
+	(e_addressbook_view_stop): Check for view != NULL.
+	(e_addressbook_view_can_create): Check for view != NULL.
+	(e_addressbook_view_can_print): Check for view != NULL.
+	(e_addressbook_view_can_save_as): Check for view != NULL.
+	(e_addressbook_view_can_send): Check for view != NULL.
+	(e_addressbook_view_can_send_to): Check for view != NULL.
+	(e_addressbook_view_can_delete): Check for view != NULL.
+	(e_addressbook_view_can_cut): Check for view != NULL.
+	(e_addressbook_view_can_copy): Check for view != NULL.
+	(e_addressbook_view_can_paste): Check for view != NULL.
+	(e_addressbook_view_can_select_all): Check for view != NULL.
+	(e_addressbook_view_can_stop): Check for view != NULL.
+
+	* gui/widgets/e-addressbook-model.c (addressbook_destroy): Be
+	careful about zeroing out our destroyed object.
+	
+	* backend/ebook/e-book-view.c (e_book_view_stop): Added.  Stops
+	event processing in the underlying listener.
+
+2001-10-10  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-manager.c
+	(e_select_names_manager_destroy): If our select names dialog is
+	still around, destroy it.  Otherwise, the dialog will hang around
+	after our composer goes away.
+
+2001-10-06  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook-config.glade: add an Email Address
+	field/label/help text.
+
+	* gui/component/addressbook-config.c
+	(addressbook_source_dialog_set_source): fill in the email entry
+	from the source.  also, set the initial state of the email
+	label/entry.
+	(auth_checkbutton_changed): set the email label/entry
+	sensitive/editable if auth is turned on, and
+	insensitive/uneditable if it's off.
+	(addressbook_source_dialog_get_source): get the email address from
+	the email entry.
+	(addressbook_source_dialog): hook up the email entry to the
+	changed signal foo, as well as the focus handler for displaying
+	help text.
+
+2001-10-06  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-manager.c
+	(e_select_names_manager_new): db isn't a BonoboObject, so don't
+	bonobo_object_unref it!
+
+2001-10-05  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(addressbook_model_set_uri): e_book_load_uri ->
+	addressbook_load_uri.
+
+	* gui/component/select-names/e-select-names-manager.c
+	(e_select_names_manager_new): e_book_load_uri ->
+	addressbook_load_uri.
+
+	* gui/component/addressbook.c (forget_passwords_cb): new function,
+	call e_passwords_forget_passwords.
+	(verbs): Add ContactsForgetPasswords.
+	(load_uri_auth_cb): new function, call the callback and free up
+	our closure stuff.
+	(load_uri_cb): once the uri is loaded, check if we're configured
+	to authenticate for it, and do so, using the e_passwords stuff.
+	(addressbook_load_uri): wrapper around e_book_load_uri.  save off
+	the parameters and start the load-with-auth machinery.
+	(book_open_cb): remove all the auth stuff from here, as it's
+	handled elsewhere now.
+
+	* gui/component/addressbook-factory.c (main): call
+	e_passwords_init.
+
+	* gui/component/addressbook-component.c (user_create_new_item_cb):
+	e_book_load_uri -> addressbook_load_uri.
+	(destination_folder_handle_drop): same.
+
+	* gui/component/addressbook.h: add prototype for
+	addressbook_load_uri (a wrapper around e_book_load_uri that also
+	handles authentication if the user selects it.)
+
+2001-10-05  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names.c
+	(real_add_address_cb): Check to make sure our call to
+	e_addressbook_model_get_card doesn't return NULL.
+
+	* gui/widgets/e-addressbook-model.c
+	(e_addressbook_model_get_card): Chek that we aren't requesting a
+	negative row.
+
+	* gui/contact-list-editor/e-contact-list-editor.c (add_email_cb):
+	Move to the bottom of the scrolled window, so we can see the
+	address we just added.
+	(table_drag_data_received_cb): Move to the bottom of the scrolled
+	window, so we can see the contact we just dropped.
+
+	* gui/component/addressbook.c (addressbook_factory_new_control):
+	We don't own the string returned by e_categories_master_list_nth,
+	so terrible things will happen if we free it. (Bug 10916)
+
+2001-10-05  Chris Toshok  <toshok@ximian.com>
+
+	* gui/widgets/e-addressbook-view.c (e_addressbook_view_set_arg):
+	don't set the editable field on the model - let the book do that.
+	(book_writable_cb): call writable_status to propagate a ui-change
+	event up (and sensitize the write-only toolbar buttons after you
+	authenticate with ldap.)
+
+2001-10-04  Chris Toshok  <toshok@ximian.com>
+
+	* backend/ebook/e-book.c (activate_factories_for_uri): for some
+	reason, matching on protocol is causing problems for me.
+	disabling it for now.
+
+2001-10-04  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook-component.c: use ldap.png for ldap
+	contacts.
+
+2001-10-03  Iain Holmes  <iain@ximian.com>
+
+	* addressbook/gui/component/addressbook-storage.c 
+	(addressbook_storage_setup): Only load_storages if you have LDAP.
+	(load_source_data): Only do stuff if you have LDAP.
+
+2001-10-03  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/widgets/e-addressbook-reflow-adapter.c (addressbook_height),
+	gui/widgets/e-minicard.c (remodel): Fixed these to determine the
+	fields to use properly.
+
+2001-10-02  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c
+	(name_style_query): Strip out commas before forming our query.
+	(match_name): Use e_card_compare_name_to_string_full, rather
+	than our crufty old matching code.  Not only is this cleaner,
+	but that crufty old code was very broken when it came to 
+	handling strings with whitespace. (Bug 8988)
+	(match_nickname): utf8 and bug fixes.
+
+	* backend/ebook/e-card-compare.c
+	(e_card_compare_name_to_string_full): Added.  This is basically
+	e_card_compare_name_to_string with a bunch of extra options, so
+	that it can more readily be reused in other contexts.
+	(e_card_compare_name_to_string): This is now just a call to
+	e_card_compare_name_to_string_full with the extra args filled in
+	to defaults that simulate the old behavior.
+
+2001-10-02  Chris Toshok  <toshok@ximian.com>
+
+        * backend/ebook/e-book.c (e_book_construct): remove most of the
+	oaf stuff from here.  we do it in load_uri, where we'll have more
+	information (namely, the protocol we're using.)
+	(activate_factories_for_uri): do an oaf query to get a list of all
+	objects implementing our BookFactory interface and also supporting
+	the protocol used in the uri.
+        (e_book_load_uri): try activating book factories to handle this
+	uri, and start the iteration over the list.
+        (e_book_load_uri_from_factory): try and load the uri.
+        (e_book_load_uri_open_cb): callback function for the
+	BookFactory_openBook call - if it succeeds, call the user's
+	callback.  otherwise step to the next factory.
+        (e_book_load_uri_step): go to the next factory in our list, and
+	error out if there are no more.
+	
+2001-10-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/select-names/e-select-names-model.c
+	(e_select_names_model_get_textification): Made the max length of
+	the textification be 2047 characters.  Fixes Ximian bug #3021.
+
 2001-10-01  JP Rosevear  <jpr@ximian.com>
 
+	* conduit/address-conduit.c (ecard_from_remote_record): if there
+	was no first name or last name, file as the company.
+
+2001-10-01  JP Rosevear  <jpr@ximian.com>
+	
 	* backend/pas/pas-backend-file.c
 	(pas_backend_file_changes_foreach_key): if there is a db error,
 	assume deletion

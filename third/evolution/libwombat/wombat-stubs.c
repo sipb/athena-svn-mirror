@@ -110,12 +110,12 @@ GNOME_Evolution_WombatClient_getPassword(GNOME_Evolution_WombatClient _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_7))) =
+	 
+	    (*((guint32 *) & (_ORBIT_tmpvar_7))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 _ORBIT_retval = CORBA_string_alloc(_ORBIT_tmpvar_7);
@@ -171,7 +171,8 @@ GNOME_Evolution_WombatClient_forgetPassword(GNOME_Evolution_WombatClient _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_WombatClient__classid) {
-      ((POA_GNOME_Evolution_WombatClient__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_WombatClient__epv *) _obj->
        vepv[GNOME_Evolution_WombatClient__classid])->forgetPassword(_obj->
 								    servant,
 								    key, ev);
@@ -237,8 +238,7 @@ GNOME_Evolution_WombatClient_forgetPassword(GNOME_Evolution_WombatClient _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {

@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -33,7 +33,7 @@
 #include "camel-mime-utils.h"
 #include "camel-charset-map.h"
 #include <e-util/md5-utils.h>
-
+#include <gal/util/e-iconv.h>
 
 #define d(x)
 
@@ -698,18 +698,18 @@ digest_response (struct _DigestResponse *resp)
 		const char *buf;
 		iconv_t cd;
 		
-		charset = camel_charset_locale_name ();
+		charset = e_iconv_locale_charset();
 		if (!charset)
 			charset = "iso-8859-1";
 		
-		cd = iconv_open (resp->charset, charset);
+		cd = e_iconv_open (resp->charset, charset);
 		
 		len = strlen (resp->username);
 		outlen = 2 * len; /* plenty of space */
 		
 		outbuf = username = g_malloc0 (outlen + 1);
 		buf = resp->username;
-		if (cd == (iconv_t) -1 || iconv (cd, &buf, &len, &outbuf, &outlen) == -1) {
+		if (cd == (iconv_t) -1 || e_iconv (cd, &buf, &len, &outbuf, &outlen) == -1) {
 			/* We can't convert to UTF-8 - pretend we never got a charset param? */
 			g_free (resp->charset);
 			resp->charset = NULL;
@@ -720,7 +720,7 @@ digest_response (struct _DigestResponse *resp)
 		}
 		
 		if (cd != (iconv_t) -1)
-			iconv_close (cd);
+			e_iconv_close (cd);
 		
 		g_byte_array_append (buffer, username, strlen (username));
 		g_free (username);

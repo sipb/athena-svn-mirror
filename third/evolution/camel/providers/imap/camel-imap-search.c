@@ -7,19 +7,19 @@
  *
  *  Copyright 2000, 2001 Ximian, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -34,10 +34,13 @@
 #include "camel-imap-store.h"
 #include "camel-imap-search.h"
 #include "camel-imap-private.h"
+#include "camel-imap-utils.h"
 
 static ESExpResult *
 imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv,
 		    CamelFolderSearch *s);
+
+static CamelFolderSearchClass *imap_search_parent_class;
 
 static void
 camel_imap_search_class_init (CamelImapSearchClass *camel_imap_search_class)
@@ -45,6 +48,8 @@ camel_imap_search_class_init (CamelImapSearchClass *camel_imap_search_class)
 	/* virtual method overload */
 	CamelFolderSearchClass *camel_folder_search_class =
 		CAMEL_FOLDER_SEARCH_CLASS (camel_imap_search_class);
+
+	imap_search_parent_class = camel_type_get_global_classfuncs (camel_folder_search_get_type ());
 	
 	/* virtual method overload */
 	camel_folder_search_class->body_contains = imap_body_contains;
@@ -67,6 +72,21 @@ camel_imap_search_get_type (void)
 	return camel_imap_search_type;
 }
 
+static int
+cmp_uid(const void *ap, const void *bp)
+{
+	unsigned int a, b;
+
+	a = strtoul(((char **)ap)[0], NULL, 10);
+	b = strtoul(((char **)bp)[0], NULL, 10);
+	if (a<b)
+		return -1;
+	else if (a>b)
+		return 1;
+
+	return 0;
+}
+
 static ESExpResult *
 imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv,
 		    CamelFolderSearch *s)
@@ -79,6 +99,13 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv,
 	ESExpResult *r;
 	CamelMessageInfo *info;
 	GHashTable *uid_hash = NULL;
+	char *set;
+	GPtrArray *sorted;
+	int i;
+
+	/* If offline, search using the parent class, which can handle this manually */
+	if (!camel_disco_store_check_online (CAMEL_DISCO_STORE (store), NULL))
+		return imap_search_parent_class->body_contains(f, argc, argv, s);
 
 	if (s->current) {
 		uid = camel_message_info_uid (s->current);
@@ -92,19 +119,35 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv,
 		
 		if (argc == 1 && *value == '\0' && s->folder) {
 			/* optimise the match "" case - match everything */
-			int i;
-			
 			r->value.ptrarray = g_ptr_array_new ();
 			for (i = 0; i < s->summary->len; i++) {
 				CamelMessageInfo *info = g_ptr_array_index (s->summary, i);
 				g_ptr_array_add (r->value.ptrarray, (char *)camel_message_info_uid (info));
 			}
 		} else {
-			/* FIXME: danw: what if we have multiple string args? */
+			/* If searching a (reasonably small) subset of
+                           the real folder size, then use a
+                           message-set to optimise it */
+			/* TODO: This peeks a bunch of 'private'ish data */
+			if (s->summary->len < camel_folder_get_message_count(s->folder)/2) {
+				sorted = g_ptr_array_new();
+				g_ptr_array_set_size(sorted, s->summary->len);
+				for (i=0;i<s->summary->len;i++)
+					sorted->pdata[i] = (void *)camel_message_info_uid((CamelMessageInfo *)s->summary->pdata[i]);
+				qsort(sorted->pdata, sorted->len, sizeof(sorted->pdata[0]), cmp_uid);
+				set = imap_uid_array_to_set(s->folder->summary, sorted);
+				response = camel_imap_command (store, s->folder, NULL,
+							       "UID SEARCH UID %s BODY \"%s\"",
+							       set, value);
+				g_free(set);
+				g_ptr_array_free(sorted, TRUE);
+			} else {
+				response = camel_imap_command (store, s->folder, NULL,
+							       "UID SEARCH BODY \"%s\"",
+							       value);
+			}
+
 			r->value.ptrarray = g_ptr_array_new ();
-			response = camel_imap_command (store, s->folder, NULL,
-						       "UID SEARCH BODY \"%s\"",
-						       value);
 		}
 	}
 	
@@ -126,8 +169,6 @@ imap_body_contains (struct _ESExp *f, int argc, struct _ESExpResult **argv,
 			   access to the summary memory which is locked for the duration of
 			   the search, and wont vanish on us */
 			if (uid_hash == NULL) {
-				int i;
-				
 				uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
 				for (i = 0; i < s->summary->len; i++) {
 					info = s->summary->pdata[i];

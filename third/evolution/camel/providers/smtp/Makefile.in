@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -191,7 +192,7 @@ providerdir = $(pkglibdir)/camel-providers/$(VERSION)
 provider_LTLIBRARIES = libcamelsmtp.la
 provider_DATA = libcamelsmtp.urls
 
-INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..				-I$(includedir)					-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(GNOME_INCLUDEDIR)				$(GTK_INCLUDEDIR)				$(NSPR_CFLAGS)					$(NSS_CFLAGS)					$(OPENSSL_CFLAGS)			        -DG_LOG_DOMAIN=\"camel-smtp-provider\"
+INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..				-I$(includedir)					-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(CAMEL_CFLAGS)					$(GNOME_INCLUDEDIR)				$(GTK_INCLUDEDIR)				$(NSPR_CFLAGS)					$(NSS_CFLAGS)					$(OPENSSL_CFLAGS)			        -DG_LOG_DOMAIN=\"camel-smtp-provider\"
 
 
 libcamelsmtp_la_SOURCES =  	camel-smtp-provider.c				camel-smtp-transport.c
@@ -232,7 +233,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libcamelsmtp_la_SOURCES)
 OBJECTS = $(libcamelsmtp_la_OBJECTS)
@@ -398,6 +399,44 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+camel-smtp-provider.lo camel-smtp-provider.o : camel-smtp-provider.c \
+	../../../config.h camel-smtp-transport.h \
+	../../../camel/camel-transport.h ../../../camel/camel-service.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/camel-session.h \
+	../../../e-util/e-msgport.h ../../../camel/camel-sasl.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def
+camel-smtp-transport.lo camel-smtp-transport.o : camel-smtp-transport.c \
+	../../../config.h ../../../camel/camel-mime-filter-crlf.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-mime-filter-linewrap.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-stream.h camel-smtp-transport.h \
+	../../../camel/camel-transport.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-multipart.h \
+	../../../camel/camel-stream-buffer.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-tcp-stream.h \
+	../../../camel/camel-tcp-stream-raw.h \
+	../../../camel/camel-tcp-stream-ssl.h \
+	../../../camel/camel-session.h ../../../e-util/e-msgport.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-sasl.h ../../../camel/string-utils.h
 
 info-am:
 info: info-am

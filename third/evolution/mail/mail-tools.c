@@ -8,9 +8,8 @@
  * Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -71,7 +70,7 @@ mail_tool_get_local_inbox (CamelException *ex)
 	CamelFolder *folder;
 
 	url = g_strdup_printf("file://%s/local/Inbox", evolution_dir);
-	folder = mail_tool_uri_to_folder (url, ex);
+	folder = mail_tool_uri_to_folder (url, 0, ex);
 	g_free (url);
 	return folder;
 }
@@ -93,16 +92,24 @@ mail_tool_get_inbox (const gchar *url, CamelException *ex)
 }
 
 CamelFolder *
-mail_tool_get_trash (const gchar *url, CamelException *ex)
+mail_tool_get_trash (const gchar *url, int connect, CamelException *ex)
 {
 	CamelStore *store;
 	CamelFolder *trash;
-	
-	store = camel_session_get_store (session, url, ex);
+
+	if (connect)
+		store = camel_session_get_store (session, url, ex);
+	else
+		store = (CamelStore *)camel_session_get_service(session, url, CAMEL_PROVIDER_STORE, ex);
+
 	if (!store)
 		return NULL;
 	
-	trash = camel_store_get_trash (store, ex);
+	if (connect || ((CamelService *)store)->status == CAMEL_SERVICE_CONNECTED)
+		trash = camel_store_get_trash (store, ex);
+	else
+		trash = NULL;
+
 	camel_object_unref (CAMEL_OBJECT (store));
 	
 	return trash;
@@ -115,29 +122,11 @@ mail_tool_do_movemail (const gchar *source_url, CamelException *ex)
 	gchar *dest_path;
 	const gchar *source;
 	struct stat sb;
-#ifndef MOVEMAIL_PATH
-	int tmpfd;
-#endif
+
 	g_return_val_if_fail (strncmp (source_url, "mbox:", 5) == 0, NULL);
 	
 	/* Set up our destination. */
 	dest_path = mail_tool_get_local_movemail_path();
-	
-	/* Create a new movemail mailbox file of 0 size */
-	
-#ifndef MOVEMAIL_PATH
-	tmpfd = open (dest_path, O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-	
-	if (tmpfd == -1) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Couldn't create temporary mbox `%s': %s"),
-				      dest_path, g_strerror (errno));
-		g_free (dest_path);
-		return NULL;
-	}
-	
-	close (tmpfd);
-#endif
 	
 	/* Skip over "mbox:" plus host part (if any) of url. */
 	source = source_url + 5;
@@ -172,10 +161,17 @@ mail_tool_generate_forward_subject (CamelMimeMessage *msg)
 	
 	if (subject && *subject) {
 		/* Truncate insanely long subjects */
-		if (strlen (subject) < max_subject_length)
+		if (strlen (subject) < max_subject_length) {
 			fwd_subj = g_strdup_printf ("[Fwd: %s]", subject);
-		else
-			fwd_subj = g_strdup_printf ("[Fwd: %.*s...]", max_subject_length, subject);
+		} else {
+			/* We can't use %.*s because it depends on the locale being C/POSIX
+			   or UTF-8 to work correctly in glibc */
+			/*fwd_subj = g_strdup_printf ("[Fwd: %.*s...]", max_subject_length, subject);*/
+			fwd_subj = g_malloc (max_subject_length + 11);
+			memcpy (fwd_subj, "[Fwd: ", 6);
+			memcpy (fwd_subj + 6, subject, max_subject_length);
+			memcpy (fwd_subj + 6 + max_subject_length, "...]", 5);
+		}
 	} else {
 		const CamelInternetAddress *from;
 		char *fromstr;
@@ -279,7 +275,7 @@ mail_tool_make_message_attachment (CamelMimeMessage *message)
 }
 
 CamelFolder *
-mail_tool_uri_to_folder (const char *uri, CamelException *ex)
+mail_tool_uri_to_folder (const char *uri, guint32 flags, CamelException *ex)
 {
 	CamelURL *url;
 	CamelStore *store = NULL;
@@ -315,7 +311,7 @@ mail_tool_uri_to_folder (const char *uri, CamelException *ex)
 		if (offset)
 			folder = camel_store_get_trash (store, ex);
 		else
-			folder = camel_store_get_folder (store, name, CAMEL_STORE_FOLDER_CREATE, ex);
+			folder = camel_store_get_folder (store, name, flags, ex);
 		camel_object_unref (CAMEL_OBJECT (store));
 	}
 	
@@ -377,6 +373,7 @@ mail_tool_quote_message (CamelMimeMessage *message, const char *fmt, ...)
 	
 	return NULL;
 }
+
 
 /**
  * mail_tool_forward_message:

@@ -7,10 +7,9 @@
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -96,7 +95,7 @@ static void task_page_destroy (GtkObject *object);
 static GtkWidget *task_page_get_widget (CompEditorPage *page);
 static void task_page_focus_main_widget (CompEditorPage *page);
 static void task_page_fill_widgets (CompEditorPage *page, CalComponent *comp);
-static void task_page_fill_component (CompEditorPage *page, CalComponent *comp);
+static gboolean task_page_fill_component (CompEditorPage *page, CalComponent *comp);
 static void task_page_set_summary (CompEditorPage *page, const char *summary);
 static void task_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates);
 
@@ -311,7 +310,8 @@ task_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 	CalClientGetStatus get_tz_status;
 	GSList *l;
 	const char *categories;
-	icaltimezone *zone;
+	icaltimezone *zone, *default_zone;
+	char *location;
 
 	tpage = TASK_PAGE (page);
 	priv = tpage->priv;
@@ -334,6 +334,9 @@ task_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 	}
 	cal_component_free_text_list (l);
 
+	location = calendar_config_get_timezone ();
+	default_zone = icaltimezone_get_builtin_timezone (location);
+
 	/* Due Date. */
 	cal_component_get_due (comp, &d);
 	zone = NULL;
@@ -342,18 +345,22 @@ task_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 		e_date_edit_set_date (E_DATE_EDIT (priv->due_date),
 				      due_tt->year, due_tt->month,
 				      due_tt->day);
-		e_date_edit_set_time_of_day (E_DATE_EDIT (priv->due_date),
-					     due_tt->hour, due_tt->minute);
+		if (due_tt->is_date) {
+			e_date_edit_set_time_of_day (E_DATE_EDIT (priv->due_date),
+						     -1, -1);
+			zone = default_zone;
+		} else {
+			e_date_edit_set_time_of_day (E_DATE_EDIT (priv->due_date),
+						     due_tt->hour,
+						     due_tt->minute);
+		}
 	} else {
-		char *location;
-
 		e_date_edit_set_time (E_DATE_EDIT (priv->due_date), -1);
 
 		/* If no time is set, we use the default timezone, so the
 		   user usually doesn't have to set this when they set the
 		   date. */
-		location = calendar_config_get_timezone ();
-		zone = icaltimezone_get_builtin_timezone (location);
+		zone = default_zone;
 	}
 
 	/* Note that if we are creating a new task, the timezones may not be
@@ -383,18 +390,22 @@ task_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 		e_date_edit_set_date (E_DATE_EDIT (priv->start_date),
 				      start_tt->year, start_tt->month,
 				      start_tt->day);
-		e_date_edit_set_time_of_day (E_DATE_EDIT (priv->start_date),
-					     start_tt->hour, start_tt->minute);
+		if (start_tt->is_date) {
+			e_date_edit_set_time_of_day (E_DATE_EDIT (priv->start_date),
+						     -1, -1);
+			zone = default_zone;
+		} else {
+			e_date_edit_set_time_of_day (E_DATE_EDIT (priv->start_date),
+						     start_tt->hour,
+						     start_tt->minute);
+		}
 	} else {
-		char *location;
-
 		e_date_edit_set_time (E_DATE_EDIT (priv->start_date), -1);
 
 		/* If no time is set, we use the default timezone, so the
 		   user usually doesn't have to set this when they set the
 		   date. */
-		location = calendar_config_get_timezone ();
-		zone = icaltimezone_get_builtin_timezone (location);
+		zone = default_zone;
 	}
 
 	if (!zone)
@@ -420,14 +431,20 @@ task_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 	    	e_dialog_radio_set (priv->classification_public,
 				    CAL_COMPONENT_CLASS_PUBLIC,
 				    classification_map);
+		break;
+
 	case CAL_COMPONENT_CLASS_PRIVATE:
 	    	e_dialog_radio_set (priv->classification_public,
 				    CAL_COMPONENT_CLASS_PRIVATE,
 				    classification_map);
+		break;
+
 	case CAL_COMPONENT_CLASS_CONFIDENTIAL:
 	    	e_dialog_radio_set (priv->classification_public,
 				    CAL_COMPONENT_CLASS_CONFIDENTIAL,
 				    classification_map);
+		break;
+
 	default:
 		/* What do do?  We can't g_assert_not_reached() since it is a
 		 * value from an external file.
@@ -455,7 +472,7 @@ task_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 }
 
 /* fill_component handler for the task page */
-static void
+static gboolean
 task_page_fill_component (CompEditorPage *page, CalComponent *comp)
 {
 	TaskPage *tpage;
@@ -463,7 +480,7 @@ task_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	CalComponentDateTime date;
 	struct icaltimetype icaltime;
 	char *cat, *str;
-	gboolean date_set;
+	gboolean date_set, time_set;
 	icaltimezone *zone;
 
 	tpage = TASK_PAGE (page);
@@ -513,37 +530,44 @@ task_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	date.value = &icaltime;
 	date.tzid = NULL;
 
-	/* FIXME: We should use is_date at some point. */
-
 	/* Due Date. */
 	date_set = e_date_edit_get_date (E_DATE_EDIT (priv->due_date),
 					 &icaltime.year,
 					 &icaltime.month,
 					 &icaltime.day);
-	e_date_edit_get_time_of_day (E_DATE_EDIT (priv->due_date),
-				     &icaltime.hour,
-				     &icaltime.minute);
+	time_set = e_date_edit_get_time_of_day (E_DATE_EDIT (priv->due_date),
+						&icaltime.hour,
+						&icaltime.minute);
 	if (date_set) {
-		zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->due_timezone));
-		if (zone)
+		if (time_set) {
+			zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->due_timezone));
 			date.tzid = icaltimezone_get_tzid (zone);
+		} else {
+			icaltime.is_date = TRUE;
+			date.tzid = NULL;
+		}
 		cal_component_set_due (comp, &date);
 	} else {
 		cal_component_set_due (comp, NULL);
 	}
 
 	/* Start Date. */
+	icaltime = icaltime_null_time ();
 	date_set = e_date_edit_get_date (E_DATE_EDIT (priv->start_date),
 					 &icaltime.year,
 					 &icaltime.month,
 					 &icaltime.day);
-	e_date_edit_get_time_of_day (E_DATE_EDIT (priv->start_date),
-				     &icaltime.hour,
-				     &icaltime.minute);
+	time_set = e_date_edit_get_time_of_day (E_DATE_EDIT (priv->start_date),
+						&icaltime.hour,
+						&icaltime.minute);
 	if (date_set) {
-		zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->start_timezone));
-		if (zone)
+		if (time_set) {
+			zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->start_timezone));
 			date.tzid = icaltimezone_get_tzid (zone);
+		} else {
+			icaltime.is_date = TRUE;
+			date.tzid = NULL;
+		}
 		cal_component_set_dtstart (comp, &date);
 	} else {
 		cal_component_set_dtstart (comp, NULL);
@@ -565,6 +589,8 @@ task_page_fill_component (CompEditorPage *page, CalComponent *comp)
 
 	/* Contacts */
 	comp_editor_contacts_to_component (priv->contacts_entry, comp);
+
+	return TRUE;
 }
 
 /* set_summary handler for the task page */
@@ -597,7 +623,10 @@ task_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates)
 static gboolean
 get_widgets (TaskPage *tpage)
 {
+	CompEditorPage *page = COMP_EDITOR_PAGE (tpage);
 	TaskPagePrivate *priv;
+	GSList *accel_groups;
+	GtkWidget *toplevel;
 
 	priv = tpage->priv;
 
@@ -606,6 +635,15 @@ get_widgets (TaskPage *tpage)
 	priv->main = GW ("task-page");
 	if (!priv->main)
 		return FALSE;
+
+	/* Get the GtkAccelGroup from the toplevel window, so we can install
+	   it when the notebook page is mapped. */
+	toplevel = gtk_widget_get_toplevel (priv->main);
+	accel_groups = gtk_accel_groups_from_object (GTK_OBJECT (toplevel));
+	if (accel_groups) {
+		page->accel_group = accel_groups->data;
+		gtk_accel_group_ref (page->accel_group);
+	}
 
 	gtk_widget_ref (priv->main);
 	gtk_widget_unparent (priv->main);
@@ -666,8 +704,8 @@ summary_changed_cb (GtkEditable *editable, gpointer data)
 	g_free (summary);
 }
 
-/* Callback used when the start or end date widgets change.  We check that the
- * start date < end date and we set the "all day task" button as appropriate.
+/* Callback used when the start or due date widgets change.  We notify the
+ * other pages in the task editor, so they can update any labels. 
  */
 static void
 date_changed_cb (EDateEdit *dedit, gpointer data)
@@ -675,7 +713,7 @@ date_changed_cb (EDateEdit *dedit, gpointer data)
 	TaskPage *tpage;
 	TaskPagePrivate *priv;
 	CompEditorPageDates dates;
-	gboolean date_set;
+	gboolean date_set, time_set;
 	CalComponentDateTime start_dt, due_dt;
 	struct icaltimetype start_tt = icaltime_null_time();
 	struct icaltimetype due_tt = icaltime_null_time();
@@ -690,12 +728,17 @@ date_changed_cb (EDateEdit *dedit, gpointer data)
 					 &start_tt.year,
 					 &start_tt.month,
 					 &start_tt.day);
-	e_date_edit_get_time_of_day (E_DATE_EDIT (priv->start_date),
-				     &start_tt.hour,
-				     &start_tt.minute);
+	time_set = e_date_edit_get_time_of_day (E_DATE_EDIT (priv->start_date),
+						&start_tt.hour,
+						&start_tt.minute);
 	if (date_set) {
-		icaltimezone *zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->start_timezone));
-		start_dt.tzid = icaltimezone_get_tzid (zone);
+		if (time_set) {
+			icaltimezone *zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->start_timezone));
+			start_dt.tzid = icaltimezone_get_tzid (zone);
+		} else {
+			start_tt.is_date = TRUE;
+			start_dt.tzid = NULL;
+		}
 	} else {
 		start_tt = icaltime_null_time ();
 		start_dt.tzid = NULL;
@@ -705,12 +748,17 @@ date_changed_cb (EDateEdit *dedit, gpointer data)
 					 &due_tt.year,
 					 &due_tt.month,
 					 &due_tt.day);
-	e_date_edit_get_time_of_day (E_DATE_EDIT (priv->due_date),
-				     &due_tt.hour,
-				     &due_tt.minute);
+	time_set = e_date_edit_get_time_of_day (E_DATE_EDIT (priv->due_date),
+						&due_tt.hour,
+						&due_tt.minute);
 	if (date_set) {
-		icaltimezone *zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->due_timezone));
-		due_dt.tzid = icaltimezone_get_tzid (zone);
+		if (time_set) {
+			icaltimezone *zone = e_timezone_entry_get_timezone (E_TIMEZONE_ENTRY (priv->due_timezone));
+			due_dt.tzid = icaltimezone_get_tzid (zone);
+		} else {
+			due_tt.is_date = TRUE;
+			due_dt.tzid = NULL;
+		}
 	} else {
 		due_tt = icaltime_null_time ();
 		due_dt.tzid = NULL;
@@ -740,7 +788,6 @@ contacts_clicked_cb (GtkWidget *button, gpointer data)
 	tpage = TASK_PAGE (data);
 	priv = tpage->priv;
 
-	g_print ("In contacts_clicked_cb\n");
 	comp_editor_show_contacts_dialog (priv->corba_select_names);
 
 	/* FIXME: Currently we aren't getting the changed event from the
@@ -819,8 +866,6 @@ init_widgets (TaskPage *tpage)
 			    GTK_SIGNAL_FUNC (field_changed_cb), tpage);
 
 	/* Classification */
-	gtk_signal_connect (GTK_OBJECT (priv->description), "changed",
-			    GTK_SIGNAL_FUNC (field_changed_cb), tpage);
 	gtk_signal_connect (GTK_OBJECT (priv->classification_public),
 			    "toggled",
 			    GTK_SIGNAL_FUNC (field_changed_cb), tpage);

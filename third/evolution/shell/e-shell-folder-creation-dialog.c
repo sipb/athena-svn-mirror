@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,6 +38,7 @@
 
 #include "e-storage-set.h"
 #include "e-storage-set-view.h"
+#include "e-shell-utils.h"
 
 #include "e-shell-folder-creation-dialog.h"
 
@@ -112,40 +112,6 @@ async_create_cb (EStorageSet *storage_set,
 		  e_storage_result_to_string (result));
 }
 
-
-/* Sanity check for the user-specified folder name.  */
-/* FIXME in the future we would like not to have the `G_DIR_SEPARATOR' limitation.  */
-static gboolean
-entry_name_is_valid (GtkEntry *entry, char **reason)
-{
-	const char *name;
-	
-	name = gtk_entry_get_text (entry);
-	
-	if (name == NULL || *name == '\0') {
-		*reason = _("No folder name specified.");
-		return FALSE;
-	}
-	
-	/* GtkEntry is broken - if you hit KP_ENTER you get a \r inserted... */
-	if (strchr (name, '\r')) {
-		*reason = _("Folder name cannot contain the Return character.");
-		return FALSE;
-	}
-	
-	if (strchr (name, G_DIR_SEPARATOR) != NULL) {
-		*reason = _("Folder cannot contain the directory separator.");
-		return FALSE;
-	}
-	
-	if (strcmp (name, ".") == 0 || strcmp (name, "..") == 0) {
-		*reason = _("'.' and '..' are reserved folder names.");
-		return FALSE;
-	}
-	
-	return TRUE;
-}
-
 
 /* Dialog signal callbacks.  */
 
@@ -159,8 +125,8 @@ dialog_clicked_cb (GnomeDialog *dialog,
 	GtkWidget *folder_type_menu_item;
 	const char *folder_type;
 	const char *parent_path;
+	const char *reason;
 	char *folder_name;
-	char *reason;
 	char *path;
 
 	dialog_data = (DialogData *) data;
@@ -175,7 +141,9 @@ dialog_clicked_cb (GnomeDialog *dialog,
 		return;
 	}
 
-	if (!entry_name_is_valid (GTK_ENTRY (dialog_data->folder_name_entry), &reason)) {
+	folder_name = e_utf8_gtk_entry_get_text (GTK_ENTRY (dialog_data->folder_name_entry));
+
+	if (! e_shell_folder_name_is_valid (folder_name, &reason)) {
 		e_notice (GTK_WINDOW (dialog), GNOME_MESSAGE_BOX_ERROR,
 			  _("The specified folder name is not valid: %s"), reason);
 		return;
@@ -193,7 +161,6 @@ dialog_clicked_cb (GnomeDialog *dialog,
 		return;
 	}
 
-	folder_name = e_utf8_gtk_entry_get_text (GTK_ENTRY (dialog_data->folder_name_entry));
 	path = g_concat_dir_and_file (parent_path, folder_name);
 	g_free (folder_name);
 
@@ -515,7 +482,7 @@ e_shell_show_folder_creation_dialog (EShell *shell,
 
 	storage_set_view = add_storage_set_view (dialog, gui, shell, default_parent_folder);
 	if (default_type == NULL) {
-		char *dt;
+		const char *dt;
 
 		dt = get_type_from_parent_path (shell, default_parent_folder);
 		folder_types = add_folder_types (dialog, gui, shell, dt);

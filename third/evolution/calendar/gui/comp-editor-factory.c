@@ -4,10 +4,9 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,10 +22,11 @@
 #include <config.h>
 #endif
 
-#include <libgnomevfs/gnome-vfs.h>
+#include <e-util/e-url.h>
 #include <cal-client/cal-client.h>
 #include "calendar-config.h"
 #include "comp-editor-factory.h"
+#include "comp-util.h"
 #include "dialogs/event-editor.h"
 #include "dialogs/task-editor.h"
 
@@ -59,7 +59,7 @@ typedef struct {
 	CompEditorFactory *factory;
 
 	/* Uri of the calendar, used as key in the clients hash table */
-	GnomeVFSURI *uri;
+	char *uri;
 
 	/* Client of the calendar */
 	CalClient *client;
@@ -106,7 +106,7 @@ static void impl_editExisting (PortableServer_Servant servant,
 			       const GNOME_Evolution_Calendar_CalObjUID uid,
 			       CORBA_Environment *ev);
 static void impl_editNew (PortableServer_Servant servant,
-			  const CORBA_char *uri,
+			  const CORBA_char *str_uri,
 			  const GNOME_Evolution_Calendar_CalObjType type,
 			  CORBA_Environment *ev);
 
@@ -144,7 +144,7 @@ comp_editor_factory_init (CompEditorFactory *factory)
 	priv = g_new (CompEditorFactoryPrivate, 1);
 	factory->priv = priv;
 
-	priv->uri_client_hash = g_hash_table_new (gnome_vfs_uri_hash, gnome_vfs_uri_hequal);
+	priv->uri_client_hash = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 /* Used from g_hash_table_foreach(); frees a component structure */
@@ -182,7 +182,7 @@ free_client (OpenClient *oc)
 {
 	GSList *l;
 
-	gnome_vfs_uri_unref (oc->uri);
+	g_free (oc->uri);
 	oc->uri = NULL;
 
 	gtk_object_unref (GTK_OBJECT (oc->client));
@@ -350,22 +350,28 @@ get_default_component (CalComponentVType vtype)
 {
 	CalComponent *comp;
 
-	comp = cal_component_new ();
-	cal_component_set_new_vtype (comp, vtype);
-
 	if (vtype == CAL_COMPONENT_EVENT) {
 		struct icaltimetype itt;
 		CalComponentDateTime dt;
+		char *location;
+		icaltimezone *zone;
+
+		comp = cal_comp_event_new_with_defaults ();
 
 		itt = icaltime_today ();
 
 		dt.value = &itt;
-		dt.tzid = calendar_config_get_timezone ();
+		location = calendar_config_get_timezone ();
+		zone = icaltimezone_get_builtin_timezone (location);
+		dt.tzid = icaltimezone_get_tzid (zone);
 
 		cal_component_set_dtstart (comp, &dt);
 		cal_component_set_dtend (comp, &dt);
 
 		cal_component_commit_sequence (comp);
+	} else {
+		comp = cal_component_new ();
+		cal_component_set_new_vtype (comp, vtype);
 	}
 
 	return comp;
@@ -419,11 +425,19 @@ resolve_pending_requests (OpenClient *oc)
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 	GSList *l;
+	char *location;
+	icaltimezone *zone;
 
 	factory = oc->factory;
 	priv = factory->priv;
 
 	g_assert (oc->pending != NULL);
+
+	/* Set the default timezone in the backend. */
+	location = calendar_config_get_timezone ();
+	zone = icaltimezone_get_builtin_timezone (location);
+	if (zone)
+		cal_client_set_default_timezone (oc->client, zone);
 
 	for (l = oc->pending; l; l = l->next) {
 		Request *request;
@@ -494,12 +508,11 @@ cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data)
  * open request.
  */
 static OpenClient *
-open_client (CompEditorFactory *factory, GnomeVFSURI *uri)
+open_client (CompEditorFactory *factory, const char *uristr)
 {
 	CompEditorFactoryPrivate *priv;
 	CalClient *client;
 	OpenClient *oc;
-	char *str_uri;
 
 	priv = factory->priv;
 
@@ -510,8 +523,7 @@ open_client (CompEditorFactory *factory, GnomeVFSURI *uri)
 	oc = g_new (OpenClient, 1);
 	oc->factory = factory;
 
-	gnome_vfs_uri_ref (uri);
-	oc->uri = uri;
+	oc->uri = g_strdup (uristr);
 
 	oc->client = client;
 	oc->uid_comp_hash = g_hash_table_new (g_str_hash, g_str_equal);
@@ -521,18 +533,14 @@ open_client (CompEditorFactory *factory, GnomeVFSURI *uri)
 	gtk_signal_connect (GTK_OBJECT (oc->client), "cal_opened",
 			    GTK_SIGNAL_FUNC (cal_opened_cb), oc);
 
-	str_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
-
-	if (!cal_client_open_calendar (oc->client, str_uri, FALSE)) {
-		g_free (str_uri);
-		gnome_vfs_uri_unref (oc->uri);
+	if (!cal_client_open_calendar (oc->client, uristr, FALSE)) {
+		g_free (oc->uri);
 		gtk_object_unref (GTK_OBJECT (oc->client));
 		g_hash_table_destroy (oc->uid_comp_hash);
 		g_free (oc);
 
 		return NULL;
 	}
-	g_free (str_uri);
 
 	g_hash_table_insert (priv->uri_client_hash, oc->uri, oc);
 
@@ -546,27 +554,26 @@ static OpenClient *
 lookup_open_client (CompEditorFactory *factory, const char *str_uri, CORBA_Environment *ev)
 {
 	CompEditorFactoryPrivate *priv;
-	GnomeVFSURI *uri;
 	OpenClient *oc;
+	EUri *uri;
 
 	priv = factory->priv;
 
 	/* Look up the client */
 
-	uri = gnome_vfs_uri_new (str_uri);
+	uri = e_uri_new (str_uri);
 	if (!uri) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI,
 				     NULL);
 		return NULL;
 	}
+	e_uri_free (uri);
 
-	oc = g_hash_table_lookup (priv->uri_client_hash, uri);
+	oc = g_hash_table_lookup (priv->uri_client_hash, str_uri);
 	if (!oc) {
-		oc = open_client (factory, uri);
+		oc = open_client (factory, str_uri);
 		if (!oc) {
-			gnome_vfs_uri_unref (uri);
-
 			CORBA_exception_set (
 				ev, CORBA_USER_EXCEPTION,
 				ex_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError,
@@ -574,8 +581,6 @@ lookup_open_client (CompEditorFactory *factory, const char *str_uri, CORBA_Envir
 			return NULL;
 		}
 	}
-
-	gnome_vfs_uri_unref (uri);
 
 	return oc;
 }
@@ -700,3 +705,5 @@ comp_editor_factory_new (void)
 {
 	return gtk_type_new (TYPE_COMP_EDITOR_FACTORY);
 }
+
+

@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -51,9 +50,10 @@ e_summary_offline_handler_create_connection_list (ESummary *summary)
 
 	list = GNOME_Evolution_ConnectionList__alloc ();
 	list->_length = 0;
-	list->_maximum = e_summary_count_connections (summary);
+	list->_maximum = e_summary_count_connections (summary) + 1;
 	list->_buffer = CORBA_sequence_GNOME_Evolution_Connection_allocbuf (list->_maximum);
 
+	g_print ("_length: %d\n_maximum: %d\n", list->_length, list->_maximum);
 	connections = e_summary_add_connections (summary);
 	for (p = connections; p; p = p->next) {
 		ESummaryConnectionData *data;
@@ -116,13 +116,13 @@ went_offline (ESummary *summary,
 	CORBA_exception_init (&ev);
 
 	g_warning ("Went offline");
-	GNOME_Evolution_OfflineProgressListener_updateProgress (priv->listener_interface, connection_list, &ev);
-	if (BONOBO_EX (&ev)) {
-		g_warning ("Error updating offline progress: %s",
-			   CORBA_exception_id (&ev));
-	}
+  	GNOME_Evolution_OfflineProgressListener_updateProgress (priv->listener_interface, connection_list, &ev); 
+  	if (BONOBO_EX (&ev)) { 
+  		g_warning ("Error updating offline progress: %s", 
+  			   CORBA_exception_id (&ev)); 
+  	} 
 
-	CORBA_exception_free (&ev);
+  	CORBA_exception_free (&ev);
 }
 
 static void

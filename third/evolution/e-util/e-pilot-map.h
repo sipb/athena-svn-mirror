@@ -5,19 +5,19 @@
  *
  * Authors: JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef E_PILOT_MAP_H
@@ -34,6 +34,8 @@ struct _EPilotMap
 	GHashTable *uid_map;
 
 	time_t since;
+
+	gboolean write_touched_only;
 };
 
 gboolean e_pilot_map_pid_is_archived (EPilotMap *map, guint32 pid);
@@ -43,8 +45,8 @@ void e_pilot_map_insert (EPilotMap *map, guint32 pid, const char *uid, gboolean 
 void e_pilot_map_remove_by_pid (EPilotMap *map, guint32 pid);
 void e_pilot_map_remove_by_uid (EPilotMap *map, const char *uid);
 
-guint32 e_pilot_map_lookup_pid (EPilotMap *map, const char *uid);
-const char * e_pilot_map_lookup_uid (EPilotMap *map, guint32 pid);
+guint32 e_pilot_map_lookup_pid (EPilotMap *map, const char *uid, gboolean touch);
+const char * e_pilot_map_lookup_uid (EPilotMap *map, guint32 pid, gboolean touch);
 
 int e_pilot_map_read (const char *filename, EPilotMap **map);
 int e_pilot_map_write (const char *filename, EPilotMap *map);

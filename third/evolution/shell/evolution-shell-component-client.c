@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -72,6 +71,8 @@ corba_exception_to_result (const CORBA_Environment *ev)
 	if (ev->_major == CORBA_USER_EXCEPTION) {
 		if (strcmp (ev->_repo_id, ex_GNOME_Evolution_ShellComponent_AlreadyOwned) == 0)
 			return EVOLUTION_SHELL_COMPONENT_ALREADYOWNED;
+		if (strcmp (ev->_repo_id, ex_GNOME_Evolution_ShellComponent_OldOwnerHasDied) == 0)
+			return EVOLUTION_SHELL_COMPONENT_OLDOWNERHASDIED;
 		if (strcmp (ev->_repo_id, ex_GNOME_Evolution_ShellComponent_NotOwned) == 0)
 			return EVOLUTION_SHELL_COMPONENT_NOTOWNED;
 		if (strcmp (ev->_repo_id, ex_GNOME_Evolution_ShellComponent_NotFound) == 0)
@@ -390,6 +391,13 @@ evolution_shell_component_client_new (const char *id)
 		g_warning ("Could not start up component for %s.", id);
 		return NULL;
 	}
+
+#if 0
+	ior = CORBA_ORB_object_to_string (bonobo_orb (), corba_object, &ev);
+	g_print ("--- %s %s\n", id, ior);
+	CORBA_free (ior);
+#endif
+
 	CORBA_exception_free (&ev);
 
 	if (corba_object == CORBA_OBJECT_NIL) {

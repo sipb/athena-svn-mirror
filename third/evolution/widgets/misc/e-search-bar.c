@@ -11,9 +11,8 @@
 
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -282,6 +281,7 @@ copy_subitems (ESearchBarSubitem *subitems)
 	for (i=0; i<N; ++i) {
 		copy[i].text = g_strdup (subitems[i].text);
 		copy[i].id = subitems[i].id;
+		copy[i].translate = subitems[i].translate;
 	}
 
 	copy[N].text = NULL;

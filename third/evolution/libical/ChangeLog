@@ -1,3 +1,115 @@
+2001-10-31  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icalproperty.c (get_next_line_start): use MAX_LINE_LEN
+	rather than magic numbers all over the place.
+
+2001-10-31  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icalproperty.c (icalproperty_as_ical_string): had to
+	redo the folding code since Outlook 2000 doesn't like parameter values
+	like 'TENTATIVE' cut in half. Now it tries to split after a ';', ':'
+	or space.
+
+2001-10-30  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icalproperty.c (fold_property_line): forgot to account
+	for the spaces added, so it could have been writing over the end of
+	the allocated memory. Added check for buffer overflow as well.
+	This could well have been the problem causing bug #14067.
+
+2001-10-30  Damon Chaplin  <damon@ximian.com>
+
+	* zoneinfo/*.ics: Regenerated all VTIMEZONEs, to be compatable with
+	Outlook Web Access. They now only include 2 RRULEs components or
+	1 simple DTSTART component.
+
+2001-10-29  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/Makefile.am: renamed the library to libical-evolution.la,
+	install ical.h into $includedir/evolution, with the other Evo headers.
+
+	* src/libical/icalproperty.c (fold_property_line): new function to
+	fold property lines around every 70 characters. Outlook Web Access
+	doesn't seem to like some properties folded after the property name
+	(e.g. UID, VTIMEZONE stuff.) Slight chance of data corruption here.
+
+	* src/libical/icalvalue.c (icalvalue_text_as_ical_string): don't fold
+	the lines here.
+
+	* src/libical/icaltime.c (icaltime_from_string): DATE values should
+	not have is_utc set to 1 - they don't have a timezone.
+
+	* src/libical/icalvalue.c (icalvalue_utcoffset_as_ical_string): 
+	always round UTC offsets to the nearest minute, for compatability
+	with Outlook. Should round data when parsing as well.
+
+2001-10-27  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icaltimezone.c (icaltimezone_get_display_name): added
+	function to get a reasonable name to display for the timezone.
+	(Though it won't be translated.)
+
+2001-10-25  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icaltimezone.c (icaltimezone_get_tznames_from_vtimezone):
+	Outlooks (2000) places "Standard Time" and "Daylight Time" in the
+	TZNAME strings, which is useless, so return NULL in that case.
+	ETimezoneEntry will then use the TZID instead, in which Outlook does
+	place the actual timezone name. (I just hope Outlook doesn't translate
+	"Standard Time" to other languages, as we won't be able to fix it then)
+
+2001-10-23  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icalrecur.c (icalrecur_two_byrule): use
+	sizeof(test_array) for the memset call. It was clearing 9 bytes but
+	the array uses shorts.
+
+2001-10-22  Damon Chaplin  <damon@ximian.com>
+
+	* zoneinfo/*: updated all files again, placing current RDATEs first,
+	so Outlook uses those. Also fixed a few bugs in vzic which resulted in
+	a few changes.
+	
+	* zoneinfo/Makefile.am (DIRS): added America/North_Dakota.
+
+2001-10-22  Damon Chaplin  <damon@ximian.com>
+
+	* src/libical/icaltimezone.c (icaltimezone_get_utc_offset): 
+	(icaltimezone_get_utc_offset_of_utc_time): if we go off the start of
+	the changes array, return the TZOFFSETFROM of the first change.
+	Also changed the maximum year to 2037.
+
+	* src/libical/icaltime.c (icaltime_day_of_week):
+	(icaltime_start_doy_of_week):
+	(icaltime_week_number): init tm_hour to 12. Sometimes mktime()
+	adjusts the time, if that local time doesn't actually exist, leading
+	to the wrong day being returned. It is unlikely to adjust by 12 hours.
+	(icaltime_as_timet_with_zone): 
+	(icaltime_from_timet_with_zone): change it back so it does convert
+	DATE values to/from the timezone. time_t values don't really go well
+	with DATE values, so be very careful when using them. We now assume
+	that the time_t points to the start of the day in the given timezone.
+	(We used to assume it pointed to the start of the day in UTC, but
+	that meant it was actually incorrect wrt the displayed calendar.)
+
+	* src/libical/icalrecur.c (expand_year_days): for FREQ=YEARLY with no
+	modifiers, we add one day, using the month and day from DTSTART.
+	(next_year): make sure we never go past 2037.
+
+	* scripts/mkderivedproperties.pl: Updated to allow DTSTART, DTEND, DUE
+	and RECURRENCE-ID to be set with DATE values. I think it now handles
+	all properties which can take DATE values, except RDATE which uses
+	DATE-TIME-PERIOD.
+
+2001-10-19  JP Rosevear  <jpr@ximian.com>
+
+	* src/libical/icalproperty.c (icalproperty_remove_parameter):
+	don't free the parameter
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* src/libical/Makefile.am (CLEANFILES): Assign with `=', not `+='.
+
 2001-09-26  Federico Mena Quintero  <federico@ximian.com>
 
 	Fix the libical-related part of Ximian bug #7892.

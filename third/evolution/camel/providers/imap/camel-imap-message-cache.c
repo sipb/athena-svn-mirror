@@ -8,9 +8,8 @@
  * Copyright (C) 2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -210,6 +209,20 @@ camel_imap_message_cache_max_uid (CamelImapMessageCache *cache)
 	return cache->max_uid;
 }
 
+/**
+ * camel_imap_message_cache_set_path:
+ * @cache: 
+ * @path: 
+ * 
+ * Set the path used for the message cache.
+ **/
+void
+camel_imap_message_cache_set_path (CamelImapMessageCache *cache, const char *path)
+{
+	g_free(cache->path);
+	cache->path = g_strdup(path);
+}
+
 static void
 stream_finalize (CamelObject *stream, gpointer event_data, gpointer user_data)
 {
@@ -262,6 +275,7 @@ static CamelStream *
 insert_finish (CamelImapMessageCache *cache, const char *uid, char *path,
 	       char *key, CamelStream *stream)
 {
+	camel_stream_flush (stream);
 	camel_stream_reset (stream);
 	cache_put (cache, uid, key, stream);
 	g_free (path);
@@ -389,6 +403,7 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
 	key = strrchr (path, '/') + 1;
 	stream = g_hash_table_lookup (cache->parts, key);
 	if (stream) {
+		camel_stream_reset (CAMEL_STREAM (stream));
 		camel_object_ref (CAMEL_OBJECT (stream));
 		return stream;
 	}

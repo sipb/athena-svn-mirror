@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -96,11 +95,13 @@ typedef struct _EvolutionShellComponentDndDestinationFolderClass EvolutionShellC
 
 typedef CORBA_boolean (*DndDestinationFolderHandleMotionFn)(EvolutionShellComponentDndDestinationFolder *folder,
 							    const char *physical_uri,
+							    const char *folder_type,
 							    const GNOME_Evolution_ShellComponentDnd_DestinationFolder_Context * destination_context,
 							    GNOME_Evolution_ShellComponentDnd_Action * suggested_action_return,
 							    gpointer closure);
 typedef CORBA_boolean (*DndDestinationFolderHandleDropFn)(EvolutionShellComponentDndDestinationFolder *folder,
 							  const char *physical_uri,
+							  const char *folder_type,
 							  const GNOME_Evolution_ShellComponentDnd_DestinationFolder_Context * destination_context,
 							  const GNOME_Evolution_ShellComponentDnd_Action action,
 							  const GNOME_Evolution_ShellComponentDnd_Data * data,

@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -151,7 +150,7 @@ component_factory_init (void)
 	result = oaf_active_server_register (COMPONENT_ID, bonobo_object_corba_objref (object));
 	if (result == OAF_REG_ERROR) {
 		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("Cannot initialize Evolution's Executive Summary component."));
+			  _("Cannot initialize Evolution's Summary component."));
 		exit (1);
 	}
 }

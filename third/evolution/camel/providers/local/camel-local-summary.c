@@ -4,20 +4,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or 
- *  modify it under the terms of the GNU General Public License as 
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- *  USA
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +35,7 @@
 #include "camel/camel-mime-message.h"
 #include "camel/camel-stream-null.h"
 
+#define w(x)
 #define io(x)
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
@@ -148,7 +148,7 @@ camel_local_summary_load(CamelLocalSummary *cls, int forceindex, CamelException 
 	if (forceindex
 	    || stat(s->summary_path, &st) == -1
 	    || ((CamelLocalSummaryClass *)(CAMEL_OBJECT_GET_CLASS(cls)))->load(cls, forceindex, ex) == -1) {
-		g_warning("Could not load summary: flags may be reset");
+		w(g_warning("Could not load summary: flags may be reset"));
 		camel_folder_summary_clear((CamelFolderSummary *)cls);
 		return -1;
 	}
@@ -255,13 +255,6 @@ camel_local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changei
 
 	ret = ((CamelLocalSummaryClass *)(CAMEL_OBJECT_GET_CLASS(cls)))->check(cls, changeinfo, ex);
 
-	if (ret != -1) {
-		if (camel_folder_summary_save((CamelFolderSummary *)cls) == -1)
-			g_warning("Could not save summary for %s: %s", cls->folder_path, strerror(errno));
-		if (cls->index && ibex_save(cls->index) == -1)
-			g_warning("Could not sync index for %s: %s", cls->folder_path, strerror(errno));
-	}
-
 #ifdef DOSTATS
 	if (ret != -1) {
 		int i;
@@ -366,7 +359,19 @@ local_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, C
 static int
 local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
-	return 0;
+	int ret = 0;
+
+	ret = camel_folder_summary_save((CamelFolderSummary *)cls);
+	if (ret == -1) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Could not save summary: %s: %s"), cls->folder_path, strerror(errno));
+		g_warning("Could not save summary for %s: %s", cls->folder_path, strerror(errno));
+	}
+
+	if (cls->index && ibex_save(cls->index) == -1)
+		g_warning("Could not sync index for %s: %s", cls->folder_path, strerror(errno));
+
+	return ret;
 }
 
 static CamelMessageInfo *

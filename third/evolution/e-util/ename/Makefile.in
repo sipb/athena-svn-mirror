@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -259,7 +260,7 @@ DIST_COMMON =  Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libename_la_SOURCES) $(libename_static_la_SOURCES) $(test_ename_western_SOURCES) $(test_ename_western_gtk_SOURCES)
 OBJECTS = $(libename_la_OBJECTS) $(libename_static_la_OBJECTS) $(test_ename_western_OBJECTS) $(test_ename_western_gtk_OBJECTS)
@@ -435,6 +436,12 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+e-address-western.lo e-address-western.o : e-address-western.c \
+	../ename/e-address-western.h
+e-name-western.lo e-name-western.o : e-name-western.c \
+	../ename/e-name-western.h ../ename/e-name-western-tables.h
+test-ename-western-gtk.o: test-ename-western-gtk.c e-name-western.h
+test-ename-western.o: test-ename-western.c ../ename/e-name-western.h
 
 info-am:
 info: info-am

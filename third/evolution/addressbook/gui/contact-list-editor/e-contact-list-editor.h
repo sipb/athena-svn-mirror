@@ -4,9 +4,8 @@
  * Author: Chris Toshok <toshok@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -76,6 +75,9 @@ struct _EContactListEditor
 
 	/* Whether the contact editor will accept modifications */
 	guint editable : 1;
+
+	/* Whether an async wombat call is in progress */
+	guint in_async_call : 1;
 };
 
 struct _EContactListEditorClass

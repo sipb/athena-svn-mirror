@@ -7,10 +7,9 @@
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -91,7 +90,7 @@ static void task_details_page_destroy (GtkObject *object);
 static GtkWidget *task_details_page_get_widget (CompEditorPage *page);
 static void task_details_page_focus_main_widget (CompEditorPage *page);
 static void task_details_page_fill_widgets (CompEditorPage *page, CalComponent *comp);
-static void task_details_page_fill_component (CompEditorPage *page, CalComponent *comp);
+static gboolean task_details_page_fill_component (CompEditorPage *page, CalComponent *comp);
 
 static CompEditorPageClass *parent_class = NULL;
 
@@ -374,7 +373,7 @@ task_details_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 }
 
 /* fill_component handler for the task page */
-static void
+static gboolean
 task_details_page_fill_component (CompEditorPage *page, CalComponent *comp)
 {
 	TaskDetailsPage *tdpage;
@@ -436,6 +435,8 @@ task_details_page_fill_component (CompEditorPage *page, CalComponent *comp)
 	cal_component_set_url (comp, url);
 	if (url)
 		g_free (url);
+
+	return TRUE;
 }
 
 
@@ -444,7 +445,10 @@ task_details_page_fill_component (CompEditorPage *page, CalComponent *comp)
 static gboolean
 get_widgets (TaskDetailsPage *tdpage)
 {
+	CompEditorPage *page = COMP_EDITOR_PAGE (tdpage);
 	TaskDetailsPagePrivate *priv;
+	GSList *accel_groups;
+	GtkWidget *toplevel;
 
 	priv = tdpage->priv;
 
@@ -453,6 +457,15 @@ get_widgets (TaskDetailsPage *tdpage)
 	priv->main = GW ("task-details-page");
 	if (!priv->main)
 		return FALSE;
+
+	/* Get the GtkAccelGroup from the toplevel window, so we can install
+	   it when the notebook page is mapped. */
+	toplevel = gtk_widget_get_toplevel (priv->main);
+	accel_groups = gtk_accel_groups_from_object (GTK_OBJECT (toplevel));
+	if (accel_groups) {
+		page->accel_group = accel_groups->data;
+		gtk_accel_group_ref (page->accel_group);
+	}
 
 	gtk_widget_ref (priv->main);
 	gtk_widget_unparent (priv->main);
@@ -507,7 +520,7 @@ date_changed_cb (EDateEdit *dedit, gpointer data)
 	TaskDetailsPage *tdpage;
 	TaskDetailsPagePrivate *priv;
 	CompEditorPageDates dates = {NULL, NULL, NULL, NULL};
-	struct icaltimetype completed_tt;
+	struct icaltimetype completed_tt = icaltime_null_time ();
 	icalproperty_status status;
 	gboolean date_set;
 

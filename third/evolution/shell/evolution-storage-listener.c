@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -95,7 +94,6 @@ impl_GNOME_Evolution_StorageListener_notifyFolderCreated (PortableServer_Servant
 static void
 impl_GNOME_Evolution_StorageListener_notifyFolderUpdated (PortableServer_Servant servant,
 							  const CORBA_char *path,
-							  const CORBA_char *display_name,
 							  CORBA_long unread_count,
 							  CORBA_Environment *ev)
 {
@@ -106,7 +104,7 @@ impl_GNOME_Evolution_StorageListener_notifyFolderUpdated (PortableServer_Servant
 	priv = listener->priv;
 
 	gtk_signal_emit (GTK_OBJECT (listener), signals[UPDATE_FOLDER], path,
-			 display_name);
+			 unread_count);
 }
 
 static void
@@ -262,10 +260,10 @@ class_init (EvolutionStorageListenerClass *klass)
 						  GTK_RUN_FIRST,
 						  object_class->type,
 						  GTK_SIGNAL_OFFSET (EvolutionStorageListenerClass, update_folder),
-						  gtk_marshal_NONE__POINTER_POINTER,
+						  gtk_marshal_NONE__POINTER_INT,
 						  GTK_TYPE_NONE, 2,
 						  GTK_TYPE_STRING,
-						  GTK_TYPE_STRING);
+						  GTK_TYPE_INT);
 
 	signals[REMOVED_FOLDER] = gtk_signal_new ("removed_folder",
 						  GTK_RUN_FIRST,

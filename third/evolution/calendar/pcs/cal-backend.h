@@ -7,10 +7,9 @@
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Rodrigo Moya <rodrigo@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,7 +25,6 @@
 #define CAL_BACKEND_H
 
 #include <libgnome/gnome-defs.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <cal-util/cal-util.h>
 #include <cal-util/cal-component.h>
 #include "evolution-calendar.h"
@@ -75,9 +73,9 @@ struct _CalBackendClass {
 	void (* obj_removed) (CalBackend *backend, const char *uid);
 
 	/* Virtual methods */
-	GnomeVFSURI *(* get_uri) (CalBackend *backend);
+	const char *(* get_uri) (CalBackend *backend);
 
-	CalBackendOpenStatus (* open) (CalBackend *backend, GnomeVFSURI *uri,
+	CalBackendOpenStatus (* open) (CalBackend *backend, const char *uristr,
 				       gboolean only_if_exists);
 
 	gboolean (* is_loaded) (CalBackend *backend);
@@ -114,15 +112,17 @@ struct _CalBackendClass {
 
 	/* Timezone related virtual methods */
 	icaltimezone *(* get_timezone) (CalBackend *backend, const char *tzid);
+	icaltimezone *(* get_default_timezone) (CalBackend *backend);
+	gboolean (* set_default_timezone) (CalBackend *backend, const char *tzid);
 };
 
 GtkType cal_backend_get_type (void);
 
-GnomeVFSURI *cal_backend_get_uri (CalBackend *backend);
+const char *cal_backend_get_uri (CalBackend *backend);
 
 void cal_backend_add_cal (CalBackend *backend, Cal *cal);
 
-CalBackendOpenStatus cal_backend_open (CalBackend *backend, GnomeVFSURI *uri,
+CalBackendOpenStatus cal_backend_open (CalBackend *backend, const char *uristr,
 				       gboolean only_if_exists);
 
 gboolean cal_backend_is_loaded (CalBackend *backend);
@@ -135,6 +135,8 @@ int cal_backend_get_n_objects (CalBackend *backend, CalObjType type);
 char *cal_backend_get_object (CalBackend *backend, const char *uid);
 
 CalComponent *cal_backend_get_object_component (CalBackend *backend, const char *uid);
+
+gboolean cal_backend_set_default_timezone (CalBackend *backend, const char *tzid);
 
 char *cal_backend_get_timezone_object (CalBackend *backend, const char *tzid);
 
@@ -164,6 +166,7 @@ gboolean cal_backend_update_objects (CalBackend *backend, const char *calobj);
 gboolean cal_backend_remove_object (CalBackend *backend, const char *uid);
 
 icaltimezone* cal_backend_get_timezone (CalBackend *backend, const char *tzid);
+icaltimezone* cal_backend_get_default_timezone (CalBackend *backend);
 
 void cal_backend_last_client_gone (CalBackend *backend);
 void cal_backend_opened (CalBackend *backend, CalBackendOpenStatus status);

@@ -8,9 +8,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -51,6 +50,11 @@ typedef struct _CamelFolderInfo {
 	int unread_message_count;
 } CamelFolderInfo;
 
+/* Structure of rename event's event_data */
+typedef struct _CamelRenameInfo {
+	char *old_base;
+	struct _CamelFolderInfo *new;
+} CamelRenameInfo;
 
 #define CAMEL_STORE_TYPE     (camel_store_get_type ())
 #define CAMEL_STORE(obj)     (CAMEL_CHECK_CAST((obj), CAMEL_STORE_TYPE, CamelStore))
@@ -74,6 +78,11 @@ struct _CamelStore
 	GHashTable *folders;
 
 	int flags;
+
+	/* FIXME: This is a temporary measure until IMAP namespaces are properly implemented,
+	   after that, all external folder api's will assume a dir separator of '/' */
+	/* This is always a copy of IMAP_STORE()->dir_sep, or '/' */
+	char dir_sep;
 };
 
 
@@ -183,6 +192,7 @@ CamelFolderInfo *camel_folder_info_build           (GPtrArray *folders,
 						    const char *namespace,
 						    char separator,
 						    gboolean short_names);
+CamelFolderInfo *camel_folder_info_clone	   (CamelFolderInfo *fi);
 
 gboolean         camel_store_supports_subscriptions   (CamelStore *store);
 
@@ -195,6 +205,7 @@ void             camel_store_unsubscribe_folder       (CamelStore *store,
 						       const char *folder_name,
 						       CamelException *ex);
 
+gboolean	 camel_store_uri_cmp		      (CamelStore *store, const char *uria, const char *urib);
 
 /* utility needed by some stores */
 int camel_mkdir_hier (const char *path, mode_t mode);

@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -570,21 +569,35 @@ set_e_shortcut_selection (EStorageSetView *storage_set_view,
 			  GtkSelectionData *selection_data)
 {
 	EStorageSetViewPrivate *priv;
+	ETreePath node;
+	EFolder *folder;
 	int shortcut_len;
 	char *shortcut;
-	const char *trailing_slash;
 	const char *name;
+	const char *folder_path;
 
 	g_assert (storage_set_view != NULL);
 	g_assert (selection_data != NULL);
 
 	priv = storage_set_view->priv;
 
-	trailing_slash = strrchr (priv->selected_row_path, '/');
-	if (trailing_slash == NULL)
-		name = NULL;
-	else
-		name = trailing_slash + 1;
+	node = lookup_node_in_hash (storage_set_view, priv->selected_row_path);
+
+	folder_path = e_tree_memory_node_get_data (E_TREE_MEMORY(priv->etree_model), node);
+	g_assert (folder_path != NULL);
+
+	folder = e_storage_set_get_folder (priv->storage_set, folder_path);
+	if (folder != NULL) {
+		name = e_folder_get_name (folder);
+	} else {
+		EStorage *storage;
+
+		storage = e_storage_set_get_storage (priv->storage_set, folder_path + 1);
+		if (storage != NULL)
+			name = e_storage_get_display_name (storage);
+		else
+			name = NULL;
+	}
 
 	/* FIXME: Get `evolution:' from somewhere instead of hardcoding it here.  */
 
@@ -995,15 +1008,53 @@ handle_evolution_path_drag_motion (EStorageSetView *storage_set_view,
 				   GdkDragContext *context,
 				   unsigned int time)
 {
+	EStorageSetViewPrivate *priv;
 	GdkModifierType modifiers;
 	GdkDragAction action;
 
+	priv = storage_set_view->priv;
+
 	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
 
-	if ((modifiers & GDK_CONTROL_MASK) != 0)
+	if ((modifiers & GDK_CONTROL_MASK) != 0) {
 		action = GDK_ACTION_COPY;
-	else
+	} else {
+		GtkWidget *source_widget;
+
 		action = GDK_ACTION_MOVE;
+
+		source_widget = gtk_drag_get_source_widget (context);
+		if (source_widget != NULL
+		    && E_IS_STORAGE_SET_VIEW (storage_set_view)) {
+			const char *source_path;
+
+			source_path = e_storage_set_view_get_current_folder (storage_set_view);
+			if (source_path != NULL) {
+				EFolder *folder;
+				int source_path_len;
+				const char *destination_path_base;
+				char *destination_path;
+
+				folder = e_storage_set_get_folder (priv->storage_set, source_path);
+				if (folder != NULL && e_folder_get_is_stock (folder))
+					return FALSE;
+
+				source_path_len = strlen (path);
+				destination_path_base = e_tree_memory_node_get_data (E_TREE_MEMORY (priv->etree_model), path);
+				if (strcmp (destination_path_base, source_path) == 0)
+					return FALSE;
+
+				destination_path = g_strconcat (destination_path_base, "/", g_basename (source_path), NULL);
+
+				if (strncmp (destination_path, source_path, source_path_len) == 0) {
+					g_free (destination_path);
+					return FALSE;
+				}
+
+				g_free (destination_path);
+			}
+		}
+	}
 
 	e_tree_drag_highlight (E_TREE (storage_set_view), row, -1);
 
@@ -1066,6 +1117,7 @@ tree_drag_motion (ETree *tree,
 	
 	can_handle = GNOME_Evolution_ShellComponentDnd_DestinationFolder_handleMotion (destination_folder_interface,
 										       e_folder_get_physical_uri (folder),
+										       e_folder_get_type_string (folder),
 										       &corba_context,
 										       &suggested_action,
 										       &ev);
@@ -1219,6 +1271,7 @@ tree_drag_data_received (ETree *etree,
 				/* pass off the data to the component's DestinationFolderInterface */
 				handled = GNOME_Evolution_ShellComponentDnd_DestinationFolder_handleDrop (destination_folder_interface,
 													  e_folder_get_physical_uri (folder),
+													  e_folder_get_type_string (folder),
 													  &corba_context,
 													  convert_gdk_drag_action_to_corba (context->action),
 													  &corba_data,
@@ -1280,17 +1333,21 @@ cursor_activated (ETree *tree,
 	priv = storage_set_view->priv;
 
 	g_free (priv->selected_row_path);
-	priv->selected_row_path = g_strdup (e_tree_memory_node_get_data (E_TREE_MEMORY (priv->etree_model), path));
+	if (path) {
+		priv->selected_row_path = g_strdup (e_tree_memory_node_get_data (E_TREE_MEMORY (priv->etree_model), path));
 
-	if (e_tree_model_node_depth (priv->etree_model, path) >= 2) {
-		/* it was a folder */
-		gtk_signal_emit (GTK_OBJECT (storage_set_view), signals[FOLDER_SELECTED],
-				 priv->selected_row_path);
-	} else {
-		/* it was a storage */
-		gtk_signal_emit (GTK_OBJECT (storage_set_view), signals[STORAGE_SELECTED],
-				 priv->selected_row_path + 1);
+		if (e_tree_model_node_depth (priv->etree_model, path) >= 2) {
+			/* it was a folder */
+			gtk_signal_emit (GTK_OBJECT (storage_set_view), signals[FOLDER_SELECTED],
+					 priv->selected_row_path);
+		} else {
+			/* it was a storage */
+			gtk_signal_emit (GTK_OBJECT (storage_set_view), signals[STORAGE_SELECTED],
+					 priv->selected_row_path + 1);
+		}
 	}
+	else
+		priv->selected_row_path = NULL;
 }
 
 
@@ -1321,8 +1378,14 @@ etree_icon_at (ETreeModel *etree,
 	if (depth == 1) {
 		EStorage *storage;
 		const char *storage_type;
+		GList *subfolder_paths;
 
 		storage = e_storage_set_get_storage (storage_set, path + 1);
+		subfolder_paths = e_storage_get_subfolder_paths (storage, "/");
+		if (subfolder_paths != NULL) {
+			e_free_string_list (subfolder_paths);
+			return NULL;
+		}
 
 		folder_type_registry = e_storage_set_get_folder_type_registry (storage_set);
 		storage_type = e_storage_get_toplevel_node_type (storage);
@@ -1605,6 +1668,7 @@ updated_folder_cb (EStorageSet *storage_set,
 	etree = priv->etree_model;
 
 	node = lookup_node_in_hash (storage_set_view, path);
+	e_tree_model_pre_change (etree);
 	e_tree_model_node_data_changed (etree, node);
 }
 
@@ -1766,6 +1830,7 @@ folder_changed_cb (EFolder *folder,
 		return;
 	}
 
+	e_tree_model_pre_change (priv->etree_model);
 	e_tree_model_node_data_changed (priv->etree_model, node);
 }
 

@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -67,6 +66,7 @@ enum _EvolutionShellComponentResult {
 	EVOLUTION_SHELL_COMPONENT_PERMISSIONDENIED,
 	EVOLUTION_SHELL_COMPONENT_HASSUBFOLDERS,
 	EVOLUTION_SHELL_COMPONENT_NOSPACE,
+	EVOLUTION_SHELL_COMPONENT_OLDOWNERHASDIED,
 	EVOLUTION_SHELL_COMPONENT_UNKNOWNERROR
 };
 typedef enum _EvolutionShellComponentResult EvolutionShellComponentResult;
@@ -138,7 +138,12 @@ struct _EvolutionShellComponentClass {
 			      EvolutionShellClient *shell_client,
 			      const char *evolution_homedir);
 	void (* owner_unset) (EvolutionShellComponent *shell_component);
+	void (* owner_died)  (EvolutionShellComponent *shell_component);
+
 	void (* debug)       (EvolutionShellComponent *shell_component);
+
+	void (* interactive)  (EvolutionShellComponent *shell_component,
+			       gboolean is_interactive);
 
 	void (* handle_external_uri) (EvolutionShellComponent *shell_component,
 				      const char *uri);
@@ -177,6 +182,8 @@ void  evolution_shell_component_add_user_creatable_item  (EvolutionShellComponen
 							  const char              *description,
 							  const char              *menu_description,
 							  char                     menu_shortcut);
+
+const char *evolution_shell_component_result_to_string (EvolutionShellComponentResult result);
 
 #ifdef cplusplus
 }

@@ -4,10 +4,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +27,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
+#include <bonobo/bonobo-exception.h>
 #include <gal/widgets/e-unicode.h>
 #include <e-util/e-sexp.h>
 #include <cal-util/cal-recur.h>
@@ -48,6 +48,9 @@ typedef enum {
 struct _QueryPrivate {
 	/* The backend we are monitoring */
 	CalBackend *backend;
+
+	/* The default timezone for the calendar. */
+	icaltimezone *default_zone;
 
 	/* Listener to which we report changes in the live query */
 	GNOME_Evolution_Calendar_QueryListener ql;
@@ -116,6 +119,7 @@ query_init (Query *query)
 	query->priv = priv;
 
 	priv->backend = NULL;
+	priv->default_zone = NULL;
 	priv->ql = CORBA_OBJECT_NIL;
 	priv->sexp = NULL;
 
@@ -163,7 +167,7 @@ query_destroy (GtkObject *object)
 		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (priv->ql, &ev);
 
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_message ("query_destroy(): Could not unref the listener\n");
 
 		CORBA_exception_free (&ev);
@@ -525,7 +529,7 @@ func_occur_in_time_range (ESExp *esexp, int argc, ESExpResult **argv, void *data
 
 	cal_recur_generate_instances (comp, start, end,
 				      instance_occur_cb, &occurs,
-				      resolve_tzid, query);
+				      resolve_tzid, query, priv->default_zone);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.bool = occurs;
@@ -930,7 +934,7 @@ add_component (Query *query, const char *uid, gboolean query_in_progress, int n_
 		total,
 		&ev);
 
-	if (ev._major != CORBA_NO_EXCEPTION)
+	if (BONOBO_EX (&ev))
 		g_message ("add_component(): Could not notify the listener of an "
 			   "updated component");
 
@@ -963,7 +967,7 @@ remove_component (Query *query, const char *uid)
 		(char *) uid,
 		&ev);
 
-	if (ev._major != CORBA_NO_EXCEPTION)
+	if (BONOBO_EX (&ev))
 		g_message ("remove_component(): Could not notify the listener of a "
 			   "removed component");
 
@@ -1081,7 +1085,7 @@ ensure_sexp (Query *query)
 			error_str,
 			&ev);
 
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_message ("ensure_sexp(): Could not notify the listener of "
 				   "a parse error");
 
@@ -1115,7 +1119,7 @@ match_component (Query *query, const char *uid,
 		return;
 
 	comp = cal_backend_get_object_component (priv->backend, uid);
-	g_assert (comp != NULL);
+	g_return_if_fail (comp != NULL);
 	gtk_object_ref (GTK_OBJECT (comp));
 
 	/* Eval the sexp */
@@ -1140,7 +1144,7 @@ match_component (Query *query, const char *uid,
 			error_str,
 			&ev);
 
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_message ("match_component(): Could not notify the listener of "
 				   "an evaluation error");
 
@@ -1155,7 +1159,7 @@ match_component (Query *query, const char *uid,
 			_("Evaluation of the search expression did not yield a boolean value"),
 			&ev);
 
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_message ("match_component(): Could not notify the listener of "
 				   "an unexpected result value type when evaluating the "
 				   "search expression");
@@ -1202,7 +1206,7 @@ process_component_cb (gpointer data)
 			"",
 			&ev);
 
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_message ("process_component_cb(): Could not notify the listener of "
 				   "a finished query");
 
@@ -1261,48 +1265,6 @@ populate_query (Query *query)
 	priv->state = QUERY_IN_PROGRESS;
 }
 
-/* Idle handler for starting a query */
-static gboolean
-start_query_cb (gpointer data)
-{
-	Query *query;
-	QueryPrivate *priv;
-
-	query = QUERY (data);
-	priv = query->priv;
-
-	priv->idle_id = 0;
-
-	if (!ensure_sexp (query))
-		return FALSE;
-
-	/* Populate the query with UIDs so that we can process them asynchronously */
-
-	populate_query (query);
-
-	return FALSE;
-}
-
-/* Callback used when the backend gets loaded; we just queue the query to be
- * started later.
- */
-static void
-backend_opened_cb (CalBackend *backend, CalBackendOpenStatus status, gpointer data)
-{
-	Query *query;
-	QueryPrivate *priv;
-
-	query = QUERY (data);
-	priv = query->priv;
-
-	if (status == CAL_BACKEND_OPEN_SUCCESS) {
-		g_assert (cal_backend_is_loaded (backend));
-		g_assert (priv->idle_id == 0);
-
-		priv->idle_id = g_idle_add (start_query_cb, query);
-	}
-}
-
 /* Callback used when a component changes in the backend */
 static void
 backend_obj_updated_cb (CalBackend *backend, const char *uid, gpointer data)
@@ -1335,6 +1297,55 @@ backend_obj_removed_cb (CalBackend *backend, const char *uid, gpointer data)
 	remove_from_pending (query, uid);
 
 	bonobo_object_unref (BONOBO_OBJECT (query));
+}
+
+/* Idle handler for starting a query */
+static gboolean
+start_query_cb (gpointer data)
+{
+	Query *query;
+	QueryPrivate *priv;
+
+	query = QUERY (data);
+	priv = query->priv;
+
+	priv->idle_id = 0;
+
+	if (!ensure_sexp (query))
+		return FALSE;
+
+	/* Populate the query with UIDs so that we can process them asynchronously */
+
+	populate_query (query);
+
+	gtk_signal_connect (GTK_OBJECT (priv->backend), "obj_updated",
+			    GTK_SIGNAL_FUNC (backend_obj_updated_cb),
+			    query);
+	gtk_signal_connect (GTK_OBJECT (priv->backend), "obj_removed",
+			    GTK_SIGNAL_FUNC (backend_obj_removed_cb),
+			    query);
+
+	return FALSE;
+}
+
+/* Callback used when the backend gets loaded; we just queue the query to be
+ * started later.
+ */
+static void
+backend_opened_cb (CalBackend *backend, CalBackendOpenStatus status, gpointer data)
+{
+	Query *query;
+	QueryPrivate *priv;
+
+	query = QUERY (data);
+	priv = query->priv;
+
+	if (status == CAL_BACKEND_OPEN_SUCCESS) {
+		g_assert (cal_backend_is_loaded (backend));
+		g_assert (priv->idle_id == 0);
+
+		priv->idle_id = g_idle_add (start_query_cb, query);
+	}
 }
 
 /**
@@ -1371,7 +1382,7 @@ query_construct (Query *query,
 
 	CORBA_exception_init (&ev);
 	priv->ql = CORBA_Object_duplicate (ql, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
+	if (BONOBO_EX (&ev)) {
 		g_message ("query_construct(): Could not duplicate the listener");
 		priv->ql = CORBA_OBJECT_NIL;
 		CORBA_exception_free (&ev);
@@ -1382,12 +1393,7 @@ query_construct (Query *query,
 	priv->backend = backend;
 	gtk_object_ref (GTK_OBJECT (priv->backend));
 
-	gtk_signal_connect (GTK_OBJECT (priv->backend), "obj_updated",
-			    GTK_SIGNAL_FUNC (backend_obj_updated_cb),
-			    query);
-	gtk_signal_connect (GTK_OBJECT (priv->backend), "obj_removed",
-			    GTK_SIGNAL_FUNC (backend_obj_removed_cb),
-			    query);
+	priv->default_zone = cal_backend_get_default_timezone (backend);
 
 	priv->sexp = g_strdup (sexp);
 

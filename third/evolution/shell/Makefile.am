@@ -117,6 +117,8 @@ evolution_SOURCES =				\
 	e-local-storage.h			\
 	e-setup.c				\
 	e-setup.h				\
+	e-shell-about-box.h			\
+	e-shell-about-box.c			\
 	e-shell-constants.h			\
 	e-shell-folder-commands.c		\
 	e-shell-folder-commands.h		\
@@ -176,7 +178,7 @@ evolution_LDADD =						\
 	$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a	\
 	$(top_builddir)/widgets/misc/libemiscwidgets.a		\
 	$(top_builddir)/e-util/libeutil.la			\
-	$(top_builddir)/libical/src/libical/libical.la		\
+	$(top_builddir)/libical/src/libical/libical-evolution.la	\
 	$(EXTRA_GNOME_LIBS)					\
 	$(GNOME_PRINT_LIBS)					\
 	$(GTKHTML_LIBS)						\

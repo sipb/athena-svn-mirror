@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +36,7 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-stock.h>
 #include <gal/widgets/e-unicode.h>
+#include <addressbook/gui/component/addressbook.h>
 #include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-book-util.h>
 #include <addressbook/backend/ebook/e-card.h>
@@ -126,7 +126,7 @@ quick_add_set_email (QuickAdd *qa, const gchar *email)
 }
 
 static void
-merge_cb (EBook *book, gpointer closure)
+merge_cb (EBook *book, EBookStatus status, gpointer closure)
 {
 	QuickAdd *qa = (QuickAdd *) closure;
 
@@ -134,6 +134,7 @@ merge_cb (EBook *book, gpointer closure)
 		e_card_merging_book_add_card (book, qa->card, NULL, NULL);
 		if (qa->cb)
 			qa->cb (qa->card, qa->closure);
+		gtk_object_unref (GTK_OBJECT (book));
 	} else {
 		/* Something went wrong. */
 		if (qa->cb)
@@ -146,8 +147,15 @@ merge_cb (EBook *book, gpointer closure)
 static void
 quick_add_merge_card (QuickAdd *qa)
 {
+	EBook *book;
+
 	quick_add_ref (qa);
-	e_book_use_local_address_book (merge_cb, qa);
+
+	book = e_book_new ();
+	if (!addressbook_load_default_book (book, merge_cb, qa)) {
+		gtk_object_unref (GTK_OBJECT (book));
+		merge_cb (book, E_BOOK_STATUS_OTHER_ERROR, qa);
+	}
 }
 
 
@@ -165,7 +173,7 @@ card_added_cb (EContactEditor *ce, EBookStatus status, ECard *card, gpointer clo
 		if (qa->cb)
 			qa->cb (qa->card, qa->closure);
 	
-		quick_add_unref (qa);
+		/* We don't need to unref qa because we set_data_full below */
 		gtk_object_set_data (GTK_OBJECT (ce), "quick_add", NULL);
 	}
 }
@@ -176,14 +184,14 @@ editor_closed_cb (GtkWidget *w, gpointer closure)
 	QuickAdd *qa = (QuickAdd *) gtk_object_get_data (GTK_OBJECT (w), "quick_add");
 
 	if (qa) {
-		quick_add_unref (qa);
+		/* We don't need to unref qa because we set_data_full below */
 		gtk_object_set_data (GTK_OBJECT (w), "quick_add", NULL);
 		gtk_object_unref (GTK_OBJECT (w));
 	}
 }
 
 static void
-ce_have_book (EBook *book, gpointer closure)
+ce_have_book (EBook *book, EBookStatus status, gpointer closure)
 {
 	QuickAdd *qa = (QuickAdd *) closure;
 
@@ -212,13 +220,20 @@ ce_have_book (EBook *book, gpointer closure)
 				    "editor_closed",
 				    GTK_SIGNAL_FUNC (editor_closed_cb),
 				    NULL);
+
+		gtk_object_unref (GTK_OBJECT (book));
 	}
 }
 
 static void
 edit_card (QuickAdd *qa)
 {
-	e_book_use_local_address_book (ce_have_book, qa);
+	EBook *book;
+	book = e_book_new ();
+	if (!addressbook_load_default_book (book, ce_have_book, qa)) {
+		gtk_object_unref (GTK_OBJECT (book));
+		ce_have_book (book, E_BOOK_STATUS_OTHER_ERROR, qa);
+	}
 }
 
 static void

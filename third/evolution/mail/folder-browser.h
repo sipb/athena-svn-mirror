@@ -17,12 +17,15 @@
 #include "mail-types.h"
 #include "shell/Evolution.h"
 
-
 #define FOLDER_BROWSER_TYPE        (folder_browser_get_type ())
 #define FOLDER_BROWSER(o)          (GTK_CHECK_CAST ((o), FOLDER_BROWSER_TYPE, FolderBrowser))
 #define FOLDER_BROWSER_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), FOLDER_BROWSER_TYPE, FolderBrowserClass))
 #define IS_FOLDER_BROWSER(o)       (GTK_CHECK_TYPE ((o), FOLDER_BROWSER_TYPE))
 #define IS_FOLDER_BROWSER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), FOLDER_BROWSER_TYPE))
+
+#define FB_DEFAULT_CHARSET _("Default")
+
+#define FOLDER_BROWSER_IS_DESTROYED(fb) (!fb || !fb->message_list || !fb->mail_display)
 
 typedef enum _FolderBrowserSelectionState {
 	FB_SELSTATE_NONE,
@@ -33,12 +36,12 @@ typedef enum _FolderBrowserSelectionState {
 
 struct  _FolderBrowser {
 	GtkTable parent;
-	
+
 	BonoboPropertyBag *properties;
 	
 	GNOME_Evolution_Shell shell;
 	GNOME_Evolution_ShellView shell_view;
-
+	
 	BonoboUIComponent *uicomp;
 	
 	/*
@@ -54,7 +57,7 @@ struct  _FolderBrowser {
 	char	    *new_uid;	/* place to save the next uid during idle timeout */
 	char	    *loaded_uid; /* what we have loaded */
 	guint	     loading_id, seen_id;
-	
+
 	/* a folder we are expunging, dont use other than to compare the pointer value */
 	CamelFolder *expunging;
 	
@@ -68,19 +71,25 @@ struct  _FolderBrowser {
 	gboolean     preview_shown;
 	gboolean     threaded;
 	gboolean     pref_master;
-
+	
 	FolderBrowserSelectionState selection_state;
 	GSList *sensitize_changes;
+	GHashTable *sensitise_state; /* the last sent sensitise state, to avoid much bonobo overhead */
 	int sensitize_timeout_id;
-
+	int update_status_bar_idle_id;
+	
 	/* View collection and the menu handler object */
 	GalViewCollection *view_collection;
 	GalViewMenus *view_menus;
 	
 	GtkWidget *invisible;
 	GByteArray *clipboard_selection;
-};
 
+	/* for async events */
+	struct _MailAsyncEvent *async_event;
+
+	int get_id;		/* for getting folder op */
+};
 
 typedef struct {
 	GtkTableClass parent_class;
@@ -152,6 +161,12 @@ void folder_browser_set_message_display_style (BonoboUIComponent           *comp
 					       Bonobo_UIComponent_EventType type,
 					       const char                  *state,
 					       gpointer                     user_data);
+
+void folder_browser_charset_changed (BonoboUIComponent *component,
+				     const char *path,
+				     Bonobo_UIComponent_EventType type,
+				     const char *state,
+				     gpointer user_data);
 
 gboolean folder_browser_is_drafts (FolderBrowser *fb);
 gboolean folder_browser_is_sent   (FolderBrowser *fb);

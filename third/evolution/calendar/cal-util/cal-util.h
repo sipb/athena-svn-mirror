@@ -5,10 +5,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -69,13 +68,15 @@ CalComponentAlarms *cal_util_generate_alarms_for_comp (CalComponent *comp,
 						       time_t start,
 						       time_t end,
 						       CalRecurResolveTimezoneFn resolve_tzid,
-						       gpointer user_data);
+						       gpointer user_data,
+						       icaltimezone *default_timezone);
 int cal_util_generate_alarms_for_list (GList *comps,
 				       time_t start,
 				       time_t end,
 				       GSList **comp_alarms,
 				       CalRecurResolveTimezoneFn resolve_tzid,
-				       gpointer user_data);
+				       gpointer user_data,
+				       icaltimezone *default_timezone);
 
 icaltimezone *cal_util_resolve_tzid (const char *tzid, gpointer data);
 

@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -69,6 +68,7 @@ enum {
 	CREATE_FOLDER,
 	REMOVE_FOLDER,
 	UPDATE_FOLDER,
+	XFER_FOLDER,
 
 	LAST_SIGNAL
 };
@@ -294,7 +294,6 @@ impl_Storage_async_remove_folder (PortableServer_Servant servant,
 {
 	BonoboObject *bonobo_object;
 	EvolutionStorage *storage;
-
 	CORBA_Object obj_dup;
 
 	bonobo_object = bonobo_object_from_servant (servant);
@@ -313,13 +312,21 @@ impl_Storage_async_xfer_folder (PortableServer_Servant servant,
 				const Bonobo_Listener listener,
 				CORBA_Environment *ev)
 {
-	g_print ("FIXME: impl_Storage_async_xfer_folder -- implement me!\n");
+	BonoboObject *bonobo_object;
+	EvolutionStorage *storage;
+	CORBA_Object obj_dup;
+
+	bonobo_object = bonobo_object_from_servant (servant);
+	storage = EVOLUTION_STORAGE (bonobo_object);
+
+	obj_dup = CORBA_Object_duplicate (listener, ev);
+	gtk_signal_emit (GTK_OBJECT (storage), signals[XFER_FOLDER],
+			 obj_dup, source_path, destination_path, remove_source);
 }
 
 static void
 impl_Storage_updateFolder (PortableServer_Servant servant,
 			   const CORBA_char *path,
-			   const CORBA_char *display_name,
 			   CORBA_long unread_count,
 			   CORBA_Environment *ev)
 {
@@ -332,7 +339,7 @@ impl_Storage_updateFolder (PortableServer_Servant servant,
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
 	gtk_signal_emit (GTK_OBJECT (storage), signals[UPDATE_FOLDER],
-			 path, display_name, unread_count);
+			 path, unread_count);
 
 	priv = storage->priv;
 
@@ -347,7 +354,6 @@ impl_Storage_updateFolder (PortableServer_Servant servant,
 		listener = p->data;
 		GNOME_Evolution_StorageListener_notifyFolderUpdated (listener,
 								     path,
-								     display_name,
 								     unread_count,
 								     ev);
 
@@ -523,7 +529,8 @@ class_init (EvolutionStorageClass *klass)
 						 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
 								    create_folder),
 						 e_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER,
-						 GTK_TYPE_INT, 4,
+						 GTK_TYPE_NONE, 5,
+						 GTK_TYPE_POINTER,
 						 GTK_TYPE_STRING,
 						 GTK_TYPE_STRING,
 						 GTK_TYPE_STRING,
@@ -535,18 +542,30 @@ class_init (EvolutionStorageClass *klass)
 						 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
 								    remove_folder),
 						 e_marshal_NONE__POINTER_POINTER_POINTER,
-						 GTK_TYPE_INT, 2,
+						 GTK_TYPE_NONE, 3,
+						 GTK_TYPE_POINTER,
 						 GTK_TYPE_STRING,
 						 GTK_TYPE_STRING);
+
+	signals[XFER_FOLDER] = gtk_signal_new ("xfer_folder",
+					       GTK_RUN_LAST,
+					       object_class->type,
+					       GTK_SIGNAL_OFFSET (EvolutionStorageClass,
+								  xfer_folder),
+					       e_marshal_NONE__POINTER_POINTER_POINTER_BOOL,
+					       GTK_TYPE_NONE, 4,
+					       GTK_TYPE_POINTER,
+					       GTK_TYPE_STRING,
+					       GTK_TYPE_STRING,
+					       GTK_TYPE_BOOL);
 	
 	signals[UPDATE_FOLDER] = gtk_signal_new ("update_folder",
 						 GTK_RUN_FIRST,
 						 object_class->type,
 						 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
 								    update_folder),
-						 e_marshal_NONE__POINTER_POINTER_INT,
-						 GTK_TYPE_NONE, 3,
-						 GTK_TYPE_STRING,
+						 gtk_marshal_NONE__POINTER_INT,
+						 GTK_TYPE_NONE, 2,
 						 GTK_TYPE_STRING,
 						 GTK_TYPE_INT);
 
@@ -807,6 +826,7 @@ evolution_storage_new_folder (EvolutionStorage *evolution_storage,
 			      EVOLUTION_STORAGE_ERROR_INVALIDPARAMETER);
 	g_return_val_if_fail (path != NULL, EVOLUTION_STORAGE_ERROR_INVALIDPARAMETER);
 	g_return_val_if_fail (g_path_is_absolute (path), EVOLUTION_STORAGE_ERROR_INVALIDPARAMETER);
+	g_return_val_if_fail (display_name != NULL, EVOLUTION_STORAGE_ERROR_INVALIDPARAMETER);
 	g_return_val_if_fail (type != NULL, EVOLUTION_STORAGE_ERROR_INVALIDPARAMETER);
 	g_return_val_if_fail (physical_uri != NULL, EVOLUTION_STORAGE_ERROR_INVALIDPARAMETER);
 
@@ -859,7 +879,6 @@ evolution_storage_new_folder (EvolutionStorage *evolution_storage,
 EvolutionStorageResult
 evolution_storage_update_folder (EvolutionStorage *evolution_storage,
 				 const char       *path,
-				 const char       *display_name,
 				 int               unread_count)
 {
 	EvolutionStorageResult result;
@@ -878,7 +897,7 @@ evolution_storage_update_folder (EvolutionStorage *evolution_storage,
 	priv = evolution_storage->priv;
 
 	gtk_signal_emit (GTK_OBJECT (evolution_storage), signals[UPDATE_FOLDER],
-			 path, display_name, unread_count);
+			 path, unread_count);
 
 	if (priv->corba_storage_listeners == NULL)
 		return EVOLUTION_STORAGE_ERROR_NOTREGISTERED;
@@ -891,7 +910,7 @@ evolution_storage_update_folder (EvolutionStorage *evolution_storage,
 		GNOME_Evolution_StorageListener listener;
 
 		listener = p->data;
-		GNOME_Evolution_StorageListener_notifyFolderUpdated (listener, path, display_name, unread_count, &ev);
+		GNOME_Evolution_StorageListener_notifyFolderUpdated (listener, path, unread_count, &ev);
 
 		if (ev._major != CORBA_NO_EXCEPTION)
 			continue;
@@ -910,11 +929,9 @@ evolution_storage_update_folder (EvolutionStorage *evolution_storage,
 
 	if (result == EVOLUTION_STORAGE_OK) {
 		corba_folder = e_folder_tree_get_folder (priv->folder_tree, path);
-		if (corba_folder != NULL) {
-			CORBA_free (corba_folder->displayName);
-			corba_folder->displayName = CORBA_string_dup (display_name);
+		if (corba_folder != NULL)
 			corba_folder->unreadCount = unread_count;
-		} else
+		else
 			result = EVOLUTION_STORAGE_ERROR_NOTFOUND;
 	}
 
@@ -924,7 +941,6 @@ evolution_storage_update_folder (EvolutionStorage *evolution_storage,
 EvolutionStorageResult
 evolution_storage_update_folder_by_uri (EvolutionStorage *evolution_storage,
 					const char       *physical_uri,
-					const char       *display_name,
 					int               unread_count)
 {
 	EvolutionStoragePrivate *priv;
@@ -939,7 +955,7 @@ evolution_storage_update_folder_by_uri (EvolutionStorage *evolution_storage,
 	priv = evolution_storage->priv;
 
 	path = g_hash_table_lookup (priv->uri_to_path, physical_uri);
-	return evolution_storage_update_folder (evolution_storage, path, display_name, unread_count);
+	return evolution_storage_update_folder (evolution_storage, path, unread_count);
 }
 
 EvolutionStorageResult

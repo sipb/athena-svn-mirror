@@ -9,9 +9,8 @@
  * Copyright 2000 Ximian Inc. (www.ximian.com) .
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -42,10 +41,8 @@ extern "C" {
 #define CAMEL_STREAM_BUFFER_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_STREAM_BUFFER_TYPE, CamelStreamBufferClass))
 #define CAMEL_IS_STREAM_BUFFER(o)    (CAMEL_CHECK_TYPE((o), CAMEL_STREAM_BUFFER_TYPE))
 
-typedef enum
-{
+typedef enum {
 	CAMEL_STREAM_BUFFER_BUFFER = 0,
-	CAMEL_STREAM_BUFFER_NEWLINE,
 	CAMEL_STREAM_BUFFER_NONE,
 	CAMEL_STREAM_BUFFER_READ = 0x00,
 	CAMEL_STREAM_BUFFER_WRITE = 0x80,

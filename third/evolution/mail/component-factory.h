@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +22,9 @@
 
 #ifndef COMPONENT_FACTORY_H
 #define COMPONENT_FACTORY_H
+
+#define COMPONENT_ID 		"OAFIID:GNOME_Evolution_Mail_ShellComponent"
+#define SUMMARY_FACTORY_ID	"OAFIID:GNOME_Evolution_Mail_ExecutiveSummaryComponentFactory"
 
 void  component_factory_init  (void);
 

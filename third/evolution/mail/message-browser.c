@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -48,7 +48,7 @@
 
 #include "folder-browser-ui.h"
 
-#define d(x) x
+#define d(x) 
 
 #define MINIMUM_WIDTH  600
 #define MINIMUM_HEIGHT 400
@@ -87,6 +87,81 @@ message_browser_init (GtkObject *object)
 	
 }
 
+static void
+transfer_msg_done (gboolean ok, void *data)
+{
+	MessageBrowser *mb = data;
+	int row;
+	
+	if (ok && !GTK_OBJECT_DESTROYED (mb)) {
+		row = e_tree_row_of_node (mb->fb->message_list->tree,
+					  e_tree_get_cursor (mb->fb->message_list->tree));
+		
+		/* If this is the last message and deleted messages
+                   are hidden, select the previous */
+		if ((row + 1 == e_tree_row_count (mb->fb->message_list->tree))
+		    && mail_config_get_hide_deleted ())
+			message_list_select (mb->fb->message_list, row, MESSAGE_LIST_SELECT_PREVIOUS,
+					     0, CAMEL_MESSAGE_DELETED, FALSE);
+		else
+			message_list_select (mb->fb->message_list, row, MESSAGE_LIST_SELECT_NEXT,
+					     0, 0, FALSE);
+	}
+	
+	gtk_object_unref (GTK_OBJECT (mb));
+}
+
+static void
+transfer_msg (MessageBrowser *mb, int del)
+{
+	const char *allowed_types[] = { "mail", "vtrash", NULL };
+	extern EvolutionShellClient *global_shell_client;
+	char *uri, *physical, *path, *desc;
+	static char *last = NULL;
+	GPtrArray *uids;
+	
+	if (GTK_OBJECT_DESTROYED(mb))
+		return;
+	
+	if (last == NULL)
+		last = g_strdup ("");
+	
+	if (del)
+		desc = _("Move message(s) to");
+	else
+		desc = _("Copy message(s) to");
+	
+	uri = NULL;
+	physical = NULL;
+	evolution_shell_client_user_select_folder (global_shell_client,
+						   GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (mb))),
+						   desc, last,
+						   allowed_types, &uri, &physical);
+	if (!uri)
+		return;
+	
+	path = strchr (uri, '/');
+	if (path && strcmp (last, path) != 0) {
+		g_free (last);
+		last = g_strdup_printf ("evolution:%s", path);
+	}
+	g_free (uri);
+	
+	uids = g_ptr_array_new ();
+	message_list_foreach (mb->fb->message_list, enumerate_msg, uids);
+	
+	if (del) {
+		gtk_object_ref (GTK_OBJECT (mb));
+		mail_transfer_messages (mb->fb->folder, uids, del,
+					physical, 0, transfer_msg_done, mb);
+	} else {
+		mail_transfer_messages (mb->fb->folder, uids, del,
+					physical, 0, NULL, NULL);
+	}
+	g_free(physical);
+}
+
+
 /* UI callbacks */
 
 static void
@@ -95,9 +170,23 @@ message_browser_close (BonoboUIComponent *uih, void *user_data, const char *path
 	gtk_widget_destroy (GTK_WIDGET (user_data));
 }
 
+static void
+message_browser_move (BonoboUIComponent *uih, void *user_data, const char *path)
+{
+	transfer_msg(user_data, TRUE);
+}
+
+static void
+message_browser_copy (BonoboUIComponent *uih, void *user_data, const char *path)
+{
+	transfer_msg(user_data, FALSE);
+}
+
 static BonoboUIVerb 
 browser_verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("MessageBrowserClose", message_browser_close),
+	BONOBO_UI_UNSAFE_VERB ("MessageMove", message_browser_move),
+	BONOBO_UI_UNSAFE_VERB ("MessageCopy", message_browser_copy),
 	BONOBO_UI_VERB_END
 };
 
@@ -109,6 +198,8 @@ message_browser_message_loaded (FolderBrowser *fb, const char *uid, MessageBrows
 	CamelMimeMessage *message;
 	char *subject = NULL;
 	char *title;
+
+	folder_browser_ui_message_loaded(fb);
 	
 	message = fb->mail_display->current_message;
 	
@@ -132,7 +223,9 @@ static void
 message_browser_message_list_built (MessageList *ml, MessageBrowser *mb)
 {
 	const char *uid = gtk_object_get_data (GTK_OBJECT (mb), "uid");
-	
+
+	gtk_signal_disconnect_by_func (GTK_OBJECT (ml), message_browser_message_list_built, mb);
+
 	message_list_select_uid (ml, uid);
 }
 
@@ -180,7 +273,7 @@ set_bonobo_ui (GtkWidget *widget, FolderBrowser *fb)
 
 	/* Load our UI */
 
-	bonobo_ui_component_freeze (uic, NULL);
+	/*bonobo_ui_component_freeze (uic, NULL);*/
 	bonobo_ui_util_set_ui (uic, EVOLUTION_DATADIR, "evolution-mail-messagedisplay.xml", "evolution-mail");
 
 	/* Load the appropriate UI stuff from the folder browser */
@@ -196,13 +289,17 @@ set_bonobo_ui (GtkWidget *widget, FolderBrowser *fb)
 			   bonobo_exception_get_text (&ev));
 	CORBA_exception_free (&ev);
 
-	/* Add the Close item */
+	/* Hack around the move/copy commands api's */
+	bonobo_ui_component_remove_listener (uic, "MessageCopy");
+	bonobo_ui_component_remove_listener (uic, "MessageMove");
+
+	/* Add the Close & Move/Copy items */
 
 	bonobo_ui_component_add_verb_list_with_data (uic, browser_verbs, widget);
 
 	/* Done */
 
-	bonobo_ui_component_thaw (uic, NULL);
+	/*bonobo_ui_component_thaw (uic, NULL);*/
 
 }
 

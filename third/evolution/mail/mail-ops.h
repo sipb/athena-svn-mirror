@@ -8,9 +8,8 @@
  * Copyright 2000, 2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,6 +45,7 @@ void mail_append_mail (CamelFolder *folder, CamelMimeMessage *message, CamelMess
 void mail_transfer_messages (CamelFolder *source, GPtrArray *uids,
 			     gboolean delete_from_source,
 			     const char *dest_uri,
+			     guint32 dest_flags,
 			     void (*done) (gboolean ok, void *data),
 			     void *data);
 
@@ -61,7 +61,7 @@ void mail_get_messages (CamelFolder *folder, GPtrArray *uids,
 			void *data);
 
 /* same for a folder */
-int mail_get_folder (const char *uri,
+int mail_get_folder (const char *uri, guint32 flags,
 		     void (*done) (char *uri, CamelFolder *folder, void *data), void *data,
 		     EThread *thread);
 

@@ -9,7 +9,14 @@
 #include <config.h>
 #endif
 
+/* define this if you need/want to be able to send USR2 to wombat and
+   get a list of the active backends */
+/*#define DEBUG_BACKENDS*/
+
 #include <stdlib.h>
+#ifdef DEBUG_BACKENDS
+#include <sys/signal.h>
+#endif
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -29,6 +36,7 @@
 #endif
 
 #include "wombat-moniker.h"
+#include "wombat-private-moniker.h"
 
 #define CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_CalendarFactory"
 #define PAS_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_ServerFactory"
@@ -169,6 +177,22 @@ setup_config (int argc, char **argv)
 	return TRUE;
 }
 
+static gboolean
+setup_private (int argc, char **argv)
+{
+	BonoboGenericFactory *factory;
+	char *oafiid = "OAFIID:Bonobo_Moniker_wombat_private_Factory";
+
+	factory = bonobo_generic_factory_new_multi (oafiid, 
+						    wombat_private_moniker_factory,
+						    NULL);
+       
+	// bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
+       
+
+	return TRUE;
+}
+
 static void
 setup_vfs (int argc, char **argv)
 {
@@ -203,15 +227,28 @@ init_bonobo (int *argc, char **argv)
 	}
 }
 
+#ifdef DEBUG_BACKENDS
+static void
+dump_backends (int signal)
+{
+	pas_book_factory_dump_active_backends (pas_book_factory);
+	cal_factory_dump_active_backends (cal_factory);
+}
+#endif
+
 int
 main (int argc, char **argv)
 {
-	gboolean did_pas=FALSE, did_pcs=FALSE, did_config=FALSE;
+	gboolean did_pas=FALSE, did_pcs=FALSE, did_config=FALSE, did_private=FALSE;
 
 	bindtextdomain (PACKAGE, EVOLUTION_LOCALEDIR);
 	textdomain (PACKAGE);
 
 	g_message ("Starting wombat");
+
+#ifdef DEBUG_BACKENDS
+	signal (SIGUSR2, dump_backends);
+#endif
 
 	init_bonobo (&argc, argv);
 	setup_vfs (argc, argv);
@@ -222,6 +259,9 @@ main (int argc, char **argv)
 
 	if (!( (did_pas = setup_pas (argc, argv))
 	       && (did_pcs = setup_pcs (argc, argv))
+	       && (did_private = setup_private (argc, argv))
+	       /* WARNING: Do not change the order here.  `setup_config()' must
+		  come last, to work around an OAF race condition.  */
 	       && (did_config = setup_config (argc, argv)))) {
 
 		const gchar *failed = NULL;
@@ -232,6 +272,8 @@ main (int argc, char **argv)
 		  failed = "PCS";
 		else if (!did_config)
 		  failed = "Config";
+		else if (!did_private)
+		  failed = "Private Config";
 
 		g_message ("main(): could not initialize Wombat service \"%s\"; terminating", failed);
 

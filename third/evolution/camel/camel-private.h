@@ -6,9 +6,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -184,9 +183,24 @@ struct _CamelVeeFolderPrivate {
 #define CAMEL_VEE_FOLDER_UNLOCK(f, l)
 #endif
 
+struct _CamelDataWrapperPrivate {
+#ifdef ENABLE_THREADS
+	pthread_mutex_t stream_lock;
+#else
+	gpointer dummy;
+#endif
+};
+
+#ifdef ENABLE_THREADS
+#define CAMEL_DATA_WRAPPER_LOCK(dw, l)   (pthread_mutex_lock(&((CamelDataWrapper *)dw)->priv->l))
+#define CAMEL_DATA_WRAPPER_UNLOCK(dw, l) (pthread_mutex_unlock(&((CamelDataWrapper *)dw)->priv->l))
+#else
+#define CAMEL_DATA_WRAPPER_LOCK(dw, l)
+#define CAMEL_DATA_WRAPPER_UNLOCK(dw, l)
+#endif
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* CAMEL_H */
-
+#endif /* CAMEL_PRIVATE_H */

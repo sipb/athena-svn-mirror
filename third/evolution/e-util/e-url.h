@@ -11,9 +11,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,6 +49,8 @@ typedef struct {
 EUri       *e_uri_new       (const char *uri_string);
 void        e_uri_free      (EUri *uri);
 const char *e_uri_get_param (EUri *uri, const char *name);
+EUri       *e_uri_copy      (EUri *uri);
+char       *e_uri_to_string (EUri *uri, gboolean show_password);
 
 #endif /* __E_URL_H__ */
 

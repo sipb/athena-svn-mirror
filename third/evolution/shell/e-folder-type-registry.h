@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -75,6 +74,11 @@ gboolean  e_folder_type_registry_set_handler_for_type  (EFolderTypeRegistry     
 							EvolutionShellComponentClient *handler);
 
 GList *e_folder_type_registry_get_type_names  (EFolderTypeRegistry *folder_type_registry);
+
+gboolean  e_folder_type_register_type_registered  (EFolderTypeRegistry *folder_type_registry,
+						   const char          *type_name);
+void      e_folder_type_register_unregister_type  (EFolderTypeRegistry *folder_type_registry,
+						   const char          *type_name);
 
 GdkPixbuf                     *e_folder_type_registry_get_icon_for_type          (EFolderTypeRegistry *folder_type_registry,
 										  const char          *type_name,

@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Checking for New Mail</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="A User's Guide to Ximian Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="Composing New Email Messages"
 HREF="usage-mail-getnsend-send.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="usage-mail.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. Using Evolution for Email</TD
+>Using Evolution for Email</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="usage-mail-getnsend-send.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -74,9 +79,9 @@ NAME="USAGE-MAIL-GETNSEND-GET"
 CLASS="INTERFACE"
 >Inbox</SPAN
 >, it's time to check for new mail.
-      Click <SPAN
+      Click <B
 CLASS="GUIBUTTON"
->Get Mail</SPAN
+>Get Mail</B
 > in the toolbar to check
       your mail.  If you haven't entered any mail settings yet, the
       <SPAN
@@ -109,55 +114,107 @@ CLASS="INTERFACE"
 >
     </P
 ><P
->      To check your email, press the <SPAN
+>      To check your email, press the <B
 CLASS="GUIBUTTON"
->Check Mail</SPAN
+>Check Mail</B
 >
       button.  If this is your first time checking mail, or you
-      haven't asked <SPAN
+      haven't asked <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > to store your
       password, you'll be prompted for the password.  Enter your
       password and your email will be downloaded.
     </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><A
 NAME="BADMAILSETTINGS"
 ></A
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Can't Check Mail?: </B
+>Can't Check Mail?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	If you get an error message instead of mail, you probably need
 	to check your network settings.  To learn how to do that, have
 	a look at <A
 HREF="config-prefs.html#CONFIG-PREFS-MAIL"
 >the section called <I
 >Mail Settings</I
-> in Chapter 9</A
+> in the chapter called <I
+>Advanced Configuration</I
+></A
 >, or ask your
 	system administrator.
        </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Sharing Mailboxes with Other Mail Programs: </B
->              If you want to use <SPAN
+>Sharing Mailboxes with Other Mail Programs</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>              If you want to use <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 >
               and another email client, such as
-              <SPAN
+              <TT
 CLASS="APPLICATION"
->Mutt</SPAN
+>Mutt</TT
 >, at the same time,
               here's how:
               <P
@@ -172,17 +229,17 @@ TYPE="1"
 ></LI
 ><LI
 ><P
->                      In <SPAN
+>                      In <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 >
-                      <SPAN
+                      <B
 CLASS="GUIMENU"
->Tools</SPAN
->-&gt;<SPAN
+>Tools</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Mail
-                      Settings</SPAN
+                      Settings</B
 >, and pick the account
                       you'd like to use to share mail. You may want to
                       create a new account just for this source of
@@ -191,9 +248,11 @@ CLASS="GUIMENUITEM"
 ></LI
 ><LI
 ><P
->                      Under the <SPAN
+>                      Under the <TT
 CLASS="GUILABEL"
->Receiving Mail</SPAN
+><B
+>Receiving Mail</B
+></TT
 >
                       tab, select the type of mail file that your
                       other mail application uses, and then enter the
@@ -202,16 +261,18 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->                      Click the <SPAN
+>                      Click the <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 > button.
                    </P
 ></LI
 ></OL
 >
                </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -222,14 +283,17 @@ NAME="USAGE-MAIL-GETNSEND-GET-ATTACH"
 >Working with Attachments and HTML Mail</A
 ></H2
 ><P
->	   If someone sends you an <I
+>	   If someone sends you an <A
+HREF="apx-gloss.html#ATTACHMENT"
+><I
 CLASS="GLOSSTERM"
 >attachment</I
+></A
 >,
 	   a file attached to an email,
-	   <SPAN
+	   <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will display the file
 	   at the bottom of the message to which it's attached.  Text,
 	   including HTML formatting and embedded images, will appear
@@ -246,9 +310,9 @@ NAME="USAGE-MAIL-GETNSEND-GET-ATTACH-ACTIONS"
 ></H3
 ><P
 >        If you get an attachment with an email message,
-        <SPAN
+        <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > can help you save
         it or open it with the appropriate applications.
      </P
@@ -261,9 +325,9 @@ TYPE="1"
 ><LI
 ><P
 >	     Click the downward pointing arrow on the attachment icon
-	     and select <SPAN
+	     and select <B
 CLASS="GUIMENUITEM"
->Save to Disk</SPAN
+>Save to Disk</B
 >.
 	   </P
 ></LI
@@ -274,9 +338,9 @@ CLASS="GUIMENUITEM"
 ></LI
 ><LI
 ><P
->	     Click <SPAN
+>	     Click <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 >.
 	   </P
 ></LI
@@ -321,37 +385,36 @@ NAME="USAGE-MAIL-GETNSEND-GET-ATTACH-HTML"
 ></H3
 ><P
 >         When someone sends you HTML mail that includes an image in
-         the body of the message&#8212; like the welcome message in
-         your Inbox when you first started <SPAN
+         the body of the message (for example, the welcome message in your
+         Inbox when you first start <TT
 CLASS="APPLICATION"
 >Ximian
-         Evolution</SPAN
->&#8212;
-         <SPAN
+         Evolution</TT
+>) <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> will display the image
-         inside the message.  You can create messages like this by
-         using the
-         <SPAN
+>Evolution</TT
+>
+         will display the image inside the message.  You can create
+         messages like this by using the
+         <B
 CLASS="GUIMENU"
->Insert</SPAN
->-&gt;<SPAN
+>Insert</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Image</SPAN
+>Image</B
 >
          tool in the message composer.
       </P
 ><P
 >         If the image isn't included in the message, but is, instead,
-         a link to an image, <SPAN
+         a link to an image, <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > can
          download the image from the Internet for you.  However,
-         <SPAN
+         <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will not display the
          image unless you ask it to. This is because remotely hosted
          images can be slow to load and display, and can even be used
@@ -360,48 +423,74 @@ CLASS="APPLICATION"
       </P
 ><P
 >	 If you want the images to load for one message, select 
-	 <SPAN
+	 <B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUISUBMENU"
->Message Display</SPAN
->-&gt;<SPAN
+>Message Display</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Load Images</SPAN
+>Load Images</B
 >.  
 
-         If you want <SPAN
+         If you want <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > to
          load remotely hosted images more often, go to the
-         <SPAN
+         <TT
 CLASS="GUILABEL"
->Display</SPAN
+><B
+>Display</B
+></TT
 > tab of the
-         <SPAN
+         <B
 CLASS="GUIMENU"
->Tools</SPAN
->-&gt;<SPAN
+>Tools</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Mail Settings</SPAN
+>Mail Settings</B
 > dialog.
       </P
 ><DIV
-CLASS="NOTE"
-><BLOCKQUOTE
 CLASS="NOTE"
 ><A
 NAME="HTTP-PROXY"
 ></A
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Loading Images from the Net through an HTTP Proxy: </B
+>Loading Images from the Net through an HTTP Proxy</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >           If you use an HTTP proxy,
-           <SPAN
+           <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > must be able to find
            it through the <SPAN
 CLASS="SYSTEMITEM"
@@ -431,33 +520,39 @@ TYPE="1"
 ></LI
 ><LI
 ><P
->	                 Select <SPAN
+>	                 Select <B
 CLASS="GUIMENU"
->Preferences</SPAN
->-&gt;<SPAN
+>Preferences</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Edit Preferences</SPAN
+>Edit Preferences</B
 >.
 	               </P
 ></LI
 ><LI
 ><P
->			Go to the <SPAN
+>			Go to the <TT
 CLASS="GUILABEL"
->Navigation</SPAN
+><B
+>Navigation</B
+></TT
 > tab.
 	               </P
 ></LI
 ><LI
 ><P
->			Click the <SPAN
+>			Click the <TT
 CLASS="GUILABEL"
->Use HTTP Proxy</SPAN
+><B
+>Use HTTP Proxy</B
+></TT
 >
 			checkbox and enter the location of your HTTP
-			proxy in the <SPAN
+			proxy in the <TT
 CLASS="GUILABEL"
->Location</SPAN
+><B
+>Location</B
+></TT
 > field.
 	               </P
 ></LI
@@ -520,7 +615,9 @@ CLASS="COMMAND"
 ></DIV
 >
          </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></DIV
 ></DIV
@@ -541,7 +638,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="usage-mail.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -557,7 +654,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="usage-mail-getnsend-send.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

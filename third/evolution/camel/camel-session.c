@@ -10,9 +10,8 @@
  * Copyright 1999 - 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -198,6 +197,29 @@ camel_session_construct (CamelSession *session, const char *storage_path)
 static void 
 register_provider (CamelSession *session, CamelProvider *provider)
 {
+	int i;
+	CamelProviderConfEntry *conf;
+	GList *l;
+
+	/* Translate all strings here */
+	provider->name = _(provider->name);
+	provider->description = _(provider->description);
+	conf = provider->extra_conf;
+	if (conf) {
+		for (i=0;conf[i].type != CAMEL_PROVIDER_CONF_END;i++) {
+			if (conf[i].text)
+				conf[i].text = _(conf[i].text);
+		}
+	}
+	l = provider->authtypes;
+	while (l) {
+		CamelServiceAuthType *auth = l->data;
+
+		auth->name = _(auth->name);
+		auth->description = _(auth->description);
+		l = l->next;
+	}
+
 	g_hash_table_insert (session->providers, provider->protocol, provider);
 }
 

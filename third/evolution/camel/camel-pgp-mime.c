@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -29,6 +29,7 @@
 #include "camel-mime-message.h"
 #include "camel-mime-filter-from.h"
 #include "camel-mime-filter-crlf.h"
+#include "camel-mime-filter-charset.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
 #include "camel-stream-fs.h"
@@ -351,6 +352,7 @@ camel_pgp_mime_part_verify (CamelPgpContext *context, CamelMimePart *mime_part, 
 	CamelMimeFilter *crlf_filter, *from_filter;
 	CamelStream *stream, *sigstream;
 	CamelCipherValidity *valid;
+	CamelContentType *type;
 	
 	g_return_val_if_fail (mime_part != NULL, NULL);
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), NULL);
@@ -372,7 +374,32 @@ camel_pgp_mime_part_verify (CamelPgpContext *context, CamelMimePart *mime_part, 
 	camel_object_unref (CAMEL_OBJECT (crlf_filter));
 	camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (from_filter));
 	camel_object_unref (CAMEL_OBJECT (from_filter));
-	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (part), CAMEL_STREAM (filtered_stream));
+	
+	type = camel_mime_part_get_content_type (mime_part);
+	if (header_content_type_param (type, "x-inline-pgp-hack")) {
+		/* this is a kludge around inline pgp signatures - basically,
+		   the multipart/signed is faked - the original part (aka part #1)
+		   is the original mime part and the signature is a copy of the
+		   signature in part #1 */
+		CamelMimeFilterCharset *charset_filter;
+		CamelContentType *content_type;
+		const char *charset;
+		
+		content_type = camel_mime_part_get_content_type (part);
+		charset = header_content_type_param (content_type, "charset");
+		if (charset) {
+			charset_filter = camel_mime_filter_charset_new_convert ("utf-8", charset);
+			if (charset_filter) {
+				camel_stream_filter_add (filtered_stream,
+							 CAMEL_MIME_FILTER (charset_filter));
+				camel_object_unref (CAMEL_OBJECT (charset_filter));
+			}
+		}
+		
+		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+	} else
+		wrapper = CAMEL_DATA_WRAPPER (part);
+	camel_data_wrapper_write_to_stream (wrapper, CAMEL_STREAM (filtered_stream));
 	camel_object_unref (CAMEL_OBJECT (filtered_stream));
 	camel_stream_reset (stream);
 	

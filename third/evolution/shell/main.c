@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,6 +49,10 @@
 
 #include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-cursors.h>
+
+#include "e-util/e-gtk-utils.h"
+
+#include "e-shell-constants.h"
 #include "e-setup.h"
 
 #include "e-shell.h"
@@ -71,6 +74,10 @@ quit_box_new (void)
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 
+	/* (Just to prevent smart-ass window managers like Sawfish from setting
+	  the make the dialog as big as the standard Evolution window).  */
+	gtk_window_set_wmclass (GTK_WINDOW (window), "evolution-quit", "Evolution:quit");
+
 	e_make_widget_backing_stored (window);
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Evolution"));
@@ -84,12 +91,22 @@ quit_box_new (void)
 
 	gtk_container_add (GTK_CONTAINER (frame), label);
 
-	gtk_widget_show (frame);
-	gtk_widget_show (label);
-	gtk_widget_show (window);
+	gtk_widget_show_now (frame);
+	gtk_widget_show_now (label);
+	gtk_widget_show_now (window);
+
+	/* For some reason, the window fails to update without this
+	   sometimes.  */
+	gtk_widget_queue_draw (window);
+	gtk_widget_queue_draw (label);
+	gtk_widget_queue_draw (frame);
+
+	gdk_flush ();
 
 	while (gtk_events_pending ())
 		gtk_main_iteration ();
+
+	gdk_flush ();
 
 	return window;
 }
@@ -118,6 +135,29 @@ no_views_left_cb (EShell *shell, gpointer data)
 
 	e_shell_unregister_all (shell);
 
+	/* FIXME: And this is another ugly hack.  We have a strange race
+	   condition that I cannot work around.  What happens is that the
+	   EShell object gets unreffed and its aggregate EActivityHandler gets
+	   destroyed too.  But for some reason, the EActivityHanlder GtkObject
+	   gets freed, while its CORBA object counterpart is still an active
+	   server.  So there is a slight chance that we receive CORBA
+	   invocation that act on an uninitialized object, and we crash.  (See
+	   #8615.) 
+
+	   The CORBA invocation on the dead object only happens because we
+	   ::unref the BonoboConf database server in the ::destroy method of
+	   the shell.  Since this is a CORBA call, it allows incoming CORBA
+	   calls to happen -- and these get invoked on the partially
+	   uninitialized object.
+
+	   Since I am not 100% sure what the reason for this half-stale object
+	   is, I am just going to make sure that no CORBA ops happen in
+	   ::destroy...  And this is achieved by placing this call here.  (If
+	   the DB is disconnected, there will be no ::unref of it in
+	   ::destroy.)  */
+
+	e_shell_disconnect_db (shell);
+
 	bonobo_object_unref (BONOBO_OBJECT (shell));
 
 	if (quit_box != NULL)
@@ -133,60 +173,6 @@ destroy_cb (GtkObject *object, gpointer data)
 }
 
 
-static void
-warning_dialog_clicked_callback (GnomeDialog *dialog,
-				 int button_number,
-				 void *data)
-{
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-}
-
-static void
-development_warning (void)
-{
-	GtkWidget *label, *warning_dialog;
-	
-	warning_dialog = gnome_dialog_new ("Ximian Evolution " VERSION, GNOME_STOCK_BUTTON_OK, NULL);
-
-	label = gtk_label_new (
-		/* xgettext:no-c-format */
-		_("Hi.  Thanks for taking the time to download this preview release\n"
-		  "of the Ximian Evolution groupware suite.\n"
-		  "\n"
-		  "Ximian Evolution is not yet complete. It's getting close, but there are\n"
-		  "places where features are either missing or only half working. \n"
-		  "\n"
-		  "If you find bugs, please report them to us at bugzilla.ximian.com.\n"
-                  "This product comes with no warranty and is not intended for\n"
-		  "individuals prone to violent fits of anger.\n"
-                  "\n"
-		  "We hope that you enjoy the results of our hard work, and we\n"
-		  "eagerly await your contributions!\n"
-		  ));
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_widget_show (label);
-
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (warning_dialog)->vbox), 
-			    label, TRUE, TRUE, 4);
-
-	label = gtk_label_new (
-		_(
-		  "Thanks\n"
-		  "The Ximian Evolution Team\n"
-		  ));
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, .5);
-	gtk_widget_show (label);
-
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (warning_dialog)->vbox), 
-			    label, TRUE, TRUE, 0);
-
-	gtk_widget_show (warning_dialog);
-	gtk_signal_connect (GTK_OBJECT (warning_dialog), "clicked",
-			    GTK_SIGNAL_FUNC (warning_dialog_clicked_callback), NULL);
-}
-
-
 /* This is for doing stuff that requires the GTK+ loop to be running already.  */
 
 static gint
@@ -196,7 +182,9 @@ idle_cb (void *data)
 	GNOME_Evolution_Shell corba_shell;
 	CORBA_Environment ev;
 	EShellConstructResult result;
-	gboolean restored;
+	GSList *p;
+	gboolean have_evolution_uri;
+	gboolean display_default;
 
 	CORBA_exception_init (&ev);
 
@@ -211,15 +199,6 @@ idle_cb (void *data)
 				    GTK_SIGNAL_FUNC (no_views_left_cb), NULL);
 		gtk_signal_connect (GTK_OBJECT (shell), "destroy",
 				    GTK_SIGNAL_FUNC (destroy_cb), NULL);
-
-		if (uri_list == NULL)
-			restored = e_shell_restore_from_settings (shell);
-		else
-			restored = FALSE;
-
-		if (!getenv ("EVOLVE_ME_HARDER"))
-			development_warning ();
-
 		corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell));
 		corba_shell = CORBA_Object_duplicate (corba_shell, &ev);
 		break;
@@ -233,8 +212,6 @@ idle_cb (void *data)
 			gtk_main_quit ();
 			return FALSE;
 		}
-
-		restored = FALSE;
 		break;
 
 	default:
@@ -247,27 +224,53 @@ idle_cb (void *data)
 
 	}
 
-	if (! restored && uri_list == NULL) {
-		const char *uri = E_SHELL_VIEW_DEFAULT_URI;
+	have_evolution_uri = FALSE;
+	for (p = uri_list; p != NULL; p = p->next) {
+		const char *uri;
 
+		uri = (const char *) p->data;
+		if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0)
+			have_evolution_uri = TRUE;
+	}
+
+	if (shell == NULL) {
+		if (uri_list == NULL)
+			display_default = TRUE;
+		else
+			display_default = FALSE;
+	} else {
+		if (! have_evolution_uri) {
+			if (! e_shell_restore_from_settings (shell)) 
+				display_default = TRUE;
+			else
+				display_default = FALSE;
+		} else {
+			display_default = FALSE;
+		}
+	}
+
+	if (display_default) {
+		const char *uri;
+
+		uri = E_SHELL_VIEW_DEFAULT_URI;
 		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION)
 			g_warning ("CORBA exception %s when requesting URI -- %s", ev._repo_id, uri);
-	} else {
-		GSList *p;
-
-		for (p = uri_list; p != NULL; p = p->next) {
-			char *uri;
-
-			uri = (char *) p->data;
-
-			GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
-			if (ev._major != CORBA_NO_EXCEPTION)
-				g_warning ("CORBA exception %s when requesting URI -- %s", ev._repo_id, uri);
-		}
-
-		g_slist_free (uri_list);
 	}
+
+	for (p = uri_list; p != NULL; p = p->next) {
+		const char *uri;
+
+		uri = (const char *) p->data;
+		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION)
+			g_warning ("CORBA exception %s when requesting URI -- %s", ev._repo_id, uri);
+
+		if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0)
+			have_evolution_uri = TRUE;
+	}
+
+	g_slist_free (uri_list);
 
 	CORBA_Object_release (corba_shell, &ev);
 

@@ -5,20 +5,19 @@
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *           Jeffrey Stedfast <fejj@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or 
- *  modify it under the terms of the GNU General Public License as 
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- *  USA
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,6 +28,8 @@
 #include <time.h>
 
 #include <glib.h>
+
+#include <errno.h>
 
 #include "camel-filter-driver.h"
 #include "camel-filter-search.h"
@@ -371,6 +372,9 @@ do_copy (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 			if (!outbox)
 				break;
 			
+			if (outbox == p->source)
+				break;
+			
 			if (p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
 				GPtrArray *uids;
 				
@@ -456,7 +460,7 @@ do_colour (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDr
 	
 	d(fprintf (stderr, "setting colour tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
-		if (p->source && p->uid)
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_user_tag(p->source, p->uid, "colour", argv[0]->value.string);
 		else
 			camel_tag_set (&p->info->user_tags, "colour", argv[0]->value.string);
@@ -476,7 +480,7 @@ do_score (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDri
 		char *value;
 		
 		value = g_strdup_printf ("%d", argv[0]->value.number);
-		if (p->source && p->uid)
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_user_tag(p->source, p->uid, "score", value);
 		else
 			camel_tag_set (&p->info->user_tags, "score", value);
@@ -494,7 +498,7 @@ do_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 	
 	d(fprintf (stderr, "setting flag\n"));
 	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
-		if (p->source && p->uid)
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_flags(p->source, p->uid, camel_system_flag(argv[0]->value.string), ~0);
 		else
 			p->info->flags |= camel_system_flag (argv[0]->value.string)|CAMEL_MESSAGE_FOLDER_FLAGGED;
@@ -653,6 +657,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 	struct stat st;
 	int status;
 	off_t last = 0;
+	int ret = -1;
 	
 	fd = open (mbox, O_RDONLY);
 	if (fd == -1) {
@@ -684,8 +689,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 		
 		msg = camel_mime_message_new ();
 		if (camel_mime_part_construct_from_parser (CAMEL_MIME_PART (msg), mp) == -1) {
+			camel_exception_set (ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_SYSTEM, _("Cannot open message"));
 			report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Failed on message %d"), i);
-			camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot open message"));
 			camel_object_unref (CAMEL_OBJECT (msg));
 			goto fail;
 		}
@@ -712,14 +717,12 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 	
 	if (p->defaultfolder) {
 		report_status(driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
-		camel_folder_sync(p->defaultfolder, FALSE, ex);
+		camel_folder_sync(p->defaultfolder, FALSE, camel_exception_is_set (ex) ? NULL : ex);
 	}
 	
 	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
-	
-	g_free (source_url);
-	return 0;
-	
+
+	ret = 0;
 fail:
 	g_free (source_url);
 	if (fd != -1)
@@ -935,7 +938,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver, CamelMimeMessage 
 	
 	/* *Now* we can set the DELETED flag... */
 	if (p->deleted) {
-		if (p->source && p->uid)
+		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_flags(p->source, p->uid, CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN, ~0);
 		else
 			info->flags |= CAMEL_MESSAGE_DELETED|CAMEL_MESSAGE_SEEN|CAMEL_MESSAGE_FOLDER_FLAGGED;

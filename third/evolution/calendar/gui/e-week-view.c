@@ -9,9 +9,8 @@
  * Copyright 2001, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,6 +57,7 @@
 #include "e-week-view-layout.h"
 #include "e-week-view-main-item.h"
 #include "e-week-view-titles-item.h"
+#include "misc.h"
 
 /* Images */
 #include "art/bell.xpm"
@@ -80,6 +80,9 @@
    we get from the server. */
 #define E_WEEK_VIEW_LAYOUT_TIMEOUT	100
 
+/* Used for the status bar messages */
+#define EVOLUTION_CALENDAR_PROGRESS_IMAGE "evolution-calendar-mini.png"
+static GdkPixbuf *progress_icon[2] = { NULL, NULL };
 
 /* Signal IDs */
 enum {
@@ -453,6 +456,8 @@ e_week_view_init (EWeekView *week_view)
 			    GTK_SIGNAL_FUNC (invisible_destroyed),
 			    (gpointer) week_view);
 	week_view->clipboard_selection = NULL;
+
+	week_view->activity = NULL;
 }
 
 
@@ -519,8 +524,15 @@ e_week_view_destroy (GtkObject *object)
 
 	if (week_view->invisible)
 		gtk_widget_destroy (week_view->invisible);
-	if (week_view->clipboard_selection)
+	if (week_view->clipboard_selection) {
 		g_free (week_view->clipboard_selection);
+		week_view->clipboard_selection = NULL;
+	}
+
+	if (week_view->activity) {
+		gtk_object_unref (GTK_OBJECT (week_view->activity));
+		week_view->activity = NULL;
+	}
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
@@ -1047,7 +1059,8 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 				      week_view->day_starts[0],
 				      week_view->day_starts[num_days],
 				      e_week_view_add_event, week_view,
-				      cal_client_resolve_tzid_cb, week_view->client);
+				      cal_client_resolve_tzid_cb, week_view->client,
+				      week_view->zone);
 
 	gtk_object_unref (GTK_OBJECT (comp));
 
@@ -1079,6 +1092,8 @@ query_query_done_cb (CalQuery *query, CalQueryDoneStatus status, const char *err
 
 	/* FIXME */
 
+	e_week_view_set_status_message (week_view, NULL);
+
 	if (status != CAL_QUERY_DONE_SUCCESS)
 		fprintf (stderr, "query done: %s\n", error_str);
 
@@ -1094,6 +1109,8 @@ query_eval_error_cb (CalQuery *query, const char *error_str, gpointer data)
 	week_view = E_WEEK_VIEW (data);
 
 	/* FIXME */
+
+	e_week_view_set_status_message (week_view, NULL);
 
 	fprintf (stderr, "eval error: %s\n", error_str);
 
@@ -1162,6 +1179,7 @@ update_query (EWeekView *week_view)
 		return; /* No time range is set, so don't start a query */
 	}
 
+	e_week_view_set_status_message (week_view, _("Searching"));
 	week_view->query = cal_client_get_query (week_view->client, real_sexp);
 	g_free (real_sexp);
 
@@ -1237,7 +1255,7 @@ e_week_view_set_cal_client	(EWeekView	*week_view,
  * e_week_view_set_query:
  * @week_view: A week view.
  * @sexp: S-expression that defines the query.
- * 
+ *
  * Sets the query sexp that the week view will use for filtering the displayed
  * events.
  **/
@@ -1261,7 +1279,7 @@ e_week_view_set_query (EWeekView *week_view, const char *sexp)
  * e_week_view_set_default_category:
  * @week_view: A week view.
  * @category: Default category name or NULL for no category.
- * 
+ *
  * Sets the default category that will be used when creating new calendar
  * components from the week view.
  **/
@@ -1801,9 +1819,13 @@ e_week_view_cut_clipboard (EWeekView *week_view)
 	if (event == NULL)
 		return;
 
+	e_week_view_set_status_message (week_view, _("Deleting selected objects"));
+
 	e_week_view_copy_clipboard (week_view);
 	cal_component_get_uid (event->comp, &uid);
 	cal_client_remove_object (week_view->client, uid);
+
+	e_week_view_set_status_message (week_view, NULL);
 }
 
 void
@@ -2069,7 +2091,7 @@ e_week_view_on_button_press (GtkWidget *widget,
 {
 	gint x, y, day;
 
-#if 1
+#if 0
 	g_print ("In e_week_view_on_button_press\n");
 	if (event->type == GDK_2BUTTON_PRESS)
 		g_print (" is a double-click\n");
@@ -2104,8 +2126,6 @@ e_week_view_on_button_press (GtkWidget *widget,
 
 	if (event->button == 1 && event->type == GDK_2BUTTON_PRESS) {
 		time_t dtstart, dtend;
-
-		g_print ("  got double-click\n");
 
 		dtstart = week_view->day_starts[day];
 		dtend = week_view->day_starts[day + 1];
@@ -2866,6 +2886,34 @@ e_week_view_stop_editing_event (EWeekView *week_view)
 }
 
 
+/* Cancels the current edition by resetting the appointment's text to its original value */
+static void
+cancel_editing (EWeekView *week_view)
+{
+	int event_num, span_num;
+	EWeekViewEvent *event;
+	EWeekViewEventSpan *span;
+	CalComponentText summary;
+
+	event_num = week_view->editing_event_num;
+	span_num = week_view->editing_span_num;
+
+	g_assert (event_num != -1);
+
+	event = &g_array_index (week_view->events, EWeekViewEvent, event_num);
+	span = &g_array_index (week_view->spans, EWeekViewEventSpan, event->spans_index + span_num);
+
+	/* Reset the text to what was in the component */
+
+	cal_component_get_summary (event->comp, &summary);
+	gtk_object_set (GTK_OBJECT (span->text_item),
+			"text", summary.value ? summary.value : "",
+			NULL);
+
+	/* Stop editing */
+	e_week_view_stop_editing_event (week_view);
+}
+
 static gboolean
 e_week_view_on_text_item_event (GnomeCanvasItem *item,
 				GdkEvent *gdkevent,
@@ -2889,6 +2937,10 @@ e_week_view_on_text_item_event (GnomeCanvasItem *item,
 			   other events getting to the EText item. */
 			gtk_signal_emit_stop_by_name (GTK_OBJECT (item),
 						      "event");
+			return TRUE;
+		} else if (gdkevent->key.keyval == GDK_Escape) {
+			cancel_editing (week_view);
+			gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
 			return TRUE;
 		}
 		break;
@@ -3054,6 +3106,45 @@ e_week_view_on_editing_stopped (EWeekView *week_view,
 			NULL);
 	g_assert (text != NULL);
 
+	if (string_is_empty (text)) {
+		ConfirmDeleteEmptyCompResult result;
+
+		result = cal_comp_confirm_delete_empty_comp (event->comp, week_view->client,
+							     GTK_WIDGET (week_view));
+
+		switch (result) {
+		case EMPTY_COMP_REMOVE_LOCALLY: {
+			const char *uid;
+
+			cal_component_get_uid (event->comp, &uid);
+
+			e_week_view_foreach_event_with_uid (week_view, uid,
+							    e_week_view_remove_event_cb, NULL);
+			gtk_widget_queue_draw (week_view->main_canvas);
+			e_week_view_check_layout (week_view);
+			goto out; }
+
+		case EMPTY_COMP_REMOVED_FROM_SERVER:
+			goto out;
+
+		case EMPTY_COMP_DO_NOT_REMOVE:
+			/* But we cannot keep an empty summary, so make the
+			 * canvas item refresh itself from the text that the
+			 * component already had.
+			 */
+
+			gtk_object_ref (GTK_OBJECT (event->comp));
+			e_week_view_update_event_cb (week_view, event_num, event->comp);
+			gtk_object_unref (GTK_OBJECT (event->comp));
+			goto out;
+
+		default:
+			g_assert_not_reached ();
+		}
+
+		g_assert_not_reached ();
+	}
+
 	/* Only update the summary if necessary. */
 	cal_component_get_summary (event->comp, &summary);
 	if (summary.value && !strcmp (text, summary.value)) {
@@ -3068,6 +3159,8 @@ e_week_view_on_editing_stopped (EWeekView *week_view,
 		if (!cal_client_update_object (week_view->client, event->comp))
 			g_message ("e_week_view_on_editing_stopped(): Could not update the object!");
 	}
+
+ out:
 
 	g_free (text);
 
@@ -3200,28 +3293,34 @@ e_week_view_key_press (GtkWidget *widget, GdkEventKey *event)
 	   character. */
 	if (event->keyval == GDK_Return) {
 		initial_text = NULL;
-	} else if ((event->keyval < 0x20)
-		   || (event->keyval > 0xFF)
+	} else if (((event->keyval >= 0x20) && (event->keyval <= 0xFF)
+		    && (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)))
 		   || (event->length == 0)
-		   || (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK))) {
+		   || (event->keyval == GDK_Tab)) {
 		return FALSE;
 	} else
 		initial_text = e_utf8_from_gtk_event_key (widget, event->keyval, event->string);
 
 	/* Add a new event covering the selected range. */
-	comp = cal_component_new ();
-	cal_component_set_new_vtype (comp, CAL_COMPONENT_EVENT);
+	comp = cal_comp_event_new_with_defaults ();
+
 	dtstart = week_view->day_starts[week_view->selection_start_day];
 	dtend = week_view->day_starts[week_view->selection_end_day + 1];
 
 	date.value = &itt;
-	date.tzid = icaltimezone_get_tzid (week_view->zone);
+	date.tzid = NULL;
 
-	*date.value = icaltime_from_timet_with_zone (dtstart, FALSE,
+	/* We use DATE values now, so we don't need the timezone. */
+	/*date.tzid = icaltimezone_get_tzid (week_view->zone);*/
+
+	*date.value = icaltime_from_timet_with_zone (dtstart, TRUE,
 						     week_view->zone);
 	cal_component_set_dtstart (comp, &date);
-	*date.value = icaltime_from_timet_with_zone (dtend, FALSE,
+
+	/* We have to take a day off the end time as it is a DATE value. */
+	*date.value = icaltime_from_timet_with_zone (dtend, TRUE,
 						     week_view->zone);
+	icaltime_adjust (date.value, -1, 0, 0, 0);
 	cal_component_set_dtend (comp, &date);
 
 	cal_component_set_categories (comp, week_view->default_category);
@@ -3326,7 +3425,7 @@ static EPopupMenu child_items [] = {
 	  e_week_view_on_delete_occurrence, NULL, MASK_RECURRING | MASK_EDITING },
 	{ N_("Delete _All Occurrences"), NULL,
 	  e_week_view_on_delete_appointment, NULL, MASK_RECURRING | MASK_EDITING },
-	
+
 	{ NULL, NULL, NULL, NULL, 0 }
 };
 
@@ -3350,14 +3449,14 @@ e_week_view_show_popup_menu (EWeekView	     *week_view,
 	 * We could possibly set up another method of checking it.
 	 */
 	being_edited = FALSE;
-	
+
 	if (event_num == -1) {
 		context_menu = main_items;
 	} else {
 		context_menu = child_items;
 		event = &g_array_index (week_view->events,
 					EWeekViewEvent, event_num);
-		if (cal_component_has_recurrences (event->comp)) 
+		if (cal_component_has_recurrences (event->comp))
 			hide_mask |= MASK_SINGLE;
 		else
 			hide_mask |= MASK_RECURRING;
@@ -3376,7 +3475,7 @@ e_week_view_on_new_appointment (GtkWidget *widget, gpointer data)
 	EWeekView *week_view = E_WEEK_VIEW (data);
 	time_t dtstart, dtend;
 	struct icaltimetype itt;
-	
+
 	/* Edit a new event. If only one day is selected we set the time to
 	   the first 1/2-hour of the working day. */
 	if (week_view->selection_start_day == week_view->selection_end_day) {
@@ -3403,7 +3502,7 @@ e_week_view_on_new_event (GtkWidget *widget, gpointer data)
 {
 	EWeekView *week_view = E_WEEK_VIEW (data);
 	time_t dtstart, dtend;
-	
+
 	dtstart = week_view->day_starts[week_view->selection_start_day];
 	dtend = week_view->day_starts[week_view->selection_end_day + 1];
 	gnome_calendar_new_appointment_for (
@@ -3486,7 +3585,7 @@ e_week_view_delete_event_internal (EWeekView *week_view, gint event_num)
 
 	vtype = cal_component_get_vtype (event->comp);
 
-	if (delete_component_dialog (event->comp, 1, vtype,
+	if (delete_component_dialog (event->comp, FALSE, 1, vtype,
 				     GTK_WIDGET (week_view))) {
 		const char *uid;
 
@@ -3787,6 +3886,7 @@ selection_received (GtkWidget *invisible,
 		return;
 	}
 
+	e_week_view_set_status_message (week_view, _("Updating objects"));
 	dtstart = week_view->day_starts[week_view->selection_start_day];
 
 	if (kind == ICAL_VCALENDAR_COMPONENT) {
@@ -3856,6 +3956,8 @@ selection_received (GtkWidget *invisible,
 
 		gtk_object_unref (GTK_OBJECT (comp));
 	}
+
+	e_week_view_set_status_message (week_view, NULL);
 }
 
 
@@ -3920,4 +4022,34 @@ e_week_view_get_num_events_selected (EWeekView *week_view)
 	g_return_val_if_fail (E_IS_WEEK_VIEW (week_view), 0);
 
 	return (week_view->editing_event_num != -1) ? 1 : 0;
+}
+
+/* Displays a message on the activity client. */
+void
+e_week_view_set_status_message (EWeekView *week_view, const char *message)
+{
+	extern EvolutionShellClient *global_shell_client; /* ugly */
+
+	g_return_if_fail (E_IS_WEEK_VIEW (week_view));
+
+	if (!message || !*message) {
+		if (week_view->activity) {
+			gtk_object_unref (GTK_OBJECT (week_view->activity));
+			week_view->activity = NULL;
+		}
+	}
+	else if (!week_view->activity) {
+		int display;
+		char *client_id = g_strdup_printf ("%p", week_view);
+
+		if (progress_icon[0] == NULL)
+			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_CALENDAR_PROGRESS_IMAGE);
+		week_view->activity = evolution_activity_client_new (
+			global_shell_client, client_id,
+			progress_icon, message, TRUE, &display);
+
+		g_free (client_id);
+	}
+	else
+		evolution_activity_client_update (week_view->activity, message, -1.0);
 }

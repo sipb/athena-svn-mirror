@@ -10,6 +10,11 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #ifdef HAVE_ALLOCA_H
 #include <alloca.h>
@@ -24,11 +29,13 @@ static void ibex_reset(ibex *ib);
 static int close_backend(ibex *ib);
 
 static struct _list ibex_list = { (struct _listnode *)&ibex_list.tail, 0, (struct _listnode *)&ibex_list.head };
+static int ibex_open_init = 0;
+static int ibex_open_threshold = IBEX_OPEN_THRESHOLD;
 
 #ifdef ENABLE_THREADS
 #include <pthread.h>
 static pthread_mutex_t ibex_list_lock = PTHREAD_MUTEX_INITIALIZER;
-int ibex_opened;		/* count of actually opened ibexe's */
+static int ibex_opened;		/* count of actually opened ibexe's */
 #define IBEX_LIST_LOCK(ib) (pthread_mutex_lock(&ibex_list_lock))
 #define IBEX_LIST_UNLOCK(ib) (pthread_mutex_unlock(&ibex_list_lock))
 #else
@@ -45,7 +52,6 @@ static void ibex_use(ibex *ib)
 
 	/* always lock list then ibex */
 	IBEX_LIST_LOCK(ib);
-	IBEX_LOCK(ib);
 
 	if (ib->blocks == NULL) {
 		o(printf("Delayed opening ibex '%s', total = %d\n", ib->name, ibex_opened+1));
@@ -68,29 +74,34 @@ static void ibex_use(ibex *ib)
 	ibex_list_remove((struct _listnode *)ib);
 	ibex_list_addtail(&ibex_list, (struct _listnode *)ib);
 
-	IBEX_UNLOCK(ib);
+	/* check env variable override for open threshold */
+	if (!ibex_open_init) {
+		char *limit;
+
+		ibex_open_init = TRUE;
+		limit = getenv("IBEX_OPEN_THRESHOLD");
+		if (limit) {
+			ibex_open_threshold = atoi(limit);
+			if (ibex_open_threshold < IBEX_OPEN_THRESHOLD)
+				ibex_open_threshold = IBEX_OPEN_THRESHOLD;
+		}
+	}
 
 	/* check for other ibex's we can close now to not over-use fd's.
 	   we can't do this first for locking issues */
-	if (ibex_opened > IBEX_OPEN_THRESHOLD) {
-		wb = (ibex *)ibex_list.head;
-		wn = wb->next;
-		while (wn) {
-			IBEX_LOCK(wb);
+	wb = (ibex *)ibex_list.head;
+	wn = wb->next;
+	while (wn && ibex_opened > ibex_open_threshold) {
+		if (wb != ib && IBEX_TRYLOCK(wb) == 0) {
 			if (wb->usecount == 0 && wb->blocks != NULL) {
 				o(printf("Forcing close of obex '%s', total = %d\n", wb->name, ibex_opened-1));
 				close_backend(wb);
-				IBEX_UNLOCK(wb);
-				/* optimise the next scan? */
-				/*ibex_list_remove((struct _listnode *)wb);
-				  ibex_list_addtail(&ibex_list, (struct _listnode *)wb);*/
 				ibex_opened--;
-				break;
 			}
 			IBEX_UNLOCK(wb);
-			wb = wn;
-			wn = wn->next;
 		}
+		wb = wn;
+		wn = wn->next;
 	}
 
 	IBEX_LIST_UNLOCK(ib);
@@ -98,11 +109,8 @@ static void ibex_use(ibex *ib)
 
 static void ibex_unuse(ibex *ib)
 {
-	IBEX_LOCK(ib);
 	ib->usecount--;
-	IBEX_UNLOCK(ib);
 }
-
 
 static signed char utf8_trans[] = {
 	'A', 'A', 'A', 'A', 'A', 'A', -1, 'C', 'E', 'E', 'E', 'E', 'I', 'I',
@@ -284,8 +292,9 @@ done:
 	g_free(word);
 	word = NULL;
 
-	ibex_use(ib);
 	IBEX_LOCK(ib);
+
+	ibex_use(ib);
 
 	if (ibex_block_cache_setjmp(ib->blocks) != 0) {
 		printf("Error in indexing\n");
@@ -303,8 +312,9 @@ done:
 		ret = 0;
 	}
 
-	IBEX_UNLOCK(ib);
 	ibex_unuse(ib);
+
+	IBEX_UNLOCK(ib);
 
 error:
 	for (i=0;i<wordlist->len;i++)
@@ -348,7 +358,7 @@ ibex *ibex_open (char *file, int flags, int mode)
 	ib->mode = mode;
 
 #ifdef ENABLE_THREADS
-	ib->lock = g_mutex_new();
+	pthread_mutex_init(&ib->lock, NULL);
 #endif
 
 	IBEX_LIST_LOCK(ib);
@@ -372,8 +382,9 @@ int ibex_save (ibex *ib)
 
 	d(printf("syncing database\n"));
 
-	ibex_use(ib);
 	IBEX_LOCK(ib);
+
+	ibex_use(ib);
 
 	if (ibex_block_cache_setjmp(ib->blocks) != 0) {
 		ibex_reset(ib);
@@ -390,8 +401,9 @@ int ibex_save (ibex *ib)
 		ret = 0;
 	}
 
-	IBEX_UNLOCK(ib);
 	ibex_unuse(ib);
+
+	IBEX_UNLOCK(ib);
 
 	return ret;
 }
@@ -434,9 +446,10 @@ ibex_reset(ibex *ib)
 	ib->blocks = ibex_block_cache_open(ib->name, ib->flags, ib->mode);
 	if (ib->blocks == 0) {
 		g_warning("ibex_reset create: Error occured?: %s\n", strerror(errno));
+	} else {
+		/* FIXME: the blockcache or the wordindex needs to manage the other one */
+		ib->words = ib->blocks->words;
 	}
-	/* FIXME: the blockcache or the wordindex needs to manage the other one */
-	ib->words = ib->blocks->words;
 }
 
 /**
@@ -468,12 +481,44 @@ int ibex_close (ibex *ib)
 	g_free(ib->name);
 
 #ifdef ENABLE_THREADS
-	g_mutex_free(ib->lock);
+	pthread_mutex_destroy(&ib->lock);
 #endif
+
 	g_free(ib);
 
 	return ret;
 }
+
+/* rename/move the ibex file */
+int ibex_move(ibex *ib, const char *newname)
+{
+	int ret = 0, error = 0;
+	struct stat st;
+
+	IBEX_LOCK(ib);
+
+	if (ib->blocks)
+		close_backend(ib);
+
+	if (stat(ib->name, &st) == -1 && errno == ENOENT) {
+		error = 0;
+	} else if (rename(ib->name, newname) == -1) {
+		g_warning("could not rename ibex file '%s' to '%s': '%s'", ib->name, newname, strerror(errno));
+		ret = -1;
+		error = errno;
+	}
+
+	g_free(ib->name);
+	ib->name = g_strdup(newname);
+
+	IBEX_UNLOCK(ib);
+
+	if (ret == -1)
+		errno = error;
+
+	return ret;
+}
+
 
 /**
  * ibex_unindex:
@@ -486,8 +531,9 @@ void ibex_unindex (ibex *ib, char *name)
 {
 	d(printf("trying to unindex '%s'\n", name));
 
-	ibex_use(ib);
 	IBEX_LOCK(ib);
+
+	ibex_use(ib);
 
 	if (ibex_block_cache_setjmp(ib->blocks) != 0) {
 		printf("Error unindexing!\n");
@@ -496,8 +542,9 @@ void ibex_unindex (ibex *ib, char *name)
 		ib->words->klass->unindex_name(ib->words, name);
 	}
 
-	IBEX_UNLOCK(ib);
 	ibex_unuse(ib);
+
+	IBEX_UNLOCK(ib);
 }
 
 /**
@@ -519,8 +566,8 @@ GPtrArray *ibex_find (ibex *ib, char *word)
 	normal = alloca(len+1);
 	ibex_normalise_word(word, word+len, normal);
 
-	ibex_use(ib);
 	IBEX_LOCK(ib);
+	ibex_use(ib);
 
 	if (ibex_block_cache_setjmp(ib->blocks) != 0) {
 		ibex_reset(ib);
@@ -529,8 +576,8 @@ GPtrArray *ibex_find (ibex *ib, char *word)
 		ret = ib->words->klass->find(ib->words, normal);
 	}
 
-	IBEX_UNLOCK(ib);
 	ibex_unuse(ib);
+	IBEX_UNLOCK(ib);
 
 	return ret;
 }
@@ -555,8 +602,8 @@ gboolean ibex_find_name (ibex *ib, char *name, char *word)
 	normal = alloca(len+1);
 	ibex_normalise_word(word, word+len, normal);
 
-	ibex_use(ib);
 	IBEX_LOCK(ib);
+	ibex_use(ib);
 
 	if (ibex_block_cache_setjmp(ib->blocks) != 0) {
 		ibex_reset(ib);
@@ -565,8 +612,8 @@ gboolean ibex_find_name (ibex *ib, char *name, char *word)
 		ret = ib->words->klass->find_name(ib->words, name, normal);
 	}
 
-	IBEX_UNLOCK(ib);
 	ibex_unuse(ib);
+	IBEX_UNLOCK(ib);
 
 	return ret;
 }
@@ -584,8 +631,8 @@ gboolean ibex_contains_name(ibex *ib, char *name)
 {
 	gboolean ret;
 
-	ibex_use(ib);
 	IBEX_LOCK(ib);
+	ibex_use(ib);
 
 	if (ibex_block_cache_setjmp(ib->blocks) != 0) {
 		ibex_reset(ib);
@@ -594,8 +641,8 @@ gboolean ibex_contains_name(ibex *ib, char *name)
 		ret = ib->words->klass->contains_name(ib->words, name);
 	}
 
-	IBEX_UNLOCK(ib);
 	ibex_unuse(ib);
+	IBEX_UNLOCK(ib);
 
 	return ret;
 }

@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,7 +57,7 @@ struct _EUriSchemaRegistryClass {
 GtkType             e_uri_schema_registry_get_type  (void);
 EUriSchemaRegistry *e_uri_schema_registry_new       (void);
 
-gboolean                       e_uri_schema_registry_set_handler_for_schema  (EUriSchemaRegistry            *registry,
+void                           e_uri_schema_registry_set_handler_for_schema  (EUriSchemaRegistry            *registry,
 									      const char                    *schema,
 									      EvolutionShellComponentClient *shell_component);
 EvolutionShellComponentClient *e_uri_schema_registry_get_handler_for_schema  (EUriSchemaRegistry            *registry,

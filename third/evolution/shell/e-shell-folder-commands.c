@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,6 +43,7 @@
 #include "e-shell-constants.h"
 #include "e-shell-folder-creation-dialog.h"
 #include "e-shell-folder-selection-dialog.h"
+#include "e-shell-utils.h"
 
 
 /* Utility functions.  */
@@ -196,10 +196,6 @@ folder_selection_dialog_folder_selected_callback (EShellFolderSelectionDialog *f
 
 	storage_set = e_shell_get_storage_set (folder_command_data->shell);
 
-	if (remove_source)
-		e_shell_view_remove_control_for_uri (folder_command_data->shell_view,
-						     e_shell_view_get_current_uri (folder_command_data->shell_view));
-
 	e_storage_set_async_xfer_folder (storage_set,
 					 folder_command_data->source_path,
 					 folder_command_data->destination_path,
@@ -208,7 +204,6 @@ folder_selection_dialog_folder_selected_callback (EShellFolderSelectionDialog *f
 					 folder_command_data);
 
 	gtk_widget_destroy (GTK_WIDGET (folder_selection_dialog));
-	folder_command_data_free (folder_command_data);
 }
 
 static void
@@ -277,7 +272,7 @@ e_shell_command_open_folder_in_other_window (EShell *shell,
 		folder_path = e_shell_view_get_current_path (shell_view);
 
 	uri = g_strconcat (E_SHELL_URI_PREFIX, folder_path, NULL);
-	view = e_shell_create_view (shell, uri);
+	view = e_shell_create_view (shell, uri, shell_view);
 	g_free (uri);
 
 	gtk_widget_show (GTK_WIDGET (view));
@@ -445,29 +440,66 @@ e_shell_command_delete_folder (EShell *shell,
 	if (folder_path == NULL)
 		folder_path = e_shell_view_get_current_path (shell_view);
 
-	if (delete_dialog (shell_view, get_folder_name (shell, folder_path)) == 0) {
-		char *uri;
-
-		uri = g_strconcat (E_SHELL_URI_PREFIX, folder_path, NULL);
-		e_shell_view_remove_control_for_uri (shell_view, uri);
-		g_free (uri);
-
+	if (delete_dialog (shell_view, get_folder_name (shell, folder_path)) == 0)
 		e_storage_set_async_remove_folder (storage_set, folder_path, delete_cb, shell_view);
-
-		e_shell_view_display_uri (shell_view, E_SHELL_VIEW_DEFAULT_URI);
-	}
 }
 
 
+struct _RenameCallbackData {
+	EShellView *shell_view;
+	char *new_path;
+};
+typedef struct _RenameCallbackData RenameCallbackData;
+
+static RenameCallbackData *
+rename_callback_data_new (EShellView *shell_view,
+			  const char *new_path)
+{
+	RenameCallbackData *callback_data;
+
+	callback_data = g_new (RenameCallbackData, 1);
+
+	gtk_object_ref (GTK_OBJECT (shell_view));
+	callback_data->shell_view = shell_view;
+
+	callback_data->new_path = g_strdup (new_path);
+
+	return callback_data;
+}
+
+static void
+rename_callback_data_free (RenameCallbackData *callback_data)
+{
+	gtk_object_unref (GTK_OBJECT (callback_data->shell_view));
+	g_free (callback_data->new_path);
+
+	g_free (callback_data);
+}
+
 static void
 rename_cb (EStorageSet *storage_set, EStorageResult result, void *data)
 {
-	EShellView *shell_view;
+	RenameCallbackData *callback_data;
 
-	shell_view = E_SHELL_VIEW (data);
-	if (result != E_STORAGE_OK)
-		e_notice (GTK_WINDOW (shell_view), GNOME_MESSAGE_BOX_ERROR,
+	callback_data = (RenameCallbackData *) data;
+
+	if (result != E_STORAGE_OK) {
+		e_notice (GTK_WINDOW (callback_data->shell_view), GNOME_MESSAGE_BOX_ERROR,
 			  _("Cannot rename folder:\n%s"), e_storage_result_to_string (result));
+	} else {
+		EFolder *folder;
+		EShell *shell;
+		EStorageSet *storage_set;
+
+		shell = e_shell_view_get_shell (callback_data->shell_view);
+		storage_set = e_shell_get_storage_set (shell);
+		folder = e_storage_set_get_folder (storage_set, callback_data->new_path);
+
+		if (folder != NULL)
+			e_folder_set_name (folder, g_basename (callback_data->new_path));
+	}
+
+	rename_callback_data_free (callback_data);
 }
 
 void
@@ -477,6 +509,7 @@ e_shell_command_rename_folder (EShell *shell,
 {
 	EStorageSet *storage_set;
 	EFolder *folder;
+	RenameCallbackData *callback_data;
 	const char *old_name;
 	char *prompt;
 	char *new_name;
@@ -502,25 +535,35 @@ e_shell_command_rename_folder (EShell *shell,
 
 	prompt = g_strdup_printf (_("Rename the \"%s\" folder to:"), old_name);  
 
-	new_name = e_request_string (shell_view != NULL ? GTK_WINDOW (shell_view) : NULL,
-				     _("Rename folder"), prompt, old_name);
+	while (1) {
+		const char *reason;
+
+		new_name = e_request_string (shell_view != NULL ? GTK_WINDOW (shell_view) : NULL,
+					     _("Rename folder"), prompt, old_name);
+
+		if (new_name == NULL)
+			return;
+
+		if (e_shell_folder_name_is_valid (new_name, &reason))
+			break;
+
+		e_notice (shell_view != NULL ? GTK_WINDOW (shell_view) : NULL,
+			  GNOME_MESSAGE_BOX_ERROR,
+			  _("The specified folder name is not valid: %s"), reason);
+	}
 
 	g_free (prompt);
-
-	if (new_name == NULL)
-		return;
 
 	if (strcmp (old_name, new_name) == 0) {
 		g_free (new_name);
 		return;
 	}
 
-	e_folder_set_name (folder, new_name);
-
 	old_base_path = g_strndup (folder_path, old_name - folder_path);
 	new_path = g_strconcat (old_base_path, new_name, NULL);
 
-	e_storage_set_async_xfer_folder (storage_set, folder_path, new_path, TRUE, rename_cb, shell_view);
+	callback_data = rename_callback_data_new (shell_view, new_path);
+	e_storage_set_async_xfer_folder (storage_set, folder_path, new_path, TRUE, rename_cb, callback_data);
 
 	g_free (old_base_path);
 	g_free (new_path);

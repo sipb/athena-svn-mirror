@@ -8,10 +8,9 @@
  *          JP Rosevear <jpr@ximian.com>
  *          Rodrigo Moya <rodrigo@ximian.com>    
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -171,7 +170,7 @@ cal_backend_class_init (CalBackendClass *class)
  *
  * Return value: The URI where the calendar is stored.
  **/
-GnomeVFSURI *
+const char *
 cal_backend_get_uri (CalBackend *backend)
 {
 	g_return_val_if_fail (backend != NULL, NULL);
@@ -249,7 +248,7 @@ cal_backend_add_cal (CalBackend *backend, Cal *cal)
 /**
  * cal_backend_open:
  * @backend: A calendar backend.
- * @uri: URI that contains the calendar data.
+ * @uristr: URI that contains the calendar data.
  * @only_if_exists: Whether the calendar should be opened only if it already
  * exists.  If FALSE, a new calendar will be created when the specified @uri
  * does not exist.
@@ -260,16 +259,16 @@ cal_backend_add_cal (CalBackend *backend, Cal *cal)
  * Return value: An operation status code.
  **/
 CalBackendOpenStatus
-cal_backend_open (CalBackend *backend, GnomeVFSURI *uri, gboolean only_if_exists)
+cal_backend_open (CalBackend *backend, const char *uristr, gboolean only_if_exists)
 {
 	CalBackendOpenStatus result;
 
 	g_return_val_if_fail (backend != NULL, CAL_BACKEND_OPEN_ERROR);
 	g_return_val_if_fail (IS_CAL_BACKEND (backend), CAL_BACKEND_OPEN_ERROR);
-	g_return_val_if_fail (uri != NULL, CAL_BACKEND_OPEN_ERROR);
+	g_return_val_if_fail (uristr != NULL, CAL_BACKEND_OPEN_ERROR);
 
 	g_assert (CLASS (backend)->open != NULL);
-	result = (* CLASS (backend)->open) (backend, uri, only_if_exists);
+	result = (* CLASS (backend)->open) (backend, uristr, only_if_exists);
 
 	return result;
 }
@@ -575,7 +574,8 @@ cal_backend_get_changes (CalBackend *backend, CalObjType type, const char *chang
  * if @valid_range returns FALSE.
  **/
 GNOME_Evolution_Calendar_CalComponentAlarmsSeq *
-cal_backend_get_alarms_in_range (CalBackend *backend, time_t start, time_t end, gboolean *valid_range)
+cal_backend_get_alarms_in_range (CalBackend *backend, time_t start, time_t end,
+				 gboolean *valid_range)
 {
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
@@ -764,8 +764,7 @@ cal_backend_obj_removed (CalBackend *backend, const char *uid)
  * Returns the icaltimezone* corresponding to the TZID, or NULL if the TZID
  * can't be found.
  * 
- * Return value: TRUE on success, FALSE on being passed an UID for an object
- * that does not exist in the backend.
+ * Returns: The icaltimezone* corresponding to the given TZID, or NULL.
  **/
 icaltimezone*
 cal_backend_get_timezone (CalBackend *backend, const char *tzid)
@@ -776,5 +775,48 @@ cal_backend_get_timezone (CalBackend *backend, const char *tzid)
 
 	g_assert (CLASS (backend)->get_timezone != NULL);
 	return (* CLASS (backend)->get_timezone) (backend, tzid);
+}
+
+
+/**
+ * cal_backend_get_default_timezone:
+ * @backend: A calendar backend.
+ * 
+ * Returns the default timezone for the calendar, which is used to resolve
+ * DATE and floating DATE-TIME values.
+ * 
+ * Returns: The default icaltimezone* for the calendar.
+ **/
+icaltimezone*
+cal_backend_get_default_timezone (CalBackend *backend)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), NULL);
+
+	g_assert (CLASS (backend)->get_default_timezone != NULL);
+	return (* CLASS (backend)->get_default_timezone) (backend);
+}
+
+
+/**
+ * cal_backend_set_default_timezone:
+ * @backend: A calendar backend.
+ * @tzid: The TZID identifying the timezone.
+ * 
+ * Sets the default timezone for the calendar, which is used to resolve
+ * DATE and floating DATE-TIME values.
+ * 
+ * Returns: TRUE if the VTIMEZONE data for the timezone was found, or FALSE if
+ * not.
+ **/
+gboolean
+cal_backend_set_default_timezone (CalBackend *backend, const char *tzid)
+{
+	g_return_val_if_fail (backend != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_BACKEND (backend), FALSE);
+	g_return_val_if_fail (tzid != NULL, FALSE);
+
+	g_assert (CLASS (backend)->set_default_timezone != NULL);
+	return (* CLASS (backend)->set_default_timezone) (backend, tzid);
 }
 

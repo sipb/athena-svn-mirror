@@ -5,10 +5,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,6 +23,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "cal-component.h"
 #include "timeutil.h"
 
@@ -88,6 +90,13 @@ struct _CalComponentPrivate {
 
 	icalproperty *dtstamp;
 
+	/* The DURATION property can be used instead of the VEVENT DTEND or
+	   the VTODO DUE dates. We do not use it directly ourselves, but we
+	   must be able to handle it from incoming data. If a DTEND or DUE
+	   is requested, we convert the DURATION if necessary. If DTEND or
+	   DUE is set, we remove any DURATION. */
+	icalproperty *duration;
+
 	struct datetime due;
 
 	GSList *exdate_list; /* list of struct datetime */
@@ -133,6 +142,7 @@ struct _CalComponentPrivate {
 
 	icalproperty *transparency;
 	icalproperty *url;
+	icalproperty *location;
 
 	/* Subcomponents */
 
@@ -262,7 +272,7 @@ free_alarm_cb (gpointer key, gpointer value, gpointer data)
  * does, it means we don't own it and we shouldn't free it.
  */
 static void
-free_icalcomponent (CalComponent *comp)
+free_icalcomponent (CalComponent *comp, gboolean free)
 {
 	CalComponentPrivate *priv;
 
@@ -273,11 +283,11 @@ free_icalcomponent (CalComponent *comp)
 
 	/* Free the icalcomponent */
 
-	if (icalcomponent_get_parent (priv->icalcomp) == NULL)
+	if (free && icalcomponent_get_parent (priv->icalcomp) == NULL) {
 		icalcomponent_free (priv->icalcomp);
-
-	priv->icalcomp = NULL;
-
+		priv->icalcomp = NULL;
+	}
+	
 	/* Free the mappings */
 
 	priv->uid = NULL;
@@ -305,6 +315,8 @@ free_icalcomponent (CalComponent *comp)
 	priv->due.prop = NULL;
 	priv->due.tzid_param = NULL;
 
+	priv->duration = NULL;
+
 	priv->exdate_list = free_slist (priv->exdate_list);
 
 	g_slist_free (priv->exrule_list);
@@ -327,6 +339,7 @@ free_icalcomponent (CalComponent *comp)
 
 	priv->transparency = NULL;
 	priv->url = NULL;
+	priv->location = NULL;
 
 	/* Free the subcomponents */
 
@@ -350,7 +363,7 @@ cal_component_destroy (GtkObject *object)
 	comp = CAL_COMPONENT (object);
 	priv = comp->priv;
 
-	free_icalcomponent (comp);
+	free_icalcomponent (comp, TRUE);
 	g_hash_table_destroy (priv->alarm_uid_hash);
 	priv->alarm_uid_hash = NULL;
 
@@ -631,6 +644,10 @@ scan_property (CalComponent *comp, icalproperty *prop)
 		scan_datetime (comp, &priv->due, prop);
 		break;
 
+	case ICAL_DURATION_PROPERTY:
+		priv->duration = prop;
+		break;
+
 	case ICAL_EXDATE_PROPERTY:
 		scan_exdate (comp, prop);
 		break;
@@ -689,6 +706,10 @@ scan_property (CalComponent *comp, icalproperty *prop)
 
 	case ICAL_URL_PROPERTY:
 		priv->url = prop;
+		break;
+
+	case ICAL_LOCATION_PROPERTY :
+		priv->location = prop;
 		break;
 
 	default:
@@ -919,7 +940,7 @@ cal_component_set_new_vtype (CalComponent *comp, CalComponentVType type)
 
 	priv = comp->priv;
 
-	free_icalcomponent (comp);
+	free_icalcomponent (comp, TRUE);
 
 	if (type == CAL_COMPONENT_NO_TYPE)
 		return;
@@ -997,7 +1018,7 @@ cal_component_set_icalcomponent (CalComponent *comp, icalcomponent *icalcomp)
 	if (priv->icalcomp == icalcomp)
 		return TRUE;
 
-	free_icalcomponent (comp);
+	free_icalcomponent (comp, TRUE);
 
 	if (!icalcomp) {
 		priv->icalcomp = NULL;
@@ -1043,6 +1064,25 @@ cal_component_get_icalcomponent (CalComponent *comp)
 	g_return_val_if_fail (priv->need_sequence_inc == FALSE, NULL);
 
 	return priv->icalcomp;
+}
+
+void
+cal_component_rescan (CalComponent *comp)
+{
+	CalComponentPrivate *priv;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (IS_CAL_COMPONENT (comp));
+
+	priv = comp->priv;
+
+	/* Clear everything out */
+	free_icalcomponent (comp, FALSE);
+	g_hash_table_destroy (priv->alarm_uid_hash);
+	priv->alarm_uid_hash = NULL;
+
+	scan_icalcomponent (comp);
+	ensure_mandatory_properties (comp);
 }
 
 /**
@@ -1127,6 +1167,66 @@ cal_component_get_as_string (CalComponent *comp)
 	return buf;
 }
 
+/* Used from g_hash_table_foreach(); ensures that an alarm subcomponent
+ * has the mandatory properties it needs.
+ */
+static void
+ensure_alarm_properties_cb (gpointer key, gpointer value, gpointer data)
+{
+	CalComponent *comp;
+	CalComponentPrivate *priv;
+	icalcomponent *alarm;
+	icalproperty *prop;
+	enum icalproperty_action action;
+	const char *str;
+
+	alarm = value;
+
+	comp = CAL_COMPONENT (data);
+	priv = comp->priv;
+
+	prop = icalcomponent_get_first_property (alarm, ICAL_ACTION_PROPERTY);
+	if (!prop)
+		return;
+
+	action = icalproperty_get_action (prop);
+
+	switch (action) {
+	case ICAL_ACTION_DISPLAY:
+		/* Ensure we have a DESCRIPTION property */
+		prop = icalcomponent_get_first_property (alarm, ICAL_DESCRIPTION_PROPERTY);
+		if (prop)
+			break;
+
+		if (!priv->summary.prop)
+			str = _("Untitled appointment");
+		else
+			str = icalproperty_get_summary (priv->summary.prop);
+
+		prop = icalproperty_new_description (str);
+		icalcomponent_add_property (alarm, prop);
+
+		break;
+
+	default:
+		break;
+		/* FIXME: add other action types here */
+	}
+}
+
+/* Ensures that alarm subcomponents have the mandatory properties they need,
+ * even when clients may not have set them properly.
+ */
+static void
+ensure_alarm_properties (CalComponent *comp)
+{
+	CalComponentPrivate *priv;
+
+	priv = comp->priv;
+
+	g_hash_table_foreach (priv->alarm_uid_hash, ensure_alarm_properties_cb, comp);
+}
+
 /**
  * cal_component_commit_sequence:
  * @comp:
@@ -1148,6 +1248,8 @@ cal_component_commit_sequence (CalComponent *comp)
 
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
+
+	ensure_alarm_properties (comp);
 
 	if (!priv->need_sequence_inc)
 		return;
@@ -1900,6 +2002,8 @@ set_datetime (CalComponent *comp, struct datetime *datetime,
 
 	priv = comp->priv;
 
+	/* If we are setting the property to NULL (i.e. removing it), then
+	   we remove it if it exists. */
 	if (!dt) {
 		if (datetime->prop) {
 			icalcomponent_remove_property (priv->icalcomp, datetime->prop);
@@ -1917,10 +2021,12 @@ set_datetime (CalComponent *comp, struct datetime *datetime,
 	/* If the TZID is set to "UTC", we set the is_utc flag. */
 	if (dt->tzid && !strcmp (dt->tzid, "UTC"))
 		dt->value->is_utc = 1;
+	else
+		dt->value->is_utc = 0;
 
-	if (datetime->prop)
+	if (datetime->prop) {
 		(* prop_set_func) (datetime->prop, *dt->value);
-	else {
+	} else {
 		datetime->prop = (* prop_new_func) (*dt->value);
 		icalcomponent_add_property (priv->icalcomp, datetime->prop);
 	}
@@ -1929,9 +2035,9 @@ set_datetime (CalComponent *comp, struct datetime *datetime,
 	if (dt->tzid && strcmp (dt->tzid, "UTC")) {
 		g_assert (datetime->prop != NULL);
 
-		if (datetime->tzid_param)
+		if (datetime->tzid_param) {
 			icalparameter_set_tzid (datetime->tzid_param, (char *) dt->tzid);
-		else {
+		} else {
 			datetime->tzid_param = icalparameter_new_tzid ((char *) dt->tzid);
 			icalproperty_add_parameter (datetime->prop, datetime->tzid_param);
 		}
@@ -1941,6 +2047,51 @@ set_datetime (CalComponent *comp, struct datetime *datetime,
 		datetime->tzid_param = NULL;
 	}
 }
+
+
+/* This tries to get the DTSTART + DURATION for a VEVENT or VTODO. In a
+   VEVENT this is used for the DTEND if no DTEND exists, In a VTOTO it is
+   used for the DUE date if DUE doesn't exist. */
+static void
+cal_component_get_start_plus_duration (CalComponent *comp,
+				       CalComponentDateTime *dt)
+{
+	CalComponentPrivate *priv;
+	struct icaldurationtype duration;
+
+	priv = comp->priv;
+
+	if (!priv->duration)
+		return;
+
+	/* Get the DTSTART time. */
+	get_datetime (&priv->dtstart, icalproperty_get_dtstart, dt);
+	if (!dt->value)
+		return;
+
+	duration = icalproperty_get_duration (priv->duration);
+
+	/* The DURATION shouldn't be negative, but just return DTSTART if it
+	   is, i.e. assume it is 0. */
+	if (duration.is_neg)
+		return;
+
+	/* If DTSTART is a DATE value, then we need to check if the DURATION
+	   includes any hours, minutes or seconds. If it does, we need to
+	   make the DTEND/DUE a DATE-TIME value. */
+	duration.days += duration.weeks * 7;
+	if (dt->value->is_date) {
+		if (duration.hours != 0 || duration.minutes != 0
+		    || duration.seconds != 0) {
+			dt->value->is_date = 0;
+		}
+	}
+
+	/* Add on the DURATION. */
+	icaltime_adjust (dt->value, duration.days, duration.hours,
+			 duration.minutes, duration.seconds);
+}
+
 
 /**
  * cal_component_get_dtend:
@@ -1963,6 +2114,11 @@ cal_component_get_dtend (CalComponent *comp, CalComponentDateTime *dt)
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	get_datetime (&priv->dtend, icalproperty_get_dtend, dt);
+
+	/* If we don't have a DTEND property, then we try to get DTSTART
+	   + DURATION. */
+	if (!dt->value)
+		cal_component_get_start_plus_duration (comp, dt);
 }
 
 /**
@@ -1987,6 +2143,15 @@ cal_component_set_dtend (CalComponent *comp, CalComponentDateTime *dt)
 		      icalproperty_new_dtend,
 		      icalproperty_set_dtend,
 		      dt);
+
+	/* Make sure we remove any existing DURATION property, as it can't be
+	   used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
+	   want to remove any DURATION. */
+	if (priv->duration) {
+		icalcomponent_remove_property (priv->icalcomp, priv->duration);
+		icalproperty_free (priv->duration);
+		priv->duration = NULL;
+	}
 
 	priv->need_sequence_inc = TRUE;
 }
@@ -2114,6 +2279,11 @@ cal_component_get_due (CalComponent *comp, CalComponentDateTime *dt)
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	get_datetime (&priv->due, icalproperty_get_due, dt);
+
+	/* If we don't have a DTEND property, then we try to get DTSTART
+	   + DURATION. */
+	if (!dt->value)
+		cal_component_get_start_plus_duration (comp, dt);
 }
 
 /**
@@ -2138,6 +2308,15 @@ cal_component_set_due (CalComponent *comp, CalComponentDateTime *dt)
 		      icalproperty_new_due,
 		      icalproperty_set_due,
 		      dt);
+
+	/* Make sure we remove any existing DURATION property, as it can't be
+	   used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
+	   want to remove any DURATION. */
+	if (priv->duration) {
+		icalcomponent_remove_property (priv->icalcomp, priv->duration);
+		icalproperty_free (priv->duration);
+		priv->duration = NULL;
+	}
 
 	priv->need_sequence_inc = TRUE;
 }
@@ -2833,6 +3012,28 @@ cal_component_set_organizer (CalComponent *comp, CalComponentOrganizer *organize
 	}
 
 
+}
+
+
+/**
+ * cal_component_has_organizer:
+ * @comp: 
+ * 
+ * 
+ * 
+ * Return value: 
+ **/
+gboolean
+cal_component_has_organizer (CalComponent *comp)
+{
+	CalComponentPrivate *priv;
+
+	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_COMPONENT (comp), FALSE);
+
+	priv = comp->priv;
+
+	return priv->organizer.prop != NULL;
 }
 		
 /**
@@ -3749,6 +3950,82 @@ cal_component_set_attendee_list (CalComponent *comp, GSList *attendee_list)
 	set_attendee_list (comp, &priv->attendee_list, attendee_list);
 }
 
+gboolean
+cal_component_has_attendees (CalComponent *comp)
+{
+	CalComponentPrivate *priv;
+
+	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_COMPONENT (comp), FALSE);
+
+	priv = comp->priv;
+
+	if (g_slist_length (priv->attendee_list) > 0)
+		return TRUE;
+	
+	return FALSE;
+}
+
+/**
+ * cal_component_get_location:
+ * @comp: A calendar component object.
+ * @url: Return value for the location.
+ *
+ * Queries the location property of a calendar component object.
+ **/
+void
+cal_component_get_location (CalComponent *comp, const char **location)
+{
+	CalComponentPrivate *priv;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (IS_CAL_COMPONENT (comp));
+	g_return_if_fail (location != NULL);
+
+	priv = comp->priv;
+	g_return_if_fail (priv->icalcomp != NULL);
+
+	if (priv->location)
+		*location = icalproperty_get_location (priv->location);
+	else
+		*location = NULL;
+}
+
+/**
+ * cal_component_set_location:
+ * @comp: A calendar component object.
+ * @url: Location value.
+ *
+ * Sets the location property of a calendar component object.
+ **/
+void
+cal_component_set_location (CalComponent *comp, const char *location)
+{
+	CalComponentPrivate *priv;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (IS_CAL_COMPONENT (comp));
+
+	priv = comp->priv;
+	g_return_if_fail (priv->icalcomp != NULL);
+
+	if (!location || !(*location)) {
+		if (priv->location) {
+			icalcomponent_remove_property (priv->icalcomp, priv->location);
+			icalproperty_free (priv->location);
+			priv->location = NULL;
+		}
+
+		return;
+	}
+
+	if (priv->location)
+		icalproperty_set_location (priv->location, (char *) location);
+	else {
+		priv->location = icalproperty_new_location ((char *) location);
+		icalcomponent_add_property (priv->icalcomp, priv->location);
+	}
+}
 
 
 
@@ -4864,6 +5141,7 @@ cal_component_event_dates_match	(CalComponent *comp1,
 {
 	CalComponentDateTime comp1_dtstart, comp1_dtend;
 	CalComponentDateTime comp2_dtstart, comp2_dtend;
+	gboolean retval = TRUE;
 
 	cal_component_get_dtstart (comp1, &comp1_dtstart);
 	cal_component_get_dtend   (comp1, &comp1_dtend);
@@ -4872,32 +5150,50 @@ cal_component_event_dates_match	(CalComponent *comp1,
 
 	/* If either value is NULL they must both be NULL to match. */
 	if (comp1_dtstart.value == NULL || comp2_dtstart.value == NULL) {
-		if (comp1_dtstart.value != comp2_dtstart.value)
-			return FALSE;
+		if (comp1_dtstart.value != comp2_dtstart.value) {
+			retval = FALSE;
+			goto out;
+		}
 	} else {
 		if (icaltime_compare (*comp1_dtstart.value,
-				      *comp2_dtstart.value))
-			return FALSE;
+				      *comp2_dtstart.value)) {
+			retval = FALSE;
+			goto out;
+		}
 	}
 
 	if (comp1_dtend.value == NULL || comp2_dtend.value == NULL) {
-		if (comp1_dtend.value != comp2_dtend.value)
-			return FALSE;
+		if (comp1_dtend.value != comp2_dtend.value) {
+			retval = FALSE;
+			goto out;
+		}
 	} else {
 		if (icaltime_compare (*comp1_dtend.value,
-				      *comp2_dtend.value))
-			return FALSE;
+				      *comp2_dtend.value)) {
+			retval = FALSE;
+			goto out;
+		}
 	}
 
 	/* Now check the timezones. */
 	if (!cal_component_strings_match (comp1_dtstart.tzid,
-					  comp2_dtstart.tzid))
-		return FALSE;
+					  comp2_dtstart.tzid)) {
+		retval = FALSE;
+		goto out;
+	}
 
 	if (!cal_component_strings_match (comp1_dtend.tzid,
-					  comp2_dtend.tzid))
-		return FALSE;
+					  comp2_dtend.tzid)) {
+		retval = FALSE;
+	}
 
-	return TRUE;
+ out:
+
+	cal_component_free_datetime (&comp1_dtstart);
+	cal_component_free_datetime (&comp1_dtend);
+	cal_component_free_datetime (&comp2_dtstart);
+	cal_component_free_datetime (&comp2_dtend);
+
+	return retval;
 }
 

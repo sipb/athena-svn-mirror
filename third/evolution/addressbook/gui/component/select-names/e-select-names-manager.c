@@ -21,6 +21,7 @@
 #include "e-select-names-completion.h"
 #include "e-select-names-popup.h"
 #include <addressbook/backend/ebook/e-destination.h>
+#include <addressbook/gui/component/addressbook.h>
 #include <bonobo-conf/bonobo-config-database.h>
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-moniker-util.h>
@@ -33,6 +34,7 @@ enum {
 
 enum {
 	CHANGED,
+	OK,
 	LAST_SIGNAL
 };
 
@@ -119,7 +121,7 @@ e_select_names_manager_new (void)
 
 	CORBA_exception_init (&ev);
 
-	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
+	db = addressbook_config_database (&ev);
 
 	val = bonobo_config_get_string (db, "/Addressbook/Completion/uri", &ev);
 
@@ -128,13 +130,11 @@ e_select_names_manager_new (void)
 	if (val) {
 		manager->completion_book = e_book_new ();
 		gtk_object_ref (GTK_OBJECT (manager)); /* ref ourself before our async call */
-		e_book_load_uri (manager->completion_book, val, (EBookCallback)open_book_cb, manager);
+		addressbook_load_uri (manager->completion_book, val, (EBookCallback)open_book_cb, manager);
 		g_free (val);
 	}
 	else
 		manager->completion_book = NULL;
-
-	bonobo_object_unref (BONOBO_OBJECT (db));
 
 	return manager;
 }
@@ -162,6 +162,15 @@ e_select_names_manager_class_init (ESelectNamesManagerClass *klass)
 				GTK_TYPE_NONE, 2,
 				GTK_TYPE_POINTER,
 				GTK_TYPE_INT);
+
+	e_select_names_manager_signals[OK] =
+		gtk_signal_new ("ok",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (ESelectNamesManagerClass, ok),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
 	gtk_object_class_add_signals (object_class, e_select_names_manager_signals, LAST_SIGNAL);
 }
 
@@ -178,6 +187,11 @@ e_select_names_manager_destroy (GtkObject *object)
 
 	gtk_object_unref(GTK_OBJECT(manager->sections));
 	gtk_object_unref(GTK_OBJECT(manager->entries));
+
+	if (manager->names) {
+		gtk_widget_destroy (GTK_WIDGET (manager->names));
+		manager->names = NULL;
+	}
 }
 
 
@@ -380,7 +394,6 @@ entry_destroyed(EEntry *entry, ESelectNamesManager *manager)
 			}
 		}
 	}
-	gtk_object_unref(GTK_OBJECT(manager));
 }
 
 static void
@@ -434,7 +447,7 @@ focus_out_cb (GtkWidget *w, GdkEventFocus *ev, gpointer user_data)
 	ESelectNamesManager *manager = E_SELECT_NAMES_MANAGER (gtk_object_get_data (GTK_OBJECT (entry), "select_names_manager"));
 
 	if (!e_entry_completion_popup_is_visible (entry))
-		e_select_names_model_cardify_all (model, manager->completion_book, 0);
+		e_select_names_model_cardify_all (model, manager->completion_book, 100);
 
 	return FALSE;
 }
@@ -488,11 +501,16 @@ e_select_names_manager_create_entry (ESelectNamesManager *manager, const char *i
 			entry->entry = eentry;
 			entry->id = (char *)id;
 
+			gtk_object_ref (GTK_OBJECT (entry->entry));
+
 			model = e_select_names_text_model_new (section->model);
 			e_list_append (manager->entries, entry);
 			g_free(entry);
 
-			comp = e_select_names_completion_new (manager->completion_book, section->model);
+			comp = e_select_names_completion_new (NULL, section->model);
+			if (manager->completion_book)
+				e_select_names_completion_add_book (E_SELECT_NAMES_COMPLETION (comp),
+								    manager->completion_book);
 			e_entry_enable_completion_full (eentry, comp, 50, completion_handler);
 
 			gtk_object_set_data (GTK_OBJECT (eentry), "completion_handler", comp);
@@ -503,9 +521,10 @@ e_select_names_manager_create_entry (ESelectNamesManager *manager, const char *i
 				       "use_ellipsis", TRUE,
 				       "allow_newlines", FALSE,
 				       NULL);
+
 			gtk_signal_connect(GTK_OBJECT(eentry), "destroy",
 					   GTK_SIGNAL_FUNC(entry_destroyed), manager);
-			gtk_object_ref(GTK_OBJECT(manager));
+
 			return GTK_WIDGET(eentry);
 		}
 	}
@@ -519,7 +538,9 @@ e_select_names_clicked(ESelectNames *dialog, gint button, ESelectNamesManager *m
 
 	switch(button) {
 	case 0:
-		/* We don't need to do anything if they click on OK */
+		/* We don't need to do much if they click on OK */
+
+		gtk_signal_emit (GTK_OBJECT (manager), e_select_names_manager_signals[OK]);
 		break;
 
 	case 1: {

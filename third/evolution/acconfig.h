@@ -18,13 +18,13 @@
 #undef HAVE_NSS
 #undef HAVE_SSL
 #undef HAVE_OPENSSL
-#undef MOVEMAIL_PATH
 #undef USE_DOT
 #undef USE_FCNTL
 #undef USE_FLOCK
 #undef ENABLE_NNTP
 #undef HAVE_BROKEN_SPOOL
 #undef ENABLE_PEDANTIC_PGPMIME
+#undef HAVE_KDE_APPLNK
 
 /* db3 version */
 #undef EVOLUTION_DB_VERSION_MAJOR

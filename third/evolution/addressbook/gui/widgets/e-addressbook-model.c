@@ -75,8 +75,9 @@ remove_book_view(EAddressbookModel *model)
 
 	model->search_in_progress = FALSE;
 
-	if (model->book_view)
+	if (model->book_view) {
 		gtk_object_unref(GTK_OBJECT(model->book_view));
+	}
 
 	model->book_view = NULL;
 }
@@ -87,8 +88,10 @@ addressbook_destroy(GtkObject *object)
 	EAddressbookModel *model = E_ADDRESSBOOK_MODEL(object);
 	int i;
 
-	if (model->get_view_idle)
+	if (model->get_view_idle) {
 		g_source_remove(model->get_view_idle);
+		model->get_view_idle = 0;
+	}
 
 	remove_book_view(model);
 
@@ -100,12 +103,15 @@ addressbook_destroy(GtkObject *object)
 		model->writable_status_id = 0;
 
 		gtk_object_unref(GTK_OBJECT(model->book));
+		model->book = NULL;
 	}
 
 	for ( i = 0; i < model->data_count; i++ ) {
 		gtk_object_unref(GTK_OBJECT(model->data[i]));
 	}
+
 	g_free(model->data);
+	model->data = NULL;
 }
 
 static void
@@ -199,7 +205,6 @@ modify_card(EBookView *book_view,
 			if ( !strcmp(e_card_get_id(model->data[i]), e_card_get_id(E_CARD(cards->data))) ) {
 				gtk_object_unref(GTK_OBJECT(model->data[i]));
 				model->data[i] = e_card_duplicate(E_CARD(cards->data));
-				gtk_object_ref(GTK_OBJECT(model->data[i]));
 				gtk_signal_emit (GTK_OBJECT (model),
 						 e_addressbook_model_signals [CARD_CHANGED],
 						 i);
@@ -419,7 +424,7 @@ ECard *
 e_addressbook_model_get_card(EAddressbookModel *model,
 			     int                row)
 {
-	if (model->data && row < model->data_count) {
+	if (model->data && 0 <= row && row < model->data_count) {
 		ECard *card;
 		card = e_card_duplicate (model->data[row]);
 		return card;
@@ -540,6 +545,12 @@ gboolean
 e_addressbook_model_can_stop (EAddressbookModel *model)
 {
 	return model->search_in_progress;
+}
+
+void
+e_addressbook_model_force_folder_bar_message (EAddressbookModel *model)
+{
+	update_folder_bar_message (model);
 }
 
 int

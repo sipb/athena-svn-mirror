@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,9 +29,8 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-exception.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <gal/util/e-util.h>
+#include "e-util/e-url.h"
 #include <cal-client/cal-client.h>
 #include "calendar-offline-handler.h"
 
@@ -50,18 +48,22 @@ struct _CalendarOfflineHandlerPrivate {
 static void
 add_connection (gpointer data, gpointer user_data)
 {
-	GnomeVFSURI *uri = gnome_vfs_uri_new (data);	
+	EUri *uri = e_uri_new (data);	
 	GNOME_Evolution_ConnectionList *list = user_data;
 
 	g_return_if_fail (uri != NULL);
 	
-	list->_buffer[list->_length].hostName 
-		= CORBA_string_dup (gnome_vfs_uri_get_host_name (uri));
-	list->_buffer[list->_length].type
-		= CORBA_string_dup (gnome_vfs_uri_get_scheme (uri));	
+	if (uri->host != NULL)
+		list->_buffer[list->_length].hostName = CORBA_string_dup (uri->host);
+	else
+		list->_buffer[list->_length].hostName = CORBA_string_dup ("Unknown");
+	if (uri->protocol != NULL)
+		list->_buffer[list->_length].type = CORBA_string_dup (uri->protocol);
+	else
+		list->_buffer[list->_length].type = CORBA_string_dup ("Unknown");
 	list->_length++;
 
-	gnome_vfs_uri_unref (uri);	
+	e_uri_free (uri);
 }
 
 static GNOME_Evolution_ConnectionList *
@@ -72,8 +74,8 @@ create_connection_list (CalendarOfflineHandler *offline_handler)
 	GList *uris;
 
 	priv = offline_handler->priv;
-	
-	uris = cal_client_uri_list (priv->client, CAL_MODE_REMOTE);	
+
+ 	uris = cal_client_uri_list (priv->client, CAL_MODE_REMOTE);	
 
 	list = GNOME_Evolution_ConnectionList__alloc ();
 	list->_length = 0;

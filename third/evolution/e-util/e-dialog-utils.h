@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +26,11 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkwidget.h>
 
-void e_set_dialog_parent (GtkWindow *dialog,
-			  GtkWidget *parent_widget);
+#include <X11/Xlib.h>		/* Window */
+
+void  e_set_dialog_parent           (GtkWindow *dialog,
+				     GtkWidget *parent_widget);
+void  e_set_dialog_parent_from_xid  (GtkWindow *dialog,
+				     Window     xid);
 
 #endif

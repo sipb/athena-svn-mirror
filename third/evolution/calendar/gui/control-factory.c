@@ -5,9 +5,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -162,6 +161,7 @@ control_factory_init (void)
 		g_error ("I could not register a Calendar control factory.");
 }
 
+#if 0
 static int
 load_calendar (BonoboPersistFile *pf, const CORBA_char *filename, CORBA_Environment *ev, void *closure)
 {
@@ -187,6 +187,7 @@ calendar_persist_init (GnomeCalendar *gcal, BonoboControl *control)
 	f = bonobo_persist_file_new (load_calendar, save_calendar, gcal);
 	bonobo_object_add_interface (BONOBO_OBJECT (control), BONOBO_OBJECT (f));
 }
+#endif
 
 static void
 on_calendar_dates_shown_changed (GnomeCalendar *gcal, BonoboControl *control)
@@ -214,7 +215,9 @@ control_factory_new_control (void)
 	}
 
 	calendar_properties_init (gcal, control);
+#if 0
 	calendar_persist_init (gcal, control);
+#endif
 					      
 	gtk_signal_connect (GTK_OBJECT (control), "activate",
 			    GTK_SIGNAL_FUNC (control_activate_cb), gcal);

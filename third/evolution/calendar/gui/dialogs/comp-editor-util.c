@@ -4,10 +4,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,6 +31,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-widget.h>
+#include <gal/unicode/gunicode.h>
 #include <e-destination.h>
 #include <e-util/e-time-utils.h>
 #include <cal-util/timeutil.h>
@@ -59,6 +59,9 @@ comp_editor_dates (CompEditorPageDates *dates, CalComponent *comp)
 	dates->due = NULL;
 	dates->complete = NULL;
 	
+	/* Note that the CalComponentDateTime's returned contain allocated
+	   icaltimetype and tzid values, so we just take over ownership of
+	   those. */
 	cal_component_get_dtstart (comp, &dt);
 	if (dt.value) {
 		dates->start = g_new (CalComponentDateTime, 1);
@@ -87,25 +90,35 @@ comp_editor_dates (CompEditorPageDates *dates, CalComponent *comp)
 void
 comp_editor_free_dates (CompEditorPageDates *dates)
 {
-	if (dates->start)
+	/* Note that cal_component_free_datetime() only frees the fields in
+	   the struct. It doesn't free the struct itself, so we do that. */
+	if (dates->start) {
 		cal_component_free_datetime (dates->start);
+		g_free (dates->start);
+	}
 
-	if (dates->end)
+	if (dates->end) {
 		cal_component_free_datetime (dates->end);
+		g_free (dates->end);
+	}
 
-	if (dates->due)
+	if (dates->due) {
 		cal_component_free_datetime (dates->due);
+		g_free (dates->due);
+	}
 
 	if (dates->complete)
 		cal_component_free_icaltimetype (dates->complete);
 }
 
 
+/* dtstart is only passed in if tt is the dtend. */
 static void
 write_label_piece (struct icaltimetype *tt, char *buffer, int size,
-		   char *stext, char *etext)
+		   char *stext, char *etext, struct icaltimetype *dtstart)
 {
 	struct tm tmp_tm = { 0 };
+	struct icaltimetype tt_copy = *tt;
 	int len;
 	
 	/* FIXME: May want to convert the time to an appropriate zone. */
@@ -113,20 +126,28 @@ write_label_piece (struct icaltimetype *tt, char *buffer, int size,
 	if (stext != NULL)
 		strcat (buffer, stext);
 
-	tmp_tm.tm_year = tt->year - 1900;
-	tmp_tm.tm_mon = tt->month - 1;
-	tmp_tm.tm_mday = tt->day;
-	tmp_tm.tm_hour = tt->hour;
-	tmp_tm.tm_min = tt->minute;
-	tmp_tm.tm_sec = tt->second;
+	/* If we are writing the DTEND (i.e. DTSTART is set), and
+	   DTEND > DTSTART, subtract 1 day. The DTEND date is not inclusive. */
+	if (tt_copy.is_date && dtstart
+	    && icaltime_compare_date_only (tt_copy, *dtstart) > 0) {
+		icaltime_adjust (&tt_copy, -1, 0, 0, 0);
+	}
+
+	tmp_tm.tm_year = tt_copy.year - 1900;
+	tmp_tm.tm_mon = tt_copy.month - 1;
+	tmp_tm.tm_mday = tt_copy.day;
+	tmp_tm.tm_hour = tt_copy.hour;
+	tmp_tm.tm_min = tt_copy.minute;
+	tmp_tm.tm_sec = tt_copy.second;
 	tmp_tm.tm_isdst = -1;
 
-	tmp_tm.tm_wday = time_day_of_week (tt->day, tt->month - 1, tt->year);
+	tmp_tm.tm_wday = time_day_of_week (tt_copy.day, tt_copy.month - 1,
+					   tt_copy.year);
 
 	len = strlen (buffer);
 	e_time_format_date_and_time (&tmp_tm,
 				     calendar_config_get_24_hour_format (), 
-				     FALSE, FALSE,
+				     !tt_copy.is_date, FALSE,
 				     &buffer[len], size - len);
 	if (etext != NULL)
 		strcat (buffer, etext);
@@ -160,24 +181,24 @@ comp_editor_date_label (CompEditorPageDates *dates, GtkWidget *label)
 
 	if (start_set)
 		write_label_piece (dates->start->value, buffer, 1024,
-				   NULL, NULL);
+				   NULL, NULL, NULL);
 
 	if (start_set && end_set)
 		write_label_piece (dates->end->value, buffer, 1024,
-				   _(" to "), NULL);
+				   _(" to "), NULL, dates->start->value);
 
 	if (complete_set) {
 		if (start_set)
-			write_label_piece (dates->complete, buffer, 1024, _(" (Completed "), ")");
+			write_label_piece (dates->complete, buffer, 1024, _(" (Completed "), ")", NULL);
 		else
-			write_label_piece (dates->complete, buffer, 1024, _("Completed "), NULL);
+			write_label_piece (dates->complete, buffer, 1024, _("Completed "), NULL, NULL);
 	}
 	
 	if (due_set && dates->complete == NULL) {
 		if (start_set)
-			write_label_piece (dates->due->value, buffer, 1024, _(" (Due "), ")");
+			write_label_piece (dates->due->value, buffer, 1024, _(" (Due "), ")", NULL);
 		else
-			write_label_piece (dates->due->value, buffer, 1024, _("Due "), NULL);
+			write_label_piece (dates->due->value, buffer, 1024, _("Due "), NULL, NULL);
 	}
 
 	gtk_label_set_text (GTK_LABEL (label), buffer);
@@ -348,8 +369,7 @@ comp_editor_show_contacts_dialog (GNOME_Evolution_Addressbook_SelectNames corba_
 
 
 /* A simple 'name <email>' parser. Input should be UTF8.
-   FIXME: Should probably use camel functions or something.
-   Also note that this is broken wrt UTF8 - can't use strchr etc. */
+   FIXME: Should probably use camel functions or something. */
 static void
 parse_contact_string (const char *value, char **name, char **email)
 {
@@ -361,8 +381,8 @@ parse_contact_string (const char *value, char **name, char **email)
 		return;
 	}
 
-	lbracket = strchr (value, '<');
-	rbracket = strchr (value, '>');
+	lbracket = g_utf8_strchr (value, '<');
+	rbracket = g_utf8_strchr (value, '>');
 
 	if (!lbracket || !rbracket || rbracket < lbracket) {
 		*name = g_strdup (value);
@@ -370,9 +390,9 @@ parse_contact_string (const char *value, char **name, char **email)
 		return;
 	}
 
-	name_end = lbracket - 1;
-	while (name_end > value && isspace (*name_end))
-		name_end--;
+	name_end = g_utf8_prev_char (lbracket);
+	while (name_end > value && g_unichar_isspace (g_utf8_get_char (name_end)))
+		name_end = g_utf8_prev_char (name_end);
 
 	tmp_name = g_malloc (name_end - value + 2);
 	strncpy (tmp_name, value, name_end - value + 1);
@@ -384,8 +404,10 @@ parse_contact_string (const char *value, char **name, char **email)
 	tmp_email[rbracket - lbracket - 1] = '\0';
 	*email = tmp_email;
 
+#if 0
 	g_print ("Parsed: %s\n  Name:'%s'\nEmail:'%s'\n",
 		 value, *name, *email);
+#endif
 }
 
 
@@ -420,7 +442,9 @@ comp_editor_contacts_to_widget (GtkWidget *contacts_entry,
 	g_ptr_array_add (dest_array, NULL);
 
 	contacts_string = e_destination_exportv ((EDestination**) dest_array->pdata);
+#if 0
 	g_print ("Destinations: %s\n", contacts_string ? contacts_string : "");
+#endif
 
 	bonobo_widget_set_property (BONOBO_WIDGET (contacts_entry),
 				    "destinations", contacts_string, NULL);
@@ -449,7 +473,9 @@ comp_editor_contacts_to_component (GtkWidget *contacts_entry,
 
 	bonobo_widget_get_property (BONOBO_WIDGET (contacts_entry),
 				    "destinations", &contacts_string, NULL);
+#if 0
 	g_print ("Contacts string: %s\n", contacts_string ? contacts_string : "");
+#endif
 
 	contact_destv = e_destination_importv (contacts_string);
 	if (contact_destv) {
@@ -461,16 +487,18 @@ comp_editor_contacts_to_component (GtkWidget *contacts_entry,
 			t->altrep = NULL;
 
 			/* If both name and email are given, use the standard
-			   'name <email>' form, otherwise use just the name
+			   '"name" <email>' form, otherwise use just the name
 			   or the email address.
 			   FIXME: I'm not sure this is correct syntax etc. */
 			if (name && name[0] && email && email[0])
-				t->value = g_strdup_printf ("%s <%s>",
+				t->value = g_strdup_printf ("\"%s\" <%s>",
 							    name, email);
 			else if (name && name[0])
-				t->value = g_strdup (name);
+				t->value = g_strdup_printf ("\"%s\"",
+							    name);
 			else
-				t->value = g_strdup (email);
+				t->value = g_strdup_printf ("<%s>",
+							    email);
 
 			contact_list = g_slist_prepend (contact_list, t);
 

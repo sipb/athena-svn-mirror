@@ -4,7 +4,7 @@
  CREATOR: Damon Chaplin 15 March 2001
 
 
- $Id: icaltimezone.c,v 1.1.1.1 2001-11-02 18:45:34 ghudson Exp $
+ $Id: icaltimezone.c,v 1.1.1.2 2001-11-08 23:20:20 ghudson Exp $
  $Locker:  $
 
  (C) COPYRIGHT 2001, Damon Chaplin
@@ -53,7 +53,7 @@
 
 /* This is the maximum year we will expand to. time_t values only go up to
    somewhere around 2037. */
-#define ICALTIMEZONE_MAX_YEAR		2035
+#define ICALTIMEZONE_MAX_YEAR		2037
 
 
 struct _icaltimezone {
@@ -87,7 +87,8 @@ struct _icaltimezone {
     /* If this is not NULL it points to the builtin icaltimezone that the
        above TZID refers to. This icaltimezone should be used instead when
        accessing the timezone changes data, so that the expanded timezone
-       changes data is shared between calendar components. */
+       changes data is shared between calendar components. (I don't think
+       we actually use this at present.) */
     icaltimezone	*builtin_timezone;
 
     /* This is the last year for which we have expanded the data to.
@@ -386,6 +387,11 @@ icaltimezone_get_tznames_from_vtimezone (icalcomponent *component)
         comp = icalcomponent_get_next_component (component,
 						 ICAL_ANY_COMPONENT);
     }
+
+    /* Outlook (2000) places "Standard Time" and "Daylight Time" in the TZNAME
+       strings, which is totally useless. So we return NULL in that case. */
+    if (standard_tzname && !strcmp (standard_tzname, "Standard Time"))
+	return NULL;
 
     /* If both standard and daylight TZNAMEs were found, if they are the same
        we return just one, else we format them like "EST/EDT". */
@@ -833,15 +839,17 @@ icaltimezone_get_utc_offset		(icaltimezone	*zone,
 	/* If we are stepping backwards through the changes and we have found
 	   a change that applies, then we know this is the change to use so
 	   we exit the loop. */
-	if (step == -1 && change_num_to_use != -1)
-	    break;
+	if (step == -1) {
+	    if (change_num_to_use != -1)
+		break;
+
+	    /* If we go past the start of the changes array, then return the
+	       TZOFFSETFROM of the first change.. */
+	    if (change_num == 0)
+		return zone_change->prev_utc_offset;
+	}
 
 	change_num += step;
-
-	/* If we go past the start of the changes array, then we have no data
-	   for this time so we return a UTC offset of 0. */
-	if (change_num < 0)
-	    return 0;
 
 	if (change_num >= zone->changes->num_elements)
 	    break;
@@ -867,24 +875,28 @@ icaltimezone_get_utc_offset		(icaltimezone	*zone,
 	    /* The time is in the overlapped region, so we may need to use
 	       either the current zone_change or the previous one. If the
 	       time has the is_daylight field set we use the matching change,
-	       else we use the change with standard time. */
+	       else we use the change with standard time. Note that iCalendar
+	       doesn't let us distinguish between the different possible
+	       choices here, so it isn't very reliable. Currently the main
+	       use of the is_daylight flag is for testing. */
 	    prev_zone_change = icalarray_element_at (zone->changes,
 						     change_num_to_use - 1);
 
-	    /* I was going to add an is_daylight flag to struct icaltimetype,
-	       but iCalendar doesn't let us distinguish between standard and
-	       daylight time anyway, so there's no point. So we just use the
-	       standard time instead. */
-	    want_daylight = (tt->is_daylight == 1) ? 1 : 0;
-
+	    /* If both possible changes have the same is_daylight setting,
+	       then we choose the last one for now. It looks like the standard
+	       Unix functions choose the each one half the time, so we may
+	       want to try to figure out the rule for doing that. */
+	    if (zone_change->is_daylight == prev_zone_change->is_daylight) {
 #if 0
-	    if (zone_change->is_daylight == prev_zone_change->is_daylight)
-		printf (" **** Same is_daylight setting\n");
+		printf (" **** Same is_daylight setting (%i). Choosing last change.\n", zone_change->is_daylight);
 #endif
+	    } else {
+		want_daylight = (tt->is_daylight == 1) ? 1 : 0;
 
-	    if (zone_change->is_daylight != want_daylight
-		&& prev_zone_change->is_daylight == want_daylight)
-		zone_change = prev_zone_change;
+		if (zone_change->is_daylight != want_daylight
+		    && prev_zone_change->is_daylight == want_daylight)
+		    zone_change = prev_zone_change;
+	    }
 	}
     }
 
@@ -965,15 +977,17 @@ icaltimezone_get_utc_offset_of_utc_time	(icaltimezone	*zone,
 	/* If we are stepping backwards through the changes and we have found
 	   a change that applies, then we know this is the change to use so
 	   we exit the loop. */
-	if (step == -1 && change_num_to_use != -1)
-	    break;
+	if (step == -1) {
+	    if (change_num_to_use != -1)
+		break;
+
+	    /* If we go past the start of the changes array, then return the
+	       TZOFFSETFROM of the first change.. */
+	    if (change_num == 0)
+		return zone_change->prev_utc_offset;
+	}
 
 	change_num += step;
-
-	/* If we go past the start of the changes array, then we have no data
-	   for this time so we return a UTC offset of 0. */
-	if (change_num < 0)
-	    return 0;
 
 	if (change_num >= zone->changes->num_elements)
 	    break;
@@ -1192,6 +1206,25 @@ icaltimezone_set_component		(icaltimezone	*zone,
 {
     icaltimezone_reset (zone);
     return icaltimezone_get_vtimezone_properties (zone, comp);
+}
+
+
+/* Returns the timezone name to display to the user. We prefer to use the
+   Olson city name, but fall back on the TZNAME, or finally the TZID. We don't
+   want to use "" as it may be wrongly interpreted as a floating time.
+   Do not free the returned string. */
+char*
+icaltimezone_get_display_name		(icaltimezone	*zone)
+{
+	char *display_name;
+
+	display_name = icaltimezone_get_location (zone);
+	if (!display_name)
+		display_name = icaltimezone_get_tznames (zone);
+	if (!display_name)
+		display_name = icaltimezone_get_tzid (zone);
+
+	return display_name;
 }
 
 

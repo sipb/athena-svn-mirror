@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Scheduling With the Evolution Calendar</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="The Task Pad"
 HREF="usage-calendar-todo.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="usage-calendar.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 6. Managing your Schedule</TD
+>Managing your Schedule</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="usage-calendar-todo.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -71,7 +76,7 @@ NAME="USAGE-CALENDAR-APTS"
 ><P
 >      Of course, you'll want to use the calendar to do more than find
       out what day it is. This section will tell you how to schedule
-      events, set alarms, and determine event recurrence.
+      appointments, set alarms, and determine appointment recurrence.
     </P
 ><DIV
 CLASS="SECT2"
@@ -79,94 +84,152 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USAGE-CALENDAR-APTS-BASIC"
->Creating events</A
+>Creating appointments</A
 ></H2
 ><P
 >	To create a new appointment, select
-        <SPAN
+        <B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUISUBMENU"
->New</SPAN
->-&gt;<SPAN
+>New</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Appointment</SPAN
+>Appointment</B
 >
-	or click the <SPAN
+	or click the <B
 CLASS="GUIBUTTON"
->New</SPAN
+>New</B
 > button on the left end
 	of the toolbar. The <SPAN
 CLASS="INTERFACE"
 >New Appointment</SPAN
 >
-	dialog will pop up with the usual menu bar, tool bar, and
+	dialog will pop up with the menu bar, tool bar, and
 	window full of choices for you.
       </P
 ><DIV
-CLASS="TIP"
-><BLOCKQUOTE
 CLASS="TIP"
 ><A
 NAME="NEW-APPOINTMENT-SHORTCUT"
 ></A
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Shortcut: </B
+>Shortcut</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >           If you don't need to enter more information than the date
            and time of the appointment, you just click in any blank
            space in the calendar and start typing. You can enter other
            information later with the appointment editor.
         </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><P
->        Your event must have a starting and ending date &#8212; by
+>        Your appointment must have a starting and ending date &#8212; by
         default, today &#8212; but you can choose whether to give it
-        starting and ending times or to mark it as an <SPAN
+        starting and ending times or to mark it as an <TT
 CLASS="GUILABEL"
+><B
 >All
-        day event</SPAN
->. An <SPAN
+        day event</B
+></TT
+>. An <TT
 CLASS="GUILABEL"
->All day event</SPAN
+><B
+>All day event</B
+></TT
 >
-        appears at the top of a day's event list rather than inside
-        it.  That makes it easy to have events that overlap and fit
+        appears at the top of a day's appointment list, in the grey header under the date, rather than inside
+        it.  That makes it easy to have appointments that overlap and fit
         inside each other.  For example, a conference might be an all
-        day event, and the meetings at the conference would be timed
-        events.  Of course, events with specific starting and ending
+        day appointment, and the meetings at the conference would be timed
+        appointments.  Of course, appointments with specific starting and ending
         times can also overlap.  When they do they're displayed as
         multiple columns in the day view of the calendar.
       </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Doing Two Things At Once: </B
->           If you create calendar events that overlap,
-           <SPAN
+>Multiple Simultanious Appointments</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>           If you create calendar appointments that overlap,
+           <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will display them side
            by side in your calendar.  However,
-           <SPAN
+           <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > cannot help you do
            multiple things at once.
          </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><P
 >         You can have as many as four different
-         <SPAN
+         <TT
 CLASS="GUILABEL"
->Alarms</SPAN
->, any time prior to the event
+><B
+>Alarms</B
+></TT
+>, any time prior to the appointment
          you've scheduled.  You can have one alarm of each of the following types:
           <P
 ></P
@@ -174,20 +237,24 @@ CLASS="GUILABEL"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Display</SPAN
+><B
+>Display</B
+></TT
 ></DT
 ><DD
 ><P
 >	        A window will pop up on your screen to remind you of
-	        your event.
+	        your appointment.
               </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Audio</SPAN
+><B
+>Audio</B
+></TT
 ></DT
 ><DD
 ><P
@@ -196,31 +263,35 @@ CLASS="GUILABEL"
               </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Program</SPAN
+><B
+>Program</B
+></TT
 ></DT
 ><DD
 ><P
 >	        Select this if you would like to run a program as a
 	        reminder.  You can enter its name in the text field,
-	        or find it with the <SPAN
+	        or find it with the <B
 CLASS="GUIBUTTON"
->Browse</SPAN
+>Browse</B
 >
 	        button.
               </P
 ></DD
 ><DT
-><SPAN
+><TT
 CLASS="GUILABEL"
->Mail</SPAN
+><B
+>Mail</B
+></TT
 ></DT
 ><DD
 ><P
->	         <SPAN
+>	         <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will send an
 	         email reminder to the address you enter into the text
 	         field.
@@ -232,102 +303,146 @@ CLASS="APPLICATION"
 	    
       </P
 ><P
->         <SPAN
+>         <TT
 CLASS="GUILABEL"
->Classification</SPAN
+><B
+>Classification</B
+></TT
 > 
-          and only applies to calendars on a
-         network. <SPAN
+         only applies to calendars on a
+         network. <TT
 CLASS="GUILABEL"
->Public</SPAN
+><B
+>Public</B
+></TT
 > is the default category,
-         and a public event can be viewed by anyone on the calendar
-         sharing network.  <SPAN
+         and a public appointment can be viewed by anyone on the calendar
+         sharing network.  <TT
 CLASS="GUILABEL"
->Private</SPAN
+><B
+>Private</B
+></TT
 > denotes one
-         level of security, and <SPAN
+         level of security, and <TT
 CLASS="GUILABEL"
->Confidential</SPAN
-> a
-         higher level.   Exact determinations and
-         implementations of this feature have yet to be
-         determined. 
+><B
+>Confidential</B
+></TT
+> an even 
+         higher level.
       </P
 ><P
->        <SPAN
+>        <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > lets you categorize your
 	appointments, which can help if you lead a busy life.  The bottom
-	section of the <SPAN
+	section of the <TT
 CLASS="GUILABEL"
->Appointment</SPAN
+><B
+>Appointment</B
+></TT
 > tab is where your
 	categorization is done.
       </P
 ><DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Adding a New Category: </B
+>Adding a New Appointment Category</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	 You can add a new category to your category list by clicking on
-         <SPAN
+         <B
 CLASS="GUIBUTTON"
->Edit Master Category List...</SPAN
+>Edit Master Category List</B
 > and single-clicking
-	 on <SPAN
+	 on <TT
 CLASS="GUILABEL"
-> Click here to add a category</SPAN
+><B
+> Click here to add a category</B
+></TT
 >.
 	</P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><P
 >	 The purpose of categories is to let you view all appointments which have
-	 similar activities.  To do this, change <SPAN
+	 similar activities.  To do this, change <TT
 CLASS="GUILABEL"
->Any field contains</SPAN
+><B
+>Any field contains</B
+></TT
 >
-	 to <SPAN
+	 to <TT
 CLASS="GUILABEL"
->Has category</SPAN
+><B
+>Has category</B
+></TT
 > and enter your category at right.
       </P
 ><P
->	Clicking on the <SPAN
+>	Clicking on the <B
 CLASS="GUIBUTTON"
->Categories</SPAN
+>Categories</B
 > button opens up the category
-	list.  To associate a category to an event, simply click the check box. 
+	list.  To associate a category to an appointment, simply click the check box. 
       </P
 ><P
->	Once you've selected your categories, click <SPAN
+>	Once you've selected your categories, click <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 > to
-	assign these categories to the event.  The categories you selected are now
-	listed in the text box to the right of the <SPAN
+	assign these categories to the appointment.  The categories you selected are now
+	listed in the text box to the right of the <B
 CLASS="GUIBUTTON"
->Categories...</SPAN
+>Categories...</B
 >
 	button.
       </P
 ><P
->        The <SPAN
+>        The <TT
 CLASS="GUILABEL"
->Recurrence</SPAN
+><B
+>Recurrence</B
+></TT
 > tab lets you describe
-        repetition in events ranging from once every day up to once
+        repetition in appointments ranging from once every day up to once
         every 100 years.  You can then choose a time and date when the
-        event will stop recurring, and, under
-        <SPAN
+        appointment will stop recurring, and, under
+        <TT
 CLASS="GUILABEL"
->Exceptions</SPAN
+><B
+>Exceptions</B
+></TT
 >, pick individual days when the
-        event will <I
+        appointment will <I
 CLASS="EMPHASIS"
 >not</I
 > recur. Make your
@@ -337,13 +452,13 @@ CLASS="EMPHASIS"
       </P
 ><P
 >	Once you're done with all those settings, click on the disk
-	icon in the toolbar.  That will save the event and close the
-	event editor window. If you want, you can alter an event
+	icon in the toolbar to save and close the appointment editor window. 
+	If you want, you can alter an appointment
 	summary in the calendar view by clicking on it and typing. You
-	can change other settings by right-clicking on the event then
-	choosing <SPAN
+	can change other settings by right-clicking on the appointment then
+	choosing <B
 CLASS="GUIMENUITEM"
->Edit this Appointment</SPAN
+>Edit this Appointment</B
 >.
       </P
 ></DIV
@@ -353,13 +468,13 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USAGE-CALENDAR-RSVP"
->RSVPs with the Calendar</A
+>Sending an RSVP with the Calendar</A
 ></H2
 ><P
->	<SPAN
+>	<TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> can be used to setup group events
+>Evolution</TT
+> can be used to setup group appointments
 	and help you manage RSVPs.
       </P
 ><P
@@ -367,6 +482,138 @@ CLASS="APPLICATION"
 	positions, such as chair.  They are sent an email which lets them
 	easily reply to you with their response.  If they aren't sure if they
 	can attend, they can always reply to the mail later.
+      </P
+><P
+>	To select receipients to be invited to an event:
+	<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>	      Click
+	      <B
+CLASS="GUIMENU"
+>Actions</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Schedule Meeting</B
+>.  The <TT
+CLASS="GUILABEL"
+><B
+>Scheduling</B
+></TT
+> and <TT
+CLASS="GUILABEL"
+><B
+>Meeting</B
+></TT
+> tab open.
+	    </P
+></LI
+><LI
+><P
+>	      If you have multiple identities setup, select the identity to use in the <TT
+CLASS="GUILABEL"
+><B
+>Sent By</B
+></TT
+> field.
+	    </P
+></LI
+><LI
+><P
+>	      Click in the white box.
+	    </P
+></LI
+><LI
+><P
+>	      Click <B
+CLASS="GUIBUTTON"
+>Invite Others</B
+>.
+	    </P
+></LI
+><LI
+><P
+>	    Select a person in the <TT
+CLASS="GUILABEL"
+><B
+>Contacts</B
+></TT
+> field and click one of the four choices to move them to be an RSVP reciever.
+	    </P
+></LI
+><LI
+><P
+>	      Click <B
+CLASS="GUIBUTTON"
+>OK</B
+>.
+	    </P
+></LI
+><LI
+><P
+>	      Save the Appointment.
+	    </P
+></LI
+></OL
+>
+	An email is now sent out to all the recipients, inviting them to your event.
+      </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="REPLYING-TO-RSVP"
+>Replying to an RSVP</A
+></H2
+><P
+>	If you recieve an RSVP, the RSVP will be attached as an ical file.  Click on the attachment and view it inline.   All the details are shown about the event including time and dates.  Then you can choose how to reply to the RSVP.  Your choices are:
+	<P
+></P
+><UL
+><LI
+><P
+>	      Accept
+	    </P
+></LI
+><LI
+><P
+>	      Tentativly Accept
+	    </P
+></LI
+><LI
+><P
+>	      Decline
+	    </P
+></LI
+></UL
+>
+	Click <B
+CLASS="GUIBUTTON"
+>OK</B
+> and an email will be sent to the organizer with your answer.  The event will also be added to your calendar if you accept.
+      </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RECIEVING-RSVP-RESPONSE"
+>Recieving an RSVP Response</A
+></H2
+><P
+>	Once you recieve an RSVP, you'll need to view it inline in the email.  Click the attachment and select <B
+CLASS="GUIBUTTON"
+>View Inline</B
+>.  At the bottom, you can choose an action.  Click <B
+CLASS="GUIBUTTON"
+>OK</B
+> to update your attendee list.
       </P
 ></DIV
 ></DIV
@@ -386,7 +633,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="usage-calendar.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -402,7 +649,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="usage-calendar-todo.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Subscription Management</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -13,13 +13,18 @@ REL="UP"
 TITLE="Using Evolution for Email"
 HREF="usage-mail.html"><LINK
 REL="PREVIOUS"
-TITLE="Writing and Sending Mail"
-HREF="usage-mail-getnsend-send.html"><LINK
+TITLE="RSVPs in Mail"
+HREF="rsvp-stuff.html"><LINK
 REL="NEXT"
 TITLE="Encryption"
 HREF="encryption.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -39,21 +44,21 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="usage-mail-getnsend-send.html"
->Prev</A
+HREF="rsvp-stuff.html"
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. Using Evolution for Email</TD
+>Using Evolution for Email</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="encryption.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -69,38 +74,72 @@ NAME="USAGE-MAIL-SUBSCRIPTIONS"
 >Subscription Management</A
 ></H1
 ><P
->         <SPAN
+>      Since IMAP folders exist on the server, and opening them or
+      checking them takes time, you need fine-grained control over
+      the way that you use IMAP folders.  That's why
+      <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> lets you handle your
-         IMAP and newsgroup subscriptions with the same tool: the
-         subscriptions manager.
-
+>Evolution</TT
+> has an IMAP
+      subscriptions manager.
+    </P
+><P
+>      To use it:
       <P
 ></P
 ><OL
 TYPE="1"
 ><LI
 ><P
->	    In the <SPAN
+>	   Select
+	   <B
+CLASS="GUIMENU"
+>Tools</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Subscribe
+	   to Folders</B
+>.
+	  </P
+></LI
+><LI
+><P
+>	    If you have accounts on multiple IMAP servers, select the
+	    server where you'd like to manage your
+	    subscriptions. <TT
+CLASS="APPLICATION"
+>Evolution</TT
+> will
+	    display a list of available files and folders.
+	  </P
+></LI
+><LI
+><P
+>            Select a file or folder by clicking on it.  You will want
+            to select at least the <TT
 CLASS="GUILABEL"
->Store</SPAN
-> section, click on the
-	    folder to which you wish to subscribe.
+><B
+>INBOX</B
+></TT
+>
+            folder. Depending upon the way your IMAP server is
+            configured, the list of available files may include
+            non-mail folders. If it does, you can ignore them.
 	  </P
 ></LI
 ><LI
 ><P
->	    Click <SPAN
+>	    Click the <B
 CLASS="GUIBUTTON"
->Subscribe</SPAN
-> to add it to the
-	    subscribed list.
+>Subscribe</B
+> to add it to
+	    the subscribed list.
 	  </P
 ></LI
 ><LI
 ><P
->	    Close the window.
+>	    When you have subscribed to the folders you want, close
+	    the window.
 	  </P
 ></LI
 ></OL
@@ -122,8 +161,8 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="usage-mail-getnsend-send.html"
->Prev</A
+HREF="rsvp-stuff.html"
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -139,7 +178,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="encryption.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR
@@ -147,7 +186,7 @@ HREF="encryption.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Writing and Sending Mail</TD
+>RSVPs in Mail</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

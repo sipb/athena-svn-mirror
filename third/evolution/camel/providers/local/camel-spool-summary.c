@@ -4,20 +4,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or 
- *  modify it under the terms of the GNU General Public License as 
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- *  USA
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -376,12 +375,12 @@ summary_rebuild(CamelSpoolSummary *cls, off_t offset, CamelException *ex)
 	/* FIXME: If there is a failure, it shouldn't clear the summary and restart,
 	   it should try and merge the summary info's.  This is a bit tricky. */
 
-	camel_operation_start(NULL, _("Summarising folder"));
+	camel_operation_start(NULL, _("Storing folder"));
 
 	fd = open(cls->folder_path, O_RDONLY);
 	if (fd == -1) {
 		d(printf("%s failed to open: %s\n", cls->folder_path, strerror(errno)));
-		camel_exception_setv(ex, 1, _("Could not open folder: %s: summarising from position %ld: %s"),
+		camel_exception_setv(ex, 1, _("Could not open folder: %s: %s"),
 				     cls->folder_path, offset, strerror(errno));
 		camel_operation_end(NULL);
 		return -1;
@@ -495,7 +494,7 @@ spool_summary_check(CamelSpoolSummary *cls, CamelFolderChangeInfo *changeinfo, C
 	/* check if the summary is up-to-date */
 	if (stat(cls->folder_path, &st) == -1) {
 		camel_folder_summary_clear(s);
-		camel_exception_setv(ex, 1, _("Cannot summarise folder: %s: %s"), cls->folder_path, strerror(errno));
+		camel_exception_setv(ex, 1, _("Cannot check folder: %s: %s"), cls->folder_path, strerror(errno));
 		return -1;
 	}
 

@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Managing your Schedule</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -13,13 +13,18 @@ REL="UP"
 TITLE="Kom i gang med Evolution 1.0"
 HREF="usage.html"><LINK
 REL="PREVIOUS"
-TITLE="Address Book Tools"
-HREF="usage-contact-automate.html"><LINK
+TITLE="Sending Mail to Categories of Contacts"
+HREF="contact-automation-lists.html"><LINK
 REL="NEXT"
 TITLE="Scheduling With the Evolution Calendar"
 HREF="usage-calendar-apts.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -39,8 +44,8 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="usage-contact-automate.html"
->Prev</A
+HREF="contact-automation-lists.html"
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -53,7 +58,7 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="usage-calendar-apts.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -65,132 +70,13 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="USAGE-CALENDAR"
->Chapter 6. Managing your Schedule</A
+>Managing your Schedule</A
 ></H1
-><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
-><A
-HREF="usage-calendar.html#USAGE-CALENDAR-VIEW"
->Ways of Looking at your Calendar</A
-></DT
-><DT
-><A
-HREF="usage-calendar-apts.html"
->Scheduling With the Evolution Calendar</A
-></DT
-><DT
-><A
-HREF="usage-calendar-todo.html"
->The Task Pad</A
-></DT
-><DT
-><A
-HREF="usage-calendar-multiple.html"
->Multiple Calendars</A
-></DT
-></DL
-></DIV
 ><P
->    To begin using the calendar, select
-    <SPAN
-CLASS="GUIBUTTON"
->Calendar</SPAN
-> from the <SPAN
-CLASS="INTERFACE"
->shortcut
-    bar</SPAN
->.  By default, the calendar starts showing today's
-    schedule on a ruled background.  At the upper right, there's a
-    monthly calendar you can use to switch days.  Below that, there's
-    a <SPAN
-CLASS="GUILABEL"
->TaskPad</SPAN
->, where you can keep a list of tasks
-    separate from your calendar appointments.  The calendar's daily
-    view is shown in <A
-HREF="usage-calendar.html#USAGE-CALENDAR-FIG"
->Figure 6-1</A
->.
-
-   
-    <DIV
-CLASS="FIGURE"
-><A
-NAME="USAGE-CALENDAR-FIG"
-></A
-><P
-><B
->Figure 6-1. Evolution Calendar View</B
-></P
-><P
-><IMG
-SRC="figures/calendar.png"></P
-></DIV
->
-   
-
-  </P
-><P
->    <IMG
-SRC="figures/full-1.png">
-    <SPAN
-CLASS="GUILABEL"
->Event List</SPAN
->
-  </P
-><P
->    The <SPAN
-CLASS="GUILABEL"
->Event List</SPAN
-> is responsible for showing you all of
-    your scheduled events, whether they are all day events or simply one time
-    events that last a half an hour.
-  </P
-><P
->    <IMG
-SRC="figures/full-2.png">
-    <SPAN
-CLASS="GUILABEL"
->Todo List</SPAN
->
-  </P
-><P
->    The <SPAN
-CLASS="GUILABEL"
->Todo List</SPAN
-> compliments the <SPAN
-CLASS="GUILABEL"
->Event List
-    </SPAN
-> as it keeps track of your chores or tasks which don't have
-    any time associated with them.  These may include "Clean Room" or "Call
-    Repairman".
-  </P
-><P
->    <IMG
-SRC="figures/full-3.png">
-    <SPAN
-CLASS="GUILABEL"
->Calendar Window</SPAN
->
-  </P
-><P
->    The <SPAN
-CLASS="GUILABEL"
->Calendar Window</SPAN
-> has a graphical representation of
-    the calendar, so you can select what days to view in the <SPAN
-CLASS="GUILABEL"
->Event
-    List</SPAN
->.
-  </P
+>      This chapter will show you how to use the Ximian Evolution
+      Calendar to manage your schedule alone or in conjunction with
+      others.
+     </P
 ><DIV
 CLASS="SECT1"
 ><H1
@@ -201,35 +87,61 @@ NAME="USAGE-CALENDAR-VIEW"
 ></H1
 ><P
 >       The toolbar offers you four different views of your calendar:
-       one day, five days, a week, or a month at once. Press the
-       calendar-shaped buttons on the right side of the toolbar to
-       switch between views. You can also select a range of
-       days&#8212; three days, ten days, a fortnight if you want
-       &#8212; in the small calendar at the upper right.
+       <P
+></P
+><UL
+><LI
+><P
+>	    Day
+	  </P
+></LI
+><LI
+><P
+>	    Work Week
+	  </P
+></LI
+><LI
+><P
+>	    Week
+	  </P
+></LI
+><LI
+><P
+>	    Month
+	  </P
+></LI
+></UL
+>
+
+      Press the calendar-shaped buttons on the right side of the toolbar to
+      switch between views. 
+      You can also select a range of
+      days&#8212; three days, ten days, or a fortnight if you want
+      &#8212; in the small calendar at the upper right.
     </P
 ><P
->       The <SPAN
+>       The <B
 CLASS="GUIBUTTON"
->Prev</SPAN
-> and <SPAN
+>Prev</B
+> and <B
 CLASS="GUIBUTTON"
->Next</SPAN
+>Next</B
 >
        buttons will move you forward and back in your calendar pages.
        If you're looking at only one day, you'll see tomorrow's page,
        or yesterday's.  If you're looking at your calendar by week,
        month, fortnight, or anything else, you'll move around by just
        that much. To come back to today's listing, click
-       <SPAN
+       <B
 CLASS="GUIBUTTON"
->Today</SPAN
+>Today</B
 >.
     </P
 ><P
 >       To visit a specific date's calendar entries, click
-       <SPAN
+       <B
 CLASS="GUIBUTTON"
->Go To</SPAN
+>Go To</B
 > and select the date in the dialog
        box that appears.
     </P
@@ -250,8 +162,8 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="usage-contact-automate.html"
->Prev</A
+HREF="contact-automation-lists.html"
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -267,7 +179,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="usage-calendar-apts.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR
@@ -275,7 +187,7 @@ HREF="usage-calendar-apts.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Address Book Tools</TD
+>Sending Mail to Categories of Contacts</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

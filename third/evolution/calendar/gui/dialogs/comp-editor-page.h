@@ -4,10 +4,9 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -50,6 +49,12 @@ typedef struct {
 
 	/* Some of the pages need the CalClient to access timezone data. */
 	CalClient *client;
+
+	/* The GtkAccelGroup for the page. We install this when the page is
+	   mapped, and uninstall when it is unmapped. libglade would do this
+	   normally, but we create our pages individually so have to do it
+	   ourselves. */
+	GtkAccelGroup *accel_group;
 } CompEditorPage;
 
 typedef struct {
@@ -68,8 +73,8 @@ typedef struct {
 	GtkWidget *(* get_widget) (CompEditorPage *page);
 	void (* focus_main_widget) (CompEditorPage *page);
 
-	void (* fill_widgets) (CompEditorPage *page, CalComponent *comp);
-	void (* fill_component) (CompEditorPage *page, CalComponent *comp);
+	void     (* fill_widgets) (CompEditorPage *page, CalComponent *comp);
+	gboolean (* fill_component) (CompEditorPage *page, CalComponent *comp);
 
 	void (* set_summary) (CompEditorPage *page, const char *summary);
 	void (* set_dates) (CompEditorPage *page, CompEditorPageDates *dates);
@@ -81,7 +86,7 @@ GtkWidget *comp_editor_page_get_widget             (CompEditorPage      *page);
 void       comp_editor_page_focus_main_widget      (CompEditorPage      *page);
 void       comp_editor_page_fill_widgets           (CompEditorPage      *page,
 						    CalComponent        *comp);
-void       comp_editor_page_fill_component         (CompEditorPage      *page,
+gboolean   comp_editor_page_fill_component         (CompEditorPage      *page,
 						    CalComponent        *comp);
 void       comp_editor_page_set_cal_client         (CompEditorPage      *page,
 						    CalClient           *client);

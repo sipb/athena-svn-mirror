@@ -1,3 +1,966 @@
+2001-11-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-data-wrapper.c (camel_data_wrapper_init): Initialize our
+	private mutex.
+	(camel_data_wrapper_finalize): Destroy our private mutex.
+	(write_to_stream): Lock around camel_stream_write_to_stream() so
+	that we don't get 2 threads trying to read from our stream at the
+	same time.
+
+2001-11-01    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (folder_changed_change): Move all searching
+	operations outside of any locks except subfolder lock, same as
+	build_folder.  Fix for #14294.
+
+2001-10-31    <NotZed@Ximian.com>
+
+	* providers/local/camel-spool-folder.c (spool_get_message): Same
+	as below.
+
+	* providers/local/camel-maildir-folder.c (maildir_get_message):
+	Same as below.
+
+	* providers/local/camel-mbox-folder.c (mbox_get_message): Set
+	USER_CANCEL if failed due to EINTR.
+
+	* camel-filter-driver.c (camel_filter_driver_filter_mbox): If
+	construct from parser fails due to user cancel, set USER_CANCEL on
+	exception.
+
+	* camel-mime-part.c (construct_from_parser): Return error if the
+	parser had an io error.
+
+	* camel-mime-message.c (construct_from_parser): Check error on
+	parser/return error.
+
+	* camel-mime-parser.c (folder_scan_init): Init error number.
+	(camel_mime_parser_errno): New function, return errno of any io
+	failures.
+	(folder_read): Set errno if a failure occured.
+	(folder_seek): Same.
+	(folder_scan_init_with_fd): Setup errno depeding on ok/failure.
+	(folder_scan_init_with_stream): Same.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* camel-operation.c (camel_operation_new): Dont setup cancel_fd.
+	(camel_operation_cancel_fd): If cancel_fd not created, set it up.
+	(camel_operation_cancel): Set cancel flag before sending message.
+	(cancel_thread): Same.
+
+	* camel-filter-driver.c (camel_filter_driver_filter_mbox): Make
+	sure we unref the mimeparse when we're done (successfully).  This
+	was leaking an fd every get-mail! :(
+
+	* camel-lock-client.c (camel_lock_helper_init): Close all fd's
+	above 2.
+
+	* providers/local/camel-mbox-folder.c (mbox_get_message): Remove
+	the X-Evolution header before anyone else gets to see this private
+	thing.  Shoudl fix 11676 since we were inheriting flags from
+	X-Evolution headers we didn't want to.
+
+	* camel-folder-search.c (match_message): If we can't retrieve the
+	message, ignore it, it can't match.
+
+	* providers/imap/camel-imap-search.c
+	(camel_imap_search_class_init): Setup parent class pointer.
+	(imap_body_contains): If offline, just use the parent
+	body_contains method which will get the messages and search them
+	manually.
+
+	* providers/imap/camel-imap-folder.c (imap_search_by_expression,
+	imap_search_by_uids): Remove offline check.
+
+2001-10-30  Dan Winship  <danw@ximian.com>
+
+	* camel-mime-part.c (free_headers): Fix this to match get_headers.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* providers/local/camel-local-store.c (rename_folder): Dont try to
+	move ibex if we have none.
+
+	* camel-tcp-stream-openssl.c (stream_write): Fixed compilation
+	errors.
+
+2001-10-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.c (camel_mime_utils_init): Removed unused
+	variable.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* camel-mime-utils.c (header_decode_mailbox): w(x) out some warnings.
+
+	* providers/local/camel-local-summary.c
+	(camel_local_summary_load): Remove the warning about not loading
+	summary file - its a valid case for new folders.
+
+2001-10-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-openssl.c (my_SSL_write): Removed.
+	(stream_write): Keep looping (non-blocking case) if errno is
+	EAGAIN, EINTR or EWOULDBLOCK. For NONBLOCKing I/O, sync up with
+	CamelTcpStreamRaw. As with CamelTcpStreamRaw/SSL - make sure to
+	write out everything before returning.
+	(my_SSL_read): Removed.
+	(stream_read): Just call ssl_error_to_errno() and check the errno
+	values that we care about so we can keep the general look of all
+	this stream code the same. Also when checking the return value of
+	SSL_read, check for <0 instead of ==-1 since the man page for
+	SSL_read doesn't say it will return -1 on fail, it just says <0.
+	(stream_flush): Don't fsync() since syncing on a socket is a Bad
+	Thing (tm).
+
+	* camel-tcp-stream-ssl.c (stream_write): Make sure we write out
+	everything just like in camel-tcp-stream-raw.c.
+
+	* camel-stream-buffer.c (camel_stream_buffer_gets): If
+	camel_stream_read() returns -1, don't necessarily return -1 to our
+	caller since it's possible that we did actually "read" some data
+	(ie, we copied some pre-buffered data into the out buffer).
+
+	* camel-stream-buffer.h: Removed CAMEL_STREAM_BUFFER_NEWLINE since
+	it never got used anywhere and it isn't supported anyway.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-store.c
+	(parse_list_response_as_folder_info): If we get an empty name,
+	then mark that as NoSelect.  Workaround fix for #13239.
+
+2001-10-29  Dan Winship  <danw@ximian.com>
+
+	* providers/imap/camel-imap-folder.c (get_message_simple, 
+	imap_get_message): Set an X-Evolution-Source header on the
+	returned message so replies come from the right identity.
+
+2001-10-29    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (folder_changed_change): If we're not going
+	to search on a changed uid, make sure we change out copy still.
+	Fixes #13916.
+
+2001-10-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-store.c (subscribe_folder): Don't emit
+	a folder_subscribed signal if we are in the process of renaming
+	folders.
+	(unsubscribe_folder): Same here but for the unsubscribe signal.
+	(rename_folder): Unsubscribe from the folder being renamed and any
+	subfolders it may have before actually renaming. Once the folder
+	has been renamed, re-subscribe to it and it's subfolders with the
+	new name.
+
+	* camel-store.c (camel_folder_info_build): Sort the folder info's
+	before constructing the tree.
+
+	* camel-mime-utils.c (header_decode_param): Minor fix - should
+	have been using a strNcmp when checking if it was an rfc2047
+	encoded word.
+
+	* camel-pgp-context.c (pgp_sign): Notify the user that PGP 2.6.x
+	is no longer supported and use camel_exception_set() instead of
+	setv() where appropriate.
+	(pgp_clearsign): Same.
+	(pgp_verify): And again here.
+	(pgp_encrypt): Here too.
+	(pgp_decrypt): And finally here.
+
+2001-10-29  Dan Winship  <danw@ximian.com>
+
+	* providers/imap/camel-imap-store.c (unsubscribe_folder): Don't
+	free the hash table key if the folder wasn't found in the hash
+	table. I'm not sure where the bug is/was that made it possible to
+	add a folder to the tree after creating it failed, but now if that
+	happens, it won't crash if you try to delete it again. (#11492)
+
+	* camel-disco-store.c (camel_disco_store_status): if the service
+	is being connected and thinks it's online, but the session is
+	offline, then mark the service offline as well. Fixes 13683.
+
+2001-10-29    <NotZed@Ximian.com>
+
+	* camel-mime-utils.c: Turn off w() -> warnings.
+
+	* providers/imap/camel-imap-store.c (rename_folder): Also rename
+	the message cache.
+	(rename_folder): Fix subscribed folders table with rename(s).
+
+	* providers/imap/camel-imap-folder.c (imap_rename): Implement,
+	rename the cache dir pointer.
+
+	* providers/imap/camel-imap-message-cache.c
+	(camel_imap_message_cache_set_path): New method to set the path
+	used by a message cache.
+
+	* camel-vee-store.c (build_info): Fix the 'is this a matching
+	subfolder or subfolder' logic to match camel-store
+	get_subfolders'.
+
+	* camel-store.c (get_subfolders): Fix the 'is this a matching
+	folder or subfolder' logic.
+
+2001-10-28    <NotZed@Ximian.com>
+
+	* providers/local/camel-local-store.c (rename_folder): Changed to
+	call ibex_move to rename it internally.
+
+	* camel-store.c (camel_store_rename_folder): Use the right
+	variable, not info.
+
+2001-10-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-stream-buffer.c (camel_stream_buffer_read_line): Make sure
+	we've actually read data before checking if p[-] is '\r' or not.
+
+	* camel-tcp-stream-raw.c (stream_write): Same.
+
+	* camel-stream-fs.c (stream_write): If errno isn't EAGAIN, just
+	exit with -1 and instead of using continue (which doesn't go to
+	the top of the do-while thus making our logic suck), just set w to
+	0. Still seems to be a bug in select() if it's telling us the
+	socket is ready for data when it really isn't but oh well.
+
+2001-10-28    <NotZed@Ximian.com>
+
+	* providers/local/camel-local-folder.c
+	(camel_local_folder_construct): Use path not protocol as the path
+	part of the uri of the folder_created event.
+
+	* providers/local/camel-maildir-store.c (scan_dir): If FAST is
+	set, dont try and scan for unread counts.
+
+	* providers/local/camel-local-store.c (create_folder): Implement,
+	just return the folderinfo of the folder matched, not all of it.
+
+	* camel-store.c (camel_store_rename_folder): Rename the
+	camelfolders before emitting the folderchanged event (otherwise
+	vstore fails to pick up change.
+
+2001-10-27    <NotZed@Ximian.com>
+
+	* camel-store.c (camel_store_init): Always use a default dir_sep
+	of '/'.
+
+	* camel-store.h (struct _CamelStore): Added a dir_sep to the base
+	store so rename and whatnot can work, temporary fix for mixed dir
+	separator in folder name api's.
+
+	* providers/imap/camel-imap-store.c (rename_folder): Finished
+	implementation.
+	(imap_connect_online): Also set the store's dir_sep here.
+	(imap_connect_offline): "
+
+	* providers/local/camel-local-folder.c (local_rename): Implement
+	local rename of folder objects.
+
+2001-10-26    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (camel_vee_folder_class_init): Hook into
+	rename function.
+	(vee_rename): Implement the veefolder rename function.
+	(camel_vee_folder_class_init): 
+	(folder_changed_change): Kill a warning with a cast.
+
+	* camel-vee-store.c (vee_rename_folder): Emit a folder_renamed
+	event properly, also call parent to do some rename stuff.
+
+	* camel-store.h: Added a CamelRenameInfo for the rename event.
+
+	* camel-folder.c (camel_folder_rename): New function to rename a
+	folder object.
+	(camel_folder_class_init): Added a renamed event.
+	(folder_rename): Default impl, set full_name, and set name
+	assuming the dir separator is '/'.
+
+	* camel-store.c (camel_store_class_init): Added folder_renamed
+	event.
+	(camel_store_rename_folder): Rename an active folder object if we
+	have one, and update the folder table.
+	(rename_folder): Make a default implementation that handles
+	updating the folder tree.
+
+2001-10-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-store.c (delete_folder): Don't bother
+	checking ex since we can rely on the response being NULL on error.
+	(rename_folder): Implemented.
+
+2001-10-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-folder.c (imap_get_message): Check to
+	make sure that the dataset is non-NULL before using and/or
+	freeing.
+
+	* camel-tcp-stream-raw.c (stream_write): Check for EWOULDBLOCK
+	too?
+	(stream_read): Same.
+	(stream_flush): Return 0 always, fsync() and tcp sockets don't
+	play nice :-)
+
+	* providers/imap/camel-imap-message-cache.c
+	(camel_imap_message_cache_get): Lets try putting a
+	camel_stream_reset() here. Logic being that the stream may have
+	been read from since it was cached and thus our caller may try
+	reading from it and get no data from it since it is already at the
+	EOS. This may fix bug #12943.
+
+2001-10-25    <NotZed@Ximian.com>
+
+	* camel-search-private.c (utf8_get): Remove the stupid warning
+	that should never have been there in the first place.
+
+	* camel-sasl-digest-md5.c (digest_response): s/iconv/e_iconv/
+
+	* camel-pgp-context.c (pgp_verify): "
+
+	* camel-mime-utils.c (rfc2047_decode_word, rfc2047_decode_word,
+	append_8bit, rfc2047_encode_word, rfc2184_decode,
+	header_decode_param): "
+
+	* camel-mime-part-utils.c (convert_buffer, convert_buffer): "
+
+	* camel-mime-filter-charset.c (reset, complete, filter): "
+
+2001-10-24    <NotZed@Ximian.com>
+
+	* camel-mime-filter-basic.c (complete): For qp decoding, if the
+	data isn't really qp encoded, we could possible grow the buffer by
+	upto 2 bytes above the input size, fix allocations/assertions
+	appropraitely.
+
+	* camel-vee-folder.c (folder_changed_change): If we're not
+	autoupdate, only search for new matches against changed uid's that
+	we dont already have.
+
+2001-10-24  Dan Winship  <danw@ximian.com>
+
+	* providers/imap/camel-imap-store.c (unsubscribe_folder): Don't
+	let fi->name be NULL.
+
+2001-10-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-stream-fs.c (stream_read): Same as in the TcpStreamRaw code.
+	(stream_write): And again here...
+
+	* camel-tcp-stream-raw.c (stream_read): Handle the EAGAIN error
+	case as well.
+	(stream_write): Same here, this might fix the SMTP truncation
+	thing? I hope?
+
+2001-10-23  Dan Winship  <danw@ximian.com>
+
+	* camel-mime-utils.c (mail_list_magic): Remove an extra * in one
+	of the regexps that glibc apparently doesn't mind but bsd does.
+
+2001-10-23    <NotZed@Ximian.com>
+
+	* providers/local/camel-mbox-summary.c: made d(x) x recompile again.
+
+2001-10-22    <NotZed@Ximian.com>
+
+	* providers/local/camel-spool-summary.c (summary_rebuild): No, use
+	Storing, as the other code does :p
+	(spool_summary_check): Check for consistency.
+
+2001-10-22  Jon Trowbridge  <trow@ximian.com>
+
+	* providers/local/camel-spool-summary.c (summary_rebuild):
+	s/summarising/summarizing/.
+	(spool_summary_check): s/summarise/summarize/.
+
+2001-10-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-pgp-mime.c (camel_pgp_mime_part_verify): If we are
+	kludging around a inline-pgp signed part, do some charset
+	conversion to protect any 8bit text.
+
+2001-10-22    <NotZed@Ximian.com>
+
+	* camel-filter-search.c, camel-folder-search.c (check_header): Use
+	search_type_mlist for mailing list searches.
+
+	* camel.c (camel_init): call camel-mime-utils-init func.
+
+	* camel-mime-utils.c: Changed mail mail_list_magic to include a
+	domain part, also pre-compile all the patterns.  They are all
+	backward compatible except List-Id: which now uses the
+	mail-address-like <list-name.host.name> part rather than the
+	plain-text part (which might've been blank anyway).
+	(camel_mime_utils_init): Initialisation function to setup any
+	static data required by camel-mime-utils at run-time.  We now
+	setup the base64/charset class tables here, so it doesn't need to
+	be done statically.
+	(camel_mime_special_table, camel_mime_base64_rank): No longer
+	statically initialise these.
+	(main): Removed + the tests at the end of the file.
+	(header_raw_check_mailing_list): Dont compile regex's here,
+	already compiled in utils_init.  Use the regex patterns to remove
+	leading <'s from addresses.  Also, if there is a domain part
+	matched, add that after a '@' is added.
+
+	* camel-search-private.c (camel_search_header_match): Match check
+	against all addresses in a multiple address match.  Should fix
+	#13051.
+	(camel_search_header_match): Oops, missing i=0.
+	(camel_search_header_match): Added SEARCH_TYPE_MLIST for mlist
+	search types.  It ignores the domain part if either (but not both)
+	of the values dont have it.
+
+2001-10-22  Dan Winship  <danw@ximian.com>
+
+	* camel-pgp-mime.c (camel_pgp_mime_part_verify): Add a hack: if
+	the multipart/signed part has a "x-inline-pgp-hack" parameter in
+	its Content-Type, don't pass the MIME headers as part of the data
+	to be verified.
+
+2001-10-22  Rodrigo Moya <rodrigo@ximian.com>
+
+	* Makefile.am: added $GNOME_INCLUDEDIR to INCLUDES, needed for latest
+	libgnome, which install headers in $(prefix)/gnome-1.0
+
+2001-10-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-part-utils.c
+	(simple_data_wrapper_construct_from_parser): Only do the rawtext
+	checks if the part is a text part, otherwise don't bother wasting
+	cpu cycles.
+
+	* camel-store.c (camel_folder_info_build): Updated comments to
+	make the code a bit more clear.
+
+2001-10-21    <NotZed@Ximian.com>
+
+	* camel-store.c (CS_CLASS): Dont do the macro stuff - basically so
+	you can actually debug calls.
+	(camel_store_uri_cmp): New function to compare store objects.
+
+	* camel-vee-folder.c (vee_folder_add_info): oops, dont free the
+	vuid, since its alloca'd now.
+	(folder_changed_change): Kill a compile warning.
+
+2001-10-20    <NotZed@Ximian.com>
+
+	* camel-folder.c (move_messages_to): If no exception supplied, use
+	a local one.
+	(move_message_to): Set the seen flag also when we delete it.
+
+2001-10-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-vtrash-folder.c (vtrash_move_messages_to): If the
+	destination folder is the vfolder source folder, then
+	set_message_flags on it.
+
+2001-10-19    <NotZed@Ximian.com>
+
+	* camel-session.c (register_provider): When registering provider,
+	translate all strings.
+
+	* camel-vee-folder.c (camel_vee_folder_remove_folder): Lock the
+	right lock for unmatched subfolder list stuff.  If the sub folder
+	is deleted & part of unmatched, or the last ref to the sub folder
+	is gone from unmatched, blow it away completely from unmatched,
+	but only do it once.
+	(vee_folder_remove_folder): Added arg to kill unmatched
+	unconditionally.  Also handle deleted folders, always remove
+	stuff.
+	(folder_changed_change): Lock subfolder lock for entirety of
+	operation, and also check to see if the subfolder is still there
+	before doing any fancy work (incase it got removed while we were
+	waiting to execute).
+	(folder_changed_change_uid): Use alloca for vuid, and not
+	sprintf(".lengths")
+	(vee_search_by_expression): Dont use sprintf for vuid.
+	(vee_search_by_uids): "
+	(vee_folder_add_info): "
+	(folder_changed_remove_uid): "
+	(folder_changed_change): "
+	(folder_changed_change_uid): Also check folder_unmatched for
+	changed uid's so we properly update/propagate unmatched changes.
+	(folder_changed_change): Ok, so dont hold the subfolder lock for
+	the whole duration of the changed event, although we probably
+	should, requires a recursive mutex.
+	(folder_changed_change): Change logic, we always add changed stuff
+	if it now matches, but dont remove it unless its auto-remove, only
+	propagate changes for it.
+	(vee_set_message_flags): Call parent method after doing our work.
+	(vee_set_message_user_flag): Same here.
+
+2001-10-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-part-utils.c
+	(simple_data_wrapper_construct_from_parser): If a charset isn't
+	specified or claims to be utf-8, check the validity of the text
+	and if it's invalid, set the rawtext bit to TRUE. If the charset
+	is x-unknown or some other x- charset, always set the rawtext bit
+	to TRUE.
+
+2001-10-18    <NotZed@Ximian.com>
+
+	* camel-store.c (camel_store_unsubscribe_folder): If we are
+	unsubscribing from a folder we have loaded, set the folder
+	deleted, as with the delete_folder case.
+
+	* providers/(imap|local|pop3|sendmail|smtp)/Makefile.am: Added
+	CAMEL_CFLAGS so we get the right iconv stuff, patch from Yanko
+	Kaneti <yaneti@declera.com>
+
+2001-10-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-pgp-context.c (crypto_exec_with_passwd): Make sure the
+	cancel_fd isn't -1.
+
+2001-10-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/imap/camel-imap-message-cache.c (insert_finish): Flush
+	the stream here, not sure it really matters but it might
+	(hopefully) fix bug #12943.
+
+	* camel-pgp-context.c (crypto_exec_with_passwd): Make
+	user-cancellable.
+
+	* providers/local/camel-local-provider.c: String cleanup for bug
+	#6640.
+
+	* providers/imap/camel-imap-folder.c (imap_sync_online): Fix my
+	Cyrus imapd workaround...instead of checking to see if info->flags
+	== FLAGGED, just check to see if it contains any IMAP flags.
+
+2001-10-17    <NotZed@Ximian.com>
+
+	* providers/local/camel-maildir-folder.c
+	(camel_maildir_folder_new): Use '.' as the inbox name for filter
+	new messages test.
+
+	* camel-store.c (camel_folder_info_clone): New function to clone a
+	folderinfo tree.
+
+2001-10-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/local/camel-mh-folder.c (mh_append_message): Same as
+	maildir and mbox append-message.
+
+	* providers/local/camel-maildir-folder.c (maildir_append_message):
+	Same as mbox append.
+
+	* camel-exception.c (camel_exception_set): Make sure the new
+	description isn't the same as the old description pointer before
+	freeing the old one.
+	(camel_exception_setv): Don't free the old description until we
+	set the new one this way we can reuse the old description in the
+	new description.
+
+	* providers/local/camel-mbox-folder.c (mbox_append_message): If
+	errno == EINTR, then we got a user-cancel so set the exception
+	appropriately so that we don't make the user shit his pants.
+
+	* camel-filter-driver.c (do_copy): Add an optimization for when
+	destination folder is the same as the source folder.
+
+2001-10-17    <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-store.c (get_folder_info_online):
+	(parse_list_response_as_folder_info): Patch from Danw, Use unread
+	count of -1 to mark unflagged messages.  Make sure any folder we
+	dont lookup explicitly is marked as -1.  Should fix #9947 and
+	friends.
+
+	* providers/local/camel-mbox-summary.c (mbox_summary_sync): Only
+	touch the summary if the timestamp or size changed.
+
+2001-10-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-filter-driver.c (camel_filter_driver_filter_message): Set
+	the DELETED flag on directly on the info if the source folder
+	doesn't have summary capability.
+
+2001-10-17  Not Zed  <NotZed@Ximian.com>
+
+	* camel-tcp-stream-raw.c (stream_write): As below.
+
+	* camel-stream-fs.c (stream_write): If not checking cancellation,
+	make sure we write out everything asked of us.
+
+2001-10-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-pgp-context.c (pgp_verify): Rearange the order of the gpg
+	options slightly otherwise it might try to use "--no-tty" as the
+	filename to verify :-)
+
+	* camel-object.[c,h]: If CAMEL_DEBUG is defined, print some useful
+	ref/unref info.
+
+	* providers/imap/camel-imap-store.c (delete_folder): Fixed an
+	assignment warning.
+
+	* camel-uid-cache.c (camel_uid_cache_new): Make sure that the
+	parent directory exists before trying to open the filename, if it
+	doesn't, create it.
+
+2001-10-16    <NotZed@Ximian.com>
+
+	* camel-mime-utils.c (header_address_decode): If no content, dont
+	try and decode further and spit meaningless warnings.
+
+2001-10-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-filter-driver.c (do_flag): Only perform the operation on
+	the folder if the folder has summary capability, else just poke
+	the info directly. Fixes the "Filters don't work" bug.
+	(do_score): Same.
+	(do_colour): And here too.
+
+2001-10-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-stream-fs.c (stream_read): Save the errno before calling
+	fcntl so fcntl doesn't overwrite errno in case of a previous
+	error.
+	(stream_write): Same.
+
+2001-10-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* providers/smtp/camel-smtp-transport.c (smtp_data): Replace the
+	Bcc headers in a single location and don't flush the data unless
+	the write was successful.
+
+2001-10-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Makefile.am: Remove the stripheader filter from the build.
+
+	* camel-mime-filter-stripheader.[c,h]: Removed.
+
+	* providers/smtp/camel-smtp-transport.c (smtp_data): Check the
+	return value of camel_stream_flush to make sure it flushed the
+	data successfully before continuing. Don't use the stripheader
+	filter, it was completely broken - instead remove the header and
+	set it again after we send.
+
+2001-10-12    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (camel_vee_folder_remove_folder): Unhook from
+	all events before removing folder.
+	(camel_vee_folder_add_folder): Hook onto delete event.
+	(camel_vee_folder_finalise): Unhook from deleted event for suibfolder.
+	(subfolder_deleted): When the folder is deleted, remove it from
+	the vfolder automagically.
+
+2001-10-11    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (vee_search_by_uids): convert the uids list
+	to a subset appropriate for each subfolder before trying to search
+	on it.
+
+	* camel-charset-map.[ch]: Removed charset/locale charset lookup
+	and iconv_open/close functions, moved to gal.  Fixed all callers.
+
+2001-10-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-ssl.c (ssl_cert_is_saved): Same.
+
+	* camel-tcp-stream-openssl.c (ssl_cert_is_saved): Instead of
+	opening the file, stat it and make sure that it belongs to us.
+
+2001-10-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-openssl.c (ssl_verify): Same hack as below.
+
+	* camel-tcp-stream-ssl.c (ssl_bad_cert): Hack around the fact that
+	adding a cert to nss's certdb seems to not work.
+
+2001-10-10    <NotZed@Ximian.com>
+
+	* camel-vee-folder.c (vee_sync): Only re-build the folder if we're
+	expunging.  Also only clear out the changed folders list if we're
+	expungung and everything worked.
+
+2001-10-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-charset-map.c (camel_charset_map_init): Added a hack for
+	Solaris systems.
+
+2001-10-10    <NotZed@Ximian.com>
+
+	* providers/local/camel-maildir-store.c (scan_dir): oops, we want
+	get_unread_message_count, not get_message_count!
+
+2001-10-09    <NotZed@Ximian.com>
+
+	* camel-service.c (camel_service_disconnect): Duplicate connect
+	code that unregisters a cancel op if we created one.
+
+	* camel-operation.c (camel_operation_progress): Another go at
+	getting the logic right again.  Make transients only update after
+	5 seconds (CAMEL_OPERATION_TRANSIENT_DELAY)
+	(camel_operation_end): Likewise.
+
+	* providers/local/camel-spool-folder.c (spool_search_by_uids):
+	Implement.
+
+	* providers/imap/camel-imap-search.c (imap_body_contains): If
+	searching a sub-set of the total message count, then use a UID
+	range to search only specific messages.
+
+	* camel-vee-folder.c (vee_folder_change_match): Removed.
+	(folder_changed_add_uid): Helper func for changed code.
+	(folder_changed_remove_uid): "
+	(folder_changed_change_uid): "
+	(folder_changed): Rewritten.  Supports proper auto-updating of
+	changes, but not removals till a sync occurs.
+	(vee_search_by_uids): Implement.
+	(folder_changed): Changed to call an async threaded function to do
+	the actual folder updating.
+
+	* camel-folder-summary.c (camel_flag_list_copy): New func to copy
+	a whole list of flags.
+	(camel_tag_list_copy): New func to copy a whole list of flags.
+
+	* providers/imap/camel-imap-folder.c (imap_search_by_uids):
+	Implement.
+
+	* providers/local/camel-local-folder.c (local_search_by_uids):
+	Implement.
+
+	* camel-folder.c (camel_folder_search_by_uids): New function,
+	search a subset of uid's.
+	(search_by_uids): Default impl, return error.
+
+2001-10-08  Dan Winship  <danw@ximian.com>
+
+	* camel-folder.h (struct _CamelFolder): replace the ever-growing
+	list of gbooleans with a single guint32 for flags.
+
+	* camel-folder.c: Update folder flag setting/checking.
+
+	* providers/pop3/camel-pop3-folder.c (camel_pop3_folder_init):
+	* providers/nntp/camel-nntp-folder.c (camel_nntp_folder_new): 
+	* providers/local/camel-spool-folder.c (spool_init,
+	camel_spool_folder_new): 
+	* providers/local/camel-maildir-folder.c (camel_maildir_folder_new): 
+	* providers/local/camel-local-folder.c (local_init): 
+	* providers/imap/camel-imap-folder.c (camel_imap_folder_init,
+	camel_imap_folder_new): 
+	* camel-vtrash-folder.c (camel_vtrash_folder_init): 
+	* camel-vee-folder.c (camel_vee_folder_init): 
+	* camel-digest-folder.c (camel_digest_folder_init): update folder
+	flag setting.
+
+2001-10-07  Dan Winship  <danw@ximian.com>
+
+	* providers/imap/camel-imap-store.c (get_folder_online): Unlock
+	the store before returning error. (noted by NotZed)
+
+2001-10-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-utils.c (header_decode_text): Fix a slight error in
+	logic. Just because the last word was an encoded word doesn't mean
+	we ignore the lwsp padding, we only ignore it if the last word and
+	*this* word are encoded.
+
+2001-10-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-mime-filter-basic.c (filter): Implemented uuencoding and
+	decoding.
+	(complete): Implemented uuencoding and decoding.
+
+	* camel-mime-utils.c (uuencode_close): New function to flush the
+	uu encoder.
+	(uuencode_step): New function to uuencode a block of data.
+
+2001-10-05    <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-store.c (subscribe_folder): Use a
+	folder_subscribed event rather than a folder_created one.
+	(unsubscribe_folder): Similarly for unsubscribed/deleted.
+	(create_folder): Emit a folder_created event on the folders we
+	added.  Not sure hsould probably check which ones are new and
+	which ones are just existing ones?
+	(delete_folder): Emit a folder_deletd event when we've deleted the
+	folder.  Part of fix for #11831.
+
+	* camel-store.c (camel_store_class_init): Added
+	folder_subscribed/unsubscribed events.
+
+2001-10-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-service.c (camel_service_finalize): Turn off warnings.
+	(get_name): Same.
+
+	* camel-sasl.c (sasl_challenge): Turn off warnings.
+
+	* camel-tcp-stream.c (tcp_connect): Turn off warnings.
+	(tcp_getsockopt): Same.
+	(tcp_setsockopt): Here too.
+	(tcp_get_socket): And here.
+
+	* camel-folder.c (folder_sync): Turn off warnings.
+	(expunge): Same.
+	(append_message): Here too.
+	(get_message): And here.
+	(search_by_expression): And again here.
+	(folder_changed): Here too.
+
+	* camel-store.c (get_folder): Set an exception and turn off
+	debugging g_warnings.
+	(create_folder): Same.
+	(delete_folder): Here too.
+	(rename_folder): And here.
+	(get_trash): And here.
+	(get_folder_info): Same.
+	(free_folder_info): And again here.
+	(camel_folder_info_build): Here too.
+	(folder_subscribed): Same.
+	(subscribe_folder): Here too.
+	(unsubscribe_folder): And here.
+
+2001-10-05    <NotZed@Ximian.com>
+
+	* camel-mime-utils.c (header_decode_mailbox): Try harder to get
+	broken names out of addresses.  Unencoded ,'s in names will still
+	break it, but well what can you do eh?
+	(header_decode_mailbox): Always add .'s into address we've scanned
+	past a '.', even if we can't decode the next part.  Fix for some
+	annoying bug #.
+
+2001-10-04    <NotZed@Ximian.com>
+
+	* camel-store.c (camel_store_delete_folder): Change the order of
+	execution slightly.  We delete the folder first, then call the
+	classes delete folder, then cleanup the hashtable afterwards.
+	This is so deletes of vfolders work, since vee-store uses the
+	folder hashtable to store all of is vfolders :-/
+
+2001-10-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-service.c (camel_service_connect): Unregister the
+	operation before unreffing it.
+
+2001-10-03    <NotZed@Ximian.com>
+
+	* providers/imap/camel-imap-folder.c (camel_imap_folder_changed):
+	Remove now unused 'recents' array/freeing func.
+
+	* camel-object.c (camel_object_trigger_event): Oops, always run
+	the prep function, even if we have no hooks listening.  Causes
+	incoming imap recents to get ignored bythe camel-folder filter
+	inbox code.
+
+	* providers/local/camel-local-folder.c (local_sync): Dont
+	explicitly save metadata, its saved in summary_sync.
+
+	* providers/local/camel-mh-summary.c: Call superclass.
+	(mh_summary_check): Dont save ibex.
+
+	* providers/local/camel-maildir-summary.c: Call superclass method.
+	(maildir_summary_check): Dont save ibex explictly.
+
+	* providers/local/camel-mbox-summary.c: Call super-class sync when
+	done, saves summary/ibex, etc.
+	(mbox_summary_check): Dont save ibex.
+	(mbox_summary_sync): Call summary_check rather than trying to
+	update from our known position.
+
+	* providers/local/camel-local-summary.c
+	(camel_local_summary_check): Dont save the summary or index here.
+	(local_summary_sync): Save the summary/index here.
+
+	* camel-search-private.c (camel_search_build_match_regex): Added
+	MATCH_NEWLINE flag, -> REG_NEWLINE.
+
+	* camel-lock-helper.c: Include <string.h> to kill some warnings.
+
+	* camel-filter-search.c (get_full_header): Put \n's between each
+	line we generate.
+	(header_full_regex): Dont drop the first argument to the command
+	-> empty matches!
+	(header_full_regex): Set match_newline for building regex.
+	(body_regex): And here too.  These all fix #9877.
+
+2001-10-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-store.c (camel_store_delete_folder): Call
+	camel_folder_delete() on the folder if it's "alive".
+
+	* camel-folder.c (camel_folder_delete): Mark the folder as
+	deleted, perform any folder specific cleanup and emit the deleted
+	event.
+	(camel_folder_sync): Only sync the folder if it hasn't been
+	deleted.
+	(camel_folder_expunge): Same.
+
+2001-10-03  Dan Winship  <danw@ximian.com>
+
+	* providers/local/camel-local-provider.c (local_url_equal):
+	Strange are the ways of alloca. Fixes 11543.
+
+2001-10-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-tcp-stream-ssl.c (ssl_bad_cert): Import the certificate if
+	the user accepts it.
+
+2001-10-02    <NotZed@Ximian.com>
+
+	* providers/local/camel-local-provider.c (local_url_hash,
+	local_url_equal): for hashing/comparing local url's, we ignore
+	trailing /'s in paths (maybe shuld handle multiple /'s too).
+	(camel_provider_module_init): Use local_url_hash/equal for all
+	functions.
+
+	* camel-sasl-digest-md5.c (digest_response): Change to
+	camel_charset_iconv_open/close.
+
+	* camel-pgp-context.c (pgp_verify): Change to
+	camel_charset_iconv_open/close.
+
+	* camel-mime-part-utils.c (convert_buffer): Change to
+	camel_charset_iconv_open().
+
+	* camel-mime-filter-charset.c
+	(camel_mime_filter_charset_new_convert, finalise): Change to
+	camel_charset_iconv_open, etc.
+
+	* camel-mime-utils.c: Use the camel_charset_iconv_open/close()
+	functions to open/close it.
+
+	* camel-charset-map.c (camel_charset_iconv_open): New function,
+	wrap iconv_open, so we can cache ic's.
+	(camel_charset_iconv_close): Likewise for close.
+	(camel_charset_map_init,shutdown): Init/free iconv cache.
+
+2001-10-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* camel-charset-map.c (camel_charset_to_iconv): Revert my
+	x-unknown special-case hack - this may mask other problems.
+
+	* camel-mime-utils.c (rfc2047_decode_word): If the iconv
+	conversion fails, for whatever reason, retry using the user's
+	locale charset.
+
+2001-10-02    <NotZed@Ximian.com>
+
+	* providers/local/camel-maildir-store.c (get_folder_info): Go back
+	to using the store url's path, not the toplevel_dir thing.
+
+	* camel-operation.c (camel_operation_progress): Fix the progress
+	logic, so we dont update too often.
+
+	* camel-object.c (camel_object_get_hooks): Change the lock to a
+	recursive e-mutex.
+	(camel_object_hook_event): Maintain list length of hook list.
+	(camel_object_unhook_event): "
+	(camel_object_unhook_event): If we are in an event, just mark the
+	pair as removed, without removing it.
+	(camel_object_trigger_event): Before running events, copy the
+	list, and also ignore 'removed' events.  After running events, if
+	we're all out of events, then free up any pending-removed events.
+	(camel_object_free_hooks): Add some new assertions on the state of
+	the hook structure.
+	Removed the #error if threads not defined.  It _should_ actually
+	work without threads.
+	(camel_object_free_hooks): Free mutex when done.
+
 2001-10-01  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* providers/imap/camel-imap-store.c (delete_folder): Remove any

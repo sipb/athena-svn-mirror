@@ -111,10 +111,22 @@ addressbook_value_at (ETableModel *etc, int col, int row)
 	EAddressbookTableAdapter *adapter = E_ADDRESSBOOK_TABLE_ADAPTER(etc);
 	EAddressbookTableAdapterPrivate *priv = adapter->priv;
 	const char *value;
+
 	if ( col >= COLS || row >= e_addressbook_model_card_count (priv->model) )
 		return NULL;
 
 	value = e_card_simple_get_const(priv->simples[row], col);
+
+	if (value && !strncmp (value, "<?xml", 5)) {
+		EDestination *dest = e_destination_import (value);
+		if (dest) {
+			g_free ((gchar *) value);
+			value = g_strdup (e_destination_get_address (dest));
+			gtk_object_unref (GTK_OBJECT (dest));
+		}
+	}
+
+
 	return (void *)(value ? value : "");
 }
 
@@ -123,7 +135,7 @@ static void
 card_modified_cb (EBook* book, EBookStatus status,
 		  gpointer user_data)
 {
-	g_print ("%s: %s(): a card was modified\n", __FILE__, __FUNCTION__);
+	/* g_print ("%s: %s(): a card was modified\n", __FILE__, __FUNCTION__); */
 	if (status != E_BOOK_STATUS_SUCCESS)
 		e_addressbook_error_dialog (_("Error modifying card"), status);
 }
@@ -137,6 +149,8 @@ addressbook_set_value_at (ETableModel *etc, int col, int row, const void *val)
 
 		if ( col >= COLS|| row >= e_addressbook_model_card_count (priv->model) )
 			return;
+
+		e_table_model_pre_change(etc);
 
 		e_card_simple_set(priv->simples[row],
 				  col,
@@ -322,6 +336,7 @@ static void
 model_changed (EAddressbookModel *model,
 	       EAddressbookTableAdapter *adapter)
 {
+	e_table_model_pre_change (E_TABLE_MODEL (adapter));
 	build_simple_mapping (adapter);
 	e_table_model_changed (E_TABLE_MODEL (adapter));
 }

@@ -73,6 +73,7 @@ enum _ECardSimpleAddressId {
 enum _ECardSimpleType {
 	E_CARD_SIMPLE_TYPE_STRING,
 	E_CARD_SIMPLE_TYPE_DATE,
+	E_CARD_SIMPLE_TYPE_BOOL,
 };
 
 enum _ECardSimpleField {
@@ -116,6 +117,7 @@ enum _ECardSimpleField {
         E_CARD_SIMPLE_FIELD_NOTE,
         E_CARD_SIMPLE_FIELD_CALURI,
         E_CARD_SIMPLE_FIELD_FBURL,
+	/* If you add after FBURL, make sure to move LAST_SIMPLE_STRING */
 	E_CARD_SIMPLE_FIELD_LAST_SIMPLE_STRING = E_CARD_SIMPLE_FIELD_FBURL,
         E_CARD_SIMPLE_FIELD_ANNIVERSARY,
         E_CARD_SIMPLE_FIELD_BIRTH_DATE,
@@ -126,6 +128,8 @@ enum _ECardSimpleField {
         E_CARD_SIMPLE_FIELD_GIVEN_NAME,
         E_CARD_SIMPLE_FIELD_ADDITIONAL_NAME,
         E_CARD_SIMPLE_FIELD_NAME_SUFFIX,
+	E_CARD_SIMPLE_FIELD_WANTS_HTML,
+	E_CARD_SIMPLE_FIELD_IS_LIST,
         E_CARD_SIMPLE_FIELD_LAST
 };
 
@@ -174,6 +178,8 @@ const char                 *e_card_simple_get_name               (ECardSimple   
 								  ECardSimpleField              field);
 const char                 *e_card_simple_get_short_name         (ECardSimple                  *simple,
 								  ECardSimpleField              field);
+gboolean                    e_card_simple_get_allow_newlines     (ECardSimple                  *simple,
+								  ECardSimpleField              field);
 
 
 /* Use these only if building lists of specific types.  It should be
@@ -210,6 +216,8 @@ void                        e_card_simple_set_arbitrary          (ECardSimple   
 								  const char                   *key,
 								  const char                   *type,
 								  const char                   *value);
+void                        e_card_simple_set_name               (ECardSimple                  *simple,
+								  ECardName                    *name);
 void                        e_card_simple_sync_card              (ECardSimple                  *simple);
 
 /* These map between the individual list types and ECardSimpleField */

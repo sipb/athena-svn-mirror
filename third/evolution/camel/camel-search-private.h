@@ -3,19 +3,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef _CAMEL_SEARCH_PRIVATE_H
@@ -26,6 +26,7 @@ typedef enum {
 	CAMEL_SEARCH_MATCH_END = 1<<1,
 	CAMEL_SEARCH_MATCH_REGEX = 1<<2, /* disables the first 2 */
 	CAMEL_SEARCH_MATCH_ICASE = 1<<3,
+	CAMEL_SEARCH_MATCH_NEWLINE = 1<<4,
 } camel_search_flags_t;
 
 typedef enum {
@@ -41,6 +42,7 @@ typedef enum {
 	CAMEL_SEARCH_TYPE_ENCODED,
 	CAMEL_SEARCH_TYPE_ADDRESS,
 	CAMEL_SEARCH_TYPE_ADDRESS_ENCODED,
+	CAMEL_SEARCH_TYPE_MLIST, /* its a mailing list pseudo-header */
 } camel_search_t;
 
 /* builds a regex that represents a string search */

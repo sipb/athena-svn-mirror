@@ -3,19 +3,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #include "camel-mime-filter-basic.h"
@@ -108,6 +108,13 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 		newlen = quoted_encode_close(in, len, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len*4+4);
 		break;
+	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
+		/* won't go to more than 2 * (x + 2) + 62 */
+		camel_mime_filter_set_size (mf, (len + 2) * 2 + 62, FALSE);
+		newlen = uuencode_close (in, len, mf->outbuf, f->uubuf, &f->state,
+					 &f->save, &f->uulen);
+		g_assert (newlen <= (len + 2) * 2 + 62);
+		break;
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 		/* output can't possibly exceed the input size */
  		camel_mime_filter_set_size(mf, len, FALSE);
@@ -115,10 +122,15 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 		g_assert(newlen <= len);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
-		/* output can't possibly exceed the input size */
-		camel_mime_filter_set_size(mf, len, FALSE);
+		/* output can't possibly exceed the input size, well unless its not really qp, then +2 max */
+		camel_mime_filter_set_size(mf, len+2, FALSE);
 		newlen = quoted_decode_step(in, len, mf->outbuf, &f->state, &f->save);
-		g_assert(newlen <= len);
+		g_assert(newlen <= len+2);
+		break;
+	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
+		/* output can't possibly exceed the input size */
+		camel_mime_filter_set_size (mf, len, FALSE);
+		newlen = uudecode_step (in, len, mf->outbuf, &f->state, &f->save, &f->uulen);
 		break;
 	default:
 		g_warning("unknown type %d in CamelMimeFilterBasic", f->type);
@@ -156,6 +168,11 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		newlen = quoted_encode_step(in, len, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len*4+4);
 		break;
+	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
+		/* won't go to more than 2 * (x + 2) + 62 */
+		camel_mime_filter_set_size (mf, (len + 2) * 2 + 62, FALSE);
+		newlen = uuencode_step (in, len, mf->outbuf, f->uubuf, &f->state, &f->save, &f->uulen);
+		g_assert (newlen <= (len + 2) * 2 + 62);
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 		/* output can't possibly exceed the input size */
 		camel_mime_filter_set_size(mf, len+3, FALSE);
@@ -167,6 +184,11 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 		camel_mime_filter_set_size(mf, len, FALSE);
 		newlen = quoted_decode_step(in, len, mf->outbuf, &f->state, &f->save);
 		g_assert(newlen <= len);
+		break;
+	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
+		/* output can't possibly exceed the input size */
+		camel_mime_filter_set_size (mf, len, FALSE);
+		newlen = uudecode_step (in, len, mf->outbuf, &f->state, &f->save, &f->uulen);
 		break;
 	default:
 		g_warning("unknown type %d in CamelMimeFilterBasic", f->type);
@@ -208,6 +230,8 @@ camel_mime_filter_basic_new_type(CamelMimeFilterBasicType type)
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
+	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
+	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
 		new = camel_mime_filter_basic_new();
 		new->type = type;
 		break;

@@ -7,9 +7,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -402,9 +401,13 @@ int camel_stream_buffer_gets(CamelStreamBuffer *sbf, char *buf, unsigned int max
 		if (outptr == outend)
 			break;
 
-		bytes_read = camel_stream_read(sbf->stream, sbf->buf, sbf->size);
-		if (bytes_read == -1)
-			return -1;
+		bytes_read = camel_stream_read (sbf->stream, sbf->buf, sbf->size);
+		if (bytes_read == -1) {
+			if (buf == outptr)
+				return -1;
+			else
+				bytes_read = 0;
+		}
 		inptr = sbf->ptr = sbf->buf;
 		inend = sbf->end = sbf->buf + bytes_read;
 	} while (bytes_read>0);
@@ -453,7 +456,7 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf)
 	}
 
 	p--;
-	if (p[-1] == '\r')
+	if (p > sbf->linebuf && p[-1] == '\r')
 		p--;
 	p[0] = 0;
 
