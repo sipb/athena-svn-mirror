@@ -19,6 +19,13 @@ Third-party stuff not under third
 		when the master copy is inaccessible.  This should be
 		updated at release time.
 
+	* packs/dotfiles/{README.mail,dot.cshrc,dot.login,dot.logout,
+		dot.mh_profile,welcome}
+
+		These should be kept in sync with the copies on
+		moira's local disk (/moira/dotfiles/*), which are
+		what actually get copied into new home directories.
+
 	* athena/etc/xdm/xlogin/bitmaps/menu16
 
 		This is from the X11 release; it probably never
