@@ -11,7 +11,7 @@
 
 DESTDIR=
 CFLAGS=	-O
-LIBDIR=	usr/lib/lpdfilters
+LIBDIR=	/usr/lib/lpdfilters
 CXREF=	/usr/ucb/ctags -x
 SRCS=	lpf.c necf.c \
 	chrtab.c rvsort.c rvcat.c vsort.c vcat.c vpf.c vpsf.c vdmp.c vpltdmp.c \
@@ -29,31 +29,31 @@ printer: ${PRINTER}
 varian:	${VARIAN}
 
 install: printer
-	-mkdir ${DESTDIR}/${LIBDIR}
-	-rm -f ${DESTDIR}/${LIBDIR}/ln03filter
-	for i in ${PRINTER}; do install -s $$i ${DESTDIR}/${LIBDIR}/$$i; done
+	-mkdir ${DESTDIR}${LIBDIR}
+	-rm -f ${DESTDIR}${LIBDIR}/ln03filter
+	for i in ${PRINTER}; do install -s $$i ${DESTDIR}${LIBDIR}/$$i; done
 	for i in ${LN01FILTERS}; do \
-		rm -f ${DESTDIR}/${LIBDIR}/$$i; \
+		rm -f ${DESTDIR}${LIBDIR}/$$i; \
 		ln -s ln01filter ${DESTDIR}/${LIBDIR}/$$i; \
 	done
 installv: varian
-	-mkdir ${DESTDIR}/${LIBDIR}
-	install -s vfontinfo ${DESTDIR}/${LIBDIR}/vfontinfo
-	install -s vwidth ${DESTDIR}/${LIBDIR}/vwidth
-	install -s vfw ${DESTDIR}/${LIBDIR}/vfw
-	install -s fcvt ${DESTDIR}/${LIBDIR}/fcvt
-	install -s rotate ${DESTDIR}/${LIBDIR}/rotate
-	install -s rotprt ${DESTDIR}/${LIBDIR}/rotprt
-	install -s rvsort ${DESTDIR}/${LIBDIR}/rvsort
-	install -s rvcat ${DESTDIR}/${LIBDIR}/rvcat
-	install -s vsort ${DESTDIR}/${LIBDIR}/vsort
-	install -s vcat ${DESTDIR}/${LIBDIR}/vcat
-	install -s vpf ${DESTDIR}/${LIBDIR}/vpf
-	ln ${DESTDIR}/${LIBDIR}/vpf ${DESTDIR}/${LIBDIR}/vpfW
-	install -s vpsf ${DESTDIR}/${LIBDIR}/vpsf
-	install -s vdmp ${DESTDIR}/${LIBDIR}/vdmp
-	install -s vpltdmp ${DESTDIR}/${LIBDIR}/vpltdmp
-	install -s vplotf ${DESTDIR}/${LIBDIR}/vplotf
+	-mkdir ${DESTDIR}${LIBDIR}
+	install -s vfontinfo ${DESTDIR}${LIBDIR}/vfontinfo
+	install -s vwidth ${DESTDIR}${LIBDIR}/vwidth
+	install -s vfw ${DESTDIR}${LIBDIR}/vfw
+	install -s fcvt ${DESTDIR}${LIBDIR}/fcvt
+	install -s rotate ${DESTDIR}${LIBDIR}/rotate
+	install -s rotprt ${DESTDIR}${LIBDIR}/rotprt
+	install -s rvsort ${DESTDIR}${LIBDIR}/rvsort
+	install -s rvcat ${DESTDIR}${LIBDIR}/rvcat
+	install -s vsort ${DESTDIR}${LIBDIR}/vsort
+	install -s vcat ${DESTDIR}${LIBDIR}/vcat
+	install -s vpf ${DESTDIR}${LIBDIR}/vpf
+	ln ${DESTDIR}${LIBDIR}/vpf ${DESTDIR}${LIBDIR}/vpfW
+	install -s vpsf ${DESTDIR}${LIBDIR}/vpsf
+	install -s vdmp ${DESTDIR}${LIBDIR}/vdmp
+	install -s vpltdmp ${DESTDIR}${LIBDIR}/vpltdmp
+	install -s vplotf ${DESTDIR}${LIBDIR}/vplotf
 
 clean:
 	rm -f ${PRINTER} ${VARIAN} *.o ln01filter.c
