@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.11 1993-06-29 15:00:02 vrt Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.12 1993-10-09 18:53:28 probe Exp $";
 #endif
 /* pscomm.c
  *
@@ -39,11 +39,15 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *			[-r]		(don't ever reverse)
  *			-n login
  *			-h host
+ *			-f form
  *                      -a account
  *                      -m mediacost
  *			[accntfile]
  *
  *	environ	== various environment variable effect behavior
+ *		NETNAME     - name of Bridge/Printer Server (hostname)
+ *		PRINTER     - name of Printer (physical name)
+ *		INTERFACE	- (1) for serial (2) for parallel
  *		VERBOSELOG	- do verbose log file output
  *		BANNERFIRST	- print .banner before job
  *		BANNERLAST	- print .banner after job
@@ -81,6 +85,12 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  93/08/23  15:39:09  probe
+ * Initial revision
+ * 
+ * Revision 1.11  93/06/29  15:00:02  vrt
+ * avoiding the <wait.h> <m_wait.h> interaction under AIX 43.2
+ * 
  * Revision 1.10  93/05/10  13:48:37  vrt
  * Solaris Port
  * 
@@ -240,6 +250,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#ifdef TRY_AGAIN
+#undef TRY_AGAIN
+#endif
 #endif BRIDGE
 
 #include "transcript.h"
@@ -282,16 +295,20 @@ private char *getpages =
 "\n(%%%%[ pagecount: )print statusdict/pagecount get exec(                )cvs \
 print(, %d %d ]%%%%)= flush\n%s";
 
-private jmp_buf initlabel, synclabel, sendlabel, croaklabel;
+private jmp_buf initlabel, synclabel, sendlabel, croaklabel, snmplabel;
 
 private char	*prog;			/* invoking program name */
 private char	*name;			/* user login name */
 private char	*host;			/* host name */
 private char	*pname;			/* printer name */
+private char	*dname;			/* printer real name */
+private char *form;			/* form name */
+private char	*duplexing = "0";			/* duplexing? */
 private char	*accountingfile;	/* file for printer accounting */
 private char    *account = "0";        /* account number - Ilham (2/20/90) */
 private char    *mediacost = "0";	/* media cost     - Ilham (2/20/90 */
 private int	doactng;		/* true if we can do accounting */
+private int doform;		/* true if we can do forms */
 private int	progress, oldprogress;	/* finite progress counts */
 private int	getstatus = FALSE;      /* TRUE = Query printer for status */
 private int	newstatmsg = FALSE;     /* TRUE = We changed status message */
@@ -303,6 +320,7 @@ private long	starttime;              /* Timer start. For status warnings */
 private int	saveerror;		/* Place to save errno when exiting */
 private int	bannerpages = 0;	/* Count of banner pages printed */
 
+private char *interface;		/* (1) serial, (2) parallel */
 private char *bannerfirst;
 private char *bannerlast;
 private char *verboselog;
@@ -310,6 +328,7 @@ private char *reverse;
 private int BannerFirst;
 private int BannerLast;
 private int VerboseLog;
+private int Duplexing;
 private int UnlinkBannerLast;   /* Unlink banner file after printing banner. */
 				/* Only looked at if BannerLast=TRUE. */
 
@@ -321,11 +340,13 @@ typedef enum {                  /* Values for "die" interrupts, like SIGINT */
     waiting,                    /* Waiting for listener to get EOF from prntr */
     lastpart,                   /* Final processing following user job */
     synclast,                   /* Syncronize communications at the end */
+    syncsnmp,                   /* Syncronize SNMP */
     ending,                     /* Cleaning up */
     croaking,			/* Abnormal exit, waiting for children to die */
     child                       /* Used ONLY for the child (listener) process */
     } dievals;
 private dievals intstate;       /* State of interrupts */
+private dievals savestate;      /* Saved State of interrupts */
 private flagsig;                /* TRUE = On signal receipt, just set flag */
 #define DIE_INT    1            /* Got a "die" interrupt. like SIGINT */
 #define ALARM_INT  2            /* Got an alarm */
@@ -337,6 +358,7 @@ private int gotsig;             /* Mask that may take any of the above values */
 
 /* WARNING: Make sure reapchildren() routine kills all processes we started */
 private int	fpid = 0;	/* formatter pid */
+private int	spid = 0;	/* secondary formatter pid */
 private int	rpid = 0;	/* page reversal pid */
 private int	cpid = 0;	/* listener pid */
 private int	mpid = 0;	/* current process pid */
@@ -360,9 +382,35 @@ private FILE *psin=NULL;        /* Buffered printer input */
 private FILE *jobout;		/* special printer output log */
 
 #ifdef BRIDGE
-/* socket numbers here are for SUN with ntohs() to convert */
+/* generic socket numbers here are for SUN with ntohs() to convert */
+#ifdef MILAN
+#define PARALLEL        2000  /* Port 2000--MiLAN Parallel Port */
+#define SERIAL          2001  /* Port 2001--MiLAN Serial Port */
+#endif
+
+#ifdef GCC
+#define GCC_PORT    3302  /* Port 3302 SelectPress 600 */
+#endif
+
+#ifdef HP
+#define HP_PORT    9100  /* Port 9100--HP JetDirect Card */
+private VOID hpcheck();
+#endif
+
 #define GENERIC_SOCKET	ntohs((u_short) 0x07D0)
 #define NMUI_SOCKET	ntohs((u_short) 0x004D)
+
+#define PARALLEL_PORT   ntohs((u_short) PARALLEL)
+#define SERIAL_PORT     ntohs((u_short) SERIAL)
+
+#ifdef GCC
+#define GCC_SOCKET       ntohs((u_short) GCC_PORT)
+#endif
+
+#ifdef HP
+#define HP_SOCKET       ntohs((u_short) HP_PORT)
+#endif
+
 private int socklen;
 struct sockaddr_in dest;
 struct hostent *hp;
@@ -420,7 +468,10 @@ main(argc,argv)            /* MAIN ROUTINE */
     register char *mbp;
 
     char  **av;
+    char *filter_name;	/* name by which program was invoked */
     char magic[11];	/* first few bytes of stdin ?magic number and type */
+    char msgbuff[100];
+    char message[512];
     int  magiccnt;	/* actual number of magic bytes read */
     int  noReverse = 0; /* flag if we should never page reverse */
     int  canReverse = 0;/* flag if we can page-reverse the ps file */
@@ -433,6 +484,7 @@ main(argc,argv)            /* MAIN ROUTINE */
     char mybuf[BUFSIZ];
     int fdpipe[2];
     int format = 0;
+    int sformat = 0;
     int i;
 
     mpid = getpid();    /* Save the current process ID for later */
@@ -464,6 +516,10 @@ main(argc,argv)            /* MAIN ROUTINE */
     av = argv;
     prog = *av;
 
+    /* parse the calling program name */
+    if ((filter_name = (char *)rindex(argv[0], '/'))) filter_name++;
+    else filter_name = argv[0];
+
     while (--argc) {
 	if (*(cp = *++av) == '-') {
 	    switch (*(cp + 1)) {
@@ -492,9 +548,20 @@ main(argc,argv)            /* MAIN ROUTINE */
 		    noReverse = 1;
 		    break;
 
+		case 'f':       /* form name */
+		    argc--;
+		    form = *(++av);
+		    doform = 1;
+		    break;
+
 		case 'a':       /* account number */
 		    argc--;
 		    account = *(++av);
+		    break;
+
+		case 'd':       /* duplexing */
+		    argc--;
+		    duplexing = *(++av);
 		    break;
 
 		case 'm':       /* media cost */
@@ -519,6 +586,14 @@ main(argc,argv)            /* MAIN ROUTINE */
     BannerFirst = BannerLast = 0;
     UnlinkBannerLast = 0;
     reverse = NULL;
+    if (atoi(duplexing)) Duplexing=atoi(duplexing);
+#ifdef ZEPHYR
+    if (!Duplexing && doform) {
+	    sprintf(msgbuff, "Printer Not Capable of Duplexing");
+	    NotifyUser(name, msgbuff);
+    }
+#endif
+
     if (bannerfirst=envget("BANNERFIRST")) {
 	BannerFirst=atoi(bannerfirst);
     }
@@ -682,20 +757,135 @@ main(argc,argv)            /* MAIN ROUTINE */
 	debugp((stderr,"%s: reverse feeding\n",prog));
     }
 
-    printit:;
+    /*
+     * Parse spooler options
+     */
+    {
+	static char mcost[512], scmd[512];
+	char buf[512], buf2[512], *cp, *cp2;
+	FILE *sfp;
+
+	scmd[0] = 0;
+	if (sfp = fopen(".spooler", "r")) {
+	    i = strlen(pname);
+	    while(fgets(buf, 256, sfp)) {
+		/* Does the printer name match? */
+		if (strncmp(buf, pname, i)) continue;
+		if (buf[i] && !isspace(buf[i])) continue;
+		cp = &buf[i];
+
+		/* Parse options */
+		buf2[0] = 0;
+		while (*cp) {
+		    /* read option */
+		    while (*cp && isspace(*cp)) cp++;
+		    for (cp2=buf2; *cp && !isspace(*cp); )
+			*cp2++ = *cp++;
+		    *cp2 = '\0';
+
+		    /* parse option */
+		    if (!strcmp(buf2, "-m"))
+			cp2 = mediacost = mcost;
+		    else if (!strcmp(buf2, "-F"))
+			cp2 = scmd;
+		    else
+			cp2 = 0;
+
+		    /* read option argument */
+		    if (cp2) {
+			while (*cp && isspace(*cp)) cp++;
+			while (*cp && !isspace(*cp))
+			    *cp2++ = *cp++;
+			*cp2 = '\0';
+		    }
+		}
+	    }
+	    fclose(sfp);
+	}
+	if (scmd[0]) {
+	    sformat = 1;
+	    if (pipe (fdpipe)) myexit2(prog, "format pipe",THROW_AWAY);
+	    if ((spid = fork()) < 0) myexit2(prog, "format fork",THROW_AWAY);
+	    if (spid == 0) { /* child */
+		/* set up child stdout to feed parent stdin */
+		if (close(1) || (dup(fdpipe[1]) != 1)
+		    || close(fdpipe[1]) || close(fdpipe[0])) {
+		    myexit2(prog, "format child",THROW_AWAY);
+		}
+		execl(scmd, scmd, pname, 0);
+		myexit2(prog,"secondary format exec",THROW_AWAY);
+	    }
+	    /* parent continues */
+	    /* set up stdin to be pipe */
+	    if (close(0) || (dup(fdpipe[0]) != 0)
+		|| close(fdpipe[0]) || close(fdpipe[1])) {
+		myexit2(prog, "secondary format parent",THROW_AWAY);
+	    }
+	    
+	    /* fall through to spooler with new stdin */
+	    /* can't seek here but we should be at the right place */
+	    streamin = fdopen(0,"r");
+	}
+    }
+
+printit:;
 
     fdinput = fileno(streamin); /* the file to print */
 
 #ifdef BRIDGE
     /* open network connection to the printer */
-    if (envget("NETNAME")) pname=envget("NETNAME");
 
-    if ((hp = gethostbyname(pname)) == NULL) {
+    /* First, let's get some info from the shell
+     * NETNAME is the name of the Netowrk Printer Server
+     * PRINTER is the name of the printer
+     * MILAN ONLY:
+     *    INTERFACE is (1) for serial, (2) for parallel
+     */
+ 
+     if (envget("NETNAME")) dname=envget("NETNAME");
+     if (envget("PRINTER")) pname=envget("PRINTER");
+ 
+     if ((hp = gethostbyname(dname)) == NULL) {
 	myexit2(prog,"badhost",TRY_AGAIN);
     }
     bcopy(hp->h_addr, &dest.sin_addr.s_addr, hp->h_length);
     dest.sin_family = AF_INET;
-    dest.sin_port = GENERIC_SOCKET;
+
+#ifdef MILAN
+    if (interface=envget("INTERFACE")) {
+	switch (atoi(interface)) {
+	case 1:
+	default:
+	    dest.sin_port = SERIAL_PORT;     /* Serial is Default */
+	    break;
+	case 2:
+	    dest.sin_port = PARALLEL_PORT;
+	    break;
+	}
+    }
+    else dest.sin_port = SERIAL_PORT;
+#else
+#ifdef HP
+    dest.sin_port = HP_SOCKET;		
+#else
+#ifdef GCC
+    dest.sin_port = GCC_SOCKET;
+#else
+    dest.sin_port = GENERIC_SOCKET; 	/* Generic is Default */
+#endif /* GCC */
+#endif /* HP */
+#endif /* MILAN */
+
+#ifdef HP
+    /*
+       Because HP JetDirect Cards Won't Respond To Connect
+       If There's An Error Condition Present...
+     */
+    savestate = intstate;	/* save existing state */
+    intstate = syncsnmp;    
+    VOIDC hpcheck();
+    intstate = savestate;    
+#endif HP
 
     if ((fdsend = socket(AF_INET,SOCK_STREAM, 0)) < 0) {
 	myexit2(prog,"opening socket",TRY_AGAIN);
@@ -714,9 +904,11 @@ main(argc,argv)            /* MAIN ROUTINE */
 	myexit2(prog,"getting socket name",TRY_AGAIN);
     }
     /* socket options processing */
+#ifdef SO_DONTLINGER
     if (setsockopt(fdsend,SOL_SOCKET,SO_DONTLINGER,0,0) < 0) {
 	perror("sockopt dontlinger");
     }
+#endif
 #else
     fdsend = fileno(stdout);	/* the printer (write) */
 #endif BRIDGE
@@ -878,7 +1070,7 @@ main(argc,argv)            /* MAIN ROUTINE */
 		    }
 		else {
 		    if( errno != EINTR ) {	/* Got a random error */
-			fprintf(stderr,"%s: Error" );
+			fprintf(stderr,"%s: Error", argv[0]);
 			perror("");
 			fflush(stderr);
 			exit(LIS_ERROR);
@@ -1268,6 +1460,7 @@ private VOID reapchildren() {
     if( cpid != 0 ) VOIDC kill(cpid,SIGEMT);  /* This kills listener */
     if( rpid != 0 ) VOIDC kill(rpid,SIGINT);
     if( fpid != 0 ) VOIDC kill(fpid,SIGINT);
+    if( spid != 0 ) VOIDC kill(spid,SIGINT);
     while (wait((union wait *) 0) > 0);
     VOIDC alarm(0);         /* No more alarms */
     if (VerboseLog) {
@@ -1397,6 +1590,12 @@ private VOID GotAlarmSig() {
 		(time((long*)0)-starttime+30)/60);
 	    Status(mybuf,1);
 	    longjmp(synclabel,1);
+	case syncsnmp:
+	    if( jobaborted ) dieanyway();   /* If already aborted, just croak */
+	    sprintf(mybuf, "Not Responding for %ld minutes",
+		(time((long*)0)-starttime+30)/60);
+	    Status(mybuf,1);
+	    longjmp(snmplabel,1);
 	case sending:
 	    if( progress == oldprogress ) { /* Nothing written since last time */
 		getstatus = TRUE;
@@ -1556,6 +1755,45 @@ private int resetprt() {
     return(0);
 }
 
+#ifdef HP
+/* Use SNMP to be sure HP JetDirect Card is responding AND that the
+ * printer is not experiencing any problems...
+ * WARNING: Make sure there are no pending alarms before calling this routine.
+ */
+private VOID hpcheck()
+{
+    char message[512];
+    unsigned int sleeptime; /* Number of seconds to sleep */
+    private int status;
+
+    sleeptime = 2;
+
+    if( setjmp(snmplabel) ) goto tryagain;   /* Got an alarm */
+    VOIDC alarm(SYNCALARM);                 /* schedule an alarm/timeout */
+
+    tryagain:
+    /* Use SNMP For Status */
+    while(TRUE) {
+	debugp((stderr,"%s: SNMP Query printer and get status\n",prog));
+	status=query(dname, &message[0]);
+	if (status) {
+	    debugp((stderr,"%s: Sending Status Message %s\n",prog,message));
+	    Status(message, 2);
+	} else {
+	    break;
+	}
+
+	/* Sleep A Bit */
+	sleep(sleeptime);
+	sleeptime += 2;
+    }
+
+    VOIDC alarm(0);    /* Don't want alarms anymore */
+
+    return;
+}
+#endif HP
+
 /* Synchronize the input and output of the printer.
  * We use the accounting message, and include our process ID and
  * a sequence number.  If the output doesn't match what we expect, we
@@ -1580,6 +1818,10 @@ long    *pagecount;        /* The current page count in the printer */
     errcnt = 0;
     sleeptime = 2;    /* Initial sleep interval */
     jobout = stderr;  /* Write extra stuff to the log file */
+#ifdef HP
+    intstate = syncsnmp;
+    VOIDC hpcheck();
+#endif
     NextChInit();
     openprtread();    /* Open the printer for reading */
     while(TRUE) {
@@ -1696,7 +1938,8 @@ NotifyUser(user, message)
     notice.z_class = "MESSAGE";
     notice.z_class_inst = "PERSONAL";
     notice.z_opcode = "";
-    sprintf(fromprinter, "Athena Print Server for printer %s",pname);
+    sprintf(fromprinter, "Athena Print Server (%s) for printer %s",
+        dname, pname);
     notice.z_sender = fromprinter;
     notice.z_recipient = user;
     notice.z_default_format = "";
