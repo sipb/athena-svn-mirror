@@ -4,11 +4,15 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v $
-/**/#	$Author: jfc $
-/**/#	$Id: Imakefile,v 1.4 1991-09-02 18:48:40 jfc Exp $
+/**/#	$Author: lwvanels $
+/**/#	$Id: Imakefile,v 1.5 1991-12-05 15:29:19 lwvanels Exp $
 /**/#
 
+#ifdef _AIX
+LIBS= $(ZEPHYR_LIB) $(KRB_LIB) $(COMERR_LIB) -lsrc
+#else
 LIBS= $(ZEPHYR_LIB) $(KRB_LIB) $(COMERR_LIB)
+#endif
 LINCLUDES=-I.
 LINTLIBS=$(ZEPHYR_LINTLIB) $(KRB_LINTLIB) $(COMERR_LINTLIB)
 SRCS = syslogd.c
