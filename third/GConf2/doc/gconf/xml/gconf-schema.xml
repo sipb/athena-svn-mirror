@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-gconf-schema">
+<refmeta>
+<refentrytitle>gconf-schema</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gconf-schema</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GConfSchema">GConfSchema</link>;
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-schema-new">gconf_schema_new</link>               (void);
+<link linkend="void">void</link>        <link linkend="gconf-schema-free">gconf_schema_free</link>               (<link linkend="GConfSchema">GConfSchema</link> *sc);
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-schema-copy">gconf_schema_copy</link>              (const <link linkend="GConfSchema">GConfSchema</link> *sc);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-type">gconf_schema_set_type</link>           (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-locale">gconf_schema_set_locale</link>         (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *locale);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-short-desc">gconf_schema_set_short_desc</link>     (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *desc);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-long-desc">gconf_schema_set_long_desc</link>      (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *desc);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-owner">gconf_schema_set_owner</link>          (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *owner);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-default-value">gconf_schema_set_default_value</link>  (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="GConfValue">GConfValue</link> *val);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-default-value-nocopy">gconf_schema_set_default_value_nocopy</link>
+                                            (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValue">GConfValue</link> *val);
+<link linkend="GConfValueType">GConfValueType</link> <link linkend="gconf-schema-get-type">gconf_schema_get_type</link>        (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+const <link linkend="char">char</link>* <link linkend="gconf-schema-get-locale">gconf_schema_get_locale</link>         (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+const <link linkend="char">char</link>* <link linkend="gconf-schema-get-short-desc">gconf_schema_get_short_desc</link>     (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+const <link linkend="char">char</link>* <link linkend="gconf-schema-get-long-desc">gconf_schema_get_long_desc</link>      (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+const <link linkend="char">char</link>* <link linkend="gconf-schema-get-owner">gconf_schema_get_owner</link>          (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-schema-get-default-value">gconf_schema_get_default_value</link>  (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+<link linkend="GConfValueType">GConfValueType</link> <link linkend="gconf-schema-get-car-type">gconf_schema_get_car_type</link>    (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+<link linkend="GConfValueType">GConfValueType</link> <link linkend="gconf-schema-get-cdr-type">gconf_schema_get_cdr_type</link>    (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+<link linkend="GConfValueType">GConfValueType</link> <link linkend="gconf-schema-get-list-type">gconf_schema_get_list_type</link>   (const <link linkend="GConfSchema">GConfSchema</link> *schema);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-car-type">gconf_schema_set_car_type</link>       (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-cdr-type">gconf_schema_set_cdr_type</link>       (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);
+<link linkend="void">void</link>        <link linkend="gconf-schema-set-list-type">gconf_schema_set_list_type</link>      (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfSchema"/>struct GConfSchema</title>
+<indexterm><primary>GConfSchema</primary></indexterm><programlisting>struct GConfSchema;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-new"/>gconf_schema_new ()</title>
+<indexterm><primary>gconf_schema_new</primary></indexterm><programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_schema_new               (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-free"/>gconf_schema_free ()</title>
+<indexterm><primary>gconf_schema_free</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_free               (<link linkend="GConfSchema">GConfSchema</link> *sc);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-copy"/>gconf_schema_copy ()</title>
+<indexterm><primary>gconf_schema_copy</primary></indexterm><programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_schema_copy              (const <link linkend="GConfSchema">GConfSchema</link> *sc);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-type"/>gconf_schema_set_type ()</title>
+<indexterm><primary>gconf_schema_set_type</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_type           (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-locale"/>gconf_schema_set_locale ()</title>
+<indexterm><primary>gconf_schema_set_locale</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_locale         (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *locale);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-short-desc"/>gconf_schema_set_short_desc ()</title>
+<indexterm><primary>gconf_schema_set_short_desc</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_short_desc     (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *desc);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-long-desc"/>gconf_schema_set_long_desc ()</title>
+<indexterm><primary>gconf_schema_set_long_desc</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_long_desc      (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *desc);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-owner"/>gconf_schema_set_owner ()</title>
+<indexterm><primary>gconf_schema_set_owner</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_owner          (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="gchar">gchar</link> *owner);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>owner</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-default-value"/>gconf_schema_set_default_value ()</title>
+<indexterm><primary>gconf_schema_set_default_value</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_default_value  (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             const <link linkend="GConfValue">GConfValue</link> *val);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-default-value-nocopy"/>gconf_schema_set_default_value_nocopy ()</title>
+<indexterm><primary>gconf_schema_set_default_value_nocopy</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_default_value_nocopy
+                                            (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValue">GConfValue</link> *val);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-type"/>gconf_schema_get_type ()</title>
+<indexterm><primary>gconf_schema_get_type</primary></indexterm><programlisting><link linkend="GConfValueType">GConfValueType</link> gconf_schema_get_type        (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-locale"/>gconf_schema_get_locale ()</title>
+<indexterm><primary>gconf_schema_get_locale</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_schema_get_locale         (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-short-desc"/>gconf_schema_get_short_desc ()</title>
+<indexterm><primary>gconf_schema_get_short_desc</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_schema_get_short_desc     (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-long-desc"/>gconf_schema_get_long_desc ()</title>
+<indexterm><primary>gconf_schema_get_long_desc</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_schema_get_long_desc      (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-owner"/>gconf_schema_get_owner ()</title>
+<indexterm><primary>gconf_schema_get_owner</primary></indexterm><programlisting>const <link linkend="char">char</link>* gconf_schema_get_owner          (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-default-value"/>gconf_schema_get_default_value ()</title>
+<indexterm><primary>gconf_schema_get_default_value</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_schema_get_default_value  (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-car-type"/>gconf_schema_get_car_type ()</title>
+<indexterm><primary>gconf_schema_get_car_type</primary></indexterm><programlisting><link linkend="GConfValueType">GConfValueType</link> gconf_schema_get_car_type    (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-cdr-type"/>gconf_schema_get_cdr_type ()</title>
+<indexterm><primary>gconf_schema_get_cdr_type</primary></indexterm><programlisting><link linkend="GConfValueType">GConfValueType</link> gconf_schema_get_cdr_type    (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-get-list-type"/>gconf_schema_get_list_type ()</title>
+<indexterm><primary>gconf_schema_get_list_type</primary></indexterm><programlisting><link linkend="GConfValueType">GConfValueType</link> gconf_schema_get_list_type   (const <link linkend="GConfSchema">GConfSchema</link> *schema);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>schema</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-car-type"/>gconf_schema_set_car_type ()</title>
+<indexterm><primary>gconf_schema_set_car_type</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_car_type       (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-cdr-type"/>gconf_schema_set_cdr_type ()</title>
+<indexterm><primary>gconf_schema_set_cdr_type</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_cdr_type       (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-set-list-type"/>gconf_schema_set_list_type ()</title>
+<indexterm><primary>gconf_schema_set_list_type</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_schema_set_list_type      (<link linkend="GConfSchema">GConfSchema</link> *sc,
+                                             <link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -33,6 +33,9 @@
 typedef struct _GConfBackendVTable GConfBackendVTable;
 
 struct _GConfBackendVTable {
+  /* Set to sizeof (GConfBackendVTable) - used for future proofing */
+  gsize                  vtable_size;
+
   void                (* shutdown)        (GError** err);
 
   GConfSource*        (* resolve_address) (const gchar* address,
@@ -127,12 +130,26 @@ struct _GConfBackendVTable {
 
   /* This is basically used by the test suite */
   void                (* clear_cache)     (GConfSource* source);
+
+  /* used by gconf-sanity-check */
+  void                (* blow_away_locks) (const char *address);
+
+  void                (* set_notify_func) (GConfSource           *source,
+					   GConfSourceNotifyFunc  notify_func,
+					   gpointer               user_data);
+
+  void                (* add_listener)    (GConfSource           *source,
+					   guint                  id,
+					   const gchar           *namespace_section);
+
+  void                (* remove_listener) (GConfSource           *source,
+					   guint                  id);
 };
 
 struct _GConfBackend {
   const gchar* name;
   guint refcount;
-  GConfBackendVTable* vtable;
+  GConfBackendVTable vtable;
   GModule* module;
 };
 
@@ -162,7 +179,6 @@ GConfSource*  gconf_backend_resolve_address (GConfBackend* backend,
                                              const gchar* address,
                                              GError** err);
 
+void          gconf_blow_away_locks       (const gchar* address);
+
 #endif
-
-
-

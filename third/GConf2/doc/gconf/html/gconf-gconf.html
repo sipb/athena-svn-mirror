@@ -1,4983 +1,563 @@
-<HTML
-><HEAD
-><TITLE
->GConf Core Interfaces</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GConf Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="GConf Reference Documentation"
-HREF="gconf-reference.html"><LINK
-REL="PREVIOUS"
-TITLE="GConfEngine"
-HREF="gconf-gconf-engine.html"><LINK
-REL="NEXT"
-TITLE="GError"
-HREF="gconf-gconf-error.html"></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
-><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->GConf Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="gconf-gconf-engine.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="gconf-reference.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="gconf-gconf-error.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-></TABLE
-></DIV
-><H1
-><A
-NAME="GCONF-GCONF">GConf Core Interfaces</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN658"
-></A
-><H2
->Name</H2
->GConf Core Interfaces&nbsp;--&nbsp;Basic functions to initialize GConf and get/set values</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN661"><H2
->Synopsis</H2
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="SYNOPSIS"
->&#13;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GConf Core Interfaces</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="[Insert name here] Reference Manual"><link rel="up" href="ch01.html" title="[Insert title here]"><link rel="previous" href="gconf-gconf-value.html" title="GConfValue, GConfEntry, GConfMetaInfo"><link rel="next" href="gconf-gconf-locale.html" title="gconf-locale"><link rel="chapter" href="ch01.html" title="[Insert title here]"><link rel="refentry" href="gconf-GConfClient.html" title="GConfClient"><link rel="refentry" href="gconf-gconf-backend.html" title="gconf-backend"><link rel="refentry" href="gconf-gconf-engine.html" title="GConfEngine"><link rel="refentry" href="gconf-gconf-error.html" title="GError"><link rel="refentry" href="gconf-gconf-internals.html" title="gconf-internals"><link rel="refentry" href="gconf-gconf-listeners.html" title="gconf-listeners"><link rel="refentry" href="gconf-gconf-schema.html" title="gconf-schema"><link rel="refentry" href="gconf-gconf-sources.html" title="gconf-sources"><link rel="refentry" href="gconf-gconf-value.html" title="GConfValue, GConfEntry, GConfMetaInfo"><link rel="refentry" href="gconf-gconf.html" title="GConf Core Interfaces"><link rel="refentry" href="gconf-gconf-locale.html" title="gconf-locale"><link rel="refentry" href="gconf-gconf-changeset.html" title="GConfChangeSet"><link rel="section" href="gconf-gconf.html#id2744530" title="Description"><link rel="section" href="gconf-gconf.html#id2744577" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gconf-gconf-value.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">[Insert name here] Reference Manual</th><td><a accesskey="n" href="gconf-gconf-locale.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gconf-gconf"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GConf Core Interfaces</span></h2><p>GConf Core Interfaces &#8212; 
+Basic functions to initialize GConf and get/set values</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-INIT"
->gconf_init</A
->                      (int argc,
+
+
+gboolean    <a href="gconf-gconf.html#gconf-init">gconf_init</a>                      (int argc,
                                              char **argv,
                                              GError **err);
-void        <A
-HREF="gconf-gconf.html#GCONF-PREINIT"
->gconf_preinit</A
->                   (gpointer app,
+void        <a href="gconf-gconf.html#gconf-preinit">gconf_preinit</a>                   (gpointer app,
                                              gpointer mod_info);
-void        <A
-HREF="gconf-gconf.html#GCONF-POSTINIT"
->gconf_postinit</A
->                  (gpointer app,
+void        <a href="gconf-gconf.html#gconf-postinit">gconf_postinit</a>                  (gpointer app,
                                              gpointer mod_info);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-IS-INITIALIZED"
->gconf_is_initialized</A
->            (void);
-void        (<A
-HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
->*GConfNotifyFunc</A
->)              (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-is-initialized">gconf_is_initialized</a>            (void);
+void        (<a href="gconf-gconf.html#GConfNotifyFunc">*GConfNotifyFunc</a>)              (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              guint cnxn_id,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
-> *entry,
+                                             <a href="gconf-gconf-value.html#GConfEntry">GConfEntry</a> *entry,
                                              gpointer user_data);
-guint       <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+guint       <a href="gconf-gconf.html#gconf-engine-notify-add">gconf_engine_notify_add</a>         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *namespace_section,
-                                             <A
-HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
->GConfNotifyFunc</A
-> func,
+                                             <a href="gconf-gconf.html#GConfNotifyFunc">GConfNotifyFunc</a> func,
                                              gpointer user_data,
                                              GError **err);
-void        <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-REMOVE"
->gconf_engine_notify_remove</A
->      (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+void        <a href="gconf-gconf.html#gconf-engine-notify-remove">gconf_engine_notify_remove</a>      (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              guint cnxn);
-<A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->                (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* <a href="gconf-gconf.html#gconf-engine-get">gconf_engine_get</a>                (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-<A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-WITH-LOCALE"
->gconf_engine_get_with_locale</A
->    (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* <a href="gconf-gconf.html#gconf-engine-get-with-locale">gconf_engine_get_with_locale</a>    (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *locale,
                                              GError **err);
-<A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-WITHOUT-DEFAULT"
->gconf_engine_get_without_default</A
->
-                                            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* <a href="gconf-gconf.html#gconf-engine-get-without-default">gconf_engine_get_without_default</a>
+                                            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-<A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
->* <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-ENTRY"
->gconf_engine_get_entry</A
->          (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<a href="gconf-gconf-value.html#GConfEntry">GConfEntry</a>* <a href="gconf-gconf.html#gconf-engine-get-entry">gconf_engine_get_entry</a>          (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *locale,
                                              gboolean use_schema_default,
                                              GError **err);
-<A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-DEFAULT-FROM-SCHEMA"
->gconf_engine_get_default_from_schema</A
->
-                                            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* <a href="gconf-gconf.html#gconf-engine-get-default-from-schema">gconf_engine_get_default_from_schema</a>
+                                            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET"
->gconf_engine_set</A
->                (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set">gconf_engine_set</a>                (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             const <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
-> *value,
+                                             const <a href="gconf-gconf-value.html#GConfValue">GConfValue</a> *value,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-UNSET"
->gconf_engine_unset</A
->              (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-unset">gconf_engine_unset</a>              (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-ASSOCIATE-SCHEMA"
->gconf_engine_associate_schema</A
->   (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-associate-schema">gconf_engine_associate_schema</a>   (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *schema_key,
                                              GError **err);
-GSList*     <A
-HREF="gconf-gconf.html#GCONF-ENGINE-ALL-ENTRIES"
->gconf_engine_all_entries</A
->        (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+GSList*     <a href="gconf-gconf.html#gconf-engine-all-entries">gconf_engine_all_entries</a>        (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *dir,
                                              GError **err);
-GSList*     <A
-HREF="gconf-gconf.html#GCONF-ENGINE-ALL-DIRS"
->gconf_engine_all_dirs</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+GSList*     <a href="gconf-gconf.html#gconf-engine-all-dirs">gconf_engine_all_dirs</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *dir,
                                              GError **err);
-void        <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SUGGEST-SYNC"
->gconf_engine_suggest_sync</A
->       (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+void        <a href="gconf-gconf.html#gconf-engine-suggest-sync">gconf_engine_suggest_sync</a>       (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-DIR-EXISTS"
->gconf_engine_dir_exists</A
->         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-dir-exists">gconf_engine_dir_exists</a>         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *dir,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-VALID-KEY"
->gconf_valid_key</A
->                 (const gchar *key,
+gboolean    <a href="gconf-gconf.html#gconf-valid-key">gconf_valid_key</a>                 (const gchar *key,
                                              gchar **why_invalid);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-KEY-IS-BELOW"
->gconf_key_is_below</A
->              (const gchar *above,
+gboolean    <a href="gconf-gconf.html#gconf-key-is-below">gconf_key_is_below</a>              (const gchar *above,
                                              const gchar *below);
-gdouble     <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-FLOAT"
->gconf_engine_get_float</A
->          (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gdouble     <a href="gconf-gconf.html#gconf-engine-get-float">gconf_engine_get_float</a>          (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-gint        <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-INT"
->gconf_engine_get_int</A
->            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gint        <a href="gconf-gconf.html#gconf-engine-get-int">gconf_engine_get_int</a>            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-gchar*      <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-STRING"
->gconf_engine_get_string</A
->         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gchar*      <a href="gconf-gconf.html#gconf-engine-get-string">gconf_engine_get_string</a>         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-BOOL"
->gconf_engine_get_bool</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-get-bool">gconf_engine_get_bool</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-<A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
->* <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-SCHEMA"
->gconf_engine_get_schema</A
->        (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<a href="gconf-gconf-schema.html#GConfSchema">GConfSchema</a>* <a href="gconf-gconf.html#gconf-engine-get-schema">gconf_engine_get_schema</a>        (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              GError **err);
-GSList*     <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-LIST"
->gconf_engine_get_list</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+GSList*     <a href="gconf-gconf.html#gconf-engine-get-list">gconf_engine_get_list</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> list_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> list_type,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
->gconf_engine_get_pair</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-get-pair">gconf_engine_get_pair</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> car_type,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> cdr_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> car_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> cdr_type,
                                              gpointer car_retloc,
                                              gpointer cdr_retloc,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-FLOAT"
->gconf_engine_set_float</A
->          (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-float">gconf_engine_set_float</a>          (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              gdouble val,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-INT"
->gconf_engine_set_int</A
->            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-int">gconf_engine_set_int</a>            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              gint val,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-STRING"
->gconf_engine_set_string</A
->         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-string">gconf_engine_set_string</a>         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *val,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-BOOL"
->gconf_engine_set_bool</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-bool">gconf_engine_set_bool</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              gboolean val,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-SCHEMA"
->gconf_engine_set_schema</A
->         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-schema">gconf_engine_set_schema</a>         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             const <A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
-> *val,
+                                             const <a href="gconf-gconf-schema.html#GConfSchema">GConfSchema</a> *val,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-LIST"
->gconf_engine_set_list</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-list">gconf_engine_set_list</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> list_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> list_type,
                                              GSList *list,
                                              GError **err);
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-PAIR"
->gconf_engine_set_pair</A
->           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+gboolean    <a href="gconf-gconf.html#gconf-engine-set-pair">gconf_engine_set_pair</a>           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> car_type,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> cdr_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> car_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> cdr_type,
                                              gconstpointer address_of_car,
                                              gconstpointer address_of_cdr,
                                              GError **err);
-struct      <A
-HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
->GConfEnumStringPair</A
->;
-gboolean    <A
-HREF="gconf-gconf.html#GCONF-STRING-TO-ENUM"
->gconf_string_to_enum</A
->            (<A
-HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
->GConfEnumStringPair</A
-> lookup_table[],
+struct      <a href="gconf-gconf.html#GConfEnumStringPair">GConfEnumStringPair</a>;
+gboolean    <a href="gconf-gconf.html#gconf-string-to-enum">gconf_string_to_enum</a>            (<a href="gconf-gconf.html#GConfEnumStringPair">GConfEnumStringPair</a> lookup_table[],
                                              const gchar *str,
                                              gint *enum_value_retloc);
-const gchar* <A
-HREF="gconf-gconf.html#GCONF-ENUM-TO-STRING"
->gconf_enum_to_string</A
->           (<A
-HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
->GConfEnumStringPair</A
-> lookup_table[],
-                                             gint enum_value);</PRE
-></TD
-></TR
-></TABLE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN857"
-></A
-><H2
->Description</H2
-><P
->These functions initialize GConf, and communicate with the
-<SPAN
-CLASS="APPLICATION"
->gconfd</SPAN
-> server via a
-<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> object. You can install a notification
+const gchar* <a href="gconf-gconf.html#gconf-enum-to-string">gconf_enum_to_string</a>           (<a href="gconf-gconf.html#GConfEnumStringPair">GConfEnumStringPair</a> lookup_table[],
+                                             gint enum_value);
+</pre></div><div class="refsect1" lang="en"><a name="id2744530"></a><h2>Description</h2><p>
+These functions initialize GConf, and communicate with the
+<span class="application">gconfd</span> server via a
+<a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> object. You can install a notification
 request on the server, get values, set values, list directories, and associate
-schema names with keys.</P
-><P
->Most of this interface is replicated in the GtkObject wrapper
-(<A
-HREF="gconfclient.html"
->GConfClient</A
-> object); an alternative to the value-setting functions
-is the <A
-HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
->GConfChangeSet</A
-> interface.</P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN866"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN868"
-></A
-><H3
-><A
-NAME="GCONF-INIT"
-></A
->gconf_init ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_init                      (int argc,
+schema names with keys.
+</p><p>
+Most of this interface is replicated in the <span class="type">GObject</span> wrapper
+(<span class="type">GConfClient</span> object); an alternative to the value-setting functions
+is the <a href="gconf-gconf-changeset.html#GConfChangeSet"><span class="type">GConfChangeSet</span></a> interface.
+</p></div><div class="refsect1" lang="en"><a name="id2744577"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2744583"></a><h3><a name="gconf-init"></a>gconf_init ()</h3><a class="indexterm" name="id2744591"></a><pre class="programlisting">gboolean    gconf_init                      (int argc,
                                              char **argv,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="100%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
-><TT
-CLASS="LITERAL"
->gconf_init</TT
-> is deprecated and should not be used in newly-written code.</P
-></TD
-></TR
-></TABLE
-></DIV
-><P
->Initializes the GConf library. Creates a connection to a CORBA ORB, and
+                                             GError **err);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gconf_init</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Initializes the GConf library. Creates a connection to a CORBA ORB, and
 initializes OAF (the object activation framework) if it isn't already
-initialized.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN878"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->argv</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> on success, <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> otherwise.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN903"
-></A
-><H3
-><A
-NAME="GCONF-PREINIT"
-></A
->gconf_preinit ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gconf_preinit                   (gpointer app,
-                                             gpointer mod_info);</PRE
-></TD
-></TR
-></TABLE
-><DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="100%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
-><TT
-CLASS="LITERAL"
->gconf_preinit</TT
-> is deprecated and should not be used in newly-written code.</P
-></TD
-></TR
-></TABLE
-></DIV
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN913"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->app</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->mod_info</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN926"
-></A
-><H3
-><A
-NAME="GCONF-POSTINIT"
-></A
->gconf_postinit ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gconf_postinit                  (gpointer app,
-                                             gpointer mod_info);</PRE
-></TD
-></TR
-></TABLE
-><DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="100%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
-><TT
-CLASS="LITERAL"
->gconf_postinit</TT
-> is deprecated and should not be used in newly-written code.</P
-></TD
-></TR
-></TABLE
-></DIV
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN936"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->app</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->mod_info</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN949"
-></A
-><H3
-><A
-NAME="GCONF-IS-INITIALIZED"
-></A
->gconf_is_initialized ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_is_initialized            (void);</PRE
-></TD
-></TR
-></TABLE
-><DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="100%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
-><TT
-CLASS="LITERAL"
->gconf_is_initialized</TT
-> is deprecated and should not be used in newly-written code.</P
-></TD
-></TR
-></TABLE
-></DIV
-><P
->Asks whether the library has been initialized.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN958"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> if the library has been initialized.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN968"
-></A
-><H3
-><A
-NAME="GCONFNOTIFYFUNC"
-></A
->GConfNotifyFunc ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        (*GConfNotifyFunc)              (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+initialized.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> otherwise.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744696"></a><h3><a name="gconf-preinit"></a>gconf_preinit ()</h3><a class="indexterm" name="id2744704"></a><pre class="programlisting">void        gconf_preinit                   (gpointer app,
+                                             gpointer mod_info);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gconf_preinit</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>mod_info</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744765"></a><h3><a name="gconf-postinit"></a>gconf_postinit ()</h3><a class="indexterm" name="id2744773"></a><pre class="programlisting">void        gconf_postinit                  (gpointer app,
+                                             gpointer mod_info);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gconf_postinit</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>mod_info</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744834"></a><h3><a name="gconf-is-initialized"></a>gconf_is_initialized ()</h3><a class="indexterm" name="id2744843"></a><pre class="programlisting">gboolean    gconf_is_initialized            (void);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gconf_is_initialized</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Asks whether the library has been initialized.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> if the library has been initialized.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744884"></a><h3><a name="GConfNotifyFunc"></a>GConfNotifyFunc ()</h3><a class="indexterm" name="id2744893"></a><pre class="programlisting">void        (*GConfNotifyFunc)              (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              guint cnxn_id,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
-> *entry,
-                                             gpointer user_data);</PRE
-></TD
-></TR
-></TABLE
-><P
->A callback function invoked when a key's value changes. The <TT
-CLASS="PARAMETER"
-><I
->cnxn_id</I
-></TT
-> parameter
-will be the connection ID returned from <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->(). <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> will be the
-full path of the changed key, <TT
-CLASS="PARAMETER"
-><I
->value</I
-></TT
-> will be the new value if the key is set.
-If the key is unset, <TT
-CLASS="PARAMETER"
-><I
->value</I
-></TT
-> will be the default value if one exists, or
-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> otherwise. <TT
-CLASS="PARAMETER"
-><I
->is_default</I
-></TT
-> indicates whether a value is a
-default setting or a user setting. If <TT
-CLASS="PARAMETER"
-><I
->value</I
-></TT
-> is <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
->,
-<TT
-CLASS="PARAMETER"
-><I
->is_default</I
-></TT
-> will be <SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
->. <TT
-CLASS="PARAMETER"
-><I
->user_data</I
-></TT
-> is the data passed to
-<A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->().</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN990"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> passed to <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->().</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->cnxn_id</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the ID returned from <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->().</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->entry</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->user_data</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the user data passed to <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->().</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1015"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-NOTIFY-ADD"
-></A
->gconf_engine_notify_add ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->guint       gconf_engine_notify_add         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             <a href="gconf-gconf-value.html#GConfEntry">GConfEntry</a> *entry,
+                                             gpointer user_data);</pre><p>
+A callback function invoked when a key's value changes. The <i class="parameter"><tt>cnxn_id</tt></i> parameter
+will be the connection ID returned from <a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a>. <i class="parameter"><tt>key</tt></i> will be the
+full path of the changed key, <i class="parameter"><tt>value</tt></i> will be the new value if the key is set.
+If the key is unset, <i class="parameter"><tt>value</tt></i> will be the default value if one exists, or
+<span class="symbol">NULL</span> otherwise. <i class="parameter"><tt>is_default</tt></i> indicates whether a value is a
+default setting or a user setting. If <i class="parameter"><tt>value</tt></i> is <span class="symbol">NULL</span>,
+<i class="parameter"><tt>is_default</tt></i> will be <span class="symbol">TRUE</span>. <i class="parameter"><tt>user_data</tt></i> is the data passed to
+<a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>the <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> passed to <a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cnxn_id</tt></i> :</span></td><td>the ID returned from <a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>entry</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>the user data passed to <a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745021"></a><h3><a name="gconf-engine-notify-add"></a>gconf_engine_notify_add ()</h3><a class="indexterm" name="id2745028"></a><pre class="programlisting">guint       gconf_engine_notify_add         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *namespace_section,
-                                             <A
-HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
->GConfNotifyFunc</A
-> func,
+                                             <a href="gconf-gconf.html#GConfNotifyFunc">GConfNotifyFunc</a> func,
                                              gpointer user_data,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Registers a notification request with the <SPAN
-CLASS="APPLICATION"
->gconfd</SPAN
->
+                                             GError **err);</pre><p>
+Registers a notification request with the <span class="application">gconfd</span>
 server.  The server will notify the client when any key at or below
-<TT
-CLASS="PARAMETER"
-><I
->namespace_section</I
-></TT
-> is set or unset. Try to watch the smallest possible part of
+<i class="parameter"><tt>namespace_section</tt></i> is set or unset. Try to watch the smallest possible part of
 the namespace; otherwise you will slow down the server and your application with
-unnecessary notifications. Note that you should prefer <A
-HREF="gconfclient.html#GCONF-CLIENT-NOTIFY-ADD"
->gconf_client_notify_add</A
->()
-if you're using the GtkObject wrapper library, because
-<A
-HREF="gconfclient.html#GCONF-CLIENT-NOTIFY-ADD"
->gconf_client_notify_add</A
->() does not require a client-server conversation for
-every callback. <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->() requests a different server notification for
+unnecessary notifications. Note that you should prefer <a href="gconf-GConfClient.html#gconf-client-notify-add"><tt class="function">gconf_client_notify_add()</tt></a>
+if you're using the <span class="type">GObject</span> wrapper library, because
+<a href="gconf-GConfClient.html#gconf-client-notify-add"><tt class="function">gconf_client_notify_add()</tt></a> does not require a client-server conversation for
+every callback. <a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a> requests a different server notification for
 every callback. The function returns an ID you can use to remove the
-notification request; 0 is an invalid ID, and is returned if an error occurs.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1032"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to monitor for changes.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->namespace_section</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the directory or key to watch; you will be notified of changes at or below this point.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->func</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the callback to invoke when a notification is received from the server.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->user_data</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the data to pass to the callback.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->an ID for the notification request, or 0 on error.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1064"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-NOTIFY-REMOVE"
-></A
->gconf_engine_notify_remove ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gconf_engine_notify_remove      (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
-                                             guint cnxn);</PRE
-></TD
-></TR
-></TABLE
-><P
->Removes a notification request.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1071"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> you were monitoring for changes.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->cnxn</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->The ID returned by <A
-HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
->gconf_engine_notify_add</A
->().
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1086"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET"
-></A
->gconf_engine_get ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* gconf_engine_get                (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+notification request; 0 is an invalid ID, and is returned if an error occurs.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to monitor for changes.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>namespace_section</tt></i> :</span></td><td>the directory or key to watch; you will be notified of changes at or below this point.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td>the callback to invoke when a notification is received from the server.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>the data to pass to the callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>an ID for the notification request, or 0 on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745193"></a><h3><a name="gconf-engine-notify-remove"></a>gconf_engine_notify_remove ()</h3><a class="indexterm" name="id2745201"></a><pre class="programlisting">void        gconf_engine_notify_remove      (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
+                                             guint cnxn);</pre><p>
+Removes a notification request.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>the <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> you were monitoring for changes.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cnxn</tt></i> :</span></td><td>The ID returned by <a href="gconf-gconf.html#gconf-engine-notify-add"><tt class="function">gconf_engine_notify_add()</tt></a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745264"></a><h3><a name="gconf-engine-get"></a>gconf_engine_get ()</h3><a class="indexterm" name="id2745273"></a><pre class="programlisting"><a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* gconf_engine_get                (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Returns the <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
-> stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if no value is
-set. You must call <A
-HREF="gconf-gconf-value.html#GCONF-VALUE-FREE"
->gconf_value_free</A
->() to free the returned value. If you know
+                                             GError **err);</pre><p>
+Returns the <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a> stored at <i class="parameter"><tt>key</tt></i>, or <span class="symbol">NULL</span> if no value is
+set. You must call <a href="gconf-gconf-value.html#gconf-value-free"><tt class="function">gconf_value_free()</tt></a> to free the returned value. If you know
 the expected type of the value, you probably want to use the type-specific
-convenience wrappers (<A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-INT"
->gconf_engine_get_int</A
->(), etc.)  because they will do the
+convenience wrappers (<a href="gconf-gconf.html#gconf-engine-get-int"><tt class="function">gconf_engine_get_int()</tt></a>, etc.)  because they will do the
 type-checking for you and return the appropriate type. Automatically returns the
-default value for a key, if the key is unset and a default exists.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1100"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to get the value from.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to get.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->newly-allocated <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if unset and no default exists.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1126"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-WITH-LOCALE"
-></A
->gconf_engine_get_with_locale ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* gconf_engine_get_with_locale    (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+default value for a key, if the key is unset and a default exists.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to get the value from.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to get.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>newly-allocated <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>, or <span class="symbol">NULL</span> if unset and no default exists.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745406"></a><h3><a name="gconf-engine-get-with-locale"></a>gconf_engine_get_with_locale ()</h3><a class="indexterm" name="id2745414"></a><pre class="programlisting"><a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* gconf_engine_get_with_locale    (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *locale,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the value appropriate for a particular locale. Right now,
-only values of type <TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
-> are localized; the locale is
-meaningless for other value types. Also, <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->() automatically
+                                             GError **err);</pre><p>
+Requests the value appropriate for a particular locale. Right now,
+only values of type <tt class="literal">GCONF_VALUE_SCHEMA</tt> are localized; the locale is
+meaningless for other value types. Also, <a href="gconf-gconf.html#gconf-engine-get"><tt class="function">gconf_engine_get()</tt></a> automatically
 requests the value in the user's current locale. So this function is
 only useful if you want a schema for some locale other than the user's
 current locale. Except for the additional argument, this function is
-identical to <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->() in all respects.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1139"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to get the value from.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to get.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->locale</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->preferred locale (as in the locale-related environment variables).</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->newly-allocated <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if unset.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1169"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-WITHOUT-DEFAULT"
-></A
->gconf_engine_get_without_default ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* gconf_engine_get_without_default
-                                            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+identical to <a href="gconf-gconf.html#gconf-engine-get"><tt class="function">gconf_engine_get()</tt></a> in all respects.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to get the value from.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to get.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>locale</tt></i> :</span></td><td>preferred locale (as in the locale-related environment variables).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>newly-allocated <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>, or <span class="symbol">NULL</span> if unset.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745558"></a><h3><a name="gconf-engine-get-without-default"></a>gconf_engine_get_without_default ()</h3><a class="indexterm" name="id2745566"></a><pre class="programlisting"><a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* gconf_engine_get_without_default
+                                            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Identical to <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->(), except that it will return <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> in
-place of the default value if the key is unset. Note that <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->() can also
-return <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if no default exists or an error occurs.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1182"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to get the value from.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to get.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->newly-allocated <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if unset.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1208"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-ENTRY"
-></A
->gconf_engine_get_entry ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
->* gconf_engine_get_entry          (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Identical to <a href="gconf-gconf.html#gconf-engine-get"><tt class="function">gconf_engine_get()</tt></a>, except that it will return <span class="symbol">NULL</span> in
+place of the default value if the key is unset. Note that <a href="gconf-gconf.html#gconf-engine-get"><tt class="function">gconf_engine_get()</tt></a> can also
+return <span class="symbol">NULL</span> if no default exists or an error occurs.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to get the value from.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to get.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>newly-allocated <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>, or <span class="symbol">NULL</span> if unset.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745690"></a><h3><a name="gconf-engine-get-entry"></a>gconf_engine_get_entry ()</h3><a class="indexterm" name="id2745698"></a><pre class="programlisting"><a href="gconf-gconf-value.html#GConfEntry">GConfEntry</a>* gconf_engine_get_entry          (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *locale,
                                              gboolean use_schema_default,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Obtain the full <A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
-> for a value.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1220"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->locale</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->use_schema_default</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1249"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-DEFAULT-FROM-SCHEMA"
-></A
->gconf_engine_get_default_from_schema ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->* gconf_engine_get_default_from_schema
-                                            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Obtain the full <a href="gconf-gconf-value.html#GConfEntry"><span class="type">GConfEntry</span></a> for a value.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>locale</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>use_schema_default</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745816"></a><h3><a name="gconf-engine-get-default-from-schema"></a>gconf_engine_get_default_from_schema ()</h3><a class="indexterm" name="id2745824"></a><pre class="programlisting"><a href="gconf-gconf-value.html#GConfValue">GConfValue</a>* gconf_engine_get_default_from_schema
+                                            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Returns the default value stored in the key's schema, if the key has a schema
+                                             GError **err);</pre><p>
+Returns the default value stored in the key's schema, if the key has a schema
 associated and the schema exists and the schema contains a default value.  Note
-that <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->(), <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-STRING"
->gconf_engine_get_string</A
->(), and so on already return the default value
+that <a href="gconf-gconf.html#gconf-engine-get"><tt class="function">gconf_engine_get()</tt></a>, <a href="gconf-gconf.html#gconf-engine-get-string"><tt class="function">gconf_engine_get_string()</tt></a>, and so on already return the default value
 if no other value is found, so normally you do not need this function. This
-function is just for convenience; you could also get the <A
-HREF="gconf-gconf-value.html#GCONFMETAINFO"
->GConfMetaInfo</A
-> for the
+function is just for convenience; you could also get the <a href="gconf-gconf-value.html#GConfMetaInfo"><span class="type">GConfMetaInfo</span></a> for the
 key, read the schema name from there, then look up the schema by name and
-extract the default value.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1261"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to get the value from.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to get the default value for.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->newly-allocated <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if unset.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1287"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET"
-></A
->gconf_engine_set ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set                (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+extract the default value.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to get the value from.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to get the default value for.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>newly-allocated <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>, or <span class="symbol">NULL</span> if unset.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2745955"></a><h3><a name="gconf-engine-set"></a>gconf_engine_set ()</h3><a class="indexterm" name="id2745964"></a><pre class="programlisting">gboolean    gconf_engine_set                (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             const <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
-> *value,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Sets the value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> to <TT
-CLASS="PARAMETER"
-><I
->value</I
-></TT
->. Does not modify the passed-in
-<A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->, you must free it yourself. You may prefer a type-specific
-convenience wrapper, such as <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SET-INT"
->gconf_engine_set_int</A
->().</P
-><P
-> An error of note is <TT
-CLASS="LITERAL"
->GCONF_OVERRIDDEN</TT
->, indicating that the system
+                                             const <a href="gconf-gconf-value.html#GConfValue">GConfValue</a> *value,
+                                             GError **err);</pre><p>
+Sets the value of <i class="parameter"><tt>key</tt></i> to <i class="parameter"><tt>value</tt></i>. Does not modify the passed-in
+<a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>, you must free it yourself. You may prefer a type-specific
+convenience wrapper, such as <a href="gconf-gconf.html#gconf-engine-set-int"><tt class="function">gconf_engine_set_int()</tt></a>.
+</p><p>
+ An error of note is <tt class="literal">GCONF_OVERRIDDEN</tt>, indicating that the system
 administrator has "forced" a value for this key. If no writable
 configuration sources exist, it is not an error, but GConf will just
 forget all your values; this allows users to have a configuration-free
-setup without a constant barrage of error messages.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1303"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to set the value in.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to set.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->value</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the new value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> on success, <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> on error.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1334"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-UNSET"
-></A
->gconf_engine_unset ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_unset              (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+setup without a constant barrage of error messages.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to set the value in.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to set.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>the new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746114"></a><h3><a name="gconf-engine-unset"></a>gconf_engine_unset ()</h3><a class="indexterm" name="id2746122"></a><pre class="programlisting">gboolean    gconf_engine_unset              (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Unsets the value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->; if <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> is already unset, has no effect.  An
-error of note is <TT
-CLASS="LITERAL"
->GCONF_OVERRIDDEN</TT
->, indicating that the system
-administrator has "forced" a value for this key.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1346"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to affect.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to unset.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> on success, <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> on error.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1372"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-ASSOCIATE-SCHEMA"
-></A
->gconf_engine_associate_schema ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_associate_schema   (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Unsets the value of <i class="parameter"><tt>key</tt></i>; if <i class="parameter"><tt>key</tt></i> is already unset, has no effect.  An
+error of note is <tt class="literal">GCONF_OVERRIDDEN</tt>, indicating that the system
+administrator has "forced" a value for this key.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to unset.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746233"></a><h3><a name="gconf-engine-associate-schema"></a>gconf_engine_associate_schema ()</h3><a class="indexterm" name="id2746241"></a><pre class="programlisting">gboolean    gconf_engine_associate_schema   (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *schema_key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Directs GConf to find the schema for <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> at location
-<TT
-CLASS="PARAMETER"
-><I
->schema_key</I
-></TT
->. That is, the value stored at <TT
-CLASS="PARAMETER"
-><I
->schema_key</I
-></TT
-> should have type
-GCONF_VALUE_SCHEMA, and be descriptive of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->. Normally you don't
+                                             GError **err);</pre><p>
+Directs GConf to find the schema for <i class="parameter"><tt>key</tt></i> at location
+<i class="parameter"><tt>schema_key</tt></i>. That is, the value stored at <i class="parameter"><tt>schema_key</tt></i> should have type
+<span class="type">GCONF_VALUE_SCHEMA</span>, and be descriptive of <i class="parameter"><tt>key</tt></i>. Normally you don't
 call this function from C code; you can ship a special file with your
-application and ask <SPAN
-CLASS="APPLICATION"
->gconftool</SPAN
-> to install
-schema associations into the database during "make install."</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1388"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to affect.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key to associate the schema with.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->schema_key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key where the schema will be stored.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> on success, <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> on error.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1418"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-ALL-ENTRIES"
-></A
->gconf_engine_all_entries ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GSList*     gconf_engine_all_entries        (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+application and ask <span class="application">gconftool</span> to install
+schema associations into the database during "make install."
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>the key to associate the schema with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>schema_key</tt></i> :</span></td><td>the key where the schema will be stored.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746382"></a><h3><a name="gconf-engine-all-entries"></a>gconf_engine_all_entries ()</h3><a class="indexterm" name="id2746390"></a><pre class="programlisting">GSList*     gconf_engine_all_entries        (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *dir,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Lists the key-value pairs in <TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->. Does not list subdirectories; for
-that use <A
-HREF="gconf-gconf.html#GCONF-ENGINE-ALL-DIRS"
->gconf_engine_all_dirs</A
->(). The returned list contains <A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
->
-objects. A <A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
-> contains a <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->relative</I
-></SPAN
-> key
+                                             GError **err);</pre><p>
+Lists the key-value pairs in <i class="parameter"><tt>dir</tt></i>. Does not list subdirectories; for
+that use <a href="gconf-gconf.html#gconf-engine-all-dirs"><tt class="function">gconf_engine_all_dirs()</tt></a>. The returned list contains <a href="gconf-gconf-value.html#GConfEntry"><span class="type">GConfEntry</span></a>
+objects. A <a href="gconf-gconf-value.html#GConfEntry"><span class="type">GConfEntry</span></a> contains an <span class="emphasis"><em>absolute</em></span> key
 and a value. The list is not recursive, it contains only the immediate
-children of <TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->.  To free the returned list, <A
-HREF="gconf-gconf-value.html#GCONF-ENTRY-FREE"
->gconf_entry_free</A
->()
-each list element, then g_slist_free() the list itself.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1435"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->Directory to list.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->List of <A
-HREF="gconf-gconf-value.html#GCONFENTRY"
->GConfEntry</A
->.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1460"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-ALL-DIRS"
-></A
->gconf_engine_all_dirs ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GSList*     gconf_engine_all_dirs           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+children of <i class="parameter"><tt>dir</tt></i>.  To free the returned list, <a href="gconf-gconf-value.html#gconf-entry-free"><tt class="function">gconf_entry_free()</tt></a>
+each list element, then <tt class="function">g_slist_free()</tt> the list itself.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td>Directory to list.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>List of <a href="gconf-gconf-value.html#GConfEntry"><span class="type">GConfEntry</span></a>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746533"></a><h3><a name="gconf-engine-all-dirs"></a>gconf_engine_all_dirs ()</h3><a class="indexterm" name="id2746541"></a><pre class="programlisting">GSList*     gconf_engine_all_dirs           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *dir,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Lists the subdirectories in <TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->. The returned list contains allocated
-strings; you should g_free() each string in the list, then
-g_slist_free() the list itself.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1472"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->Directory to get subdirectories from.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->List of allocated subdirectory names.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1496"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SUGGEST-SYNC"
-></A
->gconf_engine_suggest_sync ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->void        gconf_engine_suggest_sync       (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Suggests to <SPAN
-CLASS="APPLICATION"
->gconfd</SPAN
-> that you've just finished
+                                             GError **err);</pre><p>
+Lists the subdirectories in <i class="parameter"><tt>dir</tt></i>. The returned list contains allocated
+strings. Each string is the absolute path of a subdirectory. You should <tt class="function">g_free()</tt> each string in the list, then <tt class="function">g_slist_free()</tt> the list itself.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td>Directory to get subdirectories from.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>List of allocated subdirectory names.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746652"></a><h3><a name="gconf-engine-suggest-sync"></a>gconf_engine_suggest_sync ()</h3><a class="indexterm" name="id2746660"></a><pre class="programlisting">void        gconf_engine_suggest_sync       (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
+                                             GError **err);</pre><p>
+Suggests to <span class="application">gconfd</span> that you've just finished
 a block of changes, and it would be an optimal time to sync to
 permanent storage. This is only a suggestion; and
-<SPAN
-CLASS="APPLICATION"
->gconfd</SPAN
-> will eventually sync even if you
-don't call <A
-HREF="gconf-gconf.html#GCONF-ENGINE-SUGGEST-SYNC"
->gconf_engine_suggest_sync</A
->(). This function is just a "hint"
-provided to <SPAN
-CLASS="APPLICATION"
->gconfd</SPAN
-> to maximize efficiency
-and minimize data loss.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1507"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> to suggest syncing to.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1523"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-DIR-EXISTS"
-></A
->gconf_engine_dir_exists ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_dir_exists         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<span class="application">gconfd</span> will eventually sync even if you
+don't call <a href="gconf-gconf.html#gconf-engine-suggest-sync"><tt class="function">gconf_engine_suggest_sync()</tt></a>. This function is just a "hint"
+provided to <span class="application">gconfd</span> to maximize efficiency
+and minimize data loss.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>the <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a> to suggest syncing to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746748"></a><h3><a name="gconf-engine-dir-exists"></a>gconf_engine_dir_exists ()</h3><a class="indexterm" name="id2746756"></a><pre class="programlisting">gboolean    gconf_engine_dir_exists         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *dir,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Queries whether the directory <TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
-> exists in the GConf
-database. Returns <SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> or <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
->.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1535"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->Directory to check for.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> or <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
->.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1561"
-></A
-><H3
-><A
-NAME="GCONF-VALID-KEY"
-></A
->gconf_valid_key ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_valid_key                 (const gchar *key,
-                                             gchar **why_invalid);</PRE
-></TD
-></TR
-></TABLE
-><P
->Asks whether a key is syntactically correct, that is, it ensures that
+                                             GError **err);</pre><p>
+Queries whether the directory <i class="parameter"><tt>dir</tt></i> exists in the GConf
+database. Returns <span class="symbol">TRUE</span> or <span class="symbol">FALSE</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td>Directory to check for.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> or <span class="symbol">FALSE</span>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746864"></a><h3><a name="gconf-valid-key"></a>gconf_valid_key ()</h3><a class="indexterm" name="id2746873"></a><pre class="programlisting">gboolean    gconf_valid_key                 (const gchar *key,
+                                             gchar **why_invalid);</pre><p>
+Asks whether a key is syntactically correct, that is, it ensures that
 the key consists of slash-separated strings and contains only legal
 characters. Normally you shouldn't need to call this function; the
 GConf functions all check this for you and return an error if the key
 is invalid. However, it may be useful to validate input to an entry
-field or the like. If you pass a non-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> address as
-the <TT
-CLASS="PARAMETER"
-><I
->why_invalid</I
-></TT
-> argument, an allocated string is returned explaining
-why the key is invalid, if it is. If the key is valid the <TT
-CLASS="PARAMETER"
-><I
->why_invalid</I
-></TT
->
-argument is unused.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1572"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key to check.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->why_invalid</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->return location for an explanation of the problem, if any. g_free() the returned string.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> if the key is valid, or <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> if not.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1592"
-></A
-><H3
-><A
-NAME="GCONF-KEY-IS-BELOW"
-></A
->gconf_key_is_below ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_key_is_below              (const gchar *above,
-                                             const gchar *below);</PRE
-></TD
-></TR
-></TABLE
-><P
->Asks whether the key <TT
-CLASS="PARAMETER"
-><I
->below</I
-></TT
-> would be found below the key <TT
-CLASS="PARAMETER"
-><I
->above</I
-></TT
->, were
-they both to exist in the database. For example, <SPAN
-CLASS="SYMBOL"
->/foo</SPAN
->
-is always found below <SPAN
-CLASS="SYMBOL"
->/</SPAN
-> and above
-<SPAN
-CLASS="SYMBOL"
->/foo/bar</SPAN
->. This probably isn't useful but GConf uses
-it internally so here it is if you need it.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1605"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->above</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key on the "left hand side" of the predicate.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->below</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the key on the "right hand side."</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> or <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
->.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1624"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-FLOAT"
-></A
->gconf_engine_get_float ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gdouble     gconf_engine_get_float          (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+field or the like. If you pass a non-<span class="symbol">NULL</span> address as
+the <i class="parameter"><tt>why_invalid</tt></i> argument, an allocated string is returned explaining
+why the key is invalid, if it is. If the key is valid the <i class="parameter"><tt>why_invalid</tt></i>
+argument is unused.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key to check.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>why_invalid</tt></i> :</span></td><td>return location for an explanation of the problem, if any. <tt class="function">g_free()</tt> the returned string.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> if the key is valid, or <span class="symbol">FALSE</span> if not.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2746964"></a><h3><a name="gconf-key-is-below"></a>gconf_key_is_below ()</h3><a class="indexterm" name="id2746972"></a><pre class="programlisting">gboolean    gconf_key_is_below              (const gchar *above,
+                                             const gchar *below);</pre><p>
+Asks whether the key <i class="parameter"><tt>below</tt></i> would be found below the key <i class="parameter"><tt>above</tt></i>, were
+they both to exist in the database. For example, <span class="symbol">/foo</span>
+is always found below <span class="symbol">/</span> and above
+<span class="symbol">/foo/bar</span>. This probably isn't useful but GConf uses
+it internally so here it is if you need it.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>above</tt></i> :</span></td><td>the key on the "left hand side" of the predicate.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>below</tt></i> :</span></td><td>the key on the "right hand side."
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> or <span class="symbol">FALSE</span>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2747059"></a><h3><a name="gconf-engine-get-float"></a>gconf_engine_get_float ()</h3><a class="indexterm" name="id2747067"></a><pre class="programlisting">gdouble     gconf_engine_get_float          (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the floating point number (<TT
-CLASS="LITERAL"
->GCONF_VALUE_FLOAT</TT
->) stored at
-<TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->. Automatically performs type-checking, so if a non-float is
-stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, an error is returned. On error, or if <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> is unset, 
-0.0 is returned.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1637"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, or 0.0 if no value is obtained.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1662"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-INT"
-></A
->gconf_engine_get_int ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gint        gconf_engine_get_int            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Requests the floating point number (<tt class="literal">GCONF_VALUE_FLOAT</tt>) stored at
+<i class="parameter"><tt>key</tt></i>. Automatically performs type-checking, so if a non-float is
+stored at <i class="parameter"><tt>key</tt></i>, an error is returned. On error, or if <i class="parameter"><tt>key</tt></i> is unset, 
+0.0 is returned.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the value of <i class="parameter"><tt>key</tt></i>, or 0.0 if no value is obtained.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2747182"></a><h3><a name="gconf-engine-get-int"></a>gconf_engine_get_int ()</h3><a class="indexterm" name="id2747190"></a><pre class="programlisting">gint        gconf_engine_get_int            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the integer (<TT
-CLASS="LITERAL"
->GCONF_VALUE_INT</TT
->) stored at
-<TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->. Automatically performs type-checking, so if a non-integer is
-stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, an error is returned. On error, or if <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> is unset, 
-0 is returned.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1675"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, or 0 if no value is obtained.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1700"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-STRING"
-></A
->gconf_engine_get_string ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gchar*      gconf_engine_get_string         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Requests the integer (<tt class="literal">GCONF_VALUE_INT</tt>) stored at
+<i class="parameter"><tt>key</tt></i>. Automatically performs type-checking, so if a non-integer is
+stored at <i class="parameter"><tt>key</tt></i>, an error is returned. On error, or if <i class="parameter"><tt>key</tt></i> is unset, 
+0 is returned.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the value of <i class="parameter"><tt>key</tt></i>, or 0 if no value is obtained.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2747304"></a><h3><a name="gconf-engine-get-string"></a>gconf_engine_get_string ()</h3><a class="indexterm" name="id2747312"></a><pre class="programlisting">gchar*      gconf_engine_get_string         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the string (<TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
->) stored at
-<TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->. Automatically performs type-checking, so if a non-string is
-stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, an error is returned. On error, or if <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> is unset, 
-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> is returned.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1714"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->allocated string (value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->), or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if no value is obtained.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1740"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-BOOL"
-></A
->gconf_engine_get_bool ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_get_bool           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Requests the string (<tt class="literal">GCONF_VALUE_STRING</tt>) stored at
+<i class="parameter"><tt>key</tt></i>. Automatically performs type-checking, so if a non-string is
+stored at <i class="parameter"><tt>key</tt></i>, an error is returned. On error, or if <i class="parameter"><tt>key</tt></i> is unset, 
+<span class="symbol">NULL</span> is returned.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>allocated string (value of <i class="parameter"><tt>key</tt></i>), or <span class="symbol">NULL</span> if no value is obtained.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2747432"></a><h3><a name="gconf-engine-get-bool"></a>gconf_engine_get_bool ()</h3><a class="indexterm" name="id2747440"></a><pre class="programlisting">gboolean    gconf_engine_get_bool           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the boolean value (<TT
-CLASS="LITERAL"
->GCONF_VALUE_BOOL</TT
->) stored at
-<TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->. Automatically performs type-checking, so if a non-bool is
-stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, an error is returned. On error, or if <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> is unset, 
-<SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> is returned.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1754"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, or <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> if no value is obtained.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1780"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-SCHEMA"
-></A
->gconf_engine_get_schema ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
-><A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
->* gconf_engine_get_schema        (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Requests the boolean value (<tt class="literal">GCONF_VALUE_BOOL</tt>) stored at
+<i class="parameter"><tt>key</tt></i>. Automatically performs type-checking, so if a non-bool is
+stored at <i class="parameter"><tt>key</tt></i>, an error is returned. On error, or if <i class="parameter"><tt>key</tt></i> is unset, 
+<span class="symbol">FALSE</span> is returned.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the value of <i class="parameter"><tt>key</tt></i>, or <span class="symbol">FALSE</span> if no value is obtained.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2747584"></a><h3><a name="gconf-engine-get-schema"></a>gconf_engine_get_schema ()</h3><a class="indexterm" name="id2747596"></a><pre class="programlisting"><a href="gconf-gconf-schema.html#GConfSchema">GConfSchema</a>* gconf_engine_get_schema        (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the schema (<TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
->) stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->.
+                                             GError **err);</pre><p>
+Requests the schema (<tt class="literal">GCONF_VALUE_SCHEMA</tt>) stored at <i class="parameter"><tt>key</tt></i>.
 Automatically performs type-checking, so if a non-schema is stored at
-<TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, an error is returned. If no value is set or an error occurs,
-<SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> is returned.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1793"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the value of <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
-> as an allocated <A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
->, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if no value was obtained.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1820"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-LIST"
-></A
->gconf_engine_get_list ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->GSList*     gconf_engine_get_list           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+<i class="parameter"><tt>key</tt></i>, an error is returned. If no value is set or an error occurs,
+<span class="symbol">NULL</span> is returned.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the value of <i class="parameter"><tt>key</tt></i> as an allocated <a href="gconf-gconf-schema.html#GConfSchema"><span class="type">GConfSchema</span></a>, or <span class="symbol">NULL</span> if no value was obtained.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2747749"></a><h3><a name="gconf-engine-get-list"></a>gconf_engine_get_list ()</h3><a class="indexterm" name="id2747762"></a><pre class="programlisting">GSList*     gconf_engine_get_list           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> list_type,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the list (<TT
-CLASS="LITERAL"
->GCONF_VALUE_LIST</TT
->) stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->.  Automatically
-performs type-checking, so if a non-list is stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, or the
-list does not contain elements of type <TT
-CLASS="PARAMETER"
-><I
->list_type</I
-></TT
->, an error is
-returned. If no value is set or an error occurs, <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
->
-is returned. Note that <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> is also the empty list,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> list_type,
+                                             GError **err);</pre><p>
+Requests the list (<tt class="literal">GCONF_VALUE_LIST</tt>) stored at <i class="parameter"><tt>key</tt></i>.  Automatically
+performs type-checking, so if a non-list is stored at <i class="parameter"><tt>key</tt></i>, or the
+list does not contain elements of type <i class="parameter"><tt>list_type</tt></i>, an error is
+returned. If no value is set or an error occurs, <span class="symbol">NULL</span>
+is returned. Note that <span class="symbol">NULL</span> is also the empty list,
 so if you need to distinguish the empty list from an unset value, you
-must use <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET"
->gconf_engine_get</A
->() to obtain a raw <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->.</P
-><P
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Remember that GConf lists can only store primitive types:
-<TT
-CLASS="LITERAL"
->GCONF_VALUE_FLOAT</TT
->, <TT
-CLASS="LITERAL"
->GCONF_VALUE_INT</TT
->, <TT
-CLASS="LITERAL"
->GCONF_VALUE_BOOL</TT
->,
-<TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
->, <TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
->.</I
-></SPAN
-> Also remember
-that lists must be uniform, you may not mix types in the same list.</P
-><P
->The type of the list elements depends on <TT
-CLASS="PARAMETER"
-><I
->list_type</I
-></TT
->. A <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->
-with type <TT
-CLASS="LITERAL"
->GCONF_VALUE_LIST</TT
-> normally stores a list of more <A
-HREF="gconf-gconf-value.html#GCONFVALUE"
->GConfValue</A
->
-objects. <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-LIST"
->gconf_engine_get_list</A
->() automatically converts to primitive C
+must use <a href="gconf-gconf.html#gconf-engine-get"><tt class="function">gconf_engine_get()</tt></a> to obtain a raw <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>.
+</p><p>
+<span class="emphasis"><em>Remember that GConf lists can only store primitive types:
+<tt class="literal">GCONF_VALUE_FLOAT</tt>, <tt class="literal">GCONF_VALUE_INT</tt>, <tt class="literal">GCONF_VALUE_BOOL</tt>,
+<tt class="literal">GCONF_VALUE_STRING</tt>, <tt class="literal">GCONF_VALUE_SCHEMA</tt>.</em></span> Also remember
+that lists must be uniform, you may not mix types in the same list.
+</p><p>
+The type of the list elements depends on <i class="parameter"><tt>list_type</tt></i>. A <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>
+with type <tt class="literal">GCONF_VALUE_LIST</tt> normally stores a list of more <a href="gconf-gconf-value.html#GConfValue"><span class="type">GConfValue</span></a>
+objects. <a href="gconf-gconf.html#gconf-engine-get-list"><tt class="function">gconf_engine_get_list()</tt></a> automatically converts to primitive C
 types. Thus, the list-&gt;data fields in the returned list 
 contain:
  
-<DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1851"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFFFFF"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_INT</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->The integer itself, converted with GINT_TO_POINTER()</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_BOOL</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->The bool itself, converted with GINT_TO_POINTER()</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_FLOAT</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->A pointer to gdouble, which should be freed with g_free()</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->A pointer to gchar, which should be freed with g_free()</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->A pointer to <A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
->, which should be freed with <A
-HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
->gconf_schema_free</A
->()</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
->
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td><tt class="literal">GCONF_VALUE_INT</tt></td><td>The integer itself, converted with <tt class="function">GINT_TO_POINTER()</tt></td></tr><tr><td><tt class="literal">GCONF_VALUE_BOOL</tt></td><td>The bool itself, converted with <tt class="function">GINT_TO_POINTER()</tt></td></tr><tr><td><tt class="literal">GCONF_VALUE_FLOAT</tt></td><td>A pointer to <span class="type">gdouble</span>, which should be freed with <tt class="function">g_free()</tt></td></tr><tr><td><tt class="literal">GCONF_VALUE_STRING</tt></td><td>A pointer to <span class="type">gchar</span>, which should be freed with <tt class="function">g_free()</tt></td></tr><tr><td><tt class="literal">GCONF_VALUE_SCHEMA</tt></td><td>A pointer to <a href="gconf-gconf-schema.html#GConfSchema"><span class="type">GConfSchema</span></a>, which should be freed with <a href="gconf-gconf-schema.html#gconf-schema-free"><tt class="function">gconf_schema_free()</tt></a></td></tr></tbody></table></div><p>
 
-In the <TT
-CLASS="LITERAL"
->GCONF_VALUE_FLOAT</TT
-> and <TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
-> cases, you must
-g_free() each list element. In the <TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
-> case you must
-<A
-HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
->gconf_schema_free</A
->() each element. In all cases you must free the
-list itself with g_slist_free().</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1890"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->list_type</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->type of each list element.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->an allocated list, with elements as described above.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1918"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-GET-PAIR"
-></A
->gconf_engine_get_pair ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_get_pair           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+In the <tt class="literal">GCONF_VALUE_FLOAT</tt> and <tt class="literal">GCONF_VALUE_STRING</tt> cases, you must
+<tt class="function">g_free()</tt> each list element. In the <tt class="literal">GCONF_VALUE_SCHEMA</tt> case you must
+<a href="gconf-gconf-schema.html#gconf-schema-free"><tt class="function">gconf_schema_free()</tt></a> each element. In all cases you must free the
+list itself with <tt class="function">g_slist_free()</tt>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>list_type</tt></i> :</span></td><td>type of each list element.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>an allocated list, with elements as described above.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2748207"></a><h3><a name="gconf-engine-get-pair"></a>gconf_engine_get_pair ()</h3><a class="indexterm" name="id2748219"></a><pre class="programlisting">gboolean    gconf_engine_get_pair           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> car_type,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> cdr_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> car_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> cdr_type,
                                              gpointer car_retloc,
                                              gpointer cdr_retloc,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
->Requests the pair (<TT
-CLASS="LITERAL"
->GCONF_VALUE_PAIR</TT
->) stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->.  Automatically
-performs type-checking, so if a non-pair is stored at <TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->, or the
-pair does not have the right <TT
-CLASS="PARAMETER"
-><I
->car_type</I
-></TT
-> and <TT
-CLASS="PARAMETER"
-><I
->cdr_type</I
-></TT
->, an error is
-returned. Remember that the <I
-CLASS="FIRSTTERM"
->car</I
-> of a pair is
-its first value, and the <I
-CLASS="FIRSTTERM"
->cdr</I
-> is its second
-value, in the Lisp tradition. </P
-><P
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Remember that GConf pairs can only store primitive types:
-<TT
-CLASS="LITERAL"
->GCONF_VALUE_FLOAT</TT
->, <TT
-CLASS="LITERAL"
->GCONF_VALUE_INT</TT
->, <TT
-CLASS="LITERAL"
->GCONF_VALUE_BOOL</TT
->,
-<TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
->, <TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
->.</I
-></SPAN
-></P
-><P
-><A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
->gconf_engine_get_pair</A
->() stores the two fields of the pair in the locations
-pointed to by <TT
-CLASS="PARAMETER"
-><I
->car_retloc</I
-></TT
-> and <TT
-CLASS="PARAMETER"
-><I
->cdr_retloc</I
-></TT
->. The type of these pointers
-depends on the corresponding <TT
-CLASS="PARAMETER"
-><I
->car_type</I
-></TT
-> and <TT
-CLASS="PARAMETER"
-><I
->cdr_type</I
-></TT
->:
+                                             GError **err);</pre><p>
+Requests the pair (<tt class="literal">GCONF_VALUE_PAIR</tt>) stored at <i class="parameter"><tt>key</tt></i>.  Automatically
+performs type-checking, so if a non-pair is stored at <i class="parameter"><tt>key</tt></i>, or the
+pair does not have the right <i class="parameter"><tt>car_type</tt></i> and <i class="parameter"><tt>cdr_type</tt></i>, an error is
+returned. Remember that the <i class="firstterm">car</i> of a pair is
+its first value, and the <i class="firstterm">cdr</i> is its second
+value, in the Lisp tradition. 
+</p><p>
+<span class="emphasis"><em>Remember that GConf pairs can only store primitive types:
+<tt class="literal">GCONF_VALUE_FLOAT</tt>, <tt class="literal">GCONF_VALUE_INT</tt>, <tt class="literal">GCONF_VALUE_BOOL</tt>,
+<tt class="literal">GCONF_VALUE_STRING</tt>, <tt class="literal">GCONF_VALUE_SCHEMA</tt>.</em></span>
+</p><p>
+<a href="gconf-gconf.html#gconf-engine-get-pair"><tt class="function">gconf_engine_get_pair()</tt></a> stores the two fields of the pair in the locations
+pointed to by <i class="parameter"><tt>car_retloc</tt></i> and <i class="parameter"><tt>cdr_retloc</tt></i>. The type of these pointers
+depends on the corresponding <i class="parameter"><tt>car_type</tt></i> and <i class="parameter"><tt>cdr_type</tt></i>:
  
-<DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1951"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFFFFF"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_INT</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->pointer to gint</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_BOOL</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->pointer to gboolean</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_FLOAT</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->pointer to gdouble</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->pointer to gchar*</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
-></TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->pointer to <A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
->*</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
->
+</p><div class="informaltable"><table width="100%" border="0"><colgroup><col><col></colgroup><tbody><tr><td><tt class="literal">GCONF_VALUE_INT</tt></td><td>pointer to <span class="type">gint</span></td></tr><tr><td><tt class="literal">GCONF_VALUE_BOOL</tt></td><td>pointer to <span class="type">gboolean</span></td></tr><tr><td><tt class="literal">GCONF_VALUE_FLOAT</tt></td><td>pointer to <span class="type">gdouble</span></td></tr><tr><td><tt class="literal">GCONF_VALUE_STRING</tt></td><td>pointer to <span class="type">gchar</span>*</td></tr><tr><td><tt class="literal">GCONF_VALUE_SCHEMA</tt></td><td>pointer to <a href="gconf-gconf-schema.html#GConfSchema"><span class="type">GConfSchema</span></a>*</td></tr></tbody></table></div><p>
 
-In the <TT
-CLASS="LITERAL"
->GCONF_VALUE_STRING</TT
-> case, you must g_free() the string(s)
-stored in the return location(s). In the <TT
-CLASS="LITERAL"
->GCONF_VALUE_SCHEMA</TT
-> case you
-must <A
-HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
->gconf_schema_free</A
->() the returned schema. If there's an error
-or the value is unset, <TT
-CLASS="PARAMETER"
-><I
->car_retloc</I
-></TT
-> and <TT
-CLASS="PARAMETER"
-><I
->cdr_retloc</I
-></TT
-> are left unchanged.</P
-><P
-><A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
->gconf_engine_get_pair</A
->() returns <SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> on success.</P
-><P
->An example of <A
-HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
->gconf_engine_get_pair</A
->() in action:
-<TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gdouble car = 10.0;
+In the <tt class="literal">GCONF_VALUE_STRING</tt> case, you must <tt class="function">g_free()</tt> the string(s)
+stored in the return location(s). In the <tt class="literal">GCONF_VALUE_SCHEMA</tt> case you
+must <a href="gconf-gconf-schema.html#gconf-schema-free"><tt class="function">gconf_schema_free()</tt></a> the returned schema. If there's an error
+or the value is unset, <i class="parameter"><tt>car_retloc</tt></i> and <i class="parameter"><tt>cdr_retloc</tt></i> are left unchanged.
+</p><p>
+<a href="gconf-gconf.html#gconf-engine-get-pair"><tt class="function">gconf_engine_get_pair()</tt></a> returns <span class="symbol">TRUE</span> on success.
+</p><p>
+An example of <a href="gconf-gconf.html#gconf-engine-get-pair"><tt class="function">gconf_engine_get_pair()</tt></a> in action:
+</p><pre class="programlisting">
+gdouble car = 10.0;
 gchar* cdr  = NULL; 
 GError* error = NULL;
 
@@ -4988,10 +568,7 @@ if (!gconf_engine_get_pair(conf, "/foo",
   {
     /* Note: car/cdr should be untouched, because an error occurred */
     g_assert(error != NULL);
-    fprintf(stderr, "Error: <TT
-CLASS="LITERAL"
->s</TT
->\n", error-&#62;message);
+    fprintf(stderr, "Error: <tt class="literal">s</tt>\n", error-&gt;message);
     g_error_free(error);
     error = NULL;
   }
@@ -5000,1669 +577,154 @@ else
     /* Note: car/cdr may be untouched even though there was no error, 
        if no value was set for "/foo"
      */
-    printf("Found pair (<TT
-CLASS="LITERAL"
->g</TT
->,<TT
-CLASS="LITERAL"
->s</TT
->)\n", car, cdr);
+    printf("Found pair (<tt class="literal">g</tt>,<tt class="literal">s</tt>)\n", car, cdr);
     if (cdr != NULL)
       g_free(cdr);
-  }</PRE
-></TD
-></TR
-></TABLE
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN1996"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->key you want the value of.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->car_type</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->desired type of the pair's first field (car).</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->cdr_type</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->desired type of the pair's second field (cdr).</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->car_retloc</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->address of a return location for the car.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->cdr_retloc</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->address of a return location for the cdr.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> on success, <SPAN
-CLASS="SYMBOL"
->FALSE</SPAN
-> on error.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2038"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-FLOAT"
-></A
->gconf_engine_set_float ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_float          (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+  }
+</pre><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>car_type</tt></i> :</span></td><td>desired type of the pair's first field (car).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cdr_type</tt></i> :</span></td><td>desired type of the pair's second field (cdr).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>car_retloc</tt></i> :</span></td><td>address of a return location for the car.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cdr_retloc</tt></i> :</span></td><td>address of a return location for the cdr.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2748739"></a><h3><a name="gconf-engine-set-float"></a>gconf_engine_set_float ()</h3><a class="indexterm" name="id2748752"></a><pre class="programlisting">gboolean    gconf_engine_set_float          (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              gdouble val,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2048"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2076"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-INT"
-></A
->gconf_engine_set_int ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_int            (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Change the value of <i class="parameter"><tt>key</tt></i> to <i class="parameter"><tt>val</tt></i>. Automatically creates the <i class="parameter"><tt>key</tt></i> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a float (GCONF_VALUE_FLOAT), <a href="gconf-gconf.html#gconf-engine-set-float"><tt class="function">gconf_engine_set_float()</tt></a> will fail.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>val</tt></i> :</span></td><td>new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2748926"></a><h3><a name="gconf-engine-set-int"></a>gconf_engine_set_int ()</h3><a class="indexterm" name="id2748938"></a><pre class="programlisting">gboolean    gconf_engine_set_int            (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              gint val,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2086"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2114"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-STRING"
-></A
->gconf_engine_set_string ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_string         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Change the value of <i class="parameter"><tt>key</tt></i> to <i class="parameter"><tt>val</tt></i>. Automatically creates the <i class="parameter"><tt>key</tt></i> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store an integer (GCONF_VALUE_INT), <a href="gconf-gconf.html#gconf-engine-set-int"><tt class="function">gconf_engine_set_int()</tt></a> will fail.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>val</tt></i> :</span></td><td>new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749112"></a><h3><a name="gconf-engine-set-string"></a>gconf_engine_set_string ()</h3><a class="indexterm" name="id2749125"></a><pre class="programlisting">gboolean    gconf_engine_set_string         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              const gchar *val,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2124"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2152"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-BOOL"
-></A
->gconf_engine_set_bool ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_bool           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Change the value of <i class="parameter"><tt>key</tt></i> to <i class="parameter"><tt>val</tt></i>. Automatically creates the <i class="parameter"><tt>key</tt></i> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a string (GCONF_VALUE_STRING), <a href="gconf-gconf.html#gconf-engine-set-string"><tt class="function">gconf_engine_set_string()</tt></a> will fail.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>val</tt></i> :</span></td><td>new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749298"></a><h3><a name="gconf-engine-set-bool"></a>gconf_engine_set_bool ()</h3><a class="indexterm" name="id2749312"></a><pre class="programlisting">gboolean    gconf_engine_set_bool           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
                                              gboolean val,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2162"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2190"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-SCHEMA"
-></A
->gconf_engine_set_schema ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_schema         (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+Change the value of <i class="parameter"><tt>key</tt></i> to <i class="parameter"><tt>val</tt></i>. Automatically creates the <i class="parameter"><tt>key</tt></i> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but but doesn't store a boolean (GCONF_VALUE_BOOL), <a href="gconf-gconf.html#gconf-engine-set-bool"><tt class="function">gconf_engine_set_bool()</tt></a> will fail.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>val</tt></i> :</span></td><td>new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749485"></a><h3><a name="gconf-engine-set-schema"></a>gconf_engine_set_schema ()</h3><a class="indexterm" name="id2749498"></a><pre class="programlisting">gboolean    gconf_engine_set_schema         (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             const <A
-HREF="gconf-gconf-schema.html#GCONFSCHEMA"
->GConfSchema</A
-> *val,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2200"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->val</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2228"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-LIST"
-></A
->gconf_engine_set_list ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_list           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             const <a href="gconf-gconf-schema.html#GConfSchema">GConfSchema</a> *val,
+                                             GError **err);</pre><p>
+Change the value of <i class="parameter"><tt>key</tt></i> to <i class="parameter"><tt>val</tt></i>. Automatically creates the <i class="parameter"><tt>key</tt></i> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a schema value (GCONF_VALUE_SCHEMA), <a href="gconf-gconf.html#gconf-engine-set-schema"><tt class="function">gconf_engine_set_schema()</tt></a> will fail.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>val</tt></i> :</span></td><td>new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749671"></a><h3><a name="gconf-engine-set-list"></a>gconf_engine_set_list ()</h3><a class="indexterm" name="id2749684"></a><pre class="programlisting">gboolean    gconf_engine_set_list           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> list_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> list_type,
                                              GSList *list,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2239"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->list_type</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->list</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2271"
-></A
-><H3
-><A
-NAME="GCONF-ENGINE-SET-PAIR"
-></A
->gconf_engine_set_pair ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_engine_set_pair           (<A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
-> *conf,
+                                             GError **err);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>list_type</tt></i> :</span></td><td>type of each list element.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td>new value of <i class="parameter"><tt>key</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749856"></a><h3><a name="gconf-engine-set-pair"></a>gconf_engine_set_pair ()</h3><a class="indexterm" name="id2749868"></a><pre class="programlisting">gboolean    gconf_engine_set_pair           (<a href="gconf-gconf-engine.html#GConfEngine">GConfEngine</a> *conf,
                                              const gchar *key,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> car_type,
-                                             <A
-HREF="gconf-gconf-value.html#GCONFVALUETYPE"
->GConfValueType</A
-> cdr_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> car_type,
+                                             <a href="gconf-gconf-value.html#GConfValueType">GConfValueType</a> cdr_type,
                                              gconstpointer address_of_car,
                                              gconstpointer address_of_cdr,
-                                             GError **err);</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2284"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->conf</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a <A
-HREF="gconf-gconf-engine.html#GCONFENGINE"
->GConfEngine</A
->.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->key</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->car_type</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->cdr_type</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->address_of_car</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->address_of_cdr</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->err</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the return location for an allocated GError, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> to ignore errors.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->&nbsp;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2324"
-></A
-><H3
-><A
-NAME="GCONFENUMSTRINGPAIR"
-></A
->struct GConfEnumStringPair</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->struct GConfEnumStringPair {
+                                             GError **err);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>conf</tt></i> :</span></td><td>a <a href="gconf-gconf-engine.html#GConfEngine"><span class="type">GConfEngine</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>key you want to set the value of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>car_type</tt></i> :</span></td><td>type of the pair's first field (car).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cdr_type</tt></i> :</span></td><td>type of the pair's second field (cdr).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>address_of_car</tt></i> :</span></td><td>address of the car.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>address_of_cdr</tt></i> :</span></td><td>address of the cdr.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>err</tt></i> :</span></td><td>the return location for an allocated <span class="type">GError</span>, or <span class="symbol">NULL</span> to ignore errors.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> on success, <span class="symbol">FALSE</span> on error.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750080"></a><h3><a name="GConfEnumStringPair"></a>struct GConfEnumStringPair</h3><a class="indexterm" name="id2750092"></a><pre class="programlisting">struct GConfEnumStringPair {
+
   gint enum_value;
   const gchar* str;
-};</PRE
-></TD
-></TR
-></TABLE
-><P
-></P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2329"
-></A
-><H3
-><A
-NAME="GCONF-STRING-TO-ENUM"
-></A
->gconf_string_to_enum ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gconf_string_to_enum            (<A
-HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
->GConfEnumStringPair</A
-> lookup_table[],
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2750105"></a><h3><a name="gconf-string-to-enum"></a>gconf_string_to_enum ()</h3><a class="indexterm" name="id2750118"></a><pre class="programlisting">gboolean    gconf_string_to_enum            (<a href="gconf-gconf.html#GConfEnumStringPair">GConfEnumStringPair</a> lookup_table[],
                                              const gchar *str,
-                                             gint *enum_value_retloc);</PRE
-></TD
-></TR
-></TABLE
-><P
->It's best to store enumeration values as strings rather than integers. This is
+                                             gint *enum_value_retloc);</pre><p>
+It's best to store enumeration values as strings rather than integers. This is
 robust against changes in the enumeration, and also human-readable.
-This function makes it more convenient to store enums as strings.</P
-><P
->The first argument is a lookup table, typically declared statically as follows:
-<TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->static GConfEnumStringPair foo_enum_lookup_table[] = {
+This function makes it more convenient to store enums as strings.
+</p><p>
+The first argument is a lookup table, typically declared statically as follows:
+</p><pre class="programlisting">
+static GConfEnumStringPair foo_enum_lookup_table[] = {
   { FOO_BLAH, "Blah" },
   { FOO_BAR,  "Bar"  },
   { 0, NULL }
-};</PRE
-></TD
-></TR
-></TABLE
->
-Note that the last element of the table is <TT
-CLASS="LITERAL"
->{ 0, NULL }</TT
->.
+};
+</pre><p>
+Note that the last element of the table is <tt class="literal">{ 0, NULL }</tt>.
 Typically the strings you use should be semi-human-readable, for GTK+ and GNOME
 stripping off the library prefix and converting to StudlyCaps is the recommended
-convention.</P
-><P
->The function returns <SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> if a match for the string is found,
-and if a match is found the enum value is placed in <TT
-CLASS="PARAMETER"
-><I
->enum_value_retloc</I
-></TT
->.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2344"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->lookup_table</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a lookup table mapping enum values to strings.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->str</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the string to convert to an enum value.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->enum_value_retloc</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the address of an enum variable.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
-><SPAN
-CLASS="SYMBOL"
->TRUE</SPAN
-> if a match was found.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2366"
-></A
-><H3
-><A
-NAME="GCONF-ENUM-TO-STRING"
-></A
->gconf_enum_to_string ()</H3
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->const gchar* gconf_enum_to_string           (<A
-HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
->GConfEnumStringPair</A
-> lookup_table[],
-                                             gint enum_value);</PRE
-></TD
-></TR
-></TABLE
-><P
->See <A
-HREF="gconf-gconf.html#GCONF-STRING-TO-ENUM"
->gconf_string_to_enum</A
->() for background information on this function.</P
-><DIV
-CLASS="INFORMALTABLE"
-><A
-NAME="AEN2375"><P
-></P
-><TABLE
-BORDER="0"
-WIDTH="100%"
-BGCOLOR="#FFD0D0"
-CELLSPACING="0"
-CELLPADDING="4"
-CLASS="CALSTABLE"
-><TBODY
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->lookup_table</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a lookup table mapping enum values to strings.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><TT
-CLASS="PARAMETER"
-><I
->enum_value</I
-></TT
->&nbsp;:</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->the enumeration value to convert to a string.</TD
-></TR
-><TR
-><TD
-WIDTH="20%"
-ALIGN="RIGHT"
-VALIGN="TOP"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</TD
-><TD
-WIDTH="80%"
-ALIGN="LEFT"
-VALIGN="TOP"
->a pointer to the proper string in the lookup table, or <SPAN
-CLASS="SYMBOL"
->NULL</SPAN
-> if no match was found.
-&#13;</TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
-></DIV
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="gconf-gconf-engine.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="index.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="gconf-reference.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Up</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="gconf-gconf-error.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->GConfEngine</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->GError</B
-></FONT
-></TD
-></TR
-></TABLE
-></DIV
-></BODY
-></HTML
->
+convention.
+</p><p>
+The function returns <span class="symbol">TRUE</span> if a match for the string is found,
+and if a match is found the enum value is placed in <i class="parameter"><tt>enum_value_retloc</tt></i>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>lookup_table</tt></i> :</span></td><td>a lookup table mapping enum values to strings.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td>the string to convert to an enum value.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>enum_value_retloc</tt></i> :</span></td><td>the address of an enum variable.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><span class="symbol">TRUE</span> if a match was found.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750257"></a><h3><a name="gconf-enum-to-string"></a>gconf_enum_to_string ()</h3><a class="indexterm" name="id2750270"></a><pre class="programlisting">const gchar* gconf_enum_to_string           (<a href="gconf-gconf.html#GConfEnumStringPair">GConfEnumStringPair</a> lookup_table[],
+                                             gint enum_value);</pre><p>
+See <a href="gconf-gconf.html#gconf-string-to-enum"><tt class="function">gconf_string_to_enum()</tt></a> for background information on this function.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>lookup_table</tt></i> :</span></td><td>a lookup table mapping enum values to strings.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>enum_value</tt></i> :</span></td><td>the enumeration value to convert to a string.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a pointer to the proper string in the lookup table, or <span class="symbol">NULL</span> if no match was found.
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gconf-gconf-value.html"><b>&lt;&lt; GConfValue, GConfEntry, GConfMetaInfo</b></a></td><td align="right"><a accesskey="n" href="gconf-gconf-locale.html"><b>gconf-locale &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,8 +1,1287 @@
-2003-01-20  Havoc Pennington  <hp@pobox.com>
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
-        * NEWS: update
+	* configure.in: Version 2.8.0.1.
+
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* autogen.sh: use automake 1.7 and run gtkdocize.
 	
-	* configure.in: 2.2.0
+	* configure.in: check for glib-genmarshal and use 
+	GTK_DOC_CHECK.
+	
+	* Makefile.am: add --enable-gtk-doc to 
+	DISTCHECK_CONFIGURE_FLAGS.
+	
+	* gconf/Makefile.am: re-do how the marshallers
+	are generated.
+	
+	* doc/gconf/Makefile.am: use gtk-doc.make.
+
+	* doc/gconf/gconf.sgml: tweak to validate.
+
+	* backends/Makefile.am: make xml-test link
+	against the backend rather than rebuilding
+	the sources.
+
+	* gconf-2.m4.in: rename from gconf.m4.in.
+
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.8.1.
+
+==================== 2.8.0 ====================
+
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.0.
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.93.
+
+==================== 2.7.92 ====================
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.92.
+	
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix problem with schemas install. Bug #151334.
+
+	* gconf/gconftool.c: (process_locale_info): install the
+	global default in the C locale only.
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	Lots of debugging info from Mickey Stein <yekkim@pacbell.net>
+	narrowed this one down in bug #150779.
+
+	* gconf/gconfd.c: (drop_old_databases): don't drop the default
+	database here, we do that later. Hangover from the fact that
+	the default database didn't use to be on db_list.
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Josselin Mouette <joss@debian.org> in bug #148028
+
+	* gconf/gconfd.c: (periodic_cleanup_timeout): save and reload
+	~/.gconfd/saved_state so we don't drop listeners when reloading
+	the database.
+
+2004-08-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c: (process_locale_info): don't explicitly
+	install the global default in a schema for every locale since
+	we happily fall back to the C locale anyway. Fixes bug #131488.
+
+2004-08-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/markup-tree.c: (markup_entry_get_value): don't
+	abort if we find no local schema to match any locales - there
+	may not be a "C" local schema at all. See bug #147522 for a
+	test case from Caio Begotti <caio1982@gmail.com >
+
+2004-08-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.92.
+
+==================== 2.7.91.1 ====================
+
+2004-08-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.91.1.
+
+2004-08-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Revert the patch to make use of the merge-subtree feature at
+	specific points in the tree. Not clear that it solves the
+	problems we thought it solved. Patch archived in bug #138498
+
+	* backends/markup-tree.[ch]:
+	(markup_tree_get): remove try_merge flag.
+	(markup_dir_sync): don't try and save as a merged subtree.
+	
+	* backends/markup-backend.c: (resolve_address), (ms_new):
+	Remove the "nomerge" backend flag.
+	
+	* backends/gconf-merge-tree.c:
+	(recursively_load_subtree): add back.
+	(merge_tree): upd. for markup_tree_get() change.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.92.
+
+==================== 2.7.91 ====================
+
+2004-08-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.91.
+
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* backends/xml-cache.c: (cache_clean): Use NULL in place of 0.
+	* configure.in: Added nb to ALL_LINGUAS.
+	* gconf/gconf-internals.c: (gconf_invalid_corba_value): ANSI
+	parameter list warning.
+	* gconf/gconf-sanity-check.c: (ensure_gtk): NULL vs. 0
+	* gconf/gconfd.c: (main): Same. Closes bug #149843.
+
+2004-08-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c: (main): set the umask for
+	--makefile-install-mode	so we always install the
+	schemas with the correct permissions. bug #145041.
+
+2004-08-07  Danilo Å egan  <dsegan@gmx.net>
+
+	Fixes bug #149518.
+	
+	* gconf/gconftool.c (options): s/dir/directory/ s/standard out/standard output/.
+	* gconf/gconfd.c (main): s/fd/file descriptor/.
+	* gconf/gconf-sources.c (gconf_sources_new_from_addresses): s/config/configuration/.
+	* backends/markup-tree.c (parse_value_element): s/car_type/first-element/.
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.91.
+
+==================== 2.7.90 ====================
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.90.
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Carlos Daniel Ruvalcaba Valenzuela <clsdaniel@yahoo.com.mx>
+	in bug #148973.
+
+	* gconf/gconf-internals.[ch]: (gconf_escape_percents): remove unused
+	(and internal) function.
+
+2004-07-09  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Kai Willadsen <kaiw@itee.uq.edu.au> in
+	bug #120349.
+
+	* doc/gconf/gconf.sgml,
+	  doc/gconf/tmpl/gconf-client.sgml,
+	  doc/gconf/tmpl/gconf.sgml,
+	  doc/intro-article.sgml,
+	  gconf/gconf-client.h,
+	  gconf/gconf-listeners.h: bring the docs up to
+	date with the patch that we're using GObject instead
+	of GtkObject.
+
+2004-07-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.4.
+
+==================== 2.7.3.1 ====================
+
+2004-07-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.3.1.
+
+2004-07-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c: (process_key_list): one character
+	fix to make the schema actually be applied.
+
+2004-07-07  Fernando Herrera  <fherrera@onirica.com>
+
+	* gconf/default.path.in: Removed outdated comment.
+
+2004-07-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c: (do_makefile_uninstall): merge with
+	do_makefile_install() by adding a "unload" flag.
+
+2004-07-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.4.
+
+==================== 2.7.3 ====================
+
+2004-07-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.3.
+
+2004-07-05  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Josselin Mouette <joss@debian.org> to handle
+	SIGHUP by reloading all databases. Intended to be used
+	in package's postinst scripts to get all running gconfds
+	to reload schemas.
+
+	* gconf/gconfd.c:
+	(signal_handler): handle SIGHUP by setting flag.
+	(periodic_cleanup_timeout): reload all databases when
+	the reload flag is set.
+
+2004-07-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Julio M. Merino Vidal <jmmv@menta.net> in bug #134517
+	to add a --sysconfsubdir configure argument which allows the
+	sub-directory GConf uses under $sysconfdir to be change.
+
+	* configure.in: add --sysconfsubdir argument and subst $sysgconfdir
+	which contains the full sysconf path GConf uses.
+	
+	* Makefile.am,
+	  examples/Makefile.am,
+	  gconf/Makefile.am,
+	  gconf/default.path.in,
+	  gconf/gconftool.c,
+	  standard-schemas/Makefile.am,
+	  wrappers/cxx/Makefile.am: use $sysgconfdir.
+
+2004-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixup some bugs with the merge files support which was
+	causing unset entries not to be completely wiped out.
+
+	* backends/markup-tree.c:
+	(clean_old_local_schemas): rename.
+	(clean_old_local_schemas_recurse): if we're saving as a subtree,
+	recurse down the tree.
+	(delete_useless_subdirs): ignore the some_subdir_needs_sync and
+	entries_need_save flags on the subdir - they're irrelevant if
+	there's no entries or subdirs. Also, check whether the subdir
+	is in a subtree file rather than current dir.
+	(delete_useless_subdirs_recurse): correctly recurse over subdirs.
+	(delete_useless_entries_recurse): implement recursively deleting
+	entries too.
+	(recursively_load_subtree): set the not_in_filesytem flag if we're
+	going to be saving as a subtree.
+	(markup_dir_sync): recusively clean schemas and delete entries
+	if we're saving as a subtree.
+
+2004-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch to add --unload option from
+	Julio M. Merino Vidal <jmmv@menta.net> in bug #130129.
+
+	* gconf/gconftool.c:
+	(main): add --unload option.
+	(do_load_file): add an 'unload' flag.
+	(set_values), (process_entry),
+	(process_key_list), (hash_install_foreach), (process_schema),
+	(process_list): pass the flag about and unset/unassociate
+	things as appropriate.
+	(do_makefile_uninstall): pass the unload flag to do_load_file().
+
+2004-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #145141.
+
+	* backends/markup-tree.c: (load_subdirs): recognise
+	subdirs which don't contain a %gconf.xml file but do
+	contain a %gconf-tree.xml file.
+
+2004-07-01  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in: Added "ne" Nepali in ALL_LINGUAS
+
+2004-06-27  Ross Burton  <ross@burtonini.com>
+
+	* doc/Makefile.am: Distribute the incredibly useful FAQ and DTD.
+
+2004-06-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/markup-tree.c: fix tiny typo which was causing
+	/schemas/apps to be saved as one gigantic file.
+
+2004-06-21  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #138498 - turn on "subtree-in-a-file" for the
+	subdirectories of the following directories:
+
+	    /apps/evolution",
+	    /apps/panel/profiles",
+	    /apps
+	    /desktop/gnome
+	    /system
+	    /schemas/apps
+	    /schemas/desktop/gnome
+	    /schemas/system
+	    /schemas
+	    /
+
+	You can turn this of by passing the "nomerge" flag to the
+	backend - e.g. xml:readwrite,nomerge:$(HOME)/.gconf
+	
+	* backends/markup-tree.[ch]:
+	(markup_tree_get): pass in the nomerge path.
+	(markup_dir_build_file_path),
+	(markup_dir_build_dir_path): simple wrappers for build_path().
+	(load_subtree), (load_entries), (load_subdirs),
+	(delete_useless_subdirs): upd. for above change.
+	(recursively_load_subtree): impl. recursively loading the tree
+	below a given dir.
+	(should_save_as_subtree): logic to figure out which dirs should
+	be saved as merged files.
+	(markup_dir_sync): save the dir in a merged file if neccessary.
+	(markup_dir_build_path): allow building a non-filesystem path.
+	(parse_tree), (save_tree): upd.
+	(write_dir): set the "not_in_filesystem" flag.
+	
+	* backends/markup-backend.c:
+	(resolve_address), (ms_new): parse and use the "nomerge" flag.
+	
+	* backends/gconf-merge-tree.c: (merge_tree): upd.
+
+2004-06-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconfd.c: (shutdown_databases): don't free the
+	default database twice. Its on the databases list now
+	so it doesn't need to freed explicitly.
+
+2004-06-21  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Leonardo Quijano Vincenzi <lquijano@hotpop.com>
+	in bug #144502.
+
+	* doc/gconf/tmpl/gconf-client.sgml: warn the g_type_init()
+	must be called before using GConfClient.
+
+2004-06-12  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Daniel Elstner <daniel.elstner@gmx.net>
+	in bug #143679.
+
+	* gconf.m4.in (AM_GCONF_SOURCE_2): Use $(sysconfdir)/gconf/schemas
+	as the default value of GCONF_SCHEMA_FILE_DIR, without the trailing
+	slash.  Also get rid of the pointless else branch.
+
+2004-06-12  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Julio M. Merino Vidal <jmmv@menta.net>
+	in bug #134247.
+
+	* doc/gconf/Makefile.am: don't create a directory if
+	its not needed.
+
+2004-06-12  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Mariano SuÃ¡rez-Alvarez <msuarezalvarez@arnet.com.ar>
+	in bug #122958 to change the encoding logic so as to produce
+	shorter encoded keys when encoding non-ascii characters. Does
+	not require changes to the decoder.
+
+	* gconf/gconf.c: (gconf_escape_key): use a shorter encoding
+	for non-ascii characters.
+
+2004-06-12  Mark McLoughlin  <mark@skynet.ie>
+
+	64-bit fix from Joe Marcus Clarke <marcus@freebsd.org>
+
+	* backends/markup-tree.c: (parse_tree): the length
+	returned from g_file_get_contents() is a gsize
+	not an int.
+
+2004-06-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gconf/gconf-internals.c: (gconf_activate_server):
+	Plug a small leak. Fixes bug #143941.
+
+2004-05-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.2.
+
+==================== 2.7.1 ====================
+
+2004-05-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.1.
+
+2004-05-04  Morten Welinder  <terra@gnome.org>
+
+	* gconf/gconf-internals.c (gconf_activate_server): Delete stray
+	";" aka null statement.  (Valid only in C99 where it had no
+	effect.)
+
+2004-04-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-sources.c: (gconf_sources_new_from_addresses): return
+	NULL and the last error if we failed to resolve any of the addresses.
+
+2004-04-21  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-database.c (gconf_database_unset): Init
+	modified_sources to NULL since we access it later. Fixes random
+	crashes.
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Julio Merino <jmmv@hispabsd.org>
+	in bug #102825
+
+	* configure.in: add a --enable-gtk=yes/no/auto (defaults to auto)
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch Elijah Newren <bugsqueesher@yahoo.com> in bug #138009
+
+	* examples/basic-gconf-app.c: (config_entry_commit):
+	return a boolean so we don't crash.
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Ryan Lovett <ryan@ocf.berkeley.edu>
+	in bug #95198.
+
+	* backends/markup-backend.c: (resolve_address):
+	  backends/xml-backend.c: (resolve_address): check to see
+	if the dir exists before trying to create it rather than
+	relying on EEXIST from mkdir.
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/dir-utils.[ch],
+	  backends/val-encode.[ch]: remove last remenants
+	of the BDB backend.
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Tracked down by Gustavo GirÃƒÂ¡ldez  <gustavo.giraldez@gmx.net>
+	in bug #139170
+
+	* gconf/gconfd.c: (logfile_save): don't save default_db explicitly
+	since its now stored in the same list as the other dbs - but do
+	make sure that it gets saved as "def" rather than using its full
+	address list.
+
+2004-04-16  Colin Walters  <walters@redhat.com>
+
+	* gconf/gconf-internals.c (gconf_activate_server): Move temporary
+	directory creation into daemon code, so that we play better with
+	SELinux.  Patch reviewed by (and several improvements suggested by)
+	Mark McLoughlin <mark@skynet.ie>.
+
+2004-04-13  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix pointed out by FrÃ©dÃ©ric L. W. Meunier <1@pervalidus.net>.
+
+	* gconf.m4.in: add quotes around AM_GCONF_SOURCE_2 to
+	quell autoconf's rudeness.
+
+2004-04-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-08  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-04-05  Mark McLoughlin  <mark@skynet.ie>
+
+	Revert the --dump behaviour change (not dumping schema defaults)
+	and add a --ignore-schema-defaults argument which applies to
+	all arguments which get the value of a key.
+
+	* gconf/gconftool.c:
+	(main): check that --ignore-schema-defaults is being used with
+	an option which gets a value.
+	(list_pairs_in_dir), (dump_entries_in_dir):
+	respect --ignore-schema-defaults.
+	(get_maybe_without_default): helper function.
+	(do_get), (do_get_type), (do_get_list_size), (do_get_list_element):
+	respect --ignore-schema-defaults.
+
+2004-04-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c: (set_values), (process_entry): handle
+	an <entry> with only a <schema_name> correctly.
+
+2004-04-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c: (dump_entries_in_dir): don't dump
+	the value if its the schema default.
+
+2004-04-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/default.path.in: fix the position of the
+	local-defaults.path include. Bug #137578.
+
+2004-03-31  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix last remaining obvious issue I'm seeing with the previous
+	patches. gconfd was crashing when removing objects from the
+	panel.
+
+	* gconf/gconf-database.c: (gconf_database_recursive_unset):
+	Don't try and propogate a NULL error.
+	
+	* gconf/gconf-sources.c:
+	(gconf_sources_unset_value): create modified_sources when
+	they it doesn't exist.
+	(prepend_unset_notify): add a couple of assertions.
+	(recursive_unset_helper): unset modified_sources between
+	unsets so that we don't append to the same source list.
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-backend.c: (gconf_backend_verify_vtable):
+	Return TRUE if the vtable is okay.
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* doc/gconf/tmpl/gconf-backend.sgml: add some documentation
+	for set_notify_func().
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* tests/testbackend.c: (foreach_recursive), (sync_and_clear),
+	(check_unset), (set_value), (get_value): upd. for the fact
+	we have a copy of the vtale now rather than a pointer to it.
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-backend.h: actually add the vtable_size
+	vtable member.
+
+2004-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-database.c:
+	(safe_g_hash_table_insert): remove - no hash table here.
+
+2004-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-engine.h: add gconf_engine_get_for_addresses()
+	and gconf_engine_get_local_for_addresses().
+	
+	* gconf/gconf.c:
+	(gconf_engine_connect): implement setting up a database from
+	an arbitrary stack of sources.
+	(register_engine): use the concatenation of addresses for the key.
+	(unregister_engine): free the persistent address and address list on
+	unregistering.
+	(lookup_engine): use the concatenation of addresses for the key.
+	(gconf_engine_get_local_for_addresses): add.
+	(gconf_engine_get_for_address): update for register_engine change.
+	(gconf_engine_get_for_addresses): impl support for remote composite dbs.
+	(update_listener): update for the fact that listeners are now saved using
+	the persistent name.
+	
+	* gconf/GConfX.idl: extend the ConfigServer interface
+	by adding ConfigServer2 inherting from ConfigServer.
+	Add ConfigServer2::get_database_for_addresses().
+	
+	* gconf/gconf-backend.c:
+	(gconf_address_valid), (gconf_get_backend): check the backend
+	address doesn't contain any special characters.
+	
+	* gconf/gconf-database.[ch]:
+	(source_notify_cb): don't notify unless this change could
+	actually cause a change for the client.
+	(gconf_database_notify_listeners): impl. notifying "other"
+	listeners - clients listening on other stacks which contains
+	any of the modified sources.
+	(gconf_database_set), (gconf_database_unset): keep track of
+	the sources modified by the change and update for the
+	notify_listeners change.
+	(gconf_database_recursive_unset): ditto and upd. for the
+	change in the listeners list returned by
+	gconf_sources_recursive_unset().
+	(gconf_database_get_persistent_name): make the persistent
+	name a concatenation of the individual addresses instead
+	of the first address.
+	
+	* gconf/gconf-internals.[ch]:
+	(gconf_address_list_get_persistent_name): impl method similar
+	to gconf_database_get_persistent_name, except concatenate
+	the addresses from a GSList.
+	(gconf_persistent_name_get_address_list): do the reverse.
+	(gconf_address_list_free): free the list of strings.
+
+	* gconf/gconf-sources.[ch]:
+	(gconf_sources_new_from_source): allow creating an empty source
+	list.
+	(gconf_sources_set_value),
+	(gconf_sources_unset_value): return the sources modified by
+	the change.
+	(prepend_unset_notify), (recursive_unset_helper),
+	(gconf_sources_recursive_unset): return a list of GConfUnsetNotifys
+	which contains both the key and the modified source.
+	(get_address_resource): copy and paste of gconf_address_resource
+	except it doesn't dup the return value.
+	(gconf_sources_is_affected): figure out if a change to a particular
+	key in one source affects the key with a particular stack of sources.
+	
+	* gconf/gconfd.[ch]: impl ConfigServer2 inheritance.
+	(gconfd_get_database): upd for obtain_database change.
+	(gconfd_get_composite_database): implement.
+	(init_databases): rename dbs_by_address to dbs_by_addresses.
+	(set_default_database): register the default db like the others.
+	(register_database): use the persistent name as the key.
+	(unregister_database): ditto.
+	(lookup_database): ditto.
+	(obtain_database): use a list of addresses, not a single one.
+	(gconfd_notify_other_listeners): impl notifying listeners
+	on GConfDatabases other than the one which was changed.
+	(listener_logentry_restore_and_destroy_foreach): restore by
+	splitting the address list string.
+
+	* gconf/gconftool.c: (main): enable --config-source without
+	--direct as it works better now. Also allow --config-source
+	to be an address list.
+	
+2004-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/markup-backend.c,
+	  backends/xml-backend.c: initialize the set_notify_func
+	vtable member.
+
+2004-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	Re-work the notifications-from-backends patch so that the
+	backend doesn't have to keep track of a callback per
+	listener as suggested by Cyrille.
+
+	* gconf/gconf-backend.h: add a set_notify_func() member	to
+	the vtable and remove the callback arg from add_listener().
+	
+	* gconf/gconf-database.c:
+	(gconf_database_new): set the notification callback here.
+	(gconf_database_readd_listener): upd.
+	
+	* gconf/gconf-sources.[ch]:
+	(gconf_source_set_notify_func): add.
+	(gconf_source_add_listener): upd.
+	(gconf_sources_set_notify_func): add.
+	(gconf_sources_add_listener): upd.
+
+2004-03-26  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-database.c: (source_notify_cb): don't leak
+	the schema name.
+	
+	* gconf/gconf-sources.c:
+	(gconf_sources_add_listener),
+	(gconf_sources_remove_listener): fix mistake pointed out
+	by Cyrille.
+
+2004-03-25  Mark McLoughlin  <mark@skynet.ie>
+
+	Allow backends to notify the daemon of changes to entries.
+	Based on a patch from Cyrille Moureaux <Cyrille.Moureaux@Sun.COM>
+	in bug #07692.
+
+	* gconf/gconf-backend.h: add add_listener() and
+	remove_listener() members to the vtable.
+	
+	* gconf/gconf-database.c:
+	(source_notify_cb): re-compute the value and notify
+	listeners when the backend reports the key has changed.
+	(gconf_database_readd_listener),
+	(gconf_database_remove_listener): add/remove backend
+	listeners.
+	
+	* gconf/gconf-sources.[c]:
+	(gconf_source_add_listener),
+	(gconf_source_remove_listener),
+	(gconf_sources_add_listener),
+	(gconf_sources_remove_listener): impl. the glue.
+	
+	* doc/gconf/tmpl/gconf-backend.sgml: update the backend
+	documentation.
+	
+	* backends/markup-backend.c,
+	  backends/xml-backend.c: set the add_listener() and
+	remove_listener() members to NULL.
+	
+2004-03-24  Mark McLoughlin  <mark@skynet.ie>
+	
+	* gconf/gconf-backend.h: add a vtable_size member to
+	the vtable.
+
+	* gconf/gconf-backend.c:
+	(gconf_backend_verify_vtable): impl. copying handling
+	mismatches in vtable sizes and also refuse to use the
+	backend if any of the functions we require are NULL.
+	(gconf_get_backend): fixup error handling a bit.
+	
+	* gconf/gconf-sources.c: update to take into account
+	that the we have a copy of the vtable now rather than
+	just a pointer to it.
+	
+	* doc/gconf/tmpl/gconf-backend.sgml: upd.
+
+	* backends/markup-backend.c,
+	  backends/xml-backend.c: add sizeof (GConfBackendVTable) to
+	the vtable.
+	
+2004-03-24  Mark McLoughlin  <mark@skynet.ie>
+	
+	* gconf/gconf-database.c: (impl_ConfigDatabase_set): don't
+	convert the value into a string and then do nothing with it.
+	
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: bump to 2.7.1. 2.6.x development is on
+	the gnome-2-6 branch now.
+
+2004-03-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: kill the message-of-doom.
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.1.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0
+
+2004-03-18  Ross Burton  <ross@burtonini.com>
+
+	* doc/FAQ.txt:
+	Added a FAQ, based upon the old FAQ and updated for the new
+	locking policy.
+
+2004-03-16  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added "en_GB" (British) to ALL_LINGUAS
+
+2004-03-02 Dinesh Nadarajah <dinesh_list@sbcglobal.net>
+
+        * ta.po: Started Tamil Translation.
+
+2004-02-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.90.
+
+2004-02-01  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2003-12-14  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 2.5.1
+
+2003-12-03  Ross Burton  <ross@burtonini.com>
+
+	* tmpl/gconf.sgml: lamest patch *ever*, remove a newline.
+
+Tue Nov  4 17:17:07 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gconf/gconf-changeset.h: register GConfChangeSet as a boxed type.
+
+2003-11-02  Havoc Pennington  <hp@pobox.com>
+
+	* ChangeLog: ascii-ize various people's names; Emacs can't handle 
+	UTF-8, sadly
+
+	* backends/Makefile.am: cut over to the new backend implementation
+
+	* configure.in: change to 2.5.0, add "this is the unstable
+	branch" warning.
+
+2003-10-28  Ghee Teo  <ghee.teo@sun.com>
+
+	* gconf/default.path.in: added hooks for paths to preserve
+	  local configuration gconf values as in bug #107481.
+
+2003-10-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/gconf-merge-tree.c: include locale.h - patch
+	from Damien Carbery <damien.carbery@sun.com> in bug #125688.
+
+2003-10-27  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch to allow a single XML file to represent an arbitrary
+	GConf tree rather than a single directory. Also fixes
+	many little bugs with the markup backend. See bug #116948.
+
+	* backends/Makefile.am: install the markup backend and
+	build gconf-merge-tree.
+	
+	* backends/markup-tree.c: if a %gconf-tree.xml file exists
+	in a given directory, load that and ignore any %gconf.xml
+	files in the directory and any sub-directories. Also,
+	fix many little buglets to make this work compatibly with
+	the XML backend.
+
+	* gconf/gconftool.c:
+	(recurse_subdir_dump), (do_dump_values): sort the directories
+	before dumping.
+	(print_schema_in_xml): don't add extra whitespace to schema
+	descriptions.
+	(print_value_in_xml): dump " " strings as empty strings.
+	(compare_entries), (dump_entries_in_dir): dump entries
+	sorted by the key name.
+	
+	* backends/markup-backend.c: (cleanup_timeout): fixup.
+
+	* backends/gconf-merge-tree.c: utility to merge a GConf
+	tree into a single markup backend %gconf-tree.xml file.
+	Doing this to a tree means that any changes you make
+	to that tree using the markup backend will not be reflected
+	if you go back to the XML backend.
+	
+	* tests/testbackend.c: include stdio.h to fix warnings.
+	
+Wed Oct 22 22:59:47 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* doc/gcnf/Makefile.am: 
+	* doc/gconf/gconf.sgml:
+	* doc/gconf/tmpl/gconf-backend.sgml:
+	* doc/gconf/tmpl/gconf-client.sgml:
+	* doc/gconf/tmpl/gconf-engine.sgml:
+	* doc/gconf/tmpl/gconf.sgml: Use gtk-doc in xml mode.  (#111791)
+
+2003-10-22  Havoc Pennington  <hp@redhat.com>
+
+        * gconf/gconf.c, gconf/gconfd.c: use g_string_new (NULL) 
+	rather than g_string_new ("") #106974 Morten Welinder
+	
+	* gconf/gconfd.c (gconf_main): change cleanup/exit timeout to 30
+	seconds, bug #97361
+
+	* backends/xml-cache.c (cache_clean): whack string that needed
+	ngettext, as it was dumb debug spew. #123866 Danilo Segan
+
+	* gconf/gconf.c (gconf_handle_corba_exception): fix to avoid
+	passing arbitrary data as printf format, #123556 Dan Winship
+
+	* backends/markup-backend.c (resolve_address): remove unused
+	variables, #122734 Kjartan Maraas
+
+        * gconf.spec.in: remove, not maintained
+	
+	* gconf/gconf-error.c (gconf_error_new_valist): don't put a
+	newline in error messages, bug #111845 Morten Welinder
+
+        * throughout: s/dir/directory/ bug #111822 Christian Rose
+	
+	* gconf/gconfd.c (gconf_server_load_sources): avoid string
+	concatenation with #defines, confuses gettext, #111821
+	Christian Rose
+
+	* gconf/gconfd.h: fix gconf_get_poa() declaration, #110186
+	Morten Welinder 
+	
+	* gconf/gconf-internals.c (read_current_server_and_set_warning):
+	fix a warning, bug #110179
+
+	* gconf/gconfd.c (test_safe_tmp_dir): fix warning
+
+2003-10-22  Havoc Pennington  <hp@redhat.com>
+	
+	* gconf/gconf-client.c: patch from Ray Strode to avoid breaking
+	the schema name cache, bug #94412
+
+	* doc/rationales.txt: add file to track bugzilla numbers to refer
+	to later
+
+2003-10-22  Vincent Untz  <vincent@vuntz.net>
+
+	* backends/xml-dir.c (dir_load_doc): don't mark "%s" as translatable.
+	Fix bug #84893.
+
+2003-10-09  Ross Burton  <ross@burtonini.com>
+
+	* doc/Makefile.am:
+	* doc/gconftool-2.1:
+	Added a basic man page.
+
+2003-10-07  Aygimantas Beru?ka  <uid0@tuxfamily.org>
+
+	* configure.in: Added "lt" to ALL_LINGUAS
+
+2003-09-26  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf.c (gconf_engine_all_dirs): fix crash calling this
+	with --direct (local source), the list contains strings not 
+	GConfEntry
+
+Wed Sep 10 15:23:17 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Rerelease 2.4.0.1 to fix glib-gettext problem.
+
+2003-09-08  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 2.4.0
+
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-08-30  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" (Albanian) to ALL_LINGUAS.
+	
+2003-08-18  Muktha  <muktha.narayan@wipro.com>
+
+	* gconf/gconftool.c (main) : Print usage message when no options are
+	passed to gconftool-2. Fixes #70316.
+
+2003-08-11  Christophe Fergeau  <teuf@gnome.org>
+
+	* doc/gconf/tmpl/gconf-client.sgml:
+	* doc/gconf/tmpl/gconf.sgml: Update API documentation (in particular
+	the gconf_client doc). Fixes #89348.
+
+2003-08-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gconf/gconf-client.c: (gconf_client_real_unreturned_error),
+	(gconf_client_real_error), (cache_pairs_in_dir):
+	* gconf/gconf-internals.c: (gconf_log):
+	* gconf/gconf-listeners.c: (ltable_insert), (ltable_remove),
+	(spew_func), (ltable_spew):
+	* gconf/gconfd.c: (main):
+	* gconf/gconftool.c: (main), (recurse_subdir_list),
+	(do_recursive_list), (do_dump_values), (list_pairs_in_dir),
+	(print_schema_in_xml), (print_pair_in_xml), (print_list_in_xml),
+	(print_value_in_xml), (dump_entries_in_dir), (do_dir_exists),
+	(do_spawn_daemon), (do_get), (read_value_type), (do_set),
+	(do_get_type), (do_get_list_size), (do_get_list_element),
+	(do_schema_info), (do_associate_schema), (do_dissociate_schema),
+	(do_set_schema), (do_all_entries), (do_unset),
+	(do_recursive_unset), (do_all_subdirs), (get_list_value_from_xml),
+	(get_pair_value_from_xml), (get_schema_values_from_xml),
+	(get_values_from_xml), (set_values), (fill_default_from_string),
+	(extract_global_info), (process_locale_info), (process_key_list),
+	(get_schema_from_xml), (hash_install_foreach),
+	(hash_uninstall_foreach), (process_schema), (process_list),
+	(do_load_file), (do_makefile_install), (do_makefile_uninstall),
+	(check_err), (key_breakage), (do_break_key), (do_break_directory),
+	(do_get_default_source):
+	* gconf/gnome-testclient.c: (notify_func), (main):
+	* gconf/testclient.c: (main), (notify_func):
+	use g_print/g_printerr instead of printf/fprintf(strerr). It
+	fixes UTF-8 being displayed on command line with non-UTF-8 locales.
+
+2003-08-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" in ALL_LINGUAS.
+
+2003-03-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Fixes bug #108574
+
+	* backends/xml-dir.c (gconf_xml_doc_dump): Replacement for
+	xmlDocDump() which is not reliable. While we're at it, also dump
+	formatted xml.
+	(dir_sync): Call the new gconf_xml_doc_dump() rather than
+	xmlDocDump() because we don't want to risk losing user settings.
+
+2003-07-19  Havoc Pennington  <hp@pobox.com>
+
+	* doc/gconf/gconf.sgml: doc fixes from Samuel Stringham
+	#117830
+	
+2003-07-17  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconftool.c (do_recursive_unset): do a suggest_sync after 
+	do_recursive_unset() (which shouldn't be necessary except that we 
+	suck). Patch from Greg Hudson #117713
+
+	* gconf/gconf-value.h: flags can't be 0, patch from 
+	Greg Hudson, #117712
+
+2003-07-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf-client.c:
+	(recurse_subdir_list): the subdir list contains full
+	paths, so don't append it to the full path. Fixes
+	recursive preloading.
+	(gconf_client_preload): don't get (and leak) the list
+	of subdirs if we're only doing onelevel preloading.
+
+2003-06-28  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* gconf/gconftool.c (main): Slight extra option tweaking.
+
+2003-06-26  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* gconf/gonftool.c (main): Tidied up "--foo option must be used by
+	itself" messages.
+
+2003-06-26  Ross Golder  <ross@golder.org>
+
+	* gconf/gconftool.c (do_dissociate_schema): Fixed a misleading
+	string (#116042)
+ 	* gconf/gconftool.c (do_associate_schema): Prevent segfault when
+	no args supplied (#116040)
+ 	* gconf/gconftool.c (do_dissociate_schema): Prevent segfault when
+	no args supplied (#116040)
+ 
+2003-06-26  Abel Cheung  <maddog@linux.org.hk>
+  
+  	* configure.in: Added "am" "mk" to ALL_LINGUAS.
+
+2003-06-26  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "am" "mk" to ALL_LINGUAS.
+
+2003-06-23  Havoc Pennington  <hp@redhat.com>
+
+	* NEWS: update
+
+	* configure.in: 2.3.3
+
+2003-06-22  James M. Cape  <jcape@ignore-your.tv>
+
+	* gconf/gconf-database.c: Fix for GCC 3.3 warning (fixes #115722).
+
+2003-06-18	Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-06-18  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #73323
+
+	* gconf/gconf-sources.h: moved GConfUnsetFlags enum...
+
+	* gconf/gconf-value.h: ...to here.
+
+	* gconf/gconf-client.[ch] (gconf_client_recursive_unset):
+	implemented new function for calling the unrecursive_unset
+	method on the engine.
+
+2003-06-12  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "ml" in ALL_LINGUAS.
+
+2003-06-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: remove the explicit linc module.
+
+2003-05-31  Michael Meeks  <michael@ximian.com>
+
+	* backends/markup-tree.c: include <stdio.h>
+
+2003-05-19  Ross Burton  <ross@burtonini.com>
+
+	* gconf/gconftool.c: Implement uninstalling GConf schemas, closing
+	#104487. Patch based on work by jmmv@hispabsd.org <Julio Merino>.
+
+2003-05-19  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Add cy (Welsh) to ALL_LINGUAS
+
+2003-05-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconftool.c:
+	(print_value_in_xml): escape the string text before
+	outputting it in the XML.
+	(dump_entries_in_dir): ouput the keyname relative to
+	the base directory rather than the current directory.
+
+2003-05-08  Ross Burton  <ross@burtonini.com>
+
+	* gconf/gconf-client.[ch]: Add gconf_client_notify(), to fake a
+	notification from a monitored key. Fixes #70553.
+
+2003-05-07  Danilo Egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-03  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: 2.3.2
+
+	* NEWS: update
+
+2003-04-26  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+
+	* backends/Makefile.am: add -no-undefined to *_la_LDFLAGS.
+	add $(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la to *_la_LIBADD.
+
+	* gconf/Makefile.am (libgconf_2_la_LDFLAGS): add -no-undefined.
+
+	* gconf/gconfd.c (main): use g_strdup_printf() instead of strlen() +
+	g_malloc() + g_snprintf().
+
+03-04-23  Muktha <muktha.narayan@wipro.com>
+	* gconf/gconfd.c
+	When reading the saved_state file, gconfd will not log message if 
+	the saved_state file is not present. Fixes bug #110944.
+
+2003-03-27  Brian Cameron <brian.cameron@sun.com>
+
+	* gconf/gconf-sanity-check.c
+	Updated text of the lock question to more clear text that was
+	approved by the docs team.  Havoc reviewed/approved this
+	change.
+
+2003-03-27  Ross Burton  <ross@burtonini.com>
+
+	* gconf/gconftool.c:
+	Added --get-type, --get-list-size and --get-list-element. Patch
+	from TODO, closing #91349.
+	(do_dump_values): Return an int as the prototype says we do.
+
+	Applied patch from Jeff Franks <jcf@tpg.com.au> with a extensions,
+	closing #97205.
+	* gconf/gconf-schema.h:
+	* gconf/gconf-value.h: Wrapped both header files in an extern "C"
+	for C+compilation.
+	
+	* gconf/gconf-internals.h:
+	* gconf/gconf-value.h: Exported gconf_entry_copy(), _ref and
+	_unref. Moved declaration from gconf-internals.h to
+	gconf-value.h. Also deprecated gconf_entry_free().
+
+	* doc/gconf/tmpl/gconf-value.sgml: Fixed typo, GCONF_VALUE_DOUBLE,
+	in the description for gconf_value_get_float(). Changed the value
+	type to GCONF_VALUE_FLOAT.
+	
+	* gconf/gconf-client.h: Added missing GCONF_CLIENT_GET_CLASS
+	macro.
+
+2003-03-26  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-internals.c (gconf_get_daemon_dir): we need
+	giop_tmpdir_init(), linc_get_tmpdir() isn't helpful. Revert to 
+	/tmp/gconfd-foo for now.
+
+2003-03-26  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-internals.c (gconf_get_daemon_dir): call
+	linc_set_tmpdir() to maybe make it work
+
+2003-03-26  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump to 2.3.1
+
+	Apply "local locks" patch with linc_get_tmpdir modification from
+	Michael, and the default changed to local locks. Now to 
+	get global locks you must set GCONF_GLOBAL_LOCKS=1.
+
+	* gconf/gconf-internals.c (gconf_log): convert to locale encoding
+	to pass stuff to syslog
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Basically the same patch as the previous one .. but
+	for the markup backend.
+
+	* backends/markup-backend.c:
+	(resolve_address): update.
+	(clear_cache): use markup_tree_rebuild() instead of
+	re-creating the tree.
+	(ms_new): remove the read_only arg and s/markup_tree_new/
+	markup_tree_get/
+	(ms_destroy): s/markup_tree_free/markup_tree_unref/
+
+	* backends/markup-tree.[ch]:
+	(markup_tree_get), (markup_tree_unref): rename these
+	from new()/free() and share caches for sources with
+	the same root directory.
+	(markup_tree_rebuild): impl.
+	(markup_dir_needs_sync): we don't keep the read_only
+	flag per-tree anymore so don't check it here.
+
+2002-07-16  Mark McLoughlin  <mark@skynet.ie>
+
+	Use the same cache for multiple sources with the same
+	root directory.
+
+	* backends/xml-cache.[ch]:
+	(cache_get): rename from cache_new and return and existing
+	cache for this root dir if one exists. Also use g_free
+	as a key destroy handler for the nonexistant hash instead
+	of doing it manually.
+	(cache_unref): rename from cache_destroy and only destroy
+	when refcount drops to zero.
+	(cache_set_nonexistent), (cache_destroy_nonexistant_foreach):
+	don't free the key here.
+
+	* backends/xml-backend.c:
+	(xs_new): s/cache_new/cache_get/
+	(xs_destroy): s/cache_destroy/cache_unref/.
+
+2003-03-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/Makefile.am: kill unused bdb SOURCES.
+
+2003-03-13  Mark McLoughlin  <mark@skynet.ie>
+
+	Implement --load and --dump options for gconftool. e.g.:
+	gconftool-2 --dump /apps/metacity > metacity.dump
+	gconftool-2 --config-source blah --load metacity.dump
+	or
+	gconftool-2 -load metacity.dump /apps/other_metacity
+
+	* gconf/gconftool.c:
+	(recurse_subdir_dump), (do_dump_values),
+	(print_schema_in_xml), (print_pair_in_xml),
+	(print_list_in_xml), (print_value_in_xml), (get_key_relative),
+	(dump_entries_in_dir): impl dumping to XML.
+	(get_list_value_from_xml), (get_car_cdr_value),
+	(get_pair_value_from_xml), (get_schema_values_from_xml),
+	(get_values_from_xml), (get_first_value_from_xml), (set_values):
+	impl loading entries from XML.
+	(hash_listify_foreach), (process_entry), (fill_default_from_string),
+	(extract_global_info), (process_locale_info), (get_schema_from_xml),
+	(hash_install_foreach), (process_schema), (process_list),
+	(do_load_file), (do_makefile_install): munge the entries loading
+	code with schemas loading code.
+
+2003-03-05  Havoc Pennington  <hp@pobox.com>
+
+	* backends/Makefile.am: remove BDB backend
+
+	* configure.in: remove BDB backend support
+
+2003-03-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes weird bug where a directory appears to not exist when
+	you create subdirectories of it.
+
+	* backends/xml-cache.c:
+	(cache_lookup): use unset_nonexistent.
+	(cache_unset_nonexistent): unset the existent flag not
+	only on this directory but all parent directories.
+
+2003-02-25  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump to 2.3.0 unstable version number to avoid 
+	confusion
+
+2003-02-22  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gconf/gconf.c: (gconf_engine_set),
+	(gconf_engine_associate_schema): don't rely on
+	caller passing in a valid GError** in assertions.
+
+2003-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* backends/xml-dir.c: (listify_foreach): set the schema
+	name even when the key is set.
+
+2003-01-21  Ross Burton  <ross@burtonini.com>
+
+	* doc/gconf-1.0.dtd: Add comments to the DTD.
+
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
 
 2003-01-12  Havoc Pennington  <hp@pobox.com>
 
@@ -1103,7 +2382,7 @@ Tue Nov 20 15:37:58 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* gconf/gconf.c (ctable_remove_by_client_id): remove unused.
 
-2001-09-29  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-09-29  Carlos Perello Marin <carlos@gnome-db.org>
 
 	* gconf/gconf.h (GCONF_DISABLE_DEPRECATED): closed a comment.
 
@@ -1433,7 +2712,7 @@ Tue Nov 20 15:37:58 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* configure.in: add ORBIT_IDL check.
 
-2001-07-02  Carlos Perelló Marín <carlos@gnome-db.org>
+2001-07-02  Carlos Perello Marin <carlos@gnome-db.org>
 
 	* gconf/gconf-client.c: /s/g_signal_newc/g_signal_new to reflect
 	the changes at glib2 module. Now It compiles.

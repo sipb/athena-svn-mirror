@@ -141,7 +141,7 @@ Returns a #gint for a #GConfValue with type %GCONF_VALUE_INT.
 
 <!-- ##### FUNCTION gconf_value_get_float ##### -->
 <para>
-Returns a #gdouble for a #GConfValue with type %GCONF_VALUE_DOUBLE.
+Returns a #gdouble for a #GConfValue with type %GCONF_VALUE_FLOAT.
 </para>
 
 @value: 

@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-gconf-internals">
+<refmeta>
+<refentrytitle>gconf-internals</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gconf-internals</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-key-directory">gconf_key_directory</link>             (const <link linkend="gchar">gchar</link> *key);
+const <link linkend="gchar">gchar</link>* <link linkend="gconf-key-key">gconf_key_key</link>                  (const <link linkend="gchar">gchar</link> *key);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-file-test">gconf_file_test</link>                 (const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="int">int</link> test);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-file-exists">gconf_file_exists</link>               (const <link linkend="gchar">gchar</link> *filename);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-from-corba-value">gconf_value_from_corba_value</link>    (const <link linkend="ConfigValue">ConfigValue</link> *value);
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-schema-from-corba-schema">gconf_schema_from_corba_schema</link> (const <link linkend="ConfigSchema">ConfigSchema</link> *cs);
+const <link linkend="gchar">gchar</link>* <link linkend="gconf-value-type-to-string">gconf_value_type_to_string</link>     (<link linkend="GConfValueType">GConfValueType</link> type);
+<link linkend="GConfValueType">GConfValueType</link> <link linkend="gconf-value-type-from-string">gconf_value_type_from_string</link> (const <link linkend="gchar">gchar</link> *str);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-load-source-path">gconf_load_source_path</link>          (const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-shutdown-daemon">gconf_shutdown_daemon</link>           (<link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-ping-daemon">gconf_ping_daemon</link>               (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-spawn-daemon">gconf_spawn_daemon</link>              (<link linkend="GError">GError</link> **err);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-concat-dir-and-key">gconf_concat_dir_and_key</link>        (const <link linkend="gchar">gchar</link> *dir,
+                                             const <link linkend="gchar">gchar</link> *key);
+<link linkend="gulong">gulong</link>      <link linkend="gconf-string-to-gulong">gconf_string_to_gulong</link>          (const <link linkend="gchar">gchar</link> *str);
+const <link linkend="gchar">gchar</link>* <link linkend="gconf-current-locale">gconf_current_locale</link>           (void);
+enum        <link linkend="GConfLogPriority">GConfLogPriority</link>;
+<link linkend="void">void</link>        <link linkend="gconf-log">gconf_log</link>                       (<link linkend="GConfLogPriority">GConfLogPriority</link> pri,
+                                             const <link linkend="gchar">gchar</link> *format,
+                                             ...);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-key-check">gconf_key_check</link>                 (const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-new-from-string">gconf_value_new_from_string</link>     (<link linkend="GConfValueType">GConfValueType</link> type,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-new-list-from-string">gconf_value_new_list_from_string</link>
+                                            (<link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-new-pair-from-string">gconf_value_new_pair_from_string</link>
+                                            (<link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-quote-string">gconf_quote_string</link>              (const <link linkend="gchar">gchar</link> *str);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-unquote-string">gconf_unquote_string</link>            (const <link linkend="gchar">gchar</link> *str,
+                                             const <link linkend="gchar">gchar</link> **end,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-unquote-string-inplace">gconf_unquote_string_inplace</link>    (<link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gchar">gchar</link> **end,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-decode">gconf_value_decode</link>              (const <link linkend="gchar">gchar</link> *encoded);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-value-encode">gconf_value_encode</link>              (<link linkend="GConfValue">GConfValue</link> *val);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-list-from-primitive-list">gconf_value_list_from_primitive_list</link>
+                                            (<link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-value-pair-from-primitive-pair">gconf_value_pair_from_primitive_pair</link>
+                                            (<link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-value-list-to-primitive-list-destructive">gconf_value_list_to_primitive_list_destructive</link>
+                                            (<link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-value-pair-to-primitive-pair-destructive">gconf_value_pair_to_primitive_pair_destructive</link>
+                                            (<link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-set-daemon-mode">gconf_set_daemon_mode</link>           (<link linkend="gboolean">gboolean</link> setting);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-handle-oaf-exception">gconf_handle_oaf_exception</link>      (<link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-engine-get-full">gconf_engine_get_full</link>           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="gboolean">gboolean</link> *is_default_p,
+                                             <link linkend="gboolean">gboolean</link> *is_writable_p,
+                                             <link linkend="GError">GError</link> **err);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gconf-key-directory"/>gconf_key_directory ()</title>
+<indexterm><primary>gconf_key_directory</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_key_directory             (const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-key-key"/>gconf_key_key ()</title>
+<indexterm><primary>gconf_key_key</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gconf_key_key                  (const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-file-test"/>gconf_file_test ()</title>
+<indexterm><primary>gconf_file_test</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_file_test                 (const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="int">int</link> test);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>test</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-file-exists"/>gconf_file_exists ()</title>
+<indexterm><primary>gconf_file_exists</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_file_exists               (const <link linkend="gchar">gchar</link> *filename);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-from-corba-value"/>gconf_value_from_corba_value ()</title>
+<indexterm><primary>gconf_value_from_corba_value</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_from_corba_value    (const <link linkend="ConfigValue">ConfigValue</link> *value);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-schema-from-corba-schema"/>gconf_schema_from_corba_schema ()</title>
+<indexterm><primary>gconf_schema_from_corba_schema</primary></indexterm><programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_schema_from_corba_schema (const <link linkend="ConfigSchema">ConfigSchema</link> *cs);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-type-to-string"/>gconf_value_type_to_string ()</title>
+<indexterm><primary>gconf_value_type_to_string</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gconf_value_type_to_string     (<link linkend="GConfValueType">GConfValueType</link> type);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-type-from-string"/>gconf_value_type_from_string ()</title>
+<indexterm><primary>gconf_value_type_from_string</primary></indexterm><programlisting><link linkend="GConfValueType">GConfValueType</link> gconf_value_type_from_string (const <link linkend="gchar">gchar</link> *str);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-load-source-path"/>gconf_load_source_path ()</title>
+<indexterm><primary>gconf_load_source_path</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_load_source_path          (const <link linkend="gchar">gchar</link> *filename,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>filename</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-shutdown-daemon"/>gconf_shutdown_daemon ()</title>
+<indexterm><primary>gconf_shutdown_daemon</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_shutdown_daemon           (<link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-ping-daemon"/>gconf_ping_daemon ()</title>
+<indexterm><primary>gconf_ping_daemon</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_ping_daemon               (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-spawn-daemon"/>gconf_spawn_daemon ()</title>
+<indexterm><primary>gconf_spawn_daemon</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_spawn_daemon              (<link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-concat-dir-and-key"/>gconf_concat_dir_and_key ()</title>
+<indexterm><primary>gconf_concat_dir_and_key</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_concat_dir_and_key        (const <link linkend="gchar">gchar</link> *dir,
+                                             const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-string-to-gulong"/>gconf_string_to_gulong ()</title>
+<indexterm><primary>gconf_string_to_gulong</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      gconf_string_to_gulong          (const <link linkend="gchar">gchar</link> *str);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-current-locale"/>gconf_current_locale ()</title>
+<indexterm><primary>gconf_current_locale</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gconf_current_locale           (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfLogPriority"/>enum GConfLogPriority</title>
+<indexterm><primary>GConfLogPriority</primary></indexterm><programlisting>typedef enum {
+  GCL_EMERG,
+  GCL_ALERT,
+  GCL_CRIT,
+  GCL_ERR,
+  GCL_WARNING,
+  GCL_NOTICE,
+  GCL_INFO,
+  GCL_DEBUG
+} GConfLogPriority;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gconf-log"/>gconf_log ()</title>
+<indexterm><primary>gconf_log</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_log                       (<link linkend="GConfLogPriority">GConfLogPriority</link> pri,
+                                             const <link linkend="gchar">gchar</link> *format,
+                                             ...);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pri</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>format</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-key-check"/>gconf_key_check ()</title>
+<indexterm><primary>gconf_key_check</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_key_check                 (const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-new-from-string"/>gconf_value_new_from_string ()</title>
+<indexterm><primary>gconf_value_new_from_string</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_new_from_string     (<link linkend="GConfValueType">GConfValueType</link> type,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Tries to parse a string and create a primitive <link linkend="GConfValue"><type>GConfValue</type></link> from
+it. Only works on primitive types.
+</para><variablelist role="params">
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-new-list-from-string"/>gconf_value_new_list_from_string ()</title>
+<indexterm><primary>gconf_value_new_list_from_string</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_new_list_from_string
+                                            (<link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+This function does not work. Don't use it.
+</para><variablelist role="params">
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-new-pair-from-string"/>gconf_value_new_pair_from_string ()</title>
+<indexterm><primary>gconf_value_new_pair_from_string</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_new_pair_from_string
+                                            (<link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             const <link linkend="gchar">gchar</link> *str,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+This function does not work. Don't use it.
+</para><variablelist role="params">
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-quote-string"/>gconf_quote_string ()</title>
+<indexterm><primary>gconf_quote_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_quote_string              (const <link linkend="gchar">gchar</link> *str);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-unquote-string"/>gconf_unquote_string ()</title>
+<indexterm><primary>gconf_unquote_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_unquote_string            (const <link linkend="gchar">gchar</link> *str,
+                                             const <link linkend="gchar">gchar</link> **end,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-unquote-string-inplace"/>gconf_unquote_string_inplace ()</title>
+<indexterm><primary>gconf_unquote_string_inplace</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_unquote_string_inplace    (<link linkend="gchar">gchar</link> *str,
+                                             <link linkend="gchar">gchar</link> **end,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-decode"/>gconf_value_decode ()</title>
+<indexterm><primary>gconf_value_decode</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_decode              (const <link linkend="gchar">gchar</link> *encoded);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>encoded</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-encode"/>gconf_value_encode ()</title>
+<indexterm><primary>gconf_value_encode</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_value_encode              (<link linkend="GConfValue">GConfValue</link> *val);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-list-from-primitive-list"/>gconf_value_list_from_primitive_list ()</title>
+<indexterm><primary>gconf_value_list_from_primitive_list</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_list_from_primitive_list
+                                            (<link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-pair-from-primitive-pair"/>gconf_value_pair_from_primitive_pair ()</title>
+<indexterm><primary>gconf_value_pair_from_primitive_pair</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_value_pair_from_primitive_pair
+                                            (<link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address_of_car</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address_of_cdr</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-list-to-primitive-list-destructive"/>gconf_value_list_to_primitive_list_destructive ()</title>
+<indexterm><primary>gconf_value_list_to_primitive_list_destructive</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_value_list_to_primitive_list_destructive
+                                            (<link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-value-pair-to-primitive-pair-destructive"/>gconf_value_pair_to_primitive_pair_destructive ()</title>
+<indexterm><primary>gconf_value_pair_to_primitive_pair_destructive</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_value_pair_to_primitive_pair_destructive
+                                            (<link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-set-daemon-mode"/>gconf_set_daemon_mode ()</title>
+<indexterm><primary>gconf_set_daemon_mode</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_set_daemon_mode           (<link linkend="gboolean">gboolean</link> setting);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>setting</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-handle-oaf-exception"/>gconf_handle_oaf_exception ()</title>
+<indexterm><primary>gconf_handle_oaf_exception</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_handle_oaf_exception      (<link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-get-full"/>gconf_engine_get_full ()</title>
+<indexterm><primary>gconf_engine_get_full</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_engine_get_full           (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="gboolean">gboolean</link> *is_default_p,
+                                             <link linkend="gboolean">gboolean</link> *is_writable_p,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+This function is basically for internal use.
+</para><variablelist role="params">
+<varlistentry><term><parameter>conf</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>use_schema_default</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>is_default_p</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>is_writable_p</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,1618 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="gconf-GConfClient">
+<refmeta>
+<refentrytitle>GConfClient</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GConfClient</refname><refpurpose>
+<link linkend="GObject-based"><type>GObject-based</type></link> convenience wrapper</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="GConfClientPreloadType">GConfClientPreloadType</link>;
+enum        <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link>;
+<link linkend="void">void</link>        (<link linkend="GConfClientNotifyFunc">*GConfClientNotifyFunc</link>)        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn_id,
+                                             <link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        (<link linkend="GConfClientErrorHandlerFunc">*GConfClientErrorHandlerFunc</link>)  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);
+#define     <link linkend="GCONF-CLIENT-CAPS">GCONF_CLIENT</link>                    (obj)
+<link linkend="GConfClient">GConfClient</link>* <link linkend="gconf-client-get-default">gconf_client_get_default</link>       (void);
+<link linkend="GConfClient">GConfClient</link>* <link linkend="gconf-client-get-for-engine">gconf_client_get_for_engine</link>    (<link linkend="GConfEngine">GConfEngine</link> *engine);
+<link linkend="void">void</link>        <link linkend="gconf-client-add-dir">gconf_client_add_dir</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> preload,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-client-remove-dir">gconf_client_remove_dir</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="guint">guint</link>       <link linkend="gconf-client-notify-add">gconf_client_notify_add</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *namespace_section,
+                                             <link linkend="GConfClientNotifyFunc">GConfClientNotifyFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GFreeFunc">GFreeFunc</link> destroy_notify,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-client-notify-remove">gconf_client_notify_remove</link>      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn);
+<link linkend="void">void</link>        <link linkend="gconf-client-set-error-handling">gconf_client_set_error_handling</link> (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link> mode);
+<link linkend="void">void</link>        <link linkend="gconf-client-set-global-default-error-handler">gconf_client_set_global_default_error_handler</link>
+                                            (<link linkend="GConfClientErrorHandlerFunc">GConfClientErrorHandlerFunc</link> func);
+<link linkend="void">void</link>        <link linkend="gconf-client-clear-cache">gconf_client_clear_cache</link>        (<link linkend="GConfClient">GConfClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gconf-client-preload">gconf_client_preload</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dirname,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> type,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-client-set">gconf_client_set</link>                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-client-get">gconf_client_get</link>                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-client-get-without-default">gconf_client_get_without_default</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfEntry">GConfEntry</link>* <link linkend="gconf-client-get-entry">gconf_client_get_entry</link>          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-client-get-default-from-schema">gconf_client_get_default_from_schema</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-unset">gconf_client_unset</link>              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-client-all-entries">gconf_client_all_entries</link>        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-client-all-dirs">gconf_client_all_dirs</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-client-suggest-sync">gconf_client_suggest_sync</link>       (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-dir-exists">gconf_client_dir_exists</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gdouble">gdouble</link>     <link linkend="gconf-client-get-float">gconf_client_get_float</link>          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gint">gint</link>        <link linkend="gconf-client-get-int">gconf_client_get_int</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-client-get-string">gconf_client_get_string</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-get-bool">gconf_client_get_bool</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-client-get-schema">gconf_client_get_schema</link>        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-client-get-list">gconf_client_get_list</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-get-pair">gconf_client_get_pair</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-float">gconf_client_set_float</link>          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-int">gconf_client_set_int</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-string">gconf_client_set_string</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-bool">gconf_client_set_bool</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-schema">gconf_client_set_schema</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-list">gconf_client_set_list</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-pair">gconf_client_set_pair</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="void">void</link>        <link linkend="gconf-client-error">gconf_client_error</link>              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);
+<link linkend="void">void</link>        <link linkend="gconf-client-unreturned-error">gconf_client_unreturned_error</link>   (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);
+<link linkend="void">void</link>        <link linkend="gconf-client-value-changed">gconf_client_value_changed</link>      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-client-reverse-change-set">gconf_client_reverse_change_set</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-client-change-set-from-currentv">gconf_client_change_set_from_currentv</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> **keys,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-client-change-set-from-current">gconf_client_change_set_from_current</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err,
+                                             const <link linkend="gchar">gchar</link> *first_key,
+                                             ...);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-commit-change-set">gconf_client_commit_change_set</link>  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="gboolean">gboolean</link> remove_committed,
+                                             <link linkend="GError">GError</link> **err);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+<link linkend="GConfClient"><type>GConfClient</type></link> adds the following features to plain GConf:
+<itemizedlist>
+<listitem>
+<para>
+A client-side cache for a specified list of directories you're interested in.
+You can "preload" entire directories into the cache, speeding things up even more.
+</para>
+</listitem>
+<listitem>
+<para>
+Some automatic error handling, if you request it.
+</para>
+</listitem>
+<listitem>
+<para>
+Signals when a value changes or an error occurs.
+</para>
+</listitem>
+</itemizedlist>
+</para>
+
+<warning>
+<para>
+If you use <link linkend="GConfClient"><type>GConfClient</type></link>, you should not use the underlying <link linkend="GConfEngine"><type>GConfEngine</type></link>
+directly, or you'll break things. This is why there's no
+<link linkend="gconf-client-get-engine"><function>gconf_client_get_engine()</function></link> function; in fact, if you create the <link linkend="GConfClient"><type>GConfClient</type></link> with
+<link linkend="gconf-client-get-default"><function>gconf_client_get_default()</function></link>, there is no (legitimate) way to obtain a pointer to the
+underlying <link linkend="GConfEngine"><type>GConfEngine</type></link>. If you create a <link linkend="GConfClient"><type>GConfClient</type></link> from an existing engine,
+you'll have to be disciplined enough to avoid using that engine directly.
+<footnote>
+<para>
+This is all a white lie; <emphasis>some</emphasis> direct <link linkend="GConfEngine"><type>GConfEngine</type></link>
+operations are safe. But it's complicated to know which, and if an operation
+isn't safe the resulting bugs will mangle the cache and cause weird bugs at an
+indeterminate time in the future; you don't want to risk this
+situation.
+</para>
+</footnote>
+</para>
+</warning>
+
+<para>
+A <link linkend="GConfClient"><type>GConfClient</type></link> has a list of directories that it "watches." These directories
+are optionally pre-loaded into the cache, and monitored in order to emit the
+<link linkend="value-changed"><type>value_changed</type></link> signal. The <link linkend="GConfClient"><type>GConfClient</type></link> can also be used to access directories
+not in the list, but those directories won't be preloaded and the "value_changed"
+signal won't be emitted for them.
+</para>
+
+<para>
+There are two error-related signals in <link linkend="GConfClient"><type>GConfClient</type></link>. The first is plain "error";
+it's emitted anytime an error occurs. The second is "unreturned_error"; this
+signal is emitted if you pass <symbol>NULL</symbol> as the <link linkend="GError"><type>GError</type></link>** to any
+<link linkend="GConfClient"><type>GConfClient</type></link> function. The idea is that you can have a global error handler
+attached to the "unreturned_error" signal; if you want to use this handler, you
+don't need to use the normal GConf error handling mechanism. However, if you
+ever need to handle errors for a specific function call, you can override the
+global handler by passing a non-<symbol>NULL</symbol> <link linkend="GError"><type>GError</type></link>** to the
+function.  If you want an error handler that's <emphasis>always</emphasis>
+invoked, use the "error" signal.
+</para>
+
+<para>
+The "value_changed" signal is emitted whenever the server notifies your client
+program that a value has changed in the GConf database. There's one problem with
+this signal: the signal handler has to use <link linkend="strcmp"><function>strcmp()</function></link> to determine whether the
+changed value is the one it was interested in. If you are interested in lots of
+values, then every time a value changes you'll be making lots of calls to
+<link linkend="strcmp"><function>strcmp()</function></link> and getting O(n) performance. <link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link> is a superior
+interface in most cases for this reason. Note that calling <link linkend="gconf-client-set"><function>gconf_client_set()</function></link>
+and its relatives will cause "value_changed" to be emitted, but "value_changed"
+is also emitted if another process changes the value.
+</para>
+
+<para>
+Most of the <link linkend="GConfClient"><type>GConfClient</type></link> interface mirrors the functions you'd use to manipulate
+a <link linkend="GConfEngine"><type>GConfEngine</type></link> (<link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link> and <link linkend="gconf-client-get"><function>gconf_client_get()</function></link>, for example). These should
+all work just like the <link linkend="GConfEngine"><type>GConfEngine</type></link> versions, except that they use the cache
+from <link linkend="GConfClient"><type>GConfClient</type></link> and emit the <link linkend="GConfClient"><type>GConfClient</type></link> signals.
+</para>
+
+<para>
+As always with GConf, applications based on <link linkend="GConfClient"><type>GConfClient</type></link> should use a
+model-controller-view architecture. Typically, this means that areas of your
+application affected by a setting will monitor the relevant key and update
+themselves when necessary. The preferences dialog will simply change keys,
+allowing GConf to notify the rest of the application that changes have occurred.
+Here the application proper is the "view," GConf is the "model", and the
+preferences dialog is the "controller." In no case should you do this:
+<programlisting>
+ gconf_client_set(client, key, value);
+ <link linkend="application-update-to-reflect-setting"><function>application_update_to_reflect_setting()</function></link>;
+</programlisting>
+This breaks if a setting is changed <emphasis>outside</emphasis> your
+application&mdash;or even from a different part of your application.
+The correct way (in pseudo-code) is:
+<programlisting>
+ /* At application startup */
+ gconf_client_notify_add(client, key, application_update_to_reflect_setting, data);
+
+ /* From preferences dialog */
+ gconf_client_set(client, key, value);
+</programlisting>
+See the example programs that come with GConf for more details.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfClientPreloadType"/>enum GConfClientPreloadType</title>
+<indexterm><primary>GConfClientPreloadType</primary></indexterm><programlisting>typedef enum { /*&lt; prefix=GCONF_CLIENT &gt;*/
+  GCONF_CLIENT_PRELOAD_NONE,     /* don't preload anything */
+  GCONF_CLIENT_PRELOAD_ONELEVEL, /* load entries directly under the directory. */
+  GCONF_CLIENT_PRELOAD_RECURSIVE /* recurse the directory tree; possibly quite expensive! */
+} GConfClientPreloadType;
+</programlisting>
+<para>
+The <link linkend="GConfClientPreloadType"><type>GConfClientPreloadType</type></link> is used to tell <link linkend="GConfClient"><type>GConfClient</type></link> how to preload one of
+its directories. As a rule of thumb, if you plan to get the value of almost all the
+keys in a directory, preloading that directory will probably enhance
+performance. If you plan to use only half the keys, preloading is likely a bad
+idea. <parameter>GCONF_CLIENT_PRELOAD_NONE</parameter> specifies that no preload occurs,
+<parameter>GCONF_CLIENT_PRELOAD_ONELEVEL</parameter> loads the immediate children of the directory,
+<parameter>GCONF_CLIENT_PRELOAD_RECURSIVE</parameter> loads <emphasis>all</emphasis> children of the
+directory and its subdirectories, recursively.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GCONF_CLIENT_PRELOAD_NONE</literal></term>
+<listitem><simpara>preload nothing.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_CLIENT_PRELOAD_ONELEVEL</literal></term>
+<listitem><simpara>preload immediate children of the directory.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_CLIENT_PRELOAD_RECURSIVE</literal></term>
+<listitem><simpara>recursively preload everything in and below the directory.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfClientErrorHandlingMode"/>enum GConfClientErrorHandlingMode</title>
+<indexterm><primary>GConfClientErrorHandlingMode</primary></indexterm><programlisting>typedef enum { /*&lt; prefix=GCONF_CLIENT &gt;*/
+  GCONF_CLIENT_HANDLE_NONE,
+  GCONF_CLIENT_HANDLE_UNRETURNED,
+  GCONF_CLIENT_HANDLE_ALL
+} GConfClientErrorHandlingMode;
+</programlisting>
+<para>
+<link linkend="GConfClientErrorHandlingMode"><type>GConfClientErrorHandlingMode</type></link> is used to control <link linkend="GConfClient"><type>GConfClient</type></link>'s default error
+handling.  <link linkend="GConfClient"><type>GConfClient</type></link> can pop up a dialog in the default signal handler for
+"error" or "unreturned_error." You can specify that no errors are handled, only
+unreturned errors are handled, or all errors are handled with this enumeration.
+You can prevent specific errors from being handled automatically by stopping the
+signal emission before the default signal handler is called (see the GLib
+documentation, <link linkend="g-signal-stop-emission-by-name"><function>g_signal_stop_emission_by_name()</function></link> for example).
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GCONF_CLIENT_HANDLE_NONE</literal></term>
+<listitem><simpara>never run a default error handler.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_CLIENT_HANDLE_UNRETURNED</literal></term>
+<listitem><simpara>run a default error handler for unreturned errors ("unreturned_error" signal).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GCONF_CLIENT_HANDLE_ALL</literal></term>
+<listitem><simpara>run a default error handler for all errors ("error" signal).
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfClientNotifyFunc"/>GConfClientNotifyFunc ()</title>
+<indexterm><primary>GConfClientNotifyFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GConfClientNotifyFunc)        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn_id,
+                                             <link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+This is the signature of a user function added with <link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link>.
+The notify function is invoked when the value of a key changes. The <parameter>value</parameter>
+argument is the new value, or <symbol>NULL</symbol> if the key was unset.  The
+<parameter>value</parameter> argument should not be modified, and should be copied if you want to keep
+it around (the <link linkend="GConfClient"><type>GConfClient</type></link> will destroy it sometime after your notify function
+is called).
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfClient"><type>GConfClient</type></link> notifying us.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cnxn_id</parameter>&nbsp;:</term>
+<listitem><simpara>connection ID from <link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>entry</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data from <link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GConfClientErrorHandlerFunc"/>GConfClientErrorHandlerFunc ()</title>
+<indexterm><primary>GConfClientErrorHandlerFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GConfClientErrorHandlerFunc)  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GCONF-CLIENT-CAPS"/>GCONF_CLIENT()</title>
+<indexterm><primary>GCONF_CLIENT</primary></indexterm><programlisting>#define GCONF_CLIENT(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCONF_TYPE_CLIENT, GConfClient))
+</programlisting>
+<para>
+Casts a pointer to a <link linkend="GConfClient"><type>GConfClient</type></link>*.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-default"/>gconf_client_get_default ()</title>
+<indexterm><primary>gconf_client_get_default</primary></indexterm><programlisting><link linkend="GConfClient">GConfClient</link>* gconf_client_get_default       (void);</programlisting>
+<para>
+Creates a new <link linkend="GConfClient"><type>GConfClient</type></link> using the default <link linkend="GConfEngine"><type>GConfEngine</type></link>. Normally this is the
+engine you want. If someone else is already using the default
+<link linkend="GConfClient"><type>GConfClient</type></link>, this function returns the same one they're using, but 
+with the reference count incremented. So you have to unref either way.
+</para>
+
+<para>
+It's important to call <link linkend="g-type-init"><function>g_type_init()</function></link> before using this GObject, to initialize the type system.
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GConfClient"><type>GConfClient</type></link>. <link linkend="g-object-unref"><function>g_object_unref()</function></link> when you're done.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-for-engine"/>gconf_client_get_for_engine ()</title>
+<indexterm><primary>gconf_client_get_for_engine</primary></indexterm><programlisting><link linkend="GConfClient">GConfClient</link>* gconf_client_get_for_engine    (<link linkend="GConfEngine">GConfEngine</link> *engine);</programlisting>
+<para>
+Creates a new <link linkend="GConfClient"><type>GConfClient</type></link> with a specific <link linkend="GConfEngine"><type>GConfEngine</type></link>. Only specialized
+configuration-related programs should need to call this function. The
+returned <link linkend="GConfClient"><type>GConfClient</type></link> should be unref'd when you're done with <link linkend="g-object-unref"><function>g_object_unref()</function></link>.
+Remember to avoid using the <link linkend="GConfEngine"><type>GConfEngine</type></link> directly once you have a <link linkend="GConfClient"><type>GConfClient</type></link>
+wrapper.
+</para><variablelist role="params">
+<varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="GConfEngine"><type>GConfEngine</type></link> to use.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new <link linkend="GConfClient"><type>GConfClient</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-add-dir"/>gconf_client_add_dir ()</title>
+<indexterm><primary>gconf_client_add_dir</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_add_dir            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> preload,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Add a directory to the list of directories the <link linkend="GConfClient"><type>GConfClient</type></link> will watch. Any
+changes to keys below this directory will cause the "value_changed" signal to be
+emitted.  When you add the directory, you can request that the <link linkend="GConfClient"><type>GConfClient</type></link>
+preload its contents; see <link linkend="GConfClientPreloadType"><type>GConfClientPreloadType</type></link> for details.
+</para>
+
+<para>
+Added directories may not overlap. That is, if you add "/foo", you may not add
+"/foo/bar". However you can add "/foo" and "/bar". You can also add "/foo"
+multiple times; if you add a directory multiple times, it will not be removed
+until you call <link linkend="gconf-client-remove-dir"><function>gconf_client_remove_dir()</function></link> an equal number of times.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>directory to add to the list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>preload</parameter>&nbsp;:</term>
+<listitem><simpara>degree of preload.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-remove-dir"/>gconf_client_remove_dir ()</title>
+<indexterm><primary>gconf_client_remove_dir</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_remove_dir         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Remove a directory from the list created with <link linkend="gconf-client-add-dir"><function>gconf_client_add_dir()</function></link>.  If any
+notifications have been added below this directory with
+<link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link>, those notifications will be disabled until you re-add
+the removed directory.  Note that if a directory has been added multiple times,
+you must remove it the same number of times before the remove takes effect.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>directory to remove.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-notify-add"/>gconf_client_notify_add ()</title>
+<indexterm><primary>gconf_client_notify_add</primary></indexterm><programlisting><link linkend="guint">guint</link>       gconf_client_notify_add         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *namespace_section,
+                                             <link linkend="GConfClientNotifyFunc">GConfClientNotifyFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GFreeFunc">GFreeFunc</link> destroy_notify,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Request notification of changes to <parameter>namespace_section</parameter>. This includes the key
+<parameter>namespace_section</parameter> itself, and any keys below it (the behavior is identical to
+<link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link>, but while <link linkend="gconf-engine-notify-add"><function>gconf_engine_notify_add()</function></link> places a notification request
+on the server for every notify function, <link linkend="GConfClient"><type>GConfClient</type></link> requests server
+notification for directories added with <link linkend="gconf-client-add-dir"><function>gconf_client_add_dir()</function></link> and keeps the
+list of <link linkend="GConfClientNotifyFunc"><type>GConfClientNotifyFunc</type></link> on the client side). 
+</para>
+
+<para>
+For the notification to happen, <parameter>namespace_section</parameter> must be equal to or below one
+of the directories added with <link linkend="gconf-client-add-dir"><function>gconf_client_add_dir()</function></link>. You can still call
+<link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link> for other directories, but no notification will be
+received until you add a directory above or equal to <parameter>namespace_section</parameter>.  One
+implication of this is that <link linkend="gconf-client-remove-dir"><function>gconf_client_remove_dir()</function></link> temporarily disables
+notifications that were below the removed directory.
+</para>
+
+<para>
+The function returns a connection ID you can use to call
+<link linkend="gconf-client-notify-remove"><function>gconf_client_notify_remove()</function></link>.
+</para>
+
+<para>
+See the description of <link linkend="GConfClientNotifyFunc"><type>GConfClientNotifyFunc</type></link> for details on how the
+notification function is called.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>namespace_section</parameter>&nbsp;:</term>
+<listitem><simpara>where to listen for changes.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>function to call when changes occur.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data to pass to <parameter>func</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy_notify</parameter>&nbsp;:</term>
+<listitem><simpara>function to call on <parameter>user_data</parameter> when the notify is removed or the <link linkend="GConfClient"><type>GConfClient</type></link> is destroyed, or <symbol>NULL</symbol> for none.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a connection ID for removing the notification.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-notify-remove"/>gconf_client_notify_remove ()</title>
+<indexterm><primary>gconf_client_notify_remove</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_notify_remove      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn);</programlisting>
+<para>
+Remove a notification using the ID returned from
+<link linkend="gconf-client-notify-add"><function>gconf_client_notify_add()</function></link>. Invokes the destroy notify function on the
+notification's user data, if appropriate.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cnxn</parameter>&nbsp;:</term>
+<listitem><simpara>connection ID.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-error-handling"/>gconf_client_set_error_handling ()</title>
+<indexterm><primary>gconf_client_set_error_handling</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_set_error_handling (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link> mode);</programlisting>
+<para>
+Controls the default error handling for <link linkend="GConfClient"><type>GConfClient</type></link>. See
+<link linkend="GConfClientErrorHandlingMode"><type>GConfClientErrorHandlingMode</type></link> and <link linkend="GConfClientParentWindowFunc"><type>GConfClientParentWindowFunc</type></link> for details on this.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>mode</parameter>&nbsp;:</term>
+<listitem><simpara>error handling mode.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-global-default-error-handler"/>gconf_client_set_global_default_error_handler ()</title>
+<indexterm><primary>gconf_client_set_global_default_error_handler</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_set_global_default_error_handler
+                                            (<link linkend="GConfClientErrorHandlerFunc">GConfClientErrorHandlerFunc</link> func);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-clear-cache"/>gconf_client_clear_cache ()</title>
+<indexterm><primary>gconf_client_clear_cache</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_clear_cache        (<link linkend="GConfClient">GConfClient</link> *client);</programlisting>
+<para>
+Dumps everything out of the <link linkend="GConfClient"><type>GConfClient</type></link> client-side cache. If you know you're
+done using the <link linkend="GConfClient"><type>GConfClient</type></link> for a while, you can call this function to save some
+memory.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-preload"/>gconf_client_preload ()</title>
+<indexterm><primary>gconf_client_preload</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_preload            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dirname,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> type,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Preloads a directory. Normally you do this when you call <link linkend="gconf-client-add-dir"><function>gconf_client_add_dir()</function></link>,
+but if you've called <link linkend="gconf-client-clear-cache"><function>gconf_client_clear_cache()</function></link> there may be a reason to do it
+again.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dirname</parameter>&nbsp;:</term>
+<listitem><simpara>directory to preload.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>degree of preload.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set"/>gconf_client_set ()</title>
+<indexterm><primary>gconf_client_set</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_set                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Sets the value of a configuration key. Just like <link linkend="gconf-engine-set"><function>gconf_engine_set()</function></link>, but uses
+<link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features. The <parameter>val</parameter> argument will not be
+modified.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to set.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get"/>gconf_client_get ()</title>
+<indexterm><primary>gconf_client_get</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_client_get                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Gets the value of a configuration key. Just like <link linkend="gconf-engine-get"><function>gconf_engine_get()</function></link>, but uses
+<link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if unset and no default exists.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-without-default"/>gconf_client_get_without_default ()</title>
+<indexterm><primary>gconf_client_get_without_default</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_client_get_without_default
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Gets the value of a configuration key. Just like <link linkend="gconf-client-get"><function>gconf_client_get()</function></link> but doesn't look for a default value if the key is unset.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if unset (even if a default exists).
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-entry"/>gconf_client_get_entry ()</title>
+<indexterm><primary>gconf_client_get_entry</primary></indexterm><programlisting><link linkend="GConfEntry">GConfEntry</link>* gconf_client_get_entry          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Obtains the full <link linkend="GConfEntry"><type>GConfEntry</type></link> for a value. Just like <link linkend="gconf-engine-get-entry"><function>gconf_engine_get_entry()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>locale</parameter>&nbsp;:</term>
+<listitem><simpara>preferred locale (as in the locale-related environment variables).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>use_schema_default</parameter>&nbsp;:</term>
+<listitem><simpara>indicates whether to look for a default value when the key is unset.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-default-from-schema"/>gconf_client_get_default_from_schema ()</title>
+<indexterm><primary>gconf_client_get_default_from_schema</primary></indexterm><programlisting><link linkend="GConfValue">GConfValue</link>* gconf_client_get_default_from_schema
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Returns the default value stored in the key's schema, if the key has a schema
+associated and the schema exists and the schema contains a default value.  Note
+that <link linkend="gconf-client-get"><function>gconf_client_get()</function></link>, <link linkend="gconf-engine-client-string"><function>gconf_engine_client_string()</function></link>, and so on already return the default value
+if no other value is found, so normally you do not need this function. This
+function is just for convenience; you could also get the <link linkend="GConfMetaInfo"><type>GConfMetaInfo</type></link> for the
+key, read the schema name from there, then look up the schema by name and
+extract the default value. Just like <link linkend="gconf-engine-get-default-from-schema"><function>gconf_engine_get_default_from_schema()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to get.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>newly-allocated <link linkend="GConfValue"><type>GConfValue</type></link>, or <symbol>NULL</symbol> if the key has no default value in its schema.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-unset"/>gconf_client_unset ()</title>
+<indexterm><primary>gconf_client_unset</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_unset              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Unsets the value of <parameter>key</parameter>; if <parameter>key</parameter> is already unset, has no effect.  An
+error of note is <literal>GCONF_OVERRIDDEN</literal>, indicating that the system
+administrator has "forced" a value for this key. 
+Just like <link linkend="gconf-engine-unset"><function>gconf_engine_unset()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to unset.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-all-entries"/>gconf_client_all_entries ()</title>
+<indexterm><primary>gconf_client_all_entries</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_client_all_entries        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Lists the key-value pairs in <parameter>dir</parameter>. Does not list subdirectories; for
+that use <link linkend="gconf-client-all-dirs"><function>gconf_client_all_dirs()</function></link>. The returned list contains <link linkend="GConfEntry"><type>GConfEntry</type></link>
+objects. A <link linkend="GConfEntry"><type>GConfEntry</type></link> contains an <emphasis>absolute</emphasis> key
+and a value. The list is not recursive, it contains only the immediate
+children of <parameter>dir</parameter>.  To free the returned list, <link linkend="gconf-entry-free"><function>gconf_entry_free()</function></link>
+each list element, then <link linkend="g-slist-free"><function>g_slist_free()</function></link> the list itself.
+Just like <link linkend="gconf-engine-all-entries"><function>gconf_engine_all_entries()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>directory to list.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>List of <link linkend="GConfEntry"><type>GConfEntry</type></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-all-dirs"/>gconf_client_all_dirs ()</title>
+<indexterm><primary>gconf_client_all_dirs</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_client_all_dirs           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Lists the subdirectories in <parameter>dir</parameter>. The returned list contains allocated
+strings. Each string is the absolute path of a subdirectory. You should <link linkend="g-free"><function>g_free()</function></link> each string in the list, then <link linkend="g-slist-free"><function>g_slist_free()</function></link> the list itself.
+Just like <link linkend="gconf-engine-all-dirs"><function>gconf_engine_all_dirs()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>directory to get subdirectories from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>List of allocated subdirectory names.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-suggest-sync"/>gconf_client_suggest_sync ()</title>
+<indexterm><primary>gconf_client_suggest_sync</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_suggest_sync       (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Suggests to <application>gconfd</application> that you've just finished
+a block of changes, and it would be an optimal time to sync to
+permanent storage. This is only a suggestion; and
+<application>gconfd</application> will eventually sync even if you
+don't call <link linkend="gconf-engine-suggest-sync"><function>gconf_engine_suggest_sync()</function></link>. This function is just a "hint"
+provided to <application>gconfd</application> to maximize efficiency
+and minimize data loss.
+Just like <link linkend="gconf-engine-suggest-sync"><function>gconf_engine_suggest_sync()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-dir-exists"/>gconf_client_dir_exists ()</title>
+<indexterm><primary>gconf_client_dir_exists</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_dir_exists         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Queries whether the directory <parameter>dir</parameter> exists in the GConf
+database. Returns <symbol>TRUE</symbol> or <symbol>FALSE</symbol>.
+Just like <link linkend="gconf-engine-dir-exists"><function>gconf_engine_dir_exists()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara>directory to check for
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> or <symbol>FALSE</symbol>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-float"/>gconf_client_get_float ()</title>
+<indexterm><primary>gconf_client_get_float</primary></indexterm><programlisting><link linkend="gdouble">gdouble</link>     gconf_client_get_float          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the floating point number (<literal>GCONF_VALUE_FLOAT</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-float is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+0.0 is returned.
+Just like <link linkend="gconf-engine-get-float"><function>gconf_engine_get_float()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter>, or 0.0 if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-int"/>gconf_client_get_int ()</title>
+<indexterm><primary>gconf_client_get_int</primary></indexterm><programlisting><link linkend="gint">gint</link>        gconf_client_get_int            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the integer (<literal>GCONF_VALUE_INT</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-integer is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+0 is returned.
+Just like <link linkend="gconf-engine-get-int"><function>gconf_engine_get_int()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter>, or 0 if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-string"/>gconf_client_get_string ()</title>
+<indexterm><primary>gconf_client_get_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gconf_client_get_string         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the string (<literal>GCONF_VALUE_STRING</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-string is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+<symbol>NULL</symbol> is returned.
+Just like <link linkend="gconf-engine-get-string"><function>gconf_engine_get_string()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>allocated string (value of <parameter>key</parameter>), or <symbol>NULL</symbol> if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-bool"/>gconf_client_get_bool ()</title>
+<indexterm><primary>gconf_client_get_bool</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_get_bool           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the boolean value (<literal>GCONF_VALUE_BOOL</literal>) stored at
+<parameter>key</parameter>. Automatically performs type-checking, so if a non-bool is
+stored at <parameter>key</parameter>, an error is returned. On error, or if <parameter>key</parameter> is unset, 
+<symbol>FALSE</symbol> is returned.
+Just like <link linkend="gconf-engine-get-bool"><function>gconf_engine_get_bool()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter>, or <symbol>FALSE</symbol> if no value is obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-schema"/>gconf_client_get_schema ()</title>
+<indexterm><primary>gconf_client_get_schema</primary></indexterm><programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_client_get_schema        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the schema (<literal>GCONF_VALUE_SCHEMA</literal>) stored at <parameter>key</parameter>.
+Automatically performs type-checking, so if a non-schema is stored at
+<parameter>key</parameter>, an error is returned. If no value is set or an error occurs,
+<symbol>NULL</symbol> is returned.
+Just like <link linkend="gconf-engine-get-schema"><function>gconf_engine_get_schema()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>the value of <parameter>key</parameter> as an allocated <link linkend="GConfSchema"><type>GConfSchema</type></link>, or <symbol>NULL</symbol> if no value was obtained.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-list"/>gconf_client_get_list ()</title>
+<indexterm><primary>gconf_client_get_list</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     gconf_client_get_list           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the list (<literal>GCONF_VALUE_LIST</literal>) stored at <parameter>key</parameter>.  Automatically
+performs type-checking, so if a non-list is stored at <parameter>key</parameter>, or the
+list does not contain elements of type <parameter>list_type</parameter>, an error is
+returned. If no value is set or an error occurs, <symbol>NULL</symbol>
+is returned. Note that <symbol>NULL</symbol> is also the empty list,
+so if you need to distinguish the empty list from an unset value, you
+must use <link linkend="gconf-client-get"><function>gconf_client_get()</function></link> to obtain a raw <link linkend="GConfValue"><type>GConfValue</type></link>.
+</para>
+
+<para>
+<emphasis>Remember that GConf lists can only store primitive types:
+<literal>GCONF_VALUE_FLOAT</literal>, <literal>GCONF_VALUE_INT</literal>, <literal>GCONF_VALUE_BOOL</literal>,
+<literal>GCONF_VALUE_STRING</literal>, <literal>GCONF_VALUE_SCHEMA</literal>.</emphasis> Also remember
+that lists must be uniform, you may not mix types in the same list.
+</para>
+
+<para>
+The type of the list elements depends on <parameter>list_type</parameter>. A <link linkend="GConfValue"><type>GConfValue</type></link>
+with type <literal>GCONF_VALUE_LIST</literal> normally stores a list of more <link linkend="GConfValue"><type>GConfValue</type></link>
+objects. <link linkend="gconf-client-get-list"><function>gconf_client_get_list()</function></link> automatically converts to primitive C
+types. Thus, the list-&gt;data fields in the returned list 
+contain:
+ 
+<informaltable pgwide="1" frame="none">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry><literal>GCONF_VALUE_INT</literal></entry>
+<entry>The integer itself, converted with <link linkend="GINT-TO-POINTER-CAPS"><function>GINT_TO_POINTER()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_BOOL</literal></entry>
+<entry>The bool itself, converted with <link linkend="GINT-TO-POINTER-CAPS"><function>GINT_TO_POINTER()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_FLOAT</literal></entry>
+<entry>A pointer to <link linkend="gdouble"><type>gdouble</type></link>, which should be freed with <link linkend="g-free"><function>g_free()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_STRING</literal></entry>
+<entry>A pointer to <link linkend="gchar"><type>gchar</type></link>, which should be freed with <link linkend="g-free"><function>g_free()</function></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_SCHEMA</literal></entry>
+<entry>A pointer to <link linkend="GConfSchema"><type>GConfSchema</type></link>, which should be freed with <link linkend="gconf-schema-free"><function>gconf_schema_free()</function></link></entry>
+</row>
+
+</tbody></tgroup></informaltable>
+
+In the <literal>GCONF_VALUE_FLOAT</literal> and <literal>GCONF_VALUE_STRING</literal> cases, you must
+<link linkend="g-free"><function>g_free()</function></link> each list element. In the <literal>GCONF_VALUE_SCHEMA</literal> case you must
+<link linkend="gconf-schema-free"><function>gconf_schema_free()</function></link> each element. In all cases you must free the
+list itself with <link linkend="g-slist-free"><function>g_slist_free()</function></link>.
+
+Just like <link linkend="gconf-engine-get-list"><function>gconf_engine_get_list()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of each list element.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>an allocated list, with elements as described above.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-pair"/>gconf_client_get_pair ()</title>
+<indexterm><primary>gconf_client_get_pair</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_get_pair           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Requests the pair (<literal>GCONF_VALUE_PAIR</literal>) stored at <parameter>key</parameter>.  Automatically
+performs type-checking, so if a non-pair is stored at <parameter>key</parameter>, or the
+pair does not have the right <parameter>car_type</parameter> and <parameter>cdr_type</parameter>, an error is
+returned. Remember that the <firstterm>car</firstterm> of a pair is
+its first value, and the <firstterm>cdr</firstterm> is its second
+value, in the Lisp tradition. 
+</para>
+
+<para>
+<emphasis>Remember that GConf pairs can only store primitive types:
+<literal>GCONF_VALUE_FLOAT</literal>, <literal>GCONF_VALUE_INT</literal>, <literal>GCONF_VALUE_BOOL</literal>,
+<literal>GCONF_VALUE_STRING</literal>, <literal>GCONF_VALUE_SCHEMA</literal>.</emphasis>
+</para>
+
+<para>
+<link linkend="gconf-client-get-pair"><function>gconf_client_get_pair()</function></link> stores the two fields of the pair in the locations
+pointed to by <parameter>car_retloc</parameter> and <parameter>cdr_retloc</parameter>. The type of these pointers
+depends on the corresponding <parameter>car_type</parameter> and <parameter>cdr_type</parameter>:
+ 
+<informaltable pgwide="1" frame="none">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry><literal>GCONF_VALUE_INT</literal></entry>
+<entry>pointer to <link linkend="gint"><type>gint</type></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_BOOL</literal></entry>
+<entry>pointer to <link linkend="gboolean"><type>gboolean</type></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_FLOAT</literal></entry>
+<entry>pointer to <link linkend="gdouble"><type>gdouble</type></link></entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_STRING</literal></entry>
+<entry>pointer to <link linkend="gchar"><type>gchar</type></link>*</entry>
+</row>
+
+<row>
+<entry><literal>GCONF_VALUE_SCHEMA</literal></entry>
+<entry>pointer to <link linkend="GConfSchema"><type>GConfSchema</type></link>*</entry>
+</row>
+
+</tbody></tgroup></informaltable>
+
+In the <literal>GCONF_VALUE_STRING</literal> case, you must <link linkend="g-free"><function>g_free()</function></link> the string(s)
+stored in the return location(s). In the <literal>GCONF_VALUE_SCHEMA</literal> case you
+must <link linkend="gconf-schema-free"><function>gconf_schema_free()</function></link> the returned schema. If there's an error
+or the value is unset, <parameter>car_retloc</parameter> and <parameter>cdr_retloc</parameter> are left unchanged.
+</para>
+
+<para>
+<link linkend="gconf-client-get-pair"><function>gconf_client_get_pair()</function></link> returns <symbol>TRUE</symbol> on success.
+</para>
+
+<para>
+An example of <link linkend="gconf-client-get-pair"><function>gconf_client_get_pair()</function></link> in action:
+<programlisting>
+gdouble car = 10.0;
+gchar* cdr  = NULL; 
+GError* error = NULL;
+
+if (!gconf_client_get_pair(conf, "/foo", 
+                    GCONF_VALUE_FLOAT,
+                    GCONF_VALUE_STRING, 
+                    &amp;car, &amp;cdr, &amp;error))
+  {
+    /* Note: car/cdr should be untouched, because an error occurred */
+    g_assert(error != NULL);
+    fprintf(stderr, "Error: <literal>s</literal>\n", error->message);
+    g_error_free(error);
+    error = NULL;
+  }
+else
+  {
+    /* Note: car/cdr may be untouched even though there was no error, 
+       if no value was set for "/foo"
+     */
+    printf("Found pair (<literal>g</literal>,<literal>s</literal>)\n", car, cdr);
+    if (cdr != NULL)
+      g_free(cdr);
+  }
+</programlisting>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>desired type of the pair's first field (car).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>desired type of the pair's second field (cdr).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>address of a return location for the car.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_retloc</parameter>&nbsp;:</term>
+<listitem><simpara>address of a return location for the cdr.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-float"/>gconf_client_set_float ()</title>
+<indexterm><primary>gconf_client_set_float</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_float          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a float (GCONF_VALUE_FLOAT), <link linkend="gconf-client-set-float"><function>gconf_client_set_float()</function></link> will fail.
+Just like <link linkend="gconf-engine-set"><function>gconf_engine_set()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-int"/>gconf_client_set_int ()</title>
+<indexterm><primary>gconf_client_set_int</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_int            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store an integer (GCONF_VALUE_INT), <link linkend="gconf-client-set-int"><function>gconf_client_set_int()</function></link> will fail.
+Just like <link linkend="gconf-engine-set"><function>gconf_engine_set()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-string"/>gconf_client_set_string ()</title>
+<indexterm><primary>gconf_client_set_string</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_string         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a string (GCONF_VALUE_STRING), <link linkend="gconf-client-set-string"><function>gconf_client_set_string()</function></link> will fail.
+Just like <link linkend="gconf-engine-set"><function>gconf_engine_set()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-bool"/>gconf_client_set_bool ()</title>
+<indexterm><primary>gconf_client_set_bool</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_bool           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but but doesn't store a boolean (GCONF_VALUE_BOOL), <link linkend="gconf-client-set-bool"><function>gconf_client_set_bool()</function></link> will fail.
+Just like <link linkend="gconf-engine-set"><function>gconf_engine_set()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-schema"/>gconf_client_set_schema ()</title>
+<indexterm><primary>gconf_client_set_schema</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_schema         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Change the value of <parameter>key</parameter> to <parameter>val</parameter>. Automatically creates the <parameter>key</parameter> if it didn't exist before (ie it was unset or it only had a default value). If the key already exists but doesn't store a schema value (GCONF_VALUE_SCHEMA), <link linkend="gconf-client-set-schema"><function>gconf_client_set_schema()</function></link> will fail.
+Just like <link linkend="gconf-engine-set"><function>gconf_engine_set()</function></link>, but uses <link linkend="GConfClient"><type>GConfClient</type></link> caching and error-handling features.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>val</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-list"/>gconf_client_set_list ()</title>
+<indexterm><primary>gconf_client_set_list</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_list           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of each list element.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>list</parameter>&nbsp;:</term>
+<listitem><simpara>new value of <parameter>key</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-pair"/>gconf_client_set_pair ()</title>
+<indexterm><primary>gconf_client_set_pair</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_pair           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key you want to set the value of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>car_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of the pair's first field (car).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cdr_type</parameter>&nbsp;:</term>
+<listitem><simpara>type of the pair's second field (cdr).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address_of_car</parameter>&nbsp;:</term>
+<listitem><simpara>address of the car.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address_of_cdr</parameter>&nbsp;:</term>
+<listitem><simpara>address of the cdr.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> on error.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-error"/>gconf_client_error ()</title>
+<indexterm><primary>gconf_client_error</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_error              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);</programlisting>
+<para>
+Emits the "error" signal. Rarely useful.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara>error to pass to signal handlers.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-unreturned-error"/>gconf_client_unreturned_error ()</title>
+<indexterm><primary>gconf_client_unreturned_error</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_unreturned_error   (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);</programlisting>
+<para>
+Emits the "unreturned_error" signal. Rarely useful.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara>error to pass to signal handlers.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-value-changed"/>gconf_client_value_changed ()</title>
+<indexterm><primary>gconf_client_value_changed</primary></indexterm><programlisting><link linkend="void">void</link>        gconf_client_value_changed      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Emits the "value_changed" signal. Rarely useful.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>key to pass to signal handlers.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara>value of <parameter>key</parameter> to pass to signal handlers.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-reverse-change-set"/>gconf_client_reverse_change_set ()</title>
+<indexterm><primary>gconf_client_reverse_change_set</primary></indexterm><programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_client_reverse_change_set
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Creates a change set that would reverse <parameter>cs</parameter>. That is, for each change in <parameter>cs</parameter>,
+save the current state of that key in the returned change set.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cs</parameter>&nbsp;:</term>
+<listitem><simpara>change set to create the reverse of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a new change set that would restore the current state of each key in <parameter>cs</parameter>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-change-set-from-currentv"/>gconf_client_change_set_from_currentv ()</title>
+<indexterm><primary>gconf_client_change_set_from_currentv</primary></indexterm><programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_client_change_set_from_currentv
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> **keys,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Creates a change set that will change the keys in
+<symbol>NULL</symbol>-terminated array <parameter>keys</parameter> to their current state. Use this to
+save the current state of a collection of keys; then you can later revert to the
+current state by committing the returned change set.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>keys</parameter>&nbsp;:</term>
+<listitem><simpara><symbol>NULL</symbol>-terminated array of key names.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>new change set that changes all the <parameter>keys</parameter> to their current state.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-change-set-from-current"/>gconf_client_change_set_from_current ()</title>
+<indexterm><primary>gconf_client_change_set_from_current</primary></indexterm><programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_client_change_set_from_current
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err,
+                                             const <link linkend="gchar">gchar</link> *first_key,
+                                             ...);</programlisting>
+<para>
+Convenient varargs version of <link linkend="gconf-client-change-set-from-currentv"><function>gconf_client_change_set_from_currentv()</function></link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="GConfClient"><type>GConfClient</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>the return location for an allocated <link linkend="GError"><type>GError</type></link>, or <symbol>NULL</symbol> to ignore errors.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>first_key</parameter>&nbsp;:</term>
+<listitem><simpara>first key to save the current state of.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara><symbol>NULL</symbol>-terminated list of additional keys.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>new change set that changes all the keys to their current state.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-commit-change-set"/>gconf_client_commit_change_set ()</title>
+<indexterm><primary>gconf_client_commit_change_set</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gconf_client_commit_change_set  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="gboolean">gboolean</link> remove_committed,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>remove_committed</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>err</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -86,6 +86,7 @@ typedef void (*GConfClientErrorHandlerFunc) (GConfClient* client,
 #define GCONF_CLIENT_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GCONF_TYPE_CLIENT, GConfClientClass))
 #define GCONF_IS_CLIENT(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GCONF_TYPE_CLIENT))
 #define GCONF_IS_CLIENT_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GCONF_TYPE_CLIENT))
+#define GCONF_CLIENT_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj), GCONF_TYPE_CLIENT, GConfClientClass))
 
 struct _GConfClient
 {
@@ -188,6 +189,7 @@ guint        gconf_client_notify_add(GConfClient* client,
 
 void         gconf_client_notify_remove  (GConfClient* client,
                                           guint cnxn);
+void         gconf_client_notify (GConfClient* client, const char* key);
 
 /*
  * Error handling convenience; if you don't want the default handler,
@@ -197,7 +199,7 @@ void         gconf_client_notify_remove  (GConfClient* client,
 /* 
  * Error handling happens in the default signal handler, so you can
  * selectively override the default handling by connecting to the error
- * signal and calling gtk_signal_emit_stop()
+ * signal and calling g_signal_stop_emission()
  */
 
 void              gconf_client_set_error_handling(GConfClient* client,
@@ -256,6 +258,11 @@ GConfValue*       gconf_client_get_default_from_schema (GConfClient* client,
 
 gboolean     gconf_client_unset          (GConfClient* client,
                                           const gchar* key, GError** err);
+
+gboolean     gconf_client_recursive_unset (GConfClient *client,
+                                           const char     *key,
+                                           GConfUnsetFlags flags,
+                                           GError        **err);
 
 GSList*      gconf_client_all_entries    (GConfClient* client,
                                           const gchar* dir, GError** err);

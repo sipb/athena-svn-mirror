@@ -70,8 +70,7 @@ typedef struct
 static MarkupSource* ms_new     (const char   *root_dir,
                                  guint         dir_mode,
                                  guint         file_mode,
-                                 GConfLock    *lock,
-                                 gboolean      read_only);
+                                 GConfLock    *lock);
 static void          ms_destroy (MarkupSource *source);
 
 /*
@@ -129,10 +128,11 @@ static gboolean       sync_all        (GConfSource       *source,
                                        GError           **err);
 static void           destroy_source  (GConfSource       *source);
 static void           clear_cache     (GConfSource       *source);
-
+static void           blow_away_locks (const char        *address);
 
 
 static GConfBackendVTable markup_vtable = {
+  sizeof (GConfBackendVTable),
   x_shutdown,
   resolve_address,
   lock,
@@ -150,7 +150,11 @@ static GConfBackendVTable markup_vtable = {
   set_schema,
   sync_all,
   destroy_source,
-  clear_cache
+  clear_cache,
+  blow_away_locks,
+  NULL, /* set_notify_func */
+  NULL, /* add_listener    */
+  NULL  /* remove_listener */
 };
 
 static void          
@@ -207,27 +211,20 @@ _gconf_mode_t_to_mode(mode_t orig)
   return mode;
 }
 
-static GConfSource*  
-resolve_address (const char *address,
-                 GError    **err)
+static char*
+get_dir_from_address (const char *address,
+                      GError    **err)
 {
-  char* root_dir;
-  MarkupSource* xsource;
-  GConfSource *source;
-  guint len;
-  gint flags = 0;
-  GConfLock* lock = NULL;
-  guint dir_mode = 0700;
-  guint file_mode = 0600;
-  char** address_flags;
-  char** iter;
-  gboolean force_readonly;
+  char *root_dir;
+  int len;
   
   root_dir = gconf_address_resource (address);
 
   if (root_dir == NULL)
     {
-      gconf_set_error (err, GCONF_ERROR_BAD_ADDRESS, _("Couldn't find the root directory in the address \"%s\""), address);
+      gconf_set_error (err, GCONF_ERROR_BAD_ADDRESS,
+                       _("Couldn't find the XML root directory in the address `%s'"),
+                       address);
       return NULL;
     }
 
@@ -237,27 +234,55 @@ resolve_address (const char *address,
   if (root_dir[len-1] == '/')
     root_dir[len-1] = '\0';
 
-  if (mkdir (root_dir, dir_mode) < 0)
+  return root_dir;
+}
+
+static char*
+get_lock_dir_from_root_dir (const char *root_dir)
+{
+  gchar* lockdir;
+  
+  lockdir = gconf_concat_dir_and_key (root_dir, "%gconf-xml-backend.lock");
+
+  return lockdir;
+}
+
+static GConfSource*  
+resolve_address (const char *address,
+                 GError    **err)
+{
+  char* root_dir;
+  struct stat statbuf;
+  MarkupSource* xsource;
+  GConfSource *source;
+  gint flags = 0;
+  GConfLock* lock = NULL;
+  guint dir_mode = 0700;
+  guint file_mode = 0600;
+  char** address_flags;
+  char** iter;
+  gboolean force_readonly;
+
+  root_dir = get_dir_from_address (address, err);
+  if (root_dir == NULL)
+    return NULL;
+
+  if (stat (root_dir, &statbuf) == 0)
     {
-      if (errno != EEXIST)
-        {
-          gconf_set_error (err, GCONF_ERROR_FAILED,
-                           _("Could not make directory `%s': %s"),
-                           root_dir, g_strerror (errno));
-          g_free (root_dir);
-          return NULL;
-        }
-      else
-        {
-          /* Already exists, base our dir_mode on it */
-          struct stat statbuf;
-          if (stat (root_dir, &statbuf) == 0)
-            {
-              dir_mode = _gconf_mode_t_to_mode (statbuf.st_mode);
-              /* dir_mode without search bits */
-              file_mode = dir_mode & (~0111);
-            }
-        }
+      /* Already exists, base our dir_mode on it */
+      dir_mode = _gconf_mode_t_to_mode (statbuf.st_mode);
+
+      /* dir_mode without search bits */
+      file_mode = dir_mode & (~0111);
+    }
+  else if (mkdir (root_dir, dir_mode) < 0)
+    {
+      /* Error out even on EEXIST - shouldn't happen anyway */
+      gconf_set_error (err, GCONF_ERROR_FAILED,
+		       _("Could not make directory `%s': %s"),
+		       root_dir, g_strerror (errno));
+      g_free (root_dir);
+      return NULL;
     }
 
   force_readonly = FALSE;
@@ -271,7 +296,6 @@ resolve_address (const char *address,
           if (strcmp (*iter, "readonly") == 0)
             {
               force_readonly = TRUE;
-              break;
             }
 
           ++iter;
@@ -308,20 +332,16 @@ resolve_address (const char *address,
     if (writable)
       flags |= GCONF_SOURCE_ALL_WRITEABLE;
 
-
-    /* FIXME locking code is out of sync with XML backend
-     * (doesn't support the GCONF_LOCAL_LOCKS stuff)
-     */
-    
     /* We only do locking if it's writable,
+     * and if not using local locks,
      * which is sort of broken but close enough
      */
-    if (writable)
+    if (writable && !gconf_use_local_locks ())
       {
-        char* lockdir;
+        gchar* lockdir;
 
         /* use same lockfile name as XML backend, for safety */
-        lockdir = gconf_concat_dir_and_key (root_dir, "%gconf-xml-backend.lock");
+        lockdir = get_lock_dir_from_root_dir (root_dir);
         
         lock = gconf_get_lock (lockdir, err);
 
@@ -367,8 +387,7 @@ resolve_address (const char *address,
   
   /* Create the new source */
 
-  xsource = ms_new (root_dir, dir_mode, file_mode, lock,
-                    (flags & GCONF_SOURCE_ALL_WRITEABLE) == 0);
+  xsource = ms_new (root_dir, dir_mode, file_mode, lock);
 
   gconf_log (GCL_DEBUG,
              _("Directory/file permissions for XML source at root %s are: %o/%o"),
@@ -710,7 +729,7 @@ remove_dir (GConfSource *source,
 {
   g_set_error (err, GCONF_ERROR,
                GCONF_ERROR_FAILED,
-               _("Remove dir operation is no longer supported, just remove all the values in the directory"));
+               _("Remove directory operation is no longer supported, just remove all the values in the directory"));
 }
 
 static void          
@@ -768,12 +787,66 @@ clear_cache (GConfSource *source)
       gconf_log (GCL_WARNING, "Could not sync data in order to drop cache");
       return;
     }
+
+  markup_tree_rebuild (ms->tree);
+}
+
+static void
+blow_away_locks (const char *address)
+{
+  char *root_dir;
+  char *lock_dir;
+  DIR *dp;
+  struct dirent *dent;
+
+  /* /tmp locks should never be stuck, and possible security issue to
+   * blow them away
+   */
+  if (gconf_use_local_locks ())
+    return;
   
-  markup_tree_free (ms->tree);
+  root_dir = get_dir_from_address (address, NULL);
+  if (root_dir == NULL)
+    return;
+
+  lock_dir = get_lock_dir_from_root_dir (root_dir);
+
+  dp = opendir (lock_dir);
   
-  ms->tree = markup_tree_new (ms->root_dir,
-                              ms->dir_mode, ms->file_mode,
-                              (ms->source.flags & GCONF_SOURCE_ALL_WRITEABLE) == 0);
+  if (dp == NULL)
+    {
+      g_printerr (_("Could not open lock directory for %s to remove locks: %s\n"),
+                  address, g_strerror (errno));
+      goto out;
+    }
+  
+  while ((dent = readdir (dp)) != NULL)
+    {
+      char *path;
+      
+      /* ignore ., .. (and any ..foo as an intentional who-cares bug) */
+      if (dent->d_name[0] == '.' &&
+          (dent->d_name[1] == '\0' || dent->d_name[1] == '.'))
+        continue;
+
+      path = g_build_filename (lock_dir, dent->d_name, NULL);
+
+      if (unlink (path) < 0)
+        {
+          g_printerr (_("Could not remove file %s: %s\n"),
+                      path, g_strerror (errno));
+        }
+
+      g_free (path);
+    }
+
+ out:
+
+  if (dp)
+    closedir (dp);
+  
+  g_free (root_dir);
+  g_free (lock_dir);
 }
 
 /* Initializer */
@@ -802,12 +875,12 @@ gconf_backend_get_vtable (void)
  * data that hasn't been used in a while.
  */
 static gboolean
-cleanup_timeout (void  *data)
+cleanup_timeout (gpointer data)
 {
+#if 0
   MarkupSource* ms = (MarkupSource*)data;
 
-#if 0
-  cache_clean(xs->cache, 60*5 /* 5 minutes */);
+  cache_clean(ms->cache, 60*5 /* 5 minutes */);
 #endif
   
   return TRUE;
@@ -817,8 +890,7 @@ static MarkupSource*
 ms_new (const char* root_dir,
         guint       dir_mode,
         guint       file_mode,
-        GConfLock  *lock,
-        gboolean    read_only)
+        GConfLock  *lock)
 {
   MarkupSource* ms;
 
@@ -837,9 +909,9 @@ ms_new (const char* root_dir,
   ms->dir_mode = dir_mode;
   ms->file_mode = file_mode;
   
-  ms->tree = markup_tree_new (ms->root_dir,
-                              ms->dir_mode, ms->file_mode,
-                              read_only);
+  ms->tree = markup_tree_get (ms->root_dir,
+                              ms->dir_mode,
+                              ms->file_mode);
   
   return ms;
 }
@@ -856,7 +928,7 @@ ms_destroy (MarkupSource* ms)
    */
   if (ms->lock != NULL && !gconf_release_lock (ms->lock, &error))
     {
-      gconf_log (GCL_ERR, _("Failed to give up lock on XML dir \"%s\": %s"),
+      gconf_log (GCL_ERR, _("Failed to give up lock on XML directory \"%s\": %s"),
                  ms->root_dir, error->message);
       g_error_free(error);
       error = NULL;
@@ -868,7 +940,7 @@ ms_destroy (MarkupSource* ms)
       gconf_log (GCL_ERR, "timeout not found to remove?");
     }
 
-  markup_tree_free (ms->tree);
+  markup_tree_unref (ms->tree);
 
   g_free (ms->root_dir);
   g_free (ms);

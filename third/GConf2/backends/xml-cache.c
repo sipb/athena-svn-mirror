@@ -20,6 +20,7 @@
 #include "xml-cache.h"
 #include <gconf/gconf-internals.h>
 
+#include <string.h>
 #include <time.h>
 
 /* This makes hash table safer when debugging */
@@ -44,11 +45,13 @@ safe_g_hash_table_insert(GHashTable* ht, gpointer key, gpointer value)
 }
 #endif
 
-static gboolean cache_is_nonexistent  (Cache       *cache,
-                                       const gchar *key);
-static void     cache_set_nonexistent (Cache       *cache,
-                                       const gchar *key,
-                                       gboolean     setting);
+static gboolean cache_is_nonexistent    (Cache       *cache,
+                                         const gchar *key);
+static void     cache_set_nonexistent   (Cache       *cache,
+                                         const gchar *key,
+                                         gboolean     setting);
+static void     cache_unset_nonexistent (Cache       *cache,
+                                         const gchar *key);
 static void     cache_insert          (Cache       *cache,
                                        Dir         *d);
 
@@ -57,30 +60,48 @@ static void     cache_remove_from_parent (Cache *cache,
 static void     cache_add_to_parent      (Cache *cache,
                                           Dir   *d);
 
+static GHashTable *caches_by_root_dir = NULL;
+
 struct _Cache {
   gchar* root_dir;
   GHashTable* cache;
   GHashTable* nonexistent_cache;
   guint dir_mode;
   guint file_mode;
+  guint refcount;
 };
 
 Cache*
-cache_new (const gchar  *root_dir,
+cache_get (const gchar  *root_dir,
            guint dir_mode,
            guint file_mode)
 {
-  Cache* cache;
+  Cache* cache = NULL;
+
+  if (caches_by_root_dir == NULL)
+    caches_by_root_dir = g_hash_table_new (g_str_hash, g_str_equal);
+  else
+    cache = g_hash_table_lookup (caches_by_root_dir, root_dir);
+
+  if (cache != NULL)
+    {
+      cache->refcount += 1;
+      return cache;
+    }
 
   cache = g_new(Cache, 1);
 
   cache->root_dir = g_strdup(root_dir);
 
   cache->cache = g_hash_table_new(g_str_hash, g_str_equal);
-  cache->nonexistent_cache = g_hash_table_new(g_str_hash, g_str_equal);
+  cache->nonexistent_cache = g_hash_table_new_full(g_str_hash, g_str_equal,
+                                                   g_free, NULL);
 
   cache->dir_mode = dir_mode;
   cache->file_mode = file_mode;
+  cache->refcount = 1;
+
+  safe_g_hash_table_insert (caches_by_root_dir, cache->root_dir, cache);
   
   return cache;
 }
@@ -88,19 +109,27 @@ cache_new (const gchar  *root_dir,
 static void cache_destroy_foreach(const gchar* key,
                                   Dir* dir, gpointer data);
 
-static void cache_destroy_nonexistent_foreach(gchar* key,
-                                              gpointer val,
-                                              gpointer data);
-
 void
-cache_destroy (Cache        *cache)
+cache_unref (Cache *cache)
 {
+  g_return_if_fail (cache != NULL);
+  g_return_if_fail (cache->refcount > 0);
+
+  if (cache->refcount > 1)
+    {
+      cache->refcount -= 1;
+      return;
+    }
+
+  g_hash_table_remove (caches_by_root_dir, cache->root_dir);
+  if (g_hash_table_size (caches_by_root_dir) == 0)
+    {
+      g_hash_table_destroy (caches_by_root_dir);
+      caches_by_root_dir = NULL;
+    }
   
   g_free(cache->root_dir);
   g_hash_table_foreach(cache->cache, (GHFunc)cache_destroy_foreach,
-                       NULL);
-  g_hash_table_foreach(cache->nonexistent_cache,
-                       (GHFunc)cache_destroy_nonexistent_foreach,
                        NULL);
   g_hash_table_destroy(cache->cache);
   g_hash_table_destroy(cache->nonexistent_cache);
@@ -297,8 +326,7 @@ void
 cache_clean      (Cache        *cache,
                   GTime         older_than)
 {
-  CleanData cd = { 0, 0, 0 };
-  guint size;
+  CleanData cd = { 0, NULL, 0 };
   cd.cache = cache;
   cd.length = older_than;
   
@@ -307,13 +335,15 @@ cache_clean      (Cache        *cache,
   g_hash_table_foreach_remove(cache->cache, (GHRFunc)cache_clean_foreach,
                               &cd);
 
+#if 0
   size = g_hash_table_size(cache->cache);
 
   if (size != 0)
     gconf_log (GCL_DEBUG,
-               _("%u items remain in the cache after cleaning already-synced items older than %u seconds"),
+               "%u items remain in the cache after cleaning already-synced items older than %u seconds",
                size,
                older_than);
+#endif
 }
 
 Dir*
@@ -403,8 +433,7 @@ cache_lookup     (Cache        *cache,
         {
           cache_insert (cache, dir);
           cache_add_to_parent (cache, dir);
-          cache_set_nonexistent (cache, dir_get_name (dir),
-                                 FALSE);
+          cache_unset_nonexistent (cache, dir_get_name (dir));
         }
     }
 
@@ -432,19 +461,27 @@ cache_set_nonexistent   (Cache* cache,
                           GINT_TO_POINTER(TRUE));
     }
   else
-    {
-      gpointer origkey;
-      gpointer origval;
+    g_hash_table_remove(cache->nonexistent_cache, key);
+}
 
-      if (g_hash_table_lookup_extended(cache->nonexistent_cache,
-                                       key,
-                                       &origkey, &origval))
-        {
-          g_hash_table_remove(cache->nonexistent_cache,
-                              key);
-          g_free(origkey);
-        }
-    }
+static void
+cache_unset_nonexistent (Cache       *cache,
+                         const gchar *key)
+{
+  char *parent_key;
+
+  g_return_if_fail (key != NULL);
+
+  cache_set_nonexistent (cache, key, FALSE);
+
+  if (strcmp (key, "/") == 0)
+    return;
+
+  parent_key = gconf_key_directory (key);
+
+  cache_unset_nonexistent (cache, parent_key);
+
+  g_free (parent_key);
 }
 
 static void
@@ -468,14 +505,6 @@ cache_destroy_foreach(const gchar* key,
               dir_get_name (dir));
 #endif
   dir_destroy (dir);
-}
-
-static void
-cache_destroy_nonexistent_foreach(gchar* key,
-                                  gpointer val,
-                                  gpointer data)
-{
-  g_free(key);
 }
 
 static void
