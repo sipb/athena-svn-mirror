@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.1 2001-03-09 20:38:00 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.2 2001-03-26 20:16:03 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -70,7 +70,7 @@ static void read_new_list(struct package **pkgtab, const char *newlistname);
 static void read_installed_versions(struct package **pkgtab);
 static void perform_updates(struct package **pkgtab, int public, int dryrun,
 			    int hashmarks);
-static void *notify(const Header h, const rpmCallbackType what,
+static void *notify(const void *h, const rpmCallbackType what,
 		    const unsigned long amount, const unsigned long total,
 		    const void *pkgKey, void *data);
 static enum act decide_public(struct package *pkg);
@@ -207,8 +207,8 @@ static void read_new_list(struct package **pkgtab, const char *newlistname)
 
 static void read_installed_versions(struct package **pkgtab)
 {
+  rpmdbMatchIterator mi;
   Header h;
-  int offset;
   char *pkgname, *version, *release;
   struct package *pkg;
   rpmdb db;
@@ -218,13 +218,11 @@ static void read_installed_versions(struct package **pkgtab)
   if (rpmdbOpen(NULL, &db, O_RDONLY, 0644))
     die("Can't open RPM database for reading");
 
-  for (offset = rpmdbFirstRecNum(db);
-       offset != 0;
-       offset = rpmdbNextRecNum(db, offset))
+  mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
+  if (mi == NULL)
+    die("Failed to initialize database iterator\n");
+  while ((h = rpmdbNextIterator(mi)) != NULL)
     {
-      h = rpmdbGetRecord(db, offset);
-      if (h == NULL)
-	die("Failed to read database record\n");
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
       if (!headerGetEntry(h, RPMTAG_EPOCH, NULL, (void **) &epoch, NULL))
 	epoch = NULL;
@@ -249,8 +247,6 @@ static void read_installed_versions(struct package **pkgtab)
 	}
       else
 	freerev(&rev);
-
-      headerFree(h);
     }
 
   rpmdbClose(db);
@@ -259,13 +255,14 @@ static void read_installed_versions(struct package **pkgtab)
 static void perform_updates(struct package **pkgtab, int public, int dryrun,
 			    int hashmarks)
 {
-  int r, i, offset;
+  int r, i;
   struct package *pkg;
   rpmdb db;
   rpmTransactionSet rpmdep;
   rpmProblemSet probs = NULL;
   struct rpmDependencyConflict *conflicts;
   int nconflicts;
+  rpmdbMatchIterator mi;
   Header h;
   enum act action;
   char *pkgname;
@@ -310,11 +307,11 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
    * installed at two different versions on the system, we will remove
    * both packages.
    */
-  for (offset = rpmdbFirstRecNum(db);
-       offset != 0;
-       offset = rpmdbNextRecNum(db, offset))
+  mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
+  if (mi == NULL)
+    die("Failed to initialize database iterator\n");
+  while ((h = rpmdbNextIterator(mi)) != NULL)
     {
-      h = rpmdbGetRecord(db, offset);
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->erase)
@@ -327,9 +324,8 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
 	   */
 	  if (hashmarks)
 	    printf("Scheduling removal of package %s\n", pkgname); 
-	  rpmtransRemovePackage(rpmdep, offset);
+	  rpmtransRemovePackage(rpmdep, rpmdbGetIteratorOffset(mi));
 	}
-      headerFree(h);
     }
 
   /* The transaction set is complete.  Check for dependency problems. */
@@ -360,10 +356,11 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
 }
 
 /* Callback function for rpmRunTransactions. */
-static void *notify(const Header h, const rpmCallbackType what,
+static void *notify(const void *arg, const rpmCallbackType what,
 		    const unsigned long amount, const unsigned long total,
 		    const void *pkgKey, void *data)
 {
+  Header h = (Header) arg;
   const char *filename = pkgKey;
   struct notify_data *ndata = data;
   int n;
