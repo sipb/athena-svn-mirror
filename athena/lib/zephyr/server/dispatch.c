@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.12 1987-07-24 15:13:54 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.13 1987-09-28 15:38:34 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -307,9 +307,6 @@ register ZNotAcked_t *nackpacket;
 		/* possibly dead client */
 
 		client = nackpacket->na_client;
-		syslog(LOG_WARNING, "lost client %s %d",
-		       inet_ntoa(client->zct_sin.sin_addr),
-		       ntohs(client->zct_sin.sin_port));
 
 		/* unlink & free packet */
 		xremque(nackpacket);
