@@ -82,6 +82,7 @@ Distribution sites for software under third
 	bind		ftp.isc.org:isc/bind/src
 	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
+	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
 	kermit		http://www.columbia.edu/kermit
@@ -100,6 +101,7 @@ Distribution sites for software under third
 			libexec/talkd goes in the talkd subdirectory
 			protocols/talkd.h is from include/protocols,
 			 with some modifications for portability.
+	tcp_wrappers	ftp.win.tue.nl:/pub/security
 	tcsh		ftp.deshaw.com:pub/tcsh
 			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	tex		See below
