@@ -1,8 +1,8 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/ansi/Makefile,v $
-#	$Author: builder $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/Makefile,v 1.1 1985-04-12 15:28:59 builder Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/Makefile,v 1.2 1989-09-16 12:31:02 epeisach Exp $
 #
 
 
@@ -25,3 +25,11 @@ install: all
 
 clean:
 	rm -f ansi unseg *.o core a.out *.bak *~
+
+depend:
+	makedepend ${CFLAGS} ansi.c unseg.c
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+ansi.o: ansi.c /usr/include/stdio.h
+unseg.o: unseg.c /usr/include/stdio.h
