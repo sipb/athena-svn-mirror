@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.49 1997-10-25 21:47:27 ghudson Exp $
+ *	$Id: bdump.c,v 1.50 1998-10-21 20:08:23 ghudson Exp $
  *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -18,7 +18,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static const char rcsid_bdump_c[] = "$Id: bdump.c,v 1.49 1997-10-25 21:47:27 ghudson Exp $";
+static const char rcsid_bdump_c[] = "$Id: bdump.c,v 1.50 1998-10-21 20:08:23 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -303,6 +303,15 @@ bdump_send()
 	syslog(LOG_ERR,"bdump_send: SendKerberosData: %s",
 	       error_message (retval));
 	cleanup(server);
+
+	/* XXX For unknown reasons, sometimes we get a TGT which
+	 * produces this error while trying to get a service ticket.
+	 * This workaround forces us to get a new TGT next time
+	 * around.
+	 */
+	if (retval == RD_AP_BADD)
+	    ticket_time = 0;
+
 	return;
     }
 #else  /* !HAVE_KRB4 */
@@ -462,6 +471,15 @@ bdump_get_v12 (notice, auth, who, server)
     if (retval != 0) {
 	syslog(LOG_ERR,"bdump_get: %s", error_message(retval));
 	cleanup(server);
+
+	/* XXX For unknown reasons, sometimes we get a TGT which
+	 * produces this error while trying to get a service ticket.
+	 * This workaround forces us to get a new TGT next time
+	 * around.
+	 */
+	if (retval == RD_AP_BADD)
+	    ticket_time = 0;
+
 	return;
     }
 #if 1
