@@ -1,4 +1,4 @@
-# $Id: packages,v 1.41 1998-07-16 15:34:16 ghudson Exp $
+# $Id: packages,v 1.42 1998-07-23 16:30:20 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -97,7 +97,6 @@ athena/bin/write
 athena/bin/athdir
 athena/bin/lpr
 athena/bin/quota
-athena/bin/xdpr
 athena/bin/xquota		sun4
 athena/bin/saferm
 athena/bin/passwd
