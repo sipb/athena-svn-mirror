@@ -1,7 +1,0 @@
-if HAVE_CUPS
-CUPS_DIR=cups	
-else
-CUPS_DIR=
-endif
-
-SUBDIRS=$(CUPS_DIR)
