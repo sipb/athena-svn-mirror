@@ -1,0 +1,30 @@
+Name: athena-openmotif
+Summary: The Motif libraries and utilities 
+Copyright: The Open Group and others
+Group: User Interface/Desktops
+
+%description
+The Motif libraries and utilities 
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra file
+mkdir -p $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults
+cp system.mwmrc $RPM_BUILD_ROOT/usr/athena/lib/X11/system.mwmrc
+cp Mwm $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Mwm
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/usr/athena/lib/X11/system.mwmrc$|%config \0|" |
+  sort > rpm.filelist
