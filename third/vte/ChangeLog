@@ -1,3 +1,148 @@
+2003-03-04 nalin
+	* src/vte.c(vte_terminal_insert_char): wrap properly when a scrolling
+	region is set (#107559).  From HEAD.
+
+2003-02-26 nalin
+	* src/vte.c(vte_terminal_font_open_xft,vte_terminal_font_open_pango):
+	tweak width calculations to handle incomplete font coverage.  From HEAD.
+
+2003-02-26 nalin
+	* src/vte.c(vte_terminal_font_open_xft,vte_terminal_font_open_pango):
+	patch from Jungshik Shin for detecting and handling fonts where ASCII
+	characters are double-width (#106618).  From HEAD.
+
+2003-02-24 nalin
+	* src/vte.c(vte_sequence_handler_window_manipulation): don't report the
+	user-settable title and icon strings to applications, based on H D
+	Moore's "Terminal Emulator Security Issues" (CAN-2003-0070).
+	* src/vte.c(vte_sequence_handler_set_title_internal): strip out control
+	characters just to be on the safe side.
+
+2003-02-24 nalin
+	* src/vte.c(vte_terminal_decset_internal): home the cursor when we
+	switch to the alternate screen, from HEAD (#105075).
+
+2003-02-21 nalin
+	* src/iso2022.c: special case the rest of the graphic characters in
+	the way we already do for the 0x2500-0x257f range.  It's still wrong,
+	but at least now it's consistent (Red Hat #84783).
+	
+2003-02-20 nalin
+	* src/keymap.c: pull up from HEAD to get proper fix for Ctrl+digit
+	keys, which shouldn't break Meta+digit keys (#106667).
+
+2003-02-20 nalin
+	* src/vte.c: fix gratuitous IM resetting, don't mess with the IM when
+	we're not realized and it's a NULL pointer.  From HEAD.
+
+2003-02-20 nalin
+	* src/vte.c(vte_terminal_draw_row): fix "jittering" when the left edge
+	of the row we're drawing is the right half of a multicolumn character.
+	From HEAD.
+
+2003-02-20 nalin
+	* src/vte.c(vte_terminal_feed_child): don't reset the input method
+	here -- it may be in the middle of something (Red Hat #81542).  From
+	HEAD.
+	* src/vte.c(vte_terminal_im_commit): reset the input method when we
+	get text committed (Red Hat #81542).  From HEAD.
+
+2003-02-19 nalin
+	* src/vte.c(vte_terminal_focus_in/focus_out): don't pass focus status
+	changes on to our IM context when we're not realized, because we don't
+	have an IM context then.
+	* src/vte.c(vte_terminal_background_update): don't leak a queued update
+	if one is queued and we get called directly (Red Hat #84368).
+
+2003-02-19 nalin
+	* src/vte.c(vte_terminal_scroll_window): correctly determine whether or
+	not it's safe to scroll with gdk_window_scroll (Red Hat #83472).  From
+	HEAD.
+
+2003-02-19 nalin
+	* src/vte.c(vte_terminal_button_press): grab input focus on button 1
+	press (#106573, Red Hat #84384).  From HEAD.
+
+2003-02-19 nalin
+	* src/vte.c(vte_terminal_sequence_handler_bt): pull rest of fix
+	for backtab from HEAD.
+
+2003-02-19 nalin
+	* src/vte.c(vte_terminal_sequence_handler_cs): recognize and discard
+	bogus arguments.
+
+2003-02-19 nalin
+	* src/vteaccess.c: emit focus-event events when the widget receives
+	focus-in/focus-out events.  From HEAD.
+
+2003-02-19 nalin
+	* src/keymap.c: pull up from HEAD to get key map entries for Ctrl-digit.
+
+2003-02-19  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added "ja" (Japanese) to ALL_LINGUAS.
+
+2003-02-17  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
+
+2003-02-16  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2003-02-14 nalin
+	* configure.in: don't equate maintainer mode with debugging.  From HEAD.
+
+2003-02-14 nalin
+	* src/vte.c(vte_terminal_io_read): coalesce data to work better on
+	systems where the scheduler wakes us up as soon as data is available,
+	to better handle cases where the data we have has a pile coming in
+	right behind it.  From HEAD.
+
+2003-02-14 nalin
+	* src/vte.c(vte_terminal_sequence_handler_bt): fix to stop at the
+	leftmost column if there are no previous tabstops.  From HEAD.
+
+2003-02-13 nalin
+	* src/vte.c(vte_terminal_io_read): don't free the buffer on the stack,
+	though it should never have happened, spotted by msw.
+
+2003-02-12 nalin
+	* src/vte.c(vte_terminal_finalize): close fd leak.
+	* src/vte.c(vte_terminal_fork_command): close potential fd leak.
+
+2003-02-12 nalin
+	* src/reflect.c(main): connect to accessible signals before they can
+	be emitted so that we always have a clear picture of what's going on.
+
+2003-02-11 nalin
+        * src/vte.c(vte_terminal_get_text_range): skip over fragments properly.
+        * src/vte.c(vte_terminal_draw_row): skip over fragments properly.
+
+2003-02-10 nalin
+        * src/vte.c(vte_terminal_get_accessible): keep a weak pointer to the
+        accessible peer instead of a static pointer (part of #104909).
+        * src/vte.c(vte_terminal_finalize): if the accessible peer still exists,        remove its weak pointer before attempting to unref it.
+        * src/vteaccess.c(vte_terminal_accessible_new): make the terminal peer
+        a weak pointer (part of #104909).
+        * src/vteaccess.c(vte_terminal_accessible_finalize): if the terminal
+        peer is not NULL, disconnect it as a weak pointer and don't bother
+        disconnecting from its signals (part of #104909).  Add a debug message.
+        * src/vteaccess.c(vte_terminal_accessible_text_finalize):  Add a debug
+        message.
+
+2003-02-10 nalin
+	* src/vteaccess.c(vte_terminal_accessible_update_private_data_if_needed):
+	always update the cursor position, in case text was added or removed
+	without the cursor itself moving.  Backport from HEAD.
+	* src/vteaccess.c(vte_terminal_accessible_get_text_somewhere): don't
+	emit a warning when the caller attempts to read the Nth character when
+	we have 0 to N-1, just return an empty string.  Backport from HEAD.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
 2003-02-03 nalin
 	* src/vte.c: cause the native drawing code for code points
 	0xa3, 0x3c0 0x2592, 0x25ae, 0x25c6 to be used again, so that they can

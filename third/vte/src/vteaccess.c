@@ -19,7 +19,7 @@
 /* VTE accessibility object.  Based heavily on inspection of libzvt's
  * accessibility code. */
 
-#ident "$Id: vteaccess.c,v 1.1.1.1 2003-01-29 21:57:48 ghudson Exp $"
+#ident "$Id: vteaccess.c,v 1.1.1.2 2003-03-15 16:37:27 ghudson Exp $"
 #include "../config.h"
 #include <atk/atk.h>
 #include <gtk/gtk.h>
@@ -284,38 +284,42 @@ vte_terminal_accessible_update_private_data_if_needed(AtkObject *text,
 		/* We're finished updating this. */
 		priv->snapshot_contents_invalid = FALSE;
 	}
-	if (priv->snapshot_caret_invalid) {
-		vte_terminal_get_cursor_position(terminal, &ccol, &crow);
 
-		/* Get the offsets to the beginnings of each line. */
-		caret = -1;
-		for (i = 0; i < priv->snapshot_characters->len; i++) {
-			/* Get the attributes for the current cell. */
-			offset = g_array_index(priv->snapshot_characters,
-					       int, i);
-			attrs = g_array_index(priv->snapshot_attributes,
-					      struct vte_char_attributes,
-					      offset);
-			/* If this cell is "before" the cursor, move the
-			 * caret to be "here". */
-			if ((attrs.row < crow) ||
-			    ((attrs.row == crow) && (attrs.column < ccol))) {
-				caret = i + 1;
-			}
+	/* Update the caret position. */
+	vte_terminal_get_cursor_position(terminal, &ccol, &crow);
+
+	/* Get the offsets to the beginnings of each line. */
+	caret = -1;
+	for (i = 0; i < priv->snapshot_characters->len; i++) {
+		/* Get the attributes for the current cell. */
+		offset = g_array_index(priv->snapshot_characters,
+				       int, i);
+		attrs = g_array_index(priv->snapshot_attributes,
+				      struct vte_char_attributes,
+				      offset);
+		/* If this cell is "before" the cursor, move the
+		 * caret to be "here". */
+		if ((attrs.row < crow) ||
+		    ((attrs.row == crow) && (attrs.column < ccol))) {
+			caret = i + 1;
 		}
-		/* If no cells are before the caret, then the caret must be
-		 * at the end of the buffer. */
-		if (caret == -1) {
-			caret = priv->snapshot_characters->len;
-		}
-		/* The caret may have moved. */
-		if (caret != priv->snapshot_caret) {
-			priv->snapshot_caret = caret;
-			emit_text_caret_moved(G_OBJECT(text), caret);
-		}
-		/* Done updating the caret position, too. */
-		priv->snapshot_caret_invalid = FALSE;
 	}
+
+	/* If no cells are before the caret, then the caret must be
+	 * at the end of the buffer. */
+	if (caret == -1) {
+		caret = priv->snapshot_characters->len;
+	}
+
+	/* Notify observers if the caret moved. */
+	if (caret != priv->snapshot_caret) {
+		priv->snapshot_caret = caret;
+		emit_text_caret_moved(G_OBJECT(text), caret);
+	}
+
+	/* Done updating the caret position, whether we needed to or not. */
+	priv->snapshot_caret_invalid = FALSE;
+
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_MISC)) {
 		fprintf(stderr, "Refreshed accessibility snapshot, "
@@ -568,6 +572,26 @@ vte_terminal_accessible_title_changed(VteTerminal *terminal, gpointer data)
 	atk_object_set_description(ATK_OBJECT(data), terminal->window_title);
 }
 
+/* Reflect focus-in events. */
+static void
+vte_terminal_accessible_focus_in(VteTerminal *terminal, GdkEventFocus *event,
+				 gpointer data)
+{
+	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_signal_emit_by_name(data, "focus-event", TRUE);
+}
+
+/* Reflect focus-out events. */
+static void
+vte_terminal_accessible_focus_out(VteTerminal *terminal, GdkEventFocus *event,
+				  gpointer data)
+{
+	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(data));
+	g_return_if_fail(VTE_IS_TERMINAL(terminal));
+	g_signal_emit_by_name(data, "focus-event", FALSE);
+}
+
 /**
  * vte_terminal_accessible_new:
  * @terminal: a #VteTerminal
@@ -592,6 +616,8 @@ vte_terminal_accessible_new(VteTerminal *terminal)
 	atk_object_initialize(ATK_OBJECT(access), G_OBJECT(terminal));
 
 	access->widget = GTK_WIDGET(terminal);
+	g_object_add_weak_pointer(G_OBJECT(terminal),
+				  (gpointer*)&access->widget);
 
 	g_object_set_data(G_OBJECT(access),
 			  VTE_TERMINAL_ACCESSIBLE_PRIVATE_DATA,
@@ -615,6 +641,12 @@ vte_terminal_accessible_new(VteTerminal *terminal)
         g_signal_connect(G_OBJECT(terminal), "window-title-changed",
 			 GTK_SIGNAL_FUNC(vte_terminal_accessible_title_changed),
 			 access);
+        g_signal_connect(G_OBJECT(terminal), "focus-in-event",
+			 GTK_SIGNAL_FUNC(vte_terminal_accessible_focus_in),
+			 access);
+        g_signal_connect(G_OBJECT(terminal), "focus-out-event",
+			 GTK_SIGNAL_FUNC(vte_terminal_accessible_focus_out),
+			 access);
 
 	if (GTK_IS_WIDGET((GTK_WIDGET(terminal))->parent)) {
 		parent = gtk_widget_get_accessible((GTK_WIDGET(terminal))->parent);
@@ -636,34 +668,58 @@ vte_terminal_accessible_finalize(GObject *object)
 	GtkAccessible *accessible = NULL;
         GObjectClass *gobject_class; 
 
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+		fprintf(stderr, "Finalizing accessible peer.\n");
+	}
+#endif
+
 	g_return_if_fail(VTE_IS_TERMINAL_ACCESSIBLE(object));
 	accessible = GTK_ACCESSIBLE(object);
 	gobject_class = g_type_class_peek_parent(VTE_TERMINAL_ACCESSIBLE_GET_CLASS(object));
 
-	g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
-					     G_SIGNAL_MATCH_FUNC |
-					     G_SIGNAL_MATCH_DATA,
-					     0, 0, NULL,
-					     vte_terminal_accessible_text_modified,
-					     object);
-	g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
-					     G_SIGNAL_MATCH_FUNC |
-					     G_SIGNAL_MATCH_DATA,
-					     0, 0, NULL,
-					     vte_terminal_accessible_text_scrolled,
-					     object);
-	g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
-					     G_SIGNAL_MATCH_FUNC |
-					     G_SIGNAL_MATCH_DATA,
-					     0, 0, NULL,
-					     vte_terminal_accessible_invalidate_cursor,
-					     object);
-	g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
-					     G_SIGNAL_MATCH_FUNC |
-					     G_SIGNAL_MATCH_DATA,
-					     0, 0, NULL,
-					     (gpointer)vte_terminal_accessible_title_changed,
-					     object);
+	if (accessible->widget != NULL) {
+		g_object_remove_weak_pointer(G_OBJECT(accessible->widget),
+					     (gpointer*) &accessible->widget);
+	}
+	if (G_IS_OBJECT(accessible->widget)) {
+		g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
+						     G_SIGNAL_MATCH_FUNC |
+						     G_SIGNAL_MATCH_DATA,
+						     0, 0, NULL,
+						     vte_terminal_accessible_text_modified,
+						     object);
+		g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
+						     G_SIGNAL_MATCH_FUNC |
+						     G_SIGNAL_MATCH_DATA,
+						     0, 0, NULL,
+						     vte_terminal_accessible_text_scrolled,
+						     object);
+		g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
+						     G_SIGNAL_MATCH_FUNC |
+						     G_SIGNAL_MATCH_DATA,
+						     0, 0, NULL,
+						     vte_terminal_accessible_invalidate_cursor,
+						     object);
+		g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
+						     G_SIGNAL_MATCH_FUNC |
+						     G_SIGNAL_MATCH_DATA,
+						     0, 0, NULL,
+						     (gpointer)vte_terminal_accessible_title_changed,
+						     object);
+		g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
+						     G_SIGNAL_MATCH_FUNC |
+						     G_SIGNAL_MATCH_DATA,
+						     0, 0, NULL,
+						     (gpointer)vte_terminal_accessible_focus_in,
+						     object);
+		g_signal_handlers_disconnect_matched(G_OBJECT(accessible->widget),
+						     G_SIGNAL_MATCH_FUNC |
+						     G_SIGNAL_MATCH_DATA,
+						     0, 0, NULL,
+						     (gpointer)vte_terminal_accessible_focus_out,
+						     object);
+	}
 	if (gobject_class->finalize != NULL) {
 		gobject_class->finalize(object);
 	}
@@ -751,6 +807,10 @@ vte_terminal_accessible_get_text_somewhere(AtkText *text,
 	}
 #endif
 	g_return_val_if_fail(priv->snapshot_text != NULL, g_strdup(""));
+	g_return_val_if_fail(priv->snapshot_characters != NULL, g_strdup(""));
+	if (offset == priv->snapshot_characters->len) {
+		return g_strdup("");
+	}
 	g_return_val_if_fail(offset < priv->snapshot_characters->len,
 			     g_strdup(""));
 	g_return_val_if_fail(offset >= 0, g_strdup(""));
@@ -1133,6 +1193,12 @@ vte_terminal_accessible_text_finalize(gpointer iface, gpointer data)
 	GtkAccessibleClass *accessible_class;
 	VteTerminalAccessiblePrivate *priv;
 	accessible_class = g_type_class_peek(GTK_TYPE_ACCESSIBLE); 
+
+#ifdef VTE_DEBUG
+	if (_vte_debug_on(VTE_DEBUG_MISC)) {
+		fprintf(stderr, "Finalizing accessible peer AtkText interface.\n");
+	}
+#endif
 
 	/* Free the private data. */
 	priv = g_object_get_data(G_OBJECT(iface),

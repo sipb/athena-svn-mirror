@@ -54,7 +54,7 @@ dnl in consequence this function is much more general than their
 dnl specific counterparts like ac_cxx_rtti.m4 that will test for
 dnl -fno-rtti -fno-exceptions
 dnl 
-dnl @version $Id: aclocal.m4,v 1.1.1.2 2003-02-12 07:02:51 ghudson Exp $
+dnl @version $Id: aclocal.m4,v 1.1.1.3 2003-03-15 16:37:35 ghudson Exp $
 dml @author  Guido Draheim <guidod@gmx.de>
 
 AC_DEFUN(AC_CHECK_CC_OPT,
@@ -4999,6 +4999,8 @@ glib_DEFUN([GLIB_WITH_NLS],
 	    [CATOBJEXT=.mo
              DATADIRNAME=lib])
 	  INSTOBJEXT=.mo
+	else
+	  gt_cv_have_gettext=no
 	fi
       fi
     ])
