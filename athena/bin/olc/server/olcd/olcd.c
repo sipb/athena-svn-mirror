@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.30 1990-12-09 16:54:21 lwvanels Exp $
+ *	$Id: olcd.c,v 1.31 1990-12-12 15:19:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.30 1990-12-09 16:54:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.31 1990-12-12 15:19:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -561,7 +561,7 @@ process_request (fd, from)
 	       request.requester.username);
 #endif
 
-	(*(Proc_List[index].olc_proc))(fd, &request, auth);
+	(*(Proc_List[index].olc_proc))(fd, &request);
     }
     else
     {
@@ -578,8 +578,10 @@ process_request (fd, from)
      * make a backup of data after request complete (if data changed)
      */
 
-    if (needs_backup)
+    if (needs_backup) {
 	backup_data();
+	dump_list();
+      }
     processing_request = 0;
 }
 
@@ -670,6 +672,9 @@ reap_child(sig)
   union wait status;
   int pid;
 
+#ifdef SABER
+  sig = sig;
+#endif
   signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
   pid = wait3(&status,WNOHANG,0);
   while(pid > 0)
