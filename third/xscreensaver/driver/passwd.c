@@ -85,6 +85,17 @@ lock_init (saver_preferences *p)
         fprintf (stderr, "%s: initialization of %s passwords failed.\n",
                  blurb(), methods[i].name);
     }
+
+  if (!any_ok)
+    {
+      fprintf (stderr, "%s: couldn't get any password.\n", blurb());
+
+      if (p->start_locked_p)
+	exit(1);
+      else
+	fprintf (stderr, "%s: locking will be disabled.\n", blurb());
+    }
+
   return any_ok;
 }
 

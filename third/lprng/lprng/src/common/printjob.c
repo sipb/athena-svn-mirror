@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: printjob.c,v 1.1.1.3.2.1 1999-06-28 19:32:15 ghudson Exp $";
+"$Id: printjob.c,v 1.1.1.3.2.2 1999-07-12 20:30:38 ghudson Exp $";
 
 
 #include "lp.h"
@@ -92,47 +92,59 @@
 
 #define FILTER_STOP "\031\001"
 
-int Wait_for_pid( int of_pid, char *name, int suspend, int timeout )
+int Wait_for_pid( int of_pid, char *name, int suspend, int timeout,
+	plp_status_t *ps_status)
 {
 	int pid, n = 0, err;
-	plp_status_t status;
 	DEBUG2("Wait_for_pid: name '%s', pid %d, suspend %d, timeout %d",
 		name, of_pid, suspend, timeout );
 	errno = 0;
 	do{
-		memset(&status,0,sizeof(status));
+		memset(ps_status,0,sizeof(ps_status[0]));
 		if( timeout > 0 ){
-			pid = plp_waitpid_timeout(timeout,of_pid,&status,WUNTRACED);
+			pid = plp_waitpid_timeout(timeout,of_pid,ps_status,WUNTRACED);
 		} else if( timeout == 0 ){
-			pid = plp_waitpid(of_pid,&status,WUNTRACED);
+			pid = plp_waitpid(of_pid,ps_status,WUNTRACED);
 		} else {
-			pid = plp_waitpid(of_pid,&status,WUNTRACED||WNOHANG);
+			pid = plp_waitpid(of_pid,ps_status,WUNTRACED|WNOHANG);
 		}
 		err = errno;
-		DEBUG2("Wait_for_pid: pid %d exit status '%s'", pid, Decode_status(&status));
+		DEBUG2("Wait_for_pid: pid %d exit status '%s'",
+			pid, Decode_status(ps_status));
 	} while( pid == -1 && err != ECHILD && err != EINTR );
 	if( pid > 0 ){
-		if( suspend && !WIFSTOPPED(status) ){
-			Errorcode = JFAIL;
-			DEBUG1("Wait_for_pid: %s filter did not suspend", name );
-		} else if( WIFEXITED(status) ){
-			n = WEXITSTATUS(status);
-			DEBUG3( "Wait_for_pid: %s filter exited with status %d", name, n);
-		} else if( WIFSIGNALED(status) ){
-			n = WTERMSIG(status);
-			fatal(LOG_INFO,
-				"Wait_for_pid: %s filter died with signal '%s'",name,
-				Sigstr(n));
-			n = JFAIL;
-		}
-		if( n && n < 32 ){
-			n += 31;
+		if( suspend && WIFSTOPPED(*ps_status) ){
+			n = 0;
+			DEBUG1("Wait_for_pid: %s filter suspended", name );
+		} else {
+			if( WIFEXITED(*ps_status) ){
+				n = WEXITSTATUS(*ps_status);
+				DEBUG3( "Wait_for_pid: %s filter exited with status %d",
+					name, n);
+			} else if( WIFSIGNALED(*ps_status) ){
+				n = WTERMSIG(*ps_status);
+				Errorcode = JABORT;
+				fatal(LOG_INFO,
+					"Wait_for_pid: %s filter died with signal '%s'",name,
+					Sigstr(n));
+			} else if( suspend && !WIFSTOPPED(*ps_status) ){
+				Errorcode = JABORT;
+				fatal(LOG_INFO,
+					"Wait_for_pid: %s filter did not suspend", name );
+			}
+			if( n && n < 32 ){
+				n += 31;
+			}
 		}
 	} else if( pid <= 0 ){
+		/* you got an error, and it was ECHILD or EINTR
+		 * if it was EINTR, you want to know 
+		 */
 		n = -1;
 		if( err == EINTR ) n = -2;
 	}
-	DEBUG1("Wait_for_pid: returning '%s'", Server_status(n) );
+	DEBUG1("Wait_for_pid: returning '%s', exit status '%s'",
+		Server_status(n), Decode_status(ps_status) );
 	errno = err;
 	return( n );
 }
@@ -152,6 +164,8 @@ void Print_job( int output, struct job *job, int timeout )
 	struct line_list *datafile, files;
 	struct stat statb;
 	time_t start_time, current_time;
+	plp_status_t ps_status;
+	int exit_status;
 
 	Init_line_list(&files);
 	of_fd[0] = of_fd[1] = of_error[0] = of_error[1] = -1;
@@ -264,10 +278,12 @@ void Print_job( int output, struct job *job, int timeout )
 		msg[0] = 0;
 		n = Write_outbuf_to_OF(job,"OF",of_pid,of_fd[1],of_error[0],
 			Outbuf, Outlen,
-			msg, sizeof(msg)-1, left, 1, Filter_poll_interval_DYN );
+			msg, sizeof(msg)-1, left, 1, Filter_poll_interval_DYN,
+			&exit_status, &ps_status );
 		if( n ){
-			setstatus(job,"OF filter problems, error '%s'", Server_status(n));
 			Errorcode = JFAIL;
+			if( exit_status ) Errorcode = exit_status;
+			setstatus(job,"OF filter problems, error '%s'", Server_status(n));
 			cleanup(0);
 		}
 		setstatus(job,"OF filter suspended" );
@@ -375,11 +391,13 @@ void Print_job( int output, struct job *job, int timeout )
 					n = Write_outbuf_to_OF(job,"OF",
 						of_pid,of_fd[1],of_error[0],
 						Outbuf, Outlen,
-						msg, sizeof(msg)-1, left, 1, Filter_poll_interval_DYN );
+						msg, sizeof(msg)-1, left, 1,
+						Filter_poll_interval_DYN, &exit_status, &ps_status );
 					if( n ){
+						Errorcode = JFAIL;
+						if( exit_status ) Errorcode = exit_status;
 						setstatus(job,"OF filter problems, error '%s'",
 							Server_status(n));
-						Errorcode = JFAIL;
 						cleanup(0);
 					}
 					setstatus(job,"OF filter suspended" );
@@ -435,10 +453,13 @@ void Print_job( int output, struct job *job, int timeout )
 				msg[0] = 0;
 				n = Write_outbuf_to_OF(job,"PR",pid,-1,if_error[0],
 					0, 0,
-					msg, sizeof(msg)-1, left, 0, Filter_poll_interval_DYN );
+					msg, sizeof(msg)-1, left, 0, Filter_poll_interval_DYN,
+					&exit_status, &ps_status );
 				if( n ){
-					setstatus(job,"OF filter problems, error '%s'", Server_status(n));
 					Errorcode = JFAIL;
+					if( exit_status ) Errorcode = exit_status;
+					setstatus(job,"OF filter problems, error '%s'",
+							Server_status(n));
 					cleanup(0);
 				}
 				/* this should be closed already */
@@ -489,8 +510,11 @@ void Print_job( int output, struct job *job, int timeout )
 				msg[0] = 0;
 				n = Write_outbuf_to_OF(job,filter_title,pid,-1,if_error[0],
 					0, 0,
-					msg, sizeof(msg)-1, timeout, 0, Filter_poll_interval_DYN );
+					msg, sizeof(msg)-1, timeout, 0, Filter_poll_interval_DYN,
+					&exit_status, &ps_status );
 				if( n ){
+					Errorcode = JFAIL;
+					if( exit_status ) Errorcode = exit_status;
 					setstatus(job,"%s filter problems, error '%s'",
 						filter_title, Server_status(n));
 					Errorcode = n;
@@ -559,11 +583,13 @@ void Print_job( int output, struct job *job, int timeout )
 		n = Write_outbuf_to_OF(job,"OF",
 			of_pid,of_fd[1],of_error[0],
 			Outbuf, Outlen,
-			msg, sizeof(msg)-1, left, 0, Filter_poll_interval_DYN );
+			msg, sizeof(msg)-1, left, 0, Filter_poll_interval_DYN,
+			&exit_status, &ps_status );
 		if( n ){
+			Errorcode = JFAIL;
+			if( exit_status ) Errorcode = exit_status;
 			setstatus(job,"OF filter problems, error '%s'",
 				Server_status(n));
-			Errorcode = JFAIL;
 			cleanup(0);
 		}
 		close(of_error[0]);
@@ -795,12 +821,15 @@ int Write_outbuf_to_OF( struct job *job, char *title,
 	int of_pid, int of_fd, int of_error,
 	char *buffer, int outlen,
 	char *msg, int msgmax,
-	int timeout, int suspend, int max_wait )
+	int timeout, int suspend, int max_wait, int *exit_status,
+	plp_status_t *ps_status)
 {
 	time_t start_time, current_time;
 	int msglen, n, m, count, elapsed, left;
 	char *s;
 
+	*exit_status = 0;
+	memset(ps_status, 0, sizeof(ps_status[0]));
 	start_time = time((void *)0);
 	msglen = strlen(msg);
 	DEBUG3(
@@ -890,15 +919,17 @@ int Write_outbuf_to_OF( struct job *job, char *title,
 					continue;
 				}
 			}
-			n = Wait_for_pid( of_pid, title, suspend, left );
+			n = Wait_for_pid( of_pid, title, suspend, left, ps_status );
 			/* we got process exiting */
+			*exit_status = n;
 			of_pid = 0;
 		} else {
 			if( left == 0 || left > max_wait ){
 				left = max_wait;
 			}
 			/* we wait until it returns or we get a timeout */
-			n = Wait_for_pid( of_pid, title, suspend, left );
+			n = Wait_for_pid( of_pid, title, suspend, left, ps_status );
+			*exit_status = 0;
 			DEBUG4("Write_outbuf_to_OF: wait returned %d", n);
 			if( n != -2 ){
 				/* we got process exiting */

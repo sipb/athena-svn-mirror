@@ -157,6 +157,7 @@ __RCSID("$NetBSD: inetd.c,v 1.38.2.2 1998/05/05 08:12:06 mycroft Exp $");
  *
  */
 
+#include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -254,7 +255,7 @@ struct	servtab {
 	int	se_rpcversl;		/* rpc program lowest version */
 	int	se_rpcversh;		/* rpc program highest version */
 #define isrpcservice(sep)	((sep)->se_rpcversl != 0)
-	short	se_wait;		/* single threaded server */
+	pid_t	se_wait;		/* single threaded server */
 	short	se_switched;		/* switched by access_on/off */
 	short	se_checked;		/* looked at during merge */
 	char	*se_user;		/* user name to run as */
