@@ -4,7 +4,7 @@ MAN8=${DESTDIR}/usr/man/man8
 all depend:
 
 clean:
-	rm *~
+	rm -f *~
 
 install:
 	install -c -m 644 lpquota.1 ${MAN1}/
