@@ -30,8 +30,7 @@ Makefiles::
 install::
 	$(RM) $(DESTDIR)$(DASH_MENUS)
 	$(RM) $(DESTDIR)$(DASH_MENUS).cmp
-	-. $(ATHVERS); \
-		$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor $(DESTDIR)$(DASH_FALLBACK);
+	$(INSTALL) -m 0444 Dash.fallback $(DESTDIR)$(DASH_FALLBACK)
 	. $(ATHVERS); \
 		ln -s /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor $(DESTDIR)$(DASH_MENUS); \
 		ln -s /afs/athena.mit.edu/system/config/dash/${HOSTTYPE}/Dash.menus-$$major.$$minor.cmp $(DESTDIR)$(DASH_MENUS).cmp
