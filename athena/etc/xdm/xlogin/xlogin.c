@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.5 1990-11-26 12:40:56 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.6 1990-11-28 14:38:56 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -151,6 +151,7 @@ main(argc, argv)
 {   
   XtAppContext app;
   Widget hitanykey, namew;
+  Display *dpy1;
   char hname[64];
   Arg args[1];
   int i;
@@ -250,6 +251,14 @@ main(argc, argv)
   activation_state = ACTIVATED;
   gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
+
+  /* make another connection to the X server so that there won't be a
+   * window where there are no connections and the server resets.
+   */
+  dpy1 = XOpenDisplay(DisplayString(dpy));
+  dup(XConnectionNumber(dpy1));
+  XCloseDisplay(dpy1);
+
   /* tell display manager we're ready, just like X server handshake */
   if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
     kill(getppid(), SIGUSR1);
