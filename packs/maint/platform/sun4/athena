@@ -166,6 +166,7 @@ if [ "${PUBLIC}" = "true" ]; then
 				cp -p /os$i $i
 			fi
 		done
+		ps -e | awk '$4=="inetd" {print $1}' | xargs kill -HUP
 	    fi
 	fi
 

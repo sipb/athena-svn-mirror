@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.32 1997-11-13 23:40:26 ghudson Exp $
+# $Id: reactivate.sh,v 1.33 1997-12-02 20:23:15 jweiss Exp $
 
 trap "" 1 15
 
@@ -135,7 +135,7 @@ if [ "$full" = true ]; then
 					cp -p /os$i $i
 				fi
 			done
-			kill -HUP `cat /var/athena/inetd.pid`
+			ps -e | awk '$4=="inetd" {print $1}' | xargs kill -HUP
 		fi
 		rm -f /etc/athena/reactivate.local
 	fi
