@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_misc.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_misc.c,v 1.1 1989-11-17 14:11:30 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_misc.c,v 1.2 1990-02-16 05:55:45 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,13 +30,14 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 
-t_dump(Request,file)
+t_dump(Request,type,file)
      REQUEST *Request;
+     int type;
      char *file;
 {
   int status;
 
-  status = ODump(Request,file);
+  status = ODump(Request,type,file);
   if(status == SUCCESS)
     display_file(file,TRUE);
   else
