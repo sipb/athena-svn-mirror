@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.13 2002-04-03 14:22:41 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.14 2002-04-06 23:47:21 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -409,6 +409,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
        */
       if (kernel_was_updated(db, get_package(pkgtab, "kernel")))
 	update_lilo(get_package(pkgtab, "kernel"));
+      die("Failed to run transactions\n");
     }
   else if (r > 0)
     {
