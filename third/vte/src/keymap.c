@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: keymap.c,v 1.1.1.1 2003-01-29 21:57:52 ghudson Exp $"
+#ident "$Id: keymap.c,v 1.1.1.2 2003-03-15 16:37:29 ghudson Exp $"
 #include "../config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -147,6 +147,36 @@ static struct _vte_keymap_entry _vte_keymap_GDK_Insert[] = {
 static struct _vte_keymap_entry _vte_keymap_GDK_ISO_Left_Tab[] = {
 	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, "kB"},
 	{cursor_all, keypad_all, fkey_all, 0, _VTE_CAP_CSI "Z", -1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+
+/* Various numeric keys enter control characters. */
+static struct _vte_keymap_entry _vte_keymap_GDK_2[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\0", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+static struct _vte_keymap_entry _vte_keymap_GDK_3[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\033", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+static struct _vte_keymap_entry _vte_keymap_GDK_4[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\034", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+static struct _vte_keymap_entry _vte_keymap_GDK_5[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\035", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+static struct _vte_keymap_entry _vte_keymap_GDK_6[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\036", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+static struct _vte_keymap_entry _vte_keymap_GDK_7[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\037", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+static struct _vte_keymap_entry _vte_keymap_GDK_8[] = {
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\177", 1, NULL},
 	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
 };
 
@@ -766,6 +796,14 @@ static struct _vte_keymap_group {
 	{GDK_Page_Up,		_vte_keymap_GDK_Page_Up},
 	{GDK_Page_Down,		_vte_keymap_GDK_Page_Down},
 
+	{GDK_2,			_vte_keymap_GDK_2},
+	{GDK_3,			_vte_keymap_GDK_3},
+	{GDK_4,			_vte_keymap_GDK_4},
+	{GDK_5,			_vte_keymap_GDK_5},
+	{GDK_6,			_vte_keymap_GDK_6},
+	{GDK_7,			_vte_keymap_GDK_7},
+	{GDK_8,			_vte_keymap_GDK_8},
+
 	{GDK_Up,		_vte_keymap_GDK_Up},
 	{GDK_Down,		_vte_keymap_GDK_Down},
 	{GDK_Right,		_vte_keymap_GDK_Right},
@@ -957,8 +995,22 @@ _vte_keymap_map(guint keyval,
 			}
 			mods &= entries[j].mod_mask;
 		}
-		g_assert((fkey_mode == 0) || (fkey_mode == fkey_all));
-		g_assert(mods == 0);
+		switch (_vte_keymap[i].keyval) {
+		case GDK_2:
+		case GDK_3:
+		case GDK_4:
+		case GDK_5:
+		case GDK_6:
+		case GDK_7:
+		case GDK_8:
+			/* Known non-full-coverage cases. */
+			break;
+		default:
+			/* Everything else we double-check. */
+			g_assert((fkey_mode == 0) || (fkey_mode == fkey_all));
+			g_assert(mods == 0);
+			break;
+		}
 		entries = NULL;
 #endif
 		if (_vte_keymap[i].keyval == keyval) {
