@@ -1,4 +1,4 @@
-dnl @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/configure.in,v 1.1.1.1 1997-09-24 06:24:33 ghudson Exp $ (LBL)
+dnl @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/configure.in,v 1.2 2000-09-21 15:02:55 ghudson Exp $ (LBL)
 dnl
 dnl Copyright (c) 1995, 1996, 1997
 dnl	The Regents of the University of California.  All rights reserved.
@@ -50,7 +50,6 @@ osf3*)
 
 solaris*)
 	AC_DEFINE(BYTESWAP_IP_LEN)
-	AC_DEFINE(CANT_HACK_CKSUM,)
 	;;
 esac
 
