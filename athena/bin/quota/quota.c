@@ -17,7 +17,7 @@
  * various types of lockers.
  */
 
-static const char rcsid[] = "$Id: quota.c,v 1.26 1999-10-19 20:27:46 danw Exp $";
+static const char rcsid[] = "$Id: quota.c,v 1.27 1999-11-22 16:00:16 danw Exp $";
 
 #include <ctype.h>
 #include <pwd.h>
@@ -88,10 +88,10 @@ int main(int argc, char **argv)
 	  break;
 
 	case 'f':
-	  if (fsind == fssize)
+	  if (fsind >= fssize - 1)
 	    {
 	      fssize = 2 * (fssize + 1);
-	      fsnames = realloc(fsnames, fssize);
+	      fsnames = realloc(fsnames, fssize * sizeof(char *));
 	      if (!fsnames)
 		{
 		  fprintf(stderr, "quota: Out of memory.\n");
@@ -123,11 +123,15 @@ int main(int argc, char **argv)
 	}
     }
 
-  if (all && fsind)
+  if (fsind)
     {
-      fprintf(stderr, "quota: Can't use both -a and -f\n");
-      usage();
-      exit(1);
+      if (all)
+	{
+	  fprintf(stderr, "quota: Can't use both -a and -f\n");
+	  usage();
+	  exit(1);
+	}
+      fsnames[fsind] = NULL;
     }
 
   if (optind < argc)
