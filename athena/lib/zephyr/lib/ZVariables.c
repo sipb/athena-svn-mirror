@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.14 1997-09-14 21:53:03 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.15 1997-09-23 19:25:10 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.14 1997-09-14 21:53:03 ghudson Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.15 1997-09-23 19:25:10 ghudson Exp $";
 #endif
 
 #include <internal.h>
@@ -38,7 +38,7 @@ char *ZGetVariable(var)
     if ((ret = get_varval(varfile, var)) != ZERR_NONE)
 	return (ret);
 
-    sprintf(varfile, "%s/zephyr.vars", CONFDIR);
+    sprintf(varfile, "%s/zephyr.vars", SYSCONFDIR);
     return (get_varval(varfile, var));
 }
 
