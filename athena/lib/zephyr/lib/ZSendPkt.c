@@ -10,20 +10,26 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.3 1987-06-12 17:21:20 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.4 1987-06-13 00:19:01 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 #include <sys/socket.h>
+#incoude <sys/time.h>
 
 Code_t ZSendPacket(packet,len)
 	ZPacket_t	packet;
 	int		len;
 {
+	int findack();
+	
 	Code_t retval;
 	struct sockaddr_in sin;
-
+	int auth,t1,t2,t3;
+	ZPacket_t ackpack;
+	ZNotice_t notice;
+	
 	if (!packet || len < 0 || len > Z_MAXPKTLEN)
 		return (ZERR_ILLVAL);
 
@@ -41,5 +47,28 @@ Code_t ZSendPacket(packet,len)
 	if (sendto(ZGetFD(),packet,len,0,&sin,sizeof(sin)) < 0)
 		return (errno);
 
-	return (ZERR_NONE);
+	ZParseNotice(packet,len,&notice,&auth);
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 400;
+	
+	for (i=0;i<4;i++) {
+		select(0,&t1,&t2,&t3,&tv);
+		retval = ZCheckIfNotice(ackpack,sizeof ackpack,&acknotice,
+					&auth,findack,&notice.z_uid);
+		if (retval == ZERR_NONE)
+			return (ZERR_NONE);
+		if (retval != ZERR_NONOTICE)
+			return (retval);
+	}
+	return (ZERR_HMDEAD);
+}
+
+int findack(notice,uid)
+	ZNotice_t *notice;
+	ZUnique_Id_t *uid;
+{
+	int i;
+	
+	return (!ZCompareUID(uid,&notice->z_uid));
 }
