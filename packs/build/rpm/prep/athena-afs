@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cp $1/packs/maint/config_afs.sh $2
-cp $1/packs/mains/os/linux/system-afs.sh $2
