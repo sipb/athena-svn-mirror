@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.6 1991-06-08 20:41:01 probe Exp $
+ * $Id: unmount.c,v 1.7 1991-08-14 10:55:58 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.6 1991-06-08 20:41:01 probe Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.7 1991-08-14 10:55:58 probe Exp $";
 
 #include "attach.h"
 
@@ -127,7 +127,12 @@ unmount_42(errname, mntpt, dev)
 #define unmount(x) umount(fsdata.fd_dev)
 #endif /* ultrix */
 
-	if (unmount(dev ? dev : mntpt) < 0) {
+#if defined(_AIX) && (AIXV < 30)
+	if (unmount(dev ? dev : mntpt) < 0)
+#else
+	if (unmount(mntpt) < 0)
+#endif
+	{
 		if (errno == EINVAL || errno == ENOENT
 #ifdef _AIX
 		    || errno == ENOTBLK
