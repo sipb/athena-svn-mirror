@@ -4,8 +4,8 @@
 /proc		-		/proc		proc	-	no	-
 fd		-		/dev/fd		fd	-	no	-
 
-/dev/dsk/c0t3d0s0	/dev/rdsk/c0t3d0s0	/	ufs	1	no	-
-/dev/dsk/c0t3d0s6	/dev/rdsk/c0t3d0s6	/var	ufs	2	no	-
-/dev/dsk/c0t3d0s5	/dev/rdsk/c0t3d0s5	/usr	ufs	3	no	-
-/dev/dsk/c0t3d0s3	/dev/rdsk/c0t3d0s3	/var/usr/vice	ufs	5	yes	-
-/dev/dsk/c0t3d0s1	-	-	swap	-	no	-
+/dev/dsk/@DISK@s0	/dev/rdsk/@DISK@s0	/	ufs	1	no	-
+/dev/dsk/@DISK@s6	/dev/rdsk/@DISK@s6	/var	ufs	2	no	-
+/dev/dsk/@DISK@s5	/dev/rdsk/@DISK@s5	/usr	ufs	3	no	-
+/dev/dsk/@DISK@s3	/dev/rdsk/@DISK@s3	/var/usr/vice	ufs	5	yes	-
+/dev/dsk/@DISK@s1	-	-	swap	-	no	-
