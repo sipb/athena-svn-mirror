@@ -1,5 +1,5 @@
 /* prot.h -- stdio-like module that handles IMAP protection mechanisms
- * $Id: prot.h,v 1.1.1.1 2002-10-13 18:00:54 ghudson Exp $
+ * $Id: prot.h,v 1.1.1.2 2003-02-14 21:39:13 ghudson Exp $
  
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *

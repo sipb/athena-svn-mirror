@@ -113,7 +113,8 @@ Installing and configuring the IMAP Server
 
      8. Change to the Cyrus user and use the tool "tools/mkimap" to create
         the rest of the directories (subdirectories of the directories you
-        just created). 
+        just created). Note that if you compiled cyrus with
+        --enable-fulldirhash, you need to use "tools/rehash" instead. 
 
            su cyrus
            tools/mkimap

@@ -1,5 +1,50 @@
 Changes to the Cyrus IMAP Server
 
+Changes to the Cyrus IMAP Server since 2.1.11
+
+      * Master now will forcibly exit if a service is not executable 
+      * Master now has a daemon mode and pidfile support (-d and -p
+        options) 
+      * Berkeley DB Configuration methods have changed. Hopefully they're
+        more generic now. You can still use --with-dbdir, or you can use
+        --with-bdb-libdir and --with-bdb-incdir 
+      * timsieved now handles usernames with dots (when unixhierarchysep is
+        active) 
+      * tugowar has been removed from the distribution. 
+      * Squatter now has an option to skip unmodified mailboxes. 
+      * Properly hash username to remove a user's sieve scripts when their
+        INBOX is removed. 
+      * Reset output buffer when prot_flush returns EOF. 
+      * Minor Makefile improvements with use of $(srcdir) 
+      * Remotepurge improvement for empty mailboxes 
+      * Fix for AFS overwriting the canonicalized username in ptloader 
+      * Security audit of imapd.c performed by SecurityAppraisers and
+        Bynari 
+
+Changes to the Cyrus IMAP Server since 2.1.10
+
+      * Fixed some potential buffer overflows in the sieve code, as well as
+        a pre-login buffer overflow in the IMAP parsing code. 
+      * ipurge can now skip flagged messages 
+      * Fix a problem with the flat backend and tracking new files 
+      * Fix a problem with the memory pool routines on 64-bit machines 
+
+Changes to the Cyrus IMAP Server since 2.1.9
+
+      * support Berkley DB 4.1 
+      * more portable use of errno throughout 
+      * timsieved now does telemetry logging 
+      * libcyrus.a no longer supplies fs_get() and fs_give() 
+      * fixed use of errno on some platforms 
+      * fixed a bug in quota tracking across RENAMEs 
+      * fixed an off-by-one error in the prot layer 
+      * add support for character sets: iso-8859-15 and windows-1252 
+      * Add the "at" method of running EVENTs to master, also has the side
+        effect of events running every period minutes, intead of every
+        period + run time minutes. 
+      * timsieved version now tracks with IMAPd version 
+      * minor documentation updates 
+
 Changes to the Cyrus IMAP Server since 2.1.8
 
       * Fix a strlcpy() off-by-one error. 

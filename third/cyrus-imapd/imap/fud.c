@@ -42,7 +42,7 @@
 
 #include <config.h>
 
-/* $Id: fud.c,v 1.1.1.1 2002-10-13 18:02:55 ghudson Exp $ */
+/* $Id: fud.c,v 1.1.1.2 2003-02-14 21:38:18 ghudson Exp $ */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -59,6 +59,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <errno.h>
 #include <com_err.h>
 #include <pwd.h>
 
@@ -78,7 +79,6 @@
 #define REQ_DENY	1
 #define REQ_UNK		2
 
-extern int errno;
 extern int optind;
 
 /* current namespace */
@@ -158,24 +158,11 @@ void shut_down(int code)
  */
 int service_init(int argc, char **argv, char **envp)
 {
-    int opt;
-   
     config_changeident("fud");
 
     if (geteuid() == 0) fatal("must run as the Cyrus user", EC_USAGE);
 
     setproctitle_init(argc, argv, envp);
-
-    while ((opt = getopt(argc, argv, "C:D")) != EOF) {
-	switch (opt) {
-	case 'C': /* alt config file - handled by service::main() */
-	    break;
-	case 'D': /* external debugger - handled by service::main() */
- 	    break;
-	default:
-	    break;
-	}
-    }
 
     signals_set_shutdown(&shut_down);
     signals_add_handlers();
@@ -192,7 +179,9 @@ void service_abort(int error)
     shut_down(error);
 }
 
-int service_main(int argc, char **argv, char **envp)
+int service_main(int argc __attribute__((unused)),
+		 char **argv __attribute__((unused)),
+		 char **envp __attribute__((unused)))
 {
     int r = 0; 
 
@@ -416,10 +405,10 @@ void fatal(const char* s, int code)
     static int recurse_code = 0;
     if (recurse_code) {
         /* We were called recursively. Just give up */
-	syslog(LOG_ERR, "fatal error: %s", s);
 	exit(code);
     }
     recurse_code = code;
+    syslog(LOG_ERR, "Fatal error: %s", s);
 
     shut_down(code);
 }

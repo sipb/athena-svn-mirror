@@ -40,7 +40,7 @@
  *
  */
 /*
- * $Id: mboxlist.c,v 1.1.1.1 2002-10-13 18:03:10 ghudson Exp $
+ * $Id: mboxlist.c,v 1.1.1.2 2003-02-14 21:39:14 ghudson Exp $
  */
 
 #include <config.h>
@@ -63,8 +63,6 @@
 
 #include <sys/ipc.h>
 #include <sys/msg.h>
-
-extern int errno;
 
 #include "acl.h"
 #include "auth.h"
@@ -1169,8 +1167,6 @@ int mboxlist_renamemailbox(char *oldname, char *newname, char *partition,
 	goto done;
     }
 
-    r = mailbox_rename_finish(&newmailbox);
-
  done: /* Commit or cleanup */
     if (r != 0) {
 	int r2 = 0;
@@ -1972,8 +1968,8 @@ int mboxlist_findall_alt(struct namespace *namespace,
  */
 int mboxlist_setquota(const char *root, int newquota, int force)
 {
-    char quota_path[MAX_MAILBOX_PATH];
-    char pattern[MAX_MAILBOX_PATH];
+    char quota_path[MAX_MAILBOX_PATH+1];
+    char pattern[MAX_MAILBOX_PATH+1];
     struct quota quota;
     int have_mailbox = 1;
     int r, t;
@@ -1986,7 +1982,7 @@ int mboxlist_setquota(const char *root, int newquota, int force)
     memset(&quota, 0, sizeof(struct quota));
 
     quota.root = (char *) root;
-    mailbox_hash_quota(quota_path, root);
+    mailbox_hash_quota(quota_path, sizeof(quota_path), root);
 
     if ((quota.fd = open(quota_path, O_RDWR, 0)) != -1) {
 	/* Just lock and change it */
@@ -2052,8 +2048,8 @@ int mboxlist_setquota(const char *root, int newquota, int force)
  */
 int mboxlist_unsetquota(const char *root)
 {
-    char quota_path[MAX_MAILBOX_PATH];
-    char pattern[MAX_MAILBOX_PATH];
+    char quota_path[MAX_MAILBOX_PATH+1];
+    char pattern[MAX_MAILBOX_PATH+1];
     int fd;
     int r=0;
 
@@ -2062,7 +2058,7 @@ int mboxlist_unsetquota(const char *root)
 	return IMAP_MAILBOX_BADNAME;
     }
     
-    mailbox_hash_quota(quota_path, root);
+    mailbox_hash_quota(quota_path, sizeof(quota_path), root);
 
     if ((fd = open(quota_path, O_RDWR, 0)) == -1) {
 	/* already unset */

@@ -42,7 +42,7 @@ dnl
 
 dnl
 dnl configure.in for the Cyrus imapd
-dnl $Id: configure.in,v 1.1.1.1 2002-10-13 18:03:12 ghudson Exp $
+dnl $Id: configure.in,v 1.1.1.2 2003-02-14 21:39:28 ghudson Exp $
 dnl
 
 
@@ -94,7 +94,7 @@ dnl let's just link against local.  otherwise we never find anything useful.
 if test "$ac_cv_prog_gcc" = yes; then
   dnl xxx we should add -W at some point (but that might scare people)
   CFLAGS="-Wall ${CFLAGS}"
-  GCC_VERSION=`gcc -v 2>&1 | sed -n -e '/version/s/.*version \([[0-9]]\)\..*/\1/p'`
+  GCC_VERSION=`$CC -v 2>&1 | sed -n -e '/version/s/.*version \([[0-9]]\)\..*/\1/p'`
   if test "$GCC_VERSION" != "3"; then
     CPPFLAGS="${CPPFLAGS} -I/usr/local/include"
   fi
@@ -105,8 +105,24 @@ CMU_ADD_LIBPATH("/usr/local/lib")
 
 
 AC_CHECK_HEADERS(unistd.h sys/select.h sys/param.h)
-AC_REPLACE_FUNCS(memmove strcasecmp ftruncate strerror getaddrinfo getnameinfo)
+AC_REPLACE_FUNCS(memmove strcasecmp ftruncate strerror)
 AC_HEADER_DIRENT
+
+dnl do this before Berkeley DB/IPv6 detection
+CMU_SOCKETS
+LIBS="$LIBS ${LIB_SOCKET}"
+
+dnl check for IPv6 functions (fall back to sasl's if we don't have them)
+cyrus_cv_getaddrinfo=yes
+IPv6_CHECK_FUNC(getaddrinfo, [IPv6_CHECK_FUNC(gai_strerror,[
+	AC_DEFINE(HAVE_GETADDRINFO)
+	cyrus_cv_getaddrinfo=no])])
+
+cyrus_cv_getnameinfo=yes
+IPv6_CHECK_FUNC(getnameinfo,
+	AC_DEFINE(HAVE_GETNAMEINFO),
+	cyrus_cv_getnameinfo=no)
+
 
 dnl this is to check for time things for sieve
 AC_STRUCT_TM
@@ -119,35 +135,29 @@ AC_SUBST(DEPLIBS)
 AC_SUBST(LOCALDEFS)
 AC_FUNC_VPRINTF
 
-AC_ARG_WITH(dbdir,[  --with-dbdir=DIR        Berkeley DB in <DIR>],
-  LDFLAGS="-L$withval/lib $LDFLAGS"
-  CMU_ADD_LIBPATH($withval/lib)
-  if test -d $withval/include/db3; then
-    CPPFLAGS="-I$withval/include/db3 $CPPFLAGS"
-  else
-    CPPFLAGS="-I$withval/include $CPPFLAGS"
-  fi,
-  # otherwise, check for ../include/db3
-  for db3loc in $prefix /usr/local /usr
-    do
-      if test -d $db3loc/include/db3; then
-	CPPFLAGS="-I$db3loc/include/db3 $CPPFLAGS"
-	break
-      fi
-    done)
-#Try to detect the name of the DB4/DB3 library
-dbfound="no"
-for dbname in db-4.0 db-4 db4.0 db4 db-3.3 db3.3 db-3.2 db3.2 db-3.1 db3.1 db-3 db3 db
-  do
-    AC_CHECK_LIB($dbname, db_create, [AC_DEFINE(HAVE_LIBDB)
-				      LIBS=" -l$dbname ${LIBS}"
-				      dbfound="yes"
-				      break], dbfound="no")
-  done
-if test "$dbfound" = "no"; then
+dnl Berkeley DB Detection
+
+dnl support old-style
+AC_ARG_WITH(dbdir,
+	[  --with-dbdir=DIR        Berkeley DB files are in prefix DIR],
+	with_bdb_lib="$withval/lib"; with_db_inc="$withval/include",
+	with_bdb_lib=none; with_bdb_inc=none)
+
+CYRUS_BERKELEY_DB_CHK()
+
+if test "$dblib" = "no"; then
   AC_ERROR([this version requires Berkeley DB 3.x or later.
-(Get it from http://www.sleepycat.com/.)])
+(Get it from http://www.sleepycat.com/).  You may need to suppply the
+--with-bdb-libdir or --with-bdb-incdir configure options.])
 fi
+
+if test "$with_bdb_lib" != "none"; then
+  CMU_ADD_LIBPATH($with_bdb_lib)
+fi
+LIBS="${LIBS} ${BDB_LIBADD}"
+CPPFLAGS="${BDB_INCADD} ${CPPFLAGS}"
+
+dnl End Berkeley DB Detection
 
 dnl function for doing each of the database backends
 dnl parameters: backend name, variable to set, withval
@@ -242,6 +252,7 @@ AC_FUNC_CHECK(strerror,AC_DEFINE(HAS_STRERROR),AC_DEFINE(NEED_SYS_ERRLIST))
 dnl for master fd limits
 AC_CHECK_HEADERS(sys/resource.h)
 AC_CHECK_FUNCS(setrlimit)
+AC_CHECK_FUNCS(getrlimit)
 
 dnl for detaching terminal
 AC_CHECK_FUNCS(daemon setsid)
@@ -547,7 +558,7 @@ if test "$WITH_AUTH" = "krb" -o "$WITH_AUTH" = "krb_pts" ; then
 	else
 	    KRB_LIBS="-ldes"
 	fi,
-  AC_MSG_ERROR([The Kerberos DES library is required for Kerberos support.]))
+  AC_MSG_ERROR([The Kerberos DES library is required for Kerberos support.  You might want --with-auth=unix.]))
 
   dnl if we were ambitious, we'd look more aggressively for the
   dnl krb4 install
@@ -565,7 +576,7 @@ if test "$WITH_AUTH" = "krb" -o "$WITH_AUTH" = "krb_pts" ; then
      if test -n "${cyrus_krbinclude}"; then
        CPPFLAGS="$CPPFLAGS -I${cyrus_krbinclude}"
      fi
-     LDFLAGS="$LDFLAGS -L${with_krb}/lib"
+     CMU_ADD_LIBPATH(${with_krb}/lib)
   fi
 
   if test "$with_des" != no; then
@@ -591,7 +602,7 @@ if test "$WITH_AUTH" = "krb" -o "$WITH_AUTH" = "krb_pts" ; then
   fi
 fi
 
-LIBS="$KRB_LIBS $LIBS"
+AC_SUBST(KRB_LIBS)
 
 dnl
 dnl Test for OpenSSL
@@ -621,9 +632,9 @@ case "$with_openssl" in
 		
 		;;
 	*)  OPENSSL_INC="-I${with_openssl}/include"
-	    OPENSSL_LIB="-L${with_openssl}/lib"
+	    OPENSSL_LIBPATH="${with_openssl}/lib"
 	    CPPFLAGS="${CPPFLAGS} ${OPENSSL_INC}"
-	    LDFLAGS="${LDFLAGS} ${OPENSSL_LIB}"
+	    CMU_ADD_LIBPATH(${OPENSSL_LIBPATH})
 	    LIBS="${LIBS} -lssl -lcrypto";;
 esac
 
@@ -652,7 +663,7 @@ fi
 dnl
 dnl Test for Zephyr
 dnl
-AC_ARG_WITH(zephyr,[  --with-zephyr=PATH      use Zephyr from PATH],
+AC_ARG_WITH(zephyr,[  --with-zephyr[=PATH]    enable Zephyr notification (installed on PATH)],
 	with_zephyr="${withval}")
 if test -z "$with_zephyr"; then
      if test -f /usr/local/lib/libzephyr.a; then
@@ -674,13 +685,20 @@ case "$with_zephyr" in
            fi
            ZEPHYR_LIBS="-lzephyr";;
 esac
+AC_SUBST(ZEPHYR_LIBS)
+AC_SUBST(ZEPHYR_CPPFLAGS)
 if test "$with_zephyr" != "no"; then
 	AC_DEFINE(HAVE_ZEPHYR)
-	AC_SUBST(ZEPHYR_LIBS)
-	AC_SUBST(ZEPHYR_CPPFLAGS)
 fi
 
-
+dnl
+dnl Set pidfile location
+dnl
+AC_ARG_WITH(pidfile,[  --with-pidfile[=PATH]     pidfile in PATH (/var/run/cyrus-master.pid)],
+	[MASTERPIDFILE="$withval"],
+	[MASTERPIDFILE="/var/run/cyrus-master.pid"])
+MASTERPIDFILE="\"$MASTERPIDFILE\""
+AC_DEFINE_UNQUOTED(MASTER_PIDFILE, $MASTERPIDFILE)
 
 dnl
 dnl Select a method for IMAP IDLE
@@ -713,31 +731,35 @@ AC_ARG_WITH(com_err,
 [  --with-com_err=PATH     use com_err from path -- includes in PATH/include,
                           libs in PATH/lib, and compile_et in PATH/bin])
 if test -z "$with_com_err"; then
-	# no value supplied
-	AC_CHECK_LIB(com_err, com_err, [
+	AC_CHECK_HEADER(com_err.h, [
+  	  # no value supplied
+	  AC_CHECK_LIB(com_err, com_err, [
 		# com_err is already in library path
 		# guess we're okay
 		# can use system com_err
 		with_com_err=""
 		AC_PATH_PROG(COMPILE_ET, compile_et, [no compile et])
-	], [
-	if test -f /usr/local/include/com_err.h; then
+	  ], [
+	  if test -f /usr/local/include/com_err.h; then
 		with_com_err="/usr/local"
 		AC_PATH_PROG(COMPILE_ET, /usr/local/bin/compile_et, [no compile et])
-	else
+	  else
 		# use ours
 		with_com_err=yes
-	fi
+	  fi
+	  ])], [
+	  with_com_err="no"
 	])
 
 	if test "${with_com_err}" = "no"; then
 	  AC_MSG_WARN([com_err is required; included version will be used.])
 	  with_com_err="yes"
-	fi
-	if test "${COMPILE_ET}" = "no compile et" -o "${COMPILE_ET}" = ""; then
-	  AC_MSG_WARN([Parts of com_err distribuion were found, but not compile_et.])
-	  AC_MSG_WARN([Will build com_err from included sources.])
-	  with_com_err="yes" # build it ourselves
+	else
+	  if test "${COMPILE_ET}" = "no compile et" -o "${COMPILE_ET}" = ""; then
+	    AC_MSG_WARN([Parts of com_err distribuion were found, but not compile_et.])
+	    AC_MSG_WARN([Will build com_err from included sources.])
+	    with_com_err="yes" # build it ourselves
+	  fi
 	fi
 fi
 
@@ -747,7 +769,7 @@ case "$with_com_err" in
 	  COM_ERR_LIBS="../et/libcom_err.a"
 	  COMPILE_ET="../et/compile_et"
 	  COM_ERR_LDFLAGS=""
-	  COM_ERR_CPPFLAGS=[-I${srcdir}/../et]
+	  COM_ERR_CPPFLAGS="-I\${srcdir}/../et"
 	  PRE_SUBDIRS="et ${PRE_SUBDIRS}"
 	  EXTRA_OUTPUT="${EXTRA_OUTPUT} et/Makefile"
 	  ;;
@@ -837,10 +859,10 @@ AC_CHECK_FUNC(dlopen,,[AC_CHECK_LIB(dl, dlopen)])
 CMU_SASL2_CHECKAPOP_REQUIRED
 
 AC_ARG_WITH(perl,       [  --with-perl=PERL        use PERL for perl],
-	with_perl="$withval", with_perl="perl5")
+	with_perl="$withval", with_perl="perl")
 
 if test "${with_perl}" = yes; then
-    with_perl="perl5"
+    with_perl="perl"
 fi
 if test "${with_perl}" != no; then
     if test ${using_static_sasl} = "staticonly"; then
@@ -857,6 +879,7 @@ dnl compile perl stuff
     EXTRA_SUBDIRS="${EXTRA_SUBDIRS} perl"
 dnl and compile perl/cyradm
     PERL_SUBDIRS="imap"
+    PERL="${with_perl}"
 fi
 
 dnl for timsieved
@@ -865,7 +888,10 @@ if test "$sievedir" != "no"; then
 	EXTRA_OUTPUT="${EXTRA_OUTPUT} timsieved/Makefile notifyd/Makefile"
 
 	PERL_SUBDIRS="${PERL_SUBDIRS} sieve"
+	PERL_DEPSUBDIRS="sieve"
 	EXTRA_OUTPUT="${EXTRA_OUTPUT} perl/sieve/Makefile perl/sieve/lib/Makefile"
+else
+	PERL_DEPSUBDIRS="none"
 fi
 
 dnl Check for MD5 functions
@@ -874,22 +900,13 @@ AC_FUNC_CHECK(MD5Init,,
                     MD5OBJ="md5.o"))
 AC_SUBST(MD5OBJ)
 
-dnl --- cmu agentx library deprecated in favor of ucd snmp
-dnl CMU_AGENTX
-dnl 
-dnl if test "$found_agentx" = yes; then
-dnl   CMU_PTHREADS
-dnl   SNMP_SUBDIRS="snmp"
-dnl fi
-dnl
+dnl snmp
+dnl (agentx was depricated, but SNMP_SUBDIRS is conveinent as a placeholder)
 SNMP_SUBDIRS=""
 AC_SUBST(SNMP_SUBDIRS)
 
-CMU_SOCKETS
 CMU_LIBWRAP
 CMU_UCDSNMP
-
-LIBS="$LIBS ${LIB_SOCKET}"
 
 # Figure out what directories we're linking against.
 # Lots of fun for the whole family.
@@ -922,7 +939,7 @@ for flag in ${ldflags} ${default_ldflags}; do
 done
 
 IMAP_COM_ERR_LIBS="${COM_ERR_LIBS}"
-IMAP_LIBS="${LIB_SASL} ${LIB_RT} ${LIBS}"
+IMAP_LIBS="${LIB_SASL} ${KRB_LIBS} ${LIB_RT} ${LIBS}"
 
 AC_SUBST(IMAP_COM_ERR_LIBS)
 AC_SUBST(IMAP_LIBS)
@@ -935,6 +952,8 @@ dnl     (cd perl/imap; $perl Makefile.PL PREFIX=$prefix)
 dnl   fi
 dnl ], perl=$PERL; with_perl=$with_perl; prefix=$prefix; SASL_LIB="$LIB_SASL"; SASL_INC="$SASLFLAGS"; export SASL_LIB SASL_INC)
 AC_SUBST(PERL_SUBDIRS)
+AC_SUBST(PERL_DEPSUBDIRS)
+AC_SUBST(PERL)
 
 dnl make sure that Makefile is the last thing output
-AC_OUTPUT(man/Makefile master/Makefile lib/Makefile acap/Makefile imap/Makefile imap/feedcyrus imtest/Makefile netnews/Makefile snmp/Makefile perl/Makefile $EXTRA_OUTPUT Makefile)
+AC_OUTPUT(man/Makefile master/Makefile lib/Makefile acap/Makefile imap/Makefile imap/feedcyrus imtest/Makefile netnews/Makefile perl/Makefile $EXTRA_OUTPUT Makefile)

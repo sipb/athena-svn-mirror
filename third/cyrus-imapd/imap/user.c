@@ -40,7 +40,7 @@
  *
  */
 /*
- * $Id: user.c,v 1.1.1.1 2002-10-13 18:02:33 ghudson Exp $
+ * $Id: user.c,v 1.1.1.2 2003-02-14 21:39:01 ghudson Exp $
  */
 
 #include <config.h>
@@ -125,7 +125,7 @@ int user_deletesieve(char *user)
     
     snprintf(sieve_path, sizeof(sieve_path), "%s/%c/%s",
 	     config_getstring("sievedir", "/usr/sieve"),
-	     user[0], user);
+	     dir_hash_c(user), user);
     mbdir=opendir(sieve_path);
 
     if(mbdir) {

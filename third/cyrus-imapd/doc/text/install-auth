@@ -27,7 +27,8 @@ Authentication Mechanisms
 
     The POP server is capable of APOP authentication, but this requries
     that SASL be compiled --with-checkapop, and also that you are using an
-    auxprop backend for your password store (e.g. sasldb). 
+    auxprop backend for your password store (e.g. the sasldb auxprop
+    plugin). 
 
 Authentication Recommendations
 
@@ -68,7 +69,7 @@ Configuring Authentication
 /etc/sasldb2
 
     The easiest method for authenticating users is to use the libsasl
-    authentication database and create users using the "saslpasswd"
+    authentication database and create users using the "saslpasswd2"
     utility. Set "sasl_pwcheck_method: auxprop", and be sure that the SASL
     sasldb auxprop module is installed (it is, by default). Make sure Cyrus
     can read "/etc/sasldb2": 

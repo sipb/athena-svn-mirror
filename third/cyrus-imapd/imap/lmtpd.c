@@ -1,6 +1,6 @@
 /* lmtpd.c -- Program to deliver mail to a mailbox
  *
- * $Id: lmtpd.c,v 1.1.1.1 2002-10-13 18:02:11 ghudson Exp $
+ * $Id: lmtpd.c,v 1.1.1.2 2003-02-14 21:38:38 ghudson Exp $
  * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -155,7 +155,6 @@ static void setup_sieve();
 /* global state */
 extern int optind;
 extern char *optarg;
-extern int errno;
 static int have_dupdb = 1;	/* duplicate delivery db is initialized */
 static int dupelim = 1;		/* eliminate duplicate messages with
 				   same message-id */
@@ -312,12 +311,8 @@ int service_main(int argc, char **argv,
     prot_setflushonread(deliver_in, deliver_out);
     prot_settimeout(deliver_in, 360);
 
-    while ((opt = getopt(argc, argv, "C:Da")) != EOF) {
+    while ((opt = getopt(argc, argv, "a")) != EOF) {
 	switch(opt) {
-	case 'C': /* alt config file - handled by service::main() */
-	    break;
-	case 'D': /* ext. debugger - handled by service::main() */
- 	    break;
 	case 'a':
 	    mylmtp.preauth = 1;
 	    break;
@@ -575,7 +570,7 @@ int send_forward(char *forwardto, char *return_path, struct protstream *file)
 
     smbuf[0] = "sendmail";
     smbuf[1] = "-i";		/* ignore dots */
-    if (return_path != NULL) {
+    if (return_path && *return_path) {
 	smbuf[2] = "-f";
 	smbuf[3] = return_path;
     } else {

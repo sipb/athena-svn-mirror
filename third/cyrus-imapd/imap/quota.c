@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  */
-/* $Id: quota.c,v 1.1.1.1 2002-10-13 18:02:32 ghudson Exp $ */
+/* $Id: quota.c,v 1.1.1.2 2003-02-14 21:39:14 ghudson Exp $ */
 
 
 #include <config.h>
@@ -49,6 +49,7 @@
 #endif
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 #include <ctype.h>
 #include <syslog.h>
@@ -84,7 +85,6 @@
 #include "mboxname.h"
 #include "convert_code.h"
 
-extern int errno;
 extern int optind;
 extern char *optarg;
 
@@ -409,10 +409,10 @@ int fixquota_finish(int thisquota)
 
     if (!quota[thisquota].refcount) {
 	if (!quota[thisquota].deleted++) {
-	    char buf[MAX_MAILBOX_PATH];
+	    char buf[MAX_MAILBOX_PATH+1];
 	    
 	    printf("%s: removed\n", quota[thisquota].quota.root);
-	    mailbox_hash_quota(buf, quota[thisquota].quota.root);
+	    mailbox_hash_quota(buf, sizeof(buf), quota[thisquota].quota.root);
 
 	    unlink(buf);
 	}

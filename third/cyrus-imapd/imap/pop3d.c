@@ -40,7 +40,7 @@
  */
 
 /*
- * $Id: pop3d.c,v 1.1.1.1 2002-10-13 18:02:31 ghudson Exp $
+ * $Id: pop3d.c,v 1.1.1.2 2003-02-14 21:39:19 ghudson Exp $
  */
 #include <config.h>
 
@@ -49,6 +49,7 @@
 #include <unistd.h>
 #endif
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 #include <fcntl.h>
 #include <time.h>
@@ -98,8 +99,6 @@ static int kflag = 0;
 extern int optind;
 extern char *optarg;
 extern int opterr;
-
-extern int errno;
 
 
 
@@ -158,6 +157,10 @@ extern int proc_register(const char *progname, const char *clienthost,
 			 const char *userid, const char *mailbox);
 extern void proc_cleanup(void);
 
+extern int saslserver(sasl_conn_t *conn, const char *mech,
+		      const char *init_resp, const char *continuation,
+		      struct protstream *pin, struct protstream *pout,
+		      int *sasl_result, char **success_data);
 
 /* Enable the resetting of a sasl_conn_t */
 static int reset_saslconn(sasl_conn_t **conn);
@@ -348,12 +351,8 @@ int service_init(int argc __attribute__((unused)),
 	fatal(error_message(r), EC_CONFIG);
     }
 
-    while ((opt = getopt(argc, argv, "C:Dsk")) != EOF) {
+    while ((opt = getopt(argc, argv, "sk")) != EOF) {
 	switch(opt) {
-	case 'C': /* alt config file - handled by service::main() */
-	    break;
-	case 'D': /* external debugger - handled by service::main() */
- 	    break;
 	case 's': /* pop3s (do starttls right away) */
 	    pop3s = 1;
 	    if (!tls_enabled("pop3")) {
@@ -614,8 +613,17 @@ static void cmdloop(void)
 		}
 	    }
 	    if (!*arg) {
-		prot_printf(popd_out, "-ERR Syntax error\r\n");
-		continue;
+		if (strcasecmp(inputbuf, "auth") == 0) {
+		    /* HACK for MS Outlook's incorrect use of the old-style
+		     * SASL discovery method.
+		     * Outlook uses "AUTH \r\n" instead if "AUTH\r\n"
+		     */
+		    arg = 0;
+		}
+		else {
+		    prot_printf(popd_out, "-ERR Syntax error\r\n");
+		    continue;
+		}
 	    }
 	}
 	else {
@@ -1128,10 +1136,8 @@ char *pass;
 			    strlen(popd_userid),
 			    pass,
 			    strlen(pass))!=SASL_OK) { 
-	if (reply) {
-	    syslog(LOG_NOTICE, "badlogin: %s plaintext %s %s",
-		   popd_clienthost, popd_userid, reply);
-	}
+	syslog(LOG_NOTICE, "badlogin: %s plaintext %s %s",
+	       popd_clienthost, popd_userid, sasl_errdetail(popd_saslconn));
 	sleep(3);
 	prot_printf(popd_out, "-ERR [AUTH] Invalid login\r\n");
 	free(popd_userid);
@@ -1207,13 +1213,8 @@ cmd_capa()
  */ 
 void cmd_auth(char *arg)
 {
-    int sasl_result;
-    static struct buf clientin;
-    unsigned int clientinlen=0;
+    int r, sasl_result;
     char *authtype;
-    const char *serverout;
-    unsigned int serveroutlen;
-    char *cin;
     char *canon_user;
 
     /* if client didn't specify an argument we give them the list */
@@ -1249,76 +1250,42 @@ void cmd_auth(char *arg)
 	arg = NULL;
     }
 
-    /* if arg != NULL, it's an initial client response */
-    if (arg) {
-	int arglen = strlen(arg);
+    r = saslserver(popd_saslconn, authtype, arg, "+ ", popd_in, popd_out,
+		   &sasl_result, NULL);
 
-	clientin.alloc = arglen + 1;
-	cin = clientin.s = xmalloc(clientin.alloc);
-	sasl_result = sasl_decode64(arg, arglen,
-				    clientin.s, clientin.alloc, &clientinlen);
-    } else {
-	sasl_result = SASL_OK;
-	cin = NULL;
-	clientinlen = 0;
-    }
+    if (r) {
+	const char *errorstring = NULL;
 
-    /* server did specify a command, so let's try to authenticate */
-    if (sasl_result == SASL_OK || sasl_result == SASL_CONTINUE)
-	sasl_result = sasl_server_start(popd_saslconn, authtype,
-					cin, clientinlen,
-					&serverout, &serveroutlen);
-    /* sasl_server_start will return SASL_OK or SASL_CONTINUE on success */
-    while (sasl_result == SASL_CONTINUE)
-    {
-	char c;
-	
-	/* print the message to the user */
-	printauthready(popd_out, serveroutlen, (unsigned char *)serverout);
-
-	c = prot_getc(popd_in);
-	if(c == '*') {
-	    eatline(popd_in,c);
+	switch (r) {
+	case IMAP_SASL_CANCEL:
 	    prot_printf(popd_out,
 			"-ERR [AUTH] Client canceled authentication\r\n");
-	    reset_saslconn(&popd_saslconn);
-	    return;
-	} else {
-	    prot_ungetc(c, popd_in);
-	}
+	    break;
+	case IMAP_SASL_PROTERR:
+	    errorstring = prot_error(popd_in);
 
-	/* get string from user */
-	clientinlen = getbase64string(popd_in, &clientin);
-	if (clientinlen == -1) {
-	    reset_saslconn(&popd_saslconn);
-	    prot_printf(popd_out, "-ERR [AUTH] Invalid base64 string\r\n");
-	    return;
-	}
-
-	sasl_result = sasl_server_step(popd_saslconn,
-				       clientin.s,
-				       clientinlen,
-				       &serverout, &serveroutlen);
-    }
-
-    /* failed authentication */
-    if (sasl_result != SASL_OK)
-    {
-	sleep(3);      
+	    prot_printf(popd_out,
+			"-ERR [AUTH] Error reading client response: %s\r\n",
+			errorstring ? errorstring : "");
+	    break;
+	default:
+	    /* failed authentication */
+	    sleep(3);
 		
-	reset_saslconn(&popd_saslconn);
-	prot_printf(popd_out, "-ERR [AUTH] authenticating: %s\r\n",
-		    sasl_errstring(sasl_result, NULL, NULL));
+	    prot_printf(popd_out, "-ERR [AUTH] authenticating: %s\r\n",
+			sasl_errstring(sasl_result, NULL, NULL));
 
-	if (authtype) {
-	    syslog(LOG_NOTICE, "badlogin: %s %s %s",
-		   popd_clienthost, authtype,
-		   sasl_errstring(sasl_result, NULL, NULL));
-	} else {
-	    syslog(LOG_NOTICE, "badlogin: %s %s",
-		   popd_clienthost, authtype);
+	    if (authtype) {
+		syslog(LOG_NOTICE, "badlogin: %s %s %s",
+		       popd_clienthost, authtype,
+		       sasl_errstring(sasl_result, NULL, NULL));
+	    } else {
+		syslog(LOG_NOTICE, "badlogin: %s %s",
+		       popd_clienthost, authtype);
+	    }
 	}
 	
+	reset_saslconn(&popd_saslconn);
 	return;
     }
 
@@ -1484,6 +1451,9 @@ static int parsenum(char **ptr)
     }
     while (*p && isdigit((int) *p)) {
 	result = result * 10 + *p++ - '0';
+        if (result < 0) {
+            /* xxx overflow */
+        }
     }
 
     if (*p) {

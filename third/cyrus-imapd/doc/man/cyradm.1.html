@@ -97,8 +97,9 @@ Remove ACLs from the specified mailbox.
 <DD>
 Delete the specified mailbox.
 <P>Administrators do not have implicit delete rights on mailboxes.  Use the
-<STRONG>setaclmailbox</STRONG> command to grant the <A HREF="#item_d"><CODE>d</CODE></A> permission to your principal
-if you need to delete a mailbox you do not own.</P>
+<STRONG>setaclmailbox</STRONG> command to grant the <A HREF="#item_c"><CODE>c</CODE></A> permission (or other permission
+as specified by the deleteright configuration option in imapd.conf)
+to your principal if you need to delete a mailbox you do not own.</P>
 <P>Note that the online help admits to an optional host argument.  This argument
 is not currently used, and will be rejected with an error if specified; it
 is reserved for IMSP.</P>

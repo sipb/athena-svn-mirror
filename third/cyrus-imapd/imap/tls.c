@@ -93,7 +93,7 @@
 *
 */
 
-/* $Id: tls.c,v 1.1.1.1 2002-10-13 18:02:33 ghudson Exp $ */
+/* $Id: tls.c,v 1.1.1.2 2003-02-14 21:39:22 ghudson Exp $ */
 
 #include <config.h>
 
@@ -944,7 +944,7 @@ int tls_shutdown_serverengine(void)
 	if (sess_dbopen) {
 	    r = DB->close(sessdb);
 	    if (r) {
-		syslog(LOG_ERR, "DBERROR: error closing deliverdb: %s",
+		syslog(LOG_ERR, "DBERROR: error closing tlsdb: %s",
 		       cyrusdb_strerror(r));
 	    }
 	    sessdb = NULL;

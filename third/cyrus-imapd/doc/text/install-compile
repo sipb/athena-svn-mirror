@@ -191,7 +191,7 @@ Options to configure
     --disable-server 
             Do not compile the IMAP server programs.
 
-    "configure" ignores any other arguments that you give it. 
+    Run configure --help for further configuration options. 
 
     Some systems require unusual options for compilation or linking that
     the "configure" script does not know about. You can give "configure"

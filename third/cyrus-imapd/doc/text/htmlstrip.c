@@ -13,7 +13,7 @@
  *
  */
   
-/* $Id: htmlstrip.c,v 1.1.1.1 2002-10-13 18:01:18 ghudson Exp $ */
+/* $Id: htmlstrip.c,v 1.1.1.2 2003-02-14 21:38:26 ghudson Exp $ */
   
 #include <stdio.h>
 #include <string.h>
@@ -85,6 +85,9 @@ struct tag cmds[] = {
     { "br",	FLAG_BREAK|FLAG_NOPUSH,	0,	0, },
     { "hr",	FLAG_BREAK|FLAG_NOPUSH,	0,	0, },
     { "meta",   FLAG_NOPUSH,    0,              0, },
+    { "table",  0,		0,		0, },
+    { "tr",	FLAG_PARAGRAPH,	0,		0, },
+    { "td",	0,		0,		0, },
 };
 
 
@@ -342,6 +345,8 @@ int *linenoptr;
 	if (!strcasecmp(buf, "amp")) return '&';
 	if (!strcasecmp(buf, "lt")) return '<';
 	if (!strcasecmp(buf, "gt")) return '>';
+	if (!strcasecmp(buf, "quot")) return '"';
+	if (!strcasecmp(buf, "nbsp")) return ' ';
 	fprintf(stderr, "unrecognized entity '%s' on line %d\n", buf, lineno);
 	exit(1);
     }

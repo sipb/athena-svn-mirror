@@ -1,6 +1,6 @@
 /* mupdate.c -- cyrus murder database master 
  *
- * $Id: mupdate.c,v 1.1.1.1 2002-10-13 18:02:50 ghudson Exp $
+ * $Id: mupdate.c,v 1.1.1.2 2003-02-14 21:38:10 ghudson Exp $
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,6 +75,7 @@
 #include "exitcodes.h"
 #include "prot.h"
 #include "imapconf.h"
+#include "imap_err.h"
 #include "version.h"
 #include "mpool.h"
 
@@ -154,8 +155,15 @@ static int reset_saslconn(struct conn *c);
 void database_init();
 void sendupdates(struct conn *C, int flushnow);
 
-/* --- prototypes in mupdate-client.c */
+extern int saslserver(sasl_conn_t *conn, const char *mech,
+		      const char *init_resp, const char *continuation,
+		      struct protstream *pin, struct protstream *pout,
+		      int *sasl_result,
+		      char **success_data);
+
+/* --- prototypes in mupdate-slave.c */
 void *mupdate_client_start(void *rock);
+void *mupdate_placebo_kick_start(void *rock);
 
 /* --- mutex wrapper functions for SASL */
 void *my_mutex_new(void)
@@ -351,12 +359,8 @@ int service_init(int argc, char **argv,
     }
 
     /* see if we're the master or a slave */
-    while ((opt = getopt(argc, argv, "C:m")) != EOF) {
+    while ((opt = getopt(argc, argv, "m")) != EOF) {
 	switch (opt) {
-	case 'C': /* alt. config file - handled by service::main */
-	    break;
-	case 'D': /* ext debugger - handled by service::main */
- 	    break;
 	case 'm':
 	    masterp = 1;
 	    break;
@@ -395,6 +399,16 @@ int service_init(int argc, char **argv,
 	    pthread_cond_wait(&synced_cond, &synced_mutex);
 	pthread_mutex_unlock(&synced_mutex);
     } else {
+	pthread_t t;
+	
+	r = pthread_create(&t, NULL, &mupdate_placebo_kick_start, NULL);
+	if(r == 0) {
+	    pthread_detach(t);
+	} else {
+	    syslog(LOG_ERR, "could not start placebo kick thread");
+	    return EC_SOFTWARE;
+	}
+
 	mupdate_ready();
     }
 
@@ -882,87 +896,38 @@ void cmd_authenticate(struct conn *C,
 		      const char *tag, const char *mech,
 		      const char *clientstart)
 {
-    int r;
-    char *in = NULL;
-    const char *out = NULL;
-    unsigned int inlen = 0, outlen = 0;
-    
-    if(clientstart && clientstart[0]) {
-	unsigned len = strlen(clientstart);
-	in = xmalloc(len);
-	r = sasl_decode64(clientstart, len, in, len, &inlen);
-	if(r != SASL_OK) {
-	    prot_printf(C->pout, "%s NO \"cannot base64 decode\"\r\n",tag);
-	    free(in);
-	    return;
-	}
-    }
+    int r, sasl_result;
 
-    r = sasl_server_start(C->saslconn, mech, in, inlen, &out, &outlen);
-    free(in); in=NULL;
-    if(r == SASL_NOMECH) {
-	prot_printf(C->pout,
-		    "%s NO \"unknown authentication mechanism\"\r\n",tag);
-	return;
-    }
+    r = saslserver(C->saslconn, mech, clientstart, "", C->pin, C->pout,
+		   &sasl_result, NULL);
 
-    while(r == SASL_CONTINUE) {
-	char buf[4096];
-	char inbase64[4096];
-	char *p;
-	unsigned len;
-	
-	if(out) {
-	    r = sasl_encode64(out, outlen,
-			      inbase64, sizeof(inbase64), NULL);
-	    if(r != SASL_OK) break;
-	    
-	    /* send out */
-	    prot_printf(C->pout, "%s\r\n", inbase64);
-	    prot_flush(C->pout);
-	}
-	
-	/* read a line */
-	if(!prot_fgets(buf, sizeof(buf)-1, C->pin))
-	    return;
+    if (r) {
+	const char *errorstring = NULL;
 
-	p = buf + strlen(buf) - 1;
-	if(p >= buf && *p == '\n') *p-- = '\0';
-	if(p >= buf && *p == '\r') *p-- = '\0';
-
-	if(buf[0] == '*') {
+	switch (r) {
+	case IMAP_SASL_CANCEL:
 	    prot_printf(C->pout,
-			"%s NO \"client canceled authentication\"\r\n",
-			tag);
-	    reset_saslconn(C);
-	    return;
-	}
+			"%s NO Client canceled authentication\r\n", tag);
+	    break;
+	case IMAP_SASL_PROTERR:
+	    errorstring = prot_error(C->pin);
 
-	len = strlen(buf);
-	in = xmalloc(len+1);
-	r = sasl_decode64(buf, len, in, len, &inlen);
-	if(r != SASL_OK) {
-	    prot_printf(C->pout, "%s NO \"cannot base64 decode\"\r\n",tag);
-	    free(in);
-	    reset_saslconn(C);
-	    return;
-	}
-
-	r = sasl_server_step(C->saslconn, in, inlen,
-			     &out, &outlen);
-	free(in); in=NULL;
-    }
-
-    if(r != SASL_OK) {
-	sleep(3);
+	    prot_printf(C->pout,
+			"%s NO Error reading client response: %s\r\n",
+			tag, errorstring ? errorstring : "");
+	    break;
+	default:
+	    sleep(3);
 	
-	syslog(LOG_ERR, "badlogin: %s %s %s",
-	       C->clienthost,
-	       mech, sasl_errdetail(C->saslconn));
+	    syslog(LOG_ERR, "badlogin: %s %s %s",
+		   C->clienthost,
+		   mech, sasl_errdetail(C->saslconn));
 
-	prot_printf(C->pout, "%s NO \"%s\"\r\n", tag,
-		    sasl_errstring((r == SASL_NOUSER ? SASL_BADAUTH : r),
-				   NULL, NULL));
+	    prot_printf(C->pout, "%s NO \"%s\"\r\n", tag,
+			sasl_errstring((r == SASL_NOUSER ? SASL_BADAUTH : r),
+				       NULL, NULL));
+	}
+
 	reset_saslconn(C);
 	return;
     }
@@ -1464,7 +1429,7 @@ int cmd_resync(struct mupdate_mailboxdata *mdata,
 
 /* Callback for mupdate_synchronize to be passed to mboxlist_findall. */
 static int sync_findall_cb(char *name,
-			   int matchlen __attribute((unused)),
+			   int matchlen __attribute__((unused)),
 			   int maycreate __attribute__((unused)),
 			   void *rock)
 {

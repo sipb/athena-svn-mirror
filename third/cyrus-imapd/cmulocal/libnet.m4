@@ -1,7 +1,7 @@
 dnl libnet.m4--libnet and includes
 dnl Derrick Brashear
 dnl from KTH krb and Arla
-dnl $Id: libnet.m4,v 1.1.1.1 2002-10-13 18:01:17 ghudson Exp $
+dnl $Id: libnet.m4,v 1.1.1.2 2003-02-14 21:39:02 ghudson Exp $
 
 AC_DEFUN(CMU_LIBNET_CFG_WHERE1, [
 ac_cv_found_libnet_bin=no
@@ -46,7 +46,6 @@ AC_DEFUN(CMU_LIBNET_INC_WHERE, [
 ])
 
 AC_DEFUN(CMU_LIBNET_LIB_WHERE1, [
-AC_REQUIRE([AC_PROG_CC_GNU])
 saved_LIBS=$LIBS
 LIBS="$saved_LIBS -L$1 -lnet"
 AC_TRY_LINK(,

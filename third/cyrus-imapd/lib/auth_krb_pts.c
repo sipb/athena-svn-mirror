@@ -1,5 +1,5 @@
 /* auth_krb_pts.c -- Kerberos authorization with AFS PTServer groups
- * $Id: auth_krb_pts.c,v 1.1.1.1 2002-10-13 18:02:12 ghudson Exp $
+ * $Id: auth_krb_pts.c,v 1.1.1.2 2003-02-14 21:38:54 ghudson Exp $
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -245,8 +245,7 @@ char *auth_canonifyid(const char *identifier, size_t len)
 
     if(!len) len = strlen(identifier);
 
-    canon_buf = malloc(len + 1);
-    if(!canon_buf) return 0;
+    canon_buf = xmalloc(len + 1);
     memcpy(canon_buf, identifier, len);
     canon_buf[len] = '\0';
    
@@ -406,9 +405,12 @@ struct auth_state *auth_newstate(const char *identifier,
 	close(fd);
 	return newstate;
     }
-    
-    r = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, DB_RDONLY, 0664);
 
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1    
+    r = ptdb->open(ptdb, NULL, fnamebuf, NULL, DB_HASH, DB_RDONLY, 0664);
+#else
+    r = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, DB_RDONLY, 0664);
+#endif
     /* no database. load it */
     if (r == ENOENT) 
       goto load;
@@ -514,8 +516,12 @@ struct auth_state *auth_newstate(const char *identifier,
 	syslog(LOG_ERR, "auth_newstate: db_create: %s", db_strerror(r));
 	return newstate;
     }
-    
+
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1
+    r = ptdb->open(ptdb, NULL, fnamebuf, NULL, DB_HASH, DB_RDONLY, 0664);
+#else
     r = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, DB_RDONLY, 0664);
+#endif
     if (r != 0) {
 	syslog(LOG_ERR, "auth_newstate: opening %s: %s", fnamebuf, 
 	       db_strerror(r));

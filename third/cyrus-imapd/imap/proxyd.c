@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: proxyd.c,v 1.1.1.1 2002-10-13 18:03:19 ghudson Exp $ */
+/* $Id: proxyd.c,v 1.1.1.2 2003-02-14 21:39:04 ghudson Exp $ */
 
 #undef PROXY_IDLE
 
@@ -126,8 +126,6 @@ static int supports_referrals;
 
 extern int optind;
 extern char *optarg;
-
-extern int errno;
 
 /* global state */
 static char shutdownfilename[1024];
@@ -243,6 +241,11 @@ static void mstringdata(char *cmd, char *name, int matchlen, int maycreate);
 static int mlookup(const char *name, char **pathp, 
 		   char **aclp, void *tid);
 
+extern int saslserver(sasl_conn_t *conn, const char *mech,
+		      const char *init_resp, const char *continuation,
+		      struct protstream *pin, struct protstream *pout,
+		      int *sasl_result, char **success_data);
+
 /* Enable the resetting of a sasl_conn_t */
 static int reset_saslconn(sasl_conn_t **conn);
 
@@ -335,7 +338,8 @@ static int pipe_until_tag(struct backend *s, char *tag, int force_notfatal)
 	}
 	
 	sl = strlen(buf);
-	if (sl == (sizeof(buf) - 1)) { /* only got part of a line */
+	if (sl == (sizeof(buf) - 1) && buf[sl-1] != '\n') {
+            /* only got part of a line */
 	    /* we save the last 64 characters in case it has important
 	       literal information */
 	    strcpy(eol, buf + sl - 64);
@@ -448,7 +452,8 @@ static int pipe_to_end_of_response(struct backend *s, int force_notfatal)
 	}
 	
 	sl = strlen(buf);
-	if (sl == (sizeof(buf) - 1)) { /* only got part of a line */
+	if (sl == (sizeof(buf) - 1) && buf[sl-1] != '\n') {
+            /* only got part of a line */
 	    /* we save the last 64 characters in case it has important
 	       literal information */
 	    strcpy(eol, buf + sl - 64);
@@ -542,7 +547,9 @@ static int pipe_command(struct backend *s, int optimistic_literal)
 	}
 
 	sl = strlen(buf);
-	if (sl == (sizeof(buf) - 1)) { /* only got part of a line */
+
+	if (sl == (sizeof(buf) - 1) && buf[sl-1] != '\n') {
+            /* only got part of a line */
 	    strcpy(eol, buf + sl - 64);
 
 	    /* and write this out, except for what we've saved */
@@ -1172,12 +1179,8 @@ int service_init(int argc, char **argv, char **envp)
     mboxlist_init(0);
     mboxlist_open(NULL);
 
-    while ((opt = getopt(argc, argv, "C:Dsp:")) != EOF) {
+    while ((opt = getopt(argc, argv, "sp:")) != EOF) {
 	switch (opt) {
-	case 'C': /* alt config file - handled by service::main() */
-	    break;
-	case 'D': /* ext. debugger - handled by service::main() */
- 	    break;
 	case 's': /* imaps (do starttls right away) */
 	    imaps = 1;
 	    if (!tls_enabled("imap")) {
@@ -2186,9 +2189,6 @@ void cmd_login(char *tag, char *user)
     struct buf passwdbuf;
     char *passwd;
     char *reply = 0;
-    const char *val;
-    char buf[MAX_MAILBOX_PATH];
-    char *p;
     int plaintextloginpause;
     int r;
 
@@ -2292,19 +2292,7 @@ void cmd_login(char *tag, char *user)
 
     proxyd_authstate = auth_newstate(canon_user, (char *)0);
 
-    /* xxx why aren't we using authisa() */
-    val = config_getstring("admins", "");
-    while (*val) {
-	for (p = (char *)val; *p && !isspace((int) *p); p++);
-	strncpy(buf, val, p - val);
-	buf[p-val] = 0;
-	if (auth_memberof(proxyd_authstate, buf)) {
-	    proxyd_userisadmin = 1;
-	    break;
-	}
-	val = p;
-	while (*val && isspace((int) *val)) val++;
-    }
+    proxyd_userisadmin = authisa(proxyd_authstate, "imap", "admins");
 
     if (!reply) reply = "User logged in";
 
@@ -2329,13 +2317,6 @@ void cmd_login(char *tag, char *user)
 void cmd_authenticate(char *tag, char *authtype)
 {
     int sasl_result;
-    static struct buf clientin;
-    int clientinlen=0;
-    
-    const char *serverout;
-    unsigned int serveroutlen;
-    
-    const char *errorstring = NULL;
     const char *userid_buf;
     
     const int *ssfp;
@@ -2343,63 +2324,44 @@ void cmd_authenticate(char *tag, char *authtype)
 
     int r;
 
-    sasl_result = sasl_server_start(proxyd_saslconn, authtype,
-				    NULL, 0,
-				    &serverout, &serveroutlen);    
+    r = saslserver(proxyd_saslconn, authtype, NULL, "+ ",
+		   proxyd_in, proxyd_out, &sasl_result, NULL);
 
-    /* sasl_server_start will return SASL_OK or SASL_CONTINUE on success */
+    if (r) {
+	const char *errorstring = NULL;
 
-    while (sasl_result == SASL_CONTINUE)
-    {
-      char c;
+	switch (r) {
+	case IMAP_SASL_CANCEL:
+	    prot_printf(proxyd_out,
+			"%s NO Client canceled authentication\r\n", tag);
+	    break;
+	case IMAP_SASL_PROTERR:
+	    errorstring = prot_error(proxyd_in);
 
-      /* print the message to the user */
-      printauthready(proxyd_out, serveroutlen, (unsigned char *)serverout);
+	    prot_printf(proxyd_out,
+			"%s NO Error reading client response: %s\r\n",
+			tag, errorstring ? errorstring : "");
+	    break;
+	default: 
+	    /* failed authentication */
+	    errorstring = sasl_errstring(sasl_result, NULL, NULL);
 
-      c = prot_getc(proxyd_in);
-      if(c == '*') {
-         eatline(proxyd_in,c);
-         prot_printf(proxyd_out,
-                     "%s NO Client canceled authentication\r\n", tag);
-         reset_saslconn(&proxyd_saslconn);
-         return;
-      } else {
-         prot_ungetc(c, proxyd_in);
-      }
+	    syslog(LOG_NOTICE, "badlogin: %s %s [%s]",
+		   proxyd_clienthost, authtype, sasl_errdetail(proxyd_saslconn));
 
-      /* get string from user */
-      clientinlen = getbase64string(proxyd_in, &clientin);
-      if (clientinlen == -1) {
-	reset_saslconn(&proxyd_saslconn);
-	prot_printf(proxyd_out, "%s BAD Invalid base64 string\r\n", tag);
-	return;
-      }
+	    snmp_increment_args(AUTHENTICATION_NO, 1,
+				VARIABLE_AUTH, 0, /* hash_simple(authtype) */ 
+				VARIABLE_LISTEND);
+	    sleep(3);
 
-      sasl_result = sasl_server_step(proxyd_saslconn,
-				     clientin.s,
-				     clientinlen,
-				     &serverout, &serveroutlen);
-    }
-
-
-    /* failed authentication */
-    if (sasl_result != SASL_OK)
-    {
-	/* convert the sasl error code to a string */
-	errorstring = sasl_errstring(sasl_result, NULL, NULL);
-      
-	syslog(LOG_NOTICE, "badlogin: %s %s %s",
-	       proxyd_clienthost, authtype, sasl_errdetail(proxyd_saslconn));
-	
-	sleep(3);
-
-	reset_saslconn(&proxyd_saslconn);
-	if (errorstring) {
-	    prot_printf(proxyd_out, "%s NO %s\r\n", tag, errorstring);
-	} else {
-	    prot_printf(proxyd_out, "%s NO Error authenticating\r\n", tag);
+	    if (errorstring) {
+		prot_printf(proxyd_out, "%s NO %s\r\n", tag, errorstring);
+	    } else {
+		prot_printf(proxyd_out, "%s NO Error authenticating\r\n", tag);
+	    }
 	}
 
+	reset_saslconn(&proxyd_saslconn);
 	return;
     }
 
@@ -3264,7 +3226,7 @@ void cmd_copy(char *tag, char *sequence, char *name, int usinguid)
 	struct d {
 	    char *idate;
 	    char *flags;
-	    int seqno, uid;
+	    unsigned int seqno, uid;
 	    struct d *next;
 	} *head, *p, *q;
 	int c;
@@ -3284,7 +3246,7 @@ void cmd_copy(char *tag, char *sequence, char *name, int usinguid)
 	p = head;
 	/* read all the responses into the linked list */
 	for (/* each FETCH response */;;) {
-	    int seqno = 0, uidno = 0;
+	    unsigned int seqno = 0, uidno = 0;
 	    char *flags = NULL, *idate = NULL;
 
 	    /* read a line */
@@ -3410,11 +3372,11 @@ void cmd_copy(char *tag, char *sequence, char *name, int usinguid)
 	}
 
 	/* start the append */
-	prot_printf(s->out, "%s Append %s", tag, name);
+	prot_printf(s->out, "%s Append {%d+}\r\n%s", tag, strlen(name), name);
 	prot_printf(backend_current->out, "%s %s %s (Rfc822.peek)\r\n",
 		    mytag, usinguid ? "Uid Fetch" : "Fetch", sequence);
 	for (/* each FETCH response */;;) {
-	    int seqno = 0, uidno = 0;
+	    unsigned int seqno = 0, uidno = 0;
 
 	    /* read a line */
 	    c = prot_getc(backend_current->in);
@@ -3480,6 +3442,7 @@ void cmd_copy(char *tag, char *sequence, char *name, int usinguid)
 			while (isdigit(c = prot_getc(backend_current->in))) {
 			    sz *= 10;
 			    sz += c - '0';
+                            /* xxx overflow */
 			}
 		    }
 		    if (c == '}') c = prot_getc(backend_current->in);

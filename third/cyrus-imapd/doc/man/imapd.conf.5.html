@@ -9,9 +9,9 @@
 <a href="#sasl_option:">sasl_option:</a><br>
 <a href="#SEE ALSO">SEE ALSO</a><br>
 <!-- Creator     : groff version 1.15  -->
-<!-- CreationDate: Fri Aug 30 14:41:53 2002
+<!-- CreationDate: Mon Feb  3 16:31:15 2003
  -->
-<!-- Total number of pages: 5 -->
+<!-- Total number of pages: 6 -->
 <!-- Page: 1 -->
 <!-- left  margin: 100 -->
 <!-- right margin: 750 -->
@@ -52,36 +52,28 @@
 <p><font size=3><B>servername:</B> <font size=3>&lt;result returned by gethostname(2)&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>This is the hostname visible in the greeting messages of the POP, IMAP and LMTP daemons. If it is unset,<br>
 <span style=" text-indent: 0.3000in;"></span>then the result returned from gethostname(2) is used.</p>
+<p><font size=3><B>allowallsubscribe:</B> <font size=3>no<br>
+<span style=" text-indent: 0.3000in;"></span>Allow subscription to nonexistent mailboxes. This option is typically used on backend servers in a Murder so<br>
+<span style=" text-indent: 0.3000in;"></span>that users can subscribe to mailboxes that don't reside on their "home" server. This option can also be used<br>
+<span style=" text-indent: 0.3000in;"></span>as a workaround for IMAP clients which don't play well with nonexistent or unselectable mailboxes (eg.<br>
+<span style=" text-indent: 0.3000in;"></span>Microsoft Outlook).</p>
 <p><font size=3><B>allowanonymouslogin:</B> <font size=3>no<br>
 <span style=" text-indent: 0.3000in;"></span>Permit logins by the user "anonymous" using any password. Also allows use of the SASL ANONYMOUS<br>
-<span style=" text-indent: 0.3000in;"></span>mechanism.</p>
-<p><font size=3><B>allowplaintext:</B> <font size=3>yes<br>
-<span style=" text-indent: 0.3000in;"></span>Allow the use of the SASL PLAIN mechanism.</p>
-<p><font size=3><B>quotawarn:</B> <font size=3>90<br>
-<span style=" text-indent: 0.3000in;"></span>The percent of quota utilization over which the server generates warnings.<br>
+<span style=" text-indent: 0.3000in;"></span>mechanism.<br>
 </p>
 
 <!-- Page: 2  -->
 <!-- left  margin: 100 -->
 <!-- right margin: 750 -->
-
-<table width="100%"  rules="none"  frame="none"  cols="3">
-<tr valign="top" align="left">
-<td valign="top" align="left"  width="70.6154%">
+<p><font size=3><B>allowplaintext:</B> <font size=3>yes<br>
+<span style=" text-indent: 0.3000in;"></span>Allow the use of the SASL PLAIN mechanism.</p>
+<p><font size=3><B>quotawarn:</B> <font size=3>90<br>
+<span style=" text-indent: 0.3000in;"></span>The percent of quota utilization over which the server generates warnings.</p>
 <p><font size=3><B>timeout:</B> <font size=3>30<br>
-<span style=" text-indent: 0.3000in;"></span>The length of the IMAP server's inactivity autologout timer, in minutes.<br>
+<span style=" text-indent: 0.3000in;"></span>The length of the IMAP server's inactivity autologout timer, in minutes. The minimum value is 30, the<br>
 <span style=" text-indent: 0.3000in;"></span>default.</p>
-<p><font size=3><B>imapidlepoll:</B> <font size=3>60</p>
-</td>
-<td valign="top" align="left"  width="1.3846%">
-</td>
-<td valign="top" align="left"  width="28.0000%">
-<br>
-<p><font size=3>The minimum value is 30, the</p>
-</td>
-</tr>
-</table>
-<p><font size=3>The interval (in seconds) for polling the mailbox for changes while running the IDLE command. This option<br>
+<p><font size=3><B>imapidlepoll:</B> <font size=3>60<br>
+<span style=" text-indent: 0.3000in;"></span>The interval (in seconds) for polling the mailbox for changes while running the IDLE command. This option<br>
 <span style=" text-indent: 0.3000in;"></span>is used when idled can not be contacted or when polling is used exclusively. The minimum value is 1. A<br>
 <span style=" text-indent: 0.3000in;"></span>value of 0 will disable polling (and disable IDLE if polling is the only method available).</p>
 <p><font size=3><B>imapidresponse:</B> <font size=3>yes<br>
@@ -103,12 +95,33 @@
 <span style=" text-indent: 0.3000in;"></span>The list of userids with administrative rights. Separate each userid with a space. Sites using Kerberos<br>
 <span style=" text-indent: 0.3000in;"></span>authentication may use separate "admin" instances.</p>
 <p><font size=3>Note that accounts used by users should not be administrators. Administrative accounts should not receive mail. That is, if user "jbRo" is a user reading mail, he should not also be in the admins line. Some problems may occur otherwise, most notably the ability of administrators to create top-level mailboxes visible to users, but not writable by users.</p>
+<p><font size=3><B>imap_admins:</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>A list of users that have imap admin rights, in addition to those listed in the admins: entry.</p>
+<p><font size=3><B>lmtp_admins:</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>A list of users that have LMTP admin rights, in addition to those listed in the admins: entry. Only lmtp admins<br>
+<span style=" text-indent: 0.3000in;"></span>can deliver to lmtpd through TCP/IP sockets.</p>
+<p><font size=3><B>mupdate_admins:</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>A list of users that have mupdate admin rights, in addition to those listed in the admins: entry. Only mupdate<br>
+<span style=" text-indent: 0.3000in;"></span>admins can connect to the mupdate master.</p>
+<p><font size=3><B>sieve_admins:</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>A list of users that have sieve admin rights, in addition to those listed in the admins: entry.</p>
 <p><font size=3><B>proxyservers:</B> <font size=3>&lt;none&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>A list of users and groups that are allowed to proxy for other users, seperated by spaces. Any user listed in<br>
 <span style=" text-indent: 0.3000in;"></span>this will be allowed to login for any other user: use with caution.</p>
+<p><font size=3><B>imap_proxyservers</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>A list of users and groups that are allowed to proxy for other users for imap, seperated by spaces. Any user<br>
+<span style=" text-indent: 0.3000in;"></span>listed in this will be allowed to login in imapd or pop3d for any other user: use with caution.</p>
+<p><font size=3><B>sieve_proxyservers</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>A list of users and groups that are allowed to proxy for other users for sieve, seperated by spaces. Any user<br>
+<span style=" text-indent: 0.3000in;"></span>listed in this will be allowed to login in timsieved for any other user: use with caution.</p>
 <p><font size=3><B>defaultacl:</B> <font size=3>anyone lrs<br>
 <span style=" text-indent: 0.3000in;"></span>The Access Control List (ACL) placed on a newly-created (non-user) mailbox that does not have a parent<br>
-<span style=" text-indent: 0.3000in;"></span>mailbox.</p>
+<span style=" text-indent: 0.3000in;"></span>mailbox.<br>
+</p>
+
+<!-- Page: 3  -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
 <p><font size=3><B>newsspool:</B> <font size=3>&lt;no default&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>The pathname of the news spool directory. Only used if the <font size=3><B>partition-news</B> <font size=3>configuration option is set.</p>
 <p><font size=3><B>newsprefix:</B> <font size=3>&lt;none&gt;<br>
@@ -128,12 +141,7 @@
 <span style=" text-indent: 0.3000in;"></span>and overrides its default setting.</p>
 <p><font size=3><B>loginrealms:</B> <font size=3>&lt;none&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>The list of remote realms whose users may log in using cross-realm authentications. Seperate each realm<br>
-<span style=" text-indent: 0.3000in;"></span>name by a space. (A cross-realm identity is considered any identity returned by SASL with an "@" in it.)<br>
-</p>
-
-<!-- Page: 3  -->
-<!-- left  margin: 100 -->
-<!-- right margin: 750 -->
+<span style=" text-indent: 0.3000in;"></span>name by a space. (A cross-realm identity is considered any identity returned by SASL with an "@" in it.)</p>
 <p><font size=3><B>loginuseacl:</B> <font size=3>no<br>
 <span style=" text-indent: 0.3000in;"></span>If enabled, any authentication identity which has <font size=3><B>a</B> <font size=3>rights on a user's INBOX may log in as that user.</p>
 <p><font size=3><B>singleinstancestore:</B> <font size=3>yes<br>
@@ -155,54 +163,26 @@
 <span style=" text-indent: 0.3000in;"></span>ure is temporary.</p>
 <p><font size=3><B>lmtp_allowplaintext:</B> <font size=3>&lt;setting of <font size=3><I>allowplaintext</I><font size=3>&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>Allow the use of the SASL PLAIN mechanism for LMTP.</p>
-<p><font size=3><B>postuser:</B> <font size=3>&lt;none&gt;</p>
-
-<table width="100%"  rules="none"  frame="none"  cols="7">
-<tr valign="top" align="left">
-<td valign="top" align="left"  width="70.9231%">
-<p><font size=3><span style=" text-indent: 0.3000in;"></span>Userid used to deliver messages to shared folders. For example,<br>
-<span style=" text-indent: 0.3000in;"></span>"bb+shared.blah" would be delivered to the "shared.blah" folder. By<br>
+<p><font size=3><B>postuser:</B> <font size=3>&lt;none&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>Userid used to deliver messages to shared folders. For example, if set to "bb", email sent to<br>
+<span style=" text-indent: 0.3000in;"></span>"bb+shared.blah" would be delivered to the "shared.blah" folder. By default, an email address of<br>
 <span style=" text-indent: 0.3000in;"></span>"+shared.blah" would be used.</p>
-<p><font size=3><B>netscapeurl:</B> <font size=3>&lt;no default&gt;</p>
-</td>
-<td valign="top" align="left"  width="1.0000%">
-</td>
-<td valign="top" align="left"  width="8.1538%">
-<p><font size=3>if set to<br>
-<span style=" text-indent: 0.0500in;"></span>default,</p>
-</td>
-<td valign="top" align="left"  width="1.0000%">
-</td>
-<td valign="top" align="left"  width="16.6154%">
-<p><font size=3><span style=" text-indent: 0.0500in;"></span>"bb", email sent an email address</p>
-</td>
-<td valign="top" align="left"  width="1.3846%">
-</td>
-<td valign="top" align="left"  width="1.6923%">
-<p><font size=3>to<br>
-of</p>
-</td>
-</tr>
-</table>
-<p><font size=3>If enabled at compile time, this specifies a URL to reply when Netscape asks the server where the mail<br>
+<p><font size=3><B>netscapeurl:</B> <font size=3>&lt;no default&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>If enabled at compile time, this specifies a URL to reply when Netscape asks the server where the mail<br>
 <span style=" text-indent: 0.3000in;"></span>administration HTTP server is. Administrators should set this to a local resource with some useful informa-<br>
 <span style=" text-indent: 0.3000in;"></span>tion for end users. If not set, no URL is advertised.</p>
 <p><font size=3><B>mailnotifier:</B> <font size=3>&lt;no default&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>Notifyd(8) method to use for "MAIL" notifications. If not set, "MAIL" notifications are disabled.</p>
-
-<table width="100%"  rules="none"  frame="none"  cols="2">
-<tr valign="top" align="left">
-<td valign="top" align="left"  width="90.1538%">
 <p><font size=3><B>sievenotifier:</B> <font size=3>&lt;no default&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>Notifyd(8) method to use for "SIEVE" notifications. If not set, "SIEVE" notifications are disabled.</p>
-<p><span style=" text-indent: 0.3000in;"></span><font size=3>This method is only used when no method is specified in the script.</p>
-<p><font size=3><B>sieveusehomedir:</B> <font size=3>false</p>
-</td>
-<td valign="top" align="left"  width="9.8462%">
-</td>
-</tr>
-</table>
-<p><font size=3>If enabled, lmtpd will look for Sieve scripts in user's home directories: <sup>~</sup>user/.sieve.</p>
+<p><span style=" text-indent: 0.3000in;"></span><font size=3>This method is only used when no method is specified in the script.<br>
+</p>
+
+<!-- Page: 4  -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
+<p><font size=3><B>sieveusehomedir:</B> <font size=3>false<br>
+<span style=" text-indent: 0.3000in;"></span>If enabled, lmtpd will look for Sieve scripts in user's home directories: <sup>~</sup>user/.sieve.</p>
 <p><font size=3><B>sievedir:</B> <font size=3>/usr/sieve<br>
 <span style=" text-indent: 0.3000in;"></span>If sieveusehomedir is false, this directory is searched for Sieve scripts.</p>
 <p><font size=3><B>sendmail:</B> <font size=3>/usr/lib/sendmail<br>
@@ -218,12 +198,7 @@ of</p>
 <p><font size=3><B>sieve_maxscripts:</B> <font size=3>5<br>
 <span style=" text-indent: 0.3000in;"></span>Maximum number of sieve scripts any user may have, enforced at submission by timsieved(8).</p>
 <p><font size=3><B>sasl_maximum_layer:</B> <font size=3>256<br>
-<span style=" text-indent: 0.3000in;"></span>Maximum SSF (security strength factor) that the server will allow a client to negotiate.<br>
-</p>
-
-<!-- Page: 4  -->
-<!-- left  margin: 100 -->
-<!-- right margin: 750 -->
+<span style=" text-indent: 0.3000in;"></span>Maximum SSF (security strength factor) that the server will allow a client to negotiate.</p>
 <p><font size=3><B>sasl_minimum_layer:</B> <font size=3>0<br>
 <span style=" text-indent: 0.3000in;"></span>The minimum SSF that the server will allow a client to negotiate. A value of 1 requires integrity protection;<br>
 <span style=" text-indent: 0.3000in;"></span>any higher value requires some amount of encryption.</p>
@@ -256,7 +231,12 @@ of</p>
 <span style=" text-indent: 0.3000in;"></span>File containing the private key belonging to the pop3-specific server certificate. If not specified, the global<br>
 <span style=" text-indent: 0.3000in;"></span>private key is used. A value of "disabled" will disable SSL/TLS for pop3.</p>
 <p><font size=3><B>tls_pop3_require_cert:</B> <font size=3>0<br>
-<span style=" text-indent: 0.3000in;"></span>Require a client certificate for pop3 ONLY.</p>
+<span style=" text-indent: 0.3000in;"></span>Require a client certificate for pop3 ONLY.<br>
+</p>
+
+<!-- Page: 5  -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
 <p><font size=3><B>tls_lmtp_cert_file:</B> <font size=3>&lt;none&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>File containing the certificate used for lmtp ONLY. If not specified, the global certificate is used. A value of<br>
 <span style=" text-indent: 0.3000in;"></span>"disabled" will disable TLS for lmtp.</p>
@@ -274,12 +254,7 @@ of</p>
 <p><font size=3><B>tls_sieve_require_cert:</B> <font size=3>0<br>
 <span style=" text-indent: 0.3000in;"></span>Require a client certificate for sieve ONLY.</p>
 <p><font size=3><B>tls_ca_file:</B> <font size=3>&lt;none&gt;<br>
-<span style=" text-indent: 0.3000in;"></span>File containing one or more Certificate Authority (CA) certificates.<br>
-</p>
-
-<!-- Page: 5  -->
-<!-- left  margin: 100 -->
-<!-- right margin: 750 -->
+<span style=" text-indent: 0.3000in;"></span>File containing one or more Certificate Authority (CA) certificates.</p>
 <p><font size=3><B>tls_ca_path:</B> <font size=3>&lt;none&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>Path to directory with certificates of CAs.</p>
 <p><font size=3><B>tls_session_timeout:</B> <font size=3>1440<br>
@@ -313,7 +288,12 @@ of</p>
 <p><font size=3><B>mupdate_authname:</B> <font size=3>&lt;none&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>The SASL username (Authentication Name) to use when authenticating to the mupdate server (if needed).</p>
 <p><font size=3><B>mupdate_realm:</B> <font size=3>&lt;none&gt;<br>
-<span style=" text-indent: 0.3000in;"></span>The SASL realm (if needed) to use when authenticating to the mupdate server.</p>
+<span style=" text-indent: 0.3000in;"></span>The SASL realm (if needed) to use when authenticating to the mupdate server.<br>
+</p>
+
+<!-- Page: 6  -->
+<!-- left  margin: 100 -->
+<!-- right margin: 674 -->
 <p><font size=3><B>mupdate_password:</B> <font size=3>&lt;none&gt;<br>
 <span style=" text-indent: 0.3000in;"></span>The SASL password (if needed) to use when authenticating to the mupdate server.</p>
 <p><font size=3><B>mupdate_retry_delay:</B> <font size=3>20<br>

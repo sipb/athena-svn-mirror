@@ -24,7 +24,7 @@
 #  (412) 268-4387, fax: (412) 268-7395
 #  tech-transfer@andrew.cmu.edu
 # 
-# $Id: Makefile,v 1.1.1.1 2002-10-13 18:01:18 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2003-02-14 21:38:25 ghudson Exp $
 
 all: htmlstrip docs clean
 
@@ -32,7 +32,7 @@ docs:
 	for file in ../*.html; \
 	do \
 		echo "=== $$file ==="; \
-		./htmlstrip $$file > `basename $$file .html` || true; \
+		./htmlstrip $$file > `basename $$file .html`; \
 	done
 	@echo "== done =="
 

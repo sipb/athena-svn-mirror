@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: master.c,v 1.1.1.1 2002-10-13 18:02:34 ghudson Exp $ */
+/* $Id: master.c,v 1.1.1.2 2003-02-14 21:39:15 ghudson Exp $ */
 
 #include <config.h>
 
@@ -94,6 +94,8 @@
 #include "master.h"
 #include "service.h"
 
+#include "lock.h"
+
 enum {
     become_cyrus_early = 1,
     child_table_size = 10000,
@@ -102,6 +104,7 @@ enum {
 
 static int verbose = 0;
 static int listen_queue_backlog = 32;
+static int pidfd = -1;
 
 struct service *Services = NULL;
 int allocservices = 0;
@@ -184,10 +187,13 @@ int become_cyrus(void)
     return result;
 }
 
-void get_prog(char *path, char *const *cmd)
+void get_prog(char *path, unsigned size, char *const *cmd)
 {
-    if (cmd[0][0] == '/') strcpy(path, cmd[0]);
-    else sprintf(path, "%s/%s", SERVICE_PATH, cmd[0]);
+    if (cmd[0][0] == '/') {
+	/* master lacks strlcpy, due to no libcyrus */
+	snprintf(path, size, "%s", cmd[0]);
+    }
+    else snprintf(path, size, "%s/%s", SERVICE_PATH, cmd[0]);
 }
 
 void get_statsock(int filedes[2])
@@ -318,6 +324,17 @@ int resolve_host(char *listen, struct sockaddr_in *sin)
     return 1;
 }
 
+int verify_service_file(char *const *filename)
+{
+    char path[PATH_MAX];
+    struct stat statbuf;
+    
+    get_prog(path, sizeof(path), filename);
+    if (stat(path, &statbuf)) return 0;
+    if (! S_ISREG(statbuf.st_mode)) return 0;
+    return statbuf.st_mode & S_IXUSR;
+}
+
 void service_create(struct service *s)
 {
     struct sockaddr_in sin;
@@ -401,7 +418,7 @@ void service_create(struct service *s)
     r = bind(s->socket, sa, salen);
     umask(oldumask);
     if (r < 0) {
-	syslog(LOG_ERR, "unable to bind %s socket: %m", s->name);
+	syslog(LOG_ERR, "unable to bind socket for service %s: %m", s->name);
 	close(s->socket);
 	s->socket = 0;
 	s->exec = NULL;
@@ -432,7 +449,7 @@ void run_startup(char **cmd)
 {
     pid_t pid;
     int status;
-    char path[1024];
+    char path[PATH_MAX];
 
     switch (pid = fork()) {
     case -1:
@@ -441,6 +458,9 @@ void run_startup(char **cmd)
 	break;
 	
     case 0:
+	/* Child - Release our pidfile lock. */
+	if(pidfd != -1) close(pidfd);
+
 	if (become_cyrus() != 0) {
 	    syslog(LOG_ERR, "can't change to the cyrus user");
 	    exit(1);
@@ -448,7 +468,7 @@ void run_startup(char **cmd)
 
 	limit_fds(256);
 
-	get_prog(path, cmd);
+	get_prog(path, sizeof(path), cmd);
 	syslog(LOG_DEBUG, "about to exec %s", path);
 	execv(path, cmd);
 	syslog(LOG_ERR, "can't exec %s for startup: %m", path);
@@ -489,7 +509,7 @@ void spawn_service(struct service *s)
 
     pid_t p;
     int i;
-    char path[1024];
+    char path[PATH_MAX];
     static char name_env[100];
     struct centry *c;
     time_t now = time(NULL);
@@ -541,13 +561,15 @@ void spawn_service(struct service *s)
 	break;
 
     case 0:
-	/* child */
+	/* Child - Release our pidfile lock. */
+	if(pidfd != -1) close(pidfd);
+
 	if (become_cyrus() != 0) {
 	    syslog(LOG_ERR, "can't change to the cyrus user");
 	    exit(1);
 	}
 
-	get_prog(path, s->exec);
+	get_prog(path, sizeof(path), s->exec);
 	if (dup2(s->stat[1], STATUS_FD) < 0) {
 	    syslog(LOG_ERR, "can't duplicate status fd: %m");
 	    exit(1);
@@ -620,7 +642,7 @@ void spawn_schedule(time_t now)
 {
     struct event *a, *b;
     int i;
-    char path[1024];
+    char path[PATH_MAX];
     pid_t p;
     struct centry *c;
 
@@ -650,6 +672,9 @@ void spawn_schedule(time_t now)
 		break;
 
 	    case 0:
+		/* Child - Release our pidfile lock. */
+		if(pidfd != -1) close(pidfd);
+
 		if (become_cyrus() != 0) {
 		    syslog(LOG_ERR, "can't change to the cyrus user");
 		    exit(1);
@@ -663,7 +688,7 @@ void spawn_schedule(time_t now)
 		}
 		limit_fds(256);
 		
-		get_prog(path, a->exec);
+		get_prog(path, sizeof(path), a->exec);
 		syslog(LOG_DEBUG, "about to exec %s", path);
 		execv(path, a->exec);
 		syslog(LOG_ERR, "can't exec %s on schedule: %m", path);
@@ -687,7 +712,7 @@ void spawn_schedule(time_t now)
 	/* reschedule as needed */
 	b = a->next;
 	if (a->period) {
-	    a->mark = now + a->period;
+	    a->mark += a->period;
 	    /* reschedule a */
 	    schedule_event(a);
 	} else {
@@ -954,6 +979,16 @@ void add_service(const char *name, struct entry *e, void *rock)
 	Services[i].exec = tokenize(cmd);
 	if (!Services[i].exec) fatal("out of memory", EX_UNAVAILABLE);
 
+	/* is this service actually there? */
+	if (!verify_service_file(Services[i].exec)) {
+	    char buf[1024];
+	    snprintf(buf, sizeof(buf),
+		     "cannot find executable for service '%s'", name);
+
+	    /* if it is not, we're misconfigured, die. */
+	    fatal(buf, EX_CONFIG);
+	}
+
 	Services[i].maxforkrate = maxforkrate;
 
 	if (!strcmp(Services[i].proto, "tcp")) {
@@ -992,6 +1027,16 @@ void add_service(const char *name, struct entry *e, void *rock)
 	Services[nservices].proto = proto;
 	Services[nservices].exec = tokenize(cmd);
 	if (!Services[nservices].exec) fatal("out of memory", EX_UNAVAILABLE);
+
+	/* is this service actually there? */
+	if (!verify_service_file(Services[i].exec)) {
+	    char buf[1024];
+	    snprintf(buf, sizeof(buf),
+		     "cannot find executable for service '%s'", name);
+
+	    /* if it is not, we're misconfigured, die. */
+	    fatal(buf, EX_CONFIG);
+	}
 
 	Services[nservices].socket = 0;
 	Services[nservices].saddr = NULL;
@@ -1041,6 +1086,8 @@ void add_event(const char *name, struct entry *e, void *rock)
     int ignore_err = (int) rock;
     char *cmd = mystrdup(masterconf_getstring(e, "cmd", NULL));
     int period = 60 * masterconf_getint(e, "period", 0);
+    int at = masterconf_getint(e, "at", -1), hour, min;
+    time_t now = time(NULL);
     struct event *evt;
 
     if (!cmd) {
@@ -1059,12 +1106,28 @@ void add_event(const char *name, struct entry *e, void *rock)
     evt = (struct event *) malloc(sizeof(struct event));
     if (!evt) fatal("out of memory", EX_UNAVAILABLE);
     evt->name = strdup(name);
-    evt->mark = 0;
+
+    if (at >= 0 && ((hour = at / 100) <= 23) && ((min = at % 100) <= 59)) {
+	struct tm *tm = localtime(&now);
+
+	period = 86400; /* 24 hours */
+	tm->tm_hour = hour;
+	tm->tm_min = min;
+	tm->tm_sec = 0;
+	if ((evt->mark = mktime(tm)) < now) {
+	    /* already missed it, so schedule for next day */
+	    evt->mark += period;
+	}
+    }
+    else {
+	evt->mark = now;
+    }
     evt->period = period;
+
     evt->exec = tokenize(cmd);
     if (!evt->exec) fatal("out of memory", EX_UNAVAILABLE);
-    evt->next = schedule;
-    schedule = evt;
+
+    schedule_event(evt);
 }
 
 #ifdef HAVE_SETRLIMIT
@@ -1085,19 +1148,33 @@ void limit_fds(rlim_t x)
     rl.rlim_max = x;
     if (setrlimit(RLIMIT_NUMFDS, &rl) < 0) {
 	syslog(LOG_ERR, "setrlimit: Unable to set file descriptors limit to %ld: %m", x);
+
+#ifdef HAVE_GETRLIMIT
+
+	if (!getrlimit(RLIMIT_NUMFDS, &rl)) {
+	    syslog(LOG_ERR, "retrying with %ld (current max)", rl.rlim_max);
+	    rl.rlim_cur = rl.rlim_max;
+	    if (setrlimit(RLIMIT_NUMFDS, &rl) < 0) {
+		syslog(LOG_ERR, "setrlimit: Unable to set file descriptors limit to %ld: %m", x);
+	    }
+	}
     }
+
 
     if (verbose > 1) {
 	r = getrlimit(RLIMIT_NUMFDS, &rl);
 	syslog(LOG_DEBUG, "set maximum file descriptors to %ld/%ld", rl.rlim_cur,
 	       rl.rlim_max);
     }
+#else
+    }
+#endif /* HAVE_GETRLIMIT */
 }
 #else
 void limit_fds(rlim_t x)
 {
 }
-#endif
+#endif /* HAVE_SETRLIMIT */
 
 void reread_conf(void)
 {
@@ -1156,6 +1233,7 @@ void reread_conf(void)
 	free((char**) ptr->exec);
 	free(ptr);
     }
+    schedule = NULL;
 
     /* read events */
     masterconf_getsection("EVENTS", &add_event, (void*) 1);
@@ -1163,7 +1241,16 @@ void reread_conf(void)
 
 int main(int argc, char **argv)
 {
-    int i, opt, close_std = 1;
+    const char *default_pidfile = MASTER_PIDFILE;
+    const char *lock_suffix = ".lock";
+
+    const char *pidfile = default_pidfile;
+    char *pidfile_lock = NULL;
+
+    int startup_pipe[2] = { -1, -1 };
+    int pidlock_fd = -1;
+
+    int i, opt, close_std = 1, daemon_mode = 0;
     extern int optind;
     extern char *optarg;
     int fd;
@@ -1172,18 +1259,34 @@ int main(int argc, char **argv)
 
     p = getenv("CYRUS_VERBOSE");
     if (p) verbose = atoi(p) + 1;
-    while ((opt = getopt(argc, argv, "l:D")) != EOF) {
+    while ((opt = getopt(argc, argv, "p:l:Dd")) != EOF) {
 	switch (opt) {
-	case 'l': /* user defined listen queue backlog */
+	case 'l':
+            /* user defined listen queue backlog */
 	    listen_queue_backlog = atoi(optarg);
 	    break;
+	case 'p':
+	    /* Set the pidfile name */
+	    pidfile = optarg;
+	    break;
+	case 'd':
+	    /* Daemon Mode */
+	    if(!close_std)
+		fatal("Unable to both be debug and daemon mode", EX_CONFIG);
+	    daemon_mode = 1;
+	    break;
 	case 'D':
+	    /* Debug Mode */
+	    if(daemon_mode)
+		fatal("Unable to be both debug and daemon mode", EX_CONFIG);
 	    close_std = 0;
 	    break;
 	default:
 	    break;
 	}
     }
+
+    masterconf_init("master");
 
     /* zero out the children table */
     memset(&ctable, 0, sizeof(struct centry *) * child_table_size);
@@ -1204,9 +1307,149 @@ int main(int argc, char **argv)
 	if (dup(0) != fd) fatal("couldn't dup fd 0: %m", 2);
     }
 
+    /* Pidfile Algorithm in Daemon Mode.  This is a little subtle because
+     * we want to ensure that we can report an error to our parent if the
+     * child fails to lock the pidfile.
+     *
+     * [A] Create/lock pidfile.lock.  If locked, exit(failure).
+     * [A] Create a pipe
+     * [A] Fork [B]
+     * [A] Block on reading exit code from pipe
+     * [B] Create/lock pidfile.  If locked, write failure code to pipe and
+     *     exit(failure)
+     * [B] write pid to pidfile
+     * [B] write success code to pipe & finish starting up
+     * [A] unlink pidfile.lock and exit(code read from pipe)
+     *
+     */
+    if(daemon_mode) {
+	/* Daemonize */
+	pid_t pid = -1;
+
+	pidfile_lock = malloc(strlen(pidfile) + strlen(lock_suffix) + 1);
+	if(!pidfile_lock) fatal("out of memory", EX_TEMPFAIL);
+
+	strcpy(pidfile_lock, pidfile);
+	strcat(pidfile_lock, lock_suffix);
+	
+	pidlock_fd = open(pidfile_lock, O_CREAT|O_TRUNC|O_RDWR, 0644);
+	if(pidlock_fd == -1) {
+	    syslog(LOG_ERR, "can't open pidfile lock: %s (%m)", pidfile_lock);
+	    exit(EX_OSERR);
+	} else {
+	    if(lock_nonblocking(pidlock_fd)) {
+		syslog(LOG_ERR, "can't get exclusive lock on %s",
+		       pidfile_lock);
+		exit(EX_TEMPFAIL);
+	    }
+	}
+	
+	if(pipe(startup_pipe) == -1) {
+	    syslog(LOG_ERR, "can't create startup pipe (%m)");
+	    exit(EX_OSERR);
+	}
+
+	do {
+	    pid = fork();
+	    	    
+	    if ((pid == -1) && (errno == EAGAIN)) {
+		syslog(LOG_WARNING, "master fork failed (sleeping): %m");
+		sleep(5);
+	    }
+	} while ((pid == -1) && (errno == EAGAIN));
+
+	if (pid == -1) {
+	    fatal("fork error", EX_OSERR);
+	} else if (pid != 0) {
+	    int exit_code;
+
+	    /* Parent, wait for child */
+	    if(read(startup_pipe[0], &exit_code, sizeof(exit_code)) == -1) {
+		syslog(LOG_ERR, "could not read from startup_pipe (%m)");
+		unlink(pidfile_lock);
+		exit(EX_OSERR);
+	    } else {
+		unlink(pidfile_lock);
+		exit(exit_code);
+	    }
+	}
+
+	/* Child! */
+	close(startup_pipe[0]);
+
+	free(pidfile_lock);
+
+	/*
+	 * We're now running in the child. Lose our controlling terminal
+	 * and obtain a new process group.
+	 */
+	if (setsid() == -1) {
+	    int exit_result = EX_OSERR;
+	    
+	    /* Tell our parent that we failed. */
+	    write(startup_pipe[1], &exit_result, sizeof(exit_result));
+	
+	    fatal("setsid failure", EX_OSERR);
+	}
+    }
+
     limit_fds(RLIM_INFINITY);
 
-    masterconf_init("master");
+    /* Write out the pidfile */
+    pidfd = open(pidfile, O_CREAT|O_TRUNC|O_RDWR, 0644);
+    if(pidfd == -1) {
+	int exit_result = EX_OSERR;
+
+	/* Tell our parent that we failed. */
+	write(startup_pipe[1], &exit_result, sizeof(exit_result));
+
+	syslog(LOG_ERR, "can't open pidfile: %m");
+	exit(EX_OSERR);
+    } else {
+	char buf[100];
+
+	if(lock_nonblocking(pidfd)) {
+	    int exit_result = EX_OSERR;
+
+	    /* Tell our parent that we failed. */
+	    write(startup_pipe[1], &exit_result, sizeof(exit_result));
+	    
+	    fatal("cannot get exclusive lock on pidfile (is another master still running?)", EX_OSERR);
+	} else {
+	    int pidfd_flags = fcntl(pidfd, F_GETFD, 0);
+	    if (pidfd_flags != -1)
+		pidfd_flags = fcntl(pidfd, F_SETFD, 
+				    pidfd_flags | FD_CLOEXEC);
+	    if (pidfd_flags == -1) {
+		int exit_result = EX_OSERR;
+		
+		/* Tell our parent that we failed. */
+		write(startup_pipe[1], &exit_result, sizeof(exit_result));
+
+		fatal("unable to set close-on-exec for pidfile: %m", EX_OSERR);
+	    }
+	    
+	    /* Write PID */
+	    snprintf(buf, sizeof(buf), "%d\n", getpid());
+	    write(pidfd, buf, strlen(buf));
+	    fsync(pidfd);
+	}
+    }
+
+    if(daemon_mode) {
+	int exit_result = 0;
+
+	/* success! */
+	if(write(startup_pipe[1], &exit_result, sizeof(exit_result)) == -1) {
+	    syslog(LOG_ERR,
+		   "could not write success result to startup pipe (%m)");
+	    exit(EX_OSERR);
+	}
+
+	close(startup_pipe[1]);
+	if(pidlock_fd != -1) close(pidlock_fd);
+    }
+
     syslog(LOG_NOTICE, "process started");
 
 #ifdef HAVE_UCDSNMP

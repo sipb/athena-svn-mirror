@@ -12,10 +12,17 @@ Cyrus IMAP Server FAQ
         possibly work but you may also lose your email or have corrupted
         cyrus.* files. You can look at the mailing list archives for more
         information. 
-      * Virtual hosting - We don't support it and don't plan to support it
-        unless we get a set of complete patches. If you want it, you'll
-        need to do it yourself or use a commercial product. Check the list
-        archives for more information. 
+      * Using AFS/Coda We don't recommend it. It's even less likely to work
+        than NFS. If you want to do it, it may possibly work but you may
+        also lose your email or have corrupted cyrus.* files. CMU's
+        previous e-mail system, AMS, leveraged AFS extensively for storage
+        (and transit) purposes. For various reasons it didn't scale
+        particularly well and led to CMU's interest in IMAP. 
+
+        Cyrus was designed to use a local filesystem with Unix semantics
+        and a working mmap()/write() combination. AFS doesn't provide these
+        semantics so won't work correctly. 
+      * Virtual hosting - This will be supported starting in Cyrus 2.2. 
       * dots in userids - you can have a '.' in your username IF, AND ONLY
         IF, you use the UNIX hierarchy convention. 
       * renaming users - nope, not supported. 
@@ -49,10 +56,12 @@ Troubleshooting
             Make sure that saslauthd is running and that the cyrus user can
             access the unix domain socket (defaults to /var/run/mux). 
     Q: I'm getting messages about "duplicate_prune". What's wrong? 
-            A:These messages look like 
+            
+
+            A: These messages look like 
 
             Jan 14 13:46:24 grant ctl_deliver[9060]: duplicate_prune: opening
-            /var/imap/deliverdb/deliver-x.db: No such file or directory
+              /var/imap/deliverdb/deliver-x.db: No such file or directory
             Jan 14 13:46:24 grant ctl_deliver[9060]: duplicate_prune: opening
               /var/imap/deliverdb/deliver-y.db: No such file or directory
             Jan 14 13:46:24 grant ctl_deliver[9060]: duplicate_prune: opening
@@ -100,4 +109,23 @@ Troubleshooting
                     off |= SSL_OP_NO_SSLv2;
                     off |= SSL_OP_NO_SSLv3;
                 }
+
+    Q: I'm getting messages in imapd.log like: 
+
+            Sep 11 17:23:55 ogg lmtpd[773]: DBERROR db3: 16 lockers
+            Sep 11 17:23:55 ogg lmtpd[1409]: DBERROR db3: 17 lockers
+            Sep 11 17:23:56 ogg lmtpd[1508]: DBERROR db3: 9 lockers
+            Sep 11 17:23:56 ogg lmtpd[776]: DBERROR db3: 9 lockers
+
+            What's wrong? 
+            
+
+            A: Nothing is wrong. These messages are logged whenever
+            Berkeley db encounters lock contention, but isn't necessarily a
+            problem by themselves. This is especially likely when you have
+            an empty or small duplicate delivery database and are receiving
+            a large volume of e-mail. 
+
+            Berkeley db 4.0 has a bug where the number of lockers isn't
+            decremented properly, causing this number to be unreliable. 
 

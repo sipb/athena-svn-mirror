@@ -37,7 +37,7 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Shell.pm,v 1.1.1.1 2002-10-13 18:03:05 ghudson Exp $
+# $Id: Shell.pm,v 1.1.1.2 2003-02-14 21:38:39 ghudson Exp $
 #
 # A shell framework for IMAP::Cyrus::Admin
 #
@@ -192,7 +192,7 @@ sub _nexttoken {
   # characters (in this case, /&<>;/) and break "words" there.
   while ($$lr ne '' && ($quoted || $$lr !~ /^\s/)) {
     $tok[1] ||= 0;
-    if ($$lr =~ /^([&<>;])/) {
+    if ($q eq '' && $$lr =~ /^([&<>;])/) {
       last if $tok[0] ne '';
       $tok[0] = $1;
       $coll_command .= $1;
@@ -394,6 +394,7 @@ sub _run {
   my $fin = shift || $fstk->[0] || *STDIN;
   my ($hfh, $line);
   $hfh = $use_rl->new('cyradm shell', $fin, $fstk->[1]);
+  $hfh->ornaments(0);
   my $rc;
   while (defined ($line = $hfh->readline((defined $$cyradm ?
 					  $$cyradm->servername :
@@ -1219,6 +1220,10 @@ sub new {
   bless {in => $in, out => $out}, $class;
 }
 
+sub ornaments {
+  return;
+}
+
 sub readline {
   my ($self, $prompt) = @_;
   my $l;
@@ -1238,7 +1243,7 @@ Cyrus::IMAP::Shell - Perl version of cyradm
 
 =head1 SYNOPSIS
 
-  $ cyradm [--user user] [--[no]rc] [--systemrc file] [--userrc file] \
+  $ cyradm [--user authid] [--authz authzid] [--[no]rc] [--systemrc file] [--userrc file] \
   > [--port n] [--auth mechanism] [--server] server
 
 but possibly
@@ -1310,8 +1315,9 @@ Remove ACLs from the specified mailbox.
 Delete the specified mailbox.
 
 Administrators do not have implicit delete rights on mailboxes.  Use the
-B<setaclmailbox> command to grant the C<d> permission to your principal
-if you need to delete a mailbox you do not own.
+B<setaclmailbox> command to grant the C<c> permission (or other permission
+as specified by the deleteright configuration option in imapd.conf)
+to your principal if you need to delete a mailbox you do not own. 
 
 Note that the online help admits to an optional host argument.  This argument
 is not currently used, and will be rejected with an error if specified; it

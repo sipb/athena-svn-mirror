@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: cyradm.c,v 1.1.1.1 2002-10-13 18:01:18 ghudson Exp $ */
+/* $Id: cyradm.c,v 1.1.1.2 2003-02-14 21:38:17 ghudson Exp $ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,8 +54,6 @@
 #include <sys/types.h>
 
 #include <sasl/sasl.h>
-
-extern int errno;
 
 #include "imclient.h"
 #include "imparse.h"

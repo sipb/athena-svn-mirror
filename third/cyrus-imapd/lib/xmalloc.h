@@ -1,5 +1,5 @@
 /* xmalloc.h -- Allocation package that calls fatal() when out of memory
- * $Id: xmalloc.h,v 1.1.1.1 2002-10-13 18:00:41 ghudson Exp $
+ * $Id: xmalloc.h,v 1.1.1.2 2003-02-14 21:37:55 ghudson Exp $
  *
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -54,8 +54,6 @@ extern void *xzmalloc (unsigned size);
 extern void *xrealloc (void *ptr, unsigned size);
 extern char *xstrdup (const char *str);
 extern char *xstrndup (const char *str, unsigned len);
-extern void *fs_get (unsigned size);
-extern void fs_give (void **ptr);
 
 /* handy string manipulation functions */
 #ifndef HAVE_STRLCPY
