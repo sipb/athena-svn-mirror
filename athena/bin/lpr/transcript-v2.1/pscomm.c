@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.13 1995-07-11 21:31:37 miki Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.14 1995-10-13 21:09:32 cfields Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,15 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  1995/07/11  21:31:37  miki
+ * POSIX setjmp, signal, wait handling, but not for ultrix
+ * Changed bcopy/bzero to memcpy/memset [ANSI]
+ * Upper bound on sleeptime for HP queries (10 seconds).
+ * Pass original magic string to filter for filter processing.
+ * emulate flock for POSIX systems
+ * do accounting if filter dies and get signal
+ * for AIX undefine BSD to get the right wait functionality
+ *
  * Revision 1.12  93/10/09  18:53:28  probe
  * Added HPLJ ivSiMX support, and better Milan support [darrin]
  * Parse .spooler file (if it exists) for per-queue specifications.
@@ -2030,8 +2039,12 @@ NotifyUser(user, message)
     notice.z_class = "MESSAGE";
     notice.z_class_inst = "PERSONAL";
     notice.z_opcode = "";
-    sprintf(fromprinter, "Athena Print Server (%s) for printer %s",
-        dname, pname);
+    if (dname)
+      sprintf(fromprinter, "Athena Print Server (%s) for printer %s",
+	      dname, pname);
+    else
+      sprintf(fromprinter, "Athena Print Server for printer %s",
+	      pname);
     notice.z_sender = fromprinter;
     notice.z_recipient = user;
     notice.z_default_format = "";
