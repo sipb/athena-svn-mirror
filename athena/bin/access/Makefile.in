@@ -1,0 +1,44 @@
+# $Id: Makefile.in,v 1.1 1997-01-11 19:16:56 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
+
+all: access_off
+
+access_off: access_off.o
+	${CC} ${LDFLAGS} -o access_off access_off.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} -m 555 access_off ${DESTDIR}${bindir}
+	rm -f ${DESTDIR}${bindir}/access_on
+	ln -s access_off ${DESTDIR}${bindir}/access_on
+	${INSTALL} -m 444 ${srcdir}/access_off.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/access_on.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f access_off.o access_off
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
