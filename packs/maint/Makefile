@@ -1,11 +1,14 @@
-# $Id: Makefile,v 1.10 2000-06-08 18:48:18 ghudson Exp $
+# $Id: Makefile,v 1.11 2000-06-19 03:53:32 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
 ATHMANDIR=/usr/athena/man
 
-all:
+all: os-checkfiles
 	cd os/${OS} && ${MAKE} $@
+
+os-checkfiles: os-checkfiles.o array.o
+	${CC} ${LDFLAGS} -o $@ os-checkfiles.o array.o
 
 check:
 	cd os/${OS} && ${MAKE} $@
@@ -30,6 +33,7 @@ install:
 	cd os/${OS} && ${MAKE} $@
 
 clean:
+	rm -f os-checkfiles os-checkfiles.o array.o
 	cd os/${OS} && ${MAKE} $@
 
 distclean:
