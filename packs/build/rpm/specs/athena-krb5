@@ -18,7 +18,7 @@ fi
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
 
-cp athena-version src/appl/version
+cp athena-version src/appl/athena-version
 (cd src/appl; ../../do.sh -p -s /xxx -d $RPM_BUILD_ROOT all)
 
 %install
@@ -35,7 +35,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
-cp athena-version src/appl/version
+cp athena-version src/appl/athena-version
 (cd src/appl; ../../do.sh -p -s /xxx -d $RPM_BUILD_ROOT install)
 
 # Extra files; see prep/athena-krb5.
