@@ -3,7 +3,7 @@
  *
  *	Created by:	John T. Kohl
  *
- *	$Id: uloc.c,v 1.59 2000-01-22 18:36:02 ghudson Exp $
+ *	$Id: uloc.c,v 1.60 2001-02-27 04:59:03 zacheiss Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_uloc_c[] =
-"$Id: uloc.c,v 1.59 2000-01-22 18:36:02 ghudson Exp $";
+"$Id: uloc.c,v 1.60 2001-02-27 04:59:03 zacheiss Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -869,7 +869,7 @@ ulogin_marshal_locs(notice, found, auth)
     char **answer;
     int i = 0;
     String *inst;
-    int local = (auth && sender_in_realm(notice));
+    int local = (auth && realm_sender_in_realm(ZGetRealm(), notice->z_sender));
 
     *found = 0;			/* # of matches */
 
