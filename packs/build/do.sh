@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.24 1999-01-31 21:51:29 danw Exp $
+# $Id: do.sh,v 1.25 1999-02-19 17:13:41 danw Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -122,12 +122,17 @@ if [ -r Makefile.athena ]; then
 	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
 	make $n -f Makefile.athena "$operation"
-elif [ -x ./configure ]; then
+elif [ -x configure ]; then
 	export ATHTOOLROOT
 	ATHTOOLROOT=$athtoolroot
+	if [ -x configure.athena ]; then
+		configure=configure.athena
+	else
+		configure=configure
+	fi
 	case $operation in
 		prepare)	$maybe rm -f config.cache
-				$maybe ./configure ;;
+				$maybe ./$configure ;;
 		clean)		make $n clean ;;
 		all)		make $n all ;;
 		check)		;;
