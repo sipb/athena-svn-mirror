@@ -290,7 +290,7 @@ style "menuitem"
 	function        = CHECK
 	recolorable     = TRUE
 	shadow          = OUT
-	overlay_file    = "check2.png"
+	overlay_file    = "3d_all_normal.png"
 	overlay_stretch = FALSE
       }
     image
@@ -298,7 +298,7 @@ style "menuitem"
 	function        = CHECK
 	recolorable     = TRUE
 	shadow          = IN
-	overlay_file    = "3d_all_normal.png"
+	overlay_file    = "check2.png"
 	overlay_stretch = FALSE
       }
     image 
@@ -741,7 +741,7 @@ style "spin"
 	recolorable     = TRUE
 	shadow          = IN
 	file            = "in.png"
-	border          = { 3,3,3,3 }
+	border          = { 2,2,2,2 }
 	stretch         = TRUE
       }
     image

@@ -29,6 +29,4 @@ libcrux_engine_la_SOURCES = 	\
 libcrux_engine_la_LDFLAGS = -module -avoid-version
 libcrux_engine_la_LIBADD = $(GTKTHEME_LIBS)
 
-#noinst_PROGRAMS = test
 
-#test_LDADD = $(GTKTHEME_LIBS)

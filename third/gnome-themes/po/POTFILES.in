@@ -1,3 +1,5 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
 HighContrast/index.theme.in
 HighContrastInverse/index.theme.in
 HighContrastLargePrint/index.theme.in.in
@@ -6,6 +8,7 @@ LargePrint/index.theme.in.in
 LowContrast/index.theme.in
 LowContrastLargePrint/index.theme.in.in
 desktop-themes/Crux/index.theme.in
+desktop-themes/Glider/index.theme.in
 desktop-themes/Grand-Canyon/index.theme.in
 desktop-themes/Mist/index.theme.in
 desktop-themes/Ocean-Dream/index.theme.in

@@ -1,13 +1,16 @@
-# Russian translation for gnome-themes.
+# Ukrainian translation for gnome-themes.
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-themes package.
+# Yuriy Syrota <yuri@renome.rovno.ua>
+# Maxim Dziumanenko <mvd@mylinux.com.ua>, 2003-2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-27 10:01--500\n"
-"Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-21 09:40+0200\n"
+"Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <linux@linux.org.ua>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,7 +18,7 @@ msgstr ""
 
 #: HighContrast/index.theme.in.h:1
 msgid "Black-on-white text and icons"
-msgstr "Чорні текст і піктограми чорні на білому"
+msgstr "Чорні текст та значки на білому"
 
 #: HighContrast/index.theme.in.h:2
 msgid "High Contrast"
@@ -27,15 +30,15 @@ msgstr "Висококонтрастна негативна"
 
 #: HighContrastInverse/index.theme.in.h:2
 msgid "White-on-black text and icons"
-msgstr "Білі текст і піктограми на чорному"
+msgstr "Білі текст та значки на чорному"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
-msgstr "Висококонтрастна велика"
+msgid "High Contrast Large Print"
+msgstr "Висококонтрастна велика для друку"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
 msgid "Large black-on-white text and icons"
-msgstr "Великі чорні текст і піктограми на білому"
+msgstr "Великі чорні текст та значки на білому"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
 msgid "High Contrast Large Print Inverse"
@@ -43,7 +46,7 @@ msgstr "Висококонтрастна негативна для друку"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
 msgid "Large white-on-black text and icons"
-msgstr "Великі білі текст і піктограми на чорному"
+msgstr "Великі білі текст та значки на чорному"
 
 #: LargePrint/index.theme.in.in.h:1
 msgid "Large Print"
@@ -51,7 +54,7 @@ msgstr "Велика для друку"
 
 #: LargePrint/index.theme.in.in.h:2
 msgid "Large text and icons"
-msgstr "Великі текст і піктограми"
+msgstr "Великі текст та значки"
 
 #: LowContrast/index.theme.in.h:1
 msgid "Low Contrast"
@@ -59,11 +62,11 @@ msgstr "Низькоконтрастна"
 
 #: LowContrast/index.theme.in.h:2
 msgid "Muted text and icons"
-msgstr "Неконтрастні тест і піктограми"
+msgstr "Неконтрастні текст та значки"
 
 #: LowContrastLargePrint/index.theme.in.in.h:1
 msgid "Large muted text and icons"
-msgstr "Великі неконтрастні тест і піктограми"
+msgstr "Великі неконтрастні текст та значки"
 
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
@@ -77,14 +80,21 @@ msgstr "Кракс"
 msgid "Smooth gradients with teal highlights"
 msgstr "Гладкі переходи, що імітують забарвлення чирка"
 
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "Планер"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "Проста, гладка та естетично приваблива"
+
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
-#, fuzzy
 msgid "Dusty orange appearance"
-msgstr "М'який гладкий вигляд"
+msgstr "Запилений жовтогарячий вигляд"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:2
 msgid "Grand Canyon"
-msgstr ""
+msgstr "Великий каньйон"
 
 #: desktop-themes/Mist/index.theme.in.h:1
 msgid "A minimalistic appearance"
@@ -104,7 +114,7 @@ msgstr "Кольори океанського узбережжя"
 
 #: desktop-themes/Simple/index.theme.in.h:1
 msgid "Simple"
-msgstr ""
+msgstr "Проста"
 
 #: desktop-themes/Simple/index.theme.in.h:2
 msgid "Thin appearance, high performance"
@@ -120,7 +130,7 @@ msgstr "Синій туман"
 
 #: desktop-themes/Traditional/index.theme.in.h:1
 msgid "Traditional"
-msgstr ""
+msgstr "Традиційна"
 
 #: desktop-themes/Traditional/index.theme.in.h:2
 msgid "Traditional hard-edged 3D appearance"
@@ -141,15 +151,3 @@ msgstr "Туманно-синя"
 #: icon-themes/Smokey-Red/index.theme.in.h:1
 msgid "Smokey-Red"
 msgstr "Туманно-червона"
-
-#~ msgid "Default"
-#~ msgstr "Початкова"
-
-#~ msgid "Plain"
-#~ msgstr "Плоска"
-
-#~ msgid "Default Gnome Theme"
-#~ msgstr "Стандартна тема середовища GNOME"
-
-#~ msgid "Gnome"
-#~ msgstr "GNOME"

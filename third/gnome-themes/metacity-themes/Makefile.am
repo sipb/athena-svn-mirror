@@ -1,10 +1,16 @@
 THEMES=			\
+	Glider		\
 	Mist		\
 	Sandwish	\
 	Smokey
 
 THEME_DIR=$(datadir)/themes
 THEME_SUBDIR=metacity-1
+
+uninstall: uninstall-am
+	for THEME in $(THEMES) ; do \
+		rm -rf $(DESTDIR)$(THEME_DIR)/$$THEME/$(THEME_SUBDIR); \
+	done
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(THEME_DIR);					     \
@@ -30,3 +36,7 @@ dist-hook:
 		    	cp $$i $(distdir)/$$THEME;					\
 	  	 done)									\
 	done
+
+#Keep this hack in until 2.8.0 is released
+install: install-am
+	        rm -rf $(DESTDIR)$(datadir)/themes/SimplySmooth

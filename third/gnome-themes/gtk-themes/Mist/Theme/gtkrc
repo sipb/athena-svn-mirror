@@ -2,18 +2,18 @@ style "default"
 {
         fg[NORMAL]              = "#000000"
         fg[ACTIVE]              = "#000000"
-        fg[INSENSITIVE]         = "#555555"
+        fg[INSENSITIVE]         = "#888888"
         fg[PRELIGHT]            = "#000000"
         fg[SELECTED]            = "#ffffff"
         
-        bg[ACTIVE]              = "#bbbbbb"
+        bg[ACTIVE]              = "#cdcdcd"
 	bg[NORMAL]              = "#eaeaea"
         bg[INSENSITIVE]         = "#dddddd"
         bg[PRELIGHT]            = "#f6f6f6"
         bg[SELECTED]            = "#4a5e7d"
 
         base[NORMAL]            = "#ffffff"
-        base[ACTIVE]            = "#aaaaaa"
+        base[ACTIVE]            = "#cdcdcd"
         base[INSENSITIVE]       = "#ffffff"
         base[PRELIGHT]          = "#eaeaea"
 	base[SELECTED]          = "#4a5e7d"
@@ -24,12 +24,15 @@ style "default"
         text[SELECTED]          = "#FFFFFF"
         text[INSENSITIVE]       = "#555555"
 
-	GtkRange::slider_width = 11
-	GtkRange::stepper_size = 11
+	GtkRange::trough_border = 0
+	GtkRange::slider_width = 15
+	GtkRange::stepper_size = 15
+
 	GtkScrollbar::min_slider_length = 15
 	GtkCheckButton::indicator_size=10
+	GtkCheckMenuItem::indicator_size=10
 	GtkRadioButton::indicator_size=12
-	GtkStatusbar::shadow_type = none
+#	GtkStatusbar::shadow_type = 
 	
 	GtkNotebook::tab_vborder = 1
 	GtkNotebook::tab_hborder = 1
@@ -40,7 +43,6 @@ style "default"
 	NautilusIconContainer::light_info_color="#bbbbbb"
 	NautilusIconContainer::highlight_alpha=200
 
-
 	engine "mist"
  	{
 	}
@@ -48,6 +50,8 @@ style "default"
 
 style "menuitem"
 {
+	ythickness = 2
+	xthickness = 2
         text[PRELIGHT]          = "#ffffff"
         fg[PRELIGHT]          = "#ffffff"
 }

@@ -13,5 +13,8 @@ DISTCLEANFILES= index.theme
 
 if CORE_THEMES_ONLY
 install: install-recursive
-	mv $(datadir)/themes/LowContrastLargePrint/index.theme $(datadir)/themes/LowContrastLargePrint/index.theme~
+	rm -f $(DESTDIR)$(themedir)/index.theme~
+	mv $(DESTDIR)$(themedir)/index.theme $(DESTDIR)$(themedir)/index.theme.disabled
+uninstall: uninstall-recursive
+	rm -f $(DESTDIR)$(themedir)/index.theme.disabled
 endif

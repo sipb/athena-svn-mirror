@@ -1,3 +1,9 @@
+2004-08-18  Calum Benson  <calum.benson@sun.com>
+
+	Fix issues reported by sparse/gcc (Kjartan Maraas, bug #150348)
+
+	* src/lighthouseblue_style.c: (draw_flat_box):
+
 2003-01-16  Seth Nickell  <snickell@stanford.edu>
 
 	First checkin of LightHouseBlue to gnome-desktop-themes.

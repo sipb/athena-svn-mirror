@@ -6,6 +6,8 @@
 #include "crux-rc-style.h"
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 struct symbol_struct {
     gchar *name;
@@ -62,7 +64,7 @@ static struct symbol_struct theme_symbols[] = {
   { "bg", TOKEN_BG },						
   { "base", TOKEN_BASE },					
   { "text", TOKEN_TEXT },
-  { 0, G_TOKEN_NONE }
+  { NULL, G_TOKEN_NONE }
 };
 
 #define STOCK_SYMBOLS 									\
@@ -175,7 +177,7 @@ read_line_from_file (char *filename)
 {
     gboolean free_filename = FALSE;
     FILE *fh;
-    char *ret = 0;
+    char *ret = NULL;
 
     if (!g_path_is_absolute (filename))
     {
@@ -628,7 +630,8 @@ static guint
 parse_gradient_assign (eazel_theme_data *theme_data, GScanner *scanner,
 		       eazel_engine_gradient **gradients)
 {
-    guint token, state;
+    guint token;
+    GtkStateType state;
 
     (void) g_scanner_get_next_token (scanner);
 
@@ -864,7 +867,7 @@ crux_parse_rc_style  (GtkRcStyle   *rc_style,
     if (default_stock_data != 0)
 	theme_data->stock = eazel_engine_stock_table_ref (default_stock_data);
     else
-	theme_data->stock = 0;
+	theme_data->stock = NULL;
 
     token = g_scanner_peek_next_token(scanner);
     while (token != G_TOKEN_RIGHT_CURLY)

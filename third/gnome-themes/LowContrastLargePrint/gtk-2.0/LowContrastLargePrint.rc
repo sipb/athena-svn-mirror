@@ -16,40 +16,51 @@ gtk-icon-sizes = "@LARGEPRINT_ICON_SIZES@"
 style "default"
 {
   GtkWidget::focus-line-pattern = "\10\2"
-  GtkWidget::focus-line-width = 3
-  GtkHSV::focus-line-pattern = "\0"
   GtkWidget::interior_focus = 1
   GtkWidget::focus-padding = 0
-  GtkEntry::cursor_color    = { 0.60, 0.40, 0.40 }
-  GtkRange::slider_width = 20
-  GtkTreeView::expander_size = 20
+  GtkWidget::focus-line-width = 3
 #  GtkWidget::cursor_aspect_ratio = 0.1
-  GtkTextView::cursor_color    = { 0.60, 0.40, 0.40 }
-  GtkTextView::cursor_aspect_ratio = 0.1
+
+  GtkHSV::focus-line-pattern = "\0"
+  GtkRange::slider_width = 20
+
+  GtkEntry::cursor_color    = "#9A6666"
   GtkEntry::cursor_aspect_ratio = 0.1
 
-  fg[NORMAL]      = { 0.40, 0.40, 0.40 }
-  text[NORMAL]      = { 0.40, 0.40, 0.40 }
-  bg[NORMAL]      = { 0.60, 0.60, 0.60 }
-  base[NORMAL]    = { 0.60, 0.60, 0.60 }
+  EelEditableLabel::cursor_color    = "#9A6666"
+  EelEditableLabel::cursor_aspect_ratio = 0.1
 
-  fg[INSENSITIVE]      = { 0.5, 0.5, 0.5 }
-  bg[INSENSITIVE]      = { 0.55, 0.55, 0.55 }
-  base[INSENSITIVE]      = { 0.55, 0.55, 0.55 }
+  GtkTextView::cursor_color    = "#9A6666"
+  GtkTextView::cursor_aspect_ratio = 0.1
 
-  fg[PRELIGHT]    = { 0.45, 0.45, 0.45 }
-  text[PRELIGHT]    = { 0.45, 0.45, 0.45 }
-  bg[PRELIGHT]    = { 0.65, 0.65, 0.65 }
-  base[PRELIGHT]    = { 0.65, 0.65, 0.65 }
+  GtkTreeView::expander_size = 20
+  GtkExpander::expander-size = 24
+  GtkExpander::expander-spacing = 8
 
-  fg[ACTIVE]      = { 0.40, 0.40, 0.40 }
-  text[ACTIVE]      = { 0.40, 0.40, 0.40 }
-  bg[ACTIVE]      = { 0.55, 0.55, 0.50 }
-  base[ACTIVE]      = { 0.45, 0.45, 0.40 }
+  PanelToplevel::arrow-size = 18
 
-  fg[SELECTED]    = { 0.60, 0.60, 0.60 }
-  text[SELECTED]    = { 0.60, 0.60, 0.60 }
-  bg[SELECTED]    = { 0.40, 0.40, 0.40 }
-  base[SELECTED]    = { 0.40, 0.45, 0.45 }
+  fg[NORMAL]      = "#666666"
+  text[NORMAL]      = "#666666"
+  bg[NORMAL]      = "#9A9A9A"
+  base[NORMAL]    = "#9A9A9A"
+
+  fg[INSENSITIVE]      = "#808080"
+  bg[INSENSITIVE]      = "#8C8C8C"
+  base[INSENSITIVE]      = "#8C8C8C"
+
+  fg[PRELIGHT]    = "#737373"
+  text[PRELIGHT]    = "#737373"
+  bg[PRELIGHT]    = "#A6A6A6"
+  base[PRELIGHT]    = "#A6A6A6"
+
+  fg[ACTIVE]      = "#666666"
+  text[ACTIVE]      = "#666666"
+  bg[ACTIVE]      = "#8C8C80"
+  base[ACTIVE]      = "#737366"
+
+  fg[SELECTED]    = "#9A9A9A"
+  text[SELECTED]    = "#9A9A9A"
+  bg[SELECTED]    = "#666666"
+  base[SELECTED]    = "#667373"
 
 

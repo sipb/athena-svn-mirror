@@ -1,13 +1,14 @@
 # Catalan messages for gnome-themes.
-# Copyright (C) 2002, 2003 Free Software Foundation, Inc.
+# Copyright © 2002, 2003, 2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-themes package.
-# Jordi Mallach <jordi@sindominio.net>, 2002, 2003.
+# Jordi Mallach <jordi@sindominio.net>, 2002, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 2.1.99\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-31 12:37+0100\n"
+"Project-Id-Version: gnome-themes 2.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-21 17:51+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,8 +32,8 @@ msgid "White-on-black text and icons"
 msgstr "Text i icones en blanc sobre negre"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
-msgstr "Contrast alt gran"
+msgid "High Contrast Large Print"
+msgstr "Contrast alt amb impressió gran"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
 msgid "Large black-on-white text and icons"
@@ -40,7 +41,7 @@ msgstr "Text i icones grans en negre sobre blanc"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
 msgid "High Contrast Large Print Inverse"
-msgstr "Contrast alt invertit per a impressió gran"
+msgstr "Contrast alt invertit amb impressió gran"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
 msgid "Large white-on-black text and icons"
@@ -68,7 +69,7 @@ msgstr "Text i icones grans en mat"
 
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
-msgstr "Contrast baix per a impressió gran"
+msgstr "Contrast baix amb impressió gran"
 
 #: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
 msgid "Crux"
@@ -76,7 +77,15 @@ msgstr "Crux"
 
 #: desktop-themes/Crux/index.theme.in.h:2
 msgid "Smooth gradients with teal highlights"
-msgstr "Gradients suaus amb resaltats blau verdós"
+msgstr "Gradients suaus amb ressaltats blau verdós"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "Glider"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "Simple, suau i agradable estèticament"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"

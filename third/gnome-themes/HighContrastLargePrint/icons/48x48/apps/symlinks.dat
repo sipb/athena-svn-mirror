@@ -1,0 +1,35 @@
+# NO BLANK LINES ALLOWED
+#
+# Applications
+gnome-application-generic.png: gok.png gnopernicus.png jDictionary.png jEdit.png jGraphPad.png gthumb.png gnome-pdf.png postscript-viewer.png sun_java.png glow.png gaim.png gnomemeeting-logo-icon.png gtkam-camera.png jmplay.48.png media-player-48.png realplay.png rp7.xpm realplayer.xpm gnome-planner.png glade-2.png gnome-monitor.png JUSimageIcon.png nb48x48.png
+#
+# Games
+gnome-joystick.png: gataxx.png gnome-blackjack.png gnect-icon.png gnotski-icon.png gnome-mahjongg.png gnome-gnomine.png gnome-nibbles.png gnome-gnobots2.png gnome-gsame.png gnome-stones.png gnome-gtali.png gnome-gnotravex.png glines.png iagno.png jSpiderIcon.png
+#
+# Utilities
+gnome-system.png: gdm.png gnome-other.png gconf-editor.png jDiskReport.png procman.png fsexam-icon.png
+#
+# Preferences
+keyboard.png: acme-48.png gnome-settings-im.png
+gnome-ccscreensaver.png: screensaver.png gnome-screensaver.png
+gnome-application-generic.png: password.png gnome-palm.png gnome-remote-desktop.png
+gnome-globe.png: stock_proxy.png
+# Submenus
+gnome-folder-generic.png: gnome-applications.png gnome-folder.png
+#
+# System Preferences
+advanced-directory.png: config-language.png stock_timezone.png gnome-lockscreen.png gnome-modem.png xsane.png serviceconf.png config-users.png gnome-lockscreen.png administration.png config-xfree.png gnome-ftp.png gnome-desktop-config.png
+#
+gnome-application-generic.png: serviceconf.png disks.png logviewer.png administration.png
+#
+gnome-globe.png: network.png network-config.png gnome-server-config.png web-browser.png
+#
+gdm.png: hwbrowser.png
+#
+gnome-settings-sound.png: sound-capplet.png
+#
+# Evolution
+evolution-1.4.png: evolution.png
+#
+# StarOffice
+star.png: staroffice-writer.png staroffice-impress.png staroffice-calc.png 

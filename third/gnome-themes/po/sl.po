@@ -5,7 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
 "PO-Revision-Date: 2001-07-29 12:32+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -31,8 +32,8 @@ msgid "White-on-black text and icons"
 msgstr "Besedilo in ikone belo na črnem"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
-msgstr "Velika, visok kontrast"
+msgid "High Contrast Large Print"
+msgstr "Visok kontrast, velike črke"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
 msgid "Large black-on-white text and icons"
@@ -77,6 +78,14 @@ msgstr "Crux"
 #: desktop-themes/Crux/index.theme.in.h:2
 msgid "Smooth gradients with teal highlights"
 msgstr "Mehki prelivi z modrozelenimi poudarki"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr ""
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr ""
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"

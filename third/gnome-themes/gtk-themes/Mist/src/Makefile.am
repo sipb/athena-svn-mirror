@@ -1,4 +1,4 @@
-INCLUDES = $(MIST_CFLAGS) -Wall
+INCLUDES = $(THEME_ENGINE_CFLAGS)
 
 enginedir = $(libdir)/gtk-2.0/$(GTK_VERSION)/engines
 
@@ -12,5 +12,5 @@ libmist_la_SOURCES = 	\
 	mist-style.h 
 
 libmist_la_LDFLAGS = -module -avoid-version
-libmist_la_LIBADD = $(MIST_LIBS)
+libmist_la_LIBADD = $(THEME_ENGINE_LIBS)
 

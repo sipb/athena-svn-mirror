@@ -16,7 +16,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   $Id: crux-pixmaps.c,v 1.1.1.1 2003-02-12 07:05:42 ghudson Exp $
+   $Id: crux-pixmaps.c,v 1.1.1.2 2004-09-24 20:32:22 ghudson Exp $
 
    Authors: John Harper <jsh@eazel.com>  */
 
@@ -88,7 +88,7 @@ prepend_to_age_list (pixmap_cache_node *n)
     if (n->newer != 0)
 	n->newer->older = n;
     oldest = n;
-    n->older = 0;
+    n->older = NULL;
     if (newest == 0)
 	newest = n;
 }
@@ -114,7 +114,7 @@ prepend_to_image (pixmap_cache_node *n)
     if (n->next != 0)
 	n->next->pred = n;
     im->pixmap_first = n;
-    n->pred = 0;
+    n->pred = NULL;
     if (im->pixmap_last == 0)
 	im->pixmap_last = n;
 }
@@ -189,7 +189,7 @@ pixmap_cache_set (eazel_engine_image *im, int width, int height,
 		  GdkPixmap *p1, GdkBitmap *p2)
 {
     int pixel_count = width * height;
-    pixmap_cache_node *n = 0;
+    pixmap_cache_node *n = NULL;
 
     while (pixel_count + cached_pixels > max_cached_pixels)
     {
@@ -229,7 +229,7 @@ pixmap_cache_flush_image (eazel_engine_image *im)
 	remove_from_age_list (n);
 	free_node (n, TRUE);
     }
-    im->pixmap_first = im->pixmap_last = 0;
+    im->pixmap_first = im->pixmap_last = NULL;
 }
 
 
@@ -329,7 +329,7 @@ recolor_pixbuf (GdkPixbuf *pixbuf, eazel_engine_gradient *gradient)
 /* XXX move to gtkrc */
 static char *image_path[] = {
     DATADIR,
-    0
+    NULL 
 };
 
 static GdkPixbuf *
@@ -349,7 +349,7 @@ load_image (const char *file)
     }
     /* XXX error handling here */
     g_error ("No such image: %s", file);
-    return 0;
+    return NULL;
 }
 
 static GdkPixbuf *
@@ -361,7 +361,7 @@ eazel_engine_image_get_pixbuf (eazel_engine_image *p)
 	p->pixbuf = load_image (p->filename);
 
 	if (p->pixbuf == 0)
-	    return 0;
+	    return NULL;
 
 	if (p->recolor != 0)
 	{

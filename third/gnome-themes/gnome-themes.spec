@@ -1,6 +1,6 @@
 Summary: Themes collection for GNOME
 Name: gnome-themes
-Version: 2.2
+Version: 2.8.0
 Release: 0
 License: GPL
 Group: User Interface/Desktop
@@ -26,7 +26,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-, root, root)
-%{_libdir}/gtk-2.0/2.2.0/engines/*.so*
+%{_libdir}/gtk-2.0/2.4.0/engines/*.so*
 %{_datadir}/eazel-engine
 %{_datadir}/icons/*
 %{_datadir}/themes/*

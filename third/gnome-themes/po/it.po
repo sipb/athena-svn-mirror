@@ -3,13 +3,17 @@
 # This file is distributed under the same license as the package.
 # Luca Ferretti <elle.uca@infinito.it>, 2003.
 #
+#
+# L'utilità di questo commento è nulla, mi serviva solo una
+# lettera accentate per rendere il file UTF-8 :-P
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-31 15:41+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2003-10-06 22:19+0200\n"
 "Last-Translator: Luca Ferretti <elle.ucainfinito.it>\n"
-"Language-Team: Italian <tp@list.linux.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +35,7 @@ msgid "White-on-black text and icons"
 msgstr "Bianco su nero per testo ed icone"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
+msgid "High Contrast Large Print"
 msgstr "Forte contrasto, caratteri larghi"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
@@ -78,6 +82,14 @@ msgstr "Crux"
 msgid "Smooth gradients with teal highlights"
 msgstr "Gradienti armoniosi con decorazioni verde anatra"
 
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr ""
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr ""
+
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
 msgstr "Aspetto arancione impolverato"
@@ -92,7 +104,7 @@ msgstr "Un aspetto minimalista"
 
 #: desktop-themes/Mist/index.theme.in.h:2
 msgid "Mist"
-msgstr "Mist"
+msgstr "Nebbia"
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:1
 msgid "Ocean Dream"

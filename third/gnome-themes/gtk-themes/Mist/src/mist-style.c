@@ -60,10 +60,11 @@ get_shadow_type (GtkStyle *style, const char *detail, GtkShadowType requested)
 	}
 	
 	if (DETAIL ("dockitem")
-	    || DETAIL ("handlebox_bin") 
-	    || DETAIL ("spinbutton_up")
-	    || DETAIL ("spinbutton_down")) {
+	    || DETAIL ("handlebox_bin")) {
 		retval = GTK_SHADOW_NONE;
+	} else if (DETAIL ("spinbutton_up")
+		   || DETAIL ("spinbutton_down")) {
+		retval = GTK_SHADOW_OUT;
 	} else if (DETAIL ("button") 
 		   || DETAIL ("togglebutton") 
 		   || DETAIL ("notebook") 
@@ -288,11 +289,11 @@ draw_hline(GtkStyle *style,
 	    || DETAIL ("slider")
 	    || DETAIL("vscale")) {
 		gdk_draw_line (window, style->dark_gc[state_type], 
-			       x1, y + 1, x2, y + 1);
+			       x1, y, x2, y);
 #ifdef GTK1
 	} else if (DETAIL ("label")) {
 		gdk_draw_line (window, style->fg_gc[state_type], 
-			       x1, y + 1, x2, y + 1);
+			       x1, y, x2, y);
 #endif		
 	} else {
 		thickness_light = YTHICKNESS(style) / 2;
@@ -402,46 +403,19 @@ draw_shadow(GtkStyle *style,
 	if (state_type == GTK_STATE_INSENSITIVE && shadow_type != GTK_SHADOW_NONE) {
 		shadow_type = GTK_SHADOW_ETCHED_IN;
 	}
-
-	if (DETAIL("entry") || DETAIL("text")) {
-		int entry_width;
-		int entry_height;
-		gdk_window_get_size (window, &entry_width, &entry_height);
-		if (entry_width != width || entry_height != height)
-			return;
-	}
 	
-#ifndef GTK1
-	/* Make sure stepper and slider outlines "overlap" - taken from
-	 * bluecurve */
-	if (DETAIL("slider") && widget && GTK_IS_RANGE (widget)) {
-		GtkAdjustment *adj = GTK_RANGE (widget)->adjustment;
-		if (adj->value <= adj->lower &&
-		    (GTK_RANGE (widget)->has_stepper_a ||
-		     GTK_RANGE (widget)->has_stepper_b)) {
-			if (GTK_IS_VSCROLLBAR (widget)) {
-				height += 1;
-				y -= 1;
-			} else if (GTK_IS_HSCROLLBAR (widget)) {
-				width += 1;
-				x -= 1;
-			}
-		}
-		
-		if (adj->value >= adj->upper - adj->page_size &&
-		    (GTK_RANGE (widget)->has_stepper_c ||
-		     GTK_RANGE (widget)->has_stepper_d)) {
-			if (GTK_IS_VSCROLLBAR (widget)) {
-				height += 1;
-			} else if (GTK_IS_HSCROLLBAR (widget)) {
-				width += 1;
-			}
-		}
-	}
-#endif
+	if (DETAIL("frame") && widget->parent && GTK_IS_STATUSBAR (widget->parent)) {
+		if (shadow_type != GTK_SHADOW_NONE) {
+			gdk_draw_line (window, 
+				       style->dark_gc[GTK_STATE_NORMAL], 
+				       x, y, 
+				       x + width - 1, y);
 
-	draw_rect_with_shadow (style, window, widget, state_type,
-			       shadow_type, NULL, x, y, width, height);
+		}
+	} else {
+		draw_rect_with_shadow (style, window, widget, state_type,
+				       shadow_type, NULL, x, y, width, height);
+	}
 }
 
 static void
@@ -717,19 +691,6 @@ draw_box(GtkStyle *style,
 
 	if (DETAIL ("menuitem") && state_type == GTK_STATE_PRELIGHT) {
 		state_type = GTK_STATE_SELECTED;
-	} else if (DETAIL ("spinbutton_up") 
-		   || DETAIL ("spinbutton_down")) {
-		x += 1;
-		y += 1;
-		width -= 2;
-		height -= 2;
-	} else if (DETAIL ("slider") 
-		   || DETAIL ("hscale") 
-		   || DETAIL ("vscale")) {
-		x -= 1;
-		y -= 1;
-		width += 2;
-		height += 2;
 	}
 
 	light_gc = style->light_gc[state_type];
@@ -764,11 +725,11 @@ draw_box(GtkStyle *style,
 		gdk_draw_rectangle (window,
 				    style->bg_gc[GTK_STATE_ACTIVE],
 				    TRUE,
-				    x + 1, y + 1, width - 3, height - 3);
+				    x, y, width - 1, height - 1);
 		gdk_draw_rectangle (window,
 				    style->dark_gc[state_type],
 				    FALSE,
-				    x + 1, y + 1, width - 3, height - 3);
+				    x, y, width - 1, height - 1);
 #endif
 	} else if (DETAIL("menubar")
 		   || DETAIL ("dockitem_bin") 
@@ -780,12 +741,6 @@ draw_box(GtkStyle *style,
 				       style->dark_gc[GTK_STATE_NORMAL], 
 				       x, y + height - 1, 
 				       x + width - 1, y + height - 1);
-			if (!DETAIL ("dockitem") && !DETAIL ("handlebox")) {
-				gdk_draw_line (window, 
-					       style->dark_gc[GTK_STATE_NORMAL], 
-					       x + width - 1, 
-					       y, x + width - 1, y + height - 1);
-			}
 
 		}
 	} else if (DETAIL("tab")) {
@@ -807,12 +762,34 @@ draw_box(GtkStyle *style,
 				    FALSE,
 				    x, y, width - 1, height - 1);
 	} else {
-		if (DETAIL ("vscrollbar") || DETAIL ("hscrollbar")) {
-			x -= 1;
-			y -= 1;
-			width += 2;
-			height += 2;
+#ifndef GTK1
+		/* Make sure stepper and slider outlines "overlap" - taken from
+		 * bluecurve */
+		if (DETAIL("slider") && widget && GTK_IS_RANGE (widget)) {
+			GtkAdjustment *adj = GTK_RANGE (widget)->adjustment;
+			if (adj->value <= adj->lower &&
+			    (GTK_RANGE (widget)->has_stepper_a ||
+			     GTK_RANGE (widget)->has_stepper_b)) {
+				if (GTK_IS_VSCROLLBAR (widget)) {
+					height += 1;
+					y -= 1;
+				} else if (GTK_IS_HSCROLLBAR (widget)) {
+					width += 1;
+					x -= 1;
+				}
+			}
+			
+			if (adj->value >= adj->upper - adj->page_size &&
+			    (GTK_RANGE (widget)->has_stepper_c ||
+			     GTK_RANGE (widget)->has_stepper_d)) {
+				if (GTK_IS_VSCROLLBAR (widget)) {
+					height += 1;
+				} else if (GTK_IS_HSCROLLBAR (widget)) {
+					width += 1;
+				}
+			}
 		}
+#endif
 		
 		gtk_style_apply_default_background(style, window,
 						   widget && !GTK_WIDGET_NO_WINDOW(widget),
@@ -916,6 +893,31 @@ draw_check(GtkStyle *style,
 		gdk_draw_rectangle(window,
 				   widget->style->base_gc[GTK_STATE_SELECTED],
 				   TRUE, x + 2, y + 2, width - 5, height - 5);
+	} else if (shadow_type == GTK_SHADOW_ETCHED_IN) { /* inconsistent */
+#define gray50_width 2
+#define gray50_height 2
+		GdkBitmap *stipple;
+		static const char gray50_bits[] = {
+			0x02, 0x01
+		};
+		
+		stipple = gdk_bitmap_create_from_data (window,
+						       gray50_bits, 
+						       gray50_width,
+						       gray50_height);
+  
+		gdk_gc_set_fill (widget->style->base_gc[GTK_STATE_SELECTED],
+				 GDK_STIPPLED);
+		gdk_gc_set_stipple (widget->style->base_gc[GTK_STATE_SELECTED],
+				    stipple);
+		gdk_draw_rectangle(window,
+				   widget->style->base_gc[GTK_STATE_SELECTED],
+				   TRUE, x + 2, y + 2, width - 5, height - 5);
+		gdk_gc_set_fill (widget->style->base_gc[GTK_STATE_SELECTED],
+				 GDK_SOLID);
+
+#undef gray50_width
+#undef gray50_height 
 	}
 }
 
@@ -1217,26 +1219,7 @@ draw_handle(GtkStyle *style,
 	g_return_if_fail(window != NULL);
 	
 	sanitize_size (window, &width, &height);
-	
-	if (DETAIL("paned")) {
-		int i;
-		
-		light_gc = style->light_gc[state_type];
-		dark_gc = style->dark_gc[state_type];
-		if (orientation == GTK_ORIENTATION_HORIZONTAL) {
-			for (i = x + 5; i < x + width - 5; i += 10) {
-				mist_dot(window, light_gc, dark_gc,
-					 i, y + height / 2);
-			}
-		} else {
-			for (i = y + 5; i < y + height - 5; i += 10) {
-				mist_dot(window, light_gc, dark_gc,
-					 x + width / 2, i);
-			}
-		}
-		return;
-	}
-	
+
 	gtk_paint_box(style, window, state_type, shadow_type, area, widget,
 		      detail, x, y, width, height);
 	
@@ -1275,6 +1258,353 @@ draw_handle(GtkStyle *style,
 	
 	gdk_gc_set_clip_rectangle(light_gc, NULL);
 	gdk_gc_set_clip_rectangle(dark_gc, NULL);
+}
+
+static void
+draw_resize_grip(GtkStyle *style,
+		 GdkWindow *window,
+		 GtkStateType state_type,
+		 GdkRectangle *area,
+		 GtkWidget *widget,
+		 const char *detail,
+		 GdkWindowEdge edge,
+		 int x,
+		 int y,
+		 int width,
+		 int height)
+{
+	GdkGC *light_gc, *dark_gc;
+	GdkRectangle dest;
+	int xi, yi;
+	int max_x, max_y;
+	int threshold;
+	
+	g_return_if_fail(style != NULL);
+	g_return_if_fail(window != NULL);
+	
+	sanitize_size (window, &width, &height);
+	
+	if (area) {
+		gdk_gc_set_clip_rectangle (style->light_gc[state_type], area);
+		gdk_gc_set_clip_rectangle (style->dark_gc[state_type], area);
+	}
+
+	switch (edge) {
+	case GDK_WINDOW_EDGE_NORTH_WEST:
+		/* make it square */
+		if (width < height) {
+			height = width;
+		}
+		else if (height < width) {
+			width = height;
+		}
+		break;
+	case GDK_WINDOW_EDGE_NORTH:
+		if (width < height) {
+			height = width;
+		}
+		break;
+	case GDK_WINDOW_EDGE_NORTH_EAST:
+		/* make it square, aligning to top right */
+		if (width < height) {
+			height = width;
+		} else if (height < width) {
+			x += (width - height);
+			width = height;
+		}
+		break;
+	case GDK_WINDOW_EDGE_WEST:
+		if (height < width) {
+			width = height;
+		}
+		break;
+	case GDK_WINDOW_EDGE_EAST:
+		/* aligning to right */
+		if (height < width) {
+			x += (width - height);
+			width = height;
+		}
+		break;
+	case GDK_WINDOW_EDGE_SOUTH_WEST:
+		/* make it square, aligning to bottom left */
+		if (width < height) {
+			y += (height - width);
+			height = width;
+		} else if (height < width) {
+			width = height;
+		}
+		break;
+	case GDK_WINDOW_EDGE_SOUTH:
+		/* align to bottom */
+		if (width < height) {
+			y += (height - width);
+			height = width;
+		}
+		break;
+	case GDK_WINDOW_EDGE_SOUTH_EAST:
+		/* make it square, aligning to bottom right */
+		if (width < height) {
+			y += (height - width);
+			height = width;
+		} else if (height < width) {
+			x += (width - height);
+			width = height;
+		}
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	gtk_style_apply_default_background (style, window, FALSE,
+					    state_type, area,
+					    x, y, width, height);
+
+	light_gc = style->light_gc[state_type];
+	dark_gc = style->dark_gc[state_type];
+
+	max_x = (width - 2) / 5;
+	max_y = (height - 2) / 5;
+	
+	threshold = max_x;
+	
+	for (xi = 0; xi <= max_x; xi++) {
+		for (yi = 0; yi <= max_y; yi++) {
+			gboolean draw_dot;
+			
+			switch (edge) {
+			case GDK_WINDOW_EDGE_NORTH:
+			case GDK_WINDOW_EDGE_WEST:
+			case GDK_WINDOW_EDGE_EAST:
+			case GDK_WINDOW_EDGE_SOUTH:
+				draw_dot = TRUE;
+				break;
+			case GDK_WINDOW_EDGE_NORTH_WEST:
+				draw_dot = (xi + yi <= threshold);
+				break;
+			case GDK_WINDOW_EDGE_NORTH_EAST:
+				draw_dot = (xi >= yi);
+				break;
+			case GDK_WINDOW_EDGE_SOUTH_WEST:
+				draw_dot = (xi <= yi);
+				break;
+			case GDK_WINDOW_EDGE_SOUTH_EAST:
+				draw_dot = (xi + yi >= threshold);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+			
+			if (draw_dot) {
+				mist_dot(window,
+					 light_gc, dark_gc,
+					 x + (xi * 5) + 2,
+					 y + (yi * 5) + 2);
+			}
+		}
+	}
+
+	if (area)
+	{
+		gdk_gc_set_clip_rectangle (style->light_gc[state_type], NULL);
+		gdk_gc_set_clip_rectangle (style->dark_gc[state_type], NULL);
+	}
+}
+
+static void
+draw_string (GtkStyle      *style,
+	     GdkWindow     *window,
+	     GtkStateType   state_type,
+	     GdkRectangle  *area,
+	     GtkWidget     *widget,
+	     const char    *detail,
+	     int            x,
+	     int            y,
+	     const char    *string)
+{
+	GdkDisplay *display;
+	
+	g_return_if_fail (GTK_IS_STYLE (style));
+	g_return_if_fail (window != NULL);
+	
+	display = gdk_drawable_get_display (window);
+	
+	if (area) {
+		gdk_gc_set_clip_rectangle (style->fg_gc[state_type], area);
+	}	
+	
+	gdk_draw_string (window,
+			 gtk_style_get_font (style),
+			 style->fg_gc[state_type], x, y, string);
+	
+	if (area) {
+		gdk_gc_set_clip_rectangle (style->fg_gc[state_type], NULL);
+	}
+}
+
+static void
+draw_layout (GtkStyle        *style,
+	     GdkWindow       *window,
+	     GtkStateType     state_type,
+	     gboolean         use_text,
+	     GdkRectangle    *area,
+	     GtkWidget       *widget,
+	     const char      *detail,
+	     int              x,
+	     int              y,
+	     PangoLayout      *layout)
+{
+	GdkGC *gc;
+	
+	g_return_if_fail (GTK_IS_STYLE (style));
+	g_return_if_fail (window != NULL);
+	
+	gc = use_text ? style->text_gc[state_type] : style->fg_gc[state_type];
+	
+	if (area) {
+		gdk_gc_set_clip_rectangle (gc, area);
+	}
+	
+	gdk_draw_layout (window, gc, x, y, layout);
+	
+	if (area) {
+		gdk_gc_set_clip_rectangle (gc, NULL);
+	}
+}
+
+static GdkPixbuf *
+set_transparency (const GdkPixbuf *pixbuf, gdouble alpha_percent)
+{
+	GdkPixbuf *target;
+	guchar *data, *current;
+	guint x, y, rowstride, height, width;
+
+	g_return_val_if_fail (pixbuf != NULL, NULL);
+	g_return_val_if_fail (GDK_IS_PIXBUF (pixbuf), NULL);
+
+	/* Returns a copy of pixbuf with it's non-completely-transparent pixels to
+	   have an alpha level "alpha_percent" of their original value. */
+
+	target = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
+
+	if (alpha_percent == 1.0)
+		return target;
+	width = gdk_pixbuf_get_width (target);
+	height = gdk_pixbuf_get_height (target);
+	rowstride = gdk_pixbuf_get_rowstride (target);
+	data = gdk_pixbuf_get_pixels (target);
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			/* The "4" is the number of chars per pixel, in this case, RGBA,
+			   the 3 means "skip to the alpha" */
+			current = data + (y * rowstride) + (x * 4) + 3; 
+			*(current) = (guchar) (*(current) * alpha_percent);
+		}
+	}
+
+	return target;
+}
+
+static GdkPixbuf*
+scale_or_ref (GdkPixbuf *src,
+              int width,
+              int height)
+{
+	if (width == gdk_pixbuf_get_width (src) &&
+	    height == gdk_pixbuf_get_height (src)) {
+		return g_object_ref (src);
+	} else {
+		return gdk_pixbuf_scale_simple (src,
+						width, height,
+						GDK_INTERP_BILINEAR);
+	}
+}
+
+static GdkPixbuf *
+render_icon (GtkStyle            *style,
+	     const GtkIconSource *source,
+	     GtkTextDirection     direction,
+	     GtkStateType         state,
+	     GtkIconSize          size,
+	     GtkWidget           *widget,
+	     const char          *detail)
+{
+	int width = 1;
+	int height = 1;
+	GdkPixbuf *scaled;
+	GdkPixbuf *stated;
+	GdkPixbuf *base_pixbuf;
+	GdkScreen *screen;
+	GtkSettings *settings;
+	
+	/* Oddly, style can be NULL in this function, because
+	 * GtkIconSet can be used without a style and if so
+	 * it uses this function.
+	 */
+	
+	base_pixbuf = gtk_icon_source_get_pixbuf (source);
+	
+	g_return_val_if_fail (base_pixbuf != NULL, NULL);
+	
+	if (widget && gtk_widget_has_screen (widget)) {
+		screen = gtk_widget_get_screen (widget);
+		settings = gtk_settings_get_for_screen (screen);
+	} else if (style->colormap) {
+		screen = gdk_colormap_get_screen (style->colormap);
+		settings = gtk_settings_get_for_screen (screen);
+	} else {
+		settings = gtk_settings_get_default ();
+		GTK_NOTE (MULTIHEAD,
+			  g_warning ("Using the default screen for gtk_default_render_icon()"));
+	}
+	
+  
+	if (size != (GtkIconSize) -1 && !gtk_icon_size_lookup_for_settings (settings, size, &width, &height)) {
+		g_warning (G_STRLOC ": invalid icon size '%d'", size);
+		return NULL;
+	}
+
+	/* If the size was wildcarded, and we're allowed to scale, then scale; otherwise,
+	 * leave it alone.
+	 */
+	if (size != (GtkIconSize)-1 && gtk_icon_source_get_size_wildcarded (source))
+		scaled = scale_or_ref (base_pixbuf, width, height);
+	else
+		scaled = g_object_ref (base_pixbuf);
+	
+	/* If the state was wildcarded, then generate a state. */
+	if (gtk_icon_source_get_state_wildcarded (source)) {
+		if (state == GTK_STATE_INSENSITIVE) {
+			stated = set_transparency (scaled, 0.3);
+#if 0
+			stated =
+				gdk_pixbuf_composite_color_simple (scaled,
+								   gdk_pixbuf_get_width (scaled),
+								   gdk_pixbuf_get_height (scaled),
+								   GDK_INTERP_BILINEAR, 128,
+								   gdk_pixbuf_get_width (scaled),
+								   style->bg[state].pixel,
+								   style->bg[state].pixel);
+#endif
+			gdk_pixbuf_saturate_and_pixelate (stated, stated,
+							  0.1, FALSE);
+			
+			g_object_unref (scaled);
+		} else if (state == GTK_STATE_PRELIGHT) {
+			stated = gdk_pixbuf_copy (scaled);      
+			
+			gdk_pixbuf_saturate_and_pixelate (scaled, stated,
+							  1.2, FALSE);
+			
+			g_object_unref (scaled);
+		} else {
+			stated = scaled;
+		}
+	}
+	else
+		stated = scaled;
+  
+  return stated;
 }
 
 #ifndef GTK1
@@ -1328,6 +1658,10 @@ mist_style_class_init (MistStyleClass *klass)
 	style_class->draw_box_gap = draw_box_gap;
 	style_class->draw_extension = draw_extension;
 	style_class->draw_handle = draw_handle;
+	style_class->draw_resize_grip = draw_resize_grip;
+	style_class->draw_string = draw_string;
+	style_class->draw_layout = draw_layout;
+	style_class->render_icon = render_icon;
 }
 
 #else 
@@ -1447,7 +1781,7 @@ draw_arrow (GtkStyle      *style,
 	    int           height)
 {
 	sanitize_size (window, &width, &height);
-	
+
 	if (detail && strcmp (detail, "spinbutton") == 0) {
 		x += (width - 7) / 2;
 		
@@ -1466,8 +1800,7 @@ draw_arrow (GtkStyle      *style,
 		y += (height - ARROW_SMALL) / 2;
 		
 		draw_varrow (window, style->black_gc, shadow, area, arrow_type,
-			     x, y, ARROW_LARGE, ARROW_SMALL);
-		
+			     x, y, ARROW_LARGE, ARROW_SMALL);		
 	} else if (detail && strcmp (detail, "hscrollbar") == 0) {
 		draw_box (style, window, state, shadow, area,
 			  widget, detail, x, y, width, height);
@@ -1510,7 +1843,7 @@ draw_oval(GtkStyle * style,
   g_return_if_fail(style != NULL);
   g_return_if_fail(window != NULL);
 }
-
+#if 0
 static void
 draw_string(GtkStyle * style,
             GdkWindow * window,
@@ -1542,7 +1875,7 @@ draw_string(GtkStyle * style,
 		gdk_gc_set_clip_rectangle(style->fg_gc[state_type], NULL);
 	}
 }
-
+#endif
 static void
 draw_cross(GtkStyle * style,
            GdkWindow * window,

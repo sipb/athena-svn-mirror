@@ -16,7 +16,7 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-#  $Id: gtkrc.in,v 1.1.1.1 2003-02-12 07:05:42 ghudson Exp $
+#  $Id: gtkrc.in,v 1.1.1.2 2004-09-24 20:31:11 ghudson Exp $
 #
 #  Authors: John Harper <jsh@@eazel.com>
 
@@ -58,6 +58,7 @@ style "default"
   GtkScale::slider_length = 16
   GtkCheckButton::indicator_size = 10
   GtkCheckButton::indicator_spacing = 3
+  GtkCheckMenuItem::indicator_size = 10
 
   #GtkMenuBar::shadow_type = GTK_SHADOW_NONE
   GtkToolBar::shadow_type = GTK_SHADOW_NONE

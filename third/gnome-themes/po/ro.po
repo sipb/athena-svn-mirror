@@ -1,12 +1,13 @@
 # Romanian translation for gnome-themes
-# Copyright (C) 2003 Free Software Foundation, Inc.
-# Mişu Moldovan <dumol@go.ro>, 2003.
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Mişu Moldovan <dumol@go.ro>, 2003, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-themes 0.7\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-18 17:46+0200\n"
+"Project-Id-Version: gnome-themes\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-09-04 23:38+0300\n"
 "Last-Translator: Mişu Moldovan <dumol@go.ro>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +31,7 @@ msgid "White-on-black text and icons"
 msgstr "Text şi iconiţe Alb-pe-Negru"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-msgid "High Contrast Large"
+msgid "High Contrast Large Print"
 msgstr "Iconiţe mari şi contrast puternic"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
@@ -39,7 +40,7 @@ msgstr "Text şi iconiţe mari Negru-pe-Alb"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
 msgid "High Contrast Large Print Inverse"
-msgstr "Mărime mare, contrast puternic şi culori inversate"
+msgstr "Iconiţe mari, contrast puternic şi culori inversate"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
 msgid "Large white-on-black text and icons"
@@ -71,72 +72,80 @@ msgstr "Mărime mare cu contrast slab"
 
 #: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
 msgid "Crux"
-msgstr ""
+msgstr "Crux"
 
 #: desktop-themes/Crux/index.theme.in.h:2
 msgid "Smooth gradients with teal highlights"
-msgstr ""
+msgstr "O temă cu multe efecte vizuale"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "Planor"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "Simplă, elegantă şi atrăgătoare"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
-msgstr ""
+msgstr "Culoarea vântului turbat"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:2
 msgid "Grand Canyon"
-msgstr ""
+msgstr "Marele Canion"
 
 #: desktop-themes/Mist/index.theme.in.h:1
 msgid "A minimalistic appearance"
-msgstr ""
+msgstr "O temă minimalistă"
 
 #: desktop-themes/Mist/index.theme.in.h:2
 msgid "Mist"
-msgstr ""
+msgstr "Mist"
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:1
 msgid "Ocean Dream"
-msgstr ""
+msgstr "Vis oceanic"
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:2
 msgid "The colours of the seashore"
-msgstr ""
+msgstr "Culorile unei plaje oceanice"
 
 #: desktop-themes/Simple/index.theme.in.h:1
 msgid "Simple"
-msgstr ""
+msgstr "Simplă"
 
 #: desktop-themes/Simple/index.theme.in.h:2
 msgid "Thin appearance, high performance"
-msgstr ""
+msgstr "O temă discretă pentru performanţe maxime"
 
 #: desktop-themes/Smokey-Blue/index.theme.in.h:1
 msgid "A soft glassy appearance"
-msgstr ""
+msgstr "O temă cristalină "
 
 #: desktop-themes/Smokey-Blue/index.theme.in.h:2
 msgid "Smokey Blue"
-msgstr ""
+msgstr "Albastru fumuriu"
 
 #: desktop-themes/Traditional/index.theme.in.h:1
 msgid "Traditional"
-msgstr ""
+msgstr "Tradiţională"
 
 #: desktop-themes/Traditional/index.theme.in.h:2
 msgid "Traditional hard-edged 3D appearance"
-msgstr ""
+msgstr "O temă tradiţională cu efecte 3D"
 
 #: icon-themes/Flat-Blue/index.theme.in.h:1
 msgid "Flat-Blue"
-msgstr ""
+msgstr "Albastră-simplă"
 
 #: icon-themes/Sandy/index.theme.in.h:1
 msgid "Sandy"
-msgstr ""
+msgstr "Nisipoasă"
 
 #: icon-themes/Smokey-Blue/index.theme.in.h:1
 msgid "Smokey-Blue"
-msgstr ""
+msgstr "Albastru-fumuriu"
 
 #: icon-themes/Smokey-Red/index.theme.in.h:1
 msgid "Smokey-Red"
-msgstr ""
+msgstr "Roşu-fumuriu"

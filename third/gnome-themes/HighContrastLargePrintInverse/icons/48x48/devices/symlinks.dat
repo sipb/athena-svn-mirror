@@ -1,0 +1,12 @@
+# NO BLANK LINES ALLOWED
+#
+# Link all optical disc icons to gnome-dev-cdrom.png
+gnome-dev-cdrom.png: gnome-dev-cdrom-audio.png gnome-dev-dvd.png
+#
+# Link all mouse icons to gnome-dev-mouse-optical.png
+gnome-dev-mouse-optical.png: gnome-dev-mouse-ball.png
+#
+# Link all removable disc icons to gnome-dev-floppy.png
+gnome-dev-floppy.png: gnome-dev-jazdisk.png gnome-dev-zipdisk.png
+#
+gnome-dev-harddisk.png: gnome-dev-removable.png

@@ -14,42 +14,64 @@ gtk-icon-sizes = "@LARGEPRINT_ICON_SIZES@"
 
 style "default"
 {
+  engine "hcengine" {}
+
+# For Java Desktop System
+  PanelMenu::stripe-gradient-top = "#000000"
+  PanelMenu::stripe-gradient-bottom = "#000000"
+	
   GtkWidget::focus-line-pattern = "\10\2"
   GtkWidget::focus-line-width = 3
-  GtkHSV::focus-line-pattern = "\0"
   GtkWidget::interior_focus = 1
   GtkWidget::focus-padding = 0
+# GtkWidget::cursor_aspect_ratio = 0.1
+
   GtkEntry::cursor_color    = "#cc0000"
-  GtkTextView::cursor_color    = "#cc0000"
-  GtkRange::slider_width = 20
-  GtkTreeView::expander_size = 20
-#  GtkWidget::cursor_aspect_ratio = 0.1
-  GtkTextView::cursor_aspect_ratio = 0.1
   GtkEntry::cursor_aspect_ratio = 0.1
 
-  fg[NORMAL]      = "black"
-  text[NORMAL]      = "black"
-  bg[NORMAL]      = "white"
-  base[NORMAL]    = "white"
+  GtkTextView::cursor_color    = "#cc0000"
+  GtkTextView::cursor_aspect_ratio = 0.1
+
+  EelEditableLabel::cursor_color    = "#cc0000"
+  EelEditableLabel::cursor_aspect_ratio = 0.1
+
+  NautilusIconContainer::frame_text = 1
+
+  GtkHSV::focus-line-pattern = "\0"
+  GtkRange::slider_width = 20
+
+  GtkTreeView::expander_size = 20
+  GtkCheckButton::indicator_size = 18
+  GtkCheckMenuItem::indicator_size = 18
+
+  GtkExpander::expander-size = 24
+  GtkExpander::expander-spacing = 8
+
+  PanelToplevel::arrow-size = 18
+
+  fg[NORMAL]      = "#000000"
+  text[NORMAL]      = "#000000"
+  bg[NORMAL]      = "#ffffff"
+  base[NORMAL]    = "#ffffff"
 
   fg[INSENSITIVE]      = "#999999"
   text[INSENSITIVE]    = "#999999"
   bg[INSENSITIVE]      = "#ccccff"
   base[INSENSITIVE]      = "#ccccff"
 
-  fg[PRELIGHT]    = "white"
-  text[PRELIGHT]    = "white"
-  bg[PRELIGHT]    = "black"
-  base[PRELIGHT]    = "black"
+  fg[PRELIGHT]    = "#ffffff"
+  text[PRELIGHT]    = "#ffffff"
+  bg[PRELIGHT]    = "#000000"
+  base[PRELIGHT]    = "#000000"
 
-  fg[ACTIVE]      = "black"
-  text[ACTIVE]      = "black"
-  bg[ACTIVE]      = { 0.72, 0.72, 0.57 }
-  base[ACTIVE]      = { 0.72, 0.72, 0.57 }
+  fg[ACTIVE]      = "#000000"
+  text[ACTIVE]      = "#000000"
+  bg[ACTIVE]      =  "#b8b891"
+  base[ACTIVE]      = "#b8b891"
 
-  fg[SELECTED]    = "white"
-  text[SELECTED]    = "white"
-  bg[SELECTED]    = "black"
+  fg[SELECTED]    = "#ffffff"
+  text[SELECTED]    = "#ffffff"
+  bg[SELECTED]    = "#000000"
   base[SELECTED]    = "#333300"
 
 

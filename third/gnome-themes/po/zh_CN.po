@@ -1,14 +1,15 @@
 # zh_CN translation for gnome-themes
 # Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Funda Wang <fundawang@en2china.com>, 2003
+# Funda Wang <fundawang@linux.net.cn>, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
-"POT-Creation-Date: 2003-02-03 12:59-0800\n"
-"PO-Revision-Date: 2003-01-08 20:09+0800\n"
-"Last-Translator: Funda Wang <fundawang@en2china.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"PO-Revision-Date: 2004-08-18 23:47+0800\n"
+"Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,121 +32,121 @@ msgid "White-on-black text and icons"
 msgstr "黑底白字和图标"
 
 #: HighContrastLargePrint/index.theme.in.in.h:1
-#, fuzzy
-msgid "High Contrast Large"
-msgstr "高对比"
+msgid "High Contrast Large Print"
+msgstr "高对比大号字"
 
 #: HighContrastLargePrint/index.theme.in.in.h:2
-#, fuzzy
 msgid "Large black-on-white text and icons"
-msgstr "白底黑字和图标"
+msgstr "大号白底黑字和图标"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:1
-#, fuzzy
 msgid "High Contrast Large Print Inverse"
-msgstr "高对比反色"
+msgstr "高对比大号反色"
 
 #: HighContrastLargePrintInverse/index.theme.in.in.h:2
-#, fuzzy
 msgid "Large white-on-black text and icons"
-msgstr "黑底白字和图标"
+msgstr "大号黑底白字和图标"
 
 #: LargePrint/index.theme.in.in.h:1
 msgid "Large Print"
-msgstr ""
+msgstr "大号字"
 
 #: LargePrint/index.theme.in.in.h:2
-#, fuzzy
 msgid "Large text and icons"
-msgstr "白底黑字和图标"
+msgstr "大号文字和图标"
 
 #: LowContrast/index.theme.in.h:1
-#, fuzzy
 msgid "Low Contrast"
-msgstr "高对比"
+msgstr "低对比"
 
 #: LowContrast/index.theme.in.h:2
-#, fuzzy
 msgid "Muted text and icons"
-msgstr "黑底白字和图标"
+msgstr "柔和的文字和图标"
 
 #: LowContrastLargePrint/index.theme.in.in.h:1
-#, fuzzy
 msgid "Large muted text and icons"
-msgstr "白底黑字和图标"
+msgstr "柔和的大号文字和图标"
 
 #: LowContrastLargePrint/index.theme.in.in.h:2
 msgid "Low Contrast Large Print"
-msgstr ""
+msgstr "低对比大号"
 
 #: desktop-themes/Crux/index.theme.in.h:1 icon-themes/Crux/index.theme.in.h:1
 msgid "Crux"
-msgstr ""
+msgstr "十字架"
 
 #: desktop-themes/Crux/index.theme.in.h:2
 msgid "Smooth gradients with teal highlights"
-msgstr ""
+msgstr "带凫蓝加亮的平化渐变"
+
+#: desktop-themes/Glider/index.theme.in.h:1
+msgid "Glider"
+msgstr "滑翔机"
+
+#: desktop-themes/Glider/index.theme.in.h:2
+msgid "Simple, smooth and aesthetically pleasing"
+msgstr "简单、润畅、美观"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:1
 msgid "Dusty orange appearance"
-msgstr ""
+msgstr "充满灰尘的橙色外观"
 
 #: desktop-themes/Grand-Canyon/index.theme.in.h:2
 msgid "Grand Canyon"
-msgstr ""
+msgstr "豪华峡谷"
 
 #: desktop-themes/Mist/index.theme.in.h:1
 msgid "A minimalistic appearance"
-msgstr ""
+msgstr "最低主义外观"
 
 #: desktop-themes/Mist/index.theme.in.h:2
 msgid "Mist"
-msgstr ""
+msgstr "薄雾"
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:1
 msgid "Ocean Dream"
-msgstr ""
+msgstr "海之梦"
 
 #: desktop-themes/Ocean-Dream/index.theme.in.h:2
 msgid "The colours of the seashore"
-msgstr ""
+msgstr "海岸的色彩"
 
 #: desktop-themes/Simple/index.theme.in.h:1
 msgid "Simple"
-msgstr ""
+msgstr "简洁"
 
 #: desktop-themes/Simple/index.theme.in.h:2
 msgid "Thin appearance, high performance"
-msgstr ""
+msgstr "精简外观，高性能"
 
 #: desktop-themes/Smokey-Blue/index.theme.in.h:1
 msgid "A soft glassy appearance"
-msgstr ""
+msgstr "软玻璃外观"
 
 #: desktop-themes/Smokey-Blue/index.theme.in.h:2
 msgid "Smokey Blue"
-msgstr ""
+msgstr "烟蓝"
 
 #: desktop-themes/Traditional/index.theme.in.h:1
 msgid "Traditional"
-msgstr ""
+msgstr "传统"
 
 #: desktop-themes/Traditional/index.theme.in.h:2
 msgid "Traditional hard-edged 3D appearance"
-msgstr ""
+msgstr "传统的棱角立体外观"
 
 #: icon-themes/Flat-Blue/index.theme.in.h:1
 msgid "Flat-Blue"
-msgstr ""
+msgstr "平面蓝色"
 
 #: icon-themes/Sandy/index.theme.in.h:1
 msgid "Sandy"
-msgstr ""
+msgstr "沙黄"
 
 #: icon-themes/Smokey-Blue/index.theme.in.h:1
 msgid "Smokey-Blue"
-msgstr ""
+msgstr "烟蓝"
 
 #: icon-themes/Smokey-Red/index.theme.in.h:1
 msgid "Smokey-Red"
-msgstr ""
+msgstr "烟红"
