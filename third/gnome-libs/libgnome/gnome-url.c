@@ -41,12 +41,7 @@ gnome_url_default_handler (const char *protocol)
 		str = gnome_config_get_string_with_default ("/Gnome/URL Handlers/default-show",
 							    &def);
 		if (def) {
-			app = gnome_is_program_in_path ("nautilus");
-			if (app) {
-				g_free (app);
-				app = "nautilus \"%s\"";
-			} else
-				app = "gnome-help-browser \"%s\"";
+			app = "gnome-help-browser \"%s\"";
 
 			/* first time gnome_url_show is run -- set up some useful defaults */
 			default_handler = DEFAULT_HANDLER;
