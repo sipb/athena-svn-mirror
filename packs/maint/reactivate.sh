@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.23 1996-05-09 02:45:54 cfields Exp $
+# $Id: reactivate.sh,v 1.24 1996-06-04 21:33:47 ghudson Exp $
 
 trap "" 1 15
 
@@ -128,12 +128,6 @@ esac
 if [ $full ]; then		# START AFS reconfig
 # Reconfigure AFS state
 if [ "${AFSCLIENT}" != "false" ]; then
-    if [ -f /afs/athena.mit.edu/service/aklog ] ; then
-	${cp} /afs/athena.mit.edu/service/aklog /bin/athena/aklog.new && \
-	test -s /bin/athena/aklog.new && \
-	/bin/mv /bin/athena/aklog.new /bin/athena/aklog
-	/bin/rm -f /bin/athena/aklog.new
-    fi
     /etc/athena/config_afs > /dev/null 2>&1 &
 fi
 fi				# END AFS reconfig
