@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v 1.1 1989-11-12 19:26:51 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v 1.2 1989-11-13 20:04:53 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v $
  * $Author: qjb $
  *
@@ -9,8 +9,9 @@
 #define RKINIT_LVERSION 3
 #define RKINIT_HVERSION 3
 
-/* Port to be used */
+/* Service to be used; port number to fall back on if service isn't found */
 #define SERVENT "rkinit"
+#define PORT 2108
 
 /* Key for kerberos authentication */
 #define KEY "rcmd"
