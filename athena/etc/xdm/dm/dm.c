@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.20 1992-04-17 04:10:18 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.21 1992-04-30 14:46:07 lwvanels Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.20 1992-04-17 04:10:18 lwvanels Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.21 1992-04-30 14:46:07 lwvanels Exp $";
 #endif
 
 #ifndef NULL
@@ -873,10 +873,6 @@ char *tty;
     }
 
     if (clflag) {
-#ifdef _IBMR2
-	/* Clean groups file - must be before the password file cleanup */
-	clean_groups(login);
-#endif
 	/* Clean up password file */
 	removepwent(login);
     }
@@ -995,25 +991,67 @@ void die()
 }
 
 
-#if defined(_AIX) && defined(_IBMR2)
-removepwent(login)
-char *login;
+#ifdef _IBMR2
+removepwent(user)
+     char *user;
 {
-    if ((login != NULL) && (*login != '\0')) {
-	switch (swconspid = fork()) {
-	case -1:
-	    message("Unable to fork to run rmuser.\n");
-	    break;
-	case 0:
-	    execl("/bin/rmuser", "rmuser", "-p", login, NULL);
-	    message("Unable to run rmuser.\n");
-	    _exit(-1);
-	}
+    static char *empty = "\0";
+    char *grp, *glist;
+    int count;
 
-	/* Wait for rmuser to complete */
-	while (swconspid > 0)
-	    sigpause(0);
+#ifdef TRACE
+    trace("Cleaning user ");
+    trace(user);
+    trace("\n");
+#endif
+
+    setuserdb(S_READ|S_WRITE);
+
+    if (getuserattr(user, S_GROUPS, (void *)&grp, SEC_LIST) == 0) {
+	/* Decrement the reference count on each of the user's groups */
+	while (*grp) {
+	    if (getgroupattr(grp, "athena_temp", (void *)&count, SEC_INT)==0) {
+		if (--count > 0) {
+		    putgroupattr(grp, "athena_temp", (void *)count, SEC_INT);
+		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		} else {
+		    putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
+		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		    rmufile(grp, 0, GROUP_TABLE);
+		}
+	    }
+	    while (*grp) grp++;
+	    grp++;
+	}
     }
+
+    if (getuserattr(user, "athena_temp", (void *)&count, SEC_INT) == 0) {
+	if (--count > 0) {
+	    putuserattr(user, "athena_temp", (void *)count, SEC_INT);
+	    putuserattr(user, (char *)0, (void *)0, SEC_COMMIT);
+	} else {
+	    putuserattr(user, S_GROUPS, (void *)empty, SEC_LIST);
+	    putuserattr(user, (char *)0, (void *)0, SEC_COMMIT);
+	    rmufile(user, 1, USER_TABLE);
+	}
+    }
+
+    grp = nextgroup(S_LOCAL, 0);
+    while (grp) {
+	if (getgroupattr(grp, "athena_temp", (void *)&count, SEC_INT) == 0) {
+	    if (count < 1) {
+		putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
+		putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		rmufile(grp, 0, GROUP_TABLE);
+	    }
+	    else if (getgroupattr(grp, S_USERS, &glist, SEC_LIST) ||
+		     *glist=='\0') {
+		rmufile(grp, 0, GROUP_TABLE);
+	    }
+	}
+	grp = nextgroup(0, 0);
+    }
+    enduserdb();
 }
 
 #else /* RIOS */
@@ -1198,84 +1236,6 @@ char *name;
     }
     return(NULL);
 }
-
-
-#ifdef _IBMR2
-void
-clean_groups(user)
-     char *user;
-{
-#define MAXGROUPS (2*NGROUPS)
-
-    int i,found,nempty;
-    char *empty_groups[MAXGROUPS];	/* Can't be more new empty groups
-					 * created than the user was in */
-    char *grp;
-    int grp_status;
-    char *glist,*p;
-    char *glista[NGROUPS];
-    char *empty;
-
-    found = 0;
-    for (i = 0; i < 10; i++)
-	if (setuserdb(S_READ|S_WRITE) == -1) {
-	    alarm(1);
-	    sigpause(0);
-	} else {
-	    found = 1;
-	    break;
-	}
-
-    if (found == 0)
-	/* Couldn't get the lock- oh well, maybe next time */
-	return;
-
-#ifdef TRACE
-    trace("Cleaning groups of user ");
-    trace(user);
-    trace("\n");
-#endif
-
-    if (getuserattr(user,S_GROUPS,&glist,SEC_LIST) == -1)
-	glist = "\0";
-
-    /* Convert list to array of char *'s */
-    i = 0;
-    p = glist;
-    while (*p != '\0') {
-	glista[i] = (char *)malloc(strlen(p) + 1);
-	strcpy(glista[i++],p);
-	p = index(p,'\0') +1;
-    }
-    glista[i] = NULL;
-    
-    empty = "\0";
-    putuserattr(user,S_GROUPS,&empty,SEC_LIST);
-    putuserattr(user,(char *)NULL,((void *) 0),SEC_COMMIT);
-
-    nempty = 0;
-    grp = nextgroup(S_LOCAL, NULL);
-    while (grp && nempty < MAXGROUPS) {
-	if (getgroupattr(grp, "athena_temp", &grp_status, SEC_BOOL) == 0) {
-	    if ((getgroupattr(grp, S_USERS, &glist, SEC_LIST) == -1) ||
-		*glist=='\0') {
-#ifdef TRACE
-		trace("Removing group ");
-		trace(grp);
-		trace("\n");
-#endif
-		rmufile(grp, 0, GROUP_TABLE);
-#if 0
-		grp = nextgroup(S_LOCAL, NULL);	/* Re-scan */
-		continue;
-#endif
-	    }
-	}
-	grp = nextgroup(NULL, NULL);
-    }
-    enduserdb();
-}
-#endif
 
 
 #ifdef TRACE
