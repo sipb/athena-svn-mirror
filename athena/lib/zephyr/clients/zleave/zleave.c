@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.7 1988-06-28 16:23:57 jtkohl Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.8 1988-06-28 16:26:43 jtkohl Exp $";
 #endif lint
 
 /*
@@ -67,7 +67,7 @@ char **argv;
 	FILE *fp;
 	struct tm *nv;
 	int atoi();
-	int port;
+	short port;
 	ZSubscription_t sub;
 	
 	if (ZInitialize() != ZERR_NONE) {
