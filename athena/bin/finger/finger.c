@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.17 1992-04-16 18:37:14 lwvanels Exp $
+ * $Id: finger.c,v 1.18 1993-04-07 06:25:04 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.17 1992-04-16 18:37:14 lwvanels Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.18 1993-04-07 06:25:04 probe Exp $";
 #endif lint
 
 /*
@@ -1318,6 +1318,10 @@ namecmp(name1, name2)
 {
 	register int c1, c2;
 
+	/* Do not permit matching on empty strings */
+	if (*name1 == 0 || *name2 == 0)
+		return (0);
+	
 	for (;;) {
 		c1 = *name1++;
 		if (islower(c1))
@@ -1335,9 +1339,9 @@ namecmp(name1, name2)
 		if (*name2 == 0)
 			return (1);
 	}
-	else if (!c2) {
+	if (!c2) {
 		for (name1--; isdigit(*name1); name1++);
-		if (*name2 == 0)
+		if (*name1 == 0)
 			return (1);
 	}
 	return (0);
