@@ -768,7 +768,7 @@ user(name)
 		} else
 			result = 232;
 		reply(result, "%s", buf);
-		syslog(authorized ? LOG_INFO : LOG_ERR, "%s", buf);
+		syslog(result < 500 ? LOG_INFO : LOG_ERR, "%s", buf);
 
 		if (result == 232)
 			login(NULL);
