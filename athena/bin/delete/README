@@ -94,11 +94,23 @@ delete.
 
 			     FINAL NOTES
 
-The previous patch level I have on record is 2, but this is a whole
-new release, so I've bumped up to 5 just to be confusing :-).  There
-are, as far as I know, NO REAL PATCHES between 2 and 5, so don't go
-sending me mail asking me if you've missed patches, especially since
-this is a full distribution of the sources.
+The final patch level used for the first release of this package was
+patch level 2.  Since this is a whole new release, and there were some
+unofficial patches here and there during the life of the first
+release, I upped the patch level to 5 for the first distribution of
+the second release of the delete package.
+
+There were NO REAL PATCHES numbered 3, 4, or 5 -- I simply chose to
+jump from 2 to 5 when issuing a new release.  Therefore, if you have
+delete sources with a patch level less than 5, you will need to get a
+whole new copy of the sources.
+
+In other words, treat patch level 5 as patch level 0 for all intents
+and purposes (gee, tha sounds stupid, but you get the idea :-).  See
+the file PATCHLEVEL in the sources to find out what patch level of the
+sources you currently have in your position (if you're reading this
+README file out of a source distribution, you almost definitely have
+patch level 6 or later).
 
 As usual, suggestions and bug fixes are always welcomed.
 
