@@ -72,6 +72,7 @@ ALgetGroups(ALsession session)
   return 0L;
 }
 
+long
 ALmodifyGroupAdd(ALsession session, char groupline[])
 {
   int idx;
@@ -105,19 +106,15 @@ ALmodifyGroupAdd(ALsession session, char groupline[])
 	      ptr = buf + strlen(buf) - 1;
 	      if (*ptr == '\n') *ptr = '\0';
 
-	      /*XXP*/printf("Username=\"%s\"\n", buf);
-
 	      /* if user is already in group, we're done */
 	      if (!strcmp(ALpw_name(session), buf))
 		{
 		  ALgroupAdded(session, idx)=1;
-		  /*XXP*/printf("Found!\n", buf);
 		  return 0L;
 		}
 	    } while (*groupline != '\0');
 
 	  /* append username to line */
-	  /*XXP*/printf("Appending...\n", buf);
 	  strcat(strcat(strcpy(groupline-1, ","),
 			ALpw_name(session)), "\n");
 	  ALgroupAdded(session, idx)=1;
