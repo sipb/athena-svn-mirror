@@ -2,6 +2,20 @@
 
 case "$HOSTTYPE" in
 sun4)
+  echo "MINIROOT=true"					>> $CONFVARS
+  echo "NEWOS=true"					>> $CONFVARS
+  echo "NEWDEVS=true"					>> $CONFVARS
+  echo "OSCHANGES=true"					>> $CONFVARS
+
+  cat "$LIBDIR/solaris8-8.2"				>> $DEADFILES
+
+  # This file will be inaccurate after we remove the pkgs and patches.
+  echo "/var/sadm/install/contents"			>> $DEADFILES
+
+  # Create the lists of packages and patches to install.
+  cat "$LIBDIR/solaris8.2-local"			> "$LOCALPACKAGES"
+  cat "$LIBDIR/solaris8.2-nolocal"			> "$LINKPACKAGES"
+  cat "$LIBDIR/solaris8-patches.9.1.0"			> "$PATCHES"
   ;;
 
 sgi)
@@ -10,3 +24,6 @@ esac
 
 echo "/etc/ntp.conf"					>> "$CONFCHG"
 echo "/etc/sshd_config"					>> "$CONFCHG"
+echo "/etc/athena/named.conf"				>> "$CONFCHG"
+
+echo "/etc/afsd"					>> "$DEADFILES"

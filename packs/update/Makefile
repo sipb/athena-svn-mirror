@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.14 2001-04-11 18:19:05 ghudson Exp $
+# $Id: Makefile,v 1.15 2002-04-06 23:16:53 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -45,11 +45,15 @@ install:
 	install -c -m 0555 vers/solaris27-8 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris27-pkgs ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris27-ptchs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris8-8.2 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris8-local-sun4m ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris8-local-sun4u ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris8-nolocal-sun4m ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris8-nolocal-sun4u ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris8-patches.9.0.0 ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris8.2-local ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris8.2-nolocal ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris8-patches.9.1.0 ${DESTDIR}${UPDATE}
 	for i in vers/*.*.*; do \
 		install -c -m 0555 $$i ${DESTDIR}${UPDATE}; \
 	done
