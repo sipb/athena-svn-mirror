@@ -8,7 +8,12 @@ DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I$(AFSDIR)/include
 
 BINDIR=$(ATHBINDIR)
 INSTOPT=-o root -m 4755
+#ifdef sgi
+AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx \
+	$(AFSDIR)/lib/afs/libsys.a -llwp
+#else
 AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx -llwp
+#endif
 
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 #ifdef SOLARIS
