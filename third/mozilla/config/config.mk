@@ -291,9 +291,19 @@ else
 # if MOZ_DEBUG is not set and MOZ_PROFILE is set, then we generate
 # an optimized build with debugging symbols. Useful for debugging
 # compiler optimization bugs, as well as running with Quantify.
-ifdef MOZ_PROFILE
+# MOZ_DEBUG_SYMBOLS works the same way as MOZ_PROFILE, but generates debug
+# symbols in separate PDB files, rather than embedded into the binary.
+ifneq (,$(MOZ_PROFILE)$(MOZ_DEBUG_SYMBOLS))
 MOZ_OPTIMIZE_FLAGS=-Zi -O1 -UDEBUG -DNDEBUG
-OS_LDFLAGS = /DEBUG /DEBUGTYPE:CV /PDB:NONE /OPT:REF /OPT:nowin98
+OS_LDFLAGS = /DEBUG /OPT:REF /OPT:nowin98
+ifdef MOZ_PROFILE
+OS_LDFLAGS += /PDB:NONE
+endif
+endif
+
+# /FIXED:NO is needed for Quantify to work, but it increases the size
+# of executables, so only use it if building for Quantify.
+ifdef MOZ_QUANTIFY
 WIN32_EXE_LDFLAGS=/FIXED:NO
 endif
 
@@ -725,7 +735,11 @@ ifeq ($(MOZ_OS2_TOOLS),EMX)
 BIN_FLAGS	+= -Zlinker /PM:VIO
 endif
 ifeq ($(OS_ARCH),WINNT)
+ifdef GNU_CC
+WIN32_EXE_LDFLAGS	+= -mconsole
+else
 WIN32_EXE_LDFLAGS	+= /SUBSYSTEM:CONSOLE
+endif
 endif
 else # MOZ_WINCONSOLE
 ifeq ($(MOZ_OS2_TOOLS),VACPP)
@@ -735,7 +749,11 @@ ifeq ($(MOZ_OS2_TOOLS),EMX)
 BIN_FLAGS	+= -Zlinker /PM:PM
 endif
 ifeq ($(OS_ARCH),WINNT)
+ifdef GNU_CC
+WIN32_EXE_LDFLAGS	+= -mwindows
+else
 WIN32_EXE_LDFLAGS	+= /SUBSYSTEM:WINDOWS
+endif
 endif
 endif
 endif

@@ -240,9 +240,8 @@ nsDocShell::nsDocShell():
     mEODForCurrentDocument(PR_FALSE),
     mURIResultedInDocument(PR_FALSE),
     mIsBeingDestroyed(PR_FALSE),
-    mUseExternalProtocolHandler(PR_FALSE),
     mDisallowPopupWindows(PR_FALSE),
-    mValidateOrigin(PR_FALSE),
+    mValidateOrigin(PR_TRUE), // validate frame origins by default
     mIsExecutingOnLoadHandler(PR_FALSE),
     mIsPrintingOrPP(PR_FALSE),
     mEditorData(nsnull),
@@ -313,6 +312,7 @@ NS_INTERFACE_MAP_BEGIN(nsDocShell)
     NS_INTERFACE_MAP_ENTRY(nsIContentViewerContainer)
     NS_INTERFACE_MAP_ENTRY(nsIEditorDocShell)
     NS_INTERFACE_MAP_ENTRY(nsIWebPageDescriptor)
+    NS_INTERFACE_MAP_ENTRY(nsIAuthPromptProvider)
 NS_INTERFACE_MAP_END_THREADSAFE
 
 ///*****************************************************************************
@@ -556,7 +556,7 @@ NS_IMETHODIMP
 nsDocShell::LoadURI(nsIURI * aURI,
                     nsIDocShellLoadInfo * aLoadInfo,
                     PRUint32 aLoadFlags,
-                    PRBool firstParty)
+                    PRBool aFirstParty)
 {
     nsresult rv;
     nsCOMPtr<nsIURI> referrer;
@@ -564,6 +564,7 @@ nsDocShell::LoadURI(nsIURI * aURI,
     nsCOMPtr<nsIInputStream> headersStream;
     nsCOMPtr<nsISupports> owner;
     PRBool inheritOwner = PR_FALSE;
+    PRBool sendReferrer = PR_TRUE;
     nsCOMPtr<nsISHEntry> shEntry;
     nsXPIDLString target;
     PRUint32 loadType = MAKE_LOAD_TYPE(LOAD_NORMAL, aLoadFlags);    
@@ -585,6 +586,7 @@ nsDocShell::LoadURI(nsIURI * aURI,
         aLoadInfo->GetTarget(getter_Copies(target));
         aLoadInfo->GetPostDataStream(getter_AddRefs(postStream));
         aLoadInfo->GetHeadersStream(getter_AddRefs(headersStream));
+        aLoadInfo->GetSendReferrer(&sendReferrer);
     }
 
 #ifdef PR_LOGGING
@@ -722,17 +724,25 @@ nsDocShell::LoadURI(nsIURI * aURI,
             }
         }
 
+        PRUint32 flags = 0;
+
+        if (inheritOwner)
+            flags |= INTERNAL_LOAD_FLAGS_INHERIT_OWNER;
+
+        if (!sendReferrer)
+            flags |= INTERNAL_LOAD_FLAGS_DONT_SEND_REFERRER;
+
         rv = InternalLoad(aURI,
                           referrer,
                           owner,
-                          inheritOwner,
+                          flags,
                           target.get(),
                           nsnull,         // No type hint
                           postStream,
                           headersStream,
                           loadType,
                           nsnull,         // No SHEntry
-                          firstParty,
+                          aFirstParty,
                           nsnull,         // No nsIDocShell
                           nsnull);        // No nsIRequest
     }
@@ -935,7 +945,8 @@ PRBool SameOrSubdomainOfTarget(nsIURI* aOriginURI, nsIURI* aTargetURI, PRBool aD
 // of loading in the hands of the target, which is more secure. (per Nav 4.x)
 //
 static
-PRBool ValidateOrigin(nsIDocShellTreeItem* aOriginTreeItem, nsIDocShellTreeItem* aTargetTreeItem)
+PRBool ValidateOrigin(nsIDocShellTreeItem* aOriginTreeItem,
+                      nsIDocShellTreeItem* aTargetTreeItem)
 {
   // Get origin document uri (ignoring document.domain)
   nsCOMPtr<nsIWebNavigation> originWebNav(do_QueryInterface(aOriginTreeItem));
@@ -947,13 +958,11 @@ PRBool ValidateOrigin(nsIDocShellTreeItem* aOriginTreeItem, nsIDocShellTreeItem*
 
   // Get target principal uri (including document.domain)
   nsCOMPtr<nsIDOMDocument> targetDOMDocument(do_GetInterface(aTargetTreeItem));
-  NS_ENSURE_TRUE(targetDOMDocument, PR_TRUE);
-
   nsCOMPtr<nsIDocument> targetDocument(do_QueryInterface(targetDOMDocument));
   NS_ENSURE_TRUE(targetDocument, PR_TRUE);
 
   nsIPrincipal *targetPrincipal = targetDocument->GetPrincipal();
-  NS_ENSURE_TRUE(targetPrincipal, NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE(targetPrincipal, PR_TRUE);
 
   nsCOMPtr<nsIURI> targetPrincipalURI;
   rv = targetPrincipal->GetURI(getter_AddRefs(targetPrincipalURI));
@@ -970,7 +979,8 @@ PRBool ValidateOrigin(nsIDocShellTreeItem* aOriginTreeItem, nsIDocShellTreeItem*
 
   // Is origin same principal or a subdomain of target's document.domain
   // Compare actual URI of origin document, not origin principal's URI. (Per Nav 4.x)
-  return SameOrSubdomainOfTarget(originDocumentURI, targetPrincipalURI, documentDomainSet);
+  return SameOrSubdomainOfTarget(originDocumentURI, targetPrincipalURI,
+                                 documentDomainSet);
 }
 
 nsresult nsDocShell::FindTarget(const PRUnichar *aWindowTarget,
@@ -1049,27 +1059,43 @@ nsresult nsDocShell::FindTarget(const PRUnichar *aWindowTarget,
         // Check to see if pref is true
         if (mValidateOrigin && treeItem)
         {
+            nsCOMPtr<nsIDocShellTreeItem> tmp;
+            treeItem->GetSameTypeRootTreeItem(getter_AddRefs(tmp));
 
-            // Is origin frame from the same domain as target frame?
-            if (! ValidateOrigin(this, treeItem))
-            {
+            nsCOMPtr<nsIDocShellTreeItem> sameTypeRoot;
+            GetSameTypeRootTreeItem(getter_AddRefs(sameTypeRoot));
 
-                // No.  Is origin frame from the same domain as target's parent?
-                nsCOMPtr<nsIDocShellTreeItem> targetParentTreeItem;
-                
-                rv = treeItem->GetSameTypeParent(getter_AddRefs(targetParentTreeItem));
-                if (NS_SUCCEEDED(rv) && targetParentTreeItem) 
-                {
-                    if (! ValidateOrigin(this, targetParentTreeItem)) 
-                    {
+            if (sameTypeRoot != tmp && treeItem != tmp) {
+                // The load was targeted at a frame and initiated in
+                // another toplevel window. Assume we'll need to make
+                // a new window until we find that the target, or one
+                // of its ancestors, are from the same origin as the
+                // loading docshell.
+                mustMakeNewWindow = PR_TRUE;
 
-                        // Neither is from the origin domain, send load to a new window (_blank)
-                        mustMakeNewWindow = PR_TRUE;
-                        name.Truncate();
-                    } // else (target's parent from origin domain) allow this load
-                } // else (no parent) allow this load since shell is a toplevel window
-            } // else (target from origin domain) allow this load
-        } // else (pref is false) allow this load
+                tmp = treeItem;
+
+                do {
+                    // Is origin frame from the same domain as target frame?
+                    if (ValidateOrigin(this, tmp)) {
+                        mustMakeNewWindow = PR_FALSE;
+
+                        break;
+                    }
+
+                    nsCOMPtr<nsIDocShellTreeItem> t;
+                    tmp->GetSameTypeParent(getter_AddRefs(t));
+                    tmp.swap(t);
+                } while (tmp);
+
+                if (mustMakeNewWindow) {
+                    // Origin mismatch, open the URL in a new blank
+                    // window.
+                    treeItem = nsnull;
+                    name.Truncate();
+                }
+            }
+        }
     }
 
     if (mustMakeNewWindow)
@@ -1706,6 +1732,34 @@ nsDocShell::SetParent(nsIDocShellTreeItem * aParent)
        the parent.
      */
     mParent = aParent;
+
+    // If parent is another docshell, we inherit all their flags for
+    // allowing plugins, scripting etc.
+    nsCOMPtr<nsIDocShell> parentAsDocShell = do_QueryInterface(mParent);
+    if (parentAsDocShell)
+    {
+        PRBool value;
+        if (NS_SUCCEEDED(parentAsDocShell->GetAllowPlugins(&value)))
+        {
+            SetAllowPlugins(value);
+        }
+        if (NS_SUCCEEDED(parentAsDocShell->GetAllowJavascript(&value)))
+        {
+            SetAllowJavascript(value);
+        }
+        if (NS_SUCCEEDED(parentAsDocShell->GetAllowMetaRedirects(&value)))
+        {
+            SetAllowMetaRedirects(value);
+        }
+        if (NS_SUCCEEDED(parentAsDocShell->GetAllowSubframes(&value)))
+        {
+            SetAllowSubframes(value);
+        }
+        if (NS_SUCCEEDED(parentAsDocShell->GetAllowImages(&value)))
+        {
+            SetAllowImages(value);
+        }
+    }
 
     nsCOMPtr<nsIURIContentListener>
         parentURIListener(do_GetInterface(aParent));
@@ -2763,7 +2817,7 @@ nsDocShell::Reload(PRUint32 aReloadFlags)
         rv = InternalLoad(mCurrentURI,
                           mReferrerURI,
                           nsnull,         // No owner
-                          PR_TRUE,        // Inherit owner from document
+                          INTERNAL_LOAD_FLAGS_INHERIT_OWNER, // Inherit owner from document
                           nsnull,         // No window target
                           NS_LossyConvertUCS2toASCII(contentTypeHint).get(),
                           nsnull,         // No post data
@@ -2998,13 +3052,6 @@ nsDocShell::Create()
 
     PRBool tmpbool;
 
-    // i don't want to read this pref in every time we load a url
-    // so read it in once here and be done with it...
-    rv = mPrefs->GetBoolPref("network.protocols.useSystemDefaults",
-                             &tmpbool);
-    if (NS_SUCCEEDED(rv))
-      mUseExternalProtocolHandler = tmpbool;
-
     rv = mPrefs->GetBoolPref("browser.block.target_new_window", &tmpbool);
     if (NS_SUCCEEDED(rv))
       mDisallowPopupWindows = tmpbool;
@@ -3067,7 +3114,6 @@ nsDocShell::Destroy()
 
     mDocLoader = nsnull;
     mParentWidget = nsnull;
-    mPrefs = nsnull;
     mCurrentURI = nsnull;
 
     if (mScriptGlobal) {
@@ -3269,6 +3315,13 @@ nsDocShell::GetVisibility(PRBool * aVisibility)
         nsCOMPtr<nsIDocShell> parentDS = do_QueryInterface(parentItem);
         nsCOMPtr<nsIPresShell> pPresShell;
         parentDS->GetPresShell(getter_AddRefs(pPresShell));
+
+        // Null-check for crash in bug 267804
+        if (!pPresShell) {
+            NS_NOTREACHED("docshell has null pres shell");
+            *aVisibility = PR_FALSE;
+            return NS_OK;
+        }
 
         nsCOMPtr<nsIDocument> pDoc;
         pPresShell->GetDocument(getter_AddRefs(pDoc));
@@ -4538,7 +4591,8 @@ nsDocShell::CreateContentViewer(const char *aContentType,
 
         loadGroup->AddRequest(request, nsnull);
         if (currentLoadGroup)
-            currentLoadGroup->RemoveRequest(request, nsnull, NS_OK);
+            currentLoadGroup->RemoveRequest(request, nsnull,
+                                            NS_BINDING_RETARGETED);
 
         // Update the notification callbacks, so that progress and
         // status information are sent to the right docshell...
@@ -4883,27 +4937,14 @@ nsDocShell::SetupNewViewer(nsIContentViewer * aNewViewer)
 
 
 nsresult
-nsDocShell::CheckLoadingPermissions(nsISupports *aOwner)
+nsDocShell::CheckLoadingPermissions()
 {
-    nsresult rv = NS_OK;
+    nsresult rv = NS_OK, sameOrigin = NS_OK;
 
-    if (mPrefs) {
-        PRBool frameLoadCheckDisabled = PR_FALSE;
-        rv = mPrefs->GetBoolPref("docshell.frameloadcheck.disabled",
-                                 &frameLoadCheckDisabled);
+    if (!mValidateOrigin || !IsFrame()) {
+        // Origin validation was turned off, or we're not a frame.
+        // Permit all loads.
 
-        if (NS_SUCCEEDED(rv) && frameLoadCheckDisabled) {
-            return rv;
-        }
-    }
-
-    // Check to see if we're a frame in a frameset frame, or iframe,
-    // and make sure the caller has the right to load a new uri into
-    // this frame.
-    nsCOMPtr<nsIDocShellTreeItem> parentItem;
-    rv = GetSameTypeParent(getter_AddRefs(parentItem));
-
-    if (NS_FAILED(rv) || !parentItem) {
         return rv;
     }
 
@@ -4915,103 +4956,88 @@ nsDocShell::CheckLoadingPermissions(nsISupports *aOwner)
         do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsIPrincipal> caller(do_QueryInterface(aOwner));
-
-    if (!caller) {
-        rv = securityManager->GetSubjectPrincipal(getter_AddRefs(caller));
-
-        if (NS_FAILED(rv) || !caller) {
-            // No principal reachable, permit load (assuming the above
-            // call didn't fail)
-
-            return rv;
-        }
-    }
-
-    if (!aOwner && caller) {
-        // We were *not* passed a principal, but we found a subject
-        // principal. That means that JS is running. Check if
-        // "UniversalBrowserWrite" is enabled, and allow the load if
-        // it is.
-
-        PRBool ubwEnabled = PR_FALSE;
-        rv = securityManager->IsCapabilityEnabled("UniversalBrowserWrite",
-                                                  &ubwEnabled);
-        if (NS_FAILED(rv) || ubwEnabled) {
-            return rv;
-        }
-    }
-
-    nsCOMPtr<nsIScriptGlobalObject> sgo(do_GetInterface(parentItem));
-
-    nsCOMPtr<nsIScriptObjectPrincipal> sop(do_QueryInterface(sgo));
-
-    nsCOMPtr<nsIPrincipal> parentPrincipal;
-    if (!sop ||
-        NS_FAILED(sop->GetPrincipal(getter_AddRefs(parentPrincipal))) ||
-        !parentPrincipal) {
-        return NS_ERROR_UNEXPECTED;
-    }
-
-    // Check if the caller is from the same origin as our parent.
-    rv = securityManager->CheckSameOriginPrincipal(caller, parentPrincipal);
-    if (NS_SUCCEEDED(rv)) {
-        // Same origin, permit load
-
+    PRBool ubwEnabled = PR_FALSE;
+    rv = securityManager->IsCapabilityEnabled("UniversalBrowserWrite",
+                                              &ubwEnabled);
+    if (NS_FAILED(rv) || ubwEnabled) {
         return rv;
     }
 
-    sop = do_QueryInterface(mScriptGlobal);
- 
-    nsCOMPtr<nsIPrincipal> principal;
-    if (!sop || NS_FAILED(sop->GetPrincipal(getter_AddRefs(principal))) ||
-        !principal) {
-        return NS_ERROR_UNEXPECTED;
-    }
+    nsCOMPtr<nsIPrincipal> subjPrincipal;
+    rv = securityManager->GetSubjectPrincipal(getter_AddRefs(subjPrincipal));
+    NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && subjPrincipal, rv);
 
-    // Check if the caller is from the same origin as we are.
-    rv = securityManager->CheckSameOriginPrincipal(caller, principal);
-    if (NS_SUCCEEDED(rv)) {
-        // Same origin, permit load
+    // Check if the caller is from the same origin as this docshell,
+    // or any of it's ancestors.
+    nsCOMPtr<nsIDocShellTreeItem> item(this);
+    do {
+        nsCOMPtr<nsIScriptGlobalObject> sgo(do_GetInterface(item));
+        nsCOMPtr<nsIScriptObjectPrincipal> sop(do_QueryInterface(sgo));
 
-        return rv;
-    }
+        nsCOMPtr<nsIPrincipal> p;
+        if (!sop || NS_FAILED(sop->GetPrincipal(getter_AddRefs(p))) || !p) {
+            return NS_ERROR_UNEXPECTED;
+        }
 
-    // Caller and callee are not from the same origin. Only permit
-    // loading content if both are part of the same window, assuming
-    // we can find the window of the caller.
+        // Compare origins
+        sameOrigin =
+            securityManager->CheckSameOriginPrincipal(subjPrincipal, p);
+        if (NS_SUCCEEDED(sameOrigin)) {
+            // Same origin, permit load
 
-    nsCOMPtr<nsIDocShellTreeItem> sameTypeCalleeRoot;
-    GetSameTypeRootTreeItem(getter_AddRefs(sameTypeCalleeRoot));
+            return sameOrigin;
+        }
+
+        nsCOMPtr<nsIDocShellTreeItem> tmp;
+        item->GetSameTypeParent(getter_AddRefs(tmp));
+        item.swap(tmp);
+    } while (item);
+
+    // The caller is not from the same origin as this item, or any if
+    // this items ancestors. Only permit loading content if both are
+    // part of the same window, assuming we can find the window of the
+    // caller.
 
     nsCOMPtr<nsIJSContextStack> stack =
         do_GetService("@mozilla.org/js/xpc/ContextStack;1");
     if (!stack) {
-        return rv;
+        // No context stack available. Should never happen, but in
+        // case it does, return the sameOrigin error from the security
+        // check above.
+
+        return sameOrigin;
     }
 
     JSContext *cx = nsnull;
     stack->Peek(&cx);
 
     if (!cx) {
-        // No caller docshell reachable, disallow load.
+        // No caller docshell reachable, return the sameOrigin error
+        // from the security check above.
 
-        return rv;
+        return sameOrigin;
     }
 
-    nsIScriptContext *currentCX =
-        GetScriptContextFromJSContext(cx);
+    nsIScriptContext *currentCX = GetScriptContextFromJSContext(cx);
+    nsCOMPtr<nsIDocShellTreeItem> callerTreeItem;
+    nsIScriptGlobalObject *sgo;
     if (currentCX &&
-        (sgo = currentCX->GetGlobalObject())) {
-        nsCOMPtr<nsIDocShellTreeItem> sameTypeCallerRoot =
-            do_QueryInterface(sgo->GetDocShell());
+        (sgo = currentCX->GetGlobalObject()) &&
+        (callerTreeItem = do_QueryInterface(sgo->GetDocShell()))) {
+        nsCOMPtr<nsIDocShellTreeItem> callerRoot;
+        callerTreeItem->GetSameTypeRootTreeItem(getter_AddRefs(callerRoot));
 
-        if (sameTypeCalleeRoot == sameTypeCallerRoot) {
-            rv = NS_OK;
+        nsCOMPtr<nsIDocShellTreeItem> ourRoot;
+        GetSameTypeRootTreeItem(getter_AddRefs(ourRoot));
+
+        if (ourRoot == callerRoot) {
+            // The running JS is in the same window as the target
+            // frame, permit load.
+            sameOrigin = NS_OK;
         }
     }
 
-    return rv;
+    return sameOrigin;
 }
 
 //*****************************************************************************
@@ -5021,14 +5047,14 @@ NS_IMETHODIMP
 nsDocShell::InternalLoad(nsIURI * aURI,
                          nsIURI * aReferrer,
                          nsISupports * aOwner,
-                         PRBool aInheritOwner,
+                         PRUint32 aFlags,
                          const PRUnichar *aWindowTarget,
                          const char* aTypeHint,
                          nsIInputStream * aPostData,
                          nsIInputStream * aHeadersData,
                          PRUint32 aLoadType,
                          nsISHEntry * aSHEntry,
-                         PRBool firstParty,
+                         PRBool aFirstParty,
                          nsIDocShell** aDocShell,
                          nsIRequest** aRequest)
 {
@@ -5084,7 +5110,7 @@ nsDocShell::InternalLoad(nsIURI * aURI,
     //
     // Get an owner from the current document if necessary
     //
-    if (!owner && aInheritOwner)
+    if (!owner && (aFlags & INTERNAL_LOAD_FLAGS_INHERIT_OWNER))
         GetCurrentDocumentOwner(getter_AddRefs(owner));
 
     //
@@ -5096,40 +5122,6 @@ nsDocShell::InternalLoad(nsIURI * aURI,
         PRBool bIsNewWindow;
         nsCOMPtr<nsIDocShell> targetDocShell;
         nsAutoString name(aWindowTarget);
-
-        //
-        // This is a hack for Shrimp :-(
-        //
-        // if the load cmd is a user click....and we are supposed to try using
-        // external default protocol handlers....then try to see if we have one for
-        // this protocol
-        //
-        // See bug #52182
-        //
-        if (mUseExternalProtocolHandler && aLoadType == LOAD_LINK) {
-            // don't do it for javascript urls!
-            // _main is an IE target which should be case-insensitive but isn't
-            // see bug 217886 for details            
-            if (!bIsJavascript &&
-                (name.EqualsIgnoreCase("_content") || name.Equals(NS_LITERAL_STRING("_main")) ||
-                 name.EqualsIgnoreCase("_blank"))) 
-            {
-                nsCOMPtr<nsIExternalProtocolService> extProtService;
-                nsCAutoString urlScheme;
-
-                extProtService = do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID);
-                if (extProtService) {
-                    PRBool haveHandler = PR_FALSE;
-                    aURI->GetScheme(urlScheme);
-
-                    extProtService->ExternalProtocolHandlerExists(urlScheme.get(),
-                                                                  &haveHandler);
-                    if (haveHandler) {
-                        return extProtService->LoadUrl(aURI);
-                    }
-                }
-            }
-        }
 
         //
         // This is a hack to prevent top-level windows from ever being
@@ -5160,7 +5152,7 @@ nsDocShell::InternalLoad(nsIURI * aURI,
                          !name.Equals(NS_LITERAL_STRING("_main"))) {
                     nsCOMPtr<nsIDocShellTreeItem> targetTreeItem;
                     FindItemWithName(name.get(),
-                                     NS_STATIC_CAST(nsIInterfaceRequestor *, this),
+                                     nsnull,
                                      getter_AddRefs(targetTreeItem));
                     if (targetTreeItem)
                         targetDocShell = do_QueryInterface(targetTreeItem);
@@ -5188,14 +5180,14 @@ nsDocShell::InternalLoad(nsIURI * aURI,
             rv = targetDocShell->InternalLoad(aURI,
                                               aReferrer,
                                               owner,
-                                              aInheritOwner,
+                                              aFlags,
                                               nsnull,         // No window target
                                               aTypeHint,
                                               aPostData,
                                               aHeadersData,
                                               aLoadType,
                                               aSHEntry,
-                                              firstParty,
+                                              aFirstParty,
                                               aDocShell,
                                               aRequest);
             if (rv == NS_ERROR_NO_CONTENT) {
@@ -5238,19 +5230,6 @@ nsDocShell::InternalLoad(nsIURI * aURI,
         return rv;
     }
 
-    // Check if the page doesn't want to be unloaded. The javascript:
-    // protocol handler deals with this for javascript: URLs.
-    if (!bIsJavascript && mContentViewer) {
-        PRBool okToUnload;
-        rv = mContentViewer->PermitUnload(&okToUnload);
-
-        if (NS_SUCCEEDED(rv) && !okToUnload) {
-            // The user chose not to unload the page, interrupt the
-            // load.
-            return NS_OK;
-        }
-    }
-
     //
     // Load is being targetted at this docshell so return an error if the
     // docshell is in the process of being destroyed.
@@ -5259,7 +5238,7 @@ nsDocShell::InternalLoad(nsIURI * aURI,
         return NS_ERROR_FAILURE;
     }
 
-    rv = CheckLoadingPermissions(aOwner);
+    rv = CheckLoadingPermissions();
     if (NS_FAILED(rv)) {
         return rv;
     }
@@ -5363,6 +5342,19 @@ nsDocShell::InternalLoad(nsIURI * aURI,
         }
     }
 
+    // Check if the page doesn't want to be unloaded. The javascript:
+    // protocol handler deals with this for javascript: URLs.
+    if (!bIsJavascript && mContentViewer) {
+        PRBool okToUnload;
+        rv = mContentViewer->PermitUnload(&okToUnload);
+
+        if (NS_SUCCEEDED(rv) && !okToUnload) {
+            // The user chose not to unload the page, interrupt the
+            // load.
+            return NS_OK;
+        }
+    }
+
     // Don't stop current network activity for javascript: URL's since
     // they might not result in any data, and thus nothing should be
     // stopped in those cases. In the case where they do result in
@@ -5397,8 +5389,10 @@ nsDocShell::InternalLoad(nsIURI * aURI,
     // been called. 
     mLSHE = aSHEntry;
 
-    rv = DoURILoad(aURI, aReferrer, owner, aTypeHint, aPostData, aHeadersData,
-                   firstParty, aDocShell, aRequest);
+    rv = DoURILoad(aURI, aReferrer,
+                   !(aFlags & INTERNAL_LOAD_FLAGS_DONT_SEND_REFERRER),
+                   owner, aTypeHint, aPostData, aHeadersData, aFirstParty,
+                   aDocShell, aRequest);
 
     if (NS_FAILED(rv)) {
         DisplayLoadError(rv, aURI, nsnull);
@@ -5407,10 +5401,9 @@ nsDocShell::InternalLoad(nsIURI * aURI,
     return rv;
 }
 
-NS_IMETHODIMP
+void
 nsDocShell::GetCurrentDocumentOwner(nsISupports ** aOwner)
 {
-    nsresult rv;
     *aOwner = nsnull;
     nsCOMPtr<nsIDocument> document;
     //-- Get the current document
@@ -5418,41 +5411,43 @@ nsDocShell::GetCurrentDocumentOwner(nsISupports ** aOwner)
         nsCOMPtr<nsIDocumentViewer>
             docViewer(do_QueryInterface(mContentViewer));
         if (!docViewer)
-            return NS_ERROR_FAILURE;
-        rv = docViewer->GetDocument(getter_AddRefs(document));
+            return;
+        docViewer->GetDocument(getter_AddRefs(document));
     }
     else //-- If there's no document loaded yet, look at the parent (frameset)
     {
         nsCOMPtr<nsIDocShellTreeItem> parentItem;
-        rv = GetSameTypeParent(getter_AddRefs(parentItem));
-        if (NS_FAILED(rv) || !parentItem)
-            return rv;
+        GetSameTypeParent(getter_AddRefs(parentItem));
+        if (!parentItem)
+            return;
         nsCOMPtr<nsIDOMWindowInternal>
             parentWindow(do_GetInterface(parentItem));
         if (!parentWindow)
-            return NS_OK;
+            return;
         nsCOMPtr<nsIDOMDocument> parentDomDoc;
-        rv = parentWindow->GetDocument(getter_AddRefs(parentDomDoc));
+        parentWindow->GetDocument(getter_AddRefs(parentDomDoc));
         if (!parentDomDoc)
-            return NS_OK;
+            return;
         document = do_QueryInterface(parentDomDoc);
     }
 
     //-- Get the document's principal
-    nsIPrincipal *principal = document->GetPrincipal();
-    if (!principal)
-        return NS_ERROR_FAILURE;
-    return principal->QueryInterface(NS_GET_IID(nsISupports), (void **) aOwner);
+    if (document) {
+        *aOwner = document->GetPrincipal();
+    }
+
+    NS_IF_ADDREF(*aOwner);
 }
 
 nsresult
 nsDocShell::DoURILoad(nsIURI * aURI,
                       nsIURI * aReferrerURI,
+                      PRBool aSendReferrer,
                       nsISupports * aOwner,
                       const char * aTypeHint,
                       nsIInputStream * aPostData,
                       nsIInputStream * aHeadersData,
-                      PRBool firstParty,
+                      PRBool aFirstParty,
                       nsIDocShell ** aDocShell,
                       nsIRequest ** aRequest)
 {
@@ -5470,7 +5465,7 @@ nsDocShell::DoURILoad(nsIURI * aURI,
     if (NS_FAILED(rv)) return rv;
 
     nsLoadFlags loadFlags = nsIRequest::LOAD_NORMAL;
-    if (firstParty) {
+    if (aFirstParty) {
         // tag first party URL loads
         loadFlags |= nsIChannel::LOAD_INITIAL_DOCUMENT_URI;
     }
@@ -5510,11 +5505,19 @@ nsDocShell::DoURILoad(nsIURI * aURI,
     nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(channel));
     nsCOMPtr<nsIHttpChannelInternal> httpChannelInternal(do_QueryInterface(channel));
     if (httpChannelInternal) {
-      if (firstParty) {
+      if (aFirstParty) {
         httpChannelInternal->SetDocumentURI(aURI);
       } else {
         httpChannelInternal->SetDocumentURI(aReferrerURI);
       }
+    }
+
+    nsCOMPtr<nsIProperties> props(do_QueryInterface(channel));
+    if (props)
+    {
+      // save true referrer for those who need it (e.g. xpinstall whitelisting)
+      // Not all channels support this feature, but ftp and http do.
+      props->Set("docshell.internalReferrer", aReferrerURI);
     }
 
     //
@@ -5582,8 +5585,10 @@ nsDocShell::DoURILoad(nsIURI * aURI,
             rv = AddHeadersToChannel(aHeadersData, httpChannel);
         }
         // Set the referrer explicitly
-        if (aReferrerURI)       // Referrer is currenly only set for link clicks here.
+        if (aReferrerURI && aSendReferrer) {
+            // Referrer is currenly only set for link clicks here.
             httpChannel->SetReferrer(aReferrerURI);
+        }
     }
     // We want to use the pref for directory listings
     nsCOMPtr<nsIDirectoryListing> dirList = do_QueryInterface(channel);
@@ -6418,7 +6423,7 @@ nsDocShell::LoadHistoryEntry(nsISHEntry * aEntry, PRUint32 aLoadType)
     rv = InternalLoad(uri,
                       referrerURI,
                       nsnull,            // No owner
-                      PR_FALSE,          // Do not inherit owner from document (security-critical!)
+                      INTERNAL_LOAD_FLAGS_NONE, // Do not inherit owner from document (security-critical!)
                       nsnull,            // No window target
                       contentType.get(), // Type hint
                       postData,          // Post data stream
@@ -7076,6 +7081,18 @@ nsRefreshTimer::Notify(nsITimer * aTimer)
         }
         nsCOMPtr<nsIDocShellLoadInfo> loadInfo;
         mDocShell->CreateLoadInfo(getter_AddRefs(loadInfo));
+        NS_ENSURE_TRUE(loadInfo, NS_OK);
+
+        /* We do need to pass in a referrer, but we don't want it to
+         * be sent to the server.
+         */
+        loadInfo->SetSendReferrer(PR_FALSE);
+
+        /* for most refreshes the current URI is an appropriate
+         * internal referrer
+         */
+        loadInfo->SetReferrer(currURI);
+
         /* Check if this META refresh causes a redirection
          * to another site. 
          */
@@ -7089,6 +7106,19 @@ nsRefreshTimer::Notify(nsITimer * aTimer)
              */
             if (delay <= REFRESH_REDIRECT_TIMER) {
                 loadInfo->SetLoadType(nsIDocShellLoadInfo::loadNormalReplace);
+
+                /* for redirects we mimic HTTP, which passes the
+                 *  original referrer
+                 */
+                nsCOMPtr<nsIURI> internalReferrer;
+                nsCOMPtr<nsIWebNavigation> webNav =
+                    do_QueryInterface(mDocShell);
+                if (webNav) {
+                    webNav->GetReferringURI(getter_AddRefs(internalReferrer));
+                    if (internalReferrer) {
+                        loadInfo->SetReferrer(internalReferrer);
+                    }
+                }
             }
             else
                 loadInfo->SetLoadType(nsIDocShellLoadInfo::loadRefresh);
@@ -7193,4 +7223,36 @@ nsDocShell::SetBaseUrlForWyciwyg(nsIContentViewer * aContentViewer)
         }
     }
     return rv;
+}
+
+//*****************************************************************************
+// nsDocShell::nsIAuthPromptProvider
+//*****************************************************************************   
+
+nsresult
+nsDocShell::GetAuthPrompt(PRUint32 aPromptReason, nsIAuthPrompt **aResult)
+{
+    // if this docshell is of type chrome and has a chrome URI, then do not
+    // give out an auth prompt.  NOTE: it is possible to load a non-chrome
+    // URI into a chrome docshell, so this check is important.
+    if (mCurrentURI && mItemType == typeChrome) {
+        PRBool chrome;
+        if (NS_SUCCEEDED(mCurrentURI->SchemeIs("chrome", &chrome)) && chrome)
+            return NS_ERROR_NOT_AVAILABLE;
+    }
+
+    // a priority prompt request will override a false mAllowAuth setting
+    PRBool priorityPrompt = (aPromptReason == PROMPT_PROXY);
+
+    if (!mAllowAuth && !priorityPrompt)
+        return NS_ERROR_NOT_AVAILABLE;
+
+    // we're either allowing auth, or it's a proxy request
+    nsCOMPtr<nsIAuthPrompt> authPrompter(do_GetInterface(mTreeOwner));
+    if (!authPrompter)
+        return NS_ERROR_NOT_AVAILABLE;
+
+    *aResult = authPrompter;
+    NS_ADDREF(*aResult);
+    return NS_OK;
 }

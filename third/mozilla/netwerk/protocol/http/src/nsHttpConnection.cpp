@@ -266,14 +266,10 @@ nsHttpConnection::OnHeadersAvailable(nsAHttpTransaction *trans,
 
     NS_ASSERTION(PR_GetCurrentThread() == gSocketThread, "wrong thread");
     NS_ENSURE_ARG_POINTER(trans);
+    NS_ASSERTION(responseHead, "No response head?");
 
     // we won't change our keep-alive policy unless the server has explicitly
     // told us to do so.
-
-    if (!trans || !responseHead) {
-        LOG(("nothing to do\n"));
-        return NS_OK;
-    }
 
     // inspect the connection headers for keep-alive info provided the
     // transaction completed successfully.
@@ -319,7 +315,7 @@ nsHttpConnection::OnHeadersAvailable(nsAHttpTransaction *trans,
         else
             mIdleTimeout = gHttpHandler->IdleTimeout();
         
-        LOG(("Connection can be reused [this=%x idle-timeout=%u\n", this, mIdleTimeout));
+        LOG(("Connection can be reused [this=%x idle-timeout=%u]\n", this, mIdleTimeout));
     }
 
     // if we're doing an SSL proxy connect, then we need to check whether or not
@@ -331,14 +327,23 @@ nsHttpConnection::OnHeadersAvailable(nsAHttpTransaction *trans,
         if (responseHead->Status() == 200) {
             LOG(("SSL proxy CONNECT succeeded!\n"));
             *reset = PR_TRUE;
-            ProxyStartSSL();
+            nsresult rv = ProxyStartSSL();
+            if (NS_FAILED(rv)) // XXX need to handle this for real
+                LOG(("ProxyStartSSL failed [rv=%x]\n", rv));
             mCompletedSSLConnect = PR_TRUE;
-            nsresult rv = mSocketOut->AsyncWait(this, 0, 0, nsnull);
+            rv = mSocketOut->AsyncWait(this, 0, 0, nsnull);
             // XXX what if this fails -- need to handle this error
             NS_ASSERTION(NS_SUCCEEDED(rv), "mSocketOut->AsyncWait failed");
         }
-        else
+        else {
             LOG(("SSL proxy CONNECT failed!\n"));
+            // NOTE: this cast is valid since this connection cannot be
+            // processing a transaction pipeline until after the first HTTP/1.1
+            // response.
+            nsHttpTransaction *trans =
+                    NS_STATIC_CAST(nsHttpTransaction *, mTransaction);
+            trans->SetSSLConnectFailed();
+        }
     }
 
     return NS_OK;
@@ -679,7 +684,7 @@ nsHttpConnection::SetupSSLProxyConnect()
         request.SetHeader(nsHttp::Proxy_Authorization, nsDependentCString(val));
     }
 
-    buf.Truncate(0);
+    buf.Truncate();
     request.Flatten(buf, PR_FALSE);
     buf.Append("\r\n");
 

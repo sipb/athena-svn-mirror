@@ -2,7 +2,7 @@
 # Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident  "$Id: proto64.mk,v 1.1.1.1 2005-01-05 16:30:45 rbasch Exp $"
+#ident  "$Id: proto64.mk,v 1.1.2.1 2005-01-06 18:58:27 ghudson Exp $"
 #
 
 ifeq ($(USE_64), 1)

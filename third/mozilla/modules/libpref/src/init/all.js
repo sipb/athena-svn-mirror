@@ -168,6 +168,7 @@ pref("application.use_ns_plugin_finder", false);
 pref("browser.fixup.alternate.enabled", true);
 pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
+pref("browser.fixup.hide_user_pass", true);
 
 // Print header customization
 // Use the following codes:
@@ -413,7 +414,8 @@ pref("dom.allow_scripts_to_close_windows",          false);
 
 pref("dom.disable_open_during_load",                false);
 pref("dom.popup_maximum",                           20);
-pref("dom.popup_allowed_events", "change click dblclick reset submit");
+pref("dom.popup_allowed_events", "change click dblclick mouseup reset submit");
+pref("dom.disable_open_click_delay", 1000);
 
 pref("dom.event.contextmenu.enabled",       true);
 
@@ -435,10 +437,15 @@ pref("image.animation_mode",                "normal");
 // prevents necko connecting to ports 1-5 unless the protocol
 // overrides.
 
+// Default action for unlisted external protocol handlers
+pref("network.protocol-handler.external-default", true);      // OK to load
+pref("network.protocol-handler.warn-external-default", true); // warn before load
+
 // Prevent using external protocol handlers for these schemes
 pref("network.protocol-handler.external.hcp", false);
 pref("network.protocol-handler.external.vbscript", false);
 pref("network.protocol-handler.external.javascript", false);
+pref("network.protocol-handler.external.data", false);
 pref("network.protocol-handler.external.ms-help", false);
 pref("network.protocol-handler.external.shell", false);
 pref("network.protocol-handler.external.vnd.ms.radio", false);
@@ -573,16 +580,25 @@ pref("network.prefetch-next", true);
 
 
 // The following prefs pertain to the negotiate-auth extension (see bug 17578),
-// which provides transparent Kerberos authentication using the SPNEGO protocol.
-// Each pref is a comma-separated list of keys, where each key has the format:
+// which provides transparent Kerberos or NTLM authentication using the SPNEGO
+// protocol.  Each pref is a comma-separated list of keys, where each key has
+// the format:
 //   [scheme "://"] [host [":" port]]
 // For example, "foo.com" would match "http://www.foo.com/bar", etc.
 
-// This list controls which URIs can support the negotiate auth protocol.  This
+// This list controls which URIs can use the negotiate-auth protocol.  This
 // list should be limited to the servers you know you'll need to login to.
-pref("network.negotiate-auth.trusted-uris", "https://");
+pref("network.negotiate-auth.trusted-uris", "");
 // This list controls which URIs can support delegation.
 pref("network.negotiate-auth.delegation-uris", "");
+
+// The following prefs are used to enable automatic use of the operating
+// system's NTLM implementation to silently authenticate the user with their
+// Window's domain logon.  By default, this is enabled for proxy servers.
+// The trusted-uris pref follows the format of the trusted-uris pref for
+// negotiate authentication.
+pref("network.automatic-ntlm-auth.allow-proxies", true);
+pref("network.automatic-ntlm-auth.trusted-uris", "");
 
 
 // sspitzer:  change this back to "news" when we get to beta.
@@ -776,6 +792,11 @@ pref("bidi.characterset", 1);
 pref("layout.word_select.eat_space_to_next_word", false);
 pref("layout.word_select.stop_at_punctuation", true);
 
+// pref to control whether or not to replace backslashes with Yen signs
+// in documents encoded in one of Japanese legacy encodings (EUC-JP, 
+// Shift_JIS, ISO-2022-JP)
+pref("layout.enable_japanese_specific_transform", false);
+
 // pref to force frames to be resizable
 pref("layout.frames.force_resizability", false);
 
@@ -910,19 +931,22 @@ pref("font.name-list.serif.zh-CN", "MS Song, 宋体, SimSun");
 pref("font.name-list.sans-serif.zh-CN", "MS Song, 宋体, SimSun");
 pref("font.name-list.monospace.zh-CN", "MS Song, 宋体, SimSun");
 
-pref("font.name.serif.zh-TW", "細明體"); // "MingLiU" 
-pref("font.name.sans-serif.zh-TW", "細明體"); // "MingLiU" 
-pref("font.name.monospace.zh-TW", "細明體"); // "MingLiU" 
-pref("font.name-list.serif.zh-TW", "MingLiU, 細明體"); 
-pref("font.name-list.sans-serif.zh-TW", "MingLiU, 細明體");
-pref("font.name-list.monospace.zh-TW", "MingLiU, 細明體");
+// Per Taiwanese users' demand. They don't want to use TC fonts for
+// rendering Latin letters. (bug 88579)
+pref("font.name.serif.zh-TW", "Times New Roman"); 
+pref("font.name.sans-serif.zh-TW", "Arial"); 
+pref("font.name.monospace.zh-TW", "細明體");  // MingLiU
+pref("font.name-list.serif.zh-TW", "新細明體,PMingLiu,細明體,MingLiU"); 
+pref("font.name-list.sans-serif.zh-TW", "新細明體,PMingLiU,細明體,MingLiU");
+pref("font.name-list.monospace.zh-TW", "MingLiU,細明體");
 
-// hkscsm3u.ttf (HKSCS-2001) :  http://www.microsoft.com/hk/hkscs
-pref("font.name.serif.zh-HK", "細明體_HKSCS"); 
-pref("font.name.sans-serif.zh-HK", "細明體_HKSCS"); 
+// hkscsm3u.ttf (HKSCS-2001) :  http://www.microsoft.com/hk/hkscs 
+// Hong Kong users have the same demand about glyphs for Latin letters (bug 88579) 
+pref("font.name.serif.zh-HK", "Times New Roman"); 
+pref("font.name.sans-serif.zh-HK", "Arial"); 
 pref("font.name.monospace.zh-HK", "細明體_HKSCS"); 
-pref("font.name-list.serif.zh-HK", "MingLiu_HKSCS, 細明體_HKSCS, Ming(for ISO10646), MingLiU, 細明體"); 
-pref("font.name-list.sans-serif.zh-HK", "MingLiU_HKSCS, 細明體_HKSCS, Ming(for ISO10646), MingLiU, 細明體");  
+pref("font.name-list.serif.zh-HK", "細明體_HKSCS, MingLiu_HKSCS, Ming(for ISO10646), MingLiU, 細明體"); 
+pref("font.name-list.sans-serif.zh-HK", "細明體_HKSCS, MingLiU_HKSCS, Ming(for ISO10646), MingLiU, 細明體");  
 pref("font.name-list.monospace.zh-HK", "MingLiU_HKSCS,  細明體_HKSCS, Ming(for ISO10646), MingLiU, 細明體");
 
 pref("font.name.serif.x-devanagari", "Mangal");
@@ -1053,9 +1077,9 @@ pref("browser.always_reuse_window", false);
 
 // default font name (in UTF8)
 
-pref("font.name.serif.ar", "ثلث‮ ‬أبيض");
-pref("font.name.sans-serif.ar", "البيان");
-pref("font.name.monospace.ar", "جيزة");
+pref("font.name.serif.ar", "Lucida Grande");
+pref("font.name.sans-serif.ar", "Lucida Grande");
+pref("font.name.monospace.ar", "Monaco");
 pref("font.name.cursive.ar", "XXX.cursive");
 pref("font.name.fantasy.ar", "XXX.fantasy");
 
@@ -1065,9 +1089,9 @@ pref("font.name.monospace.el", "Courier GR");
 pref("font.name.cursive.el", "XXX.cursive");
 pref("font.name.fantasy.el", "XXX.fantasy");
 
-pref("font.name.serif.he", "פנינים‮ ‬חדש");
-pref("font.name.sans-serif.he", "אריאל");
-pref("font.name.monospace.he", "אריאל");
+pref("font.name.serif.he", "Lucida Grande");
+pref("font.name.sans-serif.he", "Lucida Grande");
+pref("font.name.monospace.he", "Monaco");
 pref("font.name.cursive.he", "XXX.cursive");
 pref("font.name.fantasy.he", "XXX.fantasy");
 
@@ -1143,18 +1167,18 @@ pref("font.name.fantasy.zh-TW", "XXX.fantasy");
 pref("font.name.serif.zh-HK", "Ming(for ISO10646)");
 pref("font.name.sans-serif.zh-HK", "Apple LiGothic Medium");  
 pref("font.name.monospace.zh-HK", "Apple LiGothic Medium");  
-pref("font.name.cursive.zh-HK", "XXX.cursive");
+pref("font.name.cursive.zh-HK", "XXX.cursive");s
 pref("font.name.fantasy.zh-HK", "XXX.fantasy");
 
 pref("font.default", "serif");
 pref("font.default", "serif");
-pref("font.size.variable.ar", 16);
+pref("font.size.variable.ar", 15);
 pref("font.size.fixed.ar", 13);
 
 pref("font.size.variable.el", 16);
 pref("font.size.fixed.el", 13);
 
-pref("font.size.variable.he", 16);
+pref("font.size.variable.he", 15);
 pref("font.size.fixed.he", 13);
 
 pref("font.size.variable.ja", 14);

@@ -35,7 +35,7 @@
 #define PKINSS3HACK_H
 
 #ifdef DEBUG
-static const char PKINSS3HACK_CVS_ID[] = "@(#) $RCSfile: pki3hack.h,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:42:19 $ $Name: not supported by cvs2svn $";
+static const char PKINSS3HACK_CVS_ID[] = "@(#) $RCSfile: pki3hack.h,v $ $Revision: 1.1.1.6.2.1 $ $Date: 2005-01-06 18:58:19 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSDEVT_H
@@ -71,31 +71,31 @@ NSS_EXTERN NSSCryptoContext *
 STAN_GetDefaultCryptoContext();
 
 NSS_EXTERN PRStatus
-STAN_LoadDefaultNSS3TrustDomain
-(
-  void
-);
+STAN_InitTokenForSlotInfo(NSSTrustDomain *td, PK11SlotInfo *slot);
+
+NSS_EXTERN PRStatus
+STAN_ResetTokenInterator(NSSTrustDomain *td);
+
+NSS_EXTERN PRStatus
+STAN_LoadDefaultNSS3TrustDomain(void);
 
 NSS_EXTERN PRStatus
 STAN_Shutdown();
 
 NSS_EXTERN SECStatus
-STAN_AddModuleToDefaultTrustDomain
-(
-  SECMODModule *module
-);
+STAN_AddModuleToDefaultTrustDomain(SECMODModule *module);
 
 NSS_EXTERN SECStatus
-STAN_RemoveModuleFromDefaultTrustDomain
-(
-  SECMODModule *module
-);
+STAN_RemoveModuleFromDefaultTrustDomain(SECMODModule *module);
 
 NSS_EXTERN CERTCertificate *
 STAN_ForceCERTCertificateUpdate(NSSCertificate *c);
 
 NSS_EXTERN CERTCertificate *
 STAN_GetCERTCertificate(NSSCertificate *c);
+
+NSS_EXTERN CERTCertificate *
+STAN_GetCERTCertificateOrRelease(NSSCertificate *c);
 
 NSS_EXTERN NSSCertificate *
 STAN_GetNSSCertificate(CERTCertificate *c);

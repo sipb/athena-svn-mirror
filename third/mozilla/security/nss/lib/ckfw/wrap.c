@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: wrap.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 12:42:59 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: wrap.c,v $ $Revision: 1.1.1.6.2.1 $ $Date: 2005-01-06 18:58:09 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
@@ -135,6 +135,7 @@ NSSCKFWC_Initialize
 )
 {
   CK_RV error = CKR_OK;
+  CryptokiLockingState locking_state;
 
   if( (NSSCKFWInstance **)NULL == pFwInstance ) {
     error = CKR_GENERAL_ERROR;
@@ -154,9 +155,12 @@ NSSCKFWC_Initialize
   /* remember the locking args for those times we need to get a lock in code
    * outside the framework.
    */
-  nssSetLockArgs(pInitArgs);
+  error = nssSetLockArgs(pInitArgs, &locking_state);
+  if (CKR_OK != error) {
+      goto loser;
+  }
 
-  *pFwInstance = nssCKFWInstance_Create(pInitArgs, mdInstance, &error);
+  *pFwInstance = nssCKFWInstance_Create(pInitArgs, locking_state, mdInstance, &error);
   if( (NSSCKFWInstance *)NULL == *pFwInstance ) {
     goto loser;
   }

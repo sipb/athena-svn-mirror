@@ -1,15 +1,23 @@
 #
-# Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident	"$Id: Makefile.targ,v 1.1.1.2 2003-07-08 16:51:10 rbasch Exp $"
+#ident	"$Id: Makefile.targ,v 1.1.1.2.2.1 2005-01-06 18:58:27 ghudson Exp $"
 #
+
+include ../proto64.mk
 
 pkginfo: pkginfo.tmpl ../awk_pkginfo
 	$(RM) $@; nawk -f ../awk_pkginfo $@.tmpl > $@
 
-pkg: $(PKGARCHIVE)
-	pkgmk -f prototype_$(MACH) -d $(PKGARCHIVE) -r $(ROOT) -o $(PACKAGE)
+prototype:  prototype_com prototype_$(MACH)
+	cat prototype_$(MACH) |  sed -e \
+'/^!include[    ][  ]*prototype_com/ r ./prototype_com' \
+-e 's/^!include[    ][  ]*prototype_com//g' \
+ | sed $(sed_proto64) >prototype
+
+pkg: $(PKGARCHIVE) prototype
+	pkgmk -f prototype -d $(PKGARCHIVE) -r $(ROOT) -o $(PACKAGE)
 
 $(PKGARCHIVE):
 	[ -d $(PKGARCHIVE) ] || mkdir -p $(PKGARCHIVE)

@@ -147,49 +147,32 @@ nsInstallTrigger::HandleContent(const char * aContentType,
         return NS_ERROR_ILLEGAL_VALUE;
 
 
-#ifdef NS_DEBUG
-    // XXX: if only the owner weren't always null this is what I'd want to do
-
-    // Get the owner of the channel to perform permission checks.
-    //
-    // It's OK if owner is null, this means it was a top level
-    // load and we want to allow installs in that case.
-    nsCOMPtr<nsISupports>  owner;
-    nsCOMPtr<nsIPrincipal> principal;
-    nsCOMPtr<nsIURI>       ownerURI;
-
-    channel->GetOwner( getter_AddRefs( owner ) );
-    if ( owner )
-    {
-        principal = do_QueryInterface( owner );
-        if ( principal )
-        {
-            principal->GetURI( getter_AddRefs( ownerURI ) );
-        }
-    }
-#endif
-
     // Save the referrer if any, for permission checks
-    PRBool trustReferrer = PR_FALSE;
+    static const char kReferrerProperty[] = "docshell.internalReferrer";
+    PRBool useReferrer = PR_FALSE;
     nsCOMPtr<nsIURI> referringURI;
-    nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(channel));
-    if ( httpChannel )
+    nsCOMPtr<nsIProperties> channelprops(do_QueryInterface(channel));
+
+    if (channelprops)
     {
-        httpChannel->GetReferrer(getter_AddRefs(referringURI));
-
-        // see if we should trust the referrer (which can be null):
-        //  - we are an httpChannel (we are if we're here)
-        //  - user has not turned off the feature
-        PRInt32 referrerLevel = 0;
-        nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
-        if ( prefBranch)
-        {
-            rv = prefBranch->GetIntPref( (const char*)"network.http.sendRefererHeader",
-                                         &referrerLevel );
-            trustReferrer = ( NS_SUCCEEDED(rv) && (referrerLevel >= 2) );
-        }
+        // Get the referrer from the channel properties if we can (not all
+        // channels support our internal-referrer property).
+        //
+        // It's possible docshell explicitly set a null referrer in the case
+        // of typed, pasted, or bookmarked URLs and the like. In this null
+        // referrer case we get NS_ERROR_NO_INTERFACE rather than the usual
+        // NS_ERROR_FAILURE that indicates the property was not set at all.
+        //
+        // A null referrer is automatically whitelisted as an explicit user
+        // action (though they'll still get the confirmation dialog). For a
+        // missing referrer we go to our fall-back plan of using the XPI
+        // location for whitelisting purposes.
+        rv = channelprops->Get(kReferrerProperty,
+                               NS_GET_IID(nsIURI),
+                               getter_AddRefs(referringURI));
+        if (NS_SUCCEEDED(rv) || rv == NS_ERROR_NO_INTERFACE)
+            useReferrer = PR_TRUE;
     }
-
 
     // Cancel the current request. nsXPInstallManager restarts the download
     // under its control (shared codepath with InstallTrigger)
@@ -212,14 +195,15 @@ nsInstallTrigger::HandleContent(const char * aContentType,
     // going to honor this request based on PermissionManager settings
     PRBool enabled = PR_FALSE;
 
-    if ( trustReferrer )
+    if ( useReferrer )
     {
-        // easiest and most common case: base decision on http referrer
+        // easiest and most common case: base decision on the page that
+        // contained the link
         //
         // NOTE: the XPI itself may be from elsewhere; the user can decide if
         // they trust the actual source when they get the install confirmation
         // dialog. The decision we're making here is whether the triggering
-        // site is one which is allowed to annoy the user with modal dialogs
+        // site is one which is allowed to annoy the user with modal dialogs.
 
         enabled = AllowInstall( referringURI );
     }
@@ -273,7 +257,7 @@ nsInstallTrigger::HandleContent(const char * aContentType,
         // TODO: fire event signaling blocked Install attempt
         rv = NS_ERROR_ABORT;
     }
-    
+
     return rv;
 }
 
@@ -386,21 +370,33 @@ nsInstallTrigger::AllowInstall(nsIURI* aLaunchURI)
 
 
 NS_IMETHODIMP
-nsInstallTrigger::UpdateEnabled(nsIScriptGlobalObject* aGlobalObject, PRBool* aReturn)
+nsInstallTrigger::UpdateEnabled(nsIScriptGlobalObject* aGlobalObject, PRBool aUseWhitelist, PRBool* aReturn)
 {
+    // disallow unless we successfully find otherwise
     *aReturn = PR_FALSE;
-    NS_ENSURE_ARG_POINTER(aGlobalObject);
 
-    // find the current site
-    nsCOMPtr<nsIDOMDocument> domdoc;
-    nsCOMPtr<nsIDOMWindow> window(do_QueryInterface(aGlobalObject));
-    if ( window )
+    if (!aUseWhitelist)
     {
-        window->GetDocument(getter_AddRefs(domdoc));
-        nsCOMPtr<nsIDocument> doc(do_QueryInterface(domdoc));
-        if ( doc )
+        // simple global pref check
+        nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+        if (prefBranch)
+            prefBranch->GetBoolPref( XPINSTALL_ENABLE_PREF, aReturn);
+    }
+    else
+    {
+        NS_ENSURE_ARG_POINTER(aGlobalObject);
+
+        // find the current site
+        nsCOMPtr<nsIDOMDocument> domdoc;
+        nsCOMPtr<nsIDOMWindow> window(do_QueryInterface(aGlobalObject));
+        if ( window )
         {
-            *aReturn = AllowInstall( doc->GetDocumentURI() );
+            window->GetDocument(getter_AddRefs(domdoc));
+            nsCOMPtr<nsIDocument> doc(do_QueryInterface(domdoc));
+            if ( doc )
+            {
+                *aReturn = AllowInstall( doc->GetDocumentURI() );
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 #
-# Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
+# Copyright 2004 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident	"$Id: Makefile.com,v 1.1.1.2 2003-07-08 17:17:58 rbasch Exp $"
+#ident	"$Id: Makefile.com,v 1.1.1.2.2.1 2005-01-06 18:58:27 ghudson Exp $"
 #
 
 MACH = $(shell mach)
@@ -16,7 +16,7 @@ endif
 
 PKGARCHIVE = $(PUBLISH_ROOT)/pkgarchive
 DATAFILES = copyright
-FILES = $(DATAFILES) pkginfo
+FILES = $(DATAFILES) pkginfo prototype
 
 PACKAGE = $(shell basename `pwd`)
 
@@ -24,6 +24,7 @@ PRODUCT_VERSION = $(shell grep NSS_VERSION $(CORE_DEPTH)/../dist/public/nss/nss.
 	| sed -e 's/"$$//' -e 's/.*"//' -e 's/ .*//')
 
 LN = /usr/bin/ln
+CP = /usr/bin/cp
 
 CLOBBERFILES = $(FILES)
 

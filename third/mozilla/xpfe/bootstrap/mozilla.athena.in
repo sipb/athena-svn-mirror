@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.13.2.1 2004-10-27 01:21:42 ghudson Exp $
+# $Id: mozilla.athena.in,v 1.13.2.2 2005-01-06 18:58:51 ghudson Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.

@@ -1456,6 +1456,9 @@
 
       <handler event="DOMWindowClose">
         <![CDATA[
+          if (!event.isTrusted)
+            return;
+
           const browsers = this.browsers;
           if (browsers.length == 1)
             return;
@@ -1466,6 +1469,24 @@
           }
           this.removeTab(this.mTabContainer.childNodes[i]);
           event.preventDefault();
+        ]]>
+      </handler>
+      <handler event="DOMWillOpenModalDialog">
+        <![CDATA[
+          if (!event.isTrusted)
+            return;
+
+          // We're about to open a modal dialog, make sure the opening
+          // tab is brought to the front.
+
+          const browsers = this.browsers;
+          for (var i = 0; i < browsers.length; ++i) {
+            if (browsers[i].contentWindow == event.target) {
+              this.selectedTab = this.mTabContainer.childNodes[i];
+
+              break;
+            }
+          }
         ]]>
       </handler>
     </handlers>

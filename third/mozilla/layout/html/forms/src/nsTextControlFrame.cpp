@@ -99,6 +99,7 @@
 #include "nsGUIEvent.h"
 #include "nsIDOMEventGroup.h"
 #include "nsIDOM3EventTarget.h"
+#include "nsIDOMNSEvent.h"
 #include "nsIDOMNSUIEvent.h"
 #include "nsIEventStateManager.h"
 
@@ -119,12 +120,17 @@
 #include "nsIEditorObserver.h"
 #include "nsITransactionManager.h"
 #include "nsIDOMText.h" //for multiline getselection
-
+#include "nsIDOMKeyListener.h"
+#include "nsIDOMEventGroup.h"
+#include "nsIDOM3EventTarget.h"
+#include "nsINativeKeyBindings.h"
 
 #ifdef IBMBIDI
 #include "nsIBidiKeyboard.h"
 #include "nsWidgetsCID.h"
 #endif // IBMBIDI
+
+#include "nsEventQueueUtils.h"
 
 #define DEFAULT_COLUMN_WIDTH 20
 
@@ -155,8 +161,12 @@ static nsresult GetElementFactoryService(nsIElementFactory **aFactory)
 }
 
 
+static nsINativeKeyBindings *sNativeInputBindings = nsnull;
+static nsINativeKeyBindings *sNativeTextAreaBindings = nsnull;
+
 class nsTextInputListener : public nsISelectionListener,
                             public nsIDOMFocusListener,
+                            public nsIDOMKeyListener,
                             public nsIEditorObserver,
                             public nsSupportsWeakReference
 {
@@ -186,11 +196,18 @@ public:
   NS_IMETHOD Blur (nsIDOMEvent* aEvent);
   /* END interfaces from nsIDOMFocusListener*/
 
+  // nsIDOMKeyListener
+  NS_IMETHOD KeyDown(nsIDOMEvent *aKeyEvent);
+  NS_IMETHOD KeyPress(nsIDOMEvent *aKeyEvent);
+  NS_IMETHOD KeyUp(nsIDOMEvent *aKeyEvent);
+
   NS_DECL_NSIEDITOROBSERVER
 
 protected:
 
   nsresult  UpdateTextInputCommands(const nsAString& commandsToUpdate);
+
+  NS_HIDDEN_(nsINativeKeyBindings*) GetKeyBindings();
 
 protected:
 
@@ -228,9 +245,18 @@ nsTextInputListener::~nsTextInputListener()
 {
 }
 
-NS_IMPL_ISUPPORTS5(nsTextInputListener, nsISelectionListener,
-                   nsIDOMEventListener, nsIDOMFocusListener,
-                   nsIEditorObserver, nsISupportsWeakReference)
+NS_IMPL_ADDREF(nsTextInputListener)
+NS_IMPL_RELEASE(nsTextInputListener)
+
+NS_INTERFACE_MAP_BEGIN(nsTextInputListener)
+  NS_INTERFACE_MAP_ENTRY(nsISelectionListener)
+  NS_INTERFACE_MAP_ENTRY(nsIEditorObserver)
+  NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMKeyListener)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMFocusListener)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsIDOMEventListener, nsIDOMFocusListener)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMFocusListener)
+NS_INTERFACE_MAP_END
 
 // BEGIN nsIDOMSelectionListener
 
@@ -330,6 +356,109 @@ nsTextInputListener::Blur(nsIDOMEvent* aEvent)
 
 // END nsIFocusListener
 
+// BEGIN nsIDOMKeyListener
+
+static void
+DoCommandCallback(const char *aCommand, void *aData)
+{
+  nsTextControlFrame *frame = NS_STATIC_CAST(nsTextControlFrame*, aData);
+  nsIContent *content = frame->GetContent();
+
+  nsCOMPtr<nsIControllers> controllers;
+  nsCOMPtr<nsIDOMNSHTMLInputElement> input = do_QueryInterface(content);
+  if (input) {
+    input->GetControllers(getter_AddRefs(controllers));
+  } else {
+    nsCOMPtr<nsIDOMNSHTMLTextAreaElement> textArea =
+      do_QueryInterface(content);
+
+    if (textArea) {
+      textArea->GetControllers(getter_AddRefs(controllers));
+    }
+  }
+
+  if (!controllers) {
+    NS_WARNING("Could not get controllers");
+    return;
+  }
+
+  nsCOMPtr<nsIController> controller;
+  controllers->GetControllerForCommand(aCommand, getter_AddRefs(controller));
+  if (controller) {
+    controller->DoCommand(aCommand);
+  }
+}
+
+static PRBool
+DOMEventToNativeKeyEvent(nsIDOMEvent      *aDOMEvent,
+                         nsNativeKeyEvent *aNativeEvent)
+{
+  nsCOMPtr<nsIDOMNSUIEvent> uievent = do_QueryInterface(aDOMEvent);
+  PRBool defaultPrevented;
+  uievent->GetPreventDefault(&defaultPrevented);
+  if (defaultPrevented)
+    return PR_FALSE;
+
+  nsCOMPtr<nsIDOMNSEvent> nsevent = do_QueryInterface(aDOMEvent);
+  PRBool trusted = PR_FALSE;
+  nsevent->GetIsTrusted(&trusted);
+  if (!trusted)
+    return PR_FALSE;
+
+  nsCOMPtr<nsIDOMKeyEvent> keyEvent = do_QueryInterface(aDOMEvent);
+
+  keyEvent->GetCharCode(&aNativeEvent->charCode);
+  keyEvent->GetKeyCode(&aNativeEvent->keyCode);
+  keyEvent->GetAltKey(&aNativeEvent->altKey);
+  keyEvent->GetCtrlKey(&aNativeEvent->ctrlKey);
+  keyEvent->GetShiftKey(&aNativeEvent->shiftKey);
+  keyEvent->GetMetaKey(&aNativeEvent->metaKey);
+
+  return PR_TRUE;
+}
+
+NS_IMETHODIMP
+nsTextInputListener::KeyDown(nsIDOMEvent *aKeyEvent)
+{
+  nsNativeKeyEvent nativeEvent;
+  nsINativeKeyBindings *bindings = GetKeyBindings();
+  if (bindings && DOMEventToNativeKeyEvent(aKeyEvent, &nativeEvent)) {
+    if (bindings->KeyDown(nativeEvent, DoCommandCallback, mFrame)) {
+      aKeyEvent->PreventDefault();
+    }
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsTextInputListener::KeyPress(nsIDOMEvent *aKeyEvent)
+{
+  nsNativeKeyEvent nativeEvent;
+  nsINativeKeyBindings *bindings = GetKeyBindings();
+  if (bindings && DOMEventToNativeKeyEvent(aKeyEvent, &nativeEvent)) {
+    if (bindings->KeyPress(nativeEvent, DoCommandCallback, mFrame)) {
+      aKeyEvent->PreventDefault();
+    }
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsTextInputListener::KeyUp(nsIDOMEvent *aKeyEvent)
+{
+  nsNativeKeyEvent nativeEvent;
+  nsINativeKeyBindings *bindings = GetKeyBindings();
+  if (bindings && DOMEventToNativeKeyEvent(aKeyEvent, &nativeEvent)) {
+    if (bindings->KeyUp(nativeEvent, DoCommandCallback, mFrame)) {
+      aKeyEvent->PreventDefault();
+    }
+  }
+
+  return NS_OK;
+}
+// END nsIDOMKeyListener
 
 // BEGIN nsIEditorObserver
 
@@ -388,6 +517,36 @@ nsTextInputListener::UpdateTextInputCommands(const nsAString& commandsToUpdate)
   return domWindow->UpdateCommands(commandsToUpdate);
 }
 
+nsINativeKeyBindings*
+nsTextInputListener::GetKeyBindings()
+{
+  if (mFrame->IsTextArea()) {
+    static PRBool sNoTextAreaBindings = PR_FALSE;
+
+    if (!sNativeTextAreaBindings && !sNoTextAreaBindings) {
+      CallGetService(NS_NATIVEKEYBINDINGS_CONTRACTID_PREFIX "textarea",
+                     &sNativeTextAreaBindings);
+
+      if (!sNativeTextAreaBindings) {
+        sNoTextAreaBindings = PR_TRUE;
+      }
+    }
+
+    return sNativeTextAreaBindings;
+  }
+
+  static PRBool sNoInputBindings = PR_FALSE;
+  if (!sNativeInputBindings && !sNoInputBindings) {
+    CallGetService(NS_NATIVEKEYBINDINGS_CONTRACTID_PREFIX "input",
+                   &sNativeInputBindings);
+
+    if (!sNativeInputBindings) {
+      sNoInputBindings = PR_TRUE;
+    }
+  }
+
+  return sNativeInputBindings;
+}
 
 // END nsTextInputListener
 
@@ -1279,6 +1438,22 @@ nsTextControlFrame::PreDestroy(nsIPresContext* aPresContext)
     {
       erP->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMFocusListener  *,mTextListener), NS_GET_IID(nsIDOMFocusListener));
     }
+
+    nsCOMPtr<nsIDOMEventGroup> systemGroup;
+    erP->GetSystemEventGroup(getter_AddRefs(systemGroup));
+    nsCOMPtr<nsIDOM3EventTarget> dom3Targ = do_QueryInterface(mContent);
+    if (dom3Targ) {
+      // cast because of ambiguous base
+      nsIDOMEventListener *listener = NS_STATIC_CAST(nsIDOMKeyListener*,
+                                                     mTextListener);
+
+      dom3Targ->RemoveGroupedEventListener(NS_LITERAL_STRING("keydown"),
+                                           listener, PR_FALSE, systemGroup);
+      dom3Targ->RemoveGroupedEventListener(NS_LITERAL_STRING("keypress"),
+                                           listener, PR_FALSE, systemGroup);
+      dom3Targ->RemoveGroupedEventListener(NS_LITERAL_STRING("keyup"),
+                                           listener, PR_FALSE, systemGroup);
+    }
   }
 
   mDidPreDestroy = PR_TRUE; 
@@ -1290,6 +1465,11 @@ nsTextControlFrame::Destroy(nsIPresContext* aPresContext)
   if (!mDidPreDestroy) {
     PreDestroy(aPresContext);
   }
+
+  nsCOMPtr<nsIEventQueue> eventQ;
+  nsresult rv = NS_GetMainEventQ(getter_AddRefs(eventQ));
+  if (NS_SUCCEEDED(rv))
+    eventQ->RevokeEvents(this);
   return nsBoxFrame::Destroy(aPresContext);
 }
 
@@ -1505,30 +1685,58 @@ nsTextControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
   return NS_ERROR_FAILURE;
 }
 
+PR_CALLBACK void *
+HandleEditorInitEvent(PLEvent *aEvent)
+{
+  nsTextControlFrame *frame = NS_STATIC_CAST(nsTextControlFrame *,
+                                             PL_GetEventOwner(aEvent));
+  frame->ReallyInitEditor();
+  return nsnull;
+}
+
+PR_CALLBACK void
+DestroyEditorInitEvent(PLEvent *aEvent)
+{
+  delete aEvent;
+}
+
 nsresult
 nsTextControlFrame::InitEditor()
 {
-  // This method must be called during/after the text
-  // control frame's initial reflow to avoid any unintened
-  // forced reflows that might result when the editor
-  // calls into DOM/layout code while trying to set the
-  // initial string.
+  nsCOMPtr<nsIEventQueue> eventQ;
+  nsresult rv = NS_GetMainEventQ(getter_AddRefs(eventQ));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  PLEvent *evt = new PLEvent();
+  NS_ENSURE_TRUE(evt, NS_ERROR_OUT_OF_MEMORY);
+
+  PL_InitEvent(evt, this, ::HandleEditorInitEvent, ::DestroyEditorInitEvent);
+  
+  rv = eventQ->PostEvent(evt);
+  if (NS_FAILED(rv))
+    PL_DestroyEvent(evt);
+
+  return rv;
+}
+
+void
+nsTextControlFrame::ReallyInitEditor()
+{
+  // This method is called asynchronously after the initial reflow
+  // to avoid re-entering frame construction.
   //
-  // This code used to be called from CreateAnonymousContent(),
-  // but when the editor set the initial string, it would trigger
-  // a PresShell listener which called FlushPendingNotifications()
-  // during frame construction. This was causing other form controls
-  // to display wrong values.
+  // XXX We can get rid of the deferred-initialization code now
+  // XXX that we put it off on an event.
 
   // Check if this method has been called already.
   // If so, just return early.
 
   if (mUseEditor)
-    return NS_OK;
+    return;
 
   // If the editor is not here, then we can't use it, now can we?
   if (!mEditor)
-    return NS_ERROR_NOT_INITIALIZED;
+    return;
 
   // Get the current value of the textfield from the content.
   nsAutoString defaultValue;
@@ -1543,47 +1751,43 @@ nsTextControlFrame::InitEditor()
   // displayed for password fields, etc. SetValue() will call the
   // editor for us.
 
-  if (!defaultValue.IsEmpty()) {
-    PRUint32 editorFlags = 0;
+  if (defaultValue.IsEmpty())
+    return;
 
-    nsresult rv = mEditor->GetFlags(&editorFlags);
-
-    if (NS_FAILED(rv))
-      return rv;
-
-    // Avoid causing reentrant painting and reflowing by telling the editor
-    // that we don't want it to force immediate view refreshes or force
-    // immediate reflows during any editor calls.
-
-    rv = mEditor->SetFlags(editorFlags |
-                           nsIPlaintextEditor::eEditorUseAsyncUpdatesMask);
-
-    if (NS_FAILED(rv))
-      return rv;
-
-    // Now call SetValue() which will make the neccessary editor calls to set
-    // the default value.  Make sure to turn off undo before setting the default
-    // value, and turn it back on afterwards. This will make sure we can't undo
-    // past the default value.
-
-    rv = mEditor->EnableUndo(PR_FALSE);
-
-    if (NS_FAILED(rv))
-      return rv;
-
-    SetValue(defaultValue);
-
-    rv = mEditor->EnableUndo(PR_TRUE);
-    NS_ASSERTION(NS_SUCCEEDED(rv),"Transaction Manager must have failed");
-    // Now restore the original editor flags.
-
-    rv = mEditor->SetFlags(editorFlags);
-
-    if (NS_FAILED(rv))
-      return rv;
-  }
-
-  return NS_OK;
+  PRUint32 editorFlags = 0;
+  
+  nsresult rv = mEditor->GetFlags(&editorFlags);
+  
+  if (NS_FAILED(rv))
+    return;
+  
+  // Avoid causing reentrant painting and reflowing by telling the editor
+  // that we don't want it to force immediate view refreshes or force
+  // immediate reflows during any editor calls.
+  
+  rv = mEditor->SetFlags(editorFlags |
+                         nsIPlaintextEditor::eEditorUseAsyncUpdatesMask);
+  
+  if (NS_FAILED(rv))
+    return;
+  
+  // Now call SetValue() which will make the neccessary editor calls to set
+  // the default value.  Make sure to turn off undo before setting the default
+  // value, and turn it back on afterwards. This will make sure we can't undo
+  // past the default value.
+  
+  rv = mEditor->EnableUndo(PR_FALSE);
+  
+  if (NS_FAILED(rv))
+    return;
+  
+  SetValue(defaultValue);
+  
+  rv = mEditor->EnableUndo(PR_TRUE);
+  NS_ASSERTION(NS_SUCCEEDED(rv),"Transaction Manager must have failed");
+  
+  // Now restore the original editor flags.
+  mEditor->SetFlags(editorFlags);
 }
 
 // XXXldb I'm not sure if we really want the 'text-decoration: inherit',
@@ -2307,6 +2511,8 @@ nsTextControlFrame::SelectAllContents()
   if (!mEditor)
     return NS_OK;
 
+  ReallyInitEditor();  // Ensure that editor is initialized fully
+
   nsCOMPtr<nsIDOMElement> rootElement;
   nsresult rv = mEditor->GetRootElement(getter_AddRefs(rootElement));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -2336,6 +2542,8 @@ nsTextControlFrame::SetSelectionEndPoints(PRInt32 aSelStart, PRInt32 aSelEnd)
 
   if (aSelStart > aSelEnd)
     return NS_ERROR_FAILURE;
+
+  ReallyInitEditor();  // Ensure that editor is initialized fully
 
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startOffset, endOffset;
@@ -2594,6 +2802,8 @@ nsTextControlFrame::GetSelectionRange(PRInt32* aSelectionStart, PRInt32* aSelect
 {
   // make sure we have an editor
   NS_ENSURE_TRUE(mEditor, NS_ERROR_NOT_INITIALIZED);
+
+  ReallyInitEditor();  // Ensure that editor is initialized fully
 
   *aSelectionStart = 0;
   *aSelectionEnd = 0;
@@ -3073,16 +3283,31 @@ nsTextControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
       scrollableFrame->SetScrollbarVisibility(aPresContext,PR_FALSE,PR_FALSE);
   }
 
-  //register keylistener
-  nsCOMPtr<nsIDOMEventReceiver> erP;
-  if (NS_SUCCEEDED(mContent->QueryInterface(NS_GET_IID(nsIDOMEventReceiver), getter_AddRefs(erP))) && erP)
-  {
-    // register the event listeners with the DOM event reveiver
+  //register focus and key listeners
+  nsCOMPtr<nsIDOMEventReceiver> erP = do_QueryInterface(mContent);
+  if (erP) {
+    // register the event listeners with the DOM event receiver
     rv = erP->AddEventListenerByIID(NS_STATIC_CAST(nsIDOMFocusListener *,mTextListener), NS_GET_IID(nsIDOMFocusListener));
     NS_ASSERTION(NS_SUCCEEDED(rv), "failed to register focus listener");
     // XXXbryner do we need to check for a null presshell here?
     if (!aPresContext->GetPresShell())
       return NS_ERROR_FAILURE;
+  }
+
+  nsCOMPtr<nsIDOMEventGroup> systemGroup;
+  erP->GetSystemEventGroup(getter_AddRefs(systemGroup));
+  nsCOMPtr<nsIDOM3EventTarget> dom3Targ = do_QueryInterface(mContent);
+  if (dom3Targ) {
+    // cast because of ambiguous base
+    nsIDOMEventListener *listener = NS_STATIC_CAST(nsIDOMKeyListener*,
+                                                   mTextListener);
+
+    dom3Targ->AddGroupedEventListener(NS_LITERAL_STRING("keydown"),
+                                      listener, PR_FALSE, systemGroup);
+    dom3Targ->AddGroupedEventListener(NS_LITERAL_STRING("keypress"),
+                                      listener, PR_FALSE, systemGroup);
+    dom3Targ->AddGroupedEventListener(NS_LITERAL_STRING("keyup"),
+                                      listener, PR_FALSE, systemGroup);
   }
 
   while(first)
@@ -3175,4 +3400,11 @@ nsTextControlFrame::HandleEvent(nsIPresContext* aPresContext,
 
   return nsStackFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
     
+}
+
+/* static */ void
+nsTextControlFrame::ShutDown()
+{
+  NS_IF_RELEASE(sNativeTextAreaBindings);
+  NS_IF_RELEASE(sNativeInputBindings);
 }

@@ -59,6 +59,7 @@ pref("slider.snapMultiplier", 6);
 pref("browser.fixup.alternate.enabled", true);
 pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
+pref("browser.fixup.hide_user_pass", true);
 
 // Scripts & Windows prefs
 pref("browser.block.target_new_window",     false);
@@ -70,7 +71,7 @@ pref("dom.disable_window_status_change",    false);
 pref("dom.disable_window_open_feature.titlebar",    false);
 pref("dom.disable_window_open_feature.close",       false);
 pref("dom.disable_window_open_feature.toolbar",     false);
-pref("dom.disable_window_open_feature.location",    false);
+pref("dom.disable_window_open_feature.location",    true);
 pref("dom.disable_window_open_feature.directories", false);
 pref("dom.disable_window_open_feature.personalbar", false);
 pref("dom.disable_window_open_feature.menubar",     false);
@@ -99,10 +100,15 @@ pref("image.animation_mode",                "normal");
 // prevents necko connecting to ports 1-5 unless the protocol
 // overrides.
 
+// Default action for unlisted external protocol handlers
+pref("network.protocol-handler.external-default", true);      // OK to load
+pref("network.protocol-handler.warn-external-default", true); // warn before load
+
 // Prevent using external protocol handlers for these schemes
 pref("network.protocol-handler.external.hcp", false);
 pref("network.protocol-handler.external.vbscript", false);
 pref("network.protocol-handler.external.javascript", false);
+pref("network.protocol-handler.external.data", false);
 pref("network.protocol-handler.external.ms-help", false);
 pref("network.protocol-handler.external.vnd.ms.radio", false);
 pref("network.protocol-handler.external.help", false);

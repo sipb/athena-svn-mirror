@@ -406,13 +406,11 @@ nsMovemailService::GetNewMail(nsIMsgWindow *aMsgWindow,
             
     // MIDDLE of the FUN : consume the mailbox data.
     PRBool isMore = PR_TRUE;
-    nsAutoString bufferUnicode;
     nsCAutoString buffer;
 
     while (isMore &&
-           NS_SUCCEEDED(lineInputStream->ReadLine(bufferUnicode, &isMore)))
+           NS_SUCCEEDED(lineInputStream->ReadLine(buffer, &isMore)))
     {
-        CopyUCS2toASCII(bufferUnicode, buffer);
 
         // If first string is empty and we're now at EOF then abort parsing.
         if (buffer.IsEmpty() && !isMore) {
@@ -426,7 +424,7 @@ nsMovemailService::GetNewMail(nsIMsgWindow *aMsgWindow,
         outFileStream << buffer.get();
 
         // 'From' lines delimit messages
-        if (isMore && !PL_strncasecmp(buffer.get(), "From ", 5)) {
+        if (isMore && !strncmp(buffer.get(), "From ", 5)) {
             buffer = NS_LITERAL_CSTRING("X-Mozilla-Status: 8000" MSG_LINEBREAK);
             newMailParser->HandleLine(buffer.BeginWriting(), buffer.Length());
             outFileStream << buffer.get();

@@ -219,8 +219,15 @@ nsEventQueueImpl::StopAcceptingEvents()
 void
 nsEventQueueImpl::NotifyObservers(const char *aTopic)
 {
-  nsresult rv;
+  // only send out this notification for native event queues
+  if (!PL_IsQueueNative(mEventQueue))
+    return;
 
+  // we should not call out to the observer service from background threads!
+  NS_ASSERTION(nsIThread::IsMainThread(),
+               "Native event queues should only be used on the main thread");
+
+  nsresult rv;
   nsCOMPtr<nsIObserverService> os = do_GetService("@mozilla.org/observer-service;1", &rv);
   if (NS_SUCCEEDED(rv)) {
     nsCOMPtr<nsIEventQueue> kungFuDeathGrip(this);

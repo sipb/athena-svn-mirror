@@ -113,7 +113,7 @@
 #include "nsIDOMHTMLImageElement.h"
 #include "nsIDOMHTMLFrameSetElement.h"
 #ifdef MOZ_XUL
-#include "nsIXULDocument.h"  // Temporary code for Bug 136185
+#include "nsIXULDocument.h"
 #endif
 
 #include "nsIClipboardHelper.h"
@@ -716,6 +716,10 @@ DocumentViewerImpl::InitPresentationStuff(PRBool aDoInitialReflow)
     if (mEnableRendering) {
       mViewManager->EnableRefresh(NS_VMREFRESH_IMMEDIATE);
     }
+  } else {
+    // Store the visible area so it's available for other callers of
+    // InitialReflow, like nsContentSink::StartLayout.
+    mPresContext->SetVisibleArea(nsRect(0, 0, width, height));
   }
 
   // now register ourselves as a selection listener, so that we get
@@ -991,15 +995,22 @@ DocumentViewerImpl::PermitUnload(PRBool *aPermitUnload)
   // to unload...
   nsEventStatus status = nsEventStatus_eIgnore;
   nsBeforePageUnloadEvent event(NS_BEFORE_PAGE_UNLOAD);
+  nsresult rv = NS_OK;
 
-  // In evil cases we might be destroyed while handling the
-  // onbeforeunload event, don't let that happen.
-  nsRefPtr<DocumentViewerImpl> kungFuDeathGrip(this);
+  {
+    // Never permit popups from the beforeunload handler, no matter
+    // how we get here.
+    nsAutoPopupStatePusher popupStatePusher(openAbused, PR_TRUE);
 
-  mInPermitUnload = PR_TRUE;
-  nsresult rv = global->HandleDOMEvent(mPresContext, &event, nsnull,
-                                       NS_EVENT_FLAG_INIT, &status);
-  mInPermitUnload = PR_FALSE;
+    // In evil cases we might be destroyed while handling the
+    // onbeforeunload event, don't let that happen.
+    nsRefPtr<DocumentViewerImpl> kungFuDeathGrip(this);
+
+    mInPermitUnload = PR_TRUE;
+    rv = global->HandleDOMEvent(mPresContext, &event, nsnull,
+                                NS_EVENT_FLAG_INIT, &status);
+    mInPermitUnload = PR_FALSE;
+  }
 
   if (NS_SUCCEEDED(rv) && event.flags & NS_EVENT_FLAG_NO_DEFAULT) {
     // Ask the user if it's ok to unload the current page
@@ -1088,6 +1099,10 @@ DocumentViewerImpl::Unload()
   // Now, fire an Unload event to the document...
   nsEventStatus status = nsEventStatus_eIgnore;
   nsEvent event(NS_PAGE_UNLOAD);
+
+  // Never permit popups from the unload handler, no matter how we get
+  // here.
+  nsAutoPopupStatePusher popupStatePusher(openAbused, PR_TRUE);
 
   return global->HandleDOMEvent(mPresContext, &event, nsnull,
                                 NS_EVENT_FLAG_INIT, &status);
@@ -1304,7 +1319,14 @@ DocumentViewerImpl::SetDOMDocument(nsIDOMDocument *aDocument)
 
   // 2) Replace the current pres shell with a new shell for the new document
 
+  nsCOMPtr<nsILinkHandler> linkHandler;
   if (mPresShell) {
+    if (mPresContext) {
+      // Save the linkhandler (nsPresShell::Destroy removes it from
+      // mPresContext).
+      linkHandler = mPresContext->GetLinkHandler();
+    }
+
     mPresShell->EndObservingDocument();
     mPresShell->Destroy();
 
@@ -1313,6 +1335,11 @@ DocumentViewerImpl::SetDOMDocument(nsIDOMDocument *aDocument)
 
   // And if we're already given a prescontext...
   if (mPresContext) {
+    // If we had a linkHandler and it got removed, put it back.
+    if (linkHandler) {
+      mPresContext->SetLinkHandler(linkHandler);
+    }
+
     // 3) Create a new style set for the document
 
     nsStyleSet *styleSet;
@@ -3068,6 +3095,15 @@ DocumentViewerImpl::Print(nsIPrintSettings*       aPrintSettings,
 #ifdef NS_PRINTING
   INIT_RUNTIME_ERROR_CHECKING();
 
+#ifdef MOZ_XUL
+  // Temporary code for Bug 136185 / Bug 240490
+  nsCOMPtr<nsIXULDocument> xulDoc(do_QueryInterface(mDocument));
+  if (xulDoc) {
+    nsPrintEngine::ShowPrintErrorDialog(NS_ERROR_NOT_IMPLEMENTED);
+    return NS_ERROR_FAILURE;
+  }
+#endif
+
   nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(mContainer));
   NS_ASSERTION(docShell, "This has to be a docshell");
 
@@ -3159,6 +3195,16 @@ DocumentViewerImpl::PrintPreview(nsIPrintSettings* aPrintSettings,
     nsPrintEngine::CloseProgressDialog(aWebProgressListener);
     return NS_ERROR_FAILURE;
   }
+
+#ifdef MOZ_XUL
+  // Temporary code for Bug 136185 / Bug 240490
+  nsCOMPtr<nsIXULDocument> xulDoc(do_QueryInterface(mDocument));
+  if (xulDoc) {
+    nsPrintEngine::CloseProgressDialog(aWebProgressListener);
+    nsPrintEngine::ShowPrintErrorDialog(NS_ERROR_NOT_IMPLEMENTED, PR_FALSE);
+    return NS_ERROR_FAILURE;
+  }
+#endif
 
   if (!mPrintEngine) {
     mPrintEngine = new nsPrintEngine();

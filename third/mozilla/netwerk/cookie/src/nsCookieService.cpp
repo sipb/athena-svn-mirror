@@ -80,9 +80,11 @@ static const char kCookieFileName[] = "cookies.txt";
 
 static const PRUint32 kLazyWriteTimeout = 5000; //msec
 
-static const PRUint32 kMaxNumberOfCookies = 300;
-static const PRUint32 kMaxCookiesPerHost = 20;
-static const PRUint32 kMaxBytesPerCookie = 4096;
+// default limits for the cookie list. these can be tuned by the
+// network.cookie.maxNumber and network.cookie.maxPerHost prefs respectively.
+static const PRUint32 kMaxNumberOfCookies = 1000;
+static const PRUint32 kMaxCookiesPerHost  = 50;
+static const PRUint32 kMaxBytesPerCookie  = 4096;
 
 // this constant augments those defined on nsICookie, and indicates
 // the cookie should be rejected because of an error (rather than
@@ -103,7 +105,9 @@ static const PRUint32 BEHAVIOR_REJECT        = 2;
 static const PRUint32 BEHAVIOR_P3P           = 3;
 
 // pref string constants
-static const char kCookiesPermissions[] = "network.cookie.cookieBehavior";
+static const char kPrefCookiesPermissions[] = "network.cookie.cookieBehavior";
+static const char kPrefMaxNumberOfCookies[] = "network.cookie.maxNumber";
+static const char kPrefMaxCookiesPerHost[]  = "network.cookie.maxPerHost";
 
 // struct for temporarily storing cookie attributes during header parsing
 struct nsCookieAttributes
@@ -377,6 +381,8 @@ nsCookieService::nsCookieService()
  , mCookieChanged(PR_FALSE)
  , mCookieIconVisible(PR_FALSE)
  , mCookiesPermissions(BEHAVIOR_ACCEPT)
+ , mMaxNumberOfCookies(kMaxNumberOfCookies)
+ , mMaxCookiesPerHost(kMaxCookiesPerHost)
 {
 }
 
@@ -390,7 +396,9 @@ nsCookieService::Init()
   // init our pref and observer
   nsCOMPtr<nsIPrefBranchInternal> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
   if (prefBranch) {
-    prefBranch->AddObserver(kCookiesPermissions, this, PR_TRUE);
+    prefBranch->AddObserver(kPrefCookiesPermissions, this, PR_TRUE);
+    prefBranch->AddObserver(kPrefMaxNumberOfCookies, this, PR_TRUE);
+    prefBranch->AddObserver(kPrefMaxCookiesPerHost,  this, PR_TRUE);
     PrefChanged(prefBranch);
   }
 
@@ -581,8 +589,8 @@ nsCookieService::GetCookieStringFromHttp(nsIURI     *aHostURI,
         continue;
       }
 
-        // check if the cookie has expired
-      if (!cookie->IsSession() && cookie->Expiry() <= currentTime) {
+      // check if the cookie has expired
+      if (cookie->Expiry() <= currentTime) {
         continue;
       }
 
@@ -788,9 +796,15 @@ void
 nsCookieService::PrefChanged(nsIPrefBranch *aPrefBranch)
 {
   PRInt32 val;
-  if (NS_SUCCEEDED(aPrefBranch->GetIntPref(kCookiesPermissions, &val)) &&
+  if (NS_SUCCEEDED(aPrefBranch->GetIntPref(kPrefCookiesPermissions, &val)) &&
       val >= 0 && val <= 3)
     mCookiesPermissions = val;
+
+  if (NS_SUCCEEDED(aPrefBranch->GetIntPref(kPrefMaxNumberOfCookies, &val)))
+    mMaxNumberOfCookies = val;
+
+  if (NS_SUCCEEDED(aPrefBranch->GetIntPref(kPrefMaxCookiesPerHost, &val)))
+    mMaxCookiesPerHost = val;
 }
 
 /******************************************************************************
@@ -907,7 +921,6 @@ nsCookieService::Read()
 
   static NS_NAMED_LITERAL_CSTRING(kTrue, "TRUE");
 
-  nsAutoString bufferUnicode;
   nsCAutoString buffer;
   PRBool isMore = PR_TRUE;
   PRInt32 hostIndex = 0, isDomainIndex, pathIndex, secureIndex, expiresIndex, nameIndex, cookieIndex;
@@ -934,11 +947,7 @@ nsCookieService::Read()
    *         most-recently used come first; least-recently-used come last.
    */
 
-  while (isMore && NS_SUCCEEDED(lineInputStream->ReadLine(bufferUnicode, &isMore))) {
-    // downconvert to ASCII. eventually, we want to fix nsILineInputStream
-    // to operate on a CString buffer...
-    CopyUCS2toASCII(bufferUnicode, buffer);
-
+  while (isMore && NS_SUCCEEDED(lineInputStream->ReadLine(buffer, &isMore))) {
     if (buffer.IsEmpty() || buffer.First() == '#') {
       continue;
     }
@@ -1131,6 +1140,7 @@ nsCookieService::SetCookieInternal(nsIURI             *aHostURI,
   // create a stack-based nsCookieAttributes, to store all the
   // attributes parsed from the cookie
   nsCookieAttributes cookieAttributes;
+  cookieAttributes.expiryTime = LL_MAXINT;
 
   // newCookie says whether there are multiple cookies in the header; so we can handle them separately.
   // after this function, we don't need the cookieHeader string for processing this cookie anymore;
@@ -1224,7 +1234,7 @@ nsCookieService::AddInternal(nsCookie   *aCookie,
     RemoveCookieFromList(matchIter);
 
     // check if the cookie has expired
-    if (!aCookie->IsSession() && aCookie->Expiry() <= aCurrentTime) {
+    if (aCookie->Expiry() <= aCurrentTime) {
       COOKIE_LOGFAILURE(SET_COOKIE, aHostURI, aCookieHeader, "previously stored cookie was deleted");
       NotifyChanged(oldCookie, NS_LITERAL_STRING("deleted").get());
       return;
@@ -1237,24 +1247,24 @@ nsCookieService::AddInternal(nsCookie   *aCookie,
 
   } else {
     // check if cookie has already expired
-    if (!aCookie->IsSession() && aCookie->Expiry() <= aCurrentTime) {
+    if (aCookie->Expiry() <= aCurrentTime) {
       COOKIE_LOGFAILURE(SET_COOKIE, aHostURI, aCookieHeader, "cookie has already expired");
       return;
     }
 
     // check if we have to delete an old cookie.
     nsEnumerationData data(aCurrentTime, LL_MAXINT);
-    if (CountCookiesFromHost(aCookie, data) >= kMaxCookiesPerHost) {
+    if (CountCookiesFromHost(aCookie, data) >= mMaxCookiesPerHost) {
       // remove the oldest cookie from host
       oldCookie = data.iter.current;
       RemoveCookieFromList(data.iter);
 
-    } else if (mCookieCount >= kMaxNumberOfCookies) {
+    } else if (mCookieCount >= mMaxNumberOfCookies) {
       // try to make room, by removing expired cookies
       RemoveExpiredCookies(aCurrentTime);
 
       // check if we still have to get rid of something
-      if (mCookieCount >= kMaxNumberOfCookies) {
+      if (mCookieCount >= mMaxNumberOfCookies) {
         // find the position of the oldest cookie, and remove it
         data.oldestTime = LL_MAXINT;
         FindOldestCookie(data);
@@ -1920,7 +1930,7 @@ removeExpiredCallback(nsCookieEntry *aEntry,
 {
   const nsInt64 &currentTime = *NS_STATIC_CAST(nsInt64*, aArg);
   for (nsListIter iter(aEntry, nsnull, aEntry->Head()); iter.current; ) {
-    if (!iter.current->IsSession() && iter.current->Expiry() <= currentTime)
+    if (iter.current->Expiry() <= currentTime)
       // remove from list. this takes care of updating the iterator for us
       nsCookieService::gCookieService->RemoveCookieFromList(iter);
     else
@@ -1971,7 +1981,7 @@ nsCookieService::CountCookiesFromHost(nsCookie          *aCookie,
     nsCookieEntry *entry = mHostTable.GetEntry(currentDot);
     for (nsListIter iter(entry); iter.current; ++iter) {
       // only count session or non-expired cookies
-      if (iter.current->IsSession() || iter.current->Expiry() > aData.currentTime) {
+      if (iter.current->Expiry() > aData.currentTime) {
         ++countFromHost;
 
         // check if we've found the oldest cookie so far

@@ -39,7 +39,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslsock.c,v 1.1.1.2 2003-07-08 17:24:34 rbasch Exp $
+ * $Id: sslsock.c,v 1.1.1.2.2.1 2005-01-06 18:58:25 ghudson Exp $
  */
 #include "seccomon.h"
 #include "cert.h"
@@ -459,13 +459,17 @@ SECStatus
 ssl_EnableNagleDelay(sslSocket *ss, PRBool enabled)
 {
     PRFileDesc *       osfd = ss->fd->lower;
-    int 	       rv;
+    SECStatus         rv = SECFailure;
     PRSocketOptionData opt;
 
     opt.option         = PR_SockOpt_NoDelay;
     opt.value.no_delay = (PRBool)!enabled;
 
-    rv = osfd->methods->setsocketoption(osfd, &opt);
+    if (osfd->methods->setsocketoption) {
+        rv = (SECStatus) osfd->methods->setsocketoption(osfd, &opt);
+    } else {
+        PR_SetError(PR_NOT_IMPLEMENTED_ERROR, 0);
+    }
 
     return rv;
 }

@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: devutil.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:44:03 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: devutil.c,v $ $Revision: 1.1.1.6.2.1 $ $Date: 2005-01-06 18:58:15 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef DEVM_H
@@ -582,6 +582,7 @@ clear_cache (
     nssCryptokiObjectAndAttributes **oa;
     PRUint32 objectType;
     for (objectType = cachedCerts; objectType <= cachedCRLs; objectType++) {
+	cache->searchedObjectType[objectType] = PR_FALSE;
 	if (!cache->objects[objectType]) {
 	    continue;
 	}
@@ -593,7 +594,6 @@ clear_cache (
 	}
 	nss_ZFreeIf(cache->objects[objectType]);
 	cache->objects[objectType] = NULL;
-	cache->searchedObjectType[objectType] = PR_FALSE;
     }
 }
 

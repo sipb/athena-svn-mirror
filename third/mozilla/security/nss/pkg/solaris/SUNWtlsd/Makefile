@@ -2,7 +2,7 @@
 # Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident	"$Id: Makefile,v 1.1.1.1 2005-01-05 16:30:46 rbasch Exp $"
+#ident	"$Id: Makefile,v 1.1.2.1 2005-01-06 18:58:28 ghudson Exp $"
 #
 
 CORE_DEPTH = ../../../..
