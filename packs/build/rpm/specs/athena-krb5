@@ -37,8 +37,10 @@ cp user-kerberos.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user/20kerberos
 chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user/20kerberos
 %endif
 
+%ifos linux
 # Don't install /bin/login on Linux.
 rm $RPM_BUILD_ROOT/bin/login
+%endif
 
 
 find $RPM_BUILD_ROOT -type f -or -type l |
