@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ ! -r /mit/infoagents ]; then
+	/bin/athena/attach -q infoagents
+fi
+if [ "$ATHENA_ATTACHRUN_RECURSION" = $$ -o ! -x @BINDIR@/htmlview ]; then
+	echo "Can't find the htmlview program in the infoagents locker."
+	echo "Please try again later."
+	exit 1
+fi
+ATHENA_ATTACHRUN_RECURSION=$$ export ATHENA_ATTACHRUN_RECURSION
+PATH="@BINDIR@:$PATH"
+exec htmlview -c http://student.mit.edu/
