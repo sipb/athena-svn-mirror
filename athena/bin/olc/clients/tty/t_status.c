@@ -19,20 +19,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.20 1991-09-10 13:34:13 lwvanels Exp $
+ *	$Id: t_status.c,v 1.21 1991-11-05 14:09:06 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.20 1991-09-10 13:34:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.21 1991-11-05 14:09:06 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
-#include "version.h"
 
 ERRCODE
 t_personal_status(Request,chart)
@@ -423,17 +422,4 @@ t_pp_stati()
 	}
     }
   printf("\n");
-}
-
-ERRCODE
-t_version(Request)
-     REQUEST *Request;
-{
-  char *output;
-  int status;
-
-  status = OVersion(Request,&output);
-  printf("Server version: %s\n",output);
-  printf("Client version: %s: %s\n",VERSION_STRING,VERSION_INFO);
-  return(status);
 }
