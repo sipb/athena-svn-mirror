@@ -1,4 +1,4 @@
-# $Id: packages,v 1.85 1999-09-10 17:16:37 danw Exp $
+# $Id: packages,v 1.86 1999-09-11 18:05:00 danw Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -95,7 +95,7 @@ athena/lib/ares
 athena/lib/athdir
 athena/lib/et
 athena/lib/hesiod
-athena/lib/larv
+athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
 athena/lib/neos			requires krb5,hesiod
 athena/lib/ss			requires readline,et
