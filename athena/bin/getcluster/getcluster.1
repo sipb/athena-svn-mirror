@@ -8,20 +8,19 @@ getcluster \- retrieve service cluster info from Hesiod as environment vars
 ] [
 .B \-d
 ] [
-.B -l local
-] [
-.B -f fallback
-] hostname version
+.B -h
+.I hostname
+] version
 .PP
 .SH DESCRIPTION
-.I Getcluster
+.B getcluster
 queries the Hesiod database for service cluster information associated
 with the workstation on which it is run.  It writes a set of environment
 variable assignments on its standard output in a format acceptable
 to the C shell, or, if the
 .B \-b
 flag is present, in Bourne shell syntax.
-.I Getcluster
+.B getcluster
 returns an exit status of 2 if no cluster information is available, or
 1 if any other error was encountered.
 .PP
@@ -33,19 +32,29 @@ definition applies.  Currently, the only defined flag is 't',
 indicating that the Athena release specified by the version is in
 testing.
 .PP
-If a fallback cluster information file is specified with the
-.B \-f
-flag, that file is read and the cluster records in it are considered
-lower priority than the Hesiod cluster records. For each variable
-name in the Hesiod cluster record, no record with the same variable
-name in the fallback file will be considered. Similarly, if a local
-cluster information file is specified with the
-.B \-l
-flag, that file is read and the cluster records in it are considered
-higher priority than the Hesiod cluster records and fallback cluster
-records.
+By default,
+.B getcluster
+looks up cluster information for the current hostname.  This name may
+be overridden by the contents of the file
+.B /etc/athena/cluster
+or via the command line using the
+.B \-h
+option.  A cluster name such as
+.B public-linux
+may be given in place of a hostname.
 .PP
-.I Getcluster
+If
+.B /etc/athena/cluster.fallback
+is present, that file is read and the cluster records in it are
+considered lower priority than the Hesiod cluster records.  For each
+variable name in the Hesiod cluster record, no record with the same
+variable name in the fallback file will be considered.  If
+.B /etc/athena/cluster.local
+is present, that file is read and the cluster records in it are
+considered higher priority than the Hesiod cluster records and
+fallback cluster records.
+.PP
+.B getcluster
 may discard a cluster record if it specifies a version which is
 higher than the current workstation version (as given by the
 .I version
@@ -67,15 +76,15 @@ is not defined or specifies a Unix time value greater than the current
 time.
 .PP
 After discarding records for the above reasons,
-.I getcluster
+.B getcluster
 outputs variable definitions for each of the variables mentioned in
 the remaining records.  For each variable,
-.I getcluster
+.B getcluster
 selects the value given in the record with the highest version number,
 or uses a record with no version number if no records with version
 numbers are present.
 .PP
-.I Getcluster
+.I getcluster
 may also output three special variable definitions:
 .IP NEW_TESTING_RELEASE
 If any records were discarded because they contained the 't' flag and
@@ -109,7 +118,7 @@ will ignore the hostname argument and instead read lines from standard
 input, treating each line as if it were an entry in the Hesiod
 database for the host's cluster information.
 .PP
-.I Getcluster
+.I getcluster
 is usually invoked from
 .I save_cluster_info (8),
 which places its output in the files
@@ -120,15 +129,28 @@ to be accessed by the C shell in a user's .login file and the Bourne
 shell in a user's .profile, respectively.  It may also be invoked
 directly by any user.
 .PP
-Getcluster uses the Hesiod type "cluster".
+.B getcluster
+uses the Hesiod type
+.BR cluster .
+.SH DEPRECATED SYNTAX
+For compatibility with older versions of
+.BR getcluster ,
+a command-line argument may be given before the version number.  (This
+is how the hostname used to be specified; now it is ignored.)  The
+name of the fallback and local cluster files may be controlled using
+the
+.B \-f
+and
+.B \-l
+options, but there is no good reason to do so.
 .SH EXAMPLES
 # C shell example
 .br
-getcluster `hostname` 5.3 > file; source file
+getcluster 5.3 > file; source file
 .PP
 # Bourne shell example
 .br
-getcluster -b `hostname` 5.3 > file; . file
+getcluster -b 5.3 > file; . file
 .SH "SEE ALSO"
 `Hesiod - Project Athena Technical Plan -- Name Service', save_cluster_info(8)
 .SH AUTHOR

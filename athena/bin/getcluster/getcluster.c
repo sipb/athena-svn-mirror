@@ -1,12 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <errno.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
+#include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <time.h>
 #include <unistd.h>
 #include <hesiod.h>
@@ -19,7 +20,8 @@
 #define UPDATE_INTERVAL (3600 * 4)
 
 static void usage(void);
-static void shellenv(char **hp, char *ws_version, int bourneshell);
+static void die(const char *f, ...);
+static void shellenv(char **hp, const char *ws_version, int bourneshell);
 static void output_var(const char *var, const char *val, int bourneshell);
 static void upper(char *v);
 static char **readcluster(FILE *f);
@@ -63,15 +65,19 @@ static void *emalloc(size_t size);
 
 int main(int argc, char **argv)
 {
-  char **hp, **fp, **lp, **or1, **or2;
+  char **hp = NULL, **fp = NULL, **lp = NULL, **or1, **or2;
   int debug = 0, bourneshell = 0, ch;
-  char *fallbackfile = NULL, *localfile = NULL;
+  const char *fallbackfile = SYSCONFDIR "/cluster.fallback";
+  const char *localfile = SYSCONFDIR "/cluster.local";
+  const char *clusterfile = SYSCONFDIR "/cluster";
+  const char *hostname = NULL, *version;
+  char hostbuf[1024];
   FILE *f;
   void *hescontext;
   extern int optind;
   extern char *optarg;
 
-  while ((ch = getopt(argc, argv, "bdl:f:")) != -1)
+  while ((ch = getopt(argc, argv, "bdl:f:h:")) != -1)
     {
       switch (ch)
 	{
@@ -82,10 +88,15 @@ int main(int argc, char **argv)
 	  bourneshell = 1;
 	  break;
 	case 'f':
+	  /* Deprecated option, for compatibility. */
 	  fallbackfile = optarg;
 	  break;
 	case 'l':
+	  /* Deprecated option, for compatibility */
 	  localfile = optarg;
+	  break;
+	case 'h':
+	  hostname = optarg;
 	  break;
 	default:
 	  usage();
@@ -94,32 +105,41 @@ int main(int argc, char **argv)
   argc -= optind;
   argv += optind;
 
-  if (argc != 2)
+  /* For compatibility, allow two arguments, but ignore the first one. */
+  if (argc != 1 && argc != 2)
     usage();
+  version = (argc == 2) ? argv[1] : argv[0];
 
-  fp = NULL;
-  if (fallbackfile != NULL)
+  if (hostname == NULL)
     {
-      f = fopen(fallbackfile, "r");
+      f = fopen(clusterfile, "r");
       if (f)
 	{
-	  fp = readcluster(f);
+	  if (fgets(hostbuf, sizeof(hostbuf), f) == NULL)
+	    die("Failed to read %s: %s", clusterfile, strerror(errno));
+	  if (*hostbuf != '\0')
+	    hostbuf[strlen(hostbuf) - 1] = '\0';
 	  fclose(f);
 	}
+      else if (gethostname(hostbuf, sizeof(hostbuf)) != 0)
+	die("Can't get hostname: %s", strerror(errno));
+      hostname = hostbuf;
     }
 
-  lp = NULL;
-  if (localfile != NULL)
+  f = fopen(fallbackfile, "r");
+  if (f)
     {
-      f = fopen(localfile, "r");
-      if (f)
-	{
-	  lp = readcluster(f);
-	  fclose(f);
-	}
+      fp = readcluster(f);
+      fclose(f);
     }
 
-  hp = NULL;
+  f = fopen(localfile, "r");
+  if (f)
+    {
+      lp = readcluster(f);
+      fclose(f);
+    }
+
   if (debug)
     {
       /* Get clusterinfo records from standard input. */
@@ -132,7 +152,7 @@ int main(int argc, char **argv)
 	perror("hesiod_init");
       else
 	{
-	  hp = hesiod_resolve(hescontext, argv[0], "cluster");
+	  hp = hesiod_resolve(hescontext, hostname, "cluster");
 	  if (hp == NULL && errno != ENOENT)
 	    perror("hesiod_resolve");
 	}
@@ -140,13 +160,13 @@ int main(int argc, char **argv)
 
   if (hp == NULL && lp == NULL && fp == NULL)
     {
-      fprintf(stderr, "No cluster information available for %s\n", argv[0]);
+      fprintf(stderr, "No cluster information available for %s\n", hostname);
       return 2;
     }
 
   or1 = merge(lp, hp);
   or2 = merge(or1, fp);
-  shellenv(or2, argv[1], bourneshell);
+  shellenv(or2, version, bourneshell);
   if (!debug)
     {
       if (hp != NULL)
@@ -214,8 +234,17 @@ static char **merge(char **l1, char **l2)
 
 static void usage(void)
 {
-  fprintf(stderr, "Usage: getcluster [-f fallbackfile] [-l localfile]"
-	  " [-b] [-d] hostname version\n");
+  die("Usage: getcluster [-h hostname] [-b] [-d] version");
+  exit(1);
+}
+
+static void die(const char *fmt, ...)
+{
+  va_list ap;
+
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  putc('\n', stderr);
   exit(1);
 }
 
@@ -244,7 +273,7 @@ static void usage(void)
  * highest version number.  If there aren't any records left with
  * version numbers and there's one with no version number, output
  * that one. */
-static void shellenv(char **hp, char *ws_version, int bourneshell)
+static void shellenv(char **hp, const char *ws_version, int bourneshell)
 {
   int *seen, count, i, j, output_time = 0, autoupdate = 0;
   char var[80], val[80], vers[80], flags[80], compvar[80], compval[80];
