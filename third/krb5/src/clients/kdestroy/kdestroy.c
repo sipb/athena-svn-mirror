@@ -27,16 +27,59 @@
  * Destroy the contents of your credential cache.
  */
 
-#include "krb5.h"
-#include "com_err.h"
+#include <krb5.h>
+#include <com_err.h>
 #include <string.h>
 #include <stdio.h>
+
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
 #endif
 
+#ifdef __STDC__
+#define BELL_CHAR '\a'
+#else
+#define BELL_CHAR '\007'
+#endif
+
 extern int optind;
 extern char *optarg;
+
+#ifndef _WIN32
+#define GET_PROGNAME(x) (strrchr((x), '/') ? strrchr((x), '/')+1 : (x))
+#else
+#define GET_PROGNAME(x) max(max(strrchr((x), '/'), strrchr((x), '\\')) + 1,(x))
+#endif
+
+char *progname;
+
+int got_k5 = 0;
+int got_k4 = 0;
+
+int default_k5 = 1;
+#ifdef KRB5_KRB4_COMPAT
+int default_k4 = 1;
+#else
+int default_k4 = 0;
+#endif
+
+
+void usage()
+{
+#define KRB_AVAIL_STRING(x) ((x)?"available":"not available")
+
+    fprintf(stderr, "Usage: %s [-5] [-4] [-q] [-c cache_name]\n", progname);
+    fprintf(stderr, "\t-5 Kerberos 5 (%s)\n", KRB_AVAIL_STRING(got_k5));
+    fprintf(stderr, "\t-4 Kerberos 4 (%s)\n", KRB_AVAIL_STRING(got_k4));
+    fprintf(stderr, "\t   (Default is %s%s%s%s)\n",
+	    default_k5?"Kerberos 5":"",
+	    (default_k5 && default_k4)?" and ":"",
+	    default_k4?"Kerberos 4":"",
+	    (!default_k5 && !default_k4)?"neither":"");
+    fprintf(stderr, "\t-q quiet mode\n");
+    fprintf(stderr, "\t-c specify name of credentials cache\n");
+    exit(2);
+}
 
 int
 main(argc, argv)
@@ -48,39 +91,56 @@ main(argc, argv)
     int c;
     krb5_ccache cache = NULL;
     char *cache_name = NULL;
-    int code, v4code;
-    int errflg=0;
-    int quiet = 0;	
+    int code = 0;
+#ifdef KRB5_KRB4_COMPAT
+    int v4code = 0;
     int v4 = 1;
-    
-    retval = krb5_init_context(&kcontext);
-    if (retval) {
-	    com_err(argv[0], retval, "while initializing krb5");
-	    exit(1);
-    }
+#endif
+    int errflg = 0;
+    int quiet = 0;
 
-    if (strrchr(argv[0], '/'))
-	argv[0] = strrchr(argv[0], '/')+1;
+    int use_k5 = 0;
+    int use_k4 = 0;
 
-    while ((c = getopt(argc, argv, "qc:")) != -1) {
+    progname = GET_PROGNAME(argv[0]);
+
+    got_k5 = 1;
+#ifdef KRB5_KRB4_COMPAT
+    got_k4 = 1;
+#endif
+
+    while ((c = getopt(argc, argv, "54qc:")) != -1) {
 	switch (c) {
 	case 'q':
 	    quiet = 1;
 	    break;	
 	case 'c':
-	    v4 = 0;	/* Don't do krb4 kdestroy if cache name given. */
-	    if (cache == NULL) {
-		cache_name = optarg;
-		
-		code = krb5_cc_resolve (kcontext, cache_name, &cache);
-		if (code != 0) {
-		    com_err (argv[0], code, "while resolving %s", cache_name);
-		    errflg++;
-		}
-	    } else {
+	    if (cache_name) {
 		fprintf(stderr, "Only one -c option allowed\n");
 		errflg++;
+	    } else {
+		cache_name = optarg;
 	    }
+	    break;
+	case '4':
+	    if (!got_k4)
+	    {
+#ifdef KRB5_KRB4_COMPAT
+		fprintf(stderr, "Kerberos 4 support could not be loaded\n");
+#else
+		fprintf(stderr, "This was not built with Kerberos 4 support\n");
+#endif
+		exit(3);
+	    }
+	    use_k4 = 1;
+	    break;
+	case '5':
+	    if (!got_k5)
+	    {
+		fprintf(stderr, "Kerberos 5 support could not be loaded\n");
+		exit(3);
+	    }
+	    use_k5 = 1;
 	    break;
 	case '?':
 	default:
@@ -93,47 +153,71 @@ main(argc, argv)
 	errflg++;
     
     if (errflg) {
-	fprintf(stderr, "Usage: %s [-q] [ -c cache-name ]\n", argv[0]);
-	exit(2);
+	usage();
     }
 
-    if (cache == NULL) {
-	if (code = krb5_cc_default(kcontext, &cache)) {
-	    com_err(argv[0], code, "while getting default ccache");
+    if (!use_k5 && !use_k4)
+    {
+	use_k5 = default_k5;
+	use_k4 = default_k4;
+    }
+
+    if (!use_k5)
+	got_k5 = 0;
+    if (!use_k4)
+	got_k4 = 0;
+
+    if (got_k5) {
+	retval = krb5_init_context(&kcontext);
+	if (retval) {
+	    com_err(progname, retval, "while initializing krb5");
 	    exit(1);
 	}
-    }
 
-    code = krb5_cc_destroy (kcontext, cache);
-    if (code != 0) {
-	com_err (argv[0], code, "while destroying cache");
-	if (code != KRB5_FCC_NOFILE) {
-	    if (quiet)
-		fprintf(stderr, "Ticket cache NOT destroyed!\n");
-	    else {
-#ifdef __STDC__
-		fprintf(stderr, "Ticket cache \aNOT\a destroyed!\n");
-#else
-		fprintf(stderr, "Ticket cache \007NOT\007 destroyed!\n");
+	if (cache_name) {
+#ifdef KRB5_KRB4_COMPAT
+	    v4 = 0;	/* Don't do v4 if doing v5 and cache name given. */
 #endif
+	    code = krb5_cc_resolve (kcontext, cache_name, &cache);
+	    if (code != 0) {
+		com_err (progname, code, "while resolving %s", cache_name);
+		exit(1);
 	    }
-	    errflg = 1;
+	} else {
+	    if (code = krb5_cc_default(kcontext, &cache)) {
+		com_err(progname, code, "while getting default ccache");
+		exit(1);
+	    }
+	}
+
+	code = krb5_cc_destroy (kcontext, cache);
+	if (code != 0) {
+	    com_err (progname, code, "while destroying cache");
+	    if (code != KRB5_FCC_NOFILE) {
+		if (quiet)
+		    fprintf(stderr, "Ticket cache NOT destroyed!\n");
+		else {
+		    fprintf(stderr, "Ticket cache %cNOT%c destroyed!\n", 
+			    BELL_CHAR, BELL_CHAR);
+		}
+		errflg = 1;
+	    }
 	}
     }
 #ifdef KRB5_KRB4_COMPAT
-    if (v4) {
+    if (got_k4 && v4) {
 	v4code = dest_tkt();
 	if (v4code == KSUCCESS && code != 0)
-	    fprintf(stderr, "Kerberos 4 ticket file destroyed.\n");
+	    fprintf(stderr, "Kerberos 4 ticket cache destroyed.\n");
 	if (v4code != KSUCCESS && v4code != RET_TKFIL) {
 	    if (quiet)
-		fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
+		fprintf(stderr, "Kerberos 4 ticket cache NOT destroyed!\n");
 	    else
-		fprintf(stderr,
-			"Kerberos 4 ticket file \007NOT\007 destroyed!\n");
+		fprintf(stderr, "Kerberos 4 ticket cache %cNOT%c destroyed!\n",
+			BELL_CHAR, BELL_CHAR);
 	    errflg = 1;
 	}
     }
 #endif
-    exit (errflg);
+    return errflg;
 }
