@@ -1,13 +1,13 @@
 # Italian translation of GConf-Editor.
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # Pier Luigi Fiorini <plfiorini@supereva.it>, 2002.
-# Alessio Frusciante <algol@firenze.linux.it>, 2003.
+# Alessio Frusciante <algol@firenze.linux.it>, 2003, 2004.
 msgid ""
 msgstr ""
 "Project-Id-Version: gconf-editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
-"PO-Revision-Date: 2003-08-06 14:29+0200\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
+"PO-Revision-Date: 2004-10-06 21:38+0200\n"
 "Last-Translator: Alessio Frusciante <algol@firenze.linux.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -23,17 +23,14 @@ msgid "Directly edit your entire configuration database"
 msgstr "Modificare direttamente l'intero database della configurazione"
 
 #: data/gconf-editor.schemas.in.h:1
-#, fuzzy
 msgid "Bookmarks"
-msgstr "/_Segnalibri"
+msgstr "Segnalibri"
 
 #: data/gconf-editor.schemas.in.h:2
-#, fuzzy
 msgid "gconf-editor folder bookmarks"
-msgstr "Modifica segnalibri"
+msgstr "cartella dei segnalibri di gconf-editor"
 
 #: src/gconf-bookmarks-dialog.c:207
-#, fuzzy
 msgid "Edit Bookmarks"
 msgstr "Modifica segnalibri"
 
@@ -50,11 +47,11 @@ msgstr ""
 #: src/gconf-editor-window.c:341
 #, c-format
 msgid "Couldn't display help: %s"
-msgstr ""
+msgstr "Impossibile visualizzare l'aiuto: %s"
 
 #: src/gconf-editor-window.c:376
 msgid "translator_credits"
-msgstr ""
+msgstr "Alessio Frusciante <algol@firenze.linux.it>"
 
 #: src/gconf-editor-window.c:386
 msgid "GConf-Editor"
@@ -109,177 +106,164 @@ msgstr ""
 "%s"
 
 #: src/gconf-editor-window.c:728
-#, fuzzy
 msgid "_File"
-msgstr "/_File"
+msgstr "_File"
 
 #: src/gconf-editor-window.c:729
-#, fuzzy
 msgid "_Edit"
-msgstr "/_Modifica"
+msgstr "_Modifica"
 
 #: src/gconf-editor-window.c:730
 msgid "_Search"
-msgstr ""
+msgstr "_Cerca"
 
 #: src/gconf-editor-window.c:731
-#, fuzzy
 msgid "_Bookmarks"
-msgstr "/_Segnalibri"
+msgstr "_Segnalibri"
 
 #: src/gconf-editor-window.c:732
-#, fuzzy
 msgid "_Help"
-msgstr "/A_iuto"
+msgstr "A_iuto"
 
 #: src/gconf-editor-window.c:734
 msgid "New _Settings Window"
-msgstr ""
+msgstr "Nuova finestra di _impostazioni"
 
 #: src/gconf-editor-window.c:735
 msgid "Open a new gconf editor window editing current settings"
 msgstr ""
+"Apre una nuova finestra dell'editor di gconf per le impostazioni attuali"
 
 #: src/gconf-editor-window.c:737
 msgid "New _Defaults Window"
-msgstr ""
+msgstr "Nuova finestra delle impostazioni _predefinite"
 
 #: src/gconf-editor-window.c:738
 msgid "Open a new gconf editor window editing system default settings"
 msgstr ""
+"Apre una nuova finestra dell'editor di gconf per le impostazioni predefinite "
+"del sistema"
 
 #: src/gconf-editor-window.c:740
 msgid "New _Mandatory Window"
-msgstr ""
+msgstr "Nuova finestra delle impostazioni _obbligatorie"
 
 #: src/gconf-editor-window.c:741
 msgid "Open a new gconf editor window editing system mandatory settings"
 msgstr ""
+"Apre una nuova finestra dell'editor di gconf per le impostazioni obbligatorie"
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "_Close Window"
-msgstr "/File/_Chiudi finestra"
+msgstr "_Chiudi finestra"
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "Close this window"
-msgstr "/File/Chiudi finestra"
+msgstr "Chiudi questa finestra"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "_Quit"
-msgstr "/File/_Esci"
+msgstr "_Esci"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "Quit the gconf editor"
-msgstr "GConf Editor"
+msgstr "Esci dall'editor di gconf"
 
 #: src/gconf-editor-window.c:748
-#, fuzzy
 msgid "_Copy Key Name"
-msgstr "/Modifica/_Copia nome chiave"
+msgstr "_Copia nome chiave"
 
 #: src/gconf-editor-window.c:748
 msgid "Copy the name of the selected key"
-msgstr ""
+msgstr "Copia il nome della chiave selezionata"
 
 #: src/gconf-editor-window.c:750
 msgid "_Find..."
-msgstr ""
+msgstr "_Trova..."
 
 #: src/gconf-editor-window.c:750
 msgid "Find patterns in keys and values"
-msgstr ""
+msgstr "Trova pattern in chiavi e valori"
 
 #: src/gconf-editor-window.c:752
 msgid "_List Recent Keys"
-msgstr ""
+msgstr "_Elenca chiavi recenti"
 
 #: src/gconf-editor-window.c:752
 msgid "Show recently modified keys"
-msgstr ""
+msgstr "Mostra le chiavi modificate di recente"
 
 #: src/gconf-editor-window.c:755
-#, fuzzy
 msgid "_Add Bookmark"
-msgstr "/_Segnalibri"
+msgstr "_Aggiungi segnalibro"
 
 #: src/gconf-editor-window.c:755
 msgid "Add a bookmark to the selected directory"
-msgstr ""
+msgstr "Aggiunge un segnalibro alla directory selezionata"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "Modifica segnalibri"
+msgstr "_Modifica segnalibri"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "Edit the bookmarks"
-msgstr "Modifica segnalibri"
+msgstr "Modifica i segnalibri"
 
 #: src/gconf-editor-window.c:760
 msgid "_Contents"
-msgstr ""
+msgstr "_Sommario"
 
 #: src/gconf-editor-window.c:760
 msgid "Open the help contents for the gconf editor"
-msgstr ""
+msgstr "Apre il sommario dell'aiuto di gconf-editor"
 
 #: src/gconf-editor-window.c:762
 msgid "_About"
-msgstr ""
+msgstr "_Informazioni"
 
 #: src/gconf-editor-window.c:762
 msgid "Show the about dialog for the gconf editor"
-msgstr ""
+msgstr "Mostra la finestra di dialogo di informazioni di gconf-editor"
 
 #: src/gconf-editor-window.c:765
-#, fuzzy
 msgid "_New Key..."
-msgstr "/_Nuova chiave..."
+msgstr "_Nuova chiave..."
 
 #: src/gconf-editor-window.c:765
 msgid "Create a new key"
-msgstr ""
+msgstr "Crea una nuova chiave"
 
 #: src/gconf-editor-window.c:767
-#, fuzzy
 msgid "_Edit Key..."
-msgstr "/Modifica chiave..."
+msgstr "_Modifica chiave..."
 
 #: src/gconf-editor-window.c:767
 msgid "Edit the selected key"
-msgstr ""
+msgstr "Modifica la chiave selezionata"
 
 #: src/gconf-editor-window.c:769
-#, fuzzy
 msgid "_Unset Key..."
-msgstr "/_Azzera chiave"
+msgstr "_Azzera chiave..."
 
 #: src/gconf-editor-window.c:769
 msgid "Unset the selected key"
-msgstr ""
+msgstr "Azzera la chiave selezionata"
 
 #: src/gconf-editor-window.c:771
-#, fuzzy
 msgid "Set as _Default"
-msgstr "/Imposta come _predefinito"
+msgstr "Imposta come _predefinita"
 
 #: src/gconf-editor-window.c:771
 msgid "Set the selected key to be the default"
-msgstr ""
+msgstr "Imposta la chiave selezionata come predefinita"
 
 #: src/gconf-editor-window.c:773
-#, fuzzy
 msgid "Set as _Mandatory"
-msgstr "/Imposta come _predefinito"
+msgstr "Imposta come _obbligatoria"
 
 #: src/gconf-editor-window.c:773
 msgid "Set the selected key to the mandatory"
-msgstr ""
+msgstr "Imposta la chiave selezionata come obbligatoria"
 
 #: src/gconf-editor-window.c:860 src/gconf-editor-window.c:867
 #: src/gconf-editor-window.c:1321
@@ -317,9 +301,8 @@ msgid "This key is not writable"
 msgstr "Questa chiave non è scrivibile"
 
 #: src/gconf-editor-window.c:1555
-#, fuzzy
 msgid "This key has no schema"
-msgstr "Questa chiave non è scrivibile"
+msgstr "Questa chiave non ha uno schema"
 
 #: src/gconf-editor-window.c:1560
 msgid "Key Name:"
@@ -375,14 +358,12 @@ msgid "_New list element:"
 msgstr "_Nuovo elemento della lista:"
 
 #: src/gconf-key-editor.c:324
-#, fuzzy
 msgid "Edit list entry"
-msgstr "Inserisci nuova voce della lista"
+msgstr "Modifica voce della lista"
 
 #: src/gconf-key-editor.c:342
-#, fuzzy
 msgid "_Edit list element:"
-msgstr "_Nuovo elemento della lista:"
+msgstr "_Modifica elemento della lista:"
 
 #: src/gconf-key-editor.c:554
 msgid "Key path:"
@@ -416,138 +397,41 @@ msgstr "Modifica chiave"
 
 #: src/gconf-search-dialog.c:61
 msgid "Pattern not found"
-msgstr ""
+msgstr "Pattern non trovato"
 
 #: src/gconf-search-dialog.c:143
 msgid "Find"
-msgstr ""
+msgstr "Trova"
 
 #: src/gconf-search-dialog.c:145
 msgid "_Search for: "
-msgstr ""
+msgstr "_Cerca:"
 
 #: src/gconf-search-dialog.c:166
 msgid "Search also in key _names"
-msgstr ""
+msgstr "Cerca anche nei _nomi delle chiavi"
 
 #: src/gconf-search-dialog.c:169
 msgid "Search also in key _values"
-msgstr ""
+msgstr "Cerca anche nei _valori delle chiavi"
 
 #: src/gedit-output-window.c:350
 msgid "Close the output window"
-msgstr ""
+msgstr "Chiudi la finestra di output"
 
 #: src/gedit-output-window.c:388
 msgid "Copy selected lines"
-msgstr ""
+msgstr "Copia le righe selezionate"
 
 #: src/gedit-output-window.c:408
 msgid "Clear the output window"
-msgstr ""
+msgstr "Pulisci la finestra di output"
 
 #: src/gedit-output-window.c:448
 msgid "Output Lines"
-msgstr ""
+msgstr "Linee di output"
 
 #: src/main.c:40
 #, c-format
 msgid "Invalid key \"%s\": %s"
 msgstr "Chiave non valida \"%s\": %s"
-
-#~ msgid "About GConf-Editor"
-#~ msgstr "Informazioni su GConf-Editor"
-
-#~ msgid "/File/tearoff1"
-#~ msgstr "/File/tearoff1"
-
-#~ msgid "/File/_New window"
-#~ msgstr "/File/_Nuova finestra"
-
-#~ msgid "/File/sep1"
-#~ msgstr "/File/sep1"
-
-#~ msgid "/Edit/tearoff2"
-#~ msgstr "/Modifica/tearoff2"
-
-#~ msgid "/Bookmarks/tearoff3"
-#~ msgstr "/Segnalibri/tearoff3"
-
-#~ msgid "/Bookmarks/_Add bookmark"
-#~ msgstr "/Segnalibri/A_ggiungi segnalibro"
-
-#~ msgid "/Bookmarks/_Edit bookmarks..."
-#~ msgstr "/Segnalibri/_Modifica segnalibri..."
-
-#~ msgid "/Help/tearoff4"
-#~ msgstr "/Aiuto/tearoff4"
-
-#~ msgid "/Help/_About..."
-#~ msgstr "/Aiuto/I_nformazioni su..."
-
-#~ msgid "/File/New window"
-#~ msgstr "/File/Nuova finestra"
-
-#~ msgid "/File/Quit"
-#~ msgstr "/File/Esci"
-
-#~ msgid "/Edit/Copy key name"
-#~ msgstr "/Modifica/Copia nome chiave"
-
-#~ msgid "/Help/About..."
-#~ msgstr "/Aiuto/Informazioni su..."
-
-#~ msgid ""
-#~ "Could not get schema location. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Impossibile ottenere la posizione dello schema. L'errore è stato:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not get schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Impossibile ottenere lo schema. L'errore è stato:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not set schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Impossibile impostare lo schema. L'errore è stato:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not associate schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Impossibile associare lo schema. L'errore è stato:\n"
-#~ "%s"
-
-#~ msgid "/sep1"
-#~ msgstr "/sep1"
-
-#~ msgid "/sep2"
-#~ msgstr "/sep2"
-
-#~ msgid "/New key..."
-#~ msgstr "/Nuova chiave..."
-
-#~ msgid "/Unset key"
-#~ msgstr "/Azzera chiave"
-
-#~ msgid "_Show this dialog again"
-#~ msgstr "_Mostra questa finestra di dialogo in futuro"
-
-#~ msgid ""
-#~ "This tool allows you to directly edit your configuration database. This "
-#~ "is not the recommended way of setting desktop preferences. Use this tool "
-#~ "at your own risk."
-#~ msgstr ""
-#~ "Questo strumento consente di modificare direttamente il database di "
-#~ "configurazione. Non è il modo consigliato per impostare le preferenze del "
-#~ "desktop. Usare questo strumento a proprio rischio e pericolo."
-
-#~ msgid "Copyright (C) Anders Carlsson 2001, 2002"
-#~ msgstr "Copyright © Anders Carlsson 2001, 2002"

@@ -1,3 +1,55 @@
+2004-10-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.8.2 "Huerto del loro"
+
+2004-10-11  Christian Neumair  <chris@gnome-de.org>
+
+	* docs/de/figures/gconf_editor_anno_window.png 
+	* docs/de/figures/gconf_editor_anno_window.xcf 
+	* docs/de/Makefile.am
+	* docs/de/gconf-editor-de.omf 
+	* docs/de/gconf-editor.xml
+	* docs/de/l10n.txt
+	* docs/de/legal.xml: Added German documentation. Kudos to Keywan
+	Najafi Tonekaboni <keywan@uni-duisburg.de>.
+
+2004-10-07  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: branched for gnome-2-8. Post release version 
+	bumping to 2.8.2
+
+2004-10-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for spewing warnings on startup - bug #144833
+
+	* configure.in: require GConf 2.8.1.
+	
+	* src/gconf-util.[ch]:
+	(can_edit_source): assume the  backend will correctly
+	report whether the key is writable.
+	(gconf_util_can_edit_defaults),
+	(gconf_util_can_edit_mandatory): re-name from
+	gconf_client_can_edit_...() to avoid possible future
+	conflicts.
+	
+	* src/gconf-editor-window.c: (gconf_editor_window_init): upd.
+
+2004-10-01  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.8.1 "Puerto Rico"
+
+2004-09-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/main.c: (main): parse correcly gtk/gnome command line
+	arguments. Based on patch from Julio M. Merino Vidal. Fix bug
+	#151829.
+
+2004-09-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post release version bumping.
+	* src/gconf-bookmarks.c: (gconf_bookmarks_hook_up_menu): don't 
+	crash if have_icons key is not present. Fix bug #151720.
+
 2004-09-13  Fernando Herrera  <fherrera@onirica.com>
 
 	* NEWS: Release 2.8.0 "Joshua Bell"

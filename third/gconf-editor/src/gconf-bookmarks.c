@@ -215,7 +215,7 @@ gconf_bookmarks_hook_up_menu (GConfEditorWindow *window,
                 err = NULL;
                 value = gconf_client_get (client, "/desktop/gnome/interface/menus_have_icons", &err);
 
-                if (err != NULL || value->type != GCONF_VALUE_BOOL)
+                if (err != NULL || value == NULL || value->type != GCONF_VALUE_BOOL)
                         return;
 
                 have_icons = gconf_value_get_bool (value);

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gconf-editor-vivi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
-"PO-Revision-Date: 2003-09-03 13:37+0700\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
+"PO-Revision-Date: 2004-10-10 19:21+0700\n"
 "Last-Translator: Trinh Minh Thanh <tmthanh@yahoo.com>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -24,17 +24,14 @@ msgid "Directly edit your entire configuration database"
 msgstr "Trực tiếp biên soạn toàn bộ cơ sở dữ liệu về cấu hình của bạn"
 
 #: data/gconf-editor.schemas.in.h:1
-#, fuzzy
 msgid "Bookmarks"
-msgstr "/_Đánh dấu"
+msgstr "Đánh dấu"
 
 #: data/gconf-editor.schemas.in.h:2
-#, fuzzy
 msgid "gconf-editor folder bookmarks"
-msgstr "Biên soạn Đánh dấu"
+msgstr "Đánh dấu thư mục"
 
 #: src/gconf-bookmarks-dialog.c:207
-#, fuzzy
 msgid "Edit Bookmarks"
 msgstr "Biên soạn Đánh dấu"
 
@@ -51,11 +48,11 @@ msgstr ""
 #: src/gconf-editor-window.c:341
 #, c-format
 msgid "Couldn't display help: %s"
-msgstr ""
+msgstr "Không thể hiển thị trợ giúp: %s"
 
 #: src/gconf-editor-window.c:376
 msgid "translator_credits"
-msgstr ""
+msgstr "Nhóm Việt hóa GNOME (http://gnomevi.sourceforge.net)"
 
 #: src/gconf-editor-window.c:386
 msgid "GConf-Editor"
@@ -110,44 +107,40 @@ msgstr ""
 "%s"
 
 #: src/gconf-editor-window.c:728
-#, fuzzy
 msgid "_File"
-msgstr "/_Tệp"
+msgstr "_Tập tin"
 
 #: src/gconf-editor-window.c:729
-#, fuzzy
 msgid "_Edit"
-msgstr "/Biên _soạn"
+msgstr "_Hiệu chỉnh"
 
 #: src/gconf-editor-window.c:730
 msgid "_Search"
-msgstr ""
+msgstr "_Tìm"
 
 #: src/gconf-editor-window.c:731
-#, fuzzy
 msgid "_Bookmarks"
-msgstr "/_Đánh dấu"
+msgstr "Đánh _dấu"
 
 #: src/gconf-editor-window.c:732
-#, fuzzy
 msgid "_Help"
-msgstr "/Trợ _giúp"
+msgstr "Trợ _giúp"
 
 #: src/gconf-editor-window.c:734
 msgid "New _Settings Window"
-msgstr ""
+msgstr "Cửa sổ _thiết lập mới"
 
 #: src/gconf-editor-window.c:735
 msgid "Open a new gconf editor window editing current settings"
-msgstr ""
+msgstr "Mở cửa sổ trình biên soạn GConf mới để hiệu chỉnh thiết lập hiện thời"
 
 #: src/gconf-editor-window.c:737
 msgid "New _Defaults Window"
-msgstr ""
+msgstr "Cửa sổ _mặc định mới"
 
 #: src/gconf-editor-window.c:738
 msgid "Open a new gconf editor window editing system default settings"
-msgstr ""
+msgstr "Mở cửa sổ trình biên soạn GConf mới để hiệu chỉnh thiết lập mặc định"
 
 #: src/gconf-editor-window.c:740
 msgid "New _Mandatory Window"
@@ -158,125 +151,112 @@ msgid "Open a new gconf editor window editing system mandatory settings"
 msgstr ""
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "_Close Window"
-msgstr "/Tệp/_Đóng cửa sổ"
+msgstr "Đón_g cửa sổ"
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "Close this window"
-msgstr "/Tệp/Đóng cửa sổ"
+msgstr "Đóng cửa sổ này"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "_Quit"
-msgstr "/Tệp/_Thoát"
+msgstr "T_hoát"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "Quit the gconf editor"
-msgstr "Trình biên soạn GConf"
+msgstr "Thoát Trình biên soạn GConf"
 
 #: src/gconf-editor-window.c:748
-#, fuzzy
 msgid "_Copy Key Name"
-msgstr "/Biên soạn/_Sao chép tên khóa"
+msgstr "_Chép tên khóa"
 
 #: src/gconf-editor-window.c:748
 msgid "Copy the name of the selected key"
-msgstr ""
+msgstr "Chép tên những khóa được chọn"
 
 #: src/gconf-editor-window.c:750
 msgid "_Find..."
-msgstr ""
+msgstr "_Tìm..."
 
 #: src/gconf-editor-window.c:750
 msgid "Find patterns in keys and values"
-msgstr ""
+msgstr "Tìm theo mẫu khoá và giá trị"
 
 #: src/gconf-editor-window.c:752
 msgid "_List Recent Keys"
-msgstr ""
+msgstr "_Danh sách khóa gần đây"
 
 #: src/gconf-editor-window.c:752
 msgid "Show recently modified keys"
-msgstr ""
+msgstr "Hiện danh sách khóa được hiệu chỉnh gần đây"
 
 #: src/gconf-editor-window.c:755
-#, fuzzy
 msgid "_Add Bookmark"
-msgstr "/_Đánh dấu"
+msgstr "_Thêm Đánh dấu"
 
 #: src/gconf-editor-window.c:755
 msgid "Add a bookmark to the selected directory"
-msgstr ""
+msgstr "Thêm đánh dấu cho thư mục được chọn"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "Biên soạn Đánh dấu"
+msgstr "_Biên soạn Đánh dấu"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "Edit the bookmarks"
 msgstr "Biên soạn Đánh dấu"
 
 #: src/gconf-editor-window.c:760
 msgid "_Contents"
-msgstr ""
+msgstr "_Nội dung"
 
 #: src/gconf-editor-window.c:760
 msgid "Open the help contents for the gconf editor"
-msgstr ""
+msgstr "Mở nội dung trợ giúp cho trình biên soạn khoá"
 
 #: src/gconf-editor-window.c:762
 msgid "_About"
-msgstr ""
+msgstr "_Giới thiệu"
 
 #: src/gconf-editor-window.c:762
 msgid "Show the about dialog for the gconf editor"
-msgstr ""
+msgstr "Hiện hộp thoại giới thiệu trình biên soạn GConf"
 
 #: src/gconf-editor-window.c:765
-#, fuzzy
 msgid "_New Key..."
-msgstr "/_Khóa mới..."
+msgstr "_Khóa mới..."
 
 #: src/gconf-editor-window.c:765
 msgid "Create a new key"
-msgstr ""
+msgstr "Tạo khóa mới"
 
 #: src/gconf-editor-window.c:767
-#, fuzzy
 msgid "_Edit Key..."
-msgstr "/Biên soạn khóa..."
+msgstr "_Biên soạn khóa..."
 
 #: src/gconf-editor-window.c:767
 msgid "Edit the selected key"
-msgstr ""
+msgstr "Sửa khóa được chọn"
 
 #: src/gconf-editor-window.c:769
-#, fuzzy
 msgid "_Unset Key..."
-msgstr "/_Khóa chưa đặt"
+msgstr ""
 
 #: src/gconf-editor-window.c:769
 msgid "Unset the selected key"
 msgstr ""
 
 #: src/gconf-editor-window.c:771
-#, fuzzy
 msgid "Set as _Default"
-msgstr "/Đặt làm mặc _định"
+msgstr "Đặt làm _mặc định"
 
 #: src/gconf-editor-window.c:771
 msgid "Set the selected key to be the default"
-msgstr ""
+msgstr "Đặt khóa được chọn làm mặc định"
 
 #: src/gconf-editor-window.c:773
-#, fuzzy
 msgid "Set as _Mandatory"
-msgstr "/Đặt làm mặc _định"
+msgstr ""
 
 #: src/gconf-editor-window.c:773
 msgid "Set the selected key to the mandatory"
@@ -318,9 +298,8 @@ msgid "This key is not writable"
 msgstr "Khóa này không thể ghi được"
 
 #: src/gconf-editor-window.c:1555
-#, fuzzy
 msgid "This key has no schema"
-msgstr "Khóa này không thể ghi được"
+msgstr "Khoá này không có schema"
 
 #: src/gconf-editor-window.c:1560
 msgid "Key Name:"
@@ -340,12 +319,12 @@ msgstr "Mô tả chi tiết:"
 
 #: src/gconf-key-editor.c:82
 msgid "T_rue"
-msgstr "Th_ực"
+msgstr "_Có"
 
 #: src/gconf-key-editor.c:85 src/gconf-key-editor.c:246
 #: src/gconf-key-editor.c:354 src/gconf-key-editor.c:634
 msgid "_False"
-msgstr "_Sai"
+msgstr "_Không"
 
 #: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
 msgid "Integer"
@@ -373,17 +352,15 @@ msgstr "Thêm mục nhập danh sách mới"
 
 #: src/gconf-key-editor.c:237
 msgid "_New list element:"
-msgstr "Phần tử danh sách m_ới:"
+msgstr "Phần tử danh sách mớ_i:"
 
 #: src/gconf-key-editor.c:324
-#, fuzzy
 msgid "Edit list entry"
-msgstr "Thêm mục nhập danh sách mới"
+msgstr "Sửa mục nhập danh sách"
 
 #: src/gconf-key-editor.c:342
-#, fuzzy
 msgid "_Edit list element:"
-msgstr "Phần tử danh sách m_ới:"
+msgstr "_Sửa phần tử danh sách:"
 
 #: src/gconf-key-editor.c:554
 msgid "Key path:"
@@ -391,7 +368,7 @@ msgstr "Đường dẫn khóa:"
 
 #: src/gconf-key-editor.c:566
 msgid "Key _name:"
-msgstr "Tên_khóa:"
+msgstr "Tên _khóa:"
 
 #: src/gconf-key-editor.c:579
 msgid "_Type:"
@@ -401,7 +378,7 @@ msgstr "_Loại:"
 #: src/gconf-key-editor.c:646 src/gconf-key-editor.c:657
 #: src/gconf-key-editor.c:680
 msgid "Key _value:"
-msgstr "Giá trị_khóa:"
+msgstr "Giá trị _khóa:"
 
 #: src/gconf-key-editor.c:672
 msgid "List _type:"
@@ -417,39 +394,39 @@ msgstr "Biên soạn khóa"
 
 #: src/gconf-search-dialog.c:61
 msgid "Pattern not found"
-msgstr ""
+msgstr "Không tìm thấy mẫu"
 
 #: src/gconf-search-dialog.c:143
 msgid "Find"
-msgstr ""
+msgstr "Tìm"
 
 #: src/gconf-search-dialog.c:145
 msgid "_Search for: "
-msgstr ""
+msgstr "_Tìm: "
 
 #: src/gconf-search-dialog.c:166
 msgid "Search also in key _names"
-msgstr ""
+msgstr "Tìm trong _tên khoá"
 
 #: src/gconf-search-dialog.c:169
 msgid "Search also in key _values"
-msgstr ""
+msgstr "Tìm trong _giá trị khóa"
 
 #: src/gedit-output-window.c:350
 msgid "Close the output window"
-msgstr ""
+msgstr "Đóng cửa sổ tìm kiếm"
 
 #: src/gedit-output-window.c:388
 msgid "Copy selected lines"
-msgstr ""
+msgstr "Chép dòng được chọn"
 
 #: src/gedit-output-window.c:408
 msgid "Clear the output window"
-msgstr ""
+msgstr "Xóa cửa sổ kết xuất"
 
 #: src/gedit-output-window.c:448
 msgid "Output Lines"
-msgstr ""
+msgstr "Dòng kết xuất"
 
 #: src/main.c:40
 #, c-format
@@ -460,13 +437,13 @@ msgstr "Khóa không hợp lệ \"%s\": %s"
 #~ msgstr "Nói về GConf-Editor"
 
 #~ msgid "/File/tearoff1"
-#~ msgstr "/Tệp/tearoff1"
+#~ msgstr "/Tập tin/tearoff1"
 
 #~ msgid "/File/_New window"
-#~ msgstr "/Tệp/_Cửa sổ mới"
+#~ msgstr "/Tập tin/_Cửa sổ mới"
 
 #~ msgid "/File/sep1"
-#~ msgstr "/Tệp/sep1"
+#~ msgstr "/Tập tin/sep1"
 
 #~ msgid "/Edit/tearoff2"
 #~ msgstr "/Biên soạn/tearoff2"
@@ -484,19 +461,19 @@ msgstr "Khóa không hợp lệ \"%s\": %s"
 #~ msgstr "/Trợ giúp/tearoff4"
 
 #~ msgid "/Help/_About..."
-#~ msgstr "/Trợ giúp/Giới thiệu _về..."
+#~ msgstr "/Trợ giúp/_Giới thiệu..."
 
 #~ msgid "/File/New window"
-#~ msgstr "/Tệp/Cửa sổ mới"
+#~ msgstr "/Tập tin/Cửa sổ mới"
 
 #~ msgid "/File/Quit"
-#~ msgstr "/Tệp/Thoát"
+#~ msgstr "/Tập tin/Thoát"
 
 #~ msgid "/Edit/Copy key name"
 #~ msgstr "/Biên soạn/Sao chép tên khóa"
 
 #~ msgid "/Help/About..."
-#~ msgstr "/Trợ giúp/Giới thiệu về..."
+#~ msgstr "/Trợ giúp/Giới thiệu..."
 
 #~ msgid ""
 #~ "Could not get schema location. Error was:\n"

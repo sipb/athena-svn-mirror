@@ -2,14 +2,14 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2001.
 #
-# $Id: az.po,v 1.1.1.2 2004-10-04 04:55:06 ghudson Exp $
+# $Id: az.po,v 1.1.1.3 2005-03-10 19:30:05 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gconf-editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
-"PO-Revision-Date: 2003-08-06 22:44+0200\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
+"PO-Revision-Date: 2004-09-14 17:49+0200\n"
 "Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
 "Language-Team: Azerbaijani Turkish <translation-team-az@lists.sourceforge."
 "net>\n"
@@ -26,19 +26,16 @@ msgid "Directly edit your entire configuration database"
 msgstr "Birbaşa bütün quraşdırma verilənlər bazasını düzəlt"
 
 #: data/gconf-editor.schemas.in.h:1
-#, fuzzy
 msgid "Bookmarks"
-msgstr "/_Nişanlar"
+msgstr "Nişanlar"
 
 #: data/gconf-editor.schemas.in.h:2
-#, fuzzy
 msgid "gconf-editor folder bookmarks"
-msgstr "Nişanları düzəlt"
+msgstr "gconf-editor qovluq nişanları"
 
 #: src/gconf-bookmarks-dialog.c:207
-#, fuzzy
 msgid "Edit Bookmarks"
-msgstr "Nişanları düzəlt"
+msgstr "Nişanları Düzəlt"
 
 #: src/gconf-editor-application.c:58 src/gconf-editor-application.c:69
 #: src/gconf-editor-window.c:653 src/gconf-editor-window.c:698
@@ -53,11 +50,11 @@ msgstr ""
 #: src/gconf-editor-window.c:341
 #, c-format
 msgid "Couldn't display help: %s"
-msgstr ""
+msgstr "Yardım göstərilə bilmədi: %s"
 
 #: src/gconf-editor-window.c:376
 msgid "translator_credits"
-msgstr ""
+msgstr "Mətin Əmirov <metin@karegen.com>"
 
 #: src/gconf-editor-window.c:386
 msgid "GConf-Editor"
@@ -112,177 +109,161 @@ msgstr ""
 "%s"
 
 #: src/gconf-editor-window.c:728
-#, fuzzy
 msgid "_File"
-msgstr "/_Fayl"
+msgstr "_Fayl"
 
 #: src/gconf-editor-window.c:729
-#, fuzzy
 msgid "_Edit"
-msgstr "/_Düzəlt"
+msgstr "_Düzəlt"
 
 #: src/gconf-editor-window.c:730
 msgid "_Search"
-msgstr ""
+msgstr "_Axtar"
 
 #: src/gconf-editor-window.c:731
-#, fuzzy
 msgid "_Bookmarks"
-msgstr "/_Nişanlar"
+msgstr "_Nişanlar"
 
 #: src/gconf-editor-window.c:732
-#, fuzzy
 msgid "_Help"
-msgstr "/_Yardım"
+msgstr "_Yardım"
 
 #: src/gconf-editor-window.c:734
 msgid "New _Settings Window"
-msgstr ""
+msgstr "Yeni _Qurğular Pəncərəsi"
 
 #: src/gconf-editor-window.c:735
 msgid "Open a new gconf editor window editing current settings"
 msgstr ""
+"Yeni gconf editoru pəncərəsi açaraq sistemin hazırkı qurğularını dəyişdir"
 
 #: src/gconf-editor-window.c:737
 msgid "New _Defaults Window"
-msgstr ""
+msgstr "Yeni Ö_n Qurğular Pəncərəsi"
 
 #: src/gconf-editor-window.c:738
 msgid "Open a new gconf editor window editing system default settings"
-msgstr ""
+msgstr "Yeni gconf editoru pəncərəsi açaraq sistemin ön qurğularını dəyişdir"
 
 #: src/gconf-editor-window.c:740
 msgid "New _Mandatory Window"
-msgstr ""
+msgstr "Yeni Ə_sas Pəncərə"
 
 #: src/gconf-editor-window.c:741
 msgid "Open a new gconf editor window editing system mandatory settings"
-msgstr ""
+msgstr "Yeni gconf editoru pəncərəsi açaraq sistemin əsas qurğularını dəyişdir"
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "_Close Window"
-msgstr "/Fayl/Pəncərəni _bağla"
+msgstr "Pəncərəni _Bağla"
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "Close this window"
-msgstr "/Fayl/Pəncərəni bağla"
+msgstr "Bu pəncərəni bağla"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "_Quit"
-msgstr "/Fayl/Çı_x"
+msgstr "Çı_x"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "Quit the gconf editor"
-msgstr "GConf editoru"
+msgstr "GConf editorundan çıx"
 
 #: src/gconf-editor-window.c:748
-#, fuzzy
 msgid "_Copy Key Name"
-msgstr "/Düzəlt/Açar adını _köçür"
+msgstr "Açar Adını _köçür"
 
 #: src/gconf-editor-window.c:748
 msgid "Copy the name of the selected key"
-msgstr ""
+msgstr "Seçili açarın adını köçür"
 
 #: src/gconf-editor-window.c:750
 msgid "_Find..."
-msgstr ""
+msgstr "_Axtar..."
 
 #: src/gconf-editor-window.c:750
 msgid "Find patterns in keys and values"
-msgstr ""
+msgstr "Açarlarda və qiymətlərində mətn axtar"
 
 #: src/gconf-editor-window.c:752
 msgid "_List Recent Keys"
-msgstr ""
+msgstr "_Son İşlədilən Açarlar"
 
 #: src/gconf-editor-window.c:752
 msgid "Show recently modified keys"
-msgstr ""
+msgstr "Son təkmilləşdirilən açarları göstər"
 
 #: src/gconf-editor-window.c:755
-#, fuzzy
 msgid "_Add Bookmark"
-msgstr "/_Nişanlar"
+msgstr "Nişan Ə_lavə Et"
 
 #: src/gconf-editor-window.c:755
 msgid "Add a bookmark to the selected directory"
-msgstr ""
+msgstr "Seçili qovluğa nişan əlvə et"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "Nişanları düzəlt"
+msgstr "Nişanları _Düzəlt"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "Edit the bookmarks"
 msgstr "Nişanları düzəlt"
 
 #: src/gconf-editor-window.c:760
 msgid "_Contents"
-msgstr ""
+msgstr "_Məzmun"
 
 #: src/gconf-editor-window.c:760
 msgid "Open the help contents for the gconf editor"
-msgstr ""
+msgstr "gconf editorunun yardım məzmununu aç"
 
 #: src/gconf-editor-window.c:762
 msgid "_About"
-msgstr ""
+msgstr "_Haqqında"
 
 #: src/gconf-editor-window.c:762
 msgid "Show the about dialog for the gconf editor"
-msgstr ""
+msgstr "gconf editoru haqqında məlumat göstər"
 
 #: src/gconf-editor-window.c:765
-#, fuzzy
 msgid "_New Key..."
-msgstr "/Ye_ni açar..."
+msgstr "Ye_ni Açar..."
 
 #: src/gconf-editor-window.c:765
 msgid "Create a new key"
-msgstr ""
+msgstr "Yeni açar yarat"
 
 #: src/gconf-editor-window.c:767
-#, fuzzy
 msgid "_Edit Key..."
-msgstr "/Açarı düzəlt..."
+msgstr "Açarı _Düzəlt..."
 
 #: src/gconf-editor-window.c:767
 msgid "Edit the selected key"
-msgstr ""
+msgstr "Seçili açarı düzəlt"
 
 #: src/gconf-editor-window.c:769
-#, fuzzy
 msgid "_Unset Key..."
-msgstr "/Açarı _sil"
+msgstr "Açarı _Sil..."
 
 #: src/gconf-editor-window.c:769
 msgid "Unset the selected key"
-msgstr ""
+msgstr "Seçili açarın qiymətini sil"
 
 #: src/gconf-editor-window.c:771
-#, fuzzy
 msgid "Set as _Default"
-msgstr "/Ə_sas olaraq al"
+msgstr "Ö_n Qurğulu Olaraq Seç"
 
 #: src/gconf-editor-window.c:771
 msgid "Set the selected key to be the default"
-msgstr ""
+msgstr "Seçili açarı ön qurğulu et"
 
 #: src/gconf-editor-window.c:773
-#, fuzzy
 msgid "Set as _Mandatory"
-msgstr "/Ə_sas olaraq al"
+msgstr "_Lazımlı Qurğulu Olaraq Seç"
 
 #: src/gconf-editor-window.c:773
 msgid "Set the selected key to the mandatory"
-msgstr ""
+msgstr "Seçili açarı ön məcburi et"
 
 #: src/gconf-editor-window.c:860 src/gconf-editor-window.c:867
 #: src/gconf-editor-window.c:1321
@@ -320,9 +301,8 @@ msgid "This key is not writable"
 msgstr "Bu açar yazıla bilən deyil"
 
 #: src/gconf-editor-window.c:1555
-#, fuzzy
 msgid "This key has no schema"
-msgstr "Bu açar yazıla bilən deyil"
+msgstr "Bu açarın sxemi yoxdur"
 
 #: src/gconf-editor-window.c:1560
 msgid "Key Name:"
@@ -378,14 +358,12 @@ msgid "_New list element:"
 msgstr "_Yeni siyahı elementi:"
 
 #: src/gconf-key-editor.c:324
-#, fuzzy
 msgid "Edit list entry"
-msgstr "Yeni siyahı girişi əlavə et"
+msgstr "Siyahı girişini düzəlt"
 
 #: src/gconf-key-editor.c:342
-#, fuzzy
 msgid "_Edit list element:"
-msgstr "_Yeni siyahı elementi:"
+msgstr "Siyahı elementini _düzəlt:"
 
 #: src/gconf-key-editor.c:554
 msgid "Key path:"
@@ -419,135 +397,41 @@ msgstr "Açarı düzəlt"
 
 #: src/gconf-search-dialog.c:61
 msgid "Pattern not found"
-msgstr ""
+msgstr "Mətn tapıla milmədi"
 
 #: src/gconf-search-dialog.c:143
 msgid "Find"
-msgstr ""
+msgstr "Axtar"
 
 #: src/gconf-search-dialog.c:145
 msgid "_Search for: "
-msgstr ""
+msgstr "_Axtarılacaq mətn:"
 
 #: src/gconf-search-dialog.c:166
 msgid "Search also in key _names"
-msgstr ""
+msgstr "Əlavə olaraq açar _adlarında da axtar"
 
 #: src/gconf-search-dialog.c:169
 msgid "Search also in key _values"
-msgstr ""
+msgstr "Əlavə olaraq açar _qiymətlərində də axtar"
 
 #: src/gedit-output-window.c:350
 msgid "Close the output window"
-msgstr ""
+msgstr "Çıxış pəncərəsini bağla"
 
 #: src/gedit-output-window.c:388
 msgid "Copy selected lines"
-msgstr ""
+msgstr "Seçili sətirləri köçür"
 
 #: src/gedit-output-window.c:408
 msgid "Clear the output window"
-msgstr ""
+msgstr "Nəticə pəncrəsini bağla"
 
 #: src/gedit-output-window.c:448
 msgid "Output Lines"
-msgstr ""
+msgstr "Nəticə Sətirləri"
 
 #: src/main.c:40
 #, c-format
 msgid "Invalid key \"%s\": %s"
 msgstr "Hökmsüz açar \"%s\": %s"
-
-#~ msgid "About GConf-Editor"
-#~ msgstr "GConf-Editoru Haqqında"
-
-#~ msgid "/File/tearoff1"
-#~ msgstr "/Fayl/tearoff1"
-
-#~ msgid "/File/_New window"
-#~ msgstr "/Fayl/_Yeni pəncərə"
-
-#~ msgid "/File/sep1"
-#~ msgstr "/Fayl/sep1"
-
-#~ msgid "/Edit/tearoff2"
-#~ msgstr "/Düzəlt/tearoff2"
-
-#~ msgid "/Bookmarks/tearoff3"
-#~ msgstr "/Nişanlar/tearoff3"
-
-#~ msgid "/Bookmarks/_Add bookmark"
-#~ msgstr "/Nişanlar/Nişan _əlavə et"
-
-#~ msgid "/Bookmarks/_Edit bookmarks..."
-#~ msgstr "/Nişanlar/Nişanları _düzəlt..."
-
-#~ msgid "/Help/tearoff4"
-#~ msgstr "/Yardım/tearoff4"
-
-#~ msgid "/Help/_About..."
-#~ msgstr "/Yardım/_Haqqında..."
-
-#~ msgid "/File/New window"
-#~ msgstr "/Fayl/Yeni pəncərə"
-
-#~ msgid "/File/Quit"
-#~ msgstr "/Fayl/Çıx"
-
-#~ msgid "/Edit/Copy key name"
-#~ msgstr "/Düzəlt/Açar adını köçür"
-
-#~ msgid "/Help/About..."
-#~ msgstr "/Yardım/Haqqında..."
-
-#~ msgid ""
-#~ "Could not get schema location. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Sxemin yeri alına bilmədi. Xəta:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not get schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Sxem alına bilmədi. Xəta:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not set schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Sxem verilə bilmədi. Xəta:\n"
-#~ "%s"
-
-#~ msgid ""
-#~ "Could not associate schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Sxem əlaqələndirilə bilmədi. Xəta:\n"
-#~ "%s"
-
-#~ msgid "/sep1"
-#~ msgstr "/sep1"
-
-#~ msgid "/sep2"
-#~ msgstr "/sep2"
-
-#~ msgid "/New key..."
-#~ msgstr "/Yeni açar..."
-
-#~ msgid "/Unset key"
-#~ msgstr "/Açarı sil"
-
-#~ msgid "_Show this dialog again"
-#~ msgstr "Bu dialoqu yenə _göstər"
-
-#~ msgid ""
-#~ "This tool allows you to directly edit your configuration database. This "
-#~ "is not the recommended way of setting desktop preferences. Use this tool "
-#~ "at your own risk."
-#~ msgstr ""
-#~ "Bu vasitə sizə birbaşa olaraq quraşdırma verilənlər bazasını dəyişdirmə "
-#~ "imkanı verir. Bu masa üstü qurğularınızı sazlamağın məsləhət edilən yol "
-#~ "deyil. Ona görə də bu vasitəni öz riskinizdə istifadə edin."

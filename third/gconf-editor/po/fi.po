@@ -3,13 +3,13 @@
 # Henri Mannerberg <henkka@ur-quan.org>, 2002.
 # Pauli Virtanen <pauli.virtanen@hut.fi>, 2003.
 #
-# $Id: fi.po,v 1.1.1.1 2004-10-04 04:55:15 ghudson Exp $
+# $Id: fi.po,v 1.1.1.2 2005-03-10 19:30:10 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gconf-editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
 "PO-Revision-Date: 2004-08-19 00:57+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <pauli.virtanen@hut.fi>\n"

@@ -21,12 +21,6 @@
 
 #include <string.h>
 
-/* We are defining this here because is internal, but there is no other way to
- * know if an user can write into default/mandatory gconf values */
-GConfEngine *gconf_engine_get_local               (const char  *address,
-                                                   GError     **err);
-
-
 GType
 gconf_value_get_type (void)
 {
@@ -97,54 +91,50 @@ gconf_client_get_schema_for_key (GConfClient *client, const char *key)
 	return schema;
 }
 
-gboolean
-gconf_client_can_edit_defaults (void)
+static gboolean
+can_edit_source (const char *source)
 {
-	GConfEngine *defaults_engine = NULL;
-	GError *error = NULL;
+	GConfEngine *engine;
+	GConfEntry  *entry;
+	GError      *error;
+	gboolean     retval;
 
-	defaults_engine = gconf_engine_get_local (GCONF_DEFAULTS_SOURCE, NULL);
-	if (error) {
+	if (!(engine = gconf_engine_get_for_address (source, NULL)))
+		return FALSE;
+
+	error = NULL;
+	entry = gconf_engine_get_entry (engine,
+					"/apps/gconf-editor/can_edit_source",
+					NULL,
+					FALSE,
+					&error);
+	if (error != NULL) {
+		g_assert (entry == NULL);
+		g_error_free (error);
+		gconf_engine_unref (engine);
 		return FALSE;
 	}
 
-	gconf_engine_set_bool (defaults_engine, "/apps/gconf-editor/can_edit_defaults", FALSE, &error);
-	if (error) {
-		gconf_engine_unref (defaults_engine);
-		return FALSE;
-	}
-	gconf_engine_suggest_sync (defaults_engine, &error);
-	if (error) {
-		gconf_engine_unref (defaults_engine);
-		return FALSE;
-	}
-	gconf_engine_unref (defaults_engine);
-	return TRUE;
+	g_assert (entry != NULL);
+
+	retval = gconf_entry_get_is_writable (entry);
+
+	gconf_entry_unref (entry);
+	gconf_engine_unref (engine);
+
+	return retval;
 }
 
 gboolean
-gconf_client_can_edit_mandatory (void)
+gconf_util_can_edit_defaults (void)
 {
-	GConfEngine *defaults_engine = NULL;
-	GError *error = NULL;
+	return can_edit_source (GCONF_DEFAULTS_SOURCE);
+}
 
-	defaults_engine = gconf_engine_get_local (GCONF_MANDATORY_SOURCE, NULL);
-	if (error) {
-		return FALSE;
-	}
-
-	gconf_engine_set_bool (defaults_engine, "/apps/gconf-editor/can_edit_mandatory", FALSE, &error);
-	if (error) {
-		gconf_engine_unref (defaults_engine);
-		return FALSE;
-	}
-	gconf_engine_suggest_sync (defaults_engine, &error);
-	if (error) {
-		gconf_engine_unref (defaults_engine);
-		return FALSE;
-	}	
-	gconf_engine_unref (defaults_engine);
-	return TRUE;
+gboolean
+gconf_util_can_edit_mandatory (void)
+{
+	return can_edit_source (GCONF_MANDATORY_SOURCE);
 }
 
 	

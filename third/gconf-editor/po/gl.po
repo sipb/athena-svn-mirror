@@ -1,6 +1,6 @@
 # Galician translation of gconf-editor.
-# Copyright (C) 2002 Jesús Bravo Álvarez.
-# Jesús Bravo Álvarez <suso@trasno.net>, 2002.
+# Copyright (C) 2002-2004 Jesús Bravo Álvarez.
+# Jesús Bravo Álvarez <suso@trasno.net>, 2002-2004.
 #
 # Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
 # colaborar connosco, podes atopar máis información en http://www.trasno.net
@@ -11,13 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf-editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-08 20:20+0200\n"
-"PO-Revision-Date: 2002-06-07 23:11+0200\n"
+"POT-Creation-Date: 2004-10-13 16:44+0200\n"
+"PO-Revision-Date: 2004-10-02 12:10+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <suso@trasno.net>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1)\n"
 
 #: data/gconf-editor.desktop.in.h:1
 msgid "Configuration Editor"
@@ -28,14 +29,12 @@ msgid "Directly edit your entire configuration database"
 msgstr "Editar directamente a base de datos completa da configuración"
 
 #: data/gconf-editor.schemas.in.h:1
-#, fuzzy
 msgid "Bookmarks"
-msgstr "/_Marcadores"
+msgstr "Marcadores"
 
 #: data/gconf-editor.schemas.in.h:2
-#, fuzzy
 msgid "gconf-editor folder bookmarks"
-msgstr "Editar marcadores"
+msgstr "Marcadores de cartafol do gconf-editor"
 
 #: src/gconf-bookmarks-dialog.c:207
 #, fuzzy
@@ -44,22 +43,24 @@ msgstr "Editar marcadores"
 
 #: src/gconf-editor-application.c:58 src/gconf-editor-application.c:69
 #: src/gconf-editor-window.c:653 src/gconf-editor-window.c:698
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot create GConf engine. Error was:\n"
 "%s"
 msgstr ""
-"Non foi posible crear a clave. O erro é:\n"
+"Non se puido crear o motor GConf. O erro foi:\n"
 "%s"
 
 #: src/gconf-editor-window.c:341
 #, c-format
 msgid "Couldn't display help: %s"
-msgstr ""
+msgstr "Non se puido mostrar a axuda: %s"
 
 #: src/gconf-editor-window.c:376
 msgid "translator_credits"
 msgstr ""
+"Jesús Bravo Álvarez <suso@trasno.net>\n"
+"Proxecto Trasno - http://www.trasno.net"
 
 #: src/gconf-editor-window.c:386
 msgid "GConf-Editor"
@@ -67,7 +68,7 @@ msgstr "GConf-Editor"
 
 #: src/gconf-editor-window.c:388
 msgid "An editor for the GConf configuration system."
-msgstr "Un editor para o sistema de configuracióin GConf."
+msgstr "Un editor para o sistema de configuración GConf."
 
 #: src/gconf-editor-window.c:423
 #, c-format
@@ -75,7 +76,7 @@ msgid ""
 "Couldn't unset key. Error was:\n"
 "%s"
 msgstr ""
-"Non foi posible desestablecer a clave. O erro foi:\n"
+"Non se puido limpar a clave. O erro foi:\n"
 "%s"
 
 #: src/gconf-editor-window.c:448
@@ -84,7 +85,7 @@ msgid ""
 "Could not create key. The error is:\n"
 "%s"
 msgstr ""
-"Non foi posible crear a clave. O erro é:\n"
+"Non se puido crear a clave. O erro é:\n"
 "%s"
 
 #: src/gconf-editor-window.c:530
@@ -93,103 +94,103 @@ msgid ""
 "Could not change key value. Error message:\n"
 "%s"
 msgstr ""
-"Non foi posible alterar o valor da clave. Mensaxe de erro:\n"
+"Non se puido modificar o valor da clave. Mensaxe de erro:\n"
 "%s"
 
 #: src/gconf-editor-window.c:562
-#, fuzzy
 msgid ""
 "Currently pairs and schemas can't be edited. This will be changed in a later "
 "version."
 msgstr ""
-"Polo momento non se poden editar as listas, parellas e esquemas. Isto "
-"cambiará nunha versión posterior."
+"Polo momento non se poden editar as parellas e os esquemas. Isto cambiará "
+"nunha versión posterior."
 
 #: src/gconf-editor-window.c:677 src/gconf-editor-window.c:722
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Could not sync value. Error was:\n"
 "%s"
 msgstr ""
-"Non foi posible desestablecer a clave. O erro foi:\n"
+"Non se puido sincronizar o valor. O error foi:\n"
 "%s"
 
 #: src/gconf-editor-window.c:728
-#, fuzzy
 msgid "_File"
-msgstr "/_Ficheiro"
+msgstr "_Ficheiro"
 
 #: src/gconf-editor-window.c:729
-#, fuzzy
 msgid "_Edit"
-msgstr "/_Editar"
+msgstr "_Editar"
 
 #: src/gconf-editor-window.c:730
 msgid "_Search"
 msgstr ""
 
 #: src/gconf-editor-window.c:731
-#, fuzzy
 msgid "_Bookmarks"
-msgstr "/_Marcadores"
+msgstr "_Marcadores"
 
 #: src/gconf-editor-window.c:732
-#, fuzzy
 msgid "_Help"
-msgstr "/A_xuda"
+msgstr "A_xuda"
 
 #: src/gconf-editor-window.c:734
+#, fuzzy
 msgid "New _Settings Window"
-msgstr ""
+msgstr "Nova fiestra de _configuración"
 
 #: src/gconf-editor-window.c:735
 msgid "Open a new gconf editor window editing current settings"
 msgstr ""
+"Abrir unha nova fiestra do editor de gconf para editar as opcións actuais"
 
 #: src/gconf-editor-window.c:737
+#, fuzzy
 msgid "New _Defaults Window"
-msgstr ""
+msgstr "Nova fiestra de _predefinicións"
 
 #: src/gconf-editor-window.c:738
 msgid "Open a new gconf editor window editing system default settings"
 msgstr ""
+"Abrir unha nova fiestra do editor de gconf para editar as opcións "
+"predefinidas do sistema"
 
 #: src/gconf-editor-window.c:740
+#, fuzzy
 msgid "New _Mandatory Window"
-msgstr ""
+msgstr "Nova fiestra de _obrigatorios"
 
 #: src/gconf-editor-window.c:741
 msgid "Open a new gconf editor window editing system mandatory settings"
 msgstr ""
+"Abrir unha nova fiestra do editor de gconf para editar as opcións "
+"obrigatorias do sistema"
 
 #: src/gconf-editor-window.c:743
 #, fuzzy
 msgid "_Close Window"
-msgstr "/Ficheiro/_Pechar fiestra"
+msgstr "_Pechar fiestra"
 
 #: src/gconf-editor-window.c:743
-#, fuzzy
 msgid "Close this window"
-msgstr "/Ficheiro/_Pechar fiestra"
+msgstr "Pechar esta fiestra"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "_Quit"
-msgstr "/Ficheiro/_Saír"
+msgstr "_Saír"
 
 #: src/gconf-editor-window.c:745
-#, fuzzy
 msgid "Quit the gconf editor"
-msgstr "Editor de GConf"
+msgstr "Saír do editor de gconf"
 
 #: src/gconf-editor-window.c:748
 #, fuzzy
 msgid "_Copy Key Name"
-msgstr "/Editar/_Copiar nome da clave"
+msgstr "_Copiar nome da clave"
 
 #: src/gconf-editor-window.c:748
 msgid "Copy the name of the selected key"
-msgstr ""
+msgstr "Copiar o nome da clave seleccionada"
 
 #: src/gconf-editor-window.c:750
 msgid "_Find..."
@@ -210,80 +211,81 @@ msgstr ""
 #: src/gconf-editor-window.c:755
 #, fuzzy
 msgid "_Add Bookmark"
-msgstr "/_Marcadores"
+msgstr "_Engadir marcador"
 
 #: src/gconf-editor-window.c:755
 msgid "Add a bookmark to the selected directory"
-msgstr ""
+msgstr "Engadir un marcador ao directorio seleccionado"
 
 #: src/gconf-editor-window.c:757
 #, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "Editar marcadores"
+msgstr "_Editar marcadores"
 
 #: src/gconf-editor-window.c:757
-#, fuzzy
 msgid "Edit the bookmarks"
-msgstr "Editar marcadores"
+msgstr "Editar os marcadores"
 
 #: src/gconf-editor-window.c:760
 msgid "_Contents"
-msgstr ""
+msgstr "_Contidos"
 
 #: src/gconf-editor-window.c:760
 msgid "Open the help contents for the gconf editor"
-msgstr ""
+msgstr "Abrir os contidos de axuda para o editor de gconf"
 
 #: src/gconf-editor-window.c:762
 msgid "_About"
-msgstr ""
+msgstr "_Acerca"
 
 #: src/gconf-editor-window.c:762
 msgid "Show the about dialog for the gconf editor"
-msgstr ""
+msgstr "Mostrar o diálogo de información sobre o editor de gconf"
 
 #: src/gconf-editor-window.c:765
 #, fuzzy
 msgid "_New Key..."
-msgstr "/_Nova clave..."
+msgstr "_Nova clave..."
 
 #: src/gconf-editor-window.c:765
 msgid "Create a new key"
-msgstr ""
+msgstr "Crear unha nova clave"
 
 #: src/gconf-editor-window.c:767
 #, fuzzy
 msgid "_Edit Key..."
-msgstr "/Editar clave..."
+msgstr "_Editar clave..."
 
 #: src/gconf-editor-window.c:767
 msgid "Edit the selected key"
-msgstr ""
+msgstr "Editar a clave seleccionada"
 
 #: src/gconf-editor-window.c:769
 #, fuzzy
 msgid "_Unset Key..."
-msgstr "/_Desestablecer clave"
+msgstr "_Limpar clave..."
 
 #: src/gconf-editor-window.c:769
 msgid "Unset the selected key"
-msgstr ""
+msgstr "Eliminar o valor da clave seleccionada"
 
 #: src/gconf-editor-window.c:771
+#, fuzzy
 msgid "Set as _Default"
-msgstr ""
+msgstr "Establecer como _predefinido"
 
 #: src/gconf-editor-window.c:771
 msgid "Set the selected key to be the default"
-msgstr ""
+msgstr "Establecer a clave seleccionada como a predefinida"
 
 #: src/gconf-editor-window.c:773
+#, fuzzy
 msgid "Set as _Mandatory"
-msgstr ""
+msgstr "Establecer como _obrigatoria"
 
 #: src/gconf-editor-window.c:773
 msgid "Set the selected key to the mandatory"
-msgstr ""
+msgstr "Establecer a clave seleccionada como obrigatoria"
 
 #: src/gconf-editor-window.c:860 src/gconf-editor-window.c:867
 #: src/gconf-editor-window.c:1321
@@ -318,11 +320,11 @@ msgstr "Documentación da clave"
 
 #: src/gconf-editor-window.c:1542 src/gconf-key-editor.c:600
 msgid "This key is not writable"
-msgstr ""
+msgstr "Esta clave non é escribible"
 
 #: src/gconf-editor-window.c:1555
 msgid "This key has no schema"
-msgstr ""
+msgstr "Esta clave non ten esquema"
 
 #: src/gconf-editor-window.c:1560
 msgid "Key Name:"
@@ -341,7 +343,6 @@ msgid "Long Description:"
 msgstr "Descrición detallada:"
 
 #: src/gconf-key-editor.c:82
-#, fuzzy
 msgid "T_rue"
 msgstr "_Certo"
 
@@ -364,32 +365,31 @@ msgstr "Cadea"
 
 #: src/gconf-key-editor.c:127
 msgid "Float"
-msgstr ""
+msgstr "Flotante"
 
 #: src/gconf-key-editor.c:129
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 #: src/gconf-key-editor.c:219
 msgid "Add new list entry"
-msgstr ""
+msgstr "Engadir nova entrada de lista"
 
 #: src/gconf-key-editor.c:237
 msgid "_New list element:"
-msgstr ""
+msgstr "_Novo elemento de lista:"
 
 #: src/gconf-key-editor.c:324
-#, fuzzy
 msgid "Edit list entry"
-msgstr "Editar clave"
+msgstr "Editar entrada de lista"
 
 #: src/gconf-key-editor.c:342
 msgid "_Edit list element:"
-msgstr ""
+msgstr "_Editar elemento de lista:"
 
 #: src/gconf-key-editor.c:554
 msgid "Key path:"
-msgstr "Ruta da clave:"
+msgstr "Camiño da clave:"
 
 #: src/gconf-key-editor.c:566
 msgid "Key _name:"
@@ -407,7 +407,7 @@ msgstr "_Valor da clave:"
 
 #: src/gconf-key-editor.c:672
 msgid "List _type:"
-msgstr ""
+msgstr "_Tipo de lista:"
 
 #: src/gconf-key-editor.c:785
 msgid "New key"
@@ -438,16 +438,18 @@ msgid "Search also in key _values"
 msgstr ""
 
 #: src/gedit-output-window.c:350
+#, fuzzy
 msgid "Close the output window"
-msgstr ""
+msgstr "Pechar esta fiestra"
 
 #: src/gedit-output-window.c:388
 msgid "Copy selected lines"
 msgstr ""
 
 #: src/gedit-output-window.c:408
+#, fuzzy
 msgid "Clear the output window"
-msgstr ""
+msgstr "Pechar esta fiestra"
 
 #: src/gedit-output-window.c:448
 msgid "Output Lines"
@@ -456,107 +458,22 @@ msgstr ""
 #: src/main.c:40
 #, c-format
 msgid "Invalid key \"%s\": %s"
-msgstr ""
+msgstr "Clave \"%s\" non válida: %s"
 
-#~ msgid "About GConf-Editor"
-#~ msgstr "Acerca do GConf-Editor"
+#~ msgid "Skip caveat dialog"
+#~ msgstr "Ignorar diálogo de aviso"
 
-#, fuzzy
-#~ msgid "/File/tearoff1"
-#~ msgstr "/Ficheiro/sep1"
-
-#~ msgid "/File/_New window"
-#~ msgstr "/Ficheiro/_Nova fiestra"
-
-#~ msgid "/File/sep1"
-#~ msgstr "/Ficheiro/sep1"
-
-#, fuzzy
-#~ msgid "/Bookmarks/tearoff3"
-#~ msgstr "/_Marcadores"
-
-#~ msgid "/Bookmarks/_Add bookmark"
-#~ msgstr "/Marcadores/En_gadir marcador"
-
-#~ msgid "/Bookmarks/_Edit bookmarks..."
-#~ msgstr "/Marcadores/_Editar marcadores..."
-
-#~ msgid "/Help/_About..."
-#~ msgstr "/Axuda/_Acerca..."
-
-#, fuzzy
-#~ msgid "/File/New window"
-#~ msgstr "/Ficheiro/_Nova fiestra"
-
-#, fuzzy
-#~ msgid "/File/Quit"
-#~ msgstr "/Ficheiro/_Saír"
-
-#, fuzzy
-#~ msgid "/Edit/Copy key name"
-#~ msgstr "/Editar/_Copiar nome da clave"
-
-#, fuzzy
-#~ msgid "/Help/About..."
-#~ msgstr "/Axuda/_Acerca..."
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not get schema location. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Non foi posible desestablecer a clave. O erro foi:\n"
-#~ "%s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not get schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Non foi posible desestablecer a clave. O erro foi:\n"
-#~ "%s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not set schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Non foi posible desestablecer a clave. O erro foi:\n"
-#~ "%s"
-
-#, fuzzy
-#~ msgid ""
-#~ "Could not associate schema. Error was:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Non foi posible desestablecer a clave. O erro foi:\n"
-#~ "%s"
-
-#~ msgid "/sep1"
-#~ msgstr "/sep1"
-
-#, fuzzy
-#~ msgid "/sep2"
-#~ msgstr "/sep1"
-
-#, fuzzy
-#~ msgid "/New key..."
-#~ msgstr "/_Nova clave..."
-
-#, fuzzy
-#~ msgid "/Unset key"
-#~ msgstr "/_Desestablecer clave"
+#~ msgid "This key defines if gconf-editor should skip the warning dialog"
+#~ msgstr "Esta clave define se o gconf-editor debe ignorar o diálogo de aviso"
 
 #~ msgid "_Show this dialog again"
 #~ msgstr "_Mostrar este diálogo de novo"
 
-#~ msgid "Copyright (C) Anders Carlsson 2001, 2002"
-#~ msgstr "Copyright © Anders Carlsson 2001, 2002"
-
 #~ msgid ""
-#~ "This is the GConf configuration editor. It is not tested and may cause "
-#~ "the GConf configuration database to wreak Havoc and other bad things. Use "
-#~ "it at your own risk!"
+#~ "This tool allows you to directly edit your configuration database. This "
+#~ "is not the recommended way of setting desktop preferences. Use this tool "
+#~ "at your own risk."
 #~ msgstr ""
-#~ "Isto é o editor de configuración de GConf. Non está probado e pode causar "
-#~ "erros na base de datos de GConf. Úseo ao seu risco"
+#~ "Esta ferramenta permite editar directamente a base de datos de "
+#~ "configuración. Este non é o xeito recomendado de cambiar as preferencias, "
+#~ "use a ferramenta ao seu risco."

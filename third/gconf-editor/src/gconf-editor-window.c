@@ -1347,13 +1347,13 @@ gconf_editor_window_init (GConfEditorWindow *window)
 
 	window->popup_menu = gtk_ui_manager_get_widget (window->ui_manager, "/GConfKeyPopupMenu");
 
-	if (!gconf_client_can_edit_defaults ()) {
+	if (!gconf_util_can_edit_defaults ()) {
 		gtk_widget_set_sensitive (gtk_ui_manager_get_widget (window->ui_manager, "/GConfKeyPopupMenu/DefaultKey"),
 					  FALSE);
 		gtk_widget_set_sensitive (gtk_ui_manager_get_widget (window->ui_manager, "/GConfEditorMenu/FileMenu/NewDefaultsWindow"),
 					  FALSE);
 	}
-	if (!gconf_client_can_edit_mandatory ()) {
+	if (!gconf_util_can_edit_mandatory ()) {
 		gtk_widget_set_sensitive (gtk_ui_manager_get_widget (window->ui_manager, "/GConfKeyPopupMenu/MandatoryKey"),
 					  FALSE);
 		gtk_widget_set_sensitive (gtk_ui_manager_get_widget (window->ui_manager, "/GConfEditorMenu/FileMenu/NewMandatoryWindow"),
