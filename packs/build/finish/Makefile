@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1997-04-02 02:54:44 ghudson Exp $
+# $Id: Makefile,v 1.4 1997-11-02 17:08:02 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -24,6 +24,15 @@ check:
 # build system rules.  It needs to wait until after everything is put
 # in place on the packs, including the other things we install.
 install:
+	@if [ -r ${DESTDIR}/.rvdinfo ]; then \
+		. ../version; \
+		dvers=`sed -e 's/^.* \([0-9]*\.[0-9]*\)\..*/\1/' \
+			${DESTDIR}/.rvdinfo`; \
+		if [ "$$dvers" != "$$major.$$minor" ]; then \
+			echo "Error: major or minor version mismatch."; \
+			exit 1; \
+		fi; \
+	fi
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	rm -f ${DESTDIR}/patch
