@@ -1,5 +1,5 @@
 ;; keymaps.jl -- the default keymaps
-;; $Id: keymaps.jl,v 1.1.1.2 2001-01-13 14:58:19 ghudson Exp $
+;; $Id: keymaps.jl,v 1.1.1.3 2001-03-09 19:34:47 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -142,6 +142,13 @@ of a window. (Only mouse-bindings are evaluated in this map.)"
     :user-level expert
     :type keymap)
 
+  (defcustom shade-button-keymap (make-keymap)
+    "Keymap containing bindings active when the pointer is in the shade button
+of a window. (Only mouse-bindings are evaluated in this map.)"
+    :group bindings
+    :user-level expert
+    :type keymap)
+
   (defcustom pointer-motion-threshold 2
     "Motion threshold for mouse pointer: \\wpixels"
     :group misc
@@ -213,6 +220,7 @@ of a window. (Only mouse-bindings are evaluated in this map.)"
     
     (bind-keys close-button-keymap
       "Button3-Click1" 'popup-window-menu
+      "S-Button1-Off" 'delete-group
       "Button1-Off" 'delete-window)
     
     (bind-keys iconify-button-keymap
@@ -226,4 +234,7 @@ of a window. (Only mouse-bindings are evaluated in this map.)"
     (bind-keys maximize-button-keymap
       "Button3-Off" 'maximize-window-horizontally-toggle
       "Button2-Off" 'maximize-window-vertically-toggle
-      "Button1-Off" 'maximize-window-toggle)))
+      "Button1-Off" 'maximize-window-toggle)
+
+    (bind-keys shade-button-keymap
+      "Button1-Off" 'toggle-window-shaded)))

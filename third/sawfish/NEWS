@@ -5,6 +5,112 @@ This lists the user-visible changes made to Sawfish, and which releases
 they occurred between. For more detailed information see the
 `ChangeLog' files in the Sawfish source tree.
 
+0.37
+====
+
+   * New command line option `--window-history-file=FILE'
+
+   * Search for user's rc file in this order: `~/.sawfishrc',
+     `~/.sawfish/rc', `~/.sawmillrc'
+
+   * New option `configure-ignore-stacking-requests' and a
+     similarly-named window property. When set stacking requests from
+     windows are ignored (Matt Tucker)
+
+   * When restarting sawfish, reselect the previously selected workspace
+
+   * Added a function that can recolour multiple image channels
+     simultaneously
+
+   * New function `exit-type' - returns the type of exit in progress
+
+   * Translation updates: ja (Sato Satoru), sk (Stanislav Visnovsky),
+     es (Iñaki García Etxebarria), hu (Robert Vanyi), tr (Fatih Demir),
+     ro (Tutu Valentin), no (Kjartan Maraas), it (Michele Campeotto), pl
+     (Daniel Koc)
+
+   * Fixed bugs:
+
+        - Fixed focus-handling in enter-only mode on window close and
+          viewport switch
+
+        - Fixed overflow error in the image recolouring module (Simon
+          Budig)
+
+        - Session management always uses a unique session file (Timo
+          Korvola, me)
+
+        - Fixed bug in random placement mode where windows could
+          sometimes be placed off-screen
+
+        - Fixed some auto-raise problems by reverting a misguided bug
+          fix
+
+        - Fixed bugs with aborted session saves
+
+        - Cache stacking order of windows locally - this allows us to
+          keep the order consistent, especially after window
+          reparenting operations
+
+        - Don't call `XParseColor' unless we actually _have_ a display
+          connection (merlin)
+
+        - Merged two calls to `setlocale' to avoid trashing the locale
+          preferences
+
+        - Check for presence of Xinerama extension before trying to use
+          it - removes the annoying error message at startup
+
+        - Added some more X server timestamp logic to correct for the
+          timestamp discontinuities after APM resume
+
+
+0.36
+====
+
+   * Added a new default theme: `Crux'. By default it recolours itself
+     to match the current GTK+ selection colour. (Arlo Rose, me)
+
+   * Updated translations: it (Michele Campeotto), fr (Christian
+     Marillat)
+
+   * Added a `shade-button' button class (many themes created it anyway)
+
+   * Added a `sawfish.wm.util.recolor-image' module, currently contains
+     a single function for recolouring parts of images based on a given
+     colour gradient
+
+   * Added new command `delete-group'. Deletes a whole group of
+     windows. With default bindings, shift-click on the close button to
+     invoke this command
+
+   * Added support for KDE-style mini-icons. If the window has no
+     normal icon, then `window-icon-image' will return the mini-icon
+
+   * Fixed bugs:
+
+        - Themes that use the module for reading the user's gtk
+          preferences will once again get updated when the gtk theme
+          changes
+
+        - Fix another of the null-string translation bugs (Christian
+          Marillat)
+
+        - Work around `XUrgencyHint' not being defined before X11R6
+
+        - Fixed some long-standing bugs when decorating windows (use the
+          correct mask when creating the overall window shape; for
+          frame parts with no mask, set the local shape to the
+          appropriate rectangle; be sure to generate at least one
+          Expose event when reconfiguring frame parts)
+
+        - Fixed crashing bug when `bind-keys' is called with zero
+          arguments
+
+        - Fixed typo in `crop-image' function when checking validity of
+          HEIGHT parameter (martin@whoever.com)
+
+
 0.35
 ====
 

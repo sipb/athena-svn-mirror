@@ -1,5 +1,5 @@
 /* frames.c -- window frame manipulation
-   $Id: frames.c,v 1.1.1.1 2000-11-12 06:28:40 ghudson Exp $
+   $Id: frames.c,v 1.1.1.2 2001-03-09 19:35:31 ghudson Exp $
 
    Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -372,17 +372,18 @@ set_frame_shapes (Lisp_Window *w, bool atomic)
 	}
     }
 
-    for (fp = w->frame_parts; fp != 0 && w->id != 0; fp = fp->next)
+    for (fp = w->frame_parts; fp != 0 && !WINDOW_IS_GONE_P (w); fp = fp->next)
     {
 	Pixmap pixmap, mask;
+	int state = current_state (fp);
 
 	if (fp->width <= 0 || fp->height <= 0)
 	    continue;
 
-	if (IMAGEP(fp->bg[0]))
+	if (IMAGEP(fp->bg[state]))
 	{
 	    bool tiled = FALSE;
-	    Lisp_Image *image = VIMAGE(fp->bg[0]);
+	    Lisp_Image *image = VIMAGE(fp->bg[state]);
 	    repv tem;
 
 	    tem = Fimage_get (rep_VAL(image), Qtiled);
@@ -477,7 +478,7 @@ commit_queued_reshapes (void)
     Lisp_Window *w;
     for (w = window_list; w != 0; w = w->next)
     {
-	if (w->id != 0 && w->pending_reshape)
+	if (!WINDOW_IS_GONE_P (w) && w->pending_reshape)
 	    set_frame_shapes (w, TRUE);
     }
 }
@@ -505,7 +506,7 @@ set_frame_part_bg (struct frame_part *fp)
 	fp->drawn.bg = Qnil;
     }
 
-    if (win->id == 0)
+    if (WINDOW_IS_GONE_P (win))
 	return;
 
     if (COLORP(bg))
@@ -547,14 +548,26 @@ set_frame_part_bg (struct frame_part *fp)
 	/* Some of the Imlib_ functions call XSync on our display. In turn
 	   this can cause the error handler to run if a window has been
 	   deleted. This then invalidates the window we're updating */
-	if (win->id == 0)
+	if (WINDOW_IS_GONE_P (win))
 	    return;
+
+	if (bg_mask == 0)
+	{
+	    /* No mask, so we always want to force the rectangle
+	       including the frame part to be shown.. */
+	    XRectangle rect;
+	    rect.x = rect.y = 0;
+	    rect.width = fp->width;
+	    rect.height = fp->height;
+	    XShapeCombineRectangles (dpy, fp->id, ShapeBounding,
+				     0, 0, &rect, 1, ShapeSet, Unsorted);
+	}
 
 	if (!tiled)
 	{
 	    XCopyArea (dpy, bg_pixmap, fp->id, fp->gc, 0, 0,
 		       fp->width, fp->height, 0, 0);
-	    if (bg_mask)
+	    if (bg_mask != 0)
 	    {
 		XShapeCombineMask (dpy, fp->id, ShapeBounding,
 				   0, 0, bg_mask, ShapeSet);
@@ -591,7 +604,7 @@ set_frame_part_bg (struct frame_part *fp)
 		{
 		    XCopyArea (dpy, bg_pixmap, fp->id, fp->gc,
 			       0, 0, width, height, x, y);
-		    if (bg_mask)
+		    if (bg_mask != 0)
 		    {
 			XShapeCombineMask (dpy, tem, ShapeBounding,
 					   x, y, bg_mask, ShapeUnion);
@@ -600,7 +613,7 @@ set_frame_part_bg (struct frame_part *fp)
 		}
 		y += height;
 	    }
-	    if (bg_mask)
+	    if (bg_mask != 0)
 	    {
 		XShapeCombineShape (dpy, fp->id, ShapeBounding, 0, 0,
 				    tem, ShapeBounding, ShapeSet);
@@ -741,7 +754,7 @@ set_frame_part_fg (struct frame_part *fp)
 	    /* Some of the Imlib_ functions call XSync on our display. In turn
 	       this can cause the error handler to run if a window has been
 	       deleted. This then invalidates the window we're updating */
-	    if (win->id == 0)
+	    if (WINDOW_IS_GONE_P (win))
 		return;
 
 	    if (fg_pixmap)
@@ -825,9 +838,9 @@ refresh_frame_part (struct frame_part *fp)
 	if (fp->drawn.width != fp->width || fp->drawn.height != fp->height)
 	    fp->drawn.bg = rep_NULL;
 
-	if (w->id != 0 && fp->id != 0)
+	if (!WINDOW_IS_GONE_P (w) && fp->id != 0)
 	    set_frame_part_bg (fp);
-	if (w->id != 0 && fp->id != 0)
+	if (!WINDOW_IS_GONE_P (w) && fp->id != 0)
 	    set_frame_part_fg (fp);
 
 	fp->drawn.width = fp->width;
@@ -843,7 +856,7 @@ void
 refresh_frame_parts (Lisp_Window *w)
 {
     struct frame_part *fp;
-    for (fp = w->frame_parts; w->id != 0 && fp != 0; fp = fp->next)
+    for (fp = w->frame_parts; !WINDOW_IS_GONE_P (w) && fp != 0; fp = fp->next)
 	refresh_frame_part (fp);
 }
 
@@ -1383,6 +1396,8 @@ configure_frame_part (struct frame_part *fp)
 	    attr.stack_mode = fp->below_client ? Below : Above;
 	    XConfigureWindow (dpy, fp->id, CWX | CWY | CWWidth
 			      | CWHeight | CWStackMode, &attr);
+	    /* Generate an Expose event for the window. */
+	    XClearArea (dpy, fp->id, 0, 0, 0, 0, True);
 	}
 	else
 	{
@@ -1844,7 +1859,7 @@ DEFUN("refresh-window", Frefresh_window,
       Srefresh_window, (repv win), rep_Subr1)
 {
     rep_DECLARE1(win, XWINDOWP);
-    if (VWIN(win)->id != 0)
+    if (!WINDOW_IS_GONE_P (VWIN(win)))
 	refresh_frame_parts (VWIN(win));
     return Qt;
 }

@@ -1,3 +1,119 @@
+2001-02-19  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.37.3
+
+	* po/ru.po: Updated Russian translation from Vlad Harchev
+	<hvv@hippo.ru>
+
+2001-02-18  Simos Xenitellis  <simos@hellug.gr>
+
+	* po/el.po: Updated Greek translation.
+
+2001-02-14  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.37.2
+
+	* configure.in: version 0.37.1
+
+2001-02-13  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.37
+
+	* themes/Crux/theme.jl (button-theme): in `Mac OS Platinum'
+	mode, only show close button on transients
+
+2001-02-12  John Harper  <jsh@eazel.com>
+
+	* po/sawfish.pot: committed the translation template (requested
+	by kmarass), will try to periodically update this
+	auto-generated file..
+
+2001-02-09  John Harper  <jsh@eazel.com>
+
+	* themes/mono/theme.jl: rewritten in `define' form. The
+	mono:active-color is now optional and defaults to the GTK
+	selection color
+
+2001-02-10  John Harper  <jsh@eazel.com>
+
+	* po/ja.po: updated Japansese translations from Sato Satoru
+
+2001-02-09  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* po/sk.po: Updated Slovak translation.
+
+2001-02-07  John Harper  <jsh@eazel.com>
+
+	* po/es.po: updated Spanish translation from Iñaki García
+	Etxebarria <garetxe@euskalnet.net>
+
+2001-02-07  Szabolcs Ban  <shooby@gnome.hu>
+
+	* po/hu.po: Updated Hungarian translation by Robert Vanyi
+
+2001-02-07  Fatih Demir	<kabalak@gmx.net>
+
+	* po/tr.po: Updated Turkish translation ci'd.
+
+2001-01-29  John Harper  <jsh@eazel.com>
+
+	* themes/Crux/theme.jl: was rebuilding _all_ windows when the
+	WM_NAME of one window changed. Fixed this inefficiency
+
+2001-02-03  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* po/ro.po: Added Romanian translation (thanks to Tutu Valentin)
+
+2001-01-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* po/no.po: Updated Norwegian translation.
+	
+2001-01-27  John Harper  <jsh@eazel.com>
+
+	* po/it.po: updated Italian translation from Michele Campeotto
+	<micampe@f2s.com>
+
+	* themes/Crux/theme.jl,
+	themes/Crux/inactive:menu-button-pressed.png,
+	themes/Crux/inactive:menu-button-hilight.png,
+	themes/Crux/inactive:button-pressed.png,
+	themes/Crux/inactive:button-hilight.png: buttons on inactive
+	frames now prelight like active frames
+
+	* po/pl.po: updated Polish translation from Daniel Koc
+	<kocio@bigfoot.com>
+
+2001-01-25  John Harper  <jsh@eazel.com>
+
+	* themes/Crux/theme.jl: s/MacOS/Mac OS/
+
+2001-01-20  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.36
+
+2001-01-19  John Harper  <jsh@eazel.com>
+
+	* themes/Makefile.in: 
+	* themes/Crux/theme.jl,	themes/Crux/*.png, themes/Crux/README:
+
+	New theme `Crux' - designed by Arlo, implemented by me. The new
+	default theme. Recolors itself to match the GTK+ theme, has
+	various customizable options
+
+2001-01-17  John Harper  <jsh@eazel.com>
+
+	* sawfish.spec.in: unset LC_ALL, LINGUAS and LANG before
+	building
+
+2001-01-11  John Harper  <jsh@eazel.com>
+
+	* themes/gtk/theme.jl: rewrote to use define instead of let*
+	for creating bindings
+
+	* po/it.po, po/fr.po: updated translations from Michele
+	Campeotto <micampe@f2s.com> and Christian Marillat
+	<marillat.christian@wanadoo.fr> respectively
+
 2001-01-05  John Harper  <jsh@eazel.com>
 
 	* configure.in: version 0.35

@@ -1,5 +1,5 @@
 /* keys.c -- Key binding and evaluating (this should be called events.c)
-   $Id: keys.c,v 1.1.1.2 2001-01-13 14:58:37 ghudson Exp $
+   $Id: keys.c,v 1.1.1.3 2001-03-09 19:35:31 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -911,7 +911,7 @@ Returns KEYMAP when successful.
 {
     repv km, arg1;
     if (!rep_CONSP(args))
-	return rep_NULL;
+	return rep_signal_missing_arg (1);
     km = rep_CAR(args);
     args = rep_CDR(args);
     while (rep_CONSP(args) && rep_CONSP(rep_CDR(args)))
@@ -1733,7 +1733,7 @@ grab_keymap_event (repv km, long code, long mods, bool grab)
 	km = Fsymbol_value (km, Qt);
     for (w = window_list; w != 0; w = w->next)
     {
-	if (w->id != 0)
+	if (!WINDOW_IS_GONE_P (w))
 	{
 	    repv tem = Fwindow_get (rep_VAL(w), Qkeymap);
 	    if (rep_SYMBOLP(tem) && tem != Qnil)
@@ -1793,17 +1793,17 @@ grab_window_events (Lisp_Window *w, bool grab)
 {
     repv tem;
     tem = Fsymbol_value (Qglobal_keymap, Qt);
-    if (tem != Qnil && !rep_VOIDP(tem) && w->id != 0)
+    if (tem != Qnil && !rep_VOIDP(tem) && !WINDOW_IS_GONE_P (w))
 	grab_keymap_events (w->id, tem, grab);
     tem = Fwindow_get (rep_VAL(w), Qkeymap);
-    if (tem && tem != Qnil && w->id != 0)
+    if (tem && tem != Qnil && !WINDOW_IS_GONE_P (w))
 	grab_keymap_events (w->id, tem, grab);
 }
 
 static void
 keymap_prop_change (Lisp_Window *w, repv prop, repv old, repv new)
 {
-    if (prop == Qkeymap && w->id != 0)
+    if (prop == Qkeymap && !WINDOW_IS_GONE_P (w))
     {
 	/* A bit of a hack */
 	grab_keymap_events (w->id, old, FALSE);

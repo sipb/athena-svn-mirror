@@ -1,5 +1,5 @@
 ;; autoload.jl -- Initialise auto-load functions
-;; $Id: autoload.jl,v 1.1.1.2 2001-01-13 14:58:50 ghudson Exp $
+;; $Id: autoload.jl,v 1.1.1.3 2001-03-09 19:34:37 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -69,6 +69,7 @@
 (autoload-command (quote raise-lower-group) (quote sawfish.wm.commands.groups) #:user-level (quote expert))
 (autoload-command (quote raise-group-depth) (quote sawfish.wm.commands.groups))
 (autoload-command (quote lower-group-depth) (quote sawfish.wm.commands.groups))
+(autoload-command (quote delete-group) (quote sawfish.wm.commands.groups))
 (autoload-command (quote grow-window-left) (quote sawfish.wm.commands.grow-pack))
 (autoload-command (quote grow-window-right) (quote sawfish.wm.commands.grow-pack))
 (autoload-command (quote grow-window-up) (quote sawfish.wm.commands.grow-pack))

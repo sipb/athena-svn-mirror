@@ -1,5 +1,5 @@
 ;; audio-events.jl -- map wm actions to audio samples
-;; $Id: audio-events.jl,v 1.1.1.2 2001-01-13 14:58:06 ghudson Exp $
+;; $Id: audio-events.jl,v 1.1.1.3 2001-03-09 19:34:39 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -69,7 +69,7 @@
 				  ;(focused . "clicked.wav")
 				  (switch-workspace . "toggled.wav")
 				  (move-viewport . "toggled.wav"))
-    ""
+    nil
     :type* `(alist ((symbol iconified uniconified
 			    shaded unshaded
 			    maximized unmaximized

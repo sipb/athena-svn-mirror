@@ -1,6 +1,6 @@
 #| nokogiri-widgets/event.jl
 
-   $Id: event.jl,v 1.1.1.1 2000-11-12 06:27:25 ghudson Exp $
+   $Id: event.jl,v 1.1.1.2 2001-03-09 19:35:10 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,6 +24,7 @@
 (define-structure sawfish.ui.widgets.event ()
 
     (open rep
+	  rep.regexp
 	  gui.gtk
 	  sawfish.gtk.widget
 	  sawfish.ui.wm)
@@ -51,7 +52,12 @@
 	  ((set) (lambda (x)
 		   (gtk-entry-set-text entry x)))
 	  ((ref) (lambda ()
-		   (gtk-entry-get-text entry)))
+		   (strip-surrounding-whitespace (gtk-entry-get-text entry))))
 	  ((validp) stringp)))))
 
-  (define-widget-type 'event make-event-item))
+  (define-widget-type 'event make-event-item)
+
+  (define (strip-surrounding-whitespace string)
+    (if (string-match "^\\s*(.*?)\\s*$" string)
+	(expand-last-match "\\1")
+      string)))

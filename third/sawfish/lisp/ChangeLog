@@ -1,3 +1,211 @@
+2001-02-14  John Harper  <jsh@eazel.com>
+
+	* version 0.37.2
+
+	* sawfish/wm/commands/move-resize.jl (viable-move-resize-p):
+	doh! fixed this properly now, was using the wrong variable to
+	get the edge list
+
+	* version 0.37.1
+
+	* sawfish/wm/commands/move-resize.jl (viable-move-resize-p):
+	fixed stupid typo in `region' and `border' modes (using
+	direction instead of edge list)
+
+2001-02-13  John Harper  <jsh@eazel.com>
+
+	* version 0.37
+
+	* sawfish/wm/state/gnome.jl (gnome-window-class-hacks): 
+	* sawfish/wm/state/wm-spec.jl (wm-class-hacks): 
+	Look for `Panel/panel_window' instead of `Panel/panel'. This
+	may not work well immediately, but it will with the forthcoming
+	gnome-core release
+
+	* sawfish/wm/ext/window-history.jl: new command line option
+	`--window-history-file=FILE' to specify where to load and store
+	the history information
+
+	* sawfish/wm/user.jl (rc-files): new internal variable - the
+	list of rc files to try, currently ~/.sawfishrc, ~/.sawfish/rc
+	and ~/.sawmillrc
+
+2001-02-10  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/match-window.jl
+	(match-window-grab-x-property): enclose grabbed regexp in
+	`^...$' so that it only matches the exact string
+
+2001-02-07  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/window-order.jl (on-viewport-change): only
+	call window-order-focus-most-recent if in click-to-focus mode,
+	not when not in enter-exit mode
+
+2001-02-06  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/match-window.jl (match-window-x-properties):
+	added WM_WINDOW_ROLE to list of properties
+
+	* sawfish/wm/state/transient.jl (transient-unmap-window): in
+	sloppy focus mode avoid focusing on the desktop window just
+	because the pointer is over it
+
+2001-02-05  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/recolor-image.jl (make-lut): subtract
+	mid-point from 255 not 256. Pointed out by Simon Budig
+	<Simon.Budig@unix-ag.org>
+
+2001-01-28  John Harper  <jsh@eazel.com>
+
+	Work to fix bug 5758 (session management doesn't work in `don't
+	automatically save' mode).
+
+	Most of the credit goes to Timo Korvola
+	<tkorvola@e.math.helsinki.fi> for working out what was wrong
+	and providing the initial implementation
+
+	* sawfish/wm/session/init.jl: lots of rewriting. The end result
+	is that we never overwrite session files when saving data.
+	Instead we use a unique prefix (the time in us in base 36) to
+	the client id. (This is how XSM is supposed to work)
+
+	* sawfish/wm/session/save.jl, sawfish/wm/session/load.jl
+	(save-session, load-session): these functions now accept a
+	filename argument instead of the client id
+
+	* sawfish/wm.jl: check for --sm-prefix option, and pass it to
+	sm-init when found
+
+2001-01-27  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/configure.jl
+	(configure-ignore-stacking-requests): new option. Controls
+	whether stacking requests from windows are honoured or not. The
+	window property `ignore-stacking-requests' has the same effect
+
+	[ adapted from Matt Tucker <tuck@whistlingfish.net> ]
+
+	* sawfish/wm/ext/match-window.jl (match-window-properties):
+	added ignore-stacking-requests to the `Other' section
+
+2001-01-25  John Harper  <jsh@eazel.com>
+
+	Fixed bug 5984 (locked-size-when-maximized is confusing):	
+
+	* sawfish/wm/frames.jl (frame-part-classes): use calls to
+	define-frame-class to populate this alist
+
+	(cursor-for-frame-part): new function, creates functions to
+	return the correct cursor. Uses frame-part-movable-p to see
+	which cursor should be displayed 
+
+	* sawfish/wm/state/maximize.jl (frame-part-movable-p): new
+	function
+
+	* sawfish/wm/state/maximize.jl (move-lock-when-maximized):
+	moved this option here (from sawfish.wm.commands.move-resize)
+
+	* sawfish/wm/commands/move-resize.jl
+	(delete-unmovable-directions, delete-unresizable-edges): new
+	functions
+
+	(viable-move-resize-p): new function, tests if it's worth
+	starting a move/resize (only if there's something that can be
+	moved or resized)
+
+2001-01-26  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/placement.jl (place-window-randomly): fixed bug
+	where windows could be left off-screen. Problem was due to
+	confusing right or bottom edges of the workarea with its width
+	or height
+
+2001-01-25  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/wm-spec.jl (init): the change to restore the
+	selected desktop on restart introduced a bug, so I've changed
+	it to not reselect the desktop until after the initialization
+	process has finished (using the after-initialization-hook)
+
+	* sawfish/wm/util/recolor-image.jl (make-image-recolorer*): new
+	function, can recolour multiple channels at once (uses a common
+	zero-channel, recolours based on whichever channel is non-zero
+	for each pixel)
+
+	(make-image-recolorer): now defined in terms of
+	make-image-recolorer*
+
+2001-01-23  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/state/wm-spec.jl (init): check for an old value of
+	_NET_CURRENT_DESKTOP before overwriting it. If set, switch to
+	that desktop. This fixes the annoying `desktop always reset to
+	zero on restart' bug
+
+2001-01-22  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/auto-raise.jl (rw-on-focus, rw-out-focus):
+	reverted the test for (eq mode 'normal). (See 2000-11-02 entry
+	for reason.) This causes worse problems than it solves (e.g.
+	switch desktops, M-TAB to a new window, but the old window gets
+	raised)
+
+2001-01-20  John Harper  <jsh@eazel.com>
+
+	* version 0.36
+
+2001-01-19  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/user.jl (fallback-frame-style): changed this to
+	`Crux' theme
+
+	* sawfish/wm/frames.jl (frame-part-classes): added shade-button
+	frame part class
+	* sawfish/wm/keymaps.jl (shade-button-keymap): new keymap
+
+	* sawfish/wm/util/recolor-image.jl (make-image-recolorer): new
+	module, exports this function. A factory for creating functions
+	that recolour images based on a white -> <color> -> black
+	gradient. Abstracted this code out of the new `Crux' theme
+
+	* sawfish/wm/gaol.jl (fully-safe-features): added
+	sawfish.wm.util.recolor-image
+
+2001-01-18  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/hide-dialogs.jl: new module, hide dialog
+	windows in groups that don't have the focus. Currently there's
+	no way to enable this except by loading it by hand..
+
+2001-01-15  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/gtkrc.jl (gtkrc-handle-client-msg): removed
+	leftover debugging output
+
+2001-01-08  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/util/gtkrc.jl (reload-gaol): new function, sets
+	all the variables that are loaded into the gaol (since they
+	don't update themselves automatically, doh!). Fixes bug 5505
+
+	* sawfish/wm/commands/groups.jl (delete-group): added special
+	case so that desktop windows don't get deleted
+
+2001-01-07  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/ext/audio-events.jl (audio-events-alist): change
+	"" doc string to nil (patch from Christian Marillat
+	<marillat.christian@wanadoo.fr>)
+
+2001-01-06  John Harper  <jsh@eazel.com>
+
+	* sawfish/wm/commands/groups.jl (delete-group): new command
+
+	* sawfish/wm/keymaps.jl (close-button-keymap): bind
+	`delete-group' to `S-Button1-Off'
+
 2001-01-05  John Harper  <jsh@eazel.com>
 
 	* version 0.35

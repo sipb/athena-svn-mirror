@@ -1,3 +1,169 @@
+2001-02-19  John Harper  <jsh@eazel.com>
+
+	* version 0.37.3
+
+	* windows.c (install_window_frame, remove_window_frame): only
+	do the reparenting if the window hasn't been destroyed
+
+	* stacking-list.c (restack_window): just return immediately if
+	the window has already been destroyed
+
+	* stacking-list.c (window_in_stacking_list_p): new predicate,
+	used to replace the assert_window_[not_]in_stacking_list
+	functions (which have been deleted)
+
+2001-02-18  John Harper  <jsh@eazel.com>
+
+	* functions.c (Frestack_windows, Fx_raise_window,
+	Fx_lower_window): be sure to never alter the stacking of
+	destroyed windows
+
+	[ I think this should fix the random crashes that some people
+	have been experiencing - it was possible for a deleted window
+	to be reinserted in the stacking list. Then, when the deleted
+	window got garbage collected bogus pointers were left in the
+	list.. ]
+
+	* stacking-list.c: added yet more assertions, this time to
+	check that destroyed windows aren't being manipulated where
+	they shouldn't be
+
+	* sawmill.h (WINDOW_IS_GONE_P): new macro, evaluates to true
+	when the window object no longer has an associated client
+	window
+
+	* windows.c, frames.c, display.c, keys.c: use the above macro
+	instead of `w->id == 0'
+
+2001-02-16  John Harper  <jsh@eazel.com>
+
+	* stacking-list.c (assert_window_in_stacking_list,
+	assert_window_not_in_stacking_list): new functions
+
+	* windows.c: use the stacking-list assertions in sensible
+	places
+
+2001-02-15  John Harper  <jsh@eazel.com>
+
+	* stacking-list.c: added debugging assertions
+
+2001-02-13  John Harper  <jsh@eazel.com>
+
+	* version 0.37
+
+	* windows.c (remove_window): only call
+	remove_from_stacking_list () once per window
+
+2001-02-11  John Harper  <jsh@eazel.com>
+
+	* session.c (save_yourself_2): set outstanding_save_done to
+	false after calling SmcSaveYourselfDone ()
+
+2001-02-09  John Harper  <jsh@eazel.com>
+
+	Work to cache the stacking order of windows locally - this
+	fixes the bug where reparenting windows screws the stacking
+	order and therefore makes the constraint-based stacking code go
+	haywire. It's also an efficiency win since we don't need to
+	keep asking the server for the order
+
+	* stacking-list.c: new file, code to maintain and manipulate a
+	doubly linked list of all managed windows, representing the
+	current stacking order. Also has a function to restack a window
+	such that it's consistent with its position in the list
+
+	* sawmill.h (Lisp_Window): new fields `above' and `below' -
+	linkage for the stacking list
+
+	* functions.c (Frestack_windows, Fx_raise_window,
+	Fx_lower_window): these are now implemented in terms of the
+	stacking list primitives. The method is simple: get the list
+	into the new order, then call restack_window () on any windows
+	that changed position in the list
+
+	* windows.c (Fstacking_order): just call make_stacking_list ()
+
+	(add_window, remove_window): add and remove the window from the
+	stacking list
+
+	(install_window_frame, remove_window_frame): after calling
+	XReparentWindow (), call restack_window () to fix the stacking
+	order of the window - this fixes the original bug
+
+2001-02-07  John Harper  <jsh@eazel.com>
+
+	* colors.c (Fget_color): don't try to call XParseColor if we
+	have no display connection, just return nil. Patch from merlin
+	<merlin@merlin.org
+
+	* fonts.c (x_create_font_set): merged two calls to setlocale ()
+	into one. This also avoids problems with its possibly static
+	buffer
+
+2001-02-06  John Harper  <jsh@eazel.com>
+
+	* functions.c (functions_init): call XineramaQueryExtension
+	before XineramaQueryScreens (in case the extension isn't
+	present)
+
+2001-01-28  John Harper  <jsh@eazel.com>
+
+	* session.c (shutdown_cancelled): if we've not already, send a
+	SaveYourselfDone message (required by the XSM protocol)
+
+	* main.c (Fexit_type): new function, returns the type of exit
+	currently in progress, one of the symbols: `user-quit',
+	`user-restart', `session-quit' (or nil if no exit in progress)
+
+	* events.c (save_timestamp): (try to) be more intelligent when
+	detecting out of order timestamps. Instead of just discarding
+	them, fetch the real time from the X server, then set
+	`last_event_time' to the timestamp closest to the current
+	server time.
+
+	This avoids sometimes dropping valid timestamps (e.g. after an
+	APM resume, focus changes could be lost for a short time)
+
+2001-01-20  John Harper  <jsh@eazel.com>
+
+	* version 0.36
+
+2001-01-18  John Harper  <jsh@eazel.com>
+
+	* windows.c: work around XUrgencyHint only being defined on
+	X11R6 and later
+
+2001-01-17  John Harper  <jsh@eazel.com>
+
+	* frames.c (set_frame_shapes): apply the mask of the image
+	associated with	the current state of the frame part, not always
+	the inactive state
+
+	* frames.c (set_frame_part_bg): if applying a pixmap with no
+	mask, set the shape to be the rectangle defined by the edges of
+	the frame part. This fixes the bug where parts in which only
+	some of the constituent images have alpha channels, get
+	corrupted when resized
+
+	* frames.c (configure_frame_part): if the window already
+	exists, call XClearArea () to generate an Expose event. This
+	fixes the bug where window decorations can update
+	inconsistently when resizing windows
+
+2001-01-15  John Harper  <jsh@eazel.com>
+
+	* keys.c (Fbind_keys): signal an error when <1 arg, don't just
+	return rep_NULL (which may cause a crash later)
+
+2001-01-09  John Harper  <jsh@eazel.com>
+
+	* windows.c (Fwindow_icon_image): added support for icons
+	stored on the KWM_WIN_ICON property (aka `mini icons'). Only
+	used when there's no icon in WM_HINTS
+
+	* images.c (Fcrop_image): fix typo when checking validity of
+	HEIGHT parameter (patch from martin@whoever.com)
+
 2001-01-05  John Harper  <jsh@eazel.com>
 
 	* version 0.35

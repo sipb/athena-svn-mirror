@@ -102,6 +102,9 @@ typedef struct lisp_window {
     repv plist;
     repv frame_style;
 
+    /* stacking order */
+    struct lisp_window *above, *below;
+
     /* Is the client window mapped? (by its app) */
     u_int mapped : 1;
 
@@ -164,6 +167,7 @@ typedef struct lisp_window {
 #define WINDOWP(v)	XWINDOWP(v)
 
 #define WINDOW_FOCUSED_P(w) (focus_window == w)
+#define WINDOW_IS_GONE_P(w) (w->id == 0)
 
 /* An allocated font */
 typedef struct lisp_font {
@@ -289,7 +293,8 @@ struct frame_part {
 
 /* codes for the clean_exit_jmp_buf */
 enum exit_codes {
-    ec_exit = 1,
+    ec_no_exit = 0,
+    ec_exit,
     ec_restart,
     ec_session_died
 };

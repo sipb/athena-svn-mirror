@@ -1,5 +1,5 @@
 ;; gtkrc.jl -- code to read current gtkrc settings
-;; $Id: gtkrc.jl,v 1.1.1.2 2001-01-13 14:58:05 ghudson Exp $
+;; $Id: gtkrc.jl,v 1.1.1.3 2001-03-09 19:34:44 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -170,6 +170,7 @@
     "Reload the gtkrc settings."
     (gtkrc-get-style)
     (gtkrc-apply-style)
+    (reload-gaol)
     (call-hook 'gtkrc-changed-hook))
 
   (define-command 'gtkrc-reload-style gtkrc-reload-style)
@@ -194,6 +195,16 @@
 
   (add-hook 'gtkrc-changed-hook (lambda () (mapc funcall gtkrc-funs)))
 
+  (define (reload-gaol)
+    (gaol-define 'gtkrc-background gtkrc-background)
+    (gaol-define 'gtkrc-background-pixmaps gtkrc-background-pixmaps)
+    (gaol-define 'gtkrc-base gtkrc-base)
+    (gaol-define 'gtkrc-light gtkrc-light)
+    (gaol-define 'gtkrc-dark gtkrc-dark)
+    (gaol-define 'gtkrc-mid gtkrc-mid)
+    (gaol-define 'gtkrc-foreground gtkrc-foreground)
+    (gaol-define 'gtkrc-font gtkrc-font))
+
 
 ;;; init
 
@@ -210,12 +221,4 @@
   (gaol-define 'gtkrc-load-pixmaps gtkrc-load-pixmaps)
   (gaol-define 'gtkrc-reload-style gtkrc-reload-style)
   (gaol-define 'gtkrc-call-after-changed gtkrc-call-after-changed)
-
-  (gaol-define 'gtkrc-background gtkrc-background)
-  (gaol-define 'gtkrc-background-pixmaps gtkrc-background-pixmaps)
-  (gaol-define 'gtkrc-base gtkrc-base)
-  (gaol-define 'gtkrc-light gtkrc-light)
-  (gaol-define 'gtkrc-dark gtkrc-dark)
-  (gaol-define 'gtkrc-mid gtkrc-mid)
-  (gaol-define 'gtkrc-foreground gtkrc-foreground)
-  (gaol-define 'gtkrc-font gtkrc-font))
+  (reload-gaol))

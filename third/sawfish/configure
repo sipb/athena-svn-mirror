@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.111 
+# From configure.in Revision: 1.116 
 
 
 
@@ -602,7 +602,7 @@ ac_config_sub=$ac_aux_dir/config.sub
 ac_configure=$ac_aux_dir/configure # This should be Cygnus configure.
 
 
-version="0.35"
+version="0.37.3"
 
 output_files="src/Makefile lisp/Makefile scripts/Makefile themes/Makefile\
  lisp/sawfish/ui/Makefile lisp/sawfish/gtk/Makefile sounds/Makefile\

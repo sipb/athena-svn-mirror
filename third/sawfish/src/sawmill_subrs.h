@@ -1,5 +1,5 @@
 /* sawmill_subrs.h -- prototypes
-   $Id: sawmill_subrs.h,v 1.1.1.2 2001-01-13 14:57:34 ghudson Exp $
+   $Id: sawmill_subrs.h,v 1.1.1.3 2001-03-09 19:35:31 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -342,5 +342,15 @@ extern repv Fcall_window_hook (repv hook, repv win, repv args, repv type);
 extern void manage_windows (void);
 extern void windows_init (void);
 extern void windows_kill (void);
+
+/* from window-list.c */
+extern bool window_in_stacking_list_p (Lisp_Window *w);
+extern void remove_from_stacking_list (Lisp_Window *w);
+extern void insert_in_stacking_list_above_all (Lisp_Window *w);
+extern void insert_in_stacking_list_below_all (Lisp_Window *w);
+extern void insert_in_stacking_list_above (Lisp_Window *w, Lisp_Window *x);
+extern void insert_in_stacking_list_below (Lisp_Window *w, Lisp_Window *x);
+extern void restack_window (Lisp_Window *w);
+extern repv make_stacking_list (void);
 
 #endif /* SAWMILL_SUBRS_H */

@@ -1,5 +1,5 @@
 ;; sm-load.jl -- session manager code to reload a saved session
-;; $Id: load.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: load.jl,v 1.1.1.2 2001-03-09 19:34:59 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -40,10 +40,10 @@
 
   (define restored-session nil)
 
-  (define (load-session id)
+  (define (load-session filename)
     (setq restored-session nil)
-    (when (file-exists-p (sm-find-file id))
-      (let ((file (open-file (sm-find-file id) 'read)))
+    (when (file-exists-p filename)
+      (let ((file (open-file filename 'read)))
 	(when file
 	  (unwind-protect
 	      (condition-case nil
