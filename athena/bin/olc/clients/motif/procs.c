@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.27 1996-09-20 02:15:01 ghudson Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.28 1997-04-30 17:46:02 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -26,6 +26,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 #include <Xm/List.h>
 #include <Xm/Text.h>
@@ -83,7 +84,7 @@ reaper(sig)
   int pid;
   Arg args[1];
 
-#ifndef POSIX
+#ifndef POSIX   /* POSIX semantics keeps the old handler -> no need to reset */
   signal(SIGCHLD, reaper);
 #endif
 
@@ -121,7 +122,7 @@ view_ready(sig)
   struct sigaction act;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
-  act.sa_handler= (void (*)()) SIG_IGN;
+  act.sa_handler= SIG_IGN;
   sigaction(SIGUSR1, &act, NULL);
 #else
   signal(SIGUSR1, SIG_IGN);
@@ -137,8 +138,8 @@ view_ready(sig)
 void
 olc_new_ques (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   REQUEST Request;
   char file[MAXPATHLEN];
@@ -176,8 +177,8 @@ olc_new_ques (w, tag, callback_data)
 void
 olc_clear_newq (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   XmTextSetString(w_newq_scrl, "");
 }
@@ -185,8 +186,8 @@ olc_clear_newq (w, tag, callback_data)
 void
 olc_send_newq (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   REQUEST Request;
   char buf[BUFSIZ];
@@ -200,7 +201,7 @@ olc_send_newq (w, tag, callback_data)
 
   WAIT_CURSOR;
 
-  memset(buf,0,BUFSIZ);
+  memset(buf, 0, BUFSIZ);
   q_text = XmTextGetString(w_newq_scrl);
   if (current_topic[0] == '\0')
       strcpy(buf,"You must select a topic for your question from the list in the\ntop half of this window.  Simply click on the line that most\nclosely matches the topic of your question.\n\n");
@@ -251,12 +252,13 @@ olc_send_newq (w, tag, callback_data)
 void
 olc_topic_select (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmListCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
+  XmListCallbackStruct *list = (XmListCallbackStruct *) callback_data;
   int item;
 
-  item = callback_data->item_position - 1;
+  item = list->item_position - 1;
   if (TopicTable[item].topic[0] == '#')
     {
       MuError("Not a valid topic line.  Please select another entry.");
@@ -273,8 +275,8 @@ olc_topic_select (w, tag, callback_data)
 void
 olc_cont_ques (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   XtSetSensitive(w_contq_btn, FALSE);
   WAIT_CURSOR;
@@ -402,8 +404,8 @@ olc_replay()
 void
 olc_done (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   REQUEST Request;
 
@@ -421,8 +423,8 @@ olc_done (w, tag, callback_data)
 void
 olc_cancel (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   REQUEST Request;
   ERRCODE status;
@@ -441,8 +443,8 @@ olc_cancel (w, tag, callback_data)
 void
 olc_savelog (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   char *homedir;
   char file[BUF_SIZE];
@@ -466,9 +468,11 @@ olc_savelog (w, tag, callback_data)
 void
 save_cbk (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmSelectionBoxCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
+  XmSelectionBoxCallbackStruct *s_box =
+    (XmSelectionBoxCallbackStruct *) callback_data;
   Arg A[1];
   ERRCODE status;
   int fd;
@@ -482,14 +486,15 @@ save_cbk (w, tag, callback_data)
   XtSetValues(w_savelog_btn,A,1);
   XtUnmanageChild(w_save_dlg);
 
-  switch (callback_data->reason) {
+  switch (s_box->reason) {
   case XmCR_CANCEL:
     return;
   case XmCR_OK:
     WAIT_CURSOR;
     filename = XmTextGetString(XmSelectionBoxGetChild(w_save_dlg,
 						      XmDIALOG_TEXT));
-    if ((out_fd = open(filename,O_WRONLY|O_CREAT|O_TRUNC,0600)) < 0) {
+    out_fd = open(filename,O_WRONLY|O_CREAT|O_TRUNC,0600);
+    if (out_fd < 0) {
       sprintf(buf,"Error opening %s: %s", filename, sys_errlist[errno]);
       MuError(buf);
       XtFree(filename);
@@ -529,8 +534,8 @@ save_cbk (w, tag, callback_data)
 void
 olc_stock (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   Arg args[1];
   char pidascii[7];
@@ -544,10 +549,11 @@ olc_stock (w, tag, callback_data)
   
   sprintf(pidascii,"%d",getpid());
 #ifdef NO_VFORK
-  if ((sa_pid = fork()) == -1) {
+  sa_pid = fork();
 #else
-  if ((sa_pid = vfork()) == -1) {
+  sa_pid = vfork();
 #endif
+  if (sa_pid == -1) {
     MuError("Error in vfork; cannot start stock answer browser");
     return;
   }
@@ -580,8 +586,8 @@ olc_stock (w, tag, callback_data)
 void
 olc_motd (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   Arg args[1];
 
@@ -598,7 +604,7 @@ olc_motd (w, tag, callback_data)
   }
   make_temp_name(file);
   
-  switch(x_get_motd(&Request,OLC,file,TRUE))
+  switch(x_get_motd(&Request,0,file,TRUE))      /* NB: 2nd arg is irrelevant */
     {
     case FAILURE:
     case ERROR:
@@ -619,8 +625,8 @@ olc_motd (w, tag, callback_data)
 void
 olc_update (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
 
   WAIT_CURSOR;
@@ -632,8 +638,8 @@ olc_update (w, tag, callback_data)
 void
 olc_help (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   Arg args[1];
   char *help;
@@ -667,8 +673,8 @@ olc_help (w, tag, callback_data)
     return;
   }
   
-  if ((help = (char *) malloc((1 + statbuf.st_size) * sizeof(char)))
-      == (char *) NULL)
+  help = malloc(1 + statbuf.st_size);
+  if (help == NULL)
     {
       fprintf(stderr, "help: unable to malloc space for help.\n");
       MuError("help: unable to malloc space for help.");
@@ -676,7 +682,8 @@ olc_help (w, tag, callback_data)
       return;
     }
   
-  if ((fd = open(help_filename, O_RDONLY, 0)) < 0)
+  fd = open(help_filename, O_RDONLY, 0);
+  if (fd < 0)
     {
       free(help);
       fprintf(stderr, "help: unable to open help file for read.\n");
@@ -707,8 +714,8 @@ olc_help (w, tag, callback_data)
 void
 olc_quit (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   if (has_question) {
     if (MuGetBoolean(QUIT_MESSAGE, "Yes", "No", NULL, FALSE))
@@ -725,12 +732,17 @@ olc_quit (w, tag, callback_data)
 void
 dlg_ok (w, tag, callback_data)
      Widget w;
-     int tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   Arg args[1];
 
-  switch (tag)
+  /* We're passing in a (small) integer value as the pointer callback
+   * arg.  This is not guaranteed to work (pointers != integers), but
+   * it almost always does in practice, and is less ugly than any of
+   * the alternatives.  --bert 07feb97
+   */
+  switch ((int) tag)
     {
     case MOTD_BTN:
       XtSetArg(args[0], XmNsensitive, TRUE);
@@ -746,8 +758,8 @@ dlg_ok (w, tag, callback_data)
 void
 olc_send (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   XtSetSensitive(w_send_btn, FALSE);
   XtManageChild(w_send_form);
@@ -757,8 +769,8 @@ olc_send (w, tag, callback_data)
 void
 olc_clear_msg (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   XmTextSetString(w_send_scrl, "");
 }
@@ -766,8 +778,8 @@ olc_clear_msg (w, tag, callback_data)
 void
 olc_send_msg (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   REQUEST Request;
   ERRCODE status;
@@ -790,8 +802,8 @@ olc_send_msg (w, tag, callback_data)
 void
 olc_close_msg (w, tag, callback_data)
      Widget w;
-     caddr_t *tag;
-     XmAnyCallbackStruct *callback_data;
+     XtPointer tag;
+     XtPointer callback_data;
 {
   XtUnmanageChild(w_send_form);
   XtSetSensitive(w_send_btn, TRUE);
