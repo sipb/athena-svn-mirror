@@ -7,6 +7,7 @@
 /etc/athena/attach.conf
 /etc/athena/inetd.conf
 /etc/athena/newsyslog.conf
+/etc/athena/smb.conf
 /etc/default/sulogin
 /etc/default/syslogd
 /etc/inet/inetd.conf
@@ -22,6 +23,7 @@
 /etc/profile
 /etc/resolv.conf
 /etc/shells
+/etc/ssh_config
 /etc/sshd_config
 /etc/syslog.conf
 /etc/system
