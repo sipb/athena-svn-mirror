@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.157 93/06/24 10:51:47 dpw Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -43,6 +43,9 @@ XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
 #endif
 #ifndef BuildXInputLib
 #define BuildXInputLib		YES
+#endif
+#ifndef BuildXIE
+#define BuildXIE		NO
 #endif
 #ifndef BuildXTrapExt
 #define BuildXTrapExt		NO
@@ -262,13 +265,20 @@ XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
 #define ScreenSaverDefines /**/
 #endif
 #endif
+#ifndef XIEdefines
+#if BuildXIE
+#define XIEdefines -DXIE
+#else
+#define XIEdefines /**/
+#endif
+#endif
 #ifndef BaseExtensionDefines
-#define BaseExtensionDefines -DSHAPE -DMULTIBUFFER -DMITMISC -DXTEST PexDefines ShmDefines XInputDefines XTrapDefines ScreenSaverDefines
+#define BaseExtensionDefines -DSHAPE -DMULTIBUFFER -DMITMISC -DXTEST -DBIGREQS PexDefines ShmDefines XInputDefines XTrapDefines ScreenSaverDefines XIEdefines
 #endif
 #define ExtensionDefines BaseExtensionDefines ExtensionOSDefines
 #endif
 #ifndef ServerExtraDefines
-#define ServerExtraDefines -DXDMCP
+#define ServerExtraDefines -DXDMCP -DPIXPRIV
 #endif
 #ifndef ServerOSDefines
 #define ServerOSDefines /**/
@@ -634,7 +644,7 @@ XCOMM X Window System make variables; this need to be coordinated with rules
  *           exists to avoid problems with some preprocessors
  */
 #ifndef _UseCat
-#if __STDC__ && !defined(UnixCpp)
+#if (__STDC__ && !defined(UnixCpp)) || defined(AnsiCpp)
 #ifdef UseInstalled
 #define _UseCat(a,b,c) a##c
 #else
@@ -650,7 +660,7 @@ XCOMM X Window System make variables; this need to be coordinated with rules
 #endif
 
 #ifndef ShLibIncludeFile
-/* need this to make ANSI-style proprocessors happy */
+/* need this to make ANSI-style preprocessors happy */
 #define ShLibIncludeFile <noop.rules>
 #endif
 
