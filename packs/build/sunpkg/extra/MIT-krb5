@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# The top-level build does not descend into src/appl, so build it here.
+cp athena-version src/appl/athena-version
+(cd src/appl &&
+  $1/packs/build/do.sh -s $1 -d $2 all &&
+  $1/packs/build/do.sh -s $1 -d $2 install) || exit 1
+
 etcdir=/etc
 athretcdir=/etc/athena
 sessdir=/var/athena/sessions
