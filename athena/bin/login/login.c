@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.5 1987-08-06 16:31:20 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.6 1987-08-06 16:42:55 rfrench Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.5 1987-08-06 16:31:20 rfrench Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.6 1987-08-06 16:42:55 rfrench Exp $";
 #endif	lint
 
 /*
@@ -1367,7 +1367,7 @@ get_groups()
 	char grlst[4096],grtmp[4096],*tmpptr;
 	int ngroups,i,cnt;
 	
-	if (!attachable)
+	if (inhibitflag)
 		return;
 	
 	cp = (char **)hes_resolve(pwd->pw_name,"grplist");
