@@ -1,4 +1,4 @@
-; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.boot,v 1.4 1997-05-08 00:42:56 ghudson Exp $
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.boot,v 1.5 1997-05-24 21:27:34 ghudson Exp $
 
 directory /etc
 
@@ -25,9 +25,9 @@ directory /etc
 ;						3600000	; Minimum 1000 hours
 ;						)
 ;
-;	  substituting your username for "yourusername."  After the SOA
-;	  record, put the local record(s) themselves, without specifying
-;	  the name, e.g.:
+;	  substituting your username for "yourusername" and removing all
+;	  whitespace before the '@'.  After the SOA record, put the local
+;	  record(s) themselves, without specifying the name, e.g.:
 ;
 ;				TXT	"erato.mit.edu"
 ;				TXT	"arilinn.mit.edu"
