@@ -1,11 +1,11 @@
-.TH REACTIVATE 8 "24 June 1991"
+.TH REACTIVATE 8 "25 May 1994"
 .FM mit
 .SH NAME
 reactivate \- reset the state of an idle workstation
 .SH SYNOPSIS
 .B /etc/athena/reactivate
 [
-.B \-detach
+.B \-detach | \-prelogin
 ]
 .SH DESCRIPTION
 The
@@ -14,56 +14,86 @@ program uses the
 .I reactivate
 script to both initialize the workstation for users and to reset the
 state after a user has logged out.  It should only be run when no one
-is logged in.
+is logged in, or to ensure that noone is logged in.
 
 The
 .I reactivate
-script performs six tasks:
-
-+ it detaches all attached filesystems and flushes all filesystem
-authentication from the workstation 
-
+script performs several tasks:
+.TP
+* it flushes all filesystem authentication from the workstation 
+.TP
+* it resets the zephyr hostmanager (\fIzhm\fR)
+.TP
 + it cleans out /tmp
-
-+ it resets the password and group files to their default contents
-
+.TP
+* it resets the password and group files to their default
+contents
+.TP
++ it reconfigures some AFS state (including running config_afs)
+.TP
+* it runs cleanup
+.TP
++ it detaches all attached filesystems
+.TP
 + it attaches the appropriate system packs
-
+.TP
 + it invokes an automatic software update if available
+.TP
+* it turns off remote network access to the workstation.
+.PP
 
-+ it turns off remote network access to the workstation.
-
-This last step closes the workstation from
-unexpected and possibly hostile
-remote connections.
-After logging in, you can use the
+This last step closes the workstation from unexpected and possibly
+hostile remote connections.  After logging in, you can use the
 .I access_on
 command to allow remote access.
 
 If the file
 .I /etc/athena/reactivate.local
 is present, it will be executed as the last thing
-.B reactivate
+.I reactivate
 does.  This allows local customization to a workstation's
 configuration.
 
 .SH OPTIONS
 .TP
 .B \-detach
-causes reactivate to detach all attached filesystems.  This is not
+causes
+.I reactivate
+to detach all attached filesystems.  This is not
 done on every invocation to cut down on the network traffic from idle
 workstations.
+.TP
+.B \-prelogin
+causes
+.I reactivate
+to perform only the *'d tasks listed above, and only
+if PUBLIC is set to true on the workstation. If PUBLIC is false,
+.I reactivate
+will simply exit. The purpose of this option is to provide
+.I xlogin
+a facility for making sure a PUBLIC workstation is as clean as
+it ought to be before a new user logs in. Specifically, this means
+making sure that no other users are logged on or have running
+processes, and that remote access is turned off.
+
+In the absence of this option,
+.I reactivate
+performs all listed tasks.
+.B \-prelogin
+and
+.B \-detach
+may not be specified simultaneously.
 
 .SH FILES
 .DT
 .nf
 /etc/athena/clusterinfo		These files contain the information
 /etc/athena/clusterinfo.bsh	received from the nameserver.
-/etc/athena/rc.conf		Contains configuration variables
-/etc/passwd.local		Default contents of password file
-/etc/group.local		Default contents of group file
+/etc/athena/rc.conf			Contains configuration variables
+/etc/passwd.local			Default contents of password file
+/etc/group.local			Default contents of group file
 /etc/athena/reactivate.local	Optional local additions
 .fi
 .SH SEE ALSO
 dm(8), xlogin(8), save_cluster_info(8), access_on(1) and access_off(1),
-attach(1) and detach(1), hesiod(3)
+attach(1) and detach(1), fsid(1), hesiod(3), zhm(8)
