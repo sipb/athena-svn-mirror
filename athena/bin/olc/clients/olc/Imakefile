@@ -1,7 +1,10 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.2 1991-01-03 13:05:00 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.3 1991-01-18 14:49:58 lwvanels Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.2  91/01/03  13:05:00  lwvanels
+# DBM not linked into the client
+# 
 # Revision 1.1  90/10/18  05:58:07  lwvanels
 # Initial revision
 # 
@@ -23,7 +26,11 @@ DEPLIBS= $(LOCAL_LIBRARIES)
 NormalProgramTarget(olc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 SaberProgramTarget(olc,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
+#ifdef TestInstall
+InstallLink(olc,olcr,/mit/olcdev/@sys)
+#else
 InstallLink(olc,olcr,$(DESTDIR)/usr/athena)
+#endif
 
 DependTarget()
 LintTarget()
