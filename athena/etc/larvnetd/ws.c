@@ -17,7 +17,7 @@
  * functions to poll and receive notifications of workstation status.
  */
 
-static const char rcsid[] = "$Id: ws.c,v 1.3 1998-10-22 18:23:28 ghudson Exp $";
+static const char rcsid[] = "$Id: ws.c,v 1.4 2003-09-15 17:08:35 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -141,7 +141,7 @@ void ws_handle_status(int s, struct config *config)
   enum busystate busystate;
 
   /* Read a packet from the server socket. */
-  count = recvfrom(s, buf, sizeof(buf), 0, (struct sockaddr *) &sin, &sz);
+  count = recvfrom(s, buf, sizeof(buf) - 1, 0, (struct sockaddr *) &sin, &sz);
   if (count == -1)
     {
       syslog(LOG_ERR, "ws_handle_status: recvfrom: %m");
