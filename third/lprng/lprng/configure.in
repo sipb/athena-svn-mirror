@@ -239,6 +239,11 @@ case $target_os in
 	 mips-sni* )
 		LIBS="$LIBS -lcurses";
 		;;
+	 irix* )
+		dnl Kerberos V
+		AC_CHECK_LIB(krb5, krb5_init_context,
+		    [LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"], , -lcrypto -lcom_err)
+		;;
 esac
 
 AC_C_CONST
