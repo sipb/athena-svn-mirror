@@ -52,6 +52,7 @@ struct _GailTreeView
   AtkObject     *focus_cell;
   GtkAdjustment *old_hadj;
   GtkAdjustment *old_vadj;
+  guint         idle_expand_id;
 };
 
 GType gail_tree_view_get_type (void);

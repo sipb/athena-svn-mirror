@@ -132,6 +132,7 @@ gail_combo_object_init (GailCombo      *combo)
   combo->press_description = NULL;
   combo->old_selection = NULL;
   combo->deselect_idle_handler = 0;
+  combo->select_idle_handler = 0;
 }
 
 AtkObject* 
@@ -189,6 +190,19 @@ notify_deselect (gpointer data)
   combo = GAIL_COMBO (data);
 
   combo->old_selection = NULL;
+  combo->deselect_idle_handler = 0;
+  g_signal_emit_by_name (data, "selection_changed");
+  return FALSE;
+}
+
+static gboolean
+notify_select (gpointer data)
+{
+  GailCombo *combo;
+
+  combo = GAIL_COMBO (data);
+
+  combo->select_idle_handler = 0;
   g_signal_emit_by_name (data, "selection_changed");
   return FALSE;
 }
@@ -215,7 +229,8 @@ gail_combo_selection_changed_gtk (GtkWidget      *widget,
       if (slist->data != gail_combo->old_selection)
         {
           gail_combo->old_selection = slist->data;
-          g_signal_emit_by_name (obj, "selection_changed");
+          if (gail_combo->select_idle_handler == 0)
+            gail_combo->select_idle_handler =  g_idle_add (notify_select, gail_combo);
         }
       if (gail_combo->deselect_idle_handler)
         {
@@ -227,6 +242,11 @@ gail_combo_selection_changed_gtk (GtkWidget      *widget,
     {
       if (gail_combo->deselect_idle_handler == 0)
         gail_combo->deselect_idle_handler =  g_idle_add (notify_deselect, gail_combo);
+      if (gail_combo->select_idle_handler)
+        {
+          g_source_remove (gail_combo->select_idle_handler);
+          gail_combo->select_idle_handler = 0;       
+        }
     }
 }
 
@@ -657,6 +677,11 @@ gail_combo_finalize (GObject            *object)
     {
       g_source_remove (combo->deselect_idle_handler);
       combo->deselect_idle_handler = 0;       
+    }
+  if (combo->select_idle_handler)
+    {
+      g_source_remove (combo->select_idle_handler);
+      combo->select_idle_handler = 0;       
     }
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

@@ -52,6 +52,7 @@ struct _GailCList
   gint n_cols;
   GArray *row_data;
   GList *cell_data;
+  AtkObject *previous_selected_cell;
 };
 
 GType gail_clist_get_type (void);

@@ -9,33 +9,35 @@ msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-03-15 10:59+0000\n"
-"PO-Revision-Date: 2004-07-22 11:07+0530\n"
+"PO-Revision-Date: 2004-11-04 10:44+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
-"Language-Team: Punjabi <pa@li.org>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 
 #: gail/gailimage.c:55
 msgid "dialog authentication"
-msgstr "ਤਖਤੀ ਪ੍ਰਮਾਣਿਕਤਾ"
+msgstr "ਵਾਰਤਾਲਾਪ ਪ੍ਰਮਾਣਿਕਤਾ"
 
 #: gail/gailimage.c:56
 msgid "dialog information"
-msgstr "ਤਖਤੀ ਜਾਣਕਾਰੀ"
+msgstr "ਵਾਰਤਾਲਾਪ ਜਾਣਕਾਰੀ"
 
 #: gail/gailimage.c:57
 msgid "dialog warning"
-msgstr "ਤਖਤੀ ਚੇਤਵਾਨੀ"
+msgstr "ਵਾਰਤਾਲਾਪ ਚੇਤਵਾਨੀ"
 
 #: gail/gailimage.c:58
 msgid "dialog error"
-msgstr "ਤਖਤੀ ਗਲਤੀ"
+msgstr "ਵਾਰਤਾਲਾਪ ਗਲਤੀ"
 
 #: gail/gailimage.c:59
 msgid "dialog question"
-msgstr "ਤਖਤੀ ਸਵਾਲ"
+msgstr "ਵਾਰਤਾਲਾਪ ਸਵਾਲ"
 
 #: gail/gailimage.c:60
 msgid "drag and drop"
@@ -47,7 +49,7 @@ msgstr "ਬਹੁ ਚੁੱਕੋ ਤੇ ਸੁੱਟੋ"
 
 #: gail/gailimage.c:62
 msgid "add"
-msgstr "ਜੋੜੋ"
+msgstr "ਸ਼ਾਮਿਲ"
 
 #: gail/gailimage.c:63
 msgid "apply"
@@ -55,11 +57,11 @@ msgstr "ਲਾਗੂ ਕਰੋ"
 
 #: gail/gailimage.c:64
 msgid "bold"
-msgstr "ਬੋਲਡ"
+msgstr "ਗੂੜਾ"
 
 #: gail/gailimage.c:65
 msgid "cancel"
-msgstr "ਰੱਦ"
+msgstr "ਰੱਦ ਕਰੋ"
 
 #: gail/gailimage.c:66
 msgid "cdrom"
@@ -71,7 +73,7 @@ msgstr "ਸਾਫ"
 
 #: gail/gailimage.c:68
 msgid "close"
-msgstr "ਬੰਦ"
+msgstr "ਬੰਦ ਕਰੋ"
 
 #: gail/gailimage.c:69
 msgid "color picker"
@@ -87,7 +89,7 @@ msgstr "ਨਕਲ"
 
 #: gail/gailimage.c:72
 msgid "cut"
-msgstr "ਕੱਟ"
+msgstr "ਕੱਟੋ"
 
 #: gail/gailimage.c:73
 msgid "delete"
@@ -95,7 +97,7 @@ msgstr "ਹਟਾਉ"
 
 #: gail/gailimage.c:74
 msgid "execute"
-msgstr "ਚਾਲੂ"
+msgstr "ਚਲਾਉ"
 
 #: gail/gailimage.c:75
 msgid "find"
@@ -123,7 +125,7 @@ msgstr "ਅਖੀਰ ਤੇ ਜਾਉ"
 
 #: gail/gailimage.c:81
 msgid "go to top"
-msgstr "ਉਪੱਰ ਜਾਉ"
+msgstr "ਉੱਪਰ ਜਾਉ"
 
 #: gail/gailimage.c:82
 msgid "go back"
@@ -139,7 +141,7 @@ msgstr "ਅੱਗੇ ਜਾਉ"
 
 #: gail/gailimage.c:85
 msgid "go up"
-msgstr "ਉਪੱਰ ਜਾਉ"
+msgstr "ਉੱਪਰ ਜਾਉ"
 
 #: gail/gailimage.c:86
 msgid "help"
@@ -163,19 +165,19 @@ msgstr "ਉਥੇ ਜਾਉ"
 
 #: gail/gailimage.c:91
 msgid "justify center"
-msgstr "ਮੱਧ ਵਿੱਚ ਨਿਰਧਾਰਨ"
+msgstr "ਕੇਂਦਰੀ ਇਕਸਾਰ"
 
 #: gail/gailimage.c:92
 msgid "justify fill"
-msgstr "ਭਰ ਨਿਰਧਾਰਨ"
+msgstr "ਭਰਨ ਇਕਸਾਰ"
 
 #: gail/gailimage.c:93
 msgid "justify left"
-msgstr "ਖੱਬੇ ਨਿਰਧਾਰਨ"
+msgstr "ਖੱਬੇ ਇਕਸਾਰ"
 
 #: gail/gailimage.c:94
 msgid "justify right"
-msgstr "ਸੱਜੇ ਨਿਰਧਾਰਨ"
+msgstr "ਸੱਜੇ ਇਕਸਾਰ"
 
 #: gail/gailimage.c:95
 msgid "missing image"
@@ -187,7 +189,7 @@ msgstr "ਨਵਾਂ"
 
 #: gail/gailimage.c:97
 msgid "no"
-msgstr "ਨਹੀ"
+msgstr "ਨਹੀਂ"
 
 #: gail/gailimage.c:98
 msgid "ok"
@@ -215,7 +217,7 @@ msgstr "ਛਾਪਣ ਨਮੂਨਾ"
 
 #: gail/gailimage.c:104
 msgid "properties"
-msgstr "ਵਿਸ਼ੇਸਤਾਵਾਂ"
+msgstr "ਵਿਸ਼ੇਸਤਾ"
 
 #: gail/gailimage.c:105
 msgid "quit"
@@ -223,7 +225,7 @@ msgstr "ਬਾਹਰ"
 
 #: gail/gailimage.c:106
 msgid "redo"
-msgstr "ਮੁੜ ਉਹੀ ਕਰੋ"
+msgstr "ਮੁੜ ਵਾਪਿਸ"
 
 #: gail/gailimage.c:107
 msgid "refresh"
@@ -251,15 +253,15 @@ msgstr "ਰੰਗ ਚੁਣੋ"
 
 #: gail/gailimage.c:113
 msgid "select font"
-msgstr "ਫੋਟ ਚੁਣੋ"
+msgstr "ਫੋਂਟ ਚੁਣੋ"
 
 #: gail/gailimage.c:114
 msgid "sort ascending"
-msgstr "ਵਧਦੇ ਕਰਮ ਅਨੁਸਾਰ"
+msgstr "ਵਧਦਾ ਕ੍ਰਮ"
 
 #: gail/gailimage.c:115
 msgid "sort descending"
-msgstr "ਘਟਦੇ ਕਰਮ ਅਨੁਸਾਰ"
+msgstr "ਘਟਦਾ ਕ੍ਰਮ"
 
 #: gail/gailimage.c:116
 msgid "spell check"
@@ -287,19 +289,19 @@ msgstr "ਹਾਂ"
 
 #: gail/gailimage.c:122
 msgid "zoom 100 percent"
-msgstr "ਜ਼ੂਮ ੧੦੦ ਪ੍ਰਤੀਸ਼ਤ"
+msgstr "ਆਕਾਰ ੧੦੦ ਪ੍ਰਤੀਸ਼ਤ"
 
 #: gail/gailimage.c:123
 msgid "zoom fit"
-msgstr "ਜ਼ੂਮ ਅਨੁਕੂਲ"
+msgstr "ਆਕਾਰ ਅਨੁਕੂਲ"
 
 #: gail/gailimage.c:124
 msgid "zoom in"
-msgstr "ਅਕਾਰ ਵਧਾਉ"
+msgstr "ਆਕਾਰ ਵਧਾਉ"
 
 #: gail/gailimage.c:125
 msgid "zoom out"
-msgstr "ਅਕਾਰ ਘਟਾਉ"
+msgstr "ਆਕਾਰ ਘਟਾਉ"
 
 #: gail/gailimage.c:127
 msgid "timer"
@@ -339,7 +341,7 @@ msgstr "ਮੀਡੀ"
 
 #: gail/gailimage.c:136
 msgid "microphone"
-msgstr "ਮਾਈਕਰੋਫੋਨ"
+msgstr "ਮਾਈਕ੍ਰੋਫੋਨ"
 
 #: gail/gailimage.c:137
 msgid "line in"
@@ -351,7 +353,7 @@ msgstr "ਪੱਤਰ"
 
 #: gail/gailimage.c:139
 msgid "mail receive"
-msgstr "ਪੱਤਰ ਮਿਲਿਆ"
+msgstr "ਪੱਤਰ ਪ੍ਰਾਪਤ"
 
 #: gail/gailimage.c:140
 msgid "mail send"
@@ -371,7 +373,7 @@ msgstr "ਪੱਤਰ ਨਵਾਂ"
 
 #: gail/gailimage.c:144
 msgid "attach"
-msgstr "ਜੋੜੋ"
+msgstr "ਨੱਥੀ"
 
 #: gail/gailimage.c:145
 msgid "book red"
@@ -399,7 +401,7 @@ msgstr "ਬਹੁ ਫਾਇਲਾਂ"
 
 #: gail/gailimage.c:151
 msgid "not"
-msgstr "ਨਹੀ"
+msgstr "ਨਹੀਂ"
 
 #: gail/gailimage.c:152
 msgid "table borders"
@@ -411,11 +413,11 @@ msgstr "ਸਾਰਣੀ ਭਰੋ"
 
 #: gail/gailimage.c:154
 msgid "text indent"
-msgstr "ਪਾਠ ਹਾਸ਼ੀਏ ਤੋ ਦੂਰ"
+msgstr "ਪਾਠ ਹਾਸ਼ੀਏ ਤੋਂ ਦੂਰ"
 
 #: gail/gailimage.c:155
 msgid "text unindent"
-msgstr "ਪਾਠ ਹਾਸ਼ੀਏੇ ਤੋ ਨਾ-ਦੂਰ"
+msgstr "ਪਾਠ ਹਾਸ਼ੀਏ ਤੋਂ ਨਾ-ਦੂਰ"
 
 #: gail/gailimage.c:156
 msgid "text bulleted list"

@@ -48,6 +48,8 @@ static AtkObject*   find_child_in_list                (GList          *list,
                                                        gint           index);
 static void         check_cache                       (GailNotebook   *gail_notebook,
                                                        GtkNotebook    *notebook);
+static void         reset_cache                       (GailNotebook   *gail_notebook,
+                                                       gint           index);
 static void         create_notebook_page_accessible   (GailNotebook   *gail_notebook,
                                                        GtkNotebook    *notebook,
                                                        gint           index,
@@ -489,6 +491,19 @@ check_cache (GailNotebook *gail_notebook,
 }
 
 static void
+reset_cache (GailNotebook *gail_notebook,
+             gint         index)
+{
+  GList *l;
+
+  for (l = gail_notebook->page_cache; l; l = l->next)
+    {
+      if (GAIL_NOTEBOOK_PAGE (l->data)->index > index)
+        GAIL_NOTEBOOK_PAGE (l->data)->index -= 1;
+    }
+}
+
+static void
 create_notebook_page_accessible (GailNotebook *gail_notebook,
                                  GtkNotebook  *notebook,
                                  gint         index,
@@ -539,6 +554,7 @@ gail_notebook_real_remove_gtk (GtkContainer *container,
   g_return_val_if_fail (obj, 1);
   gail_notebook->page_cache = g_list_remove (gail_notebook->page_cache, obj);
   gail_notebook->page_count -= 1;
+  reset_cache (gail_notebook, index);
   g_signal_emit_by_name (gail_notebook,
                          "children_changed::remove",
                           GAIL_NOTEBOOK_PAGE (obj)->index, 

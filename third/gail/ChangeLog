@@ -1,3 +1,108 @@
+2005-01-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in, NEWS: Rev to 1.8.2
+
+2005-01-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailclist.c (gail_clist_ref_at_actual): Create accessible object
+	for PIXTEXT cell.
+	(gail_clist_select_row_gtk):  Ensure that accessible cell is non-NULL
+	before referring to it.
+
+	* gail/gailclistcell.c (gail_clist_cell_get_name): Add support for
+	cell of type PIXTEXT.
+
+	Fixes bug #162083.
+
+2004-12-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtreeview.c (gail_tree_view_ref_child): Call
+	get_header_from_column to geta accessible corresponding to
+	correct column, even if not visible.
+	(gail_tree_view_get_column_header): Call get_header_from_column.
+	(get_column_from_header): New function containing code refactored
+	from gail_tree_tree_get_column_header.
+
+	Fixes bug #137222.
+
+2004-11-30  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcombo.[ch]: Add select_idle_handler to GailCombo
+	data structure.
+	Emit notification of selection-changed in an idle handler to that it
+	occurs after text insertion notification on GailText.
+	Fixes bug #156483.
+
+2004-11-29  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailclist.[ch]: Add previous_selected_cell to GailClist
+	data structure.
+	(gail_clist_ref_state_set): New function which sets state
+	MANAGES_DESCENDANTS on GailClist.
+	(gail_clist_ref_at_actual): Always set state VISIBLE on cell, 
+	set state SHOWING only if cell is on screen. Set state FOCUSED
+	ion cell if row is selected and has only one column.
+	(gail_clist_get_index_at):
+	(gail_clist_get_column_at_index):
+	(gail_clist_get_row_at_index): New functions.
+	(gail_clist_select_row_gtk): If number of columns is 1 emit
+	"active-descendant-changed" signal on cell in selected row. Set
+	state FOCUSED on selected cell.
+	(gail_clist_unselect_row_gtk): Remove state FOCUSED on unselected cell.
+	(gail_clist_adjustment_changed): Change state SHOWING instead of
+	VISIBLE.
+
+	Changes for bug #158437.
+
+2004-11-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcanvasitem.c (gail_canvas_item_get_parent):
+	(gail_canvas_item_get_index_in_parent): Cater for atk_object_set_parent
+	having been called to set the accessible parent. Fixes bug #159556.
+
+2004-11-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* configure.in, NEWS: Rev to 1.8.1
+
+2004-11-25  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailtreeview.[ch]: Add idle_handler_id to GailTreeView
+	data structure.
+	Remove idle handler idle_expand_row if rows change. Fixes bug
+	#132551.
+ 
+2004-11-24  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailnotebook.c (gail_notebook_real_remove_gtk): Call new
+	function reset-cache to correct index values for GailNotePages
+	with index greater than deleted index. Fixes bug #159206.
+
+2004-10-28  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcell.c (gail_cell_object_init): Add state SELECTABLE.
+	Fixes bug #153638.
+
+2004-10-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailsubmenuitem.c (gail_sub_menu_item_add_selection): Do not
+	activate menu item when selecting it. Fixes bug #156154.
+	
+2004-10-26  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailcanvasitem.c (get_item_extents): Correct calculation
+	when scroll offset is non-zero.
+	(is_item_in_window): Correction for when item is just outside the 
+	window. Fixes bug #156143.
+
+2004-10-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail/gailmenushell.c (gail_menu_shell_add_selection): Do not
+	activate menu item when selecting it. Fixes bug #156154.
+
+2004-10-03  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS.
+
 2004-09-13  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* configure.in, NEWS: Rev to 1.8.0

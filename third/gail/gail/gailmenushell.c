@@ -142,20 +142,7 @@ gail_menu_shell_add_selection (AtkSelection *selection,
   g_return_val_if_fail (item != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_MENU_ITEM(item->data), FALSE);
    
-  if (GTK_MENU_ITEM (item->data)->submenu) 
-  {
-    /* 
-     * This menu item is a submenu so select it
-     */
-    gtk_menu_shell_select_item (shell, GTK_WIDGET (item->data));
-  }
-  else
-  {
-    /*
-     * Activate this menu item
-     */
-    gtk_menu_shell_activate_item (shell, GTK_WIDGET (item->data), TRUE);
-  }
+  gtk_menu_shell_select_item (shell, GTK_WIDGET (item->data));
   return TRUE;
 }
 

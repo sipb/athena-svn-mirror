@@ -1,3 +1,37 @@
+Changes in GAIL 1.8.2
+=====================
+* Report correct parent of GailCanvasItem if atk_object_set_parent()
+was called. (bug #159556)
+
+* Correct implementation of GailClist so that seleced item in GtkCList
+is reported by gnopernicus. (bug #158437)
+
+* Report selection-changed after text insertion notification when GtkCOmbo 
+is changed using arrow keys. (bug #156483)
+
+* Report children which are column headers correctly even when they are not
+visible. (bug #137222)
+
+* Fix crash in glade when cell is GtkCList is referred to. (bug #162083)
+
+Changes in GAIL 1.8.1
+=====================
+* Correct reporting of visibility of items on GnomeCanvas. (bug #156143)
+
+* Do not activate menu item when selectinit it. (bug #156164)
+
+* Set cells as selectable. (bug 153638)
+
+* Fix error when tab ir removed from GtkNotebook. (bug #159206)
+
+* Fix crasher when GtkTreeView is changed immediately after row is 
+expanded. (bug #132551)
+
+* Add translation: Galician [Jesus Bravo Alvarez]
+
+* Updated translations: Canadian English [Adam Weinberger],
+Persian [Meelad Zakaria]
+
 Changes in GAIL 1.8.0
 =====================
 * Add translation: Thai [Supranee Thirawattansuk]
