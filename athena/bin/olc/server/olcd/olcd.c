@@ -57,13 +57,13 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.13 1990-01-16 14:38:05 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.14 1990-01-17 05:43:22 vanharen Exp $";
 
 /* Global variables. */
 
 extern int errno;		      /* System error number. */
 extern PROC  Proc_List[];              /* OLC Proceedure Table */
-char DaemonHost[LINE_LENGTH];	      /* Name of daemon's machine. */
+char DaemonHost[LINE_SIZE];	      /* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
 static int request_count = 0;
 int select_timeout = 10;
@@ -134,7 +134,7 @@ main (argc, argv)
   struct servent *service;		/* Network service entry. */
   struct hostent *this_host_entry;	/* Host entry for this host. */
   struct hostent *daemon_host_entry;	/* Entry for daemon host.*/
-  char hostname[LINE_LENGTH];		/* Name of this host. */
+  char hostname[LINE_SIZE];		/* Name of this host. */
   int fd;				/* Socket fd. */
   int onoff;				/* Value variable for setsockopt. */
   int n_errs=0;				/* Error count in accept() call */
@@ -159,7 +159,7 @@ main (argc, argv)
     {
       if(!strcmp(argv[arg],"-h"))  
 	{
-	  (void) strncpy(DaemonHost,argv[++arg],LINE_LENGTH);
+	  (void) strncpy(DaemonHost,argv[++arg],LINE_SIZE);
 	  hostset = 1;
 	  continue;
 	}
@@ -250,7 +250,7 @@ main (argc, argv)
    * find out who we are and what we are doing here
    */
 
-  if (gethostname(hostname, LINE_LENGTH) != 0) 
+  if (gethostname(hostname, LINE_SIZE) != 0) 
     {
       perror("gethostname");
       log_error("olcd: can't get hostname");
@@ -344,6 +344,9 @@ main (argc, argv)
       perror(LOG_DIR);
       log_error("Can't change wdir.");
     }
+
+  uncase(hostname);
+  uncase(daemon_host_entry->h_name);
 
   if (!string_eq(hostname, daemon_host_entry->h_name)) {
 #ifdef TEST
