@@ -1,13 +1,8 @@
-# $Id: configure.athena,v 1.7 2002-07-01 21:30:03 rbasch Exp $
+# $Id: configure.athena,v 1.8 2003-03-20 16:55:31 ghudson Exp $
 
 options="--with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
 	    --with-hesiod --with-kerberos"
 
-case $OS in
-irix)
-  CC=cc ./configure $options
-  ;;
-*)
-  ./configure $options
-  ;;
-esac
+# emacs's configure script can be confused by an inaccurate PWD, so unset it.
+unset PWD
+./configure $options
