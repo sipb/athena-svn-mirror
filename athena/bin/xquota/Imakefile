@@ -3,7 +3,7 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.10 1995-11-28 14:24:47 miki Exp $
+ * $Id: Imakefile,v 1.11 1996-06-08 00:47:18 ghudson Exp $
  *
  *       
  * Copyright (c) 1987, 1988, 1991 by the Massachusetts Institute of Technology.
@@ -11,15 +11,15 @@
  *       For further information on copyright and distribution 
  *       see the file mit-copyright.h
  */
-    
-#if defined(vax) && !defined(ultrix) || defined(ibm032) || defined(sun)
+
 INCFLAGS= -I. -I$(AFSDIR)/include
-#ifdef sun
-LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc -lm $(AFSDIR)/lib/afs/libsys.a    $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
-LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
-#else
-LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc $(AFSDIR)/lib/afs/libsys.a
+
+AFSLIBS=-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp
+#ifdef SOLARIS
+OSLIBS=-lucb
 #endif
+LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc $(AFSLIBS) $(OSLIBS)
+
 HELPFILES= -DDEFAULTS_FILE=\"${ATHXAPPDIR}/Xquota.ad\"\
 	   -DTOP_HELP_FILE=\"${ATHXAPPDIR}/top_help.txt\"\
 	   -DPOPUP_HELP_FILE=\"${ATHXAPPDIR}/pop_help.txt\"
@@ -34,7 +34,3 @@ install_file(Xquota.ad,${ATHXAPPDIR})
 install_file(top_help.txt,${ATHXAPPDIR})
 install_file(pop_help.txt,${ATHXAPPDIR})
 
-#else
-all::
-	@echo xquota does not compile on this platform
-#endif
