@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.22 1991-11-05 13:55:26 lwvanels Exp $
+ *	$Id: data.c,v 1.22.1.1 1992-01-07 20:34:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.22 1991-11-05 13:55:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.22.1.1 1992-01-07 20:34:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -83,7 +83,6 @@ PROC Proc_List[] =
 #endif
 };
 
-KNUCKLE **Knuckle_List  = (KNUCKLE **) NULL;
 TOPIC   **Topic_List    = (TOPIC **) NULL;
 
 KNUCKLE		*Knuckle_free = (KNUCKLE *) NULL;
