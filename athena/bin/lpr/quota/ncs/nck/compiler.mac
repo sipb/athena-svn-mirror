@@ -1,0 +1,73 @@
+;
+; ========================================================================== 
+; Confidential and Proprietary.  Copyright 1987 by Apollo Computer Inc.,
+; Chelmsford, Massachusetts.  Unpublished -- All Rights Reserved Under
+; Copyright Laws Of The United States.
+; 
+; Apollo Computer Inc. reserves all rights, title and interest with respect
+; to copying, modification or the distribution of such software programs
+; and associated documentation, except those rights specifically granted
+; by Apollo in a Product Software Program License, Source Code License
+; or Commercial License Agreement (APOLLO NETWORK COMPUTING SYSTEM) between
+; Apollo and Licensee.  Without such license agreements, such software
+; programs may not be used, copied, modified or distributed in source
+; or object code form.  Further, the copyright notice must appear on the
+; media, the supporting documentation and packaging as set forth in such
+; agreements.  Such License Agreements do not grant any rights to use
+; Apollo Computer's name or trademarks in advertising or publicity, with
+; respect to the distribution of the software programs without the specific
+; prior written permission of Apollo.  Trademark agreements may be obtained
+; in a separate Trademark License Agreement.
+; ========================================================================== 
+;
+; MicroSoft C compiler assembly code macros.  (MS/DOS)
+; - For use with MASM v5.1.
+; - Should be included after .MODEL directive, e.g.:
+;
+;    DOSSEG
+;    .MODEL LARGE
+;    include compiler.mac
+;
+;===========================================================================
+; Macros for entrance to C callable procedure
+
+CPROC macro name
+	public _&name
+_&name PROC
+	push bp
+	mov bp,sp
+	endm
+
+CRET macro name
+	mov sp,bp
+	pop bp
+	ret
+_&name endp
+	endm
+
+;===========================================================================
+; Offsets for arguments
+if @codesize
+_arg_offset equ 6
+else
+_arg_offset equ 4
+endif
+arg1 equ [bp+_arg_offset+0]
+arg2 equ [bp+_arg_offset+2]
+arg3 equ [bp+_arg_offset+4]
+arg4 equ [bp+_arg_offset+6]
+arg5 equ [bp+_arg_offset+8]
+arg6 equ [bp+_arg_offset+10]
+arg7 equ [bp+_arg_offset+12]
+arg8 equ [bp+_arg_offset+14]
+
+;===========================================================================
+; Auto variables
+use_local macro nwords
+	sub sp,nwords*2
+endm
+auto1 equ word ptr [bp-2]
+auto2 equ word ptr [bp-4]
+auto3 equ word ptr [bp-6]
+auto4 equ word ptr [bp-8]
+

@@ -1,0 +1,42 @@
+nck.lib
+y
++nck\msdos +nck\msdosa &
++nck\rpc_c +nck\rpc_s +nck\rpc_util +nck\rpc_lsn &
++nck\float +nck\uuid +nck\u_pfm +nck\error &
++nck\lb +nck\llb +nck\glb +nck\llb_man &
++nck\conv_c +nck\conv_s &
++nck\llb_c +nck\llb_s &
++nck\rrpc_c +nck\rrpc_s &
++nck\glb_c
+nck.lst
+nck.lib
+
+#
+# ========================================================================== 
+# Confidential and Proprietary.  Copyright 1987 by Apollo Computer Inc.,
+# Chelmsford, Massachusetts.  Unpublished -- All Rights Reserved Under
+# Copyright Laws Of The United States.
+# 
+# Apollo Computer Inc. reserves all rights, title and interest with respect
+# to copying, modification or the distribution of such software programs
+# and associated documentation, except those rights specifically granted
+# by Apollo in a Product Software Program License, Source Code License
+# or Commercial License Agreement (APOLLO NETWORK COMPUTING SYSTEM) between
+# Apollo and Licensee.  Without such license agreements, such software
+# programs may not be used, copied, modified or distributed in source
+# or object code form.  Further, the copyright notice must appear on the
+# media, the supporting documentation and packaging as set forth in such
+# agreements.  Such License Agreements do not grant any rights to use
+# Apollo Computer's name or trademarks in advertising or publicity, with
+# respect to the distribution of the software programs without the specific
+# prior written permission of Apollo.  Trademark agreements may be obtained
+# in a separate Trademark License Agreement.
+# ========================================================================== 
+#
+# This is a "response file" that is used as input to the MS/DOS "lib"
+# command.  It builds the NCK runtime library "nck.lib" from constituent
+# object files.  Note that it assumes that "nck.lib" does not exist (and
+# hence that "lib" will ask whether we want to create it or not.
+# 
+
+

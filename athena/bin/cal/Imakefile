@@ -1,0 +1,23 @@
+/* 
+ *
+ *	Imakefile for the entire Whatsup Calendar Package
+ *
+ *	Noah Mendelsohn
+ *	Created: 8/26/87
+ *
+ *	$Id: Imakefile,v 1.1 1993-10-12 05:35:43 probe Exp $
+ */
+
+WHATSUPINCLUDES=../include
+CFLAGS=	 "-O -I${WHATSUPINCLUDES}"
+LINTFLAGS= "-I${WHATSUPINCLUDES}"
+
+
+#define ISUBDIRS util whatsup postit doc misc
+
+
+
+lint::
+	for i in ${SUBDIR} ; do \
+	    (cd $$i; make ${MFLAGS} OLINTFLAGS=${LINTFLAGS} lint;cd ..); done
+

@@ -1,0 +1,25 @@
+%pascal
+
+{ Name basic data types and constants }
+
+interface name_;
+
+{ Commonly used naming server constants and types }
+
+const  
+    name_$long_complen_max = 255;   { Max lnth of a single long component }
+    name_$long_pnamlen_max = 1023;  { Max lnth of whole long pathname }
+    name_$pnamlen_max = 256;        { Max lnth of whole pathname (obsolete; use name_$long_pnamlen_max) }
+    name_$complen_max = 32;         { Max lnth of 1 component (obsolete; use name_$long_complen_max) }
+
+type   
+    name_$pname_t = 
+        array [0..255] of char;
+    name_$name_t  = 
+        array [0..31] of char;
+    name_$long_name_t = 
+        array [0..255] of char;
+    name_$long_pname_t =
+        array [0..1023] of char;
+
+end;

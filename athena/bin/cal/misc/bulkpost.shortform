@@ -1,0 +1,17 @@
+#========================================================================#
+#                                                                       |
+#                        bulkpost.shortform                             |
+#                                                                       |
+#      This is the  short version of the blank form used for entering   |
+#      events into the bulkpost program.  Use bulkpost.longform         |
+#      if you can't remember how to fill in the fields.                 |
+#                                                                       |
+#========================================================================#
+
+$BeginEvent:   DO NOT CHANGE THIS LINE.  REPEAT FROM HERE FOR EXTRA EVENTS.
+
+$Type:
+$Title:
+$Place:
+$When:
+$Comments:

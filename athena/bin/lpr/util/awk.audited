@@ -1,0 +1,21 @@
+BEGIN {
+	file = 0;
+	revision = 0;
+	head = 0;
+	state = 0;
+	state_rev = 0;
+	audited_rev = 0;
+	}
+	
+/RCS file:/ {file = $3}
+/^head:/{ head = $2}
+/^revision/{ revision = $2;}
+/state:/ { if(state == 0) {
+		state = $7 ;
+		state_rev = revision;
+		}
+	   if((audited_rev == 0) && ($7 == "Audited;")) audited_rev = revision
+	}
+END {
+	if(state != "Audited;") {print file " " state_rev " " state " " audited_rev}
+}

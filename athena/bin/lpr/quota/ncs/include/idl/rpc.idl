@@ -1,0 +1,930 @@
+%pascal
+
+{ RPC - Interface to NCS runtime implementation of NCA Remote Procedure Call protocol }
+
+[local] interface rpc_;
+
+import
+    'nbase.idl',
+    'ncastat.idl';
+
+{*
+ * Define the versions of stubs that this instance of "rpc.idl" supports.
+ * Defining a constant named RPC_IDL_SUPPORTS_V<n> (regardless of the
+ * value assigned) asserts that this version of "rpc.idl" supports stubs
+ * of version n.
+ *}
+
+const
+    RPC_IDL_SUPPORTS_V1 = true;
+
+
+const
+    rpc_$unbound_port       = socket_$unspec_port;
+
+{*
+ * Status codes related to the NCS runtime.  See comments in "ncastat.idl" for
+ * explanation of why some status codes are aliases of NCA status codes.
+ *}
+
+const
+    rpc_$mod                = 16#1C010000;      { RPC module code }
+
+    rpc_$comm_failure       = nca_status_$comm_failure;     { unable to get response from server }
+    rpc_$op_rng_error       = nca_status_$op_rng_error;     { bad operation number in call }
+    rpc_$unk_if             = nca_status_$unk_if;           { unknown interface }
+    rpc_$cant_create_sock   = 16#1C010004;      { can't create socket }
+    rpc_$cant_bind_sock     = 16#1C010005;      { can't bind socket }
+    rpc_$wrong_boot_time    = nca_status_$wrong_boot_time;  { client passed server wrong server boot time }
+    rpc_$too_many_ifs       = 16#1C010007;      { tried to register too many interfaces }
+    rpc_$not_in_call        = 16#1C010008;      { activity is not doing an RPC now }
+    rpc_$you_crashed        = nca_status_$you_crashed;      { a restarted server called back a client }
+    rpc_$no_port            = 16#1C01000A;      { no port in sockaddr or ifspec in set_binding }
+    rpc_$proto_error        = nca_status_$proto_error;      { someone messed up the protocol (internal error) }
+    rpc_$too_many_sockets   = 16#1C01000C;      { tried to make server use more sockets than it could }
+    rpc_$illegal_register   = 16#1C01000D;      { tried to re-register same interface with different epv }
+    rpc_$cant_recv          = 16#1C01000E;      { can't recv in listen_recv }
+    rpc_$bad_pkt            = 16#1C01000F;      { ill-formed packet }
+    rpc_$unbound_handle     = 16#1C010010;      { no binding (location) in handle }
+    rpc_$addr_in_use        = 16#1C010011;      { address (port) in use in rpc_$use_family }
+    rpc_$in_args_too_big    = 16#1C010012;      { input args too big }
+    rpc_$out_args_too_big   = nca_status_$out_args_too_big; { output args too big }
+    rpc_$server_too_busy    = nca_status_$server_too_busy;  { server is too busy to handle call }
+    rpc_$string_too_long    = nca_status_$string_too_long;  { string parameter longer than declared max len }
+    rpc_$too_many_objects   = 16#1C010016;      { tried to register too many objects }
+    rpc_$invalid_handle     = 16#1C010017;      { Bogus handle }
+    rpc_$not_authenticated  = 16#1C010018;      { Client isnt authenticated }
+    rpc_$invalid_auth_type  = 16#1C010019;      { Invalid authentication type }
+    rpc_$cant_malloc        = 16#1C01001A;      { Can't allocate heap storage }
+    rpc_$cant_nmalloc       = 16#1C01001B;      { Can't allocate near heap storage }
+
+
+{*
+ * Options to the "rpc_$sar" call.
+ *}
+
+type
+    rpc_$sar_opts_t =
+        unsigned32;
+
+const
+    rpc_$brdcst         = 16#00000001;      { use broadcast for this op }
+    rpc_$idempotent     = 16#00000002;      { idempotent semantics ok }
+    rpc_$maybe          = 16#00000004;      { don't wait for return packet }
+
+
+{*
+ * Possible values for fields in a "rpc_$drep_t" structure which is declared
+ * in idl_base.h or idl_base.ins.pas.
+ *}
+
+const
+    rpc_$drep_int_big_endian    = 0;
+    rpc_$drep_int_little_endian = 1;
+
+    rpc_$drep_float_ieee        = 0;
+    rpc_$drep_float_vax         = 1;
+    rpc_$drep_float_cray        = 2;
+    rpc_$drep_float_ibm         = 3;
+
+    rpc_$drep_char_ascii        = 0;
+    rpc_$drep_char_ebcdic       = 1;
+
+
+{*
+ * (when NIDL supports variables this should be:)
+ * Variable exported by RPCLIB to specify the native data representation
+ * (for the time being it is declared in idl_base.h)
+
+var
+    rpc_$local_drep: rpc_$drep_t;
+ *
+ *}
+
+
+{*
+ * (when NIDL supports variables this should be:)
+ * Arrays exported by RPCLIB to facilitate ASCII/EBCDIC conversion during unmarshalling.
+ * (for the time being they are declared in idl_base.h)
+
+var
+    rpc_$ascii_to_ebcdic: array[char] of char;
+    rpc_$ebcdic_to_ascii: array[char] of char;
+ *
+ *}
+
+
+{*
+ * Pointers to float point reps to be converted.
+ *}
+
+type
+    rpc_$short_float_p_t =
+        ^real;
+    rpc_$long_float_p_t =
+        ^double;
+
+    rpc_$short_float_p =        { Old, incorrect names defined for backward compatibility }
+        rpc_$short_float_p_t;
+    rpc_$long_float_p =
+        rpc_$long_float_p_t;
+
+{*
+ * Pointer to string reps to be converted.
+ *}
+
+type
+    rpc_$char_p_t =
+        ^char;
+
+{*
+ * Pointer to byte blocks.
+ *}
+
+type
+    rpc_$byte_p_t =
+        ^byte;
+
+{*
+ * Maximum "natural" alignment guaranteed by RPC runtime and stubs.
+ *}
+
+{*
+ * Maximum "natural" alignment guaranteed by RPC runtime and stubs.
+ *}
+
+const
+    rpc_$max_alignment = 8;
+
+
+{*
+ * Size of largest packet that can be sent or received across all
+ * protocol families.
+ *
+ * Note that the size represented here includes the "mispacked header size"
+ * difference.  Though the actual largest network packet will not include
+ * this mispacked header difference, buffers must be this large.  "Mispacked
+ * header size" refers to a problem with the packing of the data structure
+ * used to refer to NCA/RPC packet headers.  On (presumably) all machines
+ * whose addresses can refer to 8-bit units, there's never a problem and
+ * "rpc_$mispacked_hdr" is always 0.  If you're on one of those machines
+ * (which is most likely the case), ignore all references to "mispacked
+ * header".
+ *}
+
+const
+    rpc_$mispacked_hdr  =    0; { N.B. adjust rpc_$max_pkt_size if you change this }
+    rpc_$max_pkt_size   = 1024; { must be 1024 + rpc_$mispacked_hdr }
+    rpc_$max_pkt_size_8 =  128; { above div 8; here because NIDL doesn't handle const exprs }
+
+
+{*
+ * The public version of a packet.
+ *
+ * A packet consists of a header and a data section.  We wish to hide the
+ * position of the boundary (and make stubs find it out dynamically) from
+ * the outside world so that the RPC runtime implementation can change
+ * without requiring clients of the runtime to be recompiled.  The size
+ * of this data type is the size of the large packet that can be sent or
+ * received across all protocol families.
+ *
+ * Some procedures that declare the type of an argument to be "rpc_$ppkt_t"
+ * really allow structures that are longer than the size of an "rpc_$ppkt_t".
+ * (They break the longer structure into multiple packets.) The game that
+ * is going on here is one that attempts to ensure that calls that take
+ * "small" sized input arguments and return "small" sized output arguments
+ * require a minimum of (and hopefully no) data copying.
+ * 
+ * This data type is declared as a record with exactly one field to avoid
+ * the C language bizarre problems associated with the concept "pointer
+ * to array".  We use "double" (size = 8 bytes) as the base data type so
+ * that we're likely to get the highest alignment properties that the
+ * compiler is going to give.
+ *}
+ 
+type
+    rpc_$ppkt_t =
+        record
+            d:  array[1..rpc_$max_pkt_size_8] of double;
+            end;
+
+    rpc_$ppkt_p_t =
+        ^rpc_$ppkt_t;
+
+
+{*
+ * Server stub interface.
+ *
+ * RPC runtime passes a pointer to a buffer containing the input arguments;
+ * it also supplies a buffer into which the stub should try to marshall
+ * the output arguments.  (The stub must place the data "data_offset" bytes
+ * from the start of this buffer.)
+ *
+ * If the runtime-supplied buffer is not large enough, the stub will have
+ * to allocate its own buffer, marshall into it, and set the "must_free"
+ * out parameter to "true".  (Again, the marshalling must start "data_offset"
+ * bytes from the start of the allocated buffer.)
+ *
+ * The "routs" parameter should always be set to where the marshalled out
+ * parameters are (i.e. regardless of whether they're in the place pointed
+ * to by the "outs" parameter, or in an allocated buffer).
+ *}
+
+type
+    rpc_$server_stub_t =
+        ^procedure(
+            in  h:          handle_t;
+            in  ins:        rpc_$ppkt_p_t;      { pointer to INs }
+            in  ilen:       unsigned32;         { length of INs }
+            in  outs:       rpc_$ppkt_p_t;      { pointer to place to put OUTs }
+            in  omax:       unsigned32;         { size of above place }
+            in  drep:       rpc_$drep_t;        { client's data representation }
+            out routs:      rpc_$ppkt_p_t;      { where OUTs really are }
+            out olen:       unsigned32;         { real size of OUTs }
+            out must_free:  boolean;            { => OUTs must be freed by caller }
+            out st:         status_$t
+            );
+
+    rpc_$epv_t =
+        ^rpc_$server_stub_t;
+
+
+{*
+ * Generic server stub interface.
+ *
+ * These declarations mirror those above except that RPC runtime passes
+ * an extra IN to the server stubs:  an EPV of manager routines through
+ * which the server stub calls the manager instead of simply using the
+ * name of the operation.  This mechanism supports servers that contain
+ * multiple implementations of a single interface (i.e. that support
+ * multiple types of objects, where each type implements the interface
+ * differently).
+ * 
+ * "rpc_$mgr_proc_t" and "rpc_$mgr_epv_t" are defined only for use in
+ * defining "rpc_$generic_server_stub_t".  The actual type of the "epv"
+ * parameter to the generic server stub procedure depends on the interface
+ * definition.
+ *}
+
+type
+    rpc_$mgr_proc_t =
+        ^procedure(
+            in h:          handle_t
+            );
+
+    rpc_$mgr_epv_t =
+        ^rpc_$mgr_proc_t;
+   
+    rpc_$generic_server_stub_t =
+        ^procedure(
+            in  h:          handle_t;
+            in  ins:        rpc_$ppkt_p_t;      { pointer to INs }
+            in  ilen:       unsigned32;         { length of INs }
+            in  outs:       rpc_$ppkt_p_t;      { pointer to place to put OUTs }
+            in  omax:       unsigned32;         { size of above place }
+            in  drep:       rpc_$drep_t;        { client's data representation }
+            in  epv:        rpc_$mgr_epv_t;     { EPV for type manager }
+            out routs:      rpc_$ppkt_p_t;      { where OUTs really are }
+            out olen:       unsigned32;         { real size of OUTs }
+            out must_free:  boolean;            { => OUTs must be freed by caller }
+            out st:         status_$t
+            );
+
+    rpc_$generic_epv_t =
+        ^rpc_$generic_server_stub_t;
+
+
+{*
+ * Interface specifier.
+ *}
+
+type
+    rpc_$if_spec_t =
+        record
+            vers:   unsigned32;     { version number of the interface }
+                                    { well-known ports (if any) per family }
+            port:   array[1..socket_$num_families] of unsigned;
+            opcnt:  unsigned;       { number of ops in the interface }
+            id:     uuid_$t;        { interface UID }
+            end;
+
+
+{*
+ * Remote shutdown check function.
+ *
+ * A function (pointer) of this type can be supplied to
+ * "rpc_$allow_remote_shutdown".  Such a function is called to decide whether
+ * a remote shutdown request should be allowed to succeed.  It the function
+ * returns "true", the request succeeds.  The handle argument can be used
+ * to determine information about the remote caller.
+ *}
+
+type
+    rpc_$shut_check_fn_t =
+        ^function(
+            in  h:          handle_t;
+            out st:         status_$t
+            ): boolean;
+
+{*
+ * Authentication error logger.
+ *
+ * A procedure pointer of this type can be supplied to 
+ * "rpc_$set_auth_logger".  This function is called whenever a packet is
+ * recieved which could be the result of an attempt to break an 
+ * authentication system layered on NCS.
+ *}
+
+type
+    rpc_$auth_log_fn_t =
+        ^procedure(
+            in st:          status_$t;
+            in ref addr:    socket_$addr_t;
+            in addrlen:     unsigned32
+            );
+
+type
+    rpc_$cksum_t =
+        ^char;
+
+type
+    rpc_$string_t =
+        array [1..256] of char;
+
+
+{*
+ * R P C _ $ U S E _ F A M I L Y
+ *
+ * Declare that you want to listen for calls coming in over the specified
+ * protocol family.  Returns the sockaddr that will be used.
+ *}
+
+procedure rpc_$use_family(
+    in  family:     unsigned32;     { what family to use (socket_$addr_family_t) }
+    out saddr:      socket_$addr_t; { sockaddr that will be used }
+    out slen:       unsigned32;     { length of sockaddr }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ U S E _ F A M I L Y _ W K
+ *
+ * Like "rpc_$use_family" except says that you want socket address to have
+ * its port be the port in the specified interface descriptor.  This is to
+ * support interfaces with "well known" (wk) ports.
+ *}
+
+procedure rpc_$use_family_wk(
+    in  family:     unsigned32;     { what family to use (socket_$addr_family_t) }
+ in ref ifspec:     rpc_$if_spec_t; { interface to get w.k. port from }
+    out saddr:      socket_$addr_t; { sockaddr that will be used }
+    out slen:       unsigned32;     { length of sockaddr }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ R E G I S T E R
+ *
+ * Declare that a server supports the specified interface.
+ * 
+ * Use of this procedure implies that the server has only one implementation
+ * of the interface.  See "rpc_$register_mgr" for servers that want to
+ * have multiple implementations.
+ * 
+ * Note that "rpc_$register" can be called multiple times with the same
+ * interface.  However, each such call must have the same EPV (otherwise
+ * an error will be returned).  Each valid "re-register" simply increments
+ * a references count for the registered interface.  A corresponding number
+ * of calls to "rpc_$unregister" are required to actually unregister the
+ * interface.
+ *}
+
+procedure rpc_$register(
+ in ref ifspec:     rpc_$if_spec_t;     { interface specification }
+    in  epv:        rpc_$epv_t;         { vector of ptrs to server stub procedures }   
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ U N R E G I S T E R
+ *
+ * Unregister a previously registered interface.
+ *}
+
+procedure rpc_$unregister(
+ in ref ifspec:     rpc_$if_spec_t;     { interface specification }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ R E G I S T E R _ M G R
+ *
+ * Declare that a server supports the specified generic interface.  The
+ * server registers a set of procedures ("manager procedures") that implement
+ * the specified interface for the specified type.  Servers can call this
+ * procedure multiple times with the same interface and generic EPV but
+ * with different object types and manager EPVs.  This allows a server
+ * to have multiple implementations of the same interface.  See
+ * "rpc_$register_object" for more information.
+ *
+ * Note that servers that simply want to support multiple versions of the
+ * same interface (but not necessarily multiple typed objects) can (must)
+ * use "rpc_$register_mgr", not "rpc_$register".  Such servers should supply
+ * "uuid_$nil" as the type to "rpc_$register_mgr".
+ *}
+
+procedure rpc_$register_mgr(
+ in ref typ:        uuid_$t;            { type of object we handle }
+ in ref ifspec:     rpc_$if_spec_t;     { interface specification }
+    in  sepv:       rpc_$generic_epv_t; { vector of ptrs to server stub procedures }
+    in  mepv:       rpc_$mgr_epv_t;     { vector of ptrs to manager procedures }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ R E G I S T E R _ O B J E C T
+ *
+ * Declare that a server supports operations on a particular object and declare
+ * the type of that object.  Registering objects is required only when generic
+ * interfaces are declared (via "rpc_$register_mgr").  When a server receives
+ * a call, the object identified in the call (i.e. the object which the client
+ * specified in the "rpc_$bind") is searched for among the objects registered
+ * by the server.  If the object is found, the type of the object is used to
+ * decide which of the manager EPVs should be used to operate on the object.
+ *}
+
+procedure rpc_$register_object(
+ in ref obj:        uuid_$t;            { object we handle }
+ in ref typ:        uuid_$t;            { type of object }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ G E T _ H A N D L E
+ *
+ * Get handle based on activity uuid.
+ * This is provided to allow implementers of authentication packages
+ * to replace the conv_$ callback with their own callback.
+ *}
+
+function rpc_$get_handle(
+ in ref actuid:     uuid_$t;            { activity uuid }
+    out st:         status_$t
+): handle_t;
+
+{*
+ * R P C _ $ A L L O C _ H A N D L E
+ *
+ * Allocate and initialize a handle for an object.  The first call made
+ * using this handle will be broadcast unless "rpc_$set_binding" is called
+ * first.   The family argument specifies an initial address family to
+ * use.  It can be overwritten by "rpc_$set_binding".  You can specify
+ * "socket_$unspec" (AF_UNSPEC or "0") for the family (although the resulting
+ * handle will not be usable until "rpc_$set_binding" is called).
+ *}
+
+function rpc_$alloc_handle(
+ in ref obj:        uuid_$t;            { object to bind to }
+    in  family:     unsigned32;         { what family to use (socket_$addr_family_t) }
+    out st:         status_$t
+): handle_t;
+
+
+{*
+ * R P C _ $ S E T _ B I N D I N G
+ *
+ * Set (or reset) the sockaddr contained in a handle.
+ *
+ * What port is used:  the port in the supplied sockaddr or the well-known
+ * port (if there is one)?  If the sockaddr's port is defined (i.e. it
+ * is not "socket_$unspec_port") that port is used.  If the sockaddr's
+ * port is NOT defined, then if the interface has a well-known port, that
+ * port is used.  If neither the sockaddr nor the interface specify a port,
+ * then forwarding agent's port is used.
+ *}
+
+procedure rpc_$set_binding(
+    in  h:          handle_t;           { existing binding to modify }
+ in ref saddr:      socket_$addr_t;     { location of object to bind to }
+    in  slen:       unsigned32;         { length of location }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ I N Q _ B I N D I N G
+ *
+ * Return the sockaddr contained in a handle.
+ *}
+
+procedure rpc_$inq_binding(
+    in  h:          handle_t;
+    out saddr:      socket_$addr_t;     { location of object }
+    out slen:       unsigned32;         { length of location }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ C L E A R _ S E R V E R _ B I N D I N G
+ *
+ * Remove any association the handle's sockaddr has to a specific server
+ * process.  The next call made on this handle will go to the same host
+ * as before, but may end up being forwarded to another server.  Useful
+ * in error recovery.
+ *}
+
+procedure rpc_$clear_server_binding(
+    in  h:          handle_t;           { existing binding to clear }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ C L E A R _ B I N D I N G
+ *
+ * Remove any sockaddr association in a handle.  The next call made on
+ * this handle will be broadcast unless "rpc_$set_binding" is called first.
+ * Useful in error recovery.
+ *}
+
+procedure rpc_$clear_binding(
+    in  h:          handle_t;           { existing binding to clear }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ B I N D
+ *
+ * Allocate and initialize a handle for an object and then set the handle's
+ * binding to the specified sockaddr.  Note that this call is simply a
+ * shorthand for calls to "rpc_$alloc_handle" and "rpc_$set_binding".
+ *}
+
+function rpc_$bind(
+ in ref obj:        uuid_$t;            { object to bind to }
+ in ref saddr:      socket_$addr_t;     { location of object }
+    in  slen:       unsigned32;         { length of location }
+    out st:         status_$t
+): handle_t;
+
+
+{*
+ * R P C _ $ F R E E _ H A N D L E
+ *
+ * Free an RPC binding made by "rpc_$bind" or "rpc_$alloc_handle".  Note that
+ * the binding won't actually be freed until this routine is called the
+ * number of times "rpc_$dup_handle" has been called for the same handle.
+ *}
+
+procedure rpc_$free_handle(
+    in h:           handle_t;           { existing binding to free }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ D U P _ H A N D L E
+ *
+ * Make a duplicate of a bound RPC handle.
+ *}
+
+function rpc_$dup_handle(
+    in h:           handle_t;           { existing binding to duplicate }
+    out st:         status_$t
+): handle_t;
+
+
+{*
+ * R P C _ $ L I S T E N
+ *
+ * Server listen loop.  This call does not return.
+ *
+ * Get RPC call packets, dispatch them to server side stub.
+ *
+ * "max_calls" is the maximum number of calls the server should be allowed
+ * to process concurrently.
+ *}
+
+procedure rpc_$listen(
+    in  max_calls:  unsigned32;     { Max # of concurrent calls allowed }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ L I S T E N _ D I S P A T C H
+ *
+ * Do server-side processing for one incoming packet.  This routine is useful
+ * in case you got an RPC packet by some other means.
+ *}
+
+procedure rpc_$listen_dispatch(
+    in  sock:       unsigned32;         { open socket to send replies on }
+ in ref pkt:        rpc_$ppkt_t;        { RPC pkt that was recv'd }
+    in  cksum:      rpc_$cksum_t;       { length of packet }
+ in ref from:       socket_$addr_t;     { sockaddr of pkt's sender }
+    in  from_len:   unsigned32;         { length of above }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ L I S T E N _ R E C V
+ *
+ * Receive one RPC packet.
+ *
+ * This routine is (mainly) intended to be used by programs that want to read
+ * from socket directly and then sometimes do RPC-like stuff with what they've
+ * read.
+ *}
+
+procedure rpc_$listen_recv(
+    in  sock:       unsigned32;         { open socket to recv on }
+    out pkt:        rpc_$ppkt_t;        { returned pkt }
+    out cksum:      rpc_$cksum_t;       { opaque checksum }
+    out from:       socket_$addr_t;     { sockaddr of pkt's sender }
+    out from_len:   unsigned32;         { length of above }
+    out ptype:      unsigned32;         { packet type }
+    out obj:        uuid_$t;            { object pkt refers to }
+    out if_id:      uuid_$t;            { interface specified in pkt }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ F O R W A R D
+ *
+ * Forward one packet.  This routine is intended mainly to be used in
+ * conjunction with "rpc_$listen_recv".
+ *}
+
+procedure rpc_$forward(
+    in  sock:       unsigned32;         { open socket to forward on }
+ in ref from:       socket_$addr_t;     { sockaddr of real sender }
+    in  from_len:   unsigned32;         { length of above }
+ in ref taddr:      socket_$addr_t;     { sockaddr of target }
+    in  to_len:     unsigned32;         { length of above }
+ in ref pkt:        rpc_$ppkt_t;        { pkt to forward }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ N A M E _ T O _ S O C K A D D R
+ *
+ * Given a string "name" of a machine and a port number, return an
+ * socket_$addr_t that describes that port on that machine.  Note that
+ * the "family" field of "saddr" must be initialized prior to calling
+ * this procedure.  The family argument determines how the string
+ * name is converted to internal form.
+ *}
+
+procedure rpc_$name_to_sockaddr(
+ in ref name:       rpc_$string_t;      { text name to convert }
+    in  namelen:    unsigned32;         { length of text name }
+    in  port:       unsigned32;         { port to use }
+    in  family:     unsigned32;         { family to use (socket_$addr_family_t) }
+    out saddr:      socket_$addr_t;     { returned sockaddr }
+    out slen:       unsigned32;         { length of sockaddr }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ S O C K A D D R _ T O _ N A M E
+ *
+ * Given a sockaddr, return a string "name" of a machine and a port
+ * number.
+ *}
+
+procedure rpc_$sockaddr_to_name(
+ in ref saddr:      socket_$addr_t;     { sockaddr to convert }
+    in  slen:       unsigned32;         { length of sockaddr }
+    out name:       rpc_$string_t;      { returned text name }
+ in out namelen:    unsigned32;         { returned length of text name }
+    out port:       unsigned32;         { returned port }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ I N Q _ O B J E C T
+ *
+ * Called by a server routine to find out the ID of the object that the client
+ * supplied.
+ *}
+
+procedure rpc_$inq_object(
+    in  h:          handle_t;
+    out obj:        uuid_$t;
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ S H U T D O W N
+ *
+ * Stop processing incoming calls.  "rpc_$listen" returns.  In a tasking
+ * environment, all "listen tasks" are killed.  This procedure can be called
+ * from within a remoted procedure; the call completes and the server shuts
+ * down after replying to the caller.
+ *}
+
+procedure rpc_$shutdown(
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ A L L O W _ R E M O T E _ S H U T D O W N
+ *
+ * Allow/disallow remote callers to shutdown server via "rrpc_$shutdown".
+ * If "allow" is false, remote shutdowns are disallowed.  If "allow" is
+ * "true" and "cproc" is nil, then remote shutdowns are allowed.  If "allow"
+ * is "true" and "cproc" is non-nil, then when a remote shutdown request
+ * arrives, the function denoted by "cproc" is called and the shutdown
+ * is allowed iff the function returns "true" at that time.
+ *}
+
+procedure rpc_$allow_remote_shutdown(
+    in  allow:      unsigned32;             { boolean: 0 or ~0 }
+    in  cproc:      rpc_$shut_check_fn_t;
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ S E T _ A U T H _ L O G G E R
+ *
+ * Sets the function to call when an authentication failure is detected.
+ *}
+
+procedure rpc_$set_auth_logger(
+    in  lproc:      rpc_$auth_log_fn_t
+);
+
+
+{*
+ * R P C _ $ S E T _ S H O R T _ T I M E O U T
+ *
+ * Set or clear short-timeout mode on a handle.  When a call is made with
+ * a handle that's in short-timeout mode, the call fails quickly if no
+ * sign of alivedness can be gotten from the server.  Note that as soon
+ * as the server shows signs of being alive, standard timeouts apply for
+ * the remainder of the call.  Returns the previous setting of the mode.
+ *}
+
+function rpc_$set_short_timeout(
+    in  h:          handle_t;
+    in  on:         unsigned32;             { boolean: 0 or ~0 }
+    out st:         status_$t
+): unsigned32;
+
+
+{*
+ * R P C _ $ S E T _ F A U L T _ M O D E
+ *
+ * Control how faults occurring in user server routines are handled.
+ * Calling this procedure with "false" puts it in the default mode:  the
+ * fault is reflected back to the client and the server continues processing.
+ * Calling this procedure with "true" causes any user server routine fault
+ * to cause a "communications failure" fault back to the client and the
+ * server to exit.  (In a tasking environment, this means that the DT is
+ * signalled.)  Returns the previous setting of the mode.
+ *}
+
+function rpc_$set_fault_mode(
+    in  on:         unsigned32
+): unsigned32;
+
+
+{=================================================================================}
+
+    {*
+     * The remaining routines are called from stubs only.
+     *}
+
+{*
+ * R P C _ $ S A R
+ *
+ * Send and await reply.
+ *
+ * The caller supplies a pointer to the marshalled in arguments.  (Note
+ * that the INs must actually start "data_offset" bytes from the beginning
+ * of the buffer.)  The caller also supplies a buffer into which it wants
+ * the output arguments placed.
+ *
+ * If the OUTs can fit into that buffer, the RPC runtime will place them
+ * there, "data_offset" bytes from the start.  If they can NOT fit, the
+ * output arguments will be placed into a buffer allocated by the runtime,
+ * and the "must_free" out parameter will be set to "true".  (The caller
+ * of "rpc_$sar" will have to free the OUTs buffer.)  In either case, "routs"
+ * will point to where the OUTs really are.
+ *}
+
+procedure rpc_$sar(
+    in  hp:         handle_t;
+    in  opts:       rpc_$sar_opts_t;    { SAR options }
+ in ref ifspec:     rpc_$if_spec_t;     { interface to call upon }
+    in  opn:        unsigned32;         { operation number within interface }
+ in ref ins:        rpc_$ppkt_t;        { pointer to INs }
+    in  ilen:       unsigned32;         { length of INs }
+ in ref outs:       rpc_$ppkt_t;        { pointer to place to put OUTs }
+    in  omax:       unsigned32;         { max size of OUTs }
+    out routs:      rpc_$ppkt_p_t;      { where the OUTs really are }
+    out olen:       unsigned32;         { real size of OUTs }
+    out drep:       rpc_$drep_t;        { server's data representation }
+    out must_free:  boolean;            { => OUTs must be freed by caller }
+    out st:         status_$t
+);
+
+
+{*
+ * R P C _ $ C V T _ S H O R T _ F L O A T
+ *
+ * Called by stubs to convert from one short floating point representation
+ * to another.
+ *}
+
+procedure rpc_$cvt_short_float(
+    in  src_drep:   rpc_$drep_t;
+    in  dst_drep:   rpc_$drep_t;
+    in  src:        rpc_$short_float_p_t;
+    in  dst:        rpc_$short_float_p_t
+);
+
+
+{*
+ * R P C _ $ C V T _ L O N G _ F L O A T
+ *
+ * Called by stubs to convert from one long floating point representation
+ * to another.
+ *}
+
+procedure rpc_$cvt_long_float(
+    in  src_drep:   rpc_$drep_t;
+    in  dst_drep:   rpc_$drep_t;
+    in  src:        rpc_$long_float_p_t;
+    in  dst:        rpc_$long_float_p_t
+);
+
+
+{*
+ * R P C _ $ A L L O C _ P K T
+ *
+ * Allocate storage for a packet.
+ *}
+
+function rpc_$alloc_pkt(
+    in  len:        unsigned32
+): rpc_$ppkt_p_t;
+
+
+{*
+ * R P C _ $ F R E E _ P K T
+ *
+ * Free storage allocated by "rpc_$alloc_pkt".
+ *}
+
+procedure rpc_$free_pkt(
+    in  p:          rpc_$ppkt_p_t
+);
+
+
+{*
+ * R P C _ $ C V T _ S T R I N G
+ *
+ * Called by stubs to copy and convert a string in one character representation
+ * to another (in a possibly different character represntation).
+ *}
+
+procedure rpc_$cvt_string(
+    in  src_drep:   rpc_$drep_t;
+    in  dst_drep:   rpc_$drep_t;
+    in  src:        rpc_$char_p_t;
+    in  dst:        rpc_$char_p_t
+);
+
+
+{*
+ * R P C _ $ B L O C K _ C O P Y
+ *
+ * Called by stubs to copy blocks of bytes into and out of packets when
+ * aignment and type conversion considerations permit that optimization.
+ *}
+
+procedure rpc_$block_copy(
+    in  src:        rpc_$byte_p_t;
+    in  dst:        rpc_$byte_p_t;
+    in  count:      unsigned32
+);
+
+end;

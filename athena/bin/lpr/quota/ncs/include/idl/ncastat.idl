@@ -1,0 +1,47 @@
+%pascal
+
+{ NCA_STATUS - NCA-defined status codes. }
+
+[uuid(3c667ff91000.0d.00.01.34.22.00.00.00)] interface nca_status_;
+
+{*
+ * Define the versions of stubs that this instance of ncastat.idl supports.
+ * Defining a constant named NCASTAT_IDL_SUPPORTS_V<n> (regardless of the
+ * value assigned) asserts that this version of ncastat.idl supports stubs
+ * of version n.
+ *}
+
+const
+    NCASTAT_IDL_SUPPORTS_V1 = true;
+
+
+{*
+ * NCA-defined status codes.  These codes are "well-known" and part of the
+ * NCA/RPC protocol (e.g. they are sent back in "fault" or "reject" messages
+ * from servers).  For historical reasons, the first few status codes are
+ * derived from status codes use by NCS, the Apollo implementation of NCA.
+ *}
+
+const
+    nca_status_$comm_failure        = 16#1C010001;  { unable to get response from server }
+    nca_status_$op_rng_error        = 16#1C010002;  { bad operation number in call }
+    nca_status_$unk_if              = 16#1C010003;  { unknown interface }
+    nca_status_$wrong_boot_time     = 16#1C010006;  { client passed server wrong server boot time }
+    nca_status_$you_crashed         = 16#1C010009;  { a restarted server called back a client }
+    nca_status_$proto_error         = 16#1C01000B;  { someone messed up the protocol }
+    nca_status_$out_args_too_big    = 16#1C010013;  { output args too big }
+    nca_status_$server_too_busy     = 16#1C010014;  { server is too busy to handle call }
+    nca_status_$string_too_long     = 16#1C010015;  { string parameter longer than declared max len }
+    nca_status_$unsupported_type    = 16#1C010017;  { no implementation of generic operation for object }
+
+    nca_status_$zero_divide         = 16#1C000001;
+    nca_status_$address_error       = 16#1C000002;
+    nca_status_$fp_div_zero         = 16#1C000003;
+    nca_status_$fp_underflow        = 16#1C000004;
+    nca_status_$fp_overflow         = 16#1C000005;
+    nca_status_$invalid_tag         = 16#1C000006;
+    nca_status_$invalid_bound       = 16#1C000007;
+
+end;
+ 
+

@@ -1,0 +1,95 @@
+/*	This is the README file for the Xmore.   A Program for displaying
+ *	files on an X display.
+ *	It Contains: Information
+ *	
+ *	Created: 	1/30/88
+ *	Last changed: 	1/30/88
+ *	By:		Chris Peterson
+ *	
+ *	Copyright (c) 1988 Massachusetts Instute of Technology.
+ *
+ *	For further information on copyright and distribution 
+ *	see the file notice.h
+ */     
+
+THANKS:
+
+	Many Thanks go to Ralph Swick who put up with my complaining
+about bugs and (mis)features, as well as helping me learn Xtk and Xlib
+from scratch.  Win Treese should also be thanked for putting up with
+endless general C questions.  I must not forget to mention Barry Shein
+whose Xmore for X Version 10 got me to thinking out this.
+
+ABOUT THE CODE:
+
+	This program was written as a quick hack from code in Xman as
+yet another example of application code that uses the Xtk, and thus it
+has much the same programming style.  This program uses the Xtk as an
+aid to the programmer and not as a means for allowing the user to make
+major changes to his/her user interface.  This has been, and will
+continue to be, a source of much religious flaming.  The reason that
+this programmer chose this method is that it allows things like the
+fonts to be changed without adversely affecting the layout of the
+widgets.  Hopefully when the widget library grows there will be less
+need to hard code this type of functionality into the widget itself.
+For those of you who care, this may not be the "blessed" method of
+using the Xtk, but it is a method, and one that I found quite useful.
+
+	One last note, in many places you may wonder why I didn't use
+a different widget, or a more compact method of coding.  There are two
+reasons for this, one is that the widget may just not have been
+avaliable and the other is that I may not have known about it, the
+documentation on the Xtk in those early days was scarce or
+nonexistent.  That is the price you pay for developing on a moving and
+Imncomplete baseline.
+
+ABOUT XMORE:
+
+This program allows easy and quick viewing of a file without using up
+an xterm to do it in.  It has its own on line help system and manual page.
+Moving through the file is done with a scrollbar in the same method as xmh,
+(why, because it is easy to code from the toolkit, and I have gotten used to
+it).  There is currently no way to change files once xmore starts up, but
+it would be easy to put it in.
+
+INSTALLING XMORE:
+
+The only system specific parameter is HELPFILE which should point to a
+world readable copy of xmore.help file, wherever such things live on
+your system.  Xmore has been tested on a VS2000 running 4.3BSD with
+nfs linking against approximatly the X11R2 Xlib and Xtk as well as the
+Athena widget set.  I didn't have a color machine, but tried not to
+build monochrom dependencies into this code.  Building the code shoule be as
+simple as editing the Makefile, to give it the correct information, then:
+
+		make all
+		make manual
+		make install
+
+Xmore assumes that usr/include/X has the correct toolkit file, not
+usr/include/X11, if this is not the case with your system you will
+have edit most of the files.
+
+NOTES:
+
+It would be nice if the following could be implemented, perhaps by stealing
+some code from more.
+
+1) Changing files once xmore has started.
+
+2) searching.
+
+3) input from stdin.
+
+4) ???
+
+						Chris Peterson     
+						Project Athena     
+						Systems Development
+
+ArpaNet: kit@athena.mit.edu		
+Phone: (617) 253 - 1326			
+USMail: MIT - Room E40-342C		
+	77 Massachusetts Ave.		
+	Cambridge, MA 02139		
+

@@ -1,0 +1,59 @@
+.\"
+.\"	$Source: /source/4.3/man/man1/RCS/just.1,v $
+.\"	$Author: builder $
+.\"	$Locker:  $
+.\"	$Log:	just.1,v $
+.\"Revision 1.1  85/04/23  20:23:42  builder
+.\"Initial revision
+.\"
+.\" 
+.\"
+.TH JUST 1 "28 March 1985"
+.FM mit
+.SH NAME
+just, fill \- simple text formatting
+.SH SYNOPSIS
+.B just
+[
+.I nnn
+]
+< file ...
+.PP
+.B fill
+[
+.I nnn
+]
+< file ...
+.SH DESCRIPTION
+.PP
+.I just
+and
+.I fill
+are filters for filling and right justifying or simply filling
+lines of text, respectively.  They are intended to be used to
+filter text regions when called from an editor such as \fIvi\fP.
+For example, in \fIvi\fP, to format the entire buffer the command
+would be:
+.sp
+.B
+:1,$!just
+.PP
+If no argument is given, the right margin defaults to column 65,
+otherwise \fInnn\fP specifies a column number in the range 1 <= \fInnn\fP <= 510.
+.PP
+Each paragraph of text is indented based on how it was given in the
+input: The first line will have the same indentation as in the input,
+and the rest of the paragraph is indented the same as the second line
+of the input (if any).
+.PP
+Tabs are converted to spaces on input.  An extra space at the end of
+a sentence is preserved if present in the input.
+.PP
+.SH "SEE ALSO"
+ex(1), scribe(1), troff(1)
+.SH BUGS
+Does not hyphenate words when filling lines.  Words which can not
+fit alone on one line are truncated.
+.SH AUTHOR
+Mark H. Levine, MIT Project Athena
+

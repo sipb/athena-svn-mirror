@@ -1,0 +1,80 @@
+%pascal
+
+{   FAULT - Apollo-assigned 32-bit fault status codes. }
+
+
+[uuid(404a5e8e1000.0d.00.01.8f.a1.00.00.00)] interface fault_;
+
+const
+    fault_$address_error        = 16#00120001;
+    fault_$illegal_inst         = 16#00120002;
+    fault_$zero_divide          = 16#00120003;
+    fault_$chk_inst             = 16#00120004;
+    fault_$trapv_inst           = 16#00120005;
+    fault_$priv_violation       = 16#00120006;
+    fault_$illegal_svc_code     = 16#00120007;
+    fault_$illegal_svc_name     = 16#00120008;
+    fault_$undefined_trap       = 16#00120009;
+    fault_$unimplemented_inst   = 16#0012000A;
+    fault_$prot_violation       = 16#0012000B;
+    fault_$bus_timeout          = 16#0012000C;
+    fault_$illegal_usp          = 16#0012000D;
+    fault_$eccc                 = 16#0012000E;
+    fault_$eccu                 = 16#0012000F;
+    fault_$quit                 = 16#00120010;
+    fault_$access_violation     = 16#00120011;
+    fault_$not_valid            = 16#00120012;
+    fault_$nullproc_onb         = 16#80120013;
+    fault_$display_quit         = 16#00120014;
+    fault_$single_step          = 16#00120015;
+    fault_$invalid_user_fault   = 16#00120016;
+    fault_$pbu_user_int_fault   = 16#00120017;
+    fault_$stop                 = 16#00120018;
+    fault_$blast                = 16#00120019;
+    fault_$cache_parity         = 16#0012001A;
+    fault_$wcs_parity           = 16#0012001B;
+    fault_$not_implemented      = 16#0012001C;
+    fault_$invalid_stack        = 16#0012001D;
+    fault_$parity               = 16#0012001E;
+    fault_$interrupt            = 16#0012001F;
+    fault_$while_lock_set       = 16#00120020;
+    fault_$spurious_parity      = 16#00120021;
+    fault_$fp_inexact           = 16#00120022;
+    fault_$fp_div_zero          = 16#00120023;
+    fault_$fp_undflo            = 16#00120024;
+    fault_$fp_op_err            = 16#00120025;
+    fault_$fp_ovrflo            = 16#00120026;
+    fault_$suspend_proc         = 16#00120027;
+    fault_$suspend_proc_kbd     = 16#00120028;
+    fault_$suspend_proc_br      = 16#00120029;
+    fault_$suspend_proc_bw      = 16#0012002A;
+    fault_$continue_proc        = 16#0012002B;
+    fault_$fault_lost           = 16#0012002C;
+    fault_$illegal_coproc       = 16#0012002D;
+    fault_$fp_bsun              = 16#0012002E;
+    fault_$fp_sig_nan           = 16#0012002F;
+    fault_$parity_bad_thread    = 16#00120030;
+    fault_$illegal_page_fault   = 16#00120031;
+    fault_$cpub_bus_error       = 16#00120032;
+    fault_$spurious_interrupt   = 16#00120033;
+    fault_$cold_start_bus_error = 16#00120034;
+    fault_$cleanup_set          = 16#00120035;
+    fault_$cleanup_rls_out_order= 16#00120036;
+    fault_$ac_power_fail        = 16#00120037;
+    fault_$fp_parity            = 16#00120038;
+    fault_$fp_unknown_vec       = 16#00120039;
+    fault_$be_on_be             = 16#0012003A;
+    fault_$io_chan_chk          = 16#0012003B;
+    fault_$breakpoint           = 16#0012003C;
+    fault_$translate_error      = 16#0012003D;
+    fault_$illegal_lock         = 16#0012003E;
+    fault_$lock_timeout         = 16#0012003F;
+    fault_$unknown_status       = 16#00120040;
+    fault_$fp_exception         = 16#00120041;
+    fault_$fp_fpu_internal_error= 16#00120042;
+    fault_$pause                = 16#00120043;
+    fault_$halt                 = 16#00120044;
+    fault_$trap_on_trap         = 16#00120045;
+    fault_$unaligned_inst       = 16#00120046;
+
+end;
