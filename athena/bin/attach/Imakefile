@@ -1,17 +1,15 @@
 AnsiCC()
 
-#ifdef _AUX_SOURCE
-XSRCS = emul_re.c
-XOBJS = emul_re.o
-XLIBS = -lPW -lc
-#endif
-
 #if !defined(ultrix)
 RPCLIB=-lrpcsvc
 #endif
 
 #ifdef SOLARIS
 BSDLIB = -lbsd
+#endif
+
+#ifdef sgi
+XLIBS=-lregex
 #endif
 
 LIBS = $(BSDLIB) -lhesiod $(RPCLIB) -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto \

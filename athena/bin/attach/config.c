@@ -1,16 +1,17 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
- *	$Author: miki $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.7 1994-06-07 17:23:24 miki Exp $
+ *	$Author: ghudson $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.8 1997-12-17 18:17:22 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.7 1994-06-07 17:23:24 miki Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.8 1997-12-17 18:17:22 ghudson Exp $";
 #endif
 
 #include "attach.h"
 #include "pwd.h"
 #include <string.h>
+#include <regex.h>
 
 
 #define TOKSEP	" \t\r\n"
@@ -351,14 +352,14 @@ isnumber(s)
 	return(1);
 }
 
-char *re_comp();
-
 int nosetuid_filsys(name, type)
 	register char	*name;
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*retval;
+	char	buf[BUFSIZ];
+	regex_t	reg;
+	int	status;
 
 	for (fp = nosuidtab.tab; fp->regexp; fp++) {
 		if (fp->explicit && ((explicit && fp->explicit == -1) ||
@@ -367,12 +368,15 @@ int nosetuid_filsys(name, type)
 		if (!(fp->fs_type & type))
 			continue;
 
-		if (retval=re_comp(fp->regexp)) {
-			fprintf(stderr, "Nosetuid config: %s: %s",
-				retval, fp->regexp);
-			return(default_suid);
+		status = regcomp(&reg, fp->regexp, REG_NOSUB);
+		if (status != 0) {
+			regerror(status, &reg, buf, sizeof(buf));
+			fprintf(stderr, "Nosetuid config: %s: %s\n",
+				buf, fp->regexp);
 		}
-		if (re_exec(name))
+		status = regexec(&reg, name, 0, NULL, 0);
+		regfree(&reg);
+		if (status == 0)
 			return(fp->tab_data ? 1 : 0);
 	}
 
@@ -384,7 +388,9 @@ int allow_filsys(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*retval;
+	char	buf[BUFSIZ];
+	regex_t	reg;
+	int	status;
 
 
 	for (fp = allowtab.tab; fp->regexp; fp++) {
@@ -394,12 +400,15 @@ int allow_filsys(name, type)
 		if (!(fp->fs_type & type))
 			continue;
 
-		if (retval=re_comp(fp->regexp)) {
-			fprintf(stderr, "Allow config: %s: %s",
-				retval, fp->regexp);
-			return(1); 
+		status = regcomp(&reg, fp->regexp, REG_NOSUB);
+		if (status != 0) {
+			regerror(status, &reg, buf, sizeof(buf));
+			fprintf(stderr, "Allow config: %s: %s\n",
+				buf, fp->regexp);
 		}
-		if (re_exec(name))
+		status = regexec(&reg, name, 0, NULL, 0);
+		regfree(&reg);
+		if (status == 0)
 			return(fp->tab_data ? 1 : 0);
 
 	}
@@ -411,7 +420,9 @@ int check_mountpt(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*retval;
+	char	buf[BUFSIZ];
+	regex_t	reg;
+	int	status;
 
 
 	for (fp = goodmntpt.tab; fp->regexp; fp++) {
@@ -422,12 +433,15 @@ int check_mountpt(name, type)
 			continue;
 
 
-		if (retval=re_comp(fp->regexp)) {
-			fprintf(stderr, "Mountpoint config: %s: %s",
-				retval, fp->regexp);
-			return(1);
+		status = regcomp(&reg, fp->regexp, REG_NOSUB);
+		if (status != 0) {
+			regerror(status, &reg, buf, sizeof(buf));
+			fprintf(stderr, "Mountpoint config: %s: %s\n",
+				buf, fp->regexp);
 		}
-		if (re_exec(name))
+		status = regexec(&reg, name, 0, NULL, 0);
+		regfree(&reg);
+		if (status == 0)
 			return(fp->tab_data ? 1 : 0);
 
 	}
@@ -479,7 +493,9 @@ char *filsys_options(name, type)
 	int	type;
 {
 	register struct	_tab	*fp;
-	char	*retval;
+	char	buf[BUFSIZ];
+	regex_t	reg;
+	int	status;
 
 
 	for (fp = optionsdb.tab; fp->regexp; fp++) {
@@ -490,12 +506,15 @@ char *filsys_options(name, type)
 			continue;
 
 
-		if (retval=re_comp(fp->regexp)) {
-			fprintf(stderr, "Mountpoint config: %s: %s",
-				retval, fp->regexp);
-			config_abort();
+		status = regcomp(&reg, fp->regexp, REG_NOSUB);
+		if (status != 0) {
+			regerror(status, &reg, buf, sizeof(buf));
+			fprintf(stderr, "Mountpoint config: %s: %s\n",
+				buf, fp->regexp);
 		}
-		if (re_exec(name))
+		status = regexec(&reg, name, 0, NULL, 0);
+		regfree(&reg);
+		if (status == 0)
 			return(fp->tab_data);
 
 	}
