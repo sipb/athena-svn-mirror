@@ -18,6 +18,10 @@
 "*overlayTextBackground:	#000000",
 "*overlayStderr:		True",
 "*font:			*-medium-r-*-140-*-m-*",
+"*sgiSaverExtension:	True",
+"*mitSaverExtension:	False",
+"*xidleExtension:	True",
+"*procInterrupts:	True",
 "*demoCommand: xscreensaver-demo",
 "*prefsCommand: xscreensaver-demo -prefs",
 "*helpURL: http://www.jwz.org/xscreensaver/man.html",
@@ -83,6 +87,8 @@
 		worm -root						\\n\
 		rotor -root						\\n\
 		ant -root						\\n\
+		demon -root						\\n\
+		loop -root						\\n\
 		vines -root						\\n\
 		kaleidescope -root					\\n\
 		xjack -root						\\n\
@@ -99,6 +105,9 @@
 		rd-bomb -root						\\n\
 		rd-bomb -root -speed 1 -size 0.1			\\n\
 		sonar -root						\\n\
+		t3d -root						\\n\
+		penetrate -root						\\n\
+		deluxe -root						\\n\
 									  \
 	mono:	rocks -root						\\n\
 	color:	rocks -root -fg darksalmon				\\n\
@@ -159,7 +168,7 @@
 "*passwd.passwdFont:		*-courier-medium-r-*-*-*-140-*-*-*-iso8859-1",
 "*passwd.thermometer.width:	8",
 "*splash.heading.label:		XScreenSaver %s",
-"*splash.body.label:		Copyright © 1991-1998 by",
+"*splash.body.label:		Copyright © 1991-1999 by",
 "*splash.body2.label:		Jamie Zawinski <jwz@jwz.org>",
 "*splash.demo.label:		Demo",
 "*splash.prefs.label:		Prefs",
@@ -184,8 +193,8 @@
 "*demoDialog.maxWidth:		600",
 "*label1.labelString:		XScreenSaver %s",
 "*label1.label:			XScreenSaver %s",
-"*label2.labelString: Copyright © 1991-1998 by Jamie Zawinski <jwz@jwz.org>",
-"*label2.label:	     Copyright © 1991-1998 by Jamie Zawinski <jwz@jwz.org>",
+"*label2.labelString: Copyright © 1991-1999 by Jamie Zawinski <jwz@jwz.org>",
+"*label2.label:	     Copyright © 1991-1999 by Jamie Zawinski <jwz@jwz.org>",
 "*demoList.visibleItemCount:	10",
 "*demoList.automaticSelection:	True",
 "*next.labelString:		Run Next",
