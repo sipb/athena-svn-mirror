@@ -182,7 +182,7 @@
 #endif
 #if defined(ultrix) && defined(mips)
 /* Hack because of way we build clients */
-#define MACHINE			"ultrix", "mips", "LANGUAGE_C"
+#define MACHINE			"ultrix", "mips", "LANGUAGE_C", "MIPSEL"
 #endif
 #ifdef	apollo
 #define	MACHINE			"m68000"
