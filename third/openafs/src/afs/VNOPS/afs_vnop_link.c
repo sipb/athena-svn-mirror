@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_link.c,v 1.1.1.1 2002-01-31 21:48:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_link.c,v 1.2 2002-08-02 09:16:15 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -32,9 +32,9 @@ extern afs_rwlock_t afs_xcbhash;
 
 #ifdef	AFS_OSF_ENV
 afs_link(avc, ndp)
-    register struct vcache *avc;
+    struct vcache *avc;
     struct nameidata *ndp; {
-    register struct vcache *adp = (struct vcache *)ndp->ni_dvp;
+    struct vcache *adp = (struct vcache *)ndp->ni_dvp;
     char *aname = ndp->ni_dent.d_name;
     struct ucred *acred = ndp->ni_cred;
 #else	/* AFS_OSF_ENV */
@@ -44,7 +44,7 @@ afs_link(OSI_VC_ARG(adp), avc, aname, acred)
 afs_link(avc, OSI_VC_ARG(adp), aname, acred)
 #endif
     OSI_VC_DECL(adp);
-    register struct vcache *avc;
+    struct vcache *avc;
     char *aname;
     struct AFS_UCRED *acred;
 {
@@ -56,6 +56,7 @@ afs_link(avc, OSI_VC_ARG(adp), aname, acred)
     afs_int32 offset, len;
     struct AFSFetchStatus OutFidStatus, OutDirStatus;
     struct AFSVolSync tsync;
+    struct afs_fakestat_state vfakestate, dfakestate;
     XSTATS_DECLS
     OSI_VC_CONVERT(adp)
 
@@ -64,6 +65,14 @@ afs_link(avc, OSI_VC_ARG(adp), aname, acred)
 	       ICL_TYPE_POINTER, avc, ICL_TYPE_STRING, aname);
     /* create a hard link; new entry is aname in dir adp */
     if (code = afs_InitReq(&treq, acred)) return code;
+
+    afs_InitFakeStat(&vfakestate);
+    afs_InitFakeStat(&dfakestate);
+    code = afs_EvalFakeStat(&avc, &vfakestate, &treq);
+    if (code) goto done;
+    code = afs_EvalFakeStat(&adp, &dfakestate, &treq);
+    if (code) goto done;
+
     if (avc->fid.Cell != adp->fid.Cell || avc->fid.Fid.Volume != adp->fid.Fid.Volume) {
 	code = EXDEV;
 	goto done;
@@ -144,6 +153,8 @@ afs_link(avc, OSI_VC_ARG(adp), aname, acred)
     ReleaseWriteLock(&avc->lock);
     code = 0;
 done:
+    afs_PutFakeStat(&vfakestate);
+    afs_PutFakeStat(&dfakestate);
 #ifdef	AFS_OSF_ENV
     afs_PutVCache(adp, WRITE_LOCK);
 #endif	/* AFS_OSF_ENV */
