@@ -3,7 +3,7 @@ Summary: The Athena Online Consultant system
 License: MIT
 Group: Applications/Communications
 
-Requires: athena-krb5 athena-hesiod athena-zephyr athena-libet athena-openmotif
+Requires: athena-krb5 athena-hesiod athena-zephyr athena-libet openmotif
 Requires: athena-libMu athena-wcl
 
 %install

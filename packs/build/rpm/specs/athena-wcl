@@ -3,7 +3,7 @@ Summary: The Widget Creation Library, for Athena
 License: David Smyth
 Group: User Interface/X
 
-Requires: athena-openmotif
+Requires: openmotif
 
 %description
 The Widget Creation Library, for Athena

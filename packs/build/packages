@@ -1,4 +1,4 @@
-# $Id: packages,v 1.243 2003-05-05 19:32:57 ghudson Exp $
+# $Id: packages,v 1.244 2003-05-18 17:31:47 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -80,7 +80,7 @@ athena/bin/machtype
 athena/bin/mail-dialog		requires gnome-libs
 athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires openafs
-athena/bin/olc			requires krb5,hesiod,zephyr,et,openmotif,Mu,wcl
+athena/bin/olc			requires krb5,hesiod,zephyr,et,Mu,wcl
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,openafs
 athena/bin/revert-to-dash
@@ -246,7 +246,6 @@ third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt
 third/openafs
-third/openmotif			on linux
 third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			requires perl
 third/ORBit			requires glib,gettext
@@ -277,7 +276,7 @@ third/tiff			except linux requires jpeg
 third/top			except linux
 third/traceroute		on solaris
 third/vte			except linux requires gettext,glib2,pango,Xft,pcre
-third/wcl			requires openmotif
+third/wcl
 third/x11-ssh-askpass
 third/x3270
 third/xmh

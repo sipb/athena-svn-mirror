@@ -32,8 +32,10 @@ cp local-lockers.conf $RPM_BUILD_ROOT/etc/athena/local-lockers.conf
 cp man.config $RPM_BUILD_ROOT/etc/man.config.athena
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
+cp system.mwmrc $RPM_BUILD_ROOT/usr/X11R6/lib/X11/system.mwmrc.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp update_ws.8 $RPM_BUILD_ROOT/usr/athena/man/man8/update_ws.8
+cp Mwm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/Mwm.athena
 cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
 cp os/linux/vortex-diag $RPM_BUILD_ROOT/etc/athena/vortex-diag
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
@@ -52,7 +54,8 @@ rm $RPM_BUILD_ROOT/etc/athena/config_afs
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/athena/local-lockers.conf$|%config(noreplace) \0|" \
-      -e "s|^/etc/syslog.conf.athena$|%config \0|" |
+      -e "s|^/etc/syslog.conf.athena$|%config \0|" \
+      -e "s|^/usr/X11R6/lib/X11/system.mwmrc.athena$|%config \0|" |
   sort > rpm.filelist
 
 %triggerin -- man
@@ -63,6 +66,10 @@ cp /etc/syslog.conf.athena /etc/syslog.conf
 
 %triggerin -- XFree86
 cp /usr/X11R6/lib/X11/app-defaults/XTerm.athena /usr/X11R6/lib/X11/app-defaults/XTerm
+
+%triggerin -- openmotif
+cp /usr/X11R6/lib/X11/system.mwmrc.athena /usr/X11R6/lib/X11/system.mwmrc
+cp /usr/X11R6/lib/X11/app-defaults/Mwm.athena /usr/X11R6/lib/X11/app-defaults/Mwm
 
 %triggerin -- chkfontpath
 # This font directory causes problems for the Star Office help system.
