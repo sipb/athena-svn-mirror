@@ -3,7 +3,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v $
 #	$Author: don $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.9 1988-05-17 20:16:53 don Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.10 1988-06-13 15:20:36 don Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR}
@@ -40,7 +40,7 @@ install:
 		(install -c -s $$i $(DESTDIR)/etc/athena/$$i); \
 	done
 	chmod 4755 $(DESTDIR)/etc/athena/track
-	(cd doc; make install )
+	(cd doc; make install ${MFLAGS} DESTDIR=${DESTDIR})
 
 clean:
 	/bin/rm -f a.out core *.o *~ y.tab.c lex.yy.c $(PROGS)
