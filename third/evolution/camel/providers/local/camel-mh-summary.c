@@ -37,6 +37,8 @@
 #include "camel-mh-summary.h"
 #include <camel/camel-mime-message.h>
 
+#include "camel-private.h"
+
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
 #define CAMEL_MH_SUMMARY_VERSION (0x2000)
@@ -197,12 +199,27 @@ remove_summary(char *key, CamelMessageInfo *info, CamelLocalSummary *cls)
 }
 
 static int
+sort_uid_cmp(const void *ap, const void *bp)
+{
+	const CamelMessageInfo
+		*a = *((CamelMessageInfo **)ap),
+		*b = *((CamelMessageInfo **)bp);
+	const char
+		*auid = camel_message_info_uid(a),
+		*buid = camel_message_info_uid(b);
+	int aval = atoi(auid), bval = atoi(buid);
+
+	return (aval < bval) ? -1 : (aval > bval) ? 1 : 0;
+}
+
+static int
 mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, CamelException *ex)
 {
 	DIR *dir;
 	struct dirent *d;
 	char *p, c;
 	CamelMessageInfo *info;
+	CamelFolderSummary *s = (CamelFolderSummary *)cls;
 	GHashTable *left;
 	int i, count;
 	int forceindex;
@@ -262,6 +279,11 @@ mh_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, Came
 	closedir(dir);
 	g_hash_table_foreach(left, (GHFunc)remove_summary, cls);
 	g_hash_table_destroy(left);
+
+	/* sort the summary based on message number (uid), since the directory order is not useful */
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+	qsort(s->messages->pdata, s->messages->len, sizeof(CamelMessageInfo *), sort_uid_cmp);
+	CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 
 	return 0;
 }
