@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.48 2000-03-06 16:25:54 tb Exp $
+# $Id: do.sh,v 1.49 2000-03-11 05:03:16 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -227,7 +227,7 @@ elif [ -r Imakefile ]; then
 	prepare)
 		$maybe imake "-I$source/packs/build/xconfig" -DUseInstalled \
 			"-DTOPDIR=$source/packs/build" \
-			"-DTOOLROOT=$athtoolroot"
+			"-DTOOLROOT=$athtoolroot" \
 			"-DXCONFIGDIR=$source/packs/build/xconfig"
 		$maybe $MAKE Makefiles
 		;;
