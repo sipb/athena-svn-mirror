@@ -120,9 +120,6 @@ case "${tcsh_cv_canonical}" in
       *-irix[34]*)
         LIBS='-lsun -lbsd -lc_s'
       ;;
-      *-irix[56]*)
-        LIBS='-lsun -lbsd'
-      ;;
     esac
   ;;
 
