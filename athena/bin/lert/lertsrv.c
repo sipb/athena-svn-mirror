@@ -21,7 +21,7 @@
 #include <netdb.h>
 #include <sys/time.h>
 #include <hesiod.h>
-#include <strings.h>
+#include <string.h>
 #include <pwd.h>
 #include <sys/utsname.h>
 #include "lert.h"
@@ -68,7 +68,7 @@ char *argv[];
   /* 
     clear the socket structure 
     */
-  bzero(&sin, sizeof(sin));	
+  memset(&sin, 0, sizeof(sin));	
   sin.sin_family = AF_INET;
   sin.sin_port = htons(LERT_PORT);
   burp_me = (struct sockaddr *)&sin;
@@ -101,7 +101,7 @@ char *argv[];
     exit (1);
   }
 
-  bcopy(hp->h_addr, (char *) &sin.sin_addr.s_addr, hp->h_length);
+  memcpy(&sin.sin_addr.s_addr, hp->h_addr, hp->h_length);
  
 
   for (;;) {
@@ -123,11 +123,10 @@ char *argv[];
       continue;
     }
     
-    /* 
-      The bcopy below is necessary so that on the DECstation the authent
-      is word aligned  
+    /*
+      Copy authenticator into aligned region
       */
-    (void) bcopy((char *)&packet[LERT_LENGTH], (char *) &authent, sizeof(authent));
+    memcpy(&authent, &packet[LERT_LENGTH], sizeof(authent));
 
     status = krb_rd_req(&authent, LERT_SERVICE, LERT_HOME, 
 			/*
@@ -193,7 +192,7 @@ char *argv[];
       fprintf(stderr, "lertsrv: sendto failed: %s\n",
 	      sys_errlist[errno]);
     }
-    bzero(&from, sizeof(from));	/* Avoid confusion, zeroize now */
+    memset(&from, 0, sizeof(from));	/* Avoid confusion, zeroize now */
   }
   return (0);
 }

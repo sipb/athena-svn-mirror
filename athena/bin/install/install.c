@@ -39,7 +39,7 @@ static char sccsid[] = "@(#)install.c	5.12 (Berkeley) 7/6/88";
 #include <grp.h>
 #include <pwd.h>
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <limits.h>
 
@@ -172,7 +172,7 @@ main(argc, argv)
 
 	/* get group and owner id's */
 	if (owner) {
-	    if (to_name = index(owner, '.')) {
+	    if (to_name = strchr(owner, '.')) {
 		*to_name++ = '\0';
 		if (!group) {
 		    group = to_name;
@@ -265,7 +265,7 @@ install(from_name, to_name, isdir)
 		}
 		/* build the target path */
 		if (isdir) {
-			(void)sprintf(pathbuf, "%s/%s", to_name, (C = rindex(from_name, '/')) ? ++C : from_name);
+			(void)sprintf(pathbuf, "%s/%s", to_name, (C = strrchr(from_name, '/')) ? ++C : from_name);
 			to_name = pathbuf;
 		}
 		devnull = NO;
