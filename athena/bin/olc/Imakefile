@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.21 1991-10-30 16:11:21 lwvanels Exp $
+# $Id: Imakefile,v 1.22 1995-05-14 01:13:40 cfields Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # For copying and distribution information,
@@ -22,7 +22,12 @@ LIBMUDIR=
 LIBMUDIR=libMu
 #endif
 
+#ifdef SOLARIS
+SUBDIRS= common logger clients browser man lib $(WCLDIR) $(LIBMUDIR)
+#else
 SUBDIRS= common logger clients server browser man lib $(WCLDIR) $(LIBMUDIR)
+#endif
+
 RM=rm -f
 MV=mv -f
 
