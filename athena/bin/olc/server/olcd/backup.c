@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.22 1992-01-30 15:02:13 lwvanels Exp $
+ *	$Id: backup.c,v 1.23 1992-02-05 02:53:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.22 1992-01-30 15:02:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.23 1992-02-05 02:53:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -500,35 +500,35 @@ static void
 int fd;
 char *string;
 {
-  char buf[BUF_SIZE];
+  char my_buf[BUF_SIZE];
   char buf2[BUF_SIZE];
   int cc;
   
-  bcopy(string,buf,STRING_SIZE);
+  bcopy(string,my_buf,STRING_SIZE);
   skip = TRUE;
   
   while(TRUE)
     {
-      /*      write(1,buf,STRING_SIZE);
+      /*      write(1,my_buf,STRING_SIZE);
 	      write(1,"\n",1);*/
-      if(!strncmp(buf,USER_SEP,STRING_SIZE))
+      if(!strncmp(my_buf,USER_SEP,STRING_SIZE))
 	{
-	  bcopy(buf,type_buf,STRING_SIZE);
+	  bcopy(my_buf,type_buf,STRING_SIZE);
 	  log_error("type_error: recovered\n");
 	  return;
 	}
-      bcopy(buf,buf2,STRING_SIZE);
-      bcopy(&buf2[1],buf, STRING_SIZE-1);
+      bcopy(my_buf,buf2,STRING_SIZE);
+      bcopy(&buf2[1],my_buf, STRING_SIZE-1);
       if((cc = read(fd,buf2,sizeof(char))) != sizeof(char))
 	{
-	  bcopy(buf,type_buf,STRING_SIZE);
+	  bcopy(my_buf,type_buf,STRING_SIZE);
 	  if(cc == 0)
 	    skip = FALSE;
 	  log_error("type_error: brain damage");
 	  return;
 	}
-      buf[STRING_SIZE-1] = buf2[0];
-      bcopy(buf,type_buf,STRING_SIZE);
+      my_buf[STRING_SIZE-1] = buf2[0];
+      bcopy(my_buf,type_buf,STRING_SIZE);
     }
 }
 
