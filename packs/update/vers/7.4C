@@ -2,6 +2,9 @@
 # Version-specific update script for 7.4A
 
 case "${MACH}" in
+RT*|VAX*|VS*)
+        echo "NEWUNIX=true"             >> ${CONFVARS}
+	;;
 DS*)
 	echo "/etc/nsyslog.conf"	>> ${CONFCHG}
 	echo "NEWUNIX=true"		>> ${CONFVARS}
