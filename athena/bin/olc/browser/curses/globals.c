@@ -22,7 +22,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.2 1991-02-25 10:04:44 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.3 1991-04-10 02:51:38 lwvanels Exp $
  */
 
 #ifndef lint
@@ -124,8 +124,15 @@ init_globals()
   strcpy(Save_File, "cref_info");
 
   user_info = getpwuid(getuid());
-  strcpy(Abbrev_File, user_info->pw_dir);
-  strcat(Abbrev_File, "/");
+  if (user_info != NULL) {
+    strcpy(Abbrev_File, user_info->pw_dir);
+    strcat(Abbrev_File, "/");
+  }
+  else {
+    strcpy(Abbrev_File, "/");
+  }
+
   strcat(Abbrev_File, USER_ABBREV);
+
 }
 
