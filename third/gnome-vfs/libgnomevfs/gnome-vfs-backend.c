@@ -25,23 +25,21 @@
    Author: Elliot Lee <sopwith@redhat.com>
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <config.h>
 #include "gnome-vfs-backend.h"
-#include "gnome-vfs-types.h"
-#include "gnome-vfs-private-types.h"
 
+#include "gnome-vfs-backend-private.h"
+#include "gnome-vfs-module-callback.h"
 #include "gnome-vfs.h"
 #include <gmodule.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdlib.h>
 
 static GModule *gmod = NULL;
 static gboolean (* gnome_vfs_backend_module_init)(gboolean deps_init);
 
-static char backend_lower[128] = "";
+static char *backend_lower;
 
 const char *
 gnome_vfs_backend_name (void)
@@ -53,7 +51,7 @@ void
 gnome_vfs_backend_loadinit (gpointer app, gpointer modinfo)
 {
 	const char *backend;
-	char backend_filename[256];
+	char *short_name, *backend_filename, *init_func;
 
 	/* Decide which backend module to load, based on
 	   (a) environment variable
@@ -65,28 +63,30 @@ gnome_vfs_backend_loadinit (gpointer app, gpointer modinfo)
 
 	backend = getenv ("GNOME_VFS_BACKEND");
 	if (backend == NULL) {
-		backend = GNOME_VFS_DEFAULT_BACKEND;
+		backend = "pthread";
 	}
 
-	strcpy (backend_lower, backend);
+	backend_lower = g_strdup (backend);
 	g_strdown (backend_lower);
 
-	g_snprintf (backend_filename, sizeof (backend_filename), 
-		"libgnomevfs-%s.so.0", backend_lower);
+	short_name = g_strdup_printf ("gnomevfs-%s", backend);
+	backend_filename = g_module_build_path (NULL, short_name);
 
 	gmod = g_module_open (backend_filename, G_MODULE_BIND_LAZY);
 	if (gmod == NULL) {
 		g_error("Could not open %s: %s", backend_filename, g_module_error());
 	}
-	g_snprintf (backend_filename, sizeof (backend_filename), 
-		"gnome_vfs_%s_init", backend_lower);
+	g_free (backend_filename);
 
-	if (!g_module_symbol (gmod, backend_filename, 
+	init_func = g_strdup_printf ("gnome_vfs_%s_init", backend_lower);
+	if (!g_module_symbol (gmod, init_func, 
 		(gpointer *)&gnome_vfs_backend_module_init)) {
 		g_module_close (gmod); 
 		gmod = NULL;
 		g_error("Could not locate module initialization function: %s", g_module_error());
 	}
+	g_free (init_func);
+
 }
 
 gboolean
@@ -520,31 +520,42 @@ gnome_vfs_async_cancel (GnomeVFSAsyncHandle *handle)
 	CALL_BACKEND (gnome_vfs_async_cancel, (handle));
 }
 
-guint
-gnome_vfs_async_add_status_callback (GnomeVFSAsyncHandle *handle,
-				     GnomeVFSStatusCallback callback,
-				     gpointer user_data)
+void
+gnome_vfs_backend_get_current_context (/* OUT */ GnomeVFSContext **context)
 {
-	static guint
-		(*real_gnome_vfs_async_add_status_callback) (GnomeVFSAsyncHandle *handle,
-							     GnomeVFSStatusCallback callback,
-							     gpointer user_data);
+	static void
+		(*real_gnome_vfs_get_current_context) (GnomeVFSContext **context);
 
-	CALL_BACKEND_RETURN (gnome_vfs_async_add_status_callback,
-			     (handle, callback, user_data));
+	CALL_BACKEND (gnome_vfs_get_current_context, (context));
+
 }
 
 void
-gnome_vfs_async_remove_status_callback (GnomeVFSAsyncHandle *handle,
-					guint callback_id)
+gnome_vfs_backend_dispatch_module_callback (GnomeVFSAsyncModuleCallback callback,
+					    gconstpointer in,
+					    gsize in_size,
+					    gpointer out,
+					    gsize out_size,
+					    gpointer user_data,
+					    GnomeVFSModuleCallbackResponse response,
+					    gpointer response_data)
 {
 	static void
-		(*real_gnome_vfs_async_remove_status_callback) (GnomeVFSAsyncHandle *handle,
-								guint callback_id);
+		(*real_gnome_vfs_dispatch_module_callback) (GnomeVFSAsyncModuleCallback callback,
+							   gpointer user_data,
+							   gconstpointer in, gsize in_size,
+							   gpointer out, gsize out_size,
+							   GnomeVFSModuleCallbackResponse response,
+							   gpointer response_data);
 
-	CALL_BACKEND (gnome_vfs_async_remove_status_callback,
-		      (handle, callback_id));
+	CALL_BACKEND (gnome_vfs_dispatch_module_callback, (callback,
+							   user_data,
+							   in, in_size,
+							   out, out_size,
+							   response, response_data));
 }
+
+
 
 int
 gnome_vfs_backend_get_job_count (void)

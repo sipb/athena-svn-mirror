@@ -25,10 +25,11 @@
    from the main thread exclusively.  But for now this is fine, because we are
    only using this module internally.  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-process.h"
 
+#include "gnome-vfs-private.h"
+#include "gnome-vfs.h"
 #include <errno.h>
 #include <glib.h>
 #include <signal.h>
@@ -36,9 +37,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
-#include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
 
 
 /* A launched process.  */

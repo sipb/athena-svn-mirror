@@ -27,11 +27,11 @@
 #ifndef GNOME_VFS_MIME_SNIFF_BUFFER_PRIVATE_H
 #define GNOME_VFS_MIME_SNIFF_BUFFER_PRIVATE_H
 
-#include "gnome-vfs-mime-sniff-buffer.h"
+#include <libgnomevfs/gnome-vfs-mime-sniff-buffer.h>
 
 struct GnomeVFSMimeSniffBuffer {
 	guchar *buffer;
-	ssize_t buffer_length;
+	gssize buffer_length;
         gboolean read_whole_file;
 	gboolean owning;
 
@@ -40,8 +40,8 @@ struct GnomeVFSMimeSniffBuffer {
 	gpointer context;
 };
 
-const char 	*gnome_vfs_get_mime_type_internal 			(GnomeVFSMimeSniffBuffer *buffer,
-					      				 const char		 *file_name);
-const char 	*gnome_vfs_mime_get_type_from_magic_table 		(GnomeVFSMimeSniffBuffer *buffer);
+const char *gnome_vfs_get_mime_type_internal         (GnomeVFSMimeSniffBuffer *buffer,
+						      const char              *file_name);
+const char *gnome_vfs_mime_get_type_from_magic_table (GnomeVFSMimeSniffBuffer *buffer);
 
 #endif

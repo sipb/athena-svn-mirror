@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name     gnome-vfs
-%define ver      1.0
+%define ver      1.0.4
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
@@ -17,7 +17,7 @@ Group: System Environment/Libraries
 Source: ftp://ftp.gnome.org/pub/GNOME/sources/%name/%name-%{ver}.tar.gz
 URL: http://www.gnome.org/
 BuildRoot: /var/tmp/%{name}-root
-Requires: glib >= 1.2.4
+Requires: glib >= 1.2.6
 Requires: GConf >= 0.9
 Requires: oaf >= 0.3.0
 Docdir: %{prefix}/doc
@@ -83,26 +83,21 @@ fi
 %config %{sysconfdir}/gnome-vfs-mime-magic
 %config %{sysconfdir}/vfs/modules/*.conf
 %dir %{prefix}/share/application-registry
-%{prefix}/bin/gnome-vfs-slave
 %{prefix}/lib/*.0
 %{prefix}/lib/*.sh
 %{prefix}/lib/*.so
 %{prefix}/lib/vfs/extfs/*
-%{prefix}/lib/vfs/modules/*.0
 %{prefix}/lib/vfs/modules/*.so
 %{prefix}/man/man5/*.5*
 %{prefix}/share/application-registry/gnome-vfs.applications
-%{prefix}/share/gnome/html/*.txt
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/mime-info/*.keys
 %{prefix}/share/mime-info/*.mime
 
 %files devel
 %defattr(-, root, root)
-%{prefix}/include/libgnomevfs/*.h
-%{prefix}/lib/vfs/include/*.h
+%{prefix}/include/gnome-vfs-1.0/libgnomevfs/*.h
+%{prefix}/lib/gnome-vfs-1.0/include/*.h
 %{prefix}/lib/*.a
 %{prefix}/lib/*.la
-%{prefix}/lib/vfs/modules/*.a
-%{prefix}/lib/vfs/modules/*.la
 %{prefix}/bin/gnome-vfs-config

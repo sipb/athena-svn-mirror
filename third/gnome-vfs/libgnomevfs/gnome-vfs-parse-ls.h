@@ -25,10 +25,14 @@
 
    finduid, findgid are from GNU tar.  */
 
-#ifndef _GNOME_VFS_PARSE_LS_H
-#define _GNOME_VFS_PARSE_LS_H
+#ifndef GNOME_VFS_PARSE_LS_H
+#define GNOME_VFS_PARSE_LS_H
+
+#include <glib.h>
+
+struct stat;
 
 gint gnome_vfs_parse_ls_lga (const gchar *p, struct stat *s,
 			     gchar **filename, gchar **linkname);
 
-#endif /* _GNOME_VFS_PARSE_LS_H */
+#endif /* GNOME_VFS_PARSE_LS_H */

@@ -22,9 +22,8 @@
    Authors: Pavel Cisler <pavel@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-find-directory.h"
 
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"

@@ -2,6 +2,7 @@
 /* gnome-vfs-uri.c - URI handling for the GNOME Virtual File System.
 
    Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -22,18 +23,15 @@
 
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-uri.h"
 
+#include "gnome-vfs-private.h"
+#include "gnome-vfs-transform.h"
+#include "gnome-vfs.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
-
-/* FIXME bugzilla.eazel.com 2762: The uri->parent field is always NULL; we should get rid of it. */
 
 /* 
    split_toplevel_uri
@@ -331,7 +329,11 @@ set_uri_element (GnomeVFSURI *uri,
 	 * meaning.
 	 */
 	if ( ! (strcmp (uri->method_string, "http") == 0 
-	        || strcmp (uri->method_string, "eazel-services") == 0 )) {
+	        || strcmp (uri->method_string, "eazel-services") == 0
+	        || strcmp (uri->method_string, "ghelp") == 0
+	        || strcmp (uri->method_string, "gnome-help") == 0
+	        || strcmp (uri->method_string, "help") == 0
+		)) {
 
 		escaped_text = gnome_vfs_escape_set (uri->text, ";?&=+$,");
 		g_free (uri->text);
@@ -428,11 +430,14 @@ parse_uri_substring (const gchar *substring, GnomeVFSURI *parent)
 GnomeVFSURI *
 gnome_vfs_uri_new (const gchar *text_uri)
 {
-	return gnome_vfs_uri_new_private (text_uri, FALSE);
+	return gnome_vfs_uri_new_private (text_uri, FALSE, FALSE, TRUE);
 }
 
 GnomeVFSURI *
-gnome_vfs_uri_new_private (const gchar *text_uri, gboolean allow_unknown_methods)
+gnome_vfs_uri_new_private (const gchar *text_uri,
+			   gboolean allow_unknown_methods,
+			   gboolean allow_unsafe_methods,
+			   gboolean allow_transforms)
 {
 	GnomeVFSMethod *method;
 	GnomeVFSTransform *trans;
@@ -448,6 +453,12 @@ gnome_vfs_uri_new_private (const gchar *text_uri, gboolean allow_unknown_methods
 		return NULL;
 	}
 
+	method_scanner = get_method_string (text_uri, &method_string);
+	if (strcmp (method_string, "pipe") == 0 && !allow_unsafe_methods) {
+		g_free (method_string);
+		return NULL;
+	}
+
 	toplevel = g_new (GnomeVFSToplevelURI, 1);
 	toplevel->host_name = NULL;
 	toplevel->host_port = 0;
@@ -457,18 +468,19 @@ gnome_vfs_uri_new_private (const gchar *text_uri, gboolean allow_unknown_methods
 	uri = (GnomeVFSURI *) toplevel;
 	uri->parent = NULL;
 
-	method_scanner = get_method_string (text_uri, &method_string);
-	trans = gnome_vfs_transform_get (method_string);
-	if (trans != NULL && trans->transform) {
-		GnomeVFSContext *context;
-
-		context = gnome_vfs_context_new ();
-		(* trans->transform) (trans, method_scanner, &new_uri_string, context);
-		gnome_vfs_context_unref (context);
-		if (new_uri_string != NULL) {
-			toplevel->urn = g_strdup (text_uri);
-			g_free (method_string);
-			method_scanner = get_method_string (new_uri_string, &method_string);
+	if (allow_transforms) {
+		trans = gnome_vfs_transform_get (method_string);
+		if (trans != NULL && trans->transform) {
+			GnomeVFSContext *context;
+			
+			context = gnome_vfs_context_new ();
+			(* trans->transform) (trans, method_scanner, &new_uri_string, context);
+			gnome_vfs_context_unref (context);
+			if (new_uri_string != NULL) {
+				toplevel->urn = g_strdup (text_uri);
+				g_free (method_string);
+				method_scanner = get_method_string (new_uri_string, &method_string);
+			}
 		}
 	}
 	
@@ -533,6 +545,271 @@ destroy_element (GnomeVFSURI *uri)
 	}
 
 	g_free (uri);
+}
+
+static gboolean
+is_uri_relative (const char *uri)
+{
+	const char *current;
+
+	/* RFC 2396 section 3.1 */
+	for (current = uri ; 
+		*current
+		&& 	((*current >= 'a' && *current <= 'z')
+			 || (*current >= 'A' && *current <= 'Z')
+			 || (*current >= '0' && *current <= '9')
+			 || ('-' == *current)
+			 || ('+' == *current)
+			 || ('.' == *current)) ;
+	     current++);
+
+	return  !(':' == *current);
+}
+
+/*
+ * Remove "./" segments
+ * Compact "../" segments inside the URI
+ * Remove "." at the end of the URL 
+ * Leave any ".."'s at the beginning of the URI
+ */
+
+/* in case if you were wondering, this is probably one of the least time-efficient ways to do this*/
+static void
+remove_internal_relative_components (char *uri_current)
+{
+	char *segment_prev, *segment_cur;
+	gsize len_prev, len_cur;
+
+	len_prev = len_cur = 0;
+	segment_prev = NULL;
+
+	segment_cur = uri_current;
+
+	while (*segment_cur) {
+		len_cur = strcspn (segment_cur, "/");
+
+		if (len_cur == 1 && segment_cur[0] == '.') {
+			/* Remove "." 's */
+			if (segment_cur[1] == '\0') {
+				segment_cur[0] = '\0';
+				break;
+			} else {
+				memmove (segment_cur, segment_cur + 2, strlen (segment_cur + 2) + 1);
+				continue;
+			}
+		} else if (len_cur == 2 && segment_cur[0] == '.' && segment_cur[1] == '.' ) {
+			/* Remove ".."'s (and the component to the left of it) that aren't at the
+			 * beginning or to the right of other ..'s
+			 */
+			if (segment_prev) {
+				if (! (len_prev == 2
+				       && segment_prev[0] == '.'
+				       && segment_prev[1] == '.')) {
+				       	if (segment_cur[2] == '\0') {
+						segment_prev[0] = '\0';
+						break;
+				       	} else {
+						memmove (segment_prev, segment_cur + 3, strlen (segment_cur + 3) + 1);
+
+						segment_cur = segment_prev;
+						len_cur = len_prev;
+
+						/* now we find the previous segment_prev */
+						if (segment_prev == uri_current) {
+							segment_prev = NULL;
+						} else if (segment_prev - uri_current >= 2) {
+							segment_prev -= 2;
+							for ( ; segment_prev > uri_current && segment_prev[0] != '/' 
+							      ; segment_prev-- );
+							if (segment_prev[0] == '/') {
+								segment_prev++;
+							}
+						}
+						continue;
+					}
+				}
+			}
+		}
+
+		/*Forward to next segment */
+
+		if (segment_cur [len_cur] == '\0') {
+			break;
+		}
+		 
+		segment_prev = segment_cur;
+		len_prev = len_cur;
+		segment_cur += len_cur + 1;	
+	}
+	
+}
+
+/* If I had known this relative uri code would have ended up this long, I would
+ * have done it a different way
+ */
+static char *
+make_full_uri_from_relative (const char *base_uri, const char *uri)
+{
+	char *result = NULL;
+
+	g_return_val_if_fail (base_uri != NULL, g_strdup (uri));
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	/* See section 5.2 in RFC 2396 */
+
+	/* FIXME bugzilla.eazel.com 4413: This function does not take
+	 * into account a BASE tag in an HTML document, so its
+	 * functionality differs from what Mozilla itself would do.
+	 */
+
+	if (is_uri_relative (uri)) {
+		char *mutable_base_uri;
+		char *mutable_uri;
+
+		char *uri_current;
+		gsize base_uri_length;
+		char *separator;
+
+		/* We may need one extra character
+		 * to append a "/" to uri's that have no "/"
+		 * (such as help:)
+		 */
+
+		mutable_base_uri = g_malloc(strlen(base_uri)+2);
+		strcpy (mutable_base_uri, base_uri);
+		
+		uri_current = mutable_uri = g_strdup (uri);
+
+		/* Chew off Fragment and Query from the base_url */
+
+		separator = strrchr (mutable_base_uri, '#'); 
+
+		if (separator) {
+			*separator = '\0';
+		}
+
+		separator = strrchr (mutable_base_uri, '?');
+
+		if (separator) {
+			*separator = '\0';
+		}
+
+		if ('/' == uri_current[0] && '/' == uri_current [1]) {
+			/* Relative URI's beginning with the authority
+			 * component inherit only the scheme from their parents
+			 */
+
+			separator = strchr (mutable_base_uri, ':');
+
+			if (separator) {
+				separator[1] = '\0';
+			}			  
+		} else if ('/' == uri_current[0]) {
+			/* Relative URI's beginning with '/' absolute-path based
+			 * at the root of the base uri
+			 */
+
+			separator = strchr (mutable_base_uri, ':');
+
+			/* g_assert (separator), really */
+			if (separator) {
+				/* If we start with //, skip past the authority section */
+				if ('/' == separator[1] && '/' == separator[2]) {
+					separator = strchr (separator + 3, '/');
+					if (separator) {
+						separator[0] = '\0';
+					}
+				} else {
+				/* If there's no //, just assume the scheme is the root */
+					separator[1] = '\0';
+				}
+			}
+		} else if ('#' != uri_current[0]) {
+			/* Handle the ".." convention for relative uri's */
+
+			/* If there's a trailing '/' on base_url, treat base_url
+			 * as a directory path.
+			 * Otherwise, treat it as a file path, and chop off the filename
+			 */
+
+			base_uri_length = strlen (mutable_base_uri);
+			if ('/' == mutable_base_uri[base_uri_length-1]) {
+				/* Trim off '/' for the operation below */
+				mutable_base_uri[base_uri_length-1] = 0;
+			} else {
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				}
+			}
+
+			remove_internal_relative_components (uri_current);
+
+			/* handle the "../"'s at the beginning of the relative URI */
+			while (0 == strncmp ("../", uri_current, 3)) {
+				uri_current += 3;
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				} else {
+					/* <shrug> */
+					break;
+				}
+			}
+
+			/* handle a ".." at the end */
+			if (uri_current[0] == '.' && uri_current[1] == '.' 
+			    && uri_current[2] == '\0') {
+
+			    	uri_current += 2;
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				}
+			}
+
+			/* Re-append the '/' */
+			mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
+			mutable_base_uri [strlen(mutable_base_uri)] = '/';
+		}
+
+		result = g_strconcat (mutable_base_uri, uri_current, NULL);
+		g_free (mutable_base_uri); 
+		g_free (mutable_uri); 
+
+	} else {
+		result = g_strdup (uri);
+	}
+	
+	return result;
+}
+
+/**
+ * gnome_vfs_uri_resolve_relative:
+ * @base: The base URI.
+ * @relative_reference: A string representing a possibly-relative URI reference
+ * 
+ * Create a new URI from @text_uri relative to @base.
+ *
+ * Return value: The new URI.
+ **/
+GnomeVFSURI *
+gnome_vfs_uri_resolve_relative (const GnomeVFSURI *base,
+				const char *relative_reference)
+{
+	char *text_base;
+	char *text_new;
+	GnomeVFSURI *uri;
+
+	text_base = gnome_vfs_uri_to_string (base, 0);
+	text_new = make_full_uri_from_relative (text_base, relative_reference);
+
+	uri = gnome_vfs_uri_new (text_new);
+
+	g_free (text_base);
+	g_free (text_new);
+
+	return uri;
 }
 
 /**
@@ -652,11 +929,11 @@ gnome_vfs_uri_dup (const GnomeVFSURI *uri)
  **/
 GnomeVFSURI *
 gnome_vfs_uri_append_string (const GnomeVFSURI *uri,
-			     const gchar *uri_part_string)
+			     const char *uri_part_string)
 {
-	gchar *uri_string;
+	char *uri_string;
 	GnomeVFSURI *new_uri;
-	gchar *new_string;
+	char *new_string;
 	guint len;
 
 	g_return_val_if_fail (uri != NULL, NULL);
@@ -706,9 +983,9 @@ gnome_vfs_uri_append_string (const GnomeVFSURI *uri,
  **/
 GnomeVFSURI *
 gnome_vfs_uri_append_path (const GnomeVFSURI *uri,
-			   const gchar *path)
+			   const char *path)
 {
-	gchar *escaped_string;
+	char *escaped_string;
 	GnomeVFSURI *new_uri;
 	
 	escaped_string = gnome_vfs_escape_path_string (path);
@@ -730,9 +1007,9 @@ gnome_vfs_uri_append_path (const GnomeVFSURI *uri,
  **/
 GnomeVFSURI *
 gnome_vfs_uri_append_file_name (const GnomeVFSURI *uri,
-				const gchar *file_name)
+				const char *file_name)
 {
-	gchar *escaped_string;
+	char *escaped_string;
 	GnomeVFSURI *new_uri;
 	
 	escaped_string = gnome_vfs_escape_string (file_name);
@@ -753,12 +1030,12 @@ gnome_vfs_uri_append_file_name (const GnomeVFSURI *uri,
  * 
  * Return value: A malloced printable string representing @uri.
  **/
-gchar *
+char *
 gnome_vfs_uri_to_string (const GnomeVFSURI *uri,
 			 GnomeVFSURIHideOptions hide_options)
 {
 	GString *string;
-	gchar *result;
+	char *result;
 
 	string = g_string_new(uri->method_string);
 	g_string_append_c (string, ':');
@@ -803,7 +1080,7 @@ gnome_vfs_uri_to_string (const GnomeVFSURI *uri,
 		
 		if (top_level_uri->host_port > 0 
 			&& (hide_options & GNOME_VFS_URI_HIDE_HOST_PORT) == 0) {
-			gchar tmp[128];
+			char tmp[128];
 			sprintf (tmp, ":%d", top_level_uri->host_port);
 			g_string_append (string, tmp);
 		}
@@ -890,7 +1167,7 @@ gnome_vfs_uri_get_parent (const GnomeVFSURI *uri)
 	g_return_val_if_fail (uri != NULL, NULL);
 
 	if (uri->text != NULL && strchr (uri->text, GNOME_VFS_URI_PATH_CHR) != NULL) {
-		gchar *p;
+		char *p;
 		guint len;
 
 		len = strlen (uri->text);
@@ -968,7 +1245,7 @@ gnome_vfs_uri_get_toplevel (const GnomeVFSURI *uri)
  * 
  * Return value: A string representing the host name.
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_host_name (const GnomeVFSURI *uri)
 {
 	GnomeVFSToplevelURI *toplevel;
@@ -987,7 +1264,7 @@ gnome_vfs_uri_get_host_name (const GnomeVFSURI *uri)
  *
  * Return value: A string representing the scheme
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_scheme (const GnomeVFSURI *uri)
 {
 	return uri->method_string;
@@ -1021,7 +1298,7 @@ gnome_vfs_uri_get_host_port (const GnomeVFSURI *uri)
  * 
  * Return value: A string representing the user name in @uri.
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_user_name (const GnomeVFSURI *uri)
 {
 	GnomeVFSToplevelURI *toplevel;
@@ -1040,7 +1317,7 @@ gnome_vfs_uri_get_user_name (const GnomeVFSURI *uri)
  * 
  * Return value: The password for @uri.
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_password (const GnomeVFSURI *uri)
 {
 	GnomeVFSToplevelURI *toplevel;
@@ -1060,7 +1337,7 @@ gnome_vfs_uri_get_password (const GnomeVFSURI *uri)
  **/
 void
 gnome_vfs_uri_set_host_name (GnomeVFSURI *uri,
-			     const gchar *host_name)
+			     const char *host_name)
 {
 	GnomeVFSToplevelURI *toplevel;
 
@@ -1102,7 +1379,7 @@ gnome_vfs_uri_set_host_port (GnomeVFSURI *uri,
  **/
 void
 gnome_vfs_uri_set_user_name (GnomeVFSURI *uri,
-			     const gchar *user_name)
+			     const char *user_name)
 {
 	GnomeVFSToplevelURI *toplevel;
 
@@ -1123,7 +1400,7 @@ gnome_vfs_uri_set_user_name (GnomeVFSURI *uri,
  **/
 void
 gnome_vfs_uri_set_password (GnomeVFSURI *uri,
-			    const gchar *password)
+			    const char *password)
 {
 	GnomeVFSToplevelURI *toplevel;
 
@@ -1136,7 +1413,7 @@ gnome_vfs_uri_set_password (GnomeVFSURI *uri,
 }
 
 static gboolean
-string_match (const gchar *a, const gchar *b)
+string_match (const char *a, const char *b)
 {
 	if (a == NULL || *a == '\0') {
 		return b == NULL || *b == '\0';
@@ -1209,6 +1486,32 @@ gnome_vfs_uri_equal (const GnomeVFSURI *a,
 	    && string_match (toplevel_a->password, toplevel_b->password);
 }
 
+/* Convenience function that deals with the problem where we distinguish
+ * uris "foo://bar.com" and "foo://bar.com/" but we do not define
+ * what a child item of "foo://bar.com" would be -- to work around this,
+ * we will consider both "foo://bar.com" and "foo://bar.com/" the parent
+ * of "foo://bar.com/child"
+ */
+static gboolean
+uri_matches_as_parent (const GnomeVFSURI *possible_parent, const GnomeVFSURI *parent)
+{
+	GnomeVFSURI *alternate_possible_parent;
+	gboolean result;
+
+	if (possible_parent->text == NULL ||
+	    strlen (possible_parent->text) == 0) {
+		alternate_possible_parent = gnome_vfs_uri_append_string (possible_parent,
+			GNOME_VFS_URI_PATH_STR);
+
+		result = gnome_vfs_uri_equal (alternate_possible_parent, parent);
+		
+		gnome_vfs_uri_unref (alternate_possible_parent);
+		return result;
+	}
+	
+	return gnome_vfs_uri_equal (possible_parent, parent);
+}
+
 /**
  * gnome_vfs_uri_is_parent:
  * @possible_parent: A GnomeVFSURI.
@@ -1237,7 +1540,7 @@ gnome_vfs_uri_is_parent (const GnomeVFSURI *possible_parent,
 			return FALSE;
 		}
 
-		result = gnome_vfs_uri_equal (item_parent_uri, possible_parent);	
+		result = uri_matches_as_parent (possible_parent, item_parent_uri);	
 		gnome_vfs_uri_unref (item_parent_uri);
 
 		return result;
@@ -1252,7 +1555,7 @@ gnome_vfs_uri_is_parent (const GnomeVFSURI *possible_parent,
 			return FALSE;
 		}
 
-		result = gnome_vfs_uri_equal (item_parent_uri, possible_parent);
+		result = uri_matches_as_parent (possible_parent, item_parent_uri);
 	
 		if (result) {
 			gnome_vfs_uri_unref (item_parent_uri);
@@ -1275,7 +1578,7 @@ gnome_vfs_uri_is_parent (const GnomeVFSURI *possible_parent,
  * pointer points to the name store in @uri, so the name returned must not
  * be modified nor freed.
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_path (const GnomeVFSURI *uri)
 {
 	/* FIXME bugzilla.eazel.com 1472 */
@@ -1295,7 +1598,7 @@ gnome_vfs_uri_get_path (const GnomeVFSURI *uri)
  * 
  * Return value: A pointer to the fragment identifier for the uri or NULL.
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_fragment_identifier (const GnomeVFSURI *uri)
 {
 	g_return_val_if_fail (uri != NULL, NULL);
@@ -1313,11 +1616,11 @@ gnome_vfs_uri_get_fragment_identifier (const GnomeVFSURI *uri)
  * pointer points to the name store in @uri, so the name returned must not
  * be modified nor freed.
  **/
-const gchar *
+const char *
 gnome_vfs_uri_get_basename (const GnomeVFSURI *uri)
 {
 	/* FIXME bugzilla.eazel.com 1472: query parts of URIs aren't handled */
-	gchar *p;
+	char *p;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
@@ -1349,10 +1652,10 @@ gnome_vfs_uri_get_basename (const GnomeVFSURI *uri)
  * Return value: A pointer to the newly allocated string representing the
  * parent directory.
  **/
-gchar *
+char *
 gnome_vfs_uri_extract_dirname (const GnomeVFSURI *uri)
 {
-	const gchar *base;
+	const char *base;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
@@ -1380,11 +1683,11 @@ gnome_vfs_uri_extract_dirname (const GnomeVFSURI *uri)
  * Return value: A pointer to the newly allocated string representing the
  * unescaped short form of the name.
  **/
-gchar *
+char *
 gnome_vfs_uri_extract_short_name (const GnomeVFSURI *uri)
 {
-	gchar *escaped_short_path_name, *short_path_name;
-	const gchar *host_name;
+	char *escaped_short_path_name, *short_path_name;
+	const char *host_name;
 
 	escaped_short_path_name = gnome_vfs_uri_extract_short_path_name (uri);
 	short_path_name = gnome_vfs_unescape_string (escaped_short_path_name, "/");
@@ -1420,10 +1723,10 @@ gnome_vfs_uri_extract_short_name (const GnomeVFSURI *uri)
  * Return value: A pointer to the newly allocated string representing the
  * escaped short form of the name.
  **/
-gchar *
+char *
 gnome_vfs_uri_extract_short_path_name (const GnomeVFSURI *uri)
 {
-	const gchar *p, *short_name_start, *short_name_end;
+	const char *p, *short_name_start, *short_name_end;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 

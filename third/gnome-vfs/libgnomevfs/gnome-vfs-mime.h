@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 1997-2001 Free Software Foundation
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  * All rights reserved.
  *
  * This file is part of the Gnome Library.
@@ -21,12 +21,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __GNOME_VFS_MIME_H__
-#define __GNOME_VFS_MIME_H__
+#ifndef GNOME_VFS_MIME_H
+#define GNOME_VFS_MIME_H
 
-#include <glib.h>
-
-#include "gnome-vfs-types.h"
+#include <ctype.h>
+#include <dirent.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,17 +62,8 @@ const char  *gnome_vfs_get_file_mime_type 			(const char *path,
 gboolean    gnome_vfs_mime_type_is_supertype			(const char *mime_type);
 char	    *gnome_vfs_get_supertype_from_mime_type		(const char *mime_type);							 
 
-/* functions for working with uri lists */
-GList       *gnome_uri_list_extract_filenames			(const gchar* uri_list);
-GList       *gnome_uri_list_extract_uris			(const gchar* uri_list);
-void         gnome_uri_list_free_strings			(GList *list);
-
-/* utility function for getting a filename only from a single uri */
-gchar       *gnome_uri_extract_filename                         (const gchar* uri);
-
 #ifdef __cplusplus
 }
 #endif /*__cplusplus*/
 
 #endif
-

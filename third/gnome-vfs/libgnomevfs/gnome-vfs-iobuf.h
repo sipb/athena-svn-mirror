@@ -21,22 +21,26 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _GNOME_VFS_IOBUF_H
-#define _GNOME_VFS_IOBUF_H
+#ifndef GNOME_VFS_IOBUF_H
+#define GNOME_VFS_IOBUF_H
 
-
-GnomeVFSIOBuf   *gnome_vfs_iobuf_new     (gint fd);
-void		 gnome_vfs_iobuf_destroy (GnomeVFSIOBuf *iobuf);
-GnomeVFSResult   gnome_vfs_iobuf_read    (GnomeVFSIOBuf *iobuf,
-					  gpointer buffer,
-					  GnomeVFSFileSize bytes,
+#include <libgnomevfs/gnome-vfs-file-size.h>
+#include <libgnomevfs/gnome-vfs-result.h>
+
+typedef struct GnomeVFSIOBuf GnomeVFSIOBuf;
+
+GnomeVFSIOBuf   *gnome_vfs_iobuf_new     (gint              fd);
+void             gnome_vfs_iobuf_destroy (GnomeVFSIOBuf    *iobuf);
+GnomeVFSResult   gnome_vfs_iobuf_read    (GnomeVFSIOBuf    *iobuf,
+					  gpointer          buffer,
+					  GnomeVFSFileSize  bytes,
 					  GnomeVFSFileSize *bytes_read);
-GnomeVFSResult	 gnome_vfs_iobuf_peekc   (GnomeVFSIOBuf *iobuf,
-					  gchar *c);
-GnomeVFSResult   gnome_vfs_iobuf_write   (GnomeVFSIOBuf *iobuf,
-					  gconstpointer buffer,
-					  GnomeVFSFileSize bytes,
+GnomeVFSResult   gnome_vfs_iobuf_peekc   (GnomeVFSIOBuf    *iobuf,
+					  gchar            *c);
+GnomeVFSResult   gnome_vfs_iobuf_write   (GnomeVFSIOBuf    *iobuf,
+					  gconstpointer     buffer,
+					  GnomeVFSFileSize  bytes,
 					  GnomeVFSFileSize *bytes_written);
-GnomeVFSResult   gnome_vfs_iobuf_flush   (GnomeVFSIOBuf *iobuf);
+GnomeVFSResult   gnome_vfs_iobuf_flush   (GnomeVFSIOBuf    *iobuf);
 
-#endif /* _GNOME_VFS_IOBUF_H */
+#endif /* GNOME_VFS_IOBUF_H */

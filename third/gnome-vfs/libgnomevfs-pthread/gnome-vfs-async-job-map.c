@@ -30,7 +30,7 @@
 
 static GHashTable *async_job_map;
 static guint async_job_map_next_id;
-static pthread_mutex_t async_job_map_lock;
+static GnomeVFSRecursiveMutex async_job_map_lock;
 gboolean async_job_map_locked;
 volatile static gboolean async_job_map_shutting_down;
 
@@ -153,7 +153,7 @@ gnome_vfs_async_job_map_shutdown (void)
 void 
 gnome_vfs_async_job_map_lock (void)
 {
-	pthread_mutex_lock (&async_job_map_lock);
+	gnome_vfs_pthread_recursive_mutex_lock (&async_job_map_lock);
 	async_job_map_locked = TRUE;
 }
 
@@ -161,7 +161,7 @@ void
 gnome_vfs_async_job_map_unlock (void)
 {
 	async_job_map_locked = FALSE;
-	pthread_mutex_unlock (&async_job_map_lock);
+	gnome_vfs_pthread_recursive_mutex_unlock (&async_job_map_lock);
 }
 
 void 
@@ -206,6 +206,7 @@ gnome_vfs_async_job_add_callback (GnomeVFSJob *job, GnomeVFSNotifyResult *notify
 
 	JOB_DEBUG (("adding callback %d ", notify_result->callback_id));
 
+	/* FIXME potential startup race here! */
 	if (async_job_callback_map == NULL) {
 		/* First job, allocate a new hash table. */
 		async_job_callback_map = g_hash_table_new (NULL, NULL);

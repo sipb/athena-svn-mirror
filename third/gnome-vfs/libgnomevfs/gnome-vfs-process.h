@@ -21,42 +21,34 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _GNOME_VFS_PROCESS_H
-#define _GNOME_VFS_PROCESS_H
+#ifndef GNOME_VFS_PROCESS_H
+#define GNOME_VFS_PROCESS_H
 
 #include <glib.h>
 #include <signal.h>		/* For the signal values.  */
 
-
-/* WARNING: These types should go into "gnome-vfs-private-types.h", but we have
-   decided to make these API calls public for now, so I prefer to leave them
-   here.  */
-
-enum _GnomeVFSProcessResult {
+typedef enum {
 	GNOME_VFS_PROCESS_OK,
 	GNOME_VFS_PROCESS_ERROR_UNKNOWN,
 	GNOME_VFS_PROCESS_ERROR_INVALIDSIGNAL,
 	GNOME_VFS_PROCESS_ERROR_NOPERM,
 	GNOME_VFS_PROCESS_ERROR_NOPROCESS
-};
-typedef enum _GnomeVFSProcessResult GnomeVFSProcessResult;
+} GnomeVFSProcessResult;
 
-enum _GnomeVFSProcessRunResult {
+typedef enum {
 	GNOME_VFS_PROCESS_RUN_OK,
 	GNOME_VFS_PROCESS_RUN_ERROR,
 	GNOME_VFS_PROCESS_RUN_CANCELLED,
 	GNOME_VFS_PROCESS_RUN_SIGNALED,
 	GNOME_VFS_PROCESS_RUN_STOPPED
-};
-typedef enum _GnomeVFSProcessRunResult GnomeVFSProcessRunResult;
+} GnomeVFSProcessRunResult;
 
-enum _GnomeVFSProcessOptions {
+typedef enum {
 	GNOME_VFS_PROCESS_DEFAULT = 0,
 	GNOME_VFS_PROCESS_USEPATH = 1 << 0,
 	GNOME_VFS_PROCESS_CLOSEFDS = 1 << 1,
 	GNOME_VFS_PROCESS_SETSID = 1 << 2
-};
-typedef enum _GnomeVFSProcessOptions GnomeVFSProcessOptions;
+} GnomeVFSProcessOptions;
 
 typedef struct _GnomeVFSProcess GnomeVFSProcess;
 
@@ -66,22 +58,16 @@ typedef void (* GnomeVFSProcessCallback) (GnomeVFSProcess *process,
 					  gint status,
 					  gpointer data);
 
-
-gboolean 	 gnome_vfs_process_init	(void);
+gboolean              gnome_vfs_process_init   (void);
+GnomeVFSProcess *     gnome_vfs_process_new    (const gchar             *file_name,
+						const gchar * const      argv[],
+						GnomeVFSProcessOptions   options,
+						GnomeVFSProcessInitFunc  init_func,
+						gpointer                 init_data,
+						GnomeVFSProcessCallback  callback,
+						gpointer                 callback_data);
+GnomeVFSProcessResult gnome_vfs_process_signal (GnomeVFSProcess         *process,
+						guint                    signal_number);
+void                  gnome_vfs_process_free   (GnomeVFSProcess         *process);
 
-GnomeVFSProcess *gnome_vfs_process_new 	(const gchar *file_name,
-					 const gchar * const argv[],
-					 GnomeVFSProcessOptions options,
-					 GnomeVFSProcessInitFunc init_func,
-					 gpointer init_data,
-					 GnomeVFSProcessCallback callback,
-					 gpointer callback_data);
-
-GnomeVFSProcessResult
-		 gnome_vfs_process_signal
-					(GnomeVFSProcess *process,
-					 guint signal_number);
-
-void		 gnome_vfs_process_free	(GnomeVFSProcess *process);
-
-#endif /* _GNOME_VFS_PROCESS_H */
+#endif /* GNOME_VFS_PROCESS_H */

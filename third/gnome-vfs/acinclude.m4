@@ -9,7 +9,7 @@ AC_DEFUN(AM_GNOME_CHECK_TYPE,
 ],[$1 foo;],
      ac_cv_type_$1=yes, ac_cv_type_$1=no)])
    if test $ac_cv_type_$1 = no; then
-      AC_DEFINE($1, $2)
+      AC_DEFINE($1, $2, $1)
    fi
 ])
 

@@ -25,32 +25,20 @@
    Ramey in GNU Bash, the Bourne Again SHell.  Copyright (C) 1987, 1988, 1989,
    1990, 1991, 1992 Free Software Foundation, Inc.  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-private-utils.h"
 
+#include "gnome-vfs-cancellation.h"
+#include "gnome-vfs-ops.h"
+#include "gnome-vfs-uri.h"
+#include <ctype.h>
 #include <errno.h>
-#include <glib.h>
-#include <signal.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include <time.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <ctype.h>
-
-#include <stdlib.h> /* for mkstemp */
-#include <unistd.h> /* for close */
-
-#if GNOME_PLATFORM_VERSION < 1095000
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#endif
-
-#include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
 
 static int
 find_next_slash (const char *path, int current_offset)
@@ -490,38 +478,6 @@ gnome_vfs_atotm (const gchar *time_string,
 	/* Failure.  */
 	return FALSE;
 }
-
-
-/**
- * gnome_vfs_i18n_get_language_list:
- * @category_name: Name of category to look up, e.g. "LC_MESSAGES".
- * 
- * This computes a list of language strings.  It searches in the
- * standard environment variables to find the list, which is sorted
- * in order from most desirable to least desirable.  The `C' locale
- * is appended to the list if it does not already appear (other
- * routines depend on this behaviour).
- * If @category_name is %NULL, then LC_ALL is assumed.
- * 
- * Return value: a copy of the list of languages (which you need to free).
- **/
-GList *
-gnome_vfs_i18n_get_language_list (const gchar *category_name)
-{
-	const GList *language_list;
-	GList *retval = NULL;
-
-#if GNOME_PLATFORM_VERSION >= 1095000
-	language_list = g_i18n_get_language_list (category_name);
-#else
-	language_list = gnome_i18n_get_language_list (category_name);
-#endif
-	if (language_list)
-		retval = g_list_reverse (g_list_copy ((GList*) language_list));
-
-	return retval;
-}
-
 
 /* gnome_vfs_istr_has_prefix
  * copy-pasted from Nautilus

@@ -22,9 +22,7 @@
  * Author: Cody Russell <bratsche@dfw.net>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <stdio.h>
 #include <string.h>
@@ -32,9 +30,10 @@
 #include <time.h>
 #include <string.h>
 
+#include "gnome-vfs-handle.h"
 #include "gnome-vfs-module.h"
 #include "gnome-vfs-mime.h"
-#include "bzip2-method.h"
+#include "gnome-vfs-ops.h"
 
 #ifdef HAVE_OLDER_BZIP2
 #define BZ2_bzDecompressInit  bzDecompressInit

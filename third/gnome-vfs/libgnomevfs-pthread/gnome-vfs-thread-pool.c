@@ -44,7 +44,7 @@ typedef struct {
 	volatile gboolean exit_requested;
 } GnomeVFSThreadState;
 
-static pthread_mutex_t thread_list_lock;
+static GnomeVFSRecursiveMutex thread_list_lock;
 
 static const int MAX_AVAILABLE_THREADS = 20; 
 static GList *available_threads;
@@ -108,7 +108,7 @@ make_thread_available (GnomeVFSThreadState *state)
 	state->entry_point = NULL;
 	pthread_mutex_unlock (&state->waiting_for_work_lock);
 
-	pthread_mutex_lock (&thread_list_lock);
+	gnome_vfs_pthread_recursive_mutex_lock (&thread_list_lock);
 
 	if (thread_count < MAX_AVAILABLE_THREADS) {
 		/* haven't hit the max thread limit yet, add the now available
@@ -121,7 +121,7 @@ make_thread_available (GnomeVFSThreadState *state)
 			(guint)state->thread_id, thread_count));
 	}
 
-	pthread_mutex_unlock (&thread_list_lock);
+	gnome_vfs_pthread_recursive_mutex_unlock (&thread_list_lock);
 	
 	return !delete_thread;
 }
@@ -191,7 +191,7 @@ gnome_vfs_thread_create (pthread_t *thread, void *(* thread_routine) (void *),
 {
 	GnomeVFSThreadState *available_thread;
 	
-	pthread_mutex_lock (&thread_list_lock);
+	gnome_vfs_pthread_recursive_mutex_lock (&thread_list_lock);
 	if (available_threads == NULL) {
 		/* Thread pool empty, create a new thread. */
 		available_thread = new_thread_state ();
@@ -205,7 +205,7 @@ gnome_vfs_thread_create (pthread_t *thread, void *(* thread_routine) (void *),
 		
 
 	}
-	pthread_mutex_unlock (&thread_list_lock);
+	gnome_vfs_pthread_recursive_mutex_unlock (&thread_list_lock);
 	
 	if (available_thread == NULL) {
 		/* Failed to allocate a new thread. */
@@ -237,13 +237,13 @@ gnome_vfs_thread_pool_shutdown (void)
 	for (;;) {
 		thread_state = NULL;
 		
-		pthread_mutex_lock (&thread_list_lock);
+		gnome_vfs_pthread_recursive_mutex_lock (&thread_list_lock);
 		if (available_threads != NULL) {
 			/* Pick the next thread from the list. */
 			thread_state = (GnomeVFSThreadState *)available_threads->data;
 			available_threads = g_list_remove (available_threads, thread_state);
 		}
-		pthread_mutex_unlock (&thread_list_lock);
+		gnome_vfs_pthread_recursive_mutex_unlock (&thread_list_lock);
 		
 		if (thread_state == NULL) {
 			break;

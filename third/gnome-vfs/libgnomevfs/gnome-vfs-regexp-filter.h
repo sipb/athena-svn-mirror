@@ -2,7 +2,7 @@
 /* gnome-vfs-regexp-filter.h - Regexp-based filter for the GNOME
    Virtual File System.
 
-   Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 1999, 2001 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,10 +19,16 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Ettore Perazzoli <ettore@comm2000.it> */
+   Author: Ettore Perazzoli <ettore@comm2000.it> 
+           Seth Nickell <snickell@stanford.edu>
+*/
 
 #ifndef _GNOME_VFS_REGEXP_FILTER_H
 #define _GNOME_VFS_REGEXP_FILTER_H
+
+#include <libgnomevfs/gnome-vfs-directory-filter.h>
+
+typedef struct GnomeVFSRegexpFilter GnomeVFSRegexpFilter;
 
 GnomeVFSRegexpFilter *
 	gnome_vfs_regexp_filter_new		(const gchar *regexp,

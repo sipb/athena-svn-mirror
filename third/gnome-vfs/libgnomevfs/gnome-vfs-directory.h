@@ -24,6 +24,7 @@
 #ifndef GNOME_VFS_DIRECTORY_H
 #define GNOME_VFS_DIRECTORY_H
 
+#include <libgnomevfs/gnome-vfs-directory-filter.h>
 
 typedef struct GnomeVFSDirectoryHandle GnomeVFSDirectoryHandle;
 

@@ -26,11 +26,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <string.h>
+#include <config.h>
+#include "gnome-vfs-mime-sniff-buffer.h"
 
+#include "gnome-vfs-handle.h"
 #include "gnome-vfs-mime-sniff-buffer-private.h"
 #include "gnome-vfs-ops.h"
-
+#include <string.h>
 
 static GnomeVFSResult
 handle_seek_glue (gpointer context, GnomeVFSSeekPosition whence, 
@@ -81,7 +83,7 @@ gnome_vfs_mime_sniff_buffer_new_generic (GnomeVFSSniffBufferSeekCall seek_callba
 
 GnomeVFSMimeSniffBuffer * 
 gnome_vfs_mime_sniff_buffer_new_from_memory (const guchar *buffer, 
-					     ssize_t buffer_length)
+					     gssize buffer_length)
 {
 	GnomeVFSMimeSniffBuffer *result;
 
@@ -97,7 +99,7 @@ gnome_vfs_mime_sniff_buffer_new_from_memory (const guchar *buffer,
 
 GnomeVFSMimeSniffBuffer	*
 gnome_vfs_mime_sniff_buffer_new_from_existing_data (const guchar *buffer, 
-					 	    ssize_t buffer_length)
+					 	    gssize buffer_length)
 {
 	GnomeVFSMimeSniffBuffer *result;
 
@@ -125,7 +127,7 @@ enum {
 
 GnomeVFSResult
 gnome_vfs_mime_sniff_buffer_get (GnomeVFSMimeSniffBuffer *buffer,
-				 ssize_t size)
+				 gssize size)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileSize bytes_to_read, bytes_read;

@@ -37,7 +37,6 @@
 #include <fcntl.h>
 #include <signal.h>
 
-#include "gnome-vfs-types.h"
 #include "gnome-vfs-method.h"
 #include "gnome-vfs-mime.h"
 #include "gnome-vfs-module.h"
@@ -415,7 +414,7 @@ static GnomeVFSURI *tr_handle_exec (TranslateMethod *tm, const GnomeVFSURI * uri
 		child_result = tmpstr;
 		tmpstr = NULL;		
 
-		retval = gnome_vfs_uri_new (child_result);
+		retval = gnome_vfs_uri_new_private (child_result, FALSE, TRUE, TRUE);
 
 		if ( NULL == retval ) {
 			g_warning ("Unable to make URI from child process's result '%s'", child_result);
@@ -431,12 +430,14 @@ error:
 	return retval;
 }
 
-static void tr_exec_init (ExecState *exec_state)
+static void
+tr_exec_init (ExecState *exec_state)
 {
 	exec_state->retain_lock = g_mutex_new();
 }
 
-static void tr_exec_cleanup (ExecState *exec_state)
+static void
+tr_exec_cleanup (ExecState *exec_state)
 {
 	if (NULL != exec_state->retain_lock) {
 		g_mutex_free (exec_state->retain_lock);
@@ -461,6 +462,10 @@ static void tr_exec_cleanup (ExecState *exec_state)
 static GnomeVFSURI *tr_uri_translate(TranslateMethod * tm,
 				     const GnomeVFSURI * uri)
 {
+	const char *text_uri;
+	const char *text_uri_no_method;
+	char *translated_text;
+	char *translated_uri;
 	GnomeVFSURI *retval;
 
 	retval = NULL;
@@ -471,15 +476,25 @@ static GnomeVFSURI *tr_uri_translate(TranslateMethod * tm,
 	/* Hack it all up to pieces */
 
 	if (MODE_BASIC == tm->pa.mode) {
-		retval = gnome_vfs_uri_dup(uri);
-		g_free(retval->text);
+		text_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+		text_uri_no_method = strchr (text_uri, ':');
 
-		retval->text =
-		    g_strdup_printf(tm->pa.u.basic.trans_string, uri->text, uri->text,
-				    uri->text, uri->text, uri->text);
-		g_free(retval->method_string);
-		retval->method_string = g_strdup(tm->pa.real_method_name);
-		retval->method = tm->real_method;
+		if (text_uri_no_method == NULL) {
+			text_uri_no_method = text_uri;
+		} else {
+			text_uri_no_method = text_uri_no_method + 1;
+		}
+			
+		translated_text = g_strdup_printf (tm->pa.u.basic.trans_string, 
+						   uri->text, uri->text,
+						   uri->text, uri->text, uri->text);
+		translated_uri = g_strconcat (tm->pa.real_method_name, ":", 
+					      translated_text, NULL);
+
+		retval = gnome_vfs_uri_new_private (translated_uri, FALSE, TRUE, TRUE);
+
+		g_free (translated_text);
+		g_free (translated_uri);
 	} else if (MODE_EXEC == tm->pa.mode) {
 		retval = tr_handle_exec (tm, uri);
 	} else {
@@ -1232,7 +1247,8 @@ GnomeVFSMethod *vfs_module_init(const char *method_name, const char *args)
 	return (GnomeVFSMethod *) retval;
 }
 
-void vfs_module_shutdown (GnomeVFSMethod * method)
+void
+vfs_module_shutdown (GnomeVFSMethod * method)
 {
 	TranslateMethod *tmethod = (TranslateMethod *) method;
 

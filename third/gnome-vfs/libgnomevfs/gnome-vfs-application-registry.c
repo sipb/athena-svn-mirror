@@ -26,29 +26,27 @@
  */
 
 #include "config.h"
+#include "gnome-vfs-application-registry.h"
 
-#include <time.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <glib.h>
-#include <ctype.h>
-
-#include "gnome-vfs-types.h"
-#include "gnome-vfs-result.h"
 #include "gnome-vfs-mime-handlers.h"
 #include "gnome-vfs-mime-private.h"
 #include "gnome-vfs-mime.h"
-#include "gnome-vfs-application-registry.h"
 #include "gnome-vfs-private.h"
+#include "gnome-vfs-result.h"
+#include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <glib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 #if !defined getc_unlocked && !defined HAVE_GETC_UNLOCKED
 # define getc_unlocked(fp) getc (fp)
@@ -661,6 +659,14 @@ typedef enum {
 	STATE_ON_VALUE
 } ParserState;
 
+/**
+ * strip_trailing_whitespace
+ *
+ * string
+ *
+ * strips the white space from a string.
+ *
+ */
 
 static void
 strip_trailing_whitespace (GString *string)
@@ -674,6 +680,18 @@ strip_trailing_whitespace (GString *string)
 
 	g_string_truncate (string, i + 1);
 }
+
+/**
+ * load_application_info_from
+ *
+ * filename:  Target filename to application info from.
+ * user_owned: if application is user owned or not.
+ *
+ * This function will load application info from a file and parse through the
+ * application loading the registry with the information contained in the file.
+ *
+ * 
+ **/
 
 static void
 load_application_info_from (const char *filename, gboolean user_owned)
@@ -837,6 +855,14 @@ load_application_info_from (const char *filename, gboolean user_owned)
 	gnome_vfs_file_date_tracker_start_tracking_file (registry_date_tracker, filename);
 }
 
+/**
+ * application_info_load:
+ *
+ * source:
+ *
+ * 
+ */
+
 static void
 application_info_load (ApplicationRegistryDir *source)
 {
@@ -891,12 +917,24 @@ application_info_load (ApplicationRegistryDir *source)
 	gnome_vfs_file_date_tracker_start_tracking_file (registry_date_tracker, source->dirname);
 }
 
+/**
+ * load_application_info
+ *
+ * This function will load the registry for an application from disk.
+ **/
+
 static void
 load_application_info (void)
 {
 	application_info_load (&gnome_registry_dir);
 	application_info_load (&user_registry_dir);
 }
+
+/**
+ * gnome_vfs_application_registry_init
+ *
+ * This function initializes gnome-vfs's registry.  
+ **/
 
 static void
 gnome_vfs_application_registry_init (void)
@@ -940,6 +978,13 @@ gnome_vfs_application_registry_init (void)
 	gnome_vfs_application_registry_initialized = TRUE;
 }
 
+/*
+ * maybe_reload
+ *
+ * This function will initialize the registry in memory and then reloads the
+ *
+ */
+
 static void
 maybe_reload (void)
 {
@@ -951,6 +996,17 @@ maybe_reload (void)
 	
         gnome_vfs_application_registry_reload ();
 }
+
+/**
+ * remove_apps
+ *
+ * key: 
+ * value:
+ * user_data:
+ *
+ * FIXME: I need a clearer explanation on what this does.
+ *
+ */
 
 static gboolean
 remove_apps (gpointer key, gpointer value, gpointer user_data)
@@ -964,12 +1020,28 @@ remove_apps (gpointer key, gpointer value, gpointer user_data)
 	return TRUE;
 }
 
+/**
+ * gnome_vfs_application_registry_clear:
+ *
+ * This will wipe the registry clean removing everything from the registry.
+ * This is different from gnome_vfs_application_registry_shutdown which will
+ * actually delete the registry and leave it in an uninitialized state.
+ *
+ */
+
 static void
 gnome_vfs_application_registry_clear (void)
 {
 	if (global_applications != NULL)
 		g_hash_table_foreach_remove (global_applications, remove_apps, NULL);
 }
+
+/**
+ * gnome_vfs_application_registry_shutdown
+ *
+ * This will delete the global gnome-vfs registry.
+ *
+ **/
 
 void
 gnome_vfs_application_registry_shutdown (void)
@@ -1004,6 +1076,18 @@ gnome_vfs_application_registry_shutdown (void)
 	gnome_vfs_application_registry_initialized = FALSE;
 }
 
+
+/**
+ * gnome_vfs_application_registry_reload:
+ *
+ * If this function is called for the first time it will initialize the
+ * registry.  Subsequent calls to the function will clear out the current
+ * registry contents and load registry contents from the save file.  Make
+ * certain that you've saved your registry before calling this function.  It
+ * will destroy unsaved changes.
+ *
+ */
+
 void
 gnome_vfs_application_registry_reload (void)
 {
@@ -1019,6 +1103,19 @@ gnome_vfs_application_registry_reload (void)
 /*
  * Existance check
  */
+
+/**
+ * gnome_vfs_application_registry_exists:
+ *
+ * This function will check, if given an application name, exists in the
+ * registry.
+ *
+ * @app_id:  String containing the application name
+ *
+ * Returns: gboolean
+ *
+ **/
+
 gboolean
 gnome_vfs_application_registry_exists (const char *app_id)
 {
@@ -1037,6 +1134,16 @@ gnome_vfs_application_registry_exists (const char *app_id)
  * Getting arbitrary keys
  */
 
+
+/**
+ * get_keys_foreach
+ *
+ * key:
+ * user_data:
+ *
+ * FIXME: I have no idea what this function does.
+ **/
+
 static void
 get_keys_foreach(gpointer key, gpointer value, gpointer user_data)
 {
@@ -1049,6 +1156,17 @@ get_keys_foreach(gpointer key, gpointer value, gpointer user_data)
 	(*listp) = g_list_insert_sorted ((*listp), key,
 					 (GCompareFunc) strcmp);
 }
+
+/**
+ * gnome_vfs_application_registry_get_keys:
+ *
+ * @app_id: registry id of the application
+ * 
+ * This function wil return a list of keys for an applicaton id from the
+ * registry.
+ *
+ * Returns: GList
+ **/
 
 GList *
 gnome_vfs_application_registry_get_keys (const char *app_id)
@@ -1078,6 +1196,19 @@ gnome_vfs_application_registry_get_keys (const char *app_id)
 	return retval;
 }
 
+
+/**
+ * real_peek_value:
+ *
+ * @application: registry application
+ * @key: target key
+ *
+ * This function looks and returns the value of the target key in the registry
+ * application
+ *
+ * Returns: const char *
+ **/
+
 static const char *
 real_peek_value (const Application *application, const char *key)
 {
@@ -1096,6 +1227,21 @@ real_peek_value (const Application *application, const char *key)
 
 	return retval;
 }
+
+/**
+ * real_get_bool_value
+ *
+ * application:  Application structure
+ * key: taget key
+ * got_key: actual key stored in application if key exists.
+ *
+ * This function will try to determine whether a key exists in the application.
+ * It first checks the user applications and then the system applications and
+ * then returns whether the key exists and what the value is from the value of
+ * got_key.
+ *
+ * Returns: gboolean
+ **/
 
 static gboolean
 real_get_bool_value (const Application *application, const char *key, gboolean *got_key)
@@ -1120,6 +1266,18 @@ real_get_bool_value (const Application *application, const char *key, gboolean *
 	return retval;
 }
 
+/**
+ * gnome_vfs_application_registry_peek_value:
+ *
+ * @app_id: registry id of the application
+ * @key: key we want to look up.
+ *
+ * This will return the value of the key in registry pointed to by app_id.
+ *
+ * Returns: a string (const char *)
+ *
+ **/
+
 const char *
 gnome_vfs_application_registry_peek_value (const char *app_id, const char *key)
 {
@@ -1136,6 +1294,20 @@ gnome_vfs_application_registry_peek_value (const char *app_id, const char *key)
 
 	return real_peek_value (application, key);
 }
+
+/**
+ * gnome_vfs_application_registry_get_bool_value:
+ *
+ * @app_id:  registry id of the application
+ * @key: key to look up
+ * @got_key: key you have
+ *
+ * This will look up a key in the structure pointed to by app_id and return the
+ * boolean value of that key.  It will return false if there are no
+ * applications associated with the app_id.
+ *
+ * Returns: gboolean
+ **/
 
 gboolean
 gnome_vfs_application_registry_get_bool_value (const char *app_id, const char *key,
@@ -1158,6 +1330,17 @@ gnome_vfs_application_registry_get_bool_value (const char *app_id, const char *k
 /*
  * Setting stuff
  */
+
+/**
+ * gnome_vfs_application_registry_remove_application:
+ *
+ * @app_id:  registry id of the application
+ *
+ * Given the registry id this function will remove all applications that has
+ * been set by the user.  You will need to call
+ * gnome_vfs_application_registry_sync to save the changes.
+ *
+ **/
 
 void
 gnome_vfs_application_registry_remove_application (const char *app_id)
@@ -1182,6 +1365,19 @@ gnome_vfs_application_registry_remove_application (const char *app_id)
 	}
 }
 
+/**
+ * gnome_vfs_application_registry_set_value:
+ *
+ * @app_id:  registry id of the application
+ * @key: target key
+ * @value: value to set the target key to
+ *
+ * This function will set values pertaining to registry entry pointed to by
+ * app_id.  You will need to call gnome_vfs_application_registry_sync to
+ * realize the changes.
+ *
+ **/
+
 void
 gnome_vfs_application_registry_set_value (const char *app_id,
 					  const char *key,
@@ -1202,6 +1398,19 @@ gnome_vfs_application_registry_set_value (const char *app_id,
 	user_file_dirty = TRUE;
 }
 
+/**
+ * gnome_vfs_application_registry_set_bool_value:
+ *
+ * @app_id:  registry id of the application
+ * @key: target key
+ * @value: value you want to set the target key to.
+ *
+ * This function will modify those registry values that are of type boolean to
+ * a value specified by the user.  You will need to call
+ * gnome_vfs_application_registry_sync to save your changes.
+ *
+ **/
+
 void
 gnome_vfs_application_registry_set_bool_value (const char *app_id,
 					       const char *key,
@@ -1220,6 +1429,17 @@ gnome_vfs_application_registry_set_bool_value (const char *app_id,
 
 	user_file_dirty = TRUE;
 }
+
+/**
+ * gnome_vfs_application_registry_unset_key:
+ *
+ * @app_id:  registry id of the application
+ * @key:  search key
+ *
+ * This function given the application and the target will wipe the current
+ * value that the key contains.
+ * 
+ **/
 
 void
 gnome_vfs_application_registry_unset_key (const char *app_id,
@@ -1242,6 +1462,17 @@ gnome_vfs_application_registry_unset_key (const char *app_id,
 /*
  * Query functions
  */
+
+
+/**
+ *
+ * gnome_vfs_application_registry_get_applications:
+ *
+ * @mime_type:  mime type string
+ *
+ * This will return all applications from the registry that are associated with
+ * the given mime type string.
+ **/
 
 GList *
 gnome_vfs_application_registry_get_applications (const char *mime_type)
@@ -1287,6 +1518,19 @@ gnome_vfs_application_registry_get_applications (const char *mime_type)
 	return retval;
 }
 
+/**
+ *
+ * gnome_vfs_application_registry_get_mime_types:
+ *
+ * @app_id: registry id of application
+ *
+ * This function returns a list of mime types that is associated with a
+ * registry id.
+ *
+ * Returns: GList
+ *
+ **/
+
 GList *
 gnome_vfs_application_registry_get_mime_types (const char *app_id)
 {
@@ -1320,6 +1564,18 @@ gnome_vfs_application_registry_get_mime_types (const char *app_id)
 
 	return retval;
 }
+
+/**
+ * gnome_vfs_application_registry_supports_uri_scheme:
+ *
+ * @app_id: registry id of application
+ * @uri_scheme: uri schme string
+ *
+ *  Given the id of the application this function will
+ *  determine if the uri scheme will given is supported.
+ *
+ *  Returns: gboolean
+ **/
 
 gboolean
 gnome_vfs_application_registry_supports_uri_scheme (const char *app_id,
@@ -1360,6 +1616,18 @@ gnome_vfs_application_registry_supports_uri_scheme (const char *app_id,
 	return FALSE;
 }
 
+/**
+ * gnome_vfs_application_registry_supports_mime_type:
+ *
+ * @app_id: registry id of application
+ * @mime_type: mime type string
+ *
+ * Use this function to see if there is an application associated with a given
+ * mime type.  The function will return true or false.
+ *
+ * Returns: gboolean
+ **/
+
 gboolean
 gnome_vfs_application_registry_supports_mime_type (const char *app_id,
 						   const char *mime_type)
@@ -1397,6 +1665,17 @@ gnome_vfs_application_registry_supports_mime_type (const char *app_id,
  * Note that mime_type can be a specific (image/png) or generic (image/<star>) type
  */
 
+
+/**
+ * gnome_vfs_application_registry_clear_mime_types:
+ * @app_id: Application id
+ *
+ * This function will remove the mime types associated with the application.
+ * Changes are not realized until the  gnome_vfs_application_registry_sync
+ * function is called to save the changes to the file.
+ *
+ **/
+
 void
 gnome_vfs_application_registry_clear_mime_types (const char *app_id)
 {
@@ -1412,6 +1691,18 @@ gnome_vfs_application_registry_clear_mime_types (const char *app_id)
 
 	user_file_dirty = TRUE;
 }
+
+/**
+ * gnome_vfs_application_registry_add_mime_type:
+ * @app_id:  registry id of application
+ * @mime_type: mime type string
+ *
+ * This function will associate a mime type with an application given the   
+ * application registry id and the mime type.  Changes are not realized until
+ * the gnome_vfs_application_registry_sync function is called to save the
+ * changes to the file.
+ *
+ **/
 
 void
 gnome_vfs_application_registry_add_mime_type (const char *app_id,
@@ -1430,6 +1721,18 @@ gnome_vfs_application_registry_add_mime_type (const char *app_id,
 
 	user_file_dirty = TRUE;
 }
+
+/**
+ * gnome_vfs_application_registry_remove_mime_type:
+ * @app_id: registry id of the application
+ * @mime_type: mime type string
+ *
+ * This function will de-associate a mime type from an application registry.  
+ * Given the application registry id and the mime type.  Changes are not
+ * realized until the gnome_vfs_application_registry_sync function is called to
+ * save the changes to the file.
+ *
+ */
 
 void
 gnome_vfs_application_registry_remove_mime_type (const char *app_id,
@@ -1464,6 +1767,20 @@ application_sync_foreach (gpointer key, gpointer value, gpointer user_data)
 	else if (application->user_application)
 		application_sync (application->user_application, fp);
 }
+
+/**
+ * gnome_vfs_application_registry_sync:
+ *
+ * This function will sync the registry.  Typically you would use this function
+ * after a modification of the registry.  When you modify the registry a dirty
+ * flag is set.  Calling this function will save your modifications to disk and
+ * reset the flag.
+ *
+ * If successful, will return GNOME_VFS_OK
+ *
+ * Returns: GnomeVFSResult
+ *
+ **/
 
 GnomeVFSResult
 gnome_vfs_application_registry_sync (void)
@@ -1504,6 +1821,17 @@ gnome_vfs_application_registry_sync (void)
 
 	return GNOME_VFS_OK;
 }
+
+
+/**
+ * gnome_vfs_application_registry_get_mime_application:
+ * @app_id:  registry id of the application
+ *
+ * Returns a structure that contains the application that handles
+ * the mime type associated by the application referred by app_id.
+ *
+ * Returns: GnomeVFSMimeApplication
+ **/
 
 GnomeVFSMimeApplication *
 gnome_vfs_application_registry_get_mime_application (const char *app_id)
@@ -1551,6 +1879,18 @@ gnome_vfs_application_registry_get_mime_application (const char *app_id)
 	return application;
 }
 
+/**
+ * gnome_vfs_application_registry_save_mime_application:
+ *
+ * @application: application associated with the mime type
+ * 
+ * This will save to the registry the application that will be associated with
+ * a defined mime type.  The defined mime type is located within the
+ * GnomeVFSMimeApplication structure.  Changes are not realized until the
+ * gnome_vfs_application_registry_sync function is called.
+ *
+ **/
+
 void
 gnome_vfs_application_registry_save_mime_application (const GnomeVFSMimeApplication *application)
 {
@@ -1575,6 +1915,18 @@ gnome_vfs_application_registry_save_mime_application (const GnomeVFSMimeApplicat
 	/* FIXME: Need to save supported_uri_schemes information */
 	user_file_dirty = TRUE;
 }
+
+/**
+ * gnome_vfs_application_is_user_owned_application:
+ *
+ * @application:  data structure of the mime application
+ *
+ * This function will determine if a mime application is user owned or not.  By
+ * user ownered this means that the application is not a system application
+ * located in the prerequisite /usr area but rather in the user's area.
+ *
+ * Returns: gboolean
+ **/
 
 gboolean
 gnome_vfs_application_is_user_owned_application (const GnomeVFSMimeApplication *application)

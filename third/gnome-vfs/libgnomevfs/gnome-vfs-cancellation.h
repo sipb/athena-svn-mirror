@@ -2,7 +2,7 @@
 /* gnome-vfs-cancellation.h - Cancellation handling for the GNOME Virtual File
    System access methods.
 
-   Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 1999, 2001 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,14 +19,18 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Ettore Perazzoli <ettore@gnu.org> */
+   Author: Ettore Perazzoli <ettore@gnu.org> 
+           Seth Nickell <snickell@stanford.edu>
+*/
 
 #ifndef _GNOME_VFS_CANCELLATION_H
 #define _GNOME_VFS_CANCELLATION_H
 
 #include <glib.h>
 
-
+typedef struct GnomeVFSCancellation GnomeVFSCancellation;
+
+
 GnomeVFSCancellation *
 	 gnome_vfs_cancellation_new     (void);
 void     gnome_vfs_cancellation_destroy (GnomeVFSCancellation *cancellation);

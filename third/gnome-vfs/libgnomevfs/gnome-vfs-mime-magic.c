@@ -438,7 +438,7 @@ gnome_vfs_mime_magic_parse (const gchar *filename, gint *nents)
 }
 
 static void 
-endian_swap (guchar *result, const guchar *data, size_t length)
+endian_swap (guchar *result, const guchar *data, gsize length)
 {
 	const guchar *source_ptr = data;
 	guchar *dest_ptr = result + length - 1;
@@ -789,7 +789,7 @@ static int frequencies[2][3] = {
  * NOTE: As an optimization and because they are rare, this returns 0 for
  * version 2.5 or free format MP3s.
  */
-static size_t
+static gsize
 get_mp3_frame_length (unsigned long mp3_header)
 {
 	int ver = 4 - ((mp3_header >> 19) & 3u);
@@ -808,7 +808,7 @@ get_mp3_frame_length (unsigned long mp3_header)
 		&& ((mp3_header & 3u) != 2)) {
 		/* then this is most likely the beginning of a valid frame */
 
-		size_t length = (size_t) bitrates[ver - 1][br] * 144000;
+		gsize length = (gsize) bitrates[ver - 1][br] * 144000;
 		length /= frequencies[ver - 1][srf];
 		return length += ((mp3_header >> 9) & 1u) - 4;
 	}
@@ -871,7 +871,7 @@ gnome_vfs_sniff_buffer_looks_like_mp3 (GnomeVFSMimeSniffBuffer *sniff_buffer)
 	 */
 	mp3_header = 0;
 	for (offset = 0; offset < GNOME_VFS_MP3_SNIFF_LENGTH; offset++) {
-		size_t length;
+		gsize length;
 
 		mp3_header <<= 8;
 		mp3_header |= sniff_buffer->buffer[offset];
@@ -926,7 +926,14 @@ gnome_vfs_sniff_buffer_looks_like_gzip (GnomeVFSMimeSniffBuffer *sniff_buffer,
 	
 	if (gnome_vfs_istr_has_suffix (file_name, ".gnumeric")
 		|| gnome_vfs_istr_has_suffix (file_name, ".abw")
+		|| gnome_vfs_istr_has_suffix (file_name, ".chrt")
 		|| gnome_vfs_istr_has_suffix (file_name, ".dia")
+		|| gnome_vfs_istr_has_suffix (file_name, ".kfo")
+		|| gnome_vfs_istr_has_suffix (file_name, ".kil")
+		|| gnome_vfs_istr_has_suffix (file_name, ".kivio")
+		|| gnome_vfs_istr_has_suffix (file_name, ".kpr")
+		|| gnome_vfs_istr_has_suffix (file_name, ".ksp")
+		|| gnome_vfs_istr_has_suffix (file_name, ".kwd")
 		|| gnome_vfs_istr_has_suffix (file_name, ".pdf")) {
 		/* Have the suffix matching deal with figuring out the actual
 		 * MIME type.

@@ -21,10 +21,10 @@
 
    Author: Michael Meeks <michael@imaginator.com> */
 
-#ifndef _GNOME_VFS_MODULE_H
-#define _GNOME_VFS_MODULE_H
+#ifndef GNOME_VFS_MODULE_H
+#define GNOME_VFS_MODULE_H
 
-#include "gnome-vfs.h"
+#include <libgnomevfs/gnome-vfs-method.h>
 
 #define GNOME_VFS_MODULE_INIT      "vfs_module_init"
 #define GNOME_VFS_MODULE_TRANSFORM "vfs_module_transform"

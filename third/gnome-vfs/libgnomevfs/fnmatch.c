@@ -23,19 +23,17 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <errno.h>
+#include <config.h>
+#include "fnmatch.h"
 
 /* Added for GTK. We need to make sure that all constants are defined
- * to properly compile this file */
+ * to properly compile this file.
+ */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
-#include "fnmatch.h"
 
+#include <errno.h>
 #include <ctype.h>
 
 

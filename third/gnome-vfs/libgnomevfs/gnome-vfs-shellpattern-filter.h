@@ -21,18 +21,17 @@
 
    Author: Ettore Perazzoli <ettore@comm2000.it> */
 
-#ifndef _GNOME_VFS_FNMATCH_FILTER_H
-#define _GNOME_VFS_FNMATCH_FILTER_H
+#ifndef GNOME_VFS_SHELLPATTERN_FILTER_H
+#define GNOME_VFS_SHELLPATTERN_FILTER_H
 
-GnomeVFSShellpatternFilter *
-	gnome_vfs_shellpattern_filter_new 	(const gchar *pattern,
-				      		 GnomeVFSDirectoryFilterOptions
-						         options);
-void	gnome_vfs_shellpattern_filter_destroy	(GnomeVFSShellpatternFilter
-						         *filter);
-gboolean
-	gnome_vfs_shellpattern_filter_apply	(GnomeVFSShellpatternFilter
-						         *filter,
-						 GnomeVFSFileInfo *info);
+#include <libgnomevfs/gnome-vfs-directory-filter.h>
 
-#endif /* _GNOME_VFS_FNMATCH_FILTER_H */
+typedef struct GnomeVFSShellpatternFilter GnomeVFSShellpatternFilter;
+
+GnomeVFSShellpatternFilter *gnome_vfs_shellpattern_filter_new     (const gchar                    *pattern,
+								   GnomeVFSDirectoryFilterOptions  options);
+void                        gnome_vfs_shellpattern_filter_destroy (GnomeVFSShellpatternFilter     *filter);
+gboolean                    gnome_vfs_shellpattern_filter_apply   (GnomeVFSShellpatternFilter     *filter,
+								   GnomeVFSFileInfo               *info);
+
+#endif /* GNOME_VFS_SHELLPATTERN_FILTER_H */

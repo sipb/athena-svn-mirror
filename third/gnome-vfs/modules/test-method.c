@@ -36,11 +36,20 @@
 
 #include <config.h>
 
+#if GNOME_PLATFORM_VERSION < 1095000
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
 #include <gnome-xml/xmlmemory.h>
+#else
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xmlmemory.h>
+#endif
+
+#if GNOME_PLATFORM_VERSION < 1095000
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+#endif
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-private.h>
 #include <stdio.h>

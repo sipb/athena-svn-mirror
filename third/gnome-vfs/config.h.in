@@ -10,9 +10,6 @@
    This function is required for alloca.c support on those systems.  */
 #undef CRAY_STACKSEG_END
 
-/* Define to `int' if <sys/types.h> doesn't define.  */
-#undef gid_t
-
 /* Define if you have alloca, as a function or macro.  */
 #undef HAVE_ALLOCA
 
@@ -24,15 +21,6 @@
 
 /* Define as __inline if that's what the C compiler calls it.  */
 #undef inline
-
-/* Define to `long' if <sys/types.h> doesn't define.  */
-#undef off_t
-
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
-/* Define to `unsigned' if <sys/types.h> doesn't define.  */
-#undef size_t
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -46,9 +34,6 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-/* Define to `int' if <sys/types.h> doesn't define.  */
-#undef uid_t
-
 #undef PACKAGE
 #undef VERSION
 #undef HAVE_LIBSM
@@ -61,12 +46,12 @@
 #undef HAVE_SOCKET
 #undef HAVE_STRUCT_LINGER
 #undef HAVE_NSL
-#undef GNOME_VFS_DEFAULT_BACKEND
 #undef USING_OAF
 #undef HAVE_GCONF
 #undef HAVE_OLDER_BZIP2
 #undef GNOME_PLATFORM_VERSION
 #undef ENABLE_PROFILER
+#undef HAVE_OPENSSL
 
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
@@ -89,9 +74,6 @@
 /* Define if you have the dcgettext function.  */
 #undef HAVE_DCGETTEXT
 
-/* Define if you have the doprnt function.  */
-#undef HAVE_DOPRNT
-
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
 
@@ -101,20 +83,11 @@
 /* Define if you have the getdtablesize function.  */
 #undef HAVE_GETDTABLESIZE
 
-/* Define if you have the getopt_long function.  */
-#undef HAVE_GETOPT_LONG
-
 /* Define if you have the getpagesize function.  */
 #undef HAVE_GETPAGESIZE
 
 /* Define if you have the lseek64 function.  */
 #undef HAVE_LSEEK64
-
-/* Define if you have the memmove function.  */
-#undef HAVE_MEMMOVE
-
-/* Define if you have the mkstemp function.  */
-#undef HAVE_MKSTEMP
 
 /* Define if you have the munmap function.  */
 #undef HAVE_MUNMAP
@@ -124,12 +97,6 @@
 
 /* Define if you have the putenv function.  */
 #undef HAVE_PUTENV
-
-/* Define if you have the realpath function.  */
-#undef HAVE_REALPATH
-
-/* Define if you have the scandir function.  */
-#undef HAVE_SCANDIR
 
 /* Define if you have the setenv function.  */
 #undef HAVE_SETENV
@@ -155,44 +122,17 @@
 /* Define if you have the strdup function.  */
 #undef HAVE_STRDUP
 
-/* Define if you have the strerror function.  */
-#undef HAVE_STRERROR
-
-/* Define if you have the strerror_r function.  */
-#undef HAVE_STRERROR_R
-
-/* Define if you have the strndup function.  */
-#undef HAVE_STRNDUP
-
-/* Define if you have the strnlen function.  */
-#undef HAVE_STRNLEN
-
-/* Define if you have the strtod function.  */
-#undef HAVE_STRTOD
-
-/* Define if you have the strtok_r function.  */
-#undef HAVE_STRTOK_R
-
-/* Define if you have the strtol function.  */
-#undef HAVE_STRTOL
-
-/* Define if you have the strtoul function.  */
-#undef HAVE_STRTOUL
-
-/* Define if you have the vasprintf function.  */
-#undef HAVE_VASPRINTF
-
-/* Define if you have the vprintf function.  */
-#undef HAVE_VPRINTF
-
-/* Define if you have the vsnprintf function.  */
-#undef HAVE_VSNPRINTF
-
 /* Define if you have the <argz.h> header file.  */
 #undef HAVE_ARGZ_H
 
-/* Define if you have the <dirent.h> header file.  */
-#undef HAVE_DIRENT_H
+/* Define if you have the <cdda_interface.h> header file.  */
+#undef HAVE_CDDA_INTERFACE_H
+
+/* Define if you have the <cdda_paranoia.h> header file.  */
+#undef HAVE_CDDA_PARANOIA_H
+
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
 
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
@@ -203,29 +143,20 @@
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 
-/* Define if you have the <ndir.h> header file.  */
-#undef HAVE_NDIR_H
-
 /* Define if you have the <nl_types.h> header file.  */
 #undef HAVE_NL_TYPES_H
 
-/* Define if you have the <stdlib.h> header file.  */
-#undef HAVE_STDLIB_H
+/* Define if you have the <openssl/ssl.h> header file.  */
+#undef HAVE_OPENSSL_SSL_H
+
+/* Define if you have the <openssl/x509.h> header file.  */
+#undef HAVE_OPENSSL_X509_H
 
 /* Define if you have the <string.h> header file.  */
 #undef HAVE_STRING_H
 
-/* Define if you have the <strings.h> header file.  */
-#undef HAVE_STRINGS_H
-
-/* Define if you have the <sys/dir.h> header file.  */
-#undef HAVE_SYS_DIR_H
-
 /* Define if you have the <sys/mount.h> header file.  */
 #undef HAVE_SYS_MOUNT_H
-
-/* Define if you have the <sys/ndir.h> header file.  */
-#undef HAVE_SYS_NDIR_H
 
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H
@@ -248,6 +179,9 @@
 /* Define if you have the nsl library (-lnsl).  */
 #undef HAVE_LIBNSL
 
+/* Define if you have the rt library (-lrt).  */
+#undef HAVE_LIBRT
+
 /* Define if you have the socket library (-lsocket).  */
 #undef HAVE_LIBSOCKET
 
@@ -256,4 +190,13 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* size_t */
+#undef size_t
+
+/* off_t */
+#undef off_t
+
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#undef HAVE_LC_MESSAGES
 

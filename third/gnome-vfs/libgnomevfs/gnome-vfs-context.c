@@ -20,31 +20,46 @@
 
    Author: Havoc Pennington <hp@redhat.com> */
 
+#include <config.h>
 #include "gnome-vfs-context.h"
-#include "gnome-vfs-cancellation.h"
-#include "gnome-vfs-messages.h"
 
+#include "gnome-vfs-backend-private.h"
+#include "gnome-vfs-cancellation.h"
+#include "gnome-vfs-private-utils.h"
+#include "gnome-vfs-utils.h"
 #include <stdio.h>
+
+#if 1
+#define DEBUG_MSG (x) printf x
+#else
+#define DEBUG_MSG (x)
+#endif
+
 
 struct GnomeVFSContext {
         GnomeVFSCancellation *cancellation;
-        GnomeVFSMessageCallbacks *callbacks;
-        gchar* redirect_uri;
+
         guint refcount;
 };
+
+/* This is a token Context to return in situations
+ * where we don't normally have a context: eg, during sync calls
+ */
+const GnomeVFSContext sync_context = {NULL, 1};
 
 GnomeVFSContext*
 gnome_vfs_context_new (void)
 {
         GnomeVFSContext *ctx;
 
+        GNOME_VFS_ASSERT_PRIMARY_THREAD;
+
         ctx = g_new0(GnomeVFSContext, 1);
 
         ctx->cancellation = gnome_vfs_cancellation_new();
-        ctx->callbacks = gnome_vfs_message_callbacks_new();
-        ctx->redirect_uri = NULL;
+
         ctx->refcount = 1;
-  
+ 
         return ctx;
 }
 
@@ -52,10 +67,14 @@ void
 gnome_vfs_context_ref (GnomeVFSContext *ctx)
 {
         g_return_if_fail(ctx != NULL);
-  
+
+	/* FIXME: this function should be removed in Gnome 2.0 GnomeVFS */
+  	g_warning ("Warning call to deprecated function '%s'\n", G_GNUC_FUNCTION);
+  	
         ctx->refcount += 1;
 }
 
+/* Note: _unref should be replaced with a _free function in the gnome 2.0 platform */ 
 void
 gnome_vfs_context_unref (GnomeVFSContext *ctx)
 {
@@ -64,64 +83,47 @@ gnome_vfs_context_unref (GnomeVFSContext *ctx)
   
         if (ctx->refcount == 1) {
                 gnome_vfs_cancellation_destroy(ctx->cancellation);
-                gnome_vfs_message_callbacks_destroy(ctx->callbacks);
-                if (ctx->redirect_uri)
-                        g_free(ctx->redirect_uri);
-          
+
                 g_free(ctx);
         } else {
                 ctx->refcount -= 1;
         }
 }
 
-
-GnomeVFSMessageCallbacks*
-gnome_vfs_context_get_message_callbacks (GnomeVFSContext *ctx)
-{
-        g_return_val_if_fail(ctx != NULL, NULL);
-        return ctx->callbacks;
-}
-
 GnomeVFSCancellation*
-gnome_vfs_context_get_cancellation (GnomeVFSContext *ctx)
+gnome_vfs_context_get_cancellation (const GnomeVFSContext *ctx)
 {
         g_return_val_if_fail(ctx != NULL, NULL);
         return ctx->cancellation;
 }
 
-
-const gchar*
-gnome_vfs_context_get_redirect_uri      (GnomeVFSContext *ctx)
+const GnomeVFSContext *
+gnome_vfs_context_peek_current		  (void)
 {
-        g_return_val_if_fail(ctx != NULL, NULL);
-        return ctx->redirect_uri;
+	const GnomeVFSContext *ret;
+	
+	gnome_vfs_backend_get_current_context ((GnomeVFSContext **)&ret);
+
+	/* If the context is NULL, then this must be a synchronous call */
+	if (ret == NULL) {
+		ret = &sync_context;
+	}
+
+	return ret;
 }
 
-void
-gnome_vfs_context_set_redirect_uri      (GnomeVFSContext *ctx,
-                                         const gchar     *uri)
+gboolean
+gnome_vfs_context_check_cancellation_current (void)
 {
-        g_return_if_fail(ctx != NULL);
-        
-        if (ctx->redirect_uri)
-                g_free(ctx->redirect_uri);
-        
-        ctx->redirect_uri = uri ? g_strdup(uri) : NULL;
-}
+	const GnomeVFSContext *current_ctx;
 
-void
-gnome_vfs_context_emit_message           (GnomeVFSContext *ctx,
-                                          const gchar* message)
-{
-        GnomeVFSMessageCallbacks *callbacks;
-        
-        if (ctx == NULL) {
-                fprintf(stderr, "Debug: NULL context so not reporting status: %s\n", message);
-                return;
-        }
-        
-        callbacks = ctx->callbacks;
-        
-        if (callbacks)
-                gnome_vfs_message_callbacks_emit (callbacks, message);
+	current_ctx = gnome_vfs_context_peek_current ();
+
+	if (current_ctx == &sync_context) {
+		return FALSE;
+	} else if (current_ctx != NULL) {
+		return gnome_vfs_cancellation_check (gnome_vfs_context_get_cancellation (current_ctx));
+	} else {
+		return FALSE;
+	}	
 }

@@ -21,14 +21,12 @@
 
    Author: Ettore Perazzoli <ettore@gnu.org> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-cancellation.h"
 
-#include <unistd.h>
-
-#include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
+#include "gnome-vfs.h"
+#include <unistd.h>
 
 /* WARNING: this code is not general-purpose.  It is supposed to make the two
    sides of the VFS (i.e. the main process/thread and its asynchronous slave)
@@ -95,6 +93,8 @@ void
 gnome_vfs_cancellation_cancel (GnomeVFSCancellation *cancellation)
 {
 	g_return_if_fail (cancellation != NULL);
+
+	GNOME_VFS_ASSERT_PRIMARY_THREAD;
 
 	if (cancellation->cancelled)
 		return;

@@ -22,9 +22,8 @@
    Author: Ettore Perazzoli <ettore@comm2000.it>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-file-info.h"
 
 #include <string.h>
 #include <glib.h>

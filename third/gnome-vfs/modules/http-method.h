@@ -20,9 +20,29 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _HTTP_METHOD_H
-#define _HTTP_METHOD_H
+#ifndef HTTP_METHOD_H
+#define HTTP_METHOD_H
 
-#include "gnome-vfs-module.h"
+typedef gint64 utime_t;
 
-#endif
+utime_t http_util_get_utime (void);
+
+gchar * http_util_base64 (const gchar *text);
+
+#undef DEBUG_HTTP_ENABLE
+
+#ifdef DEBUG_HTTP_ENABLE
+
+#define DEBUG_HTTP(x) http_debug_printf x
+void http_debug_printf(char *fmt, ...) G_GNUC_PRINTF (1,2);
+/* #define ANALYZE_HTTP(x) my_debug_printf (x) */
+#define ANALYZE_HTTP(x) 
+
+#else /* DEBUG_HTTP_ENABLE */
+
+#define DEBUG_HTTP(x)
+#define ANALYZE_HTTP(x) 
+
+#endif /* DEBUG_HTTP_ENABLE */
+
+#endif /* HTTP_METHOD_H */

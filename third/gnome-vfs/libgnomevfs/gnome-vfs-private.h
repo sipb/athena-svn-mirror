@@ -55,16 +55,13 @@ extern "C" {
 #define GNOME_VFS_MODULE_DIR     LIBDIR "/vfs/modules"
 #define GNOME_VFS_MODULE_CFGDIR  SYSCONFDIR "/vfs/modules"
 
-#include "gnome-vfs-private-types.h"
-
+#include "gnome-vfs-module-callback-private.h"
 #include "gnome-vfs-cancellation.h"
 #include "gnome-vfs-configuration.h"
 #include "gnome-vfs-context.h"
 #include "gnome-vfs-handle.h"
 #include "gnome-vfs-inet-connection.h"
 #include "gnome-vfs-iobuf.h"
-#include "gnome-vfs-list-sort.h"
-#include "gnome-vfs-messages.h"
 #include "gnome-vfs-method.h"
 #include "gnome-vfs-cancellable-ops.h"
 #include "gnome-vfs-parse-ls.h"
@@ -99,4 +96,3 @@ ssize_t getdelim (char **lineptr, size_t *n, int terminator, FILE *stream);
 #endif /*__cplusplus*/
 
 #endif /* GNOME_VFS_PRIVATE_H */
-

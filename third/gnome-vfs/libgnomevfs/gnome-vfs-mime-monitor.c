@@ -102,12 +102,18 @@ gnome_vfs_mime_monitor_initialize_class (GnomeVFSMIMEMonitorClass *class)
 	signals[DATA_CHANGED]
 		= gtk_signal_new ("data_changed",
 				  GTK_RUN_LAST,
+#if GNOME_PLATFORM_VERSION < 1095000
 				  object_class->type,
+#else
+				  G_OBJECT_CLASS_TYPE (G_OBJECT (object_class)),
+#endif
 				  0,
 				  gtk_marshal_NONE__NONE,
 				  GTK_TYPE_NONE, 0);
 
+#if GNOME_PLATFORM_VERSION < 1095000
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+#endif
 }
 
 void

@@ -723,6 +723,8 @@ pthread_gnome_vfs_async_xfer (GnomeVFSAsyncHandle **handle_return,
 	return GNOME_VFS_OK;
 }
 
+#ifdef OLD_CONTEXT_DEPRECATED
+
 guint
 pthread_gnome_vfs_async_add_status_callback (GnomeVFSAsyncHandle *handle,
 					     GnomeVFSStatusCallback callback,
@@ -775,3 +777,5 @@ pthread_gnome_vfs_async_remove_status_callback (GnomeVFSAsyncHandle *handle,
 
 	gnome_vfs_async_job_map_unlock ();
 }
+
+#endif /* OLD_CONTEXT_DEPRECATED */
