@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: ghudson $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.20 1994-11-12 03:27:57 ghudson Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.21 1994-11-12 15:42:50 ghudson Exp $
 /**/#
 
 #if defined(SYSLOG_COMPAT42)
@@ -60,7 +60,7 @@ OBJS=	access.o \
 error_table(zsrv_err)
 SimpleProgram(zephyrd,$(OBJS) $(SYSLOG_OBJ) version.o $(ZLIB) $(ZLIBDES), $(ZLIBS) $(OSLIBS), $(ATHETCDIR))
 install_man(zephyrd.8,zephyrd.8)
-install_file(default.subscriptions,$(ZLIBDIR))
+install_file(default.subscriptions,$(ZETCDIR))
 
 create_dir($(ZACLDIR))
 install::
