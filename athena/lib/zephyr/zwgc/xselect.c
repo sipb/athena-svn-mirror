@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v $
- *      $Author: raeburn $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.8 1990-11-04 10:52:27 raeburn Exp $";
+static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.9 1991-08-08 07:53:13 jfc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -111,9 +111,17 @@ static void xselSetProperties(dpy,w,property,target,selreq)
    } else if (target==XA_STRING) {
       char *selected;
 
-      selected=getSelectedText();
-
-      ChangeProp(XA_STRING,8,selected,string_Length(selected));
+      if (selected = getSelectedText()) {
+	 ChangeProp(XA_STRING,8,selected,string_Length(selected));
+      } else {
+	 /* This should only happen if the pasting client is out of
+	    spec (or if this program is buggy), but it could happen */
+#ifdef DEBUG
+	 fprintf(stderr,
+		 "SelectionRequest event received for unowned selection: requestor wid=0x%x", w);
+#endif
+	 ChangeProp(XA_STRING,8,"",0);
+      }
       XSync(dpy,0);
    }
 
