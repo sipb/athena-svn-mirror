@@ -1,4 +1,23 @@
 #!/usr/athena/bin/perl
+# $Id: hostinfo.pl,v 1.3 1999-10-18 18:43:10 danw Exp $
+
+# Copyright 1998 by the Massachusetts Institute of Technology.
+#
+# Permission to use, copy, modify, and distribute this
+# software and its documentation for any purpose and without
+# fee is hereby granted, provided that the above copyright
+# notice appear in all copies and that both that copyright
+# notice and this permission notice appear in supporting
+# documentation, and that the name of M.I.T. not be used in
+# advertising or publicity pertaining to distribution of the
+# software without specific, written prior permission.
+# M.I.T. makes no representations about the suitability of
+# this software for any purpose.  It is provided "as is"
+# without express or implied warranty.
+
+# This is a simple DNS querying program. It was originally written in
+# C, but has been rewritten as a wrapper around "host" in the BIND
+# distribution.
 
 $hostprog = "/usr/athena/bin/host";
 
