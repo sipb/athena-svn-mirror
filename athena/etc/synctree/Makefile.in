@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-10-14 05:22:55 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1998-01-27 21:33:36 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -46,7 +46,8 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL_PROGRAM} synctree ${DESTDIR}${bindir}
-	${INSTALL} -m 444 ${srcdir}/synctree.man ${DESTDIR}${mandir}/man8
+	${INSTALL} -m 444 ${srcdir}/synctree.man \
+		${DESTDIR}${mandir}/man8/synctree.8
 
 clean:
 	rm -f ${OBJS} y.tab.c lex.yy.c synctree
