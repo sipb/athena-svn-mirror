@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.8 1990-02-14 23:02:49 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.9 1990-02-19 23:59:05 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -107,7 +107,7 @@ void output_status_header (file, status)
     strncpy (old_status, status, sizeof (old_status));
 }
 
-inline static void trim_hostname (name, suffix)
+static void trim_hostname (name, suffix)
     char *name;
     const char *suffix;
 {
