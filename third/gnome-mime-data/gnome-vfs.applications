@@ -170,7 +170,7 @@ gnumeric
 	mime_types=application/x-gnumeric,application/x-applix-spreadsheet,application/vnd.ms-excel,application/vnd.lotus-1-2-3,application/x-oleo,application/x-xbase,text/spreadsheet,text/x-comma-separated-values,text/tab-separated-values
 
 grecord
-	command=grecord
+	command=grecord -f
 	name=Sound Recorder
 	can_open_multiple_files=false
 	expects_uris=false
