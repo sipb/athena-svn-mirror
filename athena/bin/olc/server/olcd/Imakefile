@@ -1,5 +1,28 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
+ * $Id: Imakefile,v 1.3 1990-01-03 23:24:02 raeburn Exp $
+ */
+
+#define UseCPlusPlus
+
+/*
+ * Define the above symbol to use G++ for compiling; otherwise, standard
+ * $(CC) is used.
+ */
+
+#ifdef UseCPlusPlus
+misc=-lg++
+
+.c.o:
+	@rm -f $@ $<c
+	ln -s $< $<c
+	$(C++) $(C++FLAGS) -c $<c
+#else
+misc=
+#endif
+
 SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
-	data.c notify.c utils.c list.c  acl_files.c   \
+	data.c notify.c utils.c list.c acl_files.c \
 	requests_olc.c requests_admin.c
 
 OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
@@ -10,7 +33,9 @@ LOCAL_LIBRARIES=$(COMMONLIB)
 DEFINES=-DLOG -DTEST -DOLZ
 DEPLIBS=$(LOCAL_LIBRARIES)
 
-SYS_LIBRARIES=	$(HesiodLib) $(DbmLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib)
+
+SYS_LIBRARIES=	$(HesiodLib) $(DbmLib) $(ZephyrLib) $(ComErrLib) \
+		$(KerberosLib) $(misc)
 
 INCLUDES= -I.
 
