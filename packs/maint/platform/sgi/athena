@@ -146,6 +146,13 @@ if [ "${PUBLIC}" = "true" ]; then
 		done
 	    fi
 	fi
+
+	# To allow non-setuid mtools to work on zip drives on public
+	# workstations.
+	if [ -f /dev/scsi/sc0d5l0 ]; then
+		chmod a+rw /dev/scsi/sc0d5l0
+	fi
+
         $ECHO "done."
 fi
 
