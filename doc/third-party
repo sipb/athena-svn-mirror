@@ -91,8 +91,6 @@ Distribution sites for software under third
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	mh		ftp.ics.uci.edu:pub/mh
-	tcsh		ftp.deshaw.com:pub/tcsh
-			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	patch		prep.ai.mit.edu:pub/gnu
 	perl		prep.ai.mit.edu:pub/gnu
 	rcs		prep.ai.mit.edu:pub/gnu
@@ -104,6 +102,8 @@ Distribution sites for software under third
 			libexec/talkd goes in the talkd subdirectory
 			protocols/talkd.h is from include/protocols,
 			 with some modifications for portability.
+	tcsh		ftp.deshaw.com:pub/tcsh
+			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	tex		See below
 	top		eecs.nwu.edu:pub/top
 	traceroute	ftp.ee.lbl.gov (top level)
