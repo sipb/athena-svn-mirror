@@ -1,0 +1,660 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeClient</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="ch01.html#initialization" title="Initialization and session management"><link rel="previous" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="next" href="application-mgmt.html" title="Application management"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeClient.html#id2537905" title="Object Hierarchy"><link rel="section" href="GnomeClient.html#id2537933" title="Signal Prototypes"><link rel="section" href="GnomeClient.html#id2538179" title="Description"><link rel="section" href="GnomeClient.html#id2538189" title="Details"><link rel="section" href="GnomeClient.html#id2542609" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeui-gnome-ui-init.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html#initialization"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="application-mgmt.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeClient"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeClient</span></h2><p>GnomeClient &#8212; Interactions with the session manager.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+#define     <a href="GnomeClient.html#GNOME-CLIENT-CONNECTED-CAPS">GNOME_CLIENT_CONNECTED</a>          (obj)
+enum        <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a>;
+enum        <a href="GnomeClient.html#GnomeRestartStyle">GnomeRestartStyle</a>;
+enum        <a href="GnomeClient.html#GnomeClientFlags">GnomeClientFlags</a>;
+enum        <a href="GnomeClient.html#GnomeSaveStyle">GnomeSaveStyle</a>;
+enum        <a href="GnomeClient.html#GnomeInteractStyle">GnomeInteractStyle</a>;
+void        (<a href="GnomeClient.html#GnomeInteractFunction">*GnomeInteractFunction</a>)        (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint key,
+                                             <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a> dialog_type,
+                                             gpointer data);
+struct      <a href="GnomeClient.html#GnomeClient-struct">GnomeClient</a>;
+#define     <a href="GnomeClient.html#GNOME-CLIENT-PARAM-SM-CONNECT-CAPS">GNOME_CLIENT_PARAM_SM_CONNECT</a>
+<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a>* <a href="GnomeClient.html#gnome-master-client">gnome_master_client</a>            (void);
+const gchar* <a href="GnomeClient.html#gnome-client-get-config-prefix">gnome_client_get_config_prefix</a> (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+const gchar* <a href="GnomeClient.html#gnome-client-get-global-config-prefix">gnome_client_get_global_config_prefix</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-set-global-config-prefix">gnome_client_set_global_config_prefix</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *prefix);
+<a href="GnomeClient.html#GnomeClientFlags">GnomeClientFlags</a> <a href="GnomeClient.html#gnome-client-get-flags">gnome_client_get_flags</a>     (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-set-restart-style">gnome_client_set_restart_style</a>  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeRestartStyle">GnomeRestartStyle</a> style);
+void        <a href="GnomeClient.html#gnome-client-set-priority">gnome_client_set_priority</a>       (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             guint priority);
+void        <a href="GnomeClient.html#gnome-client-set-restart-command">gnome_client_set_restart_command</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);
+void        <a href="GnomeClient.html#gnome-client-add-static-arg">gnome_client_add_static_arg</a>     (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             ...);
+void        <a href="GnomeClient.html#gnome-client-set-discard-command">gnome_client_set_discard_command</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);
+void        <a href="GnomeClient.html#gnome-client-set-resign-command">gnome_client_set_resign_command</a> (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);
+void        <a href="GnomeClient.html#gnome-client-set-shutdown-command">gnome_client_set_shutdown_command</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);
+void        <a href="GnomeClient.html#gnome-client-set-current-directory">gnome_client_set_current_directory</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *dir);
+void        <a href="GnomeClient.html#gnome-client-set-environment">gnome_client_set_environment</a>    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *name,
+                                             const gchar *value);
+void        <a href="GnomeClient.html#gnome-client-set-clone-command">gnome_client_set_clone_command</a>  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);
+void        <a href="GnomeClient.html#gnome-client-set-process-id">gnome_client_set_process_id</a>     (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             pid_t pid);
+void        <a href="GnomeClient.html#gnome-client-set-program">gnome_client_set_program</a>        (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *program);
+void        <a href="GnomeClient.html#gnome-client-set-user-id">gnome_client_set_user_id</a>        (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *id);
+void        <a href="GnomeClient.html#gnome-client-save-any-dialog">gnome_client_save_any_dialog</a>    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             GtkDialog *dialog);
+void        <a href="GnomeClient.html#gnome-client-save-error-dialog">gnome_client_save_error_dialog</a>  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             GtkDialog *dialog);
+void        <a href="GnomeClient.html#gnome-client-request-phase-2">gnome_client_request_phase_2</a>    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-request-save">gnome_client_request_save</a>       (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeSaveStyle">GnomeSaveStyle</a> save_style,
+                                             gboolean shutdown,
+                                             <a href="GnomeClient.html#GnomeInteractStyle">GnomeInteractStyle</a> interact_style,
+                                             gboolean fast,
+                                             gboolean global);
+void        <a href="GnomeClient.html#gnome-client-flush">gnome_client_flush</a>              (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-disable-master-connection">gnome_client_disable_master_connection</a>
+                                            (void);
+<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a>* <a href="GnomeClient.html#gnome-client-new">gnome_client_new</a>               (void);
+<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a>* <a href="GnomeClient.html#gnome-client-new-without-connection">gnome_client_new_without_connection</a>
+                                            (void);
+void        <a href="GnomeClient.html#gnome-client-connect">gnome_client_connect</a>            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-disconnect">gnome_client_disconnect</a>         (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-set-id">gnome_client_set_id</a>             (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *id);
+const gchar* <a href="GnomeClient.html#gnome-client-get-id">gnome_client_get_id</a>            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+const gchar* <a href="GnomeClient.html#gnome-client-get-previous-id">gnome_client_get_previous_id</a>   (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+const gchar* <a href="GnomeClient.html#gnome-client-get-desktop-id">gnome_client_get_desktop_id</a>    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);
+void        <a href="GnomeClient.html#gnome-client-request-interaction">gnome_client_request_interaction</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a> dialog_type,
+                                             <a href="GnomeClient.html#GnomeInteractFunction">GnomeInteractFunction</a> function,
+                                             gpointer data);
+void        <a href="GnomeClient.html#gnome-client-request-interaction-interp">gnome_client_request_interaction_interp</a>
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a> dialog_type,
+                                             GtkCallbackMarshal function,
+                                             gpointer data,
+                                             GtkDestroyNotify destroy);
+void        <a href="GnomeClient.html#gnome-interaction-key-return">gnome_interaction_key_return</a>    (gint key,
+                                             gboolean cancel_shutdown);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2537905"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GnomeClient
+</pre></div><div class="refsect1" lang="en"><a name="id2537933"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeClient.html#GnomeClient-connect">connect</a>"   void        user_function      (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gboolean arg1,
+                                            gpointer user_data);
+"<a href="GnomeClient.html#GnomeClient-die">die</a>"       void        user_function      (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);
+"<a href="GnomeClient.html#GnomeClient-disconnect">disconnect</a>"
+            void        user_function      (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);
+"<a href="GnomeClient.html#GnomeClient-save-complete">save-complete</a>"
+            void        user_function      (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);
+"<a href="GnomeClient.html#GnomeClient-save-yourself">save-yourself</a>"
+            gboolean    user_function      (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gint arg1,
+                                            <a href="GnomeClient.html#GnomeSaveStyle">GnomeSaveStyle</a> arg2,
+                                            gboolean arg3,
+                                            <a href="GnomeClient.html#GnomeInteractStyle">GnomeInteractStyle</a> arg4,
+                                            gboolean arg5,
+                                            gpointer user_data);
+"<a href="GnomeClient.html#GnomeClient-shutdown-cancelled">shutdown-cancelled</a>"
+            void        user_function      (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2538179"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2538189"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2538195"></a><h3><a name="GNOME-CLIENT-CONNECTED-CAPS"></a>GNOME_CLIENT_CONNECTED()</h3><a class="indexterm" name="id2538206"></a><pre class="programlisting">#define GNOME_CLIENT_CONNECTED(obj) (GNOME_CLIENT (obj)-&gt;smc_conn)
+</pre><p>
+Determine if the <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance has connected to the session manager
+already.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if already connected to the session manager, <tt class="literal">FALSE</tt> otherwise.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538279"></a><h3><a name="GnomeDialogType"></a>enum GnomeDialogType</h3><a class="indexterm" name="id2538290"></a><pre class="programlisting">typedef enum
+{
+  GNOME_DIALOG_ERROR,
+  GNOME_DIALOG_NORMAL
+} GnomeDialogType;
+</pre><p>
+The dialogs used by the session manager to handler user interactions.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_DIALOG_ERROR</tt></span></td><td>Used when an error has occurred.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_DIALOG_NORMAL</tt></span></td><td>Used for all other (non-error) interactions.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538342"></a><h3><a name="GnomeRestartStyle"></a>enum GnomeRestartStyle</h3><a class="indexterm" name="id2538353"></a><pre class="programlisting">typedef enum
+{
+  /* update structure when adding an enum */
+  GNOME_RESTART_IF_RUNNING,
+  GNOME_RESTART_ANYWAY,
+  GNOME_RESTART_IMMEDIATELY,
+  GNOME_RESTART_NEVER
+} GnomeRestartStyle;
+</pre><p>
+The various ways in which the session manager can restart a client. Set by
+calling <a href="GnomeClient.html#gnome-client-set-restart-style"><tt class="function">gnome_client_set_restart_style()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_RESTART_IF_RUNNING</tt></span></td><td>Restart if the client was running when the previous
+session exited.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_RESTART_ANYWAY</tt></span></td><td>Restart even if the client was exited before the user
+logged out of the previous session.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_RESTART_IMMEDIATELY</tt></span></td><td>Restart the client immediately whenever it crashes
+or exits.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_RESTART_NEVER</tt></span></td><td>Do not restart the client.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538451"></a><h3><a name="GnomeClientFlags"></a>enum GnomeClientFlags</h3><a class="indexterm" name="id2538462"></a><pre class="programlisting">typedef enum
+{
+  GNOME_CLIENT_IS_CONNECTED= 1 &lt;&lt; 0,
+  GNOME_CLIENT_RESTARTED   = 1 &lt;&lt; 1,
+  GNOME_CLIENT_RESTORED    = 1 &lt;&lt; 2
+} GnomeClientFlags;
+</pre><p>
+Flags indicating the status of a client (as seen by the session manager). Used
+as return values by <a href="GnomeClient.html#gnome-client-get-flags"><tt class="function">gnome_client_get_flags()</tt></a>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_CLIENT_IS_CONNECTED</tt></span></td><td>The client is connected to the session manager.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_CLIENT_RESTARTED</tt></span></td><td>The client has been restarted (i.e. it has been
+running with the same client id previously).
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_CLIENT_RESTORED</tt></span></td><td>There may be a configuration file from which the
+client's state should be restored (applies only to the master client).
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538546"></a><h3><a name="GnomeSaveStyle"></a>enum GnomeSaveStyle</h3><a class="indexterm" name="id2538556"></a><pre class="programlisting">typedef enum
+{
+  /* update structure when adding an enum */
+  GNOME_SAVE_GLOBAL,
+  GNOME_SAVE_LOCAL,
+  GNOME_SAVE_BOTH
+} GnomeSaveStyle;
+</pre><p>
+Which pieces of data a client should save when receiving a "SaveYourself" call
+from the session manager.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_SAVE_GLOBAL</tt></span></td><td>Save data (to somewhere persistent) that affects and is
+visible to all users of this application.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_SAVE_LOCAL</tt></span></td><td>Save data that only applies to this instance of the
+application.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_SAVE_BOTH</tt></span></td><td>Save both global and local data.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538627"></a><h3><a name="GnomeInteractStyle"></a>enum GnomeInteractStyle</h3><a class="indexterm" name="id2538638"></a><pre class="programlisting">typedef enum
+{
+  GNOME_INTERACT_NONE,
+  GNOME_INTERACT_ERRORS,
+  GNOME_INTERACT_ANY
+} GnomeInteractStyle;
+</pre><p>
+Indicates how a "SaveYourself" command should interact with the user.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_INTERACT_NONE</tt></span></td><td>The client should never interact with the user.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_INTERACT_ERRORS</tt></span></td><td>The client should only interact when there are errors.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_INTERACT_ANY</tt></span></td><td>The client cna interact with the user for any reason.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538706"></a><h3><a name="GnomeInteractFunction"></a>GnomeInteractFunction ()</h3><a class="indexterm" name="id2538717"></a><pre class="programlisting">void        (*GnomeInteractFunction)        (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint key,
+                                             <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a> dialog_type,
+                                             gpointer data);</pre><p>
+A function called when the client wishes to interact with the user a the
+session manager's convenience (usually during shutdown and restarts). All other
+clients are blocked from interacting with the user until the <i class="parameter"><tt>key</tt></i> is released
+via a call to <a href="GnomeClient.html#gnome-interaction-key-return"><tt class="function">gnome_interaction_key_return()</tt></a>.
+</p><p>
+Although the function is not obliged to respect the passed in <i class="parameter"><tt>dialog_type</tt></i>, it
+is bad form not to do so.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>The <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance doing the interaction.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>A unique key.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dialog_type</tt></i> :</span></td><td>The <a href="GnomeClient.html#GnomeDialogType"><span class="type">GnomeDialogType</span></a> that should be used to do the interaction.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>Application specific data that was specified at the time the callback
+was set up.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2538878"></a><h3><a name="GnomeClient-struct"></a>struct GnomeClient</h3><a class="indexterm" name="id2538889"></a><pre class="programlisting">struct GnomeClient;</pre><p>
+A widget representing a client and containing information about the client's
+interaction with the session manager.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2538906"></a><h3><a name="GNOME-CLIENT-PARAM-SM-CONNECT-CAPS"></a>GNOME_CLIENT_PARAM_SM_CONNECT</h3><a class="indexterm" name="id2538918"></a><pre class="programlisting">#define GNOME_CLIENT_PARAM_SM_CONNECT "sm-connect"
+</pre><p>
+Passed as a parameter to the application's <a
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><tt class="function">gnome_program_init()</tt></a> call (with a
+value of <tt class="literal">TRUE</tt> or <tt class="literal">FALSE</tt>) to indicate whether the application should attempt to
+connect to the session manager or not. Can be overridden by the user passing
+<tt class="literal">--sm-disable</tt> on the command line and defaults to <tt class="literal">TRUE</tt>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2538972"></a><h3><a name="gnome-master-client"></a>gnome_master_client ()</h3><a class="indexterm" name="id2538983"></a><pre class="programlisting"><a href="GnomeClient.html" title="GnomeClient">GnomeClient</a>* gnome_master_client            (void);</pre><p>
+Get the master session management client.  This master client gets a client
+id, that may be specified by the '--sm-client-id' command line option.  A
+master client will be generated by <a
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><tt class="function">gnome_program_init()</tt></a>.  If possible the
+master client will contact the session manager after command-line parsing is
+finished (unless <a href="GnomeClient.html#gnome-client-disable-master-connection"><tt class="function">gnome_client_disable_master_connection()</tt></a> was called). The
+master client will also set the SM_CLIENT_ID property on the client leader
+window of your application.
+</p><p>
+Additionally, the master client gets some static arguments set automatically
+(see <a href="GnomeClient.html#gnome-client-add-static-arg"><tt class="function">gnome_client_add_static_arg()</tt></a> for static arguments):
+<a
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><tt class="function">gnome_program_init()</tt></a> passes all the command line options which are
+recognised by gtk as static arguments to the master client.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  Pointer to the master client
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539080"></a><h3><a name="gnome-client-get-config-prefix"></a>gnome_client_get_config_prefix ()</h3><a class="indexterm" name="id2539092"></a><pre class="programlisting">const gchar* gnome_client_get_config_prefix (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Get the config prefix for a client. This config prefix
+provides a suitable place to store any details about the state of
+the client which can not be described using the app's command line
+arguments (as set in the restart command). You may push the
+returned value using <a
+href="../libgnome/libgnome-gnome-config.html#gnome-config-push-prefix"
+><tt class="function">gnome_config_push_prefix()</tt></a> and read or write
+any values you require.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Config prefix. The returned string belongs to libgnomeui library
+and should NOT be freed by the caller.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539172"></a><h3><a name="gnome-client-get-global-config-prefix"></a>gnome_client_get_global_config_prefix ()</h3><a class="indexterm" name="id2539184"></a><pre class="programlisting">const gchar* gnome_client_get_global_config_prefix
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Get the config prefix that will be returned by
+<a href="GnomeClient.html#gnome-client-get-config-prefix"><tt class="function">gnome_client_get_config_prefix()</tt></a> for clients which have NOT been restarted
+or cloned (i.e. for clients started by the user without `--sm-' options).
+This config prefix may be used to write the user's preferred config for
+these "new" clients.
+</p><p>
+You could also use this prefix as a place to store and retrieve config
+details that you wish to apply to ALL instances of the app. However, this
+practice limits the users freedom to configure each instance in a different
+way so it should be used with caution.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  The config prefix as a newly allocated string.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539271"></a><h3><a name="gnome-client-set-global-config-prefix"></a>gnome_client_set_global_config_prefix ()</h3><a class="indexterm" name="id2539283"></a><pre class="programlisting">void        gnome_client_set_global_config_prefix
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *prefix);</pre><p>
+Set the value used for the global config prefix. The config
+prefixes returned by <a href="GnomeClient.html#gnome-client-get-config-prefix"><tt class="function">gnome_client_get_config_prefix()</tt></a> are formed by
+extending this prefix with an unique identifier.
+</p><p>
+The global config prefix defaults to a name based on the name of
+the executable. This function allows you to set it to a different
+value. It should be called BEFORE retrieving the config prefix for
+the first time. Later calls will be ignored.
+</p><p>
+For example, setting a global config prefix of "/app.d/session/"
+would ensure that all your session save files or directories would
+be gathered together into the app.d directory.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>prefix</tt></i> :</span></td><td> Prefix for saving the global configuration.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539384"></a><h3><a name="gnome-client-get-flags"></a>gnome_client_get_flags ()</h3><a class="indexterm" name="id2539395"></a><pre class="programlisting"><a href="GnomeClient.html#GnomeClientFlags">GnomeClientFlags</a> gnome_client_get_flags     (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Determine the client's status with the session manager.,</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Various <span class="type">GnomeClientFlag</span> flags which have been or'd together.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539467"></a><h3><a name="gnome-client-set-restart-style"></a>gnome_client_set_restart_style ()</h3><a class="indexterm" name="id2539478"></a><pre class="programlisting">void        gnome_client_set_restart_style  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeRestartStyle">GnomeRestartStyle</a> style);</pre><p>
+Tells the session manager how the client should be restarted in future
+session. The options are given by the <a href="GnomeClient.html#GnomeRestartStyle"><span class="type">GnomeRestartStyle</span></a> enum.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>style</tt></i> :</span></td><td> When to restart the client.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539561"></a><h3><a name="gnome-client-set-priority"></a>gnome_client_set_priority ()</h3><a class="indexterm" name="id2539573"></a><pre class="programlisting">void        gnome_client_set_priority       (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             guint priority);</pre><p>
+The gnome-session manager restarts clients in order of their
+priorities in a similar way to the start up ordering in SysV.
+This function allows the app to suggest a position in this
+ordering. The value should be between 0 and 99. A default
+value of 50 is assigned to apps that do not provide a value.
+The user may assign a different priority.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>priority</tt></i> :</span></td><td> Position of client in session start up ordering.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539650"></a><h3><a name="gnome-client-set-restart-command"></a>gnome_client_set_restart_command ()</h3><a class="indexterm" name="id2539662"></a><pre class="programlisting">void        gnome_client_set_restart_command
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);</pre><p>
+When clients crash or the user logs out and back in, they are
+restarted. This command should perform the restart.  Executing the restart
+command on the local host should reproduce the state of the client at the
+time of the session save as closely as possible. Saving config info under
+the <a href="GnomeClient.html#gnome-client-get-config-prefix"><tt class="function">gnome_client_get_config_prefix()</tt></a> is generally useful.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of strings in argv.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to an <tt class="function">execv()</tt> to restart the client.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539784"></a><h3><a name="gnome-client-add-static-arg"></a>gnome_client_add_static_arg ()</h3><a class="indexterm" name="id2539796"></a><pre class="programlisting">void        gnome_client_add_static_arg     (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             ...);</pre><p>
+You can add arguments to your restart command's argv with this
+function. This function provides an alternative way of adding new arguments
+to the restart command. The arguments are placed before the arguments
+specified by <a href="GnomeClient.html#gnome-client-set-restart-command"><tt class="function">gnome_client_set_restart_command()</tt></a> and after the arguments
+recognised by GTK+ that are specified by the user on the original command
+line.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> <tt class="literal">NULL</tt>-terminated list of arguments to add to the restart command.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2539884"></a><h3><a name="gnome-client-set-discard-command"></a>gnome_client_set_discard_command ()</h3><a class="indexterm" name="id2539895"></a><pre class="programlisting">void        gnome_client_set_discard_command
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);</pre><p>
+Provides a command to run when a client is removed from the session. It might
+delete session-specific config files for example.  Executing the discard
+command on the local host should delete the information saved as part of the
+session save that was in progress when the discard command was set. For
+example:
+
+  </p><div class="example"><a name="id2539944"></a><p class="title"><b>Example 1. Setting up a client's discard command</b></p><pre class="programlisting">
+gchar *prefix = gnome_client_get_config_prefix (client);
+gchar *argv[] = { "rm", "-r", NULL };
+argv[2] = gnome_config_get_real_path (prefix);
+gnome_client_set_discard_command (client, 3, argv);
+    </pre></div><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>The <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> of interest.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td>Number of strings in <i class="parameter"><tt>argv</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td>Vector of strings such as those passed to <tt class="function">exev()</tt>.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540033"></a><h3><a name="gnome-client-set-resign-command"></a>gnome_client_set_resign_command ()</h3><a class="indexterm" name="id2540045"></a><pre class="programlisting">void        gnome_client_set_resign_command (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);</pre><p>
+Some clients can be "undone," removing their effects and
+deleting any saved state. For example, xmodmap could register a resign
+command to undo the keymap changes it saved.
+</p><p>
+Used by clients that use the <span class="type">GNOME_RESTART_ANYWAY</span> restart style to to undo
+their effects (these clients usually perform initialisation functions and
+leave effects behind after they die). The resign command combines the
+effects of a shutdown command and a discard command. It is executed when the
+user decides that the client should cease to be restarted.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of strings in <i class="parameter"><tt>argv</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> <tt class="function">execv()</tt>-style command to undo the effects of the client.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540176"></a><h3><a name="gnome-client-set-shutdown-command"></a>gnome_client_set_shutdown_command ()</h3><a class="indexterm" name="id2540189"></a><pre class="programlisting">void        gnome_client_set_shutdown_command
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);</pre><p>
+GNOME_RESTART_ANYWAY clients can set this command to run
+when the user logs out but the client is no longer running.
+</p><p>
+Used by clients that use the GNOME_RESTART_ANYWAY restart style to
+to undo their effects (these clients usually perform initialisation
+functions and leave effects behind after they die).  The shutdown
+command simply undoes the effects of the client. It is executed
+during a normal logout.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of strings in argv.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Command to shutdown the client if the client isn't running.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540293"></a><h3><a name="gnome-client-set-current-directory"></a>gnome_client_set_current_directory ()</h3><a class="indexterm" name="id2540306"></a><pre class="programlisting">void        gnome_client_set_current_directory
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *dir);</pre><p>
+Set the directory to be in when running shutdown, discard,
+restart, etc. commands.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory path.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540379"></a><h3><a name="gnome-client-set-environment"></a>gnome_client_set_environment ()</h3><a class="indexterm" name="id2540391"></a><pre class="programlisting">void        gnome_client_set_environment    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *name,
+                                             const gchar *value);</pre><p>
+Set an environment variable to be placed in the
+client's environment prior to running restart, shutdown, discard, etc. commands.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> Name of the environment variable
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> Value of the environment variable
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540487"></a><h3><a name="gnome-client-set-clone-command"></a>gnome_client_set_clone_command ()</h3><a class="indexterm" name="id2540499"></a><pre class="programlisting">void        gnome_client_set_clone_command  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             gint argc,
+                                             gchar *argv[]);</pre><p>
+Set a command the session manager can use to create a new
+instance of the application.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of strings in the <i class="parameter"><tt>argv</tt></i> vector.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument strings, suitable for use with <tt class="function">execv()</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540610"></a><h3><a name="gnome-client-set-process-id"></a>gnome_client_set_process_id ()</h3><a class="indexterm" name="id2540622"></a><pre class="programlisting">void        gnome_client_set_process_id     (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             pid_t pid);</pre><p>
+The client should tell the session manager the result of
+<tt class="function">getpid()</tt>. However, GNOME does this automatically; so you do not need this
+function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pid</tt></i> :</span></td><td> PID to set as the client's PID.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540706"></a><h3><a name="gnome-client-set-program"></a>gnome_client_set_program ()</h3><a class="indexterm" name="id2540718"></a><pre class="programlisting">void        gnome_client_set_program        (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *program);</pre><p>
+Used to tell the session manager the name of your program. Set
+automatically; this function isn't needed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> Name of the program.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540791"></a><h3><a name="gnome-client-set-user-id"></a>gnome_client_set_user_id ()</h3><a class="indexterm" name="id2540802"></a><pre class="programlisting">void        gnome_client_set_user_id        (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *id);</pre><p>
+Tell the session manager the user's login name. GNOME
+does this automatically; no need to call the function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td> Username.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540876"></a><h3><a name="gnome-client-save-any-dialog"></a>gnome_client_save_any_dialog ()</h3><a class="indexterm" name="id2540887"></a><pre class="programlisting">void        gnome_client_save_any_dialog    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             GtkDialog *dialog);</pre><p>
+May be called during a "save_youself" handler to request that a
+(modal) dialog is presented to the user. The session manager decides
+when the dialog is shown, but it will not be shown it unless the
+session manager is sending an interaction style of <span class="type">GNOME_INTERACT_ANY</span>.
+"Cancel" and "Log out" buttons will be added during a shutdown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> Pointer to GNOME dialog widget (a <span class="type">GtkDialog</span> widget).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2540990"></a><h3><a name="gnome-client-save-error-dialog"></a>gnome_client_save_error_dialog ()</h3><a class="indexterm" name="id2541002"></a><pre class="programlisting">void        gnome_client_save_error_dialog  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             GtkDialog *dialog);</pre><p>
+May be called during a "save_youself" handler when an error has occured
+during the save. The session manager decides when the dialog is shown, but
+it will not be shown it unless the session manager is sending an interaction
+style of <span class="type">GNOME_INTERACT_ANY</span>. "Cancel" and "Log out" buttons will be added
+during a shutdown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> Pointer to GNOME dialog widget (a <span class="type">GtkDialog</span> widget).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541104"></a><h3><a name="gnome-client-request-phase-2"></a>gnome_client_request_phase_2 ()</h3><a class="indexterm" name="id2541115"></a><pre class="programlisting">void        gnome_client_request_phase_2    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Request the session managaer to emit the "save_yourself"
+signal for a second time after all the clients in the session have ceased
+interacting with the user and entered an idle state. This might be useful if
+your app manages other apps and requires that they are in an idle state
+before saving its final data.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541178"></a><h3><a name="gnome-client-request-save"></a>gnome_client_request_save ()</h3><a class="indexterm" name="id2541190"></a><pre class="programlisting">void        gnome_client_request_save       (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeSaveStyle">GnomeSaveStyle</a> save_style,
+                                             gboolean shutdown,
+                                             <a href="GnomeClient.html#GnomeInteractStyle">GnomeInteractStyle</a> interact_style,
+                                             gboolean fast,
+                                             gboolean global);</pre><p>
+Request the session manager to save the session in
+some way. The arguments correspond with the arguments passed to the
+"save_yourself" signal handler.
+</p><p>
+The save_style indicates whether the save should affect data
+accessible to other users (<span class="type">GNOME_SAVE_GLOBAL</span>) or only the state
+visible to the current user (<span class="type">GNOME_SAVE_LOCAL</span>) or both. Setting
+shutdown to <tt class="literal">TRUE</tt> will initiate a logout. The interact_style
+specifies which kinds of interaction will be available. Setting
+fast to <tt class="literal">TRUE</tt> will limit the save to setting the session manager
+properties plus any essential data.  Setting the value of global to
+<tt class="literal">TRUE</tt> will request that all the other apps in the session do a save
+as well. A global save is mandatory when doing a shutdown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>save_style</tt></i> :</span></td><td> Save style to request.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>shutdown</tt></i> :</span></td><td> Whether to log out of the session.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>interact_style</tt></i> :</span></td><td> Whether to allow user interaction.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>fast</tt></i> :</span></td><td> Minimize activity to save as soon as possible.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>global</tt></i> :</span></td><td> Request that all other apps in the session also save their state.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541403"></a><h3><a name="gnome-client-flush"></a>gnome_client_flush ()</h3><a class="indexterm" name="id2541414"></a><pre class="programlisting">void        gnome_client_flush              (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+This will force the underlying connection to the session manager to be
+flushed. This is useful if you have some pending changes that you want to
+make sure get committed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541473"></a><h3><a name="gnome-client-disable-master-connection"></a>gnome_client_disable_master_connection ()</h3><a class="indexterm" name="id2541485"></a><pre class="programlisting">void        gnome_client_disable_master_connection
+                                            (void);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_client_disable_master_connection</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Don't connect the master client to the session manager. Usually
+invoked by users when they pass the --sm-disable argument to a Gnome application.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2541526"></a><h3><a name="gnome-client-new"></a>gnome_client_new ()</h3><a class="indexterm" name="id2541537"></a><pre class="programlisting"><a href="GnomeClient.html" title="GnomeClient">GnomeClient</a>* gnome_client_new               (void);</pre><p>
+Allocates memory for a new GNOME session management client
+object. After allocating, the client tries to connect to a session manager.
+You probably want to use <a href="GnomeClient.html#gnome-master-client"><tt class="function">gnome_master_client()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Pointer to a newly allocated GNOME session management client object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541591"></a><h3><a name="gnome-client-new-without-connection"></a>gnome_client_new_without_connection ()</h3><a class="indexterm" name="id2541603"></a><pre class="programlisting"><a href="GnomeClient.html" title="GnomeClient">GnomeClient</a>* gnome_client_new_without_connection
+                                            (void);</pre><p>
+Allocates memory for a new GNOME session management client
+object. You probably want to use <a href="GnomeClient.html#gnome-master-client"><tt class="function">gnome_master_client()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Pointer to a newly allocated GNOME session management client object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541656"></a><h3><a name="gnome-client-connect"></a>gnome_client_connect ()</h3><a class="indexterm" name="id2541668"></a><pre class="programlisting">void        gnome_client_connect            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Causes the client to connect to the session manager.
+Usually happens automatically; no need to call this function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541726"></a><h3><a name="gnome-client-disconnect"></a>gnome_client_disconnect ()</h3><a class="indexterm" name="id2541738"></a><pre class="programlisting">void        gnome_client_disconnect         (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Disconnect the client from the session manager.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541796"></a><h3><a name="gnome-client-set-id"></a>gnome_client_set_id ()</h3><a class="indexterm" name="id2541807"></a><pre class="programlisting">void        gnome_client_set_id             (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             const gchar *id);</pre><p>
+Set the client's session management ID; must be done
+before connecting to the session manager. There is usually no reason to call
+this function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td> Session management ID.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541888"></a><h3><a name="gnome-client-get-id"></a>gnome_client_get_id ()</h3><a class="indexterm" name="id2541899"></a><pre class="programlisting">const gchar* gnome_client_get_id            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Returns session management ID</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  Session management ID for this client; <tt class="literal">NULL</tt> if not connected to a
+session manager.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2541974"></a><h3><a name="gnome-client-get-previous-id"></a>gnome_client_get_previous_id ()</h3><a class="indexterm" name="id2541986"></a><pre class="programlisting">const gchar* gnome_client_get_previous_id   (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Get the session management ID from the previous session.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Pointer to the session management ID the client had in the last
+session, or <tt class="literal">NULL</tt> if it was not in a previous session.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542063"></a><h3><a name="gnome-client-get-desktop-id"></a>gnome_client_get_desktop_id ()</h3><a class="indexterm" name="id2542075"></a><pre class="programlisting">const gchar* gnome_client_get_desktop_id    (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client);</pre><p>
+Get the client ID of the desktop's current instance, i.e.  if
+you consider the desktop as a whole as a session managed app, this
+returns its session ID using a GNOME extension to session
+management. May return <tt class="literal">NULL</tt> for apps not running under a recent
+version of gnome-session; apps should handle that case.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Session ID of GNOME desktop instance, or <tt class="literal">NULL</tt> if none.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542161"></a><h3><a name="gnome-client-request-interaction"></a>gnome_client_request_interaction ()</h3><a class="indexterm" name="id2542172"></a><pre class="programlisting">void        gnome_client_request_interaction
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a> dialog_type,
+                                             <a href="GnomeClient.html#GnomeInteractFunction">GnomeInteractFunction</a> function,
+                                             gpointer data);</pre><p>
+Use the following functions, if you want to interact with the
+user during a "save_yourself" handler without being restricted to using the
+dialog based commands <a href="GnomeClient.html#gnome-client-save-any-dialog"><tt class="function">gnome_client_save_any_dialog()</tt></a> or
+<a href="GnomeClient.html#gnome-client-save-error-dialog"><tt class="function">gnome_client_save_error_dialog()</tt></a>. Note, however, that overriding the session
+manager specified preference in this way (by using arbitrary dialog boxes)
+is not very nice.
+</p><p>
+If and when the session manager decides that it's the app's turn to interact
+then 'func' will be called with the specified arguments and a unique
+'GnomeInteractionKey'. The session manager will block other
+clients from interacting until this key is returned with
+<a href="GnomeClient.html#gnome-interaction-key-return"><tt class="function">gnome_interaction_key_return()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> A <a href="GnomeClient.html" title="GnomeClient"><span class="type">GnomeClient</span></a> object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dialog_type</tt></i> :</span></td><td> The type of dialog to create.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>function</tt></i> :</span></td><td> Callback to invoke to perform the interaction.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> Callback data.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542344"></a><h3><a name="gnome-client-request-interaction-interp"></a>gnome_client_request_interaction_interp ()</h3><a class="indexterm" name="id2542356"></a><pre class="programlisting">void        gnome_client_request_interaction_interp
+                                            (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                             <a href="GnomeClient.html#GnomeDialogType">GnomeDialogType</a> dialog_type,
+                                             GtkCallbackMarshal function,
+                                             gpointer data,
+                                             GtkDestroyNotify destroy);</pre><p>
+Similar to <a href="GnomeClient.html#gnome-client-request-interaction"><tt class="function">gnome_client_request_interaction()</tt></a>, but used when
+you need to destroy the callback data after the interaction.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td> Pointer to GNOME session client object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dialog_type</tt></i> :</span></td><td> Type of dialog to show.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>function</tt></i> :</span></td><td> Callback to perform the interaction (a <a href="GnomeClient.html#GnomeInteractFunction"><span class="type">GnomeInteractFunction</span></a>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> Callback data.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>destroy</tt></i> :</span></td><td> Function to destroy callback data.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542518"></a><h3><a name="gnome-interaction-key-return"></a>gnome_interaction_key_return ()</h3><a class="indexterm" name="id2542529"></a><pre class="programlisting">void        gnome_interaction_key_return    (gint key,
+                                             gboolean cancel_shutdown);</pre><p>
+Used in interaction callback to tell the session manager
+you are done interacting.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> Key passed to interaction callback
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancel_shutdown</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt>, cancel the shutdown
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2542609"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2542615"></a><h3><a name="GnomeClient-connect"></a>The "connect" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gboolean arg1,
+                                            gpointer user_data);</pre><p>
+Called once the client has been connected to the signal manager.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td><tt class="literal">TRUE</tt> if the application has been restarted.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542715"></a><h3><a name="GnomeClient-die"></a>The "die" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);</pre><p>
+Called when the session manager wants the client to shut down.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542788"></a><h3><a name="GnomeClient-disconnect"></a>The "disconnect" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);</pre><p>
+Called when the client is disconnected from the session manager.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542862"></a><h3><a name="GnomeClient-save-complete"></a>The "save-complete" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);</pre><p>
+Called when the session manager has finished checkpointing all of the clients.
+Clients are then free to change their state.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2542937"></a><h3><a name="GnomeClient-save-yourself"></a>The "save-yourself" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gint arg1,
+                                            <a href="GnomeClient.html#GnomeSaveStyle">GnomeSaveStyle</a> arg2,
+                                            gboolean arg3,
+                                            <a href="GnomeClient.html#GnomeInteractStyle">GnomeInteractStyle</a> arg4,
+                                            gboolean arg5,
+                                            gpointer user_data);</pre><p>
+Called when either a "SaveYourself" or a "SaveYourselfPhase2" call is made by
+the session manager.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>The phase of the "SaveYourself" command ('1' or '2').
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg2</tt></i> :</span></td><td>The data which should be saved by the client (local, global or both).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg3</tt></i> :</span></td><td><tt class="literal">TRUE</tt> if the session manager is shutting down.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg4</tt></i> :</span></td><td>How the client is allowed to interact with the user while saving.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg5</tt></i> :</span></td><td><tt class="literal">TRUE</tt> if this is to be a "fast" shutdown (saving minimal data).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if the "SaveYourself" was completed succesfully, <tt class="literal">FALSE</tt>
+otherwise.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2543154"></a><h3><a name="GnomeClient-shutdown-cancelled"></a>The "shutdown-cancelled" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeClient.html" title="GnomeClient">GnomeClient</a> *client,
+                                            gpointer user_data);</pre><p>
+Called if the session manager had sent a "SaveYourself" to all clients in
+preparation for shutting down and the shutdown was then cancelled. A client can
+then continue running and change its state.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>client</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeui-gnome-ui-init.html"><b>&lt;&lt; gnome-ui-init</b></a></td><td align="right"><a accesskey="n" href="application-mgmt.html"><b>Application management &gt;&gt;</b></a></td></tr></table></body></html>

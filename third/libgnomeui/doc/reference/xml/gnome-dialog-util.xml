@@ -1,0 +1,605 @@
+<refentry id="libgnomeui-gnome-dialog-util">
+<refmeta>
+<refentrytitle>gnome-dialog-util</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-dialog-util</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-ok-dialog">gnome_ok_dialog</link>                 (const <link linkend="gchar">gchar</link> *message);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-ok-dialog-parented">gnome_ok_dialog_parented</link>        (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-error-dialog">gnome_error_dialog</link>              (const <link linkend="gchar">gchar</link> *error);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-error-dialog-parented">gnome_error_dialog_parented</link>     (const <link linkend="gchar">gchar</link> *error,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-warning-dialog">gnome_warning_dialog</link>            (const <link linkend="gchar">gchar</link> *warning);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-warning-dialog-parented">gnome_warning_dialog_parented</link>   (const <link linkend="gchar">gchar</link> *warning,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-question-dialog">gnome_question_dialog</link>           (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-question-dialog-parented">gnome_question_dialog_parented</link>  (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-question-dialog-modal">gnome_question_dialog_modal</link>     (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-question-dialog-modal-parented">gnome_question_dialog_modal_parented</link>
+                                            (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-ok-cancel-dialog">gnome_ok_cancel_dialog</link>          (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-ok-cancel-dialog-parented">gnome_ok_cancel_dialog_parented</link> (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-ok-cancel-dialog-modal">gnome_ok_cancel_dialog_modal</link>    (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-ok-cancel-dialog-modal-parented">gnome_ok_cancel_dialog_modal_parented</link>
+                                            (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-request-string-dialog">gnome_request_string_dialog</link>     (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-request-string-dialog-parented">gnome_request_string_dialog_parented</link>
+                                            (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-request-password-dialog">gnome_request_password_dialog</link>   (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-request-password-dialog-parented">gnome_request_password_dialog_parented</link>
+                                            (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-request-dialog">gnome_request_dialog</link>            (<link linkend="gboolean">gboolean</link> password,
+                                             const <link linkend="gchar">gchar</link> *prompt,
+                                             const <link linkend="gchar">gchar</link> *default_text,
+                                             const <link linkend="guint16">guint16</link> max_length,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-ok-dialog"/>gnome_ok_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_ok_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_ok_dialog                 (const <link linkend="gchar">gchar</link> *message);</programlisting>
+<warning><para><literal>gnome_ok_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a simple message dialog.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-ok-dialog-parented"/>gnome_ok_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_ok_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_ok_dialog_parented        (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_ok_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a simple message dialog.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-error-dialog"/>gnome_error_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_error_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_error_dialog              (const <link linkend="gchar">gchar</link> *error);</programlisting>
+<warning><para><literal>gnome_error_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a error dialog.  This is an OK
+dialog to display on fatally failed operations.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-error-dialog-parented"/>gnome_error_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_error_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_error_dialog_parented     (const <link linkend="gchar">gchar</link> *error,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_error_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a error dialog.  This is an OK
+dialog to display on fatally failed operations.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>error</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-warning-dialog"/>gnome_warning_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_warning_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_warning_dialog            (const <link linkend="gchar">gchar</link> *warning);</programlisting>
+<warning><para><literal>gnome_warning_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a warning dialog.  For non-fatal
+warnings.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>warning</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-warning-dialog-parented"/>gnome_warning_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_warning_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_warning_dialog_parented   (const <link linkend="gchar">gchar</link> *warning,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_warning_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a warning dialog.  For non-fatal
+warnings.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>warning</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-question-dialog"/>gnome_question_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_question_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_question_dialog           (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<warning><para><literal>gnome_question_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates a question dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'Yes', 1 for 'No'
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>question</parameter>&nbsp;:</term>
+<listitem><simpara> Question to ask
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-question-dialog-parented"/>gnome_question_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_question_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_question_dialog_parented  (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_question_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates a question dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'Yes', 1 for 'No'
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>question</parameter>&nbsp;:</term>
+<listitem><simpara> Question to ask
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-question-dialog-modal"/>gnome_question_dialog_modal ()</title>
+<indexterm role="deprecated"><primary>gnome_question_dialog_modal</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_question_dialog_modal     (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<warning><para><literal>gnome_question_dialog_modal</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates a question dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'Yes', 1 for 'No'.  The dialog is created as a modal
+dialog and the user will have to answer this before proceeding.
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>question</parameter>&nbsp;:</term>
+<listitem><simpara> Question to ask
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-question-dialog-modal-parented"/>gnome_question_dialog_modal_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_question_dialog_modal_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_question_dialog_modal_parented
+                                            (const <link linkend="gchar">gchar</link> *question,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_question_dialog_modal_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates a question dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'Yes', 1 for 'No'.  The dialog is created as a modal
+dialog and the user will have to answer this before proceeding.
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>question</parameter>&nbsp;:</term>
+<listitem><simpara> Question to ask
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-ok-cancel-dialog"/>gnome_ok_cancel_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_ok_cancel_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_ok_cancel_dialog          (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<warning><para><literal>gnome_ok_cancel_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates an OK/Cancel dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'OK', 1 for 'Cancel'.
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-ok-cancel-dialog-parented"/>gnome_ok_cancel_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_ok_cancel_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_ok_cancel_dialog_parented (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_ok_cancel_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates an OK/Cancel dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'OK', 1 for 'Cancel'.
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-ok-cancel-dialog-modal"/>gnome_ok_cancel_dialog_modal ()</title>
+<indexterm role="deprecated"><primary>gnome_ok_cancel_dialog_modal</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_ok_cancel_dialog_modal    (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<warning><para><literal>gnome_ok_cancel_dialog_modal</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates an OK/Cancel dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'OK', 1 for 'Cancel'.  The dialog is created as a modal
+dialog and the user will have to answer this before proceeding.
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-ok-cancel-dialog-modal-parented"/>gnome_ok_cancel_dialog_modal_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_ok_cancel_dialog_modal_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_ok_cancel_dialog_modal_parented
+                                            (const <link linkend="gchar">gchar</link> *message,
+                                             <link linkend="GnomeReplyCallback">GnomeReplyCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_ok_cancel_dialog_modal_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows an OK/Cancel dialog and calls <parameter>callback</parameter>
+when user answers the button number is passed onto 'reply'.
+0 is for 'OK', 1 for 'Cancel'.  The dialog is created as a modal
+dialog and the user will have to answer this before proceeding.
+</para>
+<para>
+void (* GnomeReplyCallback)(gint reply, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>message</parameter>&nbsp;:</term>
+<listitem><simpara> Message to display
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data to pass to callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-request-string-dialog"/>gnome_request_string_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_request_string_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_request_string_dialog     (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<warning><para><literal>gnome_request_string_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Deprecated, use <link linkend="gnome-request-dialog"><type>gnome_request_dialog</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>prompt</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-request-string-dialog-parented"/>gnome_request_string_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_request_string_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_request_string_dialog_parented
+                                            (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_request_string_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Deprecated, use <link linkend="gnome-request-dialog"><type>gnome_request_dialog</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>prompt</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-request-password-dialog"/>gnome_request_password_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_request_password_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_request_password_dialog   (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<warning><para><literal>gnome_request_password_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Deprecated, use <link linkend="gnome-request-dialog"><type>gnome_request_dialog</type></link> instead.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>prompt</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-request-password-dialog-parented"/>gnome_request_password_dialog_parented ()</title>
+<indexterm role="deprecated"><primary>gnome_request_password_dialog_parented</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_request_password_dialog_parented
+                                            (const <link linkend="gchar">gchar</link> *prompt,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_request_password_dialog_parented</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Deprecated, use <link linkend="gnome-request-dialog"><type>gnome_request_dialog</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>prompt</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-request-dialog"/>gnome_request_dialog ()</title>
+<indexterm role="deprecated"><primary>gnome_request_dialog</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_request_dialog            (<link linkend="gboolean">gboolean</link> password,
+                                             const <link linkend="gchar">gchar</link> *prompt,
+                                             const <link linkend="gchar">gchar</link> *default_text,
+                                             const <link linkend="guint16">guint16</link> max_length,
+                                             <link linkend="GnomeStringCallback">GnomeStringCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkWindow">GtkWindow</link> *parent);</programlisting>
+<warning><para><literal>gnome_request_dialog</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates and shows a GNOME text entry request dialog.
+<parameter>callback</parameter> is called when the dialog closes, passing the text entry
+input or <literal>NULL</literal> if the user cancelled.  <parameter>callback</parameter> is defined as
+</para>
+<para>
+void (* GnomeStringCallback)(gchar * string, gpointer data);</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>password</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if on-screen text input is masked
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prompt</parameter>&nbsp;:</term>
+<listitem><simpara> Text of the prompt to be displayed
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>default_text</parameter>&nbsp;:</term>
+<listitem><simpara> Default text in entry widget, <literal>NULL</literal> if none
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>max_length</parameter>&nbsp;:</term>
+<listitem><simpara> Maximum input chars allowed
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> Callback function for handling dialog results
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Data passed to the callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
+<listitem><simpara> Parent window, or <literal>NULL</literal> for no parent.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to new GNOME dialog object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,47 +1,32 @@
-<HTML><HEAD><TITLE>gnome-window</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK REL="HOME" TITLE="GNOME UI Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="Application management" HREF="application-mgmt.html"><LINK REL="PREVIOUS" TITLE="gnome-app-helper" HREF="libgnomeui-gnome-app-helper.html"><LINK REL="NEXT" TITLE="GnomeAbout" HREF="gnomeabout.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="libgnomeui-gnome-app-helper.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="application-mgmt.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME UI Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="gnomeabout.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="LIBGNOMEUI-GNOME-WINDOW"></A>gnome-window</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN5491"></A><H2>Name</H2>gnome-window&nbsp;--&nbsp;Convenience functions for setting window attributes.</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN5494"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-window</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="application-mgmt.html" title="Application management"><link rel="previous" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="next" href="GnomeAbout.html" title="GnomeAbout"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="libgnomeui-gnome-window.html#id2589010" title="Description"><link rel="section" href="libgnomeui-gnome-window.html#id2589024" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeui-gnome-app-helper.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="application-mgmt.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeAbout.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeui-gnome-window"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-window</span></h2><p>gnome-window &#8212; Convenience functions for setting window attributes.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
 
 
-void        <A HREF="libgnomeui-gnome-window.html#GNOME-WINDOW-TOPLEVEL-SET-TITLE">gnome_window_toplevel_set_title</A> (GtkWindow *window,
+void        <a href="libgnomeui-gnome-window.html#gnome-window-toplevel-set-title">gnome_window_toplevel_set_title</a> (GtkWindow *window,
                                              const gchar *doc_name,
                                              const gchar *app_name,
-                                             const gchar *extension);</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN5502"></A><H2>Description</H2><P>This module is a convenience wrapper for some similar functions in GTK+. This
+                                             const gchar *extension);
+</pre></div><div class="refsect1" lang="en"><a name="id2589010"></a><h2>Description</h2><p>
+This module is a convenience wrapper for some similar functions in GTK+. This
 allows all GNOME applications to have a consistent way of setting their window
 and dialog titles. It is possible that in the future, a configurable way of
-setting window titles may be added.</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN5505"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN5507"></A><H3><A NAME="GNOME-WINDOW-TOPLEVEL-SET-TITLE"></A>gnome_window_toplevel_set_title ()</H3><PRE CLASS="PROGRAMLISTING">void        gnome_window_toplevel_set_title (GtkWindow *window,
+setting window titles may be added.
+</p></div><div class="refsect1" lang="en"><a name="id2589024"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2589030"></a><h3><a name="gnome-window-toplevel-set-title"></a>gnome_window_toplevel_set_title ()</h3><a class="indexterm" name="id2589041"></a><pre class="programlisting">void        gnome_window_toplevel_set_title (GtkWindow *window,
                                              const gchar *doc_name,
                                              const gchar *app_name,
-                                             const gchar *extension);</PRE><P>Set the title of a toplevel window. This is done by appending the
+                                             const gchar *extension);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_window_toplevel_set_title</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Set the title of a toplevel window. This is done by appending the
 window-specific name (less the extension, if any) to the application name.
-So it appears as "&lt;appname&gt; : &lt;docname&gt;".</P><P>This parameters to this function are appopriate in that it identifies
+So it appears as "&lt;appname&gt; : &lt;docname&gt;".
+</p><p>
+This parameters to this function are appopriate in that it identifies
 application windows as containing certain files that are being worked on at
-the time (for example, a word processor file, a spreadsheet or an image).</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5519"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>window</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A pointer to the toplevel window.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5524"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>doc_name</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The window-specific name.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5529"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>app_name</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The application name.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5534"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>extension</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The default extension that the application uses. <TT CLASS="LITERAL">NULL</TT> if there
-is not a default extension.</P></TD></TR></TBODY></TABLE></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="libgnomeui-gnome-app-helper.html"><B>&lt;&lt;&lt;&nbsp;gnome-app-helper</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="gnomeabout.html"><B>GnomeAbout&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
+the time (for example, a word processor file, a spreadsheet or an image).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>window</tt></i> :</span></td><td> A pointer to the toplevel window.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doc_name</tt></i> :</span></td><td> The window-specific name.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>app_name</tt></i> :</span></td><td> The application name.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>extension</tt></i> :</span></td><td> The default extension that the application uses. <tt class="literal">NULL</tt> if there
+is not a default extension.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeui-gnome-app-helper.html"><b>&lt;&lt; gnome-app-helper</b></a></td><td align="right"><a accesskey="n" href="GnomeAbout.html"><b>GnomeAbout &gt;&gt;</b></a></td></tr></table></body></html>

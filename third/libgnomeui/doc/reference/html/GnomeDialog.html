@@ -1,0 +1,375 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeDialog</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="deprecated.html" title="Deprecated modules"><link rel="previous" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="next" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeDialog.html#id2749156" title="Object Hierarchy"><link rel="section" href="GnomeDialog.html#id2749229" title="Implemented Interfaces"><link rel="section" href="GnomeDialog.html#id2749247" title="Signal Prototypes"><link rel="section" href="GnomeDialog.html#id2749329" title="Description"><link rel="section" href="GnomeDialog.html#id2749339" title="Details"><link rel="section" href="GnomeDialog.html#id2752917" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeui-gnome-mdi-session.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="deprecated.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeMessageBox.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeDialog"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeDialog</span></h2><p>GnomeDialog &#8212; Create generic dialog boxes.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeDialog.html#GnomeDialog-struct">GnomeDialog</a>;
+GtkWidget*  <a href="GnomeDialog.html#gnome-dialog-new">gnome_dialog_new</a>                (const gchar *title,
+                                             ...);
+GtkWidget*  <a href="GnomeDialog.html#gnome-dialog-newv">gnome_dialog_newv</a>               (const gchar *title,
+                                             const gchar **buttons);
+void        <a href="GnomeDialog.html#gnome-dialog-set-parent">gnome_dialog_set_parent</a>         (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             GtkWindow *parent);
+void        <a href="GnomeDialog.html#gnome-dialog-button-connect">gnome_dialog_button_connect</a>     (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             GCallback callback,
+                                             gpointer data);
+void        <a href="GnomeDialog.html#gnome-dialog-button-connect-object">gnome_dialog_button_connect_object</a>
+                                            (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             GCallback callback,
+                                             GtkObject *obj);
+gint        <a href="GnomeDialog.html#gnome-dialog-run">gnome_dialog_run</a>                (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog);
+gint        <a href="GnomeDialog.html#gnome-dialog-run-and-close">gnome_dialog_run_and_close</a>      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog);
+void        <a href="GnomeDialog.html#gnome-dialog-set-default">gnome_dialog_set_default</a>        (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button);
+void        <a href="GnomeDialog.html#gnome-dialog-grab-focus">gnome_dialog_grab_focus</a>         (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button);
+void        <a href="GnomeDialog.html#gnome-dialog-set-sensitive">gnome_dialog_set_sensitive</a>      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             gboolean setting);
+void        <a href="GnomeDialog.html#gnome-dialog-set-accelerator">gnome_dialog_set_accelerator</a>    (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             const guchar accelerator_key,
+                                             guint8 accelerator_mods);
+void        <a href="GnomeDialog.html#gnome-dialog-close">gnome_dialog_close</a>              (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog);
+void        <a href="GnomeDialog.html#gnome-dialog-close-hides">gnome_dialog_close_hides</a>        (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gboolean just_hide);
+void        <a href="GnomeDialog.html#gnome-dialog-set-close">gnome_dialog_set_close</a>          (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gboolean click_closes);
+void        <a href="GnomeDialog.html#gnome-dialog-editable-enters">gnome_dialog_editable_enters</a>    (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             GtkEditable *editable);
+void        <a href="GnomeDialog.html#gnome-dialog-append-buttons">gnome_dialog_append_buttons</a>     (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *first,
+                                             ...);
+void        <a href="GnomeDialog.html#gnome-dialog-append-button">gnome_dialog_append_button</a>      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *button_name);
+void        <a href="GnomeDialog.html#gnome-dialog-append-buttonsv">gnome_dialog_append_buttonsv</a>    (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar **buttons);
+void        <a href="GnomeDialog.html#gnome-dialog-append-button-with-pixmap">gnome_dialog_append_button_with_pixmap</a>
+                                            (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *button_name,
+                                             const gchar *pixmap_name);
+void        <a href="GnomeDialog.html#gnome-dialog-append-buttons-with-pixmaps">gnome_dialog_append_buttons_with_pixmaps</a>
+                                            (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar **names,
+                                             const gchar **pixmaps);
+void        <a href="GnomeDialog.html#gnome-dialog-construct">gnome_dialog_construct</a>          (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *title,
+                                             va_list ap);
+void        <a href="GnomeDialog.html#gnome-dialog-constructv">gnome_dialog_constructv</a>         (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *title,
+                                             const gchar **buttons);
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-OK-CAPS">GNOME_STOCK_BUTTON_OK</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-CANCEL-CAPS">GNOME_STOCK_BUTTON_CANCEL</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-YES-CAPS">GNOME_STOCK_BUTTON_YES</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-NO-CAPS">GNOME_STOCK_BUTTON_NO</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-CLOSE-CAPS">GNOME_STOCK_BUTTON_CLOSE</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-APPLY-CAPS">GNOME_STOCK_BUTTON_APPLY</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-HELP-CAPS">GNOME_STOCK_BUTTON_HELP</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-NEXT-CAPS">GNOME_STOCK_BUTTON_NEXT</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-PREV-CAPS">GNOME_STOCK_BUTTON_PREV</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-UP-CAPS">GNOME_STOCK_BUTTON_UP</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-DOWN-CAPS">GNOME_STOCK_BUTTON_DOWN</a>
+#define     <a href="GnomeDialog.html#GNOME-STOCK-BUTTON-FONT-CAPS">GNOME_STOCK_BUTTON_FONT</a>
+
+</pre></div><div class="refsect1" lang="en"><a name="id2749156"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBin
+                           +----GtkWindow
+                                 +----GnomeDialog
+                                       +----<a href="GnomeMessageBox.html" title="GnomeMessageBox">GnomeMessageBox</a>
+                                       +----<a href="GnomePropertyBox.html" title="GnomePropertyBox">GnomePropertyBox</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2749229"></a><h2>Implemented Interfaces</h2><p>
+GnomeDialog implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2749247"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeDialog.html#GnomeDialog-clicked">clicked</a>"   void        user_function      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                            gint arg1,
+                                            gpointer user_data);
+"<a href="GnomeDialog.html#GnomeDialog-close">close</a>"     gboolean    user_function      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2749329"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2749339"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2749344"></a><h3><a name="GnomeDialog-struct"></a>struct GnomeDialog</h3><a class="indexterm" name="id2749355"></a><pre class="programlisting">struct GnomeDialog {
+  GtkWidget * vbox;
+};
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GnomeDialog</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Client code can pack widgets (for example, text or images) into <i class="parameter"><tt>vbox</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term">GtkWidget *<i class="structfield"><tt>vbox</tt></i></span></td><td> The middle portion of the dialog box.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749417"></a><h3><a name="gnome-dialog-new"></a>gnome_dialog_new ()</h3><a class="indexterm" name="id2749428"></a><pre class="programlisting">GtkWidget*  gnome_dialog_new                (const gchar *title,
+                                             ...);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_new</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Creates a new <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a>, with the given title, and any button names
+in the arg list. Buttons can be simple names, such as _("My Button"),
+or gnome-stock defines such as <tt class="literal">GNOME_STOCK_BUTTON_OK</tt>, etc. The last
+argument should be NULL to terminate the list.
+</p><p>
+Buttons passed to this function are numbered from left to right,
+starting with 0. So the first button in the arglist is button 0,
+then button 1, etc.  These numbers are used throughout the
+<a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> API.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> The title of the dialog; appears in window titlebar.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> NULL-terminated varargs list of button names or GNOME_STOCK_BUTTON_* defines.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749557"></a><h3><a name="gnome-dialog-newv"></a>gnome_dialog_newv ()</h3><a class="indexterm" name="id2749568"></a><pre class="programlisting">GtkWidget*  gnome_dialog_newv               (const gchar *title,
+                                             const gchar **buttons);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_newv</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+See <a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a>, this function is identical but does not use
+varargs.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Title of the dialog.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buttons</tt></i> :</span></td><td> NULL-terminated vector of buttons names.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749682"></a><h3><a name="gnome-dialog-set-parent"></a>gnome_dialog_set_parent ()</h3><a class="indexterm" name="id2749693"></a><pre class="programlisting">void        gnome_dialog_set_parent         (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             GtkWindow *parent);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_set_parent</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Dialogs have "parents," usually the main application window which spawned
+them. This function will let the window manager know about the parent-child
+relationship. Usually this means the dialog must stay on top of the parent,
+and will be minimized when the parent is. Gnome also allows users to
+request dialog placement above the parent window (vs. at the mouse position,
+or at a default window manger location).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to set the parent of.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> Parent <span class="type">GtkWindow</span>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749800"></a><h3><a name="gnome-dialog-button-connect"></a>gnome_dialog_button_connect ()</h3><a class="indexterm" name="id2749812"></a><pre class="programlisting">void        gnome_dialog_button_connect     (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             GCallback callback,
+                                             gpointer data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_button_connect</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Simply <tt class="function">g_signal_connect()</tt> to the "clicked" signal of the specified button.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td> Button number.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> A standard Gtk callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> Callback data.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2749958"></a><h3><a name="gnome-dialog-button-connect-object"></a>gnome_dialog_button_connect_object ()</h3><a class="indexterm" name="id2749971"></a><pre class="programlisting">void        gnome_dialog_button_connect_object
+                                            (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             GCallback callback,
+                                             GtkObject *obj);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_button_connect_object</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+<tt class="function">g_signal_connect_swapped()</tt> to the "clicked" signal of the given button.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td> Button to connect to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> Callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td> As for <tt class="function">g_signal_connect_swapped()</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750130"></a><h3><a name="gnome-dialog-run"></a>gnome_dialog_run ()</h3><a class="indexterm" name="id2750141"></a><pre class="programlisting">gint        gnome_dialog_run                (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_run</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Blocks until the user clicks a button, or closes the dialog with the
+window manager's close decoration (or by pressing Escape).
+</p><p>
+You need to set up the dialog to do the right thing when a button
+is clicked or delete_event is received; you must consider both of
+those possibilities so that you know the status of the dialog when
+<a href="GnomeDialog.html#gnome-dialog-run"><tt class="function">gnome_dialog_run()</tt></a> returns. A common mistake is to forget about
+Escape and the window manager close decoration; by default, these
+call <a href="GnomeDialog.html#gnome-dialog-close"><tt class="function">gnome_dialog_close()</tt></a>, which by default destroys the dialog. If
+your button clicks do not destroy the dialog, you don't know
+whether the dialog is destroyed when <a href="GnomeDialog.html#gnome-dialog-run"><tt class="function">gnome_dialog_run()</tt></a>
+returns. This is bad.
+</p><p>
+So you should either close the dialog on button clicks as well, or
+change the <a href="GnomeDialog.html#gnome-dialog-close"><tt class="function">gnome_dialog_close()</tt></a> behavior to hide instead of
+destroy. You can do this with <a href="GnomeDialog.html#gnome-dialog-close-hides"><tt class="function">gnome_dialog_close_hides()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to use.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  If a button was pressed, the button number is returned. If not, -1 is returned.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750294"></a><h3><a name="gnome-dialog-run-and-close"></a>gnome_dialog_run_and_close ()</h3><a class="indexterm" name="id2750307"></a><pre class="programlisting">gint        gnome_dialog_run_and_close      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_run_and_close</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+See <a href="GnomeDialog.html#gnome-dialog-run"><tt class="function">gnome_dialog_run()</tt></a>. The only difference is that this function calls
+<a href="GnomeDialog.html#gnome-dialog-close"><tt class="function">gnome_dialog_close()</tt></a> before returning, if the dialog was not already closed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to use.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> If a button was pressed, the button number. Otherwise -1.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750410"></a><h3><a name="gnome-dialog-set-default"></a>gnome_dialog_set_default ()</h3><a class="indexterm" name="id2750422"></a><pre class="programlisting">void        gnome_dialog_set_default        (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_set_default</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+The default button will be activated if the user just presses return.
+Usually you should make the least-destructive button the default.
+Otherwise, the most commonly-used button.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td> Number of the default button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750517"></a><h3><a name="gnome-dialog-grab-focus"></a>gnome_dialog_grab_focus ()</h3><a class="indexterm" name="id2750528"></a><pre class="programlisting">void        gnome_dialog_grab_focus         (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_grab_focus</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+The button <i class="parameter"><tt>button</tt></i> will grab the focus.  Use this for dialogs
+Where only buttons are displayed and you want to change the
+default button.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td> Number of the default button.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750628"></a><h3><a name="gnome-dialog-set-sensitive"></a>gnome_dialog_set_sensitive ()</h3><a class="indexterm" name="id2750641"></a><pre class="programlisting">void        gnome_dialog_set_sensitive      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             gboolean setting);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_set_sensitive</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Calls <tt class="function">gtk_widget_set_sensitive()</tt> on the specified button number.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td> Which button to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>setting</tt></i> :</span></td><td> TRUE means it's sensitive.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750767"></a><h3><a name="gnome-dialog-set-accelerator"></a>gnome_dialog_set_accelerator ()</h3><a class="indexterm" name="id2750779"></a><pre class="programlisting">void        gnome_dialog_set_accelerator    (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gint button,
+                                             const guchar accelerator_key,
+                                             guint8 accelerator_mods);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_set_accelerator</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Set an accelerator key for a button.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button</tt></i> :</span></td><td> Button number.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>accelerator_key</tt></i> :</span></td><td> Key for the accelerator.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>accelerator_mods</tt></i> :</span></td><td> Modifier.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2750916"></a><h3><a name="gnome-dialog-close"></a>gnome_dialog_close ()</h3><a class="indexterm" name="id2750927"></a><pre class="programlisting">void        gnome_dialog_close              (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_close</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+See also <a href="GnomeDialog.html#gnome-dialog-close-hides"><tt class="function">gnome_dialog_close_hides()</tt></a>. This function emits the
+"close" signal, which either hides or destroys the dialog (destroy
+by default). If you connect to the "close" signal, and your
+callback returns TRUE, the hide or destroy will be blocked. You can
+do this to avoid closing the dialog if the user gives invalid
+input, for example.
+</p><p>
+Using <a href="GnomeDialog.html#gnome-dialog-close"><tt class="function">gnome_dialog_close()</tt></a> in place of <tt class="function">gtk_widget_hide()</tt> or
+<tt class="function">gtk_widget_destroy()</tt> allows you to easily catch all sources of
+dialog closure, including delete_event and button clicks, and
+handle them in a central location.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to close.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751059"></a><h3><a name="gnome-dialog-close-hides"></a>gnome_dialog_close_hides ()</h3><a class="indexterm" name="id2751070"></a><pre class="programlisting">void        gnome_dialog_close_hides        (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gboolean just_hide);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_close_hides</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Some dialogs are expensive to create, so you want to keep them around and just
+<tt class="function">gtk_widget_show()</tt> them when they are opened, and <tt class="function">gtk_widget_hide()</tt> them when
+they're closed. Other dialogs are expensive to keep around, so you want to
+<tt class="function">gtk_widget_destroy()</tt> them when they're closed. It's a judgment call you
+will need to make for each dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>just_hide</tt></i> :</span></td><td> If TRUE, <a href="GnomeDialog.html#gnome-dialog-close"><tt class="function">gnome_dialog_close()</tt></a> calls <tt class="function">gtk_widget_hide()</tt> instead of <tt class="function">gtk_widget_destroy()</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751231"></a><h3><a name="gnome-dialog-set-close"></a>gnome_dialog_set_close ()</h3><a class="indexterm" name="id2751243"></a><pre class="programlisting">void        gnome_dialog_set_close          (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             gboolean click_closes);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_set_close</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This is a convenience function so you don't have to connect callbacks
+to each button just to close the dialog. By default, <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a>
+has this parameter set the FALSE and it will not close on any click.
+(This was a design error.) However, almost all the <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> subclasses,
+such as <a href="GnomeMessageBox.html" title="GnomeMessageBox"><span class="type">GnomeMessageBox</span></a> and <a href="GnomePropertyBox.html" title="GnomePropertyBox"><span class="type">GnomePropertyBox</span></a>, have this parameter set to
+TRUE by default.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>click_closes</tt></i> :</span></td><td> TRUE if clicking any button should call <a href="GnomeDialog.html#gnome-dialog-close"><tt class="function">gnome_dialog_close()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751384"></a><h3><a name="gnome-dialog-editable-enters"></a>gnome_dialog_editable_enters ()</h3><a class="indexterm" name="id2751396"></a><pre class="programlisting">void        gnome_dialog_editable_enters    (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             GtkEditable *editable);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_editable_enters</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Normally if there's an editable widget (such as <span class="type">GtkEntry</span>) in your
+dialog, pressing Enter will activate the editable rather than the
+default dialog button. However, in most cases, the user expects to
+type something in and then press enter to close the dialog. This
+function enables that behavior.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to affect.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>editable</tt></i> :</span></td><td> Editable to affect.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751500"></a><h3><a name="gnome-dialog-append-buttons"></a>gnome_dialog_append_buttons ()</h3><a class="indexterm" name="id2751512"></a><pre class="programlisting">void        gnome_dialog_append_buttons     (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *first,
+                                             ...);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_append_buttons</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function is mostly for internal library use. You should use
+<a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a> instead. See that function for a description of
+the button arguments.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to add buttons to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first</tt></i> :</span></td><td> First button to add.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> varargs list of additional buttons, NULL-terminated.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751632"></a><h3><a name="gnome-dialog-append-button"></a>gnome_dialog_append_button ()</h3><a class="indexterm" name="id2751644"></a><pre class="programlisting">void        gnome_dialog_append_button      (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *button_name);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_append_button</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Add a button to a dialog after its initial construction.
+This function is mostly for internal library use. You should use
+<a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a> instead. See that function for a description of
+the button argument.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to add button to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button_name</tt></i> :</span></td><td> Button to add.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751749"></a><h3><a name="gnome-dialog-append-buttonsv"></a>gnome_dialog_append_buttonsv ()</h3><a class="indexterm" name="id2751762"></a><pre class="programlisting">void        gnome_dialog_append_buttonsv    (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar **buttons);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_append_buttonsv</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+For internal use, language bindings, etc. Use <a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to append to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buttons</tt></i> :</span></td><td> NULL-terminated vector of buttons to append.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2751866"></a><h3><a name="gnome-dialog-append-button-with-pixmap"></a>gnome_dialog_append_button_with_pixmap ()</h3><a class="indexterm" name="id2751878"></a><pre class="programlisting">void        gnome_dialog_append_button_with_pixmap
+                                            (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *button_name,
+                                             const gchar *pixmap_name);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_append_button_with_pixmap</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Add a pixmap button to a dialog.
+<a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a> does not permit custom buttons with pixmaps, so if you
+want one of those you need to use this function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to add the button to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>button_name</tt></i> :</span></td><td> Name of the button, or stock button <span class="type">define</span>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pixmap_name</tt></i> :</span></td><td> Stock pixmap name.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2752016"></a><h3><a name="gnome-dialog-append-buttons-with-pixmaps"></a>gnome_dialog_append_buttons_with_pixmaps ()</h3><a class="indexterm" name="id2752028"></a><pre class="programlisting">void        gnome_dialog_append_buttons_with_pixmaps
+                                            (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar **names,
+                                             const gchar **pixmaps);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_append_buttons_with_pixmaps</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Simply calls <a href="GnomeDialog.html#gnome-dialog-append-button-with-pixmap"><tt class="function">gnome_dialog_append_button_with_pixmap()</tt></a> repeatedly.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> <a href="GnomeDialog.html" title="GnomeDialog"><span class="type">GnomeDialog</span></a> to append to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>names</tt></i> :</span></td><td> NULL-terminated vector of button names.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pixmaps</tt></i> :</span></td><td> NULL-terminated vector of pixmap names.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2752157"></a><h3><a name="gnome-dialog-construct"></a>gnome_dialog_construct ()</h3><a class="indexterm" name="id2752168"></a><pre class="programlisting">void        gnome_dialog_construct          (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *title,
+                                             va_list ap);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_construct</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+See <a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> Dialog to construct.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Title of the dialog.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ap</tt></i> :</span></td><td> va_list of buttons, NULL-terminated.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2752285"></a><h3><a name="gnome-dialog-constructv"></a>gnome_dialog_constructv ()</h3><a class="indexterm" name="id2752296"></a><pre class="programlisting">void        gnome_dialog_constructv         (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                             const gchar *title,
+                                             const gchar **buttons);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_dialog_constructv</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+See <a href="GnomeDialog.html#gnome-dialog-new"><tt class="function">gnome_dialog_new()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td> Dialog to construct.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Title of the dialog.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buttons</tt></i> :</span></td><td> NULL-terminated array of buttons.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2752414"></a><h3><a name="GNOME-STOCK-BUTTON-OK-CAPS"></a>GNOME_STOCK_BUTTON_OK</h3><a class="indexterm" name="id2752425"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_OK     GTK_STOCK_OK
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_OK</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752455"></a><h3><a name="GNOME-STOCK-BUTTON-CANCEL-CAPS"></a>GNOME_STOCK_BUTTON_CANCEL</h3><a class="indexterm" name="id2752468"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_CANCEL GTK_STOCK_CANCEL
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_CANCEL</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752498"></a><h3><a name="GNOME-STOCK-BUTTON-YES-CAPS"></a>GNOME_STOCK_BUTTON_YES</h3><a class="indexterm" name="id2752509"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_YES    GTK_STOCK_YES
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_YES</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752539"></a><h3><a name="GNOME-STOCK-BUTTON-NO-CAPS"></a>GNOME_STOCK_BUTTON_NO</h3><a class="indexterm" name="id2752551"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_NO     GTK_STOCK_NO
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_NO</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752580"></a><h3><a name="GNOME-STOCK-BUTTON-CLOSE-CAPS"></a>GNOME_STOCK_BUTTON_CLOSE</h3><a class="indexterm" name="id2752592"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_CLOSE  GTK_STOCK_CLOSE
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_CLOSE</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752622"></a><h3><a name="GNOME-STOCK-BUTTON-APPLY-CAPS"></a>GNOME_STOCK_BUTTON_APPLY</h3><a class="indexterm" name="id2752634"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_APPLY  GTK_STOCK_APPLY
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_APPLY</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752664"></a><h3><a name="GNOME-STOCK-BUTTON-HELP-CAPS"></a>GNOME_STOCK_BUTTON_HELP</h3><a class="indexterm" name="id2752676"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_HELP   GTK_STOCK_HELP
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_HELP</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752706"></a><h3><a name="GNOME-STOCK-BUTTON-NEXT-CAPS"></a>GNOME_STOCK_BUTTON_NEXT</h3><a class="indexterm" name="id2752718"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_NEXT   GTK_STOCK_GO_FORWARD
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_NEXT</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752748"></a><h3><a name="GNOME-STOCK-BUTTON-PREV-CAPS"></a>GNOME_STOCK_BUTTON_PREV</h3><a class="indexterm" name="id2752760"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_PREV   GTK_STOCK_GO_BACK
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_PREV</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752790"></a><h3><a name="GNOME-STOCK-BUTTON-UP-CAPS"></a>GNOME_STOCK_BUTTON_UP</h3><a class="indexterm" name="id2752802"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_UP     GTK_STOCK_GO_UP
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_UP</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752832"></a><h3><a name="GNOME-STOCK-BUTTON-DOWN-CAPS"></a>GNOME_STOCK_BUTTON_DOWN</h3><a class="indexterm" name="id2752844"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_DOWN   GTK_STOCK_GO_DOWN
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_DOWN</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2752874"></a><h3><a name="GNOME-STOCK-BUTTON-FONT-CAPS"></a>GNOME_STOCK_BUTTON_FONT</h3><a class="indexterm" name="id2752886"></a><pre class="programlisting">#define GNOME_STOCK_BUTTON_FONT   GTK_STOCK_SELECT_FONT
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_STOCK_BUTTON_FONT</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This button has been replaced by one in GTK+ and new code should use that.
+</p></div></div><div class="refsect1" lang="en"><a name="id2752917"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2752922"></a><h3><a name="GnomeDialog-clicked"></a>The "clicked" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                            gint arg1,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2753016"></a><h3><a name="GnomeDialog-close"></a>The "close" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GnomeDialog.html" title="GnomeDialog">GnomeDialog</a> *dialog,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dialog</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeui-gnome-mdi-session.html"><b>&lt;&lt; gnome-mdi-session</b></a></td><td align="right"><a accesskey="n" href="GnomeMessageBox.html"><b>GnomeMessageBox &gt;&gt;</b></a></td></tr></table></body></html>

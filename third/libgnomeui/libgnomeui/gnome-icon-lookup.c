@@ -21,6 +21,7 @@
  */
 
 #include "gnome-icon-lookup.h"
+#include "gnome-icon-theme.h"
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs.h>
 
@@ -38,7 +39,7 @@
 
 #define ICON_NAME_MIME_PREFIX           "gnome-mime-"
 
-#define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
+#define SELF_THUMBNAIL_SIZE_THRESHOLD   32768
 
 
 /* Returns NULL for regular */
@@ -107,6 +108,10 @@ get_vfs_mime_name (const char *mime_type)
 
   if (vfs_mime_name)
     {
+      /* Handle absolute files */
+      if (vfs_mime_name[0] == '/')
+	return g_strdup (vfs_mime_name);
+      
       p = strrchr(vfs_mime_name, '.');
 
       if (p)
@@ -139,7 +144,7 @@ make_mime_name (const char *mime_type)
 }
 
 static char *
-make_generic_mime_name (const char *mime_type)
+make_generic_mime_name (const char *mime_type, gboolean embedd_text)
 {
   char *generic_mime_type, *icon_name;
   char *p;
@@ -155,8 +160,11 @@ make_generic_mime_name (const char *mime_type)
   if ((p = strchr(generic_mime_type, '/')) != NULL)
     {
       *p = 0;
-  
-      icon_name = g_strconcat (ICON_NAME_MIME_PREFIX, generic_mime_type, NULL);
+
+      if (strcmp ("text", generic_mime_type) == 0 && embedd_text)
+	icon_name = g_strdup ("gnome-fs-regular");
+      else
+	icon_name = g_strconcat (ICON_NAME_MIME_PREFIX, generic_mime_type, NULL);
     }
   g_free (generic_mime_type);
   
@@ -168,24 +176,34 @@ static gboolean
 mimetype_supported_by_gdk_pixbuf (const char *mime_type)
 {
 	guint i;
-	static GHashTable *formats = NULL;
-	static const char *types [] = {
-		"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
-		"image/png", "image/pnm", "image/ras", "image/tga",
-		"image/tiff", "image/wbmp", "image/x-xbitmap",
-		"image/x-xpixmap"
-	};
+	static GHashTable *formats_hash = NULL;
 
-	if (!formats) {
-		formats = g_hash_table_new (g_str_hash, g_str_equal);
+	if (!formats_hash) {
+		GSList *formats, *list;
+		
+		formats_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-		for (i = 0; i < G_N_ELEMENTS (types); i++)
-			g_hash_table_insert (formats,
-					     (gpointer) types [i],
-					     GUINT_TO_POINTER (1));	
+		formats = gdk_pixbuf_get_formats ();
+		list = formats;
+		
+		while (list) {
+			GdkPixbufFormat *format = list->data;
+			gchar **mime_types;
+			
+			mime_types = gdk_pixbuf_format_get_mime_types (format);
+
+			for (i = 0; mime_types[i] != NULL; i++)
+				g_hash_table_insert (formats_hash,
+						     (gpointer) g_strdup (mime_types[i]),
+						     GUINT_TO_POINTER (1));	
+				
+			g_strfreev (mime_types);
+			list = list->next;
+		}
+		g_slist_free (formats);
 	}
 
-	if (g_hash_table_lookup (formats, mime_type))
+	if (g_hash_table_lookup (formats_hash, mime_type))
 		return TRUE;
 
 	return FALSE;
@@ -193,7 +211,7 @@ mimetype_supported_by_gdk_pixbuf (const char *mime_type)
 
 /**
  * gnome_icon_lookup:
- * @icon_theme: a #GnomeIconTheme
+ * @icon_theme: a #GtkIconTheme, or (deprecated) a #GnomeIconTheme
  * @thumbnail_factory: an optional #GnomeThumbnailFactory used to look up thumbnails
  * @file_uri: the uri of the file
  * @custom_icon: optionally the name of a custom icon to try
@@ -208,6 +226,9 @@ mimetype_supported_by_gdk_pixbuf (const char *mime_type)
  * 
  * If you don't know any information about the file already you can use
  * gnome_icon_lookup_sync() which gets this information using gnome-vfs.
+ *
+ * For backwards compatibility, this function also accepts a GnomeIconTheme
+ * instead of a GtkIconTheme.
  *
  * The following @flags are valid:
  * 
@@ -226,7 +247,7 @@ mimetype_supported_by_gdk_pixbuf (const char *mime_type)
  *          use for the file.
  **/
 char *
-gnome_icon_lookup (GnomeIconTheme             *icon_theme,
+gnome_icon_lookup (GtkIconTheme               *icon_theme,
 		   GnomeThumbnailFactory      *thumbnail_factory,
 		   const char                 *file_uri,
 		   const char                 *custom_icon,
@@ -239,25 +260,37 @@ gnome_icon_lookup (GnomeIconTheme             *icon_theme,
   char *mime_name;
   char *thumbnail;
   time_t mtime;
+  gboolean is_svg;
 
+  /* For backwards compat we support GnomeIconTheme too */
+  if (GNOME_IS_ICON_THEME (icon_theme))
+    {
+      if (gnome_icon_theme_get_allow_svg (GNOME_ICON_THEME (icon_theme)))
+	flags |= GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES;
+      icon_theme = _gnome_icon_theme_get_gtk_icon_theme (GNOME_ICON_THEME (icon_theme));
+    }
+
+  g_return_val_if_fail (GTK_IS_ICON_THEME (icon_theme), NULL);
+  
   if (result)
     *result = GNOME_ICON_LOOKUP_RESULT_FLAGS_NONE;
-  
+
   /* Look for availibility of custom icon */
   if (custom_icon)
     {
       /* WARNING: Does I/O for abs custom icons! */
       if ((custom_icon[0] == '/' && g_file_test (custom_icon, G_FILE_TEST_IS_REGULAR)) ||
-	  gnome_icon_theme_has_icon (icon_theme, custom_icon))
+	  gtk_icon_theme_has_icon (icon_theme, custom_icon))
 	return g_strdup (custom_icon);
     }
 
   if (thumbnail_factory)
     {
+      is_svg = (strcmp (mime_type, "image/svg") == 0 ||
+		strcmp (mime_type, "image/svg+xml") == 0);
       if (flags & GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES &&
-	  (mimetype_supported_by_gdk_pixbuf (mime_type) ||
-	   (strcmp (mime_type, "image/svg") == 0 &&
-	    gnome_icon_theme_get_allow_svg (icon_theme)))  &&
+	  ((!is_svg && mimetype_supported_by_gdk_pixbuf (mime_type)) ||
+	   ( is_svg && flags & GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES))  &&
 	  strncmp (file_uri, "file:/", 6) == 0 &&
 	  file_info && file_info->size < SELF_THUMBNAIL_SIZE_THRESHOLD)
 	return gnome_vfs_get_local_path_from_uri (file_uri);
@@ -280,23 +313,25 @@ gnome_icon_lookup (GnomeIconTheme             *icon_theme,
   if (mime_type)
     {
       mime_name = get_vfs_mime_name (mime_type);
-      if (mime_name && gnome_icon_theme_has_icon (icon_theme, mime_name))
+      if (mime_name &&
+	  ((mime_name[0] == '/' &&  g_file_test (mime_name, G_FILE_TEST_IS_REGULAR)) ||
+	   gtk_icon_theme_has_icon (icon_theme, mime_name)))
 	return mime_name;
       g_free (mime_name);
       
       mime_name = make_mime_name (mime_type);
-      if (mime_name && gnome_icon_theme_has_icon (icon_theme, mime_name))
+      if (mime_name && gtk_icon_theme_has_icon (icon_theme, mime_name))
 	return mime_name;
       g_free (mime_name);
       
-      mime_name = make_generic_mime_name (mime_type);
-      if (mime_name && gnome_icon_theme_has_icon (icon_theme, mime_name))
+      mime_name = make_generic_mime_name (mime_type, flags & GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT);
+      if (mime_name && gtk_icon_theme_has_icon (icon_theme, mime_name))
 	return mime_name;
       g_free (mime_name);
     }
       
   icon_name = get_icon_name (file_uri, file_info, mime_type, flags);
-  if (icon_name && gnome_icon_theme_has_icon (icon_theme, icon_name))
+  if (icon_name && gtk_icon_theme_has_icon (icon_theme, icon_name))
     return icon_name;
   g_free (icon_name);
 
@@ -305,7 +340,7 @@ gnome_icon_lookup (GnomeIconTheme             *icon_theme,
 
 /**
  * gnome_icon_lookup_sync:
- * @icon_theme: a #GnomeIconTheme
+ * @icon_theme: a #GtkIconTheme, or (deprecated) a #GnomeIconTheme
  * @thumbnail_factory: an optional #GnomeThumbnailFactory used to look up thumbnails
  * @file_uri: the uri of the file
  * @custom_icon: optionally the name of a custom icon to try
@@ -319,7 +354,7 @@ gnome_icon_lookup (GnomeIconTheme             *icon_theme,
  *          use for the file.
  */
 char *
-gnome_icon_lookup_sync (GnomeIconTheme          *icon_theme,
+gnome_icon_lookup_sync (GtkIconTheme            *icon_theme,
 			GnomeThumbnailFactory   *thumbnail_factory,
 			const char              *file_uri,
 			const char              *custom_icon,

@@ -50,6 +50,10 @@
     (void) gnome_mdi_mode_get_type ();
 
 
+/* enumerations from "gnome-password-dialog.h" */
+    (void) gnome_password_dialog_remember_get_type ();
+
+
 /* enumerations from "gnome-thumbnail.h" */
     (void) gnome_thumbnail_size_get_type ();
 

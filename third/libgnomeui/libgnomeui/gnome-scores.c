@@ -78,8 +78,8 @@ gnome_scores_instance_init (GnomeScores *gs)
 	gtk_window_set_title (GTK_WINDOW (gs), _("Top Ten"));
 
 	gtk_dialog_add_button (GTK_DIALOG (gs),
-			       GTK_STOCK_OK,
-			       GTK_RESPONSE_OK);
+			       GTK_STOCK_CLOSE,
+			       GTK_RESPONSE_CLOSE);
 
 	gs->_priv->logo = NULL;
 	gs->_priv->but_clear = NULL;
@@ -487,10 +487,11 @@ gnome_scores_display (const gchar *title, const gchar *app_name, const gchar *le
  			gnome_scores_set_current_player(GNOME_SCORES(hs), pos-1);
 
 		gtk_widget_show (hs);
-		g_strfreev(names);
-		g_free(scores);
-		g_free(scoretimes);
 	}
+
+	g_strfreev(names);
+	g_free(scores);
+	g_free(scoretimes);
 
 	return hs;
 }
@@ -526,10 +527,11 @@ gnome_scores_display_with_pixmap (const gchar *pixmap_logo, const gchar *app_nam
  			gnome_scores_set_current_player(GNOME_SCORES(hs), pos-1);
 
 		gtk_widget_show (hs);
-		g_strfreev(names);
-		g_free(scores);
-		g_free(scoretimes);
 	}
+
+	g_strfreev(names);
+	g_free(scores);
+	g_free(scoretimes);
 
 	return hs;
 }

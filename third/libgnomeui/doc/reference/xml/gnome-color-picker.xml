@@ -1,0 +1,501 @@
+<refentry id="GnomeColorPicker">
+<refmeta>
+<refentrytitle>GnomeColorPicker</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeColorPicker</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <link linkend="GnomeColorPicker-struct">GnomeColorPicker</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-color-picker-new">gnome_color_picker_new</link>          (void);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-set-d">gnome_color_picker_set_d</link>        (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gdouble">gdouble</link> r,
+                                             <link linkend="gdouble">gdouble</link> g,
+                                             <link linkend="gdouble">gdouble</link> b,
+                                             <link linkend="gdouble">gdouble</link> a);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-get-d">gnome_color_picker_get_d</link>        (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gdouble">gdouble</link> *r,
+                                             <link linkend="gdouble">gdouble</link> *g,
+                                             <link linkend="gdouble">gdouble</link> *b,
+                                             <link linkend="gdouble">gdouble</link> *a);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-set-i8">gnome_color_picker_set_i8</link>       (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="guint8">guint8</link> r,
+                                             <link linkend="guint8">guint8</link> g,
+                                             <link linkend="guint8">guint8</link> b,
+                                             <link linkend="guint8">guint8</link> a);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-get-i8">gnome_color_picker_get_i8</link>       (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="guint8">guint8</link> *r,
+                                             <link linkend="guint8">guint8</link> *g,
+                                             <link linkend="guint8">guint8</link> *b,
+                                             <link linkend="guint8">guint8</link> *a);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-set-i16">gnome_color_picker_set_i16</link>      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gushort">gushort</link> r,
+                                             <link linkend="gushort">gushort</link> g,
+                                             <link linkend="gushort">gushort</link> b,
+                                             <link linkend="gushort">gushort</link> a);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-get-i16">gnome_color_picker_get_i16</link>      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gushort">gushort</link> *r,
+                                             <link linkend="gushort">gushort</link> *g,
+                                             <link linkend="gushort">gushort</link> *b,
+                                             <link linkend="gushort">gushort</link> *a);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-set-dither">gnome_color_picker_set_dither</link>   (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gboolean">gboolean</link> dither);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-color-picker-get-dither">gnome_color_picker_get_dither</link>   (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-set-use-alpha">gnome_color_picker_set_use_alpha</link>
+                                            (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gboolean">gboolean</link> use_alpha);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-color-picker-get-use-alpha">gnome_color_picker_get_use_alpha</link>
+                                            (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);
+<link linkend="void">void</link>        <link linkend="gnome-color-picker-set-title">gnome_color_picker_set_title</link>    (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             const <link linkend="gchar">gchar</link> *title);
+const <link linkend="char">char</link>* <link linkend="gnome-color-picker-get-title">gnome_color_picker_get_title</link>    (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GtkButton">GtkButton</link>
+                                 +----GnomeColorPicker
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomeColorPicker implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link>.</para>
+
+</refsect1>
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeColorPicker--alpha">alpha</link>&quot;                <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeColorPicker--blue">blue</link>&quot;                 <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeColorPicker--dither">dither</link>&quot;               <link linkend="gboolean">gboolean</link>              : Read / Write
+  &quot;<link linkend="GnomeColorPicker--green">green</link>&quot;                <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeColorPicker--red">red</link>&quot;                  <link linkend="guint">guint</link>                 : Read / Write
+  &quot;<link linkend="GnomeColorPicker--title">title</link>&quot;                <link linkend="gchararray">gchararray</link>            : Read / Write
+  &quot;<link linkend="GnomeColorPicker--use-alpha">use-alpha</link>&quot;            <link linkend="gboolean">gboolean</link>              : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GnomeColorPicker-color-set">color-set</link>&quot; <link linkend="void">void</link>        user_function      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *colorpicker,
+                                            <link linkend="guint">guint</link> arg1,
+                                            <link linkend="guint">guint</link> arg2,
+                                            <link linkend="guint">guint</link> arg3,
+                                            <link linkend="guint">guint</link> arg4,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeColorPicker-struct"/>struct GnomeColorPicker</title>
+<indexterm role="deprecated"><primary>GnomeColorPicker</primary></indexterm><programlisting>struct GnomeColorPicker;</programlisting>
+<warning><para><literal>GnomeColorPicker</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-new"/>gnome_color_picker_new ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_color_picker_new          (void);</programlisting>
+<warning><para><literal>gnome_color_picker_new</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates a new GNOME color picker widget. This returns a widget in the form of a small button
+containing a swatch representing the current selected color. When the button is clicked,
+a color-selection dialog will open, allowing the user to select a color. The swatch will be
+updated to reflect the new color when the user finishes.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+Pointer to new GNOME color picker widget.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-set-d"/>gnome_color_picker_set_d ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_set_d</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_set_d        (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gdouble">gdouble</link> r,
+                                             <link linkend="gdouble">gdouble</link> g,
+                                             <link linkend="gdouble">gdouble</link> b,
+                                             <link linkend="gdouble">gdouble</link> a);</programlisting>
+<warning><para><literal>gnome_color_picker_set_d</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Set color shown in the color picker widget using floating point values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Red color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Green color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Blue color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Alpha component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-get-d"/>gnome_color_picker_get_d ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_get_d</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_get_d        (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gdouble">gdouble</link> *r,
+                                             <link linkend="gdouble">gdouble</link> *g,
+                                             <link linkend="gdouble">gdouble</link> *b,
+                                             <link linkend="gdouble">gdouble</link> *a);</programlisting>
+<warning><para><literal>gnome_color_picker_get_d</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Retrieve color currently selected in the color picker widget in the form of floating point values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of red color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of green color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of blue color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of alpha color component, values are in [0.0, 1.0]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-set-i8"/>gnome_color_picker_set_i8 ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_set_i8</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_set_i8       (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="guint8">guint8</link> r,
+                                             <link linkend="guint8">guint8</link> g,
+                                             <link linkend="guint8">guint8</link> b,
+                                             <link linkend="guint8">guint8</link> a);</programlisting>
+<warning><para><literal>gnome_color_picker_set_i8</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Set color shown in the color picker widget using 8-bit integer values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Red color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Green color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Blue color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Alpha component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-get-i8"/>gnome_color_picker_get_i8 ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_get_i8</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_get_i8       (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="guint8">guint8</link> *r,
+                                             <link linkend="guint8">guint8</link> *g,
+                                             <link linkend="guint8">guint8</link> *b,
+                                             <link linkend="guint8">guint8</link> *a);</programlisting>
+<warning><para><literal>gnome_color_picker_get_i8</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Retrieve color currently selected in the color picker widget in the form of 8-bit integer values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of red color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of green color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of blue color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of alpha color component, values are in [0, 255]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-set-i16"/>gnome_color_picker_set_i16 ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_set_i16</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_set_i16      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gushort">gushort</link> r,
+                                             <link linkend="gushort">gushort</link> g,
+                                             <link linkend="gushort">gushort</link> b,
+                                             <link linkend="gushort">gushort</link> a);</programlisting>
+<warning><para><literal>gnome_color_picker_set_i16</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Set color shown in the color picker widget using 16-bit integer values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Red color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Green color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Blue color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Alpha component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-get-i16"/>gnome_color_picker_get_i16 ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_get_i16</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_get_i16      (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gushort">gushort</link> *r,
+                                             <link linkend="gushort">gushort</link> *g,
+                                             <link linkend="gushort">gushort</link> *b,
+                                             <link linkend="gushort">gushort</link> *a);</programlisting>
+<warning><para><literal>gnome_color_picker_get_i16</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Retrieve color currently selected in the color picker widget in the form of 16-bit integer values.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of red color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of green color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of blue color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>a</parameter>&nbsp;:</term>
+<listitem><simpara> Output location of alpha color component, values are in [0, 65535]
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-set-dither"/>gnome_color_picker_set_dither ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_set_dither</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_set_dither   (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gboolean">gboolean</link> dither);</programlisting>
+<warning><para><literal>gnome_color_picker_set_dither</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Sets whether the picker should dither the color sample or just paint
+a solid rectangle.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dither</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if color sample should be dithered, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-get-dither"/>gnome_color_picker_get_dither ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_get_dither</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_color_picker_get_dither   (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);</programlisting>
+<warning><para><literal>gnome_color_picker_get_dither</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Does the picker dither the color sample or just paint
+a solid rectangle.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if color sample is dithered, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-set-use-alpha"/>gnome_color_picker_set_use_alpha ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_set_use_alpha</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_set_use_alpha
+                                            (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             <link linkend="gboolean">gboolean</link> use_alpha);</programlisting>
+<warning><para><literal>gnome_color_picker_set_use_alpha</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Sets whether or not the picker should use the alpha channel.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>use_alpha</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if color sample should use alpha channel, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-get-use-alpha"/>gnome_color_picker_get_use_alpha ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_get_use_alpha</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_color_picker_get_use_alpha
+                                            (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);</programlisting>
+<warning><para><literal>gnome_color_picker_get_use_alpha</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Does the picker use the alpha channel?</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  <literal>TRUE</literal> if color sample uses alpha channel, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-set-title"/>gnome_color_picker_set_title ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_set_title</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_color_picker_set_title    (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp,
+                                             const <link linkend="gchar">gchar</link> *title);</programlisting>
+<warning><para><literal>gnome_color_picker_set_title</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Sets the title for the color selection dialog.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara> String containing new window title.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-color-picker-get-title"/>gnome_color_picker_get_title ()</title>
+<indexterm role="deprecated"><primary>gnome_color_picker_get_title</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_color_picker_get_title    (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *cp);</programlisting>
+<warning><para><literal>gnome_color_picker_get_title</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Gets the title of the color selection dialog.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>cp</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME color picker widget.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  An internal string, do not free the return value
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomeColorPicker--alpha"/>The &quot;<literal>alpha</literal>&quot; property</title>
+<programlisting>  &quot;alpha&quot;                <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The alpha value of the chosen color.</para><para>Allowed values: &lt;= 255</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeColorPicker--blue"/>The &quot;<literal>blue</literal>&quot; property</title>
+<programlisting>  &quot;blue&quot;                 <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The amount of blue in the chosen color.</para><para>Allowed values: &lt;= 255</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeColorPicker--dither"/>The &quot;<literal>dither</literal>&quot; property</title>
+<programlisting>  &quot;dither&quot;               <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether or not to dither to color.</para><para>Default value: TRUE</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeColorPicker--green"/>The &quot;<literal>green</literal>&quot; property</title>
+<programlisting>  &quot;green&quot;                <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The amount of green in the chosen color.</para><para>Allowed values: &lt;= 255</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeColorPicker--red"/>The &quot;<literal>red</literal>&quot; property</title>
+<programlisting>  &quot;red&quot;                  <link linkend="guint">guint</link>                 : Read / Write</programlisting>
+<para>The amount of red in the chosen color.</para><para>Allowed values: &lt;= 255</para>
+<para>Default value: 0</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeColorPicker--title"/>The &quot;<literal>title</literal>&quot; property</title>
+<programlisting>  &quot;title&quot;                <link linkend="gchararray">gchararray</link>            : Read / Write</programlisting>
+<para>The title to give to the color picker.</para><para>Default value: NULL</para>
+</refsect2>
+<refsect2><title><anchor id="GnomeColorPicker--use-alpha"/>The &quot;<literal>use-alpha</literal>&quot; property</title>
+<programlisting>  &quot;use-alpha&quot;            <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether or not to give the color an alpha value.</para><para>Default value: FALSE</para>
+</refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GnomeColorPicker-color-set"/>The &quot;color-set&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GnomeColorPicker">GnomeColorPicker</link> *colorpicker,
+                                            <link linkend="guint">guint</link> arg1,
+                                            <link linkend="guint">guint</link> arg2,
+                                            <link linkend="guint">guint</link> arg3,
+                                            <link linkend="guint">guint</link> arg4,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>colorpicker</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

@@ -66,6 +66,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtkmessagedialog.h>
 
 /*****************************************************************************
  * libgnomeui
@@ -93,6 +94,8 @@ static void libgnomeui_segv_setup	(GnomeProgram *program,
 /* Prototype for a private gnome_stock function */
 void _gnome_stock_icons_init (void);
 
+#ifdef HAVE_ESD
+
 /* Whether to make noises when the user clicks a button, etc.  We cache it
  * in a boolean rather than querying GConf every time.
  */
@@ -101,6 +104,8 @@ static gboolean use_event_sounds;
 /* GConf client for monitoring the event sounds option */
 static GConfClient *gconf_client = NULL;
 
+#endif /* HAVE_ESD */
+
 
 enum { ARG_DISABLE_CRASH_DIALOG=1, ARG_DISPLAY };
 
@@ -108,10 +113,11 @@ static struct poptOption libgnomeui_options[] = {
         {NULL, '\0', POPT_ARG_INTL_DOMAIN, GETTEXT_PACKAGE, 0, NULL, NULL},
 	{NULL, '\0', POPT_ARG_CALLBACK|POPT_CBFLAG_PRE|POPT_CBFLAG_POST,
 	 &libgnomeui_arg_callback, 0, NULL, NULL},
-	{"disable-crash-dialog", '\0', POPT_ARG_NONE, NULL, ARG_DISABLE_CRASH_DIALOG},
+	{"disable-crash-dialog", '\0', POPT_ARG_NONE, NULL, ARG_DISABLE_CRASH_DIALOG,
+        N_("Disable Crash Dialog"), NULL},
         {"display", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, NULL, ARG_DISPLAY,
          N_("X display to use"), N_("DISPLAY")},
-	{NULL, '\0', 0, NULL, 0}
+	{NULL, '\0', 0, NULL, 0, NULL, NULL}
 };
 
 const GnomeModuleInfo *
@@ -128,6 +134,8 @@ libgnomeui_module_info_get (void)
 
 	if (module_info.requirements == NULL) {
 		static GnomeModuleRequirement req[6];
+
+		bindtextdomain (GETTEXT_PACKAGE, GNOMEUILOCALEDIR);
 
 		req[0].required_version = "1.101.2";
 		req[0].module_info = LIBBONOBOUI_MODULE;
@@ -240,7 +248,7 @@ libgnomeui_class_init (GnomeProgramClass *klass, const GnomeModuleInfo *mod_info
                 libgnomeui_set_property,
                 g_param_spec_boolean (LIBGNOMEUI_PARAM_CRASH_DIALOG, NULL, NULL,
                                       TRUE, (G_PARAM_READABLE | G_PARAM_WRITABLE |
-                                             G_PARAM_CONSTRUCT_ONLY)));
+                                      G_PARAM_CONSTRUCT)));
         cdata->display_id = gnome_program_install_property (
                 klass,
                 libgnomeui_get_property,
@@ -286,6 +294,83 @@ libgnomeui_pre_args_parse(GnomeProgram *app, GnomeModuleInfo *mod_info)
 }
 
 #ifdef HAVE_ESD
+static gboolean
+relay_gnome_signal (GSignalInvocationHint *hint,
+              	     guint n_param_values,
+                    const GValue *param_values,
+                    gchar *signame)
+{
+        char *pieces[3] = {"gnome-2", NULL, NULL};
+        static GQuark disable_sound_quark = 0;
+        GObject *object = g_value_get_object (&param_values[0]);
+
+        if (!use_event_sounds)
+                return TRUE;
+
+        if (!disable_sound_quark)
+                disable_sound_quark = g_quark_from_static_string ("gnome_disable_sound_events");
+
+        if (g_object_get_qdata (object, disable_sound_quark))
+                return TRUE;
+
+        if (GTK_IS_WIDGET (object)) {
+
+                if (!GTK_WIDGET_DRAWABLE (object))
+                        return TRUE;
+
+                if (GTK_IS_MESSAGE_DIALOG (object)) {
+                        GtkMessageType message_type;
+                        g_object_get (object, "message_type", &message_type, NULL);
+                        switch (message_type)
+                        {
+                                case GTK_MESSAGE_INFO:
+                                        pieces[1] = "info";
+                                        break;
+
+                                case GTK_MESSAGE_QUESTION:
+                                        pieces[1] = "question";
+                                        break;
+
+                                case GTK_MESSAGE_WARNING:
+                                        pieces[1] = "warning";
+                                        break;
+
+                                case GTK_MESSAGE_ERROR:
+                                        pieces[1] = "error";
+                                        break;
+
+                                default:
+                                        pieces[1] = NULL;
+                        }
+                }
+        }
+
+        if (gnome_sound_connection_get () < 0)
+                return TRUE;
+
+        gnome_triggers_vdo ("", NULL, (const char **) pieces);
+
+        return TRUE;
+}
+
+static void
+initialize_gnome_signal_relay (void)
+{
+        static gboolean initialized = FALSE;
+        int signum;
+
+        if (initialized)
+                return;
+
+        initialized = TRUE;
+
+        signum = g_signal_lookup ("show", GTK_TYPE_MESSAGE_DIALOG);
+        g_signal_add_emission_hook (signum, 0,
+                                    (GSignalEmissionHook) relay_gnome_signal,
+                                    NULL, NULL);
+
+}
+
 static gboolean
 relay_gtk_signal(GSignalInvocationHint *hint,
 		 guint n_param_values,
@@ -406,8 +491,10 @@ event_sounds_changed_cb (GConfClient* client, guint cnxn_id, GConfEntry *entry, 
         new_use_event_sounds = (gnome_gconf_get_bool ("/desktop/gnome/sound/enable_esd") &&
                                 gnome_gconf_get_bool ("/desktop/gnome/sound/event_sounds"));
 
-        if (new_use_event_sounds && !use_event_sounds)
+        if (new_use_event_sounds && !use_event_sounds) {
                 initialize_gtk_signal_relay ();
+                initialize_gnome_signal_relay ();
+	}
 
         use_event_sounds = new_use_event_sounds;
 }
@@ -434,8 +521,10 @@ setup_event_listener (void)
         use_event_sounds = (gnome_gconf_get_bool ("/desktop/gnome/sound/enable_esd") &&
                             gnome_gconf_get_bool ("/desktop/gnome/sound/event_sounds"));
 
-        if (use_event_sounds)
+        if (use_event_sounds) {
                 initialize_gtk_signal_relay ();
+                initialize_gnome_signal_relay ();
+	 }
 #endif
 }
 
@@ -605,8 +694,10 @@ libgnomeui_segv_setup (GnomeProgram *program, gboolean post_arg_parse)
 static void libgnomeui_segv_handle(int signum)
 {
 	static int in_segv = 0;
+        struct sigaction sa;
 	pid_t pid;
 	
+	sa.sa_handler = NULL;
 	in_segv++;
 
         if (in_segv > 2) {
@@ -632,8 +723,12 @@ static void libgnomeui_segv_handle(int signum)
 				   "Cannot display crash dialog\n"));
 
                 /* Don't use app attributes here - a lot of things are probably hosed */
-		if (g_getenv ("GNOME_DUMP_CORE"))
+		if (g_getenv ("GNOME_DUMP_CORE")) {
+                        /* Reset SIGABRT so we don't get called again. */
+                        sa.sa_handler = SIG_DFL;
+                        sigaction (SIGABRT, &sa, NULL);
 	                abort ();
+                }
 
 		_exit(1);
 	} else if (pid > 0) {
@@ -646,8 +741,12 @@ static void libgnomeui_segv_handle(int signum)
 		eret = waitpid(pid, &estatus, 0);
 
                 /* Don't use app attributes here - a lot of things are probably hosed */
-		if(g_getenv("GNOME_DUMP_CORE"))
+		if(g_getenv("GNOME_DUMP_CORE")) {
+                        /* Reset SIGABRT so we don't get called again. */
+                        sa.sa_handler = SIG_DFL;
+                        sigaction (SIGABRT, &sa, NULL);
 	                abort ();
+                }
 
 		_exit(1);
 	} else /* pid == 0 */ {

@@ -1,0 +1,193 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeMDIGenericChild</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="deprecated.html" title="Deprecated modules"><link rel="previous" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="next" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeMDIGenericChild.html#id2743509" title="Object Hierarchy"><link rel="section" href="GnomeMDIGenericChild.html#id2743544" title="Description"><link rel="section" href="GnomeMDIGenericChild.html#id2743554" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeMDIChild.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="deprecated.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="libgnomeui-gnome-mdi-session.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeMDIGenericChild"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeMDIGenericChild</span></h2><p>GnomeMDIGenericChild &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeMDIGenericChild.html#GnomeMDIGenericChild-struct">GnomeMDIGenericChild</a>;
+<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a>* <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-new">gnome_mdi_generic_child_new</a>
+                                            (const gchar *name);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-view-creator">gnome_mdi_generic_child_set_view_creator</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildViewCreator">GnomeMDIChildViewCreator</a> func,
+                                             gpointer data);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-view-creator-full">gnome_mdi_generic_child_set_view_creator_full</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildViewCreator">GnomeMDIChildViewCreator</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-menu-creator">gnome_mdi_generic_child_set_menu_creator</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildMenuCreator">GnomeMDIChildMenuCreator</a> func,
+                                             gpointer data);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-menu-creator-full">gnome_mdi_generic_child_set_menu_creator_full</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildMenuCreator">GnomeMDIChildMenuCreator</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-config-func">gnome_mdi_generic_child_set_config_func</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildConfigFunc">GnomeMDIChildConfigFunc</a> func,
+                                             gpointer data);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-config-func-full">gnome_mdi_generic_child_set_config_func_full</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildConfigFunc">GnomeMDIChildConfigFunc</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-label-func">gnome_mdi_generic_child_set_label_func</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildLabelFunc">GnomeMDIChildLabelFunc</a> func,
+                                             gpointer data);
+void        <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-label-func-full">gnome_mdi_generic_child_set_label_func_full</a>
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildLabelFunc">GnomeMDIChildLabelFunc</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2743509"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----<a href="GnomeMDIChild.html" title="GnomeMDIChild">GnomeMDIChild</a>
+               +----GnomeMDIGenericChild
+</pre></div><div class="refsect1" lang="en"><a name="id2743544"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2743554"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2743559"></a><h3><a name="GnomeMDIGenericChild-struct"></a>struct GnomeMDIGenericChild</h3><a class="indexterm" name="id2743571"></a><pre class="programlisting">struct GnomeMDIGenericChild;</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GnomeMDIGenericChild</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2743599"></a><h3><a name="gnome-mdi-generic-child-new"></a>gnome_mdi_generic_child_new ()</h3><a class="indexterm" name="id2743611"></a><pre class="programlisting"><a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a>* gnome_mdi_generic_child_new
+                                            (const gchar *name);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_new</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Creates a new mdi child, which has the ability to set view creators, etc
+on an instance basis (rather than on a class basis like &amp;GnomeMDIChild).
+</p><p>
+After creation, you will need to set, at a minimum, the view creator
+function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of this MDI child.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A newly created &amp;GnomeMDIGenericChild object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2743696"></a><h3><a name="gnome-mdi-generic-child-set-view-creator"></a>gnome_mdi_generic_child_set_view_creator ()</h3><a class="indexterm" name="id2743709"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_view_creator
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildViewCreator">GnomeMDIChildViewCreator</a> func,
+                                             gpointer data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_view_creator</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function sets the function that is used to create new views for this
+particular mdi child object.  The function should return a newly created
+widget (the view).
+</p><p>
+A &amp;GnomeMDIGenericChild must have a view creator.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function used to create views
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2743826"></a><h3><a name="gnome-mdi-generic-child-set-view-creator-full"></a>gnome_mdi_generic_child_set_view_creator_full ()</h3><a class="indexterm" name="id2743839"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_view_creator_full
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildViewCreator">GnomeMDIChildViewCreator</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_view_creator_full</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Similar to <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-view-creator"><tt class="function">gnome_mdi_generic_child_set_view_creator()</tt></a>, except that it gives
+more control to the programmer.  If <i class="parameter"><tt>marshal</tt></i> is not <tt class="literal">NULL</tt>, then it will
+be called instead of <i class="parameter"><tt>func</tt></i>.
+</p><p>
+The &amp;GtkArg array passed to <i class="parameter"><tt>marshal</tt></i> will be of length 2.  The first
+element will be <i class="parameter"><tt>child</tt></i>, and the second is the return value (a pointer to
+a &amp;GtkWidget).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function to create views (not used if <i class="parameter"><tt>marshal</tt></i> != <tt class="literal">NULL</tt>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal</tt></i> :</span></td><td> a callback marshaller
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>notify</tt></i> :</span></td><td> a function used to free the user data.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744055"></a><h3><a name="gnome-mdi-generic-child-set-menu-creator"></a>gnome_mdi_generic_child_set_menu_creator ()</h3><a class="indexterm" name="id2744068"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_menu_creator
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildMenuCreator">GnomeMDIChildMenuCreator</a> func,
+                                             gpointer data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_menu_creator</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Sets the function used to create child specific menus.  The function
+should return a &amp;GList of the menus created.
+</p><p>
+A &amp;GnomeMDIGenericChild doesn't require a menu creator.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function to create a list of child specific menus
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744186"></a><h3><a name="gnome-mdi-generic-child-set-menu-creator-full"></a>gnome_mdi_generic_child_set_menu_creator_full ()</h3><a class="indexterm" name="id2744199"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_menu_creator_full
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildMenuCreator">GnomeMDIChildMenuCreator</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_menu_creator_full</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function is similar to <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-menu-creator"><tt class="function">gnome_mdi_generic_child_set_menu_creator()</tt></a>,
+but gives extra flexibility to the programmer, in the form of a a
+destroy notify for the user data, and a callback marshaller.
+</p><p>
+The &amp;GtkArg array passed to <i class="parameter"><tt>marshal</tt></i> is of length 3.  The first element
+will be <i class="parameter"><tt>child</tt></i>, the second will be a view of <i class="parameter"><tt>child</tt></i>, and the third is the
+return value (a pointer to the returned GList).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a menu creator function (not used if <i class="parameter"><tt>marshal</tt></i> != <tt class="literal">NULL</tt>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal</tt></i> :</span></td><td> a callback marshaller
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>notify</tt></i> :</span></td><td> a destroy notify for the data
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744404"></a><h3><a name="gnome-mdi-generic-child-set-config-func"></a>gnome_mdi_generic_child_set_config_func ()</h3><a class="indexterm" name="id2744416"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_config_func
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildConfigFunc">GnomeMDIChildConfigFunc</a> func,
+                                             gpointer data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_config_func</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Sets the function used to get the config key used for session saves.
+</p><p>
+A &amp;GnomeMDIGenericChild doesn't require a config func.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function to set the config key for session saves
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744532"></a><h3><a name="gnome-mdi-generic-child-set-config-func-full"></a>gnome_mdi_generic_child_set_config_func_full ()</h3><a class="indexterm" name="id2744546"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_config_func_full
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildConfigFunc">GnomeMDIChildConfigFunc</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_config_func_full</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+A function similar to <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-config-func"><tt class="function">gnome_mdi_generic_child_set_config_func()</tt></a>, except
+it gives more control to the programmer.
+</p><p>
+The &amp;GtkArg array passed to <i class="parameter"><tt>marshal</tt></i> is of length 2.  The first element is
+<i class="parameter"><tt>child</tt></i>, and the second is the return value (a pointer to a string).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function (not used if <i class="parameter"><tt>marshal</tt></i> != <tt class="literal">NULL</tt>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal</tt></i> :</span></td><td> a callback marshaller
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>notify</tt></i> :</span></td><td> a destroy notify for the user data
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744742"></a><h3><a name="gnome-mdi-generic-child-set-label-func"></a>gnome_mdi_generic_child_set_label_func ()</h3><a class="indexterm" name="id2744755"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_label_func
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildLabelFunc">GnomeMDIChildLabelFunc</a> func,
+                                             gpointer data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_label_func</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Sets the function used to set (or modify) the label for <i class="parameter"><tt>child</tt></i>.  The
+first argument to <i class="parameter"><tt>func</tt></i> is <i class="parameter"><tt>child</tt></i>.  If a label exists, it will be passed
+to <i class="parameter"><tt>func</tt></i> as the second argument, otherwise, <tt class="literal">NULL</tt> is passed.  The
+function should return the modified label.
+</p><p>
+A &amp;GnomeMDIGenericChild doesn't require a label function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> a mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2744902"></a><h3><a name="gnome-mdi-generic-child-set-label-func-full"></a>gnome_mdi_generic_child_set_label_func_full ()</h3><a class="indexterm" name="id2744916"></a><pre class="programlisting">void        gnome_mdi_generic_child_set_label_func_full
+                                            (<a href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild">GnomeMDIGenericChild</a> *child,
+                                             <a href="GnomeMDIChild.html#GnomeMDIChildLabelFunc">GnomeMDIChildLabelFunc</a> func,
+                                             GtkCallbackMarshal marshal,
+                                             gpointer data,
+                                             GtkDestroyNotify notify);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_mdi_generic_child_set_label_func_full</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Similar to <a href="GnomeMDIGenericChild.html#gnome-mdi-generic-child-set-label-func"><tt class="function">gnome_mdi_generic_child_set_label_func()</tt></a>, except it gives more
+flexibility to the programmer.
+</p><p>
+The &amp;GtkArg array passed to <i class="parameter"><tt>marshal</tt></i> is of length 3.  The first argument
+is <i class="parameter"><tt>child</tt></i>, the second is the old widget (or <tt class="literal">NULL</tt>), and the third is the
+return value (a pointer to a &amp;GtkWidget).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>child</tt></i> :</span></td><td> the mdi child object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> a function (not used if <i class="parameter"><tt>marshal</tt></i> != <tt class="literal">NULL</tt>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>marshal</tt></i> :</span></td><td> a callback marshaller
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> optional user data
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>notify</tt></i> :</span></td><td> a destroy notify for the data
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeMDIChild.html"><b>&lt;&lt; GnomeMDIChild</b></a></td><td align="right"><a accesskey="n" href="libgnomeui-gnome-mdi-session.html"><b>gnome-mdi-session &gt;&gt;</b></a></td></tr></table></body></html>

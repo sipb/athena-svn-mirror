@@ -1,0 +1,324 @@
+<refentry id="GnomePixmapEntry">
+<refmeta>
+<refentrytitle>GnomePixmapEntry</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomePixmapEntry</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <link linkend="GnomePixmapEntry-struct">GnomePixmapEntry</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-pixmap-entry-new">gnome_pixmap_entry_new</link>          (const <link linkend="gchar">gchar</link> *history_id,
+                                             const <link linkend="gchar">gchar</link> *browse_dialog_title,
+                                             <link linkend="gboolean">gboolean</link> do_preview);
+<link linkend="void">void</link>        <link linkend="gnome-pixmap-entry-construct">gnome_pixmap_entry_construct</link>    (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             const <link linkend="gchar">gchar</link> *history_id,
+                                             const <link linkend="gchar">gchar</link> *browse_dialog_title,
+                                             <link linkend="gboolean">gboolean</link> do_preview);
+<link linkend="void">void</link>        <link linkend="gnome-pixmap-entry-set-pixmap-subdir">gnome_pixmap_entry_set_pixmap_subdir</link>
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             const <link linkend="gchar">gchar</link> *subdir);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-pixmap-entry-gnome-file-entry">gnome_pixmap_entry_gnome_file_entry</link>
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-pixmap-entry-gnome-entry">gnome_pixmap_entry_gnome_entry</link>  (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-pixmap-entry-gtk-entry">gnome_pixmap_entry_gtk_entry</link>    (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-pixmap-entry-scrolled-window">gnome_pixmap_entry_scrolled_window</link>
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-pixmap-entry-preview-widget">gnome_pixmap_entry_preview_widget</link>
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);
+<link linkend="void">void</link>        <link linkend="gnome-pixmap-entry-set-preview">gnome_pixmap_entry_set_preview</link>  (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             <link linkend="gboolean">gboolean</link> do_preview);
+<link linkend="void">void</link>        <link linkend="gnome-pixmap-entry-set-preview-size">gnome_pixmap_entry_set_preview_size</link>
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             <link linkend="gint">gint</link> preview_w,
+                                             <link linkend="gint">gint</link> preview_h);
+<link linkend="gchar">gchar</link>*      <link linkend="gnome-pixmap-entry-get-filename">gnome_pixmap_entry_get_filename</link> (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBox">GtkBox</link>
+                           +----<link linkend="GtkVBox">GtkVBox</link>
+                                 +----<link linkend="GnomeFileEntry">GnomeFileEntry</link>
+                                       +----GnomePixmapEntry
+</synopsis>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GnomePixmapEntry implements
+ <link linkend="AtkImplementorIface">AtkImplementorIface</link> and  <link linkend="GtkEditable">GtkEditable</link>.</para>
+
+</refsect1>
+
+
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomePixmapEntry--do-preview">do-preview</link>&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomePixmapEntry-struct"/>struct GnomePixmapEntry</title>
+<indexterm><primary>GnomePixmapEntry</primary></indexterm><programlisting>struct GnomePixmapEntry;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-new"/>gnome_pixmap_entry_new ()</title>
+<indexterm><primary>gnome_pixmap_entry_new</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_new          (const <link linkend="gchar">gchar</link> *history_id,
+                                             const <link linkend="gchar">gchar</link> *browse_dialog_title,
+                                             <link linkend="gboolean">gboolean</link> do_preview);</programlisting>
+<para>
+Creates a new pixmap entry widget, if do_preview is false,
+there is no preview, the files are not loaded and thus are not
+checked to be real image files.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>history_id</parameter>&nbsp;:</term>
+<listitem><simpara> The id given to <link linkend="gnome-entry-new"><type>gnome_entry_new</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>browse_dialog_title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the browse dialog
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>do_preview</parameter>&nbsp;:</term>
+<listitem><simpara> boolean
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> New GnomePixmapEntry object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-construct"/>gnome_pixmap_entry_construct ()</title>
+<indexterm><primary>gnome_pixmap_entry_construct</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_pixmap_entry_construct    (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             const <link linkend="gchar">gchar</link> *history_id,
+                                             const <link linkend="gchar">gchar</link> *browse_dialog_title,
+                                             <link linkend="gboolean">gboolean</link> do_preview);</programlisting>
+<para>
+Constructs the <parameter>pentry</parameter> object.  If do_preview is <literal>FALSE</literal>,
+there is no preview, the files are not loaded and thus are not
+checked to be real image files.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomePixmapEntry"><type>GnomePixmapEntry</type></link> object to construct
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>history_id</parameter>&nbsp;:</term>
+<listitem><simpara> The id given to <link linkend="gnome-entry-new"><type>gnome_entry_new</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>browse_dialog_title</parameter>&nbsp;:</term>
+<listitem><simpara> Title of the browse dialog
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>do_preview</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> if preview is desired, <literal>FALSE</literal> if not.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-set-pixmap-subdir"/>gnome_pixmap_entry_set_pixmap_subdir ()</title>
+<indexterm><primary>gnome_pixmap_entry_set_pixmap_subdir</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_pixmap_entry_set_pixmap_subdir
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             const <link linkend="gchar">gchar</link> *subdir);</programlisting>
+<para>
+Sets the default path for the file entry. The new
+subdirectory should be specified relative to the default GNOME
+pixmap directory.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>subdir</parameter>&nbsp;:</term>
+<listitem><simpara> Subdirectory
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-gnome-file-entry"/>gnome_pixmap_entry_gnome_file_entry ()</title>
+<indexterm role="deprecated"><primary>gnome_pixmap_entry_gnome_file_entry</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_gnome_file_entry
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
+<warning><para><literal>gnome_pixmap_entry_gnome_file_entry</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Get the <link linkend="GnomeFileEntry"><type>GnomeFileEntry</type></link> component of the
+GnomePixmapEntry widget for lower-level manipulation.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GnomeFileEntry"><type>GnomeFileEntry</type></link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-gnome-entry"/>gnome_pixmap_entry_gnome_entry ()</title>
+<indexterm role="deprecated"><primary>gnome_pixmap_entry_gnome_entry</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_gnome_entry  (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
+<warning><para><literal>gnome_pixmap_entry_gnome_entry</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Get the <link linkend="GnomeEntry"><type>GnomeEntry</type></link> component of the
+GnomePixmapEntry widget for lower-level manipulation.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GnomeEntry"><type>GnomeEntry</type></link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-gtk-entry"/>gnome_pixmap_entry_gtk_entry ()</title>
+<indexterm role="deprecated"><primary>gnome_pixmap_entry_gtk_entry</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_gtk_entry    (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
+<warning><para><literal>gnome_pixmap_entry_gtk_entry</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Get the <link linkend="GtkEntry"><type>GtkEntry</type></link> component of the
+GnomePixmapEntry for Gtk+-level manipulation.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GtkEntry"><type>GtkEntry</type></link> widget
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-scrolled-window"/>gnome_pixmap_entry_scrolled_window ()</title>
+<indexterm><primary>gnome_pixmap_entry_scrolled_window</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_scrolled_window
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
+<para>
+Get the <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link> widget that the preview
+is contained in.  Could be <literal>NULL</literal></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GtkScrolledWindow"><type>GtkScrolledWindow</type></link> widget or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-preview-widget"/>gnome_pixmap_entry_preview_widget ()</title>
+<indexterm><primary>gnome_pixmap_entry_preview_widget</primary></indexterm><programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_pixmap_entry_preview_widget
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
+<para>
+Get the widget that is the preview.  Don't assume any
+type of widget.  Currently either <link linkend="GnomePixmap"><type>GnomePixmap</type></link> or <link linkend="GtkLabel"><type>GtkLabel</type></link>, but it
+could change in the future. Could be <literal>NULL</literal></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the preview widget pointer or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-set-preview"/>gnome_pixmap_entry_set_preview ()</title>
+<indexterm><primary>gnome_pixmap_entry_set_preview</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_pixmap_entry_set_preview  (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             <link linkend="gboolean">gboolean</link> do_preview);</programlisting>
+<para>
+Sets whether or not the preview box is shown above
+the entry.  If the preview is on, we also load the files and check
+for them being real images.  If it is off, we don't check files
+to be real image files.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>do_preview</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>TRUE</literal> to show previews, <literal>FALSE</literal> to not show them.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-set-preview-size"/>gnome_pixmap_entry_set_preview_size ()</title>
+<indexterm><primary>gnome_pixmap_entry_set_preview_size</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_pixmap_entry_set_preview_size
+                                            (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry,
+                                             <link linkend="gint">gint</link> preview_w,
+                                             <link linkend="gint">gint</link> preview_h);</programlisting>
+<para>
+Sets the minimum size of the preview frame in pixels.
+This works only if the preview is enabled.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>preview_w</parameter>&nbsp;:</term>
+<listitem><simpara> Preview width in pixels
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>preview_h</parameter>&nbsp;:</term>
+<listitem><simpara> Preview height in pixels
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-pixmap-entry-get-filename"/>gnome_pixmap_entry_get_filename ()</title>
+<indexterm><primary>gnome_pixmap_entry_get_filename</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_pixmap_entry_get_filename (<link linkend="GnomePixmapEntry">GnomePixmapEntry</link> *pentry);</programlisting>
+<para>
+Gets the filename of the image if the preview
+successfully loaded if preview is disabled.  If the preview is
+disabled, the file is only checked if it exists or not.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pentry</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GnomePixmapEntry widget
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Newly allocated string containing path, or <literal>NULL</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<refsect2><title><anchor id="GnomePixmapEntry--do-preview"/>The &quot;<literal>do-preview</literal>&quot; property</title>
+<programlisting>  &quot;do-preview&quot;           <link linkend="gboolean">gboolean</link>              : Read / Write</programlisting>
+<para>Whether the pixmap entry should have a preview.</para><para>Default value: FALSE</para>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

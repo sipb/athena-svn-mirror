@@ -54,8 +54,8 @@ struct _GnomeFontPickerPrivate {
         GnomeFontPickerMode mode : 2;
 
         /* Only for GNOME_FONT_PICKER_MODE_FONT_INFO */
-        gboolean      use_font_in_label : 1;
-        gboolean      show_size : 1;
+        guint      use_font_in_label : 1;
+        guint      show_size : 1;
 
 	GtkWidget     *font_dialog;
         GtkWidget     *inside;
@@ -1016,6 +1016,8 @@ gnome_font_picker_label_use_font_in_label  (GnomeFontPicker *gfp)
 	/* Modify font style */
 	gtk_widget_modify_font (gfp->_priv->font_label, desc);
 
+	pango_font_description_free (desc);
+	
 } /* gnome_font_picker_set_label_font */
 
 static void

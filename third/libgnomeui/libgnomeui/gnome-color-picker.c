@@ -294,9 +294,9 @@ render_dither (GnomeColorPicker *cp)
 		}
 	}
 	if (cp->_priv->drawing_area->window)
-		gdk_pixbuf_render_to_drawable (cp->_priv->pixbuf,
-					       cp->_priv->drawing_area->window,
+		gdk_draw_pixbuf (cp->_priv->drawing_area->window,
 					       cp->_priv->gc,
+					       cp->_priv->pixbuf,
 					       0, 0, 0, 0,
 					       COLOR_PICKER_WIDTH,
 					       COLOR_PICKER_HEIGHT,
@@ -347,9 +347,9 @@ expose_event (GtkWidget *widget, GdkEventExpose *event, gpointer data)
 
 	cp = GNOME_COLOR_PICKER (data);
 
-	gdk_pixbuf_render_to_drawable (cp->_priv->pixbuf,
-				       widget->window,
+	gdk_draw_pixbuf (widget->window,
 				       cp->_priv->gc,
+				       cp->_priv->pixbuf,
 				       event->area.x,
 				       event->area.y,
 				       event->area.x,
@@ -461,7 +461,7 @@ gnome_color_picker_instance_init (GnomeColorPicker *cp)
 	 * The application may very well override these.
 	 */
 	_add_atk_name_desc (GTK_WIDGET (cp),
-			    _("Color Selector"),
+			    NULL,
 			    _("Open a dialog to specify the color"));
 
 	alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
@@ -673,6 +673,8 @@ gnome_color_picker_clicked (GtkButton *button)
                                                      GTK_WINDOW(parent));
 
 		csd = GTK_COLOR_SELECTION_DIALOG (cp->_priv->cs_dialog);
+		gtk_color_selection_set_has_palette
+		    (GTK_COLOR_SELECTION (csd->colorsel), TRUE);
 		g_signal_connect (cp->_priv->cs_dialog, "destroy",
 				  G_CALLBACK (cs_destroy), cp);
 

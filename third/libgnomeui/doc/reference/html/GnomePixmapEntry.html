@@ -1,0 +1,145 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomePixmapEntry</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="fixme.html" title="Miscellaneous Widgets"><link rel="previous" href="GnomePixmap.html" title="GnomePixmap"><link rel="next" href="GnomeScores.html" title="GnomeScores"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomePixmapEntry.html#id2686754" title="Object Hierarchy"><link rel="section" href="GnomePixmapEntry.html#id2686818" title="Implemented Interfaces"><link rel="section" href="GnomePixmapEntry.html#id2686843" title="Properties"><link rel="section" href="GnomePixmapEntry.html#id2686872" title="Description"><link rel="section" href="GnomePixmapEntry.html#id2686882" title="Details"><link rel="section" href="GnomePixmapEntry.html#id2688108" title="Properties"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomePixmap.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="fixme.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeScores.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomePixmapEntry"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomePixmapEntry</span></h2><p>GnomePixmapEntry &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomePixmapEntry.html#GnomePixmapEntry-struct">GnomePixmapEntry</a>;
+GtkWidget*  <a href="GnomePixmapEntry.html#gnome-pixmap-entry-new">gnome_pixmap_entry_new</a>          (const gchar *history_id,
+                                             const gchar *browse_dialog_title,
+                                             gboolean do_preview);
+void        <a href="GnomePixmapEntry.html#gnome-pixmap-entry-construct">gnome_pixmap_entry_construct</a>    (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             const gchar *history_id,
+                                             const gchar *browse_dialog_title,
+                                             gboolean do_preview);
+void        <a href="GnomePixmapEntry.html#gnome-pixmap-entry-set-pixmap-subdir">gnome_pixmap_entry_set_pixmap_subdir</a>
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             const gchar *subdir);
+GtkWidget*  <a href="GnomePixmapEntry.html#gnome-pixmap-entry-gnome-file-entry">gnome_pixmap_entry_gnome_file_entry</a>
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);
+GtkWidget*  <a href="GnomePixmapEntry.html#gnome-pixmap-entry-gnome-entry">gnome_pixmap_entry_gnome_entry</a>  (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);
+GtkWidget*  <a href="GnomePixmapEntry.html#gnome-pixmap-entry-gtk-entry">gnome_pixmap_entry_gtk_entry</a>    (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);
+GtkWidget*  <a href="GnomePixmapEntry.html#gnome-pixmap-entry-scrolled-window">gnome_pixmap_entry_scrolled_window</a>
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);
+GtkWidget*  <a href="GnomePixmapEntry.html#gnome-pixmap-entry-preview-widget">gnome_pixmap_entry_preview_widget</a>
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);
+void        <a href="GnomePixmapEntry.html#gnome-pixmap-entry-set-preview">gnome_pixmap_entry_set_preview</a>  (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             gboolean do_preview);
+void        <a href="GnomePixmapEntry.html#gnome-pixmap-entry-set-preview-size">gnome_pixmap_entry_set_preview_size</a>
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             gint preview_w,
+                                             gint preview_h);
+gchar*      <a href="GnomePixmapEntry.html#gnome-pixmap-entry-get-filename">gnome_pixmap_entry_get_filename</a> (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2686754"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBox
+                           +----GtkVBox
+                                 +----<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a>
+                                       +----GnomePixmapEntry
+</pre></div><div class="refsect1" lang="en"><a name="id2686818"></a><h2>Implemented Interfaces</h2><p>
+GnomePixmapEntry implements
+ AtkImplementorIface and  GtkEditable.</p></div><div class="refsect1" lang="en"><a name="id2686843"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomePixmapEntry.html#GnomePixmapEntry--do-preview">do-preview</a>"           gboolean              : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2686872"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2686882"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2686888"></a><h3><a name="GnomePixmapEntry-struct"></a>struct GnomePixmapEntry</h3><a class="indexterm" name="id2686899"></a><pre class="programlisting">struct GnomePixmapEntry;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2686915"></a><h3><a name="gnome-pixmap-entry-new"></a>gnome_pixmap_entry_new ()</h3><a class="indexterm" name="id2686926"></a><pre class="programlisting">GtkWidget*  gnome_pixmap_entry_new          (const gchar *history_id,
+                                             const gchar *browse_dialog_title,
+                                             gboolean do_preview);</pre><p>
+Creates a new pixmap entry widget, if do_preview is false,
+there is no preview, the files are not loaded and thus are not
+checked to be real image files.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> The id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> Title of the browse dialog
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>do_preview</tt></i> :</span></td><td> boolean
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> New GnomePixmapEntry object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687041"></a><h3><a name="gnome-pixmap-entry-construct"></a>gnome_pixmap_entry_construct ()</h3><a class="indexterm" name="id2687053"></a><pre class="programlisting">void        gnome_pixmap_entry_construct    (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             const gchar *history_id,
+                                             const gchar *browse_dialog_title,
+                                             gboolean do_preview);</pre><p>
+Constructs the <i class="parameter"><tt>pentry</tt></i> object.  If do_preview is <tt class="literal">FALSE</tt>,
+there is no preview, the files are not loaded and thus are not
+checked to be real image files.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> A <a href="GnomePixmapEntry.html" title="GnomePixmapEntry"><span class="type">GnomePixmapEntry</span></a> object to construct
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> The id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> Title of the browse dialog
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>do_preview</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if preview is desired, <tt class="literal">FALSE</tt> if not.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687212"></a><h3><a name="gnome-pixmap-entry-set-pixmap-subdir"></a>gnome_pixmap_entry_set_pixmap_subdir ()</h3><a class="indexterm" name="id2687224"></a><pre class="programlisting">void        gnome_pixmap_entry_set_pixmap_subdir
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             const gchar *subdir);</pre><p>
+Sets the default path for the file entry. The new
+subdirectory should be specified relative to the default GNOME
+pixmap directory.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>subdir</tt></i> :</span></td><td> Subdirectory
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687300"></a><h3><a name="gnome-pixmap-entry-gnome-file-entry"></a>gnome_pixmap_entry_gnome_file_entry ()</h3><a class="indexterm" name="id2687313"></a><pre class="programlisting">GtkWidget*  gnome_pixmap_entry_gnome_file_entry
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_pixmap_entry_gnome_file_entry</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Get the <a href="GnomeFileEntry.html" title="GnomeFileEntry"><span class="type">GnomeFileEntry</span></a> component of the
+GnomePixmapEntry widget for lower-level manipulation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <a href="GnomeFileEntry.html" title="GnomeFileEntry"><span class="type">GnomeFileEntry</span></a> widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687404"></a><h3><a name="gnome-pixmap-entry-gnome-entry"></a>gnome_pixmap_entry_gnome_entry ()</h3><a class="indexterm" name="id2687416"></a><pre class="programlisting">GtkWidget*  gnome_pixmap_entry_gnome_entry  (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_pixmap_entry_gnome_entry</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Get the <a href="GnomeEntry.html" title="GnomeEntry"><span class="type">GnomeEntry</span></a> component of the
+GnomePixmapEntry widget for lower-level manipulation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <a href="GnomeEntry.html" title="GnomeEntry"><span class="type">GnomeEntry</span></a> widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687506"></a><h3><a name="gnome-pixmap-entry-gtk-entry"></a>gnome_pixmap_entry_gtk_entry ()</h3><a class="indexterm" name="id2687518"></a><pre class="programlisting">GtkWidget*  gnome_pixmap_entry_gtk_entry    (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_pixmap_entry_gtk_entry</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Get the <span class="type">GtkEntry</span> component of the
+GnomePixmapEntry for Gtk+-level manipulation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GtkEntry</span> widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687609"></a><h3><a name="gnome-pixmap-entry-scrolled-window"></a>gnome_pixmap_entry_scrolled_window ()</h3><a class="indexterm" name="id2687622"></a><pre class="programlisting">GtkWidget*  gnome_pixmap_entry_scrolled_window
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);</pre><p>
+Get the <span class="type">GtkScrolledWindow</span> widget that the preview
+is contained in.  Could be <tt class="literal">NULL</tt></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GtkScrolledWindow</span> widget or <tt class="literal">NULL</tt>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687712"></a><h3><a name="gnome-pixmap-entry-preview-widget"></a>gnome_pixmap_entry_preview_widget ()</h3><a class="indexterm" name="id2687725"></a><pre class="programlisting">GtkWidget*  gnome_pixmap_entry_preview_widget
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);</pre><p>
+Get the widget that is the preview.  Don't assume any
+type of widget.  Currently either <a href="GnomePixmap.html" title="GnomePixmap"><span class="type">GnomePixmap</span></a> or <span class="type">GtkLabel</span>, but it
+could change in the future. Could be <tt class="literal">NULL</tt></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the preview widget pointer or <tt class="literal">NULL</tt>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687816"></a><h3><a name="gnome-pixmap-entry-set-preview"></a>gnome_pixmap_entry_set_preview ()</h3><a class="indexterm" name="id2687828"></a><pre class="programlisting">void        gnome_pixmap_entry_set_preview  (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             gboolean do_preview);</pre><p>
+Sets whether or not the preview box is shown above
+the entry.  If the preview is on, we also load the files and check
+for them being real images.  If it is off, we don't check files
+to be real image files.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>do_preview</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> to show previews, <tt class="literal">FALSE</tt> to not show them.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2687916"></a><h3><a name="gnome-pixmap-entry-set-preview-size"></a>gnome_pixmap_entry_set_preview_size ()</h3><a class="indexterm" name="id2687929"></a><pre class="programlisting">void        gnome_pixmap_entry_set_preview_size
+                                            (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry,
+                                             gint preview_w,
+                                             gint preview_h);</pre><p>
+Sets the minimum size of the preview frame in pixels.
+This works only if the preview is enabled.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>preview_w</tt></i> :</span></td><td> Preview width in pixels
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>preview_h</tt></i> :</span></td><td> Preview height in pixels
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2688025"></a><h3><a name="gnome-pixmap-entry-get-filename"></a>gnome_pixmap_entry_get_filename ()</h3><a class="indexterm" name="id2688037"></a><pre class="programlisting">gchar*      gnome_pixmap_entry_get_filename (<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a> *pentry);</pre><p>
+Gets the filename of the image if the preview
+successfully loaded if preview is disabled.  If the preview is
+disabled, the file is only checked if it exists or not.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pentry</tt></i> :</span></td><td> Pointer to GnomePixmapEntry widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Newly allocated string containing path, or <tt class="literal">NULL</tt> on error.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2688108"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2688114"></a><h3><a name="GnomePixmapEntry--do-preview"></a>The "<tt class="literal">do-preview</tt>" property</h3><pre class="programlisting">  "do-preview"           gboolean              : Read / Write</pre><p>Whether the pixmap entry should have a preview.</p><p>Default value: FALSE</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomePixmap.html"><b>&lt;&lt; GnomePixmap</b></a></td><td align="right"><a accesskey="n" href="GnomeScores.html"><b>GnomeScores &gt;&gt;</b></a></td></tr></table></body></html>

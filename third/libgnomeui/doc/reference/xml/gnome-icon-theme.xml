@@ -1,0 +1,377 @@
+<refentry id="libgnomeui-GnomeIconTheme">
+<refmeta>
+<refentrytitle>GnomeIconTheme</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeIconTheme</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <link linkend="GnomeIconThemeClass">GnomeIconThemeClass</link>;
+typedef     <link linkend="GnomeIconTheme">GnomeIconTheme</link>;
+<link linkend="GnomeIconTheme">GnomeIconTheme</link>* <link linkend="gnome-icon-theme-new">gnome_icon_theme_new</link>        (void);
+<link linkend="void">void</link>        <link linkend="gnome-icon-theme-get-search-path">gnome_icon_theme_get_search_path</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             <link linkend="char">char</link> **path[],
+                                             <link linkend="int">int</link> *n_elements);
+<link linkend="void">void</link>        <link linkend="gnome-icon-theme-set-search-path">gnome_icon_theme_set_search_path</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *path[],
+                                             <link linkend="int">int</link> n_elements);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-icon-theme-get-allow-svg">gnome_icon_theme_get_allow_svg</link>  (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme);
+<link linkend="void">void</link>        <link linkend="gnome-icon-theme-set-allow-svg">gnome_icon_theme_set_allow_svg</link>  (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             <link linkend="gboolean">gboolean</link> allow_svg);
+<link linkend="char">char</link>*       <link linkend="gnome-icon-theme-get-example-icon-name">gnome_icon_theme_get_example_icon_name</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme);
+<link linkend="void">void</link>        <link linkend="gnome-icon-theme-append-search-path">gnome_icon_theme_append_search_path</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-icon-theme-prepend-search-path">gnome_icon_theme_prepend_search_path</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *path);
+<link linkend="void">void</link>        <link linkend="gnome-icon-theme-set-custom-theme">gnome_icon_theme_set_custom_theme</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *theme_name);
+<link linkend="char">char</link>*       <link linkend="gnome-icon-theme-lookup-icon">gnome_icon_theme_lookup_icon</link>    (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *icon_name,
+                                             <link linkend="int">int</link> size,
+                                             const <link linkend="GnomeIconData">GnomeIconData</link> **icon_data,
+                                             <link linkend="int">int</link> *base_size);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-icon-theme-has-icon">gnome_icon_theme_has_icon</link>       (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *icon_name);
+<link linkend="GList">GList</link>*      <link linkend="gnome-icon-theme-list-icons">gnome_icon_theme_list_icons</link>     (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *context);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-icon-theme-rescan-if-needed">gnome_icon_theme_rescan_if_needed</link>
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme);
+<link linkend="GnomeIconData">GnomeIconData</link>* <link linkend="gnome-icon-data-dup">gnome_icon_data_dup</link>          (const <link linkend="GnomeIconData">GnomeIconData</link> *icon_data);
+<link linkend="void">void</link>        <link linkend="gnome-icon-data-free">gnome_icon_data_free</link>            (<link linkend="GnomeIconData">GnomeIconData</link> *icon_data);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeIconThemeClass"/>struct GnomeIconThemeClass</title>
+<indexterm role="deprecated"><primary>GnomeIconThemeClass</primary></indexterm><programlisting>struct GnomeIconThemeClass {
+
+  GObjectClass parent_class;
+
+  void (* changed)  (GnomeIconTheme *icon_theme);
+};
+</programlisting>
+<warning><para><literal>GnomeIconThemeClass</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeIconTheme"/>GnomeIconTheme</title>
+<indexterm role="deprecated"><primary>GnomeIconTheme</primary></indexterm><programlisting>typedef GtkIconTheme GnomeIconTheme;
+</programlisting>
+<warning><para><literal>GnomeIconTheme</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-new"/>gnome_icon_theme_new ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_new</primary></indexterm><programlisting><link linkend="GnomeIconTheme">GnomeIconTheme</link>* gnome_icon_theme_new        (void);</programlisting>
+<warning><para><literal>gnome_icon_theme_new</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-get-search-path"/>gnome_icon_theme_get_search_path ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_get_search_path</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_theme_get_search_path
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             <link linkend="char">char</link> **path[],
+                                             <link linkend="int">int</link> *n_elements);</programlisting>
+<warning><para><literal>gnome_icon_theme_get_search_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_elements</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-set-search-path"/>gnome_icon_theme_set_search_path ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_set_search_path</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_theme_set_search_path
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *path[],
+                                             <link linkend="int">int</link> n_elements);</programlisting>
+<warning><para><literal>gnome_icon_theme_set_search_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_elements</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-get-allow-svg"/>gnome_icon_theme_get_allow_svg ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_get_allow_svg</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_icon_theme_get_allow_svg  (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme);</programlisting>
+<warning><para><literal>gnome_icon_theme_get_allow_svg</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-set-allow-svg"/>gnome_icon_theme_set_allow_svg ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_set_allow_svg</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_theme_set_allow_svg  (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             <link linkend="gboolean">gboolean</link> allow_svg);</programlisting>
+<warning><para><literal>gnome_icon_theme_set_allow_svg</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>allow_svg</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-get-example-icon-name"/>gnome_icon_theme_get_example_icon_name ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_get_example_icon_name</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_icon_theme_get_example_icon_name
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme);</programlisting>
+<warning><para><literal>gnome_icon_theme_get_example_icon_name</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-append-search-path"/>gnome_icon_theme_append_search_path ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_append_search_path</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_theme_append_search_path
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *path);</programlisting>
+<warning><para><literal>gnome_icon_theme_append_search_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-prepend-search-path"/>gnome_icon_theme_prepend_search_path ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_prepend_search_path</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_theme_prepend_search_path
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *path);</programlisting>
+<warning><para><literal>gnome_icon_theme_prepend_search_path</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>path</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-set-custom-theme"/>gnome_icon_theme_set_custom_theme ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_set_custom_theme</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_theme_set_custom_theme
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *theme_name);</programlisting>
+<warning><para><literal>gnome_icon_theme_set_custom_theme</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>theme_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-lookup-icon"/>gnome_icon_theme_lookup_icon ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_lookup_icon</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_icon_theme_lookup_icon    (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *icon_name,
+                                             <link linkend="int">int</link> size,
+                                             const <link linkend="GnomeIconData">GnomeIconData</link> **icon_data,
+                                             <link linkend="int">int</link> *base_size);</programlisting>
+<warning><para><literal>gnome_icon_theme_lookup_icon</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>size</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>base_size</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-has-icon"/>gnome_icon_theme_has_icon ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_has_icon</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_icon_theme_has_icon       (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *icon_name);</programlisting>
+<warning><para><literal>gnome_icon_theme_has_icon</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>icon_name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-list-icons"/>gnome_icon_theme_list_icons ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_list_icons</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_icon_theme_list_icons     (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme,
+                                             const <link linkend="char">char</link> *context);</programlisting>
+<warning><para><literal>gnome_icon_theme_list_icons</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>context</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-theme-rescan-if-needed"/>gnome_icon_theme_rescan_if_needed ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_theme_rescan_if_needed</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_icon_theme_rescan_if_needed
+                                            (<link linkend="GnomeIconTheme">GnomeIconTheme</link> *theme);</programlisting>
+<warning><para><literal>gnome_icon_theme_rescan_if_needed</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>theme</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-data-dup"/>gnome_icon_data_dup ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_data_dup</primary></indexterm><programlisting><link linkend="GnomeIconData">GnomeIconData</link>* gnome_icon_data_dup          (const <link linkend="GnomeIconData">GnomeIconData</link> *icon_data);</programlisting>
+<warning><para><literal>gnome_icon_data_dup</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>icon_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-icon-data-free"/>gnome_icon_data_free ()</title>
+<indexterm role="deprecated"><primary>gnome_icon_data_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_icon_data_free            (<link linkend="GnomeIconData">GnomeIconData</link> *icon_data);</programlisting>
+<warning><para><literal>gnome_icon_data_free</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>icon_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -43,6 +43,9 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkfilesel.h>
+#include <gtk/gtkfilechooserdialog.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 
@@ -61,9 +64,13 @@ struct _GnomeFileEntryPrivate {
 
 	char *browse_dialog_title;
 
-	gboolean is_modal : 1;
+	GtkFileChooserAction filechooser_action;
 
-	gboolean directory_entry : 1; /*optional flag to only do directories*/
+	guint is_modal : 1;
+
+	guint directory_entry : 1; /*optional flag to only do directories*/
+
+	guint use_filechooser : 1;
 
 	/* FIXME: Non local files!! */
 	/* FIXME: executable_entry as used in gnome_run */
@@ -106,7 +113,9 @@ enum {
 	PROP_FILENAME,
 	PROP_DEFAULT_PATH,
 	PROP_GNOME_ENTRY,
-	PROP_GTK_ENTRY
+	PROP_GTK_ENTRY,
+	PROP_USE_FILECHOOSER,
+	PROP_FILECHOOSER_ACTION
 };
 
 /* Note, can't use boilerplate with interfaces yet,
@@ -286,6 +295,26 @@ gnome_file_entry_class_init (GnomeFileEntryClass *class)
 						   "or query any of its parameters."),
 						 GTK_TYPE_ENTRY,
 						 G_PARAM_READABLE));
+	g_object_class_install_property (gobject_class,
+					 PROP_USE_FILECHOOSER,
+					 g_param_spec_boolean (
+						 "use_filechooser",
+						 _("Use GtkFileChooser"),
+						 _("Whether to use the new GtkFileChooser widget "
+						   "or the GtkFileSelection widget to select files."),
+						 FALSE,
+						 G_PARAM_READWRITE));
+
+	/* FIXME: mark the property strings for translation in 2.7.x */
+	g_object_class_install_property (gobject_class,
+					 PROP_FILECHOOSER_ACTION,
+					 g_param_spec_enum (
+						 "filechooser_action",
+						 "GtkFileChooser Action",
+						 "The type of operation that the file selector is performing",
+						 GTK_TYPE_FILE_CHOOSER_ACTION,
+						 GTK_FILE_CHOOSER_ACTION_OPEN,
+						 G_PARAM_READWRITE));
 
 	class->browse_clicked = browse_clicked;
 	class->activate = NULL;
@@ -326,6 +355,14 @@ fentry_set_property (GObject *object, guint param_id,
 
 	case PROP_DEFAULT_PATH:
 		gnome_file_entry_set_default_path (fentry, g_value_get_string (value));
+		break;
+
+	case PROP_USE_FILECHOOSER:
+		priv->use_filechooser = g_value_get_boolean (value);
+		break;
+
+	case PROP_FILECHOOSER_ACTION:
+		priv->filechooser_action = g_value_get_enum (value);
 		break;
 
 	default:
@@ -382,6 +419,14 @@ fentry_get_property (GObject *object, guint param_id,
 		g_value_set_object (value, gnome_file_entry_gtk_entry (fentry));
 		break;
 
+	case PROP_USE_FILECHOOSER:
+		g_value_set_boolean (value, priv->use_filechooser);
+		break;
+
+	case PROP_FILECHOOSER_ACTION:
+		g_value_set_enum (value, priv->filechooser_action);
+		break;
+
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
 		break;
@@ -391,19 +436,37 @@ fentry_get_property (GObject *object, guint param_id,
 static void
 browse_dialog_ok (GtkWidget *widget, gpointer data)
 {
-	GtkFileSelection *fs;
+	GtkWidget *fw;
 	GnomeFileEntry *fentry;
 	GtkWidget *entry;
+	const gchar *locale_filename;
+	gchar *utf8_filename;
 
-	fs = GTK_FILE_SELECTION (data);
-	fentry = GNOME_FILE_ENTRY (g_object_get_data (G_OBJECT (fs), "gnome_file_entry"));
+	fw = GTK_WIDGET (data);
+	fentry = GNOME_FILE_ENTRY (g_object_get_data (G_OBJECT (fw), "gnome_file_entry"));
 	entry = gnome_file_entry_gtk_entry (fentry);
 
-	gtk_entry_set_text (GTK_ENTRY (entry),
-			    gtk_file_selection_get_filename (fs));
+	if (GTK_IS_FILE_CHOOSER (fentry->fsw))
+		locale_filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fw));
+	else
+		locale_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fw));
+
+	utf8_filename = g_filename_to_utf8 (locale_filename, -1, NULL,
+					    NULL, NULL);
+	gtk_entry_set_text (GTK_ENTRY (entry), utf8_filename);
+	g_free (utf8_filename);
 	/* Is this evil? */
-	g_signal_emit_by_name (entry, "activate");
-	gtk_widget_destroy (GTK_WIDGET (fs));
+	g_signal_emit_by_name (entry, "changed");
+	gtk_widget_destroy (fw);
+}
+
+static void
+browse_dialog_response (GtkWidget *widget, gint response, gpointer data)
+{
+	if (response == GTK_RESPONSE_ACCEPT)
+		browse_dialog_ok (widget, data);
+	else
+		gtk_widget_destroy (GTK_WIDGET (data));
 }
 
 static void
@@ -454,6 +517,8 @@ tilde_expand (const char *str)
 	return g_strconcat (passwd->pw_dir, G_DIR_SEPARATOR_S, p, NULL);
 }
 
+/* This is only used for the file dialog.  It can end up also being
+ * the default path. */
 static gchar *
 build_filename (GnomeFileEntry *fentry)
 {
@@ -468,11 +533,11 @@ build_filename (GnomeFileEntry *fentry)
 		(GTK_ENTRY (gnome_file_entry_gtk_entry (fentry)));
 
 	if (text == NULL || text[0] == '\0')
-		return NULL;
+		return g_strconcat (fentry->default_path, "/", NULL);
 
 	file = _gnome_file_entry_expand_filename (text, fentry->default_path);
 	if (file == NULL)
-		return NULL;
+		return g_strconcat (fentry->default_path, "/", NULL);
 
 	/* Now append a '/' if it doesn't exist and we're in directory only
 	 * mode.  We also have to do this if the file exists and it *is* a
@@ -500,62 +565,138 @@ build_filename (GnomeFileEntry *fentry)
 static void
 browse_clicked(GnomeFileEntry *fentry)
 {
-	GtkFileSelection *fs;
+	GtkWidget *fw;
 	char *p;
 	GtkWidget *toplevel;
+	GClosure *closure;
 
 	/*if it already exists make sure it's shown and raised*/
-	if(fentry->fsw) {
-		gtk_widget_show(fentry->fsw);
-		if(fentry->fsw->window)
-			gdk_window_raise(fentry->fsw->window);
-		fs = GTK_FILE_SELECTION(fentry->fsw);
-		gtk_widget_set_sensitive(fs->file_list,
+	if (fentry->fsw) {
+		if (GTK_IS_FILE_CHOOSER (fentry->fsw)) {
+			fw = fentry->fsw;
+		
+			gtk_widget_show (fw);
+
+			if (fw->window)
+				gdk_window_raise (fw->window);
+
+			if (fentry->_priv->directory_entry)
+				gtk_file_chooser_set_action (GTK_FILE_CHOOSER (fw), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+			else
+				gtk_file_chooser_set_action (GTK_FILE_CHOOSER (fw), GTK_FILE_CHOOSER_ACTION_OPEN);
+
+			p = build_filename (fentry);
+			if (p) {
+				gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (fw), p);
+				g_free (p);
+			}
+
+			return;
+		} else {
+			fw = fentry->fsw;
+		
+			gtk_widget_show(fw);
+			if(fw->window)
+				gdk_window_raise(fw->window);
+
+			gtk_widget_set_sensitive(GTK_FILE_SELECTION (fw)->file_list,
+						 ! fentry->_priv->directory_entry);
+
+			p = build_filename (fentry);
+			if (p) {
+				gtk_file_selection_set_filename (GTK_FILE_SELECTION (fw), p);
+				g_free (p);
+			}
+			
+			return;
+		}
+	}
+
+	/* doesn't exist, create it */
+	if (fentry->_priv->use_filechooser) {
+		GtkFileChooserAction action;
+
+		if (fentry->_priv->directory_entry)
+			action = GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER;
+		else
+			action = fentry->_priv->filechooser_action;
+
+		fentry->fsw = gtk_file_chooser_dialog_new (fentry->_priv->browse_dialog_title
+							   ? fentry->_priv->browse_dialog_title
+							   : _("Select file"),
+							   NULL,
+							   action,
+							   GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+							   NULL);
+
+		if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
+			gtk_dialog_add_button (GTK_DIALOG (fentry->fsw),
+					       GTK_STOCK_SAVE,
+					       GTK_RESPONSE_ACCEPT);
+		else
+			gtk_dialog_add_button (GTK_DIALOG (fentry->fsw),
+					       GTK_STOCK_OPEN,
+					       GTK_RESPONSE_ACCEPT);
+
+		fw = fentry->fsw;
+
+		gtk_dialog_set_default_response (GTK_DIALOG (fw), GTK_RESPONSE_ACCEPT);
+
+		p = build_filename (fentry);
+		if (p) {
+			gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (fw), p);
+			g_free (p);
+		}
+
+		closure = g_cclosure_new (G_CALLBACK (browse_dialog_response), fw, NULL);
+		g_object_watch_closure (G_OBJECT (fw), closure);
+
+		g_signal_connect_closure_by_id (fw,
+						g_signal_lookup ("response", G_OBJECT_TYPE (GTK_FILE_CHOOSER (fw))),
+						0, closure, FALSE);
+	} else {
+		fentry->fsw = gtk_file_selection_new (fentry->_priv->browse_dialog_title
+						      ? fentry->_priv->browse_dialog_title
+						      : _("Select file"));
+
+		fw = fentry->fsw;
+		
+		gtk_widget_set_sensitive(GTK_FILE_SELECTION (fw)->file_list,
 					 ! fentry->_priv->directory_entry);
 
 		p = build_filename (fentry);
-		if (p != NULL) {
-			gtk_file_selection_set_filename (fs, p);
+		if (p) {
+			gtk_file_selection_set_filename (GTK_FILE_SELECTION (fw), p);
 			g_free (p);
 		}
-		return;
+
+		closure = g_cclosure_new (G_CALLBACK (browse_dialog_ok), fw, NULL);
+		g_object_watch_closure (G_OBJECT (fw), closure);
+
+		g_signal_connect_closure_by_id (GTK_FILE_SELECTION (fw)->ok_button,
+						g_signal_lookup ("clicked", G_OBJECT_TYPE (GTK_FILE_SELECTION (fw)->ok_button)),
+						0, closure, FALSE);
+
+		g_signal_connect_swapped (GTK_FILE_SELECTION (fw)->cancel_button, "clicked",
+					  G_CALLBACK (gtk_widget_destroy),
+					  fw);
 	}
 
-
-	fentry->fsw = gtk_file_selection_new (fentry->_priv->browse_dialog_title
-					      ? fentry->_priv->browse_dialog_title
-					      : _("Select file"));
-
-	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (fentry));
-	if (GTK_WIDGET_TOPLEVEL (toplevel) && GTK_IS_WINDOW (toplevel))
-		gtk_window_set_transient_for (GTK_WINDOW (fentry->fsw), GTK_WINDOW(toplevel));
-
-	g_object_set_data (G_OBJECT (fentry->fsw), "gnome_file_entry", fentry);
-
-	fs = GTK_FILE_SELECTION (fentry->fsw);
-	gtk_widget_set_sensitive(fs->file_list,
-				 ! fentry->_priv->directory_entry);
-
-	p = build_filename (fentry);
-	if (p != NULL) {
-		gtk_file_selection_set_filename (fs, p);
-		g_free (p);
-	}
-
-	g_signal_connect (fs->ok_button, "clicked",
-			  G_CALLBACK (browse_dialog_ok),
-			  fs);
-	g_signal_connect_swapped (fs->cancel_button, "clicked",
-				  G_CALLBACK (gtk_widget_destroy),
-				  fentry->fsw);
-	g_signal_connect (fentry->fsw, "destroy",
+	g_signal_connect (fw, "destroy",
 			  G_CALLBACK (browse_dialog_kill),
 			  fentry);
 
-	if (fentry->_priv->is_modal)
-		gtk_window_set_modal (GTK_WINDOW (fentry->fsw), TRUE);
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (fentry));
 
-	gtk_widget_show (fentry->fsw);
+	if (GTK_WIDGET_TOPLEVEL (toplevel) && GTK_IS_WINDOW (toplevel))
+		gtk_window_set_transient_for (GTK_WINDOW (fw), GTK_WINDOW(toplevel));
+
+	g_object_set_data (G_OBJECT (fw), "gnome_file_entry", fentry);
+
+	if (fentry->_priv->is_modal)
+		gtk_window_set_modal (GTK_WINDOW (fw), TRUE);
+
+	gtk_widget_show (fw);
 }
 
 static void

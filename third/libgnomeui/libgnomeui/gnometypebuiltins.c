@@ -315,6 +315,7 @@ static const GFlagsValue _gnome_icon_lookup_flags_values[] = {
   { GNOME_ICON_LOOKUP_FLAGS_NONE, "GNOME_ICON_LOOKUP_FLAGS_NONE", "none" },
   { GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT, "GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT", "embedding-text" },
   { GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES, "GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES", "show-small-images-as-themselves" },
+  { GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES, "GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES", "allow-svg-as-themselves" },
   { 0, NULL, NULL }
 };
 
@@ -365,6 +366,27 @@ gnome_mdi_mode_get_type (void)
 
   if (!type)
     type = g_enum_register_static ("GnomeMDIMode", _gnome_mdi_mode_values);
+
+  return type;
+}
+
+
+
+/* enumerations from "gnome-password-dialog.h" */
+static const GEnumValue _gnome_password_dialog_remember_values[] = {
+  { GNOME_PASSWORD_DIALOG_REMEMBER_NOTHING, "GNOME_PASSWORD_DIALOG_REMEMBER_NOTHING", "nothing" },
+  { GNOME_PASSWORD_DIALOG_REMEMBER_SESSION, "GNOME_PASSWORD_DIALOG_REMEMBER_SESSION", "session" },
+  { GNOME_PASSWORD_DIALOG_REMEMBER_FOREVER, "GNOME_PASSWORD_DIALOG_REMEMBER_FOREVER", "forever" },
+  { 0, NULL, NULL }
+};
+
+GType
+gnome_password_dialog_remember_get_type (void)
+{
+  static GType type = 0;
+
+  if (!type)
+    type = g_enum_register_static ("GnomePasswordDialogRemember", _gnome_password_dialog_remember_values);
 
   return type;
 }

@@ -1,0 +1,182 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeDruid</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="druids.html" title="Druids"><link rel="previous" href="druids.html" title="Druids"><link rel="next" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeDruid.html#id2595994" title="Object Hierarchy"><link rel="section" href="GnomeDruid.html#id2596036" title="Implemented Interfaces"><link rel="section" href="GnomeDruid.html#id2596053" title="Properties"><link rel="section" href="GnomeDruid.html#id2596100" title="Signal Prototypes"><link rel="section" href="GnomeDruid.html#id2596174" title="Description"><link rel="section" href="GnomeDruid.html#id2596184" title="Details"><link rel="section" href="GnomeDruid.html#id2597637" title="Properties"><link rel="section" href="GnomeDruid.html#id2597719" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="druids.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="druids.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeDruidPage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeDruid"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeDruid</span></h2><p>GnomeDruid &#8212; Widget for sequentially stepping through some pages.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeDruid.html#GnomeDruid-struct">GnomeDruid</a>;
+GtkWidget*  <a href="GnomeDruid.html#gnome-druid-new">gnome_druid_new</a>                 (void);
+void        <a href="GnomeDruid.html#gnome-druid-set-buttons-sensitive">gnome_druid_set_buttons_sensitive</a>
+                                            (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             gboolean back_sensitive,
+                                             gboolean next_sensitive,
+                                             gboolean cancel_sensitive,
+                                             gboolean help_sensitive);
+void        <a href="GnomeDruid.html#gnome-druid-set-show-finish">gnome_druid_set_show_finish</a>     (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             gboolean show_finish);
+void        <a href="GnomeDruid.html#gnome-druid-set-show-help">gnome_druid_set_show_help</a>       (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             gboolean show_help);
+void        <a href="GnomeDruid.html#gnome-druid-prepend-page">gnome_druid_prepend_page</a>        (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);
+void        <a href="GnomeDruid.html#gnome-druid-insert-page">gnome_druid_insert_page</a>         (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *back_page,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);
+void        <a href="GnomeDruid.html#gnome-druid-append-page">gnome_druid_append_page</a>         (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);
+void        <a href="GnomeDruid.html#gnome-druid-set-page">gnome_druid_set_page</a>            (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);
+GtkWidget*  <a href="GnomeDruid.html#gnome-druid-new-with-window">gnome_druid_new_with_window</a>     (const char *title,
+                                             GtkWindow *parent,
+                                             gboolean close_on_cancel,
+                                             GtkWidget **window);
+void        <a href="GnomeDruid.html#gnome-druid-construct-with-window">gnome_druid_construct_with_window</a>
+                                            (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             const char *title,
+                                             GtkWindow *parent,
+                                             gboolean close_on_cancel,
+                                             GtkWidget **window);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2595994"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GnomeDruid
+</pre></div><div class="refsect1" lang="en"><a name="id2596036"></a><h2>Implemented Interfaces</h2><p>
+GnomeDruid implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2596053"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomeDruid.html#GnomeDruid--show-finish">show-finish</a>"          gboolean              : Read / Write
+  "<a href="GnomeDruid.html#GnomeDruid--show-help">show-help</a>"            gboolean              : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2596100"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeDruid.html#GnomeDruid-cancel">cancel</a>"    void        user_function      (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                            gpointer user_data);
+"<a href="GnomeDruid.html#GnomeDruid-help">help</a>"      void        user_function      (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2596174"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2596184"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2596190"></a><h3><a name="GnomeDruid-struct"></a>struct GnomeDruid</h3><a class="indexterm" name="id2596201"></a><pre class="programlisting">struct GnomeDruid;</pre><p>
+The widget which ultimately holds all of the druid's pages and information.
+This is the widget which the application developer then places inside an outer
+widget, such as a dialog box for ultimate display.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2596219"></a><h3><a name="gnome-druid-new"></a>gnome_druid_new ()</h3><a class="indexterm" name="id2596230"></a><pre class="programlisting">GtkWidget*  gnome_druid_new                 (void);</pre><p>
+Creates a new <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget.  You need to add this
+to a dialog yourself, it is not a dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  A new <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596286"></a><h3><a name="gnome-druid-set-buttons-sensitive"></a>gnome_druid_set_buttons_sensitive ()</h3><a class="indexterm" name="id2596299"></a><pre class="programlisting">void        gnome_druid_set_buttons_sensitive
+                                            (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             gboolean back_sensitive,
+                                             gboolean next_sensitive,
+                                             gboolean cancel_sensitive,
+                                             gboolean help_sensitive);</pre><p>
+Sets the sensitivity of <i class="parameter"><tt>druid</tt></i>'s control-buttons.  If the
+variables are <tt class="literal">TRUE</tt>, then they will be clickable. This function is used
+primarily by the actual GnomeDruidPage widgets.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A Druid.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>back_sensitive</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if the back button is sensitive.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>next_sensitive</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if the next button is sensitive.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancel_sensitive</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if the cancel button is sensitive.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>help_sensitive</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if the help button is sensitive.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596475"></a><h3><a name="gnome-druid-set-show-finish"></a>gnome_druid_set_show_finish ()</h3><a class="indexterm" name="id2596487"></a><pre class="programlisting">void        gnome_druid_set_show_finish     (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             gboolean show_finish);</pre><p>
+Used to specify if <i class="parameter"><tt>druid</tt></i> is currently showing the last page of the sequence
+(and hence should display "Finish", rather than "Next").</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>show_finish</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt>, then the "Next" button is changed to be "Finish"
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596580"></a><h3><a name="gnome-druid-set-show-help"></a>gnome_druid_set_show_help ()</h3><a class="indexterm" name="id2596592"></a><pre class="programlisting">void        gnome_druid_set_show_help       (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             gboolean show_help);</pre><p>
+Sets the "Help" button on the druid to be visible in the lower left corner of
+the widget, if <i class="parameter"><tt>show_help</tt></i> is <tt class="literal">TRUE</tt>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>show_help</tt></i> :</span></td><td> <tt class="literal">TRUE</tt>, if the "Help" button is to be shown, <tt class="literal">FALSE</tt> otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596696"></a><h3><a name="gnome-druid-prepend-page"></a>gnome_druid_prepend_page ()</h3><a class="indexterm" name="id2596707"></a><pre class="programlisting">void        gnome_druid_prepend_page        (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);</pre><p>
+This will prepend a GnomeDruidPage into the internal list of
+pages that the <i class="parameter"><tt>druid</tt></i> has. Since <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> is just a container, you will
+need to also call <tt class="function">gtk_widget_show()</tt> on the page, otherwise the page will not
+be shown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A Druid widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>page</tt></i> :</span></td><td> The page to be inserted.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596808"></a><h3><a name="gnome-druid-insert-page"></a>gnome_druid_insert_page ()</h3><a class="indexterm" name="id2596819"></a><pre class="programlisting">void        gnome_druid_insert_page         (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *back_page,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);</pre><p>
+This will insert <i class="parameter"><tt>page</tt></i> after <i class="parameter"><tt>back_page</tt></i> into the list of
+internal pages that the <i class="parameter"><tt>druid</tt></i> has.  If <i class="parameter"><tt>back_page</tt></i> is not present in the
+list or <tt class="literal">NULL</tt>, <i class="parameter"><tt>page</tt></i> will be prepended to the list.  Since <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> is
+just a container, you will need to also call <tt class="function">gtk_widget_show()</tt> on the page,
+otherwise the page will not be shown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>back_page</tt></i> :</span></td><td> The page prior to the page to be inserted.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>page</tt></i> :</span></td><td> The page to insert.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2596978"></a><h3><a name="gnome-druid-append-page"></a>gnome_druid_append_page ()</h3><a class="indexterm" name="id2596990"></a><pre class="programlisting">void        gnome_druid_append_page         (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);</pre><p>
+This will append <i class="parameter"><tt>page</tt></i> onto the end of the internal list.
+Since <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> is just a container, you will need to also call
+<tt class="function">gtk_widget_show()</tt> on the page, otherwise the page will not be shown.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>page</tt></i> :</span></td><td> The <a href="GnomeDruidPage.html" title="GnomeDruidPage"><span class="type">GnomeDruidPage</span></a> to be appended.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597104"></a><h3><a name="gnome-druid-set-page"></a>gnome_druid_set_page ()</h3><a class="indexterm" name="id2597115"></a><pre class="programlisting">void        gnome_druid_set_page            (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             <a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *page);</pre><p>
+This will make <i class="parameter"><tt>page</tt></i> the currently showing page in the druid.
+<i class="parameter"><tt>page</tt></i> must already be in the druid.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> A <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>page</tt></i> :</span></td><td> The <a href="GnomeDruidPage.html" title="GnomeDruidPage"><span class="type">GnomeDruidPage</span></a> to be brought to the foreground.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597216"></a><h3><a name="gnome-druid-new-with-window"></a>gnome_druid_new_with_window ()</h3><a class="indexterm" name="id2597229"></a><pre class="programlisting">GtkWidget*  gnome_druid_new_with_window     (const char *title,
+                                             GtkWindow *parent,
+                                             gboolean close_on_cancel,
+                                             GtkWidget **window);</pre><p>
+Creates a new <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget. It also creates a new
+toplevel window with the title of <i class="parameter"><tt>title</tt></i> (which can be <tt class="literal">NULL</tt>) and a parent
+of <i class="parameter"><tt>parent</tt></i> (which also can be <tt class="literal">NULL</tt>). The window and the druid will both be
+shown.  If you need the window widget pointer you can optionally get it
+through the last argument.  When the druid gets destroyed, so will the
+window that is created here.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> A title of the window.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> The parent of this window (transient_for).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>close_on_cancel</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if the window should be closed when cancel is
+pressed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>window</tt></i> :</span></td><td> Optional return of the <span class="type">GtkWindow</span> created.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  A new <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597414"></a><h3><a name="gnome-druid-construct-with-window"></a>gnome_druid_construct_with_window ()</h3><a class="indexterm" name="id2597426"></a><pre class="programlisting">void        gnome_druid_construct_with_window
+                                            (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                             const char *title,
+                                             GtkWindow *parent,
+                                             gboolean close_on_cancel,
+                                             GtkWidget **window);</pre><p>
+Creates a new toplevel window with the title of <i class="parameter"><tt>title</tt></i> (which
+can be <tt class="literal">NULL</tt>) and a parent of <i class="parameter"><tt>parent</tt></i> (which also can be <tt class="literal">NULL</tt>).  The <i class="parameter"><tt>druid</tt></i>
+will be placed inside this window. The window and the druid will both be
+shown. If you need the window widget pointer you can optionally get it
+through the last argument. When the druid gets destroyed, so will the
+window that is created here.
+</p><p>
+See also <a href="GnomeDruid.html#gnome-druid-new-with-window"><tt class="function">gnome_druid_new_with_window()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td> The <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> A title of the window.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> The parent of this window (transient_for).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>close_on_cancel</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if the window should be closed when cancel is
+pressed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>window</tt></i> :</span></td><td> Optional return of the <span class="type">GtkWindow</span> created.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2597637"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2597642"></a><h3><a name="GnomeDruid--show-finish"></a>The "<tt class="literal">show-finish</tt>" property</h3><pre class="programlisting">  "show-finish"          gboolean              : Read / Write</pre><p>Show the 'Finish' button instead of the 'Next' button.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2597680"></a><h3><a name="GnomeDruid--show-help"></a>The "<tt class="literal">show-help</tt>" property</h3><pre class="programlisting">  "show-help"            gboolean              : Read / Write</pre><p>Show the 'Help' button.</p><p>Default value: FALSE</p></div></div><div class="refsect1" lang="en"><a name="id2597719"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2597724"></a><h3><a name="GnomeDruid-cancel"></a>The "cancel" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597797"></a><h3><a name="GnomeDruid-help"></a>The "help" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeDruid.html" title="GnomeDruid">GnomeDruid</a> *druid,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="druids.html"><b>&lt;&lt; Druids</b></a></td><td align="right"><a accesskey="n" href="GnomeDruidPage.html"><b>GnomeDruidPage &gt;&gt;</b></a></td></tr></table></body></html>

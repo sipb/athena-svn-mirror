@@ -1,0 +1,130 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeDruidPage</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="druids.html" title="Druids"><link rel="previous" href="GnomeDruid.html" title="GnomeDruid"><link rel="next" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeDruidPage.html#id2600441" title="Object Hierarchy"><link rel="section" href="GnomeDruidPage.html#id2600509" title="Implemented Interfaces"><link rel="section" href="GnomeDruidPage.html#id2600526" title="Signal Prototypes"><link rel="section" href="GnomeDruidPage.html#id2600736" title="Description"><link rel="section" href="GnomeDruidPage.html#id2600752" title="Details"><link rel="section" href="GnomeDruidPage.html#id2601209" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeDruid.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="druids.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeDruidPageEdge.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeDruidPage"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeDruidPage</span></h2><p>GnomeDruidPage &#8212; A widget representing a single page inside a druid.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeDruidPage.html#GnomeDruidPage-struct">GnomeDruidPage</a>;
+GtkWidget*  <a href="GnomeDruidPage.html#gnome-druid-page-new">gnome_druid_page_new</a>            (void);
+gboolean    <a href="GnomeDruidPage.html#gnome-druid-page-next">gnome_druid_page_next</a>           (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);
+void        <a href="GnomeDruidPage.html#gnome-druid-page-prepare">gnome_druid_page_prepare</a>        (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);
+gboolean    <a href="GnomeDruidPage.html#gnome-druid-page-back">gnome_druid_page_back</a>           (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);
+gboolean    <a href="GnomeDruidPage.html#gnome-druid-page-cancel">gnome_druid_page_cancel</a>         (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);
+void        <a href="GnomeDruidPage.html#gnome-druid-page-finish">gnome_druid_page_finish</a>         (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2600441"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBin
+                           +----GnomeDruidPage
+                                 +----<a href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge">GnomeDruidPageEdge</a>
+                                 +----<a href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard">GnomeDruidPageStandard</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2600509"></a><h2>Implemented Interfaces</h2><p>
+GnomeDruidPage implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2600526"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeDruidPage.html#GnomeDruidPage-back">back</a>"      gboolean    user_function      (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);
+"<a href="GnomeDruidPage.html#GnomeDruidPage-cancel">cancel</a>"    gboolean    user_function      (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);
+"<a href="GnomeDruidPage.html#GnomeDruidPage-finish">finish</a>"    void        user_function      (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);
+"<a href="GnomeDruidPage.html#GnomeDruidPage-next">next</a>"      gboolean    user_function      (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);
+"<a href="GnomeDruidPage.html#GnomeDruidPage-prepare">prepare</a>"   void        user_function      (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2600736"></a><h2>Description</h2><p>
+The functions in this page are mostly only for the information of developers --
+they should never needt o call them directly. Typically, a druid will connect
+to the various signals described here as a way of controlling the behaviour of
+druids that do not just proceed in a front-to-back fashion (for example, where
+the subsequent pages depend upon the choice made at some point).
+
+</p></div><div class="refsect1" lang="en"><a name="id2600752"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2600758"></a><h3><a name="GnomeDruidPage-struct"></a>struct GnomeDruidPage</h3><a class="indexterm" name="id2600769"></a><pre class="programlisting">struct GnomeDruidPage;</pre><p>
+The widget for a aprticular page in a druid.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2600785"></a><h3><a name="gnome-druid-page-new"></a>gnome_druid_page_new ()</h3><a class="indexterm" name="id2600797"></a><pre class="programlisting">GtkWidget*  gnome_druid_page_new            (void);</pre><p>
+Creates a new <a href="GnomeDruidPage.html" title="GnomeDruidPage"><span class="type">GnomeDruidPage</span></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The newly created <a href="GnomeDruidPage.html" title="GnomeDruidPage"><span class="type">GnomeDruidPage</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600852"></a><h3><a name="gnome-druid-page-next"></a>gnome_druid_page_next ()</h3><a class="indexterm" name="id2600864"></a><pre class="programlisting">gboolean    gnome_druid_page_next           (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);</pre><p>
+This will emit the "next" signal for that particular page.  It
+is called by gnome-druid exclusively.  It is expected that non-linear Druid's
+will override this signal and return TRUE if it handles changing pages.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid_page</tt></i> :</span></td><td> A DruidPage widget.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> This function will return FALSE by default.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600928"></a><h3><a name="gnome-druid-page-prepare"></a>gnome_druid_page_prepare ()</h3><a class="indexterm" name="id2600939"></a><pre class="programlisting">void        gnome_druid_page_prepare        (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);</pre><p>
+This emits the "prepare" signal for the page.  It is called by
+gnome-druid exclusively. This function is called immediately prior to a druid
+page being shown so that it can "prepare" for display.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid_page</tt></i> :</span></td><td> A DruidPage widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600993"></a><h3><a name="gnome-druid-page-back"></a>gnome_druid_page_back ()</h3><a class="indexterm" name="id2601004"></a><pre class="programlisting">gboolean    gnome_druid_page_back           (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);</pre><p>
+This will emit the "back" signal for that particular page.  It
+is called by gnome-druid exclusively.  It is expected that non-linear Druid's
+will override this signal and return TRUE if it handles changing pages.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid_page</tt></i> :</span></td><td> A DruidPage widget.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> This function will return FALSE by default.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601069"></a><h3><a name="gnome-druid-page-cancel"></a>gnome_druid_page_cancel ()</h3><a class="indexterm" name="id2601080"></a><pre class="programlisting">gboolean    gnome_druid_page_cancel         (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);</pre><p>
+This will emit the "cancel" signal for that particular page.  It
+is called by gnome-druid exclusively.  It is expected that a Druid will
+override this signal and return TRUE if it does not want to exit.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid_page</tt></i> :</span></td><td> A DruidPage widget.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> This function will return FALSE by default.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601145"></a><h3><a name="gnome-druid-page-finish"></a>gnome_druid_page_finish ()</h3><a class="indexterm" name="id2601156"></a><pre class="programlisting">void        gnome_druid_page_finish         (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druid_page);</pre><p>
+This emits the "finish" signal for the page.  It is called by
+gnome-druid exclusively.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druid_page</tt></i> :</span></td><td> A DruidPage widget.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2601209"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2601215"></a><h3><a name="GnomeDruidPage-back"></a>The "back" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druidpage</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>The <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> containg this page.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if the signal handler has changed the page (since this stops
+all further emission of the signal), <tt class="literal">FALSE</tt> otherwise.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601340"></a><h3><a name="GnomeDruidPage-cancel"></a>The "cancel" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druidpage</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>The <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> containg this page.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if the druid does not want to exit yet, <tt class="literal">FALSE</tt> if the exit
+should continue.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601464"></a><h3><a name="GnomeDruidPage-finish"></a>The "finish" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druidpage</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>The <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> containg this page.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601567"></a><h3><a name="GnomeDruidPage-next"></a>The "next" signal</h3><pre class="programlisting">gboolean    user_function                  (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druidpage</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>The <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> containg this page.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if the signal handler has changed the page (since this stops
+all further emission of the signal), <tt class="literal">FALSE</tt> otherwise.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601692"></a><h3><a name="GnomeDruidPage-prepare"></a>The "prepare" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeDruidPage.html" title="GnomeDruidPage">GnomeDruidPage</a> *druidpage,
+                                            GtkWidget *widget,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>druidpage</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>The <a href="GnomeDruid.html" title="GnomeDruid"><span class="type">GnomeDruid</span></a> containg this page.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeDruid.html"><b>&lt;&lt; GnomeDruid</b></a></td><td align="right"><a accesskey="n" href="GnomeDruidPageEdge.html"><b>GnomeDruidPageEdge &gt;&gt;</b></a></td></tr></table></body></html>

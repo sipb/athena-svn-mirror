@@ -1,18 +1,13 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
-#undef HAVE_LIBSM
-#undef ENABLE_NLS
-#undef HAVE_CATGETS
-#undef HAVE_GETTEXT
-#undef HAVE_LC_MESSAGES
-#undef HAVE_STPCPY
-#undef GETTEXT_PACKAGE
-#undef GNOME_ENABLE_DEBUG
-#undef HAVE_ESD
-#undef HAVE_LIBAUDIOFILE
-#undef HAVE_LIBJPEG
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
+
+/* Name of gettext translation domain for library */
+#undef GETTEXT_PACKAGE
+
+/* Define the location where the catalogs will be installed */
+#undef GNOMEUILOCALEDIR
 
 /* Enable additional debugging at the expense of performance and size */
 #undef GNOME_ENABLE_DEBUG
@@ -29,6 +24,9 @@
 /* Define to 1 if you have the <dl.h> header file. */
 #undef HAVE_DL_H
 
+/* Define to 1 if you have libesd installed */
+#undef HAVE_ESD
+
 /* Define if the GNU gettext() function is already present or preinstalled. */
 #undef HAVE_GETTEXT
 
@@ -41,8 +39,17 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
+/* Define to 1 if you have libaudiofile installed */
+#undef HAVE_LIBAUDIOFILE
+
+/* Define to 1 if you have libjpeg installed */
+#undef HAVE_LIBJPEG
+
 /* Define to 1 if you have the `popt' library (-lpopt). */
 #undef HAVE_LIBPOPT
+
+/* Define to 1 if you have libSM installed */
+#undef HAVE_LIBSM
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H

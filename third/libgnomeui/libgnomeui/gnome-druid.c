@@ -38,8 +38,8 @@ struct _GnomeDruidPrivate
 
 	GtkWidget *bbox;
 
-	gboolean show_finish : 1; /* if TRUE, then we are showing the finish button instead of the next button */
-	gboolean show_help : 1;
+	guint show_finish : 1; /* if TRUE, then we are showing the finish button instead of the next button */
+	guint show_help : 1;
 };
 
 enum {
@@ -566,9 +566,14 @@ gnome_druid_remove (GtkContainer *widget,
 	if (list != NULL) {
 		/* If we are mapped and visible, we want to deal with changing the page. */
 		if ((GTK_WIDGET_MAPPED (GTK_WIDGET (widget))) &&
-		    (list->data == (gpointer) druid->_priv->current) &&
-		    (list->next != NULL)) {
-			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (list->next->data));
+		    (list->data == (gpointer) druid->_priv->current)) {
+			if (list->next != NULL)
+				gnome_druid_set_page (druid, GNOME_DRUID_PAGE (list->next->data));
+			else if (list->prev != NULL)
+				gnome_druid_set_page (druid, GNOME_DRUID_PAGE (list->prev->data));
+			else
+				/* Removing the only child, just set current to NULL */
+				druid->_priv->current = NULL;
 		}
 	}
 	druid->_priv->children = g_list_remove (druid->_priv->children, child);
@@ -1053,7 +1058,10 @@ gnome_druid_set_page (GnomeDruid *druid,
 	gnome_druid_page_prepare (druid->_priv->current);
 	if (GTK_WIDGET_VISIBLE (druid->_priv->current) && (GTK_WIDGET_MAPPED (druid))) {
 		gtk_widget_map (GTK_WIDGET (druid->_priv->current));
+		gtk_widget_set_sensitive (GTK_WIDGET (druid->_priv->current), TRUE);
 	}
-	if (old && GTK_WIDGET_MAPPED (old))
-	  gtk_widget_unmap (old);
+	if (old && GTK_WIDGET_MAPPED (old)) {
+		gtk_widget_unmap (old);
+		gtk_widget_set_sensitive (old, FALSE);
+	}
 }

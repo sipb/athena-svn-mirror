@@ -1,0 +1,1235 @@
+<refentry id="GnomeClient">
+<refmeta>
+<refentrytitle>GnomeClient</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEUI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GnomeClient</refname><refpurpose>Interactions with the session manager.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+#define     <link linkend="GNOME-CLIENT-CONNECTED-CAPS">GNOME_CLIENT_CONNECTED</link>          (obj)
+enum        <link linkend="GnomeDialogType">GnomeDialogType</link>;
+enum        <link linkend="GnomeRestartStyle">GnomeRestartStyle</link>;
+enum        <link linkend="GnomeClientFlags">GnomeClientFlags</link>;
+enum        <link linkend="GnomeSaveStyle">GnomeSaveStyle</link>;
+enum        <link linkend="GnomeInteractStyle">GnomeInteractStyle</link>;
+<link linkend="void">void</link>        (<link linkend="GnomeInteractFunction">*GnomeInteractFunction</link>)        (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> key,
+                                             <link linkend="GnomeDialogType">GnomeDialogType</link> dialog_type,
+                                             <link linkend="gpointer">gpointer</link> data);
+struct      <link linkend="GnomeClient-struct">GnomeClient</link>;
+#define     <link linkend="GNOME-CLIENT-PARAM-SM-CONNECT-CAPS">GNOME_CLIENT_PARAM_SM_CONNECT</link>
+<link linkend="GnomeClient">GnomeClient</link>* <link linkend="gnome-master-client">gnome_master_client</link>            (void);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-client-get-config-prefix">gnome_client_get_config_prefix</link> (<link linkend="GnomeClient">GnomeClient</link> *client);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-client-get-global-config-prefix">gnome_client_get_global_config_prefix</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-global-config-prefix">gnome_client_set_global_config_prefix</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *prefix);
+<link linkend="GnomeClientFlags">GnomeClientFlags</link> <link linkend="gnome-client-get-flags">gnome_client_get_flags</link>     (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-restart-style">gnome_client_set_restart_style</link>  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeRestartStyle">GnomeRestartStyle</link> style);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-priority">gnome_client_set_priority</link>       (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="guint">guint</link> priority);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-restart-command">gnome_client_set_restart_command</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);
+<link linkend="void">void</link>        <link linkend="gnome-client-add-static-arg">gnome_client_add_static_arg</link>     (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             ...);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-discard-command">gnome_client_set_discard_command</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-resign-command">gnome_client_set_resign_command</link> (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-shutdown-command">gnome_client_set_shutdown_command</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-current-directory">gnome_client_set_current_directory</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-environment">gnome_client_set_environment</link>    (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *value);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-clone-command">gnome_client_set_clone_command</link>  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-process-id">gnome_client_set_process_id</link>     (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="pid-t">pid_t</link> pid);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-program">gnome_client_set_program</link>        (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *program);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-user-id">gnome_client_set_user_id</link>        (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *id);
+<link linkend="void">void</link>        <link linkend="gnome-client-save-any-dialog">gnome_client_save_any_dialog</link>    (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GtkDialog">GtkDialog</link> *dialog);
+<link linkend="void">void</link>        <link linkend="gnome-client-save-error-dialog">gnome_client_save_error_dialog</link>  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GtkDialog">GtkDialog</link> *dialog);
+<link linkend="void">void</link>        <link linkend="gnome-client-request-phase-2">gnome_client_request_phase_2</link>    (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-request-save">gnome_client_request_save</link>       (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeSaveStyle">GnomeSaveStyle</link> save_style,
+                                             <link linkend="gboolean">gboolean</link> shutdown,
+                                             <link linkend="GnomeInteractStyle">GnomeInteractStyle</link> interact_style,
+                                             <link linkend="gboolean">gboolean</link> fast,
+                                             <link linkend="gboolean">gboolean</link> global);
+<link linkend="void">void</link>        <link linkend="gnome-client-flush">gnome_client_flush</link>              (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-disable-master-connection">gnome_client_disable_master_connection</link>
+                                            (void);
+<link linkend="GnomeClient">GnomeClient</link>* <link linkend="gnome-client-new">gnome_client_new</link>               (void);
+<link linkend="GnomeClient">GnomeClient</link>* <link linkend="gnome-client-new-without-connection">gnome_client_new_without_connection</link>
+                                            (void);
+<link linkend="void">void</link>        <link linkend="gnome-client-connect">gnome_client_connect</link>            (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-disconnect">gnome_client_disconnect</link>         (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-set-id">gnome_client_set_id</link>             (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *id);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-client-get-id">gnome_client_get_id</link>            (<link linkend="GnomeClient">GnomeClient</link> *client);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-client-get-previous-id">gnome_client_get_previous_id</link>   (<link linkend="GnomeClient">GnomeClient</link> *client);
+const <link linkend="gchar">gchar</link>* <link linkend="gnome-client-get-desktop-id">gnome_client_get_desktop_id</link>    (<link linkend="GnomeClient">GnomeClient</link> *client);
+<link linkend="void">void</link>        <link linkend="gnome-client-request-interaction">gnome_client_request_interaction</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeDialogType">GnomeDialogType</link> dialog_type,
+                                             <link linkend="GnomeInteractFunction">GnomeInteractFunction</link> function,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>        <link linkend="gnome-client-request-interaction-interp">gnome_client_request_interaction_interp</link>
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeDialogType">GnomeDialogType</link> dialog_type,
+                                             <link linkend="GtkCallbackMarshal">GtkCallbackMarshal</link> function,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkDestroyNotify">GtkDestroyNotify</link> destroy);
+<link linkend="void">void</link>        <link linkend="gnome-interaction-key-return">gnome_interaction_key_return</link>    (<link linkend="gint">gint</link> key,
+                                             <link linkend="gboolean">gboolean</link> cancel_shutdown);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----GnomeClient
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GnomeClient-connect">connect</link>&quot;   <link linkend="void">void</link>        user_function      (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gboolean">gboolean</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GnomeClient-die">die</link>&quot;       <link linkend="void">void</link>        user_function      (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GnomeClient-disconnect">disconnect</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GnomeClient-save-complete">save-complete</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GnomeClient-save-yourself">save-yourself</link>&quot;
+            <link linkend="gboolean">gboolean</link>    user_function      (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="GnomeSaveStyle">GnomeSaveStyle</link> arg2,
+                                            <link linkend="gboolean">gboolean</link> arg3,
+                                            <link linkend="GnomeInteractStyle">GnomeInteractStyle</link> arg4,
+                                            <link linkend="gboolean">gboolean</link> arg5,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GnomeClient-shutdown-cancelled">shutdown-cancelled</link>&quot;
+            <link linkend="void">void</link>        user_function      (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GNOME-CLIENT-CONNECTED-CAPS"/>GNOME_CLIENT_CONNECTED()</title>
+<indexterm><primary>GNOME_CLIENT_CONNECTED</primary></indexterm><programlisting>#define GNOME_CLIENT_CONNECTED(obj) (GNOME_CLIENT (obj)-&gt;smc_conn)
+</programlisting>
+<para>
+Determine if the <link linkend="GnomeClient"><type>GnomeClient</type></link> instance has connected to the session manager
+already.
+</para><variablelist role="params">
+<varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
+<listitem><simpara>A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> if already connected to the session manager, <literal>FALSE</literal> otherwise.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeDialogType"/>enum GnomeDialogType</title>
+<indexterm><primary>GnomeDialogType</primary></indexterm><programlisting>typedef enum
+{
+  GNOME_DIALOG_ERROR,
+  GNOME_DIALOG_NORMAL
+} GnomeDialogType;
+</programlisting>
+<para>
+The dialogs used by the session manager to handler user interactions.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_DIALOG_ERROR</literal></term>
+<listitem><simpara>Used when an error has occurred.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_DIALOG_NORMAL</literal></term>
+<listitem><simpara>Used for all other (non-error) interactions.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeRestartStyle"/>enum GnomeRestartStyle</title>
+<indexterm><primary>GnomeRestartStyle</primary></indexterm><programlisting>typedef enum
+{
+  /* update structure when adding an enum */
+  GNOME_RESTART_IF_RUNNING,
+  GNOME_RESTART_ANYWAY,
+  GNOME_RESTART_IMMEDIATELY,
+  GNOME_RESTART_NEVER
+} GnomeRestartStyle;
+</programlisting>
+<para>
+The various ways in which the session manager can restart a client. Set by
+calling <link linkend="gnome-client-set-restart-style"><function>gnome_client_set_restart_style()</function></link>.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_RESTART_IF_RUNNING</literal></term>
+<listitem><simpara>Restart if the client was running when the previous
+session exited.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_RESTART_ANYWAY</literal></term>
+<listitem><simpara>Restart even if the client was exited before the user
+logged out of the previous session.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_RESTART_IMMEDIATELY</literal></term>
+<listitem><simpara>Restart the client immediately whenever it crashes
+or exits.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_RESTART_NEVER</literal></term>
+<listitem><simpara>Do not restart the client.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeClientFlags"/>enum GnomeClientFlags</title>
+<indexterm><primary>GnomeClientFlags</primary></indexterm><programlisting>typedef enum
+{
+  GNOME_CLIENT_IS_CONNECTED= 1 &lt;&lt; 0,
+  GNOME_CLIENT_RESTARTED   = 1 &lt;&lt; 1,
+  GNOME_CLIENT_RESTORED    = 1 &lt;&lt; 2
+} GnomeClientFlags;
+</programlisting>
+<para>
+Flags indicating the status of a client (as seen by the session manager). Used
+as return values by <link linkend="gnome-client-get-flags"><function>gnome_client_get_flags()</function></link>.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_CLIENT_IS_CONNECTED</literal></term>
+<listitem><simpara>The client is connected to the session manager.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_CLIENT_RESTARTED</literal></term>
+<listitem><simpara>The client has been restarted (i.e. it has been
+running with the same client id previously).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_CLIENT_RESTORED</literal></term>
+<listitem><simpara>There may be a configuration file from which the
+client's state should be restored (applies only to the master client).
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeSaveStyle"/>enum GnomeSaveStyle</title>
+<indexterm><primary>GnomeSaveStyle</primary></indexterm><programlisting>typedef enum
+{
+  /* update structure when adding an enum */
+  GNOME_SAVE_GLOBAL,
+  GNOME_SAVE_LOCAL,
+  GNOME_SAVE_BOTH
+} GnomeSaveStyle;
+</programlisting>
+<para>
+Which pieces of data a client should save when receiving a "SaveYourself" call
+from the session manager.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_SAVE_GLOBAL</literal></term>
+<listitem><simpara>Save data (to somewhere persistent) that affects and is
+visible to all users of this application.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_SAVE_LOCAL</literal></term>
+<listitem><simpara>Save data that only applies to this instance of the
+application.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_SAVE_BOTH</literal></term>
+<listitem><simpara>Save both global and local data.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeInteractStyle"/>enum GnomeInteractStyle</title>
+<indexterm><primary>GnomeInteractStyle</primary></indexterm><programlisting>typedef enum
+{
+  GNOME_INTERACT_NONE,
+  GNOME_INTERACT_ERRORS,
+  GNOME_INTERACT_ANY
+} GnomeInteractStyle;
+</programlisting>
+<para>
+Indicates how a "SaveYourself" command should interact with the user.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GNOME_INTERACT_NONE</literal></term>
+<listitem><simpara>The client should never interact with the user.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_INTERACT_ERRORS</literal></term>
+<listitem><simpara>The client should only interact when there are errors.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GNOME_INTERACT_ANY</literal></term>
+<listitem><simpara>The client cna interact with the user for any reason.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeInteractFunction"/>GnomeInteractFunction ()</title>
+<indexterm><primary>GnomeInteractFunction</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeInteractFunction)        (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> key,
+                                             <link linkend="GnomeDialogType">GnomeDialogType</link> dialog_type,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+A function called when the client wishes to interact with the user a the
+session manager's convenience (usually during shutdown and restarts). All other
+clients are blocked from interacting with the user until the <parameter>key</parameter> is released
+via a call to <link linkend="gnome-interaction-key-return"><function>gnome_interaction_key_return()</function></link>.
+</para>
+<para>
+Although the function is not obliged to respect the passed in <parameter>dialog_type</parameter>, it
+is bad form not to do so.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GnomeClient"><type>GnomeClient</type></link> instance doing the interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara>A unique key.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog_type</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GnomeDialogType"><type>GnomeDialogType</type></link> that should be used to do the interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>Application specific data that was specified at the time the callback
+was set up.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeClient-struct"/>struct GnomeClient</title>
+<indexterm><primary>GnomeClient</primary></indexterm><programlisting>struct GnomeClient;</programlisting>
+<para>
+A widget representing a client and containing information about the client's
+interaction with the session manager.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-CLIENT-PARAM-SM-CONNECT-CAPS"/>GNOME_CLIENT_PARAM_SM_CONNECT</title>
+<indexterm><primary>GNOME_CLIENT_PARAM_SM_CONNECT</primary></indexterm><programlisting>#define GNOME_CLIENT_PARAM_SM_CONNECT "sm-connect"
+</programlisting>
+<para>
+Passed as a parameter to the application's <link linkend="gnome-program-init"><function>gnome_program_init()</function></link> call (with a
+value of <literal>TRUE</literal> or <literal>FALSE</literal>) to indicate whether the application should attempt to
+connect to the session manager or not. Can be overridden by the user passing
+<literal>--sm-disable</literal> on the command line and defaults to <literal>TRUE</literal>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-master-client"/>gnome_master_client ()</title>
+<indexterm><primary>gnome_master_client</primary></indexterm><programlisting><link linkend="GnomeClient">GnomeClient</link>* gnome_master_client            (void);</programlisting>
+<para>
+Get the master session management client.  This master client gets a client
+id, that may be specified by the '--sm-client-id' command line option.  A
+master client will be generated by <link linkend="gnome-program-init"><function>gnome_program_init()</function></link>.  If possible the
+master client will contact the session manager after command-line parsing is
+finished (unless <link linkend="gnome-client-disable-master-connection"><function>gnome_client_disable_master_connection()</function></link> was called). The
+master client will also set the SM_CLIENT_ID property on the client leader
+window of your application.
+</para>
+<para>
+Additionally, the master client gets some static arguments set automatically
+(see <link linkend="gnome-client-add-static-arg"><function>gnome_client_add_static_arg()</function></link> for static arguments):
+<link linkend="gnome-program-init"><function>gnome_program_init()</function></link> passes all the command line options which are
+recognised by gtk as static arguments to the master client.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Pointer to the master client
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-get-config-prefix"/>gnome_client_get_config_prefix ()</title>
+<indexterm><primary>gnome_client_get_config_prefix</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_config_prefix (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Get the config prefix for a client. This config prefix
+provides a suitable place to store any details about the state of
+the client which can not be described using the app's command line
+arguments (as set in the restart command). You may push the
+returned value using <link linkend="gnome-config-push-prefix"><function>gnome_config_push_prefix()</function></link> and read or write
+any values you require.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Config prefix. The returned string belongs to libgnomeui library
+and should NOT be freed by the caller.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-get-global-config-prefix"/>gnome_client_get_global_config_prefix ()</title>
+<indexterm><primary>gnome_client_get_global_config_prefix</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_global_config_prefix
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Get the config prefix that will be returned by
+<link linkend="gnome-client-get-config-prefix"><function>gnome_client_get_config_prefix()</function></link> for clients which have NOT been restarted
+or cloned (i.e. for clients started by the user without `--sm-' options).
+This config prefix may be used to write the user's preferred config for
+these "new" clients.
+</para>
+<para>
+You could also use this prefix as a place to store and retrieve config
+details that you wish to apply to ALL instances of the app. However, this
+practice limits the users freedom to configure each instance in a different
+way so it should be used with caution.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  The config prefix as a newly allocated string.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-global-config-prefix"/>gnome_client_set_global_config_prefix ()</title>
+<indexterm><primary>gnome_client_set_global_config_prefix</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_global_config_prefix
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *prefix);</programlisting>
+<para>
+Set the value used for the global config prefix. The config
+prefixes returned by <link linkend="gnome-client-get-config-prefix"><function>gnome_client_get_config_prefix()</function></link> are formed by
+extending this prefix with an unique identifier.
+</para>
+<para>
+The global config prefix defaults to a name based on the name of
+the executable. This function allows you to set it to a different
+value. It should be called BEFORE retrieving the config prefix for
+the first time. Later calls will be ignored.
+</para>
+<para>
+For example, setting a global config prefix of "/app.d/session/"
+would ensure that all your session save files or directories would
+be gathered together into the app.d directory.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> Prefix for saving the global configuration.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-get-flags"/>gnome_client_get_flags ()</title>
+<indexterm><primary>gnome_client_get_flags</primary></indexterm><programlisting><link linkend="GnomeClientFlags">GnomeClientFlags</link> gnome_client_get_flags     (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Determine the client's status with the session manager.,</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Various <link linkend="GnomeClientFlag"><type>GnomeClientFlag</type></link> flags which have been or'd together.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-restart-style"/>gnome_client_set_restart_style ()</title>
+<indexterm><primary>gnome_client_set_restart_style</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_restart_style  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeRestartStyle">GnomeRestartStyle</link> style);</programlisting>
+<para>
+Tells the session manager how the client should be restarted in future
+session. The options are given by the <link linkend="GnomeRestartStyle"><type>GnomeRestartStyle</type></link> enum.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>style</parameter>&nbsp;:</term>
+<listitem><simpara> When to restart the client.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-priority"/>gnome_client_set_priority ()</title>
+<indexterm><primary>gnome_client_set_priority</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_priority       (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="guint">guint</link> priority);</programlisting>
+<para>
+The gnome-session manager restarts clients in order of their
+priorities in a similar way to the start up ordering in SysV.
+This function allows the app to suggest a position in this
+ordering. The value should be between 0 and 99. A default
+value of 50 is assigned to apps that do not provide a value.
+The user may assign a different priority.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
+<listitem><simpara> Position of client in session start up ordering.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-restart-command"/>gnome_client_set_restart_command ()</title>
+<indexterm><primary>gnome_client_set_restart_command</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_restart_command
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);</programlisting>
+<para>
+When clients crash or the user logs out and back in, they are
+restarted. This command should perform the restart.  Executing the restart
+command on the local host should reproduce the state of the client at the
+time of the session save as closely as possible. Saving config info under
+the <link linkend="gnome-client-get-config-prefix"><function>gnome_client_get_config_prefix()</function></link> is generally useful.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in argv.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to an <link linkend="execv"><function>execv()</function></link> to restart the client.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-add-static-arg"/>gnome_client_add_static_arg ()</title>
+<indexterm><primary>gnome_client_add_static_arg</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_add_static_arg     (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             ...);</programlisting>
+<para>
+You can add arguments to your restart command's argv with this
+function. This function provides an alternative way of adding new arguments
+to the restart command. The arguments are placed before the arguments
+specified by <link linkend="gnome-client-set-restart-command"><function>gnome_client_set_restart_command()</function></link> and after the arguments
+recognised by GTK+ that are specified by the user on the original command
+line.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> <literal>NULL</literal>-terminated list of arguments to add to the restart command.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-discard-command"/>gnome_client_set_discard_command ()</title>
+<indexterm><primary>gnome_client_set_discard_command</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_discard_command
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);</programlisting>
+<para>
+Provides a command to run when a client is removed from the session. It might
+delete session-specific config files for example.  Executing the discard
+command on the local host should delete the information saved as part of the
+session save that was in progress when the discard command was set. For
+example:
+
+  <example>
+    <title>Setting up a client's discard command</title>
+    <programlisting>
+gchar *prefix = gnome_client_get_config_prefix (client);
+gchar *argv[] = { "rm", "-r", NULL };
+argv[2] = gnome_config_get_real_path (prefix);
+gnome_client_set_discard_command (client, 3, argv);
+    </programlisting>
+  </example>
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>The <link linkend="GnomeClient"><type>GnomeClient</type></link> of interest.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara>Number of strings in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara>Vector of strings such as those passed to <link linkend="exev"><function>exev()</function></link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-resign-command"/>gnome_client_set_resign_command ()</title>
+<indexterm><primary>gnome_client_set_resign_command</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_resign_command (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);</programlisting>
+<para>
+Some clients can be "undone," removing their effects and
+deleting any saved state. For example, xmodmap could register a resign
+command to undo the keymap changes it saved.
+</para>
+<para>
+Used by clients that use the <link linkend="GNOME-RESTART-ANYWAY-CAPS"><type>GNOME_RESTART_ANYWAY</type></link> restart style to to undo
+their effects (these clients usually perform initialisation functions and
+leave effects behind after they die). The resign command combines the
+effects of a shutdown command and a discard command. It is executed when the
+user decides that the client should cease to be restarted.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in <parameter>argv</parameter>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="execv"><function>execv()</function></link>-style command to undo the effects of the client.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-shutdown-command"/>gnome_client_set_shutdown_command ()</title>
+<indexterm><primary>gnome_client_set_shutdown_command</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_shutdown_command
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);</programlisting>
+<para>
+GNOME_RESTART_ANYWAY clients can set this command to run
+when the user logs out but the client is no longer running.
+</para>
+<para>
+Used by clients that use the GNOME_RESTART_ANYWAY restart style to
+to undo their effects (these clients usually perform initialisation
+functions and leave effects behind after they die).  The shutdown
+command simply undoes the effects of the client. It is executed
+during a normal logout.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in argv.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Command to shutdown the client if the client isn't running.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-current-directory"/>gnome_client_set_current_directory ()</title>
+<indexterm><primary>gnome_client_set_current_directory</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_current_directory
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir);</programlisting>
+<para>
+Set the directory to be in when running shutdown, discard,
+restart, etc. commands.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory path.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-environment"/>gnome_client_set_environment ()</title>
+<indexterm><primary>gnome_client_set_environment</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_environment    (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *name,
+                                             const <link linkend="gchar">gchar</link> *value);</programlisting>
+<para>
+Set an environment variable to be placed in the
+client's environment prior to running restart, shutdown, discard, etc. commands.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the environment variable
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> Value of the environment variable
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-clone-command"/>gnome_client_set_clone_command ()</title>
+<indexterm><primary>gnome_client_set_clone_command</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_clone_command  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="gint">gint</link> argc,
+                                             <link linkend="gchar">gchar</link> *argv[]);</programlisting>
+<para>
+Set a command the session manager can use to create a new
+instance of the application.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of strings in the <parameter>argv</parameter> vector.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument strings, suitable for use with <link linkend="execv"><function>execv()</function></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-process-id"/>gnome_client_set_process_id ()</title>
+<indexterm><primary>gnome_client_set_process_id</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_process_id     (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="pid-t">pid_t</link> pid);</programlisting>
+<para>
+The client should tell the session manager the result of
+<link linkend="getpid"><function>getpid()</function></link>. However, GNOME does this automatically; so you do not need this
+function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pid</parameter>&nbsp;:</term>
+<listitem><simpara> PID to set as the client's PID.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-program"/>gnome_client_set_program ()</title>
+<indexterm><primary>gnome_client_set_program</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_program        (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *program);</programlisting>
+<para>
+Used to tell the session manager the name of your program. Set
+automatically; this function isn't needed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>program</parameter>&nbsp;:</term>
+<listitem><simpara> Name of the program.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-user-id"/>gnome_client_set_user_id ()</title>
+<indexterm><primary>gnome_client_set_user_id</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_user_id        (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *id);</programlisting>
+<para>
+Tell the session manager the user's login name. GNOME
+does this automatically; no need to call the function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> Username.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-save-any-dialog"/>gnome_client_save_any_dialog ()</title>
+<indexterm><primary>gnome_client_save_any_dialog</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_save_any_dialog    (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GtkDialog">GtkDialog</link> *dialog);</programlisting>
+<para>
+May be called during a "save_youself" handler to request that a
+(modal) dialog is presented to the user. The session manager decides
+when the dialog is shown, but it will not be shown it unless the
+session manager is sending an interaction style of <link linkend="GNOME-INTERACT-ANY-CAPS"><type>GNOME_INTERACT_ANY</type></link>.
+"Cancel" and "Log out" buttons will be added during a shutdown.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to <link linkend="GnomeClient"><type>GnomeClient</type></link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME dialog widget (a <link linkend="GtkDialog"><type>GtkDialog</type></link> widget).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-save-error-dialog"/>gnome_client_save_error_dialog ()</title>
+<indexterm><primary>gnome_client_save_error_dialog</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_save_error_dialog  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GtkDialog">GtkDialog</link> *dialog);</programlisting>
+<para>
+May be called during a "save_youself" handler when an error has occured
+during the save. The session manager decides when the dialog is shown, but
+it will not be shown it unless the session manager is sending an interaction
+style of <link linkend="GNOME-INTERACT-ANY-CAPS"><type>GNOME_INTERACT_ANY</type></link>. "Cancel" and "Log out" buttons will be added
+during a shutdown.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to <link linkend="GnomeClient"><type>GnomeClient</type></link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME dialog widget (a <link linkend="GtkDialog"><type>GtkDialog</type></link> widget).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-request-phase-2"/>gnome_client_request_phase_2 ()</title>
+<indexterm><primary>gnome_client_request_phase_2</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_request_phase_2    (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Request the session managaer to emit the "save_yourself"
+signal for a second time after all the clients in the session have ceased
+interacting with the user and entered an idle state. This might be useful if
+your app manages other apps and requires that they are in an idle state
+before saving its final data.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-request-save"/>gnome_client_request_save ()</title>
+<indexterm><primary>gnome_client_request_save</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_request_save       (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeSaveStyle">GnomeSaveStyle</link> save_style,
+                                             <link linkend="gboolean">gboolean</link> shutdown,
+                                             <link linkend="GnomeInteractStyle">GnomeInteractStyle</link> interact_style,
+                                             <link linkend="gboolean">gboolean</link> fast,
+                                             <link linkend="gboolean">gboolean</link> global);</programlisting>
+<para>
+Request the session manager to save the session in
+some way. The arguments correspond with the arguments passed to the
+"save_yourself" signal handler.
+</para>
+<para>
+The save_style indicates whether the save should affect data
+accessible to other users (<link linkend="GNOME-SAVE-GLOBAL-CAPS"><type>GNOME_SAVE_GLOBAL</type></link>) or only the state
+visible to the current user (<link linkend="GNOME-SAVE-LOCAL-CAPS"><type>GNOME_SAVE_LOCAL</type></link>) or both. Setting
+shutdown to <literal>TRUE</literal> will initiate a logout. The interact_style
+specifies which kinds of interaction will be available. Setting
+fast to <literal>TRUE</literal> will limit the save to setting the session manager
+properties plus any essential data.  Setting the value of global to
+<literal>TRUE</literal> will request that all the other apps in the session do a save
+as well. A global save is mandatory when doing a shutdown.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>save_style</parameter>&nbsp;:</term>
+<listitem><simpara> Save style to request.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>shutdown</parameter>&nbsp;:</term>
+<listitem><simpara> Whether to log out of the session.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>interact_style</parameter>&nbsp;:</term>
+<listitem><simpara> Whether to allow user interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>fast</parameter>&nbsp;:</term>
+<listitem><simpara> Minimize activity to save as soon as possible.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>global</parameter>&nbsp;:</term>
+<listitem><simpara> Request that all other apps in the session also save their state.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-flush"/>gnome_client_flush ()</title>
+<indexterm><primary>gnome_client_flush</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_flush              (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+This will force the underlying connection to the session manager to be
+flushed. This is useful if you have some pending changes that you want to
+make sure get committed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-disable-master-connection"/>gnome_client_disable_master_connection ()</title>
+<indexterm role="deprecated"><primary>gnome_client_disable_master_connection</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_disable_master_connection
+                                            (void);</programlisting>
+<warning><para><literal>gnome_client_disable_master_connection</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Don't connect the master client to the session manager. Usually
+invoked by users when they pass the --sm-disable argument to a Gnome application.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-new"/>gnome_client_new ()</title>
+<indexterm><primary>gnome_client_new</primary></indexterm><programlisting><link linkend="GnomeClient">GnomeClient</link>* gnome_client_new               (void);</programlisting>
+<para>
+Allocates memory for a new GNOME session management client
+object. After allocating, the client tries to connect to a session manager.
+You probably want to use <link linkend="gnome-master-client"><function>gnome_master_client()</function></link> instead.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to a newly allocated GNOME session management client object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-new-without-connection"/>gnome_client_new_without_connection ()</title>
+<indexterm><primary>gnome_client_new_without_connection</primary></indexterm><programlisting><link linkend="GnomeClient">GnomeClient</link>* gnome_client_new_without_connection
+                                            (void);</programlisting>
+<para>
+Allocates memory for a new GNOME session management client
+object. You probably want to use <link linkend="gnome-master-client"><function>gnome_master_client()</function></link> instead.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to a newly allocated GNOME session management client object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-connect"/>gnome_client_connect ()</title>
+<indexterm><primary>gnome_client_connect</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_connect            (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Causes the client to connect to the session manager.
+Usually happens automatically; no need to call this function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-disconnect"/>gnome_client_disconnect ()</title>
+<indexterm><primary>gnome_client_disconnect</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_disconnect         (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Disconnect the client from the session manager.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-set-id"/>gnome_client_set_id ()</title>
+<indexterm><primary>gnome_client_set_id</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_set_id             (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *id);</programlisting>
+<para>
+Set the client's session management ID; must be done
+before connecting to the session manager. There is usually no reason to call
+this function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>id</parameter>&nbsp;:</term>
+<listitem><simpara> Session management ID.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-get-id"/>gnome_client_get_id ()</title>
+<indexterm><primary>gnome_client_get_id</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_id            (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Returns session management ID</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  Session management ID for this client; <literal>NULL</literal> if not connected to a
+session manager.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-get-previous-id"/>gnome_client_get_previous_id ()</title>
+<indexterm><primary>gnome_client_get_previous_id</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_previous_id   (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Get the session management ID from the previous session.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Pointer to the session management ID the client had in the last
+session, or <literal>NULL</literal> if it was not in a previous session.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-get-desktop-id"/>gnome_client_get_desktop_id ()</title>
+<indexterm><primary>gnome_client_get_desktop_id</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_client_get_desktop_id    (<link linkend="GnomeClient">GnomeClient</link> *client);</programlisting>
+<para>
+Get the client ID of the desktop's current instance, i.e.  if
+you consider the desktop as a whole as a session managed app, this
+returns its session ID using a GNOME extension to session
+management. May return <literal>NULL</literal> for apps not running under a recent
+version of gnome-session; apps should handle that case.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> instance.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Session ID of GNOME desktop instance, or <literal>NULL</literal> if none.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-request-interaction"/>gnome_client_request_interaction ()</title>
+<indexterm><primary>gnome_client_request_interaction</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_request_interaction
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeDialogType">GnomeDialogType</link> dialog_type,
+                                             <link linkend="GnomeInteractFunction">GnomeInteractFunction</link> function,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+Use the following functions, if you want to interact with the
+user during a "save_yourself" handler without being restricted to using the
+dialog based commands <link linkend="gnome-client-save-any-dialog"><function>gnome_client_save_any_dialog()</function></link> or
+<link linkend="gnome-client-save-error-dialog"><function>gnome_client_save_error_dialog()</function></link>. Note, however, that overriding the session
+manager specified preference in this way (by using arbitrary dialog boxes)
+is not very nice.
+</para>
+<para>
+If and when the session manager decides that it's the app's turn to interact
+then 'func' will be called with the specified arguments and a unique
+'GnomeInteractionKey'. The session manager will block other
+clients from interacting until this key is returned with
+<link linkend="gnome-interaction-key-return"><function>gnome_interaction_key_return()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="GnomeClient"><type>GnomeClient</type></link> object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog_type</parameter>&nbsp;:</term>
+<listitem><simpara> The type of dialog to create.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><simpara> Callback to invoke to perform the interaction.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Callback data.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-client-request-interaction-interp"/>gnome_client_request_interaction_interp ()</title>
+<indexterm><primary>gnome_client_request_interaction_interp</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_client_request_interaction_interp
+                                            (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                             <link linkend="GnomeDialogType">GnomeDialogType</link> dialog_type,
+                                             <link linkend="GtkCallbackMarshal">GtkCallbackMarshal</link> function,
+                                             <link linkend="gpointer">gpointer</link> data,
+                                             <link linkend="GtkDestroyNotify">GtkDestroyNotify</link> destroy);</programlisting>
+<para>
+Similar to <link linkend="gnome-client-request-interaction"><function>gnome_client_request_interaction()</function></link>, but used when
+you need to destroy the callback data after the interaction.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to GNOME session client object.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dialog_type</parameter>&nbsp;:</term>
+<listitem><simpara> Type of dialog to show.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>function</parameter>&nbsp;:</term>
+<listitem><simpara> Callback to perform the interaction (a <link linkend="GnomeInteractFunction"><type>GnomeInteractFunction</type></link>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara> Callback data.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>destroy</parameter>&nbsp;:</term>
+<listitem><simpara> Function to destroy callback data.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-interaction-key-return"/>gnome_interaction_key_return ()</title>
+<indexterm><primary>gnome_interaction_key_return</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_interaction_key_return    (<link linkend="gint">gint</link> key,
+                                             <link linkend="gboolean">gboolean</link> cancel_shutdown);</programlisting>
+<para>
+Used in interaction callback to tell the session manager
+you are done interacting.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>key</parameter>&nbsp;:</term>
+<listitem><simpara> Key passed to interaction callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancel_shutdown</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal>, cancel the shutdown
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GnomeClient-connect"/>The &quot;connect&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gboolean">gboolean</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Called once the client has been connected to the signal manager.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara><literal>TRUE</literal> if the application has been restarted.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-die"/>The &quot;die&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Called when the session manager wants the client to shut down.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-disconnect"/>The &quot;disconnect&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Called when the client is disconnected from the session manager.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-save-complete"/>The &quot;save-complete&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Called when the session manager has finished checkpointing all of the clients.
+Clients are then free to change their state.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-save-yourself"/>The &quot;save-yourself&quot; signal</title>
+<programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="GnomeSaveStyle">GnomeSaveStyle</link> arg2,
+                                            <link linkend="gboolean">gboolean</link> arg3,
+                                            <link linkend="GnomeInteractStyle">GnomeInteractStyle</link> arg4,
+                                            <link linkend="gboolean">gboolean</link> arg5,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Called when either a "SaveYourself" or a "SaveYourselfPhase2" call is made by
+the session manager.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>The phase of the "SaveYourself" command ('1' or '2').
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
+<listitem><simpara>The data which should be saved by the client (local, global or both).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg3</parameter>&nbsp;:</term>
+<listitem><simpara><literal>TRUE</literal> if the session manager is shutting down.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg4</parameter>&nbsp;:</term>
+<listitem><simpara>How the client is allowed to interact with the user while saving.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg5</parameter>&nbsp;:</term>
+<listitem><simpara><literal>TRUE</literal> if this is to be a "fast" shutdown (saving minimal data).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> if the "SaveYourself" was completed succesfully, <literal>FALSE</literal>
+otherwise.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2><refsect2><title><anchor id="GnomeClient-shutdown-cancelled"/>The &quot;shutdown-cancelled&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GnomeClient">GnomeClient</link> *client,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Called if the session manager had sent a "SaveYourself" to all clients in
+preparation for shutting down and the shutdown was then cancelled. A client can
+then continue running and change its state.
+</para><variablelist role="params">
+<varlistentry><term><parameter>client</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

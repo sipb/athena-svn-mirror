@@ -1,118 +1,265 @@
-<HTML><HEAD><TITLE>gnome-uidefs</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK REL="HOME" TITLE="GNOME UI Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="Miscellaneous utility functions and macros" HREF="miscellaneous.html"><LINK REL="PREVIOUS" TITLE="gnome-types" HREF="libgnomeui-gnome-types.html"><LINK REL="NEXT" TITLE="gnome-vfs-util" HREF="libgnomeui-gnome-vfs-util.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="libgnomeui-gnome-types.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="miscellaneous.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME UI Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="libgnomeui-gnome-vfs-util.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="LIBGNOMEUI-GNOME-UIDEFS"></A>gnome-uidefs</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN17546"></A><H2>Name</H2>gnome-uidefs&nbsp;--&nbsp;Standard defines used throughout libgnomeui.</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN17549"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-uidefs</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="miscellaneous.html" title="Miscellaneous utility functions and macros"><link rel="previous" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="next" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="libgnomeui-gnome-uidefs.html#id2718343" title="Description"><link rel="section" href="libgnomeui-gnome-uidefs.html#id2718353" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeui-gnome-types.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="miscellaneous.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="libgnomeui-gnome-vfs-util.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeui-gnome-uidefs"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-uidefs</span></h2><p>gnome-uidefs &#8212; Standard defines used throughout libgnomeui.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
 
 
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-PAD-CAPS">GNOME_PAD</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-PAD-SMALL-CAPS">GNOME_PAD_SMALL</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-PAD-BIG-CAPS">GNOME_PAD_BIG</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-YES-CAPS">GNOME_YES</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-NO-CAPS">GNOME_NO</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-OK-CAPS">GNOME_OK</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-CANCEL-CAPS">GNOME_CANCEL</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-QUIT-CAPS">GNOME_KEY_NAME_QUIT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-QUIT-CAPS">GNOME_KEY_MOD_QUIT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-EXIT-CAPS">GNOME_KEY_NAME_EXIT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-EXIT-CAPS">GNOME_KEY_MOD_EXIT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-CAPS">GNOME_KEY_NAME_CLOSE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CLOSE-CAPS">GNOME_KEY_MOD_CLOSE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CUT-CAPS">GNOME_KEY_NAME_CUT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CUT-CAPS">GNOME_KEY_MOD_CUT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-COPY-CAPS">GNOME_KEY_NAME_COPY</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-COPY-CAPS">GNOME_KEY_MOD_COPY</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PASTE-CAPS">GNOME_KEY_NAME_PASTE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PASTE-CAPS">GNOME_KEY_MOD_PASTE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SELECT-ALL-CAPS">GNOME_KEY_NAME_SELECT_ALL</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-SELECT-ALL-CAPS">GNOME_KEY_MOD_SELECT_ALL</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLEAR-CAPS">GNOME_KEY_NAME_CLEAR</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CLEAR-CAPS">GNOME_KEY_MOD_CLEAR</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-CAPS">GNOME_KEY_NAME_UNDO</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-UNDO-CAPS">GNOME_KEY_MOD_UNDO</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-CAPS">GNOME_KEY_NAME_REDO</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-REDO-CAPS">GNOME_KEY_MOD_REDO</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-CAPS">GNOME_KEY_NAME_SAVE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-SAVE-CAPS">GNOME_KEY_MOD_SAVE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-OPEN-CAPS">GNOME_KEY_NAME_OPEN</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-OPEN-CAPS">GNOME_KEY_MOD_OPEN</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-AS-CAPS">GNOME_KEY_NAME_SAVE_AS</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-SAVE-AS-CAPS">GNOME_KEY_MOD_SAVE_AS</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-CAPS">GNOME_KEY_NAME_NEW</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-NEW-CAPS">GNOME_KEY_MOD_NEW</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-CAPS">GNOME_KEY_NAME_PRINT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PRINT-CAPS">GNOME_KEY_MOD_PRINT</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-SETUP-CAPS">GNOME_KEY_NAME_PRINT_SETUP</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PRINT-SETUP-CAPS">GNOME_KEY_MOD_PRINT_SETUP</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-CAPS">GNOME_KEY_NAME_FIND</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-FIND-CAPS">GNOME_KEY_MOD_FIND</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-AGAIN-CAPS">GNOME_KEY_NAME_FIND_AGAIN</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-FIND-AGAIN-CAPS">GNOME_KEY_MOD_FIND_AGAIN</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REPLACE-CAPS">GNOME_KEY_NAME_REPLACE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-REPLACE-CAPS">GNOME_KEY_MOD_REPLACE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-WINDOW-CAPS">GNOME_KEY_NAME_NEW_WINDOW</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-NEW-WINDOW-CAPS">GNOME_KEY_MOD_NEW_WINDOW</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-WINDOW-CAPS">GNOME_KEY_NAME_CLOSE_WINDOW</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CLOSE-WINDOW-CAPS">GNOME_KEY_MOD_CLOSE_WINDOW</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-MOVE-CAPS">GNOME_KEY_NAME_REDO_MOVE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-REDO-MOVE-CAPS">GNOME_KEY_MOD_REDO_MOVE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-MOVE-CAPS">GNOME_KEY_NAME_UNDO_MOVE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-UNDO-MOVE-CAPS">GNOME_KEY_MOD_UNDO_MOVE</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PAUSE-GAME-CAPS">GNOME_KEY_NAME_PAUSE_GAME</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PAUSE-GAME-CAPS">GNOME_KEY_MOD_PAUSE_GAME</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-GAME-CAPS">GNOME_KEY_NAME_NEW_GAME</A>
-#define     <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-NEW-GAME-CAPS">GNOME_KEY_MOD_NEW_GAME</A></PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN17609"></A><H2>Description</H2><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN17612"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN17614"></A><H3><A NAME="GNOME-PAD-CAPS"></A>GNOME_PAD</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_PAD          8</PRE><P>A sensible amount of padding (in pixels) to put around objects.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17619"></A><H3><A NAME="GNOME-PAD-SMALL-CAPS"></A>GNOME_PAD_SMALL</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_PAD_SMALL    4</PRE><P>A smaller amount of padding than <A HREF="libgnomeui-gnome-uidefs.html#GNOME-PAD-CAPS">GNOME_PAD</A>.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17625"></A><H3><A NAME="GNOME-PAD-BIG-CAPS"></A>GNOME_PAD_BIG</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_PAD_BIG      12</PRE><P>A larger amount of padding then <A HREF="libgnomeui-gnome-uidefs.html#GNOME-PAD-CAPS">GNOME_PAD</A>.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17631"></A><H3><A NAME="GNOME-YES-CAPS"></A>GNOME_YES</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_YES 0 </PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">GNOME_YES</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>Old way to specify the "yes" button in a yes-no dialog box. New code should use
-the constants in GTK+ to do this now.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17639"></A><H3><A NAME="GNOME-NO-CAPS"></A>GNOME_NO</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_NO 1 </PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">GNOME_NO</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>Old way to specify the "no" button in a yes-no dialog box. New code should use
-the constants in GTK+ to do this now.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17647"></A><H3><A NAME="GNOME-OK-CAPS"></A>GNOME_OK</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_OK 0</PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">GNOME_OK</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>Old way to specify the "ok" button in a ok-cancel dialog box. New code should
-use the constants in GTK+ to do this now.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17655"></A><H3><A NAME="GNOME-CANCEL-CAPS"></A>GNOME_CANCEL</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_CANCEL 1</PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">GNOME_CANCEL</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>Old way to specify the "cancel" button in a ok-cancel dialog box. New code
-should use the constants in GTK+ to do this now.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17663"></A><H3><A NAME="GNOME-KEY-NAME-QUIT-CAPS"></A>GNOME_KEY_NAME_QUIT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_QUIT 	        'q'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">quit</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17669"></A><H3><A NAME="GNOME-KEY-MOD-QUIT-CAPS"></A>GNOME_KEY_MOD_QUIT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_QUIT	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-QUIT-CAPS">GNOME_KEY_NAME_QUIT</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">quit</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17676"></A><H3><A NAME="GNOME-KEY-NAME-EXIT-CAPS"></A>GNOME_KEY_NAME_EXIT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_EXIT	GNOME_KEY_NAME_QUIT</PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">GNOME_KEY_NAME_EXIT</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">exit</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17685"></A><H3><A NAME="GNOME-KEY-MOD-EXIT-CAPS"></A>GNOME_KEY_MOD_EXIT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_EXIT	GNOME_KEY_MOD_QUIT</PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">GNOME_KEY_MOD_EXIT</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-EXIT-CAPS">GNOME_KEY_NAME_EXIT</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">exit</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17695"></A><H3><A NAME="GNOME-KEY-NAME-CLOSE-CAPS"></A>GNOME_KEY_NAME_CLOSE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_CLOSE 	        'w'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">close</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17701"></A><H3><A NAME="GNOME-KEY-MOD-CLOSE-CAPS"></A>GNOME_KEY_MOD_CLOSE</H3><PRE CLASS="PROGRAMLISTING">#define	GNOME_KEY_MOD_CLOSE	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-CAPS">GNOME_KEY_NAME_CLOSE</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">close</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17708"></A><H3><A NAME="GNOME-KEY-NAME-CUT-CAPS"></A>GNOME_KEY_NAME_CUT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_CUT 	        'x'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">cut</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17714"></A><H3><A NAME="GNOME-KEY-MOD-CUT-CAPS"></A>GNOME_KEY_MOD_CUT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_CUT 	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CUT-CAPS">GNOME_KEY_NAME_CUT</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">cut</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17721"></A><H3><A NAME="GNOME-KEY-NAME-COPY-CAPS"></A>GNOME_KEY_NAME_COPY</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_COPY	        'c'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">copy</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17727"></A><H3><A NAME="GNOME-KEY-MOD-COPY-CAPS"></A>GNOME_KEY_MOD_COPY</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_COPY	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-COPY-CAPS">GNOME_KEY_NAME_COPY</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">copy</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17734"></A><H3><A NAME="GNOME-KEY-NAME-PASTE-CAPS"></A>GNOME_KEY_NAME_PASTE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_PASTE 	        'v'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">paste</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17740"></A><H3><A NAME="GNOME-KEY-MOD-PASTE-CAPS"></A>GNOME_KEY_MOD_PASTE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_PASTE 	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PASTE-CAPS">GNOME_KEY_NAME_PASTE</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">paste</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17747"></A><H3><A NAME="GNOME-KEY-NAME-SELECT-ALL-CAPS"></A>GNOME_KEY_NAME_SELECT_ALL</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_SELECT_ALL       'a'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">select all</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17753"></A><H3><A NAME="GNOME-KEY-MOD-SELECT-ALL-CAPS"></A>GNOME_KEY_MOD_SELECT_ALL</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_SELECT_ALL        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SELECT-ALL-CAPS">GNOME_KEY_NAME_SELECT_ALL</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">select all</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17760"></A><H3><A NAME="GNOME-KEY-NAME-CLEAR-CAPS"></A>GNOME_KEY_NAME_CLEAR</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_CLEAR 	        0</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">clear</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17766"></A><H3><A NAME="GNOME-KEY-MOD-CLEAR-CAPS"></A>GNOME_KEY_MOD_CLEAR</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_CLEAR 	        (0)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLEAR-CAPS">GNOME_KEY_NAME_CLEAR</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">clear</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17773"></A><H3><A NAME="GNOME-KEY-NAME-UNDO-CAPS"></A>GNOME_KEY_NAME_UNDO</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_UNDO  	        'z'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">undo</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17779"></A><H3><A NAME="GNOME-KEY-MOD-UNDO-CAPS"></A>GNOME_KEY_MOD_UNDO</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_UNDO  	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-CAPS">GNOME_KEY_NAME_UNDO</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">undo</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17786"></A><H3><A NAME="GNOME-KEY-NAME-REDO-CAPS"></A>GNOME_KEY_NAME_REDO</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_REDO	        'z'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">redo</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17792"></A><H3><A NAME="GNOME-KEY-MOD-REDO-CAPS"></A>GNOME_KEY_MOD_REDO</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_REDO	        (GDK_CONTROL_MASK | GDK_SHIFT_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-CAPS">GNOME_KEY_NAME_REDO</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">redo</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17799"></A><H3><A NAME="GNOME-KEY-NAME-SAVE-CAPS"></A>GNOME_KEY_NAME_SAVE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_SAVE	        's'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">save</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17805"></A><H3><A NAME="GNOME-KEY-MOD-SAVE-CAPS"></A>GNOME_KEY_MOD_SAVE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_SAVE	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-CAPS">GNOME_KEY_NAME_SAVE</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">save</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17812"></A><H3><A NAME="GNOME-KEY-NAME-OPEN-CAPS"></A>GNOME_KEY_NAME_OPEN</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_OPEN	        'o'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">open</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17818"></A><H3><A NAME="GNOME-KEY-MOD-OPEN-CAPS"></A>GNOME_KEY_MOD_OPEN</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_OPEN	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-OPEN-CAPS">GNOME_KEY_NAME_OPEN</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">open</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17825"></A><H3><A NAME="GNOME-KEY-NAME-SAVE-AS-CAPS"></A>GNOME_KEY_NAME_SAVE_AS</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_SAVE_AS	        's'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">save as</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17831"></A><H3><A NAME="GNOME-KEY-MOD-SAVE-AS-CAPS"></A>GNOME_KEY_MOD_SAVE_AS</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_SAVE_AS           (GDK_CONTROL_MASK | GDK_SHIFT_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-AS-CAPS">GNOME_KEY_NAME_SAVE_AS</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">save as</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17838"></A><H3><A NAME="GNOME-KEY-NAME-NEW-CAPS"></A>GNOME_KEY_NAME_NEW</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_NEW	        'n'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">new</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17844"></A><H3><A NAME="GNOME-KEY-MOD-NEW-CAPS"></A>GNOME_KEY_MOD_NEW</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_NEW	        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-CAPS">GNOME_KEY_NAME_NEW</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">new</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17851"></A><H3><A NAME="GNOME-KEY-NAME-PRINT-CAPS"></A>GNOME_KEY_NAME_PRINT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_PRINT            'p'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">print</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17857"></A><H3><A NAME="GNOME-KEY-MOD-PRINT-CAPS"></A>GNOME_KEY_MOD_PRINT</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_PRINT             (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-CAPS">GNOME_KEY_NAME_PRINT</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">print</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17864"></A><H3><A NAME="GNOME-KEY-NAME-PRINT-SETUP-CAPS"></A>GNOME_KEY_NAME_PRINT_SETUP</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_PRINT_SETUP      0</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">print setup</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17870"></A><H3><A NAME="GNOME-KEY-MOD-PRINT-SETUP-CAPS"></A>GNOME_KEY_MOD_PRINT_SETUP</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_PRINT_SETUP       (0)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-SETUP-CAPS">GNOME_KEY_NAME_PRINT_SETUP</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">print setup</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17877"></A><H3><A NAME="GNOME-KEY-NAME-FIND-CAPS"></A>GNOME_KEY_NAME_FIND</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_FIND             'f'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">find</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17883"></A><H3><A NAME="GNOME-KEY-MOD-FIND-CAPS"></A>GNOME_KEY_MOD_FIND</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_FIND              (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-CAPS">GNOME_KEY_NAME_FIND</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">find</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17890"></A><H3><A NAME="GNOME-KEY-NAME-FIND-AGAIN-CAPS"></A>GNOME_KEY_NAME_FIND_AGAIN</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_FIND_AGAIN       'g'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">find again</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17896"></A><H3><A NAME="GNOME-KEY-MOD-FIND-AGAIN-CAPS"></A>GNOME_KEY_MOD_FIND_AGAIN</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_FIND_AGAIN        (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-AGAIN-CAPS">GNOME_KEY_NAME_FIND_AGAIN</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">find again</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17903"></A><H3><A NAME="GNOME-KEY-NAME-REPLACE-CAPS"></A>GNOME_KEY_NAME_REPLACE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_REPLACE          'r'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">replace</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17909"></A><H3><A NAME="GNOME-KEY-MOD-REPLACE-CAPS"></A>GNOME_KEY_MOD_REPLACE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_REPLACE           (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REPLACE-CAPS">GNOME_KEY_NAME_REPLACE</A> to select
-the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">replace</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17916"></A><H3><A NAME="GNOME-KEY-NAME-NEW-WINDOW-CAPS"></A>GNOME_KEY_NAME_NEW_WINDOW</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_NEW_WINDOW       0</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">new window</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17922"></A><H3><A NAME="GNOME-KEY-MOD-NEW-WINDOW-CAPS"></A>GNOME_KEY_MOD_NEW_WINDOW</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_NEW_WINDOW        (0)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-WINDOW-CAPS">GNOME_KEY_NAME_NEW_WINDOW</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">new window</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17929"></A><H3><A NAME="GNOME-KEY-NAME-CLOSE-WINDOW-CAPS"></A>GNOME_KEY_NAME_CLOSE_WINDOW</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_CLOSE_WINDOW     0</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">close window</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17935"></A><H3><A NAME="GNOME-KEY-MOD-CLOSE-WINDOW-CAPS"></A>GNOME_KEY_MOD_CLOSE_WINDOW</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_CLOSE_WINDOW      (0)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-WINDOW-CAPS">GNOME_KEY_NAME_CLOSE_WINDOW</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">close window</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17942"></A><H3><A NAME="GNOME-KEY-NAME-REDO-MOVE-CAPS"></A>GNOME_KEY_NAME_REDO_MOVE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_REDO_MOVE        'z'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">redo move</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17948"></A><H3><A NAME="GNOME-KEY-MOD-REDO-MOVE-CAPS"></A>GNOME_KEY_MOD_REDO_MOVE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_REDO_MOVE         (GDK_CONTROL_MASK | GDK_SHIFT_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-MOVE-CAPS">GNOME_KEY_NAME_REDO_MOVE</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">redo move</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17955"></A><H3><A NAME="GNOME-KEY-NAME-UNDO-MOVE-CAPS"></A>GNOME_KEY_NAME_UNDO_MOVE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_UNDO_MOVE        'z'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">undo move</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17961"></A><H3><A NAME="GNOME-KEY-MOD-UNDO-MOVE-CAPS"></A>GNOME_KEY_MOD_UNDO_MOVE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_UNDO_MOVE         (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-MOVE-CAPS">GNOME_KEY_NAME_UNDO_MOVE</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">undo move</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17968"></A><H3><A NAME="GNOME-KEY-NAME-PAUSE-GAME-CAPS"></A>GNOME_KEY_NAME_PAUSE_GAME</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_PAUSE_GAME       GDK_Pause</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">pause game</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17974"></A><H3><A NAME="GNOME-KEY-MOD-PAUSE-GAME-CAPS"></A>GNOME_KEY_MOD_PAUSE_GAME</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_PAUSE_GAME        (0)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PAUSE-GAME-CAPS">GNOME_KEY_NAME_PAUSE_GAME</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">pause game</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17981"></A><H3><A NAME="GNOME-KEY-NAME-NEW-GAME-CAPS"></A>GNOME_KEY_NAME_NEW_GAME</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_NAME_NEW_GAME         'n'</PRE><P>The default key used to select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">new game</I></SPAN> menu item.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17987"></A><H3><A NAME="GNOME-KEY-MOD-NEW-GAME-CAPS"></A>GNOME_KEY_MOD_NEW_GAME</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_KEY_MOD_NEW_GAME          (GDK_CONTROL_MASK)</PRE><P>The default modifier used in conjunction with <A HREF="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-GAME-CAPS">GNOME_KEY_NAME_NEW_GAME</A> to
-select the <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">new game</I></SPAN> menu item.</P></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="libgnomeui-gnome-types.html"><B>&lt;&lt;&lt;&nbsp;gnome-types</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="libgnomeui-gnome-vfs-util.html"><B>gnome-vfs-util&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-PAD-CAPS">GNOME_PAD</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-PAD-SMALL-CAPS">GNOME_PAD_SMALL</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-PAD-BIG-CAPS">GNOME_PAD_BIG</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-YES-CAPS">GNOME_YES</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-NO-CAPS">GNOME_NO</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-OK-CAPS">GNOME_OK</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-CANCEL-CAPS">GNOME_CANCEL</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-QUIT-CAPS">GNOME_KEY_NAME_QUIT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-QUIT-CAPS">GNOME_KEY_MOD_QUIT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-EXIT-CAPS">GNOME_KEY_NAME_EXIT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-EXIT-CAPS">GNOME_KEY_MOD_EXIT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-CAPS">GNOME_KEY_NAME_CLOSE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CLOSE-CAPS">GNOME_KEY_MOD_CLOSE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CUT-CAPS">GNOME_KEY_NAME_CUT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CUT-CAPS">GNOME_KEY_MOD_CUT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-COPY-CAPS">GNOME_KEY_NAME_COPY</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-COPY-CAPS">GNOME_KEY_MOD_COPY</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PASTE-CAPS">GNOME_KEY_NAME_PASTE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PASTE-CAPS">GNOME_KEY_MOD_PASTE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SELECT-ALL-CAPS">GNOME_KEY_NAME_SELECT_ALL</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-SELECT-ALL-CAPS">GNOME_KEY_MOD_SELECT_ALL</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLEAR-CAPS">GNOME_KEY_NAME_CLEAR</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CLEAR-CAPS">GNOME_KEY_MOD_CLEAR</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-CAPS">GNOME_KEY_NAME_UNDO</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-UNDO-CAPS">GNOME_KEY_MOD_UNDO</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-CAPS">GNOME_KEY_NAME_REDO</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-REDO-CAPS">GNOME_KEY_MOD_REDO</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-CAPS">GNOME_KEY_NAME_SAVE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-SAVE-CAPS">GNOME_KEY_MOD_SAVE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-OPEN-CAPS">GNOME_KEY_NAME_OPEN</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-OPEN-CAPS">GNOME_KEY_MOD_OPEN</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-AS-CAPS">GNOME_KEY_NAME_SAVE_AS</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-SAVE-AS-CAPS">GNOME_KEY_MOD_SAVE_AS</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-CAPS">GNOME_KEY_NAME_NEW</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-NEW-CAPS">GNOME_KEY_MOD_NEW</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-CAPS">GNOME_KEY_NAME_PRINT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PRINT-CAPS">GNOME_KEY_MOD_PRINT</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-SETUP-CAPS">GNOME_KEY_NAME_PRINT_SETUP</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PRINT-SETUP-CAPS">GNOME_KEY_MOD_PRINT_SETUP</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-CAPS">GNOME_KEY_NAME_FIND</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-FIND-CAPS">GNOME_KEY_MOD_FIND</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-AGAIN-CAPS">GNOME_KEY_NAME_FIND_AGAIN</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-FIND-AGAIN-CAPS">GNOME_KEY_MOD_FIND_AGAIN</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REPLACE-CAPS">GNOME_KEY_NAME_REPLACE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-REPLACE-CAPS">GNOME_KEY_MOD_REPLACE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-WINDOW-CAPS">GNOME_KEY_NAME_NEW_WINDOW</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-NEW-WINDOW-CAPS">GNOME_KEY_MOD_NEW_WINDOW</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-WINDOW-CAPS">GNOME_KEY_NAME_CLOSE_WINDOW</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-CLOSE-WINDOW-CAPS">GNOME_KEY_MOD_CLOSE_WINDOW</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-MOVE-CAPS">GNOME_KEY_NAME_REDO_MOVE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-REDO-MOVE-CAPS">GNOME_KEY_MOD_REDO_MOVE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-MOVE-CAPS">GNOME_KEY_NAME_UNDO_MOVE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-UNDO-MOVE-CAPS">GNOME_KEY_MOD_UNDO_MOVE</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PAUSE-GAME-CAPS">GNOME_KEY_NAME_PAUSE_GAME</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-PAUSE-GAME-CAPS">GNOME_KEY_MOD_PAUSE_GAME</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-GAME-CAPS">GNOME_KEY_NAME_NEW_GAME</a>
+#define     <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-MOD-NEW-GAME-CAPS">GNOME_KEY_MOD_NEW_GAME</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2718343"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2718353"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2718358"></a><h3><a name="GNOME-PAD-CAPS"></a>GNOME_PAD</h3><a class="indexterm" name="id2718368"></a><pre class="programlisting">#define GNOME_PAD          8
+</pre><p>
+A sensible amount of padding (in pixels) to put around objects.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718384"></a><h3><a name="GNOME-PAD-SMALL-CAPS"></a>GNOME_PAD_SMALL</h3><a class="indexterm" name="id2718393"></a><pre class="programlisting">#define GNOME_PAD_SMALL    4
+</pre><p>
+A smaller amount of padding than <a href="libgnomeui-gnome-uidefs.html#GNOME-PAD-CAPS"><span class="type">GNOME_PAD</span></a>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718417"></a><h3><a name="GNOME-PAD-BIG-CAPS"></a>GNOME_PAD_BIG</h3><a class="indexterm" name="id2718427"></a><pre class="programlisting">#define GNOME_PAD_BIG      12
+</pre><p>
+A larger amount of padding then <a href="libgnomeui-gnome-uidefs.html#GNOME-PAD-CAPS"><span class="type">GNOME_PAD</span></a>.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718451"></a><h3><a name="GNOME-YES-CAPS"></a>GNOME_YES</h3><a class="indexterm" name="id2718461"></a><pre class="programlisting">#define GNOME_YES 0 
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_YES</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Old way to specify the "yes" button in a yes-no dialog box. New code should use
+the constants in GTK+ to do this now.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718490"></a><h3><a name="GNOME-NO-CAPS"></a>GNOME_NO</h3><a class="indexterm" name="id2718500"></a><pre class="programlisting">#define GNOME_NO 1 
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_NO</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Old way to specify the "no" button in a yes-no dialog box. New code should use
+the constants in GTK+ to do this now.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718528"></a><h3><a name="GNOME-OK-CAPS"></a>GNOME_OK</h3><a class="indexterm" name="id2718539"></a><pre class="programlisting">#define GNOME_OK 0
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_OK</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Old way to specify the "ok" button in a ok-cancel dialog box. New code should
+use the constants in GTK+ to do this now.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718568"></a><h3><a name="GNOME-CANCEL-CAPS"></a>GNOME_CANCEL</h3><a class="indexterm" name="id2718578"></a><pre class="programlisting">#define GNOME_CANCEL 1
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_CANCEL</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Old way to specify the "cancel" button in a ok-cancel dialog box. New code
+should use the constants in GTK+ to do this now.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718607"></a><h3><a name="GNOME-KEY-NAME-QUIT-CAPS"></a>GNOME_KEY_NAME_QUIT</h3><a class="indexterm" name="id2718616"></a><pre class="programlisting">#define GNOME_KEY_NAME_QUIT 	        'q'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>quit</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718636"></a><h3><a name="GNOME-KEY-MOD-QUIT-CAPS"></a>GNOME_KEY_MOD_QUIT</h3><a class="indexterm" name="id2718645"></a><pre class="programlisting">#define GNOME_KEY_MOD_QUIT	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-QUIT-CAPS"><span class="type">GNOME_KEY_NAME_QUIT</span></a> to select
+the <span class="emphasis"><em>quit</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718673"></a><h3><a name="GNOME-KEY-NAME-EXIT-CAPS"></a>GNOME_KEY_NAME_EXIT</h3><a class="indexterm" name="id2718682"></a><pre class="programlisting">#define GNOME_KEY_NAME_EXIT	GNOME_KEY_NAME_QUIT
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_KEY_NAME_EXIT</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+The default key used to select the <span class="emphasis"><em>exit</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718715"></a><h3><a name="GNOME-KEY-MOD-EXIT-CAPS"></a>GNOME_KEY_MOD_EXIT</h3><a class="indexterm" name="id2718724"></a><pre class="programlisting">#define GNOME_KEY_MOD_EXIT	GNOME_KEY_MOD_QUIT
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_KEY_MOD_EXIT</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-EXIT-CAPS"><span class="type">GNOME_KEY_NAME_EXIT</span></a> to select
+the <span class="emphasis"><em>exit</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718764"></a><h3><a name="GNOME-KEY-NAME-CLOSE-CAPS"></a>GNOME_KEY_NAME_CLOSE</h3><a class="indexterm" name="id2718773"></a><pre class="programlisting">#define GNOME_KEY_NAME_CLOSE 	        'w'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>close</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718792"></a><h3><a name="GNOME-KEY-MOD-CLOSE-CAPS"></a>GNOME_KEY_MOD_CLOSE</h3><a class="indexterm" name="id2718801"></a><pre class="programlisting">#define	GNOME_KEY_MOD_CLOSE	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-CAPS"><span class="type">GNOME_KEY_NAME_CLOSE</span></a> to select
+the <span class="emphasis"><em>close</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718829"></a><h3><a name="GNOME-KEY-NAME-CUT-CAPS"></a>GNOME_KEY_NAME_CUT</h3><a class="indexterm" name="id2718838"></a><pre class="programlisting">#define GNOME_KEY_NAME_CUT 	        'x'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>cut</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718858"></a><h3><a name="GNOME-KEY-MOD-CUT-CAPS"></a>GNOME_KEY_MOD_CUT</h3><a class="indexterm" name="id2718867"></a><pre class="programlisting">#define GNOME_KEY_MOD_CUT 	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CUT-CAPS"><span class="type">GNOME_KEY_NAME_CUT</span></a> to select
+the <span class="emphasis"><em>cut</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718895"></a><h3><a name="GNOME-KEY-NAME-COPY-CAPS"></a>GNOME_KEY_NAME_COPY</h3><a class="indexterm" name="id2718903"></a><pre class="programlisting">#define GNOME_KEY_NAME_COPY	        'c'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>copy</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718924"></a><h3><a name="GNOME-KEY-MOD-COPY-CAPS"></a>GNOME_KEY_MOD_COPY</h3><a class="indexterm" name="id2718932"></a><pre class="programlisting">#define GNOME_KEY_MOD_COPY	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-COPY-CAPS"><span class="type">GNOME_KEY_NAME_COPY</span></a> to select
+the <span class="emphasis"><em>copy</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718961"></a><h3><a name="GNOME-KEY-NAME-PASTE-CAPS"></a>GNOME_KEY_NAME_PASTE</h3><a class="indexterm" name="id2718969"></a><pre class="programlisting">#define GNOME_KEY_NAME_PASTE 	        'v'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>paste</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2718989"></a><h3><a name="GNOME-KEY-MOD-PASTE-CAPS"></a>GNOME_KEY_MOD_PASTE</h3><a class="indexterm" name="id2718998"></a><pre class="programlisting">#define GNOME_KEY_MOD_PASTE 	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PASTE-CAPS"><span class="type">GNOME_KEY_NAME_PASTE</span></a> to select
+the <span class="emphasis"><em>paste</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719025"></a><h3><a name="GNOME-KEY-NAME-SELECT-ALL-CAPS"></a>GNOME_KEY_NAME_SELECT_ALL</h3><a class="indexterm" name="id2719036"></a><pre class="programlisting">#define GNOME_KEY_NAME_SELECT_ALL       'a'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>select all</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719056"></a><h3><a name="GNOME-KEY-MOD-SELECT-ALL-CAPS"></a>GNOME_KEY_MOD_SELECT_ALL</h3><a class="indexterm" name="id2719067"></a><pre class="programlisting">#define GNOME_KEY_MOD_SELECT_ALL        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SELECT-ALL-CAPS"><span class="type">GNOME_KEY_NAME_SELECT_ALL</span></a> to
+select the <span class="emphasis"><em>select all</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719096"></a><h3><a name="GNOME-KEY-NAME-CLEAR-CAPS"></a>GNOME_KEY_NAME_CLEAR</h3><a class="indexterm" name="id2719104"></a><pre class="programlisting">#define GNOME_KEY_NAME_CLEAR 	        0
+</pre><p>
+The default key used to select the <span class="emphasis"><em>clear</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719124"></a><h3><a name="GNOME-KEY-MOD-CLEAR-CAPS"></a>GNOME_KEY_MOD_CLEAR</h3><a class="indexterm" name="id2719132"></a><pre class="programlisting">#define GNOME_KEY_MOD_CLEAR 	        (0)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLEAR-CAPS"><span class="type">GNOME_KEY_NAME_CLEAR</span></a> to select
+the <span class="emphasis"><em>clear</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719160"></a><h3><a name="GNOME-KEY-NAME-UNDO-CAPS"></a>GNOME_KEY_NAME_UNDO</h3><a class="indexterm" name="id2719169"></a><pre class="programlisting">#define GNOME_KEY_NAME_UNDO  	        'z'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>undo</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719189"></a><h3><a name="GNOME-KEY-MOD-UNDO-CAPS"></a>GNOME_KEY_MOD_UNDO</h3><a class="indexterm" name="id2719198"></a><pre class="programlisting">#define GNOME_KEY_MOD_UNDO  	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-CAPS"><span class="type">GNOME_KEY_NAME_UNDO</span></a> to select
+the <span class="emphasis"><em>undo</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719226"></a><h3><a name="GNOME-KEY-NAME-REDO-CAPS"></a>GNOME_KEY_NAME_REDO</h3><a class="indexterm" name="id2719235"></a><pre class="programlisting">#define GNOME_KEY_NAME_REDO	        'z'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>redo</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719255"></a><h3><a name="GNOME-KEY-MOD-REDO-CAPS"></a>GNOME_KEY_MOD_REDO</h3><a class="indexterm" name="id2719264"></a><pre class="programlisting">#define GNOME_KEY_MOD_REDO	        (GDK_CONTROL_MASK | GDK_SHIFT_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-CAPS"><span class="type">GNOME_KEY_NAME_REDO</span></a> to select
+the <span class="emphasis"><em>redo</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719292"></a><h3><a name="GNOME-KEY-NAME-SAVE-CAPS"></a>GNOME_KEY_NAME_SAVE</h3><a class="indexterm" name="id2719301"></a><pre class="programlisting">#define GNOME_KEY_NAME_SAVE	        's'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>save</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719321"></a><h3><a name="GNOME-KEY-MOD-SAVE-CAPS"></a>GNOME_KEY_MOD_SAVE</h3><a class="indexterm" name="id2719330"></a><pre class="programlisting">#define GNOME_KEY_MOD_SAVE	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-CAPS"><span class="type">GNOME_KEY_NAME_SAVE</span></a> to select
+the <span class="emphasis"><em>save</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719358"></a><h3><a name="GNOME-KEY-NAME-OPEN-CAPS"></a>GNOME_KEY_NAME_OPEN</h3><a class="indexterm" name="id2719367"></a><pre class="programlisting">#define GNOME_KEY_NAME_OPEN	        'o'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>open</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719387"></a><h3><a name="GNOME-KEY-MOD-OPEN-CAPS"></a>GNOME_KEY_MOD_OPEN</h3><a class="indexterm" name="id2719396"></a><pre class="programlisting">#define GNOME_KEY_MOD_OPEN	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-OPEN-CAPS"><span class="type">GNOME_KEY_NAME_OPEN</span></a> to select
+the <span class="emphasis"><em>open</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719424"></a><h3><a name="GNOME-KEY-NAME-SAVE-AS-CAPS"></a>GNOME_KEY_NAME_SAVE_AS</h3><a class="indexterm" name="id2719433"></a><pre class="programlisting">#define GNOME_KEY_NAME_SAVE_AS	        's'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>save as</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719452"></a><h3><a name="GNOME-KEY-MOD-SAVE-AS-CAPS"></a>GNOME_KEY_MOD_SAVE_AS</h3><a class="indexterm" name="id2719461"></a><pre class="programlisting">#define GNOME_KEY_MOD_SAVE_AS           (GDK_CONTROL_MASK | GDK_SHIFT_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-SAVE-AS-CAPS"><span class="type">GNOME_KEY_NAME_SAVE_AS</span></a> to select
+the <span class="emphasis"><em>save as</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719489"></a><h3><a name="GNOME-KEY-NAME-NEW-CAPS"></a>GNOME_KEY_NAME_NEW</h3><a class="indexterm" name="id2719498"></a><pre class="programlisting">#define GNOME_KEY_NAME_NEW	        'n'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>new</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719518"></a><h3><a name="GNOME-KEY-MOD-NEW-CAPS"></a>GNOME_KEY_MOD_NEW</h3><a class="indexterm" name="id2719527"></a><pre class="programlisting">#define GNOME_KEY_MOD_NEW	        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-CAPS"><span class="type">GNOME_KEY_NAME_NEW</span></a> to select
+the <span class="emphasis"><em>new</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719555"></a><h3><a name="GNOME-KEY-NAME-PRINT-CAPS"></a>GNOME_KEY_NAME_PRINT</h3><a class="indexterm" name="id2719563"></a><pre class="programlisting">#define GNOME_KEY_NAME_PRINT            'p'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>print</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719583"></a><h3><a name="GNOME-KEY-MOD-PRINT-CAPS"></a>GNOME_KEY_MOD_PRINT</h3><a class="indexterm" name="id2719592"></a><pre class="programlisting">#define GNOME_KEY_MOD_PRINT             (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-CAPS"><span class="type">GNOME_KEY_NAME_PRINT</span></a> to select
+the <span class="emphasis"><em>print</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719620"></a><h3><a name="GNOME-KEY-NAME-PRINT-SETUP-CAPS"></a>GNOME_KEY_NAME_PRINT_SETUP</h3><a class="indexterm" name="id2719630"></a><pre class="programlisting">#define GNOME_KEY_NAME_PRINT_SETUP      0
+</pre><p>
+The default key used to select the <span class="emphasis"><em>print setup</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719650"></a><h3><a name="GNOME-KEY-MOD-PRINT-SETUP-CAPS"></a>GNOME_KEY_MOD_PRINT_SETUP</h3><a class="indexterm" name="id2719660"></a><pre class="programlisting">#define GNOME_KEY_MOD_PRINT_SETUP       (0)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PRINT-SETUP-CAPS"><span class="type">GNOME_KEY_NAME_PRINT_SETUP</span></a> to
+select the <span class="emphasis"><em>print setup</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719689"></a><h3><a name="GNOME-KEY-NAME-FIND-CAPS"></a>GNOME_KEY_NAME_FIND</h3><a class="indexterm" name="id2719698"></a><pre class="programlisting">#define GNOME_KEY_NAME_FIND             'f'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>find</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719718"></a><h3><a name="GNOME-KEY-MOD-FIND-CAPS"></a>GNOME_KEY_MOD_FIND</h3><a class="indexterm" name="id2719727"></a><pre class="programlisting">#define GNOME_KEY_MOD_FIND              (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-CAPS"><span class="type">GNOME_KEY_NAME_FIND</span></a> to select
+the <span class="emphasis"><em>find</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719755"></a><h3><a name="GNOME-KEY-NAME-FIND-AGAIN-CAPS"></a>GNOME_KEY_NAME_FIND_AGAIN</h3><a class="indexterm" name="id2719765"></a><pre class="programlisting">#define GNOME_KEY_NAME_FIND_AGAIN       'g'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>find again</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719785"></a><h3><a name="GNOME-KEY-MOD-FIND-AGAIN-CAPS"></a>GNOME_KEY_MOD_FIND_AGAIN</h3><a class="indexterm" name="id2719796"></a><pre class="programlisting">#define GNOME_KEY_MOD_FIND_AGAIN        (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-FIND-AGAIN-CAPS"><span class="type">GNOME_KEY_NAME_FIND_AGAIN</span></a> to
+select the <span class="emphasis"><em>find again</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719824"></a><h3><a name="GNOME-KEY-NAME-REPLACE-CAPS"></a>GNOME_KEY_NAME_REPLACE</h3><a class="indexterm" name="id2719833"></a><pre class="programlisting">#define GNOME_KEY_NAME_REPLACE          'r'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>replace</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719853"></a><h3><a name="GNOME-KEY-MOD-REPLACE-CAPS"></a>GNOME_KEY_MOD_REPLACE</h3><a class="indexterm" name="id2719861"></a><pre class="programlisting">#define GNOME_KEY_MOD_REPLACE           (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REPLACE-CAPS"><span class="type">GNOME_KEY_NAME_REPLACE</span></a> to select
+the <span class="emphasis"><em>replace</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719888"></a><h3><a name="GNOME-KEY-NAME-NEW-WINDOW-CAPS"></a>GNOME_KEY_NAME_NEW_WINDOW</h3><a class="indexterm" name="id2719899"></a><pre class="programlisting">#define GNOME_KEY_NAME_NEW_WINDOW       0
+</pre><p>
+The default key used to select the <span class="emphasis"><em>new window</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719919"></a><h3><a name="GNOME-KEY-MOD-NEW-WINDOW-CAPS"></a>GNOME_KEY_MOD_NEW_WINDOW</h3><a class="indexterm" name="id2719929"></a><pre class="programlisting">#define GNOME_KEY_MOD_NEW_WINDOW        (0)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-WINDOW-CAPS"><span class="type">GNOME_KEY_NAME_NEW_WINDOW</span></a> to
+select the <span class="emphasis"><em>new window</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719958"></a><h3><a name="GNOME-KEY-NAME-CLOSE-WINDOW-CAPS"></a>GNOME_KEY_NAME_CLOSE_WINDOW</h3><a class="indexterm" name="id2719968"></a><pre class="programlisting">#define GNOME_KEY_NAME_CLOSE_WINDOW     0
+</pre><p>
+The default key used to select the <span class="emphasis"><em>close window</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2719988"></a><h3><a name="GNOME-KEY-MOD-CLOSE-WINDOW-CAPS"></a>GNOME_KEY_MOD_CLOSE_WINDOW</h3><a class="indexterm" name="id2719998"></a><pre class="programlisting">#define GNOME_KEY_MOD_CLOSE_WINDOW      (0)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-CLOSE-WINDOW-CAPS"><span class="type">GNOME_KEY_NAME_CLOSE_WINDOW</span></a> to
+select the <span class="emphasis"><em>close window</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720027"></a><h3><a name="GNOME-KEY-NAME-REDO-MOVE-CAPS"></a>GNOME_KEY_NAME_REDO_MOVE</h3><a class="indexterm" name="id2720038"></a><pre class="programlisting">#define GNOME_KEY_NAME_REDO_MOVE        'z'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>redo move</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720057"></a><h3><a name="GNOME-KEY-MOD-REDO-MOVE-CAPS"></a>GNOME_KEY_MOD_REDO_MOVE</h3><a class="indexterm" name="id2720068"></a><pre class="programlisting">#define GNOME_KEY_MOD_REDO_MOVE         (GDK_CONTROL_MASK | GDK_SHIFT_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-REDO-MOVE-CAPS"><span class="type">GNOME_KEY_NAME_REDO_MOVE</span></a> to
+select the <span class="emphasis"><em>redo move</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720097"></a><h3><a name="GNOME-KEY-NAME-UNDO-MOVE-CAPS"></a>GNOME_KEY_NAME_UNDO_MOVE</h3><a class="indexterm" name="id2720107"></a><pre class="programlisting">#define GNOME_KEY_NAME_UNDO_MOVE        'z'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>undo move</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720127"></a><h3><a name="GNOME-KEY-MOD-UNDO-MOVE-CAPS"></a>GNOME_KEY_MOD_UNDO_MOVE</h3><a class="indexterm" name="id2720138"></a><pre class="programlisting">#define GNOME_KEY_MOD_UNDO_MOVE         (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-UNDO-MOVE-CAPS"><span class="type">GNOME_KEY_NAME_UNDO_MOVE</span></a> to
+select the <span class="emphasis"><em>undo move</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720166"></a><h3><a name="GNOME-KEY-NAME-PAUSE-GAME-CAPS"></a>GNOME_KEY_NAME_PAUSE_GAME</h3><a class="indexterm" name="id2720177"></a><pre class="programlisting">#define GNOME_KEY_NAME_PAUSE_GAME       GDK_Pause
+</pre><p>
+The default key used to select the <span class="emphasis"><em>pause game</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720197"></a><h3><a name="GNOME-KEY-MOD-PAUSE-GAME-CAPS"></a>GNOME_KEY_MOD_PAUSE_GAME</h3><a class="indexterm" name="id2720207"></a><pre class="programlisting">#define GNOME_KEY_MOD_PAUSE_GAME        (0)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-PAUSE-GAME-CAPS"><span class="type">GNOME_KEY_NAME_PAUSE_GAME</span></a> to
+select the <span class="emphasis"><em>pause game</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720236"></a><h3><a name="GNOME-KEY-NAME-NEW-GAME-CAPS"></a>GNOME_KEY_NAME_NEW_GAME</h3><a class="indexterm" name="id2720246"></a><pre class="programlisting">#define GNOME_KEY_NAME_NEW_GAME         'n'
+</pre><p>
+The default key used to select the <span class="emphasis"><em>new game</em></span> menu item.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2720266"></a><h3><a name="GNOME-KEY-MOD-NEW-GAME-CAPS"></a>GNOME_KEY_MOD_NEW_GAME</h3><a class="indexterm" name="id2720274"></a><pre class="programlisting">#define GNOME_KEY_MOD_NEW_GAME          (GDK_CONTROL_MASK)
+</pre><p>
+The default modifier used in conjunction with <a href="libgnomeui-gnome-uidefs.html#GNOME-KEY-NAME-NEW-GAME-CAPS"><span class="type">GNOME_KEY_NAME_NEW_GAME</span></a> to
+select the <span class="emphasis"><em>new game</em></span> menu item.
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeui-gnome-types.html"><b>&lt;&lt; gnome-types</b></a></td><td align="right"><a accesskey="n" href="libgnomeui-gnome-vfs-util.html"><b>gnome-vfs-util &gt;&gt;</b></a></td></tr></table></body></html>

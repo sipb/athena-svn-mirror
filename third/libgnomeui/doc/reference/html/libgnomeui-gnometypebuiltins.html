@@ -1,80 +1,216 @@
-<HTML><HEAD><TITLE>gnometypebuiltins</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK REL="HOME" TITLE="GNOME UI Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="Miscellaneous utility functions and macros" HREF="miscellaneous.html"><LINK REL="PREVIOUS" TITLE="gnome-stock-icons" HREF="libgnomeui-gnome-stock-icons.html"><LINK REL="NEXT" TITLE="gnome-types" HREF="libgnomeui-gnome-types.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="libgnomeui-gnome-stock-icons.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="miscellaneous.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME UI Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="libgnomeui-gnome-types.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="LIBGNOMEUI-GNOMETYPEBUILTINS"></A>gnometypebuiltins</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN17066"></A><H2>Name</H2>gnometypebuiltins&nbsp;--&nbsp;</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN17069"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnometypebuiltins</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="miscellaneous.html" title="Miscellaneous utility functions and macros"><link rel="previous" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="next" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="libgnomeui-gnometypebuiltins.html#id2712757" title="Description"><link rel="section" href="libgnomeui-gnometypebuiltins.html#id2712767" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeui-gnome-stock-icons.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="miscellaneous.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="libgnomeui-gnome-types.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeui-gnometypebuiltins"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnometypebuiltins</span></h2><p>gnometypebuiltins &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
 
 
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-UI-INFO-TYPE-CAPS">GNOME_TYPE_UI_INFO_TYPE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-UI-INFO-TYPE-GET-TYPE">gnome_ui_info_type_get_type</A>     (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-UI-INFO-CONFIGURABLE-TYPES-CAPS">GNOME_TYPE_UI_INFO_CONFIGURABLE_TYPES</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-UI-INFO-CONFIGURABLE-TYPES-GET-TYPE">gnome_ui_info_configurable_types_get_type</A>
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-UI-INFO-TYPE-CAPS">GNOME_TYPE_UI_INFO_TYPE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-ui-info-type-get-type">gnome_ui_info_type_get_type</a>     (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-UI-INFO-CONFIGURABLE-TYPES-CAPS">GNOME_TYPE_UI_INFO_CONFIGURABLE_TYPES</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-ui-info-configurable-types-get-type">gnome_ui_info_configurable_types_get_type</a>
                                             (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-UI-PIXMAP-TYPE-CAPS">GNOME_TYPE_UI_PIXMAP_TYPE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-UI-PIXMAP-TYPE-GET-TYPE">gnome_ui_pixmap_type_get_type</A>   (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-INTERACT-STYLE-CAPS">GNOME_TYPE_INTERACT_STYLE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-INTERACT-STYLE-GET-TYPE">gnome_interact_style_get_type</A>   (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-DIALOG-TYPE-CAPS">GNOME_TYPE_DIALOG_TYPE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-DIALOG-TYPE-GET-TYPE">gnome_dialog_type_get_type</A>      (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-SAVE-STYLE-CAPS">GNOME_TYPE_SAVE_STYLE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-SAVE-STYLE-GET-TYPE">gnome_save_style_get_type</A>       (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-RESTART-STYLE-CAPS">GNOME_TYPE_RESTART_STYLE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-RESTART-STYLE-GET-TYPE">gnome_restart_style_get_type</A>    (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-CLIENT-STATE-CAPS">GNOME_TYPE_CLIENT_STATE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-CLIENT-STATE-GET-TYPE">gnome_client_state_get_type</A>     (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-CLIENT-FLAGS-CAPS">GNOME_TYPE_CLIENT_FLAGS</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-CLIENT-FLAGS-GET-TYPE">gnome_client_flags_get_type</A>     (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-DATE-EDIT-FLAGS-CAPS">GNOME_TYPE_DATE_EDIT_FLAGS</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-DATE-EDIT-FLAGS-GET-TYPE">gnome_date_edit_flags_get_type</A>  (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-EDGE-POSITION-CAPS">GNOME_TYPE_EDGE_POSITION</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-EDGE-POSITION-GET-TYPE">gnome_edge_position_get_type</A>    (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-FONT-PICKER-MODE-CAPS">GNOME_TYPE_FONT_PICKER_MODE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-FONT-PICKER-MODE-GET-TYPE">gnome_font_picker_mode_get_type</A> (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-LIST-MODE-CAPS">GNOME_TYPE_ICON_LIST_MODE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-ICON-LIST-MODE-GET-TYPE">gnome_icon_list_mode_get_type</A>   (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-MDI-MODE-CAPS">GNOME_TYPE_MDI_MODE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-MDI-MODE-GET-TYPE">gnome_mdi_mode_get_type</A>         (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-PREFERENCES-TYPE-CAPS">GNOME_TYPE_PREFERENCES_TYPE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-PREFERENCES-TYPE-GET-TYPE">gnome_preferences_type_get_type</A> (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-THUMBNAIL-SIZE-CAPS">GNOME_TYPE_THUMBNAIL_SIZE</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-THUMBNAIL-SIZE-GET-TYPE">gnome_thumbnail_size_get_type</A>   (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-LOOKUP-FLAGS-CAPS">GNOME_TYPE_ICON_LOOKUP_FLAGS</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-ICON-LOOKUP-FLAGS-GET-TYPE">gnome_icon_lookup_flags_get_type</A>
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-UI-PIXMAP-TYPE-CAPS">GNOME_TYPE_UI_PIXMAP_TYPE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-ui-pixmap-type-get-type">gnome_ui_pixmap_type_get_type</a>   (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-INTERACT-STYLE-CAPS">GNOME_TYPE_INTERACT_STYLE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-interact-style-get-type">gnome_interact_style_get_type</a>   (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-DIALOG-TYPE-CAPS">GNOME_TYPE_DIALOG_TYPE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-dialog-type-get-type">gnome_dialog_type_get_type</a>      (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-SAVE-STYLE-CAPS">GNOME_TYPE_SAVE_STYLE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-save-style-get-type">gnome_save_style_get_type</a>       (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-RESTART-STYLE-CAPS">GNOME_TYPE_RESTART_STYLE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-restart-style-get-type">gnome_restart_style_get_type</a>    (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-CLIENT-STATE-CAPS">GNOME_TYPE_CLIENT_STATE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-client-state-get-type">gnome_client_state_get_type</a>     (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-CLIENT-FLAGS-CAPS">GNOME_TYPE_CLIENT_FLAGS</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-client-flags-get-type">gnome_client_flags_get_type</a>     (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-DATE-EDIT-FLAGS-CAPS">GNOME_TYPE_DATE_EDIT_FLAGS</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-date-edit-flags-get-type">gnome_date_edit_flags_get_type</a>  (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-EDGE-POSITION-CAPS">GNOME_TYPE_EDGE_POSITION</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-edge-position-get-type">gnome_edge_position_get_type</a>    (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-FONT-PICKER-MODE-CAPS">GNOME_TYPE_FONT_PICKER_MODE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-font-picker-mode-get-type">gnome_font_picker_mode_get_type</a> (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-LIST-MODE-CAPS">GNOME_TYPE_ICON_LIST_MODE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-icon-list-mode-get-type">gnome_icon_list_mode_get_type</a>   (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-MDI-MODE-CAPS">GNOME_TYPE_MDI_MODE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-mdi-mode-get-type">gnome_mdi_mode_get_type</a>         (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-PREFERENCES-TYPE-CAPS">GNOME_TYPE_PREFERENCES_TYPE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-preferences-type-get-type">gnome_preferences_type_get_type</a> (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-THUMBNAIL-SIZE-CAPS">GNOME_TYPE_THUMBNAIL_SIZE</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-thumbnail-size-get-type">gnome_thumbnail_size_get_type</a>   (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-LOOKUP-FLAGS-CAPS">GNOME_TYPE_ICON_LOOKUP_FLAGS</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-icon-lookup-flags-get-type">gnome_icon_lookup_flags_get_type</a>
                                             (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-LOOKUP-RESULT-FLAGS-CAPS">GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-ICON-LOOKUP-RESULT-FLAGS-GET-TYPE">gnome_icon_lookup_result_flags_get_type</A>
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-LOOKUP-RESULT-FLAGS-CAPS">GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-icon-lookup-result-flags-get-type">gnome_icon_lookup_result_flags_get_type</a>
                                             (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-THEME-CAPS">GNOME_TYPE_ICON_THEME</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-ICON-THEME-GET-TYPE">gnome_icon_theme_get_type</A>       (void);
-#define     <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-THUMBNAIL-FACTORY-CAPS">GNOME_TYPE_THUMBNAIL_FACTORY</A>
-GType       <A HREF="libgnomeui-gnometypebuiltins.html#GNOME-THUMBNAIL-FACTORY-GET-TYPE">gnome_thumbnail_factory_get_type</A>
-                                            (void);</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN17132"></A><H2>Description</H2><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN17135"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN17137"></A><H3><A NAME="GNOME-TYPE-UI-INFO-TYPE-CAPS"></A>GNOME_TYPE_UI_INFO_TYPE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_UI_INFO_TYPE gnome_ui_info_type_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17142"></A><H3><A NAME="GNOME-UI-INFO-TYPE-GET-TYPE"></A>gnome_ui_info_type_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_ui_info_type_get_type     (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17149"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17154"></A><H3><A NAME="GNOME-TYPE-UI-INFO-CONFIGURABLE-TYPES-CAPS"></A>GNOME_TYPE_UI_INFO_CONFIGURABLE_TYPES</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_UI_INFO_CONFIGURABLE_TYPES gnome_ui_info_configurable_types_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17159"></A><H3><A NAME="GNOME-UI-INFO-CONFIGURABLE-TYPES-GET-TYPE"></A>gnome_ui_info_configurable_types_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_ui_info_configurable_types_get_type
-                                            (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17166"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17171"></A><H3><A NAME="GNOME-TYPE-UI-PIXMAP-TYPE-CAPS"></A>GNOME_TYPE_UI_PIXMAP_TYPE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_UI_PIXMAP_TYPE gnome_ui_pixmap_type_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17176"></A><H3><A NAME="GNOME-UI-PIXMAP-TYPE-GET-TYPE"></A>gnome_ui_pixmap_type_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_ui_pixmap_type_get_type   (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17183"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17188"></A><H3><A NAME="GNOME-TYPE-INTERACT-STYLE-CAPS"></A>GNOME_TYPE_INTERACT_STYLE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_INTERACT_STYLE gnome_interact_style_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17193"></A><H3><A NAME="GNOME-INTERACT-STYLE-GET-TYPE"></A>gnome_interact_style_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_interact_style_get_type   (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17200"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17205"></A><H3><A NAME="GNOME-TYPE-DIALOG-TYPE-CAPS"></A>GNOME_TYPE_DIALOG_TYPE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_DIALOG_TYPE gnome_dialog_type_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17210"></A><H3><A NAME="GNOME-DIALOG-TYPE-GET-TYPE"></A>gnome_dialog_type_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_dialog_type_get_type      (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17217"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17222"></A><H3><A NAME="GNOME-TYPE-SAVE-STYLE-CAPS"></A>GNOME_TYPE_SAVE_STYLE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_SAVE_STYLE gnome_save_style_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17227"></A><H3><A NAME="GNOME-SAVE-STYLE-GET-TYPE"></A>gnome_save_style_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_save_style_get_type       (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17234"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17239"></A><H3><A NAME="GNOME-TYPE-RESTART-STYLE-CAPS"></A>GNOME_TYPE_RESTART_STYLE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_RESTART_STYLE gnome_restart_style_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17244"></A><H3><A NAME="GNOME-RESTART-STYLE-GET-TYPE"></A>gnome_restart_style_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_restart_style_get_type    (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17251"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17256"></A><H3><A NAME="GNOME-TYPE-CLIENT-STATE-CAPS"></A>GNOME_TYPE_CLIENT_STATE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_CLIENT_STATE gnome_client_state_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17261"></A><H3><A NAME="GNOME-CLIENT-STATE-GET-TYPE"></A>gnome_client_state_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_client_state_get_type     (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17268"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17273"></A><H3><A NAME="GNOME-TYPE-CLIENT-FLAGS-CAPS"></A>GNOME_TYPE_CLIENT_FLAGS</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_CLIENT_FLAGS gnome_client_flags_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17278"></A><H3><A NAME="GNOME-CLIENT-FLAGS-GET-TYPE"></A>gnome_client_flags_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_client_flags_get_type     (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17285"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17290"></A><H3><A NAME="GNOME-TYPE-DATE-EDIT-FLAGS-CAPS"></A>GNOME_TYPE_DATE_EDIT_FLAGS</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_DATE_EDIT_FLAGS gnome_date_edit_flags_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17295"></A><H3><A NAME="GNOME-DATE-EDIT-FLAGS-GET-TYPE"></A>gnome_date_edit_flags_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_date_edit_flags_get_type  (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17302"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17307"></A><H3><A NAME="GNOME-TYPE-EDGE-POSITION-CAPS"></A>GNOME_TYPE_EDGE_POSITION</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_EDGE_POSITION gnome_edge_position_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17312"></A><H3><A NAME="GNOME-EDGE-POSITION-GET-TYPE"></A>gnome_edge_position_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_edge_position_get_type    (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17319"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17324"></A><H3><A NAME="GNOME-TYPE-FONT-PICKER-MODE-CAPS"></A>GNOME_TYPE_FONT_PICKER_MODE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_FONT_PICKER_MODE gnome_font_picker_mode_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17329"></A><H3><A NAME="GNOME-FONT-PICKER-MODE-GET-TYPE"></A>gnome_font_picker_mode_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_font_picker_mode_get_type (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17336"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17341"></A><H3><A NAME="GNOME-TYPE-ICON-LIST-MODE-CAPS"></A>GNOME_TYPE_ICON_LIST_MODE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_ICON_LIST_MODE gnome_icon_list_mode_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17346"></A><H3><A NAME="GNOME-ICON-LIST-MODE-GET-TYPE"></A>gnome_icon_list_mode_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_icon_list_mode_get_type   (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17353"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17358"></A><H3><A NAME="GNOME-TYPE-MDI-MODE-CAPS"></A>GNOME_TYPE_MDI_MODE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_MDI_MODE gnome_mdi_mode_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17363"></A><H3><A NAME="GNOME-MDI-MODE-GET-TYPE"></A>gnome_mdi_mode_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_mdi_mode_get_type         (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17370"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17375"></A><H3><A NAME="GNOME-TYPE-PREFERENCES-TYPE-CAPS"></A>GNOME_TYPE_PREFERENCES_TYPE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_PREFERENCES_TYPE gnome_preferences_type_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17380"></A><H3><A NAME="GNOME-PREFERENCES-TYPE-GET-TYPE"></A>gnome_preferences_type_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_preferences_type_get_type (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17387"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17392"></A><H3><A NAME="GNOME-TYPE-THUMBNAIL-SIZE-CAPS"></A>GNOME_TYPE_THUMBNAIL_SIZE</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_THUMBNAIL_SIZE gnome_thumbnail_size_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17397"></A><H3><A NAME="GNOME-THUMBNAIL-SIZE-GET-TYPE"></A>gnome_thumbnail_size_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_thumbnail_size_get_type   (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17404"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17409"></A><H3><A NAME="GNOME-TYPE-ICON-LOOKUP-FLAGS-CAPS"></A>GNOME_TYPE_ICON_LOOKUP_FLAGS</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_ICON_LOOKUP_FLAGS gnome_icon_lookup_flags_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17414"></A><H3><A NAME="GNOME-ICON-LOOKUP-FLAGS-GET-TYPE"></A>gnome_icon_lookup_flags_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_icon_lookup_flags_get_type
-                                            (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17421"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17426"></A><H3><A NAME="GNOME-TYPE-ICON-LOOKUP-RESULT-FLAGS-CAPS"></A>GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS gnome_icon_lookup_result_flags_get_type()</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17431"></A><H3><A NAME="GNOME-ICON-LOOKUP-RESULT-FLAGS-GET-TYPE"></A>gnome_icon_lookup_result_flags_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_icon_lookup_result_flags_get_type
-                                            (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17438"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17443"></A><H3><A NAME="GNOME-TYPE-ICON-THEME-CAPS"></A>GNOME_TYPE_ICON_THEME</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_ICON_THEME             (gnome_icon_theme_get_type ())</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17448"></A><H3><A NAME="GNOME-ICON-THEME-GET-TYPE"></A>gnome_icon_theme_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_icon_theme_get_type       (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17455"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17460"></A><H3><A NAME="GNOME-TYPE-THUMBNAIL-FACTORY-CAPS"></A>GNOME_TYPE_THUMBNAIL_FACTORY</H3><PRE CLASS="PROGRAMLISTING">#define GNOME_TYPE_THUMBNAIL_FACTORY	(gnome_thumbnail_factory_get_type ())</PRE><P></P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN17465"></A><H3><A NAME="GNOME-THUMBNAIL-FACTORY-GET-TYPE"></A>gnome_thumbnail_factory_get_type ()</H3><PRE CLASS="PROGRAMLISTING">GType       gnome_thumbnail_factory_get_type
-                                            (void);</PRE><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN17472"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>&#13;</P></TD></TR></TBODY></TABLE></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="libgnomeui-gnome-stock-icons.html"><B>&lt;&lt;&lt;&nbsp;gnome-stock-icons</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="libgnomeui-gnome-types.html"><B>gnome-types&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-ICON-THEME-CAPS">GNOME_TYPE_ICON_THEME</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-icon-theme-get-type">gnome_icon_theme_get_type</a>       (void);
+#define     <a href="libgnomeui-gnometypebuiltins.html#GNOME-TYPE-THUMBNAIL-FACTORY-CAPS">GNOME_TYPE_THUMBNAIL_FACTORY</a>
+GType       <a href="libgnomeui-gnometypebuiltins.html#gnome-thumbnail-factory-get-type">gnome_thumbnail_factory_get_type</a>
+                                            (void);
+</pre></div><div class="refsect1" lang="en"><a name="id2712757"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2712767"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2712772"></a><h3><a name="GNOME-TYPE-UI-INFO-TYPE-CAPS"></a>GNOME_TYPE_UI_INFO_TYPE</h3><a class="indexterm" name="id2712785"></a><pre class="programlisting">#define GNOME_TYPE_UI_INFO_TYPE gnome_ui_info_type_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2712801"></a><h3><a name="gnome-ui-info-type-get-type"></a>gnome_ui_info_type_get_type ()</h3><a class="indexterm" name="id2712812"></a><pre class="programlisting">GType       gnome_ui_info_type_get_type     (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2712848"></a><h3><a name="GNOME-TYPE-UI-INFO-CONFIGURABLE-TYPES-CAPS"></a>GNOME_TYPE_UI_INFO_CONFIGURABLE_TYPES</h3><a class="indexterm" name="id2712860"></a><pre class="programlisting">#define GNOME_TYPE_UI_INFO_CONFIGURABLE_TYPES gnome_ui_info_configurable_types_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2712877"></a><h3><a name="gnome-ui-info-configurable-types-get-type"></a>gnome_ui_info_configurable_types_get_type ()</h3><a class="indexterm" name="id2712890"></a><pre class="programlisting">GType       gnome_ui_info_configurable_types_get_type
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2712926"></a><h3><a name="GNOME-TYPE-UI-PIXMAP-TYPE-CAPS"></a>GNOME_TYPE_UI_PIXMAP_TYPE</h3><a class="indexterm" name="id2712939"></a><pre class="programlisting">#define GNOME_TYPE_UI_PIXMAP_TYPE gnome_ui_pixmap_type_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2712955"></a><h3><a name="gnome-ui-pixmap-type-get-type"></a>gnome_ui_pixmap_type_get_type ()</h3><a class="indexterm" name="id2712966"></a><pre class="programlisting">GType       gnome_ui_pixmap_type_get_type   (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713002"></a><h3><a name="GNOME-TYPE-INTERACT-STYLE-CAPS"></a>GNOME_TYPE_INTERACT_STYLE</h3><a class="indexterm" name="id2713014"></a><pre class="programlisting">#define GNOME_TYPE_INTERACT_STYLE gnome_interact_style_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713030"></a><h3><a name="gnome-interact-style-get-type"></a>gnome_interact_style_get_type ()</h3><a class="indexterm" name="id2713042"></a><pre class="programlisting">GType       gnome_interact_style_get_type   (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713078"></a><h3><a name="GNOME-TYPE-DIALOG-TYPE-CAPS"></a>GNOME_TYPE_DIALOG_TYPE</h3><a class="indexterm" name="id2713089"></a><pre class="programlisting">#define GNOME_TYPE_DIALOG_TYPE gnome_dialog_type_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713105"></a><h3><a name="gnome-dialog-type-get-type"></a>gnome_dialog_type_get_type ()</h3><a class="indexterm" name="id2713118"></a><pre class="programlisting">GType       gnome_dialog_type_get_type      (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713153"></a><h3><a name="GNOME-TYPE-SAVE-STYLE-CAPS"></a>GNOME_TYPE_SAVE_STYLE</h3><a class="indexterm" name="id2713164"></a><pre class="programlisting">#define GNOME_TYPE_SAVE_STYLE gnome_save_style_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713180"></a><h3><a name="gnome-save-style-get-type"></a>gnome_save_style_get_type ()</h3><a class="indexterm" name="id2713192"></a><pre class="programlisting">GType       gnome_save_style_get_type       (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713227"></a><h3><a name="GNOME-TYPE-RESTART-STYLE-CAPS"></a>GNOME_TYPE_RESTART_STYLE</h3><a class="indexterm" name="id2713240"></a><pre class="programlisting">#define GNOME_TYPE_RESTART_STYLE gnome_restart_style_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713256"></a><h3><a name="gnome-restart-style-get-type"></a>gnome_restart_style_get_type ()</h3><a class="indexterm" name="id2713268"></a><pre class="programlisting">GType       gnome_restart_style_get_type    (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713303"></a><h3><a name="GNOME-TYPE-CLIENT-STATE-CAPS"></a>GNOME_TYPE_CLIENT_STATE</h3><a class="indexterm" name="id2713316"></a><pre class="programlisting">#define GNOME_TYPE_CLIENT_STATE gnome_client_state_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713332"></a><h3><a name="gnome-client-state-get-type"></a>gnome_client_state_get_type ()</h3><a class="indexterm" name="id2713344"></a><pre class="programlisting">GType       gnome_client_state_get_type     (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713379"></a><h3><a name="GNOME-TYPE-CLIENT-FLAGS-CAPS"></a>GNOME_TYPE_CLIENT_FLAGS</h3><a class="indexterm" name="id2713391"></a><pre class="programlisting">#define GNOME_TYPE_CLIENT_FLAGS gnome_client_flags_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713407"></a><h3><a name="gnome-client-flags-get-type"></a>gnome_client_flags_get_type ()</h3><a class="indexterm" name="id2713419"></a><pre class="programlisting">GType       gnome_client_flags_get_type     (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713454"></a><h3><a name="GNOME-TYPE-DATE-EDIT-FLAGS-CAPS"></a>GNOME_TYPE_DATE_EDIT_FLAGS</h3><a class="indexterm" name="id2713467"></a><pre class="programlisting">#define GNOME_TYPE_DATE_EDIT_FLAGS gnome_date_edit_flags_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713483"></a><h3><a name="gnome-date-edit-flags-get-type"></a>gnome_date_edit_flags_get_type ()</h3><a class="indexterm" name="id2713494"></a><pre class="programlisting">GType       gnome_date_edit_flags_get_type  (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713530"></a><h3><a name="GNOME-TYPE-EDGE-POSITION-CAPS"></a>GNOME_TYPE_EDGE_POSITION</h3><a class="indexterm" name="id2713543"></a><pre class="programlisting">#define GNOME_TYPE_EDGE_POSITION gnome_edge_position_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713559"></a><h3><a name="gnome-edge-position-get-type"></a>gnome_edge_position_get_type ()</h3><a class="indexterm" name="id2713570"></a><pre class="programlisting">GType       gnome_edge_position_get_type    (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713606"></a><h3><a name="GNOME-TYPE-FONT-PICKER-MODE-CAPS"></a>GNOME_TYPE_FONT_PICKER_MODE</h3><a class="indexterm" name="id2713618"></a><pre class="programlisting">#define GNOME_TYPE_FONT_PICKER_MODE gnome_font_picker_mode_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713635"></a><h3><a name="gnome-font-picker-mode-get-type"></a>gnome_font_picker_mode_get_type ()</h3><a class="indexterm" name="id2713646"></a><pre class="programlisting">GType       gnome_font_picker_mode_get_type (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713682"></a><h3><a name="GNOME-TYPE-ICON-LIST-MODE-CAPS"></a>GNOME_TYPE_ICON_LIST_MODE</h3><a class="indexterm" name="id2713694"></a><pre class="programlisting">#define GNOME_TYPE_ICON_LIST_MODE gnome_icon_list_mode_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713710"></a><h3><a name="gnome-icon-list-mode-get-type"></a>gnome_icon_list_mode_get_type ()</h3><a class="indexterm" name="id2713722"></a><pre class="programlisting">GType       gnome_icon_list_mode_get_type   (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713758"></a><h3><a name="GNOME-TYPE-MDI-MODE-CAPS"></a>GNOME_TYPE_MDI_MODE</h3><a class="indexterm" name="id2713770"></a><pre class="programlisting">#define GNOME_TYPE_MDI_MODE gnome_mdi_mode_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713785"></a><h3><a name="gnome-mdi-mode-get-type"></a>gnome_mdi_mode_get_type ()</h3><a class="indexterm" name="id2713796"></a><pre class="programlisting">GType       gnome_mdi_mode_get_type         (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713832"></a><h3><a name="GNOME-TYPE-PREFERENCES-TYPE-CAPS"></a>GNOME_TYPE_PREFERENCES_TYPE</h3><a class="indexterm" name="id2713845"></a><pre class="programlisting">#define GNOME_TYPE_PREFERENCES_TYPE gnome_preferences_type_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713861"></a><h3><a name="gnome-preferences-type-get-type"></a>gnome_preferences_type_get_type ()</h3><a class="indexterm" name="id2713872"></a><pre class="programlisting">GType       gnome_preferences_type_get_type (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713908"></a><h3><a name="GNOME-TYPE-THUMBNAIL-SIZE-CAPS"></a>GNOME_TYPE_THUMBNAIL_SIZE</h3><a class="indexterm" name="id2713921"></a><pre class="programlisting">#define GNOME_TYPE_THUMBNAIL_SIZE gnome_thumbnail_size_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2713937"></a><h3><a name="gnome-thumbnail-size-get-type"></a>gnome_thumbnail_size_get_type ()</h3><a class="indexterm" name="id2713948"></a><pre class="programlisting">GType       gnome_thumbnail_size_get_type   (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2713984"></a><h3><a name="GNOME-TYPE-ICON-LOOKUP-FLAGS-CAPS"></a>GNOME_TYPE_ICON_LOOKUP_FLAGS</h3><a class="indexterm" name="id2713996"></a><pre class="programlisting">#define GNOME_TYPE_ICON_LOOKUP_FLAGS gnome_icon_lookup_flags_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2714012"></a><h3><a name="gnome-icon-lookup-flags-get-type"></a>gnome_icon_lookup_flags_get_type ()</h3><a class="indexterm" name="id2714024"></a><pre class="programlisting">GType       gnome_icon_lookup_flags_get_type
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2714061"></a><h3><a name="GNOME-TYPE-ICON-LOOKUP-RESULT-FLAGS-CAPS"></a>GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS</h3><a class="indexterm" name="id2714074"></a><pre class="programlisting">#define GNOME_TYPE_ICON_LOOKUP_RESULT_FLAGS gnome_icon_lookup_result_flags_get_type()
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2714091"></a><h3><a name="gnome-icon-lookup-result-flags-get-type"></a>gnome_icon_lookup_result_flags_get_type ()</h3><a class="indexterm" name="id2714103"></a><pre class="programlisting">GType       gnome_icon_lookup_result_flags_get_type
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2714139"></a><h3><a name="GNOME-TYPE-ICON-THEME-CAPS"></a>GNOME_TYPE_ICON_THEME</h3><a class="indexterm" name="id2714150"></a><pre class="programlisting">#define GNOME_TYPE_ICON_THEME             (gnome_icon_theme_get_type ())
+</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">GNOME_TYPE_ICON_THEME</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2714179"></a><h3><a name="gnome-icon-theme-get-type"></a>gnome_icon_theme_get_type ()</h3><a class="indexterm" name="id2714191"></a><pre class="programlisting">GType       gnome_icon_theme_get_type       (void);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_icon_theme_get_type</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2714239"></a><h3><a name="GNOME-TYPE-THUMBNAIL-FACTORY-CAPS"></a>GNOME_TYPE_THUMBNAIL_FACTORY</h3><a class="indexterm" name="id2714251"></a><pre class="programlisting">#define GNOME_TYPE_THUMBNAIL_FACTORY	(gnome_thumbnail_factory_get_type ())
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2714268"></a><h3><a name="gnome-thumbnail-factory-get-type"></a>gnome_thumbnail_factory_get_type ()</h3><a class="indexterm" name="id2714280"></a><pre class="programlisting">GType       gnome_thumbnail_factory_get_type
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeui-gnome-stock-icons.html"><b>&lt;&lt; gnome-stock-icons</b></a></td><td align="right"><a accesskey="n" href="libgnomeui-gnome-types.html"><b>gnome-types &gt;&gt;</b></a></td></tr></table></body></html>

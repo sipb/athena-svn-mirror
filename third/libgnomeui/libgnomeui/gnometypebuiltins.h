@@ -74,6 +74,11 @@ GType gnome_icon_lookup_result_flags_get_type (void);
 GType gnome_mdi_mode_get_type (void);
 
 
+/* --- gnome-password-dialog.h --- */
+#define GNOME_TYPE_PASSWORD_DIALOG_REMEMBER gnome_password_dialog_remember_get_type()
+GType gnome_password_dialog_remember_get_type (void);
+
+
 /* --- gnome-thumbnail.h --- */
 #define GNOME_TYPE_THUMBNAIL_SIZE gnome_thumbnail_size_get_type()
 GType gnome_thumbnail_size_get_type (void);

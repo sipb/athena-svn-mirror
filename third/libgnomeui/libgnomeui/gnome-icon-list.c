@@ -274,7 +274,7 @@ gil_get_items_per_line (Gil *gil)
  * gnome_icon_list_get_items_per_line:
  * @gil: An icon list.
  *
- * Returns the number of icons that fit in a line or row.
+ * Returns: The number of icons that fit in a line or row.
  */
 int
 gnome_icon_list_get_items_per_line (GnomeIconList *gil)
@@ -566,10 +566,26 @@ gil_unselect_all (GnomeIconList *gil, GdkEvent *event, gpointer keep)
 }
 
 /**
+ * gnome_icon_list_select_all:
+ * @gil:   An icon list.
+ */
+void
+gnome_icon_list_select_all (GnomeIconList *gil)
+{
+	guint i;
+	
+	g_return_if_fail (gil != NULL);
+	g_return_if_fail (IS_GIL (gil));
+	
+	for (i = 0; i < gnome_icon_list_get_num_icons (gil); i++)
+		gnome_icon_list_select_icon (gil, i);
+}
+
+/**
  * gnome_icon_list_unselect_all:
  * @gil:   An icon list.
  *
- * Returns: the number of icons in the icon list
+ * Returns: The number of icons in the icon list
  */
 int
 gnome_icon_list_unselect_all (GnomeIconList *gil)
@@ -884,7 +900,7 @@ icon_event (GnomeCanvasItem *item, GdkEvent *event, gpointer data)
 
 	if (priv->editing_icon && event->type == GDK_BUTTON_PRESS) {
 		gnome_icon_text_item_stop_editing (priv->editing_icon->text, FALSE);
-		priv->editing_icon = FALSE;
+		priv->editing_icon = NULL;
 	}
 
 	switch (priv->selection_mode) {
@@ -1582,7 +1598,7 @@ gil_realize (GtkWidget *widget)
 {
 	Gil *gil;
 	GnomeIconListPrivate *priv;
-	GtkStyle *style;
+	GdkColor color;
 
 	gil = GIL (widget);
 	priv = gil->_priv;
@@ -1596,9 +1612,8 @@ gil_realize (GtkWidget *widget)
 
 	/* Change the style to use the base color as the background */
 
-	style = gtk_style_copy (gtk_widget_get_style (widget));
-	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
-	gtk_widget_set_style (widget, style);
+	color = widget->style->base[GTK_STATE_NORMAL];
+	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL, &color);
 
 	gdk_window_set_background (GTK_LAYOUT (gil)->bin_window,
 				   &widget->style->bg[GTK_STATE_NORMAL]);
@@ -1646,10 +1661,23 @@ real_move_cursor (Gil *gil, GtkDirectionType dir, gboolean clear_selection)
 		if (priv->focus_icon - items_per_line >= 0)
 			new_focus_icon -= items_per_line;
 		break;
+
+	case GTK_SCROLL_START:
+		if (priv->focus_icon != 0) {
+			new_focus_icon = 0;
+		}
+		break;
+
+	case GTK_SCROLL_END:
+		if (priv->focus_icon != (priv->icons -1)) {
+			new_focus_icon = priv->icons -1;
+		}
+		break;
+
 	default:
 		break;
 	}
-	
+
 	if (clear_selection &&
 	    g_array_index (priv->icon_list, Icon *, new_focus_icon)->selected == FALSE) {
 		gnome_icon_list_unselect_all (gil);
@@ -1657,7 +1685,7 @@ real_move_cursor (Gil *gil, GtkDirectionType dir, gboolean clear_selection)
 	}
 
 	if (gnome_icon_list_icon_is_visible (gil, new_focus_icon) != GTK_VISIBILITY_FULL &&
-	    (dir == GTK_DIR_UP || dir == GTK_DIR_DOWN))
+	    (dir == GTK_DIR_UP || dir == GTK_DIR_DOWN || GTK_SCROLL_START || GTK_SCROLL_END))
 		gnome_icon_list_moveto (gil, new_focus_icon, dir == GTK_DIR_UP ? 0.0 : 1.0);
 
 	gnome_icon_list_focus_icon (gil, new_focus_icon);
@@ -1718,8 +1746,9 @@ real_select_icon (Gil *gil, gint num, GdkEvent *event)
 
 	icon->selected = TRUE;
 	gnome_icon_text_item_select (icon->text, TRUE);
-	priv->selection = g_list_insert_sorted (priv->selection, GINT_TO_POINTER (num),
-						selection_list_compare_cb);
+	if (g_list_find(priv->selection, GINT_TO_POINTER(num)) == NULL)
+		priv->selection = g_list_insert_sorted (priv->selection, GINT_TO_POINTER (num),
+							selection_list_compare_cb);
 }
 
 static void
@@ -2088,13 +2117,13 @@ gil_focus_in (GtkWidget *widget, GdkEventFocus *event)
 	Gil *gil;
 
 	gil = GIL (widget);
-	
+
 	GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
 
 	if (gil->_priv->icons > 0 && gil->_priv->focus_icon == -1) {
 		gnome_icon_list_focus_icon (gil, 0);
 	}
-	
+
 	gtk_widget_queue_draw (widget);
 
 	return FALSE;
@@ -2192,6 +2221,45 @@ gil_get_accessible (GtkWidget *widget)
 }
 
 static void
+gil_style_set (GtkWidget *widget, GtkStyle *prev_style)
+{
+
+	Gil *gil;
+	GnomeIconListPrivate *priv;
+	GtkStyle *style;
+	GnomeIconTextItem *item;
+	int item_count;
+
+	gil = GIL (widget);
+	priv = gil->_priv;
+
+	if (priv->icons) {
+		char *file_name;
+
+		style = gtk_widget_get_style (GTK_WIDGET(widget));
+
+		for (item_count=0; item_count < priv->icons; item_count++) {
+			item = gnome_icon_list_get_icon_text_item (gil, item_count);
+			file_name = g_strdup (item->text);
+			gnome_icon_text_item_configure (item, 0, 0,
+											priv->icon_width, NULL,
+											file_name, priv->is_editable,
+											priv->static_text);
+
+			g_free (file_name);
+		}
+
+	}
+
+
+	if (GTK_WIDGET_CLASS (parent_class)->style_set)
+		(* GTK_WIDGET_CLASS (parent_class)->style_set) (widget, prev_style);
+
+}
+
+
+
+static void
 gnome_icon_list_class_init (GilClass *gil_class)
 {
 	GtkObjectClass *object_class;
@@ -2278,6 +2346,11 @@ gnome_icon_list_class_init (GilClass *gil_class)
 	add_move_binding (binding_set, GDK_Down, GTK_DIR_DOWN);
 	add_move_binding (binding_set, GDK_Up, GTK_DIR_UP);
 
+	add_move_binding (binding_set, GDK_Home, GTK_SCROLL_START);
+	add_move_binding (binding_set, GDK_KP_Home, GTK_SCROLL_START);
+	add_move_binding (binding_set, GDK_End, GTK_SCROLL_END);
+	add_move_binding (binding_set, GDK_KP_End, GTK_SCROLL_END);
+
 	gtk_binding_entry_add_signal (binding_set, GDK_space, 0, "toggle_cursor_selection", 0);
 	gtk_binding_entry_add_signal (binding_set, GDK_space, GDK_CONTROL_MASK, "toggle_cursor_selection", 0);
 
@@ -2296,6 +2369,7 @@ gnome_icon_list_class_init (GilClass *gil_class)
 	widget_class->key_press_event = gil_key_press;
 	widget_class->scroll_event = gil_scroll;
 	widget_class->get_accessible = gil_get_accessible;
+    widget_class->style_set = gil_style_set;
 
 	/* we override GtkLayout's set_scroll_adjustments signal instead
 	 * of creating a new signal so as to keep binary compatibility.
@@ -2591,10 +2665,10 @@ gnome_icon_list_thaw (GnomeIconList *gil)
 }
 
 /**
- * gnome_icon_list_get_selection_mode
+ * gnome_icon_list_get_selection_mode:
  * @gil:  An icon list.
  *
- * Returns the current selection mode for an icon list.
+ * Returns: The current selection mode for an icon list.
  */
 GtkSelectionMode
 gnome_icon_list_get_selection_mode (GnomeIconList *gil)
@@ -2606,7 +2680,7 @@ gnome_icon_list_get_selection_mode (GnomeIconList *gil)
 }
 
 /**
- * gnome_icon_list_set_selection_mode
+ * gnome_icon_list_set_selection_mode:
  * @gil:  An icon list.
  * @mode: New selection mode.
  *
@@ -2670,7 +2744,7 @@ gnome_icon_list_set_icon_data (GnomeIconList *gil, int pos, gpointer data)
  * @gil: An icon list.
  * @pos: Index of an icon.
  *
- * Returns the user data pointer associated to the icon at the index specified
+ * Returns: The user data pointer associated to the icon at the index specified
  * by @pos.
  */
 gpointer
@@ -2691,7 +2765,7 @@ gnome_icon_list_get_icon_data (GnomeIconList *gil, int pos)
  * @gil:    An icon list.
  * @data:   Data pointer associated to an icon.
  *
- * Returns the index of the icon whose user data has been set to @data,
+ * Returns: The index of the icon whose user data has been set to @data,
  * or -1 if no icon has this data associated to it.
  */
 int
@@ -2888,7 +2962,7 @@ gnome_icon_list_moveto (GnomeIconList *gil, int pos, double yalign)
  * @gil: An icon list.
  * @pos: Index of an icon.
  *
- * Returns whether the icon at the index specified by @pos is visible.  This
+ * Returns: Whether the icon at the index specified by @pos is visible.  This
  * will be %GTK_VISIBILITY_NONE if the icon is not visible at all,
  * %GTK_VISIBILITY_PARTIAL if the icon is at least partially shown, and
  * %GTK_VISIBILITY_FULL if the icon is fully visible.
@@ -2938,7 +3012,7 @@ gnome_icon_list_icon_is_visible (GnomeIconList *gil, int pos)
  * @x:   X position in the icon list window.
  * @y:   Y position in the icon list window.
  *
- * Returns the index of the icon that is under the specified coordinates, which
+ * Returns: The index of the icon that is under the specified coordinates, which
  * are relative to the icon list's window.  If there is no icon in that
  * position, -1 is returned.
  */
@@ -3004,7 +3078,7 @@ gnome_icon_list_get_icon_at (GnomeIconList *gil, int x, int y)
  * gnome_icon_list_get_num_icons:
  * @gil: An icon list.
  *
- * Returns the number of icons in the icon list.
+ * Returns: The number of icons in the icon list.
  */
 guint
 gnome_icon_list_get_num_icons (GnomeIconList *gil)
@@ -3019,7 +3093,7 @@ gnome_icon_list_get_num_icons (GnomeIconList *gil)
  * gnome_icon_list_get_selection:
  * @gil: An icon list.
  *
- * Returns a list of integers with the indices of the currently selected icons.
+ * Returns: A list of integers with the indices of the currently selected icons.
  */
 GList *
 gnome_icon_list_get_selection (GnomeIconList *gil)
@@ -3035,7 +3109,7 @@ gnome_icon_list_get_selection (GnomeIconList *gil)
  * @gil: An icon list.
  * @idx: Index of an @icon.
  *
- * Returns the filename of the icon with index @idx.
+ * Returns: The filename of the icon with index @idx.
  */
 gchar *
 gnome_icon_list_get_icon_filename (GnomeIconList *gil, int idx)
@@ -3056,7 +3130,7 @@ gnome_icon_list_get_icon_filename (GnomeIconList *gil, int idx)
  * @gil:       An icon list.
  * @filename:  Filename of an icon.
  *
- * Returns the index of the icon whose filename is @filename or -1 if
+ * Returns: The index of the icon whose filename is @filename or -1 if
  * there is no icon with this filename.
  */
 int
@@ -3232,7 +3306,7 @@ impl_selection_ref_selection (AtkSelection *selection, gint i)
 
 	widget = GTK_ACCESSIBLE (selection)->widget;
 	if (!widget)
-		return FALSE;
+		return NULL;
 
 	gil = GNOME_ICON_LIST (widget);
 
@@ -3263,7 +3337,7 @@ impl_selection_get_selection_count (AtkSelection *selection)
 
 	widget = GTK_ACCESSIBLE (selection)->widget;
 	if (!widget)
-		return FALSE;
+		return 0;
 
 	gil = GNOME_ICON_LIST (widget);
 	sel = gnome_icon_list_get_selection (gil);
