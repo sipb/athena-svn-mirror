@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v $
 .\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v 1.4 1989-03-27 11:32:54 jik Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v 1.5 1989-09-14 03:42:51 jik Exp $
 .\"
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -23,6 +23,8 @@ delete \- a recoverable file-deletion utility
 .B \-n
 ] [
 .B \-v
+] [
+.B \-e
 ] [
 .B \-F
 ] [
@@ -54,11 +56,11 @@ while still being able to recover accidentally removed files can do so
 by aliasing
 .I rm
 to
-.I delete \-F
+.I delete \-F \-e
 and
 .I rmdir
 to
-.I delete \-D
+.I delete \-D \-e
 (see below).
 .SH OPTIONS
 .I Delete
@@ -100,6 +102,13 @@ option not specified.
 Causes
 .I delete
 to report each file as it is deleted.
+.TP
+.B \-e
+Causes
+.I delete
+to emulate \fIrm\fR(1) and \fIrmdir\fR(1) as much as it can (i.e.
+error and status messages and other peculiarities of \fIrm\fR(1) and
+\fIrmdir\fI(1)).
 .TP
 .B \-F
 Causes
