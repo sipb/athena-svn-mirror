@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.38 1991-10-21 11:08:56 lwvanels Exp $
+ *	$Id: olcd.h,v 1.39 1991-11-05 13:59:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -31,6 +31,9 @@
 #include <olc/lang.h>
 #include <olc/olc.h>
 #include <common.h>
+#include <server_defines.h>
+#include <server_structs.h>
+
 
 /*
  * this ugliness is due to a (supposedly) standard-C compiler that
@@ -47,221 +50,7 @@
 #endif
 
 
-/* Important files. */
-
-#define DATABASE_FILE 		"/usr/athena/lib/olc/database"
-#define SPECIALTY_DIR 		"/usr/athena/lib/olc/specialties"
-#define ACL_DIR 		"/usr/athena/lib/olc/acls"
-#define LOG_DIR 		"/usr/spool/olc"
-#define BACKUP_FILE 		"/usr/spool/olc/backup.dat"
-#define BACKUP_TEMP 		"/usr/spool/olc/backup.temp"
-#define ERROR_LOG 		"/usr/adm/olc/errors"
-#define REQ_STATS_LOG 		"/usr/adm/olc/requests.stats"
-#define QUES_STATS_LOG 		"/usr/adm/olc/question.stats"
-#define STATUS_LOG 		"/usr/adm/olc/status"
-#define ADMIN_LOG 		"/usr/adm/olc/admin"
-#define STDERR_LOG 		"/usr/adm/olc/errors"
-#define TOPIC_FILE 		"/usr/athena/lib/olc/topics"
-#define MOTD_FILE 		"/usr/athena/lib/olc/motd"
-#define MOTD_TIMEOUT_FILE	"/usr/athena/lib/olc/motd_timeout"
-#define MOTD_HOLD_FILE 		"/usr/athena/lib/olc/motd_hold"
-#define MACH_TRANS_FILE 	"/usr/athena/lib/olc/translations"
-#define LIST_FILE_NAME 		"/usr/spool/olc/qlist_-1.log"
-#define LIST_TMP_NAME 		"/usr/spool/olc/queue.tmp"
-#define HOURS_FILE		"/usr/athena/lib/olc/hours"
-#define LUMBERJACK_LOC		"/usr/local/bin/lumberjack"
-
-#ifdef KERBEROS
-#define TICKET_FILE		"/usr/spool/olc/tkt.olc"
-#define SRVTAB_FILE		"/usr/athena/lib/olc/srvtab"
-#endif /* KERBEROS */
-
-/* Use by the acl checking code, so you need it even if you don't have
-   kerberos
-*/
-
-#ifdef ATHENA
-#define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
-#else
-/* Put your realm here.... */
-#define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
-#endif /* ATHENA */
-
-/* system defines */
-
-#define NOW                    (time((time_t *)NULL))
-#define DAEMON_TIME_OUT        10
-#define MAX_CACHE_SIZE         500
-
-#ifdef SYSLOG
-#define SYSLOG_LEVEL LOG_LOCAL6
-#endif
-
-/* for notifications */
-
-#define OLCD_TIMEOUT    10
-
-/* random internal flags */
-
-#define NULL_FLAG       0
-#define FORWARD         1	
-#define NOTIFY          2	
-#define UNANSWERED      3       /* Question was never answered. */
-#define ANSWERED        4       /* Question was answered. */
-#define PING            5
-#define NO_RESPOND      6
-
-/* Additional size constants. */
-
-#define DB_LINE         1000    /* maximum length of a database line.*/
-#define MAX_SEEN        81      /* Maximum number of consultants to */
-#define SPEC_SIZE       10                     
-
-/* priority queues */
-
-#define EMERGENCY_Q       1
-#define ACTIVE_Q          2
-#define INACTIVE_Q        4
-#define PIT_Q             8
-
-/* type classifiers */
-
-#define IS_TOPIC               500
-#define IS_SUBTOPIC            501
-
-#ifdef OLTA
-#define DEFAULT_TITLE   "user"
-#define DEFAULT_TITLE2  "TA"
-#else
-#define DEFAULT_TITLE   "user"
-#define DEFAULT_TITLE2  "consultant"
-#endif
-
-#define VERSION_INFO	"Version 3.1"
-
-/* OLCD data definitions */
-
-typedef struct tUSER 
-{
-  struct tKNUCKLE **knuckles;       /* all user instances */
-  int    uid;                       /* user id */
-  char   username[LOGIN_SIZE];      /* user name */
-  char   realname[NAME_SIZE];
-  char   nickname[NAME_SIZE];         
-  char   title1[NAME_SIZE];        /* title of user in OLC */
-  char   title2[NAME_SIZE];        /* title of consultant in OLC */
-  char   machine[NAME_SIZE];      /* user location */
-  char   realm[NAME_SIZE];
-  int    specialties[SPEC_SIZE];    /* Specialty list. */
-  int    no_specialties;
-  int    permissions;
-  int    status;                    /* status of the user 
-                                        (logout, idle, etc) */
-  int    no_knuckles;               /* number of current connections */
-  int    max_ask;                   /* maximum allowable connections */
-  int    max_answer;
-} USER;
-
-typedef struct tdLIST
-{
-  char	*username;
-  char	*machine;
-  int	instance;
-  int	ustatus;
-  int	kstatus;
-  char	*cusername;
-  int	cinstance;
-  int	cstatus;
-  int	n_consult;
-  char	*topic;
-  long	timestamp;
-  char	*note;
-} D_LIST;
-
-typedef struct tKNUCKLE
-{
-  struct tQUESTION *question;        /* question */
-  struct tKNUCKLE *connected;        /* connected user */
-  struct tUSER *user;                /* central user */
-  char   *title;		     /* pointer to appropriate user title */
-  int    instance;                   
-  long   timestamp;                  /* specific to type */
-
-  int    status;                     /* status of this instance 
-                                        (on priorities, pending, etc..) */
-  char   cusername[LOGIN_SIZE];
-  int    cinstance;
-  char   nm_file[NAME_SIZE+6];
-  int    new_messages;              /* new messages for this knuckle */
-				    /* 0 = none, 1 = yes, -1 = unknown */
-  
-} KNUCKLE;
-
-typedef struct tQUESTION
-{
-  struct tKNUCKLE *owner;
-  char  logfile[NAME_SIZE];          /* Name of the logfile. */
-  char	infofile[NAME_SIZE];	     /* Name of the file to store aux. info */
-  int   seen[MAX_SEEN];              /* UIDs of users who have seen 
-                                        this question */
-  int   nseen;                       /* Number who have seen it. */
-  char  topic[TOPIC_SIZE];           /* topic of this question. */
-  int   topic_code;                  /* number version of the above */
-  char  title[NAME_SIZE];            /* Title for log. */
-  char  note[NOTE_SIZE];
-  char  comment[COMMENT_SIZE];
-} QUESTION;
-
-typedef struct tTOPIC
-{
-  char acl[NAME_SIZE];
-  char name[NAME_SIZE];
-  int  value;
-  struct tTOPIC **subtopic;
-} TOPIC;
-
-typedef struct tOLC_PROC  
-{
-  int   proc_code;      /* Request code. */
-  FUNCTION olc_proc;    /* Procedure to execute. */
-  char  *description;   /* What it does. */
-} PROC;
-
-/* OLC status structure. */
-
-typedef struct tQUEUE_STATUS	
-{
-  int   consultants;    /* Number of visible consultants. */
-  int   invisible;      /* Number of invisible consultants; */
-  int   busy;           /* Number of busy consultants. */
-  int   waiting;        /* Number of waiting users. */
-} QUEUE_STATUS;
-
-
-typedef struct t_ACL
-{
-  int code;
-  char *file;
-  char *name;
-} ACL;
-
-typedef struct tTRANS
-{
-  char orig[80];
-  char trans[80];
-} TRANS;
-
-/* Global variables */
-
-extern KNUCKLE          **Knuckle_List;
-extern TOPIC            **Topic_List;
-extern int              needs_backup;
-extern PROC  Proc_List[];	/* OLC Proceedure Table */
-extern ACL  Acl_List[];
-extern int request_count;
-extern int request_counts[OLC_NUM_REQUESTS];
-extern long start_time;
-extern char DaemonInst[];
+#define VERSION_INFO	"3.1"
 
 /* useful macros */
 
@@ -389,6 +178,7 @@ void log_motd P((char *username ));
 ERRCODE write_message P((char *touser , char *tomachine , char *fromuser , char *frommachine , char *message ));
 ERRCODE write_message_to_user P((KNUCKLE *k , char *message , int flags ));
 ERRCODE olc_broadcast_message P((char *instance , char *message , char *code ));
+void toggle_zephyr P((int toggle, int time));
 
 /* olcd.c */
 int main P((int argc , char **argv ));
@@ -408,7 +198,7 @@ ERRCODE olc_get_accesses P((int fd , REQUEST *request ));
 ERRCODE olc_get_dbinfo P((int fd , REQUEST *request ));
 ERRCODE olc_change_dbinfo P((int fd , REQUEST *request ));
 ERRCODE olc_set_user_status P((int fd , REQUEST *request ));
-ERRCODE olc_version P((int fd , REQUEST *request ));
+ERRCODE olc_toggle_zephyr P((int fd , REQUEST *request ));
 
 /* requests_olc.c */
 ERRCODE olc_on P((int fd , REQUEST *request ));
@@ -441,6 +231,10 @@ ERRCODE olc_get_hours P((int fd , REQUEST *request ));
 /* statistics.c */
 void dump_request_stats P((char *file ));
 void dump_question_stats P((char *file ));
+void write_ask_stats P((char *username, char *topic, char *machine, char
+			*ask_by ));
+void write_res_stats P((QUESTION *q));
+
 
 /* syslog.c */
 void log_error P((char *message ));
@@ -452,7 +246,8 @@ void log_debug P((char *message ));
 /* utils.c */
 void get_list_info P((KNUCKLE *k , LIST *data ));
 
-
+/* version.c */
+ERRCODE olc_version P((int fd , REQUEST *request ));
 
 
 /* other libraries */
