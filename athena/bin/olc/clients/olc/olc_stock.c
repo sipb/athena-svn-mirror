@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.3 1989-07-16 17:10:22 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.4 1989-08-07 14:54:41 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -136,7 +136,7 @@ do_olc_stock(arguments)
   else if (status == ERROR)
     return(ERROR);
 
-  status = t_reply(Request,file,NULL);
+  status = t_reply(&Request,file,NULL);
   
   switch (status)
     {
