@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.5 1990-12-10 16:12:46 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.c,v 1.6 1990-12-12 18:33:23 probe Exp $
  *	$Author: probe $
  */
 
@@ -101,7 +101,7 @@ char *buf;
     for (i = 0; powers[i]; i++)
       {
 	  digit = (x/powers[i]) % 10;
-	  if ((pos > 0) || (digit != 0) || (i == 4))
+	  if ((pos > 0) || (digit != 0) || (powers[i+1] == 0))
 	    buf[pos++] = '0' + (char) digit;
       }
     buf[pos] = '\0';
