@@ -2,9 +2,9 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.2 1993-10-13 16:21:50 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.3 1994-04-26 14:11:37 root Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
-#	$Author: probe $
+#	$Author: root $
 #
 # This sendmail configuration file is for Project Athena
 # Client machines. Go ahead... run it elsewhere and find
@@ -262,7 +262,7 @@ R@			MAILER-DAEMON			errors to mailer-daemon
 ############################################################
 ############################################################
 
-Mether,	P=[IPC], F=mDFMueCX, S=11, R=21, A=IPC $h
+Mether,	P=[IPC], F=msDFMueCX, S=11, R=21, A=IPC $h
 
 S11
 
