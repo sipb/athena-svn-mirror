@@ -85,6 +85,9 @@ if [ "$OSCHANGES" = true ]; then
   fi
 fi
 
+# Force a device reconfigure on reboot.
+touch $UPDATE_ROOT/reconfigure
+
 echo "Finished os installation"
 
 echo "Tracking the srvd"
