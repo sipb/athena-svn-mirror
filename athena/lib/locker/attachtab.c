@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.1 1999-02-26 19:04:47 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.2 1999-03-08 14:51:08 ghudson Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -31,6 +31,7 @@ static const char rcsid[] = "$Id: attachtab.c,v 1.1 1999-02-26 19:04:47 danw Exp
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 /* Used internally by locker_iterate_attachtab */
