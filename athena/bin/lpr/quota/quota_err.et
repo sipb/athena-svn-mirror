@@ -1,0 +1,38 @@
+# Only add to the end of this file or you must recompile all binaries as
+# sequence number will change
+
+error_table quot
+
+error_code QBADTKTS, 	
+	"Kerberos authentication failed, use kinit and try again."
+
+error_code QNOAUTH, 
+	"Unauthorized to make request. Permission denied."
+
+error_code QNONEG,
+	"Amounts must be positive. No action taken."
+
+error_code QDBASEERROR,
+	"Unknown database error"
+
+error_code QEXISTS,
+	"User already exists in database"
+
+error_code QNOEXISTS,
+	"User does not exist"
+
+error_code QUSERDELETED,
+	"User is deleted"
+
+error_code QNEGATIVELIMIT,
+	"Negative limit not allowed - no changes made"
+
+error_code QNEGATIVEUSAGE,
+	"Negative usage not allowed - no changes made"
+
+error_code QNOTVALIDTYPE,
+	"Request sent to quota_server not valid"
+
+error_code BAD_PARAMETER,
+	"A bad parameter was send to the server"
+end

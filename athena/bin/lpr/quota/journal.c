@@ -1,0 +1,290 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.1 1990-04-16 16:26:45 epeisach Exp $ */
+/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v $ */
+/* $Author: epeisach $ */
+
+#include "logger.h"
+#include <strings.h>
+#include <sys/stat.h>
+#include <sys/param.h> 
+#include <errno.h>
+#include <sys/file.h>
+
+extern int errno;
+
+#define MAX_RETRY 5	/* Try 5 times to open strings db file */
+static char str_dbname[MAXPATHLEN] = "";
+static int dbflags = 0;
+static int dbopen = 0;
+static int dbfd = 0;
+
+char *malloc(), *realloc();
+
+#define jpos(n) ((n) * sizeof(log_entity))
+int logger_journal_set_name(name)
+char *name;
+{
+    struct stat sbuf;
+    log_header newent;
+
+    (void) strncpy(str_dbname, name, MAXPATHLEN);
+    str_dbname[MAXPATHLEN - 1] = '\0';
+
+    if (!stat(str_dbname, &sbuf)) {
+	return 0;
+    }
+
+    if (open_database(O_EXCL | O_WRONLY | O_CREAT)) {
+	/* Cannot create the database. 
+	   It can be a symlink or some other error */
+	return -1;
+    }
+    
+/* Create the first entry in the database */
+    newent.version = LOGGER_VERSION;
+    newent.num_ent = 0;			/* Start w/ 0 entries */
+    newent.last_q_time = 0;
+    newent.quota_pos = 0;
+
+    if (write(dbfd, &newent, sizeof(log_header)) != sizeof(log_header)) {
+	/* Failed write */
+	(void) close_database();
+	return -1;
+    }
+    
+    return (close_database());
+}
+    
+
+/* 0 = sucesss, -1 = failure */
+static int close_database()
+{
+    register int ret=0;
+    if (dbopen) {
+	ret = close(dbfd);
+	dbopen = 0;
+    }
+	    
+    return ret;
+}
+
+/* 0 = sucess, !0 => error */       
+
+static int open_database(flags)
+int flags;
+{
+    register int ret;
+    register int retry_cnt=0;
+    if (dbopen && (flags == dbflags)) return(0); /* Why do any work */
+    if (dbopen && ((ret=close_database()) < 0)) return(ret);
+
+    dbfd = -1;
+    while (dbfd < 0 && retry_cnt < MAX_RETRY) 
+	if ((dbfd = open(str_dbname, flags, JOUR_DB_MODE)) < 0) sleep(1);
+
+    if(dbfd < 0 ) return(dbfd);
+    
+    dbflags = flags;
+    dbopen = 1;
+    return(0);
+}
+
+
+log_entity *logger_journal_get_line(n)
+Pointer n;
+{
+    static log_entity ret;
+    if(open_database(O_RDONLY)) return (log_entity *) NULL;
+    /* This is for speed performance that we don't bother to check the 
+       num_ent field as it means we must read in the record. We could in 
+       theory cache the header record, but I don;t like it.
+     */
+
+    if(lseek(dbfd, jpos(n), L_SET) != jpos(n))
+	    {
+		(void) close_database();
+		return (log_entity *) NULL;
+	    }
+
+    if(read(dbfd, (char *) &ret, sizeof(log_entity)) != sizeof(log_entity)) 
+	    {
+		(void) close_database();
+		return (log_entity *) NULL;
+	    }
+    if(close_database()) return (log_entity *) NULL;
+    return &ret;
+}
+
+logger_journal_write_line(n, ent)
+Pointer n;
+log_entity *ent;
+{
+    if(n < 1) {
+	errno = EIO;
+	return -1;
+    }
+    if(open_database(O_WRONLY)) return -1;
+    if(lseek(dbfd, jpos(n), L_SET) != jpos(n))
+	    {
+		(void) close_database();
+		return -1;
+	    }
+
+    PROTECT();
+    if(write(dbfd, (char *) ent, sizeof(log_entity)) != sizeof(log_entity)) 
+	    {
+		(void) close_database();
+		return -1;
+	    }
+    if(close_database()) {
+	UNPROTECT();
+	return -1;
+    }
+    UNPROTECT();
+    return 0;
+}
+
+int logger_journal_get_header(head)
+log_header *head;
+{
+    if(open_database(O_RDONLY)) return -1;
+    if(read(dbfd, (char *) head, sizeof(log_header)) != sizeof(log_header)) 
+	    {
+		(void) close_database();
+		return -1;
+	    }
+    return(close_database());
+}
+
+int logger_journal_put_header(head)
+log_header *head;
+{
+    int ret;
+    if(open_database(O_WRONLY)) return -1;
+    PROTECT();
+    if(write(dbfd, (char *) head, sizeof(log_header)) != sizeof(log_header)) 
+	    {
+		(void) close_database();
+		UNPROTECT();
+		return -1;
+	    }
+    ret=close_database();
+    UNPROTECT();
+    return(ret);
+}
+
+int
+logger_journal_add_entry(ent, qt, qpos)
+log_entity *ent;
+Time qt;
+Pointer qpos;
+{
+    /* Strategy:
+       1) Lookup user structure, if doesn't exist create an entry for user
+       2) Get the header
+       3) Modify prev ref. in journal datbase
+       4) Add new line to database, with prev ref set from user structure.
+       5) Modify header with updated info and write out
+       6) Modify user database pointers
+
+
+       Failure modes based on steps above
+       1) Continue
+       2) Return -1
+       3) Return -1 (Nothing really modified - we hope...)
+       4) Back out step 3, Return -1.
+       5) Back out step 3, return -1 (The data in 4 will not be referenced)
+       6) back out 3 & 5. Return -1.
+       
+       Problem is what to do if backing out fails...
+         
+     */
+
+    log_header oldhead, newhead;
+    User_str user;
+    User_db *uret, udb;
+    Pointer num;		/* journal table position*/
+    log_entity *old_ent, new_ent;
+
+    /* Step 1 - Get entry from user_db */
+
+    user.name = ent->user.name;
+    user.instance = ent->user.instance;
+    user.realm = ent->user.realm;
+
+    if((uret = logger_find_user(&user)) == (User_db *) NULL) {
+	/* Failure 1 */
+	uret = &udb;
+	udb.user.name = user.name;
+	udb.user.instance = user.instance;
+	udb.user.realm = user.realm;
+	udb.first = 0;
+	udb.last = 0;
+    }
+
+    udb.user.name = uret->user.name;
+    udb.user.instance = uret->user.instance;
+    udb.user.realm = uret->user.realm;
+    udb.first = uret->first;
+    udb.last = uret->last;
+
+    /* Step 2 - get the header */
+    if (logger_journal_get_header(&oldhead)) return -1; /* Failure 2 */
+
+    (void) bcopy(&oldhead, &newhead, sizeof(log_header));
+    if(qt) newhead.last_q_time = qt;
+    if (qpos) newhead.quota_pos = qpos;
+    newhead.num_ent++;
+    num = newhead.num_ent;	/* num contains new entry position */
+
+    /* Step 3 - modify previous record */
+    /* If user has old record then get it and modify */
+    if (udb.last != 0) {
+	if((old_ent = logger_journal_get_line(udb.last)) == NULL) 
+	    return -1; /* Mode 3 failure */
+	(void) bcopy(old_ent, &new_ent, sizeof(log_entity));
+	new_ent.next = num;
+	if(logger_journal_write_line(udb.last, &new_ent))
+	    return -1; /* Failure */
+
+    }
+
+    /* Step 4 */
+    ent->prev = udb.last;
+    ent->next = 0;
+    if(logger_journal_write_line(num, ent)) {
+	/* Failure mode 4 - back out 3 above */
+	new_ent.next = 0;
+	(void) logger_journal_write_line(udb.last, &new_ent);
+	return -1;
+    }
+
+    /* Step 5 */
+    newhead.last_q_time = qt;
+    newhead.quota_pos = qpos;
+    if(logger_journal_put_header(&newhead)) {
+	/* Failure mode 5 - back out 3 above */
+	new_ent.next = 0;
+	(void) logger_journal_write_line(udb.last, &new_ent);
+	return -1;
+    }
+	
+    /* Step 6 */
+	    
+    if(udb.first == 0) udb.first = num;
+    udb.last = num;
+    if(logger_set_user(&user, &udb)) {
+	/* Failure mode 6 - back out 3 and 5 */
+	new_ent.next = 0;
+	(void) logger_journal_write_line(udb.last, &new_ent);
+	(void) logger_journal_put_header(&oldhead);
+	return -1;
+    }
+       
+    /* We made it ok */
+    return 0;
+}
+
+   
+
+    
+    
