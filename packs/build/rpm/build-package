@@ -51,10 +51,8 @@ fi
 
 source_name=$package_name-$version
 
-# Make the environment suitable so that we can build packages that
-# use things in $destdir/athtools.
-export PATH=$destdir/athtools/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
-export ATHTOOLROOT=$destdir/athtools
+# Set a consistent path.
+export PATH=/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
 
 ## STEP 0: Prepare the "topdir" area.
 
@@ -113,7 +111,6 @@ cp $sourcedir/packs/build/version $source_name
  $sourcedir/packs/build/do.sh  \
         -s $sourcedir \
 	-d $destdir/INSTALL \
-	-t $destdir/athtools \
 	dist )
 if [ $? -ne 0 ]; then
     exit 1
