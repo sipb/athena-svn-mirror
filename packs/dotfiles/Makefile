@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15 2003-03-15 16:18:21 ghudson Exp $
+# $Id: Makefile,v 1.16 2003-04-21 19:03:26 ghudson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -37,6 +37,9 @@ install:
 	install -c -m 0644 dot.bashrc ${DESTDIR}${PROTOTMP}/.bashrc
 	install -c -m 0644 env_remove ${DESTDIR}${SYSTEM}
 	install -c -m 0644 env_setup ${DESTDIR}${SYSTEM}
+	install -c -m 0755 gnome-stuff-1-to-2 ${DESTDIR}${SYSTEM}
+	install -c -m 0755 gnome-panel-1-to-2 ${DESTDIR}${SYSTEM}
+	install -c -m 0755 gnome-launchers-1-to-2 ${DESTDIR}${SYSTEM}
 	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 login ${DESTDIR}${SYSTEM}
 	install -c -m 0755 mksessiondir.sh ${DESTDIR}${SYSTEM}/mksessiondir

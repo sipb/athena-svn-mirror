@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.4 2003-04-07 22:21:46 ghudson Exp $
+# $Id: xsession,v 1.5 2003-04-21 19:03:39 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -111,6 +111,8 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 
 # *******************   ACTIVITY STARTUP   *******************
 
+if ( ! $?NOCALLS && -d ~/.gnome && ! -d ~/.gnome2 ) set offer_gnome_upgrade
+
 # Start window manager.  To change your default window manager, set the 
 # WINDOW_MANAGER environment variable in your ~/.environment file.
 if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
@@ -124,6 +126,33 @@ else
 endif
 
 # Run standard system/user startup activities
+
+if ( -r ~/.athena_gnome_convert_failure )
+  # A previous attempt at converting GNOME preferences failed.  Remove
+  # any GNOME 2 preferences so that the user gets the defaults.
+  gconftool-2 --recursive-unset /apps
+  gconftool-2 --recursive-unset /desktop
+  gconftool-2 --recursive-unset /system
+  rm -rf ~/.gnome2
+  rm -f ~/.athena_gnome_convert_failure
+else if ($?offer_gnome_upgrade) then
+  set dtext = ( \
+    "\n" \
+    " This Athena release uses GNOME 2, which changes the way the  \n" \
+    " desktop is configured.  You can attempt to convert your GNOME 1  \n" \
+    " preferences, or you can just accept the defaults for GNOME 2.  \n" \
+    " If you do attempt to convert, you will be given a chance to go  \n" \
+    " back to the defaults if it doesn't work well.\n" \
+    "\n" \
+    " Do you wish to attempt to convert your preferences?\n" )
+  if ( { gdialog --title "GNOME upgrade check" --yesno "$dtext" 9 70 } ) then
+    sh $initdir/gnome-stuff-1-to-2
+    sh $initdir/gnome-panel-1-to-2
+    sh $initdir/gnome-launchers-1-to-2
+    set offer_gnome_failure
+  endif
+  unset dtext
+endif
 
 if ( ! $?ATHENA_DASH_INTERFACE) then
   # Run the GNOME capplets unless the user has chosen to skip them.
@@ -217,6 +246,26 @@ if ((! $?NOCALLS) && (-r ~/.startup.X)) then
 else
   if (! $?skip_lert) lert -q -z
   echo "Session initialization completed."
+endif
+
+if ($?offer_gnome_failure) then
+  set dtext = ( \
+    "\n" \
+    " If the conversion went well, your desktop should look about the  \n" \
+    " same as it used to.  If not, you might be missing panel buttons  \n" \
+    " or other elements of the desktop.  \n" \
+    "\n" \
+    " Do you wish to keep the results of the conversion?\n" )
+  if ( ! { gdialog --title "GNOME failure check" --yesno "$dtext" 7 70 } ) then
+    set dtext = ( \
+      "\n" \
+      " You will now be logged out.  On your next login, you will  \n" \
+      " receive the GNOME 2 defaults.  \n" )
+    gdialog --infobox "$dtext" 4 70
+    touch ~/.athena_gnome_convert_failure
+    exit
+  endif
+  unset dtext
 endif
 
 
