@@ -22,7 +22,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.19 1990-04-26 13:00:40 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.20 1990-04-27 11:40:40 vanharen Exp $";
 #endif
 
 
@@ -631,7 +631,7 @@ olc_done(fd, request, auth)
   text = read_text_from_fd(fd);
 
   (void) strncpy(target->question->title, text,
-		 sizeof(target->question->title));
+		 sizeof(target->question->title) - 1);
   target->question->title[sizeof(target->question->title) - 1] = '\0';
   (void) sprintf(msgbuf, "Resolved by %s@%s.", 
 		 requester->user->username,
@@ -1534,8 +1534,8 @@ olc_describe(fd, request, auth)
       mesg = read_text_from_fd(fd);
       if(mesg != (char *) NULL)
 	{
-	  strncpy(target->question->note,mesg,NOTE_SIZE);
-          target->question->note[NOTE_SIZE] = '\0';
+	  strncpy(target->question->note,mesg,NOTE_SIZE-1);
+          target->question->note[NOTE_SIZE-1] = '\0';
 	  log_description(target,requester, target->question->note);
 	}
       else
@@ -1548,8 +1548,8 @@ olc_describe(fd, request, auth)
       mesg = read_text_from_fd(fd);
       if(mesg != (char *) NULL)
 	{
-	  strncpy(target->question->comment,mesg,COMMENT_SIZE);
-          target->question->comment[COMMENT_SIZE] = '\0';
+	  strncpy(target->question->comment,mesg,COMMENT_SIZE-1);
+          target->question->comment[COMMENT_SIZE-1] = '\0';
 	  log_long_description(target,requester, target->question->comment);
 	}
       else
