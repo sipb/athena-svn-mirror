@@ -1,4 +1,4 @@
-# $Id: athena,v 1.10 1999-05-12 18:29:35 danw Exp $
+# $Id: athena,v 1.11 1999-06-01 19:11:17 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -169,12 +169,6 @@ if [ "$PUBLIC" = true ]; then
 	fi
 
 	$ECHO "Ending public workstation cleanup"
-fi
-
-if [ -f /etc/sendmail.cf ]; then
-	$ECHO "Freezing sendmail configuration... \c"
-	/usr/lib/sendmail -bz
-	$ECHO "done."
 fi
 
 # Clean up old lock files if not running sendmail. (init.d/mail does
