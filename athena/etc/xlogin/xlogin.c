@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.11 2000-06-30 13:40:09 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.12 2000-07-31 18:15:27 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -299,8 +299,10 @@ int main(int argc, char **argv)
   XEvent e;
   Widget hitanykey, namew;
   Display *dpy1;
+  Position xPos, yPos;
+  Dimension width, height;
   char hname[1024], *c;
-  Arg args[1];
+  Arg args[2];
   int i;
   long acc = 0;
   int pid;
@@ -468,7 +470,29 @@ int main(int argc, char **argv)
   /* Realize the widget tree, finish up initializing, and enter the
    * main application loop.
    */
+  XtSetMappedWhenManaged(appShell, False);
   XtRealizeWidget(appShell);
+
+  XtSetArg(args[0], XtNx, &xPos);
+  XtSetArg(args[1], XtNy, &yPos);
+  XtGetValues(appShell, args, 2);
+
+  if (xPos == 0 && yPos == 0) {
+    Screen *s;
+
+    XtSetArg(args[0], XtNwidth, &width);
+    XtSetArg(args[1], XtNheight, &height);
+    XtGetValues(appShell, args, 2);
+
+    xPos = (WidthOfScreen(XtScreen(appShell)) - width) / 2;
+    yPos = (HeightOfScreen(XtScreen(appShell)) - height) / 3;
+
+    XtSetArg(args[0], XtNx, xPos);
+    XtSetArg(args[1], XtNy, yPos);
+    XtSetValues(appShell, args, 2);
+  }
+
+  XtMapWidget(appShell);
 
   initOwl(appShell);		/* widget tree MUST be realized... */
   adjustOwl(appShell);
