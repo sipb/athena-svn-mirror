@@ -1,6 +1,6 @@
 /* files.c -- Extendable file handling
    Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-   $Id: files.c,v 1.1.1.2 2002-03-20 04:52:59 ghudson Exp $
+   $Id: files.c,v 1.1.1.3 2003-01-05 00:23:53 ghudson Exp $
 
    This file is part of Jade.
 
@@ -27,6 +27,9 @@
 #include <string.h>
 #ifdef NEED_MEMORY_H
 # include <memory.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
 #ifndef DEV_SLASH_NULL
@@ -745,6 +748,18 @@ if it has been closed, but is still to be garbage collected.
 {
     rep_DECLARE1(file, rep_FILEP);
     return rep_FILE(file)->name;
+}
+
+DEFUN("file-ttyp", Ffile_ttyp, Sfile_ttyp, (repv file), rep_Subr1) /*
+::doc:rep.io.files#file-ttyp::
+file-ttyp FILE
+
+Returns true if FILE is linked to a tty.
+::end:: */
+{
+    rep_DECLARE1 (file, rep_FILEP);
+    return (rep_LOCAL_FILE_P (file)
+	    && isatty (fileno (rep_FILE (file)->file.fh))) ? Qt : Qnil;
 }
 
 DEFUN("file-bound-stream", Ffile_bound_stream, Sfile_bound_stream,
@@ -1661,6 +1676,7 @@ rep_files_init(void)
 
     rep_ADD_SUBR(Sfilep);
     rep_ADD_SUBR(Sfile_binding);
+    rep_ADD_SUBR(Sfile_ttyp);
     rep_ADD_SUBR(Sfile_bound_stream);
     rep_ADD_SUBR(Sfile_handler_data);
     rep_ADD_SUBR(Sset_file_handler_data);

@@ -1,6 +1,6 @@
 #| autoloader.jl -- abstractions for autoloading `definitions'
 
-   $Id: autoloader.jl,v 1.1.1.1 2000-11-12 06:10:44 ghudson Exp $
+   $Id: autoloader.jl,v 1.1.1.2 2003-01-05 00:24:11 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -29,7 +29,7 @@
     (open rep rep.structures)
 
   ;; (GETTER SYMBOL) => VALUE
-  ;; (SETTER SYMBOL VALUE)
+  ;; (SETTER SYMBOL VALUE [REST...])
 
   ;; used to tag autoload cells (in the car, cdr is module name)
   (define autoload-tag (make-symbol "autoload"))
@@ -40,9 +40,9 @@
   ;; current definition to VALUE
 
   (define (make-autoloader getter setter)
-    (lambda (symbol module)
+    (lambda (symbol module . rest)
       (unless (getter symbol)
-	(setter symbol (cons autoload-tag module)))))
+	(apply setter symbol (cons autoload-tag module) rest))))
 
   ;; Return a function of one arg (SYMBOL) that returns the definition
   ;; of SYMBOL. If an autoload has been installed for that identifier,

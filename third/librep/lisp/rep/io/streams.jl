@@ -1,6 +1,6 @@
 #| rep.io.streams bootstrap
 
-   $Id: streams.jl,v 1.1.1.1 2000-11-12 06:10:49 ghudson Exp $
+   $Id: streams.jl,v 1.1.1.2 2003-01-05 00:23:56 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,11 +24,12 @@
 (declare (in-module rep.io.streams))
 
 (open-structures '(rep.lang.symbols
-		   rep.data))
+		   rep.data
+		   rep.io.files))
 
 ;; Setup format-hooks-alist to a few default'ish things
-(defvar format-hooks-alist '((?D . file-name-directory)
-			     (?F . file-name-nondirectory)))
+(defvar format-hooks-alist (list (cons #\D file-name-directory)
+				 (cons #\F file-name-nondirectory)))
 
 (defun prin1-to-string (arg)
   "Return a string representing ARG."

@@ -1,6 +1,6 @@
 #| repl.jl -- rep input loop
 
-   $Id: repl.jl,v 1.1.1.3 2002-03-20 04:53:11 ghudson Exp $
+   $Id: repl.jl,v 1.1.1.4 2003-01-05 00:24:03 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -27,14 +27,16 @@
 	    make-repl
 	    repl-struct
 	    repl-pending
+	    repl-eval
 	    repl-iterate
-	    repl-completions)
+	    repl-completions
+	    define-repl-command)
 
     (open rep
 	  rep.structures
 	  rep.system
 	  rep.regexp
-	  rep.io.readline)
+	  rep.io.files)
 
   (define current-repl (make-fluid))
 
@@ -88,10 +90,18 @@
 	     (default-error-handler (car data) (cdr data))
 	     t))))))
 
+  (define (do-readline prompt completer)
+    (if (file-ttyp standard-input)
+	(progn
+	  (require 'rep.io.readline)
+	  (readline prompt completer))
+      (write standard-output prompt)
+      (read-line standard-input)))
+
   (define (repl #!optional initial-structure)
     ;; returns t if repl should run again
     (define (run-repl)
-      (let ((input (readline
+      (let ((input (do-readline
 		    (format nil (if (repl-pending (fluid current-repl))
 				    "" "%s> ")
 			    (repl-struct (fluid current-repl)))
@@ -108,7 +118,7 @@
       (let loop ()
 	(when (call-with-exception-handler run-repl interrupt-handler)
 	  (loop)))))
-
+  
   (define (print-list data #!optional map)
     (unless map (setq map identity))
     (let* ((count (length data))

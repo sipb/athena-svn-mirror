@@ -1,6 +1,6 @@
 #| profiler.jl -- interface to low-level lisp profiler
 
-   $Id: profiler.jl,v 1.1.1.1 2000-11-12 06:11:17 ghudson Exp $
+   $Id: profiler.jl,v 1.1.1.2 2003-01-05 00:24:09 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -40,8 +40,7 @@
   (define (print-profile #!optional stream)
     ;; each element is (SYMBOL . (LOCAL . TOTAL))
     (let ((profile '())
-	  (total-samples 0)
-	  (interval (profile-interval)))
+	  (total-samples 0))
       (symbol-table-walk (lambda (key data)
 			   (setq profile (cons (cons key data) profile))
 			   (setq total-samples (+ total-samples (car data))))
@@ -50,7 +49,7 @@
 				    (> (cadr x) (cadr y)))))
       (format (or stream standard-output)
 	      "%-32s       %10s       %10s\n\n"
-	      "Function Name" "Self (us)" "Total (us)")
+	      "Function Name" "Self" "Total")
       (mapc (lambda (cell)
 	      (let ((name (car cell))
 		    (local (cadr cell))
@@ -58,9 +57,7 @@
 		(when (> local 0)
 		  (format (or stream standard-output)
 			  "%-32s %10d (%02.2d%%) %10d (%02.2d%%)\n"
-			  (symbol-name name)
-			  (* local interval)
-			  (round (* (/ local total-samples) 100))
-			  (* total interval)
+			  (symbol-name name) local
+			  (round (* (/ local total-samples) 100)) total
 			  (round (* (/ total total-samples) 100))))))
 	    profile))))

@@ -1,6 +1,6 @@
 #| rep.net.rpc -- simple RPC mechanisms for inter-host communication
 
-   $Id: rpc.jl,v 1.1.1.1 2002-03-20 04:55:05 ghudson Exp $
+   $Id: rpc.jl,v 1.1.1.2 2003-01-05 00:24:05 ghudson Exp $
 
    Copyright (C) 2001 John Harper <jsh@pixelslut.com>
 
@@ -112,8 +112,10 @@
 	  rep.data.tables
 	  rep.data.records)
 
+  (define debug-rpc nil)
+
   (define (debug fmt . args)
-    (when nil
+    (when debug-rpc
       (let ((print-escape t))
 	(apply format standard-error fmt args))))
 
@@ -121,8 +123,8 @@
     (make-socket-data closable)
     ;; no predicate
     (pending-data socket-pending-data socket-pending-data-set!)
-    (result-pending socket-result-pending socket-result-pending-set!)
-    (closable socket-closable-p))
+    (closable socket-closable-p)
+    (pending-calls socket-pending-calls socket-pending-calls-set!))
 
   ;; The socket used to listen for connections to this server (or false)
   (define listener-socket nil)
@@ -140,11 +142,10 @@
   (define socket-data-table (make-weak-table eq-hash eq))
 
   ;; Return the socket associated with SERVER:PORT. If there isn't one,
-  ;; try to connect to the server
+  ;; try to connect to the server. Signals an error on failure
   (define (server-socket server port)
     (or (table-ref socket-cache (cons server port))
-	(open-server server port)
-	(error "No connection with server %s:%d" server port)))
+	(open-server server port)))
 
   (define (register-rpc-server socket #!key closable)
     "Add the connection SOCKET to the table of known rpc connections. If
@@ -159,17 +160,47 @@ by knowing its address and port number."
     "Remove SOCKET from the table of rpc connections."
     (let ((server (socket-peer-address socket))
 	  (port (socket-peer-port socket)))
-      (when (eq (server-socket server port) socket)
-	(let ((data (socket-data socket)))
+      (when (eq (table-ref socket-cache (cons server port)) socket)
+	(table-unset socket-cache (cons server port)))
+      (let ((data (socket-data socket)))
+	(if (not data)
+	    (close-socket socket)
 	  (when (socket-closable-p data)
 	    (close-socket socket))
-	  (table-unset socket-cache (cons server port))
-	  (table-unset socket-data-table socket)))))
+	  (table-unset socket-data-table socket)
+	  ;; fail-out any pending calls on this socket
+	  (mapc (lambda (id)
+		  (dispatch-pending-call
+		   socket id nil
+		   (list 'rpc-error "Lost connection" server port)))
+		(socket-pending-calls data))))))
 
   ;; Return the data structure associated with SOCKET
   (define (socket-data socket) (table-ref socket-data-table socket))
 
 ;;; socket I/O
+
+  ;; maps from ID -> (CALLBACK ERROR? VALUE)
+  (define pending-calls (make-table eq-hash eq))
+
+  ;; XXX make this unspoofable
+  (define make-call-id
+    (let ((counter 0))
+      (lambda ()
+	(setq counter (1+ counter)))))
+
+  (define (record-pending-call socket id callback)
+    (table-set pending-calls id callback)
+    (let ((data (socket-data socket)))
+      (socket-pending-calls-set! data (cons id (socket-pending-calls data)))))
+
+  (define (dispatch-pending-call socket id succeeded value)
+    (let ((data (socket-data socket)))
+      (socket-pending-calls-set! data (delq id (socket-pending-calls data))))
+    (let ((callback (table-ref pending-calls id)))
+      (when callback
+	(table-unset pending-calls id)
+	(callback succeeded value))))
 
   (define (rpc-socket-listener master-socket)
     "The function that should be used to listen for connections on rpc
@@ -183,7 +214,7 @@ server sockets."
       (register-rpc-server socket #:closable nil)
       socket))
 
-  ;; Open an rpc connection to HOST:PORT
+  ;; Open an rpc connection to HOST:PORT; signals an error on failure
   (define (open-server host port)
     (let (socket)
       (setq socket (socket-client host port
@@ -196,73 +227,91 @@ server sockets."
 
   (define (rpc-output-handler socket output)
     "The function used to handle any OUTPUT from SOCKET."
-    (debug "Read: %S\n" output)
     (let ((sock-data (socket-data socket)))
-      (when (socket-pending-data sock-data)
-	(setq output (concat (socket-pending-data sock-data) output))
-	(socket-pending-data-set! sock-data nil))
-      (let ((stream (make-string-input-stream output))
-	    (point 0)
-	    form)
-	(catch 'out
-	  (while t
+      (socket-pending-data-set!
+       sock-data (concat (socket-pending-data sock-data) output))
+      ;;(debug "Input: %S\n" (socket-pending-data sock-data))
+      (catch 'out
+	(while t
+	  (let ((stream (make-string-input-stream
+			 (socket-pending-data sock-data)))
+		form)
 	    (condition-case nil
 		(setq form (read stream))
 	      ((premature-end-of-stream end-of-stream)
 	       (throw 'out))
 	      ((invalid-read-syntax)
-	       (error "Can't parse rpc message: %S" (substring output point))))
+	       (error "Can't parse rpc message: %S"
+		      (socket-pending-data sock-data))))
 
 	    (debug "Parsed: %S\n" form)
+
+	    ;; this function may be called reentrantly, so make sure the
+	    ;; state is always consistent..
+	    (socket-pending-data-set!
+	     ;; stream is (STRING . POINT)
+	     sock-data (substring (cdr stream) (car stream)))
+
 	    (case (car form)
-	      ((#t #f)
-	       ;; Response
-	       (unless (socket-result-pending sock-data)
-		 (error "Spurious result on %s" socket))
-	       ((socket-result-pending sock-data) form))
-		
-	      (t ;; Request
-	       (let ((send-result t))
-		 (when (vectorp form)
-		   ;; vectors denote async requests
-		   (setq send-result nil)
-		   (setq form (vector->list form)))
+	      ((result)
+	       ;; (result CALL-ID RETURNED? VALUE-OR-EXCEPTION)
+	       (let ((id (nth 1 form))
+		     (succeeded (nth 2 form))
+		     (value (nth 3 form)))
+		 (dispatch-pending-call socket id succeeded value)))
+
+	      ((call)
+	       ;; (call CALL-ID SERVANT-ID ARGS...)
+	       (let ((id (nth 1 form))
+		     (servant-id (nth 2 form))
+		     (args (nthcdr 3 form)))
 		 (let ((result (call-with-exception-handler
 				(lambda ()
-				  (let ((impl (servant-ref (car form)))
-					(args (cdr form)))
+				  (let ((impl (servant-ref servant-id)))
 				    (unless impl
-				      (error "No such RPC servant: %s"
-					     (car form)))
+				      (error
+				       "No such RPC servant: %s" servant-id))
 				    (let-fluids ((active-socket socket))
-				      (cons '#t (apply impl args)))))
+				      (list t (apply impl args)))))
 				(lambda (data)
-				  (cons '#f data)))))
-		   (when send-result
-		     (debug "Wrote: %S\n" result)
-		     (write socket (prin1-to-string result)))))))
-	    (setq point (car stream))))
-	(when (< point (length output))
-	  (socket-pending-data-set! sock-data (substring output point))))))
+				  (list nil data)))))
+		   (when id
+		     (let ((response (list* 'result id result)))
+		       (debug "Wrote: %S\n" response)
+		       (write socket (prin1-to-string response)))))))))))))
 
-  ;; Wait for an rpc response on SOCKET. Parse it and either return the
-  ;; value or raise the exception
-  (define (wait-for-reponse socket)
-    (let ((old-vector (socket-result-pending (socket-data socket)))
-	  (result '()))
-      (define (result-callback value)
-	(debug "Result: %S\n" value)
-	(setq result value))
-      (socket-result-pending-set! (socket-data socket) result-callback)
-      (unwind-protect
-	  (while (not result)
-	    (accept-process-output 60))
-	(socket-result-pending-set! (socket-data socket) old-vector))
-      (if (eq (car result) '#t)
-	  ;; success
-	  (cdr result)
-	;; exception raised
-	(raise-exception (cdr result)))))
+  (define (invoke-method socket id callback servant-id args)
+    (record-pending-call socket id callback)
+    (let ((request (list* 'call id servant-id args)))
+      (debug "Wrote: %S\n" request)
+      (write socket (prin1-to-string request))))
+
+  (define (invoke-oneway-method socket servant-id args)
+    (let ((request (list* 'call nil servant-id args)))
+      (debug "Wrote: %S\n" request)
+      (write socket (prin1-to-string request))))
+
+  (define (synchronous-method-call socket servant-id args)
+    (let ((id (make-call-id))
+	  (done nil)
+	  succeeded value)
+      (invoke-method socket id
+		     (lambda (a b)
+		       (setq done t)
+		       (setq succeeded a)
+		       (setq value b))
+		     servant-id args)
+      (while (not done)
+	(accept-process-output 60))
+      (if succeeded
+	  value
+	(raise-exception value))))
+
+  (define (asynchronous-method-call socket callback servant-id args)
+    (invoke-method socket (make-call-id) callback servant-id args))
+
+  (define (oneway-method-call socket servant-id args)
+    (invoke-oneway-method socket servant-id args))
 
   (define (rpc-create-server)
     "Start listening for rpc connections on the current machine"
@@ -313,36 +362,55 @@ becomes invalid."
   ;; magic object used to get information from proxies
   (define proxy-token (cons))
 
-  ;; XXX shouldn't keep consing new proxies..
+  ;; table mapping GLOBAL-ID -> PROXY-WEAK-REF
+  (define proxy-table (make-table string-hash string=))
+
   (define (make-proxy server port servant-id)
     (let ((global-id (make-global-id server port servant-id)))
-      (lambda args
-	(if (eq (car args) proxy-token)
-	    ;; when called like this, do special things
-	    (case (cadr args)
-	      ((global-id) global-id)
 
-	      ((servant-id) servant-id)
+      (define (proxy)
+	(lambda args
+	  (if (eq (car args) proxy-token)
+	      ;; when called like this, do special things
+	      (case (cadr args)
+		((global-id) global-id)
 
-	      ((async)
-	       ;; async request - no result required
-	       (let ((socket (server-socket server port)))
-		 (debug "Wrote: %S\n" (cons servant-id (cddr args)))
-		 (write socket (prin1-to-string
-				;; cheap hack, vectors mean async
-				(apply vector (cons servant-id
-						    (cddr args))))))))
+		((servant-id) servant-id)
 
-	  ;; otherwise, just forward to the server
-	  (let ((socket (server-socket server port)))
-	    (debug "Wrote: %S\n" (cons servant-id args))
-	    (write socket (prin1-to-string (cons servant-id args)))
-	    (wait-for-reponse socket))))))
+		((oneway)
+		 ;; async request - no result required
+		 (oneway-method-call
+		  (server-socket server port) servant-id (cddr args)))
 
-  (define (async-rpc-call proxy . args)
+		((async)
+		 (asynchronous-method-call
+		  (server-socket server port)
+		  (caddr args) servant-id (cdddr args))))
+
+	    ;; otherwise, just forward to the server
+	    (synchronous-method-call
+	     (server-socket server port) servant-id args))))
+
+      ;; Avoid consing a new proxy each time..
+      (let ((ref (table-ref proxy-table global-id)))
+	(if ref
+	    (or (weak-ref ref)
+		(let ((p (proxy)))
+		  (weak-ref-set ref p)
+		  p))
+	  (let ((p (proxy)))
+	    (table-set proxy-table global-id (make-weak-ref p))
+	    p)))))
+
+  (define (async-rpc-call proxy #!key callback . args)
     "Call the rpc proxy function PROXY with arguments ARGS. It will be called
-asynchronously - no result will be returned from the remote function."
-    (apply proxy proxy-token 'async args))
+asynchronously. No result will be returned from the remote function
+unless CALLBACK is given, in which case (CALLBACK STATUS VALUE) will be
+called at some point in the future."
+    (if callback
+	(apply proxy proxy-token 'async callback args)
+      (apply proxy proxy-token 'oneway args))
+    #undefined)
 
   (define (rpc-proxy->global-id proxy)
     "Return the globally-valid servant-id (a string) that can be used to
@@ -363,7 +431,7 @@ reference the RPC proxy function PROXY."
   (define (servant-id->global-id id)
     "Return the globally referenceable RPC servant id for local servant id ID."
     (unless listener-socket
-      (error "Need an opened RPC server"))
+      (error "Need an active local RPC server"))
     (make-global-id (socket-address listener-socket)
 		    (socket-port listener-socket) id))
 

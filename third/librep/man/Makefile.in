@@ -1,6 +1,6 @@
 # Makefile.in for Jade's Texinfo manual
 # Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-# $Id: Makefile.in,v 1.1.1.2 2002-03-20 04:54:40 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.3 2003-01-05 00:24:10 ghudson Exp $
 #
 # This file is part of Jade.
 #
@@ -48,14 +48,14 @@ install : librep.info installdirs
 	for f in librep.info*; do \
 	  $(INSTALL_DATA) $$f $(DESTDIR)$(infodir); \
 	done
-	-install-info librep.info $(DESTDIR)$(infodir)/dir
+	-install-info --info-dir=$(DESTDIR)$(infodir) librep.info
 
 installdirs : mkinstalldirs
 	$(SHELL) $< $(DESTDIR)$(infodir)
 
 uninstall :
 	rm -f $(DESTDIR)$(infodir)/librep.info*
-	-install-info --delete librep.info $(DESTDIR)$(infodir)/dir
+	-install-info --remove --info-dir=$(DESTDIR)$(infodir) librep.info
 
 clean :
 	rm -f *~ librep.info* librep.?? librep.???

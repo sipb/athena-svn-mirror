@@ -1,6 +1,6 @@
 /* streams.c -- Lisp stream handling
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: streams.c,v 1.1.1.2 2002-03-20 04:52:59 ghudson Exp $
+   $Id: streams.c,v 1.1.1.3 2003-01-05 00:23:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -980,7 +980,7 @@ Note that the FIELD-WIDTH and all flags currently have no effect on the
 		switch (c)
 		{
 		    int radix, len, actual_len;
-		    u_char buf[256], fmt[32], *ptr;
+		    u_char buf[256], *ptr;
 
 		case 'c':
 		    rep_stream_putc (stream, rep_INT (val));
@@ -1058,10 +1058,6 @@ Note that the FIELD-WIDTH and all flags currently have no effect on the
 		    rep_print_val (stream, val);
 		    break;
 
-		case 0:
-		    last_fmt = fmt;
-		    goto end_of_input;
-
 		default:
 		    if (extra_formats == rep_NULL)
 		    {
@@ -1082,6 +1078,13 @@ Note that the FIELD-WIDTH and all flags currently have no effect on the
 			    goto unquoted;
 			}
 		    }
+		    else
+		    {
+			DEFSTRING (err, "Unknown format conversion");
+			Fsignal (Qerror, rep_list_2 (rep_VAL (&err),
+						     rep_MAKE_INT (c)));
+			goto exit;
+		    }
 		}
 		this_arg++;
 	    }
@@ -1089,7 +1092,6 @@ Note that the FIELD-WIDTH and all flags currently have no effect on the
 	}
     }
 
-end_of_input:
     if (last_fmt != fmt - 1)
 	rep_stream_puts (stream, last_fmt, fmt - last_fmt - 1, rep_FALSE);
     if (make_string)

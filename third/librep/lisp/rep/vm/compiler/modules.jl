@@ -1,6 +1,6 @@
 #| modules.jl -- module handling for the compiler
 
-   $Id: modules.jl,v 1.1.1.2 2002-03-20 04:55:00 ghudson Exp $
+   $Id: modules.jl,v 1.1.1.3 2003-01-05 00:24:16 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -81,14 +81,16 @@
 ;;; functions
 
   (define (find-structure name)
-    (or (intern-structure name)
-	(compiler-error "unable to fund module `%s'" name)))
+    (condition-case nil
+	(intern-structure name)
+      (file-error nil)))
 
   ;; return t if the module called STRUCT exports a variable called VAR
   (defun module-exports-p (struct var)
     (and (symbolp var)
 	 (cond ((symbolp struct)
-		(structure-exports-p (find-structure struct) var))
+		(let ((tem (find-structure struct)))
+		  (and tem (structure-exports-p tem var))))
 	       ((structurep struct)
 		(structure-exports-p struct var)))))
 
