@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.38 1998-06-08 14:12:04 ghudson Exp $
+# $Id: update_ws.sh,v 1.39 1999-03-02 15:55:35 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -248,12 +248,31 @@ sun4,8.[01].*|sun4,7.*)
 	;;
 esac
 
-# The Irix 5.3 -> 6.2 update requires at least 64 MB of memory,
-# and, since it is done in the miniroot, cannot use swap.
-# Since all supported machines should now have at least that
-# much memory, require it.
+# The Indy 6.2 -> 6.5 update consumes an additional 100MB of the
+# root partition; the O2 6.3 -> 6.5 update adds 40MB to root.
+# We also require a minimum of 64MB of memory on all SGI's.
 case "$HOSTTYPE" in
 sgi)
+	case "`uname -r`" in
+	6.2)
+		rootneeded=100
+		;;
+	6.3)
+		rootneeded=40
+		;;
+	*)
+		rootneeded=0
+		;;
+	esac
+
+	rootfree=`df -k / | awk '$NF == "/" { print int($5 / 1024); }'`
+	if [ "$rootfree" -lt "$rootneeded" ]; then
+		echo "Root partition low on space (less than ${rootneeded}MB);"
+		echo "not performing update.  Please reinstall or"
+		echo "clean local files off root partition."
+		exit 1
+	fi
+
 	if [ "`hinv -t memory | awk '{ print $4; }'`" -lt 64 ]; then
 		echo "Insufficient memory (less than 64MB); not"
 		echo "performing update.  Please add more memory"

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.12 1998-10-05 22:24:39 jweiss Exp $
+# $Id: finish-update.sh,v 1.13 1999-03-02 15:55:34 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -42,7 +42,13 @@ fi
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$LOCALPACKAGES" "$LINKPACKAGES" "$CONFIGVERS"
+rm -f "$CONFIGVERS"
+if [ -n "$LOCALPACKAGES" ]; then
+	rm -f "$LOCALPACKAGES".*
+fi
+if [ -n "$LINKPACKAGES" ]; then
+	rm -f "$LINKPACKAGES".*
+fi
 
 echo "Updating version"
 echo "Athena Workstation ($HOSTTYPE) Version $newvers `date`" >> \
