@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.33 1991-09-22 11:55:06 lwvanels Exp $
+ *	$Id: notify.c,v 1.34 1991-11-05 13:51:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.33 1991-09-22 11:55:06 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.34 1991-11-05 13:51:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -57,6 +57,7 @@ extern char DaemonInst[];	/* "olc", "olz", "olta", etc. */
 
 static int punt_zephyr = 0;
 static long zpunt_time;
+static int zpunt_duration;
 
 #ifdef __STDC__
 # define        P(s) s
@@ -123,11 +124,11 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 				/* 15 minutes, try using it again. */
 	  {
 	    (void) time(&time_now);
-	    if ((time_now - zpunt_time) > 15*60)
-	      {
-		log_zephyr_error("Attempting to unpunt zephyr...");
-		punt_zephyr = 0;
-	      }
+	    if ((zpunt_duration != 0) && 
+		((time_now - zpunt_time) > zpunt_duration)) {
+	      log_zephyr_error("Attempting to unpunt zephyr...");
+	      toggle_zephyr(0,0);
+	    }
 	  }
 
 	if (!punt_zephyr)
@@ -439,8 +440,7 @@ zsend(notice)
 
   if(setjmp(env) != 0)
     {
-      punt_zephyr = 1;
-      (void) time(&zpunt_time);
+      toggle_zephyr(1,ZEPHYR_PUNT_TIME);
       log_zephyr_error("Unable to send message via zephyr.  Punting.");
       alarm(0);
       signal(SIGALRM, SIG_IGN);
@@ -521,6 +521,39 @@ zsend(notice)
 }
 
 
+/*
+ * Function:	toggle_zephyr(toggle,time)
+ * Arguments:	toggle: 1 = turn zephyr on; 0 = off
+ *		time = number of minutes to turn it off for; 0 = indefinitely.
+ */
 
+void
+toggle_zephyr(toggle,punt_time)
+     int toggle,punt_time;
+{
+  int fd;
+  char errbuf[256];
+
+  if (toggle) {
+    punt_zephyr = 1;
+    (void) time(&zpunt_time);
+    zpunt_duration = punt_time * 60;
+    /* Create file to tell other daemons to punt zephyr */
+    if ((fd = creat(ZEPHYR_DOWN_FILE,0644)) < 0) {
+      sprintf(errbuf,"error trying to creat %s: %%m",ZEPHYR_DOWN_FILE);
+      log_error(errbuf);
+      return;
+    }
+    close(fd);
+  } else {
+    punt_zephyr = 0;
+    if (unlink(ZEPHYR_DOWN_FILE,0) < 0) {
+      sprintf(errbuf,"error unlinking %s: %%m",ZEPHYR_DOWN_FILE);
+      log_error(errbuf);
+      return;
+    }
+  }
+  return;
+}
 #endif /* ZEPHYR */
 
