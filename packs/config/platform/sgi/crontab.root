@@ -1,0 +1,65 @@
+# $Revision: 1.1 $
+#
+# The root crontab can be used to perform accounting data collection
+#	and cleanup.
+#
+# Format of lines:
+#min	hour	daymo	month	daywk	cmd
+#
+#
+# General SGI practice
+#
+# Remove old trash
+0	5	*	*	*	find / -local -type f '(' -name core -o -name dead.letter ')' -atime +7 -mtime +7 -exec rm -f '{}' ';'
+#
+# Remove old sendmail mail files
+2	5	*	*	*	find /var/spool/mqueue -local -type f -mtime +30 -exec rm -f '{}' ';'
+#
+# Remove old rwhod files
+2	5	*	*	*	find /var/spool/rwho -local -type f -mtime +7 -exec rm -f '{}' ';'
+#
+# Remove old vi/ex 'preserved' files
+3	5	*	*	*	find /usr/preserve -local -type f -atime +30 -mtime +30 -exec rm -f '{}' ';'
+#
+# Rotate the logs
+1	1	*	*	0	umask 033;cd /var/cron;if test -s log && test "`wc -c log`" -ge 10240; then mv -f log OLDlog;touch log; killall 1 cron; fi
+1	1	*	*	0	umask 077;cd /var/adm;if test -s sulog && test "`wc -c sulog`" -ge 10240; then mv -f sulog OLDsulog;touch sulog; fi
+1	1	*	*	0	umask 033;cd /var/adm;if test -s SYSLOG && test "`wc -c SYSLOG`" -ge 10240; then mv -f SYSLOG oSYSLOG;touch SYSLOG; killall 1 syslogd; fi
+#
+# If accounting is on it will handle wtmp rotating.
+# wtmp and wtmpx are always kept in sync by libc/getut so we should
+# always do things to them together
+#
+2	1	*	*	0	if /etc/chkconfig acct; then :; else umask 033;cd /var/adm; if test -s wtmp && test "`wc -c wtmp`" -ge 10240; then mv -f wtmp OLDwtmp; mv -f wtmpx OLDwtmpx; touch wtmp wtmpx; chown adm.adm wtmp wtmpx; fi; fi
+#
+#12	4	*	*	*	sh /var/spool/lp/etc/lib/log.rotate
+#
+#
+#
+# If this machine is running NIS and it's a slave server, the following 
+# commands keep the NIS databases up-to-date.
+#
+7	9	*	*	*	if /etc/chkconfig yp; then find /var/yp -type f -name 'xfr.*' -mtime +1 -exec rm -f '{}' ';' ; fi
+8	*	*	*	*	if test -x /var/yp/ypxfr_1ph; then /var/yp/ypxfr_1ph; fi
+9	9,15	*	*	*	if test -x /var/yp/ypxfr_2pd; then /var/yp/ypxfr_2pd; fi
+10	9	*	*	*	if test -x /var/yp/ypxfr_1pd; then /var/yp/ypxfr_1pd; fi
+#
+#
+# If this machine is a NIS master, ypmake will rotate the log file 
+# and ensure that the databases are pushed out with some regularity.
+# It is best to not build and push the databases at the same time the
+# commands above on slave servers are pulling the databases.
+#
+0,17,30,45 *	*	*	*	if /etc/chkconfig ypmaster && /etc/chkconfig yp && test -x /var/yp/ypmake; then /var/yp/ypmake; fi
+#
+#
+# dodisk does the disk accounting 
+0	2	* 	*	4	if /etc/chkconfig acct; then /usr/lib/acct/dodisk > /var/adm/acct/nite/disklog; fi
+#
+# Reorganize file systems
+#
+0	3	*	*	0	if test -x /usr/etc/fsr; then (cd /usr/tmp; /usr/etc/fsr) fi
+#
+# Repair mangled utmp/wtmp entries
+#
+1	0	*	*	*	/usr/sbin/chkutent
