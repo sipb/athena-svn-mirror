@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.26 1988-06-28 18:14:55 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.27 1988-06-28 18:44:08 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -161,12 +161,14 @@ handle_packet()
 		authentic = ZCheckAuthentication(&new_notice,
 						 &whoisit);
 	switch (authentic) {
-	ZAUTH_FAILED:
-	ZAUTH_NO:
+	case ZAUTH_YES:
+		authentic = 1;
+		break;
+	case ZAUTH_FAILED:
+	case ZAUTH_NO:
+	default:
 		authentic = 0;
 		break;
-	ZAUTH_YES:
-		authentic = 1;
 	}
 	if (whoisit.sin_port != hm_port &&
 	    strcmp(new_notice.z_class,ZEPHYR_ADMIN_CLASS) &&
