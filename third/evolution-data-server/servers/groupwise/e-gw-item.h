@@ -119,6 +119,8 @@ char       *e_gw_item_get_creation_date (EGwItem *item);
 void        e_gw_item_set_creation_date (EGwItem *item, const char *new_date);
 char       *e_gw_item_get_start_date (EGwItem *item);
 void        e_gw_item_set_start_date (EGwItem *item, const char *new_date);
+char       *e_gw_item_get_completed_date (EGwItem *item);
+void        e_gw_item_set_completed_date (EGwItem *item, const char *new_date);
 char       *e_gw_item_get_end_date (EGwItem *item);
 void        e_gw_item_set_end_date (EGwItem *item, const char *new_date);
 char       *e_gw_item_get_due_date (EGwItem *item);
@@ -131,6 +133,8 @@ const char *e_gw_item_get_place (EGwItem *item);
 void        e_gw_item_set_place (EGwItem *item, const char *new_place);
 gboolean    e_gw_item_get_completed (EGwItem *item);
 void        e_gw_item_set_completed (EGwItem *item, gboolean new_completed);
+gboolean    e_gw_item_get_is_allday_event (EGwItem *item);
+void	    e_gw_item_set_is_allday_event (EGwItem *item, gboolean is_allday);	
 char*       e_gw_item_get_field_value (EGwItem *item, char *field_name);
 void        e_gw_item_set_field_value (EGwItem *item, char *field_name, char* field_value);
 GList*      e_gw_item_get_email_list (EGwItem *item);
@@ -149,7 +153,7 @@ void e_gw_item_set_change (EGwItem *item, EGwItemChangeType change_type, char *f
 gboolean e_gw_item_append_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg);
 void e_gw_item_set_category_name (EGwItem *item, char *cateogry_name);
 char* e_gw_item_get_category_name (EGwItem *item);
-
+void e_gw_item_set_source (EGwItem *item, char *source);
 
 #define E_GW_ITEM_CLASSIFICATION_PUBLIC       "Public"
 #define E_GW_ITEM_CLASSIFICATION_PRIVATE      "Private"

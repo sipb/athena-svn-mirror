@@ -92,6 +92,9 @@
 /* Define to 1 to use the GCC compiler and Alpha assembly language mutexes. */
 /* #undef HAVE_MUTEX_ALPHA_GCC_ASSEMBLY */
 
+/* Define to use the GCC compiler and alpha assembly language mutexes. */
+/* #undef HAVE_MUTEX_ALPHA_LINUX_ASSEMBLY */
+
 /* Define to 1 to use the GCC compiler and ARM assembly language mutexes. */
 /* #undef HAVE_MUTEX_ARM_GCC_ASSEMBLY */
 
@@ -108,6 +111,9 @@
 /* Define to 1 to use the GCC compiler and IA64 assembly language mutexes. */
 /* #undef HAVE_MUTEX_IA64_GCC_ASSEMBLY */
 
+/* Define to 1 to use the GCC compiler and Mips assembly language mutexes. */
+/* #undef HAVE_MUTEX_MIPS_GCC_ASSEMBLY */
+
 /* Define to 1 to use the msem_XXX mutexes on systems other than HP-UX. */
 /* #undef HAVE_MUTEX_MSEM_INIT */
 
@@ -119,13 +125,16 @@
 /* #undef HAVE_MUTEX_PPC_GENERIC_GCC_ASSEMBLY */
 
 /* Define to 1 to use POSIX 1003.1 pthread_XXX mutexes. */
-#define HAVE_MUTEX_PTHREADS 1
+/* #undef HAVE_MUTEX_PTHREADS */
 
 /* Define to 1 to use Reliant UNIX initspin mutexes. */
 /* #undef HAVE_MUTEX_RELIANTUNIX_INITSPIN */
 
 /* Define to 1 to use the GCC compiler and S/390 assembly language mutexes. */
 /* #undef HAVE_MUTEX_S390_GCC_ASSEMBLY */
+
+/* Define to use the GCC compiler and s390 assembly language mutexes. */
+/* #undef HAVE_MUTEX_S390_LINUX_ASSEMBLY */
 
 /* Define to 1 to use the SCO compiler and x86 assembly language mutexes. */
 /* #undef HAVE_MUTEX_SCO_X86_CC_ASSEMBLY */
@@ -141,6 +150,12 @@
 
 /* Define to 1 to use the Solaris lwp threads mutexes. */
 /* #undef HAVE_MUTEX_SOLARIS_LWP */
+
+/* Define to use the GCC compiler and sparc64 assembly language mutexes. */
+/* #undef HAVE_MUTEX_SPARC32_LINUX_ASSEMBLY */
+
+/* Define to use the GCC compiler and sparc64 assembly language mutexes. */
+/* #undef HAVE_MUTEX_SPARC64_LINUX_ASSEMBLY */
 
 /* Define to 1 to use the GCC compiler and Sparc assembly language mutexes. */
 /* #undef HAVE_MUTEX_SPARC_GCC_ASSEMBLY */
@@ -169,8 +184,11 @@
 /* Define to 1 to use Windows mutexes. */
 /* #undef HAVE_MUTEX_WIN32 */
 
+/* Define to 1 to use the GCC compiler and amd64 assembly language mutexes. */
+/* #undef HAVE_MUTEX_X86_64_GCC_ASSEMBLY */
+
 /* Define to 1 to use the GCC compiler and x86 assembly language mutexes. */
-/* #undef HAVE_MUTEX_X86_GCC_ASSEMBLY */
+#define HAVE_MUTEX_X86_GCC_ASSEMBLY 1
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */

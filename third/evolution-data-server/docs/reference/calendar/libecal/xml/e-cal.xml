@@ -685,13 +685,13 @@ identifier.</para>
 <listitem><simpara> Unique identifier for a calendar component.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>rid</parameter>&nbsp;:</term>
-<listitem><simpara> 
+<listitem><simpara> Recurrence identifier.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>icalcomp</parameter>&nbsp;:</term>
 <listitem><simpara> Return value for the calendar component object.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>error</parameter>&nbsp;:</term>
-<listitem><simpara> 
+<listitem><simpara> Placeholder for error information.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Result code based on the status of the operation.
 </simpara></listitem></varlistentry>

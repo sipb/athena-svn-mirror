@@ -42,7 +42,10 @@ struct _EGwItemPrivate {
 	char *start_date;
 	char *end_date;
 	char *due_date;
+	char *completed_date;
+	char *source;
 	gboolean completed;
+	gboolean is_allday_event;
 	char *subject;
 	char *message;
 	char *classification;
@@ -275,7 +278,13 @@ e_gw_item_dispose (GObject *object)
 		if (priv->category_name) {
 			g_free (priv->category_name);
 			priv->category_name = NULL;
+		} 
+		
+		if (priv->source) {
+			g_free (priv->source);
+			priv->source = NULL;
 		}
+
 		free_changes (priv->additions);
 		free_changes (priv->deletions);
 		free_changes (priv->updates);
@@ -327,11 +336,13 @@ e_gw_item_init (EGwItem *item, EGwItemClass *klass)
 	priv->start_date = NULL;
 	priv->end_date = NULL; 
 	priv->due_date = NULL; 
+	priv->completed_date = NULL;
 	priv->trigger = 0;
 	priv->recipient_list = NULL;
 	priv->organizer = NULL;
 	priv->recurrence_dates = NULL;
 	priv->completed = FALSE;
+	priv->is_allday_event = FALSE;
 	priv->im_list = NULL;
 	priv->email_list = NULL;
 	priv->member_list = NULL;
@@ -425,6 +436,9 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 		 to none. */
 		subparam = soup_soap_parameter_get_first_child_by_name (param_recipient, "recipientStatus");
                 if (subparam) {
+       			char *formatted_date, *value; 
+			SoupSoapParameter *temp_param ;
+
                         if (soup_soap_parameter_get_first_child_by_name (subparam, "deleted"))
 				recipient->status = E_GW_ITEM_STAT_DECLINED;
 			if (soup_soap_parameter_get_first_child_by_name (subparam, "declined"))
@@ -433,6 +447,15 @@ set_recipient_list_from_soap_parameter (EGwItem *item, SoupSoapParameter *param)
 				recipient->status = E_GW_ITEM_STAT_ACCEPTED;
 			else 	
 				recipient->status = E_GW_ITEM_STAT_NONE;
+			
+			temp_param = soup_soap_parameter_get_first_child_by_name (subparam, "completed");
+			if (temp_param) {
+				value = soup_soap_parameter_get_string_value (temp_param);
+				formatted_date = e_gw_connection_format_date_string (value);
+				e_gw_item_set_completed_date (item, formatted_date);
+				g_free (value);
+				g_free (formatted_date);
+			}
                 }
 		else {
 			/* if recipientStatus is not provided, use the
@@ -1344,11 +1367,19 @@ e_gw_item_new_from_soap_parameter (const char *email, const char *container, Sou
 
 		} else if (!g_ascii_strcasecmp (name, "completed")) {
 			value = soup_soap_parameter_get_string_value (child);
-			if (!g_ascii_strcasecmp (value, "true"))
+			if (!g_ascii_strcasecmp (value, "1"))
 				item->priv->completed = TRUE;
 			else
 				item->priv->completed = FALSE;
 			g_free (value);
+
+		} else if (!g_ascii_strcasecmp (name, "allDayEvent")) {
+			value = soup_soap_parameter_get_string_value (child);
+			if (!g_ascii_strcasecmp (value, "1"))
+				item->priv->is_allday_event = TRUE;
+			else
+				item->priv->is_allday_event = FALSE;
+			g_free (value);	
 
 		} else if (!g_ascii_strcasecmp (name, "status")) {
 			if (soup_soap_parameter_get_first_child_by_name (child, "deleted"))
@@ -1635,6 +1666,24 @@ e_gw_item_set_due_date (EGwItem *item, const char *new_date)
 	item->priv->due_date = g_strdup (new_date);
 }
 
+char *
+e_gw_item_get_completed_date (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), NULL);
+
+	return item->priv->completed_date;
+}
+
+void 
+e_gw_item_set_completed_date (EGwItem *item, const char *new_date)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	if (item->priv->completed_date)
+		g_free (item->priv->completed_date);
+	item->priv->completed_date = g_strdup (new_date);
+}
+
 const char *
 e_gw_item_get_subject (EGwItem *item)
 {
@@ -1721,6 +1770,22 @@ e_gw_item_set_completed (EGwItem *item, gboolean new_completed)
 	g_return_if_fail (E_IS_GW_ITEM (item));
 
 	item->priv->completed = new_completed;
+}
+
+gboolean 
+e_gw_item_get_is_allday_event (EGwItem *item)
+{
+	g_return_val_if_fail (E_IS_GW_ITEM (item), FALSE);
+
+	return item->priv->is_allday_event;
+}
+
+void 
+e_gw_item_set_is_allday_event (EGwItem *item, gboolean allday_event)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+
+	item->priv->is_allday_event = allday_event;
 }
 
 const char *
@@ -1823,6 +1888,13 @@ e_gw_item_set_trigger (EGwItem *item, int trigger)
 	item->priv->trigger = trigger;
 }
 
+void
+e_gw_item_set_source (EGwItem *item, char *source)
+{
+	g_return_if_fail (E_IS_GW_ITEM (item));
+	item->priv->source = g_strdup (source);
+}
+
 static void
 add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient_list, SoupSoapMessage *msg)
 {
@@ -1874,7 +1946,7 @@ add_distribution_to_soap_message (EGwItemOrganizer *organizer, GSList *recipient
 	soup_soap_message_end_element (msg);
 }
 
-void 
+static void 
 e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 {
 	EGwItemPrivate *priv = item->priv;
@@ -1884,6 +1956,8 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		e_gw_message_write_string_parameter (msg, "id", NULL, priv->id);
 	if (priv->container)
 		e_gw_message_write_string_parameter (msg, "container", NULL, priv->container);
+	if (item->priv->source)
+		e_gw_message_write_string_parameter (msg, "source", NULL, item->priv->source );
 
 	if (priv->classification)
 		e_gw_message_write_string_parameter (msg, "class", NULL, priv->classification);
@@ -1899,7 +1973,7 @@ e_gw_item_set_calendar_item_elements (EGwItem *item, SoupSoapMessage *msg)
 		char *str;
 		
 		str = soup_base64_encode (priv->message, strlen (priv->message));
-		dtstring = g_strdup_printf ("%d", strlen (str));
+		dtstring = g_strdup_printf ("%d", (int)strlen (str));
 		soup_soap_message_add_attribute (msg, "length", dtstring, NULL, NULL);
 		g_free (dtstring);
 		soup_soap_message_write_string (msg, str);
@@ -1972,6 +2046,12 @@ e_gw_item_append_to_soap_message (EGwItem *item, SoupSoapMessage *msg)
 			e_gw_message_write_string_parameter (msg, "endDate", NULL, "");
 
 		e_gw_message_write_string_parameter (msg, "acceptLevel", NULL, priv->accept_level ? priv->accept_level : "");
+		if (priv->is_allday_event)
+			e_gw_message_write_string_parameter (msg, "allDayEvent", NULL, "1");
+		else
+			e_gw_message_write_string_parameter (msg, "allDayEvent", NULL ,"0");
+
+
 		if (priv->trigger != 0) {
 			alarm = g_strdup_printf ("%d", priv->trigger);
 			e_gw_message_write_string_parameter_with_attribute (msg, "alarm", NULL, alarm, "enabled", "true");
@@ -2146,13 +2226,15 @@ append_event_changes_to_soap_message (EGwItem *item, SoupSoapMessage *msg, int c
 			e_gw_message_write_string_parameter (msg, "endDate", NULL, priv->end_date);
 		}
 	}
+	if (g_hash_table_lookup (changes, "allDayEvent"))
+		e_gw_message_write_string_parameter (msg, "allDayEvent", NULL, priv->is_allday_event ? "1" : "0");
 	if (g_hash_table_lookup (changes, "message")) {
 		soup_soap_message_start_element (msg, "message", NULL, NULL);
 		if (priv->message) {
 			char *str, *message;
 
 			str = soup_base64_encode (priv->message, strlen (priv->message));
-			message = g_strdup_printf ("%d", strlen (str));
+			message = g_strdup_printf ("%d", (int)strlen (str));
 			soup_soap_message_add_attribute (msg, "length", message, NULL, NULL);
 			g_free (message);
 			soup_soap_message_write_string (msg, str);

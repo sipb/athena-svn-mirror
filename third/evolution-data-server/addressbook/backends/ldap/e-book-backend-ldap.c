@@ -2854,6 +2854,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 	gchar *retval;
 	EBookBackendLDAPSExpData data;
 	int i;
+	char **strings;
 
 	data.list = NULL;
 	data.bl = bl;
@@ -2885,7 +2886,15 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl, const char *query)
 			g_list_foreach (data.list, (GFunc)g_free, NULL);
 		}
 		else {
-			retval = data.list->data;
+			strings = g_new0(char*, 5);
+			strings[0] = g_strdup ("(&");
+			strings[1] = g_strdup ("(objectclass=person)");
+			strings[2] = data.list->data;
+			strings[3] = g_strdup (")");
+			retval =  g_strjoinv (" ", strings);
+			for (i = 0 ; i < 4; i ++)
+				g_free (strings[i]);
+			g_free (strings);
 		}
 	}
 	else {
@@ -3296,7 +3305,21 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		ldap_error = ldap_simple_bind_s(bl->priv->ldap,
 						dn,
 						passwd);
+		/* Some ldap servers are returning (ex active directory ones) LDAP_SERVER_DOWN
+		 * when we try to do an ldap operation  after being  idle 
+		 * for some time. This error is handled by poll_ldap in case of search operations
+		 * We need to handle it explicitly for this bind call. We call reconnect so that
+		 * we get a fresh ldap handle Fixes #67541 */
 
+		if (ldap_error == LDAP_SERVER_DOWN) {
+			EDataBookView *view = find_book_view (bl);
+
+			if (e_book_backend_ldap_reconnect (bl, view, ldap_error)) {
+				ldap_error = LDAP_SUCCESS;
+			}
+
+		}
+				
 		e_data_book_respond_authenticate_user (book,
 						       opid,
 						       ldap_error_to_response (ldap_error));

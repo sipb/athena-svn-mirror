@@ -503,7 +503,6 @@ do_commit_contact (gboolean        sync,
 		g_cond_wait (our_op->cond, our_op->mutex);
 
 		status = our_op->status;
-		e_contact_set (contact, E_CONTACT_UID, our_op->id);
 		g_free (our_op->id);
 
 		/* remove the op from the book's hash of operations */
@@ -2409,7 +2408,7 @@ emit_async_open_response (gpointer data)
 	EBookOp *op = data;
 	EBook *book = op->book;
 
-	printf ("in async_open_response\n");
+	d(printf ("in async_open_response\n"));
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -2443,7 +2442,7 @@ e_book_response_open (EBook       *book,
 {
 	EBookOp *op;
 
-	printf ("in e_book_response_open\n");
+	d(printf ("in e_book_response_open\n"));
 
 	g_mutex_lock (book->priv->mutex);
 
@@ -3060,11 +3059,19 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
 {
 	GError *e = NULL;
 	GConfClient *gconf;
+	gboolean status;
 	char *uid;
 
 	*book = e_book_new_system_addressbook (&e);
 
 	if (!*book) {
+		if (error)
+			g_propagate_error (error, e);
+		return FALSE;
+	}
+
+	status = e_book_open (*book, FALSE, &e);
+	if (status == FALSE) {
 		if (error)
 			g_propagate_error (error, e);
 		return FALSE;

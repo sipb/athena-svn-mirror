@@ -1,3 +1,95 @@
+2005-02-14  JP Rosevear  <jpr@novell.com>
+
+	* e-gw-connection.h: re-order enums to prevent abi breakage
+
+2004-02-14  Sivaiah Nallagatla   <snallagatla@novell.com>
+
+	* e-gw-connection.h : place _INVALID_CONNECTION
+	at the end of enum 
+
+2004-02-14 Sivaiah Nallagatla    <snallagatla@novell.com>
+                                                                                                                             
+        * e-gw-connection.c (reauthenitcate) : new function to reautheicate
+        to server when the sessionid we have becomes invalid because of timeouts
+        server restarts etc.
+        (e_gw_connection_parse_response_status) : add the new soap error code
+        and corresponding E_GW_CONNECTION_*  status code.
+        (e_gw_connection_new) : no need to dup th session id got form soap
+        response.
+        (e_gw_connection_init) (e_gw_connection_dispose) : init and free the new
+          mutex added to take care of muliple calls to reauthenicate
+        (e_gw_connection_get_items) (e_gw_connection_get_items_from_ids)
+        (e_gw_connection_send_item) (e_gw_connection_create_item)
+        (e_gw_connection_modify_item) (e_gw_connection_get_item)
+        (e_gw_connection_remove_item) (e_gw_connection_remove_items)
+        (e_gw_connection_accept_request) (e_gw_connection_decline_request)
+        (e_gw_connection_retract_request) (e_gw_connection_complete_request)
+        (e_gw_connection_create_book) (e_gw_connection_get_address_book_list)
+        (e_gw_connection_add_members) (e_gw_connection_remove_members)
+        (e_gw_connection_destroy_cursor) (e_gw_connection_create_cursor)
+        (e_gw_connection_read_cursor) (e_gw_connection_get_categories)
+        (e_gw_connection_get_quick_messages) : if the status is invalid session
+        call reauthenticate
+        part of the fix for #64298. Putting it to stable branch
+
+2005-01-31  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* e-gw-item.c: (e_gw_item_dispose), (e_gw_item_set_source),
+	(e_gw_item_set_calendar_item_elements):
+	* e-gw-item.h: Added a function to set the source.
+
+2005-01-27  Chenthill Palanisamy <pchenthill@novell.com>
+
+	* e-gw-item.c: (e_gw_item_init),
+	(set_recipient_list_from_soap_parameter),
+	(e_gw_item_get_completed_date), (e_gw_item_set_completed_date):
+	* e-gw-item.h: Added functions to get and set the completed date.
+	Added a variable in the priv structure for storing the completed date.
+
+2005-01-08  Not Zed  <NotZed@Ximian.com>
+
+	* e-gw-item.c (e_gw_item_set_calendar_item_elements): cast strlen to int.
+	(append_event_changes_to_soap_message): same.
+
+2004-11-18  Sivaiah Nallagatla <snallagatla@novell.com>
+
+       * e-gw-connection.c (e_gw_connection_new) : change
+       the "UserInfo" element to "userinfo"
+       part of the fix for #69624
+
+
+2004-10-08  Chenthill Palanisamy <pchenthill@novell.com>
+ 
+	Fixes #65200
+	* e-gw-connection.c (e_gw_connection_dispose), 
+	(e_gw_connection_finalize):
+	Remove the connection from the hash table in dispose
+	method.
+
+2004-10-07  Chenthill Palanisamy <pchenthill@novell.com>
+
+	Fixes #62868
+	* e-gw-connection.[ch] (e_gw_connection_parse_response_status):
+	Added the error code and an enum variable for Item already accepted.
+
+2004-10-07  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Partially Fixes #67031
+	* e-gw-item.c (e_gw_item_new_from_soap_parameter):
+	Get the value of the completed element comparing with 
+	the string "1" instead of "TRUE".
+
+2004-09-08  Chenthill Palanisamy <pchenthill@novell.com>
+	
+	Fixes #64062
+	* e-gw-item[ch]
+	(e_gw_item_set_is_allday_event), (e_gw_item_get_is_allday_event):
+	Added functions to handle the allday events for Appointments.
+	* e-gw-item.c 
+	(e_gw_item_append_to_soap_message),(append_event_changes_to_soap_message)
+	(e_gw_item_new_from_soap_parameter): Added the support for allDay events
+	in appointments.
+
 2004-08-27  Chenthill Palanisamy <pchenthill@novell.com>
 
 	* e-gw-item.h:
