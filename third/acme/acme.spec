@@ -1,6 +1,6 @@
 Summary:	ACME the Versatile Keyboard daemon
 Name:           acme
-Version:        2.0.1
+Version:        2.0.2
 Release:        1
 
 Group:          System Environment/Daemons 

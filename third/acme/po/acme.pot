@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,14 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this command exists."
 msgstr ""
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -30,21 +30,21 @@ msgid ""
 "Verify that at least one of these commands exist."
 msgstr ""
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
 "Please check ACME's documentation, correct the problem and restart ACME."
 msgstr ""
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
 "Key %d couldn't be unbound."
 msgstr ""
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -53,23 +53,23 @@ msgid ""
 "Is another daemon already running ?"
 msgstr ""
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr ""
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr ""
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr ""
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

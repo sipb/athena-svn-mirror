@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ACME HEAD\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-18 00:10+0100\n"
 "Last-Translator: Deep_Dark <epidamus@netscape.net>\n"
 "Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Nuk mund të ekzekutojë komandën: %s\n"
 "Verifiko që kjo komandë ekziston."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -35,7 +35,7 @@ msgstr ""
 "as komandën: %s\n"
 "Verifiko që të paktën njëra nga të dyja këto komanda të ekzistojë."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -45,7 +45,7 @@ msgstr ""
 "Ju lutem kontrolloni dokumentacionin e ACME, korrigjoni problemin dhe "
 "restartoni ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -54,7 +54,7 @@ msgstr ""
 "Ndodhi një gabim duke hequr hyrjen për tastet multimedialë.\n"
 "Tasti %d nuk mund të ç'aktivizohet."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -66,23 +66,23 @@ msgstr ""
 "Tasti %d nuk mund të disaktivizohet.\n"
 "ls të tregon nëse nje aplikacion po punon.Kontrollo!"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "Infot e përkthyesit"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Demoni i tasteve të multimedias"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Demoni i tasteve të multimedias është aktiv"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

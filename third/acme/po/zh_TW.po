@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme 2.0\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-16 08:09+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -22,7 +22,7 @@ msgstr ""
 "無法執行指令：%s\n"
 "請確定該指令已經存在。"
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -33,7 +33,7 @@ msgstr ""
 "或是指令：%s\n"
 "請確定至少其中一個指令已經存在。"
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -42,7 +42,7 @@ msgstr ""
 "檔案 %s 的權限不正確\n"
 "請參考 ACME 的文件，修正問題後再重新啟動 ACME。"
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -51,7 +51,7 @@ msgstr ""
 "當嘗試解除多媒體按鈕設定時出現錯誤。\n"
 "按鈕 %d 無法解除。"
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -63,7 +63,7 @@ msgstr ""
 "按鈕 %d 無法解除。\n"
 "是不是另一個伺服程式正在執行？"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 "i18n 程式中文化計劃\n"
@@ -71,19 +71,19 @@ msgstr ""
 "\n"
 "Abel Cheung <maddog@linux.org.hk>, 2003"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "多媒體按鈕伺服程式"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "多媒體按鈕伺服程式已經啟用"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

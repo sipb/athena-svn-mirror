@@ -1,3 +1,53 @@
+2003-02-02  Bastien Nocera  <hadess@hadess.net>
+
+	* README: update and 2.0.2
+	* src/eggtrayicon.c:
+	* src/eggtrayicon.h: update from libegg
+
+2003-02-01  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in:
+	* src/Makefile.am:
+	* src/acme.c: Fix compilation on Sun Solaris: check for XF86keysym.h
+	header, remove unneeded -export-dynamic LDFLAGS (Closes: #104792)
+
+2003-01-31  Bastien Nocera  <hadess@hadess.net>
+
+	* src/acme.desktop.in: added Encoding field
+
+2003-01-26  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added "pt" to ALL_LINGUAS
+
+2003-01-25  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added "ja" to ALL_LINGUAS
+
+2003-01-23  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: added "sk" to ALL_LINGUAS.
+
+2003-01-22  Marius Andreiana <marius galuna.ro>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+        * configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-20  Jordi Mallach  <jordi@sindominio.net>
+
+	* configure.in (ALL_LINGUAS): added Catalan (ca).
+
+2003-01-20  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am), German (de), Dutch (nl),
+	Macedonian (mk) to ALL_LINGUAS
+
+2003-01-20  Yuriy Syrota  <rastaman@renome.rovno.ua>
+
+	* configure.in: Added "uk" (Ukrainian) to ALL_LINGUAS.
+
 2003-01-19  Bastien Nocera  <hadess@hadess.net>
 
 	* src/acme.c: (do_action): use "xset dpms force off" if apm isn't

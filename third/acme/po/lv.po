@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-14 13:04+0200\n"
 "Last-Translator: Artis Trops <hornet@navigator.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Nevarēju palaist komandu %s\n"
 "Pārbaudiet, vai šāda komanda eksistē."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -34,7 +34,7 @@ msgstr ""
 "vai komandu: %s\n"
 "Pārbaudiet, vai vismaz viena no šīm komandām eksistē."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -44,7 +44,7 @@ msgstr ""
 "Lūdzu pārbaudiet ACME dokumentāciju, novērsiet problēmu un pārstartējiet "
 "ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -53,7 +53,7 @@ msgstr ""
 "Kļūda noņemot pieeju multimēdiju taustiņiem.\n"
 "Taustiņš %d nevarēja tikt atsaistīts."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -65,25 +65,25 @@ msgstr ""
 "Taustiņš %d nevarēja tikt piesaistīts.\n"
 "Vai nestrādā jau cits dēmons ?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 "Pēteris Krišjānis <peteris.krisjanis@os.lv>\n"
 "Artis Trops <hornet@navigator.lv>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Multimediju taustiņu dēmons"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Multimediju taustiņu dēmons aktīvs"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

@@ -1,20 +1,20 @@
 # French translation of ACME.
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# Copyright (C) 2002-2003 Free Software Foundation, Inc.
 # maintainer: Baptiste MILLE-MATHIAS <bmm80@ifrance.com>, 2002.
-# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2002.
+# Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2002-2003.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: ACME 1.99.10\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
-"PO-Revision-Date: 2002-12-11 22:14+0100\n"
-"Last-Translator: Baptiste MILLE-MATHIAS <bmm80@ifrance.com>\n"
+"Project-Id-Version: ACME 2.0\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
+"PO-Revision-Date: 2003-01-26 21:52+0100\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Impossible de lancer la commande : %s\n"
 "Vérifiez que la commande existe."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -34,7 +34,7 @@ msgstr ""
 "or la commande : %s\n"
 "Vérifiez qu'au moins une de ces commandes existe."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -43,7 +43,7 @@ msgstr ""
 "Les permissions du fichier %s sont cassées\n"
 "Veuillez lire la documentation d'ACME, corrigez le problème et relancez ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -52,7 +52,7 @@ msgstr ""
 "Une erreur est survenue en enlevant l'accès aux touches multimédia.\n"
 "La touche %d ne peut être détaché."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -65,7 +65,7 @@ msgstr ""
 "La touche %d ne peut être liée.\n"
 "Y-a-t'il un autre démon en fonctionnment ?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr ""
 "Mainteneur :\n"
@@ -74,19 +74,19 @@ msgstr ""
 "Contributeur :\n"
 "Christophe Merlet (RedFox) <redfox@redfoxcenter.org>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Démon des touches multimédia"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Démon des touches multimédia actif"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."
@@ -104,11 +104,11 @@ msgstr "Touche Sourdine"
 
 #: src/acme.h:74
 msgid "Volume down key"
-msgstr "Touche baisse du volume"
+msgstr "Touche Baisse du volume"
 
 #: src/acme.h:76
 msgid "Volume up key"
-msgstr "Touche hausse du volume"
+msgstr "Touche Hausse du volume"
 
 #: src/acme.h:78
 msgid "Power key"
@@ -253,9 +253,9 @@ msgid ""
 "associate with it.\n"
 "\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
 msgstr ""
-"Pour assigner une touche à une action, cliquer sur une ligne et appuyer sur "
+"Pour assigner une touche à une action, cliquerzsur une ligne et appuyez sur "
 "la touche à associer à elle.\n"
-"\"C\" annule la capture, et \"Retour Arrière\" désactive le raccourci "
+"« C » annule la capture, et « Retour arrière » désactive le raccourci "
 "clavier."
 
 #: src/acme-properties.glade.h:7
@@ -487,29 +487,33 @@ msgid "WWW key's XKeycode, 0 to disable"
 msgstr "XKeycode de la touche Web, 0 pour désactiver"
 
 #: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
-#, fuzzy
 msgid "Accelerator key"
-msgstr "Touche Calculette"
+msgstr "Touche Accélérateur"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr ""
+msgstr "Modificateurs d'accélérateur"
 
 #: src/eggcellrendererkeys.c:180
 msgid "Accelerator Mode"
-msgstr ""
+msgstr "Mode accélérateur"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr ""
+msgstr "Le type d'accélérateur."
 
 #: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
 msgstr ""
+"Saisissez un nouvel accélérateur, ou appuyez Retour arrière pour effacer"
 
 #: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
-msgstr ""
+msgstr "Saisissez un nouvel accélérateur"
+
+#, fuzzy
+#~ msgid "Accel Mode"
+#~ msgstr "Mode Accélérateur"
 
 #~ msgid "(C) 2001 Bastien Nocera"
 #~ msgstr "© 2001 Bastien Nocera"

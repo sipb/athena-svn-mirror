@@ -1,19 +1,19 @@
-# TRADUZIONE ITALIANA DI ACME
-# Copyright (C) 2002, Lapo Calamandreirms of GPL2 license.
+# ACME italian traslation
+# Copyright (C) 2002, Lapo Calamandrei following the terms of GPL2 license.
 # Lapo Calamandrei <lapo.calamandrei@virgilio.it>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: acme 1.99.9\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
-"PO-Revision-Date: 2002-11-08 14:00+0100\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
+"PO-Revision-Date: 2003-01-21 14:00+0100\n"
 "Last-Translator: Lapo Calamandrei <lapo.calamandrei@virgilio.it>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -22,8 +22,8 @@ msgstr ""
 "Impossibile eseguire il comando: %s\n"
 "Verificare che il comando esista."
 
-#: src/acme.c:182
-#, fuzzy, c-format
+#: src/acme.c:189
+#, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
 "or command: %s\n"
@@ -32,7 +32,7 @@ msgstr ""
 "Impossibile eseguire sia il comando %s che il comando %s\n"
 "Verificare che almeno uno di questi esista."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -42,7 +42,7 @@ msgstr ""
 "Consultare la documentazione di ACME, correggere il problema e riavviare "
 "l'applicazione."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Errore nel rimuovere l'accesso ai tasti multimediali.\n"
 "Il tasto %d non può essere disattivato."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -63,23 +63,23 @@ msgstr ""
 "Il tasto %d non può essere utilizzato.\n"
 "Probabilmente è in esecuzione un altro demone."
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "Lapo Calamandrei <lapo.calamandrei@virgilio.it>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Demone per i tasti multimediali"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Demone per i tasti multimediali attivo"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."
@@ -111,41 +111,40 @@ msgstr "Tasto di alimentazione"
 msgid "Eject key"
 msgstr "Tasto eject"
 
+# uhm?
 #: src/acme.h:82
-#, fuzzy
 msgid "Media key"
-msgstr "Tasto per azzerare il volume"
+msgstr "Tasto multimedia"
 
 #: src/acme.h:84
-#, fuzzy
 msgid "Play key"
-msgstr "Tasto per l'aiuto"
+msgstr "Tasto play"
 
 #: src/acme.h:86
-#, fuzzy
 msgid "Pause key"
-msgstr "Tasto per azzerare il volume"
+msgstr "Tasto pausa"
 
 #: src/acme.h:88
 msgid "Stop (Audio) key"
-msgstr ""
+msgstr "Tasto stop"
 
 #: src/acme.h:90
 msgid "Previous (Audio) key"
-msgstr ""
+msgstr "Tasto brano precedente"
 
 #: src/acme.h:92
 msgid "Next (Audio) key"
-msgstr ""
+msgstr "Tasto brano successivo"
 
 #: src/acme.h:94
 msgid "My Home key"
 msgstr "Tasto home"
 
+# lascio refresh o metto aggiorna?
+# aggiorna mi sa di aggiornamento software
 #: src/acme.h:96
-#, fuzzy
 msgid "Refresh key"
-msgstr "Tasto per la ricerca"
+msgstr "Tasto aggiorna"
 
 #: src/acme.h:98
 msgid "Search key"
@@ -153,7 +152,7 @@ msgstr "Tasto per la ricerca"
 
 #: src/acme.h:100
 msgid "E-Mail key"
-msgstr "Tasto e-mail"
+msgstr "Tasto posta"
 
 #: src/acme.h:102
 msgid "Sleep key"
@@ -176,9 +175,8 @@ msgid "WWW key"
 msgstr "Tasto WWW"
 
 #: src/acme.h:112
-#, fuzzy
 msgid "Groups key"
-msgstr "Tasto per alzare il volume"
+msgstr "Tasto gruppi"
 
 #: src/acme.h:114
 msgid "Calculator key"
@@ -189,13 +187,12 @@ msgid "Record key"
 msgstr "Tasto per la registrazione audio"
 
 #: src/acme.h:118
-#, fuzzy
 msgid "Close Window key"
-msgstr "Tasto per abbassare il volume"
+msgstr "Tasto per chiudere le finestre"
 
 #: src/acme.h:120
 msgid "Shade Window key"
-msgstr ""
+msgstr "Tasto per arrotolare la finestra"
 
 #: src/acme.h:123
 msgid "Brightness down key"
@@ -232,15 +229,15 @@ msgstr "Stato"
 
 #: src/acme-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: src/acme-properties.glade.h:2
 msgid "<span weight=\"bold\">Keys Setup </span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Impostazione dei tasti </span>"
 
 #: src/acme-properties.glade.h:3
 msgid "<span weight=\"bold\">Sound Setup</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Impostazione dei tasti </span>"
 
 #: src/acme-properties.glade.h:4
 msgid "Multimedia Keys Preferences"
@@ -261,7 +258,6 @@ msgid "Use _PCM volume instead of Master volume"
 msgstr "Utilizzare il volume _PCM invece del volume generale."
 
 #: src/acme-properties.glade.h:8
-#, fuzzy
 msgid "_Launch the multimedia key daemon"
 msgstr "Avvia il demone dei tasti mu_ltimediali"
 
@@ -298,14 +294,12 @@ msgid "Calculator key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto per la calcolatrice, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:7
-#, fuzzy
 msgid "Close Window key's XKeycode"
-msgstr "XKeycode del tasto per abbassare il volume"
+msgstr "XKeycode del tasto per Chiudere la finestra"
 
 #: src/acme.schemas.in.h:8
-#, fuzzy
 msgid "Close Window key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto per abbassare il volume, 0 per disabilitare"
+msgstr "XKeycode del tasto per chiudere la finestra, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:9
 msgid "Command to execute when the Eject button is pressed"
@@ -313,11 +307,11 @@ msgstr "Comando da eseguire quando il tasto eject viene premuto"
 
 #: src/acme.schemas.in.h:10
 msgid "E-Mail key's XKeycode"
-msgstr "XKeycode del tasto e-mail"
+msgstr "XKeycode del tasto posta"
 
 #: src/acme.schemas.in.h:11
 msgid "E-Mail key's XKeycode, 0 to disable"
-msgstr "Xkeycode del tasto e-mail, 0 per disabilitare"
+msgstr "Xkeycode del tasto posta, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:12
 msgid "Eject key's XKeycode"
@@ -336,14 +330,12 @@ msgid "Finance key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto finanze, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:16
-#, fuzzy
 msgid "Groups key's XKeycode"
-msgstr "XKeycode del tasto per l'aiuto"
+msgstr "XKeycode del tasto gruppi"
 
 #: src/acme.schemas.in.h:17
-#, fuzzy
 msgid "Groups key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto per l'aiuto, 0 per disabilitare"
+msgstr "XKeycode del tasto gruppi, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:18
 msgid "Help key's XKeycode"
@@ -370,34 +362,28 @@ msgid "My Home key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto home, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:24
-#, fuzzy
 msgid "Next key's XKeycode"
-msgstr "XKeycode del tasto eject"
+msgstr "XKeycode del tasto brano successivo"
 
 #: src/acme.schemas.in.h:25
-#, fuzzy
 msgid "Next key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto eject, 0 per disabilitare"
+msgstr "XKeycode del tasto brano successivo, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:26
-#, fuzzy
 msgid "Pause key's XKeycode"
-msgstr "XKeycode del tasto per azzerare il volume"
+msgstr "XKeycode del tasto pausa"
 
 #: src/acme.schemas.in.h:27
-#, fuzzy
 msgid "Pause key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto azzerare il volume, 0 per disabilitare"
+msgstr "XKeycode del tasto pausa, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:28
-#, fuzzy
 msgid "Play key's XKeycode"
-msgstr "XKeycode del tasto per l'aiuto"
+msgstr "XKeycode del tasto play"
 
 #: src/acme.schemas.in.h:29
-#, fuzzy
 msgid "Play key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto per l'aiuto, 0 per disabilitare"
+msgstr "XKeycode del tasto play, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:30
 msgid "Power key's XKeycode"
@@ -408,14 +394,12 @@ msgid "Power key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto di alimentazione, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:32
-#, fuzzy
 msgid "Previous key's XKeycode"
-msgstr "XKeycode del tasto di alimentazione"
+msgstr "XKeycode del tasto brano precedente"
 
 #: src/acme.schemas.in.h:33
-#, fuzzy
 msgid "Previous key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto di alimentazione, 0 per disabilitare"
+msgstr "XKeycode del tasto brano precedente, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:34
 msgid "Record key's XKeycode"
@@ -426,14 +410,12 @@ msgid "Record key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto per la registrazione, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:36
-#, fuzzy
 msgid "Refresh key's XKeycode"
-msgstr "XKeycode del tasto per la registrazione"
+msgstr "XKeycode del tasto aggiorna"
 
 #: src/acme.schemas.in.h:37
-#, fuzzy
 msgid "Refresh key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto per la registrazione, 0 per disabilitare"
+msgstr "XKeycode del tasto per aggiorna, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:38
 msgid "Screensaver key's XKeycode"
@@ -452,14 +434,12 @@ msgid "Search key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto per la ricerca, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:42
-#, fuzzy
 msgid "Shade Window key's XKeycode"
-msgstr "XKeycode del tasto per abbassare il volume"
+msgstr "XKeycode del tasto per arrotolare le finestre"
 
 #: src/acme.schemas.in.h:43
-#, fuzzy
 msgid "Shade Window key's XKeycode, 0 to disable"
-msgstr "XKeycode del tasto per abbassare il volume, 0 per disabilitare"
+msgstr "XKeycode del tasto per arrotolare le finestre, 0 per disabilitare"
 
 #: src/acme.schemas.in.h:44
 msgid "Sleep key's XKeycode"
@@ -502,35 +482,25 @@ msgid "WWW key's XKeycode, 0 to disable"
 msgstr "XKeycode del tasto WWW, 0 per disabilitare"
 
 #: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
-#, fuzzy
 msgid "Accelerator key"
-msgstr "Tasto per la calcolatrice"
+msgstr "Tasto acceleratore"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr ""
+msgstr "Modificatori acceleratore"
 
 #: src/eggcellrendererkeys.c:180
 msgid "Accelerator Mode"
-msgstr ""
+msgstr "Modalità acceleratore"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr ""
+msgstr "Tipo di acceleratore"
 
 #: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
-msgstr ""
+msgstr "Premere il nuovo acceleratore, o Backspace per disabilitarlo"
 
 #: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
-msgstr ""
-
-#~ msgid "(C) 2001, 2002 Bastien Nocera"
-#~ msgstr "(C) 2001, 2002 Bastien Nocera"
-
-#~ msgid "Keys setup"
-#~ msgstr "Impostazione dei tasti"
-
-#~ msgid "Sound setup"
-#~ msgstr "Impostazioni audio"
+msgstr "Premere il nuovo acceleratore"

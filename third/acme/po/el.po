@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Kostas Papadimas <pkst@gmx.net>, 2003
 # kostas: 105 messages, 05Jan2003, updated translation
+# kostas: 111 messages, 24Jan2003, updated translation
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: acme VERSION\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
-"PO-Revision-Date: 2003-01-05 12:54+0200\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
+"PO-Revision-Date: 2003-01-26 11:46+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -25,7 +26,7 @@ msgstr ""
 "Αδυναμία εκτέλεσης εντολής: %s\n"
 "Βεβαιωθείτε ότι η εντολή υπάρχει."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -36,7 +37,7 @@ msgstr ""
 "ή της εντολής: %s\n"
 "Βεβαιωθείτε ότι τουλάχιστον μια από τις εντολές υπάρχει"
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -46,7 +47,7 @@ msgstr ""
 "Ελέξτε την τεκμηρίωση του ACME. διορθώστε το πρόβλημα και επανεκκινήστε το "
 "ACME."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -55,7 +56,7 @@ msgstr ""
 "Σφάλμα απομάκρυνσης πρόσβασης στα πλήκτρα πολυμέσων.\n"
 "Το πλήκτρο %d δεν μπορεί να αποδεσμευθεί."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -67,23 +68,23 @@ msgstr ""
 "Το πλήκτρο %d δεν μπορεί να δεσμευτεί.\n"
 "Μήπως εκτελείται η άλλος daemon  ?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "Κώστας Παπαδήμας <pkst@gmx.net>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "Daemon πλήκτρων πολυμέσων"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "Ενεργός daemon πλήκτρων πολυμέσων"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."
@@ -484,29 +485,29 @@ msgid "WWW key's XKeycode, 0 to disable"
 msgstr "XKeycode πλήκτρου WWW, 0 για απενεργοποίηση"
 
 #: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
-#, fuzzy
 msgid "Accelerator key"
-msgstr "Πλήκτρο αριθμομηχανής"
+msgstr "Πλήκτρο συντόμευσης"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr ""
+msgstr "Μετατροπείς συντόμευσης"
 
 #: src/eggcellrendererkeys.c:180
 msgid "Accelerator Mode"
-msgstr ""
+msgstr "Λειτουργία συντόμευσης"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr ""
+msgstr "Το είδος της συντόμευσης."
 
 #: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
 msgstr ""
+"Πληκτρολογήστε μια νέα συντόμευση, ή πιέστε το  Backspace για εκκαθάριση"
 
 #: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
-msgstr ""
+msgstr "Πληκτρολογήστε μια νέα συντόμευση"
 
 #~ msgid "(C) 2001, 2002 Bastien Nocera"
 #~ msgstr "(C) 2001, 2002 Bastien Nocera"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: acme\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-19 16:51+0800\n"
 "Last-Translator: He Qiangqiang <carton@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -23,7 +23,7 @@ msgstr ""
 "无法执行命令：%s\n"
 "请确定该命令已经存在。"
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -34,7 +34,7 @@ msgstr ""
 "或是命令：%s\n"
 "请确定至少其中一个命令已经存在。"
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -43,7 +43,7 @@ msgstr ""
 "文件 %s 的权限不正确\n"
 "请参考 ACME 的文档，修正问题后再重新启动 ACME。"
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -52,7 +52,7 @@ msgstr ""
 "尝试解除多媒体键功能时出错。\n"
 "键 %d 无法解除。"
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -64,23 +64,23 @@ msgstr ""
 "键 %d 无法解除。\n"
 "是不是另一个守护进程正在执行？"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "He Qiangqiang <carton@linux.net.cn>"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "多媒体键守护进程"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "多媒体键守护进程正在运行"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

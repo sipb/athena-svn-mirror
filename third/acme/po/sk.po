@@ -1,0 +1,506 @@
+# translation of acme.sk.po to Slovak
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Stanislav Visnovsky <visnovsky@kde.org>, 2003
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: acme.sk\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
+"PO-Revision-Date: 2003-01-22 21:54+0100\n"
+"Last-Translator: Stanislav Visnovsky <visnovsky@kde.org>\n"
+"Language-Team: Slovak <sk-i18n@linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.2\n"
+
+#: src/acme.c:170
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this command exists."
+msgstr ""
+"Nepodarilo sa vykonať príkaz: %s\n"
+"Overte, že tento príkaz existuje."
+
+#: src/acme.c:189
+#, c-format
+msgid ""
+"Couldn't execute either command: %s\n"
+"or command: %s\n"
+"Verify that at least one of these commands exist."
+msgstr ""
+"Nepodarilo sa vykonať príkaz: %s\n"
+"ani príkaz: %s\n"
+"Overte, že aspoň jeden z nich existuje."
+
+#: src/acme.c:232
+#, c-format
+msgid ""
+"Permissions on the file %s are broken\n"
+"Please check ACME's documentation, correct the problem and restart ACME."
+msgstr ""
+"Práva pre súbor %s sú poškodené.\n"
+"Prosím, prečítajte si dokumentáciu k ACME, opravte problém a ACME "
+"reštartujte."
+
+#: src/acme.c:321
+#, c-format
+msgid ""
+"There was an error removing access to the multimedia keys.\n"
+"Key %d couldn't be unbound."
+msgstr ""
+"Pri odstraňovaní prístupu k multimediálnym kľúčom nastala chyba.\n"
+"Kláves %d nie je možné uvoľniť."
+
+#: src/acme.c:389
+#, c-format
+msgid ""
+"It seems that another application already has access to the multimedia "
+"keys.\n"
+"Key %d couldn't be bound.\n"
+"Is another daemon already running ?"
+msgstr ""
+"Vyzerá to, že multimediálne klávesy už používa iná aplikácia.\n"
+"Kláves %d nie je možné nastaviť.\n"
+"Nebeží už iný démon?"
+
+#: src/acme.c:614
+msgid "translator_credits"
+msgstr "Stanislav Višňovský"
+
+#: src/acme.c:625
+msgid "Acme"
+msgstr "Acme"
+
+#: src/acme.c:627
+msgid "Multimedia keys daemon"
+msgstr "Démon multimediálnych kľúčov"
+
+#: src/acme.c:687
+msgid "Multimedia Keys daemon active"
+msgstr "Démon multimediálnych kľúčov aktívny"
+
+#: src/acme.c:1180
+msgid ""
+"Couldn't load the Glade file.\n"
+"Make sure that this daemon is properly installed."
+msgstr ""
+"Nepodarilo sa načítať súbor Glade.\n"
+"Overte, že je démon správne nainštalovaný."
+
+#: src/acme.glade.h:1
+msgid "Volume"
+msgstr "Hlasitosť"
+
+#: src/acme.h:72
+msgid "Mute key"
+msgstr "Kláves Potichu"
+
+#: src/acme.h:74
+msgid "Volume down key"
+msgstr "Kláves Znížiť hlasitosť"
+
+#: src/acme.h:76
+msgid "Volume up key"
+msgstr "Kláves Zvýšiť hlasitosť"
+
+#: src/acme.h:78
+msgid "Power key"
+msgstr "Kláves Zapnúť"
+
+#: src/acme.h:80
+msgid "Eject key"
+msgstr "Kláves Vysunúť"
+
+#: src/acme.h:82
+msgid "Media key"
+msgstr "Kláves Médium"
+
+#: src/acme.h:84
+msgid "Play key"
+msgstr "Kláves Hrať"
+
+#: src/acme.h:86
+msgid "Pause key"
+msgstr "Kláves Pauza"
+
+#: src/acme.h:88
+msgid "Stop (Audio) key"
+msgstr "Kláves Zastaviť (zvuk)"
+
+#: src/acme.h:90
+msgid "Previous (Audio) key"
+msgstr "Kláves Predchádzajúci (zvuk)"
+
+#: src/acme.h:92
+msgid "Next (Audio) key"
+msgstr "Kláves Nasledujúci (zvuk)"
+
+#: src/acme.h:94
+msgid "My Home key"
+msgstr "Kláves Môj domov"
+
+#: src/acme.h:96
+msgid "Refresh key"
+msgstr "Kláves Aktualizovať"
+
+#: src/acme.h:98
+msgid "Search key"
+msgstr "Kláves Hľadať"
+
+#: src/acme.h:100
+msgid "E-Mail key"
+msgstr "Kláves E-mail"
+
+#: src/acme.h:102
+msgid "Sleep key"
+msgstr "Kláves Uspať"
+
+#: src/acme.h:104
+msgid "Screensaver key"
+msgstr "Kláves Šetrič obrazovky"
+
+#: src/acme.h:106
+msgid "Finance key"
+msgstr "Kláves Financie"
+
+#: src/acme.h:108
+msgid "Help key"
+msgstr "Kláves Pomocník"
+
+#: src/acme.h:110
+msgid "WWW key"
+msgstr "Kláves WWW"
+
+#: src/acme.h:112
+msgid "Groups key"
+msgstr "Kláves Skupiny"
+
+#: src/acme.h:114
+msgid "Calculator key"
+msgstr "Kláves Kalkulačka"
+
+#: src/acme.h:116
+msgid "Record key"
+msgstr "Kláves Nahrávať"
+
+#: src/acme.h:118
+msgid "Close Window key"
+msgstr "Kláves Zavrieť okno"
+
+#: src/acme.h:120
+msgid "Shade Window key"
+msgstr "Kláves Zabaliť okno"
+
+#: src/acme.h:123
+msgid "Brightness down key"
+msgstr "Kláves Znížiť jas"
+
+#: src/acme.h:125
+msgid "Brightness up key"
+msgstr "Kláves Zvýšiť jas"
+
+#: src/acme-properties.c:170 src/acme-properties.c:255
+#: src/eggcellrendererkeys.c:219
+msgid "Disabled"
+msgstr "Vypnuté"
+
+#: src/acme-properties.c:175 src/acme-properties.c:252
+msgid "Enabled"
+msgstr "Zapnuté"
+
+#: src/acme-properties.c:185
+msgid ""
+"This key is already bound to an action.\n"
+"Please select another key."
+msgstr ""
+"Tento kláves je už využívaný.\n"
+"Prosím, vyberte iný."
+
+#: src/acme-properties.c:292
+msgid "Description"
+msgstr "Popis"
+
+#: src/acme-properties.c:312
+msgid "Status"
+msgstr "Stav"
+
+#: src/acme-properties.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/acme-properties.glade.h:2
+msgid "<span weight=\"bold\">Keys Setup </span>"
+msgstr "<span weight=\"bold\">Nastavenie kláves</span>"
+
+#: src/acme-properties.glade.h:3
+msgid "<span weight=\"bold\">Sound Setup</span>"
+msgstr "<span weight=\"bold\">Nastavenie zvuku</span>"
+
+#: src/acme-properties.glade.h:4
+msgid "Multimedia Keys Preferences"
+msgstr "Nastavenie multimediálnych kláves"
+
+#: src/acme-properties.glade.h:5
+msgid ""
+"To assign a key to an action, click on a line, and press the key you want to "
+"associate with it.\n"
+"\"C\" cancels the capture, and \"Backspace\" disables the key shortcut."
+msgstr ""
+"Ak chcete priradiť kláves akcii, kliknite na riadok a potom stlačte kláves, "
+"ktorý chcete priradiť.\n"
+"\"C\" zruší zachytenie a \"Backspace\" vypne klávesovú skratku."
+
+#: src/acme-properties.glade.h:7
+msgid "Use _PCM volume instead of Master volume"
+msgstr "Použiť hlasitosť _PCM a nie celkovú hlasitosť"
+
+#: src/acme-properties.glade.h:8
+msgid "_Launch the multimedia key daemon"
+msgstr "_Spustiť démona multimediálnych kláves"
+
+#: src/acme.desktop.in.h:1
+msgid "Configure multimedia keys behaviour"
+msgstr "Nastavenie chovania multimediálnych kláves"
+
+#: src/acme.desktop.in.h:2
+msgid "Multimedia Keys"
+msgstr "Multimediálne klávesy"
+
+#: src/acme.schemas.in.h:1
+msgid "Brightness down key's XKeycode"
+msgstr "XKeycode pre kláves Znížiť jas"
+
+#: src/acme.schemas.in.h:2
+msgid "Brightness down key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Znížiť jas, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:3
+msgid "Brightness up key's XKeycode"
+msgstr "XKeycode pre kláves Zvýšiť jas"
+
+#: src/acme.schemas.in.h:4
+msgid "Brightness up key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Zvýšiť jas, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:5
+msgid "Calculator key's XKeycode"
+msgstr "XKeycode pre kláves Kalkulačka"
+
+#: src/acme.schemas.in.h:6
+msgid "Calculator key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Kalkulačka, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:7
+msgid "Close Window key's XKeycode"
+msgstr "XKeycode pre kláves Zavrieť okno"
+
+#: src/acme.schemas.in.h:8
+msgid "Close Window key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Zavrieť okno, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:9
+msgid "Command to execute when the Eject button is pressed"
+msgstr "Príkaz spúšťaný pri stlačení Vysunúť"
+
+#: src/acme.schemas.in.h:10
+msgid "E-Mail key's XKeycode"
+msgstr "XKeycode pre kláves E-mail"
+
+#: src/acme.schemas.in.h:11
+msgid "E-Mail key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves E-mail, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:12
+msgid "Eject key's XKeycode"
+msgstr "XKeycode pre kláves Vysunúť"
+
+#: src/acme.schemas.in.h:13
+msgid "Eject key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Vysunúť, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:14
+msgid "Finance key's XKeycode"
+msgstr "XKeycode pre kláves Financie"
+
+#: src/acme.schemas.in.h:15
+msgid "Finance key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Financie, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:16
+msgid "Groups key's XKeycode"
+msgstr "XKeycode pre kláves Skupiny"
+
+#: src/acme.schemas.in.h:17
+msgid "Groups key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Skupiny, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:18
+msgid "Help key's XKeycode"
+msgstr "XKeycode pre kláves Pomocník"
+
+#: src/acme.schemas.in.h:19
+msgid "Help key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Pomocník, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:20
+msgid "Mute key's XKeycode"
+msgstr "XKeycode pre kláves Potichu"
+
+#: src/acme.schemas.in.h:21
+msgid "Mute key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Potichu, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:22
+msgid "My Home key's XKeycode"
+msgstr "XKeycode pre kláves Môj domov"
+
+#: src/acme.schemas.in.h:23
+msgid "My Home key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Môj domov, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:24
+msgid "Next key's XKeycode"
+msgstr "XKeycode pre kláves Nasledujúci"
+
+#: src/acme.schemas.in.h:25
+msgid "Next key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Nasledujúci, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:26
+msgid "Pause key's XKeycode"
+msgstr "XKeycode pre kláves Pauza"
+
+#: src/acme.schemas.in.h:27
+msgid "Pause key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Pauza, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:28
+msgid "Play key's XKeycode"
+msgstr "XKeycode pre kláves Hrať"
+
+#: src/acme.schemas.in.h:29
+msgid "Play key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Hrať, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:30
+msgid "Power key's XKeycode"
+msgstr "XKeycode pre kláves Vypnúť"
+
+#: src/acme.schemas.in.h:31
+msgid "Power key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Vypnúť, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:32
+msgid "Previous key's XKeycode"
+msgstr "XKeycode pre kláves Predchádzajúci"
+
+#: src/acme.schemas.in.h:33
+msgid "Previous key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Predchádzajúci, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:34
+msgid "Record key's XKeycode"
+msgstr "XKeycode pre kláves Nahrávať"
+
+#: src/acme.schemas.in.h:35
+msgid "Record key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Nahrávať, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:36
+msgid "Refresh key's XKeycode"
+msgstr "XKeycode pre kláves Aktualizovať"
+
+#: src/acme.schemas.in.h:37
+msgid "Refresh key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Aktualizovať, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:38
+msgid "Screensaver key's XKeycode"
+msgstr "XKeycode pre kláves Šetrič obrazovky"
+
+#: src/acme.schemas.in.h:39
+msgid "Screensaver key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Šetrič obrazovky, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:40
+msgid "Search key's XKeycode"
+msgstr "XKeycode pre kláves Nájsť"
+
+#: src/acme.schemas.in.h:41
+msgid "Search key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Nájsť, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:42
+msgid "Shade Window key's XKeycode"
+msgstr "XKeycode pre kláves Zabaliť okno"
+
+#: src/acme.schemas.in.h:43
+msgid "Shade Window key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Zabaliť okno, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:44
+msgid "Sleep key's XKeycode"
+msgstr "XKeycode pre kláves Uspať"
+
+#: src/acme.schemas.in.h:45
+msgid "Sleep key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Uspať, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:46
+msgid "Sound file to be played when volume is changed"
+msgstr "Zvukový súbor prehraný pri zmene hlasitosti"
+
+#: src/acme.schemas.in.h:47
+msgid "Use PCM Volume instead of Master Volume"
+msgstr "Použiť hlasitosť PCM a nie celkovú hlasitosť"
+
+#: src/acme.schemas.in.h:48
+msgid "Volume down key's XKeycode"
+msgstr "XKeycode pre kláves Znížiť hlasitosť"
+
+#: src/acme.schemas.in.h:49
+msgid "Volume down key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Znížiť hlasitosť, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:50
+msgid "Volume up key's XKeycode"
+msgstr "XKeycode pre kláves Zvýšiť hlasitosť, alebo 0 pre vypnutie"
+
+#: src/acme.schemas.in.h:51
+msgid "Volume up key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves Zvýšiť hlasitosť"
+
+#: src/acme.schemas.in.h:52
+msgid "WWW key's XKeycode"
+msgstr "XKeycode pre kláves WWW"
+
+#: src/acme.schemas.in.h:53
+msgid "WWW key's XKeycode, 0 to disable"
+msgstr "XKeycode pre kláves WWW, alebo 0 pre vypnutie"
+
+#: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
+msgid "Accelerator key"
+msgstr "Kláves akcelerátora"
+
+#: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
+msgid "Accelerator modifiers"
+msgstr "Modifikátory akcelerátora"
+
+#: src/eggcellrendererkeys.c:180
+msgid "Accelerator Mode"
+msgstr "Režim akcelerátorov"
+
+#: src/eggcellrendererkeys.c:181
+msgid "The type of accelerator."
+msgstr "Typ akcelerátora."
+
+#: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
+msgid "Type a new accelerator, or press Backspace to clear"
+msgstr "Stlačte nový akcelerátor alebo ho vyčistite stlačením Backspace"
+
+#: src/eggcellrendererkeys.c:567
+msgid "Type a new accelerator"
+msgstr "Stlačte nový akcelerátor"

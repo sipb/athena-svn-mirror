@@ -55,10 +55,8 @@ struct _EggTrayIconClass
 
 GType        egg_tray_icon_get_type       (void);
 
-#if EGG_TRAY_ENABLE_MULTIHEAD
 EggTrayIcon *egg_tray_icon_new_for_screen (GdkScreen   *screen,
 					   const gchar *name);
-#endif
 
 EggTrayIcon *egg_tray_icon_new            (const gchar *name);
 

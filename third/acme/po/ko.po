@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: AC_PACKAGE_NAME AC_PACKAGE_VERSION\n"
-"POT-Creation-Date: 2003-01-19 21:08+0000\n"
+"POT-Creation-Date: 2003-02-02 00:18+0000\n"
 "PO-Revision-Date: 2003-01-05 15:42+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/acme.c:163
+#: src/acme.c:170
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -23,7 +23,7 @@ msgstr ""
 "명령을 실행할 수 없습니다: %s\n"
 "명령이 있는지 확인해보십시오."
 
-#: src/acme.c:182
+#: src/acme.c:189
 #, c-format
 msgid ""
 "Couldn't execute either command: %s\n"
@@ -34,7 +34,7 @@ msgstr ""
 "또는 명령 :%s\n"
 "(을)를 실행할 수 없습니다. 적어도 하나의 명령이 있는지 확인하십시오."
 
-#: src/acme.c:225
+#: src/acme.c:232
 #, c-format
 msgid ""
 "Permissions on the file %s are broken\n"
@@ -43,7 +43,7 @@ msgstr ""
 "파일 %s의 허가권이 없습니다\n"
 "ACME의 문서를 참고해서 문제부분을 해결한 다음 ACME를 다시 시작하십시오."
 
-#: src/acme.c:314
+#: src/acme.c:321
 #, c-format
 msgid ""
 "There was an error removing access to the multimedia keys.\n"
@@ -52,7 +52,7 @@ msgstr ""
 "멀티미디어 글쇠의 등록을 지우는데 오류가 생겼습니다.\n"
 "%d 글쇠를 지울 수 없습니다."
 
-#: src/acme.c:382
+#: src/acme.c:389
 #, c-format
 msgid ""
 "It seems that another application already has access to the multimedia "
@@ -64,23 +64,23 @@ msgstr ""
 "%d 글쇠를 등록할 수 없습니다.\n"
 "다른 데몬이 떠있습니까?"
 
-#: src/acme.c:607
+#: src/acme.c:614
 msgid "translator_credits"
 msgstr "차영호 <ganadist@mizi.com>, 2002"
 
-#: src/acme.c:618
+#: src/acme.c:625
 msgid "Acme"
 msgstr "Acme"
 
-#: src/acme.c:620
+#: src/acme.c:627
 msgid "Multimedia keys daemon"
 msgstr "멀티미디어 글쇠 데몬"
 
-#: src/acme.c:680
+#: src/acme.c:687
 msgid "Multimedia Keys daemon active"
 msgstr "멀티미디어 글쇠 데몬 시작"
 
-#: src/acme.c:1173
+#: src/acme.c:1180
 msgid ""
 "Couldn't load the Glade file.\n"
 "Make sure that this daemon is properly installed."

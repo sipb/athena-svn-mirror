@@ -26,7 +26,14 @@
 #include <sys/stat.h>
 /* X11 headers */
 #include <X11/X.h>
+
+#ifdef HAVE_XFREE
 #include <X11/XF86keysym.h>
+#endif
+#ifdef HAVE_XSUN
+#include <X11/Sunkeysym.h>
+#endif
+
 /* Gnome headers */
 #include <gdk/gdkx.h>
 #include <gnome.h>
