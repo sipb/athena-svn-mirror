@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.9 1999-06-24 02:26:05 danw Exp $
+# $Id: sendmail.cf,v 1.10 1999-06-25 04:58:28 jweiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -40,7 +40,7 @@ O MeToo
 O OperatorChars=.:%@!^=/[]
 O QueueDirectory=/var/spool/mqueue
 O SmtpGreetingMessage=$j Sendmail $v; $b
-O StatusFile=/var/log/sendmail.st
+O StatusFile=/etc/sendmail.st
 # queue up everything before starting transmission
 O SuperSafe
 O TempFileMode=0640
