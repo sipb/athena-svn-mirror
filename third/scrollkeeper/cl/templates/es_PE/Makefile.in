@@ -103,7 +103,7 @@ XML_LIBS = @XML_LIBS@
 l = @l@
 
 scrollkeeper_data_dir = $(datadir)/scrollkeeper/Templates/es_PE
-scrollkeeper_data_link_dir = $(datadir)/scrollkeeper/Templates/es
+scrollkeeper_data_link_dir = ../es
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -205,7 +205,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 install-data-local:
-	$(LN_S) -f -n $(DESTDIR)$(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
+	$(LN_S) -f -n $(scrollkeeper_data_link_dir) $(DESTDIR)$(scrollkeeper_data_dir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
