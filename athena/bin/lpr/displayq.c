@@ -110,7 +110,7 @@ displayq(format)
 
 	 if (RM != (char *) NULL) {
 
-		char name[255];
+		char name[MAXHOSTNAMELEN + 1];
 		struct hostent *hp;
 
 			/* get the name of the local host */
@@ -123,7 +123,8 @@ displayq(format)
 				name);
 		} 
 		else {
-		  strcpy (name, hp->h_name);
+		  strncpy (name, hp->h_name, sizeof(name));
+		  name[sizeof(name) - 1] = '\0';
 		  /* get the network standard name of RM */
 		  hp = gethostbyname (RM);
 		  if (hp == (struct hostent *) NULL) {
@@ -208,7 +209,7 @@ displayq(format)
 	 * Find all the control files in the spooling directory
 	 */
 	if (chdir(SD) < 0) {
-	        char msgbuf[255];
+	        char msgbuf[(2 * BUFSIZ) + 255];
 
 		if (RM) return(rem_fils);
 		sprintf(msgbuf,
@@ -217,7 +218,7 @@ displayq(format)
 		fatal(msgbuf);
 		}
 	if ((nitems = getq_(&queue)) < 0) {
-	  	char msgbuf[255];
+	  	char msgbuf[(2 * BUFSIZ) + 255];
 		sprintf(
 			msgbuf,
 			"Cannot examine spooling area %s for %s",
@@ -236,7 +237,8 @@ displayq(format)
 			        char tmp[1024];
 				(void) flock(fd, LOCK_SH);
 				while ((i = read(fd, line, sizeof(line))) > 0){
-				     strcpy(tmp, printer);
+				     strncpy(tmp, printer, sizeof(tmp));
+				     tmp[sizeof(tmp) - 1] = '\0';
                                      if (strncmp(line, strcat(tmp," is ready and printing"), 24) != 0)
 					(void) fwrite(line, 1, i, stdout);
 				     else
@@ -259,18 +261,23 @@ displayq(format)
 	}
 	fp = fopen(LO, "r");
 	if (fp == NULL) {
-	        char msgbuf[255];
+	        char msgbuf[(2 * BUFSIZ) + 255];
 		sprintf(msgbuf, "Unable to lock file %s/%s for %s",
 			SD, LO, printer);
 		warn(msgbuf);
 	        }
 	else {
 		register char *cp;
+		int icp;
 
 		/* get daemon pid */
 		cp = current;
-		while ((*cp = getc(fp)) != EOF && *cp != '\n')
+		icp = 0;
+		while ((*cp = getc(fp)) != EOF && *cp != '\n') {
+			if (icp == sizeof(current) - 1) break;
 			cp++;
+			icp++;
+		}
 		*cp = '\0';
 		i = atoi(current);
 		if (i <= 0 || kill(i, 0) < 0) {
@@ -285,8 +292,12 @@ displayq(format)
 		else {
 			/* read current file name */
 			cp = current;
-			while ((*cp = getc(fp)) != EOF && *cp != '\n')
+			icp = 0;
+			while ((*cp = getc(fp)) != EOF && *cp != '\n') {
+				if (icp == sizeof(current) - 1) break;
 				cp++;
+				icp++;
+			}
 			*cp = '\0';
 			/*
 			 * Print the status file.
@@ -389,8 +400,10 @@ inform(cf)
 		default: /* some format specifer and file name? */
 			if (line[0] < 'a' || line[0] > 'z')
 				continue;
-			if (j == 0 || strcmp(file, line+1) != 0)
-				strcpy(file, line+1);
+			if (j == 0 || strcmp(file, line+1) != 0) {
+				strncpy(file, line+1, sizeof(file));
+				file[sizeof(file) - 1] = '\0';
+			}
 			j++;
 			continue;
 		case 'N':
