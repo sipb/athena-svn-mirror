@@ -219,7 +219,11 @@ getanswer(answer, anslen, iquery, info)
 #endif
 			break;
 		}
+#ifdef POSIX
+               memmove(*hap++ = bp, cp, n);
+#else
 		bcopy(cp, *hap++ = bp, n);
+#endif
 		bp +=n;
 		cp += n;
 		haveanswer++;
@@ -520,7 +524,7 @@ _gethtbyaddr(addr, len, type)
 
 	_sethtent(0);
 	while (p = _gethtent())
-		if (p->h_addrtype == type && !bcmp(p->h_addr, addr, len))
+		if (p->h_addrtype == type && !memcmp(p->h_addr, addr, len))
 			break;
 	_endhtent();
 	return (p);
