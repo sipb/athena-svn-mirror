@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1997-02-19 18:17:53 ghudson Exp $
+# $Id: Makefile,v 1.5 1997-02-19 18:23:23 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -9,7 +9,10 @@ X11LIB=/usr/lib/X11
 APPDEFS=${X11LIB}/app-defaults
 FONTS=${X11LIB}/fonts/100dpi
 CRONTABS=/var/spool/cron/crontabs
+FLEXLM=/var/flexlm
+NCS=/var/ncs
 NETLS=/var/netls
+CONFIG=/afs/athena.mit.edu/system/config
 
 all:
 
@@ -24,6 +27,8 @@ install:
 	-mkdir -p ${DESTDIR}${APPDEFS}
 	-mkdir -p ${DESTDIR}${FONTS}
 	-mkdir -p ${DESTDIR}${CRONTABS}
+	-mkdir -p ${DESTDIR}${FLEXLM}
+	-mkdir -p ${DESTDIR}${NCS}
 	-mkdir -p ${DESTDIR}${NETLS}
 	install -c -m 0644 4DWm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
@@ -50,6 +55,10 @@ install:
 	install -c -m 0644 system.chestrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 verbose ${DESTDIR}${CONFIG}
+	rm -f ${DESTDIR}${FLEXLM}/license.dat
+	ln -s ${CONFIG}/license/sgi/license.dat ${DESTDIR}${FLEXLM}/license.dat
+	rm -f ${DESTDIR}${NCS}/glb_site.txt
+	ln -s ${CONFIG}/license/sgi/glb_site.txt ${DESTDIR}${NCS}/glb_site.txt
 
 clean:
 
