@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.26 1988-06-23 11:14:02 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.27 1988-06-28 18:11:12 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -46,6 +46,11 @@ typedef char ZPacket_t[Z_MAXPKTLEN];
 
 	/* Maximum number of unknown fields in ZNotice_t */
 #define Z_MAXOTHERFIELDS	10
+
+	/* Authentication levels returned by ZCheckAuthentication */
+#define ZAUTH_FAILED    (-1)
+#define ZAUTH_YES       1
+#define ZAUTH_NO        0
 
 	/* Packet type */
 typedef enum { UNSAFE, UNACKED, ACKED, HMACK, HMCTL, SERVACK, SERVNAK,
