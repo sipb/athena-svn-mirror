@@ -2,7 +2,7 @@
 #    Instructions to Make, for compilation of MH processes
 #
 #	@(MHWARNING)
-# @(#)$Id: uip,v 1.2 1996-10-13 18:43:40 ghudson Exp $
+# @(#)$Id: uip,v 1.3 1997-01-27 23:55:55 ghudson Exp $
 ##############################################################################
 
 # The following entries were inserted during MH configuration
@@ -547,19 +547,8 @@ inst-inc:	$(BINDIR)/inc
 
 $(BINDIR)/inc:	xinc
 		-$(REMOVE) $@ zinc
-@BEGIN: POP
-		-chmod u-s zinc
-@END: POP
 		$(CP) xinc $@
 		-@chmod $(PGMPROT) $@
-@BEGIN: MAILGROUP
-		-@chgrp @(MAILGROUP) $@
-		-@chmod g+s $@
-@END: MAILGROUP
-@BEGIN: POP
-		-$(CHOWN) root $@
-		chmod u+s $@
-@END: POP
 		-@ls -l $@
 		-@echo ""
 
@@ -719,15 +708,8 @@ inst-msgchk:	$(BINDIR)/msgchk
 
 $(BINDIR)/msgchk:	xmsgchk
 		-$(REMOVE) $@ zmsgchk
-@BEGIN: POP
-		-chmod u-s zmsgchk
-@END: POP
 		$(CP) xmsgchk $@
 		-@chmod $(PGMPROT) $@
-@BEGIN: POP
-		-$(CHOWN) root $@
-		chmod u+s $@
-@END: POP
 		-@ls -l $@
 		-@echo ""
 
