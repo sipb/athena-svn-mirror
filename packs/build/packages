@@ -1,4 +1,4 @@
-# $Id: packages,v 1.239 2003-05-03 15:38:17 ghudson Exp $
+# $Id: packages,v 1.240 2003-05-03 16:00:32 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -214,7 +214,7 @@ third/libgail-gnome		except linux requires atk,gtk2,libbonobo,libbonoboui,libgno
 third/libghttp			except linux
 third/libglade			requires gtk,gnome-libs,libxml
 third/libglade2			except linux requires gtk2,libxml2,atk,gettext
-third/libgnome			except linux requires gettext,audiofile,esound,GConf2,glib2,gnome-vfs2,libbonobo,libxml2,libxslt,popt,zlib,bzip2
+third/libgnome			except linux requires gettext,audiofile,esound,GConf2,glib2,gnome-vfs2,libbonobo,libxml2,libxslt,popt,bzip2
 third/libgnomecanvas		except linux requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
 third/libgnomeprint		except linux requires gettext,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
 third/libgnomeprintui		except linux requires gettext,libgnomeprint,libgnomecanvas,libglade2
@@ -223,13 +223,13 @@ third/libgtkhtml		except linux requires gtk2,libxml2,gnome-vfs2,gail
 third/libiconv			except linux
 third/libIDL			except linux requires glib2
 third/libole2			except linux
-third/libpng			except linux requires zlib
+third/libpng			except linux
 third/librep			except linux requires gettext,gmp,gdbm,readline,texinfo
 third/librsvg			except linux requires gtk2,glib2,libart_lgpl,libxml2,pango,popt
 third/libungif			except linux
 third/libwnck			except linux requires gettext,startup-notification,gtk2,glib2
-third/libxml			requires zlib
-third/libxml2			except linux requires zlib
+third/libxml
+third/libxml2			except linux
 third/libxslt			except linux requires libxml2
 third/linc			except linux requires glib2,openssl
 third/lprng/athena		package lprng-misc
@@ -272,7 +272,7 @@ third/tcp_wrappers		except linux
 third/tcsh			requires hesiod
 third/tetex			requires texinfo
 third/texinfo
-third/tiff			except linux requires jpeg,zlib
+third/tiff			except linux requires jpeg
 third/top			except linux
 third/traceroute		on solaris
 third/vte			except linux requires gettext,glib2,pango,Xft
@@ -284,7 +284,6 @@ third/xntp			package ntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
 third/yelp			except linux requires ORBit2,glib2,libgnome,libxslt,gnome-vfs2,libgnomeui,libbonobo,GConf2,bzip2,popt,libgtkhtml,libglade2
-third/zlib			except linux
 
 # Final packs stuff
 packs/config			late except linux
