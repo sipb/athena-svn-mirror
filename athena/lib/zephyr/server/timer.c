@@ -5,14 +5,14 @@
  *	Derived from timer_manager_ by Ken Raeburn
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  */
 
 #ifndef SABER
 #ifndef lint
 static char rcsid[] =
-    "$Id: timer.c,v 1.12 1992-08-26 04:34:55 lwvanels Exp $";
+    "$Id: timer.c,v 1.13 1993-11-19 16:05:33 probe Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -68,6 +68,7 @@ long nexttimo = 0L;			/* the Unix time of the next
 					   alarm */
 static timer timers = NULL;
 static long right_now;
+struct timeval t_local;
 
 #ifdef __STDC__
 # define        P(s) s
