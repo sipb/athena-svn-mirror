@@ -1,1 +1,1 @@
-:0 secure /etc/athena/xwrapper -bs -nobitscale -c -pseudomap 4sight -solidroot sgilightblue -cursorFG red -cursorBG white
+:0 secure /etc/athena/xwrapper -nobitscale -c -pseudomap 4sight -solidroot sgilightblue -cursorFG red -cursorBG white
