@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.2 1990-07-10 16:01:38 epeisach Exp $
+ *	$Author: ilham $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.3 1990-07-11 16:21:46 ilham Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.2 1990-07-10 16:01:38 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.3 1990-07-11 16:21:46 ilham Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -51,6 +51,8 @@ quota_report *qreport;
 
 	if(!is_sacct(name, service))
 	    return QNOAUTH;
+
+	if (QD) return(QDBASEERROR);
 
 	/* This machine is authorized to connect */
 
@@ -204,6 +206,8 @@ quota_value qamount;
 
 	if(!is_suser(name))
 	    return QNOAUTH;
+
+	if (QD) return(QDBASEERROR);
 
 	/* Ok - now the user making the request is "God" */
 
