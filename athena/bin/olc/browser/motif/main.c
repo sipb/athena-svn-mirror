@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.11 1996-09-20 02:13:23 ghudson Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.12 1997-04-30 17:32:04 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -23,7 +23,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <Mu.h>
 #include <X11/Wc/WcCreate.h>
 #include <stdio.h>
-#include "cref.h"
+#include <browser/cref.h>
 #include <signal.h>
 
 extern char Titles[MAX_TITLES][TITLE_SIZE];
@@ -62,7 +62,8 @@ void main(argc, argv)
  *  message and exit.
  */
 
-  if ((dpy = XOpenDisplay(NULL)) == NULL)
+  dpy = XOpenDisplay(NULL);
+  if (dpy == NULL)
     {
       fprintf(stderr, "%s: Unable to open X display.  Check to make sure that your\n\tDISPLAY environment variable is set.  Type:\n\n\t\tprintenv  DISPLAY\n\n\tto see if it is set.\n\n\tIf it is not, usually the problem can be fixed by\n\tsetting your DISPLAY to 'unix:0.0'.   Type:\n\n\t\tsetenv  DISPLAY  unix:0.0\n\n\tand try running this program again.\n\n", program);
       exit(-1);
