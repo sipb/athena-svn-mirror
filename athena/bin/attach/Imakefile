@@ -62,6 +62,7 @@ Makefile:: Imakefile
 install:: attach
 	rm -f ${DESTDIR}/bin/athena/attach
 	rm -f ${DESTDIR}/bin/athena/detach
+	rm -f ${DESTDIR}/bin/athena/fsid
 	rm -f ${DESTDIR}/bin/athena/nfsid
 	rm -f $(DESTDIR)/etc/athena/zinit
 	rm -f ${DESTDIR}/usr/man/man1/attach.1
@@ -78,6 +79,7 @@ install:: attach
 	install -c -m 0444 zinit.8 ${DESTDIR}/usr/man/man8
 	install -c -s -m 4755 -o root attach ${DESTDIR}/bin/athena/attach
 	ln -s attach ${DESTDIR}/bin/athena/detach
+	ln -s attach ${DESTDIR}/bin/athena/fsid
 	ln -s attach ${DESTDIR}/bin/athena/nfsid
 	ln -s /bin/athena/attach $(DESTDIR)/etc/athena/zinit
 
