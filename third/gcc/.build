@@ -1,0 +1,15 @@
+# Pick something to build gcc with.
+if [ "$HOSTTYPE" = sun4 ]; then
+	/bin/athena/attach -h -q sunsoft
+	gcc_compiler=/mit/sunsoft/sun4bin/cc
+fi
+echo In ${package}: configure --prefix=/usr/gcc &&
+./configure --prefix=/usr/gcc &&
+echo In ${package}: make clean && make clean &&
+echo In ${package}: make CC=$gcc_compiler LANGUAGES=c &&
+make CC="$gcc_compiler" LANGUAGES=c &&
+echo In ${package}: make stage1 && make stage1 &&
+echo In ${package}: make CC=\"stage1/xgcc -Bstage1/\" CFLAGS=-O2 LANGUAGES=c &&
+make CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=C &&
+echo In ${package}: make install prefix=$srvd/usr/gcc LANGUAGES=c &&
+make install prefix="$srvd/usr/gcc" LANGUAGES=c
