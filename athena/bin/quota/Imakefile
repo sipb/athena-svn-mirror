@@ -1,14 +1,16 @@
 #ifdef UseInstalled
 ATTACH=/source/athena/athena.bin/attach
+AFSDIR=/mit/afsdev/bld/dest
 #else
 ATTACH=../../athena.bin/attach
+AFSDIR=/usr/local
 #endif
 
-DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I/usr/local/include
+DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I$(AFSDIR)/include
 
 BINDIR=$(ATHBINDIR)
 INSTOPT=-o root -m 4755
-AFSLIBS= /usr/local/lib/afs/libsys.a
+AFSLIBS= $(AFSDIR)/lib/afs/libsys.a
 
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 LIBS = $(MACHLIBS) $(AFSLIBS)
