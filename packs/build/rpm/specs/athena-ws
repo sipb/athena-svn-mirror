@@ -104,6 +104,21 @@ if test -e /var/athena/ext3.converted ; then
   exit 0
 fi
 
+# Find devices for root and boot filesystems, converting symbolic
+# tags to real device names.  Punt if they're not clearly resolvable.
+rootfs=`sed -n -e '/[ 	]\/[ 	]/s/[ 	].*//p' /etc/fstab`
+bootfs=`sed -n -e '/[ 	]\/boot[ 	]/s/[ 	].*//p' /etc/fstab`
+if test -z "${rootfs%LABEL*}" ; then
+  rootfs=`mount -l|grep "\[${rootfs#LABEL=}\]"|sed -e 's/[ 	].*//'`
+fi
+if test -z "${bootfs%LABEL*}" ; then
+  bootfs=`mount -l|grep "\[${bootfs#LABEL=}\]"|sed -e 's/[ 	].*//'`
+fi
+if test -z "${bootfs}" -o -z "${rootfs}" -o \
+	! -e "${bootfs}" -o ! -e "${rootfs}"; then
+  exit 0
+fi
+
 # switch root and boot filesystems to ext3 (if not done already)
 umask 022
 if grep -q '[ 	]/[ 	].*ext2' /etc/fstab ; then
@@ -120,8 +135,7 @@ fi
 # add ext3 system support
 if [ "${buildext3}" == true ] ; then
   touch /var/athena/ext3.converted
-  rootfs=`sed -n -e '/[ 	]\/[ 	]/s/[ 	].*//p' /etc/fstab`
-  bootfs=`sed -n -e '/[ 	]\/boot[ 	]/s/[ 	].*//p' /etc/fstab`
+
   oldkernelversion=`uname -r`
   oldkernelversion=${oldkernelversion%smp}
   newkernelversion=`ls -l /boot/vmlinuz|sed -e 's/.*vmlinuz-//'`
