@@ -36,6 +36,7 @@
 #include "panel-util.h"
 #include "session.h"
 #include "icon-entry-hack.h"
+#include "conditional.h"
 
 /* for MAIN_MENU_* */
 #include "menu.h"
@@ -98,6 +99,7 @@ static GtkAdjustment *applet_border_padding;
 /* menu page */
 
 static GtkWidget *show_dot_buttons_cb;
+static GtkWidget *show_menu_titles_cb;
 static GtkWidget *off_panel_popups_cb;
 static GtkWidget *hungry_menus_cb;
 static GtkWidget *use_large_icons_cb;
@@ -137,6 +139,8 @@ static GtkWidget *normal_layer_cb;
 static GtkWidget *keys_enabled_cb;
 static GtkWidget *menu_key_entry;
 static GtkWidget *run_key_entry;
+static GtkWidget *screenshot_key_entry;
+static GtkWidget *window_screenshot_key_entry;
 static GtkWidget *confirm_panel_remove_cb;
 static GtkWidget *avoid_collisions_cb;
 
@@ -193,6 +197,8 @@ set_config (GlobalConfig *dest, GlobalConfig *src)
 	}
 	g_free (dest->menu_key);
 	g_free (dest->run_key);
+	g_free (dest->screenshot_key);
+	g_free (dest->window_screenshot_key);
 
 	*dest = *src;
 
@@ -202,6 +208,8 @@ set_config (GlobalConfig *dest, GlobalConfig *src)
 	}
 	dest->menu_key = g_strdup (dest->menu_key);
 	dest->run_key = g_strdup (dest->run_key);
+	dest->screenshot_key = g_strdup (dest->screenshot_key);
+	dest->window_screenshot_key = g_strdup (dest->window_screenshot_key);
 }
 
 
@@ -746,6 +754,8 @@ sync_menu_page_with_config(GlobalConfig *conf)
 	GtkWidget *w;
 	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(show_dot_buttons_cb),
 				    conf->show_dot_buttons);
+	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(show_menu_titles_cb),
+				    conf->show_menu_titles);
 	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(off_panel_popups_cb),
 				    conf->off_panel_popups);
 	gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(hungry_menus_cb),
@@ -774,6 +784,8 @@ sync_config_with_menu_page(GlobalConfig *conf)
 	MenuOptions *opt;
 	conf->show_dot_buttons =
 		GTK_TOGGLE_BUTTON(show_dot_buttons_cb)->active;
+	conf->show_menu_titles =
+		GTK_TOGGLE_BUTTON(show_menu_titles_cb)->active;
 	conf->off_panel_popups =
 		GTK_TOGGLE_BUTTON(off_panel_popups_cb)->active;
 	conf->hungry_menus =
@@ -882,6 +894,14 @@ menu_notebook_page(void)
 			    GTK_SIGNAL_FUNC (changed_cb),  NULL);
 	gtk_table_attach_defaults(GTK_TABLE(table), menu_check_cb,
 				  1, 2, 2, 3);
+	
+	/* Menu titles */
+	show_menu_titles_cb = gtk_check_button_new_with_label (_("Show menu titles"));
+	gtk_signal_connect (GTK_OBJECT (show_menu_titles_cb), "toggled", 
+			    GTK_SIGNAL_FUNC (changed_cb),  NULL);
+	gtk_table_attach_defaults (GTK_TABLE (table), show_menu_titles_cb,
+				   0, 1, 3, 4);
+
 
 	/* Menu frame */
 	frame = gtk_frame_new (_("Global menu"));
@@ -922,9 +942,13 @@ sync_misc_page_with_config(GlobalConfig *conf)
 	gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (keys_enabled_cb),
 				     conf->keys_enabled);
 	gtk_entry_set_text (GTK_ENTRY (menu_key_entry),
-			    conf->menu_key ? conf->menu_key : "");
+			    sure_string (conf->menu_key));
 	gtk_entry_set_text (GTK_ENTRY (run_key_entry),
-			    conf->run_key ? conf->run_key : "");
+			    sure_string (conf->run_key));
+	gtk_entry_set_text (GTK_ENTRY (screenshot_key_entry),
+			    sure_string (conf->screenshot_key));
+	gtk_entry_set_text (GTK_ENTRY (window_screenshot_key_entry),
+			    sure_string (conf->window_screenshot_key));
 }
 
 static void
@@ -952,6 +976,12 @@ sync_config_with_misc_page(GlobalConfig *conf)
 	g_free (conf->run_key);
 	conf->run_key =
 		g_strdup (gtk_entry_get_text (GTK_ENTRY (run_key_entry)));
+	g_free (conf->screenshot_key);
+	conf->screenshot_key =
+		g_strdup (gtk_entry_get_text (GTK_ENTRY (screenshot_key_entry)));
+	g_free (conf->window_screenshot_key);
+	conf->window_screenshot_key =
+		g_strdup (gtk_entry_get_text (GTK_ENTRY (window_screenshot_key_entry)));
 }
 
 static GtkWidget *grab_dialog;
@@ -994,7 +1024,6 @@ grab_key_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	KeySym keysym;
 
 	if (xevent->type != KeyPress && xevent->type != KeyRelease)
-	/*if (event->type != GDK_KEY_PRESS && event->type != GDK_KEY_RELEASE)*/
 		return GDK_FILTER_CONTINUE;
 	
 	entry = GTK_ENTRY (data);
@@ -1004,7 +1033,7 @@ grab_key_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 	if (is_modifier (keycode))
 		return GDK_FILTER_CONTINUE;
 
-	state = xevent->xkey.state;
+	state = xevent->xkey.state & USED_MODS;
 
 	XLookupString (&xevent->xkey, buf, 0, &keysym, NULL);
   
@@ -1215,6 +1244,59 @@ misc_notebook_page(void)
 			    GTK_SIGNAL_FUNC (grab_button_pressed),
 			    run_key_entry);
 	
+	/* screenshot key...*/
+	w = gtk_label_new (_("Take screenshot key"));
+	gtk_misc_set_alignment (GTK_MISC (w), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), w, 0, 1, 3, 4,
+			  GTK_FILL, GTK_FILL, 0, 0);
+	
+	list = g_list_append (NULL, "Print");
+	list = g_list_append (list, "Control-Mod1-s");
+	list = g_list_append (list, "Control-Mod1-p");
+	list = g_list_append (list, _("Disabled"));
+	w = gtk_combo_new ();
+	gtk_combo_set_popdown_strings(GTK_COMBO(w), list);
+	g_list_free(list);
+	screenshot_key_entry = GTK_COMBO(w)->entry;
+	gtk_signal_connect (GTK_OBJECT (screenshot_key_entry),
+			    "changed",
+			    GTK_SIGNAL_FUNC (changed_cb), NULL);
+	/*gtk_widget_set_sensitive (screenshot_key_entry, FALSE);*/
+	gtk_table_attach_defaults (GTK_TABLE (table), w, 1, 2, 3, 4);
+
+	w = gtk_button_new_with_label (_("Grab key..."));
+	gtk_table_attach (GTK_TABLE (table), w, 2, 3, 3, 4,
+			  GTK_FILL, GTK_FILL, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (w), "clicked",
+			    GTK_SIGNAL_FUNC (grab_button_pressed),
+			    screenshot_key_entry);
+
+	/* window screenshot key...*/
+	w = gtk_label_new (_("Take window screenshot key"));
+	gtk_misc_set_alignment (GTK_MISC (w), 0.0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), w, 0, 1, 4, 5,
+			  GTK_FILL, GTK_FILL, 0, 0);
+	
+	list = g_list_append (NULL, "Shift-Print");
+	list = g_list_append (list, "Control-Print");
+	list = g_list_append (list, "Control-Mod1-w");
+	list = g_list_append (list, _("Disabled"));
+	w = gtk_combo_new ();
+	gtk_combo_set_popdown_strings (GTK_COMBO (w), list);
+	g_list_free (list);
+	window_screenshot_key_entry = GTK_COMBO(w)->entry;
+	gtk_signal_connect (GTK_OBJECT (window_screenshot_key_entry),
+			    "changed",
+			    GTK_SIGNAL_FUNC (changed_cb), NULL);
+	/*gtk_widget_set_sensitive (window_screenshot_key_entry, FALSE);*/
+	gtk_table_attach_defaults (GTK_TABLE (table), w, 1, 2, 4, 5);
+
+	w = gtk_button_new_with_label (_("Grab key..."));
+	gtk_table_attach (GTK_TABLE (table), w, 2, 3, 4, 5,
+			  GTK_FILL, GTK_FILL, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (w), "clicked",
+			    GTK_SIGNAL_FUNC (grab_button_pressed),
+			    window_screenshot_key_entry);
 
  	return (vbox);
 }
@@ -1226,9 +1308,33 @@ help (GtkWidget *capplet)
 }
 
 static void
+_push_correct_global_prefix (void)
+{
+	gboolean foo, def;
+
+	/*set up global options*/
+	gnome_config_push_prefix ("/panel/Config/");
+
+	foo = conditional_get_bool ("tooltips_enabled", TRUE, &def);
+	if (def) {
+		/* ahhh, this doesn't exist, but tooltips_enabled should be
+		 * in every home, every kitchen and every panel configuration,
+		 * so we will load up from the global location */
+		gnome_config_pop_prefix ();
+		gnome_config_push_prefix ("=" GLOBAL_CONFDIR "/panel=/Config/");
+	}
+}
+
+
+static void
 loadup_vals (void)
 {
-	GString *buf;
+	/* NOTE: !!!!!!!
+	 * Keep in sync with load_up_globals in session.c
+	 * the function is the same there, but has an added call to
+	 * apply_global_config and the default menu flags are hardcoded here
+	 * FIXME: make this code common!!!!!
+	 */
 	char *tile_def[] = {
 		"normal",
 		"purple",
@@ -1237,144 +1343,191 @@ loadup_vals (void)
 	};
 	int i;
 	gboolean def;
-
-	/* look at tile_def, this asserts 4 */
-	g_assert (LAST_TILE == 4);
-	
-	buf = g_string_new(NULL);
+	GString *keybuf;
+	GString *tilebuf;
 
 	/*set up global options*/
-	
-	gnome_config_push_prefix("/panel/Config/");
+	_push_correct_global_prefix ();
 
 	global_config.tooltips_enabled =
-		gnome_config_get_bool("tooltips_enabled=TRUE");
+		conditional_get_bool ("tooltips_enabled", TRUE, NULL);
+
+	global_config.show_menu_titles =
+		conditional_get_bool ("show_menu_titles", FALSE, NULL);
 
 	global_config.show_dot_buttons =
-		gnome_config_get_bool("show_dot_buttons=FALSE");
+		conditional_get_bool ("show_dot_buttons", FALSE, NULL);
 
 	global_config.hungry_menus =
-		gnome_config_get_bool("memory_hungry_menus=FALSE");
+		conditional_get_bool ("memory_hungry_menus", FALSE, NULL);
 
 	global_config.use_large_icons =
-		gnome_config_get_bool("use_large_icons=TRUE");
+		conditional_get_bool ("use_large_icons", FALSE, NULL);
 
 	global_config.merge_menus =
-		gnome_config_get_bool("merge_menus=TRUE");
+		conditional_get_bool ("merge_menus", TRUE, NULL);
 
 	global_config.menu_check =
-		gnome_config_get_bool("menu_check=TRUE");
+		conditional_get_bool ("menu_check", TRUE, NULL);
 
 	global_config.off_panel_popups =
-		gnome_config_get_bool("off_panel_popups=TRUE");
+		conditional_get_bool ("off_panel_popups", TRUE, NULL);
 		
 	global_config.disable_animations =
-		gnome_config_get_bool("disable_animations=FALSE");
+		conditional_get_bool ("disable_animations", FALSE, NULL);
 		
-	g_string_sprintf (buf, "auto_hide_step_size=%d",
-			  DEFAULT_AUTO_HIDE_STEP_SIZE);
-	global_config.auto_hide_step_size=gnome_config_get_int (buf->str);
-		
-	g_string_sprintf (buf, "explicit_hide_step_size=%d",
-			  DEFAULT_EXPLICIT_HIDE_STEP_SIZE);
-	global_config.explicit_hide_step_size=gnome_config_get_int (buf->str);
-		
-	g_string_sprintf (buf, "drawer_step_size=%d",
-			  DEFAULT_DRAWER_STEP_SIZE);
-	global_config.drawer_step_size=gnome_config_get_int(buf->str);
-		
-	g_string_sprintf (buf, "minimize_delay=%d", DEFAULT_MINIMIZE_DELAY);
-	global_config.minimize_delay = gnome_config_get_int (buf->str);
+	global_config.auto_hide_step_size =
+		conditional_get_int ("auto_hide_step_size",
+				     DEFAULT_AUTO_HIDE_STEP_SIZE, NULL);
 
-	g_string_sprintf (buf, "maximize_delay=%d", DEFAULT_MAXIMIZE_DELAY);
-	global_config.maximize_delay = gnome_config_get_int (buf->str);
+	global_config.explicit_hide_step_size =
+		conditional_get_int ("explicit_hide_step_size", 
+				     DEFAULT_EXPLICIT_HIDE_STEP_SIZE, NULL);
 		
-	g_string_sprintf (buf, "minimized_size=%d", DEFAULT_MINIMIZED_SIZE);
-	global_config.minimized_size=gnome_config_get_int (buf->str);
+	global_config.drawer_step_size =
+		conditional_get_int ("drawer_step_size",
+				     DEFAULT_DRAWER_STEP_SIZE, NULL);
 		
-	g_string_sprintf (buf, "movement_type=%d", PANEL_SWITCH_MOVE);
-	global_config.movement_type=gnome_config_get_int (buf->str);
+	global_config.minimize_delay =
+		conditional_get_int ("minimize_delay",
+				     DEFAULT_MINIMIZE_DELAY, NULL);
 
-	g_string_sprintf (buf, "menu_flags=%d", 
-			  (int)(MAIN_MENU_SYSTEM_SUB | MAIN_MENU_USER_SUB|
-				MAIN_MENU_APPLETS_SUB | MAIN_MENU_DISTRIBUTION_SUB|
-				MAIN_MENU_KDE_SUB | MAIN_MENU_PANEL | MAIN_MENU_DESKTOP));
-	global_config.menu_flags = gnome_config_get_int(buf->str);
+	global_config.maximize_delay =
+		conditional_get_int ("maximize_delay",
+				     DEFAULT_MAXIMIZE_DELAY, NULL);
+		
+	global_config.minimized_size =
+		conditional_get_int("minimized_size",
+				    DEFAULT_MINIMIZED_SIZE, NULL);
+		
+	global_config.movement_type =
+		conditional_get_int("movement_type", 
+				    PANEL_SWITCH_MOVE, NULL);
 
-	global_config.keys_enabled =
-		gnome_config_get_bool ("keys_enabled=TRUE");
+	global_config.keys_enabled = conditional_get_bool ("keys_enabled",
+							   TRUE, NULL);
 
-	global_config.menu_key = gnome_config_get_string ("menu_key=Mod1-F1");
-	/*convert_string_to_keysym_state(global_config.menu_key,
+	g_free(global_config.menu_key);
+	global_config.menu_key = conditional_get_string ("menu_key",
+							 "Mod1-F1", NULL);
+	convert_string_to_keysym_state(global_config.menu_key,
 				       &global_config.menu_keysym,
-				       &global_config.menu_state);*/
+				       &global_config.menu_state);
 
-	global_config.run_key = gnome_config_get_string ("run_key=Mod1-F2");
-	/*convert_string_to_keysym_state(global_config.run_key,
+	g_free(global_config.run_key);
+	global_config.run_key = conditional_get_string ("run_key", "Mod1-F2",
+							NULL);
+	convert_string_to_keysym_state(global_config.run_key,
 				       &global_config.run_keysym,
-				       &global_config.run_state);*/
+				       &global_config.run_state);
+
+	g_free(global_config.screenshot_key);
+	global_config.screenshot_key =
+		conditional_get_string ("screenshot_key", "Print",
+					NULL);
+	convert_string_to_keysym_state(global_config.screenshot_key,
+				       &global_config.screenshot_keysym,
+				       &global_config.screenshot_state);
+
+	g_free(global_config.window_screenshot_key);
+	global_config.window_screenshot_key =
+		conditional_get_string ("window_screenshot_key",
+					"Shift-Print", NULL);
+	convert_string_to_keysym_state(global_config.window_screenshot_key,
+				       &global_config.window_screenshot_keysym,
+				       &global_config.window_screenshot_state);
+
+
 
 	global_config.applet_padding =
-		gnome_config_get_int ("applet_padding=3");
+		conditional_get_int ("applet_padding", 3, NULL);
 
 	global_config.applet_border_padding =
-		gnome_config_get_int("applet_border_padding=0");
+		conditional_get_int ("applet_border_padding", 0, NULL);
 
-	global_config.autoraise = gnome_config_get_bool("autoraise=TRUE");
+	global_config.autoraise = conditional_get_bool ("autoraise", TRUE, NULL);
 
 	global_config.keep_bottom =
-		gnome_config_get_bool_with_default ("keep_bottom=FALSE", &def);
+		conditional_get_bool ("keep_bottom", FALSE, &def);
 	/* if keep bottom was the default, then we want to do a nicer
 	 * saner default which is normal layer.  If it was not the
 	 * default then we don't want to change the layerness as it was
 	 * selected by the user and thus we default to FALSE */
 	if (def)
 		global_config.normal_layer =
-			gnome_config_get_bool ("normal_layer=TRUE");
+			conditional_get_bool ("normal_layer", TRUE, NULL);
 	else
 		global_config.normal_layer =
-			gnome_config_get_bool ("normal_layer=FALSE");
+			conditional_get_bool ("normal_layer", FALSE, NULL);
 
 	global_config.drawer_auto_close =
-		gnome_config_get_bool ("drawer_auto_close=FALSE");
+		conditional_get_bool ("drawer_auto_close", FALSE, NULL);
 	global_config.simple_movement =
-		gnome_config_get_bool ("simple_movement=FALSE");
+		conditional_get_bool ("simple_movement", FALSE, NULL);
 	global_config.hide_panel_frame =
-		gnome_config_get_bool ("hide_panel_frame=FALSE");
+		conditional_get_bool ("hide_panel_frame", FALSE, NULL);
 	global_config.tile_when_over =
-		gnome_config_get_bool ("tile_when_over=FALSE");
+		conditional_get_bool ("tile_when_over", FALSE, NULL);
 	global_config.saturate_when_over =
-		gnome_config_get_bool ("saturate_when_over=TRUE");
+		conditional_get_bool ("saturate_when_over", TRUE, NULL);
 	global_config.confirm_panel_remove =
-		gnome_config_get_bool ("confirm_panel_remove=TRUE");
-	global_config.avoid_collisions =
-		gnome_config_get_bool ("avoid_collisions=TRUE");
+		conditional_get_bool ("confirm_panel_remove", TRUE, NULL);
 	global_config.fast_button_scaling =
-		gnome_config_get_bool ("fast_button_scaling=FALSE");
+		conditional_get_bool ("fast_button_scaling", FALSE, NULL);
+	global_config.avoid_collisions =
+		conditional_get_bool ("avoid_collisions", TRUE, NULL);
+	
+	global_config.menu_flags = conditional_get_int
+		("menu_flags", (MAIN_MENU_SYSTEM_SUB | MAIN_MENU_USER_SUB |
+				MAIN_MENU_APPLETS_SUB | MAIN_MENU_PANEL_SUB |
+				MAIN_MENU_DESKTOP),
+		 NULL);
 
+	if (global_config.menu_flags < 0) {
+		global_config.menu_flags =
+			(MAIN_MENU_SYSTEM_SUB | MAIN_MENU_USER_SUB |
+			 MAIN_MENU_APPLETS_SUB | MAIN_MENU_PANEL_SUB |
+			 MAIN_MENU_DESKTOP);
+	}
+
+	keybuf = g_string_new(NULL);
+	tilebuf = g_string_new(NULL);
 	for (i = 0; i < LAST_TILE; i++) {
-		g_string_sprintf (buf, "new_tiles_enabled_%d=FALSE", i);
-		global_config.tiles_enabled[i] =
-			gnome_config_get_bool (buf->str);
+		GString *keybuf = g_string_new(NULL);
+		GString *tilebuf = g_string_new(NULL);
 
-		g_free(global_config.tile_up[i]);
-		g_string_sprintf(buf,"tile_up_%d=tiles/tile-%s-up.png",
-			   i, tile_def[i]);
-		global_config.tile_up[i] = gnome_config_get_string(buf->str);
+		g_string_sprintf (keybuf, "new_tiles_enabled_%d",i);
+		global_config.tiles_enabled[i] =
+			conditional_get_bool (keybuf->str, FALSE, NULL);
+
+		g_free (global_config.tile_up[i]);
+		g_string_sprintf (keybuf, "tile_up_%d", i);
+		g_string_sprintf (tilebuf, "tiles/tile-%s-up.png", tile_def[i]);
+		global_config.tile_up[i] = conditional_get_string (keybuf->str,
+								   tilebuf->str,
+								   NULL);
 
 		g_free(global_config.tile_down[i]);
-		g_string_sprintf(buf,"tile_down_%d=tiles/tile-%s-down.png",
-			   i,tile_def[i]);
-		global_config.tile_down[i] = gnome_config_get_string(buf->str);
+		g_string_sprintf (keybuf, "tile_down_%d", i);
+		g_string_sprintf (tilebuf, "tiles/tile-%s-down.png",
+				  tile_def[i]);
+		global_config.tile_down[i] =
+			conditional_get_string (keybuf->str, tilebuf->str,
+						NULL);
 
-		g_string_sprintf(buf,"tile_border_%d=2",i);
-		global_config.tile_border[i] = gnome_config_get_int(buf->str);
-		g_string_sprintf(buf,"tile_depth_%d=2",i);
-		global_config.tile_depth[i] = gnome_config_get_int(buf->str);
+		g_string_sprintf (keybuf, "tile_border_%d", i);
+		global_config.tile_border[i] =
+			conditional_get_int (keybuf->str, 2, NULL);
+		g_string_sprintf (keybuf, "tile_depth_%d", i);
+		global_config.tile_depth[i] =
+			conditional_get_int (keybuf->str, 2, NULL);
 	}
-	g_string_free(buf,TRUE);
-		
-	gnome_config_pop_prefix();
+	g_string_free (tilebuf, TRUE);
+	g_string_free (keybuf, TRUE);
+
+	gnome_config_sync ();
+
+	gnome_config_pop_prefix ();
 }
 
 static void
@@ -1420,6 +1573,8 @@ write_config (GlobalConfig *conf)
 			      conf->tooltips_enabled);
 	gnome_config_set_bool("show_dot_buttons",
 			      conf->show_dot_buttons);
+	gnome_config_set_bool("show_menu_titles",
+			      conf->show_menu_titles);
 	gnome_config_set_bool("memory_hungry_menus",
 			      conf->hungry_menus);
 	gnome_config_set_bool("use_large_icons",
@@ -1460,6 +1615,8 @@ write_config (GlobalConfig *conf)
 	gnome_config_set_bool("keys_enabled", conf->keys_enabled);
 	gnome_config_set_string("menu_key", conf->menu_key);
 	gnome_config_set_string("run_key", conf->run_key);
+	gnome_config_set_string("screenshot_key", conf->screenshot_key);
+	gnome_config_set_string("window_screenshot_key", conf->window_screenshot_key);
 	gnome_config_set_bool("fast_button_scaling", conf->fast_button_scaling);
 			     
 	buf = g_string_new(NULL);
@@ -1589,6 +1746,26 @@ main (int argc, char **argv)
 			      argv, NULL, 0, NULL) < 0)
 		return 1;
 	gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-panel.png");
+	/* Ahhh, yes the infamous commie mode, don't allow running of this,
+	 * just display a label */
+	if (gnome_config_get_bool
+		("=" GLOBAL_CONFDIR "/System=/Config/LockDown=FALSE")) {
+		GtkWidget *label;
+
+		capplet = capplet_widget_new();
+
+		label = gtk_label_new (_("The system administrator has "
+					 "disallowed modification of the "
+					 "panel configuration"));
+		gtk_widget_show (label);
+
+		gtk_container_add (GTK_CONTAINER (capplet), label);
+
+		capplet_gtk_main ();
+
+		return 0;
+	}
+
 	loadup_vals ();
 	
 	set_config (&loaded_config, &global_config);

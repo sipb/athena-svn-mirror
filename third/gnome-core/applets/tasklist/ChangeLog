@@ -1,3 +1,16 @@
+2002-01-06  Anders Carlsson  <andersca@gnu.org>
+
+	* tasklist_menu.c (create_task_item): Left-justify the menu items;
+	this is much more readable. Fixes #68104.
+
+Mon May 28 23:37:46 2001  George Lebl <jirka@5z.com>
+
+         * Applying patch:
+
+Sun May 27 16:14:44 2001  Michal Palczewski <mpalczew@u.washington.edu>
+
+        * tasklist_icon.c: fix memory leak in  
+
 Tue May 08 12:35:47 2001  George Lebl <jirka@5z.com>
 
 	* tasklist_applet.[ch], tasklist_config.c, tasklist_properties.c:

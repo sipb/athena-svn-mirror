@@ -26,7 +26,7 @@ GList *newGhelpTable(struct _toc_config *conf)
     GList *temp = NULL;
     struct stat buf;
     int tmp_array_size = 256, tmp_array_elems = 0;
-    struct _big_table_entry **tmp_array = g_new(struct _big_table_entry *,
+    struct _big_table_entry **tmp_array = g_new0 (struct _big_table_entry *,
                                                 tmp_array_size);
 
     lang_list = gnome_i18n_get_language_list ("LC_MESSAGE");
@@ -68,9 +68,9 @@ GList *newGhelpTable(struct _toc_config *conf)
 		while (temp)
 		  {
 		    lang= (gchar*) temp->data;
-		    snprintf (filename, sizeof(filename),
-			      "%s/%s/%s/index.html",
-			      conf->path, dirp->d_name, lang);
+		    g_snprintf (filename, sizeof(filename),
+				"%s/%s/%s/index.html",
+				conf->path, dirp->d_name, lang);
 
 		    if (stat (filename, &buf) == 0)
 		      break;

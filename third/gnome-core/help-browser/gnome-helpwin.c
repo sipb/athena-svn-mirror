@@ -219,14 +219,14 @@ void
 gnome_helpwin_goto(GnomeHelpWin *help, const char *filename)
 {
 	FILE *f;
-	char *str, *tmp, s[1024], *anchor, *path;
+	char *tmp, s[BUFSIZ], *anchor, *path;
+	GString *str;
 
 	g_return_if_fail(help != NULL);
 	g_return_if_fail(GNOME_HELPWIN_IS_HELP(help));
 	g_return_if_fail(filename != NULL);
 
 	path = help->document_path;
-	str = help->html_source;
 	
 	/* TODO: parse filename for '..' */
 	if (filename[0] == '/') {
@@ -275,17 +275,11 @@ gnome_helpwin_goto(GnomeHelpWin *help, const char *filename)
 		return;
 	}
 
-	str = NULL;
+	str = g_string_new (NULL);
 	while ((!feof(f)) && (!errno)) {
 		if (!fgets(s, sizeof (s)-1, f))
 		    continue;
-		if (str)
-		    str = g_realloc(str, strlen(str) + strlen(s) + 1);
-		else {
-		    str = g_malloc(strlen(s) + 1);
-		    *str = 0;
-		}
-		strcat(str, s);
+		g_string_append (str, s);
 	}
 	fclose(f);
 	if (errno) {
@@ -295,14 +289,15 @@ gnome_helpwin_goto(GnomeHelpWin *help, const char *filename)
 	}
 
 #ifdef HELP_USE_GTKHTML
-	gtk_html_source (GTK_HTML (help), path, str);
+	gtk_html_source (GTK_HTML (help), path, str->str);
 #else
-	gtk_xmhtml_source( GTK_XMHTML(help), str);
+	gtk_xmhtml_source( GTK_XMHTML(help), str->str);
 	gnome_helpwin_jump_to_anchor( help, anchor);
 #endif
 	if (help->html_source)
 	    g_free(help->html_source);
 
-	help->html_source = str;
+	help->html_source = str->str;
+	g_string_free (str, FALSE);
 
 }

@@ -1,4 +1,4 @@
-<refentry id="StatusDocklet" revision="1 May 2001">
+<refentry id="StatusDocklet">
 <refmeta>
 <refentrytitle>StatusDocklet</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -134,14 +134,14 @@ status_docklet_run(STATUS_DOCKLET(status));
 </programlisting>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="struct">
+</para><informaltable pgwide="1" frame="none" role="struct">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
 <tbody>
 <row>
 <entry><link linkend="GtkWidget">GtkWidget</link> *<structfield>plug</structfield></entry>
-<entry>The <link linkend="GtkPlug">GtkPlug</link> widget that's embedded inside the panel
+<entry> The <link linkend="GtkPlug">GtkPlug</link> widget that's embedded inside the panel
 
 </entry>
 </row>
@@ -161,7 +161,7 @@ build_plug signal will be emitted again.  You also must call the
 <link linkend="status-docklet-run">status_docklet_run</link> function after you bind the build_plug signal.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -178,7 +178,7 @@ Creates a neew status docklet object with the specified
 parameters.  See the description of <link linkend="status-docklet-new">status_docklet_new</link> for details.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -205,7 +205,7 @@ If the status docklet handles restarts you don't have to call this
 function ever again.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -227,7 +227,7 @@ function ever again.</para>
 This signal is emitted when you actually need to build the widget that
 you want to place inside the status docklet.  It should be 22 by 22, and
 if it is larger it will be cropped.
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -237,6 +237,7 @@ if it is larger it will be cropped.
 </entry></row>
 <row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
 <entry>
+
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>user data set when the signal handler was connected.</entry></row>

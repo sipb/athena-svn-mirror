@@ -1,4 +1,4 @@
-<refentry id="panel-Context-Menu" revision="1 May 2001">
+<refentry id="panel-Context-Menu">
 <refmeta>
 <refentrytitle>Context Menu</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -76,7 +76,7 @@ item.  You need to add any submenus with
 <link linkend="applet-widget-register-callback-dir">applet_widget_register_callback_dir</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -112,7 +112,7 @@ GNOME pixmap.  This works almost exactly the same as
 <link linkend="applet-widget-register-callback">applet_widget_register_callback</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -147,7 +147,7 @@ Remove a menu item from the applet's context menu.  The
 any submenus.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -172,7 +172,7 @@ submenu as the last part of the path.  The <parameter>name</parameter> can, but 
 have to be terminated with a '/'.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -199,7 +199,7 @@ Adds a submenu to the applet's context menu with a stock
 GNOME pixmap.  This is similiar to <link linkend="applet-widget-register-callback-dir">applet_widget_register_callback_dir</link>.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -231,7 +231,7 @@ without it's title or icon.  So make sure to first remove any items and
 submenus before calling this function.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">
@@ -254,7 +254,7 @@ Sets the sensitivity of a menu item in the applet's
 context menu.</para>
 <para>
 
-</para><informaltable pgwide=1 frame="none" role="params">
+</para><informaltable pgwide="1" frame="none" role="params">
 <tgroup cols="2">
 <colspec colwidth="2*">
 <colspec colwidth="8*">

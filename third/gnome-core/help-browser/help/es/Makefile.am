@@ -2,9 +2,9 @@
 
 EXTRA_DIST = gnome-help-browser-help.html \
 	     gnome-help-browser-topic.dat \
-	     default-page.html 
+	     default-page.html
 
-help_browser_helpdir = $(datadir)/gnome/help/help-browser/es
+help_browser_helpdir = $(datadir)/gnome/help/help-browser/C
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(help_browser_helpdir)
 	$(INSTALL_DATA)  $(srcdir)/gnome-help-browser-help.html \

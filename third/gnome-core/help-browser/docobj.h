@@ -8,7 +8,7 @@
 typedef struct _docObj *docObj;
 typedef gint(*TransportFunc) (docObj obj);
 
-docObj docObjNew(gchar *ref, gboolean useCache);
+docObj docObjNew(const gchar *ref, gboolean useCache);
 void docObjFree(docObj obj);
 void docObjResolveURL(docObj obj, gchar *currentRef);
 

@@ -1,3 +1,21 @@
+2001-10-15  Abel Cheung  <maddog@linux.org.hk>
+
+	* Makefile.am: Added PIXBUF_CFLAGS to include since gdk-pixbuf
+	  headers are moved to new location.
+
+2001-09-29  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* contributors.h: Added myself.
+
+2001-09-04  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* contributors.h: Added my name spell (sorry I forgot
+	it).
+	
+2001-08-25  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* contributors.h: Added myself.
+
 2001-04-26  Christian Rose  <menthos@menthos.com>
 
 	* contributors.h: Added myself.

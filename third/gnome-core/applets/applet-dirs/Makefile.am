@@ -7,6 +7,17 @@ Networkdir       = $(appletdir)/Network
 Amusementsdir    = $(appletdir)/Amusements
 Clocksdir	 = $(appletdir)/Clocks
 
+directory_in_files = \
+	Utility.directory.in	\
+	Monitors.directory.in	\
+	Multimedia.directory.in	\
+	Amusements.directory.in	\
+	Network.directory.in	\
+	Clocks.directory.in
+
+noinst_DATA = $(directory_in_files:.directory.in=.directory)
+@XML_I18N_MERGE_DIRECTORY_RULE@
+
 Directory_files = \
 	Utility.directory \
 	Monitors.directory \
@@ -24,13 +35,15 @@ Network_DATA =
 Amusements_DATA =
 Clocks_DATA =
 
-EXTRA_DIST = $(Utility_DATA) \
-	     $(Monitors_DATA) \
-	     $(Multimedia_DATA) \
-	     $(Network_DATA) \
-	     $(Amusements_DATA) \
-	     $(Clocks_DATA) \
-	     $(Directory_files)
+EXTRA_DIST = $(Utility_DATA)		\
+	     $(Monitors_DATA)		\
+	     $(Multimedia_DATA)		\
+	     $(Network_DATA)		\
+	     $(Amusements_DATA)		\
+	     $(Clocks_DATA)		\
+	     $(Directory_files)		\
+	     $(directory_in_files) 	\
+	     $(noinst_DATA)
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(Utilitydir)
@@ -39,9 +52,9 @@ install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(Networkdir)
 	$(mkinstalldirs) $(DESTDIR)$(Amusementsdir)
 	$(mkinstalldirs) $(DESTDIR)$(Clocksdir)
-	$(INSTALL_DATA) $(srcdir)/Utility.directory $(DESTDIR)$(Utilitydir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Monitors.directory $(DESTDIR)$(Monitorsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Multimedia.directory $(DESTDIR)$(Multimediadir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Network.directory $(DESTDIR)$(Networkdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Amusements.directory $(DESTDIR)$(Amusementsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Clocks.directory $(DESTDIR)$(Clocksdir)/.directory
+	$(INSTALL_DATA) Utility.directory $(DESTDIR)$(Utilitydir)/.directory
+	$(INSTALL_DATA) Monitors.directory $(DESTDIR)$(Monitorsdir)/.directory
+	$(INSTALL_DATA) Multimedia.directory $(DESTDIR)$(Multimediadir)/.directory
+	$(INSTALL_DATA) Network.directory $(DESTDIR)$(Networkdir)/.directory
+	$(INSTALL_DATA) Amusements.directory $(DESTDIR)$(Amusementsdir)/.directory
+	$(INSTALL_DATA) Clocks.directory $(DESTDIR)$(Clocksdir)/.directory

@@ -1,3 +1,55 @@
+2002-01-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-info2html/main.c: Use <HTML><BODY> instead of the other way around.
+	Fixes #66332. From Shingo Akagaki <dora@kondara.org>
+	* mime.c, toc2info.c: Support for bz2 compressed man/info files.
+	Fixes bug #66335. From Shingo Akagaki <dora@kondara.org>.
+	* gnome-info2html/Makefile.am: Added man pages.
+	* gnome-man2html/Makefile.am: Same.
+		
+2001-09-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* transport.c, docobj.c: Apply patch from Red Hat to disable
+	http protocol. No more remote browsing - it was never designed
+	to handle it anyway.
+	
+2001-09-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* misc.c, toc2-man.c, window.c: Fix some warnings.
+	
+2001-08-03  Abel Cheung  <maddog@linux.org.hk>
+
+	* *.desktop : Reviewed/Modified/Added traditional Chinese strings.
+
+2001-08-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* help-browser.desktop: Added nynorsk.
+	
+2001-06-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* transport.c: Fix compilation on AIX by moving #include <math.h>
+	above #include <glib.h>. From Dan McNichol <mcnichol@austin.ibm.com>.
+	
+Mon Jun 11 21:59:25 2001  George Lebl <jirka@5z.com>
+
+	* *.[ch]: fix uses of strncpy, set some buffer sizes correctly,
+	  get rid of some useless buffer copying allocation, fix all
+	  warnings, teeeny bit of constcorrectness, fix strftime usage,
+	  mark strftime strings for translation, apply fix from Kjartan
+	  Maraas, use g_new0 instead of g_new, and generally deal with buffer
+	  issues where it could cause trouble.  Still some places are just
+	  evil and bad, and there are still possible overruns.
+
+2001-06-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* misc.c: Apply patch from markd@Kermodei.com> to close
+	http://bugzilla.gnome.org/show_bug.cgi?id=52628
+	
+2001-05-31  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* gnome-info2html/html.c: added stdlib.h to get rid of compile warning
+	about exit()
+	
 2001-02-26  jacob berkman  <jacob@ximian.com>
 
 	* reverting previous patch

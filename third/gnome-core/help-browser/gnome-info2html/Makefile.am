@@ -14,4 +14,7 @@ bin_PROGRAMS = gnome-info2html
 
 gnome_info2html_SOURCES = main.c parse.c utils.c html.c data.h html.h parse.h utils.h version.h
 
+man_MANS = gnome-info2html.1
+
+EXTRA_DIST = $(man_MANS)
 

@@ -278,7 +278,8 @@ extern "C"
    {
       GNOME_Panel_BACK_NONE,
       GNOME_Panel_BACK_COLOR,
-      GNOME_Panel_BACK_PIXMAP
+      GNOME_Panel_BACK_PIXMAP,
+      GNOME_Panel_BACK_TRANSLUCENT
    }
    GNOME_Panel_BackType;
 #if !defined(TC_IMPL_TC_GNOME_Panel_BackType_0)

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,6 +60,7 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 BZ_LIBS = @BZ_LIBS@
 CANVAS_PIXBUF_CFLAGS = @CANVAS_PIXBUF_CFLAGS@
 CANVAS_PIXBUF_LIBS = @CANVAS_PIXBUF_LIBS@
@@ -72,11 +73,15 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
+ECHO = @ECHO@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GENCAT = @GENCAT@
+GLADE_CFLAGS = @GLADE_CFLAGS@
+GLADE_LIBS = @GLADE_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -89,6 +94,8 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_LIBS_REQUIRED = @GNOME_LIBS_REQUIRED@
+GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
+GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
 GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
 GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
@@ -106,11 +113,14 @@ GTK_REQUIRED = @GTK_REQUIRED@
 GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HAVE_JW = @HAVE_JW@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+JW = @JW@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBGLADE_REQUIRED = @LIBGLADE_REQUIRED@
@@ -121,6 +131,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -132,6 +143,7 @@ PACKAGE = @PACKAGE@
 PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
+PNG_LIBS = @PNG_LIBS@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -139,13 +151,23 @@ RANLIB = @RANLIB@
 RES_LIBS = @RES_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XINERAMA_LIBS = @XINERAMA_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -159,30 +181,44 @@ SUBDIRS = help
 
 defaultdir = $(datadir)/gnome
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\"" @CANVAS_PIXBUF_CFLAGS@ 
+INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) \
+	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale\"" \
+	-DDEFAULTDIR="\"$(defaultdir)\"" @CANVAS_PIXBUF_CFLAGS@ 
 
 
 LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
 
 sysdir = $(datadir)/control-center/Session
 
-@SESSION_TRUE@noinst_DATA = session.desktop
-@SESSION_TRUE@bin_PROGRAMS = gnome-session save-session gnome-login-check session-properties gnome-libice-check session-properties-capplet
+@SESSION_TRUE@noinst_in_files = @SESSION_TRUE@session.desktop.in
+@SESSION_TRUE@noinst_DATA = @SESSION_TRUE@$(noinst_in_files:.desktop.in=.desktop)
+@SESSION_TRUE@bin_PROGRAMS = @SESSION_TRUE@gnome-session save-session gnome-login-check session-properties gnome-libice-check session-properties-capplet
 
-gnome_session_SOURCES = manager.c manager.h ice.c ice.h main.c prop.c prop.h 	save.c save.h command.c command.h session.h remote.c remote.h 	logout.c logout.h splash.c splash.h gsm-protocol.c gsm-protocol.h 	headers.h
+gnome_session_SOURCES = manager.c manager.h ice.c ice.h main.c prop.c prop.h \
+	save.c save.h command.c command.h session.h remote.c remote.h \
+	logout.c logout.h splash.c splash.h gsm-protocol.c gsm-protocol.h \
+	headers.h
 
 
 gnome_session_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) @LIBWRAP_LIBS@ @CANVAS_PIXBUF_LIBS@
 
 save_session_SOURCES = save-session.c gsm-protocol.c gsm-protocol.h
 
-session_properties_SOURCES = session-properties.c gsm-client-list.c gsm-client-list.h gsm-client-editor.c gsm-client-editor.h gsm-client-row.c gsm-client-row.h gsm-protocol.c gsm-protocol.h session.h
+session_properties_SOURCES = session-properties.c \
+gsm-client-list.c gsm-client-list.h gsm-client-editor.c gsm-client-editor.h \
+gsm-client-row.c gsm-client-row.h gsm-protocol.c gsm-protocol.h \
+session.h
 
 
-session_properties_capplet_SOURCES = session-properties-capplet.c session-properties-capplet.h session.h startup-programs.c session-names.c gsm-protocol.c gsm-protocol.h gsm-client-list.c gsm-client-list.h gsm-client-row.c gsm-client-row.h gsm-client-editor.c gsm-client-editor.h 
+session_properties_capplet_SOURCES = session-properties-capplet.c \
+session-properties-capplet.h session.h startup-programs.c session-names.c \
+gsm-protocol.c gsm-protocol.h gsm-client-list.c gsm-client-list.h \
+gsm-client-row.c gsm-client-row.h gsm-client-editor.c gsm-client-editor.h 
 
 
-session_properties_capplet_LDADD = $(GNOME_LIBDIR) $(ORB_LIBS) $(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba -lcapplet
+session_properties_capplet_LDADD = $(GNOME_LIBDIR) $(ORB_LIBS) \
+$(GNOMEUI_LIBS) $(INTLLIBS) -lgnorba -lcapplet
 
 
 gnome_login_check_SOURCES = gnome-login-check.c
@@ -196,53 +232,80 @@ default_DATA = default.session default.wm
 desktopdir = $(datadir)/gnome/apps/Settings/Session/
 desktop_DATA = save-session.desktop session.desktop
 
-@SESSION_TRUE@sys_DATA = session-properties.desktop
+@SESSION_TRUE@sys_in_files = @SESSION_TRUE@session-properties.desktop.in
+@SESSION_TRUE@sys_DATA = @SESSION_TRUE@$(sys_in_files:.desktop.in=.desktop)
 
 settingsdir = $(datadir)/gnome/apps/Settings/Session
 
-@SESSION_TRUE@settings_DATA = session-properties.desktop
+@SESSION_TRUE@settings_in_files = @SESSION_TRUE@session-properties.desktop.in
+@SESSION_TRUE@settings_DATA = @SESSION_TRUE@$(settings_in_files:.desktop.in=.desktop)
 
 man_MANS = gnome-wm.1 save-session.1 default.session.5 gnome-session.1
 
-manuals = gnome-wm.1 default.session.5.in gnome-session.1.in save-session.1
+manuals = gnome-wm.1	\
+	default.session.5.in	\
+	gnome-session.1.in	\
+	save-session.1		\
+	gnome-libice-check.1	\
+	gnome-login-check.1	\
+	gnome-smproxy.1		\
+	session-properties.1	\
+	session-properties-capplet.1
+
 
 pixmapdir = $(datadir)/pixmaps/splash/
 pixmap_DATA = gnome-splash.png gnome-splash-1.4.0.png
 
-EXTRA_DIST =  	default.in			default.wm.in			gnome-wm 			save-session.desktop 		session.desktop			$(manuals)			$(pixmap_DATA)			session-properties.desktop
+EXTRA_DIST = \
+	default.in		\
+	default.wm.in		\
+	gnome-wm 		\
+	save-session.desktop.in 	\
+	session.desktop.in		\
+	$(manuals)		\
+	$(pixmap_DATA)		\
+	session-properties.desktop.in
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  default.session.5 gnome-session.1
+@SESSION_TRUE@bin_PROGRAMS =  gnome-session$(EXEEXT) \
+@SESSION_TRUE@save-session$(EXEEXT) gnome-login-check$(EXEEXT) \
+@SESSION_TRUE@session-properties$(EXEEXT) gnome-libice-check$(EXEEXT) \
+@SESSION_TRUE@session-properties-capplet$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-gnome_session_OBJECTS =  manager.o ice.o main.o prop.o save.o command.o \
-remote.o logout.o splash.o gsm-protocol.o
+gnome_session_OBJECTS =  manager.$(OBJEXT) ice.$(OBJEXT) main.$(OBJEXT) \
+prop.$(OBJEXT) save.$(OBJEXT) command.$(OBJEXT) remote.$(OBJEXT) \
+logout.$(OBJEXT) splash.$(OBJEXT) gsm-protocol.$(OBJEXT)
 gnome_session_DEPENDENCIES = 
 gnome_session_LDFLAGS = 
-save_session_OBJECTS =  save-session.o gsm-protocol.o
+save_session_OBJECTS =  save-session.$(OBJEXT) gsm-protocol.$(OBJEXT)
 save_session_LDADD = $(LDADD)
 save_session_DEPENDENCIES = 
 save_session_LDFLAGS = 
-gnome_login_check_OBJECTS =  gnome-login-check.o
+gnome_login_check_OBJECTS =  gnome-login-check.$(OBJEXT)
 gnome_login_check_LDADD = $(LDADD)
 gnome_login_check_DEPENDENCIES = 
 gnome_login_check_LDFLAGS = 
-session_properties_OBJECTS =  session-properties.o gsm-client-list.o \
-gsm-client-editor.o gsm-client-row.o gsm-protocol.o
+session_properties_OBJECTS =  session-properties.$(OBJEXT) \
+gsm-client-list.$(OBJEXT) gsm-client-editor.$(OBJEXT) \
+gsm-client-row.$(OBJEXT) gsm-protocol.$(OBJEXT)
 session_properties_LDADD = $(LDADD)
 session_properties_DEPENDENCIES = 
 session_properties_LDFLAGS = 
-gnome_libice_check_OBJECTS =  gnome-libice-check.o
+gnome_libice_check_OBJECTS =  gnome-libice-check.$(OBJEXT)
 gnome_libice_check_LDADD = $(LDADD)
 gnome_libice_check_DEPENDENCIES = 
 gnome_libice_check_LDFLAGS = 
-session_properties_capplet_OBJECTS =  session-properties-capplet.o \
-startup-programs.o session-names.o gsm-protocol.o gsm-client-list.o \
-gsm-client-row.o gsm-client-editor.o
+session_properties_capplet_OBJECTS =  \
+session-properties-capplet.$(OBJEXT) startup-programs.$(OBJEXT) \
+session-names.$(OBJEXT) gsm-protocol.$(OBJEXT) \
+gsm-client-list.$(OBJEXT) gsm-client-row.$(OBJEXT) \
+gsm-client-editor.$(OBJEXT)
 session_properties_capplet_DEPENDENCIES = 
 session_properties_capplet_LDFLAGS = 
 SCRIPTS =  $(bin_SCRIPTS)
@@ -265,14 +328,14 @@ default.session.5.in gnome-session.1.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(gnome_session_SOURCES) $(save_session_SOURCES) $(gnome_login_check_SOURCES) $(session_properties_SOURCES) $(gnome_libice_check_SOURCES) $(session_properties_capplet_SOURCES)
 OBJECTS = $(gnome_session_OBJECTS) $(save_session_OBJECTS) $(gnome_login_check_OBJECTS) $(session_properties_OBJECTS) $(gnome_libice_check_OBJECTS) $(session_properties_capplet_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps gsm/Makefile
 
@@ -313,6 +376,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -321,6 +389,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -348,28 +417,28 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-gnome-session: $(gnome_session_OBJECTS) $(gnome_session_DEPENDENCIES)
-	@rm -f gnome-session
+gnome-session$(EXEEXT): $(gnome_session_OBJECTS) $(gnome_session_DEPENDENCIES)
+	@rm -f gnome-session$(EXEEXT)
 	$(LINK) $(gnome_session_LDFLAGS) $(gnome_session_OBJECTS) $(gnome_session_LDADD) $(LIBS)
 
-save-session: $(save_session_OBJECTS) $(save_session_DEPENDENCIES)
-	@rm -f save-session
+save-session$(EXEEXT): $(save_session_OBJECTS) $(save_session_DEPENDENCIES)
+	@rm -f save-session$(EXEEXT)
 	$(LINK) $(save_session_LDFLAGS) $(save_session_OBJECTS) $(save_session_LDADD) $(LIBS)
 
-gnome-login-check: $(gnome_login_check_OBJECTS) $(gnome_login_check_DEPENDENCIES)
-	@rm -f gnome-login-check
+gnome-login-check$(EXEEXT): $(gnome_login_check_OBJECTS) $(gnome_login_check_DEPENDENCIES)
+	@rm -f gnome-login-check$(EXEEXT)
 	$(LINK) $(gnome_login_check_LDFLAGS) $(gnome_login_check_OBJECTS) $(gnome_login_check_LDADD) $(LIBS)
 
-session-properties: $(session_properties_OBJECTS) $(session_properties_DEPENDENCIES)
-	@rm -f session-properties
+session-properties$(EXEEXT): $(session_properties_OBJECTS) $(session_properties_DEPENDENCIES)
+	@rm -f session-properties$(EXEEXT)
 	$(LINK) $(session_properties_LDFLAGS) $(session_properties_OBJECTS) $(session_properties_LDADD) $(LIBS)
 
-gnome-libice-check: $(gnome_libice_check_OBJECTS) $(gnome_libice_check_DEPENDENCIES)
-	@rm -f gnome-libice-check
+gnome-libice-check$(EXEEXT): $(gnome_libice_check_OBJECTS) $(gnome_libice_check_DEPENDENCIES)
+	@rm -f gnome-libice-check$(EXEEXT)
 	$(LINK) $(gnome_libice_check_LDFLAGS) $(gnome_libice_check_OBJECTS) $(gnome_libice_check_LDADD) $(LIBS)
 
-session-properties-capplet: $(session_properties_capplet_OBJECTS) $(session_properties_capplet_DEPENDENCIES)
-	@rm -f session-properties-capplet
+session-properties-capplet$(EXEEXT): $(session_properties_capplet_OBJECTS) $(session_properties_capplet_DEPENDENCIES)
+	@rm -f session-properties-capplet$(EXEEXT)
 	$(LINK) $(session_properties_capplet_LDFLAGS) $(session_properties_capplet_OBJECTS) $(session_properties_capplet_LDADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
@@ -594,7 +663,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -684,7 +753,8 @@ gsm-client-row.o: gsm-client-row.c ../config.h gsm-client-row.h \
 	gsm-protocol.h gsm-client-list.h gsm-client-editor.h
 gsm-protocol.o: gsm-protocol.c ../config.h session.h gsm-protocol.h
 ice.o: ice.c ../config.h ice.h headers.h session.h manager.h
-logout.o: logout.c ../config.h logout.h headers.h command.h manager.h
+logout.o: logout.c ../config.h ice.h headers.h logout.h command.h \
+	manager.h
 main.o: main.c ../config.h manager.h headers.h ice.h save.h command.h \
 	splash.h
 manager.o: manager.c ../config.h manager.h headers.h session.h prop.h \
@@ -799,6 +869,7 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+@SESSION_TRUE@@XML_I18N_MERGE_DESKTOP_RULE@
 
 default.session: default.in ../config.status
 	sed -e 's,\@WINDOW_MANAGER\@,$(WINDOW_MANAGER),g' \

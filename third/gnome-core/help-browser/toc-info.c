@@ -40,7 +40,7 @@ static char *makeBaseName(char *name)
     char buf[BUFSIZ];
     char *end, *s, *ss;
 
-    strncpy(buf, name, sizeof(buf));
+    g_snprintf (buf, sizeof (buf), "%s", name);
     end = buf + strlen(buf);
 
     /* Strip off any trailing `.gz' */
@@ -77,7 +77,6 @@ void expandInfoRoot(GtkWidget *item)
     GtkWidget *newitem;
     struct _info_node *p;
     struct _toc_config *toc;
-    char fullname[BUFSIZ];
     char last[BUFSIZ];
     DIR *d;
     struct dirent *dirp;
@@ -110,10 +109,9 @@ void expandInfoRoot(GtkWidget *item)
 		}
 		
 		p = malloc(sizeof(*p));
-		snprintf(fullname, sizeof(fullname),
-			 "%s/%s", toc->path, dirp->d_name);
-		p->filename = g_strdup(fullname);
-		p->len = strlen(fullname);
+		p->filename = g_strdup_printf ("%s/%s",
+					       toc->path, dirp->d_name);
+		p->len = strlen(p->filename);
 		p->basename = makeBaseName(dirp->d_name);
 		
 		list = g_list_insert_sorted(list, p,
@@ -132,21 +130,18 @@ void expandInfoRoot(GtkWidget *item)
 
 	/* Make item, link it in, show it */
 	p = (struct _info_node *)listItem->data;
-	if (strcmp(last, p->basename)) {
+	if (strcmp(last, p->basename) != 0) {
 	    newitem = gtk_tree_item_new_with_label(p->basename);
 	    gtk_tree_append(GTK_TREE(tree), newitem);
 	    gtk_widget_show(newitem);
 	
 	    /* Set the URL for this item */
-/*	    s = g_strdup(p->filename); */
-	    s = g_malloc(strlen(p->basename)+16);
-	    strcpy(s,"info:");
-	    strcat(s, p->basename);
-	    gtk_object_set_data(GTK_OBJECT(newitem), "URL", s);
-	    gtk_signal_connect_object(GTK_OBJECT(newitem), "destroy",
-				      (GtkSignalFunc)g_free, (gpointer)s);
+	    s = g_strdup_printf ("info:%s", p->basename);
+	    gtk_object_set_data_full (GTK_OBJECT(newitem), "URL", s,
+				      (GtkDestroyNotify) g_free);
 
-	    strcpy(last, p->basename);
+	    strncpy(last, p->basename, sizeof (last));
+	    last[sizeof (last) - 1] = '\0';
 	}
 	
 	g_free(p->filename);

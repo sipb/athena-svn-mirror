@@ -23,6 +23,7 @@ tasklist_applet_SOURCES = 	\
 	gstc.c 		\
 	gwmh.c
 
+man_MANS = tasklist_applet.1
 
 #libtasklist_applet_la_SOURCES =\
 #	pixmaps.h 		\
@@ -45,15 +46,18 @@ tasklist_applet_LDADD = 			\
 
 EXTRA_DIST = 			\
 	tasklist_applet.gnorba 	\
-	tasklist_applet.desktop	\
+	tasklist_applet.desktop.in	\
 	unknown.xpm		\
-	gnome-tasklist.png
+	gnome-tasklist.png	\
+	$(man_MANS)
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gnome-tasklist.png
 
 sysdir = $(datadir)/applets/Utility
-sys_DATA = tasklist_applet.desktop 
+sys_in_files = tasklist_applet.desktop.in 
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 gnorbadir  = $(sysconfdir)/CORBA/servers
 gnorba_DATA = tasklist_applet.gnorba 

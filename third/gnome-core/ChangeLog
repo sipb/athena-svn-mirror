@@ -1,3 +1,193 @@
+2002-01-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Fix up ICONDIR stuff. Patch from Vesa Halttunen
+	<vesuri@jormas.com>.
+	
+2002-01-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Bump version.
+	
+2002-01-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Fix up PNG checks to add -lz on non GNU binutils.
+	Patch from <jacbre@internet.gr>.
+	
+2001-12-06  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in(ALL_LINGUAS): zh_CN.GB2312 -> zh_CN.
+
+2001-12-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* HACKING: Update.
+	* configure.in: Up version.
+	
+2001-11-10  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ms" to the languages list.
+
+2001-10-17  Ian McKellar  <yakk@yakk.net>
+
+	* idl/gnome-panel.idl:
+	* panel/applet-widget.c: (server_applet_back_change):
+	* panel/applet-widget.h:
+	* panel/basep-widget.c: (basep_update_frame),
+	(basep_widget_construct):
+	* panel/main.c: (get_pixmap_prop), (get_desktop_pixmap),
+	(desktop_event_filter), (set_up_desktop_event_handler), (main):
+	* panel/menu.c: (update_back_menu), (make_properties_submenu):
+	* panel/menu.h:
+	* panel/panel-types.h:
+	* panel/panel-widget.c: (panel_widget_force_repaint),
+	(panel_widget_setup_translucent_background), (setup_background),
+	(panel_widget_draw_all), (panel_widget_size_allocate),
+	(panel_try_to_set_translucent), (panel_widget_realize),
+	(panel_widget_new), (panel_widget_change_params):
+	* panel/panel-widget.h:
+	* panel/panel.c: (back_change):
+	* panel/panel_config.c: (update_config_back), (set_back),
+	(background_page):
+	* panel/panel_config.h:
+	Add support for translucent panels.
+
+2001-09-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* */*.desktop.in, *.directory.in, *.soundlist.in: Add these
+	files now that xml-i18n-tools handles them.
+	* Remove the non .in counterparts.
+	* po/*.po: Update accordingly.
+	
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-30  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Generate some more Makefiles for the
+	Norwegian docs.
+
+2001-08-24  Andras Timar <timar@gnome.hu>
+
+	* */*.desktop: Updated Hungarian translation.
+
+	* */*.soundlist: Updated Hungarian translation.
+
+2001-08-09  Jody Goldberg <jgoldberg@home.com>
+
+	* configure.in : Fix typo in error msg for capplet libraries
+	  that breaks config.
+
+2001-08-08  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Generate Makefiles for the norwegian docs.
+	
+2001-08-06  Martin Baulig  <baulig@suse.de>
+
+	* README.STABLE_BRANCH: Updated to point to this branch.
+
+2001-07-31  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* applets/gen_util/help/es/printer/figures/*:
+	* applets/gen_util/help/es/printer/printer.sgml: moved PNG
+	files here from the parent directory for consistency with other
+	doc dirs. Changed sgml file to use the right images.
+	* applets/gen_util/help/es/mailcheck/figures/mailcheck-applet.png:
+	Added. Required to make build work (and no translation required).
+	* help-browser/help/es/Makefile.am, default-page.html: use the
+	gnome foot image from the 'C' subdir. No need to put a copy in
+	each translation dir.
+	* app-docs.am.template, app-docs.make, applet-docs.make, Makefile.am: 
+	Remove these old ways of buiding docs. They have been obsoleted by
+	sgmldocs.make.
+	* Updated various .cvsignore files to ignore generated
+	documentation related files.
+	
+
+2001-07-29  Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+	Some Spanish translation updates and bug fixes
+	* */help/es/*
+	* configure.in
+
+2001-07-28  Dan Mueth  <d-mueth@uchicago.edu>
+
+        Updating doc build stuff to use jw on RH 7.1 and any other dist which
+        has moved to docbook-utils.
+
+	* configure.in:
+	* sgmldocs.make:
+
+2001-07-28  Dan Mueth  <d-mueth@uchicago.edu>
+
+	Moving a couple screenshots and removing one from a Makefile
+	which doesn't actually exist so that make dist will work.
+
+	* applets/gen_util/help/es/mailcheck/Makefile.am:
+	* applets/gen_util/help/es/mailcheck/figures/mailcheck-properties-m
+	ailbox.png:
+	* applets/gen_util/help/es/mailcheck/figures/mailcheck-properties-m
+	ailcheck.png:
+	* applets/gen_util/help/es/mailcheck/mailcheck-properties-mailbox.p
+	ng:
+	* applets/gen_util/help/es/mailcheck/mailcheck-properties-mailcheck
+	.png:
+
+2001-07-15  Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+	New Sanish translation.
+        * applets/tasklist/help/es/*
+        * applets/tasklist/help/Makefile.am
+        * configure.in
+
+2001-07-05  Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+        * panel/help: New Sanish translation.
+        * configure.in: add panel/help/es/Makefile
+
+2001-07-06  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* gnome-about/contributors.h: Added myself (with Dan's blessing)
+
+2001-06-23 Manuel de Vega Barreiro <mbarreiro@red.madritel.es>
+
+        * confifure.in : Included es for mailcheck
+        * applets/gen_util/help/Makefile.am: Included es for mailcheck
+          Spanish Translation.
+        * applets/gen_util/help/es/mailcheck: Spanish Translation
+
+Tue Jun 05 02:21:42 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, acconfig.h: Optionally check for gnome-print (we
+	  already sort of did).  If found we'll compile the print code
+	  in the screenshooter thinige in the panel.
+
+Wed May 30 22:53:47 2001  George Lebl <jirka@5z.com>
+
+	* configure.in: check for libpng (PNG_LIBS) and setup GLADE_LIBS/CFLAGS
+
+Wed May 30 04:09:10 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, gnome-core.spec.in: By the fact that no one yelled
+	  when I forgot to commit this it seems not many people actually
+	  build gnome-core HEAD :)  This adds the config dir in the panel
+	  makefile
+
+2001-05-27  Stanislav Brabec  <utx@penguin.cz>
+
+	* applets/*/*.directory, */*/*.desktop, */*/*/*.desktop,
+        */*/*/*.soundlist: Updated from 1-2 branch and completed
+	Czech. Alphabetical resort of languages, removed duplicated
+	translations.
+
+Sat May 19 16:54:24 2001  George Lebl <jirka@5z.com>
+
+	* configure.in, acconfig.h: add xinerama check (if it ain't installed,
+	  nothing happens) and niceify the  help output
+
+2001-05-15  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
+
+	* configure.in: disable libice check since it's probably
+	unnecessary
+
 2001-05-04  Dan Mueth  <dan@eazel.com>
 
 	Fixed URL for help document.  Before it was broken because it

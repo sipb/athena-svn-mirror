@@ -54,7 +54,7 @@ struct _toc_config *addToConfig(struct _toc_config *index,
 	return index;
     }
 
-    strncpy(buf, paths, sizeof(buf));
+    g_snprintf (buf, sizeof(buf), "%s", paths);
     rest = buf;
 
     while ((s = strtok(rest, ":"))) {
@@ -457,7 +457,7 @@ GList *findFirstEntryByName(GList *table, gchar *name)
 
 /* returns HTML of matches to substr search */
 GString
-*findMatchesBySubstr(Toc toc, gchar *substr)
+*findMatchesBySubstr(Toc toc, const gchar *substr)
 {
     GString *out;
     GString *tmp;
@@ -476,7 +476,7 @@ GString
     while (p && *substr) {
 	gchar *name=((struct _big_table_entry *)p->data)->name;
         gchar ext=((struct _big_table_entry *)p->data)->ext;
-        if (!strncasecmp(name, substr, strlen(substr))) {
+        if (!g_strncasecmp(name, substr, strlen(substr))) {
             g_string_sprintfa(tmp,"<LI><A HREF=\"man:%s(%c)\">%s(%c)</A>\n",
 			     name, ext, name, ext);
             foundman = TRUE;
@@ -500,7 +500,7 @@ GString
 
 	/* only one entry per info file (avoids problem with expanded info) */
 	if  (!((struct _big_table_entry *)p->data)->section &&
-	     !strncasecmp(name, substr, strlen(substr))) {
+	     !g_strncasecmp(name, substr, strlen(substr))) {
             g_string_sprintfa(tmp,"<LI><A HREF=\"info:%s\">%s</A>\n",
 			     name, name);
             foundinfo = TRUE;
@@ -523,7 +523,7 @@ GString
 	gchar *name=((struct _big_table_entry *)p->data)->name;
 
 	/* only one entry per info file (avoids problem with expanded info) */
-	if  (!strncasecmp(name, substr, strlen(substr))) {
+	if  (!g_strncasecmp(name, substr, strlen(substr))) {
             g_string_sprintfa(tmp,"<LI><A HREF=\"ghelp:%s\">%s</A>\n",
 			     name, name);
             foundghelp = TRUE;

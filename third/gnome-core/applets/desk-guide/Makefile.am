@@ -13,6 +13,8 @@ bin_PROGRAMS = deskguide_applet
 
 deskguide_applet_SOURCES = gstc.c gwmh.c gwmthumbnail.c gwmdesktop.c gwmtaskview.c deskguide_applet.c
 
+man_MANS = deskguide_applet.1
+
 deskguide_applet_LDADD = ../../panel/libpanel_applet.la \
 		     $(GNOME_LIBDIR) $(ORB_LIBS)        \
 		     $(GNOMEUI_LIBS) $(GNORBA_LIBS)     \
@@ -27,12 +29,15 @@ EXTRA_DIST = \
 	gwmthumbnail.h \
 	deskguide_applet.h \
 	deskguide_applet.gnorba \
-	deskguide_applet.desktop \
+	deskguide_applet.desktop.in \
 	gnome-deskguide-splash.png \
-	gnome-deskguide.png
+	gnome-deskguide.png \
+	$(man_MANS)
 
 sysdir = $(datadir)/applets/Utility
-sys_DATA = deskguide_applet.desktop
+sys_in_files = deskguide_applet.desktop.in
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gnome-deskguide-splash.png gnome-deskguide.png

@@ -205,12 +205,12 @@ const struct CORBA_TypeCode_struct TC_GNOME_Panel_OrientType_struct = {
 ) && !defined(TC_DEF_TC_GNOME_Panel_BackType)
 #define TC_DEF_TC_GNOME_Panel_BackType 1
 static const char *anon_subnames_array34[] =
-   { "BACK_NONE", "BACK_COLOR", "BACK_PIXMAP" };
+   { "BACK_NONE", "BACK_COLOR", "BACK_PIXMAP", "BACK_TRANSLUCENT" };
 const struct CORBA_TypeCode_struct TC_GNOME_Panel_BackType_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_enum, "BackType", "IDL:GNOME/Panel/BackType:1.0",
-   0, 3,
+   0, 4,
    (const char **) anon_subnames_array34,
    NULL,
    NULL,

@@ -22,7 +22,7 @@ HelpWindow helpWindowNew(gchar *name,
 			 HelpWindowCB set_current_callback,
 			 HelpWindowCB config_callback);
 void helpWindowClose(HelpWindow win);
-void helpWindowShowURL(HelpWindow win, gchar *ref, 
+void helpWindowShowURL(HelpWindow win, const gchar *ref, 
 		       gboolean useCache, gboolean addToQueue);
 void helpWindowSetHistory(HelpWindow win, History history);
 void helpWindowSetToc(HelpWindow win, Toc toc);

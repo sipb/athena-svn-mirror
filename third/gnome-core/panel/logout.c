@@ -13,10 +13,12 @@ extern GSList *applets_last;
 extern GtkTooltips *panel_tooltips;
 
 extern GlobalConfig global_config;
+extern gboolean commie_mode;
 
 static void
 logout (GtkWidget *widget)
 {
+	gtk_signal_handler_block_by_func (GTK_OBJECT (widget), GTK_SIGNAL_FUNC(logout), NULL);
 	if (global_config.drawer_auto_close) {
 		GtkWidget *parent = PANEL_WIDGET(widget->parent)->panel_parent;
 		g_return_if_fail(parent!=NULL);
@@ -31,6 +33,7 @@ logout (GtkWidget *widget)
 	}
 
 	panel_quit();
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (widget), GTK_SIGNAL_FUNC(logout), NULL);
 }
 
 static void  
@@ -189,8 +192,9 @@ load_lock_applet(PanelWidget *panel, int pos, gboolean exactpos)
 			    NULL, _("Kill Daemon"));
 	applet_add_callback(applets_last->data, "restart",
 			    NULL, _("Restart Daemon"));
-	applet_add_callback(applets_last->data, "prefs",
-			    NULL, _("Preferences"));
+	if ( ! commie_mode)
+		applet_add_callback(applets_last->data, "prefs",
+				    NULL, _("Preferences"));
 	applet_add_callback(applets_last->data, "help",
 			    GNOME_STOCK_PIXMAP_HELP,
 			    _("Help"));

@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
@@ -209,12 +210,13 @@ loadFileToBuf( gchar *file, guchar **bufout, gint *lenout )
 
 	while (bytes > 0) {
 		if (!out)
-			out = g_malloc(bytes);
+			out = g_malloc(bytes + 1); /* 1 for zero byte */
 		else 
-			out = g_realloc(out, len+bytes);
+			out = g_realloc(out, len+bytes + 1);
 		
 		memcpy(out+len, buf, bytes);
 		len += bytes;
+		out[len] = '\0';
 #ifdef HAVE_LIBBZ2
 		if (bz == 1)
 			bytes=bzread(bf, buf, 8192);

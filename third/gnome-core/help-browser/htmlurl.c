@@ -116,7 +116,7 @@ html_url_new (const gchar *s)
 	const gchar *reference_ptr;
 	guint s_len;
 
-	new = g_new (HTMLURL, 1);
+	new = g_new0 (HTMLURL, 1);
 	new->protocol = NULL;
 	new->username = NULL;
 	new->password = NULL;
@@ -223,7 +223,7 @@ html_url_dup (const HTMLURL *url, HTMLURLDupFlags flags)
 	if (url == NULL)
 		return NULL;
 
-	new = g_new (HTMLURL, 1);
+	new = g_new0 (HTMLURL, 1);
 
 	if (flags & HTML_URL_DUP_NOPROTOCOL)
 		new->protocol = NULL;

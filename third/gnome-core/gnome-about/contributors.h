@@ -17,6 +17,7 @@ static gchar *contributors[] = {
 	"Seth Alves",
 	"Shawn T. Amundson",
 	"Erik Andersen",
+	"Marius Andreiana",
 	"Jon Anhold",
 	N_("Timur I. Bakeyev"),
 	/* if your encoding allows it, use aacute (U00E1) 
@@ -179,6 +180,7 @@ static gchar *contributors[] = {
 	"Jaka Mocnik",
 	"Paolo Molaro",
 	"David Mosberger",
+	"Rodrigo Moya",
 	"Dan Mueth",
 	"Thomas Muldowney",
 	/* If your encodings allows it, use ntilde (U00F1) for the 'n'
@@ -205,6 +207,9 @@ static gchar *contributors[] = {
 	"Stuart Parmenter",
 	"Havoc Pennington",
 	"Ettore Perazzoli",
+	/* If your encoding allows it, use oacute (U00F3) for the 'o'
+	 * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin' */
+	N_("Carlos Perello Marin"),
 	"Ian Peters",
 	"Martin Kasper Petersen",
 	"Christof Petig",

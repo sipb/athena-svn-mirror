@@ -62,7 +62,8 @@ static GtkTooltips	*gp_tooltips = NULL;
 static GtkTooltips	*gp_desktips = NULL;
 static GtkWidget	*gp_container = NULL;
 static GtkWidget	*gp_desk_box = NULL;
-static GtkWidget	*gp_desk_widget[MAX_DESKTOPS] = { NULL, };
+static GtkWidget       **gp_desk_widget;
+static guint             CUR_MAX_DESKTOPS = MAX_DESKTOPS;
 static guint		 gp_n_desk_widgets = 0;
 static GdkWindow	*gp_atom_window = NULL;
 static GtkOrientation	 gp_orientation = GTK_ORIENTATION_HORIZONTAL;
@@ -73,82 +74,82 @@ static guint		 GP_ARROW_DIR = 0;
 static gchar		*DESK_GUIDE_NAME = NULL;
 
 static ConfigItem gp_config_items[] = {
-  CONFIG_PAGE (N_ ("Display")),
-  CONFIG_SECTION (sect_layout,					N_ ("Layout")),
+  CONFIG_PAGE (N_("Display")),
+  CONFIG_SECTION (sect_layout,					N_("Layout")),
   CONFIG_BOOL (show_arrow,      TRUE,
-	       N_ ("Show tasklist arrow")),
+	       N_("Show tasklist arrow")),
   CONFIG_BOOL (switch_arrow,	FALSE,
-	       N_ ("Switch horizontal/vertical position of tasklist arrow")),
+	       N_("Switch horizontal/vertical position of tasklist arrow")),
   CONFIG_BOOL (current_only,	FALSE,
-	       N_ ("Only show current desktop in pager")),
+	       N_("Only show current desktop in pager")),
   CONFIG_BOOL (raise_grid,	FALSE,
-	       N_ ("Raise area grid over tasks")),
-  CONFIG_SECTION (sect_thumb_nail,				N_ ("Thumb Nails")),
-  CONFIG_BOOL (enable_thumb_nails,	TRUE,
-	       N_ ("Fill window thumbnails with screen contents")),
+	       N_("Raise area grid over tasks")),
+  CONFIG_SECTION (sect_thumb_nail,				N_("Thumb Nails")),
+  CONFIG_BOOL (enable_thumb_nails,	FALSE,
+	       N_("Fill window thumbnails with screen contents")),
   CONFIG_RANGE (thumb_nail_delay, 500,	50,	5000,
-		N_ ("Incremental update delay [ms]")),
-  CONFIG_SECTION (sect_tooltips,				N_ ("Tooltips")),
+		N_("Incremental update delay [ms]")),
+  CONFIG_SECTION (sect_tooltips,				N_("Tooltips")),
   CONFIG_BOOL (tooltips,	TRUE,
-	       N_ ("Show Desk-Guide tooltips")),
+	       N_("Show Desk-Guide tooltips")),
   CONFIG_RANGE (tooltips_delay, 500,	1,	5000,
-		N_ ("Desk-Guide tooltip delay [ms]")),
+		N_("Desk-Guide tooltip delay [ms]")),
   CONFIG_BOOL (desktips,	TRUE,
-	       N_ ("Show desktop name tooltips")),
+	       N_("Show desktop name tooltips")),
   CONFIG_RANGE (desktips_delay, 10,	1,	5000,
-		N_ ("Desktop name tooltip delay [ms]")),
+		N_("Desktop name tooltip delay [ms]")),
   
-  CONFIG_PAGE (N_ ("Tasks")),
-  CONFIG_SECTION (sect_task_visibility,				N_ ("Visibility")),
+  CONFIG_PAGE (N_("Tasks")),
+  CONFIG_SECTION (sect_task_visibility,				N_("Visibility")),
   CONFIG_BOOL (show_hidden_tasks,	TRUE,
-	       N_ ("Show hidden tasks (HIDDEN)")),
+	       N_("Show hidden tasks (HIDDEN)")),
   CONFIG_BOOL (show_shaded_tasks,	TRUE,
-	       N_ ("Show shaded tasks (SHADED)")),
+	       N_("Show shaded tasks (SHADED)")),
   CONFIG_BOOL (show_skip_winlist,	FALSE,
-	       N_ ("Show tasks which hide from window list (SKIP-WINLIST)")),
+	       N_("Show tasks which hide from window list (SKIP-WINLIST)")),
   CONFIG_BOOL (show_skip_taskbar,	FALSE,
-	       N_ ("Show tasks which hide from taskbar (SKIP-TASKBAR)")),
+	       N_("Show tasks which hide from taskbar (SKIP-TASKBAR)")),
   /*  CONFIG_SECTION (sect_null_1, NULL), */
   
-  CONFIG_PAGE (N_ ("Geometry")),
-  CONFIG_SECTION (sect_horizontal,				N_ ("Horizontal Layout")),
+  CONFIG_PAGE (N_("Geometry")),
+  CONFIG_SECTION (sect_horizontal,				N_("Horizontal Layout")),
   CONFIG_RANGE (area_height,	44,	4,	1024,
-		N_ ("Desktop Height [pixels]")),
+		N_("Desktop Height [pixels]")),
   CONFIG_BOOL (abandon_area_height,		TRUE,
-	       N_ ("Override desktop height with panel size")),
+	       N_("Override desktop height with panel size")),
   CONFIG_BOOL (div_by_vareas,		TRUE,
-	       N_ ("Divide height by number of vertical areas")),
+	       N_("Divide height by number of vertical areas")),
   CONFIG_RANGE (row_stackup,	1,	1,	64,
-		N_ ("Rows of Desktops")),
+		N_("Rows of Desktops")),
   CONFIG_BOOL (div_by_nrows,		TRUE,
-	       N_ ("Divide height by number of rows")),
-  CONFIG_SECTION (sect_vertical,				N_ ("Vertical Layout")),
+	       N_("Divide height by number of rows")),
+  CONFIG_SECTION (sect_vertical,				N_("Vertical Layout")),
   CONFIG_RANGE (area_width,	44,	4,	1024,
-		N_ ("Desktop Width [pixels]")),
+		N_("Desktop Width [pixels]")),
   CONFIG_BOOL (abandon_area_width,		TRUE,
-	       N_ ("Override desktop width with panel size")),
+	       N_("Override desktop width with panel size")),
   CONFIG_BOOL (div_by_hareas,		TRUE,
-	       N_ ("Divide width by number of horizontal areas")),
+	       N_("Divide width by number of horizontal areas")),
   CONFIG_RANGE (col_stackup,	1,	1,	64,
-		N_ ("Columns of Desktops")),
+		N_("Columns of Desktops")),
   CONFIG_BOOL (div_by_ncols,		TRUE,
-	       N_ ("Divide width by number of columns")),
+	       N_("Divide width by number of columns")),
 
-  CONFIG_PAGE (N_ ("Advanced")),
-  CONFIG_SECTION (sect_workarounds,			N_ ("Window Manager Workarounds")),
+  CONFIG_PAGE (N_("Advanced")),
+  CONFIG_SECTION (sect_workarounds,			N_("Window Manager Workarounds")),
   CONFIG_BOOL (skip_movement_offset,		FALSE,
-	       N_ ("Window manager moves decoration window instead\n"
+	       N_("Window manager moves decoration window instead\n"
 		   "(AfterStep, Enlightenment, FVWM, IceWM)")),
   CONFIG_BOOL (unified_areas,			TRUE,
-	       N_ ("Window manager changes active area on all desktops\n"
+	       N_("Window manager changes active area on all desktops\n"
 		   "(FVWM, Sawfish)")),
   CONFIG_BOOL (violate_client_msg,		FALSE,
-	       N_ ("Window manager expects pager to modify area+desktop properties directly\n"
+	       N_("Window manager expects pager to modify area+desktop properties directly\n"
 		   "(Enlightenment, FVWM)")),
 
-  CONFIG_SECTION (sect_behaviour,				N_ ("Behaviour")),
+  CONFIG_SECTION (sect_behaviour,				N_("Behaviour")),
   CONFIG_BOOL (task_view_popdown_request,	TRUE,
-	       N_ ("Popdown task view automatically")),
+	       N_("Popdown task view automatically")),
 };
 static guint  gp_n_config_items = (sizeof (gp_config_items) /
 				   sizeof (gp_config_items[0]));
@@ -169,7 +170,7 @@ main (gint   argc,
 		      NULL, 0, NULL);
   
   gnome_window_icon_set_default_from_file (GNOME_ICONDIR "/gnome-deskguide.png");
-  DESK_GUIDE_NAME = _ ("GNOME Desktop Guide (Pager)");
+  DESK_GUIDE_NAME = _("GNOME Desktop Guide (Pager)");
   
   /* setup applet widget
    */
@@ -180,17 +181,19 @@ main (gint   argc,
     g_error ("Unable to create applet widget");
   gtk_widget_ref (gp_applet);
   
+  gp_desk_widget = g_new0 (GtkWidget*, CUR_MAX_DESKTOPS);
+  
   /* bail out for non GNOME window managers
    */
   if (!gwmh_init ())
     {
       GtkWidget *dialog;
-      gchar *error_msg = _ ("You are not running a GNOME Compliant\n"
+      gchar *error_msg = _("You are not running a GNOME Compliant\n"
 			    "Window Manager. GNOME support by the \n"
 			    "window manager is strongly recommended\n"
 			    "for proper Desk Guide operation.");
       
-      dialog = gnome_error_dialog (_ ("Desk Guide Alert"));
+      dialog = gnome_error_dialog (_("Desk Guide Alert"));
       gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
 			  gtk_widget_new (GTK_TYPE_LABEL,
 					  "visible", TRUE,
@@ -235,20 +238,20 @@ main (gint   argc,
   applet_widget_register_stock_callback (APPLET_WIDGET (gp_applet),
 					 "properties",
 					 GNOME_STOCK_MENU_PROP,
-					 _ ("Properties..."),
+					 _("Properties..."),
 					 (AppletCallbackFunc) gp_config_popup,
 					 NULL);
   applet_widget_register_stock_callback (APPLET_WIDGET (gp_applet),
 					 "help",
 					 GNOME_STOCK_PIXMAP_HELP,
-					 _ ("Help"),
+					 _("Help"),
 					 (AppletCallbackFunc) gp_help_popup_deskguide,
 					 NULL);
 
   applet_widget_register_stock_callback (APPLET_WIDGET (gp_applet),
 					 "about",
 					 GNOME_STOCK_MENU_ABOUT,
-					 _ ("About..."),
+					 _("About..."),
 					 (AppletCallbackFunc) gp_about,
 					 NULL);
   
@@ -274,7 +277,9 @@ main (gint   argc,
   gdk_window_unref (gp_atom_window);
   gtk_widget_destroy (gp_applet);
   gtk_widget_unref (gp_applet);
-  
+
+  g_free (gp_desk_widget);
+
   return 0;
 }
 
@@ -476,8 +481,11 @@ gp_create_desk_widgets (void)
 {
   gdouble area_size;
 
-  if (N_DESKTOPS > MAX_DESKTOPS)
-    g_error ("MAX_DESKTOPS limit reached, adjust source code");
+  if (N_DESKTOPS > CUR_MAX_DESKTOPS) {
+    gp_desk_widget = g_renew (GtkWidget*, gp_desk_widget, CUR_MAX_DESKTOPS + 1);
+    gp_desk_widget[CUR_MAX_DESKTOPS++] = NULL;
+    g_message ("Growing desktop array to allow %d desktops.", CUR_MAX_DESKTOPS);
+  }
 
   /* some gwmh configuration hacks ;( */
   gwmh_desk_set_hack_values (BOOL_CONFIG (unified_areas),
@@ -637,7 +645,7 @@ gp_widget_button_toggle_task_list (GtkWidget *widget,
       GtkWidget *task_view;
 
       dialog = gtk_widget_new (GTK_TYPE_WINDOW,
-			       "title", _ ("Desk Guide Task View"),
+			       "title", _("Desk Guide Task View"),
 			       "auto_shrink", FALSE,
 			       "allow_shrink", FALSE,
 			       "allow_grow", TRUE,
@@ -973,7 +981,7 @@ gp_config_add_boolean (GtkWidget  *vbox,
   
   widget = gtk_widget_new (GTK_TYPE_CHECK_BUTTON,
 			   "visible", TRUE,
-			   "label", _ (item->name),
+			   "label", _(item->name),
 			   "active", GPOINTER_TO_INT (item->value),
 			   "border_width", CONFIG_ITEM_BORDER,
 			   "signal::toggled", gp_config_toggled, item,
@@ -1017,7 +1025,7 @@ gp_config_add_range (GtkWidget	*vbox,
   label = gtk_widget_new (GTK_TYPE_LABEL,
 			  "visible", TRUE,
 			  "xalign", 0.0,
-			  "label", _ (item->name),
+			  "label", _(item->name),
 			  "parent", hbox,
 			  NULL);
   spinner = gtk_spin_button_new (GTK_ADJUSTMENT (adjustment), 0, 0);
@@ -1089,17 +1097,17 @@ gp_config_create_page (GSList		*item_slist,
       
       item_slist = node->next;
       
-      page_name = _ (item->name);
+      page_name = _(item->name);
     }
   else
-    page_name = _ ("Global");
+    page_name = _("Global");
   
   page = gtk_widget_new (GTK_TYPE_VBOX,
 			 "visible", TRUE,
 			 "border_width", CONFIG_OBOX_BORDER,
 			 "spacing", CONFIG_OBOX_SPACING,
 			 NULL);
-  gnome_property_box_append_page (pbox, page, gtk_label_new (_ (page_name)));
+  gnome_property_box_append_page (pbox, page, gtk_label_new (_(page_name)));
   
   while (item_slist)
     {
@@ -1110,7 +1118,7 @@ gp_config_create_page (GSList		*item_slist,
       item_slist = item_slist->next;
       
       if (item->min == -2 && item->max == -2)			/* section */
-	vbox = gp_config_add_section (GTK_BOX (page), _ (item->name));
+	vbox = gp_config_add_section (GTK_BOX (page), _(item->name));
       else if (item->min == -1 && item->max == -1)		/* boolean */
 	{
 	  if (!vbox)
@@ -1148,7 +1156,7 @@ gp_config_popup (void)
       
       dialog = gnome_property_box_new ();
       gtk_widget_set (dialog,
-		      "title", _ ("Desk Guide Settings"),
+		      "title", _("Desk Guide Settings"),
 		      "signal::apply", gp_destroy_gui, NULL,
 		      "signal::apply", gp_config_apply_tmp_values, NULL,
 		      "signal::apply", gp_init_gui, NULL,

@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >セッションプロパティマネージャ</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="NEXT"
 TITLE="既知のバグと制限"
 HREF="bugs.html"></HEAD
@@ -52,7 +52,7 @@ CLASS="TOC"
 ></DT
 ><DT
 ><A
-HREF="index.html#SESSION-PROPERTIES"
+HREF="index.html#session-properties"
 >セッションプロパティ</A
 ></DT
 ><DT
@@ -65,29 +65,23 @@ HREF="bugs.html"
 HREF="authors.html"
 >著者</A
 ></DT
-><DT
-><A
-HREF="license.html"
->License</A
-></DT
 ></DL
 ></DIV
-><DIV
+>  
+  <DIV
 CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="SESSION-PROPERTIES"
+NAME="session-properties"
 >セッションプロパティ</A
 ></H1
-><P
+>    
+    <P
 >      <SPAN
 CLASS="SYSTEMITEM"
 >セッションプロパティ</SPAN
->は<A
-HREF="index.html#SESSION-PROPERTIES-SCREENSHOT"
->Figure 1</A
->のようにGNOMEで動作しているアプリケーションやキャプレットの状態を監視しています。
+>はFigure 1のようにGNOMEで動作しているアプリケーションやキャプレットの状態を監視しています。
       <SPAN
 CLASS="SYSTEMITEM"
 >セッションプロパティ</SPAN
@@ -100,24 +94,20 @@ CLASS="SYSTEMITEM"
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
 >から削除することで、次回のログインから再起動しないように設定することもできます。
-      当然killコマンドで明示的にアプリケーションを殺すなど他にも方法もありますが、<A
-HREF="index.html#SESSION-PROPERTIES-RESPAWN"
-><TT
+      当然killコマンドで明示的にアプリケーションを殺すなど他にも方法もありますが、<TT
 CLASS="GUILABEL"
 ><B
 >復活状態</B
 ></TT
-></A
 >にあるアプリケーションの再起動を止めさせることはできません。
-      そのようなアプリケーションを永続的に除くには<A
-HREF="index.html#SESSION-PROPERTIES-REMOVE"
-><B
+      そのようなアプリケーションを永続的に除くには<B
 CLASS="GUIBUTTON"
 >削除</B
-></A
 >ボタンを使う以外に方法はありません。
     </P
-><DIV
+>
+
+    <DIV
 CLASS="NOTE"
 ><P
 ></P
@@ -131,7 +121,7 @@ WIDTH="25"
 ALIGN="CENTER"
 VALIGN="TOP"
 ><IMG
-SRC="./stylesheet-images/note.png"
+SRC="./stylesheet-images/note.gif"
 HSPACE="5"
 ALT="Note"></TD
 ><TH
@@ -147,7 +137,9 @@ VALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
+>      
+
+      <P
 >	完全にGNOME対応でないアプリケーションは<SPAN
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
@@ -162,32 +154,46 @@ CLASS="SYSTEMITEM"
 >で管理されている場合、一覧の中にそのアプリケーションが表示されているはずです。
 	ログイン時にGNOME非対応なアプリケーションを再起動させるためには、Non-session-managed Startup Programsの章をご覧下さい。
       </P
-></TD
+>
+    </TD
 ></TR
 ></TABLE
 ></DIV
-><DIV
+>
+
+    
+
+    
+    <DIV
 CLASS="FIGURE"
 ><A
-NAME="SESSION-PROPERTIES-SCREENSHOT"
+NAME="session-properties-screenshot"
 ></A
-><P
+>      
+      	
+	<P
 ><IMG
 SRC="session-properties.png"></P
-><P
+>
+      
+    <P
 ><B
 >Figure 1. セッションプロパティ ダイアログ</B
 ></P
 ></DIV
-><DIV
+>
+
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SESSION-PROPERTIES-SAVE"
+NAME="session-properties-save"
 >GNOMEセッションの保存</A
 ></H2
-><P
+>      
+
+      <P
 >	GNOMEセッションを保存するには<B
 CLASS="GUIMENU"
 >メインメニュー</B
@@ -206,7 +212,9 @@ CLASS="GUIMENUITEM"
 >を選択します。
 	ここでは、アプリケーションの設定や作業(開いているファイルや未保存のデータ)などの状態を保存できます。
       </P
-><DIV
+>
+
+      <DIV
 CLASS="NOTE"
 ><P
 ></P
@@ -220,7 +228,7 @@ WIDTH="25"
 ALIGN="CENTER"
 VALIGN="TOP"
 ><IMG
-SRC="./stylesheet-images/note.png"
+SRC="./stylesheet-images/note.gif"
 HSPACE="5"
 ALT="Note"></TD
 ><TH
@@ -236,34 +244,37 @@ VALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
+>	
+	<P
 >	  GNOMEに対応していないアプリケーションでは現在の設定やそれに関連する作業は保存されません。不測の事態に備え定期的に作業を保存することをおすすめします。
 	</P
-></TD
+>
+      </TD
 ></TR
 ></TABLE
 ></DIV
-></DIV
-><DIV
+>
+    </DIV
+>
+
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SESSION-PROPERTIES-ORDER"
+NAME="session-properties-order"
 >順番</A
 ></H2
-><P
+>      
+      <P
 >	<TT
 CLASS="GUILABEL"
 ><B
 >順番</B
 ></TT
->ではGNOME<A
-HREF="index.html#SESSION-PROPERTIES-SCREENSHOT"
-><SPAN
+>ではGNOME<SPAN
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
-></A
 >上で起動するアプリケーションの順番を設定します。
 	ここで依存関係にあるアプリケーションやキャプレットを起動した後で他のアプリケーションを起動させることが可能になります。
 	もしサーバのような<SPAN
@@ -285,7 +296,9 @@ CLASS="GUILABEL"
 ></TT
 >に小さい値を指定して下さい。
       </P
-><DIV
+>
+
+      <DIV
 CLASS="IMPORTANT"
 ><P
 ></P
@@ -299,7 +312,7 @@ WIDTH="25"
 ALIGN="CENTER"
 VALIGN="TOP"
 ><IMG
-SRC="./stylesheet-images/important.png"
+SRC="./stylesheet-images/important.gif"
 HSPACE="5"
 ALT="Important"></TD
 ><TH
@@ -315,7 +328,8 @@ VALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
+>	
+	<P
 >	  <TT
 CLASS="GUILABEL"
 ><B
@@ -329,31 +343,33 @@ CLASS="GUILABEL"
 ></TT
 >についての知識を持たない方が値を変更することは控えたほうが無難です。
 	</P
-></TD
+>
+      </TD
 ></TR
 ></TABLE
 ></DIV
-></DIV
-><DIV
+>
+    </DIV
+>
+
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SESSION-PROPERTIES-STYLE"
+NAME="session-properties-style"
 >スタイルオプション</A
 ></H2
-><P
+>      
+      <P
 >	<TT
 CLASS="GUILABEL"
 ><B
 >スタイル</B
 ></TT
->オプションはGNOME<A
-HREF="index.html#SESSION-PROPERTIES-SCREENSHOT"
->	<SPAN
+>オプションはGNOME	<SPAN
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
-></A
 >上で動作するアプリケーションの再起動時のスタイルを設定します。
 	<TT
 CLASS="GUILABEL"
@@ -369,12 +385,13 @@ CLASS="GUILABEL"
 >になっています。
 	現在アプリケーション及びキャプレットのスタイルは4種類あります。   
 	</P
-><P
+>
+      <P
 ></P
 ><UL
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <TT
 CLASS="GUILABEL"
 ><B
@@ -392,10 +409,11 @@ CLASS="GUILABEL"
 ></TT
 >欄には何も表示されていません。
 	  </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -425,10 +443,11 @@ CLASS="SYSTEMITEM"
 >パネル</SPAN
 >が挙げられます。
 	  </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -443,10 +462,11 @@ CLASS="GUILABEL"
 > - このスタイルではアプリケーションやキャプレットが一時的な存在であることを示しています。
 	    ログアウトするとデータを保存後にアプリケーションは終了し、再ログインしても再起動はしません。
 	  </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -461,9 +481,12 @@ CLASS="GUILABEL"
 > - このスタイルは、そのアプリケーションが単にGNOMEやGNOME対応のソフトウェアの設定を保存、読み込みのためだけに動作していることを示しています。
 	    これらのアプリケーションやキャプレットは通常低い優先度やハンドル設定になっています。
 	  </P
-></LI
+>
+	</LI
 ></UL
-><DIV
+>
+
+      <DIV
 CLASS="IMPORTANT"
 ><P
 ></P
@@ -477,7 +500,7 @@ WIDTH="25"
 ALIGN="CENTER"
 VALIGN="TOP"
 ><IMG
-SRC="./stylesheet-images/important.png"
+SRC="./stylesheet-images/important.gif"
 HSPACE="5"
 ALT="Important"></TD
 ><TH
@@ -493,7 +516,8 @@ VALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
-><P
+>	
+	<P
 >	  <TT
 CLASS="GUILABEL"
 ><B
@@ -506,46 +530,44 @@ CLASS="GUILABEL"
 ></TT
 >について知識を持たない方が値を変更することは控えたほうが無難です。
   	</P
-></TD
+>
+      </TD
 ></TR
 ></TABLE
 ></DIV
-></DIV
-><DIV
+>
+     </DIV
+>
+
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="STARTUP-PROGRAMS-STATE"
+NAME="startup-programs-state"
 >状態</A
 ></H2
-><P
+>      
+      <P
 >	<TT
 CLASS="GUILABEL"
 ><B
 >状態</B
 ></TT
->ではGNOME<A
-HREF="index.html#SESSION-PROPERTIES-SCREENSHOT"
-><SPAN
+>ではGNOME<SPAN
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
-></A
 >上でアプリケーションやキャプレットがその瞬間どうなっているかを表示します。
-	目にするのはほとんど <A
-HREF="index.html#SESSION-PROPERTIES-INACTIVE"
->休止</A
->状態か<A
-HREF="index.html#SESSION-PROPERTIES-RUN"
->活動</A
->状態のいずれかです。
+	目にするのはほとんど 休止状態か活動状態のいずれかです。
       </P
-><P
+>
+
+      <P
 ></P
 ><UL
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <TT
 CLASS="GUILABEL"
 ><B
@@ -570,10 +592,11 @@ CLASS="GUILABEL"
 ></TT
 >の欄には空白になっているだけです。
 	  </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -592,10 +615,11 @@ CLASS="GUILABEL"
 ></TT
 >状態にあるアプリケーションは、セッションの中で通常通りに走っています。これはアプリケーションの通常の状態であり、最もありふれたものです。
 	  </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -620,10 +644,11 @@ CLASS="GUILABEL"
 ></TT
 >に移行します。アプリケーションの開始に若干時間がかかっている場合を除いて、通常この状態を目にすることはありません。
 	  </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -641,18 +666,16 @@ CLASS="GUILABEL"
 >保存</B
 ></TT
 >状態にあるアプリケーションは設定やデータを保存しています。
-	    この状態はログアウト時や手動で<A
-HREF="index.html#SESSION-PROPERTIES-SAVE"
->セッションを保存する</A
->時、GNOME<SPAN
+	    この状態はログアウト時や手動でセッションを保存する時、GNOME<SPAN
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
 >が各アプリケーションにデータ保存を命ずる際に起こります。
 	    </P
-></LI
+>
+	</LI
 ><LI
 STYLE="list-style-type: opencircle"
-><P
+>	  <P
 >	    <B
 CLASS="GUIICON"
 >	      <IMG
@@ -682,26 +705,28 @@ CLASS="GUILABEL"
 	    この状態に陥ったアプリケーションがあったら、<SPAN
 CLASS="SYSTEMITEM"
 >セッションプロパティ</SPAN
->内をクリックして強調表示させ、<A
-HREF="index.html#SESSION-PROPERTIES-REMOVE"
-><B
+>内をクリックして強調表示させ、<B
 CLASS="GUIBUTTON"
 >削除</B
-></A
 >ボタンを押してください。
     	  </P
-></LI
+>
+	</LI
 ></UL
-></DIV
-><DIV
+>
+    </DIV
+>
+
+    <DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="SESSION-PROPERTIES-REMOVE"
+NAME="session-properties-remove"
 >削除ボタン</A
 ></H2
-><P
+>      
+      <P
 >	<B
 CLASS="GUIICON"
 >	  <IMG
@@ -711,34 +736,38 @@ SRC="button_remove.png">
 	<B
 CLASS="GUIBUTTON"
 >削除</B
->ボタンはGNOME<A
-HREF="index.html#SESSION-PROPERTIES-SCREENSHOT"
-><SPAN
+>ボタンはGNOME<SPAN
 CLASS="SYSTEMITEM"
 >セッションマネージャ</SPAN
-></A
 >からアプリケーションを削除、終了させます。
 	アプリケーションが暴走した後や、<TT
 CLASS="GUILABEL"
 ><B
 >状態</B
 ></TT
->欄が<A
-HREF="index.html#SESSION-PROPERTIES-RESPAWN"
-><TT
+>欄が<TT
 CLASS="GUILABEL"
 ><B
 >復活</B
 ></TT
-></A
 >の場合は、<B
 CLASS="GUIBUTTON"
 >削除</B
 >ボタンで終了させることをおすすめします。
       </P
-></DIV
-></DIV
-></DIV
+>
+    </DIV
+>
+  </DIV
+>
+  
+  
+  
+  
+
+
+
+  </DIV
 ><DIV
 CLASS="NAVFOOTER"
 ><HR

@@ -33,7 +33,7 @@ struct _docObj {
 };
 
 docObj
-docObjNew(gchar *ref, gboolean useCache)
+docObjNew(const gchar *ref, gboolean useCache)
 {
 	docObj p;
 
@@ -125,9 +125,6 @@ docObjResolveURL(docObj obj, gchar *currentRef)
 	if (!strncmp(decomp->access, "file", 4)) {
 	    obj->transportMethod = TRANS_FILE;
 	    obj->transportFunc   = transportFile;
-	} else if (!strncmp(decomp->access, "http", 4)) {
-	    obj->transportMethod = TRANS_HTTP;
-	    obj->transportFunc   = transportHTTP;
 	} else {
 	    obj->transportMethod = TRANS_UNKNOWN;
 	    obj->transportFunc   = transportUnknown;

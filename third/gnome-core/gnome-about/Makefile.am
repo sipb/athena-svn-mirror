@@ -3,6 +3,7 @@ INCLUDES = 			\
 	-I$(top_srcdir)/intl	\
 	-I$(top_builddir)/intl	\
 	$(GNOME_INCLUDEDIR)	\
+	$(PIXBUF_CFLAGS)	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 LDADD = \
@@ -18,7 +19,9 @@ gnome_about_SOURCES =		\
 	gnome-about.c		\
 	contributors.h
 
+man_MANS = gnome-about.1
+
 authorsdir = $(datadir)/gnome-about
 authors_DATA = contributors.dat
 
-EXTRA_DIST = logo.xpm $(authors_DATA)
+EXTRA_DIST = logo.xpm $(authors_DATA) $(man_MANS)

@@ -1,20 +1,17 @@
-# Note that this is NOT a relocatable package
-%define ver      	1.4.0.4
-%define RELEASE		1
-%define rel      	%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define localstatedir   /var/lib
 
 Summary:         The core programs for the GNOME GUI desktop environment.
 Name: 		 gnome-core
-Version: 	 %ver
-Release: 	 %rel
-Copyright: 	 LGPL
+Version: 	 1.4.0.6
+Release: 	 1
+Epoch:		 1
+License: 	 LGPL
 Group: 		 System Environment/Base
-Source:          ftp://ftp.gnome.org/pub/sources/gnome-core/gnome-core-%{ver}.tar.gz
+Source:          ftp://ftp.gnome.org/pub/sources/gnome-core/gnome-core-%{version}.tar.gz
 BuildRoot: 	 /var/tmp/%{name}-%{version}-root
 URL: 		 http://www.gnome.org
-Prereq: 	 /sbin/install-info
-Requires:        gtk+ >= 1.2.5, gdk-pixbuf >= 0.7.0
+Requires:        gtk+ >= 1.2.5
+Requires:        gdk-pixbuf >= 0.7.0
 Requires:        libglade >= 0.14, libxml
 Requires:        gnome-libs >= 1.0.59
 Requires:        ORBit >= 0.5.0
@@ -45,8 +42,7 @@ GNOME front end, you'll also need to install the gnome-linuxconf package.
 %package devel
 Summary:        GNOME core libraries, includes, and more.
 Group: 		Development/Libraries
-Requires: 	gnome-core
-PreReq: 	/sbin/install-info
+Requires: 	%name = %version
 
 %description devel
 Panel libraries and header files for creating GNOME panels.
@@ -92,6 +88,7 @@ if which scrollkeeper-update>/dev/null 2>&1; then scrollkeeper-update; fi
 %{_bindir}/*
 %{_sysconfdir}/CORBA/servers/*
 %{_sysconfdir}/sound/events/*
+%{_sysconfdir}/gnome/panel-config/*
 %{_datadir}/locale/*/*/*
 %{_mandir}/man1/*
 %{_mandir}/man5/*
@@ -114,6 +111,15 @@ if which scrollkeeper-update>/dev/null 2>&1; then scrollkeeper-update; fi
 
 
 %changelog
+* Mon Jan 21 2002 Kjartan Maraas <kmaraas@gnome.org>
+- add epoch to make it install properly for people on RHL.
+
+* Mon Aug  6 2001 Gregory Leblanc <gleblanc@linuxweasel.com>
+- removed unnecessary %defines
+- reformatted the header slightly
+- made the devel package require the main package properly
+- replaced copyright with license
+
 * Thu Apr 02 2001 Gregory Leblanc <gleblanc@cu-portland.edu>
 - Fixed %files section to include some directories as well as their contents.
 - Updated to do the scrollkeeper ditty.

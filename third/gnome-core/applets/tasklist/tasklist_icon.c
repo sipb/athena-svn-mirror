@@ -144,7 +144,7 @@ tasklist_icon_check_mini (TasklistTask *task)
 	GdkImage *image;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *pixbuf2;
 	gint size;
 	static gulong KWM_WIN_ICON = 0;
 	Display *xdisplay;
@@ -202,8 +202,10 @@ tasklist_icon_check_mini (TasklistTask *task)
 		
 		image = gdk_image_get (mask, 0, 0, width, height);
 		g_return_val_if_fail (image != NULL, FALSE);
-		
+	
+		pixbuf2 = pixbuf;
 		pixbuf = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
+		gdk_pixbuf_unref(pixbuf2);
 		
 		data = gdk_pixbuf_get_pixels (pixbuf);
 		for (y = 0; y < gdk_pixbuf_get_height (pixbuf); y++) 
@@ -212,8 +214,8 @@ tasklist_icon_check_mini (TasklistTask *task)
 				data += 3;
 				*data++ = gdk_image_get_pixel (image, x, y) == 0 ? 0 : 255;
 			}
-		
 		gdk_pixmap_unref (mask);
+		gdk_image_destroy(image);	
 	}
 
 	gdk_flush ();
@@ -288,7 +290,9 @@ tasklist_icon_check_x (TasklistTask *task)
 	gdk_gc_destroy (gc);
 
 	if (depth == 1) {
+		scaled = pixbuf;
 		pixbuf = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
+		gdk_pixbuf_unref(scaled);
 	}
 	
 	if (wmhints->flags & IconMaskHint) {
@@ -302,7 +306,7 @@ tasklist_icon_check_x (TasklistTask *task)
 
 	       image = gdk_image_get (mask, 0, 0, width, height);
 	       g_return_val_if_fail (image != NULL, FALSE);
-
+	       
 	       scaled = pixbuf;
 	       pixbuf = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
 	       gdk_pixbuf_unref (scaled);

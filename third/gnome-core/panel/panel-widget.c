@@ -17,15 +17,22 @@
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_filterlevel.h>
 #include "rgb-stuff.h"
+#include <gdk/gdkx.h>
+#include <X11/Xatom.h>
 
 GSList *panels = NULL; /*other panels we might want to move the applet to*/
 
 /*define for some debug output*/
 /*#define PANEL_DEBUG 1*/
 
+#define TRANSLUCENT_OPACITY 128
+
 /*there  can universally be only one applet being dragged since we assume
 we only have one mouse :) */
 gboolean panel_applet_in_drag = FALSE;
+
+/* Commie mode! */
+extern gboolean commie_mode;
 
 static void panel_widget_class_init	(PanelWidgetClass *klass);
 static void panel_widget_init		(PanelWidget      *panel_widget);
@@ -61,6 +68,9 @@ gboolean pw_disable_animations = FALSE;
 PanelMovementType pw_movement_type = PANEL_SWITCH_MOVE;
 int pw_applet_padding = 3;
 int pw_applet_border_padding = 0;
+
+/* translucent panel variables */
+GdkPixmap *desktop_pixmap = NULL;
 
 #define APPLET_EVENT_MASK (GDK_BUTTON_PRESS_MASK |		\
 			   GDK_BUTTON_RELEASE_MASK |		\
@@ -102,7 +112,7 @@ applet_data_compare (AppletData *ad1, AppletData *ad2)
  ************************/
 
 guint
-panel_widget_get_type ()
+panel_widget_get_type (void)
 {
 	static guint panel_widget_type = 0;
 
@@ -959,6 +969,64 @@ kill_cache_on_all_buttons(PanelWidget *panel, gboolean even_no_alpha)
 	}
 }
 
+void
+panel_widget_force_repaint (PanelWidget *panel)
+{
+	gtk_widget_queue_clear (GTK_WIDGET (panel));
+	kill_cache_on_all_buttons(panel, TRUE);
+	send_draw_to_all_applets(panel);
+}
+
+/* set up a pixbuf thats the background of the panel */
+void
+panel_widget_setup_translucent_background (PanelWidget *panel)
+{
+	GdkPixmap *pixmap = NULL;
+	GdkBitmap *bitmap = NULL;
+	GdkPixbuf *background = NULL;
+	GdkPixbuf *background_shaded = NULL;
+	GdkWindow *window = gtk_widget_get_parent_window (GTK_WIDGET (panel));
+
+	if (desktop_pixmap && window != NULL) {
+		background = gdk_pixbuf_get_from_drawable (NULL,
+				desktop_pixmap, 
+				gdk_window_get_colormap (window), 
+				panel->x, panel->y,
+				0, 0, panel->width, panel->height);
+
+		background_shaded = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 
+				8, panel->width, panel->height);
+
+		gdk_pixbuf_composite_color (background, background_shaded,
+				0, 0, panel->width, panel->height,
+				0.0, 0.0, 1.0, 1.0, 
+				GDK_INTERP_NEAREST, TRANSLUCENT_OPACITY,
+				0, 0, 100, 
+				0, 0);
+
+		/* render it onto a pixmap to use to tile the background */
+		gdk_pixbuf_render_pixmap_and_mask (background_shaded, &pixmap, 
+				&bitmap, 0);
+
+		/* and we're finished with it */
+		if (panel->backpix != NULL) {
+			gdk_pixbuf_unref (panel->backpix);
+		}
+		panel->backpix = background_shaded;
+		gdk_pixbuf_unref (background);
+
+		if (bitmap != NULL) {
+			gdk_bitmap_unref (bitmap);
+		}
+		if (pixmap != NULL) {
+			if (panel->backpixmap != NULL) {
+				gdk_pixmap_unref (panel->backpixmap);
+			}
+			panel->backpixmap = pixmap;
+		}
+	}
+}
+
 static void
 setup_background(PanelWidget *panel, GdkPixbuf **pb, int *scale_w, int *scale_h,
 		 gboolean *rotate)
@@ -1010,6 +1078,10 @@ setup_background(PanelWidget *panel, GdkPixbuf **pb, int *scale_w, int *scale_h,
 				*rotate = TRUE;
 			}
 		}
+	} else if(panel->back_type == PANEL_BACK_TRANSLUCENT) {
+		/* YAK: *shrug* */
+		/* FIXME: make this returnt he right thing! */
+		*pb = panel->backpix;
 	} 
 }
 
@@ -1068,6 +1140,12 @@ panel_widget_draw_all(PanelWidget *panel, GdkRectangle *area)
 			gdk_gc_set_ts_origin(gc,-da.x,-da.y);
 		}
 	} else if(panel->back_type == PANEL_BACK_PIXMAP) {
+		if(panel->backpixmap) {
+			gdk_gc_set_fill(gc, GDK_TILED);
+			gdk_gc_set_tile(gc, panel->backpixmap);
+			gdk_gc_set_ts_origin(gc,-da.x,-da.y);
+		}
+	} else if(panel->back_type == PANEL_BACK_TRANSLUCENT) {
 		if(panel->backpixmap) {
 			gdk_gc_set_fill(gc, GDK_TILED);
 			gdk_gc_set_tile(gc, panel->backpixmap);
@@ -1401,7 +1479,15 @@ panel_widget_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 		}
 	}
 
-	
+	if (panel->back_type == PANEL_BACK_TRANSLUCENT &&
+			GTK_WIDGET(panel)->window != NULL) {
+		panel->width = allocation->width;
+		panel->height = allocation->height;
+		gdk_window_get_deskrelative_origin (GTK_WIDGET(panel)->window,
+				&panel->x, &panel->y);
+		panel_widget_setup_translucent_background (panel);
+	}
+
 	for(li=send_move;li!=NULL;li=g_slist_next(li)) {
 		AppletData *ad = li->data;
 		gtk_signal_emit(GTK_OBJECT(panel),
@@ -1649,6 +1735,20 @@ panel_try_to_set_pixmap (PanelWidget *panel, char *pixmap)
 	return TRUE;
 }
 
+static int
+panel_try_to_set_translucent (PanelWidget *panel)
+{
+	g_return_val_if_fail(panel!=NULL,FALSE);
+	g_return_val_if_fail(IS_PANEL_WIDGET(panel),FALSE);
+
+	kill_cache_on_all_buttons(panel, FALSE);
+	send_draw_to_all_applets(panel);
+
+	panel_widget_setup_translucent_background (panel);
+
+	return TRUE;
+}
+
 static void
 panel_widget_realize(GtkWidget *w, gpointer data)
 {
@@ -1662,6 +1762,8 @@ panel_widget_realize(GtkWidget *w, gpointer data)
 	if(panel->back_type == PANEL_BACK_PIXMAP) {
 		if (!panel_try_to_set_pixmap (panel, panel->back_pixmap))
 			panel->back_type = PANEL_BACK_NONE;
+	} else if(panel->back_type == PANEL_BACK_TRANSLUCENT) {
+		/* YAK: hmm */
 	} else if(panel->back_type == PANEL_BACK_COLOR) {
 		panel_try_to_set_back_color(panel, &panel->back_color);
 	}
@@ -1896,7 +1998,7 @@ panel_widget_new (gboolean packed,
 				 "realize",
 				 GTK_SIGNAL_FUNC(panel_widget_realize),
 				 panel);
-	
+
 	return GTK_WIDGET(panel);
 }
 
@@ -2040,11 +2142,11 @@ panel_widget_get_free_space(PanelWidget *panel, GtkWidget *applet)
 		return 0;
 	
 	if(panel->no_padding_on_ends) {
-		right = 0;
-		left = panel->size;
+		right = panel->size;
+		left = 0;
 	} else {
-		right = pw_applet_padding;
-		left = panel->size - pw_applet_padding;
+		right = panel->size - pw_applet_padding;
+		left = pw_applet_padding;
 	}
 	
 	for(li = panel->applet_list; li; li = g_list_next(li)) {
@@ -2403,10 +2505,14 @@ panel_widget_applet_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 #endif
 
 			/* don't propagate this event */
-			if (panel->currently_dragged_applet)
+			if (panel->currently_dragged_applet) {
+				gtk_signal_emit_stop_by_name
+					(GTK_OBJECT (widget), "event");
 				return TRUE;
+			}
 
-			if(bevent->button == 2) {
+			if ( ! commie_mode &&
+			    bevent->button == 2) {
 				/* Start drag */
 				panel_widget_applet_drag_start
 					(panel, widget, PW_DRAG_OFF_CURSOR);
@@ -2417,6 +2523,8 @@ panel_widget_applet_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 
 		case GDK_BUTTON_RELEASE:
 			if (panel->currently_dragged_applet) {
+				gtk_signal_emit_stop_by_name
+					(GTK_OBJECT (widget), "event");
 				panel_widget_applet_drag_end(panel);
 				return TRUE;
 			}
@@ -2878,6 +2986,8 @@ panel_widget_change_params(PanelWidget *panel,
 		/* we will queue resize and redraw anyhow */
 	} else if(back_type == PANEL_BACK_COLOR) {
 		panel_try_to_set_back_color(panel, &panel->back_color);
+	} else if(back_type == PANEL_BACK_TRANSLUCENT) {
+		panel_try_to_set_translucent (panel);
 	}
 
 	/* let the applets know we changed the background */

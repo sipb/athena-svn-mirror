@@ -64,6 +64,9 @@ ORBIT_HELP_CLIENT_SOURCES   = $(ORBIT_HELP_COMMON_SOURCES) \
 ORBIT_GENERATED_SOURCEFILES      = $(ORBIT_HELP_COMMON_SOURCES) \
 		               help-browser-skels.c help-browser-stubs.c
 
+man_MANS = gnome-convert.1	\
+	gnome-download.1
+	
 MAINTAINERCLEANFILES = $(ORBIT_GENERATED_SOURCEFILES)
 CLEANFILES = $(ORBIT_GENERATED_SOURCEFILES) my_help_browser_idl
 
@@ -84,13 +87,16 @@ PIXMAPS = close.xpm contents.xpm help.xpm left_arrow.xpm right_arrow.xpm
 EXTRA_DIST = toc.c toc-man.c toc-ghelp.c toc-info.c \
 	     toc.h toc-man.h toc-ghelp.h toc-info.h \
 	     gnome-convert gnome-download sample.c \
-	     $(PIXMAPS) gnome-help.desktop help-browser.gnorba
+	     $(PIXMAPS) gnome-help.desktop.in 	\
+	     help-browser.gnorba $(man_MANS)
 
 gnorbadir = $(sysconfdir)/CORBA/servers
 gnorba_DATA = help-browser.gnorba
 
 sysdir = $(datadir)/gnome/apps
-sys_DATA = gnome-help.desktop
+sys_in_files = gnome-help.desktop.in
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 install-exec-local:
 	$(INSTALL_PROGRAM) $(top_srcdir)/help-browser/gnome-download \

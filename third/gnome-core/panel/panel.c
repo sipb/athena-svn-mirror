@@ -48,6 +48,7 @@ extern int applets_to_sync;
 extern int panels_to_sync;
 extern int need_complete_save;
 
+extern gboolean commie_mode;
 extern GlobalConfig global_config;
 
 extern GtkTooltips *panel_tooltips;
@@ -362,9 +363,9 @@ back_change (AppletInfo *info, PanelWidget *panel)
 			CORBA_Environment ev;
 			CORBA_exception_init(&ev);
 			backing._d = panel->back_type;
-			if(panel->back_type == PANEL_BACK_PIXMAP)
+			if(panel->back_type == PANEL_BACK_PIXMAP) {
 				backing._u.pmap = panel->back_pixmap;
-			else if(panel->back_type == PANEL_BACK_COLOR) {
+			} else if(panel->back_type == PANEL_BACK_COLOR) {
 				backing._u.c.red = panel->back_color.red;
 				backing._u.c.green = panel->back_color.green;
 				backing._u.c.blue = panel->back_color.blue;
@@ -795,15 +796,16 @@ panel_event(GtkWidget *widget, GdkEvent *event, PanelData *pd)
 				}
 
 				gtk_menu_popup (GTK_MENU (menu), NULL, NULL, 
-						global_config.off_panel_popups
-						? panel_menu_position : NULL,
+						panel_menu_position,
 						widget, bevent->button,
 						bevent->time);
 				return TRUE;
 			}
 			break;
 		case 2:
-			return panel_initiate_move (widget, bevent->time);
+			if ( ! commie_mode)
+				return panel_initiate_move (widget,
+							    bevent->time);
 			break;
 		default: break;
 		}

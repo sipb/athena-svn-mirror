@@ -1,3 +1,50 @@
+2001-12-12  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* Xemacs.desktop.in: fixed a syntax error that were
+	                     causing an error while parsed
+
+2001-09-14  Jason Leach  <jasonleach@usa.net>
+
+	* Makefile.am: srcdir != builddir fix.
+
+2001-09-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Makefile.am: Another stab at fixing the xml-i18n-tools stuff.
+	
+2001-09-05  Darin Adler  <darin@bentspoon.com>
+
+	* Makefile.am: Fixed up after Kjartan's recent change.
+	This is enough to make it install again, not sure if
+	it's 100% correct.
+
+2001-08-24  Ole Laursen  <olau@hardworking.dk>
+
+	* GIMP.desktop: Fixed Danish strings.
+
+2001-08-03  Abel Cheung  <maddog@linux.org.hk>
+
+	* *.{desktop,directory} : Reviewed/Modified/Added
+	  traditional Chinese strings.
+
+2001-08-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* *.desktop: Added nynorsk.
+	* *.directory: Added nynorsk.
+	
+2001-06-05  Christian Rose  <menthos@menthos.com>
+
+	* Emacs.desktop, Eterm.desktop, Internet.directory,
+	Multimedia.directory, TkSETI.desktop, Tkrat.desktop,
+	Utilities.directory, XMcd.desktop, Xemacs.desktop,
+	gaspell.desktop, realplayer.desktop, xbmbrowser.desktop:
+	Modified Swedish translations.
+	* Vim.desktop: Added Swedish translation.
+
+2001-05-15  Ole Laursen  <olau@hardworking.dk>
+
+	* *.desktop, *.directory: Looked through the translations and
+	fixed a few.
+
 2000-11-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
 
 	* *.*: Fixed encoding of slovak translations
@@ -10,7 +57,6 @@
 
 	* *.*: Improved some Norwegian translations.
 	
->>>>>>> 1.64
 2000-10-25  Karl Eichwalder  <ke@suse.de>
 
 	* xcolsel.desktop (Comment): Improve "de".

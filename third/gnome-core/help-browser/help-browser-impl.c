@@ -22,16 +22,16 @@ typedef struct {
 } impl_POA_help_browser_simple_browser;
 
 /*** Implementation stub prototypes ***/
-static void impl_help_browser_simple_browser__destroy(impl_POA_help_browser_simple_browser * servant,
+static void impl_help_browser_simple_browser__destroy(PortableServer_Servant servant,
 						    CORBA_Environment * ev);
 void
- impl_help_browser_simple_browser_fetch_url(impl_POA_help_browser_simple_browser * servant,
-					    CORBA_char * URL,
+ impl_help_browser_simple_browser_fetch_url(PortableServer_Servant _servant,
+					    const CORBA_char * URL,
 					    CORBA_Environment * ev);
 
 help_browser_simple_browser
-impl_help_browser_simple_browser_show_url(impl_POA_help_browser_simple_browser * servant,
-					  CORBA_char * URL,
+impl_help_browser_simple_browser_show_url(PortableServer_Servant _servant,
+					  const CORBA_char * URL,
 					  CORBA_Environment * ev);
 
 /*** epv structures ***/
@@ -98,18 +98,20 @@ impl_help_browser_simple_browser__create(PortableServer_POA poa,
 
 /* You shouldn't call this routine directly without first deactivating the servant... */
 void
-impl_help_browser_simple_browser__destroy(impl_POA_help_browser_simple_browser * servant, CORBA_Environment * ev)
+impl_help_browser_simple_browser__destroy (PortableServer_Servant servant, CORBA_Environment * ev)
 {
 
-   POA_help_browser_simple_browser__fini((PortableServer_Servant) servant, ev);
-   g_free(servant);
+   POA_help_browser_simple_browser__fini (servant, ev);
+   g_free (servant);
 }
 
 void
-impl_help_browser_simple_browser_fetch_url(impl_POA_help_browser_simple_browser * servant,
-					   CORBA_char * URL,
+impl_help_browser_simple_browser_fetch_url(PortableServer_Servant _servant,
+					   const CORBA_char * URL,
 					   CORBA_Environment * ev)
 {
+  impl_POA_help_browser_simple_browser * servant =
+	  (impl_POA_help_browser_simple_browser *) _servant;
   if (!servant->window)
     {
       servant->window = makeHelpWindow(0, 0, 0, 0);
@@ -125,10 +127,12 @@ impl_help_browser_simple_browser_fetch_url(impl_POA_help_browser_simple_browser 
 }
 
 help_browser_simple_browser
-impl_help_browser_simple_browser_show_url(impl_POA_help_browser_simple_browser * servant,
-					  CORBA_char * URL,
+impl_help_browser_simple_browser_show_url(PortableServer_Servant _servant,
+					  const CORBA_char * URL,
 					  CORBA_Environment * ev)
 {
+   impl_POA_help_browser_simple_browser * servant =
+	   (impl_POA_help_browser_simple_browser *) _servant;
    help_browser_simple_browser retval;
    HelpWindow                   window;
 
@@ -155,6 +159,7 @@ destroy_server(HelpWindow win)
       oid     = PortableServer_POA_servant_to_id(servant->poa, servant, &ev);
     
       PortableServer_POA_deactivate_object(servant->poa, oid, &ev);
-      impl_help_browser_simple_browser__destroy(servant, &ev);
+      impl_help_browser_simple_browser__destroy((PortableServer_Servant)servant, &ev);
     }
+  CORBA_exception_free(&ev);
 }

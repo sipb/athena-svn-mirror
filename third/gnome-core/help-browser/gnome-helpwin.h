@@ -49,7 +49,7 @@ struct _GnomeHelpWin {
     GtkXmHTML parent;
 #endif
 
-    gchar document_path[1024];
+    gchar document_path[BUFSIZ];
     gchar *html_source;
 };
 

@@ -1,3 +1,26 @@
+2002-01-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* deskguide-applet.c: Apply patch from Russel Steinthal to fix
+	the limit on MAX_DESKTOPS and make it dynamically allocated.
+	Fixes #3456.
+	
+2002-01-09  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* help/it/desk-guide.sgml: Fix typo. From Shingo Akagaki
+	<dora@kondara.org>.
+	
+2001-10-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* deskguide_applet.c: Default to no thumbnails. If only to save some
+	power for our poor laptop users :)
+	
+2001-06-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gwmthumbnail.c: Fix code to be triggered by failure to
+	allocate X shared memory. From Doug Larrick <doug@ties.org>.
+	* deskguide_applet.c: Make all uses of the gettext macros
+	look like _() and N_(), not _ () and N_ ().
+	
 2001-04-27  Leandro su Nerone  <leandro@firenze.linux.it>
 
 	* help/it/desk-guide.sgml: Little adjustment

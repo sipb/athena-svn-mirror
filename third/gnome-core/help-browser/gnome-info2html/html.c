@@ -1,6 +1,7 @@
 /* handles all html operations */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <sys/stat.h>

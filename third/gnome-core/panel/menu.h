@@ -93,6 +93,7 @@ GtkWidget *	create_menu_at		(GtkWidget *menu,
 					 const char *menudir,
 					 gboolean applets,
 					 gboolean launcher_add,
+					 gboolean favourites_add,
 					 const char *dir_name,
 					 const char *pixmap_name,
 					 gboolean fake_submenus,
@@ -101,9 +102,12 @@ GtkWidget *	create_menu_at		(GtkWidget *menu,
 GtkWidget *	create_fake_menu_at	(const char *menudir,
 					 gboolean applets,
 					 gboolean launcher_add,
+					 gboolean favourites_add,
 					 const char *dir_name,
 					 const char *pixmap_name,
 					 gboolean title);
+GtkWidget *	start_favourites_menu	(GtkWidget *menu,
+					 gboolean fake_submenus);
 
 void		submenu_to_display	(GtkWidget *menuw, gpointer data);
 gboolean	menu_need_reread	(GtkWidget *menuw);
@@ -120,7 +124,12 @@ GtkWidget *	create_root_menu	(GtkWidget *root_menu,
 /* some gtk code cut-n-paste action */
 void		our_gtk_menu_position	(GtkMenu *menu);
 
+/* Why the hell do we have a "hack", when we have scroll-menu in
+ * our own codebase?  Well cuz I don't want to require panel code in
+ * scroll-menu, since people copy it around */
+GtkWidget *	hack_scroll_menu_new	(void);
 
+void		panel_add_favourite	(const char *source_dentry);
 
 #define MENU_PATH "menu_path"
 
@@ -160,6 +169,7 @@ enum {
 #define MENU_BACK_NONE "back-none"
 #define MENU_BACK_PIXMAP "back-pixmap"
 #define MENU_BACK_COLOR "back-color"
+#define MENU_BACK_TRANSLUCENT "back-translucent"
 
 #define MENU_ORIENTS "orients_menu"
 #define MENU_ORIENT_HORIZONTAL "orient-horizontal"

@@ -119,10 +119,10 @@ static char *read_line(int s)
     t.tv_usec = 0;
     
     if (select(FD_SETSIZE, &fs, 0, 0, &t) <= 0) 
-     return 0;
+     return NULL;
      
     if (read(s, &ch, sizeof(ch)) != sizeof(ch)) 
-     return 0;
+     return NULL;
      
     if (ch == 10)
      {
@@ -133,7 +133,7 @@ static char *read_line(int s)
     *(c++) = ch;
    }    
    
-  return 0; 
+  return NULL; 
  }
 
 static int write_line(int s, char *p)
@@ -252,57 +252,74 @@ static char *wait_for_imap_answer(int s, char *tag)
   return 0; 
  }
 
-int imap_check(const char *h, const char* n, const char* e, const char* f)
- {
-  int s;
-  char *c;
-  char *x;
-  unsigned int r = (unsigned int) -1;
-  
-  if (!h || !n || !e) return -1;
+int 
+imap_check(const char *h, const char* n, const char* e, const char* f)
+{
+	int s;
+	char *c = NULL;
+	char *x;
+	unsigned int r = (unsigned int) -1;
+	int total = 0, unseen = 0;
+	int count = 0;
+	
+	if (!h || !n || !e) return -1;
+	
+	if (f == NULL ||
+	    f[0] == '\0')
+		f = "INBOX";
+	
+	s = connect_socket(h, 143);
+	
+	if (s < 0)
+		return r;
+	
+	x = read_line(s);
+	/* The greeting is untagged */
+	if (!is_imap_answer_untagged(x))
+		goto return_from_imap_check;
+	
+	if (!is_imap_answer_ok(x))
+		goto return_from_imap_check;
+	
+	
+	c = g_strdup_printf("A1 LOGIN \"%s\" \"%s\"", n, e);
+	if (!write_line(s, c))
+		goto return_from_imap_check;
+	
+	if (!is_imap_answer_ok(wait_for_imap_answer(s, "A1")))
+		goto return_from_imap_check;
+	
+	
+	c = g_strdup_printf("A2 STATUS \"%s\" (MESSAGES UNSEEN)",f);
+	if (!write_line(s, c))
+		goto return_from_imap_check;
+	
+	/* We only loop 5 times if more than that this is
+	 * probably a bogus reply */
+	for (count = 0, x = read_line(s);
+	     count < 5 && x != NULL;
+	     count++, x = read_line(s)) {
+		char tmpstr[4096];
+		
+		if (sscanf(x, "%*s %*s %*s %*s %d %4095s %d",
+			   &total, tmpstr, &unseen) != 3)
+			continue;
+		if (strcmp(tmpstr, "UNSEEN") == 0)
+			break;
+		
+	}
+	
+	r = (((unsigned int) unseen ) << 16) | /* lt unseen only */
+		((unsigned int) total & 0x0000FFFFL);
+	
+	if (write_line(s, "A3 LOGOUT"))
+		read_line(s);
 
-  if (f == NULL ||
-      f[0] == '\0')
-	  f = "INBOX";
-  
-  s = connect_socket(h, 143);
-  
-  if (s > 0)
-   {
-    x = read_line(s);
-    if (is_imap_answer_untagged(x))  /* The greeting us untagged */
-     if (is_imap_answer_ok(x))
-      {
-       c = g_strdup_printf("A1 LOGIN \"%s\" \"%s\"", n, e);
-       if (write_line(s, c))
-        {
-         g_free(c);
-         if (is_imap_answer_ok(wait_for_imap_answer(s, "A1"))) 
-         {
-          c = g_strdup_printf("A2 STATUS \"%s\" (MESSAGES UNSEEN)",f);
-          if (write_line(s, c))
-           {
-            int total = 0, unseen = 0;
-            
-              x = read_line(s);
-	      if (x != NULL)
-		      sscanf(x, "%*s %*s %*s %*s %d %*s %d", &total, &unseen);
-             r = (((unsigned int) unseen ) << 16) | /* lt unseen only */
-	       ((unsigned int) total & 0x0000FFFFL);
+ return_from_imap_check:
 
-            if (write_line(s, "A3 LOGOUT"))
-             read_line(s);
-           }     
-         g_free(c);
-         }
-       }
-      else
-       g_free(c); 
-     }
-
-    close(s);
-   }
-
-  return r; 
+	g_free (c);
+	close (s);
+	
+	return r; 
  }
 

@@ -28,6 +28,7 @@
 #include "libgnome/libgnome.h"
 #include "libgnomeui/libgnomeui.h"
 
+#include "ice.h"
 #include "logout.h"
 #include "command.h"
 
@@ -164,7 +165,7 @@ display_gui (void)
   GtkWidget *box;
   GtkWidget *toggle_button = NULL;
   gint result;
-  gchar *s;
+  gchar *s, *t;
   GtkWidget *halt = NULL;
   GtkWidget *reboot = NULL;
   GtkWidget *invisible;
@@ -228,7 +229,8 @@ display_gui (void)
    * and if so, give them that option
    */
   s = g_strconcat ("/var/lock/console/", g_get_user_name (), NULL);
-  if ((geteuid () == 0 || g_file_exists (s)) &&
+  t = g_strconcat ("/var/run/console/", g_get_user_name (), NULL);
+  if (((geteuid () == 0) || g_file_exists (t) || g_file_exists(s)) &&
       access (halt_command[0], X_OK) == 0)
     {
       GtkWidget *frame;
@@ -246,13 +248,14 @@ display_gui (void)
       r = gtk_radio_button_new_with_label (NULL, _("Logout"));
       gtk_box_pack_start (GTK_BOX (action_vbox), r, FALSE, FALSE, 0);
 
-      r = halt = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (r), _("Halt"));
+      r = halt = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (r), _("Shut Down"));
       gtk_box_pack_start (GTK_BOX (action_vbox), r, FALSE, FALSE, 0);
 
       r = reboot = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (r), _("Reboot"));
       gtk_box_pack_start (GTK_BOX (action_vbox), r, FALSE, FALSE, 0);
     }
   g_free (s);
+  g_free (t);
 
   gtk_widget_show_all (box);
 
@@ -318,10 +321,16 @@ maybe_display_gui (void)
   if (! prompt)
     return TRUE;
 
+  /*
+   *	Don't let ICE run during the dialog, otherwise we may free clients
+   *	during the dialog and rather suprise and offend the caller.
+   */
+  ice_frozen();
   result = display_gui ();
   if (action == HALT)
     set_logout_command (halt_command);
   else if (action == REBOOT)
     set_logout_command (reboot_command);
+  ice_thawed();
   return result;
 }

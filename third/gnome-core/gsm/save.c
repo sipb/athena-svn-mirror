@@ -333,7 +333,7 @@ read_clients (const char* file, const char *session, MatchRule match_rule)
   for (i = 0; i < num_clients; ++i)
     {
       Client *client = (Client*)g_new0 (Client, 1);
-
+      client->magic = CLIENT_MAGIC;
       g_snprintf (prefix, sizeof(prefix), "%s%s/%d,", file, session, i);
 
       gnome_config_push_prefix (prefix);
@@ -379,11 +379,14 @@ set_session_name (const char *name)
 {
   if (name)
     {
+      char *session_name_env;
       session_name = g_strdup(name);
       gnome_config_push_prefix (GSM_OPTION_CONFIG_PREFIX);
       gnome_config_set_string (CURRENT_SESSION_KEY, name);
       gnome_config_pop_prefix ();
       gnome_config_sync ();
+      session_name_env = g_strconcat ("GNOME_SESSION_NAME=", g_strdup (name), NULL);
+      putenv (session_name_env);
     }
 }
 
@@ -412,9 +415,12 @@ read_session (const char *name)
 
   session->name   = g_strdup (name);
   session->handle = command_handle_new ((gpointer)session);
- 
+
   if(name) {
-    list = read_clients (CONFIG_PREFIX,name,MATCH_ID);
+    if (!strcmp (name, FAILSAFE_SESSION)) 
+      list = read_clients (DEFAULT_CONFIG_PREFIX,DEFAULT_SESSION,MATCH_FAKE_ID);
+    else 
+      list = read_clients (CONFIG_PREFIX,name,MATCH_ID);
     if (!list)
       list = read_clients (DEFAULT_CONFIG_PREFIX,name,MATCH_FAKE_ID);
   } 
@@ -512,6 +518,8 @@ delete_session (const char *name)
       int old_argc;
       char **old_argv;
       char *old_system;
+      
+      old_client->magic = CLIENT_MAGIC;
       
       g_snprintf (prefix, sizeof(prefix), CONFIG_PREFIX "%s/%d,", name, i);
       gnome_config_push_prefix (prefix);

@@ -172,8 +172,7 @@ main(int argc, char *argv[])
     PortableServer_POA          root_poa;
     PortableServer_POAManager   pm;
     help_browser_simple_browser browser_object;
-    gchar **leftovers;
-    int            output_fd;
+    const gchar **leftovers;
     poptContext ctx;
     
     
@@ -201,11 +200,11 @@ main(int argc, char *argv[])
 
     leftovers = poptGetArgs(ctx);
     if(leftovers && leftovers[0]) {
-      helpURL = leftovers[0];
-      if(*helpURL == '/')
-	helpURL = g_strconcat("file:", helpURL, NULL);
+      const char *url = leftovers[0];
+      if(*url == '/')
+	helpURL = g_strconcat ("file:", url, NULL);
       else
-	helpURL = g_strdup(helpURL);
+	helpURL = g_strdup (url);
     }
     poptFreeContext(ctx);
 
@@ -457,26 +456,26 @@ save_state (GnomeClient        *client,
         argv[i++] = program_invocation_name;
         argv[i++] = (char *) "-x";
 	s = alloca(20);
-	snprintf(s, 20, "%d", xpos);
+	g_snprintf(s, 20, "%d", xpos);
         argv[i++] = s;
         argv[i++] = (char *) "-y";
 	s = alloca(20);
-	snprintf(s, 20, "%d", ypos);
+	g_snprintf(s, 20, "%d", ypos);
         argv[i++] = s;
         argv[i++] = (char *) "-w";
 	s = alloca(20);
-	snprintf(s, 20, "%d", xsize);
+	g_snprintf(s, 20, "%d", xsize);
         argv[i++] = s;
         argv[i++] = (char *) "-h";
 	s = alloca(20);
-	snprintf(s, 20, "%d", ysize);
+	g_snprintf(s, 20, "%d", ysize);
         argv[i++] = s;
 	s = alloca(512);
-	snprintf(s, 512, "%s", helpWindowHumanRef(win));
+	g_snprintf(s, 512, "%s", helpWindowHumanRef(win));
 	argv[i++] = s;
 
 	s = alloca(512);
-	snprintf(s, 512, "restart command is");
+	g_snprintf(s, 512, "restart command is");
 	for (j=0; j<i; j++) {
 		strncat(s, " ", 511);
 		strncat(s, argv[j], 511);
@@ -578,7 +577,8 @@ static void initConfig(void)
     }
 
     errno = 0;
-    snprintf(buf, sizeof(buf), "%s/%s", getenv("HOME"), HELP_BROWSER_RC_DIR);
+    g_snprintf(buf, sizeof(buf), "%s/%s",
+	       g_getenv("HOME"), HELP_BROWSER_RC_DIR);
     if (stat(buf, &statb)) {
 	if (mkdir(buf, 0755)) {
 	    g_error("Unable to mkdir $HOME/%s: %s",
@@ -686,7 +686,7 @@ generateConfigWidgets(GnomePropertyBox *property, struct _config_entry *configs,
 	p->entry = entry;
 
 	if (p->type == CONFIG_INT) {
-	    snprintf(buf, sizeof(buf), "%d", *(gint *)(p->var));
+	    g_snprintf(buf, sizeof(buf), "%d", *(gint *)(p->var));
 	    gtk_entry_set_text(GTK_ENTRY(entry), buf);
 	} else if (p->type == CONFIG_TEXT) {
 	    gtk_entry_set_text(GTK_ENTRY(entry), *(gchar **)(p->var));

@@ -43,7 +43,9 @@ gnorbadir = $(sysconfdir)/CORBA/servers
 gnorba_DATA = gnome-terminal.gnorba
 
 utildir = $(datadir)/gnome/apps/System
-util_DATA = gnome-terminal.desktop
+util_in_files = gnome-terminal.desktop.in
+util_DATA = $(util_in_files:.desktop.in=.desktop)
+@XML_I18N_MERGE_DESKTOP_RULE@
 
 gladedir   = $(datadir)/gnome-terminal/glade
 glade_DATA = gnome-terminal.glade

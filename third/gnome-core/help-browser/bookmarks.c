@@ -40,7 +40,7 @@ Bookmarks newBookmarks(BookmarksCB callback, gpointer data, gchar *file)
 {
     Bookmarks res;
 
-    res = g_new(struct _bookmarks_struct, 1);
+    res = g_new0(struct _bookmarks_struct, 1);
     res->table = g_hash_table_new(g_str_hash, g_str_equal);
     res->file = NULL;
     reconfigBookmarks(res, callback, data, file);
@@ -67,7 +67,7 @@ void reconfigBookmarks(Bookmarks b, BookmarksCB callback,
 	    g_snprintf(filename, sizeof(filename), "%s/%s",
 		       getenv("HOME"), file);
 	} else {
-	    strncpy(filename, file, sizeof(filename));
+	    g_snprintf(filename, sizeof(filename), "%s", file);
 	}
         b->file = g_strdup(filename);
     } else {
@@ -128,7 +128,7 @@ static void appendEntry(Bookmarks b, gchar *ref, gchar *title)
     gchar  *buf[2];
     gint x;
     
-    entry = g_new(struct _bookmarks_entry, 1);
+    entry = g_new0(struct _bookmarks_entry, 1);
     entry->ref = g_strdup(ref);
     entry->title = g_strdup(title);
     g_hash_table_insert(b->table, entry->ref, entry);

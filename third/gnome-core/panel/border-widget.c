@@ -9,6 +9,7 @@
 
 #include "border-widget.h"
 #include "panel_config_global.h"
+#include "multiscreen-stuff.h"
 
 extern GlobalConfig global_config;
 extern int pw_minimized_size;
@@ -196,6 +197,7 @@ border_pos_get_menu_pos (BasePWidget *basep,
 
 void
 border_widget_change_params (BorderWidget *border,
+			     int screen,
 			     BorderEdge edge,
 			     int sz,
 			     BasePMode mode,
@@ -227,14 +229,19 @@ border_widget_change_params (BorderWidget *border,
 	}
 
 	basep_widget_change_params (BASEP_WIDGET (border),
+				    screen,
 				    new_orient,
-				    sz, mode, state,
-				    level, avoid_on_maximize,
+				    sz,
+				    mode,
+				    state,
+				    level,
+				    avoid_on_maximize,
 				    hidebuttons_enabled,
 				    hidebutton_pixmaps_enabled,
 				    back_type,
 				    pixmap_name,
-				    fit_pixmap_bg, strech_pixmap_bg,
+				    fit_pixmap_bg,
+				    strech_pixmap_bg,
 				    rotate_pixmap_bg,
 				    back_color);
 }
@@ -286,7 +293,9 @@ border_widget_change_edge (BorderWidget *border, BorderEdge edge)
 	if (BORDER_POS (border->pos)->edge == edge)
 		return;
 	
-	border_widget_change_params (border, edge,
+	border_widget_change_params (border,
+				     basep->screen,
+				     edge,
 				     panel->sz,
 				     basep->mode,
 				     basep->state,
@@ -305,6 +314,7 @@ border_widget_change_edge (BorderWidget *border, BorderEdge edge)
 
 GtkWidget *
 border_widget_construct (BorderWidget *border,
+			 int screen,
 			 BorderEdge edge,
 			 gboolean packed,
 			 gboolean reverse_arrows,
@@ -337,6 +347,7 @@ border_widget_construct (BorderWidget *border,
 	basep_widget_construct (basep,
 				packed,
 				reverse_arrows,
+				screen,
 				orient,
 				sz,
 				mode,
