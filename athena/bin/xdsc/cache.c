@@ -9,19 +9,24 @@
 #include	<stdio.h>
 #include	<X11/Intrinsic.h>
 #include	<X11/StringDefs.h>
+#include	<X11/IntrinsicP.h>
+#include	<X11/CoreP.h>
 #include	<Xaw/Command.h>
+#include	<Xaw/AsciiText.h>
+#include	<Xaw/TextP.h>
 #include	"xdsc.h"
 
 #define		NUM_CACHED_FILES	5
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.1 1990-12-03 13:46:33 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.2 1990-12-06 16:45:09 sao Exp $";
 
 extern char	*RunCommand();
 extern CommandWidget	botbuttons[MAX_BOT_BUTTONS];
-extern Widget	bottextW, toptextW;
+extern TextWidget	bottextW, toptextW;
 extern Boolean	debug;
 extern char	filebase[];
 extern int	whichTopScreen;
+extern Widget	topW;
 
 static int	next=0, prev=0, nref=0;
 static int	pref=0, fref=0, lref=0;
@@ -30,36 +35,46 @@ static int	highestseen;
 static int	current;
 
 static int	cache[NUM_CACHED_FILES] = {-1,-1,-1,-1,-1};
-static char	currentmtg[50] = "";
+static char	currentmtglong[LONGNAMELEN] = "";
+static char	currentmtgshort[SHORTNAMELEN] = "";
 
 char *
-CurrentMtg()
+CurrentMtg(which)
+int	which;
 {
-	return (currentmtg);
+	if (which == 0)
+		return (currentmtglong);
+	else
+		return (currentmtgshort);
 }
 
 int
-EnterMeeting(mtg, toplevel)
-char	*mtg;
-Widget	toplevel;
+EnterMeeting(newlong, newshort)
+char	*newlong;
+char	*newshort;
 {
-	char	oldmtg[50];
-	if (*currentmtg) {
+	char	oldlong[LONGNAMELEN];
+	char	oldshort[SHORTNAMELEN];
+	if (*currentmtglong) {
 		MarkLastRead();
 		DeleteOldTransactions();
 	}
 
-	if (*mtg) {
-		strcpy (oldmtg, currentmtg);
-		strcpy (currentmtg, mtg);
-		if (HighestTransaction(toplevel) == -1) {
-			strcpy (currentmtg, oldmtg);
+	if (*newlong) {
+		strcpy (oldlong, currentmtglong);
+		strcpy (currentmtglong, newlong);
+		strcpy (oldshort, currentmtgshort);
+		strcpy (currentmtgshort, newshort);
+		if (HighestTransaction() == -1) {
+			strcpy (currentmtglong, oldlong);
+			strcpy (currentmtgshort, oldshort);
 			return (-1);
 		}
 	}
 
 	else {
-		*currentmtg = '\0';
+		*currentmtglong = '\0';
+		*currentmtgshort = '\0';
 	}
 	return (0);
 }
@@ -76,7 +91,7 @@ GoToTransaction (num, update)
 int	num;
 Boolean	update;
 {
-	static char	command[80];
+	static char	command[LONGNAMELEN + 25];
 	static char	filename[70];
 	char		*returndata;
 
@@ -88,11 +103,11 @@ Boolean	update;
 		UpdateHighlightedTransaction(num);
 
 	sprintf (command, "Reading %s [%d-%d], #%d...", 
-				currentmtg, first, last, num);
+				currentmtglong, first, last, num);
 	PutUpStatusMessage(command);
 
 	if (num > last) {
-		sprintf (command,"A request was made for transaction #%d of\nmeeting '%s'.  Unfortunately, the last\ntransaction is #%d.", num, currentmtg, last);
+		sprintf (command,"A request was made for transaction #%d of\nmeeting '%s'.  Unfortunately, the last\ntransaction is #%d.", num, currentmtglong, last);
 		PutUpWarning("WARNING", command, True);
 	}
 
@@ -102,8 +117,7 @@ Boolean	update;
 	if (update)
 		FileIntoWidget(filename, bottextW);
 
-
-	sprintf (command, "(gti %d %s)\n", num, currentmtg);
+	sprintf (command, "(gti %d %s)\n", num, currentmtglong);
 	returndata = RunCommand (command, NULL, NULL, True);
 
 	if ((int) returndata <= 0) goto DONE;
@@ -114,7 +128,7 @@ Boolean	update;
 			&nref, &fref, &lref);
 
 	if (current > last) {
-		sprintf (command,"Reading transaction information for #%d of\nmeeting '%s' returned %d\nas the current transaction.", num, currentmtg, num);
+		sprintf (command,"Reading transaction information for #%d of\nmeeting '%s' returned %d\nas the current transaction.", num, currentmtglong, num);
 		PutUpWarning("WARNING", command, True);
 	}
 
@@ -123,14 +137,18 @@ Boolean	update;
 
 	CacheSurroundingTransactions();
 
+	if ( next > last || current > last)
+		(void) HighestTransaction();
+
 	if ( current >  highestseen)
 		highestseen = current;
 
+	if (highestseen == last && whichTopScreen == MAIN)
+		RemoveLetterC();
 DONE:
 	sprintf (command, "Reading %s [%d-%d], #%d", 
-				currentmtg, first, last, num);
+				currentmtglong, first, last, num);
 	PutUpStatusMessage(command);
-
 }
 
 DeleteOldTransactions()
@@ -215,7 +233,7 @@ int	num;
 GetTransactionFile(num)
 int	num;
 {
-	char	filename[50], command[75];
+	char	filename[50], command[LONGNAMELEN + 25];
 	int	i;
 	char	*retval;
 
@@ -232,7 +250,7 @@ int	num;
 /*
 ** If file doesn't exist, go get it
 */
-	sprintf (command, "(gtf %s %d %s)\n", filename, num, currentmtg);
+	sprintf (command, "(gtf %s %d %s)\n", filename, num, currentmtglong);
 	retval = RunCommand (command, NULL, NULL, True);
 
 	if ((int) retval <= 0) 
@@ -255,15 +273,14 @@ int	num;
 */
 
 int
-HighestTransaction(toplevel)
-Widget	toplevel;
+HighestTransaction()
 {
 
-	char	command[100];
+	char	command[LONGNAMELEN + 25];
 	char	*retval;
 	static int	oldhighestseen = 0;
 
-	sprintf (command, "(gmi %s)\n", currentmtg);
+	sprintf (command, "(gmi %s)\n", currentmtglong);
 
 	retval = RunCommand (command, NULL, NULL, True);
 	if ((int) retval <= 0) return (-1);
@@ -273,7 +290,7 @@ Widget	toplevel;
 
 	oldhighestseen = highestseen;
 			
-	if (last == 0 && first ==0) {
+	if (last == 0 && first == 0) {
 		fprintf (stderr,"xdsc:  Reply out of sync with request!\n");
 		fprintf (stderr,"xdsc:  requested '%s', got '%s'\n",command, retval);
 		PutUpWarning(	"INTERNAL ERROR DETECTED", 
@@ -291,7 +308,7 @@ Widget	toplevel;
 
 	if (debug) {
 		fprintf (stderr, "highestseen message of %s is %d\n",
-				currentmtg, highestseen);
+				currentmtglong, highestseen);
 
 		fprintf (stderr, "first is %d, last is %d\n",first, last);
 	}
@@ -301,19 +318,19 @@ Widget	toplevel;
 
 MarkLastRead()
 {
-	static char	command[80];
+	static char	command[LONGNAMELEN + 25];
 
 	if (highestseen > last) {
 		sprintf (	command,
 				"Not setting highestseen in '%s'",
-				currentmtg);
+				currentmtglong);
 		PutUpWarning("WARNING", command, False);
 	}
 	else {
 		sprintf (	command, 
 				"(ss %d %s)\n", 
 				highestseen,
-				currentmtg);
+				currentmtglong);
 		(void) RunCommand (command, NULL, NULL, False);
 	}
 
@@ -348,11 +365,14 @@ int	arg;
 MoveToMeeting(which)
 int	which;
 {
-	Arg	args[1];
-	char	command[80];
+	Arg	args[2];
+/*
+	char	command[LONGNAMELEN + 25];
+*/
 
 	if (HighlightNewItem(toptextW, which, True) == 0) {
 		XtSetArg (args[0], XtNstring, "");
+		XtSetArg (args[1], XtNlength, 0);
 		XtSetValues (bottextW, args, 1);
 		current=0; next=1; prev=0; 
 		nref=0; pref=0; fref=0; lref=0;
@@ -361,9 +381,11 @@ int	which;
 	}
 
 	else {
+/*
 		sprintf (command,"HighlightNewItem of %d in %s failed\n",
-			which, CurrentMtg());
+			which, CurrentMtg(0));
 		PutUpWarning("WARNING", command, False);
+*/
 		return (-1);
 	}
 }
@@ -417,7 +439,7 @@ int mode;
 	XtSetValues (botbuttons[4], args, 1);
 	XtSetValues (botbuttons[6], args, 1);
 
-	if (*currentmtg && sensitive)
+	if (*currentmtglong && sensitive)
 		XtSetArg(args[0], XtNsensitive, True);
 	else
 		XtSetArg(args[0], XtNsensitive, False);
