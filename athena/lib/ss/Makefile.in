@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 2002-02-18 15:59:17 ghudson Exp $
+# $Id: Makefile.in,v 1.5 2002-02-18 19:43:29 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -35,8 +35,8 @@ all: libss.la mk_cmds
 .SUFFIXES: .lo
 
 libss.la: ${LIBOBJS}
-	${LIBTOOL} ${CC} -rpath ${libdir} -version-info 1:0:0 -o $@ \
-	  ${LIBOBJS} -lcom_err -lreadline
+	${LIBTOOL} ${CC} ${LDFLAGS} -rpath ${libdir} -version-info 1:0:0 \
+	  -o $@ ${LIBOBJS} -lcom_err -lreadline
 
 mk_cmds: ${BINOBJS}
 	${CC} ${LDFLAGS} -o mk_cmds ${BINOBJS} ${LIBS}
