@@ -1,4 +1,4 @@
-# $Id: packages,v 1.100 2000-03-04 19:47:23 ghudson Exp $
+# $Id: packages,v 1.101 2000-03-06 16:26:27 tb Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -19,7 +19,15 @@
 # and "except" options take a comma-separated list of platforms. The
 # "requires" option takes a comma-separated list of package names,
 # which can be abbreviated to the final pathname component if it is
-# unique among packages
+# unique among packages.
+#
+# One additional option gives information for building packages in
+# package management systems.
+#
+#	package	NAME	give the package the name athena-NAME
+# 
+# (The default package name is athena-DIR where DIR is the last
+# component of the source directory name.)
 #
 # Blank lines and lines beginning with '#' are ignored.
 
@@ -33,7 +41,7 @@ third/autoconf			early
 athena/bin/install		on solaris,irix early
 
 # Initial packs setup
-packs/build/setup		early
+packs/build/setup		early except linux
 
 # Athena software
 athena/bin/access
@@ -86,30 +94,30 @@ athena/etc/larvnetd		requires larv,ares,hesiod
 athena/etc/listsuidcells	requires afsbin
 athena/etc/messaged		requires gms
 athena/etc/mkcred
-athena/etc/newsyslog
+athena/etc/newsyslog		except linux
 athena/etc/rkinitd		requires krb5,athena/lib/rkinit
 athena/etc/synctree
 athena/etc/track
 athena/etc/writed
 athena/etc/xlogin		requires krb5,al,wcl,larv
 
-athena/lib/Mu
-athena/lib/Xj
-athena/lib/al			requires hesiod,afsbin
+athena/lib/Mu			package libMu
+athena/lib/Xj			package libXj
+athena/lib/al			requires hesiod,afsbin package libal
 athena/lib/ares
-athena/lib/athdir
-athena/lib/et
+athena/lib/athdir		package libathdir
+athena/lib/et			package libet
 athena/lib/gms			requires et
 athena/lib/fxcl			requires krb5,hesiod
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
 athena/lib/rkinit		requires krb5,et
-athena/lib/ss			requires readline,et
+athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
-third/afsbin
+third/afsbin			package afs
 third/bash
 third/bind
 third/emacs			requires hesiod,krb5
@@ -119,12 +127,12 @@ third/ispell			except linux
 third/jot
 third/kermit
 third/kpasswd			requires krb5
-third/krb5			requires et
-third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod
+third/krb5			requires et package krb5-prep
+third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
 third/look			on irix
-third/lprng/athena
+third/lprng/athena		package lprng-misc
 third/lprng/ifhp
 third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
@@ -155,11 +163,11 @@ third/xntp
 third/xscreensaver		requires krb5
 
 # Final packs stuff
-packs/config			late
+packs/config			late except linux
 packs/dotfiles			late
 packs/glue			late
-packs/install			late
-packs/maint			late
-packs/update			late
-packs/build/config		late
-packs/build/finish		late
+packs/install			late package base
+packs/maint			late package ws
+packs/update			late except linux
+packs/build/config		late package imakecf
+packs/build/finish		late except linux
