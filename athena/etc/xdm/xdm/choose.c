@@ -70,6 +70,25 @@ FormatARRAY8 (a, buf, buflen)
     return FormatBytes (a->data, a->length, buf, buflen);
 }
 
+/* Converts an Internet address in ARRAY8 format to a string in
+   familiar dotted address notation, e.g., "18.24.0.11"
+   Returns 1 if successful, 0 if not.
+   */
+static int
+ARRAY8ToDottedDecimal (a, buf, buflen)
+    ARRAY8Ptr	a;
+    char	*buf;
+    int		buflen;
+{
+    int i;
+
+    if (a->length != 4  ||  buflen < 20)
+	return 0;
+    sprintf(buf, "%d.%d.%d.%d",
+	    a->data[0], a->data[1], a->data[2], a->data[3]);
+    return 1;
+}
+
 typedef struct _IndirectUsers {
     struct _IndirectUsers   *next;
     ARRAY8	client;
@@ -170,7 +189,7 @@ FormatChooserArgument (buf, len)
 	    result_buf[2] = port[0];
 	    result_buf[3] = port[1];
 	    localAddress = getLocalAddress ();
-	    bcopy ((char *)localAddress->data, (char *)result_buf+4, 4);
+	    memcpy ((char *)result_buf+4, (char *)localAddress->data, 4);
 	    result_len = 8;
 	}
 	break;
@@ -321,7 +340,7 @@ AddChooserHost (connectionType, addr, closure)
     {
 	*argp = parseArgs (*argp, "BROADCAST");
     }
-    else if (FormatARRAY8 (addr, hostbuf, sizeof (hostbuf)))
+    else if (ARRAY8ToDottedDecimal (addr, hostbuf, sizeof (hostbuf)))
     {
 	*argp = parseArgs (*argp, hostbuf);
     }
