@@ -10,7 +10,7 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.4 1990-12-11 16:34:59 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.5 1990-12-12 14:30:22 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -257,7 +257,8 @@ XtPointer	call_data;
 			sprintf(command, "%s\n",tempstring);
 
 			returndata =  RunCommand (command, NULL, NULL, True);
-			myfree(returndata);
+			if ((int) returndata > 0)
+				myfree(returndata);
 			unlink (filename);
 		}
 	}
@@ -266,6 +267,13 @@ XtPointer	call_data;
 
 	sendPopupW = 0;
 	(void) HighestTransaction();
+	sprintf (command, "Reading %s [%d-%d], #%d", 
+			CurrentMtg(0),
+			TransactionNum(FIRST),
+			TransactionNum(LAST),
+			TransactionNum(CURRENT));
+
+	PutUpStatusMessage(command);
 
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 
