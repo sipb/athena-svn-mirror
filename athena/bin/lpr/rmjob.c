@@ -1,9 +1,9 @@
 /*
- *	$Id: rmjob.c,v 1.11 1999-01-22 23:10:46 ghudson Exp $
+ *	$Id: rmjob.c,v 1.12 1999-08-03 19:02:08 kcr Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Id: rmjob.c,v 1.11 1999-01-22 23:10:46 ghudson Exp $";
+static char *rcsid_rmjob_c = "$Id: rmjob.c,v 1.12 1999-08-03 19:02:08 kcr Exp $";
 #endif lint
 
 /*
@@ -37,7 +37,7 @@ extern char	*person;		/* name of person doing lprm */
 char	root[] = "root";
 int	all = 0;		/* eliminate all files (root only) */
 int	cur_daemon;		/* daemon's pid */
-char	current[40];		/* active control file name */
+char	current[264];		/* active control file name */
 int	assasinated = 0;	/* 1 means we've killed the lpd */
 
 #if defined(KERBEROS)

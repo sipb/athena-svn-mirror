@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.23 1999-05-21 05:13:37 jweiss Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.24 1999-08-03 19:02:08 kcr Exp $";
 #endif
 
 /*
@@ -54,9 +54,9 @@ char	*sp = "";
 #define ack()	(void) write(1, sp, 1);
 
 int 	lflag;			/* should we log a trace? */
-char    tfname[40];		/* tmp copy of cf before linking */
-char    dfname[40];		/* data files */
-char    cfname[40];             /* control fle - fix compiler bug */
+char    tfname[264];		/* tmp copy of cf before linking */
+char    dfname[264];		/* data files */
+char    cfname[264];             /* control fle - fix compiler bug */
 int	minfree;		/* keep at least minfree blocks available */
 
 #ifdef USE_USTAT
@@ -67,7 +67,7 @@ int	dfd;			/* file system device descriptor */
 #endif
 
 #ifdef KERBEROS
-char    tempfile[40];           /* Same size as used for cfname and tfname */
+char    tempfile[264];           /* Same size as used for cfname and tfname */
 extern int kflag;
 #endif
 
