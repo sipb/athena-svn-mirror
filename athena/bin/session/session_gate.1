@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.1,v $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.1,v 1.3 1992-01-28 11:00:25 probe Exp $
-.\"	$Author: probe $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/session/session_gate.1,v 1.4 1998-03-25 20:24:26 danw Exp $
+.\"	$Author: danw $
 .\"
 .TH SESSION_GATE 1 "30 November 1990"
 .ds ]W MIT Project Athena
@@ -18,9 +18,11 @@ end_session [ -force | -f ]
 end, and then optionally executes their logout script.  Normally,
 \fIsession_gate\fR appears at or near the end of a session file used
 by \fIxlogin\fR(1).  When used in this fashion, \fIsession_gate\fR
-should not be run in the background.  If invoked with the
-\fI-logout\fR option, it will run a \fI/bin/athena/tcsh\fR on the file
-\fI\&.logout\fR in the directory it was started in.
+should not be run in the background.  If \fIsession_gate\fR is invoked
+with the \fI-logout\fR option, and there is a file \fI\&.logout\fR in
+the directory it was started in, it will execute that file before
+exiting. (For historical reasons, \fI/bin/athena/tcsh\fR will be used
+to interpret the file if it does not begin with a #! string.)
 
 \fIEnd_session\fR is a command that attempts to send a hangup signal to
 each \fIsession_gate\fR process that is running.  Normally, the user
@@ -41,7 +43,8 @@ obsolete.
 
 .SH DIAGNOSTICS
 
-\fISession_gate\fR always exits with status 0.
+\fISession_gate\fR exits with status 0, or the status of the
+\fI\&.logout\fR script.
 
 \fIEnd_session\fR will exit with one of the following status values:
 .TP 5
