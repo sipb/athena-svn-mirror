@@ -1,4 +1,4 @@
-<refentry id="GnomeDruidPageStandard" revision="11 Oct 2000">
+<refentry id="GnomeDruidPageStandard" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeDruidPageStandard</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -76,6 +76,7 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -91,10 +92,13 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>logo</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -111,9 +115,11 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>druid_page_standard</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -130,9 +136,11 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>druid_page_standard</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -149,9 +157,11 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>druid_page_standard</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>color</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -168,9 +178,11 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>druid_page_standard</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>title</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -187,9 +199,11 @@ void        <link linkend="gnome-druid-page-standard-set-logo">gnome_druid_page_
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>druid_page_standard</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>logo_image</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

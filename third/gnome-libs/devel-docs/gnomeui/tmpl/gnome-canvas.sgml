@@ -483,7 +483,26 @@ GnomeCanvas
 </para>
 
 @canvas: 
-@gc: <!--
+@gc: 
+
+<!-- ##### FUNCTION gnome_canvas_get_dither ##### -->
+<para>
+
+</para>
+
+@canvas: 
+@Returns: 
+
+<!-- ##### FUNCTION gnome_canvas_set_dither ##### -->
+<para>
+
+</para>
+
+@canvas: 
+@dither:
+@Returns: 
+
+<!--
 Local variables:
 mode: sgml
 sgml-parent-document: ("../gnomeui-docs.sgml" "book" "sect1" "")

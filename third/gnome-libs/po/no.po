@@ -1,12 +1,12 @@
 # Norwegian translation of gnome-libs (bokmål dialect).
-# Copyright (C) 1998,1999,2000 Free Software Foundation, Inc.
+# Copyright (C) 1998-2000 Free Software Foundation, Inc.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2000.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.5\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-09-28 10:44+02:00\n"
+"Project-Id-Version: gnome-libs 1.2.7\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-01-24 21:56+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,8 @@ msgid "HOSTNAME:PORT"
 msgstr "VERTSNAVN:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME Alternativer"
 
 #: libgnomeui/gnome-about.c:187
@@ -929,8 +930,21 @@ msgstr "Last tilleggsmodul for Gtk+"
 msgid "MODULE"
 msgstr "MODUL"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "GTK-alternativer"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "GNOME GUI-alternativer"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s-alternativer"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Flere segmenteringsfeil oppstod; kan ikke vise feildialogen\n"
 
@@ -1505,6 +1519,10 @@ msgstr "(Kun for intern bruk) GOAD-tjener ID som skal aktiveres"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Kun for intern bruk) GOAD fildeskriptor"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Gnome Object Activation Directory"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

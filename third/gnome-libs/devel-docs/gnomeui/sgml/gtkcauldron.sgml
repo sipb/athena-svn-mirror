@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gtkcauldron" revision="11 Oct 2000">
+<refentry id="gnomeui-gtkcauldron" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gtkcauldron</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -15,29 +15,29 @@
 #include &lt;gnome.h&gt;
 
 
-#define     <link linkend="GTK-CAULDRON-TOPLEVEL">GTK_CAULDRON_TOPLEVEL</link>
-#define     <link linkend="GTK-CAULDRON-DIALOG">GTK_CAULDRON_DIALOG</link>
-#define     <link linkend="GTK-CAULDRON-POPUP">GTK_CAULDRON_POPUP</link>
-#define     <link linkend="GTK-CAULDRON-SPACE-SHIFT">GTK_CAULDRON_SPACE_SHIFT</link>
-#define     <link linkend="GTK-CAULDRON-SPACE-MASK">GTK_CAULDRON_SPACE_MASK</link>
-#define     <link linkend="GTK-CAULDRON-SPACE1">GTK_CAULDRON_SPACE1</link>
-#define     <link linkend="GTK-CAULDRON-SPACE2">GTK_CAULDRON_SPACE2</link>
-#define     <link linkend="GTK-CAULDRON-SPACE3">GTK_CAULDRON_SPACE3</link>
-#define     <link linkend="GTK-CAULDRON-SPACE4">GTK_CAULDRON_SPACE4</link>
-#define     <link linkend="GTK-CAULDRON-SPACE5">GTK_CAULDRON_SPACE5</link>
-#define     <link linkend="GTK-CAULDRON-SPACE6">GTK_CAULDRON_SPACE6</link>
-#define     <link linkend="GTK-CAULDRON-SPACE7">GTK_CAULDRON_SPACE7</link>
-#define     <link linkend="GTK-CAULDRON-SPACE8">GTK_CAULDRON_SPACE8</link>
-#define     <link linkend="GTK-CAULDRON-SPACE9">GTK_CAULDRON_SPACE9</link>
-#define     <link linkend="GTK-CAULDRON-SPACE10">GTK_CAULDRON_SPACE10</link>
-#define     <link linkend="GTK-CAULDRON-SPACE11">GTK_CAULDRON_SPACE11</link>
-#define     <link linkend="GTK-CAULDRON-SPACE12">GTK_CAULDRON_SPACE12</link>
-#define     <link linkend="GTK-CAULDRON-SPACE13">GTK_CAULDRON_SPACE13</link>
-#define     <link linkend="GTK-CAULDRON-SPACE14">GTK_CAULDRON_SPACE14</link>
-#define     <link linkend="GTK-CAULDRON-SPACE15">GTK_CAULDRON_SPACE15</link>
-#define     <link linkend="GTK-CAULDRON-IGNOREESCAPE">GTK_CAULDRON_IGNOREESCAPE</link>
-#define     <link linkend="GTK-CAULDRON-IGNOREENTER">GTK_CAULDRON_IGNOREENTER</link>
-#define     <link linkend="GTK-CAULDRON-GRAB">GTK_CAULDRON_GRAB</link>
+#define     <link linkend="GTK-CAULDRON-TOPLEVEL-CAPS">GTK_CAULDRON_TOPLEVEL</link>
+#define     <link linkend="GTK-CAULDRON-DIALOG-CAPS">GTK_CAULDRON_DIALOG</link>
+#define     <link linkend="GTK-CAULDRON-POPUP-CAPS">GTK_CAULDRON_POPUP</link>
+#define     <link linkend="GTK-CAULDRON-SPACE-SHIFT-CAPS">GTK_CAULDRON_SPACE_SHIFT</link>
+#define     <link linkend="GTK-CAULDRON-SPACE-MASK-CAPS">GTK_CAULDRON_SPACE_MASK</link>
+#define     <link linkend="GTK-CAULDRON-SPACE1-CAPS">GTK_CAULDRON_SPACE1</link>
+#define     <link linkend="GTK-CAULDRON-SPACE2-CAPS">GTK_CAULDRON_SPACE2</link>
+#define     <link linkend="GTK-CAULDRON-SPACE3-CAPS">GTK_CAULDRON_SPACE3</link>
+#define     <link linkend="GTK-CAULDRON-SPACE4-CAPS">GTK_CAULDRON_SPACE4</link>
+#define     <link linkend="GTK-CAULDRON-SPACE5-CAPS">GTK_CAULDRON_SPACE5</link>
+#define     <link linkend="GTK-CAULDRON-SPACE6-CAPS">GTK_CAULDRON_SPACE6</link>
+#define     <link linkend="GTK-CAULDRON-SPACE7-CAPS">GTK_CAULDRON_SPACE7</link>
+#define     <link linkend="GTK-CAULDRON-SPACE8-CAPS">GTK_CAULDRON_SPACE8</link>
+#define     <link linkend="GTK-CAULDRON-SPACE9-CAPS">GTK_CAULDRON_SPACE9</link>
+#define     <link linkend="GTK-CAULDRON-SPACE10-CAPS">GTK_CAULDRON_SPACE10</link>
+#define     <link linkend="GTK-CAULDRON-SPACE11-CAPS">GTK_CAULDRON_SPACE11</link>
+#define     <link linkend="GTK-CAULDRON-SPACE12-CAPS">GTK_CAULDRON_SPACE12</link>
+#define     <link linkend="GTK-CAULDRON-SPACE13-CAPS">GTK_CAULDRON_SPACE13</link>
+#define     <link linkend="GTK-CAULDRON-SPACE14-CAPS">GTK_CAULDRON_SPACE14</link>
+#define     <link linkend="GTK-CAULDRON-SPACE15-CAPS">GTK_CAULDRON_SPACE15</link>
+#define     <link linkend="GTK-CAULDRON-IGNOREESCAPE-CAPS">GTK_CAULDRON_IGNOREESCAPE</link>
+#define     <link linkend="GTK-CAULDRON-IGNOREENTER-CAPS">GTK_CAULDRON_IGNOREENTER</link>
+#define     <link linkend="GTK-CAULDRON-GRAB-CAPS">GTK_CAULDRON_GRAB</link>
 void        (<link linkend="GtkCauldronNextArgCallback">*GtkCauldronNextArgCallback</link>)   (<link linkend="gint">gint</link> cauldron_type,
                                              <link linkend="gpointer">gpointer</link> user_data,
                                              void *result);
@@ -467,42 +467,42 @@ be changed, see global options.</para>
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-TOPLEVEL">GTK_CAULDRON_TOPLEVEL</title>
+<title><anchor id="GTK-CAULDRON-TOPLEVEL-CAPS">GTK_CAULDRON_TOPLEVEL</title>
 <programlisting>#define GTK_CAULDRON_TOPLEVEL	(0x1L&lt;&lt;0)
 </programlisting>
 <para>
 This is translated to the top level window (<literal>GTK_WINDOW_TOPLEVEL</literal>)
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-DIALOG">GTK_CAULDRON_DIALOG</title>
+<title><anchor id="GTK-CAULDRON-DIALOG-CAPS">GTK_CAULDRON_DIALOG</title>
 <programlisting>#define GTK_CAULDRON_DIALOG		(0x1L&lt;&lt;1)
 </programlisting>
 <para>
 This is translated to the top level window (<literal>GTK_WINDOW_TOPLEVEL</literal>)
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-POPUP">GTK_CAULDRON_POPUP</title>
+<title><anchor id="GTK-CAULDRON-POPUP-CAPS">GTK_CAULDRON_POPUP</title>
 <programlisting>#define GTK_CAULDRON_POPUP		(0x1L&lt;&lt;2)
 </programlisting>
 <para>
 This is translated to the top level window (<literal>GTK_WINDOW_TOPLEVEL</literal>)
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE-SHIFT">GTK_CAULDRON_SPACE_SHIFT</title>
+<title><anchor id="GTK-CAULDRON-SPACE-SHIFT-CAPS">GTK_CAULDRON_SPACE_SHIFT</title>
 <programlisting>#define GTK_CAULDRON_SPACE_SHIFT	(3)
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE-MASK">GTK_CAULDRON_SPACE_MASK</title>
+<title><anchor id="GTK-CAULDRON-SPACE-MASK-CAPS">GTK_CAULDRON_SPACE_MASK</title>
 <programlisting>#define GTK_CAULDRON_SPACE_MASK	(0xFL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE1">GTK_CAULDRON_SPACE1</title>
+<title><anchor id="GTK-CAULDRON-SPACE1-CAPS">GTK_CAULDRON_SPACE1</title>
 <programlisting>#define GTK_CAULDRON_SPACE1		(0x1L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -510,7 +510,7 @@ Specify a width of 1 pixels of each space or p
 characters. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE2">GTK_CAULDRON_SPACE2</title>
+<title><anchor id="GTK-CAULDRON-SPACE2-CAPS">GTK_CAULDRON_SPACE2</title>
 <programlisting>#define GTK_CAULDRON_SPACE2		(0x2L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -518,7 +518,7 @@ Specify a width of 2 pixels of each space or p
 characters. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE3">GTK_CAULDRON_SPACE3</title>
+<title><anchor id="GTK-CAULDRON-SPACE3-CAPS">GTK_CAULDRON_SPACE3</title>
 <programlisting>#define GTK_CAULDRON_SPACE3		(0x3L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -526,7 +526,7 @@ Specify a width of 3 pixels of each space or p
 characters. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE4">GTK_CAULDRON_SPACE4</title>
+<title><anchor id="GTK-CAULDRON-SPACE4-CAPS">GTK_CAULDRON_SPACE4</title>
 <programlisting>#define GTK_CAULDRON_SPACE4		(0x4L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -535,7 +535,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE5">GTK_CAULDRON_SPACE5</title>
+<title><anchor id="GTK-CAULDRON-SPACE5-CAPS">GTK_CAULDRON_SPACE5</title>
 <programlisting>#define GTK_CAULDRON_SPACE5		(0x5L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -544,7 +544,7 @@ Specify a width of 5 pixels of each space or p
 characters. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE6">GTK_CAULDRON_SPACE6</title>
+<title><anchor id="GTK-CAULDRON-SPACE6-CAPS">GTK_CAULDRON_SPACE6</title>
 <programlisting>#define GTK_CAULDRON_SPACE6		(0x6L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -553,7 +553,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE7">GTK_CAULDRON_SPACE7</title>
+<title><anchor id="GTK-CAULDRON-SPACE7-CAPS">GTK_CAULDRON_SPACE7</title>
 <programlisting>#define GTK_CAULDRON_SPACE7		(0x7L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -562,7 +562,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE8">GTK_CAULDRON_SPACE8</title>
+<title><anchor id="GTK-CAULDRON-SPACE8-CAPS">GTK_CAULDRON_SPACE8</title>
 <programlisting>#define GTK_CAULDRON_SPACE8		(0x8L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -571,7 +571,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE9">GTK_CAULDRON_SPACE9</title>
+<title><anchor id="GTK-CAULDRON-SPACE9-CAPS">GTK_CAULDRON_SPACE9</title>
 <programlisting>#define GTK_CAULDRON_SPACE9		(0x9L&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -580,7 +580,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE10">GTK_CAULDRON_SPACE10</title>
+<title><anchor id="GTK-CAULDRON-SPACE10-CAPS">GTK_CAULDRON_SPACE10</title>
 <programlisting>#define GTK_CAULDRON_SPACE10		(0xAL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -589,7 +589,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE11">GTK_CAULDRON_SPACE11</title>
+<title><anchor id="GTK-CAULDRON-SPACE11-CAPS">GTK_CAULDRON_SPACE11</title>
 <programlisting>#define GTK_CAULDRON_SPACE11		(0xBL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -598,7 +598,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE12">GTK_CAULDRON_SPACE12</title>
+<title><anchor id="GTK-CAULDRON-SPACE12-CAPS">GTK_CAULDRON_SPACE12</title>
 <programlisting>#define GTK_CAULDRON_SPACE12		(0xCL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -607,7 +607,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE13">GTK_CAULDRON_SPACE13</title>
+<title><anchor id="GTK-CAULDRON-SPACE13-CAPS">GTK_CAULDRON_SPACE13</title>
 <programlisting>#define GTK_CAULDRON_SPACE13		(0xDL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -616,7 +616,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE14">GTK_CAULDRON_SPACE14</title>
+<title><anchor id="GTK-CAULDRON-SPACE14-CAPS">GTK_CAULDRON_SPACE14</title>
 <programlisting>#define GTK_CAULDRON_SPACE14		(0xEL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -625,7 +625,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-SPACE15">GTK_CAULDRON_SPACE15</title>
+<title><anchor id="GTK-CAULDRON-SPACE15-CAPS">GTK_CAULDRON_SPACE15</title>
 <programlisting>#define GTK_CAULDRON_SPACE15		(0xFL&lt;&lt;GTK_CAULDRON_SPACE_SHIFT)
 </programlisting>
 <para>
@@ -634,7 +634,7 @@ characters.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-IGNOREESCAPE">GTK_CAULDRON_IGNOREESCAPE</title>
+<title><anchor id="GTK-CAULDRON-IGNOREESCAPE-CAPS">GTK_CAULDRON_IGNOREESCAPE</title>
 <programlisting>#define GTK_CAULDRON_IGNOREESCAPE	(0x1L&lt;&lt;7)
 </programlisting>
 <para>
@@ -642,7 +642,7 @@ Normalling, pressing the Escape key terminates the dialog. This prevents
 this.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-IGNOREENTER">GTK_CAULDRON_IGNOREENTER</title>
+<title><anchor id="GTK-CAULDRON-IGNOREENTER-CAPS">GTK_CAULDRON_IGNOREENTER</title>
 <programlisting>#define GTK_CAULDRON_IGNOREENTER	(0x1L&lt;&lt;8)
 </programlisting>
 <para>
@@ -650,7 +650,7 @@ Normalling, pressing the Enter/Return key assigns the values and
 terminates. This prevents this.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GTK-CAULDRON-GRAB">GTK_CAULDRON_GRAB</title>
+<title><anchor id="GTK-CAULDRON-GRAB-CAPS">GTK_CAULDRON_GRAB</title>
 <programlisting>#define GTK_CAULDRON_GRAB		(0x1L&lt;&lt;9)
 </programlisting>
 <para>
@@ -670,11 +670,14 @@ application will work until the dialog exits.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>cauldron_type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>result</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -690,10 +693,13 @@ application will work until the dialog exits.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -732,7 +738,10 @@ exit the dialog is returned.</para>
 <entry> dialog options, see the macro definitions
 </entry></row>
 <row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gtk-dialog-cauldron-parse">gtk_dialog_cauldron_parse ()</title>
@@ -791,8 +800,10 @@ exit the dialog is returned.</para>
 <entry> data to pass to user function
 </entry></row>
 <row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

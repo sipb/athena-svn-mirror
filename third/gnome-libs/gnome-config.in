@@ -196,6 +196,11 @@ while test $# -gt 0; do
     zvt)
 	the_libs="$the_libs @GNOME_LIBDIR@ @ZVT_LIBS@"
 	;;
+    libgtop)
+	the_libs="$the_libs `libgtop-config --libs --extra-libs`"
+	the_flags="$the_flags `libgtop-config --cflags`"
+	MODULE_VERSION="libgtop-`libgtop-config --version`"
+	;;
     *)
         error=true
         for dir in `echo $module_dirs | sed 's/:/ /g'`; do

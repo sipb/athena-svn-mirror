@@ -1,4 +1,4 @@
-<refentry id="GnomePropertyBox" revision="11 Oct 2000">
+<refentry id="GnomePropertyBox" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomePropertyBox</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -17,7 +17,7 @@ Standarized dialog box for handling configuration</refpurpose>
 
 
 struct      <link linkend="GnomePropertyBox-struct">GnomePropertyBox</link>;
-#define     <link linkend="GNOME-PROPERTY-BOX-DIRTY">GNOME_PROPERTY_BOX_DIRTY</link>
+#define     <link linkend="GNOME-PROPERTY-BOX-DIRTY-CAPS">GNOME_PROPERTY_BOX_DIRTY</link>
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-property-box-new">gnome_property_box_new</link>          (void);
 void        <link linkend="gnome-property-box-changed">gnome_property_box_changed</link>      (<link linkend="GnomePropertyBox">GnomePropertyBox</link> *property_box);
 void        <link linkend="gnome-property-box-set-state">gnome_property_box_set_state</link>    (<link linkend="GnomePropertyBox">GnomePropertyBox</link> *property_box,
@@ -208,7 +208,7 @@ property_dialog_do_connections (GnomePropertyBox *property_box)
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PROPERTY-BOX-DIRTY">GNOME_PROPERTY_BOX_DIRTY</title>
+<title><anchor id="GNOME-PROPERTY-BOX-DIRTY-CAPS">GNOME_PROPERTY_BOX_DIRTY</title>
 <programlisting>#define GNOME_PROPERTY_BOX_DIRTY	"gnome_property_box_dirty"
 </programlisting>
 <para>
@@ -264,9 +264,11 @@ to make the Ok/Apply buttons sensitive.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>property_box</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

@@ -103,7 +103,6 @@ gnomeui_doc_DATA =				\
 	gnomeui.html				\
 	gnomeui.hierarchy			\
 	gnomeui.types				\
-	gnomeui-scan.c				\
 	gnomeui-decl.txt			\
 	gnomeui-sections.txt
 

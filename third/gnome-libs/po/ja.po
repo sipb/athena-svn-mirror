@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.5\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-09-18 07:15+09:00\n"
+"Project-Id-Version: gnome-libs 1.2.8\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-01-21 22:02+09:00\n"
 "Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,8 @@ msgid "HOSTNAME:PORT"
 msgstr "ホスト名:ポート番号"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOMEオプション"
 
 #: libgnomeui/gnome-about.c:187
@@ -930,8 +931,21 @@ msgstr "追加Gtkモジュールの読み込み"
 msgid "MODULE"
 msgstr "モジュール"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "GTK オプション"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "GNOME GUI オプション"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s オプション"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "セグメンテーションフォルトが複数回発生しました; "
@@ -1508,6 +1522,10 @@ msgstr "(内部使用のみ)活性化する GOAD サーバの ID"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(内部使用のみ)GOAD ファイルディスクリプタ"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "GNOME オブジェクト活性化ディレクトリ"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

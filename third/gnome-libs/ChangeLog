@@ -1,3 +1,61 @@
+2001-02-15  Darin Adler  <darin@eazel.com>
+
+	* libgnome/gnomelib-init.c: (gnomelib_register_options): Fixed
+	the "GNOME Options" string to have a lower-case "O" to match all
+	the other popt option section strings.
+
+2001-02-13  Darin Adler  <darin@eazel.com>
+
+	* libgnomeui/gnome-init.c: (gnome_register_options),
+	(gnome_init_with_popt_table): Some fixes to my recent change.
+	Should use N_, not _. More importantly, can't free the options
+	that are passed in to gnomelib_register_popt_table.
+
+2001-02-04  Simos Xenitellis  <simos@hellug.gr>
+
+	* gnome-data/gtk-events.soundlist, 
+	gnome-data/gnome.soundlist:
+	Minor updates to Greek translation.
+	
+
+2001-01-15  Darin Adler  <darin@eazel.com>
+
+	* libgnomeui/gnome-init.c: (gnome_register_options):
+	Mark names of sections of the popt table with _() for translation.
+	(gnome_init_with_popt_table): Use a _("%s options") template for
+	the main option section by default. This is better than what we had
+	before, translation-wise, albeit not perfect (since we'd really
+	like to translate the entire string as a whole). But probably the
+	best we can do on the stable branch without changing the API.
+	* libgnorba/goad.c: (goad_register_arguments): Mark the name of
+	another popt table section with _().
+
+2001-01-04  Stanislav Brabec  <utx@penguin.cz>
+
+	* configure.in: Added support for db1 emulation in Berkeley DB3.
+	DB3 needs --enable-compat185.
+
+2000-11-21  Martin Baulig  <baulig@suse.de>
+
+	* gnome-config.in: Added special section for module "libgtop";
+	this is required to make `gnome-config --cflags --libs libgtop`
+	work (I cannot change libgtopConf.sh since it is frozen and too
+	many apps depend on its current format).
+
+2000-11-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* configure.in:
+	Somewhere between perl version 5.0 and perl 5.6 the version format
+	spewage for 'perl -v' changed from including 'version 5.' to
+	including 'v5.'  This has the unfortunate effect of breaking the
+	"REBUILD" hack that allows for the libgnomeui/gnome.defs file to
+	be rebuilt.  My fix here is to first check for the 'version 5'
+	string and if that fails, check for 'v5'.
+	
+2000-10-24  Robert Brady  <robert@suse.co.uk>
+
+	* configure.in: Added ta (Tamil) to ALL_LINGUAS.
+
 2000-10-23  Darin Adler  <darin@eazel.com>
 
 	* configure.in: Miguel forgot to check in the "bump the version"

@@ -1,4 +1,4 @@
-<refentry id="GnomeClient" revision="11 Oct 2000">
+<refentry id="GnomeClient" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeClient</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -17,7 +17,7 @@
 
 struct      <link linkend="GnomeClient-struct">GnomeClient</link>;
 enum        <link linkend="GnomeClientFlags">GnomeClientFlags</link>;
-#define     <link linkend="GNOME-CLIENT-CONNECTED">GNOME_CLIENT_CONNECTED</link>          (obj)
+#define     <link linkend="GNOME-CLIENT-CONNECTED-CAPS">GNOME_CLIENT_CONNECTED</link>          (obj)
 enum        <link linkend="GnomeInteractStyle">GnomeInteractStyle</link>;
 enum        <link linkend="GnomeDialogType">GnomeDialogType</link>;
 enum        <link linkend="GnomeSaveStyle">GnomeSaveStyle</link>;
@@ -171,7 +171,7 @@ X.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-CLIENT-CONNECTED">GNOME_CLIENT_CONNECTED()</title>
+<title><anchor id="GNOME-CLIENT-CONNECTED-CAPS">GNOME_CLIENT_CONNECTED()</title>
 <programlisting>#define GNOME_CLIENT_CONNECTED(obj) (GNOME_CLIENT (obj)-&gt;smc_conn)
 </programlisting>
 <para>
@@ -423,6 +423,7 @@ why you'd do this.</para>
 </entry></row>
 <row><entry align="right"><parameter>client_id</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -697,6 +698,7 @@ in progress when the discard command was set. For example:
 <row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -732,6 +734,7 @@ should cease to be restarted.</para>
 <row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -765,6 +768,7 @@ during a normal logout.</para>
 </entry></row>
 <row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -837,6 +841,7 @@ Set a command the session manager can use to create a new instance of the applic
 <row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -901,6 +906,7 @@ does this automatically; no need to call the function.</para>
 </entry></row>
 <row><entry align="right"><parameter>user_id</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -999,11 +1005,14 @@ from interacting until this key is returned with
 <entry> Pointer to GNOME session client object.
 </entry></row>
 <row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>client_data</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1028,9 +1037,11 @@ Used when you need to destroy the callback data after the interaction.</para>
 <entry> Pointer to GNOME session client object.
 </entry></row>
 <row><entry align="right"><parameter>dialog</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
 <entry> callback data
 </entry></row>

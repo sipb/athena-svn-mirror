@@ -122,7 +122,7 @@ NAME="GNOMECANVAS"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN10058"
+NAME="AEN10062"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +130,7 @@ NAME="AEN10058"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN10061"
+NAME="AEN10065"
 ></A
 ><H2
 >Synopsis</H2
@@ -151,15 +151,15 @@ HREF="gnomecanvas.html#GNOMECANVAS-STRUCT"
 >GnomeCanvas</A
 >;
 #define     <A
-HREF="gnomecanvas.html#GNOME-CANVAS-EPSILON"
+HREF="gnomecanvas.html#GNOME-CANVAS-EPSILON-CAPS"
 >GNOME_CANVAS_EPSILON</A
 >
 #define     <A
-HREF="gnomecanvas.html#GNOME-CANVAS-COLOR"
+HREF="gnomecanvas.html#GNOME-CANVAS-COLOR-CAPS"
 >GNOME_CANVAS_COLOR</A
 >              (r, g, b)
 #define     <A
-HREF="gnomecanvas.html#GNOME-CANVAS-COLOR-A"
+HREF="gnomecanvas.html#GNOME-CANVAS-COLOR-A-CAPS"
 >GNOME_CANVAS_COLOR_A</A
 >            (r, g, b, a)
 struct      <A
@@ -449,7 +449,28 @@ HREF="gnomecanvas.html"
                                              <GTKDOCLINK
 HREF="GDKGC"
 >GdkGC</GTKDOCLINK
-> *gc);&#13;</PRE
+> *gc);
+void        <A
+HREF="gnomecanvas.html#GNOME-CANVAS-SET-DITHER"
+>gnome_canvas_set_dither</A
+>         (<A
+HREF="gnomecanvas.html"
+>GnomeCanvas</A
+> *canvas,
+                                             <GTKDOCLINK
+HREF="GDKRGBDITHER"
+>GdkRgbDither</GTKDOCLINK
+> dither);
+<GTKDOCLINK
+HREF="GDKRGBDITHER"
+>GdkRgbDither</GTKDOCLINK
+> <A
+HREF="gnomecanvas.html#GNOME-CANVAS-GET-DITHER"
+>gnome_canvas_get_dither</A
+>        (<A
+HREF="gnomecanvas.html"
+>GnomeCanvas</A
+> *canvas);&#13;</PRE
 ></TD
 ></TR
 ></TABLE
@@ -457,7 +478,7 @@ HREF="GDKGC"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10142"
+NAME="AEN10152"
 ></A
 ><H2
 >Object Hierarchy</H2
@@ -494,7 +515,7 @@ HREF="GTKLAYOUT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10149"
+NAME="AEN10159"
 ></A
 ><H2
 >Description</H2
@@ -506,7 +527,7 @@ NAME="AEN10149"
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10152"
+NAME="AEN10162"
 ></A
 ><H3
 >Canvas Items</H3
@@ -545,7 +566,7 @@ HREF="gnomecanvasitem.html"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10160"
+NAME="AEN10170"
 ></A
 ><H3
 >Flicker free display</H3
@@ -560,7 +581,7 @@ NAME="AEN10160"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10163"
+NAME="AEN10173"
 ></A
 ><H3
 >Event dispatching</H3
@@ -575,7 +596,7 @@ NAME="AEN10163"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10166"
+NAME="AEN10176"
 ></A
 ><H3
 >Canvas types</H3
@@ -611,14 +632,14 @@ HREF="gnomecanvas.html#GNOME-CANVAS-NEW-AA"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10173"
+NAME="AEN10183"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10175"
+NAME="AEN10185"
 ></A
 ><H3
 ><A
@@ -646,11 +667,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10180"
+NAME="AEN10190"
 ></A
 ><H3
 ><A
-NAME="GNOME-CANVAS-EPSILON"
+NAME="GNOME-CANVAS-EPSILON-CAPS"
 ></A
 >GNOME_CANVAS_EPSILON</H3
 ><TABLE
@@ -676,11 +697,11 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10185"
+NAME="AEN10195"
 ></A
 ><H3
 ><A
-NAME="GNOME-CANVAS-COLOR"
+NAME="GNOME-CANVAS-COLOR-CAPS"
 ></A
 >GNOME_CANVAS_COLOR()</H3
 ><TABLE
@@ -774,11 +795,11 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10207"
+NAME="AEN10217"
 ></A
 ><H3
 ><A
-NAME="GNOME-CANVAS-COLOR-A"
+NAME="GNOME-CANVAS-COLOR-A-CAPS"
 ></A
 >GNOME_CANVAS_COLOR_A()</H3
 ><TABLE
@@ -890,7 +911,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10233"
+NAME="AEN10243"
 ></A
 ><H3
 ><A
@@ -1251,7 +1272,7 @@ CLASS="STRUCTFIELD"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10303"
+NAME="AEN10313"
 ></A
 ><H3
 ><A
@@ -1317,7 +1338,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10319"
+NAME="AEN10329"
 ></A
 ><H3
 ><A
@@ -1382,7 +1403,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10335"
+NAME="AEN10345"
 ></A
 ><H3
 ><A
@@ -1465,7 +1486,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10356"
+NAME="AEN10366"
 ></A
 ><H3
 ><A
@@ -1616,7 +1637,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10392"
+NAME="AEN10402"
 ></A
 ><H3
 ><A
@@ -1765,7 +1786,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10428"
+NAME="AEN10438"
 ></A
 ><H3
 ><A
@@ -1853,7 +1874,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10449"
+NAME="AEN10459"
 ></A
 ><H3
 ><A
@@ -1957,7 +1978,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10473"
+NAME="AEN10483"
 ></A
 ><H3
 ><A
@@ -2059,7 +2080,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10497"
+NAME="AEN10507"
 ></A
 ><H3
 ><A
@@ -2127,7 +2148,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10513"
+NAME="AEN10523"
 ></A
 ><H3
 ><A
@@ -2254,7 +2275,7 @@ coordinates.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10544"
+NAME="AEN10554"
 ></A
 ><H3
 ><A
@@ -2341,7 +2362,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10565"
+NAME="AEN10575"
 ></A
 ><H3
 ><A
@@ -2504,7 +2525,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10602"
+NAME="AEN10612"
 ></A
 ><H3
 ><A
@@ -2591,7 +2612,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10623"
+NAME="AEN10633"
 ></A
 ><H3
 ><A
@@ -2734,7 +2755,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10657"
+NAME="AEN10667"
 ></A
 ><H3
 ><A
@@ -2883,7 +2904,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10693"
+NAME="AEN10703"
 ></A
 ><H3
 ><A
@@ -3026,7 +3047,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10727"
+NAME="AEN10737"
 ></A
 ><H3
 ><A
@@ -3177,7 +3198,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10763"
+NAME="AEN10773"
 ></A
 ><H3
 ><A
@@ -3326,7 +3347,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10799"
+NAME="AEN10809"
 ></A
 ><H3
 ><A
@@ -3459,7 +3480,7 @@ is NULL, then returns FALSE.</TD
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN10830"
+NAME="AEN10840"
 ></A
 ><H3
 ><A
@@ -3544,11 +3565,209 @@ VALIGN="TOP"
 ></P
 ></DIV
 ></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10861"
+></A
+><H3
+><A
+NAME="GNOME-CANVAS-SET-DITHER"
+></A
+>gnome_canvas_set_dither ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_canvas_set_dither         (<A
+HREF="gnomecanvas.html"
+>GnomeCanvas</A
+> *canvas,
+                                             <GTKDOCLINK
+HREF="GDKRGBDITHER"
+>GdkRgbDither</GTKDOCLINK
+> dither);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Controls dithered rendering for antialiased canvases. The value of dither
+should be; <GTKDOCLINK
+HREF="GDK-RGB-DITHER-NONE-CAPS"
+>GDK_RGB_DITHER_NONE</GTKDOCLINK
+>, <GTKDOCLINK
+HREF="GDK-RGB-DITHER-NORMAL-CAPS"
+>GDK_RGB_DITHER_NORMAL</GTKDOCLINK
+>, or
+<GTKDOCLINK
+HREF="GDK-RGB-DITHER-MAX-CAPS"
+>GDK_RGB_DITHER_MAX</GTKDOCLINK
+>. The default canvas setting is <GTKDOCLINK
+HREF="GDK-RGB-DITHER-NORMAL-CAPS"
+>GDK_RGB_DITHER_NORMAL</GTKDOCLINK
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>canvas</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A canvas.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dither</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Type of dither used to render an antialiased canvas.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN10890"
+></A
+><H3
+><A
+NAME="GNOME-CANVAS-GET-DITHER"
+></A
+>gnome_canvas_get_dither ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><GTKDOCLINK
+HREF="GDKRGBDITHER"
+>GdkRgbDither</GTKDOCLINK
+> gnome_canvas_get_dither        (<A
+HREF="gnomecanvas.html"
+>GnomeCanvas</A
+> *canvas);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the type of dithering used to render an antialiased canvas.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>canvas</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A canvas.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The dither setting.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN10851"
+NAME="AEN10911"
 ></A
 ><H2
 >See Also</H2

@@ -120,16 +120,19 @@ static guint
 get_preferred_width (GnomeDockItem *dock_item)
 {
   GtkWidget *child;
-  guint preferred_width;
+  guint preferred_width = 0;
 
   child = GTK_BIN (dock_item)->child;
 
-  if (! check_guint_arg (GTK_OBJECT (child), "preferred_width", &preferred_width))
+  if (child != NULL)
     {
-      GtkRequisition child_requisition;
+      if (! check_guint_arg (GTK_OBJECT (child), "preferred_width", &preferred_width))
+        {
+          GtkRequisition child_requisition;
   
-      gtk_widget_get_child_requisition (child, &child_requisition);
-      preferred_width = child_requisition.width;
+          gtk_widget_get_child_requisition (child, &child_requisition);
+          preferred_width = child_requisition.width;
+        }
     }
 
   if (dock_item->orientation == GTK_ORIENTATION_HORIZONTAL)
@@ -144,16 +147,19 @@ static guint
 get_preferred_height (GnomeDockItem *dock_item)
 {
   GtkWidget *child;
-  guint preferred_height;
+  guint preferred_height = 0;
 
   child = GTK_BIN (dock_item)->child;
 
-  if (! check_guint_arg (GTK_OBJECT (child), "preferred_height", &preferred_height))
+  if (child != NULL)
     {
-      GtkRequisition child_requisition;
+      if (! check_guint_arg (GTK_OBJECT (child), "preferred_height", &preferred_height))
+      {
+        GtkRequisition child_requisition;
   
-      gtk_widget_get_child_requisition (child, &child_requisition);
-      preferred_height = child_requisition.height;
+        gtk_widget_get_child_requisition (child, &child_requisition);
+        preferred_height = child_requisition.height;
+      }
     }
 
   if (dock_item->orientation == GTK_ORIENTATION_VERTICAL)
@@ -898,6 +904,10 @@ gnome_dock_item_button_changed (GtkWidget      *widget,
 
           gnome_dock_item_grab_pointer (di);
 
+	  gtk_object_set_data (GTK_OBJECT (di),
+			       "gnome_dock_item_pre_drag_orientation",
+			       GINT_TO_POINTER (di->orientation));
+
           gtk_signal_emit (GTK_OBJECT (widget),
                            dock_item_signals[DOCK_DRAG_BEGIN]);
 
@@ -1268,6 +1278,7 @@ gnome_dock_item_detach (GnomeDockItem *item, gint x, gint y)
 {
   GtkRequisition requisition;
   GtkAllocation allocation;
+  GtkOrientation pre_drag_orientation;
 
   if (item->behavior & GNOME_DOCK_ITEM_BEH_NEVER_FLOATING)
     return FALSE;
@@ -1279,6 +1290,10 @@ gnome_dock_item_detach (GnomeDockItem *item, gint x, gint y)
 
   if (! GTK_WIDGET_REALIZED (item))
     return TRUE;
+
+  pre_drag_orientation = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (item),
+							       "gnome_dock_item_pre_drag_orientation"));
+  gnome_dock_item_set_orientation (item, pre_drag_orientation);
 
   gtk_widget_size_request (GTK_WIDGET (item), &requisition);
 

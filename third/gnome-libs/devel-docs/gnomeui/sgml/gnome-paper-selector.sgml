@@ -1,4 +1,4 @@
-<refentry id="GnomePaperSelector" revision="11 Oct 2000">
+<refentry id="GnomePaperSelector" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomePaperSelector</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -76,6 +76,7 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -89,8 +90,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -105,8 +108,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -121,8 +126,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -138,8 +145,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -155,8 +164,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -172,8 +183,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -189,8 +202,10 @@ struct      <link linkend="GnomePaperSelector-struct">GnomePaperSelector</link>;
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gspaper</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

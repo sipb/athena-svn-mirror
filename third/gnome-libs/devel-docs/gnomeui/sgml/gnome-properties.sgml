@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-properties" revision="11 Oct 2000">
+<refentry id="gnomeui-gnome-properties" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gnome-properties</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -112,10 +112,13 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>descriptor</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>property_data_ptr</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -131,9 +134,11 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>property_box</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -149,9 +154,11 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>property_object_list</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>action</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -168,6 +175,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -182,6 +190,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <tbody>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -198,6 +207,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -212,6 +222,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <tbody>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -228,6 +239,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -242,6 +254,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <tbody>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -259,6 +272,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -273,6 +287,7 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <tbody>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

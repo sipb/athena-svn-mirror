@@ -1,4 +1,4 @@
-<refentry id="GnomeMDIChild" revision="11 Oct 2000">
+<refentry id="GnomeMDIChild" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeMDIChild</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -117,10 +117,13 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -137,12 +140,16 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Param3</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -158,10 +165,13 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -178,12 +188,16 @@ void        <link linkend="gnome-mdi-child-set-menu-template">gnome_mdi_child_se
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>Param3</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

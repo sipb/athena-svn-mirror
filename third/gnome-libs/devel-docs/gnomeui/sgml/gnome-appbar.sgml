@@ -1,4 +1,4 @@
-<refentry id="GnomeAppBar" revision="11 Oct 2000">
+<refentry id="GnomeAppBar" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeAppBar</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,10 +16,10 @@
 
 
 struct      <link linkend="GnomeAppBar-struct">GnomeAppBar</link>;
-#define     <link linkend="GNOME-APPBAR-HAS-STATUS">GNOME_APPBAR_HAS_STATUS</link>         (appbar)
-#define     <link linkend="GNOME-APPBAR-HAS-PROGRESS">GNOME_APPBAR_HAS_PROGRESS</link>       (appbar)
+#define     <link linkend="GNOME-APPBAR-HAS-STATUS-CAPS">GNOME_APPBAR_HAS_STATUS</link>         (appbar)
+#define     <link linkend="GNOME-APPBAR-HAS-PROGRESS-CAPS">GNOME_APPBAR_HAS_PROGRESS</link>       (appbar)
 struct      <link linkend="GnomeAppBarMsg">GnomeAppBarMsg</link>;
-#define     <link linkend="GNOME-APPBAR-INTERACTIVE">GNOME_APPBAR_INTERACTIVE</link>        (ab)
+#define     <link linkend="GNOME-APPBAR-INTERACTIVE-CAPS">GNOME_APPBAR_INTERACTIVE</link>        (ab)
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-appbar-new">gnome_appbar_new</link>                (<link linkend="gboolean">gboolean</link> has_progress,
                                              <link linkend="gboolean">gboolean</link> has_status,
                                              <link linkend="GnomePreferencesType">GnomePreferencesType</link> interactivity);
@@ -83,7 +83,7 @@ void        <link linkend="gnome-appbar-construct">gnome_appbar_construct</link>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-APPBAR-HAS-STATUS">GNOME_APPBAR_HAS_STATUS()</title>
+<title><anchor id="GNOME-APPBAR-HAS-STATUS-CAPS">GNOME_APPBAR_HAS_STATUS()</title>
 <programlisting>#define GNOME_APPBAR_HAS_STATUS(appbar) (GNOME_APPBAR(appbar)-&gt;status != NULL)
 </programlisting>
 <para>
@@ -100,7 +100,7 @@ Returns whether the appbar contains a statusbar widget. For internal use. Don't 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOME-APPBAR-HAS-PROGRESS">GNOME_APPBAR_HAS_PROGRESS()</title>
+<title><anchor id="GNOME-APPBAR-HAS-PROGRESS-CAPS">GNOME_APPBAR_HAS_PROGRESS()</title>
 <programlisting>#define GNOME_APPBAR_HAS_PROGRESS(appbar) (GNOME_APPBAR(appbar)-&gt;progress != NULL)
 </programlisting>
 <para>
@@ -120,7 +120,7 @@ Returns whether the appbar has a progress widget. For internal use. Don't use.
 <programlisting>struct GnomeAppBarMsg;</programlisting>
 </refsect2>
 <refsect2>
-<title><anchor id="GNOME-APPBAR-INTERACTIVE">GNOME_APPBAR_INTERACTIVE()</title>
+<title><anchor id="GNOME-APPBAR-INTERACTIVE-CAPS">GNOME_APPBAR_INTERACTIVE()</title>
 <programlisting>#define GNOME_APPBAR_INTERACTIVE(ab) ((ab) ? (ab)-&gt;interactive : FALSE)
 </programlisting>
 <para>

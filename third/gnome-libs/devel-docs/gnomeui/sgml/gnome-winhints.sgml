@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-winhints" revision="11 Oct 2000">
+<refentry id="gnomeui-gnome-winhints" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gnome-winhints</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,20 +16,20 @@ Manipulate GNOME-specific window manager hints.</refpurpose>
 #include &lt;gnome.h&gt;
 
 
-#define     <link linkend="XA-WIN-PROTOCOLS">XA_WIN_PROTOCOLS</link>
-#define     <link linkend="XA-WIN-ICONS">XA_WIN_ICONS</link>
-#define     <link linkend="XA-WIN-WORKSPACE">XA_WIN_WORKSPACE</link>
-#define     <link linkend="XA-WIN-WORKSPACE-COUNT">XA_WIN_WORKSPACE_COUNT</link>
-#define     <link linkend="XA-WIN-WORKSPACE-NAMES">XA_WIN_WORKSPACE_NAMES</link>
-#define     <link linkend="XA-WIN-LAYER">XA_WIN_LAYER</link>
-#define     <link linkend="XA-WIN-STATE">XA_WIN_STATE</link>
-#define     <link linkend="XA-WIN-HINTS">XA_WIN_HINTS</link>
-#define     <link linkend="XA-WIN-WORKAREA">XA_WIN_WORKAREA</link>
-#define     <link linkend="XA-WIN-CLIENT-LIST">XA_WIN_CLIENT_LIST</link>
-#define     <link linkend="XA-WIN-APP-STATE">XA_WIN_APP_STATE</link>
-#define     <link linkend="XA-WIN-EXPANDED-SIZE">XA_WIN_EXPANDED_SIZE</link>
-#define     <link linkend="XA-WIN-CLIENT-MOVING">XA_WIN_CLIENT_MOVING</link>
-#define     <link linkend="XA-WIN-SUPPORTING-WM-CHECK">XA_WIN_SUPPORTING_WM_CHECK</link>
+#define     <link linkend="XA-WIN-PROTOCOLS-CAPS">XA_WIN_PROTOCOLS</link>
+#define     <link linkend="XA-WIN-ICONS-CAPS">XA_WIN_ICONS</link>
+#define     <link linkend="XA-WIN-WORKSPACE-CAPS">XA_WIN_WORKSPACE</link>
+#define     <link linkend="XA-WIN-WORKSPACE-COUNT-CAPS">XA_WIN_WORKSPACE_COUNT</link>
+#define     <link linkend="XA-WIN-WORKSPACE-NAMES-CAPS">XA_WIN_WORKSPACE_NAMES</link>
+#define     <link linkend="XA-WIN-LAYER-CAPS">XA_WIN_LAYER</link>
+#define     <link linkend="XA-WIN-STATE-CAPS">XA_WIN_STATE</link>
+#define     <link linkend="XA-WIN-HINTS-CAPS">XA_WIN_HINTS</link>
+#define     <link linkend="XA-WIN-WORKAREA-CAPS">XA_WIN_WORKAREA</link>
+#define     <link linkend="XA-WIN-CLIENT-LIST-CAPS">XA_WIN_CLIENT_LIST</link>
+#define     <link linkend="XA-WIN-APP-STATE-CAPS">XA_WIN_APP_STATE</link>
+#define     <link linkend="XA-WIN-EXPANDED-SIZE-CAPS">XA_WIN_EXPANDED_SIZE</link>
+#define     <link linkend="XA-WIN-CLIENT-MOVING-CAPS">XA_WIN_CLIENT_MOVING</link>
+#define     <link linkend="XA-WIN-SUPPORTING-WM-CHECK-CAPS">XA_WIN_SUPPORTING_WM_CHECK</link>
 enum        <link linkend="GnomeWinLayer">GnomeWinLayer</link>;
 enum        <link linkend="GnomeWinState">GnomeWinState</link>;
 enum        <link linkend="GnomeWinHints">GnomeWinHints</link>;
@@ -93,98 +93,98 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="XA-WIN-PROTOCOLS">XA_WIN_PROTOCOLS</title>
+<title><anchor id="XA-WIN-PROTOCOLS-CAPS">XA_WIN_PROTOCOLS</title>
 <programlisting>#define XA_WIN_PROTOCOLS           "_WIN_PROTOCOLS"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-ICONS">XA_WIN_ICONS</title>
+<title><anchor id="XA-WIN-ICONS-CAPS">XA_WIN_ICONS</title>
 <programlisting>#define XA_WIN_ICONS               "_WIN_ICONS"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-WORKSPACE">XA_WIN_WORKSPACE</title>
+<title><anchor id="XA-WIN-WORKSPACE-CAPS">XA_WIN_WORKSPACE</title>
 <programlisting>#define XA_WIN_WORKSPACE           "_WIN_WORKSPACE"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-WORKSPACE-COUNT">XA_WIN_WORKSPACE_COUNT</title>
+<title><anchor id="XA-WIN-WORKSPACE-COUNT-CAPS">XA_WIN_WORKSPACE_COUNT</title>
 <programlisting>#define XA_WIN_WORKSPACE_COUNT     "_WIN_WORKSPACE_COUNT"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-WORKSPACE-NAMES">XA_WIN_WORKSPACE_NAMES</title>
+<title><anchor id="XA-WIN-WORKSPACE-NAMES-CAPS">XA_WIN_WORKSPACE_NAMES</title>
 <programlisting>#define XA_WIN_WORKSPACE_NAMES     "_WIN_WORKSPACE_NAMES"    
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-LAYER">XA_WIN_LAYER</title>
+<title><anchor id="XA-WIN-LAYER-CAPS">XA_WIN_LAYER</title>
 <programlisting>#define XA_WIN_LAYER               "_WIN_LAYER"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-STATE">XA_WIN_STATE</title>
+<title><anchor id="XA-WIN-STATE-CAPS">XA_WIN_STATE</title>
 <programlisting>#define XA_WIN_STATE               "_WIN_STATE"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-HINTS">XA_WIN_HINTS</title>
+<title><anchor id="XA-WIN-HINTS-CAPS">XA_WIN_HINTS</title>
 <programlisting>#define XA_WIN_HINTS               "_WIN_HINTS"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-WORKAREA">XA_WIN_WORKAREA</title>
+<title><anchor id="XA-WIN-WORKAREA-CAPS">XA_WIN_WORKAREA</title>
 <programlisting>#define XA_WIN_WORKAREA            "_WIN_WORKAREA"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-CLIENT-LIST">XA_WIN_CLIENT_LIST</title>
+<title><anchor id="XA-WIN-CLIENT-LIST-CAPS">XA_WIN_CLIENT_LIST</title>
 <programlisting>#define XA_WIN_CLIENT_LIST         "_WIN_CLIENT_LIST"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-APP-STATE">XA_WIN_APP_STATE</title>
+<title><anchor id="XA-WIN-APP-STATE-CAPS">XA_WIN_APP_STATE</title>
 <programlisting>#define XA_WIN_APP_STATE           "_WIN_APP_STATE"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-EXPANDED-SIZE">XA_WIN_EXPANDED_SIZE</title>
+<title><anchor id="XA-WIN-EXPANDED-SIZE-CAPS">XA_WIN_EXPANDED_SIZE</title>
 <programlisting>#define XA_WIN_EXPANDED_SIZE       "_WIN_EXPANDED_SIZE"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-CLIENT-MOVING">XA_WIN_CLIENT_MOVING</title>
+<title><anchor id="XA-WIN-CLIENT-MOVING-CAPS">XA_WIN_CLIENT_MOVING</title>
 <programlisting>#define XA_WIN_CLIENT_MOVING       "_WIN_CLIENT_MOVING"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="XA-WIN-SUPPORTING-WM-CHECK">XA_WIN_SUPPORTING_WM_CHECK</title>
+<title><anchor id="XA-WIN-SUPPORTING-WM-CHECK-CAPS">XA_WIN_SUPPORTING_WM_CHECK</title>
 <programlisting>#define XA_WIN_SUPPORTING_WM_CHECK "_WIN_SUPPORTING_WM_CHECK"
 </programlisting>
 <para>
@@ -311,9 +311,11 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>layer</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -328,8 +330,10 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -345,9 +349,11 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -362,8 +368,10 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -379,9 +387,11 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>skip</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -396,8 +406,10 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -413,9 +425,11 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>workspace</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -430,8 +444,10 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -449,6 +465,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <row><entry align="right"><parameter>workspace</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -463,6 +480,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -479,6 +497,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -493,6 +512,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -512,15 +532,20 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -540,16 +565,22 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -565,9 +596,11 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>moving</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -583,9 +616,11 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -601,8 +636,10 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -618,6 +655,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -632,6 +670,7 @@ void        <link linkend="gnome-win-hints-set-app-state">gnome_win_hints_set_ap
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

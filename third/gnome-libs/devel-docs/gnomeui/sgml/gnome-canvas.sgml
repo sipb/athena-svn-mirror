@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvas" revision="11 Oct 2000">
+<refentry id="GnomeCanvas" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeCanvas</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,9 +16,9 @@
 
 
 struct      <link linkend="GnomeCanvas-struct">GnomeCanvas</link>;
-#define     <link linkend="GNOME-CANVAS-EPSILON">GNOME_CANVAS_EPSILON</link>
-#define     <link linkend="GNOME-CANVAS-COLOR">GNOME_CANVAS_COLOR</link>              (r, g, b)
-#define     <link linkend="GNOME-CANVAS-COLOR-A">GNOME_CANVAS_COLOR_A</link>            (r, g, b, a)
+#define     <link linkend="GNOME-CANVAS-EPSILON-CAPS">GNOME_CANVAS_EPSILON</link>
+#define     <link linkend="GNOME-CANVAS-COLOR-CAPS">GNOME_CANVAS_COLOR</link>              (r, g, b)
+#define     <link linkend="GNOME-CANVAS-COLOR-A-CAPS">GNOME_CANVAS_COLOR_A</link>            (r, g, b, a)
 struct      <link linkend="GnomeCanvasBuf">GnomeCanvasBuf</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-canvas-new">gnome_canvas_new</link>                (void);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-canvas-new-aa">gnome_canvas_new_aa</link>             (void);
@@ -85,6 +85,9 @@ int         <link linkend="gnome-canvas-get-color">gnome_canvas_get_color</link>
                                              <link linkend="GdkColor">GdkColor</link> *color);
 void        <link linkend="gnome-canvas-set-stipple-origin">gnome_canvas_set_stipple_origin</link> (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
                                              <link linkend="GdkGC">GdkGC</link> *gc);
+void        <link linkend="gnome-canvas-set-dither">gnome_canvas_set_dither</link>         (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
+                                             <link linkend="GdkRgbDither">GdkRgbDither</link> dither);
+<link linkend="GdkRgbDither">GdkRgbDither</link> <link linkend="gnome-canvas-get-dither">gnome_canvas_get_dither</link>        (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas);
 
 </synopsis>
 </refsynopsisdiv>
@@ -204,7 +207,7 @@ void        <link linkend="gnome-canvas-set-stipple-origin">gnome_canvas_set_sti
     However, canvas item implementations may make use of some of them.
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-CANVAS-EPSILON">GNOME_CANVAS_EPSILON</title>
+<title><anchor id="GNOME-CANVAS-EPSILON-CAPS">GNOME_CANVAS_EPSILON</title>
 <programlisting>#define GNOME_CANVAS_EPSILON 1e-10
 </programlisting>
   <para>
@@ -214,7 +217,7 @@ void        <link linkend="gnome-canvas-set-stipple-origin">gnome_canvas_set_sti
     &ldquo;almost zero&rdquo;.
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-CANVAS-COLOR">GNOME_CANVAS_COLOR()</title>
+<title><anchor id="GNOME-CANVAS-COLOR-CAPS">GNOME_CANVAS_COLOR()</title>
 <programlisting>#define     GNOME_CANVAS_COLOR(r, g, b)</programlisting>
   <para>
     This macro is used to build a 32-bit integer with an RGB color
@@ -238,7 +241,7 @@ void        <link linkend="gnome-canvas-set-stipple-origin">gnome_canvas_set_sti
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOME-CANVAS-COLOR-A">GNOME_CANVAS_COLOR_A()</title>
+<title><anchor id="GNOME-CANVAS-COLOR-A-CAPS">GNOME_CANVAS_COLOR_A()</title>
 <programlisting>#define     GNOME_CANVAS_COLOR_A(r, g, b, a)</programlisting>
   <para>
     This macro is used to build a 32-bit integer with an RGBA color
@@ -953,6 +956,57 @@ This is typically only needed by item implementations.</para>
 </entry></row>
 <row><entry align="right"><parameter>gc</parameter>&nbsp;:</entry>
 <entry> GC on which to set the stipple origin.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-set-dither">gnome_canvas_set_dither ()</title>
+<programlisting>void        gnome_canvas_set_dither         (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas,
+                                             <link linkend="GdkRgbDither">GdkRgbDither</link> dither);</programlisting>
+<para>
+Controls dithered rendering for antialiased canvases. The value of dither
+should be; <link linkend="GDK-RGB-DITHER-NONE-CAPS">GDK_RGB_DITHER_NONE</link>, <link linkend="GDK-RGB-DITHER-NORMAL-CAPS">GDK_RGB_DITHER_NORMAL</link>, or
+<link linkend="GDK-RGB-DITHER-MAX-CAPS">GDK_RGB_DITHER_MAX</link>. The default canvas setting is <link linkend="GDK-RGB-DITHER-NORMAL-CAPS">GDK_RGB_DITHER_NORMAL</link>.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>canvas</parameter>&nbsp;:</entry>
+<entry> A canvas.
+</entry></row>
+<row><entry align="right"><parameter>dither</parameter>&nbsp;:</entry>
+<entry> Type of dither used to render an antialiased canvas.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+<!--
+Local variables:
+mode: sgml
+sgml-parent-document: ("../gnomeui-docs.sgml" "book" "sect1" "")
+End:
+-->
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-get-dither">gnome_canvas_get_dither ()</title>
+<programlisting><link linkend="GdkRgbDither">GdkRgbDither</link> gnome_canvas_get_dither        (<link linkend="GnomeCanvas">GnomeCanvas</link> *canvas);</programlisting>
+<para>
+Returns the type of dithering used to render an antialiased canvas.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>canvas</parameter>&nbsp;:</entry>
+<entry> A canvas.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The dither setting.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 

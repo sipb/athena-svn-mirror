@@ -7,7 +7,7 @@ AM_CONFIG_HEADER(config.h)
 
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(gnome-libs, 1.2.8)
+AM_INIT_AUTOMAKE(gnome-libs, 1.2.12)
 
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -76,8 +76,20 @@ AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 # We would like indent, but don't require it.
 AC_CHECK_PROG(INDENT, indent, indent)
 
-REBUILD=\#
+_found_perl=0
 if test -n "$PERL" && $PERL -v | grep 'version 5.' > /dev/null ; then
+  _found_perl=1
+else
+  # The version string for perl changed for 'version 5' to 'v5' in
+  # perl 5.6 or therabouts
+  if test -n "$PERL" && $PERL -v | grep 'v5.' > /dev/null ; then
+    _found_perl=1
+  fi
+
+fi
+
+REBUILD=\#
+if test $_found_perl -eq 1; then
   if test -n "$AWK" ; then 
     REBUILD=
   fi
@@ -93,7 +105,7 @@ if test x$enable_debug = xyes ; then
   AC_DEFINE(GNOME_ENABLE_DEBUG)
 fi
 
-ALL_LINGUAS="ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv tr wa zh_CN.GB2312 zh_TW.Big5"
+ALL_LINGUAS="az ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr wa zh_CN.GB2312 zh_TW.Big5"
 	
 AM_GNOME_GETTEXT
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
@@ -303,13 +315,17 @@ AC_CHECK_FUNC(dbopen, [],
 if test "$prefer_db1" = "yes"; then
  AC_CHECK_LIB(db1, dbopen, DB_LIB="-ldb1",
   AC_CHECK_LIB(db, dbopen, DB_LIB="-ldb",
-   AC_MSG_ERROR([Your db library is missing db 1.85 compatibility mode])
+   AC_CHECK_LIB(db-3, __db185_open, DB_LIB="-ldb-3",
+    AC_MSG_ERROR([Your db library is missing db 1.85 compatibility mode])
+   )
   )
  )
 else
  AC_CHECK_LIB(db, dbopen, DB_LIB="-ldb",
   AC_CHECK_LIB(db1, dbopen, DB_LIB="-ldb1",
-   AC_MSG_ERROR([Your db library is missing db 1.85 compatibility mode])
+   AC_CHECK_LIB(db-3, __db185_open, DB_LIB="-ldb-3",
+    AC_MSG_ERROR([Your db library is missing db 1.85 compatibility mode])
+   )
   )
  )
 fi

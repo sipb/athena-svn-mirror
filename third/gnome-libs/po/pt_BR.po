@@ -1,13 +1,13 @@
 # Gnome libs translation for Brazilian Portuguese
-# Copyright (C) 1999-2000 Free Software Foundation, Inc.
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
 # Alexandre Hautequest <hquest@fesppr.br>, 1999.
-# Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000.
+# Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>, 2000-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.4\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-08-27 11:25-03:00\n"
+"Project-Id-Version: gnome-libs 1.2.11\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-02-07 21:36-02:00\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
 "MIME-Version: 1.0\n"
@@ -61,7 +61,8 @@ msgid "HOSTNAME:PORT"
 msgstr "MÁQUINA:PORTA"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Opções do GNOME"
 
 #: libgnomeui/gnome-about.c:187
@@ -933,8 +934,21 @@ msgstr "Carregar um módulo Gtk adicional"
 msgid "MODULE"
 msgstr "MÓDULO"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "Opções do GTK"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "Opções da interface Gnome"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "Opções de %s"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Múltiplas falhas de segmentação ocorreram; não é possível exibir diálogo de "
@@ -1513,6 +1527,10 @@ msgstr "(Apenas para uso interno) ID do servidor GOAD a ativar"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Apenas para uso interno) descritor de arquivos GOAD"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Lista de ativação de objetos Gnome"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

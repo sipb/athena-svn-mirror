@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name     gnome-libs
-%define ver      1.2.8
+%define ver      1.2.12
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr

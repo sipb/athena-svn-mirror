@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.12\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 1998-05-07 18:00+0000\n"
 "Last-Translator: Alastair McKinstry <alastair@ilo.dec.com>\n"
 "Language-Team: Irish <ga@li.org>\n"
@@ -58,7 +58,7 @@ msgid "HOSTNAME:PORT"
 msgstr ""
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+msgid "GNOME options"
 msgstr ""
 
 #: libgnomeui/gnome-about.c:187
@@ -964,8 +964,21 @@ msgstr ""
 msgid "MODULE"
 msgstr ""
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr ""
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr ""
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr ""
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
@@ -1519,6 +1532,10 @@ msgstr ""
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
+msgstr ""
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
 msgstr ""
 
 #: libgnorba/loadshlib.c:11

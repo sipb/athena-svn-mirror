@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-property-entries" revision="11 Oct 2000">
+<refentry id="gnomeui-gnome-property-entries" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gnome-property-entries</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -57,14 +57,19 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>label</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>font_name_ptr</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>font_ptr</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -85,20 +90,28 @@ This module is deprecated/experimental/unfinished. Don't use it.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>label</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>num_colors</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>columns</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>table_pos</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>colors</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>texts</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

@@ -1,16 +1,15 @@
 # gnome-libs fr.po
-# Copyright (C) 1998 Free Software Foundation, Inc.
-# Vincent Renardias <vincent@ldsol.com>, 1998, 1999.
+# Copyright (C) 1998-2001 Free Software Foundation, Inc.
+# Vincent Renardias <vincent@ldsol.com>, 1998-1999.
 # Thibaut Cousin <Thibaut.Cousin@clermont.in2p3.fr>, 1999.
-# Christophe Merlet (RedFox) <christophe@merlet.net>, 2000.
+# Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.6\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-10-18 11:48+0200\n"
-"Last-Translator: Christophe Merlet (RedFox) <christophe@merlet.net>\n"
+"Project-Id-Version: gnome-libs 1.2.11\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-02-09 13:32+0100\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: Gnome French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -43,8 +42,8 @@ msgid ""
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 "Erreur avec l'option %s : %s.\n"
-"Utilisez '%s --help' pour avoir la liste complète des options de la ligne de "
-"commande.\n"
+"Utilisez « %s --help » pour avoir la liste complète des options de la ligne "
+"de commande.\n"
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
@@ -63,7 +62,8 @@ msgid "HOSTNAME:PORT"
 msgstr "MACHINE:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Options GNOME"
 
 #: libgnomeui/gnome-about.c:187
@@ -767,7 +767,7 @@ msgstr "Icone :"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Choisissez un icone"
+msgstr "Choisissez une icône"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -843,7 +843,7 @@ msgstr "Police"
 msgid "No Icon"
 msgstr ""
 "Pas\n"
-"d'icone"
+"d'icône"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -855,7 +855,7 @@ msgstr "Prévisualisation"
 
 #: libgnomeui/gnome-icon-sel.c:348
 msgid "Loading Icons..."
-msgstr "Chargement des icones..."
+msgstr "Chargement des icônes..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -934,11 +934,24 @@ msgstr "Charger un module Gtk additionnel"
 msgid "MODULE"
 msgstr "MODULE"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "Options GTK"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "Options IUG GNOME"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s options"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-"Plusieurs erreurs de segmentation sont apparues; ne peut afficher de "
+"Plusieurs erreurs de segmentation sont apparues ; ne peut afficher de "
 "dialogue d'erreur\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
@@ -1023,7 +1036,7 @@ msgid ""
 "is not in the dictionary.\n"
 "Proceed anyway?"
 msgstr ""
-"Le mot `%s' n'est pas dans le dictionnaire.\n"
+"Le mot « %s » n'est pas dans le dictionnaire.\n"
 "Continuer quand même ?"
 
 #: libgnomeui/gnome-spell.c:249
@@ -1261,7 +1274,7 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"L'application \"%s\" (processus %d) s'est\n"
+"L'application « %s » (processus %d) s'est\n"
 "terminée à la suite d'une erreur fatale.\n"
 "(%s)"
 
@@ -1470,19 +1483,19 @@ msgid ""
 "Simple test app to check how the WIN_HINTS work.\n"
 "And to test the gnome_win_hints_* functions for errors. :)"
 msgstr ""
-"Simple application de test pour controler comment les WIN_HINTS "
+"Simple application de test pour contrôler comment les WIN_HINTS "
 "fonctionnent.\n"
 "Et pour tester les fonctions gnome_win_hints_*. :)"
 
 #: libgnorba/gnome-name-server.c:229
 #, c-format
 msgid "Creating '/GNOME' context %s %d"
-msgstr "Création du contexte '/GNOME' %s %d"
+msgstr "Création du contexte « /GNOME » %s %d"
 
 #: libgnorba/gnome-name-server.c:246
 #, c-format
 msgid "Creating '/GNOME/Servers' context %s %d"
-msgstr "Création du contexte '/GNOME/Servers' %s %d"
+msgstr "Création du contexte « /GNOME/Servers » %s %d"
 
 #: libgnorba/goad-browser.c:27
 msgid "GOAD ID of the server to activate"
@@ -1514,6 +1527,10 @@ msgstr "(Usage interne seulement) ID GOAD du serveur à activer"
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Usage interne seulement) descripteur de fichier GOAD"
 
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Répertoire d'Activation d'Objet Gnome (GOAD)"
+
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
 msgstr "ID sous lequel GOAD connaît ce serveur"
@@ -1544,17 +1561,17 @@ msgstr "Impossible d'écrire dans le fichier de cookie CORBA (%s) : %s\n"
 #: libgnorba/orbitgtk.c:171
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr "Impossible d'écrire le cookie CORBA dans `%s' : %s\n"
+msgstr "Impossible d'écrire le cookie CORBA dans « %s » : %s\n"
 
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Impossible d'ouvrir de fichier de cookie CORBA `%s' : %s\n"
+msgstr "Impossible d'ouvrir de fichier de cookie CORBA « %s » : %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Impossible de lire de fichier de cookie CORBA `%s' : %s\n"
+msgstr "Impossible de lire de fichier de cookie CORBA « %s » : %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
@@ -1573,27 +1590,27 @@ msgstr "Erreur système inconnue"
 #: support/getopt.c:669
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s : option `%s' ambigüe\n"
+msgstr "%s : option « %s » ambigüe\n"
 
 # , c-format
 # , c-format
 #: support/getopt.c:693
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s : l'option `--%s' n'a pas d'argument\n"
+msgstr "%s : l'option « --%s » n'a pas d'argument\n"
 
 # , c-format
 # , c-format
 #: support/getopt.c:698
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s : l'option `%c%s' n'a pas d'argument\n"
+msgstr "%s : l'option « %c%s » n'a pas d'argument\n"
 
 # , c-format
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "%s : l'option `%s' requiert un argument\n"
+msgstr "%s : l'option « %s » requiert un argument\n"
 
 # , c-format
 # , c-format
@@ -1601,7 +1618,7 @@ msgstr "%s : l'option `%s' requiert un argument\n"
 #: support/getopt.c:744
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s : option `--%s' non reconnue\n"
+msgstr "%s : option « --%s » non reconnue\n"
 
 # , c-format
 # , c-format
@@ -1609,7 +1626,7 @@ msgstr "%s : option `--%s' non reconnue\n"
 #: support/getopt.c:748
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s : option `%c%s' non reconnue\n"
+msgstr "%s : option « %c%s » non reconnue\n"
 
 # , c-format
 # , c-format
@@ -1638,14 +1655,14 @@ msgstr "%s : cette option requiert un argument -- %c\n"
 #: support/getopt.c:854
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s : l'option `-W %s' est ambigüe\n"
+msgstr "%s : l'option « -W %s » est ambigüe\n"
 
 # , c-format
 # , c-format
 #: support/getopt.c:872
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s : l'option `-W %s' n'a pas d'argument\n"
+msgstr "%s : l'option « -W %s » n'a pas d'argument\n"
 
 #: support/popthelp.c:35
 msgid "Show this help message"
@@ -1692,7 +1709,7 @@ msgstr "L'utilisateur a choisi Non/Annuler avec comme données :\n"
 
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
-msgstr "Nombre bizarre dans le callback de réponse"
+msgstr "Nombre bizarre dans la réponse du rappel de signal"
 
 #~ msgid "Specifies the geometry for the toplevel window"
 #~ msgstr "Spécifie la géométrie de la fenêtre principale"
