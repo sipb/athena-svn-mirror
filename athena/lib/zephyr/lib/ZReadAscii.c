@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.12 1988-06-23 10:32:47 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.13 1988-08-01 12:09:44 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZReadAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.12 1988-06-23 10:32:47 jtkohl Exp $";
+static char rcsid_ZReadAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.13 1988-08-01 12:09:44 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -42,8 +42,8 @@ int ZReadAscii(ptr, len, field, num)
 	    if (len < 0)
 		return (ZERR_BADFIELD);
 	} 
-	c1 = cnvt_xtoi(ptr[0]);
-	c2 = cnvt_xtoi(ptr[1]);
+	c1 = Z_cnvt_xtoi(ptr[0]);
+	c2 = Z_cnvt_xtoi(ptr[1]);
 	if (c1 < 0 || c2 < 0)
 		return(ZERR_BADFIELD);
 	hexbyte = (c1 << 4) | c2;
@@ -60,7 +60,7 @@ int ZReadAscii(ptr, len, field, num)
     return (ZERR_NONE);
 }
 
-cnvt_xtoi(c)
+Z_cnvt_xtoi(c)
     char c;
 {
     c -= '0';

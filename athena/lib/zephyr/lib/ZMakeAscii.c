@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.8 1988-06-23 10:31:46 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.9 1988-08-01 12:09:55 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.8 1988-06-23 10:31:46 jtkohl Exp $";
+static char rcsid_ZMakeAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.9 1988-08-01 12:09:55 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -42,8 +42,8 @@ Code_t ZMakeAscii(ptr, len, field, num)
 	} 
 	if (len < 3)
 	    return (ZERR_FIELDLEN);
-	*ptr++ = cnvt_itox((int) (field[i] >> 4));
-	*ptr++ = cnvt_itox((int) (field[i] & 0xf));
+	*ptr++ = Z_cnvt_itox((int) (field[i] >> 4));
+	*ptr++ = Z_cnvt_itox((int) (field[i] & 0xf));
 	len -= 2;
     }
 
@@ -51,7 +51,7 @@ Code_t ZMakeAscii(ptr, len, field, num)
     return (ZERR_NONE);
 }
 
-cnvt_itox(i)
+Z_cnvt_itox(i)
     int i;
 {
     i += '0';
