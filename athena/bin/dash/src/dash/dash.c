@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v $
- * $Author: miki $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.9 1994-03-25 16:19:29 miki Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.10 1994-05-24 15:16:00 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -53,9 +53,13 @@ extern int sys_nerr;
 #define sigmask(n)  ((unsigned int)1 << (((n) - 1) & (32 - 1)))
 #endif
 
+/* I think I can fix this correctly now... Doing this now rather
+   than integrating inittty into the source tree at this time, to
+   keep dash from breaking.
 #ifdef SOLARIS
 #define SOLARIS_BROKEN_TTY
 #endif
+*/
 
 extern int DEBUG;
 
