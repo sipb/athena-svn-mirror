@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.21 1991-03-28 15:04:51 lwvanels Exp $
+ *	$Id: data.c,v 1.22 1991-11-05 13:55:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.21 1991-03-28 15:04:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.22 1991-11-05 13:55:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -73,6 +73,9 @@ PROC Proc_List[] =
   OLC_GET_HOURS,       olc_get_hours,	     "olc get hours",
   OLC_CHANGE_HOURS,    olc_change_hours,     "olc change hours",
   OLC_VERSION,	       olc_version,          "olc version",
+#ifdef ZEPHYR
+  OLC_TOGGLE_ZEPHYR,   olc_toggle_zephyr,    "olc toggle zephyr",
+#endif
 #ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
 #else
@@ -82,6 +85,13 @@ PROC Proc_List[] =
 
 KNUCKLE **Knuckle_List  = (KNUCKLE **) NULL;
 TOPIC   **Topic_List    = (TOPIC **) NULL;
+
+KNUCKLE		*Knuckle_free = (KNUCKLE *) NULL;
+KNUCKLE		*Knuckle_inuse = (KNUCKLE *) NULL;
+USER		*User_free = (USER *) NULL;
+USER		*User_inuse = (USER *) NULL;
+QUESTION	*Question_free = (QUESTION *) NULL;
+QUESTION	*Question_inuse = (QUESTION *) NULL;
 
 ACL Acl_List[] = 
 {
