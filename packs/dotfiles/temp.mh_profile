@@ -1,7 +1,0 @@
-Path: Mail
-Editor: emacs
-Msg-Protect: 600
-Folder-Protect: 700
-Prompter-next: emacs
-rmmproc: delete
-inc: -notruncate
