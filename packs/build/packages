@@ -1,4 +1,4 @@
-# $Id: packages,v 1.192 2003-01-24 04:59:21 ghudson Exp $
+# $Id: packages,v 1.193 2003-01-24 21:41:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -192,7 +192,7 @@ third/krb5			requires et,ss package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
-third/libart_lgpl		except linux
+third/libart_lgpl
 third/libbonobo			requires gettext,ORBit2,glib2,bonobo-activation
 third/libbonoboui		requires gettext,libgnomecanvas,libbonobo,libgnome,bonobo-activation,libxml2,GConf2,gtk2,libglade2,glib2
 third/libgail-gnome		requires atk,gtk2,libbonobo,libbonoboui,libgnomeui,at-spi
