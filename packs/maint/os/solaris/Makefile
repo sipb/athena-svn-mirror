@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1999-04-29 20:54:05 jweiss Exp $
+# $Id: Makefile,v 1.3 1999-11-10 03:52:10 kcr Exp $
 
 ATHRETCDIR=/etc/athena
 INITD=/etc/init.d
@@ -21,6 +21,7 @@ install:
 	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
 	install -c -m 0755 rpc ${DESTDIR}${INITD}
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
+	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
 	rm -f ${DESTDIR}${RC0}/K90athena
 	ln -s ../init.d/athena ${DESTDIR}${RC0}/K90athena
 	rm -f ${DESTDIR}${RC0}/K95athena.config
