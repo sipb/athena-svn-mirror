@@ -79,6 +79,7 @@ Distribution sites for software under third
 -------------------------------------------
 
 	afsbin		See below.
+	bind		ftp.isc.org:isc/bind/src
 	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
