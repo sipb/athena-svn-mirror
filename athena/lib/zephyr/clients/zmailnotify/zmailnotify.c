@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.5 1988-07-01 10:19:50 jtkohl Exp $";
+static char rcsid_zwmnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.6 1988-07-01 10:24:10 jtkohl Exp $";
 #endif lint
 
 #include <sys/uio.h>
@@ -344,9 +344,17 @@ char *host;
     }
 
 #ifdef KPOP
+#ifdef ATHENA_COMPAT
     sp = getservbyname("knetd", "tcp");
+#else
+    sp = getservbyname("kpop", "tcp");
+#endif
     if (sp == 0) {
+#ifdef ATHENA_COMPAT
 	(void) strcpy(Errmsg, "tcp/knetd: unknown service");
+#else
+	(void) strcpy(Errmsg, "tcp/kpop: unknown service");
+#endif
 	return(NOTOK);
     }
 #else !KPOP
