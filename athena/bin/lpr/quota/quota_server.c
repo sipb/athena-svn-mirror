@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.9 1991-01-23 15:13:41 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.10 1991-02-13 13:42:59 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.9 1991-01-23 15:13:41 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.10 1991-02-13 13:42:59 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -859,6 +859,9 @@ quota_message message;
 {
     if(QD) (void) strncpy((char *) message, "Quota server currently shutdown",
 			  MESSAGE_SZ);
+    else if(!access(SHUTDOWNFILE, F_OK))
+	(void) strncpy((char *) message, "Quota server shutdown for backup",
+	       MESSAGE_SZ); 
     else (void) strncpy((char *) message, "Quota server up and running",
 			MESSAGE_SZ);
     return 0;
