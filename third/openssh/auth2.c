@@ -321,6 +321,10 @@ userauth_finish(Authctxt *authctxt, int authenticated, char *method)
 	/* Log before sending the reply */
 	auth_log(authctxt, authenticated, method, " ssh2");
 
+	if (authctxt->pw->pw_uid == 0)
+	  syslog(LOG_NOTICE, "ROOT LOGIN as '%s' from %s", authctxt->pw->pw_name,
+	      get_canonical_hostname(options.reverse_mapping_check));
+
 	if (authctxt->postponed)
 		return;
 

@@ -25,6 +25,7 @@ RCSID("$OpenBSD: auth1.c,v 1.25 2001/06/26 16:15:23 dugsong Exp $");
 #include "session.h"
 #include "misc.h"
 #include "uidswap.h"
+#include "canohost.h"
 
 #include <al.h>
 extern char *session_username;
@@ -376,6 +377,11 @@ do_authloop(Authctxt *authctxt)
 			client_user = NULL;
 		}
 
+		if (authctxt->pw->pw_uid == 0)
+		  {
+		    syslog(LOG_NOTICE, "ROOT LOGIN as '%s' from %s", authctxt->pw->pw_name, 
+			get_canonical_hostname(options.reverse_mapping_check));
+		  }
 		if (authenticated)
 			return;
 
