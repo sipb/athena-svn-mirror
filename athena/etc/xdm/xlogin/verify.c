@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.8 1990-12-05 12:35:12 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.9 1990-12-17 15:14:08 mar Exp $
  */
 
 #include <stdio.h>
@@ -38,7 +38,7 @@
 #define NOATTACH "/etc/noattach"
 #define NOWLOCAL "/etc/nowarnlocal"
 #define ATTACH "/bin/athena/attach"
-#define DETACH "/bin/athena/attach"
+#define DETACH "/bin/athena/detach"
 #define MOTD "/etc/motd"
 #define UTMP "/etc/utmp"
 #define WTMP "/usr/adm/wtmp"
