@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <rx/rx.h>
 #include <afs/auth.h>
+#include <syslog.h>
 
 #define DELAY 5
 #define ROOT (uid_t)0
@@ -56,6 +57,8 @@ int main(int argc, char **argv, char **envp)
     }
   else
     name = "elmer";
+
+  openlog("elmer", 0, LOG_USER);
 
   /* xdm needed AFS tokens to stat the user's home directory.  We don't want
    * them any more; we're going to make a pag and get new ones. */
@@ -199,6 +202,7 @@ static unsigned int check_tokens(void)
   time(&now);
   if (expiry <= now + 60)
     {
+      syslog(LOG_NOTICE, "Tokens near expiry; destroying");
       ktc_ForgetAllTokens();
       return 30 * 60;
     }
