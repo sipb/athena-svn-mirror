@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Id: server.c,v 1.58 1994-08-01 08:43:48 probe Exp $";
+static char rcsid_server_c[] = "$Id: server.c,v 1.59 1994-10-31 05:36:12 ghudson Exp $";
 #endif
 #endif
 
@@ -1770,8 +1770,8 @@ srv_nack_release(server)
 
 	/* search the not-yet-acked list for anything destined to him, and
 	   flush it. */
-	for (nacked = nacklist->q_forw;
-	     nacked != nacklist;)
+	for (nacked = srv_nacklist->q_forw;
+	     nacked != srv_nacklist;)
 		if (&otherservers[nacked->na_srv_idx] == server) {
 			/* go back, since remque will change things */
 			nack2 = nacked->q_back;
