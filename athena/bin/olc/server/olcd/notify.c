@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.36 1992-06-23 14:35:46 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: notify.c,v 1.37 1993-04-28 14:49:36 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.36 1992-06-23 14:35:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.37 1993-04-28 14:49:36 vanharen Exp $";
 #endif
 #endif
 
@@ -231,6 +231,10 @@ notice_timeout(a)
   a = a;  /* Rand lives! :-) */
 #endif
     longjmp(env, 1);
+#ifndef VOID_SIGRET
+  /*NOTREACHED*/
+  return(0);
+#endif
 }
 
     
