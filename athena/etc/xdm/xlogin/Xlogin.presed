@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.8 1990-12-04 15:25:07 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.9 1990-12-04 17:36:29 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -206,7 +206,8 @@ xlogin.Geometry: 		580x325+205+75
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
 	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
-	Shift<Key>F10:	callbackACT(*omenuEntry11) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10a) \n\
+	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
 	<Key>F2:	callbackACT(*lmenuEntry2) \n\
 	<Key>F3:	callbackACT(*lmenuEntry3) \n\
@@ -286,7 +287,8 @@ xlogin.Geometry: 		580x325+205+75
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
 	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
-	Shift<Key>F10:	callbackACT(*omenuEntry11) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10a) \n\
+	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
 	<Key>F2:	callbackACT(*lmenuEntry2) \n\
 	<Key>F3:	callbackACT(*lmenuEntry3) \n\
@@ -497,7 +499,8 @@ xlogin.Geometry: 		580x325+205+75
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
 	Shift<Key>F9:	callbackACT(*omenuEntry10) \n\
-	Shift<Key>F10:	callbackACT(*omenuEntry11) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10a) \n\
+	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>Prior:	signalConsoleACT(show) \n\
 	<Key>Next:	signalConsoleACT(hide) \n\
 	Ctrl<Key>p:	WcExitACT(3) \n\
