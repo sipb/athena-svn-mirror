@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.7 1991-03-01 12:02:19 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.8 1991-09-25 10:26:11 epeisach Exp $
  */
 
 /*
@@ -32,6 +32,8 @@ extern char *GF;    /* Group quota file */
 extern char *RF;    /* Report file for logger to grok thru */
 extern char *QC;    /* Quota currency */
 extern int   QD;    /* Quota server "shutdown" for maintainence */
+extern int   AN;    /* Account numerator factor */
+extern int   AD;    /* Account denomenator factor */
 
 extern char aclname[];       /* Acl filename */
 extern char saclname[];      /* Service Acl filename */
