@@ -3,9 +3,12 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.9 1990-02-09 08:52:31 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.10 1990-05-02 14:46:13 epeisach Exp $
 #	$Author: epeisach $
 #	$Log: not supported by cvs2svn $
+# Revision 1.9  90/02/09  08:52:31  epeisach
+# *** empty log message ***
+# 
 # Revision 1.8  89/10/18  13:21:16  epeisach
 # Fixed depend line & ran depend.
 # 
@@ -70,19 +73,3 @@ install:	finger
 depend:
 	touch Make.depend; makedepend -fMake.depend ${CFLAGS} ${SRCS}
 
-# DO NOT DELETE THIS LINE -- make depend depends on it.
-
-finger.o: finger.c /usr/include/sys/file.h /usr/include/sys/types.h
-finger.o: /usr/include/sys/stat.h /usr/include/utmp.h
-finger.o: /usr/include/sys/signal.h /usr/include/pwd.h /usr/include/stdio.h
-finger.o: /usr/include/lastlog.h /usr/include/ctype.h /usr/include/sys/time.h
-finger.o: /usr/include/sys/time.h /usr/include/sys/socket.h
-finger.o: /usr/include/netinet/in.h /usr/include/netdb.h
-finger.o: /usr/include/hesiod.h /usr/include/zephyr/zephyr.h
-finger.o: /usr/include/zephyr/mit-copyright.h
-finger.o: /usr/include/zephyr/zephyr_err.h /usr/include/zephyr/zephyr_conf.h
-finger.o: /usr/include/errno.h /usr/include/krb.h
-finger.o: /usr/include/mit-copyright.h /usr/include/des.h
-finger.o: /usr/include/des_conf.h
-hespwnam.o: hespwnam.c /usr/include/stdio.h /usr/include/pwd.h
-hespwnam.o: /usr/include/mit-copyright.h
