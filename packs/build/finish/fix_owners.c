@@ -138,7 +138,6 @@ void process(absolute, relative, fangs)
 {
   DIR *dir;
   char abs[PATH_MAX], rel[PATH_MAX];
-  char create[PATH_MAX+2]; /* Extra "./"... Is that cool? */
   char *directoryname;
   struct dirent *curent;
   struct stat info;
