@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.23 1991-01-03 15:32:18 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.24 1991-01-15 17:41:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.23 1991-01-03 15:32:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.24 1991-01-15 17:41:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -107,7 +107,7 @@ enter_message(file,editor)
 {
   int status;
 
-  if(string_eq(editor, ""))
+  if((editor == NULL) || (string_eq(editor, "")))
     {
       if(isatty(1))
         {
@@ -610,7 +610,7 @@ mail_message(user, consultant, msgfile, args)
 #ifdef ATHENA
 #ifdef HESIOD
   hp = (char **) hes_resolve(user,"pobox");
-  if(*hp == NULL)
+  if((hp == NULL) || (*hp == NULL))
     {
       (void) sprintf(buf,"%s does not have an Athena pobox, continue? ", user);
       (void) get_prompted_input(buf,resp);
