@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getmisc.c,v 1.1.1.2 1998-02-12 21:32:07 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -20,13 +21,13 @@ static char *RCSid = "$Id: getmisc.c,v 1.1.1.2 1998-02-12 21:32:07 ghudson Exp $
  */
 extern char *GetHostID()
 {
-    static char 		Buf[100];
+    static char 		Buff[100];
 
 #if	defined(HAVE_GETHOSTID)
-    (void) sprintf(Buf, "%08x", gethostid());
+    (void) snprintf(Buff, sizeof(Buff),  "%08x", gethostid());
 #endif	/* HAVE_GETHOSTID */
 
-    return( (Buf[0]) ? Buf : UnSupported );
+    return( (Buff[0]) ? Buff : (char *)NULL );
 }
 
 #if	defined(HAVE_SYSINFO) && defined(SI_HW_SERIAL)
@@ -35,7 +36,7 @@ extern char *GetHostID()
  */
 extern char *GetSerialSysinfo()
 {
-    static char 		buf[BUFSIZ];
+    static char 		Buff[128];
     static int 			done = 0;
     static char 	       *retval;
 
@@ -43,10 +44,10 @@ extern char *GetSerialSysinfo()
 	return((char *) retval);
 
     done = 1;
-    if (sysinfo(SI_HW_SERIAL, buf, BUFSIZ) < 0)
-	buf[0] = CNULL;
+    if (sysinfo(SI_HW_SERIAL, Buff, sizeof(Buff)) < 0)
+	Buff[0] = CNULL;
 
-    return((retval = ((buf[0]) ? buf : (char *)NULL)) );
+    return((retval = ((Buff[0]) ? Buff : (char *)NULL)) );
 }
 #endif	/* HAVE_SYSINFO ... */
 

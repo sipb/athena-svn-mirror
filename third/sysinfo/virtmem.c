@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: virtmem.c,v 1.1.1.2 1998-02-12 21:31:54 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
-
 
 /*
  * Virtual Memory related functions.
@@ -21,14 +21,14 @@ static char *RCSid = "$Id: virtmem.c,v 1.1.1.2 1998-02-12 21:31:54 ghudson Exp $
  * Amount should always be in kilobytes.
  */
 extern char *GetVirtMemStr(Amount)
-    off_t			Amount;
+    Large_t			Amount;
 {
-    static char			Buff[BUFSIZ];
+    static char			Buff[32];
 
     if (Amount == 0)
-	return(UnSupported);
+	return((char *) NULL);
 
-    (void) sprintf(Buff, "%s", GetSizeStr((u_long)Amount, KBYTES));
+    (void) snprintf(Buff, sizeof(Buff), "%s", GetSizeStr(Amount, KBYTES));
 
     return(Buff);
 }
@@ -37,22 +37,19 @@ extern char *GetVirtMemStr(Amount)
  * Find amount of virtual memory using "anoninfo" symbol.
  */
 
-#if	defined(ANONINFO_SYM) && !defined(HAVE_ANONINFO)
-#	define			HAVE_ANONINFO
-#endif	/* ANONINFO_SYM */
-#if	defined(HAVE_ANONINFO)
+#if	defined(HAVE_ANONINFO) && !defined(HAVE_SWAPCTL)
 #	include <vm/anon.h>
 #if	!defined(ANONINFO_SYM)
 #	define ANONINFO_SYM		"_anoninfo"
 #endif
-#endif	/* HAVE_ANONINFO */
+#endif	/* HAVE_ANONINFO && !HAVE_SWAPCTL */
 
 extern char *GetVirtMemAnoninfo()
 {
-#if	defined(HAVE_ANONINFO)
+#if	defined(HAVE_ANONINFO) && !defined(HAVE_SWAPCTL)
     kvm_t		       *kd;
     static struct anoninfo	AnonInfo;
-    off_t			Amount = 0;
+    Large_t			Amount = 0;
     nlist_t		       *nlPtr;
     int				PageSize;
 
@@ -65,7 +62,7 @@ extern char *GetVirtMemAnoninfo()
 
 	if (KVMget(kd, nlPtr->n_value, (char *) &AnonInfo, 
 		   sizeof(AnonInfo), KDT_DATA) >= 0)
-	    Amount = (off_t) (AnonInfo.ani_free + AnonInfo.ani_resv);
+	    Amount = (Large_t)AnonInfo.ani_max;
 
 	if (Amount) {
 	    /*
@@ -73,9 +70,12 @@ extern char *GetVirtMemAnoninfo()
 	     */
 	    PageSize = getpagesize();
 	    if (PageSize >= KBYTES)
-		Amount = Amount * (PageSize / KBYTES);
+		Amount = Amount * ((Large_t)((PageSize / KBYTES)));
 	    else
-		Amount = (Amount * PageSize) / KBYTES;
+		Amount = (Amount * (Large_t)PageSize) / 
+		    (Large_t)KBYTES;
+	    SImsg(SIM_DBG, "GetVirtMemAnon: Amount=%.0f PageSize=%d",
+		  (float) Amount, PageSize);
 	}
 
 	KVMclose(kd);
@@ -84,7 +84,64 @@ extern char *GetVirtMemAnoninfo()
     return(GetVirtMemStr(Amount));
 #else	/* !HAVE_ANONINFO */
     return((char *) NULL);
-#endif	/* HAVE_ANONINFO */
+#endif	/* HAVE_ANONINFO && !HAVE_SWAPCTL*/
+}
+
+/*
+ * Find amount of virtual memory using swapctl()
+ */
+
+#if	defined(HAVE_SWAPCTL)
+#	include <sys/stat.h>
+#	include <sys/swap.h>
+#endif	/* HAVE_SWAPCTL */
+
+extern char *GetVirtMemSwapctl()
+{
+    char		       *ValStr = NULL;
+    Large_t			Amount = 0;
+#if	defined(HAVE_ANONINFO) && defined(HAVE_SWAPCTL)
+    static struct anoninfo	AnonInfo;
+    int				PageSize;
+
+    if (swapctl(SC_AINFO, &AnonInfo) == -1) {
+	SImsg(SIM_GERR, "swapctl(SC_AINFO) failed: %s", SYSERR);
+	return((char *) NULL);
+    }
+
+    SImsg(SIM_DBG, "GetVirtMemSwapctl: max=%d free=%d resv=%d",
+	  AnonInfo.ani_max, AnonInfo.ani_free, AnonInfo.ani_resv);
+
+    Amount = (Large_t)AnonInfo.ani_max;
+
+    if (Amount) {
+	/*
+	 * Try to avoid overflow
+	 */
+	PageSize = getpagesize();
+	if (PageSize >= KBYTES)
+	    Amount = Amount * ((Large_t)((PageSize / KBYTES)));
+	else
+	    Amount = (Amount * (Large_t)PageSize) / (Large_t)KBYTES;
+	SImsg(SIM_DBG, "GetVirtMemAnon: Amount=%.0f PageSize=%d",
+	      (float) Amount, PageSize);
+    }
+
+    ValStr = GetVirtMemStr(Amount);
+#endif	/* HAVE_ANONINFO && HAVE_SWAPCTL */
+
+#if	defined(HAVE_SWAPCTL) && defined(SC_GETSWAPVIRT)
+    if (swapctl(SC_GETSWAPVIRT, (off_t) &Amount) == -1) {
+	SImsg(SIM_GERR, "swapctl(SC_GETSWAPVIRT) failed: %s", SYSERR);
+	return((char *) NULL);
+    }
+
+    SImsg(SIM_DBG, "SC_GETSWAPVIRT = %.0f pages", (float) Amount);
+
+    ValStr = GetVirtMemStr(Amount * (Large_t) 512);
+#endif	/* HAVE_SWAPCTL && SC_GETSWAPVIRT */
+    
+    return(ValStr);
 }
 
 /*
@@ -111,7 +168,7 @@ extern char *GetVirtMemNswap()
 #if	defined(HAVE_NSWAP)
     kvm_t		       *kd;
     int				Nswap;
-    off_t			Amount = 0;
+    Large_t			Amount = 0;
     nlist_t		       *nlPtr;
 
     if (kd = KVMopen()) {
@@ -123,9 +180,11 @@ extern char *GetVirtMemNswap()
 
 	if (KVMget(kd, nlPtr->n_value, (char *) &Nswap,
 		   sizeof(Nswap), KDT_DATA) >= 0)
-	    Amount = Nswap;
+	    Amount = (Large_t)Nswap;
 
-	Amount /= KBYTES / NSWAP_SIZE;
+	Amount /= (Large_t)KBYTES / (Large_t)NSWAP_SIZE;
+	SImsg(SIM_DBG, "GetVirtMemNswap: Amount=%.0f Nswap=%d",
+	      (float) Amount, Nswap);
 
 	KVMclose(kd);
     }

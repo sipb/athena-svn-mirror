@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: cf.c,v 1.1.1.2 1998-02-12 21:31:57 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -19,13 +20,18 @@ static char *RCSid = "$Id: cf.c,v 1.1.1.2 1998-02-12 21:31:57 ghudson Exp $";
 /*
  * List of config files to search for
  */
-static char *CFileList[] = {
+static char *CFosFileList[] = {
     "${ConfDir}/${OSname}_${OSver}.cf", 
     "${ConfDir}/${OSname}_${OSmajver}.cf",
     "${ConfDir}/${OSname}.cf",
     "${ConfDir}/${DefConfFile}",
     NULL
 };
+
+extern char		       *ConfDir;		/* Default */
+extern char		       *ConfFile;		/* Default */
+char			       *CurrentConfDir;		/* working Conf Dir */
+int				DidCFread;		/* CFread() did */
 
 /*
  * Configuration keys
@@ -36,8 +42,10 @@ typedef struct {
 } CFkeys_t;
 
 static int			CFdevice(), CFdefine(), CFinclude();
+static int			CFconfdir();
 
 CFkeys_t CFkeys[] = {
+    { "ConfDir",		CFconfdir },
     { "Device",			CFdevice },
     { "Define",			CFdefine },
     { "Include",		CFinclude },
@@ -51,6 +59,8 @@ KeyTab_t DevFlagKeys[] = {
     { "DefInfo",		DDT_DEFINFO },
     { "LenCmp",			DDT_LENCMP },
     { "NoUnit",			DDT_NOUNIT },
+    { "AssUnit",		DDT_ASSUNIT },
+    { "UnitNum",		DDT_UNITNUM },
     { "Zombie",			DDT_ZOMBIE },
     { NULL },
 };
@@ -63,13 +73,17 @@ CFkeys_t *CFgetKey(String, FileName, LineNo)
     char		       *FileName;
     int				LineNo;
 {
-    static char			Key[BUFSIZ];
+    static char			Key[128];
     register char	       *cp;
     register int		i;
+    register int		Len;
 
     /* Skip leading white space */
     for (cp = String; cp && *cp && isspace(*cp); ++cp);
-    (void) strcpy(Key, cp);
+    /* Copy into Key buffer */
+    Len = strlen(cp);
+    (void) strncpy(Key, cp, Len);
+    Key[Len] = CNULL;
     /* Find end of key and terminate */
     for (cp = Key; cp && *cp && isalpha(*cp); ++cp);
     if (cp != Key)
@@ -79,63 +93,21 @@ CFkeys_t *CFgetKey(String, FileName, LineNo)
 	if (EQ(Key, CFkeys[i].Key))
 	    return(&CFkeys[i]);
 
-    Error("%s: Line %d: Unknown keyword `%s'.", FileName, LineNo, Key);
+    SImsg(SIM_GERR, "%s: Line %d: Unknown keyword `%s'.", 
+	  FileName, LineNo, Key);
+
     return((CFkeys_t *) NULL);
 }
 
 /*
- * Get Value of CF Variables
- */
-extern char *CFgetVar(Variable, Params)
-    char		       *Variable;
-    Opaque_t			Params;
-    /*ARGSUSED*/
-{
-    static char			OSnameBuf[100];
-    static char			OSverBuf[100];
-    static char			OSmajverBuf[100];
-    register char	       *Value;
-    register char	       *cp;
-    extern char		       *ConfDir;
-
-    if (EQ(Variable, "OSname")) {
-	if (Value = GetOSName()) {
-	    (void) strcpy(OSnameBuf, Value);
-	    strtolower(OSnameBuf);
-	    return(OSnameBuf);
-	}
-    } else if (EQ(Variable, "OSver")) {
-	if (Value = GetOSVer()) {
-	    (void) strcpy(OSverBuf, Value);
-	    strtolower(OSverBuf);
-	    return(OSverBuf);
-	}
-    } else if (EQ(Variable, "OSmajver")) {
-	if (Value = GetOSVer()) {
-	    (void) strcpy(OSmajverBuf, Value);
-	    if (cp = strchr(OSmajverBuf, '.'))
-		*cp = CNULL;
-	    strtolower(OSmajverBuf);
-	    return(OSmajverBuf);
-	}
-    } else if (EQ(Variable, "ConfDir")) {
-	return(ConfDir);
-    } else if (EQ(Variable, "DefConfFile")) {
-	return(DEFAULT_CONFIG_FILE);
-    }
-
-    return((char *) NULL);
-}
-
-/*
  * Read and parse CF file FileName.
- * Return 0 on success.
- * Return -1 on open file error.
+ * Return 0 on success or nothing to do.
+ * Return -1 on open file error
  * Return > 0 on parsing error.
  */
-int CFread(FileName, SilentFail)
+int CFread(FileName, DispErrs)
     char		       *FileName;
-    int				SilentFail;
+    int				DispErrs;
 {
     static char			Buff[BUFSIZ];
     register char	       *cp;
@@ -147,12 +119,12 @@ int CFread(FileName, SilentFail)
 
     FilePtr = fopen(FileName, "r");
     if (!FilePtr) {
-	if (SilentFail || Debug)
-	    Error("Cannot open config file %s: %s.", FileName, SYSERR);
+	if (DispErrs)
+	    SImsg(SIM_CERR, "%s: open failed: %s", FileName, SYSERR);
 	return(-1);
     }
 
-    if (Debug) printf("Reading `%s' . . .\n", FileName);
+    SImsg(SIM_DBG, "Reading `%s' . . .", FileName);
 
     while (fgets(Buff, sizeof(Buff), FilePtr)) {
 	++LineNo;
@@ -164,22 +136,25 @@ int CFread(FileName, SilentFail)
 	    continue;
 
 	CFkey = CFgetKey(Buff, FileName, LineNo);
-	if (!CFkey)
+	if (!CFkey) {
+	    (void) fclose(FilePtr);
 	    return(1);
+	}
 
-	if ( (*CFkey->Parse)(FileName, LineNo, Buff) != 0)
+	if ( (*CFkey->Parse)(FileName, LineNo, Buff) != 0) {
+	    (void) fclose(FilePtr);
 	    return(1);
+	}
     }
+
+    DidCFread = TRUE;
 
     (void) fclose(FilePtr);
     return(0);
 }
 
-/*
- * Set "include" CF line
- */
-static int CFinclude(FileName, LineNo, String)
-    char		       *FileName;
+static char *CFgetPath(PathName, LineNo, String)
+    char		       *PathName;
     int				LineNo;
     char		       *String;
 {
@@ -187,7 +162,6 @@ static int CFinclude(FileName, LineNo, String)
     char		       *IncFile;
     static char			Path[MAXPATHLEN];
     static char			ErrBuff[BUFSIZ];
-    extern char		       *ConfDir;
 
     /* Skip leading white space */
     for (cp = String; cp && *cp && isspace(*cp); ++cp);
@@ -196,8 +170,9 @@ static int CFinclude(FileName, LineNo, String)
     /* Skip white space */
     for ( ; cp && *cp && isspace(*cp); ++cp);
     if (!cp) {
-	Error("%s: Line %d: No filename specified.", FileName, LineNo);
-	return(-1);
+	SImsg(SIM_GERR, "%s: Line %d: No pathname specified.", 
+	      PathName, LineNo);
+	return((char *) NULL);
     }
     IncFile = cp;
     /* Find end of filename */
@@ -205,20 +180,66 @@ static int CFinclude(FileName, LineNo, String)
     if (cp)
 	*cp = CNULL;
 
-    IncFile = VarSub(IncFile, ErrBuff, CFgetVar, (Opaque_t)NULL);
+    IncFile = VarSub(IncFile, ErrBuff, sizeof(ErrBuff),
+		     VarGetVal, (Opaque_t)NULL);
     if (!IncFile) {
-	Error("%s: Line %d: %s", FileName, LineNo, ErrBuff);
+	SImsg(SIM_GERR, "%s: Line %d: %s", PathName, LineNo, ErrBuff);
+	return((char *) NULL);
+    }
+
+    if (IncFile[0] == '/' || IncFile[0] == '.')
+	(void) strcpy(Path, IncFile);
+    else
+	(void) snprintf(Path, sizeof(Path),  "%s/%s", CurrentConfDir, IncFile);
+
+    return(Path);
+}
+
+/*
+ * Get "ConfDir" CF line
+ */
+static int CFconfdir(PathName, LineNo, String)
+    char		       *PathName;
+    int				LineNo;
+    char		       *String;
+{
+    char		       *Path;
+
+    Path = CFgetPath(PathName, LineNo, String);
+
+    if (FileExists(Path) && !IsDir(Path)) {
+	SImsg(SIM_GERR, "%s: Line %d: %s is not a directory.",
+	      PathName, LineNo, Path);
 	return(-1);
     }
 
-    if (IncFile[0] == '/')
-	(void) strcpy(Path, IncFile);
-    else
-	(void) sprintf(Path, "%s/%s", ConfDir, IncFile);
+    CurrentConfDir = strdup(Path);
+    SImsg(SIM_DBG, "ConfDir is now <%s>", CurrentConfDir);
+
+    return(0);
+}
+
+/*
+ * Set "include" CF line
+ */
+static int CFinclude(PathName, LineNo, String)
+    char		       *PathName;
+    int				LineNo;
+    char		       *String;
+{
+    char		       *Path;
+
+    Path = CFgetPath(PathName, LineNo, String);
+
+    if (FileExists(Path) && !IsFile(Path)) {
+	SImsg(SIM_GERR, "%s: Line %d: %s is not a file.",
+	      PathName, LineNo, Path);
+	return(-1);
+    }
 
     if (CFread(Path, FALSE) > 0) {
-	Error("%s: Line %d: Error while parsing `%s'.",
-	      FileName, LineNo, Path);
+	SImsg(SIM_GERR, "%s: Line %d: Error while parsing `%s'",
+	      PathName, LineNo, Path);
 	return(-1);
     }
 
@@ -237,33 +258,35 @@ static int CFdefine(FileName, LineNo, String)
     int				Argc;
     Define_t	       	       *DefPtr;
 
-    Argc = StrToArgv(String, "|", &Argv);
+    Argc = StrToArgv(String, "|", &Argv, NULL, 0);
     if (Argc < 1) {
-	Error("%s: Line %d: No fields found.", FileName, LineNo);
+	SImsg(SIM_GERR, "%s: Line %d: No fields found.", FileName, LineNo);
 	return(-1);
     }
 
     if (EMPTY(Argv, 1, Argc)) {
-	Error("%s: Line %d: No table name found in field 2.", 
+	SImsg(SIM_GERR, "%s: Line %d: No table name found in field 2.", 
 	      FileName, LineNo);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
     }
 #ifdef STRICT_CF_CHECKING
     if (!DefValid(Argv[1], Argc)) {
-	Error("%s: Line %d: `%s' is an invalid definetion table (field 2).", 
+	SImsg(SIM_GERR, 
+	      "%s: Line %d: `%s' is an invalid definetion table (field 2).", 
 	      FileName, LineNo, Argv[1]);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
     }
 #endif	/* STRICT_CF_CHECKING */
     if (EMPTY(Argv, 2, Argc) && EMPTY(Argv, 3, Argc)) {
-	Error("%s: Line %d: No key found in field 3 or 4.", FileName, LineNo);
+	SImsg(SIM_GERR, "%s: Line %d: No key found in field 3 or 4.", 
+	      FileName, LineNo);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
     }
     if (EMPTY(Argv, 4, Argc) && EMPTY(Argv, 5, Argc)) {
-	Error("%s: Line %d: No values found in field 5 or 6.", 
+	SImsg(SIM_GERR, "%s: Line %d: No values found in field 5 or 6.", 
 	      FileName, LineNo);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
@@ -296,10 +319,14 @@ static int CFdevice(FileName, LineNo, String)
 {
     DevDefine_t		       *DevDefine;
     DevType_t		       *DevType;
+    ClassType_t		       *Class;
     register char	       *cp;
     register int		i;
-    char		      **Argv;
-    int				Argc;
+    register int		n;
+    char		      **Argv = NULL;
+    int				Argc = 0;
+    char		      **FlagArgv = NULL;
+    int				FlagArgc = 0;
     char		       *ProbeName = NULL;
     char		       *TypeName = NULL;
     char		       *NameField;
@@ -307,6 +334,7 @@ static int CFdevice(FileName, LineNo, String)
     int				NameArgc;
     static int			First = TRUE;
 
+#if	defined(HAVE_DEVICE_SUPPORT)
     /*
      * Initialize DevTypes[] on our first call.
      */
@@ -314,21 +342,23 @@ static int CFdevice(FileName, LineNo, String)
 	First = FALSE;
 	DevTypesInit();
     }
+#endif	/* HAVE_DEVICE_SUPPORT */
 
-    Argc = StrToArgv(String, "|", &Argv);
+    Argc = StrToArgv(String, "|", &Argv, NULL, 0);
     if (Argc < 1) {
-	Error("%s: Line %d: No fields found.", FileName, LineNo);
+	SImsg(SIM_GERR, "%s: Line %d: No fields found.", FileName, LineNo);
 	return(-1);
     }
 
     if (EMPTY(Argv, 1, Argc) && EMPTY(Argv, 3, Argc)) {
-	Error("%s: Line %d: The name (2) and ident (4) fields are both empty.",
+	SImsg(SIM_GERR, 
+	      "%s: Line %d: The name (2) and ident (4) fields are both empty.",
 	      FileName, LineNo);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
     }
     if (EMPTY(Argv, 2, Argc)) {
-	Error("%s: Line %d: The type (2) field cannot be empty.",
+	SImsg(SIM_GERR, "%s: Line %d: The type (2) field cannot be empty.",
 	      FileName, LineNo);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
@@ -337,7 +367,7 @@ static int CFdevice(FileName, LineNo, String)
     DevDefine = (DevDefine_t *) xcalloc(1, sizeof(DevDefine_t));
     if (!EMPTY(Argv, 1, Argc)) {
 	NameField = Argv[1];
-	NameArgc = StrToArgv(NameField, " ", &NameArgv);
+	NameArgc = StrToArgv(NameField, " ", &NameArgv, NULL, 0);
 	if (NameArgc > 1) {
 	    DevDefine->Name = strdup(NameArgv[0]);
 	    DevDefine->Aliases = &NameArgv[1];
@@ -358,7 +388,7 @@ static int CFdevice(FileName, LineNo, String)
 
     DevType = TypeGetByName(ProbeName);
     if (!DevType) {
-	Error("%s: Line %d: `%s' is an invalid device type name.",
+	SImsg(SIM_GERR, "%s: Line %d: `%s' is an invalid device type name.",
 	      FileName, LineNo, ProbeName);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
@@ -367,7 +397,7 @@ static int CFdevice(FileName, LineNo, String)
 
     DevType = TypeGetByName(TypeName);
     if (!DevType) {
-	Error("%s: Line %d: `%s' is an invalid device type name.",
+	SImsg(SIM_GERR, "%s: Line %d: `%s' is an invalid device type name.",
 	      FileName, LineNo, TypeName);
 	DestroyArgv(&Argv, Argc);
 	return(-1);
@@ -375,24 +405,32 @@ static int CFdevice(FileName, LineNo, String)
     DevDefine->Type = DevType->Type;
 
     if (!EMPTY(Argv, 3, Argc)) DevDefine->Ident = strtol(Argv[3], NULL, 0);
-    if (!EMPTY(Argv, 4, Argc)) DevDefine->Model = strdup(Argv[4]);
-    if (!EMPTY(Argv, 5, Argc)) DevDefine->Desc = strdup(Argv[5]);
-    if (!EMPTY(Argv, 6, Argc)) {
-	for (i = 0; DevFlagKeys[i].Key; ++i)
-	    if (EQ(DevFlagKeys[i].Key, Argv[6]))
-		DevDefine->Flags = DevFlagKeys[i].Lvalue;
-	if (!DevDefine->Flags) {
-	    if (isalpha(Argv[6][0])) {
-		Error("%s: Line %d: Unknown flag name `%s'.",
-		      FileName, LineNo, Argv[6]);
-		DestroyArgv(&Argv, Argc);
-		return(-1);
+    if (!EMPTY(Argv, 4, Argc)) DevDefine->Vendor = strdup(Argv[4]);
+    if (!EMPTY(Argv, 5, Argc)) DevDefine->Model = strdup(Argv[5]);
+    if (!EMPTY(Argv, 6, Argc)) DevDefine->Desc = strdup(Argv[6]);
+    if (!EMPTY(Argv, 7, Argc))
+	if (Class = ClassTypeGetByName(DevDefine->Type, Argv[7]))
+	    DevDefine->ClassType = Class->Type;
+    if (!EMPTY(Argv, 8, Argc)) {
+	FlagArgc = StrToArgv(Argv[8], ",", &FlagArgv, NULL);
+	for (n = 0; n < FlagArgc; ++n) {
+	    for (i = 0; DevFlagKeys[i].Key; ++i)
+		if (EQ(DevFlagKeys[i].Key, FlagArgv[n]))
+		    DevDefine->Flags |= DevFlagKeys[i].Lvalue;
+	    if (!DevDefine->Flags) {
+		if (isalpha(FlagArgv[n][0])) {
+		    SImsg(SIM_GERR, "%s: Line %d: Unknown flag name `%s'.",
+			  FileName, LineNo, FlagArgv[n]);
+		    DestroyArgv(&Argv, Argc);
+		    return(-1);
+		}
+		/* Must be a device specific flag */
+		DevDefine->DevFlags = strtol(FlagArgv[n], (char **)NULL, 0);
 	    }
-	    /* Must be a device specific flag */
-	    DevDefine->DevFlags = strtol(Argv[6], (char **)NULL, 0);
 	}
+	DestroyArgv(&FlagArgv, FlagArgc);
     }
-    if (!EMPTY(Argv, 7, Argc)) DevDefine->File = strdup(Argv[7]);
+    if (!EMPTY(Argv, 9, Argc)) DevDefine->File = strdup(Argv[9]);
 
     (void) DevDefAdd(DevDefine);
 
@@ -401,29 +439,76 @@ static int CFdevice(FileName, LineNo, String)
 }
 
 /*
- * Find and parse a config file
+ * Find and parse each config file found in CFosFileList.
  */
-extern int CFparse(ConfFile, ConfDir)
-    char		       *ConfFile;
-    char		       *ConfDir;
+extern int CFparseList()
 {
-    static char			ErrBuff[BUFSIZ];
+    static char			ErrBuff[256];
     register char	      **cpp;
     char		       *File;
+    int				RetStatus = 0;
+    int				Status = 0;
 
-    if (ConfFile)
-	return(CFread(ConfFile, FALSE));
-
-    for (cpp = CFileList; cpp && *cpp; ++cpp) {
-	File = VarSub(*cpp, ErrBuff, CFgetVar, (Opaque_t)NULL);
+    for (cpp = CFosFileList; cpp && *cpp; ++cpp) {
+	File = VarSub(*cpp, ErrBuff, sizeof(ErrBuff),
+		      VarGetVal, (Opaque_t)NULL);
 	if (!File) {
-	    Error("Internal error: %s", ErrBuff);
+	    SImsg(SIM_GERR, "Internal error: %s", ErrBuff);
 	    continue;
 	}
-	if (CFread(File, FALSE) == 0)
+	Status = CFread(File, FALSE);
+	if (Status == 0)
 	    return(0);
+	else if (Status > 0)
+	    ++Status;
     }
 
-    Error("Could not locate any configuration files in `%s'.", ConfDir);
-    return(-1);
+    return(Status);
+}
+
+/*
+ * Find and parse config files
+ */
+extern int CFparse(myConfFile, myConfDir)
+    char		       *myConfFile;
+    char		       *myConfDir;
+{
+    int				Status1 = 0;
+    int				Status2 = 0;
+
+    /*
+     * Set the name of the configuration directory
+     */
+    if (myConfDir)
+	CurrentConfDir = myConfDir;
+    else
+	CurrentConfDir = ConfDir;
+
+    if (myConfFile) {
+	/* User specified a .cf file */
+	Status1 = CFread(myConfFile, TRUE);
+	if (Status1 > 0)
+	    /* Parsing error */
+	    ++Status1;
+	else if (Status1 < 0)
+	    /* Problems opening a user specified .cf file are hard errors */
+	    return(-1);
+    } else {
+	/* We only care about parsing errors for the master file */
+	if (CFread(MASTER_CONFIG_FILE, FALSE) > 0)
+	    ++Status1;
+    }
+
+    /*
+     * Parse the standard set of files
+     */
+    Status2 = CFparseList();
+
+    if (!DidCFread) {
+	SImsg(SIM_CERR, "Could not locate any configuration files in `%s'.", 
+	      myConfDir);
+	return(-1);
+    }
+
+    return(Status1 + Status2);
 }

@@ -1,15 +1,18 @@
 .\"
-.\" Copyright (c) 1992-1994 Michael A. Cooper.
+.\" Copyright (c) 1992-1998 Michael A. Cooper.
 .\" This software may be freely distributed provided it is not sold for 
 .\" profit and the author is credited appropriately.
 .\"
-.\" $Id: sysinfo.cf.man,v 1.1.1.1 1996-10-07 20:16:47 ghudson Exp $
+.\" $Revision: 1.1.1.2 $
 .\" 
-.TH sysinfo.cf 5 "3 November 1994"
-.ds ]W USC-UCS
+.TH sysinfo.cf 5 "22 April 1998"
+.ds ]W MagniComp
 .SH NAME
 sysinfo.cf \- Configuration File for sysinfo
 .SH SYNOPSIS
+\fBConfDir \fIPathName\fR
+.br
+.sp
 \fBDefine | \fIType | StringKey | NumericKey | Value1 | Value 2\fR
 .br
 .sp
@@ -29,6 +32,16 @@ All leading and trailing white space (space and TAB characters) for
 each field is removed before parsing.
 All keywords are case insensitive.
 The valid keywords are:
+.IP "\fBConfDir \fIPathName\fR"
+Set the name of the directory to look for configuration files in to
+be \fIPathName\fR.
+This also sets the value of the
+.B ${ConfDir}
+variable available for use with the
+.B Include
+keyword.
+The default is
+.B /var/local/sysinfo/conf
 .IP "\fBDefine \fIfields\fR"
 Definetion.  Each
 field is seperated by a ``|'' character.  Any fields that are not
@@ -199,11 +212,11 @@ the value would be
 .SH AUTHOR
 Michael A. Cooper
 .br
-University Computing Services
+MagniComp Systems
 .br
-University of Southern California
-.br
-mcooper@usc.edu
+mcooper@magnicomp.com
+.SH "HOME PAGE"
+.B http://www.magnicomp.com/sysinfo/
 .SH SEE ALSO
 sysinfo(1)
 .SH DIAGNOSTICS

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-sunos4.c,v 1.1.1.2 1998-02-12 21:32:18 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -31,7 +32,6 @@ char 			CpuSYM[] = "_cpu";
  * Name of generic magnetic tape device.
  */
 #define MTNAME		"mt"
-
 
 /*
  * Generally used variables
@@ -90,8 +90,7 @@ extern int BuildMainBus(TreePtr, SearchNames)
 	 * Read this device
 	 */
 	if (KVMget(kd, DeviceAddr, (char *) &Device, DV_SIZE, KDT_DATA)) {
-	    if (Debug) 
-		Error("Cannot read mainbus device from address 0x%x.", 
+	    SImsg(SIM_GERR, "Cannot read mainbus device from address 0x%x.", 
 		      DeviceAddr);
 	    KVMclose(kd);
 	    return(-1);
@@ -108,8 +107,7 @@ extern int BuildMainBus(TreePtr, SearchNames)
 	 */
 	Addr = (u_long) Device.md_driver;
 	if (KVMget(kd, Addr, (char *) &Driver, DR_SIZE, KDT_DATA)) {
-	    if (Debug) 
-		Error("Cannot read driver for mainbus address 0x%x.", Addr);
+	    SImsg(SIM_GERR, "Cannot read driver for mainbus address 0x%x.", Addr);
 	    continue;
 	}
 
@@ -119,8 +117,7 @@ extern int BuildMainBus(TreePtr, SearchNames)
 	if (Addr = (u_long) Driver.mdr_dname) {
 	    if (KVMget(kd, Addr, (char *) DevName, 
 		       sizeof(DevName), KDT_STRING)) {
-		if (Debug)
-		    Error("Cannot read device name from address 0x%x.", Addr);
+		SImsg(SIM_GERR, "Cannot read device name from address 0x%x.", Addr);
 		continue;
 	    }
 	} else
@@ -137,8 +134,7 @@ extern int BuildMainBus(TreePtr, SearchNames)
 	if ((Addr = (u_long) Driver.mdr_cname) && Device.md_ctlr != -1) {
 	    if (KVMget(kd, Addr, (char *) CtlrName, 
 		       sizeof(CtlrName), KDT_STRING)) {
-		if (Debug)
-		    Error("Cannot read controller name from address 0x%x.", 
+		SImsg(SIM_GERR, "Cannot read controller name from address 0x%x.", 
 			  Addr);
 		continue;
 	    }
@@ -164,14 +160,13 @@ extern int BuildMainBus(TreePtr, SearchNames)
 	if (Device.md_alive)
 	    DevData.Flags |= DD_MAYBE_ALIVE;
 
-	if (Debug)
-	    printf("MainBus: Found \"%s\" (Unit %d) on \"%s\" (Unit %d) %s\n", 
-		   DevData.DevName, DevData.DevUnit,
-		   DevData.CtlrName, DevData.CtlrUnit,
-		   (DevData.Flags & DD_MAYBE_ALIVE) ? "[MAYBE-ALIVE]" : "");
+	SImsg(SIM_DBG, "MainBus: Found <%s> (Unit %d) on <%s> (Unit %d) %s",
+	      DevData.DevName, DevData.DevUnit,
+	      DevData.CtlrName, DevData.CtlrUnit,
+	      (DevData.Flags & DD_MAYBE_ALIVE) ? "[MAYBE-ALIVE]" : "");
 
 	/* Probe and add device */
-	if (DevInfo = ProbeDevice(&DevData, TreePtr, SearchNames))
+	if (DevInfo = ProbeDevice(&DevData, TreePtr, SearchNames, NULL))
 	    AddDevice(DevInfo, TreePtr, (char **)NULL);
     }
 
@@ -190,7 +185,7 @@ static DKinfo *GETdk_info(d, file)
     static DKinfo 		dk_info;
 
     if (ioctl(d, DKIOCINFO, &dk_info) < 0) {
-	if (Debug) Error("%s: DKIOCINFO: %s.", file, SYSERR);
+	SImsg(SIM_DBG, "%s: DKIOCINFO: %s.", file, SYSERR);
 	return(NULL);
     }
 
@@ -209,13 +204,13 @@ static DKconf *GETdk_conf(d, file, disktype)
 
     if (disktype == DKT_CDROM) {
 	if (Debug) 
-	    Error("%s: Get CDROM disk configuration info is not supported.",
+	    SImsg(SIM_GERR, "%s: Get CDROM disk configuration info is not supported.",
 		  file);
 	return((DKconf *) NULL);
     }
 
     if (ioctl(d, DKIOCGCONF, &dk_conf) < 0) {
-	if (Debug) Error("%s: DKIOCGCONF: %s.", file, SYSERR);
+	SImsg(SIM_DBG, "%s: DKIOCGCONF: %s.", file, SYSERR);
 	return((DKconf *) NULL);
     }
 
@@ -234,12 +229,12 @@ static DKgeom *GETdk_geom(d, file, disktype)
 
     if (disktype == DKT_CDROM) {
 	if (Debug) 
-	    Error("%s: Get CDROM disk geometry info is not supported.", file);
+	    SImsg(SIM_GERR, "%s: Get CDROM disk geometry info is not supported.", file);
 	return((DKgeom *) NULL);
     }
 
     if (ioctl(d, DKIOCGGEOM, &dk_geom) < 0) {
-	if (Debug) Error("%s: DKIOCGGEOM: %s.", file, SYSERR);
+	SImsg(SIM_DBG, "%s: DKIOCGGEOM: %s.", file, SYSERR);
 	return((DKgeom *) NULL);
     }
 
@@ -257,7 +252,7 @@ static DKtype *GETdk_type(d, file)
 
     if (ioctl(d, DKIOCGTYPE, &dk_type) < 0) {
 	if (errno != ENOTTY)
-	    if (Debug) Error("%s: DKIOCGTYPE: %s.", file, SYSERR);
+	    SImsg(SIM_DBG, "%s: DKIOCGTYPE: %s.", file, SYSERR);
 	return(NULL);
     }
 
@@ -313,19 +308,20 @@ static DKlabel *GETdk_label(d, file, dk_info, disktype)
      * a CDROM drive can sometimes crash a system.
      */
     if (disktype == DKT_CDROM) {
-	if (Debug) Error("%s: Reading CDROM labels is not supported.", file);
+	SImsg(SIM_DBG, "%s: Reading CDROM labels is not supported.", file);
 	return((DKlabel *) NULL);
     }
 
     DevDefine = DevDefGet(NULL, DT_DISKCTLR, dk_info->dki_ctype);
     if (!DevDefine) {
-	Error("Controller type %d is unknown.", dk_info->dki_ctype);
+	SImsg(SIM_GERR, "Controller type %d is unknown.", dk_info->dki_ctype);
 	return((DKlabel *) NULL);
     }
 
     if (DevDefine->DevFlags <= 0) {
 	if (Debug)
-	    Error("Read block on controller type \"%s\" is unsupported.",
+	    SImsg(SIM_GERR, 
+		  "Read block on controller type \"%s\" is unsupported.",
 		  DevDefine->Model);
 	return((DKlabel *) NULL);
     }
@@ -339,17 +335,17 @@ static DKlabel *GETdk_label(d, file, dk_info, disktype)
     dk_cmd.dkc_buflen = SECSIZE;
 
     if (ioctl(d, DKIOCSCMD, &dk_cmd) < 0) {
-	if (Debug) Error("%s: DKIOCSCMD: %s.", file, SYSERR);
+	SImsg(SIM_DBG, "%s: DKIOCSCMD: %s.", file, SYSERR);
 	return((DKlabel *) NULL);
     }
 
     if (dk_label.dkl_magic != DKL_MAGIC) {
-	Error("%s: Disk not labeled.", file);
+	SImsg(SIM_GERR, "%s: Disk not labeled.", file);
 	return((DKlabel *) NULL);
     }
 
     if (DkLblCheckSum(&dk_label)) {
-	Error("%s: Bad label checksum.", file);
+	SImsg(SIM_GERR, "%s: Bad label checksum.", file);
 	return((DKlabel *) NULL);
     }
 
@@ -372,10 +368,12 @@ static char *GetDiskName(name, dk_conf, dk_info)
 
 #if	defined(DKI_HEXUNIT)
     if (FLAGS_ON(dk_info->dki_flags, DKI_HEXUNIT))
-	(void) sprintf(Buf, "%s%3.3x", dk_conf->dkc_dname, dk_conf->dkc_unit);
+	(void) snprintf(Buf, sizeof(Buf), "%s%3.3x", 
+			dk_conf->dkc_dname, dk_conf->dkc_unit);
     else
 #endif 	/* DKI_HEXUNIT */
-	(void) sprintf(Buf, "%s%d", dk_conf->dkc_dname, dk_conf->dkc_unit);
+	(void) snprintf(Buf, sizeof(Buf), "%s%d", 
+			dk_conf->dkc_dname, dk_conf->dkc_unit);
 
     return(strdup(Buf));
 }
@@ -389,7 +387,8 @@ static char *GetDiskCtlrName(dk_conf)
     if (!dk_conf)
 	return((char *) NULL);
 
-    (void) sprintf(Buf, "%s%d", dk_conf->dkc_cname, dk_conf->dkc_cnum);
+    (void) snprintf(Buf, sizeof(Buf), "%s%d", 
+		    dk_conf->dkc_cname, dk_conf->dkc_cnum);
 
     return(strdup(Buf));
 }
@@ -455,7 +454,7 @@ static char *GetDiskLabel(dk_label)
 	if (*cp == ' ' && strncasecmp(cp, " cyl", 4) == 0)
 	    *cp = CNULL;
 
-    return(label);
+    return(strdup(label));
 }
 
 /*
@@ -480,7 +479,7 @@ static char *GetMountInfo(name, part)
      */
     if (!mountedFP) {
 	if ((mountedFP = setmntent(MOUNTED, "r")) == NULL) {
-	    Error("%s: Cannot open for reading: %s.", MOUNTED, SYSERR);
+	    SImsg(SIM_GERR, "%s: Cannot open for reading: %s.", MOUNTED, SYSERR);
 	    return(NULL);
 	}
     } else
@@ -495,7 +494,7 @@ static char *GetMountInfo(name, part)
      */
     if (!mnttabFP) {
 	if ((mnttabFP = setmntent(MNTTAB, "r")) == NULL) {
-	    Error("%s: Cannot open for reading: %s.", MNTTAB, SYSERR);
+	    SImsg(SIM_GERR, "%s: Cannot open for reading: %s.", MNTTAB, SYSERR);
 	    return(NULL);
 	}
     } else
@@ -529,18 +528,17 @@ static DiskPart_t *ExtractDiskPart(name, part, dk_conf, dk_geom)
     file = GetRawFile(name, part);
 
     if (stat(file, &StatBuf) != 0) {
-	if (Debug) Error("%s: No such partition.", file);
+	SImsg(SIM_DBG, "%s: No such partition.", file);
 	return((DiskPart_t *) NULL);
     }
 
     if ((d = open(file, O_RDONLY)) < 0) {
-	if (Debug)
-	    Error("%s: Cannot open for read: %s.", file, SYSERR);
+	SImsg(SIM_GERR, "%s: Cannot open for read: %s.", file, SYSERR);
 	return((DiskPart_t *) NULL);
     }
 
     if (ioctl(d, DKIOCGPART, &dk_map) != 0) {
-	Error("%s: Cannot extract partition info: %s.", 
+	SImsg(SIM_GERR, "%s: Cannot extract partition info: %s.", 
 		file, SYSERR);
 	return((DiskPart_t *) NULL);
     }
@@ -551,7 +549,7 @@ static DiskPart_t *ExtractDiskPart(name, part, dk_conf, dk_geom)
      * Skip empty partitions
      */
     if (!dk_map.dkl_nblk) {
-	if (Debug) Error("%s: partition has no size.", file);
+	SImsg(SIM_DBG, "%s: partition has no size.", file);
 	return((DiskPart_t *) NULL);
     }
 
@@ -568,9 +566,9 @@ static DiskPart_t *ExtractDiskPart(name, part, dk_conf, dk_geom)
     else if (dk_conf->dkc_unit == 0 && strcmp(part, "b") == 0)
 	DiskPart.Usage = "swap";
 
-    DiskPart.StartSect = dk_map.dkl_cylno *
-	(dk_geom->dkg_nhead * dk_geom->dkg_nsect);
-    DiskPart.NumSect = dk_map.dkl_nblk;
+    DiskPart.StartSect = (Large_t) (dk_map.dkl_cylno *
+	(dk_geom->dkg_nhead * dk_geom->dkg_nsect));
+    DiskPart.NumSect = (Large_t) dk_map.dkl_nblk;
 
     return(&DiskPart);
 }
@@ -611,12 +609,51 @@ static DiskPart_t *GetDiskPart(name, dk_conf, dk_geom)
 }
 
 /*
+ * Create a base DiskDrive device.
+ */
+static DevInfo_t *CreateBaseDiskDrive(ProbeData, DiskName)
+     ProbeData_t	       *ProbeData;
+     char		       *DiskName;
+{
+    DevInfo_t		       *DevInfo;
+    DevData_t 		       *DevData;
+    DevDefine_t	     	       *DevDefine;
+    char		       *DevName;
+    char		       *AltName = NULL;
+
+    DevName = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    DevDefine = ProbeData->DevDefine;
+
+    if (DiskName)
+	ProbeData->DevName = DiskName;
+
+    DevInfo = DeviceCreate(ProbeData);
+    if (!DevInfo)
+	return((DevInfo_t *) NULL);
+
+    /*
+     * See if there's a good alternative name we can set.
+     */
+    if (DevData)
+	AltName = MkDevName(DevData->DevName, DevData->DevUnit,
+			    DevDefine->Type, DevDefine->Flags);
+    else if (!EQ(DiskName, DevName))
+	AltName = DiskName;
+    if (AltName && !EQ(DevInfo->Name, AltName))
+	DevInfo->AltName = strdup(AltName);
+
+    return(ProbeData->RetDevInfo = DevInfo);
+}
+
+/*
  * Convert all we've learned about a disk to a DevInfo_t.
  */
-static DevInfo_t *dkToDevInfo(name, disktype, DevData,
-			      dk_info, dk_label, dk_conf, dk_geom, dk_type)
-    char 		       *name;
-    int				disktype;
+static DevInfo_t *CreateDiskDrive(ProbeData, DevName, DiskType, DevData,
+				  dk_info, dk_label, dk_conf, dk_geom, dk_type)
+    ProbeData_t		       *ProbeData;
+    char 		       *DevName;
+    int				DiskType;
     DevData_t 		       *DevData;
     DKinfo	 	       *dk_info;
     DKlabel	 	       *dk_label;
@@ -624,37 +661,59 @@ static DevInfo_t *dkToDevInfo(name, disktype, DevData,
     DKgeom 		       *dk_geom;
     DKtype 		       *dk_type;
 {
-    DevInfo_t 		       *DevInfo, *DiskCtlr;
-    DiskDrive_t 		       *DiskDrive;
+    DevInfo_t 		       *DevInfo;
+    DevInfo_t 		       *DiskCtlr;
+    DiskDriveData_t	       *DiskDriveData = NULL;
+    DiskDrive_t		       *DiskDrive;
+    int				GotScsi = FALSE;
 
-    if ((DevInfo = NewDevInfo(NULL)) == NULL) {
-	Error("Cannot create new device entry.");
+    if (!ProbeData)
+	return((DevInfo_t *) NULL);
+
+    if (!(DevInfo = DeviceCreate(ProbeData))) {
+	SImsg(SIM_GERR, "Cannot create new device entry.");
 	return((DevInfo_t *) NULL);
     }
 
-    if ((DiskCtlr = NewDevInfo(NULL)) == NULL) {
-	Error("Cannot create new DiskCtlr device entry.");
-	return((DevInfo_t *) NULL);
+    if (ScsiQuery(DevInfo, ProbeData->DevFile, ProbeData->FileDesc, TRUE) == 0)
+	GotScsi = TRUE;
+
+    if (dk_label == NULL && DiskType != DKT_CDROM) {
+	SImsg(SIM_GERR, "%s: No disk label found on disk.", DevName);
+	if (!GotScsi)
+	    return((DevInfo_t *) NULL);
+    }
+
+    if (DevInfo->DevSpec)
+	DiskDriveData = (DiskDriveData_t *) DevInfo->DevSpec;
+    else {
+	if ((DiskDriveData = NewDiskDriveData(NULL)) == NULL) {
+	    SImsg(SIM_GERR, "Cannot create new DiskDriveData entry.");
+	    return((DevInfo_t *) NULL);
+	}
+	DevInfo->DevSpec = (void *) DiskDriveData;
     }
 
     if ((DiskDrive = NewDiskDrive(NULL)) == NULL) {
-	Error("Cannot create new DiskDrive entry.");
+	SImsg(SIM_GERR, "Cannot create new DiskDrive entry.");
 	return((DevInfo_t *) NULL);
     }
+    /*
+     * DiskDrive is the OS DiskDrive data
+     */
+    DiskDriveData->OSdata = DiskDrive;
 
-    DevInfo->Name 		= GetDiskName(name, dk_conf, dk_info);
+    DevInfo->Name 		= GetDiskName(DevName, dk_conf, dk_info);
     DevInfo->Type 		= DT_DISKDRIVE;
     /*
      * Only read partition info we we're going to print it later.
      */
     if (VL_ALL)
-	DiskDrive->DiskPart 	= GetDiskPart(name, dk_conf, dk_geom);
-    DiskDrive->Label 	= GetDiskLabel(dk_label);
-    DevInfo->Model 		= DiskDrive->Label;
+	DiskDrive->DiskPart 	= GetDiskPart(DevName, dk_conf, dk_geom);
+    DiskDrive->Label 		= GetDiskLabel(dk_label);
+    if (!DevInfo->Model)
+      DevInfo->Model 		= DiskDrive->Label;
 
-    if (disktype == DKT_CDROM && DiskDrive->Label == NULL)
-	DevInfo->Model 		= "CD-ROM";
-	
     if (dk_conf) {
 	DiskDrive->Unit 	= dk_conf->dkc_unit;
 	DiskDrive->Slave 	= dk_conf->dkc_slave;;
@@ -663,10 +722,10 @@ static DevInfo_t *dkToDevInfo(name, disktype, DevData,
 	DiskDrive->DataCyl 	= dk_geom->dkg_ncyl;
 	DiskDrive->PhyCyl 	= dk_geom->dkg_pcyl;
 	DiskDrive->AltCyl 	= dk_geom->dkg_acyl;
-	DiskDrive->Heads 	= dk_geom->dkg_nhead;
+	DiskDrive->Tracks 	= dk_geom->dkg_nhead;
 	DiskDrive->Sect 	= dk_geom->dkg_nsect;
-	DiskDrive->APC 	= dk_geom->dkg_apc;
-	DiskDrive->RPM 	= dk_geom->dkg_rpm;
+	DiskDrive->APC 		= dk_geom->dkg_apc;
+	DiskDrive->RPM 		= dk_geom->dkg_rpm;
 	DiskDrive->IntrLv 	= dk_geom->dkg_intrlv;
     }
     if (dk_type) {
@@ -681,10 +740,8 @@ static DevInfo_t *dkToDevInfo(name, disktype, DevData,
     }
     DiskDrive->SecSize 	= SECSIZE;
 
-    DiskCtlr 			= GetDiskCtlrDevice(DevData, dk_info, dk_conf);
-
-    DevInfo->DevSpec 		= (caddr_t *) DiskDrive;
-    DevInfo->Master 		= DiskCtlr;
+    if (DiskCtlr = GetDiskCtlrDevice(DevData, dk_info, dk_conf))
+      DevInfo->Master 		= DiskCtlr;
 
     return(DevInfo);
 }
@@ -692,12 +749,9 @@ static DevInfo_t *dkToDevInfo(name, disktype, DevData,
 /*
  * Query and learn about a disk.
  */
-extern DevInfo_t *ProbeDiskDriveGeneric(disktype, name, DevData, DevDefine)
-    /*ARGSUSED*/
-    int				disktype;
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	     	       *DevDefine;
+extern DevInfo_t *ProbeDiskDriveGeneric(ProbeData, DiskType)
+     ProbeData_t	       *ProbeData;
+     int			DiskType;
 {
     DevInfo_t 		       *DevInfo;
     DKinfo 		       *dk_info = NULL;
@@ -707,35 +761,46 @@ extern DevInfo_t *ProbeDiskDriveGeneric(disktype, name, DevData, DevDefine)
     DKgeom 		       *dk_geom = NULL;
     char 		       *rfile;
     int 			d;
+    char 		       *DevName;
+    DevData_t 		       *DevData;
+    DevDefine_t	     	       *DevDefine;
 
-    if (!name)
+    if (!ProbeData || !ProbeData->DevName) {
+	SImsg(SIM_GERR, "ProbeDiskDriveGeneric: Missing parameters.");
 	return((DevInfo_t *) NULL);
+    }
+
+    DevName = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    DevDefine = ProbeData->DevDefine;
 
 #if	defined(HAVE_IPI)
     /*
      * XXX - Kludge for IPI "id" disks.
      */
     if (EQ(DevData->DevName, "id")) {
-	static char		Buf[BUFSIZ];
+	static char		Buf[128];
 
-	(void) sprintf(Buf, "%s%3.3x", 
-		       DevData->DevName, DevData->DevUnit);
-	name = Buf;
+	(void) snprintf(Buf, sizeof(Buf), "%s%3.3x", 
+			DevData->DevName, DevData->DevUnit);
+	DevName = Buf;
     }
 #endif	/* HAVE_IPI */
 
-    if (disktype == DKT_CDROM)
-	rfile = GetRawFile(name, NULL);
+    if (DiskType == DKT_CDROM)
+	rfile = GetRawFile(DevName, NULL);
     else {
-	if (stat(rfile = GetRawFile(name, NULL), &StatBuf) != 0)
+	if (stat(rfile = GetRawFile(DevName, NULL), &StatBuf) != 0)
 	    /*
 	     * Get the name of the whole disk raw device.
 	     */
-	    rfile = GetRawFile(name, "c");
+	    rfile = GetRawFile(DevName, "c");
     }
+    if (!ProbeData->DevFile)
+      ProbeData->DevFile = rfile;
 
     if ((d = open(rfile, O_RDONLY)) < 0) {
-	if (Debug) Error("%s: Cannot open for reading: %s.", rfile, SYSERR);
+	SImsg(SIM_GERR, "%s: Cannot open for reading: %s.", rfile, SYSERR);
 	/*
 	 * If we know for sure this drive is present and we
 	 * know something about it, then create a minimal device.
@@ -743,29 +808,26 @@ extern DevInfo_t *ProbeDiskDriveGeneric(disktype, name, DevData, DevDefine)
 	if (errno == EBUSY || errno == EIO ||
 	    ((DevDefine->Model || DevDefine->Desc) &&
 	     FLAGS_ON(DevData->Flags, DD_IS_ALIVE))) {
-	    DevInfo = NewDevInfo((DevInfo_t *) NULL);
-	    DevInfo->Name = strdup(name);
-	    DevInfo->Unit = DevData->DevUnit;
-	    DevInfo->Master = MkMasterFromDevData(DevData);
-	    DevInfo->Type = DT_DISKDRIVE;
-	    DevInfo->Model = DevDefine->Model;
-	    DevInfo->ModelDesc = DevDefine->Desc;
+	    DevInfo = CreateBaseDiskDrive(ProbeData, DevName);
 	    return(DevInfo);
-	} else
+	} else {
+	    SImsg(SIM_GERR, "%s: Not enough data to create disk device.",
+		  DevName);
 	    return((DevInfo_t *) NULL);
+	}
     }
 
-    if ((dk_conf = GETdk_conf(d, rfile, disktype)) == NULL)
-	if (Debug) Error("%s: get dk_conf failed.", rfile);
+    if ((dk_conf = GETdk_conf(d, rfile, DiskType)) == NULL)
+	SImsg(SIM_GERR, "%s: get dk_conf failed.", rfile);
 
     if ((dk_info = GETdk_info(d, rfile)) == NULL)
-	if (Debug) Error("%s: get dk_info failed.", rfile);
+	SImsg(SIM_GERR, "%s: get dk_info failed.", rfile);
 
-    if ((dk_geom = GETdk_geom(d, rfile, disktype)) == NULL)
-	if (Debug) Error("%s: get dk_geom failed.", rfile);
+    if ((dk_geom = GETdk_geom(d, rfile, DiskType)) == NULL)
+	SImsg(SIM_GERR, "%s: get dk_geom failed.", rfile);
 
-    if ((dk_label = GETdk_label(d, rfile, dk_info, disktype)) == NULL)
-	if (Debug) Error("%s: get dk_label failed.", rfile);
+    if ((dk_label = GETdk_label(d, rfile, dk_info, DiskType)) == NULL)
+	SImsg(SIM_GERR, "%s: get dk_label failed.", rfile);
 
     /*
      * Not all controllers support dk_type
@@ -774,10 +836,11 @@ extern DevInfo_t *ProbeDiskDriveGeneric(disktype, name, DevData, DevDefine)
 
     close(d);
 
-    if (!(DevInfo = dkToDevInfo(name, disktype, DevData,
-				dk_info, dk_label, 
-				dk_conf, dk_geom, dk_type))) {
-	Error("%s: Cannot convert DiskDrive information.", name);
+    if (!(DevInfo = CreateDiskDrive(ProbeData,
+				    DevName, DiskType, DevData,
+				    dk_info, dk_label, 
+				    dk_conf, dk_geom, dk_type))) {
+	SImsg(SIM_GERR, "%s: Cannot convert DiskDrive information.", DevName);
 	return((DevInfo_t *) NULL);
     }
 
@@ -787,23 +850,38 @@ extern DevInfo_t *ProbeDiskDriveGeneric(disktype, name, DevData, DevDefine)
 /*
  * Probe normal disk drive by calling Generic probe routine.
  */
-extern DevInfo_t *ProbeDiskDrive(name, DevData, DevDefine)
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	     	       *DevDefine;
+extern DevInfo_t *ProbeDiskDrive(ProbeData)
+     ProbeData_t	       *ProbeData;
 {
-    return(ProbeDiskDriveGeneric(DKT_GENERIC, name, DevData, DevDefine));
+    return(ProbeDiskDriveGeneric(ProbeData, DKT_GENERIC));
 }
 
 /*
  * Probe CDROM disk drive by calling Generic probe routine.
  */
-extern DevInfo_t *ProbeCDROMDrive(name, DevData, DevDefine)
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	     	       *DevDefine;
+extern DevInfo_t *ProbeCDROMDrive(ProbeData)
+     ProbeData_t	       *ProbeData;
 {
-    return(ProbeDiskDriveGeneric(DKT_CDROM, name, DevData, DevDefine));
+    return(ProbeDiskDriveGeneric(ProbeData, DKT_CDROM));
+}
+
+/*
+ * Create a tape device
+ */
+static DevInfo_t *CreateTapeDrive(ProbeData, DevName, TapeName)
+     ProbeData_t	       *ProbeData;
+     char		       *DevName;
+     char		       *TapeName;
+{
+    DevInfo_t		       *DevInfo;
+
+    ProbeData->DevName = DevName;
+    DevInfo = DeviceCreate(ProbeData);
+    if (TapeName && !EQ(DevName, TapeName))
+	DevInfo->AltName = strdup(TapeName);
+    DevInfo->Type 		= DT_TAPEDRIVE;
+
+    return(DevInfo);
 }
 
 /*
@@ -813,20 +891,30 @@ extern DevInfo_t *ProbeCDROMDrive(name, DevData, DevDefine)
  * This also loses if there's no tape in the drive, as the open will fail.
  * The above probably applies to most other flavors of UNIX.
  */
-extern DevInfo_t *ProbeTapeDrive(name, DevData, DevDefine)
-     /*ARGSUSED*/
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	 	       *DevDefine;
+extern DevInfo_t *ProbeTapeDrive(ProbeData)
+     ProbeData_t	       *ProbeData;
 {
     DevInfo_t 		       *DevInfo;
     char 		       *file;
-    char 		       *Model = NULL;
-    char			rfile[BUFSIZ];
-    static char 		Buf[BUFSIZ];
+    char			rfile[MAXPATHLEN];
+    static char 		Buf[128];
     struct mtget 		mtget;
     register char	       *cp;
     int 			d;
+    char 		       *DevName;
+    DevData_t 		       *DevData;
+    DevDefine_t	 	       *DevDefine;
+
+    if (!ProbeData) {
+	SImsg(SIM_DBG, "ProbeTapeDrive: Missing parameters.");
+	return((DevInfo_t *) NULL);
+    }
+
+    DevName = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    DevDefine = ProbeData->DevDefine;
+
+    SImsg(SIM_DBG, "ProbeTapeDrive(%s)", DevName);
 
     /*
      * Don't use GetRawFile; that'll just stick an "r" in front of the
@@ -837,24 +925,25 @@ extern DevInfo_t *ProbeTapeDrive(name, DevData, DevDefine)
      *
      * The above probably applies to most other flavors of UNIX.
      */
-    if (!name)
+    if (!DevName)
 	file = NULL;
     else {
-	(void) sprintf(rfile, "/dev/nr%s", name);
+	(void) snprintf(rfile, sizeof(rfile), "/dev/nr%s", DevName);
 	file = rfile;
     }
 
     if ((d = open(file, O_RDONLY)) < 0) {
-	if (Debug)
-	    Error("%s Cannot open for read: %s.", file, SYSERR);
+	SImsg(SIM_GERR, "%s Cannot open for read: %s.", file, SYSERR);
 
 	/*
 	 * --RECURSE--
 	 * If we haven't tried the "mt" name yet, try it now
 	 */
-	if (strncmp(name, MTNAME, strlen(MTNAME)) != 0) {
-	    (void) sprintf(Buf, "%s%d", MTNAME, DevData->DevUnit);
-	    DevInfo = ProbeTapeDrive(Buf, DevData, DevDefine);
+	if (strncmp(DevName, MTNAME, strlen(MTNAME)) != 0) {
+	    (void) snprintf(Buf, sizeof(Buf), "%s%d", 
+			    MTNAME, DevData->DevUnit);
+	    ProbeData->DevName = Buf;
+	    DevInfo = ProbeTapeDrive(ProbeData);
 	    if (DevInfo)
 		return(DevInfo);
 	}
@@ -863,52 +952,37 @@ extern DevInfo_t *ProbeTapeDrive(name, DevData, DevDefine)
 	 * If we know for sure this drive is present and we
 	 * know something about it, then create a minimal device.
 	 */
-	if ((DevDefine->Model || DevDefine->Desc) &&
-	    FLAGS_ON(DevData->Flags, DD_IS_ALIVE)) {
-	    DevInfo = NewDevInfo((DevInfo_t *) NULL);
+	if (FLAGS_ON(DevData->Flags, DD_IS_ALIVE)) {
+	    DevInfo = CreateTapeDrive(ProbeData, DevName, NULL);
 	    /* 
 	     * Recreate name from devdata since we might have had to
 	     * call ourself with name "rmt?"
 	     */
-	    (void) sprintf(Buf, "%s%d", DevData->DevName, 
+	    (void) snprintf(Buf, sizeof(Buf), "%s%d", DevData->DevName, 
 			   DevData->DevUnit);
 	    DevInfo->Name = strdup(Buf);
-	    DevInfo->Unit = DevData->DevUnit;
-	    DevInfo->Master = MkMasterFromDevData(DevData);
-	    DevInfo->Type = DT_TAPEDRIVE;
-	    DevInfo->Model = DevDefine->Model;
-	    DevInfo->ModelDesc = DevDefine->Desc;
 	    return(DevInfo);
-	} else
+	} else {
+	    SImsg(SIM_GERR, "%s: No data available to create tape device.",
+		  DevName);
 	    return((DevInfo_t *) NULL);
+	}
     }
 
     if (ioctl(d, MTIOCGET, &mtget) != 0) {
-	Error("%s: Cannot extract tape status: %s.", file, SYSERR);
+	SImsg(SIM_GERR, "%s: Cannot extract tape status: %s.", file, SYSERR);
 	return((DevInfo_t *) NULL);
     }
 
     (void) close(d);
 
+    DevInfo = CreateTapeDrive(ProbeData, DevName, NULL);
+
     cp = GetTapeModel(mtget.mt_type);
     if (cp)
-	Model = strdup(cp);
-    else
-	Model = "unknown";
-
-    /*
-     * Create and set device info
-     */
-    DevInfo = NewDevInfo(NULL);
-    DevInfo->Name = strdup(name);
-    DevInfo->Type = DT_TAPEDRIVE;
-    if (Model)
-	DevInfo->Model = Model;
-    else
-	DevInfo->Model = DevDefine->Model;
-    DevInfo->ModelDesc = DevDefine->Desc;
-    DevInfo->Unit = DevData->DevUnit;
-    DevInfo->Master = MkMasterFromDevData(DevData);
+	DevInfo->Model = strdup(cp);
+    else if (!DevInfo->Model)
+	DevInfo->Model = "unknown";
 
     return(DevInfo);
 }
@@ -929,39 +1003,49 @@ extern DevInfo_t *ProbeTapeDrive(name, DevData, DevDefine)
  * partition table, the Auspex driver lets you open the partitions as
  * if it were a disk.
  */
-extern DevInfo_t *ProbeSPDrive(name, DevData, DevDefine)
-     /*ARGSUSED*/
-    char 		       *name;
-    DevData_t 		       *DevData;
-    DevDefine_t	     	       *DevDefine;
+extern DevInfo_t *ProbeSPDrive(ProbeData)
+     ProbeData_t	       *ProbeData;
 {
     DevInfo_t 		       *thedevice;
-    char			devname[BUFSIZ];
+    char			DevName[32];
+    char 		       *name;
+    DevData_t 		       *DevData;
+    DevDefine_t	 	       *DevDefine;
+
+    if (!ProbeData)
+	return((DevInfo_t *) NULL);
+
+    name = ProbeData->DevName;
+    DevData = ProbeData->DevData;
+    DevDefine = ProbeData->DevDefine;
 
     /*
      * Try it first as a CD-ROM.
      */
-    (void) sprintf(devname, "acd%d", DevData->DevUnit);
+    (void) snprintf(DevName, sizeof(DevName), "acd%d", DevData->DevUnit);
     DevData->DevName = "acd";
     DevDefine->Model = "CD-ROM";
-    if (thedevice = ProbeCDROMDrive(devname, DevData, DevDefine))
+    ProbeData->DevName = DevName;
+    if (thedevice = ProbeCDROMDrive(ProbeData))
 	return(thedevice);
 
     /*
      * Not a CD-ROM.  Try a disk.
      */
-    (void) sprintf(devname, "ad%d", DevData->DevUnit);
+    (void) snprintf(DevName, sizeof(DevName), "ad%d", DevData->DevUnit);
     DevData->DevName = "ad";
     DevDefine->Model = NULL;
-    if (thedevice = ProbeDiskDrive(devname, DevData, DevDefine))
+    ProbeData->DevName = DevName;
+    if (thedevice = ProbeDiskDrive(ProbeData))
 	return(thedevice);
 
     /*
      * Not a disk.  Try a tape.
      */
-    (void) sprintf(devname, "ast%d", DevData->DevUnit);
+    (void) snprintf(DevName, sizeof(DevName), "ast%d", DevData->DevUnit);
     DevData->DevName = "ast";
-    if (thedevice = ProbeTapeDrive(devname, DevData, DevDefine))
+    ProbeData->DevName = DevName;
+    if (thedevice = ProbeTapeDrive(ProbeData))
 	return(thedevice);
 
     /*
@@ -1012,7 +1096,7 @@ extern char *GetRomVerSun()
      */
     if (KVMget(kd, (u_long) nlptr->n_value, (char *) &romp, 
 	       sizeof(romp), KDT_DATA)) {
-	if (Debug) Error("Cannot read sunromvec pointer from kernel.");
+	SImsg(SIM_GERR, "Cannot read sunromvec pointer from kernel.");
 	return((char *) NULL);
     }
 
@@ -1029,7 +1113,7 @@ extern char *GetRomVerSun()
     /*SUPPRESS 25*/
     if (KVMget(kd, (u_long) romp, (char *) &Rom, 
 	       sizeof(struct sunromvec), KDT_DATA)) {
-	if (Debug) Error("Cannot read sunromvec from kernel.");
+	SImsg(SIM_GERR, "Cannot read sunromvec from kernel.");
 	return((char *) NULL);
     }
 
@@ -1038,7 +1122,7 @@ extern char *GetRomVerSun()
     /*
      * XXX Hardcoded values
      */
-    (void) sprintf(RomRev, "%d.%d", Rom.v_mon_id >> 16, Rom.v_mon_id & 0xFFFF);
+    (void) snprintf(RomRev, sizeof(RomRev),  "%d.%d", Rom.v_mon_id >> 16, Rom.v_mon_id & 0xFFFF);
 
 #else	/* romp */
 
@@ -1047,7 +1131,7 @@ extern char *GetRomVerSun()
      */
     if (KVMget(kd, (u_long) Rom.v_mon_id, RomRev, 
 	       sizeof(RomRev), KDT_STRING)) {
-	if (Debug) Error("Cannot read rom revision from kernel.");
+	SImsg(SIM_GERR, "Cannot read rom revision from kernel.");
 	return((char *) NULL);
     }
 #endif	/* romp */

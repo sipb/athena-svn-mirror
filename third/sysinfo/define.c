@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: define.c,v 1.1.1.2 1998-02-12 21:31:58 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -128,7 +129,7 @@ extern Define_t *DefGet(ListName, KeyStr, KeyNum, Opts)
 
     List = DefGetList(ListName);
     if (!List) {
-	if (Debug) Error("Invalid list name `%s'.", ListName);
+	SImsg(SIM_DBG, "Invalid list name `%s'.", ListName);
 	return((Define_t *) NULL);
     }
 
@@ -137,7 +138,7 @@ extern Define_t *DefGet(ListName, KeyStr, KeyNum, Opts)
 	    if (FLAGS_ON(Opts, DO_REGEX)) {
 		strtolower(KeyStr);
 		strtolower(Ptr->KeyStr);
-		if (REMatch(KeyStr, Ptr->KeyStr) > 0)
+		if (REmatch(KeyStr, Ptr->KeyStr, NULL) > 0)
 		    StrMatch = TRUE;
 	    } else {
 		if (EQ(KeyStr, Ptr->KeyStr))

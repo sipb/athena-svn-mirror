@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 /*
- * $Id: os.h,v 1.1.1.2 1998-02-12 21:32:23 ghudson Exp $
+ * $Revision: 1.1.1.3 $
  */
 
 #ifndef __sysinfo_system__
@@ -38,6 +39,18 @@
 
 #if defined(sgi)
 #      	include "os-irix.h"
+#endif
+
+#if defined(linux)
+#	include "os-linux.h"
+#endif
+
+#if defined(__bsdi__)
+#	include "os-bsdos.h"
+#endif
+
+#if defined(__FreeBSD__)
+#	include "os-freebsd.h"
 #endif
 
 /*

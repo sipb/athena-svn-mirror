@@ -1,49 +1,41 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 /*
- * $Id: os-sunos.h,v 1.1.1.2 1998-02-12 21:32:27 ghudson Exp $
+ * $Revision: 1.1.1.3 $
  */
 
 #ifndef __os_sunos_h__
 #define __os_sunos_h__
 
-#if	defined(HAVE_OPENPROM)
+/*
+ * Default Delta for CPUspeed comparison
+ */
+#define CPU_SPEED_DELTA		2
 
 /*
- * OBP device file
+ * Graphics defines
  */
-#define _PATH_OPENPROM		"/dev/openprom"
+#define AFB_NAME		"afb"		/* Elite */
+#define PGX_NAME		"pgx"		/* m64/PGX */
+#define FFB_NAME		"ffb"		/* Creator */
+/* Special FFB defines */
+#define FFB_DBLNAME		"ffbdbl"	/* Match for sunos.cf */
+#define FFB_DBL_BUFFER		0x01		/* Has double buf flag */
+#define FFB_Z_BUFFER		0x02		/* Has Z buf flag */
 
 /*
- * OBP keywords
+ * List of driver names which provide Serial numbers (DevInfo->Serial)
+ * which are known to "bad".  Usually this means they don't contain unique
+ * fields.  Such devices are ignored when looking for duplicate entries
+ * in the Device tree.
  */
-#define OBP_ALIASES		"aliases"
-#define OBP_BANNERNAME		"banner-name"
-#define OBP_BOARD		"board#"
-#define OBP_BOARDTYPE		"board-type"
-#define OBP_CLOCKFREQ		"clock-frequency"
-#define OBP_CPUID		"cpu-id"
-#define OBP_DCACHESIZE		"dcache-size"
-#define OBP_DEVICEID		"device-id"
-#define OBP_DEVTYPE		"device_type"
-#define OBP_ECACHESIZE		"ecache-size"
-#define OBP_FHC			"fhc"
-#define OBP_KEYBOARD		"keyboard"
-#define OBP_MEMUNIT		"mem-unit"
-#define OBP_MODEL		"model"
-#define OBP_NAME		"name"
-#define OBP_SIZE		"size"
-#define OBP_SYSBOARD		"sysboard"
-#ifndef OBP_CPU
-#define OBP_CPU			"cpu"
-#endif
-
-#endif	/* HAVE_OPENPROM */
+#define IGNORE_SERIAL_LIST	{ "atf", NULL }
 
 /*
  * Cpu Type information

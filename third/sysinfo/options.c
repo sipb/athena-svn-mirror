@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 1990 Michael A. Cooper.
+ * Copyright (c) 1990-1998 Michael A. Cooper.
  * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * profit or used for commercial gain and the author is credited appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/third/sysinfo/options.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.2 $";
 #endif
 
 /*
@@ -24,6 +24,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/third/sysinfo/
 char *OptionChars = "-+";	/* Default option switching characters */
 char *ProgramName = NULL;	/* Name of this program */
 static char *UsageString();
+char *strdup();
 static int isopt();
 static int suppress_help_msg = 0;
 
@@ -89,7 +90,7 @@ int ParseOptions(options, num_options, argc, argv)
 	    p = (char *) &argv[x][strlen(opt->option)];
 	    if (!*p) {		/*** SepArg ***/
 		if (x + 1 >= argc || isopt(argv[x+1])) {
-		    if (opt->value == (caddr_t) NULL) {
+		    if (opt->value == (OptPtr_t) NULL) {
 			UserError("%s: Option requires an argument.", argv[x]);
 			UsageOptions(options, num_options, opt->option);
 			return(-1);
@@ -106,7 +107,7 @@ int ParseOptions(options, num_options, argc, argv)
 	} else if (opt->flags & StickyArg) {
 	    p = (char *) &argv[x][strlen(opt->option)];
 	    if (!*p) {
-		if (opt->value == (caddr_t) NULL) {
+		if (opt->value == (OptPtr_t) NULL) {
 		    UserError("%s: Option requires an argument.", argv[x]);
 		    UsageOptions(options, num_options, opt->option);
 		    return(-1);
@@ -120,7 +121,7 @@ int ParseOptions(options, num_options, argc, argv)
 	    }
 	} else if (opt->flags & SepArg) {
 	    if (x + 1 >= argc || isopt(argv[x+1])) {
-		if (opt->value == (caddr_t) NULL) {
+		if (opt->value == (OptPtr_t) NULL) {
 		    UserError("%s: Option requires an argument.", argv[x]);
 		    UsageOptions(options, num_options, opt->option);
 		    return(-1);
@@ -279,7 +280,7 @@ void HelpOptions(options, num_opts, message)
 
 OptBool(opt, value, docopy)
      OptionDescRec *opt;
-     caddr_t value;
+     OptPtr_t value;
      int docopy; /*ARGSUSED*/
 {
     char *vpp;
@@ -295,7 +296,7 @@ OptBool(opt, value, docopy)
 
 OptInt(opt, value, docopy)
      OptionDescRec *opt;
-     caddr_t value;
+     OptPtr_t value;
      int docopy; /*ARGSUSED*/
 {
     char *vpp;
@@ -311,7 +312,7 @@ OptInt(opt, value, docopy)
 
 OptShort(opt, value, docopy)
      OptionDescRec *opt;
-     caddr_t value;
+     OptPtr_t value;
      int docopy; /*ARGSUSED*/
 {
     char *vpp;
@@ -327,7 +328,7 @@ OptShort(opt, value, docopy)
 
 OptLong(opt, value, docopy)
      OptionDescRec *opt;
-     caddr_t value;
+     OptPtr_t value;
      int docopy; /*ARGSUSED*/
 {
     char *vpp;
@@ -343,20 +344,15 @@ OptLong(opt, value, docopy)
 
 OptStr(opt, value, docopy)
      OptionDescRec *opt;
-     caddr_t value;
+     OptPtr_t value;
      int docopy;
 {
     void *p;
 
-    if (docopy) {
-	if ((p = (void *) malloc(strlen(value)+1)) == NULL) {
-	    UserError("Cannot malloc memory: %s", SYSERR);
-	    return(FALSE);
-	}
-	(void) strcpy(p, value);
-    } else {
+    if (docopy)
+	p = strdup(value);
+    else
 	p = value;
-    }
 
     *(char **) opt->valp = p;
 
@@ -364,25 +360,26 @@ OptStr(opt, value, docopy)
 }
 
 static char *UsageString(opt)
-     OptionDescRec *opt;
+     OptionDescRec 	       *opt;
 {
-    static char buf[BUFSIZ], buf2[BUFSIZ];
+    static char 		Buff[BUFSIZ];
+    int				Len;
 
-    (void) sprintf(buf, opt->option);
-    (void) strcpy(buf2, "");
+    (void) snprintf(Buff, sizeof(Buff), "%s", opt->option);
+
     if (opt->usage) {
-	(void) sprintf(buf2, "%s%s%s%s",
-		       ((opt->flags & StickyArg) && 
-			!((opt->flags & StickyArg) && (opt->flags & SepArg))) 
-		       ? "" : " ",
-		       (opt->value) ? "[" : "",
-		       opt->usage,
-		       (opt->value) ? "]" : ""
-		       );
+	Len = strlen(Buff);
+	(void) snprintf(&Buff[Len], sizeof(Buff)-Len, "%s%s%s%s",
+			((opt->flags & StickyArg) && 
+			 !((opt->flags & StickyArg) && (opt->flags & SepArg))) 
+			? "" : " ",
+			(opt->value) ? "[" : "",
+			opt->usage,
+			(opt->value) ? "]" : ""
+			);
     }
-    (void) strcat(buf, buf2);
 
-    return(buf);
+    return(Buff);
 }
 
 /*

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getosver.c,v 1.1.1.2 1998-02-12 21:32:03 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -20,7 +21,7 @@ static char *RCSid = "$Id: getosver.c,v 1.1.1.2 1998-02-12 21:32:03 ghudson Exp 
  */
 extern char *GetOSVerUname()
 {
-    static char			Buf[BUFSIZ];
+    static char			Buff[64];
 #if	defined(HAVE_UNAME)
     struct utsname 		un;
 
@@ -30,14 +31,14 @@ extern char *GetOSVerUname()
 	 * version numbers via uname().
 	 */
 #if	defined(UNAME_REL_VER_COMB)
-	(void) sprintf(Buf, "%s.%s", un.version, un.release);
+	(void) snprintf(Buff, sizeof(Buff),  "%s.%s", un.version, un.release);
 #else
-	(void) sprintf(Buf, "%s", un.release);
+	(void) snprintf(Buff, sizeof(Buff),  "%s", un.release);
 #endif 	/* UNAME_REL_VER_COMB */
     }
 #endif	/* HAVE_UNAME */
 
-    return( (Buf[0]) ? Buf : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
@@ -46,23 +47,23 @@ extern char *GetOSVerUname()
  */
 extern char *GetOSVerKernVer()
 {
-    static char			Buf[BUFSIZ];
+    static char			Buff[256];
 #if	defined(OSVERS_FROM_KERNVER)
     register char	       *cp;
     register int		i;
 
     if (!(cp = GetKernVer()))
-	return(UnSupported);
+	return((char *) NULL);
 
-    (void) strcpy(Buf, cp);
-    for (cp = strtok(Buf, " "), i = 0; cp && i != OSVERS_FROM_KERNVER-1; 
+    (void) strcpy(Buff, cp);
+    for (cp = strtok(Buff, " "), i = 0; cp && i != OSVERS_FROM_KERNVER-1; 
 	 cp = strtok((char *)NULL, " "), ++i);
-    (void) strcpy(Buf, cp);
-    if ((cp = strchr(Buf, ':')) != NULL)
+    (void) strcpy(Buff, cp);
+    if ((cp = strchr(Buff, ':')) != NULL)
 	*cp = C_NULL;
 #endif	/* OSVERS_FROM_KERNVER */
 
-    return( (Buf[0]) ? Buf : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
@@ -70,17 +71,17 @@ extern char *GetOSVerKernVer()
  */
 extern char *GetOSVerSysinfo()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[128];
 
 #if	defined(HAVE_SYSINFO)
-    if (buff[0])
-	return(buff);
+    if (Buff[0])
+	return(Buff);
 
-    if (sysinfo(SI_RELEASE, buff, sizeof(buff)) < 0)
+    if (sysinfo(SI_RELEASE, Buff, sizeof(Buff)) < 0)
 	return((char *) NULL);
 #endif	/* HAVE_SYSINFO */
 
-    return( (buff[0]) ? buff : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
@@ -101,7 +102,7 @@ extern char *GetOSVerDef()
 extern char *GetOSVer()
 {
     extern PSI_t	       GetOSVerPSI[];
-    static char		      *Str = NULL;
+    static char		      *Str;
     register char	      *cp;
 
     if (Str)

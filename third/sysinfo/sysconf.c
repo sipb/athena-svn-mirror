@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: sysconf.c,v 1.1.1.2 1998-02-12 21:32:09 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -27,16 +28,16 @@ extern void SysConfList()
 
     DefPtr = DefGetList(DL_SYSCONF); 
     if (!DefPtr) {
-	if (Debug) Error("No sysconf variables are defined.");
+	SImsg(SIM_WARN, "No sysconf variables are defined.");
 	return;
     }
 
-    printf("\n\nThe following are valid arguments for `-class SysConf -show Name1,Name2,...':\n\n");
-    printf("%-25s %s\n", "NAME", "DESCRIPTION");
+    SImsg(SIM_INFO, "\n\nThe following are valid arguments for `-class SysConf -show Name1,Name2,...':\n\n");
+    SImsg(SIM_INFO, "%-25s %s\n", "NAME", "DESCRIPTION");
 
     for ( ; DefPtr; DefPtr = DefPtr->Next)
 	if (sysconf(DefPtr->KeyNum) > 0)
-	    printf("%-25s %s\n", DefPtr->KeyStr, DefPtr->ValStr2);
+	    SImsg(SIM_INFO, "%-25s %s\n", DefPtr->KeyStr, DefPtr->ValStr2);
 #endif	/* HAVE_SYSCONF */
 }
 
@@ -91,7 +92,7 @@ extern void SysConfShow(MyInfo, Names)
 	 */
 	Value = sysconf(DefPtr->KeyNum);
 	if (Value < 0) {
-	    if (Debug) Error("sysconf(%s) failed: %s", DefPtr->KeyStr, SYSERR);
+	    SImsg(SIM_GERR, "sysconf(%s) failed: %s", DefPtr->KeyStr, SYSERR);
 	    DefPtr->KeyNum = -1;
 	    continue;
 	}
@@ -104,7 +105,7 @@ extern void SysConfShow(MyInfo, Names)
 	    MaxDesc = Len;
     }
 
-    ClassShowLabel(MyInfo);
+    ClassShowBanner(MyInfo);
 
     for (DefPtr = SysConfDef; DefPtr; DefPtr = DefPtr->Next) {
 	if (Names && !HasName(DefPtr->KeyStr, Names))

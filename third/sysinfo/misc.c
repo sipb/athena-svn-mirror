@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.1.1.2 1998-02-12 21:32:13 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -14,101 +15,55 @@ static char *RCSid = "$Id: misc.c,v 1.1.1.2 1998-02-12 21:32:13 ghudson Exp $";
  */
 
 #include "defs.h"
-
-/*
- * Print error message
- */
-#if	ARG_TYPE == ARG_STDARG
-/*
- * StdArg version of Error()
- */
-extern void Error(char *fmt, ...)
-{
-    va_list 			args;
-    extern char 	       *ProgramName;
-
-    (void) fflush(stdout);
-    (void) fprintf(stderr, "%s: ", ProgramName);
-    va_start(args, fmt);
-    (void) vfprintf(stderr, fmt, args);
-    va_end(args);
-    (void) fprintf(stderr, "\n");
-}
-#endif	/* ARG_STDARG */
-#if	ARG_TYPE == ARG_VARARGS
-/*
- * Varargs version of Error()
- */
-extern void Error(va_alist)
-    va_dcl
-{
-    va_list 			args;
-    char 		       *fmt;
-    extern char 	       *ProgramName;
-
-    (void) fflush(stdout);
-    (void) fprintf(stderr, "%s: ", ProgramName);
-    va_start(args);
-    fmt = (char *) va_arg(args, char *);
-    (void) vfprintf(stderr, fmt, args);
-    va_end(args);
-    (void) fprintf(stderr, "\n");
-}
-#endif	/* ARG_VARARGS */
-#if	!defined(ARG_TYPE)
-/*
- * Non-Varargs version of Error()
- */
-extern void Error(fmt, a1, a2, a3, a4, a5, a6)
-    char 		       *fmt;
-{
-    extern char 	       *ProgramName;
-
-    (void) fflush(stdout);
-    (void) fprintf(stderr, "%s: ", ProgramName);
-    (void) fprintf(stderr, fmt, a1, a2, a3, a4, a5, a6);
-    (void) fprintf(stderr, "\n");
-}
-#endif 	/* !ARG_TYPE */
+#include <sys/stat.h>
 
 /*
  * Front end to calloc()
  */
-char *xcalloc(nele, esize)
-    int 			nele;
-    int 			esize;
+void *xcalloc(nele, esize)
+    size_t 			nele;
+    size_t 			esize;
 {
-    char 		       *p;
+    void 		       *p;
 
-    if ((p = (char *) calloc(nele, esize)) == NULL) {
-	Error("calloc(%d, %d) failed.", nele, esize);
+#if	defined(SYSINFO_ALLOC_DEBUG)
+    SImsg(SIM_DBG, "calloc nele %d size %d", nele, esize);
+#endif
+    if ((p = (void *) calloc(nele, esize)) == NULL) {
+	SImsg(SIM_GERR, "calloc(%d, %d) failed.", nele, esize);
 	exit(1);
     }
 
     return(p);
 }
 
-char *xmalloc(size)
-    int				size;
+void *xmalloc(size)
+    size_t			size;
 {
-    char		       *newptr;
+    void		       *newptr;
 
-    if (!(newptr = (char *) malloc(size))) {
-	Error("malloc size %d failed: %s", size, SYSERR);
+#if	defined(SYSINFO_ALLOC_DEBUG)
+    SImsg(SIM_DBG, "malloc size %d", size);
+#endif
+    if (!(newptr = (void *) malloc(size))) {
+	SImsg(SIM_GERR, "malloc size %d failed: %s", size, SYSERR);
 	exit(1);
     }
 
     return(newptr);
 }
 
-char *xrealloc(ptr, size)
-    char		       *ptr;
-    int				size;
+void *xrealloc(ptr, size)
+    void		       *ptr;
+    size_t			size;
 {
-    char		       *newptr;
+    void		       *newptr;
 
-    if (!(newptr = (char *) realloc(ptr, size))) {
-	Error("realloc 0x%x size %d failed: %s", ptr, size, SYSERR);
+#if	defined(SYSINFO_ALLOC_DEBUG)
+    SImsg(SIM_DBG, "realloc 0x%x size %d", ptr, size);
+#endif
+    if (!(newptr = (void *) realloc(ptr, size))) {
+	SImsg(SIM_GERR, "realloc 0x%x size %d failed: %s", ptr, size, SYSERR);
 	exit(1);
     }
 
@@ -119,103 +74,137 @@ char *xrealloc(ptr, size)
  * Convert integer to ASCII
  */
 char *itoa(Num)
-    int 			Num;
+    u_long 			Num;
 {
-    static char 		Buf[BUFSIZ];
+    static char 		Buf[64];
 
-    (void) sprintf(Buf, "%d", Num);
+    (void) snprintf(Buf, sizeof(Buf),  "%d", Num);
 
     return(Buf);
 }
 
-#if	RE_TYPE == RE_COMP
 /*
- * Perform Regular Expression matching
- *
- * Should return 1 on match, 0 if no match, -1 on error.
- *
+ * Convert integer to string version in hex
  */
-int REMatch(String, Pattern)
-    char		       *String;
-    char		       *Pattern;
+char *itoax(Num)
+    u_long 			Num;
 {
-    char		       *ErrStr;
-    int				Val;
+    static char 		Buff[64];
 
-    ErrStr = (char *) re_comp(Pattern);
-    if (ErrStr) {
-	if (Debug) Error("Regular Expression Error: Pattern `%s' - %s",
-			 Pattern, ErrStr);
-	return(-1);
-    }
+    (void) snprintf(Buff, sizeof(Buff),  "0x%x", Num);
 
-    Val = re_exec(String);
-
-    return(Val);
+    return(Buff);
 }
-#endif	/* RE_COMP */
 
-#if	RE_TYPE == RE_REGCOMP
-#include <regex.h>
 /*
- * Perform Regular Expression matching
- *
- * Should return 1 on match, 0 if no match, -1 on error.
- *
+ * Test to see if FileName exists.
  */
-int REMatch(String, Pattern)
-    char		       *String;
-    char		       *Pattern;
+extern int FileExists(FileName)
+     char		       *FileName;
 {
-    int				Val;
-    regex_t			RegEx;
-    static char			Buff[BUFSIZ];
+    int				Exists = FALSE;
+    struct stat			StatBuf;
 
-    Val = regcomp(&RegEx, Pattern, REG_EXTENDED|REG_NOSUB);
-    if (Val != 0) {
-	(void) regerror(Val, &RegEx, Buff, sizeof(Buff));
-	if (Debug) Error("Regular Expression Error: Pattern `%s' - %s",
-			 Pattern, Buff);
-	return(-1);
-    }
+    if (!FileName)
+	return(0);
 
-    Val = regexec(&RegEx, String, (size_t) 0, NULL, 0);
-    regfree(&RegEx);
-    if (Val >= 1)
-	return(1);
+    if (stat(FileName, &StatBuf) == 0)
+	Exists = TRUE;
 
-    return(0);
+    SImsg(SIM_DBG, "File <%s> %s", FileName, (Exists) ? "Exists" : SYSERR);
+
+    return(Exists);
 }
-#endif	/* RE_REGCOMP */
 
-#if	RE_TYPE == RE_REGCMP
 /*
- * Perform Regular Expression matching
- *
- * Should return 1 on match, 0 if no match, -1 on error.
- *
+ * Test to see if Path is a file
  */
-int REMatch(String, Pattern)
-    char		       *String;
-    char		       *Pattern;
+extern int IsFile(PathName)
+     char		       *PathName;
 {
-    char		       *CompExp = NULL;
-    int				Val;
+    int				RetVal = FALSE;
+    struct stat			StatBuf;
 
-    CompExp = (char *) regcmp(Pattern, (char *)0);
-    if (!CompExp) {
-	if (Debug) Error("Regular Expression Error: Pattern `%s' - %s",
-			 Pattern, SYSERR);
-	return(-1);
-    }
+    if (!PathName)
+	return(0);
 
-    if (regex(CompExp, String))
-	Val = 1;
-    else
-	Val = 0;
+    if (stat(PathName, &StatBuf) == 0 && S_ISREG(StatBuf.st_mode))
+	RetVal = TRUE;
 
-    (void) free(CompExp);
+    SImsg(SIM_DBG, "Path <%s> %s", PathName, (RetVal) ? "IsFile" : "NotFile");
 
-    return(Val);
+    return(RetVal);
 }
-#endif	/* RE_COMP */
+
+/*
+ * Test to see if Path is a Directory
+ */
+extern int IsDir(PathName)
+     char		       *PathName;
+{
+    int				RetVal = FALSE;
+    struct stat			StatBuf;
+
+    if (!PathName)
+	return(0);
+
+    if (stat(PathName, &StatBuf) == 0 && S_ISDIR(StatBuf.st_mode))
+	RetVal = TRUE;
+
+    SImsg(SIM_DBG, "Path <%s> %s", PathName, (RetVal) ? "IsDir" : "NotDir");
+
+    return(RetVal);
+}
+
+
+/*
+ * Clean "String" by removing leading and trailing whitespace.
+ * Returns pointer to new (allocated) copy.
+ */
+extern char *CleanString(String, StrLen, Flags)
+     char		       *String;
+     int			StrLen;
+     int			Flags;
+{
+    register char	       *cp;
+    register char	       *bp;
+    register char	       *end;
+    register int		Len;
+    register int		i;
+    char		       *Buffer;
+    char			LastChar = CNULL;
+
+    if (!String || !StrLen)
+	return((char *) NULL);
+
+    /* Skip over any leading white space */
+    for (cp = String; cp && *cp && isspace(*cp); ++cp);
+    Len = StrLen - (cp - String);
+
+    /* Copy to working Buffer */
+    Buffer = (char *) xcalloc(1, Len + 1);
+    for (bp = Buffer, i = 0; i < Len; ++i, ++cp) {
+	/*
+	 * Skip if this is SPACE and last char was SPACE or this char
+	 * is not printable
+	 */
+	if ((LastChar && isspace(*cp) && isspace(LastChar)) || !isprint(*cp)) {
+	    LastChar = *cp;
+	    continue;
+	}
+	*bp++ = *cp;
+	*bp = CNULL;
+	LastChar = *cp;
+    }
+    
+    /*
+     * Remove all trailing spaces.
+     * bp points to end of Buffer at this point.
+     */
+    end = bp;
+    for (cp = end - 1; cp > Buffer && isspace(*cp); --cp);
+    if (cp != end - 1 && cp && isspace(*++cp))
+	*cp = CNULL;
+
+    return(Buffer);
+}

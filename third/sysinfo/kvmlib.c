@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: kvmlib.c,v 1.1.1.2 1998-02-12 21:32:02 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 #include "defs.h"
@@ -102,8 +103,8 @@ extern kvm_t *kvm_open(NameList, CoreFile, SwapFile, Flag, ErrStr)
  */
 extern int kvm_read(kd, Addr, Buf, NBytes)
     kvm_t 		       *kd;
-    OFF_T_TYPE	 		Addr;
-    char 		       *Buf;
+    KVMaddr_t	 		Addr;
+    void 		       *Buf;
     size_t 			NBytes;
 {
     size_t 			RetVal;

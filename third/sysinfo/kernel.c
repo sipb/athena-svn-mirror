@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: kernel.c,v 1.1.1.2 1998-02-12 21:31:55 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -14,6 +15,7 @@ static char *RCSid = "$Id: kernel.c,v 1.1.1.2 1998-02-12 21:31:55 ghudson Exp $"
  */
 #include "defs.h"
 
+#if	defined(HAVE_KVM) && defined(HAVE_NLIST)
 static char			ValBuff[100];
 
 typedef struct {
@@ -21,24 +23,36 @@ typedef struct {
     char		     *(*Read)();	/* Function to read it */
 } DataEntry_t;
 
+static char		       *DTstring();
 static char		       *DTint();
 static char		       *DTuint();
 static char		       *DTshort();
 static char		       *DTushort();
 static char		       *DTlong();
 static char		       *DTulong();
-static char		       *DTstring();
+#if	defined(HAVE_INT64_T)
+static char		       *DTint64();
+#endif
+#if	defined(HAVE_UINT64_T)
+static char		       *DTuint64();
+#endif
 
 #define DT_BOOL			"bool"		/* Boolean */
 
 DataEntry_t DataTable[] = {
+    { "string",		DTstring },
     { "int",		DTint },
     { "uint",		DTuint },
     { "short",		DTshort },
     { "ushort",		DTushort },
     { "long",		DTlong },
     { "ulong",		DTulong },
-    { "string",		DTstring },
+#if	defined(HAVE_INT64_T)
+    { "int64",		DTint64 },
+#endif
+#if	defined(HAVE_UINT64_T)
+    { "uint64",		DTuint64 },
+#endif
     { DT_BOOL		},
     { 0 },
 };
@@ -48,15 +62,16 @@ DataEntry_t DataTable[] = {
  */
 static char *DTint(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     int				Val;
 
     if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
-	if (Debug) Error("Read int value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read int value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
-    (void) sprintf(ValBuff, "%d", Val);
+    if (!Val) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%d", Val);
 
     return(ValBuff);
 }
@@ -66,15 +81,16 @@ static char *DTint(kd, Addr)
  */
 static char *DTuint(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     u_int			Val;
 
     if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
-	if (Debug) Error("Read uint value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read uint value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
-    (void) sprintf(ValBuff, "%d", Val);
+    if (!Val) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%d", Val);
 
     return(ValBuff);
 }
@@ -84,15 +100,16 @@ static char *DTuint(kd, Addr)
  */
 static char *DTlong(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     long			Val;
 
     if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
-	if (Debug) Error("Read long value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read long value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
-    (void) sprintf(ValBuff, "%d", Val);
+    if (!Val) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%d", Val);
 
     return(ValBuff);
 }
@@ -102,15 +119,16 @@ static char *DTlong(kd, Addr)
  */
 static char *DTulong(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     u_long			Val;
 
     if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
-	if (Debug) Error("Read ulong value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read ulong value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
-    (void) sprintf(ValBuff, "%d", Val);
+    if (!Val) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%d", Val);
 
     return(ValBuff);
 }
@@ -120,15 +138,16 @@ static char *DTulong(kd, Addr)
  */
 static char *DTshort(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     short			Val;
 
     if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
-	if (Debug) Error("Read short value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read short value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
-    (void) sprintf(ValBuff, "%d", Val);
+    if (!Val) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%d", Val);
 
     return(ValBuff);
 }
@@ -138,30 +157,73 @@ static char *DTshort(kd, Addr)
  */
 static char *DTushort(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
-    ushort			Val;
+    ushort			Val = 0;
 
     if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
-	if (Debug) Error("Read ushort value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read ushort value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
-    (void) sprintf(ValBuff, "%d", Val);
+    if (Val == 0) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%d", Val);
 
     return(ValBuff);
 }
+
+#if	defined(HAVE_INT64_T)
+/*
+ * Read the data type `int64'
+ */
+static char *DTint64(kd, Addr)
+    kvm_t		       *kd;
+    KVMaddr_t			Addr;
+{
+    int64_t			Val = 0;
+
+    if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
+	SImsg(SIM_GERR, "Read int64_t value from 0x%x failed.", Addr);
+	return((char *) NULL);
+    }
+    if (Val == 0) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%lld", Val);
+
+    return(ValBuff);
+}
+#endif	/* HAVE_INT64_T */
+
+#if	defined(HAVE_UINT64_T)
+/*
+ * Read the data type `uint64'
+ */
+static char *DTuint64(kd, Addr)
+    kvm_t		       *kd;
+    KVMaddr_t			Addr;
+{
+    uint64_t			Val = 0;
+
+    if (KVMget(kd, Addr, (char *) &Val, sizeof(Val), KDT_DATA)) {
+	SImsg(SIM_GERR, "Read uint64_t value from 0x%x failed.", Addr);
+	return((char *) NULL);
+    }
+    if (Val == 0) return((char *) NULL);
+    (void) snprintf(ValBuff, sizeof(ValBuff),  "%lld", Val);
+
+    return(ValBuff);
+}
+#endif	/* HAVE_UINT64_T */
 
 /*
  * Read the data type `string'
  */
 static char *DTstring(kd, Addr)
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     static char			Val[BUFSIZ];
 
     if (KVMget(kd, Addr, (char *) Val, sizeof(Val), KDT_STRING)) {
-	if (Debug) Error("Read string value from 0x%x failed.", Addr);
+	SImsg(SIM_GERR, "Read string value from 0x%x failed.", Addr);
 	return((char *) NULL);
     }
 
@@ -174,7 +236,7 @@ static char *DTstring(kd, Addr)
 static char *DataGetStr(DataName, kd, Addr)
     char		       *DataName;
     kvm_t		       *kd;
-    OFF_T_TYPE			Addr;
+    KVMaddr_t			Addr;
 {
     DataEntry_t		       *DataPtr;
     register int		i;
@@ -190,41 +252,15 @@ static char *DataGetStr(DataName, kd, Addr)
 	 * the "Define" interface.
 	 */
 	if (Debug) {
-	    Error("Invalid data type `%s'.  Valid types are:", DataName);
+	    SImsg(SIM_GERR, "Invalid data type `%s'.  Valid types are:", 
+		  DataName);
 	    for (i = 0; DataTable[i].Name; ++i)
-		Error("\t%s\n", DataTable[i]);
+		SImsg(SIM_GERR, "\t%s", DataTable[i].Name);
 	}
 	return((char *) NULL);
     }
 
     return (*DataPtr->Read)(kd, Addr);
-}
-
-/*
- * List valid arguments for the Kernel class.
- * XXX Maybe we should nlist the variables first and only list
- * those variables we find?
- */
-extern void KernelList()
-{
-    register Define_t	       *KernDef;
-    register char	       *SymName;
-
-    KernDef = DefGetList(DL_KERNEL); 
-    if (!KernDef) {
-	if (Debug) Error("No kernel variables are defined.");
-	return;
-    }
-
-    printf("\n\nThe following are valid arguments for `-class Kernel -show Name1,Name2,...':\n\n");
-    printf("%-25s %s\n", "NAME", "DESCRIPTION");
-
-    for ( ; KernDef; KernDef = KernDef->Next) {
-	SymName = KernDef->KeyStr;
-	if (*SymName == '_')
-	    ++SymName;
-	printf("%-25s %s\n", SymName, KernDef->ValStr2);
-    }
 }
 
 /*
@@ -273,6 +309,7 @@ static nlist_t *NLget(Name, NameList)
 
     return((nlist_t *) NULL);
 }
+#endif	/* HAVE_KVM && HAVE_NLIST */
 
 /*
  * Show kernel variables
@@ -281,6 +318,7 @@ extern void KernelShow(MyInfo, Names)
     ClassInfo_t		       *MyInfo;
     char		      **Names;
 {
+#if	defined(HAVE_KVM) && defined(HAVE_NLIST)
     Define_t		       *KernDef;
     Define_t		       *DefPtr;
     int				NumDef;
@@ -296,11 +334,11 @@ extern void KernelShow(MyInfo, Names)
 
     KernDef = DefGetList(DL_KERNEL); 
     if (!KernDef) {
-	if (Debug) Error("No kernel variables are defined.");
+	SImsg(SIM_WARN, "No kernel variables are defined.");
 	return;
     }
 
-    ClassShowLabel(MyInfo);
+    ClassShowBanner(MyInfo);
 
     /*
      * Get number of variables
@@ -329,7 +367,7 @@ extern void KernelShow(MyInfo, Names)
 
     kd = KVMopen();
     if (!kd) {
-	if (Debug) Error("Cannot open kernel image.");
+	SImsg(SIM_GERR, "Cannot open kernel image.");
 	return;
     }
 
@@ -338,7 +376,7 @@ extern void KernelShow(MyInfo, Names)
      */
     NLPtr = KVMnlist(kd, NULL, NameList, NumNameList);
     if (!NLPtr) {
-	if (Debug) Error("Kernel variable nlist failed.");
+	SImsg(SIM_GERR, "Kernel variable nlist failed.");
 	(void) free(NameList);
 	return;
     }
@@ -371,20 +409,18 @@ extern void KernelShow(MyInfo, Names)
     for (DefPtr = KernDef; DefPtr; DefPtr = DefPtr->Next) {
 	NLPtr = NLget(DefPtr->KeyStr, NameList);
 	if (!NLPtr) {
-	    if (Debug) Error("Cannot lookup `%s' namelist entry.", 
+	    SImsg(SIM_GERR, "Cannot lookup `%s' namelist entry.", 
 			     DefPtr->KeyStr);
 	    continue;
 	}
-	if (CheckNlist(NLPtr)) {
-	    if (Debug) Error("Symbol `%s' was not found in kernel.", 
-			     GetNlNamePtr(NLPtr));
+	if (CheckNlist(NLPtr))
 	    continue;
-	}
 
 	if (EQ(DefPtr->ValStr1, DT_BOOL))
 	    ValStr = "TRUE";
 	else
-	    ValStr = DataGetStr(DefPtr->ValStr1, kd, NLPtr->n_value);
+	    ValStr = DataGetStr(DefPtr->ValStr1, kd, 
+				(KVMaddr_t) NLPtr->n_value);
 	if (!ValStr) 
 	    continue;
 
@@ -406,4 +442,34 @@ extern void KernelShow(MyInfo, Names)
 
     KVMclose(kd);
     (void) free(NameList);
+#else
+    SImsg(SIM_DBG, "KernelShow() not available on this OS");
+#endif	/* HAVE_KVM && HAVE_NLIST */
+}
+
+/*
+ * List valid arguments for the Kernel class.
+ * XXX Maybe we should nlist the variables first and only list
+ * those variables we find?
+ */
+extern void KernelList()
+{
+    register Define_t	       *KernDef;
+    register char	       *SymName;
+
+    KernDef = DefGetList(DL_KERNEL); 
+    if (!KernDef) {
+	SImsg(SIM_WARN, "No kernel variables are defined.");
+	return;
+    }
+
+    SImsg(SIM_INFO, "\n\nThe following are valid arguments for `-class Kernel -show Name1,Name2,...':\n\n");
+    SImsg(SIM_INFO, "%-25s %s\n", "NAME", "DESCRIPTION");
+
+    for ( ; KernDef; KernDef = KernDef->Next) {
+	SymName = KernDef->KeyStr;
+	if (*SymName == '_')
+	    ++SymName;
+	SImsg(SIM_INFO, "%-25s %s\n", SymName, KernDef->ValStr2);
+    }
 }

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: install.sh,v 1.1.1.1 1996-10-07 20:16:48 ghudson Exp $
+# $Revision: 1.1.1.2 $
 #
 # This script implements a subset of the normal BSD install(1) program.
 # It's certainly not complete.

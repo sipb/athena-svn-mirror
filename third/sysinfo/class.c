@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: class.c,v 1.1.1.2 1998-02-12 21:31:56 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -18,10 +19,14 @@ static char *RCSid = "$Id: class.c,v 1.1.1.2 1998-02-12 21:31:56 ghudson Exp $";
  * Class information
  */
 ClassInfo_t ClassInfo[] = {
-    { CN_GENERAL,	"General Information",	GeneralShow,	GeneralList },
-    { CN_KERNEL,	"Kernel Information",	KernelShow,	KernelList },
-    { CN_SYSCONF,	"SysConf Information",	SysConfShow,	SysConfList },
-    { CN_DEVICE,	"Device Information",	DeviceShow,	DeviceList },
+    { CN_GENERAL,	GeneralShow,	GeneralList,
+      "General Information", "G E N E R A L   I N F O R M A T I O N" },
+    { CN_KERNEL,	KernelShow,	KernelList,
+      "Kernel Information", "K E R N E L   I N F O R M A T I O N" },
+    { CN_SYSCONF,	SysConfShow,	SysConfList,
+      "SysConf Information", "S Y S C O N F   I N F O R M A T I O N" },
+    { CN_DEVICE,	DeviceShow,	DeviceList,
+      "Device Information", "D E V I C E   I N F O R M A T I O N" },
     { 0 },
 };
 
@@ -32,12 +37,12 @@ extern void ClassList()
 {
     register ClassInfo_t       *ClassPtr;
 
-    printf(
+    SImsg(SIM_INFO, 
 "The following values may be specified with the `-class' option:\n");
-    printf("%-20s %s\n", "VALUE", "DESCRIPTION");
+    SImsg(SIM_INFO, "%-20s %s\n", "VALUE", "DESCRIPTION");
 
     for (ClassPtr = &ClassInfo[0]; ClassPtr->Name; ++ClassPtr)
-	printf("%-20s %s\n", ClassPtr->Name, ClassPtr->Label);
+	SImsg(SIM_INFO, "%-20s %s\n", ClassPtr->Name, ClassPtr->Label);
 }
 
 /*
@@ -75,7 +80,7 @@ extern void ClassSetInfo(Names)
 	for (cp = strtok(Names, ","); cp; cp = strtok((char *)NULL, ",")) {
 	    ClassPtr = ClassGetName(cp);
 	    if (!ClassPtr) {
-		Error("The class name `%s' is invalid.", cp);
+		SImsg(SIM_GERR, "The class name `%s' is invalid.", cp);
 		ClassList();
 		exit(1);
 	    }
@@ -90,13 +95,13 @@ extern void ClassSetInfo(Names)
 }
 
 /*
- * Show a class label
+ * Show a class Banner
  */
-extern void ClassShowLabel(MyClass)
+extern void ClassShowBanner(MyClass)
     ClassInfo_t		       *MyClass;
 {
     if ((!VL_TERSE && !VL_BRIEF) && FormatType == FT_PRETTY)
-	printf("\n\n\t%s\n\n", MyClass->Label);
+	SImsg(SIM_INFO, "\n\n\t%s\n\n", MyClass->Banner);
 }
 
 /*
@@ -108,28 +113,31 @@ extern void ClassShowValue(Lbl, Key, Value, MaxLen)
     char 		       *Value;
     int				MaxLen;
 {
-    char			Buff[BUFSIZ];
+    char			Buff[256];
+    int				Len;
 
     if (!Value || !*Value)
 	return;
 
     if (VL_TERSE) {
-	printf("%s", Value);
+	SImsg(SIM_INFO, "%s", Value);
     } else if (VL_BRIEF) {
-	printf("%s is %s", Key, Value);
+	SImsg(SIM_INFO, "%s is %s", Key, Value);
     } else {
 	if (Lbl) {
 	    (void) strcpy(Buff, Lbl);
-	    if (VL_ALL)
-		(void) sprintf(Buff + strlen(Lbl), " (%s)", Key);
+	    if (VL_ALL) {
+		Len = strlen(Lbl);
+		(void) snprintf(Buff + Len, sizeof(Buff)-Len, " (%s)", Key);
+	    }
 	} else
 	    (void) strcpy(Buff, Key);
 	(void) strcat(Buff, " is ");
-	printf("%-*s %s", MaxLen + 5, Buff, Value);
+	SImsg(SIM_INFO, "%-*s %s", MaxLen + 5, Buff, Value);
     }
 
     if (Value[strlen(Value) - 1] != '\n')
-	printf("\n");
+	SImsg(SIM_INFO, "\n");
 }
 
 /*
@@ -142,7 +150,7 @@ extern int ClassCall(NameStr)
     char		      **Argv;
     int				Argc;
 
-    Argc = StrToArgv(NameStr, ",", &Argv);
+    Argc = StrToArgv(NameStr, ",", &Argv, NULL, 0);
 
     for (ClassPtr = &ClassInfo[0]; ClassPtr->Name; ++ClassPtr)
 	if (ClassPtr->Enabled && ClassPtr->Show)

@@ -1,9 +1,10 @@
 #
-# $Id: irix.cf,v 1.1.1.2 1998-02-12 21:32:31 ghudson Exp $
+# $Id: irix.cf,v 1.1.1.3 1998-12-24 22:03:00 ghudson Exp $
 #
 # SGI IRIX Sysinfo Configuration File
 #
 include		local.cf
+include		scsi.cf
 #
 # Definetions
 # 	Format of Definetions is:
@@ -89,34 +90,49 @@ define|CPUBoard			||15	|IP25 CPU Board		|IP25
 define|CPUBoard			||16	|IP30 CPU Board		|IP30
 define|CPUBoard			||17	|IP28 CPU Board		|IP28
 define|CPUBoard			||18	|IP32 CPU Board		|IP32
+define|CPUBoard			||19	|IP27 CPU Board		|IP27
+define|CPUBoard			||20	|IP MHSIM Board		|IPMHSIM
+define|CPUBoard			||21	|IP33 CPU Board		|IP33
 #
 # SCSI Controller types
 #
-define|scsi-ctlr		||0	|SCSI WD 33C93
-define|scsi-ctlr		||1	|SCSI WD 33C93A
-define|scsi-ctlr		||2	|SCSI WD 33C93B
-define|scsi-ctlr		||3	|SCSI WD 33C95A
+define|scsi-ctlr		||0	|WD 33C93
+define|scsi-ctlr		||1	|WD 33C93A
+define|scsi-ctlr		||2	|WD 33C93B
+define|scsi-ctlr		||3	|WD 33C95A
 define|scsi-ctlr		||4	|SCIP WD 33C95A
+define|scsi-ctlr		||5	|Adaptec 7880
+define|scsi-ctlr		||6	|QLogic 1040
+define|scsi-ctlr		||7	|QLogic 1040A
+define|scsi-ctlr		||8	|QLogic 1040A Rev 4
+define|scsi-ctlr		||9	|QLogic 1040B
+define|scsi-ctlr		||10	|Adaptec Emerald FibreChannel
+define|scsi-ctlr		||11	|QLogic 1040B Rev 2
+define|scsi-ctlr		||12	|Unknown QLogic
 #
 # Disk and Disk Controllers
 #
-define|DiskTypes		||2	|SCSI Disk
-define|DiskTypes		||3	|IPI Controller
-define|DiskTypes		||4	|IPI Disk
-define|DiskTypes		||5	|Removable Disk
-define|DiskTypes		||6	|Interphase IPI 3200 Controller
-define|DiskTypes		||7	|Interphase IPI 3201 Controller
-define|DiskTypes		||8	|Interphase IPI 4200 Controller
-define|DiskTypes		||9	|Interphase IPI 4201 Controller
-define|DiskTypes		||10	|Interphase IPI 4400 Controller
-define|DiskTypes		||14	|Interphase IPI 4460 Controller
-define|DiskTypes		||16	|Interphase IPI Jaguar Controller
-define|DiskTypes		||17	|Interphase IPI VSCSI Controller
-define|DiskTypes		||11	|Xylogics 714 Controller
-define|DiskTypes		||12	|Xylogics 754 SMD Controller
-define|DiskTypes		||15	|Xylogics SV-7800 IPI Controller
-define|DiskTypes		||13	|Xylogics Disk
-define|DiskTypes		||18	|GIO SCSI Controller
+define|DiskTypes	||2	|			|diskdrive	|SCSI
+define|DiskTypes	||3	|			|diskctlr	|IPI
+define|DiskTypes	||4	|			|diskdrive	|IPI
+define|DiskTypes	||5	|Removable		
+define|DiskTypes	||6	|Interphase 3200	|ctlr		|IPI
+define|DiskTypes	||7	|Interphase 3201	|ctlr		|IPI
+define|DiskTypes	||8	|Interphase 4200	|ctlr		|IPI
+define|DiskTypes	||9	|Interphase 4201	|ctlr		|IPI
+define|DiskTypes	||10	|Interphase 4400	|ctlr		|IPI
+define|DiskTypes	||14	|Interphase 4460	|ctlr		|IPI
+define|DiskTypes	||16	|Interphase Jaguar	|ctlr		|IPI
+define|DiskTypes	||17	|Interphase VSCSI	|ctlr		|IPI
+define|DiskTypes	||11	|Xylogics 714		|ctlr		|SMD
+define|DiskTypes	||12	|Xylogics 754		|ctlr		|SMD
+define|DiskTypes	||13	|Xylogics		|diskdrive
+define|DiskTypes	||15	|Xylogics SV-7800	|ctlr		|IPI
+define|DiskTypes	||18	|GIO			|ctlr		|SCSI
+define|DiskTypes	||19	|Attached RAID		|ctlr		|SCSI
+define|DiskTypes	||20	|Generic XLV
+define|DiskTypes	||21	|PC Card
+define|DiskTypes	||22	|PCI			|ctlr		|SCSI
 #
 # Memory Types
 #
@@ -128,6 +144,8 @@ define|MemoryTypes||5	|WBuffer				|wbuffermem
 define|MemoryTypes||6	|Secondary Data Cache			|sdcache
 define|MemoryTypes||7	|Secondary Instruction Cache		|sicache
 define|MemoryTypes||8	|Secondary Instruction/Data Cache	|sidcache
+define|MemoryTypes||9	|Main MB Memory				|mainmem
+define|MemoryTypes||10	|Hub SPC				|hubspc
 #
 # Serial Types
 #
@@ -143,7 +161,11 @@ define|SerialTypes||10	|IRIS (IBM) Channel Adapter Card	|ica
 define|SerialTypes||11	|SBE VME Sync Communications Board	|vsc
 define|SerialTypes||12	|SBE ISA Sync Communications Board	|isc
 define|SerialTypes||13	|SGI GIO Sync Communications Board	|gsc
-define|SerialTypes||14	|Serial Portion of SGI ASO board	|asoserial
+define|SerialTypes||14	|SGI ASO Serial Port			|asoserial
+define|SerialTypes||15	|SBE PCI Sync Communications Board	|psc
+define|SerialTypes||16	|DMA Mode IOC3 Serial Board		|ioc3dma
+define|SerialTypes||17	|PIO Mode IOC3 Serial Board		|ioc3pio
+define|SerialTypes||19	|ISA with DMA mode Serial Board		|isaserial
 #
 # Parallel Types
 #
@@ -153,32 +175,50 @@ define|ParallelTypes||3	|National Instrument GPIB Parallel Board (E Space)|gpibe
 define|ParallelTypes||4	|Everest I/O EPC Parallel Port		|epcplp
 define|ParallelTypes||5	|Onboard Parallel Port			|obplp
 define|ParallelTypes||6	|Onboard EPP/ECP Parallel Port		|eppepcplp
+define|ParallelTypes||7	|External EPP Parallel Peripheral	|epppfd
 #
 # I/O Board Types
 #
 define|IOBoardTypes||1	|Clover 2 I/O Board			|clover
 define|IOBoardTypes||2	|Everest I/O Board			|evio
+define|IOBoardTypes||3	|Origin 200 I/O Board			|o200io
+define|IOBoardTypes||4	|PCI ADAP				|pciadap
 #
 # Bus Types
 #
-define|BusTypes||0	|VME					|vme
-define|BusTypes||1	|EISA					|eisa
-define|BusTypes||2	|GIO					|gio
+define|BusTypes||0	|				|vme	|VME
+define|BusTypes||1	|				|eisa	|EISA
+define|BusTypes||2	|GIO 				|gio
+define|BusTypes||3	|BT3 PCI			|bt3pci	|PCI
 #
-# I/O Board States
+# Everest I/O Board States
 #
-define|IOBoardStates||1		|IO2 Revision 1
-define|IOBoardStates||2		|IO2 Revision 2
-define|IOBoardStates||3		|IO3 Revision 1
-define|IOBoardStates||4		|IO3 Revision 2
-define|IOBoardStates||0x21	|IO4 Revision 1
+define|EVIOBoardStates||1	|IO2 Revision 1
+define|EVIOBoardStates||2	|IO2 Revision 2
+define|EVIOBoardStates||3	|IO3 Revision 1
+define|EVIOBoardStates||4	|IO3 Revision 2
+define|EVIOBoardStates||0x21	|IO4 Revision 1
+#
+# I/O Board States for o2000io (INV_O200IO)
+#
+define|O2000ioTypes||0x21	|Base I/O Board			|o2000io
+define|O2000ioTypes||0x22	|M SCSI I/O Board		|o2000io
+define|O2000ioTypes||0x23	|M Ethernet I/O Board		|o2000io
+define|O2000ioTypes||0x24	|HIPPI I/O Board		|o2000io
+define|O2000ioTypes||0x25	|Graphics I/O Board		|o2000io
+define|O2000ioTypes||0x26	|Harold I/O Board		|o2000io
+define|O2000ioTypes||0x27	|VME I/O Board			|o2000io
+define|O2000ioTypes||0x28	|MIO I/O Board			|o2000io
+define|O2000ioTypes||0x29	|Fibre Channel I/O Board	|o2000io
+define|O2000ioTypes||0x2a	|LINC I/O Board			|o2000io
 #
 # General Tape Types
 #
-define|TapeTypes||1		|SCSI Tape			|tps
-define|TapeTypes||4		|SCSI Tape			|tps
-define|TapeTypes||2		|Xylogics 772 1/2" Tape		|xmt
-define|TapeTypes||3		|QIC-02 Cartridge		|tps
+define|TapeTypes||1	|Tape				|tps	|SCSI
+define|TapeTypes||4	|Tape				|tps	|SCSI
+define|TapeTypes||2	|Xylogics 772 1/2" Tape		|xmt
+define|TapeTypes||3	|QIC-02 Cartridge		|tps
+define|TapeTypes||4	|Jaguar				|vscsi	|SCSI
 #
 # SCSI Tape Types
 #
@@ -194,10 +234,23 @@ define|SCSITapeTypes||9		|3480 Compatible Cartridge	|tps
 define|SCSITapeTypes||10	|DEC Digital Linear Tape Cartridge|tps
 define|SCSITapeTypes||11	|D2 Tape Cartridge		|tps
 define|SCSITapeTypes||12	|DEC Digital Linear Tape Stacker|tps
-define|SCSITapeTypes||13	|IBM NTP Magnetic Tape Cartridge|tps
-define|SCSITapeTypes||14	|IBM NTP Magnetic Tape Stacker|tps
+define|SCSITapeTypes||13	|IBM 3590 Magnetic Tape Cartridge|tps
+define|SCSITapeTypes||14	|IBM 3590 Magnetic Tape Stacker|tps
 define|SCSITapeTypes||15	|StorageTeK 9490		|tps
 define|SCSITapeTypes||16	|StorageTeK SD3			|tps
+define|SCSITapeTypes||17	|Sony GY-10			|tps
+define|SCSITapeTypes||18	|AME 8mm			|tps
+define|SCSITapeTypes||19	|IBM Magstar MP 3570 Tape Cartridge|tps
+define|SCSITapeTypes||20	|IBM Magstar MP 3570 Tape Stacker|tps
+define|SCSITapeTypes||21	|StorageTeK 4791		|tps
+define|SCSITapeTypes||22	|StorageTeK 4781		|tps
+define|SCSITapeTypes||23	|Fujitsu Diana-1 (M1016/M1017)	|tps
+define|SCSITapeTypes||24	|Fujitsu Diana-2 (M2483)	|tps
+define|SCSITapeTypes||25	|Fujitsu Diana-3 (M2488)	|tps
+define|SCSITapeTypes||26	|Sony AIT Tape			|tps
+define|SCSITapeTypes||27	|Philips TD3600 Tape		|tps
+define|SCSITapeTypes||28	|Philips TD3600 Tape Stacker	|tps
+define|SCSITapeTypes||29	|Philips NCTP			|tps
 #
 # General Graphics Types
 #
@@ -218,17 +271,19 @@ define|GraphicsTypes||14|Newport Graphics			|NEWPORT
 define|GraphicsTypes||15|High-AA Impact (Mardigras) Graphics	|MGRAS
 define|GraphicsTypes||16|InfiniteReality			|IR
 define|GraphicsTypes||17|Moosehead onboard CRIME Graphics	|CRIME
+define|GraphicsTypes||18|Onyx2 InfiniteReality2 Graphics	|IR2
+define|GraphicsTypes||19|Onyx2 Reality Graphics			|IR2LITE
 #
 # GR1 Graphics States
 #
 define|GR1States||0x1	|Revision 1
 define|GR1States||0x2	|Revision 2
-define|GR1States||0x40	|Has Turbo Option
-define|GR1States||0x80	|Has Bitplane Option
-define|GR1States||0x100	|Has Z-Buffer Option
+define|GR1States||0x40	|Has Turbo
+define|GR1States||0x80	|Has Bitplane
+define|GR1States||0x100	|Has Z-Buffer
 define|GR1States||0x200	|Using 14" Monitor
 define|GR1States||0x400	|Has 256 Entry Color Map
-define|GR1States||0x800	|Has AUX/WID Plane Option
+define|GR1States||0x800	|Has AUX/WID Plane
 #
 # GR2 Graphics configurations
 #
@@ -242,11 +297,12 @@ define|GR2configs||0x13	|GR2-XZ
 define|GR2configs||0xa3	|GU1-Extreme
 define|GR2configs||0x44	|GR2-XSM
 define|GR2configs||0x47	|GR2-Elan
+define|GR2configs||0xa3	|GU1-Extreme
 #
 # GR2 Graphics features
 #
-define|GR2States||0x1	|Has Z-Buffer Option
-define|GR2States||0x2	|Has BitPlane Option
+define|GR2States||0x1	|Has Z-Buffer
+define|GR2States||0x2	|Has BitPlane
 define|GR2States||0x4	|Has 4 GEs
 define|GR2States||0x8	|Has 1 GEs
 define|GR2States||0x10	|Has 2 GEs
@@ -260,39 +316,73 @@ define|GR2States||0x200	|GR3 Board with 4 GEs
 #
 define|NEWPORTStates||0x01	|Indigo2 XL
 define|NEWPORTStates||0x02	|24 Bitplanes
+define|NEWPORTStates||0x04	|Triton SUBGR Tagging
+#
+# MGRAS Architectures
+#
+define|MGRASarchs||0x00000000	|Impact Architecture
+define|MGRASarchs||0x01000000	|Gamera Architecture
+define|MGRASarchs||0x02000000	|Mothra Architecture
+#
+# MGRAS GEs
+#
+define|MGRASges||0x00010000	|1 GE
+define|MGRASges||0x00020000	|2 GE
+#
+# MGRAS REs
+#
+define|MGRASres||0x00000100	|1 RE
+define|MGRASres||0x00000200	|2 RE
+#
+# MGRAS TRAMs
+#
+define|MGRAStrs||0x00000000	|0 TR
+define|MGRAStrs||0x00000001	|1 TR
+define|MGRAStrs||0x00000002	|2 TR
 #
 # Network Interface Types
 #
-define|NetworkTypes||0	|IP6 Integral Ethernet				|ec
-define|NetworkTypes||1	|CMC ENP Ethernet				|enp
-define|NetworkTypes||2	|IP5 Integral Ethernet				|et
-define|NetworkTypes||3	|HyperNet 					|hy
-define|NetworkTypes||4	|Cray Front End Interface			|cfei3
-define|NetworkTypes||5	|Interphase/Martin 3211 FDDI			|imf
-define|NetworkTypes||6	|Interphase V/4207 Eagle Ethernet		|egl
-define|NetworkTypes||7	|CMC C/130 FXP					|fxp
-define|NetworkTypes||8	|Interphase/SGI 4211 Peregrine FDDI		|ipg
-define|NetworkTypes||9	|Formation fv1600 Token-Ring			|fv
-define|NetworkTypes||10	|XPI GIO Bus FDDI				|xpi
-define|NetworkTypes||11	|GTR GIO Bus Token-Ring				|gtr
-define|NetworkTypes||12	|IP12/20 GIO Ethernet				|gio
-define|NetworkTypes||13	|Everest IO4 EPC SEEQ/EDLC Ethernet		|et
-define|NetworkTypes||14	|HIO HIPPI for					|hippi
-define|NetworkTypes||15	|Mez ATM OC-3C					|gio64
-define|NetworkTypes||16	|E-Plex 8-port Ethernet				|ep
-define|NetworkTypes||17	|Siemens PEB 2085 ISDN				|sm
-define|NetworkTypes||18	|EISA Token Ring				|mtr
+define|NetworkTypes||0	|IP6 Integral 			|ec	|ETHER
+define|NetworkTypes||1	|CMC ENP			|enp	|ETHER
+define|NetworkTypes||2	|IP5 Integral			|et	|ETHER
+define|NetworkTypes||3	|HyperNet 			|hy
+define|NetworkTypes||4	|Cray Front End Interface	|cfei3
+define|NetworkTypes||5	|Interphase/Martin 3211		|imf	|FDDI
+define|NetworkTypes||6	|Interphase V/4207 Eagle	|egl	|ETHER
+define|NetworkTypes||7	|CMC C/130 FXP			|fxp
+define|NetworkTypes||8	|Interphase/SGI 4211 Peregrine	|ipg	|ETHER
+define|NetworkTypes||9	|Formation fv1600		|fv	|TOKEN
+define|NetworkTypes||10	|XPI GIO Bus			|xpi	|FDDI
+define|NetworkTypes||11	|GTR GIO Bus			|gtr	|TOKEN
+define|NetworkTypes||12	|IP12/20 GIO			|gio	|ETHER
+define|NetworkTypes||13	|Everest IO4 EPC SEEQ/EDLC	|et	|ETHER
+define|NetworkTypes||14	|HIO				|hippi	|HIPPI
+define|NetworkTypes||15	|Mez OC-3C			|gio64	|ATM
+define|NetworkTypes||16	|E-Plex 8-port			|ep	|ETHER
+define|NetworkTypes||17	|Siemens PEB 2085		|sm	|ISDN
+define|NetworkTypes||18	|EISA				|mtr	|TOKEN
+define|NetworkTypes||19	|IOC3				|ef	|ETHER100M
+define|NetworkTypes||20	|Xircom PRI-48XP		|isdn48xp
+define|NetworkTypes||21	|Rockwell Network Systems	|rns	|FDDI
+define|NetworkTypes||22	|Xtalk HIPPI-Serial		|sxtk	|HIPPI
+define|NetworkTypes||23	|Xtalk Quad OC-3c		|quadoc3|ATM
+define|NetworkTypes||24	|PCI				|mtrpci	|TOKEN
+define|NetworkTypes||25	|PCI				|ecf	|ETHER100M
+define|NetworkTypes||26	|GIO				|gfe	|ETHER100M
+define|NetworkTypes||27	|VME				|vfe	|ETHER100M
+define|NetworkTypes||28	|Gigabit			|ge	|ETHER1G
 #	
 # Misc. SCSI device types
 #
-define|SCSITypes||2	|SCSI Printer				|printer
-define|SCSITypes||3	|SCSI CPU				|cpu
-define|SCSITypes||4	|SCSI WORM				|worm
-define|SCSITypes||5	|SCSI CDROM				|cdrom
-define|SCSITypes||6	|SCSI Scanner				|scanner
-define|SCSITypes||7	|SCSI Read/Write Optical		|optical
-define|SCSITypes||8	|SCSI Jukebox/Changer			|changer
-define|SCSITypes||9	|SCSI Communications Device		|comm
+define|SCSITypes||2	|Printer			|printer
+define|SCSITypes||3	|CPU				|cpu
+define|SCSITypes||4	|WORM				|worm
+define|SCSITypes||5	|CDROM				|cdrom
+define|SCSITypes||6	|Scanner			|scanner
+define|SCSITypes||7	|Read/Write Optical		|optical
+define|SCSITypes||8	|Jukebox/Changer		|changer
+define|SCSITypes||9	|Communications Device		|comm
+define|SCSITypes||32	|RAID Controller		|scsiraid
 #
 # Audio
 #
@@ -315,17 +405,22 @@ define|VideoTypes||6	|Moosehead Video Ports			|mvp
 define|VideoTypes||7	|Indy Video 601				|indy601
 define|VideoTypes||8	|PALMUX Video w/PGR Graphics		|pmux
 define|VideoTypes||9	|Galileo 1.5				|mgrasvid
+define|VideoTypes||10	|DIVO Video				|divo
+define|VideoTypes||11	|SpeedRacer Pro Video			|racer
+define|VideoTypes||12	|EVO Personal Video			|evo
 #
 # Display Types
 #
 define|DisplayTypes||0	|Indy Presenter Adapter Board		|presboard
 define|DisplayTypes||1	|Indy Presenter Board and Panel		|presenter
+define|DisplayTypes||2	|IMPACT Channel Option Board		|impact
 #
 # State info for INV_VIDEO_EXPRESS
 #
 define|ExpressVideoStates||0x10		|Junior
 define|ExpressVideoStates||0x20		|IndyCam Connected
 define|ExpressVideoStates||0x40		|DBOB
+define|ExpressVideoStates||0x80		|Elantec
 #
 # State info for INV_VIDEO_VINO
 #
@@ -341,6 +436,14 @@ define|CompressionTypes||3	|Video Imaging & Compression Engine|vice
 # Misc Devices
 #
 define|MiscTypes||0	|External Interrupts Device		|eint
+define|MiscTypes||1	|PC Keyboard or Mouse			|pckm
+define|MiscTypes||2	|IOC3 External Interrupts Device	|ioc3eint
+#
+# PROM Types
+#
+define|PROMTypes||0	|IO6 PROM				|io6prom
+define|PROMTypes||1	|IP27 PROM				|ip27prom
+define|PROMTypes||2	|FC NVRAM				|fcnvram
 #
 # System Models
 #
@@ -381,11 +484,19 @@ define|SysModels|R4.00,IP22,NEWPORT,.*		||Indigo2 XL
 define|SysModels|R4.00,IP22,NEWPRESS,.*		||Indigo2 Extreme+XL
 define|SysModels|R4.00,IP22,IMPACT,.*		||Indigo2 Impact
 define|SysModels|R4.00,IP22,MGRAS,.*		||Indigo2 High-AA Impact
-define|SysModels|R5.00,IP22,EXPRESS,.*		||Indigo R5K
 define|SysModels|R5.00,IP22,CRIME,.*		||O2
+define|SysModels|R5.00,IP22,.*,.*		||Indigo R5K
 define|SysModels|R8.00,IP21,-,.*		||Power Challenge
 define|SysModels|R8.00,IP21,VENICE,.*		||Power Onyx
 define|SysModels|R8.00,IP26,EXPRESS,.*		||Power Indigo2 {Extreme,XZ}
+define|SysModels|R8.00,IP26,.*,.*		||Power Indigo2
 define|SysModels|R10.00,IP25,IR,.*		||Onyx R10K InfiniteReality
+define|SysModels|R10.00,IP25,REALITY,.*		||Onyx R10K Reality Station
+define|SysModels|R10.00,IP25,.*,.*		||Onyx R10K
 define|SysModels|R10.00,IP28,MGRAS,.*		||Indigo2 R10K Maximum Impact
-define|SysModels|R10.00,IP32,CRIME,.*		||O2 R10K
+define|SysModels|R10.00,IP28,EXPRESS,.*		||Indigo2 R10K Extreme
+define|SysModels|R10.00,IP28,.*,.*		||Indigo2 R10K
+define|SysModels|R10.00,IP30,.*,.*		||Octane
+define|SysModels|R5.00,IP32,.*,.*		||O2 R5K
+define|SysModels|R10.00,IP32,.*,.*		||O2 R10K
+define|SysModels|R10.00,IP27,-,-		||Origin2000

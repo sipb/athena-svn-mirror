@@ -1,8 +1,13 @@
 #
-# $Id: sunos_5.cf,v 1.1.1.1 1996-10-07 20:16:56 ghudson Exp $
+# $Id: sunos_5.cf,v 1.1.1.2 1998-12-24 22:03:05 ghudson Exp $
 #
-# SYSINFO configuration information for SunOS 5.x specific items.
+# Copyright (c) 1992-1998 Michael A. Cooper.  
+# This software may be freely used and distributed provided it is not
+# sold for profit or used in part or in whole for commercial gain
+# without prior written agreement, and the author is credited
+# appropriately.
 #
+# 	SYSINFO configuration information for SunOS 5.x specific items.
 #
 # Include local (site specific) config file
 #
@@ -15,3 +20,11 @@ define|Kernel	|_max_nprocs	||int	|Maximum number of processes for system
 # Include general SunOS config file
 #
 include 	sunos.cf
+#
+# Now include additional PCI definetions.
+#
+include		pci.cf
+#
+# Include EISA info for PnP and VESA Monitors
+#
+include		eisa.cf

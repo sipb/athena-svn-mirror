@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getcpu.c,v 1.1.1.2 1998-02-12 21:32:04 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -16,11 +17,34 @@ static char *RCSid = "$Id: getcpu.c,v 1.1.1.2 1998-02-12 21:32:04 ghudson Exp $"
 #include "defs.h"
 
 /*
+ * Get cpu type using sysinfo(SI_ISALIST) system call.
+ */
+extern char *GetCpuTypeIsalist()
+{
+    static char			Buff[128];
+    register char	       *cp;
+
+#if	defined(SI_ISALIST)
+    if (Buff[0])
+	return(Buff);
+
+    if (sysinfo(SI_ISALIST, Buff, sizeof(Buff)) < 0)
+	return((char *) NULL);
+
+    /* We want only the first argument */
+    if (cp = strchr(Buff, ' '))
+	*cp = CNULL;
+#endif	/* SI_ISALIST */
+
+    return( (Buff[0]) ? Buff : (char *) NULL );
+}
+
+/*
  * Get cpu type using sysinfo() system call.
  */
 extern char *GetCpuTypeSysinfo()
 {
-    static char			buff[BUFSIZ];
+    static char			buff[128];
 
 #if	defined(HAVE_SYSINFO)
     if (buff[0])

@@ -1,12 +1,13 @@
 /*
- * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely used and distributed provided it is not sold 
- * for profit or used for commercial gain and the author is credited 
+ * Copyright (c) 1992-1998 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not
+ * sold for profit or used in part or in whole for commercial gain
+ * without prior written agreement, and the author is credited
  * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: getarch.c,v 1.1.1.2 1998-02-12 21:32:04 ghudson Exp $";
+static char *RCSid = "$Revision: 1.1.1.3 $";
 #endif
 
 /*
@@ -25,18 +26,18 @@ extern char		       *KernArchFiles[];
  */
 extern char *GetKernArchSysinfo()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[128];
 
 #if	defined(HAVE_SYSINFO)
-    if (buff[0])
-	return(buff);
+    if (Buff[0])
+	return(Buff);
 
-    if (sysinfo(SI_MACHINE, buff, sizeof(buff)) < 0)
+    if (sysinfo(SI_MACHINE, Buff, sizeof(Buff)) < 0)
 	return((char *) NULL);
 
 #endif	/* HAVE_SYSINFO */
 
-    return( (buff[0]) ? buff : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
@@ -44,20 +45,20 @@ extern char *GetKernArchSysinfo()
  */
 extern char *GetKernArchUname()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[128];
 #if	defined(HAVE_UNAME)
     static struct utsname	un;
 
-    if (buff[0])
-	return(buff);
+    if (Buff[0])
+	return(Buff);
 
     if (uname(&un) < 0)
 	return((char *) NULL);
 
-    strcpy(buff, un.machine);
+    strcpy(Buff, un.machine);
 #endif	/* HAVE_UNAME */
 
-    return( (buff[0]) ? buff : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
@@ -65,17 +66,17 @@ extern char *GetKernArchUname()
  */
 extern char *GetAppArchSysinfo()
 {
-    static char			buff[BUFSIZ];
+    static char			Buff[128];
 
 #if	defined(HAVE_SYSINFO)
-    if (buff[0])
-	return(buff);
+    if (Buff[0])
+	return(Buff);
 
-    if (sysinfo(SI_ARCHITECTURE, buff, sizeof(buff)) < 0)
+    if (sysinfo(SI_ARCHITECTURE, Buff, sizeof(Buff)) < 0)
 	return((char *) NULL);
 #endif	/* HAVE_SYSINFO */
 
-    return( (buff[0]) ? buff : (char *) NULL );
+    return( (Buff[0]) ? Buff : (char *) NULL );
 }
 
 /*
