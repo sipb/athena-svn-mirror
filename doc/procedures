@@ -177,6 +177,11 @@ be present in the tree.  We are builders, not developers, of
 third-party software, and want to track the entire distribution
 including any auto-generated files.
 
+It is not uncommon for packages to include files and directories which
+match the CVS default ignores list (directories named "core",
+filenames ending in ".old", etc.).  Use the "-I \!" option to cvs
+import to avoid losing files.
+
 Here is an example of how one might import a hypothetical new version
 of emacs (assuming the CVSROOT environment variable is set to point at
 the Athena repository):
@@ -185,7 +190,7 @@ the Athena repository):
   cd emacs-22.3
   find . -name .cvsignore -print | xargs rm
   perl $CVSROOT/CVSROOT/timestamps.pl
-  cvs import -d -m "Import emacs 22.3." third/emacs vendor emacs-22_3
+  cvs import -I \! -d -m "Import emacs 22.3." third/emacs vendor emacs-22_3
 
 Make sure to use the literal word "vendor" for the vendor branch name.
 
