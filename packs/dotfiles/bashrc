@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.14 2000-08-23 19:06:09 ghudson Exp $
+# $Id: bashrc,v 1.15 2000-10-14 17:33:39 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -15,7 +15,7 @@ initdir=/usr/athena/lib/init
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
 
-if [ "${ENV_SET+set}" != set ]; then
+if [ "${ENV_SET:+set}" != set ]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
 	export HOSTTYPE="`/bin/athena/machtype`"
