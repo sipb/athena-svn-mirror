@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.18.2.1 1998-07-30 17:23:49 ghudson Exp $
+# $Id: Makefile,v 1.18.2.2 1998-08-18 21:51:09 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
 ATHX11LIB=/usr/athena/lib/X11
 KEYMAPS=${ATHX11LIB}/keymaps
 APPDEFS=${ATHX11LIB}/app-defaults
-OWAPPDEFS=/usr/openwin/lib/X11/app-defaults
+OWAPPDEFS=/usr/openwin/lib/app-defaults
 KEYTABLES=/usr/openwin/share/etc/keytables
 DEFAULT=/etc/default
 INET=/etc/inet
