@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.17 1993-06-30 16:52:17 vrt Exp $
+ * $Id: attach.h,v 1.18 1995-07-21 00:36:43 cfields Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -28,7 +28,11 @@
 #ifdef NFS
 #include <rpc/rpc.h>
 #ifndef i386
+#ifndef sgi
 #include <nfs/nfs.h>
+#else
+#include <sys/fs/nfs.h>
+#endif /* sgi */
 #else
 #include <rpc/nfs.h>
 #endif
@@ -42,6 +46,10 @@
 #ifdef SOLARIS
 #include <nfs/mount.h>
 #include <sys/fs/ufs_mount.h>
+#endif
+#ifdef sgi
+#include <sys/fs/nfs_clnt.h>
+#include <sys/mount.h>
 #endif
 #endif /* NFS */
 
@@ -63,7 +71,7 @@
 #define	M_RDONLY	MNT_READONLY
 #endif
 
-#if defined(_AUX_SOURCE) || defined(NeXT) || defined(_AIX)
+#if defined(_AUX_SOURCE) || defined(NeXT) || defined(_AIX) || defined(sgi)
 #define	vfork	fork
 #endif
 
@@ -77,6 +85,10 @@
 #if defined(SOLARIS)
 #define MOUNT_CMD "/etc/fs/nfs/mount"
 #define UMOUNT_CMD "/usr/sbin/umount"
+#endif
+#if defined(sgi)
+#define MOUNT_CMD "/sbin/mount"
+#define UMOUNT_CMD "/sbin/umount"
 #endif
 
 #define MAXOWNERS 64
