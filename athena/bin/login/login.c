@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.20 1988-07-11 10:09:11 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.21 1988-08-04 15:23:14 jtkohl Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.20 1988-07-11 10:09:11 jtkohl Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.21 1988-08-04 15:23:14 jtkohl Exp $";
 #endif	lint
 
 /*
@@ -857,11 +857,34 @@ doKerberosLogin(host)
 	char *host;
 {
 	int rc;
+        struct hostent *hp = gethostbyname(host);
+	struct sockaddr_in sin;
+
+	/*
+	 * Kerberos autologin protocol.
+	 */
+
+	(void) bzero(&sin, sizeof(sin));
+
+        if (hp)
+                (void) bcopy (hp->h_addr, &sin.sin_addr, sizeof(sin.sin_addr));
+        else
+                /*
+		 * No host addr prevents auth, so
+                 * punt krb and require password
+		 */
+                if (Kflag) {
+                        goto paranoid;
+                } else {
+			pwd = &nouser;
+                        return(-1);
+		}
 
 	kdata = (AUTH_DAT *)malloc( sizeof(AUTH_DAT) );
-	if (rc=GetKerberosData( host, "rcmd", kdata )) {
+	if (rc=GetKerberosData(0, sin.sin_addr, kdata, "rcmd" )) {
 		printf("Kerberos rlogin failed: %s\r\n",krb_err_txt[rc]);
 		if (Kflag) {
+paranoid:
 			/*
 			 * Paranoid hosts, such as a Kerberos server, specify the Klogind
 			 * daemon to disallow even password access here.
@@ -1045,6 +1068,31 @@ dofork()
 	    ;
 
     /* Cleanup stuff */
+
+    /* Send a SIGHUP to everything in the process group, but not us.
+     * Originally included to support Zephyr over rlogin/telnet
+     * connections, but it has some general use, since any personal
+     * daemon can setpgrp(0, getpgrp(getppid())) before forking to be
+     * sure of receiving a HUP when the user logs out.
+     *
+     * Note that we are assuming that the shell will set its process
+     * group to its process id. Our csh does, anyway, and there is no
+     * other way to reliably find out what that shell's pgrp is.
+     */
+    signal(SIGHUP, SIG_IGN);
+    if(-1 == killpg(child, SIGHUP))
+      {
+	/* EINVAL shouldn't happen (SIGHUP is a constant),
+	 * ESRCH could, but we ignore it
+	 * EPERM means something actually is wrong, so log it
+	 * (in this case, the signal didn't get delivered but
+	 * something might have wanted it...)
+	 */
+	if(errno == EPERM)
+	  syslog(LOG_DEBUG,
+		 "EPERM trying to kill login process group: child_pgrp %d",
+		 child);
+      }
 
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
