@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.4 1999-05-05 17:01:41 danw Exp $
+# $Id: cshrc,v 1.5 1999-05-27 16:05:32 danw Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -26,6 +26,9 @@ set bindir=${hosttype}bin
 set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
 
 # Compatibility with older versions of Athena tcsh
+if (! $?HOST) then
+	setenv HOST `hostname`
+endif
 set host=$HOST
 set autolist=""
 bindkey "^W" backward-delete-word
