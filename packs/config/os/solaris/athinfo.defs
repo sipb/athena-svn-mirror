@@ -24,6 +24,7 @@ update.desync	test -r /var/athena/update.desync && cat /var/athena/update.desync
 services	test -r /var/server/.services && cat /var/server/.services
 update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.log && cat /var/athena/update.log
 update.pkglog	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.pkglog && cat /var/athena/update.pkglog
+install.log	test -r /var/athena/install.log && cat /var/athena/install.log
 date		date
 uptime		uptime
 partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
