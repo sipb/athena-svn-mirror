@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1996-09-25 17:49:44 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-10-18 04:53:46 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -6,9 +6,11 @@ ATHMANDIR=/usr/athena/man
 
 all:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
 	-mkdir -p ${DESTDIR}${ATHRETCDIR}
@@ -21,9 +23,12 @@ install:
 	install -c -m 0555 shutdown_notify.sh \
 		${DESTDIR}${ATHRETCDIR}/shutdown_notify
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	cd arch/${ATHENA_SYS} && ${MAKE} $@
