@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char *rcsid_phost_c =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.7 1993-04-28 18:57:19 vrt Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.8 1993-04-29 09:59:48 vrt Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -55,7 +55,7 @@ char * krb_get_phost(alias)
         if (p)
             *p = NULL;
 #ifdef SOLARIS
-	p = h->name;
+	p = h->h_name;
 	do {
 		if (isupper(*p)) *p=tolower(*p);
 	} while  (*p++);
