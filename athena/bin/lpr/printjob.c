@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.29 1997-10-13 21:52:45 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.30 1997-12-03 21:56:55 ghudson Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.29 1997-10-13 21:52:45 ghudson Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.30 1997-12-03 21:56:55 ghudson Exp $";
 #endif
 
 /*
@@ -131,11 +131,7 @@ printjob()
 	 (void) write(1, "", 1);			/* ack that daemon is started */
 	 setgid(getegid());
 	 pid = getpid();				/* for use with lprm */
-#if defined(POSIX) && !defined(ultrix)
-         setpgrp();
-#else
-	 setpgrp(0, pid); 
-#endif
+	 setsid();
 	 signal(SIGHUP, abortpr);
 	 signal(SIGINT, abortpr);
 	 signal(SIGQUIT, abortpr);
