@@ -147,10 +147,10 @@ static	struct {
 	}
 	command_table[] = {
 		{"Quit",	"quit",		'q',		50},
-		{"Shrink1",	"sh1",		1 << 8 | 's',	150},
-		{"Shrink2",	"sh2",		2 << 8 | 's',	200},
-		{"Shrink3",	"sh3",		3 << 8 | 's',	250},
-		{"Shrink4",	"sh4",		4 << 8 | 's',	300},
+		{"Shrink2",	"sh1",		2 << 8 | 's',	150},
+		{"Shrink4",	"sh2",		4 << 8 | 's',	200},
+		{"Shrink6",	"sh3",		6 << 8 | 's',	250},
+		{"Shrink8",	"sh4",		8 << 8 | 's',	300},
 		{"Page-10",	"prev10",	10 << 8 | 'p',	400},
 		{"Page-5",	"prev5",	5 << 8 | 'p',	450},
 		{"Prev",	"prev",		'p',		500},
