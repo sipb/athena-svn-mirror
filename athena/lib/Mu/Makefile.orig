@@ -1,18 +1,19 @@
 Top = /mit/motif
-BinDir = $(Top)/$(MACHINE)bin
 LibDir = $(Top)/$(MACHINE)lib
 IncludeDir = $(Top)/include
-
 IncludePath = -I$(IncludeDir) 
 LibPath = -L$(LibDir)
-
 Libs = -lMrm -lXm -lXt -lX11
+InstallLib = $(Top)/$(MACHINE)lib
+InstallBin = $(Top)/$(MACHINE)bin
+InstallMan = $(Top)/man
+InstallDoc = $(Top)/doc
 
-UIL = $(BinDir)/uil
+UIL = uil
 CC = gcc
 CFLAGS = -g $(IncludePath)
 
-SRCS = \
+LIBMUSRCS = \
 MuGetBoolean.c \
 MuGetFileName.c \
 MuGetString.c \
@@ -28,7 +29,7 @@ MuSetTextTraversal.c \
 MuSyncDialogs.c \
 _MuCallbacks.c 
 
-OBJS = \
+LIBMUOBJS = \
 MuGetBoolean.o \
 MuGetFileName.o \
 MuGetString.o \
@@ -44,42 +45,65 @@ MuSetTextTraversal.o \
 MuSyncDialogs.o \
 _MuCallbacks.o 
 
+DOCSRC = \
+man/man3/libMu.3X \
+man/man1/mockup.1 \
+man/man3/MuError.3X \
+man/man3/MuErrorSync.3X \
+man/man3/MuGetBoolean.3X \
+man/man3/MuGetFilename.3X \
+man/man3/MuGetString.3X \
+man/man3/MuHelpFile.3X \
+man/man3/MuInitialize.3X \
+man/man3/MuRegsiterNames.3X \
+man/man3/MuRegisterWidget.3X \
+man/man3/MuSetEmacsBindings.3X \
+man/man3/MuSetTextTraversal.3X \
+man/man3/MuSetWaitCursor.3X 
 
-Target = libMu.a
 
-.c.o:
-	$(CC) -c $(CFLAGS) $*.c
+all: libMu.a mockup document
 
-all: $(Target)
+libMu.a: $(LIBMUOBJS)
+	rm -f libMu.a
+	ar clq libMu.a $(LIBMUOBJS)
+	ranlib libMu.a
 
-test2: test2.c $(Target) 
-	$(CC) -o test2 test2.c $(IncludePath) $(LibPath) libMu.a $(Libs)
+$(LIBMUOBJS): Mu.h MuP.h
 
-test: test.c $(Target)
-	$(CC) -o test test.c $(IncludePath) $(LibPath) libMu.a $(Libs) 
+mockup: mockup.o libMu.a
+	$(CC) $(CFLAGS) -o mockup mockup.o libMu.a $(LibPath) $(Libs)
 
-$(Target): $(OBJS)
-	rm -f $@
-	ar clq $@ $(OBJS)
-	ranlib $@
+document: MotifUtilities.PS
 
-checkin: 
-	ci -u $(SRCS) Mu.h MuP.h Makefile
+MotifUtilities.PS: $(DOCSRC)
+	psroff -man -t $(DOCSRC) > MotifUtilities.PS
+
+install: libMu.a mockup document
+	cp libMu.a $(InstallLib)		# install libMu.a
+	ranlib -t $(InstallLib)/libMu.a		# re-ranlib it
+	cp mockup $(InstallBin)			# install mockup
+	strip $(InstallBin)/mockup		# strip it
+	cp Mu.h $(IncludeDir)			# install C header file
+	cp Mu.uil $(IncludeDir)/uil		# install uil header file
+	cp MotifUtilities.PS $(InstallDoc)	# install document
+	cp man/man1/* $(InstallMan)/man1	# install man pages sec. 1
+	cp man/man3/* $(InstallMan)/man3	# install man pages sec. 3
+	catman -M $(InstallMan)			# format man pages
+
+test: TestMu
+
+TestMu: TestMu.o TestMu.uid libMu.a
+	$(CC) $(CFLAGS) -o TestMu TestMu.o libMu.a $(LibPath) $(Libs)
+
+TestMu.uid: TestMu.uil
+	$(UIL) -I$(IncludeDir)/uil -o TestMu.uid TestMu.uil
 
 clean: 
-	rm -f $(Target)
+	rm -f libMu.a mockup TestMu
 	rm -f *.o *.uid *~ core
 
-backup: 
-	tar -cf MotifUtils.tar $(SRCS) Makefile
-	compress MotifUtils.tar
-	mv MotifUtils.tar.Z $(BackupDir)
-
-proto:
-	proto $(IncludePath) $(SRCS) > prototypes
-
-lint:
-	lint -h -b -x -z $(IncludePath) $(SRCS)
-
 saber:
-	saber $(CFLAGS) $(SRCS)
+	saber $(CFLAGS) $(LIBMUSRCS)
+
+
