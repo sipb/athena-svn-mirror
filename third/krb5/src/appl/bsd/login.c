@@ -440,7 +440,7 @@ void lookup_user (name)
 #ifdef HAVE_SHADOW
     spwd = getspnam (name);
     if (spwd)
-	salt = spwd->sp_pwdp[1] ? sspwd->sp_pwdp : "xx";
+	salt = spwd->sp_pwdp[1] ? spwd->sp_pwdp : "xx";
 #endif
 }
 
