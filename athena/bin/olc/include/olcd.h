@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.45 1993-08-11 16:53:24 thorne Exp $
- *	$Author: thorne $
+ *	$Id: olcd.h,v 1.46 1994-08-21 18:22:20 cfields Exp $
+ *	$Author: cfields $
  */
 
 #include <mit-copyright.h>
@@ -222,6 +222,7 @@ ERRCODE olc_topic P((int fd , REQUEST *request ));
 ERRCODE olc_chtopic P((int fd , REQUEST *request ));
 ERRCODE olc_verify_topic P((int fd , REQUEST *request ));
 ERRCODE olc_list_topics P((int fd , REQUEST *request ));
+ERRCODE olc_list_services P((int fd , REQUEST *request ));
 ERRCODE olc_motd P((int fd , REQUEST *request ));
 ERRCODE olc_mail P((int fd , REQUEST *request ));
 ERRCODE olc_startup P((int fd , REQUEST *request ));
