@@ -5,7 +5,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v $
 #	$Author: cfields $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v 1.4 1994-08-15 17:09:07 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v 1.5 1995-09-03 04:55:32 cfields Exp $
 #
 # Copyright (c) 1980 Regents of the University of California.
 # All rights reserved.  The Berkeley software License Agreement
@@ -15,7 +15,7 @@
 #
 DESTDIR=
 CFLAGS=	-O -DPOSIX -DSYSV -DSOLARIS 
-LDFLAGS= /usr/ucblib/libucb.a -lsocket -lnsl
+LDFLAGS= -lsocket -lnsl
 
 
 # C programs that live in the current directory and do not need
