@@ -1,16 +1,17 @@
 /* 
- * $Id: aklog_main.c,v 1.3 1990-06-27 13:05:47 qjb Exp $
+ * $Id: aklog_main.c,v 1.4 1990-07-11 17:30:37 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.3 1990-06-27 13:05:47 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.4 1990-07-11 17:30:37 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
 #include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -18,12 +19,12 @@ static char *rcsid = "$Id: aklog_main.c,v 1.3 1990-06-27 13:05:47 qjb Exp $";
 #include <netdb.h>
 #include <sys/socket.h>
 #include <krb.h>
-#include <afs/auth.h>
-#include <sys/types.h>
-#include <afs/cellconfig.h>
 
+#include <afs/auth.h>
+#include <afs/cellconfig.h>
 #include <afs/vice.h>
 #include <afs/venus.h>
+#include <afs/ptserver.h>
 
 #include <aklog.h>
 #include "linked_list.h"
@@ -65,8 +66,6 @@ typedef struct {
 
 char *malloc();
 char *calloc();
-char *index();
-char *rindex();
 extern int errno;
 extern char *sys_errlist[];
 
@@ -234,6 +233,9 @@ static int auth_to_cell(cell, realm)
     char *cell_to_use;		/* Cell we are going to authenticate to */
     char local_cell[BUFSIZ];	/* Our local afs cell */
 
+    char username[BUFSIZ]; /* To hold client username structure */
+    long viceId;		/* AFS uid of user */
+
     char name[ANAME_SZ];	/* Name of afs key */
     char instance[INST_SZ];	/* Instance of afs key */
     char realm_of_cell[REALM_SZ]; /* Kerberos realm of cell */
@@ -312,14 +314,50 @@ static int auth_to_cell(cell, realm)
 	    return(AKLOG_KERBEROS);
 	}
 	
-	atoken.kvno = c.kvno;
-	strcpy(aserver.name, AFSKEY);
-	strcpy(aserver.instance, AFSINST);
-	strcpy(aserver.cell, cell_to_use);
-	strcpy(aclient.name, c.pname);
-	strcpy(aclient.instance, c.pinst);
-	strcpy(aclient.cell, c.realm);
+	strncpy(aserver.name, AFSKEY, MAXKTCNAMELEN - 1);
+	strncpy(aserver.instance, AFSINST, MAXKTCNAMELEN - 1);
+	strncpy(aserver.cell, cell_to_use, MAXKTCREALMLEN - 1);
+
+	strcpy (username, c.pname);
+	if (c.pinst[0]) {
+	    strcat (username, ".");
+	    strcat (username, c.pinst);
+	}
+
+	if (dflag) {
+	    sprintf(msgbuf, "About to resolve name %s to id\n", username);
+	    params.pstdout(msgbuf);
+	}
+
+	if (pr_Initialize (0, AFSCONF_CLIENTNAME, aserver.cell) == 0)
+	    status = pr_SNameToId (username, &viceId);
 	
+	if (dflag) {
+	    if (status) 
+		sprintf(msgbuf, "Error %d\n", status);
+	    else
+		sprintf(msgbuf, "Id %d\n", viceId);
+	    params.pstdout(msgbuf);
+	}
+
+	/*
+	 * Contrary to what you may think by looking at the code
+	 * for tokens, this hack (AFS ID %d) will not work if you
+	 * change %d to something else.
+	 */
+	if ((status == 0) && (viceId != ANONYMOUSID))
+	    sprintf (username, "AFS ID %d", viceId);
+
+	if (dflag) {
+	    sprintf(msgbuf, "Set username to %s\n", username);
+	    params.pstdout(msgbuf);
+	}
+
+	strncpy(aclient.name, username, MAXKTCNAMELEN - 1);
+	strcpy(aclient.instance, "");
+	strncpy(aclient.cell, c.realm, MAXKTCREALMLEN - 1);
+	
+	atoken.kvno = c.kvno;
 	atoken.startTime = c.issue_date;
 	/* ticket lifetime is in five-minutes blocks. */
 	atoken.endTime = c.issue_date + (c.lifetime * 5 * 60);
@@ -383,7 +421,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
     bzero(our_file, sizeof(our_file));
     strcpy(our_file, file);
 
-    if (last_component = rindex(our_file, DIR)) {
+    if (last_component = strrchr(our_file, DIR)) {
 	*last_component++ = 0;
 	parent_dir = our_file;
     }
@@ -400,7 +438,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
     vio.out = mountpoint;
 
     if (!pioctl(parent_dir, VIOC_AFS_STAT_MT_PT, &vio, 0)) {
-	if (index(mountpoint, VOLMARKER) == NULL) {
+	if (strchr(mountpoint, VOLMARKER) == NULL) {
 	    vio.in = file;
 	    vio.in_size = strlen(file) + 1;
 	    vio.out_size = sizeof(cellname);
@@ -466,7 +504,7 @@ static char *next_path(origpath)
     do {
 	while (*last_comp == DIR)
 	    strncat(pathtocheck, last_comp++, 1);
-	len = (elast_comp = index(last_comp, DIR)) 
+	len = (elast_comp = strchr(last_comp, DIR)) 
 	    ? elast_comp - last_comp : strlen(last_comp);
 	strncat(pathtocheck, last_comp, len);
 	bzero(linkbuf, sizeof(linkbuf));
@@ -500,7 +538,7 @@ static char *next_path(origpath)
 		strncpy(last_comp, linkbuf, strlen(linkbuf) + 1);
 		strcat(path, tmpbuf);
 		elast_comp = NULL;
-		if (t = rindex(pathtocheck, DIR)) {
+		if (t = strrchr(pathtocheck, DIR)) {
 		    t++;
 		    bzero(t, strlen(t));
 		}
@@ -641,7 +679,7 @@ static int auth_to_path(path)
 		ll_string(&zsublist, ll_s_add, cell);
 		add_hosts_to_zsublist(pathtocheck);
 	    }
-	    if (endofcell = index(mountpoint, VOLMARKER)) {
+	    if (endofcell = strchr(mountpoint, VOLMARKER)) {
 		*endofcell = NULL;
 		auth_to_cell(cell, NULL);
 	    }
@@ -743,7 +781,7 @@ void aklog(argc, argv, a_params)
     ll_init(&zsublist);
 
     /* Store the program name here for error messages */
-    if (progname = rindex(argv[0], DIR))
+    if (progname = strrchr(argv[0], DIR))
 	progname++;
     else
 	progname = argv[0];
@@ -779,7 +817,7 @@ void aklog(argc, argv, a_params)
 	else if (argv[i][0] == '-')
 	    usage();
 	else if (!pmode && !cmode) {
-	    if (index(argv[i], DIR) || (strcmp(argv[i], ".") == 0) ||
+	    if (strchr(argv[i], DIR) || (strcmp(argv[i], ".") == 0) ||
 		(strcmp(argv[i], "..") == 0)) {
 		pmode++;
 		strcpy(path, argv[i]);
