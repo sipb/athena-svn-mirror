@@ -1,7 +1,7 @@
 # Synopsis:
 #     perl -n afmgen.pl afmfiles.upr.orig 1>afmfiles.upr 2>install-commands
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/transcript/lib/afmgen.pl,v 1.1 1996-10-14 04:47:28 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/transcript/lib/afmgen.pl,v 1.1.2.1 1997-11-04 18:34:59 ghudson Exp $
 #
 # This script is used to support the use of full font names for filenames
 # of AFM font files.  It reads the original Adobe afmfiles.upr, which
@@ -10,7 +10,7 @@
 # and outputs an `expanded' afmfiles.upr on STDOUT and a list of commands
 # needed to install the fonts with "long" names on STDERR.
 
-s%@AFMDIR@%$ENV{'AFMDIR'}%g;
+s%\@AFMDIR\@%$ENV{'AFMDIR'}%g;
 
 if (/^([^=]*)=([^=]*\.afm)$/) {
    print "$1=$1.afm\n";

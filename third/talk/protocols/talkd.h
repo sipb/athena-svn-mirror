@@ -52,8 +52,8 @@ typedef unsigned short u_int32_type;
 #endif
 
 struct oldsockaddr {
-    u_short sa_family;
-    char sa_data[14];
+    u_short family;
+    char data[14];
 };
 
 /*
