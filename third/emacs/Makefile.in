@@ -368,7 +368,7 @@ install-arch-indep: mkdir
 	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${DESTDIR}${infodir} && /bin/pwd)` ]; \
 	then \
 	  (cd ${DESTDIR}${infodir};  \
-	   rm -f dir
+	   rm -f dir; \
 	   cd ${srcdir}/info ; \
 	   (cd $${thisdir}; ${INSTALL_DATA} ${srcdir}/info/dir ${DESTDIR}${infodir}/dir); \
 	   (cd $${thisdir}; chmod a+r ${DESTDIR}${infodir}/dir); \
