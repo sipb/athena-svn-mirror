@@ -37,10 +37,6 @@
 #include "IIOP.h"
 #include "IIOP-private.h"
 
-#ifdef HAVE_LIMITED_WRITEV
-#define writev g_writev
-#endif
-
 /* type defs */
 
 #ifdef        __GNUC__
@@ -232,7 +228,7 @@ giop_send_buffer_write(GIOPSendBuffer *send_buffer)
     }
 
     /* Find the next place to start sending at. */
-    while (nvecs > 0 && curvec->iov_len < written) {
+    while (nvecs > 0 && curvec->iov_len <= written) {
       written -= curvec->iov_len;
       curvec++;
       nvecs--;
