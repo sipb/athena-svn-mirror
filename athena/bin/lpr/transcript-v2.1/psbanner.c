@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Id: psbanner.c,v 1.2 1995-07-11 21:15:13 miki Exp $";
+_NOTICE RCSID[]="$Id: psbanner.c,v 1.3 1995-10-23 21:17:51 miki Exp $";
 #endif
 
 /* psbanner.c
@@ -63,6 +63,12 @@ adobe:shore  Job: test.data  Date: Tue Sep 18 16:22:33 1984
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1995/07/11  21:15:13  miki
+ * replaced signal with sigaction for POSIX
+ * eliminated laps command
+ * replaced the ps command for printing job name, to eliminate do_flagpage,
+ * which is not understood by all printers
+ *
  * Revision 1.2  93/11/19  17:10:24  probe
  * POSIX signal handling
  * Use memset on all platforms
@@ -318,15 +324,15 @@ dooutput:
        printq 	(queue printed on) (printer name)
 
        */
-/*    fprintf(out, "()(%s)(%s)(%s)(%s@%s)(%s)(%s) do_flagpage end\n",
+    fprintf(out, "()(%s)(%s)(%s)(%s@%s)(%s)(%s) do_flagpage end\n",
 	    user,
 	    jname,
 	    jname,
 	    user,
 	    host,
 	    date,
-	    pname); */
-    fprintf(out, "(%s)(%s)Banner\n", pname, bannerbuf);
+	    pname); 
+/*    fprintf(out, "(%s)(%s)Banner\n", pname, bannerbuf); */
     VOIDC fclose(out);	/* this does a flush */
 
 }
