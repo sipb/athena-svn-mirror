@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.22 1990-07-16 08:30:49 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: requests_olc.c,v 1.23 1990-07-16 10:30:23 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.22 1990-07-16 08:30:49 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.23 1990-07-16 10:30:23 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -878,7 +878,7 @@ olc_ask(fd, request, auth)
   KNUCKLE *requester;
   KNUCKLE **k_ptr;
   char msgbuf[BUF_SIZE];	      /* Message buffer. */
-  char *question;
+  char *question, *machinfo;
   int status;
   char topic[TOPIC_SIZE], *text;
   int qcount = 0;
@@ -963,8 +963,16 @@ olc_ask(fd, request, auth)
   question = read_text_from_fd(fd);
   if(question == (char *) NULL)
     return(send_response(fd,ERROR));
+  else
+    if (request->version >= VERSION_5)
+      send_response(fd, SUCCESS);
 
-  init_question(target,topic,question);
+  if (request->version >= VERSION_5)
+    machinfo = read_text_from_fd(fd);
+  else
+    machinfo = NULL;
+
+  init_question(target,topic,question,machinfo);
   set_status(target, NOT_SEEN);
   strcpy(target->title,target->user->title1); 
 
@@ -1103,8 +1111,11 @@ olc_forward(fd, request,auth)
 	(void) write_message_to_user(target,
 				     "Your question is being forwarded to another consultant...\n",
 				     NULL_FLAG);
-	status = match_maker(target);
-	if(status != CONNECTED) {
+    /* Writing to user may leave user status in an inactive state. */
+    /* If so, don't bother trying to do match_maker. */
+	if (target->user->status == ACTIVE) {
+	  status = match_maker(target);
+	  if(status != CONNECTED) {
 	    (void) write_message_to_user(target,
 					 "There is no consultant available right now.\n",
 					 NULL_FLAG);
@@ -1115,8 +1126,9 @@ olc_forward(fd, request,auth)
 		    target->instance,
 		    target->question->topic);
 	    olc_broadcast_message("forward",msgbuf,target->question->topic);
+	  }
 	}
-    }
+      }
     
 #ifdef LOG
     sprintf(msgbuf,"%s [%d] forwards %s [%d]",
@@ -1276,7 +1288,7 @@ olc_send(fd, request, auth)
   KNUCKLE    *target;           /* target intermediate connection */
   char       *msg;		/* Message from consultant. */
   char       mesg[BUFSIZ];
-  int         status; 
+  int        status; 
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
@@ -1345,9 +1357,13 @@ olc_send(fd, request, auth)
   if(target != requester)
     if (write_message_to_user(target,mesg, NULL_FLAG) != SUCCESS)
       if (owns_question(requester)) {
-	  free_new_messages(requester->connected);
+	  char *msg = fmt ("Unable to contact %s %s [%d].  Forwarding.",
+			   target->title, target->user->username,
+			   target->instance);
+	  log_daemon(requester, msg);
+	  free_new_messages(target);
 	  set_status(requester, PENDING);
-	  disconnect_knuckles(requester, requester->connected);
+	  disconnect_knuckles(requester, target);
 	  (void) write_message_to_user (requester,
 					"The OLC server could not contact the consultant you were connected to.\nLooking for another consultant for you....\n",
 					NO_RESPOND);
@@ -1370,11 +1386,16 @@ olc_send(fd, request, auth)
   log_status(mesg);
 #endif LOG
 
-  if(owns_question(target) && is_me(target,requester) && !is_connected(target))
+  if (owns_question(requester))
     {
-      sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
-	      target->user->username, target->instance);
-      olc_broadcast_message("lonely_hearts",mesg, target->question->topic);
+      if (requester->status == PICKUP)
+	set_status(requester, PENDING);
+      if (! is_connected(target))
+	{
+	  sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
+		  target->user->username, target->instance);
+	  olc_broadcast_message("lonely_hearts",mesg, target->question->topic);
+	}
     }
 
   if ( (!owns_question(target) && is_connected(target) &&
@@ -1635,10 +1656,15 @@ olc_replay(fd, request, auth)
       free_new_messages(target);
     }
 
-  if((!owns_question(target) && is_connected(target) && 
-      is_me(target,requester)) || (owns_question(target) &&
-				   is_connected_to(target,requester)))
+/*  Why should replaying (in ANY case) set status to serviced?  */
+/*
+  if ((! owns_question(target) &&
+       is_connected(target) &&
+       is_me(target,requester))
+      || (owns_question(target) &&
+	  is_connected_to(target,requester)))
     set_status(target->question->owner, SERVICED);
+*/
 
 #ifdef LOG
   sprintf(mesg,"%s [%d] replays %s [%d]'s log",
@@ -2199,8 +2225,10 @@ olc_mail(fd, request,auth)
   else
     target = requester;
 
-  if(!(is_me(requester,target)) && !(is_connected_to(requester,target)) && 
-     !(is_allowed(requester->user, GMESSAGE_ACL)))
+  if ( (!(is_me(requester,target)
+	  || is_connected_to(requester,target)
+	  || is_allowed(requester->user, GMESSAGE_ACL)))
+      || owns_question(requester))
     return(send_response(fd,PERMISSION_DENIED));
 
   if(!has_question(target))
