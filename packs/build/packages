@@ -1,4 +1,4 @@
-# $Id: packages,v 1.113 2000-12-12 16:36:07 ghudson Exp $
+# $Id: packages,v 1.114 2000-12-27 23:14:14 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -119,21 +119,27 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
 third/afsbin			package afs
+third/audiofile			except linux
 third/bash
 third/bind
 third/db			except linux
+third/control-center		requires gnome-libs,libxml,libglade,esound
 third/emacs			requires hesiod,krb5
+third/esound			except linux requires audiofile
+third/gdbm			except linux
+third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
 third/gettext			except linux
 third/glib
 third/gmp			except linux
-third/gnome-libs		requires gtk,imlib,db,ORBit
+third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf
+third/gnome-libs		requires gtk,imlib,db,ORBit,xpm
 third/gtk			requires glib
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
 third/ispell			except linux
 third/jot
-third/jpeg			except linux
+third/jpeg			except linux,irix
 third/kermit
 third/kpasswd			requires krb5
 third/krb5			requires et package krb5-prep
@@ -142,8 +148,9 @@ third/ksrvutil			requires krb5
 third/lam
 third/libglade			requires gtk,gnome-libs
 third/libpng			except linux requires zlib
-third/librep			requires gmp
+third/librep			requires gmp,gdbm
 third/libungif			except linux
+third/libxml			except linux
 third/look			on irix
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp
@@ -179,7 +186,7 @@ third/xmh
 third/xntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5
-third/zlib			except linux
+third/zlib			except linux,irix
 
 # Final packs stuff
 packs/config			late except linux
