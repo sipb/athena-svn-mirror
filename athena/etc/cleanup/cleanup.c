@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.3 1992-04-30 12:12:29 lwvanels Exp $
+/* $Id: cleanup.c,v 2.4 1992-07-17 15:30:08 miki Exp $
  *
  * Cleanup program for stray processes
  *
@@ -34,7 +34,7 @@
 #endif
 #include <nlist.h>
 
-char *version = "$Id: cleanup.c,v 2.3 1992-04-30 12:12:29 lwvanels Exp $";
+char *version = "$Id: cleanup.c,v 2.4 1992-07-17 15:30:08 miki Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -42,6 +42,10 @@ extern int      sys_nerr;
 #endif
 
 #ifdef ultrix
+extern char *sys_errlist[];
+#endif
+
+#ifdef sun
 extern char *sys_errlist[];
 #endif
 
