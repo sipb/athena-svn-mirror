@@ -1,21 +1,18 @@
-# translation of tr.po to Turkish
-# Turkish translation of gnome-core.
+# Turkish translation of gnome-desktop.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@kabalak.net>, 2000.
-# Görkem Cetin <gorkem@gelecek.com.tr>, 2001.
-# Görkem Çetin <gorkem@gelecek.com.tr>, 2002
+# Görkem Çetin <gorkem@gelecek.com.tr>, 2002/2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: tr\n"
-"POT-Creation-Date: 2003-01-21 17:24+1300\n"
-"PO-Revision-Date: 2002-07-28 20:25+0000\n"
+"Project-Id-Version: gnome-desktop\n"
+"POT-Creation-Date: 2003-02-04 11:52+1300\n"
+"PO-Revision-Date: 2003-01-30 20:43+0000\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
 
 #: desktop-links/Accessories.directory.in.h:1
 msgid "Accessories"
@@ -123,7 +120,7 @@ msgstr "Jerome Bolliet"
 #. * and the last 'e' in 'Chenede'
 #: gnome-about/contributors.h:54
 msgid "Erwann Chenede"
-msgstr ""
+msgstr "Erwann Chenede"
 
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
@@ -134,9 +131,8 @@ msgstr "Abel Cheung"
 #. if you encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
 #: gnome-about/contributors.h:70
-#, fuzzy
 msgid "Frederic Crozat"
-msgstr "Frédéric Devernay"
+msgstr "Frederic Crozat"
 
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
@@ -168,86 +164,86 @@ msgstr "Dov Grobgeld"
 
 #. Wang is the surname. CJK people, please use (U738B) (U5251)
 #. * to replace this name.
-#: gnome-about/contributors.h:143
+#: gnome-about/contributors.h:144
 msgid "Wang Jian"
 msgstr "Wang Jian"
 
-#: gnome-about/contributors.h:152
+#: gnome-about/contributors.h:153
 msgid "Helmut Koeberle"
 msgstr "Helmut Koeberle"
 
-#: gnome-about/contributors.h:189
+#: gnome-about/contributors.h:190
 msgid "Matthew Marjanovic"
 msgstr "Matthew Marjanovic"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Muniz'
-#: gnome-about/contributors.h:213
+#: gnome-about/contributors.h:215
 msgid "Alexandre Muniz"
 msgstr "Alexandre Muñiz"
 
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:215
+#: gnome-about/contributors.h:217
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
 #. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
 #. * of 'Norbaeck'
-#: gnome-about/contributors.h:224
+#: gnome-about/contributors.h:226
 msgid "Martin Norbaeck"
 msgstr "Martin Norbäck"
 
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
-#: gnome-about/contributors.h:231
+#: gnome-about/contributors.h:233
 msgid "Tomas Oegren"
 msgstr "Tomas Ögren"
 
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:241
+#: gnome-about/contributors.h:243
 msgid "Carlos Perello Marin"
 msgstr "Carlos Perello Marin"
 
 #. If your encoding allows it, use aacute (U00E1) for the 'a'
 #. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
-#: gnome-about/contributors.h:250
+#: gnome-about/contributors.h:252
 msgid "German Poo-Caamano"
-msgstr ""
+msgstr "German Poo-Caamano"
 
 #. Name in Japanese is: U7b39 U5c71 U548c U5b8f
-#: gnome-about/contributors.h:271
+#: gnome-about/contributors.h:273
 msgid "Kazuhiro Sasayama"
 msgstr "Kazuhiro Sasayama"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Inigo'
-#: gnome-about/contributors.h:281
+#: gnome-about/contributors.h:283
 msgid "Inigo Serna"
 msgstr "Iñigo Serna"
 
-#: gnome-about/contributors.h:285
+#: gnome-about/contributors.h:287
 msgid "Miroslav Silovic"
 msgstr "Miroslav Silovic"
 
 #. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:296
+#: gnome-about/contributors.h:298
 msgid "The Squeaky Rubber Gnome"
 msgstr "Ve Gıcırdıyan Lastik GNOME"
 
-#: gnome-about/contributors.h:304
+#: gnome-about/contributors.h:306
 msgid "Istvan Szekeres"
 msgstr "Istvan Szekeres"
 
-#: gnome-about/contributors.h:317
+#: gnome-about/contributors.h:319
 msgid "Manish Vachharajani"
 msgstr "Manish Vachharajani"
 
-#: gnome-about/contributors.h:318
+#: gnome-about/contributors.h:320
 msgid "Neil Vachharajani"
 msgstr "Neil Vachharajani"
 
-#: gnome-about/contributors.h:326
+#: gnome-about/contributors.h:328
 msgid "Wanda the GNOME Fish"
 msgstr "Wanda GNOME Balığı"
 
@@ -260,7 +256,6 @@ msgid "List of GNOME Contributors"
 msgstr "GNOME Geliştiricilerinin Listesi"
 
 #: gnome-about/gnome-about.c:287
-#, fuzzy
 msgid "GNOME Logo Image"
 msgstr "GNOME Logo Resmi"
 
@@ -269,24 +264,21 @@ msgid "Contributors' Names"
 msgstr "Destekleyenler Listesi"
 
 #: gnome-about/gnome-about.c:297
-#, fuzzy
 msgid "GNOME Logo"
-msgstr "Gnome Logosu"
+msgstr "GNOME Logosu"
 
 #: gnome-about/gnome-about.c:506
-#, fuzzy
 msgid "GNOME"
-msgstr "Gnome Hakkında"
+msgstr "GNOME"
 
 #: gnome-about/gnome-about.c:660
-#, fuzzy
 msgid "And Many More ..."
-msgstr "<big><b>Ve diğer arkadaşlar...</b></big>"
+msgstr "Ve diğer arkadaşlar..."
 
 #: gnome-about/gnome-about.c:838
-#, fuzzy, c-format
+#, c-format
 msgid "About GNOME%s%s%s"
-msgstr "Gnome Hakkında"
+msgstr "GNOME%s%s%s Hakkında"
 
 #: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
@@ -306,7 +298,7 @@ msgstr "Gnome Geliştiricileri Sayfası"
 
 #: gnome-about/gnome-about.c:981
 msgid "GNOME is a part of the GNU Project"
-msgstr ""
+msgstr "GNOME, GNU projesinin bir parçasıdır"
 
 #: libgnome-desktop/gnome-desktop-item.c:208
 #: libgnome-desktop/gnome-desktop-item.c:578
@@ -336,7 +328,7 @@ msgstr "Kaydedilecek dosyanın adı verilmedi"
 #: libgnome-desktop/gnome-desktop-item.c:1736
 #, c-format
 msgid "Starting %s"
-msgstr ""
+msgstr "%s başlatılıyor"
 
 #: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
@@ -387,7 +379,7 @@ msgstr "Dosya Sistemi Aygıtı"
 
 #: libgnome-desktop/gnome-ditem-edit.c:224
 msgid "MIME Type"
-msgstr ""
+msgstr "MIME Türü"
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
