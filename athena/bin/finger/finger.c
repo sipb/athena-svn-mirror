@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.27 1996-06-24 05:24:48 ghudson Exp $
+ * $Id: finger.c,v 1.28 1996-06-24 05:28:24 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.27 1996-06-24 05:24:48 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.28 1996-06-24 05:28:24 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -442,6 +442,7 @@ donames(argv)
 						new->pwd = pwdcopy(pw);
 						new->name = p->name;
 						new->original = 1;
+						new->zlocation = 0;
 						new->loggedin = 0;
 						new->link = p->link;
 						p->original = 0;
@@ -503,6 +504,7 @@ donames(argv)
 				new->pwd = p->pwd;
 				new->loggedin = 1;
 				new->original = 0;
+				new->zlocation = 0;
 				new->link = p->link;
 				p->loggedin = 2;
 				p->link = new;
