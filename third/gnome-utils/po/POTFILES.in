@@ -32,8 +32,11 @@ gfloppy/src/gfloppy.c
 gfloppy/src/gfloppy2.glade
 gfloppy/src/main.c
 gfloppy/src/progress.c
+gfloppy/gfloppy.schemas.in
 gsearchtool/gnome-search-tool.desktop.in
 gsearchtool/gsearchtool.c
+gsearchtool/gsearchtool-callbacks.c
+gsearchtool/gsearchtool-support.c
 gsearchtool/help/es/gsearchtool.desktop.in
 logview/about.c
 logview/actions.c
@@ -49,5 +52,4 @@ logview/misc.c
 logview/monitor.c
 logview/userprefsdialog.c
 logview/zoom.c
-meat-grinder/archive-generator.desktop.in
-meat-grinder/meat-grinder.c
+logview/logview.schemas.in

@@ -148,6 +148,7 @@ test_ro (int dev, unsigned long blocks_count,
 	while (currently_testing < blocks_count)
 	{
 		gchar *msg;
+
 		print_status ();
 		if (currently_testing + try > blocks_count)
 			try = blocks_count - currently_testing;
@@ -160,13 +161,21 @@ test_ro (int dev, unsigned long blocks_count,
 		} else {
 			try = 1;
 		}
-
+	
 		if (got == 0) {
+			unsigned long *p;
+
 			currently_testing++;
-			msg = g_strdup_printf (_("EBad block at block %lu"), currently_testing);
+
+			/* We don't cast to a gpointer due to alignement purposes */
+			p = malloc (sizeof (unsigned long));
+			*p = currently_testing;
+
+			internal_floppy->badblocks_list = g_list_append (internal_floppy->badblocks_list, (gpointer) p);
+
+			msg = g_strdup_printf ("B%lu", currently_testing);
 			fd_print (internal_floppy, msg);
 			g_free (msg);
-			
 			/*fprintf (out, "%lu\n", currently_testing++);*/
 		}
 		
@@ -175,6 +184,8 @@ test_ro (int dev, unsigned long blocks_count,
 /*	alarm(0); */
 	fflush (stderr);
 	g_free (blkbuf);
+
+	return g_list_length (internal_floppy->badblocks_list);
 }
 
 #if 0
@@ -253,8 +264,6 @@ check_badblocks (GFloppy *floppy)
 	int dev;
 	gchar *msg;
 
-	gint i = 0;
-
 /*	while (!i)
 	;*/
 	fd_print (floppy, _("MChecking for bad blocks..."));
@@ -285,6 +294,7 @@ check_badblocks (GFloppy *floppy)
 		test_ro (floppy, dev, blocks_count, block_size, from_count);
 #endif
 
+	internal_floppy->badblocks_list = NULL;
 	test_ro (dev, blocks_count, block_size, from_count);
 
 	close (dev);

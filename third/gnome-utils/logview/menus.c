@@ -38,14 +38,12 @@ GtkWidget
    GtkWidget *menuitem;
 
    menu = gtk_menu_new ();
-   gtk_widget_set_style (menu, cfg->main_style);
 
    while (items->name != NULL)
    {
       /*  Create item */
       menuitem = gtk_menu_item_new_with_label (items->name);
       gtk_menu_append (GTK_MENU (menu), menuitem);
-      gtk_widget_set_style (menuitem, cfg->main_style);
 
       /*  Add callback  */
       if (items->callback != NULL)
@@ -60,15 +58,4 @@ GtkWidget
    }
 
    return menu;
-}
-
-/* ----------------------------------------------------------------------
-   NAME:          StubCall
-   DESCRIPTION:   This is a stub routine for a menu item. It is used
-   as testing.
-   ---------------------------------------------------------------------- */
-
-void
-StubCall (GtkWidget * widget, gpointer user_data)
-{
 }

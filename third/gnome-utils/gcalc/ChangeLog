@@ -1,8 +1,30 @@
+2003-01-24  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/*: New 2.2 docs from the help guys.
+
+2003-01-10  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-calc.c: (reduce_stack_prec): Check if the stack is 
+	NULL first. Don't reduce if it is, just return.
+
+2002-12-21 John Fleck <jfleck@inkstain.net>
+
+	* gcalc.c - add "Inc." to FSF copyright thing
+	Fix #101754
+
+2002-12-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-calculator.desktop.in: Update for StartupNotify.
+
+2002-11-18  Fernando Herrera <fherrera@onirica.com>
+
+	* gnome-calculator.desktop.in: add X-GNOME-BUGZILLA stuff
+
 2002-10-16  Emmanuel Vecchia <emmanuel.vecchia@sun.com>
 
-        * gnome-calc.c: Add Page_Up, Page_Down, Home and End to
-        the extra bindings so that now the calculator works with and
-        without numlock.
+	* gnome-calc.c: Add Page_Up, Page_Down, Home and End to
+	the extra bindings so that now the calculator works with and
+	without numlock.
 
 2002-09-06  Padraig O'Briain  <padraig.obriain@sun.com>
 
@@ -11,17 +33,31 @@
 
 2002-08-30  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
-	* gnome-calc.c: Keypad are read correctly when numlock
+        * gnome-calc.c: Keypad are read correctly when numlock
 	is on (bug #85356, patch from twaugh@redhat.com)
+	* gcalc.c: (main): Uncomment code for extra keys
+
+2002-08-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* gcalc.c: (main): s/GNOME Calculator/Calculator according
+	to the HIG. Fixes 91439.
+
+2002-08-14  Glynn Foster <glynn.foster@sun.com>
+
+	* gcalc.c: Fix about string to remove the 'the'.
 
 2002-08-12  Glynn Foster  <glynn.foster@sun.com>
 
-	* gcalc.c: Mark string in about dialog for translation.
+	* gcalc.c: Mark string for translation in the about dialog.
 	Fixes #89711.
 
 2002-08-08  Glynn Foster  <glynn.fostser@sun.com>
 
-	* gnome-calculator.1: Update man page.
+        * gnome-calculator.1: Update man page.
+
+2002-08-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* gcalc.c: s/similiar/similar
 
 2002-07-29  Frederic Crozat  <fcrozat@mandrakesoft.com>
 

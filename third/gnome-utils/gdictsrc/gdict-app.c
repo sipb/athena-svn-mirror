@@ -1,4 +1,4 @@
-/* $Id: gdict-app.c,v 1.1.1.3 2003-01-04 21:14:24 ghudson Exp $ */
+/* $Id: gdict-app.c,v 1.1.1.4 2003-01-29 20:33:00 ghudson Exp $ */
 /* -*- mode: c; style: k&r; c-basic-offset: 4 -*- */
 
 /*

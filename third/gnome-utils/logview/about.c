@@ -40,8 +40,8 @@ AboutShowWindow (GtkWidget *widget, gpointer user_data)
 {
   GdkPixbuf *logo = NULL;
   const char *author[] = {N_("Cesar Miquel (miquel@df.uba.ar)"), NULL};
-  char *comments = N_("This  program  is  part of  the  GNOME  project " 
-"for Linux. Logview comes with ABSOLUTELY NO WARRANTY. This is free " 
+  char *comments = N_("This program is part of the GNOME project. " 
+"Logview comes with ABSOLUTELY NO WARRANTY. This is free " 
 "software, and you are welcome to redistribute it under the conditions "
 "of the GNU General Public Licence. The log icon is a courtesy of "
 "Tuomas Kuosmanen (a.k.a tigert).");
@@ -57,18 +57,7 @@ AboutShowWindow (GtkWidget *widget, gpointer user_data)
 	  return;
   }
 
-  {
-	  gchar *logo_fn = NULL;
-
-	  logo_fn = gnome_pixmap_file("gnome-system-log/logview.xpm");
-	  if (logo_fn != NULL)
-	  {
-		  logo = gdk_pixbuf_new_from_file(logo_fn, NULL);
-		  g_free(logo_fn);
-	  }
-  }
-
-  /* go get logview.xpm in $(prefix)/share/pixmaps/logview */
+  logo = gdk_pixbuf_new_from_file (DATADIR G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S "gnome-log.png", NULL);
   about_window = gnome_about_new (_("GNOME System Log Viewer"), VERSION,
            			  N_("Copyright (C) 1998"),
 				  _(comments),

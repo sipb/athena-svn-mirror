@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.1.1.3 2003-01-04 21:14:28 ghudson Exp $ */
+/* $Id: main.c,v 1.1.1.4 2003-01-29 20:33:38 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -56,20 +56,36 @@ static gint client_die_cb (GnomeClient *client, gpointer client_data)
 	gtk_main_quit ();
 }
 
+const char **
+get_command_line_args (GnomeProgram *program)
+{
+	GValue value = { 0, };
+	poptContext ctx;
+
+	g_value_init (&value, G_TYPE_POINTER);
+	g_object_get_property (G_OBJECT (program), GNOME_PARAM_POPT_CONTEXT, &value);
+	ctx = g_value_get_pointer (&value);
+	g_value_unset (&value);
+
+	return poptGetArgs (ctx);
+}
+
 int main (int argc, char *argv[])
 {
     gint i;
     GDictApplet * applet = NULL;
     GnomeClient *client;
+    GnomeProgram *program;
+    const char **args;
 
     bindtextdomain(GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
 
-    gnome_program_init ("gnome-dictionary",VERSION,
-                                      LIBGNOMEUI_MODULE,
-                                      argc, argv,
-                                      GNOME_PARAM_APP_DATADIR,DATADIR,NULL);
+    program = gnome_program_init ("gnome-dictionary",VERSION,
+				  LIBGNOMEUI_MODULE,
+				  argc, argv,
+				  GNOME_PARAM_APP_DATADIR,DATADIR,NULL);
 
 	
 
@@ -92,11 +108,12 @@ int main (int argc, char *argv[])
     gdict_init_context ();
     defbox->context = context;
 
-    for (i = 1;  i < argc;  i++)
-            if (argv[i][0] != '-') {
-                gdict_defbox_lookup(defbox, argv[i]);
-                break;
-            }
+    args = get_command_line_args (program);
+
+    for (i = 0; args != NULL && args[i] != NULL; i++) {
+	    gdict_defbox_lookup(defbox, (char *)args[i]);
+	    break;
+    }
 
     gtk_widget_show(gdict_app);
     gtk_main();

@@ -8,7 +8,7 @@ INCLUDES = -DG_LOG_DOMAIN=\"gdict\"			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DPREFIX=\""$(prefix)"\"			\
 	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"	\
-	$(APPLET_CFLAGS) $(GNOME_UTILS_CFLAGS)
+	$(APPLET_CFLAGS) $(GNOME_UTILS_CFLAGS) 
 
 bin_PROGRAMS = gnome-dictionary
 

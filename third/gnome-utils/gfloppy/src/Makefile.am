@@ -18,6 +18,8 @@ gfloppy-strings.c: gfloppy2.glade
 
 gfloppy_SOURCES = \
 	main.c \
+	gfloppy-config.c \
+	gfloppy-config.h \
 	gfloppy.c \
 	progress.c \
 	fdformat.c \
@@ -36,7 +38,6 @@ EXTRA_DIST = 		     \
 	fdformat.h		\
 	badblocks.h             \
 	gfloppy.1
-
 
 update-po: gfloppy-strings.c
 	cd ../po && make update-po

@@ -1,5 +1,5 @@
 /*
- *  guage.c -- implements the guage dialog
+ *  guage.c -- implements the gauge dialog
  *
  *  AUTHOR: Marc Ewing, Red Hat Software
  *
@@ -25,7 +25,7 @@
  */
 
 /*
- * Display a guage, or progress meter.  Starts at percent% and
+ * Display a gauge, or progress meter.  Starts at percent% and
  * reads stdin.  If stdin is not XXX, then it is interpreted as
  * a percentage, and the display is updated accordingly.  Otherwise
  * the next line is the percentage, and subsequent lines up to
@@ -34,7 +34,7 @@
  * larger than the height and width specified.
  */
 int
-dialog_guage (const char *title, const char *prompt, int height,
+dialog_gauge (const char *title, const char *prompt, int height,
 		int width, int percent)
 {
     int i, x, y;
@@ -80,6 +80,7 @@ dialog_guage (const char *title, const char *prompt, int height,
 		add_atk_relation(p, GTK_WIDGET(labellist->data), ATK_RELATION_LABELLED_BY);
 	}
 
+	g_signal_connect (G_OBJECT (w), "delete_event", gtk_main_quit, NULL);
 	gtk_widget_show_all(w);
 	gtk_main();
 	exit( 0 );

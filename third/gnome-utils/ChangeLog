@@ -1,55 +1,124 @@
-2002-11-18  Glynn Foster <glynn.foster@sun.com>
+2003-01-27  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: release 2.2.0.3 " Good things come in 3s "
+	Okay, I want to wake up tommorrow and completely forget about
+	all of this. Is that possible?
+	* README, NEWS: Updated for the new release.
+
+2003-01-24  Glynn Foster <glynn.foster@sun.com>
 	
-	* configure.in: release 2.0.6 " A translation is for life, not 
-	  just for 2.0.3 "
-	* NEWS, README: Updates for new release.
+	* configure.in: release 2.2.0.2 " I am an arse "
+	* README, NEWS: Updated for the new release.
+
+2003-01-24  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: release 2.2.0.1 " Macro releases are teh suck "
+	* README, NEWS, HACKING: Updated for new release.
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* README : Version is 2.2.0 not 2.0.0.  Also, removed
+	a reference to this being a beta version.
+	
+2003-01-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 2.2.0 " Slainte "
+	* NEWS, README : Updated for new release.
+
+2003-01-10  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am), Arabic (ar)
+	and Macedonian (mk) to ALL_LINGUAS
+
+2003-01-07  Naba Kumar  <naba@gnome.org>
+
+	* configure.in: Added hi (hindi) in ALL_LINGUAS
+	
+2003-01-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 2.1.90 " Because I'm free....free falling "
+	* NEWS, README, HACKING: Updated for new release.
+
+2002-12-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 2.1.5 " All I want for Christmas... "
+	* NEWS, README, HACKING: Updated for new release.
+
+2002-12-09  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 2.1.4 " um "
+	* NEWS, README, HACKING: Updated for new release.
+
+2002-11-25  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: release 2.1.3 " Maintaining gnome-utils is like
+	  paint by number. Who wants the brush next? "
+	* NEWS, README: Updated for new release.
 
 2002-11-10  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-11-07  Glynn Foster <glynn.foster@sun.com>
+2002-11-02  Glynn Foster  <glynn.foster@sun.com>
 
-	* configure.in: release 2.0.5 " <subliminal> Vote Gman </subliminal> "
-	* NEWS, README: Updates for new release.
+	* configure.in: release 2.1.2 " Full of anchovy essence "
+	* NEWS, README: Updated for new release.
 
-2002-08-28  Glynn Foster <glynn.foster@sun.com>
+2002-10-14  Glynn Foster  <glynn.foster@sun.com>
 
-	* configure.in: release 2.0.4 " Amygdala "
-	* NEWS, README: Updates for new release.
+	* configure.in: release 2.1.1 " Vid förtäring, uppsök läkarvård omgående "
+	* NEWS, README: Updated for new release.
 
-2002-08-20  Glynn Foster <glynn.foster@sun.com>
+2002-10-09  Glynn Foster  <glynn.foster@sun.com>
 
-	* configure.in: release 2.0.3 " Start hacking or the goat gets it"
-	* NEWS, README, HACKING: Updates for new release.
+	* configure.in: Now depends on libgnomeui 2.1.0
+	* README: Update
+
+2002-10-08  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* AUTHORS:  Added myself.
+	
+2002-10-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* MAINTAINERS: Add Stephane as maintainer for gfloppy.
+	* NEWS: Whoops! Forgot gfloppy changes - they've been legendary too.
+
+2002-10-02  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: release 2.1.0 " Just when you thought it was
+	safe to come out of the cupboard "
+	* NEWS, README: Updated for new release.
+
+2002-10-01  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* configure.in: re-enabled gdialog by default.
+
+2002-08-24  Glynn Foster <glynn.foster@sun.com>
+
+	* MAINTAINERS: Added Dennis [gnome-search-tool] and Archit 
+	[gdialog] and Deepa [gnome-system-log].
 
 2002-08-12  Glynn Foster <glynn.foster@sun.com>
 
-	* Makefile.am: Dist omf.make and xmldocs.make.
+	* Makefile.am: Dist omf.make and xmldocs.make. Fixes #89228.
 
 2002-08-11  Ross Burton  <ross@burtonini.com>
 
-        * **/*.desktop.in: Added GNOME to the Categories keywords, and
-        changed 'Terminal=0' to 'Terminal=false' as per the spec.
+	* **/*.desktop.in: Added GNOME to the Categories keywords, and
+	changed 'Terminal=0' to 'Terminal=false' as per the spec.
 
-2002-08-05  Glynn Foster <glynn.foster@sun.com>
+2002-07-22  Glynn Foster <glynn.foster@sun.com>
 
-	* configure.in: release 2.0.2 " Obsession "
-	* NEWS, README: Updates for new release.
-
-2002-08-05  Irene Ryan  <irene.ryan@sun.com>
-	
-	* **/help: Updates for documentation.
-
-2002-07-25  Glynn Foster  <glynn.foster@sun.com>
-
-	* configure.in: release 2.0.1 " Will you take me where I want to go? "
-	* NEWS, README: Updates for new release.
-
-2002-07-22  Glynn Foster  <glynn.foster@sun.com>
-	
 	* README: note to explain why gdialog isn't being built by 
 	default.
+
+2002-07-09  Stephane Demurget  <demurgets@free.fr>
+
+	* po/POTFILES.in: added gfloppy schemas file.
 
 Fri Jul 12 10:18:22 2002  George Lebl <jirka@5z.com>
 
@@ -60,6 +129,10 @@ Fri Jul 12 10:18:22 2002  George Lebl <jirka@5z.com>
 2002-07-08  Glynn Foster  <glynn.foster@sun.com>
 
 	* configure.in: Add X checks.
+
+2002-07-05  Glynn Foster <glynn.foster@sun.com>
+
+	* po/POTFILES.in: add logview schemas file.
 
 2002-06-17  Glynn Foster <glynn.foster@sun.com>
 

@@ -82,9 +82,7 @@ GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
 GNOME_UTILS_CFLAGS = @GNOME_UTILS_CFLAGS@
 GNOME_UTILS_LIBS = @GNOME_UTILS_LIBS@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -99,6 +97,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -116,7 +115,8 @@ PAM_PREFIX = @PAM_PREFIX@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
-RANLIB = @RANLIB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -130,7 +130,7 @@ gnomeutilslocaledir = @gnomeutilslocaledir@
 
 @BUILD_GDIALOG_TRUE@gdialog = gdialog
 
-always_built_SUBDIRS =  	po 			logview 		gcharmap 		gcalc 			gsearchtool		gdictsrc		meat-grinder
+always_built_SUBDIRS =  	po 			logview 		gcharmap 		gcalc 			gsearchtool		gdictsrc
 
 
 SUBDIRS =  	$(always_built_SUBDIRS)		$(gfloppy)		$(gdialog)
@@ -139,7 +139,7 @@ SUBDIRS =  	$(always_built_SUBDIRS)		$(gfloppy)		$(gdialog)
 DIST_SUBDIRS =  	$(always_built_SUBDIRS)		gfloppy				gdialog
 
 
-EXTRA_DIST =  	gnome-utils.spec.in 	gnome-utils.spec 	xmldocs.make 	omf.make 	intltool-extract.in 	intltool-merge.in 	intltool-update.in
+EXTRA_DIST =  	gnome-utils.spec.in 	gnome-utils.spec 	omf.make 	xmldocs.make 	intltool-extract.in 	intltool-merge.in 	intltool-update.in
 
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

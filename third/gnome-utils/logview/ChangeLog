@@ -1,17 +1,97 @@
-2002-11-18  Glynn Foster  <glynn.foster@sun.com>
+2003-01-24  Glynn Foster  <glynn.foster@sun.com>
 
-        * logview.c: (SetDefaultUserPrefs): Add /var/log/sys.log to
-        list of possible logs to open. Apply duct tape to bug that
-        I don't have time to look at.
+	* help/C/figures/syslog_window.png:
+	* help/C/gnome-system-log-C.omf:
+	* help/C/gnome-system-log.xml: Updates from the sun docs
+	people for 2.2
+
+2002-01-07 Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* pixmaps/Makefile.am:  removed logview.xpm reference from 
+	pixmaps_DATA & EXTRA_DIST.
+
+	* pixmaps/logview.xpm:  remove file
+	
+2002-12-28 Alex Duggan <aldug@gnome.org>
+	
+	* about.c: use the standard gnome-log icon in the about
+	dialog not the ancient GNOME one, Fixes #102773
+	
+2002-12-28 John Fleck <jfleck@inkstain.net>
+
+	* info.c, zoom.c
+	removing extraneous translation marks from a bunch of
+	%s, fixing #101764
+
+2002-12-21 Alex Duggan <aldug@gnome.org>
+
+	* about.c: fix spacing in about dialog 
+
+2002-12-21 John Fleck <jfleck@inkstain.net>
+
+	* remove help/C/logview.xml logview-C.omf
+	no longer used
+
+2002-12-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log.desktop.in: Update for StartupNotify
+
+2002-11-29  Fernando Herrera <fherrera@onirica.com>
+
+       * gnome-system-log.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2002-11-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* log_repaint.c: (InitPages), logrtns.c: Crufty code - 
+	make it less crufty. Fixes #99047.
+	* logview.schemas.in: Dunno why I called it 'logview'. Oh well.
+
+2002-11-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: (SetDefaultUserPrefs): Add /var/log/sys.log to 
+	list of possible logs to open. Apply duct tape to bug that
+	I don't have time to look at.
 
 2002-10-17  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* about.c: Unref the logo pixbuf. Fixing a leak.
+	* about.c: Fix a leak. Merge from stable.
 	
+2002-10-15  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gnome-system-log.xml: updated to fix bug #91164
+	* help/C/gnome-system-log-C.omf: updated manual date
+	  and version number
+	* help/C/l10n.txt: new text containing instruction for
+	  the L10N team about how to take the screenshots for
+	  the manual
+	* help/C/figures/syslog_window.png: updated screenshot
+	  of the latest application
+	      
+2002-09-26  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* monitor.c: Set remove list in the Monitor Options window to
+	remember the logs it is monitoring. Fixes bug# 89485.
+
+2002-09-25  Deepa Natarajan <deepa.natarajan@wipro.com>
+
+	* logview.c: Add an option to collapse all the trees.
+	Fixes bug# 89482.
+
+2002-09-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: Remove conflict for menu accelerators. Also get
+	rid of silly stock icons in File menu that don't make sense. Fixes
+	#92540.
+
+2002-08-29 John Fleck <jfleck@inkstain.net>
+
+	* about.c: fixing #92056 to remove 'Linux' only references.
+
 2002-08-29  Glynn Foster  <glynn.foster@sun.com>
 
-	* gnome-system-log-security.in: Default session to true, otherwise
-	user can't launch it when console helper is enabled.
+	* gnome-system-log-security.in: Default session to true, so that
+	user can run it when console helper is enabled. Another fix from
+	Frederic.
 
 2002-08-29  Glynn Foster  <glynn.foster@sun.com>
 
@@ -22,41 +102,155 @@
 	* gnome-system-log-security.in: Point to gnome-system-log instead
 	of logview. Thanks to Frederic for pointing this out.
 
-2002-08-21  Glynn Foster  <glynn.foster@sun.com>
-
-	* help/C/gnome-system-log-C.xml, gnome-system-log.omf: Updates
-	from HEAD.
-
 2002-08-09  Glynn Foster  <glynn.foster@sun.com>
 
-	* gnome-system-log.1: Update man page.
+        * gnome-system-log.1: Update man page.
+
+2002-08-02  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* logview.c: Remove some StubCall (), modify the ordering 
+	of menu items as 'Save As' entry has been removed. 
+	Fixes bug #89685.
+
+2002-07-31  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: Remove StubCall ()
+	* logview.h: ditto
+	* menus.c: (AddMenu): Remove 'Save As' entry in the menus
+	as it's not used. Fixes #89483.
+
+2002-07-31  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: s/About.../About. Fixes #89481.
+
+2002-07-26  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* log_repaint.c, logrtns.c, logview.h: When logview first 
+	comes up set focus on the last row and scroll to that row. 
+	Always maintain the last focused line. Fixes bug #87398.
+
+2002-07-25  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* logview.[ch], log_repaint.c: Maintain the correct status
+	of expanded rows when switching between logs.
+	Partly Fixes #87398.
 
 2002-07-24  Deepa Natarajan  <deepa.natarajan@wipro.com>
 
 	* actions.c: Pass the command to execute twice for execlp (),
 	so that the action happens. Fixes bug# 88207.
 
+2002-07-17  Deepa Natarajan  <deepa.natarajan@wipro.com>
+
+	* logview.c: Add menu item Close All - to close all the log
+	files in one shot.
+
 2002-07-08  Laavanya K R <laavanya.gopalan@wipro.com>
 
-        * actions.c: Modified exec_action_in_db() to execute "action"
-        by a combination of fork() and execlp() calls instead of
-        executing through system().  There is a potential of Time of
-        Check and Time of Use (TOCTOU) issues with system() since
-        shell is spawned first and command's executed after a small
-        time gap. Fixes #87110.
+	* actions.c: Modified exec_action_in_db() to execute "action"
+	by a combination of fork() and execlp() calls instead of
+	executing through system().  There is a potential of Time of
+	Check and Time of Use (TOCTOU) issues with system() since
+	shell is spawned first and command's executed after a small
+	time gap. Fixes #87110.
+
+2002-07-08  Deepa Natarajan  <deepa.natarajan@wipro.com> 
+ 
+	* logview.[ch], log_repaint.c: Append filename to the window 
+	title. Disable Close and Properties option when all files are
+	closed. s/Log/File as logs are just files. 
 
 2002-07-05  Glynn Foster  <glynn.foster@sun.com>
 
-        * gnome-system-log.desktop.in: s/DocPath/X-GNOME-DocPath.
-        Now conforms to spec.
+	* gnome-system-log.desktop.in: s/DocPath/X-GNOME-DocPath.
+	Now conforms to spec.
+
+2002-07-05  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Add install of schema
+	* logview.schemas.in: Add schemas.
+	* logview.c, logview.h, userprefsdialog.c: Get rid of old
+	unused cruft that you could set to change the size of your 
+	windows.
+
+2002-07-02  Deepa Natarajan  <deepa.natarajan@wipro.com> 
+ 
+	* logrtns.[ch], monitor.c: Rewrote ReadPageDown() and 
+	mon_read_new_lines() to update the logs that are monitored.
+     
+2002-07-02  Deepa Natarajan  <deepa.natarajan@wipro.com> 
+
+	* logview.c: enable restore session.
+
+2002-06-28  Deepa Natarajan  <deepa.natarajan@wipro.com> 
+
+	logview.h: Remove Fonts, Colors & Style info from ConfigData
+	structure. Remove log_page structure. Change Log structure
+	to remove Page stuff and add LogLine. Add an array to 
+	maintain the tree view paths that are expanded in a file. 
+	Used when switching between logs.
+
+	logview.c: Display logs in the form of a tree view placed 
+	inside a scrolled window. Set up 2 call backs: row-activated 
+	for showing zoom window and selection changed to update the 
+	current log line. Removed all canvas and scroll window stuff.
+
+	log_repaint.c: Rewrote to use GtkTreeView. Clean up #defines.
+	Add save_row_to_expand(): to save paths that are currently 
+	expanded. Remove HandleLogKeyboard as it does not follow HIG. 
+	Remove all Pango stuff. Restore session is disabled for now.
+
+	logrtns.c: Clean up #defines. Modify OpenLogLine to read from 
+	file and fill details in the new Log struture. Update CloseLog 
+	to free memory.
+
+	config.[ch]: Modified config data - removed all fonts and 
+	pango stuff.
+
+	zoom.c: Clear the zoom window when file is closed. Change the 
+	prototype for create_zoom_window to pass void. Get the current 
+	log based on the new log structure. Convert description to utf8 
+	before passing it to GtkListStore.
+
+	monitor.c: When the monitoring logs first comes up, display 
+	only the last 5 lines. Remove all page stuff. Right now 
+	updation of logs is disabled. Clean up #defines. 
+
+	menus.c, userprefdialog.c: Do not set styles, to respect themes.
+
+	calendar.c: The functionality of the calander is currently
+	disabled.
+
+	misc.c: Remove the function to load fonts.
+
+2002-06-14  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+        * monitor.c: Update the monitor window with the new lines added 
+        properly. And also make sure that the last log is also shown when
+        monitor window opened first. Bug#85248
 
 2002-06-19  Deepa Natarajan  <deepa.natarajan@wipro.com>
-
+ 
 	* actions.c: Change the windows to dialog boxes. Set
-     	atk relation between entry box and label, set mnemonics,
-     	set default button, change title of dialog to "Actions",
-     	position buttons to the right of the tree view. 
-     	s/gtk_widget_set_usize/gtk_widget_set_size_request.
+	atk relation between entry box and label, set mnemonics,
+	set default button, change title of dialog to "Actions",
+	position buttons to the right of the tree view. 
+	s/gtk_widget_set_usize/gtk_widget_set_size_request.
+
+	* monitor.c: s/GtkWindow/GtkDialog, add mnemonics,
+	set tooltips - thanks Parag, expand some of the
+	labels, change the ordering of the buttons, put all
+	the button in the same row, change the title of the 
+	dialog to "Monitor Options" and set the default button.
+	s/gtk_widget_set_usize/gtk_widget_set_size_request.
+
+	* zoom/info.c: Remove all pango stuff. Display info
+	in a GtkTreeView.
+
+	* log_repaint.c: Call repaint_zoom() and  RepaintLogInfo()
+	without parameters - change prototype.
+
+	* logview.h: change the prototype for repaint_zoom().
 
 2002-06-12  Narayana Pattipati <narayana.pattipati@wipro.com>
 

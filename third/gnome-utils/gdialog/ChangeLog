@@ -1,12 +1,81 @@
-2002-08-20  Archit Baweja  <bighead@users.sourceforge.net>
+2003-01-14 John Fleck <jfleck@inkstain.net>
 
-	* menubox.c (dialog_menu): semi-fix for #2467 only in Gnome mode.
+	* help/C/gdialog.xml
+	* help/C/gdialog-C.omf
+	* help/C/figures/*.png
+	update docs to some semblance of reality
 
-	* textbox.c (dialog_textbox): put the GtkTextView in a Scrolled Window,
-	so we don't get broken output. Fixes #78038 in bugzilla.
+2002-12-11  Mike Newman  <mike@gtnorthern.demon.co.uk>
+
+	* dialog.c: (main): don't need to check DISPLAY is set if the
+	--create-rc arg has been passed (fixes #71569).
+
+2002-11-07  Alvaro del Castillo <acs@barrapunto.com>
+
+	* guage.c: (dialog_gauge): Close the window when gdialog
+	is finished.
+
+2002-09-22  Rodrigo Moya <rodrigo@gnome-db.org>
+
+	* menubox.c (dialog_menu): replaced the ugly scrolled window with
+	buttons with a nice GtkOptionMenu.
+
+2002-08-24  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* msgbox.c (dialog_msgbox): in --infobox mode, exit immediately but
+	clear dialog after a specified interval of time. Fixes #71572 in
+	bugzilla.
+	(dialog_infobox_quit): new function.
+	
+2002-08-22  Archit Baweja  <bighead@users.sourceforge.net>
+ 
+ 	* util.c (label_autowrap): don't do automatic wrapping. Fixes #74466
+ 	in bugzilla.
+
+2002-07-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* dialog.c, dialog.h, guage.c: s/guage/gauge/g to correct
+	spelling. Should probably rename the file too. Fixes #71578.
+
+2002-07-28  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* inputbox.c (dialog_inputbox): clean up extra code.
+
+	* checklist.c (dialog_checklist): pack the GtkViewport in a
+	GtkScrolledWindow.
+
+	* menubox.c (dialog_menu): use GtkViewport + GtkScrolledWindow to
+	display the buttons. Fixes #2467 in bugzilla.
+
+2002-07-25  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* checklist.c (err_outputter): handle the separate-output option with 
+	the new change in check/radiolist mode.
+
+2002-07-24  Archit Baweja  <bighead@users.sourceforge.net>
 
 	* inputbox.c (okayed): exit with proper error code.
 	(dialog_inputbox): likewise.
+
+2002-07-22  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* checklist.c (clist_add, rlist_add): new function.
+	(dialog_checklist): use GtkCheckButton and GtkRadioButton widgets.
+	Fixes #74468, #71577 and #77060 in bugzilla.
+	
+	* dialog.c (Usage): don't require the name parameter.
+	Changed all callers.
+
+2002-07-21  Archit Baweja  <bighead@users.sourceforge.net>
+
+	* textbox.c (dialog_textbox): put the GtkTextView in a Scrolled Window,
+	so we don't get broken output. Fixes #78038 in bugzilla.
+	(dialog_textbox_load_file): new function.
+
+	* inputbox.c (dialog_inputbox): Yes/No should be No/Yes to be HIG
+	complaint.
+
+	* checklist.c (dialog_checklist): likewise.
 
 	* yesno.c (callback_yn): exit with the proper return code.
 	Fixes #87032 in bugzilla.

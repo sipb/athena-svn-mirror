@@ -58,6 +58,8 @@
 #define LOG_WINDOW_W             LOG_CANVAS_W+15
 #define LOG_WINDOW_H             LOG_CANVAS_H+LOG_BOTTOM_MARGIN
 
+#define APP_NAME                 _("System Log Viewer")
+
 
 /*
  *    ,----------.
@@ -70,18 +72,6 @@ typedef struct __menu_item MenuItem;
 
 typedef struct
 {
-  /* Fonts ----------------------------------------------------- */
-   PangoFontDescription *heading, *headingb, *fixed, *fixedb, *small;
-
-  /* Colors ---------------------------------------------------- */
-  GdkColor black, green, blue, blue1, blue3, gray25, gray50;
-  GdkColor gray75, white;
-  GdkVisual *vis;
-  GdkColormap *cmap;
-
-  /* Styles ---------------------------------------------------- */
-  GtkStyle *main_style, *white_bg_style, *black_bg_style;
-
   /* Paths ----------------------------------------------------- */
   char *regexp_db_path, *descript_db_path, *action_db_path;
 
@@ -165,25 +155,10 @@ typedef struct
   Description *description;
 } LogLine;
 
-struct log_page
-{
-   int numlines;
-   int islastpage, isfirstpage;
-   int fl, ll;
-   LogLine line[LINES_P_PAGE];
-   long firstchpos, lastchpos;
-   struct log_page *next, *prev;
-};
-
-typedef struct log_page Page;
 typedef void (*MonActions)();
 
 typedef struct
 {
-	/* Negative column width indicates don't show */
-	int process_column_width;
-	int hostname_column_width;
-	int message_column_width;
 	/* FIXME: This should perhaps be a glist of logfiles to
 	** open on startup. Also one should be able to set the value in
 	** the prefs dialog
@@ -194,16 +169,16 @@ typedef struct
 typedef struct
 {
   FILE *fp;
-  Page *currentpg;
-  Page *firstpg, *lastpg;
   DateMark *curmark;
   char name[255];
-  int firstline;	/* Line at top of screen relative to current page. */
-  long ln;		/* Line at top of screen relative to start of log. */
-  int pointerln;	/* Line number where the pointer is.               */
-  Page *pointerpg;	/* Page where the pointer is.                      */
-  LogStats lstats;
   CalendarData *caldata;
+  LogStats lstats;
+  gint current_line_no; /* indicates the line that is selected */
+  gint total_lines; /* no of lines in the file */
+  LogLine **lines; /* actual lines */
+  gboolean first_time;
+  GtkTreePath *current_path;
+  GtkTreePath *expand_paths[32];
 
   /* Monitor info */
   GtkWidget *mon_lines;
@@ -221,18 +196,13 @@ Log;
  *    `---------------------'
  */
 
-void StubCall (GtkWidget *, gpointer);
-void InitBlackStyle( GtkStyle *cs );
 void ShowErrMessage (const char *msg);
 void QueueErrMessages (gboolean do_queue);
 void ShowQueuedErrMessages (void);
 GtkWidget *AddMenu (MenuItem * items);
 ConfigData *CreateConfig(void);
-void set_scrollbar_size (int);
-int repaint_zoom (GtkWidget * widget, GdkEventExpose * event);
+int repaint_zoom (void);
 void MoveToMark (Log *log);
-void ScrollUp (int howmuch);
-void ScrollDown (int howmuch);
 CalendarData* init_calendar_data (void);
 int RepaintCalendar (GtkWidget * widget, GdkEventExpose * event);
 int read_descript_db (char *filename, GList **db);
@@ -241,7 +211,6 @@ int IsLeapYear (int year);
 void SetDefaultUserPrefs(UserPrefsStruct *prefs);
 int exec_action_in_db (Log *log, LogLine *line, GList *db);
 
-PangoFont * LoadFont (PangoContext *context, PangoFontDescription *fontd);
 char *LocaleToUTF8 (const char *in);
 
 #define sure_string ((x)?(x):"")

@@ -91,45 +91,82 @@ cb_charbtn_click (GtkButton *button, gpointer user_data)
     GtkLabel *label = GTK_LABEL (GTK_BIN (button)->child);
     const gchar *text;
     gint current_pos;
+    gchar utf [7];
+    gunichar wc;
    
     text = gtk_label_get_text (label);
 
-    gtk_editable_get_position(GTK_EDITABLE(mainapp->entry));
-    gtk_editable_insert_text (GTK_EDITABLE (mainapp->entry), text,
-			      strlen (text), &current_pos);
-    gtk_editable_set_position (GTK_EDITABLE (mainapp->entry), current_pos + 1);
-}
-
-
-gboolean
-cb_charbtn_enter (GtkButton *button, GdkEventFocus *event, gpointer user_data)
-{
-    GtkLabel *label = GTK_LABEL (GTK_BIN (button)->child);
-    gchar *s;
-   int code;
-    const gchar *text;
-
-    text = gtk_label_get_text (label);
-    if (strcmp (text, _("del")) == 0) {
-	    code = 127;
-    } else {
-            code = g_utf8_get_char(text);
+    if (!text || text [0] == 0) {
+        wc = GPOINTER_TO_INT (user_data) + mainapp->current_page * 256;
+        text = utf;
+        utf [g_unichar_to_utf8 (wc, utf)] = 0;
     }
 
-    s = g_strdup_printf (_(" %s: Character code %d"), text, code);
+    current_pos = gtk_editable_get_position(GTK_EDITABLE(mainapp->entry));
+    gtk_editable_insert_text (GTK_EDITABLE (mainapp->entry), text,
+			      strlen (text), &current_pos);
+    gtk_editable_set_position (GTK_EDITABLE (mainapp->entry), current_pos);
+}
+
+void
+set_status_bar (GtkButton *button, gpointer user_data)
+{
+    GtkLabel *label = GTK_LABEL (GTK_BIN (button)->child);
+    const char *charset;
+    gchar *s;
+    gchar *locale;
+    gchar mbstr[MB_LEN_MAX*2+1];
+    gchar utf[7];
+    gunichar wc;
+    gsize len;
+    int i;
+
+    g_get_charset (&charset);
+    wc = GPOINTER_TO_INT (user_data) + mainapp->current_page * 256;
+    utf [g_unichar_to_utf8 (wc, utf)] = 0;
+
+    if (utf [0]!=0 && (locale = g_locale_from_utf8 (utf, -1, NULL, &len, NULL)) != NULL) {
+	if (len == 1 && (utf[0]&0xff) != 0x3f && locale[0] == 0x3f)
+		s = g_strdup_printf (_("Character code: (Unicode) U%04lX"), wc);
+	else {
+		for (i=0; i<len; i++)
+			g_snprintf (mbstr + i*2, MB_LEN_MAX*2 + 1 - i*2, "%02X", (int) ((unsigned char) locale[i]));
+		s = g_strdup_printf (_("Character code: (Unicode) U%04lX, (%s) 0x%s"), wc, charset, mbstr);
+	}
+	g_free (locale);
+    } else {
+        s = g_strdup_printf (_("Character code: (Unicode) U%04lX"), wc);
+    }
+
     gnome_appbar_set_status (GNOME_APPBAR (GNOME_APP (mainapp->window)->statusbar), s);
     g_free (s);
-    return FALSE;
 }
 
+void
+cb_charbtn_enter (GtkButton *button, gpointer user_data)
+{
+    set_status_bar (button, user_data);
+}
 
 gboolean
-cb_charbtn_leave (GtkButton *button, GdkEventFocus *event, gpointer user_data)
+cb_charbtn_focus_in (GtkButton *button, GdkEventFocus *event, gpointer user_data)
 {
-    gnome_appbar_pop (GNOME_APPBAR (GNOME_APP (mainapp->window)->statusbar));
+    set_status_bar (button, user_data);
     return FALSE;
 }
 
+void
+cb_charbtn_leave (GtkButton *button, gpointer user_data)
+{
+    gnome_appbar_pop (GNOME_APPBAR (GNOME_APP (mainapp->window)->statusbar));
+}
+
+gboolean
+cb_charbtn_focus_out (GtkButton *button, GdkEventFocus *event, gpointer user_data)
+{
+   gnome_appbar_pop (GNOME_APPBAR (GNOME_APP (mainapp->window)->statusbar));
+   return FALSE;
+}
 
 void
 cb_clear_click (GtkWidget *widget, gpointer user_data)
@@ -177,6 +214,20 @@ void
 cb_exit_click (GtkWidget *widget, gpointer user_data)
 {
     gtk_widget_destroy (mainapp->window);
+}
+
+void
+cb_fontpicker_font_set (GnomeFontPicker *picker, gchar *font, gpointer app)
+{
+    /* if font setting isn't changed, do nothing */
+    if ( strcmp(font, ((MainApp *)app)->font) == 0 )
+      return;
+  
+    if (((MainApp *)app)->font) 
+      g_free( ((MainApp *)app)->font);
+    ((MainApp *)app)->font = g_strdup(font);
+   
+    main_app_set_font ((MainApp *) app, font);
 }
 
 void
@@ -236,4 +287,87 @@ cb_entry_changed (GtkWidget *widget, gpointer data)
     g_free (text);
 }
 
+void 
+cb_page_select_spin_changed (GtkSpinButton *spin, gpointer user_data)
+{
+    static gboolean updating = FALSE;
+
+    if (updating == TRUE) return;
+
+    updating = TRUE;
+    mainapp->current_page = gtk_spin_button_get_value_as_int (spin);
+
+    if (mainapp->current_page < 0) mainapp->current_page = 0;
+    else if (mainapp->current_page > 255) mainapp->current_page = 255;
+
+    set_chartable_labels();
+    updating = FALSE;
+}
+
+void
+set_chartable_labels (void)
+{
+    GtkButton *button;
+    gchar utf[7];
+    gunichar wc;
+    gint len, i;
+
+    for (i=0; i<g_list_length (mainapp->buttons); i++)
+    {
+	wc = i + mainapp->current_page * 256;
+        len = g_unichar_to_utf8 (wc, utf);
+
+	switch (g_unichar_type (wc)) {
+/*
+	    case  G_UNICODE_CONTROL:
+            case  G_UNICODE_FORMAT:
+            case  G_UNICODE_UNASSIGNED:
+*/
+	    case  G_UNICODE_PRIVATE_USE:
+/*
+	    case  G_UNICODE_SURROGATE:
+*/
+	    case  G_UNICODE_LOWERCASE_LETTER:
+            case  G_UNICODE_MODIFIER_LETTER:
+            case  G_UNICODE_OTHER_LETTER:
+            case  G_UNICODE_TITLECASE_LETTER:
+            case  G_UNICODE_UPPERCASE_LETTER:
+/*
+	    case  G_UNICODE_COMBINING_MARK:
+            case  G_UNICODE_ENCLOSING_MARK:
+            case  G_UNICODE_NON_SPACING_MARK:
+*/
+	    case  G_UNICODE_DECIMAL_NUMBER:
+            case  G_UNICODE_LETTER_NUMBER:
+            case  G_UNICODE_OTHER_NUMBER:
+            case  G_UNICODE_CONNECT_PUNCTUATION:
+            case  G_UNICODE_DASH_PUNCTUATION:
+            case  G_UNICODE_CLOSE_PUNCTUATION:
+            case  G_UNICODE_FINAL_PUNCTUATION:
+            case  G_UNICODE_INITIAL_PUNCTUATION:
+            case  G_UNICODE_OTHER_PUNCTUATION:
+            case  G_UNICODE_OPEN_PUNCTUATION:
+            case  G_UNICODE_CURRENCY_SYMBOL:
+            case  G_UNICODE_MODIFIER_SYMBOL:
+            case  G_UNICODE_MATH_SYMBOL:
+            case  G_UNICODE_OTHER_SYMBOL:
+/*
+	    case  G_UNICODE_LINE_SEPARATOR:
+            case  G_UNICODE_PARAGRAPH_SEPARATOR:
+            case  G_UNICODE_SPACE_SEPARATOR:
+*/
+		break;
+            default:
+		len = 0;
+        }
+
+        utf [len] = 0;
+
+	button = GTK_BUTTON (g_list_nth_data (mainapp->buttons, i));
+        gtk_button_set_label (button, utf);
+    }
+   
+    main_app_set_font(mainapp, mainapp->font);
+}
+ 
 #endif /* _CALLBACKS_C_ */

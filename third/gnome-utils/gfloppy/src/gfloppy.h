@@ -37,12 +37,29 @@ typedef enum {
 	GFLOPPY_360K = 3
 } GFloppySize;
 
+typedef enum {
+	GFLOPPY_FORMAT_QUICK = 0,
+	GFLOPPY_FORMAT_STANDARD = 1,
+	GFLOPPY_FORMAT_THOROUGH = 2,
+	GFLOPPY_FORMAT_END = 3
+} GFloppyFormattingMode;
+
 typedef struct _GFloppy GFloppy;
 struct _GFloppy {
 	GFloppyType type;
 	GFloppySize size;
+	GFloppyFormattingMode formatting_mode;
+
 	gint nblocks;      /* total number of 512 byte blocks */
-	gboolean quick_format; /* If true, don't do a low level format */
+	gint nbadblocks;       /* number of bad blocks found during scan
+				  (only available in the parent process) */
+	GList *badblocks_list; /* list of the bad blocks found during scan
+				  (only available in the child process) */
+
+	gboolean mkdosfs_backend; /* If true, the mkdosfs FAT formatting
+				     will be used */
+	gchar *volume_name;    /* the label to be assigned to the disk */
+
 	gchar *device;         /* ie. /dev/fd0  can also be /dev/fd0H1440 */
 	gchar *extended_device;/* ie. /dev/fd0H1440 */
 	gchar *mdevice;        /* ie. a: or b: */
@@ -54,6 +71,7 @@ struct _GFloppy {
 	gint handler_id;
 
 	/* Protocol for message pipe.
+	 * B<number>  - Inform the main process that the block <number> is corrupted
 	 * E<message> - Spawn an error dialog with <message> as the message
 	 * M<message> - Puts <message> in the progress dialog.
 	 * P###       - Update the progress bar with ### as the percent - range 000->100  */
@@ -63,6 +81,7 @@ struct _GFloppy {
 	gchar *badblocks_cmd;
 	gchar *mformat_cmd;
 	gchar *mke2fs_cmd;
+	gchar *mkdosfs_cmd;
 };
 /* This should do the format of the floppy. */
 void format_floppy (GFloppy *floppy);
@@ -75,6 +94,9 @@ typedef enum {
 	GFLOPPY_DEVICE_DISCONNECTED,
 	GFLOPPY_DEVICE_OK
 } GFloppyStatus;
-GFloppyStatus test_floppy_device       (gchar *device);
+
+GFloppyStatus test_floppy_device (gchar *device);
+gint	      floppy_block_size  (GFloppySize size);
+
 #endif
 

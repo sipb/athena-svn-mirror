@@ -32,23 +32,7 @@
  * ------------------
  */
 
-#define LOG_COL1                 7
-#define LOG_COL2                 70
-#define LOG_COL3                 170
-#define LOG_COL4                 200
-#define LOG_COL5                 300
-#define LOG_COL6                 340
-#define LOG_COL7                 400
-#define LOG_TITLEY               10
-
 #define MAX_NUM_LOGS             10
-#define MAX_NUM_DPY_LINES        300
-#define MAX_DPY_NUM_CHARS        200
-#define DEF_NUM_LOGS             3
-
-#define FRMT_HEADING             1
-#define FRMT_NORMAL              2
-
 
 /*
  * -------------------
@@ -190,9 +174,10 @@ get_month (const char *str)
 Log *
 OpenLogFile (char *filename)
 {
-   Page *prev, *first, *cur;
    Log *tlog;
-   int j;
+   LogLine *line;
+   char buffer[1024];
+   int i, j;
 
    /* Check that the file exists and is readable and is a
       logfile */
@@ -207,29 +192,6 @@ OpenLogFile (char *filename)
       return ((Log *) NULL);
    }
    memset (tlog, 0, sizeof (Log));
-   /* Alloc memory for pages ------------------------------ */
-   tlog->currentpg = (Page *) malloc (sizeof (Page));
-   if (tlog->currentpg == NULL)
-   {
-      ShowErrMessage (_("Out of memory!\n"));
-      free (tlog);
-      return (Log *) NULL;
-   }
-   prev = NULL;
-   cur = tlog->currentpg;
-   tlog->firstpg = first = cur;
-   for (j = 1; j < NUM_PAGES; j++)
-   {
-      cur->next = (Page *) malloc (sizeof (Page));
-      cur->prev = prev;
-      prev = cur;
-      cur = cur->next;
-   }
-
-   tlog->lastpg = cur;
-   cur->prev = prev;
-   cur->next = first;
-   first->prev = cur;
 
    /* Open log files ------------------------------------- */
    strncpy (tlog->name, filename, sizeof (tlog->name)-1);
@@ -240,36 +202,39 @@ OpenLogFile (char *filename)
       ShowErrMessage (_("Unable to open logfile!\n"));
       return (Log *) NULL;
    }
-   fseek (tlog->fp, -1L, SEEK_END);
+   /* fseek (tlog->fp, -1L, SEEK_END); */
 
-   /* Read pages into buffers --------------------------- */
-   cur = tlog->lastpg;
-   for (j = 0; j < NUM_PAGES; j++)
-   {
-      if (ReadPageUp (tlog, cur) == TRUE)
-      {
-	 tlog->firstpg = cur;
-	 break;
+   while (fgets (buffer, sizeof (buffer), tlog->fp)) {
+
+      ++(tlog->total_lines);
+      tlog->lines = realloc (tlog->lines, sizeof(*(tlog->lines)) * tlog->total_lines);
+      if (!tlog->lines) {
+         ShowErrMessage ("Unable to realloc for lines\n");
+         return (Log *) NULL;
       }
-      cur = cur->prev;
+
+      line = malloc (sizeof(**(tlog->lines)));
+      if (!line) {
+         ShowErrMessage ("Unable to malloc for lines[i]\n");
+         return (Log *) NULL;
+      }
+      ParseLine (buffer, line);
+      (tlog->lines)[tlog->total_lines - 1] = line;
    }
-   tlog->lastpg->ll = LINES_P_PAGE-1;
-   tlog->lastpg->islastpage = TRUE;
-   tlog->currentpg = tlog->lastpg;
-   tlog->firstline = tlog->lastpg->fl;
-   tlog->pointerln = tlog->firstline;
-   tlog->pointerpg = tlog->currentpg;
+
    tlog->mon_on = FALSE;
 
    /* Read log stats */
    ReadLogStats (tlog);
 
-   /* Move end of file marker to last char on file */
-   fseek(tlog->fp, -1L, SEEK_END);
+   fseek(tlog->fp, 0L, SEEK_END); 
    tlog->offset_end = ftell(tlog->fp);
-   tlog->ln = tlog->lstats.numlines - LINES_P_PAGE;
+
+   if (!tlog->offset_end)
+      printf ("Empty file! \n");
 
    return tlog;
+
 }
 
 /* ----------------------------------------------------------------------
@@ -369,6 +334,7 @@ isLogFile (char *filename)
    DESCRIPTION: 
    ---------------------------------------------------------------------- */
 
+#ifdef FIXME
 int
 ReadNPagesUp (Log * lg, Page * pg, int n)
 {
@@ -493,88 +459,52 @@ ReadPageUp (Log * lg, Page * pg)
 
    return pg->isfirstpage;
 }
+#endif
 
 /* ----------------------------------------------------------------------
    NAME:        ReadPageDown
-   DESCRIPTION: Reads a page from the log file.
+   DESCRIPTION: Reads new log lines 
    ---------------------------------------------------------------------- */
 
 int
-ReadPageDown (Log * lg, Page * pg, gboolean exec_actions)
+ReadPageDown (Log *log, LogLine ***inp_mon_lines, gboolean exec_actions)
 {
+   char buffer[1024];
+   gint new_lines_read = 0;
    FILE *fp;
    LogLine *line;
-   char *c, buffer[R_BUF_SIZE + 1];
-   int ch;
-   int ln, len;
+   LogLine **new_mon_lines = NULL;
+   
+   g_return_val_if_fail (log != NULL, FALSE);
 
-   g_return_val_if_fail (lg != NULL, FALSE);
+   fp = log->fp;
 
-   fp = lg->fp;
-   ln = 0;
+   while (fgets (buffer, sizeof (buffer), fp)) {
+       ++new_lines_read;
+       new_mon_lines = realloc (new_mon_lines,
+               sizeof(*(new_mon_lines)) * new_lines_read);
 
-   pg->firstchpos = MAX (0, ftell (fp)-1);
-   pg->islastpage = FALSE;
-   pg->isfirstpage = FALSE;
-   pg->fl = 0;
-   pg->ll = 0;
+       if (!new_mon_lines) {
+           ShowErrMessage ("Unable to realloc for new_mon_lines\n");
+           return 0; 
+       }
 
-   /* Check if its the first page */
-   if ( ftell(fp) == 0)
-     pg->isfirstpage = TRUE;
+       line = malloc (sizeof(**(new_mon_lines)));
+       if (!line) {
+           ShowErrMessage ("Unable to malloc for line\n");
+           return 0;
+       }
+       ParseLine (buffer, line);
+       new_mon_lines[new_lines_read - 1] = line;
 
-   while (ln < LINES_P_PAGE)
-   {
-      c = buffer;
-      ch = fgetc (fp);
-      if (ch == '\n')
-	 ch = fgetc (fp);
-      if (ch == EOF)
-      {
-	 if (ln == 0)
-	   {
-	     if (pg->prev != NULL)
-	       pg->prev->islastpage = TRUE;
-	     else
-	       pg->islastpage = TRUE; 
-	   }
-	 else
-	   pg->islastpage = TRUE;
-	 ungetc (ch, fp);
-	 break;
-      }
-      len = 0;
-      while (ch != '\n')
-      {
-	 if (len < R_BUF_SIZE)
-	 {
-	    *c = ch;
-	    c++;
-	    len++;
-	 }
-	 ch = fgetc (fp);
-	 if (ch == EOF)
-	 {
-	    pg->islastpage = TRUE;
-	    ungetc (ch, fp);
-	    break;
-	 }
-      }
-      ungetc (ch, fp);
-      *c = '\0';
-
-      line = &pg->line[ln];
-      ParseLine (buffer, line);
-
-      if (exec_actions)
-	      exec_action_in_db (lg, line, actions_db);
-
-      ln++;
+       if (exec_actions)
+           exec_action_in_db (log, line, actions_db);
    }
-   pg->ll = ln-1;
-   pg->lastchpos = ftell (fp);
+   *inp_mon_lines = new_mon_lines;
+   log->offset_end = ftell (fp);
 
-   return TRUE;
+   return new_lines_read;
+
 }
 
 
@@ -981,6 +911,7 @@ UpdateLogStats( Log *log )
                   NUM_PAGES/2 pages behind (if possible).
    ---------------------------------------------------------------------- */
 
+#ifdef FIXME
 void
 MoveToMark (Log *log)
 {
@@ -1038,9 +969,11 @@ MoveToMark (Log *log)
   log->currentpg = middlepg;
    
 }
+#endif
 
 
 
+#ifdef FIXME
 /* ----------------------------------------------------------------------
    NAME:	UpdateLastPage
    DESCRIPTION:	Re-read the last log page.
@@ -1056,7 +989,7 @@ UpdateLastPage (Log *log)
 
 
 }
-
+#endif
 
 /* ----------------------------------------------------------------------
    NAME:          isSameDay
@@ -1147,26 +1080,28 @@ GetDate (char *line)
 void
 CloseLog (Log * log)
 {
-   Page *cur, *next;
-   int i;
+   gint i;
 
    g_return_if_fail (log);
 
    /* Close file */
-   if (log->fp != NULL)
-      fclose (log->fp);
-
-   /* Free all used memory */
-   cur = log->currentpg;
-   for (i = 0; i < NUM_PAGES; i++)
-   {
-      next = cur->next;
-      free (cur);
-      cur = next;
+   if (log->fp != NULL) {
+       fclose (log->fp);
+       log->fp = NULL;
    }
 
-   free (log);
+   /* Free all used memory */
+   for (i = 0; i < log->total_lines; i++)
+      g_free ((log->lines)[i]);
+
+   for (i = 0; log->expand_paths[i]; ++i)
+       gtk_tree_path_free (log->expand_paths[i]);
+
+   gtk_tree_path_free (log->current_path);
+
+   g_free (log);
    return;
+
 }
 
 /* ----------------------------------------------------------------------
@@ -1181,13 +1116,12 @@ WasModified (Log *log)
   struct stat filestatus;
 
   stat (log->name, &filestatus);
-  if (filestatus.st_mtime != log->lstats.mtime)
-    {
+  if (filestatus.st_mtime != log->lstats.mtime) {
       log->lstats.mtime = filestatus.st_mtime;
       return TRUE;
-    }
-  else
-    return FALSE;
+  } else
+      return FALSE;
+
 }
 
 /* ----------------------------------------------------------------------

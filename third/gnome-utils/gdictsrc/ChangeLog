@@ -1,11 +1,41 @@
+Sun Jan 12 23:23:52 2003  George Lebl <jirka@5z.com>
+
+	* main.c: properly get arguments from the command line, use popt,
+	  this should fix #99325 and #101508
+
+2002-12-04  Dan Mills  <thunder@ximian.com>
+
+	* gdict-about.c (gdict_about_new): Close the "_" macro.
+
+2002-12-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* gdict-about.c: (gdict_about_new): Remove dictionary about
+	  dialog URL's - they're invalid anyway.
+
+2002-11-29  Fernando Herrera <fherrera@onirica.com>
+
+       * gnome-dictionary.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2002-11-23 John Fleck <jfleck@inkstain.net>
+
+	* help/C/gnome-dictionary.xml
+	minor updates for 2.2
+	* help/C/figures/*.png
+	remove image files we're no longer using in the help
+
 2002-09-19  Glynn Foster  <glynn.foster@sun.com>
 
-	* gdict-app.c: (gdict_app_create): Set max history to 10. Paolo
-	pointed out it was getting too large :)
+	* gdict-app.c: (gdict_app_create): Set max history to 10 - Paolo
+	pointed out that his history was getting too large ;)
 
 2002-08-08  Glynn Foster <glynn.foster@sun.com>
 
-	* gnome-dictionary.1: Update man page.
+        * gnome-dictionary.1: Update man page.
+
+2002-07-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* gdict-pref-dialog.c: (create_dialog): Don't label two 
+	buttons 'Default' - it tends to confused people. Fixes #89409.
 
 2002-07-29  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
@@ -13,28 +43,28 @@
 	gcc 3.1.x warning when prefix=/usr
 
 2002-07-28  Joe Drew <hoserhead@woot.net>
-	
-	* Makefile.am: Clean up generated files.
+
+        * Makefile.am: Clean up generated files.
 
 2002-07-25  Paolo Maggi  <maggi@athena.polito.it>
 
-	* gdict-app.c (gdict_app_do_lookup): if needed update the 
-	the word_entry 
-	(lookup_defbox): use gnome_entry_prepend_history instead of
-	gnome_entry_append_history
-	(lookup_button_drag_cb): ditto
+       * gdict-app.c (gdict_app_do_lookup): if needed update the
+       the word_entry
+       (lookup_defbox): use gnome_entry_prepend_history instead of
+       gnome_entry_append_history
+       (lookup_button_drag_cb): ditto
 
 2002-07-23  Irene Ryan   <irene.ryan@sun.com>
 
-	* help/gnome-dictionary-C.omf: Updates for new title.
+        * help/gnome-dictionary-C.omf: Updates for new title.
 
 2002-07-23  Glynn Foster  <glynn.foster@sun.com>
 	
 	* gdict-applet.c: Clear the entry after we do a lookup. Fixes #8711.
 
-2002-07-16  Kjartan Maraas  <kmaraas@gnome.org>
+2002-07-22  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* gdict-about.c: Mark more strings for translation. (About dialog).
+	* gdict-about.c: Merge marking strings from branch.
 	
 2002-07-18  Mark McLoughlin  <mark@skynet.ie>
 
@@ -43,16 +73,11 @@
 	* GNOME_GDictApplet.server.in: move .server.in to
 	.server.in.in to allow for libexec dir substitution.
 
-2002-07-18  Glynn Foster  <glynn.foster@sun.com>
-
-	* gnome-dictionary.desktop.in: s/DocPath/X-GNOME-DocPath to 
-	conform to spec
-
 2002-07-10  Satyajit Kanungo   <satyajit.kanungo@wipro.com>
 
-        * gdict-pref-dialog.c : Added a "help"  button in the preference
-          dialog box and put the help callback.
-        * gdict-applet.c : Added the Error handling for help callback.
+        *. gdict-pref-dialog.c : Added a "help"  button in the preference
+           dialog box and put the help callback.
+        *. gdict-applet.c : Added the Error handling for help callback.
 
 2002-07-05  Glynn Foster  <glynn.foster@sun.com>
 

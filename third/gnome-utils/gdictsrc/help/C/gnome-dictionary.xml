@@ -3,8 +3,8 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
   <!ENTITY appversion "1.106.0">
-  <!ENTITY manrevision "2.1">
-  <!ENTITY date "August 2002">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "November 2002">
   <!ENTITY app "Dictionary">
 ]>
 <!-- This file covers the Dictionary applet and application. -->
@@ -22,7 +22,10 @@
 <!-- appropriate code -->
   <articleinfo> 
     <title>&app; Manual V&manrevision;</title>       
-
+    <copyright>
+      <year>2002</year>
+      <holder>John Fleck</holder>
+    </copyright>
     <copyright> 
       <year>2002</year> 
       <holder>Sun Microsystems</holder> 
@@ -77,8 +80,18 @@
     </authorgroup>
 
     <revhistory>
+      <revision>
+	<revnumber>&app; Manual V &manrevision;</revnumber>
+	<date>November 2002</date>
+	<revdescription>
+	  <para role="author">John Fleck
+	    <email>jfleck@inkstain.net</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription>
+      </revision>
       <revision> 
-	<revnumber>&app; Manual V&manrevision;</revnumber> 
+	<revnumber>&app; Manual V 2.1</revnumber> 
 	<date>&date;</date> 
 	<revdescription> 
 	  <para role="author">Sun GNOME Documentation Team
@@ -178,7 +191,7 @@
 		  			</mediaobject> 
 				</screenshot> 
 	 		</figure> 
-    		<para>To start the <application>&app;</application> application, click on the applet icon. </para>
+	    <para>To start the <application>&app;</application> application, click on the applet's <guibutton>Lookup</guibutton> button. </para>
     		</listitem>
     	</varlistentry>
     </variablelist>
@@ -264,8 +277,8 @@
     			<listitem><para>If <application>&app;</application> finds a definition for the word, the application
     			displays the definition in the display area. </para></listitem>
     			<listitem><para>If <application>&app;</application> does not find a definition for the word, the application
-    			opens the <guilabel>Spell checker</guilabel> dialog and checks the spelling of the word. You can select a
-    			word in the <guilabel>Spell checker</guilabel> dialog, then click <guibutton>Look Up Word</guibutton>. </para></listitem>
+    			opens the <guilabel>Check spelling</guilabel> dialog and checks the spelling of the word. You can select a
+    			word in the <guilabel>Check spelling</guilabel> dialog, then click <guibutton>Look Up Word</guibutton>. </para></listitem>
     		</itemizedlist>
     		</listitem>	
     		<listitem><para>Use the scrollbar to scroll through the definition.</para></listitem>
@@ -278,7 +291,7 @@
     	<orderedlist>
     		<listitem><para>Choose <menuchoice><guimenu>Dictionary</guimenu><guimenuitem>Check Spelling</guimenuitem>
     		</menuchoice>.</para></listitem>
-    		<listitem><para>In the <guilabel>Word</guilabel> text box of the <guilabel>Spell checker</guilabel> 
+    		<listitem><para>In the <guilabel>Word</guilabel> text box of the <guilabel>Check spelling</guilabel> 
     		dialog, type the word that you want to check.</para></listitem>
     		<listitem><para>Select the <guilabel>Search Strategy</guilabel> that you want to use.</para></listitem>
     		<listitem><para>Click <guibutton>Spell</guibutton>. <application>&app;</application> displays 
