@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.4 1991-03-24 23:03:54 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.5 1991-03-26 09:13:09 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
@@ -95,7 +95,7 @@ void main(argc, argv)
  */
 
   /* Let our invoker know we're ready... */
-  if (signal != 0) {
+  if (spid != 0) {
     kill(spid,SIGUSR1);
   }
 #ifdef LOG
