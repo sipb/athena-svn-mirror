@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.66 1995-01-10 06:15:09 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67 1995-01-27 09:35:16 cfields Exp $
  */
 
 #include <stdio.h>
@@ -633,7 +633,7 @@ char *password;
 	krb5_ret = do_v5_kinit(username, inst, realm,
 			       LOGIN_TKT_DEFAULT_LIFETIME, password,
 			       0, &etext);
-	if (krb5_ret) {
+	if (krb5_ret && krb5_ret != KRB5KRB_AP_ERR_BAD_INTEGRITY) {
 	    com_err("xlogin", krb5_ret, etext);
 	}
     }
