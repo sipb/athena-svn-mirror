@@ -1,9 +1,6 @@
 #!/bin/sh -
 # Version-specific update script for 7.4A
 
-echo "Adding NOREMOTE to rc.conf"
-echo "NOREMOTE=false;		 export NOREMOTE       # Deny access to remote users not in /etc/passwd" >> ${CONFDIR}/rc.conf
-
 echo "NEWUNIX=true"			>> ${CONFVARS}
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
@@ -33,5 +30,6 @@ RS*)
 		sed -e "s/Non-root logins are not supported here at this time.//" /etc/security/login.cfg > /tmp/login.cfg.new
 		cp -p /etc/security/login.cfg /etc/security/login.cfg.orig
 		mv /tmp/login.cfg.new /etc/security/login.cfg
+	fi
 	;;
 esac
