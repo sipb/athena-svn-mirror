@@ -34,8 +34,6 @@ extern const char      *g_log_domain_gmodule;
 extern "C" {
 #endif /* __cplusplus */
 
-
-
 /* exporting and importing functions, this is special cased
  * to feature Windows dll stubs.
  */
