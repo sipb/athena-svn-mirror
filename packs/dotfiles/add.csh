@@ -1,5 +1,7 @@
 #!/dev/null
 #
+# $Id: add.csh,v 1.13 1994-11-28 07:35:18 cfields Exp $
+#
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
 #	-v	verbose
@@ -26,6 +28,8 @@ set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockernam
 #
 # Parse options
 #
+
+if ( $#add_opts == 0 ) set add_print
 
 while ( $#add_opts > 0 )
   set add_arg = $add_opts[1]
@@ -91,7 +95,7 @@ endif
 
 if ( ! $?bindir ) then
   set bindir = `machtype`bin
-  if ( $bindir == "" ) unset bindir
+  if ( $bindir == "bin" ) unset bindir
 endif
 
 if ( ! $?ATHENA_SYS && ! $?bindir ) then
