@@ -49,6 +49,7 @@ grep -q ^MRUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 MRUPDATE=false;		export MRUPDATE		# Moira update daemon
 EOF
 
+chkconfig --del athena-update_server
 chkconfig --add athena-update_server
 
 %preun
