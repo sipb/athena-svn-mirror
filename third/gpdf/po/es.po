@@ -1,0 +1,813 @@
+# traducción de es.po al Spanish
+# translation of es.po to Spanish
+# Spanish translation of gpdf.
+# Copyright © 2003 the Free Software Foundation inc.
+# This file is distributed under the same license as the gpdf package.
+# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: es\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"PO-Revision-Date: 2004-08-28 16:00+0200\n"
+"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+msgid "PDF Viewer"
+msgstr "Visor PDF"
+
+#: gpdf.desktop.in.h:2
+msgid "View PDF files"
+msgstr "Ver archivos PDF"
+
+#: gpdf.schemas.in.h:1
+msgid "Default sidebar page"
+msgstr "Página predeterminada de la barra lateral"
+
+#: gpdf.schemas.in.h:2
+msgid "Default sidebar size"
+msgstr "Tamaño predeterminado de la barra lateral"
+
+#: gpdf.schemas.in.h:3
+msgid "Show sidebar by default"
+msgstr "Mostrar barra lateral por omisión"
+
+#: shell/eel-vfs-extensions.c:691
+msgid " (invalid Unicode)"
+msgstr " (Unicode inválido)"
+
+#: shell/gpdf-recent-view-toolitem.c:195
+msgid "Open a recently used file"
+msgstr "Abrir un archivo recientemente usado"
+
+#: shell/gpdf-recent-view-toolitem.c:199
+msgid "Recent"
+msgstr "Reciente"
+
+#: shell/gpdf-window-ui.xml.h:1
+msgid "About this application"
+msgstr "Acerca de esta aplicación"
+
+#: shell/gpdf-window-ui.xml.h:2
+msgid "Close window"
+msgstr "Cerrar ventana"
+
+#: shell/gpdf-window-ui.xml.h:3
+msgid "Online manual for this application"
+msgstr "Manual en línea de esta aplicación"
+
+#: shell/gpdf-window-ui.xml.h:4
+msgid "Open"
+msgstr "Abrir"
+
+#: shell/gpdf-window-ui.xml.h:5
+msgid "Open a file"
+msgstr "Abrir un archivo"
+
+#: shell/gpdf-window-ui.xml.h:6
+msgid "Toggle fullscreen mode"
+msgstr "Cambiar a modo pantalla completa"
+
+#: shell/gpdf-window-ui.xml.h:7
+msgid "_About"
+msgstr "A_cerca de"
+
+#: shell/gpdf-window-ui.xml.h:8
+msgid "_Close"
+msgstr "_Cerrar"
+
+#: shell/gpdf-window-ui.xml.h:9
+msgid "_Contents"
+msgstr "_Contenido"
+
+#: shell/gpdf-window-ui.xml.h:10 xpdf/gpdf-control-ui.xml.h:34
+msgid "_File"
+msgstr "_Archivo"
+
+#: shell/gpdf-window-ui.xml.h:11
+msgid "_Full Screen"
+msgstr "Pantalla _completa"
+
+#: shell/gpdf-window-ui.xml.h:12
+msgid "_Help"
+msgstr "A_yuda"
+
+#: shell/gpdf-window-ui.xml.h:13
+msgid "_Open..."
+msgstr "_Abrir..."
+
+#: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
+msgid "_View"
+msgstr "_Ver"
+
+#: shell/gpdf.c:142
+msgid "Could not initialize Bonobo!\n"
+msgstr "No se pudo inicializar Bonobo!\n"
+
+#: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
+#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
+#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+msgid "PDF Document"
+msgstr "Documento PDF"
+
+#: shell/gpdf.c:457
+msgid "Exit Full Screen"
+msgstr "Salir de pantalla completa"
+
+#: shell/gpdf.c:530
+msgid "Load file"
+msgstr "Cargar archivo"
+
+#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+msgid "PDF Documents"
+msgstr "Documentos PDF"
+
+#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+msgid "All Files"
+msgstr "Todos los archivos"
+
+#: shell/gpdf.c:671
+msgid "Derek B. Noonburg, Xpdf author."
+msgstr "Derek B. Noonburg, autor de Xpdf."
+
+#: shell/gpdf.c:672
+msgid "Martin Kretzschmar, GNOME port maintainer."
+msgstr "Martin Kretzschmar, mantenedor del porte a Gnome."
+
+#: shell/gpdf.c:673
+msgid "Michael Meeks, GNOME port creator."
+msgstr "Michael Meeks, creador de la migración a Gnome."
+
+#. please localize as R&eacute;mi (R\303\251mi)
+#: shell/gpdf.c:675
+msgid "Remi Cohen-Scali."
+msgstr "Rémi Cohen-Scali."
+
+#: shell/gpdf.c:676
+msgid "Miguel de Icaza."
+msgstr "Miguel de Icaza."
+
+#: shell/gpdf.c:677
+msgid "Nat Friedman."
+msgstr "Nat Friedman."
+
+#: shell/gpdf.c:678
+msgid "Ravi Pratap."
+msgstr "Ravi Pratap."
+
+#: shell/gpdf.c:683
+msgid "Chee Bin HOH <cbhoh@mimos.my>"
+msgstr "Chee Bin HOH <cbhoh@mimos.my>"
+
+#: shell/gpdf.c:684
+msgid "Breda McColgan <BredaMcColgan@sun.com>"
+msgstr "Breda McColgan <BredaMcColgan@sun.com>"
+
+#: shell/gpdf.c:698
+msgid "translator-credits"
+msgstr "Francisco Javier Fernández"
+
+#: shell/gpdf.c:701
+msgid "Glyph & Cog, LLC and authors"
+msgstr "Glyph & Cog, LLC y autores"
+
+#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+msgid "GNOME PDF Viewer"
+msgstr "Visor PDF de Gnome"
+
+#: shell/gpdf.c:708
+msgid "A PDF viewer based on Xpdf"
+msgstr "Un visor PDF basado en Xpdf"
+
+#: xpdf/GNOME_PDF.server.in.in.h:2
+msgid "GNOME PDF viewer factory"
+msgstr "Fábrica del visor de PDF de Gnome"
+
+#: xpdf/GNOME_PDF.server.in.in.h:3
+msgid "Nautilus PDF Property Page"
+msgstr "Página de propiedades de PDF de Nautilus"
+
+#: xpdf/GNOME_PDF.server.in.in.h:6
+msgid "PDF document viewer factory"
+msgstr "Fábrica del visor de documentos PDF"
+
+#: xpdf/GNOME_PDF.server.in.in.h:7
+msgid "View as PDF Document"
+msgstr "Ver como documento PDF"
+
+#: xpdf/eel-gconf-extensions.c:74
+msgid ""
+"Cannot find a schema for gpdf preferences. \n"
+"Check your gconf setup, look at gpdf FAQ for \n"
+"more info"
+msgstr ""
+"No se puede encontrar un esquema para las preferencias de gconf.\n"
+"Compruebe la configuración de gconf, mire en el FAQ de gpdf para más\n"
+"información"
+
+#: xpdf/eel-gconf-extensions.c:101
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"Error Gconf:\n"
+" %s"
+
+#: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
+msgid "Parent control"
+msgstr "Control padre"
+
+#: xpdf/gpdf-annots-view.cc:916
+msgid "Owner/Title"
+msgstr "Propietario/Título"
+
+#: xpdf/gpdf-annots-view.cc:925
+msgid "Opened"
+msgstr "Abierto"
+
+#: xpdf/gpdf-annots-view.cc:1070 xpdf/gpdf-annots-view.cc:1086
+#: xpdf/gpdf-thumbnails-view.cc:1466 xpdf/gpdf-thumbnails-view.cc:1482
+msgid "Not yet implemented!"
+msgstr "¡No implementado aún!"
+
+#: xpdf/gpdf-annots-view.cc:1071
+msgid "Annotations Filter feature not yet implemented... Sorry."
+msgstr ""
+"La característica del filtro de anotaciones no está implementada. Lo "
+"sentimos."
+
+#: xpdf/gpdf-annots-view.cc:1087
+msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
+msgstr ""
+"La gestión de complementos de anotaciones no está todavía implementada... Lo "
+"sentimos."
+
+#: xpdf/gpdf-bookmarks-view.cc:924
+#, c-format
+msgid "** Unknown %s **"
+msgstr "** Desconocido %s **"
+
+#: xpdf/gpdf-bookmarks-view.cc:1061
+msgid "Title"
+msgstr "Título"
+
+#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+msgid "Page"
+msgstr "Página"
+
+#: xpdf/gpdf-control-ui.xml.h:1
+msgid "Back"
+msgstr "Retroceder"
+
+#: xpdf/gpdf-control-ui.xml.h:2
+msgid "Best Fit"
+msgstr "Ajuste óptimo"
+
+#: xpdf/gpdf-control-ui.xml.h:3
+msgid "Best _Fit"
+msgstr "Ajuste _óptimo"
+
+#: xpdf/gpdf-control-ui.xml.h:4
+msgid "Change the visibility of the sidebar"
+msgstr "Cambiar la visibilidad de la barra lateral"
+
+#: xpdf/gpdf-control-ui.xml.h:5
+msgid "Expand to a larger size"
+msgstr "Ampliar a un tamaño mayor"
+
+#: xpdf/gpdf-control-ui.xml.h:6
+msgid "First"
+msgstr "Primera"
+
+#: xpdf/gpdf-control-ui.xml.h:7
+msgid "Fit Width"
+msgstr "Ajustar ancho"
+
+#: xpdf/gpdf-control-ui.xml.h:8
+msgid "Fit page _width"
+msgstr "Ajusta _ancho de página"
+
+#: xpdf/gpdf-control-ui.xml.h:9
+msgid "Fo_rward"
+msgstr "A_vanzar"
+
+#: xpdf/gpdf-control-ui.xml.h:10
+msgid "Forward"
+msgstr "Avanzar"
+
+#: xpdf/gpdf-control-ui.xml.h:11
+msgid "Go backward in history"
+msgstr "Retroceder por el histórico"
+
+#: xpdf/gpdf-control-ui.xml.h:12
+msgid "Go forward in history"
+msgstr "Avanzar por el histórico"
+
+#: xpdf/gpdf-control-ui.xml.h:13
+msgid "In"
+msgstr "Ampliar"
+
+#: xpdf/gpdf-control-ui.xml.h:14
+msgid "Last"
+msgstr "Última"
+
+#: xpdf/gpdf-control-ui.xml.h:15
+msgid "Next"
+msgstr "Siguiente"
+
+#: xpdf/gpdf-control-ui.xml.h:16
+msgid "Out"
+msgstr "Reducir"
+
+#: xpdf/gpdf-control-ui.xml.h:17
+msgid "Previous"
+msgstr "Anterior"
+
+#: xpdf/gpdf-control-ui.xml.h:18 xpdf/gpdf-control.cc:934
+msgid "Print"
+msgstr "Imprimir"
+
+#: xpdf/gpdf-control-ui.xml.h:19
+msgid "Print the current file"
+msgstr "Imprime el archivo actual"
+
+#: xpdf/gpdf-control-ui.xml.h:20
+msgid "Proper_ties"
+msgstr "_Propiedades"
+
+#: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
+msgid "Save a Copy"
+msgstr "Guardar una copia"
+
+#: xpdf/gpdf-control-ui.xml.h:22
+msgid "Save the current PDF document with a new filename"
+msgstr "Guarda el documento PDF actual con un nombre nuevo"
+
+#: xpdf/gpdf-control-ui.xml.h:23
+msgid "Shrink to a smaller size"
+msgstr "Reducir a un tamaño menor"
+
+#: xpdf/gpdf-control-ui.xml.h:24
+msgid "Size to fit the page"
+msgstr "Tamaño para ajustar a la página"
+
+#: xpdf/gpdf-control-ui.xml.h:25
+msgid "Size to fit the page width"
+msgstr "Tamaño para ajustar al ancho de página"
+
+#: xpdf/gpdf-control-ui.xml.h:26
+msgid "View properties of the displayed document"
+msgstr "Ver propiedades del documento mostrado"
+
+#: xpdf/gpdf-control-ui.xml.h:27
+msgid "View the first page"
+msgstr "Ver la primera página"
+
+#: xpdf/gpdf-control-ui.xml.h:28
+msgid "View the last page"
+msgstr "Ver la última página"
+
+#: xpdf/gpdf-control-ui.xml.h:29
+msgid "View the next page"
+msgstr "Ver la siguiente página"
+
+#: xpdf/gpdf-control-ui.xml.h:30
+msgid "View the previous page"
+msgstr "Ver la página anterior"
+
+#: xpdf/gpdf-control-ui.xml.h:31
+msgid "Zoom _In"
+msgstr "_Ampliar"
+
+#: xpdf/gpdf-control-ui.xml.h:32
+msgid "Zoom _Out"
+msgstr "_Reducir"
+
+#: xpdf/gpdf-control-ui.xml.h:33
+msgid "_Back"
+msgstr "_Retroceder"
+
+#: xpdf/gpdf-control-ui.xml.h:35
+msgid "_First Page"
+msgstr "_Primera página"
+
+#: xpdf/gpdf-control-ui.xml.h:36
+msgid "_Go"
+msgstr "_Ir"
+
+#: xpdf/gpdf-control-ui.xml.h:37
+msgid "_Last Page"
+msgstr "_Última página"
+
+#: xpdf/gpdf-control-ui.xml.h:38
+msgid "_Next Page"
+msgstr "Página _siguiente"
+
+#: xpdf/gpdf-control-ui.xml.h:39
+msgid "_Previous Page"
+msgstr "Página _anterior"
+
+#: xpdf/gpdf-control-ui.xml.h:40
+msgid "_Print..."
+msgstr "Im_primir..."
+
+#: xpdf/gpdf-control-ui.xml.h:41
+msgid "_Save a Copy..."
+msgstr "_Guardar una copia..."
+
+#: xpdf/gpdf-control-ui.xml.h:42
+msgid "_Sidebar"
+msgstr "Barra _lateral"
+
+#: xpdf/gpdf-control.cc:559
+msgid "Documentation Error"
+msgstr "Error de documentación"
+
+#: xpdf/gpdf-control.cc:763
+#, c-format
+msgid "Printing: Page %d."
+msgstr "Imprimiendo: página %d."
+
+#: xpdf/gpdf-control.cc:891
+#, c-format
+msgid ""
+"You were trying to print to a printer using the \"%s\" driver. This program "
+"requires a PostScript printer driver."
+msgstr ""
+"Está intentando imprimir en una impresora usando el controlador «%s». Este "
+"programa requiere un controlador de impresión PostScript."
+
+#: xpdf/gpdf-control.cc:894
+msgid ""
+"You were trying to print to a printer that does not use PostScript. This "
+"program requires a PostScript printer driver."
+msgstr ""
+"Está intentando imprimir en una impresora que no usa PostScript. Este "
+"programa requiere un controlador de impresora PostScript."
+
+#: xpdf/gpdf-control.cc:898
+msgid "Printing is not supported on this printer."
+msgstr "La impresión no está soportada en esta impresora."
+
+#: xpdf/gpdf-control.cc:937
+msgid "_Pages"
+msgstr "_Páginas"
+
+#: xpdf/gpdf-control.cc:1043
+#, c-format
+msgid "A file named \"%s\" already exists."
+msgstr "Ya existe un archivo con el nombre «%s»."
+
+#: xpdf/gpdf-control.cc:1049
+msgid "Do you want to replace it with the one you are saving?"
+msgstr "¿Quiere reemplazarlos con el que está guardando?"
+
+#: xpdf/gpdf-control.cc:1058
+msgid "_Replace"
+msgstr "_Reemplazar"
+
+#: xpdf/gpdf-control.cc:1068
+msgid "Question"
+msgstr "Pregunta"
+
+#: xpdf/gpdf-control.cc:1082
+#, c-format
+msgid "The file could not be saved as \"%s\"."
+msgstr "El archivo no se pudo guardar como «%s»."
+
+#: xpdf/gpdf-control.cc:1195
+msgid "PDF Properties"
+msgstr "Propiedades PDF"
+
+#: xpdf/gpdf-control.cc:2034
+#, c-format
+msgid "Loading of %s failed."
+msgstr "La carga de %s ha fallado."
+
+#: xpdf/gpdf-control.cc:2373
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+#: xpdf/gpdf-control.cc:2377
+msgid "Pages"
+msgstr "Páginas"
+
+#: xpdf/gpdf-control.cc:2382
+msgid "Annotations"
+msgstr "Anotaciones"
+
+#: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
+msgid "Link"
+msgstr "Enlace"
+
+#: xpdf/gpdf-link-canvas-item.cc:265 xpdf/gpdf-link-canvas-item.cc:266
+msgid "UsingHandCursor"
+msgstr "Usando cursor de mano"
+
+#: xpdf/gpdf-links-canvas-layer.cc:219 xpdf/gpdf-links-canvas-layer.cc:220
+msgid "Links"
+msgstr "Enlaces"
+
+#: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
+msgid "_Open Document"
+msgstr "_Abrir documento"
+
+#: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
+msgid "Enter document password:"
+msgstr "Introduzca la contraseña del documento:"
+
+#: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
+msgid ""
+"This document is encrypted and this operation requires the document's "
+"password"
+msgstr ""
+"Este documento está cifrado y esta operación requiere la contraseña del "
+"documento"
+
+#. translators: page catalog is a part of the PDF file
+#. The last period (.) is missing on purpose
+#: xpdf/gpdf-persist-file.cc:337
+msgid "The PDF file is damaged. Its page catalog could not be read"
+msgstr "El archivo PDF está dañado. Su catálogo de páginas no pudo leerse"
+
+#: xpdf/gpdf-persist-file.cc:341
+msgid ""
+"The PDF file is damaged or it is not a PDF file. It could not be repaired"
+msgstr "El archivo PDF está dañado o no es un archivo PDF. No pudo repararse"
+
+#: xpdf/gpdf-persist-file.cc:345
+msgid "The PDF document is encrypted and you didn't enter the correct password"
+msgstr "El documento PDF está cifrado y no dio la contraseña correcta"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:1
+msgid "Printing"
+msgstr "Imprimiendo"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:2
+msgid "Printing: Preparing."
+msgstr "Impresión: preparándose."
+
+#: xpdf/gpdf-properties-dialog.glade.h:1
+msgid "Author:"
+msgstr "Autor:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:2
+msgid "Created:"
+msgstr "Creación:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:3
+msgid "Creator:"
+msgstr "Creador:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:4
+msgid "Keywords:"
+msgstr "Palabras clave:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:5
+msgid "Modified:"
+msgstr "Modificado:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:6
+msgid "Number of Pages:"
+msgstr "Número de páginas:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:7
+msgid "Optimized:"
+msgstr "Optimizado:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:8
+msgid "PDF Version:"
+msgstr "Versión PDF:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:9
+msgid "Producer:"
+msgstr "Productor:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:10
+msgid "Security:"
+msgstr "Seguridad:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:11
+msgid "Subject:"
+msgstr "Asunto:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:12
+msgid "Title:"
+msgstr "Título:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:13 xpdf/pdf-info-dict-util.cc:49
+#: xpdf/pdf-properties-display.c:225 xpdf/pdf-properties-display.c:233
+#: xpdf/pdf-properties-display.c:241 xpdf/pdf-properties-display.c:249
+#: xpdf/pdf-properties-display.c:258 xpdf/pdf-properties-display.c:267
+#: xpdf/pdf-properties-display.c:275 xpdf/pdf-properties-display.c:284
+#: xpdf/pdf-properties-display.c:292 xpdf/pdf-properties-display.c:301
+#: xpdf/pdf-properties-display.c:309 xpdf/pdf-properties-display.c:317
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+msgid "Select sidebar page by title for displaying it"
+msgstr "Seleccione la página de la barra lateral por el título para mostrarla"
+
+#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+msgid "Click to open page tools menu"
+msgstr "Pulsar para abrir el menú de herramientas de página"
+
+#: xpdf/gpdf-sidebar.c:407
+msgid "Remove page if it is removeable"
+msgstr "Quitar página si es eliminable"
+
+#: xpdf/gpdf-sidebar.c:434
+msgid "Close sidebar"
+msgstr "Cerrar barra lateral"
+
+#: xpdf/gpdf-thumbnails-view.cc:1467
+msgid "Thumbnail Generation feature not yet implemented... Sorry."
+msgstr ""
+"La característica de generación de miniaturas no está aún implementada .. Lo "
+"siento."
+
+#: xpdf/gpdf-thumbnails-view.cc:1483
+msgid "All Thumbnails Generation feature not yet implemented... Sorry."
+msgstr ""
+"Todas las características de generación de miniaturas aún no implementadas. "
+"Se siente."
+
+#: xpdf/gpdf-view.cc:378
+#, c-format
+msgid "No application was found to open the URI: %s"
+msgstr "No se encontró ninguna aplicación para abrir la URI: %s"
+
+#: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
+msgid "Application Launch Failure!"
+msgstr "Fallo al lanzar la aplicación."
+
+#: xpdf/gpdf-view.cc:388
+#, c-format
+msgid "Failed to launch %s for URI: %s"
+msgstr "Fallo al lanzar %s para la URI: %s"
+
+#: xpdf/gpdf-view.cc:404
+msgid "Application Launch notification!"
+msgstr "Notificación de lanzamiento de aplicación."
+
+#: xpdf/gpdf-view.cc:514
+#, c-format
+msgid "Go to page #%d"
+msgstr "Ir la página #%d"
+
+#: xpdf/gpdf-view.cc:547
+#, c-format
+msgid "Go to file %s:#%d"
+msgstr "Ir al archivo %s:#%d"
+
+#: xpdf/gpdf-view.cc:555
+#, c-format
+msgid "Launch: %s %s"
+msgstr "Lanzar %s %s"
+
+#: xpdf/gpdf-view.cc:565
+#, c-format
+msgid "Browse %s"
+msgstr "Visualizar %s"
+
+#: xpdf/gpdf-view.cc:573
+#, c-format
+msgid "Action: %s"
+msgstr "Acción: %s"
+
+#: xpdf/gpdf-view.cc:581
+#, c-format
+msgid "Movie: %s"
+msgstr "Película: %s"
+
+#: xpdf/gpdf-view.cc:592
+#, c-format
+msgid "Unknown action: %s !"
+msgstr "Acción desconocida: %s."
+
+#: xpdf/gpdf-view.cc:1623
+msgid "Document View"
+msgstr "Vista del documento"
+
+#: xpdf/nautilus-pdf-property-page.cc:146
+msgid "URI currently displayed"
+msgstr "URI mostrada actualmente"
+
+#: xpdf/page-control.c:101
+#, c-format
+msgid " of %d"
+msgstr " de %d"
+
+#: xpdf/page-control.c:219 xpdf/page-control.c:233
+msgid "Current page"
+msgstr "Página actual"
+
+#: xpdf/page-control.c:220
+msgid ""
+"This shows the current page number. To jump to another page, enter its "
+"number."
+msgstr ""
+"Esto muestra el número de página actual. Para saltar a otra página, "
+"introduzca su número."
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "Encrypted"
+msgstr "Cifrado"
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "None"
+msgstr "Ninguno"
+
+#. Yes/No will be displayed in the pdf properties dialog
+#. in a table as "Optimized: No"
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "Yes"
+msgstr "Sí"
+
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "No"
+msgstr "No"
+
+#~ msgid "Quit the program"
+#~ msgstr "Salir del programa"
+
+#~ msgid "_Quit"
+#~ msgstr "_Salir"
+
+#~ msgid "Parent view"
+#~ msgstr "Vista padre"
+
+#~ msgid "Print preview is not available in this program."
+#~ msgstr ""
+#~ "La vista preliminar de impresión no está disponible en este programa."
+
+#~ msgid "Thumbnails"
+#~ msgstr "Miniaturas"
+
+#~ msgid "PDF file viewer"
+#~ msgstr "Visor de archivos PDF"
+
+#~ msgid "Default sidebar page."
+#~ msgstr "Página predeterminada de la barra lateral."
+
+#~ msgid "Default sidebar size."
+#~ msgstr "Tamaño predeterminado de la barra lateral."
+
+#~ msgid "Show sidebar by default."
+#~ msgstr "Mostrar barra lateral por omisión."
+
+#~ msgid "Ok"
+#~ msgstr "Aceptar"
+
+#~ msgid "Enter document owner password:"
+#~ msgstr "Introduzca la contraseña del propietario del documento:"
+
+#~ msgid ""
+#~ "This document is password protected and this operation requires the "
+#~ "document's owner password"
+#~ msgstr ""
+#~ "Este documento está protegido con una contraseña y esta operación "
+#~ "requiere la contraseña del propietario"
+
+#~ msgid ""
+#~ "The PDF file is encrypted and requires a password. This program does not "
+#~ "support password-protected files"
+#~ msgstr ""
+#~ "El archivo PDF está cifrado y requiere una contraseña. Este programa no "
+#~ "soporta archivos protegidos por contraseña"
+
+#~ msgid "dialog1"
+#~ msgstr "diálogo1"
+
+#~ msgid "Could not open %s"
+#~ msgstr "No se pudo abrir %s"
+
+#~ msgid "Can't open a directory"
+#~ msgstr "No pudo abrir un directorio"
+
+#~ msgid "File Size:"
+#~ msgstr "Tamaño del archivo:"
+
+#~ msgid "_First"
+#~ msgstr "_Primera"
+
+#~ msgid "_Last"
+#~ msgstr "_Última"
+
+#~ msgid "_Next"
+#~ msgstr "_Siguiente"
+
+#~ msgid "_Prev"
+#~ msgstr "_Anterior"
+
+#~ msgid "Gnome PDF Viewer"
+#~ msgstr "Visor PDF de GNOME"

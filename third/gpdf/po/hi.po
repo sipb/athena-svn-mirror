@@ -1,0 +1,747 @@
+# translation of gpdf.HEAD.hi.po to Hindi
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Anand Subramanian <anand.subra@wipro.com>, 2003.
+# Ravishankar Shrivastava <raviratlami@yahoo.com>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gpdf.HEAD.hi\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"PO-Revision-Date: 2004-07-08 17:17+0530\n"
+"Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
+"Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+msgid "PDF Viewer"
+msgstr "पीडीएफ़ प्रदर्शक"
+
+#: gpdf.desktop.in.h:2
+msgid "View PDF files"
+msgstr "पीडीएफ़ फ़ाइलें देखें"
+
+#: gpdf.schemas.in.h:1
+msgid "Default sidebar page"
+msgstr "डिफ़ॉल्ट बाजू पट्टी पृष्ठ"
+
+#: gpdf.schemas.in.h:2
+msgid "Default sidebar size"
+msgstr "डिफ़ॉल्ट बाजू पट्टी आकार"
+
+#: gpdf.schemas.in.h:3
+msgid "Show sidebar by default"
+msgstr "डिफ़ॉल्ट से बाजू पट्टी दिखाएँ"
+
+#: shell/eel-vfs-extensions.c:691
+msgid " (invalid Unicode)"
+msgstr "(अवैध यूनिकोड)"
+
+#: shell/gpdf-recent-view-toolitem.c:195
+msgid "Open a recently used file"
+msgstr "हाल ही में उपयोग की गई फ़ाइल खोलें"
+
+#: shell/gpdf-recent-view-toolitem.c:199
+msgid "Recent"
+msgstr "हाल ही का"
+
+#: shell/gpdf-window-ui.xml.h:1
+msgid "About this application"
+msgstr "इस अनुप्रयोग के बारे में"
+
+#: shell/gpdf-window-ui.xml.h:2
+msgid "Close window"
+msgstr "विंडो बंद करें"
+
+#: shell/gpdf-window-ui.xml.h:3
+msgid "Online manual for this application"
+msgstr "इस अनुप्रयोग हेतु ऑनलाइन मेनुअल"
+
+#: shell/gpdf-window-ui.xml.h:4
+msgid "Open"
+msgstr "खोलें"
+
+#: shell/gpdf-window-ui.xml.h:5
+msgid "Open a file"
+msgstr "फ़ाइल खोलें"
+
+#: shell/gpdf-window-ui.xml.h:6
+msgid "Toggle fullscreen mode"
+msgstr "पूर्ण स्क्रीन मोड टॉगल करें"
+
+#: shell/gpdf-window-ui.xml.h:7
+msgid "_About"
+msgstr "के बारे में (_A)"
+
+#: shell/gpdf-window-ui.xml.h:8
+msgid "_Close"
+msgstr "बंद करें (_C)"
+
+#: shell/gpdf-window-ui.xml.h:9
+msgid "_Contents"
+msgstr "विषय सूची (_C)"
+
+#: shell/gpdf-window-ui.xml.h:10 xpdf/gpdf-control-ui.xml.h:34
+msgid "_File"
+msgstr "फ़ाइल (_F)"
+
+#: shell/gpdf-window-ui.xml.h:11
+msgid "_Full Screen"
+msgstr "पूर्ण सक्रीन (_F)"
+
+#: shell/gpdf-window-ui.xml.h:12
+msgid "_Help"
+msgstr "मदद (_H)"
+
+#: shell/gpdf-window-ui.xml.h:13
+msgid "_Open..."
+msgstr "खोलें (_O)..."
+
+# #-#-#-#-#  libgnomeui.gnome-2-2.hi.po (libgnomeui HEAD)  #-#-#-#-#
+# libgnomeui/gnome-app-helper.c:86 libgnomeui/gnome-app-helper.h:519
+#: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
+msgid "_View"
+msgstr "देखें (_V)"
+
+#: shell/gpdf.c:142
+msgid "Could not initialize Bonobo!\n"
+msgstr "बोनोबो को प्रारंभ नही कर पाए!\n"
+
+#: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
+#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
+#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+msgid "PDF Document"
+msgstr "पीडीएफ़ दस्तावेज़"
+
+#: shell/gpdf.c:457
+msgid "Exit Full Screen"
+msgstr "पूर्ण स्क्रीन से बाहर हों"
+
+#: shell/gpdf.c:530
+msgid "Load file"
+msgstr "फ़ाइल लोड करें"
+
+#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+msgid "PDF Documents"
+msgstr "पीडीएफ़ दस्तावेज़"
+
+#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+msgid "All Files"
+msgstr "सभी फ़ाइलें"
+
+#: shell/gpdf.c:671
+msgid "Derek B. Noonburg, Xpdf author."
+msgstr "डेरेक बी नूनबर्ग, एक्सपीडीएफ़ लेखक."
+
+#: shell/gpdf.c:672
+msgid "Martin Kretzschmar, GNOME port maintainer."
+msgstr "मार्टिन क्रेत्ज़्स्च्मर, गनोम पोर्ट मेन्टेनर."
+
+#: shell/gpdf.c:673
+msgid "Michael Meeks, GNOME port creator."
+msgstr "माइकल मीक्स, गनोम पोर्ट सृजक."
+
+#  please localize as R&eacute;mi (R\303\251mi)
+#. please localize as R&eacute;mi (R\303\251mi)
+#: shell/gpdf.c:675
+msgid "Remi Cohen-Scali."
+msgstr "रेमी कोहेन-स्केली."
+
+#: shell/gpdf.c:676
+msgid "Miguel de Icaza."
+msgstr "मिगेल दे इकाज़ा."
+
+#: shell/gpdf.c:677
+msgid "Nat Friedman."
+msgstr "नेट फ़्रीड्मेन."
+
+#: shell/gpdf.c:678
+msgid "Ravi Pratap."
+msgstr "रवि प्रताप."
+
+#: shell/gpdf.c:683
+msgid "Chee Bin HOH <cbhoh@mimos.my>"
+msgstr "ची बिन हो <cbhoh@mimos.my>"
+
+#: shell/gpdf.c:684
+msgid "Breda McColgan <BredaMcColgan@sun.com>"
+msgstr "ब्रेडा मॅककोगन<BredaMcColgan@sun.com>"
+
+#: shell/gpdf.c:698
+msgid "translator-credits"
+msgstr ""
+"आनंद सुब्रमणियन <anand.subra@wipro.com>, रविशंकर श्रीवास्तव <raviratlami@gmail.com>"
+
+#: shell/gpdf.c:701
+msgid "Glyph & Cog, LLC and authors"
+msgstr "ग्लिफ़ & कॉग, एलएलसी तथा लेखक"
+
+#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+msgid "GNOME PDF Viewer"
+msgstr "गनोम पीडीएफ प्रदर्शक"
+
+#: shell/gpdf.c:708
+msgid "A PDF viewer based on Xpdf"
+msgstr "एक्स-पीडीएफ़ आधारित पीडीएफ़ प्रदर्शक"
+
+#: xpdf/GNOME_PDF.server.in.in.h:2
+msgid "GNOME PDF viewer factory"
+msgstr "गनोम पीडीएफ़ प्रदर्शक फैक्ट्री"
+
+#: xpdf/GNOME_PDF.server.in.in.h:3
+msgid "Nautilus PDF Property Page"
+msgstr "नॉटिलस पीडीएफ़ गुण पृष्ठ"
+
+#: xpdf/GNOME_PDF.server.in.in.h:6
+msgid "PDF document viewer factory"
+msgstr "पीडीएफ़ दस्तावेज़ प्रदर्शक फैक्ट्री"
+
+#: xpdf/GNOME_PDF.server.in.in.h:7
+msgid "View as PDF Document"
+msgstr "पीडीएफ़ दस्तावेज़ के रूप में देखें"
+
+#: xpdf/eel-gconf-extensions.c:74
+msgid ""
+"Cannot find a schema for gpdf preferences. \n"
+"Check your gconf setup, look at gpdf FAQ for \n"
+"more info"
+msgstr ""
+"जी-पीडीएफ़ वरीयताओं हेतु प्रसंग नहीं मिला. \n"
+"अपना जी-कॉन्फ़ सेटअप जाँचें, अधिक जानकारी के लिए\n"
+"जी-पीजीएफ़ एफ़एक्यू देखें"
+
+#: xpdf/eel-gconf-extensions.c:101
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"जी-कॉन्फ त्रुटि:\n"
+"  %s"
+
+#: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
+msgid "Parent control"
+msgstr "पैरेंट नियंत्रक"
+
+#: xpdf/gpdf-annots-view.cc:916
+msgid "Owner/Title"
+msgstr "मालिक/शीर्षक"
+
+#: xpdf/gpdf-annots-view.cc:925
+msgid "Opened"
+msgstr "खुला"
+
+#: xpdf/gpdf-annots-view.cc:1070 xpdf/gpdf-annots-view.cc:1086
+#: xpdf/gpdf-thumbnails-view.cc:1466 xpdf/gpdf-thumbnails-view.cc:1482
+msgid "Not yet implemented!"
+msgstr "अभी तक लागू नहीं हैं!"
+
+#: xpdf/gpdf-annots-view.cc:1071
+msgid "Annotations Filter feature not yet implemented... Sorry."
+msgstr "व्याख्या फ़िल्टर विशेषताएँ अभी लागू नहीं हैं...माफ़ करें."
+
+#: xpdf/gpdf-annots-view.cc:1087
+msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
+msgstr "व्याख्या प्लगइन प्रबंधन विशेषताएँ अभी लागू नहीं हैं...माफ़ करें."
+
+# #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
+# gnome-session/gsm-client-row.c:43
+# #-#-#-#-#  gnome-session.gnome-2-2.hi.po (gnome-session VERSION)  #-#-#-#-#
+# gnome-session/gsm-client-row.c:43
+#: xpdf/gpdf-bookmarks-view.cc:924
+#, c-format
+msgid "** Unknown %s **"
+msgstr "** अज्ञात %s **"
+
+#: xpdf/gpdf-bookmarks-view.cc:1061
+msgid "Title"
+msgstr "शीर्षक"
+
+#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+msgid "Page"
+msgstr "पृष्ठ"
+
+#: xpdf/gpdf-control-ui.xml.h:1
+msgid "Back"
+msgstr "पीछे"
+
+#: xpdf/gpdf-control-ui.xml.h:2
+msgid "Best Fit"
+msgstr "सर्वोत्तम अनुरूप"
+
+#: xpdf/gpdf-control-ui.xml.h:3
+msgid "Best _Fit"
+msgstr "सर्वोत्तम अनुरूप (_F)"
+
+#: xpdf/gpdf-control-ui.xml.h:4
+msgid "Change the visibility of the sidebar"
+msgstr "बाजू पट्टी की दृश्यता बदलें"
+
+#: xpdf/gpdf-control-ui.xml.h:5
+msgid "Expand to a larger size"
+msgstr "एक बड़े आकार में फैलाऍ"
+
+#: xpdf/gpdf-control-ui.xml.h:6
+msgid "First"
+msgstr "प्रथम"
+
+#: xpdf/gpdf-control-ui.xml.h:7
+msgid "Fit Width"
+msgstr "चौड़ाई के अनुरूप करें"
+
+#: xpdf/gpdf-control-ui.xml.h:8
+msgid "Fit page _width"
+msgstr "पृष्ठ चौड़ाई के अनुरूप करें (_w)"
+
+#: xpdf/gpdf-control-ui.xml.h:9
+msgid "Fo_rward"
+msgstr "आगे जाएँ (_r)"
+
+#: xpdf/gpdf-control-ui.xml.h:10
+msgid "Forward"
+msgstr "आगे जाएँ"
+
+#: xpdf/gpdf-control-ui.xml.h:11
+msgid "Go backward in history"
+msgstr "इतिहास में पीछे जाएँ"
+
+#: xpdf/gpdf-control-ui.xml.h:12
+msgid "Go forward in history"
+msgstr "इतिहास में आगे जाएँ"
+
+#: xpdf/gpdf-control-ui.xml.h:13
+msgid "In"
+msgstr "अन्दर"
+
+#: xpdf/gpdf-control-ui.xml.h:14
+msgid "Last"
+msgstr "अंतिम"
+
+#: xpdf/gpdf-control-ui.xml.h:15
+msgid "Next"
+msgstr "अगला"
+
+#: xpdf/gpdf-control-ui.xml.h:16
+msgid "Out"
+msgstr "बाहर"
+
+#: xpdf/gpdf-control-ui.xml.h:17
+msgid "Previous"
+msgstr "पिछला"
+
+#: xpdf/gpdf-control-ui.xml.h:18 xpdf/gpdf-control.cc:934
+msgid "Print"
+msgstr "मुद्रण"
+
+#: xpdf/gpdf-control-ui.xml.h:19
+msgid "Print the current file"
+msgstr "वर्तमान फाइल मुद्रित करें"
+
+#: xpdf/gpdf-control-ui.xml.h:20
+msgid "Proper_ties"
+msgstr "गुण (_t)"
+
+#: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
+msgid "Save a Copy"
+msgstr "एक प्रतिलिपि सहेजें"
+
+#: xpdf/gpdf-control-ui.xml.h:22
+msgid "Save the current PDF document with a new filename"
+msgstr "वर्तमान पीडीएफ़ दस्तावेज़ एक नए फ़ाइलनाम से सहेजें"
+
+#: xpdf/gpdf-control-ui.xml.h:23
+msgid "Shrink to a smaller size"
+msgstr "छोटे आकार में संकुचित करें"
+
+#: xpdf/gpdf-control-ui.xml.h:24
+msgid "Size to fit the page"
+msgstr "आकार पृष्ठ के अनुरूप करें"
+
+#: xpdf/gpdf-control-ui.xml.h:25
+msgid "Size to fit the page width"
+msgstr "आकार पृष्ठ चौड़ाई के अनुरूप करें"
+
+#: xpdf/gpdf-control-ui.xml.h:26
+msgid "View properties of the displayed document"
+msgstr "प्रदर्शित दस्तावेज़ के गुण देखें"
+
+#: xpdf/gpdf-control-ui.xml.h:27
+msgid "View the first page"
+msgstr "प्रथम पृष्ठ देख़ें"
+
+#: xpdf/gpdf-control-ui.xml.h:28
+msgid "View the last page"
+msgstr "अंतिम पृष्ठ देख़ें"
+
+#: xpdf/gpdf-control-ui.xml.h:29
+msgid "View the next page"
+msgstr "अगला पृष्ठ देख़ें"
+
+#: xpdf/gpdf-control-ui.xml.h:30
+msgid "View the previous page"
+msgstr "पिछला पृष्ठ देख़ें"
+
+#: xpdf/gpdf-control-ui.xml.h:31
+msgid "Zoom _In"
+msgstr "बड़ा आकार (_I)"
+
+#: xpdf/gpdf-control-ui.xml.h:32
+msgid "Zoom _Out"
+msgstr "छोटा आकार (_O)"
+
+#: xpdf/gpdf-control-ui.xml.h:33
+msgid "_Back"
+msgstr "पीछे (_B)"
+
+#: xpdf/gpdf-control-ui.xml.h:35
+msgid "_First Page"
+msgstr "प्रथम पृष्ठ (_F)"
+
+#: xpdf/gpdf-control-ui.xml.h:36
+msgid "_Go"
+msgstr "जाएँ (_G)"
+
+#: xpdf/gpdf-control-ui.xml.h:37
+msgid "_Last Page"
+msgstr "अंतिम पृष्ठ (_L)"
+
+#: xpdf/gpdf-control-ui.xml.h:38
+msgid "_Next Page"
+msgstr "अगला पृष्ठ (_N)"
+
+#: xpdf/gpdf-control-ui.xml.h:39
+msgid "_Previous Page"
+msgstr "पिछला पृष्ठ (_P)"
+
+#: xpdf/gpdf-control-ui.xml.h:40
+msgid "_Print..."
+msgstr "मुद्रण...(_P)"
+
+#: xpdf/gpdf-control-ui.xml.h:41
+msgid "_Save a Copy..."
+msgstr "एक प्रतिलिपि सहेजें...(_S)"
+
+#: xpdf/gpdf-control-ui.xml.h:42
+msgid "_Sidebar"
+msgstr "बाजू पट्टी (_S)"
+
+#: xpdf/gpdf-control.cc:559
+msgid "Documentation Error"
+msgstr "दस्तावेज़ीकरण त्रुटि"
+
+#: xpdf/gpdf-control.cc:763
+#, c-format
+msgid "Printing: Page %d."
+msgstr "मुद्रण: पृष्ठ %d."
+
+#: xpdf/gpdf-control.cc:891
+#, c-format
+msgid ""
+"You were trying to print to a printer using the \"%s\" driver. This program "
+"requires a PostScript printer driver."
+msgstr ""
+"आप एक मुद्रक पर मुद्रित करने की कोशिश कर रहे हैं जो \"%s\" ड्राइवर उपयोग करता है. इस "
+"प्रोग्राम को पोस्ट-स्क्रिप्ट मुद्रक ड्राइवर की आवश्यकता है."
+
+#: xpdf/gpdf-control.cc:894
+msgid ""
+"You were trying to print to a printer that does not use PostScript. This "
+"program requires a PostScript printer driver."
+msgstr ""
+"आप एक मुद्रक पर मुद्रित करने की कोशिश कर रहे हैं जो पोस्ट-स्क्रिप्ट उपयोग नहीं करता है. इस "
+"प्रोग्राम को पोस्ट-स्क्रिप्ट मुद्रक ड्राइवर की आवश्यकता है."
+
+#: xpdf/gpdf-control.cc:898
+msgid "Printing is not supported on this printer."
+msgstr "इस मुद्रक पर मुद्रण समर्थित नहीं है."
+
+#: xpdf/gpdf-control.cc:937
+msgid "_Pages"
+msgstr "पृष्ठ (_P)"
+
+#: xpdf/gpdf-control.cc:1043
+#, c-format
+msgid "A file named \"%s\" already exists."
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1049
+msgid "Do you want to replace it with the one you are saving?"
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1058
+msgid "_Replace"
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1068
+msgid "Question"
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1082
+#, c-format
+msgid "The file could not be saved as \"%s\"."
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1195
+msgid "PDF Properties"
+msgstr "पीडीएफ़ गुण"
+
+#: xpdf/gpdf-control.cc:2034
+#, c-format
+msgid "Loading of %s failed."
+msgstr "%s लोड करने में असफल."
+
+#: xpdf/gpdf-control.cc:2373
+msgid "Bookmarks"
+msgstr "पसंद"
+
+#: xpdf/gpdf-control.cc:2377
+msgid "Pages"
+msgstr "पृष्ठ"
+
+#: xpdf/gpdf-control.cc:2382
+msgid "Annotations"
+msgstr "व्याख्याएँ"
+
+#: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
+msgid "Link"
+msgstr "लिंक"
+
+#: xpdf/gpdf-link-canvas-item.cc:265 xpdf/gpdf-link-canvas-item.cc:266
+msgid "UsingHandCursor"
+msgstr "उपयोग-में-हाथ-संकेतक"
+
+#: xpdf/gpdf-links-canvas-layer.cc:219 xpdf/gpdf-links-canvas-layer.cc:220
+msgid "Links"
+msgstr "कडियाँ"
+
+#: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
+msgid "_Open Document"
+msgstr "दस्तावेज़ खोलें (_O)"
+
+#: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
+msgid "Enter document password:"
+msgstr "दस्तावेज़ पासवर्ड भरें:"
+
+#: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
+msgid ""
+"This document is encrypted and this operation requires the document's "
+"password"
+msgstr "दस्तावेज़ एनक्रिप्टेड है तथा इस ऑपरेशन हेतु दस्तावेज का पासवर्ड आवश्यक है"
+
+#  translators: page catalog is a part of the PDF file
+#  The last period (.) is missing on purpose
+#. translators: page catalog is a part of the PDF file
+#. The last period (.) is missing on purpose
+#: xpdf/gpdf-persist-file.cc:337
+msgid "The PDF file is damaged. Its page catalog could not be read"
+msgstr "यह पीडीएफ़ फ़ाइल क्षतिग्रस्त है. इसका पृष्ठ केटलॉग पढ़ा नहीं जा सका"
+
+#: xpdf/gpdf-persist-file.cc:341
+msgid ""
+"The PDF file is damaged or it is not a PDF file. It could not be repaired"
+msgstr ""
+"यह पीडीएफ़ फ़ाइल क्षतिग्रस्त है या फिर यह पीडीएफ़ फ़ाइल नही हैं. इसे सुधारा नहीं जा सकता"
+
+#: xpdf/gpdf-persist-file.cc:345
+msgid "The PDF document is encrypted and you didn't enter the correct password"
+msgstr "पीडीएफ़ दस्तावेज़ एनक्रिप्टेड है तथा आपने सही पासवर्ड नहीं भरा है"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:1
+msgid "Printing"
+msgstr "मुद्रण"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:2
+msgid "Printing: Preparing."
+msgstr "मुद्रणः तैयारी कर रहे."
+
+# libgnomeui/gnome-about.c:365
+#: xpdf/gpdf-properties-dialog.glade.h:1
+msgid "Author:"
+msgstr "लेखक:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:2
+msgid "Created:"
+msgstr "सृजितः"
+
+#: xpdf/gpdf-properties-dialog.glade.h:3
+msgid "Creator:"
+msgstr "निर्माता:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:4
+msgid "Keywords:"
+msgstr "कीवर्ड:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:5
+msgid "Modified:"
+msgstr "परिवर्धितः"
+
+#: xpdf/gpdf-properties-dialog.glade.h:6
+msgid "Number of Pages:"
+msgstr "पृष्ठों की संख्या:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:7
+msgid "Optimized:"
+msgstr "ऑप्टीमाइज़्ड:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:8
+msgid "PDF Version:"
+msgstr "पीडीएफ़ संस्करण:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:9
+msgid "Producer:"
+msgstr "निर्माता:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:10
+msgid "Security:"
+msgstr "सुरक्षा:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:11
+msgid "Subject:"
+msgstr "विषय:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:12
+msgid "Title:"
+msgstr "शीर्षक:"
+
+# #-#-#-#-#  gnome-applets.gnome-2-2.hi.po (gnome-applets 2.x)  #-#-#-#-#
+# gnome-session/gsm-client-row.c:43
+# #-#-#-#-#  gnome-session.gnome-2-2.hi.po (gnome-session VERSION)  #-#-#-#-#
+# gnome-session/gsm-client-row.c:43
+#: xpdf/gpdf-properties-dialog.glade.h:13 xpdf/pdf-info-dict-util.cc:49
+#: xpdf/pdf-properties-display.c:225 xpdf/pdf-properties-display.c:233
+#: xpdf/pdf-properties-display.c:241 xpdf/pdf-properties-display.c:249
+#: xpdf/pdf-properties-display.c:258 xpdf/pdf-properties-display.c:267
+#: xpdf/pdf-properties-display.c:275 xpdf/pdf-properties-display.c:284
+#: xpdf/pdf-properties-display.c:292 xpdf/pdf-properties-display.c:301
+#: xpdf/pdf-properties-display.c:309 xpdf/pdf-properties-display.c:317
+msgid "Unknown"
+msgstr "अज्ञात"
+
+#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+msgid "Select sidebar page by title for displaying it"
+msgstr "इसे दिखाने हेतु बाजू-पट्टी पृष्ठ शीर्षक से चुनें "
+
+#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+msgid "Click to open page tools menu"
+msgstr "पृष्ठ उपकरण मेनू खोलने हेतु क्लिक करें"
+
+#: xpdf/gpdf-sidebar.c:407
+msgid "Remove page if it is removeable"
+msgstr "पृष्ठ मिटाएँ यदि यह मिटानेयोग्य है"
+
+#: xpdf/gpdf-sidebar.c:434
+msgid "Close sidebar"
+msgstr "बाजू-पट्टी बन्द करें"
+
+#: xpdf/gpdf-thumbnails-view.cc:1467
+msgid "Thumbnail Generation feature not yet implemented... Sorry."
+msgstr "लघुछवि ज़ेनरेशन विशेषताएँ अभी लागू नहीं हैं...माफ़ करें."
+
+#: xpdf/gpdf-thumbnails-view.cc:1483
+msgid "All Thumbnails Generation feature not yet implemented... Sorry."
+msgstr "सभी लघुछवि ज़ेनरेशन विशेषताएँ अभी लागू नहीं हैं...माफ़ करें."
+
+#: xpdf/gpdf-view.cc:378
+#, c-format
+msgid "No application was found to open the URI: %s"
+msgstr ""
+
+#: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
+msgid "Application Launch Failure!"
+msgstr "अनुप्रयोग प्रारंभ असफल!"
+
+#: xpdf/gpdf-view.cc:388
+#, c-format
+msgid "Failed to launch %s for URI: %s"
+msgstr "%s को यूआरआई: %s हेतु प्रारंभ करने में असफल"
+
+#: xpdf/gpdf-view.cc:404
+msgid "Application Launch notification!"
+msgstr "अनुप्रयोग प्रारंभ सूचना!"
+
+#: xpdf/gpdf-view.cc:514
+#, c-format
+msgid "Go to page #%d"
+msgstr "पृष्ठ पर जाएँ #%d"
+
+#: xpdf/gpdf-view.cc:547
+#, c-format
+msgid "Go to file %s:#%d"
+msgstr "फ़ाइल पर जाएँ %s:#%d"
+
+#: xpdf/gpdf-view.cc:555
+#, c-format
+msgid "Launch: %s %s"
+msgstr "प्रारंभ करें: %s %s"
+
+#: xpdf/gpdf-view.cc:565
+#, c-format
+msgid "Browse %s"
+msgstr "ब्राउज़ %s"
+
+#: xpdf/gpdf-view.cc:573
+#, c-format
+msgid "Action: %s"
+msgstr "क्रिया: %s"
+
+#: xpdf/gpdf-view.cc:581
+#, c-format
+msgid "Movie: %s"
+msgstr "चलचित्र: %s"
+
+#: xpdf/gpdf-view.cc:592
+#, c-format
+msgid "Unknown action: %s !"
+msgstr "अज्ञात क्रिया: %s !"
+
+#: xpdf/gpdf-view.cc:1623
+msgid "Document View"
+msgstr "दस्तावेज़ दृश्य"
+
+#: xpdf/nautilus-pdf-property-page.cc:146
+msgid "URI currently displayed"
+msgstr "वर्तमान में प्रदर्शित यूआरआई"
+
+#: xpdf/page-control.c:101
+#, c-format
+msgid " of %d"
+msgstr " का %d"
+
+#: xpdf/page-control.c:219 xpdf/page-control.c:233
+msgid "Current page"
+msgstr "वर्तमान पृष्ठ"
+
+#: xpdf/page-control.c:220
+msgid ""
+"This shows the current page number. To jump to another page, enter its "
+"number."
+msgstr "यह वर्तमान पृष्ठ की संख्या दर्शाती है. अन्य पृष्ठ पर जाने हेतु उसका क्रमांक भरें."
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "Encrypted"
+msgstr "एनक्रिप्टेड"
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "None"
+msgstr "कुछ नहीं"
+
+#  Yes/No will be displayed in the pdf properties dialog
+#  in a table as "Optimized: No"
+#. Yes/No will be displayed in the pdf properties dialog
+#. in a table as "Optimized: No"
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "Yes"
+msgstr "हाँ"
+
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "No"
+msgstr "नहीं"
+
+#~ msgid "Quit the program"
+#~ msgstr "प्रोग्राम से बाहर जाएँ"
+
+#~ msgid "_Quit"
+#~ msgstr "बाहर जाएँ/समाप्त करें (_Q)"

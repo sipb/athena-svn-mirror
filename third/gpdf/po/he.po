@@ -1,0 +1,742 @@
+# translation of gpdf.HEAD.he.po to Hebrew
+# translation of xpdf.HEAD.po to Hebrew
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2003.
+# Gil Osher <dolfin@rpg.org.il>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gpdf.HEAD.he\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"PO-Revision-Date: 2004-07-11 22:26+0300\n"
+"Last-Translator: Gil Osher <dolfin@rpg.org.il>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+msgid "PDF Viewer"
+msgstr "מציג PDF ל־GNOME"
+
+#: gpdf.desktop.in.h:2
+msgid "View PDF files"
+msgstr "הצג קבצי PDF"
+
+#: gpdf.schemas.in.h:1
+msgid "Default sidebar page"
+msgstr "דף ברירת המחדל בסרגל הצד"
+
+#: gpdf.schemas.in.h:2
+msgid "Default sidebar size"
+msgstr "גודל ברירת המחדל לסרגל הצד"
+
+#: gpdf.schemas.in.h:3
+msgid "Show sidebar by default"
+msgstr "הצג סרגל צד כברירת מחדל"
+
+#: shell/eel-vfs-extensions.c:691
+msgid " (invalid Unicode)"
+msgstr " (יוניקוד לא תקני)"
+
+#: shell/gpdf-recent-view-toolitem.c:195
+msgid "Open a recently used file"
+msgstr "פתח קובץ שהיה בשימוש לאחרונה"
+
+#: shell/gpdf-recent-view-toolitem.c:199
+msgid "Recent"
+msgstr "אחרונים"
+
+#: shell/gpdf-window-ui.xml.h:1
+msgid "About this application"
+msgstr "אודות היישום הזה"
+
+#: shell/gpdf-window-ui.xml.h:2
+msgid "Close window"
+msgstr "סגור חלון"
+
+#: shell/gpdf-window-ui.xml.h:3
+msgid "Online manual for this application"
+msgstr "מדריך עבור היישום ברשת"
+
+#: shell/gpdf-window-ui.xml.h:4
+msgid "Open"
+msgstr "פתיחה"
+
+#: shell/gpdf-window-ui.xml.h:5
+msgid "Open a file"
+msgstr "פתח קובץ"
+
+#: shell/gpdf-window-ui.xml.h:6
+msgid "Toggle fullscreen mode"
+msgstr "מצב מסך מלא מופעל/מופסק"
+
+#: shell/gpdf-window-ui.xml.h:7
+msgid "_About"
+msgstr "_אודות"
+
+#: shell/gpdf-window-ui.xml.h:8
+msgid "_Close"
+msgstr "_סגור"
+
+#: shell/gpdf-window-ui.xml.h:9
+msgid "_Contents"
+msgstr "_תוכן"
+
+#: shell/gpdf-window-ui.xml.h:10 xpdf/gpdf-control-ui.xml.h:34
+msgid "_File"
+msgstr "_קובץ"
+
+#: shell/gpdf-window-ui.xml.h:11
+msgid "_Full Screen"
+msgstr "_מסך מלא"
+
+#: shell/gpdf-window-ui.xml.h:12
+msgid "_Help"
+msgstr "_עזרה"
+
+#: shell/gpdf-window-ui.xml.h:13
+msgid "_Open..."
+msgstr "_פתיחה..."
+
+#: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
+msgid "_View"
+msgstr "_תצוגה"
+
+#: shell/gpdf.c:142
+msgid "Could not initialize Bonobo!\n"
+msgstr "לא ניתן לאתחל את Bonobo!\n"
+
+#: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
+#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
+#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+msgid "PDF Document"
+msgstr "מסמך PDF"
+
+#: shell/gpdf.c:457
+msgid "Exit Full Screen"
+msgstr "יציאה ממסך מלא"
+
+#: shell/gpdf.c:530
+msgid "Load file"
+msgstr "טען קובץ"
+
+#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+msgid "PDF Documents"
+msgstr "מסמכי PDF"
+
+#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+msgid "All Files"
+msgstr "כל הקבצים"
+
+#: shell/gpdf.c:671
+msgid "Derek B. Noonburg, Xpdf author."
+msgstr "Derek B. Noonburg, מחבר Xpdf."
+
+#: shell/gpdf.c:672
+msgid "Martin Kretzschmar, GNOME port maintainer."
+msgstr "Martin Kretzschmar, מנהל ההסבה לGNOME."
+
+#: shell/gpdf.c:673
+msgid "Michael Meeks, GNOME port creator."
+msgstr "Michael Meeks, יוצר ההסבה ל GNOME."
+
+#  please localize as R&eacute;mi (R\303\251mi)
+#. please localize as R&eacute;mi (R\303\251mi)
+#: shell/gpdf.c:675
+msgid "Remi Cohen-Scali."
+msgstr "Remi Cohen-Scali."
+
+#: shell/gpdf.c:676
+msgid "Miguel de Icaza."
+msgstr "Miguel de Icaza."
+
+#: shell/gpdf.c:677
+msgid "Nat Friedman."
+msgstr "Nat Friedman."
+
+#: shell/gpdf.c:678
+msgid "Ravi Pratap."
+msgstr "Ravi Pratap."
+
+#: shell/gpdf.c:683
+msgid "Chee Bin HOH <cbhoh@mimos.my>"
+msgstr "Chee Bin HOH <cbhoh@mimos.my>"
+
+#: shell/gpdf.c:684
+msgid "Breda McColgan <BredaMcColgan@sun.com>"
+msgstr "Breda McColgan <BredaMcColgan@sun.com>"
+
+#: shell/gpdf.c:698
+msgid "translator-credits"
+msgstr ""
+"גיל אשר\n"
+"dolfin@rpg.org.il\n"
+"שושנה פורבס \n"
+"xslf@xslf.com \n"
+"\n"
+"פרויקט linBrew\n"
+"http://linbrew.sourceforge.net"
+
+#: shell/gpdf.c:701
+msgid "Glyph & Cog, LLC and authors"
+msgstr "Glyph & Cog, LLC והמחברים"
+
+#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+msgid "GNOME PDF Viewer"
+msgstr "מציג PDF ל GNOME"
+
+#: shell/gpdf.c:708
+msgid "A PDF viewer based on Xpdf"
+msgstr "מציג PDF המבוסס על Xpdf"
+
+#: xpdf/GNOME_PDF.server.in.in.h:2
+msgid "GNOME PDF viewer factory"
+msgstr "יצרן מציג PDF בעבור GNOME"
+
+#: xpdf/GNOME_PDF.server.in.in.h:3
+msgid "Nautilus PDF Property Page"
+msgstr "עמוד מאפייני PDF של נאוטילוס"
+
+#: xpdf/GNOME_PDF.server.in.in.h:6
+msgid "PDF document viewer factory"
+msgstr "יצרן מציג מסמך PDF"
+
+#: xpdf/GNOME_PDF.server.in.in.h:7
+msgid "View as PDF Document"
+msgstr "צפה כמסמך PDF"
+
+#: xpdf/eel-gconf-extensions.c:74
+msgid ""
+"Cannot find a schema for gpdf preferences. \n"
+"Check your gconf setup, look at gpdf FAQ for \n"
+"more info"
+msgstr ""
+"לא מצליח לאתר סכמה עבור העדפות gpdf. \n"
+"בדוק את התקנת gconf, וראה את השאלות  הנפוצות \n"
+"של gpdf למידע נוסף"
+
+#: xpdf/eel-gconf-extensions.c:101
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"שגיאת GConf: \n"
+" %s"
+
+#: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
+msgid "Parent control"
+msgstr "בקרת הורים"
+
+#: xpdf/gpdf-annots-view.cc:916
+msgid "Owner/Title"
+msgstr "בעלים/תואר"
+
+#: xpdf/gpdf-annots-view.cc:925
+msgid "Opened"
+msgstr "נפתח"
+
+#: xpdf/gpdf-annots-view.cc:1070 xpdf/gpdf-annots-view.cc:1086
+#: xpdf/gpdf-thumbnails-view.cc:1466 xpdf/gpdf-thumbnails-view.cc:1482
+msgid "Not yet implemented!"
+msgstr "האפשרות אינה ממומשת!"
+
+#: xpdf/gpdf-annots-view.cc:1071
+msgid "Annotations Filter feature not yet implemented... Sorry."
+msgstr "מצטערים, אפשרות סינון הערות לא ממומשת בשלב זה."
+
+#: xpdf/gpdf-annots-view.cc:1087
+msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
+msgstr "מצטערים, אפשרות ניהול תוספי הערות אינה ממומשת בשלב זה."
+
+#: xpdf/gpdf-bookmarks-view.cc:924
+#, c-format
+msgid "** Unknown %s **"
+msgstr "** %s לא ידוע **"
+
+#: xpdf/gpdf-bookmarks-view.cc:1061
+msgid "Title"
+msgstr "כותרת"
+
+#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+msgid "Page"
+msgstr "עמוד"
+
+#: xpdf/gpdf-control-ui.xml.h:1
+msgid "Back"
+msgstr "אחורה"
+
+#: xpdf/gpdf-control-ui.xml.h:2
+msgid "Best Fit"
+msgstr "ההתאמה הטובה ביותר"
+
+#: xpdf/gpdf-control-ui.xml.h:3
+msgid "Best _Fit"
+msgstr "_ההתאמה הטובה ביותר"
+
+#: xpdf/gpdf-control-ui.xml.h:4
+msgid "Change the visibility of the sidebar"
+msgstr "שינוי התצוגה של סרגל הצד"
+
+#: xpdf/gpdf-control-ui.xml.h:5
+msgid "Expand to a larger size"
+msgstr "הרחב לגודל גדול יותר"
+
+#: xpdf/gpdf-control-ui.xml.h:6
+msgid "First"
+msgstr "ראשון"
+
+#: xpdf/gpdf-control-ui.xml.h:7
+msgid "Fit Width"
+msgstr "התאם רוחב"
+
+#: xpdf/gpdf-control-ui.xml.h:8
+msgid "Fit page _width"
+msgstr "התאם _רוחב עמוד"
+
+#: xpdf/gpdf-control-ui.xml.h:9
+msgid "Fo_rward"
+msgstr "ק_דימה"
+
+#: xpdf/gpdf-control-ui.xml.h:10
+msgid "Forward"
+msgstr "קדימה"
+
+#: xpdf/gpdf-control-ui.xml.h:11
+msgid "Go backward in history"
+msgstr "לך אחורה בהיסטוריה"
+
+#: xpdf/gpdf-control-ui.xml.h:12
+msgid "Go forward in history"
+msgstr "לך קדימה בהיסטוריה"
+
+#: xpdf/gpdf-control-ui.xml.h:13
+msgid "In"
+msgstr "פנימה"
+
+#: xpdf/gpdf-control-ui.xml.h:14
+msgid "Last"
+msgstr "אחרון"
+
+#: xpdf/gpdf-control-ui.xml.h:15
+msgid "Next"
+msgstr "הבא"
+
+#: xpdf/gpdf-control-ui.xml.h:16
+msgid "Out"
+msgstr "החוצה"
+
+#: xpdf/gpdf-control-ui.xml.h:17
+msgid "Previous"
+msgstr "הקודם"
+
+#: xpdf/gpdf-control-ui.xml.h:18 xpdf/gpdf-control.cc:934
+msgid "Print"
+msgstr "הדפס"
+
+#: xpdf/gpdf-control-ui.xml.h:19
+msgid "Print the current file"
+msgstr "הדפס קובץ נוכחי"
+
+#: xpdf/gpdf-control-ui.xml.h:20
+msgid "Proper_ties"
+msgstr "מאפיי_נים"
+
+#: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
+msgid "Save a Copy"
+msgstr "שמור עותק"
+
+#: xpdf/gpdf-control-ui.xml.h:22
+msgid "Save the current PDF document with a new filename"
+msgstr "שמור את קובץ ה־PDF הנוכחי תחת שם חדש"
+
+#: xpdf/gpdf-control-ui.xml.h:23
+msgid "Shrink to a smaller size"
+msgstr "כווץ לגודל קטן יותר"
+
+#: xpdf/gpdf-control-ui.xml.h:24
+msgid "Size to fit the page"
+msgstr "גודל להתאמת העמוד"
+
+#: xpdf/gpdf-control-ui.xml.h:25
+msgid "Size to fit the page width"
+msgstr "גודל להתאמת רוחב העמוד"
+
+#: xpdf/gpdf-control-ui.xml.h:26
+msgid "View properties of the displayed document"
+msgstr "הצג את מאפייני המסמך המוצג"
+
+#: xpdf/gpdf-control-ui.xml.h:27
+msgid "View the first page"
+msgstr "הצג את העמוד הראשון"
+
+#: xpdf/gpdf-control-ui.xml.h:28
+msgid "View the last page"
+msgstr "הצג את העמוד האחרון"
+
+#: xpdf/gpdf-control-ui.xml.h:29
+msgid "View the next page"
+msgstr "הצג את העמוד הבא"
+
+#: xpdf/gpdf-control-ui.xml.h:30
+msgid "View the previous page"
+msgstr "הצג את העמוד הקודם"
+
+#: xpdf/gpdf-control-ui.xml.h:31
+msgid "Zoom _In"
+msgstr "הת_קרב"
+
+#: xpdf/gpdf-control-ui.xml.h:32
+msgid "Zoom _Out"
+msgstr "הת_רחק"
+
+#: xpdf/gpdf-control-ui.xml.h:33
+msgid "_Back"
+msgstr "_אחורה"
+
+#: xpdf/gpdf-control-ui.xml.h:35
+msgid "_First Page"
+msgstr "עמוד _ראשון"
+
+#: xpdf/gpdf-control-ui.xml.h:36
+msgid "_Go"
+msgstr "_מעבר"
+
+#: xpdf/gpdf-control-ui.xml.h:37
+msgid "_Last Page"
+msgstr "עמוד _אחרון"
+
+#: xpdf/gpdf-control-ui.xml.h:38
+msgid "_Next Page"
+msgstr "עמוד ה_בא"
+
+#: xpdf/gpdf-control-ui.xml.h:39
+msgid "_Previous Page"
+msgstr "עמוד _קודם"
+
+#: xpdf/gpdf-control-ui.xml.h:40
+msgid "_Print..."
+msgstr "ה_דפס..."
+
+#: xpdf/gpdf-control-ui.xml.h:41
+msgid "_Save a Copy..."
+msgstr "שמור _עותק..."
+
+#: xpdf/gpdf-control-ui.xml.h:42
+msgid "_Sidebar"
+msgstr "_סרגל צד"
+
+#: xpdf/gpdf-control.cc:559
+msgid "Documentation Error"
+msgstr "שגיאת תיעוד"
+
+#: xpdf/gpdf-control.cc:763
+#, c-format
+msgid "Printing: Page %d."
+msgstr "מדפיס: עמוד %d."
+
+#: xpdf/gpdf-control.cc:891
+#, c-format
+msgid ""
+"You were trying to print to a printer using the \"%s\" driver. This program "
+"requires a PostScript printer driver."
+msgstr ""
+"ניסית להדפיס באמצעות מנהל התקן \"%s\". תוכנה זו דורשת מנהל התקן PostScript."
+
+#: xpdf/gpdf-control.cc:894
+msgid ""
+"You were trying to print to a printer that does not use PostScript. This "
+"program requires a PostScript printer driver."
+msgstr ""
+"אתה מנסה להשתמש במדפסת שאינה PostScript. תוכנה זו דורשת מנהל התקן PostScript."
+
+#: xpdf/gpdf-control.cc:898
+msgid "Printing is not supported on this printer."
+msgstr "הדפסה אינה נתמכת במדפסת זו."
+
+#: xpdf/gpdf-control.cc:937
+msgid "_Pages"
+msgstr "_עמודים"
+
+#: xpdf/gpdf-control.cc:1043
+#, c-format
+msgid "A file named \"%s\" already exists."
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1049
+msgid "Do you want to replace it with the one you are saving?"
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1058
+msgid "_Replace"
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1068
+msgid "Question"
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1082
+#, c-format
+msgid "The file could not be saved as \"%s\"."
+msgstr ""
+
+#: xpdf/gpdf-control.cc:1195
+msgid "PDF Properties"
+msgstr "מאפייני PDF"
+
+#: xpdf/gpdf-control.cc:2034
+#, c-format
+msgid "Loading of %s failed."
+msgstr "הטעינה של %s נכשלה."
+
+#: xpdf/gpdf-control.cc:2373
+msgid "Bookmarks"
+msgstr "סימניות"
+
+#: xpdf/gpdf-control.cc:2377
+msgid "Pages"
+msgstr "עמודים"
+
+#: xpdf/gpdf-control.cc:2382
+msgid "Annotations"
+msgstr "הערות"
+
+#: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
+msgid "Link"
+msgstr "קישור"
+
+#: xpdf/gpdf-link-canvas-item.cc:265 xpdf/gpdf-link-canvas-item.cc:266
+msgid "UsingHandCursor"
+msgstr "משתמש-בסמן-יד"
+
+#: xpdf/gpdf-links-canvas-layer.cc:219 xpdf/gpdf-links-canvas-layer.cc:220
+msgid "Links"
+msgstr "קישורים"
+
+#: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
+msgid "_Open Document"
+msgstr "_פתח מסמך"
+
+#: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
+msgid "Enter document password:"
+msgstr "הכנס סיסמה עבור המסמך:"
+
+#: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
+msgid ""
+"This document is encrypted and this operation requires the document's "
+"password"
+msgstr "מסמך זה מוצפן ופעולה זו דורשת את סיסמת המסמך"
+
+#  translators: page catalog is a part of the PDF file
+#  The last period (.) is missing on purpose
+#. translators: page catalog is a part of the PDF file
+#. The last period (.) is missing on purpose
+#: xpdf/gpdf-persist-file.cc:337
+msgid "The PDF file is damaged. Its page catalog could not be read"
+msgstr "קובץ ה־PDF פגום. לא ניתן לקרוא את קטלוג העמודים שלו"
+
+#: xpdf/gpdf-persist-file.cc:341
+msgid ""
+"The PDF file is damaged or it is not a PDF file. It could not be repaired"
+msgstr "קובץ ה PDF פגום או שאינו קובץ PDF. לא ניתן לתקן זאת"
+
+#: xpdf/gpdf-persist-file.cc:345
+msgid "The PDF document is encrypted and you didn't enter the correct password"
+msgstr "מסמך PDF זה מוצפן, ולא הכנסת את הסיסמה הנכונה"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:1
+msgid "Printing"
+msgstr "מדפיס"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:2
+msgid "Printing: Preparing."
+msgstr "מדפיס: מתכונן."
+
+#: xpdf/gpdf-properties-dialog.glade.h:1
+msgid "Author:"
+msgstr "מחבר:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:2
+msgid "Created:"
+msgstr "נוצר:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:3
+msgid "Creator:"
+msgstr "יוצר:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:4
+msgid "Keywords:"
+msgstr "מילות מפתח:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:5
+msgid "Modified:"
+msgstr "נערך:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:6
+msgid "Number of Pages:"
+msgstr "מספר עמודים:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:7
+msgid "Optimized:"
+msgstr "ייעול:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:8
+msgid "PDF Version:"
+msgstr "גרסת PDF:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:9
+msgid "Producer:"
+msgstr "יצרן:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:10
+msgid "Security:"
+msgstr "אבטחה:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:11
+msgid "Subject:"
+msgstr "נושא:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:12
+msgid "Title:"
+msgstr "כותרת:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:13 xpdf/pdf-info-dict-util.cc:49
+#: xpdf/pdf-properties-display.c:225 xpdf/pdf-properties-display.c:233
+#: xpdf/pdf-properties-display.c:241 xpdf/pdf-properties-display.c:249
+#: xpdf/pdf-properties-display.c:258 xpdf/pdf-properties-display.c:267
+#: xpdf/pdf-properties-display.c:275 xpdf/pdf-properties-display.c:284
+#: xpdf/pdf-properties-display.c:292 xpdf/pdf-properties-display.c:301
+#: xpdf/pdf-properties-display.c:309 xpdf/pdf-properties-display.c:317
+msgid "Unknown"
+msgstr "לא ידוע"
+
+#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+msgid "Select sidebar page by title for displaying it"
+msgstr "בחר דף מסרגל הצד באמצעות הצגתו"
+
+#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+msgid "Click to open page tools menu"
+msgstr "לחץ כדי לפתוח את תפריט כלים"
+
+#: xpdf/gpdf-sidebar.c:407
+msgid "Remove page if it is removeable"
+msgstr "הסר דף אם ניתן להסירו"
+
+#: xpdf/gpdf-sidebar.c:434
+msgid "Close sidebar"
+msgstr "סגור סרגל צד"
+
+#: xpdf/gpdf-thumbnails-view.cc:1467
+msgid "Thumbnail Generation feature not yet implemented... Sorry."
+msgstr "מצטערים, אפשרות יצירת תצוגה מקדימה עדיין לא ממומשת."
+
+#: xpdf/gpdf-thumbnails-view.cc:1483
+msgid "All Thumbnails Generation feature not yet implemented... Sorry."
+msgstr "מצטערים, אפשרות יצירת תצוגה מקדימה עבור כל הדפים עדיין לא ממומשת."
+
+#: xpdf/gpdf-view.cc:378
+#, c-format
+msgid "No application was found to open the URI: %s"
+msgstr ""
+
+#: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
+msgid "Application Launch Failure!"
+msgstr "הפעלת יישום נכשלה!"
+
+#: xpdf/gpdf-view.cc:388
+#, c-format
+msgid "Failed to launch %s for URI: %s"
+msgstr "ההפעלה של %s עבור הכתובת (URI) %s נכשלה"
+
+#: xpdf/gpdf-view.cc:404
+msgid "Application Launch notification!"
+msgstr "יידוע הרצת יישום!"
+
+#: xpdf/gpdf-view.cc:514
+#, c-format
+msgid "Go to page #%d"
+msgstr "לך לעמוד #%d"
+
+#: xpdf/gpdf-view.cc:547
+#, c-format
+msgid "Go to file %s:#%d"
+msgstr "לך לקובץ %s:#%d"
+
+#: xpdf/gpdf-view.cc:555
+#, c-format
+msgid "Launch: %s %s"
+msgstr "הרץ %s %s"
+
+#: xpdf/gpdf-view.cc:565
+#, c-format
+msgid "Browse %s"
+msgstr "עיון %s"
+
+#: xpdf/gpdf-view.cc:573
+#, c-format
+msgid "Action: %s"
+msgstr "פעולה: %s"
+
+#: xpdf/gpdf-view.cc:581
+#, c-format
+msgid "Movie: %s"
+msgstr "סרט: %s"
+
+#: xpdf/gpdf-view.cc:592
+#, c-format
+msgid "Unknown action: %s !"
+msgstr "פעולה לא ידועה: %s !"
+
+#: xpdf/gpdf-view.cc:1623
+msgid "Document View"
+msgstr "תצוגת מסמך"
+
+#: xpdf/nautilus-pdf-property-page.cc:146
+msgid "URI currently displayed"
+msgstr "הכתובת המוצגת כעת"
+
+#: xpdf/page-control.c:101
+#, c-format
+msgid " of %d"
+msgstr " מתוך %d"
+
+#: xpdf/page-control.c:219 xpdf/page-control.c:233
+msgid "Current page"
+msgstr "עמוד נוכחי"
+
+#: xpdf/page-control.c:220
+msgid ""
+"This shows the current page number. To jump to another page, enter its "
+"number."
+msgstr "זה מראה את מספר העמוד הנוכחי. כדי לקפוץ לעמוד אחר, כתוב את מספרו."
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "Encrypted"
+msgstr "מוצפן"
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "None"
+msgstr "ללא"
+
+#  Yes/No will be displayed in the pdf properties dialog
+#  in a table as "Optimized: No"
+#. Yes/No will be displayed in the pdf properties dialog
+#. in a table as "Optimized: No"
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "Yes"
+msgstr "כן"
+
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "No"
+msgstr "לא"
+
+#~ msgid "Quit the program"
+#~ msgstr "צא מהתוכנה"
+
+#~ msgid "_Quit"
+#~ msgstr "_יציאה"

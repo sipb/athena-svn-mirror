@@ -1,0 +1,736 @@
+# translation of gpdf.HEAD.az.po to Azerbaijani
+# translation of gpdf.HEAD.az.po to Azerbaijani Turkish
+# Copyright (C) 2001,2003, 2004 Free Software Foundation, Inc.
+# Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2001, 2002.
+# Mətin Əmirov <metin@karegen.com>, 2003, 2004.
+msgid ""
+msgstr ""
+"Project-Id-Version: gpdf.HEAD.az\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 19:12+0200\n"
+"PO-Revision-Date: 2004-09-04 15:06+0300\n"
+"Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
+"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"net>\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: gpdf.desktop.in.h:1 shell/gpdf.c:925 xpdf/GNOME_PDF.server.in.in.h:5
+msgid "PDF Viewer"
+msgstr "PDF Nümayişçisi"
+
+#: gpdf.desktop.in.h:2
+msgid "View PDF files"
+msgstr "PDF fayllarını açın"
+
+#: gpdf.schemas.in.h:1
+msgid "Default sidebar page"
+msgstr "Ön qurğulu yan çubuq səhifəsi"
+
+#: gpdf.schemas.in.h:2
+msgid "Default sidebar size"
+msgstr "Ön qurğulu yan çubuq böyüklüyü"
+
+#: gpdf.schemas.in.h:3
+msgid "Show sidebar by default"
+msgstr "Ön qurğulu olaraq yan çubuğu göstər"
+
+#: shell/eel-vfs-extensions.c:691
+msgid " (invalid Unicode)"
+msgstr " (hökmsüz Yunikod)"
+
+#: shell/gpdf-recent-view-toolitem.c:195
+msgid "Open a recently used file"
+msgstr "Təzəlikcə istifadə edilən faylı aç"
+
+#: shell/gpdf-recent-view-toolitem.c:199
+msgid "Recent"
+msgstr "Son açılanlar"
+
+#: shell/gpdf-window-ui.xml.h:1
+msgid "About this application"
+msgstr "Bu proqram haqqında"
+
+#: shell/gpdf-window-ui.xml.h:2
+msgid "Close window"
+msgstr "Pəncərəni bağla"
+
+#: shell/gpdf-window-ui.xml.h:3
+msgid "Online manual for this application"
+msgstr "Bu proqramın onlayn sənədləri"
+
+#: shell/gpdf-window-ui.xml.h:4
+msgid "Open"
+msgstr "Aç"
+
+#: shell/gpdf-window-ui.xml.h:5
+msgid "Open a file"
+msgstr "Faylı aç"
+
+#: shell/gpdf-window-ui.xml.h:6
+msgid "Toggle fullscreen mode"
+msgstr "Tam ekran moduna keç"
+
+#: shell/gpdf-window-ui.xml.h:7
+msgid "_About"
+msgstr "_Haqqında"
+
+#: shell/gpdf-window-ui.xml.h:8
+msgid "_Close"
+msgstr "_Bağla"
+
+#: shell/gpdf-window-ui.xml.h:9
+msgid "_Contents"
+msgstr "_Məzmun"
+
+#: shell/gpdf-window-ui.xml.h:10 xpdf/gpdf-control-ui.xml.h:34
+msgid "_File"
+msgstr "_Fayl"
+
+#: shell/gpdf-window-ui.xml.h:11
+msgid "_Full Screen"
+msgstr "_Tam Ekran"
+
+#: shell/gpdf-window-ui.xml.h:12
+msgid "_Help"
+msgstr "_Yardım"
+
+#: shell/gpdf-window-ui.xml.h:13
+msgid "_Open..."
+msgstr "_Aç..."
+
+#: shell/gpdf-window-ui.xml.h:14 xpdf/gpdf-control-ui.xml.h:43
+msgid "_View"
+msgstr "Görünüş"
+
+#: shell/gpdf.c:142
+msgid "Could not initialize Bonobo!\n"
+msgstr "Bonobo başladıla bilmədi!\n"
+
+#: shell/gpdf.c:263 shell/gpdf.c:266 xpdf/GNOME_PDF.server.in.in.h:4
+#: xpdf/gpdf-control.cc:1979 xpdf/gpdf-control.cc:2011
+#: xpdf/gpdf-control.cc:2030 xpdf/gpdf-control.cc:2524
+msgid "PDF Document"
+msgstr "PDF Sənədi"
+
+#: shell/gpdf.c:457
+msgid "Exit Full Screen"
+msgstr "Tam Ekran Modundan Çıx"
+
+#: shell/gpdf.c:530
+msgid "Load file"
+msgstr "Faylı yüklə"
+
+#: shell/gpdf.c:539 xpdf/gpdf-control.cc:1117
+msgid "PDF Documents"
+msgstr "PDF Sənədləri"
+
+#: shell/gpdf.c:543 xpdf/gpdf-control.cc:1123
+msgid "All Files"
+msgstr "Bütün Fayllar"
+
+#: shell/gpdf.c:671
+msgid "Derek B. Noonburg, Xpdf author."
+msgstr "Derek B. Noonburg, Xpdf müəllifi."
+
+#: shell/gpdf.c:672
+msgid "Martin Kretzschmar, GNOME port maintainer."
+msgstr "Michael Meeks, GNOME buraxılışı müəllifi."
+
+#: shell/gpdf.c:673
+msgid "Michael Meeks, GNOME port creator."
+msgstr "Michael Meeks, GNOME buraxılışı yaradıcısı."
+
+#. please localize as R&eacute;mi (R\303\251mi)
+#: shell/gpdf.c:675
+msgid "Remi Cohen-Scali."
+msgstr "Remi Cohen-Scali."
+
+#: shell/gpdf.c:676
+msgid "Miguel de Icaza."
+msgstr "Miguel de Icaza."
+
+#: shell/gpdf.c:677
+msgid "Nat Friedman."
+msgstr "Nat Friedman."
+
+#: shell/gpdf.c:678
+msgid "Ravi Pratap."
+msgstr "Ravi Pratap."
+
+#: shell/gpdf.c:683
+msgid "Chee Bin HOH <cbhoh@mimos.my>"
+msgstr "Chee Bin HOH <cbhoh@mimos.my>"
+
+#: shell/gpdf.c:684
+msgid "Breda McColgan <BredaMcColgan@sun.com>"
+msgstr "Breda McColgan <BredaMcColgan@sun.com>"
+
+#: shell/gpdf.c:698
+msgid "translator-credits"
+msgstr ""
+"Vasif İsmailoğlu <azerblinux@hotmail.com>\n"
+"Mətin Əmirov <metin@karegen.com>\n"
+"\n"
+"Tərcümə işləri üzrə yazışma siyahısı ünvanımız:\n"
+"<translation-team-az@lists.sourceforge.net>"
+
+#: shell/gpdf.c:701
+msgid "Glyph & Cog, LLC and authors"
+msgstr "Glyph & Cog, LLC və müəlliflər"
+
+#: shell/gpdf.c:705 xpdf/GNOME_PDF.server.in.in.h:1
+msgid "GNOME PDF Viewer"
+msgstr "GNOME PDF Nümayişçisi"
+
+#: shell/gpdf.c:708
+msgid "A PDF viewer based on Xpdf"
+msgstr "Xpdf əsaslı PDF nümayişçisi"
+
+#: xpdf/GNOME_PDF.server.in.in.h:2
+msgid "GNOME PDF viewer factory"
+msgstr "GNOME PDF nümayişçisi e'malatxanası"
+
+#: xpdf/GNOME_PDF.server.in.in.h:3
+msgid "Nautilus PDF Property Page"
+msgstr "Nautilus PDF Xassələr Səhifəsi"
+
+#: xpdf/GNOME_PDF.server.in.in.h:6
+msgid "PDF document viewer factory"
+msgstr "PDF nümayişçisi e'malatxanası"
+
+#: xpdf/GNOME_PDF.server.in.in.h:7
+msgid "View as PDF Document"
+msgstr "PDF Sənədi Olaraq Göstər"
+
+#: xpdf/eel-gconf-extensions.c:74
+msgid ""
+"Cannot find a schema for gpdf preferences. \n"
+"Check your gconf setup, look at gpdf FAQ for \n"
+"more info"
+msgstr ""
+"gpdf seçimlərinin sxemi tapıla bilmir. \n"
+"gconf qurğularınızı yoxlayın, daha çox mə'lumat üçün\n"
+"gpdf FAQ faylına baxın"
+
+#: xpdf/eel-gconf-extensions.c:101
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf xətası:\n"
+"  %s"
+
+#: xpdf/gpdf-annots-view.cc:288 xpdf/gpdf-annots-view.cc:289
+msgid "Parent control"
+msgstr "Valideyin idarəsi"
+
+#: xpdf/gpdf-annots-view.cc:916
+msgid "Owner/Title"
+msgstr "Müəllif/Başlıq"
+
+#: xpdf/gpdf-annots-view.cc:925
+msgid "Opened"
+msgstr "Açıq"
+
+#: xpdf/gpdf-annots-view.cc:1070 xpdf/gpdf-annots-view.cc:1086
+#: xpdf/gpdf-thumbnails-view.cc:1466 xpdf/gpdf-thumbnails-view.cc:1482
+msgid "Not yet implemented!"
+msgstr "Hələlik dəstəklənmir!"
+
+#: xpdf/gpdf-annots-view.cc:1071
+msgid "Annotations Filter feature not yet implemented... Sorry."
+msgstr ""
+"Üzr istəyirik, amma annotasiya süzgəci xassəsi hələlik tam bitirilməyib."
+
+#: xpdf/gpdf-annots-view.cc:1087
+msgid "Annotations Plug-ins management feature not yet implemented... Sorry."
+msgstr ""
+"Üzr istəyirik, amma annotasiya əlavələri idarəsi xassəsi hələlik tam "
+"bitirilməyib."
+
+#: xpdf/gpdf-bookmarks-view.cc:924
+#, c-format
+msgid "** Unknown %s **"
+msgstr "** Namə'lum %s **"
+
+#: xpdf/gpdf-bookmarks-view.cc:1061
+msgid "Title"
+msgstr "Başlıq"
+
+#: xpdf/gpdf-bookmarks-view.cc:1067 xpdf/page-control.c:230
+msgid "Page"
+msgstr "Səhifə"
+
+#: xpdf/gpdf-control-ui.xml.h:1
+msgid "Back"
+msgstr "Geri"
+
+#: xpdf/gpdf-control-ui.xml.h:2
+msgid "Best Fit"
+msgstr "Ən Uyğun"
+
+#: xpdf/gpdf-control-ui.xml.h:3
+msgid "Best _Fit"
+msgstr "Ən _Uyğun"
+
+#: xpdf/gpdf-control-ui.xml.h:4
+msgid "Change the visibility of the sidebar"
+msgstr "Yan çubuğun görünüşünü dəyişdir"
+
+#: xpdf/gpdf-control-ui.xml.h:5
+msgid "Expand to a larger size"
+msgstr "Daha da genişlət"
+
+#: xpdf/gpdf-control-ui.xml.h:6
+msgid "First"
+msgstr "İlk"
+
+#: xpdf/gpdf-control-ui.xml.h:7
+msgid "Fit Width"
+msgstr "Eninə uyğunlaşdır"
+
+#: xpdf/gpdf-control-ui.xml.h:8
+msgid "Fit page _width"
+msgstr "Səhifə _eninə görə uyğunlaşdır"
+
+#: xpdf/gpdf-control-ui.xml.h:9
+msgid "Fo_rward"
+msgstr "İ_rəli"
+
+#: xpdf/gpdf-control-ui.xml.h:10
+msgid "Forward"
+msgstr "İrəli"
+
+#: xpdf/gpdf-control-ui.xml.h:11
+msgid "Go backward in history"
+msgstr "Keçmişdə geri get"
+
+#: xpdf/gpdf-control-ui.xml.h:12
+msgid "Go forward in history"
+msgstr "Keçmişdə irəli get"
+
+#: xpdf/gpdf-control-ui.xml.h:13
+msgid "In"
+msgstr "Yaxına"
+
+#: xpdf/gpdf-control-ui.xml.h:14
+msgid "Last"
+msgstr "Son"
+
+#: xpdf/gpdf-control-ui.xml.h:15
+msgid "Next"
+msgstr "Sonrakı"
+
+#: xpdf/gpdf-control-ui.xml.h:16
+msgid "Out"
+msgstr "Uzağa"
+
+#: xpdf/gpdf-control-ui.xml.h:17
+msgid "Previous"
+msgstr "Öncəki"
+
+#: xpdf/gpdf-control-ui.xml.h:18 xpdf/gpdf-control.cc:934
+msgid "Print"
+msgstr "Çap Et"
+
+#: xpdf/gpdf-control-ui.xml.h:19
+msgid "Print the current file"
+msgstr "Hazırkı faylı çap et"
+
+#: xpdf/gpdf-control-ui.xml.h:20
+msgid "Proper_ties"
+msgstr "_Xassələr"
+
+#: xpdf/gpdf-control-ui.xml.h:21 xpdf/gpdf-control.cc:1109
+msgid "Save a Copy"
+msgstr "Nüsxəsini Qeyd Et"
+
+#: xpdf/gpdf-control-ui.xml.h:22
+msgid "Save the current PDF document with a new filename"
+msgstr "Hazırkı PDF sənədini fərqli fayl adıyla qeyd et"
+
+#: xpdf/gpdf-control-ui.xml.h:23
+msgid "Shrink to a smaller size"
+msgstr "Daha da daralt"
+
+#: xpdf/gpdf-control-ui.xml.h:24
+msgid "Size to fit the page"
+msgstr "Səhifə böyükülüyünə uyğunlaşdır"
+
+#: xpdf/gpdf-control-ui.xml.h:25
+msgid "Size to fit the page width"
+msgstr "Səhifə eninə uyğunlaşdırma böyüklüyü"
+
+#: xpdf/gpdf-control-ui.xml.h:26
+msgid "View properties of the displayed document"
+msgstr "Nümayiş edilən sənədin xassələrini göstər"
+
+#: xpdf/gpdf-control-ui.xml.h:27
+msgid "View the first page"
+msgstr "İlk səhifəni göstər"
+
+#: xpdf/gpdf-control-ui.xml.h:28
+msgid "View the last page"
+msgstr "Son səhifəni göstər"
+
+#: xpdf/gpdf-control-ui.xml.h:29
+msgid "View the next page"
+msgstr "Sonrakı səhifəni göstər"
+
+#: xpdf/gpdf-control-ui.xml.h:30
+msgid "View the previous page"
+msgstr "Öncəki səhifəni göstər"
+
+#: xpdf/gpdf-control-ui.xml.h:31
+msgid "Zoom _In"
+msgstr "Yaxınlaş_dır"
+
+#: xpdf/gpdf-control-ui.xml.h:32
+msgid "Zoom _Out"
+msgstr "_Uzaqlaşdır"
+
+#: xpdf/gpdf-control-ui.xml.h:33
+msgid "_Back"
+msgstr "_Geri"
+
+#: xpdf/gpdf-control-ui.xml.h:35
+msgid "_First Page"
+msgstr "_İlk Səhifə"
+
+#: xpdf/gpdf-control-ui.xml.h:36
+msgid "_Go"
+msgstr "_Get"
+
+#: xpdf/gpdf-control-ui.xml.h:37
+msgid "_Last Page"
+msgstr "_Son Səhifə"
+
+#: xpdf/gpdf-control-ui.xml.h:38
+msgid "_Next Page"
+msgstr "_Sonrakı Səhifə"
+
+#: xpdf/gpdf-control-ui.xml.h:39
+msgid "_Previous Page"
+msgstr "Ə_vvəlki Səhifə"
+
+#: xpdf/gpdf-control-ui.xml.h:40
+msgid "_Print..."
+msgstr "Ç_ap Et..."
+
+#: xpdf/gpdf-control-ui.xml.h:41
+msgid "_Save a Copy..."
+msgstr "Nüsxəsini _Qeyd Et..."
+
+#: xpdf/gpdf-control-ui.xml.h:42
+msgid "_Sidebar"
+msgstr "_Yan Çubuq"
+
+#: xpdf/gpdf-control.cc:559
+msgid "Documentation Error"
+msgstr "Sənəd Xətası"
+
+#: xpdf/gpdf-control.cc:763
+#, c-format
+msgid "Printing: Page %d."
+msgstr "Çap Edilir: Səhifə %d."
+
+#: xpdf/gpdf-control.cc:891
+#, c-format
+msgid ""
+"You were trying to print to a printer using the \"%s\" driver. This program "
+"requires a PostScript printer driver."
+msgstr ""
+"Siz \"%s\" sürücüsünü işlədən çapçıya çap etmək istədiniz. Bu proqram "
+"PostScript çapçısı sürücülərini məcbur qılır."
+
+#: xpdf/gpdf-control.cc:894
+msgid ""
+"You were trying to print to a printer that does not use PostScript. This "
+"program requires a PostScript printer driver."
+msgstr ""
+"Siz PostScript işlətməyən çapçıya çap etmək istədiniz. Bu proqram PostScript "
+"çapçısı sürücülərini məcbur qılır."
+
+#: xpdf/gpdf-control.cc:898
+msgid "Printing is not supported on this printer."
+msgstr "Bu çapçı üstündə çap dəstəklənmir."
+
+#: xpdf/gpdf-control.cc:937
+msgid "_Pages"
+msgstr "_Səhifələr"
+
+#: xpdf/gpdf-control.cc:1043
+#, c-format
+msgid "A file named \"%s\" already exists."
+msgstr "\"%s\" adlı fayl onsuzda mövcuddur."
+
+#: xpdf/gpdf-control.cc:1049
+msgid "Do you want to replace it with the one you are saving?"
+msgstr "Bunu qeyd etdiyinizlə əvəz etmək istəyirsiniz?"
+
+#: xpdf/gpdf-control.cc:1058
+msgid "_Replace"
+msgstr "Ə_vəz Et"
+
+#: xpdf/gpdf-control.cc:1068
+msgid "Question"
+msgstr "Sual"
+
+#: xpdf/gpdf-control.cc:1082
+#, c-format
+msgid "The file could not be saved as \"%s\"."
+msgstr "Fayl \"%s\" olaraq qeyd edilə bilmədi."
+
+#: xpdf/gpdf-control.cc:1195
+msgid "PDF Properties"
+msgstr "PDF Xassələri"
+
+#: xpdf/gpdf-control.cc:2034
+#, c-format
+msgid "Loading of %s failed."
+msgstr "%s faylı yüklənə bilmədi."
+
+#: xpdf/gpdf-control.cc:2373
+msgid "Bookmarks"
+msgstr "Nişanlar"
+
+#: xpdf/gpdf-control.cc:2377
+msgid "Pages"
+msgstr "Səhifələr"
+
+#: xpdf/gpdf-control.cc:2382
+msgid "Annotations"
+msgstr "Annotasiyalar"
+
+#: xpdf/gpdf-link-canvas-item.cc:258 xpdf/gpdf-link-canvas-item.cc:259
+msgid "Link"
+msgstr "Körpü"
+
+#: xpdf/gpdf-link-canvas-item.cc:265 xpdf/gpdf-link-canvas-item.cc:266
+msgid "UsingHandCursor"
+msgstr "ƏlKursoruİstifadədə"
+
+#: xpdf/gpdf-links-canvas-layer.cc:219 xpdf/gpdf-links-canvas-layer.cc:220
+msgid "Links"
+msgstr "Körpülər"
+
+#: xpdf/gpdf-persist-file.cc:224 xpdf/gpdf-persist-stream.cc:213
+msgid "_Open Document"
+msgstr "Sənədi _Aç"
+
+#: xpdf/gpdf-persist-file.cc:251 xpdf/gpdf-persist-stream.cc:240
+msgid "Enter document password:"
+msgstr "Sənəd şifrəsini bildirin:"
+
+#: xpdf/gpdf-persist-file.cc:252 xpdf/gpdf-persist-stream.cc:241
+msgid ""
+"This document is encrypted and this operation requires the document's "
+"password"
+msgstr "Bu sənəd şifrə qorumalıdır və bu əməliyyat üçün sənəd şifrəsi lazımdır"
+
+#. translators: page catalog is a part of the PDF file
+#. The last period (.) is missing on purpose
+#: xpdf/gpdf-persist-file.cc:337
+msgid "The PDF file is damaged. Its page catalog could not be read"
+msgstr "PDF faylı pozulub. Onun səhifə kataloqu oxuna bilmədi"
+
+#: xpdf/gpdf-persist-file.cc:341
+msgid ""
+"The PDF file is damaged or it is not a PDF file. It could not be repaired"
+msgstr "PDF faylı pozulub ya da PDF faylı deyil. Fayl düzəldilə bilmədi"
+
+#: xpdf/gpdf-persist-file.cc:345
+msgid "The PDF document is encrypted and you didn't enter the correct password"
+msgstr "Bu PDF sənədi şifrəlidir və siz hökmlü şifrəni bildirmədiniz"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:1
+msgid "Printing"
+msgstr "Çap Etmə"
+
+#: xpdf/gpdf-print-progress-dialog.glade.h:2
+msgid "Printing: Preparing."
+msgstr "Çap Etmə: Hazırlanır."
+
+#: xpdf/gpdf-properties-dialog.glade.h:1
+msgid "Author:"
+msgstr "Müəllif:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:2
+msgid "Created:"
+msgstr "Yaradılma Tarixi:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:3
+msgid "Creator:"
+msgstr "Müəllif:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:4
+msgid "Keywords:"
+msgstr "Açar Sözlər:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:5
+msgid "Modified:"
+msgstr "Təkmilləşmə Tarixi:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:6
+msgid "Number of Pages:"
+msgstr "Səhifə Ədədi:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:7
+msgid "Optimized:"
+msgstr "Optimizasiya Edilib:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:8
+msgid "PDF Version:"
+msgstr "PDF Buraxılışı:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:9
+msgid "Producer:"
+msgstr "İstehsal Edən:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:10
+msgid "Security:"
+msgstr "Təhlükəsizlik:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:11
+msgid "Subject:"
+msgstr "Mövzu:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:12
+msgid "Title:"
+msgstr "Başlıq:"
+
+#: xpdf/gpdf-properties-dialog.glade.h:13 xpdf/pdf-info-dict-util.cc:49
+#: xpdf/pdf-properties-display.c:225 xpdf/pdf-properties-display.c:233
+#: xpdf/pdf-properties-display.c:241 xpdf/pdf-properties-display.c:249
+#: xpdf/pdf-properties-display.c:258 xpdf/pdf-properties-display.c:267
+#: xpdf/pdf-properties-display.c:275 xpdf/pdf-properties-display.c:284
+#: xpdf/pdf-properties-display.c:292 xpdf/pdf-properties-display.c:301
+#: xpdf/pdf-properties-display.c:309 xpdf/pdf-properties-display.c:317
+msgid "Unknown"
+msgstr "Namə'lum"
+
+#: xpdf/gpdf-sidebar.c:316 xpdf/gpdf-sidebar.c:339
+msgid "Select sidebar page by title for displaying it"
+msgstr "Göstərilməsi üçün yan çubuq səhifəsini başlığına görə seç"
+
+#: xpdf/gpdf-sidebar.c:371 xpdf/gpdf-sidebar.c:388
+msgid "Click to open page tools menu"
+msgstr "Səhifə vasitələri menyusunu açmaq üçün tıqlayın"
+
+#: xpdf/gpdf-sidebar.c:407
+msgid "Remove page if it is removeable"
+msgstr "Səhifə silinə bilirsə onu sil"
+
+#: xpdf/gpdf-sidebar.c:434
+msgid "Close sidebar"
+msgstr "Yan çubuğu bağla"
+
+#: xpdf/gpdf-thumbnails-view.cc:1467
+msgid "Thumbnail Generation feature not yet implemented... Sorry."
+msgstr "Üzr istəyirik, amma dırnaq görünüşü xassəsi hələlik tam bitirilməyib."
+
+#: xpdf/gpdf-thumbnails-view.cc:1483
+msgid "All Thumbnails Generation feature not yet implemented... Sorry."
+msgstr ""
+"Üzr istəyirik, amma bütün dırnaq görünüşləri xassəsi hələlik tam "
+"bitirilməyib."
+
+#: xpdf/gpdf-view.cc:378
+#, c-format
+msgid "No application was found to open the URI: %s"
+msgstr "Ünvanı aça vilən heç bir proqram tapılmadı: %s"
+
+#: xpdf/gpdf-view.cc:381 xpdf/gpdf-view.cc:392
+msgid "Application Launch Failure!"
+msgstr "Proqram Başlatma İflası!"
+
+#: xpdf/gpdf-view.cc:388
+#, c-format
+msgid "Failed to launch %s for URI: %s"
+msgstr "%s sənədi bu URI üçün açıla bilmədi: %s"
+
+#: xpdf/gpdf-view.cc:404
+msgid "Application Launch notification!"
+msgstr "Proqram Başlatma bildirişi!"
+
+#: xpdf/gpdf-view.cc:514
+#, c-format
+msgid "Go to page #%d"
+msgstr "#%d nömrəli səhifəyə get"
+
+#: xpdf/gpdf-view.cc:547
+#, c-format
+msgid "Go to file %s:#%d"
+msgstr "%s:#%d faylına get"
+
+#: xpdf/gpdf-view.cc:555
+#, c-format
+msgid "Launch: %s %s"
+msgstr "%s %s-i aç"
+
+#: xpdf/gpdf-view.cc:565
+#, c-format
+msgid "Browse %s"
+msgstr "%s-i gəz"
+
+#: xpdf/gpdf-view.cc:573
+#, c-format
+msgid "Action: %s"
+msgstr "Gedişat: %s"
+
+#: xpdf/gpdf-view.cc:581
+#, c-format
+msgid "Movie: %s"
+msgstr "Film: %s"
+
+#: xpdf/gpdf-view.cc:592
+#, c-format
+msgid "Unknown action: %s !"
+msgstr "Naməlum gedişat: %s !"
+
+#: xpdf/gpdf-view.cc:1623
+msgid "Document View"
+msgstr "Sənəd Görünüşü"
+
+#: xpdf/nautilus-pdf-property-page.cc:146
+msgid "URI currently displayed"
+msgstr "Hazırda göstərilən URI"
+
+#: xpdf/page-control.c:101
+#, c-format
+msgid " of %d"
+msgstr " / %d"
+
+#: xpdf/page-control.c:219 xpdf/page-control.c:233
+msgid "Current page"
+msgstr "Hazırkı səhifə"
+
+#: xpdf/page-control.c:220
+msgid ""
+"This shows the current page number. To jump to another page, enter its "
+"number."
+msgstr ""
+"Bu hazırkı səhifənin nömrəsini göstərir. Başqa səhifəyə getmək üçün, onun "
+"nömrəsini daxil edin."
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "Encrypted"
+msgstr "Şiflələnmiş"
+
+#: xpdf/pdf-info-dict-util.cc:203
+msgid "None"
+msgstr "Heç biri"
+
+#. Yes/No will be displayed in the pdf properties dialog
+#. in a table as "Optimized: No"
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "Yes"
+msgstr "Bəli"
+
+#: xpdf/pdf-info-dict-util.cc:219
+msgid "No"
+msgstr "Xeyir"

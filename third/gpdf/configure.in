@@ -1,0 +1,389 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl Copyright 1998-2004 Glyph & Cog, LLC
+dnl Copyright 1999-2000 Ximian, Inc.
+dnl Copyright 2002-2004 Martin Kretzschmar
+
+AC_PREREQ(2.52)
+AC_INIT(gpdf, 2.8.0,
+	[http://bugzilla.gnome.org/enter_bug.cgi?product=gpdf])
+STABLE_RELEASE=true
+
+AM_MAINTAINER_MODE
+
+AC_CONFIG_SRCDIR(xpdf/gpdf-control.cc)
+AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_CONFIG_HEADER(aconf.h)
+
+dnl Required libraries
+
+GTK_REQUIRED=2.3.0
+LIBBONOBO_REQUIRED=2.2.1
+LIBGNOMEPRINT_REQUIRED=2.5.1
+GCONF_REQUIRED=2.0.0
+
+AC_SUBST(GTK_REQUIRED)
+AC_SUBST(LIBBONOBO_REQUIRED)
+AC_SUBST(LIBGNOMEPRINT_REQUIRED)
+AC_SUBST(GCONF_REQUIRED)
+
+dnl Checks for programs.
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_PROG_CXX
+AC_STDC_HEADERS
+AC_PROG_RANLIB
+
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
+AC_PATH_PROG(PDFTEX, pdftex, no)
+AM_CONDITIONAL(HAVE_PDFTEX, test "x$PDFTEX" != "xno")
+
+dnl Compiler strictness, deprecated function handling
+
+GNOME_COMPILE_WARNINGS("maximum")
+CFLAGS="$CFLAGS $WARN_CFLAGS"
+GNOME_CXX_WARNINGS("yes")
+CXXFLAGS="$CXXFLAGS $WARN_CXXFLAGS"
+
+AC_MSG_CHECKING([whether to disable deprecated glib/gtk+/etc. features])
+AC_ARG_ENABLE([deprecation-errors],
+	      AC_HELP_STRING([--enable-deprecation-errors],
+			     [don't allow use of deprecated GTK+/etc. features]),
+	      if test "$enable_deprecation_errors" = "yes"; then
+	          AC_MSG_RESULT(yes)
+	          GPDF_DEPRECATED_CFLAGS="-DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED -DGNOME_DISABLE_DEPRECATED"
+	      else
+	          AC_MSG_RESULT(no)
+		  GPDF_DEPRECATED_CFLAGS=""
+	      fi,
+	      AC_MSG_RESULT(no)
+	      GPDF_DEPRECATED_CFLAGS="")
+AC_SUBST(GPDF_DEPRECATED_CFLAGS)
+
+dnl i18n
+
+ALL_LINGUAS="af am ar az be bn bs ca cs cy da de el en_CA en_GB eo es eu fa fi fr ga gl gu he hi hr hu id is it ja kn ko lt lv mk ml mn ms nb nl nn no or pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
+
+GETTEXT_PACKAGE=AC_PACKAGE_NAME
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [foo])
+
+AM_GLIB_GNU_GETTEXT
+AC_PROG_INTLTOOL
+
+dnl Xpdf aconf.h.in compatibility
+
+AH_TOP([#include <aconf2.h>])
+AH_TEMPLATE([HAVE_LIBSM], [Define to 1 if you have session management.])
+AH_TEMPLATE([ENABLE_NLS], [Use Native Language Support.])
+AH_TEMPLATE([HAVE_CATGETS], [Use catgets functions.])
+AH_TEMPLATE([HAVE_GETTEXT], [Use gettext functions.])
+
+dnl Optional features.
+AH_TEMPLATE([A4_PAPER],
+            [Use A4 paper size instead of Letter for PostScript output.])
+AC_ARG_ENABLE(a4-paper,
+              AC_HELP_STRING([--enable-a4-paper],
+                             [use A4 paper size instead of Letter for 
+                              PostScript output]),
+              AC_DEFINE(A4_PAPER))
+
+dnl never define NO_TEXT_SELECT, just remember this Xpdf setting.
+AH_TEMPLATE([NO_TEXT_SELECT], [Do not allow text selection.])
+
+AH_TEMPLATE([OPI_SUPPORT],
+            [Include support for OPI comments.])
+AC_ARG_ENABLE(opi,
+              AC_HELP_STRING([--enable-opi],
+                             [include support for OPI comments]),
+              AC_DEFINE(OPI_SUPPORT))
+
+dnl enable these unconditionally.
+AC_DEFINE([MULTITHREADED], [1], [Enable multithreading support.])
+AC_DEFINE([TEXTOUT_WORD_LIST], [1], [Enable word list support.])
+	      
+AH_TEMPLATE([APPDEFDIR],
+            [Directory with the Xpdf app-defaults file.])
+AC_ARG_WITH(appdef-dir,
+            AC_HELP_STRING([--with-appdef-dir],
+                           [set app-defaults directory]),
+            AC_DEFINE_UNQUOTED(APPDEFDIR, "$with_appdef_dir"))
+
+dnl Path to xpdfrc.
+dnl This ugly kludge to get the sysconfdir path is needed because
+dnl autoconf doesn't actually set the prefix variable until later.
+if test "$sysconfdir" = '${prefix}/etc'; then
+  if test "x$prefix" = xNONE; then
+    system_xpdfrc="$ac_default_prefix/etc/xpdfrc"
+  else
+    system_xpdfrc="$prefix/etc/xpdfrc"
+  fi
+else
+  system_xpdfrc="$sysconfdir/xpdfrc"
+fi
+AC_DEFINE_UNQUOTED(SYSTEM_XPDFRC, "$system_xpdfrc",
+                   [Full path for the system-wide xpdfrc file.])
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+
+dnl Switch over to C++.  This will make the checks below a little
+dnl bit stricter (requiring function prototypes in include files).
+dnl (99% of xpdf is written in C++.)
+AC_LANG_CPLUSPLUS
+
+dnl Look for header that defines select() and fd_set.
+AC_MSG_CHECKING([select() and fd_set in sys/select.h and sys/bsdtypes.h])
+AC_TRY_COMPILE([#include <stdlib.h>
+#include <stddef.h>
+#include <unistd.h>
+#include <sys/types.h>],
+  [fd_set fds;
+select(0, NULL, NULL, NULL, NULL);], xpdf_ok=yes, xpdf_ok=no)
+if test $xpdf_ok = yes; then
+  AC_MSG_RESULT([not needed])
+else
+  AC_TRY_COMPILE([#include <stdlib.h>
+#include <stddef.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/select.h>],
+    [fd_set fds;
+select(0, NULL, NULL, NULL, NULL);], xpdf_ok=yes, xpdf_ok=no)
+  if test $xpdf_ok = yes; then
+    AC_DEFINE(HAVE_SYS_SELECT_H, 1, [Have sys/select.h.])
+    AC_MSG_RESULT([need sys/select.h])
+  else
+    AC_TRY_COMPILE([#include <stdlib.h>
+#include <stddef.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/bsdtypes.h>],
+      [fd_set fds;
+select(0, NULL, NULL, NULL, NULL);], xpdf_ok=yes, xpdf_ok=no)
+    if test $xpdf_ok = yes; then
+      AC_DEFINE(HAVE_SYS_BSDTYPES_H, 1, [Have sys/bsdtypes.h.])
+      AC_MSG_RESULT([need sys/bsdtypes.h])
+    else
+      AC_MSG_RESULT([problem])
+    fi
+  fi
+fi
+
+dnl Look for header that defines FD_ZERO.
+AC_MSG_CHECKING([FD_ZERO and strings.h or bstring.h])
+AC_TRY_COMPILE([#include <stdlib.h>
+#include <sys/types.h>
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif],
+[fd_set fds; FD_ZERO(&fds);], xpdf_ok=yes, xpdf_ok=no)
+if test $xpdf_ok = yes; then
+  AC_MSG_RESULT([not needed])
+else
+  AC_TRY_COMPILE([#include <stdlib.h>
+#include <sys/types.h>
+#include <strings.h>
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif],
+    [fd_set fds; FD_ZERO(&fds);], xpdf_ok=yes, xpdf_ok=no)
+  if test $xpdf_ok = yes; then
+    AC_DEFINE(HAVE_STRINGS_H, 1, [Have strings.h.])
+    AC_MSG_RESULT([need strings.h])
+  else
+    AC_TRY_COMPILE([#include <stdlib.h>
+#include <sys/types.h>
+#include <bstring.h>
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif],
+      [fd_set fds; FD_ZERO(&fds);], xpdf_ok=yes, xpdf_ok=no)
+    if test $xpdf_ok = yes; then
+      AC_DEFINE(HAVE_BSTRING_H, 1, [Have bstring.h.])
+      AC_MSG_RESULT([need bstring.h])
+    else
+      AC_MSG_RESULT([problem])
+    fi
+  fi
+fi
+
+dnl Look for rewinddir.
+AC_CHECK_FUNCS(rewinddir)
+if test $ac_cv_func_rewinddir = no; then
+  AC_CHECK_LIB(cposix, rewinddir)
+fi
+
+dnl Checks for library functions.
+AC_CHECK_FUNCS(popen)
+dnl # This should use 'AC_CHECK_FUNCS(mkstemp)' but that fails if
+dnl # the mkstemp exists in the library but isn't declared in the
+dnl # include file (e.g., in cygwin 1.1.2).
+AC_CACHE_CHECK([for mkstemp],
+xpdf_cv_func_mkstemp,
+[AC_TRY_LINK([#include <stdlib.h>
+#include <unistd.h>],
+[mkstemp("foo");],
+xpdf_cv_func_mkstemp=yes, xpdf_cv_func_mkstemp=no)])
+if test "$xpdf_cv_func_mkstemp" = yes; then
+  AC_DEFINE(HAVE_MKSTEMP, 1, [Have mkstemp().])
+fi
+dnl Check for mkstemps, just like mkstemp.
+AC_CACHE_CHECK([for mkstemps],
+xpdf_cv_func_mkstemps,
+[AC_TRY_LINK([#include <stdlib.h>
+#include <unistd.h>],
+[mkstemps("foo", 0);],
+xpdf_cv_func_mkstemps=yes, xpdf_cv_func_mkstemps=no)])
+if test "$xpdf_cv_func_mkstemps" = yes; then
+  AC_DEFINE(HAVE_MKSTEMPS, 1, [Have mkstemps().])
+fi
+
+dnl Check select argument type: on HP-UX before version 10, select
+dnl takes (int *) instead of (fd_set *).
+AC_CACHE_CHECK([whether select takes fd_set arguments],
+xpdf_cv_func_select_arg,
+[AC_TRY_COMPILE([#include <sys/types.h>
+#include <sys/time.h>
+#include <unistd.h>
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif],
+[fd_set fds;
+select(1, &fds, &fds, &fds, 0);],
+xpdf_cv_func_select_arg=yes, xpdf_cv_func_select_arg=no)])
+if test "$xpdf_cv_func_select_arg" != yes; then
+  AC_DEFINE(SELECT_TAKES_INT, 1, [select() takes int, not fd_set arguments.])
+fi
+
+dnl Back to C for the library tests.
+AC_LANG_C
+
+dnl Check for fseeko/ftello or fseek64/ftell64
+dnl The LARGEFILE and FSEEKO macros have to be called in C, not C++, mode.
+AC_SYS_LARGEFILE
+AC_FUNC_FSEEKO
+AC_CHECK_FUNCS(fseek64, xpdf_cv_func_fseek64=yes, xpdf_cv_func_fseek64=no)
+AC_CHECK_FUNCS(ftell64, xpdf_cv_func_ftell64=yes, xpdf_cv_func_ftell64=no)
+if test "$xpdf_cv_func_fseek64" = yes -a "$xpdf_cv_func_ftell64" = yes; then
+  AC_DEFINE(HAVE_FSEEK64, 1, [Have fseek64().])
+fi
+
+dnl Check for libpaper (Debian).
+smr_CHECK_LIB(libpaper, paper, [Debian libpaper], paperinit, paper.h)
+AC_SUBST(libpaper_LIBS)
+AC_SUBST(libpaper_CFLAGS)
+
+dnl Check for GNOME libraries
+
+PKG_CHECK_MODULES(EXTRA_GNOME, gtk+-2.0		    >= $GTK_REQUIRED	       \
+			       libgnomeui-2.0				       \
+			       libbonoboui-2.0				       \
+			       libbonobo-2.0	    >= $LIBBONOBO_REQUIRED     \
+			       gnome-vfs-2.0				       \
+			       gnome-vfs-module-2.0			       \
+			       libgnomeprint-2.2    >= $LIBGNOMEPRINT_REQUIRED \
+			       libgnomeprintui-2.2			       \
+			       libglade-2.0				       \
+			       gconf-2.0	    >= $GCONF_REQUIRED)
+
+AC_SUBST(EXTRA_GNOME_LIBS)
+AC_SUBST(EXTRA_GNOME_CFLAGS)
+
+dnl gnome-print private headers
+
+GNOME_PRINT_PRIVATE_CFLAGS="-I`$PKG_CONFIG libgnomeprint-2.2 --variable privateincludedir`"
+
+save_CFLAGS="$CFLAGS"
+save_LIBS="$LIBS"
+CFLAGS="$CFLAGS $EXTRA_GNOME_CFLAGS $GNOME_PRINT_PRIVATE_CFLAGS"
+LIBS="$LIBS $EXTRA_GNOME_LIBS"
+AC_CACHE_CHECK([whether gnome-print has sane private headers],
+gpdf_cv_gnome_font_private,
+[AC_TRY_LINK([#include <libgnomeprint/private/gnome-font-private.h>],
+[gp_fontmap_get ();],
+gpdf_cv_gnome_font_private=yes, gpdf_cv_gnome_font_private=no)])
+CFLAGS="$save_CFLAGS"
+LIBS="$save_LIBS"
+if test "$gpdf_cv_gnome_font_private" = yes; then
+  AC_DEFINE(HAVE_FONT_EMBEDDING, 1,
+  [Define to 1 if `gnome-font-private.h' is usable.])
+else
+  AC_MSG_WARN([Cannot use internal gnome-print headers. gpdf's font support won't be as good as possible.])
+fi
+
+AC_SUBST(GNOME_PRINT_PRIVATE_CFLAGS)
+
+dnl gconf configuration source, 
+dnl default to xml::$(sysconfdir)/gconf/gconf.xml.defaults
+
+AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
+
+if test x"$GCONFTOOL" = xno; then
+  AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
+fi
+
+AM_GCONF_SOURCE_2
+
+dnl Fix for bug #121730
+
+AC_CANONICAL_HOST
+
+case $host_os in
+  hpux*)
+    AC_MSG_CHECKING([for broken g++ 3.3 on HP-UX])
+    if test "$GCC" = "yes" && $CXX -dumpversion | grep ^3.3 > /dev/null; then
+      AC_MSG_RESULT([yes, defining __STDC_EXT__ ])
+      AC_DEFINE(__STDC_EXT__, 1, [Define to 1 on HP-UX with gcc 3.3])
+    else
+      AC_MSG_RESULT([no])
+    fi
+esac    
+
+dnl Enable/Disable annotation sidebar
+
+AC_MSG_CHECKING([whether annotations view should be compiled])
+AC_ARG_ENABLE(annotations-view, 
+              AC_HELP_STRING([--enable-annotations-view],
+                             [enable the Annotations view in the sidebar (very experimental)]),
+              if test "$enable_annotations_view" = "yes"; then
+    	          AC_MSG_RESULT([yes])
+     	          AC_DEFINE(USE_ANNOTS_VIEW, 1, [Enable/Disable Annotations view in GPdf sidebar])
+              else
+    	          AC_MSG_RESULT([no])
+	      fi,
+	      AC_MSG_RESULT([no]))
+
+AM_CONDITIONAL(USE_ANNOTS_VIEW, test "x$enable_annotations_view" = "xyes")
+
+dnl Write the makefiles.
+
+AC_OUTPUT([
+Makefile
+gpdf.schemas
+gpdf.spec
+goo/Makefile
+lib/Makefile
+lib/ggv-sidebar/Makefile
+lib/recent-files/Makefile
+po/Makefile.in
+shell/Makefile
+shell/tests/Makefile
+test-files/Makefile
+fofi/Makefile
+splash/Makefile
+xpdf/Makefile
+xpdf/tests/Makefile
+help/Makefile
+help/C/Makefile
+help/de/Makefile
+help/es/Makefile
+])
+
+dnl Message of Doom
+
+$STABLE_RELEASE || echo "
+This is a development version of GPdf.
+Use GPdf 2.8.x if you want something more stable."
