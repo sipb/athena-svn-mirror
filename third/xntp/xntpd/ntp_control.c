@@ -1743,11 +1743,14 @@ ctl_getitem(var_list, data)
 					return v;
 				}
 				if (*cp == '=') {
+					int cnt = sizeof(buf);
+
 					cp++;
 					tp = buf;
 					while (cp < reqend && isspace(*cp))
 						cp++;
-					while (cp < reqend && *cp != ',')
+					while (cp < reqend && *cp != ',' &&
+					       --cnt > 0)
 						*tp++ = *cp++;
 					if (cp < reqend)
 						cp++;
