@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.1 1998-12-25 19:33:28 ghudson Exp $
+# $Id: lp.sh,v 1.2 2000-08-30 22:29:53 rbasch Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
@@ -41,7 +41,7 @@ while getopts cd:mn:o:st:w opt; do
 	o)
 		case "$OPTARG" in
 		nobanner|*,nobanner|nobanner,*|*,nobanner,*)
-			opts="$opt -h"
+			opts="$opts -h"
 			;;
 		esac
 		;;
@@ -63,11 +63,10 @@ if [ "$suppress_s" = no ]; then
 	opts="$opts -s"
 fi
 
-# Verify that there is at least one file.
 shift `expr $OPTIND - 1`
-if [ $# -eq 0 ]; then
-	echo "$usage" 1>&2
-	exit 1
+
+if [ -z "$title" ]; then
+	title="${@:-(stdin)}"
 fi
 
-exec /usr/athena/bin/lpr -J "${title:-$@}" $opts "$@"
+exec /usr/athena/bin/lpr -J "$title" $opts "$@"

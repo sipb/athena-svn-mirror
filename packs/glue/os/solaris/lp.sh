@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: lp.sh,v 1.1 1998-12-25 19:33:30 ghudson Exp $
+# $Id: lp.sh,v 1.2 2000-08-30 22:30:16 rbasch Exp $
 
 # This script emulates the System V lp command using the Athena lpr
 # command.  The emulation is not perfect; the known imperfections are:
@@ -18,6 +18,8 @@
 #
 #	* Arguments to some options may be expanded twice for words and
 #	  globbing.
+
+lpr=/usr/athena/bin/lpr
 
 # Parse command-line flags.
 opts=""
@@ -61,7 +63,7 @@ while getopts H:P:S:T:cd:fmn:o:pq:rst:wy: opt; do
 	o)
 		case "$OPTARG" in
 		nobanner|*,nobanner|nobanner,*|*,nobanner,*)
-			opts="$opt -h"
+			opts="$opts -h"
 			;;
 		esac
 		;;
@@ -139,9 +141,15 @@ shift `expr $OPTIND - 1`
 
 if [ -n "$filter" ]; then
 	# This option may not work with all lpr options.
+	if [ -z "$title" -a $# -eq 0 ]; then
+		title="(stdin)"
+	fi
 	for file in "${@:--}"; do
-		$filter $file | lpr -J "${title:-$file}" $opts
+		$filter $file | $lpr -J "${title:-$file}" $opts
 	done
 else
-	exec /usr/athena/bin/lpr -J "${title:-$@}" $opts "$@"
+	if [ -z "$title" ]; then
+		title="${@:-(stdin)}"
+	fi
+	exec $lpr -J "$title" $opts "$@"
 fi
