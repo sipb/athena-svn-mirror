@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.12 1987-09-15 10:43:23 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.13 1987-09-15 10:45:03 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -144,7 +144,7 @@ extern char *ZGetSender();
 	/* Kerberos information */
 #define SERVER_SERVICE		"zephyr"
 #define SERVER_INSTANCE		"zephyr"
-#define SERVER_SRVTAB		"/site/zephyr/srvtab"
+#define SERVER_SRVTAB		"/usr/athena/lib/zephyr/srvtab"
 
 	/* Kerberos defines for ZFormatNotice, et al. */
 extern int ZMakeAuthentication();
