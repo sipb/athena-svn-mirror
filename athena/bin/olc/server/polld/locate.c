@@ -7,8 +7,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-static jmp_buf env;
-
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -23,9 +21,15 @@ static int find_zephyr P((PTF *person ));
 
 #undef P
 
+static jmp_buf env;		/* for longjmp in finger timeout */
+static int fd;			/* Socket for fingering */
+static FILE *f;			/* Associated FILE * */
+
 static int
   do_timeout()
 {
+  if (f != NULL)
+    fclose(f);
   longjmp(env,MACHINE_DOWN);
 }
 
@@ -74,8 +78,6 @@ PTF *person;
   static int finger_port = 0;
   struct hostent *host;		/* Host entry for receiver */
   struct sockaddr_in sin;	/* Socket address */
-  int fd;			/* Socket for fingering */
-  FILE *f;
   int len;
 
   if (finger_port == 0) {
@@ -118,6 +120,7 @@ PTF *person;
   write(fd,"\r\n",2);
   f = fdopen(fd,"r");
   if (f == NULL) {
+    syslog(LOG_ERR,"Error fdopening finger fd to %s: %m", person->machine);
     alarm(0);
     signal(SIGALRM, SIG_IGN);
     close(fd);
@@ -132,8 +135,8 @@ PTF *person;
     }
   }
   
-  fclose(f);
-  close(fd);
+  if (fclose(f) == EOF)
+    syslog(LOG_ERR,"Error closing finger fd to %s: %m", person->machine);
   signal(SIGALRM, SIG_IGN);
   alarm(0);
 
