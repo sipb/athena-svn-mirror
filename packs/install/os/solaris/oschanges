@@ -5,7 +5,7 @@
 rm $UPDATE_ROOT/usr/ucblib/libucb.so.1
 rm $UPDATE_ROOT/usr/ucblib/libucb.so
 cp /os/usr/ucblib/libucb.so.1 $UPDATE_ROOT/usr/ucblib
-ln -s $UPDATE_ROOT/usr/ucblib/libucb.so.1 $UPDATE_ROOT/usr/ucblib/libucb.so
+ln -s libucb.so.1 $UPDATE_ROOT/usr/ucblib/libucb.so
 
 
 
@@ -24,5 +24,5 @@ rm $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so*
 rm $UPDATE_ROOT/usr/openwin/server/lib/libfont.so*
 cp -p /os/usr/openwin/server/lib/libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/
 cp -p /os/usr/openwin/server/lib/libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/
-ln -s /usr/openwin/server/libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/libfont.so
-ln -s /usr/openwin/server/libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so
+ln -s ../libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/libfont.so
+ln -s ../libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so
