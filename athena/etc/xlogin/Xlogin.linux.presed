@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.16 2003-04-06 17:56:50 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.17 2004-05-16 21:20:51 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -27,7 +27,7 @@ xlogin*left:			ChainLeft
 				register
 
 *savershell.wcConstructor:	XtCreateTransientShell
-*savershell.geometry:		2000x2000+0+0
+*savershell.geometry:		3200x2000+0+0
 
 *instructions.wcConstructor:	XtCreateTransientShell
 *instructions.wcChildren:	hitanykey
