@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.12 1995-07-11 20:36:14 miki Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.13 1995-11-28 23:07:30 cfields Exp $";
 #endif
 
 /*
@@ -691,7 +691,7 @@ char file[];
 		return 0;
 	    }
 
-	    if((s1=recv(fd, inbuf, 36)) != 36) {
+	    if((s1=recv(fd, inbuf, 36, 0)) != 36) {
 		syslog(LOG_WARNING, "Receive error in UDP contacting quota");
 		/* Retry */
 		continue;
@@ -751,7 +751,7 @@ char *file;
 	person[0] = '\0';
 
 	if(!AC) {
-	    syslog("ACL file not set in printcap");
+	    syslog(LOG_ERR, "ACL file not set in printcap");
 	    return NULL;
 	}
 	if(access(AC, R_OK)) {
