@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v $
- * $Author: ghudson $ 
+ * $Author: danw $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.10 1997-02-25 19:08:25 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.11 1998-02-28 18:03:02 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -33,7 +33,7 @@ static char *month[] =
   "August", "September", "October", "November", "December",
 };
 
-#define DEF_FMT "%.3w %.3n %2D %02e:%02m:%02s 19%Y"
+#define DEF_FMT "%.3w %.3n %2D %02e:%02m:%02s %C%Y"
 #define offset(field) XjOffset(DClockJet,field)
 
 static XjResource resources[] = {
@@ -382,6 +382,7 @@ static char *get_label(me)
 	   * 'n' = monthname (January - December)
 	   * 'M' = Month number (1 - 12)
 	   * 'D' = Day of month (1 - {28,30,31})
+	   * 'C' = Century (all but last two digits of year - ex: 19)
 	   * 'Y' = Year number (no century - ex: 91)
 	   * 'e' = european time (24 hour time)
 	   * 'h' = hour number (1 - 12)
@@ -409,8 +410,11 @@ static char *get_label(me)
 	case 'D':
 	  f[i] = (caddr_t) tp->tm_mday;
 	  break;
+	case 'C':
+	  f[i] = (caddr_t) ((tp->tm_year + 1900) / 100);
+	  break;
 	case 'Y':
-	  f[i] = (caddr_t) tp->tm_year;
+	  f[i] = (caddr_t) (tp->tm_year % 100);
 	  break;
 	case 'e':
 	  f[i] = (caddr_t) tp->tm_hour;
@@ -496,6 +500,7 @@ static void parse_formats(me)
 		       * 'n' = monthname (January - December)
 		       * 'M' = Month number (1 - 12)
 		       * 'D' = Day of month (1 - {28,30,31})
+		       * 'C' = Century (all but last two digits of year)
 		       * 'Y' = Year number (no century - ex: 91)
 		       * 'e' = european time (24 hour time)
 		       * 'h' = hour number (1 - 12)
@@ -519,6 +524,7 @@ static void parse_formats(me)
 
 		    case 'M':
 		    case 'D':
+		    case 'C':
 		    case 'Y':
 		    case 'e':
 		    case 'h':
