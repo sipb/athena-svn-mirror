@@ -18,7 +18,7 @@
  * conventions used within the rkinit library.
  */
 
-static const char rcsid[] = "$Id: rk_krb.c,v 1.2 1999-12-09 22:23:54 danw Exp $";
+static const char rcsid[] = "$Id: rk_krb.c,v 1.3 2000-02-20 05:10:05 ghudson Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -38,7 +38,7 @@ static const char rcsid[] = "$Id: rk_krb.c,v 1.2 1999-12-09 22:23:54 danw Exp $"
 #include <rkinit_err.h>
 
 static sigjmp_buf env;
-static void sig_restore(void);
+static void sig_restore(int sig);
 static void push_signals(void);
 static void pop_signals(void);
 
@@ -298,7 +298,7 @@ static void pop_signals(void)
         (void) sigaction (i, &oact[i], NULL);
 }
 
-static void sig_restore(void)
+static void sig_restore(int sig)
 {
     siglongjmp(env,1);
 }
