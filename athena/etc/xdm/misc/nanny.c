@@ -40,7 +40,7 @@ typedef struct disp_state {
 #define DPYNAME ":0.0"
 char *dpyenv = "DISPLAY=" DPYNAME;
 char *name;
-int debug = 5;
+int debug = 0;
 
 typedef char *(*varHandler)(disp_state *, char *, varlist *, varlist *);
 
@@ -174,6 +174,14 @@ char *do_login(char *uname, disp_state *ds)
   times[1].tv_sec = times[0].tv_sec;
   times[1].tv_usec = times[0].tv_usec;
   utimes(tty, times);
+#endif
+
+#ifdef sgi
+  /* Something unidentified is occasionally making /dev/console non-
+     world-writable. It needs to be world-writable for SGI's Xsession
+     code to work correctly, so until we find the breakage, we make
+     sure it's correct here. */
+  chmod("/dev/console", 0622);
 #endif
 
   return "logged in";
