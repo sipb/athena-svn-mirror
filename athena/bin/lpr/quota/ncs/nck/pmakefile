@@ -206,7 +206,7 @@ DEFS        = -Dvax -DBSD -DINET
 #if defined(ibm032) && defined(unix) && ! defined (aix)
 DEFS	    = -Dibm032 -DBSD -DINET
 #define BSD
-#define MAKECPP
+/*#define MAKECPP*/
 
 #define compile_file_to(from,to) ../cpp/cpp $(CFLAGS) from x.c; $(CC) -c $(CFLAGS) x.c; mv x.o to
 
@@ -249,24 +249,25 @@ CC          = cc -t p,../cpp/cpp
 #endif
 
 /* #define apple   /* until MacII A/UX cpp has its act together */
-#ifdef apple
+#if defined(apple) || defined(_AUX_SOURCE)
 DEFS        = -Dm68000 -Dapple_aux -DSYS5 -DSYS5_PRE_R3 -DINET \
 		-DSYS5_SOCKETS_TYPE6 -DSYS5_HAS_SELECT -DSYS5_HAS_GETTIMEOFDAY
 CC          = cc -tp -B../cpp/
 #define SYS5
-#define MAKECPP
+/* #define MAKECPP */
 MAKECPP_ENV_VARS = BSDDEFINE=' ' MAKECPP_ENV='-DOLD_PREPROCESSOR=1 -Dapple_aux'
 #endif
 
-#ifdef aix
-DEFS        = -I/usr/include/bsd -Daix -Drtpc -DBSD -DINET 
+#if defined(aix) || (defined(AIX) && defined(i386))
+DEFS        = -I/usr/include/bsd -Daix -Drtpc -DBSD -D_BSD -DINET 
 EXTRALIBS   = -lbsd -linet -lsocket -ludp
-#define MAKECPP
+CC          = cc -q -B../cpp/
+/*#define MAKECPP*/
 #define BSD
 #endif
 
 #ifndef compile_file_to
-#define compile_file_to(from,to) cc $(CFLAGS) -c from; mv `basename from .c`.o to
+#define compile_file_to(from,to) $(CC) $(CFLAGS) -c from; mv `basename from .c`.o to
 #endif
 
 /***************************************************************************/ 
@@ -302,7 +303,7 @@ call: makecpp all
 
 /***************************************************************************/ 
 
-all: libnck.a llbd lb_admin uuid_gen stcode nrglbd
+all: libnck.a /* llbd lb_admin uuid_gen stcode nrglbd */
 	@echo done
 
 install: all
@@ -536,7 +537,7 @@ makecpp:
 /***************************************************************************/
 
 clean:
-	rm -f *.o rmakefile
+	rm -f *.o rmakefile *.a
 	cd ${IDLDIR}; rm -f *.o
 
 clobber: clean
