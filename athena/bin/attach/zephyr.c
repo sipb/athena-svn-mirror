@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.1 1990-04-19 12:47:32 jfc Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.2 1990-04-19 12:51:12 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -16,37 +16,17 @@ static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <setjmp.h>
 #include <signal.h>
 
-#define min(x,y) ((x)<(y)?(x):(y))
+#ifdef __HIGHC__
+#define	min(x,y)	_min(x,y)
+#else
+#define	min(x,y)	((x)<(y)?(x):(y))
+#endif
 
 #define ZEPHYR_MAXONEPACKET 5
 Code_t ZSubscribeTo(), ZUnsubscribeTo();
 
 static ZSubscription_t subs[ZEPHYR_MAXSUBS];
 static int num_subs = 0;
-
-zephyr_addsub(class)
-    char *class;
-{
-    if (num_subs == ZEPHYR_MAXSUBS)
-	return;
-    
-    if (debug_flag)
-	    printf("Subscribing to zepyr instance %s.\n", class);
-    subs[num_subs].recipient = "*";
-    subs[num_subs].classinst = strdup(class);
-    subs[num_subs].class = ZEPHYR_CLASS;
-    num_subs++;
-}
-
-zephyr_sub()
-{
-    zephyr_op(ZSubscribeTo);
-}
-
-zephyr_unsub()
-{
-    zephyr_op(ZUnsubscribeTo);
-}
 
 static jmp_buf	timeout;
 
@@ -55,7 +35,7 @@ static int zephyr_timeout()
 	longjmp(timeout, 1);
 }
 
-static int zephyr_op(func)
+static void zephyr_op(func)
     Code_t (*func)();
 {
     static int inited = 0;
@@ -107,5 +87,29 @@ static int zephyr_op(func)
     }
     alarm(0);
     (void) signal(SIGALRM, old_sig_func);
+}
+
+void zephyr_addsub(class)
+    const char *class;
+{
+    if (num_subs == ZEPHYR_MAXSUBS)
+	return;
+    
+    if (debug_flag)
+	    printf("Subscribing to zepyr instance %s.\n", class);
+    subs[num_subs].recipient = "*";
+    subs[num_subs].classinst = strdup(class);
+    subs[num_subs].class = ZEPHYR_CLASS;
+    num_subs++;
+}
+
+void zephyr_sub()
+{
+    zephyr_op(ZSubscribeTo);
+}
+
+void zephyr_unsub()
+{
+    zephyr_op(ZUnsubscribeTo);
 }
 #endif
