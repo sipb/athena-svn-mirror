@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.33 1999-12-14 04:56:13 jweiss Exp $
+# $Id: do-update.sh,v 1.34 2000-03-20 20:34:54 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -51,6 +51,10 @@ esac
 method=$1
 version=$2
 newvers=$3
+
+# On IRIX, reboot prompts for confirmation when logged in remotely.
+# The following kludge prevents the prompt.
+unset REMOTEHOST
 
 # Some versions of Solaris will panic if they are hit with a certain
 # type of port scan and you then kill a network daemon.  As a
