@@ -1,0 +1,155 @@
+#
+#  DEFAULT mwm RESOURCE DESCRIPTION FILE (system.mwmrc)
+#
+#   modified for Project Athena by Chris VanHaren
+#
+
+#
+# Menu Pane Descriptions
+#
+
+# Window Menu Description
+
+Menu DefaultWindowMenu
+{
+    "Normal size"	_N	Alt<Key>F5	f.normalize
+    "Move"		_M	Alt<Key>F6	f.move
+    "Size"		_S	Alt<Key>F7	f.resize
+    "Iconify"		_I	Alt<Key>F8	f.minimize
+    "Maximum size"	_x	Alt<Key>F9	f.maximize
+    "Lower"		_L	Alt<Key>F10	f.lower
+    "Raise"		_R	Alt<Key>F12	f.raise
+    no-label					f.separator
+    "Kill program"				f.kill
+}
+
+# Root Window Menus
+
+Menu RootMenu
+{
+    "Window Ops"				f.title
+    "New window"	_N			f.exec	"xterm &"
+    "Refresh screen"	_R			f.refresh
+    "Shuffle Up"	_U	Alt<Key>Up	f.circle_up
+    "Shuffle Down"	_D	Alt<Key>Down	f.circle_down
+    "Pack icons"	_P			f.pack_icons
+    no-label					f.separator
+    "X Preferences"	_X			f.menu	Preferences
+    "Applications"	_A			f.menu	Applications
+    no-label					f.separator
+    "Quit MWM"		_Q			f.quit_mwm
+    "Restart MWM..."	_M			f.restart
+}
+
+Menu Preferences
+{
+    "X Preferences"		f.title
+    "Keyclick volume"	_K	f.menu	Keyclick
+    "Bell volume"	_B	f.menu	Bell
+    "Mouse speed"	_M	f.menu	Mouse
+#
+#  A neat hack is to have a menu of bitmaps which can be selected to set the
+#       root window pattern.  Un-comment the line below and the Backgrounds
+#       menu below.
+#
+#    "Backgrounds"      _g      f.menu  Backgrounds
+#
+}
+	Menu Keyclick
+	{
+	    "Loud"	_L	f.exec	"xset c 100"
+	    "Quiet"	_Q	f.exec	"xset c 13"
+	    "Off"	_O	f.exec	"xset c 0"
+	}
+	Menu Bell
+	{
+	    "Loud"	_L	f.exec	"xset b 100"
+	    "Quiet"	_Q	f.exec	"xset b 3"
+	    "Off"	_O	f.exec	"xset b 0"
+	}
+	Menu Mouse
+	{
+	    "Fast"	_F	f.exec	"xset m 7 2"
+	    "Medium"	_M	f.exec	"xset m 2 5"
+	    "Slow"	_S	f.exec	"xset m 1 1"
+	}
+#
+#  Example of menu 'Backgrounds' using the bitmaps found in the sipb locker.
+#  If you want to use them, make sure that 'sipb' is attach'ed.
+#
+#	Menu Backgrounds
+#	{
+#	    @/mit/sipb/bitmaps.x11/good_scales	f.exec  "xsetroot -bitmap /mit/sipb/bitmaps.x11/good_scales"
+#	    "Default"		f.exec	"xsetroot -default"
+#	    "White"		f.exec	"xsetroot -solid white"
+#	    "Grey"		f.exec	"xsetroot -grey"
+#	    "Black"		f.exec	"xsetroot -solid black"
+#       }
+
+Menu Applications
+{
+    "Applications"		f.title
+    "Emacs"		_E	f.exec  "emacs &"
+    "Xmh"		_m	f.exec	"xmh &"
+    "Xterm"		_t	f.exec	"xterm &"
+#   "Xscreensaver"	_s	f.exec	"/afs/athena/contrib/sipb/@sys/xscreensaver"
+    "Xcalc"		_c	f.exec	"xcalc &"
+    "Xclock"		_k	f.exec	"xclock &"
+    "Xload"		_l	f.exec	"xload &"
+}
+
+#
+# Key Binding Descriptions
+#
+
+Keys DefaultKeyBindings
+{
+    Shift<Key>Escape		icon|window		f.post_wmenu
+    Meta<Key>space		icon|window		f.post_wmenu
+    Shift<Key>Escape		root			f.menu	RootMenu
+    Meta<Key>space		root			f.menu	RootMenu
+#    Meta<Key>Tab		root|icon|window	f.next_key
+#    Meta Shift<Key>Tab		root|icon|window	f.prev_key
+    Meta<Key>Escape		root|icon|window	f.next_key
+    Meta Shift<Key>Escape	root|icon|window	f.prev_key
+    Meta Ctrl Shift<Key>exclam	root|icon|window	f.set_behavior
+    Meta<Key>F3			window			f.next_key transient
+}
+
+
+#
+# Button Binding Descriptions
+#
+
+Buttons DefaultButtonBindings
+{
+    <Btn1Down>			frame			f.raise
+    <Btn2Down>			frame|icon		f.post_wmenu
+    <Btn3Down>			frame|icon		f.post_wmenu
+    <Btn1Down>			root			f.menu	RootMenu
+#    <Btn2Down>			root			f.menu	RootMenu
+#    <Btn3Down>			root			f.menu	RootMenu
+#
+#  Athena's mwm now uses MWM_SHELL to exec processes, or /bin/sh if MWM_SHELL
+#  is not set.  Therefore, the 'Preferences' and 'Applications' menus
+#  were added back in.  If you do not like them, copy this file to your
+#  home directory and uncomment the two lines above and comment out the
+#  two below and in the Root Menu.  The menus are currently uncommented.
+#
+    <Btn2Down>			root			f.menu	Preferences
+    <Btn3Down>			root			f.menu	Applications
+    Meta<Btn1Click>		icon|window		f.lower
+    Meta<Btn2Click>		icon			f.normalize
+    Meta<Btn2Click>		window			f.minimize
+    Meta<Btn3Click>		icon|window		f.raise
+    Meta Shift<Btn1Down>	icon|window|root	f.circle_down
+    Meta Shift<Btn2Down>	icon|window|root	f.menu	RootMenu
+    Meta Shift<Btn3Down>	icon|window|root	f.circle_up
+    Meta Ctrl<Btn1Down>		icon|window		f.resize
+    Meta Ctrl<Btn2Down>		icon|window|root	f.menu	RootMenu
+    Meta Ctrl<Btn3Down>		icon|window		f.move
+}
+
+#
+#  END OF mwm RESOURCE DESCRIPTION FILE
+#
