@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.10 1998-01-24 19:40:00 danw Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.11 1998-01-28 04:36:18 danw Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
 #	$Author: danw $
 #
@@ -210,6 +210,7 @@ R$-!$+			$@$>6$2<@$1.UUCP>		resolve uucp names
 R$-=$+			$@$>6$2<@$1.BITNET>		resolve bitnet names
 
 # fix the leftovers
+R$+<@$+>		$@$1<@$2>
 R$+			$:$1<@$M>			user w/o host
 R$+<@>			$:$1<@$j>			in case $M undefined
 
@@ -250,7 +251,6 @@ R$*<$*:@$+>$*		$1<@$3>$4			Not for us; don't frob
 R$*<@$j>$*POP$*		$#pop$@$j$:$1			POP mail delivery
 R$*<@$j>$*LOCAL$*	$#local$:$1			Local mail
 R$*<@$j>$*		$#local$:$1			(yet) More local mail
-Rroot			$#null$:root			bitbucket root
 R$*			$#ether$@ATHENA.$D$:$1		All else to ATHENA
 
 ############################################################
