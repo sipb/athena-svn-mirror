@@ -1,9 +1,16 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.8 1990-07-16 21:57:55 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.9 1990-07-17 14:18:10 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  90/07/16  21:57:55  tom
+ * maybe this is it... all TIMES which really represented dates have been 
+ * changed to strings. This was done to avoid confusion with the sysUpTime
+ * variable (more of a standard thing) which measures time ticks in hundreths
+ * of a second. The kernel variables measuring times in other smaller units
+ * are left as INTS. 
+ * 
  * Revision 1.7  90/07/15  17:59:31  tom
  * changed file mod time vars to be of type TIME
  * 
@@ -42,7 +49,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.8 1990-07-16 21:57:55 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.9 1990-07-17 14:18:10 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -1636,10 +1643,6 @@ objident kcRealm = {
         1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 2
 };
 
-objident kcKey = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 6
-};
 #endif KERBEROS
 
 #ifdef ZEPHYR
@@ -1915,6 +1918,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &statLogin, 	 lu_status,   NULL, N_STATLOGIN,    NULL_OBJINST|VAL_INT  },
 #endif LOGIN
 
+#if !defined(decmips)
 { &statDkNParts, lu_ndparts,  NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &statDkPath,   lu_disk,     NULL, N_DKPATH,       NULL_OBJINST|VAL_STR  },
 { &statDkDname,  lu_disk,     NULL, N_DKDNAME,      NULL_OBJINST|VAL_STR  },
@@ -2028,6 +2032,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &ptTotal,      lu_pstat,    NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &ptUsed,       lu_pstat,    NULL, N_PTUSED,       NULL_OBJINST|VAL_INT  },
 { &ptActive,     lu_pstat,    NULL, N_PTACTIVE,     NULL_OBJINST|VAL_INT  },
+#endif (decmips)
 		 		
 #ifdef RPC		 
 { &rpcCall,      lu_rpccl,    NULL, N_RPCCCALL,     NULL_OBJINST|VAL_CNTR },
@@ -2124,7 +2129,6 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 
 #ifdef KERBEROS
 { &kcRealm,      lu_kerberos, NULL, N_KRBCREALM,    NULL_OBJINST|VAL_STR  },
-{ &kcKey,        lu_kerberos, NULL, N_KRBCKEY,      NULL_OBJINST|VAL_INT  },
 #endif KERBEROS
 
 #ifdef ZEPHYR
