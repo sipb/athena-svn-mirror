@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# Process the crontab files in a package.  These are handled similarly
+# to config files, except that the .athena and .old versions of the
+# file are saved in /var/athena/update.save, to avoid complaints from
+# cron.
+
+# Set up the save directory.  Do not use $PKGSAV for this -- pkgadd
+# cleans that out when the package is updated.
+savedir=$PKG_INSTALL_ROOT/var/athena/update.save
+if [ ! -d $savedir ]; then
+  mkdir -p $savedir || exit 1
+fi
+
+# Note whether this is a PUBLIC=true machine.
+if [ -s $PKG_INSTALL_ROOT/etc/athena/rc.conf ]; then
+  eval `grep '^PUBLIC=' $PKG_INSTALL_ROOT/etc/athena/rc.conf`
+fi
+
+# pkgadd supplies file source/destination pairs on our standard input.
+while read src dest ; do
+  cronuser=`basename $dest`
+  athena_save=$savedir/crontab.$cronuser.athena
+  noreplace=false
+  if [ "$PUBLIC" != true -a -f $dest ]; then
+    # We are updating the package on a non-PUBLIC machine.  See if the
+    # target file has been modified by the administrator.
+    cmp -s $dest $athena_save || {
+      # The administrator has modified the previously installed file.
+      # See if the package version of the file has changed.
+      if cmp -s $src $athena_save ; then
+	# The file is unchanged in the package; leave the modified version
+	# in place.
+	noreplace=true
+      else
+	# We have changed it in the package.  Save the edited version,
+	# as we will replace it below.
+	oldfile=$savedir/crontab.$cronuser.old
+	cp -p $dest $oldfile || exit 1
+	echo "Replacing the $cronuser crontab; the existing version has been"
+	echo "saved as $oldfile"
+      fi
+    }
+  fi
+  # Always copy the new version to the save directory.
+  cp -p $src $athena_save || exit 1
+  if [ $noreplace = false ]; then
+    cp -p $src $dest || exit 1
+  fi
+done      
+
+exit 0
