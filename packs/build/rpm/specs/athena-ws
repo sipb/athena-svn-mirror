@@ -83,6 +83,12 @@ if [ -f /etc/xinetd.d/finger ]; then
   mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
 fi
 
+%triggerin -- talk-server
+if [ -f /etc/xinetd.d/talk ]; then
+  sed -e '/disable/s/yes/no/' /etc/xinetd.d/talk > /etc/xinetd.d/talk.new
+  mv -f /etc/xinetd.d/talk.new /etc/xinetd.d/talk
+fi
+
 %triggerin -- setup
 sed -e '/^COLOR/s/tty/none/' /etc/DIR_COLORS > /etc/DIR_COLORS.new
 mv -f /etc/DIR_COLORS.new /etc/DIR_COLORS
