@@ -1,4 +1,4 @@
-dnl Use tcpwrappers
+dnl Use tcpwrappers and Hesiod
 APPENDDEF(`confENVDEF', `-DTCPWRAPPERS')
 APPENDDEF(`confINCDIRS', `-I$(ATHTOOLROOT)/usr/athena/include')
 APPENDDEF(`confLIBDIRS', `-L$(ATHTOOLROOT)/usr/athena/lib')
@@ -15,3 +15,7 @@ define(`confMANROOT', `/usr/athena/man/man')
 define(`confMAN1SRC', 1)
 define(`confMAN5SRC', 5)
 define(`confMAN8SRC', 8)
+
+dnl Install random binaries in /usr/athena to save local disk space
+define(`athEBINDIR', `/usr/athena/libexec')
+define(`athSBINDIR', `/usr/athena/etc')
