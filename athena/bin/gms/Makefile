@@ -1,13 +1,13 @@
 #  This file is part of the Project Athena Global Message System.
 #  Created by: Mark W. Eichin <eichin@athena.mit.edu>
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v $
-#  $Author: epeisach $
+#  $Author: probe $
 # 
 # 	Copyright (c) 1988 by the Massachusetts Institute of Technology.
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.5 1990-02-09 09:34:10 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.6 1990-05-01 05:58:18 probe Exp $
 # Generic one project, one target makefile.
 #
 
@@ -63,7 +63,7 @@ $(SERVER): message_daemon.o $(LIB)
 	$(CC) $(CFLAGS) -o $@ message_daemon.o $(LIBS)
 
 
-$(LIB):	$(OBJS) $(ETOBJS)
+$(LIB):	$(ETOBJS) $(OBJS)
 	-rm -f $(LIB)
 	ar cqv $(LIB) $(OBJS) $(ETOBJS)
 	ranlib $(LIB)
@@ -78,7 +78,7 @@ $(ETCSRC):	$(ETSRCS)
 	rm -f $*.c $*.h
 	$(COMPILE_ET) $*.et
 
-$(ETOBJS):	$(ETCSRC)
+$(ETOBJS):	$(ETINCS) $(ETCSRC)
 
 depend: $(ETINCS)
 	${DEPEND} -v ${CFLAGS} -s'# DO NOT DELETE' $(CSRCS) $(MODS)
