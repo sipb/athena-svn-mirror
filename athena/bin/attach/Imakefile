@@ -1,7 +1,3 @@
-#ifdef vax
-CC=cc
-#endif
-
 #ifdef _AUX_SOURCE
 XSRCS = emul_re.c
 XOBJS = emul_re.o
@@ -28,10 +24,11 @@ install_program(attach,-m 4755 -o root,$(ATHRBINDIR))
 install_man(attach.1,attach.1)
 install_man(detach.1,detach.1)
 install_man(fsid.1,fsid.1)
-install_man(nfsid.1,nfsid.1)
 install_man(attach.conf.5,attach.conf.5)
 install_man(attachtab.5,attachtab.5)
 install_man(zinit.8,zinit.8)
+
+install_man_links(fsid.1,nfsid.1)
 
 install::
 	$(RM) $(DESTDIR)$(ATHRBINDIR)/detach
