@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv CVS-20020609\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2002-06-09 18:46+0900\n"
 "Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -609,7 +609,7 @@ msgstr "ツールバースタイル"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "ステータスバーを表示(_S)"
 
 #. save geometry
@@ -936,31 +936,31 @@ msgstr "インタプリタ"
 msgid "Error while decompressing file %s:\n"
 msgstr "ファイル %s の解凍中にエラーが発生しました:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "pdf ファイル %s の読み込み中にエラーが発生しました:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, fuzzy, c-format
 msgid "Cannot open file %s.\n"
 msgstr "ファイル %s を開くことが出来ません\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr ""
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "ファイル %s の読み込み中にエラーが発生しました\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 #, fuzzy
 msgid "The file is not a PostScript document."
 msgstr "PostScript文書を選択します"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 #, fuzzy
 msgid "Document loaded."
 msgstr "文書のタイトル"

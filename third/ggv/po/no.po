@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 0.95\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-15 23:44+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-21 11:14+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,11 +41,11 @@ msgstr "25%"
 
 #: bonobo/ggv-control-ui.xml.h:6
 msgid "Change zoom factor to default"
-msgstr ""
+msgstr "Endre zoom-faktor til forvalg"
 
 #: bonobo/ggv-control-ui.xml.h:7
 msgid "Decrease zoom factor"
-msgstr ""
+msgstr "Mindre zoom-faktor"
 
 #: bonobo/ggv-control-ui.xml.h:8
 msgid "Fit"
@@ -93,11 +93,11 @@ msgstr "Zoom _ut"
 
 #: bonobo/ggv-control-ui.xml.h:19
 msgid "Zoom the page to be as wide as the window"
-msgstr ""
+msgstr "Zoom siden til vinduets bredde"
 
 #: bonobo/ggv-control-ui.xml.h:20
 msgid "Zoom the page to fit in the window"
-msgstr ""
+msgstr "Zoom siden til å passe i vinduet"
 
 #: bonobo/ggv-control-ui.xml.h:22
 #, no-c-format
@@ -150,15 +150,15 @@ msgstr "10x14"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:2
 msgid "A0"
-msgstr ""
+msgstr "A0"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:3
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:4
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:5
 msgid "A3"
@@ -269,14 +269,12 @@ msgid "Tabloid"
 msgstr "Tabloid"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:32
-#, fuzzy
 msgid "_Document Orientation"
-msgstr "Dokumentets orientering"
+msgstr "_Dokumentets orientering"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:33
-#, fuzzy
 msgid "_Document Size"
-msgstr "Dokumentets tittel"
+msgstr "D_okumentets størrelse"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:34
 msgid "_First page"
@@ -441,41 +439,48 @@ msgstr "Antialiasing"
 
 #: bonobo/ggv-sidebar.c:309
 msgid "Toggle marked state of all pages"
-msgstr ""
+msgstr "Bytt markert tilstand for alle sider"
 
 #: bonobo/ggv-sidebar.c:310
 msgid ""
 "Toggle marked state of all pages: previously marked pages will be unmarked "
 "and unmarked ones will become marked."
 msgstr ""
+"Bytt markert tilstand på alle sider: tidligere markerte sider vil ikke være "
+"markert og ikke-markerte vil bli markert."
 
 #: bonobo/ggv-sidebar.c:322
 msgid "Toggle marked state of odd pages"
-msgstr ""
+msgstr "Bytt markert tilstand på sider med oddetall"
 
 #: bonobo/ggv-sidebar.c:323
 msgid ""
 "Toggle marked state of odd pages: previously marked odd pages will be "
 "unmarked and unmarked ones will become marked."
 msgstr ""
+"Bytt markert tilstand for sider med oddetall: tidligere markerte odde sider "
+"vil ikke bli markert og ikke-markerte vil bli markert."
 
 #: bonobo/ggv-sidebar.c:336
 msgid "Toggle marked state of even pages"
-msgstr ""
+msgstr "Bytt markert tilstand på sider med partall"
 
 #: bonobo/ggv-sidebar.c:337
 msgid ""
 "Toggle marked state of even pages: previously marked even pages will be "
 "unmarked and unmarked ones will become marked."
 msgstr ""
+"Bytt markert tilstand for sider med partall: tidligere markerte sider vil "
+"ikke være markert og ikke-markerte vil bli markert."
 
 #: bonobo/ggv-sidebar.c:350
 msgid "Clear marked state of all pages"
-msgstr ""
+msgstr "Nullstill markert tilstand for alle sider"
 
 #: bonobo/ggv-sidebar.c:351
 msgid "Clear marked state of all pages: all pages will be unmarked."
 msgstr ""
+"Nullstill markert tilstand for alle sider: ingen sider vil være markert."
 
 #: ggv.desktop.in.h:1
 msgid "A Ghostscript frontend to visualize PostScript files"
@@ -486,24 +491,20 @@ msgid "GGV PostScript Viewer"
 msgstr "GGV PostScript visning"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Bruk GNOME forvalg"
+msgstr "Br_uk GNOME-forvalg"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Vis både ikoner og tekst"
+msgstr "Vis _både ikoner og tekst"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Vis kun ikoner"
+msgstr "Vis kun _ikoner"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Vis kun tekst"
+msgstr "Vis kun t_ekst"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -511,63 +512,53 @@ msgstr "GGV brukervalg"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Forvalgt zoom:"
+msgstr "_Forvalgt zoom:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "_Automatisk tilpasning"
+msgstr "_Automatisk tilpasning:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Enhet for koordinater:"
+msgstr "Enhet for _koordinater:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Forvalgt sidestørrelse:"
+msgstr "_Forvalgt sidestørrelse:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Overstyr dokumentstørrelse"
+msgstr "Overstyr _dokumentstørrelse"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Forvalgt medieorientering:"
+msgstr "Forvalgt _medieorientering:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Overstyr dokumentets orientering"
+msgstr "O_verstyr dokumentets orientering"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antialiasing"
+msgstr "A_ntialiasing"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respekter EOF-kommentarer"
+msgstr "_Respekter EOF-kommentarer"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Overvåk fil"
+msgstr "_Overvåk fil"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -575,26 +566,22 @@ msgstr "Dokument"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Vis sidepanel"
+msgstr "_Vis sidepanel"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Plasser sidepanelet i Nautilus til høyre"
+msgstr "_Plasser sidepanelet til høyre"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Vis menylinje"
+msgstr "Vis _menylinje"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Vis verktøylinje"
+msgstr "Vis verk_tøylinje"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -603,15 +590,13 @@ msgstr "Stil for verktøylinje"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Vis statuslinje"
+msgid "Show statusba_r"
+msgstr "Vis st_atuslinje"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Lagre geometri"
+msgstr "Lagre _geometri"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -619,25 +604,22 @@ msgstr "Utseende"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Hopp til begynnelsen av siden"
+msgstr "_Hopp til begynnelsen av siden"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
 msgid "Automatically _flip pages"
-msgstr ""
+msgstr "_Vend om sider automatisk"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Omriss sist synlige når du ruller"
+msgstr "Vis _omriss av sist synlige del når du ruller"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Mengde synlig område som skal rulles"
+msgstr "Mengde _synlig område som skal rulles"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -645,33 +627,28 @@ msgstr "Navigering"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Fortolker:"
+msgstr "_Fortolker:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Antialiasing:"
+msgstr "A_ntialiasing:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Konverter PDF til PS:"
+msgstr "Konverter _PDF til PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -679,9 +656,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Utskriftskommando:"
+msgstr "_Utskriftskommando:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -789,7 +765,7 @@ msgstr "Vis/skjul verktøylinjen"
 
 #: src/ggv-ui.xml.h:26
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "Bytt til/fra fullskjermmodus"
 
 #: src/ggv-ui.xml.h:27
 msgid "_About..."
@@ -927,30 +903,30 @@ msgstr "Fortolker feilet."
 msgid "Error while decompressing file %s:\n"
 msgstr "Feil under dekomprimering av filen %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Feil under konvertering av pdf fil %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Kan ikke åpne file %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Filen er ikke lesbar."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Feil under skanning av fil %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Filen er ikke et PostScript-dokument."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokument lastet."
 
@@ -978,15 +954,3 @@ msgstr "GEOMETRI"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Kunne ikke initiere Bonobo!\n"
-
-#~ msgid "_Override Orientation"
-#~ msgstr "_Overstyr orientering"
-
-#~ msgid "_Override Size"
-#~ msgstr "_Overstyr størrelse"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "Opphavsrett © 1998-2002 Free Software Foundation"
-
-#~ msgid "Scan PDF:"
-#~ msgstr "Skann PDF:"

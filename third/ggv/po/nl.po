@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-13 15:20+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-20 17:09+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -151,15 +151,15 @@ msgstr "10x14"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:2
 msgid "A0"
-msgstr ""
+msgstr "A0"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:3
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:4
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:5
 msgid "A3"
@@ -270,14 +270,12 @@ msgid "Tabloid"
 msgstr "Tabloid"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:32
-#, fuzzy
 msgid "_Document Orientation"
-msgstr "Documentoriëntatie"
+msgstr "_Documentoriëntatie"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:33
-#, fuzzy
 msgid "_Document Size"
-msgstr "Documenttitel"
+msgstr "Document_formaat"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:34
 msgid "_First page"
@@ -495,91 +493,77 @@ msgstr "Een Ghostscript-schil om PostScript-bestanden te visualiseren"
 
 #: ggv.desktop.in.h:2
 msgid "GGV PostScript Viewer"
-msgstr "GGV PostScript-bekijker"
+msgstr "GGV PostScriptweergave"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "GNOME-standaardinstellingen gebruiken"
+msgstr "GNOME-standaardinstellingen gebr_uiken"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Zowel pictogrammen als tekst tonen"
+msgstr "_Zowel pictogrammen als tekst tonen"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Alleen pictogrammen tonen"
+msgstr "Alleen p_ictogrammen tonen"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Alleen tekst tonen"
+msgstr "Alleen t_ekst tonen"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
-msgstr "GGV Voorkeuren"
+msgstr "GGV-voorkeuren"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Standaard zoomfactor:"
+msgstr "Stan_daard zoomfactor:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Auto-inpasmodus:"
+msgstr "A_uto-inpasmodus:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Coördinaat-eenheden:"
+msgstr "_Coördinaat-eenheden:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Terugval-papierformaat:"
+msgstr "Terugval-papier_formaat:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Forceer documentformaat"
+msgstr "_Documentformaat forceren"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Terugval-mediaoriëntatie:"
+msgstr "Terugval-_mediaoriëntatie:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Forceer documentoriëntatie"
+msgstr "D_ocumentoriëntatie forceren"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Anti-aliasing"
+msgstr "A_nti-aliasing"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respecteer EOF-commentaar"
+msgstr "EOF-commentaar _respecteren"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Bestand blijven volgen"
+msgstr "Bestand blij_ven volgen"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -587,26 +571,22 @@ msgstr "Document"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Zijpaneel tonen"
+msgstr "_Zijpaneel tonen"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Zijpaneel in Nautilus aan rechterkant plaatsen"
+msgstr "Zij_paneel aan rechterkant plaatsen"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Menubalk tonen"
+msgstr "_Menubalk tonen"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Werkbalk tonen"
+msgstr "Werkbalk _tonen"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -615,15 +595,13 @@ msgstr "Werkbalk-stijl"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Statusbalk tonen"
+msgid "Show statusba_r"
+msgstr "Status_balk tonen"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Afmetingen opslaan"
+msgstr "Afmetin_gen opslaan"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -631,26 +609,22 @@ msgstr "Layout"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Spring naar begin van de pagina"
+msgstr "Naar _begin van pagina springen"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Pagina's automatisch omslaan"
+msgstr "Pagina's automatisch _omslaan"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Bij scrollen laatst zichtbare gedeelte omranden"
+msgstr "Bij schuiven _laatst zichtbare gedeelte omranden"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Grootte van te verschuiven zichtbaar gedeelte"
+msgstr "Grootte van te _verschuiven zichtbaar gedeelte"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -658,33 +632,28 @@ msgstr "Navigatie"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interpreter:"
+msgstr "_Interpreter:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Anti-aliasing:"
+msgstr "A_nti-aliasing:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "PDF converteren naar PS:"
+msgstr "_PDF converteren naar PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -692,9 +661,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Printopdracht:"
+msgstr "_Printopdracht:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -861,8 +829,8 @@ msgstr ""
 #: src/ggv-window.c:568
 msgid "translator_credits"
 msgstr ""
-"Reinout van Schouwen <reinout@cs.vu.nl>, Dennis Smit <synap@area101.penguin."
-"nl>"
+"Dennis Smit <synap@area101.penguin.nl>\n"
+"Reinout van Schouwen <reinout@cs.vu.nl>"
 
 #: src/ggv-window.c:578
 msgid "Gnome Ghostview"
@@ -942,30 +910,30 @@ msgstr "Analyse is mislukt."
 msgid "Error while decompressing file %s:\n"
 msgstr "Fout bij het decomprimeren van %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Fout bij het converteren van pdf-bestand %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Kan bestand %s niet openen.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Bestand is onleesbaar"
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Fout bij het analyseren van bestand %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Het bestand is geen PostScript-document"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Document geladen."
 

@@ -93,7 +93,7 @@ pages_new(struct page *pages, int current, int maxpages)
         else
                 pages = g_renew(struct page, oldpages, maxpages);
         for(; current < maxpages; current++) {
-                memset(&(pages[current]), 0x00, current);
+                memset(&(pages[current]), 0x00, sizeof(struct page));
                 pages[current].orientation = GTK_GS_ORIENTATION_NONE;
         }
         return pages;

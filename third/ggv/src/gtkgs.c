@@ -1414,10 +1414,48 @@ check_pdf (GtkGS *gs)
 		g_free (cmd);
 
 		if ((system (cmdline) == 0)
-		    && ggv_file_readable (filename_dsc)
-		    && (ggv_file_length (filename_err) == 0)) {
+		    && ggv_file_readable (filename_dsc) ) {
+
 			/* success */
 			filename = gs->gs_filename_dsc = filename_dsc;
+			
+			if (ggv_file_length (filename_err) > 0) {
+				gchar *err_msg = " ";
+				GtkWidget *dialog;
+				FILE *err;
+				GdkColor color;
+
+				if ((err = fopen (filename_err, "r"))) {
+
+					/* print the content of the file to a message box */
+					while (fgets (buf, 1024, err))
+						err_msg = g_strconcat (err_msg,buf ,NULL);
+
+					/* FIXME The dialog is not yet set to modal, difficult to 
+					 * get the parent of the dialog box here 
+					 */ 
+
+					dialog = gtk_message_dialog_new (NULL ,
+									 GTK_DIALOG_MODAL,
+									 GTK_MESSAGE_WARNING,
+									 GTK_BUTTONS_OK,
+									 ("There was an error while scaning the file: %s \n%s"),
+									 gs->gs_filename,
+									 err_msg);
+
+					gdk_color_parse ("white", &color);
+					gtk_widget_modify_bg (GTK_WIDGET(dialog), GTK_STATE_NORMAL, &color);
+
+					g_signal_connect (G_OBJECT (dialog), "response",
+							  G_CALLBACK (gtk_widget_destroy),
+							  NULL);
+
+					gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+					gtk_widget_show (dialog);
+					g_free(err_msg);
+				}
+			}
+
 		} else {
 			/* report error */
 			g_snprintf (buf, 1024,

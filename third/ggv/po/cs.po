@@ -2,13 +2,13 @@
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Original translation by Marek Kriz <mcross@email.cz> (Marek Kříž), 2000.
 # Updated by Stanislav Brabec <utx@penguin.cz>, 2001.
-# Miloslav Trmac <mitr@volny.cz>, 2002.
+# Miloslav Trmac <mitr@volny.cz>, 2002, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.1.91\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-25 19:09+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-22 18:59+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -494,24 +494,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Prohlížeč PostScriptu GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Použít nastavení GNOME"
+msgstr "_Použít nastavení GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Zobrazovat ikony i text"
+msgstr "_Zobrazovat ikony i text"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Zobrazovat jen ikony"
+msgstr "Zobrazovat jen _ikony"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Zobrazovat jen text"
+msgstr "Zobrazovat jen _text"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -519,63 +515,53 @@ msgstr "Nastavení GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Implicitní zvětšení:"
+msgstr "Implicitní _zvětšení:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Režim automatického vmístění:"
+msgstr "Režim _automatického vmístění:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Souřadnicová jednotka:"
+msgstr "_Souřadnicová jednotka:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Implicitní velikost strany:"
+msgstr "Implicitní _velikost strany:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Vnutit dokumentu velikost"
+msgstr "Vnutit _dokumentu velikost"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Implicitní orientace média:"
+msgstr "Implicitní orientace _média:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Vnutit dokumentu orientaci"
+msgstr "Vnutit dokumentu _orientaci"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Vyhlazování"
+msgstr "_Vyhlazování"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respektovat komentář EOF"
+msgstr "_Respektovat komentář EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Sledovat soubor"
+msgstr "_Sledovat soubor"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -583,26 +569,22 @@ msgstr "Dokument"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Zobrazovat boční panel"
+msgstr "_Zobrazovat boční panel"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Dát boční panel na pravou stranu"
+msgstr "Dát boční panel na _pravou stranu"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Zobrazovat menu"
+msgstr "Zobrazovat _menu"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Zobrazovat nástrojovou lištu"
+msgstr "Zobrazovat _nástrojovou lištu"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -611,15 +593,13 @@ msgstr "Styl nástrojové lišty"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Zobrazovat stavovou lištu"
+msgid "Show statusba_r"
+msgstr "Zobrazovat _stavovou lištu"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Ukládat geometrii"
+msgstr "Ukládat _geometrii"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -627,26 +607,22 @@ msgstr "Rozložení"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Automaticky skočit na začátek strany"
+msgstr "Automaticky _skočit na začátek strany"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Automaticky obracet strany"
+msgstr "Automaticky _obracet strany"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Při posunu orámovat poslední viditelnou oblast"
+msgstr "Při posunu orámovat _poslední viditelnou oblast"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Část viditelné oblasti, kterou posunout"
+msgstr "Část _viditelné oblasti, kterou posunout"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -654,33 +630,28 @@ msgstr "Navigace"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interpret:"
+msgstr "_Interpret:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Vyhlazování:"
+msgstr "_Vyhlazování:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Zkonvertovat PDF do PS:"
+msgstr "Zkonvertovat _PDF do PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -688,9 +659,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Tiskový příkaz:"
+msgstr "_Tiskový příkaz:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -939,30 +909,30 @@ msgstr "Interpret selhal."
 msgid "Error while decompressing file %s:\n"
 msgstr "Chyba při rozbalování souboru %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Chyba při konverzi pdf souboru %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Nemohu otevřít soubor %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Soubor nelze číst."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Chyba při prohledávání souboru %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Soubor není postscriptový dokument."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokument načten."
 
@@ -990,9 +960,6 @@ msgstr "GEOMETRIE"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Nemohu inicializovat Bonobo!\n"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"
 
 #~ msgid "At end"
 #~ msgstr "Na konci"
@@ -1022,17 +989,8 @@ msgstr "Nemohu inicializovat Bonobo!\n"
 #~ msgid "gs warnings for %s"
 #~ msgstr "gs varování pro %s"
 
-#~ msgid "Opening %s..."
-#~ msgstr "Otevírá se %s..."
-
-#~ msgid "Successfully loaded %s."
-#~ msgstr "Úspěšně nahrán %s."
-
 #~ msgid "Successfully saved marked pages to file %s."
 #~ msgstr "Označené strany úspěšně uloženy do souboru %s."
-
-#~ msgid "Unable to create %s."
-#~ msgstr "Nelze vytvořit %s."
 
 #~ msgid "_Recenter Page"
 #~ msgstr "Vy_centrovat stranu"
@@ -1068,17 +1026,8 @@ msgstr "Nemohu inicializovat Bonobo!\n"
 #~ "Postscript(TM) prohlížeč.\n"
 #~ "Vytvořen na základě vynikající aplikace Tima Theisena Ghostview."
 
-#~ msgid "GGv: Open File"
-#~ msgstr "GGv: otevřít soubor"
-
 #~ msgid "There are no marked pages."
 #~ msgstr "Nejsou označeny žádné strany."
 
-#~ msgid "GGv: Save marked pages"
-#~ msgstr "GGv: Uložit označené strany"
-
 #~ msgid "Couldn't find the GGv manual!"
 #~ msgstr "Nelze najít manuál k GGv!"
-
-#~ msgid "GNOME Ghostview"
-#~ msgstr "GNOME Ghostview"

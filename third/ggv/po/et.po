@@ -2,12 +2,13 @@
 # Copyright (C) 2002 Free Software Foundation, Inc.
 # This file is distributed under the same license as the ggv package.
 # Ilmar Kerm <ikerm@hot.ee>, 2002.
+# Tõivo Leedjärv <toivo@linux.ee>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-06 02:15+0300\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-26 20:37+0200\n"
 "Last-Translator: Tõivo Leedjärv <toivo@linux.ee>\n"
 "Language-Team: Estonian <gnome-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -127,7 +128,7 @@ msgstr "_75%"
 
 #: bonobo/ggv-control-ui.xml.h:31
 msgid "_Auto-fit"
-msgstr ""
+msgstr "_Automaatne-mahutus"
 
 #: bonobo/ggv-control-ui.xml.h:32
 msgid "_Default Zoom"
@@ -139,7 +140,7 @@ msgstr "_Mahuta aknasse"
 
 #: bonobo/ggv-control-ui.xml.h:34
 msgid "_No Auto-fit"
-msgstr ""
+msgstr "_Ei mahuta automaatselt"
 
 #: bonobo/ggv-control-ui.xml.h:35
 msgid "_Zoom"
@@ -442,41 +443,49 @@ msgstr "Silumine"
 
 #: bonobo/ggv-sidebar.c:309
 msgid "Toggle marked state of all pages"
-msgstr ""
+msgstr "Lülita kõikide lehekülgede märgitus ümber"
 
 #: bonobo/ggv-sidebar.c:310
 msgid ""
 "Toggle marked state of all pages: previously marked pages will be unmarked "
 "and unmarked ones will become marked."
 msgstr ""
+"Lülita kõikide lehekülgede märgitus ümber: eelnevalt märkimata lehed "
+"märgitakse ära ning märgitud lehtedelt võetakse märked ära."
 
 #: bonobo/ggv-sidebar.c:322
 msgid "Toggle marked state of odd pages"
-msgstr ""
+msgstr "Lülita paaritute lehekülgede märgitus ümber"
 
 #: bonobo/ggv-sidebar.c:323
 msgid ""
 "Toggle marked state of odd pages: previously marked odd pages will be "
 "unmarked and unmarked ones will become marked."
 msgstr ""
+"Lülita paaritute lehekülgede märgitus ümber: eelnevalt märkimata paaritud "
+"lehed märgitakse ära ning märgitud paaritutelt lehtedelt võetakse märked ära."
 
 #: bonobo/ggv-sidebar.c:336
 msgid "Toggle marked state of even pages"
-msgstr ""
+msgstr "Lülita paaris lehekülgede märgitus ümber"
 
 #: bonobo/ggv-sidebar.c:337
 msgid ""
 "Toggle marked state of even pages: previously marked even pages will be "
 "unmarked and unmarked ones will become marked."
 msgstr ""
+"Lülita paaris lehekülgede märgitus ümber: eelnevalt märkimata paaris lehed "
+"märgitakse ära ning märgitud paaris lehtedelt võetakse märked ära."
 
 #: bonobo/ggv-sidebar.c:350
 msgid "Clear marked state of all pages"
-msgstr ""
+msgstr "Tühista kõikide lehekülgede märgitus"
 
 #: bonobo/ggv-sidebar.c:351
 msgid "Clear marked state of all pages: all pages will be unmarked."
 msgstr ""
+"Tühista kõikide lehekülgede märgitus: kõikidelt lehtedelt võetakse märked "
+"ära."
 
 #: ggv.desktop.in.h:1
 msgid "A Ghostscript frontend to visualize PostScript files"
@@ -518,8 +527,9 @@ msgstr "Vaikimisi suurendus:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
+#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr ""
+msgstr "Automaatse mahutuse viis:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
@@ -531,7 +541,7 @@ msgstr "Koordinaatteljestiku mõõtühik:"
 #: src/ggv-prefs-ui.c:488
 #, fuzzy
 msgid "_Fallback page size:"
-msgstr "Vaikimisi paberi suurus"
+msgstr "Vaikimisi paberi suurus:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
@@ -543,7 +553,7 @@ msgstr "Kehtesta dokumendi suurus ümber"
 #: src/ggv-prefs-ui.c:530
 #, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Vaikimisi meedia suund"
+msgstr "Vaikimisi meedia suund:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
@@ -604,7 +614,7 @@ msgstr "Tööriistariba stiil"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "Näita olekuriba"
 
 #. save geometry
@@ -625,8 +635,9 @@ msgstr "Mine lehekülje algusesse"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
+#, fuzzy
 msgid "Automatically _flip pages"
-msgstr ""
+msgstr "Vaheta leheküljed automaatselt"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
@@ -637,11 +648,11 @@ msgstr "Kerimisel märgi ära viimati näidatud ala"
 #: src/ggv-prefs-ui.c:742
 #, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Kerimisel märgi ära viimati näidatud ala"
+msgstr "Nähtava keritava ala suurus"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
-msgstr ""
+msgstr "Navigeerimine"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
@@ -681,7 +692,7 @@ msgstr "Ghostscript"
 #: src/ggv-prefs-ui.c:886
 #, fuzzy
 msgid "_Print command:"
-msgstr "Trükkimise käsk"
+msgstr "Trükkimise käsk:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -849,7 +860,7 @@ msgstr ""
 msgid "translator_credits"
 msgstr ""
 "Tõlge eesti keelde:\n"
-"\tIlmar Kerm <ikerm@hot.ee>, 2002."
+"\tIlmar Kerm <ikerm@hot.ee>, 2002,\tTõivo Leedjärv <toivo@linux.ee>, 2003."
 
 #: src/ggv-window.c:578
 msgid "Gnome Ghostview"
@@ -897,16 +908,15 @@ msgstr "punkt"
 
 #: src/ggvutils.c:79
 msgid "None"
-msgstr ""
+msgstr "Ei ole"
 
 #: src/ggvutils.c:79
 msgid "Fit to page width"
 msgstr "Mahuta lehe laius"
 
 #: src/ggvutils.c:79
-#, fuzzy
 msgid "Fit to page size"
-msgstr "Vaikimisi paberi suurus"
+msgstr "Mahuta paberi suurus"
 
 #: src/gtkgs.c:358
 msgid "No document loaded."
@@ -930,30 +940,30 @@ msgstr "Interpretaatori töö ebaõnnestus."
 msgid "Error while decompressing file %s:\n"
 msgstr "Viga faili %s lahtipakkimisel:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Viga pdf faili %s teisendamisel:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Ei saa avada faili %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Fail ei ole loetav."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Viga faili %s skanneerimisel\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Fail ei ole PostScript dokument."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokument laetud."
 

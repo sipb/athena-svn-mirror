@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.0.2\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-30 17:15-0300\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-25 01:21-0200\n"
 "Last-Translator: Alexandre Folle de Menezes <afmenez@terra.com.br>\n"
 "Language-Team: GNOME-BR <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
@@ -493,24 +493,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Visualizador de PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Usar o padrão do GNOME"
+msgstr "_Usar o padrão do GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Mostrar tanto ícones quanto textos"
+msgstr "Mostrar _tanto ícones quanto textos"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Mostrar apenas ícones"
+msgstr "Mostrar apenas _ícones"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Mostrar apenas texto"
+msgstr "Mostrar apenas t_exto"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -518,63 +514,53 @@ msgstr "Preferências do GGv"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Ampliação padrão:"
+msgstr "Ampliação Pa_drão:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Modo auto-fazer-caber:"
+msgstr "Modo A_uto-fazer-caber:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Unidades de coordenada:"
+msgstr "Unidades de _coordenada:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Tamanho do papel padrão:"
+msgstr "Tamanho _padrão do papel:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Ignorar tamanho do documento"
+msgstr "Ignorar tamanho do _documento"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Orientação do papel padrão:"
+msgstr "Orie_ntação padrão do papel:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Ignorar a orientação do documento"
+msgstr "I_gnorar a orientação do documento"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antialiasing"
+msgstr "A_ntialiasing"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respeitar comentários de EOF"
+msgstr "_Respeitar comentários de EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Observar modificações no arquivo"
+msgstr "Observar _modificações no arquivo"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -582,26 +568,22 @@ msgstr "Documento"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Exibir painel lateral"
+msgstr "E_xibir painel lateral"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Colocar o painel lateral no lado direito"
+msgstr "_Colocar o painel lateral no lado direito"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Exibir barra de menus"
+msgstr "Exibir barra de _menus"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Exibir barra de ferramentas"
+msgstr "Exibir barra de ferramen_tas"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -610,15 +592,13 @@ msgstr "Estilo de barra de ferramentas"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Mostrar barra de status"
+msgid "Show statusba_r"
+msgstr "Mostrar barra de _status"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Salvar geometria"
+msgstr "Salvar _geometria"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -626,26 +606,22 @@ msgstr "Aparência"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Pular para o começo da página"
+msgstr "_Pular para o começo da página"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Trocar páginas automaticamente"
+msgstr "_Trocar páginas automaticamente"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Realçar a última parte visível ao correr o texto"
+msgstr "Realçar a ú_ltima parte visível ao rolar o texto"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Quantidade de área visível a rolar"
+msgstr "Quantidade de área _visível a rolar"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -653,33 +629,28 @@ msgstr "Navegação"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interpretador:"
+msgstr "_Interpretador:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Antialiasing:"
+msgstr "A_ntialiasing:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Converter PDF para PS:"
+msgstr "Converter _PDF para PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -687,9 +658,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Comando de impressão:"
+msgstr "Comando de im_pressão:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -938,30 +908,30 @@ msgstr "Interpretador falhou."
 msgid "Error while decompressing file %s:\n"
 msgstr "Erro ao descomprimir arquivo %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Erro ao converter arquivo pdf %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Não foi possível abrir arquivo %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "O arquivo não pode ser lido."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Erro ao varrer arquivo %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "O arquivo não é um documento PostScript."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Documento carregado."
 

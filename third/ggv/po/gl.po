@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2001-08-19 03:38+0200\n"
 "Last-Translator: Jesus Bravo Alvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -633,9 +633,8 @@ msgstr ""
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Mostrar a barra de _ferramentas"
+msgid "Show statusba_r"
+msgstr ""
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
@@ -979,32 +978,32 @@ msgstr "Intérprete"
 msgid "Error while decompressing file %s:\n"
 msgstr "Erro ao descomprimir o ficheiro %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Erro ao examinar o ficheiro pdf %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, fuzzy, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Non se pode abrir o ficheiro %s\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 #, fuzzy
 msgid "File is not readable."
 msgstr "%s non é un ficheiro regular."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Erro ao examinar o ficheiro %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 #, fuzzy
 msgid "The file is not a PostScript document."
 msgstr "Cargar un documento postscript"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 #, fuzzy
 msgid "Document loaded."
 msgstr "Documento"

@@ -8,7 +8,7 @@
 
 Summary: GNOME PostScript viewer
 Name: 		ggv
-Version:	1.99.97
+Version:	1.99.98
 Release: 	%rel
 Copyright: 	GPL
 Group: 		X11/Utilities

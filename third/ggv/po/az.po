@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.0.3\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2001-12-19 19:26GMT+0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"
@@ -629,9 +629,8 @@ msgstr ""
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "_Vasitə Çubuğunu Göstər"
+msgid "Show statusba_r"
+msgstr ""
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
@@ -977,32 +976,32 @@ msgstr "Tərçiməçi"
 msgid "Error while decompressing file %s:\n"
 msgstr "%s faylını sıxışdırılmış halınden açarkən xəta oldu:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "PDF faylını `%s''yi dararken xəta oldu:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, fuzzy, c-format
 msgid "Cannot open file %s.\n"
 msgstr "%s faylını aça bilmədim\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 #, fuzzy
 msgid "File is not readable."
 msgstr "%s normal bir fayl deyildir."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "%s faylını dararken xəta oldu\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 #, fuzzy
 msgid "The file is not a PostScript document."
 msgstr "Bir postscript faylı yüklə"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 #, fuzzy
 msgid "Document loaded."
 msgstr "Sənəd"

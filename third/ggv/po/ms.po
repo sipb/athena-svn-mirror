@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-12-19 02:16+0800\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2002-12-26 01:12+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -493,24 +493,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Pelihat PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Guna default GNOME"
+msgstr "_Guna default GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Papar kedua-dua ikon dan teks"
+msgstr "Papar _kedua-dua ikon dan teks"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Papar hanya ikon"
+msgstr "Papar hanya _ikon"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Papar hanya teks"
+msgstr "Papar hanya _teks"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -518,21 +514,18 @@ msgstr "Keutamaan GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Zoom Default:"
+msgstr "Zoom _Default:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Mod Auto-muat:"
+msgstr "Mod _auto-muat:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Unit kordinat:"
+msgstr "Unit _kordinat:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
@@ -542,9 +535,8 @@ msgstr "Muat saiz halaman"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Tindih saiz dokumen"
+msgstr "Tindih saiz _dokumen"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
@@ -554,27 +546,23 @@ msgstr "Orientasi dokumen"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Tindih orientasi dokumen"
+msgstr "_Tindih orientasi dokumen"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Anti Alias"
+msgstr "A_nti Alias"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Hormat komen EOF"
+msgstr "_Hormat komen EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Perhati fail"
+msgstr "_Perhati fail"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -582,26 +570,22 @@ msgstr "Dokumen"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Papar panel bar tepi"
+msgstr "_Papar panel  tepi"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Letak panel tepi pada Nautlus di sebelah kanan"
+msgstr "_Letak panel tepi pada di sebelah kanan"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Papar bar menu"
+msgstr "Papar bar _menu"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Papar Toolbar"
+msgstr "Papar _toolbar"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -611,14 +595,13 @@ msgstr "Gaya Toolbar"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "Papar bar _status"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Simpan geometri"
+msgstr "Simpan _geometri"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -626,9 +609,8 @@ msgstr "Susunatur"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Lompat ke permulaan halaman"
+msgstr "_Lompat ke permulaan halaman"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
@@ -642,9 +624,8 @@ msgid "Outline _last visible part when scrolling"
 msgstr "Jumlah kawasan tampak untuk diskrol"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Jumlah kawasan tampak untuk diskrol"
+msgstr "Jumlah kawasan _tampak untuk diskrol"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -652,33 +633,28 @@ msgstr "Navigasi"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Pentafsir:"
+msgstr "Pen_tafsir:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Anti Alias:"
+msgstr "A_nti Alias:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Tukar PDF ke PS:"
+msgstr "Tukar _PDF ke PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -686,9 +662,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Arahan cetakan:"
+msgstr "Arahan _cetakan:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -883,7 +858,7 @@ msgstr "Tertonggeng"
 
 #: src/ggvutils.c:45
 msgid "Seascape"
-msgstr ""
+msgstr "Seascape"
 
 #: src/ggvutils.c:53
 msgid "inch"
@@ -937,30 +912,30 @@ msgstr "Pentafsir gagal."
 msgid "Error while decompressing file %s:\n"
 msgstr "Ralat bila nyahmampat fail%s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Ralat bila menukar fail pdf %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Tak dapat buka fail %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Fail tak boleh dibaca."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Ralat bila mengimbas fail %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Fail adalah bukan dokumen PostScript."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokumen dimuatkan."
 
@@ -988,6 +963,3 @@ msgstr "GEOMETRI"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Gagal menginitialisasikan Bonobo!\n"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"

@@ -348,7 +348,7 @@ ps_view_get_tmp_file(GgvPostScriptView *ps_view)
 	if((fd = mkstemp(ps_view->priv->tmp_name)) < 0) {
 		g_free(ps_view->priv->tmp_name),
 		ps_view->priv->tmp_name = NULL;
-		return;
+		return NULL;
 	}
 	tmpfile = fdopen(fd, "w");
 	if(!tmpfile) {
@@ -1900,22 +1900,22 @@ sidebar_key_press_event(GtkWidget *widget, GdkEventKey *event,
 
 	switch(event->keyval) {
 	case GDK_Left:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_LEFT, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_LEFT, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) - 1);
 		break;
 	case GDK_Right:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_RIGHT, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_RIGHT, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) + 1);
 		break;
 	case GDK_Up:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_UP, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_UP, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) - 1);
 		break;
 	case GDK_Down:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_DOWN, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_DOWN, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) + 1);
 		break;

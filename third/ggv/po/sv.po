@@ -1,17 +1,17 @@
 # Swedish messages for ggv.
-# Copyright (C) 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 # Tomas Ögren <stric@ing.umu.se>, 1999.
-# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002.
+# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
 # Richard Hult <rhult@codefactory.se>, 2001.
 # Martin Norbäck <d95mback@dtek.chalmers.se, 2001.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-29 21:58:20 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-02-12 07:06:51 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-23 16:25+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-26 03:31+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -452,7 +452,7 @@ msgid ""
 "and unmarked ones will become marked."
 msgstr ""
 "Växla markerat tillstånd på alla sidor: sidor som tidigare varit markerade "
-"kommer att avmarkeras och avmarkerade kommer att markeras."
+"kommer att avmarkeras och omarkerade kommer att markeras."
 
 #: bonobo/ggv-sidebar.c:322
 msgid "Toggle marked state of odd pages"
@@ -464,7 +464,7 @@ msgid ""
 "unmarked and unmarked ones will become marked."
 msgstr ""
 "Växla markerat tillstånd på udda sidor: udda sidor som tidigare varit "
-"markerade kommer att avmarkeras och avmarkerade kommer att markeras."
+"markerade kommer att avmarkeras och omarkerade kommer att markeras."
 
 #: bonobo/ggv-sidebar.c:336
 msgid "Toggle marked state of even pages"
@@ -476,7 +476,7 @@ msgid ""
 "unmarked and unmarked ones will become marked."
 msgstr ""
 "Växla markerat tillstånd på jämna sidor: jämna sidor som tidigare varit "
-"markerade kommer att avmarkeras och avmarkerade kommer att markeras."
+"markerade kommer att avmarkeras och omarkerade kommer att markeras."
 
 #: bonobo/ggv-sidebar.c:350
 msgid "Clear marked state of all pages"
@@ -496,24 +496,20 @@ msgid "GGV PostScript Viewer"
 msgstr "PostScriptvisaren GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Använd GNOME-standardvärden"
+msgstr "_Använd GNOME-standardvärden"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Visa både ikoner och text"
+msgstr "Visa _både ikoner och text"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Visa endast ikoner"
+msgstr "Visa endast _ikoner"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Visa endast text"
+msgstr "Visa endast t_ext"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -521,63 +517,53 @@ msgstr "Inställningar för GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Standardzoom:"
+msgstr "_Standardzoom:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Läge för automatisk anpassning:"
+msgstr "Läge för a_utomatisk anpassning:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Koordinatenheter:"
+msgstr "_Koordinatenheter:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Sidstorlek om ingen finns:"
+msgstr "_Sidstorlek om ingen finns:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Åsidosätt dokumentstorleken"
+msgstr "Åsidosätt _dokumentstorleken"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Mediaorientering om ingen finns:"
+msgstr "_Mediaorientering om ingen finns:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Åsidosätt dokumentets orientering"
+msgstr "_Åsidosätt dokumentets orientering"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Kantutjämning"
+msgstr "_Kantutjämning"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respektera EOF-kommentarer"
+msgstr "_Respektera EOF-kommentarer"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Bevaka fil"
+msgstr "_Bevaka fil"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -585,26 +571,22 @@ msgstr "Dokument"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Visa sidopanel"
+msgstr "Visa _sidopanel"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Placera sidopanel på höger sida"
+msgstr "_Placera sidopanel på höger sida"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Visa sidorad"
+msgstr "Visa _menyrad"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Visa verktygsrad"
+msgstr "Visa _verktygsrad"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -613,15 +595,13 @@ msgstr "Stil på verktygrad"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Visa statusrad"
+msgid "Show statusba_r"
+msgstr "Visa status_rad"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Spara geometri"
+msgstr "Spara _geometri"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -629,26 +609,22 @@ msgstr "Layout"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Hoppa till början av sidan"
+msgstr "_Hoppa till början av sidan"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Gå till nästa sida automatiskt"
+msgstr "_Gå till nästa sida automatiskt"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Visa senast synliga del vid rullning"
+msgstr "Visa s_enast synliga del vid rullning"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Mängd synligt område att rulla"
+msgstr "Mängd _synligt område att rulla"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -656,33 +632,28 @@ msgstr "Navigering"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Tolk:"
+msgstr "_Tolk:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Kantutjämning:"
+msgstr "_Kantutjämning:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Konvertera PDF till PS:"
+msgstr "Konvertera _PDF till PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -690,9 +661,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Utskriftskommando:"
+msgstr "_Utskriftskommando:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -943,30 +913,30 @@ msgstr "Tolk misslyckades."
 msgid "Error while decompressing file %s:\n"
 msgstr "Fel vid uppackning av filen %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Fel vid konvertering av pdf-filen %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Kan inte öppna filen %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Filen är inte läsbar."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Fel vid genomsökning av filen %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Filen är inte ett PostScript-dokument."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokument inläst."
 
@@ -994,6 +964,90 @@ msgstr "GEOMETRI"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Kunde inte initiera Bonobo!\n"
+
+#~ msgid "Show statusbar"
+#~ msgstr "Visa statusrad"
+
+#~ msgid "Show s_tatusbar"
+#~ msgstr "Visa s_tatusrad"
+
+#~ msgid "Use GNOME defaults"
+#~ msgstr "Använd GNOME-standardvärden"
+
+#~ msgid "Show both icons and text"
+#~ msgstr "Visa både ikoner och text"
+
+#~ msgid "Show only icons"
+#~ msgstr "Visa endast ikoner"
+
+#~ msgid "Show only text"
+#~ msgstr "Visa endast text"
+
+#~ msgid "Default Zoom:"
+#~ msgstr "Standardzoom:"
+
+#~ msgid "Auto-fit mode:"
+#~ msgstr "Läge för automatisk anpassning:"
+
+#~ msgid "Coordinate units:"
+#~ msgstr "Koordinatenheter:"
+
+#~ msgid "Fallback page size:"
+#~ msgstr "Sidstorlek om ingen finns:"
+
+#~ msgid "Fallback media orientation:"
+#~ msgstr "Mediaorientering om ingen finns:"
+
+#~ msgid "Respect EOF comments"
+#~ msgstr "Respektera EOF-kommentarer"
+
+#~ msgid "Watch file"
+#~ msgstr "Bevaka fil"
+
+#~ msgid "Show side panel"
+#~ msgstr "Visa sidopanel"
+
+#~ msgid "Put side panel on the right-hand side"
+#~ msgstr "Placera sidopanel på höger sida"
+
+#~ msgid "Show menubar"
+#~ msgstr "Visa menyrad"
+
+#~ msgid "Show toolbar"
+#~ msgstr "Visa verktygsrad"
+
+#~ msgid "Save geometry"
+#~ msgstr "Spara geometri"
+
+#~ msgid "Jump to beginning of page"
+#~ msgstr "Hoppa till början av sidan"
+
+#~ msgid "Automatically flip pages"
+#~ msgstr "Gå till nästa sida automatiskt"
+
+#~ msgid "Outline last visible part when scrolling"
+#~ msgstr "Visa senast synliga del vid rullning"
+
+#~ msgid "Amount of visible area to scroll"
+#~ msgstr "Mängd synligt område att rulla"
+
+#~ msgid "Interpreter:"
+#~ msgstr "Tolk:"
+
+#~ msgid "Antialiasing:"
+#~ msgstr "Kantutjämning:"
+
+#~ msgid "Convert PDF to PS:"
+#~ msgstr "Konvertera PDF till PS:"
+
+#~ msgid "Gzip:"
+#~ msgstr "Gzip:"
+
+#~ msgid "Bzip2:"
+#~ msgstr "Bzip2:"
+
+#~ msgid "Print command:"
+#~ msgstr "Utskriftskommando:"
 
 #~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
 #~ msgstr "Copyright © 1998-2002 Free Software Foundation"

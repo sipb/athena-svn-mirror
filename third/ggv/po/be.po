@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 2.0\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2002-11-20 09:47+0200\n"
 "Last-Translator: Ales Nyakhaychyk <i18n@infonet.by>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -609,7 +609,7 @@ msgstr "Стыль палоскі прылад"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "Паказць палоску стану"
 
 #. save geometry
@@ -936,30 +936,30 @@ msgstr "Памылка разьбіральніка."
 msgid "Error while decompressing file %s:\n"
 msgstr "Памылка разьцісканьня файлу %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Памылка пераўтварэньня pdf файлу %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Немагчыма адчыніць файл %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Файл нечытаемы."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Памылка хуткага прагляду файлу %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Файл не зьяўляецца PostScript дакумэнтам."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Дакумэнт загружаны."
 
