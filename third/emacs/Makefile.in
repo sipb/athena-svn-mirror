@@ -157,7 +157,7 @@ etcdir=@etcdir@
 # Where to create and expect the locking directory, where
 # the Emacs locking code keeps track of which files are
 # currently being edited.
-lockdir=@lockdir@
+lockdir=/var/tmp
 
 # Where to put executables to be run by Emacs rather than
 # the user.  This path usually includes the Emacs version
@@ -195,7 +195,7 @@ SUBDIR_MAKEFILES = lib-src/Makefile man/Makefile src/Makefile oldXMenu/Makefile 
 # avoid nuking an existing dir file, so we don't do that here;
 # instead, we have written out explicit code in the `install' targets.
 COPYDIR = ${srcdir}/etc ${srcdir}/lisp
-COPYDESTS = ${etcdir} ${lispdir}
+COPYDESTS = ${DESTDIR}${etcdir} ${DESTDIR}${lispdir}
 
 all:	paths-force ${SUBDIR}
 
@@ -257,7 +257,7 @@ ${SUBDIR}: ${SUBDIR_MAKEFILES} FRC
 	  CC='${CC}' CFLAGS='${CFLAGS}' CPPFLAGS='${CPPFLAGS}' \
 	  LDFLAGS='${LDFLAGS}' MAKE='${MAKE}'
 
-blessmail: ${SUBDIR_MAKEFILES} src FRC
+blessmail: FRC
 	cd lib-src; $(MAKE) maybe-blessmail $(MFLAGS) \
 	  MAKE='${MAKE}' archlibdir='$(archlibdir)'
 
@@ -296,8 +296,9 @@ lwlib/Makefile: lwlib/Makefile.in config.status
 ## ever modify src/paths.h.
 ### We do install-arch-indep first because
 ### the executable needs the Lisp files and DOC file to work properly.
-install: ${SUBDIR} install-arch-indep install-arch-dep blessmail
-	@true
+install: install-arch-indep install-arch-dep blessmail
+	${INSTALL_DATA} site-lisp/clu-mode.el \
+		${DESTDIR}${datadir}/emacs/site-lisp
 
 ### Install the executables that were compiled specifically for this machine.
 ### It would be nice to do something for a parallel make
@@ -307,10 +308,7 @@ install-arch-dep: mkdir
 	  $(MAKE) install $(MFLAGS) prefix=${prefix} \
 	    exec_prefix=${exec_prefix} bindir=${bindir} \
 	    libexecdir=${libexecdir} archlibdir=${archlibdir})
-	${INSTALL_PROGRAM} src/emacs ${bindir}/emacs-${version}
-	-chmod 1755  ${bindir}/emacs-${version}
-	rm -f ${bindir}/$(EMACS)
-	-ln ${bindir}/emacs-${version} ${bindir}/$(EMACS)
+	${INSTALL_PROGRAM} src/emacs ${DESTDIR}${bindir}/emacs-${version}
 
 ### Install the files that are machine-independent.
 ### Most of them come straight from the distribution;
@@ -348,45 +346,45 @@ install-arch-indep: mkdir
 		rm -f  $${subdir}/dired.todo ; \
 	      done) ; \
 	done
-	-rm -f ${lispdir}/subdirs.el
-	$(srcdir)/update-subdirs ${lispdir}
+	-rm -f ${DESTDIR}${lispdir}/subdirs.el
+	$(srcdir)/update-subdirs ${DESTDIR}${lispdir}
 	-chmod -R a+r ${COPYDESTS}
-	if [ `(cd ./etc; /bin/pwd)` != `(cd ${docdir}; /bin/pwd)` ]; \
+	if [ `(cd ./etc; /bin/pwd)` != `(cd ${DESTDIR}${docdir}; /bin/pwd)` ]; \
 	then \
 	   echo "Copying etc/DOC-* to ${docdir} ..." ; \
-	   (cd ./etc; tar -cf - DOC*)|(cd ${docdir}; umask 0; tar -xvf - ); \
-	   (cd $(docdir); chmod a+r DOC*; rm DOC) \
+	   (cd ./etc; tar -cf - DOC*)|(cd ${DESTDIR}${docdir}; umask 0; tar -xvf - ); \
+	   (cd ${DESTDIR}$(docdir); chmod a+r DOC*; rm DOC) \
 	else true; fi
 	if [ -r ./lisp ] \
-	   && [ x`(cd ./lisp; /bin/pwd)` != x`(cd ${lispdir}; /bin/pwd)` ] \
+	   && [ x`(cd ./lisp; /bin/pwd)` != x`(cd ${DESTDIR}${lispdir}; /bin/pwd)` ] \
 	   && [ x`(cd ${srcdir}/lisp; /bin/pwd)` != x`(cd ./lisp; /bin/pwd)` ]; \
 	then \
 	   echo "Copying lisp/*.el and lisp/*.elc to ${lispdir} ..." ; \
-	   (cd lisp; tar -cf - *.el *.elc)|(cd ${lispdir}; umask 0; tar -xvf - ); \
+	   (cd lisp; tar -cf - *.el *.elc)|(cd ${DESTDIR}${lispdir}; umask 0; tar -xvf - ); \
 	else true; fi
 	thisdir=`/bin/pwd`; \
-	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${infodir} && /bin/pwd)` ]; \
+	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${DESTDIR}${infodir} && /bin/pwd)` ]; \
 	then \
-	  (cd ${infodir};  \
+	  (cd ${DESTDIR}${infodir};  \
 	   if [ -f dir ]; then \
 	     if [ ! -f dir.old ]; then mv -f dir dir.old; \
 	     else mv -f dir dir.bak; fi; \
 	   fi; \
 	   cd ${srcdir}/info ; \
-	   (cd $${thisdir}; ${INSTALL_DATA} ${srcdir}/info/dir ${infodir}/dir); \
-	   (cd $${thisdir}; chmod a+r ${infodir}/dir); \
+	   (cd $${thisdir}; ${INSTALL_DATA} ${srcdir}/info/dir ${DESTDIR}${infodir}/dir); \
+	   (cd $${thisdir}; chmod a+r ${DESTDIR}${infodir}/dir); \
 	   for f in ccmode* cl* dired-x* ediff* emacs* forms* gnus* info* message* mh-e* sc* vip*; do \
 	     (cd $${thisdir}; \
-	      ${INSTALL_DATA} ${srcdir}/info/$$f ${infodir}/$$f; \
-	      chmod a+r ${infodir}/$$f); \
+	      ${INSTALL_DATA} ${srcdir}/info/$$f ${DESTDIR}${infodir}/$$f; \
+	      chmod a+r ${DESTDIR}${infodir}/$$f); \
 	   done); \
 	else true; fi
 	thisdir=`/bin/pwd`; \
 	cd ${srcdir}/etc; \
 	for page in emacs etags ctags ; do \
 	  (cd $${thisdir}; \
-	   ${INSTALL_DATA} ${srcdir}/etc/$${page}.1 ${man1dir}/$${page}${manext}; \
-	   chmod a+r ${man1dir}/$${page}${manext}); \
+	   ${INSTALL_DATA} ${srcdir}/etc/$${page}.1 ${DESTDIR}${man1dir}/$${page}${manext}; \
+	   chmod a+r ${DESTDIR}${man1dir}/$${page}${manext}); \
 	done
 
 ### Build Emacs and install it, stripping binaries while installing them.
@@ -398,9 +396,10 @@ install-strip:
 ### /usr/local/lib/emacs/19.0/mips-dec-ultrix4.2), we use mkinstalldirs
 ### instead of mkdir.  Not all systems' mkdir programs have the `-p' flag.
 mkdir: FRC
-	$(srcdir)/mkinstalldirs ${COPYDESTS} ${lockdir} ${infodir} ${man1dir} \
-	  ${bindir} ${datadir} ${docdir} ${libexecdir} \
-	  `echo ${locallisppath} | sed 's/:/ /g'`
+	$(srcdir)/mkinstalldirs ${COPYDESTS} ${DESTDIR}${infodir} \
+	  ${DESTDIR}${man1dir} ${DESTDIR}${bindir} ${DESTDIR}${datadir} \
+	  ${DESTDIR}${docdir} ${DESTDIR}${libexecdir} \
+	  `echo ${DESTDIR}${locallisppath} | sed 's,:, ${DESTDIR},g'`
 	-chmod a+rwx ${lockdir}
 
 ### Delete all the installed files that the `install' target would
@@ -413,15 +412,15 @@ uninstall:
 	 $(MAKE) $(MFLAGS) uninstall			\
 	    prefix=${prefix} exec_prefix=${exec_prefix}	\
 	    bindir=${bindir} libexecdir=${libexecdir} archlibdir=${archlibdir})
-	for dir in ${lispdir} ${etcdir} ; do 		\
+	for dir in ${DESTDIR}${lispdir} ${DESTDIR}${etcdir} ; do 		\
 	  if [ -d $${dir} ]; then			\
 	    case `(cd $${dir} ; /bin/pwd)` in		\
 	      `(cd ${srcdir} ; /bin/pwd)`* ) ;;		\
 	      * ) rm -rf $${dir} ;;			\
 	    esac ;					\
 	    case $${dir} in				\
-	      ${datadir}/emacs/${version}/* )		\
-	        rm -rf ${datadir}/emacs/${version}	\
+	      ${DESTDIR}${datadir}/emacs/${version}/* )		\
+	        rm -rf ${DESTDIR}${datadir}/emacs/${version}	\
 	      ;;					\
 	    esac ;					\
 	  fi ;						\
