@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.2 1989-01-26 12:02:23 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.3 1989-01-26 14:16:15 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -195,9 +195,9 @@ get_home(buf)
 char *buf;
 {
      char *user;
+     struct passwd *psw;
      
      strcpy(buf, getenv("HOME"));
-     struct passwd *psw;
      
      if (*buf)
 	  return(0);
