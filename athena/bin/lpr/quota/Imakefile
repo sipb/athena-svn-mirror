@@ -1,5 +1,5 @@
 /* 
- *	$Id: Imakefile,v 1.7 1991-03-01 11:59:32 epeisach Exp $
+ *	$Id: Imakefile,v 1.8 1991-06-28 13:30:00 epeisach Exp $
  *	$Author: epeisach $
  *	$Locker:  $
  *
@@ -129,8 +129,8 @@ veryclean:
 	(cd ncs/nck; rm -f *.o *.a)
 #endif /* LOCAL_NCS */
 
-SimpleProgram(s_chkaf,${SOBJS},${LIBS},/usr/etc/s_chkaf)
-SimpleProgram(lpqd,${OBJS},${LIBS},/usr/etc/lpqd)
+SimpleProgram(s_chkaf,${SOBJS},${LIBS},$(ATHETCDIR)/s_chkaf)
+SimpleProgram(lpqd,${OBJS},${LIBS},$(ATHETCDIR)/lpqd)
 SimpleProgram(lpquota,${COBJS},${LIBS},$(ATHBINDIR)/lpquota)
 
 /* generic */
