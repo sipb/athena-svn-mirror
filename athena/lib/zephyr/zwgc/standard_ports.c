@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.3 1989-11-14 18:52:04 jtkohl Exp $";
+static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.4 1989-11-15 12:15:26 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -160,7 +160,7 @@ void init_standard_ports(pargc, argv)
 
     /*
      * Process argument list handling "-disable <port>" and
-     * "-default <output port>" arguments:
+     * "-default <output port>" arguments, as well as "-ttymode"
      */
     for (new=current=argv+1; *current; current++) {
         if (string_Eq((string) *current, "-disable")) {
@@ -174,7 +174,10 @@ void init_standard_ports(pargc, argv)
             if (!*current)
               usage();
             default_port = (string) *current;
-        } else
+        } else if (string_Eq((string) *current, "-ttymode")) {
+	    default_port = (string) "tty";
+	    (*pargc)--;
+	} else
           *(new++) = *current;
     }
     *new = *current;
