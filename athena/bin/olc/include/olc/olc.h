@@ -12,13 +12,14 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.13 1990-07-24 14:08:04 lwvanels Exp $
+ *	$Id: olc.h,v 1.14 1990-08-26 16:27:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -54,7 +55,7 @@ extern "C" {
 };
 #endif
 
-struct tREQUEST;
+/* struct tREQUEST; */
 
 #include <olc/os.h>
 #include <olc/macros.h>
@@ -84,7 +85,7 @@ void expand_hostname ();
 #define OLC_SERV_NAME  "sloc"                 /* nameservice key */
 #define OLC_SERVICE    "olc"                  /* olc service name */
 #define OLC_PROTOCOL   "tcp"                  /* protocol */
-#define OLC_SERVER     "PICASSO.MIT.EDU"      /* in case life fails */
+#define OLC_SERVER     "MATISSE.MIT.EDU"      /* in case life fails */
 
 
 #ifdef KERBEROS
