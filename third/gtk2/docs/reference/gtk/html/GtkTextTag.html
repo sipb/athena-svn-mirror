@@ -1,0 +1,768 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>GtkTextTag</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GTK+ Reference Manual"><link rel="up" href="TextWidgetObjects.html" title="Multiline Text Editor"><link rel="previous" href="GtkTextBuffer.html" title="GtkTextBuffer"><link rel="next" href="GtkTextTagTable.html" title="GtkTextTagTable"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkTextBuffer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="TextWidgetObjects.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GTK+ Reference Manual</th><td><a accesskey="n" href="GtkTextTagTable.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="GtkTextTag"></a><div class="titlepage"></div><div class="refnamediv"><h2>GtkTextTag</h2><p>GtkTextTag &#8212; 
+A tag that can be applied to text in a <a href="GtkTextBuffer.html" title="GtkTextBuffer">GtkTextBuffer</a></p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gtk/gtk.h&gt;
+
+
+struct      <a href="GtkTextTag.html#GtkTextTag-struct">GtkTextTag</a>;
+enum        <a href="GtkTextTag.html#GtkWrapMode">GtkWrapMode</a>;
+struct      <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>;
+<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>* <a href="GtkTextTag.html#gtk-text-tag-new">gtk_text_tag_new</a>                (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);
+<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>        <a href="GtkTextTag.html#gtk-text-tag-get-priority">gtk_text_tag_get_priority</a>       (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *tag);
+void        <a href="GtkTextTag.html#gtk-text-tag-set-priority">gtk_text_tag_set_priority</a>       (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *tag,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> priority);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="GtkTextTag.html#gtk-text-tag-event">gtk_text_tag_event</a>              (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *tag,
+                                             <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *event_object,
+                                             <a
+href="../gdk/gdk-Event-Structures.html#GdkEvent"
+>GdkEvent</a> *event,
+                                             const <a href="gtk-GtkTextIter.html#GtkTextIter">GtkTextIter</a> *iter);
+struct      <a href="GtkTextTag.html#GtkTextAppearance">GtkTextAppearance</a>;
+<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>* <a href="GtkTextTag.html#gtk-text-attributes-new">gtk_text_attributes_new</a>  (void);
+<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>* <a href="GtkTextTag.html#gtk-text-attributes-copy">gtk_text_attributes_copy</a> (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *src);
+void        <a href="GtkTextTag.html#gtk-text-attributes-copy-values">gtk_text_attributes_copy_values</a> (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *src,
+                                             <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *dest);
+void        <a href="GtkTextTag.html#gtk-text-attributes-unref">gtk_text_attributes_unref</a>       (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *values);
+void        <a href="GtkTextTag.html#gtk-text-attributes-ref">gtk_text_attributes_ref</a>         (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *values);
+
+
+</pre></div><div class="refsect1"><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkTextTag
+</pre></div><div class="refsect1"><h2>Properties</h2><pre class="synopsis">
+
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background">background</a>&quot;           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background-full-height">background-full-height</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background-full-height-set">background-full-height-set</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background-gdk">background-gdk</a>&quot;       <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+>GdkColor</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background-set">background-set</a>&quot;       <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background-stipple">background-stipple</a>&quot;   <a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+>GdkPixmap</a>            : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--background-stipple-set">background-stipple-set</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--direction">direction</a>&quot;            <a href="GtkWidget.html#GtkTextDirection">GtkTextDirection</a>     : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--editable">editable</a>&quot;             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--editable-set">editable-set</a>&quot;         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--family">family</a>&quot;               <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--family-set">family-set</a>&quot;           <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--font">font</a>&quot;                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--font-desc">font-desc</a>&quot;            <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--foreground">foreground</a>&quot;           <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--foreground-gdk">foreground-gdk</a>&quot;       <a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+>GdkColor</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--foreground-set">foreground-set</a>&quot;       <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--foreground-stipple">foreground-stipple</a>&quot;   <a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+>GdkPixmap</a>            : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--foreground-stipple-set">foreground-stipple-set</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--indent">indent</a>&quot;               <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--indent-set">indent-set</a>&quot;           <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--invisible">invisible</a>&quot;            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--invisible-set">invisible-set</a>&quot;        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--justification">justification</a>&quot;        <a href="gtk-Standard-Enumerations.html#GtkJustification">GtkJustification</a>     : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--justification-set">justification-set</a>&quot;    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--language">language</a>&quot;             <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--language-set">language-set</a>&quot;         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--left-margin">left-margin</a>&quot;          <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--left-margin-set">left-margin-set</a>&quot;      <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--name">name</a>&quot;                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>           : Read / Write / Construct Only
+  &quot;<a href="GtkTextTag.html#GtkTextTag--pixels-above-lines">pixels-above-lines</a>&quot;   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--pixels-above-lines-set">pixels-above-lines-set</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--pixels-below-lines">pixels-below-lines</a>&quot;   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--pixels-below-lines-set">pixels-below-lines-set</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--pixels-inside-wrap">pixels-inside-wrap</a>&quot;   <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--pixels-inside-wrap-set">pixels-inside-wrap-set</a>&quot; <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--right-margin">right-margin</a>&quot;         <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--right-margin-set">right-margin-set</a>&quot;     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--rise">rise</a>&quot;                 <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--rise-set">rise-set</a>&quot;             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--scale">scale</a>&quot;                <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>              : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--scale-set">scale-set</a>&quot;            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--size">size</a>&quot;                 <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--size-points">size-points</a>&quot;          <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a>              : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--size-set">size-set</a>&quot;             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--stretch">stretch</a>&quot;              <a
+href="../pango/pango-Fonts.html#PangoStretch"
+>PangoStretch</a>         : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--stretch-set">stretch-set</a>&quot;          <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--strikethrough">strikethrough</a>&quot;        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--strikethrough-set">strikethrough-set</a>&quot;    <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--style">style</a>&quot;                <a
+href="../pango/pango-Fonts.html#PangoStyle"
+>PangoStyle</a>           : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--style-set">style-set</a>&quot;            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--tabs">tabs</a>&quot;                 <a
+href="../pango/pango-Tab-Stops.html#PangoTabArray"
+>PangoTabArray</a>        : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--tabs-set">tabs-set</a>&quot;             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--underline">underline</a>&quot;            <a
+href="../pango/pango-Text-Attributes.html#PangoUnderline"
+>PangoUnderline</a>       : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--underline-set">underline-set</a>&quot;        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--variant">variant</a>&quot;              <a
+href="../pango/pango-Fonts.html#PangoVariant"
+>PangoVariant</a>         : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--variant-set">variant-set</a>&quot;          <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--weight">weight</a>&quot;               <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>                 : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--weight-set">weight-set</a>&quot;           <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--wrap-mode">wrap-mode</a>&quot;            <a href="GtkTextTag.html#GtkWrapMode">GtkWrapMode</a>          : Read / Write
+  &quot;<a href="GtkTextTag.html#GtkTextTag--wrap-mode-set">wrap-mode-set</a>&quot;        <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>             : Read / Write
+</pre></div><div class="refsect1"><h2>Signal Prototypes</h2><pre class="synopsis">
+
+&quot;<a href="GtkTextTag.html#GtkTextTag-event">event</a>&quot;     <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    user_function      (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *texttag,
+                                            <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *arg1,
+                                            <a
+href="../gdk/gdk-Event-Structures.html#GdkEvent"
+>GdkEvent</a> *event,
+                                            <a href="gtk-GtkTextIter.html#GtkTextIter">GtkTextIter</a> *arg2,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+You may wish to begin by reading the <a href="TextWidget.html" title="Text Widget Overview">text widget
+conceptual overview</a> which gives an overview of all the objects and data
+types related to the text widget and how they work together.
+</p><p>
+Tags should be in the <a href="GtkTextTagTable.html" title="GtkTextTagTable">GtkTextTagTable</a> for a given <a href="GtkTextBuffer.html" title="GtkTextBuffer">GtkTextBuffer</a>
+before using them with that buffer.
+</p><p>
+<a href="GtkTextBuffer.html#gtk-text-buffer-create-tag">gtk_text_buffer_create_tag</a>() is the best way to create tags.
+See gtk-demo for numerous examples.
+</p><p>
+The &quot;invisible&quot; property was not implemented for GTK+ 2.0; it's
+planned to be implemented in future releases.
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GtkTextTag-struct"></a>struct GtkTextTag</h3><pre class="programlisting">struct GtkTextTag;</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GtkWrapMode"></a>enum GtkWrapMode</h3><pre class="programlisting">typedef enum
+{
+  GTK_WRAP_NONE,
+  GTK_WRAP_CHAR,
+  GTK_WRAP_WORD
+} GtkWrapMode;
+</pre><p>
+Describes a type of line wrapping.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><tt>GTK_WRAP_NONE</tt></span></td><td>do not wrap lines; just make the text area wider
+</td></tr><tr><td><span class="term"><tt>GTK_WRAP_CHAR</tt></span></td><td>wrap text, breaking lines anywhere the cursor can
+                appear (between characters, usually - if you want to
+                be technical, between graphemes, see
+                <a
+href="../pango/pango-Text-Processing.html#pango-get-log-attrs"
+>pango_get_log_attrs</a>())
+</td></tr><tr><td><span class="term"><tt>GTK_WRAP_WORD</tt></span></td><td>wrap text, breaking lines in between words
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GtkTextAttributes"></a>struct GtkTextAttributes</h3><pre class="programlisting">struct GtkTextAttributes {
+
+  GtkTextAppearance appearance;
+
+  GtkJustification justification;
+  GtkTextDirection direction;
+
+  /* Individual chunks of this can be set/unset as a group */
+  PangoFontDescription *font;
+
+  gdouble font_scale;
+  
+  gint left_margin;
+
+  gint indent;  
+
+  gint right_margin;
+
+  gint pixels_above_lines;
+
+  gint pixels_below_lines;
+
+  gint pixels_inside_wrap;
+
+  PangoTabArray *tabs;
+
+  GtkWrapMode wrap_mode;        /* How to handle wrap-around for this tag.
+                                 * Must be GTK_WRAPMODE_CHAR,
+                                 * GTK_WRAPMODE_NONE, GTK_WRAPMODE_WORD
+                                 */
+
+  PangoLanguage *language;
+
+  /* hide the text  */
+  guint invisible : 1;
+
+  /* Background is fit to full line height rather than
+   * baseline +/- ascent/descent (font height)
+   */
+  guint bg_full_height : 1;
+
+  /* can edit this text */
+  guint editable : 1;
+
+  /* colors are allocated etc. */
+  guint realized : 1;
+
+};
+</pre><p>
+Using <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> directly should rarely be necessary. It's
+primarily useful with <a href="gtk-GtkTextIter.html#gtk-text-iter-get-attributes">gtk_text_iter_get_attributes</a>(). As with most
+GTK+ structs, the fields in this struct should only be read, never
+modified directly.
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a href="GtkTextTag.html#GtkTextAppearance">GtkTextAppearance</a> <i><tt>appearance</tt></i></span></td><td>pointer to sub-struct containing certain attributes
+</td></tr><tr><td><span class="term"><a href="gtk-Standard-Enumerations.html#GtkJustification">GtkJustification</a> <i><tt>justification</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a href="GtkWidget.html#GtkTextDirection">GtkTextDirection</a> <i><tt>direction</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *<i><tt>font</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> <i><tt>font_scale</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> <i><tt>left_margin</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> <i><tt>indent</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> <i><tt>right_margin</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> <i><tt>pixels_above_lines</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> <i><tt>pixels_below_lines</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> <i><tt>pixels_inside_wrap</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../pango/pango-Tab-Stops.html#PangoTabArray"
+>PangoTabArray</a> *<i><tt>tabs</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a href="GtkTextTag.html#GtkWrapMode">GtkWrapMode</a> <i><tt>wrap_mode</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../pango/pango-Text-Attributes.html#PangoLanguage"
+>PangoLanguage</a> *<i><tt>language</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> <i><tt>invisible</tt></i> : 1</span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> <i><tt>bg_full_height</tt></i> : 1</span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> <i><tt>editable</tt></i> : 1</span></td><td>
+</td></tr><tr><td><span class="term"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> <i><tt>realized</tt></i> : 1</span></td><td>
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-tag-new"></a>gtk_text_tag_new ()</h3><pre class="programlisting"><a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>* gtk_text_tag_new                (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name);</pre><p>
+Creates a <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>. Configure the tag using object arguments,
+i.e. using <a
+href="../gobject/gobject-The-Base-Object-Type.html#g-object-set"
+>g_object_set</a>().</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> tag name, or <tt>NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-tag-get-priority"></a>gtk_text_tag_get_priority ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a>        gtk_text_tag_get_priority       (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *tag);</pre><p>
+Get the tag priority.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>tag</tt></i> :</span></td><td> a <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The tag's priority.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-tag-set-priority"></a>gtk_text_tag_set_priority ()</h3><pre class="programlisting">void        gtk_text_tag_set_priority       (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *tag,
+                                             <a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> priority);</pre><p>
+Sets the priority of a <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>. Valid priorities are
+start at 0 and go to one less than <a href="GtkTextTagTable.html#gtk-text-tag-table-get-size">gtk_text_tag_table_get_size</a>().
+Each tag in a table has a unique priority; setting the priority
+of one tag shifts the priorities of all the other tags in the
+table to maintain a unique priority for each tag. Higher priority
+tags &quot;win&quot; if two tags both set the same text attribute. When adding
+a tag to a tag table, it will be assigned the highest priority in
+the table by default; so normally the precedence of a set of tags
+is the order in which they were added to the table, or created with
+<a href="GtkTextBuffer.html#gtk-text-buffer-create-tag">gtk_text_buffer_create_tag</a>(), which adds the tag to the buffer's table
+automatically.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>tag</tt></i> :</span></td><td> a <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>
+</td></tr><tr><td><span class="term"><i><tt>priority</tt></i> :</span></td><td> the new priority
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-tag-event"></a>gtk_text_tag_event ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_text_tag_event              (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *tag,
+                                             <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *event_object,
+                                             <a
+href="../gdk/gdk-Event-Structures.html#GdkEvent"
+>GdkEvent</a> *event,
+                                             const <a href="gtk-GtkTextIter.html#GtkTextIter">GtkTextIter</a> *iter);</pre><p>
+Emits the &quot;event&quot; signal on the <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>tag</tt></i> :</span></td><td> a <a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a>
+</td></tr><tr><td><span class="term"><i><tt>event_object</tt></i> :</span></td><td> object that received the event, such as a widget
+</td></tr><tr><td><span class="term"><i><tt>event</tt></i> :</span></td><td> the event
+</td></tr><tr><td><span class="term"><i><tt>iter</tt></i> :</span></td><td> location where the event was received
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> result of signal emission (whether the event was handled)
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GtkTextAppearance"></a>struct GtkTextAppearance</h3><pre class="programlisting">struct GtkTextAppearance {
+
+  GdkColor bg_color;
+  GdkColor fg_color;
+  GdkBitmap *bg_stipple;
+  GdkBitmap *fg_stipple;
+
+  /* super/subscript rise, can be negative */
+  gint rise;
+
+  guint underline : 4;          /* PangoUnderline */
+  guint strikethrough : 1;
+
+  /* Whether to use background-related values; this is irrelevant for
+   * the values struct when in a tag, but is used for the composite
+   * values struct; it's true if any of the tags being composited
+   * had background stuff set.
+   */
+  guint draw_bg : 1;
+  
+  /* These are only used when we are actually laying out and rendering
+   * a paragraph; not when a GtkTextAppearance is part of a
+   * GtkTextAttributes.
+   */
+  guint inside_selection : 1;
+  guint is_text : 1;
+
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gtk-text-attributes-new"></a>gtk_text_attributes_new ()</h3><pre class="programlisting"><a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>* gtk_text_attributes_new  (void);</pre><p>
+Creates a <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>, which describes
+a set of properties on some text.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-attributes-copy"></a>gtk_text_attributes_copy ()</h3><pre class="programlisting"><a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>* gtk_text_attributes_copy (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *src);</pre><p>
+Copies <i><tt>src</tt></i> and returns a new <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>src</tt></i> :</span></td><td> a <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> to be copied
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a copy of <i><tt>src</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-attributes-copy-values"></a>gtk_text_attributes_copy_values ()</h3><pre class="programlisting">void        gtk_text_attributes_copy_values (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *src,
+                                             <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *dest);</pre><p>
+Copies the values from <i><tt>src</tt></i> to <i><tt>dest</tt></i> so that <i><tt>dest</tt></i> has the same values
+as <i><tt>src</tt></i>. Frees existing values in <i><tt>dest</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>src</tt></i> :</span></td><td> a <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>
+</td></tr><tr><td><span class="term"><i><tt>dest</tt></i> :</span></td><td> another <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-attributes-unref"></a>gtk_text_attributes_unref ()</h3><pre class="programlisting">void        gtk_text_attributes_unref       (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *values);</pre><p>
+Decrements the reference count on <i><tt>values</tt></i>, freeing the structure
+if the reference count reaches 0.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>values</tt></i> :</span></td><td> a <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gtk-text-attributes-ref"></a>gtk_text_attributes_ref ()</h3><pre class="programlisting">void        gtk_text_attributes_ref         (<a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a> *values);</pre><p>
+Increments the reference count on <i><tt>values</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>values</tt></i> :</span></td><td> a <a href="GtkTextTag.html#GtkTextAttributes">GtkTextAttributes</a>
+</td></tr></tbody></table></div></div></div><div class="refsect1"><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a name="GtkTextTag--background"></a>&quot;<tt>background</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--background-full-height"></a>&quot;<tt>background-full-height</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--background-full-height-set"></a>&quot;<tt>background-full-height-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--background-gdk"></a>&quot;<tt>background-gdk</tt>&quot; (<a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+>GdkColor</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--background-set"></a>&quot;<tt>background-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--background-stipple"></a>&quot;<tt>background-stipple</tt>&quot; (<a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+>GdkPixmap</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--background-stipple-set"></a>&quot;<tt>background-stipple-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--direction"></a>&quot;<tt>direction</tt>&quot; (<a href="GtkWidget.html#GtkTextDirection">GtkTextDirection</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--editable"></a>&quot;<tt>editable</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--editable-set"></a>&quot;<tt>editable-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--family"></a>&quot;<tt>family</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--family-set"></a>&quot;<tt>family-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--font"></a>&quot;<tt>font</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--font-desc"></a>&quot;<tt>font-desc</tt>&quot; (<a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--foreground"></a>&quot;<tt>foreground</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--foreground-gdk"></a>&quot;<tt>foreground-gdk</tt>&quot; (<a
+href="../gdk/gdk-Colormaps-and-Colors.html#GdkColor"
+>GdkColor</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--foreground-set"></a>&quot;<tt>foreground-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--foreground-stipple"></a>&quot;<tt>foreground-stipple</tt>&quot; (<a
+href="../gdk/gdk-Bitmaps-and-Pixmaps.html#GdkPixmap"
+>GdkPixmap</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--foreground-stipple-set"></a>&quot;<tt>foreground-stipple-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--indent"></a>&quot;<tt>indent</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--indent-set"></a>&quot;<tt>indent-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--invisible"></a>&quot;<tt>invisible</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--invisible-set"></a>&quot;<tt>invisible-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--justification"></a>&quot;<tt>justification</tt>&quot; (<a href="gtk-Standard-Enumerations.html#GtkJustification">GtkJustification</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--justification-set"></a>&quot;<tt>justification-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--language"></a>&quot;<tt>language</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--language-set"></a>&quot;<tt>language-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--left-margin"></a>&quot;<tt>left-margin</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--left-margin-set"></a>&quot;<tt>left-margin-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--name"></a>&quot;<tt>name</tt>&quot; (<a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a> : Read / Write / Construct Only)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--pixels-above-lines"></a>&quot;<tt>pixels-above-lines</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--pixels-above-lines-set"></a>&quot;<tt>pixels-above-lines-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--pixels-below-lines"></a>&quot;<tt>pixels-below-lines</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--pixels-below-lines-set"></a>&quot;<tt>pixels-below-lines-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--pixels-inside-wrap"></a>&quot;<tt>pixels-inside-wrap</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--pixels-inside-wrap-set"></a>&quot;<tt>pixels-inside-wrap-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--right-margin"></a>&quot;<tt>right-margin</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--right-margin-set"></a>&quot;<tt>right-margin-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--rise"></a>&quot;<tt>rise</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--rise-set"></a>&quot;<tt>rise-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--scale"></a>&quot;<tt>scale</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--scale-set"></a>&quot;<tt>scale-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--size"></a>&quot;<tt>size</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--size-points"></a>&quot;<tt>size-points</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--size-set"></a>&quot;<tt>size-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--stretch"></a>&quot;<tt>stretch</tt>&quot; (<a
+href="../pango/pango-Fonts.html#PangoStretch"
+>PangoStretch</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--stretch-set"></a>&quot;<tt>stretch-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--strikethrough"></a>&quot;<tt>strikethrough</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--strikethrough-set"></a>&quot;<tt>strikethrough-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--style"></a>&quot;<tt>style</tt>&quot; (<a
+href="../pango/pango-Fonts.html#PangoStyle"
+>PangoStyle</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--style-set"></a>&quot;<tt>style-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--tabs"></a>&quot;<tt>tabs</tt>&quot; (<a
+href="../pango/pango-Tab-Stops.html#PangoTabArray"
+>PangoTabArray</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--tabs-set"></a>&quot;<tt>tabs-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--underline"></a>&quot;<tt>underline</tt>&quot; (<a
+href="../pango/pango-Text-Attributes.html#PangoUnderline"
+>PangoUnderline</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--underline-set"></a>&quot;<tt>underline-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--variant"></a>&quot;<tt>variant</tt>&quot; (<a
+href="../pango/pango-Fonts.html#PangoVariant"
+>PangoVariant</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--variant-set"></a>&quot;<tt>variant-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--weight"></a>&quot;<tt>weight</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gint"
+>gint</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--weight-set"></a>&quot;<tt>weight-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--wrap-mode"></a>&quot;<tt>wrap-mode</tt>&quot; (<a href="GtkTextTag.html#GtkWrapMode">GtkWrapMode</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr><tr><td><span class="term"><a name="GtkTextTag--wrap-mode-set"></a>&quot;<tt>wrap-mode-set</tt>&quot; (<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> : Read / Write)</span></td><td><p>
+
+</p></td></tr></tbody></table></div></div><div class="refsect1"><h2>Signals</h2><div class="refsect2"><h3><a name="GtkTextTag-event"></a>The &quot;event&quot; signal</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    user_function                  (<a href="GtkTextTag.html" title="GtkTextTag">GtkTextTag</a> *texttag,
+                                            <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *arg1,
+                                            <a
+href="../gdk/gdk-Event-Structures.html#GdkEvent"
+>GdkEvent</a> *event,
+                                            <a href="gtk-GtkTextIter.html#GtkTextIter">GtkTextIter</a> *arg2,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>texttag</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i><tt>arg1</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>event</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>arg2</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GtkTextBuffer.html"><b>&lt;&lt; GtkTextBuffer</b></a></td><td align="right"><a accesskey="n" href="GtkTextTagTable.html"><b>GtkTextTagTable &gt;&gt;</b></a></td></tr></table></body></html>

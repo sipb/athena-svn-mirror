@@ -1,0 +1,110 @@
+<refentry id="GtkWindowGroup">
+<refmeta>
+<refentrytitle>GtkWindowGroup</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkWindowGroup</refname><refpurpose>Limit the effect of grabs</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+struct      <link linkend="GtkWindowGroup-struct">GtkWindowGroup</link>;
+<link linkend="GtkWindowGroup">GtkWindowGroup</link>* <link linkend="gtk-window-group-new">gtk_window_group_new</link>        (void);
+void        <link linkend="gtk-window-group-add-window">gtk_window_group_add_window</link>     (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+                                             <link linkend="GtkWindow">GtkWindow</link> *window);
+void        <link linkend="gtk-window-group-remove-window">gtk_window_group_remove_window</link>  (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+                                             <link linkend="GtkWindow">GtkWindow</link> *window);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----GtkWindowGroup
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkWindowGroup-struct"/>struct GtkWindowGroup</title>
+<programlisting>struct GtkWindowGroup;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-window-group-new"/>gtk_window_group_new ()</title>
+<programlisting><link linkend="GtkWindowGroup">GtkWindowGroup</link>* gtk_window_group_new        (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkWindowGroup">GtkWindowGroup</link> object. Grabs added with
+<link linkend="gtk-grab-add">gtk_grab_add</link>() only affect windows within the same <link linkend="GtkWindowGroup">GtkWindowGroup</link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkWindowGroup">GtkWindowGroup</link>. 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-window-group-add-window"/>gtk_window_group_add_window ()</title>
+<programlisting>void        gtk_window_group_add_window     (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+                                             <link linkend="GtkWindow">GtkWindow</link> *window);</programlisting>
+<para>
+Adds a window to a <link linkend="GtkWindowGroup">GtkWindowGroup</link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>window_group</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWindowGroup">GtkWindowGroup</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkWindow">GtkWindow</link> to add
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-window-group-remove-window"/>gtk_window_group_remove_window ()</title>
+<programlisting>void        gtk_window_group_remove_window  (<link linkend="GtkWindowGroup">GtkWindowGroup</link> *window_group,
+                                             <link linkend="GtkWindow">GtkWindow</link> *window);</programlisting>
+<para>
+Removes a window from a <link linkend="GtkWindowGroup">GtkWindowGroup</link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>window_group</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkWindowGroup">GtkWindowGroup</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="GtkWindow">GtkWindow</link> to remove
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

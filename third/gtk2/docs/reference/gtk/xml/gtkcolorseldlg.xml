@@ -1,0 +1,129 @@
+<refentry id="GtkColorSelectionDialog">
+<refmeta>
+<refentrytitle>GtkColorSelectionDialog</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkColorSelectionDialog</refname><refpurpose>a standard dialog box for selecting a color.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtk/gtk.h&gt;
+
+
+struct      <link linkend="GtkColorSelectionDialog-struct">GtkColorSelectionDialog</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gtk-color-selection-dialog-new">gtk_color_selection_dialog_new</link>  (const <link linkend="gchar">gchar</link> *title);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GtkWidget">GtkWidget</link>
+               +----<link linkend="GtkContainer">GtkContainer</link>
+                     +----<link linkend="GtkBin">GtkBin</link>
+                           +----<link linkend="GtkWindow">GtkWindow</link>
+                                 +----<link linkend="GtkDialog">GtkDialog</link>
+                                       +----GtkColorSelectionDialog
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+GtkColorSelectionDialog implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
+</para>
+</refsect1>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The <link linkend="GtkColorSelectionDialog">GtkColorSelectionDialog</link> provides a standard dialog which
+allows the user to select a color much like the <link linkend="GtkFileSelection">GtkFileSelection</link>
+provides a standard dialog for file selection.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkColorSelectionDialog-struct"/>struct GtkColorSelectionDialog</title>
+<programlisting>struct GtkColorSelectionDialog;</programlisting>
+<para>
+The <link linkend="GtkColorSelectionDialog-struct">GtkColorSelectionDialog</link> struct contains the following fields.
+(These fields should be considered read-only. They should never be set by
+an application.)
+
+<informaltable pgwide="1" frame="none" role="struct">
+<tgroup cols="2"><colspec colwidth="2*"/><colspec colwidth="8*"/>
+<tbody>
+
+<row>
+<entry><link linkend="GtkWidget">GtkWidget</link> *colorsel;</entry>
+<entry>The <link linkend="GtkColorSelection">GtkColorSelection</link> widget contained within the
+dialog.  Use this widget and its <link linkend="gtk-color-selection-get-current-color">gtk_color_selection_get_current_color</link>()
+function to gain access to the selected color.  Connect a handler 
+for this widget's color_changed signal to be notified when the
+color changes.
+</entry>
+</row>
+
+<row>
+<entry><link linkend="GtkWidget">GtkWidget</link> *ok_button;</entry>
+<entry>The OK button widget contained within the dialog.  
+Connect a handler for the clicked event.
+</entry>
+</row>
+
+<row>
+<entry><link linkend="GtkWidget">GtkWidget</link> *cancel_button;</entry>
+<entry>The cancel button widget contained within the dialog.  
+Connect a handler for the clicked event.
+</entry>
+</row>
+
+<row>
+<entry><link linkend="GtkWidget">GtkWidget</link> *help_button;</entry>
+<entry>The help button widget contained within the dialog.  
+Connect a handler for the clicked event.
+</entry>
+</row>
+
+</tbody></tgroup></informaltable>
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-color-selection-dialog-new"/>gtk_color_selection_dialog_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  gtk_color_selection_dialog_new  (const <link linkend="gchar">gchar</link> *title);</programlisting>
+<para>
+Creates a new <link linkend="GtkColorSelectionDialog">GtkColorSelectionDialog</link>.
+</para><variablelist role="params">
+<varlistentry><term><parameter>title</parameter>&nbsp;:</term>
+<listitem><simpara>a string containing the title text for the dialog.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GtkColorSelectionDialog">GtkColorSelectionDialog</link>.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

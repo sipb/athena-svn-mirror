@@ -1,0 +1,824 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+ASFLAGS = @ASFLAGS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CCAS = @CCAS@
+CCASFLAGS = @CCASFLAGS@
+DATADIRNAME = @DATADIRNAME@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+FREETYPE_CFLAGS = @FREETYPE_CFLAGS@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
+FREETYPE_LIBS = @FREETYPE_LIBS@
+GDK_DEP_CFLAGS = @GDK_DEP_CFLAGS@
+GDK_DEP_LIBS = @GDK_DEP_LIBS@
+GDK_EXTRA_CFLAGS = @GDK_EXTRA_CFLAGS@
+GDK_EXTRA_LIBS = @GDK_EXTRA_LIBS@
+GDK_PACKAGES = @GDK_PACKAGES@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
+GDK_PIXBUF_DEP_CFLAGS = @GDK_PIXBUF_DEP_CFLAGS@
+GDK_PIXBUF_DEP_LIBS = @GDK_PIXBUF_DEP_LIBS@
+GDK_PIXBUF_EXTRA_CFLAGS = @GDK_PIXBUF_EXTRA_CFLAGS@
+GDK_PIXBUF_EXTRA_LIBS = @GDK_PIXBUF_EXTRA_LIBS@
+GDK_PIXBUF_MAJOR = @GDK_PIXBUF_MAJOR@
+GDK_PIXBUF_MICRO = @GDK_PIXBUF_MICRO@
+GDK_PIXBUF_MINOR = @GDK_PIXBUF_MINOR@
+GDK_PIXBUF_PACKAGES = @GDK_PIXBUF_PACKAGES@
+GDK_PIXBUF_VERSION = @GDK_PIXBUF_VERSION@
+GDK_PIXBUF_XLIB_DEP_CFLAGS = @GDK_PIXBUF_XLIB_DEP_CFLAGS@
+GDK_PIXBUF_XLIB_DEP_LIBS = @GDK_PIXBUF_XLIB_DEP_LIBS@
+GDK_PIXBUF_XLIB_EXTRA_CFLAGS = @GDK_PIXBUF_XLIB_EXTRA_CFLAGS@
+GDK_PIXBUF_XLIB_EXTRA_LIBS = @GDK_PIXBUF_XLIB_EXTRA_LIBS@
+GDK_PIXBUF_XLIB_PACKAGES = @GDK_PIXBUF_XLIB_PACKAGES@
+GDK_WIN32_EXTRA_CFLAGS = @GDK_WIN32_EXTRA_CFLAGS@
+GDK_WLIBS = @GDK_WLIBS@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GOBJECT_QUERY = @GOBJECT_QUERY@
+GTKDOC = @GTKDOC@
+GTK_API_VERSION = @GTK_API_VERSION@
+GTK_BINARY_AGE = @GTK_BINARY_AGE@
+GTK_BINARY_VERSION = @GTK_BINARY_VERSION@
+GTK_DEBUG_FLAGS = @GTK_DEBUG_FLAGS@
+GTK_DEP_CFLAGS = @GTK_DEP_CFLAGS@
+GTK_DEP_LIBS = @GTK_DEP_LIBS@
+GTK_EXTRA_CFLAGS = @GTK_EXTRA_CFLAGS@
+GTK_EXTRA_LIBS = @GTK_EXTRA_LIBS@
+GTK_INTERFACE_AGE = @GTK_INTERFACE_AGE@
+GTK_MAJOR_VERSION = @GTK_MAJOR_VERSION@
+GTK_MICRO_VERSION = @GTK_MICRO_VERSION@
+GTK_MINOR_VERSION = @GTK_MINOR_VERSION@
+GTK_PACKAGES = @GTK_PACKAGES@
+GTK_VERSION = @GTK_VERSION@
+GTK_XIM_FLAGS = @GTK_XIM_FLAGS@
+HTML_DIR = @HTML_DIR@
+IE55_UUID_LIB = @IE55_UUID_LIB@
+INCLUDED_LOADER_DEFINE = @INCLUDED_LOADER_DEFINE@
+INCLUDED_LOADER_OBJ = @INCLUDED_LOADER_OBJ@
+INDENT = @INDENT@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+LIBJPEG = @LIBJPEG@
+LIBPNG = @LIBPNG@
+LIBTIFF = @LIBTIFF@
+LIBTOOL = @LIBTOOL@
+LIBTOOL_EXPORT_OPTIONS = @LIBTOOL_EXPORT_OPTIONS@
+LN_S = @LN_S@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_CURRENT_MINUS_AGE = @LT_CURRENT_MINUS_AGE@
+LT_RELEASE = @LT_RELEASE@
+LT_REVISION = @LT_REVISION@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+RANLIB = @RANLIB@
+REBUILD = @REBUILD@
+REBUILD_PNGS = @REBUILD_PNGS@
+SGML2HTML = @SGML2HTML@
+STRIP = @STRIP@
+STRIP_BEGIN = @STRIP_BEGIN@
+STRIP_DUMMY = @STRIP_DUMMY@
+STRIP_END = @STRIP_END@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+WINTAB_LIB = @WINTAB_LIB@
+gdktarget = @gdktarget@
+gdktargetlib = @gdktargetlib@
+gtktargetlib = @gtktargetlib@
+ms_librarian = @ms_librarian@
+xinput_progs = @xinput_progs@
+
+@PLATFORM_WIN32_TRUE@no_undefined = @PLATFORM_WIN32_TRUE@-no-undefined
+
+INCLUDES = @STRIP_BEGIN@ \
+	-I$(top_srcdir) 				\
+	-I$(top_srcdir)/gdk				\
+	-I$(top_builddir)/gdk				\
+	-DG_DISABLE_DEPRECATED	 			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED 			\
+	@GTK_DEBUG_FLAGS@				\
+	@GTK_XIM_FLAGS@					\
+	@GTK_DEP_CFLAGS@				\
+@STRIP_END@
+
+
+DEPS = \
+	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+	$(top_builddir)/gdk/@gdktargetlib@ 				\
+	$(top_builddir)/gtk/@gtktargetlib@
+
+
+LDADDS = @STRIP_BEGIN@ 							\
+	$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la	\
+	$(top_builddir)/gdk/@gdktargetlib@        			\
+	$(top_builddir)/gtk/@gtktargetlib@ 				\
+	@GTK_DEP_LIBS@							\
+@STRIP_END@
+
+
+moduledir = $(libdir)/gtk-2.0/$(GTK_BINARY_VERSION)/immodules
+
+im_xim_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_xim_la_SOURCES = \
+	gtkimcontextxim.c 	\
+	gtkimcontextxim.h	\
+	imxim.c
+
+im_xim_la_LIBADD = $(LDADDS)
+@USE_X11_TRUE@IM_XIM_MODULE = @USE_X11_TRUE@im-xim.la 
+
+im_am_et_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_am_et_la_SOURCES = imam-et.c
+im_am_et_la_LIBADD = $(LDADDS)
+
+im_cyrillic_translit_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_cyrillic_translit_la_SOURCES = imcyrillic-translit.c
+im_cyrillic_translit_la_LIBADD = $(LDADDS)
+
+im_ti_er_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_ti_er_la_SOURCES = imti-er.c
+im_ti_er_la_LIBADD = $(LDADDS)
+
+im_ti_et_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_ti_et_la_SOURCES = imti-et.c
+im_ti_et_la_LIBADD = $(LDADDS)
+
+im_thai_broken_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_thai_broken_la_SOURCES = imthai-broken.c
+im_thai_broken_la_LIBADD = $(LDADDS)
+
+im_viqr_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_viqr_la_SOURCES = imviqr.c
+im_viqr_la_LIBADD = $(LDADDS)
+
+im_inuktitut_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_inuktitut_la_SOURCES = iminuktitut.c
+im_inuktitut_la_LIBADD = $(LDADDS)
+
+im_ipa_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_ipa_la_SOURCES = imipa.c
+im_ipa_la_LIBADD = $(LDADDS)
+
+im_hangul_la_LDFLAGS = -rpath $(moduledir) -avoid-version -module $(no_undefined)
+im_hangul_la_SOURCES = imhangul.c imhangul-defs.h
+im_hangul_la_LIBADD = $(LDADDS)
+@CROSS_COMPILING_TRUE@RUN_QUERY_IMMODULES_TEST = @CROSS_COMPILING_TRUE@false
+@CROSS_COMPILING_FALSE@RUN_QUERY_IMMODULES_TEST = @CROSS_COMPILING_FALSE@test -z "$(DESTDIR)"
+
+module_LTLIBRARIES = \
+	$(IM_XIM_MODULE)			\
+	im-am-et.la				\
+	im-cyrillic-translit.la			\
+	im-hangul.la				\
+	im-inuktitut.la				\
+	im-ipa.la				\
+	im-thai-broken.la			\
+	im-ti-er.la				\
+	im-ti-et.la				\
+	im-viqr.la
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(module_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+im_xim_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_xim_la_OBJECTS =  gtkimcontextxim.lo imxim.lo
+im_am_et_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_am_et_la_OBJECTS =  imam-et.lo
+im_cyrillic_translit_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_cyrillic_translit_la_OBJECTS =  imcyrillic-translit.lo
+im_hangul_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_hangul_la_OBJECTS =  imhangul.lo
+im_inuktitut_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_inuktitut_la_OBJECTS =  iminuktitut.lo
+im_ipa_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_ipa_la_OBJECTS =  imipa.lo
+im_thai_broken_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_thai_broken_la_OBJECTS =  imthai-broken.lo
+im_ti_er_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_ti_er_la_OBJECTS =  imti-er.lo
+im_ti_et_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_ti_et_la_OBJECTS =  imti-et.lo
+im_viqr_la_DEPENDENCIES =  \
+$(top_builddir)/gdk-pixbuf/libgdk_pixbuf-$(GTK_API_VERSION).la \
+$(top_builddir)/gdk/@gdktargetlib@ $(top_builddir)/gtk/@gtktargetlib@
+im_viqr_la_OBJECTS =  imviqr.lo
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(im_xim_la_SOURCES) $(im_am_et_la_SOURCES) $(im_cyrillic_translit_la_SOURCES) $(im_hangul_la_SOURCES) $(im_inuktitut_la_SOURCES) $(im_ipa_la_SOURCES) $(im_thai_broken_la_SOURCES) $(im_ti_er_la_SOURCES) $(im_ti_et_la_SOURCES) $(im_viqr_la_SOURCES)
+OBJECTS = $(im_xim_la_OBJECTS) $(im_am_et_la_OBJECTS) $(im_cyrillic_translit_la_OBJECTS) $(im_hangul_la_OBJECTS) $(im_inuktitut_la_OBJECTS) $(im_ipa_la_OBJECTS) $(im_thai_broken_la_OBJECTS) $(im_ti_er_la_OBJECTS) $(im_ti_et_la_OBJECTS) $(im_viqr_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps modules/input/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-moduleLTLIBRARIES:
+
+clean-moduleLTLIBRARIES:
+	-test -z "$(module_LTLIBRARIES)" || rm -f $(module_LTLIBRARIES)
+
+distclean-moduleLTLIBRARIES:
+
+maintainer-clean-moduleLTLIBRARIES:
+
+install-moduleLTLIBRARIES: $(module_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(moduledir)
+	@list='$(module_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(moduledir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(moduledir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-moduleLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(module_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(moduledir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+im-xim.la: $(im_xim_la_OBJECTS) $(im_xim_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_xim_la_LDFLAGS) $(im_xim_la_OBJECTS) $(im_xim_la_LIBADD) $(LIBS)
+
+im-am-et.la: $(im_am_et_la_OBJECTS) $(im_am_et_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_am_et_la_LDFLAGS) $(im_am_et_la_OBJECTS) $(im_am_et_la_LIBADD) $(LIBS)
+
+im-cyrillic-translit.la: $(im_cyrillic_translit_la_OBJECTS) $(im_cyrillic_translit_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_cyrillic_translit_la_LDFLAGS) $(im_cyrillic_translit_la_OBJECTS) $(im_cyrillic_translit_la_LIBADD) $(LIBS)
+
+im-hangul.la: $(im_hangul_la_OBJECTS) $(im_hangul_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_hangul_la_LDFLAGS) $(im_hangul_la_OBJECTS) $(im_hangul_la_LIBADD) $(LIBS)
+
+im-inuktitut.la: $(im_inuktitut_la_OBJECTS) $(im_inuktitut_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_inuktitut_la_LDFLAGS) $(im_inuktitut_la_OBJECTS) $(im_inuktitut_la_LIBADD) $(LIBS)
+
+im-ipa.la: $(im_ipa_la_OBJECTS) $(im_ipa_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_ipa_la_LDFLAGS) $(im_ipa_la_OBJECTS) $(im_ipa_la_LIBADD) $(LIBS)
+
+im-thai-broken.la: $(im_thai_broken_la_OBJECTS) $(im_thai_broken_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_thai_broken_la_LDFLAGS) $(im_thai_broken_la_OBJECTS) $(im_thai_broken_la_LIBADD) $(LIBS)
+
+im-ti-er.la: $(im_ti_er_la_OBJECTS) $(im_ti_er_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_ti_er_la_LDFLAGS) $(im_ti_er_la_OBJECTS) $(im_ti_er_la_LIBADD) $(LIBS)
+
+im-ti-et.la: $(im_ti_et_la_OBJECTS) $(im_ti_et_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_ti_et_la_LDFLAGS) $(im_ti_et_la_OBJECTS) $(im_ti_et_la_LIBADD) $(LIBS)
+
+im-viqr.la: $(im_viqr_la_OBJECTS) $(im_viqr_la_DEPENDENCIES)
+	$(LINK) -rpath $(moduledir) $(im_viqr_la_LDFLAGS) $(im_viqr_la_OBJECTS) $(im_viqr_la_LIBADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = modules/input
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+gtkimcontextxim.lo gtkimcontextxim.o : gtkimcontextxim.c \
+	../../gtk/gtkintl.h ../../config.h ../../gtk/gtklabel.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h ../../gtk/gtkmisc.h \
+	../../gtk/gtkwidget.h ../../gtk/gtkaccelgroup.h \
+	../../gtk/gtkenums.h ../../gtk/gtkobject.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkadjustment.h \
+	../../gtk/gtkstyle.h ../../gtk/gtksettings.h ../../gtk/gtkrc.h \
+	../../gtk/gtkwindow.h ../../gtk/gtkbin.h \
+	../../gtk/gtkcontainer.h ../../gtk/gtkmenu.h \
+	../../gtk/gtkmenushell.h ../../gtk/gtksignal.h \
+	../../gtk/gtkmarshal.h gtkimcontextxim.h \
+	../../gtk/gtkimcontext.h ../../gdk/x11/gdkx.h \
+	../../gdk/gdkprivate.h
+imam-et.lo imam-et.o : imam-et.c ../../gdk/gdkkeysyms.h \
+	../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imcyrillic-translit.lo imcyrillic-translit.o : imcyrillic-translit.c \
+	../../gdk/gdkkeysyms.h ../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imhangul.lo imhangul.o : imhangul.c ../../gdk/gdkkeysyms.h \
+	../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h imhangul-defs.h
+iminuktitut.lo iminuktitut.o : iminuktitut.c ../../gdk/gdkkeysyms.h \
+	../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imipa.lo imipa.o : imipa.c ../../gdk/gdkkeysyms.h ../../gtk/gtkintl.h \
+	../../config.h ../../gtk/gtkimcontextsimple.h \
+	../../gtk/gtkimcontext.h ../../gdk/gdk.h ../../gdk/gdkcolor.h \
+	../../gdk/gdktypes.h ../../gdk/gdkconfig.h \
+	../../gdk/gdkcursor.h ../../gdk/gdkdisplay.h \
+	../../gdk/gdkevents.h ../../gdk/gdkdnd.h ../../gdk/gdkinput.h \
+	../../gdk/gdkdrawable.h ../../gdk/gdkgc.h ../../gdk/gdkrgb.h \
+	../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imthai-broken.lo imthai-broken.o : imthai-broken.c \
+	../../gdk/gdkkeysyms.h ../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imti-er.lo imti-er.o : imti-er.c ../../gdk/gdkkeysyms.h \
+	../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imti-et.lo imti-et.o : imti-et.c ../../gdk/gdkkeysyms.h \
+	../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimcontextsimple.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imviqr.lo imviqr.o : imviqr.c ../../gdk/gdkkeysyms.h ../../gtk/gtkintl.h \
+	../../config.h ../../gtk/gtkimcontextsimple.h \
+	../../gtk/gtkimcontext.h ../../gdk/gdk.h ../../gdk/gdkcolor.h \
+	../../gdk/gdktypes.h ../../gdk/gdkconfig.h \
+	../../gdk/gdkcursor.h ../../gdk/gdkdisplay.h \
+	../../gdk/gdkevents.h ../../gdk/gdkdnd.h ../../gdk/gdkinput.h \
+	../../gdk/gdkdrawable.h ../../gdk/gdkgc.h ../../gdk/gdkrgb.h \
+	../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h ../../gtk/gtkimmodule.h
+imxim.lo imxim.o : imxim.c ../../gtk/gtkintl.h ../../config.h \
+	../../gtk/gtkimmodule.h ../../gtk/gtkimcontext.h \
+	../../gdk/gdk.h ../../gdk/gdkcolor.h ../../gdk/gdktypes.h \
+	../../gdk/gdkconfig.h ../../gdk/gdkcursor.h \
+	../../gdk/gdkdisplay.h ../../gdk/gdkevents.h ../../gdk/gdkdnd.h \
+	../../gdk/gdkinput.h ../../gdk/gdkdrawable.h ../../gdk/gdkgc.h \
+	../../gdk/gdkrgb.h ../../gdk-pixbuf/gdk-pixbuf.h \
+	../../gdk-pixbuf/gdk-pixbuf-features.h \
+	../../gdk-pixbuf/gdk-pixbuf-loader.h \
+	../../gdk-pixbuf/gdk-pixbuf-enum-types.h \
+	../../gdk/gdkenumtypes.h ../../gdk/gdkfont.h \
+	../../gdk/gdkimage.h ../../gdk/gdkkeys.h \
+	../../gdk/gdkdisplaymanager.h ../../gdk/gdkpango.h \
+	../../gdk/gdkpixbuf.h ../../gdk/gdkpixmap.h \
+	../../gdk/gdkproperty.h ../../gdk/gdkregion.h \
+	../../gdk/gdkscreen.h ../../gdk/gdkselection.h \
+	../../gdk/gdkvisual.h ../../gdk/gdkwindow.h \
+	../../gtk/gtkobject.h ../../gtk/gtkenums.h \
+	../../gtk/gtktypeutils.h ../../gtk/gtktypebuiltins.h \
+	../../gtk/gtkdebug.h gtkimcontextxim.h ../../gdk/x11/gdkx.h \
+	../../gdk/gdkprivate.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
+install-exec: install-exec-am
+
+install-data-am: install-moduleLTLIBRARIES install-data-local
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-moduleLTLIBRARIES
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) all-local
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(moduledir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-moduleLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-moduleLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-moduleLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-moduleLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-moduleLTLIBRARIES distclean-moduleLTLIBRARIES \
+clean-moduleLTLIBRARIES maintainer-clean-moduleLTLIBRARIES \
+uninstall-moduleLTLIBRARIES install-moduleLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-local install-data-am install-data install-am \
+install uninstall-am uninstall all-local all-redirect all-am all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Running this if cross compiling or if DESTDIR is set is going to
+# not work at all, so skip it.
+install-data-local:
+	@if $(RUN_QUERY_IMMODULES_TEST) ; then \
+	  echo $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/gtk-2.0 ; \
+	  $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/gtk-2.0 ; \
+	  echo "$(top_builddir)/gtk/gtk-query-immodules-2.0 > $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules" ; \
+	  $(top_builddir)/gtk/gtk-query-immodules-2.0 > $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules ; \
+	else \
+	  echo "***" ; \
+	  echo "*** Warning: gtk.immodules not built" ; \
+	  echo "***" ; \
+	  echo "*** Generate this file manually on host" ; \
+	  echo "*** system using gtk-query-immodules-2.0" ; \
+	  echo "***" ; \
+        fi
+
+gtk.immodules: Makefile.am $(module_LTLIBRARIES)
+	$(top_builddir)/gtk/gtk-query-immodules-2.0 *.la > gtk.immodules
+
+@CROSS_COMPILING_FALSE@all-local: gtk.immodules
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
