@@ -1,5 +1,5 @@
-This is Info file ../info/message, produced by Makeinfo version 1.68
-from the input file message.texi.
+This is ../info/message, produced by makeinfo version 4.2 from
+message.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -109,7 +109,7 @@ Reply
 to the message in the current buffer.
 
    Message uses the normal methods to determine where replies are to go
-(*note Responses::.), but you can change the behavior to suit your needs
+(*note Responses::), but you can change the behavior to suit your needs
 by fiddling with the `message-reply-to-function' variable.
 
    If you want the replies to go to the `Sender' instead of the `From',
@@ -150,7 +150,7 @@ and `Cc' headers.
    Message uses the normal methods to determine where wide replies are
 to go, but you can change the behavior to suit your needs by fiddling
 with the `message-wide-reply-to-function'.  It is used in the same way
-as `message-reply-to-function' (*note Reply::.).
+as `message-reply-to-function' (*note Reply::).
 
    Addresses that match the `message-dont-reply-to-names' regular
 expression will be removed from the `Cc' header.
@@ -167,7 +167,7 @@ followup to the message in the current buffer.
    Message uses the normal methods to determine where followups are to
 go, but you can change the behavior to suit your needs by fiddling with
 the `message-followup-to-function'.  It is used in the same way as
-`message-reply-to-function' (*note Reply::.).
+`message-reply-to-function' (*note Reply::).
 
    The `message-use-followup-to' variable says what to do about
 `Followup-To' headers.  If it is `use', always use the value.  If it is
@@ -674,7 +674,7 @@ of messages look sufficiently similar.
 
 `message-subject-re-regexp'
      Responses to messages have subjects that start with `Re: '.  This
-     is *not* an abbreviation of the English word "response", but is
+     is _not_ an abbreviation of the English word "response", but is
      Latin, and means "in response to".  Some illiterate nincompoops
      have failed to grasp this fact, and have "internationalized" their
      software to use abonimations like `Aw: ' ("antwort") or `Sv: '
@@ -791,7 +791,7 @@ impossible, they will be prompted for.  The following symbols are valid:
 
 `Path'
      This extremely optional header should probably never be used.
-     However, some *very* old servers require that this header is
+     However, some _very_ old servers require that this header is
      present.  `message-user-path' further controls how this `Path'
      header is to look.  If it is `nil', use the server name as the
      leaf node.  If it is a string, use the string.  If it is neither a
@@ -1131,7 +1131,7 @@ Responses
 used by default.
 
 "reply"
-     A "reply" is when you want to respond *just* to the person who
+     A "reply" is when you want to respond _just_ to the person who
      sent the message via mail.  There will only be one recipient.  To
      determine who the recipient will be, the following headers are
      consulted, in turn:
@@ -1141,7 +1141,7 @@ used by default.
     `From'
 
 "wide reply"
-     A "wide reply" is a mail response that includes *all* entities
+     A "wide reply" is a mail response that includes _all_ entities
      mentioned in the message you are responded to.  All mailboxes from
      the following headers will be concatenated to form the outgoing
      `To'/`Cc' headers:
@@ -1364,42 +1364,42 @@ Key Index
 
 
 Tag Table:
-Node: Top1297
-Node: Interface2014
-Node: New Mail Message3011
-Node: New News Message3368
-Node: Reply3756
-Node: Wide Reply5131
-Node: Followup5843
-Node: Canceling News6614
-Node: Superseding6819
-Node: Forwarding7306
-Node: Resending8741
-Node: Bouncing9126
-Node: Commands9653
-Node: Buffer Entry10251
-Node: Header Commands10917
-Node: Movement11978
-Node: Insertion12262
-Node: MIME15826
-Node: Various Commands16479
-Node: Sending18199
-Node: Mail Aliases18600
-Node: Spelling19463
-Node: Variables20755
-Node: Message Headers21401
-Node: Mail Headers24113
-Node: Mail Variables24736
-Node: News Headers25695
-Node: News Variables31456
-Node: Various Message Variables31858
-Node: Sending Variables35199
-Node: Message Buffers36056
-Node: Message Actions37486
-Node: Compatibility38954
-Node: Appendices39396
-Node: Responses39585
-Node: Index40929
-Node: Key Index48983
+Node: Top1271
+Node: Interface1988
+Node: New Mail Message2985
+Node: New News Message3342
+Node: Reply3730
+Node: Wide Reply5104
+Node: Followup5815
+Node: Canceling News6585
+Node: Superseding6790
+Node: Forwarding7277
+Node: Resending8712
+Node: Bouncing9097
+Node: Commands9624
+Node: Buffer Entry10222
+Node: Header Commands10888
+Node: Movement11949
+Node: Insertion12233
+Node: MIME15797
+Node: Various Commands16450
+Node: Sending18170
+Node: Mail Aliases18571
+Node: Spelling19434
+Node: Variables20726
+Node: Message Headers21372
+Node: Mail Headers24084
+Node: Mail Variables24707
+Node: News Headers25666
+Node: News Variables31427
+Node: Various Message Variables31829
+Node: Sending Variables35170
+Node: Message Buffers36027
+Node: Message Actions37457
+Node: Compatibility38925
+Node: Appendices39367
+Node: Responses39556
+Node: Index40900
+Node: Key Index48954
 
 End Tag Table

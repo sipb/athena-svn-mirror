@@ -5,7 +5,7 @@
 ;; Author:     FSF (see vc.el for full credits)
 ;; Maintainer: Andre Spiegel <spiegel@gnu.org>
 
-;; $Id: vc-hooks.el,v 1.1.1.4 2002/02/08 04:19:43 zacheiss Exp $
+;; $Id$
 
 ;; This file is part of GNU Emacs.
 
@@ -129,7 +129,7 @@ VC commands are globally reachable under the prefix `\\[vc-prefix-map]':
 \\{vc-prefix-map}")
 
 (defmacro vc-error-occurred (&rest body)
-  (list 'condition-case nil (cons 'progn (append body '(nil))) '(error t)))
+  `(condition-case nil (progn ,@body nil) (error t)))
 
 ;; We need a notion of per-file properties because the version
 ;; control state of a file is expensive to derive --- we compute
@@ -137,7 +137,7 @@ VC commands are globally reachable under the prefix `\\[vc-prefix-map]':
 ;; during any subsequent VC operations, and forget them when
 ;; the buffer is killed.
 
-(defvar vc-file-prop-obarray (make-vector 16 0)
+(defvar vc-file-prop-obarray (make-vector 17 0)
   "Obarray for per-file properties.")
 
 (defvar vc-touched-properties nil)
@@ -216,8 +216,9 @@ It is usually called via the `vc-call' macro."
 
 Optional argument LIMIT is a regexp.  If present, the file is inserted
 in chunks of size BLOCKSIZE (default 8 kByte), until the first
-occurrence of LIMIT is found.  The function returns non-nil if FILE 
-exists and its contents were successfully inserted."
+occurrence of LIMIT is found.  Anything from the start of that occurrence
+to the end of the buffer is then deleted.  The function returns
+non-nil if FILE exists and its contents were successfully inserted."
   (erase-buffer)
   (when (file-exists-p file)
     (if (not limit)
@@ -228,7 +229,10 @@ exists and its contents were successfully inserted."
 	    (and (< 0 (cadr (insert-file-contents
 			     file nil filepos (incf filepos blocksize))))
 		 (progn (beginning-of-line)
-			(not (re-search-forward limit nil 'move)))))))
+                        (let ((pos (re-search-forward limit nil 'move)))
+                          (if pos (delete-region (match-beginning 0)
+                                                 (point-max)))
+                          (not pos)))))))
     (set-buffer-modified-p nil)
     t))
 
@@ -304,21 +308,25 @@ If the file is not registered, or the master name is not known, return nil."
 (defun vc-checkout-model (file)
   "Indicate how FILE is checked out.
 
-Possible values:
+If FILE is not registered, this function always returns nil.
+For registered files, the possible values are:
 
-  'implicit   File is always writeable, and checked out `implicitly'
+  'implicit   FILE is always writeable, and checked out `implicitly'
               when the user saves the first changes to the file.
 
-  'locking    File is read-only if up-to-date; user must type
+  'locking    FILE is read-only if up-to-date; user must type
               \\[vc-toggle-read-only] before editing.  Strict locking
               is assumed.
 
-  'announce   File is read-only if up-to-date; user must type
+  'announce   FILE is read-only if up-to-date; user must type
               \\[vc-toggle-read-only] before editing.  But other users
-              may be editing at the same time."
+              may be editing at the same time.
+
+If FILE is not registered, this function always returns nil."
   (or (vc-file-getprop file 'vc-checkout-model)
-      (vc-file-setprop file 'vc-checkout-model
-                       (vc-call checkout-model file))))
+      (if (vc-backend file)
+          (vc-file-setprop file 'vc-checkout-model
+                           (vc-call checkout-model file)))))
 
 (defun vc-user-login-name (&optional uid)
   "Return the name under which the user is logged in, as a string.
@@ -332,7 +340,8 @@ UID is returned as a string."
 (defun vc-state (file)
   "Return the version control state of FILE.
 
-The value returned is one of:
+If FILE is not registered, this function always returns nil.
+For registered files, the value returned is one of:
 
   'up-to-date        The working file is unmodified with respect to the
                      latest version on the current branch, and not locked.
@@ -360,8 +369,9 @@ The value returned is one of:
                      should be resolved by the user (vc-next-action will
                      prompt the user to do it)."
   (or (vc-file-getprop file 'vc-state)
-      (vc-file-setprop file 'vc-state
-		       (vc-call state-heuristic file))))
+      (if (vc-backend file)
+          (vc-file-setprop file 'vc-state
+                           (vc-call state-heuristic file)))))
 
 (defsubst vc-up-to-date-p (file)
   "Convenience function that checks whether `vc-state' of FILE is `up-to-date'."
@@ -373,11 +383,28 @@ It simply calls the real state computation function `vc-BACKEND-state'
 and does not employ any heuristic at all."
    (vc-call-backend backend 'state file))
 
+(defun vc-workfile-unchanged-p (file)
+  "Return non-nil if FILE has not changed since the last checkout."
+  (let ((checkout-time (vc-file-getprop file 'vc-checkout-time))
+        (lastmod (nth 5 (file-attributes file))))
+    (if checkout-time
+        (equal checkout-time lastmod)
+      (let ((unchanged (vc-call workfile-unchanged-p file)))
+        (vc-file-setprop file 'vc-checkout-time (if unchanged lastmod 0))
+        unchanged))))
+
+(defun vc-default-workfile-unchanged-p (backend file)
+  "Check if FILE is unchanged by diffing against the master version.
+Return non-nil if FILE is unchanged."
+  (zerop (vc-call diff file (vc-workfile-version file))))
+
 (defun vc-workfile-version (file)
-  "Return version level of the current workfile FILE."
+  "Return the version level of the current workfile FILE.
+If FILE is not registered, this function always returns nil."
   (or (vc-file-getprop file 'vc-workfile-version)
-      (vc-file-setprop file 'vc-workfile-version
-                       (vc-call workfile-version file))))
+      (if (vc-backend file)
+          (vc-file-setprop file 'vc-workfile-version
+                           (vc-call workfile-version file)))))
 
 ;;; actual version-control code starts here
 
@@ -412,8 +439,7 @@ and does not employ any heuristic at all."
       (if (consp result) (car result) result)))))
 
 (defun vc-check-master-templates (file templates)
-  "Return non-nil if there is a master corresponding to FILE,
-according to any of the elements in TEMPLATES.
+  "Return non-nil if there is a master corresponding to FILE.
 
 TEMPLATES is a list of strings or functions.  If an element is a
 string, it must be a control string as required by `format', with two
@@ -463,8 +489,8 @@ to do that, use this command a second time with no argument."
 (define-key global-map "\C-x\C-q" 'vc-toggle-read-only)
 
 (defun vc-default-make-version-backups-p (backend file)
-  "Return non-nil if unmodified repository versions should 
-be backed up locally.  The default is to switch off this feature."
+  "Return non-nil if unmodified versions should be backed up locally.
+The default is to switch off this feature."
   nil)
 
 (defun vc-version-backup-file-name (file &optional rev manual regexp)

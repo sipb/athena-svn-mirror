@@ -225,7 +225,7 @@ This is normally copied from `default-directory' when Emacs starts.")
     ("--cursor-color" 1 x-handle-switch cursor-color)
     ("--vertical-scroll-bars" 0 x-handle-switch vertical-scroll-bars t)
     ("--line-spacing" 1 x-handle-numeric-switch line-spacing)
-    ("--border-color" 1 x-handle-switch border-width))
+    ("--border-color" 1 x-handle-switch border-color))
   "Alist of X Windows options.
 Each element has the form
   (NAME NUMARGS HANDLER FRAME-PARAM VALUE)
@@ -480,7 +480,11 @@ or `CVS', and any subdirectory that contains a file named `.nosearch'."
 
 	;; Don't do this if we failed to create the initial frame,
 	;; for instance due to a dense colormap.
-	(when frame-initial-frame
+	(when (or frame-initial-frame
+		  ;; If frame-initial-frame has no meaning, do this anyway.
+		  (not (and window-system
+			    (not noninteractive)
+			    (not (eq window-system 'pc)))))
 	  ;; Modify the initial frame based on what .emacs puts into
 	  ;; ...-frame-alist.
 	  (if (fboundp 'frame-notice-user-settings)

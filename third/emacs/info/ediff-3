@@ -1,5 +1,4 @@
-This is Info file ../info/ediff, produced by Makeinfo version 1.68 from
-the input file ediff.texi.
+This is ../info/ediff, produced by makeinfo version 4.2 from ediff.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -232,8 +231,8 @@ Index
 * h:                                     Quick Help Commands.
 * i:                                     Quick Help Commands.
 * j:                                     Quick Help Commands.
-* m:                                     Quick Help Commands.
 * M:                                     Quick Help Commands.
+* m:                                     Quick Help Commands.
 * Merging files and buffers:             Introduction.
 * mode-line.el:                          Customizing the Mode Line.
 * Multi-file patches:                    Session Groups.

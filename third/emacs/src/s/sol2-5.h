@@ -2,6 +2,10 @@
 
 #include "sol2-4.h"
 
+#if 0 /* Klaus Zeitler <kzeitler@lucent.com> says SIGIO still fails.  */
+#undef BROKEN_SIGIO
+#endif
+
 /* -lgen is needed for the regex and regcmp functions
    which are used by Motif.  In the future we can try changing
    regex.c to provide them in Emacs, but this is safer for now.  */
@@ -23,6 +27,11 @@
    We can optimize this later.  */
 
 #undef USE_MMAP_FOR_BUFFERS
+
+/* This prevents crashes in "M-x shell".  */
+#ifndef HAVE_VFORK
+#define HAVE_VFORK 1
+#endif
 
 /* Newer versions of Solaris have bcopy etc. as functions, with
    prototypes in strings.h.  They lose if the defines from usg5-4.h
