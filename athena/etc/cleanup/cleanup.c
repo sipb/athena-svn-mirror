@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.24 1997-11-05 21:40:45 ghudson Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.25 1998-03-25 20:25:58 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -26,6 +26,25 @@ static const char rcsid[] = "$Id: cleanup.c,v 2.24 1997-11-05 21:40:45 ghudson E
 #include <unistd.h>
 #include <errno.h>
 #include <al.h>
+
+/* utmp includes.  If we have getutxent(), use that and have done with it.
+ * If we don't, make sure that UT_NAMESIZE is defined, and make a good
+ * guess at the location of the utmp file. */
+#ifdef HAVE_GETUTXENT
+#include <utmpx.h>
+#else /* HAVE_GETUTXENT */
+#include <utmp.h>
+#ifndef UT_NAMESIZE
+#define UT_NAMESIZE 8
+#endif
+#if defined(_PATH_UTMP)
+#define UTFILE _PATH_UTMP
+#elif defined(UTMP_FILE)
+#define UTFILE UTMP_FILE
+#else
+#define UTFILE "/var/adm/utmp"
+#endif
+#endif /* HAVE_GETUTXENT */
 
 #ifdef SOLARIS
 #include <sys/param.h>
@@ -74,7 +93,8 @@ struct process {
 static struct process *get_processes(int *nprocs);
 static void check_plist(int n, struct process **plist, int *psize);
 static uid_t *get_passwd_uids(int *nuids);
-static uid_t *cleanup_sessions(int *nuids);
+static void cleanup_sessions(void);
+static uid_t *get_utmp_uids(int *nuids);
 static void kill_processes(struct process *plist, int nprocs,
 			   uid_t *approved, int nuids);
 static int uid_okay(uid_t uid, uid_t *approved, int nuids);
@@ -103,7 +123,10 @@ int main(int argc, char **argv)
   if (passwd)
     approved = get_passwd_uids(&nuids);
   else
-    approved = cleanup_sessions(&nuids);
+    {
+      cleanup_sessions();
+      approved = get_utmp_uids(&nuids);
+    }
 
   /* Sort the approved uid list for fast search. */
   qsort(approved, nuids, sizeof(uid_t), uidcomp);
@@ -327,15 +350,10 @@ static uid_t *get_passwd_uids(int *nuids)
 }
 
 /* Clean up sessions and return a list of uids of users logged in. */
-static uid_t *cleanup_sessions(int *nuids)
+static void cleanup_sessions(void)
 {
-  uid_t *uids = emalloc(256 * sizeof(uid_t));
-  int n = 0, uids_size = 256;
   DIR *dir;
   struct dirent *entry;
-  struct stat statbuf;
-  struct passwd *pwd;
-  char *filename;
 
   dir = opendir(AL_PATH_SESSIONS);
   if (!dir)
@@ -355,31 +373,80 @@ static uid_t *cleanup_sessions(int *nuids)
       /* Punt any defunct login processes for this user and revert the
        * account if there are any. */
       al_acct_cleanup(entry->d_name);
-
-      /* Construct the filename for the session record and stat it. */
-      filename = emalloc(strlen(AL_PATH_SESSIONS) + strlen(entry->d_name) + 2);
-      sprintf(filename, "%s/%s", AL_PATH_SESSIONS, entry->d_name);
-      if (stat(filename, &statbuf) == 0 && statbuf.st_size > 0)
-	{
-	  /* Looks like the user is logged in.  Get the uid and record it. */
-	  pwd = getpwnam(entry->d_name);
-	  if (pwd)
-	    {
-	      if (n == uids_size)
-		{
-		  uids_size *= 2;
-		  uids = erealloc(uids, uids_size * sizeof(uid_t));
-		}
-	      uids[n++] = pwd->pw_uid;
-	    }
-	}
-      free(filename);
     }
 
   closedir(dir);
+}
+
+#ifdef HAVE_GETUTXENT
+
+static uid_t *get_utmp_uids(int *nuids)
+{
+  uid_t *uids = emalloc(256 * sizeof(uid_t));
+  int n = 0, uids_size = 256;
+  struct utmpx *utx;
+  struct passwd *pwd;
+
+  /* Add an entry to uids for everyone in the utmpx file.  Don't worry
+   * about duplicates; that would make us O(n^2) unless we used a more
+   * complicated data structure. */
+  while ((utx = getutxent()) != NULL)
+    {
+      if (utx->ut_type != USER_PROCESS || utx->ut_name[0] == 0)
+	continue;
+      pwd = getpwnam(utx->ut_name);
+      if (!pwd)
+	continue;
+      if (n == uids_size)
+	{
+	  uids_size *= 2;
+	  uids = erealloc(uids, uids_size * sizeof(uid_t));
+	}
+      uids[n++] = pwd->pw_uid;
+    }
+  endutxent();
   *nuids = n;
   return uids;
 }
+
+#else /* HAVE_GETUTXENT */
+
+static uid_t *get_utmp_uids(int *nuids)
+{
+  uid_t *uids = emalloc(256 * sizeof(uid_t));
+  int n = 0, uids_size = 256;
+  FILE *fp;
+  struct utmp ut;
+  struct passwd *pwd;
+  char login[UT_NAMESIZE + 1];
+
+  /* Add an entry to uids for everyone in the utmpx file.  Don't worry
+   * about duplicates; that would make us O(n^2) unless we used a more
+   * complicated data structure. */
+  fp = fopen(UTFILE, "r");
+  if (fp)
+    {
+      while (fread(&ut, sizeof(ut), 1, fp) == 1)
+	{
+	  strncpy(login, ut.ut_name, UT_NAMESIZE);
+	  login[UT_NAMESIZE] = 0;
+	  pwd = getpwnam(login);
+	  if (!pwd)
+	    continue;
+	  if (n == uids_size)
+	    {
+	      uids_size *= 2;
+	      uids = erealloc(uids, uids_size * sizeof(uid_t));
+	    }
+	  uids[n++] = pwd->pw_uid;
+	}
+      fclose(fp);
+    }
+  *nuids = n;
+  return uids;
+}
+
+#endif /* HAVE_GETUTXENT */
 
 /* Kill unapproved processes. */
 static void kill_processes(struct process *plist, int nprocs,

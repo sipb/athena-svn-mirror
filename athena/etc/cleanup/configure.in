@@ -7,6 +7,8 @@ AC_SUBST(lsbindir)
 AC_PROG_CC
 AC_PROG_INSTALL
 
+AC_CHECK_FUNCS(getutxent)
+
 AC_CANONICAL_SYSTEM
 case $target_os in
 solaris*)
