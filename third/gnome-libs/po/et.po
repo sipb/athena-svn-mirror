@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 0.99\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 1999-09-28 02:30+0300\n"
 "Last-Translator: Lauris Kaplinski <lauris@ariman.ee>\n"
 "Language-Team: Estonian <linux-l@eenet.ee>\n"
@@ -59,7 +59,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME parameetrid"
 
 #: libgnomeui/gnome-about.c:187
@@ -941,8 +942,23 @@ msgstr "Laadi gtk lisamoodul"
 msgid "MODULE"
 msgstr "MODULE"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME parameetrid"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME parameetrid"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME parameetrid"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
@@ -1516,6 +1532,10 @@ msgstr "(Ainult sisemiseks kasutamiseks) GOAD serveri aktiveeritav ID"
 #, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Ainult sisemiseks kasutamiseks) GOAD serveri aktiveeritav ID"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

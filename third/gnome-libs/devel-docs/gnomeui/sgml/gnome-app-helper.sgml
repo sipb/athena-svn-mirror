@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-app-helper" revision="11 Oct 2000">
+<refentry id="gnomeui-gnome-app-helper" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gnome-app-helper</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -19,76 +19,76 @@ enum        <link linkend="GnomeUIInfoType">GnomeUIInfoType</link>;
 enum        <link linkend="GnomeUIInfoConfigurableTypes">GnomeUIInfoConfigurableTypes</link>;
 enum        <link linkend="GnomeUIPixmapType">GnomeUIPixmapType</link>;
 struct      <link linkend="GnomeUIInfo">GnomeUIInfo</link>;
-#define     <link linkend="GNOMEUIINFO-KEY-UIDATA">GNOMEUIINFO_KEY_UIDATA</link>
-#define     <link linkend="GNOMEUIINFO-KEY-UIBDATA">GNOMEUIINFO_KEY_UIBDATA</link>
-#define     <link linkend="GNOMEUIINFO-END">GNOMEUIINFO_END</link>
-#define     <link linkend="GNOMEUIINFO-SEPARATOR">GNOMEUIINFO_SEPARATOR</link>
-#define     <link linkend="GNOMEUIINFO-ITEM">GNOMEUIINFO_ITEM</link>                (label, tooltip, callback, xpm_data)
-#define     <link linkend="GNOMEUIINFO-ITEM-STOCK">GNOMEUIINFO_ITEM_STOCK</link>          (label, tooltip, callback, stock_id)
-#define     <link linkend="GNOMEUIINFO-ITEM-NONE">GNOMEUIINFO_ITEM_NONE</link>           (label, tooltip, callback)
-#define     <link linkend="GNOMEUIINFO-ITEM-DATA">GNOMEUIINFO_ITEM_DATA</link>           (label, tooltip, callback, user_data, xpm_data)
-#define     <link linkend="GNOMEUIINFO-TOGGLEITEM">GNOMEUIINFO_TOGGLEITEM</link>          (label, tooltip, callback, xpm_data)
-#define     <link linkend="GNOMEUIINFO-TOGGLEITEM-DATA">GNOMEUIINFO_TOGGLEITEM_DATA</link>     (label, tooltip, callback, user_data, xpm_data)
-#define     <link linkend="GNOMEUIINFO-HELP">GNOMEUIINFO_HELP</link>                (app_name)
-#define     <link linkend="GNOMEUIINFO-SUBTREE">GNOMEUIINFO_SUBTREE</link>             (label, tree)
-#define     <link linkend="GNOMEUIINFO-SUBTREE-STOCK">GNOMEUIINFO_SUBTREE_STOCK</link>       (label, tree, stock_id)
-#define     <link linkend="GNOMEUIINFO-RADIOLIST">GNOMEUIINFO_RADIOLIST</link>           (list)
-#define     <link linkend="GNOMEUIINFO-RADIOITEM">GNOMEUIINFO_RADIOITEM</link>           (label, tooltip, callback, xpm_data)
-#define     <link linkend="GNOMEUIINFO-RADIOITEM-DATA">GNOMEUIINFO_RADIOITEM_DATA</link>      (label, tooltip, callback, user_data, xpm_data)
-#define     <link linkend="GNOMEUIINFO-MENU-ABOUT-ITEM">GNOMEUIINFO_MENU_ABOUT_ITEM</link>     (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-CLEAR-ITEM">GNOMEUIINFO_MENU_CLEAR_ITEM</link>     (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-CLOSE-ITEM">GNOMEUIINFO_MENU_CLOSE_ITEM</link>     (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-CLOSE-WINDOW-ITEM">GNOMEUIINFO_MENU_CLOSE_WINDOW_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-COPY-ITEM">GNOMEUIINFO_MENU_COPY_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-CUT-ITEM">GNOMEUIINFO_MENU_CUT_ITEM</link>       (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-EDIT-TREE">GNOMEUIINFO_MENU_EDIT_TREE</link>      (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-END-GAME-ITEM">GNOMEUIINFO_MENU_END_GAME_ITEM</link>  (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-EXIT-ITEM">GNOMEUIINFO_MENU_EXIT_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-FILES-TREE">GNOMEUIINFO_MENU_FILES_TREE</link>     (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-FILE-TREE">GNOMEUIINFO_MENU_FILE_TREE</link>      (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-FIND-AGAIN-ITEM">GNOMEUIINFO_MENU_FIND_AGAIN_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-FIND-ITEM">GNOMEUIINFO_MENU_FIND_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-GAME-TREE">GNOMEUIINFO_MENU_GAME_TREE</link>      (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-HELP-TREE">GNOMEUIINFO_MENU_HELP_TREE</link>      (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-HINT-ITEM">GNOMEUIINFO_MENU_HINT_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-NEW-GAME-ITEM">GNOMEUIINFO_MENU_NEW_GAME_ITEM</link>  (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-NEW-ITEM">GNOMEUIINFO_MENU_NEW_ITEM</link>       (label, tip, cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-NEW-SUBTREE">GNOMEUIINFO_MENU_NEW_SUBTREE</link>    (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-NEW-WINDOW-ITEM">GNOMEUIINFO_MENU_NEW_WINDOW_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-OPEN-ITEM">GNOMEUIINFO_MENU_OPEN_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-PASTE-ITEM">GNOMEUIINFO_MENU_PASTE_ITEM</link>     (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-PAUSE-GAME-ITEM">GNOMEUIINFO_MENU_PAUSE_GAME_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-PREFERENCES-ITEM">GNOMEUIINFO_MENU_PREFERENCES_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-PRINT-ITEM">GNOMEUIINFO_MENU_PRINT_ITEM</link>     (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-PRINT-SETUP-ITEM">GNOMEUIINFO_MENU_PRINT_SETUP_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-PROPERTIES-ITEM">GNOMEUIINFO_MENU_PROPERTIES_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-REDO-ITEM">GNOMEUIINFO_MENU_REDO_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-REDO-MOVE-ITEM">GNOMEUIINFO_MENU_REDO_MOVE_ITEM</link> (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-REPLACE-ITEM">GNOMEUIINFO_MENU_REPLACE_ITEM</link>   (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-RESTART-GAME-ITEM">GNOMEUIINFO_MENU_RESTART_GAME_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-REVERT-ITEM">GNOMEUIINFO_MENU_REVERT_ITEM</link>    (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-SAVE-AS-ITEM">GNOMEUIINFO_MENU_SAVE_AS_ITEM</link>   (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-SAVE-ITEM">GNOMEUIINFO_MENU_SAVE_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-SCORES-ITEM">GNOMEUIINFO_MENU_SCORES_ITEM</link>    (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-SELECT-ALL-ITEM">GNOMEUIINFO_MENU_SELECT_ALL_ITEM</link>(cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-SETTINGS-TREE">GNOMEUIINFO_MENU_SETTINGS_TREE</link>  (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-UNDO-ITEM">GNOMEUIINFO_MENU_UNDO_ITEM</link>      (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-UNDO-MOVE-ITEM">GNOMEUIINFO_MENU_UNDO_MOVE_ITEM</link> (cb, data)
-#define     <link linkend="GNOMEUIINFO-MENU-VIEW-TREE">GNOMEUIINFO_MENU_VIEW_TREE</link>      (tree)
-#define     <link linkend="GNOMEUIINFO-MENU-WINDOWS-TREE">GNOMEUIINFO_MENU_WINDOWS_TREE</link>   (tree)
-#define     <link linkend="GNOMEUIINFO-SUBTREE-HINT">GNOMEUIINFO_SUBTREE_HINT</link>        (label, hint, tree)
-#define     <link linkend="GNOME-MENU-FILE-STRING">GNOME_MENU_FILE_STRING</link>
-#define     <link linkend="GNOME-MENU-FILE-PATH">GNOME_MENU_FILE_PATH</link>
-#define     <link linkend="GNOME-MENU-EDIT-STRING">GNOME_MENU_EDIT_STRING</link>
-#define     <link linkend="GNOME-MENU-EDIT-PATH">GNOME_MENU_EDIT_PATH</link>
-#define     <link linkend="GNOME-MENU-VIEW-STRING">GNOME_MENU_VIEW_STRING</link>
-#define     <link linkend="GNOME-MENU-VIEW-PATH">GNOME_MENU_VIEW_PATH</link>
-#define     <link linkend="GNOME-MENU-SETTINGS-STRING">GNOME_MENU_SETTINGS_STRING</link>
-#define     <link linkend="GNOME-MENU-SETTINGS-PATH">GNOME_MENU_SETTINGS_PATH</link>
-#define     <link linkend="GNOME-MENU-FILES-STRING">GNOME_MENU_FILES_STRING</link>
-#define     <link linkend="GNOME-MENU-FILES-PATH">GNOME_MENU_FILES_PATH</link>
-#define     <link linkend="GNOME-MENU-WINDOWS-STRING">GNOME_MENU_WINDOWS_STRING</link>
-#define     <link linkend="GNOME-MENU-WINDOWS-PATH">GNOME_MENU_WINDOWS_PATH</link>
+#define     <link linkend="GNOMEUIINFO-KEY-UIDATA-CAPS">GNOMEUIINFO_KEY_UIDATA</link>
+#define     <link linkend="GNOMEUIINFO-KEY-UIBDATA-CAPS">GNOMEUIINFO_KEY_UIBDATA</link>
+#define     <link linkend="GNOMEUIINFO-END-CAPS">GNOMEUIINFO_END</link>
+#define     <link linkend="GNOMEUIINFO-SEPARATOR-CAPS">GNOMEUIINFO_SEPARATOR</link>
+#define     <link linkend="GNOMEUIINFO-ITEM-CAPS">GNOMEUIINFO_ITEM</link>                (label, tooltip, callback, xpm_data)
+#define     <link linkend="GNOMEUIINFO-ITEM-STOCK-CAPS">GNOMEUIINFO_ITEM_STOCK</link>          (label, tooltip, callback, stock_id)
+#define     <link linkend="GNOMEUIINFO-ITEM-NONE-CAPS">GNOMEUIINFO_ITEM_NONE</link>           (label, tooltip, callback)
+#define     <link linkend="GNOMEUIINFO-ITEM-DATA-CAPS">GNOMEUIINFO_ITEM_DATA</link>           (label, tooltip, callback, user_data, xpm_data)
+#define     <link linkend="GNOMEUIINFO-TOGGLEITEM-CAPS">GNOMEUIINFO_TOGGLEITEM</link>          (label, tooltip, callback, xpm_data)
+#define     <link linkend="GNOMEUIINFO-TOGGLEITEM-DATA-CAPS">GNOMEUIINFO_TOGGLEITEM_DATA</link>     (label, tooltip, callback, user_data, xpm_data)
+#define     <link linkend="GNOMEUIINFO-HELP-CAPS">GNOMEUIINFO_HELP</link>                (app_name)
+#define     <link linkend="GNOMEUIINFO-SUBTREE-CAPS">GNOMEUIINFO_SUBTREE</link>             (label, tree)
+#define     <link linkend="GNOMEUIINFO-SUBTREE-STOCK-CAPS">GNOMEUIINFO_SUBTREE_STOCK</link>       (label, tree, stock_id)
+#define     <link linkend="GNOMEUIINFO-RADIOLIST-CAPS">GNOMEUIINFO_RADIOLIST</link>           (list)
+#define     <link linkend="GNOMEUIINFO-RADIOITEM-CAPS">GNOMEUIINFO_RADIOITEM</link>           (label, tooltip, callback, xpm_data)
+#define     <link linkend="GNOMEUIINFO-RADIOITEM-DATA-CAPS">GNOMEUIINFO_RADIOITEM_DATA</link>      (label, tooltip, callback, user_data, xpm_data)
+#define     <link linkend="GNOMEUIINFO-MENU-ABOUT-ITEM-CAPS">GNOMEUIINFO_MENU_ABOUT_ITEM</link>     (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-CLEAR-ITEM-CAPS">GNOMEUIINFO_MENU_CLEAR_ITEM</link>     (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-CLOSE-ITEM-CAPS">GNOMEUIINFO_MENU_CLOSE_ITEM</link>     (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-CLOSE-WINDOW-ITEM-CAPS">GNOMEUIINFO_MENU_CLOSE_WINDOW_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-COPY-ITEM-CAPS">GNOMEUIINFO_MENU_COPY_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-CUT-ITEM-CAPS">GNOMEUIINFO_MENU_CUT_ITEM</link>       (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-EDIT-TREE-CAPS">GNOMEUIINFO_MENU_EDIT_TREE</link>      (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-END-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_END_GAME_ITEM</link>  (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-EXIT-ITEM-CAPS">GNOMEUIINFO_MENU_EXIT_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-FILES-TREE-CAPS">GNOMEUIINFO_MENU_FILES_TREE</link>     (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-FILE-TREE-CAPS">GNOMEUIINFO_MENU_FILE_TREE</link>      (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-FIND-AGAIN-ITEM-CAPS">GNOMEUIINFO_MENU_FIND_AGAIN_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-FIND-ITEM-CAPS">GNOMEUIINFO_MENU_FIND_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-GAME-TREE-CAPS">GNOMEUIINFO_MENU_GAME_TREE</link>      (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-HELP-TREE-CAPS">GNOMEUIINFO_MENU_HELP_TREE</link>      (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-HINT-ITEM-CAPS">GNOMEUIINFO_MENU_HINT_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-NEW-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_NEW_GAME_ITEM</link>  (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-NEW-ITEM-CAPS">GNOMEUIINFO_MENU_NEW_ITEM</link>       (label, tip, cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-NEW-SUBTREE-CAPS">GNOMEUIINFO_MENU_NEW_SUBTREE</link>    (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-NEW-WINDOW-ITEM-CAPS">GNOMEUIINFO_MENU_NEW_WINDOW_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-OPEN-ITEM-CAPS">GNOMEUIINFO_MENU_OPEN_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-PASTE-ITEM-CAPS">GNOMEUIINFO_MENU_PASTE_ITEM</link>     (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-PAUSE-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_PAUSE_GAME_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-PREFERENCES-ITEM-CAPS">GNOMEUIINFO_MENU_PREFERENCES_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-PRINT-ITEM-CAPS">GNOMEUIINFO_MENU_PRINT_ITEM</link>     (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-PRINT-SETUP-ITEM-CAPS">GNOMEUIINFO_MENU_PRINT_SETUP_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-PROPERTIES-ITEM-CAPS">GNOMEUIINFO_MENU_PROPERTIES_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-REDO-ITEM-CAPS">GNOMEUIINFO_MENU_REDO_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-REDO-MOVE-ITEM-CAPS">GNOMEUIINFO_MENU_REDO_MOVE_ITEM</link> (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-REPLACE-ITEM-CAPS">GNOMEUIINFO_MENU_REPLACE_ITEM</link>   (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-RESTART-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_RESTART_GAME_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-REVERT-ITEM-CAPS">GNOMEUIINFO_MENU_REVERT_ITEM</link>    (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-SAVE-AS-ITEM-CAPS">GNOMEUIINFO_MENU_SAVE_AS_ITEM</link>   (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-SAVE-ITEM-CAPS">GNOMEUIINFO_MENU_SAVE_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-SCORES-ITEM-CAPS">GNOMEUIINFO_MENU_SCORES_ITEM</link>    (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-SELECT-ALL-ITEM-CAPS">GNOMEUIINFO_MENU_SELECT_ALL_ITEM</link>(cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-SETTINGS-TREE-CAPS">GNOMEUIINFO_MENU_SETTINGS_TREE</link>  (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-UNDO-ITEM-CAPS">GNOMEUIINFO_MENU_UNDO_ITEM</link>      (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-UNDO-MOVE-ITEM-CAPS">GNOMEUIINFO_MENU_UNDO_MOVE_ITEM</link> (cb, data)
+#define     <link linkend="GNOMEUIINFO-MENU-VIEW-TREE-CAPS">GNOMEUIINFO_MENU_VIEW_TREE</link>      (tree)
+#define     <link linkend="GNOMEUIINFO-MENU-WINDOWS-TREE-CAPS">GNOMEUIINFO_MENU_WINDOWS_TREE</link>   (tree)
+#define     <link linkend="GNOMEUIINFO-SUBTREE-HINT-CAPS">GNOMEUIINFO_SUBTREE_HINT</link>        (label, hint, tree)
+#define     <link linkend="GNOME-MENU-FILE-STRING-CAPS">GNOME_MENU_FILE_STRING</link>
+#define     <link linkend="GNOME-MENU-FILE-PATH-CAPS">GNOME_MENU_FILE_PATH</link>
+#define     <link linkend="GNOME-MENU-EDIT-STRING-CAPS">GNOME_MENU_EDIT_STRING</link>
+#define     <link linkend="GNOME-MENU-EDIT-PATH-CAPS">GNOME_MENU_EDIT_PATH</link>
+#define     <link linkend="GNOME-MENU-VIEW-STRING-CAPS">GNOME_MENU_VIEW_STRING</link>
+#define     <link linkend="GNOME-MENU-VIEW-PATH-CAPS">GNOME_MENU_VIEW_PATH</link>
+#define     <link linkend="GNOME-MENU-SETTINGS-STRING-CAPS">GNOME_MENU_SETTINGS_STRING</link>
+#define     <link linkend="GNOME-MENU-SETTINGS-PATH-CAPS">GNOME_MENU_SETTINGS_PATH</link>
+#define     <link linkend="GNOME-MENU-FILES-STRING-CAPS">GNOME_MENU_FILES_STRING</link>
+#define     <link linkend="GNOME-MENU-FILES-PATH-CAPS">GNOME_MENU_FILES_PATH</link>
+#define     <link linkend="GNOME-MENU-WINDOWS-STRING-CAPS">GNOME_MENU_WINDOWS_STRING</link>
+#define     <link linkend="GNOME-MENU-WINDOWS-PATH-CAPS">GNOME_MENU_WINDOWS_PATH</link>
 struct      <link linkend="GnomeUIBuilderData">GnomeUIBuilderData</link>;
 void        (<link linkend="GnomeUISignalConnectFunc">*GnomeUISignalConnectFunc</link>)     (<link linkend="GnomeUIInfo">GnomeUIInfo</link> *uiinfo,
                                              <link linkend="gchar">gchar</link> *signal_name,
@@ -314,7 +314,7 @@ it is not recommended, as it is an error-prone task).</para>
      not phrase them like a description, e.g. "Opens a new file".</para></listitem>
 
    <listitem><para> All menu text should be internationalized.  Use
-     the <link linkend="N-">N_</link>() macro, e.g.  N_("Open new mailbox")</para></listitem>
+     the <link linkend="N--CAPS">N_</link>() macro, e.g.  N_("Open new mailbox")</para></listitem>
 
    <listitem><para>You may notice that most of these guidelines seem
      geared towards "productivity" applications (editors,
@@ -583,33 +583,33 @@ those instead of these macros.  It is defined as follows:</para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-KEY-UIDATA">GNOMEUIINFO_KEY_UIDATA</title>
+<title><anchor id="GNOMEUIINFO-KEY-UIDATA-CAPS">GNOMEUIINFO_KEY_UIDATA</title>
 <programlisting>#define GNOMEUIINFO_KEY_UIDATA		"uidata"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-KEY-UIBDATA">GNOMEUIINFO_KEY_UIBDATA</title>
+<title><anchor id="GNOMEUIINFO-KEY-UIBDATA-CAPS">GNOMEUIINFO_KEY_UIBDATA</title>
 <programlisting>#define GNOMEUIINFO_KEY_UIBDATA		"uibdata"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-END">GNOMEUIINFO_END</title>
+<title><anchor id="GNOMEUIINFO-END-CAPS">GNOMEUIINFO_END</title>
 <programlisting>#define     GNOMEUIINFO_END</programlisting>
 <para>
 Use this macro to tag the end of a menu or toolbar definition.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-SEPARATOR">GNOMEUIINFO_SEPARATOR</title>
+<title><anchor id="GNOMEUIINFO-SEPARATOR-CAPS">GNOMEUIINFO_SEPARATOR</title>
 <programlisting>#define     GNOMEUIINFO_SEPARATOR</programlisting>
 <para>
 Use this macro to include a separator in your menu.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-ITEM">GNOMEUIINFO_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-ITEM-CAPS">GNOMEUIINFO_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_ITEM(label, tooltip, callback, xpm_data)</programlisting>
 <para>
 Generic menu or toolbar item which includes a label, a tooltip and an
@@ -635,7 +635,7 @@ optional pixmap (in xpm format) to be displayed next to the entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-ITEM-STOCK">GNOMEUIINFO_ITEM_STOCK()</title>
+<title><anchor id="GNOMEUIINFO-ITEM-STOCK-CAPS">GNOMEUIINFO_ITEM_STOCK()</title>
 <programlisting>#define     GNOMEUIINFO_ITEM_STOCK(label, tooltip, callback, stock_id)</programlisting>
 <para>
 Use this macro to include an item in your menu that includes a
@@ -661,7 +661,7 @@ GNOME-stock image.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-ITEM-NONE">GNOMEUIINFO_ITEM_NONE()</title>
+<title><anchor id="GNOMEUIINFO-ITEM-NONE-CAPS">GNOMEUIINFO_ITEM_NONE()</title>
 <programlisting>#define     GNOMEUIINFO_ITEM_NONE(label, tooltip, callback)</programlisting>
 <para>
 Use this macro to add an item to the menu that has no pixmap
@@ -684,7 +684,7 @@ associated with it.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-ITEM-DATA">GNOMEUIINFO_ITEM_DATA()</title>
+<title><anchor id="GNOMEUIINFO-ITEM-DATA-CAPS">GNOMEUIINFO_ITEM_DATA()</title>
 <programlisting>#define     GNOMEUIINFO_ITEM_DATA(label, tooltip, callback, user_data, xpm_data)</programlisting>
 <para>
 Use this macro to create a menu item and keep some information in the
@@ -713,7 +713,7 @@ structure.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-TOGGLEITEM">GNOMEUIINFO_TOGGLEITEM()</title>
+<title><anchor id="GNOMEUIINFO-TOGGLEITEM-CAPS">GNOMEUIINFO_TOGGLEITEM()</title>
 <programlisting>#define     GNOMEUIINFO_TOGGLEITEM(label, tooltip, callback, xpm_data)</programlisting>
 <para>
 Creates a toggle-item (a checkbox) in a menu, this includes an xpm
@@ -739,7 +739,7 @@ graphic.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-TOGGLEITEM-DATA">GNOMEUIINFO_TOGGLEITEM_DATA()</title>
+<title><anchor id="GNOMEUIINFO-TOGGLEITEM-DATA-CAPS">GNOMEUIINFO_TOGGLEITEM_DATA()</title>
 <programlisting>#define     GNOMEUIINFO_TOGGLEITEM_DATA(label, tooltip, callback, user_data, xpm_data)</programlisting>
 <para>
 Creates a toggle-item (a checkbox) in a menu, this includes an xpm
@@ -769,7 +769,7 @@ callback routine.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-HELP">GNOMEUIINFO_HELP()</title>
+<title><anchor id="GNOMEUIINFO-HELP-CAPS">GNOMEUIINFO_HELP()</title>
 <programlisting>#define     GNOMEUIINFO_HELP(app_name)</programlisting>
 <para>
 This special item inserts all of the topics defined by the application
@@ -790,7 +790,7 @@ $LANG is the language chosen when running the application.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-SUBTREE">GNOMEUIINFO_SUBTREE()</title>
+<title><anchor id="GNOMEUIINFO-SUBTREE-CAPS">GNOMEUIINFO_SUBTREE()</title>
 <programlisting>#define     GNOMEUIINFO_SUBTREE(label, tree)</programlisting>
 <para>
 Creates a submenu or a sub-tree in the menu structure.  The argument
@@ -810,7 +810,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-SUBTREE-STOCK">GNOMEUIINFO_SUBTREE_STOCK()</title>
+<title><anchor id="GNOMEUIINFO-SUBTREE-STOCK-CAPS">GNOMEUIINFO_SUBTREE_STOCK()</title>
 <programlisting>#define     GNOMEUIINFO_SUBTREE_STOCK(label, tree, stock_id)</programlisting>
 <para>
 Creates a submenu or a sub-tree in the menu structure with a stock
@@ -834,7 +834,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-RADIOLIST">GNOMEUIINFO_RADIOLIST()</title>
+<title><anchor id="GNOMEUIINFO-RADIOLIST-CAPS">GNOMEUIINFO_RADIOLIST()</title>
 <programlisting>#define     GNOMEUIINFO_RADIOLIST(list)</programlisting>
 <para>
 
@@ -846,10 +846,11 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 <row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-RADIOITEM">GNOMEUIINFO_RADIOITEM()</title>
+<title><anchor id="GNOMEUIINFO-RADIOITEM-CAPS">GNOMEUIINFO_RADIOITEM()</title>
 <programlisting>#define     GNOMEUIINFO_RADIOITEM(label, tooltip, callback, xpm_data)</programlisting>
 <para>
 
@@ -874,7 +875,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-RADIOITEM-DATA">GNOMEUIINFO_RADIOITEM_DATA()</title>
+<title><anchor id="GNOMEUIINFO-RADIOITEM-DATA-CAPS">GNOMEUIINFO_RADIOITEM_DATA()</title>
 <programlisting>#define     GNOMEUIINFO_RADIOITEM_DATA(label, tooltip, callback, user_data, xpm_data)</programlisting>
 <para>
 
@@ -893,7 +894,8 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 <entry>Callback routine to invoke.
 </entry></row>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>xpm_data</parameter>&nbsp;:</entry>
 <entry>Pointer to a pixmap to display (in C-xpm format).
 
@@ -901,7 +903,7 @@ passed is an array of <structname>GnomeUIInfo</structname>.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-ABOUT-ITEM">GNOMEUIINFO_MENU_ABOUT_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-ABOUT-ITEM-CAPS">GNOMEUIINFO_MENU_ABOUT_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_ABOUT_ITEM(cb, data)</programlisting>
 <para>
 Use this macro inside a GnomeUIInfo structure to include an "About"
@@ -921,7 +923,7 @@ menu entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-CLEAR-ITEM">GNOMEUIINFO_MENU_CLEAR_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-CLEAR-ITEM-CAPS">GNOMEUIINFO_MENU_CLEAR_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_CLEAR_ITEM(cb, data)</programlisting>
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Clear"
@@ -941,7 +943,7 @@ option.  This is used typically in the Edit menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-CLOSE-ITEM">GNOMEUIINFO_MENU_CLOSE_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-CLOSE-ITEM-CAPS">GNOMEUIINFO_MENU_CLOSE_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_CLOSE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Close"
@@ -962,7 +964,7 @@ to close the toplevel window.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-CLOSE-WINDOW-ITEM">GNOMEUIINFO_MENU_CLOSE_WINDOW_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-CLOSE-WINDOW-ITEM-CAPS">GNOMEUIINFO_MENU_CLOSE_WINDOW_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_CLOSE_WINDOW_ITEM(cb, data)</programlisting>
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Close"
@@ -983,7 +985,7 @@ includes one.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-COPY-ITEM">GNOMEUIINFO_MENU_COPY_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-COPY-ITEM-CAPS">GNOMEUIINFO_MENU_COPY_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_COPY_ITEM(cb, data)</programlisting>
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Copy"
@@ -1003,7 +1005,7 @@ option.  This is used typically in the Edit menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-CUT-ITEM">GNOMEUIINFO_MENU_CUT_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-CUT-ITEM-CAPS">GNOMEUIINFO_MENU_CUT_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_CUT_ITEM(cb, data)</programlisting>
 <para>
 Use this macro inside a GnomeUIInfo structure to include a "Cut"
@@ -1023,7 +1025,7 @@ option.  This is used typically in the Edit menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-EDIT-TREE">GNOMEUIINFO_MENU_EDIT_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-EDIT-TREE-CAPS">GNOMEUIINFO_MENU_EDIT_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_EDIT_TREE(tree)</programlisting>
 <para>
 Inserts a top-level "Edit" menu.  The argument is a pointer to
@@ -1042,7 +1044,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-END-GAME-ITEM">GNOMEUIINFO_MENU_END_GAME_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-END-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_END_GAME_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_END_GAME_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "End game" menu item.
@@ -1061,7 +1063,7 @@ Use this macro to include an "End game" menu item.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-EXIT-ITEM">GNOMEUIINFO_MENU_EXIT_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-EXIT-ITEM-CAPS">GNOMEUIINFO_MENU_EXIT_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_EXIT_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "Exit" menu entry.  To be included in the
@@ -1081,7 +1083,7 @@ Use this macro to include an "Exit" menu entry.  To be included in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-FILES-TREE">GNOMEUIINFO_MENU_FILES_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-FILES-TREE-CAPS">GNOMEUIINFO_MENU_FILES_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_FILES_TREE(tree)</programlisting>
 <para>
 Inserts a top-level "Files" menu.  The argument is pointer to
@@ -1100,7 +1102,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-FILE-TREE">GNOMEUIINFO_MENU_FILE_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-FILE-TREE-CAPS">GNOMEUIINFO_MENU_FILE_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_FILE_TREE(tree)</programlisting>
 <para>
 Inserts a top-level "File" menu.  The argument is pointer to
@@ -1119,7 +1121,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-FIND-AGAIN-ITEM">GNOMEUIINFO_MENU_FIND_AGAIN_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-FIND-AGAIN-ITEM-CAPS">GNOMEUIINFO_MENU_FIND_AGAIN_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_FIND_AGAIN_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Find again" menu entry.  To be included
@@ -1139,7 +1141,7 @@ in the "Edit" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-FIND-ITEM">GNOMEUIINFO_MENU_FIND_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-FIND-ITEM-CAPS">GNOMEUIINFO_MENU_FIND_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_FIND_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Find" menu entry.  To be included in the
@@ -1160,7 +1162,7 @@ Use this macro to include a "Find" menu entry.  To be included in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-GAME-TREE">GNOMEUIINFO_MENU_GAME_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-GAME-TREE-CAPS">GNOMEUIINFO_MENU_GAME_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_GAME_TREE(tree)</programlisting>
 <para>
 Inserts a top-level "Game" menu.  The argument is a pointer to
@@ -1179,7 +1181,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-HELP-TREE">GNOMEUIINFO_MENU_HELP_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-HELP-TREE-CAPS">GNOMEUIINFO_MENU_HELP_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_HELP_TREE(tree)</programlisting>
 <para>
 Inserts a top-level "Game" menu.  The argument is pointer to
@@ -1198,7 +1200,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-HINT-ITEM">GNOMEUIINFO_MENU_HINT_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-HINT-ITEM-CAPS">GNOMEUIINFO_MENU_HINT_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_HINT_ITEM(cb, data)</programlisting>
 <para>
 
@@ -1217,7 +1219,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-NEW-GAME-ITEM">GNOMEUIINFO_MENU_NEW_GAME_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-NEW-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_NEW_GAME_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_NEW_GAME_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "New game" menu entry.  To be included in the
@@ -1237,7 +1239,7 @@ Use this macro to include an "New game" menu entry.  To be included in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-NEW-ITEM">GNOMEUIINFO_MENU_NEW_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-NEW-ITEM-CAPS">GNOMEUIINFO_MENU_NEW_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_NEW_ITEM(label, tip, cb, data)</programlisting>
 <para>
 Use this macro to include a "New" menu entry.  To be included in the
@@ -1251,7 +1253,8 @@ Use this macro to include a "New" menu entry.  To be included in the
 <entry>The text that will be displayed
 </entry></row>
 <row><entry align="right"><parameter>tip</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
 <entry>Specifies the routine to be invoked when the menu is selected
 </entry></row>
@@ -1262,7 +1265,7 @@ Use this macro to include a "New" menu entry.  To be included in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-NEW-SUBTREE">GNOMEUIINFO_MENU_NEW_SUBTREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-NEW-SUBTREE-CAPS">GNOMEUIINFO_MENU_NEW_SUBTREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_NEW_SUBTREE(tree)</programlisting>
 <para>
 
@@ -1279,7 +1282,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-NEW-WINDOW-ITEM">GNOMEUIINFO_MENU_NEW_WINDOW_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-NEW-WINDOW-ITEM-CAPS">GNOMEUIINFO_MENU_NEW_WINDOW_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_NEW_WINDOW_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "New window" menu entry.  
@@ -1298,7 +1301,7 @@ Use this macro to include a "New window" menu entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-OPEN-ITEM">GNOMEUIINFO_MENU_OPEN_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-OPEN-ITEM-CAPS">GNOMEUIINFO_MENU_OPEN_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_OPEN_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "Open" menu entry.  To be used in the
@@ -1318,7 +1321,7 @@ Use this macro to include an "Open" menu entry.  To be used in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-PASTE-ITEM">GNOMEUIINFO_MENU_PASTE_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-PASTE-ITEM-CAPS">GNOMEUIINFO_MENU_PASTE_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_PASTE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Paste" menu entry.  To be used in the
@@ -1338,7 +1341,7 @@ Use this macro to include a "Paste" menu entry.  To be used in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-PAUSE-GAME-ITEM">GNOMEUIINFO_MENU_PAUSE_GAME_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-PAUSE-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_PAUSE_GAME_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_PAUSE_GAME_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Pause game" menu entry.  To be used in the
@@ -1358,7 +1361,7 @@ Use this macro to include a "Pause game" menu entry.  To be used in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-PREFERENCES-ITEM">GNOMEUIINFO_MENU_PREFERENCES_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-PREFERENCES-ITEM-CAPS">GNOMEUIINFO_MENU_PREFERENCES_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_PREFERENCES_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Preferences" menu entry.  
@@ -1377,7 +1380,7 @@ Use this macro to include a "Preferences" menu entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-PRINT-ITEM">GNOMEUIINFO_MENU_PRINT_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-PRINT-ITEM-CAPS">GNOMEUIINFO_MENU_PRINT_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_PRINT_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Print" menu entry.  To be used in the
@@ -1397,7 +1400,7 @@ Use this macro to include a "Print" menu entry.  To be used in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-PRINT-SETUP-ITEM">GNOMEUIINFO_MENU_PRINT_SETUP_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-PRINT-SETUP-ITEM-CAPS">GNOMEUIINFO_MENU_PRINT_SETUP_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_PRINT_SETUP_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Print setup" menu entry.  To be used in the
@@ -1417,7 +1420,7 @@ Use this macro to include a "Print setup" menu entry.  To be used in the
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-PROPERTIES-ITEM">GNOMEUIINFO_MENU_PROPERTIES_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-PROPERTIES-ITEM-CAPS">GNOMEUIINFO_MENU_PROPERTIES_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_PROPERTIES_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Properties" menu entry.  
@@ -1436,7 +1439,7 @@ Use this macro to include a "Properties" menu entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-REDO-ITEM">GNOMEUIINFO_MENU_REDO_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-REDO-ITEM-CAPS">GNOMEUIINFO_MENU_REDO_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_REDO_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Redo" menu entry.  Most likely to be put
@@ -1456,7 +1459,7 @@ in the "Edit" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-REDO-MOVE-ITEM">GNOMEUIINFO_MENU_REDO_MOVE_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-REDO-MOVE-ITEM-CAPS">GNOMEUIINFO_MENU_REDO_MOVE_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_REDO_MOVE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Redo move" menu entry.  Most likely to be put
@@ -1476,7 +1479,7 @@ in the "Edit" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-REPLACE-ITEM">GNOMEUIINFO_MENU_REPLACE_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-REPLACE-ITEM-CAPS">GNOMEUIINFO_MENU_REPLACE_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_REPLACE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Replace" menu entry.  
@@ -1495,7 +1498,7 @@ Use this macro to include a "Replace" menu entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-RESTART-GAME-ITEM">GNOMEUIINFO_MENU_RESTART_GAME_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-RESTART-GAME-ITEM-CAPS">GNOMEUIINFO_MENU_RESTART_GAME_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_RESTART_GAME_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Restart game" menu entry.  To be used in
@@ -1515,7 +1518,7 @@ the "Game" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-REVERT-ITEM">GNOMEUIINFO_MENU_REVERT_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-REVERT-ITEM-CAPS">GNOMEUIINFO_MENU_REVERT_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_REVERT_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Revert" menu entry.  
@@ -1534,7 +1537,7 @@ Use this macro to include a "Revert" menu entry.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-SAVE-AS-ITEM">GNOMEUIINFO_MENU_SAVE_AS_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-SAVE-AS-ITEM-CAPS">GNOMEUIINFO_MENU_SAVE_AS_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_SAVE_AS_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Save as" menu entry.  To be used in
@@ -1554,7 +1557,7 @@ the "File" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-SAVE-ITEM">GNOMEUIINFO_MENU_SAVE_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-SAVE-ITEM-CAPS">GNOMEUIINFO_MENU_SAVE_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_SAVE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Save" menu entry.  To be used in
@@ -1574,7 +1577,7 @@ the "File" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-SCORES-ITEM">GNOMEUIINFO_MENU_SCORES_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-SCORES-ITEM-CAPS">GNOMEUIINFO_MENU_SCORES_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_SCORES_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Scores" menu entry.  To be used in
@@ -1594,7 +1597,7 @@ the "Game" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-SELECT-ALL-ITEM">GNOMEUIINFO_MENU_SELECT_ALL_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-SELECT-ALL-ITEM-CAPS">GNOMEUIINFO_MENU_SELECT_ALL_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_SELECT_ALL_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include a "Select all" menu entry.  Most likely to
@@ -1614,7 +1617,7 @@ be used in the "Edit" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-SETTINGS-TREE">GNOMEUIINFO_MENU_SETTINGS_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-SETTINGS-TREE-CAPS">GNOMEUIINFO_MENU_SETTINGS_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_SETTINGS_TREE(tree)</programlisting>
 <para>
 Inserts a top-level "Settings" menu.  The argument is a pointer to
@@ -1633,7 +1636,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-UNDO-ITEM">GNOMEUIINFO_MENU_UNDO_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-UNDO-ITEM-CAPS">GNOMEUIINFO_MENU_UNDO_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_UNDO_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "Undo" menu entry.  Most likely to
@@ -1653,7 +1656,7 @@ be used in the "Edit" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-UNDO-MOVE-ITEM">GNOMEUIINFO_MENU_UNDO_MOVE_ITEM()</title>
+<title><anchor id="GNOMEUIINFO-MENU-UNDO-MOVE-ITEM-CAPS">GNOMEUIINFO_MENU_UNDO_MOVE_ITEM()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_UNDO_MOVE_ITEM(cb, data)</programlisting>
 <para>
 Use this macro to include an "Undo move" menu entry.  Most likely to
@@ -1673,7 +1676,7 @@ be used in the "Edit" menu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-VIEW-TREE">GNOMEUIINFO_MENU_VIEW_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-VIEW-TREE-CAPS">GNOMEUIINFO_MENU_VIEW_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_VIEW_TREE(tree)</programlisting>
 <para>
 
@@ -1690,7 +1693,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-MENU-WINDOWS-TREE">GNOMEUIINFO_MENU_WINDOWS_TREE()</title>
+<title><anchor id="GNOMEUIINFO-MENU-WINDOWS-TREE-CAPS">GNOMEUIINFO_MENU_WINDOWS_TREE()</title>
 <programlisting>#define     GNOMEUIINFO_MENU_WINDOWS_TREE(tree)</programlisting>
 <para>
 
@@ -1707,7 +1710,7 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOMEUIINFO-SUBTREE-HINT">GNOMEUIINFO_SUBTREE_HINT()</title>
+<title><anchor id="GNOMEUIINFO-SUBTREE-HINT-CAPS">GNOMEUIINFO_SUBTREE_HINT()</title>
 <programlisting>#define     GNOMEUIINFO_SUBTREE_HINT(label, hint, tree)</programlisting>
 <para>
 
@@ -1720,7 +1723,8 @@ the submenu.
 <entry>The text that will be displayed
 </entry></row>
 <row><entry align="right"><parameter>hint</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
 <entry>array of <structname>GnomeUIInfo</structname> structures for
 the submenu.
@@ -1729,84 +1733,84 @@ the submenu.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-FILE-STRING">GNOME_MENU_FILE_STRING</title>
+<title><anchor id="GNOME-MENU-FILE-STRING-CAPS">GNOME_MENU_FILE_STRING</title>
 <programlisting>#define GNOME_MENU_FILE_STRING D_("_File")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-FILE-PATH">GNOME_MENU_FILE_PATH</title>
+<title><anchor id="GNOME-MENU-FILE-PATH-CAPS">GNOME_MENU_FILE_PATH</title>
 <programlisting>#define GNOME_MENU_FILE_PATH D_("_File/")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-EDIT-STRING">GNOME_MENU_EDIT_STRING</title>
+<title><anchor id="GNOME-MENU-EDIT-STRING-CAPS">GNOME_MENU_EDIT_STRING</title>
 <programlisting>#define GNOME_MENU_EDIT_STRING D_("_Edit")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-EDIT-PATH">GNOME_MENU_EDIT_PATH</title>
+<title><anchor id="GNOME-MENU-EDIT-PATH-CAPS">GNOME_MENU_EDIT_PATH</title>
 <programlisting>#define GNOME_MENU_EDIT_PATH D_("_Edit/")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-VIEW-STRING">GNOME_MENU_VIEW_STRING</title>
+<title><anchor id="GNOME-MENU-VIEW-STRING-CAPS">GNOME_MENU_VIEW_STRING</title>
 <programlisting>#define GNOME_MENU_VIEW_STRING D_("_View")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-VIEW-PATH">GNOME_MENU_VIEW_PATH</title>
+<title><anchor id="GNOME-MENU-VIEW-PATH-CAPS">GNOME_MENU_VIEW_PATH</title>
 <programlisting>#define GNOME_MENU_VIEW_PATH D_("_View/")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-SETTINGS-STRING">GNOME_MENU_SETTINGS_STRING</title>
+<title><anchor id="GNOME-MENU-SETTINGS-STRING-CAPS">GNOME_MENU_SETTINGS_STRING</title>
 <programlisting>#define GNOME_MENU_SETTINGS_STRING D_("_Settings")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-SETTINGS-PATH">GNOME_MENU_SETTINGS_PATH</title>
+<title><anchor id="GNOME-MENU-SETTINGS-PATH-CAPS">GNOME_MENU_SETTINGS_PATH</title>
 <programlisting>#define GNOME_MENU_SETTINGS_PATH D_("_Settings/")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-FILES-STRING">GNOME_MENU_FILES_STRING</title>
+<title><anchor id="GNOME-MENU-FILES-STRING-CAPS">GNOME_MENU_FILES_STRING</title>
 <programlisting>#define GNOME_MENU_FILES_STRING D_("Fi_les")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-FILES-PATH">GNOME_MENU_FILES_PATH</title>
+<title><anchor id="GNOME-MENU-FILES-PATH-CAPS">GNOME_MENU_FILES_PATH</title>
 <programlisting>#define GNOME_MENU_FILES_PATH D_("Fi_les/")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-WINDOWS-STRING">GNOME_MENU_WINDOWS_STRING</title>
+<title><anchor id="GNOME-MENU-WINDOWS-STRING-CAPS">GNOME_MENU_WINDOWS_STRING</title>
 <programlisting>#define GNOME_MENU_WINDOWS_STRING D_("_Windows")
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MENU-WINDOWS-PATH">GNOME_MENU_WINDOWS_PATH</title>
+<title><anchor id="GNOME-MENU-WINDOWS-PATH-CAPS">GNOME_MENU_WINDOWS_PATH</title>
 <programlisting>#define GNOME_MENU_WINDOWS_PATH D_("_Windows/")
 </programlisting>
 <para>
@@ -1838,11 +1842,14 @@ the submenu.
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>uiinfo</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>signal_name</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>uibdata</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -2234,6 +2241,7 @@ described by path.</para>
 </entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -2315,7 +2323,8 @@ structure right after the item described by <parameter>path</parameter>.</para>
 <entry>
 </entry></row>
 <row><entry align="right"><parameter>menuinfo</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>uibdata</parameter>&nbsp;:</entry>
 <entry>
 </entry></row>
@@ -2469,6 +2478,7 @@ Set menu hints for the GNOME app object's attached status bar.</para>
 </entry></row>
 <row><entry align="right"><parameter>uinfo</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-popup-help" revision="11 Oct 2000">
+<refentry id="gnomeui-gnome-popup-help" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gnome-popup-help</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -31,7 +31,7 @@ void        <link linkend="gnome-widget-add-help-with-uidata">gnome_widget_add_h
 <refsect1>
 <title>Description</title>
 <para>
-  This will add a popup-menu to a non <link linkend="GTK-WIDGET-NO-WINDOW">GTK_WIDGET_NO_WINDOW</link>() widget.  It
+  This will add a popup-menu to a non <link linkend="GTK-WIDGET-NO-WINDOW-CAPS">GTK_WIDGET_NO_WINDOW</link>() widget.  It
   also has the ability to add "cut", "copy" and "paste" to <link linkend="GtkEditable">GtkEditable</link>
   widgets if needed.  It is important to not run this on a widget
   without a window, as doing so can lead to stuck pointer grabs.  This
@@ -77,7 +77,7 @@ will add "cut", "copy", and "paste" to the menu.  If <parameter>help</parameter>
 will &lt;emphasis&gt;just&lt;/emphasis&gt; add the "cut", "copy", and "paste".  Finally,
 if <parameter>menuinfo</parameter> is non-NULL, it will append the menu defined by it on the end of
 the popup menu, with <parameter>user_data</parameter> passed to the callbacks.  This function
-currently only works on non <link linkend="GTK-WIDGET-NO-WINDOW">GTK_WIDGET_NO_WINDOW</link>() widgets (ie. it only
+currently only works on non <link linkend="GTK-WIDGET-NO-WINDOW-CAPS">GTK_WIDGET_NO_WINDOW</link>() widgets (ie. it only
 works on widgets with windows.)  If you would actually like a handle to the
 popup menu, call <link linkend="gnome-popup-menu-get">gnome_popup_menu_get</link>() as normal.</para>
 <para>
@@ -89,7 +89,7 @@ variable as its text.  In addition, if the widget is a descendent of
 is NULL, then it will <emphasis>just</emphasis> add the "cut", "copy", and
 "paste".  Finally, if <parameter>menuinfo</parameter> is non-NULL, it will append the menu defined
 by it on the end of the popup menu, with <parameter>user_data</parameter> passed to the callbacks.
-This function currently only works on non <link linkend="GTK-WIDGET-NO-WINDOW">GTK_WIDGET_NO_WINDOW</link>() widgets
+This function currently only works on non <link linkend="GTK-WIDGET-NO-WINDOW-CAPS">GTK_WIDGET_NO_WINDOW</link>() widgets
 (ie. it only works on widgets with windows.)  If you would actually like a
 handle to the popup menu, call <link linkend="gnome-popup-menu-get">gnome_popup_menu_get</link>() as normal.
 </para><informaltable pgwide=1 frame="none" role="params">

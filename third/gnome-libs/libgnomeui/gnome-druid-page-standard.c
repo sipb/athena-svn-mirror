@@ -124,12 +124,10 @@ gnome_druid_page_standard_init (GnomeDruidPageStandard *druid_page_standard)
 	rc_style->bg[GTK_STATE_NORMAL].green = 6400;
 	rc_style->bg[GTK_STATE_NORMAL].blue = 28672;
 	rc_style->color_flags[GTK_STATE_NORMAL] = GTK_RC_BG;
-	gtk_rc_style_ref (rc_style);
 	gtk_widget_modify_style (druid_page_standard->side_bar, rc_style);
-	gtk_rc_style_ref (rc_style);
 	gtk_widget_modify_style (druid_page_standard->bottom_bar, rc_style);
-	gtk_rc_style_ref (rc_style);
 	gtk_widget_modify_style (druid_page_standard->right_bar, rc_style);
+	gtk_rc_style_unref (rc_style);
 
 	/* FIXME: can I just ref the old style? */
 	rc_style = gtk_rc_style_new ();
@@ -138,6 +136,7 @@ gnome_druid_page_standard_init (GnomeDruidPageStandard *druid_page_standard)
 	rc_style->bg[GTK_STATE_NORMAL].blue = 28672;
 	rc_style->color_flags[GTK_STATE_NORMAL] = GTK_RC_BG;
 	gtk_widget_modify_style (druid_page_standard->canvas, rc_style);
+	gtk_rc_style_unref (rc_style);
 	gtk_box_pack_start (GTK_BOX (vbox), druid_page_standard->canvas, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 	gtk_box_pack_end (GTK_BOX (vbox), druid_page_standard->bottom_bar, FALSE, FALSE, 0);
@@ -153,7 +152,11 @@ gnome_druid_page_standard_init (GnomeDruidPageStandard *druid_page_standard)
 static void
 gnome_druid_page_standard_finalize (GtkObject *object)
 {
-	g_free (GNOME_DRUID_PAGE_STANDARD (object)->title);
+	GnomeDruidPageStandard *druid_page_standard = GNOME_DRUID_PAGE_STANDARD (object);
+
+	g_free (druid_page_standard->title);
+	druid_page_standard->title = NULL;
+	(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 static void

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 0.99.7\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 1999-02-20 22:30+0800\n"
 "Last-Translator: Pofeng Lee <pofeng.lee@ms7.url.com.tw> \n"
 "Language-Team: Chinese <zh@li.org>\n"
@@ -58,7 +58,8 @@ msgid "HOSTNAME:PORT"
 msgstr "主機名稱:埠號"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME 選項"
 
 #: libgnomeui/gnome-about.c:187
@@ -944,8 +945,23 @@ msgstr "載入外加的 Gtk 模組"
 msgid "MODULE"
 msgstr "模組"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME 選項"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME 選項"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME 選項"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
@@ -1514,6 +1530,10 @@ msgstr "(僅供內部使用) GOAD 此伺服程式的代號為活化"
 #, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(僅供內部使用) GOAD 此伺服程式的代號為活化"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

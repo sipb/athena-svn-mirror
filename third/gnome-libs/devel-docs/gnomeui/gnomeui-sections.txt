@@ -148,6 +148,8 @@ gnome_canvas_window_to_world
 gnome_canvas_world_to_window
 gnome_canvas_get_color
 gnome_canvas_set_stipple_origin
+gnome_canvas_set_dither
+gnome_canvas_get_dither
 <SUBSECTION Standard>
 gnome_canvas_get_type
 GNOME_TYPE_CANVAS

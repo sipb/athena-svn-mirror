@@ -1,9 +1,11 @@
-#, fuzzy
+#
+# GNOME PL Team <translators@gnome.pl>, 2000
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-10-09 23:33+0200\n"
+"Project-Id-Version: gnome-libs 1.2.8\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2000-11-10 23:57+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -41,11 +43,11 @@ msgstr ""
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Bez wykorzystywania serwera d¼wiêku"
+msgstr "Nie wykorzystuje serwera d¼wiêku"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "Z wykorzystaniem serwera d¼wiêku"
+msgstr "Wykorzystuje serwer d¼wiêku"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
@@ -56,7 +58,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOST:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Opcje GNOME"
 
 #: libgnomeui/gnome-about.c:187
@@ -702,7 +705,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "Okre¶l identyfikator sesji"
+msgstr "Okre¶la identyfikator sesji"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -760,7 +763,7 @@ msgstr "Ikona:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Wybierz ikonê"
+msgstr "Wybór ikony"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -927,8 +930,23 @@ msgstr "Wczytuje dodatkowy modu³ Gtk"
 msgid "MODULE"
 msgstr "MODU£"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "Opcje GNOME"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "Opcje GNOME"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "Opcje GNOME"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Kilkakrotnie wyst±pi³o niepoprawne odwo³anie do pamiêci; nie mo¿na "
@@ -1507,6 +1525,10 @@ msgstr "(Do u¿ytku wewnêtrznego) GOAD ID aktywowanego serwera"
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Do u¿ytku wewnêtrznego) deskryptor pliku GOAD"
 
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
+
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
 msgstr "Identyfikator po którym GOAD rozpoznaje serwer"
@@ -1622,11 +1644,11 @@ msgstr "%s: opcja `-W %s' nie pozwala na u¿ycie argumentu\n"
 
 #: support/popthelp.c:35
 msgid "Show this help message"
-msgstr "Wypisz ten komunikat pomocy"
+msgstr "Wypisuje ten komunikat pomocy"
 
 #: support/popthelp.c:36
 msgid "Display brief usage message"
-msgstr "Wypisz krótki opis u¿ycia"
+msgstr "Wypisuje krótki opis u¿ycia"
 
 #. Pixmap
 #: test-gnome/testgnome.c:792

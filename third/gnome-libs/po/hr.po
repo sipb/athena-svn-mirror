@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.8\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 1999-04-13 15:02+02:00\n"
 "Last-Translator: Tomislav Vujec <tvujec@carnet.hr>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -59,7 +59,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME Opcije"
 
 #: libgnomeui/gnome-about.c:187
@@ -945,8 +946,23 @@ msgstr "Uèitaj dodatni Gtk modul"
 msgid "MODULE"
 msgstr "MODUL"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME Opcije"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME Opcije"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME Opcije"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
@@ -1516,6 +1532,10 @@ msgstr "(Samo za internu uporabu) GOAD poslu¾itelj ID za aktiviranje"
 #, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Samo za internu uporabu) GOAD poslu¾itelj ID za aktiviranje"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

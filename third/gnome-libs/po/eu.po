@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.53\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 1999-04-01 17:11+0200\n"
 "Last-Translator: Joseba Bidaurrazaga van Dierdonck <gcpbivaj@lg.ehu.es>\n"
 "Language-Team: euskara <linux-eu@chanae.alphanet.ch>\n"
@@ -70,7 +70,8 @@ msgstr "HOSTNAME:PORT"
 
 # libgnome/gnomelib-init.c:144
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME Aukerak"
 
 # libgnomeui/gnome-about.c:187
@@ -1160,9 +1161,27 @@ msgstr "Gtk modulu gehigarria gehitu"
 msgid "MODULE"
 msgstr "MODULU"
 
+# libgnome/gnomelib-init.c:144
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME Aukerak"
+
+# libgnome/gnomelib-init.c:144
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME Aukerak"
+
+# libgnome/gnomelib-init.c:144
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME Aukerak"
+
 # libgnomeui/gnome-init.c:635
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Segmentatze akats ugari gertatu dira; ezin erakuts akatserako elkarrizketa\n"
@@ -1865,6 +1884,10 @@ msgstr "(Barrurako) GOAD zerbitzariaren ID aktibatuz"
 #, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Barrurako) GOAD zerbitzariaren ID aktibatuz"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 # libgnorba/loadshlib.c:11
 #: libgnorba/loadshlib.c:11

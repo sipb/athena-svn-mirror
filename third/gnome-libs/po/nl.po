@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.* (cvs)\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 2000-10-10 17:35+0200\n"
 "Last-Translator: Dennis Smit <synap@area101.penguin.nl>\n"
 "Language-Team: nl <nl@li.org>\n"
@@ -59,7 +59,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME Opties"
 
 #: libgnomeui/gnome-about.c:187
@@ -928,8 +929,23 @@ msgstr "Extra Gtk module laden"
 msgid "MODULE"
 msgstr "MODULE"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME Opties"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME Opties"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME Opties"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Er waren meerdere segmentation faults, kan de foutboodschap niet tonen\n"
@@ -1505,6 +1521,10 @@ msgstr "(Intern gebruik) te activeren GOAD server ID"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Alleen voor intern gebruik) GOAD bestands beschrijver"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

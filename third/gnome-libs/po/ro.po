@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.60\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 2000-05-10 19:20+0200\n"
 "Last-Translator: Dan Damian <dand@dnttm.ro>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -62,7 +62,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Opþiuni GNOME"
 
 #: libgnomeui/gnome-about.c:187
@@ -931,8 +932,21 @@ msgstr "Încarcã un modul Gtk adiþional"
 msgid "MODULE"
 msgstr "MODULE"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "Opþiuni GNOME"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "Opþiuni interfaþã GNOME"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s opþiuni"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Au avut loc segmentation faulturi multiple; nu pot afiºa dialogul de eroare\n"
@@ -1271,7 +1285,7 @@ msgstr "Trimite un raport de erori"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1510,6 +1524,10 @@ msgstr "(Doar pt. uz intern) ID-ul de server GOAD pentru activare"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Doar pt. uz intern) Descriptrul de fiºier GOAD"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Directorul Gnome de Activare a Obiectelor (GOAD)"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

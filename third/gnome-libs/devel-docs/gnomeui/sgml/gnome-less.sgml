@@ -1,4 +1,4 @@
-<refentry id="GnomeLess" revision="11 Oct 2000">
+<refentry id="GnomeLess" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeLess</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -25,7 +25,7 @@ void        <link linkend="gnome-less-clear">gnome_less_clear</link>            
 void        <link linkend="gnome-less-show-string">gnome_less_show_string</link>          (<link linkend="GnomeLess">GnomeLess</link> *gl,
                                              const <link linkend="gchar">gchar</link> *s);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-less-show-filestream">gnome_less_show_filestream</link>      (<link linkend="GnomeLess">GnomeLess</link> *gl,
-                                             <link linkend="FILE">FILE</link> *f);
+                                             <link linkend="FILE-CAPS">FILE</link> *f);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-less-show-fd">gnome_less_show_fd</link>              (<link linkend="GnomeLess">GnomeLess</link> *gl,
                                              int file_descriptor);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-less-write-file">gnome_less_write_file</link>           (<link linkend="GnomeLess">GnomeLess</link> *gl,
@@ -206,7 +206,7 @@ already being displayed.</para>
 <refsect2>
 <title><anchor id="gnome-less-show-filestream">gnome_less_show_filestream ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_less_show_filestream      (<link linkend="GnomeLess">GnomeLess</link> *gl,
-                                             <link linkend="FILE">FILE</link> *f);</programlisting>
+                                             <link linkend="FILE-CAPS">FILE</link> *f);</programlisting>
 <para>
 Reads all of the text from filestream <parameter>f</parameter>, and places it in the GnomeLess widget <parameter>gl</parameter>. Replaces any text
 already being displayed.</para>

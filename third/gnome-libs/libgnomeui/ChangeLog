@@ -1,3 +1,97 @@
+2001-02-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	* gnome-dock.c (gnome_dock_size_allocate): Don't set `client_rect'
+	anymore.
+	(drag_begin): Set `client_rect' here instead.
+	(drag_motion): Added some debugging messages.
+	(drag_snap): Added some debugging messages.
+
+	* gnome-dock-band.c [GNOME_DOCK_BAND_DEBUG] (DEBUG): Use
+	`g_print()' instead of `printf()' and `putchar()'.
+	* gnome-dock.c (DEBUG): Likewise.
+
+2001-02-11  Rusty Conover  <rconover@zootweb.com>
+
+	* gnome-canvas-rect-ellipse.c (gnome_canvas_rect_update): Added
+	fix for proper stroking of the rectangle's outlines.  Thre
+	previous implementation was broken when the canvas's pixels per
+	unit != 1.0
+
+	* gnome-canvas-line.c (gnome_canvas_line_set_arg): Added fix for
+	when the color of a line changes the SVP's of teh arrowheads also
+	change color.  They didn't change color before.
+
+2001-02-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	* gnome-dock-item.c (gnome_dock_item_button_changed): When
+	starting a drag, set the "gnome_dock_item_pre_drag_orientation"
+	data to the current orientation value.
+	(gnome_dock_item_detach): Set the orientation to that value.
+
+2001-01-22  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-dialog.c (gnome_dialog_set_default): Do not grab focus.
+	(gnome_dialog_grab_focus): New API call.
+
+2001-01-15  Miguel de Icaza  <miguel@ximian.com>
+
+	* gnome-dialog.c (gnome_dialog_set_default): Grab focus as well. 
+
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* gnome-canvas.c (gnome_canvas_focus_in,
+	gnome_canvas_focus_out): added code to set and unset the
+	HAS_FOCUS flag (which all focusable widgets should do). Without
+	this patch the canvas (and thus the focused canvas item) will
+	not receive focus out events
+
+Fri Dec 22 22:58:50 2000  George Lebl <jirka@5z.com>
+
+	* gnome-winhints.c:  When setting hints, add all the hints to the
+	  mask for the client message when the window is already mapped.
+	  This is needed for the do not cover hint to get through.  Sawfish
+	  already implements this and it's needed for the panel to work
+	  fully.
+
+Sun Dec 17 14:41:54 2000  George Lebl <jirka@5z.com>
+
+	* gnome-dock-layout.c:  In the destroy handler actually call
+	  the parent handler to avoid leaks.  This was a patch I was
+	  supposed to apply in like august, so with slight delay, here goes.
+
+2000-11-30  Mike Engber  <engber@eazel.com>
+
+	* gnome-canvas.c:
+	* gnome-canvas.h:
+	add dithered rendering support for antialiased canvases
+
+2000-11-28  Morten Welinder  <terra@diku.dk>
+
+	* gnome-druid-page-standard.c
+ 	(gnome_druid_page_standard_finalize): Call parent's finalize also.
+
+2000-11-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* gnome-druid.c: (gnome_druid_destroy):
+	Fix tiny mistake from the last change.  GnomeDruid in this branch
+	doesnt have a '_priv' structure.
+	
+2000-11-28  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-druid.c (gnome_druid_destroy): Merge in from HEAD the
+	correct destroy function.
+
+1999-11-22  Morten Welinder  <terra@diku.dk>
+
+	* gnome-druid-page-standard.c (gnome_druid_page_standard_init):
+ 	Plug leaks.
+
+2000-11-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* gnome-dock-item.c: (get_preferred_width), (get_preferred_height):
+	Check for a possible NULL child while computing the preffered
+	dimensions.  Intialize the preferred dimnensions to 0.
+	
 2000-10-23  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
 	* gnome-dialog.c: revert previous patch, as it wasn't meant to be

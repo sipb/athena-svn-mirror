@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.12\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-05-09 05:42+02:00\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-02-15 06:03+01:00\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,8 @@ msgid "HOSTNAME:PORT"
 msgstr "NOMEHOST:PORTA"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Opzioni GNOME"
 
 #: libgnomeui/gnome-about.c:187
@@ -951,8 +952,21 @@ msgstr "Carica un modulo Gtk+ aggiuntivo"
 msgid "MODULE"
 msgstr "MODULO"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "Opzioni GTK"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "Opzioni della GUI di GNOME"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "Opzioni %s"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 "Sono occorsi errori di segmentazione multipli: impossibile visualizzare la "
@@ -1292,7 +1306,7 @@ msgstr "Invia un bug report"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: libgnomeui/gnome_segv.c:111
 msgid "http://www.gnome.org/application_crashed.shtml"
@@ -1532,6 +1546,10 @@ msgstr "ID server GOAD da attivare (solo per uso interno)"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "Descrittore file GOAD (riservato ad uso interno)"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Directory per l'attivazione degli oggetti GNOME"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

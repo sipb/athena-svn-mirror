@@ -10,33 +10,8 @@
 #	also correct gnome-vfs.mime.
 #
 #
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
 # Copryght (C) The Free Software Foundation, 1998, 1999
+# Copyright (C) 2000 Eazel, Inc.
 # http://www.fsf.org
 #
 # Mime types as provided by the GNOME libraries for GNOME.
@@ -59,192 +34,75 @@
 # for .gz
 #
 
-# text values.
+application/andrew-inset
+	ext: ez
 
-text/css
-	ext: css
+application/mspowerpoint
+	ext: ppt
 
-text/sgml
-	ext: sgml sgm
-
-text/plain
-	ext: asc txt 
-
-text/html
-	ext: html htm
-
-text/richtext
-	ext: rtx
-
-text/tab-separated-values
-	ext: tsv
-
-text/x-fortran:
-	ext: f
-
-text/vnd.latex-z
-	ext: latex
-
-text/xml
-	ext: xml
-
-text/x-authors:
-	regex: AUTHORS
-	
-text/x-copying:
-	regex: COPYING	
-
-text/x-credits:
-	regex: CREDITS
-
-text/x-install:
-	regex: INSTALL
-
-text/x-makefile:
-	regex: [Mm]akefile
-
-text/x-readme:
-	regex: README.*
-
-text/x-idl
-        ext: idl
-
-text/x-setext
-	ext: etx
-
-text/x-c
-	ext: c h
-
-text/x-gtkrc
-        regex: [.|]gtkrc
-
-text/x-applix-word
-        ext: aw
-
-text/x-C++
-	ext: cc C cpp
-
-text/x-java
-	ext: java
-
-text/x-perl
-	ext: pl perl
-
-text/x-scheme
-	ext: scm
-
-text/x-sql
-	ext: sql
-
-text/x-emacs-lisp
-	ext: el
-
-text/x-python:
-	ext: py
-
-text/x-vCalendar:
-	ext: vcs vcf
-
-text/x-vCard
-	ext: gcrd
-
-text/x-java
-	ext: java
-
-text/x-dsl
-	ext: dsl
-
-text/x-dtd
-	ext: dtd
-
-text/x-dcl
-	ext: dcl
-
-text/x-comma-separated-values
-	ext: csv
-
-#audio values
-audio/midi:
-	ext: midi mid
-
-audio/x-wav:
-	ext: wav
-
-audio/x-mp3
-	ext: mp3
-
-audio/x-aiff
-	ext: aif aifc aiff
-
-audio/x-ulaw
-	ext: au
-
-audio/basic
-	ext: snd
-
-audio/x-voc
-	ext: voc
-
-audio/x-pn-realaudio
-	ext: rm ra ram
-
-audio/x-mod
-	ext: mod
-
-audio/x-s3m
-	ext:s3m
-
-audio/x-stm
-	ext: stm
-
-audio/x-xi
-	ext: xi
-
-audio/x-xm
-	ext: xm
-
-audio/x-it
-        ext: it
-
-#application values
-application/x-gnome-app-info
-	ext: desktop
-
-application/x-kde-app-info
-	ext: kdelnk
-
-application/x-bzip
-	ext: bz2 bz
-
-application/x-troff-man
-	regex: (([^0-9]|^[^\.]*)\.([1-9][A-Za-z]*|n)|\.man)$
-
-application/x-troff-man-compressed
-	regex: ([^0-9]|^[^\.]*)\.([1-9][a-z]?|n)\.g?[Zz]$
-
-application/x-object-file
-	ext: o
-
-application/x-class-file
-	ext: class
-
-application/x-shared-library
-	ext: so
-
-application/postscript
-	ext: ps eps
-
-application/pgp
-	ext: pgp
-
-application/x-bcpio
-	ext: bcpio
+application/msword
+	ext: doc
 
 application/octet-stream
 	ext: bin
 
-application/x-netcdf
-	ext: cdf nc
+application/oda
+	ext: oda
+
+application/pdf
+	ext: pdf
+
+application/pgp
+	ext: pgp
+
+application/postscript
+	ext: ps eps
+
+application/rtf
+	ext: rtf
+
+application/vnd.ms-excel
+	ext: xls
+
+application/x-applix-spreadsheet
+        ext: as
+
+application/x-applix-word
+        ext: aw
+
+application/x-arj
+	ext: arj
+
+application/x-asp
+        ext: asp
+
+application/x-backup
+        ext: bak BAK
+	
+application/x-bcpio
+	ext: bcpio
+
+application/x-bzip
+	ext: bz2 bz
+
+application/x-bzip-compressed-tar
+	regex,2: tar\.bz2$
+
+application/x-cgi
+        ext: cgi
+
+application/x-chess-pgn
+	ext: pgn
+
+application/x-class-file
+	ext: class
+
+application/x-compressed-tar
+	regex,2: tar\.gz$
+	ext: tgz
+
+application/x-core-file
+	regex: core
 
 application/x-cpio
 	ext: cpio
@@ -252,14 +110,41 @@ application/x-cpio
 application/x-cpio-compressed
 	regex: \.cpio\.gz$
 
-application/x-csh
-	ext: csh
+application/x-deb
+	ext: deb
 
 application/x-dvi
 	ext: dvi
 
-application/andrew-inset
-	ext: ez
+application/x-e-theme
+        ext: etheme ETHEME
+
+application/x-font-afm
+	ext: afm
+
+application/x-font-bdf
+	ext: bdf
+
+application/x-font-linux-psf
+	ext: psf
+
+application/x-font-pcf
+	ext: pcf
+
+application/x-font-speedo
+	ext: spd
+
+application/x-font-ttf
+	ext: ttf TTF
+
+application/x-font-type1
+	ext: pfa pfb
+
+application/x-gnome-app-info
+	ext: desktop
+
+application/x-gnumeric
+	ext: gnumeric
 
 application/x-gtar
 	ext: gtar
@@ -270,41 +155,59 @@ application/x-gzip
 application/x-hdf
 	ext: hdf
 
-application/x-troff-man
-	ext: man
+application/x-kde-app-info
+	ext: kdelnk
 
-application/x-troff-me
-	ext: me
+application/x-lha
+	ext: lha
+
+application/x-lhz
+	ext: lhz
 
 application/x-mif
 	ext: mif
 
-application/x-troff-ms
-	ext: ms
+application/x-netcdf
+	ext: cdf nc
 
-application/oda
-	ext: oda
+application/x-object-file
+	ext: o
 
-application/pdf
-	ext: pdf
+application/x-ogg
+        ext: ogg
 
-application/x-chess-pgn
-	ext: pgn
+application/x-php
+        ext: php php3 php4
 
-application/x-troff
-	ext: roff t tr
+application/x-profile
+        regex: gmon\.out$
 
-application/rtf
-	ext: rtf
-
-application/x-sh
-	ext: sh
+application/x-reject
+	ext: rej
+	
+application/x-rpm
+	ext: rpm
 
 application/x-shar
 	ext: shar
 
-application/x-wais-source
-	ext: src
+application/x-shared-library
+	ext: so
+
+application/x-shared-library-la
+        ext: la
+
+application/x-smil
+	ext: smil smi sml
+
+application/x-staroffice-presentation
+	ext: sdd
+
+application/x-staroffice-spreadsheet
+	ext: sdc
+
+application/x-staroffice-words
+	ext: sdw
 
 application/x-sv4cpio
 	ext: sv4cpio
@@ -315,114 +218,81 @@ application/x-sv4crc
 application/x-tar
 	ext: tar
 
-application/x-compressed-tar
-	regex,2: tar\.gz$
-	ext: tgz
+application/x-theme
+        ext: theme
 
-application/x-bzip-compressed-tar
-	regex,2: tar\.bz2$
-
-application/x-tcl
-	ext: tcl
-
-application/x-tex
-	ext: tex
-
-application/x-texinfo
-	ext: texi texinfo
-
-application/x-ustar
-	ext: ustar
-
-application/zip
-	ext: zip
-
-application/x-rpm
-	ext: rpm
-
-application/x-deb
-	ext: deb
-
-application/x-slp
-	ext: slp
-
-application/x-zoo
-	ext: zoo
-
-application/x-lha
-	ext: lha
-
-application/x-arj
-	ext: arj
+application/x-troff-man-compressed
+	regex: ([^0-9]|^[^\.]*)\.([1-9][a-z]?|n)\.g?[Zz]$
 
 application/x-unix-archive
 	ext: a sa
 
-application/x-backup
-        ext: bak
-	
-application/x-reject
-		ext: rej
-	
-application/x-profile
-        regex: gmon\.out$
+application/x-ustar
+	ext: ustar
 
-application/x-cgi
-        ext: cgi
+application/x-wais-source
+	ext: src
 
-application/x-asp
-        ext: asp
+application/x-zoo
+	ext: zoo
 
-application/x-php
-        ext: php
+application/zip
+	ext: zip
 
-application/x-shared-library-la
-        ext: la
 
-application/x-applix-spreadsheet
-        ext: as
 
-application/x-e-theme
-        ext: etheme
+audio/basic
+	ext: snd
 
-application/x-theme
-        ext: theme
+audio/x-aiff
+	ext: aif aifc aiff
 
-font/afm
-	ext: afm
+audio/x-it
+        ext: it IT
 
-font/ttf
-	ext: ttf
+audio/x-midi
+	ext: midi mid
 
-font/x-pcf
-	ext: pcf
+audio/x-mod
+	ext: mod MOD
 
-x-url/http
-	regex: http://.*
+audio/x-mp3
+	ext: mp3
 
-x-url/ftp
-	regex: ftp://.*
+audio/x-mpegurl
+        ext: m3u
 
-x-url/info
-	regex: info:.*
+audio/x-pn-realaudio
+	ext: rm ra ram
 
-x-url/gopher
-	regex: gopher:.*
+audio/x-s3m
+	ext: S3M s3m
 
-x-url/news
-	regex: news:.*
+audio/x-stm
+	ext: STM stm
 
-image/x-bmp
-	ext: bmp
+audio/x-ulaw
+	ext: au
 
-image/x-ico
-	ext: ico
+audio/x-voc
+	ext: voc
 
-image/x-png
-	ext: png
+audio/x-wav
+	ext: wav
 
-image/x-tga
-	ext: tga
+audio/x-xi
+	ext: xi
+
+audio/x-xm
+	ext: xm XM
+
+
+
+image/cgm
+	ext: cgm
+
+image/gif
+	ext: gif
 
 image/ief
 	ext: ief
@@ -430,63 +300,45 @@ image/ief
 image/jpeg
 	ext: jpe jpeg jpg
 
-image/x-portable-bitmap
-	ext: pbm
+image/png
+	ext: png
 
-image/x-portable-graymap
-	ext: pgm
-
-image/x-portable-anymap
-	ext: pnm
-
-image/x-portable-pixmap
-	ext: ppm
-
-image/x-cmu-raster
-	ext: ras
-
-image/x-rgb
-	ext: rgb
+image/svg
+	ext: svg
 
 image/tiff
 	ext: tif tiff
 
-image/x-xbitmap
-	ext: xbm
+image/vnd.dwg
+        ext: dwg
 
-image/x-xpixmap
-	ext: xpm
+image/vnd.dxf
+        ext: dxf
 
-image/x-xwindowdump
-	ext: xwd
+image/x-3ds
+        ext: 3ds
 
-image/x-xcf:
-	ext: xcf
+image/x-applix-graphic
+        ext: ag
+
+image/x-bmp
+	ext: bmp
+
+image/x-cmu-raster
+	ext: ras
 
 image/x-compressed-xcf
 	regex,2: \.xcf\.gz$
 	regex.2: \.xcf\.bz2$
 
-image/x-psd:
-	ext: psd
+image/x-ico
+	ext: ico
 
-image/gif
-	ext: gif
+image/x-iff
+        ext: iff IFF
 
-image/x-applix-graphic
-        ext: ag
-
-image/x-xfig
-        ext: fig
-
-image/vnd.dxf
-        ext: dxf
-
-image/vnd.dwg
-        ext: dwg
-
-image/x-3ds
-        ext: 3ds
+image/x-ilbm
+        ext: ilbm ILBM
 
 image/x-lwo
         ext: lwo lwob
@@ -494,31 +346,199 @@ image/x-lwo
 image/x-lws
         ext: lws
 
-image/x-iff
-        ext: iff
+image/x-portable-anymap
+	ext: pnm
 
-image/x-ilbm
-        ext: ilbm
+image/x-portable-bitmap
+	ext: pbm
 
-video/quicktime
-	ext: mov qt
+image/x-portable-graymap
+	ext: pgm
 
-video/x-sgi-movie
-	ext: movie
+image/x-portable-pixmap
+	ext: ppm
 
-video/x-msvideo:
-	ext: avi
+image/x-psd
+	ext: psd
 
-video/mpeg
-	ext: mp2 mpe mpeg mpg
+image/x-rgb
+	ext: rgb
 
-video/x-msvideo
-	ext: avi
+image/x-tga
+	ext: tga
 
-video/x-anim
-        ext: anim5 anim7
+image/x-xbitmap
+	ext: xbm
+
+image/x-xcf
+	ext: xcf
+
+image/x-xfig
+        ext: fig
+
+image/x-xpixmap
+	ext: xpm
+
+image/x-xwindowdump
+	ext: xwd
+
+
 
 message/x-gnu-rmail
 	regex: ^RMAIL$
 
 
+
+model/vrml
+	ext: wrl
+
+
+
+
+text/bib
+	ext: bib
+
+text/css
+	ext: css
+
+text/html
+	ext: html htm HTML
+
+text/mathml
+	ext: mml
+
+text/plain
+	ext: asc txt TXT
+
+text/richtext
+	ext: rtx
+
+text/sgml
+	ext: sgml sgm
+
+text/tab-separated-values
+	ext: tsv
+
+text/x-authors
+	regex: AUTHORS
+	
+text/x-c
+	ext: c h
+
+text/x-c++
+	ext: cc C cpp c++ hp H h++
+
+text/x-comma-separated-values
+	ext: csv
+
+text/x-copying
+	regex: COPYING	
+
+text/x-credits
+	regex: CREDITS
+
+text/x-csh
+	ext: csh
+
+text/x-dcl
+	ext: dcl
+
+text/x-dsl
+	ext: dsl
+
+text/x-dtd
+	ext: dtd
+
+text/x-emacs-lisp
+	ext: el
+
+text/x-fortran
+	ext: f
+
+text/x-gtkrc
+        regex: [.|]gtkrc
+
+text/x-idl
+        ext: idl
+
+text/x-install
+	regex: INSTALL
+
+text/x-java
+	ext: java
+
+text/x-makefile
+	regex: [Mm]akefile
+
+text/x-perl
+	ext: pl perl
+
+text/x-python
+	ext: py
+
+text/x-readme
+	regex: README.*
+
+text/x-scheme
+	ext: scm
+
+text/x-setext
+	ext: etx
+
+text/x-sh
+	ext: sh
+
+text/x-sql
+	ext: sql
+
+text/x-tcl
+	ext: tcl
+
+text/x-tex
+	ext: tex
+
+text/x-texinfo
+	ext: texi texinfo
+
+text/x-troff
+	ext: roff t tr
+
+text/x-troff-man
+	regex: (([^0-9]|^[^\.]*)\.([1-9][A-Za-z]*|n)|\.man)$
+	ext: man
+
+text/x-troff-me
+	ext: me
+
+text/x-troff-ms
+	ext: ms
+
+text/x-vcalendar
+	ext: vcs vcf
+
+text/x-vcard
+	ext: gcrd
+
+text/xml
+	ext: xml
+
+video/mpeg
+	ext: mp2 mpe mpeg mpg
+
+video/quicktime
+	ext: mov qt
+
+video/x-anim
+        ext: anim5 anim7
+
+video/x-flc
+	ext: flc
+
+video/x-fli
+	ext: fli
+
+video/x-msvideo
+	ext: avi
+
+video/x-sgi-movie
+	ext: movie

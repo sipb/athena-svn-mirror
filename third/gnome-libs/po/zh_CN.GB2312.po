@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 0.99.7\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 2000-10-16 22:30+0800\n"
 "Last-Translator: Wu Yulun <migr@operamail.com>\n"
 "Language-Team: Chinese <i18n-chinese@egroups.com>\n"
@@ -55,7 +55,8 @@ msgid "HOSTNAME:PORT"
 msgstr ""
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME 选项"
 
 #: libgnomeui/gnome-about.c:187
@@ -941,8 +942,23 @@ msgstr "装载一个附属的 Gtk 组件"
 msgid "MODULE"
 msgstr "组件"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME 选项"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME 选项"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME 选项"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
 
@@ -1495,6 +1511,10 @@ msgstr "(仅供内部使用) 激活GOAD服务器ID"
 #, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(仅供内部使用) 激活GOAD服务器ID"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

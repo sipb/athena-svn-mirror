@@ -1,12 +1,12 @@
 # ko.po -- Korean messages for GNOME libraries
-# Copyright (C) 1998, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1998-2001 Free Software Foundation, Inc.
 # Changwoo Ryu <cwryu@adam.kaist.ac.kr>, 1998.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.4\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-09-07 23:31+0900\n"
+"Project-Id-Version: gnome-libs 1.2.11\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-02-08 18:04+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,8 @@ msgid "HOSTNAME:PORT"
 msgstr "호스트이름:포트"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "그놈 옵션"
 
 #: libgnomeui/gnome-about.c:187
@@ -928,11 +929,24 @@ msgstr "Gtk 모듈을 추가로 읽어들임"
 msgid "MODULE"
 msgstr "<모듈>"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "GTK 옵션"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "그놈 GUI 옵션"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s 옵션"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-"여러 개의 세그먼테이션 오류가 발생했습니다; 애러 창을 표시할 수 없습니다\n"
+"여러 세그먼테이션 오류가 발생했습니다; 에러 대화상자를 표시할 수 없습니다\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
 msgid "Information"
@@ -1508,13 +1522,17 @@ msgstr "(내부 사용) 활성화할 GOAD 서버 ID"
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(내부 사용) GOAD 파일 서술자"
 
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "그놈 객체 활성 디렉토리"
+
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
 msgstr "GOAD가 알고 있는 서버에서 사용할 ID"
 
 #: libgnorba/loadshlib.c:11
 msgid "GOAD_ID"
-msgstr "<GOAD_ID>"
+msgstr "GOAD_ID"
 
 #: libgnorba/loadshlib.c:12
 msgid "Repository ID under which GOAD knows this server"
@@ -1522,7 +1540,7 @@ msgstr "GOAD가 알고 있는 서버에서 사용할 저장소 ID"
 
 #: libgnorba/loadshlib.c:12
 msgid "REPO_ID"
-msgstr "<저장고_ID>"
+msgstr "REPO_ID"
 
 #: libgnorba/orbitgtk.c:138
 #, c-format

@@ -1,18 +1,18 @@
 # Translation into the walloon language.
 #
 # Si vos voloz donner on côp di spale pol ratoûrnaedje di Gnome (ou des
-# ôtes libes programes) sicrijhoz-mu a l' adresse emile
-# <srtxg@chanae.alphanet.ch>; nos avans co bråmint di l' ovraedje a fé.
+# ôtes libes programes) sicrijhoz-mu a l' adresse emile
+# <srtxg@chanae.alphanet.ch>; nos avans co bråmint di l' ovraedje a fé.
 #
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Pablo Saratxaga <srtxg@chanae.alphanet.ch> 1999-2000
-# Lorint Hendschel, 1999
+# Lorint Hendschel <LorintHendschel@skynet.be>, 1999
 # Lucyin Mahin, 2000
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.61\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 1999-03-18 23:11+0100\n"
 "Last-Translator: Lorint Hendschel <LorintHendschel@skynet.be>\n"
 "Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
@@ -26,7 +26,7 @@ msgstr "rapexhî"
 
 #: libgnome/gconfigger.c:32
 msgid "Get config entry"
-msgstr "Rapexhî l' intreye d' apontiaedje"
+msgstr "Rapexhî l' intreye d' apontiaedje"
 
 #: libgnome/gconfigger.c:32 libgnome/gconfigger.c:33
 msgid "CONFIG-PATH"
@@ -38,7 +38,7 @@ msgstr "Mete"
 
 #: libgnome/gconfigger.c:33
 msgid "Set config entry"
-msgstr "Mete l' intreye d' apontiaedje"
+msgstr "Mete l' intreye d' apontiaedje"
 
 #: libgnome/gnome-popt.c:90
 #, c-format
@@ -47,11 +47,11 @@ msgid ""
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
 "Aroke avou les tchûzes %s: %s.\n"
-"Enonder '%s --help' po vey tote li djîveye des tchûzes.\n"
+"Enonder «%s --help» po vey tote li djîveye des tchûzes.\n"
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Esocter li sierveu di sons"
+msgstr "Essocter li sierveu di sons"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
@@ -63,23 +63,24 @@ msgstr "Lodjeu: pôrt do sierveu di sons"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
-msgstr "LODJEU:PORT"
+msgstr "LODJEU:PÔRT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Tchûzes di GNOME"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
-msgstr "Auteur:"
+msgstr "Oteur:"
 
 #: libgnomeui/gnome-about.c:189 libgnomeui/gnome-about.c:191
 msgid "Authors:"
-msgstr "Auteurs:"
+msgstr "Oteurs:"
 
 #: libgnomeui/gnome-about.c:352
 msgid "Authors: "
-msgstr "Auteurs: "
+msgstr "Oteurs: "
 
 #: libgnomeui/gnome-about.c:591 libgnomeui/stock_demo.c:282
 #: libgnomeui/winhints_demo.c:256
@@ -144,7 +145,7 @@ msgstr "_Djeu"
 
 #: libgnomeui/gnome-app-helper.c:92
 msgid "_Help"
-msgstr "_Aide"
+msgstr "_Aidance"
 
 #: libgnomeui/gnome-app-helper.c:93
 msgid "_Windows/"
@@ -209,7 +210,7 @@ msgstr "Djeu"
 #: libgnomeui/gnome-app-helper.c:109 libgnomeui/gnome-stock.c:843
 #: libgnomeui/stock_demo.c:290
 msgid "Help"
-msgstr "Aide"
+msgstr "Aidance"
 
 #: libgnomeui/gnome-app-helper.c:110
 msgid "Windows/"
@@ -218,11 +219,11 @@ msgstr "Purneas/"
 #. Open
 #: libgnomeui/gnome-app-helper.c:122
 msgid "_Open..."
-msgstr "_Drovi..."
+msgstr "_Drovî..."
 
 #: libgnomeui/gnome-app-helper.c:122
 msgid "Open a file"
-msgstr "Drovi on fitchî"
+msgstr "Drovî on fitchî"
 
 #. Save
 #: libgnomeui/gnome-app-helper.c:127
@@ -249,7 +250,7 @@ msgstr "_Rivni èn erî"
 
 #: libgnomeui/gnome-app-helper.c:139
 msgid "Revert to a saved version of the file"
-msgstr "Rivni a ene modeye dedja schapeye do fitchî"
+msgstr "Rivni a ene modeye dedja schapéye do fitchî"
 
 #. Print
 #: libgnomeui/gnome-app-helper.c:144
@@ -267,7 +268,7 @@ msgstr "A_pontiaedje del Scrirece..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
-msgstr "Apontyî li pådje po vosse sicrîrece do moumint"
+msgstr "Apontyî li pådje po vosse sicrirece do moumint"
 
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
@@ -316,7 +317,7 @@ msgstr "C_laper"
 
 #: libgnomeui/gnome-app-helper.c:179
 msgid "Paste the clipboard"
-msgstr "Aclapler çu k' i gn a è tchapea emacralé"
+msgstr "Aclaper çu k' i gn a è tchapea emacralé"
 
 #. Clear
 #: libgnomeui/gnome-app-helper.c:184
@@ -343,7 +344,7 @@ msgstr "_Rifé"
 
 #: libgnomeui/gnome-app-helper.c:194
 msgid "Redo the undone action"
-msgstr "Rifé l' ovraedje disfé"
+msgstr "Rifé l' ovraedje disfé"
 
 #. Find
 #: libgnomeui/gnome-app-helper.c:199
@@ -370,7 +371,7 @@ msgstr "_Mete el plaece..."
 
 #: libgnomeui/gnome-app-helper.c:210
 msgid "Replace a string"
-msgstr "Mete ene tchinne el plaece d' ene ôte"
+msgstr "Mete ene tchinne el plaece d' ene ôte"
 
 #. Properties
 #: libgnomeui/gnome-app-helper.c:215
@@ -412,7 +413,7 @@ msgstr "_Tchwezi Totafwait"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
-msgstr "Tchwezi totafait"
+msgstr "Tchwezi totafwait"
 
 #.
 #. * Window menu
@@ -454,11 +455,11 @@ msgstr "Djoker li djeu"
 
 #: libgnomeui/gnome-app-helper.c:271
 msgid "_Restart game"
-msgstr "Renonder li djeu"
+msgstr "Rinonder li djeu"
 
 #: libgnomeui/gnome-app-helper.c:272
 msgid "Restart the game"
-msgstr "Renonder li djeu"
+msgstr "Rinonder li djeu"
 
 #: libgnomeui/gnome-app-helper.c:276
 msgid "_Undo move"
@@ -466,7 +467,7 @@ msgstr "Ri_vni èn erî"
 
 #: libgnomeui/gnome-app-helper.c:277
 msgid "Undo the last move"
-msgstr "Rivni èn erî, come vos n' årîz nén djowé"
+msgstr "Rivni èn erî, come vos n' årîz nén djowé"
 
 #: libgnomeui/gnome-app-helper.c:281
 msgid "_Redo move"
@@ -474,7 +475,7 @@ msgstr "_Rifé li dierin côp"
 
 #: libgnomeui/gnome-app-helper.c:282
 msgid "Redo the undone move"
-msgstr "Rifé çu ki vos avîz disfait tot rivnant èn erî"
+msgstr "Rifé çu ki vos avîz disfwait tot rivnant èn erî"
 
 #: libgnomeui/gnome-app-helper.c:286
 msgid "_Hint"
@@ -482,7 +483,7 @@ msgstr "_Racsegne"
 
 #: libgnomeui/gnome-app-helper.c:287
 msgid "Get a hint for your next move"
-msgstr "Dimander ene racsegne pol côp ki vént"
+msgstr "Dimander ene racsegne pol côp ki vint"
 
 #. 30
 #: libgnomeui/gnome-app-helper.c:292
@@ -491,7 +492,7 @@ msgstr "_Meyeus..."
 
 #: libgnomeui/gnome-app-helper.c:293
 msgid "View the scores"
-msgstr "Veure les meyeus rezultats"
+msgstr "Voere les meyeus rezultats"
 
 #: libgnomeui/gnome-app-helper.c:297
 msgid "_End game"
@@ -503,7 +504,7 @@ msgstr "Difén li djeu do moumint"
 
 #: libgnomeui/gnome-app-util.c:93
 msgid " (press return)"
-msgstr " (tchôkxhoz return)"
+msgstr " (tchôkoz return)"
 
 #: libgnomeui/gnome-app-util.c:136
 msgid "ERROR: "
@@ -563,7 +564,7 @@ msgstr "x^2"
 
 #: libgnomeui/gnome-calculator.c:1052
 msgid "SQRT"
-msgstr "Racene"
+msgstr "Raecene"
 
 #: libgnomeui/gnome-calculator.c:1053
 msgid "CE/C"
@@ -712,7 +713,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "Dîre l' ID pol manaedjmint del session"
+msgstr "Dire l' ID pol manaedjmint del session"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -720,7 +721,7 @@ msgstr "ID"
 
 #: libgnomeui/gnome-client.c:837
 msgid "Specify prefix of saved configuration"
-msgstr "Dîre li betchete di l' apontiaedje schapé"
+msgstr "Dire li betchete di l' apontiaedje schapé"
 
 #: libgnomeui/gnome-client.c:837
 msgid "PREFIX"
@@ -728,7 +729,7 @@ msgstr "BETCHETE"
 
 #: libgnomeui/gnome-client.c:839
 msgid "Disable connection to session manager"
-msgstr "Esocter l' adjondaedje å manaedjeu di sessions"
+msgstr "Essocter l' adjondaedje å manaedjeu di sessions"
 
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
@@ -770,7 +771,7 @@ msgstr "Imådjete:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Tchwezi on imådjete"
+msgstr "Tchwezi ene imådjete"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -836,7 +837,7 @@ msgstr "Foyter..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
-msgstr "Tchwezi one Fonte"
+msgstr "Tchwezi ene Fonte"
 
 #: libgnomeui/gnome-font-picker.c:710 libgnomeui/gnome-stock.c:848
 msgid "Font"
@@ -848,7 +849,7 @@ msgstr "Nole imådjete"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "Dji n' trove nol hbox; dji prind ene tchûze di fitchîs normåle"
+msgstr "Dji n' trove nou hbox; dji prind ene tchûze di fitchîs normåle"
 
 #: libgnomeui/gnome-icon-entry.c:280 libgnomeui/gnome-pixmap-entry.c:278
 msgid "Preview"
@@ -885,11 +886,11 @@ msgstr "Rinde les houcaedjes di X sincrones"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "Ni nén eployî li stinduwe pårteye memwere di X"
+msgstr "Ni nén eployî li stindowe pårteye memwere di X"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
-msgstr "No do programe tel ki li manaedjeu di purnea s' endè sievrè"
+msgstr "No do programe tel ki li manaedjeu di purnea s' endè sievrè"
 
 #: libgnomeui/gnome-init.c:171
 msgid "NAME"
@@ -897,7 +898,7 @@ msgstr "NO"
 
 #: libgnomeui/gnome-init.c:173
 msgid "Program class as used by the window manager"
-msgstr "Classe do programe tel ki li manaedjeu di purnea s' endè sievrè"
+msgstr "Classe do programe tel ki li manaedjeu di purnea s' endè sievrè"
 
 #: libgnomeui/gnome-init.c:173
 msgid "CLASS"
@@ -909,7 +910,7 @@ msgstr "LODJEU"
 
 #: libgnomeui/gnome-init.c:177
 msgid "PORT"
-msgstr "PORT"
+msgstr "PÔRT"
 
 #: libgnomeui/gnome-init.c:179 libgnomeui/gnome-init.c:181
 msgid "STYLE"
@@ -929,18 +930,33 @@ msgstr "Tos les advertixhmints dvèt esse fatås"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
-msgstr "Tcherdjî eco on module Gtk did pus"
+msgstr "Tcherdjî eco on module Gtk di pus"
 
 #: libgnomeui/gnome-init.c:189
 msgid "MODULE"
 msgstr "MODULE"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "Tchûzes di GNOME"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "Tchûzes di GNOME"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "Tchûzes di GNOME"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-"I gn a yeu pus d' ene aroke di segmentåcion; dji n' pout mostrer li purnea "
-"d' aroke\n"
+"I gn a yeu pus d' ene aroke di segmentåcion; dji n' pout mostrer li purnea "
+"d' aroke\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
 msgid "Information"
@@ -976,7 +992,7 @@ msgstr "Nole Imådje"
 
 #: libgnomeui/gnome-popup-help.c:52
 msgid "_Help with this"
-msgstr "_Aide avou çoula"
+msgstr "_Aidance avou çoula"
 
 #: libgnomeui/gnome-popup-help.c:58
 msgid "Cu_t"
@@ -1025,7 +1041,7 @@ msgid ""
 "Proceed anyway?"
 msgstr ""
 "Li mot « %s »\n"
-"n' est nén dins li motî.\n"
+"n' est nén dins li motî.\n"
 "Fé cwand minme?"
 
 #: libgnomeui/gnome-spell.c:249
@@ -1092,7 +1108,7 @@ msgstr "Radjouter è motî da vosse"
 
 #: libgnomeui/gnome-spell.c:591
 msgid "Insert with case"
-msgstr "Sitichî tot tnant conte des grandes èt ptitès letes"
+msgstr "Sititchî tot tnant conte des grandes èt ptitès letes"
 
 #: libgnomeui/gnome-spell.c:597
 msgid ""
@@ -1102,7 +1118,7 @@ msgid ""
 "case-sensitivity)"
 msgstr ""
 "Sititchî li mot dins vosse motî da vosse.\n"
-"S' i gn a, do côp, des ptites èt des grantès letes,\n"
+"S' i gn a, do côp, des ptites èt des grandès letes,\n"
 "elzès wårder."
 
 #: libgnomeui/gnome-spell.c:612
@@ -1127,7 +1143,7 @@ msgstr "Waitî les mots pus longs ki:"
 
 #: libgnomeui/gnome-spell.c:686
 msgid "Sort by correctness"
-msgstr "Relîre pa djustesse"
+msgstr "Relire pa djustesse"
 
 #: libgnomeui/gnome-spell.c:694
 msgid "Accept run-together words"
@@ -1135,7 +1151,7 @@ msgstr "Prinde les mots aclapés eshonne"
 
 #: libgnomeui/gnome-spell.c:704
 msgid "Discard accepted words on kill"
-msgstr "Retchessî les mots prindus si vos touwez"
+msgstr "Retchessî les mots prindous si vos touwez"
 
 #: libgnomeui/gnome-spell.c:712
 msgid "Enable tooltips"
@@ -1147,7 +1163,7 @@ msgstr "Touwer ispell"
 
 #: libgnomeui/gnome-spell.c:752
 msgid "Spell"
-msgstr "Waitî li scrîjhaedje"
+msgstr "Waitî li scrijhaedje"
 
 #: libgnomeui/gnome-spell.c:759
 msgid "Configure"
@@ -1246,10 +1262,10 @@ msgid ""
 "will exit.\n"
 "Please save all your files before closing this dialog."
 msgstr ""
-"Li Manaedjeu di Session di GNOME (processus lº %d) s' est crashé\n"
-"a cåze d' ene aroke moirt (%s).\n"
+"Li Manaedjeu di Session di GNOME (processus lº %d) s' est crashé\n"
+"a cåze d' ene aroke moirt (%s).\n"
 "Cwand vos alez clôre ci purnea chal, tos les ôtes programes èt vosse session "
-"vont esse cloyus eto.\n"
+"vont esse clôyous eto.\n"
 "Schapez tos vos fitchîs dvant di clôre ci purnea chal."
 
 #: libgnomeui/gnome_segv.c:72
@@ -1259,17 +1275,17 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"Li programe \"%s\" (processus lº %d)\n"
-"s' est crashé a cåze d' ene aroke moirt.\n"
+"Li programe «%s» (processus lº %d)\n"
+"s' est crashé a cåze d' ene aroke moirt.\n"
 "(%s)"
 
 #: libgnomeui/gnome_segv.c:80
 msgid "Usage: gnome_segv appname signum\n"
-msgstr "Po s' è siervi: gnome_segv nodiprograme limsign\n"
+msgstr "Po s' è siervî: gnome_segv nodiprograme limsign\n"
 
 #: libgnomeui/gnome_segv.c:94
 msgid "Submit a bug report"
-msgstr "Evoyi on rapoirt di bug"
+msgstr "Evoyî on rapoirt di bug"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
@@ -1281,7 +1297,7 @@ msgstr "http://www.gnome.org/application_crashed.shtml"
 
 #: libgnomeui/gnome_segv.c:117
 msgid "Please visit the GNOME Application Crash page for more information"
-msgstr "Loukîz li pådje GNOME Application Crash po pus d' informåcion"
+msgstr "Loukîz li pådje GNOME Application Crash po pus d' informåcion"
 
 #: libgnomeui/stock_demo.c:112
 msgid "New..."
@@ -1289,7 +1305,7 @@ msgstr "Novea..."
 
 #: libgnomeui/stock_demo.c:120
 msgid "Open..."
-msgstr "Drovi..."
+msgstr "Drovî..."
 
 #: libgnomeui/stock_demo.c:128
 msgid "Save"
@@ -1321,7 +1337,7 @@ msgstr "Rifé"
 
 #: libgnomeui/stock_demo.c:208
 msgid "Delete"
-msgstr "Rafacer"
+msgstr "Disfacer"
 
 #: libgnomeui/stock_demo.c:213
 msgid "Cut"
@@ -1401,11 +1417,11 @@ msgstr "Aclapé"
 msgid "Set Workspace"
 msgstr "Mete li scribanne"
 
-# no + viebe (l' etat discandje)
+# no + viebe (l' etat discandje)
 # ou coplémint do no + no (toggles of the state)?
 #: libgnomeui/winhints_demo.c:165
 msgid "State Toggles:"
-msgstr "Discandje di l' Etat:"
+msgstr "Discandje di l' etat:"
 
 #: libgnomeui/winhints_demo.c:175
 msgid "Minimized"
@@ -1413,7 +1429,7 @@ msgstr "Å pus ptit"
 
 #: libgnomeui/winhints_demo.c:179
 msgid "Maximized Vertical"
-msgstr "Å pus grand d' astampé"
+msgstr "Å pus grand d' astampé"
 
 #: libgnomeui/winhints_demo.c:183
 msgid "Maximized Horizontal"
@@ -1425,7 +1441,7 @@ msgstr "Catchî"
 
 #: libgnomeui/winhints_demo.c:191
 msgid "Shaded"
-msgstr "Èrôlé"
+msgstr "Erôlé"
 
 #: libgnomeui/winhints_demo.c:195
 msgid "Fixed Position"
@@ -1437,7 +1453,7 @@ msgstr "Passer Hute cwand vos Arindjîz"
 
 #: libgnomeui/winhints_demo.c:203
 msgid "Set State"
-msgstr "Mete l' Etat"
+msgstr "Mete l' etat"
 
 #: libgnomeui/winhints_demo.c:209
 msgid "Skip Toggles:"
@@ -1472,19 +1488,19 @@ msgid ""
 "Simple test app to check how the WIN_HINTS work.\n"
 "And to test the gnome_win_hints_* functions for errors. :)"
 msgstr ""
-"Simpe programe po sayî cmint-ce ki les WIN_HINTS rotèt.\n"
-"Mins eto po sayî les foncsions gnome_win_hints_* èt vey s' i gn a des arokes "
+"Simpe programe po sayî cmint c' est ki les WIN_HINTS rotèt.\n"
+"Mins eto po sayî les foncsions gnome_win_hints_* èt vey s' i gn a des arokes "
 ":)"
 
 #: libgnorba/gnome-name-server.c:229
 #, c-format
 msgid "Creating '/GNOME' context %s %d"
-msgstr "Dji fwai on cotoû '/Gnome' %s %d"
+msgstr "Dji fwai on cotoû «/Gnome» %s %d"
 
 #: libgnorba/gnome-name-server.c:246
 #, c-format
 msgid "Creating '/GNOME/Servers' context %s %d"
-msgstr "Dji fwai on cotoû '/Gnome/Servers' %s %d"
+msgstr "Dji fwai on cotoû «/Gnome/Servers» %s %d"
 
 #: libgnorba/goad-browser.c:27
 msgid "GOAD ID of the server to activate"
@@ -1504,17 +1520,21 @@ msgid ""
 "any services installed or I don't know the path to find them.\n"
 "In either case, please check your GNOME installation."
 msgstr ""
-"Dji n' a trové nou siervice d' astalé. Ça vout dîre... ki vos n' avoz\n"
-"nou siervice d' astalé ou ki dji n' conoxhe nén li tchmin po les trover.\n"
-"Dins tos les cas, vos dvoz waitî si Gnome e-st astalé comufåt."
+"Dji n' a trové nou siervice d' astalé. Ça vout dire... ki vos n' avoz\n"
+"nou siervice d' astalé ou ki dji n' conoxhe nén li tchmin po les trover.\n"
+"Dins tos les cas, vos dvoz waitî si Gnome est astalé comufåt."
 
 #: libgnorba/goad.c:1361
 msgid "(Internal use only) GOAD server ID to activate"
-msgstr "(Divintrinnmint seulmint) ID do sierveu GOAD a mete èn alaedje"
+msgstr "(Divintrinmint seulmint) ID do sierveu GOAD a mete èn alaedje"
 
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(Divintrinnmint seulmint) descripteu di fitchî GOAD"
+msgstr "(Divintrinmint seulmint) descripteu di fitchî GOAD"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1536,72 +1556,72 @@ msgstr "REPO_ID"
 #, c-format
 msgid "Failed to open CORBA cookie file (%s) for writing: %s\n"
 msgstr ""
-"Dji n' a savu drovî li fitchî cookie CORBA (%s) po z-î scrire dvins: %s\n"
+"Dji n' a savou drovî li fitchî cookie CORBA (%s) po z-î scrire dvins: %s\n"
 
 #: libgnorba/orbitgtk.c:145
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
-msgstr "Dji n' a savu scrire li fitchî cookie CORBA (%s): %s\n"
+msgstr "Dji n' a savou scrire li fitchî cookie CORBA (%s): %s\n"
 
 #: libgnorba/orbitgtk.c:171
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr "Dji n' a savu scrire li fitchî cookie CORBA è '%s': %s\n"
+msgstr "Dji n' a savou scrire li fitchî cookie CORBA è «%s»: %s\n"
 
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Dji n' a savu drovî li fitchî cookie CORBA '%s': %s\n"
+msgstr "Dji n' a savou drovî li fitchî cookie CORBA «%s»: %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Dji n' a savu lere li fitchî cookie CORBA '%s': %s\n"
+msgstr "Dji n' a savou lere li fitchî cookie CORBA «%s»: %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr ""
-"Dj' a nén parvinu a rapexhî on cookie d' åtentificåcion CORBA, dji cwite\n"
+"Dj' a nén parvinou a rapexhî on cookie d' åtentificåcion CORBA, dji cwite\n"
 
 #: libgnorba/orbitns.c:295
 msgid "Could not get name service!"
-msgstr "Dji n' a nén parvinu a rapexhî li no do siervice!"
+msgstr "Dji n' a nén parvinou a rapexhî li no do siervice!"
 
 #: support/error.c:109
 msgid "Unknown system error"
-msgstr "Aroke sitinme disconoxhuwe"
+msgstr "Aroke sistinme disconoxhowe"
 
 #: support/getopt.c:669
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: tchûze  '%s' n' est nén clair\n"
+msgstr "%s: li tchûze «%s» n' est nén clére\n"
 
 #: support/getopt.c:693
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "\"tchûze %s: `--%s' ni pout nén avu èn årgumint\n"
+msgstr "%s: li tchûze «--%s» ni pout nén aveur in årgumint\n"
 
 #: support/getopt.c:698
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: `%c%s' ni pout nén avu èn årgumint\n"
+msgstr "%s: «%c%s» ni pout nén aveur in årgumint\n"
 
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "tchûze %s: `--%s' ni doet avu èn årgumint\n"
+msgstr "tchûze %s: «--%s» ni doet aveur in årgumint\n"
 
 #. --option
 #: support/getopt.c:744
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: tchûze `--%s' nén ricnoxhuwe\n"
+msgstr "%s: tchûze «--%s» nén ricnoxhowe\n"
 
 #. +option or -option
 #: support/getopt.c:748
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: tchûze `%c%s' nén ricnoxhuwe\n"
+msgstr "%s: tchûze «%c%s» nén ricnoxhowe\n"
 
 #. 1003.2 specifies the format of this message.
 #: support/getopt.c:774
@@ -1618,35 +1638,35 @@ msgstr "%s: -- %c tchûze nén valåbe\n"
 #: support/getopt.c:807 support/getopt.c:937
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: cisse tchûze a mezåjhe d' èn årgumint -- %c\n"
+msgstr "%s: cisse tchûze a mezåjhe d' in årgumint -- %c\n"
 
 #: support/getopt.c:854
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: li tchûze `-W %s' n' est nén claire\n"
+msgstr "%s: li tchûze «-W %s» n' est nén clére\n"
 
 #: support/getopt.c:872
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: avou li tchûze `-W %s', vos n' poloz pont mete d' årgumint\n"
+msgstr "%s: avou li tchûze «-W %s», vos n' poloz pont mete d' årgumint\n"
 
 #: support/popthelp.c:35
 msgid "Show this help message"
-msgstr "Mostrer ci messaedje d' aidance"
+msgstr "Mostrer ci messaedje d' aidance"
 
 #: support/popthelp.c:36
 msgid "Display brief usage message"
-msgstr "Mostrer on court messaedje d' ûzaedje"
+msgstr "Mostrer on court messaedje d' ûzaedje"
 
 #. Pixmap
 #: test-gnome/testgnome.c:792
 msgid "Default Pixmap"
-msgstr "Prémetu pixmap"
+msgstr "Prémetou pixmap"
 
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
 msgid "If you choose a font it will appear here"
-msgstr "Si vos tchwezixhoz ene fonte, elle aparetrè droci"
+msgstr "Si vos tchwezixhoz ene fonte, ele aparetrè droci"
 
 #. Font_Info
 #: test-gnome/testgnome.c:807
@@ -1663,7 +1683,7 @@ msgstr "Mostrer li grandeu del fonte"
 
 #: test-gnome/testgnome.c:860
 msgid "This is an hbox with pixmap and text"
-msgstr "Çouci, c' e-st èn hbox avou on pixmap èt do scrît"
+msgstr "Çouci, c' est on hbox avou on pixmap èt do scrit"
 
 #: test-gnome/testgnome.c:1072
 msgid "The user chose Yes/OK with data:\n"
@@ -1678,4 +1698,4 @@ msgid "Weird number in reply callback"
 msgstr "Drole di nombe el response å callback"
 
 #~ msgid "Giving up on displaying error dialog"
-#~ msgstr "Dj' aresteye di sayi di mostrer li purnea d' aroke"
+#~ msgstr "Dj' aresteye di sayi di mostrer li purnea d' aroke"

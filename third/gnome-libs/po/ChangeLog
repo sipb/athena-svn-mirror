@@ -1,3 +1,148 @@
+2001-02-15  Fatih Demir	<kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Enis.
+
+2001-02-15  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation.
+
+2001-02-14  Jarkko Ranta  <jjranta@cc.joensuu.fi>
+
+	fi.po: Updated Finnish translation by Pauli Virtanen
+
+2001-02-14  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Cleanup.
+
+2001-02-14  Dan Damian  <dand@dnttm.ro>
+
+	* ro.po: Updated Romanian translation.
+
+2001-02-10  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: More cleanup.
+	* de.po: Cleanup.
+
+2001-02-09  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Minor Update of the French translation.
+
+2001-02-07  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-02-05  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-02-04  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-02-04  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Cleanup according to the recent discussion on
+	gnome-de@gnome.org.
+
+2001-01-31  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Terminology fixes by Andras Timar <timar@gnome.hu>
+
+2001-01-28  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-01-25  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Update.
+
+2001-01-25  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: More fixes by Andras and Emese (spelling, terminology).
+
+2001-01-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2001-01-24  Szabolcs Ban  <shooby@gnome.hu>
+
+	* hu.po: Tons of fixes by Andras and Emese (spelling, terminology,
+	headers).
+
+2001-01-24  Martin NorbC$ck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated translation
+
+2001-01-24  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-23  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Update.
+
+2001-01-21  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2000-12-22  Christian Meyer  <cm@ggtt.de>
+
+	* de.po: Updated German translation.
+
+2000-12-17  Dan Damian  <dand@dnttm.ro>
+
+	* ro.po: Updated Romanian translation.
+
+2000-12-06  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: added Azeri file
+	* wa.po: updated Waloon file
+	* fr.po,sk.po,pl.po: corrected errors in headers
+
+2000-11-18  Karl Eichwalder  <ke@suse.de>
+
+	* de.po: Update.
+
+2000-11-11  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation
+
+2000-11-11  Jarkko Ranta  <jjranta@cc.joensuu.fi>
+
+	* fi.po: updated Finnish translation.
+
+2000-11-10  Robert Brady  <robert@suse.co.uk>
+
+	* ta.po: Updated Tamil translation from Dinesh Nadarajah.
+
+2000-11-02  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* sk.po: Update Slovak translation from Stanislav Visnovsky.
+
+2000-10-30  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2000-10-27  Robert Brady  <robert@suse.co.uk>
+
+	* sk.po: Updated Slovak translation from Stanislav Visnovsky.
+	<visnovsky@nenya.ms.mff.cuni.cz>
+
+2000-10-26  Robert Brady  <robert@suse.co.uk>
+
+	* ta.po: Added Tamil translation, thanks to Dinesh Nadarajah 
+	<dindin2k@yahoo.com>.
+	
+2000-10-24  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated Italian translation
+
+2000-10-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmel) translation.
+	* nn.po: Updated Norwegian (nynorsk) translation.
+	
 2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* pl.po: Updated Polish translation.
@@ -23,7 +168,7 @@
 2000-10-15  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* nn.po: Added Norwegian (nynorsk) translation.
-	
+
 2000-10-14  Karl Eichwalder  <ke@suse.de>
 
 	* de.po: Small Cleanup.
@@ -53,7 +198,7 @@
 2000-09-28  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian translation.
-	
+
 2000-09-26  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
@@ -98,7 +243,7 @@
 2000-07-16  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian translation.
-	
+
 2000-07-15  Karl Eichwalder  <ke@suse.de>
 
 	* de.po: Update.
@@ -128,7 +273,7 @@
 	* ru.po: updated russian translation.
 
 2000-06-01  Fatih Demir	<kabalak@gmx.net>
-	
+
 	* tr.po: Updated the Turkish translation.
 
 2000-05-27  Karl Eichwalder  <ke@suse.de>
@@ -167,11 +312,11 @@
 	* update.sh: Updated update.sh to support
           merging, --help, easier porting to new
           packages, et al
-	
+
 2000-05-07  Andreas Hyden  <a.hyden@cyberpoint.se>
 
 	* sv.po: Fixed some strings.
-	
+
 2000-05-07  Kjartan Maraas  <kmaraas@online.no>
 
 	* no.po: Updated Norwegian translation.

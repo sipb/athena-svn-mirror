@@ -1,4 +1,4 @@
-<refentry id="GnomeIconList" revision="11 Oct 2000">
+<refentry id="GnomeIconList" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeIconList</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,8 +16,8 @@
 
 
 struct      <link linkend="GnomeIconList-struct">GnomeIconList</link>;
-#define     <link linkend="GNOME-ICON-LIST-IS-EDITABLE">GNOME_ICON_LIST_IS_EDITABLE</link>
-#define     <link linkend="GNOME-ICON-LIST-STATIC-TEXT">GNOME_ICON_LIST_STATIC_TEXT</link>
+#define     <link linkend="GNOME-ICON-LIST-IS-EDITABLE-CAPS">GNOME_ICON_LIST_IS_EDITABLE</link>
+#define     <link linkend="GNOME-ICON-LIST-STATIC-TEXT-CAPS">GNOME_ICON_LIST_STATIC_TEXT</link>
 enum        <link linkend="GnomeIconListMode">GnomeIconListMode</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-icon-list-new">gnome_icon_list_new</link>             (<link linkend="guint">guint</link> icon_width,
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adj,
@@ -163,7 +163,7 @@ int         <link linkend="gnome-icon-list-get-items-per-line">gnome_icon_list_g
     that holds the indices of the icons that are selected at any one
     time.  The <structfield>data</structfield> pointer in each link of
     the list can be casted to an integer, preferably using the
-    <function><link linkend="GPOINTER-TO-INT">GPOINTER_TO_INT</link>()</function> macro, to get the index of
+    <function><link linkend="GPOINTER-TO-INT-CAPS">GPOINTER_TO_INT</link>()</function> macro, to get the index of
     the icon represented by that link:
 
     <programlisting>
@@ -181,7 +181,7 @@ print_selected_icons (GnomeIconList *gil)
     </programlisting>
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-ICON-LIST-IS-EDITABLE">GNOME_ICON_LIST_IS_EDITABLE</title>
+<title><anchor id="GNOME-ICON-LIST-IS-EDITABLE-CAPS">GNOME_ICON_LIST_IS_EDITABLE</title>
 <programlisting>#define GNOME_ICON_LIST_IS_EDITABLE 1
 </programlisting>
   <para>
@@ -190,7 +190,7 @@ print_selected_icons (GnomeIconList *gil)
     captions.
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-ICON-LIST-STATIC-TEXT">GNOME_ICON_LIST_STATIC_TEXT</title>
+<title><anchor id="GNOME-ICON-LIST-STATIC-TEXT-CAPS">GNOME_ICON_LIST_STATIC_TEXT</title>
 <programlisting>#define GNOME_ICON_LIST_STATIC_TEXT 2
 </programlisting>
   <para>
@@ -366,6 +366,7 @@ scrolling will be handled automatically.</para>
 <row><entry align="right"><parameter>vadj</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -494,6 +495,7 @@ the specified file, and it is inserted at the <parameter>pos</parameter> index.<
 </entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -521,6 +523,7 @@ the specified Imlib image.</para>
 <entry> Text to be used for the icon's caption.
 </entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -603,6 +606,7 @@ Selects the icon at the index specified by <parameter>pos</parameter>.</para>
 </entry></row>
 <row><entry align="right"><parameter>idx</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -790,11 +794,14 @@ word-wrapping in the icon text captions.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -916,10 +923,13 @@ An icon can be centered on the icon list.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>gil</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>pos</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

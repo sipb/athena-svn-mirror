@@ -1,4 +1,4 @@
-<refentry id="GnomeMessageBox" revision="11 Oct 2000">
+<refentry id="GnomeMessageBox" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeMessageBox</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,11 +16,11 @@
 
 
 struct      <link linkend="GnomeMessageBox-struct">GnomeMessageBox</link>;
-#define     <link linkend="GNOME-MESSAGE-BOX-INFO">GNOME_MESSAGE_BOX_INFO</link>
-#define     <link linkend="GNOME-MESSAGE-BOX-WARNING">GNOME_MESSAGE_BOX_WARNING</link>
-#define     <link linkend="GNOME-MESSAGE-BOX-ERROR">GNOME_MESSAGE_BOX_ERROR</link>
-#define     <link linkend="GNOME-MESSAGE-BOX-QUESTION">GNOME_MESSAGE_BOX_QUESTION</link>
-#define     <link linkend="GNOME-MESSAGE-BOX-GENERIC">GNOME_MESSAGE_BOX_GENERIC</link>
+#define     <link linkend="GNOME-MESSAGE-BOX-INFO-CAPS">GNOME_MESSAGE_BOX_INFO</link>
+#define     <link linkend="GNOME-MESSAGE-BOX-WARNING-CAPS">GNOME_MESSAGE_BOX_WARNING</link>
+#define     <link linkend="GNOME-MESSAGE-BOX-ERROR-CAPS">GNOME_MESSAGE_BOX_ERROR</link>
+#define     <link linkend="GNOME-MESSAGE-BOX-QUESTION-CAPS">GNOME_MESSAGE_BOX_QUESTION</link>
+#define     <link linkend="GNOME-MESSAGE-BOX-GENERIC-CAPS">GNOME_MESSAGE_BOX_GENERIC</link>
 struct      <link linkend="GnomeMessageBoxButton">GnomeMessageBoxButton</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-message-box-new">gnome_message_box_new</link>           (const <link linkend="gchar">gchar</link> *message,
                                              const <link linkend="gchar">gchar</link> *messagebox_type,
@@ -146,35 +146,35 @@ void        <link linkend="gnome-message-box-set-default">gnome_message_box_set_
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MESSAGE-BOX-INFO">GNOME_MESSAGE_BOX_INFO</title>
+<title><anchor id="GNOME-MESSAGE-BOX-INFO-CAPS">GNOME_MESSAGE_BOX_INFO</title>
 <programlisting>#define GNOME_MESSAGE_BOX_INFO      "info"
 </programlisting>
   <para>
     Use this macro for displaying an informational message.
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MESSAGE-BOX-WARNING">GNOME_MESSAGE_BOX_WARNING</title>
+<title><anchor id="GNOME-MESSAGE-BOX-WARNING-CAPS">GNOME_MESSAGE_BOX_WARNING</title>
 <programlisting>#define GNOME_MESSAGE_BOX_WARNING   "warning"
 </programlisting>
   <para>
     Use this macro for displaying a warning message.
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MESSAGE-BOX-ERROR">GNOME_MESSAGE_BOX_ERROR</title>
+<title><anchor id="GNOME-MESSAGE-BOX-ERROR-CAPS">GNOME_MESSAGE_BOX_ERROR</title>
 <programlisting>#define GNOME_MESSAGE_BOX_ERROR     "error"
 </programlisting>
   <para>
     Use this macro for displaying an error message.
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MESSAGE-BOX-QUESTION">GNOME_MESSAGE_BOX_QUESTION</title>
+<title><anchor id="GNOME-MESSAGE-BOX-QUESTION-CAPS">GNOME_MESSAGE_BOX_QUESTION</title>
 <programlisting>#define GNOME_MESSAGE_BOX_QUESTION  "question"
 </programlisting>
   <para>
     Use this macro when you want to query the user for information. 
   </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-MESSAGE-BOX-GENERIC">GNOME_MESSAGE_BOX_GENERIC</title>
+<title><anchor id="GNOME-MESSAGE-BOX-GENERIC-CAPS">GNOME_MESSAGE_BOX_GENERIC</title>
 <programlisting>#define GNOME_MESSAGE_BOX_GENERIC   "generic"
 </programlisting>
 <para>
@@ -206,7 +206,8 @@ to create gnome-stock-buttons.</para>
 <entry> The message to be displayed.
 </entry></row>
 <row><entry align="right"><parameter>messagebox_type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
 <entry> A NULL terminated list of strings to use in each button.
 </entry></row>
@@ -233,7 +234,8 @@ You can use the GNOME stock identifiers to create gnome-stock-buttons.</para>
 <entry> The message to be displayed.
 </entry></row>
 <row><entry align="right"><parameter>messagebox_type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>buttons</parameter>&nbsp;:</entry>
 <entry> a NULL terminated array with the buttons to insert.
 </entry></row>
@@ -253,6 +255,7 @@ Deprecated. Use <function><link linkend="gtk-window-set-modal">gtk_window_set_mo
 <row><entry align="right"><parameter>messagebox</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -267,9 +270,11 @@ Deprecated. Use <function><link linkend="gnome-dialog-set-modal">gnome_dialog_se
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>messagebox</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry><!--
+<entry>
+<!--
 Local variables:
 mode: sgml
 sgml-parent-document: ("../gnomeui-docs.sgml" "book" "sect1" "")

@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasItem" revision="11 Oct 2000">
+<refentry id="GnomeCanvasItem" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeCanvasItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -326,6 +326,7 @@ values, and the item is repainted as appropriate.</para>
 <row><entry align="right"><parameter>var_args</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -412,15 +413,20 @@ matrix.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>scale_x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>scale_y</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -438,13 +444,17 @@ matrix.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>angle</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

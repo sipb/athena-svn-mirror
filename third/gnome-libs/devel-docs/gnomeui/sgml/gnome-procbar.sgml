@@ -1,4 +1,4 @@
-<refentry id="GnomeProcBar" revision="11 Oct 2000">
+<refentry id="GnomeProcBar" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeProcBar</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,7 +16,7 @@
 
 
 struct      <link linkend="GnomeProcBar-struct">GnomeProcBar</link>;
-#define     <link linkend="GNOME-PROC-BAR--CLASS">GNOME_PROC_BAR__CLASS</link>           (klass)
+#define     <link linkend="GNOME-PROC-BAR--CLASS-CAPS">GNOME_PROC_BAR__CLASS</link>           (klass)
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-proc-bar-new">gnome_proc_bar_new</link>              (<link linkend="GtkWidget">GtkWidget</link> *label,
                                              <link linkend="gint">gint</link> n,
                                              <link linkend="GdkColor">GdkColor</link> *colors,
@@ -70,7 +70,7 @@ and swap load. It is for instance used in the cpumemusage applet and in GTop.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PROC-BAR--CLASS">GNOME_PROC_BAR__CLASS()</title>
+<title><anchor id="GNOME-PROC-BAR--CLASS-CAPS">GNOME_PROC_BAR__CLASS()</title>
 <programlisting>#define GNOME_PROC_BAR__CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gnome_proc_bar_get_type (), GnomeProcBarClass)
 </programlisting>
 <para>
@@ -82,6 +82,7 @@ and swap load. It is for instance used in the cpumemusage applet and in GTop.
 <tbody>
 <row><entry align="right"><parameter>klass</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -141,6 +142,7 @@ probably call this function in the callback to update the values.</para>
 </entry></row>
 <row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

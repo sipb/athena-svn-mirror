@@ -1495,7 +1495,12 @@ vt_parse_vt (struct vt_em *vt, char *ptr, int length)
 	    continue;
 	  }
 	}
+      } else if (c>0xf7) {
+	/* utf-8 shiftchar can only include 4 1 bits in a row (see standard, S 3.8), so we drop this/reset */
+	vt->decode.utf8.shiftchar=0;
+	continue;
       } else {
+	/* valid utf-8 start char, save it out */
 	vt->decode.utf8.shiftchar=c<<1;
 	vt->decode.utf8.wchar=0;
 	vt->decode.utf8.shift=4;

@@ -1364,5 +1364,5 @@ goad_register_arguments(void)
 		{NULL, '\0', 0, NULL, 0}
 	};
 	
-	gnomelib_register_popt_table(options, "Gnome Object Activation Directory");
+	gnomelib_register_popt_table(options, _("Gnome Object Activation Directory"));
 }

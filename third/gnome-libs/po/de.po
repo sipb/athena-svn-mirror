@@ -1,18 +1,19 @@
 # German message file for gnome-libs.
 # Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.
 # Carsten Schaar <nhadcasc@fs-maphy.uni-hannover.de>, 1998.
-# Karl Eichwalder <ke@suse.de>, 1999-2000.
+# Christian Meyer <cm@ggtt.de>, 2000.
+# Karl Eichwalder <ke@suse.de>, 1999, 2000, 2001.
 # Matthias Warkus <mawa@iname.com>, 1999.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.5cvs\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 2000-10-14 20:51+02:00\n"
+"Project-Id-Version: gnome-libs 1.2.11cvs\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-02-10 17:31+01:00\n"
 "Last-Translator: Karl Eichwalder <ke@suse.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: libgnome/gconfigger.c:32
@@ -62,7 +63,8 @@ msgid "HOSTNAME:PORT"
 msgstr "RECHNERNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME-Optionen"
 
 #: libgnomeui/gnome-about.c:187
@@ -259,7 +261,7 @@ msgstr "Die aktuelle Datei drucken"
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "Druckereinstellun_g..."
+msgstr "Drucker_einstellung..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
@@ -405,7 +407,7 @@ msgstr "Informationen zu dieser Anwendung"
 # Checkit: right accelarator? -ke-
 #: libgnomeui/gnome-app-helper.c:238
 msgid "_Select All"
-msgstr "Alle au_swählen"
+msgstr "Alles au_swählen"
 
 #: libgnomeui/gnome-app-helper.c:239
 msgid "Select everything"
@@ -709,7 +711,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "Sitzungsmanagementkennung angeben"
+msgstr "Managementkennung der Sitzung angeben"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -775,12 +777,13 @@ msgstr "Im Terminal laufen lassen"
 
 #: libgnomeui/gnome-dentry-edit.c:364
 msgid "Try this before using:"
-msgstr "Vor dem Aufruf dies versuchen:"
+msgstr "Vor dem Aufruf dies ausprobieren:"
 
 #: libgnomeui/gnome-dentry-edit.c:374
 msgid "Documentation:"
 msgstr "Dokumentation:"
 
+# Checkit!
 #: libgnomeui/gnome-dentry-edit.c:384
 msgid "Name/Comment translations:"
 msgstr "Übersetzungen:"
@@ -829,11 +832,11 @@ msgstr "Dateiauswahl"
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
 #: libgnomeui/gnome-spell.c:636 libgnomeui/gnome-spell.c:653
 msgid "Browse..."
-msgstr "Suchen..."
+msgstr "Durchsuchen..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
-msgstr "Wählen Sie eine Schriftart"
+msgstr "Wählen Sie eine Schrift"
 
 #: libgnomeui/gnome-font-picker.c:710 libgnomeui/gnome-stock.c:848
 msgid "Font"
@@ -845,7 +848,7 @@ msgstr "Kein Icon"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
-msgstr "Kann keine hbox finden, benutze normalen Dateiselektor"
+msgstr "Keine hbox zu finden, normaler Dateiselektor wird benutzt."
 
 #: libgnomeui/gnome-icon-entry.c:280 libgnomeui/gnome-pixmap-entry.c:278
 msgid "Preview"
@@ -853,7 +856,7 @@ msgstr "Vorschau"
 
 #: libgnomeui/gnome-icon-sel.c:348
 msgid "Loading Icons..."
-msgstr "Lade Icons..."
+msgstr "Icons werden geladen..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -932,11 +935,24 @@ msgstr "Ein zusätzliches Gtk-Modul laden"
 msgid "MODULE"
 msgstr "MODUL"
 
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "GTK-Optionen"
+
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "GNOME-GUI-Optionen"
+
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s-Optionen"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-"Mehrere Segmentation-Faults sind vorgefallen; es ist nicht\n"
+"Mehrere Speicherzugriffsfehler sind vorgefallen; es ist nicht\n"
 "möglich, einen Fehlerdialog anzuzeigen.\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
@@ -1021,7 +1037,7 @@ msgid ""
 "is not in the dictionary.\n"
 "Proceed anyway?"
 msgstr ""
-"Das Wort `%s'\n"
+"Das Wort »%s«\n"
 "ist nicht im Wörterbuch.\n"
 "Trotzdem fortfahren?"
 
@@ -1086,8 +1102,8 @@ msgid ""
 "Insert the word\n"
 "in your personal dictionary"
 msgstr ""
-"Wort in das\n"
-"persönliche Wörterbuch einfügen"
+"Das Wort in das persönliche\n"
+"Wörterbuch einfügen."
 
 #: libgnomeui/gnome-spell.c:591
 msgid "Insert with case"
@@ -1100,10 +1116,10 @@ msgid ""
 "(if mixed-case preserve\n"
 "case-sensitivity)"
 msgstr ""
-"Das Wort in das\n"
-"persönliche Wörterbuch einfügen\n"
-"(wenn groß/klein geschrieben,\n"
-"dies beibehalten)"
+"Das Wort in das persönliche\n"
+"Wörterbuch einfügen;\n"
+"Groß-/Kleinschreibung gegebenenfalls\n"
+"beibehalten."
 
 #: libgnomeui/gnome-spell.c:612
 msgid "Ispell command:"
@@ -1123,7 +1139,7 @@ msgstr "Zugelassene Zeichen in Wörtern:"
 
 #: libgnomeui/gnome-spell.c:675
 msgid "Check words longer than:"
-msgstr "Prüfe Wörter länger als:"
+msgstr "Wörter prüfen, länger als:"
 
 #: libgnomeui/gnome-spell.c:686
 msgid "Sort by correctness"
@@ -1191,7 +1207,7 @@ msgstr "Ausrücken"
 
 #: libgnomeui/gnome-stock.c:838
 msgid "Apply"
-msgstr "Übernehmen"
+msgstr "Anwenden"
 
 #: libgnomeui/gnome-stock.c:840 libgnomeui/stock_demo.c:144
 msgid "Close"
@@ -1247,10 +1263,10 @@ msgid ""
 "Please save all your files before closing this dialog."
 msgstr ""
 "Der GNOME Session Manager (Prozess %d) ist wegen eines\n"
-"fatalen Fehlers (%s) abgestürzt.\n"
+"schwerwiegenden Fehlers (%s) abgestürzt.\n"
 "Wenn Sie diesen Dialog schließen, werden alle Anwendungen geschlossen\n"
-"und Ihre Sitzung wird beendet.\n"
-"Bitte speichern Sie alle Ihre Dateien, bevor Sie diesen Dialog schließen."
+"und die Sitzung wird beendet.\n"
+"Bitte speichern Sie Ihre Dateien, bevor Sie diesen Dialog schließen."
 
 #: libgnomeui/gnome_segv.c:72
 #, c-format
@@ -1259,8 +1275,8 @@ msgid ""
 "due to a fatal error.\n"
 "(%s)"
 msgstr ""
-"Die Anwendung \"%s\" (Prozess %d) ist wegen\n"
-"eines fatalen Fehlers abgestürzt.\n"
+"Die Anwendung »%s« (Prozess %d) ist wegen\n"
+"eines schwerwiegenden Fehlers abgestürzt.\n"
 "(%s)"
 
 #: libgnomeui/gnome_segv.c:80
@@ -1324,7 +1340,7 @@ msgstr "Wiederherstellen"
 
 #: libgnomeui/stock_demo.c:208
 msgid "Delete"
-msgstr "Löschen"
+msgstr "Entfernen"
 
 #: libgnomeui/stock_demo.c:213
 msgid "Cut"
@@ -1344,7 +1360,7 @@ msgstr "Eigenschaften..."
 
 #: libgnomeui/stock_demo.c:251
 msgid "Preferences..."
-msgstr "Einstellungen..."
+msgstr "Vorlieben..."
 
 #: libgnomeui/stock_demo.c:266
 msgid "Scores..."
@@ -1380,7 +1396,7 @@ msgstr "Normal"
 
 #: libgnomeui/winhints_demo.c:110
 msgid "Below"
-msgstr "Untendrunter"
+msgstr "Darunter"
 
 #: libgnomeui/winhints_demo.c:114
 msgid "Desktop"
@@ -1477,12 +1493,12 @@ msgstr ""
 #: libgnorba/gnome-name-server.c:229
 #, c-format
 msgid "Creating '/GNOME' context %s %d"
-msgstr "Erzeuge '/GNOME'-Kontext %s %d"
+msgstr "»/GNOME«-Kontext %s %d wird erzeugt"
 
 #: libgnorba/gnome-name-server.c:246
 #, c-format
 msgid "Creating '/GNOME/Servers' context %s %d"
-msgstr "Erzeuge '/GNOME/Servers'-Kontext %s %d"
+msgstr "»/GNOME/Servers«-Kontext %s %d wird erzeugt"
 
 #: libgnorba/goad-browser.c:27
 msgid "GOAD ID of the server to activate"
@@ -1502,10 +1518,10 @@ msgid ""
 "any services installed or I don't know the path to find them.\n"
 "In either case, please check your GNOME installation."
 msgstr ""
-"Ich konnte keine installierten Dienste finden.  Entweder haben Sie keine\n"
-"Dienste installiert, oder ich kenne den Pfad nicht, unter dem ich sie\n"
-"finden kann.  Wie auch immer, bitte überprüfen Sie Ihre\n"
-"GNOME-Installation."
+"Es konnten keine installierten Dienste gefunden werden. Entweder haben Sie "
+"keine\n"
+"Dienste installiert, oder der Pfad ist unbekannt, unter dem sie gefunden\n"
+"werden können.  Wie auch immer, bitte überprüfen Sie Ihre GNOME-Installation."
 
 #: libgnorba/goad.c:1361
 msgid "(Internal use only) GOAD server ID to activate"
@@ -1514,6 +1530,10 @@ msgstr "(Nur intern) zu aktivierende GOAD-Server-ID"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Nur intern) GOAD-Datei-Deskriptor"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Gnome Object Activation Directory"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"
@@ -1541,32 +1561,32 @@ msgstr ""
 #: libgnorba/orbitgtk.c:145
 #, c-format
 msgid "Failed to write CORBA cookie file (%s): %s\n"
-msgstr "Das Schreiben der CORBA Cookie-Datei (%s) ist fehlgeschlagen: %s\n"
+msgstr "Das Schreiben der CORBA-Cookie-Datei (%s) ist fehlgeschlagen: %s\n"
 
 #: libgnorba/orbitgtk.c:171
 #, c-format
 msgid "Failed to write CORBA cookie to `%s': %s\n"
-msgstr "Das Schreiben des CORBA Cookies in `%s' ist fehlgeschlagen: %s\n"
+msgstr "Das Schreiben des CORBA-Cookies in »%s« ist fehlgeschlagen: %s\n"
 
 #: libgnorba/orbitgtk.c:181
 #, c-format
 msgid "Failed to open CORBA cookie file `%s': %s\n"
-msgstr "Das Öffnen der CORBA Cookie-Datei `%s' ist fehlgeschlagen: %s\n"
+msgstr "Das Öffnen der CORBA-Cookie-Datei »%s« ist fehlgeschlagen: %s\n"
 
 #: libgnorba/orbitgtk.c:187
 #, c-format
 msgid "Failed to read CORBA cookie file `%s': %s\n"
-msgstr "Das Lesen der CORBA Cookie-Datei `%s' ist fehlgeschlagen: %s\n"
+msgstr "Das Lesen der CORBA-Cookie-Datei »%s« ist fehlgeschlagen: %s\n"
 
 #: libgnorba/orbitgtk.c:213
 msgid "Failed to obtain CORBA authentication cookie, exiting\n"
 msgstr ""
-"Die Übermittlung des CORBA Authentikationscookies ist fehlgeschlagen, breche "
-"ab\n"
+"Die Übermittlung des CORBA-Authentikationscookies ist fehlgeschlagen;\n"
+"Abbruch des Versuchs.\n"
 
 #: libgnorba/orbitns.c:295
 msgid "Could not get name service!"
-msgstr "Konnte keinen Name-Service erhalten!"
+msgstr "Es konnte kein Name-Service erhalten werden!"
 
 #: support/error.c:109
 msgid "Unknown system error"
@@ -1580,12 +1600,12 @@ msgstr "%s: Die Option `%s' ist nicht eindeutig\n"
 #: support/getopt.c:693
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: Die Option `--%s' erlaubt kein Argmuent\n"
+msgstr "%s: Die Option `--%s' erlaubt kein Argument\n"
 
 #: support/getopt.c:698
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: Die Option `%c%s' erlaubt kein Argmuent\n"
+msgstr "%s: Die Option `%c%s' erlaubt kein Argument\n"
 
 #: support/getopt.c:715 support/getopt.c:888
 #, c-format
@@ -1619,7 +1639,7 @@ msgstr "%s: ungültige Option -- %c\n"
 #: support/getopt.c:807 support/getopt.c:937
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: Die Option verlangt ein Argmuent -- %c\n"
+msgstr "%s: Die Option verlangt ein Argument -- %c\n"
 
 #: support/getopt.c:854
 #, c-format
@@ -1647,7 +1667,7 @@ msgstr "Standard-Pixmap"
 #: test-gnome/testgnome.c:800 test-gnome/testgnome.c:841
 #: test-gnome/testgnome.c:866
 msgid "If you choose a font it will appear here"
-msgstr "Wenn Sie eine Schrift wählen, wird diese hier erscheinen"
+msgstr "Wenn Sie eine Schrift wählen, wird diese hier erscheinen."
 
 #. Font_Info
 #: test-gnome/testgnome.c:807
@@ -1677,9 +1697,3 @@ msgstr "Der Anwender wählte Nein/Abbrechen mit den Daten:\n"
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
 msgstr "Merkwürdige Nummer in Antwort"
-
-#~ msgid "Specifies the geometry for the toplevel window"
-#~ msgstr "Die Geometrie des Hauptfensters (Toplevel) angeben"
-
-#~ msgid "GEOMETRY"
-#~ msgstr "GEOMETRIE"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.5\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
 "PO-Revision-Date: 2000-10-13 03:37+0300\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -60,7 +60,8 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTAS:PRIEV"
 
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "GNOME Nuostatos"
 
 #: libgnomeui/gnome-about.c:187
@@ -931,8 +932,23 @@ msgstr "Uþkrauti papildomà Gtk modulá"
 msgid "MODULE"
 msgstr "MODULIS"
 
+#: libgnomeui/gnome-init.c:297
+#, fuzzy
+msgid "GTK options"
+msgstr "GNOME Nuostatos"
+
+#: libgnomeui/gnome-init.c:298
+#, fuzzy
+msgid "GNOME GUI options"
+msgstr "GNOME Nuostatos"
+
+#: libgnomeui/gnome-init.c:452
+#, fuzzy, c-format
+msgid "%s options"
+msgstr "GNOME Nuostatos"
+
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Ávyko keletas segmentacijos klaidø; negaliu parodyti klaidos dialogo\n"
 
@@ -1506,6 +1522,10 @@ msgstr "(Tik vidiniam naudojimui) Aktyvuojamo serverio GOAD ID"
 #: libgnorba/goad.c:1363
 msgid "(Internal use only) GOAD file descriptor"
 msgstr "(Tik vidiniam naudojimui) Aktyvuojamo serverio GOAD bylos apraðiklis"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr ""
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

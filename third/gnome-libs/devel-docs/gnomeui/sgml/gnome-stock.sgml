@@ -1,4 +1,4 @@
-<refentry id="GnomeStock" revision="11 Oct 2000">
+<refentry id="GnomeStock" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeStock</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,88 +16,88 @@
 
 
 struct      <link linkend="GnomeStock-struct">GnomeStock</link>;
-#define     <link linkend="GNOME-STOCK-PIXMAP-NEW">GNOME_STOCK_PIXMAP_NEW</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-OPEN">GNOME_STOCK_PIXMAP_OPEN</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-CLOSE">GNOME_STOCK_PIXMAP_CLOSE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-REVERT">GNOME_STOCK_PIXMAP_REVERT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-SAVE">GNOME_STOCK_PIXMAP_SAVE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-SAVE-AS">GNOME_STOCK_PIXMAP_SAVE_AS</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-CUT">GNOME_STOCK_PIXMAP_CUT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-COPY">GNOME_STOCK_PIXMAP_COPY</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-PASTE">GNOME_STOCK_PIXMAP_PASTE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-CLEAR">GNOME_STOCK_PIXMAP_CLEAR</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-PROPERTIES">GNOME_STOCK_PIXMAP_PROPERTIES</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-PREFERENCES">GNOME_STOCK_PIXMAP_PREFERENCES</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-HELP">GNOME_STOCK_PIXMAP_HELP</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-SCORES">GNOME_STOCK_PIXMAP_SCORES</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-PRINT">GNOME_STOCK_PIXMAP_PRINT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-SEARCH">GNOME_STOCK_PIXMAP_SEARCH</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-SRCHRPL">GNOME_STOCK_PIXMAP_SRCHRPL</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BACK">GNOME_STOCK_PIXMAP_BACK</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-FORWARD">GNOME_STOCK_PIXMAP_FORWARD</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-FIRST">GNOME_STOCK_PIXMAP_FIRST</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-LAST">GNOME_STOCK_PIXMAP_LAST</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-HOME">GNOME_STOCK_PIXMAP_HOME</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-STOP">GNOME_STOCK_PIXMAP_STOP</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-REFRESH">GNOME_STOCK_PIXMAP_REFRESH</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-UNDO">GNOME_STOCK_PIXMAP_UNDO</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-REDO">GNOME_STOCK_PIXMAP_REDO</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TIMER">GNOME_STOCK_PIXMAP_TIMER</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TIMER-STOP">GNOME_STOCK_PIXMAP_TIMER_STOP</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL">GNOME_STOCK_PIXMAP_MAIL</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-RCV">GNOME_STOCK_PIXMAP_MAIL_RCV</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-SND">GNOME_STOCK_PIXMAP_MAIL_SND</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-RPL">GNOME_STOCK_PIXMAP_MAIL_RPL</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-FWD">GNOME_STOCK_PIXMAP_MAIL_FWD</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-NEW">GNOME_STOCK_PIXMAP_MAIL_NEW</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TRASH">GNOME_STOCK_PIXMAP_TRASH</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TRASH-FULL">GNOME_STOCK_PIXMAP_TRASH_FULL</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-UNDELETE">GNOME_STOCK_PIXMAP_UNDELETE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-SPELLCHECK">GNOME_STOCK_PIXMAP_SPELLCHECK</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MIC">GNOME_STOCK_PIXMAP_MIC</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-LINE-IN">GNOME_STOCK_PIXMAP_LINE_IN</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-CDROM">GNOME_STOCK_PIXMAP_CDROM</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-VOLUME">GNOME_STOCK_PIXMAP_VOLUME</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-RED">GNOME_STOCK_PIXMAP_BOOK_RED</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-GREEN">GNOME_STOCK_PIXMAP_BOOK_GREEN</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-BLUE">GNOME_STOCK_PIXMAP_BOOK_BLUE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-YELLOW">GNOME_STOCK_PIXMAP_BOOK_YELLOW</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-OPEN">GNOME_STOCK_PIXMAP_BOOK_OPEN</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ABOUT">GNOME_STOCK_PIXMAP_ABOUT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-QUIT">GNOME_STOCK_PIXMAP_QUIT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-MULTIPLE">GNOME_STOCK_PIXMAP_MULTIPLE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-NOT">GNOME_STOCK_PIXMAP_NOT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-CONVERT">GNOME_STOCK_PIXMAP_CONVERT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-JUMP-TO">GNOME_STOCK_PIXMAP_JUMP_TO</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-UP">GNOME_STOCK_PIXMAP_UP</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-DOWN">GNOME_STOCK_PIXMAP_DOWN</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TOP">GNOME_STOCK_PIXMAP_TOP</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-BOTTOM">GNOME_STOCK_PIXMAP_BOTTOM</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ATTACH">GNOME_STOCK_PIXMAP_ATTACH</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-INDEX">GNOME_STOCK_PIXMAP_INDEX</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-FONT">GNOME_STOCK_PIXMAP_FONT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-EXEC">GNOME_STOCK_PIXMAP_EXEC</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-LEFT">GNOME_STOCK_PIXMAP_ALIGN_LEFT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-RIGHT">GNOME_STOCK_PIXMAP_ALIGN_RIGHT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-CENTER">GNOME_STOCK_PIXMAP_ALIGN_CENTER</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-JUSTIFY">GNOME_STOCK_PIXMAP_ALIGN_JUSTIFY</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-BOLD">GNOME_STOCK_PIXMAP_TEXT_BOLD</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-ITALIC">GNOME_STOCK_PIXMAP_TEXT_ITALIC</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-UNDERLINE">GNOME_STOCK_PIXMAP_TEXT_UNDERLINE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-STRIKEOUT">GNOME_STOCK_PIXMAP_TEXT_STRIKEOUT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-INDENT">GNOME_STOCK_PIXMAP_TEXT_INDENT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-UNINDENT">GNOME_STOCK_PIXMAP_TEXT_UNINDENT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-EXIT">GNOME_STOCK_PIXMAP_EXIT</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-COLORSELECTOR">GNOME_STOCK_PIXMAP_COLORSELECTOR</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-ADD">GNOME_STOCK_PIXMAP_ADD</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-REMOVE">GNOME_STOCK_PIXMAP_REMOVE</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TABLE-BORDERS">GNOME_STOCK_PIXMAP_TABLE_BORDERS</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TABLE-FILL">GNOME_STOCK_PIXMAP_TABLE_FILL</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-BULLETED-LIST">GNOME_STOCK_PIXMAP_TEXT_BULLETED_LIST</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-NUMBERED-LIST">GNOME_STOCK_PIXMAP_TEXT_NUMBERED_LIST</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-REGULAR">GNOME_STOCK_PIXMAP_REGULAR</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-DISABLED">GNOME_STOCK_PIXMAP_DISABLED</link>
-#define     <link linkend="GNOME-STOCK-PIXMAP-FOCUSED">GNOME_STOCK_PIXMAP_FOCUSED</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-NEW-CAPS">GNOME_STOCK_PIXMAP_NEW</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-OPEN-CAPS">GNOME_STOCK_PIXMAP_OPEN</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-CLOSE-CAPS">GNOME_STOCK_PIXMAP_CLOSE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-REVERT-CAPS">GNOME_STOCK_PIXMAP_REVERT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-SAVE-CAPS">GNOME_STOCK_PIXMAP_SAVE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-SAVE-AS-CAPS">GNOME_STOCK_PIXMAP_SAVE_AS</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-CUT-CAPS">GNOME_STOCK_PIXMAP_CUT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-COPY-CAPS">GNOME_STOCK_PIXMAP_COPY</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-PASTE-CAPS">GNOME_STOCK_PIXMAP_PASTE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-CLEAR-CAPS">GNOME_STOCK_PIXMAP_CLEAR</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-PROPERTIES-CAPS">GNOME_STOCK_PIXMAP_PROPERTIES</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-PREFERENCES-CAPS">GNOME_STOCK_PIXMAP_PREFERENCES</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-HELP-CAPS">GNOME_STOCK_PIXMAP_HELP</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-SCORES-CAPS">GNOME_STOCK_PIXMAP_SCORES</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-PRINT-CAPS">GNOME_STOCK_PIXMAP_PRINT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-SEARCH-CAPS">GNOME_STOCK_PIXMAP_SEARCH</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-SRCHRPL-CAPS">GNOME_STOCK_PIXMAP_SRCHRPL</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BACK-CAPS">GNOME_STOCK_PIXMAP_BACK</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-FORWARD-CAPS">GNOME_STOCK_PIXMAP_FORWARD</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-FIRST-CAPS">GNOME_STOCK_PIXMAP_FIRST</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-LAST-CAPS">GNOME_STOCK_PIXMAP_LAST</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-HOME-CAPS">GNOME_STOCK_PIXMAP_HOME</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-STOP-CAPS">GNOME_STOCK_PIXMAP_STOP</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-REFRESH-CAPS">GNOME_STOCK_PIXMAP_REFRESH</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-UNDO-CAPS">GNOME_STOCK_PIXMAP_UNDO</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-REDO-CAPS">GNOME_STOCK_PIXMAP_REDO</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TIMER-CAPS">GNOME_STOCK_PIXMAP_TIMER</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TIMER-STOP-CAPS">GNOME_STOCK_PIXMAP_TIMER_STOP</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-CAPS">GNOME_STOCK_PIXMAP_MAIL</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-RCV-CAPS">GNOME_STOCK_PIXMAP_MAIL_RCV</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-SND-CAPS">GNOME_STOCK_PIXMAP_MAIL_SND</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-RPL-CAPS">GNOME_STOCK_PIXMAP_MAIL_RPL</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-FWD-CAPS">GNOME_STOCK_PIXMAP_MAIL_FWD</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MAIL-NEW-CAPS">GNOME_STOCK_PIXMAP_MAIL_NEW</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TRASH-CAPS">GNOME_STOCK_PIXMAP_TRASH</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TRASH-FULL-CAPS">GNOME_STOCK_PIXMAP_TRASH_FULL</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-UNDELETE-CAPS">GNOME_STOCK_PIXMAP_UNDELETE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-SPELLCHECK-CAPS">GNOME_STOCK_PIXMAP_SPELLCHECK</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MIC-CAPS">GNOME_STOCK_PIXMAP_MIC</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-LINE-IN-CAPS">GNOME_STOCK_PIXMAP_LINE_IN</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-CDROM-CAPS">GNOME_STOCK_PIXMAP_CDROM</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-VOLUME-CAPS">GNOME_STOCK_PIXMAP_VOLUME</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-RED-CAPS">GNOME_STOCK_PIXMAP_BOOK_RED</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-GREEN-CAPS">GNOME_STOCK_PIXMAP_BOOK_GREEN</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-BLUE-CAPS">GNOME_STOCK_PIXMAP_BOOK_BLUE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-YELLOW-CAPS">GNOME_STOCK_PIXMAP_BOOK_YELLOW</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BOOK-OPEN-CAPS">GNOME_STOCK_PIXMAP_BOOK_OPEN</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ABOUT-CAPS">GNOME_STOCK_PIXMAP_ABOUT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-QUIT-CAPS">GNOME_STOCK_PIXMAP_QUIT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-MULTIPLE-CAPS">GNOME_STOCK_PIXMAP_MULTIPLE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-NOT-CAPS">GNOME_STOCK_PIXMAP_NOT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-CONVERT-CAPS">GNOME_STOCK_PIXMAP_CONVERT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-JUMP-TO-CAPS">GNOME_STOCK_PIXMAP_JUMP_TO</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-UP-CAPS">GNOME_STOCK_PIXMAP_UP</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-DOWN-CAPS">GNOME_STOCK_PIXMAP_DOWN</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TOP-CAPS">GNOME_STOCK_PIXMAP_TOP</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-BOTTOM-CAPS">GNOME_STOCK_PIXMAP_BOTTOM</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ATTACH-CAPS">GNOME_STOCK_PIXMAP_ATTACH</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-INDEX-CAPS">GNOME_STOCK_PIXMAP_INDEX</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-FONT-CAPS">GNOME_STOCK_PIXMAP_FONT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-EXEC-CAPS">GNOME_STOCK_PIXMAP_EXEC</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-LEFT-CAPS">GNOME_STOCK_PIXMAP_ALIGN_LEFT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-RIGHT-CAPS">GNOME_STOCK_PIXMAP_ALIGN_RIGHT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-CENTER-CAPS">GNOME_STOCK_PIXMAP_ALIGN_CENTER</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ALIGN-JUSTIFY-CAPS">GNOME_STOCK_PIXMAP_ALIGN_JUSTIFY</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-BOLD-CAPS">GNOME_STOCK_PIXMAP_TEXT_BOLD</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-ITALIC-CAPS">GNOME_STOCK_PIXMAP_TEXT_ITALIC</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-UNDERLINE-CAPS">GNOME_STOCK_PIXMAP_TEXT_UNDERLINE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-STRIKEOUT-CAPS">GNOME_STOCK_PIXMAP_TEXT_STRIKEOUT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-INDENT-CAPS">GNOME_STOCK_PIXMAP_TEXT_INDENT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-UNINDENT-CAPS">GNOME_STOCK_PIXMAP_TEXT_UNINDENT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-EXIT-CAPS">GNOME_STOCK_PIXMAP_EXIT</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-COLORSELECTOR-CAPS">GNOME_STOCK_PIXMAP_COLORSELECTOR</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-ADD-CAPS">GNOME_STOCK_PIXMAP_ADD</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-REMOVE-CAPS">GNOME_STOCK_PIXMAP_REMOVE</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TABLE-BORDERS-CAPS">GNOME_STOCK_PIXMAP_TABLE_BORDERS</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TABLE-FILL-CAPS">GNOME_STOCK_PIXMAP_TABLE_FILL</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-BULLETED-LIST-CAPS">GNOME_STOCK_PIXMAP_TEXT_BULLETED_LIST</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-TEXT-NUMBERED-LIST-CAPS">GNOME_STOCK_PIXMAP_TEXT_NUMBERED_LIST</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-REGULAR-CAPS">GNOME_STOCK_PIXMAP_REGULAR</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-DISABLED-CAPS">GNOME_STOCK_PIXMAP_DISABLED</link>
+#define     <link linkend="GNOME-STOCK-PIXMAP-FOCUSED-CAPS">GNOME_STOCK_PIXMAP_FOCUSED</link>
 struct      <link linkend="GnomeStockPixmapEntryAny">GnomeStockPixmapEntryAny</link>;
 struct      <link linkend="GnomeStockPixmapEntryData">GnomeStockPixmapEntryData</link>;
 struct      <link linkend="GnomeStockPixmapEntryFile">GnomeStockPixmapEntryFile</link>;
@@ -138,87 +138,87 @@ void        <link linkend="gnome-stock-pixmap-widget-set-icon">gnome_stock_pixma
                                              const char *text);
 void        <link linkend="gnome-button-can-default">gnome_button_can_default</link>        (<link linkend="GtkButton">GtkButton</link> *button,
                                              <link linkend="gboolean">gboolean</link> can_default);
-#define     <link linkend="GNOME-STOCK-BUTTON-OK">GNOME_STOCK_BUTTON_OK</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-CANCEL">GNOME_STOCK_BUTTON_CANCEL</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-YES">GNOME_STOCK_BUTTON_YES</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-NO">GNOME_STOCK_BUTTON_NO</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-CLOSE">GNOME_STOCK_BUTTON_CLOSE</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-APPLY">GNOME_STOCK_BUTTON_APPLY</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-HELP">GNOME_STOCK_BUTTON_HELP</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-NEXT">GNOME_STOCK_BUTTON_NEXT</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-PREV">GNOME_STOCK_BUTTON_PREV</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-UP">GNOME_STOCK_BUTTON_UP</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-DOWN">GNOME_STOCK_BUTTON_DOWN</link>
-#define     <link linkend="GNOME-STOCK-BUTTON-FONT">GNOME_STOCK_BUTTON_FONT</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-OK-CAPS">GNOME_STOCK_BUTTON_OK</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-CANCEL-CAPS">GNOME_STOCK_BUTTON_CANCEL</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-YES-CAPS">GNOME_STOCK_BUTTON_YES</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-NO-CAPS">GNOME_STOCK_BUTTON_NO</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-CLOSE-CAPS">GNOME_STOCK_BUTTON_CLOSE</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-APPLY-CAPS">GNOME_STOCK_BUTTON_APPLY</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-HELP-CAPS">GNOME_STOCK_BUTTON_HELP</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-NEXT-CAPS">GNOME_STOCK_BUTTON_NEXT</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-PREV-CAPS">GNOME_STOCK_BUTTON_PREV</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-UP-CAPS">GNOME_STOCK_BUTTON_UP</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-DOWN-CAPS">GNOME_STOCK_BUTTON_DOWN</link>
+#define     <link linkend="GNOME-STOCK-BUTTON-FONT-CAPS">GNOME_STOCK_BUTTON_FONT</link>
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-stock-button">gnome_stock_button</link>              (const char *type);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-stock-or-ordinary-button">gnome_stock_or_ordinary_button</link>  (const char *type);
-#define     <link linkend="GNOME-STOCK-MENU-BLANK">GNOME_STOCK_MENU_BLANK</link>
-#define     <link linkend="GNOME-STOCK-MENU-NEW">GNOME_STOCK_MENU_NEW</link>
-#define     <link linkend="GNOME-STOCK-MENU-SAVE">GNOME_STOCK_MENU_SAVE</link>
-#define     <link linkend="GNOME-STOCK-MENU-SAVE-AS">GNOME_STOCK_MENU_SAVE_AS</link>
-#define     <link linkend="GNOME-STOCK-MENU-REVERT">GNOME_STOCK_MENU_REVERT</link>
-#define     <link linkend="GNOME-STOCK-MENU-OPEN">GNOME_STOCK_MENU_OPEN</link>
-#define     <link linkend="GNOME-STOCK-MENU-CLOSE">GNOME_STOCK_MENU_CLOSE</link>
-#define     <link linkend="GNOME-STOCK-MENU-QUIT">GNOME_STOCK_MENU_QUIT</link>
-#define     <link linkend="GNOME-STOCK-MENU-CUT">GNOME_STOCK_MENU_CUT</link>
-#define     <link linkend="GNOME-STOCK-MENU-COPY">GNOME_STOCK_MENU_COPY</link>
-#define     <link linkend="GNOME-STOCK-MENU-PASTE">GNOME_STOCK_MENU_PASTE</link>
-#define     <link linkend="GNOME-STOCK-MENU-PROP">GNOME_STOCK_MENU_PROP</link>
-#define     <link linkend="GNOME-STOCK-MENU-PREF">GNOME_STOCK_MENU_PREF</link>
-#define     <link linkend="GNOME-STOCK-MENU-ABOUT">GNOME_STOCK_MENU_ABOUT</link>
-#define     <link linkend="GNOME-STOCK-MENU-SCORES">GNOME_STOCK_MENU_SCORES</link>
-#define     <link linkend="GNOME-STOCK-MENU-UNDO">GNOME_STOCK_MENU_UNDO</link>
-#define     <link linkend="GNOME-STOCK-MENU-REDO">GNOME_STOCK_MENU_REDO</link>
-#define     <link linkend="GNOME-STOCK-MENU-PRINT">GNOME_STOCK_MENU_PRINT</link>
-#define     <link linkend="GNOME-STOCK-MENU-SEARCH">GNOME_STOCK_MENU_SEARCH</link>
-#define     <link linkend="GNOME-STOCK-MENU-SRCHRPL">GNOME_STOCK_MENU_SRCHRPL</link>
-#define     <link linkend="GNOME-STOCK-MENU-BACK">GNOME_STOCK_MENU_BACK</link>
-#define     <link linkend="GNOME-STOCK-MENU-FORWARD">GNOME_STOCK_MENU_FORWARD</link>
-#define     <link linkend="GNOME-STOCK-MENU-FIRST">GNOME_STOCK_MENU_FIRST</link>
-#define     <link linkend="GNOME-STOCK-MENU-LAST">GNOME_STOCK_MENU_LAST</link>
-#define     <link linkend="GNOME-STOCK-MENU-HOME">GNOME_STOCK_MENU_HOME</link>
-#define     <link linkend="GNOME-STOCK-MENU-STOP">GNOME_STOCK_MENU_STOP</link>
-#define     <link linkend="GNOME-STOCK-MENU-REFRESH">GNOME_STOCK_MENU_REFRESH</link>
-#define     <link linkend="GNOME-STOCK-MENU-MAIL">GNOME_STOCK_MENU_MAIL</link>
-#define     <link linkend="GNOME-STOCK-MENU-MAIL-RCV">GNOME_STOCK_MENU_MAIL_RCV</link>
-#define     <link linkend="GNOME-STOCK-MENU-MAIL-SND">GNOME_STOCK_MENU_MAIL_SND</link>
-#define     <link linkend="GNOME-STOCK-MENU-MAIL-RPL">GNOME_STOCK_MENU_MAIL_RPL</link>
-#define     <link linkend="GNOME-STOCK-MENU-MAIL-FWD">GNOME_STOCK_MENU_MAIL_FWD</link>
-#define     <link linkend="GNOME-STOCK-MENU-MAIL-NEW">GNOME_STOCK_MENU_MAIL_NEW</link>
-#define     <link linkend="GNOME-STOCK-MENU-TRASH">GNOME_STOCK_MENU_TRASH</link>
-#define     <link linkend="GNOME-STOCK-MENU-TRASH-FULL">GNOME_STOCK_MENU_TRASH_FULL</link>
-#define     <link linkend="GNOME-STOCK-MENU-UNDELETE">GNOME_STOCK_MENU_UNDELETE</link>
-#define     <link linkend="GNOME-STOCK-MENU-TIMER">GNOME_STOCK_MENU_TIMER</link>
-#define     <link linkend="GNOME-STOCK-MENU-TIMER-STOP">GNOME_STOCK_MENU_TIMER_STOP</link>
-#define     <link linkend="GNOME-STOCK-MENU-SPELLCHECK">GNOME_STOCK_MENU_SPELLCHECK</link>
-#define     <link linkend="GNOME-STOCK-MENU-MIC">GNOME_STOCK_MENU_MIC</link>
-#define     <link linkend="GNOME-STOCK-MENU-LINE-IN">GNOME_STOCK_MENU_LINE_IN</link>
-#define     <link linkend="GNOME-STOCK-MENU-CDROM">GNOME_STOCK_MENU_CDROM</link>
-#define     <link linkend="GNOME-STOCK-MENU-VOLUME">GNOME_STOCK_MENU_VOLUME</link>
-#define     <link linkend="GNOME-STOCK-MENU-BOOK-RED">GNOME_STOCK_MENU_BOOK_RED</link>
-#define     <link linkend="GNOME-STOCK-MENU-BOOK-GREEN">GNOME_STOCK_MENU_BOOK_GREEN</link>
-#define     <link linkend="GNOME-STOCK-MENU-BOOK-BLUE">GNOME_STOCK_MENU_BOOK_BLUE</link>
-#define     <link linkend="GNOME-STOCK-MENU-BOOK-YELLOW">GNOME_STOCK_MENU_BOOK_YELLOW</link>
-#define     <link linkend="GNOME-STOCK-MENU-BOOK-OPEN">GNOME_STOCK_MENU_BOOK_OPEN</link>
-#define     <link linkend="GNOME-STOCK-MENU-CONVERT">GNOME_STOCK_MENU_CONVERT</link>
-#define     <link linkend="GNOME-STOCK-MENU-JUMP-TO">GNOME_STOCK_MENU_JUMP_TO</link>
-#define     <link linkend="GNOME-STOCK-MENU-UP">GNOME_STOCK_MENU_UP</link>
-#define     <link linkend="GNOME-STOCK-MENU-DOWN">GNOME_STOCK_MENU_DOWN</link>
-#define     <link linkend="GNOME-STOCK-MENU-TOP">GNOME_STOCK_MENU_TOP</link>
-#define     <link linkend="GNOME-STOCK-MENU-BOTTOM">GNOME_STOCK_MENU_BOTTOM</link>
-#define     <link linkend="GNOME-STOCK-MENU-ATTACH">GNOME_STOCK_MENU_ATTACH</link>
-#define     <link linkend="GNOME-STOCK-MENU-INDEX">GNOME_STOCK_MENU_INDEX</link>
-#define     <link linkend="GNOME-STOCK-MENU-FONT">GNOME_STOCK_MENU_FONT</link>
-#define     <link linkend="GNOME-STOCK-MENU-EXEC">GNOME_STOCK_MENU_EXEC</link>
-#define     <link linkend="GNOME-STOCK-MENU-ALIGN-LEFT">GNOME_STOCK_MENU_ALIGN_LEFT</link>
-#define     <link linkend="GNOME-STOCK-MENU-ALIGN-RIGHT">GNOME_STOCK_MENU_ALIGN_RIGHT</link>
-#define     <link linkend="GNOME-STOCK-MENU-ALIGN-CENTER">GNOME_STOCK_MENU_ALIGN_CENTER</link>
-#define     <link linkend="GNOME-STOCK-MENU-ALIGN-JUSTIFY">GNOME_STOCK_MENU_ALIGN_JUSTIFY</link>
-#define     <link linkend="GNOME-STOCK-MENU-TEXT-BOLD">GNOME_STOCK_MENU_TEXT_BOLD</link>
-#define     <link linkend="GNOME-STOCK-MENU-TEXT-ITALIC">GNOME_STOCK_MENU_TEXT_ITALIC</link>
-#define     <link linkend="GNOME-STOCK-MENU-TEXT-UNDERLINE">GNOME_STOCK_MENU_TEXT_UNDERLINE</link>
-#define     <link linkend="GNOME-STOCK-MENU-TEXT-STRIKEOUT">GNOME_STOCK_MENU_TEXT_STRIKEOUT</link>
-#define     <link linkend="GNOME-STOCK-MENU-EXIT">GNOME_STOCK_MENU_EXIT</link>
+#define     <link linkend="GNOME-STOCK-MENU-BLANK-CAPS">GNOME_STOCK_MENU_BLANK</link>
+#define     <link linkend="GNOME-STOCK-MENU-NEW-CAPS">GNOME_STOCK_MENU_NEW</link>
+#define     <link linkend="GNOME-STOCK-MENU-SAVE-CAPS">GNOME_STOCK_MENU_SAVE</link>
+#define     <link linkend="GNOME-STOCK-MENU-SAVE-AS-CAPS">GNOME_STOCK_MENU_SAVE_AS</link>
+#define     <link linkend="GNOME-STOCK-MENU-REVERT-CAPS">GNOME_STOCK_MENU_REVERT</link>
+#define     <link linkend="GNOME-STOCK-MENU-OPEN-CAPS">GNOME_STOCK_MENU_OPEN</link>
+#define     <link linkend="GNOME-STOCK-MENU-CLOSE-CAPS">GNOME_STOCK_MENU_CLOSE</link>
+#define     <link linkend="GNOME-STOCK-MENU-QUIT-CAPS">GNOME_STOCK_MENU_QUIT</link>
+#define     <link linkend="GNOME-STOCK-MENU-CUT-CAPS">GNOME_STOCK_MENU_CUT</link>
+#define     <link linkend="GNOME-STOCK-MENU-COPY-CAPS">GNOME_STOCK_MENU_COPY</link>
+#define     <link linkend="GNOME-STOCK-MENU-PASTE-CAPS">GNOME_STOCK_MENU_PASTE</link>
+#define     <link linkend="GNOME-STOCK-MENU-PROP-CAPS">GNOME_STOCK_MENU_PROP</link>
+#define     <link linkend="GNOME-STOCK-MENU-PREF-CAPS">GNOME_STOCK_MENU_PREF</link>
+#define     <link linkend="GNOME-STOCK-MENU-ABOUT-CAPS">GNOME_STOCK_MENU_ABOUT</link>
+#define     <link linkend="GNOME-STOCK-MENU-SCORES-CAPS">GNOME_STOCK_MENU_SCORES</link>
+#define     <link linkend="GNOME-STOCK-MENU-UNDO-CAPS">GNOME_STOCK_MENU_UNDO</link>
+#define     <link linkend="GNOME-STOCK-MENU-REDO-CAPS">GNOME_STOCK_MENU_REDO</link>
+#define     <link linkend="GNOME-STOCK-MENU-PRINT-CAPS">GNOME_STOCK_MENU_PRINT</link>
+#define     <link linkend="GNOME-STOCK-MENU-SEARCH-CAPS">GNOME_STOCK_MENU_SEARCH</link>
+#define     <link linkend="GNOME-STOCK-MENU-SRCHRPL-CAPS">GNOME_STOCK_MENU_SRCHRPL</link>
+#define     <link linkend="GNOME-STOCK-MENU-BACK-CAPS">GNOME_STOCK_MENU_BACK</link>
+#define     <link linkend="GNOME-STOCK-MENU-FORWARD-CAPS">GNOME_STOCK_MENU_FORWARD</link>
+#define     <link linkend="GNOME-STOCK-MENU-FIRST-CAPS">GNOME_STOCK_MENU_FIRST</link>
+#define     <link linkend="GNOME-STOCK-MENU-LAST-CAPS">GNOME_STOCK_MENU_LAST</link>
+#define     <link linkend="GNOME-STOCK-MENU-HOME-CAPS">GNOME_STOCK_MENU_HOME</link>
+#define     <link linkend="GNOME-STOCK-MENU-STOP-CAPS">GNOME_STOCK_MENU_STOP</link>
+#define     <link linkend="GNOME-STOCK-MENU-REFRESH-CAPS">GNOME_STOCK_MENU_REFRESH</link>
+#define     <link linkend="GNOME-STOCK-MENU-MAIL-CAPS">GNOME_STOCK_MENU_MAIL</link>
+#define     <link linkend="GNOME-STOCK-MENU-MAIL-RCV-CAPS">GNOME_STOCK_MENU_MAIL_RCV</link>
+#define     <link linkend="GNOME-STOCK-MENU-MAIL-SND-CAPS">GNOME_STOCK_MENU_MAIL_SND</link>
+#define     <link linkend="GNOME-STOCK-MENU-MAIL-RPL-CAPS">GNOME_STOCK_MENU_MAIL_RPL</link>
+#define     <link linkend="GNOME-STOCK-MENU-MAIL-FWD-CAPS">GNOME_STOCK_MENU_MAIL_FWD</link>
+#define     <link linkend="GNOME-STOCK-MENU-MAIL-NEW-CAPS">GNOME_STOCK_MENU_MAIL_NEW</link>
+#define     <link linkend="GNOME-STOCK-MENU-TRASH-CAPS">GNOME_STOCK_MENU_TRASH</link>
+#define     <link linkend="GNOME-STOCK-MENU-TRASH-FULL-CAPS">GNOME_STOCK_MENU_TRASH_FULL</link>
+#define     <link linkend="GNOME-STOCK-MENU-UNDELETE-CAPS">GNOME_STOCK_MENU_UNDELETE</link>
+#define     <link linkend="GNOME-STOCK-MENU-TIMER-CAPS">GNOME_STOCK_MENU_TIMER</link>
+#define     <link linkend="GNOME-STOCK-MENU-TIMER-STOP-CAPS">GNOME_STOCK_MENU_TIMER_STOP</link>
+#define     <link linkend="GNOME-STOCK-MENU-SPELLCHECK-CAPS">GNOME_STOCK_MENU_SPELLCHECK</link>
+#define     <link linkend="GNOME-STOCK-MENU-MIC-CAPS">GNOME_STOCK_MENU_MIC</link>
+#define     <link linkend="GNOME-STOCK-MENU-LINE-IN-CAPS">GNOME_STOCK_MENU_LINE_IN</link>
+#define     <link linkend="GNOME-STOCK-MENU-CDROM-CAPS">GNOME_STOCK_MENU_CDROM</link>
+#define     <link linkend="GNOME-STOCK-MENU-VOLUME-CAPS">GNOME_STOCK_MENU_VOLUME</link>
+#define     <link linkend="GNOME-STOCK-MENU-BOOK-RED-CAPS">GNOME_STOCK_MENU_BOOK_RED</link>
+#define     <link linkend="GNOME-STOCK-MENU-BOOK-GREEN-CAPS">GNOME_STOCK_MENU_BOOK_GREEN</link>
+#define     <link linkend="GNOME-STOCK-MENU-BOOK-BLUE-CAPS">GNOME_STOCK_MENU_BOOK_BLUE</link>
+#define     <link linkend="GNOME-STOCK-MENU-BOOK-YELLOW-CAPS">GNOME_STOCK_MENU_BOOK_YELLOW</link>
+#define     <link linkend="GNOME-STOCK-MENU-BOOK-OPEN-CAPS">GNOME_STOCK_MENU_BOOK_OPEN</link>
+#define     <link linkend="GNOME-STOCK-MENU-CONVERT-CAPS">GNOME_STOCK_MENU_CONVERT</link>
+#define     <link linkend="GNOME-STOCK-MENU-JUMP-TO-CAPS">GNOME_STOCK_MENU_JUMP_TO</link>
+#define     <link linkend="GNOME-STOCK-MENU-UP-CAPS">GNOME_STOCK_MENU_UP</link>
+#define     <link linkend="GNOME-STOCK-MENU-DOWN-CAPS">GNOME_STOCK_MENU_DOWN</link>
+#define     <link linkend="GNOME-STOCK-MENU-TOP-CAPS">GNOME_STOCK_MENU_TOP</link>
+#define     <link linkend="GNOME-STOCK-MENU-BOTTOM-CAPS">GNOME_STOCK_MENU_BOTTOM</link>
+#define     <link linkend="GNOME-STOCK-MENU-ATTACH-CAPS">GNOME_STOCK_MENU_ATTACH</link>
+#define     <link linkend="GNOME-STOCK-MENU-INDEX-CAPS">GNOME_STOCK_MENU_INDEX</link>
+#define     <link linkend="GNOME-STOCK-MENU-FONT-CAPS">GNOME_STOCK_MENU_FONT</link>
+#define     <link linkend="GNOME-STOCK-MENU-EXEC-CAPS">GNOME_STOCK_MENU_EXEC</link>
+#define     <link linkend="GNOME-STOCK-MENU-ALIGN-LEFT-CAPS">GNOME_STOCK_MENU_ALIGN_LEFT</link>
+#define     <link linkend="GNOME-STOCK-MENU-ALIGN-RIGHT-CAPS">GNOME_STOCK_MENU_ALIGN_RIGHT</link>
+#define     <link linkend="GNOME-STOCK-MENU-ALIGN-CENTER-CAPS">GNOME_STOCK_MENU_ALIGN_CENTER</link>
+#define     <link linkend="GNOME-STOCK-MENU-ALIGN-JUSTIFY-CAPS">GNOME_STOCK_MENU_ALIGN_JUSTIFY</link>
+#define     <link linkend="GNOME-STOCK-MENU-TEXT-BOLD-CAPS">GNOME_STOCK_MENU_TEXT_BOLD</link>
+#define     <link linkend="GNOME-STOCK-MENU-TEXT-ITALIC-CAPS">GNOME_STOCK_MENU_TEXT_ITALIC</link>
+#define     <link linkend="GNOME-STOCK-MENU-TEXT-UNDERLINE-CAPS">GNOME_STOCK_MENU_TEXT_UNDERLINE</link>
+#define     <link linkend="GNOME-STOCK-MENU-TEXT-STRIKEOUT-CAPS">GNOME_STOCK_MENU_TEXT_STRIKEOUT</link>
+#define     <link linkend="GNOME-STOCK-MENU-EXIT-CAPS">GNOME_STOCK_MENU_EXIT</link>
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-stock-menu-item">gnome_stock_menu_item</link>           (const char *type,
                                              const char *text);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-stock-menu-accel">gnome_stock_menu_accel</link>          (const char *type,
@@ -313,77 +313,77 @@ void        <link linkend="gnome-stock-pixmap-gdk">gnome_stock_pixmap_gdk</link>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-NEW">GNOME_STOCK_PIXMAP_NEW</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-NEW-CAPS">GNOME_STOCK_PIXMAP_NEW</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_NEW         "New"
 </programlisting>
 <para>
     Image for representing "New".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-OPEN">GNOME_STOCK_PIXMAP_OPEN</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-OPEN-CAPS">GNOME_STOCK_PIXMAP_OPEN</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_OPEN        "Open"
 </programlisting>
 <para>
     Image for representing "Open".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-CLOSE">GNOME_STOCK_PIXMAP_CLOSE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-CLOSE-CAPS">GNOME_STOCK_PIXMAP_CLOSE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_CLOSE       "Close"
 </programlisting>
 <para>
     Image for representing "Close".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-REVERT">GNOME_STOCK_PIXMAP_REVERT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-REVERT-CAPS">GNOME_STOCK_PIXMAP_REVERT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_REVERT      "Revert"
 </programlisting>
 <para>
     Image for representing "Revert".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-SAVE">GNOME_STOCK_PIXMAP_SAVE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-SAVE-CAPS">GNOME_STOCK_PIXMAP_SAVE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_SAVE        "Save"
 </programlisting>
 <para>
     Image for representing "Save".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-SAVE-AS">GNOME_STOCK_PIXMAP_SAVE_AS</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-SAVE-AS-CAPS">GNOME_STOCK_PIXMAP_SAVE_AS</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_SAVE_AS     "Save As"
 </programlisting>
 <para>
     Image for representing "Save as".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-CUT">GNOME_STOCK_PIXMAP_CUT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-CUT-CAPS">GNOME_STOCK_PIXMAP_CUT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_CUT         "Cut"
 </programlisting>
 <para>
     Image for representing "Cut".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-COPY">GNOME_STOCK_PIXMAP_COPY</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-COPY-CAPS">GNOME_STOCK_PIXMAP_COPY</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_COPY        "Copy"
 </programlisting>
 <para>
     Image for representing "Copy".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-PASTE">GNOME_STOCK_PIXMAP_PASTE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-PASTE-CAPS">GNOME_STOCK_PIXMAP_PASTE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_PASTE       "Paste"
 </programlisting>
 <para>
     Image for representing "Paste".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-CLEAR">GNOME_STOCK_PIXMAP_CLEAR</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-CLEAR-CAPS">GNOME_STOCK_PIXMAP_CLEAR</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_CLEAR       "Clear"
 </programlisting>
 <para>
     Image for representing "Clear".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-PROPERTIES">GNOME_STOCK_PIXMAP_PROPERTIES</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-PROPERTIES-CAPS">GNOME_STOCK_PIXMAP_PROPERTIES</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_PROPERTIES  "Properties"
 </programlisting>
 <para>
@@ -394,7 +394,7 @@ database. "Preferences" should be used when editing user preferences
 application-wide, such as display colors or default servers.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-PREFERENCES">GNOME_STOCK_PIXMAP_PREFERENCES</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-PREFERENCES-CAPS">GNOME_STOCK_PIXMAP_PREFERENCES</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_PREFERENCES "Preferences"
 </programlisting>
 <para>
@@ -402,490 +402,490 @@ application-wide, such as display colors or default servers.
 "Properties" above.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-HELP">GNOME_STOCK_PIXMAP_HELP</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-HELP-CAPS">GNOME_STOCK_PIXMAP_HELP</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_HELP        "Help"
 </programlisting>
 <para>
     Image for representing "Help".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-SCORES">GNOME_STOCK_PIXMAP_SCORES</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-SCORES-CAPS">GNOME_STOCK_PIXMAP_SCORES</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_SCORES      "Scores"
 </programlisting>
 <para>
     Image for representing "Scores".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-PRINT">GNOME_STOCK_PIXMAP_PRINT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-PRINT-CAPS">GNOME_STOCK_PIXMAP_PRINT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_PRINT       "Print"
 </programlisting>
 <para>
     Image for representing "Print".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-SEARCH">GNOME_STOCK_PIXMAP_SEARCH</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-SEARCH-CAPS">GNOME_STOCK_PIXMAP_SEARCH</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_SEARCH      "Search"
 </programlisting>
 <para>
     Image for representing "Search".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-SRCHRPL">GNOME_STOCK_PIXMAP_SRCHRPL</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-SRCHRPL-CAPS">GNOME_STOCK_PIXMAP_SRCHRPL</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_SRCHRPL     "Search/Replace"
 </programlisting>
 <para>
     Image for representing "Search and replace".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BACK">GNOME_STOCK_PIXMAP_BACK</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BACK-CAPS">GNOME_STOCK_PIXMAP_BACK</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BACK        "Back"
 </programlisting>
 <para>
     Image for representing "Back".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-FORWARD">GNOME_STOCK_PIXMAP_FORWARD</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-FORWARD-CAPS">GNOME_STOCK_PIXMAP_FORWARD</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_FORWARD     "Forward"
 </programlisting>
 <para>
     Image for representing "Forward".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-FIRST">GNOME_STOCK_PIXMAP_FIRST</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-FIRST-CAPS">GNOME_STOCK_PIXMAP_FIRST</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_FIRST       "First"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-LAST">GNOME_STOCK_PIXMAP_LAST</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-LAST-CAPS">GNOME_STOCK_PIXMAP_LAST</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_LAST        "Last"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-HOME">GNOME_STOCK_PIXMAP_HOME</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-HOME-CAPS">GNOME_STOCK_PIXMAP_HOME</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_HOME        "Home"
 </programlisting>
 <para>
     Image for representing "Home".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-STOP">GNOME_STOCK_PIXMAP_STOP</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-STOP-CAPS">GNOME_STOCK_PIXMAP_STOP</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_STOP        "Stop"
 </programlisting>
 <para>
     Image for representing "Stop".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-REFRESH">GNOME_STOCK_PIXMAP_REFRESH</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-REFRESH-CAPS">GNOME_STOCK_PIXMAP_REFRESH</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_REFRESH     "Refresh"
 </programlisting>
 <para>
     Image for representing "Refresh".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-UNDO">GNOME_STOCK_PIXMAP_UNDO</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-UNDO-CAPS">GNOME_STOCK_PIXMAP_UNDO</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_UNDO        "Undo"
 </programlisting>
 <para>
     Image for representing "Undo".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-REDO">GNOME_STOCK_PIXMAP_REDO</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-REDO-CAPS">GNOME_STOCK_PIXMAP_REDO</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_REDO        "Redo"
 </programlisting>
 <para>
     Image for representing "Redo".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TIMER">GNOME_STOCK_PIXMAP_TIMER</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TIMER-CAPS">GNOME_STOCK_PIXMAP_TIMER</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TIMER       "Timer"
 </programlisting>
 <para>
     Image for representing "Timer".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TIMER-STOP">GNOME_STOCK_PIXMAP_TIMER_STOP</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TIMER-STOP-CAPS">GNOME_STOCK_PIXMAP_TIMER_STOP</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TIMER_STOP  "Timer Stopped"
 </programlisting>
 <para>
     Image for representing "Timer stop".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MAIL">GNOME_STOCK_PIXMAP_MAIL</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-CAPS">GNOME_STOCK_PIXMAP_MAIL</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MAIL	       "Mail"
 </programlisting>
 <para>
     Image for representing "Mail".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-RCV">GNOME_STOCK_PIXMAP_MAIL_RCV</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-RCV-CAPS">GNOME_STOCK_PIXMAP_MAIL_RCV</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MAIL_RCV    "Receive Mail"
 </programlisting>
 <para>
     Image for representing "Mail get".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-SND">GNOME_STOCK_PIXMAP_MAIL_SND</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-SND-CAPS">GNOME_STOCK_PIXMAP_MAIL_SND</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MAIL_SND    "Send Mail"
 </programlisting>
 <para>
     Image for representing "Mail send".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-RPL">GNOME_STOCK_PIXMAP_MAIL_RPL</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-RPL-CAPS">GNOME_STOCK_PIXMAP_MAIL_RPL</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MAIL_RPL    "Reply to Mail"
 </programlisting>
 <para>
     Image for representing "Mail reply".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-FWD">GNOME_STOCK_PIXMAP_MAIL_FWD</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-FWD-CAPS">GNOME_STOCK_PIXMAP_MAIL_FWD</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MAIL_FWD    "Forward Mail"
 </programlisting>
 <para>
     Image for representing "Timer".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-NEW">GNOME_STOCK_PIXMAP_MAIL_NEW</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MAIL-NEW-CAPS">GNOME_STOCK_PIXMAP_MAIL_NEW</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MAIL_NEW    "New Mail"
 </programlisting>
 <para>
     Image for representing "Mail new".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TRASH">GNOME_STOCK_PIXMAP_TRASH</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TRASH-CAPS">GNOME_STOCK_PIXMAP_TRASH</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TRASH       "Trash"
 </programlisting>
 <para>
     Image for representing "Trashcan".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TRASH-FULL">GNOME_STOCK_PIXMAP_TRASH_FULL</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TRASH-FULL-CAPS">GNOME_STOCK_PIXMAP_TRASH_FULL</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TRASH_FULL  "Trash Full"
 </programlisting>
 <para>
     Image for representing "Trashcan is full".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-UNDELETE">GNOME_STOCK_PIXMAP_UNDELETE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-UNDELETE-CAPS">GNOME_STOCK_PIXMAP_UNDELETE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_UNDELETE    "Undelete"
 </programlisting>
 <para>
     Image for representing "Undelete".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-SPELLCHECK">GNOME_STOCK_PIXMAP_SPELLCHECK</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-SPELLCHECK-CAPS">GNOME_STOCK_PIXMAP_SPELLCHECK</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_SPELLCHECK  "Spellchecker"
 </programlisting>
 <para>
     Image for representing "Spellcheck".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MIC">GNOME_STOCK_PIXMAP_MIC</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MIC-CAPS">GNOME_STOCK_PIXMAP_MIC</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MIC         "Microphone"
 </programlisting>
 <para>
     Image for representing "Microphone".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-LINE-IN">GNOME_STOCK_PIXMAP_LINE_IN</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-LINE-IN-CAPS">GNOME_STOCK_PIXMAP_LINE_IN</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_LINE_IN     "Line In"
 </programlisting>
 <para>
     Image for representing "Line in".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-CDROM">GNOME_STOCK_PIXMAP_CDROM</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-CDROM-CAPS">GNOME_STOCK_PIXMAP_CDROM</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_CDROM       "Cdrom"
 </programlisting>
 <para>
     Image for representing "CD-ROM".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-VOLUME">GNOME_STOCK_PIXMAP_VOLUME</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-VOLUME-CAPS">GNOME_STOCK_PIXMAP_VOLUME</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_VOLUME      "Volume"
 </programlisting>
 <para>
     Image for representing "Volume".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-RED">GNOME_STOCK_PIXMAP_BOOK_RED</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-RED-CAPS">GNOME_STOCK_PIXMAP_BOOK_RED</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BOOK_RED    "Book Red"
 </programlisting>
 <para>
     Image for representing "A red book".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-GREEN">GNOME_STOCK_PIXMAP_BOOK_GREEN</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-GREEN-CAPS">GNOME_STOCK_PIXMAP_BOOK_GREEN</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BOOK_GREEN  "Book Green"
 </programlisting>
 <para>
     Image for representing "A green book".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-BLUE">GNOME_STOCK_PIXMAP_BOOK_BLUE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-BLUE-CAPS">GNOME_STOCK_PIXMAP_BOOK_BLUE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BOOK_BLUE   "Book Blue"
 </programlisting>
 <para>
     Image for representing "A blue book".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-YELLOW">GNOME_STOCK_PIXMAP_BOOK_YELLOW</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-YELLOW-CAPS">GNOME_STOCK_PIXMAP_BOOK_YELLOW</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BOOK_YELLOW "Book Yellow"
 </programlisting>
 <para>
     Image for representing "A yellow book".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-OPEN">GNOME_STOCK_PIXMAP_BOOK_OPEN</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BOOK-OPEN-CAPS">GNOME_STOCK_PIXMAP_BOOK_OPEN</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BOOK_OPEN   "Book Open"
 </programlisting>
 <para>
     Image for representing "An open book".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ABOUT">GNOME_STOCK_PIXMAP_ABOUT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ABOUT-CAPS">GNOME_STOCK_PIXMAP_ABOUT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ABOUT       "About"
 </programlisting>
 <para>
     Image for representing "About".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-QUIT">GNOME_STOCK_PIXMAP_QUIT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-QUIT-CAPS">GNOME_STOCK_PIXMAP_QUIT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_QUIT        "Quit"
 </programlisting>
 <para>
     Image for representing "Quit".
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-MULTIPLE">GNOME_STOCK_PIXMAP_MULTIPLE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-MULTIPLE-CAPS">GNOME_STOCK_PIXMAP_MULTIPLE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_MULTIPLE    "Multiple"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-NOT">GNOME_STOCK_PIXMAP_NOT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-NOT-CAPS">GNOME_STOCK_PIXMAP_NOT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_NOT         "Not"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-CONVERT">GNOME_STOCK_PIXMAP_CONVERT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-CONVERT-CAPS">GNOME_STOCK_PIXMAP_CONVERT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_CONVERT     "Convert"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-JUMP-TO">GNOME_STOCK_PIXMAP_JUMP_TO</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-JUMP-TO-CAPS">GNOME_STOCK_PIXMAP_JUMP_TO</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_JUMP_TO     "Jump To"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-UP">GNOME_STOCK_PIXMAP_UP</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-UP-CAPS">GNOME_STOCK_PIXMAP_UP</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_UP          "Up"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-DOWN">GNOME_STOCK_PIXMAP_DOWN</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-DOWN-CAPS">GNOME_STOCK_PIXMAP_DOWN</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_DOWN        "Down"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TOP">GNOME_STOCK_PIXMAP_TOP</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TOP-CAPS">GNOME_STOCK_PIXMAP_TOP</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TOP         "Top"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-BOTTOM">GNOME_STOCK_PIXMAP_BOTTOM</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-BOTTOM-CAPS">GNOME_STOCK_PIXMAP_BOTTOM</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_BOTTOM      "Bottom"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ATTACH">GNOME_STOCK_PIXMAP_ATTACH</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ATTACH-CAPS">GNOME_STOCK_PIXMAP_ATTACH</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ATTACH      "Attach"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-INDEX">GNOME_STOCK_PIXMAP_INDEX</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-INDEX-CAPS">GNOME_STOCK_PIXMAP_INDEX</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_INDEX       "Index"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-FONT">GNOME_STOCK_PIXMAP_FONT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-FONT-CAPS">GNOME_STOCK_PIXMAP_FONT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_FONT        "Font"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-EXEC">GNOME_STOCK_PIXMAP_EXEC</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-EXEC-CAPS">GNOME_STOCK_PIXMAP_EXEC</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_EXEC        "Exec"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-LEFT">GNOME_STOCK_PIXMAP_ALIGN_LEFT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-LEFT-CAPS">GNOME_STOCK_PIXMAP_ALIGN_LEFT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ALIGN_LEFT    "Left"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-RIGHT">GNOME_STOCK_PIXMAP_ALIGN_RIGHT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-RIGHT-CAPS">GNOME_STOCK_PIXMAP_ALIGN_RIGHT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ALIGN_RIGHT   "Right"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-CENTER">GNOME_STOCK_PIXMAP_ALIGN_CENTER</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-CENTER-CAPS">GNOME_STOCK_PIXMAP_ALIGN_CENTER</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ALIGN_CENTER  "Center"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-JUSTIFY">GNOME_STOCK_PIXMAP_ALIGN_JUSTIFY</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ALIGN-JUSTIFY-CAPS">GNOME_STOCK_PIXMAP_ALIGN_JUSTIFY</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ALIGN_JUSTIFY "Justify"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-BOLD">GNOME_STOCK_PIXMAP_TEXT_BOLD</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-BOLD-CAPS">GNOME_STOCK_PIXMAP_TEXT_BOLD</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_BOLD      "Bold"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-ITALIC">GNOME_STOCK_PIXMAP_TEXT_ITALIC</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-ITALIC-CAPS">GNOME_STOCK_PIXMAP_TEXT_ITALIC</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_ITALIC    "Italic"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-UNDERLINE">GNOME_STOCK_PIXMAP_TEXT_UNDERLINE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-UNDERLINE-CAPS">GNOME_STOCK_PIXMAP_TEXT_UNDERLINE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_UNDERLINE "Underline"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-STRIKEOUT">GNOME_STOCK_PIXMAP_TEXT_STRIKEOUT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-STRIKEOUT-CAPS">GNOME_STOCK_PIXMAP_TEXT_STRIKEOUT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_STRIKEOUT "Strikeout"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-INDENT">GNOME_STOCK_PIXMAP_TEXT_INDENT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-INDENT-CAPS">GNOME_STOCK_PIXMAP_TEXT_INDENT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_INDENT "Text Indent"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-UNINDENT">GNOME_STOCK_PIXMAP_TEXT_UNINDENT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-UNINDENT-CAPS">GNOME_STOCK_PIXMAP_TEXT_UNINDENT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_UNINDENT "Text Unindent"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-EXIT">GNOME_STOCK_PIXMAP_EXIT</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-EXIT-CAPS">GNOME_STOCK_PIXMAP_EXIT</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_EXIT        GNOME_STOCK_PIXMAP_QUIT
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-COLORSELECTOR">GNOME_STOCK_PIXMAP_COLORSELECTOR</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-COLORSELECTOR-CAPS">GNOME_STOCK_PIXMAP_COLORSELECTOR</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_COLORSELECTOR "Color Select"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-ADD">GNOME_STOCK_PIXMAP_ADD</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-ADD-CAPS">GNOME_STOCK_PIXMAP_ADD</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_ADD    "Add"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-REMOVE">GNOME_STOCK_PIXMAP_REMOVE</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-REMOVE-CAPS">GNOME_STOCK_PIXMAP_REMOVE</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_REMOVE "Remove"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TABLE-BORDERS">GNOME_STOCK_PIXMAP_TABLE_BORDERS</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TABLE-BORDERS-CAPS">GNOME_STOCK_PIXMAP_TABLE_BORDERS</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TABLE_BORDERS "Table Borders"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TABLE-FILL">GNOME_STOCK_PIXMAP_TABLE_FILL</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TABLE-FILL-CAPS">GNOME_STOCK_PIXMAP_TABLE_FILL</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TABLE_FILL "Table Fill"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-BULLETED-LIST">GNOME_STOCK_PIXMAP_TEXT_BULLETED_LIST</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-BULLETED-LIST-CAPS">GNOME_STOCK_PIXMAP_TEXT_BULLETED_LIST</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_BULLETED_LIST "Text Bulleted List"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-NUMBERED-LIST">GNOME_STOCK_PIXMAP_TEXT_NUMBERED_LIST</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-TEXT-NUMBERED-LIST-CAPS">GNOME_STOCK_PIXMAP_TEXT_NUMBERED_LIST</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_TEXT_NUMBERED_LIST "Text Numbered List"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-REGULAR">GNOME_STOCK_PIXMAP_REGULAR</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-REGULAR-CAPS">GNOME_STOCK_PIXMAP_REGULAR</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_REGULAR     "regular"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-DISABLED">GNOME_STOCK_PIXMAP_DISABLED</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-DISABLED-CAPS">GNOME_STOCK_PIXMAP_DISABLED</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_DISABLED    "disabled"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-PIXMAP-FOCUSED">GNOME_STOCK_PIXMAP_FOCUSED</title>
+<title><anchor id="GNOME-STOCK-PIXMAP-FOCUSED-CAPS">GNOME_STOCK_PIXMAP_FOCUSED</title>
 <programlisting>#define GNOME_STOCK_PIXMAP_FOCUSED     "focused"
 </programlisting>
 <para>
@@ -1091,12 +1091,16 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>subtype</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1112,10 +1116,13 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1134,14 +1141,19 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>window</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1158,9 +1170,11 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1177,12 +1191,16 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>subtype</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>entry</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1199,12 +1217,16 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>subtype</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>entry</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1221,10 +1243,13 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>subtype</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1240,10 +1265,13 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>pixmap</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1259,91 +1287,93 @@ Sets the <parameter>stock</parameter> object icon to be the one whose code is <p
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>button</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>can_default</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-OK">GNOME_STOCK_BUTTON_OK</title>
+<title><anchor id="GNOME-STOCK-BUTTON-OK-CAPS">GNOME_STOCK_BUTTON_OK</title>
 <programlisting>#define GNOME_STOCK_BUTTON_OK     "Button_Ok"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-CANCEL">GNOME_STOCK_BUTTON_CANCEL</title>
+<title><anchor id="GNOME-STOCK-BUTTON-CANCEL-CAPS">GNOME_STOCK_BUTTON_CANCEL</title>
 <programlisting>#define GNOME_STOCK_BUTTON_CANCEL "Button_Cancel"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-YES">GNOME_STOCK_BUTTON_YES</title>
+<title><anchor id="GNOME-STOCK-BUTTON-YES-CAPS">GNOME_STOCK_BUTTON_YES</title>
 <programlisting>#define GNOME_STOCK_BUTTON_YES    "Button_Yes"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-NO">GNOME_STOCK_BUTTON_NO</title>
+<title><anchor id="GNOME-STOCK-BUTTON-NO-CAPS">GNOME_STOCK_BUTTON_NO</title>
 <programlisting>#define GNOME_STOCK_BUTTON_NO     "Button_No"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-CLOSE">GNOME_STOCK_BUTTON_CLOSE</title>
+<title><anchor id="GNOME-STOCK-BUTTON-CLOSE-CAPS">GNOME_STOCK_BUTTON_CLOSE</title>
 <programlisting>#define GNOME_STOCK_BUTTON_CLOSE  "Button_Close"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-APPLY">GNOME_STOCK_BUTTON_APPLY</title>
+<title><anchor id="GNOME-STOCK-BUTTON-APPLY-CAPS">GNOME_STOCK_BUTTON_APPLY</title>
 <programlisting>#define GNOME_STOCK_BUTTON_APPLY  "Button_Apply"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-HELP">GNOME_STOCK_BUTTON_HELP</title>
+<title><anchor id="GNOME-STOCK-BUTTON-HELP-CAPS">GNOME_STOCK_BUTTON_HELP</title>
 <programlisting>#define GNOME_STOCK_BUTTON_HELP   "Button_Help"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-NEXT">GNOME_STOCK_BUTTON_NEXT</title>
+<title><anchor id="GNOME-STOCK-BUTTON-NEXT-CAPS">GNOME_STOCK_BUTTON_NEXT</title>
 <programlisting>#define GNOME_STOCK_BUTTON_NEXT   "Button_Next"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-PREV">GNOME_STOCK_BUTTON_PREV</title>
+<title><anchor id="GNOME-STOCK-BUTTON-PREV-CAPS">GNOME_STOCK_BUTTON_PREV</title>
 <programlisting>#define GNOME_STOCK_BUTTON_PREV   "Button_Prev"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-UP">GNOME_STOCK_BUTTON_UP</title>
+<title><anchor id="GNOME-STOCK-BUTTON-UP-CAPS">GNOME_STOCK_BUTTON_UP</title>
 <programlisting>#define GNOME_STOCK_BUTTON_UP     "Button_Up"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-DOWN">GNOME_STOCK_BUTTON_DOWN</title>
+<title><anchor id="GNOME-STOCK-BUTTON-DOWN-CAPS">GNOME_STOCK_BUTTON_DOWN</title>
 <programlisting>#define GNOME_STOCK_BUTTON_DOWN   "Button_Down"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-BUTTON-FONT">GNOME_STOCK_BUTTON_FONT</title>
+<title><anchor id="GNOME-STOCK-BUTTON-FONT-CAPS">GNOME_STOCK_BUTTON_FONT</title>
 <programlisting>#define GNOME_STOCK_BUTTON_FONT   "Button_Font"
 </programlisting>
 <para>
@@ -1394,469 +1424,469 @@ setups it might break subtly.</para>
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BLANK">GNOME_STOCK_MENU_BLANK</title>
+<title><anchor id="GNOME-STOCK-MENU-BLANK-CAPS">GNOME_STOCK_MENU_BLANK</title>
 <programlisting>#define GNOME_STOCK_MENU_BLANK        "Menu_"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-NEW">GNOME_STOCK_MENU_NEW</title>
+<title><anchor id="GNOME-STOCK-MENU-NEW-CAPS">GNOME_STOCK_MENU_NEW</title>
 <programlisting>#define GNOME_STOCK_MENU_NEW          "Menu_New"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-SAVE">GNOME_STOCK_MENU_SAVE</title>
+<title><anchor id="GNOME-STOCK-MENU-SAVE-CAPS">GNOME_STOCK_MENU_SAVE</title>
 <programlisting>#define GNOME_STOCK_MENU_SAVE         "Menu_Save"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-SAVE-AS">GNOME_STOCK_MENU_SAVE_AS</title>
+<title><anchor id="GNOME-STOCK-MENU-SAVE-AS-CAPS">GNOME_STOCK_MENU_SAVE_AS</title>
 <programlisting>#define GNOME_STOCK_MENU_SAVE_AS      "Menu_Save As"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-REVERT">GNOME_STOCK_MENU_REVERT</title>
+<title><anchor id="GNOME-STOCK-MENU-REVERT-CAPS">GNOME_STOCK_MENU_REVERT</title>
 <programlisting>#define GNOME_STOCK_MENU_REVERT       "Menu_Revert"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-OPEN">GNOME_STOCK_MENU_OPEN</title>
+<title><anchor id="GNOME-STOCK-MENU-OPEN-CAPS">GNOME_STOCK_MENU_OPEN</title>
 <programlisting>#define GNOME_STOCK_MENU_OPEN         "Menu_Open"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-CLOSE">GNOME_STOCK_MENU_CLOSE</title>
+<title><anchor id="GNOME-STOCK-MENU-CLOSE-CAPS">GNOME_STOCK_MENU_CLOSE</title>
 <programlisting>#define GNOME_STOCK_MENU_CLOSE        "Menu_Close"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-QUIT">GNOME_STOCK_MENU_QUIT</title>
+<title><anchor id="GNOME-STOCK-MENU-QUIT-CAPS">GNOME_STOCK_MENU_QUIT</title>
 <programlisting>#define GNOME_STOCK_MENU_QUIT         "Menu_Quit"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-CUT">GNOME_STOCK_MENU_CUT</title>
+<title><anchor id="GNOME-STOCK-MENU-CUT-CAPS">GNOME_STOCK_MENU_CUT</title>
 <programlisting>#define GNOME_STOCK_MENU_CUT          "Menu_Cut"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-COPY">GNOME_STOCK_MENU_COPY</title>
+<title><anchor id="GNOME-STOCK-MENU-COPY-CAPS">GNOME_STOCK_MENU_COPY</title>
 <programlisting>#define GNOME_STOCK_MENU_COPY         "Menu_Copy"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-PASTE">GNOME_STOCK_MENU_PASTE</title>
+<title><anchor id="GNOME-STOCK-MENU-PASTE-CAPS">GNOME_STOCK_MENU_PASTE</title>
 <programlisting>#define GNOME_STOCK_MENU_PASTE        "Menu_Paste"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-PROP">GNOME_STOCK_MENU_PROP</title>
+<title><anchor id="GNOME-STOCK-MENU-PROP-CAPS">GNOME_STOCK_MENU_PROP</title>
 <programlisting>#define GNOME_STOCK_MENU_PROP         "Menu_Properties"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-PREF">GNOME_STOCK_MENU_PREF</title>
+<title><anchor id="GNOME-STOCK-MENU-PREF-CAPS">GNOME_STOCK_MENU_PREF</title>
 <programlisting>#define GNOME_STOCK_MENU_PREF         "Menu_Preferences"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-ABOUT">GNOME_STOCK_MENU_ABOUT</title>
+<title><anchor id="GNOME-STOCK-MENU-ABOUT-CAPS">GNOME_STOCK_MENU_ABOUT</title>
 <programlisting>#define GNOME_STOCK_MENU_ABOUT        "Menu_About"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-SCORES">GNOME_STOCK_MENU_SCORES</title>
+<title><anchor id="GNOME-STOCK-MENU-SCORES-CAPS">GNOME_STOCK_MENU_SCORES</title>
 <programlisting>#define GNOME_STOCK_MENU_SCORES       "Menu_Scores"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-UNDO">GNOME_STOCK_MENU_UNDO</title>
+<title><anchor id="GNOME-STOCK-MENU-UNDO-CAPS">GNOME_STOCK_MENU_UNDO</title>
 <programlisting>#define GNOME_STOCK_MENU_UNDO         "Menu_Undo"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-REDO">GNOME_STOCK_MENU_REDO</title>
+<title><anchor id="GNOME-STOCK-MENU-REDO-CAPS">GNOME_STOCK_MENU_REDO</title>
 <programlisting>#define GNOME_STOCK_MENU_REDO         "Menu_Redo"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-PRINT">GNOME_STOCK_MENU_PRINT</title>
+<title><anchor id="GNOME-STOCK-MENU-PRINT-CAPS">GNOME_STOCK_MENU_PRINT</title>
 <programlisting>#define GNOME_STOCK_MENU_PRINT        "Menu_Print"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-SEARCH">GNOME_STOCK_MENU_SEARCH</title>
+<title><anchor id="GNOME-STOCK-MENU-SEARCH-CAPS">GNOME_STOCK_MENU_SEARCH</title>
 <programlisting>#define GNOME_STOCK_MENU_SEARCH       "Menu_Search"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-SRCHRPL">GNOME_STOCK_MENU_SRCHRPL</title>
+<title><anchor id="GNOME-STOCK-MENU-SRCHRPL-CAPS">GNOME_STOCK_MENU_SRCHRPL</title>
 <programlisting>#define GNOME_STOCK_MENU_SRCHRPL      "Menu_Search/Replace"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BACK">GNOME_STOCK_MENU_BACK</title>
+<title><anchor id="GNOME-STOCK-MENU-BACK-CAPS">GNOME_STOCK_MENU_BACK</title>
 <programlisting>#define GNOME_STOCK_MENU_BACK         "Menu_Back"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-FORWARD">GNOME_STOCK_MENU_FORWARD</title>
+<title><anchor id="GNOME-STOCK-MENU-FORWARD-CAPS">GNOME_STOCK_MENU_FORWARD</title>
 <programlisting>#define GNOME_STOCK_MENU_FORWARD      "Menu_Forward"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-FIRST">GNOME_STOCK_MENU_FIRST</title>
+<title><anchor id="GNOME-STOCK-MENU-FIRST-CAPS">GNOME_STOCK_MENU_FIRST</title>
 <programlisting>#define GNOME_STOCK_MENU_FIRST        "Menu_First"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-LAST">GNOME_STOCK_MENU_LAST</title>
+<title><anchor id="GNOME-STOCK-MENU-LAST-CAPS">GNOME_STOCK_MENU_LAST</title>
 <programlisting>#define GNOME_STOCK_MENU_LAST         "Menu_Last"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-HOME">GNOME_STOCK_MENU_HOME</title>
+<title><anchor id="GNOME-STOCK-MENU-HOME-CAPS">GNOME_STOCK_MENU_HOME</title>
 <programlisting>#define GNOME_STOCK_MENU_HOME         "Menu_Home"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-STOP">GNOME_STOCK_MENU_STOP</title>
+<title><anchor id="GNOME-STOCK-MENU-STOP-CAPS">GNOME_STOCK_MENU_STOP</title>
 <programlisting>#define GNOME_STOCK_MENU_STOP         "Menu_Stop"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-REFRESH">GNOME_STOCK_MENU_REFRESH</title>
+<title><anchor id="GNOME-STOCK-MENU-REFRESH-CAPS">GNOME_STOCK_MENU_REFRESH</title>
 <programlisting>#define GNOME_STOCK_MENU_REFRESH      "Menu_Refresh"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MAIL">GNOME_STOCK_MENU_MAIL</title>
+<title><anchor id="GNOME-STOCK-MENU-MAIL-CAPS">GNOME_STOCK_MENU_MAIL</title>
 <programlisting>#define GNOME_STOCK_MENU_MAIL         "Menu_Mail"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MAIL-RCV">GNOME_STOCK_MENU_MAIL_RCV</title>
+<title><anchor id="GNOME-STOCK-MENU-MAIL-RCV-CAPS">GNOME_STOCK_MENU_MAIL_RCV</title>
 <programlisting>#define GNOME_STOCK_MENU_MAIL_RCV     "Menu_Receive Mail"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MAIL-SND">GNOME_STOCK_MENU_MAIL_SND</title>
+<title><anchor id="GNOME-STOCK-MENU-MAIL-SND-CAPS">GNOME_STOCK_MENU_MAIL_SND</title>
 <programlisting>#define GNOME_STOCK_MENU_MAIL_SND     "Menu_Send Mail"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MAIL-RPL">GNOME_STOCK_MENU_MAIL_RPL</title>
+<title><anchor id="GNOME-STOCK-MENU-MAIL-RPL-CAPS">GNOME_STOCK_MENU_MAIL_RPL</title>
 <programlisting>#define GNOME_STOCK_MENU_MAIL_RPL     "Menu_Reply to Mail"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MAIL-FWD">GNOME_STOCK_MENU_MAIL_FWD</title>
+<title><anchor id="GNOME-STOCK-MENU-MAIL-FWD-CAPS">GNOME_STOCK_MENU_MAIL_FWD</title>
 <programlisting>#define GNOME_STOCK_MENU_MAIL_FWD     "Menu_Forward Mail"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MAIL-NEW">GNOME_STOCK_MENU_MAIL_NEW</title>
+<title><anchor id="GNOME-STOCK-MENU-MAIL-NEW-CAPS">GNOME_STOCK_MENU_MAIL_NEW</title>
 <programlisting>#define GNOME_STOCK_MENU_MAIL_NEW     "Menu_New Mail"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TRASH">GNOME_STOCK_MENU_TRASH</title>
+<title><anchor id="GNOME-STOCK-MENU-TRASH-CAPS">GNOME_STOCK_MENU_TRASH</title>
 <programlisting>#define GNOME_STOCK_MENU_TRASH        "Menu_Trash"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TRASH-FULL">GNOME_STOCK_MENU_TRASH_FULL</title>
+<title><anchor id="GNOME-STOCK-MENU-TRASH-FULL-CAPS">GNOME_STOCK_MENU_TRASH_FULL</title>
 <programlisting>#define GNOME_STOCK_MENU_TRASH_FULL   "Menu_Trash Full"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-UNDELETE">GNOME_STOCK_MENU_UNDELETE</title>
+<title><anchor id="GNOME-STOCK-MENU-UNDELETE-CAPS">GNOME_STOCK_MENU_UNDELETE</title>
 <programlisting>#define GNOME_STOCK_MENU_UNDELETE     "Menu_Undelete"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TIMER">GNOME_STOCK_MENU_TIMER</title>
+<title><anchor id="GNOME-STOCK-MENU-TIMER-CAPS">GNOME_STOCK_MENU_TIMER</title>
 <programlisting>#define GNOME_STOCK_MENU_TIMER        "Menu_Timer"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TIMER-STOP">GNOME_STOCK_MENU_TIMER_STOP</title>
+<title><anchor id="GNOME-STOCK-MENU-TIMER-STOP-CAPS">GNOME_STOCK_MENU_TIMER_STOP</title>
 <programlisting>#define GNOME_STOCK_MENU_TIMER_STOP   "Menu_Timer Stopped"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-SPELLCHECK">GNOME_STOCK_MENU_SPELLCHECK</title>
+<title><anchor id="GNOME-STOCK-MENU-SPELLCHECK-CAPS">GNOME_STOCK_MENU_SPELLCHECK</title>
 <programlisting>#define GNOME_STOCK_MENU_SPELLCHECK   "Menu_Spellchecker"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-MIC">GNOME_STOCK_MENU_MIC</title>
+<title><anchor id="GNOME-STOCK-MENU-MIC-CAPS">GNOME_STOCK_MENU_MIC</title>
 <programlisting>#define GNOME_STOCK_MENU_MIC          "Menu_Microphone"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-LINE-IN">GNOME_STOCK_MENU_LINE_IN</title>
+<title><anchor id="GNOME-STOCK-MENU-LINE-IN-CAPS">GNOME_STOCK_MENU_LINE_IN</title>
 <programlisting>#define GNOME_STOCK_MENU_LINE_IN      "Menu_Line In"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-CDROM">GNOME_STOCK_MENU_CDROM</title>
+<title><anchor id="GNOME-STOCK-MENU-CDROM-CAPS">GNOME_STOCK_MENU_CDROM</title>
 <programlisting>#define GNOME_STOCK_MENU_CDROM	     "Menu_Cdrom"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-VOLUME">GNOME_STOCK_MENU_VOLUME</title>
+<title><anchor id="GNOME-STOCK-MENU-VOLUME-CAPS">GNOME_STOCK_MENU_VOLUME</title>
 <programlisting>#define GNOME_STOCK_MENU_VOLUME       "Menu_Volume"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BOOK-RED">GNOME_STOCK_MENU_BOOK_RED</title>
+<title><anchor id="GNOME-STOCK-MENU-BOOK-RED-CAPS">GNOME_STOCK_MENU_BOOK_RED</title>
 <programlisting>#define GNOME_STOCK_MENU_BOOK_RED     "Menu_Book Red"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BOOK-GREEN">GNOME_STOCK_MENU_BOOK_GREEN</title>
+<title><anchor id="GNOME-STOCK-MENU-BOOK-GREEN-CAPS">GNOME_STOCK_MENU_BOOK_GREEN</title>
 <programlisting>#define GNOME_STOCK_MENU_BOOK_GREEN   "Menu_Book Green"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BOOK-BLUE">GNOME_STOCK_MENU_BOOK_BLUE</title>
+<title><anchor id="GNOME-STOCK-MENU-BOOK-BLUE-CAPS">GNOME_STOCK_MENU_BOOK_BLUE</title>
 <programlisting>#define GNOME_STOCK_MENU_BOOK_BLUE    "Menu_Book Blue"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BOOK-YELLOW">GNOME_STOCK_MENU_BOOK_YELLOW</title>
+<title><anchor id="GNOME-STOCK-MENU-BOOK-YELLOW-CAPS">GNOME_STOCK_MENU_BOOK_YELLOW</title>
 <programlisting>#define GNOME_STOCK_MENU_BOOK_YELLOW  "Menu_Book Yellow"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BOOK-OPEN">GNOME_STOCK_MENU_BOOK_OPEN</title>
+<title><anchor id="GNOME-STOCK-MENU-BOOK-OPEN-CAPS">GNOME_STOCK_MENU_BOOK_OPEN</title>
 <programlisting>#define GNOME_STOCK_MENU_BOOK_OPEN    "Menu_Book Open"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-CONVERT">GNOME_STOCK_MENU_CONVERT</title>
+<title><anchor id="GNOME-STOCK-MENU-CONVERT-CAPS">GNOME_STOCK_MENU_CONVERT</title>
 <programlisting>#define GNOME_STOCK_MENU_CONVERT      "Menu_Convert"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-JUMP-TO">GNOME_STOCK_MENU_JUMP_TO</title>
+<title><anchor id="GNOME-STOCK-MENU-JUMP-TO-CAPS">GNOME_STOCK_MENU_JUMP_TO</title>
 <programlisting>#define GNOME_STOCK_MENU_JUMP_TO      "Menu_Jump To"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-UP">GNOME_STOCK_MENU_UP</title>
+<title><anchor id="GNOME-STOCK-MENU-UP-CAPS">GNOME_STOCK_MENU_UP</title>
 <programlisting>#define GNOME_STOCK_MENU_UP           "Menu_Up"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-DOWN">GNOME_STOCK_MENU_DOWN</title>
+<title><anchor id="GNOME-STOCK-MENU-DOWN-CAPS">GNOME_STOCK_MENU_DOWN</title>
 <programlisting>#define GNOME_STOCK_MENU_DOWN         "Menu_Down"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TOP">GNOME_STOCK_MENU_TOP</title>
+<title><anchor id="GNOME-STOCK-MENU-TOP-CAPS">GNOME_STOCK_MENU_TOP</title>
 <programlisting>#define GNOME_STOCK_MENU_TOP          "Menu_Top"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-BOTTOM">GNOME_STOCK_MENU_BOTTOM</title>
+<title><anchor id="GNOME-STOCK-MENU-BOTTOM-CAPS">GNOME_STOCK_MENU_BOTTOM</title>
 <programlisting>#define GNOME_STOCK_MENU_BOTTOM       "Menu_Bottom"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-ATTACH">GNOME_STOCK_MENU_ATTACH</title>
+<title><anchor id="GNOME-STOCK-MENU-ATTACH-CAPS">GNOME_STOCK_MENU_ATTACH</title>
 <programlisting>#define GNOME_STOCK_MENU_ATTACH       "Menu_Attach"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-INDEX">GNOME_STOCK_MENU_INDEX</title>
+<title><anchor id="GNOME-STOCK-MENU-INDEX-CAPS">GNOME_STOCK_MENU_INDEX</title>
 <programlisting>#define GNOME_STOCK_MENU_INDEX        "Menu_Index"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-FONT">GNOME_STOCK_MENU_FONT</title>
+<title><anchor id="GNOME-STOCK-MENU-FONT-CAPS">GNOME_STOCK_MENU_FONT</title>
 <programlisting>#define GNOME_STOCK_MENU_FONT         "Menu_Font"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-EXEC">GNOME_STOCK_MENU_EXEC</title>
+<title><anchor id="GNOME-STOCK-MENU-EXEC-CAPS">GNOME_STOCK_MENU_EXEC</title>
 <programlisting>#define GNOME_STOCK_MENU_EXEC         "Menu_Exec"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-ALIGN-LEFT">GNOME_STOCK_MENU_ALIGN_LEFT</title>
+<title><anchor id="GNOME-STOCK-MENU-ALIGN-LEFT-CAPS">GNOME_STOCK_MENU_ALIGN_LEFT</title>
 <programlisting>#define GNOME_STOCK_MENU_ALIGN_LEFT     "Menu_Left"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-ALIGN-RIGHT">GNOME_STOCK_MENU_ALIGN_RIGHT</title>
+<title><anchor id="GNOME-STOCK-MENU-ALIGN-RIGHT-CAPS">GNOME_STOCK_MENU_ALIGN_RIGHT</title>
 <programlisting>#define GNOME_STOCK_MENU_ALIGN_RIGHT    "Menu_Right"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-ALIGN-CENTER">GNOME_STOCK_MENU_ALIGN_CENTER</title>
+<title><anchor id="GNOME-STOCK-MENU-ALIGN-CENTER-CAPS">GNOME_STOCK_MENU_ALIGN_CENTER</title>
 <programlisting>#define GNOME_STOCK_MENU_ALIGN_CENTER   "Menu_Center"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-ALIGN-JUSTIFY">GNOME_STOCK_MENU_ALIGN_JUSTIFY</title>
+<title><anchor id="GNOME-STOCK-MENU-ALIGN-JUSTIFY-CAPS">GNOME_STOCK_MENU_ALIGN_JUSTIFY</title>
 <programlisting>#define GNOME_STOCK_MENU_ALIGN_JUSTIFY  "Menu_Justify"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TEXT-BOLD">GNOME_STOCK_MENU_TEXT_BOLD</title>
+<title><anchor id="GNOME-STOCK-MENU-TEXT-BOLD-CAPS">GNOME_STOCK_MENU_TEXT_BOLD</title>
 <programlisting>#define GNOME_STOCK_MENU_TEXT_BOLD      "Menu_Bold"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TEXT-ITALIC">GNOME_STOCK_MENU_TEXT_ITALIC</title>
+<title><anchor id="GNOME-STOCK-MENU-TEXT-ITALIC-CAPS">GNOME_STOCK_MENU_TEXT_ITALIC</title>
 <programlisting>#define GNOME_STOCK_MENU_TEXT_ITALIC    "Menu_Italic"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TEXT-UNDERLINE">GNOME_STOCK_MENU_TEXT_UNDERLINE</title>
+<title><anchor id="GNOME-STOCK-MENU-TEXT-UNDERLINE-CAPS">GNOME_STOCK_MENU_TEXT_UNDERLINE</title>
 <programlisting>#define GNOME_STOCK_MENU_TEXT_UNDERLINE "Menu_Underline"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-TEXT-STRIKEOUT">GNOME_STOCK_MENU_TEXT_STRIKEOUT</title>
+<title><anchor id="GNOME-STOCK-MENU-TEXT-STRIKEOUT-CAPS">GNOME_STOCK_MENU_TEXT_STRIKEOUT</title>
 <programlisting>#define GNOME_STOCK_MENU_TEXT_STRIKEOUT "Menu_Strikeout"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-STOCK-MENU-EXIT">GNOME_STOCK_MENU_EXIT</title>
+<title><anchor id="GNOME-STOCK-MENU-EXIT-CAPS">GNOME_STOCK_MENU_EXIT</title>
 <programlisting>#define GNOME_STOCK_MENU_EXIT     GNOME_STOCK_MENU_QUIT
 </programlisting>
 <para>
@@ -1874,10 +1904,13 @@ setups it might break subtly.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1894,12 +1927,16 @@ setups it might break subtly.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>mod</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1916,6 +1953,7 @@ setups it might break subtly.</para>
 <row><entry align="right"><parameter>section</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -1930,10 +1968,13 @@ setups it might break subtly.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>subtype</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1951,13 +1992,17 @@ setups it might break subtly.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>icon</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>subtype</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>pixmap</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>mask</parameter>&nbsp;:</entry>
-<entry><!--
+<entry>
+<!--
 Local variables:
 mode: sgml
 sgml-parent-document: ("../gnomeui-docs.sgml" "book" "sect1" "")

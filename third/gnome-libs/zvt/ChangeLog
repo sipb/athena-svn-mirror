@@ -1,3 +1,11 @@
+2000-11-25  Not Zed  <NotZed@HelixCode.com>
+
+	* vt.c
+	(vt_parse_vt): When we get a utf-8 start character, check that it
+	is in range (max of 4 chars for a valid utf-8 char), see standard,
+	section 3.8, D36.  Fixes some crashes where a big shift char (like
+	0xff) could create an over-run c.
+
 2000-10-23  Jacob "Ulysses" Berkman  <jacob@helixcode.com>
 
 	* zvtterm.c (zvt_term_motion_notify): don't increment y by the

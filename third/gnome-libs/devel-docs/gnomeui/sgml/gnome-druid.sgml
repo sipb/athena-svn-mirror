@@ -1,4 +1,4 @@
-<refentry id="GnomeDruid" revision="11 Oct 2000">
+<refentry id="GnomeDruid" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeDruid</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -134,6 +134,7 @@ void        <link linkend="gnome-druid-set-page">gnome_druid_set_page</link>    
 <tbody>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -188,6 +189,7 @@ text becomes "Cancel".</para>
 </entry></row>
 <row><entry align="right"><parameter>show_finish</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

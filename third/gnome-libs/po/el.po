@@ -1,14 +1,14 @@
 # gnome-libs Greek PO file
-# Copyright (C) 1999 Free Software Foundation, Inc.
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 1999.
-# Simos Xenitellis <simos@hellug.gr>, 1999
+# Simos Xenitellis <simos@hellug.gr>, 1999-2001.
 # Credits: Most of the work done by Spiros.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.0.52\n"
-"POT-Creation-Date: 2000-09-27 17:36-0400\n"
-"PO-Revision-Date: 1999-11-14 05:51+0000\n"
+"Project-Id-Version: gnome-libs 1.2.12\n"
+"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"PO-Revision-Date: 2001-02-14 01:28:08+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,8 @@ msgstr "ΣΥΣΤΗΜΑ:ΘΥΡΑ"
 
 #
 #: libgnome/gnomelib-init.c:150
-msgid "GNOME Options"
+#, fuzzy
+msgid "GNOME options"
 msgstr "Επιλογές GNOME"
 
 #
@@ -184,9 +185,8 @@ msgstr "Αρχείο"
 
 #
 #: libgnomeui/gnome-app-helper.c:96
-#, fuzzy
 msgid "File/"
-msgstr "_Αρχείο/"
+msgstr "Αρχείο/"
 
 #
 #: libgnomeui/gnome-app-helper.c:97 libgnomeui/stock_demo.c:274
@@ -195,69 +195,58 @@ msgstr "Επεξεργασία"
 
 #
 #: libgnomeui/gnome-app-helper.c:98
-#, fuzzy
 msgid "Edit/"
-msgstr "_Επεξεργασία/"
+msgstr "Επεξεργασία/"
 
 #
 #: libgnomeui/gnome-app-helper.c:99
-#, fuzzy
 msgid "View"
-msgstr "_Προβολή"
+msgstr "Προβολή"
 
 #
 #: libgnomeui/gnome-app-helper.c:100
-#, fuzzy
 msgid "View/"
-msgstr "_Προβολή/"
+msgstr "Προβολή/"
 
 #
 #: libgnomeui/gnome-app-helper.c:101
-#, fuzzy
 msgid "Settings"
-msgstr "_Ρυθμίσεις"
+msgstr "Ρυθμίσεις"
 
 #
 #: libgnomeui/gnome-app-helper.c:102
-#, fuzzy
 msgid "Settings/"
-msgstr "_Ρυθμίσεις/"
+msgstr "Ρυθμίσεις/"
 
 #
 #: libgnomeui/gnome-app-helper.c:103
-#, fuzzy
 msgid "New"
-msgstr "_Νέο"
+msgstr "Νέο"
 
 #
 #: libgnomeui/gnome-app-helper.c:104
-#, fuzzy
 msgid "New/"
-msgstr "_Νέο/"
+msgstr "Νέο/"
 
 #
 #: libgnomeui/gnome-app-helper.c:105
-#, fuzzy
 msgid "Files"
-msgstr "Αρ_χεία"
+msgstr "Αρχεία"
 
 #
 #: libgnomeui/gnome-app-helper.c:106
-#, fuzzy
 msgid "Files/"
-msgstr "Αρ_χεία/"
+msgstr "Αρχεία/"
 
 #
 #: libgnomeui/gnome-app-helper.c:107
-#, fuzzy
 msgid "Windows"
-msgstr "_Παράθυρα"
+msgstr "Παράθυρα"
 
 #
 #: libgnomeui/gnome-app-helper.c:108
-#, fuzzy
 msgid "Game"
-msgstr "_Παιχνίδι"
+msgstr "Παιχνίδι"
 
 #
 #: libgnomeui/gnome-app-helper.c:109 libgnomeui/gnome-stock.c:843
@@ -267,9 +256,8 @@ msgstr "Βοήθεια"
 
 #
 #: libgnomeui/gnome-app-helper.c:110
-#, fuzzy
 msgid "Windows/"
-msgstr "_Παράθυρα/"
+msgstr "Παράθυρα/"
 
 #
 #. Open
@@ -908,9 +896,8 @@ msgstr "Απενεργοποίηση σύνδεσης με το διαχειριστή συνεδρίας"
 #
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
-#, fuzzy
 msgid "Session management options"
-msgstr "Διαχείριση συνεδρίας"
+msgstr "Επιλογές διαχείρισης συνεδρίας"
 
 #
 #: libgnomeui/gnome-client.c:2348
@@ -1016,7 +1003,7 @@ msgstr "Για προχωρημένους"
 #
 #: libgnomeui/gnome-druid.c:129
 msgid "Back"
-msgstr "Επιστροφή"
+msgstr "Προηγούμενο"
 
 #
 #: libgnomeui/gnome-druid.c:136
@@ -1162,8 +1149,24 @@ msgid "MODULE"
 msgstr "MODULE"
 
 #
+#: libgnomeui/gnome-init.c:297
+msgid "GTK options"
+msgstr "Επιλογές GTK"
+
+#
+#: libgnomeui/gnome-init.c:298
+msgid "GNOME GUI options"
+msgstr "Επιλογές Γραφ. Διασ. Χρήστη GNOME"
+
+#
+#: libgnomeui/gnome-init.c:452
+#, c-format
+msgid "%s options"
+msgstr "%s επιλογές"
+
+#
 #. dialog display isn't working out
-#: libgnomeui/gnome-init.c:644
+#: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr "Πολλαπλά σφάλματα κατάτμησης· εμφάνιση διαλόγου σφάλματος αδύνατη\n"
 
@@ -1865,9 +1868,12 @@ msgstr "(Μόνο προς εσωτερική χρήση) Κωδικός εξυπηρέτη GOAD προς ενεργοποίηση"
 
 #
 #: libgnorba/goad.c:1363
-#, fuzzy
 msgid "(Internal use only) GOAD file descriptor"
-msgstr "(Μόνο προς εσωτερική χρήση) Κωδικός εξυπηρέτη GOAD προς ενεργοποίηση"
+msgstr "(Μόνο προς εσωτερική χρήση) Περιγραφέας αρχείου GOAD"
+
+#: libgnorba/goad.c:1367
+msgid "Gnome Object Activation Directory"
+msgstr "Κατάλογος Ενεργοποίησης Αντικειμένων GNOME"
 
 #
 #: libgnorba/loadshlib.c:11

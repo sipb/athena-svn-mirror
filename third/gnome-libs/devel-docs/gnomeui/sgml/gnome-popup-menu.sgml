@@ -1,4 +1,4 @@
-<refentry id="gnomeui-gnome-popup-menu" revision="11 Oct 2000">
+<refentry id="gnomeui-gnome-popup-menu" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>gnome-popup-menu</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -238,7 +238,8 @@ index of the selected item, or -1 if none.</para>
 <row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
 <entry>
 </entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><!--
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+<!--
 Local variables:
 mode: sgml
 sgml-parent-document: ("../gnomeui-docs.sgml" "book" "sect1" "")

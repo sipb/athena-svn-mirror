@@ -2396,6 +2396,9 @@ struct GnomeCanvas {
 
 	/* Whether the canvas is in antialiased mode or not */
 	unsigned int aa : 1;
+
+	/* dither mode for aa drawing */
+	unsigned int dither : 2;
 };
 </STRUCT>
 <FUNCTION>
@@ -2507,6 +2510,16 @@ GnomeCanvas *canvas,guint        rgba
 <NAME>gnome_canvas_set_stipple_origin</NAME>
 <RETURNS>void  </RETURNS>
 GnomeCanvas *canvas, GdkGC *gc
+</FUNCTION>
+<FUNCTION>
+<NAME>gnome_canvas_set_dither</NAME>
+<RETURNS>void  </RETURNS>
+GnomeCanvas *canvas, GdkRgbDither dither
+</FUNCTION>
+<FUNCTION>
+<NAME>gnome_canvas_get_dither</NAME>
+<RETURNS>GdkRgbDither  </RETURNS>
+GnomeCanvas *canvas
 </FUNCTION>
 <MACRO>
 <NAME>GNOME_CLIENT</NAME>

@@ -1,4 +1,4 @@
-<refentry id="GnomeDockItem" revision="11 Oct 2000">
+<refentry id="GnomeDockItem" revision="21 Jan 2001">
 <refmeta>
 <refentrytitle>GnomeDockItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -17,7 +17,7 @@
 
 struct      <link linkend="GnomeDockItem-struct">GnomeDockItem</link>;
 enum        <link linkend="GnomeDockItemBehavior">GnomeDockItemBehavior</link>;
-#define     <link linkend="GNOME-DOCK-ITEM-NOT-LOCKED">GNOME_DOCK_ITEM_NOT_LOCKED</link>      (x)
+#define     <link linkend="GNOME-DOCK-ITEM-NOT-LOCKED-CAPS">GNOME_DOCK_ITEM_NOT_LOCKED</link>      (x)
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-dock-item-new">gnome_dock_item_new</link>             (const <link linkend="gchar">gchar</link> *name,
                                              <link linkend="GnomeDockItemBehavior">GnomeDockItemBehavior</link> behavior);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="gnome-dock-item-get-child">gnome_dock_item_get_child</link>       (<link linkend="GnomeDockItem">GnomeDockItem</link> *dock_item);
@@ -137,7 +137,7 @@ vertical band.</para></listitem>
 drag the item around.</para></listitem>
 </itemizedlist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-DOCK-ITEM-NOT-LOCKED">GNOME_DOCK_ITEM_NOT_LOCKED()</title>
+<title><anchor id="GNOME-DOCK-ITEM-NOT-LOCKED-CAPS">GNOME_DOCK_ITEM_NOT_LOCKED()</title>
 <programlisting>#define     GNOME_DOCK_ITEM_NOT_LOCKED(x)</programlisting>
 <para>
 
@@ -148,6 +148,7 @@ drag the item around.</para></listitem>
 <tbody>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -187,7 +188,8 @@ Retrieve the child of <parameter>item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>dock_item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The child of <parameter>item</parameter>.
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -204,7 +206,8 @@ Retrieve the name of <parameter>item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>dock_item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The name of <parameter>item</parameter> as a <link linkend="malloc">malloc</link>()ed zero-terminated
 string.
 </entry></row>
@@ -321,12 +324,16 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -344,13 +351,17 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -367,6 +378,7 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -382,11 +394,14 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -403,9 +418,11 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>requisition</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -423,11 +440,14 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
