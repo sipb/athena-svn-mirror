@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xshow.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.5 1989-11-30 21:32:35 marc Exp $";
+static char rcsid_xshow_c[] = "$Id: xshow.c,v 1.6 1989-12-01 13:43:42 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -366,13 +366,14 @@ void fixup_and_draw(dpy, style, auxblocks, blocks, num, lines, numlines,
 char *no_dots_downcase_var(str)
      char *str;
 {
-   char *var;
+   register char *var, *var2;
 
    var = string_Downcase(var_get_variable(str));
+   var2 = var;
    while (*var++)
       if (*var == '.')
 	 *var = '_';
-   return(var);
+   return(var2);
 }
 
 #define MODE_TO_FONT(dpy,style,mode) \
