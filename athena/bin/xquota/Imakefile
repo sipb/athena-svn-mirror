@@ -3,7 +3,7 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.9 1992-11-06 03:55:15 probe Exp $
+ * $Id: Imakefile,v 1.10 1995-11-28 14:24:47 miki Exp $
  *
  *       
  * Copyright (c) 1987, 1988, 1991 by the Massachusetts Institute of Technology.
@@ -15,7 +15,8 @@
 #if defined(vax) && !defined(ultrix) || defined(ibm032) || defined(sun)
 INCFLAGS= -I. -I$(AFSDIR)/include
 #ifdef sun
-LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc -lm $(AFSDIR)/lib/afs/libsys.a
+LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc -lm $(AFSDIR)/lib/afs/libsys.a    $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
+LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
 #else
 LIBS= -lXaw -lXt -lXmu -lX11 -lXext -lhesiod -lrpcsvc $(AFSDIR)/lib/afs/libsys.a
 #endif
