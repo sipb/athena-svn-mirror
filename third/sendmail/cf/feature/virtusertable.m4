@@ -1,6 +1,7 @@
 divert(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998, 1999, 2001 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -12,11 +13,13 @@ divert(-1)
 #
 
 divert(0)
-VERSIONID(`@(#)virtusertable.m4	8.8 (Berkeley) 10/6/1998')
+VERSIONID(`$Id: virtusertable.m4,v 1.1.1.2 2003-04-08 15:12:03 zacheiss Exp $')
 divert(-1)
 
-define(`VIRTUSER_TABLE', ifelse(_ARG_, `',
-				ifdef(`_USE_ETC_MAIL_',
-				      DATABASE_MAP_TYPE` -o /etc/mail/virtusertable',
-				      DATABASE_MAP_TYPE` -o /etc/virtusertable'),
-				`_ARG_'))dnl
+define(`_VIRTUSER_TABLE_', `')
+
+LOCAL_CONFIG
+# Virtual user table (maps incoming users)
+Kvirtuser ifelse(defn(`_ARG_'), `', DATABASE_MAP_TYPE MAIL_SETTINGS_DIR`virtusertable',
+		 defn(`_ARG_'), `LDAP', `ldap -1 -v sendmailMTAMapValue -k (&(objectClass=sendmailMTAMapObject)(|(sendmailMTACluster=${sendmailMTACluster})(sendmailMTAHost=$j))(sendmailMTAMapName=virtuser)(sendmailMTAKey=%0))',
+		 `_ARG_')

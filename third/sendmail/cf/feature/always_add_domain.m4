@@ -1,6 +1,7 @@
 divert(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998-2000 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -12,7 +13,10 @@ divert(-1)
 #
 
 divert(0)
-VERSIONID(`@(#)always_add_domain.m4	8.6 (Berkeley) 5/19/1998')
+VERSIONID(`$Id: always_add_domain.m4,v 1.1.1.2 2003-04-08 15:11:32 zacheiss Exp $')
 divert(-1)
 
-define(`_ALWAYS_ADD_DOMAIN_', 1)
+ifdef(`_MAILER_local_',
+	`errprint(`*** MAILER(`local') must appear after FEATURE(`always_add_domain')')
+')dnl
+define(`_ALWAYS_ADD_DOMAIN_', ifelse(len(X`'_ARG_),`1',`',_ARG_))

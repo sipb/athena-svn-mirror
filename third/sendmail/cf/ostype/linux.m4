@@ -1,6 +1,7 @@
 divert(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998-2000 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -12,5 +13,8 @@ divert(-1)
 #
 
 divert(0)
-VERSIONID(`@(#)linux.m4	8.7 (Berkeley) 5/19/1998')
-define(`LOCAL_MAILER_PATH', /bin/mail.local)dnl
+VERSIONID(`$Id: linux.m4,v 1.1.1.2 2003-04-08 15:11:33 zacheiss Exp $')
+define(`confEBINDIR', `/usr/sbin')
+ifdef(`PROCMAIL_MAILER_PATH',,
+	define(`PROCMAIL_MAILER_PATH', `/usr/bin/procmail'))
+FEATURE(local_procmail)

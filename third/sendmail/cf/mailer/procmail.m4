@@ -1,6 +1,7 @@
 PUSHDIVERT(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998-2001 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -15,10 +16,10 @@ ifdef(`PROCMAIL_MAILER_PATH',,
 	`ifdef(`PROCMAIL_PATH',
 		`define(`PROCMAIL_MAILER_PATH', PROCMAIL_PATH)',
 		`define(`PROCMAIL_MAILER_PATH', /usr/local/bin/procmail)')')
-ifdef(`PROCMAIL_MAILER_FLAGS',,
-	`define(`PROCMAIL_MAILER_FLAGS', `SPhnu9')')
+_DEFIFNOT(`PROCMAIL_MAILER_FLAGS', `SPhnu9')
 ifdef(`PROCMAIL_MAILER_ARGS',,
 	`define(`PROCMAIL_MAILER_ARGS', `procmail -Y -m $h $f $u')')
+define(`_PROCMAIL_QGRP', `ifelse(defn(`PROCMAIL_MAILER_QGRP'),`',`', ` Q=PROCMAIL_MAILER_QGRP,')')dnl
 
 POPDIVERT
 
@@ -26,7 +27,8 @@ POPDIVERT
 ###   PROCMAIL Mailer specification   ###
 ##################*****##################
 
-VERSIONID(`@(#)procmail.m4	8.11 (Berkeley) 5/19/1998')
+VERSIONID(`$Id: procmail.m4,v 1.1.1.2 2003-04-08 15:06:31 zacheiss Exp $')
 
-Mprocmail,	P=PROCMAIL_MAILER_PATH, F=CONCAT(`DFM', PROCMAIL_MAILER_FLAGS), S=11/31, R=21/31, T=DNS/RFC822/X-Unix,
-		ifdef(`PROCMAIL_MAILER_MAX', `M=PROCMAIL_MAILER_MAX, ')A=PROCMAIL_MAILER_ARGS
+Mprocmail,	P=PROCMAIL_MAILER_PATH, F=_MODMF_(CONCAT(`DFM', PROCMAIL_MAILER_FLAGS), `PROCMAIL'), S=EnvFromSMTP/HdrFromSMTP, R=EnvToSMTP/HdrFromSMTP,
+		ifdef(`PROCMAIL_MAILER_MAX', `M=PROCMAIL_MAILER_MAX, ')T=DNS/RFC822/X-Unix,_PROCMAIL_QGRP
+		A=PROCMAIL_MAILER_ARGS

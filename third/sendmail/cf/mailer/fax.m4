@@ -1,6 +1,7 @@
 PUSHDIVERT(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998, 1999, 2001 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -21,14 +22,16 @@ ifdef(`FAX_MAILER_PATH',,
 	`define(`FAX_MAILER_PATH', /usr/local/bin/faxmail)')
 ifdef(`FAX_MAILER_MAX',,
 	`define(`FAX_MAILER_MAX', 100000)')
+define(`_FAX_QGRP', `ifelse(defn(`FAX_MAILER_QGRP'),`',`', ` Q=FAX_MAILER_QGRP,')')dnl
 POPDIVERT
 ####################################
 ###   FAX Mailer specification   ###
 ####################################
 
-VERSIONID(`@(#)fax.m4	8.11 (Berkeley) 5/19/1998')
+VERSIONID(`$Id: fax.m4,v 1.1.1.2 2003-04-08 15:06:31 zacheiss Exp $')
 
-Mfax,		P=FAX_MAILER_PATH, F=DFMhu, S=14, R=24, M=FAX_MAILER_MAX, T=X-Phone/X-FAX/X-Unix,
+Mfax,		P=FAX_MAILER_PATH, F=DFMhu, S=14, R=24,
+		M=FAX_MAILER_MAX, T=X-Phone/X-FAX/X-Unix,_FAX_QGRP
 		A=FAX_MAILER_ARGS
 
 LOCAL_CONFIG

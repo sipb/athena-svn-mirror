@@ -1,6 +1,7 @@
 PUSHDIVERT(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998-2001 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -14,8 +15,9 @@ PUSHDIVERT(-1)
 #
 
 ifdef(`PH_MAILER_PATH',, `define(`PH_MAILER_PATH', /usr/local/etc/phquery)')
-ifdef(`PH_MAILER_FLAGS',, `define(`PH_MAILER_FLAGS', `ehmu')')
+_DEFIFNOT(`PH_MAILER_FLAGS', `ehmu')
 ifdef(`PH_MAILER_ARGS',, `define(`PH_MAILER_ARGS', `phquery -- $u')')
+define(`_PH_QGRP', `ifelse(defn(`PH_MAILER_QGRP'),`',`', ` Q=PH_MAILER_QGRP,')')dnl
 
 POPDIVERT
 
@@ -23,7 +25,8 @@ POPDIVERT
 ###   PH Mailer specification   ###
 ####################################
 
-VERSIONID(`@(#)phquery.m4	8.6 (Berkeley) 5/19/1998')
+VERSIONID(`$Id: phquery.m4,v 1.1.1.2 2003-04-08 15:06:31 zacheiss Exp $')
 
-Mph,		P=PH_MAILER_PATH, F=CONCAT(`nrDFM', PH_MAILER_FLAGS), S=10, R=20/40,
+Mph,		P=PH_MAILER_PATH, F=_MODMF_(CONCAT(`nrDFM', PH_MAILER_FLAGS), `PH'), S=EnvFromL, R=EnvToL/HdrToL,
+		T=DNS/RFC822/X-Unix,_PH_QGRP
 		A=PH_MAILER_ARGS
