@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.7 1996-10-13 16:16:51 ghudson Exp $
+# $Id: build.sh,v 1.8 1996-10-17 16:17:06 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -79,7 +79,7 @@ for package in $packages; do
 	# Build the package.
 	cd $build/$package || exit 1
 	echo "**********************"
-	for op in configure clean check all install; do
+	for op in configure clean all check install; do
 		echo "***** ${package}: $op"
 		sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op" ||
 			{ echo "We bombed in $package"; exit 1; }
