@@ -12,7 +12,9 @@
  * C.  Grump grump...
  */
 #if ! __GNUC__
+#if !defined(__osf__)
 #define VARARGS 1
+#endif
 #endif
 
 /* We don't have the v*printf routines... */
@@ -46,7 +48,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.4 1993-08-03 20:39:35 vrt Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.5 1993-10-23 13:18:09 epeisach Exp $";
 #endif	/* ! lint */
 
 static void
