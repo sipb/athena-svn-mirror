@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.4 1989-11-17 13:57:07 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.5 1989-12-22 16:20:27 vanharen Exp $";
 #endif
 
 
@@ -541,6 +541,7 @@ init_question(k,topic,text)
   k->question->owner = k;
   k->queue = ACTIVE_Q;
   k->question->nseen = 0;
+  k->question->seen[0] = -1;
   k->question->note[0] = '\0';
   k->question->comment[0] = '\0';
   k->question->topic_code = verify_topic(topic);
@@ -920,7 +921,13 @@ connect_knuckles(a,b)
       return(FAILURE);*/
     }
 
-  a->question->nseen++;
+  if (!was_connected(a,b))
+    {
+      a->question->seen[a->question->nseen] = b->user->uid;
+      a->question->nseen++;
+      a->question->seen[a->question->nseen] = -1;
+    }
+
   return(SUCCESS);
 }
 
@@ -973,10 +980,8 @@ match_maker(knuckle)
 	    continue;
 	  if(is_connected((*k_ptr)))
 	    continue;
-/*
 	  if(was_connected((*k_ptr),knuckle))
 	    continue;
-*/
 	  if(is_logout((*k_ptr)))
 	    continue;
 	  if((*k_ptr)->status > QUESTION_STATUS)
@@ -1276,16 +1281,19 @@ is_topic(topics,code)
   return(FALSE);
 }
 
-/*
 was_connected(a,b)
      KNUCKLE *a, *b;
 {
   int i = 0;
 
-  for(i=0;*a->question->seen[i] != '\0'; i++)
-    if(!strcmp(a->question->seen[i], b->user->username))
+  fprintf(stderr, "Nseen: %d  UIDs: ", a->question->nseen);
+  for(i=0; a->question->seen[i] != -1; i++)
+    fprintf(stderr, "%d ", a->question->seen[i]);
+  fprintf(stderr, "\n");
+
+  for(i=0; a->question->seen[i] != -1; i++)
+    if(a->question->seen[i] == b->user->uid)
       return(TRUE);
 
   return(FALSE);
 }
-*/
