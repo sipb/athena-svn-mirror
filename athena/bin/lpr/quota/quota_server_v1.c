@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v $
- *	$Author: ilham $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.3 1990-07-11 16:21:46 ilham Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.4 1990-11-14 16:04:37 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.3 1990-07-11 16:21:46 ilham Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.4 1990-11-14 16:04:37 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -21,6 +21,8 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "quota_err.h"
 #include "quota_db.h"
 #include "uuid.h"
+#include <sys/file.h>
+
 extern char qcurrency[];             /* The quota currency */
 char *set_service();
 
@@ -44,7 +46,9 @@ quota_report *qreport;
 
 	CHECK_PROTECT();
 
-	service = set_service(qid->service);
+	if (QD || !access(SHUTDOWNFILE, F_OK)) return(QDBDOWN);
+
+	service = set_service((char *) qid->service);
 	if(ret=check_krb_auth(h, auth, &ad)) 
 	    return QBADTKTS;
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
@@ -56,10 +60,10 @@ quota_report *qreport;
 
 	/* This machine is authorized to connect */
 
-	parse_username(qid->username, qprincipal, qinstance, qrealm);
-	strncpy(quotarec.name, qprincipal, ANAME_SZ);
-	strncpy(quotarec.instance, qinstance, INST_SZ);
-	strncpy(quotarec.realm, qrealm, REALM_SZ);    
+	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	(void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
+	(void) strncpy(quotarec.instance, qinstance, INST_SZ);
+	(void) strncpy(quotarec.realm, qrealm, REALM_SZ);    
 	ret = quota_db_get_principal(qprincipal, qinstance,
 					service,
 					qrealm, &quotarec,
@@ -112,7 +116,7 @@ quota_return_v1 *qret;
 	int more, retval;
 	int authuser = 0;	/* If user is in the access list for special */
 
-	service = set_service(qid->service);
+	service = set_service((char *) qid->service);
 
 	CHECK_PROTECT();
 
@@ -133,12 +137,12 @@ quota_return_v1 *qret;
 
 	if(is_suser(name)) authuser = 1;
 
-	parse_username(qid->username, qprincipal, qinstance, qrealm);
-	strncpy(quotarec.name, qprincipal, ANAME_SZ);
-	strncpy(quotarec.instance, qinstance, INST_SZ);
-	strncpy(quotarec.realm, qrealm, REALM_SZ);    
+	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	(void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
+	(void) strncpy(quotarec.instance, qinstance, INST_SZ);
+	(void) strncpy(quotarec.realm, qrealm, REALM_SZ);    
 
-	parse_username(name, kprincipal, kinstance, krealm);
+	parse_username((char *) name, kprincipal, kinstance, krealm);
 	if(((strcmp(quotarec.name, kprincipal) != 0) || 
 	    (strcmp(quotarec.instance, kinstance) != 0) ||
 	    (strcmp(quotarec.realm, krealm) != 0)) && (authuser == 0)) 
@@ -160,7 +164,7 @@ quota_return_v1 *qret;
     /* Set the return variables */
 	qret->usage = quotarec.quotaAmount;
 	qret->limit = quotarec.quotaLimit;
-	strcpy(qret->currency, qcurrency);
+	(void) strcpy((char *) qret->currency, qcurrency);
 	qret->last_bill = quotarec.lastBilling;
 	qret->last_charge = quotarec.lastCharge;
 	qret->pending_charge = quotarec.pendingCharge;
@@ -169,9 +173,9 @@ quota_return_v1 *qret;
 
 
 	if(quotarec.allowedToPrint == FALSE) 
-	    strcpy(qret->message, "Printing is disabled");
+	    (void) strcpy((char *) qret->message, "Printing is disabled");
 	else
-	    strcpy(qret->message, "Printing is allowed");
+	    (void) strcpy((char *) qret->message, "Printing is allowed");
 	return 0;
 
     }
@@ -197,7 +201,7 @@ quota_value qamount;
 	syslog(LOG_DEBUG, "Quotamodify %s, %s, %d:amt %d, type %d\n", 
 	       qid->username, qid->service, qid->account,qamount,qtype);
 #endif
-	service=set_service(qid->service);
+	service=set_service((char *) qid->service);
 
 	if(check_krb_auth(h, auth, &ad))
 	    return QBADTKTS;
@@ -214,15 +218,15 @@ quota_value qamount;
 	if(qamount < 0) 
 	    return QNONEG;
 	
-	parse_username(qid->username, qprincipal, qinstance, qrealm);
+	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
 
 	/* Handle U_NEW special..., all others require the user to be
 	   present in the database, so get entry... */
 	if(qtype == U_NEW) {
-	    strncpy(quotarec.name, qprincipal, ANAME_SZ);
-	    strncpy(quotarec.instance, qinstance, INST_SZ);
-	    strncpy(quotarec.realm, qrealm, REALM_SZ);
-	    strncpy(quotarec.service, service, SERV_SZ);
+	    (void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
+	    (void) strncpy(quotarec.instance, qinstance, INST_SZ);
+	    (void) strncpy(quotarec.realm, qrealm, REALM_SZ);
+	    (void) strncpy(quotarec.service, service, SERV_SZ);
 
 	    quotarec.quotaAmount = 0;
 	    if (qamount != 0)
@@ -290,7 +294,7 @@ quota_value qamount;
 	    return QUSERDELETED;
     
 	/* Let's modify this sucker !!! */
-	switch (qtype) {
+	switch ((int) qtype) {
 	case U_SET:
 	    quotarec.quotaLimit = qamount;
 	    break;
@@ -328,6 +332,7 @@ quota_value qamount;
 	return 0;
     }
 
+/*ARGSUSED*/
 quota_error_code QuotaModifyAccount_v1(h, auth, qtype, qid, qamount)
 handle_t h;
 krb_ktext *auth;
