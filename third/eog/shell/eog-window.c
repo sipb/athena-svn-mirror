@@ -91,6 +91,7 @@ struct _EogWindowPrivate {
 	GtkWidget           *wraplist;
 	GtkWidget           *info_view;
 	GtkWidget           *statusbar;
+	GtkWidget           *n_img_label;
 
 	/* available action groups */
 	GtkActionGroup      *actions_window;
@@ -132,6 +133,7 @@ static gint eog_window_key_press (GtkWidget *widget, GdkEventKey *event);
 static void eog_window_drag_data_received (GtkWidget *widget, GdkDragContext *context, gint x, gint y, 
 				    GtkSelectionData *selection_data, guint info, guint time);
 static void adapt_window_size (EogWindow *window, int width, int height);
+static void update_status_bar (EogWindow *window);
 
 static GtkWindowClass *parent_class;
 
@@ -249,10 +251,7 @@ verb_DirOpen_cb (GtkAction *action, gpointer user_data)
 	gtk_widget_show_all (dlg);
 	response = gtk_dialog_run (GTK_DIALOG (dlg));
 	if (response == GTK_RESPONSE_OK) {
-		char *folder;
-
-		folder = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER (dlg));
-		list = g_slist_append (list, folder);
+		list = gtk_file_chooser_get_uris (GTK_FILE_CHOOSER (dlg));
 	}
 
 	gtk_widget_destroy (dlg);
@@ -266,12 +265,6 @@ static void
 verb_FileCloseWindow_cb (GtkAction *action, gpointer user_data)
 {
 	eog_window_close (EOG_WINDOW (user_data));
-}
-
-static void
-verb_FileExit_cb (GtkAction *action, gpointer data)
-{
-	eog_window_close_all ();
 }
 
 static void
@@ -626,13 +619,11 @@ save_error (SaveData *data)
 
 	/* display generic error dialog, except for FILE_EXISTS error */
 	if (err_code == EOG_IMAGE_ERROR_FILE_EXISTS) {
-		GnomeVFSURI *uri;
-		char *uri_str;
+		char *str;
 
-		uri = eog_image_get_uri (image); /* FIXME: display uri correct */
-		uri_str = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+		str = eog_image_get_uri_for_display (image); 
 
-		header = g_strdup_printf (_("Overwrite file %s?"), uri_str);
+		header = g_strdup_printf (_("Overwrite file %s?"), str);
 		detail = _("File exists. Do you want to overwrite it?");
 
 		dlg = eog_hig_dialog_new (GTK_WINDOW (data->window), 
@@ -640,8 +631,7 @@ save_error (SaveData *data)
 					  header, detail,
 					  TRUE);
 
-		g_free (uri_str);
-		gnome_vfs_uri_unref (uri);
+		g_free (str);
 
 		gtk_dialog_add_button (GTK_DIALOG (dlg), _("Skip"), EOG_SAVE_RESPONSE_SKIP);
 		gtk_dialog_add_button (GTK_DIALOG (dlg), _("Overwrite"), EOG_SAVE_RESPONSE_OVERWRITE);
@@ -1906,7 +1896,7 @@ eog_window_key_press (GtkWidget *widget, GdkEventKey *event)
 	switch (event->keyval) {
 	case GDK_Q:
 	case GDK_q:
-		verb_FileExit_cb (NULL, NULL);
+		eog_window_close (EOG_WINDOW (widget));
 		break;
 
 	default:
@@ -2058,6 +2048,8 @@ image_loading_finished_cb (EogImage *image, gpointer data)
 		g_print ("loading finished: %s - (%i|%i)\n", eog_image_get_caption (image), width, height);
 #endif
 	}
+
+	update_status_bar  (window);
 }
 
 static void
@@ -2067,12 +2059,67 @@ image_loading_failed_cb (EogImage *image, const char* message,  gpointer data)
 }
 
 static void
+update_status_bar (EogWindow *window)
+{
+	EogWindowPrivate *priv;
+	int nimg;
+	int nsel;
+	char *n_img_str = NULL;
+	char *str = NULL;
+
+	priv = window->priv;
+
+	/* update number of selected images */	
+	nimg = eog_image_list_length (priv->image_list);
+	if (nimg > 0) {
+		nsel = eog_wrap_list_get_n_selected (EOG_WRAP_LIST (priv->wraplist));
+		/* Images: (n_selected_images) / (n_total_images) */
+		n_img_str = g_strdup_printf ("%i / %i", nsel, nimg);
+	}
+	gtk_label_set_text (GTK_LABEL (priv->n_img_label), n_img_str);
+	
+	if (priv->displayed_image != NULL) {
+		int zoom, width, height;
+		GnomeVFSFileSize bytes = 0;
+
+		zoom = floor (100 * eog_scroll_view_get_zoom (EOG_SCROLL_VIEW (priv->scroll_view)));
+		
+		eog_image_get_size (priv->displayed_image, &width, &height);
+		bytes = eog_image_get_bytes (priv->displayed_image);
+		
+		if ((width > 0) && (height > 0)) {
+			char *size_string;
+
+			size_string = gnome_vfs_format_file_size_for_display (bytes);
+
+			/* [image width] x [image height] pixel  [bytes]    [zoom in percent] */
+			str = g_strdup_printf (_("%i x %i pixel  %s    %i%%"), 
+					       width, height, size_string, zoom);
+			
+			g_free (size_string);
+		}
+	}
+
+	if (str != NULL) {
+		gnome_appbar_set_status (GNOME_APPBAR (priv->statusbar), str);
+		g_free (str);
+	}
+	else {
+		gnome_appbar_set_status (GNOME_APPBAR (priv->statusbar), "");
+	}
+}
+
+static void
+view_zoom_changed_cb (GtkWidget *widget, double zoom, gpointer data)
+{
+	update_status_bar (EOG_WINDOW (data));
+}
+
+static void
 handle_image_selection_changed (EogWrapList *list, EogWindow *window) 
 {
 	EogWindowPrivate *priv;
 	EogImage *image;
-	gchar *str;
-	gint nimg, nsel;
 	char *title = NULL; 
 
 	priv = window->priv;
@@ -2105,14 +2152,8 @@ handle_image_selection_changed (EogWrapList *list, EogWindow *window)
 	
         eog_scroll_view_set_image (EOG_SCROLL_VIEW (priv->scroll_view), image);
 	eog_info_view_set_image (EOG_INFO_VIEW (priv->info_view), image);
-	
-	/* update status bar text */	
-	nimg = eog_image_list_length (priv->image_list);
-	nsel = eog_wrap_list_get_n_selected (EOG_WRAP_LIST (priv->wraplist));
-	
-	/* Images: (n_selected_images) / (n_total_images) */
-	str = g_strdup_printf (_("Images: %i/%i"), nsel, nimg);
-	gnome_appbar_set_status (GNOME_APPBAR (priv->statusbar), str);
+
+	update_status_bar (window);
 
 	/* update window title */
 	if (image != NULL) {
@@ -2128,7 +2169,6 @@ handle_image_selection_changed (EogWrapList *list, EogWindow *window)
 	gtk_window_set_title (GTK_WINDOW (window), title);
 		
 	g_free (title);
-	g_free (str);
 }
 
 typedef struct {
@@ -2198,7 +2238,6 @@ static GtkActionEntry action_entries_window[] = {
   { "FileOpen",        GTK_STOCK_OPEN,  N_("_Open..."),  "<control>O",  N_("Open a file"),                  G_CALLBACK (verb_FileOpen_cb) },
   { "FileDirOpen",     GTK_STOCK_OPEN,  N_("Open _Directory..."), "<control><shift>O", N_("Open a directory"), G_CALLBACK (verb_DirOpen_cb) },
   { "FileCloseWindow", GTK_STOCK_CLOSE, N_("_Close"),    "<control>W",  N_("Close window"),                 G_CALLBACK (verb_FileCloseWindow_cb) },
-  { "FileExit",        GTK_STOCK_QUIT,  N_("_Quit"),     "<control>Q",  N_("Close all windows and quit"),   G_CALLBACK (verb_FileExit_cb) },
   { "EditPreferences", GTK_STOCK_PREFERENCES, N_("Prefere_nces"), NULL, N_("Preferences for Eye of Gnome"), G_CALLBACK (verb_EditPreferences_cb) },
   { "HelpManual",      GTK_STOCK_HELP,  N_("_Contents"), "F1",          N_("Help On this application"),     G_CALLBACK (verb_HelpContent_cb) },
   { "HelpAbout",       GNOME_STOCK_ABOUT, N_("_About"),	NULL, N_("About this application"),       G_CALLBACK (verb_HelpAbout_cb) }
@@ -2307,6 +2346,14 @@ eog_window_construct_ui (EogWindow *window)
 
 	/* add statusbar */
 	priv->statusbar = gnome_appbar_new (TRUE, TRUE, GNOME_PREFERENCES_NEVER);
+	{
+		GtkWidget *frame;
+		frame = g_object_new (GTK_TYPE_FRAME, "shadow-type", GTK_SHADOW_IN, NULL);
+		priv->n_img_label = gtk_label_new ("       ");
+		gtk_container_add (GTK_CONTAINER (frame), priv->n_img_label);
+		gtk_box_pack_start (GTK_BOX (priv->statusbar), frame, FALSE, TRUE, 0);
+	}
+
 	gtk_box_pack_end (GTK_BOX (priv->box), GTK_WIDGET (priv->statusbar),
 			  FALSE, FALSE, 0);
 
@@ -2315,7 +2362,11 @@ eog_window_construct_ui (EogWindow *window)
 
 	/* the image view for the full size image */
  	priv->scroll_view = eog_scroll_view_new ();
-	/* g_object_set (G_OBJECT (priv->scroll_view), "height_request", 250, NULL); */
+	gtk_widget_set_usize (GTK_WIDGET (priv->scroll_view), 100, 100);
+	g_signal_connect (G_OBJECT (priv->scroll_view),
+			  "zoom_changed",
+			  (GCallback) view_zoom_changed_cb, window);
+
 	frame = gtk_widget_new (GTK_TYPE_FRAME, "shadow-type", GTK_SHADOW_IN, NULL);
 	gtk_container_add (GTK_CONTAINER (frame), priv->scroll_view);
 

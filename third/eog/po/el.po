@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"POT-Creation-Date: 2004-12-01 20:56+0100\n"
 "PO-Revision-Date: 2004-08-29 17:54+0300\n"
 "Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
 "Language-Team:  <nls@tux.hellug.gr>\n"
@@ -51,11 +51,11 @@ msgstr "."
 
 #: eog.glade.h:4
 msgid "<b>File Name Preview</b>"
-msgstr "<b>Προεπισκόπηση ονόματος αρχείου</b>"
+msgstr "<b>Προεπισκόπηση Ονόματος Αρχείου</b>"
 
 #: eog.glade.h:5
 msgid "<b>File Path Specifications</b>"
-msgstr "<b>Χαρακτηριστικά διαδρομής αρχείου</b>"
+msgstr "<b>Χαρακτηριστικά Διαδρομής Αρχείου</b>"
 
 #: eog.glade.h:6
 msgid "<b>Image Interpolation</b>"
@@ -101,7 +101,7 @@ msgstr "Χρώμα για Διάφανες Περιοχές"
 #
 #: eog.glade.h:17
 msgid "Destination Folder:"
-msgstr "Φακέλος προορισμού:"
+msgstr "Φακέλος Προορισμού:"
 
 #
 #: eog.glade.h:18
@@ -110,7 +110,7 @@ msgstr "Προτιμήσεις για το Μάτι του Gnome"
 
 #: eog.glade.h:19
 msgid "Filename Format:"
-msgstr "Τύπος ονόματος αρχείου:"
+msgstr "Τύπος Ονόματος Αρχείου:"
 
 #: eog.glade.h:20
 msgid "Image _View"
@@ -118,7 +118,7 @@ msgstr "Προ_βολή Εικόνας"
 
 #: eog.glade.h:21
 msgid "Rename From:"
-msgstr "Μετονομασία από:"
+msgstr "Μετονομασία Από:"
 
 #: eog.glade.h:22
 msgid "Replace spaces by underscore"
@@ -132,7 +132,7 @@ msgstr "Αποθήκευση Ως"
 #
 #: eog.glade.h:24
 msgid "Saving Image"
-msgstr "Αποθήκευση εικόνας"
+msgstr "Αποθήκευση Εικόνας"
 
 #: eog.glade.h:25
 msgid "Show _next image automatically after:"
@@ -157,7 +157,7 @@ msgstr "_Περιήγηση"
 
 #: eog.glade.h:30
 msgid "_Interpolate image on zoom"
-msgstr "_Παρεμβολή εικόνας στην μεγέθυνση"
+msgstr "_Παρεμβολή εικόνας στη μεγέθυνση"
 
 #: eog.glade.h:31
 msgid "_Loop sequence"
@@ -183,7 +183,7 @@ msgstr "Να επιτρέπεται αρχική μεγέθυνση μεγαλύ
 
 #: eog.schemas.in.h:4
 msgid "Delay in seconds until showing the next image"
-msgstr "Καθυστέρηση σε δευτερόλεπτα μέχρι την εμφάνιση της επόμενης εικόνας."
+msgstr "Καθυστέρηση σε δευτερόλεπτα μέχρι την εμφάνιση της επόμενης εικόνας"
 
 #: eog.schemas.in.h:5
 msgid ""
@@ -320,7 +320,7 @@ msgstr "Δεν έχει φορτωθεί εικόνα."
 
 #: libeog/eog-image.c:1409 libeog/eog-image.c:1535
 msgid "Temporary file creation failed."
-msgstr "Η δημιουργία προσωρινού αρχείου απέτυχε"
+msgstr "Η δημιουργία προσωρινού αρχείου απέτυχε."
 
 #: libeog/eog-info-view-exif.c:26
 msgid "Camera"
@@ -337,7 +337,7 @@ msgstr "Συνθήκες λήψης εικόνας"
 
 #: libeog/eog-info-view-exif.c:29
 msgid "Maker Note"
-msgstr "Σημείωση δημιουργού"
+msgstr "Σημείωση Δημιουργού"
 
 #: libeog/eog-info-view-exif.c:30
 msgid "Other"
@@ -459,22 +459,24 @@ msgstr "Δευτερόλεπτο"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:321
+#: shell/eog-window.c:314
 msgid "translator-credits"
-msgstr "Simos Xenitellis <simos74@gmx.net>Kostas Papadimas <pkst@gnome.org>"
+msgstr ""
+"Simos Xenitellis <simos74@gmx.net>\n"
+" Kostas Papadimas <pkst@gnome.org>"
 
 #
-#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
-#: shell/main.c:498
+#: shell/eog-window.c:319 shell/eog-window.c:2167 shell/eog-window.c:2482
+#: shell/main.c:497
 msgid "Eye of Gnome"
 msgstr "Μάτι του Gnome"
 
 #
-#: shell/eog-window.c:329
+#: shell/eog-window.c:322
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Η εφαρμογή προβολής και καταλογοποίησης εικόνων του GNOME."
 
-#: shell/eog-window.c:366
+#: shell/eog-window.c:359
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -483,227 +485,218 @@ msgstr ""
 "Δεν είναι δυνατή η προβολή βοήθειας για το Μάτι του Gnome.\n"
 "%s "
 
-#: shell/eog-window.c:635
+#: shell/eog-window.c:626
 #, c-format
 msgid "Overwrite file %s?"
-msgstr "Αντικατάσταση αρχείου %s?"
+msgstr "Αντικατάσταση αρχείου %s;"
 
-#: shell/eog-window.c:636
+#: shell/eog-window.c:627
 msgid "File exists. Do you want to overwrite it?"
-msgstr "Το αρχείο υπάρχει. Θέλετε να το αντικαταστήσετε?"
+msgstr "Το αρχείο υπάρχει. Θέλετε να το αντικαταστήσετε;"
 
-#: shell/eog-window.c:646 shell/eog-window.c:659
+#: shell/eog-window.c:636 shell/eog-window.c:649
 msgid "Skip"
-msgstr "Προσπέλαση"
+msgstr "Προσπέραση"
 
-#: shell/eog-window.c:647
+#: shell/eog-window.c:637
 msgid "Overwrite"
 msgstr "Αντικατάσταση"
 
-#: shell/eog-window.c:652
+#: shell/eog-window.c:642
 #, c-format
 msgid "Error on saving %s."
 msgstr "Σφάλμα κατα την αποθήκευση %s."
 
-#: shell/eog-window.c:660 shell/eog-window.c:1044
+#: shell/eog-window.c:650 shell/eog-window.c:1034
 msgid "Retry"
 msgstr "Προσπάθεια ξανά"
 
-#: shell/eog-window.c:1033
+#: shell/eog-window.c:1023
 #, c-format
 msgid "Couldn't determine file format of %s"
 msgstr "Αδυναμία αναγνώρισης τύπου αρχείου %s"
 
-#: shell/eog-window.c:1034
+#: shell/eog-window.c:1024
 msgid "Please use an appropriate filename suffix or select a file format."
 msgstr ""
 "Παρακαλώ χρησιμοποιήστε μια κατάλληλη κατάληξη ονόματος αρχείου ή επιλέξτε "
 "ένα τύπο αρχείου."
 
 #
-#: shell/eog-window.c:1176
+#: shell/eog-window.c:1166
 msgid "Error on saving images."
 msgstr "Σφάλμα στην αποθήκευση εικόνων."
 
-#: shell/eog-window.c:1409
+#: shell/eog-window.c:1399
 #, c-format
 msgid "Do you really want to move %i image to trash?"
 msgid_plural "Do you really want to move %i images to trash?"
-msgstr[0] "Θέλετε να μετακινήσετε %i εικόνα στα απορρίματα?"
-msgstr[1] "Θέλετε να μετακινήσετε %i εικόνες στα απορρίματα?"
+msgstr[0] "Θέλετε να μετακινήσετε %i εικόνα στα απορρίματα;"
+msgstr[1] "Θέλετε να μετακινήσετε %i εικόνες στα απορρίματα;"
 
-#: shell/eog-window.c:1447
+#: shell/eog-window.c:1437
 msgid "Couldn't access trash."
 msgstr "Αδυναμία πρόσβασης στα απορρίματα."
 
-#: shell/eog-window.c:1521
+#: shell/eog-window.c:1511
 #, c-format
 msgid "Error on deleting image %s"
 msgstr "Σφάλμα κατα την διαγραφή εικόνας %s"
 
-#. Images: (n_selected_images) / (n_total_images)
-#: shell/eog-window.c:2114
+#. [image width] x [image height] pixel  [bytes]    [zoom in percent]
+#: shell/eog-window.c:2096
 #, c-format
-msgid "Images: %i/%i"
-msgstr "Εικόνες :%i/%i"
+msgid "%i x %i pixel  %s    %i%%"
+msgstr "%i x %i εικονοστοιχεία  %s    %i%%"
 
-#: shell/eog-window.c:2193
+#: shell/eog-window.c:2233
 msgid "_File"
 msgstr "_Αρχείο"
 
-#: shell/eog-window.c:2194
+#: shell/eog-window.c:2234
 msgid "_Edit"
 msgstr "_Επεξεργασία"
 
-#: shell/eog-window.c:2195
+#: shell/eog-window.c:2235
 msgid "_View"
 msgstr "_Προβολή"
 
-#: shell/eog-window.c:2196
+#: shell/eog-window.c:2236
 msgid "_Help"
 msgstr "_Βοήθεια"
 
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "_New"
 msgstr "_Νέο"
 
 #
-#: shell/eog-window.c:2197
+#: shell/eog-window.c:2237
 msgid "Open a new window"
 msgstr "Άνοιγμα νέου παραθύρου"
 
 #
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "_Open..."
 msgstr "_Άνοιγμα..."
 
 #
-#: shell/eog-window.c:2198
+#: shell/eog-window.c:2238
 msgid "Open a file"
 msgstr "Άνοιγμα αρχείου"
 
 #
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open _Directory..."
 msgstr "Άνοιγμα _Καταλόγου..."
 
 #
-#: shell/eog-window.c:2199
+#: shell/eog-window.c:2239
 msgid "Open a directory"
 msgstr "Άνοιγμα ενός καταλόγου"
 
 #
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
 #
-#: shell/eog-window.c:2200
+#: shell/eog-window.c:2240
 msgid "Close window"
 msgstr "Κλείσιμο παραθύρου"
 
-#: shell/eog-window.c:2201
-msgid "_Quit"
-msgstr "Έ_ξοδος"
-
-#
-#: shell/eog-window.c:2201
-msgid "Close all windows and quit"
-msgstr "Κλείσιμο όλων των παραθύρων και έξοδος"
-
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Prefere_nces"
 msgstr "Προτι_μήσεις"
 
-#: shell/eog-window.c:2202
+#: shell/eog-window.c:2241
 msgid "Preferences for Eye of Gnome"
 msgstr "Προτιμήσεις για το Eye of Gnome"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "_Contents"
 msgstr "_Περιεχόμενα"
 
-#: shell/eog-window.c:2203
+#: shell/eog-window.c:2242
 msgid "Help On this application"
 msgstr "Βοήθεια για αυτήν τη εφαρμογή"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "_About"
 msgstr "Π_ερί"
 
-#: shell/eog-window.c:2204
+#: shell/eog-window.c:2243
 msgid "About this application"
 msgstr "Περί της εφαρμογής"
 
-#: shell/eog-window.c:2209
+#: shell/eog-window.c:2248
 msgid "_Toolbar"
 msgstr "Ερ_γαλειοθήκη"
 
-#: shell/eog-window.c:2210
+#: shell/eog-window.c:2249
 msgid "_Statusbar"
 msgstr "_Γραμμή Κατάστασης"
 
 #
-#: shell/eog-window.c:2215
+#: shell/eog-window.c:2254
 msgid "_Save"
 msgstr "Απο_θήκευση"
 
 #
-#: shell/eog-window.c:2216
+#: shell/eog-window.c:2255
 msgid "Save _As"
 msgstr "Αποθήκευση _Ως"
 
-#: shell/eog-window.c:2218
+#: shell/eog-window.c:2257
 msgid "_Undo"
 msgstr "Α_ναίρεση"
 
-#: shell/eog-window.c:2220
+#: shell/eog-window.c:2259
 msgid "Flip _Horizontal"
 msgstr "Ορι_ζόντια Περιστροφή"
 
-#: shell/eog-window.c:2221
+#: shell/eog-window.c:2260
 msgid "Flip _Vertical"
 msgstr "Κά_θετη Περιστροφή"
 
-#: shell/eog-window.c:2223
+#: shell/eog-window.c:2262
 msgid "_Rotate Clockwise"
 msgstr "Ω_ρολογιακή Περιστροφή"
 
-#: shell/eog-window.c:2224
+#: shell/eog-window.c:2263
 msgid "Rotate Counter C_lockwise"
 msgstr "Αν_τιωρολογιακή Περιστροφή"
 
-#: shell/eog-window.c:2225
+#: shell/eog-window.c:2264
 msgid "Rotat_e 180°"
 msgstr "Περιστροφή 180 _Μοίρες"
 
-#: shell/eog-window.c:2227
+#: shell/eog-window.c:2266
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: shell/eog-window.c:2229
+#: shell/eog-window.c:2268
 msgid "_Full Screen"
 msgstr "_Πλήρης Οθόνη"
 
 #
-#: shell/eog-window.c:2230
+#: shell/eog-window.c:2269
 msgid "_Zoom In"
 msgstr "Μεγέ_θυνση"
 
 #
-#: shell/eog-window.c:2231
+#: shell/eog-window.c:2270
 msgid "Zoom _Out"
 msgstr "Σ_μίκρυνση"
 
-#: shell/eog-window.c:2232
+#: shell/eog-window.c:2271
 msgid "_Normal Size"
 msgstr "Κα_νονικό Μέγεθος"
 
-#: shell/eog-window.c:2233
+#: shell/eog-window.c:2272
 msgid "Best _Fit"
 msgstr "Καλύτερο _Ταίριασμα"
 
-#: shell/main.c:236
+#: shell/main.c:235
 #, c-format
 msgid ""
 "You are about to open %i windows simultaneously. Do you want to open them in "
@@ -713,20 +706,20 @@ msgstr ""
 "συλλογή;"
 
 #
-#: shell/main.c:240
+#: shell/main.c:239
 msgid "Open multiple single windows?"
 msgstr "Άνοιγμα πολλαπλών παραθύρων;"
 
-#: shell/main.c:244
+#: shell/main.c:243
 msgid "Single Windows"
 msgstr "Μονά Παράθυρα"
 
 #
-#: shell/main.c:246
+#: shell/main.c:245
 msgid "Collection"
 msgstr "Συλλογή"
 
-#: shell/main.c:298
+#: shell/main.c:297
 msgid "File not found."
 msgid_plural "Files not found."
 msgstr[0] "Το αρχείο δε βρέθηκε."
@@ -736,3 +729,13 @@ msgstr[1] "Τα αρχεία δε βρέθηκαν."
 #, c-format
 msgid "Could not open `%s'"
 msgstr "Αδύνατο το άνοιγμα του `%s'"
+
+#~ msgid "Images: %i/%i"
+#~ msgstr "Εικόνες :%i/%i"
+
+#~ msgid "_Quit"
+#~ msgstr "Έ_ξοδος"
+
+#
+#~ msgid "Close all windows and quit"
+#~ msgstr "Κλείσιμο όλων των παραθύρων και έξοδος"

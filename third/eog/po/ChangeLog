@@ -1,3 +1,100 @@
+2004-12-01  Jens Finke  <jens@triq.net>
+
+	* zu.po: Fixed 'invalid control sequence' error in
+	zu.po:441 during make.
+
+2004-11-30  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* zu.po: Added Zulu translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-11-29  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Updated Northern Sotho translation.
+
+2004-11-28  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* nso.po: Added Northern Sotho translation by
+	Zuza Software Foundation <info@translate.org.za>.
+
+2004-10-26  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated translation-credits.
+
+2004-10-25  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-19  David Lodge <dave@cirt.net>
+
+	* en_GB.po: Fixed misspelling in bug 152412
+
+2004-10-19  Alexander Shopov  <ash@contact.bg>
+
+	* bg.po: Updated Bulgarian translation by
+	Vladimir Petkov <vpetkov@i-space.org>
+
+===== 2.8.2 ======
+
+2004-10-09  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2004-10-06  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-09-26  Jens Finke  <jens@triq.net>
+
+	* cs.po, el.po, en_CA.po, fr.po, gu.po, hu.po, ja.po, 
+	  nn.po, pa.po, ro.po, ru.po, sk.po, sq.po, ta.po,
+	  tr.po: 
+	  Copied translation for the string 
+	  "%i x %i pixel  %s    %i%%" from the 2.6 series. This 
+	  string has been re-added by a recent patch.
+
+	  Other po files have been updated by msgmerge.
+
+2004-09-21  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2004-09-21  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation by Ivan Noris.
+
+2004-09-20  Nikos Charonitakis  <charosn@her.forthnet.gr>
+
+	* el.po: Updated Greek translation.
+
+2004-09-17  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po: sr@Latn.po: Small updates.
+
+2004-09-13  Arafat Medini  <lumina@silverpen.de>
+
+	* ar.po: Updated Arabic translation.
+
+2004-09-13  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* gl.po: Updated Galician translation.
+
+2004-09-12  Akagic Amila <bono@linux.org.ba>
+
+	* bs.po: Updated Bosnian translation.
+
+2004-09-12  Abel Cheung  <maddog@linuxhall.org>
+
+	* zh_TW.po: Updated traditional Chinese translation by GNOME HK Team
+	* mk.po: Mark wrong entry as fuzzy (msgfmt check failed).
+	* de.po: Add missing plural form header.
+
+2004-09-12  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* th.po: Updated Thai translation.
+
+======== 2.8.1 =========
+
 2004-09-12  Christophe Merlet  <redfox@redfoxcenter.org>
 
 	* fr.po: Updated French translation from
@@ -25,7 +122,7 @@
 	* nl.po: Translation updated by Tino Meinen.
 
 2004-09-07  Gora Mohanty  <gmohanty@cvs.gnome.org>
-                                                                                
+
         * or.po: Updated Oriya translation.
 
 2004-09-07  Peteris Krisjanis  <pecisk@gmail.com>
@@ -64,9 +161,9 @@
 	* cs.po: Updated Czech translation.
 
 2004-09-03  Gora Mohanty  <gmohanty@cvs.gnome.org>
-                                                                                
+
         * or.po: Updated Oriya translation.
-                                                                                
+
 2004-09-03  Gora Mohanty  <gmohanty@cvs.gnome.org>
 
 	* or.po: Updated Oriya translation.
@@ -92,9 +189,9 @@
 	* da.po: Updated Danish translation.
 
 2004-08-25  David Lodge <dave@cirt.net>
-                                                                                
+
         * en_GB.po: Updated British translation.
-                                                                                
+
 2004-08-24  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
 
 	* es.po: Updated Spanish translation.
@@ -152,7 +249,7 @@
 
 	* ja.po: Updated Japanese translation.
 
-====== 2.7.2 ======
+====== 2.8.0 ======
 
 2004-08-18  Jens Finke  <jens@triq.net>
 
