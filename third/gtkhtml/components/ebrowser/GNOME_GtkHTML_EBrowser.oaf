@@ -46,7 +46,7 @@
   <oaf_attribute name="description-pl" type="string" value="Generator komponent&#243;&#179; EBrowser"/>
   <oaf_attribute name="description-pt" type="string" value="F&#195;&#161;brica para o controlo EBrowser"/>
   <oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica para o controle EBrowser"/>
-  <oaf_attribute name="description-sk" type="string" value="Vytv&#195;&#161;racie rozhranie pre ovl&#195;&#161;dac&#195;&#173; prvok EBrowser"/>
+  <oaf_attribute name="description-sk" type="string" value="Vytv&#195;&#161;racie rozhanie pre prvok EBrowser"/>
   <oaf_attribute name="description-sl" type="string" value="Tovarna za kontrolo EBrskalnik"/>
   <oaf_attribute name="description-sv" type="string" value="Fabrik f&#195;&#182;r EBrowser-kontrollen"/>
   <oaf_attribute name="description-tr" type="string" value="EBrowser denetimi i&#195;&#167;in yap&#196;&#177;mc&#196;&#177;"/>
@@ -82,7 +82,7 @@
 <oaf_attribute name="name-pl" type="string" value="Komponent EBrowser"/>
 <oaf_attribute name="name-pt" type="string" value="Controlos EBrowser"/>
 <oaf_attribute name="name-pt_BR" type="string" value="Controle EBrowser"/>
-<oaf_attribute name="name-sk" type="string" value="Prvok EBrowser"/>
+<oaf_attribute name="name-sk" type="string" value="Ovl&#195;&#161;dac&#195;&#173; prvok EBrowser"/>
 <oaf_attribute name="name-sl" type="string" value="Kontrola EBrskalnik"/>
 <oaf_attribute name="name-sv" type="string" value="EBrowser-kontroll"/>
 <oaf_attribute name="name-tr" type="string" value="EBrowser denetimi"/>

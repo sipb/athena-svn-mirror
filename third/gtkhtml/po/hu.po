@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml VERSION\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2001-12-17 11:22+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -632,7 +632,7 @@ msgstr "Alsó index"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Táblázat"
 
@@ -1015,7 +1015,7 @@ msgid "Color:"
 msgstr "Szín:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Oszlop"
 
@@ -1133,7 +1133,7 @@ msgid "Right"
 msgstr "Jobbra"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Sor"
 
@@ -1407,43 +1407,43 @@ msgstr "Vonal..."
 msgid "Image..."
 msgstr "Kép..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Táblázat..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Cella..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Táblázat..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Táblázat beszúrása"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Egy sorral feljebb"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Egy sorral lejjebb"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Egy oszloppal elõtte"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Egy oszloppal utána"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Táblázat törlése"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Cellatartalom"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Oldal..."
 
@@ -1490,11 +1490,6 @@ msgstr "Reguláris kifejezés keresése"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "Nem volt rosszul írt szó"
-
-#: components/html-editor/spell.c:493
-#, fuzzy
-msgid "Spell Checking _Languages"
-msgstr "Helyesírás-ellenõrzés"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1601,6 +1596,10 @@ msgstr "Nyomtatási _kép"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Nyomtatási kép"
+
+#, fuzzy
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "Helyesírás-ellenõrzés"
 
 #, fuzzy
 #~ msgid "Test"

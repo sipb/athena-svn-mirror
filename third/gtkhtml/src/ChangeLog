@@ -1,3 +1,10 @@
+2003-01-23  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c: Use the correct UCS-2 character set to fix a problem
+	copying and pasting text from Mozilla-based browsers into the
+	GtkHTML editor on FreeBSD.  Patch from Joe Marcus Clarke
+	<marcus@FreeBSD.org>
+
 2002-11-06  Larry Ewing  <lewing@ximian.com>
 
 	* gtkhtml.c (selection_received): add a <br> to cited pasted to

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.16.1\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2001-12-19 19:38GMT+0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"
@@ -633,7 +633,7 @@ msgstr "Üst xarakter"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Cədvəl"
 
@@ -1013,7 +1013,7 @@ msgid "Color:"
 msgstr "Rəng:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Sütun"
 
@@ -1137,7 +1137,7 @@ msgid "Right"
 msgstr "Saǧ"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Sətir"
 
@@ -1404,43 +1404,43 @@ msgstr "Rol..."
 msgid "Image..."
 msgstr "Rəsm ..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Cədvəl ..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Hücrə..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Cədvəl ..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Cədvəl daxil et"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Üstdəki sətir"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Altakı sətir"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Əvvəlki sütun"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Sonrakı sütun"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Cədvəl sil"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Hücrə məzmunu"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Səhifə..."
 
@@ -1487,11 +1487,6 @@ msgstr "Qaydalı İfadə Axtar"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "İmla xətalı söz yoxdur"
-
-#: components/html-editor/spell.c:493
-#, fuzzy
-msgid "Spell Checking _Languages"
-msgstr "İmla Yoxlaması"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1598,6 +1593,10 @@ msgstr "Önizləməyi _çap et"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Çap etmə önizləməsi"
+
+#, fuzzy
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "İmla Yoxlaması"
 
 #, fuzzy
 #~ msgid "Test"

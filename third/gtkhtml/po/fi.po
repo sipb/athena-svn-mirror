@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 1.1.0.99\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2002-04-19 19:55+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -633,7 +633,7 @@ msgstr "Yläindeksi"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Taulukko"
 
@@ -1010,7 +1010,7 @@ msgid "Color:"
 msgstr "Väri:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Sarake"
 
@@ -1128,7 +1128,7 @@ msgid "Right"
 msgstr "Oikea"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Rivi"
 
@@ -1401,43 +1401,43 @@ msgstr "Viiva..."
 msgid "Image..."
 msgstr "Kuva..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Taulukko..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Solu..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Taulukko..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Lisää taulukko"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Rivi yllä"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Rivi alla"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Edeltävä sarake"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Seuraava sarake"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Poista taulukko"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Solun sisältö"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Sivu..."
 
@@ -1484,10 +1484,6 @@ msgstr "Etsi säännöllinen lauseke"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "Väärin kirjoitettuja sanoja ei löytynyt"
-
-#: components/html-editor/spell.c:493
-msgid "Spell Checking _Languages"
-msgstr "Oikoluettavat _kielet"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1593,6 +1589,9 @@ msgstr "_Esikatselu"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Esikatselu"
+
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "Oikoluettavat _kielet"
 
 #~ msgid "Test"
 #~ msgstr "Testi"

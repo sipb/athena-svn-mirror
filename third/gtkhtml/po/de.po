@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 1.0.x\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2001-12-30 00:57+01:00\n"
 "Last-Translator: Matthias Warkus <mawarkus@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -634,7 +634,7 @@ msgstr "Hochgestellt"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Tabelle"
 
@@ -1019,7 +1019,7 @@ msgid "Color:"
 msgstr "Farbe:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "Spalte"
 
@@ -1138,7 +1138,7 @@ msgid "Right"
 msgstr "Rechts"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Zeile"
 
@@ -1413,43 +1413,43 @@ msgstr "Trennlinie..."
 msgid "Image..."
 msgstr "Bild..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Tabelle..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Zelle..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Tabelle..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Tabelle einfügen"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Zeile darüber"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Zeile darunter"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Spalte davor"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Spalte danach"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Tabelle löschen"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Zelle enthält"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Seite..."
 
@@ -1496,11 +1496,6 @@ msgstr "Regulären Ausdruck suchen"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "Keine Rechtschreibfehler gefunden"
-
-#: components/html-editor/spell.c:493
-#, fuzzy
-msgid "Spell Checking _Languages"
-msgstr "Rechtschreibprüfung"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1606,6 +1601,10 @@ msgstr "Druck_vorschau"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Druckvorschau"
+
+#, fuzzy
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "Rechtschreibprüfung"
 
 #, fuzzy
 #~ msgid "Test"

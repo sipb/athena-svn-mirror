@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.9.99.1\n"
-"POT-Creation-Date: 2002-11-06 13:47-0600\n"
+"POT-Creation-Date: 2003-02-04 16:16-0600\n"
 "PO-Revision-Date: 2001-11-09 12:30+0100\n"
 "Last-Translator: Héctor García Álvarez <hector@scouts-es.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -633,7 +633,7 @@ msgstr "Superíndice"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
 #: components/html-editor/gtkhtml-editor-properties.glade.h:71
 #: components/html-editor/menubar.c:176 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:515 components/html-editor/popup.c:524
+#: components/html-editor/popup.c:511 components/html-editor/popup.c:520
 msgid "Table"
 msgstr "Tabla"
 
@@ -1009,7 +1009,7 @@ msgid "Color:"
 msgstr "Color:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:25
-#: components/html-editor/popup.c:526
+#: components/html-editor/popup.c:522
 msgid "Column"
 msgstr "columna"
 
@@ -1127,7 +1127,7 @@ msgid "Right"
 msgstr "Derecha"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:59
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:521
 msgid "Row"
 msgstr "Fila"
 
@@ -1400,43 +1400,43 @@ msgstr "Regla..."
 msgid "Image..."
 msgstr "Imagen..."
 
-#: components/html-editor/popup.c:501 components/html-editor/popup.c:511
-msgid "Table..."
-msgstr "Tabla..."
-
-#: components/html-editor/popup.c:508
+#: components/html-editor/popup.c:504
 msgid "Cell..."
 msgstr "Celda..."
 
-#: components/html-editor/popup.c:514
+#: components/html-editor/popup.c:507
+msgid "Table..."
+msgstr "Tabla..."
+
+#: components/html-editor/popup.c:510
 msgid "Table insert"
 msgstr "Insertar tabla"
 
-#: components/html-editor/popup.c:517
+#: components/html-editor/popup.c:513
 msgid "Row above"
 msgstr "Fila superior"
 
-#: components/html-editor/popup.c:518
+#: components/html-editor/popup.c:514
 msgid "Row below"
 msgstr "Fila inferior"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:516
 msgid "Column before"
 msgstr "Columna anterior"
 
-#: components/html-editor/popup.c:521
+#: components/html-editor/popup.c:517
 msgid "Column after"
 msgstr "Columna posterior"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:519
 msgid "Table delete"
 msgstr "Borrar tabla"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:523
 msgid "Cell contents"
 msgstr "Contenidos de la celda"
 
-#: components/html-editor/popup.c:535
+#: components/html-editor/popup.c:531
 msgid "Page..."
 msgstr "Página..."
 
@@ -1483,10 +1483,6 @@ msgstr "Buscar una expresión regular"
 #: components/html-editor/spell.c:413
 msgid "No misspelled word found"
 msgstr "No se encontró ninguna palabra errónea"
-
-#: components/html-editor/spell.c:493
-msgid "Spell Checking _Languages"
-msgstr "Lenguajes de la corrección ortográfica"
 
 #: components/html-editor/table.c:198
 msgid "Flat gray"
@@ -1592,6 +1588,9 @@ msgstr "Pre_visualización de la impresión"
 #: src/testgtkhtml.c:99
 msgid "Print preview"
 msgstr "Previsualización de la impresión"
+
+#~ msgid "Spell Checking _Languages"
+#~ msgstr "Lenguajes de la corrección ortográfica"
 
 #~ msgid "Test"
 #~ msgstr "Prueba"
