@@ -1,7 +1,7 @@
 #
-# $Id: Imakefile,v 1.4 1991-03-05 14:42:30 lwvanels Exp $
+# $Id: Imakefile,v 1.5 1991-03-11 13:44:20 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/Imakefile,v $
 #
 
 #define IHaveSubdirs
-SUBDIRS= lib parser tty olc motif # maude jay
+SUBDIRS= lib parser tty olc motif oreplay # maude jay
