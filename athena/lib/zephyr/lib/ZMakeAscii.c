@@ -4,39 +4,32 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v $
- *	$Author: raeburn $
+ *	$Author: jfc $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.10 1990-07-15 22:58:15 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.11 1991-06-20 14:25:50 jfc Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAscii_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.10 1990-07-15 22:58:15 raeburn Exp $";
-#endif lint
-
-#include <zephyr/mit-copyright.h>
+static char rcsid_ZMakeAscii_c[] = "$Id: ZMakeAscii.c,v 1.11 1991-06-20 14:25:50 jfc Exp $";
+#endif
 
 #include <zephyr/zephyr_internal.h>
 
-static
-#ifdef __STDC__
-    const
-#endif
-    char itox_chars[] = "0123456789ABCDEF";
-
 Code_t ZMakeAscii(ptr, len, field, num)
-    char *ptr;
+    register char *ptr;
     int len;
     unsigned char *field;
     int num;
 {
     int i;
+    register char *itox_chars = "0123456789ABCDEF";
 
     for (i=0;i<num;i++) {
 	/* we need to add "0x" if we are between 4 byte pieces */
-	if (i%4 == 0) {
+	if ((i & 3) == 0) {
 	    if (len < (i?4:3))
 		return ZERR_FIELDLEN;
 	    /* except at the beginning, put a space in before the "0x" */
