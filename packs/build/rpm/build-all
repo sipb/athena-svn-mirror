@@ -6,7 +6,7 @@ usage="build-all [-s srcdir] [-d destdir] [-k] [-n] [-l] [package [endpackage]]"
 
 # Default variables
 
-source="/mit/source"
+source="/mit/source-9.1"
 destdir="/build"
 ignore=false
 nobuild=false
