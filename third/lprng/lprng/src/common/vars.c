@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.7 1999-10-27 22:31:38 mwhitson Exp $";
+"$Id: vars.c,v 1.8 1999-10-28 17:34:05 mwhitson Exp $";
 
 
 /* force local definitions */
@@ -305,6 +305,8 @@ struct keywords Pc_var_list[] = {
 { "nb",  FLAG_K,  &Nonblocking_open_DYN,0,0},
    /* connection control for remote network printers */
 { "network_connect_grace", INTEGER_K, &Network_connect_grace_DYN,0,0},
+   /*  N line after cfA000... line in control file */
+{ "nline_after_file",  FLAG_K,  &Nline_after_file_DYN,0,0},
    /*  output filter, run once for all output */
 { "of",  STRING_K,  &OF_Filter_DYN,0,0},
    /* OF filter options */

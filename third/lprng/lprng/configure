@@ -673,7 +673,7 @@ test "$host_alias" != "$target_alias" &&
 
 
 PACKAGE=LPRng
-VERSION=3.6.11
+VERSION=3.6.12
 cat >> confdefs.h <<EOF
 #define PACKAGE "$PACKAGE"
 EOF
@@ -2766,7 +2766,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="$LIBS -lkrb5 -lk5crypto -lcom_err"
+  LIBS="-lkrb5 -lk5crypto -lcom_err $LIBS"
 else
   echo "$ac_t""no" 1>&6
 fi
@@ -2807,7 +2807,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="$LIBS -lkrb4 -ldes425"
+  LIBS="-lkrb4 -ldes425 $LIBS"
 else
   echo "$ac_t""no" 1>&6
 fi
@@ -2816,7 +2816,7 @@ fi
 
 case $target_os in
 	 mips-sni* )
-		LIBS="$LIBS -lcurses";
+		LIBS="-lcurses $LIBS";
 		;;
 	 irix* )
 				echo $ac_n "checking for krb5_init_context in -lkrb5""... $ac_c" 1>&6

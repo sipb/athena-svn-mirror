@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_control.c,v 1.3 1999-10-27 22:31:37 mwhitson Exp $";
+"$Id: lpd_control.c,v 1.4 1999-10-28 17:34:05 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -120,9 +120,6 @@ int Job_control( int *sock, char *input )
 	permission = Perms_check( &Perm_line_list, &Perm_check, 0, 0 ); /* queue perm check */
 	DEBUGF(DCTRL1)( "Job_control: checked for '%c', permission %s",
 		Perm_check.service, perm_str(permission) );
-	if( permission == P_REJECT ){
-		goto noperm;
-	}
 
 	/* Keep a record of what everyone's doing with their bits */
 	if( Auth_client_id_DYN )
