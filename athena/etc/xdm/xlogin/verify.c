@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.12 1991-03-04 16:59:56 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.13 1991-03-07 18:03:44 mar Exp $
  */
 
 #include <stdio.h>
@@ -712,7 +712,7 @@ char *display;
 	    break;
 	if (ut_tmp.ut_pid == getppid())
 	  lseek(f, -(long) sizeof(ut_tmp), 1);
-	strncpy(ut_entry.ut_id, ut_tmp.ud_id, 6);
+	strncpy(ut_entry.ut_id, ut_tmp.ut_id, 6);
 #endif /* _AIX */
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
