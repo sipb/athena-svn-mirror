@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.2 1989-12-14 23:19:17 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.3 1989-12-18 10:25:48 raeburn Exp $";
 #endif
 
 
@@ -543,9 +543,9 @@ olc_done(fd, request, auth)
 
   text = read_text_from_fd(fd);
 
-#ifdef TEST
+#if 0
   printf("text: %s\n",text);
-#endif TEST
+#endif
 
   (void) strcpy(target->question->title, text);
   (void) sprintf(msgbuf, "Resolved by %s@%s.", 
@@ -1008,7 +1008,7 @@ olc_forward(fd, request,auth)
     
   if (is_option(request->options,OFF_OPT))
     {
-#ifdef TEST
+#if 0
   printf("olc forward options: %d\n",request->options);
 #endif
 
@@ -1181,7 +1181,7 @@ olc_send(fd, request, auth)
 
   send_response(fd,SUCCESS);
 
-#ifdef TEST
+#if 0
   printf("olc_send: options %d\n",request->options);
 #endif TEST
 
@@ -1413,7 +1413,7 @@ olc_describe(fd, request, auth)
 
 /*
  * Function:	olc_replay() replays the entire conversation.
-  * Arguments:	fd:		   File descriptor of socket.
+ * Arguments:	fd:		   File descriptor of socket.
  *		request:	   The request structure from olcr.
  * Returns:	USER_NOT_FOUND:    The user does not have a pending question.
  *		NOT_SIGNED_ON:	   Consultant is not signed on to OLC.
@@ -1572,7 +1572,7 @@ olc_show(fd, request, auth)
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
-#endif LOG
+#endif
   return(SUCCESS);
 }
 
@@ -1616,7 +1616,7 @@ olc_list(fd, request,auth)
 
 #ifdef LOG
   char mesg[BUFSIZ];
-#endif LOG
+#endif
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
