@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.12 1999-10-16 20:09:44 danw Exp $
+# $Id: sendmail.cf,v 1.13 1999-11-08 22:18:48 danw Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -25,6 +25,9 @@ Cwlocalhost $w
 
 # hosts we will relay mail for (other than localhost)
 CR
+
+# map for local configuration
+Kathconf text -o -v 1 /etc/athena/sendmail.conf
 
 ###################
 ###   Options   ###
@@ -181,10 +184,7 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # deliver mail
 R$*<@$=w>$*		$#local$:$1			Local mail
-# Uncomment the following line to queue remote mail locally rather
-# than forwarding it all to the MIT mailhubs.
-# R$*<@$+>$*		$#smtp$@$2$:$1<@$2>$3		Remote mail
-R$*			$#smtp$@ATHENA.$D$:$1		All else to ATHENA
+R$*<@$+>$*		$#smtp$@$(athconf relay$:$2$)$:$1<@$2>$3
 
 #####################
 ###   Anti-spam   ###
