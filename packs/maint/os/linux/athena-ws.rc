@@ -206,6 +206,18 @@ EOF
 	echo -n Updating panel menus:
 	local-menus && success local-menus || failure local-menus
 	echo
+
+	echo -n Recreating gconf schemas:
+	rm -rf /etc/athena/gconf/gconf.xml.defaults
+	GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+	export GCONF_CONFIG_SOURCE
+	for f in /etc/gconf/schemas/*.schemas \
+		 /etc/athena/gconf/schemas/*.schemas; do
+		gconftool-2 --makefile-install-rule $f > /dev/null
+	done
+	success gconf
+	echo
+
 	;;
   stop)
 	;;

@@ -1,4 +1,4 @@
-# $Id: athena-ws.rc,v 1.3 2002-11-11 22:18:29 ghudson Exp $
+# $Id: athena-ws.rc,v 1.4 2003-04-02 15:36:06 ghudson Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -251,6 +251,23 @@ start)
   echo "Updating panel menus... \c"
   local-menus
   echo "done."
+
+  echo "Recreating gconf schemas... \c"
+  if [ -x /usr/athena/bin/gconftool-2 ]; then
+    rm -rf /etc/athena/gconf/gconf.xml.defaults
+    GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+    export GCONF_CONFIG_SOURCE
+    for f in /etc/athena/gconf/schemas/*.schemas; do
+      gconftool-2 --makefile-install-rule $f > /dev/null
+    done
+    # athena-panel-config.schemas one has to be installed last, since it
+    # overlaps with panel-per-panel-config.schemas right now.
+    gconftool-2 --makefile-install-rule \
+      /etc/athena/gconf/schemas/athena-panel-config.schemas > /dev/null
+    echo "done."
+  else
+    echo "failed."
+  fi
 
   echo "Ending Athena startup tasks"
   ;;
