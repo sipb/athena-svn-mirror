@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.3 1993-07-21 17:04:11 vrt Exp $
+# $Id: cshrc,v 1.4 1993-07-21 17:43:50 vrt Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -13,7 +13,7 @@ set initdir=/usr/athena/lib/init
 
 # Set standard Athena path variable (generic path for all users):
 set athena_path=( /usr/athena/bin /bin/athena /usr/openwin/bin \
-		/bin /usr/ucb /usr/sbin /usr/ccs/bin  /usr/andrew/bin )
+		/usr/bin /usr/ucb /usr/ccs/bin /usr/gcc/bin  /usr/andrew/bin )
 
 # Set appropriate bin directory variable for this platform
 # (e.g., vaxbin for VAXstations, decmipsbin for pMAXen, etc.;  this will
