@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.64 1994-12-30 04:52:55 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.65 1995-01-08 22:46:43 cfields Exp $
  */
 
 #include <stdio.h>
@@ -333,9 +333,9 @@ char *display;
 
 #ifdef SOLARIS
     chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
+#endif
 #ifdef KRB5
     chown(tkt5_file, pwd->pw_uid, pwd->pw_gid);
-#endif
 #endif
 
     /* if mail-check login selected, do that now. */
