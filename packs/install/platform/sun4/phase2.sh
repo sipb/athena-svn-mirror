@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.25 1997-10-21 03:12:43 jweiss Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.26 1997-10-24 20:54:26 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -61,6 +61,7 @@ Y)
 		# Only one drive, pick it.
 		drive=`awk '{ print $2; }' /tmp/disks`
 	fi
+	;;
 N)
 	drive=$defaultdrive
 	;;
@@ -229,6 +230,7 @@ cp -p SuidCells SuidCells.public
 echo "Making an /afs repository"
 mkdir /tmp/afs
 echo "Loading afs in the kernel"
+modload /kernel/misc/nfssrv
 modload /kernel/fs/afs
 echo "Starting afsd "
 /etc/afsd -nosettime -daemons 4
