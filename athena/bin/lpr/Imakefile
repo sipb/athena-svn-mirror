@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.14 1996-05-24 21:34:50 ghudson Exp $
+ * $Id: Imakefile,v 1.15 1997-07-18 19:05:21 danw Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -75,7 +75,8 @@ install::
 	@echo makespools ${DESTDIR} 775 ${DAEMON} ${SPGRP}
 
 /* Specify that should trust all hosts on 18.xx.xx.xx */
-SpecialObject(lpd.o,lpd.c,-DWS)
+/* Remove the -DCHECK_NETWORK to trust all hosts (even outside net 18). */
+SpecialObject(lpd.o,lpd.c,-DWS -DCHECK_NETWORK)
 
 /* Dependencies */
 lpd.o lpr.o lpq.o lprm.o pac.o: lp.h lp.local.h

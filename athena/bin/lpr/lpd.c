@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: ghudson $
+ *	$Author: danw $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.20 1997-06-27 22:53:50 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.21 1997-07-18 19:05:26 danw Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.20 1997-06-27 22:53:50 ghudson Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.21 1997-07-18 19:05:26 danw Exp $";
 #endif
 
 /*
@@ -289,8 +289,10 @@ main(argc, argv)
 			(void) close(finet);
 			dup2(s, 1);
 			(void) close(s);
+#ifdef CHECK_NETWORK
 			if (domain == AF_INET)
 				chkhost(&frominet);
+#endif
 			doit();
 			exit(0);
 		}
