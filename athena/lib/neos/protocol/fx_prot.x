@@ -3,7 +3,7 @@
  *
  * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.4 1998-02-19 17:43:46 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.5 1998-08-03 17:34:35 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -137,7 +137,7 @@ struct DBVers {
  * Random data definitions for use in aggregate return values.
  */
 
-union init_res switch (long errno) {
+union init_res switch (long local_errno) {
 case ERR_NOT_SYNC:
     string sync<>;
 default:
@@ -154,7 +154,7 @@ struct stringnode {
     stringlist next;
 };
 
-union stringlist_res switch (long errno) {
+union stringlist_res switch (long local_errno) {
 case 0:
     stringlist list;
 default:
@@ -171,7 +171,7 @@ struct PaperNode {
     Paperlist next;
 };
 
-union Paperlist_res switch (long errno) {
+union Paperlist_res switch (long local_errno) {
 case 0:
     Paperlist list;
 default:
@@ -182,7 +182,7 @@ default:
  * A "retrieve_res" is a data burst from a RETRIEVE_BURST call.
  */
 
-union retrieve_res switch (long errno) {
+union retrieve_res switch (long local_errno) {
 case 0:
     burst_data burst;
 default:
@@ -199,7 +199,7 @@ struct krb_info {
     string realm<>;
 };
 
-union krb_info_res switch (long errno) {
+union krb_info_res switch (long local_errno) {
 case 0:
     krb_info info;
 default:
