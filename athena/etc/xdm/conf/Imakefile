@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.26 1997-03-26 20:53:59 ghudson Exp $
+# $Id: Imakefile,v 1.27 1997-03-26 20:54:40 ghudson Exp $
 
 SESSIONSCRIPT=Xsession
 KEYMAPS=/usr/athena/lib/X11/keymaps
@@ -10,7 +10,7 @@ create_dir($(KEYMAPS))
 #ifdef SOLARIS
 install_file(config.solaris,/etc/athena/login/config)
 install_file(AthenaMods.sun4,$(KEYMAPS)/AthenaMods)
-install_script(console-ttymon.sh,$(ATHRETCDIR))
+install_script(console-ttymon.sh,$(ATHRETCDIR)/console-ttymon)
 #endif
 
 #ifdef sgi
