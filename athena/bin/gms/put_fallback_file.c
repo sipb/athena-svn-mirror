@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v $
- * $Author: eichin $
+ * $Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.3 1988-10-12 04:11:53 eichin Exp $";
+static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.4 1990-07-02 15:54:24 epeisach Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -26,7 +26,8 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
   int message_filedesc;
   time_t ftime;
   struct timeval tvp[2];
-
+  int oumask;
+  
   /* in case we try to NULL out the file... */
   tvp[0].tv_sec = tvp[1].tv_sec = 0;
   tvp[0].tv_usec = tvp[1].tv_usec = 0;
@@ -84,8 +85,13 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
      * try to warp the clock.
      */
   }
-    
-  (void) umask(0);		/* we really want these open */
+
+  /*
+   * We could use an open and then a chmod to set the permissions of
+   * the file, rather than using umask, but if we do things that way,
+   * there is a window of time during which the file has the wrong permissions.
+   */
+  oumask = umask(0);		/* we really want these open */
   /* write the file so that it is world writeable. Note that since
    * usr/tmp is sticky-bitted by default, we can't remove the file
    * directly, even with this openness; that is dealt with by warping
@@ -94,7 +100,8 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
    */
   message_filedesc = open(message_filename,
 			  O_CREAT|O_WRONLY|O_TRUNC, 0666);
-
+  (void) umask(oumask);
+  
   /* Just return the error if something fails. This will be later
    * ignored, since this is a non critical stage...
    */
