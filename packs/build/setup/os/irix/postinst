@@ -11,16 +11,6 @@ AUTO_MR_FILE=auto_mr
 shadow=.shd
 shadowfile=/var/inst/.shadowed
 
-	if [ -f /core -a ! -l /core ]
-	then
-		echo "Moving /core to /usr/tmp/core.postinst_detected
-	An old core file has been found at /core. To reduce
-	the chance of running out of disk space on the root
-	filesystem during postinst processing, the file /core
-	is being moved to /usr/tmp/core.postinst_detected."
-		mv /core /usr/tmp/core.postinst_detected
-	fi 
-
 
 #
 # special treatment for files active at shutdown time:
