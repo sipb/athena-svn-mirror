@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.39 1994-04-29 16:19:19 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.40 1994-04-30 00:14:19 cfields Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -53,9 +53,10 @@ static sigset_t sig_cur;
 #include <sys/proc.h>
 #include <sys/sysinfo.h>
 #endif
+#include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.39 1994-04-29 16:19:19 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.40 1994-04-30 00:14:19 cfields Exp $";
 #endif
 
 #ifndef NULL
@@ -123,7 +124,8 @@ char *passwdtf ="/etc/ptmp";
 char *spasswdf =	"/etc/shadow";
 char *spasswdtf =	"/etc/stmp";
 #endif
-char *xpidf = 	"/usr/tmp/X0.pid";
+char *xpids =	"/usr/tmp/X%d.pid";
+char *xhosts =	"/etc/X%d.hosts";
 char *consolepidf = "/etc/athena/console.pid";
 char *dmpidf =	"/etc/athena/dm.pid";
 char *consolef ="/dev/console";
@@ -187,10 +189,18 @@ char **argv;
     void die(), child(), catchalarm(), xready(), setclflag(), shutdown();
     void loginready(), clean_groups();
     char *consoletty, *conf, *p, *number(), *getconf();
-    char **xargv, **consoleargv = NULL, **loginargv, **parseargs();
-    char line[16], buf[256];
+    char **dmargv, **xargv, **consoleargv = NULL, **loginargv, **parseargs();
+    char xpidf[256], line[16], buf[256];
     fd_set readfds;
     int pgrp, file, tries, console = TRUE;
+
+    char dpyname[10], dpyacl[40];
+    Display *dpy;
+    XHostAddress *hosts;
+    int nhosts, dpynum = 0;
+    struct stat hostsinfo;
+    Bool state;
+
 #ifdef ultrix
     int login_tty;
 #ifdef mips
@@ -237,10 +247,39 @@ char **argv;
     conf = argv[1];
     logintty = argv[2];
     consoletty = argv[argc-1];
+
+    /* We use options from the config file rather than taking
+     * them from the command line because the current command
+     * line form is gross (why???), and I don't see a good way
+     * to extend it without making things grosser or breaking
+     * backwards compatibility. So, we take a line from the
+     * config file and use real parsing.
+     */
+    p = getconf(conf, "dm");
+    if (p != NULL)
+      {
+	dmargv = parseargs(p, NULL, NULL, NULL);
+	while (*dmargv)
+	  {
+	    if (!strcmp(*dmargv, "-display"))
+	      {
+		dmargv++;
+		if (*dmargv)
+		  {
+		    dpynum = atoi(*(dmargv)+1);
+		    dmargv++;
+		  }
+	      }
+	    else
+	      dmargv++;
+	  }
+      }
+
     p = getconf(conf, "X");
     if (p == NULL)
       console_login("\ndm: Can't find X command line\n");
     xargv = parseargs(p, NULL, NULL, NULL);
+
     if (console) {
 	p = getconf(conf, "console");
 	if (p == NULL)
@@ -251,6 +290,7 @@ char **argv;
           consoleargv = parseargs(p, NULL, NULL, NULL);
 #endif
     }
+
     p = getconf(conf, "login");
     if (p == NULL)
       console_login("\ndm: Can't find login command line\n");
@@ -393,6 +433,7 @@ char **argv;
 #else
 	    signal(SIGUSR1, xready);
 #endif
+	    sprintf(xpidf, xpids, dpynum);
 	    if ((file = open(xpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
 		write(file, number(xpid), strlen(number(xpid)));
 		close(file);
@@ -468,6 +509,53 @@ char **argv;
     if (x_running != RUNNING) {
 	console_login("\nUnable to start X, doing console login instead.\n");
     }
+
+    /* Tighten up security a little bit. Remove all hosts from X's
+     * access control list, assuming /etc/X0.hosts does not exist or
+     * has zero length. If it does exist with nonzero length, this
+     * behavior is not wanted. The desired effect of removing all hosts
+     * is that only connections from the Unix domain socket will be
+     * allowed.       
+
+     * More secure code using Xau also exists, but there wasn't
+     * time to completely flesh it out and resolve a couple of
+     * issues. This code is probably good enough, but we'll see.
+     * Maybe next time. 
+
+     * This code has the added benefit of leaving an X display
+     * connection open, owned by dm. This provides a less-hacky
+     * solution to the config_console problem, where if config_console
+     * is the first program run on user login, it causes the only
+     * X app running at the time, console, to exit, thus resetting
+     * the X server. Thus this code also allows the removal of the
+     * hack in xlogin that attempts to solve the same problem, but
+     * fails on the RS/6000 for reasons unexplored.
+
+     * P.S. Don't run this code under Solaris 2.2- (2.3 is safe).
+     * Removing all hosts from the acl on that server results in
+     * no connections, not even from the Unix domain socket, being
+     * allowed. --- cfields
+     */
+
+    sprintf(dpyacl, xhosts, dpynum);
+    sprintf(dpyname, ":%d", dpynum);
+    dpy = XOpenDisplay(dpyname);
+    if (dpy != NULL && (stat(dpyacl, &hostsinfo) || hostsinfo.st_size == 0))
+      {
+	hosts = XListHosts(dpy, &nhosts, &state);
+	if (hosts != NULL)
+	  {
+	    XRemoveHosts(dpy, hosts, nhosts);
+	    XFlush(dpy);
+	    XFree(hosts);
+	  }
+      }
+    /* else if (dpy == NULL)
+     *   Could've sworn the X server was running now.
+     *   Follow the original code path. No need introducing new bugs
+     *   to this hairy code, just preserve the old behavior as though
+     *   this code had never been added.
+     */
 
     /* start up console */
     strcpy(line, "/dev/");
