@@ -297,10 +297,8 @@ char *argv[];
 	setenv ("XFILESEARCHPATH",newpath,1);
 
 #endif
-#endif
-
-
 	myfree (newpath);
+#endif
 
 #if 0
 	XtGetApplicationResources(	topW, (XtPointer) &defs,
