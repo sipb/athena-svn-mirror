@@ -2,16 +2,19 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sgi,v 1.5 1995-05-28 20:47:15 cfields Exp $
+# $Id: Xsession.sgi,v 1.6 1996-05-28 00:33:55 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
 initlib="/usr/athena/lib/init"
-
 defsession=$1
 defsessioncmd="$2"
 
 attach -q $USER
+
+if [ -f .noignore ]; then
+	defsession=1;
+fi
 
 host=`hostname`
 dotdesktop=.desktop_indy
