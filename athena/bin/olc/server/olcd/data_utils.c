@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.34 1991-03-28 23:07:53 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.35 1991-04-08 21:15:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.34 1991-03-28 23:07:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.35 1991-04-08 21:15:29 lwvanels Exp $";
 #endif
 #endif
 
@@ -127,12 +127,6 @@ create_user(person)
 
   init_user(knuckle,person);
 
-#ifdef TEST
-  printf("create_user: %s (%d) \n",
-	 knuckle->user->username, knuckle->instance);
-#endif /* TEST */
-
-
   return(knuckle);
 }
 
@@ -213,10 +207,6 @@ create_knuckle(user)
   sprintf(k->nm_file,"%s/%s_%d.nm", LOG_DIR, k->user->username,k->instance);
   k->title = k->user->title2;
 
-#ifdef TEST
-  printf("create_knuckle: %s (%d)\n",user->username, k->instance);
-#endif /* TEST */
-
   return(k);
 }
   
@@ -249,7 +239,7 @@ insert_knuckle(knuckle)
       Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
       if (Knuckle_List == (KNUCKLE **) NULL) 
 	{
-	  perror("malloc(insert_knuckle): %m");
+	  log_error("malloc(insert_knuckle)");
 	  return(ERROR);
 	}
       *Knuckle_List = (KNUCKLE *) NULL;
@@ -284,7 +274,7 @@ insert_knuckle(knuckle)
       Knuckle_List = (KNUCKLE **) realloc((char *) Knuckle_List, (unsigned)
 					  (n_knuckles+1) * sizeof(KNUCKLE *));
       if (Knuckle_List == (KNUCKLE **) NULL) {
-	perror("insert_knuckle: realloc: ");
+	log_error("insert_knuckle: realloc: ");
 	return(ERROR);
       }
       Knuckle_List[n_knuckles]   = (KNUCKLE *) NULL;
@@ -343,7 +333,7 @@ insert_knuckle_in_user(knuckle, user)
       user->knuckles = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
       if (user->knuckles == (KNUCKLE **) NULL) 
 	{
-	  perror("malloc(insert_knuckle)");
+	  log_error("malloc(insert_knuckle)");
 	  return(ERROR);
 	}
       *(user->knuckles) = (KNUCKLE *) NULL;
@@ -365,7 +355,7 @@ insert_knuckle_in_user(knuckle, user)
   user->knuckles = (KNUCKLE **) realloc((char *) user->knuckles, (unsigned)
 				      ((n_knuckles+1) * sizeof(KNUCKLE *)));
   if (user->knuckles == (KNUCKLE **) NULL) {
-    perror("realloc(insert_knuckle)");
+    log_error("realloc(insert_knuckle)");
     return(ERROR);
   }
   user->knuckles[n_knuckles]   = (KNUCKLE *) NULL;
@@ -398,7 +388,7 @@ insert_topic(t)
 
     Topic_List = (TOPIC **) malloc(20*sizeof(TOPIC *));
     if (Topic_List == (TOPIC **) NULL) {
-      perror("malloc (insert topic)");
+      log_error("malloc (insert topic)");
       return(ERROR);
     }
     max_topics = 20;
@@ -412,7 +402,7 @@ insert_topic(t)
     Topic_List = (TOPIC **) realloc((char *) Topic_List, (unsigned)
 				    ((max_topics) * sizeof(TOPIC *)));
     if (Topic_List == (TOPIC **) NULL) {
-      perror("realloc (insert topic)");
+      log_error("realloc (insert topic)");
       return(ERROR);
     }
   }
@@ -625,7 +615,7 @@ init_question(k,topic,text, machinfo)
   k->question = (QUESTION *) malloc(sizeof(QUESTION));
   if(k->question == (QUESTION *) NULL)
     {
-      perror("init_question");
+      log_error("init_question");
       return(ERROR);
     }
 
@@ -716,13 +706,6 @@ get_knuckle(name,instance,knuckle,active)
 {
   KNUCKLE **k_ptr;  
   int status = 0;
-#ifdef TEST
-  char mesg[BUF_SIZE];
-#endif /* TEST */
-
-#ifdef TEST
-  printf("get_knuckle: %s %d...\n",name,instance);
-#endif /* TEST */
 
   if (Knuckle_List == (KNUCKLE **) NULL)
     {
@@ -733,13 +716,6 @@ get_knuckle(name,instance,knuckle,active)
   for (k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
     if(string_eq((*k_ptr)->user->username,name))
       {
-
-#ifdef TEST
-	printf("get_knuckle: matched on %s (%d)\n", 
-	       (*k_ptr)->user->username,
-	       (*k_ptr)->instance);
-#endif /* TEST */
-
 	if(active && (!is_active((*k_ptr))))
 	  continue;
 
@@ -753,20 +729,8 @@ get_knuckle(name,instance,knuckle,active)
 	status=1;
       }
 
-
-#ifdef TEST
-  sprintf(mesg,
-	  "get_knuckle: matched on %s, incomplete instance %d (%d)",
-	  name,instance,status);
-  log_status(mesg);
-#endif /* TEST */
-
   if(status) 
     return(INSTANCE_NOT_FOUND);
-
-#ifdef TEST
-  printf("get_knuckle: no match for %s\n",name);
-#endif
 
   return(USER_NOT_FOUND);
 }	
@@ -789,10 +753,6 @@ match_knuckle(name,instance,knuckle)
   status = 0;
   store_ptr = (KNUCKLE *) NULL;
 
-#ifdef TEST
-  printf("get_knuckle: %s %d...\n",name,instance);
-#endif /* TEST */
-
   if (Knuckle_List == (KNUCKLE **) NULL)
     return(EMPTY_LIST);
   
@@ -800,13 +760,6 @@ match_knuckle(name,instance,knuckle)
     if(string_equiv(name,(*k_ptr)->user->username,strlen(name)) && 
        is_active((*k_ptr)))
       {
-
-#ifdef TEST
-	printf("match_knuckle: matched on %s (%d)\n", 
-	       (*k_ptr)->user->username,
-	       (*k_ptr)->instance);
-#endif /* TEST */
-
 	if((*k_ptr)->instance == instance)
 	  {
 	    if(store_ptr != (KNUCKLE *) NULL)
@@ -835,16 +788,8 @@ match_knuckle(name,instance,knuckle)
       return(SUCCESS);
     }
 
-#ifdef TEST
-  printf("match_knuckle: matched on %s, incomplete instance %d\n",name,status);
-#endif /* TEST */
-
   if(status) 
     return(INSTANCE_NOT_FOUND);
-
-#ifdef TEST
-  printf("get_knuckle: no match for %s\n",name);
-#endif /* TEST */
 
   return(USER_NOT_FOUND);
 }	
@@ -960,12 +905,6 @@ assign_instance(user)
 	{
 	  if( (*(k+j))->instance == i)
 	    {
-
-#ifdef TEST
-	      printf("assign_instance: match on %d, no = %d\n",i,
-		     user->no_knuckles);
-#endif /* TEST */
-
 	      match = 1;
 	      break;
 	    }
