@@ -1,7 +1,8 @@
 #
-# $Id: Imakefile,v 1.6 1996-06-06 05:36:13 ghudson Exp $
+# $Id: Imakefile,v 1.7 1996-06-17 17:17:42 ghudson Exp $
 #
 
+AnsiCC()
 SimpleProgram(getcluster,getcluster.o,-lhesiod,/bin/athena)
 install_man(getcluster.8,getcluster.8)
 install_man(save_cluster_info.8,save_cluster_info.8)
