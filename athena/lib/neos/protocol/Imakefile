@@ -1,8 +1,8 @@
 /* 
  * Makefile for the FX (file exchange) protocol
  *
- * $Author: ghudson $
- * $Id: Imakefile,v 1.7 1997-11-17 20:58:10 ghudson Exp $
+ * $Author: danw $
+ * $Id: Imakefile,v 1.8 1998-02-19 17:43:46 danw Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -28,7 +28,7 @@ DEFKRB = -DKERBEROS
 /*#DEFHES = -DHESIOD */
 
 /* Define MULTI for multiple server support */
-DEFMULTI = -DMULTI
+/*#DEFMULTI = -DMULTI */
 
 /* 
  * Define DEBUG for command debugging messages

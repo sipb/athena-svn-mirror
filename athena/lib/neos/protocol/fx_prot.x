@@ -3,7 +3,7 @@
  *
  * $Author: danw $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.3 1998-02-17 19:48:49 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.4 1998-02-19 17:43:46 danw Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -288,9 +288,11 @@ program FXSERVER {
 	long SERVER_STORE(Contents) = 51;	/* Store in DB */
 	long SERVER_DELETE(Contents) = 52;	/* Delete from DB */
 	long SERVER_COMMIT(DBVers) = 53;	/* Commit a change */
+#ifdef MULTI
 	long SERVER_END_COURSE(int) = 54;	/* Finished with a course */
 	long SERVER_REQUPDATE(int) = 55;	/* Request an update */
 	long SERVER_START_UPD(int) = 56;	/* Start an update */
 	long SERVER_END_UPD(DBVers) = 57;	/* End an update */
+#endif
     } = 1;
 } = 100;
