@@ -83,7 +83,11 @@ installboot "/os/usr/platform/$SUNPLATFORM/lib/fs/ufs/bootblk" "$rswapdev"
 
 echo "Saving and changing the prom boot device..."
 oldboot=`/os/usr/platform/$SUNPLATFORM/sbin/eeprom boot-device`
-newboot=`ls -l "$swapdev" | sed -e 's,^.*-> ../../devices,,' -e 's/dad/disk/'`
+if [ sun4u = "$SUNPLATFORM" ]; then
+  newboot=`ls -l "$swapdev" | sed -e 's,^.*-> ../../devices,,' -e 's/sd/disk/' -e 's/dad/disk/'`
+else
+  newboot=`ls -l "$swapdev" | sed -e 's,^.*-> ../../devices,,'`
+fi
 echo "$oldboot" > $swapmount/etc/boot-device
 /os/usr/platform/$SUNPLATFORM/sbin/eeprom "boot-device=$newboot"
 
