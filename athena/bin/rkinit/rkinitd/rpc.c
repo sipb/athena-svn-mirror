@@ -1,13 +1,13 @@
 /* 
- * $Id: rpc.c,v 1.2 1990-07-16 14:16:38 qjb Exp $
+ * $Id: rpc.c,v 1.3 1994-03-30 11:03:29 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rpc.c,v $
- * $Author: qjb $
+ * $Author: miki $
  *
  * This file contains the network parts of the rkinit server.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rpc.c,v 1.2 1990-07-16 14:16:38 qjb Exp $";
+static char *rcsid = "$Id: rpc.c,v 1.3 1994-03-30 11:03:29 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -62,6 +62,12 @@ int setup_rpc(notimeout)
 #endif /* __STDC__ */
 {
     struct itimerval timer;	/* Time structure for timeout */
+#ifdef POSIX
+   struct sigaction act, oact;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+#endif
+
 
     /* For now, support only inetd. */
     in = 0;
@@ -84,7 +90,12 @@ int setup_rpc(notimeout)
 	    exit(1);
 	}
 
+#ifdef POSIX
+      act.sa_handler= (void (*)()) timeout;
+      (void) sigaction (SIGALRM, &act, NULL);
+#else
 	signal(SIGALRM, timeout);
+#endif
     }
 
     return(TRUE);
