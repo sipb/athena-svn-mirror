@@ -1,3 +1,0 @@
-SimpleProgram(inetd,inetd.o,,${ATHRETCDIR})
-install_man(inetd.conf.5,inetd.conf.5)
-install_man(inetd.8,inetd.8)
