@@ -24,7 +24,7 @@
  *
  *	defines a few constants used throughout ITC code
  *
- *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/itc.h,v 1.1.1.1 1999-03-13 21:23:38 rbasch Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/itc.h,v 1.1.1.2 1999-12-22 20:04:56 ghudson Exp $
  */
 
 /* $Log: not supported by cvs2svn $
@@ -69,6 +69,5 @@ typedef	int	boolean;
 /* very commonly used values */
 #define	TRUE	1
 #define	FALSE	0
-#define	NULL	0
 
 #endif /* _ITC */

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_multi.h,v 1.1.1.1 1999-03-13 21:23:39 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_multi.h,v 1.1.1.2 1999-12-22 20:05:48 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_multi.h,v $ */
 
 /*
@@ -38,6 +38,10 @@ struct multi_handle {
     short nReady;        /* XXX UNALIGNED */
     short *nextReady;
     short *firstNotReady;
+#ifdef RX_ENABLE_LOCKS
+    afs_kmutex_t lock;
+    afs_kcondvar_t cv;
+#endif /* RX_ENABLE_LOCKS */
 };
 
 extern struct multi_handle *multi_Init();
@@ -69,5 +73,9 @@ extern void multi_Finalize();
 	multi_Finalize(multi_h);\
     } while (0)
 
+/* Ignore remaining multi RPC's */
+#define multi_End_Ignore\
+	multi_Finalize_Ignore(multi_h);\
+    } while (0)
 
 #endif /* _RX_MULTI_	 End of rx_multi.h */

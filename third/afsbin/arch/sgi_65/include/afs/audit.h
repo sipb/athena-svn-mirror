@@ -1,4 +1,6 @@
-#define AFS_AUDIT_FILE "/usr/afs/local/Audit"
+/*  Copyright (C)  1998  Transarc Corporation.  All rights reserved.
+ *  $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/audit.h,v 1.1.1.2 1999-12-22 20:05:13 ghudson Exp $
+ */
 
 #define AUD_END  0         /* End           of veriable list */
 #define AUD_STR  1         /* String        in variable list */
@@ -10,13 +12,19 @@
 #define AUD_FID  7         /* File ID                        */
 #define AUD_FIDS 8         /* array of Fids                  */
 
-#define KANOAUTH                                 (180488L)
-#define RXKADNOAUTH                              (19270405L)
-#define PRPERM                                   (267269L)
-#define VL_PERM                                  (363546L)
-#define BUDB_NOTPERMITTED                        (156303880L)
-#define BZACCESS                                 (39430L)
-#define VOLSERBAD_ACCESS                         (1492325127L)
+/*
+ * Note: the master definitions of these error codes come from *.et
+ * files in other parts of the tree.  They are hardcoded here as a
+ * simple way to avoid circular dependence problems in the build.
+ */
+
+#define KANOAUTH                                 (180488L)      /* kauth/kaerrors.et */
+#define RXKADNOAUTH                              (19270405L)    /* rxkad/rxkad_errs.et */
+#define PRPERM                                   (267269L)      /* ptserver/pterror.et */
+#define VL_PERM                                  (363546L)      /* vlserver/vl_errors.et */
+#define BUDB_NOTPERMITTED                        (156303880L)   /* budb/budb_errs.et */
+#define BZACCESS                                 (39430L)       /* bozo/boserr.et */
+#define VOLSERBAD_ACCESS                         (1492325127L)  /* volser/volerr.et */
 
 
 #define VS_StartEvent	   "AFS_VS_Start"
@@ -68,6 +76,7 @@
 #define PTS_LstMaxEvent    "AFS_PTS_LstMax"
 #define PTS_SetMaxEvent    "AFS_PTS_SetMax"
 #define PTS_LstEntEvent    "AFS_PTS_LstEnt"
+#define PTS_LstEntsEvent   "AFS_PTS_LstEnts"
 #define PTS_ChgEntEvent    "AFS_PTS_ChgEnt"
 #define PTS_SetFldEntEvent "AFS_PTS_SetFEnt"
 #define PTS_LstEleEvent    "AFS_PTS_LstEle"
@@ -188,6 +197,7 @@
 #define BOS_GetLogsEvent        "AFS_BOS_GetLog"
 #define BOSDoExecEvent          "AFS_BOS_DoExec"
 #define BOSStopProcEvent        "AFS_BOS_StpProc"
+#define BOSSpawnProcEvent       "AFS_BOS_SpawnProc"
 
 #define	VLCreateEntryEvent	"AFS_VL_CreEnt"
 #define VLDeleteEntryEvent	"AFS_VL_DelEnt"
@@ -197,3 +207,9 @@
 #define VLSetLockEvent		"AFS_VL_SetLck"
 #define VLReleaseLockEvent	"AFS_VL_RelLck"
 #define VLChangeAddrEvent	"AFS_VL_ChgAdd"
+
+
+/* prototypes for audit functions */
+int osi_audit (char *audEvent, int32 errCode, ...);
+int osi_auditU (struct rx_call *call, char *audEvent, int errCode, ...);
+

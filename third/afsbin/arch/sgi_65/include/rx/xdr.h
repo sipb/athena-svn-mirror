@@ -38,10 +38,17 @@
 #ifndef __XDR_INCLUDE__
 #define __XDR_INCLUDE__
 #include <afs/param.h>
+#ifdef AFS_NT40_ENV
+#include <winsock2.h>
+#endif
 #define	bool_t	int
 #define	enum_t	int
+#ifndef FALSE
 #define	FALSE	0
+#endif /* !FALSE */
+#ifndef TRUE
 #define	TRUE	1
+#endif /* !TRUE */
 #define __dontcare__	-1
 
 #ifndef mem_alloc
@@ -53,7 +60,7 @@
 #endif
 
 #ifdef	KERNEL
-char *afs_osi_Alloc();
+void *afs_osi_Alloc();
 #define	osi_alloc		afs_osi_Alloc
 #define	osi_free		afs_osi_Free
 #endif
@@ -143,14 +150,21 @@ typedef struct {
 		bool_t	(*x_getint64)(); /* get 32 bits into a long */
 		bool_t	(*x_putint64)(); /* send 32 bits of a long */
 #endif /* AFS_SGI61_ENV */
+#if !(defined(KERNEL) && defined(AFS_SUN57_ENV))
 		bool_t	(*x_getint32)();	/* get a int32 from underlying stream */
 		bool_t	(*x_putint32)();	/* put a int32 to " */
+#endif
 		bool_t	(*x_getbytes)();/* get some bytes from " */
 		bool_t	(*x_putbytes)();/* put some bytes to " */
 		u_int	(*x_getpostn)();/* returns bytes off from beginning */
 		bool_t  (*x_setpostn)();/* lets you reposition the stream */
 		int32 *	(*x_inline)();	/* buf quick ptr to buffered data */
 		void	(*x_destroy)();	/* free privates of this xdr_stream */
+#if defined(KERNEL) && defined(AFS_SUN57_ENV)
+		bool_t  (*x_control)();
+		bool_t  (*x_getint32)();
+		bool_t  (*x_putint32)();
+#endif
 	} *x_ops;
 	caddr_t 	x_public;	/* users' data */
 	caddr_t		x_private;	/* pointer to private data */
@@ -273,10 +287,9 @@ struct xdr_discrim {
 extern bool_t	xdr_void();
 extern bool_t	xdr_int();
 extern bool_t	xdr_u_int();
-extern bool_t	xdr_int32();
-extern bool_t	xdr_u_int32();
 extern bool_t	xdr_short();
 extern bool_t	xdr_u_short();
+extern bool_t	xdr_long();
 extern bool_t	xdr_char();
 extern bool_t	xdr_u_char();
 extern bool_t	xdr_bool();
@@ -290,26 +303,35 @@ extern bool_t	xdr_float();
 extern bool_t	xdr_double();
 extern bool_t	xdr_reference();
 extern bool_t	xdr_wrapstring();
+extern bool_t	xdr_vector();
 
 /*
  * These are the public routines for the various implementations of
  * xdr streams.
  */
 extern void   xdrmem_create();		/* XDR using memory buffers */
+extern void   xdrrx_create();		/* XDR using rx */
 extern void   xdrstdio_create();	/* XDR using stdio library */
 extern void   xdrrec_create();		/* XDR pseudo records for tcp */
 extern bool_t xdrrec_endofrecord();	/* make end of xdr record */
 extern bool_t xdrrec_skiprecord();	/* move to begining of next record */
 extern bool_t xdrrec_eof();		/* true iff no more input */
 
-#ifndef AFS_SGI61_ENV
-#ifndef AFS_OSF20_ENV
-#define xdr_int32 xdr_long 
-#define xdr_u_int32 xdr_u_long 
+/*
+ * If you change the definitions of xdr_int32 and xdr_u_int32, be sure
+ * to change them in BOTH rx/xdr.h and rxgen/rpc_main.c.  Also, config/stds.h
+ * has the defines for int32 which should match below.
+ */
+
+#ifndef xdr_int32
+#ifdef  AFS_64BIT_ENV
+#define xdr_int32 xdr_int
 #else
-#define xdr_int32 xdr_int 
+#define xdr_int32 xdr_long
+#endif
+#endif
+#ifndef xdr_u_int32
 #define xdr_u_int32 xdr_u_int
 #endif
-#endif /* AFS_SGI61_ENV */
 
 #endif /* __XDR_INCLUDE__ */

@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dir.h,v 1.1.1.1 1999-03-13 21:23:41 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dir.h,v 1.1.1.2 1999-12-22 20:05:25 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dir.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsiddir = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dir.h,v 1.1.1.1 1999-03-13 21:23:41 rbasch Exp $";
+static char *rcsiddir = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/dir.h,v 1.1.1.2 1999-12-22 20:05:25 ghudson Exp $";
 #endif
 
 /*
@@ -79,5 +79,12 @@ struct DirPage1
     struct PageHeader header;
     struct DirEntry entry[1];
     };
+
+/*
+ * Note that this declaration is seen in both the kernel code and the
+ * user space code.  One implementation is in afs/afs_buffer.c; the
+ * other is in dir/buffer.c.
+ */
+extern int DVOffset(void *ap);
 
 #endif /*	!defined(__AFS_DIR_H) */

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_clock.h,v 1.1.1.1 1999-03-13 21:23:39 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_clock.h,v 1.1.1.2 1999-12-22 20:05:48 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/rx/rx_clock.h,v $ */
 
 /*
@@ -34,9 +34,14 @@
 #include "../h/time.h"
 #endif	/* System V */
 #else /* KERNEL */
+#ifndef AFS_NT40_ENV
 #ifndef ITIMER_REAL
 #include <sys/time.h>
 #endif /* ITIMER_REAL */
+#else
+#include <time.h>
+#include <afs/afsutil.h>
+#endif
 #endif /* KERNEL */
 
 /* Some macros to make macros more reasonable (this allows a block to be used within a macro which does not cause if statements to screw up).   That is, you can use "if (...) macro_name(); else ...;" without having things blow up on the semi-colon. */
@@ -53,6 +58,14 @@ struct clock {
 };
 
 #ifndef	KERNEL
+#if defined(AFS_USE_GETTIMEOFDAY) || defined(AFS_PTHREAD_ENV)
+#define clock_Init()
+#define clock_NewTime()
+#define clock_UpdateTime()
+#define clock_GetTime(cv) (gettimeofday((struct timeval *)cv, NULL))
+#define clock_Sec() (time(NULL))
+#define clock_haveCurrentTime 1
+#else /* AFS_USE_GETTIMEOFDAY || AFS_PTHREAD_ENV */
 
 /* For internal use.  The last value returned from clock_GetTime() */
 extern struct clock clock_now;
@@ -64,7 +77,7 @@ extern int clock_haveCurrentTime;
 extern int clock_nUpdates;
 
 /* Initialize the clock package */
-extern clock_Init();
+extern void clock_Init();
 
 #define	clock_NewTime()	(clock_haveCurrentTime = 0)
 
@@ -81,11 +94,11 @@ extern void clock_UpdateTime();
 
 /* Current clock time, truncated to seconds */
 #define	clock_Sec() ((!clock_haveCurrentTime)? clock_UpdateTime(), clock_now.sec:clock_now.sec)
-
+#endif /* AFS_USE_GETTIMEOFDAY || AFS_PTHREAD_ENV */
 #else /* KERNEL */
-#include "../afs/osi.h"
+#include "../afs/afs_osi.h"
 #define clock_Init()
-#ifdef AFS_SGI61_ENV
+#if defined(AFS_SGI61_ENV) || defined(AFS_HPUX_ENV)
 #define clock_GetTime(cv) osi_GetTime((osi_timeval_t *)cv)
 #else
 #define clock_GetTime(cv) osi_GetTime((struct timeval *)cv)
@@ -98,8 +111,12 @@ extern void clock_UpdateTime();
 #define clock_ElapsedTime(cv1, cv2) \
     (((cv2)->sec - (cv1)->sec)*1000 + ((cv2)->usec - (cv1)->usec)/1000)
 
+#ifdef AFS_PTHREAD_ENV
+#define clock_Advance(cv)
+#else
 /* Advance the known value of the current clock time (clock_now) by the specified clock value */
 #define clock_Advance(cv) clock_Add(&clock_now, cv)
+#endif /* AFS_PTHREAD_ENV */
 
 /* Some comparison operators for clock values */
 #define	clock_Gt(a, b)	((a)->sec>(b)->sec || (a)->sec==(b)->sec && (a)->usec>(b)->usec)
@@ -127,11 +144,15 @@ extern void clock_UpdateTime();
 #define MSEC(cp)	((cp->sec * 1000) + (cp->usec / 1000))
 
 /* Add ms milliseconds to time c1.  Both ms and c1 must be positive */
-/* optimized for ms << 1000 */
 #define	clock_Addmsec(c1, ms)					 \
     BEGIN							 \
-	(c1)->usec += ((u_int32) (ms)) * 1000;             \
-        while ((c1)->usec >= 1000000) {		                 \
+	if ((ms) >= 1000) {					 \
+	    (c1)->sec += (int32)((ms) / 1000);			 \
+	    (c1)->usec += (int32)(((ms) % 1000) * 1000);	 \
+	} else {						 \
+	    (c1)->usec += (int32)((ms) * 1000);			 \
+	}							 \
+        if ((c1)->usec >= 1000000) {		                 \
 	    (c1)->usec -= 1000000;				 \
 	    (c1)->sec++;					 \
 	}							 \
@@ -148,5 +169,29 @@ extern void clock_UpdateTime();
     END
 
 #define clock_Float(c) ((c)->sec + (c)->usec/1e6)
+
+/* Add square of time c2 to time c1.  Both c2 and c1 must be positive times. */
+#define	clock_AddSq(c1, c2)					              \
+    BEGIN							              \
+   if((c2)->sec > 0 )                                                         \
+     {                                                                        \
+       (c1)->sec += (c2)->sec * (c2)->sec                                     \
+                    +  2 * (c2)->sec * (c2)->usec /1000000;                   \
+       (c1)->usec += (2 * (c2)->sec * (c2)->usec) % 1000000                   \
+                     + ((c2)->usec / 1000)*((c2)->usec / 1000)                \
+                     + 2 * ((c2)->usec / 1000) * ((c2)->usec % 1000) / 1000   \
+                     + ((((c2)->usec % 1000) > 707) ? 1 : 0);                 \
+     }                                                                        \
+   else                                                                       \
+     {                                                                        \
+       (c1)->usec += ((c2)->usec / 1000)*((c2)->usec / 1000)                  \
+                     + 2 * ((c2)->usec / 1000) * ((c2)->usec % 1000) / 1000   \
+                     + ((((c2)->usec % 1000) > 707) ? 1 : 0);                 \
+     }                                                                        \
+   if ((c1)->usec > 1000000) {                                                \
+        (c1)->usec -= 1000000;                                                \
+        (c1)->sec++;                                                          \
+   }                                                                          \
+    END
 
 #endif /* _CLOCK_ */

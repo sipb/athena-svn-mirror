@@ -6,6 +6,12 @@
 #ifdef	KERNEL
 /* The following 'ifndefs' are not a good solution to the vendor's omission of surrounding all system includes with 'ifndef's since it requires that this file is included after the system includes...*/
 #include "../afs/param.h"
+#ifdef	UKERNEL
+#include "../afs/sysincludes.h"
+#include "../rx/xdr.h"
+#include "../rx/rx.h"
+#include "../rx/rx_globals.h"
+#else	/* UKERNEL */
 #include "../h/types.h"
 #ifndef	SOCK_DGRAM  /* XXXXX */
 #include "../h/socket.h"
@@ -14,7 +20,9 @@
 #ifdef AFS_DEC_ENV
 #include "../h/smp_lock.h"
 #endif
+#ifndef AFS_LINUX22_ENV
 #include "../h/file.h"
+#endif
 #endif
 #ifndef	S_IFMT  /* XXXXX */
 #include "../h/stat.h"
@@ -25,19 +33,44 @@
 #ifndef	DST_USA  /* XXXXX */
 #include "../h/time.h"
 #endif
+#ifndef AFS_LINUX22_ENV
 #include "../rpc/types.h"
+#endif /* AFS_LINUX22_ENV */
 #ifndef	XDR_GETLONG /* XXXXX */
-#include "../rpc/xdr.h"
+#ifdef AFS_LINUX22_ENV
+#ifndef quad_t
+#define quad_t __quad_t
+#define u_quad_t __u_quad_t
 #endif
+#endif
+#ifdef AFS_LINUX22_ENV
+#include "../rx/xdr.h"
+#else /* AFS_LINUX22_ENV */
+#include "../rpc/xdr.h"
+#endif /* AFS_LINUX22_ENV */
+#endif /* XDR_GETLONG */
+#endif   /* UKERNEL */
 #include "../afsint/rxgen_consts.h"
-#include "../afs/osi.h"
+#include "../afs/afs_osi.h"
 #include "../rx/rx.h"
+#include "../rx/rx_globals.h"
 #else	/* KERNEL */
+#include <afs/param.h>
+#include <afs/stds.h>
 #include <sys/types.h>
 #include <rx/xdr.h>
 #include <rx/rx.h>
+#include <rx/rx_globals.h>
 #include <afs/rxgen_consts.h>
 #endif	/* KERNEL */
+
+#ifdef AFS_NT40_ENV
+#ifndef AFS_RXGEN_EXPORT
+#define AFS_RXGEN_EXPORT __declspec(dllimport)
+#endif /* AFS_RXGEN_EXPORT */
+#else /* AFS_NT40_ENV */
+#define AFS_RXGEN_EXPORT
+#endif /* AFS_NT40_ENV */
 
 #ifndef FSINT_COMMON_XG
 
@@ -193,6 +226,18 @@ typedef char DiskName[AFS_DISKNAMESIZE];
 bool_t xdr_DiskName();
 
 #define CALLBACK_VERSION 1
+#define AFS_MAX_INTERFACE_ADDR 32
+
+struct interfaceAddr {
+	int numberOfInterfaces;
+	afsUUID uuid;
+	int32 addr_in[AFS_MAX_INTERFACE_ADDR];
+	int32 subnetmask[AFS_MAX_INTERFACE_ADDR];
+	int32 mtu[AFS_MAX_INTERFACE_ADDR];
+};
+typedef struct interfaceAddr interfaceAddr;
+bool_t xdr_interfaceAddr();
+
 #endif /* FSINT_COMMON_XG */
 #ifdef KERNEL
 #include "../afs/longc_procs.h"
@@ -203,9 +248,27 @@ bool_t xdr_DiskName();
 	multi_Body(StartRXAFSCB_CallBack(multi_call, Fids_Array, CallBacks_Array), EndRXAFSCB_CallBack(multi_call))
 
 
+#define multi_RXAFSCB_Probe() \
+	multi_Body(StartRXAFSCB_Probe(multi_call), EndRXAFSCB_Probe(multi_call))
+
+
+#define multi_RXAFSCB_ProbeUuid(clientUuid) \
+	multi_Body(StartRXAFSCB_ProbeUuid(multi_call, clientUuid), EndRXAFSCB_ProbeUuid(multi_call))
+
+
 /* Opcode-related useful stats for package: RXAFSCB_ */
 #define RXAFSCB_LOWEST_OPCODE   204
-#define RXAFSCB_HIGHEST_OPCODE	210
-#define RXAFSCB_NUMBER_OPCODES	7
+#define RXAFSCB_HIGHEST_OPCODE	214
+#define RXAFSCB_NUMBER_OPCODES	11
+
+#define RXAFSCB_NO_OF_CLIENT_STAT_FUNCS	17
+
+#define RXAFSCB_NO_OF_SERVER_STAT_FUNCS	11
+
+AFS_RXGEN_EXPORT
+extern const char *RXAFSCB_client_function_names[];
+
+AFS_RXGEN_EXPORT
+extern const char *RXAFSCB_server_function_names[];
 
 #endif	/* _RXGEN_AFSCBINT_ */

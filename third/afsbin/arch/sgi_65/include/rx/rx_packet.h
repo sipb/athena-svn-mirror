@@ -1,6 +1,12 @@
 #ifndef _RX_PACKET_
 #define _RX_PACKET_
-#include "sys/uio.h"
+#ifndef UKERNEL
+#ifdef AFS_NT40_ENV
+#include "rx_xmit_nt.h"
+#else
+#include <sys/uio.h>
+#endif
+#endif /* !UKERNEL */
 /* this file includes the macros and decls which depend on packet
  * format, and related packet manipulation macros.  Note that code
  * which runs at NETPRI should not sleep, or AIX will panic */
@@ -17,12 +23,22 @@
  */
 
 
+#ifdef AFS_NT40_ENV
 #ifndef MIN
 #define MIN(a,b)  ((a)<(b)?(a):(b))
 #endif
+#ifndef MAX
+#define MAX(a,b)  ((a)>(b)?(a):(b))
+#endif
+#else /* AFS_NT40_ENV */
+#include <sys/sysmacros.h>      /* MIN, MAX on Solaris */
+#include <sys/param.h>          /* MIN, MAX elsewhere */
+#endif /* AFS_NT40_ENV */
 
-#define	RX_IP_SIZE		20
-#define UDP_HDR_SIZE             8
+#define	IPv6_HDR_SIZE		40	/* IPv6 Header */
+#define IPv6_FRAG_HDR_SIZE	 8	/* IPv6 Fragment Header */
+#define UDP_HDR_SIZE             8	/* UDP Header */
+#define	RX_IP_SIZE		(IPv6_HDR_SIZE + IPv6_FRAG_HDR_SIZE)
 #define	RX_IPUDP_SIZE		(RX_IP_SIZE + UDP_HDR_SIZE)
 
 /* REMOTE_PACKET_SIZE is currently the same as local.  This is because REMOTE
@@ -37,8 +53,7 @@
 
 /* MTUXXX the various "MAX" params here must be rationalized.  From now on,
  * the MAX packet size will be the maximum receive size, but the maximum send
- * size will be larger than that.
- */
+ * size will be larger than that. */
 
 #ifdef notdef 
 /*  some sample MTUs 
@@ -50,6 +65,7 @@
            2002   IEEE 802.5 Recommended 
 	   1500   what Ethernet uses 
 	   1492   what 802.3 uses ( 8 bytes for 802.2 SAP )
+	   9180   Classical IP over ATM (RFC2225)
 */
 
 /* * * * these are the old defines
@@ -71,10 +87,11 @@
  */
 #define	RX_HEADER_SIZE		sizeof (struct rx_header) 
 
-#define RX_MIN_PACKET_SIZE      (576 +RX_HEADER_SIZE)
+/* The minimum MTU for an IP network is 576 bytes including headers */
+#define RX_MIN_PACKET_SIZE      (576 - RX_IPUDP_SIZE)
 #define	RX_PP_PACKET_SIZE	RX_MIN_PACKET_SIZE
 
-#define	OLD_MAX_PACKET_SIZE	(1500 -RX_IPUDP_SIZE)
+#define	OLD_MAX_PACKET_SIZE	(1500 - RX_IPUDP_SIZE)
 
 /* if the other guy is not on the local net, use this size */
 #define	RX_REMOTE_PACKET_SIZE	(1500 - RX_IPUDP_SIZE)   
@@ -98,14 +115,20 @@
 
 
 #define	RX_PACKET_TYPES	    {"data", "ack", "busy", "abort", "ackall", "challenge", "response", "debug", "params", "unused", "unused", "unused", "version"}
-#define	RX_N_PACKET_TYPES	    13	    /* Must agree with above list; counts 0 */
+#define	RX_N_PACKET_TYPES	    13	    /* Must agree with above list;
+					       counts 0
+					       WARNING: if this number ever
+					       grows past 13, rxdebug packets
+					       will need to be modified */
 
 /* Packet classes, for rx_AllocPacket */
 #define	RX_PACKET_CLASS_RECEIVE	    0
 #define	RX_PACKET_CLASS_SEND	    1
 #define	RX_PACKET_CLASS_SPECIAL	    2
+#define	RX_PACKET_CLASS_RECV_CBUF   3
+#define	RX_PACKET_CLASS_SEND_CBUF   4
 
-#define	RX_N_PACKET_CLASSES	    3	    /* Must agree with above list */
+#define	RX_N_PACKET_CLASSES	    5	    /* Must agree with above list */
 
 /* Flags for rx_header flags field */
 #define	RX_CLIENT_INITIATED	1   /* Packet is sent/received from client side of call */
@@ -117,6 +140,12 @@
                                      * this one, rather than a resend of an
 				     * earlier sequence number */
 #define	RX_FREE_PACKET		16	/* Unallocated to a call */
+#define RX_SLOW_START_OK	32  /* Set this flag in an ack packet to
+				     * inform the sender that slow start is
+				     * supported by the receiver. */
+#define RX_JUMBO_PACKET         32  /* Set this flag in a data packet to
+				     * indicate that more packets follow
+				     * this packet in the datagram */
 
 /* The following flags are preset per packet, i.e. they don't change
  * on retransmission of the packet */
@@ -143,20 +172,56 @@ struct rx_header {
     u_short spare;
 };
 
-#define RX_MAXWVECS 13             /* most Unixes max is 16, so never let this > 15*/
+/* The abbreviated header for jumbo packets. Most fields in the
+ * jumbo packet headers are either the same as or can be quickly
+ * derived from their counterparts in the main packet header.
+ */
+struct rx_jumboHeader {
+    u_char flags;      /* Flags, defined below */
+    u_char spare1;
+    u_short cksum;     /* packet header checksum */
+};
+
+/* For most Unixes, maximum elements in an iovec is 16 */
+#define RX_MAXIOVECS 16            /* limit for ReadvProc/WritevProc */
+#define RX_MAXWVECS RX_MAXIOVECS-1 /* need one iovec for packet header */
+
+/*
+ * The values for the RX buffer sizes are calculated to ensure efficient
+ * use of network resources when sending AFS 3.5 jumbograms over Ethernet,
+ * 802.3, FDDI, and ATM networks running IPv4 or IPv6. Changing these
+ * values may affect interoperability with AFS 3.5 clients.
+ */
+
+/*
+ * We always transmit jumbo grams so that each packet starts at the
+ * beginning of a packet buffer. Because of the requirement that all
+ * segments of a 3.4a jumbogram contain multiples of eight bytes, the
+ * receivers iovec has RX_HEADERSIZE bytes in the first element,
+ * RX_FIRSTBUFFERSIZE bytes in the second element, and RX_CBUFFERSIZE
+ * bytes in each successive entry.  All packets in a jumbogram
+ * except for the last must contain RX_JUMBOBUFFERSIZE bytes of data
+ * so the receiver can split the AFS 3.5 jumbograms back into packets
+ * without having to copy any of the data.
+ */
+#define RX_JUMBOBUFFERSIZE 1412
+#define RX_JUMBOHEADERSIZE 4
 /*
  * RX_FIRSTBUFFERSIZE must be larger than the largest ack packet, 
  * the largest possible challenge or response packet. 
  * Both Firstbuffersize and cbuffersize must be integral multiples of 8,
  * so the security header and trailer stuff works for rxkad_crypt.  yuck.
  */
-#define RX_FIRSTBUFFERSIZE 1448
-#define RX_CBUFFERSIZE 1448
-
-#ifdef TESTINGMTU
-#define RX_FIRSTBUFFERSIZE 480 /* MTUXXX should be 1444 */
-#define RX_CBUFFERSIZE 504     /* MTUXXX change this to 1024 or 1012  */
-#endif /* TESTINGMTU */
+#define RX_FIRSTBUFFERSIZE (RX_JUMBOBUFFERSIZE+RX_JUMBOHEADERSIZE)
+/*
+ * The size of a continuation buffer is buffer is the same as the
+ * size of the first buffer, which must also the size of a jumbo packet
+ * buffer plus the size of a jumbo packet header. */
+#define RX_CBUFFERSIZE (RX_JUMBOBUFFERSIZE+RX_JUMBOHEADERSIZE)
+/*
+ * Add an extra four bytes of slop at the end of each buffer.
+ */
+#define RX_EXTRABUFFERSIZE 4
 
 struct rx_packet {
     struct rx_queue queueItemHeader;   /* Packets are chained using the queue.h package */
@@ -167,18 +232,25 @@ struct rx_packet {
     struct rx_header header;	    /* The internal packet header */
     unsigned int niovecs;
     struct iovec wirevec[RX_MAXWVECS+1];       /* the new form of the packet */
-    u_int32 wirehead[RX_HEADER_SIZE/sizeof(int32)];
-    u_int32 localdata[(RX_FIRSTBUFFERSIZE/sizeof(int32))]; 
-    u_int32 dummy;
-    u_char acked;		    /* This packet has been *tentatively* acknowledged */
+    
+    u_char acked;	/* This packet has been *tentatively* acknowledged */
     u_char backoff;                 /* for multiple re-sends */
     u_short length;		    /* Data length */
+    /* NT port relies on the fact that the next two are physically adjacent.
+     * If that assumption changes change sendmsg and recvmsg in rx_xmit_nt.c .
+     * The jumbo datagram code also relies on the next two being
+     * physically adjacent.
+     * The Linux port uses this knowledge as well in osi_NetSend.
+     */
+    u_int32 wirehead[RX_HEADER_SIZE/sizeof(int32)];
+    u_int32 localdata[RX_CBUFFERSIZE/sizeof(int32)]; 
+    u_int32 extradata[RX_EXTRABUFFERSIZE/sizeof(int32)];
 };
 
-struct rx_cbuf {
-    struct rx_queue queueItemHeader;   
-    u_int32 data[(RX_CBUFFERSIZE/sizeof(int32))]; 
-};
+/* Macro to convert continuation buffer pointers to packet pointers */
+#define RX_CBUF_TO_PACKET(CP, PP) \
+    ((struct rx_packet *) \
+     ((char *)(CP) - ((char *)(&(PP)->localdata[0])-(char *)(PP))))
 
 /* Macros callable by security modules, to set header/trailer lengths,
  * set actual packet size, and find the beginning of the security
@@ -200,7 +272,9 @@ struct rx_cbuf {
 #define rx_GetPacketCksum(packet)	 ((packet)->header.spare)
 #define rx_SetPacketCksum(packet, cksum) ((packet)->header.spare = (cksum))
 
+#ifdef KERNEL
 #define rxi_OverQuota(packetclass) (rx_nFreePackets - 1 < rx_packetQuota[packetclass])
+#endif /* KERNEL */
 
 /* this returns a int32 from byte offset o in packet p.  offset must
  * always be aligned properly for a int32, I'm leaving this up to the
@@ -221,17 +295,18 @@ struct rx_cbuf {
 struct rx_packet *rx_AllocPacket();
 struct rx_packet *rxi_ReceiveDebugPacket();
 struct rx_packet *rxi_ReceiveVersionPacket();
+struct rx_packet *rxi_SplitJumboPacket();
 
 /* copy data into an RX packet */
 #define rx_packetwrite(p, off, len, in)               \
   ( (off) + (len) > (p)->wirevec[1].iov_len ?         \
-    rx_SlowWritePacket(p, off, len, in) :             \
+    rx_SlowWritePacket(p, off, len, (char*)(in)) :             \
     ((bcopy((char *)(in), (char*)((p)->wirevec[1].iov_base)+(off), (len))),0))
 
 /* copy data from an RX packet */
 #define rx_packetread(p, off, len, out)               \
   ( (off) + (len) > (p)->wirevec[1].iov_len ?         \
-    rx_SlowReadPacket(p, off, len, out) :             \
+    rx_SlowReadPacket(p, off, len, (char*)out) :             \
     ((bcopy((char*)((p)->wirevec[1].iov_base)+(off), (char *)(out), len)),0))
 
 #define rx_computelen(p,l) { register int i; \
@@ -260,5 +335,12 @@ struct rx_packet *rxi_ReceiveVersionPacket();
  * security header */
 /* DEPRECATED: DON'T USE THIS!  [ 93.05.03  lws ] */
 #define	rx_UserDataOf(conn, packet)	(((char *) (packet)->wirevec[1].iov_base) + (conn)->securityHeaderSize)
+
+/* Adjust an MTU for efficient use of RX buffers */
+extern int rxi_AdjustIfMTU(int mtu);
+/* Adjust a maximum MTU for efficient use of RX buffers */
+extern int rxi_AdjustMaxMTU(int mtu, int peerMaxMTU);
+/* Figure out how many datagram packets will fit in this mtu */
+extern int rxi_AdjustDgramPackets(int frags, int mtu);
 
 #endif /* _RX_PACKET_ */

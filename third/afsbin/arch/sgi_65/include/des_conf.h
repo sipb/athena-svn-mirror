@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des_conf.h,v $
- * $Author: rbasch $
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des_conf.h,v 1.1.1.1 1999-03-13 21:23:38 rbasch Exp $
+ * $Author: ghudson $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des_conf.h,v 1.1.1.2 1999-12-22 20:04:56 ghudson Exp $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -49,17 +49,6 @@
 
 #else
 
-#ifdef AFS_AOS_ENV
-#define IBMWS
-#define IBMWSASM
-#define BITS32
-#define BIG
-#define BSDUNIX
-#define MSBFIRST
-#define MUSTALIGN
-
-#else
-
 #ifdef sun
 #define BITS32
 #define BIG
@@ -69,7 +58,6 @@
 #else
 
 #ifdef	AFS_AIX_ENV
-/* WARNING: Identical to AOS's; some defines might have to change! */
 #define IBMWS
 #define IBMWSASM
 #define BITS32
@@ -91,7 +79,6 @@ include it.
 #endif /* multimax */
 #endif /* AFS_AIX_ENV */
 #endif /* sun */
-#endif /* ibm032 */
 #endif /* vax */
 #endif /* pc8086 */
 

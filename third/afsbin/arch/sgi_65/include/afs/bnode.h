@@ -77,7 +77,28 @@ struct bnode_proc {
     int32 lastSignal;		    /* last signal that killed this guy */
     int32 flags;			    /* flags giving process state */
 };
+    
+struct ezbnode {
+    struct bnode b;
+    int32 zapTime;		/* time we sent a sigterm */
+    char *command;
+    struct bnode_proc *proc;
+    int32 lastStart;		/* time last started process */
+    char waitingForShutdown;	/* have we started any shutdown procedure? */
+    char running;   /* is process running? */
+    char killSent;  /* have we tried sigkill signal? */
+};
 
+/* this struct is used to construct a list of dirpaths, along with 
+ * their recommended permissions 
+ */
+struct bozo_bosEntryStats {
+    const char *path;			/* pathname to check */
+    int dir;				/* 1=>dir or 0=>file */
+    int rootOwner;			/* 1=>root must own */
+    int reqPerm;			/* required permissions */
+    int proPerm;			/* prohibited permissions */
+};
 /* bnode flags */
 #define	BNODE_NEEDTIMEOUT	    1	    /* timeouts are active */
 #define	BNODE_ACTIVE		    2	    /* in generic lists */
@@ -96,6 +117,18 @@ struct bnode_proc {
 #define	BSTAT_NORMAL		    1	    /* running normally */
 #define	BSTAT_SHUTTINGDOWN	    2	    /* normal --> shutdown */
 #define	BSTAT_STARTINGUP	    3	    /* shutdown --> normal */
+
+/* exit values indicating that NT SCM integrator should restart bosserver */
+#ifdef AFS_NT40_ENV
+#define BOSEXIT_RESTART        0xA0
+#define BOSEXIT_DORESTART(code)  (((code) & ~(0xF)) == BOSEXIT_RESTART)
+#define BOSEXIT_NOAUTH_FLAG    0x01
+#define BOSEXIT_LOGGING_FLAG   0x02
+#endif
+
+/* max time to wait for fileserver shutdown */
+#define	FSSDTIME	(30 * 60) /* seconds */
+
 
 /* calls back up to the generic bnode layer */
 extern int bnode_SetTimeout(/* bnode, timeout */);
@@ -120,6 +153,7 @@ extern struct bnode *bnode_FindInstance();
 #define BZNET                                    (39433L)
 #define BZBADTYPE                                (39434L)
 #define BZKEYINUSE                               (39435L)
+#define BZENCREQ                                 (39436L)
 extern void initialize_bz_error_table ();
 #define ERROR_TABLE_BASE_bz (39424L)
 

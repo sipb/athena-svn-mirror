@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des.h,v $
- * $Author: rbasch $
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des.h,v 1.1.1.1 1999-03-13 21:23:38 rbasch Exp $ 
+ * $Author: ghudson $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/des.h,v 1.1.1.2 1999-12-22 20:04:56 ghudson Exp $ 
  *
  * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +15,11 @@
 #ifndef DES_DEFS
 #define DES_DEFS
 
+#if defined(UKERNEL)
+#include "../des/mit-cpyright.h"
+#else /* defined(UKERNEL) */
 #include <mit-cpyright.h>
+#endif /* defined(UKERNEL) */
 
 typedef unsigned char des_cblock[8];	/* crypto-block size */
 /* Key schedule */

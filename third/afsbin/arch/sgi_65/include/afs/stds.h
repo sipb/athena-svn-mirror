@@ -1,6 +1,6 @@
-/* Copyright (C) 1990 Transarc Corporation - All rights reserved */
+/* Copyright (C) 1998, 1990 Transarc Corporation - All rights reserved */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/stds.h,v 1.1.1.1 1999-03-13 21:23:41 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/stds.h,v 1.1.1.2 1999-12-22 20:05:02 ghudson Exp $ */
 
 #ifndef TRANSARC_AFS_CONFIG_STDS_H
 #define TRANSARC_AFS_CONFIG_STDS_H	1
@@ -14,11 +14,6 @@
 #define IN              /* indicates a parameter is read in */
 #define OUT             /* indicates a parameter is sent out (a ptr) */
 #define INOUT           /* indicates a parameter is read in and sent out (a ptr) */
-#define EXPORT          /* available to everyone */
-#define HIDDEN		/* used in a PUBLIC macro, but not exported */
-#define SHARED          /* shared between module source files */ 
-#define PRIVATE static  /* private to a source (.c) file */
-#define IMPORT extern	/* this is new -ota */
 
 #ifndef	MACRO_BEGIN
 #define MACRO_BEGIN	do {
@@ -27,26 +22,7 @@
 #define MACRO_END	} while (0)
 #endif
 
-/*
- * The following are provided for ANSI C compatibility
- */
-#ifdef __STDC__
 typedef void *opaque;
-#else /* __STDC__ */
-#define const
-typedef char *opaque;
-#endif /* __STDC__ */
-
-/* Use _TAKES with double parentheses around an ANSI C param list */
-/* MIPS compilers understand ANSI prototypes (and check 'em too!) */
-
-#ifndef _TAKES
-#if defined(__STDC__) || defined(mips)
-#define _TAKES(x) x
-#else /* __STDC__ */
-#define _TAKES(x) ()
-#endif /* __STDC__ */
-#endif /* _TAKES */
 
 #ifndef _ATT4
 #if defined(__HIGHC__)
@@ -72,10 +48,10 @@ pragma Off(Prototype_override_warnings);
 
 #define RCSID(x) \
   static const char *rcsid = x; \
-  static int (*__rcsid)(); \
-  static int _rcsid () \
-  { static int a; \
-    a = (int)rcsid; __rcsid = _rcsid; a = (int)__rcsid; return a; }
+  static unsigned long (*__rcsid)(); \
+  static unsigned long _rcsid () \
+  { static unsigned long a; \
+    a = (unsigned long)rcsid; __rcsid = _rcsid; a = (unsigned long)__rcsid; return a; }
 
 /* #define RCSID(x) static const char *rcsid() { return x;} */
 
@@ -100,9 +76,11 @@ typedef int	         int32;
  * compile if the following is re-typedef'd...... And we need to be able to
  * #undef it if required.
  */
-#ifndef AFS_SGI64_ENV
-#define u_int32 unsigned int;
-#endif
+#define u_int32 unsigned int
+#elif defined(AFS_HPUX_ENV)
+/* It's an error for a 64 bit compile if the following is re-typedef'd
+ */
+#define u_int32 unsigned int
 #else
 typedef unsigned int  u_int32;
 #endif
@@ -113,15 +91,12 @@ typedef long	         int32;
 /* The Sun RPC include files define this with a typedef and this caused
  * problems for the NFS Translator.  Users of those include files should just
  * #undef this. */
-#if	!defined(AFS_OSF_ENV)
+#if	!defined(AFS_OSF_ENV) && !defined(AFS_USR_OSF_ENV)
+#if	!defined(AFS_64BIT_ENV) || !defined(AFS_SGI53_ENV)
 #define u_int32 unsigned int
+#endif
 #define uint32 unsigned int
 /* typedef unsigned int	u_int32; */
-#endif
-
-#if !defined(AFS_ALPHA_ENV) && !defined(AFS_SGI61_ENV)
-#define	xdr_int32	xdr_long
-#define	xdr_u_int32	xdr_u_long
 #endif
 
 /* you still have to include <netinet/in.h> to make these work */
@@ -138,7 +113,7 @@ typedef long	         int32;
 
 #if	defined(AFS_64BIT_ENV) && 0
 
-typedef	unsigned long	hyper;
+typedef	unsigned long	afs_hyper_t;
 
 #define	hcmp(a,b)	((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
 #define	hsame(a,b)	((a) == (b))
@@ -159,10 +134,10 @@ typedef	unsigned long	hyper;
 
 #else	/* AFS_64BIT_ENV */
 
-typedef struct hyper { /* unsigned 64 bit integers */
+typedef struct afs_hyper_t { /* unsigned 64 bit integers */
     unsigned int high;
     unsigned int low;
-} hyper;
+} afs_hyper_t;
 
 #define hcmp(a,b) ((a).high<(b).high? -1 : ((a).high > (b).high? 1 : \
     ((a).low <(b).low? -1 : ((a).low > (b).low? 1 : 0))))
@@ -195,18 +170,42 @@ typedef struct hyper { /* unsigned 64 bit integers */
 #endif	/* AFS_64BIT_ENV */
 
 #ifndef	KERNEL
+#ifndef AFS_NT40_ENV
 #define max(a, b)               ((a) < (b) ? (b) : (a))
 #define min(a, b)               ((a) > (b) ? (b) : (a))
+#endif
 /*#define abs(x)                  ((x) >= 0 ? (x) : -(x))*/
 #endif
 
+#if defined(AFS_LINUX20_ENV) && defined(KERNEL)
+/* This is here instead of osi_machdep.h so fcrypt.c can pick it up. */
+#include "../h/string.h"
+#define bcopy(F,T,C) memcpy((T), (F), (C))
+#endif
+
+
 /* minumum length of string to pass to int_to_base64 */
 typedef char b64_string_t[8];
-#if defined(AFS_HPUX_ENV) || (defined(AFS_SUN_ENV) && !defined(AFS_SUN5_ENV))
+#if defined(AFS_HPUX_ENV) || defined(AFS_USR_HPUX_ENV) || (defined(AFS_SUN_ENV) && !defined(AFS_SUN5_ENV))
 char *int_to_base64();
 int base64_to_int();
 #else
 char *int_to_base64(b64_string_t s, int a);
 int base64_to_int(char *s);
 #endif
+
+/*
+ * The afsUUID data type is built in to RX
+ */
+struct afsUUID {
+    u_int32 time_low;
+    u_int16 time_mid;
+    u_int16 time_hi_and_version;
+    char clock_seq_hi_and_reserved;
+    char clock_seq_low;
+    char node[6];
+};
+typedef struct afsUUID afsUUID;
+extern int xdr_afsUUID();
+
 #endif /* TRANSARC_CONFIG_AFS_STDS_H */
