@@ -1,4 +1,4 @@
-%define ver      0.16.1
+%define ver      1.0.0
 
 Summary: gtkhtml library
 Name: gtkhtml

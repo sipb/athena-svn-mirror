@@ -1,3 +1,7 @@
+2001-11-15  Radek Doulik  <rodo@ximian.com>
+
+	* update empty_image.png with new one from Jakub
+
 2001-08-23  Radek Doulik  <rodo@ximian.com>
 
 	* Makefile.am (icons_DATA): sorted and added properties-16.png

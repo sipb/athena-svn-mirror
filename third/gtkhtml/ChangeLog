@@ -1,3 +1,9 @@
+2001-11-21  Larry Ewing  <lewing@ximian.com>
+
+	* Make 1.0 release.
+
+	* configure.in: bump version to 1.0.0 and bump soname.
+
 2001-11-14  Larry Ewing  <lewing@ximian.com>
 
 	* Make 0.16.1 release.

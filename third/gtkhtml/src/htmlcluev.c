@@ -173,9 +173,10 @@ do_layout (HTMLObject *o, HTMLPainter *painter, gboolean calc_size, GList **chan
 	}
 
 	while (clue->curr != NULL) {
-		gint old_y_off, new_y_off;
+		gint old_y, old_y_off, new_y_off;
 		/* Set an initial ypos so that the alignment stuff knows where
 		   the top of this object is */
+		old_y = clue->curr->y;
 		old_y_off = clue->curr->y - clue->curr->ascent;
 		clue->curr->y = o->ascent;
 
@@ -193,11 +194,10 @@ do_layout (HTMLObject *o, HTMLPainter *painter, gboolean calc_size, GList **chan
 				if (first_change) {
 					first_change = FALSE;
 				        /* if it's new one (y == 0) clear from new y_off, else from old one or new one,
-					   which one is higher*/
-					first_y_off = old_y_off
+					   which one is higher */
+					first_y_off = old_y
 						&& old_y_off < new_y_off ? old_y_off : new_y_off;
-					/* printf ("\nfirst_y_off: %d x %d --> %d\n", old_y, o->ascent - clue->curr->descent,
-					   first_y_off + clue->curr->ascent); */
+					/* printf ("\nfirst_y_off: %d x %d --> %d\n", old_y_off, new_y_off, first_y_off); */
 				}
 				html_object_add_to_changed (&local_changed_objs, clue->curr);
 			}

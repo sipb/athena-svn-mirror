@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gtkhtml\n"
-"POT-Creation-Date: 2001-11-14 16:55-0600\n"
-"PO-Revision-Date: 2001-09-29 23:57+0400\n"
+"POT-Creation-Date: 2001-11-21 13:41-0600\n"
+"PO-Revision-Date: 2001-11-17 19:17+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +21,11 @@ msgstr "<Нет>"
 #: components/html-editor/table.c:528 components/html-editor/table.c:619
 #: components/html-editor/template.c:244
 msgid "Could not load glade file."
-msgstr ""
+msgstr "Не удалось загрузить файл glade."
 
 #: capplet/gtkhtml-capplet.glade.h:1
 msgid "*********************"
-msgstr ""
+msgstr "*********************"
 
 #: capplet/gtkhtml-capplet.glade.h:2
 msgid "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
@@ -891,7 +891,7 @@ msgstr "Длина:"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:21
 #: components/html-editor/image.c:202
 msgid "Middle"
-msgstr ""
+msgstr "Середина"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:23
 msgid "None"
@@ -1247,6 +1247,9 @@ msgid ""
 "cellpadding=3 cellspacing=0 width=\"100%\"><tr><td valign=top><img "
 "src=\"file://"
 msgstr ""
+"<table cellspacing=0 cellpadding=1 bgcolor=\"#ccccc0\"\n"
+"@width@@align@><tr><td><table bgcolor=\"#fffff0\" cellpadding=3 \n"
+"cellspacing=0 width=\"100%\"><tr><td valign=top><img src=\"file://"
 
 #: components/html-editor/template.c:91
 msgid "Image frame"
@@ -1258,6 +1261,9 @@ msgid ""
 "bgcolor=\"#f2f2f2\" cellspacing=\"0\" cellpadding=\"8\" "
 "width=\"100%\"><tr><td align=\"center\"><img src=\"file://"
 msgstr ""
+"<table bgcolor=\"#c0c0c0\" cellspacing=\"0\" @width@@align@><tr><td><table\n"
+"bgcolor=\"#f2f2f2\" cellspacing=\"0\" cellpadding=\"8\" width=\"100%\"\n"
+"\"><tr><td align=\"center\"><img src=\"file://"
 
 #: components/html-editor/test-html-editor-control.c:276
 msgid "Open file..."
@@ -1342,3 +1348,20 @@ msgstr "Просмотр печати"
 #: src/testgtkhtml.c:112
 msgid "Print preview"
 msgstr "Просмотр печати"
+
+#~ msgid ""
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Place your text "
+#~ "here</td></tr></table></td></tr></table>"
+#~ msgstr ""
+#~ "/bulb.png\" hspace=10></td><td width=\"100%\">Вставьте сюда ваш "
+#~ "текст</td></\"\n"
+#~ "tr></table></td></tr></table>"
+
+#~ msgid ""
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font "
+#~ "size=\"-1\">Image 1: "
+#~ "<b>description</b></font></td></tr></table></td></tr></table>"
+#~ msgstr ""
+#~ "/empty_image.png\" align=\"top\" border=\"0\"></td></tr><tr><td><font size=\n"
+#~ "\"-1\">Изображение 1: "
+#~ "<b>описание</b></font></td></tr></table></td></tr></table>"
