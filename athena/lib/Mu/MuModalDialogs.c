@@ -15,8 +15,12 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuModalDialogs.c,v $
- * $Author: vanharen $
+ * $Author: djf $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  89/12/19  14:57:04  vanharen
+ * Change XtUnmanage to XtDestroy for unused button widgets.
+ * Saves (a little) memory...
+ * 
  * Revision 1.1  89/12/09  15:14:36  djf
  * Initial revision
  * 
@@ -25,6 +29,7 @@
 
 
 #include "MuP.h"
+#include <Xm/DialogS.h>
 #include <Xm/MessageB.h>
 
 Widget _MuModalDialogWidget = (Widget)NULL;
@@ -32,23 +37,25 @@ Widget _MuModalDialogWidget = (Widget)NULL;
 
 static void CreateWidget()
 {
-    Arg args[5];
+    Arg args[10];
     int n;
-    Widget dummy;
+    Widget parent, dummy;
+
+    XtSetArg(args[0],XmNallowShellResize,True);
+    parent = XmCreateDialogShell(_MuToplevel,"_MuModalDialogShell",args,1);
     
     n = 0;
     XtSetArg(args[n], XmNdefaultButtonType, XmDIALOG_OK_BUTTON); n++;
     XtSetArg(args[n], XmNdialogStyle, XmDIALOG_APPLICATION_MODAL); n++;
     XtSetArg(args[n], XmNborderWidth, 2); n++;
-    _MuModalDialogWidget = XmCreateMessageDialog(_MuToplevel,
-						 "_MuModalDialogWidget",
-						 args,n);
-    dummy = XmMessageBoxGetChild(_MuModalDialogWidget,
-				 XmDIALOG_CANCEL_BUTTON);
+    XtSetArg(args[n], XmNdialogType, XmDIALOG_ERROR); n++;
+    _MuModalDialogWidget = XmCreateMessageBox(parent,"_MuModalDialogChild",
+					       args,n);
+    
+    dummy = XmMessageBoxGetChild(_MuModalDialogWidget,XmDIALOG_CANCEL_BUTTON);
     XtDestroyWidget(dummy);
-    dummy = XmMessageBoxGetChild(_MuModalDialogWidget,
-				 XmDIALOG_HELP_BUTTON);
-    XtDestroyWidget(dummy);
+    dummy = XmMessageBoxGetChild(_MuModalDialogWidget,XmDIALOG_HELP_BUTTON);
+    XtDestroyWidget(dummy); 
     XtRealizeWidget(_MuModalDialogWidget);
     MuSetStandardCursor(_MuModalDialogWidget);
 }
