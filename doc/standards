@@ -28,8 +28,8 @@ following changes:
 	  the name of the function; put the function name on the same
 	  line as the return type.
 
-	* Don't insert formfeed characters into source files to divide
-	  programs into pages.
+	* Don't insert form feed characters into source files to
+	  divide programs into pages.
 
 	* Ignore the sections on "Portability between System Types"
 	  and "Portability between CPUs"; see the sections on
@@ -137,7 +137,7 @@ The following software engineering practices are discouraged:
 	  function prototype.  Global variables are marginally
 	  acceptable to represent configuration parameters determined
 	  by command-line arguments or a configuration file, but even
-	  then it is preferrable to find an alternative.
+	  then it is preferable to find an alternative.
 
 	* Use of global process state.  You should avoid using
 	  alarm(), and you should avoid using getuid() or getenv()
@@ -154,7 +154,7 @@ application's namespace (both at link time and on inclusion of the
 header file) begin with your prefix (or the all-caps form of your
 prefix, in the case of preprocessor symbols and enumeration constants)
 followed by an underscore.  Symbols which are not intended for use by
-the application should begin with your preefix followed by two
+the application should begin with your prefix followed by two
 underscores.
 
 For instance, if your prefix is "hes", then functions exported to the
@@ -231,7 +231,7 @@ systems; we make sure it's defined when we build code not using
 autoconf.  There are no reliable automatically defined constants for
 Solaris systems.
 
-For some highly nonportable operations you may need to do a platform
+For some highly non-portable operations you may need to do a platform
 test even when using Autoconf.  In that case, use AC_CANONICAL_HOST
 rather than the above ifdefs.
 
