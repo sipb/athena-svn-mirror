@@ -1,15 +1,4 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
- *	$Author: probe $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.11 1993-10-09 18:22:58 probe Exp $
- */
-
-#ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.11 1993-10-09 18:22:58 probe Exp $";
-#endif lint
-
-/*
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
  * specifies the terms and conditions for redistribution.
@@ -17,7 +6,8 @@ static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athe
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-#endif not lint
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.12 1995-07-11 20:36:14 miki Exp $";
+#endif
 
 /*
  * Receive printer jobs from the network, queue them and
@@ -25,25 +15,22 @@ static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
  */
 
 #include "lp.h"
+
 #ifdef _AUX_SOURCE
 #include <sys/sysmacros.h>
 #include <ufs/ufsparam.h>
 #endif
 
-#if (!defined(AIX) || !defined(i386)) && (!defined(_IBMR2))
-#ifdef VFS
-#ifdef SOLARIS
-#include <sys/fs/ufs_fs.h>
+#if defined(POSIX) && !defined(ultrix)
+#define USE_USTAT
+#include <ustat.h>
 #else
 #include <ufs/fs.h>
-#endif
-#else
-#include <sys/fs.h>
-#endif VFS
 #endif
 
 #ifdef PQUOTA
 #include "quota.h"
+#include <time.h>
 #include <sys/time.h>
 #endif
 
@@ -64,12 +51,18 @@ char    tfname[40];		/* tmp copy of cf before linking */
 char    dfname[40];		/* data files */
 char    cfname[40];             /* control fle - fix compiler bug */
 int	minfree;		/* keep at least minfree blocks available */
+
+#ifdef USE_USTAT
+dev_t	ddev;			/* disk device (for checking free space) */
+#else
 char	*ddev;			/* disk device (for checking free space) */
 int	dfd;			/* file system device descriptor */
+#endif
+
 #ifdef KERBEROS
 char    tempfile[40];           /* Same size as used for cfname and tfname */
 extern int kflag;
-#endif KERBEROS
+#endif
 
 #ifdef _AUX_SOURCE
 /* They defined fds_bits correctly, but lose by not defining this */
@@ -103,7 +96,7 @@ recvjob()
 	}
  	else if (status == 0)
 		frecverr("unknown printer %s", printer);
-#endif HESIOD
+#endif
 	if ((LF = pgetstr("lf", &bp)) == NULL)
 		LF = DEFLOGF;
 	if ((SD = pgetstr("sd", &bp)) == NULL)
@@ -113,13 +106,13 @@ recvjob()
 #ifdef PQUOTA
 	RQ = pgetstr("rq", &bp);
 	QS = pgetstr("qs", &bp);
-#endif PQUOTA	    
+#endif
 #ifdef LACL
 	AC = pgetstr("ac", &bp);
 	PA = pgetflag("pa");
 	RA = pgetflag("ra");
-#endif /* LACL */
-	    
+#endif
+
 	(void) close(2);			/* set up log file */
 	if (open(LF, O_WRONLY|O_APPEND, 0664) < 0) {
 		syslog(LOG_ERR, "%s: %m", LF);
@@ -137,29 +130,39 @@ recvjob()
 	} else if (stat(SD, &stb) < 0)
 		frecverr("%s: %s: %m", printer, SD);
 	minfree = read_number("minfree");
+
+#ifdef USE_USTAT
+	ddev = stb.st_dev;
+#else
 	ddev = find_dev(stb.st_dev, S_IFBLK);
 	if ((dfd = open(ddev, O_RDONLY)) < 0)
 		syslog(LOG_WARNING, "%s: %s: %m", printer, ddev);
+#endif
+
 
 	signal(SIGTERM, rcleanup);
 	signal(SIGPIPE, rcleanup);
 
 	if(lflag) syslog(LOG_INFO, "Reading job");
+
 	if (readjob())
 	  {
+
 	    if (lflag) syslog(LOG_INFO, "Printing job..");
+
 	    printjob();
 	  }
 	
 }
 
+#ifndef USE_USTAT
 char *
 find_dev(dev, type)
 	register dev_t dev;
 	register int type;
 {
 	register DIR *dfd = opendir("/dev");
-#if defined(_IBMR2) || defined(POSIX)
+#ifdef POSIX
 	struct dirent *dir;
 #else
 	struct direct *dir;
@@ -183,12 +186,30 @@ find_dev(dev, type)
 		}
 	}
 	closedir(dfd);
-#ifdef SOLARIS
-	frecverr("cannot find device %d, %d", __major(dev), __minor(dev));
-#else
 	frecverr("cannot find device %d, %d", major(dev), minor(dev));
-#endif
 	/*NOTREACHED*/
+}
+#endif /* USE_USTAT */
+
+/* Compute the next job number */
+jobnum()
+{
+    FILE *jfp;
+    int job = 0;
+
+    jfp = fopen(".seq", "r");
+    if (jfp) {
+      fscanf(jfp, "%d", &job);
+      job = (job+1) % 1000;
+      fclose(jfp);
+    }
+
+    jfp = fopen(".seq", "w");
+    if (jfp) {
+      fprintf(jfp, "%d\n", job);
+      fclose(jfp);
+    }
+    return job;
 }
 
 /*
@@ -210,6 +231,7 @@ readjob()
 #endif
 
 	if (lflag) syslog(LOG_INFO, "In readjob");
+
 	ack();
 	nfiles = 0;
 	for (;;) {
@@ -238,24 +260,19 @@ readjob()
 				size = size * 10 + (*cp++ - '0');
 			if (*cp++ != ' ')
 				break;
-			/*
-			 * host name has been authenticated, we use our
-			 * view of the host name since we may be passed
-			 * something different than what gethostbyaddr()
-			 * returns
-			 */
-			strcpy(cp + 6, from);
-			strcpy(cfname, cp);
+
+			/* Compute local filenames. */
+			sprintf(cfname, "cfA%03d%s", jobnum(), from);
 			strcpy(tfname, cp);
 			tfname[0] = 't';
 #ifdef KERBEROS
 			strcpy(tempfile, tfname);
 			tempfile[0] = 'T';
-#endif KERBEROS
+#endif
 			if (!chksize(size)) {
 				(void) write(1, "\2", 1);
 				continue;
-			}
+			} 
 			    
 			/* Don't send final acknowledge beacuse we may wish to 
 			   send error below */
@@ -278,14 +295,14 @@ readjob()
 			}
 
 			if(AC && (cret = check_lacl(tfname)) != 0) {
-			    /* We return !=0 for error. Old clients
-			       stupidly don't print any error in this sit.
-			       We do a cleanup cause we can't expect 
-			       client to do so. */
+			    /* We return !=0 for error. Old clients stupidly
+			     * don't print any error in this situation.
+			     * We do a cleanup cause we can't expect 
+			     * client to do so. */
 			    (void) write(1, cret, 1);
 #ifdef DEBUG
 			    syslog(LOG_DEBUG, "Got %s", cret);
-#endif DEBUG
+#endif
 			    rcleanup();
 			    continue;
 			}
@@ -301,18 +318,19 @@ readjob()
 			    (void) write(1, cret, 1);
 #ifdef DEBUG
 			    syslog(LOG_DEBUG, "Got %s", cret);
-#endif DEBUG
+#endif
 			    rcleanup();
 			    continue;
 			}
-#endif PQUOTA
+#endif /* PQUOTA */
 
 			/* Send acknowldege, cause we didn't before */
 			ack();
 
-			if (link(tfname, cfname) < 0)
+			if (link(tfname, cfname) < 0) 
 				frecverr("%s: %m", tfname);
-			(void) UNLINK(tfname);
+
+			(void) UNLINK(tfname);  
 			tfname[0] = '\0';
 			nfiles++;
 			continue;
@@ -329,7 +347,7 @@ readjob()
 			}
 
 			(void) strcpy(dfname, cp);
-			if (index(dfname, '/'))
+			if (strchr(dfname, '/'))
 				frecverr("illegal path name");
 			(void) readfile(dfname, size, 1);
 			continue;
@@ -380,11 +398,12 @@ readfile(file, size, acknowledge)
 	if (err)
 		frecverr("%s: write error", file);
 	if (noresponse()) {		/* file sent had bad data in it */
-		(void) UNLINK(file);
+		(void) UNLINK(file); 
 		return(0);	
 	    }
 	if(acknowledge)
 	    ack();
+
 	return(1);
 }
 
@@ -432,7 +451,7 @@ char *file, *tfile;
 	 */
 	if (link(file, tfile) < 0)
 		return(0);
-	(void) UNLINK(file);
+	(void) UNLINK(file); 
 
 	/* If we cannot open tf file, then return error */
 	if ((tfp = fopen(tfile, "r")) == NULL)
@@ -463,7 +482,7 @@ char *file, *tfile;
 
 	(void) fclose(cfp);
 	(void) fclose(tfp);
-	(void) UNLINK(tfile);
+	(void) UNLINK(tfile); 
 
 	return(1);
 }
@@ -486,8 +505,12 @@ noresponse()
 chksize(size)
 	int size;
 {
-#if (defined(AIX) && defined(i386)) || defined(_IBMR2)
-	/* This is really not appropriate, but maybe someday XXX */
+#ifdef USE_USTAT
+	struct ustat ubuf;
+
+	if (ustat(ddev, &ubuf)) return 1;
+	size = (size+1023)/1024;
+	if (minfree + size > ubuf.f_tfree) return 0;
 	return 1;
 #else
 	int spacefree;
@@ -504,7 +527,7 @@ chksize(size)
 	if (minfree + size > spacefree)
 		return(0);
 	return(1);
-#endif /* AIX & i386 */
+#endif
 }
 
 read_number(fn)
@@ -534,15 +557,15 @@ rcleanup()
 	 */
 
 	if (tfname[0])
-		(void) UNLINK(tfname);
+		(void) UNLINK(tfname); 
 #ifdef KERBEROS
 	if (tempfile[0])
-		(void) UNLINK(tempfile);
-#endif KERBEROS
+		(void) UNLINK(tempfile); 
+#endif
 	if (dfname[0])
 		do {
 			do
-				(void) UNLINK(dfname);
+				(void) UNLINK(dfname); 
 			while (dfname[2]-- >= 'A');
 			dfname[2] = 'z';
 		} while (dfname[0]-- >= 'd');
@@ -582,19 +605,20 @@ char file[];
 	}
 
 	/* Setup output buffer.... */
-	outbuf[0] = (char) UDPPROTOCOL;
+	outbuf[0] = QUOTA_QUERY_VERSION;
+	outbuf[1] = (char) UDPPROTOCOL;
 
 	/* Generate a sequence number... Since we fork the only realistic
 	   thing to use is the time... */
 	t = htonl(time((char *) 0));
-	bcopy(&t, outbuf + 1, 4);
-	strncpy(outbuf + 4, printer, 30);
+	memcpy(outbuf + 2, &t,  4);
+	strncpy(outbuf + 5, printer, 30);
 
 
 	if(QS == NULL) 
-	    outbuf[39] = '\0';
+	    outbuf[40] = '\0';
 	else 
-	    strncpy(outbuf + 39, QS, 20);
+	    strncpy(outbuf + 40, QS, 20);
 	/* If can't open the control file, then there is some error...
 	   We'll return allowed to print, but somewhere else it will be caught.
 	   Is this proper? XXX
@@ -613,11 +637,11 @@ char file[];
 	fclose(cfp);
 
        	act = htonl(act);
-	bcopy(&act, outbuf + 35, 4);
+	memcpy(outbuf + 36, &act,  4);
 
-	strncpy(outbuf + 59, kprincipal, ANAME_SZ);
-	strncpy(outbuf + 59 + ANAME_SZ, kinstance, INST_SZ);
-	strncpy(outbuf + 59 + ANAME_SZ + INST_SZ, krealm, REALM_SZ);
+	strncpy(outbuf + 60, kprincipal, ANAME_SZ);
+	strncpy(outbuf + 60 + ANAME_SZ, kinstance, INST_SZ);
+	strncpy(outbuf + 60 + ANAME_SZ + INST_SZ, krealm, REALM_SZ);
 
 	if((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 	    syslog(LOG_WARNING, "Could not create UDP socket\n");
@@ -625,7 +649,7 @@ char file[];
 	    return 0;
 	}
 
-	bzero((char *)&sin_c, sizeof(sin_c));
+	memset((char *)&sin_c, 0, sizeof(sin_c));
 	sin_c.sin_family = AF_INET;
 	servname = getservbyname(QUOTASERVENTNAME,"udp");
 	if(!servname) 
@@ -633,7 +657,7 @@ char file[];
 	else 
 	    sin_c.sin_port = servname->s_port;
 
-	bcopy(hp->h_addr_list[0], &sin_c.sin_addr,hp->h_length);
+	memcpy(&sin_c.sin_addr,hp->h_addr_list[0], hp->h_length);
 
 	if(connect(fd, &sin_c, sizeof(sin_c)) < 0) {
 	    syslog(LOG_WARNING, "Could not connect with UDP - quota server down?");
@@ -673,7 +697,7 @@ char file[];
 		continue;
 	    }
 
-	    if(bcmp(inbuf, outbuf, 35)) {
+	    if(memcmp(inbuf, outbuf, 36)) {
 		/* Wrong packet */
 #ifdef DEBUG
 		syslog(LOG_DEBUG, "Packet not for me on UDP");
@@ -682,7 +706,7 @@ char file[];
 	    }
 
 	    /* Packet good, send response */
-	    switch ((int) inbuf[35]) {
+	    switch ((int) inbuf[36]) {
 	    case ALLOWEDTOPRINT:
 #ifdef DEBUG
 		syslog(LOG_DEBUG, "Allowed to print!!");
@@ -704,7 +728,6 @@ char file[];
 		break;
 		/* Bogus, retry */
 	    }
-		    
 	}
 
 	if(retry == RETRY_COUNT) {
@@ -728,17 +751,17 @@ char *file;
 	person[0] = '\0';
 
 	if(!AC) {
-	    syslog("lpd: ACL file not set");
+	    syslog("ACL file not set in printcap");
 	    return NULL;
 	}
 	if(access(AC, R_OK)) {
-	    syslog(LOG_ERR, "lpd: Could not find ACL file %s", AC);
+	    syslog(LOG_ERR, "Could not find ACL file %s", AC);
 	    return NULL;
 	}
-	if ((cfp = fopen(file, "r")) == NULL)
-		return 0;
 
 	/* Read the control file for the person sending the job */
+	if ((cfp = fopen(file, "r")) == NULL)
+		return 0;
 	while (getline(cfp)) {
 		if (line[0] == 'P' && line[1]) {
 		    strcpy(person, line + 1);
@@ -760,22 +783,20 @@ char *file;
 
 #ifdef KERBEROS
 	/* Now to tack the realm on */
-	if(kerberos_cf && !index(person, '@')) {
+	if(kerberos_cf && !strchr(person, '@')) {
 	    strcat(person,"@");
 	    strcat(person, local_realm);
 	}
 
-#endif /* KERBEROS */
+#endif
 
 #ifdef DEBUG
 	syslog(LOG_DEBUG, "Checking on :%s: ", person);
 #endif
 
 	/* Now see if the person is in AC */
-
 	if ((cfp = fopen(AC, "r")) == NULL)
 		return 0;
-	   
 	while(getline(cfp)) {
 	    if(!strcasecmp(person, line)) {
 		fclose(cfp);
