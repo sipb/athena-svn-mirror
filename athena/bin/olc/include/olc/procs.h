@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.6 1990-11-15 09:11:43 lwvanels Exp $
+ *	$Id: procs.h,v 1.7 1991-01-03 15:27:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -99,8 +99,8 @@ int OWaitForMessage P((REQUEST *Request , char *file , char *sender ));
 int ODump P((REQUEST *Request , int type , char *file ));
 
 /* motd.c */
-ERRCODE OGetMOTD P((REQUEST *Request , int type , char *file ));
-ERRCODE OChangeMOTD P((REQUEST *Request , int type , char *file ));
+ERRCODE OGetFile P((REQUEST *Request , int type , char *file ));
+ERRCODE OChangeFile P((REQUEST *Request , int type , char *file ));
 
 /* olc.c */
 int main P((int argc , char **argv ));
