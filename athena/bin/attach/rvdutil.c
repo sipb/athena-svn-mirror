@@ -1,20 +1,18 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v $
- *	$Author: probe $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.2 1991-01-22 16:18:48 probe Exp $";
+static char rcsid_rvdutil_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvdutil.c,v 1.3 1991-07-09 15:10:09 lwvanels Exp $";
 #endif lint
 
 #include "attach.h"
 #ifdef RVD
 #include "rvdlib.h"
-#include <sys/file.h>
-#include <sys/socket.h>
 #include <setjmp.h>
 #include <signal.h>
 
