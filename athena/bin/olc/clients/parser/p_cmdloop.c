@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v $
- *	$Id: p_cmdloop.c,v 1.12 1990-11-14 12:30:44 lwvanels Exp $
+ *	$Id: p_cmdloop.c,v 1.13 1991-02-24 11:37:20 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.12 1990-11-14 12:30:44 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.13 1991-02-24 11:37:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,6 +34,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc_parser.h>
 #include <signal.h>
 #include <ctype.h>
+#ifdef m68k
+#include <time.h>
+#endif
 
 int subsystem = 0;		/* (initial value) */
 extern char **environ;
@@ -156,19 +159,19 @@ do_command(Command_Table, arguments)
      COMMAND Command_Table[];
      char *arguments[];
 {
-  int index;		    /* Index in the command table. */
+  int ind;		    /* Index in the command table. */
 	
 #ifdef CSH
   if(*arguments[0] == '\\') /* want to escape olc command */
     return(-1);
 #endif /* CSH */
 
-  index = command_index(Command_Table, arguments[0]);
+  ind = command_index(Command_Table, arguments[0]);
   
-  if (index == NOT_UNIQUE)
+  if (ind == NOT_UNIQUE)
     return(FAILURE);
   else 
-    if (index == ERROR) 
+    if (ind == ERROR) 
       {
 	printf("The command '%s' is not defined.  ", arguments[0]);
 	printf("Please use the 'help' request if\nyou need help.\n");
@@ -181,7 +184,7 @@ do_command(Command_Table, arguments)
       }
     else 
       {
-	(*(Command_Table[index].command_function))(arguments);
+	(*(Command_Table[ind].command_function))(arguments);
 	return(SUCCESS);
       }
 }
@@ -209,23 +212,23 @@ command_index(Command_Table, command_name)
      COMMAND Command_Table[];
      char *command_name;
 {
-  int index;		      /* Index in table. */
+  int ind;		      /* Index in table. */
   int matches[MAX_COMMANDS];  /* Matching commands. */
   int match_count;	      /* Number of matches. */
   int comm_length;	      /* Length of command. */
   
-  index = 0;
+  ind = 0;
   match_count = 0;
   if (command_name == (char *)NULL)
     return(ERROR);
 	
   comm_length = strlen(command_name);
-  while (Command_Table[index].command_name != (char *) NULL) 
+  while (Command_Table[ind].command_name != (char *) NULL) 
     {
-      if (!strncmp(command_name, Command_Table[index].command_name,
+      if (!strncmp(command_name, Command_Table[ind].command_name,
 		   comm_length))
-	matches[match_count++] = index;
-      index++;
+	matches[match_count++] = ind;
+      ind++;
     }
   
   if (match_count == 0)
@@ -236,8 +239,8 @@ command_index(Command_Table, command_name)
     else 
       {
 	printf("Could be one of:\n");
-	for (index = 0; index < match_count; index++)
-	  printf("\t%s\n", Command_Table[matches[index]].command_name);
+	for (ind = 0; ind < match_count; ind++)
+	  printf("\t%s\n", Command_Table[matches[ind]].command_name);
 	return(NOT_UNIQUE);
       }
 }
