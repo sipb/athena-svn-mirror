@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-12-08 22:07:17 danw Exp $
+# $Id: Makefile.in,v 1.2 2002-04-09 05:54:30 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -15,7 +15,7 @@ DEFS=@DEFS@
 CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
 LDFLAGS=@LDFLAGS@
-LIBS=-lcom_err -lgms @LIBS@
+LIBS=-lgms -lcom_err @LIBS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 
 all: messaged
