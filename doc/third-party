@@ -28,20 +28,23 @@ Distribution sites for software under third
 			some ITAR-related paperwork.
 	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
-	jot		From NetBSD (ftp.netbsd.org)
+	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
 	krb5		athena-dist.mit.edu:pub/kerberos
-	lam		From NetBSD (ftp.netbsd.org)
-	look		From NetBSD (ftp.netbsd.org)
+	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
+	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	mh		ftp.ics.uci.edu:pub/mh
 	tcsh		ftp.deshaw.com:pub/tcsh
 			(Old versions at ftp.uu.net:pub/shells/tcsh)
 	patch		prep.ai.mit.edu:pub/gnu
 	perl		prep.ai.mit.edu:pub/gnu
 	rcs		prep.ai.mit.edu:pub/gnu
-	rs		From NetBSD (ftp.netbsd.org)
+	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
 	sysinfo		usc.edu:pub/sysinfo
 	talk		From NetBSD (ftp.netbsd.org)
-	talkd		From NetBSD (ftp.netbsd.org)
+			usr.bin/talk goes in the talk subdirectory
+			libexec/talkd goes in the talkd subdirectory
+			protocols/talkd.h is from include/protocols,
+			 with some modifications for portability.
 	tex		Any CTAN mirror (e.g. ftp.duke.edu:/tex-archive,
 			ftp.cdrom.com:pub/tex/ctan).  We want:
 				- dvips from dviware/dvips
@@ -58,7 +61,7 @@ Distribution sites for software under third
 	top		eecs.nwu.edu:pub/top
 	transcript	From Adobe
 	wcl		ftp.x.org:contrib/devel_tools
-	whois		From NetBSD (ftp.netbsd.org)
+	whois		From NetBSD (ftp.netbsd.org), usr.bin/whois
 	x3270		ftp.x.org:contrib/applications/x3270
 
 Third-party build systems
@@ -97,6 +100,7 @@ rules to get the value of such variables):
 	SRVD		Install destination directory (e.g. /srvd)
 	SOURCE		Source tree (e.g. /source0
 	COMPILER	Appropriate compiler for this system
+	CONFIGDIR	Location of Athena Imake templates
 	XCONFIGDIR	Location of X-style Imake templates
 
 Following is a sample Makefile.athena file, used to build a package
