@@ -1,5 +1,5 @@
 /* 
- * $Id: krb.c,v 1.3 1990-07-16 14:16:26 qjb Exp $
+ * $Id: krb.c,v 1.4 1990-08-09 15:29:31 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: qjb $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.3 1990-07-16 14:16:26 qjb Exp $";
+static char *rcsid = "$Id: krb.c,v 1.4 1990-08-09 15:29:31 qjb Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -36,6 +36,92 @@ static char errbuf[BUFSIZ];
 typedef struct {
     jmp_buf env;
 } rkinitd_intkt_info;
+
+
+#if defined(_AIX) && defined(_IBMR2)
+
+#include <sys/id.h>
+
+/*
+ * The RIOS has bizzarre ideas about changing uids around.  They are
+ * such that the seteuid and setruid calls here fail.  For this reason
+ * we are replacing the seteuid and setruid calls.
+ * 
+ * The bizzarre ideas are as follows:
+ *
+ * The effective ID may be changed only to the current real or
+ * saved IDs.
+ *
+ * The saved uid may be set only if the real and effective
+ * uids are being set to the same value.
+ *
+ * The real uid may be set only if the effective
+ * uid is being set to the same value.
+ */
+
+#ifdef __STDC__
+static int setruid(uid_t ruid)
+#else
+static int setruid(ruid)
+  uid_t ruid;
+#endif /* __STDC__ */
+{
+    uid_t euid;
+
+    euid = geteuid();
+
+    if (setuidx(ID_REAL | ID_EFFECTIVE, ruid) == -1)
+	return (-1);
+    
+    return (setuidx(ID_EFFECTIVE, euid));
+}
+
+
+#ifdef __STDC__
+static int seteuid(uid_t euid)
+#else
+static int seteuid(euid)
+  uid_t euid;
+#endif /* __STDC__ */
+{
+    uid_t ruid;
+
+    ruid = getuid();
+
+    if (setuidx(ID_SAVED | ID_REAL | ID_EFFECTIVE, euid) == -1)
+	return (-1);
+    
+    return (setruid(ruid));
+}
+
+
+#ifdef __STDC__
+static int setreuid(uid_t ruid, uid_t euid)
+#else
+static int setreuid(ruid, euid)
+  uid_t ruid;
+  uid_t euid;
+#endif /* __STDC__ */
+{
+    if (seteuid(euid) == -1)
+	return (-1);
+
+    return (setruid(ruid));
+}
+
+
+#ifdef __STDC__
+static int setuid(uid_t uid)
+#else
+static int setuid(uid)
+  uid_t uid;
+#endif /* __STDC__ */
+{
+    return (setreuid(uid, uid));
+}
+
+#endif /* RIOS */
+
 
 #ifdef __STDC__
 static void this_phost(char *host, int hostlen)
