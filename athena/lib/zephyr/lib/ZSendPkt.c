@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.20 1988-05-13 15:17:53 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.21 1988-05-13 17:03:38 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.20 1988-05-13 15:17:53 rfrench Exp $";
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.21 1988-05-13 17:03:38 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -55,15 +55,15 @@ Code_t ZSendPacket(packet, len, waitforack)
     tv.tv_sec = 0;
     tv.tv_usec = 500000;
 
-    /* XXX */
     for (i=0;i<HM_TIMEOUT*2;i++) {
 	if (select(0, &t1, &t2, &t3, &tv) < 0)
 	    return (errno);
-	retval = ZCheckIfNotice(ackpack, sizeof(ackpack), &acknotice, 
-				NULL, ZCompareUIDPred, 
+	retval = ZCheckIfNotice(&acknotice, NULL, ZCompareUIDPred, 
 				(char *)&notice.z_uid);
-	if (retval == ZERR_NONE)
+	if (retval == ZERR_NONE) {
+	    ZFreeNotice(&acknotice);
 	    return (ZERR_NONE);
+	}
 	if (retval != ZERR_NONOTICE)
 	    return (retval);
     }
