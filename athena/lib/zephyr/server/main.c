@@ -13,22 +13,12 @@
 
 #include <zephyr/mit-copyright.h>
 
-#ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 3.10";
-#else
-char version[] = "Zephyr Server 3.10";
-#endif DEBUG
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.37 1989-05-15 14:29:42 jtkohl Exp $";
-char copyright[] = "Copyright (c) 1987,1988 Massachusetts Institute of Technology.\n";
-#ifdef CONCURRENT
-char concurrent[] = "Brain-dump concurrency enabled";
-#else
-char concurrent[] = "no brain-dump concurrency";
-#endif CONCURRENT
+static char rcsid_main_c[] = "$Id: main.c,v 1.38 1989-09-18 14:23:31 jtkohl Exp $";
 #endif SABER
 #endif lint
+
 /*
  * Server loop for Zephyr.
  */
