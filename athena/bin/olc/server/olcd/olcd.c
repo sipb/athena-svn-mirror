@@ -20,7 +20,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #include <olc/lang.h>
@@ -53,7 +53,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.18 1990-02-09 18:47:09 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.19 1990-02-20 05:48:41 raeburn Exp $";
 
 /* Global variables. */
 
@@ -423,8 +423,7 @@ restart:
 	int len = sizeof (from);  /* Length of address. */
 
 	s = accept(fd, (struct sockaddr *) &from, &len);
-	if (s < 0)
-	{
+	if (s < 0) {
 	    if (errno == EINTR)
 		continue;
 	    perror("accept");
@@ -443,6 +442,16 @@ restart:
 	    else
 		abort();
 	}
+#if 1
+	{
+	    struct sockaddr addr[20];
+	    int len = sizeof (addr);
+	    struct sockaddr_in *in = (struct sockaddr_in *) addr;
+	    if (getpeername (s, addr, &len) == 0)
+		log_debug (fmt ("connect from %s/%d\n",
+				inet_ntoa (in->sin_addr), in->sin_port));
+	}
+#endif
 	process_request(s, &from);
 	close(s);
 	if (got_signal)
