@@ -1,4 +1,4 @@
-# $Id: packages,v 1.14 1996-10-26 02:34:01 ghudson Exp $
+# $Id: packages,v 1.15 1996-12-16 08:31:01 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -12,8 +12,8 @@
 # first, even before the packs are set up.  They have .build files
 # which don't assume that much of anything is ready.
 third/gcc			sun4
-athena/bin/imake		sun4
 athena/bin/install
+athena/bin/imake		sun4
 
 packs/build/setup
 third/afsbin
