@@ -15,10 +15,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/xselect.c,v 1.1 1991-09-03 11:21:43 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/xselect.c,v 1.2 1991-12-17 11:21:35 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 
@@ -151,7 +151,7 @@ int xselGetOwnership(dpy,w,time)
 /* Get the selection.  Return !0 if success, 0 if fail */
 int xselProcessSelection(dpy,w,event,selected)
      Display *dpy;
-     Window w;
+     Window w;			/* ARGSUSED */
      XEvent *event;
      char *selected;
 {
@@ -182,10 +182,9 @@ void xselOwnershipLost(time)
    ownership_end = time;
 }
 
-/*ARGSUSED*/
 void xselGiveUpOwnership(dpy,w)
      Display *dpy;
-     Window w;
+     Window w;			/* ARGSUSED */
 {
    XSetSelectionOwner(dpy,XA_PRIMARY,None,ownership_start);
 
