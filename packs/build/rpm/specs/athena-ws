@@ -1,0 +1,43 @@
+Name: athena-ws
+Summary: Athena workstation management infrastructure
+Copyright: MIT
+Group: System Environment/Base
+
+%description
+Various maintenanance and configuration files required for any
+Athena workstation.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+#Extra stuff
+mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena}
+cp masks $RPM_BUILD_ROOT/etc/athena/masks $RPM_BUILD_ROOT/etc/athena
+cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
+cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
+cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
+cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
+chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
+
+# This file actually goes in the athena-afs package.
+rm $RPM_BUILD_ROOT/etc/athena/config_afs
+
+%post
+cp /etc/syslog.conf.athena /etc/syslog.conf
+chkconfig --add athena-ws
+
+# Inaugurate /etc/athena/version
+if [ ! -f /etc/athena/version ]; then
+	echo Athena Workstation '(linux)' Version Layered `date` >> \
+		 /etc/athena/version
+fi
