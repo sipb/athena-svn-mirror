@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendjob.c,v 1.3 1999-05-04 19:24:27 danw Exp $";
+"$Id: sendjob.c,v 1.3.2.1 1999-06-28 19:32:18 ghudson Exp $";
 
 
 #include "lp.h"
@@ -151,7 +151,9 @@ int Send_job( struct job *job,
 	if( real_host ) free( real_host );
 	setstatus( job, "connected to '%s'", RemoteHost_DYN );
 
-	if( safestrcasecmp(Auth_DYN,NONE) ){
+	if( (Is_server && Auth_forward_DYN && safestrcmp(Auth_client_id_DYN,NONE)
+		&& safestrcasecmp(Auth_forward_DYN,NONE))
+		|| (!Is_server && Auth_DYN && safestrcasecmp(Auth_DYN,NONE)) ){
 		/* we send the Kerberos 4 authentication,
 		 * then use normal transfer.  This is only for client to server
 		 * otherwise we are in trouble.

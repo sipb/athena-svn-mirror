@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements NFS lockers. */
 
-static const char rcsid[] = "$Id: nfs.c,v 1.3 1999-06-04 14:06:42 danw Exp $";
+static const char rcsid[] = "$Id: nfs.c,v 1.3.2.1 1999-06-28 19:31:48 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -189,14 +189,14 @@ static int nfs_parse(locker_context context, char *name, char *desc,
 	  char *mount_dir = context->nfs_mount_dir ?
 	    context->nfs_mount_dir : "";
 	  int root_hack = context->nfs_root_hack && !strcmp(dir, "/");
-	  int hostlen = strcspn(h->h_name, ".");
+	  int hostlen = strcspn(host, ".");
 
 	  at->mountpoint = malloc(strlen(mount_dir) + 1 + hostlen +
 			      strlen(dir) + (root_hack ? 5 : 1));
 	  if (at->mountpoint)
 	    {
 	      sprintf(at->mountpoint, "%s/%.*s%s%s", mount_dir, hostlen,
-		      h->h_name, dir, root_hack ? "root" : "");
+		      host, dir, root_hack ? "root" : "");
 	    }
 
 	  for (p = at->mountpoint + strlen(mount_dir) + 1; *p != '/'; p++)
