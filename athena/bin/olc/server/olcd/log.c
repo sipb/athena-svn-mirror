@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.33 1991-03-07 13:34:35 lwvanels Exp $
+ *	$Id: log.c,v 1.34 1991-03-28 14:56:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.33 1991-03-07 13:34:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.34 1991-03-28 14:56:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,8 +37,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>
 #include <string.h>		/* Defs. for string functions. */
 #include <com_err.h>
+#ifdef DISCUSS
 #include <lumberjack.h>
-
+#endif
 #include <olcd.h>
 
 extern int errno;
@@ -553,6 +554,8 @@ dispose_of_log(knuckle)
 
   question = knuckle->question;
 
+#ifdef DISCUSS
+  /* Spool log off to discuss.... */
   (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
   if (access(ctrlfile,F_OK) == 0) {
     /* Whups, processed that last done too fast... */
@@ -594,6 +597,12 @@ dispose_of_log(knuckle)
       log_error("dispose_of_log: cannot exec /usr/local/lumberjack.\n");
       _exit(0);
     }
+#else
+  /* Well, get rid of it- if you have some alternative to discuss, you */
+  /* should include a method for getting the log into it here. */
+  unlink(question->logfile);
+#endif
+
   return(SUCCESS);
 }
 
