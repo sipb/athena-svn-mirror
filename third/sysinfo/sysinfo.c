@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char *RCSid = "$Revision: 1.1.1.3 $";
+static char *RCSid = "$Revision: 1.1.1.3.6.1 $";
 #endif
 
 /*
@@ -22,7 +22,7 @@ static char *RCSid = "$Revision: 1.1.1.3 $";
 /*
  * Local declarations
  */
-int				Danger = FALSE;
+int				Danger = TRUE;
 int 				DoPrintUnknown = FALSE;
 int 				DoPrintVersion = FALSE;
 int 				DoPrintLicense = FALSE;
