@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.4 1990-11-14 17:37:50 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.5 1991-01-23 15:19:32 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v $ */
 /* $Author: epeisach $ */
 
@@ -63,15 +63,23 @@ User_str *user;
 	return (User_db *) NULL;
     }
 
-/* These better be the same or else. Let's ensure the first few for
-   bozo on other side.
-*/
+    /* These better be the same or else. Let's ensure the first few */
+    /* for bozo on other side. */
     db_ret.user.name = user->name;
     db_ret.user.instance = user->instance;
     db_ret.user.realm = user->realm;
-/* Real info */
+    /* Real info */
+
+#ifndef UNALIGNED
+    bcopy(((char *) &(((User_db *) contents.dptr)->first)), (char *)
+	  &db_ret.first, sizeof(Pointer));
+    bcopy(((char *) &(((User_db *) contents.dptr)->last)), (char *)
+	  &db_ret.last, sizeof(Pointer));
+#else
     db_ret.first = ((User_db *) contents.dptr)->first;
     db_ret.last = ((User_db *) contents.dptr)->last;
+#endif
+
     return(&db_ret);
 }
 
