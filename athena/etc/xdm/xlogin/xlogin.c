@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.11 1991-03-07 15:08:54 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.12 1991-03-27 15:44:49 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -655,6 +655,7 @@ char **p;
 Cardinal *n;
 {
     char **argv;
+    extern char *defaultpath;
     int i;
 
     unfocusACT(w, event, p, n);
@@ -678,6 +679,14 @@ Cardinal *n;
     setFontPath();
     XFlush(dpy);
     XtCloseDisplay(dpy);
+
+    setenv("PATH", defaultpath);
+    setenv("USER", "daemon");
+    setenv("SHELL", "/bin/sh");
+    setenv("DISPLAY", ":0");
+#if defined(_AIX) && defined(i386)
+    setenv("hosttype", "ps2");
+#endif
 
     setreuid(DAEMON, DAEMON);
     execv("/bin/sh", argv);
