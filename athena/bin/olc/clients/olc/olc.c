@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.35 1992-02-14 21:23:00 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olc.c,v 1.36 1994-08-21 18:16:58 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.35 1992-02-14 21:23:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.36 1994-08-21 18:16:58 cfields Exp $";
 #endif
 #endif
 
@@ -171,6 +171,9 @@ main(argc, argv)
   char buf[BUFSIZ];
 #endif
   ERRCODE status;
+#ifdef POSIX
+  struct sigaction act;
+#endif
 
 /*
  * All client specific stuff should be initialized here, if they wish
@@ -247,7 +250,14 @@ main(argc, argv)
       --argc;
   }
 
+#ifdef POSIX
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+  act.sa_handler= (void (*)()) SIG_IGN;
+  (void) sigaction(SIGPIPE, &act, NULL);
+#else
   signal(SIGPIPE, SIG_IGN);
+#endif
   if (argc)
     {
       OInitialize();
