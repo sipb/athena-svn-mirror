@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 1.1 1987-02-12 09:57:46 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.1 1987-09-01 16:22:04 steiner Exp $
  */
 
 #ifndef lint
-static char *rcsid_phost_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 1.1 1987-02-12 09:57:46 jtkohl Exp $";
+static char *rcsid_phost_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.1 1987-09-01 16:22:04 steiner Exp $";
 #endif lint
 
 #include <stdio.h>
