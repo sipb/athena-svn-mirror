@@ -15,7 +15,7 @@
 
 /* main() for the attach suite */
 
-static const char rcsid[] = "$Id: suite.c,v 1.4 1999-10-19 20:27:23 danw Exp $";
+static const char rcsid[] = "$Id: suite.c,v 1.5 1999-12-02 20:12:26 danw Exp $";
 
 #include <fcntl.h>
 #include <signal.h>
@@ -34,10 +34,10 @@ int main(int argc, char **argv)
   int fd;
   sigset_t mask;
 
-  /* First, a suid safety check. */
-  fd = open("/dev/null", O_RDONLY);
-  if (fd == STDIN_FILENO || fd == STDOUT_FILENO || fd == STDERR_FILENO)
-    exit(1);
+  /* Make sure std* are open, for suid safety. */
+  do
+    fd = open("/dev/null", O_RDONLY);
+  while (fd == STDIN_FILENO || fd == STDOUT_FILENO || fd == STDERR_FILENO);
   close(fd);
 
   /* Block ^Z to prevent holding locks on the attachtab. */
