@@ -1,15 +1,14 @@
 /*
  *  session_gate - Keeps session alive by continuing to run
  *
- *	$Id: session_gate.c,v 1.17 1999-08-13 22:27:18 danw Exp $
+ *	$Id: session_gate.c,v 1.18 1999-09-21 20:09:49 danw Exp $
  */
 
+#include <fcntl.h>
 #include <signal.h>
 #include <string.h>
 #include <stdio.h>
-#ifdef SOLARIS
-#include <sys/fcntl.h>
-#endif
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -34,8 +33,12 @@ int SGISession_debug = 0;
 #define SGISession_WMONLY 2
 #define SGISession_EVERYONE 3
 
-void flaglogout();
-void SGISession_EndSession(), SGISession_Debug();
+int SGISession_Initialize(void);
+void flaglogout(void);
+int SGISession_Wait(void);
+int SGISession_WhoCares(void);
+void SGISession_EndSession(void);
+void SGISession_Debug(char *message);
 #endif
 
 #define MINUTE 60
@@ -43,26 +46,22 @@ void SGISession_EndSession(), SGISession_Debug();
 
 static char filename[80];
 
-void main( );
-int itoa( );
-void cleanup( );
-void logout( );
-void clean_child( );
-time_t check_pid_file( );
-time_t create_pid_file( );
-time_t update_pid_file( );
-void write_pid_to_file( );
+int itoa(int x, char *buf);
+void cleanup(void);
+void logout(void);
+void clean_child(void);
+time_t check_pid_file(char *filename, pid_t pid, time_t mtime);
+time_t create_pid_file(char *filename, pid_t pid);
+time_t update_pid_file(char* filename, pid_t pid);
+void write_pid_to_file(pid_t pid, int fd);
 
-
-void main(argc, argv)
-int argc;
-char **argv;
+int main(int argc, char **argv)
 {
-    int pid;
-    int parentpid;
+    pid_t pid, parentpid;
     char buf[10];
     time_t mtime;
     int dologout = 0;
+    struct sigaction sa;
 #ifdef SGISession
     int logoutStarted = 0;
 
@@ -86,31 +85,25 @@ char **argv;
     parentpid = getppid();
     
     /*  Set up signal handlers for a clean exit  */
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
 
 #ifdef SGISession
-    	signal(SIGHUP, flaglogout);
-	signal(SIGINT, flaglogout);
-	signal(SIGQUIT, flaglogout);
-	signal(SIGTERM, flaglogout);
+    sa.sa_handler = flaglogout;
 #else
-    if (dologout) {
-	signal(SIGHUP, logout);
-	signal(SIGINT, logout);
-	signal(SIGQUIT, logout);
-	signal(SIGTERM, logout);
-    } else {
-	signal(SIGHUP, cleanup);
-	signal(SIGINT, cleanup);
-	signal(SIGQUIT, cleanup);
-	signal(SIGTERM, cleanup);
-    }
+    if (dologout)
+      sa.sa_handler = logout;
+    else
+      sa.sa_handler = cleanup;
 #endif
+    sigaction(SIGHUP, &sa, NULL);
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 
-#ifdef SYSV
-    sigset(SIGCHLD, clean_child);	/* Clean up zobmied children */
-#else
-    signal(SIGCHLD, clean_child);	/* Clean up zobmied children */
-#endif
+    /* Clean up zobmied children */
+    sa.sa_handler = clean_child;
+    sigaction(SIGCHLD, &sa, NULL);
 
     /*  Figure out the filename  */
 
@@ -204,7 +197,7 @@ calling endsession and doing Athena logout\n");
 }
 
 #ifdef SGISession
-int SGISession_Initialize()
+int SGISession_Initialize(void)
 {
   int screen;
 
@@ -223,12 +216,12 @@ int SGISession_Initialize()
   return 0;
 }
 
-void flaglogout( )
+void flaglogout(void)
 {
   logoutsignal++;
 }
 
-int SGISession_Wait()
+int SGISession_Wait(void)
 {
   static int initialized = 0;
   static fd_set read;
@@ -290,7 +283,7 @@ int SGISession_Wait()
     }
 }
 
-int SGISession_WhoCares()
+int SGISession_WhoCares(void)
 {
   Atom *properties;
   int i, numprops;
@@ -320,13 +313,12 @@ int SGISession_WhoCares()
   return SGISession_NOBODY;
 }
 
-void SGISession_EndSession()
+void SGISession_EndSession(void)
 {
   system("/usr/bin/X11/endsession -f");
 }
 
-void SGISession_Debug(message)
-     char *message;
+void SGISession_Debug(char *message)
 {
   if (SGISession_debug)
     fprintf(stderr, "session_gate debug: %s", message);
@@ -336,9 +328,7 @@ void SGISession_Debug(message)
 
 static int powers[] = {100000,10000,1000,100,10,1,0};
 
-int itoa(x, buf)
-int x;
-char *buf;
+int itoa(int x, char *buf)
 {
     int i;
     int pos=0;
@@ -355,20 +345,24 @@ char *buf;
 }
 
 
-void cleanup( )
+void cleanup(void)
 {
     unlink(filename);
     exit(0);
 }
 
-void logout( )
+void logout(void)
 {
     int f;
+    struct sigaction sa;
 
     /* Ignore Alarm in child since HUP probably arrived during
      * sleep() in main loop.
      */
-    signal(SIGALRM, SIG_IGN);
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGALRM, &sa, NULL);
     unlink(filename);
     f = open(".logout", O_RDONLY, 0);
     if (f >= 0) {
@@ -392,19 +386,12 @@ void logout( )
  * 	Clean up any zombied children that are awaiting this process's
  * 	acknowledgement of the child's death.
  */
-void clean_child( )
+void clean_child(void)
 {
-#ifdef POSIX
     waitpid((pid_t)-1, 0, WNOHANG);
-#else
-    wait3(0, WNOHANG, 0);
-#endif
 }
 
-time_t check_pid_file(filename, pid, mtime)
-char* filename;
-int pid;
-time_t mtime;
+time_t check_pid_file(char *filename, pid_t pid, time_t mtime)
 {
     struct stat st_buf;
 
@@ -417,9 +404,7 @@ time_t mtime;
 }
 
 
-time_t create_pid_file(filename, pid)
-char* filename;
-int pid;
+time_t create_pid_file(char *filename, pid_t pid)
 {
     int fd;
     struct stat st_buf;
@@ -436,9 +421,7 @@ int pid;
 }
 
 
-time_t update_pid_file(filename, pid)
-char* filename;
-int pid;
+time_t update_pid_file(char* filename, pid_t pid)
 {
     int fd;
     char buf[BUFSIZ];
@@ -482,9 +465,7 @@ int pid;
 }
 
 
-void write_pid_to_file(pid, fd)
-int pid;
-int fd;
+void write_pid_to_file(pid_t pid, int fd)
 {
     char buf[10];
 
