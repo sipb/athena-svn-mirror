@@ -28,15 +28,21 @@
 #include <gal/e-table/e-table-state.h>
 #include <gal/e-table/e-table-specification.h>
 #include <gal/e-table/e-table-extras.h>
+#include <libgnome/gnome-defs.h>
 
 BEGIN_GNOME_DECLS
 
-ETableHeader *e_table_state_to_header            (GtkWidget           *widget,
-						  ETableHeader        *full_header,
-						  ETableState         *state);
+ETableHeader *e_table_state_to_header                    (GtkWidget           *widget,
+							  ETableHeader        *full_header,
+							  ETableState         *state);
 
-ETableHeader *e_table_spec_to_full_header        (ETableSpecification *spec,
-						  ETableExtras        *ete);
+ETableHeader *e_table_spec_to_full_header                (ETableSpecification *spec,
+							  ETableExtras        *ete);
+
+ETableCol    *e_table_util_calculate_current_search_col  (ETableHeader        *header,
+							  ETableHeader        *full_header,
+							  ETableSortInfo      *sort_info,
+							  gboolean             always_search);
 
 END_GNOME_DECLS
 

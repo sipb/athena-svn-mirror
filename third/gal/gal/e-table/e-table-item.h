@@ -32,6 +32,7 @@
 #include <gal/e-table/e-table-tooltip.h>
 #include <gal/widgets/e-selection-model.h>
 #include <gal/widgets/e-printable.h>
+#include <libgnome/gnome-defs.h>
 
 BEGIN_GNOME_DECLS
 
@@ -113,6 +114,7 @@ typedef struct {
 	guint            gtk_grabbed : 1;
 
 	guint            queue_show_cursor : 1;
+	guint            grab_cancelled : 1;
 
 	int              frozen_count;
 
@@ -153,6 +155,9 @@ typedef struct {
 	int              editing_col, editing_row;
 	void            *edit_ctx;
 
+	int              save_col, save_row;
+	void            *save_state;
+
 	int grabbed_col, grabbed_row;
 	int grabbed_count;
 
@@ -173,6 +178,7 @@ typedef struct {
 	gint        (*click)            (ETableItem *eti, int row, int col, GdkEvent *event);
 	gint        (*key_press)        (ETableItem *eti, int row, int col, GdkEvent *event);
 	gint        (*start_drag)       (ETableItem *eti, int row, int col, GdkEvent *event);
+	void        (*style_set)        (ETableItem *eti, GtkStyle *previous_style);
 } ETableItemClass;
 GtkType     e_table_item_get_type            (void);
 

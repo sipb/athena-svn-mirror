@@ -1,6 +1,336 @@
-2002-04-18  Christopher James Lahey  <clahey@ximian.com>
+2002-12-05  Jeffrey Stedfast  <fejj@ximian.com>
 
-	* .cvsignore: Added iconv-detect.h.
+	* configure.in: Bumped gal version to 0.21.99.99.
+
+	* gal/util/e-util.c (g_str_compare): Revert back to using just
+	strcmp - this fixes bug #33933 but reopens bug #26355.
+	(g_collate_compare): New function meant to address the sorting
+	required by bug #26335.
+
+2002-11-30  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gal/widgets/e-canvas-background.c (ecb_destroy): Don't leak
+	private structure.
+
+2002-10-29  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : bump version to 0.21.0.99
+
+2002-10-25  Dan Winship  <danw@ximian.com>
+
+	* gal/widgets/e-file-selection.c (e_file_selection_get_filenames):
+	Don't prepend the cwd to absolute paths.
+
+2002-10-24  Larry Ewing  <lewing@ximian.com>
+
+	* gal/widgets/e-font.c (e_font_normalize_punctuation): helper
+	fuction to do a (custom) normalization of unicode chars.
+	(e_font_to_native) use e_font_normalize_punctuation to convert
+	punctuation that is not in the current charset.
+
+2002-10-22  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in: update to gal 0.20.99.99
+
+2002-10-20  Chris Toshok  <toshok@ximian.com>
+
+	[ Fixes evolution bug #26355 ]
+	* gal/util/e-util.c (g_str_compare): use g_utf8_collate here
+	instead of strcmp.
+
+	* gal/e-text/Makefile.am (e_completion_test_LDADD): reorder so
+	that util comes before unicode.
+
+2002-10-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/widgets/e-unicode.c (e_utf8_from_gtk_string_sized): Don't
+	include the byte reserved for the nul in the outleft size.
+	(e_utf8_from_iconv_string_sized): Same.
+	(e_utf8_to_iconv_string_sized): Here too, but also make sure we
+	pad the end of the resulting string with enough nul bytes (4) so
+	that even multi-byte charsets are terminated correctly.
+	(e_utf8_to_gtk_string_sized): Again here.
+
+2002-10-15  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : remove dup Makefile from AC_OUTPUT
+
+2002-10-07  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : bump to version 0.20.1
+
+2002-09-26  Radek Doulik  <rodo@ximian.com>
+
+	* gal/util/e-iconv.c (C_g_strdown): new helper function, g_strdown
+	with forced C locale
+	(e_iconv_init): use C_g_strdown
+	(e_iconv_charset_name): ditto
+
+2002-09-25  Larry Ewing  <lewing@ximian.com>
+
+	* gal/widgets/e-unicode.c: add the gtk2 keypad entries (resync
+	with gdk).
+
+	* gal/widgets/e-font.c (e_font_to_native): rework again to remove
+	the need for converting nbsp ahead of time.
+
+2002-09-23  Chris Toshok  <toshok@ximian.com>
+
+	* gal/widgets/e-option-menu.c (item_destroyed_cb): new function,
+	free the cb_struct.
+	(e_option_menu_set_strings_from_array): hook up the destroy signal
+	to item_destroyed_cb.
+
+2002-09-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/widgets/e-font.c (set_nbsp_zero_width_flag): Updated to the
+	slightly changed e_font_to_native() API.
+	(e_font_draw_utf8_text): Same.
+	(e_font_utf8_text_width): Here too.
+	(e_font_to_native): Rewritten from scratch.
+
+2002-09-19  Dan Winship  <danw@ximian.com>
+
+	* gal/util/e-iconv.c: Make locale_charset a char *, not
+	const char *. Kills a warning in the !HAVE_CODESET case.
+	(e_iconv_init): No longer need to cast locale_charset to (char *)
+	while mangling it in the HAVE_CODESET case.
+
+	* gal/util/e-xml-utils.c: #include <stdlib.h> for free()
+
+	* gal/widgets/e-categories-master-list-array.c: Likewise
+
+2002-09-19  Larry Ewing  <lewing@ximian.com>
+
+	* gal/widgets/e-font.c (e_font_draw_utf8_text): set the pointer
+	not the length to allocation.
+
+2002-09-18  Larry Ewing  <lewing@ximian.com>
+
+	* gal/widgets/e-font.c (e_font_draw_utf8_text): limit alloca
+	length to a E_ALLOCA_MAX.
+	(e_font_utf8_text_width): limit alloca length to E_ALLOCA_MAX.
+
+2002-09-17  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/util/e-iconv.c : apply patch for 27447 from Matt Avery for
+	a bug in the solaris iconv implementation.
+
+2002-09-10  JP Rosevear  <jpr@ximian.com>
+
+	* gal/e-text/e-text.c (line_splitter): take a clip_height and use
+	it to set the maximum number of lines if necessary
+	(split_into_lines): pass clip_height arg
+
+	Fixes #13901
+	
+2002-08-29  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/widgets/e-selection-model-array.c : kill a return that caused
+	selection ranges to not emit selection_changed if the end index only
+	changed by 1.
+
+2002-08-26  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* gal/e-text/Makefile.am: removed \ before new line to make
+	automake 1.6 happy
+
+2002-08-14  Chema Celorio  <chema@ximian.com>
+
+	* configure.in: Fix the check for strftime, scan for "l" and "k"
+	not "%l" and "%k"
+
+2002-08-07  Peter Williams  <peterw@ximian.com>
+
+	* configure.in (CFLAGS): Add -D_REENTRANT cause we need errno
+	to behave reliably.
+
+2002-08-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/util/e-xml-utils.c (e_xml_save_file): Do slightly better
+	error handling for close() and loop until it closes successfully.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/util/e-xml-utils.c (e_xml_save_file): Changed to handle
+	saving to a temp file first, this allows us to remove a lot of
+	duplicate code from everywhere.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Bumped version to 0.19.99.18
+
+	* gal/util/e-xml-utils.c (e_xml_save_file): New convenience
+	function to save an xmlDocPtr. Replaces xmlSaveFile because
+	xmlSaveFile isn't dependable.
+
+2002-06-21  Radek Doulik  <rodo@ximian.com>
+
+	* gal/widgets/e-font.c (e_font_from_gdk_font_gtkhtml): new
+	simplified version of e_font_from_gdk_font for GtkHTML library
+
+2002-06-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.19.99.17.
+
+	* gal/widgets/e-reflow.c, gal/widgets/e-reflow.h
+	(e_reflow_selection_event_real): Made this function handle
+	GDK_BUTTON_RELEASE.  Added a maybe_in_drag variable that the API
+	user can set to 0 to indicate that a drag has occurred.
+
+2002-06-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-text.c: Added debugging printfs.
+	(e_text_request_paste): Fixed the order of setting
+	last_type_request before calling gtk_selection_convert due to a
+	reentrancy bug.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.19.99.16.
+
+2002-06-03  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-text.c, gal/e-text/e-text.h (e_text_style_set):
+	Reflow and redraw when the style gets set.
+
+2002-05-10  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-canvas.c (grab_cancelled_check): If grabbed_item
+	is NULL, cancel the timeout.
+
+2002-05-09  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-text.c: Switch from gnome_canvas_item_grab to
+	e_canvas_item_grab.
+
+	* gal/widgets/e-canvas.c, gal/widgets/e-canvas.h
+	(e_canvas_item_grab, e_canvas_item_ungrab): Added these functions.
+
+2002-05-06  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/Makefile.am (imagesdir): Change this directory to
+	include the $(VERSION).
+
+	* gal/widgets/e-reflow.c (set_empty): Don't switch from utf8 to
+	widget encoding, since EText takes utf8.
+
+2002-05-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-text.c (e_text_draw): Make the style here match the
+	proper widget style to emulate a label or an entry.
+
+2002-05-02  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-popup-menu.c, gal/widgets/e-popup-menu.h
+	(e_popup_menu_create_with_domain): Added this function that lets
+	you specify the translation domain.
+
+2002-05-01  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/util/e-util.c, gal/util/e-util.h (e_filename_make_safe):
+	Documented this function as not necessarily stripping shell
+	metacharacters.  Fixes Ximian bug #21223.
+
+2002-05-01  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-completion-view.c (simple_spec),
+	gal/widgets/e-categories-master-list-dialog.c (SPEC),
+	gal/widgets/e-categories.c (INITIAL_SPEC): Set the gettext-domain
+	here.
+
+	* gal/util/e-i18n.h (E_I18N_DOMAIN): #define as makes sense in the
+	different cases.
+
+2002-04-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Added a sed job on po/Makefile.in.in here.
+
+	* gal/util/e-i18n.h: Made this use
+	GNOME_EXPLICIT_TRANSLATION_DOMAIN if it's set.
+
+2002-04-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/util/e-util.c (e_format_number_float): Changed this to
+	handle large numbers.
+	(e_create_directory): Changed this to be a wrapper around
+	e_mkdir_hier.
+
+2002-04-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Changed LDFLAGS to LIBS for tests here.  Bumped
+	the version number to 0.19.99.15.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/util/e-util.h (E_ASCII_DTOSTR_BUF_SIZE): Use DBL_DIG to
+	compute how much buffer space to use here.
+
+	* gal/util/e-xml-utils.c (e_xml_set_double_prop_by_name): Use
+	DBL_DIG here to decide how many digits to print.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-unicode.c: Include alloca.h here if it's
+	necessary.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-canvas-background.c (ecb_init): Initialize these
+	struct members individually instead of as a struct.
+
+2002-04-26  Christopher James Lahey  <clahey@ximian.com>
+
+	* acconfig.h, configure.in: Handle GAL_HAVE_ALLOCA_H properly in
+	autoconf > 2.5.0 as well as in low autoconfs.
+
+2002-04-25  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-paned/e-paned.c, gal/e-text/e-entry.c,
+	gal/util/e-bit-array.c, gal/util/e-sorter-array.c,
+	gal/util/e-sorter.c, gal/util/e-text-event-processor.c,
+	gal/widgets/color-group.c, gal/widgets/color-palette.c,
+	gal/widgets/e-canvas-vbox.c, gal/widgets/e-canvas.c,
+	gal/widgets/e-canvas.h,
+	gal/widgets/e-categories-master-list-array.c,
+	gal/widgets/e-categories-master-list-combo.c,
+	gal/widgets/e-categories-master-list-dialog-model.c,
+	gal/widgets/e-categories-master-list-dialog.c,
+	gal/widgets/e-categories.c, gal/widgets/e-reflow-model.c,
+	gal/widgets/e-reflow.c, gal/widgets/e-selection-model-array.c,
+	gal/widgets/e-selection-model-simple.c,
+	gal/widgets/e-selection-model.c, gal/widgets/e-selection-model.h,
+	gal/widgets/gtk-combo-box.c, gal/widgets/gtk-combo-stack.c,
+	gal/widgets/widget-color-combo.c,
+	gal/widgets/widget-pixmap-combo.c: Ansification patch from danw.
+
+2002-04-24  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-categories-master-list-option-menu.c
+	(e_categories_master_list_option_menu_get_category): Don't return
+	NULL here or segfault if ecmlom->priv->categories is NULL.
+
+	* gal/widgets/e-option-menu.c (e_option_menu_init): The initial
+	value of an option menu is the first element, not no element
+	selected.  Changed the default value here from -1 to 0.
+
+2002-04-15  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=67220
+	http://bugzilla.gnome.org/show_bug.cgi?id=75227
+	* gal/widgets/gtk-combo-stack.c (list_select_cb) : remove silly code.
+	(gtk_combo_stack_push_item) : ditto.
+	(cb_button_release_event) : fix signature, and always end the grab.
+
+2002-04-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.19.99.14.
+
+	* gal/widgets/e-popup-menu.c, gal/widgets/e-popup-menu.h
+	(e_popup_menu_copy_1, e_popup_menu_free_1, e_popup_menu_copy,
+	e_popup_menu_free): Added these functions
+
+2002-04-18  Christopher James Lahey  <clahey@ximian.com>
 
 	* Makefile.am (EXTRA_DIST): Removed iconv-detect.h.
 
@@ -10,82 +340,85 @@
 	* gal/util/Makefile.am: Added "-I$(top_builddir)" to INCLUDES
 	here.
 
-	* iconv-detect.h: Removed this autogenerated file from cvs.
+2002-04-18  JP Rosevear  <jpr@ximian.com>
 
-2002-04-18  Christopher James Lahey  <clahey@ximian.com>
+	* gal/widgets/e-popup-menu.c (e_popup_menu_create): handle toggle
+	and radio items
+	(make_item): the item is now passed in from above and not returned
 
-	* configure.in: Bumped version number to 0.9.2.
+2002-04-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Bump version number to 0.19.99.13.
+
+2002-04-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/Makefile.am: Added
+	gal/widgets/e-categories-master-list-option-menu.c and
+	gal/widgets/e-categories-master-list-option-menu.h.
+
+	* gal/widgets/e-categories-master-list-option-menu.c,
+	gal/widgets/e-categories-master-list-option-menu.h: New class to
+	pick one category from the master list as an option menu instead
+	of as a combo.
+
+	* configure.in: Bumped version number to 0.19.99.12.
+
+2002-04-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.19.99.11.
+	
+	* gal/widgets/e-popup-menu.c, gal/widgets/e-popup-menu.h: Changed
+	this to be API compatible with gal 0.19.  Added a bunch of pound
+	defines and added API for toggle and radio menu items.
+
+	* gal/widgets/e-categories.c: Updated this to match the new
+	EPopupMenu.
 
 2002-04-17  Christopher James Lahey  <clahey@ximian.com>
 
 	* gal/widgets/e-canvas.c (emit_event): If there is a grabbed_item,
 	send all events to it.
 
-2002-04-18  Ettore Perazzoli  <ettore@ximian.com>
-
-	* Makefile.am (EXTRA_DIST): Add iconv-detect.c and iconv-detect.h.
-
-	* iconv-detect.c: New.
-	* iconv-detect.h: New.
-
-2002-04-18  Ettore Perazzoli  <ettore@ximian.com>
-
-	* configure.in: Add imlib cflags/libs to EXTRA_GNOME_CFLAGS and
-	EXTRA_GNOME_LIBS to work around a bug in the gnome-libs
-	cflags/libs.
+2002-04-10  Ettore Perazzoli  <ettore@ximian.com>
 
 	* gal/util/e-xml-utils.c: #include <parser.h> and <xmlmemory.h>
-	instead of <gnome-xml/parser.h> and <gnome-xml/xmlmemory.h>.
+	instead of <gnome-xml/parser.h> and <gnome-xml/xmlmemory.h>.  In
+	fact, the latter is incompatible with what `gnome-config --cflags
+	xml' is assuming, and breaks in the case where gnome-xml is not
+	installed in /usr/local.
 
-	* gal/util/e-xml-utils.h: Don't #include libxml headers from
-	gnome-xml [i.e. #include <tree.h>, not <gnome-xml/tree.h>.
-	* gal/util/e-unicode.h: Likewise.
-	* gal/e-table/e-table-click-to-add.h: Likewise.
-	* gal/e-table/e-table-column-specification.c: Likewise.
-	* gal/e-table/e-table-column-specification.h: Likewise.
-	* gal/e-table/e-table-field-chooser-item.h: Likewise.
-	* gal/e-table/e-table-header-item.h: Likewise.
-	* gal/e-table/e-table-memory.c: Likewise.
-	* gal/e-table/e-table-memory.c: Likewise.
-	* gal/e-table/e-table-scrolled.c: Likewise.
-	* gal/e-table/e-table-scrolled.c: Likewise.
-	* gal/e-table/e-table-sort-info.h: Likewise.
-	* gal/e-table/e-table-specification.c: Likewise.
-	* gal/e-table/e-table-specification.c: Likewise.
-	* gal/e-table/e-table-state.c: Likewise.
-	* gal/e-table/e-table-state.c: Likewise.
-	* gal/e-table/e-table-state.h: Likewise.
-	* gal/e-table/e-table.h: Likewise.
-	* gal/e-table/e-tree-memory.c: Likewise.
-	* gal/e-table/e-tree-memory.c: Likewise.
-	* gal/e-table/e-tree-model.c: Likewise.
-	* gal/e-table/e-tree-model.c: Likewise.
-	* gal/e-table/e-tree-scrolled.c: Likewise.
-	* gal/e-table/e-tree-scrolled.c: Likewise.
-	* gal/e-table/e-tree-sorted.c: Likewise.
-	* gal/e-table/e-tree-sorted.c: Likewise.
-	* gal/e-table/e-tree-table-adapter.c: Likewise.
-	* gal/e-table/e-tree-table-adapter.c: Likewise.
-	* gal/e-table/e-tree.h: Likewise.
-	* gal/e-text/e-entry.c: Likewise.
-	* gal/e-text/e-entry.h: Likewise.
-	* gal/menus/gal-define-views-model.c: Likewise.
-	* gal/menus/gal-define-views-model.c: Likewise.
-	* gal/menus/gal-define-views-model.c: Likewise.
-	* gal/menus/gal-view-collection.c: Likewise.
-	* gal/menus/gal-view.h: Likewise.
-	* gal/widgets/e-categories-master-list-array.c: Likewise.
-	* gal/widgets/e-categories-master-list-array.c: Likewise.
-	* gal/widgets/e-categories-master-list-array.c: Likewise.
-	* gal/widgets/e-unicode.c: Likewise.
+2002-04-04  JP Rosevear  <jpr@ximian.com>
 
-	* gal/unicode/Makefile.am: Add $(EXTRA_GNOME_CFLAGS).
+	* configure.in: one piece should not have gone it
 
-	* configure.in: Use ICONV_CFLAGS and ICONV_LIBS for compiling the
-	iconv-detect test so we make sure we are using the same version of
-	iconv that the actual library is going to use.
+2002-04-04  JP Rosevear  <jpr@ximian.com>
+	
+	* Makefile.am: dist the iconv-detect files
 
-2002-04-16  Jeffrey Stedfast  <fejj@ximian.com>
+2002-04-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	* gal/e-text/e-entry.c (e_entry_show_popup): Don't show the popup
+	if the entry->item doesn't have focus.
+
+2002-04-02  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in: restore the CFLAGS/LDFLAGS after we run
+	iconv-detect since we need -liconv.  Fixes the build on freebsd.
+
+2002-03-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-file-selection.c (selection_changed): Set text
+	based on the base GtkFileSelection entry if the selection is
+	NULL.  Compute the filename for the no selection case using the
+	visible entry.
+
+2002-04-01  Dan Winship  <danw@ximian.com>
+
+	* gal/widgets/e-file-selection.c (e_file_selection_get_filenames):
+	strdup the result of gtk_file_selection_get_filename. Free
+	filesel_path when done.
+
+2002-03-29  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* configure.in: Use iconv-detect.c to generate a iconv-detect.h
 	file containing information about the preferred charset formats to
@@ -97,19 +430,285 @@
 	* gal/util/e-iconv.c (e_iconv_charset_name): Update to use macros
 	defined in iconv-detect which is created at configure time.
 
-2002-04-09  Ettore Perazzoli  <ettore@ximian.com>
+2002-03-28  Christopher James Lahey  <clahey@ximian.com>
 
-	* gal/e-text/e-entry.c (e_entry_show_popup): Don't show the popup
-	if the entry->canvas doesn't have focus.
+	* configure.in: Bumped version number to 0.19.99.10.
 
-2002-03-20  Christopher James Lahey  <clahey@ximian.com>
+2002-03-28  Christopher James Lahey  <clahey@ximian.com>
 
-	* configure.in (GAL_REVISION): Bumped GAL_REVISION and bumped
-	version number to 0.19.1.1.
+	* gal/widgets/Makefile.am (libwidgets_la_SOURCES): Added
+	e-file-selection.c
+	(libwidgetsinclude_HEADERS): Added e-file-selection.h
 
-2002-03-18  Christopher James Lahey  <clahey@ximian.com>
+	* gal/widgets/e-file-selection.c, gal/widgets/e-file-selection.h:
+	New class to make multiple selection possible in Gtk file
+	selection.
 
-	* configure.in: Bumped version number to 0.19.1.
+2002-03-26  Chris Toshok  <toshok@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): oops, add e-text.
+
+	* gal/e-text/Makefile.am: remove comment about adding .lo's to the
+	parent directory Makefile.am.
+
+2002-03-26  Chris Toshok  <toshok@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): just list the .la's instead
+	of all the .lo's, and let libtool worry about how to link things
+	together.  makes the .so link line *much* smaller.
+
+	* gal/util/Makefile.am: remove comment about adding .lo's to the
+	parent directory Makefile.am.
+
+	* gal/unicode/Makefile.am: same.
+
+	* gal/widgets/Makefile.am: same.
+
+	* gal/e-paned/Makefile.am: same.
+
+2002-03-25  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): Added
+	widgets/e-option-menu.lo.
+
+	* gal/util/e-util.c, gal/util/e-util.h (e_strdupv): Copied this
+	function from glib2.
+	(GET_STRING_ARRAY_FROM_ELLIPSIS,
+	GET_DUPLICATED_STRING_ARRAY_FROM_ELLIPSIS): Added these macros to
+	automate getting a NULL terminated array off of the stack.
+
+	* gal/widgets/Makefile.am (libwidgets_la_SOURCES): Added
+	e-option-menu.c.
+	(libwidgetsinclude_HEADERS): Added e-option-menu.h.
+
+	* gal/widgets/e-canvas.c (e_canvas_class_init): Reformatted this
+	function.
+
+	* gal/widgets/e-gui-utils.c, gal/widgets/e-gui-utils.h
+	(e_glade_xml_connect_widget, e_glade_xml_set_sensitive): Two new
+	functions to automate pulling a widget from a GladeXML and either
+	connecting a signal or setting the sensitivity.
+
+	* gal/widgets/e-option-menu.c, gal/widgets/e-option-menu.h: New
+	class to simplify the interface to GtkOptionMenu.
+
+2002-03-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/gal/widgets/e-popup-menu.c: Allow for per-item closures and
+	also instead of taking a const char *pixname, take a GtkWidget
+	*pixmap instead.
+
+	* gal/widgets/e-categories.c: Update to sync up with changes made
+	to the EPopupMenu Api.
+
+2002-03-15  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-canvas.c (e_canvas_style_set): Check for a
+	style_set signal on all the contained GnomeCanvasItems.
+
+2002-03-13  Dan Winship  <danw@ximian.com>
+
+	* configure.in (LDFLAGS): Remove a bit that toshok didn't mean to
+	commit.
+
+2002-03-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/util/e-util.c, gal/util/e-util.h
+	(e_marshal_BOOL__STRING_INT): Replaced e_marshal_BOOL__STRING with
+	this since the function it was used for has been modified.
+
+2002-03-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number here to 0.19.99.9.
+
+2002-03-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): Added e-table-search.lo.
+
+	* gal/util/e-util.c, gal/util/e-util.h (e_marshal_BOOL__STRING):
+	Added this marshal function.
+
+2002-03-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number here to 0.19.99.8.
+
+2002-03-11  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): Added e-cell-vbox.lo.
+
+2002-03-09  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in: Bumped version number to 0.19.99.7
+
+	* gal/widgets/e-unicode.c (e_utf8_strstrcasedecomp): we want to
+	return o from here on success, not p, since p is incremented one
+	unicode character past the point where the substring begins.
+	(e_utf8_strstrcase): same.
+
+2002-02-28  Jon Trowbridge  <trow@ximian.com>
+
+	* gal/e-text/e-completion-view.c
+	(e_completion_view_key_press_handler): If tab is hit and the
+	cursor is still in the entry, move down into the entry otherwise
+	unbrowse.
+
+2002-02-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): Added
+	e-table-memory-store.lo.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-categories.c (table_click): Toggle whether this
+	row is selected when it's clicked on.
+	(e_categories_construct): Set the title of this dialog.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.19.99.6.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-reflow.c, gal/widgets/e-reflow.h
+	(column_width_changed): New signal for when the width of the
+	column changes.
+
+	* gal/util/e-util.c, gal/util/e-util.h (e_marshal_NONE__DOUBLE):
+	New marshaller.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.19.99.5.
+
+	* gal/Makefile.am (libgal_la_LIBADD): Added
+	menus/gal-view-instance-save-as-dialog.lo.
+
+	* gal/e-text/e-text.c (next_word): Contains refactored code from
+	the E_TEP_FORWARD_WORD case of e_text_command.
+	(e_text_command): Implemented E_TEP_CAPS.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/util/e-text-event-processor-emacs-like.c: Emit E_TEP_CAPS
+	for the right values for M-l, M-c, and M-u.
+
+	* gal/util/e-text-event-processor-types.h
+	(ETextEventProcessorCommandAction): New action E_TEP_CAPS.
+	(ETextEventProcessorCaps): New enum giving values for E_TEP_CAPS
+	action.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/Makefile.am (libgal_la_LIBADD): Added gal-view-instance.lo.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.19.99.4 for
+	e-tree.h changes.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.19.99.3 for
+	e-tree.h changes.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the version number to 0.19.99.2 for
+	e-tree-model.h changes.
+
+2002-01-30  Chris Toshok  <toshok@ximian.com>
+
+	* gal/e-text/Makefile.am (e_completion_test_LDADD): fix link
+	ordering so tests build on freebsd.
+
+	* gal/widgets/Makefile.am (test_e_font_LDADD): same.
+	(test_font_loading_LDADD): same.
+
+2002-01-28  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2002-01-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/util/e-iconv.c: AIX and IRIX are like Sun systems - they use
+	ISO8859-1 rather than names like ISO-8859-1.
+
+2002-01-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Up version number to 0.19.99.1.
+
+2002-01-24  Radek Doulik  <rodo@ximian.com>
+
+	* gal/widgets/e-scroll-frame.c: added void
+	e_scroll_frame_get_policy, e_scroll_frame_get_vscrollbar_visible,
+	e_scroll_frame_get_hscrollbar_visible
+
+2002-01-23  Hasbullah Bin Pit <sebol@ikhlas.com>
+
+	* configure.in: Added ms at ALL_LINGUAS.
+	* po/ms.po: Added Malay Translation.
+
+2002-01-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* gal/util/e-util.c (e_marshal_NONE__POINTER_POINTER_POINTER_POINTER): New.
+
+2002-01-20  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-text.c (e_text_text_model_changed): Request a
+	reflow and an update when the text model changes.  Fixes Ximian
+	bug #16459.
+	(e_text_set_arg): (ARG_TEXT) Don't set the number of lines to one
+	here.
+
+2002-01-18  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/widgets/e-categories-master-list-dialog.c (dialog_clicked):
+	Handle the remove button here.
+
+	* gal/widgets/e-categories-master-list-dialog.glade: Added the
+	remove button here.
+
+2002-01-16  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-entry.h, gal/e-text/e-table-text-model.h,
+	gal/e-text/e-text-model-uri.h, gal/e-text/e-text.h,
+	gal/util/e-i18n.h, gal/widgets/e-canvas-utils.h,
+	gal/widgets/e-gui-utils.h, gal/widgets/e-printable.h,
+	gal/widgets/gtk-combo-stack.h: Added #include
+	<libgnome/gnome-defs.h>.
+
+2002-01-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in (iconv): if iconv_open() returns -1, abort. Don't
+	abort if (!cd) because that could be valid.
+
+2002-01-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal/e-text/e-text.c (line_splitter): Handle the case of a 0
+	length string properly here.
+
+2002-01-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* gal/widgets/e-font.c: Conditionally include alloca.h
+
+2002-01-09  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.19.99.0.  Bumped
+	GAL_CURRENT.  Reset GAL_REVISION.
+
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+        * configure.in: Added "eu" to ALL_LINGUAS
+
+2001-12-28  Simos Xenitellis  <simos@hellug.gr>
+
+	* configure.in: Added "el" (Greek) to ALL_LINGUAS.
+
+2001-12-27  Jon Trowbridge  <trow@ximian.com>
+
+	* gal/e-text/e-text.c (split_into_lines): Reworked to fix bugs
+	related to breaking text on newlines.  Some fairly substantial
+	code duplication was removed in the process.
 
 2001-12-18  Christopher James Lahey  <clahey@helixcode.com>
 
@@ -122,7 +721,7 @@
 
 2001-12-17  Christopher James Lahey  <clahey@ximian.com>
 
-From a patch by Dan Nguyen <dnn@austin.ibm.com>
+        From a patch by Dan Nguyen <dnn@austin.ibm.com>
 
 	* configure.in: Added configure check for %l and %k in strftime.
 
@@ -165,12 +764,17 @@ From a patch by Dan Nguyen <dnn@austin.ibm.com>
 	handling in the unrealize function instead of the destroy
 	function.
 
+2001-12-11  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* gal/e-table/e-table-header-item.c (ethi_unrealize): unregister
+	ETableHeaderItem widget as a drag target when unrealizing it.
+
 2001-12-10  Jon Trowbridge  <trow@ximian.com>
 
-	* gal/e-text/e-text.c (text_width_with_objects): Don't crash if
-	the text string is NULL.
-	(text_draw_with_objects): Don't crash if the text string is NULL.
-	(Fixes #16359)
+        * gal/e-text/e-text.c (text_width_with_objects): Don't crash if
+        the text string is NULL.
+        (text_draw_with_objects): Don't crash if the text string is NULL.
+        (Fixes #16359)
 
 2001-12-04  Christopher James Lahey  <clahey@ximian.com>
 

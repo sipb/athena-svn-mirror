@@ -8,9 +8,6 @@ INCLUDES =					\
 
 noinst_LTLIBRARIES = libutil.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libutil_la_SOURCES =	\
 	e-bit-array.c	\
 	e-cache.c	\

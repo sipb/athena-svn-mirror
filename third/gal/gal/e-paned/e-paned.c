@@ -56,7 +56,7 @@
 enum {
   ARG_0,
   ARG_HANDLE_SIZE,
-  ARG_QUANTUM,
+  ARG_QUANTUM
 };
 
 static void    e_paned_class_init (EPanedClass  *klass);

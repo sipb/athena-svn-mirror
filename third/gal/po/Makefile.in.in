@@ -2,7 +2,7 @@
 # Copyright (C) 1995-1997, 2000, 2001 by Ulrich Drepper <drepper@gnu.ai.mit.edu>
 #
 # This file file be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU General Public License
+# be used in projects which are not available under the GNU Public License
 # but which still want to provide support for the GNU gettext functionality.
 # Please note that the actual code is *not* freely available.
 
@@ -110,12 +110,12 @@ install-data-yes: all
 	  dir=$(localedir)/$$lang/LC_MESSAGES; \
 	  $(mkinstalldirs) $(DESTDIR)$$dir; \
 	  if test -r $$cat; then \
-	    $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE).mo; \
-	    echo "installing $$cat as $(DESTDIR)$$dir/$(PACKAGE).mo"; \
+	    $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE)-$(VERSION).mo; \
+	    echo "installing $$cat as $(DESTDIR)$$dir/$(PACKAGE)-$(VERSION).mo"; \
 	  else \
-	    $(INSTALL_DATA) $(srcdir)/$$cat $(DESTDIR)$$dir/$(PACKAGE).mo; \
+	    $(INSTALL_DATA) $(srcdir)/$$cat $(DESTDIR)$$dir/$(PACKAGE)-$(VERSION).mo; \
 	    echo "installing $(srcdir)/$$cat as" \
-		 "$(DESTDIR)$$dir/$(PACKAGE).mo"; \
+		 "$(DESTDIR)$$dir/$(PACKAGE)-$(VERSION).mo"; \
 	  fi; \
 	done
 
@@ -127,7 +127,7 @@ uninstall:
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed 's/\.gmo$$//'`; \
-	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(PACKAGE).mo; \
+	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(PACKAGE)-$(VERSION).mo; \
 	done
 	if test "$(PACKAGE)" = "gettext"; then \
 	  rm -f $(DESTDIR)$(gettextsrcdir)/Makefile.in.in; \

@@ -1,4 +1,4 @@
-imagesdir = $(datadir)/pixmaps/gal/categories
+imagesdir = $(datadir)/gal/$(VERSION)/pixmaps/categories
 images_DATA = \
 	category_birthday_16.png		\
 	category_business_16.png		\

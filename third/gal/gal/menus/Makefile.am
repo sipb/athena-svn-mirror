@@ -1,7 +1,8 @@
 gladedir = $(datadir)/gal/$(VERSION)/glade
 glade_DATA = 					\
 	gal-define-views.glade			\
-	gal-view-new-dialog.glade
+	gal-view-new-dialog.glade		\
+	gal-view-instance-save-as-dialog.glade
 
 INCLUDES =					\
 	-I$(top_srcdir)                         \
@@ -14,9 +15,6 @@ INCLUDES =					\
 
 noinst_LTLIBRARIES = libgalmenus.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libgalmenus_la_SOURCES = 			\
 	gal-define-views-dialog.c		\
 	gal-define-views-model.c		\
@@ -24,6 +22,8 @@ libgalmenus_la_SOURCES = 			\
 	gal-view-etable.c			\
 	gal-view-factory-etable.c		\
 	gal-view-factory.c			\
+	gal-view-instance-save-as-dialog.c	\
+	gal-view-instance.c			\
 	gal-view-new-dialog.c			\
 	gal-view.c
 
@@ -36,6 +36,8 @@ libgalmenusinclude_HEADERS = 			\
 	gal-view-etable.h			\
 	gal-view-factory-etable.h		\
 	gal-view-factory.h			\
+	gal-view-instance-save-as-dialog.h	\
+	gal-view-instance.h			\
 	gal-view-new-dialog.h			\
 	gal-view.h
 

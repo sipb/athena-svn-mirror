@@ -26,10 +26,11 @@
 
 #include <gal/util/e-i18n.h>
 #include <gal/util/e-xml-utils.h>
-#include <tree.h>
-#include <parser.h>
-#include <xmlmemory.h>
+#include <gnome-xml/tree.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 #include "e-unicode.h"
+#include <stdlib.h>
 #include <string.h>
 
 #define PARENT_TYPE e_categories_master_list_get_type ()
@@ -38,7 +39,7 @@
 
 typedef enum {
 	E_CATEGORIES_MASTER_LIST_ARRAY_NORMAL,
-	E_CATEGORIES_MASTER_LIST_ARRAY_DELETED,
+	E_CATEGORIES_MASTER_LIST_ARRAY_DELETED
 } ECategoriesMasterListArrayState;
 
 typedef struct {

@@ -78,6 +78,7 @@ static void *e_categories_initialize_value (ETableModel *etc, int col, gpointer 
 static gboolean e_categories_value_is_empty (ETableModel *etc, int col, const void *value, gpointer data);
 static char * e_categories_value_to_string (ETableModel *etc, int col, const void *value, gpointer data);
 static void e_categories_toggle (ECategories *categories, int row);
+static void e_categories_rebuild (ECategories *categories);
 
 static GnomeDialogClass *parent_class = NULL;
 
@@ -86,7 +87,7 @@ enum {
 	ARG_0,
 	ARG_CATEGORIES,
 	ARG_HEADER,
-	ARG_ECML,
+	ARG_ECML
 };
 
 GtkType
@@ -323,7 +324,7 @@ ec_set_header (ECategories *categories, const char *header)
 }
 
 
-#define INITIAL_SPEC "<ETableSpecification no-headers=\"true\" draw-grid=\"true\" cursor-mode=\"line\">\
+#define INITIAL_SPEC "<ETableSpecification no-headers=\"true\" draw-grid=\"true\" cursor-mode=\"line\" gettext-domain=\"" E_I18N_DOMAIN "\">\
   <ETableColumn model_col=\"0\" _title=\"Active\" expansion=\"0.0\" minimum_width=\"20\" resizable=\"false\" cell=\"checkbox\"       compare=\"integer\"/> \
   <ETableColumn model_col=\"1\" _title=\"Category\" expansion=\"1.0\" minimum_width=\"20\" resizable=\"true\" cell=\"string\" compare=\"string\"/> \
         <ETableState>                                                           \
@@ -392,14 +393,10 @@ remove_category (GtkWidget *widget, gpointer user_data)
 }
 
 static EPopupMenu menu[] = {
-	{ N_("Add to global category list"),                         NULL,
-	  GTK_SIGNAL_FUNC (add_category),         NULL,  4 + 1 },
-	{ N_("Add all to global category list"),                         NULL,
-	  GTK_SIGNAL_FUNC (add_category),         NULL,  8 + 1 },
-	{ N_("Remove from global category list"),                         NULL,
-	  GTK_SIGNAL_FUNC (remove_category),         NULL,  4 + 2 },
-	{ N_("Remove all from global category list"),                         NULL,
-	  GTK_SIGNAL_FUNC (remove_category),         NULL,  8 + 2 },
+	E_POPUP_ITEM (N_("Add to global category list"), GTK_SIGNAL_FUNC (add_category), 4 + 1),
+	E_POPUP_ITEM (N_("Add all to global category list"), GTK_SIGNAL_FUNC (add_category), 8 + 1),
+	E_POPUP_ITEM (N_("Remove from global category list"), GTK_SIGNAL_FUNC (remove_category), 4 + 2),
+	E_POPUP_ITEM (N_("Remove all from global category list"), GTK_SIGNAL_FUNC (remove_category), 8 + 2),
 
 	E_POPUP_TERMINATOR
 };
@@ -459,6 +456,16 @@ table_right_click (ETable *table, int row, int col, GdkEvent *event, ECategories
 		hide_mask |= 1;
 	e_popup_menu_run (menu, event, 0, hide_mask, categories);
 
+	return TRUE;
+}
+
+static gint
+table_click (ETable *table, int row, int col, GdkEvent *event, ECategories *categories)
+{
+	if (col == 1) {
+		categories->priv->selected_list[row] = !categories->priv->selected_list[row];
+		e_categories_rebuild (categories);
+	}
 	return TRUE;
 }
 
@@ -532,6 +539,8 @@ e_categories_construct (ECategories *categories,
 
 	gui = glade_xml_new_with_domain (GAL_GLADEDIR "/gal-categories.glade", NULL, PACKAGE);
 
+	gtk_window_set_title (GTK_WINDOW (categories), _("Edit Categories"));
+
 	if (gui) {
 		categories->priv->gui = gui;
 
@@ -586,6 +595,8 @@ e_categories_construct (ECategories *categories,
 				   GTK_SIGNAL_FUNC(table_key_press), categories);
 		gtk_signal_connect(GTK_OBJECT(categories->priv->table), "right_click",
 				   GTK_SIGNAL_FUNC(table_right_click), categories);
+		gtk_signal_connect(GTK_OBJECT(categories->priv->table), "click",
+				   GTK_SIGNAL_FUNC(table_click), categories);
 		
 		gtk_object_sink(GTK_OBJECT(categories->priv->model));
 		

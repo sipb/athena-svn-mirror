@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
 "PO-Revision-Date: 2001-08-07 15:53+0400\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -43,22 +43,6 @@ msgstr "%b %d %k:%M"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Возрастающая)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Убывающая)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "Без сортировки"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Без группирования"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
@@ -85,7 +69,7 @@ msgid "Descending"
 msgstr "Убывающая"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Описание"
 
@@ -144,14 +128,36 @@ msgstr "Затем по"
 msgid "_Add ->"
 msgstr "Добавить ->"
 
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "Группировать по..."
-
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+#, fuzzy
+msgid "_Fields Shown..."
+msgstr "Поля..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "Сортировать..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Возрастающая)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Убывающая)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Без сортировки"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Без группирования"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "Группировать по..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -185,68 +191,94 @@ msgstr "Доступные поля"
 msgid "Show in this order"
 msgstr "Показывать в этом порядке"
 
-#: gal/e-table/e-table-header-item.c:1302
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d элемент)"
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d элементов)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d элемент)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d элементов)"
+
+#: gal/e-table/e-table-header-item.c:1440
 #, fuzzy
 msgid "Customize Current View"
 msgstr "Настроить текущий вид..."
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "Возрастающая сортировка"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "Убывающая сортировка"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "Без сортировки"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "Группировать по этому полю"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "Группировать по ящику"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "Удалить этот столбец"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "Добавить столбец..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Выравнивание"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "Лучшее заполнение"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "Формат столбцов..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "Настроить текущий вид..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "Определить окна для \"%s\""
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#, fuzzy
+msgid "Define Views"
+msgstr "Определить окна для \"%s\""
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "Определить окна для \"%s\""
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "Сбросить к исходным значениям..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "Окна для \"%s\""
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -268,6 +300,16 @@ msgstr "Новый..."
 msgid "Table"
 msgstr "Таблица"
 
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Custom View"
+msgstr "Настроить текущий вид..."
+
+#: gal/menus/gal-view-instance.c:581
+#, fuzzy
+msgid "Save Custom View"
+msgstr "Важные пользователи"
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "Название нового окна:"
@@ -280,6 +322,10 @@ msgstr "Тип окна:"
 #, c-format
 msgid "Group %i"
 msgstr "Группа %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr ""
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -467,7 +513,7 @@ msgstr "темнопурпурный"
 msgid "sky blue"
 msgstr "небесносиний"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "Добавить к глобальному списку категорий"
 
@@ -475,13 +521,18 @@ msgstr "Добавить к глобальному списку категорий"
 msgid "Add all to global category list"
 msgstr "Добавить всё к глобальному списку категорий"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "Удалить из глобального списка категорий"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "Удалить всё из глобального списка категорий"
+
+#: gal/widgets/e-categories.c:542
+#, fuzzy
+msgid "Edit Categories"
+msgstr "категории"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -499,95 +550,95 @@ msgstr "Доступные категории:"
 msgid "categories"
 msgstr "категории"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "День рождения"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "Работа"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "Соревнование"
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "Предпочтения"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "Подарки"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "Цели/Задачи"
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "Праздники"
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "Поздравительные открытки"
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "Важные контакты"
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "Идеи"
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "Международное"
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "Важные пользователи"
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "Разное"
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "Личное"
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "Телефонные звонки"
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "Состояние"
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "Стратегии"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "Время и расходы"
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "Ожидание"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* Нажмите сюда, чтобы добавить категорию *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "Категория"
 
@@ -596,50 +647,41 @@ msgid "Add a category"
 msgstr "Добавить категорию"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "Добавить..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Global Category List"
 msgstr "Правка глобального списка категорий"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "Изменить категорию"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "Изменить..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "Удалить"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "Категория для добавления:"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "Категория для изменения:"
 
-#~ msgid "_Fields..."
-#~ msgstr "Поля..."
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+#, fuzzy
+msgid "All Categories"
+msgstr "Доступные категории:"
 
 #~ msgid "label20"
 #~ msgstr "Метка2"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d элемент)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d элементов)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d элемент)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d элементов)"
-
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Настройка окна: FIXME"
+
+#~ msgid "Views for \"%s\""
+#~ msgstr "Окна для \"%s\""
+
+#~ msgid "Add..."
+#~ msgstr "Добавить..."
+
+#~ msgid "Modify..."
+#~ msgstr "Изменить..."

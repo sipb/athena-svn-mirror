@@ -1,16 +1,16 @@
 # GAL Finnish translation.
 # Suomennos: http://gnome-fi.sourceforge.net/
-#  
-# Copyright (C) 2001 Free Software Foundation, Inc.
+#
+# Copyright (C) 2002 Free Software Foundation, Inc.
 # Jarmo Kielosto <jarmoki@kolumbus.fi>, 2000.
-# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000-2001
+# Pauli Virtanen <pauli.virtanen@hut.fi>, 2000-2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gal 0.13.99.1\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
-"PO-Revision-Date: 2001-10-06 20:17+0300\n"
-"Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
+"Project-Id-Version: gal 0.19.99.0\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"PO-Revision-Date: 2002-08-27 15:33+0300\n"
+"Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-15\n"
@@ -48,22 +48,6 @@ msgstr "%d. %b %H:%M"
 msgid "%b %d %Y"
 msgstr "%d. %b %Y"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Nouseva)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Laskeva)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "Ei j‰rjestyst‰"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Ei ryhmittely‰"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
@@ -90,7 +74,7 @@ msgid "Descending"
 msgstr "Laskevasti"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Kuvaus"
 
@@ -149,14 +133,35 @@ msgstr "Sitten"
 msgid "_Add ->"
 msgstr "_Lis‰‰ ->"
 
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "_Ryhmittele..."
-
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Fields Shown..."
+msgstr "_N‰kyv‰t kent‰t..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "_J‰rjest‰..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Nouseva)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Laskeva)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Ei j‰rjestyst‰"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Ei ryhmittely‰"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Ryhmittele..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -190,68 +195,92 @@ msgstr "Mahdolliset kent‰t"
 msgid "Show in this order"
 msgstr "N‰yt‰ t‰ss‰ j‰rjestyksess‰"
 
-#: gal/e-table/e-table-header-item.c:1302
-#, fuzzy
-msgid "Customize Current View"
-msgstr "Mukauta nykyist‰ n‰kym‰‰..."
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d kohde)"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d kohdetta)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d kohde)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d kohdetta)"
+
+#: gal/e-table/e-table-header-item.c:1440
+msgid "Customize Current View"
+msgstr "Mukauta nykyist‰ n‰kym‰‰"
+
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "J‰rjest‰ nousevasti"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "J‰rjest‰ laskevasti"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "ƒl‰ j‰rjest‰"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "Ryhmittele t‰m‰n kent‰n mukaan"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "Ryhmittele laatikon mukaan"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "Poista t‰m‰ sarake"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "Lis‰‰ sarake..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Tasaus"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "Parhaiten sopiva"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "Muotoile sarakkeita..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "Mukauta nykyist‰ n‰kym‰‰..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr "M‰‰rit‰ kohteen \"%s\" n‰kym‰t"
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+msgid "Define Views"
+msgstr "M‰‰rit‰ n‰kym‰t"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "M‰‰rit‰ kohteen \"%s\" n‰kym‰t"
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "Palauta _oletusasetukset..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "Kohteen \"%s\" n‰kym‰t"
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -273,6 +302,14 @@ msgstr "_Uusi..."
 msgid "Table"
 msgstr "Taulukko"
 
+#: gal/menus/gal-view-instance.c:580
+msgid "Custom View"
+msgstr "Mukautettu n‰kym‰"
+
+#: gal/menus/gal-view-instance.c:581
+msgid "Save Custom View"
+msgstr "Tallenna mukautettu n‰kym‰"
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "Uuden n‰kym‰n nimi:"
@@ -285,6 +322,10 @@ msgstr "N‰kym‰n tyyppi:"
 #, c-format
 msgid "Group %i"
 msgstr "Ryhm‰ %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr "Merkki ei kuulu UTF-8-merkistˆˆn"
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -472,7 +513,7 @@ msgstr "tumma purppura"
 msgid "sky blue"
 msgstr "taivaansininen"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "Lis‰‰ yleiseen luokkalistaan"
 
@@ -480,13 +521,17 @@ msgstr "Lis‰‰ yleiseen luokkalistaan"
 msgid "Add all to global category list"
 msgstr "Lis‰‰ kaikki yleiseen luokkalistaan"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "Poista yleisest‰ luokkalistasta"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "Poista kaikki yleisest‰ luokkalistasta"
+
+#: gal/widgets/e-categories.c:542
+msgid "Edit Categories"
+msgstr "Muokkaa luokkia"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -504,95 +549,95 @@ msgstr "_Mahdolliset luokat:"
 msgid "categories"
 msgstr "luokat"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "Syntym‰p‰iv‰"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "Liiketoiminta"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "Kilpailu"
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "Suosikit"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "Lahjat"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "Tavoitteet"
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "Loma"
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "Lomakortit"
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "Kuumat yhteydet"
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "Ideat"
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "Kansainv‰linen"
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "Avainasiakas"
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "Sekalaista"
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "Henkilˆkohtaista"
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "Puhelinsoitot"
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "Tila"
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "Strategiat"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr "Tavarantoimittajat"
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "Aika ja kulut"
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "Odottavat"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* Napsauta t‰t‰ lis‰t‰ksesi uuden luokan *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "Luokka"
 
@@ -601,44 +646,49 @@ msgid "Add a category"
 msgstr "Lis‰‰ luokka"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "Lis‰‰..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Global Category List"
 msgstr "Muokkaa yleist‰ luokkalistaa"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "Muokkaa luokkaa"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "Muokkaa..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "Poista"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "_Lis‰tt‰v‰ luokka:"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "_Muokattava luokka:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d kohde)"
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+msgid "All Categories"
+msgstr "Kaikki luokat"
 
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d kohdetta)"
+#~ msgid "&lt;- _Remove"
+#~ msgstr "&lt;- _Poista"
 
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d kohde)"
+#~ msgid "_Add -&gt;"
+#~ msgstr "_Lis‰‰ -&gt;"
 
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d kohdetta)"
+#~ msgid "&lt;&lt; Remove"
+#~ msgstr "&lt;&lt; Poista"
+
+#~ msgid "Add &gt;&gt;"
+#~ msgstr "Lis‰‰ &gt;&gt;"
+
+#~ msgid "Views for \"%s\""
+#~ msgstr "Kohteen \"%s\" n‰kym‰t"
+
+#~ msgid "Add..."
+#~ msgstr "Lis‰‰..."
+
+#~ msgid "Modify..."
+#~ msgstr "Muokkaa..."
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Asetetaan n‰kym‰: FIXME"

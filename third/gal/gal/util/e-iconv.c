@@ -96,7 +96,7 @@ static GHashTable *iconv_cache_open;
 static unsigned int iconv_cache_size = 0;
 
 static GHashTable *iconv_charsets = NULL;
-static const char *locale_charset = NULL;
+static char *locale_charset = NULL;
 
 struct {
 	char *charset;
@@ -187,6 +187,23 @@ static EDListNode *e_dlist_remove(EDListNode *n)
         return n;
 }
 
+/*
+  we don't want to lower charset names in native locale (look what does in such case ISO-8859-9),
+  but rather lower them in "pure" C locale
+  this fixes bug #24179
+*/
+static void
+C_g_strdown (gchar *string)
+{
+	gchar *old_locale;
+
+	old_locale = g_strdup (setlocale (LC_CTYPE, NULL));
+	setlocale (LC_CTYPE, "C");
+	g_strdown (string);
+	setlocale (LC_CTYPE, old_locale);
+	g_free (old_locale);
+}
+
 /* NOTE: Owns the lock on return if keep is TRUE ! */
 static void
 e_iconv_init(int keep)
@@ -207,7 +224,7 @@ e_iconv_init(int keep)
 	for (i = 0; known_iconv_charsets[i].charset != NULL; i++) {
 		from = g_strdup(known_iconv_charsets[i].charset);
 		to = g_strdup(known_iconv_charsets[i].iconv_name);
-		g_strdown(from);
+		C_g_strdown(from);
 		g_hash_table_insert(iconv_charsets, from, to);
 	}
 
@@ -227,7 +244,7 @@ e_iconv_init(int keep)
 	} else {
 #ifdef HAVE_CODESET
 		locale_charset = g_strdup(nl_langinfo(CODESET));
-		g_strdown((char *)locale_charset);
+		C_g_strdown(locale_charset);
 #else
 		/* A locale name is typically of  the  form  language[_terri-
 		 * tory][.codeset][@modifier],  where  language is an ISO 639
@@ -244,7 +261,7 @@ e_iconv_init(int keep)
 			/* ; is a hack for debian systems and / is a hack for Solaris systems */
 			for (p = codeset; *p && !strchr ("@;/", *p); p++);
 			locale_charset = g_strndup (codeset, p - codeset);
-			g_strdown (locale_charset);
+			C_g_strdown (locale_charset);
 		} else {
 			/* charset unknown */
 			locale_charset = NULL;
@@ -265,7 +282,7 @@ const char *e_iconv_charset_name(const char *charset)
 
 	name = alloca(strlen(charset)+1);
 	strcpy(name, charset);
-	g_strdown(name);
+	C_g_strdown(name);
 
 	e_iconv_init(TRUE);
 	ret = g_hash_table_lookup(iconv_charsets, name);
@@ -412,10 +429,11 @@ iconv_t e_iconv_open(const char *oto, const char *ofrom)
 			/* work around some broken iconv implementations 
 			 * that die if the length arguments are NULL 
 			 */
-			size_t buggy_iconv = 0;
+			size_t buggy_iconv_len = 0;
+			gchar *buggy_iconv_buf = NULL;
 
 			/* resets the converter */
-			iconv(ip, NULL, &buggy_iconv, NULL, &buggy_iconv);
+			iconv(ip, &buggy_iconv_buf, &buggy_iconv_len, &buggy_iconv_buf, &buggy_iconv_len);
 			in->busy = TRUE;
 			e_dlist_remove((EDListNode *)in);
 			e_dlist_addhead(&ic->open, (EDListNode *)in);

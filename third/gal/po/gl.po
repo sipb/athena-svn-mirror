@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
 "PO-Revision-Date: 2001-04-28 18:45+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -50,22 +50,6 @@ msgstr "O %d de %B ás %k:%M"
 msgid "%b %d %Y"
 msgstr "%d de %B de %Y"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Ascendentemente)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Descendentemente)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "Sen ordenar"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Sen agrupar"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
@@ -92,7 +76,7 @@ msgid "Descending"
 msgstr "Descendentemente"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Descrición"
 
@@ -151,14 +135,36 @@ msgstr "Despois por"
 msgid "_Add ->"
 msgstr "E_ngadir ->"
 
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "_Agrupar por..."
-
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+#, fuzzy
+msgid "_Fields Shown..."
+msgstr "_Campos..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "_Ordenar..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Ascendentemente)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Descendentemente)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Sen ordenar"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Sen agrupar"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Agrupar por..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -193,68 +199,94 @@ msgstr "Campos dispoñibles"
 msgid "Show in this order"
 msgstr "Amosar nesta orde"
 
-#: gal/e-table/e-table-header-item.c:1302
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1440
 #, fuzzy
 msgid "Customize Current View"
 msgstr "Personalizar a vista actual..."
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "Ordenar ascendentemente"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "Ordenar descendentemente"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "Desordenar"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "Agrupar por este campo"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "Agrupar por caixa"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "Eliminar esta columna"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "Engadir unha columna..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Aliñamento"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "Ancho óptima"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "Formatar columnas..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "Personalizar a vista actual..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "Definir vistas para \"%s\""
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#, fuzzy
+msgid "Define Views"
+msgstr "Definir vistas para \"%s\""
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "Definir vistas para \"%s\""
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "Re_iniciar ós predeterminados..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "Vistas para \"%s\""
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -276,6 +308,15 @@ msgstr "_Novo..."
 msgid "Table"
 msgstr "Táboa"
 
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Custom View"
+msgstr "Personalizar a vista actual..."
+
+#: gal/menus/gal-view-instance.c:581
+msgid "Save Custom View"
+msgstr ""
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "Nome da nova vista:"
@@ -288,6 +329,10 @@ msgstr "Tipo de vista:"
 #, c-format
 msgid "Group %i"
 msgstr "Agrupar %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr ""
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -475,7 +520,7 @@ msgstr "púrpura escuro"
 msgid "sky blue"
 msgstr "azul ceo"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "Engadir á lista de categorías global"
 
@@ -483,13 +528,18 @@ msgstr "Engadir á lista de categorías global"
 msgid "Add all to global category list"
 msgstr "Engadir todas á lista de categorías global"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "Quitar da lista de categorías global"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "Quitar todas da lista de categorías global"
+
+#: gal/widgets/e-categories.c:542
+#, fuzzy
+msgid "Edit Categories"
+msgstr "categorías"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -507,97 +557,97 @@ msgstr "Categorías _dispoñibles:"
 msgid "categories"
 msgstr "categorías"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 #, fuzzy
 msgid "Favorites"
 msgstr "categorías"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 #, fuzzy
 msgid "Strategies"
 msgstr "categorías"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 #, fuzzy
 msgid "Category"
 msgstr "categorías"
@@ -608,37 +658,34 @@ msgid "Add a category"
 msgstr "Engadir á lista de categorías global"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr ""
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 #, fuzzy
 msgid "Edit Global Category List"
 msgstr "Engadir á lista de categorías global"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr ""
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 #, fuzzy
 msgid "Remove"
 msgstr "<< Eliminar"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr ""
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr ""
 
-#~ msgid "_Fields..."
-#~ msgstr "_Campos..."
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+#, fuzzy
+msgid "All Categories"
+msgstr "Categorías _dispoñibles:"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Configurando vista: FIXME"
+
+#~ msgid "Views for \"%s\""
+#~ msgstr "Vistas para \"%s\""

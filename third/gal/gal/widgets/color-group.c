@@ -38,7 +38,7 @@ enum {
         LAST_SIGNAL
 };
 
-static gint color_group_signals [LAST_SIGNAL] = { 0 };
+static guint color_group_signals [LAST_SIGNAL] = { 0 };
 
 static void color_group_destroy(GtkObject *obj);
 
@@ -74,7 +74,7 @@ E_MAKE_TYPE(color_group,
 	    ColorGroup,
 	    color_group_class_init,
 	    color_group_init,
-	    PARENT_TYPE);
+	    PARENT_TYPE)
 
 
 /* Hash table used to ensure unicity in newly created names*/

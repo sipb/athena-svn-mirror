@@ -18,9 +18,6 @@ INCLUDES =					\
 
 noinst_LTLIBRARIES = libetable.la
 
-# WARNING
-# WARNING Be sure to add any files here into the parent Makefile too.
-# WARNING
 libetable_la_SOURCES = 				\
 	e-cell.c				\
 	e-cell-checkbox.c			\
@@ -30,11 +27,13 @@ libetable_la_SOURCES = 				\
 	e-cell-number.c				\
 	e-cell-pixbuf.c				\
 	e-cell-popup.c				\
+	e-cell-progress.c			\
 	e-cell-size.c				\
 	e-cell-spin-button.c			\
 	e-cell-text.c				\
 	e-cell-toggle.c				\
 	e-cell-tree.c				\
+	e-cell-vbox.c				\
 	e-table-click-to-add.c			\
 	e-table-col.c				\
 	e-table-column-specification.c		\
@@ -51,10 +50,12 @@ libetable_la_SOURCES = 				\
 	e-table-header-utils.c			\
 	e-table-item.c				\
 	e-table-memory-callbacks.c		\
+	e-table-memory-store.c			\
 	e-table-memory.c			\
 	e-table-model.c				\
 	e-table-one.c				\
 	e-table-scrolled.c			\
+	e-table-search.c			\
 	e-table-selection-model.c		\
 	e-table-simple.c			\
 	e-table-sort-info.c			\
@@ -89,11 +90,13 @@ libetableinclude_HEADERS = 			\
 	e-cell-number.h				\
 	e-cell-pixbuf.h				\
 	e-cell-popup.h				\
+	e-cell-progress.h			\
 	e-cell-size.h				\
 	e-cell-spin-button.h			\
 	e-cell-text.h				\
 	e-cell-toggle.h				\
 	e-cell-tree.h				\
+	e-cell-vbox.h				\
 	e-table-click-to-add.h			\
 	e-table-col-dnd.h			\
 	e-table-col.h				\
@@ -112,10 +115,12 @@ libetableinclude_HEADERS = 			\
 	e-table-header-utils.h			\
 	e-table-item.h				\
 	e-table-memory-callbacks.h		\
+	e-table-memory-store.h			\
 	e-table-memory.h			\
 	e-table-model.h				\
 	e-table-one.h				\
 	e-table-scrolled.h			\
+	e-table-search.h			\
 	e-table-selection-model.h		\
 	e-table-simple.h			\
 	e-table-sort-info.h			\

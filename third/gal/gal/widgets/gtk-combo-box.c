@@ -60,7 +60,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static gint gtk_combo_box_signals [LAST_SIGNAL] = { 0, };
+static guint gtk_combo_box_signals [LAST_SIGNAL] = { 0, };
 
 struct _GtkComboBoxPrivate {
 	GtkWidget *pop_down_widget;

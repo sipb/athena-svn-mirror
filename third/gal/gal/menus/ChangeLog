@@ -1,3 +1,123 @@
+2002-12-02  Mike Kestner  <mkestner@ximian.com>
+
+	* gal-view-instance.c : nuke Collection::changed handling (Bug#33439)
+
+2002-06-16  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-define-views-dialog.c (gdvd_button_new_dialog_callback):
+	Edit the view after appending it to the model.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-view-collection.c, gal-view-collection.h
+	(gal_view_collection_set_title): Added this function to set the
+	user visible name of this collection.
+
+	* gal-define-views-dialog.c (gal_define_views_dialog_init): Set
+	the Define Views for %s label.  Fixes Ximian bug #2100 and #4080.
+
+	* gal-define-views.glade: Change the Define Views for %s label to
+	match what is used within the .c.
+
+2002-05-01  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-define-views-dialog.c (SPEC),
+	gal-view-instance-save-as-dialog.c (SPEC): Set the gettext-domain
+	here.
+
+2002-04-25  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-define-views-dialog.c, gal-view-factory.c,
+	gal-view-new-dialog.c, gal-view.c: Ansification patch from danw.
+
+2002-04-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-view-instance.c, gal-view-instance.h
+	(gal_view_instance_get_popup_menu,
+	gal_view_instance_free_popup_menu):  Added these functions.  Used
+	to add a current view menu to your popup menus.
+
+2002-03-26  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am: remove comment about adding .lo's to the parent
+	directory's Makefile.am.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-view-etable.c (detach_table): Set
+	view->table_state_changed_id to 0.
+	(detach_tree): Set view->tree_state_changed_id to 0.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* gal-view-collection.c (gal_view_collection_load): Create the
+	local directory when loading instead of when saving.  This way
+	instance data will have somewhere to be saved.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* Makefile.am (glade_DATA): Added
+	gal-view-instance-save-as-dialog.glade.
+	(libgalmenus_la_SOURCES): Added
+	gal-view-instance-save-as-dialog.c.
+	(libgalmenusinclude_HEADERS): Added
+	gal-view-instance-save-as-dialog.h.
+
+	* gal-view-collection.c, gal-view-collection.h
+	(gal_view_collection_append_with_title): Added this new version of
+	the append function that sets the title and returns the new id as
+	well.
+	(gal_view_collection_set_nth_view): Added this function to save
+	over another view.
+	(gal_view_collection_get_default_view,
+	gal_view_collection_set_default_view): Added the concept of a
+	default view for GalViewCollections.
+
+	* gal-view-etable.c, gal-view-etable.h
+	(gal_view_etable_attach_table, gal_view_etable_attach_tree,
+	gal_view_etable_detach): Added functions to set the state of a
+	table or tree and then send GalView "changed" signals whenever
+	that state changes.
+	(gal_view_etable_set_state): New function to set the ETableState
+	of a GalViewETable.
+
+	* gal-view-instance-save-as-dialog.c,
+	gal-view-instance-save-as-dialog.glade,
+	gal-view-instance-save-as-dialog.h: New dialog to save the current
+	custom view as a named view.
+
+	* gal-view-instance.c, gal-view-instance.h
+	(gal_view_instance_set_custom_view): New function to set the state
+	of an instance to custom view and set the custom view to a
+	particular GalView.
+	(gal_view_instance_exists): New function to check if this
+	particular instance has ever been opened before.  Use before
+	gal_view_instance_load.
+	(gal_view_instance_save_as): New function to open a save as
+	dialog.
+	(gal_view_instance_load): Added this function which used to be
+	part of _construct.  This function can be called multiple times,
+	and those extra times will be ignored.  This is so you can set a
+	default view before loading.
+	(gal_view_instance_get_default_view,
+	gal_view_instance_set_default_view): Set the default view for this
+	instance.  If unset, this falls back to the default view for the
+	corresponding GalViewCollection.
+
+2002-01-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* Makefile.am: Added gal-view-instance.c and gal-view-instance.h.
+
+	* gal-view-collection.c, gal-view-collection.h
+	(gal_view_collection_load_view_from_file): Factored out this
+	function so that it can be used outside of gal-view-collection.c.
+	(gal_view_collection_get_view_index_by_id,
+	gal_view_collection_get_view_id_by_index,
+	gal_view_collection_loaded): Added these functions.
+
+	* gal-view-instance.c, gal-view-instance.h: New class representing
+	a single folder of a particular type of folder.
+
 2001-10-31  Christopher James Lahey  <clahey@ximian.com>
 
 	* gal-define-views-model.c: Made this match pre_changes with

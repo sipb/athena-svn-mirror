@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -111,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LIBTOOL = @LIBTOOL@
@@ -135,7 +136,15 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
@@ -145,11 +154,30 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-imagesdir = $(datadir)/pixmaps/gal/categories
-images_DATA =  	category_birthday_16.png			category_business_16.png			category_favorites_16.png			category_gifts_16.png				category_goals_16.png				category_holiday_16.png				category_holiday-cards_16.png			category_hot-contacts_16.png			category_ideas_16.png				category_international_16.png			category_key-customer_16.png			category_miscellaneous_16.png			category_personal_16.png			category_phonecalls_16.png			category_status_16.png				category_strategies_16.png			category_suppliers_16.png			category_time-and-expenses_16.png
+imagesdir = $(datadir)/gal/$(VERSION)/pixmaps/categories
+images_DATA = \
+	category_birthday_16.png		\
+	category_business_16.png		\
+	category_favorites_16.png		\
+	category_gifts_16.png			\
+	category_goals_16.png			\
+	category_holiday_16.png			\
+	category_holiday-cards_16.png		\
+	category_hot-contacts_16.png		\
+	category_ideas_16.png			\
+	category_international_16.png		\
+	category_key-customer_16.png		\
+	category_miscellaneous_16.png		\
+	category_personal_16.png		\
+	category_phonecalls_16.png		\
+	category_status_16.png			\
+	category_strategies_16.png		\
+	category_suppliers_16.png		\
+	category_time-and-expenses_16.png
 
 
-EXTRA_DIST =  	$(images_DATA)
+EXTRA_DIST = \
+	$(images_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -161,7 +189,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

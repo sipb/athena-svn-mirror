@@ -85,20 +85,47 @@ struct _EShortcutBarClass
 {
 	EGroupBarClass parent_class;
 
-	void   (*item_selected)        (EShortcutBar   *shortcut_bar,
-					GdkEvent       *event,
-					gint		group_num,
-					gint		item_num);
+	void (*item_selected)    (EShortcutBar   *shortcut_bar,
+			          GdkEvent       *event,
+			          gint		group_num,
+			          gint		item_num);
 
-	void   (*shortcut_dropped)     (EShortcutBar   *shortcut_bar,
-					gint            group_num,
-					gint            position,
-					const gchar    *item_url,
-					const char     *item_name);
+	void (*shortcut_dropped) (EShortcutBar   *shortcut_bar,
+				  gint            group_num,
+				  gint            position,
+				  const gchar    *item_url,
+				  const char     *item_name);
 
-	void   (*shortcut_dragged)     (EShortcutBar   *shortcut_bar,
-					gint            group_num,
-					gint            item_num);
+	void (*shortcut_dragged) (EShortcutBar   *shortcut_bar,
+				  gint            group_num,
+				  gint            item_num);
+
+	/* This is emitted when the pointer is moved over an icon on the
+	   shortcut bar during a drag operation.  Note that @widget !=
+	   @shortcut_bar because of the way the widget is implemented (the drop
+	   goes through the EIconBar, not the EShortcutBar, so for all the gtk
+	   dnd -related stuff you have to use @widget and not
+	   @shortcut_bar).  */
+	gboolean (*shortcut_drag_motion) (EShortcutBar   *shortcut_bar,
+					  GtkWidget      *widget,
+					  GdkDragContext *context,
+					  guint           time,
+					  gint            group_num,
+					  gint            item_num);
+
+	/* This is emitted after a drop is performed on the shortcut bar.  The
+	   callback has to either return %FALSE or invoke gtk_drag_finish() by
+	   itself on @widget.  In the first case, the shortcut bar will take
+	   care of invoking gtk_drag_finish() passing %FALSE as the @success
+	   arg.  Again, see how @widget != @shortcut_bar (as explained
+	   above).  */
+	gboolean (*shortcut_drag_data_received) (EShortcutBar     *shortcut_bar,
+						 GtkWidget        *widget,
+						 GdkDragContext   *context,
+						 GtkSelectionData *selection_data,
+						 guint            time,
+						 gint             group_num,
+						 gint             item_num);
 };
 
 

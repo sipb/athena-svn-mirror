@@ -182,6 +182,8 @@ ecb_destroy (GtkObject *object)
 		gdk_bitmap_unref (ecb->priv->stipple);
 	ecb->priv->stipple = NULL;
 
+	g_free (ecb->priv);
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
                 GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
@@ -309,7 +311,10 @@ ecb_init (GnomeCanvasItem *item)
 
 	ecb->priv               = g_new (ECanvasBackgroundPrivate, 1);
 
-	ecb->priv->color        = (GdkColor) {0,};
+	ecb->priv->color.pixel  = 0;
+	ecb->priv->color.red    = 0;
+	ecb->priv->color.green  = 0;
+	ecb->priv->color.blue   = 0;
 	ecb->priv->stipple      = NULL;
 	ecb->priv->gc           = NULL;
 	ecb->priv->x1           = -1.0;

@@ -989,13 +989,19 @@ e_group_bar_add_group		(EGroupBar	*group_bar,
 			    GTK_SIGNAL_FUNC (e_group_bar_on_button_clicked),
 			    group_bar);
 
-	gtk_signal_connect (GTK_OBJECT (group->button), "drag_motion",
-			    GTK_SIGNAL_FUNC (e_group_bar_on_button_drag_motion),
-			    group_bar);
 	gtk_signal_connect (GTK_OBJECT (group->button), "drag_leave",
 			    GTK_SIGNAL_FUNC (e_group_bar_on_button_drag_leave),
 			    group_bar);
 
+	/* Set up the button as a drop target.  */
+
+	gtk_drag_dest_set (GTK_WIDGET (group->button),
+			   0, NULL, 0,
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE);
+
+	gtk_signal_connect (GTK_OBJECT (group->button), "drag_motion",
+			    GTK_SIGNAL_FUNC (e_group_bar_on_button_drag_motion),
+			    group_bar);
 	return group_num;
 }
 
@@ -1489,7 +1495,8 @@ e_group_bar_on_button_drag_motion (GtkWidget	      *widget,
 			group_bar->auto_show_group_num = group_num;
 		}
 	}
-	return TRUE;
+
+	return FALSE;
 }
 
 

@@ -781,7 +781,7 @@ e_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		gtk_widget_hide (priv->vsb);
 }
 
-/* Button press handler for the scroll framw diget */
+/* Button press handler for the scroll frame widget */
 static gint
 e_scroll_frame_button_press (GtkWidget *widget, GdkEventButton *event)
 {
@@ -1251,4 +1251,34 @@ e_scroll_frame_add_with_viewport (EScrollFrame *sf, GtkWidget *child)
 
 	gtk_widget_show (viewport);
 	gtk_container_add (GTK_CONTAINER (viewport), child);
+}
+
+void
+e_scroll_frame_get_policy (EScrollFrame *sf, GtkPolicyType *hsb_policy, GtkPolicyType *vsb_policy)
+{
+	g_return_if_fail (sf != NULL);
+	g_return_if_fail (E_IS_SCROLL_FRAME (sf));
+
+	if (hsb_policy)
+		*hsb_policy = ((ScrollFramePrivate *) sf->priv)->hsb_policy;
+	if (vsb_policy)
+		*vsb_policy = ((ScrollFramePrivate *) sf->priv)->vsb_policy;
+}
+
+gboolean
+e_scroll_frame_get_vscrollbar_visible (EScrollFrame *sf)
+{
+	g_return_val_if_fail (sf != NULL, FALSE);
+	g_return_val_if_fail (E_IS_SCROLL_FRAME (sf), FALSE);
+
+	return GTK_WIDGET_VISIBLE (((ScrollFramePrivate *) sf->priv)->vsb);
+}
+
+gboolean
+e_scroll_frame_get_hscrollbar_visible (EScrollFrame *sf)
+{
+	g_return_val_if_fail (sf != NULL, FALSE);
+	g_return_val_if_fail (E_IS_SCROLL_FRAME (sf), FALSE);
+
+	return GTK_WIDGET_VISIBLE (((ScrollFramePrivate *) sf->priv)->hsb);
 }

@@ -1,18 +1,21 @@
+# translation of sk.po to Slovak
+# Slovak translation of sk.po
 # gal Slovak translation
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2001.
+# Copyright (C) 2001,2002 Free Software Foundation, Inc.
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2001,2002.
+# Stanislav Vi≈°≈àovsk√Ω <visnovsky@nenya.ms.mff.cuni.cz>, 2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gal 0.9.99\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
-"PO-Revision-Date: 2001-07-17 15:10CET\n"
+"Project-Id-Version: sk\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
+"PO-Revision-Date: 2002-08-12 11:42+0200\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
-"Language-Team: Slovak <sk-i18n@linux.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.3\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: gal/e-table/e-cell-date.c:51
 msgid "?"
@@ -28,11 +31,11 @@ msgstr "Dnes %l:%M %p"
 
 #: gal/e-table/e-cell-date.c:78
 msgid "Late Yesterday %l:%M %p"
-msgstr "VËera veËer %l:%M %p"
+msgstr "Vƒçera veƒçer %l:%M %p"
 
 #: gal/e-table/e-cell-date.c:81
 msgid "Yesterday %l:%M %p"
-msgstr "VËera %l:%M %p"
+msgstr "Vƒçera %l:%M %p"
 
 #: gal/e-table/e-cell-date.c:96
 msgid "%a %l:%M %p"
@@ -46,31 +49,15 @@ msgstr "%b %d %l:%M %p"
 msgid "%b %d %Y"
 msgstr "%b %d %Y"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Vzostupne)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Zostupne)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "NeutriedenÈ"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Bez zoskupovania"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
-msgstr "<- _Odstr·niª"
+msgstr "<- _Odstr√°ni≈•"
 
 #: gal/e-table/e-table-config-no-group.glade.h:2
 #: gal/e-table/e-table-config.glade.h:2
 msgid "A_vailable Fields:"
-msgstr "Polia k _dispozÌcii:"
+msgstr "Polia k _dispoz√≠cii:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:3
 #: gal/e-table/e-table-config.glade.h:3
@@ -80,7 +67,7 @@ msgstr "Vzostupne"
 #: gal/e-table/e-table-config-no-group.glade.h:4
 #: gal/e-table/e-table-config.glade.h:4
 msgid "Clear All"
-msgstr "VyËistiª vπetko"
+msgstr "Vyƒçisti≈• v≈°etko"
 
 #: gal/e-table/e-table-config-no-group.glade.h:5
 #: gal/e-table/e-table-config.glade.h:5
@@ -88,7 +75,7 @@ msgid "Descending"
 msgstr "Zostupne"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Popis"
 
@@ -100,32 +87,32 @@ msgstr "Zoskupenie"
 #: gal/e-table/e-table-config-no-group.glade.h:8
 #: gal/e-table/e-table-config.glade.h:8
 msgid "Group Items By"
-msgstr "Zoskupiª podµa"
+msgstr "Zoskupi≈• podƒæa"
 
 #: gal/e-table/e-table-config-no-group.glade.h:9
 #: gal/e-table/e-table-config.glade.h:9
 msgid "Move _Down"
-msgstr "Presun˙ª _niæπie"
+msgstr "Presun√∫≈• _ni≈æ≈°ie"
 
 #: gal/e-table/e-table-config-no-group.glade.h:10
 #: gal/e-table/e-table-config.glade.h:10
 msgid "Move _Up"
-msgstr "Presun˙ª _vyππie"
+msgstr "Presun√∫≈• _vy≈°≈°ie"
 
 #: gal/e-table/e-table-config-no-group.glade.h:11
 #: gal/e-table/e-table-config.glade.h:11
 msgid "Sh_ow these fields in order:"
-msgstr "_Zobraziª tieto polia v poradÌ:"
+msgstr "_Zobrazi≈• tieto polia v porad√≠:"
 
 #: gal/e-table/e-table-config-no-group.glade.h:12
 #: gal/e-table/e-table-config.glade.h:12
 msgid "Show Fields"
-msgstr "Zobraziª polia"
+msgstr "Zobrazi≈• polia"
 
 #: gal/e-table/e-table-config-no-group.glade.h:13
 #: gal/e-table/e-table-config.glade.h:13
 msgid "Show field in View"
-msgstr "Zobraziª pole v pohµade"
+msgstr "Zobrazi≈• pole v pohƒæade"
 
 #: gal/e-table/e-table-config-no-group.glade.h:14
 #: gal/e-table/e-table-config.glade.h:14
@@ -135,164 +122,221 @@ msgstr "Triedenie"
 #: gal/e-table/e-table-config-no-group.glade.h:15
 #: gal/e-table/e-table-config.glade.h:15
 msgid "Sort Items By"
-msgstr "Utriediª podµa"
+msgstr "Utriedi≈• podƒæa"
 
 #: gal/e-table/e-table-config-no-group.glade.h:16
 #: gal/e-table/e-table-config.glade.h:16
 msgid "Then By"
-msgstr "Potom podµa"
+msgstr "Potom podƒæa"
 
 #: gal/e-table/e-table-config-no-group.glade.h:17
 #: gal/e-table/e-table-config.glade.h:17
 msgid "_Add ->"
-msgstr "_Pridaª ->"
-
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "_Zoskupiª podµa..."
+msgstr "_Prida≈• ->"
 
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Fields Shown..."
+msgstr "Zobrazen√© _polia..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
-msgstr "_Triediª..."
+msgstr "_Triedi≈•..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Vzostupne)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Zostupne)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Neutrieden√©"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Bez zoskupovania"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Zoskupi≈• podƒæa..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
-msgstr "V˝ber poµa"
+msgstr "V√Ωber poƒæa"
 
 #: gal/e-table/e-table-field-chooser.glade.h:2
 msgid ""
 "To add a column to your table, drag it into\n"
 "the location in which you want it to appear."
 msgstr ""
-"StÂpec do tabuµky prid·te ªahanÌm\n"
+"Stƒ∫pec do tabuƒæky prid√°te ≈•ahan√≠m\n"
 "na miesto, kde ho chcete"
 
 #: gal/e-table/e-table-field-chooser-dialog.c:127
 msgid "Add a column..."
-msgstr "Pridaª stÂpec..."
+msgstr "Prida≈• stƒ∫pec..."
 
 #: gal/e-table/e-table-group.glade.h:1
 msgid "<< Remove"
-msgstr "<< Odstr·niª"
+msgstr "<< Odstr√°ni≈•"
 
 #: gal/e-table/e-table-group.glade.h:2
 msgid "Add >>"
-msgstr "Pridaª >>"
+msgstr "Prida≈• >>"
 
 #: gal/e-table/e-table-group.glade.h:3
 msgid "Available fields"
-msgstr "Polia k dispozÌcii"
+msgstr "Polia k dispoz√≠cii"
 
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
-msgstr "Zobraziª v tomto poradÌ"
+msgstr "Zobrazi≈• v tomto porad√≠"
 
-#: gal/e-table/e-table-header-item.c:1302
-#, fuzzy
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d polo≈æka)"
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d polo≈æiek)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d polo≈æka)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d polo≈æiek)"
+
+#: gal/e-table/e-table-header-item.c:1440
 msgid "Customize Current View"
-msgstr "PrispÙsobiª aktu·lny pohµad..."
+msgstr "Prisp√¥sobi≈• aktu√°lny pohƒæad"
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
-msgstr "Utriediª vzostupne"
+msgstr "Utriedi≈• vzostupne"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
-msgstr "Utriediª zostupne"
+msgstr "Utriedi≈• zostupne"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
-msgstr "NetriedenÈ"
+msgstr "Netrieden√©"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
-msgstr "Zoskupiª podµa tohto poµa"
+msgstr "Zoskupi≈• podƒæa tohto poƒæa"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
-msgstr "Zoskupiª podµa boxu"
+msgstr "Zoskupi≈• podƒæa boxu"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
-msgstr "Odstr·ni tento stÂpec"
+msgstr "Odstr√°ni tento stƒ∫pec"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
-msgstr "Pridaª stÂpec..."
+msgstr "Prida≈• stƒ∫pec..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Zarovnanie"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
-msgstr "Nejlepπie"
+msgstr "Nejlep≈°ie"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
-msgstr "Form·t stÂpcov..."
+msgstr "Form√°t stƒ∫pcov..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
-msgstr "PrispÙsobiª aktu·lny pohµad..."
+msgstr "Prisp√¥sobi≈• aktu√°lny pohƒæad..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, no-c-format
+msgid "Define Views for %s"
+msgstr "Definujte pohƒæady pre %s"
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+msgid "Define Views"
+msgstr "Definujte pohƒæady"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
-msgstr "Definujte pohµady pre \"%s\""
-
-#: gal/menus/gal-define-views.glade.h:4
-msgid "Re_set to Factory Defaults..."
-msgstr "P_rednastavenÈ hodnoty..."
+msgstr "Definujte pohƒæady pre \"%s\""
 
 #: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "Pohµady pre \"%s\""
+msgid "Re_set to Factory Defaults..."
+msgstr "P_rednastaven√© hodnoty..."
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
-msgstr "_KopÌrovaª..."
+msgstr "_Kop√≠rova≈•..."
 
 #: gal/menus/gal-define-views.glade.h:8
 msgid "_Delete..."
-msgstr "_Odstr·niª..."
+msgstr "_Odstr√°ni≈•..."
 
 #: gal/menus/gal-define-views.glade.h:9
 msgid "_Edit..."
-msgstr "_Upraviª..."
+msgstr "_Upravi≈•..."
 
 #: gal/menus/gal-define-views.glade.h:10
 msgid "_New..."
-msgstr "_Nov˝..."
+msgstr "_Nov√Ω..."
 
 #: gal/menus/gal-view-factory-etable.c:38
 msgid "Table"
-msgstr "Tabuµka"
+msgstr "Tabuƒæka"
+
+#: gal/menus/gal-view-instance.c:580
+msgid "Custom View"
+msgstr "Vlastn√Ω pohƒæad"
+
+#: gal/menus/gal-view-instance.c:581
+msgid "Save Custom View"
+msgstr "Ulo≈æi≈• vlastn√Ω pohƒæad"
 
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
-msgstr "Meno novÈho pohµadu:"
+msgstr "Meno nov√©ho pohƒæadu:"
 
 #: gal/menus/gal-view-new-dialog.glade.h:2
 msgid "Type of view:"
-msgstr "Typ pohµadu:"
+msgstr "Typ pohƒæadu:"
 
 #: gal/shortcut-bar/e-group-bar.c:632
 #, c-format
 msgid "Group %i"
 msgstr "Skupina %i"
 
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr "Znak mimo rozsah UTF-8"
+
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
 msgid "custom"
-msgstr "vlastn˝"
+msgstr "vlastn√Ω"
 
 #. "Custom" color - we'll pop up a GnomeColorPicker
 #: gal/widgets/color-palette.c:472
 msgid "Custom Color:"
-msgstr "Vlastn· farba:"
+msgstr "Vlastn√° farba:"
 
 #: gal/widgets/color-palette.c:480
 msgid "Choose Custom Color"
@@ -300,159 +344,159 @@ msgstr "Vyberte farbu"
 
 #: gal/widgets/color-palette.c:592
 msgid "black"
-msgstr "Ëierna"
+msgstr "ƒçierna"
 
 #: gal/widgets/color-palette.c:593
 msgid "light brown"
-msgstr "svetlohned·"
+msgstr "svetlohned√°"
 
 #: gal/widgets/color-palette.c:594
 msgid "brown gold"
-msgstr "zlatohned·"
+msgstr "zlatohned√°"
 
 #: gal/widgets/color-palette.c:595
 msgid "dark green #2"
-msgstr "tmavozelen· #2"
+msgstr "tmavozelen√° #2"
 
 #: gal/widgets/color-palette.c:596
 msgid "navy"
-msgstr "n·mornÌcka"
+msgstr "n√°morn√≠cka"
 
 #: gal/widgets/color-palette.c:597 gal/widgets/color-palette.c:653
 msgid "dark blue"
-msgstr "tmavomodr·"
+msgstr "tmavomodr√°"
 
 #: gal/widgets/color-palette.c:598
 msgid "purple #2"
-msgstr "purpurov· #2"
+msgstr "purpurov√° #2"
 
 #: gal/widgets/color-palette.c:599
 msgid "very dark gray"
-msgstr "veµmi tmavoπed·"
+msgstr "veƒæmi tmavo≈°ed√°"
 
 #: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:658
 msgid "dark red"
-msgstr "tmavoËerven·"
+msgstr "tmavoƒçerven√°"
 
 #: gal/widgets/color-palette.c:603
 msgid "red-orange"
-msgstr "oranæovoËerven·"
+msgstr "oran≈æovoƒçerven√°"
 
 #: gal/widgets/color-palette.c:604
 msgid "gold"
-msgstr "zlat·"
+msgstr "zlat√°"
 
 #: gal/widgets/color-palette.c:605
 msgid "dark green"
-msgstr "tmavozelen·"
+msgstr "tmavozelen√°"
 
 #: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:659
 msgid "dull blue"
-msgstr "tlmen· modr·"
+msgstr "tlmen√° modr√°"
 
 #: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:660
 msgid "blue"
-msgstr "modr·"
+msgstr "modr√°"
 
 #: gal/widgets/color-palette.c:608
 msgid "dull purple"
-msgstr "tlmen· fialov·"
+msgstr "tlmen√° fialov√°"
 
 #: gal/widgets/color-palette.c:609
 msgid "dark grey"
-msgstr "tmavoπed·"
+msgstr "tmavo≈°ed√°"
 
 #: gal/widgets/color-palette.c:612
 msgid "red"
-msgstr "Ëerven·"
+msgstr "ƒçerven√°"
 
 #: gal/widgets/color-palette.c:613
 msgid "orange"
-msgstr "oranæov·"
+msgstr "oran≈æov√°"
 
 #: gal/widgets/color-palette.c:614
 msgid "lime"
-msgstr "citrÛnov·"
+msgstr "citr√≥nov√°"
 
 #: gal/widgets/color-palette.c:615
 msgid "dull green"
-msgstr "tlmen· zelen·"
+msgstr "tlmen√° zelen√°"
 
 #: gal/widgets/color-palette.c:616
 msgid "dull blue #2"
-msgstr "tlmen· modr· #2"
+msgstr "tlmen√° modr√° #2"
 
 #: gal/widgets/color-palette.c:617
 msgid "sky blue #2"
-msgstr "modr· oblohy #2"
+msgstr "modr√° oblohy #2"
 
 #: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:657
 msgid "purple"
-msgstr "purpurov·"
+msgstr "purpurov√°"
 
 #: gal/widgets/color-palette.c:619
 msgid "gray"
-msgstr "πed·"
+msgstr "≈°ed√°"
 
 #: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:654
 msgid "magenta"
-msgstr "fialov·"
+msgstr "fialov√°"
 
 #: gal/widgets/color-palette.c:623
 msgid "bright orange"
-msgstr "svetlooranæov·"
+msgstr "svetlooran≈æov√°"
 
 #: gal/widgets/color-palette.c:624 gal/widgets/color-palette.c:655
 msgid "yellow"
-msgstr "ælt·"
+msgstr "≈ælt√°"
 
 #: gal/widgets/color-palette.c:625
 msgid "green"
-msgstr "zelen·"
+msgstr "zelen√°"
 
 #: gal/widgets/color-palette.c:626 gal/widgets/color-palette.c:656
 msgid "cyan"
-msgstr "modrozelen·"
+msgstr "modrozelen√°"
 
 #: gal/widgets/color-palette.c:627
 msgid "bright blue"
-msgstr "svetlomodr·"
+msgstr "svetlomodr√°"
 
 #: gal/widgets/color-palette.c:628 gal/widgets/color-palette.c:645
 msgid "red purple"
-msgstr "fialovoËerven·"
+msgstr "fialovoƒçerven√°"
 
 #: gal/widgets/color-palette.c:629
 msgid "light grey"
-msgstr "svetloπed·"
+msgstr "svetlo≈°ed√°"
 
 #: gal/widgets/color-palette.c:632 gal/widgets/color-palette.c:649
 msgid "pink"
-msgstr "ruæov·"
+msgstr "ru≈æov√°"
 
 #: gal/widgets/color-palette.c:633
 msgid "light orange"
-msgstr "svetlooranæov·"
+msgstr "svetlooran≈æov√°"
 
 #: gal/widgets/color-palette.c:634 gal/widgets/color-palette.c:646
 msgid "light yellow"
-msgstr "svetloælt·"
+msgstr "svetlo≈ælt√°"
 
 #: gal/widgets/color-palette.c:635
 msgid "light green"
-msgstr "svetlozelen·"
+msgstr "svetlozelen√°"
 
 #: gal/widgets/color-palette.c:636
 msgid "light cyan"
-msgstr "svetl· modrozelen·"
+msgstr "svetl√° modrozelen√°"
 
 #: gal/widgets/color-palette.c:637 gal/widgets/color-palette.c:647
 msgid "light blue"
-msgstr "svetlomodr·"
+msgstr "svetlomodr√°"
 
 #: gal/widgets/color-palette.c:638 gal/widgets/color-palette.c:651
 msgid "light purple"
-msgstr "svetlofialov·"
+msgstr "svetlofialov√°"
 
 #: gal/widgets/color-palette.c:639
 msgid "white"
@@ -460,186 +504,189 @@ msgstr "biela"
 
 #: gal/widgets/color-palette.c:644
 msgid "purplish blue"
-msgstr "fialovomodr·"
+msgstr "fialovomodr√°"
 
 #: gal/widgets/color-palette.c:648
 msgid "dark purple"
-msgstr "tmavofialov·"
+msgstr "tmavofialov√°"
 
 #: gal/widgets/color-palette.c:650
 msgid "sky blue"
-msgstr "modr· obloha"
+msgstr "modr√° obloha"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
-msgstr "Pridaª do glob·lneho zoznamu kategÛriÌ"
+msgstr "Prida≈• do glob√°lneho zoznamu kateg√≥ri√≠"
 
 #: gal/widgets/e-categories.c:397
 msgid "Add all to global category list"
-msgstr "Pridaª vπetko do glob·lneho zoznamu kategÛriÌ"
+msgstr "Prida≈• v≈°etko do glob√°lneho zoznamu kateg√≥ri√≠"
+
+#: gal/widgets/e-categories.c:398
+msgid "Remove from global category list"
+msgstr "Odstr√°ni≈• z glob√°lneho zoznamu kateg√≥ri√≠"
 
 #: gal/widgets/e-categories.c:399
-msgid "Remove from global category list"
-msgstr "Odstr·niª z glob·lneho zoznamu kategÛriÌ"
-
-#: gal/widgets/e-categories.c:401
 msgid "Remove all from global category list"
-msgstr "Odstr·niª vπetko z glob·lneho zoznamu kategÛriÌ"
+msgstr "Odstr√°ni≈• v≈°etko z glob√°lneho zoznamu kateg√≥ri√≠"
+
+#: gal/widgets/e-categories.c:542
+msgid "Edit Categories"
+msgstr "Upravi≈• kateg√≥rie"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
-msgstr "Upraviª hlavn˝ zoznam kategÛriÌ..."
+msgstr "Upravi≈• hlavn√Ω zoznam kateg√≥ri√≠..."
 
 #: gal/widgets/gal-categories.glade.h:2
 msgid "Item(s) belong to these _categories:"
-msgstr "Poloæky patriace do t˝chto _kategÛriÌ:"
+msgstr "Polo≈æky patriace do t√Ωchto _kateg√≥ri√≠:"
 
 #: gal/widgets/gal-categories.glade.h:3
 msgid "_Available Categories:"
-msgstr "_MoænÈ kategÛrie:"
+msgstr "_Mo≈æn√© kateg√≥rie:"
 
 #: gal/widgets/gal-categories.glade.h:4
 msgid "categories"
-msgstr "kategÛrie"
+msgstr "kateg√≥rie"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "Narodeniny"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "Obchod"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "Konkurencia"
 
-#: gal/widgets/e-categories-master-list-array.c:68
-msgid "Favorites"
-msgstr "Obµ˙benÈ"
-
 #: gal/widgets/e-categories-master-list-array.c:69
+msgid "Favorites"
+msgstr "Obƒæ√∫ben√©"
+
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "Dary"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "Ciele"
 
-#: gal/widgets/e-categories-master-list-array.c:71
-msgid "Holiday"
-msgstr "Pr·zdniny"
-
 #: gal/widgets/e-categories-master-list-array.c:72
-msgid "Holiday Cards"
-msgstr "Pohµadnice"
+msgid "Holiday"
+msgstr "Pr√°zdniny"
 
 #: gal/widgets/e-categories-master-list-array.c:73
-msgid "Hot Contacts"
-msgstr "V˝znamnÈ kontakty"
+msgid "Holiday Cards"
+msgstr "Pohƒæadnice"
 
 #: gal/widgets/e-categories-master-list-array.c:74
-msgid "Ideas"
-msgstr "Myπlienky"
+msgid "Hot Contacts"
+msgstr "V√Ωznamn√© kontakty"
 
 #: gal/widgets/e-categories-master-list-array.c:75
-msgid "International"
-msgstr "Medzin·rodnÈ"
+msgid "Ideas"
+msgstr "My≈°lienky"
 
 #: gal/widgets/e-categories-master-list-array.c:76
-msgid "Key Customer"
-msgstr "Kµ˙Ëov˝ z·kaznÌk"
+msgid "International"
+msgstr "Medzin√°rodn√©"
 
 #: gal/widgets/e-categories-master-list-array.c:77
-msgid "Miscellaneous"
-msgstr "RÙzne"
+msgid "Key Customer"
+msgstr "Kƒæ√∫ƒçov√Ω z√°kazn√≠k"
 
 #: gal/widgets/e-categories-master-list-array.c:78
-msgid "Personal"
-msgstr "OsobnÈ"
+msgid "Miscellaneous"
+msgstr "R√¥zne"
 
 #: gal/widgets/e-categories-master-list-array.c:79
-msgid "Phone Calls"
-msgstr "TelefÛnne volania"
+msgid "Personal"
+msgstr "Osobn√©"
 
 #: gal/widgets/e-categories-master-list-array.c:80
+msgid "Phone Calls"
+msgstr "Telef√≥nne volania"
+
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "Stav"
 
-#: gal/widgets/e-categories-master-list-array.c:81
-msgid "Strategies"
-msgstr "StratÈgie"
-
 #: gal/widgets/e-categories-master-list-array.c:82
-msgid "Suppliers"
-msgstr "Dod·vatelia"
+msgid "Strategies"
+msgstr "Strat√©gie"
 
 #: gal/widgets/e-categories-master-list-array.c:83
-msgid "Time & Expenses"
-msgstr "»as & V˝daje"
+msgid "Suppliers"
+msgstr "Dod√°vatelia"
 
 #: gal/widgets/e-categories-master-list-array.c:84
+msgid "Time & Expenses"
+msgstr "ƒåas & V√Ωdaje"
+
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
-msgstr "»akanie"
+msgstr "ƒåakanie"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
-msgstr "* KliknutÌm sem pridajte kategÛriu *"
+msgstr "* Kliknut√≠m sem pridajte kateg√≥riu *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
-msgstr "KategÛria"
+msgstr "Kateg√≥ria"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:1
 msgid "Add a category"
-msgstr "Pridaª kategÛriu"
+msgstr "Prida≈• kateg√≥riu"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "Pridaª..."
+msgid "Edit Global Category List"
+msgstr "Upravi≈• glob√°lny zoznam kateg√≥ri√≠"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:3
-msgid "Edit Global Category List"
-msgstr "Upraviª glob·lny zoznam kategÛriÌ"
+msgid "Modify a Category"
+msgstr "Upravi≈• kateg√≥riu"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:4
-msgid "Modify a Category"
-msgstr "Upraviª kategÛriu"
+msgid "Remove"
+msgstr "Odstr√°ni≈•"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "Zmeniª..."
+msgid "_Category to Add:"
+msgstr "Prida≈• _kateg√≥riu:"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:6
-msgid "Remove"
-msgstr "Odstr·niª"
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
-msgid "_Category to Add:"
-msgstr "Pridaª _kategÛriu:"
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
-msgstr "Upraviª _kategÛriu:"
+msgstr "Upravi≈• _kateg√≥riu:"
 
-#~ msgid "_Fields..."
-#~ msgstr "_Polia..."
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+msgid "All Categories"
+msgstr "V≈°etky kateg√≥rie"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d poloæka)"
+#~ msgid "Views for \"%s\""
+#~ msgstr "Pohƒæady pre \"%s\""
 
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d poloæiek)"
+#~ msgid "&lt;- _Remove"
+#~ msgstr "&lt;- _Odstr√°ni≈•"
 
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d poloæka)"
+#~ msgid "_Add -&gt;"
+#~ msgstr "_Prida≈• -&gt;"
 
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d poloæiek)"
+#~ msgid "&lt;&lt; Remove"
+#~ msgstr "&lt;&lt; Odstr√°ni≈•"
 
-#~ msgid "Configuring view: FIXME"
-#~ msgstr "Nastavujem pohµad:"
+#~ msgid "Add &gt;&gt;"
+#~ msgstr "Prida≈• &gt;&gt;"
+
+#~ msgid "Add..."
+#~ msgstr "Prida≈•..."
+
+#~ msgid "Modify..."
+#~ msgstr "Zmeni≈•..."

@@ -27,6 +27,7 @@
 
 #include <gtk/gtkwidget.h>
 #include "gtk-combo-box.h"
+#include <libgnome/gnome-defs.h>
 
 BEGIN_GNOME_DECLS
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.11.2\n"
-"POT-Creation-Date: 2002-04-18 17:59-0400\n"
+"POT-Creation-Date: 2002-12-03 18:04-0600\n"
 "PO-Revision-Date: 2001-09-11 18:44+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -45,22 +45,6 @@ msgstr "%b %d %H:%M"
 msgid "%b %d %Y"
 msgstr "%Y %b %d"
 
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Ascending)"
-msgstr "(Didëjanèiai)"
-
-#: gal/e-table/e-table-config.c:282 gal/e-table/e-table-config.c:324
-msgid "(Descending)"
-msgstr "(Maþëjanèiai)"
-
-#: gal/e-table/e-table-config.c:289
-msgid "Not sorted"
-msgstr "Nerikiuoti"
-
-#: gal/e-table/e-table-config.c:330
-msgid "No grouping"
-msgstr "Negrupuoti"
-
 #: gal/e-table/e-table-config-no-group.glade.h:1
 #: gal/e-table/e-table-config.glade.h:1
 msgid "<- _Remove"
@@ -87,7 +71,7 @@ msgid "Descending"
 msgstr "Maþëjanèiai"
 
 #: gal/e-table/e-table-config-no-group.glade.h:6
-#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:5
 msgid "Description"
 msgstr "Apraðymas"
 
@@ -146,14 +130,36 @@ msgstr "Tada pagal"
 msgid "_Add ->"
 msgstr "_Pridëti ->"
 
-#: gal/e-table/e-table-config.glade.h:18
-msgid "_Group By..."
-msgstr "_Grupuoti pagal..."
-
 #: gal/e-table/e-table-config-no-group.glade.h:18
-#: gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:18
+#, fuzzy
+msgid "_Fields Shown..."
+msgstr "_Laukai..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
 msgid "_Sort..."
 msgstr "_Rikiuoti..."
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Ascending)"
+msgstr "(Didëjanèiai)"
+
+#: gal/e-table/e-table-config.c:293 gal/e-table/e-table-config.c:335
+msgid "(Descending)"
+msgstr "(Maþëjanèiai)"
+
+#: gal/e-table/e-table-config.c:300
+msgid "Not sorted"
+msgstr "Nerikiuoti"
+
+#: gal/e-table/e-table-config.c:341
+msgid "No grouping"
+msgstr "Negrupuoti"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Grupuoti pagal..."
 
 #: gal/e-table/e-table-field-chooser.glade.h:1
 msgid "Field Chooser"
@@ -187,68 +193,94 @@ msgstr "Galimi laukai"
 msgid "Show in this order"
 msgstr "Rodyti ðia tvarka"
 
-#: gal/e-table/e-table-header-item.c:1302
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d elementas)"
+
+#: gal/e-table/e-table-group-container.c:351
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d elementø)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d elementas)"
+
+#: gal/e-table/e-table-group-container.c:357
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d elementø)"
+
+#: gal/e-table/e-table-header-item.c:1440
 #, fuzzy
 msgid "Customize Current View"
 msgstr "Prisitaikyti esamà vaizdà..."
 
-#: gal/e-table/e-table-header-item.c:1317
+#: gal/e-table/e-table-header-item.c:1461
 msgid "Sort Ascending"
 msgstr "Rikiuoti didëjanèiai"
 
-#: gal/e-table/e-table-header-item.c:1318
+#: gal/e-table/e-table-header-item.c:1462
 msgid "Sort Descending"
 msgstr "Rikiuoti maþëjanèiai"
 
-#: gal/e-table/e-table-header-item.c:1319
+#: gal/e-table/e-table-header-item.c:1463
 msgid "Unsort"
 msgstr "Nerikiuoti"
 
-#: gal/e-table/e-table-header-item.c:1321
+#: gal/e-table/e-table-header-item.c:1465
 msgid "Group By This Field"
 msgstr "Grupuoti pagal ðá laukà"
 
-#: gal/e-table/e-table-header-item.c:1322
+#: gal/e-table/e-table-header-item.c:1466
 msgid "Group By Box"
 msgstr "Grupuoti pagal dëþutæ"
 
-#: gal/e-table/e-table-header-item.c:1324
+#: gal/e-table/e-table-header-item.c:1468
 msgid "Remove This Column"
 msgstr "Paðalinti ðá stulpelá"
 
-#: gal/e-table/e-table-header-item.c:1325
+#: gal/e-table/e-table-header-item.c:1469
 msgid "Add a Column..."
 msgstr "Pridëti stulpelá..."
 
-#: gal/e-table/e-table-header-item.c:1327
+#: gal/e-table/e-table-header-item.c:1471
 msgid "Alignment"
 msgstr "Lygiavimas"
 
-#: gal/e-table/e-table-header-item.c:1328
+#: gal/e-table/e-table-header-item.c:1472
 msgid "Best Fit"
 msgstr "Geriausiai telpantis"
 
-#: gal/e-table/e-table-header-item.c:1329
+#: gal/e-table/e-table-header-item.c:1473
 msgid "Format Columns..."
 msgstr "Formatuoti stulpelius..."
 
-#: gal/e-table/e-table-header-item.c:1331
+#: gal/e-table/e-table-header-item.c:1475
 msgid "Customize Current View..."
 msgstr "Prisitaikyti esamà vaizdà..."
+
+#: gal/menus/gal-define-views-dialog.c:287
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "Apibrëþti ¥%s´ vaizdus"
+
+#: gal/menus/gal-define-views-dialog.c:294 gal/menus/gal-view-instance.c:585
+#, fuzzy
+msgid "Define Views"
+msgstr "Apibrëþti ¥%s´ vaizdus"
 
 #: gal/menus/gal-define-views.glade.h:2
 #, no-c-format
 msgid "Define Views for \"%s\""
 msgstr "Apibrëþti ¥%s´ vaizdus"
 
-#: gal/menus/gal-define-views.glade.h:4
+#: gal/menus/gal-define-views.glade.h:6
 msgid "Re_set to Factory Defaults..."
 msgstr "At_statyti gamyklines nuostatas..."
-
-#: gal/menus/gal-define-views.glade.h:6
-#, no-c-format
-msgid "Views for \"%s\""
-msgstr "¥%s´ vaizdai"
 
 #: gal/menus/gal-define-views.glade.h:7
 msgid "_Copy..."
@@ -270,6 +302,16 @@ msgstr "_Naujas..."
 msgid "Table"
 msgstr "Lentelë"
 
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Custom View"
+msgstr "Prisitaikyti esamà vaizdà..."
+
+#: gal/menus/gal-view-instance.c:581
+#, fuzzy
+msgid "Save Custom View"
+msgstr "Svarbus klientas"
+
 #: gal/menus/gal-view-new-dialog.glade.h:1
 msgid "Name of new view:"
 msgstr "Naujo vaizdo pavadinimas:"
@@ -282,6 +324,10 @@ msgstr "Vaizdo tipas:"
 #, c-format
 msgid "Group %i"
 msgstr "Grupë %i"
+
+#: gal/unicode/gutf8.c:1034
+msgid "Character out of range for UTF-8"
+msgstr ""
 
 #. This is the default custom color
 #: gal/widgets/color-palette.c:430
@@ -469,7 +515,7 @@ msgstr "tamsiai violetinë"
 msgid "sky blue"
 msgstr "dangiðkai mëlyna"
 
-#: gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:396
 msgid "Add to global category list"
 msgstr "Pridëti prie globalaus kategorijø sàraðo"
 
@@ -477,13 +523,18 @@ msgstr "Pridëti prie globalaus kategorijø sàraðo"
 msgid "Add all to global category list"
 msgstr "Pridëti visas prie globalaus kategorijø sàraðo"
 
-#: gal/widgets/e-categories.c:399
+#: gal/widgets/e-categories.c:398
 msgid "Remove from global category list"
 msgstr "Paðalinti ið globalaus kategorijø sàraðo"
 
-#: gal/widgets/e-categories.c:401
+#: gal/widgets/e-categories.c:399
 msgid "Remove all from global category list"
 msgstr "Paðalinti visas ið globalaus kategorijø sàraðo"
+
+#: gal/widgets/e-categories.c:542
+#, fuzzy
+msgid "Edit Categories"
+msgstr "kategorijos"
 
 #: gal/widgets/gal-categories.glade.h:1
 msgid "Edit Master Category List..."
@@ -501,95 +552,95 @@ msgstr "_Galimos kategorijos:"
 msgid "categories"
 msgstr "kategorijos"
 
-#: gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:66
 msgid "Birthday"
 msgstr "Gimtadienis"
 
-#: gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:67
 msgid "Business"
 msgstr "Darbas"
 
-#: gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:68
 msgid "Competition"
 msgstr "Varþovai"
 
-#: gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:69
 msgid "Favorites"
 msgstr "Favoritai"
 
-#: gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:70
 msgid "Gifts"
 msgstr "Dovanos"
 
-#: gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:71
 msgid "Goals/Objectives"
 msgstr "Tikslai/Siekiai"
 
-#: gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:72
 msgid "Holiday"
 msgstr "Atostogos"
 
-#: gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:73
 msgid "Holiday Cards"
 msgstr "Ðventiniai atvirukai"
 
-#: gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:74
 msgid "Hot Contacts"
 msgstr "Karðti kontaktai"
 
-#: gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:75
 msgid "Ideas"
 msgstr "Idëjos"
 
-#: gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:76
 msgid "International"
 msgstr "Tarptautiniai"
 
-#: gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:77
 msgid "Key Customer"
 msgstr "Svarbus klientas"
 
-#: gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:78
 msgid "Miscellaneous"
 msgstr "Ávairûs"
 
-#: gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:79
 msgid "Personal"
 msgstr "Asmeniðki"
 
-#: gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:80
 msgid "Phone Calls"
 msgstr "Telefono skambuèiai"
 
-#: gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:81
 msgid "Status"
 msgstr "Bûsena"
 
-#: gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:82
 msgid "Strategies"
 msgstr "Strategija"
 
-#: gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:83
 msgid "Suppliers"
 msgstr "Tiekëjai"
 
-#: gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:84
 msgid "Time & Expenses"
 msgstr "Laikas ir iðlaidos"
 
-#: gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:85
 msgid "VIP"
 msgstr "VIP"
 
-#: gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:86
 msgid "Waiting"
 msgstr "Laukia"
 
-#: gal/widgets/e-categories-master-list-dialog.c:171
+#: gal/widgets/e-categories-master-list-dialog.c:191
 msgid "* Click here to add a category *"
 msgstr "* Spausk èia, kad pridëtum kategorijà *"
 
-#: gal/widgets/e-categories-master-list-dialog.c:172
+#: gal/widgets/e-categories-master-list-dialog.c:192
 msgid "Category"
 msgstr "Kategorija"
 
@@ -598,47 +649,38 @@ msgid "Add a category"
 msgstr "Pridëti kategorijà"
 
 #: gal/widgets/e-categories-master-list-dialog.glade.h:2
-msgid "Add..."
-msgstr "Pridëti..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Edit Global Category List"
 msgstr "Taisyti globalø kategorijø sàraðà"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
 msgid "Modify a Category"
 msgstr "Taisyti kategorijà"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:5
-msgid "Modify..."
-msgstr "Taisyti..."
-
-#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
 msgid "Remove"
 msgstr "Paðalinti"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
 msgid "_Category to Add:"
 msgstr "Pridedama _kategorija:"
 
-#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
 msgid "_Category to Modify:"
 msgstr "Taisoma _kategorija:"
 
-#~ msgid "%s : %s (%d item)"
-#~ msgstr "%s : %s (%d elementas)"
-
-#~ msgid "%s : %s (%d items)"
-#~ msgstr "%s : %s (%d elementø)"
-
-#~ msgid "%s (%d item)"
-#~ msgstr "%s (%d elementas)"
-
-#~ msgid "%s (%d items)"
-#~ msgstr "%s (%d elementø)"
+#: gal/widgets/e-categories-master-list-option-menu.c:72
+#, fuzzy
+msgid "All Categories"
+msgstr "_Galimos kategorijos:"
 
 #~ msgid "Configuring view: FIXME"
 #~ msgstr "Prisitaikomas vaizdas: FIXME"
 
-#~ msgid "_Fields..."
-#~ msgstr "_Laukai..."
+#~ msgid "Views for \"%s\""
+#~ msgstr "¥%s´ vaizdai"
+
+#~ msgid "Add..."
+#~ msgstr "Pridëti..."
+
+#~ msgid "Modify..."
+#~ msgstr "Taisyti..."
