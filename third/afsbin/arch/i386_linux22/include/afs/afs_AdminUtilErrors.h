@@ -15,6 +15,9 @@
 #define ADMUTILRPCSTATSNULL                      (21770L)
 #define ADMRPCSTATENULL                          (21771L)
 #define ADMRPCVERSIONNULL                        (21772L)
+#define ADMRXDEBUGHANDLENULL                     (21773L)
+#define ADMRXDEBUGVERSIONNULL                    (21774L)
+#define ADMRXDEBUGSTATSNULL                      (21775L)
 extern void initialize_au_error_table ();
 #define ERROR_TABLE_BASE_au (21760L)
 

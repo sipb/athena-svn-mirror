@@ -4,10 +4,11 @@
 /*
  * Copyright (C)  1998  Transarc Corporation.  All rights reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/afs_Admin.h,v 1.1.1.1 1999-12-22 20:45:34 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/afs_Admin.h,v 1.1.1.2 2000-04-12 18:46:17 ghudson Exp $
  */
 
 #include <afs/param.h>
+#include <afs/afs_args.h>
 #include <rx/rx.h>
 
 #ifdef AFS_NT40_ENV
@@ -32,12 +33,7 @@ typedef enum {
   AFS_RPC_STATS_ENABLED
 } afs_RPCStatsState_t, *afs_RPCStatsState_p;
 
-typedef u_int32 afs_RPCStatsVersion_t, *afs_RPCStatsVersion_p;
-
-/*
- * The following is not an enum because AIX forces enum's to be
- * unsigned ints and rejects the all flag
- */
+typedef afs_uint32 afs_RPCStatsVersion_t, *afs_RPCStatsVersion_p;
 
 #define AFS_RX_STATS_CLEAR_ALL 			 	0xffffffff
 #define AFS_RX_STATS_CLEAR_INVOCATIONS 			0x1
@@ -46,17 +42,45 @@ typedef u_int32 afs_RPCStatsVersion_t, *afs_RPCStatsVersion_p;
 #define AFS_RX_STATS_CLEAR_TIME_MIN 			0x8
 #define AFS_RX_STATS_CLEAR_TIME_MAX 			0x10
 
-typedef u_int32 afs_RPCStatsClearFlag_t, *afs_RPCStatsClearFlag_p;
+typedef afs_uint32 afs_RPCStatsClearFlag_t, *afs_RPCStatsClearFlag_p;
+
+typedef union {
+  rx_function_entry_v1_t stats_v1;
+  /* add new stat structures here when required */
+} afs_RPCUnion_t, *afs_RPCUnion_p;
 
 typedef struct afs_RPCStats {
-  u_int32 clientVersion;
-  u_int32 serverVersion;
-  u_int32 statCount;
-  union {
-      rx_function_entry_v1_t stats_v1;
-      /* add new stat structures here when required */
-  } s;
+  afs_uint32 clientVersion;
+  afs_uint32 serverVersion;
+  afs_uint32 statCount;
+  afs_RPCUnion_t s;
 } afs_RPCStats_t, *afs_RPCStats_p;
+
+typedef union {
+  cm_initparams_v1 config_v1;
+  /* add new client config structures here when required */
+} afs_ClientConfigUnion_t, *afs_ClientConfigUnion_p;
+
+typedef struct afs_ClientConfig {
+  afs_uint32 clientVersion;
+  afs_uint32 serverVersion;
+  afs_ClientConfigUnion_t c;
+} afs_ClientConfig_t, *afs_ClientConfig_p;
+
+#if AFS_NT40_ENV
+typedef HANDLE rxdebugSocket_t;
+#else /* AFS_NT40_ENV */
+typedef int rxdebugSocket_t;
+#endif /* AFS_NT40_ENV */
+#define INVALID_RXDEBUG_SOCKET	((rxdebugSocket_t)-1)
+
+typedef struct {
+  rxdebugSocket_t sock;
+  int ipAddr;
+  int udpPort;
+  int firstFlag;
+  afs_uint32 supportedStats;
+} rxdebugHandle_t, *rxdebugHandle_p;
 
 #define AFS_STATUS_OK 0
 
