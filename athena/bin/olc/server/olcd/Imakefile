@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.13 1991-01-18 14:53:19 lwvanels Exp $
+ * $Id: Imakefile,v 1.14 1991-02-01 23:21:00 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -22,11 +22,11 @@ OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
 LOCAL_LIBRARIES=$(COMMONLIB)
 
 #ifdef Profiling
-DEFINES=-DLOG -DSYSLOG -DPROFILE
+DEFINES=-DLOG -DSYSLOG -DPROFILE -DCDATE="\"`date`\""
 .c.o:
 	$(CC) -pg -c $(CFLAGS) $*.c
 #else
-DEFINES=-DLOG -DSYSLOG
+DEFINES=-DLOG -DSYSLOG -DCDATE="\"`date`\""
 #endif /* Profiling */
 
 DEPLIBS=$(LOCAL_LIBRARIES)
