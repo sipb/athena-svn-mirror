@@ -109,7 +109,7 @@ EOS
 # On Solaris machines with SYNCCONFIG set, update /etc/nodename so we
 # don't have to reboot an extra time during this update.
 if [ "$HOSTTYPE" = sun4 -a "$SYNCCONFIG" = true ]; then
-	rm -f /etc/nodename.new
+	rm -f /etc/nodename.new /etc/nodename.saved
 	echo "$HOST" > /etc/nodename.new
 	ln /etc/nodename /etc/nodename.saved
 	mv /etc/nodename.new /etc/nodename
