@@ -15,9 +15,85 @@ ChangeLog.html
 to the CVS at 
 http://cvs.gnome.org/viewcvs/libxml2/
  code base.There is the list of public releases:
+2.6.17: Jan 16 2005:
+   - build fixes: Windows, warnings removal (William Brack), 
+      maintainer-clean dependency(William), build in a different directory
+      (William), fixing --with-minimum configure build (William), BeOS
+      build (Marcin Konicki), Python-2.4 detection (William), compilation
+      on AIX (Dan McNichol)
+   - bug fixes: xmlTextReaderHasAttributes (Rob Richards), xmlCtxtReadFile()
+      to use the catalog(s), loop on output (William Brack), XPath memory leak,
+      ID deallocation problem (Steve Shepard), debugDumpNode crash (William),
+      warning not using error callback (William), xmlStopParser bug (William),
+      UTF-16 with BOM on DTDs (William), namespace bug on empty elements
+      in push mode (Rob Richards), line and col computations fixups (Aleksey
+      Sanin), xmlURIEscape fix (William), xmlXPathErr on bad range (William),
+      patterns with too many steps, bug in RNG choice optimization, line
+      number sometimes missing.
+      
+   - improvements: XSD Schemas (Kasimier Buchcik), python generator (William),
+      xmlUTF8Strpos speedup (William), unicode Python strings (William),
+      XSD error reports (Kasimier Buchcik), Python __str__ call serialize().
+      
+   - new APIs: added xmlDictExists(), GetLineNumber and GetColumnNumber
+      for the xmlReader (Aleksey Sanin), Dynamic Shared Libraries APIs
+      (mostly Joel Reed), error extraction API from regexps, new XMLSave
+      option for format (Phil Shafer)
+   - documentation: site improvement (John Fleck), FAQ entries (William).
+
+
+2.6.16: Nov 10 2004:
+   - general hardening and bug fixing crossing all the API based on new
+    automated regression testing
+   - build fix: IPv6 build and test on AIX (Dodji Seketeli)
+   - bug fixes: problem with XML::Libxml reported by Petr Pajas,  encoding
+    conversion functions return values, UTF-8 bug affecting XPath reported by
+    Markus Bertheau, catalog problem with NULL entries (William Brack)
+   - documentation: fix to xmllint man page, some API function descritpion
+    were updated.
+   - improvements: DTD validation APIs provided at the Python level (Brent
+    Hendricks) 
+
+
+2.6.15: Oct 27 2004:
+   - security fixes on the nanoftp and nanohttp modules
+   - build fixes: xmllint detection bug in configure, building outside the
+    source tree (Thomas Fitzsimmons)
+   - bug fixes: HTML parser on broken ASCII chars in names (William), Python
+    paths (Malcolm Tredinnick), xmlHasNsProp and default namespace (William),
+    saving to python file objects (Malcolm Tredinnick), DTD lookup fix
+    (Malcolm), save back <group> in catalogs (William), tree build
+    fixes (DV and Rob Richards), Schemas memory bug, structured error handler
+    on Python 64bits, thread local memory deallocation, memory leak reported
+    by Volker Roth, xmlValidateDtd in the presence of an internal subset,
+    entities and _private problem (William), xmlBuildRelativeURI error
+    (William).
+   - improvements: better XInclude error reports (William), tree debugging
+    module and tests, convenience functions at the Reader API (Graham
+    Bennett), add support for PI in the HTML parser.
+
+
+2.6.14: Sep 29 2004:
+   - build fixes: configure paths for xmllint and xsltproc, compilation
+    without HTML parser, compilation warning cleanups (William Brack &
+    Malcolm Tredinnick), VMS makefile update (Craig Berry),
+   - bug fixes: xmlGetUTF8Char (William Brack), QName properties (Kasimier
+    Buchcik), XInclude testing, Notation serialization, UTF8ToISO8859x
+    transcoding (Mark Itzcovitz), lots of XML Schemas cleanup and fixes
+    (Kasimier), ChangeLog cleanup (Stepan Kasal), memory fixes (Mark Vakoc),
+    handling of failed realloc(), out of bound array adressing in Schemas
+    date handling, Python space/tabs cleanups (Malcolm Tredinnick), NMTOKENS
+    E20 validation fix (Malcolm),
+   - improvements: added W3C XML Schemas testsuite (Kasimier Buchcik), add
+    xmlSchemaValidateOneElement (Kasimier), Python exception hierearchy
+    (Malcolm Tredinnick), Python libxml2 driver improvement (Malcolm
+    Tredinnick), Schemas support for xsi:schemaLocation,
+    xsi:noNamespaceSchemaLocation, xsi:type (Kasimier Buchcik)
+
+
 2.6.13: Aug 31 2004:
    - build fixes: Windows and zlib (Igor Zlatkovic), -O flag with gcc,
-    Solaris compiler warning, fixing RPM BuildRequires, 
+    Solaris compiler warning, fixing RPM BuildRequires,
    - fixes: DTD loading on Windows (Igor), Schemas error reports APIs
     (Kasimier Buchcik), Schemas validation crash, xmlCheckUTF8 (William Brack
     and Julius Mittenzwei), Schemas facet check (Kasimier), default namespace

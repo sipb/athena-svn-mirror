@@ -60,6 +60,7 @@
 #include "libxml/xpath.h"
 #include "libxml/xpathInternals.h"
 #include "libxml/xpointer.h"
+#include "libxml/xmlmodule.h"
 
 /* special hot spot not exported ones */
 
@@ -108,7 +109,7 @@ extern __typeof (__xmlGenericErrorContext) __xmlGenericErrorContext __attribute(
     </xsl:if>
   </xsl:template>
   <xsl:template match="cond">
-    <xsl:text>#ifdef </xsl:text>
+    <xsl:text>#if </xsl:text>
     <xsl:value-of select="."/>
     <xsl:text>
 </xsl:text>

@@ -377,7 +377,14 @@ xmlNewSaveCtxt(const char *encoding, int options)
 	return ( NULL );
     }
     memset(ret, 0, sizeof(xmlSaveCtxt));
+
+    /*
+     * Use the options
+     */
     ret->options = options;
+    if (options & XML_SAVE_FORMAT)
+        ret->format = 1;
+
     if (encoding != NULL) {
         ret->handler = xmlFindCharEncodingHandler(encoding);
 	if (ret->handler == NULL) {
@@ -445,6 +452,7 @@ xhtmlNodeDumpOutput(xmlSaveCtxtPtr ctxt, xmlNodePtr cur);
 static void xmlNodeListDumpOutput(xmlSaveCtxtPtr ctxt, xmlNodePtr cur);
 static void xmlNodeDumpOutputInternal(xmlSaveCtxtPtr ctxt, xmlNodePtr cur);
 void xmlNsListDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur);
+static void xmlDocContentDumpOutput(xmlSaveCtxtPtr ctxt, xmlDocPtr cur);
 
 /**
  * xmlNsDumpOutput:
@@ -456,7 +464,7 @@ void xmlNsListDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur);
  */
 static void
 xmlNsDumpOutput(xmlOutputBufferPtr buf, xmlNsPtr cur) {
-    if (cur == NULL) return;
+    if ((cur == NULL) || (buf == NULL)) return;
     if ((cur->type == XML_LOCAL_NAMESPACE) && (cur->href != NULL)) {
 	if (xmlStrEqual(cur->prefix, BAD_CAST "xml"))
 	    return;
@@ -517,14 +525,18 @@ xmlDtdDumpOutput(xmlSaveCtxtPtr ctxt, xmlDtdPtr dtd) {
 	xmlBufferWriteQuotedString(buf->buffer, dtd->SystemID);
     }
     if ((dtd->entities == NULL) && (dtd->elements == NULL) &&
-            (dtd->attributes == NULL) && (dtd->notations == NULL) &&
-	    (dtd->pentities == NULL)) {
+        (dtd->attributes == NULL) && (dtd->notations == NULL) &&
+	(dtd->pentities == NULL)) {
 	xmlOutputBufferWrite(buf, 1, ">");
 	return;
     }
     xmlOutputBufferWrite(buf, 3, " [\n");
-    /* Dump the notations first they are not in the DTD children list */
-    if (dtd->notations != NULL) {
+    /*
+     * Dump the notations first they are not in the DTD children list
+     * Do this only on a standalone DTD or on the internal subset though.
+     */
+    if ((dtd->notations != NULL) && ((dtd->doc == NULL) ||
+        (dtd->doc->intSubset == dtd))) {
         xmlDumpNotationTable(buf->buffer, (xmlNotationTablePtr) dtd->notations);
     }
     format = ctxt->format;
@@ -553,6 +565,7 @@ xmlAttrDumpOutput(xmlSaveCtxtPtr ctxt, xmlAttrPtr cur) {
 
     if (cur == NULL) return;
     buf = ctxt->buf;
+    if (buf == NULL) return;
     xmlOutputBufferWrite(buf, 1, " ");
     if ((cur->ns != NULL) && (cur->ns->prefix != NULL)) {
         xmlOutputBufferWriteString(buf, (const char *)cur->ns->prefix);
@@ -630,6 +643,11 @@ xmlNodeDumpOutputInternal(xmlSaveCtxtPtr ctxt, xmlNodePtr cur) {
 	return;
     if (cur->type == XML_XINCLUDE_END)
 	return;
+    if ((cur->type == XML_DOCUMENT_NODE) ||
+        (cur->type == XML_HTML_DOCUMENT_NODE)) {
+	xmlDocContentDumpOutput(ctxt, (xmlDocPtr) cur);
+	return;
+    }
     if (cur->type == XML_DTD_NODE) {
         xmlDtdDumpOutput(ctxt, (xmlDtdPtr) cur);
 	return;
@@ -1425,6 +1443,7 @@ xmlSaveDoc(xmlSaveCtxtPtr ctxt, xmlDocPtr doc)
 {
     long ret = 0;
 
+    if ((ctxt == NULL) || (doc == NULL)) return(-1);
     xmlDocContentDumpOutput(ctxt, doc);
     return(ret);
 }
@@ -1445,6 +1464,7 @@ xmlSaveTree(xmlSaveCtxtPtr ctxt, xmlNodePtr node)
 {
     long ret = 0;
 
+    if ((ctxt == NULL) || (node == NULL)) return(-1);
     xmlNodeDumpOutputInternal(ctxt, node);
     return(ret);
 }
@@ -1786,6 +1806,8 @@ xmlNodeDumpOutput(xmlOutputBufferPtr buf, xmlDocPtr doc, xmlNodePtr cur,
 
     xmlInitParser();
 
+    if ((buf == NULL) || (cur == NULL)) return;
+
     memset(&ctxt, 0, sizeof(ctxt));
     ctxt.doc = doc;
     ctxt.buf = buf;
@@ -2031,6 +2053,8 @@ xmlDocDump(FILE *f, xmlDocPtr cur) {
  * @encoding:  the encoding if any assuming the I/O layer handles the trancoding
  *
  * Dump an XML document to an I/O buffer.
+ * Warning ! This call xmlOutputBufferClose() on buf which is not available
+ * after this call.
  *
  * returns: the number of bytes written or -1 in case of failure.
  */
@@ -2039,7 +2063,11 @@ xmlSaveFileTo(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding) {
     xmlSaveCtxt ctxt;
     int ret;
 
-    if (buf == NULL) return(0);
+    if (buf == NULL) return(-1);
+    if (cur == NULL) {
+        xmlOutputBufferClose(buf);
+	return(-1);
+    }
     memset(&ctxt, 0, sizeof(ctxt));
     ctxt.doc = cur;
     ctxt.buf = buf;
@@ -2060,7 +2088,8 @@ xmlSaveFileTo(xmlOutputBufferPtr buf, xmlDocPtr cur, const char *encoding) {
  * @format: should formatting spaces been added
  *
  * Dump an XML document to an I/O buffer.
- * NOTE: the I/O buffer is closed as part of the call.
+ * Warning ! This call xmlOutputBufferClose() on buf which is not available
+ * after this call.
  *
  * returns: the number of bytes written or -1 in case of failure.
  */
@@ -2071,8 +2100,13 @@ xmlSaveFormatFileTo(xmlOutputBufferPtr buf, xmlDocPtr cur,
     xmlSaveCtxt ctxt;
     int ret;
 
-    if (buf == NULL)
-        return (0);
+    if (buf == NULL) return(-1);
+    if ((cur == NULL) ||
+        ((cur->type != XML_DOCUMENT_NODE) &&
+	 (cur->type != XML_HTML_DOCUMENT_NODE))) {
+        xmlOutputBufferClose(buf);
+	return(-1);
+    }
     memset(&ctxt, 0, sizeof(ctxt));
     ctxt.doc = cur;
     ctxt.buf = buf;

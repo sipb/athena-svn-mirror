@@ -29,28 +29,28 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  *
  * the version string like "1.2.3"
  */
-#define LIBXML_DOTTED_VERSION "2.6.13"
+#define LIBXML_DOTTED_VERSION "2.6.17"
 
 /**
  * LIBXML_VERSION:
  *
  * the version number: 1.2.3 value is 1002003
  */
-#define LIBXML_VERSION 20613
+#define LIBXML_VERSION 20617
 
 /**
  * LIBXML_VERSION_STRING:
  *
  * the version number string, 1.2.3 value is "1002003"
  */
-#define LIBXML_VERSION_STRING "20613"
+#define LIBXML_VERSION_STRING "20617"
 
 /**
  * LIBXML_VERSION_EXTRA:
  *
  * extra version information, used to show a CVS compilation
  */
-#define LIBXML_VERSION_EXTRA "-CVS2151"
+#define LIBXML_VERSION_EXTRA "-CVS2309"
 
 /**
  * LIBXML_TEST_VERSION:
@@ -58,7 +58,7 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  * Macro to check that the libxml version in use is compatible with
  * the version the software has been compiled against
  */
-#define LIBXML_TEST_VERSION xmlCheckVersion(20613);
+#define LIBXML_TEST_VERSION xmlCheckVersion(20617);
 
 #ifndef VMS
 #if 0
@@ -295,6 +295,15 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
 #endif
 
 /**
+ * LIBXML_DEBUG_RUNTIME:
+ *
+ * Whether the runtime debugging is configured in
+ */
+#if 1
+#define LIBXML_DEBUG_RUNTIME
+#endif
+
+/**
  * LIBXML_UNICODE_ENABLED:
  *
  * Whether the Unicode related interfaces are compiled in
@@ -328,6 +337,16 @@ XMLPUBFUN void XMLCALL xmlCheckVersion(int version);
  */
 #if 1
 #define LIBXML_SCHEMAS_ENABLED
+#endif
+
+/**
+ * LIBXML_MODULES_ENABLED:
+ *
+ * Whether the module interfaces are compiled in
+ */
+#if 1
+#define LIBXML_MODULES_ENABLED
+#define LIBXML_MODULE_EXTENSION ".so" 
 #endif
 
 /**

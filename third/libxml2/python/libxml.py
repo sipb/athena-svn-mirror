@@ -1,28 +1,31 @@
 import libxml2mod
 import types
 
+# The root of all libxml2 errors.
+class libxmlError(Exception): pass
+
 #
 # Errors raised by the wrappers when some tree handling failed.
 #
-class treeError:
+class treeError(libxmlError):
     def __init__(self, msg):
         self.msg = msg
     def __str__(self):
         return self.msg
 
-class parserError:
+class parserError(libxmlError):
     def __init__(self, msg):
         self.msg = msg
     def __str__(self):
         return self.msg
 
-class uriError:
+class uriError(libxmlError):
     def __init__(self, msg):
         self.msg = msg
     def __str__(self):
         return self.msg
 
-class xpathError:
+class xpathError(libxmlError):
     def __init__(self, msg):
         self.msg = msg
     def __str__(self):
@@ -228,6 +231,8 @@ class xmlCore:
             self._o = _obj;
             return
         self._o = None
+    def __str__(self):
+        return self.serialize()
     def get_parent(self):
         ret = libxml2mod.parent(self._o)
         if ret == None:

@@ -420,7 +420,8 @@ __xmlLoaderErr(void *ctx, const char *msg, const char *filename)
 	    channel = ctxt->sax->warning;
 	    level = XML_ERR_WARNING;
 	}
-	schannel = ctxt->sax->serror;
+	if (ctxt->sax->initialized == XML_SAX2_MAGIC)
+	    schannel = ctxt->sax->serror;
 	data = ctxt->userData;
     }
     __xmlRaiseError(schannel, channel, data, ctxt, NULL, XML_FROM_IO,
@@ -554,6 +555,9 @@ xmlCheckFilename (const char *path)
 #ifdef HAVE_STAT
     struct stat stat_buffer;
 
+    if (path == NULL)
+        return(0);
+
     if (stat(path, &stat_buffer) == -1)
         return 0;
 
@@ -563,6 +567,9 @@ xmlCheckFilename (const char *path)
     }
 #endif
 #endif
+    if (path == NULL)
+        return(0);
+
     return 1;
 }
 
@@ -654,6 +661,9 @@ xmlFileOpen_real (const char *filename) {
     const char *path = NULL;
     FILE *fd;
 
+    if (filename == NULL)
+        return(NULL);
+
     if (!strcmp(filename, "-")) {
 	fd = stdin;
 	return((void *) fd);
@@ -701,13 +711,14 @@ void *
 xmlFileOpen (const char *filename) {
     char *unescaped;
     void *retval;
+
     unescaped = xmlURIUnescapeString(filename, 0, NULL);
     if (unescaped != NULL) {
 	retval = xmlFileOpen_real(unescaped);
+	xmlFree(unescaped);
     } else {
 	retval = xmlFileOpen_real(filename);
     }
-    xmlFree(unescaped);
     return retval;
 }
 
@@ -763,11 +774,13 @@ xmlFileOpenW (const char *filename) {
  *
  * Read @len bytes to @buffer from the I/O channel.
  *
- * Returns the number of bytes written
+ * Returns the number of bytes written or < 0 in case of failure
  */
 int
 xmlFileRead (void * context, char * buffer, int len) {
     int ret;
+    if ((context == NULL) || (buffer == NULL)) 
+        return(-1);
     ret = fread(&buffer[0], 1,  len, (FILE *) context);
     if (ret < 0) xmlIOErr(0, "fread()");
     return(ret);
@@ -788,6 +801,8 @@ static int
 xmlFileWrite (void * context, const char * buffer, int len) {
     int items;
 
+    if ((context == NULL) || (buffer == NULL)) 
+        return(-1);
     items = fwrite(&buffer[0], len, 1, (FILE *) context);
     if ((items == 0) && (ferror((FILE *) context))) {
         xmlIOErr(0, "fwrite()");
@@ -810,6 +825,8 @@ xmlFileClose (void * context) {
     FILE *fil;
     int ret;
 
+    if (context == NULL)
+        return(-1);
     fil = (FILE *) context;
     if ((fil == stdout) || (fil == stderr)) {
         ret = fflush(fil);
@@ -834,6 +851,9 @@ xmlFileClose (void * context) {
 static int
 xmlFileFlush (void * context) {
     int ret;
+
+    if (context == NULL)
+        return(-1);
     ret = ( fflush((FILE *) context) == EOF ) ? -1 : 0;
     if (ret < 0)
         xmlIOErr(0, "fflush()");
@@ -1530,6 +1550,7 @@ xmlIOHTTPDfltOpenW( const char * post_uri ) {
  */
 int 
 xmlIOHTTPRead(void * context, char * buffer, int len) {
+    if ((buffer == NULL) || (len < 0)) return(-1);
     return(xmlNanoHTTPRead(context, &buffer[0], len));
 }
 
@@ -1808,6 +1829,7 @@ xmlIOFTPOpen (const char *filename) {
  */
 int 
 xmlIOFTPRead(void * context, char * buffer, int len) {
+    if ((buffer == NULL) || (len < 0)) return(-1);
     return(xmlNanoFTPRead(context, &buffer[0], len));
 }
 
@@ -2217,7 +2239,9 @@ __xmlOutputBufferCreateFilename(const char *URI,
     int i = 0;
     void *context = NULL;
     char *unescaped = NULL;
+#ifdef HAVE_ZLIB_H
     int is_file_uri = 1;
+#endif
 
     if (xmlOutputCallbackInitialized == 0)
 	xmlRegisterDefaultOutputCallbacks();
@@ -2228,7 +2252,9 @@ __xmlOutputBufferCreateFilename(const char *URI,
     if (puri != NULL) {
         if ((puri->scheme != NULL) &&
 	    (!xmlStrEqual(BAD_CAST puri->scheme, BAD_CAST "file")))
+#ifdef HAVE_ZLIB_H
 	    is_file_uri = 0;
+#endif
 	/*
 	 * try to limit the damages of the URI unescaping code.
 	 */
@@ -3029,7 +3055,9 @@ xmlOutputBufferWriteEscape(xmlOutputBufferPtr out, const xmlChar *str,
     int len;         /* number of bytes in str */
     int cons;        /* byte from str consumed */
 
-    if ((out == NULL) || (out->error) || (str == NULL)) return(-1);
+    if ((out == NULL) || (out->error) || (str == NULL) ||
+        (out->buffer == NULL) ||
+	(out->buffer->alloc == XML_BUFFER_ALLOC_IMMUTABLE)) return(-1);
     len = strlen((const char *)str);
     if (len < 0) return(0);
     if (out->error) return(-1);
@@ -3056,7 +3084,7 @@ xmlOutputBufferWriteEscape(xmlOutputBufferPtr out, const xmlChar *str,
 	    }
 	    ret = escaping(out->buffer->content + out->buffer->use ,
 	                   &chunk, str, &cons);
-	    if (ret < 0)
+	    if ((ret < 0) || (chunk == 0)) /* chunk==0 => nothing done */
 	        return(-1);
 	    out->buffer->use += chunk;
 	    out->buffer->content[out->buffer->use] = 0;
@@ -3077,7 +3105,7 @@ xmlOutputBufferWriteEscape(xmlOutputBufferPtr out, const xmlChar *str,
 	} else {
 	    ret = escaping(out->buffer->content + out->buffer->use ,
 	                   &chunk, str, &cons);
-	    if (ret < 0)
+	    if ((ret < 0) || (chunk == 0)) /* chunk==0 => nothing done */
 	        return(-1);
 	    out->buffer->use += chunk;
 	    out->buffer->content[out->buffer->use] = 0;
@@ -3411,7 +3439,7 @@ xmlDefaultExternalEntityLoader(const char *URL, const char *ID,
         /*
          * Do a local lookup
          */
-        if ((ctxt->catalogs != NULL) &&
+        if ((ctxt != NULL) && (ctxt->catalogs != NULL) &&
             ((pref == XML_CATA_ALLOW_ALL) ||
              (pref == XML_CATA_ALLOW_DOCUMENT))) {
             resource = xmlCatalogLocalResolve(ctxt->catalogs,
@@ -3437,7 +3465,7 @@ xmlDefaultExternalEntityLoader(const char *URL, const char *ID,
             && (!xmlSysIDExists((const char *) resource))) {
             xmlChar *tmp = NULL;
 
-            if ((ctxt->catalogs != NULL) &&
+            if ((ctxt != NULL) && (ctxt->catalogs != NULL) &&
                 ((pref == XML_CATA_ALLOW_ALL) ||
                  (pref == XML_CATA_ALLOW_DOCUMENT))) {
                 tmp = xmlCatalogLocalResolveURI(ctxt->catalogs, resource);
@@ -3599,7 +3627,7 @@ xmlNoNetExternalEntityLoader(const char *URL, const char *ID,
 	/*
 	 * Do a local lookup
 	 */
-	if ((ctxt->catalogs != NULL) &&
+	if ((ctxt != NULL) && (ctxt->catalogs != NULL) &&
 	    ((pref == XML_CATA_ALLOW_ALL) ||
 	     (pref == XML_CATA_ALLOW_DOCUMENT))) {
 	    resource = xmlCatalogLocalResolve(ctxt->catalogs,
@@ -3624,7 +3652,7 @@ xmlNoNetExternalEntityLoader(const char *URL, const char *ID,
 	if ((resource != NULL) && (!xmlNoNetExists((const char *)resource))) {
 	    xmlChar *tmp = NULL;
 
-	    if ((ctxt->catalogs != NULL) &&
+	    if ((ctxt != NULL) && (ctxt->catalogs != NULL) &&
 		((pref == XML_CATA_ALLOW_ALL) ||
 		 (pref == XML_CATA_ALLOW_DOCUMENT))) {
 		tmp = xmlCatalogLocalResolveURI(ctxt->catalogs, resource);

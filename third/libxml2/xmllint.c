@@ -738,6 +738,7 @@ xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
  * 									*
  ************************************************************************/
 #ifdef LIBXML_DEBUG_ENABLED
+#ifdef LIBXML_XPATH_ENABLED
 /**
  * xmlShellReadline:
  * @prompt:  the prompt value
@@ -778,6 +779,7 @@ xmlShellReadline(char *prompt) {
     return(ret);
 #endif
 }
+#endif /* LIBXML_XPATH_ENABLED */
 #endif /* LIBXML_DEBUG_ENABLED */
 
 /************************************************************************
@@ -1005,7 +1007,7 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 	    xmlNodePtr n;
 
 	    doc = xmlNewDoc(BAD_CAST "1.0");
-	    n = xmlNewNode(NULL, BAD_CAST "info");
+	    n = xmlNewDocNode(doc, NULL, BAD_CAST "info", NULL);
 	    xmlNodeSetContent(n, BAD_CAST "abc");
 	    xmlDocSetRootElement(doc, n);
 	}
@@ -1223,11 +1225,13 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
 #endif
 
 #ifdef LIBXML_DEBUG_ENABLED
+#ifdef LIBXML_XPATH_ENABLED
     /*
      * shell interaction
      */
     if (shell)  
         xmlShell(doc, filename, xmlShellReadline, stdout);
+#endif
 #endif
 
 #ifdef LIBXML_TREE_ENABLED
@@ -1236,8 +1240,20 @@ static void parseAndPrintFile(char *filename, xmlParserCtxtPtr rectxt) {
      */
     if (copy) {
         tmp = doc;
+	if (timing) {
+	    startTimer();
+	}
 	doc = xmlCopyDoc(doc, 1);
+	if (timing) {
+	    endTimer("Copying");
+	}
+	if (timing) {
+	    startTimer();
+	}
 	xmlFreeDoc(tmp);
+	if (timing) {
+	    endTimer("Freeing original");
+	}
     }
 #endif /* LIBXML_TREE_ENABLED */
 
@@ -1646,6 +1662,9 @@ static void showVersion(const char *name) {
 #endif
 #ifdef LIBXML_SCHEMAS_ENABLED
     fprintf(stderr, "Schemas ");
+#endif
+#ifdef LIBXML_MODULES_ENABLED
+    fprintf(stderr, "Modules ");
 #endif
     fprintf(stderr, "\n");
 }

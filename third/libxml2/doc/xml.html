@@ -315,6 +315,41 @@ libxml2</p>
     <p><code>CFLAGS=`xml2-config --cflags`</code></p>
     <p><code>LIBS=`xml2-config --libs`</code></p>
   </li>
+  <li><em>I want to install my own copy of libxml2 in my home directory and link
+    my programs against it, but it doesn't work</em>
+    <p>There are many different ways to accomplish this.  Here is one way to
+      do this under Linux.  Suppose your home directory is <code>/home/user.
+      </code>Then:</p>
+    <ul><li>Create a subdirectory, let's call it <code>myxml</code></li>
+      <li>unpack the libxml2 distribution into that subdirectory</li>
+      <li>chdir into the unpacked distribution (<code>/home/user/myxml/libxml2
+        </code>)</li>
+      <li>configure the library using the "<code>--prefix</code>" switch,
+      specifying an installation subdirectory in <code>/home/user/myxml</code>,
+      e.g.
+      <p><code>./configure --prefix /home/user/myxml/xmlinst</code> {other
+      configuration options}</p></li>
+      <li>now run <code>make</code> followed by <code>make install</code></li>
+      <li>At this point, the installation subdirectory contains the complete
+      "private" include files, library files and binary program files (e.g.
+      xmllint), located in
+      <p> <code>/home/user/myxml/xmlinst/lib, /home/user/myxml/xmlinst/include
+      </code> and <code> /home/user/myxml/xmlinst/bin</code></p>
+      respectively.</li>
+      <li>In order to use this "private" library, you should first add it
+      to the beginning of your default PATH (so that your own private
+      program files such as xmllint will be used instead of the normal
+      system ones).  To do this, the Bash command would be
+      <p><code>export PATH=/home/user/myxml/xmlinst/bin:$PATH</code></p></li>
+      <li>Now suppose you have a program <code>test1.c</code> that you would
+      like to compile with your "private" library.  Simply compile it
+      using the command <p><code>gcc `xml2-config --cflags --libs` -o test
+      test.c</code></p>  Note that, because your PATH has been set with <code>
+      /home/user/myxml/xmlinst/bin</code> at the beginning, the
+      xml2-config program which you just installed will be used instead of
+      the system default one, and this will <em>automatically</em> get the
+      correct libraries linked with your program.</li></ul>
+  </li><p/>
   <li><em>xmlDocDump() generates output on one line.</em>
     <p>Libxml2 will not <strong>invent</strong> spaces in the content of a
     document since <strong>all spaces in the content of a document are
@@ -603,7 +638,8 @@ database</a>:</p>
 href="ftp://xmlsoft.org/">xmlsoft.org</a> server ( <a
 href="http://xmlsoft.org/sources/">HTTP</a>, <a
 href="ftp://xmlsoft.org/">FTP</a> and rsync are available), there is also
-mirrors (<a href="ftp://speakeasy.rpmfind.net/pub/libxml/">Seattle</a>, <a
+mirrors (<a href="ftp://ftp.planetmirror.com/pub/xmlsoft/">Australia</a>( <a
+href="http://xmlsoft.planetmirror.com/">Web</a>), <a
 href="ftp://fr.rpmfind.net/pub/libxml/">France</a>) or on the <a
 href="ftp://ftp.gnome.org/pub/GNOME/MIRRORS.html">Gnome FTP server</a> as <a
 href="ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/">source archive</a>
@@ -627,8 +663,8 @@ href="http://xmlsoft.org/sources/win32/">win32</a> directory.</p>
     maintainer of the Windows port, <a
     href="http://www.zlatkovic.com/projects/libxml/index.html">he provides
     binaries</a>.</li>
-  <li><a href="mailto:Gary.Pennington@sun.com">Gary Pennington</a> provides
-    <a href="http://garypennington.net/libxml2/">Solaris binaries</a>.</li>
+  <li>Blastwave provides
+    <a href="http://www.blastwave.org/packages.php/libxml2">Solaris binaries</a>.</li>
   <li><a href="mailto:Steve.Ball@zveno.com">Steve Ball</a> provides <a
     href="http://www.zveno.com/open_source/libxml2xslt.html">Mac Os X
     binaries</a>.</li>
@@ -664,7 +700,7 @@ href="python.html">bindings section</a></p>
   <li>The <strong>libxslt</strong> module is also present there</li>
 </ul>
 
-<h2><a name="News">News</a></h2>
+<h2><a name="News">Releases</a></h2>
 
 <p>Items not finished and worked on, get in touch with the list if you want
 to help those</p>
@@ -679,10 +715,90 @@ to the <a href="http://cvs.gnome.org/viewcvs/libxml2/">CVS</a> code base.</p>
 
 <p>There is the list of public releases:</p>
 
+<h3>2.6.17: Jan 16 2005</h3>
+<ul>
+  <li>build fixes: Windows, warnings removal (William Brack), 
+      maintainer-clean dependency(William), build in a different directory
+      (William), fixing --with-minimum configure build (William), BeOS
+      build (Marcin Konicki), Python-2.4 detection (William), compilation
+      on AIX (Dan McNichol)</li>
+  <li>bug fixes: xmlTextReaderHasAttributes (Rob Richards), xmlCtxtReadFile()
+      to use the catalog(s), loop on output (William Brack), XPath memory leak,
+      ID deallocation problem (Steve Shepard), debugDumpNode crash (William),
+      warning not using error callback (William), xmlStopParser bug (William),
+      UTF-16 with BOM on DTDs (William), namespace bug on empty elements
+      in push mode (Rob Richards), line and col computations fixups (Aleksey
+      Sanin), xmlURIEscape fix (William), xmlXPathErr on bad range (William),
+      patterns with too many steps, bug in RNG choice optimization, line
+      number sometimes missing.
+      </li>
+  <li>improvements: XSD Schemas (Kasimier Buchcik), python generator (William),
+      xmlUTF8Strpos speedup (William), unicode Python strings (William),
+      XSD error reports (Kasimier Buchcik), Python __str__ call serialize().
+      </li>
+  <li>new APIs: added xmlDictExists(), GetLineNumber and GetColumnNumber
+      for the xmlReader (Aleksey Sanin), Dynamic Shared Libraries APIs
+      (mostly Joel Reed), error extraction API from regexps, new XMLSave
+      option for format (Phil Shafer)</li>
+  <li>documentation: site improvement (John Fleck), FAQ entries (William).</li>
+</ul>
+
+<h3>2.6.16: Nov 10 2004</h3>
+<ul>
+  <li>general hardening and bug fixing crossing all the API based on new
+    automated regression testing</li>
+  <li>build fix: IPv6 build and test on AIX (Dodji Seketeli)</li>
+  <li>bug fixes: problem with XML::Libxml reported by Petr Pajas,  encoding
+    conversion functions return values, UTF-8 bug affecting XPath reported by
+    Markus Bertheau, catalog problem with NULL entries (William Brack)</li>
+  <li>documentation: fix to xmllint man page, some API function descritpion
+    were updated.</li>
+  <li>improvements: DTD validation APIs provided at the Python level (Brent
+    Hendricks) </li>
+</ul>
+
+<h3>2.6.15: Oct 27 2004</h3>
+<ul>
+  <li>security fixes on the nanoftp and nanohttp modules</li>
+  <li>build fixes: xmllint detection bug in configure, building outside the
+    source tree (Thomas Fitzsimmons)</li>
+  <li>bug fixes: HTML parser on broken ASCII chars in names (William), Python
+    paths (Malcolm Tredinnick), xmlHasNsProp and default namespace (William),
+    saving to python file objects (Malcolm Tredinnick), DTD lookup fix
+    (Malcolm), save back &lt;group&gt; in catalogs (William), tree build
+    fixes (DV and Rob Richards), Schemas memory bug, structured error handler
+    on Python 64bits, thread local memory deallocation, memory leak reported
+    by Volker Roth, xmlValidateDtd in the presence of an internal subset,
+    entities and _private problem (William), xmlBuildRelativeURI error
+    (William).</li>
+  <li>improvements: better XInclude error reports (William), tree debugging
+    module and tests, convenience functions at the Reader API (Graham
+    Bennett), add support for PI in the HTML parser.</li>
+</ul>
+
+<h3>2.6.14: Sep 29 2004</h3>
+<ul>
+  <li>build fixes: configure paths for xmllint and xsltproc, compilation
+    without HTML parser, compilation warning cleanups (William Brack &amp;
+    Malcolm Tredinnick), VMS makefile update (Craig Berry),</li>
+  <li>bug fixes: xmlGetUTF8Char (William Brack), QName properties (Kasimier
+    Buchcik), XInclude testing, Notation serialization, UTF8ToISO8859x
+    transcoding (Mark Itzcovitz), lots of XML Schemas cleanup and fixes
+    (Kasimier), ChangeLog cleanup (Stepan Kasal), memory fixes (Mark Vakoc),
+    handling of failed realloc(), out of bound array adressing in Schemas
+    date handling, Python space/tabs cleanups (Malcolm Tredinnick), NMTOKENS
+    E20 validation fix (Malcolm),</li>
+  <li>improvements: added W3C XML Schemas testsuite (Kasimier Buchcik), add
+    xmlSchemaValidateOneElement (Kasimier), Python exception hierearchy
+    (Malcolm Tredinnick), Python libxml2 driver improvement (Malcolm
+    Tredinnick), Schemas support for xsi:schemaLocation,
+    xsi:noNamespaceSchemaLocation, xsi:type (Kasimier Buchcik)</li>
+</ul>
+
 <h3>2.6.13: Aug 31 2004</h3>
 <ul>
   <li>build fixes: Windows and zlib (Igor Zlatkovic), -O flag with gcc,
-    Solaris compiler warning, fixing RPM BuildRequires, </li>
+    Solaris compiler warning, fixing RPM BuildRequires,</li>
   <li>fixes: DTD loading on Windows (Igor), Schemas error reports APIs
     (Kasimier Buchcik), Schemas validation crash, xmlCheckUTF8 (William Brack
     and Julius Mittenzwei), Schemas facet check (Kasimier), default namespace
@@ -2199,6 +2315,16 @@ or libxslt wrappers or bindings:</p>
     libxslt as part of GNU ClasspathX project.</li>
   <li>Patrick McPhee provides Rexx bindings fof libxml2 and libxslt, look for
     <a href="http://www.interlog.com/~ptjm/software.html">RexxXML</a>.</li>
+  <li><a href="http://www.satimage.fr/software/en/xml_suite.html">Satimage</a>
+    provides <a
+    href="http://www.satimage.fr/software/en/downloads_osaxen.html">XMLLib
+    osax</a>. This is an osax for Mac OS X with a set of commands to
+    implement in AppleScript the XML DOM, XPATH and XSLT. Also includes
+    commands for Property-lists (Apple's fast lookup table XML format.)</li>
+  <li>Francesco Montorsi developped
+<a href="https://sourceforge.net/project/showfiles.php?group_id=51305&amp;package_id=45182">wxXml2</a>
+    wrappers that interface libxml2, allowing wxWidgets applications to
+    load/save/edit XML instances.</li>
 </ul>
 
 <p>The distribution includes a set of Python bindings, which are guaranteed

@@ -330,6 +330,9 @@ xmlReportError(xmlErrorPtr err, xmlParserCtxtPtr ctxt, const char *str,
         case XML_FROM_REGEXP:
             channel(data, "regexp ");
             break;
+        case XML_FROM_MODULE:
+            channel(data, "module ");
+            break;
         case XML_FROM_SCHEMASV:
             channel(data, "Schemas validity ");
             break;
@@ -426,7 +429,7 @@ xmlReportError(xmlErrorPtr err, xmlParserCtxtPtr ctxt, const char *str,
  * @str2: extra string info
  * @str3: extra string info
  * @int1: extra int info
- * @int2: extra int info
+ * @col: column number of the error or 0 if N/A 
  * @msg:  the message to display/transmit
  * @...:  extra parameters for the message display
  *
@@ -439,7 +442,7 @@ __xmlRaiseError(xmlStructuredErrorFunc schannel,
               xmlGenericErrorFunc channel, void *data, void *ctx,
               void *nod, int domain, int code, xmlErrorLevel level,
               const char *file, int line, const char *str1,
-              const char *str2, const char *str3, int int1, int int2,
+              const char *str2, const char *str3, int int1, int col,
 	      const char *msg, ...)
 {
     xmlParserCtxtPtr ctxt = NULL;
@@ -447,13 +450,13 @@ __xmlRaiseError(xmlStructuredErrorFunc schannel,
     char *str = NULL;
     xmlParserInputPtr input = NULL;
     xmlErrorPtr to = &xmlLastError;
-    xmlChar *base = NULL;
+    xmlNodePtr baseptr = NULL;
 
     if ((xmlGetWarningsDefaultValue == 0) && (level == XML_ERR_WARNING))
         return;
     if ((domain == XML_FROM_PARSER) || (domain == XML_FROM_HTML) ||
         (domain == XML_FROM_DTD) || (domain == XML_FROM_NAMESPACE) ||
-	(domain == XML_FROM_IO)) {
+	(domain == XML_FROM_IO) || (domain == XML_FROM_VALID)) {
 	ctxt = (xmlParserCtxtPtr) ctx;
 	if ((schannel == NULL) && (ctxt != NULL) && (ctxt->sax != NULL) &&
 	    (ctxt->sax->initialized == XML_SAX2_MAGIC))
@@ -502,6 +505,7 @@ __xmlRaiseError(xmlStructuredErrorFunc schannel,
             if (input != NULL) {
                 file = input->filename;
                 line = input->line;
+                col = input->col;
             }
         }
         to = &ctxt->lastError;
@@ -509,14 +513,14 @@ __xmlRaiseError(xmlStructuredErrorFunc schannel,
 	int i;
 
 	if ((node->doc != NULL) && (node->doc->URL != NULL))
-	    base = xmlStrdup(node->doc->URL);
+	    baseptr = node;
 	for (i = 0;
 	     ((i < 10) && (node != NULL) && (node->type != XML_ELEMENT_NODE));
 	     i++)
 	     node = node->parent;
-        if ((base == NULL) && (node != NULL) &&
+        if ((baseptr == NULL) && (node != NULL) &&
 	    (node->doc != NULL) && (node->doc->URL != NULL))
-	    base = xmlStrdup(node->doc->URL);
+	    baseptr = node;
 
 	if ((node != NULL) && (node->type == XML_ELEMENT_NODE))
 	    line = node->line;
@@ -532,9 +536,33 @@ __xmlRaiseError(xmlStructuredErrorFunc schannel,
     to->level = level;
     if (file != NULL)
         to->file = (char *) xmlStrdup((const xmlChar *) file);
-    else if (base != NULL) {
-        to->file = (char *) base;
-	file = (char *) base;
+    else if (baseptr != NULL) {
+#ifdef LIBXML_XINCLUDE_ENABLED
+	/*
+	 * We check if the error is within an XInclude section and,
+	 * if so, attempt to print out the href of the XInclude instead
+	 * of the usual "base" (doc->URL) for the node (bug 152623).
+	 */
+        xmlNodePtr prev = baseptr;
+	int inclcount = 0;
+	while (prev != NULL) {
+	    if (prev->prev == NULL)
+	        prev = prev->parent;
+	    else {
+	        prev = prev->prev;
+		if (prev->type == XML_XINCLUDE_START) {
+		    if (--inclcount < 0)
+		        break;
+		} else if (prev->type == XML_XINCLUDE_END)
+		    inclcount++;
+	    }
+	}
+	if (prev != NULL) {
+	    to->file = (char *) xmlGetProp(prev, BAD_CAST "href");
+	} else
+#endif
+	    to->file = (char *) xmlStrdup(baseptr->doc->URL);
+	file = to->file;
     }
     to->line = line;
     if (str1 != NULL)
@@ -544,7 +572,7 @@ __xmlRaiseError(xmlStructuredErrorFunc schannel,
     if (str3 != NULL)
         to->str3 = (char *) xmlStrdup((const xmlChar *) str3);
     to->int1 = int1;
-    to->int2 = int2;
+    to->int2 = col;
     to->node = node;
     to->ctxt = ctx;
 

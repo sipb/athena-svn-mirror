@@ -9,6 +9,11 @@ enums = {} # { enumType: { enumConstant: enumValue } }
 import sys
 import string
 
+if len(sys.argv) > 1:
+    srcPref = sys.argv[1] + '/'
+else:
+    srcPref = ''
+
 #######################################################################
 #
 #  That part if purely the API acquisition phase from the
@@ -270,6 +275,7 @@ py_types = {
     'xmlParserCtxt *': ('O', "parserCtxt", "xmlParserCtxtPtr", "xmlParserCtxtPtr"),
     'htmlParserCtxtPtr': ('O', "parserCtxt", "xmlParserCtxtPtr", "xmlParserCtxtPtr"),
     'htmlParserCtxt *': ('O', "parserCtxt", "xmlParserCtxtPtr", "xmlParserCtxtPtr"),
+    'xmlValidCtxtPtr': ('O', "ValidCtxt", "xmlValidCtxtPtr", "xmlValidCtxtPtr"),
     'xmlCatalogPtr': ('O', "catalog", "xmlCatalogPtr", "xmlCatalogPtr"),
     'FILE *': ('O', "File", "FILEPtr", "FILE *"),
     'xmlURIPtr': ('O', "URI", "xmlURIPtr", "xmlURIPtr"),
@@ -293,12 +299,33 @@ py_return_types = {
 
 unknown_types = {}
 
+foreign_encoding_args = (
+    'htmlCreateMemoryParserCtxt',
+    'htmlCtxtReadMemory',
+    'htmlParseChunk',
+    'htmlReadMemory',
+    'xmlCreateMemoryParserCtxt',
+    'xmlCtxtReadMemory',
+    'xmlCtxtResetPush',
+    'xmlParseChunk',
+    'xmlParseMemory',
+    'xmlReadMemory',
+    'xmlRecoverMemory',
+)
+
 #######################################################################
 #
 #  This part writes the C <-> Python stubs libxml2-py.[ch] and
 #  the table libxml2-export.c to add when registrering the Python module
 #
 #######################################################################
+
+# Class methods which are written by hand in libxml.c but the Python-level
+# code is still automatically generated (so they are not in skip_function()).
+skip_impl = (
+    'xmlSaveFileTo',
+    'xmlSaveFormatFileTo',
+)
 
 def skip_function(name):
     if name[0:12] == "xmlXPathWrap":
@@ -338,6 +365,14 @@ def skip_function(name):
         return 1
     if name == "xmlErrMemory":
         return 1
+
+    if name == "xmlValidBuildContentModel":
+        return 1
+    if name == "xmlValidateElementDecl":
+        return 1
+    if name == "xmlValidateAttributeDecl":
+        return 1
+
     return 0
 
 def print_function_wrapper(name, output, export, include):
@@ -356,6 +391,9 @@ def print_function_wrapper(name, output, export, include):
         return 0
     if skip_function(name) == 1:
         return 0
+    if name in skip_impl:
+	# Don't delete the function entry in the caller.
+	return 1
 
     c_call = "";
     format=""
@@ -363,6 +401,7 @@ def print_function_wrapper(name, output, export, include):
     c_args=""
     c_return=""
     c_convert=""
+    num_bufs=0
     for arg in args:
         # This should be correct
         if arg[1][0:6] == "const ":
@@ -370,6 +409,8 @@ def print_function_wrapper(name, output, export, include):
         c_args = c_args + "    %s %s;\n" % (arg[1], arg[0])
         if py_types.has_key(arg[1]):
             (f, t, n, c) = py_types[arg[1]]
+	    if (f == 'z') and (name in foreign_encoding_args) and (num_bufs == 0):
+	        f = 't#'
             if f != None:
                 format = format + f
             if t != None:
@@ -380,6 +421,10 @@ def print_function_wrapper(name, output, export, include):
                    arg[1], t, arg[0]);
             else:
                 format_args = format_args + ", &%s" % (arg[0])
+	    if f == 't#':
+	        format_args = format_args + ", &py_buffsize%d" % num_bufs
+	        c_args = c_args + "    int py_buffsize%d;\n" % num_bufs
+		num_bufs = num_bufs + 1
             if c_call != "":
                 c_call = c_call + ", ";
             c_call = c_call + "%s" % (arg[0])
@@ -551,14 +596,14 @@ def buildStubs():
     global unknown_types
 
     try:
-	f = open("libxml2-api.xml")
+	f = open(srcPref + "libxml2-api.xml")
 	data = f.read()
 	(parser, target)  = getparser()
 	parser.feed(data)
 	parser.close()
     except IOError, msg:
 	try:
-	    f = open("../doc/libxml2-api.xml")
+	    f = open(srcPref + "../doc/libxml2-api.xml")
 	    data = f.read()
 	    (parser, target)  = getparser()
 	    parser.feed(data)
@@ -572,7 +617,7 @@ def buildStubs():
 
     py_types['pythonObject'] = ('O', "pythonObject", "pythonObject", "pythonObject")
     try:
-	f = open("libxml2-python-api.xml")
+	f = open(srcPref + "libxml2-python-api.xml")
 	data = f.read()
 	(parser, target)  = getparser()
 	parser.feed(data)
@@ -658,6 +703,7 @@ classes_type = {
     "xmlParserCtxt *": ("._o", "parserCtxt(_obj=%s)", "parserCtxt"),
     "htmlParserCtxtPtr": ("._o", "parserCtxt(_obj=%s)", "parserCtxt"),
     "htmlParserCtxt *": ("._o", "parserCtxt(_obj=%s)", "parserCtxt"),
+    "xmlValidCtxtPtr": ("._o", "ValidCtxt(_obj=%s)", "ValidCtxt"),
     "xmlCatalogPtr": ("._o", "catalog(_obj=%s)", "catalog"),
     "xmlURIPtr": ("._o", "URI(_obj=%s)", "URI"),
     "xmlErrorPtr": ("._o", "Error(_obj=%s)", "Error"),
@@ -708,12 +754,15 @@ classes_destructors = {
 	"Schema": "xmlSchemaFree",
 	"SchemaParserCtxt": "xmlSchemaFreeParserCtxt",
 	"SchemaValidCtxt": "xmlSchemaFreeValidCtxt",
+        "ValidCtxt": "xmlFreeValidCtxt",
 }
 
 functions_noexcept = {
     "xmlHasProp": 1,
     "xmlHasNsProp": 1,
     "xmlDocSetRootElement": 1,
+    "xmlNodeGetNs": 1,
+    "xmlNodeGetNsDefs": 1,
 }
 
 reference_keepers = {

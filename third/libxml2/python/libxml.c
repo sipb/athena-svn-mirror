@@ -512,6 +512,11 @@ libxml_xmlOutputBufferClose(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     if (!PyArg_ParseTuple(args, (char *)"O:xmlOutputBufferClose", &pyobj_out))
         return(NULL);
     out = (xmlOutputBufferPtr) PyoutputBuffer_Get(pyobj_out);
+    /* Buffer may already have been destroyed elsewhere. This is harmless. */
+    if (out == NULL) {
+	Py_INCREF(Py_None);
+	return(Py_None);
+    }
 
     c_retval = xmlOutputBufferClose(out);
     py_retval = libxml_intWrap((int) c_retval);
@@ -530,6 +535,53 @@ libxml_xmlOutputBufferFlush(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
     out = (xmlOutputBufferPtr) PyoutputBuffer_Get(pyobj_out);
 
     c_retval = xmlOutputBufferFlush(out);
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
+}
+
+static PyObject *
+libxml_xmlSaveFileTo(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    int c_retval;
+    xmlOutputBufferPtr buf;
+    PyObject *pyobj_buf;
+    xmlDocPtr cur;
+    PyObject *pyobj_cur;
+    char * encoding;
+
+    if (!PyArg_ParseTuple(args, (char *)"OOz:xmlSaveFileTo", &pyobj_buf, &pyobj_cur, &encoding))
+        return(NULL);
+    buf = (xmlOutputBufferPtr) PyoutputBuffer_Get(pyobj_buf);
+    cur = (xmlDocPtr) PyxmlNode_Get(pyobj_cur);
+
+    c_retval = xmlSaveFileTo(buf, cur, encoding);
+	/* xmlSaveTo() freed the memory pointed to by buf, so record that in the
+	 * Python object. */
+    ((PyoutputBuffer_Object *)(pyobj_buf))->obj = NULL;
+    py_retval = libxml_intWrap((int) c_retval);
+    return(py_retval);
+}
+
+static PyObject *
+libxml_xmlSaveFormatFileTo(PyObject *self ATTRIBUTE_UNUSED, PyObject *args) {
+    PyObject *py_retval;
+    int c_retval;
+    xmlOutputBufferPtr buf;
+    PyObject *pyobj_buf;
+    xmlDocPtr cur;
+    PyObject *pyobj_cur;
+    char * encoding;
+    int format;
+
+    if (!PyArg_ParseTuple(args, (char *)"OOzi:xmlSaveFormatFileTo", &pyobj_buf, &pyobj_cur, &encoding, &format))
+        return(NULL);
+    buf = (xmlOutputBufferPtr) PyoutputBuffer_Get(pyobj_buf);
+    cur = (xmlDocPtr) PyxmlNode_Get(pyobj_cur);
+
+    c_retval = xmlSaveFormatFileTo(buf, cur, encoding, format);
+	/* xmlSaveFormatFileTo() freed the memory pointed to by buf, so record that
+	 * in the Python object */
+	((PyoutputBuffer_Object *)(pyobj_buf))->obj = NULL;
     py_retval = libxml_intWrap((int) c_retval);
     return(py_retval);
 }
@@ -1375,34 +1427,24 @@ static PyObject *libxml_xmlPythonErrorFuncHandler = NULL;
 static PyObject *libxml_xmlPythonErrorFuncCtxt = NULL;
 
 /* helper to build a xmlMalloc'ed string from a format and va_list */
+/* 
+ * disabled the loop, the repeated call to vsnprintf without reset of ap
+ * in case the initial buffer was too small segfaulted on x86_64
+ * we now directly vsnprintf on a large buffer.
+ */
 static char *
 libxml_buildMessage(const char *msg, va_list ap)
 {
-    int size;
     int chars;
-    char *larger;
     char *str;
 
-    str = (char *) xmlMalloc(150);
+    str = (char *) xmlMalloc(1000);
     if (str == NULL)
         return NULL;
 
-    size = 150;
-
-    while (1) {
-        chars = vsnprintf(str, size, msg, ap);
-        if ((chars > -1) && (chars < size))
-            break;
-        if (chars > -1)
-            size += chars + 1;
-        else
-            size += 100;
-        if ((larger = (char *) xmlRealloc(str, size)) == NULL) {
-            xmlFree(str);
-            return NULL;
-        }
-        str = larger;
-    }
+    chars = vsnprintf(str, 999, msg, ap);
+    if (chars >= 998)
+        str[999] = 0;
 
     return str;
 }
@@ -1412,10 +1454,10 @@ libxml_xmlErrorFuncHandler(ATTRIBUTE_UNUSED void *ctx, const char *msg,
                            ...)
 {
     va_list ap;
-    char *str;
     PyObject *list;
     PyObject *message;
     PyObject *result;
+    char str[1000];
 
 #ifdef DEBUG_ERROR
     printf("libxml_xmlErrorFuncHandler(%p, %s, ...) called\n", ctx, msg);
@@ -1428,13 +1470,14 @@ libxml_xmlErrorFuncHandler(ATTRIBUTE_UNUSED void *ctx, const char *msg,
         va_end(ap);
     } else {
         va_start(ap, msg);
-        str = libxml_buildMessage(msg,ap);
+        if (vsnprintf(str, 999, msg, ap) >= 998)
+	    str[999] = 0;
         va_end(ap);
 
         list = PyTuple_New(2);
         PyTuple_SetItem(list, 0, libxml_xmlPythonErrorFuncCtxt);
         Py_XINCREF(libxml_xmlPythonErrorFuncCtxt);
-        message = libxml_charPtrWrap(str);
+        message = libxml_charPtrConstWrap(str);
         PyTuple_SetItem(list, 1, message);
         result = PyEval_CallObject(libxml_xmlPythonErrorFuncHandler, list);
         Py_XDECREF(list);
@@ -1511,7 +1554,7 @@ libxml_xmlParserCtxtGenericErrorFuncHandler(void *ctx, int severity, char *str)
     xmlParserCtxtPyCtxtPtr pyCtxt;
     
 #ifdef DEBUG_ERROR
-    printf("libxml_xmlParserCtxtGenericErrorFuncHandler(%p, %s, ...) called\n", ctx, msg);
+    printf("libxml_xmlParserCtxtGenericErrorFuncHandler(%p, %s, ...) called\n", ctx, str);
 #endif
 
     ctxt = (xmlParserCtxtPtr)ctx;
@@ -1678,6 +1721,141 @@ libxml_xmlFreeParserCtxt(ATTRIBUTE_UNUSED PyObject *self, PyObject *args) {
 
     Py_INCREF(Py_None);
     return(Py_None);
+}
+
+/***
+ * xmlValidCtxt stuff
+ */
+
+typedef struct 
+{
+    PyObject *warn;
+    PyObject *error;
+    PyObject *arg;
+} xmlValidCtxtPyCtxt;
+typedef xmlValidCtxtPyCtxt *xmlValidCtxtPyCtxtPtr;
+
+static void
+libxml_xmlValidCtxtGenericErrorFuncHandler(void *ctx, int severity, char *str) 
+{
+    PyObject *list;
+    PyObject *result;
+    xmlValidCtxtPyCtxtPtr pyCtxt;
+    
+#ifdef DEBUG_ERROR
+    printf("libxml_xmlValidCtxtGenericErrorFuncHandler(%p, %d, %s, ...) called\n", ctx, severity, str);
+#endif
+
+    pyCtxt = (xmlValidCtxtPyCtxtPtr)ctx;
+    
+    list = PyTuple_New(2);
+    PyTuple_SetItem(list, 0, libxml_charPtrWrap(str));
+    PyTuple_SetItem(list, 1, pyCtxt->arg);
+    Py_XINCREF(pyCtxt->arg);
+    result = PyEval_CallObject(pyCtxt->error, list);
+    if (result == NULL) 
+    {
+	/* TODO: manage for the exception to be propagated... */
+	PyErr_Print();
+    }
+    Py_XDECREF(list);
+    Py_XDECREF(result);
+}
+
+static void
+libxml_xmlValidCtxtGenericWarningFuncHandler(void *ctx, int severity, char *str) 
+{
+    PyObject *list;
+    PyObject *result;
+    xmlValidCtxtPyCtxtPtr pyCtxt;
+    
+#ifdef DEBUG_ERROR
+    printf("libxml_xmlValidCtxtGenericWarningFuncHandler(%p, %d, %s, ...) called\n", ctx, severity, str);
+#endif
+
+    pyCtxt = (xmlValidCtxtPyCtxtPtr)ctx;
+
+    list = PyTuple_New(2);
+    PyTuple_SetItem(list, 0, libxml_charPtrWrap(str));
+    PyTuple_SetItem(list, 1, pyCtxt->arg);
+    Py_XINCREF(pyCtxt->arg);
+    result = PyEval_CallObject(pyCtxt->warn, list);
+    if (result == NULL) 
+    {
+	/* TODO: manage for the exception to be propagated... */
+	PyErr_Print();
+    }
+    Py_XDECREF(list);
+    Py_XDECREF(result);
+}
+
+static void 
+libxml_xmlValidCtxtErrorFuncHandler(void *ctx, const char *msg, ...) 
+{
+    va_list ap;
+
+    va_start(ap, msg);
+    libxml_xmlValidCtxtGenericErrorFuncHandler(ctx,XML_PARSER_SEVERITY_VALIDITY_ERROR,libxml_buildMessage(msg,ap));
+    va_end(ap);
+}
+
+static void 
+libxml_xmlValidCtxtWarningFuncHandler(void *ctx, const char *msg, ...) 
+{
+    va_list ap;
+
+    va_start(ap, msg);
+    libxml_xmlValidCtxtGenericWarningFuncHandler(ctx,XML_PARSER_SEVERITY_VALIDITY_WARNING,libxml_buildMessage(msg,ap));
+    va_end(ap);
+}
+
+static PyObject *
+libxml_xmlSetValidErrors(ATTRIBUTE_UNUSED PyObject * self, PyObject * args)
+{
+    PyObject *py_retval;
+    PyObject *pyobj_error;
+    PyObject *pyobj_warn;
+    PyObject *pyobj_ctx;
+    PyObject *pyobj_arg = Py_None;
+    xmlValidCtxtPtr ctxt;
+    xmlValidCtxtPyCtxtPtr pyCtxt;
+
+    if (!PyArg_ParseTuple
+        (args, (char *) "OOO|O:xmlSetValidErrors", &pyobj_ctx, &pyobj_error, &pyobj_warn, &pyobj_arg))
+        return (NULL);
+
+#ifdef DEBUG_ERROR
+    printf("libxml_xmlSetValidErrors(%p, %p, %p) called\n", pyobj_ctx, pyobj_error, pyobj_warn);
+#endif
+
+    ctxt = PyValidCtxt_Get(pyobj_ctx);
+    pyCtxt = xmlMalloc(sizeof(xmlValidCtxtPyCtxt));
+    if (pyCtxt == NULL) {
+            py_retval = libxml_intWrap(-1);
+            return(py_retval);
+    }
+    memset(pyCtxt, 0, sizeof(xmlValidCtxtPyCtxt));
+
+    
+    /* TODO: check warn and error is a function ! */
+    Py_XDECREF(pyCtxt->error);
+    Py_XINCREF(pyobj_error);
+    pyCtxt->error = pyobj_error;
+    
+    Py_XDECREF(pyCtxt->warn);
+    Py_XINCREF(pyobj_warn);
+    pyCtxt->warn = pyobj_warn;
+    
+    Py_XDECREF(pyCtxt->arg);
+    Py_XINCREF(pyobj_arg);
+    pyCtxt->arg = pyobj_arg;
+
+    ctxt->error = libxml_xmlValidCtxtErrorFuncHandler;
+    ctxt->warning = libxml_xmlValidCtxtWarningFuncHandler;
+    ctxt->userData = pyCtxt;
+
+    py_retval = libxml_intWrap(1);
+    return (py_retval);
 }
 
 /************************************************************************
@@ -3439,6 +3617,7 @@ static PyMethodDef libxmlMethods[] = {
     {(char *) "type", libxml_type, METH_VARARGS, NULL},
     {(char *) "doc", libxml_doc, METH_VARARGS, NULL},
     {(char *) "xmlNewNode", libxml_xmlNewNode, METH_VARARGS, NULL},
+    {(char *)"xmlSetValidErrors", libxml_xmlSetValidErrors, METH_VARARGS, NULL},
 #ifdef LIBXML_OUTPUT_ENABLED
     {(char *) "serializeNode", libxml_serializeNode, METH_VARARGS, NULL},
     {(char *) "saveNodeTo", libxml_saveNodeTo, METH_VARARGS, NULL},
@@ -3446,6 +3625,8 @@ static PyMethodDef libxmlMethods[] = {
     {(char *) "outputBufferGetPythonFile", libxml_outputBufferGetPythonFile, METH_VARARGS, NULL},
     {(char *) "xmlOutputBufferClose", libxml_xmlOutputBufferClose, METH_VARARGS, NULL},
     { (char *)"xmlOutputBufferFlush", libxml_xmlOutputBufferFlush, METH_VARARGS, NULL },
+    { (char *)"xmlSaveFileTo", libxml_xmlSaveFileTo, METH_VARARGS, NULL },
+    { (char *)"xmlSaveFormatFileTo", libxml_xmlSaveFormatFileTo, METH_VARARGS, NULL },
 #endif /* LIBXML_OUTPUT_ENABLED */
     {(char *) "inputBufferCreate", libxml_xmlCreateInputBuffer, METH_VARARGS, NULL},
     {(char *) "setEntityLoader", libxml_xmlSetEntityLoader, METH_VARARGS, NULL},
@@ -3460,6 +3641,7 @@ static PyMethodDef libxmlMethods[] = {
 #ifdef LIBXML_SCHEMAS_ENABLED
     {(char *)"xmlRelaxNGSetValidErrors", libxml_xmlRelaxNGSetValidErrors, METH_VARARGS, NULL},
     {(char *)"xmlRelaxNGFreeValidCtxt", libxml_xmlRelaxNGFreeValidCtxt, METH_VARARGS, NULL},
+    {(char *)"xmlSchemaSetValidErrors", libxml_xmlSchemaSetValidErrors, METH_VARARGS, NULL},
 #endif
 #ifdef LIBXML_C14N_ENABLED
 #ifdef LIBXML_OUTPUT_ENABLED

@@ -318,6 +318,7 @@
     </form>
     <ul><!-- style="margin-left: -1em" -->
       <li><a href="index.html">Home</a></li>
+      <li><a href="html/index.html">Reference Manual</a></li>
       <xsl:for-each select="/html/body/h2">
         <xsl:variable name="filename">
           <xsl:call-template name="tocfilename">
@@ -341,7 +342,7 @@
       <li><a href="examples/index.html" style="font-weight:bold">Code Examples</a></li>
       <li><a href="html/index.html" style="font-weight:bold">API Menu</a></li>
       <li><a href="guidelines.html">XML Guidelines</a></li>
-      <li><a href="ChangeLog.html">ChangeLog</a></li>
+      <li><a href="ChangeLog.html">Recent Changes</a></li>
     </ul>
   </xsl:variable>
   <xsl:variable name="develtoc">
@@ -352,6 +353,7 @@
     </form>
     <ul><!-- style="margin-left: -1em" -->
       <li><a href="index.html" style="font-weight:bold">Main Menu</a></li>
+      <li><a href="html/index.html" style="font-weight:bold">Reference Manual</a></li>
       <li><a href="examples/index.html" style="font-weight:bold">Code Examples</a></li>
       <li><a href="guidelines.html">XML Guidelines</a></li>
       <li><a href="tutorial/index.html">Tutorial</a></li>
@@ -394,7 +396,7 @@
       <li><a href="http://www.aleksey.com/xmlsec/">XML-DSig xmlsec</a></li>
       <li><a href="ftp://xmlsoft.org/">FTP</a></li>
       <li><a href="http://www.zlatkovic.com/projects/libxml/">Windows binaries</a></li>
-      <li><a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
+      <li><a href="http://www.blastwave.org/packages.php/libxml2">Solaris binaries</a></li>
       <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
       <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>
       <li><a href="http://bugzilla.gnome.org/buglist.cgi?product=libxml2">Bug Tracker</a></li>
