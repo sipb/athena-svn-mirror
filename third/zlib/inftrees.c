@@ -104,8 +104,7 @@ uIntf *v;               /* working area: values in order of bit length */
 /* Given a list of code lengths and a maximum table size, make a set of
    tables to decode that set of codes.  Return Z_OK on success, Z_BUF_ERROR
    if the given code set is incomplete (the tables are still built in this
-   case), Z_DATA_ERROR if the input is invalid (an over-subscribed set of
-   lengths), or Z_MEM_ERROR if not enough memory. */
+   case), or Z_DATA_ERROR if the input is invalid. */
 {
 
   uInt a;                       /* counter for codes of length k */
@@ -231,7 +230,7 @@ uIntf *v;               /* working area: values in order of bit length */
 
         /* allocate new table */
         if (*hn + z > MANY)     /* (note: doesn't matter for fixed) */
-          return Z_MEM_ERROR;   /* not enough memory */
+          return Z_DATA_ERROR;  /* overflow of MANY */
         u[h] = q = hp + *hn;
         *hn += z;
 
