@@ -11,7 +11,7 @@
 # first thing, source /etc/TIMEZONE, so TZ (and maybe others) set
 . /etc/TIMEZONE
 
-SHELL=/bin/sh
+SHELL=/sbin/sh
 export SHELL
 
 PATH=/sbin:/usr/bin:/usr/sbin:/etc:.:$PATH
@@ -21,15 +21,12 @@ export PATH
 HOME=/tmp
 export HOME
 
-trap "" 1 2 15	# ignore traps
+trap /sbin/sh 1  2 15  # ignore traps
 
 if [ ! "$TERM" ]; then
-	TERM=sun
-	export TERM
+        TERM=sun
+        export TERM
 fi
 
 
-athenainstall
-
-
-
+/sbin/athenainstall
