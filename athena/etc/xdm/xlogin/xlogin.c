@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.39 1994-05-03 11:38:27 miki Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.40 1994-05-04 22:40:32 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -54,7 +54,7 @@
 #endif
 
 #ifndef MOTD_FILENAME
-#define MOTD_FILENAME "/afs/athena.mit.edu/system/config/motd/login.74"
+#define MOTD_FILENAME "/afs/athena.mit.edu/system/config/motd/login.77"
 #endif
 
 #define OWL_AWAKE 0
@@ -239,6 +239,10 @@ int attachhelp_state, attachhelp_pid, quota_pid;
 int exiting = FALSE;
 extern char *defaultpath;
 char login[128], passwd[128];
+#ifdef POSIX
+sigset_t sig_zero;
+#endif
+
 /*
  * Local Globals
  */
@@ -268,6 +272,7 @@ main(argc, argv)
 #endif
 
 #ifdef POSIX
+  sigemptyset(&sig_zero);
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
   sigact.sa_handler = catch_child;
@@ -863,7 +868,7 @@ Cardinal *n;
  	alarm(resources.activate_timeout); 
 	while (activation_state != ACTIVATED)
 #ifdef POSIX
-	  sigsuspend((sigset_t *)0);
+	  sigsuspend(&sig_zero);
 #else
 	  sigpause(0);
 #endif
@@ -1014,7 +1019,7 @@ Cardinal *n;
       fprintf(stderr, "Waiting for workstation to finish activating...\n");
     while (activation_state != ACTIVATED)
 #ifdef POSIX
-      sigsuspend((sigset_t *)0);
+      sigsuspend(&sig_zero);
 #else
       sigpause(0);
 #endif
@@ -1094,7 +1099,7 @@ caddr_t unused;
     default:
 	while (attach_state == -1)
 #ifdef POSIX
-	  sigsuspend((sigset_t *)0);
+	  sigsuspend(&sig_zero);
 #else
 	  sigpause(0);
 #endif
