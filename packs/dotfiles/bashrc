@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.3 1999-06-17 21:51:26 ghudson Exp $
+# $Id: bashrc,v 1.4 1999-06-18 19:54:05 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -15,7 +15,7 @@ initdir=/usr/athena/lib/init
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
 
-if [ "${ENV_SET+set}" != set]; then
+if [ "${ENV_SET+set}" != set ]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
 	export HOSTTYPE="`/bin/athena/machtype`"
@@ -78,9 +78,9 @@ if [ "${ENV_SET+set}" != set]; then
 	export ATHENA_SYS=`/bin/athena/machtype -S`
 	export ATHENA_SYS_COMPAT=`/bin/athena/machtype -C`
 
-	if [ -z "$ATHENA_SYS" ] then
+	if [ -z "$ATHENA_SYS" ]; then
 		export ATHENA_SYS=@sys
-	endif
+	fi
 
 	if [ "${PRINTER+set}" != set -a -e /var/athena/clusterinfo ]; then
 		PRINTER=`awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
@@ -132,9 +132,9 @@ if [ "${ENV_SET+set}" != set]; then
 		XUSERFILESEARCHPATH=/usr/athena/lib/X11/app-defaults/%N
 	else
 		XUSERFILESEARCHPATH=$XUSERFILESEARCHPATH:/usr/athena/lib/X11/app-defaults/%N
-	endif
+	fi
 
-	if [ sgi = "$HOSTTYPE" -a "${skip_sgi+set}" != set -a "${NOCALLS+set}" != set]; then
+	if [ sgi = "$HOSTTYPE" -a "${skip_sgi+set}" != set -a "${NOCALLS+set}" != set ]; then
 		XUSERFILESEARCHPATH="$HOME/.desktop-$host/%N:$HOME/.desktop-$host/0.0/%N:$XUSERFILESEARCHPATH"
 	fi
 
@@ -142,7 +142,7 @@ if [ "${ENV_SET+set}" != set]; then
 
 
 	if [ sun4 = "$HOSTTYPE" ]; then
-		if [ "${XFILESEARCHPATH+set}" != set]; then
+		if [ "${XFILESEARCHPATH+set}" != set ]; then
 			XFILESEARCHPATH="/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
 		else
 			XFILESEARCHPATH="$XFILESEARCHPATH:/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
@@ -175,7 +175,7 @@ renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
 term () { set -f; unsetenv TERMCAP; eval "$(tset -s -I -Q " "$@" ")"; unset -f; }
 
 #   aliases dealing with mail
-alias mail Mail
+alias mail=Mail
 Mail () { more /usr/prototype_user/README.mail ; }
 
 #   aliases dealing with x window system
@@ -183,9 +183,9 @@ xresize () { set -f; eval $(resize -c) || unset -f ; }
 
 if [ "${XSESSION+set}" == set ]; then
 	if [ -z "$XSESSION" ]; then
-		logout () { exit && end_session ; }		# logout for X
+		logout () { end_session && exit; }		# logout for X
 	else
-		logout () { exit && kill -HUP $XSESSION ; }	# logout for X
+		logout () { kill -HUP $XSESSION && exit; }	# logout for X
 	fi
 fi
 
@@ -194,7 +194,7 @@ fi
 add_flags=
 add () { eval "$(/bin/athena/attach -Padd -b "$add_flags "$@"")" ; }
 
-alias setup echo "setup is not supported in bash yet"
+alias setup='echo "setup is not supported in bash yet"'
 
 
 # All of the bash initializing commands above can be overridden by using
