@@ -1,7 +1,0 @@
-[Desktop Entry]
-_Name=Clock
-_Comment=Clock
-Exec=gen_util_clock
-Icon=
-Terminal=0
-Type=PanelApplet
