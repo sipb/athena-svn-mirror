@@ -1,6 +1,7 @@
-# $Id: Makefile.athena,v 1.6 1997-01-27 10:31:25 ghudson Exp $
+# $Id: Makefile.athena,v 1.7 1997-02-18 06:30:02 ghudson Exp $
 
 SHELL=/bin/sh
+ATHETCDIR=/usr/athena/etc
 ATHINCDIR=/usr/athena/include
 
 prepare:
@@ -16,7 +17,11 @@ all:
 check:
 
 install:
+	-mkdir -p "$$SRVD${ATHETCDIR}"
 	-mkdir -p "$$SRVD${ATHINCDIR}"
+	cd src/appl/bsd && install -c kshd "$$SRVD${ATHETCDIR}"
+	cd src/appl/bsd && install -c klogind "$$SRVD${ATHETCDIR}"
+	cd src/appl/bsd && install -c login.krb5 "$$SRVD${ATHETCDIR}"
 	cd src/include && install -c -m 644 krb5.h "$$SRVD${ATHINCDIR}"
 	cd src/lib/krb5 && ${MAKE} install DESTDIR="$$SRVD"
 	cd src/lib/crypto && ${MAKE} install DESTDIR="$$SRVD"
