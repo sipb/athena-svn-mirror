@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.9 2000-02-08 18:44:16 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.10 2000-02-23 19:33:13 tb Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -104,8 +104,7 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/b
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/usr/bin:/bin:/etc:/usr/etc:/usr/bin/X11:/usr/andrew/bin:.";
 #else
 #if defined(__NetBSD__) || defined(__linux__)
-char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/
-sbin:/usr/X11R6/bin:/usr/andrew/bin:.";
+char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:/usr/andrew/bin:.";
 #else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 #endif
