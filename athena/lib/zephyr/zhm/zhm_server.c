@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.13 1997-09-23 06:01:29 ghudson Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.14 1998-04-16 22:09:02 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -177,6 +177,7 @@ ZNotice_t *notice;
 	syslog (LOG_INFO, "Bad notice from port %u.", notice->z_port);
     } else {
 	/* This is our server, handle the notice */
+	booting = 0;
 	if (boot_timer) {
 	    timer_reset(boot_timer);
 	    boot_timer = NULL;
