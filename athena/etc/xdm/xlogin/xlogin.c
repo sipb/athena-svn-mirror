@@ -1,10 +1,11 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.52 1996-11-26 21:52:22 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.53 1997-02-04 09:40:56 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
 #endif
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -87,7 +88,6 @@ gid_t def_grplist[] = { 101 };			/* default group list */
  * Function declarations.
  */
 extern void AriRegisterAthena ();
-extern unsigned long random();
 static void move_instructions(), screensave(), unsave(), start_reactivate();
 static void blinkOwl(), blinkIs(), initOwl(), adjustOwl();
 static void catch_child(), setFontPath(), setAutoRepeat();
@@ -284,7 +284,7 @@ main(argc, argv)
   XtAppContext app;
   Widget hitanykey, namew;
   Display *dpy1;
-  char hname[64], *c;
+  char hname[1024], *c;
   Arg args[1];
   int i;
   unsigned acc = 0;
@@ -325,15 +325,20 @@ main(argc, argv)
 #endif
 
   /* Have to find this argument before initializing the toolkit.
-   * We set both XAPPLRESDIR and XENVIRONMENT.  The effect is that
-   * the -config argument names a directory that will have the file
-   * Xlogin which contains the resources, and may optionally have
+   * We set both XUSERFILESEARCHPATH and XENVIRONMENT.  The effect is
+   * that the -config argument names a directory that will have the
+   * file Xlogin which contains the resources, and may optionally have
    * a Xlogin.local file containing additional resources which will
    * override those in the regular file.
    */
   for (i = 1; i < argc; i++)
     if (!strcmp(argv[i], "-config") && (i+1 < argc)) {
-	setenv("XAPPLRESDIR", argv[i+1], 1);
+	c = getenv("XUSERFILESEARCHPATH");
+	if (c)
+	    sprintf(hname, "%s:%s/%%N", c, argv[i+1]);
+	else
+	    sprintf(hname, "%s/%%N", argv[i+1]);
+	setenv("XUSERFILESEARCHPATH", hname, 1);
 	sprintf(hname, "%s/Xlogin.local", argv[i+1]);
 	setenv("XENVIRONMENT", hname, 1);
 	break;
@@ -1176,7 +1181,7 @@ Cardinal *n;
      *   mucked with. Others are done earlier for other functions
      *   of xlogin.
      */
-    unsetenv("XAPPLRESDIR");
+    unsetenv("XUSERFILESEARCHPATH");
     unsetenv("XENVIRONMENT");
 
     setenv("PATH", defaultpath, 1);
@@ -1894,8 +1899,9 @@ static void setFontPath()
     static int ndirs = 0;
     static char **dirlist;
     register char *cp;
-    register int i=0;
+    register int i=0, j;
     char *dirs;
+    struct stat statbuf;
 
     if (!ndirs) {
  	dirs = cp = strdup(resources.fontpath);
@@ -1915,6 +1921,14 @@ static void setFontPath()
  	    *cp++ = '\0';
  	    dirlist[i++] = cp;
  	}
+
+	/* Discard directories which aren't present. */
+	j = 0;
+	for (i = 0; i < ndirs; i++) {
+	    if (stat(dirlist[i], &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
+		dirlist[j++] = dirlist[i];
+	}
+	ndirs = j;
     }
 
     XSetFontPath(dpy, dirlist, ndirs);
