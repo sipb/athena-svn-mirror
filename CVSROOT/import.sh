@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: import.sh,v 1.6 2003-02-26 05:41:50 ghudson Exp $
+# $Id: import.sh,v 1.7 2003-05-03 15:21:01 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
@@ -92,7 +92,7 @@ if [ -n "$oldver" ]; then
 fi
 
 # Figure out what this tarfile unpacks into.
-tardir=`$dcmd "$tarfile" | tar -tf - | sed -e 's|/.*$||' | uniq`
+tardir=`$dcmd "$tarfile" | tar -tf - | sed -e 's|^\./||' -e 's|/.*$||' | uniq`
 if [ `echo "$tardir" | wc -l` -ne 1 ]; then
   printf "%s unpacks into multiple dirs:\n%s\n" "$tarfile" "$tardir" >&2
   exit 1
