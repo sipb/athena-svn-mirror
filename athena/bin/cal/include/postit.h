@@ -8,8 +8,8 @@
 /*	Revised:	8/21/87
 /*
 /*	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/include/postit.h,v $
-/*	$Author: epeisach $
-/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/include/postit.h,v 1.2 1991-07-08 13:32:07 epeisach Exp $
+/*	$Author: lwvanels $
+/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/include/postit.h,v 1.3 1991-09-04 11:22:45 lwvanels Exp $
 /*
 /*	Copyright 1987 by the Massachusetts Institute of Technology.
 /*	For copying and distribution information, see the file mit-copyright.h
@@ -69,7 +69,7 @@ extern int mode;				/* are we in postit or */
 	/*	
 	/*----------------------------------------------------------*/
 
-#define EMACSMACS "/usr/athena/lib/postit.elc" /* load these when */
+#define EMACSMACS "/usr/athena/lib/elisp/postit.elc" /* load these when */
 						 /* using gnuemacs*/
 
 
