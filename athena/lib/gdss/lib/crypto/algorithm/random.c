@@ -51,6 +51,9 @@
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include <sys/resource.h>
+#ifdef SOLARIS
+#include <sys/rusage.h>
+#endif
 
 #include "DEScrypto.h"
 
