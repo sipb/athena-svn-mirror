@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.27 1992-05-26 19:10:39 cfields Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.28 1993-01-27 15:57:17 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -480,7 +480,7 @@ xlogin.Geometry: 		580x325+205+105
 *register.horizDistance:	195
 *register.label:		Register for an Account
 *register.fromVert:		*loptions
-*register.callback:		attachAndRunCB(register,/mit/register/xregister)
+*register.callback:		attachAndRunCB(register,/afs/athena/system/register/xregister)
 
 
 ! ------------------------------------------------------------
