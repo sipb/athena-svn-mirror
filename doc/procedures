@@ -68,9 +68,9 @@ objections.  If you receive objections or requests for further
 information from staff members, you must either satisfy those concerns
 or resolve the issue with the release team before committing your
 change.  If after one day, you have received no objections and someone
-has signed onto your change, you may commit your change, noting who
-reviewed it.  If no one responds within five days, you may commit your
-change with the comment that no one reviewed it in five days.
+has signed onto your change, you may commit your change.  You may also
+commit your change if no one objects within five days, even if no one
+has signed onto it.
 
 When you check in your change, be sure to include a clear log message.
 Explain why you are making the change you are making if it's not
@@ -79,6 +79,13 @@ obvious.  If you are checking in a significant user-visible change
 
 Reviewing changes
 -----------------
+
+Sometimes you can review a change by looking at the patch.  Other
+times you will want to check out a tree and apply the patch, with
+"patch -E -p < message-file" if you have the mail message in a file,
+or "dsgrep -p -t trn-number source-reviewers | patch -E -p" if what
+you have is a transaction number in the source-reviewers discuss
+meeting.
 
 When reviewing a change, be sure to make your position on the change
 clear.  Say "I object to this change" if you are not merely voicing a
@@ -92,10 +99,8 @@ may be brought up before the release team.
 If you have reviewed a change carefully and have found nothing wrong
 with it, and no one else has responded to the change, you should sign
 onto the change rather than remaining silent.  You are encouraged to
-try out changes (by checking out your own working directory and
-applying the patch) before signing onto them, but for small, obvious
-changes to big modules the inconvenience outweights the benefit of
-this consideration.
+try out changes before signing onto them, but in some cases the
+inconvenience outweights the benefit of this consideration.
 
 Updating third-party sources
 ----------------------------
