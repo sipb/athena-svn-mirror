@@ -17,7 +17,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.1 1989-10-25 15:21:07 probe Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.2 1989-10-25 15:21:54 probe Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -55,6 +55,7 @@ main(argc, argv)
 {
   extern int getopt();
   extern int optind;
+  extern int h_errno;
 
   char hostname[LINE_LENGTH];	           /* Name of desired host. */
   struct hostent *host_entry = NULL;	   /* Host entry of it. */
@@ -96,8 +97,31 @@ main(argc, argv)
     }
   if (host_entry == NULL)
     {
-      printf("No such host.\n");
-      exit(ERROR);
+	switch (h_errno) {
+#ifdef ultrix
+	/* it can return NULL, h_errno == 0 in some cases when
+	   there is no name */
+	case 0:
+#endif
+	case HOST_NOT_FOUND:
+	    printf("No such host '%s'.\n",hostname);
+	    exit(ERROR);
+	    break;
+	default:
+	case TRY_AGAIN:
+	case NO_RECOVERY:
+	    printf("Cannot resolve name '%s' due to network difficulties.\n",
+		   hostname);
+	    exit(ERROR);
+	    break;
+	case NO_ADDRESS:
+	    /* should look up MX record? */
+	    /* this error return appears if there is some entry for the
+	       requested name, but no A record (e.g. only an NS record) */
+	    printf("No address for '%s'.\n", hostname);
+	    exit(ERROR);
+	    break;
+	}
     }
   bcopy(host_entry->h_addr, &internet_address, host_entry->h_length);
   if (h_flag) printf("%s\n", host_entry->h_name);
