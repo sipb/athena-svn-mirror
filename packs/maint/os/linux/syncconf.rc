@@ -24,7 +24,7 @@ case "$1" in
 	echo -n "Synchronizing workstation configuration: "
 	
 	/etc/athena/syncconf && success "syncconf" || failure "syncconf"
-
+	RETVAL=$?
 	;;
 
   stop)
