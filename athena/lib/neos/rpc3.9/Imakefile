@@ -10,8 +10,11 @@
  *
  */
 
-
+#if defined(_IBMR2)
+#define ISUBDIRS rpc
+#else
 #define ISUBDIRS rpcgen rpc
+#endif
 
 clean::
 	rm -rf ./usr/include/rpc
