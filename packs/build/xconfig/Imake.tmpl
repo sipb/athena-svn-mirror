@@ -272,6 +272,48 @@ XCOMM
 #define i860SVR4Architecture
 #endif /* Oki */
 
+#ifdef linux 
+# undef linux
+# define LinuxArchitecture
+# ifdef i386
+#  define i386Architecture
+#  undef i386
+# endif /* i386 */
+# ifdef __alpha
+#  define AlphaArchitecture
+#  undef __alpha
+# endif /* __alpha */
+# ifdef mc68000
+#  define Mc68020Architecture
+#  undef mc68000
+# endif /* mc68000 */
+#endif /* linux */
+
+#ifdef __NetBSD__
+# undef __NetBSD__
+# define NetBSDArchitecture
+# ifdef __i386__
+#  define i386BsdArchitecture
+#  define i386Architecture
+#  undef i386
+# endif
+# if defined(__sparc__) || defined(sparc)
+#  define SparcArchitecture
+#  undef sparc
+# endif
+# ifdef mips
+#   define MipsArchitecture
+#   undef mips
+# endif
+# ifdef __alpha
+#   define AlphaArchitecture
+#   undef __alpha
+# endif
+# ifdef mc68000
+#   define Mc68020Architecture
+# endif
+#endif /* NetBSD */
+
 #ifndef MacroIncludeFile
 XCOMM WARNING:  Imake.tmpl not configured; guessing at definitions!!!
 XCOMM This might mean that BOOTSTRAPCFLAGS was not set when building imake.

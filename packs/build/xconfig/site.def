@@ -57,4 +57,13 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #define OptimizedCDebugFlags	-O2
 #endif
 
+#if defined(LinuxArchitecture) || defined(NetBSDArchitecture)
+#define SiteIncludes	-I/usr/X11R6/include -I$(ATHTOOLROOT)/usr/athena/include
+#define SiteLdLibs	-L/usr/X11R6/lib -L$(ATHTOOLROOT)/usr/athena/lib
+#endif
+
+#ifdef LinuxArchitecture
+#define ExtraLibraries		-lresolv
+#endif
+
 #endif /* AfterVendorCF */
