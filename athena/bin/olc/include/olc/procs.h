@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.7 1991-01-03 15:27:27 lwvanels Exp $
+ *	$Id: procs.h,v 1.8 1991-01-21 01:19:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -134,6 +134,7 @@ int OGetUsername P((REQUEST *Request , char *username ));
 int OGetHostname P((REQUEST *Request , char *hostname ));
 int OGetConnectedUsername P((REQUEST *Request , char *username ));
 int OGetConnectedHostname P((REQUEST *Request , char *hostname ));
+int OVersion P((REQUEST *Request, char **vstring));
 
 /* topic.c */
 ERRCODE OGetTopic P((REQUEST *Request , char *topic ));
