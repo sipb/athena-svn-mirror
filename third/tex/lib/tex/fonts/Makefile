@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 1998-12-11 18:04:44 ghudson Exp $
+# $Id: Makefile,v 1.12 1999-05-17 16:40:45 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -117,4 +117,4 @@ install:
 	install -c -m 444 dummy.tfm ${DESTDIR}${ATHLIBDIR}/tex/fonts/tfm
 
 clean:
-	rm -f cm *gf *pk *.log *.tfm
+	echo cm *gf *pk *.log *.tfm | xargs rm -f
