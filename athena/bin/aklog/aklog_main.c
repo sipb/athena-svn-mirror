@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.11 1990-12-25 15:37:58 probe Exp $
+ * $Id: aklog_main.c,v 1.12 1991-01-08 20:37:46 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
- * $Author: probe $
+ * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.11 1990-12-25 15:37:58 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.12 1991-01-08 20:37:46 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -241,12 +241,13 @@ static int auth_to_cell(cell, realm)
 	if (realm && realm[0])
 	    strcpy(realm_of_cell, realm);
 	else 
-	    strcpy(realm_of_cell, krb_realmofhost(cellconfig.hostName[0]));
+	    strcpy((char *)realm_of_cell, 
+		   (char *)krb_realmofhost(cellconfig.hostName[0]));
 	
 	/* We use the afs.<cellname> convention here... */
 	strcpy(name, AFSKEY);
 	strncpy(instance, cell_to_use, sizeof(instance));
-	instance[sizeof(instance)-1] = NULL;
+	instance[sizeof(instance)-1] = '\0';
 	
 	if (dflag) {
 	    sprintf(msgbuf, "Getting tickets: %s.%s@%s\n", name, instance, 
@@ -588,7 +589,7 @@ static void add_hosts_to_zsublist(file)
 		ll_string(&zsublist, SL_ADD, hp->h_name);
 	    }
 #else
-	if (hosts[1] == NULL) 
+	if (hosts[1] == '\0') 
 	    if (hp = gethostbyaddr(&hosts[0], sizeof(long), AF_INET)) {
 		if (dflag) {
 		    sprintf(msgbuf, "Got host %s\n", hp->h_name);
@@ -664,7 +665,7 @@ static int auth_to_path(path)
 		add_hosts_to_zsublist(pathtocheck);
 	    }
 	    if (endofcell = strchr(mountpoint, VOLMARKER)) {
-		*endofcell = NULL;
+		*endofcell = '\0';
 		if (auth_to_cell_status = auth_to_cell(cell, NULL)) {
 		    if (status == AKLOG_SUCCESS)
 			status = auth_to_cell_status;
@@ -826,7 +827,7 @@ void aklog(argc, argv, a_params)
 	    usage();
 
 	if (cmode) {
-	    if (((i + 1) < argc) && (strcmp(argv[i + 1], "-k") == NULL)) {
+	    if (((i + 1) < argc) && (strcmp(argv[i + 1], "-k") == 0)) {
 		i+=2;
 		if (i < argc)
 		    strcpy(realm, argv[i]);

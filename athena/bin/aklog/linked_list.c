@@ -1,5 +1,5 @@
 /* 
- * $Id: linked_list.c,v 1.1 1990-06-22 18:02:39 qjb Exp $
+ * $Id: linked_list.c,v 1.2 1991-01-08 20:38:03 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/linked_list.c,v $
  * $Author: qjb $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_list_c = "$Id: linked_list.c,v 1.1 1990-06-22 18:02:39 qjb Exp $";
+static char *rcsid_list_c = "$Id: linked_list.c,v 1.2 1991-01-08 20:38:03 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -178,7 +178,7 @@ int ll_string(list, action, string)
 	/* Scan the list until we find the string in question */
 	for (cur_node = list->first; cur_node && (status == FALSE); 
 	     cur_node = cur_node->next)
-	    status = (strcmp(string, cur_node->data) == NULL);
+	    status = (strcmp(string, cur_node->data) == 0);
 	break;
       case ll_s_add:
 	/* Add a string to the list. */
