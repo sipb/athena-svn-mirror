@@ -77,9 +77,6 @@ done
 # Set up default values (default to internal disk, swap partition, mount
 # on /root, prompt for inputs).
 #
-AIS_BASE=${AIS_BASE:-/afs/dev/project/ais}
-AIS_LIB=${AIS_LIB:-${AIS_BASE}/lib}
-AIS_EXEC=${AIS_EXEC:-${AIS_BASE}/exec}
 AIS_CPUBOARD=${AIS_CPUBOARD:-`uname -m`}
 AIS_OSVERSION=${AIS_OSVERSION:-`uname -r`}
 
@@ -89,24 +86,18 @@ eval `hinv | awk '\
     /graphics installed/	{ g = $1 }				\
     END			{ printf("AIS_CPU=%s; AIS_GRAPHICS=%s", p, g); }'`
 
-# AFSDIST is separated only because there isn't an AFS distribution in
-# the AFS locker for 6.3 yet.
 # MODLOADAFS is separated because AFS is still a bit broken in 6.3.
 case ${AIS_OSVERSION} in
     6.2)
 	AIS_SYS=${AIS_SYS:-sgi_62}
 	AIS_OPSSYS=${AIS_OPSSYS:-62}
 	AIS_SYSTEM=IRIX62
-	AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}/${AIS_SYS}}
-	AIS_AFSDIST=${AIS_AFSDIST:-/afs/athena.mit.edu/system/afsuser/dist/3.4a.patches.4/${AIS_SYS}/root.client}
 	AIS_MODLOADAFS=${AIS_MODLOADAFS:-1}
 	;;
     6.3)
 	AIS_SYS=${AIS_SYS:-sgi_63}
 	AIS_OPSSYS=${AIS_OPSSYS:-63}
 	AIS_SYSTEM=IRIX63
-	AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}/${AIS_SYS}}
-	AIS_AFSDIST=${AIS_AFSDIST:-${AIS_OSLIB}/afsdist/root.client}
 	AIS_MODLOADAFS=${AIS_MODLOADAFS:-0}
 	;;
     *)
@@ -135,9 +126,14 @@ AIS_BUS=${AIS_BUS:-0}
 AIS_UTIL=${AIS_UTIL:-/ais}
 AIS_DEV=${AIS_DEV:-1}
 AIS_ATHENAVERS=${AIS_ATHENAVERS:-8.1}
-AIS_DIST=${AIS_DIST:-/afs/dev/system/${AIS_SYS}/install}
-AIS_SRVD=${AIS_SRVD:-/afs/dev/system/${AIS_SYS}/srvd-${AIS_ATHENAVERS}}
-AIS_OS=${AIS_OS:-/afs/dev/system/${AIS_SYS}/os}
+AIS_DIST=${AIS_DIST:-/install}
+AIS_BASE=${AIS_BASE:-${AIS_DIST}}
+AIS_LIB=${AIS_LIB:-${AIS_BASE}/lib}
+AIS_EXEC=${AIS_EXEC:-${AIS_BASE}/exec}
+AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}}
+AIS_AFSDIST=${AIS_AFSDIST:-${AIS_OSLIB}/afsdist/root.client}
+AIS_SRVD=${AIS_SRVD:-/srvd}
+AIS_OS=${AIS_OS:-/os}
 AIS_LOCALBITS=${AIS_LOCALBITS:-"/ram"}
 AIS_ROOT=${AIS_ROOT:-/root}
 AIS_FUTUREROOT=${AIS_FUTUREROOT:-/root}
@@ -231,6 +227,8 @@ imagename()
 	    ;;
 	CRM)
 	    hdwr="${hdwr}cr"
+	    AIS_GFXB="GFXBOARD=CRIME"
+	    AIS_SUBG="SUBGR=CRM"
 	    ;;
 	*)
 	    echo "Unrecognized graphics subsystem: ${graphics}"
