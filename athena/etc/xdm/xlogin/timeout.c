@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.6 1993-07-08 01:08:57 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.7 1994-04-26 10:41:36 root Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>
@@ -27,6 +27,11 @@ char **argv;
     struct stat stbuf;
     struct timeval now, start;
     void child(), wakeup();
+#ifdef POSIX
+    struct sigaction sigact;
+    sigemptyset(&sigact.sa_mask);
+    sigact.sa_flags = 0;
+#endif
 
     name = *argv++;
     if (argc < 3) {
@@ -38,9 +43,15 @@ char **argv;
     argc -= 2;
 
     app_running = TRUE;
+#ifdef POSIX
+     sigact.sa_handler = child;
+    sigaction(SIGCHLD, &sigact, NULL);
+    sigact.sa_handler = wakeup;
+    sigaction(SIGALRM, &sigact, NULL);
+#else
     signal(SIGCHLD, child);
     signal(SIGALRM, wakeup);
-
+#endif
     /* launch application */
     switch (app_pid = fork()) {
     case 0:
