@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.11 1999-03-23 18:31:01 danw Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.12 1999-03-30 18:40:50 danw Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -30,6 +30,7 @@ static const char rcsid[] = "$Id: homedir.c,v 1.11 1999-03-23 18:31:01 danw Exp 
 #include <errno.h>
 #include <pwd.h>
 #include <dirent.h>
+#include <fcntl.h>
 #include "al.h"
 #include "al_private.h"
 
@@ -38,7 +39,7 @@ int al__setup_homedir(const char *username, struct al_record *record,
 {
   struct passwd *local_pwd, *hes_pwd;
   pid_t pid, rpid;
-  int status;
+  int status, fd;
   char *tmpdir, *tmpfile, *saved_homedir;
   void *hescontext;
   DIR *dir;
@@ -91,8 +92,14 @@ int al__setup_homedir(const char *username, struct al_record *record,
       return AL_WNOHOMEDIR;
 
     case 0:
+      close(STDIN_FILENO);
       close(STDOUT_FILENO);
       close(STDERR_FILENO);
+      fd = open("/dev/null", O_RDWR);
+      dup2(fd, STDIN_FILENO);
+      dup2(fd, STDOUT_FILENO);
+      dup2(fd, STDERR_FILENO);
+
       if (havecred)
 	{
 	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
@@ -185,8 +192,13 @@ int al__setup_homedir(const char *username, struct al_record *record,
 	      return AL_WNOHOMEDIR;
 
 	    case 0:
+	      close(STDIN_FILENO);
 	      close(STDOUT_FILENO);
 	      close(STDERR_FILENO);
+	      fd = open("/dev/null", O_RDWR);
+	      dup2(fd, STDIN_FILENO);
+	      dup2(fd, STDOUT_FILENO);
+	      dup2(fd, STDERR_FILENO);
 	      if (setgid(local_pwd->pw_gid) == -1
 		  || setuid(local_pwd->pw_uid) == -1)
 		_exit(1);
@@ -246,7 +258,7 @@ int al__revert_homedir(const char *username, struct al_record *record)
 {
   struct passwd *local_pwd;
   pid_t pid;
-  int status;
+  int status, fd;
 
   local_pwd = al__getpwnam(username);
   if (!local_pwd)
@@ -272,8 +284,14 @@ int al__revert_homedir(const char *username, struct al_record *record)
 	  return AL_ENOMEM;
 
 	case 0:
+	  close(STDIN_FILENO);
 	  close(STDOUT_FILENO);
 	  close(STDERR_FILENO);
+	  fd = open("/dev/null", O_RDWR);
+	  dup2(fd, STDIN_FILENO);
+	  dup2(fd, STDOUT_FILENO);
+	  dup2(fd, STDERR_FILENO);
+
 	  if (setgid(local_pwd->pw_gid) == -1
 	      || setuid(local_pwd->pw_uid) == -1)
 	    _exit(1);
