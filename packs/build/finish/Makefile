@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 2001-08-22 16:41:56 ghudson Exp $
+# $Id: Makefile,v 1.14 2003-05-03 15:29:16 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -39,7 +39,6 @@ install:
 	vers="$$ATHENA_MAJOR_VERSION.$$ATHENA_MINOR_VERSION"; \
 		ln -s /afs/athena.mit.edu/system/patch-$$vers/${ATHENA_SYS} \
 		 ${DESTDIR}/patch
-	install -c -m 444 rvdinfo ${DESTDIR}/.rvdinfo
 	./fix_owners ${DESTDIR}
 	chmod go-w ${DESTDIR}
 	${DESTDIR}${ATHETCDIR}/track -w -F${DESTDIR} -W${DESTDIR}${ATHLIBDIR} \
@@ -52,6 +51,7 @@ install:
 	chgrp 0 ${DESTDIR}${ATHLIBDIR}/stats/*
 	(cd ${DESTDIR} && find . -print | sort) > FILES
 	install -c -m 444 -o 0 -g 0 FILES ${DESTDIR}${UPDATE}/FILES
+	install -c -m 444 rvdinfo ${DESTDIR}/.rvdinfo
 
 clean:
 	rm -f fix_owners.o fix_owners rvdinfo FILES
