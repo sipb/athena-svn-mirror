@@ -1,0 +1,9 @@
+Name: athena-mitmailappend
+Summary: Append a message to an IMAP folder
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmailappend program appends one message to a folder on an IMAP server.
