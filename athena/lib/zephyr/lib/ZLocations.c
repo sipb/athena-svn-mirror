@@ -1,20 +1,20 @@
 /* This file is part of the Project Athena Zephyr Notification System.
- * It contains source for the ZSetLocation, ZUnsetLocation, ZHideLocation,
- * and ZUnhideLocation functions.
+ * It contains source for the ZSetLocation, ZUnsetLocation, and
+ * ZFlushMyLocations functions.
  *
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.16 1987-09-24 10:59:49 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.17 1987-10-31 16:03:13 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.16 1987-09-24 10:59:49 jtkohl Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.17 1987-10-31 16:03:13 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -28,21 +28,10 @@ static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/
 
 uid_t getuid();
 
-Code_t ZSetLocation()
+Code_t ZSetLocation(exposure)
+	char *exposure;
 {
-	char bfr[BUFSIZ];
-	int quiet;
-	struct passwd *pw;
-	
-        quiet = 0;
-	/* XXX a uid_t is a u_short (now), but getpwuid wants an int. AARGH! */
-	if (pw = getpwuid((int) getuid())) {
-		(void) sprintf(bfr,"%s/.hideme",pw->pw_dir);
-		quiet = !access(bfr,F_OK);
-	} 
-
-	return (Z_SendLocation(LOGIN_CLASS,quiet?LOGIN_QUIET_LOGIN:
-			       LOGIN_USER_LOGIN,ZAUTH,
+	return (Z_SendLocation(LOGIN_CLASS,exposure,ZAUTH,
 			       "$sender logged in to $1 on $3 at $2"));
 }
 
@@ -52,19 +41,9 @@ Code_t ZUnsetLocation()
 			       "$sender logged out of $1 on $3 at $2"));
 }
 
-Code_t ZFlushLocations()
+Code_t ZFlushMyLocations()
 {
 	return (Z_SendLocation(LOGIN_CLASS,LOGIN_USER_FLUSH,ZAUTH,""));
-}
-
-Code_t ZHideLocation()
-{
-	return (Z_SendLocation(LOCATE_CLASS,LOCATE_HIDE,ZAUTH,(char *)0));
-}
-
-Code_t ZUnhideLocation()
-{
-	return (Z_SendLocation(LOCATE_CLASS,LOCATE_UNHIDE,ZAUTH,(char *)0));
 }
 
 Z_SendLocation(class,opcode,auth,format)
