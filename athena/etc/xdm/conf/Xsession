@@ -2,9 +2,9 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.8 1991-07-22 01:11:11 probe Exp $
+# $Id: Xsession,v 1.9 1992-04-30 14:49:59 lwvanels Exp $
 
-trap 'kdestroy; exit 0' 1 2 15
+trap 'kdestroy; unlog; exit 0' 1 2 15
 
 initlib="/usr/athena/lib/init"
 defsession=$1
