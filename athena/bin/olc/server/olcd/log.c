@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.23 1990-07-16 08:30:20 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: log.c,v 1.24 1990-07-16 10:20:32 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.23 1990-07-16 08:30:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.24 1990-07-16 10:20:32 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -335,9 +335,12 @@ log_long_description(owner,sender,message)KNUCKLE *owner,*sender;char *message;
 
 ERRCODE
 #if __STDC__
-init_log(KNUCKLE *knuckle, const char *question)
+init_log(KNUCKLE *knuckle, const char *question, const char *machinfo)
 #else
-init_log(knuckle, question) KNUCKLE *knuckle; char *question;
+init_log(knuckle, question, machinfo)
+     KNUCKLE *knuckle;
+     char *question;
+     char *machinfo;
 #endif
 {
   FILE *logfile;		/* Ptr. to user's log file. */
@@ -385,6 +388,8 @@ init_log(knuckle, question) KNUCKLE *knuckle; char *question;
   fprintf(logfile, "Topic:\t\t%s\n\n", knuckle->question->topic);
   fprintf(logfile, "Question:\n");
   write_line_to_log(logfile, question);
+  if (machinfo != NULL)
+    fprintf(logfile, "\nMachine info:\t%s\n", machinfo);
   write_line_to_log(logfile,"___________________________________________________________\n\n");
   fprintf(logfile, "\n");
   (void) fclose(logfile);
@@ -512,7 +517,7 @@ terminate_log_crash(knuckle) KNUCKLE *knuckle;
       return(ERROR);
     }
   time_now(current_time);
-  fprintf(logfile, "\n--- Log file '%s' saved at after daemon crash\n[%s]",
+  fprintf(logfile, "\n--- Log file '%s' saved after daemon crash.\n[%s]",
 	  index(question->logfile, '/')+1, current_time);
   (void) fclose(logfile);
   if (dispose_of_log(knuckle, UNANSWERED) == ERROR)
@@ -543,29 +548,24 @@ dispose_of_log(KNUCKLE *knuckle, int answered)
 dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
 #endif
 {
-  QUESTION *question;
-  char error[ERROR_SIZE];	        /* Error message. */
-  char notesfile[NAME_SIZE];  /* Name of notesfile. */
-  char newfile[NAME_SIZE];    /* New file name. */
-  char topic[NAME_SIZE];
-  int fd;			/* File descriptor of log. */
-  int pid, pid2;		/* Process ID for fork. */
-  char msgbuf[BUF_SIZE];
+  QUESTION *question;		/* Pointer to the question. */
+  char newfile[NAME_SIZE];	/* New file name. */
+  char ctrlfile[NAME_SIZE];	/* Control file name. */
+  FILE *fp;			/* Stream for control file. */
+  int pid;			/* Process ID for fork. */
+  char msgbuf[BUF_SIZE];	/* Construct messages to be logged. */
+  long time_now;		/* time now, in seconds (a unique number) */
   
 #ifdef TEST
   printf("dispose title: %s\n",knuckle->question->title);
 #endif
 
+  time_now = NOW;
+
   question = knuckle->question;
 
-  sprintf(topic, "%s: ", question->owner->user->username);
-  strncat(topic, question->title, (sizeof(topic) - strlen(topic)) );
-  topic[sizeof(topic) - 1] = '\0';
-
-  (void) strcpy(newfile, question->logfile);
-  *(rindex(newfile, '/') + 1) = '\0';
-  (void) strcat(newfile, "#");
-  (void) strcat(newfile, rindex(question->logfile, '/') + 1);
+  (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
+  (void) sprintf(newfile, "%s/log%d", DONE_DIR, time_now);
 
   if (rename(question->logfile, newfile) == -1) 
     {
@@ -573,54 +573,32 @@ dispose_of_log(knuckle, answered) KNUCKLE *knuckle;
       log_error("Can't rename user log.");
       return(ERROR);
     }
+  if ((fp = fopen(ctrlfile, "w")) == NULL)
+    {
+      perror("dispose_of_log: control file");
+      log_error("Can't create control file.");
+      return(ERROR);
+    }
+  fprintf(fp, "%s\n%s\n%s\n%s\n", newfile, question->title,
+	  question->topic, question->owner->user->username);
+  fclose(fp);
+      
   if ((pid = fork()) == -1) 
     {
       perror("dispose_of_log: fork");
-      log_error("Can't fork to write to notesfile.");
+      log_error("Can't fork to dispose of log.");
       return(ERROR);
     }
   else if (pid == 0) 
     {
-      (void) sprintf(notesfile, "%s%s", NF_PREFIX, question->topic);
-      (void) sprintf(msgbuf, "%s to %s",
-		     question->logfile, notesfile);
+      (void) sprintf(msgbuf, "%s to %s logs",
+		     question->logfile, question->topic);
       log_status(msgbuf);
-      
-      if ((fd = open(newfile, O_RDONLY, 0)) == -1) 
-	{
-	  perror("dispose_of_log: open");
-	  (void) sprintf(error, 
-			 "dispose_of_log: unable to open %s",
-			 question->logfile);
-	  log_error(error);
-	  exit(ERROR);
-	}
-      if (dup2(fd, 0) == -1) {
-	perror("dispose_of_log: dup2");
-	log_error("dispose_of_log: unable to duplicate file descriptor");
-	exit(ERROR);
-      }
-      execl("/usr/sipb/bin/dspipe", "dspipe", notesfile, "-t",topic, 0);
-      perror("dispose_of_log: /usr/sipb/bin/dspipe");
-      log_error("dispose_of_log: cannot exec /usr/sipb/bin/dspipe.\n");
-      execl("/usr/local/dspipe", "dspipe", notesfile, "-t", topic, 0);
-      perror("dispose_of_log: /usr/local/dspipe");
-      log_error("dispose_of_log: cannot exec /usr/local/dspipe, giving up.\n");
+
+      execl("/usr/local/lumberjack", "lumberjack", 0);
+      perror("dispose_of_log: /usr/local/lumberjack");
+      log_error("dispose_of_log: cannot exec /usr/local/lumberjack.\n");
       exit(0);
-    }
-  while ((pid2 = wait(0)) != pid) 
-    {
-      if (pid2 == -1) 
-	{
-	  perror("dispose_of_log: wait");
-	  return(ERROR);
-	}
-    }
-  if (unlink(newfile) == -1) 
-    {
-      perror("dispose_of_log: unlink");
-      (void) sprintf(error, "dispose_of_log: Unable to remove %s",newfile);
-      log_error(error);
     }
   return(SUCCESS);
 }
