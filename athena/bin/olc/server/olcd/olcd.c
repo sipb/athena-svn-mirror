@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.37 1991-03-07 13:35:51 lwvanels Exp $
+ *	$Id: olcd.c,v 1.38 1991-03-26 12:07:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.37 1991-03-07 13:35:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.38 1991-03-26 12:07:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -295,9 +295,9 @@ main (argc, argv)
     }
     (void) strcpy(hostname, this_host_entry->h_name);
 
+#ifdef HESIOD
     if (!hostset)
     {
-#ifdef HESIOD
 	if ((hp = hes_resolve(DaemonInst, OLC_SERV_NAME)) == NULL)
 	{
 	    log_error("Unable to get name of OLC server host from nameserver.");
@@ -305,9 +305,8 @@ main (argc, argv)
 	    exit(ERROR);
 	}
 	else (void) strcpy(DaemonHost, *hp);
-
-#endif /* HESIOD */
     }
+#endif /* HESIOD */
 
     if((daemon_host_entry = gethostbyname(DaemonHost))==(struct hostent *)NULL)
     {
@@ -316,9 +315,6 @@ main (argc, argv)
     }
 
     if (port_num == 0) {
-#ifdef HESIOD
-	/* do hesiod-like stuff */
-#endif /* HESIOD */
 	if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) ==
 	    (struct servent *)NULL)
 	{
@@ -383,12 +379,12 @@ restart:
 
     if (!string_eq(hostname, daemon_host_entry->h_name)) {
 #ifdef TEST
-	log_error("warning: hesiod information doesn't point here");
+	log_error("warning: host must be here, not %s (hesiod probs?)", DaemonHost);
 	strcpy (DaemonHost, hostname);
 #else
 	/* format message first, because h_name is static buffer */
 	char *msg = fmt("%s != %s", hostname, daemon_host_entry->h_name);
-	log_error("error: hesiod information doesn't point here; exiting");
+	log_error("error: host information doesn't point here; exiting");
 	log_error(msg);
 	return 1;
 #endif
