@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.22 1998-03-27 19:10:10 ghudson Exp $
+# $Id: do-update.sh,v 1.23 1998-04-08 17:06:30 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -15,13 +15,32 @@
 # this software for any purpose.  It is provided "as is"
 # without express or implied warranty.
 
+# Eliminate duplicates in the argument list, putting the result into
+# a variable "out".  Not super-robust, but it's only intended to work
+# on filenames added to CONFCHG.  We have this because we can't rely
+# on "sort" working across OS versions.
+undup() {
+	for i in "$@"; do
+		case $out in
+		*" $i "*)
+			;;
+		*)
+			out="$out $i "
+			;;
+		esac
+	done
+}
+
 . /srvd/usr/athena/lib/update/update-environment
 
 # Get the platform name for Solaris.  "uname -i" is the documented way, but
 # it doesn't work in Solaris 2.4 and prior, and "uname -m" works for now.
+# Also determine the root disk based on the mount table.
 case "$HOSTTYPE" in
 sun4)
-	platform=`uname -m`
+	SUNPLATFORM=`uname -m`
+	ROOTDISK=`mount | sed -n '/^\/ /s#^/ on /dev/dsk/\([^ ]*\).*$#\1#p'`
+	export SUNPLATFORM ROOTDISK
 	;;
 esac
 
@@ -39,9 +58,10 @@ echo "Athena Workstation ($HOSTTYPE) Version Update `date`" >> \
 
 if [ "$version" != "$newvers" ]; then
 	echo "Version-specific updating.."
-	cp /dev/null $CONFCHG
-	cp /dev/null $CONFVARS
-	cp /dev/null $OLDBINS
+	cp /dev/null "$CONFCHG"
+	cp /dev/null "$CONFVARS"
+	cp /dev/null "$OLDBINS"
+	cp /dev/null "$OLDLIBS"
 	upvers "$version" "$newvers" "$LIBDIR"
 fi
 
@@ -54,14 +74,15 @@ fi
 #	$CONFCHG	A list of configuration files to update
 #	$AUXDEVS	A list of auxiliary device scripts to run
 #			from /srvd/install/aux.devs (sun4 only)
-#	$OLDBINS	A list of binaries to preserve before
-#			tracking
+#	$OLDBINS	A list of binaries to preserve before tracking
+#	$OLDLIBS	A list of libraries to preserve before tracking
 #	$DEADFILES	A list of local files to be removed
 #	$LOCALPACKAGES	A list of local OS packages to be de/installed
 #	$LINKPACKAGES	A list of linked OS packages to be de/installed
 #	$CONFVARS	Can set variables to "true", including:
 #		NEWUNIX		Update kernel
 #		NEWBOOT		Boot blocks have changed
+#		NEWDEVS		New pseudo-devices required
 #		NEWOS		OS version has changed
 #		TRACKOS		OS files relevant to local disk have changed
 #		MINIROOT	some OS files require a miniroot update
@@ -84,7 +105,8 @@ for i in $configfiles; do
 done
 
 if [ -s "$CONFCHG" ]; then
-	conf="`sort -u $CONFCHG`"
+	undup `cat "$CONFCHG"`
+	conf=$out
 	if [ "$PUBLIC" != true ]; then
 		echo "The following configuration files have changed and will"
 		echo "be replaced.  The old versions will be renamed to the"
@@ -208,7 +230,30 @@ if [ "$MINIROOT" = true ]; then
 	exec reboot
 fi
 
-# Not a miniroot update; run update-os here.
+# Not a miniroot update; run update-os here.  This is a good place to
+# handle OLDBINS and OLDLIBS, since we need the environment variables
+# after update-os.
+
+if [ -s "$OLDBINS" ]; then
+	echo "Making copies of OS binaries we need"
+	mkdir -p /tmp/bin
+	bins="`cat $OLDBINS`"
+	for i in $bins; do
+		cp -p $i /tmp/bin/`basename $i`
+	done
+	PATH=/tmp/bin:$PATH; export PATH
+fi
+
+if [ -s "$OLDLIBS" ]; then
+	echo "Making copies of OS libraries we need"
+	mkdir -p /tmp/lib
+	libs="`cat $OLDLIBS`"
+	for i in $libs; do
+		cp -p $i /tmp/lib/`basename $i`
+	done
+	LD_LIBRARY_PATH=/tmp/lib; export LD_LIBRARY_PATH
+fi
+
 sh /srvd/usr/athena/lib/update/update-os
 
 if [ "$NEWOS" = true ]; then
