@@ -22,10 +22,8 @@ daytime	stream	tcp	nowait	unswitched	root	internal	internal
 daytime	dgram	udp	nowait	unswitched	root	internal	internal
 #
 # Remote access services that should normally be disabled.
-# Digital's vs. Athena's version
-#tftp	dgram	udp	wait	switched	root	/usr/athena/etc/tftpd	tftpd
-#tftp	dgram	udp	wait	switched	root	/usr/etc/tftpd	tftpd
-#exec	stream	tcp	nowait	switched	root	/etc/rexecd	rexecd
+#tftp	dgram	udp	wait	switched	root	/usr/sbin/in.tftpd	tftpd
+#exec	stream	tcp	nowait	switched	root	/usr/sbin/in.rexecd	rexecd
 #
 # Obsolete services that are not in the Athena release.
-#comsat	dgram	udp	wait	unswitched	root	/etc/comsat	comsat
+#comsat	dgram	udp	wait	unswitched	root	/usr/sbin/in.comsat	comsat
