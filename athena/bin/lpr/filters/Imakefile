@@ -23,7 +23,7 @@ LN01FILTERS= ln01l ln01p
 VARIAN=	rvsort rvcat vsort vcat vpf vpsf vdmp vpltdmp vplotf vfontinfo vwidth \
 	vfw fcvt rotate rotprt
 
-#if defined(AIX) && defined(_I386)
+#if (defined(AIX) && defined(_I386)) || defined(_IBMR2)
 OPTLIBS=-lbsd
 #endif
 
