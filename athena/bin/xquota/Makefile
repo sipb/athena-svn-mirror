@@ -5,7 +5,7 @@
 #    
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v $
 #       $Author: kit $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.2 1989-03-28 17:14:24 kit Exp $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.3 1989-04-11 12:17:38 kit Exp $
 #       
 #          Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #    
@@ -14,7 +14,7 @@
     
 LIBDIR= /mit/StaffTools/lib/xquota
 
-HELPFILES= -DDEFAULTS_FILE=\"${LIBDIR}/Xquota.ad\"\
+HELPFILES= -DDEFAULTS_FILE=\"${LIBDIR}/XQuota.ad\"\
 	   -DTOP_HELP_FILE=\"${LIBDIR}/top_help.txt\"\
 	   -DPOPUP_HELP_FILE=\"${LIBDIR}/pop_help.txt\"
 
