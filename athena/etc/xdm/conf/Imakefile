@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.16 1993-03-04 22:12:26 probe Exp $
+# $Id: Imakefile,v 1.17 1993-03-04 22:41:20 probe Exp $
 
 USRSCRIPTS=mitvma
 
@@ -36,8 +36,13 @@ create_dir(/etc/athena/login/fonts/100dpi)
 create_dir(/etc/athena/login/fonts/75dpi)
 
 install_file(fonts.alias.rsaix,/etc/athena/login/fonts/100dpi/fonts.alias)
+#if (AIXV == 31)
+install_file(fonts.dir.rsaix31,/etc/athena/login/fonts/100dpi/fonts.dir)
+install_file(7x13.snf.rsaix31,/etc/athena/login/fonts/100dpi/7x13.snf)
+#else
 install_file(fonts.dir.rsaix,/etc/athena/login/fonts/100dpi/fonts.dir)
-install_file(7x13.snf.rsaix,/etc/athena/login/fonts/100dpi/7x13.snf)
+install_file(7x13.pcf.rsaix,/etc/athena/login/fonts/100dpi/7x13.pcf)
+#endif
 #endif
 
 
