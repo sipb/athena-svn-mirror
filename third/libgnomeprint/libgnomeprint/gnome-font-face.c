@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdarg.h>
@@ -40,10 +41,9 @@
 #include <libgnomeprint/gnome-font-private.h>
 #include <libgnomeprint/gnome-print-i18n.h>
 #include <libgnomeprint/gnome-fontmap.h>
-#include <libgnomeprint/gp-truetype-utils.h>
-#include <libgnomeprint/gp-tt-t1.h>
 #include <libgnomeprint/gnome-font-family.h>
 #include <libgnomeprint/gnome-print-encode.h>
+#include <libgnomeprint/ttsubset/gnome-print-tt-subset.h>
 
 enum {
 	PROP_0,
@@ -72,7 +72,11 @@ static void gff_load_metrics (GnomeFontFace *face, gint glyph);
 static void gff_load_outline (GnomeFontFace *face, gint glyph);
 
 static void gf_pso_print_sized (GnomeFontPsObject *pso, const guchar *text, gint size);
-static void gf_pso_sprintf (GnomeFontPsObject * pso, const gchar * format, ...);
+static void gf_pso_sprintf (GnomeFontPsObject * pso, 
+			    const gchar * format, ...);
+static gint gf_pso_print_double (GnomeFontPsObject *pso, const gchar *format,
+				 gdouble x);
+
 static void gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject * pso, gint size);
 
 #define GFE_IS_T1(e) ((e)->type == GP_FONT_ENTRY_TYPE1)
@@ -212,7 +216,8 @@ gnome_font_face_get_prop (GObject *o, guint id, GValue *value, GParamSpec *pspec
 		g_value_set_string (value, face->entry->familyname);
 		break;
 	case PROP_WEIGHT:
-		g_value_set_string (value, face->entry->weight);
+		/* FIXME: we should be using the GnomeFontWeight Weight */
+		g_value_set_string (value, face->entry->speciesname);
 		break;
 	case PROP_ITALICANGLE:
 		/* FIXME: implement (Lauris) */
@@ -537,34 +542,35 @@ gnome_font_face_find (const guchar *name)
 	}
 }
 
-/* fixme: Do some well-known substitutions here */
-
 GnomeFontFace *
 gnome_font_face_find_closest (const guchar *name)
 {
-	GnomeFontFace *face;
-	GPFontMap *map;
-
-	face = NULL;
-
-	map = gp_fontmap_get ();
+	GnomeFontFace *face = NULL;
 
 	if (name)
 		face = gnome_font_face_find (name);
 
-	if (!face && map->fonts) {
-		/* No face, no default, load whatever font is first */
-		GPFontEntry *e;
-		e = (GPFontEntry *) map->fonts->data;
-		if (e->face) {
-			gnome_font_face_ref (e->face);
-		} else {
-			gff_face_from_entry (e);
+	if (!face)
+		face = gnome_font_face_find ("Sans Regular");
+
+	if (!face) {
+		GPFontMap *map = gp_fontmap_get ();
+		if (map && map->fonts) {
+			/* No face, no default, load whatever font is first */
+			GPFontEntry *e;
+			e = (GPFontEntry *) map->fonts->data;
+			if (e->face) {
+				gnome_font_face_ref (e->face);
+			} else {
+				gff_face_from_entry (e);
+			}
+			face = e->face;
 		}
-		face = e->face;
+		
+		gp_fontmap_release (map);
 	}
 
-	gp_fontmap_release (map);
+	g_return_val_if_fail (face != NULL, NULL);
 
 	return face;
 }
@@ -640,6 +646,55 @@ gnome_font_face_find_from_family_and_style (const guchar *family, const guchar *
 	return face;
 }
 
+/**
+ * gnome_font_face_find_from_filename:
+ * @filename: filename of a font face in the system font database
+ * @index_: index of the face within @filename. (Font formats such as
+ *          TTC/TrueType Collections can have multiple fonts within
+ *          a single file.
+ * 
+ * Looks up the #GnomeFontFace for a particular pair of filename and
+ * index of the font within the file. The font must already be within
+ * the system font database; this can't be used to access arbitrary
+ * fonts on disk.
+ * 
+ * Return value: the matching #GnomeFontFace, if any, otherwise %NULL
+ **/
+GnomeFontFace *
+gnome_font_face_find_from_filename (const guchar *filename, gint index_)
+{
+	GPFontMap * map;
+	GPFontEntry match_e;
+	GPFontEntry * e;
+
+	/* The hash table for map->filenamedict uses this GPFontEntry
+	 * itself as a key but only the file/index are used as input
+	 * to the hash and equal functions.
+	 */
+	match_e.file = (guchar *)filename;
+	match_e.index = index_;
+
+	map = gp_fontmap_get ();
+		
+	e = g_hash_table_lookup (map->filenamedict, &match_e);
+	if (!e) {
+		gp_fontmap_release (map);
+		return NULL;
+	}
+
+	if (e->face) {
+		gnome_font_face_ref (e->face);
+		gp_fontmap_release (map);
+		return e->face;
+	}
+
+	gff_face_from_entry (e);
+
+	gp_fontmap_release (map);
+
+	return (e->face);
+}
+
 GnomeFontFace *
 gnome_font_face_find_closest_from_pango_font (PangoFont *pfont)
 {
@@ -668,12 +723,42 @@ gnome_font_face_find_closest_from_pango_description (const PangoFontDescription 
 
 	g_return_val_if_fail (desc != NULL, NULL);
 
-	weight = (pango_font_description_get_weight (desc) + 49)/ 100;
+	/* pango_font_description_get_weight returns a numerical enum */
+	/* value in the range from 100 to 900 with                    */
+	/* PANGO_WEIGHT_ULTRALIGHT = 200                              */
+	/* PANGO_WEIGHT_NORMAL     = 400                              */
+        /* PANGO_WEIGHT_HEAVY      = 900                              */
+
+	weight = pango_font_description_get_weight (desc);
 	style = pango_font_description_get_style (desc);
-	italic = ((style == PANGO_STYLE_OBLIQUE) || (style == PANGO_STYLE_ITALIC));
+	italic = ((style == PANGO_STYLE_OBLIQUE) 
+		  || (style == PANGO_STYLE_ITALIC));
 	family_name = pango_font_description_get_family (desc);
 
-	return gnome_font_face_find_closest_from_weight_slant (family_name, weight, italic);
+	/* gnome_font_face_find_closest_from_weight_slant requires as */
+	/* weight a GnomeFontWeight, a numerical value ranging from   */
+	/* 100 to 1100 with                                           */
+        /* 	GNOME_FONT_LIGHTEST = 100, */
+        /* 	GNOME_FONT_EXTRA_LIGHT = 100, */
+        /* 	GNOME_FONT_THIN = 200, */
+        /* 	GNOME_FONT_LIGHT = 300, */
+        /* 	GNOME_FONT_BOOK = 400, */
+        /* 	GNOME_FONT_REGULAR = 400, */
+        /* 	GNOME_FONT_MEDIUM = 500, */
+        /* 	GNOME_FONT_SEMI = 600, */
+        /* 	GNOME_FONT_DEMI = 600, */
+        /* 	GNOME_FONT_BOLD = 700, */
+        /* 	GNOME_FONT_HEAVY = 900, */
+        /* 	GNOME_FONT_EXTRABOLD = 900, */
+        /* 	GNOME_FONT_BLACK = 1000, */
+        /* 	GNOME_FONT_EXTRABLACK = 1100, */
+        /* 	GNOME_FONT_HEAVIEST = 1100 */
+
+	/* Since these values are reasonably close, we retain the same */
+        /* numerical values. */
+
+	return gnome_font_face_find_closest_from_weight_slant 
+		(family_name, weight, italic);
 }
 
 /* This returns GList of (guchar *) */
@@ -763,16 +848,16 @@ gnome_font_face_lookup_default (GnomeFontFace * face, gint unicode)
 }
 
 gboolean
-gff_load (GnomeFontFace *face)
+gnome_font_face_load (GnomeFontFace *face)
 {
 	FT_Face ft_face;
 	FT_Error ft_result;
 	static FT_Library ft_library = NULL;
 	GPFontEntry *entry;
-	FT_CharMap found = 0;
+	FT_CharMap found = NULL;
 	FT_CharMap charmap;
-	FT_CharMap appleRoman = 0;
-	FT_CharMap symbol = 0;
+	FT_CharMap appleRoman = NULL;
+	FT_CharMap symbol = NULL;
 	const guchar *psname;
 	int n;
 
@@ -787,7 +872,7 @@ gff_load (GnomeFontFace *face)
 		entry = face->entry;
 	}
 
-	ft_result = FT_New_Face (ft_library, entry->file, 0, &ft_face);
+	ft_result = FT_New_Face (ft_library, entry->file, entry->index, &ft_face);
 	g_return_val_if_fail (ft_result == FT_Err_Ok, FALSE);
 
 	psname = FT_Get_Postscript_Name (ft_face);
@@ -1002,7 +1087,7 @@ static int gfft2_cubic_to (FT_Vector * control1, FT_Vector * control2, FT_Vector
 	return 0;
 }
 
-FT_Outline_Funcs gfft2_outline_funcs = {
+static FT_Outline_Funcs gfft2_outline_funcs = {
 	gfft2_move_to,
 	gfft2_line_to,
 	gfft2_conic_to,
@@ -1222,7 +1307,7 @@ gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 	if (pso->encodedbytes == 1) {
 		gint glyph;
 		/* 8-bit vector */
-		gf_pso_sprintf (pso, "/%s findfont dup length dict begin\n", embeddedname);
+		gf_pso_sprintf (pso, "(%s) cvn findfont dup length dict begin\n", embeddedname);
 		gf_pso_sprintf (pso, "{1 index /FID ne {def} {pop pop} ifelse} forall\n");
 		gf_pso_sprintf (pso, "/Encoding [\n");
 		for (glyph = 0; glyph < 256; glyph++) {
@@ -1238,7 +1323,7 @@ gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 			gf_pso_sprintf (pso, ((glyph & 0xf) == 0xf) ? "/%s\n" : "/%s ", c);
 		}
 		gf_pso_sprintf (pso, "] def currentdict end\n");
-		gf_pso_sprintf (pso, "/%s exch definefont pop\n", pso->encodedname);
+		gf_pso_sprintf (pso, "(%s) cvn exch definefont pop\n", pso->encodedname);
 	} else {
 		gint nfonts, nglyphs, i, j;
 		/* 16-bit vector */
@@ -1249,7 +1334,7 @@ gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 		/* Common entries */
 		gf_pso_sprintf (pso, "/FontType 0 def\n");
 		gf_pso_sprintf (pso, "/FontMatrix [1 0 0 1 0 0] def\n");
-		gf_pso_sprintf (pso, "/FontName /%s-Glyph-Composite def\n", embeddedname);
+		gf_pso_sprintf (pso, "/FontName (%s-Glyph-Composite) cvn def\n", embeddedname);
 		gf_pso_sprintf (pso, "/LanguageLevel 2 def\n");
 
 		/* Type 0 entries */
@@ -1258,7 +1343,7 @@ gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 		/* Bitch 'o' bitches */
 		gf_pso_sprintf (pso, "/FDepVector [\n");
 		for (i = 0; i < nfonts; i++) {
-			gf_pso_sprintf (pso, "/%s findfont dup length dict begin\n", embeddedname);
+			gf_pso_sprintf (pso, "(%s) cvn findfont dup length dict begin\n", embeddedname);
 			gf_pso_sprintf (pso, "{1 index /FID ne {def} {pop pop} ifelse} forall\n");
 			gf_pso_sprintf (pso, "/Encoding [\n");
 			for (j = 0; j < 256; j++) {
@@ -1276,7 +1361,7 @@ gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 				gf_pso_sprintf (pso, ((j & 0xf) == 0xf) ? "/%s\n" : "/%s ", c);
 			}
 			gf_pso_sprintf (pso, "] def\n");
-			gf_pso_sprintf (pso, "currentdict end /%s-Glyph-Page-%d exch definefont\n", embeddedname, i);
+			gf_pso_sprintf (pso, "currentdict end (%s-Glyph-Page-%d) cvn exch definefont\n", embeddedname, i);
 		}
 		gf_pso_sprintf (pso, "] def\n");
 		gf_pso_sprintf (pso, "/Encoding [\n");
@@ -1287,7 +1372,7 @@ gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 		}
 		gf_pso_sprintf (pso, "] def\n");
 		gf_pso_sprintf (pso, "currentdict end\n");
-		gf_pso_sprintf (pso, "/%s exch definefont pop\n", pso->encodedname);
+		gf_pso_sprintf (pso, "(%s) cvn exch definefont pop\n", pso->encodedname);
 	}
 }
 
@@ -1304,171 +1389,55 @@ gnome_font_face_ps_embed_tt (GnomeFontPsObject *pso)
 {
 	GnomePrintBuffer b;
 	const gchar *file_name;
-	guchar *fbuf;
-	GSList *strings;
-	const gchar * embeddedname;
-	gdouble TTVersion, MfrRevision;
-	const ArtDRect *bbox;
-	gint i;
-	gchar *line;
-	gint line_length;
+	gint nglyphs, j, k, lower, upper, len;
+	guchar *subfont_file = NULL;
+	gushort glyphArray[256];
+        guchar encoding[256];
 
 	g_return_if_fail (pso->face->entry->type == GP_FONT_ENTRY_TRUETYPE);
  	file_name = pso->face->entry->file;
 
-	if (GNOME_PRINT_OK != gnome_print_buffer_mmap (&b, file_name)) {
+	nglyphs = pso->face->num_glyphs;
+
+	len = pso->encodedname ? strlen (pso->encodedname) : 0;
+	lower = (len > 3) ? atoi (pso->encodedname + len - 3) : 0;
+	upper = lower + 1;
+
+	k = 1;
+	lower *= 255;
+	upper *= 255;
+
+	glyphArray[0] = encoding[0] = 0;
+
+	for ( j = lower; j < upper && j < nglyphs; j++) {
+		if (PSO_GLYPH_MARKED (pso, j)) {
+			glyphArray [k] = j;
+			encoding [k] = j%255 + 1;
+			k++;
+		}
+	}
+
+	(void) gnome_print_ps_tt_create_subfont (file_name, pso->encodedname, &subfont_file, glyphArray, encoding, k);
+
+	if (GNOME_PRINT_OK != gnome_print_buffer_mmap (&b, subfont_file)) {
 		gnome_font_face_ps_embed_empty (pso);
-		return;
-	}
-	
-	embeddedname = pso->face->psname;
-
-	fbuf = b.buf;
-	strings = gp_tt_split_file (fbuf, b.buf_size);
-	if (strings) {
-		/* Relatively easy - just embed TTF into PS stream */
-		/* Download master font */
-		TTVersion = 1.0;
-		MfrRevision = 1.0;
-		gf_pso_sprintf (pso, "%%!PS-TrueTypeFont-%g-%g\n", TTVersion, MfrRevision);
-		gf_pso_sprintf (pso, "11 dict begin\n");
-		gf_pso_sprintf (pso, "/FontName /%s def\n", embeddedname);
-		gf_pso_sprintf (pso, "/Encoding 256 array\n");
-		gf_pso_sprintf (pso, "0 1 255 {1 index exch /.notdef put} for\n");
-		gf_pso_sprintf (pso, "readonly def\n");
-		gf_pso_sprintf (pso, "/PaintType 0 def\n");
-		gf_pso_sprintf (pso, "/FontMatrix [1 0 0 1 0 0] def\n");
-		/* fixme: */
-		bbox = gnome_font_face_get_stdbbox (pso->face);
-		gf_pso_sprintf (pso, "/FontBBox [%g %g %g %g] def\n", bbox->x0, bbox->y0, bbox->x1, bbox->y1);
-		gf_pso_sprintf (pso, "/FontType 42 def\n");
-		/* fixme: XUID */
-		/* fixme: Be more intelligent */
-		gf_pso_sprintf (pso, "/sfnts [\n");
-		line_length = gnome_print_encode_hex_wcs (TT_BLOCK_SIZE);
-		line = g_malloc (line_length);
-		while (strings) {
-			guint start, next;
-			guchar *s, *e;
-			start = GPOINTER_TO_UINT (strings->data);
-			strings = g_slist_remove (strings, strings->data);
-			next = strings ? GPOINTER_TO_UINT (strings->data) : b.buf_size;
-			gf_pso_sprintf (pso, "<\n");
-			s = b.buf + start;
-			e = b.buf + next;
-			while (s < e) {
-				gint block_size, len;
-				block_size = MIN (TT_BLOCK_SIZE, e - s);
-				len = gnome_print_encode_hex (s, line, block_size);
-				gf_pso_print_sized (pso, line, len);
-				s += block_size;
-			}
-			gf_pso_sprintf (pso, strings ? ">\n" : "00>\n");
-		}
-		g_free (line);
-		gf_pso_sprintf (pso, "] def\n");
-		/* fixme: Use CID or something */
-		gf_pso_sprintf (pso, "/CharStrings %d dict dup begin\n", pso->face->num_glyphs);
-		gf_pso_sprintf (pso, "/.notdef 0 def\n");
-		for (i = 1; i < pso->face->num_glyphs; i++) {
-			gf_pso_sprintf (pso, "/_%d %d def\n", i, i);
-		}
-		gf_pso_sprintf (pso, "end readonly def\n");
-		gf_pso_sprintf (pso, "FontName currentdict end definefont pop\n");
-	} else {
-		guchar *afm;
-		/* This is somewhat experimental - convert TTF to Type1 */
-		afm = ttf2pfa (pso->face->ft_face, embeddedname, pso->glyphs);
-		if (!afm) {
-			gnome_print_buffer_munmap (&b);
-			g_warning ("file %s: line %d: Cannot convert TTF %s to Type1", __FILE__, __LINE__, file_name);
-			gnome_font_face_ps_embed_empty (pso);
-			return;
-		}
-		/* We take over ownership of afm here (be careful) */
-		pso->buf = afm;
-		pso->bufsize = strlen (afm);
-		pso->length = pso->bufsize;
+		g_warning ("Could not parse TrueType font from %s\n", subfont_file);
+		goto ps_truetype_error;
 	}
 
-	gnome_print_buffer_munmap (&b);
+	if (b.buf_size < 8)
+		goto ps_truetype_error;
 
-	/*
-	 * We have font downloaded (hopefully)
-	 *
-	 * With CharStrings: .nodef _1 _2 _3
-	 *
-	 * Now we have to build usable 2-byte encoded font from it
-	 *
-	 */
+	gf_pso_print_sized (pso, b.buf, b.buf_size);
 
-	/* fixme: That is crap. We should use CID */
-	/* Bitch 'o' bitches (Lauris) ! */
-	if (pso->face->num_glyphs < 256) {
-		gint glyph;
-		/* 8-bit vector */
-		pso->encodedbytes = 1;
-		gf_pso_sprintf (pso, "/%s findfont dup length dict begin\n", embeddedname);
-		gf_pso_sprintf (pso, "{1 index /FID ne {def} {pop pop} ifelse} forall\n");
-		gf_pso_sprintf (pso, "/Encoding [\n");
-		for (glyph = 0; glyph < 256; glyph++) {
-			guint g;
-			g = (glyph < pso->face->num_glyphs) ? glyph : 0;
-			if ((g == 0) || !PSO_GLYPH_MARKED (pso, glyph)) {
-				gf_pso_sprintf (pso, ((glyph & 0xf) == 0xf) ? "/.notdef\n" : "/.notdef ", g);
-			} else {
-				gf_pso_sprintf (pso, ((glyph & 0xf) == 0xf) ? "/_%d\n" : "/_%d ", g);
-			}
-		}
-		gf_pso_sprintf (pso, "] def currentdict end\n");
-		gf_pso_sprintf (pso, "/%s exch definefont pop\n", pso->encodedname);
-	} else {
-		gint nfonts, nglyphs, i, j;
-		/* 16-bit vector */
-		pso->encodedbytes = 2;
-		nglyphs = pso->face->num_glyphs;
-		nfonts = (nglyphs + 255) >> 8;
+ps_truetype_error:
 
-		gf_pso_sprintf (pso, "32 dict begin\n");
-		/* Common entries */
-		gf_pso_sprintf (pso, "/FontType 0 def\n");
-		gf_pso_sprintf (pso, "/FontMatrix [1 0 0 1 0 0] def\n");
-		gf_pso_sprintf (pso, "/FontName /%s-Glyph-Composite def\n", embeddedname);
-		gf_pso_sprintf (pso, "/LanguageLevel 2 def\n");
-		/* Type 0 entries */
-		gf_pso_sprintf (pso, "/FMapType 2 def\n");
-		/* Bitch 'o' bitches */
-		gf_pso_sprintf (pso, "/FDepVector [\n");
-		for (i = 0; i < nfonts; i++) {
-			gf_pso_sprintf (pso, "/%s findfont dup length dict begin\n", embeddedname);
-			gf_pso_sprintf (pso, "{1 index /FID ne {def} {pop pop} ifelse} forall\n");
-			gf_pso_sprintf (pso, "/Encoding [\n");
-			for (j = 0; j < 256; j++) {
-				gint glyph;
-				glyph = 256 * i + j;
-				if (glyph >= nglyphs)
-					glyph = 0;
-				if ((glyph == 0) || !PSO_GLYPH_MARKED (pso, glyph)) {
-					gf_pso_sprintf (pso, ((j & 0xf) == 0xf) ? "/.notdef\n" : "/.notdef ");
-				} else {
-					gf_pso_sprintf (pso, ((j & 0xf) == 0xf) ? "/_%d\n" : "/_%d ", glyph);
-				}
-			}
-			gf_pso_sprintf (pso, "] def\n");
-			gf_pso_sprintf (pso, "currentdict end /%s-Glyph-Page-%d exch definefont\n", embeddedname, i);
-		}
-		gf_pso_sprintf (pso, "] def\n");
-		gf_pso_sprintf (pso, "/Encoding [\n");
-		for (i = 0; i < 256; i++) {
-			gint fn;
-			fn = (i < nfonts) ? i : 0;
-			gf_pso_sprintf (pso, ((i & 0xf) == 0xf) ? "%d\n" : "%d  ", fn);
-		}
-		gf_pso_sprintf (pso, "] def\n");
-		gf_pso_sprintf (pso, "currentdict end\n");
-		gf_pso_sprintf (pso, "/%s exch definefont pop\n", pso->encodedname);
-	}
-}
+	if (b.buf)
+		gnome_print_buffer_munmap (&b);
+
+	if (subfont_file)
+		unlink (subfont_file);
+}	
 
 /**
  * gnome_font_face_ps_embed_empty:
@@ -1494,16 +1463,16 @@ gnome_font_face_ps_embed_empty (GnomeFontPsObject *pso)
 	gf_pso_sprintf (pso, "/BuildChar {1 index /Encoding get exch get 1 index /BuildGlyph get exec } bind def\n");
 	if (pso->encodedbytes == 1) {
 		/* 8-bit empty font */
-		gf_pso_sprintf (pso, "currentdict end /%s exch definefont pop\n", pso->encodedname);
+		gf_pso_sprintf (pso, "currentdict end (%s) cvn exch definefont pop\n", pso->encodedname);
 	} else {
 		/* 16-bit empty font */
-		gf_pso_sprintf (pso, "currentdict end /%s-Base exch definefont pop\n", pso->encodedname);
+		gf_pso_sprintf (pso, "currentdict end (%s-Base) cvn exch definefont pop\n", pso->encodedname);
 		gf_pso_sprintf (pso, "32 dict begin /FontType 0 def /FontMatrix [1 0 0 1 0 0] def\n");
-		gf_pso_sprintf (pso, "/FontName /%s-Glyph-Composite def\n", pso->encodedname);
+		gf_pso_sprintf (pso, "/FontName (%s-Glyph-Composite) cvn def\n", pso->encodedname);
 		gf_pso_sprintf (pso, "/LanguageLevel 2 def /FMapType 2 def\n");
-		gf_pso_sprintf (pso, "/FDepVector [/%s-Base findfont] def", pso->encodedname);
+		gf_pso_sprintf (pso, "/FDepVector [(%s-Base) cvn findfont] def", pso->encodedname);
 		gf_pso_sprintf (pso, "/Encoding 256 array def 0 1 255 {Encoding exch 0 put} for\n");
-		gf_pso_sprintf (pso, "currentdict end /%s exch definefont pop\n", pso->encodedname);
+		gf_pso_sprintf (pso, "currentdict end (%s) cvn exch definefont pop\n", pso->encodedname);
 	}
 }
 
@@ -1515,28 +1484,37 @@ gf_pso_print_sized (GnomeFontPsObject *pso, const guchar *text, gint size)
 	pso->length += size;
 }
 
+/* Note "format" should be locale independent, so it should not use %g */
+/* and friends */
 static void
 gf_pso_sprintf (GnomeFontPsObject *pso, const gchar * format, ...)
 {
 	va_list arguments;
-	gchar *oldlocale;
 	gchar *text;
-	gint len;
 	
-	oldlocale = g_strdup (setlocale (LC_NUMERIC, NULL));
-	setlocale (LC_NUMERIC, "C");
-		
 	va_start (arguments, format);
 	text = g_strdup_vprintf (format, arguments);
 	va_end (arguments);
 
-	len = strlen (text);
-	gf_pso_print_sized (pso, text, len);
+	gf_pso_print_sized (pso, text, strlen (text));
+	g_free (text);
+}
+
+/* Allowed conversion specifiers are 'e', 'E', 'f', 'F', 'g' and 'G'. */
+static gint   
+gf_pso_print_double (GnomeFontPsObject *pso, const gchar *format, gdouble x)
+{
+ 	gchar *text;
+
+	text = g_new (gchar, G_ASCII_DTOSTR_BUF_SIZE);
+	g_ascii_formatd (text, G_ASCII_DTOSTR_BUF_SIZE, format, x);
+
+	gf_pso_print_sized (pso, text, strlen (text));
 	g_free (text);
 
-	setlocale (LC_NUMERIC, oldlocale);
-	g_free (oldlocale);
+	return GNOME_PRINT_OK;
 }
+
 
 static void
 gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject *pso, gint size)
@@ -1645,7 +1623,7 @@ gnome_font_face_is_italic (GnomeFontFace * face)
 		e = face->entry;
 	}
 
-	return (e->italic_angle = 0.0 ? TRUE : FALSE);
+	return (e->italic_angle < 0 ? TRUE : FALSE);
 }
 
 gboolean

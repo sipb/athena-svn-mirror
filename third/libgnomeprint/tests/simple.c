@@ -70,7 +70,7 @@ my_print (void)
 	gnome_print_config_set (config, "Printer", "GENERIC");
 	gnome_print_job_print_to_file (job, "o.ps");
 	gnome_print_config_set (config, GNOME_PRINT_KEY_PAPER_SIZE, "USLetter");
-	
+
 	my_draw (gpc);
 
 	gnome_print_job_close (job);

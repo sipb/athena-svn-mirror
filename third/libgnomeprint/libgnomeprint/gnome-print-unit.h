@@ -103,6 +103,10 @@ gboolean gnome_print_convert_distance      (gdouble *distance, const GnomePrintU
 gboolean gnome_print_convert_distance_full (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to,
 					    gdouble ctmscale, gdouble devicescale);
 
+#ifdef GNOME_PRINT_UNSTABLE_API
+gchar * gnome_print_unit_get_name (const GnomePrintUnit *unit, gboolean plural, gboolean abbreviation, gint flags);
+#endif
+
 G_END_DECLS
 
 #endif /* __GNOME_PRINT_UNIT_H__ */

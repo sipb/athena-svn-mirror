@@ -1,0 +1,253 @@
+<refentry id="libgnomeprint-gnome-print-job">
+<refmeta>
+<refentrytitle>gnome-print-job</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEPRINT Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-print-job</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GnomePrintJob">GnomePrintJob</link>;
+<link linkend="GnomePrintJob">GnomePrintJob</link>* <link linkend="gnome-print-job-new">gnome_print_job_new</link>          (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
+<link linkend="GnomePrintConfig">GnomePrintConfig</link>* <link linkend="gnome-print-job-get-config">gnome_print_job_get_config</link>
+                                            (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);
+<link linkend="GnomePrintContext">GnomePrintContext</link>* <link linkend="gnome-print-job-get-context">gnome_print_job_get_context</link>
+                                            (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-job-close">gnome_print_job_close</link>           (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-job-print">gnome_print_job_print</link>           (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-job-render">gnome_print_job_render</link>          (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-job-render-page">gnome_print_job_render_page</link>     (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
+                                             <link linkend="gint">gint</link> page,
+                                             <link linkend="gboolean">gboolean</link> pageops);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-job-get-pages">gnome_print_job_get_pages</link>       (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-print-job-get-page-size-from-config">gnome_print_job_get_page_size_from_config</link>
+                                            (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config,
+                                             <link linkend="gdouble">gdouble</link> *width,
+                                             <link linkend="gdouble">gdouble</link> *height);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-job-print-to-file">gnome_print_job_print_to_file</link>   (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
+                                             <link linkend="gchar">gchar</link> *output);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomePrintJob"/>struct GnomePrintJob</title>
+<indexterm><primary>GnomePrintJob</primary></indexterm><programlisting>struct GnomePrintJob;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-new"/>gnome_print_job_new ()</title>
+<indexterm><primary>gnome_print_job_new</primary></indexterm><programlisting><link linkend="GnomePrintJob">GnomePrintJob</link>* gnome_print_job_new          (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);</programlisting>
+<para>
+Creates a new GnomePrintJob.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara> The job options, can be NULL in which case a
+         default GnomePrintConfig is created
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new GnomePrintJob, NULL on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-get-config"/>gnome_print_job_get_config ()</title>
+<indexterm><primary>gnome_print_job_get_config</primary></indexterm><programlisting><link linkend="GnomePrintConfig">GnomePrintConfig</link>* gnome_print_job_get_config
+                                            (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
+<para>
+Gets a referenced pointer to the configuration of the job</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a referenced GnomePrintConfig for this job, NULL on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-get-context"/>gnome_print_job_get_context ()</title>
+<indexterm><primary>gnome_print_job_get_context</primary></indexterm><programlisting><link linkend="GnomePrintContext">GnomePrintContext</link>* gnome_print_job_get_context
+                                            (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
+<para>
+Retrieve the GnomePrintContext which applications
+print to.
+</para>
+<para>
+The caller is responsible to unref the context when s/he is done with it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> An initialised GnomePrintJob.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The printing context, NULL on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-close"/>gnome_print_job_close ()</title>
+<indexterm><primary>gnome_print_job_close</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_print_job_close           (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
+<para>
+Closes the GnomePrintJob <parameter>job</parameter>, ready for printing or
+previewing. To be called after the application has finished
+sending the drawing commands</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> A GnomePrintJob which has had printing performed
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-print"/>gnome_print_job_print ()</title>
+<indexterm><primary>gnome_print_job_print</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_print_job_print           (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
+<para>
+Print the pages stored in the GnomePrintJob to
+the phyisical printing device.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> A closed GnomePrintJob.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_PRINT_OK on success GNOME_PRINT_ERROR_UNKNOWN otherwise
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-render"/>gnome_print_job_render ()</title>
+<indexterm><primary>gnome_print_job_render</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_print_job_render          (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx);</programlisting>
+<para>
+Renders printout to specified context
+(with layout, ignoring copies)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-render-page"/>gnome_print_job_render_page ()</title>
+<indexterm><primary>gnome_print_job_render_page</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_print_job_render_page     (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
+                                             <link linkend="gint">gint</link> page,
+                                             <link linkend="gboolean">gboolean</link> pageops);</programlisting>
+<para>
+Renders the specified page <parameter>page</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pageops</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-get-pages"/>gnome_print_job_get_pages ()</title>
+<indexterm><primary>gnome_print_job_get_pages</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_print_job_get_pages       (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
+<para>
+Find the number of pages stored in a completed printout.
+This is the number of physical pages, so if the layout
+can hold 4 pages per page, and 5 logical pages are printed
+(5 beginpage/endpage convinations) 2 is returned</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara> An initialised and closed GnomePrintJob.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of pages, 0 on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-get-page-size-from-config"/>gnome_print_job_get_page_size_from_config ()</title>
+<indexterm><primary>gnome_print_job_get_page_size_from_config</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_print_job_get_page_size_from_config
+                                            (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config,
+                                             <link linkend="gdouble">gdouble</link> *width,
+                                             <link linkend="gdouble">gdouble</link> *height);</programlisting>
+<para>
+Deprecated, use gnome_print_config_get_page_size</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE on success, FALSE on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-job-print-to-file"/>gnome_print_job_print_to_file ()</title>
+<indexterm><primary>gnome_print_job_print_to_file</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_print_job_print_to_file   (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
+                                             <link linkend="gchar">gchar</link> *output);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

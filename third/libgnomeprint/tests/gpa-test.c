@@ -46,15 +46,19 @@ gint callback_count = 0;
 gint num = 0;
 gchar *num_str = NULL;
 gboolean debug = FALSE;
-gboolean dump = FALSE;
+gboolean dump_config = FALSE;
+gboolean dump_root = FALSE;
+GList * cmd_line_nodes = NULL;
 
 #define max_num ((sizeof (num_table) / sizeof (num_table[0]))-1)
 
 static struct poptOption options[] = {
 	{ "num", '\0', POPT_ARG_STRING, &num_str,   0,
 	  "Num number of functions to run, where nn is the num number", "#"},
-	{ "dump",     '\0', POPT_ARG_NONE, &dump,   0,
+	{ "dump-config",     '\0', POPT_ARG_NONE, &dump_config,   0,
 	  "Dump the GnomePrintConfig object to the console",  NULL},
+	{ "dump-root",     '\0', POPT_ARG_NONE,   &dump_root,   0,
+	  "Dump the GpaRoot node to the console",  NULL},
 	{ "debug",    '\0', POPT_ARG_NONE, &debug, 0,
 	  "Print debugging output",          NULL},
 	POPT_AUTOHELP
@@ -66,7 +70,7 @@ typedef enum {
 	TEST_GPA_ERROR = -2,
 	TEST_GPA_BAD_PARAMETERS = -1,
 	TEST_GPA_SUCCESS = 0,
-	TEST_GPA_SUCCESS_LAST = 99,
+	TEST_GPA_SUCCESS_LAST = 99
 } GpaTestRetval;
 
 typedef struct _GpaTestNum GpaTestNum;
@@ -666,15 +670,25 @@ static void
 parse_command_line (int argc, const char ** argv, gint *num)
 {
 	poptContext popt;
+	char **args;
 
 	popt = poptGetContext ("test_gpa", argc, argv, options, 0);
 	poptGetNextOpt (popt);
 
-	if (dump)
+	args = (char**) poptGetArgs (popt);
+	if (args) {
+		gint i;
+		for (i = 0; args[i]; i++) {
+			cmd_line_nodes = g_list_append (cmd_line_nodes, args[i]);
+		}
+		return;
+	}
+
+	if (dump_config || dump_root)
 		return;
 	
 	if (!num_str || num_str[0] == '\0') {
-		dump = TRUE;
+		dump_config = TRUE;
 		return;
 	}
 
@@ -725,37 +739,42 @@ main (int argc, const char * argv[])
 	sig.sa_flags = 0;
 	sigaction (SIGSEGV, &sig, NULL);
 
+	gpa_init ();
 
-	if (dump) {
-		GPANode *config;
-		gint max, i;
-		const gchar *p;
- 		const gchar * paths[] = {
-			"Settings",
-			"Settings.Document.Page",
-			"Settings.Document.Page.LogicalOrientation",
-			"Settings.Document.Page.LogicalOrientation.Page2LayoutTransform",
-			"Printer",
-			"Globals"};
-		
-		gpa_init ();
-#if 0
-		config = root;
-#else
-		config = (GPANode*) gpa_config_new ();
-#endif
-		gpa_utils_dump_tree (config, 2);
-		max = (sizeof (paths) / sizeof (gchar *));
-		for (i = 0; i < max; i++) {
-			p = paths[i];
-			g_print ("%s\n", p);
-		}
-		
-		gpa_node_unref (config);
-		
+	if (dump_config || dump_root) {
+		GPANode *node;
+
+		if (dump_config)
+			node = (GPANode*) gpa_config_new ();
+		if (dump_root)
+			node = (GPANode*) gpa_root;
+
+		gpa_utils_dump_tree (node, 2);
+
 		return TEST_GPA_SUCCESS;
 	}
-	
+
+	if (cmd_line_nodes) {
+		GList *l = cmd_line_nodes;
+
+		while (l) {
+			GPANode *node;
+			gchar *path;
+			path = l->data;
+			g_print ("Looking for %s\n", path);
+
+			node = gpa_node_lookup (NULL, path);
+			if (node) {
+				gpa_utils_dump_tree (node, 2);
+				gpa_node_unref (node);
+				node = NULL;
+			}
+			l = l->next;
+		}
+
+		return TEST_GPA_SUCCESS;
+	}
+
 	ret = test_gpa_run_num (num);
 		
 	return ret;

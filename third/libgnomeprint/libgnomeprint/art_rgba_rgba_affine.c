@@ -34,7 +34,7 @@
    affine transform. */
 
 /**
- * art_rgb_rgba_affine: Affine transform source RGBA image and composite.
+ * gnome_print_art_rgba_rgba_affine: Affine transform source RGBA image and composite.
  * @dst: Destination image RGB buffer.
  * @x0: Left coordinate of destination rectangle.
  * @y0: Top coordinate of destination rectangle.
@@ -64,7 +64,7 @@
  * implemented.
  **/
 void
-art_rgba_rgba_affine (art_u8 *dst,
+gnome_print_art_rgba_rgba_affine (art_u8 *dst,
 		     int x0, int y0, int x1, int y1, int dst_rowstride,
 		     const art_u8 *src,
 		     int src_width, int src_height, int src_rowstride,

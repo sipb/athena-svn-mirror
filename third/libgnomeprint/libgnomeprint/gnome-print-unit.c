@@ -26,6 +26,8 @@
 
 #include <config.h>
 
+#define GNOME_PRINT_UNSTABLE_API
+
 #include <libgnomeprint/gnome-print-unit.h>
 #include <libgnomeprint/gnome-print-i18n.h>
 
@@ -73,11 +75,11 @@ gnome_print_unit_get_type (void)
 
 /**
  * gnome_print_unit_get_identity:
- * @base: 
+ * @base: The base of the #GnomePrintUnit to retrieve
  * 
- *
+ * Retrieves the #GnomePrintUnit structure referenced by base @base. 
  * 
- * Return Value: 
+ * Returns: The #GnomePrintUnit structure representing @base. %NULL on error
  **/
 const GnomePrintUnit *
 gnome_print_unit_get_identity (guint base)
@@ -85,32 +87,44 @@ gnome_print_unit_get_identity (guint base)
 	switch (base) {
 	case GNOME_PRINT_UNIT_DIMENSIONLESS:
 		return &gp_units[0];
-		break;
 	case GNOME_PRINT_UNIT_ABSOLUTE:
 		return &gp_units[1];
-		break;
 	case GNOME_PRINT_UNIT_DEVICE:
 		return &gp_units[2];
-		break;
 	case GNOME_PRINT_UNIT_USERSPACE:
 		return &gp_units[3];
-		break;
 	default:
 		g_warning ("file %s: line %d: Illegal unit base %d", __FILE__, __LINE__, base);
-		return FALSE;
-		break;
+		return NULL;
 	}
 }
 
 /* FIXME: return a gettexted default unit so that translators can
  *        set the default unit on a per locale basis (Chema)
  */
+/**
+ * gnome_print_unit_get_default:
+ * 
+ * Used to get the default #GnomePrintUnit structure.
+ *
+ * Returns: A pointer to the default #GnomePrintUnit structure
+ *
+ **/
 const GnomePrintUnit *
 gnome_print_unit_get_default (void)
 {
 	return &gp_units[0];
 }
 
+/**
+ * gnome_print_unit_get_by_name:
+ * @name: Name of the unit, as a string pointer
+ *
+ * Get a unit based on its name, for example "Millimeter" or "Inches".
+ *
+ * Returns: A constant pointer to a #GnomePrintUnit, %NULL on error
+ *
+ **/
 const GnomePrintUnit *
 gnome_print_unit_get_by_name (const guchar *name)
 {
@@ -130,11 +144,11 @@ gnome_print_unit_get_by_name (const guchar *name)
 
 /**
  * gnome_print_unit_get_by_abbreviation:
- * @abbreviation: an ascii string poiting to the abbreviation
+ * @abbreviation: Abbreviation of the unit, as a string pointer
  * 
- * get a unit based on its abbreviation like "cm" "pts" or "in".
+ * Get a unit based on its abbreviation, for example "cm" "pts" or "in".
  * 
- * Return Value: a constant pointer to a GnomePrintUnit, NULL on error
+ * Returns: A constant pointer to a GnomePrintUnit, %NULL on error
  **/
 const GnomePrintUnit *
 gnome_print_unit_get_by_abbreviation (const guchar *abbreviation)
@@ -153,6 +167,17 @@ gnome_print_unit_get_by_abbreviation (const guchar *abbreviation)
 	return NULL;
 }
 
+/**
+ * gnome_print_unit_get_list:
+ * @bases: The bases to include in the list
+ *
+ * Gets a list of the units represented by the bases @bases.  To get
+ * a list of all units then use #GNOME_PRINT_UNITS_ALL.  The list that
+ * is returned should be freed using #gnome_print_unit_free_list.
+ *
+ * Returns: A pointer to a #GList, %NULL on error
+ *
+ **/
 GList *
 gnome_print_unit_get_list (guint bases)
 {
@@ -174,6 +199,13 @@ gnome_print_unit_get_list (guint bases)
 	return units;
 }
 
+/**
+ * gnome_print_unit_free_list:
+ * @units: A pointer to a GList to be freed
+ *
+ * Used to free the list of units created by #gnome_print_unit_get_list.
+ *
+ **/
 void
 gnome_print_unit_free_list (GList *units)
 {
@@ -182,14 +214,14 @@ gnome_print_unit_free_list (GList *units)
 
 /**
  * gnome_print_convert_distance:
- * @distance: 
- * @from: 
- * @to: 
+ * @distance: The distance to convert, and the converted value on success
+ * @from: Units to convert from
+ * @to: Units to convert to
  * 
- * Check wether a conversion between @from and @to can be made
+ * Check whether a conversion between @from and @to can be made
  * 
- * Return Value: TRUE if the conversion is possible, FALSE if
- *               it is not or on error
+ * Returns: %TRUE if the conversion is possible, %FALSE if
+ *          it is not or on error
  **/
 gboolean
 gnome_print_convert_distance (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to)
@@ -213,15 +245,19 @@ gnome_print_convert_distance (gdouble *distance, const GnomePrintUnit *from, con
 
 /**
  * gnome_print_convert_distance_full:
- * @distance: 
- * @from: 
- * @to: 
- * @ctmscale: 
- * @devicescale: 
+ * @distance: The distance to convert, and the result on success
+ * @from: Units to convert from
+ * @to: Units to convert to
+ * @ctmscale: The userspace scale to use
+ * @devicescale: The device scale to use
  * 
+ * Convert a distance from one unit to another.  You should supply a scale
+ * as necessary.
+ *
  * ctmscale is userspace->absolute, devicescale is device->absolute
  * 
- * Return Value: 
+ * Returns: %TRUE if the conversion is possible, %FALSE if
+ *          it is not or on error
  **/
 gboolean
 gnome_print_convert_distance_full (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to,
@@ -292,3 +328,23 @@ gnome_print_convert_distance_full (gdouble *distance, const GnomePrintUnit *from
 	return TRUE;
 }
 
+/**
+ * gnome_print_unit_get_name:
+ * @unit: The unit that we want to get the name from
+ * @plural: flag to specify single or plural name [Inch v.s. Inches]
+ * @abbreviation: flag to specify abbreviation or full name [Inch v.s. in]
+ * @flags: 0 for now, used for future expansion
+ *
+ * Returns the translated user visible name for @unit
+ *
+ * Return Value: a translated malloced string on success, NULL otherwise
+ **/
+gchar *
+gnome_print_unit_get_name (const GnomePrintUnit *unit, gboolean plural, gboolean abbreviation, gint flags)
+{
+	gchar *name;
+
+	name = g_strdup (_((abbreviation) ? (plural) ? unit->abbr_plural : unit->abbr : (plural) ? unit->plural : unit->name));
+
+	return name;
+}

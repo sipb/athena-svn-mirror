@@ -6,17 +6,62 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint 1.104.0\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
 "PO-Revision-Date: 2002-05-01 11:04MET\n"
 "Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
 "Language-Team: Walon <linux-wa@chanae.alphanet.ch>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Mi trûte a les balzins, co mî ki l' grijhe cawe di m' pôve fayé vexhå!"
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr "1/3 di A4"
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr "1/3 di A5"
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr "1/4 di A3"
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr "1/4 di A4"
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr "1/8 di A4"
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr "2 pÃ¥djes so 1"
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr "4 pÃ¥djes so 1"
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr "A0"
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr "A1"
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr "A10"
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr "A2"
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr "A3"
 
 #. FIXME: fill in all papers and units. (Lauris)
 #. FIXME: load papers from file (Lauris)
@@ -24,287 +69,141 @@ msgstr "Mi trûte a les balzins, co mî ki l' grijhe cawe di m' pôve fayé vexhå!"
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
 msgid "A4"
 msgstr "A4"
 
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "Unité"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "Unités"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "Pont"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Pt"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "Ponts"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Pts"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr ""
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "Uzeu"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr ""
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "Picsel"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Px"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "Picsels"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr ""
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr ""
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "Milimete"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "Milimetes"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "Cintimete"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "Cintimetes"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "Pôce"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "in"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "Pôces"
-
-#: data/globals.xml.in.h:1
-msgid "1/3 A4"
-msgstr ""
-
-#: data/globals.xml.in.h:2
-msgid "1/3 A5"
-msgstr ""
-
-#: data/globals.xml.in.h:3
-msgid "1/4 A3"
-msgstr ""
-
-#: data/globals.xml.in.h:4
-msgid "1/4 A4"
-msgstr ""
-
-#: data/globals.xml.in.h:5
-msgid "1/8 A4"
-msgstr ""
-
-#: data/globals.xml.in.h:6
-msgid "2 pages to 1"
-msgstr ""
-
-#: data/globals.xml.in.h:7
-msgid "4 pages to 1"
-msgstr ""
-
-#: data/globals.xml.in.h:8
-msgid "A0"
-msgstr ""
-
-#: data/globals.xml.in.h:9
-msgid "A1"
-msgstr ""
-
-#: data/globals.xml.in.h:10
-msgid "A10"
-msgstr ""
-
-#: data/globals.xml.in.h:11
-msgid "A2"
-msgstr ""
-
-#: data/globals.xml.in.h:12
-msgid "A3"
-msgstr ""
-
 #: data/globals.xml.in.h:14
 msgid "A5"
-msgstr ""
+msgstr "A5"
 
 #: data/globals.xml.in.h:15
 msgid "A6"
-msgstr ""
+msgstr "A6"
 
 #: data/globals.xml.in.h:16
 msgid "A7"
-msgstr ""
+msgstr "A7"
 
 #: data/globals.xml.in.h:17
 msgid "A8"
-msgstr ""
+msgstr "A8"
 
 #: data/globals.xml.in.h:18
 msgid "A9"
-msgstr ""
+msgstr "A9"
 
 #: data/globals.xml.in.h:19
 msgid "B0"
-msgstr ""
+msgstr "B0"
 
 #: data/globals.xml.in.h:20
 msgid "B1"
-msgstr ""
+msgstr "B1"
 
 #: data/globals.xml.in.h:21
 msgid "B10"
-msgstr ""
+msgstr "B10"
 
 #: data/globals.xml.in.h:22
 msgid "B2"
-msgstr ""
+msgstr "B2"
 
 #: data/globals.xml.in.h:23
 msgid "B3"
-msgstr ""
+msgstr "B3"
 
 #: data/globals.xml.in.h:24
 msgid "B4"
-msgstr ""
+msgstr "B4"
 
 #: data/globals.xml.in.h:25
 msgid "B5"
-msgstr ""
+msgstr "B5"
 
 #: data/globals.xml.in.h:26
 msgid "B6"
-msgstr ""
+msgstr "B6"
 
 #: data/globals.xml.in.h:27
 msgid "B7"
-msgstr ""
+msgstr "B7"
 
 #: data/globals.xml.in.h:28
 msgid "B8"
-msgstr ""
+msgstr "B8"
 
 #: data/globals.xml.in.h:29
 msgid "B9"
-msgstr ""
+msgstr "B9"
 
 #: data/globals.xml.in.h:30
 msgid "C0"
-msgstr ""
+msgstr "C0"
 
 #: data/globals.xml.in.h:31
 msgid "C1"
-msgstr ""
+msgstr "C1"
 
 #: data/globals.xml.in.h:32
 msgid "C10"
-msgstr ""
+msgstr "C10"
 
 #: data/globals.xml.in.h:33
 msgid "C2"
-msgstr ""
+msgstr "C2"
 
 #: data/globals.xml.in.h:34
 msgid "C3"
-msgstr ""
+msgstr "C3"
 
 #: data/globals.xml.in.h:35
 msgid "C4"
-msgstr ""
+msgstr "C4"
 
 #: data/globals.xml.in.h:36
 msgid "C5"
-msgstr ""
+msgstr "C5"
 
 #: data/globals.xml.in.h:37
 msgid "C6"
-msgstr ""
+msgstr "C6"
 
 #: data/globals.xml.in.h:38
 msgid "C6/C5 Envelope"
-msgstr ""
+msgstr "Ewalpeure C6/C5"
 
 #: data/globals.xml.in.h:39
 msgid "C7"
-msgstr ""
+msgstr "C7"
 
 #: data/globals.xml.in.h:40
 msgid "C8"
-msgstr ""
+msgstr "C8"
 
 #: data/globals.xml.in.h:41
 msgid "C9"
-msgstr ""
+msgstr "C9"
 
 #: data/globals.xml.in.h:42
 msgid "Custom"
-msgstr "A vosse môde"
+msgstr "A vosse mÃ´de"
 
 #: data/globals.xml.in.h:43
 msgid "DL Envelope"
-msgstr ""
+msgstr "Ewalpeure DL"
 
 #: data/globals.xml.in.h:44
 msgid "Divided"
-msgstr ""
+msgstr "DivizÃ©"
 
 #: data/globals.xml.in.h:45
 msgid "Envelope 6x9"
-msgstr ""
+msgstr "Ewalpeure 6Ã—9"
 
 #: data/globals.xml.in.h:46
 msgid "Envelope No10"
-msgstr ""
+msgstr "Ewalpeure LÂºÂ 10"
 
 #: data/globals.xml.in.h:47
 msgid "Folded"
@@ -312,27 +211,27 @@ msgstr ""
 
 #: data/globals.xml.in.h:48
 msgid "Landscape"
-msgstr "Di coûtchî"
+msgstr "Di coÃ»tchÃ®"
 
 #: data/globals.xml.in.h:49
 msgid "Plain"
-msgstr ""
+msgstr "Simpe"
 
 #: data/globals.xml.in.h:50
 msgid "Portrait"
-msgstr "D' astampé"
+msgstr "D'Â astampÃ©"
 
 #: data/globals.xml.in.h:51
 msgid "Rotated 180 degrees"
-msgstr "Tourné di 180°"
+msgstr "TournÃ© di 180Â°"
 
 #: data/globals.xml.in.h:52
 msgid "Rotated 270 degrees"
-msgstr "Tourné di 270°"
+msgstr "TournÃ© di 270Â°"
 
 #: data/globals.xml.in.h:53
 msgid "Rotated 90 degrees"
-msgstr "Tourné di 90°"
+msgstr "TournÃ© di 90Â°"
 
 #: data/globals.xml.in.h:54
 msgid "Straight"
@@ -340,15 +239,15 @@ msgstr "Droet"
 
 #: data/globals.xml.in.h:55
 msgid "US Executive"
-msgstr ""
+msgstr "US Executive"
 
 #: data/globals.xml.in.h:56
 msgid "US Legal"
-msgstr ""
+msgstr "US Legal"
 
 #: data/globals.xml.in.h:57
 msgid "US Letter"
-msgstr ""
+msgstr "US Letter"
 
 #: data/globals.xml.in.h:58
 msgid "Upside down landscape"
@@ -360,33 +259,173 @@ msgstr ""
 
 #: data/printers/GENERIC.xml.in.h:1
 msgid "Generic Postscript"
-msgstr ""
+msgstr "PostScript djenerike"
 
 #: data/printers/PDF-WRITER.xml.in.h:1
 msgid "Create a PDF document"
+msgstr "Ahiver on documint PDF"
+
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Mi trÃ»te a les balzins, co mÃ® ki l' grijhe cawe di m' pÃ´ve fayÃ© vexhÃ¥!"
+
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr ""
+
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr ""
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "UnitÃ©"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "UnitÃ©s"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "Pont"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "Ponts"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Pts"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr ""
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "Uzeu"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr ""
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "Picsel"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "Picsels"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "Ã…cintaedje"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "Ã…cintaedje"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "Milimete"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "Milimetes"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "Cintimete"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "Cintimetes"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "PÃ´ce"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "in"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "PÃ´ces"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr ""
+
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr ""
+
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
 msgstr ""
 
 #~ msgid "Print out debugging information"
-#~ msgstr "Håyner l' informåtion di disbugaedje"
+#~ msgstr "HÃ¥yner l'Â informÃ¥tion di disbugaedje"
 
 #~ msgid "Tries to do everything automatically"
-#~ msgstr "Sayî di tot fé otomaticmint"
+#~ msgstr "SayÃ® di tot fÃ© otomaticmint"
 
 #~ msgid "PATH"
 #~ msgstr "TCHIMIN"
 
 #~ msgid "Specify default font(s) for any locale"
-#~ msgstr "Sipecifyî les prémetowès fontes po tchaeke locåle"
+#~ msgstr "SipecifyÃ® les prÃ©metowÃ¨s fontes po tchaeke locÃ¥le"
 
 #~ msgid "[LOCALE[,LOCALE]:fontname]"
-#~ msgstr "[LOCÅLE[,LOCÅLE]:nodelfonte]"
+#~ msgstr "[LOCÃ…LE[,LOCÃ…LE]:nodelfonte]"
 
 #~ msgid "Print text file"
-#~ msgstr "Eprimî fitchî tecse"
-
-#, fuzzy
-#~ msgid "Use GnomePrintJob for printing"
-#~ msgstr "Eployî GnomePrintMaster po-z eprimî"
+#~ msgstr "EprimÃ® fitchÃ® tecse"
 
 #~ msgid "Meter"
 #~ msgstr "Mete"

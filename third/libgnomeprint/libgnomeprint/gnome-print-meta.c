@@ -74,7 +74,7 @@ typedef enum {
 	GNOME_META_GLYPHLIST,
 	GNOME_META_COLOR,
 	GNOME_META_LINE,
-	GNOME_META_DASH,
+	GNOME_META_DASH
 } GnomeMetaType;
 
 typedef enum {
@@ -305,12 +305,19 @@ static int
 meta_image (GnomePrintContext *pc, const gdouble *affine, const guchar *px, gint w, gint h, gint rowstride, gint ch)
 {
 	int i, y;
+	GnomePrintMeta *meta;
 
 	gpm_encode_int (pc, GNOME_META_IMAGE);
 	for (i = 0; i < 6; i++) gpm_encode_double (pc, affine[i]);
 	gpm_encode_int (pc, h);
 	gpm_encode_int (pc, w);
 	gpm_encode_int (pc, ch);
+
+	meta = (GnomePrintMeta *)pc;
+	if (!GPM_ENSURE_SPACE (meta, w * ch * h)) {
+		g_warning ("file %s: line %d: Cannot grow metafile buffer (%d bytes)", __FILE__, __LINE__, w * ch * h);
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
 
 	for (y = 0; y < h; y++){
 		gpm_encode_block (pc, px, w * ch);

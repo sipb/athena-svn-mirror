@@ -1,8 +1,8 @@
 SUBDIRS = files output tools
 
-CFLAGS=$(WARN_CFLAGS)
+AM_CFLAGS=$(WARN_CFLAGS)
 
-noinst_PROGRAMS = generate gpa-test fonts simple
+noinst_PROGRAMS = generate gpa-test fonts simple pango
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -21,6 +21,10 @@ generate_LDADD = $(print_libs)
 simple_SOURCES = simple.c
 simple_LDFLAGS =
 simple_LDADD = $(print_libs)
+
+pango_SOURCES = pango.c
+pango_LDFLAGS =
+pango_LDADD = $(print_libs)
 
 EXTRA_DIST = quit.txt run-test.pl quit.txt
 

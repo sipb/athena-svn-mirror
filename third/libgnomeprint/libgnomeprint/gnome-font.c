@@ -182,8 +182,9 @@ gnome_font_get_prop (GObject *o, guint id, GValue *value, GParamSpec *pspec)
 	case PROP_FAMILYNAME:
 		g_value_set_string (value, gnome_font_face_get_family_name (font->face));
 		break;
-	case PROP_WEIGHT:
-		g_value_set_string (value, font->face->entry->weight);
+	case PROP_WEIGHT:                      
+                /* FIXME: we  should be using GnomeFontWeight */
+		g_value_set_string (value, font->face->entry->speciesname);
 		break;
 	case PROP_ITALICANGLE:
 		/* fixme: implement */
@@ -285,19 +286,11 @@ gnome_font_find_closest (const guchar *name, gdouble size)
 	GnomeFontFace *face;
 	GnomeFont *font;
 
-	if (name)
-		face = gnome_font_face_find (name);
-	else
-		face = NULL;
+	face = gnome_font_face_find_closest (name);
 
-	if (!face) {
-		/* fixme: */
-		face = gnome_font_face_find_closest ("Helvetica");
-		g_return_val_if_fail (face != NULL, NULL);
-	}
+	g_return_val_if_fail (face != NULL, NULL);
 
 	font = gnome_font_face_get_font_full (face, size, NULL);
-
 	gnome_font_face_unref (face);
 
 	return font;
@@ -351,6 +344,39 @@ gnome_font_find_closest_from_full_name (const guchar *name)
 
 	font = gnome_font_find_closest (copy, size);
 	g_free (copy);
+
+	return font;
+}
+
+/**
+ * gnome_font_find_from_filename:
+ * @filename: filename of a font face in the system font database
+ * @index_: index of the face within @filename. (Font formats such as
+ *          TTC/TrueType Collections can have multiple fonts within
+ *          a single file.
+ * @size: size (in points) at which to load the font
+ * 
+ * Creates a font using the filename and index of the face within the file to
+ * identify the #GnomeFontFace. The font must already be within
+ * the system font database; this can't be used to access arbitrary
+ * fonts on disk.
+ * 
+ * Return value: a newly created font if the face could be located,
+ *  otherwise %NULL
+ **/
+GnomeFont *
+gnome_font_find_from_filename (const guchar *filename, gint index_, gdouble size)
+{
+	GnomeFontFace *face;
+	GnomeFont *font;
+
+	face = gnome_font_face_find_from_filename (filename, index_);
+	if (!face)
+		return NULL;
+
+	font = gnome_font_face_get_font_full (face, size, NULL);
+
+	gnome_font_face_unref (face);
 
 	return font;
 }

@@ -54,6 +54,7 @@ static void gnome_print_multipage_finalize (GObject *object);
 
 static int gnome_print_multipage_beginpage (GnomePrintContext *pc, const guchar *name);
 static int gnome_print_multipage_showpage (GnomePrintContext *pc);
+static int gnome_print_multipage_end_doc (GnomePrintContext *pc);
 static int gnome_print_multipage_gsave (GnomePrintContext *pc);
 static int gnome_print_multipage_grestore (GnomePrintContext *pc);
 static int gnome_print_multipage_clip (GnomePrintContext *pc, const ArtBpath *bpath, ArtWindRule rule);
@@ -101,6 +102,7 @@ gnome_print_multipage_class_init (GnomePrintMultipageClass *klass)
 
 	pc_class->beginpage = gnome_print_multipage_beginpage;
 	pc_class->showpage = gnome_print_multipage_showpage;
+	pc_class->end_doc = gnome_print_multipage_end_doc;
 
 	pc_class->gsave    = gnome_print_multipage_gsave;
 	pc_class->grestore = gnome_print_multipage_grestore;
@@ -158,6 +160,13 @@ gnome_print_multipage_grestore (GnomePrintContext *pc)
 {
 	GnomePrintMultipage *multipage = GNOME_PRINT_MULTIPAGE(pc);
 	return gnome_print_grestore (multipage->subpc);
+}
+
+static int
+gnome_print_multipage_end_doc (GnomePrintContext *pc)
+{
+	GnomePrintMultipage *multipage = GNOME_PRINT_MULTIPAGE(pc);
+	return gnome_print_end_doc (multipage->subpc);
 }
 
 static int

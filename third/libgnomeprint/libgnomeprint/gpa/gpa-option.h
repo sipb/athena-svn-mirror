@@ -55,7 +55,7 @@ typedef enum {
 	GPA_OPTION_TYPE_LIST,
 	GPA_OPTION_TYPE_ITEM,
 	GPA_OPTION_TYPE_STRING,
-	GPA_OPTION_TYPE_ROOT,
+	GPA_OPTION_TYPE_ROOT
 } GPAOptionType;
 
 struct _GPAOption {
@@ -80,6 +80,8 @@ GPANode * gpa_option_key_new    (GPANode *parent, const guchar *id, const guchar
 GPANode * gpa_option_string_new (GPANode *parent, const guchar *id, const guchar *value);
 
 gboolean  gpa_option_append_child (GPAOption *option, GPAOption *child);
+
+gchar *   gpa_option_get_name (GPANode *node);
 
 #define gpa_option_prepend_child(o,c)  gpa_node_attach(o,c)
 #define gpa_option_reverse_children(o) gpa_node_reverse_children(o)

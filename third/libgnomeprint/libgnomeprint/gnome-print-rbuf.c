@@ -379,6 +379,8 @@ gpb_glyphlist (GnomePrintContext * pc, const gdouble *affine, GnomeGlyphList *gl
 					     rbuf->private->width, rbuf->private->height, rbuf->private->rowstride, 0);
 	}
 
+	gnome_pgl_destroy (pgl);
+
 	return 1;
 }
 
@@ -474,7 +476,7 @@ gp_svp_uncross_to_render (GnomePrintContext * pc, const ArtSVP * svp, ArtWindRul
 	}
 
 	if (rbp->alpha) {
-		art_rgba_svp_alpha (svp1,
+		gnome_print_art_rgba_svp_alpha (svp1,
 			0, 0, rbp->width, rbp->height,
 			gp_gc_get_rgba (pc->gc),
 			rbp->pixels, rbp->rowstride,
@@ -596,7 +598,7 @@ gp_render_silly_rgba (GnomePrintContext * pc, const gdouble *affine, const gucha
 		}
 	}
 
-	art_rgba_svp_alpha (svp1,
+	gnome_print_art_rgba_svp_alpha (svp1,
 		ibox.x0, ibox.y0, ibox.x1, ibox.y1,
 		0xffffffff,
 		cbuf, bw * 4,
@@ -621,7 +623,7 @@ gp_render_silly_rgba (GnomePrintContext * pc, const gdouble *affine, const gucha
 	ba[4] -= ibox.x0;
 	ba[5] -= ibox.y0;
 
-	art_rgba_rgba_affine (ibuf,
+	gnome_print_art_rgba_rgba_affine (ibuf,
 		0, 0, bw, bh, bw * 4,
 		px, w, h, rowstride,
 		ba,
@@ -646,7 +648,7 @@ gp_render_silly_rgba (GnomePrintContext * pc, const gdouble *affine, const gucha
 	/* Render */
 
 	if (rbuf->private->alpha) {
-		art_rgba_rgba_affine (rbuf->private->pixels,
+		gnome_print_art_rgba_rgba_affine (rbuf->private->pixels,
 			0, 0, rbuf->private->width, rbuf->private->height, rbuf->private->rowstride,
 			ibuf, bw, bh, bw * 4,
 			ba,

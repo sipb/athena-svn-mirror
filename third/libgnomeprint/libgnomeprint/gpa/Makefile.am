@@ -6,14 +6,8 @@ INCLUDES = \
 	$(LIBGNOMEPRINT_CFLAGS) \
 	-DBINDIR=\""$(bindir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
-     -DGPA_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\" \
-     -DGPA_DATA_DIR=\""$(GNOME_PRINT_DATA_DIR)"\" \
-	\
-	-DG_DISABLE_DEPRECATED				\
-	-DGDK_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED				\
-	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
-	-DGNOME_DISABLE_DEPRECATED
+        -DGPA_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\" \
+        -DGPA_DATA_DIR=\""$(GNOME_PRINT_DATA_DIR)"\"
 
 libgpa_la_SOURCES = \
 	gpa-node.c      gpa-node.h gpa-node-private.h \
@@ -27,6 +21,7 @@ libgpa_la_SOURCES = \
 	gpa-root.c     \
 	gpa-config.c   \
 	gpa-key.c      \
+	gpa-state.c    \
 	gpa-settings.c \
 	\
 	gpa-utils.c    gpa-utils.h
@@ -38,6 +33,7 @@ libgpainc_HEADERS = \
 	gpa-utils.h \
 	gpa-printer.h \
 	gpa-key.h \
+	gpa-state.h \
 	gpa-option.h \
 	gpa-node-private.h \
 	gpa-list.h \

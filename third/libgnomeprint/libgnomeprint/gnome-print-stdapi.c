@@ -61,7 +61,7 @@ gnome_print_clip (GnomePrintContext *pc)
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_close_all (pc->gc);
-	ret = gnome_print_clip_bpath_rule (pc, gp_gc_get_currentpath (pc->gc), ART_WIND_RULE_ODDEVEN);
+	ret = gnome_print_clip_bpath_rule (pc, gp_gc_get_currentpath (pc->gc), ART_WIND_RULE_NONZERO);
 	gp_gc_newpath (pc->gc);
 
 	return ret;
@@ -1083,6 +1083,21 @@ gnome_print_translate (GnomePrintContext *pc, double x, double y)
  * Convenience methods
  */
 
+/**
+ * gnome_print_line_stroked:
+ * @pc: A #GnomePrintContext
+ * @x0: X position of start point in user coordinates
+ * @y0: Y position of start point in user coordinates
+ * @x1: X position of end point in user coordinates
+ * @y1: Y position of end point in user coordinates
+ *
+ * A convenience function to draw a line.  Uses 
+ * #gnome_print_stroke to do the actual work.
+ * 
+ * Returns: #GNOME_PRINT_OK or positive value on success, negative error code
+ *          on failure.
+ *
+ **/
 gint
 gnome_print_line_stroked (GnomePrintContext *pc, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
@@ -1097,6 +1112,21 @@ gnome_print_line_stroked (GnomePrintContext *pc, gdouble x0, gdouble y0, gdouble
 	return gnome_print_stroke (pc);
 }
 
+/**
+ * gnome_print_rect_stroked:
+ * @pc: A #GnomePrintContext
+ * @x: X position of origin of rectangle in user coordinates
+ * @y: Y position of origin of rectangle in user coordinates
+ * @width: Width of the rectangle
+ * @height: Height of the rectange
+ *
+ * A convenience function to draw a rectangle. Uses 
+ * #gnome_print_stroke to do the actual work.
+ *
+ * Returns: #GNOME_PRINT_OK or positive value on success, negative error code
+ *          on failure. 
+ *
+ **/
 gint
 gnome_print_rect_stroked (GnomePrintContext *pc, gdouble x, gdouble y, gdouble width, gdouble height)
 {
@@ -1115,6 +1145,21 @@ gnome_print_rect_stroked (GnomePrintContext *pc, gdouble x, gdouble y, gdouble w
 	return gnome_print_stroke (pc);
 }
 
+/**
+ * gnome_print_rect_filled:
+ * @pc: A #GnomePrintContext
+ * @x: X position of origin of rectangle in user coordinates
+ * @y: Y position of origin of rectangle in user coordinates
+ * @width: Width of the rectangle
+ * @height: Height of the rectange
+ *
+ * A convenience function to draw a filled rectangle. Uses 
+ * #gnome_print_stroke to do the actual work.
+ *
+ * Returns: #GNOME_PRINT_OK or positive value on success, negative error code
+ *          on failure. 
+ *
+ **/
 gint
 gnome_print_rect_filled (GnomePrintContext *pc, gdouble x, gdouble y, gdouble width, gdouble height)
 {

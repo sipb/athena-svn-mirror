@@ -118,7 +118,8 @@ gpa_key_finalize (GObject *object)
 	}
 	node->children = NULL;
 
-	gpa_node_unref (key->option);
+	if (key->option)
+		gpa_node_unref (key->option);
 	if (key->value)
 		g_free (key->value);
 
@@ -138,9 +139,14 @@ gpa_key_duplicate (GPANode *node)
 
 	new = (GPAKey *) gpa_node_new (GPA_TYPE_KEY, gpa_node_id (node));
 
+	if ((GPA_NODE_FLAGS (node) & NODE_FLAG_LOCKED) == NODE_FLAG_LOCKED) {
+		GPA_NODE_SET_FLAGS (key, NODE_FLAG_LOCKED);
+	}
+	
 	if (key->value)
 		new->value = g_strdup (key->value);
-	new->option = gpa_node_ref (key->option);
+	if (key->option)
+		new->option = gpa_node_ref (key->option);
 
 	child = GPA_NODE (key)->children;
 	while (child) {
@@ -190,6 +196,14 @@ gpa_key_set_value (GPANode *node, const guchar *value)
 
 	key    = GPA_KEY (node);
 	option = GPA_KEY_OPTION (key);
+
+	if (option == NULL) {
+		   g_free (key->value);
+		   key->value = g_strdup (value);
+		   return TRUE;
+	}
+	
+	g_return_val_if_fail (option != NULL, FALSE);
 
 	if (strcmp (key->value, value) == 0)
 		return FALSE;
@@ -352,7 +366,6 @@ gpa_key_merge_from_key (GPAKey *dst, GPAKey *src)
 	g_return_val_if_fail (GPA_IS_KEY (dst), FALSE);
 	g_return_val_if_fail (src != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_KEY (src), FALSE);
-	g_return_val_if_fail (src->option != NULL, FALSE);
 
 	if (dst->value)
 		g_free (dst->value);
@@ -360,7 +373,10 @@ gpa_key_merge_from_key (GPAKey *dst, GPAKey *src)
 
 	if (dst->option)
 		gpa_node_unref (dst->option);
-	dst->option = gpa_node_ref (src->option);
+	if (src->option)
+		dst->option = gpa_node_ref (src->option);
+	else
+		dst->option = NULL;
 
 	gpa_key_merge_children_from_key (dst, src);
 
@@ -373,6 +389,7 @@ gpa_key_merge_children_from_option (GPAKey *key, GPAOption *option)
 	GPANode *child;
 	GSList *keys = NULL, *keys2;
 	GSList *options = NULL;
+	GSList *options_orig = NULL;
 
 	child = GPA_NODE (key)->children;
 	while (child) {
@@ -404,6 +421,7 @@ gpa_key_merge_children_from_option (GPAKey *key, GPAOption *option)
 }
 #endif
 	keys2 = g_slist_copy (keys);
+	options_orig = options;
 	while (options) {
 		GSList *l;
 		l = keys2;
@@ -449,7 +467,7 @@ gpa_key_merge_children_from_option (GPAKey *key, GPAOption *option)
 		keys = g_slist_remove (keys, keys->data);
 	}
 	
-	g_slist_free (options);
+	g_slist_free (options_orig);
 
 	return TRUE;
 }
@@ -501,6 +519,31 @@ gpa_key_merge_from_option (GPAKey *key, GPAOption *option)
 		
 	gpa_key_merge_children_from_option (key, GPA_OPTION (och));
 	gpa_node_unref (och);
+
+	return TRUE;
+}
+
+
+gboolean
+gpa_key_insert (GPANode *parent, const guchar *path, const guchar *value)
+{
+	GPANode *new;
+	const guchar *dot;
+	
+	g_return_val_if_fail (GPA_IS_KEY (parent), FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+
+	/* For now, only insert first level keys. (Chema) */
+	dot = strchr (path, '.');
+	if (dot) {
+		g_print ("We only support top level key_inserts");
+		return FALSE;
+	}
+
+	new = gpa_node_new (GPA_TYPE_KEY, path);
+	if (value)
+		GPA_KEY (new)->value = g_strdup (value);
+	gpa_node_attach (parent, new);
 
 	return TRUE;
 }

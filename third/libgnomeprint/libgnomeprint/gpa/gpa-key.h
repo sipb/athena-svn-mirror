@@ -61,6 +61,8 @@ gboolean   gpa_key_merge_from_tree (GPANode *key, xmlNodePtr tree);
 gboolean   gpa_key_merge_from_key  (GPAKey *dst, GPAKey *src);
 xmlNodePtr gpa_key_to_tree (GPAKey *key);
 
+gboolean   gpa_key_insert (GPANode *parent, const guchar *path, const guchar *value);
+
 G_END_DECLS
 
 #endif /* __GPA_KEY_H__ */

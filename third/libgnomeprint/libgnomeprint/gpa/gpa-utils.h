@@ -47,7 +47,6 @@ xmlNodePtr  gpa_xml_node_get_child (xmlNodePtr node, const guchar *name);
 void gpa_utils_dump_tree (GPANode *node, gint follow_references);
 
 #ifndef __GNUC__
-#define __FUNCTION__   ""
 #define __PRETTY_FUNCTION__ ""
 #endif
 

@@ -36,7 +36,10 @@ typedef enum {
 	BACKEND_PS,
 	BACKEND_PDF,
 	BACKEND_META,
-	BACKEND_UNKNOWN,
+#ifdef ENABLE_SVG
+	BACKEND_SVG,
+#endif
+	BACKEND_UNKNOWN
 } BackendType;
 
 static gchar *sequence_str = NULL;
@@ -44,6 +47,9 @@ static gchar *backend_str = NULL;
 static gchar *replay_str = NULL;
 static gchar *output_str = NULL;
 gboolean debug = FALSE;
+
+extern struct poptOption poptHelpOptions[];
+/* Only const exprs in initializer, and compliant compilers needn't choke */
 
 static struct poptOption options[] = {
 	{ "backend",   '\0', POPT_ARG_STRING, &backend_str, 0,
@@ -104,15 +110,15 @@ my_draw_randomfig (GnomePrintContext *pc)
 	double max = 100.0;
 	gint ret = 0;
 
-	srandom (47);
+	g_random_set_seed (47);
 	
 	ret += gnome_print_gsave (pc);
 	
 	ret += gnome_print_newpath (pc);
 	ret += gnome_print_moveto (pc, 0, 0);
 	for (i = 80; 0 < i; i --) {
-		a = 1+(int) (max*rand()/(RAND_MAX+1.0));
-		b = 1+(int) (max*rand()/(RAND_MAX+1.0));
+		a = 1+(int) (max*g_random_double()/(RAND_MAX+1.0));
+		b = 1+(int) (max*g_random_double()/(RAND_MAX+1.0));
 		ret += gnome_print_lineto (pc, a, b);
 	}
 	ret += gnome_print_stroke (pc);
@@ -245,6 +251,30 @@ my_draw_image (GnomePrintContext *pc, gboolean color)
 }
 
 static gint
+my_clip_region (GnomePrintContext *pc)
+{
+	gint ret = 0;
+
+	ret += gnome_print_beginpage (pc, "1");
+
+	gnome_print_newpath (pc);
+	gnome_print_moveto (pc, 0, 0);
+	gnome_print_lineto (pc, 320, 0);
+	gnome_print_lineto (pc, 320, 1000);
+	gnome_print_lineto (pc, 0, 1000);
+	gnome_print_closepath (pc);
+	gnome_print_clip (pc);
+	gnome_print_newpath (pc);
+
+	gnome_print_moveto (pc, 300, 300);
+	ret += gnome_print_show (pc, "Test");
+		
+	ret += gnome_print_showpage (pc);
+	
+	return ret;
+}
+
+static gint
 my_draw_text (GnomePrintContext *pc)
 {
 	GnomeFont *font;
@@ -268,6 +298,7 @@ my_draw_text (GnomePrintContext *pc)
 			     font_name = "Arioso Bold";
 			     break;
 		     case 3:
+		     default:
 			     font_name = "Verdana Bold Italic";
 			     break;
 		     }
@@ -302,7 +333,7 @@ my_draw_glyphlist (GnomePrintContext *pc)
 {
 	GnomeGlyphList *gl;
 	GnomeFont *font;
-	gint ret;
+	gint ret = 0;
 	gchar *p, *end;
 
 	ret += gnome_print_beginpage (pc, "1");
@@ -430,6 +461,9 @@ my_draw (GnomePrintContext *gpc, gint sequence)
 	case 5:
 		ret += my_draw_glyphlist (gpc);
 		break;
+	case 6:
+		ret += my_clip_region (gpc);
+		break;
 	default:
 		g_print ("Fatal error: Sequence not implemented. (%s)\n", sequence_str);
 		ret = 1;
@@ -513,7 +547,13 @@ main (int argc, const char * argv[])
 		if (strcmp (test, "PDF") != 0)
 			my_error ("Could not set printer to PDF.\n");
 		g_free (test);		
-		break;		
+		break;	
+#ifdef ENABLE_SVG
+	case BACKEND_SVG:
+		if (!gnome_print_config_set (config, "Settings.Engine.Backend.Driver", "gnome-print-svg"))
+			my_error ("gnome_print_config_set Printer-SVG");
+		break;
+#endif
 	case BACKEND_UNKNOWN:
 	default:
 		g_print ("Fatal error: Backend not implemented. (%s)\n", backend_str);
@@ -557,6 +597,9 @@ usage (gchar *error)
 		 "    Valid backends are:\n"
 		 "         -ps\n"
 		 "         -pdf\n"
+#ifdef ENABLE_SVG
+		 "         -svg\n"
+#endif
 		 "         -meta\n\n"
 		 "    Valid drawing sequences are: 0 thru 999 fixme\n"
 		 "\n");
@@ -582,6 +625,10 @@ parse_command_line (int argc, const char ** argv, BackendType *backend,
 		*backend = BACKEND_PS;
 	else if (!strcmp ("pdf", backend_str))
 		*backend = BACKEND_PDF;
+#ifdef ENABLE_SVG
+	else if (!strcmp ("svg", backend_str))
+		*backend = BACKEND_SVG;
+#endif
 	else if (!strcmp ("meta", backend_str))
 		*backend = BACKEND_META;
 	else 

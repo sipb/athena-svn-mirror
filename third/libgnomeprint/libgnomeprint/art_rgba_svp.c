@@ -222,7 +222,7 @@ art_rgba_svp_alpha_opaque_callback (void *callback_data, int y,
 }
 
 /**
- * art_rgb_svp_alpha: Alpha-composite sorted vector path over RGBA buffer.
+ * gnome_print_art_rgba_svp_alpha: Alpha-composite sorted vector path over RGBA buffer.
  * @svp: The source sorted vector path.
  * @x0: Left coordinate of destination rectangle.
  * @y0: Top coordinate of destination rectangle.
@@ -249,11 +249,11 @@ art_rgba_svp_alpha_opaque_callback (void *callback_data, int y,
  * @alphagamma is NULL.
  **/
 void
-art_rgba_svp_alpha (const ArtSVP *svp,
-		   int x0, int y0, int x1, int y1,
-		   art_u32 rgba,
-		   art_u8 *buf, int rowstride,
-		   ArtAlphaGamma *alphagamma)
+gnome_print_art_rgba_svp_alpha (const ArtSVP *svp,
+				int x0, int y0, int x1, int y1,
+				art_u32 rgba,
+				art_u8 *buf, int rowstride,
+				ArtAlphaGamma *alphagamma)
 {
   ArtRgbaSVPAlphaData data;
   int r, g, b, alpha;

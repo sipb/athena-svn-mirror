@@ -1,131 +1,20 @@
 # Swedish messages for libgnomeprint.
-# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
-# Christian Rose <menthos@menthos.com>, 2001, 2002.
+# Copyright (C) 2001, 2002, 2004 Free Software Foundation, Inc.
+# Christian Rose <menthos@menthos.com>, 2001, 2002, 2004.
 #
-# $Id: sv.po,v 1.1.1.3 2003-02-12 06:42:02 ghudson Exp $
+# $Id: sv.po,v 1.1.1.4 2004-10-04 04:23:14 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
-"PO-Revision-Date: 2002-12-29 15:04+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2004-08-04 23:07+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Flygande bäckasiner söka strax hwila på mjuka tuvor."
-
-#. FIXME: fill in all papers and units. (Lauris)
-#. FIXME: load papers from file (Lauris)
-#. FIXME: use some fancy unit program (Lauris)
-#.
-#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
-#.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
-msgid "A4"
-msgstr "A4"
-
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "Enhet"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "Enheter"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "Punkt"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Pt"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "Punkter"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Ptr"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr "Användarlägesenhet"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "Användare"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr "Användarlägesenheter"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "Bildpunkt"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Bp"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "Bildpunkter"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr "Procent"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr "Procent"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "Millimeter"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "millimeter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "centimeter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "centimeter"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "tum"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "tum"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "tum"
 
 #: data/globals.xml.in.h:1
 msgid "1/3 A4"
@@ -174,6 +63,16 @@ msgstr "A2"
 #: data/globals.xml.in.h:12
 msgid "A3"
 msgstr "A3"
+
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
+msgid "A4"
+msgstr "A4"
 
 #: data/globals.xml.in.h:14
 msgid "A5"
@@ -366,6 +265,151 @@ msgstr "Generisk Postscript"
 #: data/printers/PDF-WRITER.xml.in.h:1
 msgid "Create a PDF document"
 msgstr "Skapa ett PDF-dokument"
+
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Flygande bäckasiner söka strax hwila på mjuka tuvor."
+
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr "Jobbkonfiguration"
+
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr "Konfigurationen för utskriftsjobbet"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "Enhet"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "Enheter"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "Punkt"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "Punkter"
+
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Ptr"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "Användarlägesenhet"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "Användare"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "Användarlägesenheter"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "Bildpunkt"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Bp"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "Bildpunkter"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "Procent"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "Procent"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "Millimeter"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "millimeter"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "centimeter"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "centimeter"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "tum"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "tum"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "tum"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr "under helgen"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr "mellan midnatt och 08.00"
+
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr "mellan 18.00 och 06.00"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr "mellan 16.00 och midnatt"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr "mellan 06.00 och 18.00"
+
+# Osäker
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr "då det släpps manuellt"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr "omedelbart"
+
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr "%s (via lpr)"
 
 #~ msgid "Executive"
 #~ msgstr "Executive"

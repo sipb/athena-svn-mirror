@@ -4,7 +4,7 @@ plugin_LTLIBRARIES = \
 	$(LPR_LIB) \
 	$(CUSTOM_LIB)
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
 INCLUDES = \
@@ -18,9 +18,10 @@ FILE_SRC = gp-transport-file.c gp-transport-file.h
 
 libgnomeprint_file_la_SOURCES = $(FILE_SRC)
 
-libgnomeprint_file_la_LDFLAGS = -version-info 0:0:0 -module
+libgnomeprint_file_la_LDFLAGS = -avoid-version -module -no-undefined
 
-libgnomeprint_file_la_LIBADD = ../libgnomeprint-2-2.la
+libgnomeprint_file_la_LIBADD = ../libgnomeprint-2-2.la \
+	$(LIBGNOMEPRINT_LIBS)
 
 # LPR transport destination
 
@@ -29,9 +30,10 @@ LPR_SRC = gp-transport-lpr.c gp-transport-lpr.h
 
 libgnomeprint_lpr_la_SOURCES = $(LPR_SRC)
 
-libgnomeprint_lpr_la_LDFLAGS = -version-info 0:0:0 -module
+libgnomeprint_lpr_la_LDFLAGS = -avoid-version -module -no-undefined
 
-libgnomeprint_lpr_la_LIBADD = ../libgnomeprint-2-2.la
+libgnomeprint_lpr_la_LIBADD = ../libgnomeprint-2-2.la \
+	$(LIBGNOMEPRINT_LIBS)
 
 # Custom transport destination
 
@@ -40,7 +42,7 @@ CUSTOM_SRC = gp-transport-custom.c gp-transport-custom.h
 
 libgnomeprint_custom_la_SOURCES = $(CUSTOM_SRC)
 
-libgnomeprint_custom_la_LDFLAGS = -version-info 0:0:0 -module
+libgnomeprint_custom_la_LDFLAGS = -avoid-version -module -no-undefined
 
-libgnomeprint_custom_la_LIBADD = ../libgnomeprint-2-2.la
-
+libgnomeprint_custom_la_LIBADD = ../libgnomeprint-2-2.la \
+	$(LIBGNOMEPRINT_LIBS)

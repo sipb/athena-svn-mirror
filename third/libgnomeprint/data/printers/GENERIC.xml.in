@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Printer Id="GENERIC" Version="1.0">
+  <_Name>Generic Postscript</_Name>
+  <Model>GNOME-GENERIC-PS</Model>
+  <Settings Id="SETTINGS-000989541673031997000001">
+    <Name>Default</Name>
+    <Key Id="Engine">
+      <Key Id="Backend" Value="gnome"/>
+    </Key>
+    <Key Id="Output">
+      <Key Id="Media">
+        <Key Id="PhysicalSize" Value="A4"/>
+      </Key>
+      <Key Id="Resolution" Value="360x360"/>
+    </Key>
+    <Key Id="Transport">
+      <Key Id="Backend" Value="lpr"/>
+    </Key>
+  </Settings>
+</Printer>

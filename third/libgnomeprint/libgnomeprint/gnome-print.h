@@ -154,6 +154,7 @@ gint gnome_print_rgbaimage (GnomePrintContext *pc, const guchar *data, gint widt
 /* Page */
 gint gnome_print_beginpage (GnomePrintContext *pc, const guchar *name);
 gint gnome_print_showpage (GnomePrintContext *pc);
+gint gnome_print_end_doc (GnomePrintContext *pc);
 
 /*
  * Convenience methods for printing straight lines and rectangles.

@@ -48,6 +48,37 @@ struct _GnomePrintPdfT1Font {
 	GnomePrintBuffer b;
 };
 
+/* g_strstr_len contains checks for embedded NULs that
+ * might confuse us and are slow, so here's a simplified
+ * version.
+ */
+static char *
+my_strrstr_len (const gchar *haystack,
+		gssize       haystack_len,
+		const gchar *needle)
+{
+	gsize needle_len = strlen (needle);
+	const gchar *p;
+	gsize i;
+	
+	if (haystack_len < needle_len)
+		return NULL;
+
+	p = haystack + haystack_len - needle_len;
+	while (p >= haystack) {
+		for (i = 0; i < needle_len; i++)
+			if (p[i] != needle[i])
+				goto next;
+
+		return (gchar *)p;
+
+	next:
+		p--;
+	}
+
+	return NULL;
+}
+
 static gint
 gnome_print_pdf_t1_determine_lengths_pfa (GnomePrintPdfT1Font *font)
 {
@@ -71,34 +102,16 @@ gnome_print_pdf_t1_determine_lengths_pfa (GnomePrintPdfT1Font *font)
 		goto determine_lengths_pfa_error;
 	font->length[0] = len;
 	
-	/* Get the length of segment 2, scaning from the end of the
+	/* Get the length of segment 2, scanning from the end of the
 	 * font. First look for the cleartomark, then rewind 512
 	 * zeros, which will most likely have newlines between them (Chema)
 	 */
-	
-	/* Rewind newlines at the end of the font, no more than 10 */
-	pos = font->b.buf + font->b.buf_size;
+
 	error = 2;
-	if (*pos != '\0' )
+	pos = my_strrstr_len (pos, font->b.buf_size - len, T1_SEGMENT_3_END);
+	if (!pos)
 		goto determine_lengths_pfa_error;
-	pos--;
-	i = 0;
-	while ((*pos == '\n' || *pos == '\r') && (i < 10)) {
-		pos--; i++;
-
-	}
-
-	/* the first non-newline char should be a k for "cleartomarK" */
-	error = 3;
-	if (*pos != 'k')
-		goto determine_lengths_pfa_error;
-
-	/* Check that "cleartomark" is there */
-	i = strlen (T1_SEGMENT_3_END);
-	pos = pos - i + 1;
-	error = 4;
-	if (strncmp (pos, T1_SEGMENT_3_END, i))
-		goto determine_lengths_pfa_error;
+	
 	pos --;
 
 	/* Rewind 512 zeros */

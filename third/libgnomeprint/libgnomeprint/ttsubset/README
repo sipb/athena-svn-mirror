@@ -1,0 +1,20 @@
+	The files sft.c, list.c, ttcr.c, crc32.c and corresponding header files
+are yanked from STSF (Standard Type Services Framework)  text imaging and
+font handling framework for application developers.
+
+http://stsf.sourceforge.net/about.html
+
+STSF 0.4
+March 25, 2003
+
+gnome-print-tt-subset.c contains gnome_print_pdf_tt_create_subfont function, 
+which actually takes in a ttf file_name and a glyphArray/encoding array of 
+length len, and returns a subfont file created in subfont_file. This subfont 
+is a standalone ttf font, encoded in symbol format.
+
+This also contains gnome_print_ps_tt_create_subfont, which creates a type 42
+subfont in the similar manner. This is needed for embedding truetype data 
+directly in PS output.
+
+						suresh.chandrasekharan@sun.com	
+								06/21/04

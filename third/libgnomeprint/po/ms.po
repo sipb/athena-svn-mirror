@@ -5,18 +5,62 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint HEAD\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
-"PO-Revision-Date: 2002-01-12 08:13+0800\n"
-"Last-Translator: Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2003-04-27 10:52+0800\n"
+"Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# Ditujukan buat Abit & Tiong yang dah tiada :(
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Seekor arnab memakan kangkung bersama tiong."
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr "1/3 A4"
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr "1/3 A5"
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr "1/4 A3"
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr "1/4 A4"
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr "1/8 A4"
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr "2 halaman kpd 1"
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr "4 halaman kpd 1"
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr "A0"
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr "A1"
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr "A10"
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr "A2"
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr "A3"
 
 #. FIXME: fill in all papers and units. (Lauris)
 #. FIXME: load papers from file (Lauris)
@@ -24,267 +68,121 @@ msgstr "Seekor arnab memakan kangkung bersama tiong."
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
 msgid "A4"
 msgstr "A4"
 
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "Unit"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "Unit"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "Titik"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Ttk"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "Titik"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Ttk"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr "Unit ruangpengguna"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "Pengguna"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr "Unit ruangpengguna"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "Piksel"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Px"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "Piksel"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr "Peratus"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr "Peratus"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "Milimeter"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "Milimeter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "Sentimeter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "sm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "Sentimeter"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "Inci"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "in"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "Inci"
-
-#: data/globals.xml.in.h:1
-msgid "1/3 A4"
-msgstr ""
-
-#: data/globals.xml.in.h:2
-msgid "1/3 A5"
-msgstr ""
-
-#: data/globals.xml.in.h:3
-msgid "1/4 A3"
-msgstr ""
-
-#: data/globals.xml.in.h:4
-msgid "1/4 A4"
-msgstr ""
-
-#: data/globals.xml.in.h:5
-msgid "1/8 A4"
-msgstr ""
-
-#: data/globals.xml.in.h:6
-msgid "2 pages to 1"
-msgstr ""
-
-#: data/globals.xml.in.h:7
-msgid "4 pages to 1"
-msgstr ""
-
-#: data/globals.xml.in.h:8
-msgid "A0"
-msgstr ""
-
-#: data/globals.xml.in.h:9
-msgid "A1"
-msgstr ""
-
-#: data/globals.xml.in.h:10
-msgid "A10"
-msgstr ""
-
-#: data/globals.xml.in.h:11
-msgid "A2"
-msgstr ""
-
-#: data/globals.xml.in.h:12
-msgid "A3"
-msgstr ""
-
 #: data/globals.xml.in.h:14
 msgid "A5"
-msgstr ""
+msgstr "A5"
 
 #: data/globals.xml.in.h:15
 msgid "A6"
-msgstr ""
+msgstr "A6"
 
 #: data/globals.xml.in.h:16
 msgid "A7"
-msgstr ""
+msgstr "A7"
 
 #: data/globals.xml.in.h:17
 msgid "A8"
-msgstr ""
+msgstr "A8"
 
 #: data/globals.xml.in.h:18
 msgid "A9"
-msgstr ""
+msgstr "A9"
 
 #: data/globals.xml.in.h:19
 msgid "B0"
-msgstr ""
+msgstr "B0"
 
 #: data/globals.xml.in.h:20
 msgid "B1"
-msgstr ""
+msgstr "B1"
 
 #: data/globals.xml.in.h:21
 msgid "B10"
-msgstr ""
+msgstr "B10"
 
 #: data/globals.xml.in.h:22
 msgid "B2"
-msgstr ""
+msgstr "B2"
 
 #: data/globals.xml.in.h:23
 msgid "B3"
-msgstr ""
+msgstr "B3"
 
 #: data/globals.xml.in.h:24
 msgid "B4"
-msgstr ""
+msgstr "B4"
 
 #: data/globals.xml.in.h:25
 msgid "B5"
-msgstr ""
+msgstr "B5"
 
 #: data/globals.xml.in.h:26
 msgid "B6"
-msgstr ""
+msgstr "B6"
 
 #: data/globals.xml.in.h:27
 msgid "B7"
-msgstr ""
+msgstr "B7"
 
 #: data/globals.xml.in.h:28
 msgid "B8"
-msgstr ""
+msgstr "B8"
 
 #: data/globals.xml.in.h:29
 msgid "B9"
-msgstr ""
+msgstr "B9"
 
 #: data/globals.xml.in.h:30
 msgid "C0"
-msgstr ""
+msgstr "C0"
 
 #: data/globals.xml.in.h:31
 msgid "C1"
-msgstr ""
+msgstr "C1"
 
 #: data/globals.xml.in.h:32
 msgid "C10"
-msgstr ""
+msgstr "C10"
 
 #: data/globals.xml.in.h:33
 msgid "C2"
-msgstr ""
+msgstr "C2"
 
 #: data/globals.xml.in.h:34
 msgid "C3"
-msgstr ""
+msgstr "C3"
 
 #: data/globals.xml.in.h:35
 msgid "C4"
-msgstr ""
+msgstr "C4"
 
 #: data/globals.xml.in.h:36
 msgid "C5"
-msgstr ""
+msgstr "C5"
 
 #: data/globals.xml.in.h:37
 msgid "C6"
-msgstr ""
+msgstr "C6"
 
 #: data/globals.xml.in.h:38
 msgid "C6/C5 Envelope"
-msgstr ""
+msgstr "Samoul surat C6/C5"
 
 #: data/globals.xml.in.h:39
 msgid "C7"
-msgstr ""
+msgstr "C7"
 
 #: data/globals.xml.in.h:40
 msgid "C8"
-msgstr ""
+msgstr "C8"
 
 #: data/globals.xml.in.h:41
 msgid "C9"
-msgstr ""
+msgstr "C9"
 
 #: data/globals.xml.in.h:42
 msgid "Custom"
@@ -292,23 +190,23 @@ msgstr "Sendiri"
 
 #: data/globals.xml.in.h:43
 msgid "DL Envelope"
-msgstr ""
+msgstr "Sampul surat DL"
 
 #: data/globals.xml.in.h:44
 msgid "Divided"
-msgstr ""
+msgstr "DIbahagi"
 
 #: data/globals.xml.in.h:45
 msgid "Envelope 6x9"
-msgstr ""
+msgstr "Sampul surat 6x9"
 
 #: data/globals.xml.in.h:46
 msgid "Envelope No10"
-msgstr ""
+msgstr "Sampul surat No10"
 
 #: data/globals.xml.in.h:47
 msgid "Folded"
-msgstr ""
+msgstr "Dilipat"
 
 #: data/globals.xml.in.h:48
 msgid "Landscape"
@@ -340,15 +238,15 @@ msgstr "Tegak"
 
 #: data/globals.xml.in.h:55
 msgid "US Executive"
-msgstr ""
+msgstr "Eksekutif US"
 
 #: data/globals.xml.in.h:56
 msgid "US Legal"
-msgstr ""
+msgstr "Legal US"
 
 #: data/globals.xml.in.h:57
 msgid "US Letter"
-msgstr ""
+msgstr "Letter US"
 
 #: data/globals.xml.in.h:58
 msgid "Upside down landscape"
@@ -360,120 +258,153 @@ msgstr "Potret tertonggeng"
 
 #: data/printers/GENERIC.xml.in.h:1
 msgid "Generic Postscript"
-msgstr ""
+msgstr "Postscript Generik"
 
 #: data/printers/PDF-WRITER.xml.in.h:1
 msgid "Create a PDF document"
+msgstr "Cipta dokumen PDF"
+
+# Ditujukan buat Abit & Tiong yang dah tiada :(
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Seekor arnab memakan kangkung bersama tiong."
+
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
 msgstr ""
 
-#~ msgid "Print out debugging information"
-#~ msgstr "Cetak maklumat nyahpepijat"
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr ""
 
-#~ msgid "Tries to do everything automatically"
-#~ msgstr "Cuba untuk melakukan semuanya secara automatik"
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "Unit"
 
-#~ msgid "Search directories recursively for font files"
-#~ msgstr "Cari di direktori secara rekursif untuk fail font"
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "Unit"
 
-#~ msgid "Start from zero fontmap, instead of parsing old one"
-#~ msgstr "Bermula daripada sifar, selain dari menghantar yang lama"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "Titik"
 
-#~ msgid "Reverifies all font files, even for fontmaps of same version"
-#~ msgstr "Tentusahkan lagi semua fail font, walaupun fontmaps bagi versi sama"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Ttk"
 
-#~ msgid "Include font notice field (Copyright data) into fontmap"
-#~ msgstr "Sertakan medan notis font (Data hakcipta) ke fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "Titik"
 
-#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-#~ msgstr "Cipta $HOME/.gnome/fonts/gnome-print.fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Ttk"
 
-#~ msgid "Create "
-#~ msgstr "Cipta"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "Unit ruangpengguna"
 
-#~ msgid "/gnome-print.fontmap"
-#~ msgstr "/gnome-print.fontmap"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "Pengguna"
 
-#~ msgid "Write output fontmap to specified file (- for stdout)"
-#~ msgstr "Tulis output fontmap ke fail yang dinyatakan (- untuk stdout)"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "Unit ruangpengguna"
 
-#~ msgid ""
-#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-#~ "print installation)"
-#~ msgstr ""
-#~ "Pulangkan $FONTMAPDIR_STATIC dan $FONTMAPDIR_DYNAMIC digunakan untuk "
-#~ "pemasangan gnome-print ini"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "Piksel"
 
-#~ msgid "File describing known aliases"
-#~ msgstr "Fail menghuraikan alias dikenali"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Px"
 
-#~ msgid "PATH"
-#~ msgstr "PATH"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "Piksel"
 
-#~ msgid "Specify default font(s) for any locale"
-#~ msgstr "Nyatakan font default untuk sebarang locale"
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "Peratus"
 
-#~ msgid "[LOCALE[,LOCALE]:fontname]"
-#~ msgstr "[LOCALE[,LOCALE]:namafont]"
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
 
-#~ msgid "Print Paper database"
-#~ msgstr "Pangkalandata Kertas Cetakan"
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "Peratus"
 
-#~ msgid "Describe GPA Tree"
-#~ msgstr "Hurai Pepohon GPA"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "Milimeter"
 
-#~ msgid "Print text file"
-#~ msgstr "Cetak fail teks"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
 
-#~ msgid "Use GnomePrintJob for printing"
-#~ msgstr "Guna GnomePrintJob untuk mencetak"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "Milimeter"
 
-#~ msgid "Dump printout to metafile ('-' for stdout)"
-#~ msgstr "Tulis output fontmap ke fail meta (- untuk stdout)"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "Sentimeter"
 
-#~ msgid "Split job between bonobo"
-#~ msgstr "Pisahkan kerja antara bonobo"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "sm"
 
-#~ msgid "Render from metafile"
-#~ msgstr "Render dari failmeta"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "Sentimeter"
 
-#~ msgid "Gnome-print test page, rotated"
-#~ msgstr "Halaman ujian Gnome-print, dikilas"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "Inci"
 
-#~ msgid "Gnome-print test page, slanted"
-#~ msgstr "Halaman ujian Gnome-print, disengetkan"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "in"
 
-#~ msgid "Gnome-print test page, slanted. Small"
-#~ msgstr "Halaman ujian Gnome-print. Kecil"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "Inci"
 
-#~ msgid "Meter"
-#~ msgstr "Meter"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr ""
 
-#~ msgid "m"
-#~ msgstr "m"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr ""
 
-#~ msgid "Meters"
-#~ msgstr "Meter"
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr ""
 
-#~ msgid "meters"
-#~ msgstr "meter"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr ""
 
-#~ msgid "Default Key"
-#~ msgstr "Kekunci Default"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr ""
 
-#~ msgid "Printer is active"
-#~ msgstr "Pencetak adalah aktif"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr ""
 
-#~ msgid "Printer is ready to print"
-#~ msgstr "Pencetak bersedia untuk mencetak"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr ""
 
-#~ msgid "Printer is off-line"
-#~ msgstr "pencetak adalah luar-talian"
-
-#~ msgid "Can not communicate with printer"
-#~ msgstr "Tak dapat bekomunikais dengan pencetak"
-
-#~ msgid "Unknown status"
-#~ msgstr "Status Entah"
-
-#~ msgid "Default Settings"
-#~ msgstr "Tetapan Default"
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr ""

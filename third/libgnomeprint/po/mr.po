@@ -1,0 +1,566 @@
+# translation of libgnomeprint.mr.po to 
+# Copyright (C) 2003 Jitendra Shah
+# Swapnil Hajare <dreamil1000a@yahoo.com>, 2003
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint.mr\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2003-07-18 14:40+0530\n"
+"Last-Translator: Jitendra Shah <jitendras@vsnl.com>\n"
+"Language-Team:  Marathi <www.indictrans.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
+
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr ""
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr ""
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr ""
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr ""
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr ""
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr ""
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr ""
+
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
+msgid "A4"
+msgstr "A4"
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr ""
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr ""
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr ""
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr ""
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr ""
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr ""
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr ""
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr ""
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr ""
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr ""
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr ""
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr ""
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr ""
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr ""
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr ""
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr ""
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr ""
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr ""
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr ""
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr ""
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr ""
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr ""
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr ""
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr ""
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr ""
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr ""
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr ""
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr ""
+
+# libgnomeprint/gpa/gpa-media.c:241
+#: data/globals.xml.in.h:42
+msgid "Custom"
+msgstr "कस्टम"
+
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr ""
+
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr ""
+
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr ""
+
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr ""
+
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr ""
+
+# libgnomeprint/gpa/gpa-media.c:310
+#: data/globals.xml.in.h:48
+msgid "Landscape"
+msgstr "चित्र "
+
+# libgnomeprint/gpa/gpa-media.c:343
+#: data/globals.xml.in.h:49
+msgid "Plain"
+msgstr " सरळ "
+
+# libgnomeprint/gpa/gpa-media.c:303
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "प्रतिमा "
+
+# libgnomeprint/gpa/gpa-media.c:277
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "180 डिग्री ने फिरणे"
+
+# libgnomeprint/gpa/gpa-media.c:284
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "270 डिग्री ने फिरणे"
+
+# libgnomeprint/gpa/gpa-media.c:270
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "90 डिग्री ने फिरणे "
+
+# libgnomeprint/gpa/gpa-media.c:263
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "सरळ "
+
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr ""
+
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr ""
+
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr ""
+
+# libgnomeprint/gpa/gpa-media.c:324
+#: data/globals.xml.in.h:58
+msgid "Upside down landscape"
+msgstr "उलटे  चित्र"
+
+# libgnomeprint/gpa/gpa-media.c:317
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "उलटी  प्रतिमा"
+
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr ""
+
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr ""
+
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "The quick brown fox jumps over the lazy dog."
+
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr ""
+
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr ""
+
+# libgnomeprint/gnome-print-paper.c:46
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "एकक "
+
+# libgnomeprint/gnome-print-paper.c:46
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "एकके "
+
+# libgnomeprint/gnome-print-paper.c:47
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "बिंदू "
+
+# libgnomeprint/gnome-print-paper.c:47
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "पिटि  "
+
+# libgnomeprint/gnome-print-paper.c:47
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "बिंदू"
+
+# libgnomeprint/gnome-print-paper.c:47
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "पिटि"
+
+# libgnomeprint/gnome-print-paper.c:48
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "यूज़रस्पेस एकक "
+
+# libgnomeprint/gnome-print-paper.c:48
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "उपयोगकर्ता"
+
+# libgnomeprint/gnome-print-paper.c:48
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "यूज़रस्पेस एकके "
+
+# libgnomeprint/gnome-print-paper.c:49
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "पिक्सल"
+
+# libgnomeprint/gnome-print-paper.c:49
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "पि एक्स "
+
+# libgnomeprint/gnome-print-paper.c:49
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "पिक्सल्स"
+
+# libgnomeprint/gnome-print-paper.c:51
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "टक्के "
+
+# libgnomeprint/gnome-print-paper.c:51
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
+
+# libgnomeprint/gnome-print-paper.c:51
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "टक्के"
+
+# libgnomeprint/gnome-print-paper.c:52
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "मिलीमीटर"
+
+# libgnomeprint/gnome-print-paper.c:52
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "मिमि"
+
+# libgnomeprint/gnome-print-paper.c:52
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "मिलिमीटर्स"
+
+# libgnomeprint/gnome-print-paper.c:53
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "सेन्टीमीटर"
+
+# libgnomeprint/gnome-print-paper.c:53
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "सेमि"
+
+# libgnomeprint/gnome-print-paper.c:53
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "सेन्टीमीटर्स"
+
+# libgnomeprint/gnome-print-paper.c:55
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "इंच"
+
+# libgnomeprint/gnome-print-paper.c:55
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "इं"
+
+# libgnomeprint/gnome-print-paper.c:55
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "इंचेस"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr ""
+
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr ""
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr ""
+
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr ""
+
+# installer/gnome-font-install.c:141
+#~ msgid "Print out debugging information"
+#~ msgstr "डिबगिंग सूचनां छापा "
+
+# installer/gnome-font-install.c:143
+#~ msgid "Tries to do everything automatically"
+#~ msgstr "सर्व कार्य ला स्वचालित रूप ने करण्याचा प्रयत्न करा "
+
+# installer/gnome-font-install.c:145
+#~ msgid "Search directories recursively for font files"
+#~ msgstr "फोन्ट फाइलीं साठी  सर्व  डायरेक्टरी शोधा "
+
+# installer/gnome-font-install.c:147
+#~ msgid "Start from zero fontmap, instead of parsing old one"
+#~ msgstr "जुने  फोन्ट चे पारसिंग सोडुन  शून्य फोन्ट मैप पासून  प्रारंभ करा "
+
+# installer/gnome-font-install.c:149
+#~ msgid "Reverifies all font files, even for fontmaps of same version"
+#~ msgstr ""
+#~ "सर्व  फोन्ट फाइलींची पुन्हा तपासणी करा , समान संस्करणा च्या  फोन्ट मैप ला सुध्दा "
+
+# installer/gnome-font-install.c:151
+#~ msgid "Include font notice field (Copyright data) into fontmap"
+#~ msgstr "फोन्टमैप मध्ये  फोन्ट सूचना फील्ड (काॅपीराइट डाटा) जोडा "
+
+# installer/gnome-font-install.c:153
+#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+#~ msgstr "$HOME/.gnome/fonts/gnome-print.fontmap निर्मित करें"
+
+# installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+#~ msgid "Create "
+#~ msgstr "निर्माण करा "
+
+# installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+#~ msgid "/gnome-print.fontmap"
+#~ msgstr "/gnome-print.fontmap"
+
+# installer/gnome-font-install.c:159
+#~ msgid "Write output fontmap to specified file (- for stdout)"
+#~ msgstr "निर्दिष्ट फाइल (stdout करीता ) मध्ये  आउटपुट फोन्टमैप लिहा "
+
+# installer/gnome-font-install.c:161
+#~ msgid ""
+#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+#~ "print installation)"
+#~ msgstr ""
+#~ "ह्या  जीनोम प्रिंट संस्थापना करीता प्रयुक्त $FONTMAPDIR_STATIC किंवा  "
+#~ "$FONTMAPDIR_DYNAMIC"
+
+# installer/gnome-font-install.c:164
+#~ msgid "File describing known aliases"
+#~ msgstr "ज्ञात समान-नावांना वर्णित करण्यासाठी  फाइल"
+
+# installer/gnome-font-install.c:164 tests/testprint.c:68
+# tests/testprint.c:72
+#~ msgid "PATH"
+#~ msgstr "पाथ"
+
+# installer/gnome-font-install.c:167
+#~ msgid "Specify default font(s) for any locale"
+#~ msgstr "स्थानीक  भाषा मध्ये  प्रयोग करण्यासाठी  डिफाल्ट फोन्टचा उल्लेख करा "
+
+# installer/gnome-font-install.c:167
+#~ msgid "[LOCALE[,LOCALE]:fontname]"
+#~ msgstr "[स्थानीय [,स्थानीय]: फोन्टनाव ]"
+
+# libgnomeprint/gnome-print-paper.c:54
+#~ msgid "Meter"
+#~ msgstr "मीटर"
+
+# libgnomeprint/gnome-print-paper.c:54
+#~ msgid "m"
+#~ msgstr "मि"
+
+# libgnomeprint/gnome-print-paper.c:54
+#~ msgid "Meters"
+#~ msgstr "मीटर"
+
+# tests/testprint.c:64
+#~ msgid "Print Paper database"
+#~ msgstr "पेपर डाटाबेस छापा "
+
+# tests/testprint.c:66
+#~ msgid "Describe GPA Tree"
+#~ msgstr "GPA Tree चे  वर्णन करा "
+
+# tests/testprint.c:68
+#~ msgid "Print text file"
+#~ msgstr "पाठ्य फाइल छापा"
+
+# tests/testprint.c:70
+#~ msgid "Use GnomePrintMaster for printing"
+#~ msgstr "छापण्यासाठी  GnomePrintMaster चा  प्रयोग करा "
+
+# tests/testprint.c:72
+#~ msgid "Dump printout to metafile ('-' for stdout)"
+#~ msgstr "प्रिन्टआउट ला  मेटाफाइल मध्ये ठेवा  ( stdout साठी  )"
+
+# tests/testprint.c:74
+#~ msgid "Split job between bonobo"
+#~ msgstr "बोनबो च्या मध्ये  कार्य विभाजन करा "
+
+#~ msgid "Render from metafile"
+#~ msgstr "metafile पासून  रेंडर करा "
+
+# tests/testprint.c:143
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "जीनोम प्रिन्ट परीक्षण पेज, फिरवून "
+
+# tests/testprint.c:158
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "जीनोम प्रिन्ट परीक्षण पेज,  "
+
+# tests/testprint.c:166
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "जीनोम प्रिन्ट परीक्षण पेज, वाकलेले , छोठा "
+
+# libgnomeprint/gnome-print-paper.c:54
+#~ msgid "meters"
+#~ msgstr "मीटर्स"

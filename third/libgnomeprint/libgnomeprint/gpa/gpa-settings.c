@@ -177,11 +177,34 @@ gpa_settings_get_value (GPANode *node)
 	return g_strdup (GPA_SETTINGS (node)->name);
 }
 
+
+/**
+ * gpa_settings_append_stock_nodes:
+ * @settings: 
+ * 
+ * Appends keys that should be present on all Settings
+ **/
+static void
+gpa_settings_append_stock_nodes (GPANode *settings)
+{
+	GPANode *document;
+	GPANode *app;
+	GPANode *key;
+
+	document = gpa_node_lookup (NULL, "Globals.Document");
+	key = gpa_option_create_key (GPA_OPTION (document),
+				     settings);
+	g_assert (key);
+	gpa_node_attach (settings, key);
+
+	app = gpa_node_new (GPA_TYPE_KEY, "Application");
+	gpa_node_attach (settings, app);
+}
+
 GPANode *
 gpa_settings_new (GPAModel *model, const guchar *name, const guchar *id)
 {
 	GPASettings *settings;
-	GPANode *document;
 	GPANode *child;
 	GPANode *key;
 	GSList *list;
@@ -211,11 +234,7 @@ gpa_settings_new (GPAModel *model, const guchar *name, const guchar *id)
 		child = child->next;
 	}
 
-	document = gpa_node_lookup (NULL, "Globals.Document");
-	key = gpa_option_create_key (GPA_OPTION (document),
-				     GPA_NODE (settings));
-	g_assert (key);
-	gpa_node_attach (GPA_NODE (settings), key);
+	gpa_settings_append_stock_nodes (GPA_NODE (settings));
 
 	gpa_node_reverse_children (GPA_NODE (settings));
 

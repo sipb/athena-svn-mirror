@@ -1,137 +1,29 @@
+# translation of el.po to 
+# translation of el.po to Greek
 # Greek translation of libgnomeprint.
 # Copyright (C) 2002 GNOME Foundation.
-# Simos Xenitellis <simos@hellug.gr>, 2002.
 #
 # simos: 64 messages, 16Aug2002, initial translation.
 # kostas: 25Dec2002, updated translation for Gnome2.1x
 # kostas: 84 messages, 05Jan2003.
+# nikos: 96 messages, small update for gnome2.8
+#
+# Simos Xenitellis <simos@hellug.gr>, 2002.
+# Kostas Papadimas <pkst@gnome.org>, 2004.
+# Nikos Charonitakis <charosn@her.forthnet.gr>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint 1.116.0\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
-"PO-Revision-Date: 2003-01-05 11:31+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2004-08-30 11:08-0300\n"
+"Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
+"Language-Team:  <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
-
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Και ο νους του σαν τον αχνό του λιβανιού στης Παναγιάς την όψη."
-
-#. FIXME: fill in all papers and units. (Lauris)
-#. FIXME: load papers from file (Lauris)
-#. FIXME: use some fancy unit program (Lauris)
-#.
-#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
-#.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
-msgid "A4"
-msgstr "A4"
-
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "Μονάδα"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "Μονάδες"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "Στιγμή"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Pt"
-
-#
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "Στιγμές"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Pts"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr "Μονάδα διαστήματος χρήστη"
-
-# sysdeps/names/mem.c:49
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "Χρήστης"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr "Μονάδες διαστήματος χρήστη"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "Εικονοστοιχείο"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Px"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "Εικονοστοιχεία"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr "Ποσοστό"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr "Ποσοστά"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "Χιλιοστό"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "Χιλιοστά"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "Εκατοστό"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "Εκατοστά"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "Ίντσα"
-
-#
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "in"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "Ίντσες"
+"X-Generator: KBabel 1.3.1\n"
 
 #: data/globals.xml.in.h:1
 msgid "1/3 A4"
@@ -180,6 +72,16 @@ msgstr "A2"
 #: data/globals.xml.in.h:12
 msgid "A3"
 msgstr "A3"
+
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
+msgid "A4"
+msgstr "A4"
 
 #: data/globals.xml.in.h:14
 msgid "A5"
@@ -378,104 +280,149 @@ msgstr "Generic Postscript"
 msgid "Create a PDF document"
 msgstr "Δημιουργία εγγράφου PDF"
 
-#
-#~ msgid "Print out debugging information"
-#~ msgstr "Εκτύπωση πληροφοριών εξσφαλμάτωσης"
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Και ο νους του σαν τον αχνό του λιβανιού στης Παναγιάς την όψη."
 
-#~ msgid "Tries to do everything automatically"
-#~ msgstr "Προσπάθεια να γίνουν όλα αυτόματα"
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr "Ρύθμιση εργασίας"
 
-#
-#~ msgid "Search directories recursively for font files"
-#~ msgstr "Αναζήτηση σε καταλόγους αναδρομικά για αρχεία γραμματοσειρών"
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr "Η ρύθμιση για την εργασία εκτύπωσης"
 
-#~ msgid "Start from zero fontmap, instead of parsing old one"
-#~ msgstr ""
-#~ "Εκκίνηση από μηδενικό χάρτη γραμματοσειρών αντί της ανάλυσης του "
-#~ "παλαιότερου"
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "Μονάδα"
 
-#~ msgid "Reverifies all font files, even for fontmaps of same version"
-#~ msgstr ""
-#~ "Επανέλεγχος όλων των αρχείων γραμματοσειρών, ακόμα και των χαρτών "
-#~ "γραμματοσειρών ίδιας έκδοσης"
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "Μονάδες"
 
-#~ msgid "Include font notice field (Copyright data) into fontmap"
-#~ msgstr ""
-#~ "Συμπερίληψη πεδίου γνωστοποίησης γραμματοσειράς (Δεδομένα πνευματικών "
-#~ "δικαιωμάτων) στο χάρτη γραμματοσειράς (fontmap)"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "Στιγμή"
 
-#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-#~ msgstr "Δημιουργία του $HOME/.gnome/fonts/gnome-print.fontmap"
-
-#
-#~ msgid "/gnome-print.fontmap"
-#~ msgstr "/gnome-print.fontmap"
-
-#~ msgid "Write output fontmap to specified file (- for stdout)"
-#~ msgstr ""
-#~ "Εγγραφή του τελικού χάρτη γραμματοσειρών στο καθορισμένο αρχείο (- για "
-#~ "κανονική έξοδο)"
-
-#~ msgid ""
-#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-#~ "print installation)"
-#~ msgstr ""
-#~ "Εμφάνιση των $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC που "
-#~ "χρησιμοποιήθηκαν στην εγκατάσταση αυτή του gnome-print)"
-
-#~ msgid "File describing known aliases"
-#~ msgstr "Αρχείο που περιγράφει γνωστά ψευδώνυμα"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Pt"
 
 #
-#~ msgid "PATH"
-#~ msgstr "ΜΟΝΟΠΆΤΙ"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "Στιγμές"
 
-#~ msgid "Specify default font(s) for any locale"
-#~ msgstr "Καθορισμός εξ ορισμού γραμματοσειρών για κάθε τοπική ρύθμιση"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Pts"
 
-#~ msgid "[LOCALE[,LOCALE]:fontname]"
-#~ msgstr "[LOCALE[,LOCALE]:fontname]"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "Μονάδα διαστήματος χρήστη"
 
-#~ msgid "Meter"
-#~ msgstr "Μέτρο"
+# sysdeps/names/mem.c:49
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "Χρήστης"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "Μονάδες διαστήματος χρήστη"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "Εικονοστοιχείο"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "Εικονοστοιχεία"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "Ποσοστό"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "Ποσοστά"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "Χιλιοστό"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "Χιλιοστά"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "Εκατοστό"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "Εκατοστά"
+
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "Ίντσα"
 
 #
-#~ msgid "m"
-#~ msgstr "m"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "in"
 
-#~ msgid "Meters"
-#~ msgstr "Μέτρα"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "Ίντσες"
 
-#~ msgid "Print Paper database"
-#~ msgstr "Εκτύπωση βάσης δεδομένων ειδών Χαρτιού"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr "το σαββατοκύριακο"
 
-#~ msgid "Describe GPA Tree"
-#~ msgstr "Περιγραφή Δέντρου GPA"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr "μεταξύ μεσάνυχτα και 8 π.μ."
 
-#~ msgid "Print text file"
-#~ msgstr "Εκτύπωση αρχείου κειμένου"
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr "μεταξύ 6 μ.μ και 6 π.μ."
 
-#~ msgid "Use GnomePrintMaster for printing"
-#~ msgstr "Χρήση του GnomePrintMaster για εκτυπώσεις"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr "μεταξύ 4 μ.μ και μεσάνυχτα"
 
-#~ msgid "Dump printout to metafile ('-' for stdout)"
-#~ msgstr ""
-#~ "Εξαγωγή εκτύπωσης σε αρχείο μορφής metafile ('-' για κανονική έξοδο)"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr "μεταξύ 6 π.μ και 6 μ.μ."
 
-#~ msgid "Split job between bonobo"
-#~ msgstr "Διαχωρισμός εργασίας μεταξύ του μπονόμπο"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr "χειροκίνητα"
 
-#~ msgid "Render from metafile"
-#~ msgstr "Απόδοση από metafile"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr "άμεσα"
 
-#
-#~ msgid "Gnome-print test page, rotated"
-#~ msgstr "Δοκιμαστική σελίδα του Gnome-print, περιστραμμένη"
-
-#
-#~ msgid "Gnome-print test page, slanted"
-#~ msgstr "Δοκιμαστική σελίδα του Gnome-print, γερμένη"
-
-#
-#~ msgid "Gnome-print test page, slanted. Small"
-#~ msgstr "Δοκιμαστική σελίδα του Gnome-print, γερμένη. Μικρό"
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr "%s (μέσω lpr)"

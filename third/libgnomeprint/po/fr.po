@@ -1,130 +1,20 @@
 # French translation of libgnomeprint.
-# Copyright (C) 2002-2003 Free Software Foundation, Inc.
+# Copyright (C) 2002-2004 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgnomeprint package.
-# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2002-2003.
+#
+# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2002-2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint 2.1.7\n"
-"POT-Creation-Date: 2003-02-02 20:27-0500\n"
-"PO-Revision-Date: 2003-01-02 17:58+0100\n"
+"Project-Id-Version: libgnomeprint 2.7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"PO-Revision-Date: 2004-05-05 22:49+0200\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: libgnomeprint/gnome-font-face.c:490
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "Portez ce vieux whisky au juge blond qui fume."
-
-#. FIXME: fill in all papers and units. (Lauris)
-#. FIXME: load papers from file (Lauris)
-#. FIXME: use some fancy unit program (Lauris)
-#.
-#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
-#.
-#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
-msgid "A4"
-msgstr "A4"
-
-#. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Unit"
-msgstr "Unité"
-
-#: libgnomeprint/gnome-print-unit.c:34
-msgid "Units"
-msgstr "Unités"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Point"
-msgstr "Point"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pt"
-msgstr "Pt"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Points"
-msgstr "Points"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Pts"
-msgstr "Pts"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace unit"
-msgstr "Unité utilisateur"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "User"
-msgstr "Utilisateur"
-
-#: libgnomeprint/gnome-print-unit.c:36
-msgid "Userspace units"
-msgstr "Unités utilisateur"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixel"
-msgstr "Pixel"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Px"
-msgstr "Px"
-
-#: libgnomeprint/gnome-print-unit.c:37
-msgid "Pixels"
-msgstr "Pixels"
-
-#. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percent"
-msgstr "Pourcentage"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "%"
-msgstr "%"
-
-#: libgnomeprint/gnome-print-unit.c:39
-msgid "Percents"
-msgstr "Pourcentages"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeter"
-msgstr "Millimètre"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "mm"
-msgstr "mm"
-
-#: libgnomeprint/gnome-print-unit.c:40
-msgid "Millimeters"
-msgstr "Millimètres"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeter"
-msgstr "Centimètre"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "cm"
-msgstr "cm"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Centimeters"
-msgstr "Centimètres"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inch"
-msgstr "Pouce"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "in"
-msgstr "in"
-
-#: libgnomeprint/gnome-print-unit.c:42
-msgid "Inches"
-msgstr "Pouces"
 
 #: data/globals.xml.in.h:1
 msgid "1/3 A4"
@@ -173,6 +63,16 @@ msgstr "A2"
 #: data/globals.xml.in.h:12
 msgid "A3"
 msgstr "A3"
+
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: data/globals.xml.in.h:13 libgnomeprint/gnome-print-paper.c:43
+msgid "A4"
+msgstr "A4"
 
 #: data/globals.xml.in.h:14
 msgid "A5"
@@ -324,15 +224,15 @@ msgstr "Portrait"
 
 #: data/globals.xml.in.h:51
 msgid "Rotated 180 degrees"
-msgstr "Rotation 190 degré"
+msgstr "Rotation 180 degrés"
 
 #: data/globals.xml.in.h:52
 msgid "Rotated 270 degrees"
-msgstr "Rotation 270 degré"
+msgstr "Rotation 270 degrés"
 
 #: data/globals.xml.in.h:53
 msgid "Rotated 90 degrees"
-msgstr "Rotation 90 dégré"
+msgstr "Rotation 90 degrés"
 
 #: data/globals.xml.in.h:54
 msgid "Straight"
@@ -366,98 +266,147 @@ msgstr "PostScript générique"
 msgid "Create a PDF document"
 msgstr "Créer un document PDF"
 
-#~ msgid "Print out debugging information"
-#~ msgstr "Affiche les informations de débogage"
+#: libgnomeprint/gnome-font-face.c:495
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr ""
+"Portez ce vieux whisky au juge blond qui fume. 0123456789. àâçèéêëîïôùûüæœ."
 
-#~ msgid "Tries to do everything automatically"
-#~ msgstr "Essaye de tout faire automatiquement"
+#: libgnomeprint/gnome-print-job.c:130
+msgid "Job Configuration"
+msgstr "Configuration du travail"
 
-#~ msgid "Search directories recursively for font files"
-#~ msgstr ""
-#~ "Cherche récursivement dans les répertoires pour des fichiers de polices"
+#: libgnomeprint/gnome-print-job.c:131
+msgid "The configuration for the print job"
+msgstr "La configuration du travail d'impression"
 
-#~ msgid "Start from zero fontmap, instead of parsing old one"
-#~ msgstr "Démarre depuis un fontmap nul, au lieu d'en analyser un vieux"
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Unit"
+msgstr "Unité"
 
-#~ msgid "Reverifies all font files, even for fontmaps of same version"
-#~ msgstr ""
-#~ "Revérifie tous les fichiers de polices, même pour les fontmap de la même "
-#~ "version"
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Units"
+msgstr "Unités"
 
-#~ msgid "Include font notice field (Copyright data) into fontmap"
-#~ msgstr ""
-#~ "Inclure le champ de notice (donnée de droit d'auteur) dans le fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Point"
+msgstr "Point"
 
-#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-#~ msgstr "Créer $HOME/.gnome/fonts/gnome-print.fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pt"
+msgstr "Pt"
 
-#~ msgid "Create "
-#~ msgstr "Créer "
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Points"
+msgstr "Points"
 
-#~ msgid "/gnome-print.fontmap"
-#~ msgstr "/gnome-print.fontmap"
+#: libgnomeprint/gnome-print-unit.c:37
+msgid "Pts"
+msgstr "Pts"
 
-#~ msgid "Write output fontmap to specified file (- for stdout)"
-#~ msgstr "Écrire le fontmap de sortie dans le fichier spécifié (- for stdout)"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace unit"
+msgstr "Unité utilisateur"
 
-#~ msgid ""
-#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-#~ "print installation)"
-#~ msgstr ""
-#~ "Retourne le $FONTMAPDIR_STATIC le $FONTMAPDIR_DYNAMIC utilisé pour cette "
-#~ "installation gnome-print"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "User"
+msgstr "Utilisateur"
 
-#~ msgid "File describing known aliases"
-#~ msgstr "Fichier décrivant les alias connus"
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Userspace units"
+msgstr "Unités utilisateur"
 
-#~ msgid "PATH"
-#~ msgstr "CHEMIN"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixel"
+msgstr "Pixel"
 
-#~ msgid "Specify default font(s) for any locale"
-#~ msgstr "Spécifie la(es) police(s) par défaut pour toutes les locales"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Px"
+msgstr "Px"
 
-#~ msgid "[LOCALE[,LOCALE]:fontname]"
-#~ msgstr "[LOCALE[,LOCALE]:nomdepolice]"
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Pixels"
+msgstr "Pixels"
 
-#~ msgid "Print Paper database"
-#~ msgstr "Base de donnée de papier d'impression"
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percent"
+msgstr "Pourcentage"
 
-#~ msgid "Describe GPA Tree"
-#~ msgstr "Décrire l'arbre GPA"
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "%"
+msgstr "%"
 
-#~ msgid "Print text file"
-#~ msgstr "Imprimer le fichier texte"
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Percents"
+msgstr "Pourcentages"
 
-#, fuzzy
-#~ msgid "Use GnomePrintJob for printing"
-#~ msgstr "Utiliser GnomePrintMaster pour l'impression"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeter"
+msgstr "Millimètre"
 
-#~ msgid "Dump printout to metafile ('-' for stdout)"
-#~ msgstr "Sortir l'impression dans un metafichier (« - » pout stdout)"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "mm"
+msgstr "mm"
 
-#~ msgid "Split job between bonobo"
-#~ msgstr "Divise le travail entre bonobo"
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Millimeters"
+msgstr "Millimètres"
 
-#~ msgid "Render from metafile"
-#~ msgstr "Rendre depuis le métafichier"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeter"
+msgstr "Centimètre"
 
-#~ msgid "Gnome-print test page, rotated"
-#~ msgstr "Page de test Gnome-print, pivoté"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "cm"
+msgstr "cm"
 
-#~ msgid "Gnome-print test page, slanted"
-#~ msgstr "Page de teste Gnome-print, incliné"
+#: libgnomeprint/gnome-print-unit.c:43
+msgid "Centimeters"
+msgstr "Centimètres"
 
-#~ msgid "Gnome-print test page, slanted. Small"
-#~ msgstr "Page de test, incliné. Petit"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inch"
+msgstr "Pouce"
 
-#~ msgid "Meter"
-#~ msgstr "Mètre"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "in"
+msgstr "in"
 
-#~ msgid "m"
-#~ msgstr "m"
+#: libgnomeprint/gnome-print-unit.c:44
+msgid "Inches"
+msgstr "Pouces"
 
-#~ msgid "Meters"
-#~ msgstr "Mètres"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:334
+msgid "on the weekend"
+msgstr "sur le weekend"
 
-#~ msgid "meters"
-#~ msgstr "mètres"
+#: libgnomeprint/modules/cups/gnome-print-cups.c:336
+msgid "between midnight and 8 a.m."
+msgstr "entre minuit et 8h du matin"
+
+#. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
+#: libgnomeprint/modules/cups/gnome-print-cups.c:338
+msgid "between 6 p.m. and 6 a.m."
+msgstr "entre 6h du soir et 6h du matin"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:340
+msgid "between 4 p.m. and midnight"
+msgstr "entre 4h de l'après-midi et minuit"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:341
+msgid "between 6 a.m. and 6 p.m."
+msgstr "entre 6h du matin et 6h du soir"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:342
+msgid "when manually released"
+msgstr "lorsqu'il est libéré manuellement"
+
+#: libgnomeprint/modules/cups/gnome-print-cups.c:343
+msgid "immediately"
+msgstr "immédiatement"
+
+#: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
+#, c-format
+msgid "%s (via lpr)"
+msgstr ""

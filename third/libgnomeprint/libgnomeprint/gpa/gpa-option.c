@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* vim: set sw=8: -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  gpa-option.c: 
  *
@@ -35,6 +35,7 @@
 #include "gpa-key.h"
 #include "gpa-option.h"
 #include "gpa-root.h"
+#include "gnome-print-i18n.h"
 
 struct _GPAOptionClass {
 	GPANodeClass node_class;
@@ -135,6 +136,11 @@ gpa_option_duplicate (GPANode *node)
 	option = GPA_OPTION (node);
 
 	new_node = gpa_node_new (GPA_TYPE_OPTION, gpa_node_id (node));
+
+	if ((GPA_NODE_FLAGS (node) & NODE_FLAG_LOCKED) == NODE_FLAG_LOCKED) {
+		GPA_NODE_SET_FLAGS (new_node, NODE_FLAG_LOCKED);
+	}
+	
 	new = GPA_OPTION (new_node);
 	new->type = option->type;
 
@@ -229,52 +235,36 @@ gpa_option_create_key (GPAOption *option, GPANode *parent)
 	GPANode *child;
 	GPAKey *key;
 
-	key = NULL;
+	g_return_val_if_fail (option != NULL, NULL);
 
-	switch (option->type) {
-	case GPA_OPTION_TYPE_NODE:
-	case GPA_OPTION_TYPE_KEY:
-	case GPA_OPTION_TYPE_STRING:
-		key_node = gpa_node_new (GPA_TYPE_KEY, GPA_NODE_ID (option));
-		key = GPA_KEY (key_node);
-		key->option = gpa_node_ref (GPA_NODE (option));
-		if (option->value)
-			key->value = g_strdup (option->value);
-
-		child = GPA_NODE (option)->children;
-		while (child) {
-			GPANode *child_key;
-			child_key = gpa_option_create_key (GPA_OPTION (child),
-							   key_node);
-			if (child_key) {
-				gpa_node_attach (key_node, child_key);
-			}
-			child = child->next;
-		}
-		gpa_node_reverse_children (GPA_NODE (key));
-		break;
-	case GPA_OPTION_TYPE_LIST:
-		key_node = gpa_node_new (GPA_TYPE_KEY, GPA_NODE_ID (option));
-		key = GPA_KEY (key_node);
-		key->option = gpa_node_ref (GPA_NODE (option));
+	key_node = gpa_node_new (GPA_TYPE_KEY, GPA_NODE_ID (option));
+	key = (GPAKey *) key_node;
+	key->option = gpa_node_ref (GPA_NODE (option));
+	if (option->value)
 		key->value = g_strdup (option->value);
-		child = gpa_option_get_child_by_id
-			(option, option->value);
-		child = child->children;
-		while (child) {
-			GPANode *child_key;
-			child_key = gpa_option_create_key (GPA_OPTION (child),
-							   key_node);
-			if (child_key) {
-				gpa_node_attach (key_node, child_key);
-			}
-			child = child->next;
-		}
-		gpa_node_reverse_children (GPA_NODE (key));
-		break;
-	default:
-		g_assert_not_reached ();
+
+	if (option->type == GPA_OPTION_TYPE_LIST) {
+		child = gpa_option_get_child_by_id (option, option->value);
+		if (child != NULL)
+			child = child->children;
+	} else {
+		child = GPA_NODE (option)->children;
 	}
+
+	if ((GPA_NODE_FLAGS (option) & NODE_FLAG_LOCKED) == NODE_FLAG_LOCKED) {
+		GPA_NODE_SET_FLAGS (key, NODE_FLAG_LOCKED);
+	}
+
+	while (child) {
+		GPANode *child_key;
+		child_key = gpa_option_create_key (GPA_OPTION (child),
+						   key_node);
+		if (child_key) {
+			gpa_node_attach (key_node, child_key);
+		}
+		child = child->next;
+	}
+	gpa_node_reverse_children (GPA_NODE (key));
 
 	return (GPANode *) key;
 }
@@ -351,6 +341,7 @@ gpa_option_new_from_tree (xmlNodePtr tree, GPANode *parent)
 	GPANode *option = NULL;
 	xmlChar *id;
 	xmlChar *type = NULL;
+	xmlChar *locked = NULL;
 
 	g_return_val_if_fail (tree != NULL, NULL);
 
@@ -379,20 +370,32 @@ gpa_option_new_from_tree (xmlNodePtr tree, GPANode *parent)
 	
 	if (!type || !type[0]) {
 		option = gpa_option_node_new_from_tree (tree, parent, id);
-		goto new_from_tree_done;
+		goto new_from_tree_option_loaded;
 	}
 
 	if (strcmp (type, "List") == 0) {
 		option = gpa_option_list_new_from_tree (tree, parent, id);
-		goto new_from_tree_done;
+		goto new_from_tree_option_loaded;
 	}
 
 	if (strcmp (type, "String") == 0) {
 		option = gpa_option_string_new_from_tree (tree, parent, id);
-		goto new_from_tree_done;
+		goto new_from_tree_option_loaded;
 	}
 
+new_from_tree_option_loaded:
+	locked = xmlGetProp (tree, "Locked");
+	
+	if (option) {
+		if (locked && !strcmp (locked, "true")) {
+			GPA_NODE_SET_FLAGS (option, NODE_FLAG_LOCKED);
+		} else {
+			GPA_NODE_UNSET_FLAGS (option, NODE_FLAG_LOCKED);
+		}		
+	}
+	
 new_from_tree_done:
+	my_xmlFree (locked);
 	my_xmlFree (id);
 	my_xmlFree (type);
 
@@ -751,3 +754,26 @@ gpa_option_xml_check (xmlNodePtr node, const gchar* id, gint def, gint val, gint
 	return TRUE;
 }
 
+
+/**
+ * gpa_option_get_name:
+ * @node: 
+ * 
+ * Returns the translated name for the @node option
+ * 
+ * Return Value: a strduped string on success, NULL otherwise
+ **/
+gchar *
+gpa_option_get_name (GPANode *node)
+{
+	GPAOption *option;
+
+	g_return_val_if_fail (GPA_IS_OPTION (node), NULL);
+
+	option = GPA_OPTION (node);
+
+	if (option->value == NULL)
+		return NULL;
+
+	return g_strdup (_(option->value));
+}

@@ -58,6 +58,7 @@ GnomeFontFace *gnome_font_face_find_closest_from_weight_slant (const guchar *fam
 GnomeFontFace *gnome_font_face_find_closest_from_pango_font        (PangoFont *pfont);
 GnomeFontFace *gnome_font_face_find_closest_from_pango_description (const PangoFontDescription *desc);
 GnomeFontFace *gnome_font_face_find_from_family_and_style (const guchar *family, const guchar *style);
+GnomeFontFace *gnome_font_face_find_from_filename (const guchar *filename, gint index_);
 
 /*
  * Create font

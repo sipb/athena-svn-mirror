@@ -28,6 +28,7 @@
 #include <config.h>
 #include <string.h>
 #include <gmodule.h>
+#include <errno.h>
 
 #include <libgnomeprint/gnome-print-i18n.h>
 #include <libgnomeprint/gnome-print-private.h>
@@ -37,13 +38,30 @@
 #include <libgnomeprint/gnome-print-pdf.h>
 #include <libgnomeprint/gnome-print-frgba.h>
 
-/* For the buffer stuff, remove when the buffer stuff is moved out here */
-#include <sys/mman.h>
+#ifdef ENABLE_SVG
+#include <libgnomeprint/gnome-print-svg.h>
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#ifdef HAVE_MMAP
+/* For the buffer stuff, remove when the buffer stuff is moved out here */
+#include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
-/* Endif */
+
+#ifndef PROT_READ
+#define PROT_READ 0x1
+#endif
+
+#if defined(FREEBSD) || defined(__FreeBSD__)
+/* We must keep the file open while pages are mapped.  */
+/* http://www.freebsd.org/cgi/query-pr.cgi?pr=48291 */
+#define HAVE_BROKEN_MMAP
+#endif
+
+#endif /* HAVE_MMAP */
 
 static void gnome_print_context_class_init (GnomePrintContextClass *klass);
 static void gnome_print_context_init (GnomePrintContext *pc);
@@ -101,7 +119,7 @@ gnome_print_context_finalize (GObject *object)
 	pc = GNOME_PRINT_CONTEXT (object);
 
 	if (pc->transport) {
-		g_warning ("file %s: line %d: Destorying Context with open transport", __FILE__, __LINE__);
+		g_warning ("file %s: line %d: Destroying Context with open transport", __FILE__, __LINE__);
 		g_object_unref (G_OBJECT (pc->transport));
 		pc->transport = NULL;
 	}
@@ -230,6 +248,39 @@ gnome_print_showpage (GnomePrintContext *pc)
 		ret = GNOME_PRINT_CONTEXT_GET_CLASS (pc)->showpage (pc);
 
 	pc->haspage = FALSE;
+
+	return ret;
+}
+
+/**
+ * gnome_print_end_doc:
+ * @pc: A #GnomePrintContext
+ *
+ * to be called at the end of any copy of the document before the next 
+ * copy starts. It will do such things as ejecting a page in duplex printing.
+ * 
+ * 
+ * 
+ * 
+ *
+ * Returns: #GNOME_PRINT_OK or positive value on success, negative error
+ * code on failure.
+ */
+int
+gnome_print_end_doc (GnomePrintContext *pc)
+{
+	gint ret;
+
+	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), 
+			      GNOME_PRINT_ERROR_BADCONTEXT);
+	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
+	g_return_val_if_fail (!pc->haspage, GNOME_PRINT_ERROR_NOMATCH);
+
+	ret = GNOME_PRINT_OK;
+
+	if (GNOME_PRINT_CONTEXT_GET_CLASS (pc)->end_doc)
+		ret = GNOME_PRINT_CONTEXT_GET_CLASS (pc)->end_doc (pc);
 
 	return ret;
 }
@@ -408,12 +459,12 @@ gnome_print_context_close (GnomePrintContext *pc)
 
 	if (ret != GNOME_PRINT_OK) {
 		g_warning ("Could not close transport inside gnome_print_context_close");
-		return GNOME_PRINT_ERROR_UNKNOWN;
+		return ret;
 	}
 
 	if (pc->transport) {
 		g_warning ("file %s: line %d: Closing Context should clear transport", __FILE__, __LINE__);
-		return GNOME_PRINT_ERROR_UNKNOWN;
+		return ret;
 	}
 
 	return ret;
@@ -429,7 +480,7 @@ gnome_print_context_close (GnomePrintContext *pc)
  *
  * Also, if creating the context by hand, it completely ignores layout and
  * orientation value. If you need those, use GnomePrintJob. The
- * latter also can create output context for you, so in most cases
+ * later also can create output context for you, so in most cases
  * you may want to ignore gnome_print_context_new at all.
  *
  * Returns: The new GnomePrintContext or NULL on error
@@ -468,6 +519,19 @@ gnome_print_context_new (GnomePrintConfig *config)
 		return pc;
 	}
 
+#ifdef ENABLE_SVG
+	if (strcmp (drivername, "gnome-print-svg") == 0) {
+		pc = gnome_print_svg_new (config);
+		if (pc == NULL)
+			return NULL;
+		g_free (drivername);
+		return pc;
+	}
+#endif
+
+	if (pc == NULL)
+		g_warning ("Could not create context for driver: %s", drivername);
+
 	g_free (drivername);
 
 	return pc;
@@ -477,11 +541,25 @@ gnome_print_context_new (GnomePrintConfig *config)
 void
 gnome_print_buffer_munmap (GnomePrintBuffer *b)
 {
-	if (b->buf)
-		munmap (b->buf, b->buf_size);
+	if (b->buf) {
+#ifdef HAVE_MMAP
+		if (b->was_mmaped)
+			munmap (b->buf, b->buf_size);
+		else
+#endif
+			g_free (b->buf);
+	}
+
 	b->buf = NULL;
 	b->buf_size = 0;
+
+#ifdef HAVE_BROKEN_MMAP
+	if (b->fd != -1)
+		close (b->fd);
+#endif
 }
+
+#define GP_MMAP_BUFSIZ 4096
 
 gint
 gnome_print_buffer_mmap (GnomePrintBuffer *b,
@@ -492,6 +570,8 @@ gnome_print_buffer_mmap (GnomePrintBuffer *b,
 
 	b->buf = NULL;
 	b->buf_size = 0;
+	b->was_mmaped = FALSE;
+	b->fd = -1;
 
 	fh = open (file_name, O_RDONLY);
 	if (fh < 0) {
@@ -500,13 +580,53 @@ gnome_print_buffer_mmap (GnomePrintBuffer *b,
 	}
 	if (fstat (fh, &s) != 0) {
 		g_warning ("Can't stat \"%s\"", file_name);
+		close (fh);
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
 	
+#ifdef HAVE_MMAP
 	b->buf = mmap (NULL, s.st_size, PROT_READ, MAP_SHARED, fh, 0);
-	b->buf_size = s.st_size;
-	
-	close (fh);
+#endif
+
+	if ((b->buf == NULL) || (b->buf == (void *) -1)) {
+		g_warning ("Can't mmap file %s - attempting a fallback...", file_name);
+
+		b->buf = g_try_malloc (s.st_size);
+		b->buf_size = s.st_size;
+		if (b->buf != NULL) {
+			ssize_t nread, total_read;
+			
+			nread = total_read = 0;
+			
+			while (total_read < s.st_size) {
+				nread = read (fh, b->buf + total_read,
+					      MIN (GP_MMAP_BUFSIZ, s.st_size - total_read));
+				if (nread == 0) {
+					b->buf_size = total_read;
+					break; /* success */
+				} else if (nread == -1) {
+					if (errno != EINTR) {
+						g_free (b->buf);
+						b->buf = NULL;
+						b->buf_size = 0;
+						break; /* failure */
+				}
+				} else 
+					total_read += nread;
+			}
+		}
+	} else {
+		b->was_mmaped = TRUE;
+		b->buf_size = s.st_size;
+	}
+
+#ifdef HAVE_BROKEN_MMAP
+	if (b->buf != NULL)
+		b->fd = fh;
+	else
+#endif
+		close (fh);
+
 	if ((b->buf == NULL) || (b->buf == (void *) -1)) {
 		g_warning ("Can't mmap file %s", file_name);
 		return GNOME_PRINT_ERROR_UNKNOWN;

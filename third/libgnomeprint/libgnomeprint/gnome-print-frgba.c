@@ -57,6 +57,7 @@ static void gnome_print_frgba_finalize (GObject *object);
 
 static gint gpf_beginpage (GnomePrintContext * pc, const guchar * name);
 static gint gpf_showpage (GnomePrintContext * pc);
+static gint gpf_end_doc (GnomePrintContext * pc);
 
 static gint gpf_gsave (GnomePrintContext * pc);
 static gint gpf_grestore (GnomePrintContext * pc);
@@ -119,6 +120,7 @@ gnome_print_frgba_class_init (GnomePrintFRGBAClass *klass)
 	
 	pc_class->beginpage = gpf_beginpage;
 	pc_class->showpage = gpf_showpage;
+	pc_class->end_doc = gpf_end_doc;
 
 	pc_class->gsave = gpf_gsave;
 	pc_class->grestore = gpf_grestore;
@@ -206,6 +208,17 @@ gpf_grestore (GnomePrintContext * pc)
 
 	gnome_print_grestore (frgba->meta);
 	return gnome_print_grestore (frgba->ctx);
+}
+
+static gint
+gpf_end_doc (GnomePrintContext * pc)
+{
+	GnomePrintFRGBA * frgba;
+
+	frgba = GNOME_PRINT_FRGBA (pc);
+
+	gnome_print_end_doc (frgba->meta);
+	return gnome_print_end_doc (frgba->ctx);
 }
 
 static gint

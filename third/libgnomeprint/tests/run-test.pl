@@ -298,7 +298,7 @@ sub my_check_gpa
 #
 sub my_check_output
 {
-    my $max = 6;
+    my $max = 7;
     my (@tests) = (
 		   ["ps",   \&run_gs],
 		   ["meta", \&run_meta], # Always run meta before acroread because

@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+privateincludedir=${includedir}/libgnomeprint-2.2/libgnomeprint/private
+
+Name: libgnomeprint-2.2
+Description: libgnomeprint - Printing library for gtk+ based applications
+Requires: libart-2.0 glib-2.0 gmodule-2.0 gobject-2.0 libxml-2.0 pango
+Version: @VERSION@
+Libs: ${pc_top_builddir}/${pcfiledir}/libgnomeprint-2-2.la -lz
+Cflags: -I${pc_top_builddir}/${pcfiledir}/..

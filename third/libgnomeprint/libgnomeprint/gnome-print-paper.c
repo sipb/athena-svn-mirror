@@ -90,6 +90,15 @@ gnome_print_papers_load (void)
 
 /* Returned papers are const, but lists have to be freed */
 
+/**
+ * gnome_print_paper_get_default:
+ *
+ * Get a pointer to the default paper for the system.  The returned
+ * pointer should not be freed.
+ *
+ * Returns: A pointer to the default #GnomePrintPaper.
+ *
+ **/
 const GnomePrintPaper *
 gnome_print_paper_get_default (void)
 {
@@ -98,6 +107,16 @@ gnome_print_paper_get_default (void)
 	return gp_papers->data;
 }
 
+/**
+ * gnome_print_paper_get_by_name
+ * @name: The name of the paper to get
+ *
+ * Gets a pointer the paper represented by name @name, for example: "A4".
+ * The returned pointer should not be freed.
+ *
+ * Returns: A pointer to the #GnomePrintPaper, %NULL if not found.
+ *
+ **/
 const GnomePrintPaper *
 gnome_print_paper_get_by_name (const guchar *name)
 {
@@ -117,6 +136,17 @@ gnome_print_paper_get_by_name (const guchar *name)
 #define GP_CLOSE_ENOUGH(a,b) (fabs ((a) - (b)) < 0.1)
 #define GP_LESS_THAN(a,b) ((a) - (b) < 0.01)
 
+/**
+ * gnome_print_paper_get_by_size
+ * @width: The width of the paper
+ * @height: The height of the paper
+ *
+ * Gets a pointer the paper with width @width and height @height.
+ * The returned pointer should not be freed.
+ *
+ * Returns: A pointer to the #GnomePrintPaper, %NULL if not found.
+ *
+ **/
 const GnomePrintPaper *
 gnome_print_paper_get_by_size (gdouble width, gdouble height)
 {
@@ -138,6 +168,20 @@ gnome_print_paper_get_by_size (gdouble width, gdouble height)
 	return NULL;
 }
 
+/**
+ * gnome_print_paper_get_closest_by_size
+ * @width: The width of the paper
+ * @height: The height of the paper
+ * @mustfit: Should @width and @height fit within paper
+ *
+ * Gets a pointer the paper with dimensions closest to width @width and 
+ * height @height.  If @mustfit is %TRUE then @width and @height must fit
+ * within the dimensions of the returned paper.  The returned pointer 
+ * should not be freed.
+ *
+ * Returns: A pointer to the #GnomePrintPaper, %NULL if not found.
+ *
+ **/
 const GnomePrintPaper *
 gnome_print_paper_get_closest_by_size (gdouble width, gdouble height, gboolean mustfit)
 {
@@ -173,6 +217,15 @@ gnome_print_paper_get_closest_by_size (gdouble width, gdouble height, gboolean m
 	return bestpaper;
 }
 
+/**
+ * gnome_print_paper_get_list:
+ * 
+ * Get a #GList of all the papers available on the system.  The list returned
+ * must be freed with #gnome_print_paper_free_list when you are finished.
+ *
+ * Returns: A pointer to the list of papers.
+ *
+ **/
 GList *
 gnome_print_paper_get_list (void)
 {
@@ -185,6 +238,13 @@ gnome_print_paper_get_list (void)
 	return papers;
 }
 
+/**
+ * gnome_print_paper_free_list:
+ * @papers: A pointer to a #GList of papers to free
+ *
+ * Used to free the list created using #gnome_print_paper_get_list.
+ *
+ **/
 void
 gnome_print_paper_free_list (GList *papers)
 {

@@ -137,10 +137,8 @@ gpa_reference_set_value (GPANode *node, const guchar *value)
 	reference = GPA_REFERENCE (node);
 	old = reference->ref;
 
-	if (G_OBJECT_TYPE (old->parent) != GPA_TYPE_LIST) {
-		g_warning ("Can only set GPAReference values of GPALists");
-		return FALSE;
-	}
+	g_return_val_if_fail (old->parent != NULL, FALSE);
+	g_return_val_if_fail (G_OBJECT_TYPE (old->parent) == GPA_TYPE_LIST, FALSE);
 
 	new = gpa_node_lookup (old->parent, value);
 	if (!new) {
@@ -199,11 +197,15 @@ gpa_reference_set_reference (GPAReference *reference, GPANode *node)
 {
 	g_return_val_if_fail (reference != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_REFERENCE (reference), FALSE);
-	g_return_val_if_fail (!node || GPA_IS_NODE (node), FALSE);
 
 	if (reference->ref)
 		gpa_node_unref (reference->ref);
-	reference->ref = gpa_node_ref (node);
+
+	if (node) {
+		g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
+		reference->ref = gpa_node_ref (node);
+	} else
+		reference->ref = NULL;
 
 	return TRUE;
 }

@@ -27,7 +27,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include <freetype/ftglyph.h>
 #include <freetype/ftbbox.h>
 #include <libart_lgpl/art_misc.h>
@@ -108,7 +109,7 @@ struct _GRFGlyphSlot {
 #define GRF_COORD_FROM_FLOAT_LOWER(f) ((gint) floor (f * 64.0))
 #define GRF_COORD_FROM_FLOAT_UPPER(f) ((gint) ceil (f * 64.0))
 
-static inline gint gnome_rfont_get_num_glyphs (GnomeRFont *rfont);
+static gint gnome_rfont_get_num_glyphs (GnomeRFont *rfont);
 
 #define GRF_NUM_GLYPHS(f) (gnome_rfont_get_num_glyphs (f))
 #define G__RF_NUM_GLYPHS(f) ((f)->font->face->num_glyphs)
@@ -528,7 +529,7 @@ grf_ensure_slot_graymap (GnomeRFont *rfont, gint glyph)
 			g_return_val_if_fail (status == FT_Err_Ok, slot);
 			if (((FT_OutlineGlyph) bm)->outline.n_points < 3)
 				return slot;
-			status = FT_Glyph_To_Bitmap ((FT_Glyph *) &bm, ft_render_mode_normal, 0, 1);
+			status = FT_Glyph_To_Bitmap ((FT_Glyph *) &bm, ft_render_mode_normal, NULL, 1);
 			g_return_val_if_fail (status == FT_Err_Ok, slot);
 
 			slot->is_greek = TRUE;
@@ -567,7 +568,7 @@ grf_ensure_slot_graymap (GnomeRFont *rfont, gint glyph)
 		g_return_val_if_fail (status == FT_Err_Ok, slot);
 		if (((FT_OutlineGlyph) bm)->outline.n_points < 3)
 			return slot;
-		status = FT_Glyph_To_Bitmap ((FT_Glyph *) &bm, ft_render_mode_normal, 0, 1);
+		status = FT_Glyph_To_Bitmap ((FT_Glyph *) &bm, ft_render_mode_normal, NULL, 1);
 		g_return_val_if_fail (status == FT_Err_Ok, slot);
 
 		slot->bd.px = g_new0 (guchar, sw * sh);
@@ -843,7 +844,7 @@ gnome_rfont_render_glyph_rgb8 (GnomeRFont *rfont, gint glyph,
 		const ArtSVP *svp;
 		svp = gnome_rfont_get_glyph_svp (rfont, glyph);
 		if (svp) {
-			art_rgb_svp_alpha (svp, -x, -y, width - x, height - y, rgba, buf, rowstride, 0);
+			art_rgb_svp_alpha (svp, -x, -y, width - x, height - y, rgba, buf, rowstride, NULL);
 		}
 		return;
 	}
@@ -1020,7 +1021,7 @@ rfont_equal (gconstpointer key1, gconstpointer key2)
 	return art_affine_equal (f1->transform, f2->transform);
 }
 
-static inline gint
+static gint
 gnome_rfont_get_num_glyphs (GnomeRFont *rfont)
 {
 	if (!GFF_LOADED (rfont->font->face)) {
