@@ -300,10 +300,17 @@ execbrc(p, s)
 	case '[':
 		for (pe++; *pe && *pe != ']'; pe++)
 			continue;
+		if (!*pe) {
+			globerr = "Missing ]";
+			return (0);
+		}
 		continue;
 	}
 pend:
-	brclev = 0;
+	if (brclev || !*pe) {
+		globerr = "Missing }";
+		return (0);
+	}
 	for (pl = pm = p; pm <= pe; pm++)
 	switch (*pm & (QUOTE|TRIM)) {
 
@@ -337,19 +344,17 @@ doit:
 			return (1);
 		sort();
 		pl = pm + 1;
-		if (brclev)
-			return (0);
 		continue;
 
 	case '[':
 		for (pm++; *pm && *pm != ']'; pm++)
 			continue;
-		if (!*pm)
-			pm--;
+		if (!*pm) {
+			globerr = "Missing ]";
+			return (0);
+		}
 		continue;
 	}
-	if (brclev)
-		goto doit;
 	return (0);
 }
 
@@ -396,6 +401,7 @@ amatch(s, p)
 				if (cc == ']') {
 					if (ok)
 						break;
+					globerr = "Empty []";
 					return (0);
 				}
 				if (cc == '-') {
@@ -408,8 +414,10 @@ amatch(s, p)
 			if (cc == 0)
 				if (ok)
 					p--;
-				else
-					return 0;
+				else {
+					globerr = "Missing ]";
+					return (0);
+				}
 			continue;
 
 		case '*':
@@ -480,6 +488,7 @@ Gmatch(s, p)
 				if (cc == ']') {
 					if (ok)
 						break;
+					globerr = "Empty []";
 					return (0);
 				}
 				if (cc == '-') {
@@ -492,8 +501,10 @@ Gmatch(s, p)
 			if (cc == 0)
 				if (ok)
 					p--;
-				else
+				else {
+					globerr = "Missing ]";
 					return 0;
+				}
 			continue;
 
 		case '*':
