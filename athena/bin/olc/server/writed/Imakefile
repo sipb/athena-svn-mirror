@@ -1,8 +1,24 @@
 #
-# $Id: Imakefile,v 1.2 1991-04-18 22:27:15 lwvanels Exp $
+# $Id: Imakefile,v 1.3 1991-05-08 11:06:57 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/Imakefile,v $
 # Copyright (C) 1991 by the Massachusetts Institute of Technology.
 # For copying and distribution information, see the file "mit-copyright.h".
 #
 
-SimpleProgramTarget(writed)
+SRCS = writed.c
+OBJS = writed.o
+
+NormalProgramTarget(writed,$(OBJS),,,)
+SaberProgramTarget(writed,$(SRCS),$(OBJS),,)
+
+DependSrcs()
+
+LintTarget()
+
+#ifdef InstallAltLoc
+InstallProgram(writed,$(DESTDIR)/etc/athena)
+#else
+InstallProgram(writed,$(DESTDIR)/etc)
+#endif
+
+AllTarget(writed)
