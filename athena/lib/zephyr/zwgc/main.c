@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.5 1989-11-15 12:17:20 jtkohl Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.6 1989-11-15 12:23:25 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -131,13 +131,13 @@ void usage()
 #ifdef DEBUG
     fprintf(stderr, "\
 zwgc: usage: zwgc [-debug] [-f <filename>] [-subfile <filename>]\n\
-                  [-ttymode] [-nofork]\n\
+                  [-ttymode] [-nofork] [-reenter]\n\
                   [-default <driver>] {-disable <driver>}*\n\
                   [output driver options]\n");
 #else
     fprintf(stderr, "\
 zwgc: usage: zwgc [-f <filename>] [-subfile <filename>]\n\
-                  [-ttymode] [-nofork]\n\
+                  [-ttymode] [-nofork] [-reenter]\n\
                   [-default <driver>] {-disable <driver>}*\n\
                   [output driver options]\n");
 #endif
