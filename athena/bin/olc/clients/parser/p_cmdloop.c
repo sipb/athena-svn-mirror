@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.3 1990-01-17 05:41:53 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.4 1990-02-14 14:23:24 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -158,7 +158,7 @@ do_command(Command_Table, arguments)
   if(string_eq(arguments[0],"answers")&&!OLC)
     strcpy(arguments[0],"stock");
 
-  index = command_index(Command_Table, arguments[0], NULL);
+  index = command_index(Command_Table, arguments[0]);
   
   if (index == NOT_UNIQUE)
     return(FAILURE);
@@ -200,10 +200,9 @@ do_command(Command_Table, arguments)
  */
 
 ERRCODE
-command_index(Command_Table, command_name, ret)
+command_index(Command_Table, command_name)
      COMMAND Command_Table[];
      char *command_name;
-     char *ret;
 {
   int index;		      /* Index in table. */
   int matches[MAX_COMMANDS];  /* Matching commands. */
@@ -222,8 +221,6 @@ command_index(Command_Table, command_name, ret)
 		   comm_length))
 	matches[match_count++] = index;
       index++;
-      if(ret != (char *) NULL)
-	strcpy(ret, Command_Table[index].command_name);
     }
   
   if (match_count == 0)
