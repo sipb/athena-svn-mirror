@@ -135,7 +135,6 @@ INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
 LIB = @LIB@
 LIBEGG_CFLAGS = @LIBEGG_CFLAGS@
-LIBJPEG = @LIBJPEG@
 LIBNAUTILUS_CFLAGS = @LIBNAUTILUS_CFLAGS@
 LIBNAUTILUS_EXTENSION_CFLAGS = @LIBNAUTILUS_EXTENSION_CFLAGS@
 LIBNAUTILUS_EXTENSION_LIBS = @LIBNAUTILUS_EXTENSION_LIBS@
@@ -411,7 +410,7 @@ fm-directory-view.lo fm-directory-view.o : fm-directory-view.c \
 	../../libnautilus-private/nautilus-icon-factory.h \
 	../../libnautilus-private/nautilus-link.h \
 	../../libnautilus/nautilus-view.h \
-	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view-component.h fm-list-view.h \
 	fm-error-reporting.h fm-properties-window.h \
 	../../libnautilus-private/nautilus-recent.h \
 	../../cut-n-paste-code/libegg/egg-recent-model.h \
@@ -529,6 +528,7 @@ fm-list-view.lo fm-list-view.o : fm-list-view.c ../../config.h \
 	../../libnautilus-private/nautilus-module.h \
 	../../libnautilus-private/nautilus-tree-view-drag-dest.h \
 	../../libnautilus/nautilus-scroll-positionable.h \
+	../../libnautilus/nautilus-clipboard.h \
 	../../libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h
 fm-properties-window.lo fm-properties-window.o : fm-properties-window.c \
 	../../config.h fm-properties-window.h \

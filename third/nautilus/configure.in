@@ -6,7 +6,7 @@ ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=2.1.0
 BONOBO_REQUIRED=2.1.0
 BONOBO_UI_REQUIRED=2.2.0
-EEL_REQUIRED=2.8.0
+EEL_REQUIRED=2.8.2
 ESOUND_REQUIRED=0.2.27
 GLIB_REQUIRED=2.3.0
 GNOME_DESKTOP_REQUIRED=2.1.0
@@ -43,7 +43,7 @@ AC_SUBST(STARTUP_NOTIFICATION_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 2.8.0)
+AM_INIT_AUTOMAKE(nautilus, 2.8.2)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -234,26 +234,6 @@ if test "x$have_exif" = "xyes"; then
   AC_SUBST(EXIF_CFLAGS)
   AC_SUBST(EXIF_LIBS)
 fi
-
-dnl ==========================================================================
-
-dnl libjpeg
-
-  if test -z "$LIBJPEG"; then
-    AC_CHECK_LIB(jpeg, jpeg_start_decompress,
-      [AC_CHECK_HEADER(jpeglib.h,
-        jpeg_ok=yes,
-        jpeg_ok=no)],
-      AC_MSG_WARN(*** (jpeg library not found) ***), -lm)
-    if test "$jpeg_ok" = yes; then
-      JPEG='jpeg'; LIBJPEG='-ljpeg'
-      AC_DEFINE(HAVE_LIBJPEG)
-    else
-     AC_MSG_WARN(*** JPEG loader will not be built (jpeg header file not found) ***)
-    fi
-  fi
-
-AC_SUBST(LIBJPEG)
 
 dnl ==========================================================================
 

@@ -30,6 +30,7 @@
 #include <config.h>
 #include <math.h>
 #include "fm-directory-view.h"
+#include "fm-list-view.h"
 
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
@@ -99,11 +100,6 @@
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
 
-/* The list view receives files from the directory model in chunks, to
- * improve responsiveness during loading. This is the number of files
- * we add to the list or change at once.
- */
-#define FILES_TO_PROCESS_AT_ONCE 300
 #define DISPLAY_TIMEOUT_FIRST_MSECS 1000
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 10*1000
 
@@ -211,6 +207,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static GdkAtom copied_files_atom;
+static GdkAtom utf8_string_atom;
 
 static gboolean show_delete_command_auto_value;
 static gboolean confirm_trash_auto_value;
@@ -255,6 +252,11 @@ struct FMDirectoryViewDetails
 
 	GList *pending_uris_selected;
 
+	/* loading indicates whether this view has begun loading a directory.
+	 * This flag should need not be set inside subclasses. FMDirectoryView automatically
+	 * sets 'loading' to TRUE before it begins loading a directory's contents and to FALSE
+	 * after it finishes loading the directory and its view.
+	 */
 	gboolean loading;
 	gboolean menus_merged;
 	gboolean menu_states_untrustworthy;
@@ -303,11 +305,13 @@ typedef struct {
 } ActivateParameters;
 
 enum {
-	GNOME_COPIED_FILES
+	GNOME_COPIED_FILES,
+	UTF8_STRING
 };
 
 static const GtkTargetEntry clipboard_targets[] = {
 	{ "x-special/gnome-copied-files", 0, GNOME_COPIED_FILES },
+	{ "UTF8_STRING", 0, UTF8_STRING }
 };
 
 /* forward declarations */
@@ -383,6 +387,9 @@ static void     monitor_file_for_open_with                     (FMDirectoryView 
 static void     create_scripts_directory                       (void);
 static void     activate_activation_uri_ready_callback         (NautilusFile         *file,
 								gpointer              callback_data);
+static gboolean activate_check_mime_types                      (FMDirectoryView *view,
+								NautilusFile *file,
+								gboolean warn_on_mismatch);
 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
@@ -1915,20 +1922,23 @@ selection_changed_callback (NautilusView *nautilus_view,
 {
 	GList *selection;
 
-	if (view->details->loading) {
-		eel_g_list_free_deep (view->details->pending_uris_selected);
-		view->details->pending_uris_selected = NULL;
-	}
-
 	if (!view->details->loading) {
-		/* If we aren't still loading, set the selection right now. */
+		/* If we aren't still loading, set the selection right now,
+		 * and reveal the new selection.
+		 */
 		selection = file_list_from_uri_list (selection_uris);
 		view->details->selection_change_is_due_to_shell = TRUE;
 		fm_directory_view_set_selection (view, selection);
 		view->details->selection_change_is_due_to_shell = FALSE;
+		fm_directory_view_reveal_selection (view);
 		nautilus_file_list_free (selection);
 	} else {
-		/* If we are still loading, add to the list of pending URIs instead. */
+		/* If we are still loading, set the list of pending URIs instead.
+		 * done_loading() will eventually select the pending URIs and reveal them.
+		 */
+		eel_g_list_free_deep (view->details->pending_uris_selected);
+		view->details->pending_uris_selected = NULL;
+
 		view->details->pending_uris_selected =
 			g_list_concat (view->details->pending_uris_selected,
 				       eel_g_str_list_copy (selection_uris));
@@ -2304,7 +2314,7 @@ ready_to_load (NautilusFile *file)
 /* Go through all the new added and changed files.
  * Put any that are not ready to load in the non_ready_files hash table.
  * Add all the rest to the old_added_files and old_changed_files lists.
- * Sort the old_added_files list if anything is added to it.
+ * Sort the old_*_files lists if anything was added to them.
  */
 static void
 process_new_files (FMDirectoryView *view)
@@ -2379,26 +2389,16 @@ process_new_files (FMDirectoryView *view)
 		EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, sort_files,
 				   (view, &view->details->old_added_files));
 	}
-	view->details->old_changed_files = old_changed_files;
-}
 
-static GList *
-split_off_first_n (GList **list, int removed_count)
-{
-	GList *first_n_items, *nth_item;
-
-	nth_item = g_list_nth (*list, removed_count);
-	first_n_items = *list;
-
-	if (nth_item == NULL) {
-		*list = NULL;
-	} else {
-		nth_item->prev->next = NULL;
-		nth_item->prev = NULL;
-		*list = nth_item;
+	/* Resort old_changed_files too, since file attributes
+	 * relevant to sorting could have changed.
+	 */
+	if (old_changed_files != view->details->old_changed_files) {
+		view->details->old_changed_files = old_changed_files;
+		EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, sort_files,
+				   (view, &view->details->old_changed_files));
 	}
 
-	return first_n_items;
 }
 
 static void
@@ -2409,8 +2409,8 @@ process_old_files (FMDirectoryView *view)
 	GList *selection;
 	gboolean send_selection_change;
 
-	files_added = split_off_first_n (&view->details->old_added_files, FILES_TO_PROCESS_AT_ONCE);
-	files_changed = split_off_first_n (&view->details->old_changed_files, FILES_TO_PROCESS_AT_ONCE);
+	files_added = view->details->old_added_files;
+	files_changed = view->details->old_changed_files;
 	
 	send_selection_change = FALSE;
 
@@ -2441,8 +2441,11 @@ process_old_files (FMDirectoryView *view)
 			nautilus_file_list_free (selection);
 		}
 
-		nautilus_file_list_free (files_added);
-		nautilus_file_list_free (files_changed);
+		nautilus_file_list_free (view->details->old_added_files);
+		view->details->old_added_files = NULL;
+
+		nautilus_file_list_free (view->details->old_changed_files);
+		view->details->old_changed_files = NULL;
 	}
 
 	if (send_selection_change) {
@@ -2453,25 +2456,17 @@ process_old_files (FMDirectoryView *view)
 	}
 }
 
-/* Return FALSE if there is no work remaining. */
-static gboolean
+static void
 display_pending_files (FMDirectoryView *view)
 {
 	process_new_files (view);
 	process_old_files (view);
-
-	if (view->details->old_added_files != NULL
-	    || view->details->old_changed_files != NULL) {
-		return TRUE;
-	}
 
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)
 	    && g_hash_table_size (view->details->non_ready_files) == 0) {
 		done_loading (view);
 	}
-
-	return FALSE;
 }
 
 static gboolean
@@ -2547,23 +2542,19 @@ update_menus_timeout_callback (gpointer data)
 static gboolean
 display_pending_idle_callback (gpointer data)
 {
-	gboolean ret;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (data);
 
 	g_object_ref (G_OBJECT (view));
 
-	if (display_pending_files (view)) {
-		ret = TRUE;
-	} else {
-		ret = FALSE;
-		view->details->display_pending_idle_id = 0;
-	}
+	display_pending_files (view);
+
+	view->details->display_pending_idle_id = 0;
 
 	g_object_unref (G_OBJECT (view));
 
-	return ret;
+	return FALSE;
 }
 
 static void
@@ -3430,9 +3421,57 @@ start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	}
 }
 
+typedef struct {
+	FMDirectoryView *view;
+	NautilusFile *new_file;
+} RenameData;
+
+static gboolean
+delayed_rename_file_hack_callback (RenameData *data)
+{
+	FMDirectoryView *view;
+	NautilusFile *new_file;
+
+	view = data->view;
+	new_file = data->new_file;
+
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file));
+	fm_directory_view_reveal_selection (view);
+	
+	g_object_unref (data->view);
+	nautilus_file_unref (data->new_file);
+	g_free (data);
+
+	return FALSE;
+}
+
 static void
 rename_file (FMDirectoryView *view, NautilusFile *new_file)
 {
+	RenameData *data;
+
+	/* HACK!!!!
+	   This is a work around bug in listview. After the rename is
+	   enabled we will get file changes due to info about the new
+	   file being read, which will cause the model to change. When
+	   the model changes GtkTreeView clears the editing. This hack just
+	   delays editing for some time to try to avoid this problem.
+	   A major problem is that the selection of the row causes us
+	   to load the slow mimetype for the file, which leads to a
+	   file_changed. So, before we delay we select the row.
+	*/
+	if (FM_IS_LIST_VIEW (view)) {
+		fm_directory_view_select_file (view, new_file);
+		
+		data = g_new (RenameData, 1);
+		data->view = g_object_ref (view);
+		data->new_file = nautilus_file_ref (new_file);
+		g_timeout_add (100, (GSourceFunc)delayed_rename_file_hack_callback,
+			       data);
+		
+		return;
+	}
+	
 	/* no need to select because start_renaming_file selects
 	 * fm_directory_view_select_file (view, new_file);
 	 */
@@ -3849,6 +3888,8 @@ get_activation_action (NautilusFile *file)
 			action = ACTIVATION_ACTION_OPEN_IN_APPLICATION;
 		}
 	}
+	g_free (activation_uri);
+
 	return action;
 }
 
@@ -3888,9 +3929,13 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		uri = nautilus_file_get_uri (file);
 
 		other_applications_visible = !can_use_component_for_file (file);
-		
+
 		action = get_activation_action (file);
-		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION) {
+		/* Only use the default app for open if there is not
+		   a mime mismatch, otherwise we can't use it in the
+		   open with menu */
+		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION &&
+		    activate_check_mime_types (view, file, FALSE)) {
 			default_app = nautilus_mime_get_default_application_for_file (file);
 		} else {
 			default_app = NULL;
@@ -4026,7 +4071,7 @@ extension_action_slow_mime_types_ready_callback (GList *selection,
 		
 		g_object_get (l->data, "name", &name, NULL);
 		
-		if (strcmp (name, item_name)) {
+		if (strcmp (name, item_name) == 0) {
 			is_valid = TRUE;
 			g_free (name);
 			break;
@@ -4169,15 +4214,18 @@ warn_mismatched_mime_types (FMDirectoryView *view,
 
 static gboolean
 activate_check_mime_types (FMDirectoryView *view,
-			   NautilusFile *file)
+			   NautilusFile *file,
+			   gboolean warn_on_mismatch)
 {
 	char *guessed_mime_type;
 	char *mime_type;
 	gboolean ret;
 	GnomeVFSMimeApplication *default_app;
 	GnomeVFSMimeApplication *guessed_default_app;
-	
-	g_return_val_if_fail (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE), FALSE);
+
+	if (!nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE)) {
+		return FALSE;
+	}
 
 	ret = TRUE;
 
@@ -4194,7 +4242,9 @@ activate_check_mime_types (FMDirectoryView *view,
 		    guessed_default_app == NULL ||
 		    guessed_default_app->id == NULL ||
 		    strcmp (default_app->id, guessed_default_app->id) != 0) {
-			warn_mismatched_mime_types (view, file);
+			if (warn_on_mismatch) {
+				warn_mismatched_mime_types (view, file);
+			}
 			ret = FALSE;
 		}
 	}
@@ -4989,27 +5039,47 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 	return menu;
 }
 
+typedef struct {
+	GList *file_uris;
+	gboolean cut;
+} ClipboardInfo;
+
 static char *
 convert_file_list_to_string (GList *files,
+			     gboolean format_for_text,
 			     gboolean cut)
 {
 	GString *uris;
 	GList *node;
-	char *uri, *result;
+	char *uri, *tmp;
 
-	uris = g_string_new (cut ? "cut" : "copy");
+	if (format_for_text) {
+		uris = g_string_new (NULL);
+	} else {
+		uris = g_string_new (cut ? "cut" : "copy");
+	}
 	
 	for (node = files; node != NULL; node = node->next) {
-		uri = nautilus_file_get_uri (node->data);
-		g_string_append_c (uris, '\n');
-		g_string_append (uris, uri);
-		g_free (uri);
+		uri = node->data;
+		
+		if (format_for_text) {
+			tmp = eel_format_uri_for_display (uri);
+			
+			if (tmp != NULL) {
+				g_string_append (uris, tmp);
+				g_free (tmp);
+			} else {
+				g_string_append (uris, uri);
+			}
+			g_string_append_c (uris, '\n');
+			
+		} else {
+			g_string_append_c (uris, '\n');
+			g_string_append (uris, uri);
+		}
 	}
 
-	result = uris->str;
-	g_string_free (uris, FALSE);
-
-	return result;
+	return g_string_free (uris, FALSE);
 }
 
 static void
@@ -5018,20 +5088,32 @@ get_clipboard_callback (GtkClipboard     *clipboard,
 			guint             info,
 			gpointer          user_data_or_owner)
 {
-	char *str = user_data_or_owner;
+	ClipboardInfo *clipboard_info = user_data_or_owner;
+	char *str;
+
+	str = convert_file_list_to_string (clipboard_info->file_uris,
+					   info == UTF8_STRING,
+					   clipboard_info->cut);
+
 
 	gtk_selection_data_set (selection_data,
-				copied_files_atom,
+				selection_data->target,
 				8,
 				str,
 				strlen (str));
+	
+	g_free (str);
 }
 
 static void
 clear_clipboard_callback (GtkClipboard *clipboard,
 			  gpointer      user_data_or_owner)
 {
-	g_free (user_data_or_owner);
+	ClipboardInfo *info = user_data_or_owner;
+	
+	eel_g_list_free_deep (info->file_uris);
+
+	g_free (info);
 }
 
 static GtkClipboard *
@@ -5041,7 +5123,20 @@ get_clipboard (FMDirectoryView *view)
 					      GDK_SELECTION_CLIPBOARD);
 }
 
+static GList *
+convert_file_list_to_uri_list (GList *files)
+{
+	GList *tmp = NULL;
+	
+	while (files != NULL) {
+		tmp = g_list_prepend (tmp, nautilus_file_get_uri (files->data));
 
+		files = files->next;
+	}
+
+	return g_list_reverse (tmp);
+}
+	
 static void
 copy_or_cut_files (FMDirectoryView *view,
 		   gboolean cut)
@@ -5049,16 +5144,18 @@ copy_or_cut_files (FMDirectoryView *view,
 	int count;
 	char *status_string, *name;
 	GList *clipboard_contents;
-	char *clipboard_string;
+	ClipboardInfo *info;
 	
 	clipboard_contents = fm_directory_view_get_selection (view);
 
-	clipboard_string = convert_file_list_to_string (clipboard_contents, cut);
+	info = g_new0 (ClipboardInfo, 1);
+	info->file_uris = convert_file_list_to_uri_list (clipboard_contents);
+	info->cut = cut;
 	
 	gtk_clipboard_set_with_data (get_clipboard (view),
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
-				     clipboard_string);
+				     info);
 	nautilus_clipboard_monitor_emit_changed ();
 	
 	
@@ -5092,6 +5189,7 @@ copy_or_cut_files (FMDirectoryView *view,
 							 count);
 		}
 	}
+
 	nautilus_file_list_free (clipboard_contents);
 	
 	nautilus_view_report_status (view->details->nautilus_view,
@@ -5172,6 +5270,11 @@ paste_clipboard_data (FMDirectoryView *view,
 						   cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
 						   0, 0,
 						   view);
+
+		/* If items are cut then remove from clipboard */
+		if (cut) {
+			gtk_clipboard_clear (get_clipboard (view));
+		}
 	}
 }
 
@@ -5516,6 +5619,10 @@ fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 	gboolean show_hidden_changed;
 	gboolean show_hidden_default_setting;
 
+	if (view->details->ignore_hidden_file_preferences) {
+		return;
+	}
+	
 	show_hidden_changed = FALSE;
 	mode = nautilus_view_get_show_hidden_files_mode (view->details->nautilus_view);
 	
@@ -5768,6 +5875,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 			     eel_istr_has_prefix (uri, "dav:") ||
 			     eel_istr_has_prefix (uri, "davs:"))) {
 				show_connect = TRUE;
+				g_free (uri);
 			}
 		} else if (nautilus_file_is_mime_type (file,
 						       "x-directory/smb-share")) {
@@ -5928,7 +6036,11 @@ real_update_menus (FMDirectoryView *view)
 		
 		action = get_activation_action (file);
 		
-		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION) {
+		/* Only use the default app for open if there is not
+		   a mime mismatch, otherwise we can't use it in the
+		   open with menu */
+		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION &&
+		    activate_check_mime_types (view, file, FALSE)) {
 			GnomeVFSMimeApplication *app;
 
 			app = nautilus_mime_get_default_application_for_file (file);
@@ -6248,7 +6360,7 @@ void
 fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	NautilusFile *file;
-	GList *selection, *p;
+	GList *selection;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -6275,9 +6387,13 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 		/* Schedule an update of menu item states to match selection */
 		schedule_update_menus (view);
 
+		/* If there's exactly one item selected we sniff the slower attributes needed
+		 * to activate a file ahead of time to improve interactive response.
+		 */
 		selection = fm_directory_view_get_selection (view);
-		for (p = selection; p != NULL; p = p->next) {
-			file = p->data;
+
+		if (eel_g_list_exactly_one_item (selection)) {
+			file = NAUTILUS_FILE (selection->data);
 			
 			if (nautilus_file_needs_slow_mime_type (file)) {
 				nautilus_file_call_when_ready
@@ -6293,6 +6409,7 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 				 NULL, 
 				 NULL);
 		}
+
 		nautilus_file_list_free (selection);
 	}
 }
@@ -6399,7 +6516,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	if (!activate_check_mime_types (view, file)) {
+	if (!activate_check_mime_types (view, file, TRUE)) {
 		nautilus_file_unref (file);
 		g_free (parameters);
 		
@@ -6743,6 +6860,8 @@ load_directory (FMDirectoryView *view,
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
 
+	view->details->loading = TRUE;
+
 	/* Update menus when directory is empty, before going to new
 	 * location, so they won't have any false lingering knowledge
 	 * of old selection.
@@ -6808,8 +6927,6 @@ finish_loading (FMDirectoryView *view)
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);		
 	}
-	
-	view->details->loading = TRUE;
 	
 	/* Start loading. */
 
@@ -7634,4 +7751,5 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
+	utf8_string_atom = gdk_atom_intern ("UTF8_STRING", FALSE);
 }

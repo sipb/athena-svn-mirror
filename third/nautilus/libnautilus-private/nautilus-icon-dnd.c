@@ -79,6 +79,8 @@ static GtkTargetEntry drop_types [] = {
 	/* Must be last: */
 	{ NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE,  0, NAUTILUS_ICON_DND_ROOTWINDOW_DROP }
 };
+static void     stop_dnd_highlight         (GtkWidget      *widget);
+static void     dnd_highlight_queue_redraw (GtkWidget      *widget);
 
 static GtkTargetList *drop_types_list = NULL;
 static GtkTargetList *drop_types_list_root = NULL;
@@ -653,6 +655,9 @@ auto_scroll_timeout_callback (gpointer data)
 		return TRUE;
 	}
 
+	/* Clear the old dnd highlight frame */
+	dnd_highlight_queue_redraw (widget);
+	
 	if (!nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta)) {
 		/* the scroll value got pinned to a min or max adjustment value,
 		 * we ended up not scrolling
@@ -660,6 +665,9 @@ auto_scroll_timeout_callback (gpointer data)
 		return TRUE;
 	}
 
+	/* Make sure the dnd highlight frame is redrawn */
+	dnd_highlight_queue_redraw (widget);
+	
 	/* update cached drag start offsets */
 	container->details->dnd_info->drag_info.start_x -= x_scroll_delta;
 	container->details->dnd_info->drag_info.start_y -= y_scroll_delta;
@@ -1206,6 +1214,8 @@ drag_leave_callback (GtkWidget *widget,
 	
 	if (dnd_info->shadow != NULL)
 		eel_canvas_item_hide (dnd_info->shadow);
+
+	stop_dnd_highlight (widget);
 	
 	set_drop_target (NAUTILUS_ICON_CONTAINER (widget), NULL);
 	stop_auto_scroll (NAUTILUS_ICON_CONTAINER (widget));
@@ -1226,8 +1236,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	int x_offset, y_offset;
-	ArtDRect world_rect;
-	ArtIRect widget_rect;
+	double x1, y1, x2, y2, winx, winy;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -1250,14 +1259,11 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	   to it, with the hope that we get it back someday as X Windows improves */
 	
         /* compute the image's offset */
-	world_rect = nautilus_icon_canvas_item_get_icon_rectangle
-		(container->details->drag_icon->item);
-
-	canvas_rect_world_to_widget (EEL_CANVAS (container),
-				     &world_rect, &widget_rect);
-	
-        x_offset = dnd_info->drag_info.start_x - widget_rect.x0;
-        y_offset = dnd_info->drag_info.start_y - widget_rect.y0;
+	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (container->details->drag_icon->item),
+				    &x1, &y1, &x2, &y2);
+	eel_canvas_world_to_window (canvas, x1, y1,  &winx, &winy);
+        x_offset = start_x - winx;
+        y_offset = start_y - winy;
         
 	/* start the drag */
 	context = gtk_drag_begin (GTK_WIDGET (container),
@@ -1272,6 +1278,96 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 					  gtk_widget_get_colormap (GTK_WIDGET (container)),
 					  pixmap, mask,
 					  x_offset, y_offset);
+	}
+}
+
+static gboolean
+drag_highlight_expose (GtkWidget      *widget,
+		       GdkEventExpose *event,
+		       gpointer        data)
+{
+	gint x, y, width, height;
+	GdkWindow *window;
+	
+	x = gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (widget)));
+	y = gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (widget)));
+	gdk_drawable_get_size (widget->window, &width, &height);
+
+	window = GTK_LAYOUT (widget)->bin_window;
+	
+	gtk_paint_shadow (widget->style, window,
+			  GTK_STATE_NORMAL, GTK_SHADOW_OUT,
+			  NULL, widget, "dnd",
+			  x, y, width, height);
+  
+	gdk_draw_rectangle (window,
+			    widget->style->black_gc,
+			    FALSE,
+			    x, y, width - 1, height - 1);
+
+	
+	return FALSE;
+}
+
+/* Queue a redraw of the dnd highlight rect */
+static void
+dnd_highlight_queue_redraw (GtkWidget *widget)
+{
+	NautilusIconDndInfo *dnd_info;
+	int width, height;
+	
+	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
+	
+	if (!dnd_info->highlighted) {
+		return;
+	}
+
+	width = widget->allocation.width;
+	height = widget->allocation.height;
+
+	gtk_widget_queue_draw_area (widget,
+				    0, 0,
+				    width, 1);
+	gtk_widget_queue_draw_area (widget,
+				    0, 0,
+				    1, height);
+	gtk_widget_queue_draw_area (widget,
+				    0, height - 1,
+				    width, 1);
+	gtk_widget_queue_draw_area (widget,
+				    width - 1, 0,
+				    1, height);
+}
+
+static void
+start_dnd_highlight (GtkWidget *widget)
+{
+	NautilusIconDndInfo *dnd_info;
+	
+	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
+
+	if (!dnd_info->highlighted) {
+		dnd_info->highlighted = TRUE;
+		g_signal_connect_after (widget, "expose_event",
+					G_CALLBACK (drag_highlight_expose),
+					NULL);
+		gtk_widget_queue_draw (widget);
+	}
+}
+
+static void
+stop_dnd_highlight (GtkWidget *widget)
+{
+	NautilusIconDndInfo *dnd_info;
+	
+	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
+
+	if (dnd_info->highlighted) {
+		dnd_info->highlighted = FALSE;
+		g_signal_handlers_disconnect_by_func (widget,
+						      drag_highlight_expose,
+						      NULL);
+		gtk_widget_queue_draw (widget);
 	}
 }
 
@@ -1293,6 +1389,10 @@ drag_motion_callback (GtkWidget *widget,
 	action = 0;
 	nautilus_icon_container_get_drop_action (NAUTILUS_ICON_CONTAINER (widget), context, x, y,
 						 &action);
+	if (action != 0) {
+		start_dnd_highlight (widget);
+	}
+	  
 	gdk_drag_status (context, action, time);
 
 	return TRUE;
