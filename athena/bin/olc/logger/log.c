@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.6 1991-04-19 00:55:34 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.7 1991-04-23 15:13:45 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.6 1991-04-19 00:55:34 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.7 1991-04-23 15:13:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -41,24 +41,41 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 
 #endif
 
+#define DEFAULT_SERVICE_NAME "ols"
+
 static int session_id;
 static int fd;
 static int punt = 0;
 static struct sockaddr_in name;
 
 void
-log_startup(type,log_host)
+log_startup(type,log_host,port)
      char *type;
      char *log_host;
+     int port;
 {
   char buf[BUFSIZ];
   char hostnm[MAXHOSTNAMELEN];
   char *t,*p;
   struct hostent *hp, *gethostbyname();
+  struct servent *service;
   time_t now;
   fd_set readfds;
   int nfound,len;
   struct timeval timeout;
+
+  /* Find port number if not already defined */
+  if (port == 0) {
+    if ((service = getservbyname(DEFAULT_SERVICE_NAME,"tcp")) ==
+	(struct servent *) NULL) {
+      punt = 1;
+      return;
+    }
+    port = service->s_port;
+  }
+  else 
+    port = htons(port);
+    
 
   if ((fd = socket(AF_INET,SOCK_DGRAM,0)) < 0) {
     punt = 1;
@@ -72,7 +89,7 @@ log_startup(type,log_host)
   
   bcopy(hp->h_addr,&name.sin_addr,hp->h_length);
   name.sin_family = AF_INET;
-  name.sin_port = htons(2052);
+  name.sin_port = port;
   
   if (connect(fd, &name, sizeof(name))< 0) {
     punt = 1;
