@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+# rc.athstatusd -- start and stop the Athena network status daemon
+#
+# chkconfig: 2345 20 70
+# description:  the status daemon notifies clients when the system
+#		has changed states, and runs scripts to reconfigure
+#		the machine when the state changes, and reconfigure
+#		the user's environment as well.
+# processname: athstatusd
+#
+
+#
+# Source the Athena configuration.
+#
+if [ -f /etc/athena/rc.conf ]; then
+  . /etc/athena/rc.conf
+  [ true = "$DISCONNECTABLE" ] || exit 0
+fi
+
+# Source function library.
+. /etc/init.d/functions
+
+RETVAL=0
+
+start() {
+        echo -n $"Starting up Athena Status daemon: "
+	rm -f /var/tmp/athstatusd.sock
+        daemon /etc/athena/athstatusd
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/athstatusd
+        echo
+	# Now process any events that may exist
+	if [ -f /var/run/athstatusd.events ]; then
+	    sh /var/run/athstatusd.events
+	    rm -f /var/run/athstatusd.events
+	fi
+}
+
+stop() {
+        echo -n $"Shutting down Athena Status daemon: "
+        killproc athstatusd
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athstatusd
+        echo
+}
+
+dostatus() {
+        status athstatusd
+        RETVAL=$?
+}
+
+restart() {
+        stop
+        start
+        RETVAL=$?
+}
+
+condrestart() {
+        [ -e /var/lock/subsys/athstatusd ] && restart || :
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        dostatus
+        ;;
+  restart|reload)
+        restart
+        ;;
+  condrestart)
+        condrestart
+        ;;
+  *)
+        echo "Usage: rc.athstatusd {start|stop|status|restart|reload|condrestart}"
+        exit 1
+esac
+
+exit $RETVAL
