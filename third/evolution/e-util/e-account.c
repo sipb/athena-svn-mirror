@@ -302,6 +302,9 @@ xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
 				if (autogen) {
 					id->sig_uid = g_strdup ("::0");
 					changed = TRUE;
+				} else if (sig_id == -1) {
+					id->sig_uid = g_strdup ("");
+					changed = TRUE;
 				} else if (sig_id) {
 					id->sig_uid = g_strdup_printf ("::%d", sig_id + 1);
 					changed = TRUE;
