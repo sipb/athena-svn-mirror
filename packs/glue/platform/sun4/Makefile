@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1997-04-02 22:22:46 ghudson Exp $
+# $Id: Makefile,v 1.9 1997-04-24 22:19:23 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -7,7 +7,7 @@ USRLIBDIR=/usr/lib
 all: cc f77
 
 cc:
-	path=`athdir -c -p /mit/sunsoft -t bin`/cc; \
+	path=`athdir -c -p /mit/sunsoft -t bin`/suncc; \
 		sed -e 's|@LOCKER@|sunsoft|g' -e "s|@PATH@|$$path|g" \
 		-e 's|@PROGRAM@|cc|g' ../../template.sh > $@
 
