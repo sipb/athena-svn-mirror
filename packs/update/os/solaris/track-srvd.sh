@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: track-srvd.sh,v 1.1 2001-08-16 14:46:53 ghudson Exp $
+# $Id: track-srvd.sh,v 1.2 2001-09-16 17:26:08 ghudson Exp $
 
 # track-srvd: Track the srvd on a Solaris machine, deciding between
 # the regular subscription list (sys_rvd) and the list for machines
@@ -24,5 +24,5 @@ if [ "$part" = / -a "$kbytes" -ge 2831155 ]; then
   fi
 fi
 
-/srvd/usr/athena/etc/track -T "${UPDATE_ROOT-/}" -W /srvd/usr/athena/lib \
+/srvd/usr/athena/etc/track -q -T "${UPDATE_ROOT-/}" -W /srvd/usr/athena/lib \
   -s stats/sys_rvd$big slists/sys_rvd$big
