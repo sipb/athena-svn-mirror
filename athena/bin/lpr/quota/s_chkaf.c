@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.7 1990-11-14 17:33:17 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.8 1990-11-15 13:54:59 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.7 1990-11-14 17:33:17 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.8 1990-11-15 13:54:59 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -44,6 +44,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lp
 #define WAKEUP		180		/* Interval for checking acct. file */
 #define CACHEFILE	"/usr/spool/printer/klpd.cache"
 #define CACHEFILENEW	"/usr/spool/printer/klpd.cache.new"
+#define CACHEDIR	"/usr/spool/printer"
 
 int init();
 int wakeup();
@@ -127,6 +128,10 @@ char *argv[];
 	exit(1);
     }
     
+    if(access(CACHEDIR, R_OK)) {
+	syslog(LOG_ERR, "s_chkaf: Cannot access %s - exiting\n", CACHEDIR);
+	exit(1);
+    }
 
 #ifndef NOFORK
     else {
