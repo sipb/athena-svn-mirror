@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lert/lert.1,v $
-.\"	$Author: cfields $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lert/lert.1,v 1.1 1995-01-27 01:20:07 cfields Exp $
+.\"	$Author: ghudson $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lert/lert.1,v 1.1.2.1 1997-05-24 21:35:18 ghudson Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/mit-copyright.h
@@ -19,6 +19,8 @@ lert \- display account deactivation messages
 .BI -m[ail]
 ] [
 .BI -n[o]
+] [
+.BI -q[uiet]
 ]
 .SH DESCRIPTION
 .I lert
@@ -45,6 +47,9 @@ send each message to you as an email message.
 .B \-n[o]
 acknowledge the current set of messages.  The current set of messages
 is shown one last time and you are not shown these messages again.  
+.TP
+.B \-q[uiet]
+fail silently if an error occurs while contacting the server.
 .SH EXAMPLE
 .TP
 .B lert | lpr
