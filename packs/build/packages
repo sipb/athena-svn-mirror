@@ -1,4 +1,4 @@
-# $Id: packages,v 1.21 1997-03-25 09:16:08 ghudson Exp $
+# $Id: packages,v 1.22 1997-06-29 00:46:54 cfields Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -46,7 +46,6 @@ third/appletalk			sun4
 athena/lib/AL
 athena/lib/acl
 athena/lib/gdb
-athena/lib/gdss
 athena/lib/zephyr
 athena/lib/neos
 athena/etc/track
@@ -79,7 +78,6 @@ athena/bin/dent
 athena/bin/attach
 athena/bin/dash
 athena/bin/xmore
-athena/bin/cal
 athena/bin/xdsc
 athena/bin/rkinit
 athena/bin/xversion
