@@ -29,6 +29,9 @@
 #include "gnome-vfs-private.h"
 
 
+
+#define VFS_MAXIMUM_SYMBOLIC_LINK_DEPTH 256
+
 struct GnomeVFSDirectoryHandle {
 	/* URI of the directory being accessed through the handle.  */
 	GnomeVFSURI *uri;
@@ -45,7 +48,7 @@ struct GnomeVFSDirectoryHandle {
 
 #define CHECK_IF_SUPPORTED(vfs_method, what)		\
 G_STMT_START{						\
-	if (vfs_method->what == NULL)			\
+	if (!VFS_METHOD_HAS_FUNC(vfs_method, what))			\
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;	\
 }G_STMT_END
 
@@ -302,10 +305,15 @@ remove_first_reference (GList *reference_list)
 
 static gboolean
 lookup_ancestor (GList *ancestors,
+		 gboolean inode_and_device_are_valid,
 		 ino_t inode,
 		 dev_t device)
 {
 	GList *p;
+
+	if (!inode_and_device_are_valid) {
+		return g_list_length (ancestors) >= VFS_MAXIMUM_SYMBOLIC_LINK_DEPTH;
+	}
 
 	for (p = ancestors; p != NULL; p = p->next) {
 		DirectoryReference *reference;
@@ -390,6 +398,8 @@ directory_visit_internal (GnomeVFSURI *uri,
 		    && (visit_options & GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK))
 			recursing_will_loop
 				= lookup_ancestor (ancestor_references,
+						   (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_DEVICE) &&
+						   (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_INODE),
 						   info->inode, info->device);
 		else
 			recursing_will_loop = FALSE;
@@ -609,3 +619,66 @@ gnome_vfs_directory_visit_files (const gchar *text_uri,
 
 	return result;
 }
+
+static GnomeVFSResult
+load_from_handle (GList **list,
+		  GnomeVFSDirectoryHandle *handle)
+{
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *info;
+
+	*list = NULL;
+
+	for (;;) {
+		info = gnome_vfs_file_info_new ();
+		result = gnome_vfs_directory_read_next (handle, info);
+		if (result != GNOME_VFS_OK)
+			break;
+		*list = g_list_prepend (*list, info);
+	}
+
+	*list = g_list_reverse (*list);
+	
+	gnome_vfs_file_info_unref (info);
+
+	if (result != GNOME_VFS_ERROR_EOF) {
+		gnome_vfs_file_info_list_free (*list);
+		*list = NULL;
+	}
+
+	return GNOME_VFS_OK;
+}
+
+/**
+ * gnome_vfs_directory_list_load:
+ * @list: An address of a pointer to a list
+ * @text_uri: A text URI
+ * @options: Options for loading the directory 
+ * @filter: Filter to be applied to the files being read
+ * 
+ * Load a directory from @text_uri with the specified @options
+ * into a list.  Directory entries are filtered through
+ * @filter.
+ * 
+ * Return value: An integer representing the result of the operation.
+ **/
+GnomeVFSResult 
+gnome_vfs_directory_list_load (GList **list,
+			       const gchar *text_uri,
+			       GnomeVFSFileInfoOptions options,
+			       const GnomeVFSDirectoryFilter *filter)
+{
+	GnomeVFSDirectoryHandle *handle;
+	GnomeVFSResult result;
+
+	result = gnome_vfs_directory_open (&handle, text_uri, options, filter);
+	if (result != GNOME_VFS_OK) {
+		return result;
+	}
+
+	result = load_from_handle (list, handle);
+
+	gnome_vfs_directory_close (handle);
+	return result;
+}
+

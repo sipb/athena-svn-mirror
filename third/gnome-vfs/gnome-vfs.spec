@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define name     gnome-vfs
-%define ver      0.5
+%define ver      1.0
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
@@ -84,7 +84,6 @@ fi
 %config %{sysconfdir}/vfs/modules/*.conf
 %dir %{prefix}/share/application-registry
 %{prefix}/bin/gnome-vfs-slave
-%{prefix}/bin/nautilus-mime-type-capplet
 %{prefix}/lib/*.0
 %{prefix}/lib/*.sh
 %{prefix}/lib/*.so
@@ -93,8 +92,6 @@ fi
 %{prefix}/lib/vfs/modules/*.so
 %{prefix}/man/man5/*.5*
 %{prefix}/share/application-registry/gnome-vfs.applications
-%{prefix}/share/control-center/*.desktop
-%{prefix}/share/gnome/apps/Settings/*.desktop
 %{prefix}/share/gnome/html/*.txt
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/mime-info/*.keys
@@ -108,3 +105,4 @@ fi
 %{prefix}/lib/*.la
 %{prefix}/lib/vfs/modules/*.a
 %{prefix}/lib/vfs/modules/*.la
+%{prefix}/bin/gnome-vfs-config

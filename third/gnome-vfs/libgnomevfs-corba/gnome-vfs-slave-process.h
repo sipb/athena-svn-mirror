@@ -23,16 +23,13 @@
 #ifndef _GNOME_VFS_SLAVE_PROCESS_H
 #define _GNOME_VFS_SLAVE_PROCESS_H
 
-
 typedef struct _GnomeVFSSlaveProcess GnomeVFSSlaveProcess;
 
-
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
 
 #include "gnome-vfs-slave-notify.h"
 
-
 struct _GnomeVFSAsyncFileOpInfo {
 	gpointer buffer;
 	GnomeVFSFileSize buffer_size;
@@ -42,7 +39,7 @@ typedef struct _GnomeVFSAsyncFileOpInfo GnomeVFSAsyncFileOpInfo;
 struct _GnomeVFSAsyncDirectoryOpInfo {
 	gchar **meta_keys;
 	guint num_meta_keys;
-	GnomeVFSDirectoryList *list;
+	GList *list;
 };
 typedef struct _GnomeVFSAsyncDirectoryOpInfo GnomeVFSAsyncDirectoryOpInfo;
 
@@ -94,7 +91,6 @@ struct _GnomeVFSSlaveProcess {
 	GnomeVFSContext *context;
 };
 
-
 GnomeVFSSlaveProcess *gnome_vfs_slave_process_new (void);
 void gnome_vfs_slave_process_destroy (GnomeVFSSlaveProcess *slave);
 gboolean gnome_vfs_slave_process_busy (GnomeVFSSlaveProcess *slave);

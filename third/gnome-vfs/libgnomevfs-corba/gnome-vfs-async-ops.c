@@ -452,8 +452,6 @@ GnomeVFSResult
 corba_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 				      const gchar *uri,
 				      GnomeVFSFileInfoOptions options,
-				      GnomeVFSDirectorySortRule sort_rules[],
-				      gboolean reverse_order,
 				      GnomeVFSDirectoryFilterType filter_type,
 				      GnomeVFSDirectoryFilterOptions filter_options,
 				      const gchar *filter_pattern,
@@ -464,8 +462,6 @@ GnomeVFSResult
 corba_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 				      const gchar *uri,
 				      GnomeVFSFileInfoOptions options,
-				      GnomeVFSDirectorySortRule sort_rules[],
-				      gboolean reverse_order,
 				      GnomeVFSDirectoryFilterType filter_type,
 				      GnomeVFSDirectoryFilterOptions filter_options,
 				      const gchar *filter_pattern,
@@ -474,9 +470,7 @@ corba_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 				      gpointer callback_data)
 {
 	GNOME_VFS_Slave_DirectoryFilter my_filter;
-	GNOME_VFS_Slave_DirectorySortRuleList my_sort_rules;
 	GnomeVFSSlaveProcess *slave;
-	guint num_sort_rules;
 	GnomeVFSAsyncDirectoryOpInfo *op_info;
 
 	g_return_val_if_fail (handle_return != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
@@ -486,9 +480,6 @@ corba_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 	slave = gnome_vfs_slave_process_new ();
 	if (slave == NULL)
 		return GNOME_VFS_ERROR_INTERNAL;
-
-	COUNT_ELEMENTS (num_sort_rules, sort_rules,
-			GNOME_VFS_DIRECTORY_SORT_NONE);
 
 	/* Initialize slave for directory operation.  */
 
@@ -508,10 +499,6 @@ corba_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 	else
 		my_filter.pattern = (char *)filter_pattern;
 
-	my_sort_rules._length = my_sort_rules._maximum = num_sort_rules;
-	my_sort_rules._buffer = (GNOME_VFS_Slave_DirectorySortRule *)sort_rules;
-	CORBA_sequence_set_release (&my_sort_rules, FALSE);
-
 	/* Here we go...  */
 
 	slave->operation_in_progress = GNOME_VFS_ASYNC_OP_LOAD_DIRECTORY;
@@ -520,8 +507,6 @@ corba_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 						uri,
 						options,
 						&my_filter,
-						&my_sort_rules,
-						reverse_order,
 						items_per_notification,
 						&slave->ev);
 
@@ -539,8 +524,6 @@ GnomeVFSResult
 corba_gnome_vfs_async_load_directory_uri (GnomeVFSAsyncHandle **handle_return,
 					  GnomeVFSURI *uri,
 					  GnomeVFSFileInfoOptions options,
-					  GnomeVFSDirectorySortRule sort_rules[],
-					  gboolean reverse_order,
 					  GnomeVFSDirectoryFilterType filter_type,
 					  GnomeVFSDirectoryFilterOptions filter_options,
 					  const gchar *filter_pattern,
@@ -551,8 +534,6 @@ GnomeVFSResult
 corba_gnome_vfs_async_load_directory_uri (GnomeVFSAsyncHandle **handle_return,
 					  GnomeVFSURI *uri,
 					  GnomeVFSFileInfoOptions options,
-					  GnomeVFSDirectorySortRule sort_rules[],
-					  gboolean reverse_order,
 					  GnomeVFSDirectoryFilterType filter_type,
 					  GnomeVFSDirectoryFilterOptions filter_options,
 					  const gchar *filter_pattern,
@@ -566,7 +547,7 @@ corba_gnome_vfs_async_load_directory_uri (GnomeVFSAsyncHandle **handle_return,
 	str_uri = gnome_vfs_uri_to_string(uri, 0);
 
 	retval = corba_gnome_vfs_async_load_directory(handle_return, str_uri, options,
-						      sort_rules, reverse_order, filter_type,
+						      filter_type,
 						      filter_options,
 						      filter_pattern,
 						      items_per_notification,

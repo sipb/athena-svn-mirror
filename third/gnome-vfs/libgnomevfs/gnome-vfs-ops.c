@@ -28,7 +28,6 @@
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
 
-
 /**
  * gnome_vfs_open:
  * @handle: A pointer to a pointer to a GnomeVFSHandle object
@@ -248,7 +247,6 @@ gnome_vfs_tell (GnomeVFSHandle *handle,
 	return gnome_vfs_handle_do_tell (handle, offset_return);
 }
 
-
 /**
  * gnome_vfs_get_file_info:
  * @text_uri: URI of the file for which information will be retrieved
@@ -403,7 +401,6 @@ gnome_vfs_make_directory (const gchar *text_uri,
 	return result;
 }
 
-
 /**
  * gnome_vfs_remove_directory_from_uri:
  * @uri: URI of the directory to be removed
@@ -445,7 +442,6 @@ gnome_vfs_remove_directory (const gchar *text_uri)
 	return result;
 }
 
-
 /**
  * gnome_vfs_unlink_from_uri:
  * @uri: URI of the file to be unlinked
@@ -503,7 +499,6 @@ gnome_vfs_unlink (const gchar *text_uri)
 	return result;
 }
 
-
 /**
  * gnome_vfs_move_uri:
  * @old_uri: Source URI
@@ -564,7 +559,6 @@ gnome_vfs_move (const gchar *old_text_uri,
 	return retval;
 }
 
-
 /**
  * gnome_vfs_check_same_fs_uris:
  * @a: A URI
@@ -688,11 +682,12 @@ gnome_vfs_set_file_info (const gchar *text_uri,
 gboolean
 gnome_vfs_uri_exists (GnomeVFSURI *uri)
 {
-	GnomeVFSFileInfo info;
+	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
 
-	gnome_vfs_file_info_init (&info);
-	result = gnome_vfs_get_file_info_uri (uri, &info, GNOME_VFS_FILE_INFO_DEFAULT);
-	gnome_vfs_file_info_clear (&info);
+	info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info_uri (uri, info, GNOME_VFS_FILE_INFO_DEFAULT);
+	gnome_vfs_file_info_unref (info);
+
 	return result == GNOME_VFS_OK;
 }

@@ -1,6 +1,6 @@
 AC_INIT(libgnomevfs/gnome-vfs.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-vfs, 0.5)
+AM_INIT_AUTOMAKE(gnome-vfs, 1.0)
 AM_ACLOCAL_INCLUDE(macros)
 
 AM_MAINTAINER_MODE
@@ -11,6 +11,83 @@ AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_AWK
 AM_PROG_LIBTOOL
+
+
+dnl ==========================================================================
+dnl
+dnl If you add a version number here, you *must* either use it with
+dnl EAZEL_VERSION_INSIST or add an AC_SUBST line for it, or it will
+dnl never make it into the spec file!
+dnl
+dnl ==========================================================================
+
+GLIB_REQUIRED=1.2.4
+GCONF_REQUIRED=0.9
+OAF_REQUIRED=0.3.0
+
+AC_SUBST(GLIB_REQUIRED)
+AC_SUBST(GCONF_REQUIRED)
+
+dnl ===========================================================================
+
+dnl EAZEL_VERSION_CANON(version)
+dnl                     1
+
+AC_DEFUN(EAZEL_VERSION_CANON, [`
+
+	dnl Assumes that there are no more than 999 revisions at a level,
+	dnl no more than three levels of revision.
+	dnl
+	dnl Any more than that, and test starts messing up the numeric
+	dnl comparisons because its integers overflow, and there's no
+	dnl way to do string comparisons in the shell.  Grr.
+	dnl
+	dnl Must come up with some way to fix this.
+
+	echo "$1" |
+	tr . '\012' |
+	sed -e 's/^/000/' -e 's/^.*\(...\)/\1/' |
+	tr -d '\012' |
+	sed 's/$/000000000/
+	     s/^\(.........\).*/\1/'
+`])
+
+dnl EAZEL_VERSION_INSIST(package, get-version-cmd, operator, want-version-var)
+dnl                      1        2                3         4
+
+AC_DEFUN(EAZEL_VERSION_INSIST, [
+	ez_want_version=[$]$4
+
+	case "$3" in
+		">")	ez_operator=-gt ;;
+		">=")	ez_operator=-ge ;;
+		"<")	ez_operator=-lt ;;
+		"<=")	ez_operator=-le ;;
+		"=")	ez_operator=-eq ;;
+		"!=")	ez_operator=-ne ;;
+		*)	AC_ERROR(Unknown operator $3 in configure script) ;;
+	esac
+
+	AC_MSG_CHECKING(for $1 $3 [$ez_want_version])
+
+	if ez_installed_version="`$2`"
+	then
+		AC_MSG_RESULT([$ez_installed_version])
+	else
+		AC_ERROR($2 failed)
+	fi
+
+	if test "EAZEL_VERSION_CANON([$ez_installed_version])" "$ez_operator" \
+		"EAZEL_VERSION_CANON([$ez_want_version])"
+	then
+		:
+		AC_SUBST($4)
+	else
+		AC_ERROR($1 version [$ez_want_version] is required.)
+	fi
+])
+
+dnl ===========================================================================
 
 dnl ====================================
 dnl =
@@ -97,7 +174,7 @@ AC_ARG_WITH(default-backend,
 	      [  --with-default-backend=(corba|pthread)		    ],
 	      default_backend="$withval")
 
-AM_PATH_GLIB(1.2.0,,
+AM_PATH_GLIB($GLIB_REQUIRED,,
   AC_MSG_ERROR([
 *** GLIB 1.2.0 or better is required. The latest version of GLIB
 *** is always available from ftp://ftp.gtk.org/.]),
@@ -122,7 +199,7 @@ dnl Don't blindly #define them if they're typedef'ed in <sys/types.h>
 AM_GNOME_SIZE_T
 AM_GNOME_OFF_T
 
-ALL_LINGUAS="ca da de el fi fr ga gl hu it ja ko lt nl no pl pt_BR ru sk sl sv tr uk"
+ALL_LINGUAS="az ca da de el es fi fr ga gl hu it ja ko lt nl nn no pl pt_BR ro ru sk sl sv tr uk wa"
 AM_GNOME_GETTEXT
 
 AC_FUNC_ALLOCA
@@ -227,19 +304,11 @@ if test x$OAF_CONFIG = xno; then
 	OAF_LIBS=""
 	OAF_CFLAGS=""
 else
-	AC_MSG_CHECKING(for Oaf >= 0.3.0)
-	vers=`$OAF_CONFIG --version | \
-		awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
-	if test "$vers" -ge 3; then
-		using_oaf=yes
-	        OAF_LIBS=`$OAF_CONFIG --libs`
-        	OAF_CFLAGS=`$OAF_CONFIG --cflags`
-		AC_MSG_RESULT(found)
-		AC_DEFINE(USING_OAF)
-	else
-		AC_MSG_RESULT(not found)	
-		AC_MSG_ERROR(Please upgrade the oaf and oaf-devel packages)
-	fi
+	EAZEL_VERSION_INSIST(oaf, $OAF_CONFIG --version, >=, OAF_REQUIRED)
+	using_oaf=yes
+	AC_DEFINE(USING_OAF)
+	OAF_LIBS=`$OAF_CONFIG --libs`
+	OAF_CFLAGS=`$OAF_CONFIG --cflags`
 fi
 AM_CONDITIONAL(USING_OAF, test x"$using_oaf" = "xyes")
 AC_SUBST(OAF_LIBS)
@@ -284,16 +353,6 @@ AC_SUBST(VFS_LIBDIR)
 AC_SUBST(VFS_INCLUDEDIR)
 AC_SUBST(VFS_LIBS)
 
-dnl
-dnl Flags needed to build the mime-type capplet
-dnl
-CAPPLET_LIBDIR='-L${libdir}'
-CAPPLET_INCLUDEDIR='-I${includedir} -I${libdir}/vfs/include'
-CAPPLET_INCLUDEDIR="$CAPPLET_INCLUDEDIR $VFS_CAPPLET_CFLAGS"
-CAPPLET_LIBS="$VFS_CAPPLET_LIBS"
-AC_SUBST(CAPPLET_LIBDIR)
-AC_SUBST(CAPPLET_INCLUDEDIR)
-AC_SUBST(CAPPLET_LIBS)
 
 dnl
 dnl gnome-xml libraries - for WebDAV support in modules/http-method.c
@@ -312,7 +371,7 @@ dnl
 dnl gconf
 dnl
 
-AM_PATH_GCONF(0.9.0,,,gconf gconf-gtk)
+AM_PATH_GCONF($GCONF_REQUIRED,,,gconf gconf-gtk)
 AC_SUBST(GCONF_LIBS)
 AC_SUBST(GCONF_CFLAGS)
 AC_SUBST(GTK_LIBS)
@@ -432,7 +491,6 @@ modules/extfs/lha
 modules/extfs/rar
 modules/extfs/zip
 modules/extfs/zoo
-mime-type-capplet/Makefile
 man/Makefile
 man/gnome-vfs-mime.5
 devel-docs/Makefile
@@ -442,6 +500,7 @@ po/Makefile.in
 test/Makefile
 test/gnome-file-selection/Makefile
 test/vfs-run
+macros/Makefile
 ])
 
 chmod u+x test/vfs-run

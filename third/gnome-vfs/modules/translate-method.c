@@ -35,9 +35,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 
+#include "gnome-vfs-types.h"
+#include "gnome-vfs-method.h"
 #include "gnome-vfs-mime.h"
 #include "gnome-vfs-module.h"
+#include "gnome-vfs-private-utils.h"
 
 typedef struct {
 	enum {
@@ -1131,6 +1135,7 @@ static gboolean tr_args_parse(ParsedArgs * pa, const char *args)
 }
 
 static GnomeVFSMethod base_vfs_method = {
+	sizeof (GnomeVFSMethod),
 	tr_do_open,
 	tr_do_create,
 	tr_do_close,
@@ -1197,7 +1202,7 @@ GnomeVFSMethod *vfs_module_init(const char *method_name, const char *args)
 
 	retval->base_method = base_vfs_method;
  
-#define CHECK_NULL_METHOD(x) if(!retval->real_method->x) retval->base_method.x = NULL
+#define CHECK_NULL_METHOD(x) if(!VFS_METHOD_HAS_FUNC (retval->real_method, x)) retval->base_method.x = NULL
 	CHECK_NULL_METHOD(open);
 	CHECK_NULL_METHOD(create);
 	CHECK_NULL_METHOD(close);
@@ -1227,7 +1232,7 @@ GnomeVFSMethod *vfs_module_init(const char *method_name, const char *args)
 	return (GnomeVFSMethod *) retval;
 }
 
-void vfs_module_shutdown(GnomeVFSMethod * method)
+void vfs_module_shutdown (GnomeVFSMethod * method)
 {
 	TranslateMethod *tmethod = (TranslateMethod *) method;
 

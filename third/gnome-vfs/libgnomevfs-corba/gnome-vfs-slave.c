@@ -591,12 +591,13 @@ setup_and_serve_channel (GnomeVFSHandle *handle,
 	struct sockaddr caller_addr;
 	int caller_addr_size;
 	guint size;
-	gint socket_fd, fd;
+	gint socket_fd, fd, temp_file_fd;
 	gchar socket_name[] = "/tmp/gnome-vfs-XXXXXX";
 
 	socket_fd = -1;
 
-	if (mktemp (socket_name) == NULL) {
+	temp_file_fd = mkstemp (socket_name);
+	if (temp_file_fd == -1) {
 		g_warning (_("Cannot create temporary file name `%s'"),
 			   gnome_vfs_result_to_string(gnome_vfs_result_from_errno()));
 		result = GNOME_VFS_ERROR_INTERNAL;
@@ -649,6 +650,7 @@ setup_and_serve_channel (GnomeVFSHandle *handle,
 						socket_name, ev);
 	if (ev->_major != CORBA_NO_EXCEPTION) {
 		unlink (socket_name);
+		close (temp_file_fd);
 		close (socket_fd);
 		return;
 	}
@@ -674,6 +676,7 @@ setup_and_serve_channel (GnomeVFSHandle *handle,
 	DPRINTF (("Closing file descriptors.\n"));
 
 	gnome_vfs_close (handle);
+	close (temp_file_fd);
 	close (fd);
 	close (socket_fd);
 
@@ -682,6 +685,9 @@ setup_and_serve_channel (GnomeVFSHandle *handle,
 	return;
 
 error:
+	if (temp_file_fd != -1)
+		close (temp_file_fd);
+
 	if (socket_fd != -1)
 		close (socket_fd);
 	unlink (socket_name);
@@ -797,11 +803,11 @@ copy_file_info (GNOME_VFS_Slave_FileInfo *dest,
 }
 
 static void
-load_directory_not_sorted (const gchar *uri,
-			   GnomeVFSFileInfoOptions options,
-			   GnomeVFSDirectoryFilter *filter,
-			   GNOME_VFS_Slave_FileInfoList *list_buffer,
-			   CORBA_Environment *ev)
+load_directory (const gchar *uri,
+	        GnomeVFSFileInfoOptions options,
+	        GnomeVFSDirectoryFilter *filter,
+	        GNOME_VFS_Slave_FileInfoList *list_buffer,
+	        CORBA_Environment *ev)
 {
 	GnomeVFSDirectoryHandle *handle;
 	GnomeVFSResult result;
@@ -862,80 +868,6 @@ load_directory_not_sorted (const gchar *uri,
 }
 
 static void
-load_directory_sorted (const gchar *uri,
-		       GnomeVFSFileInfoOptions options,
-		       GnomeVFSDirectoryFilter *filter,
-		       const GnomeVFSDirectorySortRule *rules,
-		       gboolean reverse_order,
-		       GNOME_VFS_Slave_FileInfoList *list_buffer,
-		       CORBA_Environment *ev)
-{
-	GnomeVFSDirectoryList *list;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *info;
-	gboolean stopped;
-
-	list_buffer->_length = 0;
-
-	result = gnome_vfs_directory_list_load (&list,
-						uri,
-						options,
-						filter);
-
-	if (result != GNOME_VFS_OK) {
-		GNOME_VFS_Slave_Notify_load_directory (notify_objref, result,
-						       list_buffer, ev);
-		return;
-	}
-
-	stopped = FALSE;
-	long_operation_started ();
-
-	gnome_vfs_directory_list_sort (list, reverse_order, rules);
-
-	info = gnome_vfs_directory_list_first (list);
-	while (info != NULL) {
-		GNOME_VFS_Slave_FileInfo *i;
-
-		if (check_stop ()) {
-			stopped = TRUE;
-			break;
-		}
-
-		i = list_buffer->_buffer + list_buffer->_length;
-		copy_file_info (i, info);
-		list_buffer->_length++;
-
-		info = gnome_vfs_directory_list_next (list);
-		DPRINTF (("***SLAVE*** Notifying `%s'\n",
-			  i->name));
-		if (info == NULL) {
-			GNOME_VFS_Slave_Notify_load_directory
-				(notify_objref, GNOME_VFS_ERROR_EOF,
-				 list_buffer, ev);
-		} else if (list_buffer->_length == list_buffer->_maximum) {
-			GNOME_VFS_Slave_Notify_load_directory
-				(notify_objref, GNOME_VFS_OK, list_buffer, ev);
-			list_buffer->_length = 0;
-		}
-
-#if 0
-		if (ev->_major != CORBA_NO_EXCEPTION) {
-			/*  printf ("***SLAVE*** error sending notification.\n"); */
-			fflush (stdout);
-		}
-#endif
-	}
-
-	long_operation_finished ();
-
-	if (stopped)
-		GNOME_VFS_Slave_Notify_stop (notify_objref, ev);
-
-	gnome_vfs_directory_list_destroy (list);
-}
-
-static void
 impl_Request_get_file_info (PortableServer_Servant servant,
 			    const GNOME_VFS_Slave_URIList *uris,
 			    const GNOME_VFS_Slave_FileInfoOptions info_options,
@@ -985,15 +917,11 @@ impl_Request_load_directory (PortableServer_Servant servant,
 			     const CORBA_char *uri,
 			     const GNOME_VFS_Slave_FileInfoOptions info_options,
 			     const GNOME_VFS_Slave_DirectoryFilter *filter,
-			     const GNOME_VFS_Slave_DirectorySortRuleList *sort_rules,
-			     const CORBA_boolean reverse_order,
 			     const CORBA_unsigned_long items_per_notification,
 			     CORBA_Environment *ev)
 {
 	GnomeVFSDirectoryFilter *my_filter;
-	GnomeVFSDirectorySortRule *my_sort_rules;
 	GNOME_VFS_Slave_FileInfoList *list_buffer;
-	guint i;
 
 	my_filter = gnome_vfs_directory_filter_new (filter->type,
 						    filter->options,
@@ -1001,18 +929,7 @@ impl_Request_load_directory (PortableServer_Servant servant,
 
 	list_buffer = allocate_info_list (items_per_notification);
 
-	if (sort_rules->_length == 0) {
-		load_directory_not_sorted (uri, info_options,
-					   my_filter, list_buffer, ev);
-	} else {
-		my_sort_rules = alloca (sizeof (gchar *) * sort_rules->_length);
-		for (i = 0; i < sort_rules->_length; i++)
-			my_sort_rules[i] = sort_rules->_buffer[i];
-
-		load_directory_sorted (uri, info_options,
-				       my_filter, my_sort_rules, reverse_order,
-				       list_buffer, ev);
-	}
+	load_directory (uri, info_options, my_filter, list_buffer, ev);
 
 	CORBA_free (list_buffer);
 

@@ -100,6 +100,7 @@ static GnomeVFSResult do_get_file_info  (GnomeVFSMethod *method,
 static gboolean do_is_local (GnomeVFSMethod *method, const GnomeVFSURI *uri);
 
 static GnomeVFSMethod method = {
+	sizeof (GnomeVFSMethod),
 	do_open,
 	do_create,
 	do_close,

@@ -92,19 +92,20 @@ type_to_string (GnomeVFSFileType type)
 }
 
 static void
-print_list (GnomeVFSDirectoryList *list)
+print_list (GList *list)
 {
 	GnomeVFSFileInfo *info;
+	GList *node;
 
-	info = gnome_vfs_directory_list_first (list);
-
-	if (info == NULL) {
+	if (list == NULL) {
 		printf ("  (No files)\n");
 		return;
 	}
 
-	while (info != NULL) {
+	for (node = list; node != NULL; node = node->next) {
 		const gchar *mime_type;
+	
+		info = node->data;
 
 		mime_type = gnome_vfs_file_info_get_mime_type (info);
 		if (mime_type == NULL)
@@ -119,75 +120,13 @@ print_list (GnomeVFSDirectoryList *list)
 			mime_type,
 			(glong) info->size,
 			info->permissions);
-
-		info = gnome_vfs_directory_list_next (list);
 	}
 }
 
-static void
-sort_list (GnomeVFSDirectoryList *list)
-{
-	GnomeVFSDirectorySortRule rules[] = {
-		GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST,
-		GNOME_VFS_DIRECTORY_SORT_BYNAME,
-		GNOME_VFS_DIRECTORY_SORT_NONE
-	};
-	GTimer *timer;
-		
-	printf ("Now sorting...");
-	fflush (stdout);
-
-	if (measure_speed) {
-		timer = g_timer_new ();
-		g_timer_start (timer);
-	} else {
-		timer = NULL;
-	}
-
-	gnome_vfs_directory_list_sort (list, FALSE, rules);
-
-	if (measure_speed) {
-		gdouble elapsed_seconds;
-		guint num_entries;
-
-		g_timer_stop (timer);
-		elapsed_seconds = g_timer_elapsed (timer, NULL);
-		num_entries = gnome_vfs_directory_list_get_num_entries (list);
-		printf ("\n%.5f seconds to sort %d entries, %.5f entries/sec.\n",
-			elapsed_seconds, num_entries,
-			(double) num_entries / elapsed_seconds);
-	} else {
-		printf ("  Done!\n");
-	}
-}
-
-#if 0
-static void
-filter_list (GnomeVFSDirectoryList *list,
-	     const gchar *pattern)
-{
-	GnomeVFSDirectoryFilter *filter;
-
-	printf ("Filtering with `%s'...", pattern);
-	fflush (stdout);
-
-	filter = gnome_vfs_directory_filter_new
-		(GNOME_VFS_DIRECTORY_FILTER_SHELLPATTERN,
-		 GNOME_VFS_DIRECTORY_FILTER_NODOTFILES,
-		 pattern);
-
-	gnome_vfs_directory_list_filter (list, filter);
-	gnome_vfs_directory_filter_destroy (filter);
-
-	printf ("  Done!\n");
-}
-#endif
-
-
 int
 main (int argc, char **argv)
 {
-	GnomeVFSDirectoryList *list;
+	GList *list;
 	GnomeVFSResult result;
 	GTimer *timer;
 	const char **args;
@@ -236,30 +175,23 @@ main (int argc, char **argv)
 
 		g_timer_stop (timer);
 		elapsed_seconds = g_timer_elapsed (timer, NULL);
-		num_entries = gnome_vfs_directory_list_get_num_entries (list);
+		num_entries = g_list_length (list);
 		printf ("\n%.5f seconds for %d unsorted entries, %.5f entries/sec.\n",
 			elapsed_seconds, num_entries,
 			(double) num_entries / elapsed_seconds);
 	}
 
-	if (! measure_speed) {
+	if (!measure_speed) {
 		printf ("Ok\n");
 
 		show_result (result, "load_directory", text_uri);
 
-		printf ("Raw listing for `%s':\n", text_uri);
-		print_list (list);
-	}
-
-	sort_list (list);
-
-	if (! measure_speed) {
-		printf ("Sorted listing for `%s':\n", text_uri);
+		printf ("Listing for `%s':\n", text_uri);
 		print_list (list);
 	}
 
 	printf ("Destroying.\n");
-	gnome_vfs_directory_list_destroy (list);
+	gnome_vfs_file_info_list_free (list);
 
 	printf ("Done.\n");
 

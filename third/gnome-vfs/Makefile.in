@@ -61,9 +61,6 @@ host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
 AWK = @AWK@
-CAPPLET_INCLUDEDIR = @CAPPLET_INCLUDEDIR@
-CAPPLET_LIBDIR = @CAPPLET_LIBDIR@
-CAPPLET_LIBS = @CAPPLET_LIBS@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
@@ -75,10 +72,12 @@ ENABLE_PROFILER = @ENABLE_PROFILER@
 GCONF_CFLAGS = @GCONF_CFLAGS@
 GCONF_CONFIG = @GCONF_CONFIG@
 GCONF_LIBS = @GCONF_LIBS@
+GCONF_REQUIRED = @GCONF_REQUIRED@
 GENCAT = @GENCAT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
+GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -160,6 +159,7 @@ XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
@@ -170,12 +170,12 @@ need_gnome_support = @need_gnome_support@
 @USING_OAF_TRUE@SUBDIRS_OAF = libgnomevfs-corba
 @USING_OAF_FALSE@SUBDIRS_OAF = 
 @PLATFORM_GNOME_2_TRUE@SUBDIRS_GNOME = 
-@PLATFORM_GNOME_2_FALSE@SUBDIRS_GNOME = test mime-type-capplet
+@PLATFORM_GNOME_2_FALSE@SUBDIRS_GNOME = test
 
-SUBDIRS =  	libgnomevfs					libgnomevfs-pthread				$(SUBDIRS_OAF)					idl						modules						data						man						devel-docs					$(SUBDIRS_GNOME)				po
+SUBDIRS =  	libgnomevfs					libgnomevfs-pthread				$(SUBDIRS_OAF)					idl						modules						data						man						devel-docs					$(SUBDIRS_GNOME)				po						macros
 
 
-EXTRA_DIST =  	HACKING						TODO						autogen.sh					gnome-vfs.spec					vfsConf.sh.in					vfscorbaConf.sh.in				vfspthreadConf.sh.in				xml-i18n-extract				xml-i18n-merge					xml-i18n-update					gnome-vfs-config.in
+EXTRA_DIST =  	HACKING						TODO						autogen.sh					gnome-vfs.spec					vfsConf.sh.in					vfscorbaConf.sh.in				vfspthreadConf.sh.in				xml-i18n-extract.in				xml-i18n-merge.in				xml-i18n-update.in				gnome-vfs-config.in
 
 
 bin_SCRIPTS = $(top_builddir)/gnome-vfs-config
@@ -203,7 +203,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DIST_SUBDIRS =  libgnomevfs libgnomevfs-pthread libgnomevfs-corba idl \
-modules data man devel-docs test mime-type-capplet po
+modules data man devel-docs test po macros
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 

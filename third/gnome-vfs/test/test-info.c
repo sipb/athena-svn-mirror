@@ -21,7 +21,7 @@
 
    Author: Ettore Perazzoli <ettore@comm2000.it> */
 
-
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -30,7 +30,6 @@
 
 #include "gnome-vfs.h"
 
-
 static const gchar *
 type_to_string (GnomeVFSFileType type)
 {
@@ -121,12 +120,11 @@ print_file_info (const GnomeVFSFileInfo *info)
 #undef FLAG_STRING
 }
 
-
-int
+int
 main (int argc,
       char **argv)
 {
-	GnomeVFSFileInfo info;
+	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
 	gchar *uri;
 	int i=1;
@@ -136,21 +134,21 @@ main (int argc,
 		return 1;
 	}
 
-	if (! gnome_vfs_init ()) {
+	if (!gnome_vfs_init ()) {
 		fprintf (stderr, "%s: Cannot initialize the GNOME Virtual File System.\n",
 			 argv[0]);
 		return 1;
 	}
 
-	while(i < argc) {
+	while (i < argc) {
 
 		uri = argv[i];
 
 		g_print("Getting info for \"%s\".\n", uri);
 
-		gnome_vfs_file_info_init (&info);
+		info = gnome_vfs_file_info_new ();
 		result = gnome_vfs_get_file_info (uri, 
-						  &info,
+						  info,
 						  (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 						   | GNOME_VFS_FILE_INFO_FOLLOW_LINKS));
 		if (result != GNOME_VFS_OK) {
@@ -160,9 +158,9 @@ main (int argc,
 			return result;
 		}
 
-		print_file_info (&info);
+		print_file_info (info);
 
-		gnome_vfs_file_info_clear (&info);
+		gnome_vfs_file_info_unref (info);
 
 		i++;
 	}

@@ -35,12 +35,19 @@ typedef enum {
 	GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
 } GnomeVFSMimeActionType;
 
+typedef enum {
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS,
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS,
+	GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES
+} GnomeVFSMimeApplicationArgumentType;
+
 typedef struct {
 	char *id;
 	char *name;
 	char *command;
 	gboolean can_open_multiple_files;
-	gboolean can_open_uris;
+	GnomeVFSMimeApplicationArgumentType expects_uris;
+	GList *supported_uri_schemes;
 	gboolean requires_terminal;
 } GnomeVFSMimeApplication;
 
@@ -68,10 +75,14 @@ GnomeVFSResult           gnome_vfs_mime_set_default_application            (cons
 									    const char              *application_id);
 GnomeVFSResult           gnome_vfs_mime_set_default_component              (const char              *mime_type,
 									    const char              *component_iid);
+
 const char  		*gnome_vfs_mime_get_icon 			   (const char 		    *mime_type);
 GnomeVFSResult  	 gnome_vfs_mime_set_icon 			   (const char 		    *mime_type,
 									    const char		    *filename);
 const char 	        *gnome_vfs_mime_get_description   		   (const char              *mime_type);
+GnomeVFSResult		 gnome_vfs_mime_set_description			   (const char		    *mime_type,
+									    const char		    *description);
+
 gboolean 	         gnome_vfs_mime_can_be_executable   		   (const char              *mime_type);
 GnomeVFSResult	 	 gnome_vfs_mime_set_can_be_executable   	   (const char              *mime_type,
 									    gboolean		     new_value);

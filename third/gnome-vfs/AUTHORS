@@ -1,8 +1,9 @@
 Main VFS engine:
-	Ettore Perazzoli <ettore@helixcode.com>
+	Ettore Perazzoli <ettore@ximian.com>
 
 VFS engine contributors:
 	Elliot Lee <sopwith@redhat.com>
+	Miguel de Icaza  <miguel@nuclecu.unam.mx>
 	Maciej Stachowiak <mjs@eazel.com>
 	Darin Adler <darin@eazel.com>
 	John Sullivan <sullivan@eazel.com>
@@ -11,19 +12,19 @@ VFS engine contributors:
 	Rebecca Schulman <rebecka@eazel.com>
 	Seth Nickel <seth@eazel.com>
 	Ian McKellar <yakk@yakk.net.au>
-	Michael Meeks <michael@helixcode.com>
-	Dan Winship  <danw@helixcode.com>
+	Michael Meeks <michael@ximian.com>
+	Dan Winship  <danw@ximian.com>
 	Mathieu Lacage  <mathieu@eazel.com>
 
 "file" method: 
-	Ettore Perazzoli <ettore@helixcode.com>
+	Ettore Perazzoli <ettore@ximian.com>
 	Pavel Cisler <pavel@eazel.com>
 
 "gzip", "extfs" methods:
-	Ettore Perazzoli <ettore@helixcode.com>
+	Ettore Perazzoli <ettore@ximian.com>
 
 "http" methods:
-	Ettore Perazzoli <ettore@helixcode.com>
+	Ettore Perazzoli <ettore@ximian.com>
 	Mike Fleming <mfleming@eazel.com.com>
 	
 "ftp" method:
@@ -47,12 +48,14 @@ MIME API and the MIME capplet:
 	Pavel Cisler <pavel@eazel.com>
 	Maciej Stachowiak <mjs@eazel.com>
 	Gene Ragan <gzr@eazel.com>
+	Rebecca Schulman  <rebecka@eazel.com>
+	Aaron Brick <aaron@eazel.com>
 
 Misc changes:
 	J Shane Culpepper  <pepper@eazel.com>
 	Ali Abdin  <aliabdin@aucegypt.edu>
 	Seth Nickell  <seth@eazel.com>
-	Chris Toshok  <toshok@helixcode.com>
+	Chris Toshok  <toshok@ximian.com>
 	Glynn Foster  <glynn.foster@sun.com>
 	Martin Baulig  <baulig@suse.de>
 	Jarkko Ranta  <jjranta@cc.joensuu.fi>
@@ -61,3 +64,11 @@ Misc changes:
 	Kjartan Maraas  <kmaraas@gnome.org>
 	Christophe Merlet  <christophe@merlet.net>
 	Ramiro Estrugo  <ramiro@eazel.com>
+	Don Melton  <don@eazel.com>
+	Robin * Slomkowski  <rslomkow@rslomkow.org>
+	Robey Pointer  <robey@eazel.com>
+	Rolf Grossmann <grossman@securitas.net>
+	Kenneth Christiansen  <kenneth@gnu.org>
+	Lutz Müller <urc8@rz.uni-karlsruhe.de>
+	Matt Bissiri  <matt@bissiri.org>
+	Yukihiro Nakai  <nakai@gnome.gr.jp>

@@ -24,24 +24,29 @@
 #define GNOME_VFS_ASYNC_JOB_MAP_H
 
 #include "gnome-vfs.h"
+#include "gnome-vfs-job.h"
+
 
 /* async job map calls */
-void	     	 gnome_vfs_async_job_map_shutdown	  (void);
-gboolean     	 gnome_vfs_async_job_completed 	  	  (GnomeVFSAsyncHandle		*handle);
-void 		 gnome_vfs_async_job_map_add_job  	  (GnomeVFSJob			*job);
-void 		 gnome_vfs_async_job_map_remove_job  	  (GnomeVFSJob			*job);
-GnomeVFSJob	*gnome_vfs_async_job_map_get_job	  (const GnomeVFSAsyncHandle	*handle);
+void		 gnome_vfs_async_job_map_init		  	(void);
+void	     	 gnome_vfs_async_job_map_shutdown	  	(void);
+gboolean     	 gnome_vfs_async_job_completed 	  	  	(GnomeVFSAsyncHandle		*handle);
+void 		 gnome_vfs_async_job_map_add_job  	  	(GnomeVFSJob			*job);
+void 		 gnome_vfs_async_job_map_remove_job  	  	(GnomeVFSJob			*job);
+GnomeVFSJob	*gnome_vfs_async_job_map_get_job	  	(const GnomeVFSAsyncHandle	*handle);
 
-void		 gnome_vfs_async_job_map_assert_locked	  (void);
-void		 gnome_vfs_async_job_map_lock	  	  (void);
-void		 gnome_vfs_async_job_map_unlock	  	  (void);
+void		 gnome_vfs_async_job_map_assert_locked	  	(void);
+void		 gnome_vfs_async_job_map_lock	  	  	(void);
+void		 gnome_vfs_async_job_map_unlock	  	  	(void);
 
 /* async job callback map calls */
-void		 gnome_vfs_async_job_callback_valid	  (guint			 callback_id,
-							   gboolean			*valid,
-							   gboolean			*cancelled);
-void		 gnome_vfs_async_job_add_callback	  (GnomeVFSNotifyResult		*notify_result);
-void		 gnome_vfs_async_job_remove_callback	  (guint			 callback_id);
-void		 gnome_vfs_async_job_cancel_callbacks	  (GnomeVFSAsyncHandle		*job_handle);
+void		 gnome_vfs_async_job_callback_valid		(guint				 callback_id,
+								 gboolean			*valid,
+								 gboolean			*cancelled);
+gboolean	 gnome_vfs_async_job_add_callback		(GnomeVFSJob			*job,
+							  	 GnomeVFSNotifyResult		*notify_result);
+void		 gnome_vfs_async_job_remove_callback		(guint			 	 callback_id);
+void		 gnome_vfs_async_job_cancel_job_and_callbacks	(GnomeVFSAsyncHandle		*job_handle,
+								 GnomeVFSJob 			*job);
 
 #endif

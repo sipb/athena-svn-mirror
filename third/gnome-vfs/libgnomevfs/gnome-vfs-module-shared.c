@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "gnome-vfs-types.h"
 #include "gnome-vfs-module.h"
 #include "gnome-vfs-module-shared.h"
 

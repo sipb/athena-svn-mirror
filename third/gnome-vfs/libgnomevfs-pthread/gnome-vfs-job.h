@@ -28,8 +28,10 @@
 
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
+#include <semaphore.h>
 
 typedef struct GnomeVFSJob GnomeVFSJob;
+
 
 #define GNOME_VFS_JOB_DEBUG 0
 
@@ -72,6 +74,7 @@ enum GnomeVFSOpType {
 	GNOME_VFS_OP_CLOSE,
 	GNOME_VFS_OP_READ,
 	GNOME_VFS_OP_WRITE,
+	GNOME_VFS_OP_READ_WRITE_DONE,
 	GNOME_VFS_OP_LOAD_DIRECTORY,
 	GNOME_VFS_OP_FIND_DIRECTORY,
 	GNOME_VFS_OP_XFER,
@@ -187,7 +190,7 @@ typedef struct {
 
 typedef struct {
 	GnomeVFSURI *uri;
-	GnomeVFSFileInfo info;
+	GnomeVFSFileInfo *info;
 	GnomeVFSSetFileInfoMask mask;
 	GnomeVFSFileInfoOptions options;
 } GnomeVFSSetFileInfoOp;
@@ -197,7 +200,7 @@ typedef struct {
 	void *callback_data;
 	GnomeVFSResult set_file_info_result;
 	GnomeVFSResult get_file_info_result;
-	GnomeVFSFileInfo info;
+	GnomeVFSFileInfo *info;
 } GnomeVFSSetFileInfoOpResult;
 
 typedef struct {
@@ -217,8 +220,6 @@ typedef struct {
 typedef struct {
 	GnomeVFSURI *uri;
 	GnomeVFSFileInfoOptions options;
-	GnomeVFSDirectorySortRule *sort_rules;
-	gboolean reverse_order;
 	GnomeVFSDirectoryFilterType filter_type;
 	GnomeVFSDirectoryFilterOptions filter_options;
 	gchar *filter_pattern;
@@ -226,15 +227,10 @@ typedef struct {
 } GnomeVFSLoadDirectoryOp;
 
 typedef struct {
-	GnomeVFSDirectoryList *list;
-	int ref_count;
-} GnomeVFSSharedDirectoryList;
-
-typedef struct {
 	GnomeVFSAsyncDirectoryLoadCallback callback;
 	void *callback_data;
 	GnomeVFSResult result;
-	GnomeVFSSharedDirectoryList *list;
+	GList *list;
 	guint entries_read;
 } GnomeVFSLoadDirectoryOpResult;
 
@@ -331,15 +327,13 @@ struct GnomeVFSJob {
 	gboolean failed;
 	
 	/* Global lock for accessing data.  */
-	GMutex *access_lock;
+	sem_t access_lock;
 
 	/* This condition is signalled when the master thread gets a
            notification and wants to acknowledge it.  */
 	GCond *notify_ack_condition;
 
-	/* Mutex associated with `notify_ack_condition'.  We cannot just use
-           `access_lock', because we want to keep the lock in the slave thread
-           until the job is really finished.  */
+	/* Mutex associated with `notify_ack_condition'.  */
 	GMutex *notify_ack_lock;
 
 	/* Operations that are being done and those that are completed and
@@ -361,7 +355,7 @@ void         	 gnome_vfs_job_set	  	  (GnomeVFSJob     	*job,
 				      		   gpointer        	 callback_data);
 void         	 gnome_vfs_job_go       	  (GnomeVFSJob     	*job);
 void     	 gnome_vfs_job_execute  	  (GnomeVFSJob     	*job);
-void         	 gnome_vfs_job_cancel   	  (GnomeVFSJob	 	*job);
+void         	 gnome_vfs_job_module_cancel   	  (GnomeVFSJob	 	*job);
 int          	 gnome_vfs_job_get_count 	  (void);
 
 gboolean	 gnome_vfs_job_complete		  (GnomeVFSJob 		*job);

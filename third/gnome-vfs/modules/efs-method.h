@@ -20,8 +20,8 @@
 
    Author: Rajit Singh <endah@dircon.co.uk> */
 
-#ifndef _FILE_H
-#define _FILE_H
+#ifndef _EFS_METHOD_H
+#define _EFS_MEHTOD_H
 
 #include "gnome-vfs.h"
 #include <efs.h>

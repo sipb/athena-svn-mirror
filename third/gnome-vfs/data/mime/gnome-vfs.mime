@@ -32,9 +32,6 @@
 application/andrew-inset
 	ext: ez
 
-application/mspowerpoint
-	ext: ppt
-
 application/msword
 	ext: doc
 
@@ -53,11 +50,20 @@ application/pgp
 application/postscript
 	ext: ps eps
 
+application/qif
+	ext: qif
+
 application/rtf
 	ext: rtf
 
+application/vnd.lotus-1-2-3
+	ext: 123 wk1 wk3 wk4 wks
+
 application/vnd.ms-excel
-	ext: xls
+	ext: xls xla xlt xlc xld
+
+application/vnd.ms-powerpoint
+	ext: ppt
 
 application/x-applix-spreadsheet
 	ext: as
@@ -108,6 +114,9 @@ application/x-cpio-compressed
 application/x-deb
 	ext: deb
 
+application/x-dia-diagram
+	ext: dia
+
 application/x-dvi
 	ext: dvi
 
@@ -135,8 +144,14 @@ application/x-font-ttf
 application/x-font-type1
 	ext: pfa pfb
 
+application/x-glade
+	ext: glade
+
 application/x-gnome-app-info
 	ext: desktop
+
+application/x-gnucash
+	ext: gnucash gnc xac
 
 application/x-gnumeric
 	ext: gnumeric
@@ -153,8 +168,23 @@ application/x-hdf
 application/x-java-byte-code
 	ext: class
 
+application/x-jbuilder-project
+	ext: jpr jpx
+
 application/x-kde-app-info
 	ext: kdelnk
+
+application/x-killustrator
+	ext: kil
+
+application/x-kpresenter
+	ext: kpr
+
+application/x-kspread
+	ext: ksp
+
+application/x-kword
+	ext: kwd
 
 application/x-lha
 	ext: lha
@@ -174,11 +204,23 @@ application/x-object-file
 application/x-ogg
 	ext: ogg
 
+application/x-oleo
+	ext: oleo
+
 application/x-php
 	ext: php php3 php4
 
 application/x-profile
 	regex: gmon\.out$
+
+application/x-qw
+	ext: qif
+
+application/x-rar
+	ext: rar
+
+application/x-rar-compressed
+	ext: rar
 
 application/x-reject
 	ext: rej
@@ -194,6 +236,9 @@ application/x-shared-library
 
 application/x-shared-library-la
 	ext: la
+
+application/x-shockwave-flash
+	ext: swf
 
 application/x-smil
 	ext: smil smi sml
@@ -233,13 +278,17 @@ application/x-ustar
 application/x-wais-source
 	ext: src
 
+application/x-xbase
+	ext: dbf
+
 application/x-zoo
 	ext: zoo
 
 application/zip
 	ext: zip
 
-
+audio/ac3
+	ext: ac3
 
 audio/basic
 	ext: snd
@@ -287,6 +336,8 @@ audio/x-xm
 	ext: xm XM
 
 
+image/bmp
+	ext: bmp
 
 image/cgm
 	ext: cgm
@@ -329,7 +380,7 @@ image/x-cmu-raster
 
 image/x-compressed-xcf
 	regex,2: \.xcf\.gz$
-	regex.2: \.xcf\.bz2$
+	regex,2: \.xcf\.bz2$
 
 image/x-ico
 	ext: ico
@@ -367,6 +418,9 @@ image/x-rgb
 image/x-tga
 	ext: tga
 
+image/x-wmf
+	ext: wmf
+
 image/x-xbitmap
 	ext: xbm
 
@@ -393,6 +447,8 @@ model/vrml
 	ext: wrl
 
 
+text/abiword
+	ext: abw
 
 text/bib
 	ext: bib
@@ -414,6 +470,9 @@ text/richtext
 
 text/sgml
 	ext: sgml sgm
+
+text/spreadsheet
+	ext: sylk slk
 
 text/tab-separated-values
 	ext: tsv
@@ -526,10 +585,8 @@ text/x-vcard
 text/xml
 	ext: xml
 
-
-
 video/mpeg
-	ext: mp2 mpe mpeg mpg
+	ext: mp2 mpe mpeg mpg vob dat
 
 video/quicktime
 	ext: mov qt
@@ -542,6 +599,9 @@ video/x-flc
 
 video/x-fli
 	ext: fli
+
+video/x-ms-asf
+	ext: asf asx
 
 video/x-msvideo
 	ext: avi

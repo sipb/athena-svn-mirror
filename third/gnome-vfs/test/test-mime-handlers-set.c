@@ -159,7 +159,7 @@ main (int argc, char **argv)
 		app.name = g_list_nth (stuff, 1)->data;
 		app.command = g_list_nth (stuff, 2)->data;
 		app.can_open_multiple_files = str_to_bool (g_list_nth (stuff, 3)->data);
-		app.can_open_uris = str_to_bool (g_list_nth (stuff, 4)->data);
+		app.expects_uris = str_to_bool (g_list_nth (stuff, 4)->data);
 		app.requires_terminal = str_to_bool (g_list_nth (stuff, 5)->data);
 		
 		gnome_vfs_application_registry_save_mime_application (&app);

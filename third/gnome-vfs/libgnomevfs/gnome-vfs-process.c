@@ -84,15 +84,16 @@ foreach_pid_func (gpointer key,
 	if (waitpid (pid, &status, WNOHANG) == pid) {
 		write (wake_up_channel_out_fd, &process, sizeof (process));
 		write (wake_up_channel_out_fd, &status, sizeof (status));
-		*found = 1;
+		*found = TRUE;
 	}
 }
 
 static void
 sigchld_handler (int signum)
 {
-	gboolean found;
+	gboolean found = FALSE;
 
+	found = FALSE;
 	g_hash_table_foreach (pid_to_process, foreach_pid_func, &found);
 
 	if (! found && old_sigchld_action.sa_handler != NULL)

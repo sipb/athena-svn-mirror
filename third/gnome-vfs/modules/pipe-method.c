@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "gnome-vfs-mime.h"
+#include "gnome-vfs-method.h"
 #include "gnome-vfs-module.h"
 #include "gnome-vfs-module-shared.h"
 #include "gnome-vfs-utils.h"
@@ -223,6 +224,7 @@ is_local(GnomeVFSMethod *method,
 }
 
 static GnomeVFSMethod method = {
+	sizeof (GnomeVFSMethod),
 	do_open,
 	NULL, /* create */
 	do_close,

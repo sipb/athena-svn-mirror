@@ -573,7 +573,7 @@ impl_Notify_load_directory (PortableServer_Servant servant,
 {
 	GnomeVFSSlaveProcess *slave;
 	GnomeVFSAsyncDirectoryOpInfo *op_info;
-	GnomeVFSDirectoryList *list;
+	GList *list;
 	GnomeVFSAsyncDirectoryLoadCallback callback;
 	guint i;
 
@@ -586,15 +586,6 @@ impl_Notify_load_directory (PortableServer_Servant servant,
 
 	op_info = &slave->op_info.directory;
 	list = op_info->list;
-
-	if (list == NULL) {
-		if (files->_length > 0) {
-			op_info->list = gnome_vfs_directory_list_new ();
-			list = op_info->list;
-		}
-	} else {
-		gnome_vfs_directory_list_last (list);
-	}
 
 	for (i = 0; i < files->_length; i++) {
 		GNOME_VFS_Slave_FileInfo *slave_info;
@@ -622,17 +613,14 @@ impl_Notify_load_directory (PortableServer_Servant servant,
 			info->symlink_name
 				= g_strdup (slave_info->symlink_name);
 
-		gnome_vfs_directory_list_append (list, info);
+		list = g_list_prepend (list, info);
 	}
+
+	list = g_list_reverse (list);
 
 	if (result != GNOME_VFS_OK) {
 		slave->operation_in_progress = GNOME_VFS_ASYNC_OP_NONE;
 	}
-
-	/* Make sure we have set a current position on the list.  */
-	if (list != NULL
-	    && gnome_vfs_directory_list_get_position (list) == NULL)
-		gnome_vfs_directory_list_first (list);
 
 	callback = (GnomeVFSAsyncDirectoryLoadCallback) slave->callback;
 	(* callback) ((GnomeVFSAsyncHandle *) slave, result,

@@ -71,11 +71,11 @@ main (int argc, char **argv)
 		printf ("Error: get_value failed on \"short_list_component_iids_for_intermediate_user_level\".\n");
 		exit (1);
 	}
-	value = gnome_vfs_mime_get_value ("x-directory/normal", "short_list_component_iids_for_hacker_user_level");
+	value = gnome_vfs_mime_get_value ("x-directory/normal", "short_list_component_iids_for_advanced_user_level");
 	if (value == NULL || strcmp (value, "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,"
 		    "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,"
 		    "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391") != 0) {
-		printf ("Error: get_value failed on \"short_list_component_iids_for_hacker_user_level\".\n");
+		printf ("Error: get_value failed on \"short_list_component_iids_for_advanced_user_level\".\n");
 		exit (1);
 	}
 	value = gnome_vfs_mime_get_description ("application/mime-type-test");
@@ -99,6 +99,7 @@ main (int argc, char **argv)
 		for (temp = list, extension = extensions; temp != NULL; temp = temp->next, extension++) {
 			if (strcmp (*extension, (char *)temp->data) != 0) {
 				printf ("Error: get_extensions_list failed on \"application/postscript\".\n");
+				printf ("Wrong value received was %s instead of %s\n", (char *) temp->data, *extension);
 				exit (1);
 			}
 		}

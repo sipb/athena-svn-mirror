@@ -48,7 +48,7 @@ G_STMT_START{					\
 
 #define CHECK_IF_SUPPORTED(handle, what)		\
 G_STMT_START{						\
-	if (handle->uri->method->what == NULL)		\
+	if (!VFS_METHOD_HAS_FUNC(handle->uri->method, what))		\
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;	\
 }G_STMT_END
 
@@ -85,7 +85,7 @@ gnome_vfs_handle_new (GnomeVFSURI *uri,
 	new->open_mode = open_mode;
 
 	if ((open_mode & GNOME_VFS_OPEN_RANDOM) &&
-	    uri->method->seek == NULL) {
+	    !VFS_METHOD_HAS_FUNC (uri->method, seek)) {
 		GnomeVFSMethodHandle *handle;
 		handle = gnome_vfs_seek_emulate (new->uri, method_handle,
 						 open_mode);

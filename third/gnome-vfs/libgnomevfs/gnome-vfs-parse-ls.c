@@ -478,8 +478,8 @@ gnome_vfs_parse_ls_lga (const gchar *p,
 	gint idx, idx2, num_cols;
 	gint i;
 	gint nlink;
-	gchar *p_copy;
-    
+	gchar *p_copy, *p_pristine;
+
 	if (strncmp (p, "total", 5) == 0)
 		return 0;
 
@@ -513,6 +513,7 @@ gnome_vfs_parse_ls_lga (const gchar *p,
 
 	g_free (p_copy);
 	p_copy = g_strdup (p);
+	p_pristine = g_strdup (p);
 	num_cols = vfs_split_text (p_copy, columns, column_ptr);
 
 	nlink = atol (columns [0]);
@@ -631,21 +632,18 @@ gnome_vfs_parse_ls_lga (const gchar *p,
 			 */
 			gint p;
 			gchar *s;
-	    
-			s = g_strdup (p_copy + column_ptr [idx++]);
-			p = strlen (s);
-			/* g_strchomp (); */
-			if (s [p-1] == '\r' || s [p-1] == '\n')
-				s [p-1] = 0;
-			if (s [p-2] == '\r' || s [p-2] == '\n')
-				s [p-2] = 0;
-	    
+
+			s = g_strdup (p_pristine + column_ptr [idx]);
+			p = strcspn (s, "\r\n");
+			s[p] = '\0';
+
 			*filename = s;
 		}
 		if (linkname)
 			*linkname = NULL;
 	}
 	g_free (p_copy);
+	g_free (p_pristine);
 	return 1;
 
  error:

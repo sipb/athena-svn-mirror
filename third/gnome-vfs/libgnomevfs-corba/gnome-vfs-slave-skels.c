@@ -316,11 +316,6 @@ _ORBIT_skel_GNOME_VFS_Slave_Request_load_directory(POA_GNOME_VFS_Slave_Request
 						    const
 						    GNOME_VFS_Slave_DirectoryFilter
 						    * filter,
-						    const
-						    GNOME_VFS_Slave_DirectorySortRuleList
-						    * sort_rules,
-						    const CORBA_boolean
-						    reverse_order,
 						    const CORBA_unsigned_long
 						    items_per_notification,
 						    CORBA_Environment * ev))
@@ -328,28 +323,24 @@ _ORBIT_skel_GNOME_VFS_Slave_Request_load_directory(POA_GNOME_VFS_Slave_Request
    CORBA_char *uri;
    GNOME_VFS_Slave_FileInfoOptions info_options;
    GNOME_VFS_Slave_DirectoryFilter filter;
-   GNOME_VFS_Slave_DirectorySortRuleList sort_rules =
-      { 0, 0, NULL, CORBA_FALSE };
-   CORBA_boolean reverse_order;
    CORBA_unsigned_long items_per_notification;
 
    {				/* demarshalling */
       guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_5;
-      CORBA_unsigned_long _ORBIT_tmpvar_6;
-      register CORBA_unsigned_long _ORBIT_tmpvar_7;
-      CORBA_unsigned_long _ORBIT_tmpvar_8;
-      register CORBA_unsigned_long _ORBIT_tmpvar_9;
+      register CORBA_unsigned_long _ORBIT_tmpvar_4;
+      CORBA_unsigned_long _ORBIT_tmpvar_5;
+      register CORBA_unsigned_long _ORBIT_tmpvar_6;
+      CORBA_unsigned_long _ORBIT_tmpvar_7;
 
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_6))) =
+	    (*((guint32 *) & (_ORBIT_tmpvar_5))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 uri = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(uri[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6;
+	 _ORBIT_curptr += sizeof(uri[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
 	    (*((guint32 *) & (info_options))) =
@@ -363,40 +354,22 @@ _ORBIT_skel_GNOME_VFS_Slave_Request_load_directory(POA_GNOME_VFS_Slave_Request
 	    (*((guint32 *) & (filter.options))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	    _ORBIT_curptr += 4;
-	 (*((guint32 *) & (_ORBIT_tmpvar_8))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_7))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 filter.pattern = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
-	    sizeof(filter.pattern[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (sort_rules._length))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 sort_rules._buffer =
-	    alloca(sizeof(sort_rules._buffer[_ORBIT_tmpvar_9]) *
-		   sort_rules._length);
-	 sort_rules._release = CORBA_FALSE;
-	 for (_ORBIT_tmpvar_9 = 0; _ORBIT_tmpvar_9 < sort_rules._length;
-	      _ORBIT_tmpvar_9++) {
-	    (*((guint16 *) & (sort_rules._buffer[_ORBIT_tmpvar_9]))) =
-	       GUINT16_SWAP_LE_BE(*((guint16 *) _ORBIT_curptr));
-	    _ORBIT_curptr += 2;
-	 }
-
-	 reverse_order = *((CORBA_boolean *) _ORBIT_curptr);
-	 _ORBIT_curptr += 1;
+	    sizeof(filter.pattern[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 
 	    (*((guint32 *) & (items_per_notification))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_6 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
 	 uri = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(uri[_ORBIT_tmpvar_5]) * _ORBIT_tmpvar_6;
+	 _ORBIT_curptr += sizeof(uri[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 info_options = *((GNOME_VFS_Slave_FileInfoOptions *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
@@ -407,27 +380,17 @@ _ORBIT_skel_GNOME_VFS_Slave_Request_load_directory(POA_GNOME_VFS_Slave_Request
 	 filter.options =
 	    *((GNOME_VFS_Slave_DirectoryFilterOptions *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 _ORBIT_tmpvar_8 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_7 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
 	 filter.pattern = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr +=
-	    sizeof(filter.pattern[_ORBIT_tmpvar_7]) * _ORBIT_tmpvar_8;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 sort_rules._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 sort_rules._buffer =
-	    (GNOME_VFS_Slave_DirectorySortRule *) _ORBIT_curptr;
-	 _ORBIT_curptr +=
-	    sizeof(sort_rules._buffer[_ORBIT_tmpvar_9]) * sort_rules._length;
-	 reverse_order = *((CORBA_boolean *) _ORBIT_curptr);
-	 _ORBIT_curptr += 1;
+	    sizeof(filter.pattern[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 items_per_notification = *((CORBA_unsigned_long *) _ORBIT_curptr);
       }
    }
    _impl_load_directory(_ORBIT_servant, uri, info_options, &(filter),
-			&(sort_rules), reverse_order, items_per_notification,
-			ev);
+			items_per_notification, ev);
 }
 
 void

@@ -1,12 +1,9 @@
-Gnome VFS 0.4
+Gnome VFS 0.6
 -------------
 
-0.4 is mostly a bug fixing release.
+Pthread async backend redone for performance improvements.
 
-New in this release:
+Several API cleanups.
 
 Numerous bug fixes.
 
-New NFS module.
-
-New Gnome VFS debug module.

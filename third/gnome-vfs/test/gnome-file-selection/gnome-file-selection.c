@@ -150,31 +150,29 @@ add_file_to_clist (GnomeVFSFileInfo *info,
 static void
 populate_callback (GnomeVFSAsyncHandle *handle,
 		   GnomeVFSResult result,
-		   GnomeVFSDirectoryList *list,
+		   GList *list,
 		   guint entries_read,
 		   gpointer callback_data)
 {
 	GnomeFileSelection *fs;
 	GnomeVFSFileInfo *info;
+	GList *element;
 
 	g_return_if_fail (GNOME_IS_FILE_SELECTION (callback_data));
 
 	fs = GNOME_FILE_SELECTION (callback_data);
 
-	if (list != NULL) {
-		info = gnome_vfs_directory_list_current (list);
-		while (info != NULL) {
-		        if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY
-		            && ! GNOME_VFS_FILE_INFO_SYMLINK (info)) {
-				add_directory_to_clist (fs->directory_clist,
-							info->name);
-			} else {
-				add_file_to_icon_list (info,
-						       fs->file_icon_list);
-				fs->priv->file_list = g_list_append (fs->priv->file_list,
-								     g_strdup (info->name));
-			}
-			info = gnome_vfs_directory_list_next (list);
+	for (element = list; element != NULL; element = element->next) {
+		info = element->data;
+
+	        if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY
+	            && ! GNOME_VFS_FILE_INFO_SYMLINK (info)) {
+			add_directory_to_clist (fs->directory_clist,
+						info->name);
+		} else {
+			add_file_to_icon_list (info, fs->file_icon_list);
+			fs->priv->file_list = g_list_append (fs->priv->file_list,
+							     g_strdup (info->name));
 		}
 	}
 
@@ -213,8 +211,6 @@ start_populating (GnomeFileSelection *fs)
 					(GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 					 | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE
 					 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-					NULL,
-					FALSE,
 					GNOME_VFS_DIRECTORY_FILTER_NONE,
 					0,
 					NULL,

@@ -68,5 +68,8 @@ gboolean		 gnome_vfs_sniff_buffer_looks_like_text
 					 (GnomeVFSMimeSniffBuffer	*buffer);
 gboolean		 gnome_vfs_sniff_buffer_looks_like_mp3
 					 (GnomeVFSMimeSniffBuffer	*buffer);
+gboolean		 gnome_vfs_sniff_buffer_looks_like_gzip
+					 (GnomeVFSMimeSniffBuffer 	*sniff_buffer,
+					  const char 			*file_name);
 
 #endif

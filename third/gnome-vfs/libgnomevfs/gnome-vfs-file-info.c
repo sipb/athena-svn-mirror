@@ -31,11 +31,9 @@
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
 
-/* Special refcount used on stack-allocated file_info's */
-#define FILE_INFO_REFCOUNT_STACK ((guint)(-1))
-
 /* Mutex for making GnomeVFSFileInfo ref's/unref's atomic */
 /* Note that an atomic increment function (such as is present in NSPR) is preferable */
+/* FIXME: This mutex is probably not needed and might be causing performance issues */
 static GStaticMutex file_info_ref_lock = G_STATIC_MUTEX_INIT;
 
 
@@ -61,35 +59,55 @@ gnome_vfs_file_info_new (void)
 	return new;
 }
 
+
 /**
- * gnome_vfs_file_info_init:
- * @info: 
+ * gnome_vfs_file_info_ref:
+ * @info: Pointer to a file information struct
  * 
- * Initialize @info.  This is different from %gnome_vfs_file_info_clear,
- * because it will not de-allocate any memory.  This is supposed to be used
- * when a new %GnomeVFSFileInfo struct is allocated on the stack, and you want
- * to initialize it.
+ * Increment reference count
  **/
 void
-gnome_vfs_file_info_init (GnomeVFSFileInfo *info)
+gnome_vfs_file_info_ref (GnomeVFSFileInfo *info)
 {
 	g_return_if_fail (info != NULL);
+	g_return_if_fail (info->refcount > 0);
 
-	/* This is enough to initialize everything (we just want all
-           the members to be set to zero).  */
-	memset (info, 0, sizeof (*info));
-
-	info->refcount = FILE_INFO_REFCOUNT_STACK;
+	g_static_mutex_lock (&file_info_ref_lock);
+	info->refcount += 1;
+	g_static_mutex_unlock (&file_info_ref_lock);
+	
 }
+
+/**
+ * gnome_vfs_file_info_unref:
+ * @info: Pointer to a file information struct
+ * 
+ * Destroy @info
+ **/
+void
+gnome_vfs_file_info_unref (GnomeVFSFileInfo *info)
+{
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (info->refcount > 0);
+
+	g_static_mutex_lock (&file_info_ref_lock);
+	info->refcount -= 1;
+	g_static_mutex_unlock (&file_info_ref_lock);
+
+	if (info->refcount == 0) {
+		gnome_vfs_file_info_clear (info);
+		g_free (info);
+	}
+}
+
 
 /**
  * gnome_vfs_file_info_clear:
  * @info: Pointer to a file information struct
  * 
- * Clear @info so that it's ready to accept new data.  This is different from
- * %gnome_vfs_file_info_init as it will free associated memory too.  This is
+ * Clear @info so that it's ready to accept new data. This is
  * supposed to be used when @info already contains meaningful information which
- * we want to get rid of.
+ * we want to replace.
  **/
 void
 gnome_vfs_file_info_clear (GnomeVFSFileInfo *info)
@@ -110,52 +128,7 @@ gnome_vfs_file_info_clear (GnomeVFSFileInfo *info)
 	info->refcount = old_refcount;
 
 	g_static_mutex_unlock (&file_info_ref_lock);
-
 }
-
-
-/**
- * gnome_vfs_file_info_ref:
- * @info: Pointer to a file information struct
- * 
- * Increment reference count
- **/
-void
-gnome_vfs_file_info_ref (GnomeVFSFileInfo *info)
-{
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (info->refcount != FILE_INFO_REFCOUNT_STACK);
-	g_return_if_fail (info->refcount > 0);
-
-	g_static_mutex_lock (&file_info_ref_lock);
-	info->refcount += 1;
-	g_static_mutex_unlock (&file_info_ref_lock);
-	
-}
-
-/**
- * gnome_vfs_file_info_unref:
- * @info: Pointer to a file information struct
- * 
- * Destroy @info
- **/
-void
-gnome_vfs_file_info_unref (GnomeVFSFileInfo *info)
-{
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (info->refcount != FILE_INFO_REFCOUNT_STACK);
-	g_return_if_fail (info->refcount > 0);
-
-	g_static_mutex_lock (&file_info_ref_lock);
-	info->refcount -= 1;
-	g_static_mutex_unlock (&file_info_ref_lock);
-
-	if (info->refcount == 0) {
-		gnome_vfs_file_info_clear (info);
-		g_free (info);
-	}
-}
-
 
 
 /**
@@ -174,7 +147,6 @@ gnome_vfs_file_info_get_mime_type (GnomeVFSFileInfo *info)
 	return info->mime_type;
 }
 
-
 /**
  * gnome_vfs_file_info_copy:
  * @dest: Pointer to a struct to copy @src's information into
@@ -248,6 +220,11 @@ gboolean
 gnome_vfs_file_info_matches (const GnomeVFSFileInfo *a,
 			     const GnomeVFSFileInfo *b)
 {
+	g_return_val_if_fail (a != NULL, FALSE);
+	g_return_val_if_fail (b != NULL, FALSE);
+	g_return_val_if_fail (a->name != NULL, FALSE);
+	g_return_val_if_fail (b->name != NULL, FALSE);
+
 	if (a->type != b->type
 	    || a->size != b->size
 	    || a->block_count != b->block_count
@@ -264,94 +241,6 @@ gnome_vfs_file_info_matches (const GnomeVFSFileInfo *a,
 
 	g_assert (a->mime_type != NULL && b->mime_type != NULL);
 	return g_strcasecmp (a->mime_type, b->mime_type) == 0;
-}
-
-gint
-gnome_vfs_file_info_compare_for_sort (const GnomeVFSFileInfo *a,
-				      const GnomeVFSFileInfo *b,
-				      const GnomeVFSDirectorySortRule *sort_rules)
-{
-	guint i;
-	gint retval;
-
-	/* Note that the sort direction is determined by a
-	 * "natural order" rather than a logical "small" to "large"
-	 * order. For instance, large sizes come before small ones,
-	 * because that is what the user probably cares about.
-	 */
-
-	for (i = 0; sort_rules[i] != GNOME_VFS_DIRECTORY_SORT_NONE; i++) {
-		switch (sort_rules[i]) {
-		case GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST:
-			if (a->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-				if (b->type != GNOME_VFS_FILE_TYPE_DIRECTORY)
-					return -1;
-			} else if (b->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-				return +1;
-			}
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYNAME:
-			retval = strcmp (a->name, b->name);
-			if (retval != 0)
-				return retval;
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYNAME_IGNORECASE:
-			retval = g_strcasecmp (a->name, b->name);
-			if (retval != 0)
-				return retval;
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYSIZE:
-			/* Natural order of sorting by size is largest first */
-			if (a->size != b->size)
-				return (a->size > b->size) ? -1 : +1;
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYBLOCKCOUNT:
-			/* Natural order of sorting by block count is largest first */
-			if (a->block_count != b->block_count)
-				return ((a->block_count > b->block_count)
-					? -1 : +1);
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYATIME:
-			/* Natural order of sorting by date is most recent first */
-			if (a->atime != b->atime)
-				return (a->atime > b->atime) ? -1 : +1;
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYMTIME:
-			/* Natural order of sorting by date is most recent first */
-			if (a->mtime != b->mtime)
-				return (a->mtime > b->mtime) ? -1 : +1;
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYCTIME:
-			/* Natural order of sorting by date is most recent first */
-			if (a->ctime != b->ctime)
-				return (a->ctime > b->ctime) ? -1 : +1;
-			break;
-		case GNOME_VFS_DIRECTORY_SORT_BYMIMETYPE:
-			/* Directories (e.g.) don't have mime types, so
-			 * we have to check the NULL case.
-			 */
-			if (a->mime_type != b->mime_type) {
-				if (a->mime_type == NULL)
-					return -1;
-				if (b->mime_type == NULL)
-					return +1;
-				return g_strcasecmp (a->mime_type, b->mime_type);
-			}
-			break;
-		default:
-			g_warning (_("Unknown sort rule %d"), sort_rules[i]);
-		}
-	}
-
-	return 0;
-}
-
-gint
-gnome_vfs_file_info_compare_for_sort_reversed (const GnomeVFSFileInfo *a,
-					       const GnomeVFSFileInfo *b,
-					       const GnomeVFSDirectorySortRule *sort_rules)
-{
-	return 0 - gnome_vfs_file_info_compare_for_sort (a, b, sort_rules);
 }
 
 GList *

@@ -36,6 +36,7 @@
 #include <gconf/gconf-client.h>
 
 #include "gnome-vfs-mime.h"
+#include "gnome-vfs-method.h"
 #include "gnome-vfs-module.h"
 
 #include "file-method.h"
@@ -95,6 +96,7 @@ static gboolean       do_is_local       (GnomeVFSMethod *method,
 					 const GnomeVFSURI *uri);
 
 static GnomeVFSMethod method = {
+	sizeof (GnomeVFSMethod),
         do_open,
         NULL, /* create */
         do_close,
@@ -125,25 +127,6 @@ static GConfClient *client = NULL;
 static GMutex *client_mutex;
 #endif
 
-
-/* This is to make sure the path starts with `/', so that at least we
- * get a predictable behavior when the leading `/' is not present.  
- * Also make sure there is no trailing '/', as gconf doesn't like trailing 
- * slashes.
- */
-#define MAKE_ABSOLUTE(dest, src)                        \
-G_STMT_START{                                           \
-        if ((src)[0] != '/') {                          \
-                (dest) = alloca (strlen (src) + 2);     \
-                (dest)[0] = '/';                        \
-                strcpy ((dest), (src));                 \
-	} else {                                        \
-                (dest) = (src);                         \
-        }                                               \
-       if (strlen(dest) > 1 && dest[strlen(dest) - 1] == '/') \
-                dest[strlen(dest) - 1] = '\0'; \
-}G_STMT_END
-
 #ifdef G_THREADS_ENABLED
 #define MUTEX_LOCK(a)   if ((a) != NULL) g_mutex_lock (a)
 #define MUTEX_UNLOCK(a) if ((a) != NULL) g_mutex_unlock (a)
@@ -162,6 +145,37 @@ typedef struct {
 	
 	GMutex *mutex;
 } DirectoryHandle;
+
+
+/* This is to make sure the path starts with `/', so that at least we
+ * get a predictable behavior when the leading `/' is not present.  
+ * Also make sure there is no trailing '/', as gconf doesn't like trailing 
+ * slashes.
+ */
+ 
+static char *
+make_absolute (const char *src)
+{
+	char *dest;
+	
+	if (src == NULL) {
+		return NULL;
+	}
+
+	if ((src)[0] != '/') {
+		dest = g_malloc (strlen (src) + 2);
+		dest[0] = '/';
+		strcpy (dest, src);
+	} else {
+		dest = g_strdup (src);
+	}
+	
+	if (strlen (dest) > 1 && dest[strlen (dest) - 1] == '/') {
+                dest[strlen (dest) - 1] = '\0';
+	}
+	
+	return dest;
+}
 
 static DirectoryHandle *
 directory_handle_new (GnomeVFSURI *uri,
@@ -263,6 +277,10 @@ get_value_size (const GConfValue *value, GnomeVFSFileSize *size)
 	GSList *values;
 	GConfSchema *schema;
 	
+	if (value == NULL) {
+		return GNOME_VFS_ERROR_GENERIC;
+	}
+	
 	*size = 0;
 	
 	switch (value->type) {
@@ -294,11 +312,11 @@ get_value_size (const GConfValue *value, GnomeVFSFileSize *size)
 		if (schema->owner != NULL)
 			*size += strlen (schema->owner);
 		if (schema->default_value != NULL) {
-			result = get_value_size (schema->default_value, 
-						 &subvalue_size);
-			if (result != GNOME_VFS_OK)
+			result = get_value_size (schema->default_value, &subvalue_size);
+			if (result != GNOME_VFS_OK) {
 				return result;
-			
+			}
+
 			*size += subvalue_size;
 		}
 		
@@ -310,26 +328,26 @@ get_value_size (const GConfValue *value, GnomeVFSFileSize *size)
 		 */
 		values = value->d.list_data.list;
 		while (values != NULL) {
-			result = get_value_size ((GConfValue*)values->data,
-						 &subvalue_size);
-			if (result != GNOME_VFS_OK) 
+			result = get_value_size ((GConfValue*)values->data, &subvalue_size);
+			if (result != GNOME_VFS_OK) {
 				return result;
-			
+			}
+
 			*size += subvalue_size;
 			values = g_slist_next (values);
 		}	
                 break;
         case GCONF_VALUE_PAIR :
-                result = get_value_size (value->d.pair_data.car, 
-					 &subvalue_size);
-		if (result != GNOME_VFS_OK) 
+                result = get_value_size (value->d.pair_data.car, &subvalue_size);
+		if (result != GNOME_VFS_OK) {
 			return result;
+		}
 		*size = subvalue_size;
                 
-		result = get_value_size (value->d.pair_data.car, 
-					 &subvalue_size);
-		if (result != GNOME_VFS_OK) 
+		result = get_value_size (value->d.pair_data.car, &subvalue_size);
+		if (result != GNOME_VFS_OK) {
 			return result;
+		}
 		
 		*size += subvalue_size;		
                 break;
@@ -354,8 +372,9 @@ set_stat_info_value (GnomeVFSFileInfo *info,
 	info->mtime = 0;
 
 	result = get_value_size (value, &info->size);
-	if (result != GNOME_VFS_OK) 
+	if (result != GNOME_VFS_OK) {
 		return result;
+	}
 
         GNOME_VFS_FILE_INFO_SET_LOCAL (info, TRUE);
         GNOME_VFS_FILE_INFO_SET_SUID (info, FALSE);
@@ -462,7 +481,10 @@ do_open_directory (GnomeVFSMethod *method,
         GSList *subdirs;
         gchar *dirname;
 
-        MAKE_ABSOLUTE (dirname, uri->text);
+        dirname = make_absolute (uri->text);
+        if (dirname == NULL) {
+        	return GNOME_VFS_ERROR_GENERIC;
+        }
 
 	MUTEX_LOCK (client_mutex);
         subdirs = gconf_client_all_dirs (client, dirname, NULL);
@@ -475,7 +497,9 @@ do_open_directory (GnomeVFSMethod *method,
 							     filter,
 							     subdirs,
 							     pairs);
-        return GNOME_VFS_OK;
+	g_free (dirname);
+	
+	return GNOME_VFS_OK;
 }
 
 static GnomeVFSResult 
@@ -610,12 +634,14 @@ do_read_directory (GnomeVFSMethod *method,
 		result = read_directory ((DirectoryHandle*)method_handle,
 					 file_info, 
 					 &skip);
-		if (result != GNOME_VFS_OK) 
+		if (result != GNOME_VFS_OK) {
 			break;
-		if (skip)
-			gnome_vfs_file_info_clear (file_info);
-
+		}
 		
+		if (skip) {
+			gnome_vfs_file_info_clear (file_info);
+		}
+				
 	} while (skip);
 
 	return result;	    
@@ -631,8 +657,11 @@ do_get_file_info (GnomeVFSMethod *method,
         GConfValue *value;
         gchar *key;
         
-        MAKE_ABSOLUTE (key, uri->text);
-        
+	key = make_absolute (uri->text);
+        if (key == NULL) {
+        	return GNOME_VFS_ERROR_GENERIC;
+        }
+                
 	MUTEX_LOCK (client_mutex);
 	if (gconf_client_dir_exists (client, key, NULL)) {
 		MUTEX_UNLOCK (client_mutex);
@@ -642,6 +671,9 @@ do_get_file_info (GnomeVFSMethod *method,
         value = gconf_client_get (client, key, NULL);
 	
 	MUTEX_UNLOCK (client_mutex);
+	
+	g_free (key);
+	
 	return file_info_value (file_info, options, value, key);
 }
 
@@ -699,8 +731,9 @@ vfs_module_shutdown (GnomeVFSMethod *method)
 	gtk_object_unref(GTK_OBJECT(client));
 
 #ifdef G_THREADS_ENABLED
-	if (g_thread_supported ()) 
+	if (g_thread_supported ()) {
 		g_mutex_free (client_mutex);
+	}
 #endif
 	client = NULL;
 }

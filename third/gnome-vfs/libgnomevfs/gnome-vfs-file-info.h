@@ -65,13 +65,11 @@
 	       : ((info)->permissions &= ~GNOME_VFS_PERM_STICKY))
 
 
-
 GnomeVFSFileInfo *
 		 gnome_vfs_file_info_new 	(void);
-void		 gnome_vfs_file_info_init	(GnomeVFSFileInfo *info);
-void		 gnome_vfs_file_info_clear	(GnomeVFSFileInfo *info);
 void 		 gnome_vfs_file_info_unref   	(GnomeVFSFileInfo *info);
 void 		 gnome_vfs_file_info_ref     	(GnomeVFSFileInfo *info);
+void 		 gnome_vfs_file_info_clear     	(GnomeVFSFileInfo *info);
 const gchar	*gnome_vfs_file_info_get_mime_type
 						(GnomeVFSFileInfo *info);
 
@@ -84,16 +82,6 @@ GnomeVFSFileInfo *
 
 gboolean	 gnome_vfs_file_info_matches	(const GnomeVFSFileInfo *a,
 						 const GnomeVFSFileInfo *b);
-
-gint		 gnome_vfs_file_info_compare_for_sort
-						(const GnomeVFSFileInfo *a,
-						 const GnomeVFSFileInfo *b,
-						 const GnomeVFSDirectoryFilterType *sort_rules);
-
-gint		 gnome_vfs_file_info_compare_for_sort_reversed
-						(const GnomeVFSFileInfo *a,
-						 const GnomeVFSFileInfo *b,
-						 const GnomeVFSDirectoryFilterType *sort_rules);
 
 GList           *gnome_vfs_file_info_list_ref   (GList *list);
 GList           *gnome_vfs_file_info_list_unref (GList *list);

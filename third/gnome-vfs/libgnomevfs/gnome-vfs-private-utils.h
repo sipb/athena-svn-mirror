@@ -28,6 +28,8 @@
  * break even when the GnomeVFS APIs are otherwise frozen.
  */
 
+#include "gnome-vfs-process.h"
+
 gchar   	*gnome_vfs_canonicalize_pathname         (char *path);
 GnomeVFSResult   gnome_vfs_remove_optional_escapes 	 (char *escaped_uri);
 
@@ -58,4 +60,9 @@ GnomeVFSURI    *gnome_vfs_uri_new_private (const gchar *text_uri,
 					   gboolean allow_unknown_method);
 
 
-#endif /* _GNOME_VFS_UTILS_H */
+gboolean	gnome_vfs_istr_has_prefix (const char *haystack,
+					   const char *needle);
+gboolean	gnome_vfs_istr_has_suffix (const char *haystack,
+					   const char *needle);
+
+#endif /* _GNOME_VFS_PRIVATE_UTILS_H */

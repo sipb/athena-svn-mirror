@@ -19,7 +19,7 @@ while test $# -gt 0; do
 
   case $1 in
     --version)
-      echo $MODULE_VERSION
+      echo @VERSION@
       ;;
     --config)
       echo $config_file

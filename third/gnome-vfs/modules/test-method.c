@@ -20,7 +20,7 @@
 
    Authors: Seth Nickell      (seth@eazel.com) */
 
-/* Create a settings file and put it at /gnome/etc/vfs/Test-conf.xml,
+/* Create a settings file and put it at PREFIX/etc/vfs/Test-conf.xml,
  * then point gnome-vfs clients to test:<uri_minus_scheme> which will
  * translate into the "real" method (e.g. test:///home/seth).
  *
@@ -56,6 +56,8 @@ typedef struct {
 } OperationSettings;
 
 #define NUM_RESULT_STRINGS 41
+
+static gboolean properly_initialized;
 
 static char *test_method_name;
 static GList *settings_list;
@@ -106,8 +108,8 @@ result_strings[NUM_RESULT_STRINGS] = {
 
 /* Module entry points. */
 GnomeVFSMethod *vfs_module_init     (const char     *method_name,
-				     const char     *args);
-void            vfs_module_shutdown (GnomeVFSMethod *method);
+				        const char     *args);
+void            vfs_module_shutdown  (GnomeVFSMethod *method);
 
 static GnomeVFSURI *
 translate_uri (GnomeVFSURI *uri)
@@ -119,10 +121,22 @@ translate_uri (GnomeVFSURI *uri)
 
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	no_method = strchr (uri_text, ':');
-	translated_uri_text = g_strconcat (test_method_name, no_method, NULL);
-	g_free (uri_text);
-	translated_uri = gnome_vfs_uri_new (translated_uri_text);
+	
+	if (test_method_name != NULL) {
+	  translated_uri_text = g_strconcat (test_method_name, 
+					     no_method, NULL);
+	} else {
+	  translated_uri_text = NULL;
+	}
+
+	if (translated_uri_text != NULL) {
+	  translated_uri = gnome_vfs_uri_new (translated_uri_text);
+	} else {
+	  translated_uri = NULL;
+	}
+
 	g_free (translated_uri_text);
+	g_free (uri_text);
 
 	return translated_uri;
 }
@@ -191,6 +205,10 @@ do {								\
 	GnomeVFSURI *saved_uri;					\
 	GnomeVFSResult result;					\
 								\
+        if (!properly_initialized) {                            \
+                return GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;   \
+        }                                                       \
+                                                                \
 	settings = start_operation (#name, &uri, &saved_uri);	\
 	if (settings->skip) {					\
 		result = GNOME_VFS_OK;				\
@@ -207,6 +225,10 @@ do {								\
 	const OperationSettings *settings;			\
 	GnomeVFSResult result;					\
 								\
+        if (!properly_initialized) {                            \
+                return GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;   \
+        }                                                       \
+                                                                \
 	settings = start_operation (#name, NULL, NULL);		\
 	if (settings->skip) {					\
 		result = GNOME_VFS_OK;				\
@@ -233,7 +255,7 @@ parse_result_text (const char *result_text,
 	return FALSE;
 }
 
-static void
+static gboolean
 load_settings (const char *filename) 
 {
 	xmlDocPtr doc;
@@ -249,7 +271,7 @@ load_settings (const char *filename)
 	    || doc->xmlRootNode->name == NULL
 	    || g_strcasecmp (doc->xmlRootNode->name, "testmodule") != 0) {
 		xmlFreeDoc(doc);
-		return;
+		return FALSE;
 	}
 
 	test_method_name = xmlGetProp (doc->xmlRootNode, "method");
@@ -284,6 +306,7 @@ load_settings (const char *filename)
 		
 		settings_list = g_list_prepend (settings_list, operation);
 	}
+	return TRUE;
 }
 
 static GnomeVFSResult
@@ -512,6 +535,7 @@ do_create_symbolic_link (GnomeVFSMethod *method,
 }
 
 static GnomeVFSMethod method = {
+	sizeof (GnomeVFSMethod),
 	do_open,
 	do_create,
 	do_close,
@@ -543,8 +567,15 @@ vfs_module_init (const char *method_name, const char *args)
 {
 	LIBXML_TEST_VERSION
 	
-	/* FIXME bugzilla.eazel.com 3838: the path to the config file should not be hardcoded */
-	load_settings ("/gnome/etc/vfs/Test-conf.xml");
+	if (load_settings (PREFIX "/etc/vfs/Test-conf.xml") == FALSE) {
+
+	  // FIXME: we probably shouldn't use printf to output the message
+	  printf (_("Didn't find a valid settings file at %s\n"), 
+		  PREFIX "/etc/vfs/Test-conf.xml");
+	  properly_initialized = FALSE;
+	} else {
+	  properly_initialized = TRUE;
+	}
 
 	return &method;
 }

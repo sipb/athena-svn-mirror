@@ -31,6 +31,8 @@
 #include "gnome-vfs-job.h"
 #include "gnome-vfs-async-job-map.h"
 
+#include <unistd.h>
+
 void           pthread_gnome_vfs_async_cancel                 (GnomeVFSAsyncHandle                 *handle);
 void           pthread_gnome_vfs_async_open_uri               (GnomeVFSAsyncHandle                **handle_return,
 							       GnomeVFSURI                         *uri,
@@ -108,8 +110,6 @@ void           pthread_gnome_vfs_async_set_file_info          (GnomeVFSAsyncHand
 void           pthread_gnome_vfs_async_load_directory         (GnomeVFSAsyncHandle                **handle_return,
 							       const gchar                         *text_uri,
 							       GnomeVFSFileInfoOptions              options,
-							       GnomeVFSDirectorySortRule            sort_rules[],
-							       gboolean                             reverse_order,
 							       GnomeVFSDirectoryFilterType          filter_type,
 							       GnomeVFSDirectoryFilterOptions       filter_options,
 							       const gchar                         *filter_pattern,
@@ -119,8 +119,6 @@ void           pthread_gnome_vfs_async_load_directory         (GnomeVFSAsyncHand
 void           pthread_gnome_vfs_async_load_directory_uri     (GnomeVFSAsyncHandle                **handle_return,
 							       GnomeVFSURI                         *uri,
 							       GnomeVFSFileInfoOptions              options,
-							       GnomeVFSDirectorySortRule            sort_rules[],
-							       gboolean                             reverse_order,
 							       GnomeVFSDirectoryFilterType          filter_type,
 							       GnomeVFSDirectoryFilterOptions       filter_options,
 							       const gchar                         *filter_pattern,
@@ -163,22 +161,13 @@ pthread_gnome_vfs_async_cancel (GnomeVFSAsyncHandle *handle)
 	if (job == NULL) {
 		JOB_DEBUG (("job %u - job no longer exists", GPOINTER_TO_UINT (handle)));
 		/* have to cancel the callbacks because they still can be pending */
-		gnome_vfs_async_job_cancel_callbacks (handle);
+		gnome_vfs_async_job_cancel_job_and_callbacks (handle, NULL);
 	} else {
-		/* Cancel the job in progress. OK to do outside of job->access_lock. */
-		gnome_vfs_job_cancel (job);
-
-		JOB_DEBUG (("locking access lock %u", (int) job->job_handle));
-		g_mutex_lock (job->access_lock);
-	
-		/* The lock here is to make sure that either the job doesn't
-		 * get to execute anything or that any callbacks it schedules get cancelled
+		/* Cancel the job in progress. OK to do outside of job->access_lock,
+		 * job lifetime is protected by gnome_vfs_async_job_map_lock.
 		 */
-		gnome_vfs_async_job_cancel_callbacks (handle);
-				
-		job->cancelled = TRUE;
-		JOB_DEBUG (("unlocking access lock %u", (int) job->job_handle));
-		g_mutex_unlock (job->access_lock);
+		gnome_vfs_job_module_cancel (job);
+		gnome_vfs_async_job_cancel_job_and_callbacks (handle, job);
 	}
 
 	gnome_vfs_async_job_map_unlock ();
@@ -411,18 +400,33 @@ pthread_gnome_vfs_async_close (GnomeVFSAsyncHandle *handle,
 	g_return_if_fail (handle != NULL);
 	g_return_if_fail (callback != NULL);
 
-	gnome_vfs_async_job_map_lock ();
-	job = gnome_vfs_async_job_map_get_job (handle);
-	if (job == NULL) {
-		g_warning ("trying to read a non-existing handle");
-		gnome_vfs_async_job_map_unlock ();
-		return;
-	}
+	for (;;) {
+		gnome_vfs_async_job_map_lock ();
+		job = gnome_vfs_async_job_map_get_job (handle);
+		if (job == NULL) {
+			g_warning ("trying to read a non-existing handle");
+			gnome_vfs_async_job_map_unlock ();
+			return;
+		}
 
-	gnome_vfs_job_set (job, GNOME_VFS_OP_CLOSE,
-			   (GFunc) callback, callback_data);
-	gnome_vfs_job_go (job);
-	gnome_vfs_async_job_map_unlock ();
+		if (job->op->type != GNOME_VFS_OP_READ
+			&& job->op->type != GNOME_VFS_OP_WRITE) {
+			gnome_vfs_job_set (job, GNOME_VFS_OP_CLOSE,
+					   (GFunc) callback, callback_data);
+			gnome_vfs_job_go (job);
+			gnome_vfs_async_job_map_unlock ();
+			return;
+		}
+		/* Still reading, wait a bit, cancel should be pending.
+		 * This mostly handles a race condition that can happen
+		 * on a dual CPU machine where a cancel stops a read before
+		 * the read thread picks up and a close then gets scheduled
+		 * on a new thread. Without this the job op type would be
+		 * close for both threads and two closes would get executed
+		 */
+		gnome_vfs_async_job_map_unlock ();
+		usleep (100);
+	}
 }
 
 void
@@ -562,7 +566,8 @@ pthread_gnome_vfs_async_set_file_info (GnomeVFSAsyncHandle **handle_return,
 	op = &job->op->specifics.set_file_info;
 
 	op->uri = gnome_vfs_uri_ref (uri);
-	gnome_vfs_file_info_copy (&op->info, info);
+	op->info = gnome_vfs_file_info_new ();
+	gnome_vfs_file_info_copy (op->info, info);
 	op->mask = mask;
 	op->options = options;
 
@@ -600,36 +605,9 @@ pthread_gnome_vfs_async_find_directory (GnomeVFSAsyncHandle **handle_return,
 	gnome_vfs_job_go (job);
 }
 
-static GnomeVFSDirectorySortRule *
-copy_sort_rules (GnomeVFSDirectorySortRule *rules)
-{
-	GnomeVFSDirectorySortRule *result;
-	guint count, i;
-
-	if (rules == NULL) {
-		return NULL;
-	}
-
-	for (count = 0; rules[count] != GNOME_VFS_DIRECTORY_SORT_NONE; count++) {
-		;
-	}
-
-	result = g_new (GnomeVFSDirectorySortRule, count + 1);
-
-	for (i = 0; i < count; i++) {
-		result[i] = rules[i];
-	}
-
-	result[i] = GNOME_VFS_DIRECTORY_SORT_NONE;
-
-	return result;
-}
-
 static GnomeVFSAsyncHandle *
 async_load_directory (GnomeVFSURI *uri,
 		      GnomeVFSFileInfoOptions options,
-		      GnomeVFSDirectorySortRule sort_rules[],
-		      gboolean reverse_order,
 		      GnomeVFSDirectoryFilterType filter_type,
 		      GnomeVFSDirectoryFilterOptions filter_options,
 		      const gchar *filter_pattern,
@@ -646,8 +624,6 @@ async_load_directory (GnomeVFSURI *uri,
 	load_directory_op = &job->op->specifics.load_directory;
 	load_directory_op->uri = uri == NULL ? NULL : gnome_vfs_uri_ref (uri);
 	load_directory_op->options = options;
-	load_directory_op->sort_rules = copy_sort_rules (sort_rules);
-	load_directory_op->reverse_order = reverse_order;
 	load_directory_op->filter_type = filter_type;
 	load_directory_op->filter_options = filter_options;
 	load_directory_op->filter_pattern = g_strdup (filter_pattern);
@@ -664,8 +640,6 @@ void
 pthread_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 					const gchar *text_uri,
 					GnomeVFSFileInfoOptions options,
-					GnomeVFSDirectorySortRule sort_rules[],
-					gboolean reverse_order,
 					GnomeVFSDirectoryFilterType filter_type,
 					GnomeVFSDirectoryFilterOptions filter_options,
 					const gchar *filter_pattern,
@@ -681,7 +655,6 @@ pthread_gnome_vfs_async_load_directory (GnomeVFSAsyncHandle **handle_return,
 
 	uri = gnome_vfs_uri_new (text_uri);
 	*handle_return = async_load_directory (uri, options,
-				               sort_rules, reverse_order,
 				               filter_type, filter_options, filter_pattern,
 				               items_per_notification,
 				               callback, callback_data);
@@ -694,8 +667,6 @@ void
 pthread_gnome_vfs_async_load_directory_uri (GnomeVFSAsyncHandle **handle_return,
 					    GnomeVFSURI *uri,
 					    GnomeVFSFileInfoOptions options,
-					    GnomeVFSDirectorySortRule sort_rules[],
-					    gboolean reverse_order,
 					    GnomeVFSDirectoryFilterType filter_type,
 					    GnomeVFSDirectoryFilterOptions filter_options,
 					    const gchar *filter_pattern,
@@ -708,7 +679,6 @@ pthread_gnome_vfs_async_load_directory_uri (GnomeVFSAsyncHandle **handle_return,
 	g_return_if_fail (callback != NULL);
 
 	*handle_return = async_load_directory (uri, options,
-					       sort_rules, reverse_order,
 					       filter_type, filter_options, filter_pattern,
 					       items_per_notification,
 					       callback, callback_data);

@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BUFFER_SIZE 1024
+
 static void
 show_result (GnomeVFSResult result, const gchar *what, const gchar *text_uri)
 {
@@ -43,7 +45,7 @@ main (int argc, char **argv)
 {
 	GnomeVFSResult    result;
 	GnomeVFSHandle   *handle;
-	gchar             buffer[1024];
+	gchar             buffer[BUFFER_SIZE+1];
 	GnomeVFSFileSize  bytes_read;
 	GnomeVFSURI 	 *uri;
 	gchar            *text_uri;
@@ -72,7 +74,7 @@ main (int argc, char **argv)
 	while( result==GNOME_VFS_OK && !feof(stdin)) {
 		GnomeVFSFileSize temp;
 
-		bytes_read = fread(buffer, 1, sizeof buffer - 1, stdin);
+		bytes_read = fread(buffer, 1, BUFFER_SIZE, stdin);
 		if(!bytes_read) break;
 		buffer[bytes_read] = 0;
 		result = gnome_vfs_write (handle, buffer, bytes_read,

@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* gnome-vfs-result.h - Result handling for the GNOME Virtual File System.
 
    Copyright (C) 1999 Free Software Foundation
@@ -21,12 +22,14 @@
    Author: Ettore Perazzoli <ettore@comm2000.it>
 */
 
-#ifndef _GNOME_VFS_RESULT_H
-#define _GNOME_VFS_RESULT_H
+#ifndef GNOME_VFS_RESULT_H
+#define GNOME_VFS_RESULT_H
+
+#include <libgnomevfs/gnome-vfs-types.h>
 
 const gchar	*gnome_vfs_result_to_string	  (GnomeVFSResult result);
 GnomeVFSResult   gnome_vfs_result_from_errno_code (int errno_code);
 GnomeVFSResult	 gnome_vfs_result_from_errno	  (void);
 GnomeVFSResult   gnome_vfs_result_from_h_errno    (void);
 
-#endif /* _GNOME_VFS_RESULT_H */
+#endif /* GNOME_VFS_RESULT_H */

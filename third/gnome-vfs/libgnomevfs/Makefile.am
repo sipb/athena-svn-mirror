@@ -48,14 +48,12 @@ libgnomevfsinclude_HEADERS =			\
 	gnome-vfs-constants.h			\
 	gnome-vfs-directory.h			\
 	gnome-vfs-directory-filter.h		\
-	gnome-vfs-directory-list.h		\
 	gnome-vfs-file-info.h			\
 	gnome-vfs-file-size.h			\
 	gnome-vfs-find-directory.h		\
 	gnome-vfs-init.h			\
 	gnome-vfs-xfer.h			\
 	gnome-vfs-ops.h				\
-	gnome-vfs-process.h			\
 	gnome-vfs-result.h			\
 	gnome-vfs-types.h			\
 	gnome-vfs-uri.h				\
@@ -77,7 +75,6 @@ libgnomevfsinclude_HEADERS =			\
 	gnome-vfs-mime-magic.h			\
 	gnome-vfs-mime-monitor.h		\
 	gnome-vfs-mime-sniff-buffer.h		\
-	gnome-vfs-mime-sniff-buffer-private.h	\
 	gnome-vfs-application-registry.h	\
 	gnome-vfs-module.h			\
 	gnome-vfs-module-shared.h		\
@@ -98,7 +95,6 @@ libgnomevfs_la_SOURCES =			\
 	gnome-vfs-context.c			\
 	gnome-vfs-directory.c			\
 	gnome-vfs-directory-filter.c		\
-	gnome-vfs-directory-list.c		\
 	gnome-vfs-handle.c			\
 	gnome-vfs-file-info.c			\
 	gnome-vfs-find-directory.c		\
@@ -131,7 +127,9 @@ libgnomevfs_la_SOURCES =			\
 	fnmatch.c
 
 noinst_HEADERS =				\
-	gnome-vfs-mime-private.h
+	gnome-vfs-mime-private.h		\
+	gnome-vfs-mime-sniff-buffer-private.h	\
+	gnome-vfs-process.h			
 
 # Platform specific includes
 libgnomevfsplatofrmincludedir = $(libdir)/vfs/include
