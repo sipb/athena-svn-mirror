@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.19 1991-03-07 13:35:13 lwvanels Exp $
+ *	$Id: list.c,v 1.20 1991-04-14 17:19:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.19 1991-03-07 13:35:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.20 1991-04-14 17:19:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -194,12 +194,12 @@ dump_list()
     mx_refer = 10;
     mx_on = 20;
     
-    active_q = calloc(mx_active,sizeof(D_LIST));
-    unseen_q = calloc(mx_unseen,sizeof(D_LIST));
-    pending_q = calloc(mx_pending,sizeof(D_LIST));
-    pickup_q = calloc(mx_pickup,sizeof(D_LIST));
-    refer_q = calloc(mx_refer,sizeof(D_LIST));
-    on_q = calloc(mx_on,sizeof(D_LIST));
+    active_q = (D_LIST *) calloc(mx_active,sizeof(D_LIST));
+    unseen_q = (D_LIST *) calloc(mx_unseen,sizeof(D_LIST));
+    pending_q = (D_LIST *) calloc(mx_pending,sizeof(D_LIST));
+    pickup_q = (D_LIST *) calloc(mx_pickup,sizeof(D_LIST));
+    refer_q = (D_LIST *) calloc(mx_refer,sizeof(D_LIST));
+    on_q = (D_LIST *) calloc(mx_on,sizeof(D_LIST));
   }
 
   n_active = n_unseen = n_pending = n_pickup = n_refer = n_on =0;
@@ -217,7 +217,7 @@ dump_list()
 	  n_active++;
 	  if (n_active == mx_active) {
 	    mx_active *= 2;
-	    active_q = realloc(active_q,mx_active);
+	    active_q = (D_LIST *) realloc(active_q,mx_active);
 	    if (active_q == NULL) {
 	      log_error("dump_list: realloc failed");
 	      return;
@@ -229,7 +229,7 @@ dump_list()
 	  n_on++;
 	  if (n_on == mx_on) {
 	    mx_on *= 2;
-	    on_q = realloc(on_q,mx_on);
+	    on_q = (D_LIST *) realloc(on_q,mx_on);
 	    if (on_q == NULL) {
 	      log_error("dump_list: realloc failed");
 	      return;
@@ -241,7 +241,7 @@ dump_list()
 	  n_unseen++;
 	  if (n_unseen == mx_unseen) {
 	    mx_unseen *= 2;
-	    unseen_q = realloc(unseen_q,mx_unseen);
+	    unseen_q = (D_LIST *) realloc(unseen_q,mx_unseen);
 	    if (unseen_q == NULL) {
 	      log_error("dump_list: realloc failed");
 	      return;
@@ -254,7 +254,7 @@ dump_list()
 	  n_pending++;
 	  if (n_pending == mx_pending) {
 	    mx_pending *= 2;
-	    pending_q = realloc(pending_q,mx_pending);
+	    pending_q = (D_LIST *) realloc(pending_q,mx_pending);
 	    if (pending_q == NULL) {
 	      log_error("dump_list: realloc failed");
 	      return;
@@ -266,7 +266,7 @@ dump_list()
 	  n_pickup++;
 	  if (n_pickup == mx_pickup) {
 	    mx_pickup *= 2;
-	    pickup_q = realloc(pickup_q,mx_pickup);
+	    pickup_q = (D_LIST *) realloc(pickup_q,mx_pickup);
 	    if (pickup_q == NULL) {
 	      log_error("dump_list: realloc failed");
 	      return;
@@ -278,7 +278,7 @@ dump_list()
 	  n_refer++;
 	  if (n_refer == mx_refer) {
 	    mx_refer *= 2;
-	    refer_q = realloc(refer_q,mx_refer);
+	    refer_q = (D_LIST *) realloc(refer_q,mx_refer);
 	    if (refer_q == NULL) {
 	      log_error("dump_list: realloc failed");
 	      return;
