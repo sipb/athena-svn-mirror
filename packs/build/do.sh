@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.60 2001-01-04 04:48:31 ghudson Exp $
+# $Id: do.sh,v 1.61 2001-03-04 21:13:19 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -70,6 +70,11 @@ M4=$athtoolroot/usr/athena/bin/m4
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
 case `uname -srm` in
+"SunOS 5.8 sun4"*)
+	ATHENA_SYS=sun4x_58
+	ATHENA_SYS_COMPAT=sun4x_57:sun4x_56:sun4x_55:sun4m_54:sun4m_53
+	ATHENA_SYS_COMPAT=${ATHENA_SYS_COMPAT}:sun4m_412
+	;;
 "SunOS 5.7 sun4"*)
 	ATHENA_SYS=sun4x_57
 	ATHENA_SYS_COMPAT=sun4x_56:sun4x_55:sun4m_54:sun4m_53:sun4m_412
