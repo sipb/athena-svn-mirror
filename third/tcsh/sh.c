@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.c,v 1.1.1.1 1996-10-02 06:09:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.c,v 1.2 1996-10-03 04:40:33 ghudson Exp $ */
 /*
  * sh.c: Main shell routines
  */
@@ -43,7 +43,7 @@ char    copyright[] =
  All rights reserved.\n";
 #endif				/* not lint */
 
-RCSID("$Id: sh.c,v 1.1.1.1 1996-10-02 06:09:20 ghudson Exp $")
+RCSID("$Id: sh.c,v 1.2 1996-10-03 04:40:33 ghudson Exp $")
 
 #include "tc.h"
 #include "ed.h"
@@ -472,15 +472,20 @@ main(argc, argv)
 	if (gethostname(cbuff, sizeof(cbuff)) >= 0) {
 	    cbuff[sizeof(cbuff) - 1] = '\0';	/* just in case */
 	    tsetenv(STRHOST, str2short(cbuff));
+	    set(STRhost, SAVE(cbuff));
 	}
-	else
+	else {
 	    tsetenv(STRHOST, str2short("unknown"));
+	    set(STRhost, SAVE("unknown"));
+	}
     }
 
     /*
      * HOSTTYPE, too. Just set it again.
      */
     tsetenv(STRHOSTTYPE, str2short(gethosttype()));
+    set(STRhosttype, SAVE(gethosttype()));
+    set(STRautolist, Strsave(STRNULL));
  
 #ifdef apollo
     if ((tcp = getenv("SYSTYPE")) == NULL)
@@ -1044,9 +1049,8 @@ main(argc, argv)
 	if (loginsh)
 	    (void) srccat(value(STRhome), STRsldotlogin);
 #endif
-	/* upward compat. */
-	if (!srccat(value(STRhome), STRsldottcshrc))
-	    (void) srccat(value(STRhome), STRsldotcshrc);
+	(void) srccat(value(STRhome), STRsldottcshrc);
+	(void) srccat(value(STRhome), STRsldotcshrc);
 
 	if (!fast && !arginp && !onelflg && !havhash)
 	    dohash(NULL,NULL);
