@@ -3432,7 +3432,7 @@ create_system_menu (GtkWidget *menu, gboolean fake_submenus,
 		    gboolean title,
 		    gboolean launcher_add)
 {
-	char *menudir = gnome_datadir_file ("gnome/apps");
+	char *menudir = gnome_datadir_file ("gnome/athena/menus");
 
 	if (menudir &&
 	    g_file_test (menudir, G_FILE_TEST_ISDIR)) {
@@ -4539,8 +4539,8 @@ make_add_submenu (GtkWidget *menu, gboolean fake_submenus)
 	gtk_menu_append (GTK_MENU (submenu), submenuitem);
 	gtk_signal_connect(GTK_OBJECT(submenuitem), "activate",
 			   GTK_SIGNAL_FUNC(add_menu_to_panel),
-			   "gnome/apps/");
-	setup_internal_applet_drag(submenuitem, "MENU:gnome/apps/");
+			   "gnome/athena/menus/");
+	setup_internal_applet_drag(submenuitem, "MENU:gnome/athena/menus/");
 
 	submenuitem = gtk_menu_item_new ();
 	gtk_widget_lock_accelerators (menuitem);

@@ -92,7 +92,7 @@ get_pixmap(const char *menudir, gboolean main_menu)
 {
 	char *pixmap_name = NULL;
 	if (main_menu) {
-		pixmap_name = gnome_unconditional_pixmap_file("gnome-logo-icon-transparent.png");
+		pixmap_name = gnome_datadir_file("gnome/athena/menu-icon");
 	} else {
 		char *dentry_name;
 		GnomeDesktopEntry *item_info;
