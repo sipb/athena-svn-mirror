@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1996-12-18 18:18:34 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-01-02 09:52:54 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -46,6 +46,7 @@ install:
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 rfindd ${DESTDIR}${CONFIG}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
+	install -c -m 0644 services ${DESTDIR}${ETCDIR}
 	install -c -m 0644 staticroute ${DESTDIR}${CONFIG}
 	install -c -m 0644 su ${DESTDIR}${DEFAULT}
 	install -c -m 0644 system.chestrc ${DESTDIR}${X11LIB}
