@@ -63,7 +63,7 @@ print_help()
   wait_for_key();
   clear();
   refresh();
-  make_display(Current_Index);
+  make_display();
 }
 
 
@@ -76,8 +76,8 @@ print_help()
 top()
 {
   set_current_dir(Root_Dir);
-  Current_Index=1;
-  make_display(Current_Index);
+  Index_Start = Current_Index = 1;
+  make_display();
 }
 
 /* Function:	prev_entry() displays the previous CREF entry.
@@ -131,13 +131,11 @@ up_level()
       if ( strlen(new_dir) >= strlen(Root_Dir) )
 	{
 	  set_current_dir(new_dir);
-	  Current_Index = Previous_Index;
-	  Index_Start = Prev_Index_Start;
-	  Prev_Index_Start = 1;
+	  Index_Start = Current_Index = Previous_Index;
 	  Previous_Index = 1;
 	}
     }
-  make_display(Index_Start);
+  make_display();
 }
 
 /* Function:	save_file() saves an entry in a file.
@@ -181,16 +179,18 @@ save_to_file()
       return;
     }
   close(fd);
-  sprintf(msg, "Filename (default %s)? ", Save_File);
+  sprintf(msg, "Filename: ");
   message(1, msg);
-  inbuf[0] = (char) NULL;
+  strcpy(inbuf, Save_File);
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
-    strcpy(filename, Save_File);
+      message(1, "No filename entered; file not saved.");
   else
-    strcpy(filename, inbuf);
-  message(1, "");
-  copy_file(save_entry->filename, filename);
+    {
+      strcpy(filename, inbuf);
+      message(1, "");
+      copy_file(save_entry->filename, filename);
+    }
 }
 
 /* Function:	next_page() displays the next page of the index.
@@ -211,7 +211,7 @@ next_page()
     Index_Start = new_index;
   else
     Index_Start = Entry_Count - MAX_INDEX_LINES + 1;
-  make_display(Index_Start);
+  make_display();
 }
 
 /* Function:	prev_page() displays the previous page of the index.
@@ -225,7 +225,7 @@ prev_page()
   Index_Start = Index_Start - MAX_INDEX_LINES + 1;
   if (Index_Start < 1)
     Index_Start = 1;
-  make_display(Index_Start);
+  make_display();
 }
 
 
@@ -279,8 +279,8 @@ goto_entry()
 	  if (check_cref_dir(new_dir) == TRUE)
 	    {
 	      set_current_dir(new_dir);
-	      Current_Index=1;
-	      make_display(Current_Index);
+	      Previous_Index = Current_Index = Index_Start = 1;
+	      make_display();
 	      message(1,"");
 	      return;
 	    }
@@ -397,7 +397,7 @@ list_abbrevs()
     }
   wait_for_key();
   clear();
-  make_display(Current_Index);
+  make_display();
 }
 
 /* Function:	insert_entry() inserts a new entry into the current CREF
@@ -527,7 +527,7 @@ insert_entry()
   if (inbuf[0] != 'y')
     {
       clear();
-      make_display(Current_Index);
+      make_display();
       return;
     }
 
@@ -538,7 +538,7 @@ insert_entry()
 	{
 	  wait_for_key();
 	  clear();
-	  make_display(Current_Index);
+	  make_display();
 	  return;
 	}
     }
@@ -549,7 +549,7 @@ insert_entry()
 	{
 	  wait_for_key();
 	  clear();
-	  make_display(Current_Index);
+	  make_display();
 	  return;
 	}
     }
@@ -572,7 +572,7 @@ insert_entry()
 		sprintf(line2, "Unable to rmdir:%s",newdir);
 	    }
 	  messages(line1,line2);
-	  make_display(Current_Index);
+	  make_display();
 	  return;
 	}
       fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
@@ -595,7 +595,7 @@ else
 	      sprintf(line2, "Unable to rmdir:%s",newdir);
 	  }
 	messages(line1,line2);
-	make_display(Current_Index);
+	make_display();
 	return;
       }
     
@@ -640,7 +640,7 @@ else
     }
   set_current_dir(Current_Dir);
   clear();
-  make_display(Current_Index);
+  make_display();
 }
 
 /* Function:	remove_entry() removes an entry from the CREF
@@ -708,7 +708,7 @@ delete_entry()
   if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
     {
       message(1, "Unable to open contents file.");
-      make_display(Current_Index);
+      make_display();
       return;
     }
 
@@ -759,14 +759,14 @@ delete_entry()
   
   set_current_dir(Current_Dir);
   clear();
-  make_display(Current_Index);
+  make_display();
 }
 
 redisplay()
 {
   set_current_dir(Current_Dir);
   clear();
-  make_display(Index_Start);
+  make_display();
 }
 
 contents_file()
@@ -779,7 +779,7 @@ contents_file()
   call_program("more",contents_path);
   wait_for_key();
   clear();
-  make_display(Current_Index);
+  make_display();
 }
 
 dir_contents()
@@ -789,5 +789,5 @@ dir_contents()
   call_program("ls",Current_Dir);
   wait_for_key();
   clear();
-  make_display(Current_Index);
+  make_display();
 }
