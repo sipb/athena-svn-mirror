@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.52 1997-12-13 01:19:00 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.53 1997-12-21 08:06:40 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -9,13 +9,12 @@
  */
 
 #include <mit-copyright.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
-#if defined(sun)
 #include <fcntl.h>
-#endif
 #include <sys/wait.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -37,15 +36,18 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.52 1997-12-13 01:19:00 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.53 1997-12-21 08:06:40 ghudson Exp $";
 #endif
 
-#ifndef NULL
-#define NULL 0
+/* Non-portable termios flags we'd like to set. */
+#ifndef IMAXBEL
+#define IMAXBEL 0
 #endif
-
-#ifndef __STDC__
-#define volatile
+#ifndef ECHOCTL
+#define ECHOCTL 0
+#endif
+#ifndef TAB3
+#define TAB3 0
 #endif
 
 /* Process states */
@@ -80,18 +82,25 @@ char *login_prog = "/etc/athena/console-ttymon";
 char *login_prog = "/bin/login";
 #endif
 
-/* Files */
-char *utmpf =	"/etc/utmp";
-char *wtmpf =	"/usr/adm/wtmp";
-#ifdef SOLARIS
-char *utmpfx =	"/etc/utmpx";
-char *wtmpfx =	"/usr/adm/wtmpx";
+#if defined(UTMP_FILE)
+char *utmpf = UTMP_FILE;
+char *wtmpf = WTMP_FILE;
+#elif defined(_PATH_UTMP)
+char *utmpf = _PATH_UTMP;
+char *wtmpf = _PATH_WTMP;
+#else
+char *utmpf = "/var/adm/utmp";
+char *wtmpf = "/var/adm/wtmp";
 #endif
-char *xpids =	"/var/athena/X%d.pid";
-char *xhosts =	"/etc/X%d.hosts";
+#ifdef SOLARIS
+char *utmpfx = UTMPX_FILE;
+char *wtmpfx = WTMPX_FILE;
+#endif
+char *xpids = "/var/athena/X%d.pid";
+char *xhosts = "/etc/X%d.hosts";
 char *consolepidf = "/var/athena/console.pid";
-char *dmpidf =	"/var/athena/dm.pid";
-char *consolef ="/dev/console";
+char *dmpidf = "/var/athena/dm.pid";
+char *consolef = "/dev/console";
 char *consolelog = "/var/athena/console.log";
 char *mousedev = "/dev/mouse";
 char *displaydev = "/dev/cons";
@@ -109,7 +118,6 @@ char *displaydev = "/dev/cons";
 static    int max_fd;
 
 #ifdef SOLARIS
-#include <stdio.h>
 int
 grabconsole()
 {
@@ -554,7 +562,7 @@ char **argv;
 console_login(msg)
 char *msg;
 {
-    int i, graceful = FALSE, xfirst = TRUE, cfirst = TRUE;
+    int i, graceful = FALSE, xfirst = TRUE, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
     struct termios ttybuf;
 
@@ -736,17 +744,9 @@ char **argv;
 #endif
 	/* Since we are the session leader, we must initialize the tty */
 	(void) tcgetattr(0, &tc);
-#ifdef IMAXBEL
 	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY|IMAXBEL;
-#else
-	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY;
-#endif
 	tc.c_oflag = OPOST|ONLCR|TAB3;
-#ifdef ECHOCTL
 	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK|ECHOCTL;
-#else
-	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK;
-#endif
 	tc.c_cc[VMIN] = 1;
 	tc.c_cc[VTIME] = 0;
 	tc.c_cc[VERASE] = CERASE;
@@ -756,10 +756,10 @@ char **argv;
 	tc.c_cc[VQUIT] = CQUIT;
 	tc.c_cc[VSTART] = CSTART;
 	tc.c_cc[VSTOP] = CSTOP;
-	tc.c_cc[VEOL] = CNUL;
+	tc.c_cc[VEOL] = _POSIX_VDISABLE;
 	/* The following are common extensions to POSIX */
 #ifdef VEOL2
-	tc.c_cc[VEOL2] = CNUL;
+	tc.c_cc[VEOL2] = _POSIX_VDISABLE;
 #endif
 #ifdef VSUSP
 	tc.c_cc[VSUSP] = CSUSP;
@@ -787,13 +787,8 @@ char **argv;
 	open("/tmp/console.err", O_CREAT|O_APPEND|O_WRONLY, 0644);
 	dup2(1, 2);
 #endif
-#ifdef SOLARIS
 	setgid(DAEMON);
 	setuid(DAEMON);
-#else
-	setregid(DAEMON, DAEMON);
-	setreuid(DAEMON, DAEMON);
-#endif
 	(void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
 #ifdef SOLARIS
 	/* Icky hack: last two args are "-inputfd" and "0"; change the last
@@ -966,22 +961,15 @@ char *tty;
 void child()
 {
     int pid;
-#ifdef SOLARIS
     int status;
-#else
-    union wait status;
-#endif
     char *number();
     struct sigaction sigact;
+
     sigemptyset(&sigact.sa_mask);
     sigact.sa_flags = 0;
     sigact.sa_handler = (void (*)())child;
     sigaction(SIGCHLD, &sigact, NULL);
-#ifdef SOLARIS
     pid = waitpid(-1, &status, WNOHANG);
-#else
-    pid = wait3(&status, WNOHANG, 0);
-#endif
     if (pid == 0 || pid == -1) return;
 
 #ifdef DEBUG
@@ -1013,11 +1001,7 @@ void child()
 	trace("X Login exited status ");
 	trace(number(status.w_retcode));
 #endif
-#ifdef SOLARIS
         if (WEXITSTATUS(status) == CONSOLELOGIN)
-#else
-	if (status.w_retcode == CONSOLELOGIN)
-#endif
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTENT;
