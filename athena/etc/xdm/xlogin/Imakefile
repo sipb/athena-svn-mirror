@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.19 1993-02-16 14:56:53 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.20 1993-02-22 15:40:52 probe Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -11,7 +11,8 @@ MACHLIBS = -lodm -lcfg -ls
 #endif
 
 AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
-DEFINES = -I. $(MACHDEFS)
+DEFINES = -I. $(MACHDEFS) \
+	-DMOTD_FILE=\"/afs/athena.mit.edu/system/config/motd/login.`. $(ATHVERS);echo $$ATHMAJV$$ATHMINV`\"
 LINTFLAGS = $(CFLAGS) -b -h -u -v -z
 
   SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
