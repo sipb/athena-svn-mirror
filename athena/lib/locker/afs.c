@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.10 2002-03-15 04:39:49 ghudson Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.11 2003-07-29 14:06:00 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -42,6 +42,7 @@ static const char rcsid[] = "$Id: afs.c,v 1.10 2002-03-15 04:39:49 ghudson Exp $
 
 #include <com_err.h>
 #include <krb.h>
+#include <krb5.h>
 
 #include "locker.h"
 #include "locker_private.h"
@@ -76,10 +77,14 @@ struct locker_ops locker__afs_ops = {
   afs_zsubs
 };
 
-static int afs_get_cred(char *name, char *inst, char *realm,
-			CREDENTIALS *cred);
+static int afs_get_cred(krb5_context context, char *name, char *inst, char *realm,
+			CREDENTIALS *cred, krb5_creds **creds);
 static int afs_maybe_auth_to_cell(locker_context context, char *name,
 				  char *cell, int op, int force);
+static int get_user_realm(krb5_context context, char *realm);
+static char *afs_realm_of_cell(krb5_context, struct afsconf_cell *);
+
+extern int krb524_convert_creds_kdc(krb5_context, krb5_creds *, CREDENTIALS *);
 
 static int afs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **atp)
@@ -360,6 +365,8 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   struct ktc_token token, xtoken;
   long vice_id;
   uid_t uid = geteuid(), ruid = getuid();
+  krb5_context krb5_context;
+  krb5_creds *v5cred = NULL;
 
   if (op != LOCKER_AUTH_AUTHENTICATE)
     return LOCKER_SUCCESS;
@@ -389,39 +396,54 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
    * to the user before touching the ticket file.) Try
    * afs.cellname@realm first, and afs@realm if that doesn't exist.
    */
-  crealm = (char *)krb_realmofhost(cellconfig.hostName[0]);
+  status = krb5_init_context(&krb5_context);
+  if (status)
+    {
+      locker__error(context, "%s: Could not establish krb5 context: %s\n",
+		    name, error_message(status));
+      return LOCKER_EAUTH;
+    }
+  crealm = afs_realm_of_cell(krb5_context, &cellconfig);
   if (uid != ruid)
     seteuid(ruid);
-  krb_get_tf_realm(TKT_FILE, urealm);
-  status = afs_get_cred("afs", cell, crealm, &cred);
+  status = afs_get_cred(krb5_context, "afs", cell, crealm, &cred, &v5cred);
   if (status)
-    status = afs_get_cred("afs", "", crealm, &cred);
+    status = afs_get_cred(krb5_context, "afs", "", crealm, &cred, &v5cred);
   if (uid != ruid)
     seteuid(uid);
   if (status)
     {
-      if (status == NO_TKT_FIL)
+      if (status == KRB5_FCC_NOFILE)
 	{
 	  locker__error(context, "%s: Could not authenticate to AFS: %s.\n",
-			name, krb_get_err_text(status));
+			name, error_message(status));
 	}
       else
 	{
 	  locker__error(context, "%s: Could not authenticate to AFS cell "
 			"%s:\n%s while getting tickets for %s.\n",
-			name, cell, krb_get_err_text(status), crealm);
+			name, cell, error_message(status), crealm);
 	}
+      krb5_free_context(krb5_context);
       return LOCKER_EAUTH;
     }
 
   /* Create a token from the ticket. (Code stolen from aklog.) */
   token.kvno = cred.kvno;
   token.startTime = cred.issue_date;
-  /* ticket lifetime is in five-minutes blocks. */
-  token.endTime = cred.issue_date + ((unsigned char)cred.lifetime * 5 * 60);
+  token.endTime = v5cred->times.endtime;
   memcpy(&token.sessionKey, cred.session, sizeof(token.sessionKey));
   token.ticketLen = cred.ticket_st.length;
   memcpy(token.ticket, cred.ticket_st.dat, token.ticketLen);
+
+  status = get_user_realm(krb5_context, urealm);
+  krb5_free_creds(krb5_context, v5cred);
+  krb5_free_context(krb5_context);
+  if (status)
+    {
+      locker__error(context, "Couldn't obtain user's realm.\n");
+      return LOCKER_EAUTH;
+    }
 
   user = malloc(strlen(cred.pname) + strlen(cred.pinst) + strlen(urealm) + 3);
   if (!user)
@@ -498,19 +520,50 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   return LOCKER_SUCCESS;
 }
 
-static int afs_get_cred(char *name, char *inst, char *realm, CREDENTIALS *cred)
+static int afs_get_cred(krb5_context context, char *name, char *inst, char *realm,
+			CREDENTIALS *c, krb5_creds **creds)
 {
-  int status;
+  krb5_creds increds;
+  krb5_principal client_principal = NULL;
+  krb5_ccache krb425_ccache = NULL;
+  krb5_error_code retval = 0;
 
-  status = krb_get_cred(name, inst, realm, cred);
-  if (status != KSUCCESS)
-    {
-      status = get_ad_tkt(name, inst, realm, 255);
-      if (status == KSUCCESS)
-	status = krb_get_cred(name, inst, realm, cred);
-    }
+  memset(&increds, 0, sizeof(increds));
+  /* ANL - instance may be ptr to a null string. Pass null then */
+  retval = krb5_build_principal(context, &increds.server, strlen(realm),
+				realm, name,
+				(inst && strlen(inst)) ? inst : NULL,
+				NULL);
+  if (retval)
+    goto fail;
 
-  return status;
+  retval = krb5_cc_default(context, &krb425_ccache);
+  if (retval)
+    goto fail;
+
+  retval = krb5_cc_get_principal(context, krb425_ccache, &client_principal);
+  if (retval)
+    goto fail;
+
+  increds.client = client_principal;
+  increds.times.endtime = 0;
+  /* Ask for DES since that is what V4 understands */
+  increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+
+  retval = krb5_get_credentials(context, 0, krb425_ccache, &increds, creds);
+  if (retval)
+    goto fail;
+
+  /* This requires krb524d to be running with the KDC */
+  retval = krb524_convert_creds_kdc(context, *creds, c);
+
+fail:
+  krb5_free_cred_contents(context, &increds);
+  if (client_principal)
+    krb5_free_principal(context, client_principal);
+  if (krb425_ccache)
+    krb5_cc_close(context, krb425_ccache);
+  return(retval);
 }
 
 static int afs_zsubs(locker_context context, locker_attachent *at)
@@ -609,4 +662,58 @@ static int afs_zsubs(locker_context context, locker_attachent *at)
 void des_pcbc_init(void)
 {
   abort();
+}
+
+static char *afs_realm_of_cell(context, cellconfig)
+     krb5_context context;
+     struct afsconf_cell *cellconfig;
+{
+  char krbhst[MAX_K_NAME_SZ];
+  static char krbrlm[REALM_SZ+1];
+  char **hrealms = 0;
+  krb5_error_code retval;
+
+  if (!cellconfig)
+    return 0;
+  if (retval = krb5_get_host_realm(context,
+				   cellconfig->hostName[0], &hrealms))
+    return 0;
+  if (!hrealms[0])
+    return 0;
+  strcpy(krbrlm, hrealms[0]);
+
+  if (hrealms)
+    free(hrealms);
+
+  return krbrlm;
+}
+
+static int get_user_realm(krb5_context context, char *realm)
+{
+  krb5_principal client_principal = NULL;
+  krb5_ccache krb425_ccache = NULL;
+  krb5_error_code retval = 0;
+  int i;
+
+  retval = krb5_cc_default(context, &krb425_ccache);
+  if (retval)
+    goto fail;
+
+  retval = krb5_cc_get_principal(context, krb425_ccache, &client_principal);
+  if (retval)
+    goto fail;
+
+  i = krb5_princ_realm(context, client_principal)->length;
+  if (i < REALM_SZ - 1)
+    i = REALM_SZ - 1;
+  memcpy(realm, krb5_princ_realm(context, client_principal)->data, i);
+  realm[i] = '\0';
+
+fail:
+  if (krb425_ccache)
+    krb5_cc_close(context, krb425_ccache);
+  if (client_principal)
+    krb5_free_principal(context, client_principal);
+
+  return retval;
 }
