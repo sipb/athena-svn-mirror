@@ -344,7 +344,7 @@ AUTOUPDATE=true;	export AUTOUPDATE	# Automatically update?
 EOF
 
 grep -q ^SYNCCONFIG /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-SYNCCONFIG=true;	export SYNCCONFIG	# Syncronize configurations?
+SYNCCONFIG=true;	export SYNCCONFIG	# Synchronize configurations?
 EOF
 
 grep -q ^MAILRELAY /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
