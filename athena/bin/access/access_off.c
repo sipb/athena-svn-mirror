@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: access_off.c,v 1.6 1997-04-11 20:48:49 ghudson Exp $";
+static const char rcsid[] = "$Id: access_off.c,v 1.7 1998-04-15 18:47:09 ghudson Exp $";
 
 #include <stdio.h>
 #include <signal.h>
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
   if (kill(pid, signo) < 0)
     {
       if (errno != ESRCH)
-	  perror("error killing daemon");
+	perror("error killing daemon");
       return 1;
     }
 
