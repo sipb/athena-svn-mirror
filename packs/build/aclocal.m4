@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.12 1999-10-13 22:29:41 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.13 1999-10-30 18:47:37 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -237,8 +237,8 @@ fi])
 dnl ----- Kerberos 5 -----
 
 AC_DEFUN(ATHENA_KRB5_CHECK,
-[AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
-AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
+[AC_SEARCH_LIBS(gethostbyname, nsl)
+AC_SEARCH_LIBS(socket, socket)
 AC_CHECK_LIB(gen, compile)
 if test "$krb5" != yes; then
 	CPPFLAGS="$CPPFLAGS -I$krb5/include"
