@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.3 1999-06-29 22:07:41 mwhitson Exp $";
+"$Id: sendmail.c,v 1.4 1999-06-30 14:37:47 danw Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -32,6 +32,10 @@ void Sendmail_to_user( int retval, struct job *job )
 	char *id, *mailname, *path, *s, *process;
 	plp_status_t status;
 	struct line_list files;
+
+	/* Don't notify if we're just forwarding it along. */
+	if (retval == JSUCC && Bounce_queue_dest_DYN)
+	  return;
 
 	/*
 	 * check to see if the user really wanted
