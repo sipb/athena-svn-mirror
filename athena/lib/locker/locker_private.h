@@ -1,4 +1,4 @@
-/* $Id: locker_private.h,v 1.6 2001-08-16 14:27:52 ghudson Exp $ */
+/* $Id: locker_private.h,v 1.6.2.1 2002-12-09 22:14:18 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -21,6 +21,7 @@
 
 #define LOCKER_PATH_ATTACHTAB "/var/athena/attachtab"
 #define LOCKER_PATH_ATTACH_CONF "/etc/athena/attach.conf"
+#define LOCKER_PATH_LOCAL "/var/athena/local-validated"
 
 #define LOCKER_AFS_MOUNT_DIR "/mit"
 #define LOCKER_UFS_MOUNT_DIR "/mnt"
@@ -57,7 +58,7 @@ struct locker__regexp_list {
 struct locker_context {
   /* attach.conf variables */
   int exp_desc, exp_mountpoint, keep_mount, nfs_root_hack, ownercheck;
-  char *afs_mount_dir, *attachtab, *nfs_mount_dir;
+  char *afs_mount_dir, *attachtab, *nfs_mount_dir, *local_dir;
   struct locker__regexp_list allow, setuid, mountpoint;
   struct locker__regexp_list allowopts, defopts, filesystem, reqopts;
 
