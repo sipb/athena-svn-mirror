@@ -251,6 +251,7 @@ case "$1" in
 	on_network || exit 1
 
 	athena_afsadjust
+	choose_afsdoptions
 
 	# Load kernel extensions
 	if  load_client  ; then :
