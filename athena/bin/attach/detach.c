@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.23 1999-09-20 16:27:08 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.24 1999-09-27 16:14:13 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -240,7 +240,7 @@ static void detach_by_host(locker_context context, char *host, int options)
 	      whoami, host);
       exit(1);
     }
-  locker_iterate_attachtab(context, locker_check_host, &(h->h_addr),
+  locker_iterate_attachtab(context, locker_check_host, h->h_addr,
 			   detach_attachent, &options);
 }
 
