@@ -225,38 +225,27 @@
 #ifndef OSMinorVersion
 #define OSMinorVersion          0
 #endif
-#ifndef UnalignedReferencesAllowed
-#define UnalignedReferencesAllowed NO	/* if arbitrary deref is okay */
-#endif
-#ifndef ExecableScripts
-#ifdef SYSV
-#define ExecableScripts		NO
-#else
-#define ExecableScripts		YES	/* kernel exec() can handle #! */
-#endif
+
+
+#ifndef HaveTermIO
+#define HaveTermIO		0    /* If 0, uses BSD-style terminal
+					control */
 #endif
 
-#ifndef BourneShell			/* to force shell in makefile */
-#define BourneShell		/bin/sh
-#endif
-#ifndef ConstructMFLAGS
-#if SystemV
-#define ConstructMFLAGS		YES	/* build MFLAGS from MAKEFLAGS */
-#else
-#define ConstructMFLAGS		NO	/* build MFLAGS from MAKEFLAGS */
-#endif
+#ifndef HaveDefErrno
+#define HaveDefErrno		1 /* If 0, sys/errno.h doesn't define errno or
+				      sys_errlist */
 #endif
 
-#ifndef HasLargeTmp
-#define HasLargeTmp		NO	/* be paranoid */
+#ifndef HaveSelectMacros
+#define HaveSelectMacros	1  /* If 0, needs FD_SET et al defined */
 #endif
-#ifndef HasSockets
-#if SystemV
-#define HasSockets		NO	/* not yet... */
-#else
-#define HasSockets		YES	/* bsd does have them */
+
+#ifndef HaveAnsiIncludes
+#define HaveAnsiIncludes	0  /* If 1, include files already have
+				      function prototypes */
 #endif
-#endif
+
 #ifndef HasVFork
 #if SystemV
 #define HasVFork		NO	/* not yet... */
@@ -264,9 +253,11 @@
 #define HasVFork		YES
 #endif
 #endif
+
 #ifndef HasPutenv
 #define HasPutenv		NO	/* assume not */
 #endif
+
 #ifndef HasVoidSignalReturn
 #if SystemV
 #define HasVoidSignalReturn	YES
@@ -274,65 +265,62 @@
 #define HasVoidSignalReturn	NO	/* may or may not be true */
 #endif
 #endif
-#ifndef HasBsearch
-#if SystemV
-#define HasBsearch		YES
-#else
-#define HasBsearch		NO	/* stupid systems */
-#endif
-#endif
+
 #ifndef HasSaberC
 #define HasSaberC		NO	/* for people unclear on the concept */
-#endif
-#ifndef HasFortran
-#define HasFortran		NO
-#endif
-
-#ifndef HasSunOSSharedLibraries
-#define HasSunOSSharedLibraries NO
-#endif
-
-#ifndef SharedCodeDef
-#if HasSunOSSharedLibraries
-#define SharedCodeDef -DSHAREDCODE
-#else
-#define SharedCodeDef /**/
-#endif
-#endif
-#ifndef SharedLibraryDef
-#if HasSunOSSharedLibraries
-#define SharedLibraryDef -DSUNSHLIB	/* eventually will be SVR4SHLIB... */
-#ifndef HasSharedLibraries
-#define HasSharedLibraries YES
-#endif
-#else
-#define SharedLibraryDef /**/
-#ifndef HasSharedLibraries
-#define HasSharedLibraries NO
-#endif
-#endif
-#else
-#ifndef HasSharedLibraries
-#define HasSharedLibraries NO
-#endif
 #endif
 
 #ifndef StripInstalledPrograms
 #define StripInstalledPrograms YES
 #endif
 
+/* Set flags based on preferences set... */
+
+
+#if HaveDefErrno
+#define ErrnoDef
+#else
+#define ErrnoDef	-DNEEDS_ERRNO_DEFS
+#endif
+
+#if HaveSelectMacros
+#define SelectMDef
+#else
+#define SelectMDef	-DNEEDS_SELECT_MACROS
+#endif
+
+#if HaveAnsiIncludes
+#define AnsiIDef	-DHAS_ANSI_INCLUDES
+#else
+#define AnsiIDef
+#endif
+
+#if HasVFork
+#define VforkDef
+#else
+#define VforkDef	-DNO_VFORK
+#endif
+
+#if HasPutenv  
+#define PutenvDef	-DPUTENV
+#else
+/* otherwise, it uses setenv */
+#define PutenvDef
+#endif
+
+
+#define OptionDefines TermIODef PutenvDef ErrnoDef SelectMDef \
+AnsiIDef VforkDef
+
+
 #ifndef DestDir
 #define DestDir /* as nothing */
 #endif
-#ifndef UsrLibDir
-#define UsrLibDir $(DESTDIR)/usr/lib
+
+#ifndef BourneShell                   /* to force shell in makefile */
+#define BourneShell           /bin/sh
 #endif
-#ifndef IncRoot
-#define IncRoot $(DESTDIR)/usr/include
-#endif
-#ifndef UNCOMPRESSPATH
-#define UNCOMPRESSPATH /usr/ucb/uncompress
-#endif
+
 #ifndef OptimizedCDebugFlags
 #define OptimizedCDebugFlags -O
 #endif
@@ -356,12 +344,6 @@
 #endif
 #ifndef LibraryCCOptions
 #define LibraryCCOptions DefaultCCOptions
-#endif
-#ifndef ServerCCOptions
-#define ServerCCOptions DefaultCCOptions
-#endif
-#ifndef PexCDebugFlags
-#define PexCDebugFlags -g
 #endif
 #ifndef InstPgmFlags
 #define InstPgmFlags -s
@@ -388,37 +370,14 @@
 #define InstKmemFlags InstUidFlags    /* put -g kmem -m 2755 in site.def... */
 #endif
 #ifndef ArCmd
-#if HasLargeTmp
-#define ArCmd ar cq	/* use /tmp for temp files */
-#else
 #define ArCmd ar clq	/* use local dir for temp files */
 #endif
-#endif
+
 #ifndef BootstrapCFlags
 #define BootstrapCFlags /**/
 #endif
 #ifndef CcCmd
 #define CcCmd cc
-#endif
-#ifndef CPlusPlusCmd
-#define CPlusPlusCmd g++
-#endif
-#if HasFortran
-#ifndef FortranCmd			/* for xgks */
-#define FortranCmd f77
-#endif
-#ifndef FortranFlags
-#define FortranFlags /**/
-#endif
-#ifndef FortranDebugFlags
-#define FortranDebugFlags /**/		/* for -O or -g */
-#endif
-#endif
-#ifndef AsCmd
-#define AsCmd as
-#endif
-#ifndef CompressCmd
-#define CompressCmd compress
 #endif
 #ifndef CppCmd
 #define CppCmd /lib/cpp
@@ -492,13 +451,7 @@
 #ifndef StandardIncludes
 #define StandardIncludes /**/			/* for platform-specifics */
 #endif
-#ifndef StandardDefines
-#if SystemV
-#define StandardDefines -DSYSV
-#else
-#define StandardDefines /**/
-#endif
-#endif
+
 #ifndef ExtraLibraries
 #define ExtraLibraries /**/
 #endif
@@ -555,16 +508,12 @@
                RM = RmCmd
      STD_INCLUDES = StandardIncludes
   STD_CPP_DEFINES = StandardCppDefines
-      STD_DEFINES = StandardDefines
+      STD_DEFINES = StandardDefines OptionDefines
  EXTRA_LOAD_FLAGS = ExtraLoadFlags
   EXTRA_LIBRARIES = ExtraLibraries
              TAGS = TagsCmd
 #if ConstructMFLAGS
            MFLAGS = -$(MAKEFLAGS)
-#endif
-#if HasSharedLibraries
-    SHAREDCODEDEF = SharedCodeDef
-         SHLIBDEF = SharedLibraryDef
 #endif
 
 #if StripInstalledPrograms
