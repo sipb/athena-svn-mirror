@@ -3,7 +3,7 @@
  *	Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.3 1990-07-20 15:37:56 probe Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.4 1991-01-22 16:13:27 probe Exp $";
 
 #include "attach.h"
 
@@ -22,6 +22,13 @@ extern char *krb_realmofhost();	/* <krb.h> doesn't declare this */
 #define AFSAUTH_CELL		2
 #define AFSAUTH_DOZEPHYR	4
 
+#ifdef __STDC__
+static int afs_auth_internal(char * errorname, char * afs_pathname, int flags);
+#else
+static int afs_auth_internal();
+#endif
+
+
 /*
  * The current implementation of AFS attaches is to make a symbolic
  * link.  This is NOT GUARANTEED to always be the case. 
@@ -36,8 +43,6 @@ afs_attach(at, mopt, errorout)
 	char	buf[BUFSIZ];
 	int	len;
 	int	afs_auth_flags = 0;
-	int	real_uid = getuid();
-	int	effective_uid = geteuid();
 
 	if ((at->mode != 'n') && do_nfsid)
 		afs_auth_flags |= AFSAUTH_DOAUTH;
@@ -45,12 +50,14 @@ afs_attach(at, mopt, errorout)
 	if (use_zephyr)
 		afs_auth_flags |= AFSAUTH_DOZEPHYR;
 	
-	if (afs_auth_flags & (AFSAUTH_DOZEPHYR | AFSAUTH_DOAUTH))
-		afs_auth_internal(at->hesiodname, at->hostdir, afs_auth_flags);
+	if ((afs_auth_flags & (AFSAUTH_DOZEPHYR | AFSAUTH_DOAUTH)) &&
+	    (afs_auth_internal(at->hesiodname, at->hostdir, afs_auth_flags)
+	     == FAILURE))
+		return(FAILURE);
 	
 	if (debug_flag)
 		printf("lstating %s...\n", at->hostdir);
-	setreuid(effective_uid, real_uid);
+	setreuid(effective_uid, owner_uid);
 	if (stat(at->hostdir, &statbuf)) {
 		if (errno == ENOENT)
 			fprintf(stderr, "%s: %s does not exist\n",
@@ -95,7 +102,13 @@ afs_attach(at, mopt, errorout)
 					error_status = ERR_ATTACHINUSE;
 					return(FAILURE);
 				}
-				if (unlink(at->mntpt)) {
+				if (
+#if defined(_AIX) && (AIXV==12)
+				    /* AIX 1.x */
+				    rmslink(at->mntpt) == -1 &&
+#endif
+				    unlink(at->mntpt) == -1)
+				{
 					fprintf(stderr,
 	"%s: Couldn't remove existing symlink from %s to %s: %s\n",
 			at->hesiodname, at->mntpt, buf, sys_errlist[errno]);
@@ -199,7 +212,7 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 		close(fds[0]);
 		dup2(fds[1], 1);
 		close(fds[1]);
-		setuid(getuid());
+		setuid(owner_uid);
 		execl(aklog_fn, AKLOG_SHORTNAME,
 		      flags & AFSAUTH_CELL ? "-cell" : "-path", 
 		      afs_pathname, "-zsubs",
@@ -258,6 +271,7 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 }
 
 int afs_auth(hesname, afsdir)
+const char *hesname, *afsdir;
 {
     return(afs_auth_internal(hesname, afsdir, AFSAUTH_DOAUTH));
 }
@@ -293,23 +307,28 @@ char **afs_explicit(name)
 int afs_detach(at)
 	struct _attachtab *at;
 {
-  if(at->flags & FLAG_PERMANENT)
-    return SUCCESS;
+    if(at->flags & FLAG_PERMANENT)
+	return SUCCESS;
      
-  if(unlink(at->mntpt) == -1)
-    {
-      if(errno == ENOENT)
+    if (
+#if defined(_AIX) && (AIXV==12)
+	/* AIX 1.x */
+	rmslink(at->mntpt) == -1 &&
+#endif
+	unlink(at->mntpt) == -1)
 	{
-	  fprintf(stderr, "%s: filesystem %s already detached\n",
-		  progname, at->hesiodname);
-	  return SUCCESS;
+	    if(errno == ENOENT)
+		{
+		    fprintf(stderr, "%s: filesystem %s already detached\n",
+			    progname, at->hesiodname);
+		    return SUCCESS;
+		}
+	    fprintf(stderr, "%s: detach of filesystem %s failed, unable to remove mountpoint\n\terror is %s\n",
+		    progname, at->hesiodname, errstr(errno));
+	    /* Set error_status? */
+	    return FAILURE;
 	}
-      fprintf(stderr, "%s: detach of filesystem %s failed, unable to remove mountpoint\n\terror is %s\n",
-	      progname, at->hesiodname, errstr(errno));
-      /* Set error_status? */
-      return FAILURE;
-    }
-  return SUCCESS;
+    return SUCCESS;
 }
 
 int afs_auth_to_cell(cell)
