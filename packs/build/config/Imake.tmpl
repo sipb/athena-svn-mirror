@@ -38,7 +38,7 @@
 #define AIncDir /usr/include
 #endif
 #ifndef LintCFlag
-#define LintCFlag -C
+#define LintCFlag -o
 #endif
 #ifndef CcCmd
 #define CcCmd cc
@@ -66,6 +66,9 @@
 #endif
 #ifndef InstScriptFlags
 #define InstScriptFlags -m 755
+#endif
+#ifndef RmCmd
+#define RmCmd rm -f
 #endif
 #ifndef CcFlags
 #define CcFlags
@@ -115,6 +118,7 @@ RANLIB=RanLibCmd
 CC=CcCmd
 LD=LdCmd
 AS=AsCmd
+RM=RmCmd
 CFLAGS=CDebugFlags CcFlags $(DEFINES) -I$(ATHINCDIR)
 LDFLAGS=LdFlags -L$(ATHLIBDIR)
 LDLIBS=LdLibs
