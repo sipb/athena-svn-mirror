@@ -1,0 +1,80 @@
+% \iffalse meta-comment
+%
+% Copyright 1993 1994 1995 1996 1997
+% The LaTeX3 Project and any individual authors listed elsewhere
+% in this file. 
+% 
+% For further copyright information, and conditions for modification
+% and distribution, see the file legal.txt, and any other copyright
+% notices in this file.
+% 
+% This file is part of the LaTeX2e system.
+% ----------------------------------------
+%   This system is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+% 
+%   For error reports concerning UNCHANGED versions of this file no
+%   more than one year old, see bugs.txt.
+% 
+%   Please do not request updates from us directly.  Primary
+%   distribution is through the CTAN archives.
+% 
+% 
+% IMPORTANT COPYRIGHT NOTICE:
+% 
+% You are NOT ALLOWED to distribute this file alone.
+% 
+% You are allowed to distribute this file under the condition that it
+% is distributed together with all the files listed in manifest.txt.
+% 
+% If you receive only some of these files from someone, complain!
+% 
+% 
+% Permission is granted to copy this file to another file with a
+% clearly different name and to customize the declarations in that
+% copy to serve the needs of your installation, provided that you
+% comply with the conditions in the file legal.txt.
+% 
+% However, NO PERMISSION is granted to produce or to distribute a
+% modified version of this file under its original name.
+%  
+% You are NOT ALLOWED to change this file.
+% 
+% 
+% 
+% \fi
+%<*driver>
+\documentclass{ltxdoc}
+
+\begin{document}
+
+The package \textsf{pict2e} that is mentioned in the 2nd edition of
+``\LaTeX: A Document Preparation System'' has not yet been produced.
+It is unlikely that the \LaTeX3 Project Team will ever produce this
+package thus we would be very happy if someone else creates it.
+
+Most of the basic functionality of the proposed package---implementing
+picture mode commands using driver specific |\special|'s (eg
+PostScript code) is available in the old \LaTeX2.09 packages:
+\begin{itemize}
+\item \textsf{pspicture} (By David Carlisle).
+\item \textsf{pspic} (By Kresten Krab Thorup).
+\end{itemize}
+However, there are some syntactic differences between these styles, and
+the proposed \textsf{pict2e}. Both these packages are probably still
+available from CTAN.
+
+Another alternative  would be to use the very powerful
+\textsf{pstricks} package written by Timothy Van Zandt. 
+CTAN archives have \textsf{pstricks} in the directory:\\
+|graphics/pstricks|
+\end{document}
+%</driver>
+%<*package>
+\PackageError{pict2e}
+    {The package pict2e.sty will not be written\MessageBreak
+     by the LaTeX maintainers soon}%
+    {The file pict2e.dtx contains suggested alternative solutions.}
+%</package>
+

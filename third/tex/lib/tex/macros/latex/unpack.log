@@ -1,0 +1,757 @@
+This is TeX, Version 3.14159 (C version 6.1) (INITEX)  30 JUN 1998 16:23
+**unpack.ins
+(unpack.ins (ltdirchk.dtx
+** Writing a default texsys.cfg
+./texsys.aux found
+
+
+\@currdir set to: ./.
+
+) (docstrip.dtx
+Utility: `docstrip' 2.5b <1998/04/28>
+English documentation    <1998/04/03>
+
+**********************************************************
+* This program converts documented macro-files into fast *
+* loadable files by stripping off (nearly) all comments! *
+**********************************************************
+
+********************************************************
+* No Configuration file found, using default settings. *
+********************************************************
+
+) (ltvers.dtx)
+**********************************************
+*
+* Welcome to the Installation routine of
+*
+*     LaTeX2e <1998/06/01>
+*
+* Depending on your machine the installation
+* might take a long time --- this is the
+* price for being able to run on all platforms.
+* So please be patient :-)
+*
+**********************************************
+
+
+(format.ins
+
+Generating file(s) ./latex.ltx ./tracefnt.sty ./flafter.sty ./fleqn.clo ./leqno
+.clo 
+
+Processing file ltdirchk.dtx (initex,2ekernel,dircheck) -> latex.ltx
+Lines  processed: 920
+Comments removed: 684
+Comments  passed: 1
+Codelines passed: 214
+
+
+Processing file ltplain.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1121
+Comments removed: 836
+Comments  passed: 17
+Codelines passed: 250
+
+
+Processing file ltvers.dtx (2ekernel) -> latex.ltx
+File ltvers.dtx ended by \endinput.
+Lines  processed: 111
+Comments removed: 56
+Comments  passed: 1
+Codelines passed: 48
+
+
+Processing file ltdefns.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1386
+Comments removed: 1076
+Comments  passed: 1
+Codelines passed: 296
+
+
+Processing file ltalloc.dtx (2ekernel) -> latex.ltx
+File ltalloc.dtx ended by \endinput.
+Lines  processed: 193
+Comments removed: 154
+Comments  passed: 1
+Codelines passed: 34
+
+
+Processing file ltcntrl.dtx (2ekernel) -> latex.ltx
+File ltcntrl.dtx ended by \endinput.
+Lines  processed: 340
+Comments removed: 281
+Comments  passed: 1
+Codelines passed: 54
+
+
+Processing file lterror.dtx (2ekernel) -> latex.ltx
+File lterror.dtx ended by \endinput.
+Lines  processed: 838
+Comments removed: 537
+Comments  passed: 1
+Codelines passed: 222
+
+
+Processing file ltpar.dtx (2ekernel) -> latex.ltx
+File ltpar.dtx ended by \endinput.
+Lines  processed: 212
+Comments removed: 184
+Comments  passed: 1
+Codelines passed: 23
+
+
+Processing file ltspace.dtx (2ekernel) -> latex.ltx
+File ltspace.dtx ended by \endinput.
+Lines  processed: 977
+Comments removed: 761
+Comments  passed: 1
+Codelines passed: 211
+
+
+Processing file ltlogos.dtx (2ekernel) -> latex.ltx
+File ltlogos.dtx ended by \endinput.
+Lines  processed: 139
+Comments removed: 102
+Comments  passed: 1
+Codelines passed: 32
+
+
+Processing file ltfiles.dtx (2ekernel) -> latex.ltx
+Lines  processed: 880
+Comments removed: 628
+Comments  passed: 1
+Codelines passed: 242
+
+
+Processing file ltoutenc.dtx (2ekernel) -> latex.ltx
+File ltoutenc.dtx ended by \endinput.
+Lines  processed: 2597
+Comments removed: 1690
+Comments  passed: 1
+Codelines passed: 869
+
+
+Processing file ltcounts.dtx (2ekernel) -> latex.ltx
+Lines  processed: 452
+Comments removed: 368
+Comments  passed: 1
+Codelines passed: 79
+
+
+Processing file ltlength.dtx (2ekernel) -> latex.ltx
+Lines  processed: 170
+Comments removed: 136
+Comments  passed: 1
+Codelines passed: 29
+
+
+Processing file ltfssbas.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1895
+Comments removed: 1405
+Comments  passed: 3
+Codelines passed: 449
+
+
+Processing file ltfsstrc.dtx (2ekernel) -> latex.ltx
+                             (package,trace) -> tracefnt.sty
+Lines  processed: 1904
+Comments removed: 1348
+Comments  passed: 3
+Codelines passed: 430
+
+
+Processing file ltfsscmp.dtx (compat,2ekernel) -> latex.ltx
+Lines  processed: 432
+Comments removed: 281
+Comments  passed: 3
+Codelines passed: 136
+
+
+Processing file ltfssdcl.dtx (compat,2ekernel) -> latex.ltx
+Lines  processed: 1537
+Comments removed: 712
+Comments  passed: 3
+Codelines passed: 809
+
+
+Processing file ltfssini.dtx (compat) -> latex.ltx
+Lines  processed: 596
+Comments removed: 429
+Comments  passed: 3
+Codelines passed: 154
+
+
+Processing file ltfntcmd.dtx (2ekernel) -> latex.ltx
+File ltfntcmd.dtx ended by \endinput.
+Lines  processed: 766
+Comments removed: 609
+Comments  passed: 17
+Codelines passed: 136
+
+
+Processing file ltpageno.dtx (2ekernel) -> latex.ltx
+Lines  processed: 119
+Comments removed: 89
+Comments  passed: 1
+Codelines passed: 25
+
+
+Processing file ltxref.dtx (2ekernel) -> latex.ltx
+Lines  processed: 354
+Comments removed: 294
+Comments  passed: 1
+Codelines passed: 55
+
+
+Processing file ltmiscen.dtx (2ekernel) -> latex.ltx
+Lines  processed: 804
+Comments removed: 632
+Comments  passed: 1
+Codelines passed: 167
+
+
+Processing file ltmath.dtx (2ekernel) -> latex.ltx
+                           (fleqn) -> fleqn.clo
+                           (leqno) -> leqno.clo
+Lines  processed: 1004
+Comments removed: 628
+Comments  passed: 17
+Codelines passed: 344
+
+
+Processing file ltlists.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1083
+Comments removed: 820
+Comments  passed: 1
+Codelines passed: 258
+
+
+Processing file ltboxes.dtx (2ekernel) -> latex.ltx
+File ltboxes.dtx ended by \endinput.
+Lines  processed: 1184
+Comments removed: 872
+Comments  passed: 1
+Codelines passed: 307
+
+
+Processing file lttab.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1624
+Comments removed: 1245
+Comments  passed: 1
+Codelines passed: 363
+
+
+Processing file ltpictur.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1469
+Comments removed: 1068
+Comments  passed: 1
+Codelines passed: 367
+
+
+Processing file ltthm.dtx (2ekernel) -> latex.ltx
+Lines  processed: 307
+Comments removed: 245
+Comments  passed: 1
+Codelines passed: 57
+
+
+Processing file ltsect.dtx (2ekernel) -> latex.ltx
+Lines  processed: 884
+Comments removed: 694
+Comments  passed: 1
+Codelines passed: 185
+
+
+Processing file ltfloat.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1315
+Comments removed: 1002
+Comments  passed: 1
+Codelines passed: 308
+
+
+Processing file ltidxglo.dtx (2ekernel) -> latex.ltx
+Lines  processed: 235
+Comments removed: 177
+Comments  passed: 1
+Codelines passed: 53
+
+
+Processing file ltbibl.dtx (2ekernel) -> latex.ltx
+Lines  processed: 359
+Comments removed: 288
+Comments  passed: 1
+Codelines passed: 66
+
+
+Processing file ltpage.dtx (2ekernel) -> latex.ltx
+Lines  processed: 327
+Comments removed: 258
+Comments  passed: 1
+Codelines passed: 64
+
+
+Processing file ltoutput.dtx (2ekernel) -> latex.ltx
+                             (flafter) -> flafter.sty
+File ltoutput.dtx ended by \endinput.
+Lines  processed: 3921
+Comments removed: 2382
+Comments  passed: 1
+Codelines passed: 1267
+
+
+Processing file ltclass.dtx (2ekernel) -> latex.ltx
+Lines  processed: 1692
+Comments removed: 1164
+Comments  passed: 1
+Codelines passed: 521
+
+
+Processing file ltfinal.dtx (2ekernel) -> latex.ltx
+Lines  processed: 633
+Comments removed: 376
+Comments  passed: 1
+Codelines passed: 252
+
+
+Generating file(s) ./oldlfont.sty 
+
+Processing file oldlfont.dtx (package) -> oldlfont.sty
+File oldlfont.dtx ended by \endinput.
+Lines  processed: 284
+Comments removed: 210
+Comments  passed: 18
+Codelines passed: 45
+
+
+Generating file(s) ./newlfont.sty 
+
+Processing file newlfont.dtx (package) -> newlfont.sty
+File newlfont.dtx ended by \endinput.
+Lines  processed: 235
+Comments removed: 160
+Comments  passed: 18
+Codelines passed: 48
+
+
+Generating file(s) ./hyphen.ltx 
+
+Processing file lthyphen.dtx (default) -> hyphen.ltx
+File lthyphen.dtx ended by \endinput.
+Lines  processed: 175
+Comments removed: 136
+Comments  passed: 15
+Codelines passed: 17
+
+
+Generating file(s) ./fonttext.ltx ./fontmath.ltx 
+
+Processing file fontdef.dtx (text) -> fonttext.ltx
+                            (math) -> fontmath.ltx
+File fontdef.dtx ended by \endinput.
+Lines  processed: 1256
+Comments removed: 731
+Comments  passed: 16
+Codelines passed: 496
+
+
+Generating file(s) ./preload.ltx 
+
+Processing file preload.dtx (preload,cm,xpt,tex) -> preload.ltx
+File preload.dtx ended by \endinput.
+Lines  processed: 300
+Comments removed: 203
+Comments  passed: 31
+Codelines passed: 26
+
+) (inputenc.ins
+*** Generating input encoding files ***
+
+Generating file(s) ./inputenc.sty ./ascii.def ./latin2.def ./latin3.def ./latin
+5.def 
+
+Processing file inputenc.dtx (package) -> inputenc.sty
+                             (ascii) -> ascii.def
+                             (latin2) -> latin2.def
+                             (latin3) -> latin3.def
+                             (latin5) -> latin5.def
+File inputenc.dtx ended by \endinput.
+Lines  processed: 2150
+Comments removed: 802
+Comments  passed: 15
+Codelines passed: 1230
+
+
+Generating file(s) ./cp850.def ./cp852.def ./cp865.def ./cp437.def ./cp437de.de
+f ./decmulti.def 
+
+Processing file inputenc.dtx (cp850) -> cp850.def
+                             (cp852) -> cp852.def
+                             (cp865) -> cp865.def
+                             (cp437) -> cp437.def
+                             (cp437de) -> cp437de.def
+                             (decmulti) -> decmulti.def
+File inputenc.dtx ended by \endinput.
+Lines  processed: 2150
+Comments removed: 802
+Comments  passed: 15
+Codelines passed: 1230
+
+
+Generating file(s) ./applemac.def ./next.def ./ansinew.def ./cp1252.def ./latin
+1.def ./cp1250.def 
+
+Processing file inputenc.dtx (applemac) -> applemac.def
+                             (next) -> next.def
+                             (ansinew) -> ansinew.def
+                             (cp1252) -> cp1252.def
+                             (latin1) -> latin1.def
+                             (cp1250) -> cp1250.def
+File inputenc.dtx ended by \endinput.
+Lines  processed: 2150
+Comments removed: 802
+Comments  passed: 15
+Codelines passed: 1230
+
+) (ltoutenc.ins
+
+Generating file(s) ./ot1enc.def ./omsenc.def ./omlenc.def ./t1enc.def ./ot4enc.
+def ./ts1enc.def ./textcomp.sty ./fontenc.sty 
+
+Processing file ltoutenc.dtx (OT1) -> ot1enc.def
+                             (OMS) -> omsenc.def
+                             (OML) -> omlenc.def
+                             (T1) -> t1enc.def
+                             (OT4) -> ot4enc.def
+                             (TS1) -> ts1enc.def
+                             (TS1sty) -> textcomp.sty
+                             (package) -> fontenc.sty
+File ltoutenc.dtx ended by \endinput.
+Lines  processed: 2597
+Comments removed: 1690
+Comments  passed: 1
+Codelines passed: 869
+
+) (classes.ins
+
+Generating file(s) ./article.cls ./report.cls ./book.cls ./size10.clo ./size11.
+clo ./size12.clo ./bk10.clo ./bk11.clo ./bk12.clo 
+
+Processing file classes.dtx (article) -> article.cls
+                            (report) -> report.cls
+                            (book) -> book.cls
+                            (10pt) -> size10.clo
+                            (11pt) -> size11.clo
+                            (12pt) -> size12.clo
+                            (10pt,bk) -> bk10.clo
+                            (11pt,bk) -> bk11.clo
+                            (12pt,bk) -> bk12.clo
+File classes.dtx ended by \endinput.
+Lines  processed: 4397
+Comments removed: 3004
+Comments  passed: 15
+Codelines passed: 1073
+
+) (letter.ins
+*** Generating letter class file ***
+
+Generating file(s) ./letter.cls 
+
+Processing file letter.dtx (letter) -> letter.cls
+File letter.dtx ended by \endinput.
+Lines  processed: 1932
+Comments removed: 1500
+Comments  passed: 15
+Codelines passed: 408
+
+) (slides.ins
+*** Generating slide cmd files and styles ***
+
+Generating file(s) ./slides.cls ./slides.def 
+
+Processing file slides.dtx (class) -> slides.cls
+                           (cmd) -> slides.def
+File slides.dtx ended by \endinput.
+Lines  processed: 2740
+Comments removed: 1800
+Comments  passed: 15
+Codelines passed: 912
+
+*** Generating default fonts setup file for slides ***
+*** Generating .fd files ***
+
+Generating file(s) ./sfonts.def ./ot1lcmss.fd ./ot1lcmtt.fd ./omllcmm.fd ./omsl
+cmsy.fd ./omxlcmex.fd ./ullasy.fd 
+
+Processing file slifonts.fdd (main) -> sfonts.def
+                             (lcmss,fd) -> ot1lcmss.fd
+                             (lcmtt,fd) -> ot1lcmtt.fd
+                             (lcmm,fd) -> omllcmm.fd
+                             (lcmsy,fd) -> omslcmsy.fd
+                             (lcmex,fd) -> omxlcmex.fd
+                             (llasy,fd) -> ullasy.fd
+File slifonts.fdd ended by \endinput.
+Lines  processed: 483
+Comments removed: 299
+Comments  passed: 0
+Codelines passed: 103
+
+) (proc.ins
+
+Generating file(s) ./proc.cls ./proc.sty 
+
+Processing file proc.dtx (class) -> proc.cls
+                         (style) -> proc.sty
+File proc.dtx ended by \endinput.
+Lines  processed: 473
+Comments removed: 350
+Comments  passed: 15
+Codelines passed: 93
+
+) (latexsym.ins
+
+Generating file(s) ./latexsym.sty ./ulasy.fd 
+
+Processing file latexsym.dtx (package) -> latexsym.sty
+                             (fd) -> ulasy.fd
+File latexsym.dtx ended by \endinput.
+Lines  processed: 213
+Comments removed: 160
+Comments  passed: 0
+Codelines passed: 41
+
+) (cmfonts.ins
+
+Generating file(s) ./ot1cmss.fd ./ot1cmr.fd ./ot1cmtt.fd ./ot1cmvtt.fd ./ot1cmf
+ib.fd ./ot1cmfr.fd ./ot1cmdh.fd 
+
+Processing file cmfonts.fdd (fd,OT1cmss) -> ot1cmss.fd
+                            (fd,OT1cmr) -> ot1cmr.fd
+                            (fd,OT1cmtt,nowarn) -> ot1cmtt.fd
+                            (fd,OT1cmvtt) -> ot1cmvtt.fd
+                            (fd,OT1cmfib) -> ot1cmfib.fd
+                            (fd,OT1cmfr) -> ot1cmfr.fd
+                            (fd,OT1cmdh) -> ot1cmdh.fd
+File cmfonts.fdd ended by \endinput.
+Lines  processed: 1309
+Comments removed: 570
+Comments  passed: 0
+Codelines passed: 424
+
+
+Generating file(s) ./ucmr.fd ./ucmss.fd ./ucmtt.fd ./omlcmm.fd ./omscmsy.fd ./o
+mxcmex.fd ./omlcmr.fd ./omscmr.fd 
+
+Processing file cmfonts.fdd (fd,Ucmr) -> ucmr.fd
+                            (fd,Ucmss) -> ucmss.fd
+                            (fd,Ucmtt) -> ucmtt.fd
+                            (fd,OMLcmm) -> omlcmm.fd
+                            (fd,OMScmsy) -> omscmsy.fd
+                            (fd,OMXcmex) -> omxcmex.fd
+                            (fd,OMLcmr) -> omlcmr.fd
+                            (fd,OMScmr) -> omscmr.fd
+File cmfonts.fdd ended by \endinput.
+Lines  processed: 1309
+Comments removed: 570
+Comments  passed: 0
+Codelines passed: 424
+
+) (ec.ins
+*** Generating font defs for Cork encoded and Text Companion fonts ***
+
+Generating file(s) ./t1cmfib.fd ./t1cmfr.fd ./t1cmdh.fd ./t1cmr.fd ./t1cmss.fd 
+./t1cmtt.fd ./t1cmvtt.fd ./ts1cmr.fd ./ts1cmss.fd ./ts1cmtt.fd ./ts1cmvtt.fd 
+
+Processing file cmfonts.fdd (fd,T1cmfib,ec) -> t1cmfib.fd
+                            (fd,T1cmfr,ec) -> t1cmfr.fd
+                            (fd,T1cmdh,ec) -> t1cmdh.fd
+                            (fd,T1cmr,ec) -> t1cmr.fd
+                            (fd,T1cmss,ec) -> t1cmss.fd
+                            (fd,T1cmtt,tt,ec,nowarn) -> t1cmtt.fd
+                            (fd,T1cmvtt,tt,ec) -> t1cmvtt.fd
+                            (fd,TS1cmr,ec) -> ts1cmr.fd
+                            (fd,TS1cmss,ec) -> ts1cmss.fd
+                            (fd,TS1cmtt,ec,tt) -> ts1cmtt.fd
+                            (fd,TS1cmvtt,ec,tt) -> ts1cmvtt.fd
+File cmfonts.fdd ended by \endinput.
+Lines  processed: 1309
+Comments removed: 570
+Comments  passed: 0
+Codelines passed: 424
+
+
+Generating file(s) ./t1lcmss.fd ./t1lcmtt.fd 
+
+Processing file slifonts.fdd (lcmss,fd,ec) -> t1lcmss.fd
+                             (lcmtt,fd,ec) -> t1lcmtt.fd
+File slifonts.fdd ended by \endinput.
+Lines  processed: 483
+Comments removed: 299
+Comments  passed: 0
+Codelines passed: 103
+
+) (latex209.ins
+*** Generating compatibility mode files ***
+
+Generating file(s) ./latex209.def ./article.sty ./book.sty ./report.sty ./lette
+r.sty ./slides.sty ./fleqn.sty ./leqno.sty ./openbib.sty ./bezier.sty ./t1enc.s
+ty 
+
+Processing file latex209.dtx (head) -> latex209.def
+                             (article) -> article.sty
+                             (book) -> book.sty
+                             (report) -> report.sty
+                             (letter) -> letter.sty
+                             (slides) -> slides.sty
+                             (fleqn) -> fleqn.sty
+                             (leqno) -> leqno.sty
+                             (openbib) -> openbib.sty
+                             (bezier) -> bezier.sty
+                             (t1enc) -> t1enc.sty
+File latex209.dtx ended by \endinput.
+Lines  processed: 1164
+Comments removed: 806
+Comments  passed: 15
+Codelines passed: 315
+
+
+Processing file oldlfont.dtx (latex209) -> latex209.def
+File oldlfont.dtx ended by \endinput.
+Lines  processed: 284
+Comments removed: 210
+Comments  passed: 18
+Codelines passed: 45
+
+
+Processing file latex209.dtx (tail) -> latex209.def
+File latex209.dtx  ended by \endinput.
+Lines  processed: 1164
+Comments removed: 806
+Comments  passed: 15
+Codelines passed: 315
+
+) (docstrip.ins
+
+Generating file(s) ./docstrip.tex 
+
+Processing file docstrip.dtx (initex,program,stats) -> docstrip.tex
+File docstrip.dtx ended by \endinput.
+Lines  processed: 4373
+Comments removed: 3262
+Comments  passed: 25
+Codelines passed: 1053
+
+
+Generating file(s) ./doc.sty ./shortvrb.sty ./gind.ist ./gglo.ist 
+
+Processing file doc.dtx (package) -> doc.sty
+                        (shortvrb) -> shortvrb.sty
+                        (gind) -> gind.ist
+                        (gglo) -> gglo.ist
+File doc.dtx ended by \endinput.
+Lines  processed: 4781
+Comments removed: 3949
+Comments  passed: 18
+Codelines passed: 746
+
+
+Generating file(s) ./ltxdoc.cls 
+
+Processing file ltxdoc.dtx (class) -> ltxdoc.cls
+Lines  processed: 520
+Comments removed: 342
+Comments  passed: 0
+Codelines passed: 171
+
+) (ifthen.ins
+
+Generating file(s) ./ifthen.sty 
+
+Processing file ifthen.dtx (package) -> ifthen.sty
+File ifthen.dtx ended by \endinput.
+Lines  processed: 511
+Comments removed: 400
+Comments  passed: 6
+Codelines passed: 96
+
+) (graphpap.ins
+
+Generating file(s) ./graphpap.sty 
+
+Processing file graphpap.dtx (package) -> graphpap.sty
+Lines  processed: 207
+Comments removed: 138
+Comments  passed: 5
+Codelines passed: 57
+
+) (pict2e.ins
+
+Generating file(s) ./pict2e.sty 
+
+Processing file pict2e.dtx (package) -> pict2e.sty
+Lines  processed: 80
+Comments removed: 46
+Comments  passed: 0
+Codelines passed: 30
+
+) (makeindx.ins
+
+Generating file(s) ./makeidx.sty ./showidx.sty 
+
+Processing file makeindx.dtx (makeidx) -> makeidx.sty
+                             (showidx) -> showidx.sty
+File makeindx.dtx ended by \endinput.
+Lines  processed: 306
+Comments removed: 250
+Comments  passed: 0
+Codelines passed: 48
+
+) (syntonly.ins
+
+Generating file(s) ./syntonly.sty 
+
+Processing file syntonly.dtx (package) -> syntonly.sty
+File syntonly.dtx ended by \endinput.
+Lines  processed: 304
+Comments removed: 230
+Comments  passed: 17
+Codelines passed: 48
+
+) (exscale.ins
+
+Generating file(s) ./exscale.sty 
+
+Processing file exscale.dtx (package) -> exscale.sty
+File exscale.dtx ended by \endinput.
+Lines  processed: 200
+Comments removed: 157
+Comments  passed: 3
+Codelines passed: 28
+
+) (alltt.ins
+
+Generating file(s) ./alltt.sty 
+
+Processing file alltt.dtx (package) -> alltt.sty
+File alltt.dtx ended by \endinput.
+Lines  processed: 230
+Comments removed: 156
+Comments  passed: 6
+Codelines passed: 59
+
+)
+
+***********************************
+*
+* Now run INITEX on latex.ltx
+*
+***********************************
+
+Overall statistics:
+Files  processed: 69
+Lines  processed: 74849
+Comments removed: 49921
+Comments  passed: 427
+Codelines passed: 21583
+ )
+No pages of output.

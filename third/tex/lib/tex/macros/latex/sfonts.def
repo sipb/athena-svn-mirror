@@ -1,0 +1,62 @@
+%%
+%% This is file `sfonts.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% slifonts.fdd  (with options: `main')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1993 1994 1995 1996 1997
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file.
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see the file legal.txt, and any other copyright
+%% notices in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%%   This system is distributed in the hope that it will be useful,
+%%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%%   For error reports concerning UNCHANGED versions of this file no
+%%   more than one year old, see bugs.txt.
+%% 
+%%   Please do not request updates from us directly.  Primary
+%%   distribution is through the CTAN archives.
+%% 
+%% 
+%% IMPORTANT COPYRIGHT NOTICE:
+%% 
+%% You are NOT ALLOWED to distribute this file alone.
+%% 
+%% You are allowed to distribute this file under the condition that it
+%% is distributed together with all the files listed in manifest.txt.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% 
+%% No other permissions to distribute this file in any form are
+%% granted and in particular NO PERMISSION to modify its contents.
+%% 
+%% You are NOT ALLOWED to change this file.
+%% 
+%% 
+%% MODIFICATION ADVICE:
+%% 
+%% Details of how to use a configuration file to modify this part of
+%% the system are in the document cfgguide.tex.
+%% 
+%% 
+%% 
+\ProvidesFile{sfonts.def}
+        [1998/06/12 v2.2e Standard LaTeX slide font definitions]
+\DeclareErrorFont{OT1}{lcmss}{m}{n}{19.907}
+\DeclareFontSubstitution{OT1}{lcmss}{m}{n}
+\input ot1lcmss.fd
+\endinput
+%%
+%% End of file `sfonts.def'.

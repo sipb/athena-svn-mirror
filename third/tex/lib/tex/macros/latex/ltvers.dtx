@@ -1,0 +1,112 @@
+%
+% \iffalse
+%%% From File: ltvers.dtx
+%
+%<*driver>
+% \fi
+\ProvidesFile{ltvers.dtx}
+             [1996/11/28 v1.0g LaTeX Kernel (Version Info)]
+% \iffalse
+\documentclass{ltxdoc}
+\GetFileInfo{ltvers.dtx}
+\title{\filename}
+\date{\filedate}
+ \author{%
+  Johannes Braams\and
+  David Carlisle\and
+  Alan Jeffrey\and
+  Leslie Lamport\and
+  Frank Mittelbach\and
+  Chris Rowley\and
+  Rainer Sch\"opf}
+\begin{document}
+\maketitle
+ \DocInput{\filename}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{46}
+%
+% \section{Version Identifictation}
+% First we identify the date and version number of this release of
+% \LaTeX, and set |\everyjob| so that it is printed at the start of
+% every \LaTeX\ run.
+%
+% \StopEventually{}
+%
+% \changes{v1.0g}{1996/11/28}
+%     {Check for old format modified /2319}
+% \changes{v1.0f}{1996/11/20}
+%     {Check for old format modified /2319}
+% \changes{v1.0e}{1995/05/12}
+%     {Add autoload docstrip guards}
+% \changes{v1.0e}{1995/05/12}
+%     {Check for format older than 1 year}
+% \changes{v1.0d}{1994/05/25}
+%     {Remove PRELIMINARY TEST RELEASE from startup banner
+%      (spring is here)}
+% \changes{v1.0b}{1994/04/12}
+%     {Have version info generated automatically.}
+% \changes{v1.0a}{1994/03/04}
+%     {Initial version, split from latex.dtx}
+%
+% \begin{macro}{\fmtname}
+% \begin{macro}{\fmtversion}
+%    \begin{macrocode}
+%<*2ekernel>
+\def\fmtname{LaTeX2e}
+\edef\fmtversion{1998/06/01}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% 
+% Check that the format being made is not too old.
+% The error message complains about `more than a year'
+% but in fact the error is not triggered until 18 months.
+%    \begin{macrocode}
+\def\reserved@a#1/#2/#3\@nil{%
+  \count@\year
+  \advance\count@-#1\relax
+  \multiply\count@ by 12\relax
+  \advance\count@\month
+  \advance\count@-#2\relax}
+\expandafter\reserved@a\fmtversion\@nil
+%    \end{macrocode}
+% |\count@| is now the age of this file in months. Take a generous
+% definition of `year' so this message is not generated too often.
+%    \begin{macrocode}
+\ifnum\count@>17
+  \typeout{^^J%
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+!  You are attempting to make a LaTeX format from a source file^^J%
+!  That is more than one year old.^^J%
+!^^J%
+!  If you enter <return> to scroll past this message then the format^^J%
+!  will be built, but please consider obtaining newer source files^^J%
+!  before continuing to build LaTeX.^^J%
+!^^J%
+!  LaTeX is re-issued every 6 months, in June and December.^^J%
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
+}
+   \errhelp{To avoid this error message, obtain new LaTeX sources.}
+   \errmessage{LaTeX source files more than 1 year old!}
+\fi
+\let\reserved@a\relax
+%    \end{macrocode}
+%
+% This startup banner may be further modified by the code in
+% |ltfinal.dtx| if a patch file is present.
+%    \begin{macrocode}
+\everyjob{\typeout{\fmtname
+%<autoload>\space(autoload version)%
+                                     \space<\fmtversion>}}
+\immediate\write16{\fmtname
+%<autoload>\space(autoload version)%
+                                     \space<\fmtversion>}
+%</2ekernel>
+%    \end{macrocode}
+%
+% \Finale
+%
+\endinput

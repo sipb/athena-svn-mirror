@@ -1,0 +1,180 @@
+%%
+%% This file will generate fast loadable files and documentation
+%% driver files from the doc files in this package when run through
+%% LaTeX or TeX.
+%%
+%% Copyright 1993 1994 1995 1996 1997
+%% The LaTeX3 Project and any individual authors listed elsewhere
+%% in this file. 
+%% 
+%% For further copyright information, and conditions for modification
+%% and distribution, see the file legal.txt, and any other copyright
+%% notices in this file.
+%% 
+%% This file is part of the LaTeX2e system.
+%% ----------------------------------------
+%%   This system is distributed in the hope that it will be useful,
+%%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%%   For error reports concerning UNCHANGED versions of this file no
+%%   more than one year old, see bugs.txt.
+%% 
+%%   Please do not request updates from us directly.  Primary
+%%   distribution is through the CTAN archives.
+%% 
+%% 
+%% IMPORTANT COPYRIGHT NOTICE:
+%% 
+%% You are NOT ALLOWED to distribute this file alone.
+%% 
+%% You are allowed to distribute this file under the condition that it
+%% is distributed together with all the files listed in manifest.txt.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% 
+%% No other permissions to distribute this file in any form are
+%% granted and in particular NO PERMISSION to modify its contents.
+%% 
+%% You are NOT ALLOWED to change this file.
+%% 
+%% 
+%%
+%% --------------- start of docstrip commands ------------------
+%%
+
+\input docstrip
+
+\preamble
+
+This is a generated file.
+
+Copyright 1993 1994 1995 1996 1997
+The LaTeX3 Project and any individual authors listed elsewhere
+in this file. 
+
+For further copyright information, and conditions for modification
+and distribution, see the file legal.txt, and any other copyright
+notices in this file.
+
+This file is part of the LaTeX2e system.
+----------------------------------------
+  This system is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+  For error reports concerning UNCHANGED versions of this file no
+  more than one year old, see bugs.txt.
+
+  Please do not request updates from us directly.  Primary
+  distribution is through the CTAN archives.
+
+
+IMPORTANT COPYRIGHT NOTICE:
+
+You are NOT ALLOWED to distribute this file alone.
+
+You are allowed to distribute this file under the condition that it
+is distributed together with all the files listed in manifest.txt.
+
+If you receive only some of these files from someone, complain!
+
+
+Permission is granted to customize the declarations in this file to
+serve the needs of your installation, provided that you comply with
+the conditions in the file legal.txt.
+
+However, NO PERMISSION is granted to distribute a modified version
+of this file under its original name.
+ 
+
+MODIFICATION ADVICE:
+
+If you want to customize this file, it is best to make a copy of
+the source file(s) from which it was produced.  Use a different
+name for your copy(ies) and modify the copy(ies); this will ensure
+that your modifications do not get overwritten when you install a
+new release of the standard system.
+
+You can then easily distribute your modifications by distributing
+the modified and renamed copy of the source file, together with a
+suitable .ins file, taking care to observe the conditions in
+legal.txt; this will ensure that other users can safely use
+your modifications.
+
+The names of the source files used are shown above.
+
+
+
+\endpreamble
+
+\keepsilent
+\usedir{tex/latex/base}
+
+% Concrete font support removed: Use the contributed package available
+% from ctan  tex-archive/macros/latex/contrib/supported/ccfonts.
+%
+% \Ask\answer{%
+%      **************************************************************
+%   ^^J* 
+%   ^^J* Do you have the Concrete Roman fonts installed on your system,
+%   ^^J* or do you intend to install them?
+%   ^^J*  
+%   ^^J* If so please answer with `y' otherwise with `n' below.
+%   ^^J*
+%   ^^J* You can easily redo this installation later in case you 
+%   ^^J* change your mind.
+%   ^^J**************************************************************}
+% 
+% {\ifx\answer\y
+% 
+% \Msg{*** Generating font defs for Cork encoded fonts ***}
+% \Msg{*** Generating font defs for old TeX Text encoding ***}
+% \Msg{*** Generating font defs for math italic encoding ***}
+% 
+% \generate{%
+%   \file{t1ccr.fd}{\from{cmfonts.fdd}{fd,T1ccr}}
+%   \file{ot1ccr.fd}{\from{cmfonts.fdd}{fd,OT1ccr}}
+%   \file{omlccm.fd}{\from{cmfonts.fdd}{fd,OMLccm}}}
+% 
+% \fi}
+
+\Ask\answer{%
+     **************************************************************
+  ^^J* 
+  ^^J* Do you have the cyrillic fonts from the University of
+  ^^J* Washington installed on your system,
+  ^^J* or do you intend to install them?
+  ^^J*  
+  ^^J* If so please answer with `y' otherwise with `n' below.
+  ^^J*
+  ^^J* You can easily redo this installation later in case you 
+  ^^J* change your mind.
+  ^^J**************************************************************}
+
+{\ifx\answer\y
+
+\Msg{*** Generating font defs for old TeX cyrillic text encoding ***}
+
+\generate{%
+  \file{ot2cmr.fd}{\from{cmfonts.fdd}{fd,OT2cmr}}
+  \file{ot2cmss.fd}{\from{cmfonts.fdd}{fd,OT2cmss}}}
+
+\fi}
+
+
+
+\ifToplevel{
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space All *.fd}
+\Msg{*}
+\Msg{* Happy TeXing}
+\Msg{***********************************************************}
+}
+
+\endbatchfile
