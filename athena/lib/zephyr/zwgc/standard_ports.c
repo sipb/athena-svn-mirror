@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/standard_ports.c,v $
- *      $Author: jtkohl $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.8 1989-11-29 12:29:21 jtkohl Exp $";
+static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.9 1990-10-19 06:36:16 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -214,8 +214,11 @@ void init_standard_ports(pargc, argv)
         } else if (string_Eq((string) *current, "-ttymode")) {
 	    default_port = (string) "tty";
 	    (*pargc)--;
-            if (p = get_standard_port_info(default_port))
+            if (p = get_standard_port_info(default_port)) {
 		p->port_setup_status = DEFAULT_OK;
+		if (p = get_standard_port_info ((string) "X"))
+		    p->port_setup_status = DISABLED;
+	    }
 	} else
           *(new++) = *current;
     }
