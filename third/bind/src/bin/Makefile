@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.3 1999-03-16 19:44:33 danw Exp $
+# $Id: Makefile,v 1.2 1999-03-21 21:00:20 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -62,7 +62,7 @@ MARGS =	"SYSTYPE=${SYSTYPE}" "SHELL=${SHELL}" "A=${A}" "O=${O}" \
 CFLAGS=	${CDEBUG} -I${PORTINCL} -I${INCL}
 
 SUBDIRS = addr nslookup dig dnsquery host named named-xfer ndc nsupdate \
-	mkservdb irpd dnskeygen named-bootconf
+	mkservdb dnskeygen named-bootconf
 
 all: ${SUBDIRS}
 
