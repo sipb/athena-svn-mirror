@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.11 1991-09-25 11:38:20 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.12 1991-09-30 10:26:54 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.11 1991-09-25 11:38:20 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.12 1991-09-30 10:26:54 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -24,7 +24,7 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "uuid.h"
 #include <sys/file.h>
 
-#define MAX_RETRY 3	/* Max retry to get db lock */
+#define MAX_RETRY 4	/* Max retry to get db lock */
 
 extern char qcurrency[];             /* The quota currency */
 char *set_service();
