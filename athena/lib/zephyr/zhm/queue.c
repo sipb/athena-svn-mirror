@@ -3,7 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: queue.c,v 1.21 1999-01-22 23:19:57 ghudson Exp $
+ *      $Id: queue.c,v 1.21.4.1 1999-11-09 16:11:27 ghudson Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Id: queue.c,v 1.21 1999-01-22 23:19:57 ghudson Exp $";
+static char rcsid_queue_c[] = "$Id: queue.c,v 1.21.4.1 1999-11-09 16:11:27 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -103,7 +103,8 @@ Code_t remove_notice_from_queue(notice, kind, repl)
 
     *kind = entry->notice.z_kind;
     *repl = entry->reply;
-    timer_reset(entry->timer);
+    if (entry->timer)
+	timer_reset(entry->timer);
     free(entry->packet);
     LIST_DELETE(entry);
 #ifdef DEBUG
