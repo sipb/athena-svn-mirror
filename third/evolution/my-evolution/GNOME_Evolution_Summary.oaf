@@ -1,0 +1,52 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:GNOME_Evolution_Summary_ShellComponent"
+	type="exe"
+	location="evolution-executive-summary">
+
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/Evolution/ShellComponent:1.0"/>
+	</oaf_attribute>
+
+	<oaf_attribute name="description" type="string"
+		value="Evolution component for the executive summary."/>
+	<oaf_attribute name="description-az" type="string"
+		value="&#196;&#176;crac&#196;&#177; m&#195;&#188;nd&#201;&#153;ricat &#195;&#188;&#195;&#167;&#195;&#188;n &#39;Evolution&#39; par&#195;&#167;as&#196;&#177;."/>
+	<oaf_attribute name="description-de" type="string"
+		value="Evolution-Komponente f&#252;r die Chefsesselansicht"/>
+	<oaf_attribute name="description-es" type="string"
+		value="Componente Evolution para el resumen de trabajo."/>
+	<oaf_attribute name="description-fr" type="string"
+		value="Composant pour le r&#233;sum&#233;"/>
+	<oaf_attribute name="description-gl" type="string"
+		value="Compo&#241;ente de Evolution para o resumo executivo"/>
+	<oaf_attribute name="description-hu" type="string"
+		value="Vezet&#245;i &#246;sszefoglal&#243; Evol&#250;ci&#243; komponens."/>
+	<oaf_attribute name="description-it" type="string"
+		value="Componente di Evolution per il sommario esecutivo."/>
+	<oaf_attribute name="description-ja" type="string"
+		value="&#188;&#194;&#185;&#212;&#165;&#181;&#165;&#222;&#165;&#234;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206; Evolution &#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+	<oaf_attribute name="description-nl" type="string"
+		value="Evolution-component voor de samenvatting."/>
+	<oaf_attribute name="description-no" type="string"
+		value="Evolution-komponent for sammendrag."/>
+	<oaf_attribute name="description-pl" type="string"
+		value="Komponent Evolution obs&#179;uguj&#177;cy zestawienie wykonawcze."/>
+	<oaf_attribute name="description-ro" type="string"
+		value="Componenta Evolution pentru sumarul activit&#227;&#254;ilor."/>
+	<oaf_attribute name="description-ru" type="string"
+		value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolution &#196;&#204;&#209; Executive Summary."/>
+	<oaf_attribute name="description-sk" type="string"
+		value="Komponent Evolution pre S&#250;hrn."/>
+	<oaf_attribute name="description-sl" type="string"
+		value="Evolucijina komponenta za povzetke."/>
+	<oaf_attribute name="description-sv" type="string"
+		value="Evolutionkomponent f&#246;r sammanfattningen."/>
+	<oaf_attribute name="description-tr" type="string"
+		value="&#214;zet i&#231;in Evolution bile&#254;eni"/>
+
+	<oaf_attribute name="evolution:shell-component-icon" type="string"
+		       value="evolution-today.png"/>
+</oaf_server>
+
+</oaf_info>

@@ -1,0 +1,554 @@
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+#
+# libcal-client
+#
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+BONOBO_CONF_CFLAGS = @BONOBO_CONF_CFLAGS@
+BONOBO_CONF_LIBS = @BONOBO_CONF_LIBS@
+BONOBO_GNOME_CFLAGS = @BONOBO_GNOME_CFLAGS@
+BONOBO_GNOME_LIBS = @BONOBO_GNOME_LIBS@
+BONOBO_HTML_GNOME_CFLAGS = @BONOBO_HTML_GNOME_CFLAGS@
+BONOBO_HTML_GNOME_LIBS = @BONOBO_HTML_GNOME_LIBS@
+BONOBO_VFS_GNOME_CFLAGS = @BONOBO_VFS_GNOME_CFLAGS@
+BONOBO_VFS_GNOME_LIBS = @BONOBO_VFS_GNOME_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_LIBS = @CAMEL_LIBS@
+CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
+CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CPP = @CPP@
+DATADIRNAME = @DATADIRNAME@
+DB3_CFLAGS = @DB3_CFLAGS@
+DB3_LDADD = @DB3_LDADD@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EVOLUTION_DIR = @EVOLUTION_DIR@
+EXEEXT = @EXEEXT@
+EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
+EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
+GAL_CFLAGS = @GAL_CFLAGS@
+GAL_LIBS = @GAL_LIBS@
+GENCAT = @GENCAT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
+GNOMEUI_LIBS = @GNOMEUI_LIBS@
+GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
+GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
+GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
+GNOME_LIBDIR = @GNOME_LIBDIR@
+GNOME_LIBS = @GNOME_LIBS@
+GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
+GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
+GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
+GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
+GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
+GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
+GNORBA_CFLAGS = @GNORBA_CFLAGS@
+GNORBA_LIBS = @GNORBA_LIBS@
+GTKDOC = @GTKDOC@
+GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
+GTKHTML_DATADIR = @GTKHTML_DATADIR@
+GTKHTML_LIBS = @GTKHTML_LIBS@
+GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_CONFIG = @GTK_CONFIG@
+GTK_LIBS = @GTK_LIBS@
+GT_NO = @GT_NO@
+GT_YES = @GT_YES@
+HAVE_JW = @HAVE_JW@
+HTML_DIR = @HTML_DIR@
+INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+JW = @JW@
+KRB4_CFLAGS = @KRB4_CFLAGS@
+KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB5_CFLAGS = @KRB5_CFLAGS@
+KRB5_LDFLAGS = @KRB5_LDFLAGS@
+LDAP_CFLAGS = @LDAP_CFLAGS@
+LDAP_LIBS = @LDAP_LIBS@
+LEX = @LEX@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAILER_CFLAGS = @MAILER_CFLAGS@
+MAILER_LIBS = @MAILER_LIBS@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+NSPR_CFLAGS = @NSPR_CFLAGS@
+NSPR_LDFLAGS = @NSPR_LDFLAGS@
+NSS_CFLAGS = @NSS_CFLAGS@
+NSS_LDFLAGS = @NSS_LDFLAGS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
+ORBIT_CFLAGS = @ORBIT_CFLAGS@
+ORBIT_CONFIG = @ORBIT_CONFIG@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_LIBS = @ORBIT_LIBS@
+PACKAGE = @PACKAGE@
+PISOCK_CFLAGS = @PISOCK_CFLAGS@
+PISOCK_LIBS = @PISOCK_LIBS@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PTHREAD_LIB = @PTHREAD_LIB@
+PURIFY = @PURIFY@
+RANLIB = @RANLIB@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
+SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
+SENDMAIL = @SENDMAIL@
+STRIP = @STRIP@
+THREADS_CFLAGS = @THREADS_CFLAGS@
+THREADS_LIBS = @THREADS_LIBS@
+USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
+XPM_LIBS = @XPM_LIBS@
+YACC = @YACC@
+ZVT_LIBS = @ZVT_LIBS@
+cflags_set = @cflags_set@
+cxxflags_set = @cxxflags_set@
+l = @l@
+localedir = @localedir@
+
+CORBA_GENERATED =  	evolution-calendar-common.c			evolution-calendar-skels.c			evolution-calendar-stubs.c
+
+
+CORBA_HEADERS_GENERATED =  	evolution-calendar.h
+
+
+idls =  	$(srcdir)/../idl/evolution-calendar.idl
+
+
+idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
+
+INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"cal-client\"				-I$(top_srcdir)/calendar				-I$(srcdir) -I$(top_srcdir) 				-I. 							-I.. 							-I$(top_builddir)					-I$(top_builddir)/libical/src/libical			-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libwombat				-I$(top_srcdir)/libwombat				$(BONOBO_GNOME_CFLAGS)
+
+
+lib_LTLIBRARIES = libcal-client.la
+
+libcal_clientincludedir = $(includedir)/evolution/cal-client
+
+libcal_client_la_SOURCES =  	$(CORBA_GENERATED)		cal-client-multi.c		cal-client-types.c		cal-client.c			cal-listener.c			cal-listener.h			cal-query.c			query-listener.c		query-listener.h
+
+
+libcal_clientinclude_HEADERS =  	$(CORBA_HEADERS_GENERATED)		cal-client-multi.h			cal-client-types.h 			cal-client.h				cal-query.h
+
+
+#
+# make a static library for use by calendar conduit's shared library
+#
+noinst_LTLIBRARIES = libcal-client-static.la
+libcal_client_static_la_SOURCES = $(libcal_client_la_SOURCES)
+libcal_client_static_la_LDFLAGS = --all-static
+
+#
+# client-test program
+#
+
+noinst_PROGRAMS = client-test
+
+client_test_SOURCES =  	client-test.c
+
+
+client_test_INCLUDES =  	$(INCLUDES)				-DG_LOG_DOMAIN=\"client-test\"
+
+
+client_test_LDADD =  	$(BONOBO_VFS_GNOME_LIBS)					$(EXTRA_GNOME_LIBS)						$(top_builddir)/calendar/cal-util/libcal-util.la		$(top_builddir)/libversit/libversit.la				$(top_builddir)/libical/src/libical/libical.la			$(top_builddir)/libwombat/libwombat.la				libcal-client.la
+
+
+BUILT_SOURCES = $(CORBA_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libcal_client_la_LDFLAGS = 
+libcal_client_la_LIBADD = 
+libcal_client_la_OBJECTS =  evolution-calendar-common.lo \
+evolution-calendar-skels.lo evolution-calendar-stubs.lo \
+cal-client-multi.lo cal-client-types.lo cal-client.lo cal-listener.lo \
+cal-query.lo query-listener.lo
+libcal_client_static_la_LIBADD = 
+libcal_client_static_la_OBJECTS =  evolution-calendar-common.lo \
+evolution-calendar-skels.lo evolution-calendar-stubs.lo \
+cal-client-multi.lo cal-client-types.lo cal-client.lo cal-listener.lo \
+cal-query.lo query-listener.lo
+noinst_PROGRAMS =  client-test$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS)
+
+client_test_OBJECTS =  client-test.$(OBJEXT)
+client_test_DEPENDENCIES =  \
+$(top_builddir)/calendar/cal-util/libcal-util.la \
+$(top_builddir)/libversit/libversit.la \
+$(top_builddir)/libical/src/libical/libical.la \
+$(top_builddir)/libwombat/libwombat.la libcal-client.la
+client_test_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(libcal_clientinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = $(libcal_client_la_SOURCES) $(libcal_client_static_la_SOURCES) $(client_test_SOURCES)
+OBJECTS = $(libcal_client_la_OBJECTS) $(libcal_client_static_la_OBJECTS) $(client_test_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps calendar/cal-client/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+mostlyclean-noinstLTLIBRARIES:
+
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+
+distclean-noinstLTLIBRARIES:
+
+maintainer-clean-noinstLTLIBRARIES:
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libcal-client.la: $(libcal_client_la_OBJECTS) $(libcal_client_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libcal_client_la_LDFLAGS) $(libcal_client_la_OBJECTS) $(libcal_client_la_LIBADD) $(LIBS)
+
+libcal-client-static.la: $(libcal_client_static_la_OBJECTS) $(libcal_client_static_la_DEPENDENCIES)
+	$(LINK)  $(libcal_client_static_la_LDFLAGS) $(libcal_client_static_la_OBJECTS) $(libcal_client_static_la_LIBADD) $(LIBS)
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+client-test$(EXEEXT): $(client_test_OBJECTS) $(client_test_DEPENDENCIES)
+	@rm -f client-test$(EXEEXT)
+	$(LINK) $(client_test_LDFLAGS) $(client_test_OBJECTS) $(client_test_LDADD) $(LIBS)
+
+install-libcal_clientincludeHEADERS: $(libcal_clientinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libcal_clientincludedir)
+	@list='$(libcal_clientinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libcal_clientincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libcal_clientincludedir)/$$p; \
+	done
+
+uninstall-libcal_clientincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libcal_clientinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libcal_clientincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = calendar/cal-client
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-libcal_clientincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES \
+		uninstall-libcal_clientincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
+		$(DESTDIR)$(libcal_clientincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-libLTLIBRARIES \
+		mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-noinstLTLIBRARIES clean-compile \
+		clean-libtool clean-noinstPROGRAMS clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-noinstLTLIBRARIES \
+		distclean-compile distclean-libtool \
+		distclean-noinstPROGRAMS distclean-tags \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-noinstLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES \
+mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-libcal_clientincludeHEADERS \
+install-libcal_clientincludeHEADERS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+$(CORBA_GENERATED): $(idls)
+	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/evolution-calendar.idl
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,1336 @@
+<HTML
+><HEAD
+><TITLE
+>Writing and Sending Mail</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="En brukers håndbok for Evolution"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Using Evolution for Email"
+HREF="usage-mail.html"><LINK
+REL="PREVIOUS"
+TITLE="Checking Mail"
+HREF="usage-mail-getnsend-get.html"><LINK
+REL="NEXT"
+TITLE="Subscription Management"
+HREF="usage-mail-subscriptions.html"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>En brukers håndbok for Evolution</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="usage-mail-getnsend-get.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Using Evolution for Email</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="usage-mail-subscriptions.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND"
+>Writing and Sending Mail</A
+></H1
+><P
+>         You can start writing a new email message by selecting
+         <SPAN
+CLASS="GUIMENU"
+>File</SPAN
+>-&gt;<SPAN
+CLASS="GUISUBMENU"
+>New</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>         Mail Message</SPAN
+>, or by pressing the
+         <SPAN
+CLASS="GUIBUTTON"
+>Compose</SPAN
+> button in the Inbox toolbar.
+         When you do so, the <SPAN
+CLASS="INTERFACE"
+>New Message</SPAN
+> window
+         will open, as shown in <A
+HREF="usage-mail-getnsend-send.html#USAGE-MAIL-NEWMSG-FIG"
+>Figure 3-2</A
+>.
+      </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="USAGE-MAIL-NEWMSG-FIG"
+></A
+><P
+><B
+>Figure 3-2. New Message Window</B
+></P
+><P
+><IMG
+SRC="figures/newmsg.png"></P
+></DIV
+><P
+>      Enter an address in the <SPAN
+CLASS="GUILABEL"
+>To:</SPAN
+> field.  If you wish
+      enter a  subject in the <SPAN
+CLASS="GUILABEL"
+>Subject:</SPAN
+> and a message in
+      the big empty box at the bottom of the window.  Once you have revised
+      your message, press <SPAN
+CLASS="GUIBUTTON"
+>Send</SPAN
+>.
+    </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-DELAY"
+>Saving Messages for Later</A
+></H2
+><P
+>           <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> will send mail immediately unless you tell it to
+           do otherwise by selecting <SPAN
+CLASS="GUIMENU"
+>File</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Send
+           Later</SPAN
+>.  This will add your
+           messages to the <SPAN
+CLASS="GUILABEL"
+>Outbox</SPAN
+> queue.  Then,
+           when you press <SPAN
+CLASS="GUIBUTTON"
+>Send</SPAN
+> in another
+           message, or <SPAN
+CLASS="GUIBUTTON"
+>Get Mail</SPAN
+> in the main
+           mail window, all your unsent messages will go out at once.
+           You might want to use "Send Later" becuase it gives
+           you a chance to change your mind about a message before you send it.
+        </P
+><P
+>           To learn more about how you can specify message queue and
+           filter behavior, see <A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL"
+>the section called <I
+>Mail Settings</I
+> in Chapter 9</A
+>.
+        </P
+><P
+>	You can also choose to save messages as drafts or as text
+	files. Your options are:
+       <P
+></P
+><UL
+><LI
+><P
+>          Choose
+	  <SPAN
+CLASS="GUIMENU"
+>File</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Save Draft</SPAN
+>
+          to store your messages in the drafts folder for later
+          revision.
+       </P
+></LI
+><LI
+><P
+>         If you'd like to have the message sent later, you
+         can choose <SPAN
+CLASS="GUIMENUITEM"
+>Send Later</SPAN
+>. That way,
+         the message will be added to the queue, and you can send a 
+         batch of messages all at once.
+        </P
+></LI
+><LI
+><P
+> 
+         If you prefer to save your message as a text file,
+         choose <SPAN
+CLASS="GUIMENUITEM"
+>Save As</SPAN
+> and then choose a
+         file name.
+           </P
+></LI
+></UL
+>
+      </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-COMPOSE"
+>Advanced Mail Composition</A
+></H2
+><P
+>        In the next few sections, you'll see how
+	<SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> handles advanced email
+	features, including large recipient lists, attachments, and
+	forwarding.
+      </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-ATTACH"
+>Attachments</A
+></H3
+><P
+>	  To attach a file to your email:
+	  <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>		Push the attach button in the composer toolbar
+	      </P
+></LI
+><LI
+><P
+>		Select the file you want to attach
+	      </P
+></LI
+><LI
+><P
+>		Press <SPAN
+CLASS="GUIBUTTON"
+>OK</SPAN
+>
+	      </P
+></LI
+></OL
+>
+	</P
+><P
+>	  You can drag a file from your desktop into the composer window to
+	  attach it as well.
+        </P
+><P
+>            To hide the display of files you've attached to the
+            message, select <SPAN
+CLASS="GUIMENU"
+>View</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Hide
+            Attachments</SPAN
+>; to show them
+            again, choose <SPAN
+CLASS="GUIMENUITEM"
+>Show Attachments</SPAN
+>.
+        </P
+><P
+>            When you send the message, a copy of the attached file
+            will go with it.  Be aware that big attachments can take a
+            long time to download.
+        </P
+><P
+>            When receiving a message that has an attached image,
+            <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> gives you the choice
+            whether to view it or not.  You can choose to have it
+            always shown, load images only if the sender is in your
+            addressbook, or never load images.
+        </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-TO-TYPES"
+>Types of Recipients</A
+></H3
+><P
+>	  <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+>, like most email
+	   programs, recognizes three types of addressee: primary
+	   recipients, secondary recipients, and hidden ("blind")
+	   recipients.
+         </P
+><P
+>            The simplest way to direct a message is to put the email
+            address or addresses in the <SPAN
+CLASS="GUILABEL"
+>To:</SPAN
+>
+            field, which denotes primary recipients.  To send mail to
+            more than one or two people, you can use the the
+            <SPAN
+CLASS="GUILABEL"
+>Cc:</SPAN
+> field.
+          </P
+><P
+>            Hearkening back to the dark ages when people used
+            typewriters and there were no copy machines, "Cc" stands
+            for "Carbon Copy."  Use it whenever you want to share a
+            message you've written to someone else.
+          </P
+><P
+>            <SPAN
+CLASS="GUILABEL"
+>Bcc:</SPAN
+> is a little more complex.  You
+            use it like <SPAN
+CLASS="GUILABEL"
+>Cc:</SPAN
+>, but people on the
+            <SPAN
+CLASS="GUILABEL"
+>Bcc:</SPAN
+> list are hidden from the other
+            recipients of the message. Use it to send mail to large
+            groups of people, especially if they don't know each other
+            or if privacy is a concern.
+          </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EX-MAIL-CC"
+></A
+><P
+><B
+>Example 3-1. Using the Cc: field</B
+></P
+><P
+>                 When Susan sends an email to a client, she puts her
+                 co-worker, Tim, in the in the
+                 <SPAN
+CLASS="GUILABEL"
+>Cc:</SPAN
+> field, so that he know
+                 what's going on.  The client can see that Tim also
+                 received the message, and knows that he can talk to
+                 Tim about the message as well.
+              </P
+></DIV
+><P
+>&#13;            <DIV
+CLASS="EXAMPLE"
+><A
+NAME="EX-MAIL-BCC"
+></A
+><P
+><B
+>Example 3-2. Using the Bcc: field</B
+></P
+><P
+>                 Tim is sending an email announcement to all of his
+                 company's clients, some of whom are in competition
+                 with each other, and all of whom value their
+                 privacy. He needs to use the
+                 <SPAN
+CLASS="GUILABEL"
+>Bcc:</SPAN
+> field here.  If he puts
+                 every address from his address book's "Clients"
+                 category into the <SPAN
+CLASS="GUILABEL"
+>To:</SPAN
+> or
+                 <SPAN
+CLASS="GUILABEL"
+>Cc:</SPAN
+> fields, he'll make the
+                 company's <I
+CLASS="EMPHASIS"
+>entire</I
+> client list
+                 public. But putting his "Clients" addressbook
+                 into the Bcc: section, that will cause them to be hidden
+                 from the competition.  It seems insignificant, but it can
+                 make a huge difference in some situations.
+             </P
+></DIV
+>
+          </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-TO"
+>Choosing Recipients Quickly</A
+></H3
+><P
+>	  If you have created address cards in the contact manager,
+          you can also enter nicknames or other portions of address
+          data, and <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> will offer a
+          drop down list of possible address completions from your
+          address book.  If you enter a name or nickname that can go
+          with more than one card, Evolution will open a dialog box to
+          ask you which person you meant. Also,
+          <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> will add a domain to
+          any unqualified addresses.  By default, this is your domain,
+          but you can choose which one mail preferences dialog.
+          </P
+><P
+>            Alternately, you can click on the
+            <SPAN
+CLASS="GUIBUTTON"
+>To:</SPAN
+>, <SPAN
+CLASS="GUIBUTTON"
+>Cc:</SPAN
+>, or
+            <SPAN
+CLASS="GUIBUTTON"
+>Bcc:</SPAN
+> buttons to get a list &#8212;
+            potentially a very long one &#8212; of the email addresses
+            in your contact manager.  Select addresses and click on
+            the arrows to move them into the appropriate address
+            columns.
+          </P
+><P
+>            For more information about using email together with the
+            contact manager and the calendar, see <A
+HREF="usage-contact-automate.html"
+>the section called <I
+>Address Book Tools</I
+> in Chapter 5</A
+> and <A
+HREF="usage-calendar-apts.html"
+>the section called <I
+>Scheduling With the Evolution Calendar</I
+> in Chapter 6</A
+>.
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-REPLY"
+>Replying to Messages</A
+></H2
+><P
+>           To reply to a message, press the
+           <SPAN
+CLASS="GUIBUTTON"
+>Reply:</SPAN
+> button while it is selected,
+           or choose <SPAN
+CLASS="GUIMENUITEM"
+>Reply to Sender:</SPAN
+> from
+           the message's right-click menu.  That will open the
+           <SPAN
+CLASS="INTERFACE"
+>message composer</SPAN
+>.  The
+           <SPAN
+CLASS="GUILABEL"
+>To:</SPAN
+> and <SPAN
+CLASS="GUILABEL"
+>Subject:</SPAN
+>
+           fields will already be filled, although you can alter them
+           if you wish.  In addition, the full text of the old message
+           is inserted into the new message, either grey (for
+           HTML display) or with the &#62; character before each line
+           (in plain text mode), to indicate that it's part of the
+           previous message.  People often intersperse their message
+           with the quoted material as shown in <A
+HREF="usage-mail-getnsend-send.html#USAGE-MAIL-GETNSEND-REPLY-FIG"
+>Figure 3-3</A
+>.
+
+ 
+       <DIV
+CLASS="FIGURE"
+><A
+NAME="USAGE-MAIL-GETNSEND-REPLY-FIG"
+></A
+><P
+><B
+>Figure 3-3. Reply Message Window</B
+></P
+><P
+><IMG
+SRC="figures/replymsg.png"></P
+></DIV
+>
+        </P
+><P
+>          If you're reading a message with several recipients, you may
+           wish to use <SPAN
+CLASS="GUIBUTTON"
+>Reply to All</SPAN
+> instead of
+           <SPAN
+CLASS="GUIBUTTON"
+>Reply</SPAN
+>.  If there are large numbers
+           of people in the <SPAN
+CLASS="GUILABEL"
+>Cc:</SPAN
+> or
+           <SPAN
+CLASS="GUILABEL"
+>To:</SPAN
+> fields, this can save substantial
+           amounts of time.
+          <DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN1049"
+></A
+><P
+><B
+>Example 3-3. Using the Reply to All feature</B
+></P
+><P
+>              Susan sends an email to a client and sends copies to Tim
+              and to an internal company mailing list of co-workers.
+              If Tim wants to make a comment for all of them to read,
+              he uses <SPAN
+CLASS="GUIBUTTON"
+>Reply to All</SPAN
+>, but if he
+              just wants to tell Susan that he agrees with her, he
+              uses <SPAN
+CLASS="GUIBUTTON"
+>Reply</SPAN
+>.  Note that his reply
+              will not reach anyone that Susan put on her
+              <SPAN
+CLASS="GUILABEL"
+>Bcc</SPAN
+> list, since that list is not
+              shared with anyone.
+            </P
+></DIV
+>
+        </P
+><P
+>          If you're subscribed to a mailing list, and want your reply
+          to go just to the list, rather than to the sender, choose
+          <SPAN
+CLASS="GUIBUTTON"
+>Reply to List</SPAN
+> instead of
+          <SPAN
+CLASS="GUIBUTTON"
+>Reply</SPAN
+> or <SPAN
+CLASS="GUIBUTTON"
+>Reply to
+          All</SPAN
+>.
+          <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>What is a Mailing List?: </B
+>              Mailing Lists are one of the most popular tools for
+              group collaboration on the Internet. Here's how they work: 
+              <P
+></P
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>                  Someone sends a message to a single address, like
+                  <TT
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:evolution@ximian.com"
+>evolution@ximian.com</A
+>&#62;</TT
+>.
+                </TD
+></TR
+><TR
+><TD
+>                  That address belongs to a program that distributes
+                  the message to a list of recipients.
+                </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+>
+               The mail management program lets individuals subscribe
+               to or unsubscribe from the list at will, without
+               requiring the message writers to remember the addresses
+               of every recipient.
+            </P
+><P
+>              Mailing list servers can also let network administrators
+              control mail flow, list membership, and even moderate
+              the content of mailing lists.
+            </P
+></BLOCKQUOTE
+></DIV
+>
+        </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-FIND"
+>Searching and Replacing with the Composer</A
+></H2
+><P
+>           You are probably familiar with search and replace features
+           in any sort of text-editing software, and if you come from
+           a Linux or Unix background, you may know what
+           <SPAN
+CLASS="GUIMENUITEM"
+>Find Regex</SPAN
+> does.  If you aren't
+           among the lucky who already know, here's a quick rundown of
+           the automated text searching features that the message
+           composer makes available to you.
+        </P
+><P
+>           <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Find</SPAN
+></DT
+><DD
+><P
+> Enter a word or phrase, and
+              <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> will find it
+              in your message.
+              </P
+></DD
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Find Regex</SPAN
+></DT
+><DD
+><P
+>                  Find a regex, also called a
+                  <A
+HREF="apx-gloss.html#REGULAR-EXPRESSION"
+><I
+CLASS="GLOSSTERM"
+>regular
+                  expression</I
+></A
+>, in your composer window.
+               </P
+></DD
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Find Again</SPAN
+></DT
+><DD
+><P
+>                   Select this item to repeat the last search you performed.
+              </P
+></DD
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Replace</SPAN
+></DT
+><DD
+><P
+>                 Find a word or phrase, and replace it with
+                 something else.
+               </P
+></DD
+></DL
+></DIV
+>
+        </P
+><P
+>            For all of these menu items, you can choose whether or not
+            to <SPAN
+CLASS="GUILABEL"
+>Search Backwards</SPAN
+> in the document
+            from the point where your cursor is.  For all but the
+            regular expression search (which doesn't need it), you are
+            offered a check box to determine whether the search is to
+            be <SPAN
+CLASS="GUILABEL"
+>Case Sensitive</SPAN
+> when it determines
+            a match.
+        </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-SEND-HTML"
+>Embellish your email with HTML</A
+></H2
+><P
+>            Normally, you can't set text styles or insert pictures in
+            emails, which is why you've probably seen people use far
+            too many exclamation points for emphasis, or use
+            <A
+HREF="apx-gloss.html#EMOTICON"
+><I
+CLASS="GLOSSTERM"
+>emoticons</I
+></A
+> to
+            convey their feelings.  However, most newer email programs
+            can display images and text styles as well as basic
+            alignment and paragraph formatting. They do this with
+            <A
+HREF="apx-gloss.html#HTML"
+><I
+CLASS="GLOSSTERM"
+>HTML</I
+></A
+>, just like web
+            pages do.
+        </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>HTML Mail is not a Default Setting: </B
+>            Some people do not have HTML-capable mail clients, or
+            prefer not to receive HTML-enhanced mail because it is
+            slower to download and display.  <I
+CLASS="EMPHASIS"
+>Some</I
+>
+            people refer to HTML mail as "the root of all evil" and
+            get very angry if you send them HTML mail, which is why
+            <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> sends plain text
+            unless you explicitly ask for HTML.  To send HTML mail,
+            you will need to select <SPAN
+CLASS="GUIMENU"
+>Format</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>            HTML</SPAN
+>.  Alternately, you can set
+            your default mail format preferences in the mail
+            configuration dialog.  See <A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL-OTHER"
+>the section called <I
+>Other Mail Preferences</I
+> in Chapter 9</A
+> for more information.
+          </P
+></BLOCKQUOTE
+></DIV
+><P
+>           HTML formatting tools are located in the toolbar just above
+           the space where you'll actually compose the message, and
+           they also appear in the <SPAN
+CLASS="GUIMENU"
+>Insert</SPAN
+> and
+           <SPAN
+CLASS="GUIMENU"
+>Format</SPAN
+> menus.
+          </P
+><P
+>            The icons in the toolbar are explained in <A
+HREF="apx-gloss.html#TOOLTIP"
+><I
+CLASS="GLOSSTERM"
+>tool-tips</I
+></A
+>, which appear when
+            you hold your mouse over the buttons.  The buttons fall
+            into four categories:
+            <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Headers and lists</DT
+><DD
+><P
+>                  At the left edge of the toolbar, you can choose
+                  <SPAN
+CLASS="GUILABEL"
+>Normal</SPAN
+> for a default text style
+                  or <SPAN
+CLASS="GUILABEL"
+>Header 1</SPAN
+> through
+                  <SPAN
+CLASS="GUILABEL"
+>Header 6</SPAN
+> for varying sizes of
+                  header from large (1) to tiny (6). Other styles
+                  include <SPAN
+CLASS="GUILABEL"
+>preformat</SPAN
+>, to use the HTML
+                  tag for preformatted blocks of text, and three types
+                  of <SPAN
+CLASS="GUILABEL"
+>List Item</SPAN
+> for the highly
+                  organized.
+                </P
+></DD
+><DT
+>Text style</DT
+><DD
+><P
+>		Use these buttons to determine the way your letters
+		look.  If you have text selected, the style will
+		apply to the selected text.  If you do not have text
+		selected, the style will apply to whatever you type
+		next.  The buttons are:
+		<P
+></P
+><UL
+><LI
+STYLE="list-style-type: none"
+><P
+>Push <SPAN
+CLASS="GUIBUTTON"
+>B</SPAN
+> for bold text</P
+></LI
+><LI
+STYLE="list-style-type: none"
+><P
+>Push <SPAN
+CLASS="GUIBUTTON"
+>I</SPAN
+> for italics</P
+></LI
+><LI
+STYLE="list-style-type: none"
+><P
+>Push <SPAN
+CLASS="GUIBUTTON"
+>U</SPAN
+> to underline</P
+></LI
+><LI
+STYLE="list-style-type: none"
+><P
+>Push <SPAN
+CLASS="GUIBUTTON"
+>S</SPAN
+> for a strikethrough.</P
+></LI
+></UL
+>
+	      </P
+></DD
+><DT
+>Alignment</DT
+><DD
+><P
+>		Located next to the text style buttons, these three
+		paragraph icons should be familiar to users of most
+		word processing software.  The leftmost button will
+		make your text aligned to the left, the center
+		button, centered, and the right hand button,
+		aligned on the right side.
+	      </P
+></DD
+><DT
+>Indentation rules</DT
+><DD
+><P
+>                  The button with the arrow pointing left will reduce
+                  a paragraph's indentation, and the right arrow will
+                  increase its indentation.
+               </P
+></DD
+><DT
+>Color Selection</DT
+><DD
+><P
+>                  At the far right is the color section tool.  The
+                  colored box displays the current text color; to
+                  choose a new one, click the arrow button just to the
+                  right. If you have text selected, the color will
+                  apply to the selected text.  If you do not have text
+                  selected, the color will apply to whatever you type
+                  next.
+               </P
+></DD
+></DL
+></DIV
+>
+        </P
+><P
+>	The <SPAN
+CLASS="GUIMENU"
+>Insert</SPAN
+> gives you three opinions which let you
+           spruce up your email to make it more interesting:
+	<P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Insert Link</SPAN
+></DT
+><DD
+><P
+>		Lets you link some text to a website.  Use this tool to put hyperlinks in your HTML
+                  messages.  If you don't want special link text, you can just enter the address
+                  directly, and <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+>
+                  will recognize it as a link.
+	      </P
+></DD
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Insert Image</SPAN
+></DT
+><DD
+><P
+>		Lets you put an image alongside text.
+	      </P
+></DD
+><DT
+><SPAN
+CLASS="GUIMENUITEM"
+>Insert Rule</SPAN
+></DT
+><DD
+><P
+>		Inserts a horizontal line into the text to help divide two
+		sections.
+	      </P
+></DD
+></DL
+></DIV
+>
+	To add a hyperlink to your HTML message:
+	<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>	      Select the text you want to link from
+	    </P
+></LI
+><LI
+><P
+>	      Right click on text and select
+	      <SPAN
+CLASS="GUIMENUITEM"
+>Link</SPAN
+>
+	    </P
+></LI
+><LI
+><P
+>	      Enter the address you wish to link to in the
+	      <SPAN
+CLASS="GUILABEL"
+>URL</SPAN
+> field.
+	    </P
+></LI
+><LI
+><P
+>	      Press <SPAN
+CLASS="GUIBUTTON"
+>OK</SPAN
+>.
+	    </P
+></LI
+></OL
+>
+      </P
+><P
+>	To add an image to your HTML message:
+	<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>	      Click
+	      <SPAN
+CLASS="GUIMENU"
+>Insert</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Image</SPAN
+>
+	    </P
+></LI
+><LI
+><P
+>	      Click <SPAN
+CLASS="GUIBUTTON"
+>Browse</SPAN
+>
+	    </P
+></LI
+><LI
+><P
+>	      Select the image you want
+	    </P
+></LI
+><LI
+><P
+>	      Press <SPAN
+CLASS="GUIBUTTON"
+>OK</SPAN
+>
+	    </P
+></LI
+><LI
+><P
+>	      Press <SPAN
+CLASS="GUIBUTTON"
+>Insert</SPAN
+>
+	    </P
+></LI
+></OL
+>
+
+      </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>A Technical note on HTML Tags: </B
+>	  The composer is a <SPAN
+CLASS="ACRONYM"
+>WYSIWYG</SPAN
+>
+	  (What You See Is What You Get)
+	  editor for HTML. That means that if you enter HTML
+	  directly into the composer&#8212; say, 
+	  <SPAN
+CLASS="MARKUP"
+>&#60;B&#62;Bold Text&#60;/B&#62;</SPAN
+>, the
+	  the composer will assume you meant exactly that string
+	  of characters, and not "make this text bold," as an HTML
+	  composition tool or text editor would.
+	</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-FWD"
+>Forwarding Mail</A
+></H2
+><P
+>          The post office forwards your mail for you when you change
+          addresses, and you can forward a letter if it comes to you by mistake.
+          The email <SPAN
+CLASS="GUILABEL"
+>Forward</SPAN
+> button
+          works in much the same way.  It's particularly useful if you
+          have received a message and you think someone else would
+          like to see it.  You can forward a message as an attachment
+          to a new message (this is the default) or
+          you can send it <A
+HREF="apx-gloss.html#INLINE"
+><I
+CLASS="GLOSSTERM"
+>inline</I
+></A
+> as a quoted
+          portion of the message you are sending.  Attachment
+          forwarding is best if you want to send the full, unaltered
+          message on to someone else.  Inline forwarding is best if
+          you want to send portions of a message, or if you have a
+          large number of comments on different sections of the
+          message you are forwarding.  Remember to note from whom the
+          message came, and where, if at all, you have removed or
+          altered content.
+        </P
+><P
+>          To forward a message you are reading, press
+          <SPAN
+CLASS="GUIBUTTON"
+>Forward</SPAN
+> on the toolbar, or select
+          <SPAN
+CLASS="GUIMENU"
+>Message</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Forward</SPAN
+>.  If you
+          prefer to forward the message <A
+HREF="apx-gloss.html#INLINE"
+><I
+CLASS="GLOSSTERM"
+>inline</I
+></A
+>
+          instead of attached, select <SPAN
+CLASS="GUIMENU"
+>Message</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Forward
+          Inline</SPAN
+> from the menu.  Choose an
+          addressee as you would when sending a new message; the
+          subject will already be entered, but you can alter it.
+          Enter your comments on the message in the
+          <SPAN
+CLASS="INTERFACE"
+>composition frame</SPAN
+>, and press
+          <SPAN
+CLASS="GUIBUTTON"
+>Send</SPAN
+>.
+        </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-MAIL-GETNSEND-ETTIQUETTE"
+>Seven Tips for Email Courtesy</A
+></H2
+><P
+>&#13;          <P
+></P
+><UL
+><LI
+><P
+>                 Don't send spam or forward chain mail.  If you must,
+                 watch out for hoaxes and urban legends, and make sure
+                 the message doesn't have multiple layers of
+                 greater-than signs, (&#62;) indicating multiple layers
+                 of careless in-line forwarding.
+              </P
+></LI
+><LI
+><P
+>                Always begin and close with a salutation. Say "please"
+                and "thank you," just like you do in real life. You
+                can keep your pleasantries short, but be pleasant!
+              </P
+></LI
+><LI
+><P
+>                WRITING IN CAPITAL LETTERS MEANS YOU'RE SHOUTING!
+                Don't write a whole message in capital letters.  It
+                hurts people's ears.
+              </P
+></LI
+><LI
+><P
+>               Check your spelling and use complete sentences.
+              </P
+></LI
+><LI
+><P
+>                Don't send nasty emails (flames).  If you get one,
+                don't write back.
+              </P
+></LI
+><LI
+><P
+>	      When you reply or forward, include just enough of
+	      the previous message to provide context: not too
+	      much, not too little.
+	    </P
+></LI
+><LI
+><P
+>	      Don't send <A
+HREF="apx-gloss.html#SPAM"
+><I
+CLASS="GLOSSTERM"
+>spam</I
+></A
+>.
+	    </P
+></LI
+></UL
+>
+      </P
+><P
+> Happy mailing! </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="usage-mail-getnsend-get.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="usage-mail-subscriptions.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Checking Mail</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="usage-mail.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Subscription Management</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
