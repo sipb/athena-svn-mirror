@@ -2,14 +2,16 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.2 1999-02-22 03:44:58 danw Exp $
+#* $Id: Makefile.in,v 1.3 1999-03-14 21:56:01 danw Exp $
 #
 
 
 prefix=@prefix@
+exec_prefix=@exec_prefix@
+libexecdir=@libexecdir@
+
 # where the filters are installed:
-INSTDIR=${prefix}/lib/filters
-FONTDIR=${prefix}/lib/filters/fonts
+INSTDIR=${libexecdir}/filters
 
 # shell to use
 SHELL=@SHELL@
