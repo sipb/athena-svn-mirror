@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.30 1991-08-07 23:31:38 epeisach Exp $
+# $Id: xsession,v 1.31 1991-08-16 14:52:00 lwvanels Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -209,6 +209,11 @@ endif
 # To terminate this process, type the "logout" command in an xterm window
 # or invoke the "end_session" program.
 
-exec session_gate -logout			# Wait for logout
+if ($?NOCALLS) then
+	exec session_gate
+else
+	exec session_gate -logout
+endif
 
-# The session gate will source .logout when it gets a SIGHUP.
+# The session gate will source .logout when it gets a SIGHUP, if
+# invoked with the -logout flag.
