@@ -1,6 +1,6 @@
 #ifndef lint
 static char     rcsid[] =
-"$Id: t_getline.c,v 1.3 1992-03-30 19:28:23 lwvanels Exp $";
+"$Id: t_getline.c,v 1.4 1992-08-31 12:12:01 lwvanels Exp $";
 #endif
 
 /* 
@@ -114,33 +114,39 @@ static int      gl_pos, gl_cnt = 0;     /* position and size of input */
 static char     gl_buf[BUF_SIZE];       /* input buffer */
 static char    *gl_prompt;		/* to save the prompt string */
 
-void            gl_init(int);		
-void            gl_cleanup(void);	/* to undo gl_init */
-void            gl_redraw(void);	/* issue \n and redraw all */
-void            gl_replace(void);	/* toggle replace/insert mode */
-void		gl_char_init(void);	/* get ready for no echo input */
-void		gl_char_cleanup(void);	/* undo gl_char_init */
-static int      gl_getc(void);          /* read one char from terminal */
-static void     gl_putc(int);           /* write one char to terminal */
-static void     gl_gets(char *, int);   /* get a line from terminal */
-static void     gl_puts(char *);        /* write a line to terminal */
-static void     gl_addchar(int);	/* install specified char */
-static void     gl_transpose(void);	/* transpose two chars */
-static void     gl_newline(int);	/* handle \n or \r */
-static void     gl_fixup(int, int);	/* fixup state variables and screen */
-static void     gl_del(int);		/* del, either left (-1) or cur (0) */
-static void     gl_kill(void);		/* delete to EOL */
-static int      gl_tab(char *, int, int *);	/* default TAB handler */
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
+#endif
 
-static void     hist_add(void);		/* adds nonblank entries to hist */
-static void     hist_init(void);	/* initializes hist pointers */
-static void     hist_next(void);	/* copies next entry to input buf */
-static void     hist_prev(void);	/* copies prev entry to input buf */
-static char    *hist_save(char *);	/* makes copy of a string */
+void            gl_init P((int));		
+void            gl_cleanup P((void));	/* to undo gl_init */
+void            gl_redraw P((void));	/* issue \n and redraw all */
+void            gl_replace P((void));	/* toggle replace/insert mode */
+void		gl_char_init P((void));	/* get ready for no echo input */
+void		gl_char_cleanup P((void));	/* undo gl_char_init */
+static int      gl_getc P((void));          /* read one char from terminal */
+static void     gl_putc P((int));           /* write one char to terminal */
+static void     gl_gets P((char *, int));   /* get a line from terminal */
+static void     gl_puts P((char *));        /* write a line to terminal */
+static void     gl_addchar P((int));	/* install specified char */
+static void     gl_transpose P((void));	/* transpose two chars */
+static void     gl_newline P((int));	/* handle \n or \r */
+static void     gl_fixup P((int, int));	/* fixup state variables and screen */
+static void     gl_del P((int));		/* del, either left (-1) or cur (0) */
+static void     gl_kill P((void));		/* delete to EOL */
+static int      gl_tab P((char *, int, int *));	/* default TAB handler */
 
-int 		(*gl_in_hook)(char *) = 0;
-int 		(*gl_out_hook)(char *) = 0;
-int 		(*gl_tab_hook)(char *, int, int *) = gl_tab;
+static void     hist_add P((void));		/* adds nonblank entries to hist */
+static void     hist_init P((void));	/* initializes hist pointers */
+static void     hist_next P((void));	/* copies next entry to input buf */
+static void     hist_prev P((void));	/* copies prev entry to input buf */
+static char    *hist_save P((char *));	/* makes copy of a string */
+
+int 		(*gl_in_hook) P((char *)) = 0;
+int 		(*gl_out_hook) P((char *)) = 0;
+int 		(*gl_tab_hook) P((char *, int, int *)) = gl_tab;
 
 /************************ nonportable part *********************************/
 extern int      write();
@@ -210,7 +216,12 @@ gl_getc()
 }
 
 static void
+#ifdef __STDC__
 gl_putc(int c)
+#else
+gl_putc(c)
+     int c;
+#endif
 {
     char   ch = c;
 
@@ -220,7 +231,13 @@ gl_putc(int c)
 /******************** fairly portable part *********************************/
 
 static void
+#ifdef __STDC__
 gl_gets(char *buf, int size)	/* slow, only used in batch mode */
+#else
+gl_gets(buf,size)
+     char *buf;
+     int size;	/* slow, only used in batch mode */
+#endif
 {
     char *p = buf;
     int   c;
@@ -235,14 +252,24 @@ gl_gets(char *buf, int size)	/* slow, only used in batch mode */
 }
 
 static void
+#ifdef __STDC__
 gl_puts(char *buf)
+#else
+gl_puts(buf)
+     char *buf;
+#endif
 {
     while (*buf) 
 	gl_putc(*buf++);
 }
 
 void
+#ifdef __STDC__
 gl_init(int scrn_wdth)
+#else
+gl_init(scrn_wdth)
+     int scrn_wdth;
+#endif
 /* set up variables and terminal */
 {
     gl_screen = scrn_wdth;
@@ -268,7 +295,13 @@ gl_cleanup()
 }
 
 char *
+#ifdef __STDC__
 getline(char *prompt,int add_to_hist)
+#else
+getline(prompt, add_to_hist)
+     char *prompt;
+     int add_to_hist;
+#endif
 {
     int             c, loc, tmp;
 
@@ -369,7 +402,12 @@ getline(char *prompt,int add_to_hist)
 }
 
 static void
+#ifdef __STDC__
 gl_addchar(int c)
+#else
+gl_addchar(c)
+     int c;
+#endif
 /* adds the character c to the input buffer at current location */
 {
     int  i;
@@ -391,7 +429,11 @@ gl_addchar(int c)
 }
 
 static void
+#ifdef __STDC__
 gl_transpose(void)
+#else
+gl_transpose()
+#endif
 /* switch character under cursor and to left of cursor */
 {
     int    c;
@@ -413,7 +455,12 @@ gl_replace()
 }
 
 static void
+#ifdef __STDC__
 gl_newline(int add_to_hist)
+#else
+gl_newline(add_to_hist)
+     int add_to_hist;
+#endif
 /*
  * Cleans up entire line before returning to caller. A \n is appended.
  * If line longer than screen, we redraw starting at beginning
@@ -442,7 +489,12 @@ gl_newline(int add_to_hist)
 }
 
 static void
+#ifdef __STDC__
 gl_del(int loc)
+#else
+gl_del(loc)
+     int loc;
+#endif
 /*
  * Delete a character.  The loc variable can be:
  *    -1 : delete character to left of cursor
@@ -483,7 +535,13 @@ gl_redraw()
 }
 
 static void
+#ifdef __STDC__
 gl_fixup(int change, int cursor)
+#else
+gl_fixup(change, cursor)
+     int change;
+     int cursor;
+#endif
 /*
  * This function is used both for redrawing when input changes or for
  * moving within the input line.  The parameters are:
@@ -586,7 +644,14 @@ gl_fixup(int change, int cursor)
 }
 
 static int
+#ifdef __STDC__
 gl_tab(char *buf, int offset, int *loc)
+#else
+gl_tab(buf, offset, loc)
+     char *buf;
+     int offset;
+     int *loc;
+#endif
 /* default tab handler, acts like tabstops every 8 cols */
 {
     int i, count, len;
@@ -677,7 +742,12 @@ hist_next()
 }
 
 static char *
+#ifdef __STDC__
 hist_save(char *p)
+#else
+hist_save(p)
+     char *p;
+#endif
 /* makes a copy of the string */
 {
     char *s = 0;
