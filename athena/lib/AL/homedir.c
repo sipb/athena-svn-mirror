@@ -89,7 +89,8 @@ char *dir;
     return(1);
 #endif
     
-#if (defined(hpux) || defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
+#if (defined(vax) || defined(ibm032) || defined(sun) \
+     || defined(hpux) || defined(sgi)) && !defined(REMOTEDONE)
 #define REMOTEDONE
 #if defined(hpux)
 #undef major
@@ -98,7 +99,7 @@ char *dir;
 #if defined(vax) || defined(ibm032) || defined(hpux)
 #define NFS_MAJOR 0xff
 #endif
-#if defined(sun)
+#if defined(sun) || defined(sgi)
 #define NFS_MAJOR 130
 #endif
     struct stat stbuf;
@@ -223,9 +224,13 @@ ALgetHomedir(ALsession session)
 	 to modify the passwd file.  As of 12/94, telnetd uses libAL
 	 but login.krb doesn't, so login.krb wouldn't get the right
 	 homedir and would log the user in with home="/" */
-      ALmodifyLinesOfFile(session, "/etc/passwd", "/etc/ptmp",
-			  ALmodifyRemoveUser,
-			  ALmodifyAppendPasswd);
+      if (ALlockPasswdFile(session) != -1)
+	{
+	  ALmodifyLinesOfFile(session, PASSWD, ALlockPASSWD,
+			      ALmodifyRemoveUser,
+			      ALmodifyAppendPasswd);
+	  ALunlockPasswdFile(session);
+	}
 
       i = lstat(ALpw_dir(session), &stb);
       if (i == 0)
