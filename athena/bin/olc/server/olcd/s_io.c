@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.24 1991-05-06 23:20:01 lwvanels Exp $
+ *	$Id: s_io.c,v 1.25 1991-05-08 10:56:36 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.24 1991-05-06 23:20:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.25 1991-05-08 10:56:36 lwvanels Exp $";
 #endif
 #endif
 
@@ -115,7 +115,7 @@ read_request(fd, request)
   strncpy(request->requester.title, (char *) (net_req.data+162), 32);
   strncpy(request->requester.machine, (char *) (net_req.data+194), 32);
 
-  request->target.uid = (ntohl(*((u_long *) (net_req.data+227))));
+  request->target.uid = (ntohl(*((u_long *) (net_req.data+228))));
 
   request->target.instance = (ntohl(*((u_long *) (net_req.data+232))));
 
