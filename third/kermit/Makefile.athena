@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 1998-01-03 03:37:00 ghudson Exp $
+# $Id: Makefile.athena,v 1.2.6.1 1999-11-09 03:20:00 tb Exp $
 
 SHELL=/bin/sh
 
@@ -37,5 +37,6 @@ all:
 check:
 
 install:
+	mkdir -p $$SRVD/usr/athena/bin $$SRVD/usr/athena/man/man1
 	${MAKE} install WERMIT=wermit DESTDIR="$$SRVD" \
 	        MANDIR=/usr/athena/man/man1 MANEXT=1 BINDIR=/usr/athena/bin
