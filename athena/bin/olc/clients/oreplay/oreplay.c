@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.19 1991-03-11 13:42:45 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.20 1991-03-28 13:20:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -217,7 +217,11 @@ main(argc,argv)
 	fprintf(stderr,"Unknown request\n");
 	break;
       default:
-	fprintf(stderr,"%s\n",krb_err_txt[-len]);
+#ifdef KERBEROS
+	fprintf(stderr,"Kerberos Error: %s\n",krb_err_txt[-len]);
+#else
+	fprintf(stderr,"Unknown Error %d\n",-len);
+#endif
       }
     else
       fprintf(stderr,"Unknown error %d\n",-len);

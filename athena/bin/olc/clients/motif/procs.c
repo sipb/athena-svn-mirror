@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.10 1991-03-24 23:46:11 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.11 1991-03-28 13:20:01 lwvanels Exp $";
 #endif
 
 #include <signal.h>
@@ -319,7 +319,11 @@ olc_replay()
         MuError("Unknown request\n");
         break;
       default:
+#ifdef KERBEROS
         sprintf(buf,"kerberos Error: %s",krb_err_txt[-status]);
+#else
+        sprintf(buf,"Unknown Error: %d",-status);
+#endif
 	MuError(buf);
       }
     else {
@@ -471,7 +475,11 @@ save_cbk (w, tag, callback_data)
 	  MuError("Unknown request\n");
 	  break;
 	default:
+#ifdef KERBEROS
 	  sprintf(buf,"kerberos Error: %s",krb_err_txt[-status]);
+#else
+	  sprintf(buf,"Unknown Error: %d",-status);
+#endif
 	  MuError(buf);
 	}
       else {
