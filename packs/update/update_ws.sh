@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.30 1998-03-25 20:13:31 danw Exp $
+# $Id: update_ws.sh,v 1.31 1998-03-27 01:21:19 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -190,9 +190,9 @@ if [ "$method" = Auto -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
 	on how to update your workstation yourself, or to schedule
 	us to do it for you. Thank you.  -Athena Operations
 EOF
-	if [ ! -f /usr/tmp/update.check ]; then
+	if [ ! -f /var/tmp/update.check ]; then
 		logger -t $HOST -p user.notice at revision $version
-		cp /dev/null /usr/tmp/update.check
+		cp /dev/null /var/tmp/update.check
 	fi
 
 	exit 1
@@ -288,5 +288,6 @@ if [ "$method" = Auto ]; then
 	exec sh "$LIBDIR/do-update" "$method" "$version" "$newvers" \
 		< /dev/null 2>&1 | tee /var/athena/update.log
 else
-	exec sh "$LIBDIR/do-update" "$method" 2>&1 | tee /var/athena/update.log
+	exec sh "$LIBDIR/do-update" "$method" "$version" "$newvers" \
+		2>&1 | tee /var/athena/update.log
 fi
