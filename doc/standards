@@ -106,8 +106,8 @@ statements according to the format:
 
 	case expression in
 	pattern)
-		statements
-		;;
+	  statements
+	  ;;
 	esac
 
 Environment variable names should be in all capitals; shell variable
