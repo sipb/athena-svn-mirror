@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "/usr/share/man/sman3thr/pthread_atfork.3thr"	>> $DEADFILES
+echo "/usr/share/man/sman3xcurses/mvwins_nstr.3xcurses"	>> $DEADFILES
+echo "SUNWmdr"						>> $PACKAGES
+echo "SUNWmdu"						>> $PACKAGES
+echo "113096-03"					>> $PATCHES
+echo "112785-17"					>> $PATCHES
+echo "OSCHANGES=true"					>> $CONFVARS
+echo "/etc/athena/athinfo.defs"				>> $CONFCHG
