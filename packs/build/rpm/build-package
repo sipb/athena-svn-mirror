@@ -101,7 +101,8 @@ if [ -a $sourcedir/packs/build/rpm/patches/$source_name ]; then
     (cd $source_name; tar xfp -)
 fi
 if [ -a $sourcedir/packs/build/rpm/prep/$package_name ]; then
-    $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name
+    $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name \
+      || exit 1
 fi
 sed -e 's%$source/packs/build/version%version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
 cp $sourcedir/packs/build/version $source_name
