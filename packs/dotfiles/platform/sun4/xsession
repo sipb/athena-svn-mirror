@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.34 1992-05-26 21:38:35 lwvanels Exp $
+# $Id: xsession,v 1.35 1992-12-06 15:39:36 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -177,13 +177,12 @@ if (! $?skip_x_startup) then
 	# Start Zephyr client, and if zephyr started okay, send
 	# message of the day as windowgram
 	if ($?NOCALLS) then
-		( zwgc -f /usr/athena/lib/zephyr/zwgc.desc \
+		zwgc -f /usr/athena/lib/zephyr/zwgc.desc \
 				-subfile /dev/null && \
-		  get_message -new -zephyr &)
+		get_message -new -zephyr
 	else
-		( zwgc && get_message -new -zephyr &)
+		zwgc && get_message -new -zephyr
 	endif
-	sleep $sleep_time
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 endif
