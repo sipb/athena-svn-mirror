@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.22 1997-04-30 17:35:07 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: init.c,v 1.23 1998-10-22 03:53:01 kcr Exp $
+ *	$Author: kcr $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.22 1997-04-30 17:35:07 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.23 1998-10-22 03:53:01 kcr Exp $";
 #endif
 #endif
 
@@ -104,8 +104,10 @@ OInitialize()
     }
   else
     {
-      (void) strcpy(User.username, pwent->pw_name);
-      (void) strcpy(User.realname, pwent->pw_gecos);
+      (void) strncpy(User.username, pwent->pw_name, sizeof(User.username));
+      User.username[sizeof(User.username) - 1] = 0;
+      (void) strncpy(User.realname, pwent->pw_gecos, sizeof(User.realname));
+      User.realname[sizeof(User.realname) - 1] = 0;
     }
       
   {
@@ -124,7 +126,9 @@ OInitialize()
       fprintf(stderr,"Unable to get host by name for this host, `%s'\n",
 	      hostname);
     }
-    (void) strcpy(User.machine, (host ? host->h_name : hostname));
+    (void) strncpy(User.machine, (host ? host->h_name : hostname),
+		  sizeof(User.machine));
+    User.machine[sizeof(User.machine) - 1] = 0;
   }
   User.uid = uid;
  
