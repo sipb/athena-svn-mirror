@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 2004-10-26 16:25:09 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2004-11-01 14:37:54 rbasch Exp $
 
 SHELL=/bin/sh
 common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
@@ -17,7 +17,7 @@ prepare:
 	    ;; \
 	sun4) \
 	    CONFIG_SITE=`pwd`/config.site.athena \
-	    PATH=${sprobin}:$PATH \
+	    PATH=${sprobin}:${PATH} \
 	    CC=cc \
 	    CXX=CC \
 	    CFLAGS="-xlibmil" \
@@ -39,7 +39,7 @@ all:
 	    ${MAKE} \
 	    ;; \
 	sun4) \
-	    ${MAKE} PATH=${sprobin}:$PATH \
+	    ${MAKE} PATH=${sprobin}:${PATH} \
 	    ;; \
 	esac
 
