@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.init.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.init.c,v 1.2 1997-10-14 21:25:17 lcs Exp $ */
 /*
  * tw.init.c: Handle lists of things to complete
  */
@@ -16,8 +16,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *      This product includes software developed by the University of
+ *      California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.init.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $")
+RCSID("$Id: tw.init.c,v 1.2 1997-10-14 21:25:17 lcs Exp $")
 
 #include "tw.h"
 #include "ed.h"
@@ -50,81 +50,81 @@ RCSID("$Id: tw.init.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $")
 # define NSIG _NSIG
 #endif /* !NSIG && _NSIG */
 
-#define TW_INCR	128
+#define TW_INCR 128
 
 typedef struct {
-    Char **list, 			/* List of command names	*/
-	  *buff;			/* Space holding command names	*/
-    int    nlist, 			/* Number of items		*/
-           nbuff,			/* Current space in name buf	*/
-           tlist,			/* Total space in list		*/
-	   tbuff;			/* Total space in name buf	*/
+    Char **list,                        /* List of command names        */
+          *buff;                        /* Space holding command names  */
+    int    nlist,                       /* Number of items              */
+           nbuff,                       /* Current space in name buf    */
+           tlist,                       /* Total space in list          */
+           tbuff;                       /* Total space in name buf      */
 } stringlist_t;
 
 
-static struct varent *tw_vptr = NULL;	/* Current shell variable 	*/
-static Char **tw_env = NULL;		/* Current environment variable */
-static Char  *tw_word;			/* Current word pointer		*/
-static struct KeyFuncs *tw_bind = NULL;	/* List of the bindings		*/
+static struct varent *tw_vptr = NULL;   /* Current shell variable       */
+static Char **tw_env = NULL;            /* Current environment variable */
+static Char  *tw_word;                  /* Current word pointer         */
+static struct KeyFuncs *tw_bind = NULL; /* List of the bindings         */
 #ifndef HAVENOLIMIT
-static struct limits *tw_limit = NULL;	/* List of the resource limits	*/
+static struct limits *tw_limit = NULL;  /* List of the resource limits  */
 #endif /* HAVENOLIMIT */
-static int tw_index = 0;		/* signal and job index		*/
-static DIR   *tw_dir_fd = NULL;		/* Current directory descriptor	*/
-static Char   tw_retname[MAXPATHLEN+1];	/* Return buffer		*/
-static int    tw_cmd_got = 0;		/* What we need to do		*/
+static int tw_index = 0;                /* signal and job index         */
+static DIR   *tw_dir_fd = NULL;         /* Current directory descriptor */
+static Char   tw_retname[MAXPATHLEN+1]; /* Return buffer                */
+static int    tw_cmd_got = 0;           /* What we need to do           */
 static stringlist_t tw_cmd  = { NULL, NULL, 0, 0, 0, 0 };
 static stringlist_t tw_item = { NULL, NULL, 0, 0, 0, 0 };
-#define TW_FL_CMD	0x01
-#define TW_FL_ALIAS	0x02
-#define TW_FL_BUILTIN	0x04
-#define TW_FL_SORT	0x08
-#define TW_FL_REL	0x10
+#define TW_FL_CMD       0x01
+#define TW_FL_ALIAS     0x02
+#define TW_FL_BUILTIN   0x04
+#define TW_FL_SORT      0x08
+#define TW_FL_REL       0x10
 
-static struct {				/* Current element pointer	*/
-    int    cur;				/* Current element number	*/
-    Char **pathv;			/* Current element in path	*/
-    DIR   *dfd;				/* Current directory descriptor	*/
+static struct {                         /* Current element pointer      */
+    int    cur;                         /* Current element number       */
+    Char **pathv;                       /* Current element in path      */
+    DIR   *dfd;                         /* Current directory descriptor */
 } tw_cmd_state;
 
 
 #ifdef BSDSIGS
 static sigmask_t tw_omask;
-# define TW_HOLD()	tw_omask = sigblock(sigmask(SIGINT))
-# define TW_RELS()	(void) sigsetmask(tw_omask)
+# define TW_HOLD()      tw_omask = sigblock(sigmask(SIGINT))
+# define TW_RELS()      (void) sigsetmask(tw_omask)
 #else /* !BSDSIGS */
-# define TW_HOLD()	(void) sighold(SIGINT)
-# define TW_RELS()	(void) sigrelse(SIGINT)
+# define TW_HOLD()      (void) sighold(SIGINT)
+# define TW_RELS()      (void) sigrelse(SIGINT)
 #endif /* BSDSIGS */
 
 #define SETDIR(dfd) \
     { \
-	tw_dir_fd = dfd; \
-	if (tw_dir_fd != NULL) \
-	    rewinddir(tw_dir_fd); \
+        tw_dir_fd = dfd; \
+        if (tw_dir_fd != NULL) \
+            rewinddir(tw_dir_fd); \
     }
 
 #define CLRDIR(dfd) \
     if (dfd != NULL) { \
-	TW_HOLD(); \
-	(void) closedir(dfd); \
-	dfd = NULL; \
-	TW_RELS(); \
+        TW_HOLD(); \
+        (void) closedir(dfd); \
+        dfd = NULL; \
+        TW_RELS(); \
     }
 
-static Char	*tw_str_add		__P((stringlist_t *, int));
-static void	 tw_str_free		__P((stringlist_t *));
-static Char     *tw_dir_next		__P((DIR *));
-static void	 tw_cmd_add 		__P((Char *name));
-static void 	 tw_cmd_cmd		__P((void));
-static void	 tw_cmd_builtin		__P((void));
-static void	 tw_cmd_alias		__P((void));
-static void	 tw_cmd_sort		__P((void));
-static void 	 tw_vptr_start		__P((struct varent *));
+static Char     *tw_str_add             __P((stringlist_t *, int));
+static void      tw_str_free            __P((stringlist_t *));
+static Char     *tw_dir_next            __P((DIR *));
+static void      tw_cmd_add             __P((Char *name));
+static void      tw_cmd_cmd             __P((void));
+static void      tw_cmd_builtin         __P((void));
+static void      tw_cmd_alias           __P((void));
+static void      tw_cmd_sort            __P((void));
+static void      tw_vptr_start          __P((struct varent *));
 
 
 /* tw_str_add():
- *	Add an item to the string list
+ *      Add an item to the string list
  */
 static Char *
 tw_str_add(sl, len)
@@ -134,31 +134,31 @@ tw_str_add(sl, len)
     Char *ptr;
 
     if (sl->tlist <= sl->nlist) {
-	TW_HOLD();
-	sl->tlist += TW_INCR;
-	sl->list = sl->list ? 
-		    (Char **) xrealloc((ptr_t) sl->list, 
-				       (size_t) (sl->tlist * sizeof(Char *))) :
-		    (Char **) xmalloc((size_t) (sl->tlist * sizeof(Char *)));
-	TW_RELS();
+        TW_HOLD();
+        sl->tlist += TW_INCR;
+        sl->list = sl->list ?
+                    (Char **) xrealloc((ptr_t) sl->list,
+                                       (size_t) (sl->tlist * sizeof(Char *))) :
+                    (Char **) xmalloc((size_t) (sl->tlist * sizeof(Char *)));
+        TW_RELS();
     }
     if (sl->tbuff <= sl->nbuff + len) {
-	int i;
-	ptr = sl->buff;
+        int i;
+        ptr = sl->buff;
 
-	TW_HOLD();
-	sl->tbuff += TW_INCR + len;
-	sl->buff = sl->buff ? 
-		    (Char *) xrealloc((ptr_t) sl->buff, 
-				      (size_t) (sl->tbuff * sizeof(Char))) :
-		    (Char *) xmalloc((size_t) (sl->tbuff * sizeof(Char)));
-	/* Re-thread the new pointer list, if changed */
-	if (ptr != NULL && ptr != sl->buff) {
-	    int offs = sl->buff - ptr;
-	    for (i = 0; i < sl->nlist; i++)
-		sl->list[i] += offs;
-	}
-	TW_RELS();
+        TW_HOLD();
+        sl->tbuff += TW_INCR + len;
+        sl->buff = sl->buff ?
+                    (Char *) xrealloc((ptr_t) sl->buff,
+                                      (size_t) (sl->tbuff * sizeof(Char))) :
+                    (Char *) xmalloc((size_t) (sl->tbuff * sizeof(Char)));
+        /* Re-thread the new pointer list, if changed */
+        if (ptr != NULL && ptr != sl->buff) {
+            int offs = sl->buff - ptr;
+            for (i = 0; i < sl->nlist; i++)
+                sl->list[i] += offs;
+        }
+        TW_RELS();
     }
     ptr = sl->list[sl->nlist++] = &sl->buff[sl->nbuff];
     sl->nbuff += len;
@@ -167,7 +167,7 @@ tw_str_add(sl, len)
 
 
 /* tw_str_free():
- *	Free a stringlist
+ *      Free a stringlist
  */
 static void
 tw_str_free(sl)
@@ -175,14 +175,14 @@ tw_str_free(sl)
 {
     TW_HOLD();
     if (sl->list) {
-	xfree((ptr_t) sl->list);
-	sl->list = NULL;
-	sl->tlist = sl->nlist = 0;
+        xfree((ptr_t) sl->list);
+        sl->list = NULL;
+        sl->tlist = sl->nlist = 0;
     }
     if (sl->buff) {
-	xfree((ptr_t) sl->buff);
-	sl->buff = NULL;
-	sl->tbuff = sl->nbuff = 0;
+        xfree((ptr_t) sl->buff);
+        sl->buff = NULL;
+        sl->tbuff = sl->nbuff = 0;
     }
     TW_RELS();
 } /* end tw_str_free */
@@ -195,18 +195,18 @@ tw_dir_next(dfd)
     register struct dirent *dirp;
 
     if (dfd == NULL)
-	return NULL;
+        return NULL;
 
     if ((dirp = readdir(dfd)) != NULL) {
-	(void) Strcpy(tw_retname, str2short(dirp->d_name));
-	return (tw_retname);
+        (void) Strcpy(tw_retname, str2short(dirp->d_name));
+        return (tw_retname);
     }
     return NULL;
 } /* end tw_dir_next */
 
 
 /* tw_cmd_add():
- *	Add the name to the command list
+ *      Add the name to the command list
  */
 static void
 tw_cmd_add(name)
@@ -214,18 +214,18 @@ tw_cmd_add(name)
 {
     int len;
 
-    if (name[0] == '#' || name[0] == '.')	/* emacs temp's, .files	*/
-	return;
+    if (name[0] == '#' || name[0] == '.')       /* emacs temp's, .files */
+        return;
     len = Strlen(name) + 2;
-    if (name[len - 3] == '~')			/* No emacs backups */
-	return;
+    if (name[len - 3] == '~')                   /* No emacs backups */
+        return;
     
     (void) Strcpy(tw_str_add(&tw_cmd, len), name);
 } /* end tw_cmd_add */
 
 
 /* tw_cmd_free():
- *	Free the command list
+ *      Free the command list
  */
 void
 tw_cmd_free()
@@ -236,7 +236,7 @@ tw_cmd_free()
 } /* end tw_cmd_free */
 
 /* tw_cmd_cmd():
- *	Add system commands to the command list
+ *      Add system commands to the command list
  */
 static void
 tw_cmd_cmd()
@@ -250,35 +250,35 @@ tw_cmd_cmd()
 
 
     if (v == NULL) /* if no path */
-	return;
+        return;
 
     for (pv = v->vec; *pv; pv++) {
-	if (pv[0][0] != '/') {
-	    tw_cmd_got |= TW_FL_REL;
-	    continue;
-	}
+        if (pv[0][0] != '/') {
+            tw_cmd_got |= TW_FL_REL;
+            continue;
+        }
 
-	if ((dirp = opendir(short2str(*pv))) == NULL)
-	    continue;
+        if ((dirp = opendir(short2str(*pv))) == NULL)
+            continue;
 
-	if (recexec)
-	    dir = Strspl(*pv, STRslash);
-	while ((dp = readdir(dirp)) != NULL) {
-	    /* the call to executable() may make this a bit slow */
-	    name = str2short(dp->d_name);
-	    if (dp->d_ino == 0 || (recexec && !executable(dir, name, 0)))
-		continue;
-	    tw_cmd_add(name);
-	}
-	(void) closedir(dirp);
-	if (recexec)
-	    xfree((ptr_t) dir);
+        if (recexec)
+            dir = Strspl(*pv, STRslash);
+        while ((dp = readdir(dirp)) != NULL) {
+            /* the call to executable() may make this a bit slow */
+            name = str2short(dp->d_name);
+            if (dp->d_ino == 0 || (recexec && !executable(dir, name, 0)))
+                continue;
+            tw_cmd_add(name);
+        }
+        (void) closedir(dirp);
+        if (recexec)
+            xfree((ptr_t) dir);
     }
 } /* end tw_cmd_cmd */
 
 
 /* tw_cmd_builtin():
- *	Add builtins to the command list
+ *      Add builtins to the command list
  */
 static void
 tw_cmd_builtin()
@@ -286,13 +286,13 @@ tw_cmd_builtin()
     register struct biltins *bptr;
 
     for (bptr = bfunc; bptr < &bfunc[nbfunc]; bptr++)
-	if (bptr->bname)
-	    tw_cmd_add(str2short(bptr->bname));
+        if (bptr->bname)
+            tw_cmd_add(str2short(bptr->bname));
 } /* end tw_cmd_builtin */
 
 
 /* tw_cmd_alias():
- *	Add aliases to the command list
+ *      Add aliases to the command list
  */
 static void
 tw_cmd_alias()
@@ -302,28 +302,28 @@ tw_cmd_alias()
 
     p = &aliases;
     for (;;) {
-	while (p->v_left)
-	    p = p->v_left;
+        while (p->v_left)
+            p = p->v_left;
 x:
-	if (p->v_parent == 0) /* is it the header? */
-	    return;
-	if (p->v_name)
-	    tw_cmd_add(p->v_name);
-	if (p->v_right) {
-	    p = p->v_right;
-	    continue;
-	}
-	do {
-	    c = p;
-	    p = p->v_parent;
-	} while (p->v_right == c);
-	goto x;
+        if (p->v_parent == 0) /* is it the header? */
+            return;
+        if (p->v_name)
+            tw_cmd_add(p->v_name);
+        if (p->v_right) {
+            p = p->v_right;
+            continue;
+        }
+        do {
+            c = p;
+            p = p->v_parent;
+        } while (p->v_right == c);
+        goto x;
     }
 } /* end tw_cmd_alias */
 
 
 /* tw_cmd_sort():
- *	Sort the command list removing duplicate elements
+ *      Sort the command list removing duplicate elements
  */
 static void
 tw_cmd_sort()
@@ -332,27 +332,27 @@ tw_cmd_sort()
 
     TW_HOLD();
     /* sort the list. */
-    qsort((ptr_t) tw_cmd.list, (size_t) tw_cmd.nlist, sizeof(Char *), 
-	  (int (*) __P((const void *, const void *))) fcompare);
+    qsort((ptr_t) tw_cmd.list, (size_t) tw_cmd.nlist, sizeof(Char *),
+          (int (*) __P((const void *, const void *))) fcompare);
 
     /* get rid of multiple entries */
     for (i = 0, fwd = 0; i < tw_cmd.nlist - 1; i++) {
-	if (Strcmp(tw_cmd.list[i], tw_cmd.list[i + 1]) == 0) /* garbage */
-	    fwd++;		/* increase the forward ref. count */
-	else if (fwd) 
-	    tw_cmd.list[i - fwd] = tw_cmd.list[i];
+        if (Strcmp(tw_cmd.list[i], tw_cmd.list[i + 1]) == 0) /* garbage */
+            fwd++;              /* increase the forward ref. count */
+        else if (fwd)
+            tw_cmd.list[i - fwd] = tw_cmd.list[i];
     }
     /* Fix fencepost error -- Theodore Ts'o <tytso@athena.mit.edu> */
     if (fwd)
-	tw_cmd.list[i - fwd] = tw_cmd.list[i];
+        tw_cmd.list[i - fwd] = tw_cmd.list[i];
     tw_cmd.nlist -= fwd;
     TW_RELS();
 } /* end tw_cmd_sort */
 
 
 /* tw_cmd_start():
- *	Get the command list and sort it, if not done yet.
- *	Reset the current pointer to the beginning of the command list
+ *      Get the command list and sort it, if not done yet.
+ *      Reset the current pointer to the beginning of the command list
  */
 /*ARGSUSED*/
 void
@@ -363,42 +363,42 @@ tw_cmd_start(dfd, pat)
     static Char *defpath[] = { STRNULL, 0 };
     SETDIR(dfd)
     if ((tw_cmd_got & TW_FL_CMD) == 0) {
-	tw_cmd_free();
-	tw_cmd_cmd();
-	tw_cmd_got |= TW_FL_CMD;
+        tw_cmd_free();
+        tw_cmd_cmd();
+        tw_cmd_got |= TW_FL_CMD;
     }
     if ((tw_cmd_got & TW_FL_ALIAS) == 0) {
-	tw_cmd_alias();
-	tw_cmd_got &= ~TW_FL_SORT;
-	tw_cmd_got |= TW_FL_ALIAS;
+        tw_cmd_alias();
+        tw_cmd_got &= ~TW_FL_SORT;
+        tw_cmd_got |= TW_FL_ALIAS;
     }
     if ((tw_cmd_got & TW_FL_BUILTIN) == 0) {
-	tw_cmd_builtin();
-	tw_cmd_got &= ~TW_FL_SORT;
-	tw_cmd_got |= TW_FL_BUILTIN;
+        tw_cmd_builtin();
+        tw_cmd_got &= ~TW_FL_SORT;
+        tw_cmd_got |= TW_FL_BUILTIN;
     }
     if ((tw_cmd_got & TW_FL_SORT) == 0) {
-	tw_cmd_sort();
-	tw_cmd_got |= TW_FL_SORT;
+        tw_cmd_sort();
+        tw_cmd_got |= TW_FL_SORT;
     }
 
     tw_cmd_state.cur = 0;
     CLRDIR(tw_cmd_state.dfd)
     if (tw_cmd_got & TW_FL_REL) {
-	struct varent *vp = adrof(STRpath);
-	if (vp && vp->vec)
-	    tw_cmd_state.pathv = vp->vec;
-	else
-	    tw_cmd_state.pathv = defpath;
+        struct varent *vp = adrof(STRpath);
+        if (vp && vp->vec)
+            tw_cmd_state.pathv = vp->vec;
+        else
+            tw_cmd_state.pathv = defpath;
     }
-    else 
-	tw_cmd_state.pathv = defpath;
+    else
+        tw_cmd_state.pathv = defpath;
 } /* tw_cmd_start */
 
 
 /* tw_cmd_next():
- *	Return the next element in the command list or
- *	Look for commands in the relative path components
+ *      Return the next element in the command list or
+ *      Look for commands in the relative path components
  */
 Char *
 tw_cmd_next(dir, flags)
@@ -408,121 +408,121 @@ tw_cmd_next(dir, flags)
     Char *ptr = NULL;
 
     if (tw_cmd_state.cur < tw_cmd.nlist) {
-	*flags = TW_DIR_OK;
-	return tw_cmd.list[tw_cmd_state.cur++];
+        *flags = TW_DIR_OK;
+        return tw_cmd.list[tw_cmd_state.cur++];
     }
 
     /*
      * We need to process relatives in the path.
      */
     while (((tw_cmd_state.dfd == NULL) ||
-	    ((ptr = tw_dir_next(tw_cmd_state.dfd)) == NULL)) &&
-	   (*tw_cmd_state.pathv != NULL)) {
+            ((ptr = tw_dir_next(tw_cmd_state.dfd)) == NULL)) &&
+           (*tw_cmd_state.pathv != NULL)) {
 
         CLRDIR(tw_cmd_state.dfd)
 
-	while (*tw_cmd_state.pathv && tw_cmd_state.pathv[0][0] == '/')
-	    tw_cmd_state.pathv++;
-	if ((ptr = *tw_cmd_state.pathv) != 0) {
-	    /*
-	     * We complete directories only on '.' should that
-	     * be changed?
-	     */
-	    if (ptr[0] == '\0' || (ptr[0] == '.' && ptr[1] == '\0')) {
-		*dir = '\0';
-		tw_cmd_state.dfd = opendir(".");
-		*flags = TW_DIR_OK | TW_EXEC_CHK;	
-	    }
-	    else {
-		copyn(dir, *tw_cmd_state.pathv, FILSIZ);
-		catn(dir, STRslash, FILSIZ);
-		tw_cmd_state.dfd = opendir(short2str(*tw_cmd_state.pathv));
-		*flags = TW_EXEC_CHK;
-	    }
-	    tw_cmd_state.pathv++;
-	}
+        while (*tw_cmd_state.pathv && tw_cmd_state.pathv[0][0] == '/')
+            tw_cmd_state.pathv++;
+        if ((ptr = *tw_cmd_state.pathv) != 0) {
+            /*
+             * We complete directories only on '.' should that
+             * be changed?
+             */
+            if (ptr[0] == '\0' || (ptr[0] == '.' && ptr[1] == '\0')) {
+                *dir = '\0';
+                tw_cmd_state.dfd = opendir(".");
+                *flags = TW_DIR_OK | TW_EXEC_CHK;
+            }
+            else {
+                copyn(dir, *tw_cmd_state.pathv, FILSIZ);
+                catn(dir, STRslash, FILSIZ);
+                tw_cmd_state.dfd = opendir(short2str(*tw_cmd_state.pathv));
+                *flags = TW_EXEC_CHK;
+            }
+            tw_cmd_state.pathv++;
+        }
     }
     return ptr;
 } /* end tw_cmd_next */
 
 
 /* tw_vptr_start():
- *	Find the first variable in the variable list
+ *      Find the first variable in the variable list
  */
 static void
 tw_vptr_start(c)
     struct varent *c;
 {
-    tw_vptr = c;		/* start at beginning of variable list */
+    tw_vptr = c;                /* start at beginning of variable list */
 
     for (;;) {
-	while (tw_vptr->v_left)
-	    tw_vptr = tw_vptr->v_left;
+        while (tw_vptr->v_left)
+            tw_vptr = tw_vptr->v_left;
 x:
-	if (tw_vptr->v_parent == 0) {	/* is it the header? */
-	    tw_vptr = NULL;
-	    return;
-	}
-	if (tw_vptr->v_name)
-	    return;		/* found first one */
-	if (tw_vptr->v_right) {
-	    tw_vptr = tw_vptr->v_right;
-	    continue;
-	}
-	do {
-	    c = tw_vptr;
-	    tw_vptr = tw_vptr->v_parent;
-	} while (tw_vptr->v_right == c);
-	goto x;
+        if (tw_vptr->v_parent == 0) {   /* is it the header? */
+            tw_vptr = NULL;
+            return;
+        }
+        if (tw_vptr->v_name)
+            return;             /* found first one */
+        if (tw_vptr->v_right) {
+            tw_vptr = tw_vptr->v_right;
+            continue;
+        }
+        do {
+            c = tw_vptr;
+            tw_vptr = tw_vptr->v_parent;
+        } while (tw_vptr->v_right == c);
+        goto x;
     }
 } /* end tw_shvar_start */
 
 
 /* tw_shvar_next():
- *	Return the next shell variable
+ *      Return the next shell variable
  */
 /*ARGSUSED*/
 Char *
 tw_shvar_next(dir, flags)
     Char *dir;
-    int	 *flags;
+    int  *flags;
 {
     register struct varent *p;
     register struct varent *c;
     register Char *cp;
 
     if ((p = tw_vptr) == NULL)
-	return (NULL);		/* just in case */
+        return (NULL);          /* just in case */
 
-    cp = p->v_name;		/* we know that this name is here now */
+    cp = p->v_name;             /* we know that this name is here now */
 
     /* now find the next one */
     for (;;) {
-	if (p->v_right) {	/* if we can go right */
-	    p = p->v_right;
-	    while (p->v_left)
-		p = p->v_left;
-	}
-	else {			/* else go up */
-	    do {
-		c = p;
-		p = p->v_parent;
-	    } while (p->v_right == c);
-	}
-	if (p->v_parent == 0) {	/* is it the header? */
-	    tw_vptr = NULL;
-	    return (cp);
-	}
-	if (p->v_name) {
-	    tw_vptr = p;	/* save state for the next call */
-	    return (cp);
-	}
+        if (p->v_right) {       /* if we can go right */
+            p = p->v_right;
+            while (p->v_left)
+                p = p->v_left;
+        }
+        else {                  /* else go up */
+            do {
+                c = p;
+                p = p->v_parent;
+            } while (p->v_right == c);
+        }
+        if (p->v_parent == 0) { /* is it the header? */
+            tw_vptr = NULL;
+            return (cp);
+        }
+        if (p->v_name) {
+            tw_vptr = p;        /* save state for the next call */
+            return (cp);
+        }
     }
 } /* end tw_shvar_next */
 
 
 /* tw_envvar_next():
- *	Return the next environment variable
+ *      Return the next environment variable
  */
 /*ARGSUSED*/
 Char *
@@ -533,10 +533,10 @@ tw_envvar_next(dir, flags)
     Char   *ps, *pd;
 
     if (tw_env == NULL || *tw_env == NULL)
-	return (NULL);
+        return (NULL);
     for (ps = *tw_env, pd = tw_retname;
-	 *ps && *ps != '=' && pd <= &tw_retname[MAXPATHLEN]; *pd++ = *ps++)
-	continue;
+         *ps && *ps != '=' && pd <= &tw_retname[MAXPATHLEN]; *pd++ = *ps++)
+        continue;
     *pd = '\0';
     tw_env++;
     return (tw_retname);
@@ -544,7 +544,7 @@ tw_envvar_next(dir, flags)
 
 
 /* tw_var_start():
- *	Begin the list of the shell and environment variables
+ *      Begin the list of the shell and environment variables
  */
 /*ARGSUSED*/
 void
@@ -559,7 +559,7 @@ tw_var_start(dfd, pat)
 
 
 /* tw_alias_start():
- *	Begin the list of the shell aliases
+ *      Begin the list of the shell aliases
  */
 /*ARGSUSED*/
 void
@@ -574,7 +574,7 @@ tw_alias_start(dfd, pat)
 
 
 /* tw_complete_start():
- *	Begin the list of completions
+ *      Begin the list of completions
  */
 /*ARGSUSED*/
 void
@@ -590,7 +590,7 @@ tw_complete_start(dfd, pat)
 
 
 /* tw_var_next():
- *	Return the next shell or environment variable
+ *      Return the next shell or environment variable
  */
 Char *
 tw_var_next(dir, flags)
@@ -600,31 +600,31 @@ tw_var_next(dir, flags)
     Char *ptr = NULL;
 
     if (tw_vptr)
-	ptr = tw_shvar_next(dir, flags);
+        ptr = tw_shvar_next(dir, flags);
     if (!ptr && tw_env)
-	ptr = tw_envvar_next(dir, flags);
+        ptr = tw_envvar_next(dir, flags);
     return ptr;
 } /* end tw_var_next */
 
 
 /* tw_logname_start():
- *	Initialize lognames to the beginning of the list
+ *      Initialize lognames to the beginning of the list
  */
 /*ARGSUSED*/
-void 
+void
 tw_logname_start(dfd, pat)
     DIR *dfd;
     Char *pat;
 {
     SETDIR(dfd)
 #ifndef _VMS_POSIX
-    (void) setpwent();	/* Open passwd file */
+    (void) setpwent();  /* Open passwd file */
 #endif /* atp vmsposix */
 } /* end tw_logname_start */
 
 
 /* tw_logname_next():
- *	Return the next entry from the passwd file
+ *      Return the next entry from the passwd file
  */
 /*ARGSUSED*/
 Char *
@@ -649,9 +649,9 @@ tw_logname_next(dir, flags)
 
     if (pw == NULL) {
 #ifdef YPBUGS
-	fix_yp_bugs();
+        fix_yp_bugs();
 #endif
-	return (NULL);
+        return (NULL);
     }
     (void) Strcpy(retname, str2short(pw->pw_name));
     return (retname);
@@ -659,7 +659,7 @@ tw_logname_next(dir, flags)
 
 
 /* tw_logname_end():
- *	Close the passwd file to finish th logname list
+ *      Close the passwd file to finish th logname list
  */
 void
 tw_logname_end()
@@ -674,7 +674,7 @@ tw_logname_end()
 
 
 /* tw_file_start():
- *	Initialize the directory for the file list
+ *      Initialize the directory for the file list
  */
 /*ARGSUSED*/
 void
@@ -685,12 +685,12 @@ tw_file_start(dfd, pat)
     struct varent *vp;
     SETDIR(dfd)
     if ((vp = adrof(STRcdpath)) != NULL)
-	tw_env = vp->vec;
+        tw_env = vp->vec;
 } /* end tw_file_start */
 
 
 /* tw_file_next():
- *	Return the next file in the directory 
+ *      Return the next file in the directory
  */
 Char *
 tw_file_next(dir, flags)
@@ -699,25 +699,25 @@ tw_file_next(dir, flags)
 {
     Char *ptr = tw_dir_next(tw_dir_fd);
     if (ptr == NULL && (*flags & TW_DIR_OK) != 0) {
-	CLRDIR(tw_dir_fd)
-	while (tw_env && *tw_env)
-	    if ((tw_dir_fd = opendir(short2str(*tw_env))) != NULL)
-		break;
-	    else
-		tw_env++;
-		
-	if (tw_dir_fd) {
-	    copyn(dir, *tw_env++, MAXPATHLEN);
-	    catn(dir, STRslash, MAXPATHLEN);
-	    ptr = tw_dir_next(tw_dir_fd);
-	}
+        CLRDIR(tw_dir_fd)
+        while (tw_env && *tw_env)
+            if ((tw_dir_fd = opendir(short2str(*tw_env))) != NULL)
+                break;
+            else
+                tw_env++;
+                
+        if (tw_dir_fd) {
+            copyn(dir, *tw_env++, MAXPATHLEN);
+            catn(dir, STRslash, MAXPATHLEN);
+            ptr = tw_dir_next(tw_dir_fd);
+        }
     }
     return ptr;
 } /* end tw_file_next */
 
 
 /* tw_dir_end():
- *	Clear directory related lists
+ *      Clear directory related lists
  */
 void
 tw_dir_end()
@@ -728,7 +728,7 @@ tw_dir_end()
 
 
 /* tw_item_free():
- *	Free the item list
+ *      Free the item list
  */
 void
 tw_item_free()
@@ -737,8 +737,8 @@ tw_item_free()
 } /* end tw_item_free */
 
 
-/* tw_item_get(): 
- *	Return the list of items 
+/* tw_item_get():
+ *      Return the list of items
  */
 Char **
 tw_item_get()
@@ -748,7 +748,7 @@ tw_item_get()
 
 
 /* tw_item_add():
- *	Return a new item
+ *      Return a new item
  */
 Char *
 tw_item_add(len)
@@ -759,8 +759,8 @@ tw_item_add(len)
 
 
 /* tw_item_find():
- *      Find the string if it exists in the item list 
- *	end return it.
+ *      Find the string if it exists in the item list
+ *      end return it.
  */
 Char *
 tw_item_find(str)
@@ -769,17 +769,17 @@ tw_item_find(str)
     int i;
 
     if (tw_item.list == NULL || str == NULL)
-	return NULL;
+        return NULL;
 
     for (i = 0; i < tw_item.nlist; i++)
-	if (tw_item.list[i] != NULL && Strcmp(tw_item.list[i], str) == 0)
-	    return tw_item.list[i];
+        if (tw_item.list[i] != NULL && Strcmp(tw_item.list[i], str) == 0)
+            return tw_item.list[i];
     return NULL;
 } /* end tw_item_find */
 
 
 /* tw_vl_start():
- *	Initialize a variable list
+ *      Initialize a variable list
  */
 void
 tw_vl_start(dfd, pat)
@@ -788,11 +788,11 @@ tw_vl_start(dfd, pat)
 {
     SETDIR(dfd)
     if ((tw_vptr = adrof(pat)) != NULL) {
-	tw_env = tw_vptr->vec;
-	tw_vptr = NULL;
+        tw_env = tw_vptr->vec;
+        tw_vptr = NULL;
     }
     else
-	tw_env = NULL;
+        tw_env = NULL;
 } /* end tw_vl_start */
 
 
@@ -819,20 +819,20 @@ tw_wl_next(dir, flags)
     int *flags;
 {
     if (tw_word == NULL || tw_word[0] == '\0')
-	return NULL;
+        return NULL;
     
     while (*tw_word && Isspace(*tw_word)) tw_word++;
 
     for (dir = tw_word; *tw_word && !Isspace(*tw_word); tw_word++)
-	continue;
+        continue;
     if (*tw_word)
-	*tw_word++ = '\0';
+        *tw_word++ = '\0';
     return *dir ? dir : NULL;
 } /* end tw_wl_next */
 
 
 /* tw_bind_start():
- *	Begin the list of the shell bindings
+ *      Begin the list of the shell bindings
  */
 /*ARGSUSED*/
 void
@@ -846,7 +846,7 @@ tw_bind_start(dfd, pat)
 
 
 /* tw_bind_next():
- *	Begin the list of the shell bindings
+ *      Begin the list of the shell bindings
  */
 /*ARGSUSED*/
 Char *
@@ -856,17 +856,17 @@ tw_bind_next(dir, flags)
 {
     char *ptr;
     if (tw_bind && tw_bind->name) {
-	for (ptr = tw_bind->name, dir = tw_retname; (*dir++ = *ptr++) != '\0';)
-	    continue;
-	tw_bind++;
-	return(tw_retname);
+        for (ptr = tw_bind->name, dir = tw_retname; (*dir++ = *ptr++) != '\0';)
+            continue;
+        tw_bind++;
+        return(tw_retname);
     }
     return NULL;
 } /* end tw_bind_next */
 
 
 /* tw_limit_start():
- *	Begin the list of the shell limitings
+ *      Begin the list of the shell limitings
  */
 /*ARGSUSED*/
 void
@@ -882,7 +882,7 @@ tw_limit_start(dfd, pat)
 
 
 /* tw_limit_next():
- *	Begin the list of the shell limitings
+ *      Begin the list of the shell limitings
  */
 /*ARGSUSED*/
 Char *
@@ -893,11 +893,11 @@ tw_limit_next(dir, flags)
 #ifndef HAVENOLIMIT
     char *ptr;
     if (tw_limit && tw_limit->limname) {
-	for (ptr = tw_limit->limname, dir = tw_retname; 
-	     (*dir++ = *ptr++) != '\0';)
-	    continue;
-	tw_limit++;
-	return(tw_retname);
+        for (ptr = tw_limit->limname, dir = tw_retname;
+             (*dir++ = *ptr++) != '\0';)
+            continue;
+        tw_limit++;
+        return(tw_retname);
     }
 #endif /* ! HAVENOLIMIT */
     return NULL;
@@ -905,7 +905,7 @@ tw_limit_next(dir, flags)
 
 
 /* tw_sig_start():
- *	Begin the list of the shell sigings
+ *      Begin the list of the shell sigings
  */
 /*ARGSUSED*/
 void
@@ -919,7 +919,7 @@ tw_sig_start(dfd, pat)
 
 
 /* tw_sig_next():
- *	Begin the list of the shell sigings
+ *      Begin the list of the shell sigings
  */
 /*ARGSUSED*/
 Char *
@@ -928,23 +928,24 @@ tw_sig_next(dir, flags)
     int *flags;
 {
     char *ptr;
-    for (;tw_index < NSIG; tw_index++) {
 
-	if (mesg[tw_index].iname == NULL)
-	    continue;
+    for (;tw_index < NSIG && tw_index < mesg_size; tw_index++) {
 
-	for (ptr = mesg[tw_index].iname, dir = tw_retname; 
-	     (*dir++ = *ptr++) != '\0';)
-	    continue;
-	tw_index++;
-	return(tw_retname);
+        if (mesg[tw_index].iname == NULL)
+            continue;
+
+        for (ptr = mesg[tw_index].iname, dir = tw_retname;
+             (*dir++ = *ptr++) != '\0';)
+            continue;
+        tw_index++;
+        return(tw_retname);
     }
     return NULL;
 } /* end tw_sig_next */
 
 
 /* tw_job_start():
- *	Begin the list of the shell jobings
+ *      Begin the list of the shell jobings
  */
 /*ARGSUSED*/
 void
@@ -958,7 +959,7 @@ tw_job_start(dfd, pat)
 
 
 /* tw_job_next():
- *	Begin the list of the shell jobings
+ *      Begin the list of the shell jobings
  */
 /*ARGSUSED*/
 Char *
@@ -969,16 +970,16 @@ tw_job_next(dir, flags)
     Char *ptr;
     struct process *j;
     for (;tw_index <= pmaxindex; tw_index++) {
-	for (j = proclist.p_next; j != NULL; j = j->p_next)
-	    if (j->p_index == tw_index && j->p_procid == j->p_jobid)
-		break;
-	if (j == NULL) 
-	    continue;
-	for (ptr = j->p_command, dir = tw_retname; (*dir++ = *ptr++) != '\0';)
-	    continue;
-	*dir = '\0';
-	tw_index++;
-	return(tw_retname);
+        for (j = proclist.p_next; j != NULL; j = j->p_next)
+            if (j->p_index == tw_index && j->p_procid == j->p_jobid)
+                break;
+        if (j == NULL)
+            continue;
+        for (ptr = j->p_command, dir = tw_retname; (*dir++ = *ptr++) != '\0';)
+            continue;
+        *dir = '\0';
+        tw_index++;
+        return(tw_retname);
     }
     return NULL;
 } /* end tw_job_next */
