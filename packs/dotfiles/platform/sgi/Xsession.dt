@@ -248,12 +248,10 @@ if [ "$rundesktop" = TRUE ]
 then
 	/usr/sbin/fm  -lrb >/dev/console 2>&1 &
 fi
-if [ "$runwmsession" = FALSE ]
-then
-	/usr/sbin/startconsole -iconic
-
-
-fi
+#if [ "$runwmsession" = FALSE ]
+#then
+#	/usr/sbin/startconsole -iconic
+#fi
 
 if [ -x $sgisession ]; then
 	$sgisession >/dev/console 2>&1 &
