@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.34 1988-06-24 22:46:10 jtkohl Exp $";
+static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.35 1988-06-25 16:52:21 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -1417,7 +1417,7 @@ ZNotice_t *notice;
 	nacked->na_packet = pack;
 	nacked->na_srv_idx = server - otherservers;
 	nacked->na_packsz = packlen;
-	nacked->na_uid = notice->z_multiuid;
+	nacked->na_uid = notice->z_uid;
 	nacked->q_forw = nacked->q_back = nacked;
 	nacked->na_abstimo = 0;
 
@@ -1483,7 +1483,7 @@ struct sockaddr_in *who;
 	     nacked != srv_nacklist;
 	     nacked = nacked->q_forw)
 		if (&otherservers[nacked->na_srv_idx] == which)
-			if (ZCompareUID(&nacked->na_uid, &notice->z_multiuid)) {
+			if (ZCompareUID(&nacked->na_uid, &notice->z_uid)) {
 				timer_reset(nacked->na_timer);
 				xfree(nacked->na_packet);
 				xremque(nacked);

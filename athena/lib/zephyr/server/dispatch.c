@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.24 1988-06-24 22:55:57 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.25 1988-06-25 16:51:59 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -370,7 +370,7 @@ int len, waitforack;
 	nacked->na_packet = savebuf;
 	nacked->na_addr = ZGetDestAddr();
 	nacked->na_packsz = len;
-	nacked->na_uid = notice->z_multiuid;
+	nacked->na_uid = notice->z_uid;
 	nacked->q_forw = nacked->q_back = nacked;
 	nacked->na_abstimo = NOW + abs_timo;
 
@@ -479,7 +479,7 @@ ZClient_t *client;
 	nacked->na_packet = noticepack;
 	nacked->na_addr = *dest;
 	nacked->na_packsz = packlen;
-	nacked->na_uid = notice->z_multiuid;
+	nacked->na_uid = notice->z_uid;
 	nacked->q_forw = nacked->q_back = nacked;
 	nacked->na_abstimo = NOW + abs_timo;
 
@@ -652,7 +652,7 @@ struct sockaddr_in *who;
 	     nacked = nacked->q_forw)
 		if ((nacked->na_addr.sin_addr.s_addr == who->sin_addr.s_addr) &&
 		     (nacked->na_addr.sin_port == who->sin_port))
-			if (ZCompareUID(&nacked->na_uid, &notice->z_multiuid)) {
+			if (ZCompareUID(&nacked->na_uid, &notice->z_uid)) {
 				timer_reset(nacked->na_timer);
 				xfree(nacked->na_packet);
 				xremque(nacked);
