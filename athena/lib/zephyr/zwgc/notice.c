@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/notice.c,v $
- *      $Author: jfc $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_notice_c[] = "$Id: notice.c,v 1.7 1990-12-04 22:47:03 jfc Exp $";
+static char rcsid_notice_c[] = "$Id: notice.c,v 1.8 1993-09-24 21:31:09 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -278,7 +278,7 @@ char *decode_notice(notice)
      * Set $sender to the name of the notice sender except first strip off the
      * realm name if it is the local realm:
      */
-    if ( (temp=index(notice->z_sender,'@')) && string_Eq(temp+1, ZGetRealm()) )
+    if ( (temp=strchr(notice->z_sender,'@')) && string_Eq(temp+1, ZGetRealm()) )
       var_set_variable_then_free_value("sender",
 				string_CreateFromData(notice->z_sender,
 						      temp-notice->z_sender));

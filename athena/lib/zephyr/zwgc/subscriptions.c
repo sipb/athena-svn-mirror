@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/subscriptions.c,v $
- *      $Author: jfc $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.9 1991-09-02 18:22:54 jfc Exp $";
+static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.10 1993-09-24 21:33:12 probe Exp $";
 #endif
 
 /****************************************************************************/
@@ -272,7 +272,7 @@ static void load_subscriptions_from_file(file)
 	    /* <<<>>>
 	     * The below does NOT work is the recipient field  is "":
 	     */ 
-	    if (temp = index(line, '#'))
+	    if (temp = strchr(line, '#'))
 	      *temp = '\0';
 	    for (temp=line; *temp && *temp==' '; temp++) ;
 	    if (!*temp || *temp=='\n')
