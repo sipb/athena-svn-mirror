@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.4 1990-07-11 10:21:08 epeisach Exp $
+ *	$Author: ilham $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.5 1990-07-11 16:23:46 ilham Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.4 1990-07-11 10:21:08 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.5 1990-07-11 16:23:46 ilham Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -45,6 +45,8 @@ quota_report *qreport;
 	*cks = 0;
 
 	CHECK_PROTECT();
+
+	if (QD) return(QDBDOWN);
 
 	service = set_service(qid->service);
 	if(ret=check_krb_auth(h, auth, &ad)) 
@@ -236,6 +238,8 @@ quota_value qamount;
 
 	CHECK_PROTECT();
 
+	if (QD) return(QDBDOWN);
+
 #if 0
 	syslog(LOG_DEBUG, "Quotamodify %s, %s, %d:amt %d, type %d\n", 
 	       qid->username, qid->service, qid->account,qamount,qtype);
@@ -386,6 +390,8 @@ quota_value qamount;
 	int read_group_record = 0;
 
 	CHECK_PROTECT();
+
+	if (QD) return(QDBDOWN);
 
 	service=set_service(qid->service);
 
