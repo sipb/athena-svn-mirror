@@ -266,9 +266,10 @@ There are two avenues one can take for building third-party software:
 
 In a some cases, the native build system may already conform to the
 Athena build system (a configure script which needs no special options
-for the Athena environment besides those given in our site.def file),
-but generally you will have to write either a configure.athena or a
-Makefile.athena file specifying how to build and install the program.
+for the Athena environment besides those given in our config.site
+file), but generally you will have to write either a configure.athena
+or a Makefile.athena file specifying how to build and install the
+program.
 
 configure.athena is used when the package builds and installs
 normally, but needs to have extra options passed to configure (or has
