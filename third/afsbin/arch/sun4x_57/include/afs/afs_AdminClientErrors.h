@@ -32,6 +32,13 @@
 #define ADMCLIENTRPCSTATHANDLEPNULL              (19483L)
 #define ADMCLIENTNOKASTOKENS                     (19484L)
 #define ADMCLIENTRPCSTATNOCONNECTION             (19485L)
+#define ADMCLIENTCMSTATHANDLEPNULL               (19486L)
+#define ADMCLIENTCMSTATNOCONNECTION              (19487L)
+#define ADMCLIENTCMCELLNAMENULL                  (19488L)
+#define ADMCLIENTCMCONFIGNULL                    (19489L)
+#define ADMCLIENTRXDEBUGHANDLEPNULL              (19490L)
+#define ADMCLIENTRXDEBUGTIMEOUT                  (19491L)
+#define ADMCLIENTRXDEBUGNOTSUPPORTED             (19492L)
 extern void initialize_al_error_table ();
 #define ERROR_TABLE_BASE_al (19456L)
 

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/rx/rx_globals.h,v 1.1.1.1 2000-03-29 21:27:23 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/rx/rx_globals.h,v 1.1.1.2 2000-04-12 18:30:45 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/rx/rx_globals.h,v $ */
 
 /*
@@ -173,20 +173,20 @@ EXT int rx_packetReclaims INIT(0);
  * This is provided for backward compatibility with peers which may be unable
  * to swallow anything larger. THIS MUST NEVER DECREASE WHILE AN APPLICATION
  * IS RUNNING! */
-EXT u_int32 rx_maxReceiveSize INIT(OLD_MAX_PACKET_SIZE*RX_MAX_FRAGS + UDP_HDR_SIZE*(RX_MAX_FRAGS-1));
+EXT afs_uint32 rx_maxReceiveSize INIT(OLD_MAX_PACKET_SIZE*RX_MAX_FRAGS + UDP_HDR_SIZE*(RX_MAX_FRAGS-1));
 
 /* this is the maximum packet size that the user wants us to receive */
 /* this is set by rxTune if required */
-EXT u_int32 rx_maxReceiveSizeUser INIT(0xffffffff);
+EXT afs_uint32 rx_maxReceiveSizeUser INIT(0xffffffff);
 
 /* rx_MyMaxSendSize is the size of the largest packet we will send,
  * including the RX header. Just as rx_maxReceiveSize is the
  * max we will receive, including the rx header.
  */
-EXT u_int32 rx_MyMaxSendSize INIT(8588);
+EXT afs_uint32 rx_MyMaxSendSize INIT(8588);
 
 /* Maximum size of a jumbo datagram we can receive */
-EXT u_int32 rx_maxJumboRecvSize INIT(RX_MAX_PACKET_SIZE);
+EXT afs_uint32 rx_maxJumboRecvSize INIT(RX_MAX_PACKET_SIZE);
 
 /* need this to permit progs to run on AIX systems */
 EXT int (*rxi_syscallp) () INIT(0); 
@@ -202,7 +202,7 @@ EXT struct rx_queue rx_freeCallQueue;
 #ifdef	RX_ENABLE_LOCKS
 EXT afs_kmutex_t rx_freeCallQueue_lock;
 #endif
-EXT int32 rxi_nCalls INIT(0);
+EXT afs_int32 rxi_nCalls INIT(0);
 
 /* Port requested at rx_Init.  If this is zero, the actual port used will be different--but it will only be used for client operations.  If non-zero, server provided services may use the same port. */
 EXT u_short rx_port;
@@ -247,9 +247,9 @@ EXT int rxi_2dchoice INIT(1);    /* keep track of another call to schedule */
    without blocking */
 EXT int rxi_dataQuota INIT(RX_MAX_QUOTA); /* packets to reserve for active threads */
 
-EXT int32 rxi_availProcs INIT(0);	/* number of threads in the pool */
-EXT int32 rxi_totalMin INIT(0);		/* Sum(minProcs) forall services */
-EXT int32 rxi_minDeficit INIT(0);	/* number of procs needed to handle all minProcs */
+EXT afs_int32 rxi_availProcs INIT(0);	/* number of threads in the pool */
+EXT afs_int32 rxi_totalMin INIT(0);		/* Sum(minProcs) forall services */
+EXT afs_int32 rxi_minDeficit INIT(0);	/* number of procs needed to handle all minProcs */
 
 EXT int rx_nextCid;	    /* Next connection call id */
 EXT int rx_epoch;	    /* Initialization time of rx */
@@ -263,8 +263,8 @@ EXT struct rx_stats rx_stats;
 EXT struct rx_peer **rx_peerHashTable;
 EXT struct rx_connection **rx_connHashTable;
 EXT struct rx_connection *rx_connCleanup_list INIT(0);
-EXT u_int32 rx_hashTableSize INIT(256);	/* Power of 2 */
-EXT u_int32 rx_hashTableMask INIT(255);	/* One less than rx_hashTableSize */
+EXT afs_uint32 rx_hashTableSize INIT(256);	/* Power of 2 */
+EXT afs_uint32 rx_hashTableMask INIT(255);	/* One less than rx_hashTableSize */
 #ifdef RX_ENABLE_LOCKS
 EXT afs_kmutex_t rx_peerHashTable_lock;
 EXT afs_kmutex_t rx_connHashTable_lock;
@@ -398,3 +398,10 @@ EXT afs_kmutex_t rx_stats_mutex; /* used to activate stats gathering */
 #endif
 
 EXT int rx_enable_stats INIT(0);
+
+/*
+ * Set this flag to enable the listener thread to trade places with an idle
+ * worker thread to move the context switch from listener to worker out of
+ * the request path.
+ */
+EXT int rx_enable_hot_thread INIT(0);

@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/partition.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/partition.h,v 1.1.1.2 2000-04-12 18:30:12 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/partition.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/partition.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $";
+static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/partition.h,v 1.1.1.2 2000-04-12 18:30:12 ghudson Exp $";
 #endif
 
 /*
@@ -97,7 +97,7 @@ extern void VResetDiskUsage_r(void);
 extern void VSetPartitionDiskUsage(register struct DiskPartition *dp);
 extern void VSetPartitionDiskUsage_r(register struct DiskPartition *dp);
 extern char *VPartitionPath(struct DiskPartition *p);
-/*extern void VAdjustDiskUsage(Error *ec, Volume *vp, int32 blocks,
-			     int32 checkBlocks); */
+/*extern void VAdjustDiskUsage(Error *ec, Volume *vp, afs_int32 blocks,
+			     afs_int32 checkBlocks); */
 extern void VPrintDiskStats(void);
 

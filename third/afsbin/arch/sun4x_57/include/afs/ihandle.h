@@ -203,6 +203,7 @@ typedef struct StreamHandle_s {
 typedef struct IHandle_s {
     int ih_vid;	/* Parent volume id. */
     int ih_dev;	/* device id. */
+    int ih_flags; /* Flags */
     Inode ih_ino; /* Inode number */
     int ih_refcnt; /* reference count */
     struct FdHandle_s *ih_fdhead;   /* List of open file desciptors */
@@ -210,6 +211,9 @@ typedef struct IHandle_s {
     struct IHandle_s *ih_next;	    /* Links for avail list/hash chains */
     struct IHandle_s *ih_prev;
 } IHandle_t;
+
+/* Flags for the Inode handle */
+#define IH_REALLY_CLOSED		1
 
 /* Hash function for inode handles */
 #define I_HANDLE_HASH_SIZE	1024	/* power of 2 */

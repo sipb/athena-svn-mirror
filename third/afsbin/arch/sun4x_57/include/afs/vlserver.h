@@ -40,10 +40,10 @@ extern struct vldstats dynamic_statistics;
 /* Header struct holding stats, internal pointers and the hash tables */
 struct vlheader {
     struct  vital_vlheader  vital_header;   /* all small critical stuff are in here */
-    u_int32  IpMappedAddr[MAXSERVERID+1];    /* Mapping of ip addresses to relative ones */
-    int32    VolnameHash[HASHSIZE];	    /* hash table for vol names */
-    int32    VolidHash[MAXTYPES][HASHSIZE];  /* hash table for vol ids */
-    int32    SIT;                            /* spare for poss future use */
+    afs_uint32  IpMappedAddr[MAXSERVERID+1];    /* Mapping of ip addresses to relative ones */
+    afs_int32    VolnameHash[HASHSIZE];	    /* hash table for vol names */
+    afs_int32    VolidHash[MAXTYPES][HASHSIZE];  /* hash table for vol ids */
+    afs_int32    SIT;                            /* spare for poss future use */
 };
 
 /* Vlentry's flags state */
@@ -70,15 +70,15 @@ struct vlheader {
 
 /* Internal representation of vldbentry; trying to save any bytes */
 struct vlentry {
-    u_int32  volumeId[MAXTYPES];		/* Corresponding volume of each type */
-    int32    flags;			/* General flags */
-    int32    LockAfsId;			/* Person who locked entry */
-    int32    LockTimestamp;		/* lock time stamp */
-    int32    cloneId;			/* used during cloning */
-    int32    spares0;			/* XXXX was AssociatedChain XXXX */
-    int32    nextIdHash[MAXTYPES];	/* Next id hash table pointer (or freelist ->[0]) */
-    int32    nextNameHash;		/* Next name hash table pointer */
-    int32    spares1[2];			/* long spares */
+    afs_uint32  volumeId[MAXTYPES];		/* Corresponding volume of each type */
+    afs_int32    flags;			/* General flags */
+    afs_int32    LockAfsId;			/* Person who locked entry */
+    afs_int32    LockTimestamp;		/* lock time stamp */
+    afs_int32    cloneId;			/* used during cloning */
+    afs_int32    spares0;			/* XXXX was AssociatedChain XXXX */
+    afs_int32    nextIdHash[MAXTYPES];	/* Next id hash table pointer (or freelist ->[0]) */
+    afs_int32    nextNameHash;		/* Next name hash table pointer */
+    afs_int32    spares1[2];			/* long spares */
     char    name[VL_MAXNAMELEN];	/* Volume name */
     char    spares3;			/* XXX was volumeType XXXX */
     u_char  serverNumber[OMAXNSERVERS];	/* Server # for each server that holds volume */
@@ -89,13 +89,13 @@ struct vlentry {
 };
 
 struct nvlentry {
-    u_int32  volumeId[MAXTYPES];		/* Corresponding volume of each type */
-    int32    flags;			/* General flags */
-    int32    LockAfsId;			/* Person who locked entry */
-    int32    LockTimestamp;		/* lock time stamp */
-    int32    cloneId;			/* used during cloning */
-    int32    nextIdHash[MAXTYPES];	/* Next id hash table pointer (or freelist ->[0]) */
-    int32    nextNameHash;		/* Next name hash table pointer */
+    afs_uint32  volumeId[MAXTYPES];		/* Corresponding volume of each type */
+    afs_int32    flags;			/* General flags */
+    afs_int32    LockAfsId;			/* Person who locked entry */
+    afs_int32    LockTimestamp;		/* lock time stamp */
+    afs_int32    cloneId;			/* used during cloning */
+    afs_int32    nextIdHash[MAXTYPES];	/* Next id hash table pointer (or freelist ->[0]) */
+    afs_int32    nextNameHash;		/* Next name hash table pointer */
     char    name[VL_MAXNAMELEN];	/* Volume name */
     u_char  serverNumber[NMAXNSERVERS];	/* Server # for each server that holds volume */
     u_char  serverPartition[NMAXNSERVERS];/* Server Partition number */
@@ -117,16 +117,16 @@ typedef struct nvlentry nvlentry;
 struct extentaddr {
     union ex_un {
 	struct {
-	    int32  count;		/* # of valid addresses */
-	    int32  spares1[2];
-	    int32  flags;		/* must match vlentry's flags field XXX */
-	    u_int32 contaddrs[VL_MAX_ADDREXTBLKS];
-	    int32  spares2[24];
+	    afs_int32  count;		/* # of valid addresses */
+	    afs_int32  spares1[2];
+	    afs_int32  flags;		/* must match vlentry's flags field XXX */
+	    afs_uint32 contaddrs[VL_MAX_ADDREXTBLKS];
+	    afs_int32  spares2[24];
 	} _ex_header;
 	struct {
 	    afsUUID hostuuid;
-	    int32 uniquifier;
-	    u_int32 addrs[VL_MAXIPADDRS_PERMH];
+	    afs_int32 uniquifier;
+	    afs_uint32 addrs[VL_MAXIPADDRS_PERMH];
 	} _ex_addrentry;
     } _ex_un;
 };

@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/assert.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/assert.h,v 1.1.1.2 2000-04-12 18:29:38 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/assert.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidassert = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/assert.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $";
+static char *rcsidassert = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/assert.h,v 1.1.1.2 2000-04-12 18:29:38 ghudson Exp $";
 #endif
 
 /*

@@ -8,7 +8,7 @@
 #ifndef AFS_NT40_ENV
 
 #ifndef lint
-static char *rcsid_afssyscalls_h = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/afssyscalls.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $";
+static char *rcsid_afssyscalls_h = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/afssyscalls.h,v 1.1.1.2 2000-04-12 18:29:49 ghudson Exp $";
 #endif
 
 /* Declare Inode type. */

@@ -1,9 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/remote.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/remote.h,v 1.1.1.2 2000-04-12 18:29:40 ghudson Exp $ */
 /* $ACIS:remote.h 9.1$ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/remote.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE)  && defined(RCS_HDRS)
-static char *rcsidremote = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/remote.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $";
+static char *rcsidremote = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/remote.h,v 1.1.1.2 2000-04-12 18:29:40 ghudson Exp $";
 #endif
 
 /*
@@ -63,13 +63,13 @@ struct	intercept_message {
     short	im_gid;		/* The effective group id of the client */
     int		im_seq;		/* The sequence number of this transaction.
 				   Never 0 */
-    int32	im_wdfid[3];	/* Current directory on the remote file system
+    afs_int32	im_wdfid[3];	/* Current directory on the remote file system
     				   Vice II only. */
     int		im_error;	/* u.u_error copied from this */
     char	im_follow1;	/* 1=>follow last component of first pathname
 				   if symbolic link; 0=>don't */
     char	im_follow2;	/* ditto for second pathname */
-    int32	im_pag;		/* process authentication group */
+    afs_int32	im_pag;		/* process authentication group */
     /* im_arg contains a representation of the arguments to the intercepted
        system call, when transmitted from the kernel to Venus.
        Returned values are passed back from Venus to the kernel the same way */

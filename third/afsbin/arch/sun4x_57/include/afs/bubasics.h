@@ -115,7 +115,7 @@
 #define cTIME(t)  ( (*(t) == NEVERDATE) ? (char *)NEVERSTRING : (char *)ctime(t) )
 
 #ifndef Date
-#define Date u_int32
+#define Date afs_uint32
 #endif
 
 #define	DUMP_TAPE_NAME	"Ubik_db_dump"		/* base database tape name */
@@ -134,7 +134,7 @@ struct dlqlink
 {
     struct dlqlink	*dlq_next;
     struct dlqlink	*dlq_prev;
-    int32		dlq_type;
+    afs_int32		dlq_type;
     char *		dlq_structPtr;		/* enclosing structure */
 };
 
@@ -184,6 +184,7 @@ extern dlqlinkP dlqUnlinkf();
 #define	ABORT_LOCAL	0x10	/* C; abort local task if contact lost */
 #define	TASK_DONE 	0x20   	/* B; task complete */
 #define	SILENT		0x400	/* C; don't be verbose about termination */
+#define	NOREMOVE	0x1000	/* C; don't remove from queue */
 
 /* comm status */
 #define	CONTACT_LOST	0x40    /* B; contact lost */
@@ -200,20 +201,20 @@ struct statusS
 {
     dlqlinkT	link;
 
-    u_int32	taskId;				/* task identifier */
-    u_int32      dbDumpId;                       /* dump id */
-    u_int32	flags;				/* as above */
-    u_int32	nKBytes;			/* bytes xferred */
+    afs_uint32	taskId;				/* task identifier */
+    afs_uint32      dbDumpId;                       /* dump id */
+    afs_uint32	flags;				/* as above */
+    afs_uint32	nKBytes;			/* bytes xferred */
     char	volumeName[BU_MAXNAMELEN];	/* current volume (if any) */
-    int32	volsFailed;			/* # operation failures */    
-    int32	lastPolled;			/* last successful poll */
+    afs_int32	volsFailed;			/* # operation failures */    
+    afs_int32	lastPolled;			/* last successful poll */
 
     /* bucoord local */
     char	taskName[64];			/* type of task */
-    int32	port;	
-    int32	jobNumber;
-    int32	volsTotal;			/* total # vols */
-    int32        scheduledDump;                  /* Time this dump was scheduled */
+    afs_int32	port;	
+    afs_int32	jobNumber;
+    afs_int32	volsTotal;			/* total # vols */
+    afs_int32        scheduledDump;                  /* Time this dump was scheduled */
     char        *cmdLine;                       /* Command to exectute for this dump */
 };
 

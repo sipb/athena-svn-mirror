@@ -16,12 +16,11 @@
 #define	AFS_SUN56_ENV		1
 #define AFS_SUN57_ENV		1
 
-#define AFS_64BIT_ENV		1       /* Defines int32 as int, not long. */
+#define AFS_64BIT_ENV		1       /* Defines afs_int32 as int, not long. */
 
 #include <afs/afs_sysnames.h>
 
-#define AFS_GLOBAL_SUNLOCK	1	/* For fine mp lock granularity comment this out */
-/*#define AFS_FINEGR_SUNLOCK	1	/* For global locking comment this out */
+#define AFS_GLOBAL_SUNLOCK	1	/* For global locking */
 #define RXK_LISTENER_ENV   1
 #define AFS_GCPAGS		1       /* if nonzero, garbage collect PAGs */
 

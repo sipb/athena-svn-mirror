@@ -4,7 +4,7 @@
  */
 /* Including cmd.p.h at beginning of cmd.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/cmd.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/cmd.h,v 1.1.1.2 2000-04-12 18:29:45 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/cmd.h,v $ */
 
 /*
@@ -39,7 +39,7 @@ struct cmd_parmdesc {
     char *name;			/* switch name */
     int	type;			/* flag, single or list */
     struct cmd_item *items;	/* list of cmd items */
-    int32 flags;			/* flags */
+    afs_int32 flags;			/* flags */
     char *help;			/* optional help descr */
 };
 
@@ -60,7 +60,7 @@ struct cmd_syndesc {
     int (*proc)();
     char *rock;
     int	nParms;		    /* number of parms */
-    int32 flags;		    /* random flags */
+    afs_int32 flags;		    /* random flags */
     struct cmd_parmdesc parms[CMD_MAXPARMS];	/* parms themselves */
 };
 
@@ -95,7 +95,7 @@ extern int cmd_AddParm(
   struct cmd_syndesc *as,
   char *aname,
   int atype,
-  int32 aflags,
+  afs_int32 aflags,
   char *ahelp
 );
 
@@ -111,8 +111,8 @@ extern cmd_FreeArgv(
 extern cmd_ParseLine(
   char *aline,
   char **argv,
-  int32 *an,
-  int32 amaxn
+  afs_int32 *an,
+  afs_int32 amaxn
 );
 
 #endif /* __CMD_INCL__ */

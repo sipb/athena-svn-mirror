@@ -16,12 +16,12 @@
 #define	AFSCONF_MAXKEYS	    8
 
 struct afsconf_key {
-    int32 kvno;
+    afs_int32 kvno;
     char key[8];
 };
 
 struct afsconf_keys {
-    int32 nkeys;
+    afs_int32 nkeys;
     struct afsconf_key key[AFSCONF_MAXKEYS];
 };
 

@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/dir.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/dir.h,v 1.1.1.2 2000-04-12 18:30:07 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/dir.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsiddir = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/dir.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $";
+static char *rcsiddir = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/dir.h,v 1.1.1.2 2000-04-12 18:30:07 ghudson Exp $";
 #endif
 
 /*
@@ -34,8 +34,8 @@ Date:			Now */
 
 struct MKFid
     {/* A file identifier. */
-    int32 vnode;	/* file's vnode slot */
-    int32 vunique;	/* the slot incarnation number */
+    afs_int32 vnode;	/* file's vnode slot */
+    afs_int32 vunique;	/* the slot incarnation number */
     };
 
 struct PageHeader

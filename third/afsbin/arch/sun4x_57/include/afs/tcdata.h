@@ -32,12 +32,12 @@
 struct dumpNode
 {
     /* administrative fields */
-    int32 taskID;	                /* the task id */
+    afs_int32 taskID;	                /* the task id */
     struct dumpNode *next;              /* ptr to the next node on the list */
     statusP statusNodePtr;              /* status node pointer */
 
     /* common to dumps and restores */
-    int32 arraySize;                    /* Size of dump/restore array */
+    afs_int32 arraySize;                    /* Size of dump/restore array */
 
     /* specific to dumps */
     char dumpSetName[TC_MAXNAMELEN];	/* name of the dump "<volset>.<dump>" */
@@ -45,8 +45,8 @@ struct dumpNode
     char *volumeSetName;                /* volume set */
     struct tc_tapeSet tapeSetDesc;	/* description of the tape set */
     struct tc_dumpDesc *dumps;		/* list of vols to dump */
-    int32 parent;			/* parent dump ID, from main call */
-    int32 level;			/* this dump's level, from main call */
+    afs_int32 parent;			/* parent dump ID, from main call */
+    afs_int32 level;			/* this dump's level, from main call */
     int  doAppend;                      /* Append this dump to a dump set */
 
     /* restore specific */
@@ -55,7 +55,7 @@ struct dumpNode
 
 struct deviceSyncNode{
     struct Lock lock; /* this is used to synchronise access to tape drive */
-    int32 flags;
+    afs_int32 flags;
 };
 
 /* flags used to monitor status of dumps/restores */
@@ -112,21 +112,21 @@ struct volumeHeader {
     char postamble[9];
     char volumeName[TC_MAXVOLNAME];
     char pad[2];
-    int32 volumeID;
-    int32 server;				/* which server */
-    int32 part;					/* partition vol. was on */
-    int32 from;					/* clone date of vol ?? */
+    afs_int32 volumeID;
+    afs_int32 server;				/* which server */
+    afs_int32 part;					/* partition vol. was on */
+    afs_int32 from;					/* clone date of vol ?? */
     int frag;
-    int32 magic;					/* just for checking */
-    int32 contd;
+    afs_int32 magic;					/* just for checking */
+    afs_int32 contd;
     char dumpSetName[TC_MAXNAMELEN];
-    int32 dumpID;				/* ID of enclosing dump */
-    int32 level;					/* dump level, 0=full */
-    int32 parentID;				/* ID of parent dump */
-    int32 endTime;
-    int32 versionflags;				/* previously spare[0] */
-    int32 cloneDate;				/* when this vol. was cloned */
-    int32 spares[2];				/* spare used to be spare[4] */
+    afs_int32 dumpID;				/* ID of enclosing dump */
+    afs_int32 level;					/* dump level, 0=full */
+    afs_int32 parentID;				/* ID of parent dump */
+    afs_int32 endTime;
+    afs_int32 versionflags;				/* previously spare[0] */
+    afs_int32 cloneDate;				/* when this vol. was cloned */
+    afs_int32 spares[2];				/* spare used to be spare[4] */
 };
 
 /* Interface structure for STC_LabelTape  */
@@ -134,13 +134,13 @@ struct volumeHeader {
 struct labelTapeIf
 {
     struct tc_tapeLabel label;
-    u_int32 taskId;
+    afs_uint32 taskId;
 };
 
 struct scanTapeIf
 {
-    int32 addDbFlag;
-    u_int32 taskId;
+    afs_int32 addDbFlag;
+    afs_uint32 taskId;
 };
 
 /* Interface structure for STC_SaveDb */
@@ -148,8 +148,15 @@ struct scanTapeIf
 struct saveDbIf
 {
     Date    archiveTime;
-    u_int32  taskId;
+    afs_uint32  taskId;
     statusP statusPtr;
+};
+
+/* Iterface structure for STC_DeleteDump */
+struct deleteDumpIf
+{
+   afs_uint32 dumpID;
+   afs_uint32 taskId;
 };
 
 #endif
@@ -178,6 +185,7 @@ struct saveDbIf
 #define TC_NOMEMORY                              (156566290L)
 #define TC_NOTPERMITTED                          (156566291L)
 #define TC_SKIPTAPE                              (156566292L)
+#define TC_BADTASK                               (156566293L)
 extern void initialize_butc_error_table ();
 #define ERROR_TABLE_BASE_butc (156566272L)
 

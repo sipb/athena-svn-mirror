@@ -12,12 +12,12 @@
 
 #include <stdarg.h>
 
-void com_err (const char *, int32, const char *, ...);
-char const *error_table_name(int32);
-char const *error_message (int32);
-void (*set_com_err_hook (void (*) (const char *, int32, const char *, va_list)))
-    (const char *, int32, const char *, va_list);
-void (*reset_com_err_hook ()) (const char *, int32, const char *, va_list);
+void com_err (const char *, afs_int32, const char *, ...);
+char const *error_table_name(afs_int32);
+char const *error_message (afs_int32);
+void (*set_com_err_hook (void (*) (const char *, afs_int32, const char *, va_list)))
+    (const char *, afs_int32, const char *, va_list);
+void (*reset_com_err_hook ()) (const char *, afs_int32, const char *, va_list);
 
 #define __COM_ERR_H
 #endif /* ! defined(__COM_ERR_H) */

@@ -98,26 +98,26 @@ bool_t xdr_bozo_key();
 
 
 struct bozo_keyInfo {
-	int32 mod_sec;
-	int32 mod_usec;
-	u_int32 keyCheckSum;
-	int32 spare2;
+	afs_int32 mod_sec;
+	afs_int32 mod_usec;
+	afs_uint32 keyCheckSum;
+	afs_int32 spare2;
 };
 typedef struct bozo_keyInfo bozo_keyInfo;
 bool_t xdr_bozo_keyInfo();
 
 
 struct bozo_status {
-	int32 goal;
-	int32 fileGoal;
-	int32 procStartTime;
-	int32 procStarts;
-	int32 lastAnyExit;
-	int32 lastErrorExit;
-	int32 errorCode;
-	int32 errorSignal;
-	int32 flags;
-	int32 spare[8];
+	afs_int32 goal;
+	afs_int32 fileGoal;
+	afs_int32 procStartTime;
+	afs_int32 procStarts;
+	afs_int32 lastAnyExit;
+	afs_int32 lastErrorExit;
+	afs_int32 errorCode;
+	afs_int32 errorSignal;
+	afs_int32 flags;
+	afs_int32 spare[8];
 };
 typedef struct bozo_status bozo_status;
 bool_t xdr_bozo_status();
@@ -128,20 +128,16 @@ bool_t xdr_bozo_status();
 #define BOZO_PRUNEOLD		1	/* prune .OLD files */
 #define BOZO_PRUNEBAK		2	/* prune .BAK files */
 #define BOZO_PRUNECORE		4	/* prune core files */
+#define BOZO_STATINDEX 1
 
 /* Opcode-related useful stats for package: BOZO_ */
 #define BOZO_LOWEST_OPCODE   80
 #define BOZO_HIGHEST_OPCODE	114
 #define BOZO_NUMBER_OPCODES	35
 
-#define BOZO_NO_OF_CLIENT_STAT_FUNCS	37
-
-#define BOZO_NO_OF_SERVER_STAT_FUNCS	35
+#define BOZO_NO_OF_STAT_FUNCS	35
 
 AFS_RXGEN_EXPORT
-extern const char *BOZO_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *BOZO_server_function_names[];
+extern const char *BOZO_function_names[];
 
 #endif	/* _RXGEN_BOSINT_ */
