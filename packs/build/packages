@@ -1,4 +1,4 @@
-# $Id: packages,v 1.293 2004-10-14 21:38:16 ghudson Exp $
+# $Id: packages,v 1.294 2004-10-15 16:58:13 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -238,7 +238,7 @@ third/libglade2			requires gtk2,libxml2,atk,gettext
 third/libgnome			requires gettext,intltool,audiofile,esound,GConf2,glib2,gnome-vfs2,libbonobo,libxml2,libxslt,popt,bzip2
 third/libgnomecanvas		requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
 third/libgnomeprint		requires gettext,intltool,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
-third/libgnomeprintui		requires gettext,libgnomeprint,libgnomecanvas,libglade2
+third/libgnomeprintui		requires gettext,gtk2,libgnomeprint,libgnomecanvas,gnome-icon-theme,libglade2
 third/libgnomeui		requires gettext,audiofile,esound,jpeg,libgnome,libgnomecanvas,libbonoboui,GConf2,pango,libglade2,popt,gtk2,gnome-keyring
 third/libgsf
 third/libgtkhtml		requires gtk2,libxml2,gnome-vfs2,gail
