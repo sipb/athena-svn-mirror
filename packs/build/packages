@@ -1,4 +1,4 @@
-# $Id: packages,v 1.272 2004-04-13 19:10:55 zacheiss Exp $
+# $Id: packages,v 1.273 2004-04-30 04:39:23 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -266,6 +266,7 @@ third/pcre			on solaris
 third/perl			requires db,gdbm,libiconv
 third/pine			requires krb5,hesiod,openssl
 third/popt			except linux requires gettext,libiconv
+third/python
 third/rcs			on solaris
 third/read-edid			on linux
 third/readline			except linux
