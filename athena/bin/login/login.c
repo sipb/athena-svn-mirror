@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.61 1993-06-30 13:03:54 cfields Exp $
+ * $Id: login.c,v 1.62 1993-06-30 13:12:51 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.61 1993-06-30 13:03:54 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.62 1993-06-30 13:12:51 cfields Exp $";
 #endif
 
 /*
@@ -1810,7 +1810,7 @@ make_homedir()
     /* Make sure there's not already a directory called pwd->pw_dir
        before we try to unlink it. This was OK under BSD, but it's
        a Bad Thing under Ultrix. */
-    if (0 == lstat(pwd->pw_dir, &st))
+    if (0 == lstat(pwd->pw_dir, &statbuf))
       {
 	if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
 	  {
