@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Sawfish
+Name[el]=Πριονόψαρο (Sawfish)
+Exec=sawfish
+TryExec=sawfish
+Terminal=false
+MultipleArgs=false
+
+[Window Manager]
+ConfigExec=sawfish-ui
+SessionManaged=true
