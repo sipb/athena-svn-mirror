@@ -54,7 +54,7 @@ libvte_la_SOURCES = \
 	vteaccess.c \
 	vteaccess.h
 
-libvte_la_LIBADD = -lpcreposix -lpcre @LIBS@ @VTE_LIBS@ @X_LIBS@
+libvte_la_LIBADD = @LIBS@ @VTE_LIBS@ @X_LIBS@
 libvte_la_LDFLAGS = -version-info 4:0:0
 
 CLEANFILES = marshal.c marshal.h
