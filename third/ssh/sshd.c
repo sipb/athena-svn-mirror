@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.4 1997-11-19 20:44:45 danw Exp $
+ * $Id: sshd.c,v 1.5 1998-01-01 18:18:21 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1997/11/19 20:44:45  danw
+ * do chown later
+ *
  * Revision 1.3  1997/11/15 00:04:20  danw
  * Use atexit() functions to destroy tickets and call al_acct_revert.
  * Work around Solaris lossage with libucb and grantpt.
@@ -3407,7 +3410,7 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 #ifdef KERBEROS
   /* Set KRBTKFILE to point to our ticket */
 #ifdef KRB5
-  if (ticket)
+  if (ticket && strcmp(ticket, "none"))
     {
       child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
       child_set_env(&env, &envsize, "KRBTKFILE", tkt_string());
