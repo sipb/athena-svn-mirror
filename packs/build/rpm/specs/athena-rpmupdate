@@ -1,0 +1,8 @@
+Name: athena-rpmupdate
+Summary: Athena program for updating between lists of RPMs
+Copyright: MIT
+Group: System Environment/Base
+
+%description
+The rpmupdate program handles an update from one list of RPMs to
+another.  It is used by the Athena update script.
