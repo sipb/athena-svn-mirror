@@ -27,14 +27,48 @@ Third-party stuff not under third
 		and fetching it out of the vendor X distribution at
 		build time is contrary to principles.
 
-	* packs/config/platform/*
-	  packs/maint/platform/*
+	* Modified operating system files
 
-		Some of the files in these directories are modified
-		versions of vendor configuration and /etc/init.d
-		files.  When an OS upgrade happens, changes must be
-		propagated from the newer configuration files into
-		these files.
+		We keep some modified configuration files from the
+		operating systems we use in packs/config and
+		packs/maint.  The files and their origins are:
+
+		Solaris files in packs/config/platform/sun4:
+
+		Athena4.kt	/usr/openwin/share/etc/keytables/US4.kt.Z
+		Athena5.kt	/usr/openwin/share/etc/keytables/US_UNIX5.kt.Z
+		devlink.tab	/etc/devlink.tab
+		inetd.conf	/etc/inet/inetd.conf
+		inittab		/etc/inittab
+		logindevperm	/etc/logindevperm
+		keytable.map	/usr/openwin/share/etc/keytables/keytable.map
+		minor_perm	/etc/minor_perm
+		name_to_sysnum	/etc/name_to_sysnum
+		nsswitch.conf	/etc/nsswitch.conf
+		services	/etc/inet/services
+		su		/etc/default/su
+		system		/etc/system
+
+		Solaris files in packs/maint/platform/sun4:
+
+		nfs.client	/etc/init.d/nfs.client
+		rpc		/etc/init.d/rpc
+
+		IRIX files in packs/config/platform/sgi:
+
+		4DWm		/usr/lib/X11/app-defaults/4DWm
+		Mwm		/usr/lib/X11/app-defaults/Mwm
+		Toolchest	/usr/lib/X11/app-defaults/Toolchest
+		crontab.root	/var/spool/cron/crontabs/root
+		fonts.alias	/usr/lib/X11/fonts/100dpi/fonts.alias
+		fonts.dir	/usr/lib/X11/fonts/100dpi/fonts.dir
+		inetd.conf	/etc/inetd.conf
+		services	/etc/services
+		system.chestrc	/usr/lib/X11/system.chestrc
+
+		IRIX files in packs/maint/platform/sgi:
+
+		network		/etc/init.d/network
 
 Distribution sites for software under third
 -------------------------------------------
