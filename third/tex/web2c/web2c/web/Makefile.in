@@ -57,11 +57,6 @@ tangleboot.c tangleboot.h: tangleboot.p
 	sed s/tangle.h/tangleboot.h/ < temp.c > tangleboot.c
 	rm -f temp.c
 
-# To make tangleboot.p, we must assume a working tangle.
-tangleboot.p: tangle.web tangle.ch
-	tangle tangle.web tangle.ch
-	mv tangle.p tangleboot.p
-
 
 tangle: tangle.o $(commono)
 	$(CCLD) -o tangle $(LDFLAGS) tangle.o $(libs)
@@ -106,7 +101,8 @@ c-sources: pooltype.c tangle.c weave.c
 .PHONY: c-sources
 
 install install-exec: all
-	for p in $(program); do $(INSTALL_PROGRAM) $$p $(bindir)/$$p; done
+	for p in $(program); do \
+	  $(INSTALL_PROGRAM) $$p ${DESTDIR}$(bindir)/$$p; done
 install-data:
 
 TAGS: *.c *.h
