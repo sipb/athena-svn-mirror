@@ -17,11 +17,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.5 1989-11-17 14:18:03 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.6 1990-01-18 04:59:04 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>        
@@ -90,7 +90,7 @@ send_request(fd, request)
   net_rq.target.instance    = (int) htonl((u_long) request->target.instance);
   net_rq.requester.instance = (int) htonl((u_long) request->requester.instance);
 
-  if (swrite(fd, &net_rq, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
+  if (swrite(fd, (char *) &net_rq, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
     return(ERROR);
 
 #ifdef KERBEROS
@@ -127,7 +127,7 @@ read_list(fd, list)
   int size;
 
   bzero(list, sizeof(LIST));
-  size = sread(fd, list, sizeof(LIST));
+  size = sread(fd, (char *) list, sizeof(LIST));
 
   if(size == -1)        /* let's not hold up the server if we can't  */
     {                   /* handle it. */
