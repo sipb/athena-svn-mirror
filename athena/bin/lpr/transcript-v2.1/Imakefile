@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.8 1993-10-09 18:55:05 probe Exp $
+ * $Id: Imakefile,v 1.9 1993-10-09 19:00:42 probe Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
@@ -31,8 +31,10 @@ install_script(psif,,$(PSLIBDIR)/psif)
 SimpleProgram(psbanner,psbanner.o psutil.o config.o,,$(PSLIBDIR))
 SimpleProgram(pscomm,pscomm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
 
+SimpleProgram(lps40comm,lps40comm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
+
 SimpleProgram(hpcomm,hpcomm.o psutil.o config.o hpquery.o snmplib/libsnmp.a,$(LIBS),$(PSLIBDIR))
-SimpleProgram(hpduplex,hpduplex.o,,$(PSLIBDIR))
+SimpleProgram(duplex2,duplex2.o,,$(PSLIBDIR))
 
 SpecialObject(hpcomm.o,hpcomm.c,-DBRIDGE -DHP)
 SpecialObject(hpquery.o,hpquery.c,-I./snmplib)
