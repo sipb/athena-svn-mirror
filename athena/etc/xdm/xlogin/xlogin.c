@@ -1,4 +1,4 @@
-/* $Id: xlogin.c,v 1.80 1999-01-29 18:03:15 ghudson Exp $ */
+/* $Id: xlogin.c,v 1.81 1999-02-24 21:24:53 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1921,9 +1921,9 @@ static void setFontPath()
 	  dirlist[i++] = cp;
  	}
 
-      /* Discard directories which aren't present. */
-      j = 0;
-      for (i = 0; i < ndirs; i++)
+      /* Discard new entries which don't exist or aren't directories. */
+      j = nold;
+      for (i = nold; i < ndirs; i++)
 	{
 	  if (stat(dirlist[i], &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
 	    dirlist[j++] = dirlist[i];
