@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.46 2001-04-26 17:19:59 ghudson Exp $
+# $Id: Makefile,v 1.47 2001-10-02 02:56:19 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -8,7 +8,7 @@ ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint gs help klog \
 	lastlog listmaint mailmaint moira mrcheck namespace olh olh_ascii \
-	olh_motif pts stella usermaint vos xinfo \
+	olh_motif pts stanley stella usermaint vos xinfo \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex
@@ -44,6 +44,8 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MOIRA}/man/cat1/mrcheck.1	${ATHMANDIR}/cat1/mrcheck.1 \
 		${HELP}/man/man1/olh.1		${ATHMANDIR}/man1/olh.1 \
 		${HELP}/man/cat1/olh.1		${ATHMANDIR}/cat1/olh.1 \
+		${MOIRA}/man/man1/stanley.1	${ATHMANDIR}/man1/stanley.1 \
+		${MOIRA}/man/cat1/stanley.1	${ATHMANDIR}/cat1/stanley.1 \
 		${MOIRA}/man/man1/stella.1	${ATHMANDIR}/man1/stella.1 \
 		${MOIRA}/man/cat1/stella.1	${ATHMANDIR}/cat1/stella.1 \
 		${MOIRA}/man/man1/usermaint.1	${ATHMANDIR}/man1/usermaint.1 \
@@ -100,6 +102,7 @@ install:
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
+	install -c -m 555 stanley ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 stella ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 vacation.sh ${DESTDIR}${ATHBINDIR}/vacation
