@@ -5,8 +5,8 @@
 # chkconfig: 2345 80 30
 # description: Public workstation integrity verification.
 
-# "daemon".  There.  I said it.  This makes the Red Hat boot process not
-# mess with my output.
+# "daemon ".  There.  I said it.  This makes the Red Hat boot process
+# not mess with my output.
 
 # Source function library
 . /etc/rc.d/init.d/functions
