@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.7 1997-12-31 19:47:51 ghudson Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.8 1997-12-31 22:41:45 danw Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -120,7 +120,10 @@ static int update_passwd(FILE *fp)
   while ((rpid = waitpid(pid, &pstat, 0)) < 0 && errno == EINTR)
     ;
   if (rpid == -1 || !WIFEXITED(pstat) || WEXITSTATUS(pstat) != 0)
-    return AL_EPASSWD;
+    {
+      unlink(PATH_PASSWD_TMP);
+      return AL_EPASSWD;
+    }
 #else /* HAVE_MASTER_PASSWD */
   if (rename(PATH_PASSWD_TMP, PATH_PASSWD))
     {
@@ -231,7 +234,7 @@ int al__add_to_passwd(const char *username, struct al_record *record,
     }
   while (nbytes == BUFSIZ);
 
-  fprintf(out, "%s:%s:%lu:%lu:%s:%s:%s\n",
+  fprintf(out, "%s:%s:%lu:%lu%s:%s:%s:%s\n",
 	  pwd->pw_name,
 #ifdef HAVE_SHADOW
 	  "x",
@@ -239,6 +242,11 @@ int al__add_to_passwd(const char *username, struct al_record *record,
 	  passwd,
 #endif
 	  (unsigned long) pwd->pw_uid, (unsigned long) pwd->pw_gid,
+#ifdef HAVE_MASTER_PASSWD
+	  "::0:0",
+#else
+	  "",
+#endif
 	  pwd->pw_gecos, pwd->pw_dir, pwd->pw_shell);
 
 #ifdef HAVE_SHADOW
