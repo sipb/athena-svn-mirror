@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.2 1990-04-25 11:52:33 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.3 1990-07-10 21:14:27 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.2 1990-04-25 11:52:33 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.3 1990-07-10 21:14:27 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -20,6 +20,7 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "quota_ncs.h"
 #include "quota_err.h"
 #include "quota_db.h"
+#include "gquota_db.h"
 #include "uuid.h"
 extern char qcurrency[];             /* The quota currency */
 char *set_service();
@@ -37,7 +38,8 @@ quota_report *qreport;
 	char name[MAX_K_NAME_SZ];
 	char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
 	quota_rec quotarec;
-	int ret, more;
+	gquota_rec gquotarec;
+	int ret, more, retval;
 
 	/* For now - no backauth */
 	*cks = 0;
@@ -49,7 +51,7 @@ quota_report *qreport;
 	    return QBADTKTS;
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
 
-	if(!is_sacct(name))
+	if(!is_sacct(name, service))
 	    return QNOAUTH;
 
 	/* This machine is authorized to connect */
@@ -64,36 +66,78 @@ quota_report *qreport;
 					(unsigned int)1, &more);
     
 	if (!(ret)) {
-	    syslog(LOG_ERR, "Cannot charge:User does not exist in quota dbase %s from %s", qid->username, name);
+	    syslog(LOG_ERR, "Cannot charge: User does not exist in quota dbase: %s from %s", qid->username, name);
 	    /* we return 0 so that the entry get's cleared on the client side */
-/*	    return QNOEXISTS;*/
+	    /*  return QNOEXISTS;*/
 	    return 0;
 	}
 	if (ret < 0)  {
-	    syslog(LOG_ERR, "Database error:User does not exist in quota dbase %s from %s", qid->username, name);
+	    syslog(LOG_ERR, "Database error:User does not exist in quota dbase: %s from %s", qid->username, name);
 	    return QDBASEERROR;
 	}
-
 	if (quotarec.deleted) {
 	    syslog(LOG_ERR, "Deleted user printed: %s from %s", qid->username, name);
 	    /* We continue and post the bill anyway... Sigh... */
 	}
 
-	if(qreport->pages * qreport->pcost < 0) 
-	    return QNONEG;
+	if (qid->account == (long) 0) {
+	    if(qreport->pages * qreport->pcost < 0) 
+		return QNONEG;
 
-	/* report users changes */
-	quotarec.quotaAmount += qreport->pages * qreport->pcost;
+	    /* report users changes */
+	    quotarec.quotaAmount += qreport->pages * qreport->pcost;
+	    
+	    if (quota_db_put_principal(&quotarec, (unsigned int) 1) < 0) {
+		syslog(LOG_ERR, "Database error: In user quota dbase: %s from %s", qid->username, name);
+		return QDBASEERROR;
+	    }
 
-	if (quota_db_put_principal(&quotarec, (unsigned int) 1) < 0) {
-	    syslog(LOG_ERR, "Database error:User does not exist in quota dbase %s from %s", qid->username, name);
-	    return QDBASEERROR;
+	    QuotaReport_notify(qid, qreport, &quotarec);
+	    Quota_report_log(qid, qreport);
+
+	} else {
+	    /* This is a group charge ... handle it */
+	    retval = gquota_db_get_group(qid->account, service,
+					 &gquotarec, (unsigned int)1,
+					 &more);
+	    if (!(retval)) {
+		syslog(LOG_ERR, "Cannot charge: Group does not exist in group dbase: %d from %s", qid->account, name);	
+		/* we return 0 so that the entry get's cleared on the client side */
+		return 0;
+	    }
+	    else if (retval < 0) {
+		syslog(LOG_ERR, "Database error: In Group quota dbase: %d from %s", qid->account, name);
+		return QGDBASEERROR;
+	    }
+	    if (gquotarec.deleted) {
+		syslog(LOG_ERR, "Printed to deleted group account: %d from %s", qid->account, name);
+		/* Continue anyway .. sigh .. */
+	    }
+	    if (!is_group_user(quotarec.uid, &gquotarec)) {
+		syslog(LOG_ERR, "Unknown user %s printed to group account %d", name, qid->account);
+		/* oh well post it anyway */
+	    }
+
+	    if(qreport->pages * qreport->pcost < 0) 
+		return QNONEG;
+
+	    /* report users changes */
+	    gquotarec.quotaAmount += qreport->pages * qreport->pcost;
+	    
+	    if (gquota_db_put_group(&gquotarec, (unsigned int) 1) < 0) {
+		syslog(LOG_ERR, "Database error: In writing group quota dbase: %d from %s", qid->account, name);
+		return QGDBASEERROR;
+	    }
+	    
+	    
+	    QuotaReport_group_notify(qid, qreport, &gquotarec, 
+				     is_group_admin(quotarec.uid, &gquotarec));
+
+	    Quota_report_group_log(qid, qreport, name);
 	}
-
-	QuotaReport_notify(qid, qreport, &quotarec);
-	Quota_report_log(qid, qreport);
 	return 0;
     }
+
 
 quota_error_code QuotaQuery (h, auth, qid, qret)
 handle_t h;
@@ -156,6 +200,7 @@ quota_return *qret;
 	    return QUSERDELETED;
 
     /* Set the return variables */
+	qret->uid = quotarec.uid;
 	qret->usage = quotarec.quotaAmount;
 	qret->limit = quotarec.quotaLimit;
 	strcpy(qret->currency, qcurrency);
@@ -182,7 +227,7 @@ modify_user_type qtype;
 quota_value qamount;
     {
 	AUTH_DAT ad;
-	char name[MAX_K_NAME_SZ];
+	char name[MAX_K_NAME_SZ], uname[MAX_K_NAME_SZ];
 	char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
 	quota_rec quotarec;
 	int retval,more;
@@ -238,6 +283,11 @@ quota_value qamount;
 	    quotarec.yearToDateCharge = (quota_amount)  0;
 	    quotarec.deleted          = (quota_deleted) 0;
 
+	    /* If we cannot generate new uid then error */
+	    make_kname(qprincipal, qinstance, qrealm, uname);
+	    if ((quotarec.uid = (long) uid_add_string(uname)) < (long)0)
+		return(QUIDERROR);
+
 #ifdef DEBUG
 	    printf("\tPrincipal - %s\n\tInstance - %s\n\tRealm - %s\n\tService - %s\n",
 		   qprincipal, qinstance, qrealm, service);
@@ -278,7 +328,7 @@ quota_value qamount;
 	    return QUSERDELETED;
     
 	/* Let's modify this sucker !!! */
-	switch (qtype) {
+	switch ((int) qtype) {
 	case U_SET:
 	    quotarec.quotaLimit = qamount;
 	    break;
@@ -316,36 +366,406 @@ quota_value qamount;
 	return 0;
     }
 
-quota_error_code QuotaModifyAccount(h, auth, qtype, qid, qamount)
+quota_error_code QuotaModifyAccount(h, auth, qaccount, qtype, qid, qamount)
 handle_t h;
 krb_ktext *auth;
+quota_account qaccount;
 quota_identifier *qid;
 modify_user_type qtype;
 quota_value qamount;
     {
+	AUTH_DAT ad;
+        char name[MAX_K_NAME_SZ];
+        char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
+        quota_rec quotarec;
+	gquota_rec gquotarec, gquotarec1;
+        int retval,more,tmp;
+        extern int qdefault;
+        char *service;
+	int authuser = 0;
+	int read_group_record = 0;
+
 	CHECK_PROTECT();
-	/* Not implemented yet... */
-	return QNOTVALIDTYPE;
+
+	service=set_service(qid->service);
+
+        if(check_krb_auth(h, auth, &ad))
+            return QBADTKTS;
+
+	if(qaccount <= (long) 0)
+	    return(QBADACCOUNT);
+
+	make_kname(ad.pname, ad.pinst, ad.prealm, name);
+        parse_username(qid->username, qprincipal, qinstance, qrealm);
+
+	/* If we are superuser we can do anything */
+        if(is_suser(name)) authuser = 1;
+
+	/* Superuser can only do the following operations */
+	/* If anyone else tries, shoot 'em */
+	if (!authuser && (qtype == A_NEW || qtype == A_SET || 
+	    qtype == A_SUBTRACT || qtype == A_DELETE || 
+	    qtype == A_ADJUST))
+	    return QNOAUTH;
+
+	/* If we got this far and am not superuser then it is
+	 * for all other operations. Check to see if the user
+	 * is a group admin */
+	if (!authuser) {
+	    retval = quota_db_get_principal(ad.pname, ad.pinst,
+					    service,
+					    ad.prealm, &quotarec,
+					    (unsigned int)1, &more);
+	    if (!(retval))
+		return QNOAUTH;    /* user not in database */
+	    else if (retval < 0)
+		return QDBASEERROR;
+	    if (quotarec.deleted)
+		return QUSERDELETED;
+
+	    retval = gquota_db_get_group(qaccount, service,
+					 &gquotarec, (unsigned int)1,
+					 &more);
+	    if (!(retval))
+		return QNOGROUPEXISTS;    /* group not in database */
+	    else if (retval < 0)
+		return QGDBASEERROR;
+	    if (gquotarec.deleted)
+		return QGROUPDELETED;
+
+	    if (!is_group_admin(quotarec.uid, &gquotarec))
+		return QNOAUTH;
+
+	    read_group_record++;    /* So we need to read it again */
+	}
+
+	/* Now process the request */
+	if (qtype == A_NEW) {
+
+	    /* Put in the key */
+	    gquotarec.account = qaccount;
+	    strncpy(gquotarec.service, service, SERV_SZ);
+
+	    gquotarec.admin[0] = (long) 0;   /* No admins exists yet for group */
+	    gquotarec.user[0] = (long) 0;    /* No users exists yet for group */
+
+            gquotarec.quotaAmount = 0;
+            if (qamount != 0)
+                gquotarec.quotaLimit = qamount;
+            else
+                gquotarec.quotaLimit = qdefault;
+
+            if (gquotarec.quotaLimit > gquotarec.quotaAmount)
+                gquotarec.allowedToPrint = 1;
+            else
+                gquotarec.allowedToPrint = 0;
+
+            gquotarec.lastBilling      = (gquota_time)    0;
+            gquotarec.lastCharge       = (gquota_amount)  0;
+            gquotarec.pendingCharge    = (gquota_amount)  0;
+            gquotarec.lastQuotaAmount  = (gquota_amount)  0;
+            gquotarec.yearToDateCharge = (gquota_amount)  0;
+            gquotarec.deleted          = (gquota_deleted) 0;
+
+	    if (read_group_record)
+		return QGROUPEXISTS;
+
+	    /* We havent read it yet ... do it now */
+	    retval = gquota_db_get_group(qaccount, service,
+					 &gquotarec1, (unsigned int)1,
+					 &more);
+	    if (!(retval)) {
+		if (gquota_db_put_group(&gquotarec, (unsigned int)1) < 0)
+		    return QGDBASEERROR;
+	    } else if (retval > 0) {
+		return QGROUPEXISTS;
+	    } else {
+                return QGDBASEERROR;
+            }
+	    return 0;
+	}
+
+	/* This is not an A_NEW entry */
+	if (!read_group_record) {
+	    retval = gquota_db_get_group(qaccount, service,
+					 &gquotarec, (unsigned int)1,
+					 &more);
+	    if (!(retval))
+		return QNOGROUPEXISTS;    /* group not in database */
+	    else if (retval < 0)
+		return QGDBASEERROR;
+	    if (gquotarec.deleted)
+		return QGROUPDELETED;
+	}
+
+	switch (qtype) {
+	case A_SET:
+	    gquotarec.quotaLimit = qamount;
+            break;
+        case A_ADD:
+            gquotarec.quotaLimit += qamount;
+            break;
+        case A_SUBTRACT:
+            if(gquotarec.quotaLimit < qamount)
+                return QNEGATIVELIMIT;
+            gquotarec.quotaLimit -= qamount;
+            break;
+        case A_DELETE:
+            gquotarec.deleted = (gquota_deleted) 1;
+            break;
+        case A_ALLOW_PRINT:
+            gquotarec.allowedToPrint = (gquota_allowed) 1;
+            break;
+        case A_DISALLOW_PRINT:
+            gquotarec.allowedToPrint = (gquota_allowed) 0;
+            break;
+        case A_ADJUST:
+            if(gquotarec.quotaAmount < qamount)
+                return QNEGATIVEUSAGE;
+            gquotarec.quotaAmount -= qamount;
+            break;
+	case A_ADD_ADMIN:
+	case A_DELETE_ADMIN:
+	case A_ADD_USER:
+	case A_DELETE_USER:
+	    /* Read the users record to get the uid */
+	    retval = quota_db_get_principal(qprincipal, qinstance,
+					    service,
+					    qrealm, &quotarec,
+					    (unsigned int)1, &more);
+	    if(!(retval))
+		return QNOEXISTS;
+	    if (retval < 0)
+		return QDBASEERROR;
+	    if (quotarec.deleted)
+		return QUSERDELETED;
+
+	    if (qtype == A_ADD_ADMIN || qtype == A_DELETE_ADMIN) {
+		tmp = gquota_db_find_admin(quotarec.uid, &gquotarec);
+		if (qtype == A_ADD_ADMIN) {
+		    if (tmp >= 0) return QGADMINEXISTS;
+		    if (gquota_db_insert_admin(quotarec.uid, &gquotarec) < 0)
+			return QGMAXADMINEXCEEDED;
+		} else if (qtype == A_DELETE_ADMIN) {
+		    if (tmp < 0) return QGNOADMINEXISTS;
+		    gquota_db_remove_admin(quotarec.uid,&gquotarec, tmp);
+		}
+	    } else {
+		tmp = gquota_db_find_user(quotarec.uid, &gquotarec);
+		if (qtype == A_ADD_USER) {
+		    if (tmp >= 0) return QGUSEREXISTS;
+		    if (gquota_db_insert_user(quotarec.uid, &gquotarec) < 0)
+			return QGMAXUSEREXCEEDED;
+		} else if (qtype == A_DELETE_USER) {
+		    if (tmp < 0) return QGNOUSEREXISTS;
+		    gquota_db_remove_user(quotarec.uid, &gquotarec, tmp);
+		}
+	    }
+	    break;
+
+        default:
+            return QNOTVALIDTYPE;
+        }
+
+        if (gquota_db_put_group(&gquotarec, (unsigned int) 1) < 0)
+            return QGDBASEERROR;
+	
+	(void) Quota_modify_group_log(qaccount, qid, &ad, qtype, qamount);
+	
+        return 0;
     }
 
 
+quota_error_code QuotaQueryAccount(h, auth, qaccount, qid, startadmin, 
+				   maxadmin, startuser, maxuser, qret, 
+				   numadmin, admin, numuser, user, flag)
+handle_t h;
+krb_ktext *auth;
+quota_account qaccount;
+quota_identifier *qid;
+qstartingpoint startadmin;
+qmaxtotransfer maxadmin;
+qstartingpoint startuser;
+qmaxtotransfer maxuser;
+quota_return *qret;
+ndr_$long_int *numadmin;
+Principal admin[G_ADMINMAXRETURN];
+ndr_$long_int *numuser;
+Principal user[G_USERMAXRETURN];
+ndr_$long_int *flag;
+
+    {
+        AUTH_DAT ad;
+        char name[MAX_K_NAME_SZ];
+        char *service, *tmp;
+#if 0
+        char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
+        char kprincipal[ANAME_SZ], kinstance[INST_SZ], krealm[REALM_SZ];
+#endif
+        quota_rec quotarec;
+        gquota_rec gquotarec;
+        int more, retval, i, j;
+        int authuser = 0;       /* If user is in the access list for special */
+	int read_group_record = 0;
+
+        service = set_service(qid->service);
+	CHECK_PROTECT();
+
+	/* Initialize so in case of error return, we are ok */
+        qret->currency[0] = NULL;
+        qret->message[0] = NULL;
+	*numadmin = *numuser = 0;
+	*flag = GQUOTA_NONE;
+	for (i = 0; i < G_ADMINMAXRETURN; i++)
+	    admin[i][0] = '\0';
+	for (i = 0; i < G_USERMAXRETURN; i++)
+	    user[i][0] = '\0';
+
+        if(check_krb_auth(h, auth, &ad))
+            return QBADTKTS;
+
+        make_kname(ad.pname, ad.pinst, ad.prealm, name);
+
+	/* Is he superuser, if so, he can do as he feels */
+        if(is_suser(name)) authuser = 1;
+
+	/* If not superuser check if the person is a group admin */
+        if (!authuser) {
+            retval = quota_db_get_principal(ad.pname, ad.pinst,
+                                            service,
+                                            ad.prealm, &quotarec,
+                                            (unsigned int)1, &more);
+            if (!(retval))
+                return QNOAUTH;    /* user not in database */
+            else if (retval < 0)
+                return QDBASEERROR;
+            if (quotarec.deleted)
+                return QUSERDELETED;
+
+            retval = gquota_db_get_group(qaccount, service,
+                                         &gquotarec, (unsigned int)1,
+                                         &more);
+            if (!(retval))
+                return QNOGROUPEXISTS;    /* group not in database */
+            else if (retval < 0)
+                return QGDBASEERROR;
+            if (gquotarec.deleted)
+                return QGROUPDELETED;
+
+            if (!is_group_admin(quotarec.uid, &gquotarec))
+                return QNOAUTH;
+	    read_group_record++;
+	}
+
+	/* Ok, we have permission to look ... let take a peek */
+	if (!read_group_record) {
+            retval = gquota_db_get_group(qaccount, service,
+                                         &gquotarec, (unsigned int)1,
+                                         &more);
+            if (!(retval))
+                return QNOGROUPEXISTS;    /* group not in database */
+            else if (retval < 0)
+                return QGDBASEERROR;
+            if (gquotarec.deleted)
+                return QGROUPDELETED;
+        }
+	qret->uid = 0;
+        qret->usage = gquotarec.quotaAmount;
+        qret->limit = gquotarec.quotaLimit;
+        strcpy(qret->currency, qcurrency);
+        qret->last_bill = gquotarec.lastBilling;
+        qret->last_charge = gquotarec.lastCharge;
+        qret->pending_charge = gquotarec.pendingCharge;
+        qret->last_amount = gquotarec.lastQuotaAmount;
+        qret->ytd_billed = gquotarec.yearToDateCharge;
+
+        if(gquotarec.allowedToPrint == FALSE)
+            strcpy(qret->message, "Printing is disabled");
+        else
+            strcpy(qret->message, "Printing is allowed");
+
+	/* Now fill in list of admin */
+	if (((int) gquotarec.admin[0] != 0) && (startadmin != -1)) {
+	    maxadmin = (maxadmin > G_ADMINMAXRETURN) ? 
+		G_ADMINMAXRETURN : maxadmin;
+	    maxadmin = (maxadmin > (int)gquotarec.admin[0]) ? 
+		(int)gquotarec.admin[0] : maxadmin;
+
+	    /* check for a valid startadmin */
+	    if (startadmin == 0) startadmin = 1;
+	    if ((startadmin < -1) || (startadmin > (int) gquotarec.admin[0]))
+		return BAD_PARAMETER;
+
+	    for (i = startadmin, j = 0; i <= maxadmin; i++, j++) {
+		tmp = (char *)uid_num_to_string(gquotarec.admin[i]);
+		if (tmp == (char *) NULL) {
+		    /* Cant get the name for uid. Must be an error */
+		    /* in the uid_database ... nothing fatal but needs */
+		    /* the database to be recreated. */
+		    syslog(LOG_ERR, 
+			   "uid %d in admin_list for account %d == NULL", 
+			   (int)gquotarec.admin[i], (int) qaccount);
+		} else {
+		    strncpy(admin[j], tmp, MAX_K_NAME_SZ);
+		    admin[j][MAX_K_NAME_SZ - 1] = '\0';
+		    (*numadmin)++;
+		}
+	    }
+	    /* If we still have more admins, set the flag */
+	    if (i <= (int)gquotarec.admin[0])
+		*flag = GQUOTA_MORE_ADMIN;
+	}
+	/* Now fill in the list of user*/
+	if (((int) gquotarec.user[0] != 0) && (startuser != -1)) {
+	    maxuser = (maxuser > G_USERMAXRETURN) ? 
+		G_USERMAXRETURN : maxuser;
+	    maxuser = (maxuser > (int)gquotarec.user[0]) ? 
+		(int)gquotarec.user[0] : maxuser;
+
+	    /* check for a valid startuser */
+	    if (startuser == 0) startuser = 1;
+	    if ((startuser < -1) || (startuser > (int) gquotarec.user[0]))
+		return BAD_PARAMETER;
+
+	    for (i = startuser, j = 0; i <= maxuser; i++, j++) {
+		tmp = (char *)uid_num_to_string(gquotarec.user[i]);
+		if (tmp == (char *) NULL) {
+		    /* Cant get the name for uid. Must be an error */
+		    /* in the uid_database ... nothing fatal but needs */
+		    /* the database to be recreated. */
+		    syslog(LOG_ERR, 
+			   "uid %d in user_list for account %d == NULL", 
+			   (int)gquotarec.user[i], (int) qaccount);
+		} else {
+		    strncpy(user[j], tmp, MAX_K_NAME_SZ);
+		    user[j][MAX_K_NAME_SZ - 1] = '\0';
+		    (*numuser)++;
+		}
+	    }
+	    /* If we have more users add to the flag */
+	    if (i <= (int)gquotarec.user[0])
+		*flag += GQUOTA_MORE_USER;
+	}
+	return 0;
+    }
 
 
 /* Warning these must reflect the idl file */
-static print_quota_v1$epv_t print_quota_v1$mgr_epv = {
+static print_quota_v2$epv_t print_quota_v2$mgr_epv = {
     QuotaReport,
     QuotaQuery,
     QuotaModifyUser,
-    QuotaModifyAccount
+    QuotaModifyAccount,
+    QuotaQueryAccount
     };
 
-register_quota_manager_v1()
+register_quota_manager_v2()
 {
         status_$t st;
 	extern uuid_$t uuid_$nil;
-        rpc_$register_mgr(&uuid_$nil, &print_quota_v1$if_spec, 
-			  print_quota_v1$server_epv,
-			  (rpc_$mgr_epv_t) &print_quota_v1$mgr_epv, &st);
+        rpc_$register_mgr(&uuid_$nil, &print_quota_v2$if_spec, 
+			  print_quota_v2$server_epv,
+			  (rpc_$mgr_epv_t) &print_quota_v2$mgr_epv, &st);
 
     if (st.all != 0) {
 	syslog(LOG_ERR, "Can't register - %s\n", error_text(st));
