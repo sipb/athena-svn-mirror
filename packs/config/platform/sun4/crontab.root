@@ -1,3 +1,0 @@
-05 3 * * *	/etc/athena/desync; /etc/athena/newsyslog
-20 4 * * *	/etc/athena/clean_tmp_areas
-37 * * * *	/etc/athena/desync; /usr/lib/sendmail -q
