@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.18 2001-10-23 17:51:46 ghudson Exp $
+;; $Id: site-init.jl,v 1.19 2003-05-20 18:27:45 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -44,7 +44,8 @@
 ;; Special treatment for zwgc windows
 (require 'sawfish.wm.ext.match-window)
 (add-window-matcher 'WM_NAME "zwgc" '(never-focus . t)
-				    '(skip-tasklist . t)
+				    '(window-list-skip . t)
+				    '(task-list-skip . t)
 				    '(sticky-viewport . t)
 				    '(frame-type . border-only))
 (add-window-matcher 'WM_NAME "Console" '(never-focus . t))
