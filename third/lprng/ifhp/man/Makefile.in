@@ -2,7 +2,7 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1997 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.3 1999-02-27 18:07:12 danw Exp $
+#* $Id: Makefile.in,v 1.4 1999-03-03 21:51:42 mwhitson Exp $
 #
 
 prefix=@prefix@
@@ -27,7 +27,7 @@ all: $(INSTALL)
 install: $(INSTALL)
 	${SRC}/mkinstalldirs $(DESTDIR)$(MAN)/man8
 	for i in $(INSTALL) ; do \
-		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR); \
+		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(MAN)/man8; \
 	done ;
 
 clean:
