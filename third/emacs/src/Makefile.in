@@ -731,6 +731,7 @@ emacs: temacs ${etc}DOC ${lisp}
 	rm -f emacs
 	ln temacs emacs
 #else
+	rm -f emacs-* ${etc}DOC-*
 #ifdef HAVE_SHM
 	./temacs -nl -batch -l loadup dump
 #else /* ! defined (HAVE_SHM) */
@@ -807,7 +808,6 @@ shortnames:
 #if defined (HAVE_X_WINDOWS) && defined (HAVE_X11) && defined (HAVE_MENUS)
 
 #ifdef USE_X_TOOLKIT
-$(OLDXMENU): really-lwlib
 
 /* Encode the values of these two macros in Make variables,
    so we can use $(...) to substitute their values within "...".  */
@@ -817,7 +817,7 @@ C_SWITCH_SITE_1 = C_SWITCH_SITE
 C_SWITCH_X_SITE_1 = C_SWITCH_X_SITE
 C_SWITCH_X_MACHINE_1 = C_SWITCH_X_MACHINE
 C_SWITCH_X_SYSTEM_1 = C_SWITCH_X_SYSTEM
-really-lwlib:
+${OLDXMENU}:
 	cd ${lwlibdir}; ${MAKE} ${MFLAGS} LWLIB_OPTIONS \
     CC='${CC}' CFLAGS='${CFLAGS}' MAKE='${MAKE}' \
     "C_SWITCH_X_SITE=$(C_SWITCH_X_SITE_1)" \
@@ -826,8 +826,7 @@ really-lwlib:
     "C_SWITCH_SITE=$(C_SWITCH_SITE_1)" \
     "C_SWITCH_MACHINE=$(C_SWITCH_MACHINE_1)" \
     "C_SWITCH_SYSTEM=$(C_SWITCH_SYSTEM_1)"
-	@true  /* make -t should not create really-lwlib.  */
-.PHONY: really-lwlib
+	@true
 #else /* not USE_X_TOOLKIT */
 $(OLDXMENU): really-oldXMenu
 
