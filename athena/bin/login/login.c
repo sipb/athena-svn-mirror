@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.14 1987-10-25 01:19:15 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.15 1987-11-21 15:25:22 treese Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.14 1987-10-25 01:19:15 rfrench Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.15 1987-11-21 15:25:22 treese Exp $";
 #endif	lint
 
 /*
@@ -31,7 +31,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
  * login -h hostname (for telnetd, etc.)
  */
 
-#define ZEPHYR
+/* #define ZEPHYR */
 	
 #include <sys/param.h>
 #ifndef VFS
@@ -398,6 +398,7 @@ main(argc, argv)
 					    what his administration is doing */
 		switch (krbval) {
 			case INTK_OK:
+			alarm(0);	/* Authentic, so don't time out. */
 			invalid = FALSE;
 			krbflag = TRUE;
 			if (!found) {
@@ -451,6 +452,7 @@ main(argc, argv)
 			break;
 		    
 		  case KDC_NULL_KEY:
+			invalid = TRUE;
 			/* tell the luser to go register with kerberos */
 
 			if (found)
@@ -482,6 +484,7 @@ main(argc, argv)
 			/* These errors should be printed and are fatal */
 		case KDC_PR_UNKNOWN:
 		case KDC_PR_N_UNIQUE:
+			invalid = TRUE;
 			if (found)
 				goto good_anyway;
 		case INTK_BADPW:
@@ -1259,7 +1262,7 @@ make_homedir()
     
     strcpy(pwd->pw_dir,"/tmp/");
     strcat(pwd->pw_dir,lusername);
-    
+    setenv("TMPHOME", "", 1);
     /* Make the home dir and chdir to it */
     unlink(pwd->pw_dir);
     if(mkdir(pwd->pw_dir) < 0) {
