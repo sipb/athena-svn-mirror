@@ -1,75 +1,14 @@
 #!/bin/sh -
 # Version-specific update script for 8.0A
 
+# Just before early release for Solaris, I managed to overwrite the
+# 8.0A update script with 8.0B.  To recover the situation, the Solaris
+# part of this file has been gutted and moved to 8.0C (minus the parts
+# which were taken care of in 8.0B, like copying /var/sadm local and
+# adding the crontab entry for gettime).
+
 case ${MACH} in
 SUN*)
-	echo "NEWTTYS=true"			>> ${CONFVARS}
-	echo "NEWUNIX=true"                     >> ${CONFVARS}
-	echo "NEWBOOT=true"                     >> ${CONFVARS}
-	echo "NEWOS=true"                       >> ${CONFVARS}
-	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
-	echo "/etc/shells"			>> ${CONFCHG}
-
-	# Add gettime entry to root crontab.
-	cronentry='45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB'
-	if [ `grep -ic "gettime" /var/spool/cron/crontabs/root` = 0 ]; then
-		echo "$cronentry" >> /var/spool/cron/crontabs/root
-	fi
-
-	# Fix /etc/hosts if it's broken.
-	if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
-		echo "/etc/hosts was moved to /etc/hosts.old"
-		rm -f /etc/hosts.old
-		mv /etc/hosts /etc/hosts.old
-		sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
-			/etc/hosts.old > /etc/hosts
-	fi
-
-	# This is taken care of in the 8.0 installation, but for a
-	# while Sparc 4s will be installing 7.7 and taking the update,
-	# so deal with it here.
-	if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
-		echo "Setting monitor resolution..."
-		eeprom output-device=screen:r1152x900x94
-		eeprom fcode-debug?=true
-	fi
-
-	# Remove obsolete files.
-	rm -rf /etc/*.sun /etc/TIMEZONE.temp /etc/athena/*old
-	rm -rf /etc/athena/login/fonts /etc/init.d/* /etc/lib/*old
-	rm -rf /etc/lib/ld.so.1.old /etc/lib/tcpip.so* /etc/rc*.d/*
-	rm -rf /include /kernel/* /sbin/bdconfig /sbin/shutdown /ups_data
-	rm -rf /usr/bin/*.23 /usr/bin/*.sun /usr/cancel /usr/disable
-	rm -rf /usr/enable /usr/kernel/* /usr/kvm/* /usr/lib/ld.so.1.old
-	rm -rf /usr/lib/libnisdb.so.1 /usr/lib/libthread_db.a /usr/lib/lint
-	rm -rf /usr/lib/switch.so /usr/lib/switch.so.2 /usr/lib/tcpip.so
-	rm -rf /usr/lib/tcpip.so.2 /usr/lp* /usr/openwin/SUNWits
-	rm -rf /usr/openwin/lib/C.ct /usr/openwin/lib/X11/fonts/misc/3270.pcf.Z
-	rm -rf /usr/openwin/lib/X11/standardPS_xdps.VM
-	rm -rf /usr/openwin/lib/libPEX5.a /usr/sbin/in.rlogind.21
-	rm -rf /usr/sbin/in.rlogind.21 /usr/sbin/in.rlogind.23
-	rm -rf /usr/sbin/in.routed.sun /usr/sbin/in.telnetd.21
-	rm -rf /usr/sbin/in.telnetd.23 /usr/sbin/inetplumb /usr/sbin/kmacntl
-	rm -rf /usr/sbin/kmamkdb /usr/sbin/kmapr /usr/sbin/swm
-	rm -rf /usr/share/lib/keytables/layout_81
-	rm -rf /usr/share/lib/keytables/layout_82
-	rm -rf /usr/share/lib/terminfo/a/a.term
-	rm -rf /usr/share/lib/terminfo/c/c.term
-	rm -rf /usr/share/lib/terminfo/d/d.term
-	rm -rf /usr/share/lib/zoneinfo/US/Yukon /var/cron/log
-	rm -rf /var/spool/cron/crontabs/sysadm /var/uucp/.Workspace
-	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
-	rm -rf /etc/group.std /etc/passwd.std /etc/shadow.std
-	rm -rf /auto_update /patch /sun4 /.cshrc.mine /.tcshrc
-	rm -rf /usr/lib/learn /usr/lib/lint /usr/etc /usr/new
-
-	# Create new directories and files, make /var/sadm local (otherwise
-	# "showrev" fails).
-	rm -f /var/sadm
-	mkdir /var/audit /var/log /var/sadm
-	touch /var/log/authlog /var/log/syslog
-	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
-
 	;;
 
 INDY)
