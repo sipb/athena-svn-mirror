@@ -316,8 +316,6 @@ pc_message *pc_wait(pc_state *s)
   r = s->readfds;
   w = s->writefds;
 
-  fd_print(&r);
-
   m = malloc(sizeof(pc_message));
   if (m == NULL)
     return NULL;
