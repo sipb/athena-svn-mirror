@@ -208,6 +208,7 @@ cat >> $destdir/SPECS/$source_name <<'EOF'
 for file in `find /usr/athena/info -type f ! -name dir`; do
     install-info --info-dir=/usr/athena/info $file 2>/dev/null
 done
+exit 0
 EOF
 fi
 
