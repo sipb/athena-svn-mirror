@@ -195,7 +195,7 @@ gnumeric
 	mime_types=application/x-gnumeric,application/x-applix-spreadsheet,application/vnd.ms-excel,application/vnd.lotus-1-2-3,application/x-oleo,application/x-xbase,text/spreadsheet,text/x-comma-separated-values,text/tab-separated-values
 
 grecord
-	command=gnome-sound-recorder -p
+	command=gnome-sound-recorder
 	name=Sound Recorder
 	can_open_multiple_files=false
 	expects_uris=false
@@ -233,6 +233,15 @@ gvim
 	expects_uris=false
 	requires_terminal=false
 	mime_types=text/*,text/plain,text/x-c,text/x-c++,text/x-c-header,text/x-perl
+
+htmlview
+	command=htmlview
+	name=htmlview
+	can_open_multiple_files=true
+	expects_uris=true
+	requires_terminal=false
+	supported_uri_schemes=file,http,ftp,telnet,gopher
+	mime_types=text/html,x-directory/webdav,x-directory/webdav-prefer-directory,image/gif,image/jpeg,text/xml
 
 imgview
 	command=imgview -nofork
@@ -428,7 +437,7 @@ omsomi
 	mime_types=video/mpeg,video/x-msvideo,audio/ac3
 
 openoffice
-	command=ooffice
+	command=gathrun ooffice ooffice
 	name=OpenOffice.org
 	can_open_multiple_files=true
 	expects_uris=false
