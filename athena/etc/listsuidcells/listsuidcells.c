@@ -1,4 +1,4 @@
-/* $Id: listsuidcells.c,v 1.5 1999-01-22 23:15:48 ghudson Exp $
+/* $Id: listsuidcells.c,v 1.6 2000-04-13 20:58:09 ghudson Exp $
  * Created by Greg Hudson.
  * Copyright (c) 1996 by the Massachusetts Institute of Technology.
  */
@@ -20,7 +20,7 @@ static void try_cell(char *name);
 
 int main(int argc, char **argv)
 {
-    int32 i;
+    afs_int32 i;
     char out[2048];
     struct ViceIoctl ioc;
     
@@ -31,14 +31,14 @@ int main(int argc, char **argv)
 	ioc.out_size = sizeof(out);
 	if (pioctl(0, VIOCGETCELL, &ioc, 1) < 0)
 	    exit((errno == EDOM) ? 0 : 1);
-	try_cell(out + OMAXHOSTS * sizeof(int32));
+	try_cell(out + OMAXHOSTS * sizeof(afs_int32));
     }
     return 0;
 }
 
 static void try_cell(char *name)
 {
-    int32 out[2];
+    afs_int32 out[2];
     struct ViceIoctl ioc;
     
     ioc.in = (caddr_t) name;
