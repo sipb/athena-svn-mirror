@@ -496,12 +496,6 @@ dnl ******************************
 dnl borrowed from gnu findutils
 dnl and relicensed as LGPL by the FSF
 
-AC_ARG_WITH(afs,
-[  --with-afs              support -fstype afs],
-[  AC_DEFINE(AFS)
-  CPPFLAGS="$CPPFLAGS -I/usr/afsws/include"
-  LIBS="$LIBS -L/usr/afsws/lib -L/usr/afsws/lib/afs -lsys -lrx -llwp"])
-
 AC_MSG_CHECKING(how to get filesystem type)
 fstype=no
 # The order of these tests is important.
