@@ -1,1 +1,0 @@
-LIBNDBM=-L/usr/local/lib -lgdbm

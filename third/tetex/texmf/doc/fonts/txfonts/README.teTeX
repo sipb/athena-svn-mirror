@@ -1,8 +1,0 @@
-For the teTeX and TeXLive distribution, we have
- a) made all the hex font positions in txfonts.sty into decimal
- b) added a new file txfonts.map, which is a copy of txr.map
-    but with no Times or Helvetica entries in
-
-    Sebastian Rahtz <sebastian.rahtz@oucs.ox.ac.uk>
-    Thomas Esser <te@dbs.uni-hannover.de>
-    May 2002
