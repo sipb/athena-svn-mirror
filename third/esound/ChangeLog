@@ -1,3 +1,235 @@
+2004-03-01  Frédéric Crozat  <fred@crozat.net>
+
+	* NEWS:
+	* configure.in:
+	Release 0.2.33
+
+2004-03-01  Frédéric Crozat  <fred@crozat.net>
+
+	* util.c: (esd_get_socket_dirname):
+	Fix crash when AUDIODEV doesn't contain '/' (Bug #135113,
+	patch from Stefan Heinsen <stefan.heinsen@gmx.de>).
+
+2004-01-19  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* esd.m4: Fixed quoting in esd.m4 to AC_DEFUN([],[]) for latest
+	autoconf.
+
+2004-01-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* audio.c: (esd_audio_close):
+	Don't try to close audio device if it wasn't opened (Debian).
+
+2004-01-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* acconfig.h:
+	* audio_alsa09.c:
+	* configure.in: Use new ALSA PCM API if available 
+	(fixes from Lukasz Mach <lukasz@mach.com.pl> and 
+	Eddy Mulyono <eddymulyono@mail.com>)
+
+2004-01-14  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* esd.c: Fix build on AIX. Patch from
+        Albert Chin-A-Young <china@thewrittenword.com>.
+
+2004-01-14  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* audio_osf.c: Fix build on OSF. Patch from 
+	Albert Chin-A-Young <china@thewrittenword.com>.
+
+2004-01-14  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* autogen.sh:
+	Don't force automake 1.4, now that we support 1.7.
+	Fix url for various tools.
+
+	* Makefile.am:
+	Fix build with automake 1.7 (Patch from Thomas Cataldo
+	<tom@aliacom.fr>).
+
+2003-10-10  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* esound.pc.in: Add missing sound-libs param.
+	Fix for Darwin and osf, from Jerry Talkington
+	<jtalkington@users.sourceforge.net> 
+
+2003-09-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* docs/esd.1.in: Fix a small typo in the man page.
+
+2003-09-03  Frederic Crozat  <fcrozat@mandrakesoft.com>
+	* Release 0.2.32
+
+2003-09-03  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* esd.c: (open_listen_socket):
+	Fix build when IPv6 is disabled (Soren Jacobsen <snj@pobox.com>)
+
+2003-08-30  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (AUDIO_BACKENDS): add several missing backends that
+	weren't getting disted.
+
+2003-08-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in: Release 0.2.31
+
+2003-08-05  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in: Fix compilation on Solaris 8.
+	bug #119092.
+
+2003-08-01  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* NEWS:
+	* configure.in: Release 0.2.30
+
+2003-08-01  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* esd.c: Add missing prototype.
+
+2003-08-01  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* acconfig.h:
+	* configure.in:
+	* esd.c:
+	* esdlib.c:
+	Use inet_pton instead of inet_aton which is a libresolv private symbol.
+	Bug #117559, patch from Leena Gunda <leena.gunda@wipro.com>.
+
+2003-08-01  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* esd.c: (set_audio_buffer), (reset_daemon), (clean_exit),
+	(esd_server_resume), (main):
+	* esd.h:
+	* esd_config.c:
+	* esdcat.c:
+	* esdctl.c: (exit_usage), (main):
+	* esddsp.c:
+	* esdfile.c:
+	* esdlib.c: (esd_get_latency), (esd_send_auth), (esd_lock),
+	(esd_unlock), (esd_standby), (esd_resume), (esd_connect_unix),
+	(esd_open_sound), (esd_play_stream), (esd_monitor_stream),
+	(esd_filter_stream), (esd_record_stream), (esd_sample_cache),
+	(esd_confirm_sample_cache), (esd_sample_getid), (esd_sample_free),
+	(esd_sample_play), (esd_sample_loop), (esd_sample_stop),
+	(esd_sample_kill):
+	Code cleanup. Patch from Kjartan Maraas <kmaraas@broadpark.no>.
+
+2003-08-01  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* Makefile.am:
+	* esd-config.h:
+	* esd.c: (main):
+	* esd_config.c:
+	Allow esound to read esd.conf whether it is to autospawn or not.
+	bug #118230, patch from James Strandboge <jstrand1@rochester.rr.com>.
+
+2003-08-01  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* util.c: Add missing headers to fix warnings.
+
+2003-07-09  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* docs/esdcat.1.in:
+	* esdcat.c: (main): Add support for session name.
+	Patch from <j@thing.net>.
+
+2003-07-05  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* audio_solaris.c: (fill_play_info), (esd_audio_open):
+	allow simultaneous play and record on Solaris (bug #116742).
+	Patch from Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+2003-07-05  Frederic Crozat <fcrozat@mandrakesoft.com>
+
+	IPv6 support (bug #109324), 
+	patch from Archana Shah  <archana.shah@wipro.com>
+
+	* configure.in: Added option for IPv6 support, and only
+	enabling IPv6 support if getaddrinfo() is available on
+	the system. Also checked for the existence of inet_ntop()
+	function.
+
+	* esd.h: Added prototype for function have_ipv6().
+
+	* esd-server.h: Changed the definition of structure
+	esd_client to include sockaddr_in6 variable.
+
+	* util.c: Included config.h for having definition of 
+	ENABLE_IPV6. Added definition of have_ipv6().
+
+	* esd.c: (open_listen_socket) Changed the code to create
+	and bind IPv6 socket if IPv6 support is there.
+
+	* esdlib.c: (esd_connect_tcpip) Changed the code so that it
+	can understand and parse "hostname:port" parameter
+	for IPv6 addresses as well.
+
+	* clients.c: Included header file <arpa/inet.h> for having
+	prototype of inet_ntop().
+	(get_new_clients) Modified to accept connections from IPv6 	
+	enabled clients also.
+	(dump_clients) Modified to handle IPv6 addresses too.
+
+2003-06-25  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * autogen.sh: exit with error if any of the autotools fail so
+          you know what's going on where it's going on
+
+2003-06-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* esd.c: (main): allow to set auto-standby to 0 (patch from 
+	Mohammed Waleed Kadous <waleed@cse.unsw.edu.au>)
+
+2003-06-18 2003-04-06  Arvind Samptur <arvind.samptur@wipro.com>
+
+        * esdlib.c: (esd_open_sound) : waitpid() could fail due to
+        a interrupted system call, loop till you succeed (bug #110099).
+
+2003-06-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* acconfig.h:
+	* audio.c:
+	* audio_coreaudio.c: (PlaybackIOProc), (RecordIOProc),
+	(esd_audio_devices), (esd_audio_open), (esd_audio_close),
+	(esd_audio_pause), (esd_audio_write), (esd_audio_read),
+	(esd_audio_flush):
+	* configure.in:
+	* esdlib.c: (esd_open_sound):
+	Mac OS X CoreAudio (bug #107842, patch from Masanori Sekino
+	<msek@users.sourceforge.net>)
+
+2003-06-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	Cygwin support (bug #110916, patch from Masahiro Sakai 
+        <s01397ms@sfc.keio.ac.jp>
+	* configure.in (AC_LIBTOOL_WIN32_DLL): call AC_LIBTOOL_WIN32_DLL,
+	which is necessary for building DLL on win32 platform.
+	* Makefile.am (libesd_la_LDFLAGS): add -no-undefined to declare that
+	libesd's dependencies provide all symbols that are undefined in
+	libesd. This is also necessary for building DLL on win32 platform.
+	* .cvsignore: quiet cvs !
+
+2003-06-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* esdlib.c: Fix a typo in a comment.
+
+2003-03-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* audio_alsa09.c: fix license, it is LGPL, not GPL (bug #108799).
+	(patch from Santiago Otero <siryurian@terra.es>)
+
+2003-02-24  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* docs/esd.1.in, esd.c: Updated man page, typo fix.
+
+2002-12-05  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* audio_alsa09.c: Limit maximum periods to 64 (bug #100125).
+	Prevents drop-outs for hardware allowing low period_size.
+
 2002-08-26  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	* configure.in: Release 0.2.29
@@ -63,7 +295,7 @@
 
 	* configure.in: Release 0.2.28
 
-2002-06-19    <b@cuba.mandrakesoft.com>
+2002-06-19  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
         * esdlib.c: (is_host_local), (esd_open_sound):
         Fix esd not starting when DISPLAY is set to localhost

@@ -59,8 +59,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
-AO_CFLAGS = @AO_CFLAGS@
-AO_LIBS = @AO_LIBS@
 AS = @AS@
 AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
@@ -82,8 +80,11 @@ ESD_PC_DIR = @ESD_PC_DIR@
 ESD_VERSION = @ESD_VERSION@
 ESD_VERSION_INFO = @ESD_VERSION_INFO@
 EXEEXT = @EXEEXT@
+HAVE_LIB = @HAVE_LIB@
+LIB = @LIB@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
@@ -117,14 +118,15 @@ bin_SCRIPTS =  	$(ESDDSP)		esd-config
 
 lib_LTLIBRARIES = libesd.la $(libesddsp_la)
 
-libesd_la_LDFLAGS = -version-info $(ESD_VERSION_INFO)
+libesd_la_CFLAGS = $(AM_CFLAGS)
+libesd_la_LDFLAGS = -version-info $(ESD_VERSION_INFO) -no-undefined
 libesd_la_LIBADD = $(AUDIOFILE_LIBS) $(SOUND_LIBS)
 
-libesd_la_SOURCES =  	esdlib.c		esdmgr.c		esdfile.c		esd_config.c		audio.c			genrand.c		genrand.h		util.c
+libesd_la_SOURCES =  	esdlib.c		esdmgr.c		esdfile.c		esd-config.h		esd_config.c		audio.c			genrand.c		genrand.h		util.c
 
 
 # one of these gets included by audio.c
-AUDIO_BACKENDS =  	audio_aix.c		audio_alsa.c		audio_alsa09.c  	audio_hpux.c		audio_irix.c		audio_none.c		audio_oss.c		audio_mklinux.c		audio_solaris.c	
+AUDIO_BACKENDS =  	audio_aix.c			audio_alsa.c			audio_alsa09.c  		audio_coreaudio.c		audio_dart.c			audio_hpux.c			audio_mklinux.c			audio_irix.c			audio_none.c			audio_osf.c			audio_oss.c			audio_solaris.c			audio_win32.c
 
 
 libesddsp_la_LDFLAGS = -version-info $(ESD_VERSION_INFO)
@@ -144,7 +146,7 @@ esd_PROGRAMS =  	esd
 bin_PROGRAMS =  	esdcat			esdctl			esdfilt			esdmon			esdrec			esdsample		esdloop			$(ESDPLAY)
 
 
-esd_SOURCES =  	esd.c 			clients.c		filter.c		mix.c			players.c		proto.c			samples.c		$(getopt_src)   	util.c			esd-server.h
+esd_SOURCES =  	esd.c 			clients.c		filter.c		mix.c			players.c		proto.c			samples.c		$(getopt_src)   	util.c			esd-config.h		esd-server.h
 
 
 esdcat_SOURCES =  	esdcat.c
@@ -269,8 +271,8 @@ DATA =  $(esdconf_DATA) $(m4data_DATA) $(pkgconfig_DATA)
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
-INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 \
-aclocal.m4 config.guess config.h.in config.sub configure configure.in \
+INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h aclocal.m4 \
+config.guess config.h.in config.sub configure configure.in \
 esd-config.in esddsp.in esound.pc.in esound.spec.in install-sh \
 ltmain.sh missing mkinstalldirs
 
@@ -292,7 +294,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
 	cd $(srcdir) && $(ACLOCAL)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
@@ -738,8 +740,8 @@ distdir: $(DISTFILES)
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 audio.lo audio.o : audio.c esd.h config.h getopt.h audio_alsa09.c
 clients.o: clients.c esd-server.h esd.h config.h getopt.h
-esd.o: esd.c esd-server.h esd.h config.h getopt.h
-esd_config.lo esd_config.o : esd_config.c getopt.h
+esd.o: esd.c esd-server.h esd.h config.h getopt.h esd-config.h
+esd_config.lo esd_config.o : esd_config.c esd-config.h getopt.h
 esdcat.o: esdcat.c esd.h getopt.h
 esdctl.o: esdctl.c esd.h getopt.h
 esddsp.lo esddsp.o : esddsp.c config.h getopt.h esd.h
@@ -758,7 +760,7 @@ mix.o: mix.c esd-server.h esd.h config.h getopt.h
 players.o: players.c esd-server.h esd.h config.h getopt.h
 proto.o: proto.c esd-server.h esd.h config.h getopt.h
 samples.o: samples.c esd-server.h esd.h config.h getopt.h
-util.o: util.c esd.h
+util.lo util.o : util.c config.h esd.h getopt.h
 
 info-am:
 info: info-recursive

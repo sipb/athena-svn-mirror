@@ -4,19 +4,19 @@
  *  by Santiago Otero (siryurian@terra.es)
  *
  *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ *                                                                             
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *                                                                             
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  */
 
@@ -136,15 +136,24 @@ snd_pcm_t* initAlsa(char *dev, int format, int channels, int speed, int mode)
 		alsaerr = -1;
 		return handle;
 	}
-  
+#ifndef DRIVER_ALSA_09_NEW_PCM_API
 	err = snd_pcm_hw_params_set_rate_near(handle, hwparams, speed, 0);
+#else
+    int t_dir=0;
+    int t_speed=speed;
+    err = snd_pcm_hw_params_set_rate_near(handle, hwparams, &t_speed, &t_dir);
+#endif
 	if (err < 0) {
 		if (alsadbg)
 			fprintf(stderr, "%s\n", snd_strerror(err));
 		alsaerr = -1;
 		return handle;
 	}
+#ifndef DRIVER_ALSA_09_NEW_PCM_API
 	if (err != speed) {
+#else
+	if (t_speed != speed) {
+#endif
 		if (alsadbg)
 			fprintf(stderr, "Rate not avaliable %i != %i\n", speed, err);
 		alsaerr = -1;
@@ -168,8 +177,20 @@ snd_pcm_t* initAlsa(char *dev, int format, int channels, int speed, int mode)
 		return handle;
 	}
   
-  
+	periods = 64;
+	err = snd_pcm_hw_params_set_periods_max(handle, hwparams, &periods, 0);
+	if (err < 0) {
+		if (alsadbg)
+			fprintf(stderr, "%s\n", snd_strerror(err));
+		alsaerr = -1;
+		return handle;
+	}
+#ifndef DRIVER_ALSA_09_NEW_PCM_API
 	err = snd_pcm_hw_params_set_buffer_size_near(handle, hwparams, BUFFERSIZE); 
+#else
+	snd_pcm_uframes_t t_bufsize=BUFFERSIZE;
+	err = snd_pcm_hw_params_set_buffer_size_near(handle, hwparams, &t_bufsize);
+#endif
 	if (err < 0) { 
 		if (alsadbg)
 			fprintf(stderr, "Buffersize:%s\n", snd_strerror(err)); 

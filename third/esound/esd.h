@@ -10,7 +10,7 @@ extern "C" {
 #define ESD_UNIX_SOCKET_DIR	esd_get_socket_dirname()
 #define ESD_UNIX_SOCKET_NAME	esd_get_socket_name()
 
-/* length of the audio buffer size */
+/* size of the audio buffer */
 #define ESD_BUF_SIZE (4 * 1024)
 
 /* length of the authorization key, octets */
@@ -330,6 +330,7 @@ void esd_audio_flush( void );
 const char *esd_get_socket_dirname();
 const char *esd_get_socket_name();
 
+int have_ipv6();
 
 #ifdef __cplusplus
 }

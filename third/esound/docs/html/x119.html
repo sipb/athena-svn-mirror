@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML
 ><HEAD
 ><TITLE
@@ -8,7 +8,7 @@ NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.7"><LINK
 REL="HOME"
 TITLE="EsounD"
-HREF="book1.html"><LINK
+HREF="index.html"><LINK
 REL="UP"
 TITLE="Running EsounD"
 HREF="c76.html"><LINK
@@ -47,13 +47,13 @@ VALIGN="bottom"
 ><A
 HREF="c76.html"
 ACCESSKEY="P"
->&#60;&#60;&#60; Previous</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Running EsounD</TD
+>Chapter 3. Running EsounD</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -61,7 +61,7 @@ VALIGN="bottom"
 ><A
 HREF="x179.html"
 ACCESSKEY="N"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ></TABLE
@@ -74,8 +74,8 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="ESDCTL"
-></A
->esdctl</H1
+>3.2. esdctl</A
+></H1
 ><P
 >	controls certain aspects of the sound daemon.  
       </P
@@ -83,175 +83,113 @@ NAME="ESDCTL"
 >	<B
 CLASS="COMMAND"
 >esdctl</B
-> <TT
+> <VAR
 CLASS="OPTION"
->[options]</TT
+>[options]</VAR
 >
       </P
 ><DIV
 CLASS="INFORMALTABLE"
+><P
+></P
 ><A
 NAME="AEN125"
 ></A
-><P
-></P
 ><TABLE
 BORDER="1"
-BGCOLOR="#E0E0E0"
-CELLSPACING="0"
-CELLPADDING="4"
+FRAME="border"
 CLASS="CALSTABLE"
-><THEAD
+><COL><COL><THEAD
 ><TR
 ><TH
-ALIGN="LEFT"
-VALIGN="TOP"
 >commands</TH
 ><TH
-ALIGN="LEFT"
-VALIGN="TOP"
 >purpose</TH
 ></TR
 ></THEAD
 ><TBODY
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >lock</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >foreign clients may not use the server</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >unlock</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >foreign clients may use the server</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >standby, off</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >suspend sound output for other programs</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >resume, on</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >resume sound output</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >cache SAMPLE</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >cache sample from file SAMPLE in the server</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >getid NAME</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >retrieve a sample id from its name</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >free NAME</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >uncache a sample in the server by NAME</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >play NAME</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >play a cached sample once</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >loop NAME</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >play a cached sample in a loop</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >stop NAME</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >stop a looping sample at end of sample</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >serverinfo</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >get server info from server</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >allinfo</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >get player and sample info from server</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >panstream ID LEFT RIGHT</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >set left and right volume levels for a stream</TD
 ></TR
 ><TR
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >pansample ID LEFT RIGHT</TD
 ><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 >set default left and right volume levels for a sample</TD
 ></TR
 ></TBODY
@@ -261,7 +199,7 @@ VALIGN="TOP"
 ></DIV
 ><P
 >	lock - only the "owner" of the daemon can play sounds.  the first key
-	(obtained from &#732;/.esd-auth) submitted to the daemon identifies
+	(obtained from &tilde;/.esd-auth) submitted to the daemon identifies
 	the owner.
       </P
 ><P
@@ -296,14 +234,14 @@ VALIGN="top"
 ><A
 HREF="c76.html"
 ACCESSKEY="P"
->&#60;&#60;&#60; Previous</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="book1.html"
+HREF="index.html"
 ACCESSKEY="H"
 >Home</A
 ></TD
@@ -314,7 +252,7 @@ VALIGN="top"
 ><A
 HREF="x179.html"
 ACCESSKEY="N"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ><TR
