@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.5 1991-07-01 15:15:08 epeisach Exp $
+ * $Id: from.c,v 1.6 1991-07-12 13:59:09 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: epeisach $
+ * $Author: probe $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.5 1991-07-01 15:15:08 epeisach Exp $";
+static char *rcsid = "$Id: from.c,v 1.6 1991-07-12 13:59:09 probe Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -554,14 +554,14 @@ print_report(headers, num_headers, winlength)
       exit (1);
     }    
   buf[0] = '\0';
-
-  strncpy(buf, from_field, winlength+1);
+  buf[winlength] = '\0';
+  strncpy(buf, from_field, winlength);
   len = strlen(buf);
   if  (len < 30)
     len = 30;
 
   buf1 = malloc(winlength-len+1);  /* add 1 for the NULL terminator */
-  if (buf == NULL)
+  if (buf1 == NULL)
     {
       fprintf (stderr, "from: out of memory");
       exit (1);
