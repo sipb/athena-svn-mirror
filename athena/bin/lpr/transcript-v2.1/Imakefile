@@ -1,12 +1,12 @@
 /*
- * $Id: Imakefile,v 1.16 1997-06-08 20:22:29 ghudson Exp $
+ * $Id: Imakefile,v 1.17 1997-06-08 20:25:01 ghudson Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
 #ifndef _AIX
 #define ISUBDIRS snmplib
 #endif
-PSLIBDIR=/usr/athena/lib/lpdfilters
+PSLIBDIR=$(ATHLIBDIR)/lpdfilters
 PSTEMPDIR=/tmp
 DITDIR=/usr/lib/font
 TROFFFONTDIR=$(PSLIBDIR)/troff.font
@@ -36,14 +36,19 @@ SimpleProgram(duplex2,duplex2.o,,$(PSLIBDIR))
 #ifndef _AIX
 SimpleProgram(hpcomm,hpcomm.o psutil.o config.o hpquery.o snmplib/libsnmp.a,$(LIBS),$(PSLIBDIR))
 #endif
-all install:: psif
+all install:: psif hpif
 
 install_script(psif,,$(PSLIBDIR))
+install_script(hpif,,$(PSLIBDIR))
 install_script(psbad.sh,,$(PSLIBDIR)/psbad)
 install::
 	-for i in psof psgf psnf pstf psrf psvf pscf psdf; do \
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		ln -s psif $(DESTDIR)$(PSLIBDIR)/$$i; \
+		done
+	-for i in hpof hpgf hpnf hptf hprf hpvf hpcf hpdf; do \
+		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
+		ln -s hpif $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
 	-for i in bogusmsg.ps pstext.pro banner.pro; do \
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
@@ -67,7 +72,14 @@ config.c: config.proto Makefile
 psif: psif.proto Makefile
 	$(RM) psif
 	sed	-e s,XPSLIBDIRX,$(PSLIBDIR),g \
+		-e s,XPSCOMMX,pscomm,g \
 		psif.proto > psif
+
+hpif: psif.proto Makefile
+	$(RM) hpif
+	sed	-e s,XPSLIBDIRX,$(PSLIBDIR),g \
+		-e s,XPSCOMMX,hpcomm,g \
+		psif.proto > hpif
 
 snmplib/libsnmp.a:: snmplib
 config.o: config.c
@@ -76,4 +88,4 @@ psutil.o: transcript.h
 pscat.o pscatmap.o: action.h 
 
 clean::
-	$(RM) config.c hpcomm.c psif
+	$(RM) config.c hpcomm.c psif hpif

@@ -4,7 +4,7 @@
 # Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.6 1995-11-28 23:08:33 cfields Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.7 1997-06-08 20:25:02 ghudson Exp $
 
 PATH=/bin:/usr/bin:/usr/ucb
 export PATH
@@ -29,7 +29,7 @@ BANNERLAST=0
 BANNERPRO=$PSLIBDIR/banner.pro
 PSTEXT=$PSLIBDIR/pstext
 PSBANNER=$PSLIBDIR/psbanner
-PSCOMM=$PSLIBDIR/pscomm
+PSCOMM=$PSLIBDIR/XPSCOMMX
 
 export PSLIBDIR VERBOSELOG BANNERFIRST BANNERLAST BANNERPRO REVERSE \
 	PSTEXT PSBANNER PSCOMM
