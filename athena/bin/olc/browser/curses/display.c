@@ -165,9 +165,9 @@ make_display(start)
   center(1, current_dir);
 /*  curr_index = Index_Start;*/
   curr_index = start;
-  curr_line = 4;
+  curr_line = 3;
   
-  for (index_line = 1; index_line < MAX_INDEX_LINES; index_line++)
+  for (index_line = 0; index_line < MAX_INDEX_LINES; index_line++)
     {
       curr_entry = get_entry(curr_index);
       if (curr_entry == NULL)
@@ -183,10 +183,10 @@ make_display(start)
       curr_line++;
       curr_index++;
     }
-  if (curr_index >= Entry_Count)
-    center(curr_line + 2, "** End of Index **");
+  if (curr_index > Entry_Count)
+    center(curr_line + 1, "** End of Index **");
   else
-    center(curr_line + 2, "** More **");
+    center(curr_line + 1, "** More **");
 }
 
 /* Function:	display_entry() displays a CREF entry on the screen.
@@ -213,11 +213,7 @@ display_entry(index)
       clear();
       refresh();
       call_program("more", entry->filename);
-      standout();
-      mvaddstr(LINES-1, 0, "Hit any key to continue");
-      standend();
-      refresh();
-      getch();
+      wait_for_key();
       clear();
       make_display(Current_Index);
     }
