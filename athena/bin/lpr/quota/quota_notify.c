@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.4 1990-07-10 20:21:16 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.5 1990-11-14 17:32:13 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.4 1990-07-10 20:21:16 epeisach Exp $";
+static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.5 1990-11-14 17:32:13 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -44,18 +44,18 @@ quota_rec 		*quotaRec;
     parse_username(qid->username, qprincipal, qinstance, qrealm);
 
     if(quotaRec->quotaAmount > quotaRec->quotaLimit) {
-	sprintf(message,
+	(void) sprintf(message,
 		"Your last print job was %d pages.\nYou were charged %d %s.",
 		qreport->pages, 
 		(qreport->pages * qreport->pcost), 
 		qcurrency);
 	if(strcmp(qcurrency, "cents")) 
-	    sprintf(message1, 
+	    (void) sprintf(message1, 
 		    "%s\nYour total print charges this semester are %d %s.",
 		    message, (quotaRec->quotaAmount - quotaRec->quotaLimit),
 		    qcurrency);
 	else
-	    sprintf(message1, 
+	    (void) sprintf(message1, 
 		    "%s\nYour total print charges this semester are $%.2f.",
 		    message, (float) (quotaRec->quotaAmount - quotaRec->quotaLimit)/100.0);
 	goto notify;
@@ -68,14 +68,14 @@ quota_rec 		*quotaRec;
        (100 * (quotaRec->quotaLimit - quotaRec->quotaAmount))
        /quotaRec->quotaLimit < 10) {
 	if(strcmp(qcurrency, "cents"))
-	    sprintf(message1, 
+	    (void) sprintf(message1, 
 		    "There are %d %s left in your %s print quota.\nLast job printed at %d %s/page\n",
 		    (quotaRec->quotaLimit - quotaRec->quotaAmount),
 		    qcurrency,
 		    quotaRec->service,
 		    qreport->pcost, qcurrency);
 	else
-	    sprintf(message1, 
+	    (void) sprintf(message1, 
 		    "There are $%.2f left in your %s print quota.\nLast job printed at %d %s/page\n",
 		    (float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
 		    quotaRec->service,
@@ -90,42 +90,42 @@ quota_rec 		*quotaRec;
 	
 	if(ratio >=1 && ratio < 2) {
 	    if(strcmp(qcurrency, "cents"))
-		sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
+		(void) sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
 			message1,
 			(quotaRec->quotaLimit - quotaRec->quotaAmount), 
 			qcurrency,
 			quotaRec->service);
 	    else
-		sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
+		(void) sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
 			message1,
 			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0, 
 			quotaRec->service);
-	    sprintf(message1, "%sYour last print job was %d pages.\n",
+	    (void) sprintf(message1, "%sYour last print job was %d pages.\n",
 		    message, qreport->pages);
-	    sprintf(message, "%sYou can print only one more print job of\n",
+	    (void) sprintf(message, "%sYou can print only one more print job of\n",
 		    message1);
-	    sprintf(message1, "%sthat size without going over your quota.\n",
+	    (void) sprintf(message1, "%sthat size without going over your quota.\n",
 		    message);
 	    goto notify;
 	}
 	
 	if(ratio < 1) {
 	    if(strcmp(qcurrency, "cents"))
-		sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
+		(void) sprintf(message,"%s\nThere are %d %s left in your %s print quota.\n",
 			message1,
 			quotaRec->quotaLimit - quotaRec->quotaAmount,
 			qcurrency,
 			quotaRec->service);
 	    else
-		sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
+		(void) sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
 			message1,
 			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
 			quotaRec->service);
-	    sprintf(message1, "%sYour last print job was %d pages.\n",
+	    (void) sprintf(message1, "%sYour last print job was %d pages.\n",
 		    message, qreport->pages);
-	    sprintf(message, "%sYou cannot print another print job of\n",
+	    (void) sprintf(message, "%sYou cannot print another print job of\n",
 		    message1);
-	    sprintf(message1, "%sthat size without going over your quota.\n",
+	    (void) sprintf(message1, "%sthat size without going over your quota.\n",
 		    message);
 	    goto notify;
 	}
@@ -161,7 +161,7 @@ int                     isadmin;
     parse_username(qid->username, qprincipal, qinstance, qrealm);
 
     if(quotaRec->quotaAmount > quotaRec->quotaLimit) {
-	sprintf(message,
+	(void) sprintf(message,
 		"Your last print job to account #%d (%s) was %d pages.\nThe account was charged %d %s.",
 		qid->account,
 		quotaRec->service,
@@ -170,16 +170,17 @@ int                     isadmin;
 		qcurrency);
 	if (isadmin) {
 	    if(strcmp(qcurrency, "cents")) 
-		sprintf(message1, 
+		(void) sprintf(message1, 
 			"%s\nThe total print charges to the account this semester is %d %s.",
-		    message, (quotaRec->quotaAmount - quotaRec->quotaLimit),
-		    qcurrency);
-	else
-	    sprintf(message1, 
-		    "%s\nThe total print charges to the account this semester is $%.2f.",
-		    message, (float) (quotaRec->quotaAmount - quotaRec->quotaLimit)/100.0);
-	    goto notify;
-	}
+			message, (quotaRec->quotaAmount - quotaRec->quotaLimit),
+		        qcurrency);
+	    else
+		(void) sprintf(message1, 
+			       "%s\nThe total print charges to the account this semester is $%.2f.",
+			       message, (float) (quotaRec->quotaAmount - quotaRec->quotaLimit)/100.0);
+	} else /* Not admin */
+	    strcpy(message1, message);
+	goto notify;
     }
 
     message1[0] = '\0';
@@ -188,7 +189,7 @@ int                     isadmin;
        (100 * (quotaRec->quotaLimit - quotaRec->quotaAmount))
        /quotaRec->quotaLimit < 10) {
 	if(strcmp(qcurrency, "cents"))
-	    sprintf(message1, 
+	    (void) sprintf(message1, 
 		    "There are %d %s left in %d (%s) account print quota.\nLast job printed at %d %s/page\n",
 		    (quotaRec->quotaLimit - quotaRec->quotaAmount),
 		    qcurrency,
@@ -196,7 +197,7 @@ int                     isadmin;
 		    quotaRec->service,
 		    qreport->pcost, qcurrency);
 	else
-	    sprintf(message1, 
+	    (void) sprintf(message1, 
 		    "There are $%.2f left in %d (%s) account print quota.\nLast job printed at %d %s/page\n",
 		    (float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
 		    qid->account,
@@ -212,46 +213,46 @@ int                     isadmin;
 	
 	if(ratio >=1 && ratio < 2) {
 	    if(strcmp(qcurrency, "cents"))
-		sprintf(message,"%s\nThere are %d %s left in the %d (%s) account print quota.\n",
+		(void) sprintf(message,"%s\nThere are %d %s left in the %d (%s) account print quota.\n",
 			message1,
 			(quotaRec->quotaLimit - quotaRec->quotaAmount), 
 			qcurrency,
 			qid->account,
 			quotaRec->service);
 	    else
-		sprintf(message,"%s\nThere are $%.2f left in the %d (%s) account print quota.\n",
+		(void) sprintf(message,"%s\nThere are $%.2f left in the %d (%s) account print quota.\n",
 			message1,
 			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0, 
 			qid->account,
 			quotaRec->service);
-	    sprintf(message1, "%sThe last print job was %d pages.\n",
+	    (void) sprintf(message1, "%sThe last print job was %d pages.\n",
 		    message, qreport->pages);
-	    sprintf(message, "%sYou can print only one more print job of\n",
+	    (void) sprintf(message, "%sYou can print only one more print job of\n",
 		    message1);
-	    sprintf(message1, "%sthat size without going over the account quota.\n",
+	    (void) sprintf(message1, "%sthat size without going over the account quota.\n",
 		    message);
 	    goto notify;
 	}
 	
 	if(ratio < 1) {
 	    if(strcmp(qcurrency, "cents"))
-		sprintf(message,"%s\nThere are %d %s left in the %d (%s) account print quota.\n",
+		(void) sprintf(message,"%s\nThere are %d %s left in the %d (%s) account print quota.\n",
 			message1,
 			quotaRec->quotaLimit - quotaRec->quotaAmount,
 			qcurrency,
 			qid->account,
 			quotaRec->service);
 	    else
-		sprintf(message,"%s\nThere are $%.2f left in the %d (%s) account print quota.\n",
+		(void) sprintf(message,"%s\nThere are $%.2f left in the %d (%s) account print quota.\n",
 			message1,
 			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
 			qid->account,
 			quotaRec->service);
-	    sprintf(message1, "%sYour last print job was %d pages.\n",
+	    (void) sprintf(message1, "%sYour last print job was %d pages.\n",
 		    message, qreport->pages);
-	    sprintf(message, "%sYou cannot print another print job of\n",
+	    (void) sprintf(message, "%sYou cannot print another print job of\n",
 		    message1);
-	    sprintf(message1, "%sthat size without going over the account quota.\n",
+	    (void) sprintf(message1, "%sthat size without going over the account quota.\n",
 		    message);
 	    goto notify;
 	}
@@ -283,12 +284,12 @@ NotifyUser(user, message)
 
     /* Return if NULL message */
     if (message[0] == '\0')
-	return;
+	return 0;
 
     bzero((char *)&notice, sizeof(notice));
     
     if (ZInitialize() != ZERR_NONE) 
-	return;
+	return -1;
     /* Something wrong, oh well... */
 
     notice.z_kind = UNACKED;
@@ -303,9 +304,9 @@ NotifyUser(user, message)
     notice.z_message_len = strlen(notice.z_message)+1;
 
     if (ZSendNotice(&notice, ZNOAUTH) != ZERR_NONE) {
-	return;
+	return 1;
     }
-    return;
+    return 0;
 }
 #endif ZEPHYR
 
