@@ -4195,7 +4195,7 @@ relink_command=\"$relink_command\""
 	  # location b/c this prevents finding dependent libraries that
 	  # are installed to the same prefix.
 	  if test "$inst_prefix_dir" = "$destdir"; then
-	    $echo "$modename: error: cannot install \`$file' to a directory not ending in $libdir" 1&gt;&amp;2
+	    $echo "$modename: error: cannot install \`$file' to a directory not ending in $libdir" 1>&2
 	    exit 1
 	  fi
 
