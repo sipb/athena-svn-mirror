@@ -1,4 +1,4 @@
-# $Id: packages,v 1.59 1999-02-19 17:23:54 danw Exp $
+# $Id: packages,v 1.60 1999-02-22 04:09:01 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -57,6 +57,8 @@ third/bind
 third/ksrvutil
 third/inetd
 third/mdoc
+third/lprng/ifhp
+third/lprng/lprng
 athena/lib/ares
 athena/lib/acl
 athena/lib/zephyr
