@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2001-02-14 02:01:58 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2002-02-17 21:04:57 ghudson Exp $
 
 dist:
 
@@ -13,5 +13,7 @@ all:
 
 check:
 
-install:
+install: force
 	${MAKE} install DESTDIR="$$SRVD"
+
+force:
