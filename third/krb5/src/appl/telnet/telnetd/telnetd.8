@@ -121,6 +121,14 @@ This disables the authentication code.  All user verification will
 happen through the
 .IR login (1)
 program.
+.TP
+.B cred
+Allow automatic login for connections that supply forwarded
+credentials. Otherwise, do user verification through
+.IR login (1)
+as with
+.B \-a
+.BR off .
 .RE
 .TP
 .B \-B
