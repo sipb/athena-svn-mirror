@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_krb.c,v 1.4 1991-06-26 12:41:45 probe Exp $
+ * $Id: rk_krb.c,v 1.5 1993-04-30 18:04:26 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
- * $Author: probe $
+ * $Author: miki $
  *
  * This file contains the kerberos parts of the rkinit library.
  * See the comment at the top of rk_lib.c for a description of the naming
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.4 1991-06-26 12:41:45 probe Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.5 1993-04-30 18:04:26 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -17,6 +17,9 @@ static char *rcsid = "$Id: rk_krb.c,v 1.4 1991-06-26 12:41:45 probe Exp $";
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <krb.h>
+#ifdef SYSV
+#include <netdb.h>
+#endif
 #include <des.h>
 
 #include <signal.h>

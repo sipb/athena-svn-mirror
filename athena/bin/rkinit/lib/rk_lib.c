@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_lib.c,v 1.2 1990-07-16 14:15:29 qjb Exp $
+ * $Id: rk_lib.c,v 1.3 1993-04-30 18:04:38 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_lib.c,v $
- * $Author: qjb $
+ * $Author: miki $
  *
  * This file contains the non-rpc top-level rkinit library routines.
  * The routines in the rkinit library that should be called from clients
@@ -16,7 +16,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_lib.c,v 1.2 1990-07-16 14:15:29 qjb Exp $";
+static char *rcsid = "$Id: rk_lib.c,v 1.3 1993-04-30 18:04:38 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -24,6 +24,9 @@ static char *rcsid = "$Id: rk_lib.c,v 1.2 1990-07-16 14:15:29 qjb Exp $";
 #include <setjmp.h>
 #include <krb.h>
 
+#ifdef SYSV
+#include <netdb.h>
+#endif
 #include <rkinit.h>
 #include <rkinit_private.h>
 #include <rkinit_err.h>
