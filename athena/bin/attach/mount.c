@@ -1,7 +1,7 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v $
- *	$Author: jfc $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
@@ -13,7 +13,7 @@
  * (This may not be true anymore --- [tytso:19890720.2145EDT])
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.3 1990-07-09 00:54:35 jfc Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.4 1991-03-04 12:56:12 epeisach Exp $";
 
 #include "attach.h"
 #include <sys/param.h>
@@ -23,7 +23,13 @@ static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena
 #ifdef AIX
 #include <sys/dstat.h>
 #endif
+#if defined(_AIX) && (AIXV < 30)
+#include <rpc/rpcmount.h>
+#include <rpc/nfsmount.h>
+struct ufs_args { char *fspec;};
+#else
 #include <rpcsvc/mount.h>
+#endif
 #ifdef _AUX_SOURCE
 #define	mount(type,dir,flags,data)	fsmount(type,dir,flags,data)
 #endif
@@ -52,13 +58,18 @@ mountfs(at, fsname, mopt, errorout)
 
 	mnt.mnt_fsname = fsname;
 	mnt.mnt_dir = at->mntpt;
-#ifndef ultrix
+#if !defined(_AIX) && !defined(ultrix)
 	mnt.mnt_type = (at->fs->mount_type==MOUNT_NFS) ? MNTTYPE_NFS
 		: MNTTYPE_42;
 #endif
 	mnt.mnt_opts = stropt(*mopt);
 	mnt.mnt_freq = 0;
+#if defined(_AIX) && (AIXV<30)
+	mnt.mnt_type = at->fs->mount_type == MOUNT_NFS ? "nfs" : "ufs";
+	mnt.mnt_checkno = 0;
+#else
 	mnt.mnt_passno = 0;
+#endif
 	
 	bzero(&data, sizeof(data));
 	/* Already mounted? Why lose? */
@@ -80,7 +91,7 @@ mountfs(at, fsname, mopt, errorout)
 		if (mount_nfs(at, mopt, &data.nfs_args,
 			      errorout) == FAILURE)
 			return (FAILURE);
-#ifdef AIX
+#ifdef _AIX
 		if (nfs_mount(mnt.mnt_dir, &data.nfs_args, mopt->flags) != 0) {
 			if (errorout)
 				fprintf(stderr,
@@ -110,7 +121,11 @@ mountfs(at, fsname, mopt, errorout)
 	if (mount(mnt.mnt_fsname, mnt.mnt_dir, mopt->flags,
 		  at->fs->mount_type, (char *)&data) < 0) {
 #else /* !ultrix */
+#ifdef _AIX
+	if (mount(mnt.mnt_fsname, mnt.mnt_dir, mopt->flags) < 0) {
+#else
 	if (mount(at->fs->mount_type, mnt.mnt_dir, mopt->flags, &data) < 0) {
+#endif
 #endif /* ultrix */
 		if (errorout) {
 			fprintf(stderr,
@@ -122,6 +137,20 @@ mountfs(at, fsname, mopt, errorout)
 		return (FAILURE);
 	} 
 
+#ifdef _AIX
+	else {
+	  struct dstat st_buf;
+	  if(dstat(mnt.mnt_dir, &st_buf, sizeof(st_buf)) != 0) {
+	    if (errorout)
+	      fprintf(stderr,
+		      "%s: Can't stat %s to verify mount: %s\n",
+		      at->hesiodname, mnt.mnt_dir, sys_errlist[errno]);
+	    return (FAILURE);
+	  } else {
+	    mnt.mnt_gfs = st_buf.dst_gfs;
+	  }
+	}
+#endif
 #ifndef ultrix
       done:
 	addtomtab(&mnt);
