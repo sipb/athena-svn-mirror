@@ -263,3 +263,6 @@ echo "/etc/athena/attach.conf"				>> "$CONFCHG"
 echo "/etc/athena/inetd.conf"				>> "$CONFCHG"
 
 chmod 755 /mit
+if [ -f /var/athena/attachtab ]; then
+    mv /var/athena/attachtab /var/athena/attachtab.old
+fi
