@@ -16,7 +16,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   $Id: theme.jl,v 1.2 2001-03-30 20:56:24 ghudson Exp $
+   $Id: theme.jl,v 1.3 2001-03-31 05:10:56 ghudson Exp $
 
    Authors: John Harper <jsh@eazel.com>
 |#
@@ -442,7 +442,7 @@
 (recolor-all)
 
 ;; register the theme
-(add-frame-style 'Crux get-frame)
+(add-frame-style 'Crux-athena get-frame)
 
 ;; recalibrate frames when the window-name changes
 (call-after-property-changed 'WM_NAME rebuild-frame)
