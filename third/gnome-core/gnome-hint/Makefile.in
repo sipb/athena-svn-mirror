@@ -172,7 +172,8 @@ EXTRA_DIST =  	gnome-hint-properties.desktop 	gnome-hint.png 	gnome-hint.desktop
 
 
 sysdir = $(datadir)/control-center/Session/
-sys_DATA = gnome-hint-properties.desktop
+# Disable capplet listing, since Athena doesn't run gnome-hint by default.
+# sys_DATA = gnome-hint-properties.desktop
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = gnome-hint.png
@@ -195,7 +196,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(pixmaps_DATA) $(sys_DATA) $(util_DATA)
+DATA =  $(pixmaps_DATA) $(util_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -308,25 +309,6 @@ uninstall-pixmapsDATA:
 	  rm -f $(DESTDIR)$(pixmapsdir)/$$p; \
 	done
 
-install-sysDATA: $(sys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(sysdir)
-	@list='$(sys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-sysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(sys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(sysdir)/$$p; \
-	done
-
 install-utilDATA: $(util_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(utildir)
@@ -401,15 +383,14 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-pixmapsDATA install-sysDATA install-utilDATA \
-		install-data-local
+install-data-am: install-pixmapsDATA install-utilDATA install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS uninstall-pixmapsDATA \
-		uninstall-sysDATA uninstall-utilDATA
+		uninstall-utilDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
@@ -417,7 +398,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(pixmapsdir) \
-		$(DESTDIR)$(sysdir) $(DESTDIR)$(utildir)
+		$(DESTDIR)$(utildir)
 
 
 mostlyclean-generic:
@@ -460,14 +441,14 @@ maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-pixmapsDATA \
-install-pixmapsDATA uninstall-sysDATA install-sysDATA \
-uninstall-utilDATA install-utilDATA tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-local install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+install-pixmapsDATA uninstall-utilDATA install-utilDATA tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-local \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 install-data-local:
