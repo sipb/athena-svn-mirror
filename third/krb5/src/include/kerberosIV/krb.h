@@ -632,6 +632,13 @@ KRB5_DLLIMP int KRB5_CALLCONV krb_save_credentials
 	PROTOTYPE((char FAR *service, char FAR *instance, char FAR *realm,
 		   C_Block session, int lifetime, int kvno,
 		   KTEXT ticket, long issue_date));
+/* sendauth.c */
+int krb_sendauth
+	PROTOTYPE((long options, int fd, KTEXT ticket, char *service,
+		   char *inst, char *realm, unsigned KRB4_32 checksum,
+		   MSG_DAT *msg_data, CREDENTIALS *cred,
+		   Key_schedule schedule, struct sockaddr_in *laddr,
+		   struct sockaddr_in *faddr, char *version));
 /* send_to_kdc.c */
 int send_to_kdc
 	PROTOTYPE((KTEXT pkt, KTEXT rpkt, char *realm));
