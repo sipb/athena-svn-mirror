@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.7 1990-07-04 15:53:52 jfc Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.8 1990-07-04 16:21:22 jfc Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -599,7 +599,8 @@ attachcmd(argc, argv)
 	    continue;
 	}
 	gotname++;
-	attach(argv[i]);
+	if(attach(argv[i]) == SUCCESS)
+		error_status = 0;
 	override_mode = '\0';
 	override_suid = -1;
 	override = 0;
@@ -648,6 +649,7 @@ detachcmd(argc, argv)
 	{ "-host", "-H" },
 	{ "-user", "-U" },
 	{ "-clean", "-C" },
+	{ "-lint", "-L" },
 	{ 0, 0}};
 
     check_root_privs(progname);
@@ -747,6 +749,10 @@ detachcmd(argc, argv)
 			fprintf(stderr,
 		"Sorry, you're not authorized to use the -clean option\n");
 		}
+		break;
+	case 'L':
+		lint_attachtab();
+		gotname = 1;
 		break;
 	default:
 		fprintf(stderr, "Unknown switch %s\n", argv[i]);
