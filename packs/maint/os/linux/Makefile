@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2000-09-04 16:49:06 ghudson Exp $
+# $Id: Makefile,v 1.8 2001-11-28 22:43:51 amb Exp $
 
 SHELL=/bin/sh
 
@@ -24,6 +24,8 @@ install:
 	install -c -m 0755 syncconf.rc ${DESTDIR}${RCINITDIR}/syncconf
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 verify.sh ${DESTDIR}${ATHRETCDIR}/verify
+	install -c -m 0755 athena-sysconfig.rc \
+		${DESTDIR}${RCINITDIR}/athena-sysconfig
 
 clean:
 
