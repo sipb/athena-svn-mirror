@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs 1.0.1\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-09-07 00:37+0900\n"
 "Last-Translator: Nam SungHyun <namsh@kldp.org>\n"
 "Language-Team: korean <ko@li.org>\n"
@@ -299,7 +299,7 @@ msgstr "알수없는 작업 종류 %u"
 msgid "Operation stopped"
 msgstr "작동 중지"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "알수없는 GnomeVFSSeekPosition %d"

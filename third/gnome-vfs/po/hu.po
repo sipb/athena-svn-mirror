@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs gnome-vfs-1 branch\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-09-04 10:06+0200\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -301,7 +301,7 @@ msgstr "Ismeretlen munkattípus: %u"
 msgid "Operation stopped"
 msgstr "A mûvelet leállítva"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Ismeretlen GnomeVFSSeekPosition %d"

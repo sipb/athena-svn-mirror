@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-02-24 11:22+0200\n"
 "Last-Translator: Marius Andreiana <mandreiana@yahoo.com>\n"
 "Language-Team: Românã <ro@li.org>\n"
@@ -301,7 +301,7 @@ msgstr "ID activitate necunoscut %u"
 msgid "Operation stopped"
 msgstr "Operaþia opritã"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "GnomeVFSSeekPosition %d necunoscut"

@@ -123,7 +123,7 @@ typedef struct {
 
 	/* This is only valid if `is_local' is TRUE (see below).  */
 	dev_t device;
-	ino_t inode;
+	guint inode;
 
 	/* Link count.  */
 	guint link_count;

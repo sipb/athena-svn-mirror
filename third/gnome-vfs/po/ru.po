@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-01-23 17:55+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -299,7 +299,7 @@ msgstr "Неизвестный идентификатор задания %u"
 msgid "Operation stopped"
 msgstr "Действие остановлено"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Неизвестная GnomeVFSSeekPosition %d"

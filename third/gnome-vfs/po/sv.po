@@ -3,12 +3,12 @@
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000-2001.
 # Christian Rose <menthos@menthos.com>, 2000-2001.
 #
-# $Id: sv.po,v 1.1.1.4 2002-02-12 23:53:03 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5 2002-12-19 15:12:10 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-11-05 00:53+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -302,7 +302,7 @@ msgstr "Okänd jobbtyp %u"
 msgid "Operation stopped"
 msgstr "Operationen stoppad"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Okänd GnomeVFSSeekPosition %d"

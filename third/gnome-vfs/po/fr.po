@@ -1,13 +1,13 @@
 # gnome-vfs fr.po
-# Copyright (C) 1999-2001 Free Software Foundation, Inc.
+# Copyright (C) 1999-2002 Free Software Foundation, Inc.
 # Vincent Renardias <vincent@ldsol.com>, 1999-2000.
-# maintainer: Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
+# maintainer: Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs 1.0.3\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
-"PO-Revision-Date: 2001-10-25 22:34+0200\n"
+"Project-Id-Version: gnome-vfs 1.0.4\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
+"PO-Revision-Date: 2002-01-29 09:24+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -300,7 +300,7 @@ msgstr "Type de job %u inconnu"
 msgid "Operation stopped"
 msgstr "Opération stoppée"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "GnomeVFSSeekPosition %d inconnue"
@@ -903,7 +903,7 @@ msgstr "GnomeVFSSeekPosition %d inconnue"
 #~ msgstr "Document texte enrichi"
 
 #~ msgid "folder"
-#~ msgstr "Répertoire"
+#~ msgstr "dossier"
 
 #~ msgid "gtar archive"
 #~ msgstr "Archive gtar"

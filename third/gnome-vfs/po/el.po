@@ -8,12 +8,13 @@
 # simos: 384 messages, 18Feb2001, two fuzzies.
 # simos: 405 messages, 27Feb2001, (rgmtsgpbea).
 # simos: 406 messages, 01Mar2001, (rgmtsgpbea).
-#
+# simos: 59 messages, 31Jan2002, split to gnome-mime-data.
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs 0.6.2\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
-"PO-Revision-Date: 2001-03-01 23:39:19+0900\n"
+"Project-Id-Version: gnome-vfs 1.0.4\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
+"PO-Revision-Date: 2002-01-31 20:25+0000\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -255,9 +256,8 @@ msgstr "Η αίτηση απαρχαιώνει τα δεδομένα της υπηρεσίας"
 
 #. GNOME_VFS_ERROR_PROTOCOL_ERROR
 #: libgnomevfs/gnome-vfs-result.c:78
-#, fuzzy
 msgid "Protocol error"
-msgstr "Κανένα σφάλμα"
+msgstr "Σφάλμα πρωτοκόλλου"
 
 #: libgnomevfs/gnome-vfs-result.c:141
 msgid "Unknown error"
@@ -307,7 +307,7 @@ msgstr "¶γνωστη είδος εργασίας %u"
 msgid "Operation stopped"
 msgstr "Η λειτουργία διακόπηκε"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "¶γνωστη GnomeVFSSeekPosition %d"

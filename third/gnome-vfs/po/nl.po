@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-vfs\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2000-07-18 21:23+0200\n"
 "Last-Translator: Mendel Mobach <mendel@mobach.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -300,7 +300,7 @@ msgstr "Onbekend proces ID %d"
 msgid "Operation stopped"
 msgstr "Operatie afgebroken"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Onbekende GnomeVFSSeekPosition %d"

@@ -578,7 +578,7 @@ vfs_module_init (const char *method_name, const char *args)
 	
 	if (load_settings (PREFIX "/etc/vfs/Test-conf.xml") == FALSE) {
 
-	  // FIXME: we probably shouldn't use printf to output the message
+	  /* FIXME: we probably shouldn't use printf to output the message */
 	  printf (_("Didn't find a valid settings file at %s\n"), 
 		  PREFIX "/etc/vfs/Test-conf.xml");
 	  properly_initialized = FALSE;

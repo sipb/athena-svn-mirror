@@ -1,3 +1,96 @@
+2002-02-23  Andy Hertzfeld  <andy@differnet.com>
+
+	* modules/nntp-method.c: (do_basic_command), (get_auth_info),
+	(get_files_from_newsgroup), (add_file_to_folder),
+	(do_get_file_info), (do_open_directory):
+	added password interrogation when necessary, using the standard
+	gnome-vfs facilities.  Also, added some checks to avoid crashing
+	with badly formed urls.
+	
+	* modules/default-modules.conf:
+	removed the "news" protocol variant since it's supposed to get the
+	servername from preferences; I'll put it back when that's implemented
+	
+2002-02-11  jacob berkman  <jacob@ximian.com>
+
+	* configure.in: remove checks for capplet things
+
+2002-02-10  Darin Adler  <darin@bentspoon.com>
+
+	* libgnomevfs/Makefile.am:
+	* modules/Makefile.am:
+	Define _FILE_OFFSET_BITS=64 and _LARGEFILE64_SOURCE,
+	so we get 64-bit file sizes.
+
+	* libgnomevfs/gnome-vfs-module-shared.c:
+	* modules/file-method.c:
+	Removed _LARGEFILE64_SOURCE defines in individual files
+	that are now redundant.
+
+	* libgnomevfs/gnome-vfs-file-info.h: Change the inode
+	number field to be guint, so it doesn't change based on
+	the flags controlling types in the system headers. I chose
+	guint assuming that it will match the size of inode_t
+	compiled into existing gnome-vfs-using programs.
+
+2002-01-30  Seth Nickell  <snickell@stanford.edu>
+
+	* acconfig.h:
+	* configure.in:
+	* libgnomevfs/libcharset/Makefile.am:
+	* libgnomevfs/libcharset/codeset.m4:
+	* libgnomevfs/libcharset/config.charset:
+	* libgnomevfs/libcharset/glibc21.m4:
+	* libgnomevfs/libcharset/libcharset.h:
+	* libgnomevfs/libcharset/localcharset.c:
+	(_gnome_vfs_locale_get_charset_aliases),
+	(_gnome_vfs_locale_charset):
+	* libgnomevfs/libcharset/ref-add.sin:
+	* libgnomevfs/libcharset/ref-del.sin:
+
+	Add libcharset, snatched from glib, which snatched
+	it from libiconv.
+
+	* libgnomevfs/Makefile.am:
+	* libgnomevfs/gnome-vfs-mime-info.c: (convert_with_iconv),
+	(get_charset), (locale_from_utf8), (context_add_key):
+
+	Steal some code from glib and improvise the rest ;-) When
+	reading the MIME database in convert it from UTF-8 into
+	the character set of the current locale.
+	
+2002-01-28  Darin Adler  <darin@bentspoon.com>
+
+	* modules/Makefile.am: Fix module flags. Patch from Remi Cohen-Scali
+	<remi@cohen-scali.com>.
+
+2002-01-28  Darin Adler  <darin@bentspoon.com>
+
+	* gnome-vfs.spec.in: Oops, one more thing to remove.
+
+2002-01-28  Darin Adler  <darin@bentspoon.com>
+
+	* gnome-vfs.spec.in: Patch from Roy-Magne Mo to fix spec file now
+	that gnome-mime-data is separate.
+
+2002-01-27  Anders Carlsson  <andersca@gnu.org>
+
+	* libgnomevfs/gnome-vfs-xfer.c (gnome_vfs_xfer_delete_items): Call
+	count_Items_and_size with move set to FALSE. Fixes #46777.
+	Approved by Seth Nickell.
+
+2002-01-22  jacob berkman  <jacob@ximian.com>
+
+	* man/:
+	* Makefile.am (SUBDIRS): 
+	* configure.in (AC_OUTPUT): remove man page
+
+2002-01-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomevfs/gnome-vfs-seekable.c: Use /* */ not // in comments.
+	* modules/extfs-method.c, modules/bzip2-method.c, gzip-method.c:
+	Same here too. From Tim Mooney <mooney@dogbert.cc.ndsu.nodak.edu>.
+	
 2002-01-20  Seth Nickell  <snickell@stanford.edu>
 
 	* configure.in: 

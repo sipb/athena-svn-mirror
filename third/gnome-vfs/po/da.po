@@ -13,7 +13,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs CVS\n"
-"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"POT-Creation-Date: 2002-03-15 12:46-0800\n"
 "PO-Revision-Date: 2001-10-28 19:46+02:00\n"
 "Last-Translator: Keld SImonsen <keld@dkuug.dk>\n"
 "Language-Team: Dansk/Danish <dansk@klid.dk>\n"
@@ -307,7 +307,7 @@ msgstr "Ukendt jobtype %u"
 msgid "Operation stopped"
 msgstr "Operation stoppet"
 
-#: modules/file-method.c:380
+#: modules/file-method.c:369
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Ukendt GnomeVFSSeekPosition %d"
