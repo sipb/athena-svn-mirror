@@ -229,7 +229,7 @@ tandem:
 
 # Amdahl UTS 2.1.5 (Richard.Richmond@bridge.bst.bls.com)
 uts215:
-	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \   
+	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
 	LIBS="-lsocket" RANLIB=echo \
 	ARFLAGS=rv AUX_OBJ=setenv.o NETGROUP=-DNO_NETGROUP TLI= all
 
@@ -610,7 +610,7 @@ TABLES	= -DHOSTS_DENY=\"/etc/hosts.deny\" -DHOSTS_ALLOW=\"/etc/hosts.allow\"
 # Paranoid mode implies hostname lookup. In order to disable hostname
 # lookups altogether, see the next section.
 
-PARANOID= -DPARANOID
+#PARANOID= -DPARANOID
 
 ########################################
 # Optional: turning off hostname lookups
