@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.6 1990-11-30 16:30:12 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.7 1990-12-04 17:31:07 mar Exp $
  */
 
 #include <stdio.h>
@@ -43,6 +43,7 @@
 #define UTMP "/etc/utmp"
 #define WTMP "/usr/adm/wtmp"
 #define QUOTA "/usr/ucb/quota"
+#define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 
 #define DEFAULTPATH "/srvd/patch:/usr/athena:/bin/athena:/usr/bin/X:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:."
 
@@ -238,7 +239,8 @@ char *display;
 	    return(msg);
 	}
 	strcpy(glist[0], errbuf);
-    }
+    } else
+      fprintf(stderr, "Warning: could not get any groups for you from Hesiod.\n");
 
     environment = (char **) malloc(MAXENVIRON * sizeof(char *));
     if (environment == NULL)
@@ -280,17 +282,23 @@ char *display;
     times[1].tv_usec = times[0].tv_usec;
     utimes(errbuf, times);
 
-    cp = glist[0];
-    for (i = 0; i < NGROUPS; i++) {
-	cp = index(cp, ':');
-	if (cp == NULL) break;
-	gids[i] = atoi(++cp);
-	cp = index(cp, ':');
-	if (cp++ == NULL) break;
+    if (glist && glist[0]) {
+	cp = glist[0];
+	for (i = 0; i < NGROUPS; i++) {
+	    cp = index(cp, ':');
+	    if (cp == NULL) break;
+	    gids[i] = atoi(++cp);
+	    cp = index(cp, ':');
+	    if (cp++ == NULL) break;
+	}
+	i++;
+	if (setgroups(i, gids))
+	  prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
+    } else {
+	gids[0] = pwd->pw_gid;
+	setgroups(1, gids);
     }
-    i++;
-    if (setgroups(i, gids))
-      prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
+
     if (setreuid(pwd->pw_uid, pwd->pw_uid))
       return(lose("Unable to set your user ID.\n"));
 
@@ -561,7 +569,7 @@ struct passwd *pwd;
 	pwd->pw_dir = malloc(strlen(buf)+1);
 	strcpy(pwd->pw_dir, buf);
 
-	i = stat(buf, &stb);
+	i = lstat(buf, &stb);
 	if (i == 0) {
 	    if (stb.st_mode & S_IFDIR) {
 		fprintf(stderr, "Warning - The temporary directory already exists.\n");
@@ -571,31 +579,30 @@ struct passwd *pwd;
 	  return("Error while retrieving status of temporary homedir.");
 
 	if (setreuid(ROOT, pwd->pw_uid) != 0)
-	  return("Error while setting owner on temporary home directory.");
+	  return("Error while setting user ID to make temporary home directory.");
+
+	if (mkdir(buf, TEMP_DIR_PERM))
+	  return("Error while creating temporary directory.");
 
 	attachhelp_state = -1;
 	switch (attachhelp_pid = fork()) {
 	case -1:
 	    fprintf(stderr, "Warning - could not fork to copy user prototype files into temporary directory.\n");
-	    mkdir(buf, TEMP_DIR_PERM);
 	    return (NULL);
 	case 0:
+	    /* redirect to /dev/null to make cp quiet */
 	    close(1);
 	    close(2);
 	    open("/dev/null", O_RDWR, 0);
 	    dup(1);
-	    execl("/bin/cp", "cp", "-r", "/usr/athena/lib/prototype_tmpuser", "/tmp", NULL);
+	    execl("/bin/cp", "cp", "-r", TMPDOTFILES, buf, NULL);
 	    fprintf(stderr, "Warning - could not copy user prototype files into temporary directory.\n");
-	    mkdir(buf, TEMP_DIR_PERM);
 	    _exit(-1);
 	default:
 	    break;
 	}
 	while (attachhelp_state == -1)
 	  sigpause(0);
-
-	if (rename("/tmp/prototype_user", buf))
-	  return("Unable to put temporary directory into place.  Try again.");
 
 	if (chmod(buf, TEMP_DIR_PERM))
 	  return("Could not change protections on temporary directory.");
