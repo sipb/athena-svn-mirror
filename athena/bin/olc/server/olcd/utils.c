@@ -16,11 +16,11 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v $
- *	$Author: tjcoppet $
+ *	$Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.3 1989-11-17 13:59:30 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.4 1990-01-03 23:44:03 raeburn Exp $";
 #endif
 
 
@@ -124,7 +124,7 @@ printf("==> %d %d\n",is_busy(k), !is_busy(k));
 }
 
 
-
+void
 get_list_info(k,data)
      KNUCKLE *k;
      LIST *data;
