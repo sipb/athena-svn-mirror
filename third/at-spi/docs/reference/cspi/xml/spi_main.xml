@@ -49,7 +49,7 @@ Connects to the accessibility registry and initializes the SPI.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 on success, otherwise an integer error code.
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 0 on success, otherwise an integer error code.  
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

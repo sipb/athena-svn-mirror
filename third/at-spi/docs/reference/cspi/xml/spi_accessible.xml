@@ -721,12 +721,10 @@ Query an <link linkend="Accessible">Accessible</link> object to for a named inte
   SPI_ROLE_APPLICATION,
   SPI_ROLE_AUTOCOMPLETE,
   SPI_ROLE_EDITBAR,
+  SPI_ROLE_EMBEDDED,
   SPI_ROLE_LAST_DEFINED
 } AccessibleRole;
 </programlisting>
-<para>
-<parameter>SPI_ROLE_LAST_DEFINED</parameter>: Used to determine the end of the role enumeration.
-</para>
 <para>
 Describes the role of an object
 </para>
@@ -1158,9 +1156,17 @@ SPI_ROLE_LAST_DEFINED is not necessarily an error.</para>
 </simpara></listitem>
 </varlistentry>
 <varlistentry>
+<term><literal>SPI_ROLE_EMBEDDED</literal></term>
+<listitem><simpara> The object is an embedded component container.  
+                    This role is a  "grouping" hint that the contained 
+                    objects share a context which is different from the 
+                    container in which this accessible is embedded.
+                    Uses: document embedding, "panel applets", etc.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
 <term><literal>SPI_ROLE_LAST_DEFINED</literal></term>
-<listitem><simpara>
-
+<listitem><simpara> Used to determine the end of the role enumeration.
 </simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
