@@ -10,7 +10,7 @@
  *	"mit-copyright.h".
  *
  *
- *	$Id: Imakefile,v 1.5 1992-07-06 17:03:38 epeisach Exp $
+ *	$Id: Imakefile,v 1.6 1994-08-14 17:00:50 cfields Exp $
  */
 
 .SUFFIXES: .el .elc
@@ -19,8 +19,8 @@ FORMSINSTDIR=/usr/athena/lib
 MACROINSTDIR=/usr/athena/lib/elisp
 
 BLANKFORMS= bulkpost.longform bulkpost.shortform
-EMACSMACROS= postit.el
-COMPILEDMACROS= postit.elc
+/* EMACSMACROS= /build/athena/bin/cal/misc/postit.el */
+/* COMPILEDMACROS= postit.elc */
 
 
 #ifndef _AIX
@@ -40,9 +40,9 @@ install:: all
 	for i in ${BLANKFORMS}; do \
 		(install -c $$i ${DESTDIR}${FORMSINSTDIR}/$$i); \
 	done
-	for i in ${EMACSMACROS} ${COMPILEDMACROS}; do \
-		(install -c $$i ${DESTDIR}${MACROINSTDIR}/$$i); \
-	done
+#	for i in ${EMACSMACROS} ${COMPILEDMACROS}; do \
+#		(install -c $$i ${DESTDIR}${MACROINSTDIR}/$$i); \
+#	done
 
 clean::
 	rm -f a.out core *.s *.o *~ *.PS *.err *.man *.otl *.aux *.elc
