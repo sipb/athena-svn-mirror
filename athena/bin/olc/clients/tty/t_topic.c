@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v $
- *	$Id: t_topic.c,v 1.11 1992-02-05 16:17:58 lwvanels Exp $
+ *	$Id: t_topic.c,v 1.12 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.11 1992-02-05 16:17:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.12 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -135,7 +135,7 @@ t_list_topics(Request, file, display)
       break;
 
     case ERROR:
-      fprintf(stderr,"Cannot list OLC topics\n");
+      fprintf(stderr,"Cannot list %s topics\n", OLC_SERVICE_NAME);
       status = ERROR;
       break;
 

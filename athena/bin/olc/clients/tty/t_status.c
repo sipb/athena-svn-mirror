@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.22 1992-01-10 19:57:56 lwvanels Exp $
+ *	$Id: t_status.c,v 1.23 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.22 1992-01-10 19:57:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.23 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -52,12 +52,12 @@ t_personal_status(Request,chart)
 
     case EMPTY_LIST:
       if(isme(Request))
-	printf("You are not doing anything in OLC.\n");
+	printf("You are not doing anything in %s.\n", OLC_SERVICE_NAME);
       else
-	printf("%s %s [%d] (%s@%s) is not doing anything in OLC.\n",
+	printf("%s %s [%d] (%s@%s) is not doing anything in %s.\n",
 	       cap(Request->target.title), Request->target.realname, 
 	       Request->target.instance, Request->target.username,
-	       Request->target.machine);
+	       Request->target.machine, OLC_SERVICE_NAME);
       break;
 
     case ERROR:
@@ -159,7 +159,7 @@ t_display_personal_status(Request,list,chart)
 		       list->user.instance, list->user.username,
 		       list->user.machine);
 
-	      printf("signed on to OLC!\n");
+	      printf("signed on to %s!\n", OLC_SERVICE_NAME);
 	    }
 	}
     }

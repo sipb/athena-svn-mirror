@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.17 1991-10-31 14:55:41 lwvanels Exp $
+ *	$Id: t_ask.c,v 1.18 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.17 1991-10-31 14:55:41 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.18 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -83,7 +83,8 @@ t_ask(Request,topic,q_file)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr,"You are not allowed to ask OLC questions.\n");
+      fprintf(stderr,"You are not allowed to ask %s questions.\n",
+	      OLC_SERVICE_NAME);
       fprintf(stderr,"Does defeat the purpose of things, doesn't it?\n");
       status = ERROR;
       if(OLC)

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v $
- *	$Id: t_consult.c,v 1.10 1990-11-14 14:56:20 lwvanels Exp $
+ *	$Id: t_consult.c,v 1.11 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.10 1990-11-14 14:56:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.11 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -53,7 +53,7 @@ t_sign_on(Request,flag,hold)
     { 
     case SUCCESS: 
       if(isme(Request))
-	printf("You have signed on to OLC.\n");
+	printf("You have signed on to %s.\n", OLC_SERVICE_NAME);
       else
 	printf("%s [%d] is signed on.  I hope you told him.\n",
 	       Request->target.username,Request->target.instance);
@@ -88,7 +88,8 @@ t_sign_on(Request,flag,hold)
 
     case ALREADY_CONNECTED: 
       if(isme(Request))
-	printf("You have signed on to OLC. You are already connected.\n");
+	printf("You have signed on to %s. You are already connected.\n",
+	       OLC_SERVICE_NAME);
       else
 	printf("%s [%d] is signed on and connected.\n",
 	        Request->target.username,Request->target.instance);
@@ -144,17 +145,18 @@ t_olc_off(Request)
   switch (status)
     {
     case SUCCESS:
-      printf("You have signed off of OLC.\n");
+      printf("You have signed off of %s.\n", OLC_SERVICE_NAME);
       break;
 
     case NOT_SIGNED_ON:
-      fprintf(stderr, "You are not signed on to OLC.\n");
+      fprintf(stderr, "You are not signed on to %s.\n", OLC_SERVICE_NAME);
       status = NO_ACTION;
       break;
 
     case CONNECTED:
       fprintf(stderr,
-              "You have signed off of OLC but you are still connected.\n");
+              "You have signed off of %s but you are still connected.\n",
+	      OLC_SERVICE_NAME);
       status = NO_ACTION;
       break;
 

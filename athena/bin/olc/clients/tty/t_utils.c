@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.35 1992-02-06 16:29:09 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.36 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.35 1992-02-06 16:29:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.36 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -313,7 +313,8 @@ handle_response(response, req)
     case NO_QUESTION:
       if(isme(req))
 	{
-	  fprintf(stderr,"You do not have a question in OLC.\n");
+	  fprintf(stderr,"You do not have a question in %s.\n",
+		  OLC_SERVICE_NAME);
 	  if(OLC)
 	    {
 	      printf("If you wish to ask another question, use %s again.\n",
@@ -379,7 +380,8 @@ handle_response(response, req)
 
     case ERROR_NAME_RESOLVE:
       fprintf(stderr, 
-	      "Unable to resolve name of OLC daemon host. Seek help.\n");
+	      "Unable to resolve name of %s daemon host. Seek help.\n",
+	      OLC_SERVICE_NAME);
       if(OLC)
 	exit(ERROR);
       else
@@ -397,7 +399,8 @@ handle_response(response, req)
       break;
 
     case ERROR_CONNECT:
-      fprintf(stderr,"Unable to connect to OLC daemon.  Please try ");
+      fprintf(stderr,"Unable to connect to the %s daemon.  Please try ",
+	      OLC_SERVICE_NAME);
       fprintf(stderr,"again later.\n");
       if(OLC)
 	exit(ERROR);

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *	$Id: t_connect.c,v 1.16 1992-02-06 16:50:33 lwvanels Exp $
+ *	$Id: t_connect.c,v 1.17 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.16 1992-02-06 16:50:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.17 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -133,7 +133,7 @@ t_forward(Request)
     case SUCCESS:
       printf("Question forwarded.  %s\n",
 	     (is_option (Request->options, OFF_OPT)
-	      ? "You have signed off OLC..."
+	      ? "You have signed off..."
 	      : ""));
 
       t_set_default_instance(Request);
@@ -148,9 +148,9 @@ t_forward(Request)
     case SIGNED_OFF:
       printf("Question forwarded.  ");
       if(is_option(Request->options, OFF_OPT))
-	printf("You have signed off OLC.\n");
+	printf("You have signed off %s.\n", OLC_SERVICE_NAME);
       else
-	printf("(You are not signed on to OLC.)\n");
+	printf("(You are not signed on to %s.)\n", OLC_SERVICE_NAME);
 
       t_set_default_instance(Request);
       status = SUCCESS;

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.13 1992-01-10 19:57:56 lwvanels Exp $
+ *	$Id: t_resolve.c,v 1.14 1992-02-06 17:06:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.13 1992-01-10 19:57:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.14 1992-02-06 17:06:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -88,7 +88,8 @@ t_done(Request,title,check)
 	      }
 	    printf("Using this command means that the consultant has satisfactorly answered\n");
 	    printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
-	    printf("and OLC will save your question until a consultant can answer it.  If you\n");
+	    printf("and %s will save your question until a consultant can answer it.  If you\n",
+                    OLC_SERVICE_NAME);
 	    printf("wish to withdraw your question, use the 'cancel' command.\n");
 	    buf[0] = '\0';
 	    get_prompted_input("Really done? [y/n] ", buf, LINE_SIZE,0);
@@ -107,7 +108,7 @@ t_done(Request,title,check)
 	case NOT_CONNECTED:
 	case NO_QUESTION:
 	  if(OLC) {
-	    printf("You do not have a question in OLC.\n");
+	    printf("You do not have a question in %s.\n", OLC_SERVICE_NAME);
 	    printf("Type \"ask\" to ask a question, or \"quit\" to quit.\n");
 	    return(NO_ACTION);
 	  }
@@ -130,9 +131,9 @@ t_done(Request,title,check)
     case SIGNED_OFF:
       printf("Question resolved. ");
       if(is_option(Request->options,OFF_OPT))
-	printf("You have signed off OLC.\n");
+	printf("You have signed off %s.\n", OLC_SERVICE_NAME);
       else
-	printf("You are signed off OLC.\n");
+	printf("You are signed off %s.\n", OLC_SERVICE_NAME);
 
       t_set_default_instance(Request);
       status = SUCCESS;
@@ -145,7 +146,7 @@ t_done(Request,title,check)
 
     case OK:
       printf("The consultant has been notified that you are finished with your question.\n");
-      printf("Thank you for using OLC!\n");
+      printf("Thank you for using %s!\n", OLC_SERVICE_NAME);
       if(OLC) {
 	exit(0);
       }
@@ -155,7 +156,8 @@ t_done(Request,title,check)
 
     case SUCCESS:
       if(isme(Request))
-	printf("Your question is resolved. Thank you for using OLC.\n");
+	printf("Your question is resolved. Thank you for using %s.\n",
+	       OLC_SERVICE_NAME);
       else
 	  printf("%s's [%d] question is resolved.\n",
 		 Request->target.username, Request->target.instance);
@@ -211,9 +213,10 @@ t_cancel(Request,title)
       if(OLC)
 	{
 	  printf("Using this command means that you want to withdraw your question. If you \n");
-	  printf("do not, OLC will store your question until a consultant can answer it.\n");
+	  printf("do not, %s will store your question until a consultant can answer it.\n",
+		OLC_SERVICE_NAME);
 	  printf("In that case, exit using the 'quit' command. If the consultant has\n");
-	  printf("satisfactorily answered your question, use the 'done' command to exit OLC.\n");
+	  printf("satisfactorily answered your question, use the 'done' command to exit %s.\n", OLC_SERVICE_NAME);
 	}
 
       buf[0] = '\0';
@@ -229,7 +232,7 @@ t_cancel(Request,title)
     case NOT_CONNECTED:
     case NO_QUESTION:
       if(OLC) {
-	printf("You do not have a question in OLC.\n");
+	printf("You do not have a question in %s.\n", OLC_SERVICE_NAME);
 	printf("Type \"ask\" to ask a question, or \"quit\" to quit.\n");
 	return(NO_ACTION);
       }
@@ -275,9 +278,9 @@ t_cancel(Request,title)
     case SIGNED_OFF:
       printf("Question cancelled.  ");
       if(is_option(Request->options,OFF_OPT))
-	printf("You have signed off OLC.\n");
+	printf("You have signed off %s.\n", OLC_SERVICE_NAME);
       else
-	printf("You are signed off OLC.\n");
+	printf("You are signed off %s.\n", OLC_SERVICE_NAME);
       
       t_set_default_instance(Request);
       status = SUCCESS;
