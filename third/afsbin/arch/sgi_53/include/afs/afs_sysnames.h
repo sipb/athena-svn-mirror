@@ -33,6 +33,9 @@
 #define SYS_NAME_ID_hp800_ux90		 409
 #define SYS_NAME_ID_hp700_ux100	 	 410
 #define SYS_NAME_ID_hp800_ux100	 	 411
+#define SYS_NAME_ID_hp700_ux101	 	 412
+#define SYS_NAME_ID_hp800_ux101	 	 413
+#define SYS_NAME_ID_hp_ux102	 	 414
 
 #define SYS_NAME_ID_mac2_51		 500	
 #define SYS_NAME_ID_mac_aux10		 501
@@ -43,6 +46,7 @@
 
 #define SYS_NAME_ID_rs_aix32		 701
 #define SYS_NAME_ID_rs_aix41		 702
+#define SYS_NAME_ID_rs_aix42		 703
 
 #define SYS_NAME_ID_rt_aix221		 800
 #define SYS_NAME_ID_rt_aos4		 802
@@ -76,12 +80,14 @@
 #define	SYS_NAME_ID_sgi_52		1102
 #define	SYS_NAME_ID_sgi_53		1103
 #define	SYS_NAME_ID_sgi_61		1104
+#define	SYS_NAME_ID_sgi_62		1105
 
 #define SYS_NAME_ID_alpha_osf1		1200
 #define SYS_NAME_ID_alpha_osf20		1201
 #define SYS_NAME_ID_alpha_osf30		1202
 #define SYS_NAME_ID_alpha_osf32		1203
 #define SYS_NAME_ID_alpha_osf32c	1204
+#define SYS_NAME_ID_alpha_dux40		1205
 
 #define SYS_NAME_ID_ncrx86_20		1300
 

@@ -1,4 +1,4 @@
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptserver.h,v 2.5 1993/11/08 21:17:25 vasilis Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptserver.h,v 2.6 1996/12/10 19:09:40 thakur Exp $ */
 /* $Source: /afs/transarc.com/project/fs/dev/afs/rcs/ptserver/RCS/ptserver.h,v $ */
 
 /* Copyright (C) 1989 Transarc Corporation - All rights reserved */
@@ -136,4 +136,10 @@ struct contentry {			/* continuation of entry */
 };
 
 #define	CROSS_CELL	1		/* Enable it by default */
+
+#if	!defined(PR_START)
+#define PR_START                0
+#define PR_RESTART              1
+#endif
+
 

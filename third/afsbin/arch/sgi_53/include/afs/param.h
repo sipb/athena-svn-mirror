@@ -59,6 +59,8 @@
 #define	DEBUG		1
 #endif /* KERNEL */
 
+#define AFS_EVENT_LOCK  1 /* osi_Sleep/osi_Wakeup use spinlock. */
+
 #ifndef CMSERVERPREF
 #define CMSERVERPREF
 #endif

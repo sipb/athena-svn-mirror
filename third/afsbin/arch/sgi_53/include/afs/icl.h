@@ -138,9 +138,13 @@ struct icl_log {
  *
  * Note that "tsize" and "rsize" are free variables!
  * I use rsize to determine correct alignment (and hence size).
+ * The #ifdef's start to get unwieldly when the 32 bit kernels for SGI 6.2 are
+ * factored in. So, I'm going to a single macro with a variable for sizeof long.
+ * User space programs need to set this based on the size of the kernel long.
+ * Defined in afs_call.c and venus/fstrace.c
  */
-#if defined(AFS_ALPHA_ENV) || defined(AFS_SGI61_ENV)
-/* long and pointer are 2 rsize words. */
+extern int icl_sizeofLong;
+
 #define ICL_SIZEHACK(t1, p1) \
     MACRO_BEGIN \
 	if ((t1) == ICL_TYPE_STRING) { \
@@ -152,25 +156,10 @@ struct icl_log {
 	else if ((t1) == ICL_TYPE_INT32) \
 	    tsize = 1; \
 	else \
-	    tsize = 2; \
+	    tsize = icl_sizeofLong; \
 	/* now add in the parameter */ \
 	rsize += tsize; \
     MACRO_END
-#else /* AFS_ALPHA_ENV */
-/* Default for everything being 32 bit ints. */
-#define ICL_SIZEHACK(t1, p1) \
-    MACRO_BEGIN \
-	if ((t1) == ICL_TYPE_STRING) { \
-	    tsize = (int)((unsigned)(strlen((char *)(p1)) + 4) >> 2); \
-	} else if ((t1) == ICL_TYPE_HYPER) \
-	    tsize = 2; \
-	else if ((t1) == ICL_TYPE_FID) \
-	    tsize = 4; \
-	else tsize = 1; \
-	/* now add in the parameter */ \
-	rsize += tsize; \
-    MACRO_END
-#endif /* AFS_ALPHA_ENV */
 
 /* log flags */
 #define ICL_LOGF_DELETED	1	/* freed */
@@ -234,7 +223,9 @@ struct icl_log {
 #else
 #define osi_copyinstr		copyinstr
 #endif
-extern struct icl_set *cm_iclSetp;
+extern struct icl_set *cm_iclSetp; /* standard icl trace */
+/* A separate icl set to collect long term debugging info. */
+extern struct icl_set *cm_iclLongTermSetp;
 #else
 #define	osi_Alloc		malloc
 #define	osi_Free(a,b)		free(a)

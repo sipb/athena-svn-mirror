@@ -4,14 +4,14 @@
  */
 /* Including ubik.p.h at beginning of ubik.h file. */
 
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ubik/RCS/ubik.p.h,v 2.9 1994/08/23 19:33:28 lws Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/ubik/RCS/ubik.p.h,v 2.14 1996/12/10 19:09:48 thakur Exp $ */
 /* $Source: /afs/transarc.com/project/fs/dev/afs/rcs/ubik/RCS/ubik.p.h,v $ */
 
 #ifndef UBIK_H
 #define UBIK_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlock = "$Header: /afs/transarc.com/project/fs/dev/afs/rcs/ubik/RCS/ubik.p.h,v 2.9 1994/08/23 19:33:28 lws Exp $";
+static char *rcsidlock = "$Header: /afs/transarc.com/project/fs/dev/afs/rcs/ubik/RCS/ubik.p.h,v 2.14 1996/12/10 19:09:48 thakur Exp $";
 #endif
 
 /*
@@ -73,6 +73,7 @@ static char *rcsidlock = "$Header: /afs/transarc.com/project/fs/dev/afs/rcs/ubik
 
 /* per-client structure for ubik */
 struct ubik_client {
+    short initializationState;		/* ubik client init state */
     short states[MAXSERVERS];		/* state bits */
     struct rx_connection *conns[MAXSERVERS];
 };
