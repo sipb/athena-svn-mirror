@@ -127,6 +127,7 @@ EOF
 		cp -p /srvd/etc/crontab.root.add /var/spool/cron/crontabs/root
 		cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
 		cp -p /srvd/etc/inetd.conf /etc/inetd.conf
+		cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
 		cp -p /srvd/etc/passwd.std /etc/passwd.local
 		cp -p /etc/passwd.local /etc/passwd
 		cp -p /srvd/etc/shadow.std /etc/shadow.local
@@ -196,6 +197,9 @@ EOF
 		/bin/rmdir /mit/*  >/dev/null
 		echo "done."					>/dev/console
 	fi
+        # Start Athena's inetd
+        /etc/athena/inetd &
+
 	echo "Editing /etc/motd..."				>/dev/console
 	awk '{ prev = $0 }; END { print prev }' /etc/athena/version > /tmp/t1
 	if [ "${PUBLIC}" != "true" ]; then
