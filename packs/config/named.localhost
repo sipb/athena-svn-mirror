@@ -14,3 +14,23 @@
 	IN	NS	w20ns.mit.edu.
 
 	IN	A	127.0.0.1
+
+; Old versions of named allow you to shove authoritative records into
+; the database in a primary file outside of the domain the primary
+; file is for.  We can exploit this bug to find the MIT name servers
+; if the root name servers are down, and to allow people to write
+; arbitrary authoritative records into /etc/named.local.  Newer
+; versions of named will ignore the following records and anything the
+; user is likely to put in named.local.
+mit.edu.		IN	NS	bitsy.mit.edu.
+mit.edu.		IN	NS	w20ns.mit.edu.
+mit.edu.		IN	NS	strawb.mit.edu.
+bitsy.mit.edu.		IN	A	18.72.0.3
+w20ns.mit.edu.		IN	A	18.70.0.160
+strawb.mit.edu.		IN	A	18.71.0.151
+18.in-addr.arpa.	IN	NS	bitsy.mit.edu.
+18.in-addr.arpa.	IN	NS	w20ns.mit.edu.
+18.in-addr.arpa.	IN	NS	strawb.mit.edu.
+
+$ORIGIN	.
+$INCLUDE /etc/named.local
