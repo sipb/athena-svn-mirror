@@ -9,14 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-07-29 23:14+0200\n"
 "PO-Revision-Date: 2004-07-29 23:30+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.2\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
@@ -109,7 +109,7 @@ msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3786
 msgid "Could not create the archive"
 msgstr "Ezin izan da artxiboa sortu"
 
@@ -185,7 +185,7 @@ msgstr "_Kopiatu"
 msgid "_Move"
 msgstr "_Mugitu"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4900
 msgid "Rename"
 msgstr "Berrizendatu"
 
@@ -193,7 +193,7 @@ msgstr "Berrizendatu"
 msgid "New archive name (without extension)"
 msgstr "Arxtiboaren izen berria (luzapenik gabe)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4905
 msgid "_Rename"
 msgstr "Be_rrizendatu"
 
@@ -203,7 +203,7 @@ msgid ""
 "permanently?"
 msgstr "Artxiboa ezin da zaborrera mugitu. Behin-betiko ezabatu nahi duzu?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4618
 msgid "Last Output"
 msgstr "Azken emaitza"
 
@@ -218,8 +218,8 @@ msgstr ""
 "Iñaki Larrañaga <dooteo@euskalgnu.org>"
 
 #. Create the application.
-#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:843
+#: src/window.c:1274 src/window.c:3085
 msgid "File Roller"
 msgstr "File Roller"
 
@@ -227,79 +227,78 @@ msgstr "File Roller"
 msgid "An archive manager for GNOME."
 msgstr "Artxibo kudeatzaile bat GNOMErako."
 
-#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
-#: src/dlg-add-folder.c:247
+#: src/dlg-add-files.c:92 src/dlg-add-files.c:99 src/dlg-add-folder.c:121
 #, c-format
 msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "Ez duzu \"%s\" karpetako fitxategiak irakurtzeko baimenik"
 
-#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-files.c:98 src/dlg-add-folder.c:127 src/window.c:1952
+#: src/window.c:1990
 msgid "Could not add the files to the archive"
 msgstr "Ezin izan dira fitxategiak artxibora gehitu"
 
-#: src/dlg-add-files.c:179
+#: src/dlg-add-files.c:155
 msgid "Add Files"
 msgstr "Gehitu fitxategiak"
 
-#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
+#: src/dlg-add-files.c:167 src/dlg-add-folder.c:299
 msgid "_Add only if newer"
 msgstr "_Gehitu soilik berriago bada"
 
-#: src/dlg-add-folder.c:309
+#: src/dlg-add-folder.c:287
 msgid "Add a Folder"
 msgstr "Gehitu karpeta bat"
 
-#: src/dlg-add-folder.c:322
+#: src/dlg-add-folder.c:300
 msgid "_Include subfolders"
 msgstr "_Barneratu azpikarpetak"
 
-#: src/dlg-add-folder.c:323
+#: src/dlg-add-folder.c:301
 msgid "Exclude folders that are symbolic lin_ks"
 msgstr "Baztertu este_ka sinbolikoak diren karpetak"
 
-#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
+#: src/dlg-add-folder.c:304 src/dlg-add-folder.c:309
 msgid "example: *.o; *.bak"
 msgstr "Adibidea: *.o, *.bak"
 
-#: src/dlg-add-folder.c:327
+#: src/dlg-add-folder.c:305
 msgid "_Include files:"
 msgstr "_Txertatu fitxategiak:"
 
-#: src/dlg-add-folder.c:332
+#: src/dlg-add-folder.c:310
 msgid "E_xclude files:"
 msgstr "Baztertu fit_xategiak:"
 
-#: src/dlg-add-folder.c:335
+#: src/dlg-add-folder.c:313
 msgid "_Load Options"
 msgstr "_Kargatu aukerak"
 
-#: src/dlg-add-folder.c:336
+#: src/dlg-add-folder.c:314
 msgid "Sa_ve Options"
 msgstr "_Gorde aukerak"
 
-#: src/dlg-add-folder.c:796
+#: src/dlg-add-folder.c:776
 msgid "Save Options"
 msgstr "Gorde aukerak"
 
-#: src/dlg-add-folder.c:797
+#: src/dlg-add-folder.c:777
 msgid "Options Name:"
 msgstr "Aukeren izena:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3787
+#: src/window.c:3943
 msgid "Archive type not supported."
 msgstr "Artxibo mota ez da ezagutzen."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4185
 msgid "Destination folder does not exist.  Do you want to create it?"
 msgstr "Helburu karpeta ez dago. Sortu nahi duzu?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4188
 msgid "Create _Folder"
 msgstr "Sortu _karpeta"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4205
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "Ezin izan da \"%s\" helburu karpeta sortu."
@@ -309,14 +308,13 @@ msgid "Archive not created"
 msgstr "Artxiboa ez da sortu"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4209 src/window.c:4229
 msgid "Extraction not performed"
 msgstr "Ateratzea ez da burutu"
 
 #: src/dlg-extract.c:216
 #, c-format
-msgid ""
-"You don't have the right permissions to extract archives in the folder \"%s\""
+msgid "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "Ez dituzu artxiboak \"%s\" karpetara ateratzeko baimen egokiak"
 
 #: src/dlg-extract.c:380
@@ -388,7 +386,7 @@ msgstr "%s-ren propietateak"
 msgid "Modified on:"
 msgstr "Aldatze-data:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:413
 msgid "%d %B %Y, %H:%M"
 msgstr "%Y %B %d, %H:%M"
 
@@ -432,8 +430,8 @@ msgid ""
 "current archive, and to decrypt files you extract from the current archive. "
 "When the archive is closed the password will be deleted.</i>"
 msgstr ""
-"<i><b>Oharra</b>: pasahitza oraingo artxibora gehitutako fitxategiak zifratu "
-"eta bertatik ateratakoak desenkriptatzeko erabiliko da. Artxiboa ixtean "
+"<i><b>Oharra</b>: pasahitza oraingo artxibora gehitutako fitxategiak "
+"zifratu eta bertatik ateratakoak desenkriptatzeko erabiliko da. Artxiboa ixtean "
 "pasahitza ezabatuko da.</i>"
 
 #: src/file_roller.glade.h:3
@@ -500,7 +498,7 @@ msgstr "Fitxategia gehitzen:"
 msgid "Removing file: "
 msgstr "Fitxategia ezabatzen:"
 
-#: src/fr-command-tar.c:451 src/window.c:1388
+#: src/fr-command-tar.c:451 src/window.c:1376
 msgid "Deleting files from archive"
 msgstr "Artxibotik fitxategiak ezabatzen"
 
@@ -729,7 +727,7 @@ msgstr "Pasa_hitza..."
 msgid "Specify a password for this archive"
 msgstr "Zehaztu pasahitza artxiboarentzat"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5012
 msgid "_Paste"
 msgstr "It_satsi"
 
@@ -885,58 +883,58 @@ msgstr "_Kokapenaren arabera"
 msgid "Sort file list by location"
 msgstr "Fitxategi-zerrenda kokapenaren arabera ordenatu"
 
-#: src/window.c:698
+#: src/window.c:686
 msgid "Folder"
 msgstr "Karpeta"
 
-#: src/window.c:863
+#: src/window.c:851
 msgid "[read only]"
 msgstr "[irakurtze soilekoa]"
 
-#: src/window.c:957
+#: src/window.c:945
 #, c-format
 msgid "%d file (%s)"
 msgid_plural "%d files (%s)"
 msgstr[0] "Fitxategi %d (%s)"
 msgstr[1] "%d fitxategi (%s)"
 
-#: src/window.c:962
+#: src/window.c:950
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "Fitxategi %d hautatua (%s)"
 msgstr[1] "%d fitxategi hautatuak (%s)"
 
-#: src/window.c:1385
+#: src/window.c:1373
 msgid "Reading archive"
 msgstr "Artxiboa irakurtzen"
 
-#: src/window.c:1391
+#: src/window.c:1379
 msgid "Adding files to archive"
 msgstr "Fitxategiak artxibora gehitzen"
 
-#: src/window.c:1394
+#: src/window.c:1382
 msgid "Extracting files from archive"
 msgstr "Fitxategiak artxibotik ateratzen"
 
-#: src/window.c:1397
+#: src/window.c:1385
 msgid "Testing archive"
 msgstr "Artxiboa probatzen"
 
-#: src/window.c:1400
+#: src/window.c:1388
 msgid "Getting the file list"
 msgstr "Fitxategi-zerrenda lortzen"
 
-#: src/window.c:1407
+#: src/window.c:1395
 msgid "wait please..."
 msgstr "itxaron mesedez..."
 
-#: src/window.c:1484
+#: src/window.c:1472
 #, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "Ezin izan da \"%s\" karpeta erakutsi"
 
-#: src/window.c:1543
+#: src/window.c:1531
 msgid ""
 "This archive is password protected.\n"
 "Please specify a password with the command: Edit->Password"
@@ -944,7 +942,7 @@ msgstr ""
 "Artxiboa pasahitzarekin babestua dago.\n"
 "Pasahitz bat zehaztu honako aginduarekin: Editatu->Pasahitza"
 
-#: src/window.c:1545
+#: src/window.c:1533
 msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
@@ -952,51 +950,51 @@ msgstr ""
 "Zehaztutako pasahitza ez da zuzena; mesedez zehatu pasahitz berri bat honako "
 "aginduarekin: Editatu->Pasahitza"
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1538
 msgid "Could not perform the operation"
 msgstr "Ezin izan da eragiketa burutu"
 
-#: src/window.c:1575
+#: src/window.c:1563
 msgid "An error occurred while extracting files."
 msgstr "Errorea gertatu da fitxategiak ateratzerakoan."
 
-#: src/window.c:1579
+#: src/window.c:1567
 msgid "An error occurred while loading the archive."
 msgstr "Errorea gertatu da artxiboa irakurtzerakoan."
 
-#: src/window.c:1583
+#: src/window.c:1571
 msgid "An error occurred while deleting files from the archive."
 msgstr "Errorea gertatu da artxibotik fitxategiak ezabatzerakoan."
 
-#: src/window.c:1587
+#: src/window.c:1575
 msgid "An error occurred while adding files to the archive."
 msgstr "Errorea gertatu da fitxategiak artxibora gehitzerakoan."
 
-#: src/window.c:1591
+#: src/window.c:1579
 msgid "An error occurred while testing archive."
 msgstr "Errorea gertatu da artxiboa probatzerakoan."
 
-#: src/window.c:1600
+#: src/window.c:1588
 msgid "Command not found."
 msgstr "Ez da komandoa aurkitu"
 
-#: src/window.c:1603
+#: src/window.c:1591
 msgid "Command exited abnormally."
 msgstr "Komandoa gaizki bukatu da."
 
-#: src/window.c:1732
+#: src/window.c:1720
 msgid "Test Result"
 msgstr "Probaren emaitza"
 
-#: src/window.c:1968
+#: src/window.c:1953
 msgid "You don't have the right permissions."
 msgstr "Ez dituzu baimen egokiak."
 
-#: src/window.c:2006
+#: src/window.c:1991
 msgid "You can't add an archive to itself."
 msgstr "Ezin duzu artxibo bat bere buruari gehitu."
 
-#: src/window.c:2203
+#: src/window.c:2175
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
@@ -1004,83 +1002,83 @@ msgstr ""
 "Fitxategi hau uneko artxibora gehitu ala artxibo berri bat bezala ireki nahi "
 "duzu?"
 
-#: src/window.c:2240
+#: src/window.c:2212
 msgid "Do you want to create a new archive with these files?"
 msgstr "Artxibo berri bat sortu nahi duzu fitxategi hauekin?"
 
-#: src/window.c:2243
+#: src/window.c:2215
 msgid "Create _Archive"
 msgstr "Sortu _artxiboa"
 
-#: src/window.c:2564
+#: src/window.c:2538
 msgid "Size"
 msgstr "Tamaina"
 
-#: src/window.c:2565
+#: src/window.c:2539
 msgid "Type"
 msgstr "Mota"
 
-#: src/window.c:2566
+#: src/window.c:2540
 msgid "Date Modified"
 msgstr "Aldatze-data"
 
-#: src/window.c:2567
+#: src/window.c:2541
 msgid "Location"
 msgstr "Kokapena"
 
-#: src/window.c:2574
+#: src/window.c:2548
 msgid "Name"
 msgstr "Izena"
 
-#: src/window.c:3031
+#: src/window.c:3005
 #, c-format
 msgid "Open '%s'"
 msgstr "Ireki '%s'"
 
-#: src/window.c:3350
+#: src/window.c:3324
 msgid "Go to the previous visited location"
 msgstr "Bisitatutako aurreko kokapenera joan"
 
-#: src/window.c:3358
+#: src/window.c:3332
 msgid "Go to the next visited location"
 msgstr "Bisitatutako hurrengo kokapenera joan"
 
-#: src/window.c:3366
+#: src/window.c:3340
 msgid "Go up one level"
 msgstr "Maila bat gora joan"
 
-#: src/window.c:3374
+#: src/window.c:3348
 msgid "Go to the home location"
 msgstr "Etxera joan"
 
 #. current location
-#: src/window.c:3393
+#: src/window.c:3367
 msgid "Location:"
 msgstr "Kokapena:"
 
-#: src/window.c:3904
+#: src/window.c:3878
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "Ezin dut \"%s\" ireki"
 
-#: src/window.c:3962
+#: src/window.c:3936
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "Ezin izan da \"%s\" artxiboa gorde"
 
-#: src/window.c:4856
+#: src/window.c:4832
 msgid "The new name is void."
 msgstr "Izen berria hutsa da."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4832 src/window.c:4836 src/window.c:4845
 msgid "Please use a different name."
 msgstr "Mesedez, erabil ezazu beste izen bat."
 
-#: src/window.c:4860
+#: src/window.c:4836
 msgid "The new name is equal to the old one."
 msgstr "Izen berria zaharraren berdina da."
 
-#: src/window.c:4869
+#: src/window.c:4845
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1091,35 +1089,35 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4901
 msgid "New folder name"
 msgstr "Karpeta berriaren izena"
 
-#: src/window.c:4925
+#: src/window.c:4901
 msgid "New file name"
 msgstr "Fitxategi berriaren izena"
 
-#: src/window.c:4946
+#: src/window.c:4922
 msgid "Could not rename the folder"
 msgstr "Ezin izan da karpeta berrizendatu"
 
-#: src/window.c:4946
+#: src/window.c:4922
 msgid "Could not rename the file"
 msgstr "Ezin izan da fitxategia berrizendatu"
 
-#: src/window.c:5031
+#: src/window.c:5007
 msgid "Paste Selection"
 msgstr "Itsati hautapena"
 
-#: src/window.c:5032
+#: src/window.c:5008
 msgid "Destination folder"
 msgstr "Helburu karpeta"
 
-#: src/window.c:5614
+#: src/window.c:5594
 msgid "Add files to an archive"
 msgstr "Gehitu fitxategiak artxibora"
 
-#: src/window.c:5641
+#: src/window.c:5621
 msgid "Extract archive"
 msgstr "Atera artxiboa"
 
@@ -1272,3 +1270,4 @@ msgstr "Atera artxiboa"
 
 #~ msgid "_Up"
 #~ msgstr "_Gora"
+

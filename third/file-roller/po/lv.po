@@ -5,13 +5,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: file-roller\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-09-03 19:15+0200\n"
 "PO-Revision-Date: 2004-09-03 23:38+0300\n"
 "Last-Translator: Edgars Jēkabsons <edgars@way.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: component/File_Roller_Component.server.in.in.h:1
 msgid "Create Archive..."
@@ -165,6 +165,7 @@ msgstr "Nevaru pārvietot arhīvu"
 #: src/actions.c:800
 msgid "Copy"
 msgstr "_Kopēt"
+""
 
 #: src/actions.c:800
 msgid "Move"
@@ -173,6 +174,7 @@ msgstr "Pārvietot"
 #: src/actions.c:805 src/ui.h:66
 msgid "_Copy"
 msgstr "_Kopēt"
+""
 
 #: src/actions.c:805
 msgid "_Move"
@@ -194,8 +196,7 @@ msgstr "_Pārdēvēt"
 msgid ""
 "The archive cannot be moved to the Trash. Do you want to delete it "
 "permanently?"
-msgstr ""
-"Arhīvu nav iespējams pārvietot uz Atkritumkasti. Vai to izdzēst pavisam?"
+msgstr "Arhīvu nav iespējams pārvietot uz Atkritumkasti. Vai to izdzēst pavisam?"
 
 #: src/actions.c:1219 src/window.c:4643
 msgid "Last Output"
@@ -207,8 +208,7 @@ msgstr "Nevarēju parādīt palīdzību"
 
 #: src/actions.c:1272
 msgid "translator_credits"
-msgstr ""
-"Artis Trops <hornet@navigator.lv>\n"
+msgstr "Artis Trops <hornet@navigator.lv>\n"
 "Edgars Jēkabsons <edgars@way.lv>"
 
 #. Create the application.
@@ -231,6 +231,7 @@ msgstr "Jums nav vajadzīgās atļaujas, lai nolasītu failus no mapes \"%s\""
 #: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
 msgid "Could not add the files to the archive"
 msgstr "Nevarēja pievienot failus arhīvam"
+""
 
 #: src/dlg-add-files.c:179
 msgid "Add Files"
@@ -243,6 +244,7 @@ msgstr "_Pievienot tikai, ja jaunāks"
 #: src/dlg-add-folder.c:309
 msgid "Add a Folder"
 msgstr "Pievienot Failus un Mapes"
+""
 
 #: src/dlg-add-folder.c:322
 msgid "_Include subfolders"
@@ -296,7 +298,8 @@ msgstr "Izveidot _Mapi"
 #: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
 #, c-format
 msgid "Could not create the destination folder: %s."
-msgstr "Nevarēju izveidot mērķa mapi: %s."
+msgstr ""
+"Nevarēju izveidot mērķa mapi: %s."
 
 #: src/dlg-batch-add.c:189
 msgid "Archive not created"
@@ -424,10 +427,9 @@ msgid ""
 "current archive, and to decrypt files you extract from the current archive. "
 "When the archive is closed the password will be deleted.</i>"
 msgstr ""
-"<i><b>Piezīme:</b> parole tiks lietota, lai šifrētu failus, kurus jūs "
-"pievienojat pašreizējam arhīvam,  un lai atšifrētu failus, kurus jūs "
-"atspiežat no pašreizējā arhīva. Kad arhīvs tiks aizvērts, parole tiks dzēsta."
-"</i>"
+"<i><b>Piezīme:</b> parole tiks lietota, lai šifrētu failus, kurus jūs pievienojat "
+"pašreizējam arhīvam,  un lai atšifrētu failus, kurus jūs atspiežat no "
+"pašreizējā arhīva. Kad arhīvs tiks aizvērts, parole tiks dzēsta.</i>"
 
 #: src/file_roller.glade.h:3
 msgid "A_vailable application:"
@@ -536,8 +538,7 @@ msgstr "ARCHIVE"
 
 #: src/main.c:64
 msgid "Add files asking the name of the archive and quit the program"
-msgstr ""
-"Pievienot failus, jautājot pēc arhīva nosaukuma, un iziet no programmas"
+msgstr "Pievienot failus, jautājot pēc arhīva nosaukuma, un iziet no programmas"
 
 #: src/main.c:68
 msgid "Extract archives to the specified folder and quit the program"
@@ -630,6 +631,7 @@ msgstr "Kopēt izvēlēto"
 #: src/ui.h:70
 msgid "Cop_y..."
 msgstr "_Kopēt"
+""
 
 #: src/ui.h:71
 msgid "Copy current archive to another folder"
@@ -888,18 +890,14 @@ msgid "[read only]"
 msgstr "[tikai lasāms]"
 
 #: src/window.c:957
-#, fuzzy, c-format
+#, c-format
 msgid "%d file (%s)"
-msgid_plural "%d files (%s)"
-msgstr[0] "%d fails (%s)"
-msgstr[1] "%d fails (%s)"
+msgstr "%d fails (%s)"
 
 #: src/window.c:962
-#, fuzzy, c-format
+#, c-format
 msgid "%d file selected (%s)"
-msgid_plural "%d files selected (%s)"
-msgstr[0] "%d fails izvēlēts (%s)"
-msgstr[1] "%d fails izvēlēts (%s)"
+msgstr "%d fails izvēlēts (%s)"
 
 #: src/window.c:1385
 msgid "Reading archive"
@@ -943,8 +941,7 @@ msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
 msgstr ""
-"Norādītā parole nav derīga, lūdzu norādiet jaunu paroli ar komandu: Rediģēt-"
-">Parole"
+"Norādītā parole nav derīga, lūdzu norādiet jaunu paroli ar komandu: Rediģēt->Parole"
 
 #: src/window.c:1550 src/window.c:2169
 msgid "Could not perform the operation"

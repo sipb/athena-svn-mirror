@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-08-02 19:32+0200\n"
 "PO-Revision-Date: 2004-08-02 19:42+0200\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -107,7 +107,7 @@ msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3786
 msgid "Could not create the archive"
 msgstr "Kan ikkje oppretta arkivet"
 
@@ -183,7 +183,7 @@ msgstr "_Kopier"
 msgid "_Move"
 msgstr "_Flytt"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4900
 msgid "Rename"
 msgstr "Gje nytt namn"
 
@@ -191,7 +191,7 @@ msgstr "Gje nytt namn"
 msgid "New archive name (without extension)"
 msgstr "Nytt arkivnamn (utan filending)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4905
 msgid "_Rename"
 msgstr "_Gje nytt namn"
 
@@ -199,10 +199,9 @@ msgstr "_Gje nytt namn"
 msgid ""
 "The archive cannot be moved to the Trash. Do you want to delete it "
 "permanently?"
-msgstr ""
-"Dette arkivet kan ikkje flyttast til papirkorga. Vil du sletta det permanent?"
+msgstr "Dette arkivet kan ikkje flyttast til papirkorga. Vil du sletta det permanent?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4618
 msgid "Last Output"
 msgstr "Sist skrive ut"
 
@@ -215,8 +214,8 @@ msgid "translator_credits"
 msgstr "Åsmund Skjæveland <aasmunds@fys.uio.no>"
 
 #. Create the application.
-#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:843
+#: src/window.c:1274 src/window.c:3085
 msgid "File Roller"
 msgstr "File Roller"
 
@@ -224,79 +223,78 @@ msgstr "File Roller"
 msgid "An archive manager for GNOME."
 msgstr "Ein arkivhandsamar for GNOME."
 
-#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
-#: src/dlg-add-folder.c:247
+#: src/dlg-add-files.c:92 src/dlg-add-files.c:99 src/dlg-add-folder.c:121
 #, c-format
 msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "Du har ikkje løyve til å lesa filer frå mappa «%s»"
 
-#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-files.c:98 src/dlg-add-folder.c:127 src/window.c:1952
+#: src/window.c:1990
 msgid "Could not add the files to the archive"
 msgstr "Kunne ikkje leggja filene til arkivet"
 
-#: src/dlg-add-files.c:179
+#: src/dlg-add-files.c:155
 msgid "Add Files"
 msgstr "Legg til filer"
 
-#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
+#: src/dlg-add-files.c:167 src/dlg-add-folder.c:299
 msgid "_Add only if newer"
 msgstr "_Legg til berre dersom nyare"
 
-#: src/dlg-add-folder.c:309
+#: src/dlg-add-folder.c:287
 msgid "Add a Folder"
 msgstr "Legg til ei mappe"
 
-#: src/dlg-add-folder.c:322
+#: src/dlg-add-folder.c:300
 msgid "_Include subfolders"
 msgstr "_Ta med undermapper"
 
-#: src/dlg-add-folder.c:323
+#: src/dlg-add-folder.c:301
 msgid "Exclude folders that are symbolic lin_ks"
 msgstr "_Ikkje ta med mapper som er symbolske lenkjer"
 
-#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
+#: src/dlg-add-folder.c:304 src/dlg-add-folder.c:309
 msgid "example: *.o; *.bak"
 msgstr "Døme: *.o; *.bak"
 
-#: src/dlg-add-folder.c:327
+#: src/dlg-add-folder.c:305
 msgid "_Include files:"
 msgstr "T_a med filer:"
 
-#: src/dlg-add-folder.c:332
+#: src/dlg-add-folder.c:310
 msgid "E_xclude files:"
 msgstr "Ikkje t_a med filer:"
 
-#: src/dlg-add-folder.c:335
+#: src/dlg-add-folder.c:313
 msgid "_Load Options"
 msgstr "Les _inn brukarval"
 
-#: src/dlg-add-folder.c:336
+#: src/dlg-add-folder.c:314
 msgid "Sa_ve Options"
 msgstr "_Lagra brukarval"
 
-#: src/dlg-add-folder.c:796
+#: src/dlg-add-folder.c:776
 msgid "Save Options"
 msgstr "Lagra brukarval"
 
-#: src/dlg-add-folder.c:797
+#: src/dlg-add-folder.c:777
 msgid "Options Name:"
 msgstr "Namn på brukarval:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3787
+#: src/window.c:3943
 msgid "Archive type not supported."
 msgstr "Arkivtypen er ikkje støtta."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4185
 msgid "Destination folder does not exist.  Do you want to create it?"
 msgstr "Målmappa finst ikkje. Vil du oppretta henne?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4188
 msgid "Create _Folder"
 msgstr "Lag _mappe"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4205
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "Kunne ikkje laga målkataogen: %s"
@@ -306,14 +304,13 @@ msgid "Archive not created"
 msgstr "Arkiv ikkje oppretta"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4209 src/window.c:4229
 msgid "Extraction not performed"
 msgstr "Utpakkinga vart ikkje utført"
 
 #: src/dlg-extract.c:216
 #, c-format
-msgid ""
-"You don't have the right permissions to extract archives in the folder \"%s\""
+msgid "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "Du har ikkje løyve til å pakka ut arkiv i mappa «%s»"
 
 #: src/dlg-extract.c:380
@@ -386,7 +383,7 @@ msgstr "Eigenskapar for %s"
 msgid "Modified on:"
 msgstr "Endra:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:413
 msgid "%d %B %Y, %H:%M"
 msgstr "%d %B %Y, %H.%M"
 
@@ -498,7 +495,7 @@ msgstr "Legg til fil:"
 msgid "Removing file: "
 msgstr "Fjernar fil:"
 
-#: src/fr-command-tar.c:451 src/window.c:1388
+#: src/fr-command-tar.c:451 src/window.c:1376
 msgid "Deleting files from archive"
 msgstr "Slettar filer frå arkivet"
 
@@ -557,8 +554,7 @@ msgstr "Spør etter målmappe, pakk ut arkivet og avslutt programmet"
 
 #: src/main.c:76
 msgid "Default folder to use for the '--add' and '--extract' commands"
-msgstr ""
-"Standard mappe som skal brukast til «--add»- og «--extract»-kommandoane"
+msgstr "Standard mappe som skal brukast til «--add»- og «--extract»-kommandoane"
 
 #: src/main.c:80
 msgid "Create destination folder without asking confirmation"
@@ -728,7 +724,7 @@ msgstr "_Passord..."
 msgid "Specify a password for this archive"
 msgstr "Oppgje eit passord for dette arkivet"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5012
 msgid "_Paste"
 msgstr "_Lim inn"
 
@@ -884,58 +880,58 @@ msgstr "etter _plassering"
 msgid "Sort file list by location"
 msgstr "Sorter fillista etter plassering"
 
-#: src/window.c:698
+#: src/window.c:686
 msgid "Folder"
 msgstr "Mappe"
 
-#: src/window.c:863
+#: src/window.c:851
 msgid "[read only]"
 msgstr "[berre lesing]"
 
-#: src/window.c:957
+#: src/window.c:945
 #, c-format
 msgid "%d file (%s)"
 msgid_plural "%d files (%s)"
 msgstr[0] "%d fil (%s)"
 msgstr[1] "%d filer (%s)"
 
-#: src/window.c:962
+#: src/window.c:950
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d fil vald (%s)"
 msgstr[1] "%d filer valde (%s)"
 
-#: src/window.c:1385
+#: src/window.c:1373
 msgid "Reading archive"
 msgstr "Les arkiv"
 
-#: src/window.c:1391
+#: src/window.c:1379
 msgid "Adding files to archive"
 msgstr "Legg til filer i arkivet"
 
-#: src/window.c:1394
+#: src/window.c:1382
 msgid "Extracting files from archive"
 msgstr "Pakkar ut filer frå arkivet"
 
-#: src/window.c:1397
+#: src/window.c:1385
 msgid "Testing archive"
 msgstr "Testar arkivet"
 
-#: src/window.c:1400
+#: src/window.c:1388
 msgid "Getting the file list"
 msgstr "Hentar fillista"
 
-#: src/window.c:1407
+#: src/window.c:1395
 msgid "wait please..."
 msgstr "vent litt ..."
 
-#: src/window.c:1484
+#: src/window.c:1472
 #, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "Kan ikkje visa mappa «%s»"
 
-#: src/window.c:1543
+#: src/window.c:1531
 msgid ""
 "This archive is password protected.\n"
 "Please specify a password with the command: Edit->Password"
@@ -943,7 +939,7 @@ msgstr ""
 "Arkivet er verna med eit passord.\n"
 "Oppgje eit passord ved å velja «Rediger -> Passord» på menylinja."
 
-#: src/window.c:1545
+#: src/window.c:1533
 msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
@@ -951,135 +947,135 @@ msgstr ""
 "Det oppgjevne passordet er feil. Oppgje eit nytt passord ved å velja "
 "«Rediger -> Passord» på menylinja."
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1538
 msgid "Could not perform the operation"
 msgstr "Kan ikkje utføra handlinga"
 
-#: src/window.c:1575
+#: src/window.c:1563
 msgid "An error occurred while extracting files."
 msgstr "Ein feil oppstod medan filer vart pakka ut."
 
-#: src/window.c:1579
+#: src/window.c:1567
 msgid "An error occurred while loading the archive."
 msgstr "Ein feil oppstod medan arkivet vart lese."
 
-#: src/window.c:1583
+#: src/window.c:1571
 msgid "An error occurred while deleting files from the archive."
 msgstr "Ein feil oppstod medan filert vart sletta frå arkivet."
 
-#: src/window.c:1587
+#: src/window.c:1575
 msgid "An error occurred while adding files to the archive."
 msgstr "Ein feil oppstod medan filer vart lagt til arkivet."
 
-#: src/window.c:1591
+#: src/window.c:1579
 msgid "An error occurred while testing archive."
 msgstr "Ein feil oppstod medan arkivet vart testa."
 
-#: src/window.c:1600
+#: src/window.c:1588
 msgid "Command not found."
 msgstr "Kommandoen finst ikkje."
 
-#: src/window.c:1603
+#: src/window.c:1591
 msgid "Command exited abnormally."
 msgstr "Kommandoen avslutta unormalt."
 
-#: src/window.c:1732
+#: src/window.c:1720
 msgid "Test Result"
 msgstr "Testresultat"
 
-#: src/window.c:1968
+#: src/window.c:1953
 msgid "You don't have the right permissions."
 msgstr "Du har ikkje dei naudsynte løyva."
 
-#: src/window.c:2006
+#: src/window.c:1991
 msgid "You can't add an archive to itself."
 msgstr "Du kan ikkje leggja eit arkiv inn i seg sjølv."
 
-#: src/window.c:2203
+#: src/window.c:2175
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
 msgstr ""
-"Vil du leggja denne fila til det opne arkivet, eller opna henne som eit nytt "
-"arkiv?"
+"Vil du leggja denne fila til det opne arkivet, eller opna henne som eit "
+"nytt arkiv?"
 
-#: src/window.c:2240
+#: src/window.c:2212
 msgid "Do you want to create a new archive with these files?"
 msgstr "Vil du laga eit nytt arkiv med desse filene?"
 
-#: src/window.c:2243
+#: src/window.c:2215
 msgid "Create _Archive"
 msgstr "Lag _arkiv"
 
-#: src/window.c:2564
+#: src/window.c:2538
 msgid "Size"
 msgstr "Storleik"
 
-#: src/window.c:2565
+#: src/window.c:2539
 msgid "Type"
 msgstr "Type"
 
-#: src/window.c:2566
+#: src/window.c:2540
 msgid "Date Modified"
 msgstr "Endringsdato"
 
-#: src/window.c:2567
+#: src/window.c:2541
 msgid "Location"
 msgstr "Plassering"
 
-#: src/window.c:2574
+#: src/window.c:2548
 msgid "Name"
 msgstr "Namn"
 
-#: src/window.c:3031
+#: src/window.c:3005
 #, c-format
 msgid "Open '%s'"
 msgstr "Opna «%s»"
 
-#: src/window.c:3350
+#: src/window.c:3324
 msgid "Go to the previous visited location"
 msgstr "Gå til den førre vitja staden"
 
-#: src/window.c:3358
+#: src/window.c:3332
 msgid "Go to the next visited location"
 msgstr "Gå til den neste vitja staden"
 
-#: src/window.c:3366
+#: src/window.c:3340
 msgid "Go up one level"
 msgstr "Gå opp eitt nivå"
 
-#: src/window.c:3374
+#: src/window.c:3348
 msgid "Go to the home location"
 msgstr "Gå til heimemappa"
 
 #. current location
-#: src/window.c:3393
+#: src/window.c:3367
 msgid "Location:"
 msgstr "Plassering:"
 
-#: src/window.c:3904
+#: src/window.c:3878
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "Kan ikkje opna «%s»"
 
-#: src/window.c:3962
+#: src/window.c:3936
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "Kan ikkje lagra arkivet «%s»"
 
-#: src/window.c:4856
+#: src/window.c:4832
 msgid "The new name is void."
 msgstr "Namnet er tomt."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4832 src/window.c:4836 src/window.c:4845
 msgid "Please use a different name."
 msgstr "Bruk eit anna namn."
 
-#: src/window.c:4860
+#: src/window.c:4836
 msgid "The new name is equal to the old one."
 msgstr "Det nye namnet er det same som det gamle."
 
-#: src/window.c:4869
+#: src/window.c:4845
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1090,34 +1086,35 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4901
 msgid "New folder name"
 msgstr "Nytt mappenamn"
 
-#: src/window.c:4925
+#: src/window.c:4901
 msgid "New file name"
 msgstr "Nytt filnamn"
 
-#: src/window.c:4946
+#: src/window.c:4922
 msgid "Could not rename the folder"
 msgstr "Kan ikkje gje mappa nytt namn"
 
-#: src/window.c:4946
+#: src/window.c:4922
 msgid "Could not rename the file"
 msgstr "Kan ikkje gje fila nytt namn"
 
-#: src/window.c:5031
+#: src/window.c:5007
 msgid "Paste Selection"
 msgstr "Lim inn utval"
 
-#: src/window.c:5032
+#: src/window.c:5008
 msgid "Destination folder"
 msgstr "Målmappe"
 
-#: src/window.c:5614
+#: src/window.c:5594
 msgid "Add files to an archive"
 msgstr "Legg til filer i eit arkiv"
 
-#: src/window.c:5641
+#: src/window.c:5621
 msgid "Extract archive"
 msgstr "Pakk ut arkiv"
+

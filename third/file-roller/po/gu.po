@@ -1,20 +1,21 @@
+# translation of file-roller.gnome-2-8.gu.po to Gujarati
 # translation of file-roller.HEAD.gu.po to Gujarati
 # Copyright (C) 2004 Free Software Foundation, Inc.
 # MagNet <magnet@magnet-i.com>, 2004.
 # Ankit Patel <ankit@redhat.com>, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: file-roller.HEAD.gu\n"
+"Project-Id-Version: file-roller.gnome-2-8.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
-"PO-Revision-Date: 2004-08-23 16:40+0530\n"
+"POT-Creation-Date: 2004-10-26 04:22+0200\n"
+"PO-Revision-Date: 2004-10-26 09:49+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "<magnet@magnet-i.com>\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n\n"
 "\n"
 "\n"
 "X-Generator: KBabel 1.3.1\n"
@@ -108,7 +109,7 @@ msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3820
 msgid "Could not create the archive"
 msgstr "પેટી બનાવી શકતી નથી"
 
@@ -184,7 +185,7 @@ msgstr "નકલ કરો (_C)"
 msgid "_Move"
 msgstr "ખસેડો (_M)"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4932
 msgid "Rename"
 msgstr "ફરીથી નામ આપો"
 
@@ -192,7 +193,7 @@ msgstr "ફરીથી નામ આપો"
 msgid "New archive name (without extension)"
 msgstr "પેટીનું નવું નામ (extension વગર)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4937
 msgid "_Rename"
 msgstr "ફરીથી નામ આપો (_R)"
 
@@ -202,7 +203,7 @@ msgid ""
 "permanently?"
 msgstr "પેટીને કચરા પેટીમાં લઇ જઇ શકાતી નથી. શું તમે તેને હંમેશ માટે દૂર કરવા માગો છો?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4651
 msgid "Last Output"
 msgstr "છેલ્લો આઉટપુટ"
 
@@ -214,7 +215,7 @@ msgstr "મદદ દેખાડી શકાઈ નથી"
 msgid "translator_credits"
 msgstr ""
 "નીરવ <nirav@magnet-i.com>\n"
-"અંકિત <ankit644@linux.net>\n"
+"અંકિત <ankit644@yahoo.com>\n"
 "અંકુર <ankur_surti@linux.net>\n"
 "અતિત <shahatit_84@linux.net>\n"
 "ભાવિન <bhavinshah@linux.net>\n"
@@ -224,7 +225,7 @@ msgstr ""
 
 #. Create the application.
 #: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/window.c:1286 src/window.c:3126
 msgid "File Roller"
 msgstr "ફાઇલ રોલર"
 
@@ -239,7 +240,7 @@ msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "તમારી પાસે \"%s\" ફાઇલો વાંચવાની સત્તા નથી"
 
 #: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-folder.c:253 src/window.c:1982 src/window.c:2020
 msgid "Could not add the files to the archive"
 msgstr "ફાઇલો પેટીમાં ઉમેરી શકાતી નથી"
 
@@ -291,20 +292,20 @@ msgstr "વિકલ્પો સંગ્રહિત કરો"
 msgid "Options Name:"
 msgstr "વિકલ્પનું નામ:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3821
+#: src/window.c:3977
 msgid "Archive type not supported."
 msgstr "પેટીનો પ્રકાર આધાર આપતો નથી."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4218
 msgid "Destination folder does not exist.  Do you want to create it?"
-msgstr "અંતિમ મુકામ માટેનુ ફાેલ્ડર અસ્તિત્વ ધરાવતુ નથી. શું તમે તેને બનાવવા માગો છો?"
+msgstr "અંતિમ મુકામ માટેનુ ફોલ્ડર અસ્તિત્વ ધરાવતુ નથી. શું તમે તેને બનાવવા માગો છો?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4221
 msgid "Create _Folder"
-msgstr "ફાેલ્ડર બનાવો (_F)"
+msgstr "ફોલ્ડર બનાવો (_F)"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4238
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "અંતિમ મુકામ માટેની ફાઇલ બનાવી શકાતી નથી: %s."
@@ -314,14 +315,13 @@ msgid "Archive not created"
 msgstr "પેટી બનેલી નથી"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4242 src/window.c:4262
 msgid "Extraction not performed"
 msgstr "અર્ક કાઢી શકાયો નહિં"
 
 #: src/dlg-extract.c:216
 #, c-format
-msgid ""
-"You don't have the right permissions to extract archives in the folder \"%s\""
+msgid "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "તમારી પાસે \"%s\" ફોલ્ડરમાં પેટીનો અર્ક કાઢવાની સાચી પરવાનગીઓ નથી"
 
 #: src/dlg-extract.c:380
@@ -393,7 +393,7 @@ msgstr "%s ગુણધર્મો"
 msgid "Modified on:"
 msgstr "આ વખતે સુધારાયેલ છે:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:426
 msgid "%d %B %Y, %H:%M"
 msgstr "%d %B %Y, %H:%M"
 
@@ -554,12 +554,11 @@ msgstr "પેટીનો સ્પષ્ટ કરેલા ફોલ્ડર
 
 #: src/main.c:69 src/main.c:77
 msgid "FOLDER"
-msgstr "ફાેલ્ડર"
+msgstr "ફોલ્ડર"
 
 #: src/main.c:72
 msgid "Extract archives asking the destination folder and quit the program"
-msgstr ""
-"પેટી નો અર્ક કાઢતી વખતે અંતિમ મુકામના ફોલ્ડરનું નામ પૂછો અને કાર્યક્રમની બહાર નીકડી જાઓ"
+msgstr "પેટી નો અર્ક કાઢતી વખતે અંતિમ મુકામના ફોલ્ડરનું નામ પૂછો અને કાર્યક્રમની બહાર નીકડી જાઓ"
 
 #: src/main.c:76
 msgid "Default folder to use for the '--add' and '--extract' commands"
@@ -667,7 +666,7 @@ msgstr "કચરાપેટીમાં લઇ જાઓ (_T)"
 
 #: src/ui.h:83
 msgid "Move current archive to trash"
-msgstr "વર્તમાન પેટીને કતરાપેટીમાં લઇ જાઓ"
+msgstr "વર્તમાન પેટીને કચરાપેટીમાં લઇ જાઓ"
 
 #: src/ui.h:86
 msgid "Dese_lect All"
@@ -733,7 +732,7 @@ msgstr "પાસવર્ડ (_w)..."
 msgid "Specify a password for this archive"
 msgstr "આ પેટી માટે પાસવર્ડ સ્પષ્ટ કરો"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5044
 msgid "_Paste"
 msgstr "ચોંટાડો (_P)"
 
@@ -835,7 +834,7 @@ msgstr "સ્થિતિદર્શક પટ્ટીને જુઓ"
 
 #: src/ui.h:189
 msgid "_Reversed Order"
-msgstr "ઉલટાે ક્રમ (_R)"
+msgstr "ઉલટો ક્રમ (_R)"
 
 #: src/ui.h:190
 msgid "Reverse the list order"
@@ -847,7 +846,7 @@ msgstr "બધી ફાઇલો જુઓ (_F)"
 
 #: src/ui.h:202
 msgid "View as a F_older"
-msgstr "ફાેલ્ડર તરીકે જુઓ (_o)"
+msgstr "ફોલ્ડર તરીકે જુઓ (_o)"
 
 #: src/ui.h:210
 msgid "by _Name"
@@ -889,7 +888,7 @@ msgstr "સ્થાન પ્રમાણે (_L)"
 msgid "Sort file list by location"
 msgstr "સ્થાન પ્રમાણે ફાઇલની યાદીને ક્રમમાં ગોઠવો"
 
-#: src/window.c:698
+#: src/window.c:703
 msgid "Folder"
 msgstr "ફોલ્ડર"
 
@@ -956,7 +955,7 @@ msgstr ""
 "સ્પષ્ટ કરેલ પાસવર્ડ માન્ય નથી.\n"
 "મહેરબાની કરીને પાસવર્ડ આ આદેશથી સ્પષ્ટ કરો: Edit->Password"
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1550 src/window.c:2184
 msgid "Could not perform the operation"
 msgstr "પ્રક્રિયા થઈ શકી નહિ"
 
@@ -992,98 +991,97 @@ msgstr "આદેશ અસામાન્ય રીતે બહાર ની�
 msgid "Test Result"
 msgstr "પરિણામ ચકાસો"
 
-#: src/window.c:1968
+#: src/window.c:1983
 msgid "You don't have the right permissions."
 msgstr "તમારી પાસે તે કરવા માટે ખરી પરવાનગીઓ નથી."
 
-#: src/window.c:2006
+#: src/window.c:2021
 msgid "You can't add an archive to itself."
 msgstr "એક પેટીમાં બીજી પેટી ઉમેરી શકાય નહિં."
 
-#: src/window.c:2203
+#: src/window.c:2218
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
-msgstr ""
-"શું તમે આ ફાઇલને વર્તમાન પેટીમાં ઉમેરવા માગો છો કે પછી તેને નવી પેટી તરીકે બનાવવા માગે છો?"
+msgstr "શું તમે આ ફાઇલને વર્તમાન પેટીમાં ઉમેરવા માગો છો કે પછી તેને નવી પેટી તરીકે બનાવવા માગે છો?"
 
-#: src/window.c:2240
+#: src/window.c:2255
 msgid "Do you want to create a new archive with these files?"
-msgstr "શંુ તમે આ ફાઇલો માટે નવી પેટી બનાવવા માગે છો?"
+msgstr "શું તમે આ ફાઇલો માટે નવી પેટી બનાવવા માગે છો?"
 
-#: src/window.c:2243
+#: src/window.c:2258
 msgid "Create _Archive"
 msgstr "પેટી બનાવો (_A)"
 
-#: src/window.c:2564
+#: src/window.c:2579
 msgid "Size"
 msgstr "માપ"
 
-#: src/window.c:2565
+#: src/window.c:2580
 msgid "Type"
 msgstr "પ્રકાર"
 
-#: src/window.c:2566
+#: src/window.c:2581
 msgid "Date Modified"
 msgstr "તારીખ બદલાયેલ છે"
 
-#: src/window.c:2567
+#: src/window.c:2582
 msgid "Location"
 msgstr "સ્થાન"
 
-#: src/window.c:2574
+#: src/window.c:2589
 msgid "Name"
 msgstr "નામ"
 
-#: src/window.c:3031
+#: src/window.c:3046
 #, c-format
 msgid "Open '%s'"
 msgstr "'%s' ને ખોલો"
 
-#: src/window.c:3350
+#: src/window.c:3359
 msgid "Go to the previous visited location"
 msgstr "પહેલાની મુલાકાત લીધેલ સ્થાને જાઓ"
 
-#: src/window.c:3358
+#: src/window.c:3367
 msgid "Go to the next visited location"
 msgstr "પછીના મુલાકાત લીધેલ સ્થાને જાઓ"
 
-#: src/window.c:3366
+#: src/window.c:3375
 msgid "Go up one level"
 msgstr "એક સ્તર ઉપર જાઓ"
 
-#: src/window.c:3374
+#: src/window.c:3383
 msgid "Go to the home location"
 msgstr "ઘરના સ્થાને જાઓ"
 
 #. current location
-#: src/window.c:3393
+#: src/window.c:3402
 msgid "Location:"
 msgstr "સ્થાન:"
 
-#: src/window.c:3904
+#: src/window.c:3912
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "\"%s\" ખોલી શકાયુ નથી"
 
-#: src/window.c:3962
+#: src/window.c:3970
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "પેટી \"%s\" નો સંગ્રહ કરી શકાયો નથી"
 
-#: src/window.c:4856
+#: src/window.c:4864
 msgid "The new name is void."
 msgstr "નવુ નામ વંચિત છે."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4864 src/window.c:4868 src/window.c:4877
 msgid "Please use a different name."
 msgstr "મહેરબાની કરીને અલગ નામ વાપરો."
 
-#: src/window.c:4860
+#: src/window.c:4868
 msgid "The new name is equal to the old one."
 msgstr "નવુ નામ જૂના નામને બરાબર છે."
 
-#: src/window.c:4869
+#: src/window.c:4877
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1094,34 +1092,35 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4933
 msgid "New folder name"
 msgstr "ફોલ્ડરનુ નવુ નામ"
 
-#: src/window.c:4925
+#: src/window.c:4933
 msgid "New file name"
 msgstr "ફાઈલનુ નવુ નામ"
 
-#: src/window.c:4946
+#: src/window.c:4954
 msgid "Could not rename the folder"
 msgstr "ફોલ્ડરને ફરીથી નામ આપી શકાયુ નથી"
 
-#: src/window.c:4946
+#: src/window.c:4954
 msgid "Could not rename the file"
 msgstr "ફાઈલને ફરીથી નામ આપી શકાયુ નથી"
 
-#: src/window.c:5031
+#: src/window.c:5039
 msgid "Paste Selection"
 msgstr "પસંદગીને ચોંટાડો"
 
-#: src/window.c:5032
+#: src/window.c:5040
 msgid "Destination folder"
 msgstr "અંતિમ મુકામ માટેનુ ફોલ્ડર"
 
-#: src/window.c:5614
+#: src/window.c:5581
 msgid "Add files to an archive"
 msgstr "પેટીમાં ફાઇલો ઉમેરો"
 
-#: src/window.c:5641
+#: src/window.c:5608
 msgid "Extract archive"
 msgstr "પેટીનો અર્ક કાઢવો"
+

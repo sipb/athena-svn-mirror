@@ -13,15 +13,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: file-roller.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-08-20 11:14+0200\n"
 "PO-Revision-Date: 2004-08-26 14:30+0300\n"
 "Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.3.1\n"
 
@@ -114,7 +113,7 @@ msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3800
 msgid "Could not create the archive"
 msgstr "Не удалось создать архив"
 
@@ -190,7 +189,7 @@ msgstr "С_копировать"
 msgid "_Move"
 msgstr "Пере_местить"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4912
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -198,7 +197,7 @@ msgstr "Переименовать"
 msgid "New archive name (without extension)"
 msgstr "Новое имя (без расширения)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4917
 msgid "_Rename"
 msgstr "Пере_именовать"
 
@@ -210,7 +209,7 @@ msgstr ""
 "Архив не может быть перемещен в мусорную корзину.  Хотите удалить уго "
 "навсегда?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4631
 msgid "Last Output"
 msgstr "Журнал сообщений"
 
@@ -227,8 +226,8 @@ msgstr ""
 "Андрей Носенко <awn@bcs.zp.ua>"
 
 #. Create the application.
-#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:843
+#: src/window.c:1274 src/window.c:3099
 msgid "File Roller"
 msgstr "\"Файл Роллер\""
 
@@ -243,7 +242,7 @@ msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "Недостаточно прав для чтения файлов из каталога  \"%s\""
 
 #: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-folder.c:253 src/window.c:1955 src/window.c:1993
 msgid "Could not add the files to the archive"
 msgstr "Не удалось добавить файлы в архив"
 
@@ -295,20 +294,20 @@ msgstr "Сохранить параметры"
 msgid "Options Name:"
 msgstr "Имя файла:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3801
+#: src/window.c:3957
 msgid "Archive type not supported."
 msgstr "Тип архива не поддерживается."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4198
 msgid "Destination folder does not exist.  Do you want to create it?"
 msgstr "Целевая папка не существует. Создать её?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4201
 msgid "Create _Folder"
 msgstr "Создать _папку"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4218
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "Не удалость создать целевую папку: %s."
@@ -318,14 +317,13 @@ msgid "Archive not created"
 msgstr "Архив не создан"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4222 src/window.c:4242
 msgid "Extraction not performed"
 msgstr "Распаковка не состоялась"
 
 #: src/dlg-extract.c:216
 #, c-format
-msgid ""
-"You don't have the right permissions to extract archives in the folder \"%s\""
+msgid "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "Недостаточно прав для распаковки архивов в папку  \"%s\""
 
 #: src/dlg-extract.c:380
@@ -397,7 +395,7 @@ msgstr "Свойства архива \"%s\""
 msgid "Modified on:"
 msgstr "Модифицирован:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:413
 msgid "%d %B %Y, %H:%M"
 msgstr "%d %B %Y, %H:%M"
 
@@ -509,7 +507,7 @@ msgstr "Добавляется файл: "
 msgid "Removing file: "
 msgstr "Удаляется файл: "
 
-#: src/fr-command-tar.c:451 src/window.c:1388
+#: src/fr-command-tar.c:451 src/window.c:1376
 msgid "Deleting files from archive"
 msgstr "Удаляются файлы из архива"
 
@@ -738,7 +736,7 @@ msgstr "_Пароль..."
 msgid "Specify a password for this archive"
 msgstr "Укажите пароль для этого архива"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5024
 msgid "_Paste"
 msgstr "Вст_авить"
 
@@ -894,15 +892,15 @@ msgstr "по _местоположению"
 msgid "Sort file list by location"
 msgstr "Сортировать список файлов по каталогу расположения файлов"
 
-#: src/window.c:698
+#: src/window.c:686
 msgid "Folder"
 msgstr "Каталог"
 
-#: src/window.c:863
+#: src/window.c:851
 msgid "[read only]"
 msgstr "[только для чтения]"
 
-#: src/window.c:957
+#: src/window.c:945
 #, c-format
 msgid "%d file (%s)"
 msgid_plural "%d files (%s)"
@@ -910,7 +908,7 @@ msgstr[0] "%d файл (%s)"
 msgstr[1] "%d файла (%s)"
 msgstr[2] "%d файлов (%s)"
 
-#: src/window.c:962
+#: src/window.c:950
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
@@ -918,36 +916,36 @@ msgstr[0] "%d файл выбран (%s)"
 msgstr[1] "%d файла выбрано (%s)"
 msgstr[2] "%d файлов выбрано (%s)"
 
-#: src/window.c:1385
+#: src/window.c:1373
 msgid "Reading archive"
 msgstr "Читается архив"
 
-#: src/window.c:1391
+#: src/window.c:1379
 msgid "Adding files to archive"
 msgstr "Добавляются файлы в архив"
 
-#: src/window.c:1394
+#: src/window.c:1382
 msgid "Extracting files from archive"
 msgstr "Распаковываются файлы из архива"
 
-#: src/window.c:1397
+#: src/window.c:1385
 msgid "Testing archive"
 msgstr "Проверяется архив"
 
-#: src/window.c:1400
+#: src/window.c:1388
 msgid "Getting the file list"
 msgstr "Извлекается список файлов"
 
-#: src/window.c:1407
+#: src/window.c:1395
 msgid "wait please..."
 msgstr "подождите, пожалуйста..."
 
-#: src/window.c:1484
+#: src/window.c:1472
 #, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "Невозможно показать папку \"%s\""
 
-#: src/window.c:1543
+#: src/window.c:1531
 msgid ""
 "This archive is password protected.\n"
 "Please specify a password with the command: Edit->Password"
@@ -955,7 +953,7 @@ msgstr ""
 "Этот архив защищён паролем.\n"
 "Укажите пароль с помощью пункта меню: Правка->Пароль"
 
-#: src/window.c:1545
+#: src/window.c:1533
 msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
@@ -963,133 +961,133 @@ msgstr ""
 "Введённый пароль неверен, укажите новый пароль с помощью пункта меню: Правка-"
 ">Пароль"
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1538 src/window.c:2157
 msgid "Could not perform the operation"
 msgstr "Не удалось выполнить операцию"
 
-#: src/window.c:1575
+#: src/window.c:1563
 msgid "An error occurred while extracting files."
 msgstr "Во время распаковки файлов произошла ошибка."
 
-#: src/window.c:1579
+#: src/window.c:1567
 msgid "An error occurred while loading the archive."
 msgstr "Во время чтения архива произошла ошибка."
 
-#: src/window.c:1583
+#: src/window.c:1571
 msgid "An error occurred while deleting files from the archive."
 msgstr "Во время удаления файлов из архива произошла ошибка."
 
-#: src/window.c:1587
+#: src/window.c:1575
 msgid "An error occurred while adding files to the archive."
 msgstr "Во время добавления файлов в архив произошла ошибка."
 
-#: src/window.c:1591
+#: src/window.c:1579
 msgid "An error occurred while testing archive."
 msgstr "Во время проверки архива произошла ошибка."
 
-#: src/window.c:1600
+#: src/window.c:1588
 msgid "Command not found."
 msgstr "Требуемая программа не найдена."
 
-#: src/window.c:1603
+#: src/window.c:1591
 msgid "Command exited abnormally."
 msgstr "Работа программы завершилась некорректно."
 
-#: src/window.c:1732
+#: src/window.c:1720
 msgid "Test Result"
 msgstr "Результаты проверки"
 
-#: src/window.c:1968
+#: src/window.c:1956
 msgid "You don't have the right permissions."
 msgstr "Недостаточно прав."
 
-#: src/window.c:2006
+#: src/window.c:1994
 msgid "You can't add an archive to itself."
 msgstr "Невозможно поместить архив внутрь самого себя."
 
-#: src/window.c:2203
+#: src/window.c:2191
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
 msgstr "Добавить этот файл в текущий архив или открыть его как новый?"
 
-#: src/window.c:2240
+#: src/window.c:2228
 msgid "Do you want to create a new archive with these files?"
 msgstr "Создать новый архив и добавить в него выбранные файлы?"
 
-#: src/window.c:2243
+#: src/window.c:2231
 msgid "Create _Archive"
 msgstr "Создать _архив"
 
-#: src/window.c:2564
+#: src/window.c:2552
 msgid "Size"
 msgstr "Размер"
 
-#: src/window.c:2565
+#: src/window.c:2553
 msgid "Type"
 msgstr "Тип"
 
-#: src/window.c:2566
+#: src/window.c:2554
 msgid "Date Modified"
 msgstr "Дата изменения"
 
-#: src/window.c:2567
+#: src/window.c:2555
 msgid "Location"
 msgstr "Местоположение"
 
-#: src/window.c:2574
+#: src/window.c:2562
 msgid "Name"
 msgstr "Имя"
 
-#: src/window.c:3031
+#: src/window.c:3019
 #, c-format
 msgid "Open '%s'"
 msgstr "Открыть '%s'"
 
-#: src/window.c:3350
+#: src/window.c:3338
 msgid "Go to the previous visited location"
 msgstr "Перейти к посещённому ранее местоположению"
 
-#: src/window.c:3358
+#: src/window.c:3346
 msgid "Go to the next visited location"
 msgstr "Перейти к следующему посещённому местоположению"
 
-#: src/window.c:3366
+#: src/window.c:3354
 msgid "Go up one level"
 msgstr "Перейти на один уровень вверх"
 
-#: src/window.c:3374
+#: src/window.c:3362
 msgid "Go to the home location"
 msgstr "Перейти к домашнему каталогу"
 
 #. current location
-#: src/window.c:3393
+#: src/window.c:3381
 msgid "Location:"
 msgstr "Местоположение:"
 
-#: src/window.c:3904
+#: src/window.c:3892
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "Не удалось открыть \"%s\""
 
-#: src/window.c:3962
+#: src/window.c:3950
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "Не удалось сохранить архив \"%s\""
 
-#: src/window.c:4856
+#: src/window.c:4844
 msgid "The new name is void."
 msgstr "Новое имя пустое."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4844 src/window.c:4848 src/window.c:4857
 msgid "Please use a different name."
 msgstr "Используйте другое имя."
 
-#: src/window.c:4860
+#: src/window.c:4848
 msgid "The new name is equal to the old one."
 msgstr "Новое имя такое же, как и старое."
 
-#: src/window.c:4869
+#: src/window.c:4857
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1100,34 +1098,35 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4913
 msgid "New folder name"
 msgstr "Новое имя папки"
 
-#: src/window.c:4925
+#: src/window.c:4913
 msgid "New file name"
 msgstr "Новое имя файла"
 
-#: src/window.c:4946
+#: src/window.c:4934
 msgid "Could not rename the folder"
 msgstr "Не удалось переименовать папку"
 
-#: src/window.c:4946
+#: src/window.c:4934
 msgid "Could not rename the file"
 msgstr "Не удалось переименовать файл"
 
-#: src/window.c:5031
+#: src/window.c:5019
 msgid "Paste Selection"
 msgstr "Вставить выделенные элементы"
 
-#: src/window.c:5032
+#: src/window.c:5020
 msgid "Destination folder"
 msgstr "Целевой каталог"
 
-#: src/window.c:5614
+#: src/window.c:5602
 msgid "Add files to an archive"
 msgstr "Добавить файлы в архив"
 
-#: src/window.c:5641
+#: src/window.c:5629
 msgid "Extract archive"
 msgstr "Распаковать архив"
+

@@ -1,3 +1,70 @@
+2005-02-14  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	[ File Roller 2.8.4 released ]
+
+2004-10-20  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	[ File Roller 2.8.3 released ]
+
+	* src/fr-archive.c (fr_archive_extract, compute_base_path): 
+
+	Fixed extraction without folders recreation.
+
+2004-10-11  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	[ File Roller 2.8.2 released ] 
+
+2004-09-28  Christopher Aillon  <caillon@cvs.gnome.org>
+
+	* file-roller.desktop.in: use %F in Exec to avoid opening
+	remote files in nautilus.
+
+2004-09-29  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	[ File Roller 2.8.1 released ] 
+
+	* src/window.c (window_view_or_open_file): open the "open with"
+	dialog if there is no registered command.
+
+2004-09-25  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	* src/window.c (window_close): 
+	* src/window.h: empty store hack removed.
+
+2004-09-24  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	* src/file-utils.c (application_get_command): do not escape spaces
+	here.
+
+	* src/window.c (update_file_list_idle): restore the timeout
+	correctly.
+	(window_view_or_open_file): use the default application instead of
+	the default action.
+	(view_file): if we are here it's better to use the internal viewer.
+
+	* src/file_roller.glade: 
+	* src/dlg-batch-add.c (dlg_batch_add_files): make the WM give
+	focus to the 'create archive' dialog.
+
+2004-09-21  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	* src/window.c (default_sort_func): return 0 instead of 1
+
+	Fixes bug #151113  - crash trying to open zip file for extraction
+	Patch by ed AT catmur.co.uk
+
+2004-09-20  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	* src/window.c (window_new, update_file_list_idle): 
+	* src/window.h: Remove and restore the timeout each
+	time.  See bugs #152347 and #151113.
+
+2004-09-16  Kaushal Kumar  <kaushal.kumar@wipro.com>
+
+	* src/window.c (get_file_list_from_url_list): Handle multiple 
+	drag and drop correctly. Accept all valid urls and ignore the 
+	invalid ones. Fixes bug #152900.
+
 2004-09-13  Paolo Bacchilega  <paobac@cvs.gnome.org>
 
 	[ File Roller 2.8.0 released ] 

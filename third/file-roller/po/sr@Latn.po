@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: file-roller 2.5.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-06-20 23:47+0200\n"
 "PO-Revision-Date: 2004-06-20 23:50+0200\n"
 "Last-Translator: Slobodan Sredojević <ssl@uns.ns.ac.yu>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
@@ -108,7 +108,7 @@ msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3791
 msgid "Could not create the archive"
 msgstr "Nisam mogao da napravim arhivu"
 
@@ -184,7 +184,7 @@ msgstr "_Umnoži"
 msgid "_Move"
 msgstr "Pre_mesti"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4905
 msgid "Rename"
 msgstr "Preimenuj"
 
@@ -192,7 +192,7 @@ msgstr "Preimenuj"
 msgid "New archive name (without extension)"
 msgstr "Novo ime arhive (bez nastavka)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4910
 msgid "_Rename"
 msgstr "Preimenu_j"
 
@@ -202,7 +202,7 @@ msgid ""
 "permanently?"
 msgstr "Ne mogu da prebacim arhivu u smeće. Želite li da je trajno uklonite?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4623
 msgid "Last Output"
 msgstr "Detaljan ispis"
 
@@ -219,8 +219,8 @@ msgstr ""
 "http://prevod.org/"
 
 #. Create the application.
-#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:843
+#: src/window.c:1266 src/window.c:3090
 msgid "File Roller"
 msgstr "File Roller"
 
@@ -228,80 +228,79 @@ msgstr "File Roller"
 msgid "An archive manager for GNOME."
 msgstr "Alat za rad sa arhivama za Gnom okruženje"
 
-#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
-#: src/dlg-add-folder.c:247
+#: src/dlg-add-files.c:92 src/dlg-add-files.c:99 src/dlg-add-folder.c:121
+#: src/dlg-add-folder.c:128
 #, c-format
 msgid "You don't have the right permissions to read files from folder \"%s\""
-msgstr ""
-"Nemate odgovarajuća ovlašćenja da čitate datoteke iz „%s“ direktorijuma"
+msgstr "Nemate odgovarajuća ovlašćenja da čitate datoteke iz „%s“ direktorijuma"
 
-#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-files.c:98 src/dlg-add-folder.c:127 src/window.c:1957
+#: src/window.c:1995
 msgid "Could not add the files to the archive"
 msgstr "Nisam mogao da dodam datoteke u arhivu"
 
-#: src/dlg-add-files.c:179
+#: src/dlg-add-files.c:155
 msgid "Add Files"
 msgstr "Dodaj datoteke"
 
-#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
+#: src/dlg-add-files.c:167 src/dlg-add-folder.c:298
 msgid "_Add only if newer"
 msgstr "Dodaj samo ako je novi_ja"
 
-#: src/dlg-add-folder.c:309
+#: src/dlg-add-folder.c:286
 msgid "Add a Folder"
 msgstr "Dodaj direktorijum"
 
-#: src/dlg-add-folder.c:322
+#: src/dlg-add-folder.c:299
 msgid "_Include subfolders"
 msgstr "_Obuhvati pod-direktorijume"
 
-#: src/dlg-add-folder.c:323
+#: src/dlg-add-folder.c:300
 msgid "Exclude folders that are symbolic lin_ks"
 msgstr "Izuzmi direktorijume koji predstavljaju simbo_ličke veze"
 
-#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
+#: src/dlg-add-folder.c:303 src/dlg-add-folder.c:308
 msgid "example: *.o; *.bak"
 msgstr "Primer: *.o; *.bak"
 
-#: src/dlg-add-folder.c:327
+#: src/dlg-add-folder.c:304
 msgid "_Include files:"
 msgstr "Obu_hvati datoteke:"
 
-#: src/dlg-add-folder.c:332
+#: src/dlg-add-folder.c:309
 msgid "E_xclude files:"
 msgstr "Izu_zmi datoteke:"
 
-#: src/dlg-add-folder.c:335
+#: src/dlg-add-folder.c:312
 msgid "_Load Options"
 msgstr "Učitaj pod_ešavanja"
 
-#: src/dlg-add-folder.c:336
+#: src/dlg-add-folder.c:313
 msgid "Sa_ve Options"
 msgstr "Saču_vaj podešavanja"
 
-#: src/dlg-add-folder.c:796
+#: src/dlg-add-folder.c:775
 msgid "Save Options"
 msgstr "Čuvanje podešavanja"
 
-#: src/dlg-add-folder.c:797
+#: src/dlg-add-folder.c:776
 msgid "Options Name:"
 msgstr "Ime datoteke:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3792
+#: src/window.c:3948
 msgid "Archive type not supported."
 msgstr "Vrsta arhive nije podržana."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4190
 msgid "Destination folder does not exist.  Do you want to create it?"
 msgstr "Odredišno stablo ne postoji. Da li želite da ga obrazujete?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4193
 msgid "Create _Folder"
 msgstr "Napravi _direktorijum"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4210
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "Nisam mogao da napravim odredišni direktorijum: %s."
@@ -311,7 +310,7 @@ msgid "Archive not created"
 msgstr "Arhiva nije napravljena"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4214 src/window.c:4234
 msgid "Extraction not performed"
 msgstr "Raspakivanje nije izvedeno"
 
@@ -390,7 +389,7 @@ msgstr "%s Osobine"
 msgid "Modified on:"
 msgstr "Poslednja izmena:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:413
 msgid "%d %B %Y, %H:%M"
 msgstr "%d. %B %Y, %H:%M"
 
@@ -495,27 +494,27 @@ msgstr "_Arhiva:"
 msgid "The file does not exist."
 msgstr "Datoteka ne postoji."
 
-#: src/fr-command-tar.c:396
+#: src/fr-command-tar.c:384
 msgid "Adding file: "
 msgstr "Dodajem datoteku: "
 
-#: src/fr-command-tar.c:442
+#: src/fr-command-tar.c:430
 msgid "Removing file: "
 msgstr "Uklanjam datoteku: "
 
-#: src/fr-command-tar.c:451 src/window.c:1388
+#: src/fr-command-tar.c:439 src/window.c:1368
 msgid "Deleting files from archive"
 msgstr "Brisanje datoteka iz arhive"
 
-#: src/fr-command-tar.c:484
+#: src/fr-command-tar.c:472
 msgid "Extracting file: "
 msgstr "Raspakujem datoteku: "
 
-#: src/fr-command-tar.c:529
+#: src/fr-command-tar.c:517
 msgid "Recompressing archive"
 msgstr "Ponovo sažimam arhivu"
 
-#: src/fr-command-tar.c:663
+#: src/fr-command-tar.c:651
 msgid "Decompressing archive"
 msgstr "Od-sažima arhivu"
 
@@ -733,7 +732,7 @@ msgstr "_Lozinka..."
 msgid "Specify a password for this archive"
 msgstr "Navedite lozinku za ovu arhivu"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5017
 msgid "_Paste"
 msgstr "U_baci"
 
@@ -889,15 +888,15 @@ msgstr "po _putanji"
 msgid "Sort file list by location"
 msgstr "Poređaj spisak datoteka po putanji"
 
-#: src/window.c:698
+#: src/window.c:686
 msgid "Folder"
 msgstr "Direktorijum"
 
-#: src/window.c:863
+#: src/window.c:851
 msgid "[read only]"
 msgstr "[samo za čitanje]"
 
-#: src/window.c:957
+#: src/window.c:945
 #, c-format
 msgid "%d file (%s)"
 msgid_plural "%d files (%s)"
@@ -905,7 +904,7 @@ msgstr[0] "%d datoteka (%s)"
 msgstr[1] "%d datoteke (%s)"
 msgstr[2] "%d datoteka (%s)"
 
-#: src/window.c:962
+#: src/window.c:950
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
@@ -913,36 +912,36 @@ msgstr[0] "%d datoteka izabrana (%s)"
 msgstr[1] "%d datoteke izabrane (%s)"
 msgstr[2] "%d datoteka izabrano (%s)"
 
-#: src/window.c:1385
+#: src/window.c:1365
 msgid "Reading archive"
 msgstr "Učitavam arhivu"
 
-#: src/window.c:1391
+#: src/window.c:1371
 msgid "Adding files to archive"
 msgstr "Dodavanje datoteka u arhivu"
 
-#: src/window.c:1394
+#: src/window.c:1374
 msgid "Extracting files from archive"
 msgstr "Raspakivanje datoteka iz arhive"
 
-#: src/window.c:1397
+#: src/window.c:1377
 msgid "Testing archive"
 msgstr "Isprobavam arhivu"
 
-#: src/window.c:1400
+#: src/window.c:1380
 msgid "Getting the file list"
 msgstr "Učitavam spisak datoteka"
 
-#: src/window.c:1407
+#: src/window.c:1387
 msgid "wait please..."
 msgstr "molim sačekajte..."
 
-#: src/window.c:1484
+#: src/window.c:1464
 #, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "Nisam mogao da prikažem direktorijum „%s“"
 
-#: src/window.c:1543
+#: src/window.c:1523
 msgid ""
 "This archive is password protected.\n"
 "Please specify a password with the command: Edit->Password"
@@ -950,7 +949,7 @@ msgstr ""
 "Ova arhiva je zaštićena lozinkom.\n"
 "Navedite lozinku pomoću naredbe: Uređivanje->Lozinka"
 
-#: src/window.c:1545
+#: src/window.c:1525
 msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
@@ -958,51 +957,55 @@ msgstr ""
 "Data lozinka nije ispravna, molim navedite novu lozinku pomoću naredbe: "
 "Uređivanje->Lozinka"
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1530
 msgid "Could not perform the operation"
 msgstr "Nisam mogao da izvedem radnju"
 
-#: src/window.c:1575
+#: src/window.c:1546
+msgid "Operation stopped"
+msgstr "Radnja je prekinuta"
+
+#: src/window.c:1568
 msgid "An error occurred while extracting files."
 msgstr "Dogodila se greška prilikom raspakivanja."
 
-#: src/window.c:1579
+#: src/window.c:1572
 msgid "An error occurred while loading the archive."
 msgstr "Dogodila se greška prilikom učitavanja arhive."
 
-#: src/window.c:1583
+#: src/window.c:1576
 msgid "An error occurred while deleting files from the archive."
 msgstr "Dogodila se greška prilikom uklanjanja datoteka iz arhive."
 
-#: src/window.c:1587
+#: src/window.c:1580
 msgid "An error occurred while adding files to the archive."
 msgstr "Dogodila se greška prilikom dodavanja datoteka u arhivu."
 
-#: src/window.c:1591
+#: src/window.c:1584
 msgid "An error occurred while testing archive."
 msgstr "Dogodila se greška prilikom ispitivanja arhive."
 
-#: src/window.c:1600
+#: src/window.c:1593
 msgid "Command not found."
 msgstr "Naredba nije pronađena."
 
-#: src/window.c:1603
+#: src/window.c:1596
 msgid "Command exited abnormally."
 msgstr "Naredba je prekinuta neočekivano."
 
-#: src/window.c:1732
+#: src/window.c:1725
 msgid "Test Result"
 msgstr "Rezultat provere"
 
-#: src/window.c:1968
+#: src/window.c:1958
 msgid "You don't have the right permissions."
 msgstr "Nemate odgovarajuća ovlašćenja."
 
-#: src/window.c:2006
+#: src/window.c:1996
 msgid "You can't add an archive to itself."
 msgstr "Ne možete dodati arhivu u samu sebe."
 
-#: src/window.c:2203
+#: src/window.c:2180
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
@@ -1010,84 +1013,84 @@ msgstr ""
 "Da li želite da dodate ovu datoteku u već otvorenu arhivu ili da napravite "
 "novu arhivu?"
 
-#: src/window.c:2240
+#: src/window.c:2217
 msgid "Do you want to create a new archive with these files?"
 msgstr "Da li želite da napravite novu arhivu sa ovim datotekama?"
 
-#: src/window.c:2243
+#: src/window.c:2220
 msgid "Create _Archive"
 msgstr "Napravi _arhivu"
 
-#: src/window.c:2564
+#: src/window.c:2543
 msgid "Size"
 msgstr "Veličina"
 
-#: src/window.c:2565
+#: src/window.c:2544
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/window.c:2566
+#: src/window.c:2545
 msgid "Date Modified"
 msgstr "Datum izmene"
 
-#: src/window.c:2567
+#: src/window.c:2546
 msgid "Location"
 msgstr "Putanja"
 
-#: src/window.c:2574
+#: src/window.c:2553
 msgid "Name"
 msgstr "Ime"
 
-#: src/window.c:3031
+#: src/window.c:3010
 #, c-format
 msgid "Open '%s'"
 msgstr "Otvori „%s“"
 
-#: src/window.c:3350
+#: src/window.c:3329
 msgid "Go to the previous visited location"
 msgstr "Idi na prethodno posećenu putanju"
 
-#: src/window.c:3358
+#: src/window.c:3337
 msgid "Go to the next visited location"
 msgstr "Idi na sledeće posećenu putanju"
 
-#: src/window.c:3366
+#: src/window.c:3345
 msgid "Go up one level"
 msgstr "Idi jedan nivo iznad"
 
-#: src/window.c:3374
+#: src/window.c:3353
 msgid "Go to the home location"
 msgstr "Idi na početnu putanju"
 
 #. current location
-#: src/window.c:3393
+#: src/window.c:3372
 msgid "Location:"
 msgstr "Putanja:"
 
-#: src/window.c:3904
+#: src/window.c:3883
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "Nisam mogao da otvorim „%s“"
 
-#: src/window.c:3962
+#: src/window.c:3941
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "Nisam mogao da sačuvam arhivu „%s“"
 
 # Ili „je prazno“?
-#: src/window.c:4856
+#: src/window.c:4837
 msgid "The new name is void."
 msgstr "Novo ime nije dozvoljeno."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4837 src/window.c:4841 src/window.c:4850
 msgid "Please use a different name."
 msgstr "Koristite neko drugo ime."
 
-#: src/window.c:4860
+#: src/window.c:4841
 msgid "The new name is equal to the old one."
 msgstr "Novo ime je isto kao i staro."
 
-#: src/window.c:4869
+#: src/window.c:4850
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1098,40 +1101,37 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4906
 msgid "New folder name"
 msgstr "Novo ime direktorijuma"
 
-#: src/window.c:4925
+#: src/window.c:4906
 msgid "New file name"
 msgstr "Novo ime datoteke"
 
-#: src/window.c:4946
+#: src/window.c:4927
 msgid "Could not rename the folder"
 msgstr "Ne mogu da preimenujem direktorijum"
 
-#: src/window.c:4946
+#: src/window.c:4927
 msgid "Could not rename the file"
 msgstr "Ne mogu da preimenujem datoteku"
 
-#: src/window.c:5031
+#: src/window.c:5012
 msgid "Paste Selection"
 msgstr "Ubaci izabrano"
 
-#: src/window.c:5032
+#: src/window.c:5013
 msgid "Destination folder"
 msgstr "Odredište"
 
-#: src/window.c:5614
+#: src/window.c:5599
 msgid "Add files to an archive"
 msgstr "Dodaj datoteke u arhivu"
 
-#: src/window.c:5641
+#: src/window.c:5626
 msgid "Extract archive"
 msgstr "Raspakuj arhivu"
-
-#~ msgid "Operation stopped"
-#~ msgstr "Radnja je prekinuta"
 
 #~ msgid "File size:"
 #~ msgstr "Veličina datoteke:"

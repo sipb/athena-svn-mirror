@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: th\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-09-12 23:24+0700\n"
 "PO-Revision-Date: 2004-09-12 23:48+0700\n"
 "Last-Translator: Supranee Thirawatthanasuk <supranee@opentle.org>\n"
 "Language-Team: Thai <l10n>\n"
@@ -330,8 +330,7 @@ msgstr "ไม่สามารถทำการแตกแฟ้มได้
 
 #: src/dlg-extract.c:216
 #, c-format
-msgid ""
-"You don't have the right permissions to extract archives in the folder \"%s\""
+msgid "You don't have the right permissions to extract archives in the folder \"%s\""
 msgstr "คุณไม่ได้รับสิทธิ์ในการแตกแฟ้มจากแฟ้มจัดเก็บลงในโฟลเดอร์ \"%s\""
 
 #: src/dlg-extract.c:380
@@ -1139,3 +1138,4 @@ msgstr "เพิ่มแฟ้มลงในแฟ้มจัดเก็บ
 #: src/window.c:5641
 msgid "Extract archive"
 msgstr "แตกแฟ้มออกจากแฟ้มจัดเก็บ"
+
