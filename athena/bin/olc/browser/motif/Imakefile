@@ -7,8 +7,8 @@
 # For copying and distribution information, see the file "mit-copyright.h".
 #
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v $
-#       $Author: lwvanels $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.7 1991-06-30 13:47:37 lwvanels Exp $
+#       $Author: cfields $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.8 1996-08-10 21:29:28 cfields Exp $
 #
 
 SRCS		=	main.c callbacks.c MriRegAll.c
@@ -16,7 +16,11 @@ OBJS		=	main.o callbacks.o MriRegAll.o
 
 SYS_LIBS   	=	$(MotifWCLLib) $(MotifUtilLib) \
 			$(MotifLib) $(MotifToolLib) $(XLib)
-INCLUDES	=	-I/mit/motif/include
+#ifdef sgi
+INCLUDES	=	$(RandomIncludes)
+#else
+INCLUDES	=	-I/mit/motif/include $(RandomIncludes)
+#endif
 
 #if DoUsageLog
 LOCAL_LIBS = $(LOGGERLIB)
