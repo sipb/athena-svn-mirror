@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.1 1999-02-04 17:25:48 ghudson Exp $
+# $Id: sendmail.cf,v 1.2 1999-02-17 17:56:32 danw Exp $
 #
 #	SENDMAIL CONFIGURATION FILE
 #
@@ -237,6 +237,7 @@ R$*<@$+.$D>$*		$:$1<$[$2$]:@$2>$3		@something.mit.edu
 R$*<@$->$*		$:$1<$[$2$]:@$2>$3		@something [no .s]
 R$*<$=w:@$+>$*		$1<@$j>$3			This mail is for us
 R$*<$=w.$D:@$+>$*	$1<@$j>$3			also for us
+R$*<[$I]:@$+>$*		$1<@$j>$3			for us, by IP addr
 R$*<$*:@$+>$*		$1<@$3>$4			Not for us; don't frob
 
 # deliver mail
