@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.7 1999-06-16 14:56:25 rbasch Exp $
+## $Id: sys_rvd,v 1.8 1999-07-06 16:44:51 mwhitson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -15,6 +15,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		group
 		ifhp.conf
 		lpd.conf
+		lpd.perms
 		mail
 		inet/inetd.conf
 		inet/netmasks	

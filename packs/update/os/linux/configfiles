@@ -12,6 +12,7 @@
 /etc/ifhp.conf
 /etc/inetd.conf
 /etc/lpd.conf
+/etc/lpd.perms
 /etc/named.conf
 /etc/ntp.conf
 /etc/printcap

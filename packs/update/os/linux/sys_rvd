@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-# $Id: sys_rvd,v 1.2 1999-06-21 04:20:12 ghudson Exp $
+# $Id: sys_rvd,v 1.3 1999-07-06 16:44:49 mwhitson Exp $
 	/core::::
 	/etc:::
 		aliases
@@ -9,6 +9,7 @@ GLOBAL : *.CKP *.local *.pid :
 		ifhp.conf
 		inetd.conf
 		lpd.conf
+		lpd.perms
 		named.conf
 		ntp.conf
 		passwd
