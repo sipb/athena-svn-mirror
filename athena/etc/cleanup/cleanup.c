@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.18.2.1 1997-08-12 03:50:49 ghudson Exp $
+/* $Id: cleanup.c,v 2.18.2.2 1997-09-08 20:59:18 ghudson Exp $
  *
  * Cleanup program for stray processes
  *
@@ -30,7 +30,13 @@
 #endif
 #include <signal.h>
 #include <string.h>
+#ifdef SYSV
+#include <utmpx.h>
+#define CLEANUP_UTMP_FILE "/etc/utmpx"
+#else
 #include <utmp.h>
+#define CLEANUP_UTMP_FILE "/etc/utmp"
+#endif
 #include <pwd.h>
 #ifdef _IBMR2
 #include <usersec.h>
@@ -44,7 +50,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.18.2.1 1997-08-12 03:50:49 ghudson Exp $";
+char *version = "$Id: cleanup.c,v 2.18.2.2 1997-09-08 20:59:18 ghudson Exp $";
 
 
 
@@ -250,15 +256,19 @@ int *get_logged_in()
     int pwuid;
     struct utmp *u;
 #else
+#ifdef SYSV
+    struct utmpx u;
+#else
     struct utmp u;
+#endif
     struct passwd *p;
 #endif
     static int uids[MAXUSERS];
 
 #ifndef _IBMR2
-    fd = open("/etc/utmp", O_RDONLY);
+    fd = open(CLEANUP_UTMP_FILE, O_RDONLY);
     if (fd < 0) {
-	fprintf(stderr, "cleanup: can't open /etc/utmp, %s\n",
+	fprintf(stderr, "cleanup: can't open %s, %s\n", CLEANUP_UTMP_FILE,
 		sys_errlist[errno]);
 	return(NULL);
     }
