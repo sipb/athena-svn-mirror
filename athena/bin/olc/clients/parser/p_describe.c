@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_describe.c,v 1.13 1999-07-08 22:56:52 ghudson Exp $
+ *	$Id: p_describe.c,v 1.14 1999-07-30 18:27:02 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_describe.c,v 1.13 1999-07-08 22:56:52 ghudson Exp $";
+static char rcsid[] ="$Id: p_describe.c,v 1.14 1999-07-30 18:27:02 ghudson Exp $";
 #endif
 #endif
 
@@ -45,13 +45,13 @@ do_olc_describe(arguments)
   int save_file = FALSE;
   int dochnote = FALSE;
   int dochcomment = FALSE;
- 
+
   make_temp_name(file);
   note[0] = '\0';
-  
+
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
+
   if(arguments == NULL)
     return ERROR;
   arguments++;
@@ -62,12 +62,15 @@ do_olc_describe(arguments)
 	 is_flag(*arguments,">", 1))
 	{
 	  arguments++;
-	  if(*arguments == NULL)
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
             {
 	      file[0] = '\0';
               get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
-		return ERROR;
+		{
+		  status = ERROR;
+		  break;
+		}
             }
 	  else
 	    {
@@ -77,6 +80,7 @@ do_olc_describe(arguments)
 	  save_file = TRUE;
 	  continue;
 	}
+
       if(is_flag(*arguments,"-note", 2))
 	{
 	  arguments++;
@@ -89,13 +93,14 @@ do_olc_describe(arguments)
 	  dochnote = TRUE;
 	  continue;
 	}
+
       if(is_flag(*arguments,"-comment",2))
 	{	
 	  dochcomment = TRUE;
 	  arguments++;
 	  continue;
 	}
-      
+
       status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
 	break;
@@ -116,6 +121,5 @@ do_olc_describe(arguments)
   if(!save_file)
     unlink(file);
 
-  return(status);
+  return status;
 }
-  

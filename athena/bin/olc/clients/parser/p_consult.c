@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_consult.c,v 1.10 1999-07-08 22:56:52 ghudson Exp $
+ *	$Id: p_consult.c,v 1.11 1999-07-30 18:26:34 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_consult.c,v 1.10 1999-07-08 22:56:52 ghudson Exp $";
+static char rcsid[] ="$Id: p_consult.c,v 1.11 1999-07-30 18:26:34 ghudson Exp $";
 #endif
 #endif
 
@@ -45,7 +45,7 @@ static char rcsid[] ="$Id: p_consult.c,v 1.10 1999-07-08 22:56:52 ghudson Exp $"
  *	a consultant to be connected to a user.  If the first argument is
  *	"urgent", the consultant will be given a question only if no one
  *	else is available.
- *      "duty" is a synonym for "olc".
+ *	"duty" is a synonym for "olc".
  */
 
 ERRCODE
@@ -103,14 +103,10 @@ do_olc_on(arguments)
 	      "[-urgent]\n");
       return ERROR;
     }
-  
+
   status = t_sign_on(&Request,0,0);
   return(status);
 }
-	    
-	
-  
-
 
 /*
  * Function:    do_olc_off() signs a consultant off of OLC.
@@ -147,13 +143,13 @@ do_olc_off(arguments)
       if(status != SUCCESS)
 	break;
     }
-  
+
   if(status != SUCCESS)   /* error */
     {
       fprintf(stderr,"Usage is: \toff [-force]\n");
       return ERROR;
     }
-  
+
   status = t_olc_off(&Request);
-  return(status);
+  return status;
 }

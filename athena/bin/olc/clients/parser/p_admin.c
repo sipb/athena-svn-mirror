@@ -3,17 +3,17 @@
  * It contains procedures for administrative commands 
  *
  *	Lucien Van Elsen
- *      MIT Project Athena
+ *	MIT Project Athena
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_admin.c,v 1.6 1999-07-08 22:56:51 ghudson Exp $
+ *	$Id: p_admin.c,v 1.7 1999-07-30 18:25:27 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_admin.c,v 1.6 1999-07-08 22:56:51 ghudson Exp $";
+static char rcsid[] ="$Id: p_admin.c,v 1.7 1999-07-30 18:25:27 ghudson Exp $";
 #endif
 #endif
 
@@ -37,22 +37,23 @@ do_olc_zephyr(arguments)
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
+
   Request.request_type = OLC_TOGGLE_ZEPHYR;
 
   if(arguments == NULL)
     return ERROR;
   arguments++;
 
-  while (*arguments != NULL)
+  while(*arguments != NULL)
     {
-      if (is_flag(*arguments, "-punt", 2))
+      if(is_flag(*arguments, "-punt", 2))
 	{
 	  if(what < 0)
 	    {
 	      what = 1;
 	      ++arguments;
-	      if (*arguments != NULL) /* override default */
+	      if((*arguments != NULL) && (*arguments != '-'))
+		/* override default */
 		{
 		  how_long = atoi(*arguments);
 		  ++arguments;
@@ -86,14 +87,14 @@ do_olc_zephyr(arguments)
 	  break;
 	}
     }
-  
+
   if (what < 0) /* error */
     {
       fprintf(stderr,"Usage is: \tzephyr [-unpunt "
 	      "| -punt [<minutes_to_punt>]]\n");
-      return(ERROR);
+      return ERROR;
     }
 
-  return(t_toggle_zephyr(&Request,what,how_long));
+  return t_toggle_zephyr(&Request,what,how_long);
 }
 #endif /* HAVE_ZEPHYR */

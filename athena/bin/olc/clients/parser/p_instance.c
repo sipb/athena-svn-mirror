@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_instance.c,v 1.16 1999-06-28 22:52:07 ghudson Exp $
+ *	$Id: p_instance.c,v 1.17 1999-07-30 18:27:34 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_instance.c,v 1.16 1999-06-28 22:52:07 ghudson Exp $";
+static char rcsid[] ="$Id: p_instance.c,v 1.17 1999-07-30 18:27:34 ghudson Exp $";
 #endif
 #endif
 
@@ -40,43 +40,51 @@ do_olc_instance(arguments)
 {
   REQUEST Request;
   int instance = -1;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
-  while (*arguments != (char *) NULL)
-    {
-      arguments++;
-      if (!*arguments) break;
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
 
-      if(is_flag(*arguments,"-instance", 2) || is_flag(*arguments,"-change", 2))
+  while (*arguments != NULL)
+    {
+      if(is_flag(*arguments,"-instance", 2) ||
+	 is_flag(*arguments,"-change", 2))
 	{
-          ++arguments;
-	  if(*arguments != (char *) NULL) {
-	    if (!isdigit(**arguments)) {
-	      printf("Instance specified must be numeric; %s is not.\n",
-		     *arguments);
-	      return(ERROR);
+	  arguments++;
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
+	    {
+	      if (isnumber(*arguments) != SUCCESS)
+		{
+		  printf("Instance specified must be numeric; %s is not.\n",
+			 *arguments);
+		  status = ERROR;
+		  break;
+		}
+	      instance = atoi(*arguments);
+	      arguments++;
 	    }
-	    instance = atoi(*arguments);
-	  }
 	  else
-	    instance = -2;
+	    {
+	      instance = -2;
+	    }
 	  continue;
 	}
 
-      arguments = handle_argument(arguments, &Request, &status);
+      status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
-	return(ERROR);
-
-      if(arguments == (char **) NULL)
-	{
-	  printf("Usage is: \tinstance [-instance <n>] [-change]\n");
-	  printf("\t\t[<username> <instance id>]\n");
-	  return(ERROR);
-	}
+	break;
     }
 
-  return(t_instance(&Request,instance));
+  if(status != SUCCESS)
+    {
+      fprintf(stderr, "Usage is: \tinstance [-instance <n>] [-change]\n"
+	      "\t\t[<username> <instance id>]\n");
+      return ERROR;
+    }
+
+  return t_instance(&Request,instance);
 }

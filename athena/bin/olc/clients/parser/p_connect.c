@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_connect.c,v 1.15 1999-07-08 22:56:52 ghudson Exp $
+ *	$Id: p_connect.c,v 1.16 1999-07-30 18:26:09 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_connect.c,v 1.15 1999-07-08 22:56:52 ghudson Exp $";
+static char rcsid[] ="$Id: p_connect.c,v 1.16 1999-07-30 18:26:09 ghudson Exp $";
 #endif
 #endif
 
@@ -77,12 +77,11 @@ do_olc_grab(arguments)
 	{
 	  break;
 	}
-      
     }
 
   if(status != SUCCESS)
     {
-      fprintf(stderr,"Usage is: \tgrab  [<username> <instance id>] "
+      fprintf(stderr,"Usage is: \tgrab [<username> <instance id>] "
 	      "[-create_new_instance]\n"
 	      "\t\t[-do_not_change_instance] [-instance <instance id>]\n");
       return ERROR;
@@ -116,8 +115,8 @@ do_olc_forward(arguments)
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-	
-  if(arguments = NULL)
+
+  if(arguments == NULL)
     return ERROR;
   arguments++;
 

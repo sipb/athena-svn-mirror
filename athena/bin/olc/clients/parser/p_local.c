@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_local.c,v 1.19 1999-06-28 22:52:08 ghudson Exp $
+ *	$Id: p_local.c,v 1.20 1999-07-30 18:28:07 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_local.c,v 1.19 1999-06-28 22:52:08 ghudson Exp $";
+static char rcsid[] ="$Id: p_local.c,v 1.20 1999-07-30 18:28:07 ghudson Exp $";
 #endif
 #endif
 
@@ -38,6 +38,7 @@ extern COMMAND *Command_Table;
 /*
  * Function:	do_quit() exits from OLC.
  * Arguments:	arguments:	The argument array from the parser.
+ *				(doesnt do anything with it though)
  * Returns:	Doesn't return.
  * Notes:
  *	Exits from OLC with status 0.
@@ -49,10 +50,8 @@ do_quit(arguments)
 {
   REQUEST Request;
   LIST *list;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
 
-  *arguments = (char *) NULL;
-  
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
@@ -62,10 +61,11 @@ do_quit(arguments)
     case SUCCESS:
       if(client_is_user_client())
 	{
-	  printf("To continue this question, just run this program again.  Remember, your\n");
-	  printf("question is active until you use the 'done' or 'cancel' command.  It will be\n");
-	  printf("stored until someone can answer it.  If you logout, someone may send you\n");
-	  printf("mail.\n");
+	  printf("To continue this question, just run this program again.  "
+		 "Remember, your\nquestion is active until you use the "
+		 "\"done\" or \"cancel\" command.  It will be\nstored until "
+		 "someone can answer it.  If you logout, someone may send "
+		 "you\nmail.\n");
 	}
  /* There is currently no way to tell, if you are connected, whether you */
  /* are connected to someone as a consultant or a user.  It would be */
@@ -81,8 +81,9 @@ do_quit(arguments)
 	    }
 	  if (status == TRUE);
 #endif
-	    printf("Warning: you are still active in %s.  You may be signed on,\n", client_service_name());
-            printf("connected to someone, or have a question of your own in the queue.\n");
+	    printf("Warning: you are still active in %s.  You may be "
+		   "signed on,\nconnected to someone, or have a question "
+		   "of your own in the queue.\n", client_service_name());
 	}
 
       free(list);
@@ -96,8 +97,8 @@ do_quit(arguments)
       break;
 
     default:
-      fprintf(stderr, "An error occurered when trying to determine whether you were still\n");
-      fprintf(stderr, "active in %s:\n",client_service_name());
+      fprintf(stderr, "An error occurered when trying to determine whether "
+	      "you were still\nactive in %s:\n",client_service_name());
       status = handle_response(status, &Request);
       break;
     }
@@ -124,33 +125,39 @@ do_olc_help(arguments)
   char help_filename[NAME_SIZE]; /* Name of help file. */
   int  ind;
 
-  if (arguments[1] == (char *)NULL) 
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  strcpy(help_filename, client_help_directory());
+  strcat(help_filename, "/");
+
+  if (*arguments == NULL) 
     {
-      strcpy(help_filename, client_help_directory());
-      strcat(help_filename, "/");
       strcat(help_filename, client_help_primary_file());
     }
   else 
     {
-      strcpy(help_filename, client_help_directory());
-      strcat(help_filename, "/");
-
-      ind = command_index(Command_Table, arguments[1]);
+      ind = command_index(Command_Table, *arguments);
       if (ind == ERROR)
 	{
-	  printf("The command \"%s\" is not defined.  ", arguments[1]);
-	  printf("For a list of commands, type \"?\".\n");
-	  return(ERROR);
+	  fprintf(stderr, "The command \"%s\" is not defined.  "
+		  "For a list of commands, type \"?\".\n", *arguments);
+	  return ERROR;
 	}
       else
 	if (ind == NOT_UNIQUE)
-	  return(NOT_UNIQUE);
+	  {
+	    fprintf(stderr, "\"%s\" matches multiple commands. "
+		    "For a list of commands, type \"?\".\n", *arguments);
+	    return ERROR;
+	  }
 
       strcat(help_filename, Command_Table[ind].command_name);
     }
 
   strcat(help_filename, client_help_ext());
-  return(display_file(help_filename));
+  return display_file(help_filename);
 }
 
 
@@ -170,10 +177,12 @@ do_olc_list_cmds(arguments)
 {
   int i;
 
-  for (i = 0; Command_Table[i].command_name != (char *) NULL; i++)
-    printf("%s%s%s\n", Command_Table[i].command_name,
-           strlen(Command_Table[i].command_name) > 7 ? "\t" : "\t\t",
-	   Command_Table[i].description);
-  return(SUCCESS);
+  for (i = 0; Command_Table[i].command_name != NULL; i++)
+    {
+      printf("%s%s%s\n", Command_Table[i].command_name,
+	     strlen(Command_Table[i].command_name) > 7 ? "\t" : "\t\t",
+	     Command_Table[i].description);
+    }
+  return SUCCESS;
 }
 

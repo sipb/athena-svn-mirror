@@ -2,28 +2,28 @@
  * This file is part of the OLC On-Line Consulting System.
  * It contains procedures for exectuting olc commands.
  *
- *      Win Treese
- *      Dan Morgan
- *      Bill Saphir
- *      MIT Project Athena
+ *	Win Treese
+ *	Dan Morgan
+ *	Bill Saphir
+ *	MIT Project Athena
  *
- *      Ken Raeburn
- *      MIT Information Systems
+ *	Ken Raeburn
+ *	MIT Information Systems
  *
- *      Tom Coppeto
+ *	Tom Coppeto
  *	Chris VanHaren
  *	Lucien Van Elsen
- *      MIT Project Athena
+ *	MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_acl.c,v 1.10 1999-07-08 22:56:50 ghudson Exp $
+ *	$Id: p_acl.c,v 1.11 1999-07-30 18:24:54 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_acl.c,v 1.10 1999-07-08 22:56:50 ghudson Exp $";
+static char rcsid[] ="$Id: p_acl.c,v 1.11 1999-07-30 18:24:54 ghudson Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ do_olc_acl(arguments)
   char file[NAME_SIZE];
   int save_file = 0;
   int list_flag = 0;
-  int acl_flag  = 0;
+  int acl_flag = 0;
   int change_flag = 0;
   ERRCODE status = SUCCESS;
 
@@ -64,7 +64,7 @@ do_olc_acl(arguments)
 	  acl_flag = TRUE;
 	  change_flag = TRUE;	    
 
-	  if(*arguments != NULL)
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
 	      strncpy(acl,*arguments,NAME_SIZE);
 	      arguments++;
@@ -77,8 +77,8 @@ do_olc_acl(arguments)
 	  arguments++;
 	  acl_flag = 0;
 	  change_flag = TRUE;
-	    
-	  if(*arguments != NULL)
+
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
 	      strncpy(acl,*arguments,NAME_SIZE);
 	      arguments++;
@@ -90,19 +90,19 @@ do_olc_acl(arguments)
 	{
 	  list_flag = TRUE;
 	  arguments++;
-	  if(*arguments != NULL)
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
 	      arguments++;
 	      strncpy(acl,*arguments,NAME_SIZE);
 	    }
 	  continue;
 	}
-      
+
       if(!strcmp(*arguments, ">") || is_flag(*arguments,"-file",2))
 	{
 	  arguments++;
 	  unlink(file);
-          if (*arguments != NULL)
+          if((*arguments != NULL) && (*arguments[0] != '-'))
             {
 	      strcpy(file, *arguments);
 	      arguments++;
@@ -112,12 +112,12 @@ do_olc_acl(arguments)
               file[0] = '\0';
               get_prompted_input("Enter a file name: ",file, NAME_SIZE,0);
               if(file[0] == '\0')
-                return ERROR;
+		return ERROR;
 	    }
-	  
+
           save_file = TRUE;
           continue;
-        }
+	}
 
       status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
@@ -132,14 +132,14 @@ do_olc_acl(arguments)
 	      " [-list <list>]\n\t\t[-list <username>] [-file <filename>]\n");
       return ERROR;
     }
-    
+
   if((*acl == '\0') && !list_flag)
     {
       get_prompted_input("Enter access control list: ",acl, NAME_SIZE,0);
       if(acl[0] == '\0')
 	return ERROR;
     }
-    
+
   if(list_flag && !change_flag)
     {
       if(acl[0] != '\0')
@@ -155,5 +155,3 @@ do_olc_acl(arguments)
 
   return(status);
 }
-
-

@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_cmdloop.c,v 1.23 1999-06-28 22:52:06 ghudson Exp $
+ *	$Id: p_cmdloop.c,v 1.24 1999-07-30 18:25:55 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_cmdloop.c,v 1.23 1999-06-28 22:52:06 ghudson Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.24 1999-07-30 18:25:55 ghudson Exp $";
 #endif
 #endif
 
@@ -86,7 +86,7 @@ command_loop(Command_Table, prompt)
   sigaddset(&act.sa_mask, SIGWINCH); 
   act.sa_flags = 0;                  
   sigaction(SIGINT, &act, NULL);
-  
+
   while(1) 
     {
       sigsetjmp(command_loop_jmp_buf, 1); /*save the signal state*/
@@ -155,7 +155,7 @@ do_command(Command_Table, arguments)
   ERRCODE status;
 
   ind = command_index(Command_Table, arguments[0]);
-  
+
   if (ind == NOT_UNIQUE)
     return(FAILURE);
   else 
@@ -186,7 +186,7 @@ do_command(Command_Table, arguments)
  *	name has, so any unique specifier can be used for a command.  Each
  *	time a match is found, record its index in an array, and increment
  *	a counter.  If more than one match is found, print the possible
- *	commands for the user.  If one match is found, return its index.
+ *	commands for the user. If one match is found, return its index.
  *	Otherwise, return an ERROR.
  */
 
@@ -199,12 +199,12 @@ command_index(Command_Table, command_name)
   int matches[MAX_COMMANDS];  /* Matching commands. */
   int match_count;	      /* Number of matches. */
   int comm_length;	      /* Length of command. */
-  
+
   ind = 0;
   match_count = 0;
   if (command_name == NULL)
     return(ERROR);
-	
+
   comm_length = strlen(command_name);
   while (Command_Table[ind].command_name != NULL) 
     {
@@ -213,7 +213,7 @@ command_index(Command_Table, command_name)
 	matches[match_count++] = ind;
       ind++;
     }
-  
+
   if (match_count == 0)
     return(ERROR);
   else 
@@ -535,7 +535,7 @@ set_prompt(Request, prompt, inprompt)
  * Returns:	SUCCESS or ERROR.
  * Notes:
  *	Get each word in the command line and set up a pointer to it.
- *      Kludge it so phrases can be quoted.
+ *	Kludge it so phrases can be quoted.
  */
 
 ERRCODE
@@ -544,7 +544,7 @@ parse_command_line(command_line, arguments)
      char arguments[MAX_ARGS][MAX_ARG_LENGTH];
 {
   char *current;		/* Current place in the command line.*/
-  int argcount;		        /* Running counter of arguments. */
+  int argcount;			/* Running counter of arguments. */
   char buf[BUF_SIZE];
   char *bufP;
   int quote = 0;
@@ -592,7 +592,7 @@ parse_command_line(command_line, arguments)
 	  argcount++;
 	}
     }
-  
+
   *arguments[argcount] = '\0';
   return(SUCCESS);
 }

@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_list.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $
+ *	$Id: p_list.c,v 1.13 1999-07-30 18:27:48 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_list.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $";
+static char rcsid[] ="$Id: p_list.c,v 1.13 1999-07-30 18:27:48 ghudson Exp $";
 #endif
 #endif
 
@@ -48,7 +48,7 @@ do_olc_list(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
   int  stati = 0;
   char queues[NAME_SIZE];
   char users[NAME_SIZE];
@@ -61,174 +61,227 @@ do_olc_list(arguments)
   int savefile = FALSE;
   int comments = 0;
   int i,mask,display= FALSE;
-  
+
   queues[0] = '\0';
   users[0] = '\0';
   instances[0] = '\0';
   topics[0] = '\0';
   *sort[0] = '\0';
-  sortP[0] = (char *) NULL;
-  
+  sortP[0] = NULL;
+
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 
   make_temp_name(file);
   savefile = FALSE;
 
-  for (++arguments; *arguments != (char *) NULL; ++arguments) 
-    {
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
 
-       if ((is_flag(*arguments, "-file", 2)) || string_eq(*arguments,">"))
-        {
+  while(*arguments != NULL)
+    {
+      if((is_flag(*arguments, "-file", 2)) ||
+	  string_eq(*arguments,">"))
+	{
           arguments++;
           unlink(file);
-          if (*arguments == (char *)NULL)
+          if((*arguments == NULL) || (*arguments[0] == '-'))
             {
               file[0] = '\0';
               get_prompted_input("Enter a file name: ",file, NAME_SIZE,0);
               if(file[0] == '\0')
-                return(ERROR);
+		{
+		  status = ERROR;
+		  break;
+		}
             }
           else
-	    strcpy(file, *arguments);
+	    {
+	      strcpy(file, *arguments);
+	      arguments++;
+	    }
 
           savefile = TRUE;
           continue;
-        }
+	}
 
       if(is_flag(*arguments,"-queue", 2))
 	{
-	  ++arguments;
-	  if(*arguments == (char *) NULL)
+	  /* Currently the server ignores this option. I am not actually
+	   * sure what it is supposed to do, but I am leaving it in.
+	   * - Richard Tibbetts 7-19-99
+	   */
+	  arguments++;
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
 	    {
 	      fprintf(stderr,
 		      "You must specify a queue after the -queue option.\n");
-	      return(ERROR);
+	      status = ERROR;
+	      break;
 	    }
-	 
-	  for(i=0; *arguments != (char *) NULL; arguments++)
+
+	  i = 0;
+	  while((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
-	      if(strlen(*arguments) >= (NAME_SIZE -i))
-		fprintf(stderr,"Too many queues specified. Continuing...\n");
-	      else
+	      i += strlen(*arguments) + 1;
+	      if( i >= NAME_SIZE)
 		{
-		  strcat(queues," ");
-		  strncat(queues,*arguments,NAME_SIZE-1);
+		  fprintf(stderr,"Too many queues specified.\n");
+		  status = ERROR;
 		  break;
 		}
-	      if(*(arguments+1) && (*(arguments+1)[0] == '-'))
-		break;
-	      if(arguments[1] == (char *) NULL)
-		break;
+	      else
+		{
+		  if(queues[0] != '\0')
+		    strcat(queues," ");
+		  strncat(queues,*arguments,NAME_SIZE-1);
+		  arguments++;
+		}
 	    }
-	  continue;
+	  if(status == ERROR)
+	    break;
+	  else
+	    continue;
 	}
 
       if(is_flag(*arguments,"-status",2))
 	{
-	  ++arguments;
-	  if(*arguments != (char *) NULL)
-	    for(i=0; *arguments != (char *) NULL; arguments++)
-	      {
-		OGetStatusCode(*arguments, &mask);
-		if(mask == -1)
-		  {
-		    printf("Invalid status label specified. Choose one of...\n");
-		    t_pp_stati();
-		    return(ERROR);
-		  }
-		else
-		  stati |= mask;
-		if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
+	  arguments++;
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
+	    {
+	      fprintf(stderr, "You must specify something "
+		      "after the -status option.\n");
+	      status = ERROR;;
+	      break;
+	    }
+
+	  while((*arguments != NULL) && (*arguments[0] != '-'))
+	    {
+	      OGetStatusCode(*arguments, &mask);
+	      arguments++;
+	      if(mask == -1)
+		{
+		  fprintf(stderr, "Invalid status label "
+			  "specified. Choose one of...\n");
+		  t_pp_stati();
+		  status = ERROR;
 		  break;
-		if(arguments[1] == (char *) NULL)
-		  break;
-	      }
-	  continue;
+		}
+	      else
+		stati |= mask;
+	    }
+	  if(status != SUCCESS)
+	    break;
+	  else
+	    continue;
 	}
 
       if(is_flag(*arguments,"-user",2))
 	{
-	  ++arguments;
-	  if(*arguments == (char *) NULL)
+	  arguments++;
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
 	    {
 	      fprintf(stderr,
-		      "You must specify something after the -user option.\n");
-	      return(ERROR);
+		      "You must specify a username after the -user option.\n");
+	      status = ERROR;
+	      break;
 	    }
 	  strncpy(users,*arguments,NAME_SIZE-1);
+	  arguments++;
 	  continue;
 	}
-      
+
       if(is_flag(*arguments,"-topic", 2))
 	{
-	  ++arguments;
-	  if(*arguments == (char *) NULL)
+	  arguments++;
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
 	    {
 	      fprintf(stderr,
 		      "You must specify a topic after the -topic option.\n");
-	      return(ERROR);
+	      status = ERROR;
+	      break;
 	    }
 
-	  for(i=0; *arguments != (char *) NULL; arguments++)
+	  i = 0;
+	  while((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
-	      if(strlen(*arguments) >= (NAME_SIZE -i))
-		fprintf(stderr,
-			"Too many topics specified. Continuing...\n");
-	      else
+	      i += strlen(*arguments) + 1;
+	      if(i >= NAME_SIZE)
 		{
-		  strncpy(topics, *arguments, NAME_SIZE-1);
+		  fprintf(stderr,
+			  "Too many topics specified.\n");
+		  status = ERROR;
 		  break;
 		}
-	      if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
-		break;
-	      if(arguments[1] == (char *) NULL)
-		break;
+	      else
+		{
+		  if(topics[0] != '\0')
+		    {
+		      /* Currently the server doesnt deal with multiple topics,
+		       * though it is supposed to. This throws an error if
+		       * multiple topics are specified.
+		       */
+		      /*strcat(topics, " ");	This is the line that would be
+		       *			here if it worked.
+		       */
+		      fprintf(stderr,
+			      "Multiple topics are not allowed.\n");
+		      status = ERROR;
+		      break;
+		    }
+		  strncat(topics,*arguments,NAME_SIZE-1);
+		  arguments++;
+		}
 	    }
-	  continue;
+	  if(status != SUCCESS)
+	    break;
+	  else
+	    continue;
 	}
-      
-      /* 
-       * some strange way is going to have to be devised to specify
-       * multiple targets
-       */
-	 
-      if(is_flag(*arguments,"-comments",2) || is_flag(*arguments,"-long",2))
+
+      if(is_flag(*arguments,"-comments",2) ||
+	 is_flag(*arguments,"-long",2))
 	{
+	  arguments++;
 	  comments = TRUE;
 	  continue;
 	}
-	 
+
       if(is_flag(*arguments,"-display",2))
 	{
+	  arguments++;
 	  display = TRUE;
 	  continue;
 	}
-	
-       if(**arguments != '-') {
-	 strncpy(users,*arguments,NAME_SIZE-1);
-	 continue;
-       }
 
-      arguments = handle_argument(arguments, &Request, &status);
-      if(status != SUCCESS)
-	return(ERROR);
-	    
-      if(arguments == (char **) NULL)   /* error */
+      if(*arguments[0] != '-')
 	{
-	  printf("Usage is: \tlist [-display] [-queue <queues>] ");
-	  printf("[-topic <topic>]\n\t\t[-status <statuses>] ");
-	  printf("[-comments] [<username pattern>]\n\t\t");
-	  printf("[-file <filename>]\n");
-	  return(ERROR);
+	  strncpy(users,*arguments,NAME_SIZE-1);
+	  arguments++;
+	  continue;
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
-	break;
+
+       status = handle_common_arguments(&arguments, &Request);
+       if(status != SUCCESS)
+	 break;
     }
 
-  status = t_list_queue(&Request,sortP,queues,topics,users,stati,comments,file,display);
+  if(status != SUCCESS)
+    {
+      fprintf(stderr, "Usage is: \tlist [-display] [-queue <queues>] "
+	      "[-topic <topic>]\n\t\t[-status <statuses>] "
+	      "[-comments] [<username pattern>]\n\t\t"
+	      "[-file <filename>]\n");
+      return ERROR;
+    }
+
+
+  status = t_list_queue(&Request, sortP, queues, topics, users,
+			stati, comments, file, display);
+
   if((savefile == FALSE) || (status != SUCCESS))
     unlink(file);
 
-  return(status);
+  return status;
 }

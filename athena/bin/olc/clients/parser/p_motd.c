@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_motd.c,v 1.22 1999-06-28 22:52:08 ghudson Exp $
+ *	$Id: p_motd.c,v 1.23 1999-07-30 18:29:08 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_motd.c,v 1.22 1999-06-28 22:52:08 ghudson Exp $";
+static char rcsid[] ="$Id: p_motd.c,v 1.23 1999-07-30 18:29:08 ghudson Exp $";
 #endif
 #endif
 
@@ -33,103 +33,115 @@ static char rcsid[] ="$Id: p_motd.c,v 1.22 1999-06-28 22:52:08 ghudson Exp $";
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
-extern int num_of_args;
-
 ERRCODE
 do_olc_motd(arguments)
      char **arguments;
 {
   REQUEST Request;
   char file[NAME_SIZE];
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
   int clear_flag = 0;
   char editor[NAME_SIZE];
 
-  strcpy(file, "");
-  strcpy(editor, "");
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
+
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
   make_temp_name(file);
 
-  arguments++;
-  while(*arguments != (char *) NULL)
+  while(*arguments != NULL)
     {
-      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
+      if(is_flag(*arguments,"-file", 2) ||
+	 string_eq(*arguments, ">"))
 	{
-          ++arguments;
+          arguments++;
 	  unlink(file);
-	  if(*arguments == NULL)
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
             {
 	      file[0] = '\0';
               get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
-		return(ERROR);
+		{
+		  status = ERROR;
+		  break;
+		}
             }
-	  else {
-	    strcpy(file,*arguments);
-	    arguments++;
-	  }
-	  
+	  else
+	    {
+	      strcpy(file,*arguments);
+	      arguments++;
+	    }
 	  save_file = TRUE;
 	  continue;
 	}
 
       if (is_flag(*arguments, "-editor",2))
-        {
-          ++arguments;
-          if(*arguments != (char *) NULL) {
-            strcpy(editor, *arguments);
-	    arguments++;
-	  }
+	{
+          arguments++;
+          if((*arguments != NULL) && (*arguments[0] != '-'))
+	    {
+	      strcpy(editor, *arguments);
+	      arguments++;
+	    }
           else
-            strcpy(editor, NO_EDITOR);
+	    {
+	      strcpy(editor, NO_EDITOR);
+	    }
 	  continue;
-        }
+	}
 
       if(is_flag(*arguments,"-change", 2))
 	{
-          ++arguments;
+          arguments++;
 	  change_flag = TRUE;
 	  continue;
 	}
 
       if (is_flag(*arguments,"-clear", 2))
 	{
-	  ++arguments;
+	  arguments++;
 	  clear_flag = TRUE;
 	  continue;
 	}
-      arguments = handle_argument(arguments, &Request, &status);
+
+      status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
-	return(ERROR);
+	break;
 	
-      arguments += num_of_args;		/* HACKHACKHACK */
-	
-      if(arguments == (char **) NULL)   /* error */
-	{
-	  printf("Usage is: \tmotd  [-file <filename>] [-change] ");
-	  printf("[-editor <editor>] [-clear]\n");
-	  return(ERROR);
-	}
     }
 
-  if(!(change_flag || clear_flag)) {
-    Request.request_type = OLC_MOTD;
-    status = t_get_file(&Request,type,file,!save_file);
-  }
-  else {
-    Request.request_type = OLC_CHANGE_MOTD;
-    status = t_change_file(&Request,type,file,editor,
-			   (!save_file ? OLC_MOTD : 0), clear_flag); 
-  }
+  if(status != SUCCESS)
+    {
+      fprintf(stderr,"Usage is: \tmotd [-file <filename>] [-change] "
+	      "[-editor <editor>] [-clear]\n");
+      return ERROR;
+    }
+
+  if(!(change_flag || clear_flag))
+    {
+      Request.request_type = OLC_MOTD;
+      status = t_get_file(&Request,type,file,!save_file);
+    }
+  else
+    {
+      Request.request_type = OLC_CHANGE_MOTD;
+      status = t_change_file(&Request,type,file,editor,
+			     (!save_file ? OLC_MOTD : 0), clear_flag); 
+    }
+
   if(!save_file)
     unlink(file);
-  return(status);
+
+  return status;
 }
 
 ERRCODE
@@ -138,86 +150,99 @@ do_olc_hours(arguments)
 {
   REQUEST Request;
   char file[NAME_SIZE];
-  ERRCODE status;
+  ERRCODE status = SUCCESS;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
   char editor[NAME_SIZE];
 
-  strcpy(file, "");
-  strcpy(editor, "");
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
-    return(ERROR);
-  
+    return ERROR;  
+
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
   make_temp_name(file);
 
-  arguments++;
-  while(*arguments != (char *) NULL)
+  while(*arguments != NULL)
     {
-      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
+      if(is_flag(*arguments,"-file", 2) ||
+	 string_eq(*arguments, ">"))
 	{
-          ++arguments;
+          arguments++;
 	  unlink(file);
-	  if(*arguments == NULL)
+	  if((*arguments == NULL) || (*arguments[0] == '-'))
             {
 	      file[0] = '\0';
               get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
 	      if(file[0] == '\0')
-		return(ERROR);
+		{
+		  status = ERROR;
+		  break;
+		}
             }
-	  else {
-	    strcpy(file,*arguments);
-	    arguments++;
-	  }
-	  
+	  else
+	    {
+	      strcpy(file,*arguments);
+	      arguments++;
+	    }
 	  save_file = TRUE;
 	  continue;
 	}
 
       if (is_flag(*arguments, "-editor", 2))
-        {
-          ++arguments;
-          if(*arguments != (char *) NULL) {
-            strcpy(editor, *arguments);
-	    arguments++;
-	  }
+	{
+          arguments++;
+          if((*arguments != NULL) || (*arguments[0] != '-'))
+	    {
+	      strcpy(editor, *arguments);
+	      arguments++;
+	    }
           else
-            strcpy(editor, NO_EDITOR);
+	    {
+	      strcpy(editor, NO_EDITOR);
+	    }
 	  continue;
-        }
+	}
 
       if(is_flag(*arguments,"-change", 2))
 	{
-          ++arguments;
+          arguments++;
 	  change_flag = TRUE;
 	  continue;
 	}
 
-      arguments = handle_argument(arguments, &Request, &status);
+      status = handle_common_arguments(&arguments, &Request);
       if(status != SUCCESS)
-	return(ERROR);
-	
-      arguments += num_of_args;		/* HACKHACKHACK */
-	
-      if(arguments == (char **) NULL)   /* error */
-	{
-	  printf("Usage is: \thours  [-file <filename>] [-change] ");
-	  printf("[-editor <editor>]\n");
-	  return(ERROR);
-	}
+	break;
     }
 
-  if(!change_flag) {
-    Request.request_type = OLC_GET_HOURS;
-    status = t_get_file(&Request,type,file,!save_file);
-  }
-  else {
-    Request.request_type = OLC_CHANGE_HOURS;
-    status = t_change_file(&Request,type,file,editor,
-			   (!save_file ? OLC_GET_HOURS : 0),0);
-  }
+  if(status != SUCCESS)
+    {
+      fprintf(stderr,
+	      "Usage is: \thours  [-file <filename>] [-change] "
+	      "[-editor <editor>]\n");
+      return ERROR;
+    }
+
+  if(!change_flag)
+    {
+      Request.request_type = OLC_GET_HOURS;
+      status = t_get_file(&Request,type,file,!save_file);
+    }
+  else
+    {
+      Request.request_type = OLC_CHANGE_HOURS;
+      status = t_change_file(&Request,type,file,editor,
+			     (!save_file ? OLC_GET_HOURS : 0),0);
+    }
+
   if(!save_file)
     unlink(file);
-  return(status);
+
+  return status;
 }

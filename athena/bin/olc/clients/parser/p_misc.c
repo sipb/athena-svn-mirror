@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_misc.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $
+ *	$Id: p_misc.c,v 1.13 1999-07-30 18:28:47 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_misc.c,v 1.12 1999-06-28 22:52:08 ghudson Exp $";
+static char rcsid[] ="$Id: p_misc.c,v 1.13 1999-07-30 18:28:47 ghudson Exp $";
 #endif
 #endif
 
@@ -38,27 +38,28 @@ do_olc_load_user(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;
-  
+  ERRCODE status = SUCCESS;
+
   if (fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
-  for (arguments++; *arguments != (char *) NULL; arguments++)
-    {
-      arguments = handle_argument(arguments, &Request, &status);
-      if (status != SUCCESS)
-	return(ERROR);
-            if(arguments == (char **) NULL)   /* error */
-        {
-          printf("Usage is: \tload  [username]\n");
-          return(ERROR);
-        }
 
-      if (*arguments == (char *) NULL)   /* end of list */
-        break;
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
+  while(*arguments != NULL)
+    {
+      status = handle_common_arguments(&arguments, &Request);
+      if (status != SUCCESS)
+	break;
+    }
+  if(status != SUCCESS)
+    {
+      printf("Usage is: \tload [username]\n");
+      return ERROR;
     }
 
-  return(t_load_user(&Request));
+  return t_load_user(&Request);
 }
 
 ERRCODE
@@ -66,52 +67,62 @@ do_olc_dbinfo(arguments)
      char **arguments;
 {
   REQUEST Request;
-  ERRCODE status;            
+  ERRCODE status = SUCCESS;
   char file[NAME_SIZE];
   int save_file = 0;
   int change = 0;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
+
+  if(arguments == NULL)
+    return ERROR;
+  arguments++;
+
   make_temp_name(file);
-  for (arguments++; *arguments != (char *) NULL; arguments++)
+
+  while(*arguments != NULL)
     {
-      if(string_eq(*arguments, ">") || is_flag(*arguments,"-file", 2))
-        {
-          ++arguments;
+      if(is_flag(*arguments,"-file", 2) ||
+	 string_eq(*arguments, ">"))
+	{
+          arguments++;
           unlink(file);
-          if(*arguments == NULL)
+          if((*arguments == NULL) || (*arguments[0] == '-'))
             {
               file[0] = '\0';
               get_prompted_input("Enter file name: ",file,NAME_SIZE,0);
               if(file[0] == '\0')
-                return(ERROR);
+		{
+		  status = ERROR;
+		  break;
+		}
             }
 	  else
-	    strcpy(file,*arguments);
+	    {
+	      strcpy(file,*arguments);
+	      arguments++;
+	    }
 
           save_file = TRUE;
-        }
-      else
-	if(is_flag(*arguments,"-change",2))
+	  continue;
+	}
+      if(is_flag(*arguments,"-change",2))
+	{
+	  arguments++;
 	  change = TRUE;
-	else
-	  {
-	    arguments = handle_argument(arguments, &Request, &status);
-          if(status != SUCCESS)
-            return(ERROR);
-	  }
+	  continue;
+	}
+      status = handle_common_arguments(&arguments, &Request);
+      if(status != SUCCESS)
+	break;
+    }
 
-      if(arguments == (char **) NULL)   /* error */
-        {
-          printf("Usage is: \tdbinfo [-file <filename>] ");
-	  printf("[-change]\n");
-          return(ERROR);
-        }
-
-      if(*arguments == (char *) NULL)   /* end of list */
-        break;
+  if(status != SUCCESS)
+    {
+      fprintf(stderr, "Usage is: \tdbinfo [-file <filename>] "
+	      "[-change]\n");
+      return ERROR;
     }
 
   if(!change)
@@ -121,5 +132,6 @@ do_olc_dbinfo(arguments)
 
   if(!save_file)
     unlink(file);
-  return(status);
+
+  return status;
 }

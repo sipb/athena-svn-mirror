@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_ask.c,v 1.17 1999-07-08 22:56:52 ghudson Exp $
+ *	$Id: p_ask.c,v 1.18 1999-07-30 18:25:41 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_ask.c,v 1.17 1999-07-08 22:56:52 ghudson Exp $";
+static char rcsid[] ="$Id: p_ask.c,v 1.18 1999-07-30 18:25:41 ghudson Exp $";
 #endif
 #endif
 
@@ -59,7 +59,7 @@ do_olc_ask(arguments)
       if(is_flag(*arguments, "-topic", 2))
 	{
 	  arguments++;
-	  if(*arguments != NULL)
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
 	      strcpy(topic,*arguments);
 	      arguments++;
@@ -74,7 +74,7 @@ do_olc_ask(arguments)
       if(is_flag(*arguments, "-file",2))
 	{
 	  arguments++;
-	  if(*arguments != NULL)
+	  if((*arguments != NULL) && (*arguments[0] != '-'))
 	    {
 	      strcpy(file, *arguments);
 	      arguments++;
