@@ -56,6 +56,7 @@ rd_and_store_for_creds(context, auth_context, inbuf, ticket)
     krb5_error_code retval;
     char ccname[35];
     krb5_ccache ccache = NULL;
+    char *tty;
 
     k5_haveauth = 0;
 

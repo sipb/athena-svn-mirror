@@ -2356,7 +2356,7 @@ telnet(user)
 	    }
 	    if (encrypt_is_encrypting())
 		break;
-	    if (time(0) > timeout) {
+	    if (time(0) > time_out) {
 		printf("\nEncryption could not be enabled.\n\r");
 		break;
 	    }

@@ -325,7 +325,7 @@ void dofork(void);
 char *stypeof(char *);
 void term_init(int);
 int doremotelogin(char *), do_krb_login(char *, int), rootterm(char *);
-void lgetstr(char *, int, char *), getloginname(void), checknologin(void);
+void lgetstr(char *, int, char *), getloginname(int), checknologin(void);
 void dolastlog(char *, int, char *), motd(void), check_mail(void);
 void sleepexit(int);
 
