@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.13 1992-06-08 17:37:42 lwvanels Exp $
+# $Id: Imakefile,v 1.14 1992-08-11 15:36:19 miki Exp $
 
 USRSCRIPTS=mitvma
 
@@ -45,7 +45,7 @@ install_file(7x13.snf,/etc/athena/login/fonts/)
 #endif
 
 
-#if defined(vax) || defined(ibm032) || defined(ultrix)
+#if defined(vax) || defined(ibm032) || defined(ultrix) || defined(sun)
 create_dir(/etc/athena/login/fonts)
 
 FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
