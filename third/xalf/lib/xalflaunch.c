@@ -122,7 +122,7 @@ XMapRaised (Display* display, Window w)
  #define PRELOAD_UNSETTER unsetenv ("LD_PRELOAD")
  #define PID_UNSETTER unsetenv (PID_PROPERTY_NAME)
 #else
- #define PRELOAD_UNSETTER putenv ("LD_PRELOAD=")
+ #define PRELOAD_UNSETTER putenv (strdup("LD_PRELOAD="))
 /* If we can't remove this variable name, lets leave it */
  #define PID_UNSETTER 
 #endif
