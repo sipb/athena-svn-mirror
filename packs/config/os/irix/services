@@ -1,7 +1,7 @@
 #
 # Network services, Internet style
 #
-# $Id: services,v 1.1 1999-02-08 18:21:12 rbasch Exp $
+# $Id: services,v 1.2 1999-06-28 21:00:46 ghudson Exp $
 #
 tcpmux		1/tcp			# TCP port multiplexer (RFC 1078)
 echo		7/tcp
@@ -232,6 +232,9 @@ afsrmtsys		7009/udp	# remote cache manager service
 # Used by mitdir
 csnet-cs	105/tcp
 csnet-fi	106/tcp
+
+# Used by the ESRI Spatial Database Engine
+esri_sde	5150/tcp
 
 #
 # End of Athena additions
