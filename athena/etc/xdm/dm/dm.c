@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.41 1994-05-02 10:35:27 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.42 1994-05-02 17:24:44 miki Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.41 1994-05-02 10:35:27 vrt Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.42 1994-05-02 17:24:44 miki Exp $";
 #endif
 
 #ifndef NULL
@@ -381,7 +381,11 @@ char **argv;
 	if (xpid != 0) {
 	    kill(xpid, SIGKILL);
 	    alarm(5);
+#ifdef POSIX
+	    sigsuspend(&sig_zero);
+#else
 	    sigpause(0);
+#endif
 	}
 	if (pipe(pp) < 0) {
 	    message("Could not establish a pipe");
@@ -490,7 +494,11 @@ char **argv;
 #ifdef DEBUG
 	    message("waiting for X\n");
 #endif
+#ifdef POSIX
+	    sigsuspend(&sig_zero);
+#else
 	    sigpause(0);
+#endif
 	    if (x_running != RUNNING) {
 		if (alarm_running == NONEXISTENT)
 		  message("dm: Unable to start X\n");
@@ -642,7 +650,11 @@ char **argv;
 	    alarm(LOGIN_START_WAIT);
 	    alarm_running = RUNNING;
 	    while (login_running == STARTUP && alarm_running == RUNNING)
+#ifdef POSIX
+	      sigsuspend(&sig_zero);
+#else
 	      sigpause(0);
+#endif
 	    if (login_running != RUNNING) {
 		kill(loginpid, SIGKILL);
 		if (alarm_running != NONEXISTENT)
@@ -737,7 +749,11 @@ char **argv;
 #endif /* ultrix */
 	} else {
 	    alarm(60);
+#ifdef POSIX
+	    sigsuspend(&sig_zero);
+#else
 	    sigpause(0);
+#endif
 	}
 
 	if (login_running == STARTUP) {
@@ -792,6 +808,9 @@ char *msg;
     message(msg);
 #endif
 
+#ifdef POSIX
+    sigemptyset(&sig_zero);
+#endif
     for (i = 0; i < X_STOP_WAIT; i++) {
 	if (login_running != NONEXISTENT && login_running != STARTUP)
 	  kill(loginpid, SIGKILL);
@@ -841,13 +860,23 @@ char *msg;
 	i = open(mousedev, O_RDWR, 0);
 	if (i >= 0) {
 	    alarm(2);
+#ifdef POSIX
+	    sigsuspend(&sig_zero);
+#else
 	    sigpause(0);
+#endif
 	    close(i);
+
 	}
 	i = open(displaydev, O_RDWR, 0);
 	if (i >= 0) {
 	    alarm(2);
+#ifdef POSIX
+	    sigsuspend(&sig_zero);
+#else
+
 	    sigpause(0);
+#endif
 	    close(i);
 	}
     }
@@ -1490,14 +1519,21 @@ char *login;
     int count = 10;
     int newfile, oldfile, cc;
     char buf[BUFSIZ], *p, *start;
-
+#ifdef POSIX
+    sigemptyset(&sig_zero);
+#endif
     if (!strcmp(login, "root")) return;
 
     for (count = 0; count < 10; count++)
       if ((newfile = open(passwdtf, O_RDWR|O_CREAT|O_EXCL, 0644)) == -1 &&
 	  errno == EEXIST) {
 	  alarm(1);
+
+#ifdef POSIX
+	  sigsuspend(&sig_zero);
+#else
 	  sigpause(0);
+#endif
       } else
 	break;
     if (newfile == -1) {
@@ -1545,7 +1581,11 @@ char *login;
       if ((newfile = open(spasswdtf, O_RDWR|O_CREAT|O_EXCL, 0600)) == -1 &&
 	  errno == EEXIST) {
 	  alarm(1);
+#ifdef POSIX
+	  sigsuspend(&sig_zero);
+#else
 	  sigpause(0);
+#endif
       } else
 	break;
     if (newfile == -1) {
