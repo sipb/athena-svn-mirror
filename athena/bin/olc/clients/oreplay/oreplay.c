@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.17 1991-01-27 15:05:14 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.18 1991-02-01 16:28:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -295,40 +295,66 @@ main(argc,argv)
 /* continue on */
 
   if (i_list && (tusername[0] != '\0')) {
-    char *p1,*p2; /* current position in buffer */
+    char *p1,*p2,*status,*ip; /* current position in buffer */
     int n;        /* number of users in this queue */
-    int i,j;
+    int nq;
+    int i,j,inst;
     int len;
+    int right_user;
     char obuf[100];
 
     p1 = buf;
     len = strlen(tusername);
 
-    for(i=0;i<2;i++) {
+    nq = atoi(p1);
+    p1 = index(p1,'\n')+1;
+    
+    for(i=0;i<nq;i++) {
       p1 = index(p1,'\n')+1; /* Scan past queue name */
       n = atoi(p1);           /* number of users in this queue */
       p1 = index(p1,'\n')+1;  /* past number of users */
       for(;n>0;n--) {
-	for(j=0;j<4;j++)
-	  p1 = index(p1,'\n')+1;  /* Scan past the user info */
+	if (strncmp(tusername,p1,len) == 0)
+	  right_user = 1;
+	else
+	  right_user = 0;
+	p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
+	inst = atoi(p1);
+	p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
+	status = p1;
+	p1 = index(p1,'\n')+1;
 	if (strncmp(tusername,p1,len) == 0) {
-	  /* username right, check instance */
 	  p1 = index(p1,'\n')+1;
-	  tinstance = atoi(p1);
+	  inst = atoi(p1);
 	  p1 = index(p1,'\n')+1;
-	  p2 = index(p1,'\n')+1;
-	  *p2 = '\0';
-	  if (strncmp(p1,"off",3) !=0 ) {
-	    sprintf(obuf,"%d\n%s\n",tinstance,p1);
+	  if (strncmp(p1,"off",3) != 0) {
+	    p2 = index(p1,'\n');
+	    *p2 = '\0';
+	    sprintf(obuf,"%d\n%s\n",inst,status);
 	    write(output_fd,obuf,strlen(obuf));
 	    goto done;               /* Get out of this whole mess */
 	  }
+	} else {
+	  p1 = index(p1,'\n')+1;
+	  p1 = index(p1,'\n')+1;
 	}
-	else
-	  p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
 	
-	for(j=0;j<7;j++)   /* Skip rest of information for this user */
-	  p1 = index(p1,'\n')+1;
+	/* username right, check instance */
+	if (right_user && (strncmp(p1,"on-duty",7) ==0) ) {
+	  p2 = index(status,'\n');
+	  *p2 = '\0';
+	  sprintf(obuf,"%d\n%s\n",inst,status);
+	  write(output_fd,obuf,strlen(obuf));
+	  goto done;               /* Get out of this whole mess */
+	}
+	p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
+	p1 = index(p1,'\n')+1;
       }
     }
     write(output_fd,"off\n",4);
@@ -357,17 +383,18 @@ main(argc,argv)
     char tmp[40];
     char obuf[1024];
     int len;
-    int nq,j;
+    int nc,nq,j;
     
     lseek(output_fd,0,L_SET);
     input_file = fdopen(output_fd,"r+");
 
-    for(j=0;j<3;j++) {
+    nq = atoi(f_gets(input_file,tmp));
+    for(j=0;j<nq;j++) {
       f_gets(input_file,qname);
-      nq = atoi(f_gets(input_file,tmp));
+      nc = atoi(f_gets(input_file,tmp));
       sprintf(obuf,"\n[%s]\n",qname);
       write(temp_fd,obuf,strlen(obuf));
-      for(;nq>0;nq--) {
+      for(;nc>0;nc--) {
 	f_gets(input_file,username);
 	f_gets(input_file,machine);
 	len = strlen(username);
