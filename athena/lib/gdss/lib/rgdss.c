@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v $
- * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.3 1992-05-13 22:50:53 jis Exp $
+ * $Author: mar $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/rgdss.c,v 1.4 1993-01-25 12:19:36 mar Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -122,7 +122,7 @@ int *outlen;
     if (*(++cp) == GDSS_NULL) {
       *bp++ = '\0';
     } else *bp++ = GDSS_ESCAPE;
-    cp++;
+    if(!*cp++) break;
   }
   *outlen = bp - buf;
   bcopy(buf, signature, *outlen);
