@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.12 2002-03-21 05:30:07 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.13 2002-04-03 14:22:41 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -83,6 +83,7 @@ static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep);
 static void display_action(struct package *pkg, enum act action);
+static int kernel_was_updated(rpmdb db, struct package *pkg);
 static void update_lilo(struct package *pkg);
 static char *fudge_arch_in_filename(char *filename);
 static void printrev(struct rev *rev);
@@ -163,9 +164,6 @@ int main(int argc, char **argv)
   /* Walk the table and perform the required updates. */
   perform_updates(pkgtab, public, dryrun, hashmarks);
 
-  if (!dryrun)
-    update_lilo(get_package(pkgtab, "kernel"));
-
   exit(0);
 }
 
@@ -185,7 +183,7 @@ static void read_old_list(struct package **pkgtab, const char *oldlistname)
       parse_line(buf, &pkgname, &epoch, &version, &release, NULL);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->oldlistrev.present)
-	die("Duplicate package %s in old list %s\n", pkgname, oldlistname);
+	die("Duplicate package %s in old list %s", pkgname, oldlistname);
       pkg->oldlistrev.present = 1;
       pkg->oldlistrev.epoch = epoch;
       pkg->oldlistrev.version = version;
@@ -211,7 +209,7 @@ static void read_new_list(struct package **pkgtab, const char *newlistname)
       parse_line(buf, &pkgname, &epoch, &version, &release, &filename);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->newlistrev.present)
-	die("Duplicate package %s in new list %s\n", pkgname, newlistname);
+	die("Duplicate package %s in new list %s", pkgname, newlistname);
       pkg->filename = filename;
       pkg->newlistrev.present = 1;
       pkg->newlistrev.epoch = epoch;
@@ -238,7 +236,7 @@ static void read_upgrade_list(struct package **pkgtab, const char *listname)
       parse_line(buf, &pkgname, &epoch, &version, &release, &filename);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->newlistrev.present)
-	die("Duplicate package %s in upgrade list %s\n", pkgname, listname);
+	die("Duplicate package %s in upgrade list %s", pkgname, listname);
       pkg->filename = filename;
       pkg->newlistrev.present = 1;
       pkg->newlistrev.epoch = epoch;
@@ -284,7 +282,7 @@ static void read_installed_versions(struct package **pkgtab)
 
   mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
   if (mi == NULL)
-    die("Failed to initialize database iterator\n");
+    die("Failed to initialize database iterator");
   while ((h = rpmdbNextIterator(mi)) != NULL)
     {
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
@@ -375,7 +373,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
    */
   mi = rpmdbInitIterator(db, RPMDBI_PACKAGES, NULL, 0);
   if (mi == NULL)
-    die("Failed to initialize database iterator\n");
+    die("Failed to initialize database iterator");
   while ((h = rpmdbNextIterator(mi)) != NULL)
     {
       if (!headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL))
@@ -405,7 +403,13 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
   r = rpmRunTransactions(rpmdep, notify, &ndata, NULL, &probs, 0,
 			 RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
   if (r < 0)
-    die("Failed to run transactions\n");
+    {
+      /* The kernel may have been upgraded; make sure to edit
+       * lilo.conf if so.
+       */
+      if (kernel_was_updated(db, get_package(pkgtab, "kernel")))
+	update_lilo(get_package(pkgtab, "kernel"));
+    }
   else if (r > 0)
     {
       fprintf(stderr, "Update failed due to the following problems:\n");
@@ -414,6 +418,8 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
     }
 
   rpmdbClose(db);
+
+  update_lilo(get_package(pkgtab, "kernel"));
 }
 
 /* Callback function for rpmRunTransactions. */
@@ -576,14 +582,51 @@ static void display_action(struct package *pkg, enum act action)
     }
 }
 
+/* If rpmRunTransactions() fails, we don't really know whether all,
+ * some, or none of the updates happens.  So we have to examine the
+ * database to find out whether the kernel was updated so that we know
+ * whether to update lilo.
+ */
+static int kernel_was_updated(rpmdb db, struct package *pkg)
+{
+  rpmdbMatchIterator mi;
+  Header h;
+  char *version, *release;
+  int_32 *epoch;
+  struct rev rev;
+
+  /* Don't bother checking if there was no kernel update. */
+  if (!pkg->instrev.present || !pkg->newlistrev.present
+      || revsame(&pkg->instrev, &pkg->newlistrev))
+    return 0;
+
+  mi = rpmdbInitIterator(db, RPMDBI_LABEL, "kernel", 0);
+  if (mi == NULL)
+    die("Failed to initialize database iterator while recovering.");
+  while ((h = rpmdbNextIterator(mi)) != NULL)
+    {
+      if (!headerGetEntry(h, RPMTAG_EPOCH, NULL, (void **) &epoch, NULL))
+	epoch = NULL;
+      headerGetEntry(h, RPMTAG_VERSION, NULL, (void **) &version, NULL);
+      headerGetEntry(h, RPMTAG_RELEASE, NULL, (void **) &release, NULL);
+      rev.present = 1;
+      rev.epoch = (epoch == NULL) ? -1 : *epoch;
+      rev.version = version;
+      rev.release = release;
+    }
+  return (rev.present && revcmp(&rev, &pkg->newlistrev) == 0);
+}
+
 /* Red Hat's kernel package doesn't take care of lilo.conf; the update
- * agent does.  So we have to take care of it too.
+ * agent does.  So we have to take care of it too.  (If the machine
+ * uses grub, then we don't have to do anything.)
  */
 static void update_lilo(struct package *pkg)
 {
   const char *name = "/etc/lilo.conf", *savename = "/etc/lilo.conf.rpmsave";
   FILE *in, *out;
-  char *buf = NULL, *oldktag, *oldkname, *newktag, *newkname, *initrdcmd, *newitag;
+  char *buf = NULL, *oldktag, *oldkname;
+  char *newktag, *newkname, *initrdcmd, *newitag;
   const char *p, *q;
   int bufsize = 0, status, replaced;
   struct stat statbuf;
@@ -593,14 +636,16 @@ static void update_lilo(struct package *pkg)
       || revsame(&pkg->instrev, &pkg->newlistrev))
     return;
 
+  /* If there's no lilo.conf, then the machine presumably doesn't use lilo. */
+  if (stat(name, &statbuf) == -1)
+    return;
+
   /* Figure out kernel names. */
   easprintf(&oldktag, "%s-%s", pkg->instrev.version, pkg->instrev.release);
   easprintf(&oldkname, "/boot/vmlinuz-%s", oldktag);
-  easprintf(&newktag, "%s-%s", pkg->newlistrev.version, pkg->newlistrev.release);
+  easprintf(&newktag, "%s-%s", pkg->newlistrev.version,
+	    pkg->newlistrev.release);
   easprintf(&newkname, "/boot/vmlinuz-%s", newktag);
-
-  if (stat(name, &statbuf) == -1)
-    die("Can't stat lilo.conf for rewrite.");
 
   /* This isn't very atomic, but it's what Red Hat's update agent does. */
   if (rename(name, savename) == -1)
@@ -669,7 +714,13 @@ static void update_lilo(struct package *pkg)
   free(oldkname);
   free(newktag);
   free(newkname);
-  system("/sbin/lilo");
+
+  /* If a machine has both lilo.conf and grub.conf, then it's anyone's
+   * guess which one is installed.  We will guess that the machine
+   * uses grub, so we update lilo.conf but don't run lilo.
+   */
+  if (stat("/boot/grub/grub.conf", &statbuf) == -1)
+    system("/sbin/lilo");
 }
 
 /* If filename has an arch string which is too high for this machine's
