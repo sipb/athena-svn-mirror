@@ -26,6 +26,7 @@
 #define LERTS_DATA   "/var/ops/lert/lertdata"
 #define LERTS_LOG    "/var/ops/lert/lertlog"
 #define LERTS_SRVTAB    "/var/ops/lert/srvtab"
+#define LERTS_KEYTAB    "/var/ops/lert/keytab"
 
 /* the base name of the displayed files */
 #define LERTS_MSG_FILES   "/afs/athena/system/config/lert/lert"
@@ -49,7 +50,7 @@
 #define LERT_MAIL     2
 #define LERT_HANDLE   3
 
-#define LERT_VERSION '1'
+#define LERT_VERSION '2'
 #define LERT_ASKS    '0'
 
 /* various categories of response from server

@@ -15,7 +15,7 @@
 
 /* This is the client for the lert system. */
 
-static const char rcsid[] = "$Id: lert.c,v 1.11 2001-03-19 16:52:44 zacheiss Exp $";
+static const char rcsid[] = "$Id: lert.c,v 1.12 2002-09-01 03:31:25 zacheiss Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -32,9 +32,8 @@ static const char rcsid[] = "$Id: lert.c,v 1.11 2001-03-19 16:52:44 zacheiss Exp
 #include <string.h>
 #include <unistd.h>
 
-#include <des.h>
 #include <hesiod.h>
-#include <krb.h>
+#include <krb5.h>
 
 #include "lert.h"
 
@@ -53,19 +52,23 @@ static void usage(char *pname)
 
 static char *lert_says(int no_more, char *server)
 {
+  krb5_context context = NULL;
+  krb5_auth_context auth_con = NULL;
+  krb5_ccache ccache = NULL;
+  krb5_data auth, packet, msg_data;
+  krb5_error_code problem = 0;
   void *hes_context = NULL;
   char *lert_host, *message;
   struct hostent *hp;
   struct servent *sp;
-  struct sockaddr_in sin, lsin;
-  char *cp, *srealm, *sinst;
-  KTEXT_ST authent;
-  CREDENTIALS cred;
-  Key_schedule sched;
-  int plen, packetsize, s, i, tries, status, gotit;
-  unsigned char *packet;
+  struct sockaddr_in sin;
+  int plen, packetsize, s, tries, gotit, nread;
+  unsigned char *pktbuf;
   fd_set readfds;
-  MSG_DAT msg_data;
+
+  memset(&auth, 0, sizeof(krb5_data));
+  memset(&packet, 0, sizeof(krb5_data));
+  memset(&msg_data, 0, sizeof(krb5_data));
 
   /* Find out where lert lives. (Note the presumption that there is
    * only one lert!)
@@ -114,83 +117,62 @@ static char *lert_says(int no_more, char *server)
   if (hes_context)
     hesiod_end(hes_context);
 
-  /* Find out what Kerberos realm the server is in and get a ticket
-   * for it.
-   */
-  cp = krb_realmofhost(lert_host);
-  if (cp == NULL)
-    bombout(ERR_KERB_REALM);
-  srealm = strdup(cp);
-  if (!srealm)
-    bombout(ERR_MEMORY);
+  problem = krb5_init_context(&context);
+  if (problem)
+    goto out;
 
-  /* Resolve hostname for service principal. */
-  cp = krb_get_phost(lert_host);
-  if (cp == NULL)
-    bombout(ERR_KERB_PHOST);
-  sinst = strdup(cp);
-  if (!sinst)
-    bombout(ERR_MEMORY);
+  problem = krb5_auth_con_init(context, &auth_con);
+  if (problem)
+    goto out;
 
-  status = krb_mk_req(&authent, LERT_SERVICE, sinst, srealm, no_more);
-  if (status != KSUCCESS)
-    bombout(ERR_KERB_AUTH);
+  problem = krb5_cc_default(context, &ccache);
+  if (problem)
+    goto out;
 
-  /* Get the session key now... we'll need it later. */
-  status = krb_get_cred(LERT_SERVICE, sinst, srealm, &cred);
-  if (status != KSUCCESS)
-    bombout(ERR_KERB_CRED);
-  des_key_sched(cred.session, sched);
-
-  free(srealm);
-  free(sinst);
+  problem = krb5_mk_req(context, &auth_con, 0, LERT_SERVICE, lert_host,
+			NULL, ccache, &auth);
+  if (problem)
+    goto out;
 
   /* Lert's basic protocol:
    * Client sends version, one byte query code, and authentication.
    */
-  plen = LERT_LENGTH + sizeof(int) + authent.length;
-  packet = malloc(plen);
-  if (!packet)
+  plen = LERT_LENGTH + sizeof(int) + auth.length;
+  pktbuf = malloc(plen);
+  if (!pktbuf)
     bombout(ERR_MEMORY);
-  packet[0] = LERT_VERSION;
-  packet[1] = no_more;
-  memcpy(packet + LERT_LENGTH, &authent, sizeof(int) + authent.length);
+  pktbuf[0] = LERT_VERSION;
+  pktbuf[1] = no_more;
+  memcpy(pktbuf + LERT_LENGTH, auth.data, auth.length);
 
   s = socket(AF_INET, SOCK_DGRAM, 0);
   if (s < 0)
     bombout(ERR_SOCKET);
   if (connect(s, (struct sockaddr *)&sin, sizeof(struct sockaddr_in)) < 0)
     bombout(ERR_CONNECT);
-  /* Get my address, for krb_rd_priv. */
-  memset(&lsin, 0, sizeof(lsin));
-  i = sizeof(lsin);
-  if (getsockname(s, (struct sockaddr *)&lsin, &i) < 0)
-    bombout(LERT_NO_SOCK);
 
   gotit = 0;
   for (tries = 0; tries < RETRIES && !gotit; tries++)
     {
-      if (send(s, packet, plen, 0) < 0)
+      if (send(s, pktbuf, plen, 0) < 0)
 	bombout(ERR_SEND);
       FD_ZERO(&readfds);
       FD_SET(s, &readfds);
       gotit = select(s + 1, &readfds, NULL, NULL, &timeout) == 1;
     }
-  free(packet);
+  free(pktbuf);
   if (tries == RETRIES)
     bombout(ERR_TIMEOUT);
 
   /* Read the response. */
   packetsize = 2048;
-  packet = malloc(packetsize);
-  if (!packet)
+  pktbuf = malloc(packetsize);
+  if (!pktbuf)
     bombout(ERR_MEMORY);
   plen = 0;
   while (1)
     {
-      int nread;
-
-      nread = recv(s, packet + plen, packetsize - plen, 0);
+      nread = recv(s, pktbuf + plen, packetsize - plen, 0);
       if (nread < 0)
 	bombout(ERR_RCV);
       plen += nread;
@@ -199,21 +181,36 @@ static char *lert_says(int no_more, char *server)
 	break;
 
       packetsize *= 2;
-      packet = realloc(packet, packetsize);
-      if (!packet)
+      pktbuf = realloc(pktbuf, packetsize);
+      if (!pktbuf)
 	bombout(ERR_MEMORY);
     }
+
+  packet.data = pktbuf;
+  packet.length = nread;
+
+  problem = krb5_auth_con_genaddrs(context, auth_con, s,
+				   KRB5_AUTH_CONTEXT_GENERATE_REMOTE_ADDR |
+				   KRB5_AUTH_CONTEXT_GENERATE_LOCAL_ADDR);
+  if (problem)
+    goto out;
 
   /* Now close the socket. */
   shutdown(s, 2);
   close(s);
 
-  status = krb_rd_priv(packet, plen, sched, cred.session,
-		       &sin, &lsin, &msg_data);
-  if (status)
-    bombout(ERR_SERVER);
+  /* Clear auth_context flags so we don't need to manually set up a 
+   * replay cache.
+   */
+  problem = krb5_auth_con_setflags(context, auth_con, 0);
+  if (problem)
+    goto out;
 
-  if (msg_data.app_length == 0)
+  problem = krb5_rd_priv(context, auth_con, &packet, &msg_data, NULL);
+  if (problem)
+    goto out;
+
+  if (msg_data.length == 0)
     return NULL;
 
   /* At this point, we have a packet.  Check it out:
@@ -222,24 +219,37 @@ static char *lert_says(int no_more, char *server)
    * [2 on] data...
    */
 
-  if (msg_data.app_data[0] != LERT_VERSION)
+  if (msg_data.data[0] != LERT_VERSION)
     bombout(ERR_VERSION);
 
-  if (msg_data.app_data[1] == LERT_MSG)
+  if (msg_data.data[1] == LERT_MSG)
     {
       /* We have a message from the server. */
-      message = malloc(msg_data.app_length - LERT_CHECK + 1);
+      message = malloc(msg_data.length - LERT_CHECK + 1);
       if (!message)
 	bombout(ERR_MEMORY);
-      memcpy(message, msg_data.app_data + LERT_CHECK,
-	   msg_data.app_length - LERT_CHECK);
-      message[msg_data.app_length - LERT_CHECK] = '\0';
+      memcpy(message, msg_data.data + LERT_CHECK,
+	   msg_data.length - LERT_CHECK);
+      message[msg_data.length - LERT_CHECK] = '\0';
     }
   else
     message = NULL;
-  free(packet);
+  free(pktbuf);
 
   return message;
+
+ out:
+  /* krb5 library checks if this is allocated so we don't have to. */
+  krb5_free_data_contents(context, &auth);
+  krb5_free_data_contents(context, &msg_data);
+
+  if (ccache)
+    krb5_cc_close(context, ccache);
+
+  if (auth_con)
+    krb5_auth_con_free(context, auth_con);
+
+  bombout(problem);
 }
 
 /* General error reporting */
@@ -286,8 +296,8 @@ static void bombout(int mess)
 	  fprintf(stderr, "Could not read message file\n");
 	  break;
 	default:
-	  fprintf(stderr, "A problem (%d) occurred when checking the "
-		  "database\n", mess);
+	  fprintf(stderr, "%s while accessing the database\n",
+		  error_message(mess));
 	  break;
 	}
       fprintf(stderr, "Please try again later.\n");

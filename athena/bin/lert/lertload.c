@@ -6,6 +6,9 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -14,10 +17,7 @@
 
 #include "lert.h"     
 
-
-main(argc, argv)
-int argc;
-char ** argv;
+int main(int argc, char **argv)
 {
   char buffer[512];
   DBM *db;
