@@ -21,6 +21,7 @@
 #else
 extern char *malloc();
 #endif
+#include <errno.h>
 
 /*
  * krb_realmofhost.

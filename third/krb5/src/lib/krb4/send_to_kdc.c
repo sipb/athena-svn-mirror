@@ -18,6 +18,7 @@
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
+#include <errno.h>
 
 #define S_AD_SZ sizeof(struct sockaddr_in)
 
