@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -76,12 +76,11 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
-
-@USE_INSTALLED_GLIB_TRUE@pkg_config_CFLAGS = @USE_INSTALLED_GLIB_TRUE@@GLIB_CFLAGS@
-@USE_INSTALLED_GLIB_TRUE@pkg_config_LDFLAGS = @USE_INSTALLED_GLIB_TRUE@@GLIB_LIBS@
-@USE_INSTALLED_GLIB_FALSE@SUBDIRS = @USE_INSTALLED_GLIB_FALSE@glib-1.2.8
+@USE_INSTALLED_GLIB_TRUE@included_glib_includes = @USE_INSTALLED_GLIB_TRUE@@GLIB_CFLAGS@
 @USE_INSTALLED_GLIB_FALSE@included_glib_includes = @USE_INSTALLED_GLIB_FALSE@-I./glib-1.2.8
+@USE_INSTALLED_GLIB_TRUE@pkg_config_LDADD = @USE_INSTALLED_GLIB_TRUE@@GLIB_LIBS@
 @USE_INSTALLED_GLIB_FALSE@pkg_config_LDADD = @USE_INSTALLED_GLIB_FALSE@glib-1.2.8/libglib.la
+@USE_INSTALLED_GLIB_FALSE@SUBDIRS = @USE_INSTALLED_GLIB_FALSE@glib-1.2.8
 
 m4dir = $(datadir)/aclocal
 m4_DATA = pkg.m4
@@ -127,6 +126,8 @@ parse.$(OBJEXT) main.$(OBJEXT) findme.$(OBJEXT) popt.$(OBJEXT) \
 poptconfig.$(OBJEXT) popthelp.$(OBJEXT) poptparse.$(OBJEXT)
 @USE_INSTALLED_GLIB_FALSE@pkg_config_DEPENDENCIES =  \
 @USE_INSTALLED_GLIB_FALSE@glib-1.2.8/libglib.la
+@USE_INSTALLED_GLIB_TRUE@pkg_config_DEPENDENCIES = 
+pkg_config_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

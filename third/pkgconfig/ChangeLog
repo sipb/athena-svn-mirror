@@ -1,3 +1,110 @@
+2002-10-10  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 0.14
+
+2002-10-02  Anders Carlsson  <andersca@gnu.org>
+
+	* pkg.c (add_env_variable_to_list): Don't return NULL, return
+	the new list.
+	(verify_package): break if we've removed the variable.
+
+2002-09-26  Tor Lillqvist  <tml@iki.fi>
+
+	* parse.c (get_compat_package): Return NULL right away on
+	Windows. There has never been any of these legacy *-config scripts
+	distributed for Windows as far as I know.
+
+2002-09-26  Anders Carlsson  <andersca@gnu.org>
+
+	* pkg.c (verify_package): Use strncmp when checking for
+	the -I prefix.
+
+2002-09-19  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: 0.13
+
+2002-09-19  Anders Carlsson  <andersca@gnu.org>
+
+	* pkg.c: (verify_package):
+	Don't call g_free on strings returned from g_getenv.
+	
+Tue Sep 17 14:11:51 2002  Jonathan Blandford  <jrb@redhat.com>
+
+	* pkg.c: strip out C_INCLUDE_PATH and CPLUS_INCLUDE_PATH if they
+	exist, as this can break -Werror on some newer gcc versions.
+
+2002-09-13  Tor Lillqvist  <tml@iki.fi>
+
+	* Makefile.am (USE_INSTALLED_GLIB): Seems that the automake
+	version used by Havoc doesn't recognize pkg_config_CFLAGS and
+	pkg_config_LDFLAGS, thus failing builds on Win32 directly from the
+	tarball. Set included_glib_includes and pkg_config_LDADD instead,
+	then, like in the !USE_INSTALLED_GLIB branch.
+
+	* findme.c (X_OK): If X_OK undefined, define as 1, always, not
+	only if G_OS_WIN32, which is never defined here. Fixes a corner
+	case on Win32 with MSYS and mingw where configure as included in
+	the release tarball for some reason doesn't find unistd.h.
+
+2002-09-09  Havoc Pennington  <hp@pobox.com>
+
+	* pkg.c (fill_list_single_package): fix uninitialized variable,
+	patch from Andrea Suatoni
+
+2002-09-06  Havoc Pennington  <hp@redhat.com>
+
+	* parse.c, pkg.c: handle other_libs other_cflags same 
+	as -l/-L/-I flags, so we pull in from dependent packages. 
+	Closes #85244, #90706, #89851
+
+2002-03-27  Havoc Pennington  <hp@redhat.com>
+
+	* pkg.c (verify_package): fix a typo
+
+2002-03-07  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 0.12.0
+
+2002-03-06  Tor Lillqvist  <tml@iki.fi>
+
+	* configure.in: Use GLib 2.x on Win32.
+
+2002-02-28  Havoc Pennington  <hp@redhat.com>
+
+	* pkg-config.1: add a note about the need for AC_SUBST with
+	PKG_CHECK_MODULES. Stefan Kost pointed this out.
+
+2002-02-28  Havoc Pennington  <hp@redhat.com>
+
+        Fix for static linking, -l flag order for libs in multiple prefixes
+	
+	* pkg.c: only sort -L/-I by PKG_CONFIG_PATH order, don't sort 
+	-l flags.
+	(fill_list_single_package): make whether to path sort
+	controlled by a boolean arg
+	(fill_list): ditto
+
+2002-02-13  Havoc Pennington  <hp@redhat.com>
+
+	* pkg.c (internal_get_package): look up path position by package
+	key, not package name
+
+2002-02-12  Havoc Pennington  <hp@redhat.com>
+
+	* pkg.c (scan_dir): use g_strdup, and fix the location where 
+	we assign the nul byte, so we don't mangle things for directories
+	that end in '/' - reported by Enrico Scholz
+
+2002-02-07  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 0.11.0
+
+2002-02-07  Havoc Pennington  <hp@redhat.com>
+
+	* autogen.sh: patch gslist.c so that it has a stable sort
+	function, so we don't utterly mangle the order of the libraries on
+	the link line.
+
 2002-02-03  Havoc Pennington  <hp@pobox.com>
 
 	* configure.in: 0.10.0

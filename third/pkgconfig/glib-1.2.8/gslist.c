@@ -550,7 +550,7 @@ g_slist_sort_merge  (GSList      *l1,
 
   while (l1 && l2)
     {
-      if (compare_func(l1->data,l2->data) < 0)
+      if (compare_func(l1->data,l2->data) <= 0)
         {
 	  l=l->next=l1;
 	  l1=l1->next;
