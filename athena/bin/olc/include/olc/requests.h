@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.1 1989-07-07 13:22:39 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.2 1989-07-13 13:26:53 tjcoppet Exp $
  */
 
 /* request structure */
@@ -93,6 +93,7 @@ typedef struct tIO_REQUEST
 #define OLC_HELP_TOPIC      236
 #define OLC_VERIFY_TOPIC    237
 #define OLC_CONNECTED       238
+#define OLC_LOAD_USER       239
 
 /* Return values from daemon requests and functions. */
 
