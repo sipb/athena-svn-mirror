@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/port.c,v $
- *      $Author: jtkohl $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Id: port.c,v 1.5 1989-11-28 14:48:05 jtkohl Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.6 1990-05-17 03:45:55 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -425,8 +425,20 @@ void create_port_from_files(name, input, output)
 {
     port *p = create_named_port(name);
 
+#if !defined(ibm032)
     p->get = input ? get_file : NULL;
     p->put = output ? put_file : NULL;
+#else
+    /* RT compiler (hc2.1y) bug workaround */
+    if (input)
+        p->get = get_file;
+    else
+        p->get = NULL;
+    if (output)
+        p->put = put_file;
+    else
+        p->put = NULL;
+#endif
     p->close_input = close_file_input;
     p->close_output = close_file_output;
     p->status = 0;
