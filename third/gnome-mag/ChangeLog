@@ -1,0 +1,1781 @@
+2004-04-26  Jayaradha  <njaya@redhat.com>
+
+        * configure.in: Added "ta" (Tamil) to ALL_LINGUAS.
+
+2004-08-24  Bill Haneman <billh@gnome.org>
+
+	* configure.in, NEWS, README: Revved to 0.11.5.
+
+	* magnifier/magnifier.c: Implement LoginHelper API from
+	at-spi.
+	(magnifier_new): Aggregate LoginHelper interface via 
+	new MagLoginHelper subclass.
+	(mag_login_helper_get_raise_windows): New.
+	(mag_login_helper_get_device_reqs): New.
+	(mag_login_helper_set_safe): New, no-op.
+	Fixes bug #150846.
+	
+2004-08-17  Bill Haneman <billh@gnome.org>
+
+	* configure.in:
+	Check in /usr/openwin/sfw/lib for Damage and Xfixes client
+	libraries, because XSun puts them there.
+	Revved to 0.11.4.
+
+	* magnifier/zoom-region-private.h: Added paint_cursor_gc 
+	and crosswire_gc here.
+
+	* magnifier/magnifier.c:
+	(magnifier_set_property): Re-init the cursor set when TARGET
+	display changes; this is necessarly along with fixes listed below, 
+	to ensure that the pixmaps for backing data are recreated for the
+	new GdkScreen.
+	
+	* magnifier/zoom-region.c:
+	(zoom_region_priv_init): Init the paint_cursor_gc and crosswire_gc to NULL.
+	(zoom_region_paint_cursor): Method-static GC here was wrong, it must be reinitialized
+	on a per-region basis if the target display changes.
+	(zoom_region_paint_crosswire_cursor):	Method-static GC cache was
+	a bad idea here too, see above.
+	Fixes bug #149599.
+	
+	Removed some #ifdef XTST_CURSOR code that didn't work anyway; we
+	don't need it now that we have XFIXES.
+	
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add nb to ALL_LINGUAS.
+
+2004-08-13  Gora Mohanty  <gmohanty@cvs.gnome.org>
+
+	* configure.in: Added "or" to ALL_LINGUAS.
+
+2004-06-15  Bill Haneman <billh@gnome.org>
+
+	* magnifier/magnifier-main.c:
+	(main): Only queue the global refresh if DAMAGE is not available.
+
+	* magnifier/magnifier.h:
+	(magnifier_source_has_damage_extension): New.
+
+	* magnifier/damage-client.c:
+	(magnifier_source_has_damage_extension): New, test for DAMAGE
+	in source display.
+	
+2004-06-11  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 0.11.3.
+
+	* magnifier/magnifier-main.c:
+	Added is_override_redirect flag to MagnifierOptions.
+	Initialized to '0'.  Added --override-redirect 
+	commandline option.
+
+	* magnifier/magnifier.h:
+	(magnifier_new): Take a gboolean indicating whether the instance
+	should be override-redirect or not.
+
+	* magnifier/magnifier.c:
+	Removed #define MAG_WINDOW_OVERRIDE_REDIRECT and related
+	compile-time bracketing, replaced with override-redirect
+	runtime flag.
+	Added enum for WM_STRUT types.
+	(magnifier_reset_struts_at_idle): New, called in idle handler
+	after a window is created, to ensure that struts are set when
+	appropriate.
+	(magnifier_check_set_struts): Sets the _NET_WM_STRUT and 
+	_NET_WM_STRUT_PARTIAL properties on the magnifier window.
+	Has no effect if the window is override-redirect.
+	(magnifier_set_property): Call magnifier_check_set_struts when the
+	source or target display, or target bounds, are changed.
+	(impl_magnifier_add_zoom_region): Reset the struts when a zoom
+	region is added.
+	(magnifier_init_window): Register an idle handler to set the
+	window struts.
+	(magnifier_new): Take a boolean indicating whether the
+	instance is override redirect or not.  Attach to the
+	size_allocate signal.
+	(magnifier_size_allocate): New, reset struts when size changes.
+	Fixes for bug #124690.
+
+	* test/control-client.c:
+	Added test "control-client T" for resizing the target bounds.
+	
+2004-05-27  Mohammad DAMT  <mdamt@bisnisweb.com>
+ 
+	* po/id.po: Added Indonesian translation done by 
+	Ahmad Riza H Nst <rizahnst@eriagempita.co.id>
+	* configure.in: Added id to ALL_LINGUAS
+ 
+2004-05-14  Bill Haneman <billh@gnome.org>
+
+	* test/control-client.c:
+	Add a test for cursor size, "control-client S".
+
+	* magnifier/magnifier_transform_cursor:
+	Ensure that size_y is initialized.  Fix for
+	#141503.
+
+	* configure.in: Revved to 0.11.2.
+	
+2004-04-28  Bill Haneman <billh@gnome.org>
+
+	* test/control-client.c:
+	Added a test for magnifier color and scale factor,
+	"control-client m".
+	
+2004-04-27  Bill Haneman <billh@gnome.org>
+
+	* magnifier/magnifier.c:
+	(magnifier_get_cursor): Remember to transform the cursor if
+	we fall back to the 'default' cursor image and set.
+	Fixes bug #141211.
+	
+2004-04-27  Bill Haneman <billh@gnome.org>
+
+	* magnifier/magnifier.c:
+	(magnifier_warp_cursor_to_screen): New method, ensures that
+	pointer is on source display when source display is set by client.
+	(magnifier_set_property): Call warp_cursor_to_screen when source is set.
+
+2004-04-14  Bill Haneman <billh@gnome.org>
+
+	* cursors/1_32/Makefile.am: Added missing file.
+	
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-07  Bill Haneman <billh@gnome.org>
+
+	Fixed border-color property (border-size is still broken).
+
+	* magnifier/magnifier-main.c: Fix setting of smooth-scroll-policy
+	and border-size.
+
+	* magnifier/zoom-region.c:
+	(zoom_region_paint_border): Reinstated.
+	Fixed color creation (color RGB values are 16 bit) and
+	allocate the color on the appropriate drawable.
+	(zoom_region_get_property, zoom_region_set_property): 
+	Fix for smoothscroll and bordersize properties.
+	
+
+2004-04-07  Bill Haneman <billh@gnome.org>
+
+	Big changes to cursor handling, to support 
+	cursor-change notifications from Xfixes.
+	Fix for bug #104831.
+	
+	* Makefile.am:
+	Added "cursors" to SUBDIRS.
+
+	* configure.in:
+	Revved to 0.11.1.
+	Added AC_OUT targets cursors/Makefile and cursors/1_32
+
+	* magnifier/Makefile.am:
+	Don't dist cursor data from here, dist from cursors subdir.
+
+	* magnifier/magnifier-private.h:
+	Changed private cursor_default_size to
+	cursor_default_size_x/y, to support non-square cursors.
+	Added "use_source_cursor" flag, and cursorlist hash table
+	of named cursor pixbufs.
+
+	* magnifier/magnifier.c:
+	Include "config.h", and include Xfixes.h if HAVE_XFIXES is
+	defined.  Added statics for cursor_client_connection,
+	fixes_event_base, fixes_error_base.
+	(magnifier_set_cursor_from_pixbuf): New utility (from
+	refactoring).
+	(magnifier_free_cursor_pixels): Called when an XFixes cursor 
+	is destroyed.
+	(magnifier_get_source_pixbuf): New, returns a GdkPixbuf
+	which contains the current source display's cursor image,
+	if XFixes is available.
+	(magnifier_get_pixbuf_for_name): New, returns a named cursor
+	pixbuf from a previously loaded cursor set.
+	(magnifier_set_cursor_pixmap_by_name): New, either sets the
+	cursor from a named pixbuf in a cursor set (if found), or
+	resorts to the source image from Xfixes (if available), or
+	else loads a cursor called "default".
+	(magnifier_cursor_notify): New, gets called if/when events are 
+	received on the x connection on which XFixesSelectCursorNotify
+	has been called (if Xfixes is available).
+	(magnifier_cursor_notification_init): New, sets up the
+	notification link from Xfixes, if available.
+	(magnifier_set_expose_listener): Renamed to
+	(magnifier_set_extension_listeners): added call to
+	magnifier_cursor_notification_init ().
+	(magnifier_recolor_pixbuf): Don't only recolor pure black pixels,
+	recolor all those darker than "0x808080".
+	(magnifier_transform_cursor): Allow non-square cursors.
+	(magnifier_init_cursor): renamed to
+	(magnifier_init_cursor_set): Initialize a whole hashtable of
+	cursors whose names are taken from their filenames in a directory
+	whose dirname corresponds to the cursor-set name.
+
+	* magnifier/magnifier.h: Added cursor_size_x and cursor_size_y
+	in place of "cursor_size".
+
+	* magnifier/zoom-region.c: Removed some debug printfs.
+	
+2004-04-07  Bill Haneman <billh@gnome.org>
+
+	* magnifier/magnifier.c:
+	(magnifier_realize): Reversed incorrect sense of a #define 
+	regarding WM hints when gnome-mag is using OVERRIDE_REDIRECT.
+	(magnifier_reparent_zoom_regions): New method, reparents
+	zoom regions when target DISPLAY is changed.
+	See bug #137105; re-targeting now preserves existing zoomers.
+	(magnifier_init_window): Set window type to GTK_WINDOW_TOPLEVEL
+	if compiled with MAG_WINDOW_OVERRIDE_REDIRECT undefined.
+
+	* magnifier/zoom-region.c:
+	(zoom_region_get_property, zoom_region_set_property): 
+	Added get/set for "is-managed" property.
+	Fixed broken fall-through in BORDERCOLOR_PROP.
+	Changed BORDERSIZE_PROP to LONG.
+	Changed usage of "default_gc" to use "priv->default_gc".
+	(zoom_region_private_init): Init priv->default_gc to NULL.
+	
+	* magnifier/zoom-region.h:
+	Added "is_managed" boolean member.
+
+	* magnifier/zoom-region-private.h:
+	Added "default_gc" GdkGC* member.
+
+	* test/control-client.c:
+	Added tests for setting target and source displays.
+	"s" changes source display, "t" changes target.
+	Changed arg for 'resize' from "s" to "b" (mnemonic 'bounds).	
+	
+2004-04-06  Bill Haneman <billh@gnome.org>
+
+	* configure.in:
+	Revved to 0.11.0.  This is now the unstable
+	(gnome-2.7) branch of gnome-mag.
+	Added (non-fatal) checks for DAMAGE and XFIXES
+	X extensions, and set HAVE_DAMAGE and HAVE_XFIXES
+	accordingly.
+
+	* idl/GNOME_Magnifier.idl:
+	(markDirty): Clarified doc/comment, to indicate
+	that markDirty's input region is clipped by
+	the current target visibility.
+
+	* magnifier/damage-client.[ch]:
+	New files, to support notifications from the DAMAGE
+	extension.
+
+	* magnifier/Makefile.am: 
+	Added damage-client.[ch] to sources.
+	Fixes bug #136635.
+
+	* magnifier/magnifier-main.c:
+	(magnifier_main_refresh_all): Changed reference to property
+	"source-display-size" to "source-display-bounds".
+	(main): Use bonobo_pbclient APIs for setting
+	source and target display bounds.  Set the source display bounds
+	to halfscreen if we're started in splitscreen (vertical or
+	horizontal) mode.
+
+	* magnifier/magnifier.c:
+	(magnifier_zoom_regions_mark_dirty): New internal method,
+	sends dirty notification to all zoom regions.
+	(magnifier_notify_damage): New, used to pass an XRectangle
+	indicating a dirty region in the source display.
+	(magnifier_expose_filter): Refactor to use
+	magnifier_zoom_regions_mark_dirty.
+	(magnifier_set_expose_listener): Also init the damage client
+	when called.
+	(magnifier_get_display_rect_bounds): New method to load a
+	RectBounds from a magnifier's source or target display.
+	(magnifier_init_display): New method, initializes the 
+	source or target display fields when a new display-name is passed
+	in.
+	(magnifier_exit): Moved this method.
+	(magnifier_get_property): Changed implementation for
+	SOURCE_SIZE_PROP and TARGET_SIZE_PROP to read from the stored
+	value, rather than always returning the absolute bounds of the
+	source/target display.
+	(magnifier_set_property): Make SOURCE_SIZE_PROP and
+	TARGET_SIZE_PROP read/write.  Fixes bug #135409.
+	Make sure to reset source/target bounds when resetting source or
+	target display.
+
+	* magnifier/magnifier.h:
+	Added source_bounds to Magnifier struct.
+	Added declarations for magnifier_notify_damage.
+	
+2004-03-22  Bill Haneman <billh@gnome.org>
+
+	* configure.in:
+	Revved to 0.10.10.
+	This is the gnome 2.6.0 release of gnome-mag.
+
+2004-03-21   Mugurel Tudor  <mugurelu@go.ro>
+
+	* configure.in: Added "ro" to ALL_LINGUAS
+
+2004-03-20  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-17  Leonid Kanter <leon@asplinux.ru>
+
+	* configure.in: Added "ru" to ALL_LINGUAS.
+
+2004-03-17  John C Barstow  <jbarstow@cvs.gnome.org>
+
+	* configure.in: Added "mi" to ALL_LINGUAS.
+
+2004-03-13  Danilo Segan  <dsegan@gmx.net>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-03-10  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-10  Bill Haneman <billh@gnome.org>
+
+	* configure.in: (build fix)
+	Don't check for XTST twice.
+	
+2004-03-07  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 0.10.8.
+	Fix for builds with non-standard Xlib prefixes
+	[Fernando Herrera, bug #130787].
+
+	* NEWS: updated.
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-03  Bill Haneman <billh@gnome.org>
+
+	* magnifier/magnifier-main.c:
+	Made smooth-scrolling on by default, since there is
+	little performance difference on the platforms we've tested.
+
+2004-02-27  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2004-02-24  Bill Haneman <billh@gnome.org>
+
+	* configure.in:
+	Revved to 0.10.7.
+	
+	* magnifier/magnifier.c:
+	(magnifier_init_window): Make the toplevel magnifier window
+	GTK_TYPE_POPUP as it should be override-redirect and should never
+	be occluded or decorated.
+	
+2004-02-10  Tomasz K�oczko <kloczek@pld.org.pl>
+
+	* magnifier/Makefile.am: fix for paralel build (make -j<N>).
+	* configure.in: Trivial cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are
+	  substed by default.
+
+2004-02-09  Bill Haneman <billh@gnome.org>
+
+	* configure.in: Revved to 0.10.6.
+
+	Re-dist to fix libtool problem.
+	
+2004-02-06  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2003-01-08  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/zoom-region.c: Fix pan test so that it does not
+	call zoom_region_process_updates if the delta is 0.  This
+	should fix the problem with Frame Rate being assigned 
+	unreasonable values.  Also fixed the counter so it exits
+	the pan test after the correct number of iterations.
+
+2003-01-06  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/zoom-region.c: Properly reset max totals.
+
+2003-12-20  Arafat Medini <lumina@silverpen.de>
+                                                                               
+	* configure.in: Added Arabic locale "ar"  to ALL_LINGUAS
+
+2003-12-17  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/zoom-region.c:
+	Now cache gc's, so there is less X-traffic.
+	* magnifier/magnifier-main.c:
+	Properly abort if user specifies a pantest but does not supply
+	a number of iterations via --timing-iterations.  Corrected bug
+	with exit-magnifier property not being set properly during the
+	update test.
+
+2003-12-11  Bill Haneman <billh@gnome.org>
+
+	* magnifier/magnifier.c:
+	Fixed compile issue in magnifier_expose_filter.
+	Thanks to Kaushal Kumar for catching the problem.
+
+2003-12-10  TÃµivo LeedjÃ¤rv  <toivo@linux.ee>
+
+	* configure.in: Added et to ALL_LINGUAS.
+
+2003-12-10  Bill Haneman <billh@gnome.org>
+
+	* magnifier/zoom-region.c:
+	(zoom_region_update): Changed use of deprecated
+	gdk_pixbuf_render_to_drawable to
+	gdk_draw_pixbuf.
+
+	* magnifier/magnifier.c:
+	(magnifier_transform_cursor): 
+	Replaced gdk_pixbuf_render_to_drawable with gdk_draw_pixbuf (as above).
+
+	* magnifier/magnifier-main.c, zoom-region.c, magnifier.c:
+	Silenced some other compiler warnings introduced by timing patch.
+
+2003-12-10  Bill Haneman <billh@gnome.org>
+
+	* magnifier/zoom-region.c:
+	Add #include <gdk/gdk.h>
+	(zoom_region_clip_to_target): New function, clips a rectangle
+	in the source screen to the zoom-region's target.  Used for 
+	processing expose/dirty notifications on the source.
+	(impl_zoom_region_mark_dirty): Fixed implementation; it was
+	using the wrong coordinate system for the 'dirty' notification.
+
+	* idl/GNOME_Magnifier.idl:
+	Improved docs for markDirty.
+
+	* magnifier/magnifier.c:
+	(magnifier_expose_filter): New  method, filters
+	'GdkExpose' events that are passed in on a source
+	window for which notifications are selected by the 
+	client.  Useful if we have the ability to 'snoop' exposes on 
+	the source.
+	(magnifier_set_expose_listener): 
+	Add the expose filter (above) to a specified GdkWindow.
+	(magnifier_realize): Add the expose filter (above) to the source root window
+	on set_source_display.
+	(impl_magnifier_add_zoom_region): Add the expose filter to the source
+	root when the first zoom region is added.
+	
+2003-12-08  Brian Cameron <Brian.Cameron@sun.com>
+	* magnifier/zoom-region.c
+	Cleaned the timing report, now more code reuse.
+
+2003-12-09  Ãsmund SkjÃ¦veland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added nn to ALL_LNGUAS.
+	* nn.po: Added Norwegian Nynorsk translation.
+
+2003-12-09  Bill Haneman <billh@gnome.org>
+
+	* configure,in, README, NEWS:
+ 	Version 0.10.4.
+
+2003-12-08  Brian Cameron <Brian.Cameron@sun.com>
+	* magnifier/zoom-region.[ch]
+	* magnifier/magnifier-mai.c
+	Updated performance tests so that they work properly when 
+	at magnification factors greater than 2.  Improved test so that
+	the ROI never goes off the edge of the screen, and exits more
+	cleanly.  Now display a performance summary so that performance
+	data can be seen even if --timing-output is not specified.
+	Improved the output so that it displays more useful information.
+	Cleaned the implementation and code style.
+
+2003-11-19  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/zoom-region.c
+	Made logic for computing total frame time more accurate, cleaned some
+	printf statments, and added comments explaining how to read the timing
+	report output.
+
+2003-11-18  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/zoom-region.c
+	Fixed typo in printf statement.
+
+2003-11-12  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/magnifier-main.c
+	* magnifier/zoom-region.c
+	Updated panning test so that it loads the magnifier with
+	screen data on first loop before starting the pan test.
+
+2003-11-06  Brian Cameron <Brian.Cameron@sun.com>
+
+	* magnifier/zoom-region.h
+	* magnifier/magnifier-main.c
+	* magnifier/zoom-region.c
+	Adding perfomance timing output.  Support two different types
+	of tests (--timing-delta-x/y and --timing-pan-rate).  Now
+	support pending of set_roi requests if they are coming in
+	more quickly than can be processed.
+
+2003-09-30  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eu" to ALL_LINGUAS.
+
+2003-09-22  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-09-19  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "br" to ALL_LINGUAS.
+
+2003-09-02  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-08-24  Sanlig Badral  <badral@openmn.org>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-08-08  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" to ALL_LINGUAS.
+
+2003-08-06  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2003-08-01  Yuriy Syrota  <yuriy@beer.com>
+
+	* configure.in: Added "uk" to ALL_LINGUAS.
+
+2003-07-30 Paderaig O'Briain <padraig.obriain@sun.com>
+	
+	* magnifier/magnifier.c:
+	Add include of <strings.h> to fix compiler warning.
+	Remove semicolon after BONOBO_TYPE_FUNC_FULL to fix compiler warning.
+	(magnifier_init): Move call to bonobo_activation_active_server_register
+	to magnifier_new as BONOBO_OBJREF () returns NULL here; it causes
+	bonobo-activation-server to crash where NUILL CORBA object is sent.
+	(magnifier_new): check if server's registration was successful or not 
+	and take action accordingly. Code from Adi Dascal.
+
+	This fixes bug #117991.
+
+2003-07-20  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINGUAS.
+
+2003-07-08  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
+
+2003-07-06  Andras Timar  <timar@gnome.hu>
+
+	* configure.in: Added "hu" to ALL_LINGUAS.
+
+2003-07-02  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2003-06-30  Artur Flinta  <aflinta@cvs.gnome.org>
+
+        * configure.in: Added "pl" to ALL_LINGUAS.
+
+
+2003-06-29  Dafydd Harries  <daf@parnassus.ath.cx>
+
+	* configure.in: Added cy (Welsh) to ALL_LINGUAS.
+
+2003-06-28  Jordi Mallach  <jordi@sindominio.net>
+
+	* configure.in (ALL_LINGUAS): Added "ca" (Catalan).
+
+2003-06-18  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added Turkish ("tr") to the languages' list.
+
+2003-06-03  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added "ko" to ALL_LINGUAS.
+
+2003-05-20  Marcel Telka  <marcel@telka.sk>
+
+	* configure.in: Added "sk" to ALL_LINGUAS.
+
+2003-05-13  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "zh_TW" to ALL_LINGUAS.
+
+2003-05-10  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-04-26  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added 'ja' into ALL_LINGUAS.
+
+2003-04-22 Adi Dascal <ad@baum.ro>
+
+	* magnifier/Makefile.am:
+	GNOME_Magnifier.server file will be generated and installed.
+	Cosmetical and functional change to EXTRA_DIST (same data, which is
+	the value of "server_in_files" variable was exposed in two places).
+	Added CLEANFILES tag, so the .server and .server.in will be erased at
+	make clean.
+	
+2003-04-05  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added "pt" to ALL_LINGUAS.
+
+2003-04-02  Bill Haneman <bill.haneman@sun.com>
+
+	[Bugs 106067, 105298, 105820]
+
+	[Replaced use of deprecated methods gtk_signal_connect,
+	gtk_exit, gtk_drawable_size, gtk_window_get_size.]
+
+	* configure.in: Add -DG*_DISABLE_DEPRECATED to 
+	GNOME_MAG_DEBUG_CFLAGS.
+
+	* magnifier/Makefile.am:
+	Add GNOME_MAG_DEBUG_CFLAGS to $INCLUDES
+	(note that these CFLAGS don't include debug flags
+	if --enable-debug wasn't specified).
+
+	* test/mag-test.c:
+	(magnifier_clear_all_regions): Removed (unused).
+	(test_client_magnifier_get_zoomer): #ifdef'ed out (unused).
+	
+	* magnifier/magnifier-main.c:
+	(main): Do popt stuff before calling gtk_init.
+	Also, set $DISPLAY via putenv if it has been
+	assigned via --target-display, this is because gtk+
+	may not handle changing X servers mid-stream
+	very well. 
+
+	* magnifier/magnifier.h:
+	* magnifier/magnifier.c:
+	(magnifier_new): Don't pass argc and argv anymore, we
+	weren't using them anyhow.
+
+	* magnifier/zoom-region.c:
+	(zoom_region_paint_crosswire_cursor):
+	Fix broken calculation of clip bounds if we're clipping a
+	crosswire cursor of thickness > 1 pixel about a cursor bitmap.
+	
+2003-04-02  Bill Haneman <bill.haneman@sun.com>
+
+        Fix for bugs 105205 and 106067.
+
+	* magnifier/magnifier-main.c:
+	(magnifier_options): Improved terse docs for --fullscreen,
+	noting dependency on --source-display and --target-display.
+
+	* configure.in: version 0.10.0
+	
+	* idl/GNOME_Magnifier.idl:
+	(setMagFactor): return boolean instead of void,
+	i.e. FALSE on failure.
+
+	* magnifier/magnifier.h:
+	(magnifier_error_check): New; test for X allocation errors.
+
+	* magnifier/magnifier.c:
+	(magnifier_error_check): New method (see above).
+	(magnifier_x_error_handler): New method (see above).
+	(magnifier_realize): Set X error handler (as above).
+
+	* magnifier/zoom-region.h:
+	* magnifier/zoom-region.c:
+	(ZoomRegionPixmapCreationError): New enum.
+	(zoom_region_paint_crosswire_cursor): 
+	Initialize x_left_clip and y_top_clip.
+	(zoom_region_create_pixmap): New, broken out from
+	zoom_region_expose_handler.  
+	Returns an error code if the pixmap could not be 
+	created, for instance if the target drawable isn't 
+	initialized yet, or we run out of X memory.
+	(zoom_region_expose_handler): call create_pixmap (above),
+	and decrement the scale factor if we can't allocate it.
+	(impl_zoom_region_set_mag_factor): Refuse to comply, and
+	return CORBA_FALSE, if the resulting pixmap is too big for
+	X to allocate.  This also means we do the pixmap allocation
+	synchronously now, so we can check.  
+	Note that we can only check if the target is already in
+	existance, so in some cases (setting the initial mag factor
+	at magnifier startup, i.e. before it's mapped) we 
+	won't actually return CORBA_FALSE, but will just create the
+	largest pixmap possible once the target drawable is realized.
+		
+
+2003-04-02  Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier-main.c:
+	(magnifier_main_refresh_all):
+	Removed obsolete FIXME comment.
+	
+	* magnifier/magnifier.h:
+	(magnifier_get_root): New method.
+	
+	* magnifier/magnifier.c:
+	(magnifier_get_root): New method.
+	(magnifier_init_window): New method, initializes
+	magnifier's main window.
+	(magnifier_init): Call magnifier_init_window, don't
+	try to set the magnifier's root window here anymore.
+	Don't set source and target display to $DISPLAY here,
+	set them also in magnifier_init_window.
+	Initialize magnifier->priv->root to NULL and 
+	set it on-demand.
+	
+	* magnifier/zoom-region.c:
+	(zoom_region_scroll_smooth, zoom_region_cursor_rect): 
+	(zoom_region_paint_cursor, zoom_region_paint_pixmap): 
+	Checks for NULL drawables (null cursor,
+	null window, null cursor-backing-pixmap, etc.)
+	(zoom_region_properties_init):
+	Free new bonobo_args after use.
+	(zoom_region_update_pointer, zoom_region_source_root): 
+	Replace direct access to private magnifier 'root' 
+	window with magnifier_get_root().	
+	
+2003-04-02  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: release 0.9.2
+	Removed obsolete GNOME_PLATFORM_GNOME2 macro.
+	Replaced AC_DEFINE instances with 3-arg versions, to
+	allow omission of acconfig.h.
+	Include po/Makefile in AC_OUTPUT.
+	
+	* acconfig.h: removed.
+	
+	* Makefile.am: added 'po' to SUBDIRS.
+
+2003-03-28  Glynn Foster  <glynn.foster@sun.com>
+		
+	* configure.in: release 0.9.1
+	* magnifier/Makefile.am: Fixes to distcheck.
+	* Makefile.am: Add the intltool stuff to the 
+	distcheck.
+
+2003-03-26 Bill Haneman <bill.haneman@sun.com>
+
+        Released 0.9.1.
+	
+	* configure.in: version 0.9.1.
+	* NEWS: updated.
+
+2003-03-23 Adi Dascal <ad@baum.ro> [committed by bh]
+
+ 	* magnifier/magnifier.c:
+ 	(magnifier_transfor_cursor): transform the hotspot, too. (if a scaling 
+ 	    occurs than the position of the hotspot is not the same as in the 
+ 	    xpm file)
+ 	(magnifier_init_cursor): hold the default hotspot positions in the private
+ 	    strucure.
+ 	
+2003-03-25  Metin Amiroff <metin@karegen.com>
+
+	* configure.in: Added "az" to ALL_LINGUAS.
+
+2003-02-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-20  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS.
+
+2003-02-17 Bill Haneman <bill.haneman@sun.com>
+
+	Fixes for bugzilla #106304.
+	
+	* magnifier/magnifier.c:
+	(magnifier_parse_display_name): Fixed silly error in 
+	parsing of screen_num.
+	(magnifier_realize): Changed references to 
+	gdk_x11_get_atom_by_name to gdk_x11_get_atom_by_name_for_display.
+	(magnifier_set_property):
+	Fixes so that magnifier's main GtkWindow is moved to the correct
+	target screen when the MAGNIFIER_TARGET_DISPLAY_PROP property
+	is set.
+
+2003-01-31 Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier_main.c:
+	(main):
+	Fixed magnifier's cursor-color property be use ulong.
+	(global_options):
+	Reverted the default cursor-set back to "default",
+	from "crosswire" (which doesn't exist).
+	
+	* magnifier/magnifier.c:
+	(magnifier_set_property): 
+	Fixed bonobo-arg bug which was 
+	introduced/exposed by pbclient patch.
+	(magnifier_set_property): 
+	(magnifier_get_property): 
+	Revised use of cursor_color property to be a 
+	'proper' unsigned long.	
+	(magnifier_init_cursor):
+	Restructured 'if' to squash occasional leak.
+	(magnifier_transform_cursor): Killed a debug printf.
+
+	* magnifier/crosswire-cursor.xmp:
+	Fixed bug in XPM input that resulted in wrong hotspot
+	visuals.
+	
+2003-01-27 Adi Dascal <ad@baum.ro>
+
+	* magnifier/cursors/*:
+	Modified *.xpm files so the cursors would be able to be coloured by
+	the current algorithm.
+
+	* magnifier/magnifier.c:
+	(magnifier_init_cursor): added a way to obtain the hotspots from the
+	    *.xpm cursor files, using a GdkPixbuf method.
+
+	* magnifier/crosshair-cursor.xpm,
+	* magnifier/default-cursor.xpm :
+	Added hotspot information inside the file.
+
+	* magnifier/magnifier-main.c:
+	Setting "cursor-set" property - added.
+
+2003-01-27  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* configure.in (ALL_LINGUAS): Added "fi" (Finnish).
+
+2003-01-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added GETTEXT_PACKAGE and ALL_LINGUAS.
+	
+2002-12-10  Michael Meeks  <michael@ximian.com>
+
+	* magnifier/magnifier.c (magnifier_do_dispose): split.
+	(magnifier_gobject_dispose, impl_magnifier_dispose): upd.
+
+	* magnifier/zoom-region.c (zoom_region_do_dispose):
+	split & protect from double disposes.
+	(impl_zoom_region_dispose, zoom_region_dispose): use it.
+
+2002-12-09  Michael Meeks  <michael@ximian.com>
+
+	* magnifier/zoom-region.c (zoom_region_paint_cursor),
+	(zoom_region_calculate_scroll_rects),
+	(zoom_region_scroll_smooth): exit if we don't have drawable.
+
+	* magnifier/magnifier.c (magnifier_get_type): kill.
+	(magnifier_new): upd.
+	(impl_magnifier_dispose): upd.
+	(impl_magnifier_create_zoom_region): plug leak.
+	(magnifier_properties_init): don't leak default args
+	on properties that are non-writeable.
+
+	* magnifier/magnifier-main.c
+	(magnifier_main_test_image): make test_i_foo a
+	local static at least.
+
+	* magnifier/zoom-region.c
+	(impl_zoom_region_set_mag_factor): dup/ref pb.
+	(zoom_region_update_pointer_timeout): remove evil
+	check for ->priv == 0xaaaaaaa ie. what might be
+	in freed memory if you're lucky.
+	(zoom_region_class_init): use GObject dispose,
+	not the epv version.
+	(zoom_region_dispose): fix several evilnesses.
+	(zoom_region_get_type): kill.
+	(zoom_region_finalize): chain to parent.
+	(zoom_region_get_source_subwindow): bin ugly static we
+	re-allocate each time anyway.
+	(impl_zoom_region_dispose): for compat, just do
+	an unref.
+	calm compile warnings, kill PropData, PropIdx
+
+	* magnifier/magnifier.c (impl_magnifier_create_zoom_region),
+	(impl_magnifier_get_properties): dup/ref/rel/unref the pb.
+
+	* magnifier/magnifier-main.c (main): re-write to
+	use bonobo_pbclient stuff.
+	(magnifier_main_refresh_all): release/unref the pb.
+
+	* magnifier/zoom-region.c (impl_zoom_region_dispose):
+	don't g_idle_remove_by_data 3 times.
+
+2002-11-12  Bill Haneman <bill.haneman@sun.com>
+
+	Fixes for bugzilla 95942 and 98236.
+
+	* magnifier/magnifier-private.h:
+	Added cursor_default_size member.
+
+	* magnifier/magnifier.c:
+	(magnifier_transform_cursor):
+	Changed to resize with respect to cursor default size, 
+	instead of cursor's *current* size. [98236]
+
+	* magnifier/zoom-region.c:
+	(zoom_region_queue_update):
+	Add zoom_region_process_updates as an idle handler
+	on receipt of an update to queue (rather than running the
+	idle handler continuously).
+	(zoom_region_update_pointer):
+	Fixed to correctly detect when the zoom_region has been 
+	destroyed, and return FALSE then.
+	(zoom_region_update_pointer_idle):
+	Changed to queue a timeout-based pointer query and return
+	FALSE if the pointer has stopped moving, otherwise keep spinning the idle
+	handler. [95942]
+	(zoom_region_update_pointer_timeout):
+	Reinstate this function and queue an idle handler if the pointer
+	has moved since the last timeout, which spins until the pointer
+	gets quiet.
+	(zoom_region_init): Changed to queue a timeout rather than
+	an idle handler for the pointer update.
+	(zoom_region_finalize):
+	Do useful freeing of memory instead of just doing nothing ;-)
+	stops massive memory leakage if multiple zoomers are created/destroyed.
+
+2002-10-24  Bill Haneman <bill.haneman@sun.com>
+ 
+	* acconfig.h: Added this missing file, with
+	template for HAVE_XFT.
+
+2002-10-22  Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier.h:
+	Add a #define for the OAFIID string.
+	Fixed type in the IS_MAGNIFIER() macro.
+
+	* magnifier/magnifier.c:
+	(magnifier_gobject_dipose):
+	Create this method from impl_magnifier_dispose;
+	Fix a race condition in magnifier destruction.
+	Removed the unref() of the property bag, this happens
+	automatically on object disposal because of the way property bag
+	is declared (bonobo_property_bag_new_closure).
+	(magnifier_class_init):
+	Add the gobject dispose handler.
+
+	* test/mag-test.c:
+	(get_magnifier): Change so that varible "magnifier" is not
+	shadowed, and to avoid the peculiar declaration of "static"
+	variables within a method block.
+
+	* magnifier/magnifier-main.c:
+	(magnifier_main_pan_all) (magnifier_main_refresh_all)
+	Added guards for the timeout methods, to make sure the object
+	hasn't been disposed when the timeout is called.
+	(main):
+	Added calls to g_timeout_remove() for the timers.
+
+2002-10-21  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Test for XTst and locate it if available.
+
+	* magnifier/magnifier-main.c: 
+	(MagnifierOptions) (main): Add code to set cursor-color.
+	
+	* magnifier/magnifier.c:
+	(magnifier_scale_cursor): renamed "magnifier_transform_cursor".
+	Added code to recolor the magnifier cursor's "black" pixels, if
+	a cursor color has been specified.
+	(magnifier_recolor_pixbuf) : New method, to support cursor color.
+	(magnifier_set_property) (magnifier_get_property) : Cursor-color
+	fixes.
+
+	* magnifier/zoom-region.c:
+	Added #includes of XTest.h and X11/cursorfont.h.
+	(_get_x_cursors) : New method to grab X cursor set.
+	(zoom_region_source_root) : Get the root source GdkWindow.
+	(zoom_region_update_pointer) : Add code to check the
+	current X cursor, using XTest.  Does not seem to work reliably,
+	#defined out via TEST_XTST_CURSOR block.
+	
+2002-10-18  Bill Haneman <bill.haneman@sun.com>
+
+	* cursors/1_32/*.xpm:
+	* cursors/1_48/*.xpm:
+	* cursors/1_64/*.xpm:
+	Added a number of new cursors, courtesy of BAUM.  They aren't
+	available via the "cursor-set" API yet, but will be.
+	
+2002-10-18  Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier-main.c:
+	(MagnifierOptions):
+	Fixed incorrect type of cursor_scale_factor popt 
+	struct member.
+	
+	* magnifier/magnifier.c:
+	(magnifier_properties_init): 
+	Fixed naming bug, "cursor-scale-factor" was incorrectly
+	referred to as "cursor-mag-factor".
+	
+	* magnifier/zoom-region.c:
+	Stifled some debug printfs.
+	(magnifier_set_property) : Fixed bug when setting "smoothing-type"
+	property to "none"; we now revert to NEAREST_NEIGHBOR
+	interpolation.
+	
+	
+2002-10-17  Bill Haneman <bill.haneman@sun.com>
+
+	* idl/GNOME_Magnifier.idl:
+	Added struct Point (GNOME_Magnifier_Point).
+
+	* magnifier/magnifier.c:
+	(PropIdx): Added
+	MAGNIFIER_CURSOR_COLOR_PROP,
+	MAGNIFIER_CURSOR_HOTSPOT_PROP,
+	MAGNIFIER_CURSOR_DEFAULT_SIZE_PROP,
+	MAGNIFIER_CROSSWIRE_SIZE_PROP,
+	MAGNIFIER_CROSSWIRE_CLIP_PROP,
+	MAGNIFIER_CROSSWIRE_COLOR_PROP
+	(magnifier_regions_refresh_cursor): Removed.
+	(magnifier_scale_cursor): Changed to use new properties.
+	(magnifier_init_cursor): Initial code for recoloring cursor
+	pixmaps (non-functional).
+	(magnifier_get_property) (magnifier_set_property)
+	(magnifier_init): 
+	Added support for new properties.
+	(magnifier_set_pointer): Removed.
+
+	* magnifier/magnifier-private.h 
+	* magnifier/magnifier.h:
+	Added members for new property support.
+	
+	* magnifier/zoom-region.c:
+	(zoom_region_cursor_rect):
+	(zoom_region_paint_cursor):
+	(zoom_region_unpaint_cursor):
+	(zoom_region_paint_crosswire):
+	(zoom_region_unpaint_crosswire):
+	Major changes to cursor drawing, to support new features.
+	Crosswire now can draw XOR, colored lines/rects, and
+	can be clipped by the cursor's rectanglar bounds if 
+	desired.
+	(zoom_region_update_cursor_pos):
+	(zoom_region_update_cursor):
+	(zoom_region_update_pointer):
+	New functions for cursor tracking and updating.
+	(zoom_region_update_pointer_idle): GIdleFunc for checking the
+	pointer position.
+	(zoom_region_moveto): update the pointer before scrolling.	
+	
+2002-10-16  Bill Haneman <bill.haneman@sun.com>
+	
+	* magnifier/zoom-region.c:
+	(zoom_region_update_pointer) (zoom_region_update_pointer_timeout) 
+	(zoom_region_update_pointer_idle) : New methods, for making sure
+	the displayed cursor position in the magnifier is current.
+	(impl_zoom_region_dispose): call g_idle_remove_by_data more than
+	once.
+	(zoom_region_init) : Add the idle func for checking the mouse
+	position.	
+	(zoom_region_paint_*): Change the second GdkRectangle param to a
+	pointer.
+	(zoom_region_paint_cursor): Don't bother clipping if the second
+	parameter is NULL.
+	(zoom_region_paint_crosswire_cursor) (zoom_region_cursor_rect): 
+	Don't use the magnifier->priv->cursor_x, etc. positions, 
+	ask for the current mouse coords from GDK when painting the
+	cursor.
+
+	* magnifier/magnifier.c:
+	(magnifier_set_cursor): Don't force refresh of the zoom regions
+	anymore, they are now responsible for their own mouse coord finding.
+
+	* magnifier/magnifier-main.c:
+	(magnifier_main_pan_image): Revert the change from last night
+	which forcibly updated the mouse coords; zoom regions are now
+	responsible for doing this themselves.  
+	(This is much more performant).
+	
+2002-10-15  Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier.h:
+	(magnifier_set_pointer): New method.
+
+	* magnifier/magnifier-main.c:
+	(magnifier_main_pan_image): Changed to check the mouse and
+	call magnifier_set_pointer() whenever it moves, even if "mouse
+	tracking" is not on; this means that the zoom-regions accurately
+	reflect the pointer position.  However latency is too big, this is
+	a temporary fix and a more performant one is expected.
+
+	* magnifier/magnifier.h:
+	Added a gboolean "crosswire" member to the struct, to facilitate
+	simultaneous crosswire+normal cursor.
+
+	* magnifier/magnifier.c:
+	(magnifier_set_pointer): New method.
+	(magnifier_regions_refresh_cursor): New internal method (possibly
+	temporary).
+	(magnifier_get_cursor): Changes to support simultaneous crosswire
+	and 'normal' cursors. (Not yet complete).
+
+	* magnifier/zoom-region.c:
+	(zoom_region_paint_cursor): Changes to draw a "normal" cursor only
+	if there is a valid GdkDrawable for it in the magnifier private
+	structs.  This prevents error messages being printed for
+	cursor-set="none".
+	
+2002-10-15  Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier.c:
+	(#include): added #include of <X11/Xatom.h>.
+	(magnifier_realize): Set the WM_TYPE of the magnifier
+	toplevel window to _WM_TYPE_DOCK; this will work OK until the
+	Metacity RFE for a new WM type (for special, always-always-on-top
+	windows) goes in.
+	(magnifier_unref_zoom_region): Commented-out cast of user_data to
+	"Magnifier" since we don't use it yet.
+	
+2002-10-14  Bill Haneman <bill.haneman@sun.com>
+
+	* test/control-client.c:
+	New file, exercises a couple of simple pieces of control API for a
+	running magnifier instance.
+
+	* test/mag-test.c:
+	New file; tests a new or running magnifier by clearing all zoom
+	regions and creating four new ones with various parameter
+	settings.  NOTE: If the pre-existing magnifier is tracking the mouse,
+	the resulting test will, too.
+
+	* idl/GNOME_Magnifier.idl:
+	Renamed method "resize" to "moveResize".
+
+	* magnifier/GNOME_Magnifier.server.in.in:
+	Fixed brokenness in the .server file, in terms of 
+	namespace and versioning.
+	
+	* magnifier/Makefile.am:
+	Removed reference to removed file "mag_control.c".
+	
+	* magnifier/magnifier-main.c:	
+	(magnifier_main_pan_image): Now set ROI on all active zoom_regions.
+	
+	* magnifier/magnifier.c:
+	(magnifier_unref_zoom_region): Created new GFunc for use when
+	freein the zoom regions list.
+	(magnifier_create_zoom_region): Moved call to gtk_container_add()
+	to magnifier_add_zoom_region, so that newly created zoomers aren't
+	mapped to the parent until they are explicitly added.
+	(magnifier_clear_all_zoom_regions): Fixed so that the zoomers are
+	disposed of when the list is freed.
+	(magnifier_init): We now add the canvas to the toplevel window
+	here.
+	()
+	
+	* magnifier/zoom-region-private.h:
+	Reorganized, tidied comments about the coordinate bounds.  Added
+	an expose_handler_id private member, for calling
+	gtk_signal_disconnect_by_data(). NOTE: we should change this to
+	use gsignal API instead, at some point.
+	
+	* magnifier/zoom-region.c:
+	(_rectangle_clip_to_rectangle) (_rectangle_clip_to_bounds): Added
+	new convenience API, reduced code duplication.
+	(zoom_region_clip_to_exposed_target): Changed to use new
+	methods above.
+	(zoom_region_clip_to_window): New method.
+	(zoom_region_paint): We no longer clip to the viewport, but only
+	to the window.
+	(zoom_region_calculate_scroll_rects) (zoom_region_scroll_fast): 
+	Added some error checking.
+	(zoom_region_recompute_exposed_viewport) : New method.
+	(zoom_region_recompute_exposed_bounds): New method; used when 
+	viewport, roi, border-size, or other coordinate-system-affecting
+	properties are changed.
+	(zoom_region_update): We no longer clip to the target before
+	clipping to the "exposed target".  We also now clip the "paint
+	rectangle" to the window, not the viewport.
+	(zoom_region_align): New method, factored out of 'moveto' code.
+	(impl_zoom_resize): renamed "impl_zoom_move_resize".
+	(impl_zoom_region_dispose): We now disconnect from the 'expose'
+	signal, and also disconnect the update idle handler, on dispose.
+	(zoom_region_private_init): Initialize some things that were being
+	left to chance (!).
+
+	* magnifier/zoom-region.h: rearrange members in struct a bit.
+
+	* magnifier/test/Makefile.am: Added 'control-client' and
+	'mag-test' targets.	
+	
+2002-10-10  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in:
+	Changed versioning stuff to match 'libgnome' model.
+	We now increment the version when interfaces change.
+	Changed current version to '0.9.0', and soname to
+	so.1.0.0, to reflect API and bincompat changes.
+
+	* magnifier/Makefile.am:
+	Added libgnome_mag_la_LDFLAGS definition, including
+	LT_VERSION_INFO.
+
+	* magnifier/magnifier.c:
+	(magnifier_init_cursor): Fixed hotspot specification for
+	"crosshair" cursor (note, not same as "crosswire" cursor).
+
+	* magnifier/zoom-region-private.h:
+	Added a "border" widget.
+
+	* magnifier/zoom-region.c:
+	(_coalesce_update_rects): Fixed this so that it actually coalesces
+	the expose regions.  It isn't real smart, so the resulting areas
+	can be larger than the original updates if the updates are "tiled"
+	perfectly.  However for overlapping or redundant expose rectangles
+	it helps, and it usually reduces the queue length to only two
+	expose events, thus it's mostly a performance improvement.
+	(zoom_region_coalesce_updates): Fixed to check for existance of 
+	zoom_region->coalesce_func pointer, and use that to do coalescing
+	if it's found.
+	(zoom_region_init_window):
+	We now create a "border" widget which contains the viewport.  This
+	should help us with border visuals, but it's not fully
+	implemented yet so borders are still pretty broken.
+
+2002-10-09  Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier-main.c:
+	(main): Fixed reversed sense of "--timing-test" flag. [Oops]
+	Added support for "--border-size" argument. (border visuals a bit ugly ATM)
+	Added support for "--border-color" argument.
+
+2002-10-09  Bill Haneman <bill.haneman@sun.com>
+
+	Mostly-functional sample implementation of new IDL.
+	Not Yet Supported: contrast settings (but inverse video is
+	supported).
+	TODO : consider storing a smaller scaled GdkPixbuf for the source
+	image, and discarding it after rendering.
+	
+	* idl/GNOME_Magnifier.idl:
+	GNOME_Magnifier_ZoomRegion_AlignPolicy: Added this enum.
+	GNOME_Magnifier_ZoomRegion_ScrollingPolicy: Added this enum.
+	
+	* magnifier/GNOME_Magnifier.server.in.in:
+	Activation file now looks in 'bindir' directory,
+	since we've moved the magnifier executable there.
+	Also changed the OADIID interface string suffix from
+	"proto0.1" to "0.9".
+
+	* magnifier/Makefile.am:
+	Moved the magnifier executable from LIBEXECDIR to BINDIR,
+	since it's user-executable.
+	Added cursors DATA, exported CURSORSDIR variable to CFLAGS.
+	Added cursors to EXTRA_DIST.
+
+	* magnifier/mag_control.c:
+	Changed included file from Magnifier.h to GNOME_Magnifier.h.
+	(NB: This source file doesn't work anymore and is deprecated, probably
+	will remove it soon).
+
+	* magnifier/magnifier-main.c:
+	Added #include of <string.h> due to use of strcmp.
+	(MagnifierOptions): Added cursor_set, smoothing_type,
+	zoom_factor_x, zoom_factor_y, refresh_time, mouse_poll_time,
+	cursor_size, cursor_scale_factor, smooth_scroll, and test_pattern
+	members; removed dual_head, clamp_colors, no_bonobo,
+	fast_cmap_convert, bilinear, hyperbolic options.  
+	The removed options were either nonfunctional now or are
+	superceded by newer options.
+	(magnifier_options): Renamed some options, made "--usage", 
+	"--help", and "-?" arguments work.  Added support for 
+	cursor-sets, cursor size and scaling, mouse latency control,
+	smoothing algorithms (by name), and scrolling smoothness
+	selection. Also added a "use-test-pattern" option for 
+	testing magnifier scrolling without a source display.	
+	(lastx, lasty): Removed statics.
+	(magnifier_main_test_image): Tweaks to test mode.
+	(magnifier_main_pan_image): Replaced use of X API for querying the
+	pointer with Gdk API.  We also poke the magnifier's internal
+	cursor_x and cursor_y members, which should probably be replaced
+	with an API call at some date.
+	(magnifier_main_refresh_all): Timer-based routine to mark the
+	current view window dirty periodically; either clients or the main
+	executable must do this until we get global expose events from the
+	XServer, which will only be true for the XVirtualScreen,
+	(main): We now do all our interaction with the magnifier instance
+	via the properties, initializing them based on the
+	magnifier_options from popt.
+
+	* magnifier/magnifier-private.h: Added this file.
+	(_MagnifierPrivate): removed X dependencies.
+	Added private members for dealing with the root window and the cursor.
+
+	* magnifier/magnifier.c: 
+	Removed some cruft.
+	(magnifier_timing_test): Removed.
+	(magnifier_scale_cursor) (magnifier_init_cursor)
+	(magnifier_get_cursor): Added methods for cursor manipulation.
+	[magnifier_get_cursor is public, others are static methods.]
+	(magnifier_get_property): Added support for target-source-size,
+	taret-size properties.
+	(magnifier_set_property): Removed X dependencies,
+	Added support for target-display and source-display properties,
+	target-size property, cursor-set, cursor-size, and cursor-zoom properties.
+	(impl_magnifier_create_zoom_region): Implemented, and improved
+	window behavior.
+	(magnifier_init): Removed X dependencies. Changed OADIID suffix to
+	"0.9" from "proto0.1".
+	
+	* magnifier/magnifier.h:
+	Added include of <gdk/gdk.h>.
+	Removed deprecated "mag_data" pointer.
+	(magnifier_get_cursor): Added public declaration of method. 
+	
+	* magnifier/zoom-image-private.h:
+	(_ZoomRegionPrivate): Added exposed_viewport member, bounds of
+	current viewport, not including borders.
+	Added source_drawable, source_pixbuf_cache (only used if pixbuf
+	diffs are being used), cursor_backing_pixels, border_gc.
+	
+	* magnifier/zoom-image.c:
+	Massive revision.
+	(PropIdx): Added ZOOM_REGION_TESTPATTERN_PROP.
+	(_debug_announce_rect): Added debugging aid.
+	(_diff_pixbufs): Added support for source image diffs, 
+	intended for conditional updates, but currently too slow.
+	(_combine_rects) (_refactor_rects) (_combine_update_rects) 
+	(_coalesce_update_rects) (_smartbutbroken_coalesce_update_rects) 
+	(zoom_region_coalesce_updates) :
+	Added event coalescing functions, currently buggy.
+	(zoom_region_clip_to_exposed_target) (zoom_region_clip_to_target) 
+	(zoom_region_clip_to_viewport) (): Added coordinate conversion
+	routines.
+	(zoom_region_update_current): Added.
+	(zoom_region_cursor_rect) (zoom_region_unpaint_crosswire_cursor) 
+	(zoom_region_paint_crosswire_cursor) (zoom_region_paint_cursor) 
+	(zoom_region_unpaint_cursor) : Added cursor painting support.
+	(zoom_region_paint_border) (zoom_region_paint_pixmap) : Added.
+	(zoom_region_paint) : Refactored to use above routines.
+	(zoom_region_scroll_fast) : Added cursor support, and scrolling code.
+	(zoom_region_scroll_smooth) : Allow smoother scrolling.
+	(zoom_region_scroll) : Check the smooth_scroll_policy and decide
+	which scrolling routine to call.
+	(zoom_region_moveto) : Fixed the coordinate conversions.
+	(_zoom_region_invert_pixbuf) : Added support for inverse video.
+	(zoom_region_post_process_pixbuf) : Hooks for doing image
+	smoothing, currently not connected to anything.
+	(zoom_region_get_source_subwindow) : Implement this, so that we
+	can get the source display pixels to scale.  Also added support
+	for source image diffs, so that we only update if the source image
+	has changed.  However the diff process is currently too slow to be
+	helpful.
+	(zoom_region_update) : Added some useful clipping, so that we only
+	update pixels that are currently in-view.  Added hooks to invert
+	video, and to post-process the scaled image (for smoothing, etc.).
+	(zoom_region_init_window) : split the GdkWindow initialization
+	code into its own method.
+	(zoom_region_sync) : Changed to consume all pending updates.
+	(zoom_region_set_viewport) : Does more stuff, so that setting the 
+	viewport after the zoomer has been realize works.
+	(zoom_region_get_property) :
+	(zoom_region_set_property) :
+	Added "smooth-scroll-policy" property support.  Better support for
+	"smoothing-type", "use-test-pattern", and border properties.
+	(impl_zoom_region_set_roi) : Added support for various alignment
+	policies.
+	(impl_zoom_region_set_mag_factor) : 
+	(impl_zoom_region_mark_dirty) : Fixed implementation.
+	(impl_zoom_region_set_viewport) : Fixed.
+	(zoom_region_init_properties) : Added initialization of new
+	properties.
+	(zoom_region_private_init) (zoom_region_init) : Added
+	initializations of new instance data.
+	
+	* magnifier/zoom-image.h:
+	Added definition of CoalesceFunc.
+	Added new members for the event coalescing function to use, and
+	changed the 'smooth_scroll' member to a
+	GNOME_Magnifier_RectBounds_ScrollingPolicy enum.
+
+	* magnifier/mag_image.h:
+	Removed.
+
+	* magnifier/mag_image.c:
+	Removed.
+	
+	
+2002-09-24  Bill Haneman <bill.haneman@sun.com>
+
+	* idl/GNOME_Magnifier.idl:
+	(GNOME_Magnifier_Magnifier_ZoomRegionList):
+	Moved to GNOME_Magnifier_ZoomRegionList, where it belongs.
+
+	* magnifier/Makefile.am:
+	Added magnifier-main.c to magnifier_SOURCES.
+	
+	* magnifier/magnifier-main.c:
+	New file, contains main() and associated CLI processing
+	code, but not "magnifier" instance code.
+
+	* magnifier/mag_image.h:
+	Now we #include "magnifier.h".
+
+	* magnifier/mag_image.c:
+	(refresh_image): Changed to take Magnifier* as data,
+	not MagnifierData*.  
+	Also changed to use XDISPLAY information from 
+	Magnifier struct instead of MagnifierData struct.
+
+	* magnifier/magnifier.h:
+	Now #include <bonobo/bonobo-property-bag.h>
+	Changed mag_data pointer (deprecated) to a gpointer.
+	
+	* magnifier/magnifier.c:
+	(global_options): 
+	(MagnifierOption):
+	(magnifier_option):
+	(magnifier_realize):
+	(magnifier_exit):
+	(magnifier_pack_regions):
+	(main): Moved to magnifier-main.c.
+	(magnifier_process_updates): New method.
+	(magnifier_realize): New method.
+	(magnifier_parse_display_name): 
+	New method, parses string into display name and screen number.
+	(magnifier_set_property):
+	Implemented back-end support for source-display, target-display.
+	(magnifier_create_zoom_region):
+	Implemented, using ZoomRegion api.
+	(magnifier_init):
+	Added some old MagnifierData stuff here, which will
+	eventually need removing.
+	(magnifier_new):
+	Removed popt stuff, to magnifier-main.c.
+	
+	* magnifier/zoom-region.c:
+	(zoom_region_display): 
+	(zoom_region_get_property): Added debug printf.
+	(zoom_region_set_property): Added debug printf.
+	(zoom_region_get_properties): 
+	Fixed previously broken return value, we now dup the objref before
+	returning it.
+	
+2002-09-24  Bill Haneman <bill.haneman@sun.com>
+
+	* idl/GNOME_Magnifier.idl:
+	Major revision of Magnifier API.
+	(#includes):
+	Now we include (and thus depend on) Bonobo_Property.idl.
+	(namespace):
+	Now our interfaces are in the GNOME/Magnifier namespace.
+	(setMagFactor):
+	No longer a oneway method.
+	(markDirty, markUnmanaged):
+	Moved to ZoomRegion.
+	(SourceDisplay, TargetDisplay):
+	Changed to BonoboProperty properties.
+	(getProperties): new method.
+	(setROI): moved to ZoomRegion,
+	changed to take RectBounds struct instead of 
+	individual longs as in params.
+	(getROI): move to ZoomRegion, now return a RectBounds.
+	(exit): changed to dispose().
+	(resize): moved to ZoomRegion.
+	(getZoomRegionParams): Changed to getProperties() call on
+	the ZoomRegion object.
+	(destroyZoomRegion): Removed, replaced with dispose() and
+	de-referencing of the ZoomRegion object via unref().
+	(addZoomRegion): new method.
+	(general):
+	Created new GNOME_Magnifier_ZoomRegion interface,
+	and return a sequence of ZoomRegions from the Magnifier.
+	Defined a new RectBounds structure, for manipulating 
+	bounding boxes.
+	Most methods now operate on these ZoomRegion objects
+	rather than the containing Magnifier.
+	Most properties and settings on both Magnifier and
+	ZoomRegion are now via Bonobo_PropertyBag, 
+	which is implemented on Magnifier and ZoomRegion, and
+	available via getProperties() methods on the two
+	interface types.
+
+	* magnifier/Makefile.am:
+	Added zoom-region.h and zoom-region.c to 
+	magnifier_SOURCES.
+	Added libgnome-mag.la to LDADD.
+
+	* magnifier/magnifier.c:
+	(#includes):
+	Added "xoom-region.h" and "GNOME_Magnifier.h".
+	(PropIdx):
+	New enum.
+	(impl_magnifier_fullscreen): Removed.
+	(impl_magnifier_set_extents): Removed.
+	(impl_magnifier_set_follow_mouse): Removed.
+	(impl_magnifier_set_contrast): Removed.
+	(impl_magnifier_set_roi): Removed.
+	(impl_magnifier_goto): Removed.
+	(impl_magnifier_set_mag_factor): Removed.
+	(impl_magnifier_mark_dirty): Removed.
+	(impl_magnifier_mark_unmanaged): Removed.
+	(impl_magnifier_get_zoom_region_params): Removed.
+	(impl_magnifier_remove_zoom_region): Removed.
+	(impl_magnifier_resize_zoom_region): Removed.
+	(impl_magnifier_create_zoom_region): Modified for new args.
+	(impl_magnifier_add_zoom_region): New method.
+	(impl_magnifier_get_zoom_regions): New method.
+	(impl_magnifier_exit): changed to impl_magnifier_dispose().
+	(impl_magnifier_destroy): tweaked for new implementation.
+	(magnifier_get_property): New method.
+	(magnifier_set_property): New method.
+	(impl_magnifier_set_source_display): Changed to use properties.
+	(impl_magnifier_set_target_display): Changed to use properties.
+	(magnifier_class_init): Changed to use new IDL methods.
+	(magnifier_instance_init): Changed to use new IDL methods.
+	(magnifier_properties_init): New method.
+	(magnifier_get_type): Changes for new namespace.
+
+	* magnifier/magnifier.h:
+	(Magnifier):
+	Changed Magnifier struct to include members for new properties.
+	(MagnifierClass):
+	Changed POA typename to match new namespace.
+	
+	* magnifier/zoom-image.h:
+	New file; implementation of GNOME_Magnifier_ZoomRegion.
+	
+	* magnifier/zoom-image.c:
+	New file; structure/type definitions of
+	ZoomRegion BonoboObject which implements 
+	GNOME_Magnifier_ZoomRegion.
+
+2002-09-02  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* po/: Added dir
+	* magnifier/GNOME_Magnifier.server.in.in: 
+	Marked strings for translation
+	* po/POTFILEs.in: Added files containing strings.
+	* po/Makefile.in.in: Added file.
+	
+2002-07-19 Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/mag_image.c:
+	GdkPixbug *subimage: Removed unnecessary static object.
+	(parse_message): Removed this method (a relic of the old socket
+	control).
+	(get_num, get_coord, get_rect): Removed these methods.
+	(pan_image):
+	Removed unused variable 'rect'.
+	(CDIFF): 
+	Fixed this macro, shutup preprocessor warnings.
+	(clamp_to_nearest):
+	Removed unused retval.
+	(GET_PIXEL, PUT_PIXEL): 
+	New macros for direct gdkpixbuf poking.
+	(mag_pixbuf_post_process):
+	Removed use of GdkImage and horrible slow copy,
+	gdk_image_get_pixel and gdk_image_get_pixel, etc.,
+	replacing with direct access to the GdkPixbuf data.
+	Also fixed the postprocessing when panning.
+	(refresh_image):
+	Added missing return value.
+
+	Horizontal and vertical pans now look pretty good, diagonal
+	pans still look buggy. 
+
+	* magnifier/magnifier.c:
+	(sockaddr_un mag_server): Removed (unused).
+	(timer_iterations): Removed (unused).
+	(get_commands): Removed (unused).
+	(main): Removed old traces of socket controls.
+	(impl_magnifier_mark_unmanaged):
+	Silenced compiler warning.
+	(magnifier_class_init):
+	Silenced compiler warning.
+	
+2002-07-19 Bill Haneman <bill.haneman@sun.com>
+
+	(Branched gnome_2_0 branch prior to this commit)
+	
+	* configure.in:
+	Now require gtk+-2.1.0.
+	Incremented gnome-mag revision to 0.2.0.
+
+	* magnifier/mag_image.h:
+	Added global 'spi_source_root_window' GdkWindow.
+	
+	* magnifier/mag_image.c:
+	Remove old codepath in favor of multihead gdkpixbuf image scaling...
+	(old_get_root_subimage): 
+	Removed.
+	(new_get_root_subimage): 
+	Renamed 'get_root_subimage()'.
+	(xlib_get_colormap): 
+	Removed.
+	(mask_table[], convert_map[]): 
+	Removed.
+	(rgb1, rgb1a, rgb8, rgb8a, rgb565lsb, rgb565msb, rgb565alsb):
+	Removed.
+	(rbg565amsb, rgb555lsb, rgb555msb, rgb555alsb, rgb555amsb):
+	Removed.
+	(rgb888alsb, rgb888amsb, rgb888lsb, rgb888msb, visual_decompose_mask):
+	Removed.
+	(convert_real_slow, xlib_get_colormap, get_root_image): 
+	Removed.
+	(get_root_subimage):
+	Changed to call gdk_pixbuf_get_from_drawable, rather than the old
+	'rgbconvert' method.
+	
+	* magnifier/magnifier.c:
+	(main):
+	Changed to use new codepath, i.e. 
+	spi_source_root_window = gdk_screen_get_root_window (), rathen
+	than using X calls to get the root window.  This way we can use
+	GDK more effectively and portably than having to convert XImage
+	data via the (previous, removed) various rgbconvert implementation
+	methods listed above.
+
+2002-07-16 Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/mag_image.c:
+	rgbconvert():
+        Removed unused method; we now use gdkpixbuf to do this.
+
+2002-08-19  Bill Haneman <bill.haneman@sun.com>
+
+	* HACKING:
+	Added file, including build sheriff consent.
+
+2002-08-16  Michael Meeks  <michael@ximian.com>
+
+	* magnifier/mag_image.c (rgbconvert):
+	add pre-conditions.
+
+2002-08-15  Michael Meeks  <michael@ximian.com>
+
+	* magnifier/Makefile.am: install generated header.
+
+	* gnome-mag-1.0.pc.in: upd.
+
+2002-08-15  Michael Meeks  <michael@ximian.com>
+
+	* magnifier/Makefile.am: rename server file.
+	move stuff into libexec, process twice.
+
+	* magnifier/Magnifier.server.in.in: namespace it, update to
+	libexec.
+
+	* idl/Magnifier.idl: include Bonobo_Unknown only.
+	Also, this file needs renaming to Accessibility_Magnifier
+
+	* idl/GNOME_Magnifier.idl: and rename to this / re-namespace.
+
+2002-08-15  Michael Meeks  <michael@ximian.com>
+
+	* gnome-mag-1.0.pc.in (idldir): get it right.
+
+2002-08-13  Michael Meeks  <michael@ximian.com>
+
+	* idl/Makefile.am (idl_DATA):
+	fix it so we actually install it.
+
+2002-07-26  Laszlo Peter  <laca@sun.com>
+
+	* magnifier/Makefile.am: add POPT_LIBS to LDADD.
+
+2002-06-30 Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/magnifier.c:
+	Made the commands setRoi, setMagFactor, markDirty, and goto
+	update the display immediately.  Added option at runtime to clamp
+	the colors of the scaled image to those of the input image, useful
+	with the --bilinear-interpolation and other interpolation options.
+	We start the magnifier with a full pull of the root window, so
+	that we never see "blackout" areas in the magnified region before
+	we process expose events (cosmetic fix).
+
+	* magnifier/mag_image.c:
+	Implemented colormap inversion and clamping of the colors in the
+	scaled image to the input image.
+	NOTE: current implementation is slow, so refresh of the magnifier
+	is slower when colormap inversion or clamping are turned on.
+	(old_get_root_subimage):
+	Renamed from get_root_subimage; will replace with new method when
+	patch for bug #86931 is accepted into gtk+.
+	(new_get_root_subimage):
+	New code which uses the more portable, debugged 
+	gdk_pixbuf_xlib_get_from_drawable () instead of our cut-and-paste
+	code.  [We can't use this until a fix for the bug mentioned above
+	is accepted into gtk+.]
+	
+2002-06-25 Bill Haneman <bill.haneman@sun.com>
+
+	* magnifier/mag_image.c:
+	(display_image):
+	Fixed bug which used target screen bounds to clamp center values,
+	should have been source screen bounds.
+	(convert_real_slow):
+	Don't call visual_decompose_mask if the masks are zero.
+
+2002-06-24 Bill Haneman <bill.haneman@sun.com>
+
+	Reworking of the magnification code to support 
+	fast panning, subimage tiles, and refreshing the copy of the
+	source X root window in an idle handler.
+	(This code is still pretty rough, but much more
+	 performant now).
+
+	* magnifier/magnifier.c:
+	(main):
+	Added timing benchmark.
+	Removed last of socket control API.
+	(timing_test):
+	Added this method.
+	(magnifier_options);
+	Added options --bilinear-interpolation and 
+	--hyperbolic-interpolation, and --timing-test.
+
+	* magnifier/mag_image.h:
+	(pan_image):
+	(refresh_image):
+	Added functions.
+	(get_root_subimage):
+	Renamed/modified signature.
+	(get_root_image):
+	Removed.
+	(MagnifierData):
+	Added source_screen_num and target_screen_num members.
+	
+	* magnifier/mag_image.c:
+	(get_root_image):
+	(get_root_subimage):
+	Refactored substantially, get_root_subimage calls
+	get_root_image with bbox parameters.
+	(expose_event):
+	Implemented, to pull data in from stored source 
+	image and scale on-the-fly.
+	(update_image):
+	Big refactor.
+	(display_image):
+	Big refactor.
+	(refresh_image):
+	New method, refreshes entire copy of source X display.
+	(pull_into_scaled_image):
+	New method, 'does what it says on the tin'.
+	(pan_image):
+	New method, in timeout, checks pointer and scrolls/pans window if
+	necessary, pulling in new image data if needed from the cached
+	copy of the source root window.
+	

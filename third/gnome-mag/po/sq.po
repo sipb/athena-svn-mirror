@@ -1,0 +1,25 @@
+# Albanian translation of gnome-mag
+# This file is distributed under the same license as the gnome-mag package.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Laurent Dhima <laurenti@alblinux.net>, 2003
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-mag\n"
+"POT-Creation-Date: 2004-08-30 18:13+0100\n"
+"PO-Revision-Date: 2003-07-02 17:34+0200\n"
+"Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
+"Language-Team: Albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"X-Generator: KBabel 1.0.1\n"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:1
+msgid "Magnifier"
+msgstr "Zmadhues (Lupë)"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:2
+msgid "Simple Screen Magnification Service"
+msgstr "Një shërbim i thjeshtë për të zmadhuar ekranin"

@@ -1,0 +1,23 @@
+# Bulgarian translation of gnome-mag po file.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Alexander Shopov <al_shopov@yahoo.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-mag\n"
+"POT-Creation-Date: 2004-08-30 18:13+0100\n"
+"PO-Revision-Date: 2002-12-22 23:45+0200\n"
+"Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
+"Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:1
+msgid "Magnifier"
+msgstr "Лупа"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:2
+msgid "Simple Screen Magnification Service"
+msgstr "Проста услуга за увеличаване на екрана"

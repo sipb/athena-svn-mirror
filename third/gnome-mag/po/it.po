@@ -1,0 +1,24 @@
+# gnome-mag italian translation
+# Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-mag package.
+# Alessio Frusciante <algol@firenze.linux.it>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-mag\n"
+"POT-Creation-Date: 2004-08-30 18:13+0100\n"
+"PO-Revision-Date: 2003-07-08 23:35+0200\n"
+"Last-Translator: Alessio Frusciante <algol@firenze.linux.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:1
+msgid "Magnifier"
+msgstr "Ingranditore"
+
+#: magnifier/GNOME_Magnifier.server.in.in.h:2
+msgid "Simple Screen Magnification Service"
+msgstr "Semplice servizio di ingrandimento schermo"
