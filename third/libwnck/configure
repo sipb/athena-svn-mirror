@@ -1635,7 +1635,7 @@ fi
 
 PACKAGE=libwnck
 
-VERSION=2.2.0
+VERSION=2.2.1
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -7638,7 +7638,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et fa fi fr gl he hi hu it ja ko lv mk ms nl nn no pl pt pt_BR ru sk sl sq sv tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es et fa fi fr gl he hi hu it ja ko lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv tr uk vi wa zh_CN zh_TW"
 
 
 for ac_header in locale.h
