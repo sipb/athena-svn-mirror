@@ -1,8 +1,11 @@
-# $Id: Makefile,v 1.2 1996-12-05 21:06:32 ghudson Exp $
+# $Id: Makefile,v 1.3 1996-12-27 21:35:37 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
 MODULES=/kernel/fs
+INITD=/etc/init.d
+RC0=/etc/rc0.d
+RC2=/etc/rc2.d
 WS=/usr/afsws
 
 all:
@@ -23,6 +26,11 @@ install:
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 afsd ${DESTDIR}${ATHRETCDIR}
 	install -c -m 444 libafs.nonfs.o ${DESTDIR}${MODULES}/afs
+	install -c -m 555 afs.rc ${DESTDIR}${INITD}/afs
+	rm -f ${DESTDIR}${RC0}/K66afs
+	ln -s ../init.d/afs ${DESTDIR}${RC0}/K66afs
+	rm -f ${DESTDIR}${RC2}/S70afs
+	ln -s ../init.d/afs ${DESTDIR}${RC2}/S70afs 
 	install -c -m 444 include/andrewOS.h ${DESTDIR}${WS}/include
 	install -c -m 444 include/des.h ${DESTDIR}${WS}/include
 	install -c -m 444 include/des_conf.h ${DESTDIR}${WS}/include
