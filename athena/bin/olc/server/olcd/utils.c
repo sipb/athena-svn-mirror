@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v $
- *	$Id: utils.c,v 1.11 1990-12-09 17:15:07 lwvanels Exp $
+ *	$Id: utils.c,v 1.12 1990-12-12 15:24:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.11 1990-12-09 17:15:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/utils.c,v 1.12 1990-12-12 15:24:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,100 +37,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/time.h>		/* System time definitions. */
 #include <ctype.h>		/* character types */
-
-
-void
-get_user_status_string(u,status)
-     USER *u;
-     char *status;
-{
-  switch(u->status)
-    {
-    case ACTIVE:
-      strcpy(status, "active");
-      break;
-    case LOGGED_OUT:
-      strcpy(status, "logout");
-      break;
-    case MACHINE_DOWN:
-      strcpy(status, "host down");
-      break;
-    default:
-      strcpy(status, "unknown");
-      break;
-    }
-}
-
-
-void
-get_status_string(k,status)
-     KNUCKLE *k;
-     char *status;
-{
-  *status = '\0';
-
-printf("==> %d %d\n",is_busy(k), !is_busy(k));
-
-  if(has_question(k))
-    {
-      if(k->question->owner == k)
-	switch(k->status & QUESTION_STATUS)
-	  {
-	  case SERVICED:                  /* this is a bit! */
-	    strcpy(status, "active");
-	    break;
-	  case PENDING:
-	    strcpy(status, "pending");
-	    break;
-	  case NOT_SEEN:
-	    strcpy(status, "unseen");
-	    break;
-	  case DONE:
-	    strcpy(status, "done");
-	    break;
-	  case CANCEL:
-	    strcpy(status, "cancel");
-	    break;
-	  default:
-	    strcpy(status, "unknown");
-	    break;
-	  }
-    }
-  else
-    {
-      if(!is_busy(k))
-	{
-	  switch(k->status & SIGNED_ON)
-	    {
-	    case OFF:
-	      strcpy(status, "off");
-	      break;
-	    case ON:
-	      strcpy(status, "on");
-	      break;
-	    case FIRST:
-	      strcpy(status, "sp1");
-	      break;
-	    case SECOND:
-	      strcpy(status, "sp2");
-	      break;
-	    case DUTY:
-	      strcpy(status, "dut");
-	      break;
-	    case URGENT:
-	      strcpy(status, "urg");
-	      break;
-	    default:
-	      strcpy(status, "unknown");
-	      break;
-	    }
-	}
-      else
-	strcpy(status, "busy");
-      
-    }
-  strcat(status, '\0');
-}
 
 
 void
