@@ -1058,6 +1058,7 @@ dolog(sin)
 
 	if (hp) {
 		(void) strncpy(remotehost, hp->h_name, sizeof (remotehost));
+		remotehost[sizeof(remotehost) - 1] = '\0';
 		endhostent();
 	} else
 		(void) strncpy(remotehost, inet_ntoa(sin->sin_addr),
