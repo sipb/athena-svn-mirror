@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.7 1990-02-14 18:45:47 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.8 1990-02-14 23:02:49 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -94,7 +94,10 @@ void output_status_header (file, status)
 	old_status[0] = '\0';
 	return;
     }
-    if (! strcmp (status, "pending") || ! strcmp (status, "unseen"))
+    if (! strcmp (status, "pending")
+	|| ! strcmp (status, "unseen")
+	|| ! strcmp (status, "done")
+	|| ! strcmp (status, "cancel"))
 	status = "active";
     if (! strncmp (old_status, status, sizeof (old_status)))
 	return;
