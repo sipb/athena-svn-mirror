@@ -170,6 +170,7 @@ static char * submenu_names1[MAX_BUTTONS][MAX_MENU_LEN] = {
         { "replybutton", "newbutton", NULL },
         { "writebutton", "mailbutton", NULL }};
 
+#ifdef 0
 typedef struct{
 	Boolean logging_on;
 	String	log_file;
@@ -185,6 +186,7 @@ static XtResource app_resources[] = {
 		XtRString, sizeof (String), XtOffset (defaults *, log_file),
 		XtRString, "/afs/athena.mit.edu/user/s/sao/scores/xdsc.log"},
 };
+#endif
 
 
 EntryRec        toplevelbuttons[2][MAX_BUTTONS];
@@ -293,6 +295,7 @@ char *argv[];
 
 	myfree (newpath);
 
+#ifdef 0
 	XtGetApplicationResources(	topW, (XtPointer) &defs,
 					app_resources, XtNumber (app_resources),
 					NULL, 0);
@@ -304,6 +307,7 @@ char *argv[];
 		sprintf (commandline, "date >> %s", defs.log_file);
 		system (commandline);
 	}
+#endif
 
 
 	BuildUserInterface();
