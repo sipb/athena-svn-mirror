@@ -32,8 +32,7 @@ esac
 # Fetch cluster variables for the version we are currently running.
 
 unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
-eval `AUTOUPDATE=false getcluster -b -l /etc/athena/cluster.local \
-	"$HOST" $athenaversion`
+eval `AUTOUPDATE=false getcluster -b "$athenaversion"`
 
 # Find the files list from the control file.
 
