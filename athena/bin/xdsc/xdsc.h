@@ -1,3 +1,19 @@
+/*
+Copyright 1991 by the Massachusetts Institute of Technology
+
+Permission to use, copy, modify, and distribute this
+software and its documentation for any purpose and without
+fee is hereby granted, provided that the above copyright
+notice appear in all copies and that both that copyright
+notice and this permission notice appear in supporting
+documentation, and that the name of M.I.T. not be used in
+advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.
+M.I.T. makes no representations about the suitability of
+this software for any purpose.  It is provided "as is"
+without express or implied warranty.
+*/
+
 #define		MAX_BUTTONS		8
 #define		MAX_MENU_LEN		4
 #define		BUFSIZE			512
@@ -37,4 +53,4 @@ typedef struct entryrec {
         struct entryrec *nextrec;
 } EntryRec;
 
-static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.4 1991-02-11 16:31:15 sao Exp $";
+static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.5 1991-05-07 15:19:26 sao Exp $";
