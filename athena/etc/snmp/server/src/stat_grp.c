@@ -15,6 +15,13 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.6  90/07/16  21:55:24  tom
+ * maybe this is it... all TIMES which really represented dates have been 
+ * changed to strings. This was done to avoid confusion with the sysUpTime
+ * variable (more of a standard thing) which measures time ticks in hundreths
+ * of a second. The kernel variables measuring times in other smaller units
+ * are left as INTS. 
+ * 
  * Revision 1.5  90/07/15  18:00:03  tom
  * changed file mod time vars to be of type TIME
  * 
@@ -31,7 +38,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.6 1990-07-16 21:55:24 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.7 1990-07-17 14:23:26 tom Exp $";
 #endif
 
 
@@ -39,9 +46,14 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #include <mit-copyright.h>
 
 #ifdef MIT
+
+#ifdef EMPTY
+#undef EMPTY
+#endif EMPTY
+
 #include <utmp.h>
 
-static char stattime();
+static char *stattime();
 static int  get_load();
 static int  get_time();
 static char lbuf[BUFSIZ];
@@ -187,16 +199,22 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
     {
     case N_MAILALIAS:
       repl->val.value.str.str = stattime("/usr/lib/aliases");
+      break;
     case N_MAILALIASPAG:
       repl->val.value.str.str = stattime("/usr/lib/aliases.pag");
+      break;
     case N_MAILALIASDIR:
       repl->val.value.str.str = stattime("/usr/lib/aliases.dir");
+      break;
     case N_RPCCRED:
       repl->val.value.str.str = stattime("/usr/etc/credentials");
+      break;
     case N_RPCCREDPAG:
       repl->val.value.str.str = stattime("/usr/etc/credentials.pag");
+      break;
     case N_RPCCREDDIR:
       repl->val.value.str.str = stattime("/usr/etc/credentials.dir");
+      break;
     default:
       syslog (LOG_ERR, "lu_tuchtime: bad offset: %d", varnode->offset);
       return(BUILD_ERR);
@@ -208,7 +226,7 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
       return(BUILD_SUCCESS);
     }
   else
-    return(BUILD_ERROR);
+    return(BUILD_ERR);
 }
 
 
@@ -333,8 +351,13 @@ get_load(ret)
   (void) lseek(kmem, nl[N_AVENRUN].n_value, L_SET);
   if(read(kmem, avenrun, sizeof(avenrun)) == -1)
     {
+#if defined(decmips)
+      syslog(LOG_ERR, "avenrun read(%d, %#x, %d) failed.\n",
+	     kmem, avenrun, sizeof(avenrun));
+#else
       syslog(LOG_ERR, "avenrun read(%d, %#x, %d) failed: %s\n",
 	      kmem, avenrun, sizeof(avenrun), sys_errlist[errno]);
+#endif
       return(4);
     } 
   else 
