@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)announce.c	5.9 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: announce.c,v 1.2 1996-10-13 07:08:39 ghudson Exp $";
+static char rcsid[] = "$Id: announce.c,v 1.3 2002-05-24 18:36:08 ghudson Exp $";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -202,7 +202,7 @@ print_mesg(tf, request, remote_machine)
 		*(bptr++) = '\n';
 	}
 	*bptr = '\0';
-	fprintf(tf, big_buf);
+	fprintf(tf, "%s", big_buf);
 	fflush(tf);
 #ifdef TIOCNOTTY
 	ioctl(fileno(tf), TIOCNOTTY, (struct sgttyb *) 0);
