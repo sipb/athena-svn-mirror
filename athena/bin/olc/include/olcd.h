@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.44 1993-04-28 14:33:09 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: olcd.h,v 1.45 1993-08-11 16:53:24 thorne Exp $
+ *	$Author: thorne $
  */
 
 #include <mit-copyright.h>
@@ -33,8 +33,9 @@
 #include <common.h>
 #include <server_defines.h>
 #include <server_structs.h>
-
-
+#ifdef DBMALLOC
+#include "/afs/athena.mit.edu/contrib/watchmaker/src/include/malloc.h"
+#endif
 /*
  * this ugliness is due to a (supposedly) standard-C compiler that
  * doesn't provide stdarg.h.
@@ -68,7 +69,9 @@
 #define is_active(k)            ((k->status) || (k->connected))
 #define deactivate(k)           k->status = 0;
 #define is_me(r,t)              (r->user == t->user)
-#define is_connected_to(t,r)    (r->connected) && (t->connected) && \
+#define is_connected_to(t,r)    (t != (KNUCKLE *) NULL) && \
+                                (r != (KNUCKLE *) NULL) && \
+                                (r->connected) && (t->connected) && \
                                 (r->connected == t) && (t->connected == r)
 
 #define ON_ACL                  1<<1
