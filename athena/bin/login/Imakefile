@@ -11,7 +11,7 @@ OSLIBS = -lbsd
 MACHDEP = -DINITTAB
 #endif
 
-LIBS=-lkrb4 -lkrb5 -ldes425 -lcrypto -lcom_err -lhesiod $(OSLIBS)
+LIBS=-lknet -lkrb -ldes -lkrb5 -lcrypto -lcom_err -lhesiod $(OSLIBS)
 
 build_program(login,login.o,,$(AFSLIBS) $(LIBS))
 install_program(login,-o root -m 4555,/bin/login)
