@@ -11,11 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
- *      $Author: lwvanels $
+ *      $Author: vrt $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.23 1992-06-11 17:14:21 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.24 1994-03-14 15:27:59 vrt Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -37,6 +37,10 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include "xolc.h"
 #include "data.h"
 #include "buttons.h"
+
+#ifdef SOLARIS
+#define _POSIX_SOURCE
+#endif
 
 char current_topic[TOPIC_SIZE] = "unknown";
 int sa_pid = 0;
