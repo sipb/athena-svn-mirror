@@ -8,13 +8,14 @@ TST=if test -n "`cat DONE`" ; then
 MAC_SUBDIRS = error_tables asn.1 ccache keytab krb rcache free os posix 
 
 LIB_SUBDIRS= error_tables asn.1 ccache ccache/stdio ccache/file ccache/memory \
-	keytab keytab/file krb rcache free os posix \
+	keytab keytab/file keytab/srvtab keytab/any krb rcache free os posix \
         $(BUILDTOP)/util/profile
 LIBUPDATE= $(BUILDTOP)/util/libupdate
 LIBDONE= error_tables/DONE asn.1/DONE ccache/DONE ccache/stdio/DONE \
 		ccache/file/DONE ccache/memory/DONE keytab/DONE \
-		keytab/file/DONE krb/DONE rcache/DONE free/DONE os/DONE \
-		posix/DONE $(BUILDTOP)/util/profile/DONE
+		keytab/file/DONE keytab/srvtab/DONE keytab/any/DONE \
+		krb/DONE rcache/DONE free/DONE os/DONE posix/DONE \
+		$(BUILDTOP)/util/profile/DONE
 
 #
 CRYPTO_VER=@CRYPTO_SH_VERS@
