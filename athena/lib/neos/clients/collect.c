@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Author: brlewis $
+ * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.4 1990-11-09 16:34:04 brlewis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.5 1992-04-27 12:43:09 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.4 1990-11-09 16:34:04 brlewis Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.5 1992-04-27 12:43:09 epeisach Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -94,6 +94,9 @@ prep_paper(p, f, flags)
   static char *old_author = NULL;
   struct stat buf;
 
+  (void) sprintf(f, "%s/%s", p->author, p->filename);
+  kbytes += ((p->size + 1023) >> 10);
+
   if (!old_author || strcmp(p->author, old_author)) {
     /******** deal with new student ********/
     if (verbose) {
@@ -103,8 +106,7 @@ prep_paper(p, f, flags)
     if (!(flags & LISTONLY))
       if (mkdir(p->author, 0777))
 	if (errno != EEXIST) {
-	  sprintf(fxmain_error_context, "while creating directory \"%s\"",
-		  p->author);
+	  sprintf(fxmain_error_context, "(%s not collected)", f);
 	  return ((long) errno);
 	} else {
 	  stat(p->author, &buf);
@@ -114,17 +116,12 @@ prep_paper(p, f, flags)
 	      printf("Using existing directory \"%s\".\n",
 		     p->author);
 	  } else {
-	    sprintf(fxmain_error_context,
-		    "(\"%s\"); Could not create directory.",
-		    p->author);
+	    sprintf(fxmain_error_context, "(%s not collected)", f);
 	    return((long) errno);
 	  }
 	}
     old_author = p->author;
   }
-
-  (void) sprintf(f, "%s/%s", p->author, p->filename);
-  kbytes += ((p->size + 1023) >> 10);
 
   return(0L);
 }
