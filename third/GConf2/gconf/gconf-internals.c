@@ -723,7 +723,8 @@ get_variable(const gchar* varname)
   */
   if (strcmp(varname, "HOME") == 0)
     {
-      return g_get_home_dir();
+      /* Athena mod: If NOCALLS is set, don't use the real home directory. */
+      return (getenv("NOCALLS") ? gconf_get_tmp_dir() : g_get_home_dir());
     }
   else if (strcmp(varname, "USER") == 0)
     {
@@ -2765,11 +2766,25 @@ gconf_orb_release (void)
 char*
 gconf_get_daemon_dir (void)
 {
-  /* Athena local mod: create the daemon directory under /tmp,
-   * instead of the home directory, so we can run a separate
-   * daemon on each machine.
+  /* Athena local mod: create the daemon directory in a special
+   * per-session directory in /tmp, instead of the home directory,
+   * so we can run a separate daemon for each session.
    */
-  return g_strconcat ("/tmp/gconfd-", g_get_user_name (), NULL);
+  char *session_tmpdir;
+  char *session_id;
+
+  session_tmpdir = getenv("ATHENA_SESSION_TMPDIR");
+  if (session_tmpdir != NULL)
+    return g_strconcat (session_tmpdir, "/gconfd", NULL);
+
+  session_id = getenv("ATHENA_LOGIN_SESSION");
+  if (session_id == NULL)
+    session_id = getenv("XSESSION");
+  if (session_id == NULL)
+    session_id = "";
+
+  return g_strconcat ("/tmp/gconfd-", g_get_user_name (), "-",
+                      session_id, NULL);
 }
 
 char*
@@ -2783,6 +2798,21 @@ gconf_get_lock_dir (void)
 
   g_free (gconfd_dir);
   return lock_dir;
+}
+
+/* Athena mod:  Get the temporary directory to use for the session
+ * (needed for "NOCALLS").
+ * For now, just uses the daemon directory, which is assumed to be
+ * temporary for this session.
+ */
+gchar *
+gconf_get_tmp_dir(void)
+{
+  static gchar *tmpdir = NULL;
+
+  if (tmpdir == NULL)
+    tmpdir = gconf_get_daemon_dir();
+  return tmpdir;
 }
 
 static void

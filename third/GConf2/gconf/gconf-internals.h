@@ -249,6 +249,8 @@ void _gconf_init_i18n (void);
 
 int gconf_mkdir_private (const char *path);
 
+gchar * gconf_get_tmp_dir(void);
+
 #endif /* GCONF_ENABLE_INTERNALS */
 
 #endif /* GCONF_GCONF_INTERNALS_H */
