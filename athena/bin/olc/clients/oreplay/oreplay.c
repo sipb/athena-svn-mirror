@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.15 1991-01-21 15:51:37 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.16 1991-01-25 13:45:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -54,7 +54,6 @@ main(argc,argv)
   int temp_fd;
   int gimme_raw;
   int nuke;
-  int n_errors;
 #ifdef KERBEROS
   KTEXT_ST my_auth;
   int auth_result;
@@ -151,7 +150,6 @@ main(argc,argv)
   }
 
 /* Find out where the server is */
-redo:
 
   if (hp == NULL) {
 #ifdef HESIOD
@@ -204,14 +202,8 @@ redo:
   
   /* This is a hack; the connection is occasionally refused the first time */
   /* for an unknown reason */
-  n_errors = 0;
 
   if (connect(sock,(struct sockaddr *)&sin,sizeof(sin)) < 0) {
-    n_errors++;
-    if (n_errors < 3) {
-      close(sock);
-      goto redo;
-    }
     perror(" connect");
     punt(output_fd,filename);
   }
