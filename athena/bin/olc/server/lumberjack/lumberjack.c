@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.17 1991-09-23 12:53:16 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.18 1992-01-07 20:15:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.17 1991-09-23 12:53:16 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.18 1992-01-07 20:15:03 lwvanels Exp $";
 #endif
 #endif
 
@@ -20,6 +20,11 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include <sys/types.h>
 #include <sys/dir.h>
+#if defined(_IBMR2) && defined(ZEPHYR)
+/* Conflict in definitions between AIX's dir.h and zephyr.h for STAT; keep */
+/* the Zephyr one */
+#undef STAT
+#endif
 #include <sys/file.h>
 #include <sys/wait.h>
 #include <strings.h>
