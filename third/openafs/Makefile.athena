@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.9 2003-09-15 20:43:05 zacheiss Exp $
+# $Id: Makefile.athena,v 1.10 2004-03-06 18:03:42 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -14,7 +14,7 @@ prepare:
 	rm -f config.cache
 	case $$ATHENA_HOSTTYPE in \
 	linux) \
-	   LINUX_VERS=`ls -l /boot/vmlinuz|sed -e 's/.*vmlinuz-//'` ; \
+	   LINUX_VERS=`ls -l /boot/vmlinuz*|tail -1|sed -e 's/.*vmlinuz-//'`; \
 	   . ./compiler && CONFIG_SITE=`pwd`/config.site.athena CC=$$cc \
 	   ./configure --enable-transarc-paths --enable-redhat-buildsys \
 	   --with-linux-kernel-headers=/lib/modules/$${LINUX_VERS}/build \
@@ -283,7 +283,7 @@ install:
 	# Platform specific grot.
 	case $$ATHENA_HOSTTYPE in \
 	linux) \
-	   LINUX_VERS=`ls -l /boot/vmlinuz|sed -e 's/.*vmlinuz-//'` ; \
+	   LINUX_VERS=`ls -l /boot/vmlinuz*|tail -1|sed -e 's/.*vmlinuz-//'`; \
 	   mkdir -p $$SRVD${VICE}/modload ; \
 	   mkdir -p $$SRVD/etc/sysconfig ; \
 	   mkdir -p $$SRVD/usr/vice/cache ; \
