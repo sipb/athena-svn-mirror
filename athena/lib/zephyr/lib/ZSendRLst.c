@@ -4,16 +4,16 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRLst.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRLst.c,v 1.2 1991-12-04 13:51:09 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRLst.c,v 1.3 1994-11-01 17:51:59 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendRawList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRLst.c,v 1.2 1991-12-04 13:51:09 lwvanels Exp $";
+static char rcsid_ZSendRawList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendRLst.c,v 1.3 1994-11-01 17:51:59 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -46,7 +46,7 @@ Code_t ZSrvSendRawList(notice, list, nitems, send_routine)
     if ((retval = ZParseNotice(buffer, len, &newnotice)) != ZERR_NONE)
 	return (retval);
     
-    retval = Z_SendFragmentedNotice(&newnotice, len, send_routine);
+    retval = Z_SendFragmentedNotice(&newnotice, len, NULL, send_routine);
 
     free(buffer);
 

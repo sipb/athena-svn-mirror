@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.15 1993-11-21 03:13:25 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.16 1994-11-01 17:51:30 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.15 1993-11-21 03:13:25 probe Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.16 1994-11-01 17:51:30 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -28,7 +28,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     C_Block session;
 {
     ZNotice_t newnotice;
-    char *ptr;
+    char *ptr
     int retval, hdrlen;
 
     newnotice = *notice;
@@ -37,7 +37,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     newnotice.z_ascii_authent = "";
 
     if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
-				    &hdrlen, &ptr)) != ZERR_NONE)
+				    &hdrlen, &ptr, NULL)) != ZERR_NONE)
 	return (retval);
 
 #ifdef NOENCRYPTION
@@ -47,7 +47,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
 	(ZChecksum_t)des_quad_cksum(buffer, NULL, ptr - buffer, 0, session);
 #endif
     if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
-				    &hdrlen, (char **) 0)) != ZERR_NONE)
+				    &hdrlen, NULL, NULL)) != ZERR_NONE)
 	return (retval);
 
     ptr = buffer+hdrlen;

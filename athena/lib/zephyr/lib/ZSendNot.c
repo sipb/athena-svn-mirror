@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v $
- *	$Author: lwvanels $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.10 1991-12-04 13:48:18 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.11 1994-11-01 17:51:59 ghudson Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.10 1991-12-04 13:48:18 lwvanels Exp $";
+static char rcsid_ZSendNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.11 1994-11-01 17:51:59 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -44,7 +44,8 @@ Code_t ZSrvSendNotice(notice, cert_routine, send_routine)
     if ((retval = ZParseNotice(buffer, len, &newnotice)) != ZERR_NONE)
 	return (retval);
     
-    retval = Z_SendFragmentedNotice(&newnotice, len, send_routine);
+    retval = Z_SendFragmentedNotice(&newnotice, len, cert_routine,
+				    send_routine);
 
     free(buffer);
 

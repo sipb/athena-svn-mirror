@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.25 1993-11-19 15:23:04 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.26 1994-11-01 17:51:59 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZParseNotice_c[] =
@@ -195,6 +195,7 @@ Code_t ZParseNotice(buffer, len, notice)
     }
     else
 	BAD;
+    notice->z_checked_auth = ZAUTH_UNSET;
 	
     if (numfields) {
 	if (ZReadAscii(ptr, end-ptr, (unsigned char *)&temp.i,
