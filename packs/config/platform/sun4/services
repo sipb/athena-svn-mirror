@@ -149,6 +149,8 @@ slw		3716/udp			# software license wrapper
 lert		3717/udp			# login user notification
 klpc		49152/tcp			# kerberized lpc daemon
 
+nqs		607/tcp				# Generic NQS batch system
+
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
 galatea         4001/tcp        galatead   # Video disk control
 bsearch         4010/tcp        binsearch  # Database service

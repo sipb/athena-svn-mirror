@@ -1,7 +1,7 @@
 #
 # Network services, Internet style
 #
-# $Id: services,v 1.1 1997-10-18 05:07:05 ghudson Exp $
+# $Id: services,v 1.2 1998-05-11 19:35:45 tb Exp $
 #
 tcpmux		1/tcp			# TCP port multiplexer (RFC 1078)
 echo		7/tcp
@@ -192,6 +192,8 @@ gshell		3715/tcp			# gsh service
 slw		3716/udp			# software license wrapper
 lert		3717/udp			# login user notification
 klpc		49152/tcp			# kerberized lpc daemon
+
+nqs		607/tcp				# Generic NQS batch system
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
 galatea         4001/tcp        galatead   # Video disk control
