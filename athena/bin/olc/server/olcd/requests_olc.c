@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.60 1999-06-28 22:52:42 ghudson Exp $
+ *	$Id: requests_olc.c,v 1.61 2000-01-10 21:54:17 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.60 1999-06-28 22:52:42 ghudson Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.61 2000-01-10 21:54:17 zacheiss Exp $";
 #endif
 #endif
 
@@ -1882,9 +1882,9 @@ olc_chtopic(fd, request)
 	return(send_response(fd,status));
     }
   else
-    target = requester->connected;
-
-  if(!((is_me(requester,target) || is_connected_to(requester,target)) &&
+      target = requester;
+  
+  if(!((is_me(requester,target) || is_connected_to(requester,target)) ||
        (is_allowed(requester->user, CONSULT_ACL))) &&
      !(is_connected_to(requester,target)) && 
      !(is_allowed(requester->user, GCHTOPIC_ACL)))
