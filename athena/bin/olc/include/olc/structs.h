@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v 1.2 1989-08-08 10:46:52 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v 1.3 1989-11-17 14:53:56 tjcoppet Exp $
  */
 
 /* Structure describing a person. */
@@ -44,6 +44,10 @@ typedef struct tLIST
   int    cstatus;
   int    ukstatus;
   int    ckstatus;
+  long   utime;
+  long   ctime;
+  int    umessage;
+  int    cmessage;
   int    nseen;
   char   topic[TOPIC_SIZE];
   char   note[NOTE_SIZE];
@@ -52,8 +56,29 @@ typedef struct tLIST
 } LIST;
 
 
+typedef struct tGOO
+{
+  int    ustatus;
+  int    cstatus;
+  int    ukstatus;
+  int    ckstatus;
+  int    nseen;
+  char   topic[TOPIC_SIZE];
+  char   note[NOTE_SIZE];
+  struct tPERSON user;
+  struct tPERSON connected;
+} OLDLIST;
+
 typedef struct tSTATUS
 {
   int status;
   char label[LABEL_LENGTH];
 } STATUS;
+
+typedef struct tDBINFO
+{
+  int max_ask;
+  int max_answer;
+  char title1[LABEL_LENGTH];
+  char title2[LABEL_LENGTH];
+} DBINFO ;

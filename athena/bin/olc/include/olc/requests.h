@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.4 1989-08-22 13:59:16 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.5 1989-11-17 14:53:43 tjcoppet Exp $
  */
 
 /* request structure */
@@ -79,12 +79,11 @@ typedef struct tIO_REQUEST
 #define OLC_MOTD             223      /* display motd */
 #define OLC_CHANGE_MOTD      224      /* Change motd */
 #define OLC_CHECK_USER       225      /* Check user status */
-#define OLC_ADD_PRINCIPAL    225      /* add user to acl */
-#define OLC_DEL_PRINCIPAL    226      /* delete user from acl */
+#define OLC_CHANGE_ACL       225      /* add user to acl */
 #define OLC_USER_INFO        227      /* find out about user */
 #define OLC_RESTART          229      /* restart server */
 #define OLC_FLUSH_NM         230      /* flush new messages */
-#define OLC_CHANGE_TOPIC     231      /* change topic */
+#define OLC_SET_TOPIC        231      /* change topic */
 #define OLC_CREATE_INSTANCE  232      /* create instance */
 #define OLC_DUMP             233      /* debug server */
 #define OLC_WHO              234      /* find who */
@@ -94,6 +93,12 @@ typedef struct tIO_REQUEST
 #define OLC_CONNECTED        238
 #define OLC_LOAD_USER        239
 #define OLC_DEFAULT_INSTANCE 240
+#define OLC_GET_DBINFO       241
+#define OLC_SET_DBINFO       242
+#define OLC_LIST_ACL         243
+#define OLC_GET_ACCESSES     244
+#define OLC_CHANGE_TOPICS    245
+
 /* Return values from daemon requests and functions. */
 
 #define PERMISSION_DENIED	100
@@ -124,6 +129,11 @@ typedef struct tIO_REQUEST
 #define OK                      126
 #define MAX_ASK                 127
 #define MAX_ANSWER              128
+#define UNKNOWN_ACL             129
+#define NO_MESSAGES             130
+#define ERROR_NAME_RESOLVE      150
+#define ERROR_CONNECT           151
+#define ERROR_SLOC              152
 #define END_OF_LIST             -1
 
 /* Request options. */  /* should be broken up by request */
@@ -156,6 +166,8 @@ typedef struct tIO_REQUEST
 #define CHANGE_COMMENT_OPT 1<<25
 #define CHANGE_NOTE_OPT    1<<26
 
+#define ADD_OPT            1<<20
+#define DEL_OPT            1<<21
 #define LIST_PERSONAL      1
 
 /* other stuff */
@@ -165,9 +177,10 @@ typedef struct tIO_REQUEST
 
 #define	VERSION_1	1	/* 07 Aug 1986 */
 #define	VERSION_2	2	/* 07 Jun 1988 */
-#define VERSION_3       3
+#define VERSION_3       3       /* 07 Jun 1989 */
+#define VERSION_4       4       /* 01 Oct 1989 */
 
-#define	CURRENT_VERSION	VERSION_3
+#define	CURRENT_VERSION	VERSION_4
 
 
 

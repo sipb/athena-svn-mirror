@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.4 1989-08-22 13:58:45 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.5 1989-11-17 14:53:24 tjcoppet Exp $
  */
 
 #include <stdio.h>                  
@@ -37,7 +37,7 @@
 #include <olc/procs.h>
 #include <olc/status.h>
 
-#define VERSION_STRING "2.2b"
+#define VERSION_STRING "3.0a"
 
 /* 
  * service definitions 
@@ -60,6 +60,7 @@ extern char INSTANCE[];
 
 extern PERSON User;
 extern STATUS Status_Table[];
+extern char DaemonHost[];
 
 /*
  * misc stuff

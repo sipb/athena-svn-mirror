@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v 1.1 1989-07-07 13:22:29 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v 1.2 1989-11-17 14:53:33 tjcoppet Exp $
  */
 
 #include <olc/olc_tty.h>
