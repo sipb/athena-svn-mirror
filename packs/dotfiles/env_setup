@@ -1,18 +1,30 @@
 # Prototype file for setting up course-specific environment
 # $Author: epeisach $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v 1.2 1989-08-18 14:59:05 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v 1.3 1989-11-16 10:58:21 epeisach Exp $
 
+# Just in case this alias is not already set,
 alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) setenv \!:1 ${\!:1}:\!:2'
 
-set dir = `/bin/athena/attach -p $SUBJECT`
+echo "Attaching $SUBJECT ... "
+set setup_dir = `/bin/athena/attach -p $SUBJECT`
+
 if (! $status) then
+
+	# Record information to remove setup later
+	set setup_filsys = $SUBJECT
+
+	# Set prompt to reflect changed environment
 	set prompt = "$SUBJECT% "
-	if ( -r $dir/.attachrc) then
-		source $dir/.attachrc
+
+	if ( -r $setup_dir/.attachrc) then
+		unsetenv SUBJECT	# to prevent infinite loops
+		echo "Running commands in $setup_dir/.attachrc ... "
+		source $setup_dir/.attachrc
         else
-		extend PATH $dir/${hosttype}bin
-		extend MANPATH $dir/man
+		# Do minimal environment setup
+		extend PATH $setup_dir/${hosttype}bin
+		extend MANPATH $setup_dir/man
         endif  
 else
 	echo ""
@@ -21,10 +33,14 @@ else
 	if ($#filsys < 3) then
 		echo "Check your spelling of the filesystem name."
 	else
-		echo "The $filsys[1] fileserver named $filsys[3] may be down."
+		echo -n "The $filsys[1] fileserver"
+		if ($filsys[1] != AFS) echo -n " named $filsys[3]"
+		echo " may be down."
 	endif
-	echo ""
-        echo "Type exit to get rid of this window."   
+	if ($?XSESSION) then
+		echo "Type exit to get rid of this window."
+	else
+		kill -HUP $$	# cause shell to exit
+	endif
 endif
-unset dir
-unsetenv SUBJECT	# so that child shells won't do all this again.
+unsetenv SUBJECT	# to prevent infinite loops
