@@ -67,13 +67,18 @@ else
 
 # if ($machine == "decmips")...
 
-foreach package ( $machine/kits/install_srvd setup $machine athena/lib/syslog $libs1 $third $libs2 $etcs $bins )
+foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $third $libs2 $etcs $bins $machine )
+# at the moment, lib/resolv gets built twice...
 
 endif
 switch ($package)
 	case setup
 	(echo in setup >>& $outfile)
 	mkdir /build/bin
+	mkdir $SRVD/usr/athena
+	mkdir $SRVD/usr/athena/include
+	mkdir $SRVD/usr/athena/lib
+	mkdir $SRVD/usr/athena/bin
 	cd /build/support/imake
 		((make -f Makefile.ini clean >>& $outfile) && \
 			(make -f Makefile.ini >>& $outfile ) && \
@@ -95,8 +100,25 @@ switch ($package)
 	(make >>& $outfile))
 	if ($status == 1 ) then
 	        echo "We bombed in install" >>& $outfile
+		exit -1
 	endif
 
+# Mark, why don't we just do everything in build/support?
+#	cd /build/support/makedepend
+#	((echo "In makedepend" >>& $outfile) &&\
+#	(imake -I/source/third/supported/X11R5/mit/config -DTOPDIR=. -DCURDIR=. >>& $outfile) &&\
+#	(make clean >>& $outfile) &&\
+#	(make >>& $outfile) &&\
+#	(cp makedepend /build/bin >>& $outfile))
+#	if ($status == 1 ) then
+#	        echo "We bombed in makedepend" >>& $outfile
+#		exit -1
+#	endif
+# I'm sick of this for now...
+
+	cp -p /afs/athena/system/@sys/srvd.76/usr/athena/bin/makedepend /build/bin
+	# Probably want this in build/bin... change Imake.tmpl...
+	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh /usr/athena/bin/mkdirhier
 	# Hack...
 	if ($machine == "decmips") then
 		(cp -p /source/decmips/etc/named/bin/mkdep.ultrix /build/bin/mkdep >>& $outfile)
@@ -135,8 +157,8 @@ switch ($package)
 # Sigh. There are gross interdependencies that can't be resolved
 # at this level, which aren't noticed when you're building from
 # a non-pure machine.
-	cp -p /source/decmips/sys/fs/nfs/nfs_mapctl.h /usr/include/nfs
 	((echo In $package : make Makefile  >>& $outfile ) && \
+	(cp -p /source/decmips/sys/fs/nfs/nfs_mapctl.h /usr/include/nfs >>& $outfile) && \
 	((cd /build/$package;xmkmf . ) >>& $outfile ) && \
 	(echo In $package : make Makefiles>>& $outfile ) && \
 	((cd /build/$package;make Makefiles) >>& $outfile )  && \
@@ -145,13 +167,26 @@ switch ($package)
 	(echo In $package : make all >>& $outfile ) && \
 	((cd /build/$package;make all) >> & $outfile ) && \
 	(echo In $package : make install >>& $outfile ) && \
-	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))  
+	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
 	if ($status == 1 ) then
 		echo "We bombed at $package"  >>& $outfile
 		exit -1
 	endif
 	breaksw
 		
+	case athena/lib/syslog
+	((echo In $package : make clean >>& $outfile ) && \
+	((cd /build/$package;make clean) >>& $outfile ) && \
+	(echo In $package : make all >>& $outfile ) && \
+	((cd /build/$package;make all) >> & $outfile ) && \
+	(echo In $package : make install >>& $outfile ) && \
+	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
+	if ($status == 1 ) then
+		echo "We bombed at $package"  >>& $outfile
+		exit -1
+	endif
+	breaksw
+
 	case third/unsupported/perl
 	case third/unsupported/perl-4.036
 	(echo In $package >>& $outfile)
@@ -391,6 +426,7 @@ switch ($package)
 	echo "We bombed at $package"  >>& $outfile
 	exit -1
    endif
+ rehash
 		breaksw
 		case simple
 		default:
@@ -408,7 +444,7 @@ switch ($package)
         echo "We bombed at $package"  >>& $outfile
         exit -1
    endif
-
+ rehash
 		breaksw
 		endsw
 	breaksw
