@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.38 1991-04-14 17:18:59 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.39 1991-11-05 13:54:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.38 1991-04-14 17:18:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.39 1991-11-05 13:54:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -627,6 +627,10 @@ init_question(k,topic,text, machinfo)
   k->question->seen[0] = -1;
   k->question->comment[0] = '\0';
   k->question->topic_code = verify_topic(topic);
+  k->question->stats.n_crepl = 0;
+  k->question->stats.n_cmail = 0;
+  k->question->stats.n_urepl = 0;
+  k->question->stats.time_to_fr = -1;
   k->title = k->user->title1;
   (void) strcpy(k->question->topic,topic);
   init_log(k, text, machinfo);
@@ -1464,6 +1468,8 @@ write_question_info(q)
   }
 
   fprintf(f,"%d\n",q->nseen);
+  fprintf(f,"%d %d %d %d\n",q->stats.n_crepl, q->stats.n_cmail,
+	  q->stats.n_urepl, q->stats.time_to_fr);
   for(i=1;i<=q->nseen;i++)
     fprintf(f,"%d\n",q->seen[i-1]);
   fprintf(f,"%s\n%s\n%s\n",q->title,q->note,q->comment);
