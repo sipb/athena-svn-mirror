@@ -1605,9 +1605,9 @@ if test "$enable_locking" = yes; then
 		    AC_CHECK_LIB(socket, socket,
 				 krb_libs="-lsocket $krb_libs", :, $krb_libs))
       AC_CHECK_X_LIB(krb4, krb_mk_req, found_libkrb4=yes, found_libkrb4=no,
-		     -ldes425 -lkrb5 -lcrypto -lcom_err $krb_libs)
+		     -ldes425 -lkrb5 -lk5crypto -lcom_err $krb_libs)
       if test "$found_libkrb4" = yes ; then
-	PASSWD_LIBS="$PASSWD_LIBS -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"
+	PASSWD_LIBS="$PASSWD_LIBS -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
         PASSWD_LIBS="$PASSWD_LIBS $krb_libs"
       else
         AC_CHECK_X_LIB(des, des_cbc_encrypt, krb_libs="-ldes $krb_libs", :,

@@ -6843,7 +6843,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err $krb_libs $LIBS"
+LIBS="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err $krb_libs $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 6849 "configure"
 #include "confdefs.h"
@@ -6880,7 +6880,7 @@ fi
   CPPFLAGS="$ac_save_CPPFLAGS"
   LDFLAGS="$ac_save_LDFLAGS"
       if test "$found_libkrb4" = yes ; then
-	PASSWD_LIBS="$PASSWD_LIBS -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"
+	PASSWD_LIBS="$PASSWD_LIBS -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
         PASSWD_LIBS="$PASSWD_LIBS $krb_libs"
       else
         
