@@ -1,3 +1,4 @@
 #!/bin/sh
 
 echo "/etc/mail/sendmail.cf"				>> $CONFCHG
+echo "/etc/inet/services"				>> $CONFCHG
