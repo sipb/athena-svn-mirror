@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.16 1987-11-09 12:13:26 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.17 1987-11-15 23:46:17 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -359,7 +359,9 @@ struct sockaddr_in *who;
 			zdbug((LOG_DEBUG,"lost client %s/%d",
 			       inet_ntoa(lhp->lh_client->zct_sin.sin_addr),
 			       ntohs(lhp->lh_client->zct_sin.sin_port)));
-			client_deregister(lhp->lh_client, lhp->lh_host);
+			/* deregister all subscriptions, and flush locations
+			   associated with the client. */
+			client_deregister(lhp->lh_client, lhp->lh_host, 1);
 			server_kill_clt(lhp->lh_client);
 			xremque(lhp);
 			xfree(lhp);
