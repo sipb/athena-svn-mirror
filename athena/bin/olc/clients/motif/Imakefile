@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.16 1999-01-22 23:12:18 ghudson Exp $
+# $Id: Imakefile,v 1.17 1999-01-26 00:41:03 ghudson Exp $
 #
 # For copying and distribution information,
 # please see the file <mit-copyright.h>.
@@ -37,7 +37,7 @@ DEFINES=-DSA_LOC=\"/usr/athena/bin/xbrowser\" $(NO_PROTO)
 
 Xolc: Xolc.cpp
 	$(RM) Xolc
-	$(CPP) -P Xolc.cpp > Xolc
+	$(CPP) $(TRADITIONAL) -P Xolc.cpp > Xolc
 
 NormalProgramTarget(xolc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 SaberProgramTarget(xolc,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
