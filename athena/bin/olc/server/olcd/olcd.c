@@ -22,12 +22,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.25 1990-08-02 15:35:38 lwvanels Exp $
+ *	$Id: olcd.c,v 1.26 1990-08-20 04:43:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.25 1990-08-02 15:35:38 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.26 1990-08-20 04:43:07 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -105,11 +105,12 @@ static int listening_fd;
 #if __STDC__
 int punt(int sig);
 int reap_child(int sig);
+int dump_profile(int sig);
 #else
 int punt();
 int reap_child();
+int dump_profile();
 #endif
-
 
 static char ME[60] =
 #ifdef TEST
@@ -436,7 +437,9 @@ restart:
     signal(SIGTERM, punt);	/* kill $$ */
     signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
     signal(SIGPIPE, SIG_IGN);
-
+#ifdef PROFILE
+    signal(SIGUSR1, dump_profile); /* Dump profiling information */
+#endif /* PROFILE */
     get_kerberos_ticket ();
 
     olc_broadcast_message("syslog",
@@ -516,7 +519,6 @@ process_request (fd, from)
     int index;		/* Index in proc. table. */
     int auth;             /* status from authentication */
     struct hostent *hp;	/* host sending request */
-    int f;
 
     index = 0;
     processing_request = 1;
@@ -691,6 +693,21 @@ reap_child(sig)
     pid = wait3(&status,WNOHANG,0);
 }
 
+int
+#if __STDC__
+dump_profile(int sig)
+#else
+dump_profile(sig)
+     int sig;
+#endif
+{
+#ifdef PROFILE
+  olc_broadcast_message("syslog", fmt("%s dumping profiling stats.",
+				      ME),"system");
+  log_status("Dumping profile..");
+  monitor(0);
+#endif PROFILE
+}
 
 
 /*
@@ -715,7 +732,6 @@ authenticate(request, addr)
 #ifdef KERBEROS
     AUTH_DAT data;
 #endif KERBEROS
-    char mesg[BUFSIZ];
 
     int result;
 
@@ -746,15 +762,14 @@ int get_kerberos_ticket()
     char principal[ANAME_SZ];
     char *ptr;
 
-    strcpy(principal,K_SERVICE);
-    strcpy(sinstance,DaemonHost);
-    ptr = index(sinstance,'.');
-    if (ptr)
-	*ptr = '\0';
-    uncase(sinstance);
-
     if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
     {
+	strcpy(principal,K_SERVICE);
+	strcpy(sinstance,DaemonHost);
+	ptr = index(sinstance,'.');
+	if (ptr)
+	  *ptr = '\0';
+	uncase(sinstance);
 	log_error (fmt ("get new tickets: %s %s ", K_SERVICE, sinstance));
 	dest_tkt();
 	ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
@@ -766,7 +781,7 @@ int get_kerberos_ticket()
 	    return(ERROR);
 	}
 	else
-	    ticket_time = NOW;
+	  ticket_time = NOW;
     }
     return(SUCCESS);
 }
