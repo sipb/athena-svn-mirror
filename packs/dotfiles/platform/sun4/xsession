@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.32 1992-04-05 16:32:24 probe Exp $
+# $Id: xsession,v 1.33 1992-04-27 13:44:47 mar Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -10,7 +10,8 @@ set initdir=/usr/athena/lib/init
 
 # Determine whether to use user customizations:  use no customization files
 # ONLY if the single argument "nocalls" was provided to xsession (e.g., if
-# the user selected the SYSTEM option from the initial xlogin menu).
+# the user selected the "Ignore your customizations" option from the
+# initial xlogin menu).
 
 switch ($#argv)
     case 0:
@@ -51,7 +52,8 @@ endif
 setenv XSESSION $$
 
 # Set the sleep time for waiting between launching large applications.
-# These can be overridden in the ~/.cshrc or ~/.environment files.
+# These are only set for "slow" machines.  They can be overridden in
+# the ~/.cshrc or ~/.environment files. 
 
 switch ("`machtype -c`")
     case VAXSTAR:
@@ -206,8 +208,9 @@ endif
 # Gate the session.
 
 # This command replaces this script and will wait for you to log out.
-# To terminate this process, type the "logout" command in an xterm window
-# or invoke the "end_session" program.
+# To terminate this process, logout (type the "logout" command in any
+# xterm window, use the Logout button, or select the "Logout of Athena"
+# option from Dash), or invoke the "end_session" program.
 
 if ($?NOCALLS) then
 	exec session_gate
