@@ -7,7 +7,7 @@ echo "NOREMOTE=false;		 export NOREMOTE       # Deny access to remote users not 
 echo "NEWUNIX=true"			>> ${CONFVARS}
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
-echo "${SITE}/usr/vice/etc/SuidCells"	>> ${CONFCHG}
+echo "/${SITE}/usr/vice/etc/SuidCells"	>> ${CONFCHG}
 
 case "${MACH}" in
 DS*)
