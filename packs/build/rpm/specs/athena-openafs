@@ -10,14 +10,6 @@ Client programs, libaries, kernel modules, and configuration files for
 the AFS filesystem.
 
 %install
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
@@ -30,6 +22,10 @@ cp CellAlias $RPM_BUILD_ROOT/usr/vice/etc/CellAlias
 cp CellServDB $RPM_BUILD_ROOT/usr/vice/etc/CellServDB
 cp ThisCell $RPM_BUILD_ROOT/usr/vice/etc/ThisCell
 cp cacheinfo $RPM_BUILD_ROOT/usr/vice/etc/cacheinfo
+
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
+cp system-afs.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
