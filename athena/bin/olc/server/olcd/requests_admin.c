@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.15 1991-01-03 15:47:21 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.16 1991-01-07 01:44:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.15 1991-01-03 15:47:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.16 1991-01-07 01:44:33 lwvanels Exp $";
 #endif
 #endif
 
@@ -446,5 +446,70 @@ olc_set_user_status(fd,request)
      int fd;
      REQUEST *request;
 {
+  KNUCKLE *requester,*target;
+  USER *user;
+  int status;
+  char message[BUF_SIZE];
+
+  status = find_knuckle(&(request->requester), &requester);
+  if (status != SUCCESS)
+    return(send_response(fd,status));
+  if (!is_allowed(requester->user, ADMIN_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+
+  status = get_knuckle(request->target.username, request->target.instance,
+		       &requester,0);
+  if (status != SUCCESS)
+    return(send_response(fd,status));
+
+  user = target->user;
+
+  switch(request->options) {
+  case ACTIVE:
+    if (!(user->status & ACTIVE)) {
+      sprintf(message,"%s %s has logged back in.",
+	      cap(requester->title), user->username);
+      log_daemon(requester,message);
+#ifdef LOG
+      log_status(message);
+#endif /* LOG */
+
+      strcat(message, "\n");
+      olc_broadcast_message("resurrection",message,
+			    requester->question->topic);
+      set_status(user,ACTIVE);
+    }
+    break;
+  case LOGGED_OUT:
+    if (!(user->status & LOGGED_OUT)) {
+      sprintf(message,"%s %s has logged out.",
+	      cap(requester->title), user->username);
+      log_daemon(requester,message);
+#ifdef LOG
+      log_status(message);
+#endif /* LOG */
+
+      strcat(message, "\n");
+      olc_broadcast_message("aloha",message, requester->question->topic);
+      set_status(user,LOGGED_OUT);
+    }
+    break;
+  case MACHINE_DOWN:
+    if (!(user->status & MACHINE_DOWN)) {
+      sprintf(message,"%s %s machine is down.",
+	      cap(requester->title), user->username);
+      log_daemon(requester,message);
+#ifdef LOG
+      log_status(message);
+#endif /* LOG */
+
+      set_status(user,MACHINE_DOWN);
+    }
+    break;
+  default:
+    send_response(fd,UNKNOWN_REQUEST);
+    return(PERMISSION_DENIED);
+  }
+  send_response(fd,SUCCESS);
   return(SUCCESS);
 }
