@@ -15,8 +15,11 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuHelp.c,v $
- * $Author: vanharen $
+ * $Author: rbasch $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1989/12/19 14:56:18  vanharen
+ * fixed an error in logic when hitting the 25 mark...
+ *
  * Revision 1.1  89/12/09  15:14:29  djf
  * Initial revision
  * 
@@ -79,7 +82,8 @@ void MuHelp(string)
 	    /* Once created, keep the first three dialog boxes */
 	    /* for all others, destroy them when done. */
             if (i > 2)
-              XtAddCallback(helpbox[i], XmNokCallback, Destroy, i);
+              XtAddCallback(helpbox[i], XmNokCallback,
+			    (XtCallbackProc) Destroy, (XtPointer) i);
             break;
 	  }
 
