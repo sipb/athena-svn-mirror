@@ -1,5 +1,5 @@
 .\" 
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinit.1,v 1.1 1989-01-22 16:47:00 qjb Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinit.1,v 1.2 1989-01-22 20:52:46 qjb Exp $
 .\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinit.1,v $
 .\" $Author: qjb $
 .\"
@@ -98,11 +98,11 @@ using
 tickets.
 
 .SH EXAMPLES
-% rkinit soup
+% rkinit priam
 .br
-Kerberos initialization on host priam for qjb
+Kerberos initialization (priam)
 .br
-Password:
+Password for qjb:
 .br
 % 
 .br
@@ -110,25 +110,25 @@ Password:
 .br
 % rkinit charon -u qjb.root 
 .br
-Kerberos initialization on host priam for qjb.root
+Kerberos initialization (charon)
 .br
-Password:
+Password for qjb.root:
 .br
 % 
 
 % rkinit soup -l local
 .br
-Kerberos initialization: qjb's tickets for local on host soup
+Kerberos initialization (soup): tickets will be owned by local
 .br
-Password: 
+Password for qjb:
 .br
 % 
 
 % rkinit dodo 
 .br
-Kerberos initialization on host dodo for qjb@SMS_TEST.MIT.EDU
+Kerberos initialization (dodo)
 .br
-Password:
+Password for qjb@SMS_TEST.MIT.EDU:
 .br
 %
 
