@@ -49,7 +49,9 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #define tdecode pdecode
 #define tnchktc	pnchktc
 #define	tnamatch pnamatch
+#ifdef E_TERMCAP
 #undef E_TERMCAP
+#endif
 #define E_TERMCAP "/etc/printcap"
 #define V6
 #endif
@@ -125,7 +127,6 @@ hpgetent(line, print)
         char *line;
         char *print;
 {
-	register int status;
 	register char **hv;
 	char **hes_resolve();
 
@@ -188,6 +189,7 @@ endprent()
 {
 	if (pfp != NULL)
 		fclose(pfp);
+	pfp = NULL;
 }
 
 /*
@@ -203,7 +205,9 @@ tgetent(bp, name)
 	register int c;
 	register int i = 0, cnt = 0;
 	char ibuf[BUFSIZ];
+#ifndef V6
 	char *cp2;
+#endif
 	int tf;
 
 	tbuf = bp;
@@ -441,7 +445,7 @@ tgetstr(id, area)
 	char *id, **area;
 {
 	register char *bp = tbuf;
-
+	
 	for (;;) {
 		bp = tskip(bp);
 		if (!*bp)
