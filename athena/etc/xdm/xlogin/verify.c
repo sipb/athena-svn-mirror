@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.23 1992-05-18 16:50:42 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.24 1992-05-18 16:52:42 epeisach Exp $
  */
 
 #include <stdio.h>
@@ -929,8 +929,14 @@ char *dir;
     return(TRUE);
 #endif
     
-#if (defined(vax) || defined(ibm032)) && !defined(REMOTEDONE)
+#if (defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
 #define REMOTEDONE
+#if defined(vax) || defined(ibm032)
+#define NFS_MAJOR 0xff
+#endif
+#if defined(sun)
+#define NFS_MAJOR 130
+#endif
     int f;
     char c;
     struct stat stbuf;
@@ -938,7 +944,7 @@ char *dir;
     if (stat(dir, &stbuf))
 	return(TRUE);
 
-    if ((unsigned short)stbuf.st_dev >= 0xff00)
+    if (major(stbuf.st_dev) == NFS_MAJOR)
 	return(TRUE);
     if (stbuf.st_dev == 0x0001)			/* AFS */
 	return(TRUE);
