@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:38:26 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-11-24 19:33:40 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
@@ -166,6 +166,8 @@ install:
 	install -c -m 444 lib/afs/libxstat_fs.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/util.a ${DESTDIR}${WS}/lib/afs
 	install -c -m 444 lib/afs/vlib.a ${DESTDIR}${WS}/lib/afs
+	rm -f ${DESTDIR}${WS}/lib/afs/libtermlib.a
+	ln -s libnull.a ${DESTDIR}${WS}/lib/afs/libtermlib.a
 
 clean:
 
