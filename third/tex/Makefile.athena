@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.7 1998-12-04 18:55:02 ghudson Exp $
+# $Id: Makefile.athena,v 1.8 2000-03-13 15:25:41 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -6,7 +6,7 @@ ATHLIBDIR=/usr/athena/lib
 prepare:
 	cd web2c && CC="$$COMPILER" ./configure --prefix=/usr/athena
 	cd xdvi && imake "-I$$XCONFIGDIR" -DUseInstalled \
-		"-DCONFIGDIR=$$XCONFIGDIR"
+		"-DXCONFIGDIR=$$XCONFIGDIR"
 	cd xdvi && ${MAKE} Makefiles
 	rm -f lib/tex/fonts/mf
 	ln -s ../../../web2c/web2c/mf/virmf lib/tex/fonts/mf
