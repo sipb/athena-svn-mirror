@@ -24,7 +24,6 @@ echo "Making dirs on root"
 mkdir /root/var
 mkdir /root/usr
 mkdir /root/proc
-ln -s var/rtmp /root/tmp
 
 
 echo "Mount var, usr , var/usr/vice..."
@@ -85,7 +84,7 @@ date >/tmp/end
 echo "the os part is installed"
 
 echo "tracking the srvd"
-/srvd/usr/athena/etc/track -d -F /srvd -T /root -W /srvd/usr/athena/lib
+/srvd/usr/athena/lib/update/track-srvd
 echo "copying kernel modules from /srvd/kernel"
 cp -p /srvd/kernel/fs/* /root/kernel/fs/
 
