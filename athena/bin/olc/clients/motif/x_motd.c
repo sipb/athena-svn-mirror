@@ -22,13 +22,15 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.1 1989-07-20 22:19:39 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.2 1989-07-31 15:14:52 vanharen Exp $";
 #endif
 
 #include "xolc.h"
 
-extern Widget widget_motdlabel;
-
+/*extern Widget
+  w_motd_scrl,
+  w_motd_dlg;
+*/
 
 ERRCODE
 x_get_motd(Request,type,file)
@@ -56,13 +58,26 @@ x_get_motd(Request,type,file)
 	fprintf(stderr, "x_get_motd: unable to read motd correctly.\n");
       close(fd);
       motd[buf.st_size] = '\0';
-      printf("Got MOTD of %d characters.  Here it is:\n", buf.st_size);
-      printf("%s", motd);
-      XmTextSetString(widget_motdlabel, motd);
+/*
+ * This part is gross.  I'm using this routine to set the motd for both a
+ * dialog widget and a text widget, so I set them both here, and don't really
+ * care which one I came here to do...  oh well.
+ */
+      XmTextSetString(w_motd_scrl, motd);
+
+      XtSetArg(arg, XmNmessageString, XmStringLtoRCreate(motd, ""));
+      XtSetValues(w_motd_dlg, &arg, 1);
+
       free(motd);
       break;
 
     default:
+      XmTextSetString(w_motd_scrl, "An error has occurred.");
+
+      XtSetArg(arg, XmNmessageString,
+	       XmStringLtoRCreate("An error has occurred.", ""));
+      XtSetValues(w_motd_dlg, &arg, 1);
+
       status = handle_response(Request,status);
       break;
     }
