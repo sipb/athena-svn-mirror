@@ -1,7 +1,7 @@
 /*
  * Various stuff stolen from the X Toolkit...
  *
- * $Id: Jets.h,v 1.2 1999-01-22 23:16:54 ghudson Exp $
+ * $Id: Jets.h,v 1.3 1999-02-22 18:16:31 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -47,11 +47,13 @@ typedef struct _XjCallbackRec
 
 #define argInt 0
 #define argString 1
+#define argPtr 2
 
 typedef struct _XjCallback
 {
   struct _XjCallback *next;
   int argType;
+  void *passPtr;
   char *passString;
   int passInt;
   XjCallbackProc proc;

@@ -5,7 +5,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- * $Id: xselect.c,v 1.2 1999-01-22 23:17:11 ghudson Exp $
+ * $Id: xselect.c,v 1.3 1999-02-22 18:16:35 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -16,7 +16,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Id: xselect.c,v 1.2 1999-01-22 23:17:11 ghudson Exp $";
+"$Id: xselect.c,v 1.3 1999-02-22 18:16:35 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -24,6 +24,7 @@ static char rcsid[] =
 /* xselect.c - ICCCM compliant cut-and-paste */
 
 #include <stdio.h>
+#include <string.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>

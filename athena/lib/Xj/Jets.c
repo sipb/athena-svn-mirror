@@ -1,5 +1,5 @@
 /*
- * $Id: Jets.c,v 1.2 1999-01-22 23:16:53 ghudson Exp $
+ * $Id: Jets.c,v 1.3 1999-02-22 18:16:29 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,11 +10,12 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: Jets.c,v 1.2 1999-01-22 23:16:53 ghudson Exp $";
+"$Id: Jets.c,v 1.3 1999-02-22 18:16:29 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <X11/Xos.h>
 #include <ctype.h>
 #include <varargs.h>
@@ -421,6 +422,9 @@ void XjCallCallbacks(info, callback, data)
 	break;
       case argString:
 	exit = callback->proc(info, callback->passString, data);
+	break;
+      case argPtr:
+	exit = callback->proc(info, callback->passPtr, data);
 	break;
       }
 }
