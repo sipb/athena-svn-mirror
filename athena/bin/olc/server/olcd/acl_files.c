@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.9 1990-12-05 21:11:42 lwvanels Exp $
+ *	$Id: acl_files.c,v 1.10 1990-12-12 15:11:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.9 1990-12-05 21:11:42 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.10 1990-12-12 15:11:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -69,7 +69,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 extern int errno;
 
-extern char *calloc();
 extern time_t time();
 
 /* Hash table stuff */
@@ -99,6 +98,7 @@ static int acl_load P((char *name ));
 /* system */
 
 void *malloc P((unsigned int));
+void *calloc P((unsigned int, unsigned int));
 void perror P((char *msg ));
 void free P((void *));
 
