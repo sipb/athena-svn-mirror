@@ -77,8 +77,8 @@ gconf_source_free (GConfSource* source)
   g_return_if_fail(source != NULL);
 
   backend = source->backend;
-  
-  (*source->backend->vtable->destroy_source)(source);
+
+  (*source->backend->vtable.destroy_source)(source);
   
   /* Remove ref held by the source. */
   gconf_backend_unref(backend);
@@ -86,8 +86,8 @@ gconf_source_free (GConfSource* source)
 
 #define SOURCE_READABLE(source, key, err)                  \
      ( ((source)->flags & GCONF_SOURCE_ALL_READABLE) ||    \
-       ((source)->backend->vtable->readable != NULL &&     \
-        (*(source)->backend->vtable->readable)((source), (key), (err))) )
+       ((source)->backend->vtable.readable != NULL &&     \
+        (*(source)->backend->vtable.readable)((source), (key), (err))) )
 
 static gboolean
 source_is_writable(GConfSource* source, const gchar* key, GError** err)
@@ -96,8 +96,8 @@ source_is_writable(GConfSource* source, const gchar* key, GError** err)
     return FALSE;
   else if ((source->flags & GCONF_SOURCE_ALL_WRITEABLE) != 0)
     return TRUE;
-  else if ((source->backend->vtable->writable != NULL) &&
-           (*source->backend->vtable->writable)(source, key, err))
+  else if ((source->backend->vtable.writable != NULL) &&
+           (*source->backend->vtable.writable)(source, key, err))
     return TRUE;
   else
     return FALSE;
@@ -119,7 +119,7 @@ gconf_source_query_value      (GConfSource* source,
   if ( SOURCE_READABLE(source, key, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, NULL);
-      return (*source->backend->vtable->query_value)(source, key, locales, schema_name, err);
+      return (*source->backend->vtable.query_value)(source, key, locales, schema_name, err);
     }
   else
     return NULL;
@@ -139,7 +139,7 @@ gconf_source_query_metainfo      (GConfSource* source,
   if ( SOURCE_READABLE(source, key, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, NULL);
-      return (*source->backend->vtable->query_metainfo)(source, key, err);
+      return (*source->backend->vtable.query_metainfo)(source, key, err);
     }
   else
     return NULL;
@@ -163,7 +163,7 @@ gconf_source_set_value        (GConfSource* source,
   if ( source_is_writable(source, key, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
-      (*source->backend->vtable->set_value)(source, key, value, err);
+      (*source->backend->vtable.set_value)(source, key, value, err);
       return TRUE;
     }
   else
@@ -184,7 +184,7 @@ gconf_source_unset_value      (GConfSource* source,
     {
       g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
 
-      (*source->backend->vtable->unset_value)(source, key, locale, err);
+      (*source->backend->vtable.unset_value)(source, key, locale, err);
       return TRUE;
     }
   else
@@ -204,7 +204,7 @@ gconf_source_all_entries         (GConfSource* source,
   if ( SOURCE_READABLE(source, dir, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, NULL);
-      return (*source->backend->vtable->all_entries)(source, dir, locales, err);
+      return (*source->backend->vtable.all_entries)(source, dir, locales, err);
     }
   else
     return NULL;
@@ -222,7 +222,7 @@ gconf_source_all_dirs          (GConfSource* source,
   if ( SOURCE_READABLE(source, dir, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, NULL);
-      return (*source->backend->vtable->all_subdirs)(source, dir, err);
+      return (*source->backend->vtable.all_subdirs)(source, dir, err);
     }
   else
     return NULL;
@@ -240,7 +240,7 @@ gconf_source_dir_exists        (GConfSource* source,
   if ( SOURCE_READABLE(source, dir, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
-      return (*source->backend->vtable->dir_exists)(source, dir, err);
+      return (*source->backend->vtable.dir_exists)(source, dir, err);
     }
   else
     return FALSE;
@@ -258,7 +258,7 @@ gconf_source_remove_dir        (GConfSource* source,
   if ( source_is_writable(source, dir, err) )
     {
       g_return_if_fail(err == NULL || *err == NULL);
-      (*source->backend->vtable->remove_dir)(source, dir, err);
+      (*source->backend->vtable.remove_dir)(source, dir, err);
     }
 }
 
@@ -275,7 +275,7 @@ gconf_source_set_schema        (GConfSource* source,
   if ( source_is_writable(source, key, err) )
     {
       g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
-      (*source->backend->vtable->set_schema)(source, key, schema_key, err);
+      (*source->backend->vtable.set_schema)(source, key, schema_key, err);
       return TRUE;
     }
   else
@@ -292,7 +292,7 @@ gconf_source_sync_all         (GConfSource* source, GError** err)
   g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
 
   /* Athena local mod: lock the source during the sync. */
-  (*source->backend->vtable->lock)(source, &lock_error);
+  (*source->backend->vtable.lock)(source, &lock_error);
   if (lock_error != NULL)
     {
       if (err != NULL)
@@ -303,12 +303,52 @@ gconf_source_sync_all         (GConfSource* source, GError** err)
     }
 
   /* Sync the source. */
-  status = (*source->backend->vtable->sync_all)(source, err);
+  status = (*source->backend->vtable.sync_all)(source, err);
 
   /* Unlock the source, ignoring errors. */
-  (*source->backend->vtable->unlock)(source, NULL);
+  (*source->backend->vtable.unlock)(source, NULL);
 
   return status;
+}
+
+static void
+gconf_source_set_notify_func (GConfSource           *source,
+			      GConfSourceNotifyFunc  notify_func,
+			      gpointer               user_data)
+{
+  g_return_if_fail (source != NULL);
+
+  if (source->backend->vtable.set_notify_func)
+    {
+      (*source->backend->vtable.set_notify_func) (source, notify_func, user_data);
+    }
+}
+
+static void
+gconf_source_add_listener (GConfSource *source,
+			   guint        id,
+			   const gchar *namespace_section)
+{
+  g_return_if_fail (source != NULL);
+  g_return_if_fail (id > 0);
+
+  if (source->backend->vtable.add_listener)
+    {
+      (*source->backend->vtable.add_listener) (source, id, namespace_section);
+    }
+}
+
+static void
+gconf_source_remove_listener (GConfSource *source,
+			      guint        id)
+{
+  g_return_if_fail (source != NULL);
+  g_return_if_fail (id > 0);
+
+  if (source->backend->vtable.remove_listener)
+    {
+      (*source->backend->vtable.remove_listener) (source, id);
+    }
 }
 
 /*
@@ -318,37 +358,59 @@ gconf_source_sync_all         (GConfSource* source, GError** err)
 GConfSources* 
 gconf_sources_new_from_addresses(GSList * addresses, GError** err)
 {
-  GConfSources* sources;
+  GConfSources *sources;
+  GList        *sources_list;
 
   g_return_val_if_fail( (err == NULL) || (*err == NULL), NULL);
-  
-  sources = g_new0(GConfSources, 1);
 
-  while (addresses != NULL)
+  sources_list = NULL;
+  if (addresses != NULL)
     {
-      GConfSource* source;
-      GError* error = NULL;
-      
-      source = gconf_resolve_address((const gchar*)addresses->data, &error);
+      GError *last_error = NULL;
 
-      if (source != NULL)
-        {
-          sources->sources = g_list_prepend(sources->sources, source);          
-          g_return_val_if_fail(error == NULL, NULL);
-        }
-      else
-        {
-          g_assert(error != NULL);
-          gconf_log(GCL_WARNING, _("Failed to load source \"%s\": %s"),
-                    (const gchar*)addresses->data, error->message);
+      while (addresses != NULL)
+	{
+	  GConfSource* source;
+
+	  if (last_error)
+	    {
+	      g_error_free (last_error);
+	      last_error = NULL;
+	    }
+      
+	  source = gconf_resolve_address ((const gchar*)addresses->data, &last_error);
+
+	  if (source != NULL)
+	    {
+	      sources_list = g_list_prepend(sources_list, source);          
+	      g_return_val_if_fail(last_error == NULL, NULL);
+	    }
+	  else
+	    {
+	      g_assert(last_error != NULL);
+	      gconf_log(GCL_WARNING, _("Failed to load source \"%s\": %s"),
+			(const gchar*)addresses->data, last_error->message);
+	    }
           
-          g_error_free(error);
-        }
-          
-      addresses = g_slist_next(addresses);
+	  addresses = g_slist_next(addresses);
+	}
+
+      if (sources_list == NULL)
+	{
+	  g_assert (last_error != NULL);
+	  g_propagate_error (err, last_error);
+	  return NULL;
+	}
+
+      if (last_error)
+	{
+	  g_error_free(last_error);
+	  last_error = NULL;
+	}
     }
 
-  sources->sources = g_list_reverse(sources->sources);
+  sources          = g_new0 (GConfSources, 1);
+  sources->sources = g_list_reverse (sources_list);
 
   {
     GList *tmp;
@@ -366,13 +428,13 @@ gconf_sources_new_from_addresses(GSList * addresses, GError** err)
           {
             some_writable = TRUE;
             gconf_log (GCL_INFO,
-                       _("Resolved address \"%s\" to a writable config source at position %d"),
+                       _("Resolved address \"%s\" to a writable configuration source at position %d"),
                        source->address, i);
           }
         else if (source->flags & GCONF_SOURCE_NEVER_WRITEABLE)
           {
             gconf_log (GCL_INFO,
-                       _("Resolved address \"%s\" to a read-only config source at position %d"),
+                       _("Resolved address \"%s\" to a read-only configuration source at position %d"),
                        source->address, i);
           }
         else
@@ -401,7 +463,8 @@ gconf_sources_new_from_source       (GConfSource* source)
   
   sources = g_new0(GConfSources, 1);
 
-  sources->sources = g_list_append(NULL, source);
+  if (source)
+    sources->sources = g_list_append(NULL, source);
 
   return sources;
 }
@@ -436,8 +499,8 @@ gconf_sources_clear_cache        (GConfSources  *sources)
     {
       GConfSource* source = tmp->data;
 
-      if (source->backend->vtable->clear_cache)
-        (*source->backend->vtable->clear_cache)(source);
+      if (source->backend->vtable.clear_cache)
+        (*source->backend->vtable.clear_cache)(source);
       
       tmp = g_list_next(tmp);
     }
@@ -646,6 +709,7 @@ void
 gconf_sources_set_value   (GConfSources* sources,
                            const gchar* key,
                            const GConfValue* value,
+			   GConfSources **modified_sources,
                            GError** err)
 {
   GList* tmp;
@@ -653,6 +717,9 @@ gconf_sources_set_value   (GConfSources* sources,
   g_return_if_fail(sources != NULL);
   g_return_if_fail(key != NULL);
   g_return_if_fail((err == NULL) || (*err == NULL));
+
+  if (modified_sources)
+    *modified_sources = NULL;
   
   if (!gconf_key_check(key, err))
     return;
@@ -682,7 +749,11 @@ gconf_sources_set_value   (GConfSources* sources,
         {
           /* source was writable, err may be set */
           gconf_log (GCL_DEBUG, "%s was writable in %s", key, src->address);
-          return;
+	  if (modified_sources)
+	    {
+	      *modified_sources = gconf_sources_new_from_source (src);
+	    }
+	  return;
         }
       else
         {
@@ -720,6 +791,7 @@ void
 gconf_sources_unset_value   (GConfSources* sources,
                              const gchar* key,
                              const gchar* locale,
+			     GConfSources **modified_sources,
                              GError** err)
 {
   /* We unset in every layer we can write to... */
@@ -751,10 +823,41 @@ gconf_sources_unset_value   (GConfSources* sources,
                   return;
                 }
             }
+
+	  if (modified_sources)
+	    {
+	      if (*modified_sources == NULL)
+		{
+		  *modified_sources = gconf_sources_new_from_source (src);
+		}
+	      else
+		{
+		  (*modified_sources)->sources =
+		    g_list_prepend ((*modified_sources)->sources, src);
+		}
+	    }
         }
       
       tmp = g_list_next(tmp);
     }
+}
+
+static GSList *
+prepend_unset_notify (GSList       *notifies,
+		      GConfSources *modified_sources,
+		      char         *key)
+{
+  GConfUnsetNotify *notify;
+
+  g_assert (modified_sources != NULL);
+  g_assert (key != NULL);
+
+  notify = g_new0 (GConfUnsetNotify, 1);
+
+  notify->modified_sources = modified_sources;
+  notify->key              = key;
+
+  return g_slist_append (notifies, notify);
 }
 
 static void
@@ -770,6 +873,14 @@ recursive_unset_helper (GConfSources   *sources,
   GSList* entries;
   GSList* tmp;
   const char *locales[2] = { NULL, NULL };
+  GConfSources* modified_sources;
+  GConfSources** modifiedp = NULL;
+
+  if (notifies)
+    {
+      modified_sources = NULL;
+      modifiedp = &modified_sources;
+    }
   
   err = NULL;
   
@@ -832,16 +943,20 @@ recursive_unset_helper (GConfSources   *sources,
       while (tmp != NULL)
         {
           GConfEntry* entry = tmp->data;
-          char *full = gconf_concat_dir_and_key (key,
-                                                 gconf_entry_get_key (entry));
+          char *full, *freeme;
+
+	  full = freeme = gconf_concat_dir_and_key (key,
+						    gconf_entry_get_key (entry));
           
+          
+          gconf_sources_unset_value (sources, full, locale, modifiedp, &err);
           if (notifies)
-            *notifies = g_slist_prepend (*notifies, g_strdup (full));
-          
-          gconf_sources_unset_value (sources,
-                                     full,
-                                     locale,
-                                     &err);
+	    {
+	      *notifies = prepend_unset_notify (*notifies, modified_sources, full);
+	      modified_sources = NULL;
+	      freeme = NULL;
+	    }
+
           if (err != NULL)
             {
               gconf_log (GCL_DEBUG, "Error unsetting '%s': %s\n",
@@ -873,7 +988,7 @@ recursive_unset_helper (GConfSources   *sources,
             }
           
           gconf_entry_free (entry);
-          g_free (full);
+          g_free (freeme);
           
           tmp = g_slist_next (tmp);
         }
@@ -881,10 +996,14 @@ recursive_unset_helper (GConfSources   *sources,
       g_slist_free (entries);
     }
 
+  gconf_sources_unset_value (sources, key, locale, modifiedp, &err);
   if (notifies)
-    *notifies = g_slist_prepend (*notifies, g_strdup (key));
-  
-  gconf_sources_unset_value (sources, key, locale, &err);
+    {
+      *notifies = prepend_unset_notify (*notifies,
+					modified_sources,
+					g_strdup (key));
+      modified_sources = NULL;
+    }
   
   if (err != NULL)
     {
@@ -918,7 +1037,28 @@ gconf_sources_recursive_unset (GConfSources   *sources,
                           notifies, &first_error);
 
   if (first_error)
-    g_propagate_error (err, first_error);
+    {
+      if (notifies != NULL && *notifies != NULL)
+	{
+	  GSList *tmp;
+
+	  tmp = *notifies;
+	  while (tmp != NULL)
+	    {
+	      GConfUnsetNotify *notify = tmp->data;
+
+	      g_free (notify->key);
+	      g_free (notify);
+
+	      tmp = tmp->next;
+	    }
+
+	  g_slist_free (*notifies);
+	  *notifies = NULL;
+	}
+
+      g_propagate_error (err, first_error);
+    }
 }
 
 gboolean
@@ -1573,4 +1713,119 @@ gconf_sources_query_default_value(GConfSources* sources,
       
       return NULL;
     }
+}
+
+void
+gconf_sources_set_notify_func (GConfSources          *sources,
+			       GConfSourceNotifyFunc  notify_func,
+			       gpointer               user_data)
+{
+  GList *tmp;
+
+  tmp = sources->sources;
+  while (tmp != NULL)
+    {
+      gconf_source_set_notify_func (tmp->data, notify_func, user_data);
+
+      tmp = tmp->next;
+    }
+}
+
+void
+gconf_sources_add_listener (GConfSources *sources,
+			    guint         id,
+			    const gchar  *namespace_section)
+{
+  GList *tmp;
+
+  tmp = sources->sources;
+  while (tmp != NULL)
+    {
+      gconf_source_add_listener (tmp->data, id, namespace_section);
+
+      tmp = tmp->next;
+    }
+}
+
+void
+gconf_sources_remove_listener (GConfSources *sources,
+			       guint         id)
+{
+  GList *tmp;
+
+  tmp = sources->sources;
+  while (tmp != NULL)
+    {
+      gconf_source_remove_listener (tmp->data, id);
+
+      tmp = tmp->next;
+    }
+}
+
+/* Non-allocating variant of gconf_address_resource()
+ */
+static const char *
+get_address_resource (const char *address)
+{
+  const char *start;
+
+  g_return_val_if_fail (address != NULL, NULL);
+
+  start = strchr (address, ':');
+  if (start != NULL)
+    {
+      start = strchr (++start, ':');
+
+      if (start != NULL)
+        start++;
+    }
+
+  return start;
+}
+
+/* Return TRUE if
+ *  1. @sources contains @modified_src and
+ *  2. @key is not set in any source above @modified_src.
+ */
+gboolean
+gconf_sources_is_affected (GConfSources *sources,
+                           GConfSource  *modified_src,
+                           const char   *key)
+{
+  const char *modified_resource;
+  GList      *tmp;
+
+  modified_resource = get_address_resource (modified_src->address);
+
+  tmp = sources->sources;
+  while (tmp != NULL)
+    {
+      GConfSource *source = tmp->data;
+
+      if (source->backend == modified_src->backend &&
+          strcmp (modified_resource, get_address_resource (source->address)) == 0)
+        break;
+
+      tmp = tmp->next;
+    }
+
+  if (tmp)
+    {
+      tmp = tmp->prev;
+      while (tmp != NULL)
+	{
+	  GConfValue *val;
+
+	  val = gconf_source_query_value (tmp->data, key, NULL, NULL, NULL);
+	  if (val != NULL)
+	    {
+	      gconf_value_free (val);
+	      return FALSE;
+	    }
+
+	  tmp = tmp->prev;
+	}
+    }
+
+  return TRUE;
 }
