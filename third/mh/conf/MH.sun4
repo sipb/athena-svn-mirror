@@ -51,7 +51,7 @@ curses		-lcurses
 oldload		none
 ranlib		off
 sharedlib	off
-ccoptions	-O -I@TOOLROOT@/usr/athena/include
+ccoptions	-O -I@TOOLROOT@/usr/athena/include -I@TOOLROOT@/usr/athena/include/kerberosIV
 ldoptions	-L@TOOLROOT@/usr/athena/lib
 sprintf		int
 signal		void

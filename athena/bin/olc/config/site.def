@@ -99,8 +99,8 @@ ZephyrLib	=	-L$(ATHTOOLROOT)/usr/athena/lib -lzephyr$(LIBSUFFIX)
 
 #if HaveKerberos
 #define	KerberosDef	-DKERBEROS
-KerberosLib	=	-L$(ATHTOOLROOT)/usr/athena/lib -lkrb$(LIBSUFFIX) \
-			-ldes$(LIBSUFFIX)
+KerberosLib	=	-L$(ATHTOOLROOT)/usr/athena/lib -lkrb4 -ldes425 \
+			-lkrb5 -lcrypto -lcom_err
 #else
 #define	KerberosDef
 #endif

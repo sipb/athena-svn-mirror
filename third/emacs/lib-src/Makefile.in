@@ -121,7 +121,8 @@ SOURCES = COPYING ChangeLog Makefile.in README emacs.csh \
 # HESIOD		Support Hesiod lookups of user mailboxes.
 # MAILHOST		A string, the host name of the default POP
 #			mail host for the site.
-MOVE_FLAGS=-I$(ATHTOOLROOT)/usr/athena/include
+MOVE_FLAGS=-I$(ATHTOOLROOT)/usr/athena/include \
+	-I$(ATHTOOLROOT)/usr/athena/include/kerberosIV
 
 # Additional libraries for movemail:
 # For KERBEROS
@@ -129,7 +130,8 @@ MOVE_FLAGS=-I$(ATHTOOLROOT)/usr/athena/include
 # For KERBEROS + KRB5
 # MOVE_LIBS= -lkrb5 -lcrypto -lisode -lcom_err
 # Add "-lhesiod" if HESIOD is defined.
-MOVE_LIBS=-L$(ATHTOOLROOT)/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err
+MOVE_LIBS=-L$(ATHTOOLROOT)/usr/athena/lib -lhesiod -lkrb4 -ldes425 -lkrb5 \
+	-lcrypto -lcom_err
 
 # ========================== start of cpp stuff =======================
 /* From here on, comments must be done in C syntax.  */

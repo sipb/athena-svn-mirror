@@ -2,7 +2,7 @@
 #    Instructions to Make, for compilation of MH processes
 #
 #	@(MHWARNING)
-# @(#)$Id: uip,v 1.3 1997-01-27 23:55:55 ghudson Exp $
+# @(#)$Id: uip,v 1.4 1997-10-13 22:05:03 ghudson Exp $
 ##############################################################################
 
 # The following entries were inserted during MH configuration
@@ -82,7 +82,7 @@ LPOPMISC=	l-spop
 TPOPMISC=	xspop
 @END: SENDMTSHACK
 @BEGIN: KPOP
-KRBLIB  =       -lkrb -ldes
+KRBLIB  =       -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err
 @END: KPOP
 @END: POP
 @BEGIN: BPOP
