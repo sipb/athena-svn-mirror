@@ -1,64 +1,70 @@
 #!/bin/sh
+# $Id: update_ws.sh,v 1.10 1996-12-27 22:09:21 ghudson Exp $
+
+# Copyright 1996 by the Massachusetts Institute of Technology.
 #
-# Update script for Project Athena workstations
+# Permission to use, copy, modify, and distribute this
+# software and its documentation for any purpose and without
+# fee is hereby granted, provided that the above copyright
+# notice appear in all copies and that both that copyright
+# notice and this permission notice appear in supporting
+# documentation, and that the name of M.I.T. not be used in
+# advertising or publicity pertaining to distribution of the
+# software without specific, written prior permission.
+# M.I.T. makes no representations about the suitability of
+# this software for any purpose.  It is provided "as is"
+# without express or implied warranty.
+
+# update_ws (also known as auto_update)
 #
 # Check that an update is needed, and make sure the conditions necessary
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
-#
-# $Id: update_ws.sh,v 1.9 1996-07-08 02:19:57 cfields Exp $
-#
 
 trap "" 1 15
 
-ROOT="${ROOT-}"; export ROOT
-CONFDIR="${CONFDIR-/etc/athena}"; export CONFDIR
-LIBDIR=/srvd/usr/athena/lib/update;	export LIBDIR
-PATH=/bin:/srvd/bin:/os/bin:/srvd/etc:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/os/usr/bin:/srvd/usr/etc:/os/usr/etc:/os/usr/ucb:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
+export CONFDIR LIBDIR PATH HOSTTYPE
+CONFDIR=/etc/athena
+LIBDIR=/srvd/usr/athena/lib/update
+PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
+HOSTTYPE=`/srvd/bin/athena/machtype`
 
-RC=nothing
-HOSTNAME=hostname
-WHOAMI=whoami
-LOGGER=logger
+if [ "`whoami`" != "root" ];  then
+	echo "You are not root.  This update script must be run as root."
+	exit 1
+fi
 
-case `/bin/athena/machtype` in
-sgi)
-	RC=rc
-	CONFIG=/etc/config
-	HOSTNAME=/usr/bsd/hostname
-	WHOAMI=/bin/whoami
-	LOGGER=/usr/bsd/logger
-	;;
-sun4)
-	RC=rc
-	;;
-esac
-
-#
 # If /srvd is not mounted, quit.
-#
 if [ ! -d /srvd/bin ]; then
 	exit 1
 fi
 
-if [ ! -f ${ROOT}/${CONFDIR}/version -a -f ${ROOT}/etc/version ]; then
-	CONFDIR=/etc; export CONFDIR;
-fi
-
-if [ ! -f ${ROOT}/${CONFDIR}/version ]; then
+if [ ! -f "$CONFDIR/version" ]; then
 	echo "Athena Update (???) Version 0.0A Mon Jan 1 00:00:00 EDT 0000" \
-		> ${ROOT}/${CONFDIR}/version
+		> "$CONFDIR/version"
 fi
 
-NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
-VERSION=`awk '{a=$5}; END{print a}' ${ROOT}/${CONFDIR}/version`
 export NEWVERS VERSION
+NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
+VERSION=`awk '{a=$5}; END{print a}' "$CONFDIR/version"`
 
-if [ -f ${ROOT}/${CONFDIR}/rc.conf ]; then
-   . ${ROOT}/${CONFDIR}/rc.conf
+# A temporary backward compatibility hack, necessary as long as there are
+# 7.7 and 8.0 machines upgrading to the new release.
+case "$VERSION" in
+7.7*)
+	VERSION=7.7.0
+	;;
+8.0*)
+	VERSION=8.0.0
+	;;
+esac
+
+if [ -f "$CONFDIR/rc.conf" ]; then
+	. "$CONFDIR/rc.conf"
 else
-   PUBLIC=true; export PUBLIC
-   AUTOUPDATE=true; export AUTOUPDATE
+	export PUBLIC AUTOUPDATE
+	PUBLIC=true
+	AUTOUPDATE=true
 fi
 
 AUTO=false
@@ -66,48 +72,48 @@ if [ `expr $0 : '.*auto_update'` != "0" ]; then
 	AUTO=true;
 fi
 
-# The output of getcluster is relevant in two places:
-#
-#   The attaching of INSTLIB for the SGI.
-#     Passing AUTOUPDATE=false and NEWVERS for the version
-#     ensures that we will attach the INSTLIB that matches
-#     the attached system packs.
-#
-#   The OK case of the comparison of the workstation version
-#   with the version on the packs.
-#     In this case, VERSION and NEWVERS have essentially been
-#     compared to be equal, and therefore having passed NEWVERS
-#     rather than VERSION to getcluster is irrelevant. Passing
-#     AUTOUPDATE=false is also ok, since it doesn't affect the
-#     output of *RELEASE.
-#
-AUTOUPDATE=false /bin/athena/getcluster -b `$HOSTNAME` ${NEWVERS} > /tmp/clusterinfo.bsh
+# Get clusterinfo for the version in /srvd/.rvdinfo to determine what
+# to attach for /install on SGIs.  This also sets NEW_TESTING_RELEASE
+# and NEW_PRODUCTION_RELEASE if there are new releases available.  If
+# SGIs are ever brought back to the normal /srvd vs. /os distinction,
+# we can just run /etc/athena/save_cluster_info like we used to before
+# version 1.9 of this file.
+AUTOUPDATE=false /bin/athena/getcluster -b `hostname` "$NEWVERS" > \
+	/tmp/clusterinfo.bsh
 if [ $? -ne 0 -o ! -s /tmp/clusterinfo.bsh ]; then
 	# No updates for machines without cluster info.
 	if [ "$AUTO" = false ]; then
-		echo "Cannot find Hesiod information for this machine, aborting update."
+		echo "Cannot find Hesiod information for this machine;"
+		echo "aborting update."
 	fi
 	exit 1
 fi
 . /tmp/clusterinfo.bsh
 
-case `echo $VERSION $NEWVERS | awk '(NR==1) { \
-	if ($1 == "Update") {print "OOPS"} \
-	else if ($1 >= $2) {print "OK"} \
-	else if (substr($1,1,3) == substr($2,1,3)) {print "INCR"} \
-	else {print "FULL"}}'` in
-OOPS)
-	if [ ! -f /usr/tmp/update.check -a -f $LOGGER ]; then
-		$LOGGER -t `$HOSTNAME` -p user.notice at revision $VERSION
-		cp /dev/null /usr/tmp/update.check
+# Check if we're already in the middle of an update.
+if [ "$VERSION" = Update ]; then
+	if [ ! -f /var/tmp/update.check ]; then
+		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
+		touch /var/tmp/update.check
 	fi
 
 	echo "This system is in the middle of an update.  Please contact"
 	echo "Athena Operations at x3-1410. Thank you. -Athena Operations"
 	exit 1
-	;;
-OK)
-	if [ "${AUTO}" != "true" ]; then
+fi
+
+# Find out if the version in /srvd/.rvdinfo is newer than /etc/athena/version.
+packsnewer=`echo "$NEWVERS $VERSION" | awk '{
+	split($1, v1, ".");
+	split($2, v2, ".");
+	if (v1[1] + 0 > v2[1] + 0 || \
+	    (v1[1] + 0 == v2[1] + 0 && v1[2] + 0 > v2[2] + 0) || \
+	    (v1[1] == v2[1] && v1[2] == v2[2] && v1[3] + 0 > v2[3] + 0))
+		print "true"; }'`
+
+# If the packs aren't any newer, print an appropriate message and exit.
+if [ -z "$packsnewer" ]; then
+	if [ "$AUTO" != true ]; then
 		# User ran update_ws; display something appropriate.
 		if [ -n "$NEW_PRODUCTION_RELEASE" -o \
 		     -n "$NEW_TESTING_RELEASE" ]; then
@@ -142,16 +148,11 @@ EOF
 		fi
 	fi
 	exit 0
-	;;
-INCR|FULL)
-	;;
-esac
-
-if [ "${PUBLIC}" = "true" ]; then
-	AUTOUPDATE=true
 fi
 
-if [ "${AUTO}" = "true" -a "${AUTOUPDATE}" != "true" ]; then
+# The packs are newer, but if we were run as auto_update, we don't want to do
+# an update unless the machine is autoupdate (or public).
+if [ "$AUTO" = true -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
 	cat <<EOF
 
 	A new version of Athena software is now available.
@@ -159,73 +160,41 @@ if [ "${AUTO}" = "true" -a "${AUTOUPDATE}" != "true" ]; then
 	on how to update your workstation yourself, or to schedule
 	us to do it for you. Thank you.  -Athena Operations
 EOF
-	if [ ! -f /usr/tmp/update.check -a -f $LOGGER ]; then
-		$LOGGER -t `$HOSTNAME` -p user.notice at revision $VERSION
+	if [ ! -f /usr/tmp/update.check ]; then
+		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
 		cp /dev/null /usr/tmp/update.check
 	fi
 
 	case "$1" in
-	reactivate|rc|"") ;;
-	*) sleep 20 ;;
-	esac
-
-	exit 1
-fi
-
-# Version-specific updating (forcing compatibility, if necessary)
-case $VERSION in
-7.3*)	;;
-*)
-	# For an update to succeed on the DECstation, svc.conf must be present
-	# or the whoami will fail
-	if [ -f /srvd/etc/svc.conf -a ! -f /etc/svc.conf ]; then
-        	/srvd/bin/cp -p /srvd/etc/svc.conf /etc/svc.conf
-	fi
-	;;
-esac
-
-if [ "`$WHOAMI`" != "root" ];  then
-	echo "You are not root.  This update script must be run as root."
-	exit 1
-fi
-
-SITE=/var
-
-if [ -d ${SITE}/server ] ; then
-	# shutdown kills off named which we need.
-	case `/bin/athena/machtype` in
-	rsaix)
-		/etc/athena/named
-		;;
-	sun*)
-		/usr/sbin/in.named /etc/named.boot
-		;;
-	sgi)
-		/usr/sbin/named `cat $CONFIG/named.options 2> /dev/null` < /dev/null
+	reactivate|rc|"")
 		;;
 	*)
-		/etc/named /etc/named.boot
+		sleep 20
 		;;
 	esac
 
-	/bin/athena/attach -q -h -n -o hard mkserv
-	MKSERV=`/usr/athena/bin/athdir /mit/mkserv`/mkserv
-	if [ -s ${MKSERV} ]; then
-		export MKSERV
-		${MKSERV} updatetest
-		if [ $? -ne 0 ]; then
-			echo "Update cannot be performed as mkserv services cannot be found for all services"
-			exit 1
-		fi
-	else
-		echo "Update cannot be performed as mkserv binary not available"
+	exit 1
+fi
+
+# If this is a private workstations, make sure we can recreate the mkserv
+# state of the machine after the update.
+if [ -d /var/server ] ; then
+	/srvd/usr/athena/bin/mkserv updatetest
+	if [ $? -ne 0 ]; then
+		echo "mkserv services cannot be found for all services."
+		echo "Update cannot be performed."
 		exit 1
 	fi
 fi
 
-if [ `/bin/athena/machtype` = sgi ]; then
+# On SGIs, make sure /install exists.  (This should hopefully go away if
+# SGIs are ever brought back to the normal /srvd vs. /os way of doing
+# things.)
+case "$HOSTTYPE" in
+sgi)
 	if [ ! -n "$INSTLIB" ]; then
-		echo "No installation library set in Hesiod information, aborting update."
+		echo "No installation library set in Hesiod information,"
+		echo "aborting update."
 		exit 1
 	fi
 
@@ -234,77 +203,40 @@ if [ `/bin/athena/machtype` = sgi ]; then
 		echo "Installation directory can't be found, aborting update."
 		exit 1
 	fi
-fi
+	;;
+esac
 
-if [ ! -d ${ROOT}/.deleted ] ; then
-	mkdir ${ROOT}/.deleted
-fi
-
-if [ "${AUTO}" = "true" -a "$1" = "reactivate" ]; then
+# Tell dm to shut down everything and sleep forever during the update.
+if [ "$AUTO" = true -a "$1" = reactivate ]; then
 	if [ -f /etc/athena/dm.pid ]; then
 		kill -FPE `cat /etc/athena/dm.pid`
-		ln ${ROOT}/etc/athena/dm ${ROOT}/.deleted/
 	fi
 
 	if [ -f /etc/init.d/axdm ]; then
 		/etc/init.d/axdm stop
-	fi
+ 	fi
 
 	sleep 2
-	if [ `/bin/athena/machtype` = sgi ]; then
+	if [ "$HOSTTYPE" = sgi ]; then
 		exec 1>/dev/tport 2>&1
 	fi
 fi
 
-FULLCOPY=true; export FULLCOPY
-
-if [ ${AUTO}x = "truex" ]; then
-	cat <<EOF
-
-THIS WORKSTATION IS ABOUT TO UNDERGO AN AUTOMATIC SOFTWARE UPDATE.
-THIS PROCEDURE MAY TAKE SOME TIME.
-
-PLEASE DO *NOT* DISTURB IT WHILE THIS IS IN PROGRESS.
-
-EOF
-	case "$1" in
-	${RC}|reactivate|activate|deactivate)
-		case `/bin/athena/machtype` in
-		sgi)
-			/etc/killall -TERM inetd snmpd zhm syslogd
-			;;
-		*)
-		        rm /tmp/pids
-		        cat /etc/inetd.pid >/tmp/pids
-		        cat /etc/athena/inetd.pid >>/tmp/pids
-		        cat /etc/snmpd.pid >>/tmp/pids
-		        cat /etc/athena/snmpd.pid >>/tmp/pids
-		        cat /etc/athena/zhm.pid >>/tmp/pids
-		        cat /etc/syslog.pid >>/tmp/pids
-			(kill -TERM `cat /tmp/pids`) > /dev/null 2>&1
-			;;
-		esac
-		;;
-	esac
-
-	/bin/sh $LIBDIR/do_update < /dev/null
-	/bin/athena/detach -h -n -q -a
-	/bin/sync
-	case "${SYSTEM}" in
-ULTRIX*)
-		echo "Auto Update Done, System will now reboot."
-		/bin/sync
-		exec /etc/reboot
-		;;
-*)
-		echo "Auto Update Done, System will reboot in 15 seconds."
-		/bin/sync
-		/bin/sleep 15
-		exec /etc/reboot -q
-		;;
-	esac
+# Everything is all set; do the actual update.
+if [ "$AUTO" = true ]; then
+	echo
+	echo THIS WORKSTATION IS ABOUT TO UNDERGO AN AUTOMATIC SOFTWARE UPDATE.
+	echo THIS PROCEDURE MAY TAKE SOME TIME.
+	echo
+	echo PLEASE DO NOT DISTURB IT WHILE THIS IS IN PROGRESS.
+	echo 
+	sh "$LIBDIR/do-update" < /dev/null
+	echo "Update partially completed, system will reboot in 15 seconds."
+	sync
+	sleep 15
+	exec reboot
 else
-	/bin/sh $LIBDIR/do_update
+	sh "$LIBDIR/do-update"
+	echo "Update partially completed; please reboot your machine with the"
+	echo "'reboot' command to complete the update."
 fi
-echo "Done"
-exit 0
