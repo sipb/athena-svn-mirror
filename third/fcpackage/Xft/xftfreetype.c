@@ -935,9 +935,13 @@ XftFontCopy (Display *dpy, XftFont *public)
 static void
 XftFontDestroy (Display *dpy, XftFont *public)
 {
-    XftFontInt	*font = (XftFontInt *) public;
-    int		i;
+    XftDisplayInfo  *info = _XftDisplayInfoGet (dpy, False);
+    XftFontInt	    *font = (XftFontInt *) public;
+    int		    i;
     
+    /* note reduction in memory use */
+    if (info)
+	info->glyph_memory -= font->glyph_memory;
     /* Clean up the info */
     XftFontInfoEmpty (dpy, &font->info);
     /* Free the glyphset */
