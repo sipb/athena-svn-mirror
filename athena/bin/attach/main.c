@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.10 1990-07-06 10:52:41 jfc Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.11 1990-07-16 07:24:36 jfc Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -111,7 +111,6 @@ main(argc, argv)
     attachtab_fn = strdup(ATTACHTAB);
     mtab_fn = strdup(MTAB);
 #ifdef AFS
-    aklog_fn = strdup(AKLOG_FULLNAME);
     afs_mount_dir = strdup(AFS_MOUNT_DIR);
 #endif
     fsck_fn = strdup(FSCK_FULLNAME);
@@ -314,7 +313,7 @@ nfsidcmd(argc, argv)
 	}
 	gotname++;
 	if (cell_sw) {
-		afs_auth(argv[i], argv[i], AFSAUTH_DOAUTH | AFSAUTH_CELL);
+		afs_auth_to_cell(argv[i]);
 	} else if (filsysp) {
 	    /*
 	     * Lookup the specified filsys name and perform an nfsid
@@ -329,8 +328,8 @@ nfsidcmd(argc, argv)
 		    } else if (atp->fs->type == TYPE_AFS) {
 #ifdef AFS
 			    if (op == MOUNTPROC_KUIDMAP &&
-				(afs_auth(atp->hesiodname, atp->hostdir,
-			  AFSAUTH_DOAUTH) == SUCCESS) && verbose)
+				(afs_auth(atp->hesiodname, atp->hostdir) == SUCCESS)
+				&& verbose)
 				    printf("%s: %s %s\n", progname, argv[i], ops);
 #endif
 		    }
@@ -858,7 +857,7 @@ zinitcmd(argc, argv)
 		if(who != ALL_USERS && !wants_to_subscribe(p, real_uid, who))
 			continue;
 		if (p->fs->type == TYPE_AFS) 
-			afs_auth(p->hesiodname, p->hostdir, AFSAUTH_DOZEPHYR);
+			afs_zinit(p->hesiodname, p->hostdir);
 		else if (p->fs->flags & FS_REMOTE) {
 			sprintf(instbfr, "%s:%s", p->host, p->hostdir);
 			zephyr_addsub(instbfr);
