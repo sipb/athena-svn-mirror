@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.14 1990-08-26 16:27:21 lwvanels Exp $
+ *	$Id: olc.h,v 1.15 1990-11-15 09:07:03 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -51,11 +51,7 @@ extern "C" {
 #endif
 #endif
 
-#if is_cplusplus
-};
-#endif
-
-/* struct tREQUEST; */
+struct tREQUEST;
 
 #include <olc/os.h>
 #include <olc/macros.h>
@@ -63,19 +59,9 @@ extern "C" {
 #include <olc/requests.h>
 #include <olc/common.h>
 
-#if is_cplusplus
-extern "C" {
-#endif
-
 #include <olc/procs.h>
 #include <olc/status.h>
 
-void expand_hostname ();
-
-#if is_cplusplus
-};
-#endif
-    
 #define VERSION_STRING "3.0b"
 
 /* 
@@ -86,7 +72,6 @@ void expand_hostname ();
 #define OLC_SERVICE    "olc"                  /* olc service name */
 #define OLC_PROTOCOL   "tcp"                  /* protocol */
 #define OLC_SERVER     "MATISSE.MIT.EDU"      /* in case life fails */
-
 
 #ifdef KERBEROS
 #define K_SERVICE      "olc"                  /* Kerberos service name */
