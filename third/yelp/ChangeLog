@@ -1,3 +1,36 @@
+2004-12-05  Shaun McCance  <shaunm@gnome.org>
+
+	* NEWS:
+	* configure.in:
+	- Version 2.6.5
+
+2004-12-02  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-11-27  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+2004-11-04  Shaun McCance  <shaunm@gnome.org>
+
+	* stylesheets/db2html-header.xsl:
+	- s/Bigliography/Bibliography/ (I swear I've done this before)
+
+2004-10-11  Shaun McCance  <shaunm@gnome.org>
+
+	* NEWS:
+	* configure.in:
+	* */af.po:
+	- Version 2.6.4
+
+2004-09-13  Shaun McCance  <shaunm@gnome.org>
+
+	* NEWS:
+	* configure.in:
+	* po/*.po:
+	- Version 2.6.3
+
 2004-08-30  Shaun McCance  <shaunm@gnome.org>
 
 	* configure.in:
