@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_class_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.4 1987-07-07 13:56:05 jtkohl Exp $";
+static char rcsid_class_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/class.c,v 1.5 1987-07-09 05:46:54 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -86,7 +86,7 @@ static Code_t remove_client(), insert_client();
 static void free_class();
 static ZClientList_t *client_alloc();
 static ZClass_t *class_alloc();
-static int hash();
+static unsigned int hash();
 
 /* public routines */
 
@@ -330,12 +330,12 @@ ZAcl_t *acl;
 
 /* the hash function */
 
-static int
+static unsigned int
 hash(string)
 char *string;
 {
-	register int hval = 0;
-	register char *cp = string;
+	register unsigned int hval = 0;
+	register unsigned char *cp = (unsigned char *) string;
 
 	while (*cp)
 		hval = (hval + (*cp++) * HASHMUL) % HASHSIZE;
