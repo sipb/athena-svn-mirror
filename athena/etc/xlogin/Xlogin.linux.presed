@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.9 2000-08-01 18:53:18 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.10 2000-08-02 21:22:23 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -204,12 +204,9 @@ xlogin.Geometry: 		580x325
 	<Key>BackSpace:	delete-previous-character() \n\
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
-	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
 	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
-	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
 	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
-	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
-	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
 	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
@@ -291,12 +288,9 @@ xlogin.Geometry: 		580x325
 	<Key>BackSpace:	delete-previous-character() \n\
 	<FocusIn>:	focus-in() \n\
 	<FocusOut>:	focus-out() \n\
-	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
 	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
-	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
 	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
-	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
-	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
 	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
@@ -438,41 +432,33 @@ xlogin.Geometry: 		580x325
 *omenu.wcClassName:		SimpleMenu
 *omenu.right:			ChainRight
 *omenu.wcManaged:		False
-*omenu.wcChildren:		omenuEntry1, omenuEntry2, omenuEntry3, \
-				omenuEntry4, omenuEntry5, omenuEntry6, \
-				omenuEntry6a, menuLine, \
+*omenu.wcChildren:		omenuEntry1, omenuEntry3, \
+				omenuEntry5, \
+				omenuEntry6, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
 				omenuEntry10, omenuEntry11, omenuEntry12
 
 *menuLine.wcClassName:		SmeLine
 *omenuEntry1.wcClassName:	SmeBSB
-*omenuEntry2.wcClassName:	SmeBSB
 *omenuEntry3.wcClassName:	SmeBSB
-*omenuEntry4.wcClassName:	SmeBSB
 *omenuEntry5.wcClassName:	SmeBSB
 *omenuEntry6.wcClassName:	SmeBSB
-*omenuEntry6a.wcClassName:	SmeBSB
 *omenuEntry7.wcClassName:	SmeBSB
 *omenuEntry8.wcClassName:	SmeBSB
 *omenuEntry9.wcClassName:	SmeBSB
 *omenuEntry10.wcClassName:	SmeBSB
 *omenuEntry11.wcClassName:	SmeBSB
+*omenuEntry12.wcClassName:	SmeBSB
 
 *omenuEntry1.label:		Information
 *omenuEntry1.justify:		center
 *omenuEntry1.flipColors:	False
-*omenuEntry2.label:		Athena On-Line Help (olh)
-*omenuEntry2.callback:		runCB(xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 olh -tty)
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
 *omenuEntry3.callback:		runCB(xcluster -i 60 -display :0.0)
-*omenuEntry4.label:		MIT On-Line Information (TechInfo)
-*omenuEntry4.callback:		attachAndRunCB(techinfo,xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/techinfo/techinfo.prelogin)
 *omenuEntry5.label:		Library Access
 *omenuEntry5.callback:		attachAndRunCB(library,/mit/library/bin/library -timeout -geometry 80x25+270+270)
-*omenuEntry6.label:		MIT Campus Map (xinfo)
-*omenuEntry6.callback:		runCB(xinfo -inactive 180 -display :0.0)
-*omenuEntry6a.label:		Display Workstation Configuration
-*omenuEntry6a.callback:		runCB(xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 60 /etc/athena/login/machine)
+*omenuEntry6.label:		Display Workstation Configuration
+*omenuEntry6.callback:		runCB(xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 60 /etc/athena/login/machine)
 *omenuEntry7.label:		Other
 *omenuEntry7.justify:		center
 *omenuEntry7.flipColors:	False
@@ -488,12 +474,9 @@ xlogin.Geometry: 		580x325
 *omenuEntry12.callback:		commandCB(touch /var/athena/x-8-bit), \
 				restartCB()
 
-*omenuEntry2.rightBitmap:	Shift-F1
 *omenuEntry3.rightBitmap:	Shift-F2
-*omenuEntry4.rightBitmap:	Shift-F3
 *omenuEntry5.rightBitmap:	Shift-F4
-*omenuEntry6.rightBitmap:	Shift-F5
-*omenuEntry6a.rightBitmap:	Shift-F6
+*omenuEntry6.rightBitmap:	Shift-F6
 *omenuEntry8.rightBitmap:	Shift-F7
 *omenuEntry9.rightBitmap:	Shift-F8
 *omenuEntry10.rightBitmap:	Prev
