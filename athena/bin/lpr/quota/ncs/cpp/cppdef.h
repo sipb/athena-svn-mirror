@@ -344,7 +344,7 @@
 #define	IDMAX			 31
 #define	PAR_MAC		   (31 + 1)
 #define	NBUFF			512
-#define	NWORK			512
+#define	NWORK			1024
 #define	NEXP			128
 #define	NINCLUDE		  7
 #define	NPARMWORK		(NWORK * 2)
@@ -388,5 +388,6 @@
  *  be elided.
  */
 
+#if 0
 #define ELIDE_DOLLAR 1
-
+#endif
