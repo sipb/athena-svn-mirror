@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.8 1989-10-18 13:10:47 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.9 1989-12-18 13:25:04 jtkohl Exp $
 /**/#
 
 #if defined(DO_SYSLOG) && defined(SYSLOG_COMPAT42)
@@ -71,7 +71,7 @@ depend:: zsrv_err.h
 
 install::
 	-mkdir ${DESTDIR}${ACLDIR}
-	-rm -f ${DESTDIR}${ACLDIR}/?*
+	-rm -f ${DESTDIR}${ACLDIR}/?*.acl
 	cp acldir/?* ${DESTDIR}${ACLDIR}
 	${INSTALLFILE} default.subscriptions ${DESTDIR}${ACLDIR}/default.subscriptions
 
