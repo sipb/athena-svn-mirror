@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.17 2001-02-14 03:02:52 jweiss Exp $
+# $Id: update_ws.sh,v 1.18 2001-02-23 03:54:24 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -110,7 +110,9 @@ else
 	getclust "${versarg:-$oldvers}"
 fi
 if [ -z "$SYSPREFIX" -o -z "$SYSCONTROL" ]; then
-	errorout "Can't find system cluster information for this machine."
+	# Default to the release data a fresh install would use.
+	SYSPREFIX=/afs/athena.mit.edu/system/rhlinux
+	SYSCONTROL=control/control-current
 fi
 
 # Change to the system area.
