@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v 1.2 1989-11-13 20:04:53 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v 1.3 1990-07-03 14:57:24 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v $
  * $Author: qjb $
  *
@@ -32,6 +32,7 @@
 #define MT_SKDC 4
 #define MT_CKDC 5
 #define MT_AUTH 6
+#define MT_DROP 7
 
 /* Miscellaneous protocol constants */
 #define VERSION_INFO_SIZE 2
