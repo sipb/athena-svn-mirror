@@ -158,6 +158,9 @@ A: libiconv, as an internationalization library, supports those character
        on Unix in Russia and Ukraine, respectively.
      * KOI8-RU
        We implement this because MSIE4 supports it.
+     * KOI8-T
+       We implement this because it is the locale encoding in glibc's Tajik
+       locale.
      * CP{1250,1251,1252,1253,1254,1255,1256,1257}
        We implement these because they are the predominant Windows encodings
        in Europe.
@@ -177,11 +180,11 @@ A: libiconv, as an internationalization library, supports those character
        We implement this because it is mentioned as occurring in the web
        in the aforementioned statistics.
    Japanese
-     * EUC-JP, SHIFT-JIS, ISO-2022-JP
-       We implement these because they are widely used. EUC-JP and SHIFT-JIS
+     * EUC-JP, SHIFT_JIS, ISO-2022-JP
+       We implement these because they are widely used. EUC-JP and SHIFT_JIS
        are more used for files, whereas ISO-2022-JP is recommended for email.
      * CP932
-       We implement this because it is the Microsoft variant of SHIFT-JIS,
+       We implement this because it is the Microsoft variant of SHIFT_JIS,
        used on Windows.
      * ISO-2022-JP-2
        We implement this because it's the common way to represent mails which
@@ -295,6 +298,9 @@ A: libiconv, as an internationalization library, supports those character
      * UTF-7
        We implement this because it is essential functionality for mail
        applications.
+     * C99
+       We implement it because it's used for C and C++ programs and because
+       it's a nice encoding for debugging.
      * JAVA
        We implement it because it's used for Java programs and because it's
        a nice encoding for debugging.

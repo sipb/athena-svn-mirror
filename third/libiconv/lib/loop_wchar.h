@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2001 Free Software Foundation, Inc.
+ * Copyright (C) 2000-2002 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -25,18 +25,23 @@
  */
 
 #if HAVE_WCRTOMB || HAVE_MBRTOWC
-#include <wchar.h>
-#define BUF_SIZE 64  /* assume MB_LEN_MAX <= 64 */
-/* Some systems, like BeOS, have multibyte encodings but lack mbstate_t.  */
-extern size_t mbrtowc ();
-#ifdef mbstate_t
-#define mbrtowc(pwc, s, n, ps) (mbrtowc)(pwc, s, n, 0)
-#define mbsinit(ps) 1
-#endif
+# include <wchar.h>
+# define BUF_SIZE 64  /* assume MB_LEN_MAX <= 64 */
+  /* Some systems, like BeOS, have multibyte encodings but lack mbstate_t.  */
+  extern size_t mbrtowc ();
+# ifdef mbstate_t
+#  define mbrtowc(pwc, s, n, ps) (mbrtowc)(pwc, s, n, 0)
+#  define mbsinit(ps) 1
+# endif
+# ifndef mbsinit
+#  if !HAVE_MBSINIT
+#   define mbsinit(ps) 1
+#  endif
+# endif
 #else
-#ifndef mbstate_t
-typedef int mbstate_t;
-#endif
+# ifndef mbstate_t
+   typedef int mbstate_t;
+# endif
 #endif
 
 /*
@@ -69,8 +74,11 @@ static size_t wchar_from_loop_convert (iconv_t icd,
       size_t count = wcrtomb(buf+bufcount,*inptr,&state);
       if (count == (size_t)(-1)) {
         /* Invalid input. */
-        errno = EILSEQ;
-        return -1;
+        if (!wcd->parent.discard_ilseq) {
+          errno = EILSEQ;
+          return -1;
+        }
+        count = 0;
       }
       inptr++;
       inleft -= sizeof(wchar_t);
@@ -176,11 +184,11 @@ static size_t wchar_to_loop_convert (iconv_t icd,
   struct wchar_conv_struct * wcd = (struct wchar_conv_struct *) icd;
   size_t result = 0;
   while (*inbytesleft > 0) {
-    size_t try;
-    for (try = 1; try <= *inbytesleft; try++) {
+    size_t incount;
+    for (incount = 1; incount <= *inbytesleft; incount++) {
       char buf[BUF_SIZE];
       const char* inptr = *inbuf;
-      size_t inleft = try;
+      size_t inleft = incount;
       char* bufptr = buf;
       size_t bufleft = BUF_SIZE;
       size_t res = unicode_loop_convert(&wcd->parent,
@@ -203,19 +211,27 @@ static size_t wchar_to_loop_convert (iconv_t icd,
         res = mbrtowc(&wc,buf,bufcount,&state);
         if (res == (size_t)(-2)) {
           /* Next try with one more input byte. */
-        } else if (res == (size_t)(-1)) {
-          /* Invalid input. */
-          return -1;
         } else {
-          if (*outbytesleft < sizeof(wchar_t)) {
-            errno = E2BIG;
-            return -1;
+          if (res == (size_t)(-1)) {
+            /* Invalid input. */
+            if (!wcd->parent.discard_ilseq)
+              return -1;
+          } else {
+            if (*outbytesleft < sizeof(wchar_t)) {
+              errno = E2BIG;
+              return -1;
+            }
+            *(wchar_t*) *outbuf = wc;
+            /* Restoring the state is not needed because it is the initial
+               state anyway: For all known locale encodings, the multibyte
+               to wchar_t conversion doesn't have shift state, and we have
+               excluded partial accumulated characters. */
+            /* wcd->state = state; */
+            *outbuf += sizeof(wchar_t);
+            *outbytesleft -= sizeof(wchar_t);
           }
-          *(wchar_t*) *outbuf = wc;
-          *outbuf += sizeof(wchar_t);
-          *outbytesleft -= sizeof(wchar_t);
-          *inbuf += try;
-          *inbytesleft -= try;
+          *inbuf += incount;
+          *inbytesleft -= incount;
           result += res;
           break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2002 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -25,6 +25,16 @@
 #include "config.h"
 #include "libcharset.h"
 
+#if ENABLE_EXTRA
+/*
+ * Consider all system dependent encodings, for any system,
+ * and the extra encodings.
+ */
+#define USE_AIX
+#define USE_OSF1
+#define USE_DOS
+#define USE_EXTRA
+#else
 /*
  * Consider those system dependent encodings that are needed for the
  * current system.
@@ -35,8 +45,9 @@
 #ifdef __osf__
 #define USE_OSF1
 #endif
-#ifdef __DJGPP__
+#if defined(__DJGPP__) || (defined(_WIN32) && (defined(_MSC_VER) || defined(__MINGW32__)))
 #define USE_DOS
+#endif
 #endif
 
 /*
@@ -82,6 +93,9 @@ enum {
 #ifdef USE_DOS
 #include "encodings_dos.def"
 #endif
+#ifdef USE_EXTRA
+#include "encodings_extra.def"
+#endif
 #include "encodings_local.def"
 #undef DEFENCODING
 ei_for_broken_compilers_that_dont_like_trailing_commas
@@ -99,6 +113,9 @@ static struct encoding const all_encodings[] = {
 #endif
 #ifdef USE_DOS
 #include "encodings_dos.def"
+#endif
+#ifdef USE_EXTRA
+#include "encodings_extra.def"
 #endif
 #undef DEFENCODING
 #define DEFENCODING(xxx_names,xxx,xxx_ifuncs1,xxx_ifuncs2,xxx_ofuncs1,xxx_ofuncs2) \
@@ -126,7 +143,7 @@ static struct encoding const all_encodings[] = {
  * Defines
  *   const struct alias * aliases2_lookup (const char *str);
  */
-#if defined(USE_AIX) || defined(USE_OSF1) || defined(USE_DOS) /* || ... */
+#if defined(USE_AIX) || defined(USE_OSF1) || defined(USE_DOS) || defined(USE_EXTRA) /* || ... */
 static struct alias sysdep_aliases[] = {
 #ifdef USE_AIX
 #include "aliases_aix.h"
@@ -136,6 +153,9 @@ static struct alias sysdep_aliases[] = {
 #endif
 #ifdef USE_DOS
 #include "aliases_dos.h"
+#endif
+#ifdef USE_EXTRA
+#include "aliases_extra.h"
 #endif
 };
 #ifdef __GNUC__
@@ -189,6 +209,7 @@ iconv_t iconv_open (const char* tocode, const char* fromcode)
   unsigned int to_index;
   int to_wchar;
   int transliterate = 0;
+  int discard_ilseq = 0;
 
   /* Before calling aliases_lookup, convert the input string to upper case,
    * and check whether it's entirely ASCII (we call gperf with option "-7"
@@ -209,10 +230,23 @@ iconv_t iconv_open (const char* tocode, const char* fromcode)
       if (--count == 0)
         goto invalid;
     }
-    if (bp-buf > 10 && memcmp(bp-10,"//TRANSLIT",10)==0) {
+    if (bp-buf >= 10 && memcmp(bp-10,"//TRANSLIT",10)==0) {
       bp -= 10;
       *bp = '\0';
       transliterate = 1;
+    }
+    if (bp-buf >= 8 && memcmp(bp-8,"//IGNORE",8)==0) {
+      bp -= 8;
+      *bp = '\0';
+      discard_ilseq = 1;
+    }
+    if (buf[0] == '\0') {
+      tocode = locale_charset();
+      /* Avoid an endless loop that could occur when using an older version
+         of localcharset.c. */
+      if (tocode[0] == '\0')
+        goto invalid;
+      continue;
     }
     ap = aliases_lookup(buf,bp-buf);
     if (ap == NULL) {
@@ -222,6 +256,10 @@ iconv_t iconv_open (const char* tocode, const char* fromcode)
     }
     if (ap->encoding_index == ei_local_char) {
       tocode = locale_charset();
+      /* Avoid an endless loop that could occur when using an older version
+         of localcharset.c. */
+      if (tocode[0] == '\0')
+        goto invalid;
       continue;
     }
     if (ap->encoding_index == ei_local_wchar_t) {
@@ -263,9 +301,21 @@ iconv_t iconv_open (const char* tocode, const char* fromcode)
       if (--count == 0)
         goto invalid;
     }
-    if (bp-buf > 10 && memcmp(bp-10,"//TRANSLIT",10)==0) {
+    if (bp-buf >= 10 && memcmp(bp-10,"//TRANSLIT",10)==0) {
       bp -= 10;
       *bp = '\0';
+    }
+    if (bp-buf >= 8 && memcmp(bp-8,"//IGNORE",8)==0) {
+      bp -= 8;
+      *bp = '\0';
+    }
+    if (buf[0] == '\0') {
+      fromcode = locale_charset();
+      /* Avoid an endless loop that could occur when using an older version
+         of localcharset.c. */
+      if (fromcode[0] == '\0')
+        goto invalid;
+      continue;
     }
     ap = aliases_lookup(buf,bp-buf);
     if (ap == NULL) {
@@ -275,6 +325,10 @@ iconv_t iconv_open (const char* tocode, const char* fromcode)
     }
     if (ap->encoding_index == ei_local_char) {
       fromcode = locale_charset();
+      /* Avoid an endless loop that could occur when using an older version
+         of localcharset.c. */
+      if (fromcode[0] == '\0')
+        goto invalid;
       continue;
     }
     if (ap->encoding_index == ei_local_wchar_t) {
@@ -346,6 +400,7 @@ iconv_t iconv_open (const char* tocode, const char* fromcode)
   memset(&cd->ostate,'\0',sizeof(state_t));
   /* Initialize the operation flags. */
   cd->transliterate = transliterate;
+  cd->discard_ilseq = discard_ilseq;
   /* Initialize additional fields. */
   if (from_wchar != to_wchar) {
     struct wchar_conv_struct * wcd = (struct wchar_conv_struct *) cd;
@@ -397,10 +452,94 @@ int iconvctl (iconv_t icd, int request, void* argument)
     case ICONV_SET_TRANSLITERATE:
       cd->transliterate = (*(const int *)argument ? 1 : 0);
       return 0;
+    case ICONV_GET_DISCARD_ILSEQ:
+      *(int *)argument = cd->discard_ilseq;
+      return 0;
+    case ICONV_SET_DISCARD_ILSEQ:
+      cd->discard_ilseq = (*(const int *)argument ? 1 : 0);
+      return 0;
     default:
       errno = EINVAL;
       return -1;
   }
+}
+
+static int compare_by_index (const void * arg1, const void * arg2)
+{
+  const struct alias * alias1 = (const struct alias *) arg1;
+  const struct alias * alias2 = (const struct alias *) arg2;
+  return (int)alias1->encoding_index - (int)alias2->encoding_index;
+}
+
+static int compare_by_name (const void * arg1, const void * arg2)
+{
+  const char * name1 = *(const char **)arg1;
+  const char * name2 = *(const char **)arg2;
+  /* Compare alphabetically, but put "CS" names at the end. */
+  int sign = strcmp(name1,name2);
+  if (sign != 0) {
+    sign = ((name1[0]=='C' && name1[1]=='S') - (name2[0]=='C' && name2[1]=='S'))
+           * 4 + (sign >= 0 ? 1 : -1);
+  }
+  return sign;
+}
+
+void iconvlist (int (*do_one) (unsigned int namescount,
+                               const char * const * names,
+                               void* data),
+                void* data)
+{
+#define aliascount1  sizeof(aliases)/sizeof(aliases[0])
+#ifndef aliases2_lookup
+#define aliascount2  sizeof(sysdep_aliases)/sizeof(sysdep_aliases[0])
+#else
+#define aliascount2  0
+#endif
+#define aliascount  (aliascount1+aliascount2)
+  struct alias aliasbuf[aliascount];
+  const char * namesbuf[aliascount];
+  size_t num_aliases;
+  {
+    /* Put all existing aliases into a buffer. */
+    size_t i;
+    size_t j;
+    j = 0;
+    for (i = 0; i < aliascount1; i++) {
+      const struct alias * p = &aliases[i];
+      if (p->name[0] != '\0'
+          && p->encoding_index != ei_local_char
+          && p->encoding_index != ei_local_wchar_t)
+        aliasbuf[j++] = *p;
+    }
+#ifndef aliases2_lookup
+    for (i = 0; i < aliascount2; i++)
+      aliasbuf[j++] = sysdep_aliases[i];
+#endif
+    num_aliases = j;
+  }
+  /* Sort by encoding_index. */
+  if (num_aliases > 1)
+    qsort(aliasbuf, num_aliases, sizeof(struct alias), compare_by_index);
+  {
+    /* Process all aliases with the same encoding_index together. */
+    size_t j;
+    j = 0;
+    while (j < num_aliases) {
+      unsigned int ei = aliasbuf[j].encoding_index;
+      size_t i = 0;
+      do
+        namesbuf[i++] = aliasbuf[j++].name;
+      while (j < num_aliases && aliasbuf[j].encoding_index == ei);
+      if (i > 1)
+        qsort(namesbuf, i, sizeof(const char *), compare_by_name);
+      /* Call the callback. */
+      if (do_one(i,namesbuf,data))
+        break;
+    }
+  }
+#undef aliascount
+#undef aliascount2
+#undef aliascount1
 }
 
 int _libiconv_version = _LIBICONV_VERSION;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2002 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -97,6 +97,7 @@ struct conv_struct {
   state_t ostate;
   /* Operation flags */
   int transliterate;
+  int discard_ilseq;
 };
 
 /*
@@ -124,6 +125,7 @@ struct conv_struct {
 #include "ucs2swapped.h"
 #include "ucs4internal.h"
 #include "ucs4swapped.h"
+#include "c99.h"
 #include "java.h"
 
 /* 8-bit encodings */
@@ -173,6 +175,7 @@ struct conv_struct {
 #include "armscii_8.h"
 #include "georgian_academy.h"
 #include "georgian_ps.h"
+#include "koi8_t.h"
 #include "mulelao.h"
 #include "cp1133.h"
 #include "tis620.h"
@@ -237,6 +240,9 @@ typedef struct {
 #include "cp1046.h"
 #include "cp1124.h"
 #include "cp1129.h"
+#include "cp1161.h"
+#include "cp1162.h"
+#include "cp1163.h"
 #endif
 
 #ifdef USE_OSF1
@@ -246,13 +252,27 @@ typedef struct {
 
 #ifdef USE_DOS
 #include "cp437.h"
+#include "cp737.h"
 #include "cp775.h"
 #include "cp852.h"
+#include "cp853.h"
 #include "cp855.h"
 #include "cp857.h"
+#include "cp858.h"
+#include "cp860.h"
 #include "cp861.h"
+#include "cp863.h"
 #include "cp864.h"
 #include "cp865.h"
 #include "cp869.h"
+#include "cp1125.h"
+#endif
+
+#ifdef USE_EXTRA
+#include "euc_jisx0213.h"
+#include "shift_jisx0213.h"
+#include "iso2022_jp3.h"
+#include "tds565.h"
+#include "riscos1.h"
 #endif
 

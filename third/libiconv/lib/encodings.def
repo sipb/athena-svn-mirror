@@ -1,4 +1,4 @@
-/* Copyright (C) 1999-2001 Free Software Foundation, Inc.
+/* Copyright (C) 1999-2002 Free Software Foundation, Inc.
    This file is part of the GNU LIBICONV Library.
 
    The GNU LIBICONV Library is free software; you can redistribute it
@@ -154,6 +154,11 @@ DEFENCODING(( "UCS-4-SWAPPED",          /* libiconv */
             ),
             ucs4swapped,
             { ucs4swapped_mbtowc, NULL }, { ucs4swapped_wctomb, NULL })
+
+DEFENCODING(( "C99",
+            ),
+            c99,
+            { c99_mbtowc, NULL },         { c99_wctomb, NULL })
 
 DEFENCODING(( "JAVA",
             ),
@@ -538,6 +543,11 @@ DEFENCODING(( "GEORGIAN-PS",
             ),
             georgian_ps,
             { georgian_ps_mbtowc, NULL }, { georgian_ps_wctomb, NULL })
+
+DEFENCODING(( "KOI8-T",
+            ),
+            koi8_t,
+            { koi8_t_mbtowc, NULL },      { koi8_t_wctomb, NULL })
 
 DEFENCODING(( "MULELAO-1",
             ),
