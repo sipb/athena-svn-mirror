@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.15 1991-07-26 15:59:50 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.16 1992-01-06 15:56:32 probe Exp $";
 
 #include "attach.h"
 
@@ -39,19 +39,20 @@ static missarg();
  * terminates then.
  */
 
+int		caught_signal = 0;
 static int	in_critical_code_p = 0;
-int	caught_signal = 0;
+static int	osigmask;
 
 /*
  * Signal handler for SIGTERM & SIGINT
  */
 sig_catch sig_trap()
 {
-	if (in_critical_code_p) {
-		caught_signal++;
-		return;
-	}
-	terminate_program();
+    if (in_critical_code_p) {
+	caught_signal++;
+	return;
+    }
+    terminate_program();
 }
 
 /*
@@ -59,7 +60,8 @@ sig_catch sig_trap()
  */
 start_critical_code()
 {
-	in_critical_code_p++;
+    if (in_critical_code_p++ == 0)
+	osigmask=sigblock(sigmask(SIGTSTP)|sigmask(SIGTTIN)|sigmask(SIGTTOU));
 }
 
 /*
@@ -67,8 +69,11 @@ start_critical_code()
  */
 end_critical_code()
 {
-	if (!--in_critical_code_p && caught_signal)
-		terminate_program();
+    if (--in_critical_code_p == 0) {
+	if (caught_signal)
+	    terminate_program();
+	sigsetmask(osigmask);
+    }
 }
 
 /*
@@ -76,10 +81,7 @@ end_critical_code()
  */
 terminate_program()
 {
-#ifdef notdef
-	printf("\nInterrupted.... aborting operation....\n");
-#endif
-	exit(ERR_INTERRUPT);
+    exit(ERR_INTERRUPT);
 }
 
 /*
@@ -982,7 +984,7 @@ int parse_username(s)
 	struct passwd	*pw;
 	const char	*os = s;
        
-	pw = getpwnam(s);
+	pw = getpwnam((char *)s);
 	if (pw)
 		return(pw->pw_uid);
 	else {
