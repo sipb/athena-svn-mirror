@@ -1,14 +1,14 @@
 # translation of libgnomeprint to Persian
-# Copyright (C) 2002 The FarsiWeb Project Group
+# Copyright (C) 2002, 2004 Sharif FarsiWeb, Inc.
 # Roozbeh Pournader <roozbeh@sharif.edu>, 2002
-#
+# Meelad Zakaria <meelad@bamdad.org>, 2004
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint\n"
+"Project-Id-Version: libgnomeprint HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
-"PO-Revision-Date: 2002-08-24 19:01+0430\n"
-"Last-Translator: Roozbeh Pournader <roozbeh@sharif.edu>\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
+"PO-Revision-Date: 2004-10-27 18:01+0430\n"
+"Last-Translator: Meelad Zakaria <meelad@bamdad.org>\n"
 "Language-Team: Persian <farsi@lists.sharif.edu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,51 +16,51 @@ msgstr ""
 
 #: data/globals.xml.in.h:1
 msgid "1/3 A4"
-msgstr ""
+msgstr "‏۱/۳ A4"
 
 #: data/globals.xml.in.h:2
 msgid "1/3 A5"
-msgstr ""
+msgstr "۱/۳ A5"
 
 #: data/globals.xml.in.h:3
 msgid "1/4 A3"
-msgstr ""
+msgstr "‏۱/۴ A3"
 
 #: data/globals.xml.in.h:4
 msgid "1/4 A4"
-msgstr ""
+msgstr "‏۱/۴ A4"
 
 #: data/globals.xml.in.h:5
 msgid "1/8 A4"
-msgstr ""
+msgstr "‏‍۱/۸ A4"
 
 #: data/globals.xml.in.h:6
 msgid "2 pages to 1"
-msgstr ""
+msgstr "‏۲ صفحه در یک صفحه"
 
 #: data/globals.xml.in.h:7
 msgid "4 pages to 1"
-msgstr ""
+msgstr "‏۴ صفحه در یک صفحه"
 
 #: data/globals.xml.in.h:8
 msgid "A0"
-msgstr ""
+msgstr "A0"
 
 #: data/globals.xml.in.h:9
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #: data/globals.xml.in.h:10
 msgid "A10"
-msgstr ""
+msgstr "A10"
 
 #: data/globals.xml.in.h:11
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #: data/globals.xml.in.h:12
 msgid "A3"
-msgstr ""
+msgstr "A3"
 
 #. FIXME: fill in all papers and units. (Lauris)
 #. FIXME: load papers from file (Lauris)
@@ -74,115 +74,115 @@ msgstr "A4"
 
 #: data/globals.xml.in.h:14
 msgid "A5"
-msgstr ""
+msgstr "A5"
 
 #: data/globals.xml.in.h:15
 msgid "A6"
-msgstr ""
+msgstr "A6"
 
 #: data/globals.xml.in.h:16
 msgid "A7"
-msgstr ""
+msgstr "A7"
 
 #: data/globals.xml.in.h:17
 msgid "A8"
-msgstr ""
+msgstr "A8"
 
 #: data/globals.xml.in.h:18
 msgid "A9"
-msgstr ""
+msgstr "A9"
 
 #: data/globals.xml.in.h:19
 msgid "B0"
-msgstr ""
+msgstr "B0"
 
 #: data/globals.xml.in.h:20
 msgid "B1"
-msgstr ""
+msgstr "B1"
 
 #: data/globals.xml.in.h:21
 msgid "B10"
-msgstr ""
+msgstr "B10"
 
 #: data/globals.xml.in.h:22
 msgid "B2"
-msgstr ""
+msgstr "B2"
 
 #: data/globals.xml.in.h:23
 msgid "B3"
-msgstr ""
+msgstr "B3"
 
 #: data/globals.xml.in.h:24
 msgid "B4"
-msgstr ""
+msgstr "B4"
 
 #: data/globals.xml.in.h:25
 msgid "B5"
-msgstr ""
+msgstr "B5"
 
 #: data/globals.xml.in.h:26
 msgid "B6"
-msgstr ""
+msgstr "B6"
 
 #: data/globals.xml.in.h:27
 msgid "B7"
-msgstr ""
+msgstr "B7"
 
 #: data/globals.xml.in.h:28
 msgid "B8"
-msgstr ""
+msgstr "B8"
 
 #: data/globals.xml.in.h:29
 msgid "B9"
-msgstr ""
+msgstr "B9"
 
 #: data/globals.xml.in.h:30
 msgid "C0"
-msgstr ""
+msgstr "C0"
 
 #: data/globals.xml.in.h:31
 msgid "C1"
-msgstr ""
+msgstr "C1"
 
 #: data/globals.xml.in.h:32
 msgid "C10"
-msgstr ""
+msgstr "C10"
 
 #: data/globals.xml.in.h:33
 msgid "C2"
-msgstr ""
+msgstr "C2"
 
 #: data/globals.xml.in.h:34
 msgid "C3"
-msgstr ""
+msgstr "C3"
 
 #: data/globals.xml.in.h:35
 msgid "C4"
-msgstr ""
+msgstr "C4"
 
 #: data/globals.xml.in.h:36
 msgid "C5"
-msgstr ""
+msgstr "C5"
 
 #: data/globals.xml.in.h:37
 msgid "C6"
-msgstr ""
+msgstr "C6"
 
 #: data/globals.xml.in.h:38
 msgid "C6/C5 Envelope"
-msgstr ""
+msgstr "پاکت C6/C5"
 
 #: data/globals.xml.in.h:39
 msgid "C7"
-msgstr ""
+msgstr "C7"
 
 #: data/globals.xml.in.h:40
 msgid "C8"
-msgstr ""
+msgstr "C8"
 
 #: data/globals.xml.in.h:41
 msgid "C9"
-msgstr ""
+msgstr "C9"
 
 #: data/globals.xml.in.h:42
 msgid "Custom"
@@ -190,7 +190,7 @@ msgstr "تنظیمی"
 
 #: data/globals.xml.in.h:43
 msgid "DL Envelope"
-msgstr ""
+msgstr "پاکت DL"
 
 #: data/globals.xml.in.h:44
 msgid "Divided"
@@ -198,15 +198,15 @@ msgstr ""
 
 #: data/globals.xml.in.h:45
 msgid "Envelope 6x9"
-msgstr ""
+msgstr "پاکت ۹×۶"
 
 #: data/globals.xml.in.h:46
 msgid "Envelope No10"
-msgstr ""
+msgstr "پاکت شماره ۱۰"
 
 #: data/globals.xml.in.h:47
 msgid "Folded"
-msgstr ""
+msgstr "تا شده"
 
 #: data/globals.xml.in.h:48
 msgid "Landscape"
@@ -238,15 +238,15 @@ msgstr "مستقیم"
 
 #: data/globals.xml.in.h:55
 msgid "US Executive"
-msgstr ""
+msgstr "اداری ایالات متحده"
 
 #: data/globals.xml.in.h:56
 msgid "US Legal"
-msgstr ""
+msgstr "حقوقی ایالات متحده"
 
 #: data/globals.xml.in.h:57
 msgid "US Letter"
-msgstr ""
+msgstr "نامه‌ای ایالات متحده"
 
 #: data/globals.xml.in.h:58
 msgid "Upside down landscape"
@@ -258,23 +258,23 @@ msgstr "پرتره‌ای وارونه"
 
 #: data/printers/GENERIC.xml.in.h:1
 msgid "Generic Postscript"
-msgstr ""
+msgstr "پست‌اسکریپت عام"
 
 #: data/printers/PDF-WRITER.xml.in.h:1
 msgid "Create a PDF document"
-msgstr ""
+msgstr "ایجاد یک نوشتار PDF"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "این یک متن آزمایشی است."
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
-msgstr ""
+msgstr "پیکربندی کار"
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
-msgstr ""
+msgstr "پیکربندی کار چاپی"
 
 #. Do not insert any elements before/between first 4
 #: libgnomeprint/gnome-print-unit.c:36
@@ -376,24 +376,24 @@ msgstr "اینچ"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:334
 msgid "on the weekend"
-msgstr ""
+msgstr "آخر هفته"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:336
 msgid "between midnight and 8 a.m."
-msgstr ""
+msgstr "بین نیمه شب و ۸ صبح"
 
 #. gpa_option_item_new (node,"night",_("between 6 p.m. and 6 a.m."));
 #: libgnomeprint/modules/cups/gnome-print-cups.c:338
 msgid "between 6 p.m. and 6 a.m."
-msgstr ""
+msgstr "بین ۶ صبح تا ۶ عصر"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:340
 msgid "between 4 p.m. and midnight"
-msgstr ""
+msgstr "بین ۴ عصر و نیمه شب"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:341
 msgid "between 6 a.m. and 6 p.m."
-msgstr ""
+msgstr "بین ۶ صبح تا ۶ عصر"
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:342
 msgid "when manually released"
@@ -401,7 +401,7 @@ msgstr ""
 
 #: libgnomeprint/modules/cups/gnome-print-cups.c:343
 msgid "immediately"
-msgstr ""
+msgstr "بلافاصله"
 
 #: libgnomeprint/modules/lpd/gnome-print-lpd.c:116
 #, c-format

@@ -33,7 +33,7 @@
  *
  */
 
-/* $Id: ttcr.c,v 1.1.1.1 2004-10-04 04:22:45 ghudson Exp $ */
+/* $Id: ttcr.c,v 1.1.1.2 2005-03-10 22:11:35 ghudson Exp $ */
 /* @(#)ttcr.c 1.7 03/01/08 SMI */
 
 /*
@@ -43,10 +43,12 @@
  * @version 1.3
  *
  */
+#include <config.h>
 
 #include <sys/types.h>
-#include <sys/uio.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <stdlib.h>
 #ifdef sun
@@ -56,6 +58,10 @@
 #endif
 #include <assert.h>
 #include "ttcr.h"
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 /* These must be #defined so that they can be used in initializers */
 #define T_maxp  0x6D617870
@@ -408,7 +414,7 @@ int StreamToFile(TrueTypeCreator *_this, const char* fname)
     int fd, r;
 
     if (!fname) return SF_BADFILE;
-    if ((fd = open(fname, O_WRONLY | O_CREAT | O_TRUNC, 0644)) == -1) return SF_BADFILE;
+    if ((fd = open(fname, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, 0644)) == -1) return SF_BADFILE;
 
     if ((r = StreamToMemory(_this, &ptr, &length)) != SF_OK) return r;
 

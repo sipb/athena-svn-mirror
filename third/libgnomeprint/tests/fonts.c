@@ -83,7 +83,7 @@ my_config_load_from_file (void)
 	gchar *str;
 	gint read, allocated;
 
-	file = fopen (CONFIG_FILE, "r");
+	file = fopen (CONFIG_FILE, "rb");
 	if (!file) {
 		g_print ("Config not found [%s]\n", CONFIG_FILE);
 		return gnome_print_config_default ();

@@ -42,7 +42,7 @@ nox_sources = \
 	gnome-print-rbuf.c      gnome-print-rbuf.h \
 	gnome-print-frgba.c     gnome-print-frgba.h \
 	gnome-print-rgbp.c      gnome-print-rgbp.h \
-	gnome-print-transport.c gnome-print-transport.h \
+	gnome-print-transport.c			\
 	gnome-print-i18n.c      gnome-print-i18n.h \
 	gp-path.c			       	\
 	gp-path.h			       	\
@@ -55,6 +55,7 @@ nox_sources = \
 	gnome-print-paper.c
 
 nox_headers = \
+	gnome-print-transport.h \
 	gnome-print-config.h \
 	gnome-print.h \
 	gp-gc.h \
@@ -95,9 +96,9 @@ enum_sources = \
 $(libgnomeprint_2_2_la_OBJECTS): $(marshal_sources) $(enum_sources)
 
 libgnomeprint_2_2_la_LIBADD = \
+	$(LIBGNOMEPRINT_LIBS) \
 	gpa/libgpa.la \
-	ttsubset/libttsubset.la \
-	$(LIBGNOMEPRINT_LIBS)
+	ttsubset/libttsubset.la 
 
 libgnomeprint_2_2_la_LDFLAGS = \
 	-no-undefined
@@ -122,6 +123,8 @@ EXTRA_DIST = \
 	libgnomeprint-2.2.pc.in \
 	libgnomeprint-2.2-uninstalled.pc.in \
 	libgnomeprint-marshal.list \
+	gnome-print.def		\
+	makefile.msc		\
 	gnome-print-svg.c	\
 	gnome-print-svg.h
 

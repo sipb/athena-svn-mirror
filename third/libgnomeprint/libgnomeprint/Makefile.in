@@ -99,6 +99,7 @@ HAVE_GTK_DOC_TRUE = @HAVE_GTK_DOC_TRUE@
 HAVE_PAPI_FALSE = @HAVE_PAPI_FALSE@
 HAVE_PAPI_TRUE = @HAVE_PAPI_TRUE@
 HTML_DIR = @HTML_DIR@
+ICONV = @ICONV@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_META_PRINTER_FALSE = @INSTALL_META_PRINTER_FALSE@
 INSTALL_META_PRINTER_TRUE = @INSTALL_META_PRINTER_TRUE@
@@ -126,6 +127,7 @@ INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBGNOMECUPS_CFLAGS = @LIBGNOMECUPS_CFLAGS@
@@ -143,6 +145,7 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -204,6 +207,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localstatedir = @localstatedir@
 mandir = @mandir@
+mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
@@ -259,7 +263,7 @@ nox_sources = \
 	gnome-print-rbuf.c      gnome-print-rbuf.h \
 	gnome-print-frgba.c     gnome-print-frgba.h \
 	gnome-print-rgbp.c      gnome-print-rgbp.h \
-	gnome-print-transport.c gnome-print-transport.h \
+	gnome-print-transport.c			\
 	gnome-print-i18n.c      gnome-print-i18n.h \
 	gp-path.c			       	\
 	gp-path.h			       	\
@@ -273,6 +277,7 @@ nox_sources = \
 
 
 nox_headers = \
+	gnome-print-transport.h \
 	gnome-print-config.h \
 	gnome-print.h \
 	gp-gc.h \
@@ -316,9 +321,9 @@ enum_sources = \
 
 
 libgnomeprint_2_2_la_LIBADD = \
+	$(LIBGNOMEPRINT_LIBS) \
 	gpa/libgpa.la \
-	ttsubset/libttsubset.la \
-	$(LIBGNOMEPRINT_LIBS)
+	ttsubset/libttsubset.la 
 
 
 libgnomeprint_2_2_la_LDFLAGS = \
@@ -348,6 +353,8 @@ EXTRA_DIST = \
 	libgnomeprint-2.2.pc.in \
 	libgnomeprint-2.2-uninstalled.pc.in \
 	libgnomeprint-marshal.list \
+	gnome-print.def		\
+	makefile.msc		\
 	gnome-print-svg.c	\
 	gnome-print-svg.h
 

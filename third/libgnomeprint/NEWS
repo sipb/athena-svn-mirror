@@ -1,3 +1,31 @@
+libgnomeprint 2.8.2
+
+Dom & Hans
+	* Clean up win32 build
+
+Jody
+	* Use 'b' with fopen just to be safe
+	http://bugzilla.gnome.org/show_bug.cgi?id=160185
+	* Set the use theme flag correctly on subsequent previews
+	* Check for existence of transport before offering it
+	* Don't center the preview by default
+
+------------------------------------------------------------------------------
+libgnomeprint 2.8.1
+
+Andreas
+	* Fix some preview problem, see #157881
+
+Jody
+	* Don't force duplex/tumble
+	http://bugzilla.gnome.org/show_bug.cgi?id=157706
+	* Preview makes a better guess of the screen resolution
+
+Suresh Chandrasekharan
+	http://bugzilla.gnome.org/show_bug.cgi?id=156641
+	* BE more robust when dealing with fonts with multiple encodings
+
+------------------------------------------------------------------------------
 libgnomeprint 2.8.0
 
 Jody
@@ -7,6 +35,9 @@ Jody
 
 J.H.M. Dassen
 	* Explicitly require gmodule
+
+Morten:
+	* Minor ps optimizations, see #153667.
 
 ------------------------------------------------------------------------------
 libgnomeprint 2.7.90

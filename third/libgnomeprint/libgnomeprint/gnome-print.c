@@ -45,10 +45,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <fcntl.h>
+
 #ifdef HAVE_MMAP
 /* For the buffer stuff, remove when the buffer stuff is moved out here */
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <unistd.h>
 
 #ifndef PROT_READ
@@ -61,7 +62,16 @@
 #define HAVE_BROKEN_MMAP
 #endif
 
+#elif defined G_OS_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <io.h>
 #endif /* HAVE_MMAP */
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
 
 static void gnome_print_context_class_init (GnomePrintContextClass *klass);
 static void gnome_print_context_init (GnomePrintContext *pc);
@@ -137,7 +147,7 @@ gint
 gnome_print_context_construct (GnomePrintContext *pc, GnomePrintConfig *config)
 {
 	GnomePrintReturnCode retval = GNOME_PRINT_OK;
-	
+
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (config != NULL, GNOME_PRINT_ERROR_UNKNOWN);
@@ -148,7 +158,7 @@ gnome_print_context_construct (GnomePrintContext *pc, GnomePrintConfig *config)
 
 	if (GNOME_PRINT_CONTEXT_GET_CLASS (pc)->construct)
 		retval = GNOME_PRINT_CONTEXT_GET_CLASS (pc)->construct (pc);
-	
+
 	return retval;
 }
 
@@ -161,7 +171,7 @@ gnome_print_context_create_transport (GnomePrintContext *pc)
 	g_return_val_if_fail (pc->transport == NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
 	pc->transport = gnome_print_transport_new (pc->config);
-	
+
 	if (pc->transport == NULL) {
 		g_warning ("Could not create transport inside gnome_print_context_create_transport");
 		return GNOME_PRINT_ERROR_UNKNOWN;
@@ -192,7 +202,7 @@ int
 gnome_print_beginpage (GnomePrintContext *pc, const guchar *name)
 {
 	guchar *real_name;
-	
+
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
@@ -204,7 +214,7 @@ gnome_print_beginpage (GnomePrintContext *pc, const guchar *name)
 	} else {
 		real_name = (guchar *) name;
 	}
-	
+
 	gp_gc_reset (pc->gc);
 	pc->haspage = TRUE;
 
@@ -256,12 +266,12 @@ gnome_print_showpage (GnomePrintContext *pc)
  * gnome_print_end_doc:
  * @pc: A #GnomePrintContext
  *
- * to be called at the end of any copy of the document before the next 
+ * to be called at the end of any copy of the document before the next
  * copy starts. It will do such things as ejecting a page in duplex printing.
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  *
  * Returns: #GNOME_PRINT_OK or positive value on success, negative error
  * code on failure.
@@ -272,7 +282,7 @@ gnome_print_end_doc (GnomePrintContext *pc)
 	gint ret;
 
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), 
+	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc),
 			      GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (!pc->haspage, GNOME_PRINT_ERROR_NOMATCH);
@@ -510,7 +520,7 @@ gnome_print_context_new (GnomePrintConfig *config)
 		g_free (drivername);
 		return pc;
 	}
-	
+
 	if (strcmp (drivername, "gnome-print-pdf") == 0) {
 		pc = gnome_print_pdf_new (config);
 		if (pc == NULL)
@@ -546,6 +556,9 @@ gnome_print_buffer_munmap (GnomePrintBuffer *b)
 		if (b->was_mmaped)
 			munmap (b->buf, b->buf_size);
 		else
+#elif defined G_OS_WIN32
+		if (b->was_mmaped)
+			UnmapViewOfFile (b->buf);
 #endif
 			g_free (b->buf);
 	}
@@ -573,7 +586,7 @@ gnome_print_buffer_mmap (GnomePrintBuffer *b,
 	b->was_mmaped = FALSE;
 	b->fd = -1;
 
-	fh = open (file_name, O_RDONLY);
+	fh = open (file_name, O_RDONLY | O_BINARY);
 	if (fh < 0) {
 		g_warning ("Can't open \"%s\"", file_name);
 		return GNOME_PRINT_ERROR_UNKNOWN;
@@ -583,9 +596,15 @@ gnome_print_buffer_mmap (GnomePrintBuffer *b,
 		close (fh);
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
-	
+
 #ifdef HAVE_MMAP
 	b->buf = mmap (NULL, s.st_size, PROT_READ, MAP_SHARED, fh, 0);
+#elif defined G_OS_WIN32
+	{
+		HANDLE handle = CreateFileMapping ((HANDLE)_get_osfhandle (fh), NULL, PAGE_READONLY, 0, 0, NULL);
+		b->buf = MapViewOfFile (handle, FILE_MAP_READ, 0, 0, 0);
+		CloseHandle (handle);
+	}
 #endif
 
 	if ((b->buf == NULL) || (b->buf == (void *) -1)) {
@@ -594,10 +613,10 @@ gnome_print_buffer_mmap (GnomePrintBuffer *b,
 		b->buf = g_try_malloc (s.st_size);
 		b->buf_size = s.st_size;
 		if (b->buf != NULL) {
-			ssize_t nread, total_read;
-			
+			gssize nread, total_read;
+
 			nread = total_read = 0;
-			
+
 			while (total_read < s.st_size) {
 				nread = read (fh, b->buf + total_read,
 					      MIN (GP_MMAP_BUFSIZ, s.st_size - total_read));
@@ -611,7 +630,7 @@ gnome_print_buffer_mmap (GnomePrintBuffer *b,
 						b->buf_size = 0;
 						break; /* failure */
 				}
-				} else 
+				} else
 					total_read += nread;
 			}
 		}

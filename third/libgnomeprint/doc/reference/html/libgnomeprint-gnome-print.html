@@ -1,9 +1,9 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-print</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="GNOME Print Reference Manual"><link rel="up" href="libgnomeprintunsorted.html" title="Part II. API Reference"><link rel="previous" href="libgnomeprint-gnome-print-paper.html" title="gnome-print-paper"><link rel="next" href="libgnomeprint-Pango-Integration.html" title="Pango Integration"><link rel="part" href="libgnomeprint.html" title="Part I. GNOME Print Overview"><link rel="refentry" href="libgnomeprint-building.html" title="Compiling the GNOME Print library"><link rel="refentry" href="libgnomeprint-compiling.html" title="Compiling GNOME Print Applications"><link rel="refentry" href="libgnomeprint-resources.html" title="Mailing lists and bug reports"><link rel="part" href="libgnomeprintunsorted.html" title="Part II. API Reference"><link rel="refentry" href="libgnomeprint-gnome-font-face.html" title="gnome-font-face"><link rel="refentry" href="libgnomeprint-gnome-font.html" title="gnome-font"><link rel="refentry" href="libgnomeprint-gnome-glyphlist.html" title="gnome-glyphlist"><link rel="refentry" href="libgnomeprint-gnome-pgl.html" title="gnome-pgl"><link rel="refentry" href="libgnomeprint-gnome-print-config.html" title="gnome-print-config"><link rel="refentry" href="libgnomeprint-gnome-print-job.html" title="gnome-print-job"><link rel="refentry" href="libgnomeprint-gnome-print-paper.html" title="gnome-print-paper"><link rel="refentry" href="libgnomeprint-gnome-print.html" title="gnome-print"><link rel="refentry" href="libgnomeprint-Pango-Integration.html" title="Pango Integration"><link rel="refentry" href="libgnomeprint-gnome-print-unit.html" title="gnome-print-unit"><link rel="refentry" href="libgnomeprint-gnome-rfont.html" title="gnome-rfont"><link rel="section" href="libgnomeprint-gnome-print.html#id2544295" title="Description"><link rel="section" href="libgnomeprint-gnome-print.html#id2544305" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprint-gnome-print-paper.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnomeprintunsorted.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print Reference Manual</th><td><a accesskey="n" href="libgnomeprint-Pango-Integration.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeprint-gnome-print"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-print</span></h2><p>gnome-print &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-print</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GNOME Print Reference Manual"><link rel="up" href="libgnomeprintunsorted.html" title="Part II. API Reference"><link rel="prev" href="libgnomeprint-gnome-print-paper.html" title="gnome-print-paper"><link rel="next" href="libgnomeprint-Pango-Integration.html" title="Pango Integration"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="part" href="libgnomeprint.html" title="Part I. GNOME Print Overview"><link rel="part" href="libgnomeprintunsorted.html" title="Part II. API Reference"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnomeprint-gnome-print-paper.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnomeprintunsorted.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Print Reference Manual</th><td><a accesskey="n" href="libgnomeprint-Pango-Integration.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeprint-gnome-print"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">gnome-print</span></h2><p>gnome-print &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
 
 enum        <a href="libgnomeprint-gnome-print.html#GnomePrintReturnCode">GnomePrintReturnCode</a>;
-struct      <a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a>;
+            <a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a>;
 <a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a>* <a href="libgnomeprint-gnome-print.html#gnome-print-context-new">gnome_print_context_new</a>  (<a href="libgnomeprint-gnome-print-config.html#GnomePrintConfig">GnomePrintConfig</a> *config);
 gint        <a href="libgnomeprint-gnome-print.html#gnome-print-context-close">gnome_print_context_close</a>       (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);
 gint        <a href="libgnomeprint-gnome-print.html#gnome-print-newpath">gnome_print_newpath</a>             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);
@@ -113,9 +113,9 @@ gint        <a href="libgnomeprint-gnome-print.html#gnome-print-rect-filled">gno
                                              gdouble width,
                                              gdouble height);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2544295"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2563484"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2544305"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2544310"></a><h3><a name="GnomePrintReturnCode"></a>enum GnomePrintReturnCode</h3><a class="indexterm" name="id2544322"></a><pre class="programlisting">typedef enum {
+</p></div><div class="refsect1" lang="en"><a name="id2563494"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2563499"></a><h3><a name="GnomePrintReturnCode"></a>enum GnomePrintReturnCode</h3><a class="indexterm" name="id2563511"></a><pre class="programlisting">typedef enum {
 	GNOME_PRINT_OK = 0,
 	GNOME_PRINT_ERROR_UNKNOWN        = -1,
 	GNOME_PRINT_ERROR_BADVALUE       = -2,
@@ -128,9 +128,9 @@ gint        <a href="libgnomeprint-gnome-print.html#gnome-print-rect-filled">gno
 } GnomePrintReturnCode;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2544343"></a><h3><a name="GnomePrintContext"></a>struct GnomePrintContext</h3><a class="indexterm" name="id2544354"></a><pre class="programlisting">struct GnomePrintContext;</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2563532"></a><h3><a name="GnomePrintContext"></a>GnomePrintContext</h3><a class="indexterm" name="id2563542"></a><pre class="programlisting">typedef struct _GnomePrintContext GnomePrintContext;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2544369"></a><h3><a name="gnome-print-context-new"></a>gnome_print_context_new ()</h3><a class="indexterm" name="id2544380"></a><pre class="programlisting"><a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a>* gnome_print_context_new  (<a href="libgnomeprint-gnome-print-config.html#GnomePrintConfig">GnomePrintConfig</a> *config);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2563558"></a><h3><a name="gnome-print-context-new"></a>gnome_print_context_new ()</h3><a class="indexterm" name="id2563569"></a><pre class="programlisting"><a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a>* gnome_print_context_new  (<a href="libgnomeprint-gnome-print-config.html#GnomePrintConfig">GnomePrintConfig</a> *config);</pre><p>
 Create new printing context from config. You have to have set
 all the options/settings beforehand, as changing the config of
 an existing context has undefined results.
@@ -141,8 +141,8 @@ later also can create output context for you, so in most cases
 you may want to ignore gnome_print_context_new at all.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>config</tt></i> :</span></td><td> GnomePrintConfig object to query print settings from
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new GnomePrintContext or NULL on error
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2544452"></a><h3><a name="gnome-print-context-close"></a>gnome_print_context_close ()</h3><a class="indexterm" name="id2544465"></a><pre class="programlisting">gint        gnome_print_context_close       (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new GnomePrintContext or NULL on error
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563642"></a><h3><a name="gnome-print-context-close"></a>gnome_print_context_close ()</h3><a class="indexterm" name="id2563654"></a><pre class="programlisting">gint        gnome_print_context_close       (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Informs given <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a> that application has finished print
 job. From that point on, <i class="parameter"><tt>pc</tt></i> has to be considered illegal pointer,
 and any further printing operation with it may kill application.
@@ -150,16 +150,16 @@ Some printing contexts may not start printing before context is
 closed.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2544560"></a><h3><a name="gnome-print-newpath"></a>gnome_print_newpath ()</h3><a class="indexterm" name="id2544571"></a><pre class="programlisting">gint        gnome_print_newpath             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563750"></a><h3><a name="gnome-print-newpath"></a>gnome_print_newpath ()</h3><a class="indexterm" name="id2563761"></a><pre class="programlisting">gint        gnome_print_newpath             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Resets currentpath to empty path. As currentpoint is defined as
 the last point of open path segment, is also erases currentpoint.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2544650"></a><h3><a name="gnome-print-moveto"></a>gnome_print_moveto ()</h3><a class="indexterm" name="id2544661"></a><pre class="programlisting">gint        gnome_print_moveto              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563840"></a><h3><a name="gnome-print-moveto"></a>gnome_print_moveto ()</h3><a class="indexterm" name="id2563851"></a><pre class="programlisting">gint        gnome_print_moveto              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x,
                                              gdouble y);</pre><p>
 Starts new subpath in currentpath with coordinates <i class="parameter"><tt>x</tt></i>,<i class="parameter"><tt>y</tt></i>.
@@ -168,9 +168,9 @@ Moves currentpoint to <i class="parameter"><tt>x</tt></i>,<i class="parameter"><
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> X position in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> Y position in user coordinates
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2544804"></a><h3><a name="gnome-print-lineto"></a>gnome_print_lineto ()</h3><a class="indexterm" name="id2544815"></a><pre class="programlisting">gint        gnome_print_lineto              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563994"></a><h3><a name="gnome-print-lineto"></a>gnome_print_lineto ()</h3><a class="indexterm" name="id2564005"></a><pre class="programlisting">gint        gnome_print_lineto              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x,
                                              gdouble y);</pre><p>
 Adds new straight line segment from currentpoint to <i class="parameter"><tt>x</tt></i>,<i class="parameter"><tt>y</tt></i> to currentpath.
@@ -180,9 +180,9 @@ If currentpoint is not defined, returns <span class="type">GNOME_PRINT_ERROR_NOC
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> X position in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> Y position in user coordinates
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2544971"></a><h3><a name="gnome-print-curveto"></a>gnome_print_curveto ()</h3><a class="indexterm" name="id2544982"></a><pre class="programlisting">gint        gnome_print_curveto             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2564161"></a><h3><a name="gnome-print-curveto"></a>gnome_print_curveto ()</h3><a class="indexterm" name="id2564172"></a><pre class="programlisting">gint        gnome_print_curveto             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x1,
                                              gdouble y1,
                                              gdouble x2,
@@ -201,18 +201,18 @@ If currentpoint is not defined, returns <span class="type">GNOME_PRINT_ERROR_NOC
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y2</tt></i> :</span></td><td> Y position of second control point in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x3</tt></i> :</span></td><td> X position of endpoint in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y3</tt></i> :</span></td><td> Y position of endpoint in user coordinates
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2545247"></a><h3><a name="gnome-print-closepath"></a>gnome_print_closepath ()</h3><a class="indexterm" name="id2545258"></a><pre class="programlisting">gint        gnome_print_closepath           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2564437"></a><h3><a name="gnome-print-closepath"></a>gnome_print_closepath ()</h3><a class="indexterm" name="id2564448"></a><pre class="programlisting">gint        gnome_print_closepath           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Closes the last segment of currentpath, optionally drawing straight
 line segment from its endpoint to starting point.
 Erases currentpoint.
 If currentpath is empty, returns <span class="type">GNOME_PRINT_ERROR_NOCURRENTPATH</span>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2545349"></a><h3><a name="gnome-print-strokepath"></a>gnome_print_strokepath ()</h3><a class="indexterm" name="id2545361"></a><pre class="programlisting">gint        gnome_print_strokepath          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2564539"></a><h3><a name="gnome-print-strokepath"></a>gnome_print_strokepath ()</h3><a class="indexterm" name="id2564550"></a><pre class="programlisting">gint        gnome_print_strokepath          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Converts currentpath to new path, that is identical to area painted
 by <a href="libgnomeprint-gnome-print.html#gnome-print-stroke"><span class="type">gnome_print_stroke</span></a> function, using currentpath. I.e. strokepath
 followed by fill giver result identical to stroke.
@@ -220,9 +220,9 @@ If currentpath is empty, returns <span class="type">GNOME_PRINT_ERROR_NOCURRENTP
 Stroked path is always closed, so currentpoint is erased.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2545459"></a><h3><a name="gnome-print-bpath"></a>gnome_print_bpath ()</h3><a class="indexterm" name="id2545471"></a><pre class="programlisting">gint        gnome_print_bpath               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2564650"></a><h3><a name="gnome-print-bpath"></a>gnome_print_bpath ()</h3><a class="indexterm" name="id2564662"></a><pre class="programlisting">gint        gnome_print_bpath               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const ArtBpath *bpath,
                                              gboolean append);</pre><p>
 Adds all <i class="parameter"><tt>bpath</tt></i> segments up to <span class="type">ART_END</span> to currentpath. If <i class="parameter"><tt>append</tt></i>
@@ -234,9 +234,9 @@ of currentpoint depends on segments processed.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>bpath</tt></i> :</span></td><td> Array of <span class="type">ArtBpath</span> segments
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>append</tt></i> :</span></td><td> Whether to append to currentpath
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2545623"></a><h3><a name="gnome-print-vpath"></a>gnome_print_vpath ()</h3><a class="indexterm" name="id2545635"></a><pre class="programlisting">gint        gnome_print_vpath               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2564814"></a><h3><a name="gnome-print-vpath"></a>gnome_print_vpath ()</h3><a class="indexterm" name="id2564826"></a><pre class="programlisting">gint        gnome_print_vpath               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const ArtVpath *vpath,
                                              gboolean append);</pre><p>
 Adds all <i class="parameter"><tt>vpath</tt></i> line segments up to <span class="type">ART_END</span> to currentpath. If <i class="parameter"><tt>append</tt></i>
@@ -248,9 +248,9 @@ of currentpoint depends on segments processed.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>vpath</tt></i> :</span></td><td> Array of <span class="type">ArtVpath</span> segments
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>append</tt></i> :</span></td><td> Whether to append to currentpath
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2545787"></a><h3><a name="gnome-print-arcto"></a>gnome_print_arcto ()</h3><a class="indexterm" name="id2545798"></a><pre class="programlisting">gint        gnome_print_arcto               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2564978"></a><h3><a name="gnome-print-arcto"></a>gnome_print_arcto ()</h3><a class="indexterm" name="id2564989"></a><pre class="programlisting">gint        gnome_print_arcto               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x,
                                              gdouble y,
                                              gdouble radius,
@@ -267,8 +267,8 @@ Adds an arc with control points <i class="parameter"><tt>x</tt></i> and <i class
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>angle1</tt></i> :</span></td><td> start angle in degrees
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>angle2</tt></i> :</span></td><td> end angle in degrees
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>direction</tt></i> :</span></td><td> direction of movement, 0 counterclockwise 1 clockwise
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GNOME_PRINT_OK or postive value on success, a negative value otherwise
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546035"></a><h3><a name="gnome-print-setrgbcolor"></a>gnome_print_setrgbcolor ()</h3><a class="indexterm" name="id2546046"></a><pre class="programlisting">gint        gnome_print_setrgbcolor         (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GNOME_PRINT_OK or postive value on success, a negative value otherwise
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565226"></a><h3><a name="gnome-print-setrgbcolor"></a>gnome_print_setrgbcolor ()</h3><a class="indexterm" name="id2565238"></a><pre class="programlisting">gint        gnome_print_setrgbcolor         (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble r,
                                              gdouble g,
                                              gdouble b);</pre><p>
@@ -280,9 +280,9 @@ Channel values are clamped to 0.0 - 1.0 region, 0.0 meaning minimum.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>r</tt></i> :</span></td><td> Red channel value
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>g</tt></i> :</span></td><td> Green channel value
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>b</tt></i> :</span></td><td> Blue channel value
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546191"></a><h3><a name="gnome-print-setopacity"></a>gnome_print_setopacity ()</h3><a class="indexterm" name="id2546202"></a><pre class="programlisting">gint        gnome_print_setopacity          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565383"></a><h3><a name="gnome-print-setopacity"></a>gnome_print_setopacity ()</h3><a class="indexterm" name="id2565394"></a><pre class="programlisting">gint        gnome_print_setopacity          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble opacity);</pre><p>
 Sets painting opacity in graphic state to given value.
 Value is clamped to 0.0 - 1.0 region, 0.0 meaning full transparency and
@@ -290,9 +290,9 @@ Value is clamped to 0.0 - 1.0 region, 0.0 meaning full transparency and
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>opacity</tt></i> :</span></td><td> Opacity value
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546303"></a><h3><a name="gnome-print-setlinewidth"></a>gnome_print_setlinewidth ()</h3><a class="indexterm" name="id2546314"></a><pre class="programlisting">gint        gnome_print_setlinewidth        (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565495"></a><h3><a name="gnome-print-setlinewidth"></a>gnome_print_setlinewidth ()</h3><a class="indexterm" name="id2565506"></a><pre class="programlisting">gint        gnome_print_setlinewidth        (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble width);</pre><p>
 Sets line width in graphic state to given value.
 Value is given in user coordinates, so effective line width depends on
@@ -303,9 +303,9 @@ Default line width is 1.0 in user coordinates.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> Line width in user coordinates
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546435"></a><h3><a name="gnome-print-setmiterlimit"></a>gnome_print_setmiterlimit ()</h3><a class="indexterm" name="id2546446"></a><pre class="programlisting">gint        gnome_print_setmiterlimit       (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565626"></a><h3><a name="gnome-print-setmiterlimit"></a>gnome_print_setmiterlimit ()</h3><a class="indexterm" name="id2565638"></a><pre class="programlisting">gint        gnome_print_setmiterlimit       (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble limit);</pre><p>
 Sets minimum angle between two lines, in which case miter join is
 used. For smaller angles, join is beveled.
@@ -313,9 +313,9 @@ Default miter limit is 4 degrees.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>limit</tt></i> :</span></td><td> Miter limit in degrees
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546547"></a><h3><a name="gnome-print-setlinejoin"></a>gnome_print_setlinejoin ()</h3><a class="indexterm" name="id2546558"></a><pre class="programlisting">gint        gnome_print_setlinejoin         (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565739"></a><h3><a name="gnome-print-setlinejoin"></a>gnome_print_setlinejoin ()</h3><a class="indexterm" name="id2565750"></a><pre class="programlisting">gint        gnome_print_setlinejoin         (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gint jointype);</pre><p>
 Sets join type for non-colinear line segments.
 0 - miter
@@ -325,9 +325,9 @@ Default join type is miter.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>jointype</tt></i> :</span></td><td> Integer indicating join type
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546658"></a><h3><a name="gnome-print-setlinecap"></a>gnome_print_setlinecap ()</h3><a class="indexterm" name="id2546670"></a><pre class="programlisting">gint        gnome_print_setlinecap          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565851"></a><h3><a name="gnome-print-setlinecap"></a>gnome_print_setlinecap ()</h3><a class="indexterm" name="id2565862"></a><pre class="programlisting">gint        gnome_print_setlinecap          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gint captype);</pre><p>
 Sets cap type for line endpoints.
 0 - butt
@@ -337,9 +337,9 @@ Default cap type is butt.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>captype</tt></i> :</span></td><td> Integer indicating cap type
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546770"></a><h3><a name="gnome-print-setdash"></a>gnome_print_setdash ()</h3><a class="indexterm" name="id2546781"></a><pre class="programlisting">gint        gnome_print_setdash             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2565963"></a><h3><a name="gnome-print-setdash"></a>gnome_print_setdash ()</h3><a class="indexterm" name="id2565974"></a><pre class="programlisting">gint        gnome_print_setdash             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gint n_values,
                                              const gdouble *values,
                                              gdouble offset);</pre><p>
@@ -357,9 +357,9 @@ Default is solid line.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>n_values</tt></i> :</span></td><td> Number of dash segment lengths
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>values</tt></i> :</span></td><td> Array of dash segment lengths
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> Line starting offset in dash
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2546947"></a><h3><a name="gnome-print-setfont"></a>gnome_print_setfont ()</h3><a class="indexterm" name="id2546959"></a><pre class="programlisting">gint        gnome_print_setfont             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566141"></a><h3><a name="gnome-print-setfont"></a>gnome_print_setfont ()</h3><a class="indexterm" name="id2566152"></a><pre class="programlisting">gint        gnome_print_setfont             (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const <a href="libgnomeprint-gnome-font.html#GnomeFont">GnomeFont</a> *font);</pre><p>
 Sets font in graphic state. Font is referenced by gnome print,
 so caller may discard it immediately afterwards.
@@ -367,9 +367,9 @@ Default font is system dependent.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>font</tt></i> :</span></td><td> <a href="libgnomeprint-gnome-font.html#GnomeFont"><span class="type">GnomeFont</span></a> to use for text
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547067"></a><h3><a name="gnome-print-clip"></a>gnome_print_clip ()</h3><a class="indexterm" name="id2547078"></a><pre class="programlisting">gint        gnome_print_clip                (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566260"></a><h3><a name="gnome-print-clip"></a>gnome_print_clip ()</h3><a class="indexterm" name="id2566272"></a><pre class="programlisting">gint        gnome_print_clip                (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Defines drawing region as inside area of currentpath. If path is
 self-intersecting or consists of several overlapping subpaths,
 nonzero rule is used to define the inside orea of path.
@@ -379,9 +379,9 @@ returned.
 Currentpath is emptied by this function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547170"></a><h3><a name="gnome-print-eoclip"></a>gnome_print_eoclip ()</h3><a class="indexterm" name="id2547181"></a><pre class="programlisting">gint        gnome_print_eoclip              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566364"></a><h3><a name="gnome-print-eoclip"></a>gnome_print_eoclip ()</h3><a class="indexterm" name="id2566375"></a><pre class="programlisting">gint        gnome_print_eoclip              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Defines drawing region as inside area of currentpath. If path is
 self-intersecting or consists of several overlapping subpaths,
 even-odd rule is used to define the inside area of path.
@@ -391,9 +391,9 @@ returned.
 Currentpath is emptied by this function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547272"></a><h3><a name="gnome-print-concat"></a>gnome_print_concat ()</h3><a class="indexterm" name="id2547284"></a><pre class="programlisting">gint        gnome_print_concat              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566466"></a><h3><a name="gnome-print-concat"></a>gnome_print_concat ()</h3><a class="indexterm" name="id2566478"></a><pre class="programlisting">gint        gnome_print_concat              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const gdouble *matrix);</pre><p>
 Appends <i class="parameter"><tt>matrix</tt></i> to current transformation matrix (CTM). The resulting
 transformation from user coordinates to page coordinates is, as
@@ -405,9 +405,9 @@ Y' = X * m[1] + Y * m[3] + m[5]</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>matrix</tt></i> :</span></td><td> 3x2 affine transformation matrix
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547398"></a><h3><a name="gnome-print-scale"></a>gnome_print_scale ()</h3><a class="indexterm" name="id2547410"></a><pre class="programlisting">gint        gnome_print_scale               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566592"></a><h3><a name="gnome-print-scale"></a>gnome_print_scale ()</h3><a class="indexterm" name="id2566604"></a><pre class="programlisting">gint        gnome_print_scale               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble sx,
                                              gdouble sy);</pre><p>
 Scales user coordinate system by given X and Y values.</p><p>
@@ -415,17 +415,17 @@ Scales user coordinate system by given X and Y values.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>sx</tt></i> :</span></td><td> X scale
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>sy</tt></i> :</span></td><td> Y scale
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547529"></a><h3><a name="gnome-print-rotate"></a>gnome_print_rotate ()</h3><a class="indexterm" name="id2547541"></a><pre class="programlisting">gint        gnome_print_rotate              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566724"></a><h3><a name="gnome-print-rotate"></a>gnome_print_rotate ()</h3><a class="indexterm" name="id2566736"></a><pre class="programlisting">gint        gnome_print_rotate              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble theta);</pre><p>
 Rotates user coordinate system theta degrees counterclockwise.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>theta</tt></i> :</span></td><td> Angle in degrees
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547640"></a><h3><a name="gnome-print-translate"></a>gnome_print_translate ()</h3><a class="indexterm" name="id2547651"></a><pre class="programlisting">gint        gnome_print_translate           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566835"></a><h3><a name="gnome-print-translate"></a>gnome_print_translate ()</h3><a class="indexterm" name="id2566846"></a><pre class="programlisting">gint        gnome_print_translate           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x,
                                              gdouble y);</pre><p>
 Move the starting point of user coordinate system to given point.</p><p>
@@ -433,9 +433,9 @@ Move the starting point of user coordinate system to given point.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x</tt></i> :</span></td><td> New starting X
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> New starting Y
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547772"></a><h3><a name="gnome-print-gsave"></a>gnome_print_gsave ()</h3><a class="indexterm" name="id2547783"></a><pre class="programlisting">gint        gnome_print_gsave               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2566966"></a><h3><a name="gnome-print-gsave"></a>gnome_print_gsave ()</h3><a class="indexterm" name="id2566978"></a><pre class="programlisting">gint        gnome_print_gsave               (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Saves current graphic state (transformation, color, line properties, font)
 into stack (push). Values itself remain unchanged.
 You can later restore saved values, using <a href="libgnomeprint-gnome-print.html#gnome-print-grestore"><span class="type">gnome_print_grestore</span></a>, but not
@@ -444,16 +444,16 @@ over page boundaries. Graphic state stack has to be cleared for each
 match the number of <a href="libgnomeprint-gnome-print.html#gnome-print-grestore"><span class="type">gnome_print_grestore</span></a> for each page.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547899"></a><h3><a name="gnome-print-grestore"></a>gnome_print_grestore ()</h3><a class="indexterm" name="id2547910"></a><pre class="programlisting">gint        gnome_print_grestore            (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567094"></a><h3><a name="gnome-print-grestore"></a>gnome_print_grestore ()</h3><a class="indexterm" name="id2567105"></a><pre class="programlisting">gint        gnome_print_grestore            (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Retrieves last saved graphic state from stack (pop). Stack has to be
 at least the size of one.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2547988"></a><h3><a name="gnome-print-fill"></a>gnome_print_fill ()</h3><a class="indexterm" name="id2548000"></a><pre class="programlisting">gint        gnome_print_fill                (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567184"></a><h3><a name="gnome-print-fill"></a>gnome_print_fill ()</h3><a class="indexterm" name="id2567195"></a><pre class="programlisting">gint        gnome_print_fill                (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Fills the inside area of currentpath, using current graphic state.
 If path is self-intersecting or consists of several overlapping subpaths,
 nonzero rule is used to define the inside area of path.
@@ -463,9 +463,9 @@ returned.
 Currentpath is emptied by this function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548092"></a><h3><a name="gnome-print-eofill"></a>gnome_print_eofill ()</h3><a class="indexterm" name="id2548103"></a><pre class="programlisting">gint        gnome_print_eofill              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567287"></a><h3><a name="gnome-print-eofill"></a>gnome_print_eofill ()</h3><a class="indexterm" name="id2567298"></a><pre class="programlisting">gint        gnome_print_eofill              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Fills the inside area of currentpath, using current graphic state.
 If path is self-intersecting or consists of several overlapping subpaths,
 even-odd rule is used to define the inside area of path.
@@ -475,9 +475,9 @@ returned.
 Currentpath is emptied by this function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548194"></a><h3><a name="gnome-print-stroke"></a>gnome_print_stroke ()</h3><a class="indexterm" name="id2548206"></a><pre class="programlisting">gint        gnome_print_stroke              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567390"></a><h3><a name="gnome-print-stroke"></a>gnome_print_stroke ()</h3><a class="indexterm" name="id2567401"></a><pre class="programlisting">gint        gnome_print_stroke              (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Strokes currentpath, i.e. draws line along it, with style, defined
 by current graphic state values.
 If currentpath is empty, <span class="type">GNOME_PRINT_ERROR_NOCURRENTPATH</span> is
@@ -485,9 +485,9 @@ returned.
 Currentpath is emptied by this function.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548294"></a><h3><a name="gnome-print-show"></a>gnome_print_show ()</h3><a class="indexterm" name="id2548305"></a><pre class="programlisting">gint        gnome_print_show                (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567490"></a><h3><a name="gnome-print-show"></a>gnome_print_show ()</h3><a class="indexterm" name="id2567501"></a><pre class="programlisting">gint        gnome_print_show                (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const guchar *text);</pre><p>
 Draws UTF-8 text at currentpoint, using current font from graphic
 state.
@@ -497,9 +497,9 @@ Both currentpath and currentpoint are erased.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td> Null-terminated UTF-8 string
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548417"></a><h3><a name="gnome-print-show-sized"></a>gnome_print_show_sized ()</h3><a class="indexterm" name="id2548428"></a><pre class="programlisting">gint        gnome_print_show_sized          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567613"></a><h3><a name="gnome-print-show-sized"></a>gnome_print_show_sized ()</h3><a class="indexterm" name="id2567624"></a><pre class="programlisting">gint        gnome_print_show_sized          (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const guchar *text,
                                              gint bytes);</pre><p>
 Draws UTF-8 text at currentpoint, using current font from graphic
@@ -511,9 +511,9 @@ Both currentpath and currentpoint are erased.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>text</tt></i> :</span></td><td> UTF-8 text string
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td> Number of bytes to use from string
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548561"></a><h3><a name="gnome-print-glyphlist"></a>gnome_print_glyphlist ()</h3><a class="indexterm" name="id2548572"></a><pre class="programlisting">gint        gnome_print_glyphlist           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567758"></a><h3><a name="gnome-print-glyphlist"></a>gnome_print_glyphlist ()</h3><a class="indexterm" name="id2567769"></a><pre class="programlisting">gint        gnome_print_glyphlist           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              <a href="libgnomeprint-gnome-glyphlist.html#GnomeGlyphList">GnomeGlyphList</a> *glyphlist);</pre><p>
 Draws text, using <a href="libgnomeprint-gnome-glyphlist.html#GnomeGlyphList"><span class="type">GnomeGlyphList</span></a> rich text format.
 Glyphlist is rendered in user coordinates, starting from
@@ -522,9 +522,9 @@ Both currentpath and currentpoint are erased.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>glyphlist</tt></i> :</span></td><td> <a href="libgnomeprint-gnome-glyphlist.html#GnomeGlyphList"><span class="type">GnomeGlyphList</span></a> text object
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548690"></a><h3><a name="gnome-print-grayimage"></a>gnome_print_grayimage ()</h3><a class="indexterm" name="id2548701"></a><pre class="programlisting">gint        gnome_print_grayimage           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2567887"></a><h3><a name="gnome-print-grayimage"></a>gnome_print_grayimage ()</h3><a class="indexterm" name="id2567898"></a><pre class="programlisting">gint        gnome_print_grayimage           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const guchar *data,
                                              gint width,
                                              gint height,
@@ -539,9 +539,9 @@ white and 0 black.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> Image buffer width
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Image buffer height
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rowstride</tt></i> :</span></td><td> Image buffer rowstride
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2548867"></a><h3><a name="gnome-print-rgbimage"></a>gnome_print_rgbimage ()</h3><a class="indexterm" name="id2548878"></a><pre class="programlisting">gint        gnome_print_rgbimage            (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568064"></a><h3><a name="gnome-print-rgbimage"></a>gnome_print_rgbimage ()</h3><a class="indexterm" name="id2568075"></a><pre class="programlisting">gint        gnome_print_rgbimage            (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const guchar *data,
                                              gint width,
                                              gint height,
@@ -556,9 +556,9 @@ maximum and 0 minimum value.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> Image buffer width
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Image buffer height
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rowstride</tt></i> :</span></td><td> Image buffer rowstride
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2549045"></a><h3><a name="gnome-print-rgbaimage"></a>gnome_print_rgbaimage ()</h3><a class="indexterm" name="id2549057"></a><pre class="programlisting">gint        gnome_print_rgbaimage           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568242"></a><h3><a name="gnome-print-rgbaimage"></a>gnome_print_rgbaimage ()</h3><a class="indexterm" name="id2568254"></a><pre class="programlisting">gint        gnome_print_rgbaimage           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const guchar *data,
                                              gint width,
                                              gint height,
@@ -574,9 +574,9 @@ transparency.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> Image buffer width
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Image buffer height
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>rowstride</tt></i> :</span></td><td> Image buffer rowstride
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2549225"></a><h3><a name="gnome-print-beginpage"></a>gnome_print_beginpage ()</h3><a class="indexterm" name="id2549236"></a><pre class="programlisting">gint        gnome_print_beginpage           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568423"></a><h3><a name="gnome-print-beginpage"></a>gnome_print_beginpage ()</h3><a class="indexterm" name="id2568434"></a><pre class="programlisting">gint        gnome_print_beginpage           (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              const guchar *name);</pre><p>
 Starts new output page with <i class="parameter"><tt>name</tt></i>. Naming is used for interactive
 contexts like <a
@@ -590,9 +590,9 @@ so one has to define these again at the beginning of each page.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> Name of the page, NULL if you just want to use the page number of the page
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2549367"></a><h3><a name="gnome-print-showpage"></a>gnome_print_showpage ()</h3><a class="indexterm" name="id2549378"></a><pre class="programlisting">gint        gnome_print_showpage            (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568565"></a><h3><a name="gnome-print-showpage"></a>gnome_print_showpage ()</h3><a class="indexterm" name="id2568576"></a><pre class="programlisting">gint        gnome_print_showpage            (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc);</pre><p>
 Finishes rendering of current page, and marks it as shown. All subsequent
 drawing methods will fail, until new page is started with <span class="type">gnome_print_newpage</span>.
 Printing contexts may process drawing methods differently - some do
@@ -603,9 +603,9 @@ operators to internal stack, and only after <a href="libgnomeprint-gnome-print.h
 any output produced.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pc</tt></i> :</span></td><td> A <a href="libgnomeprint-gnome-print.html#GnomePrintContext"><span class="type">GnomePrintContext</span></a>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error
 code on failure.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2549487"></a><h3><a name="gnome-print-line-stroked"></a>gnome_print_line_stroked ()</h3><a class="indexterm" name="id2549499"></a><pre class="programlisting">gint        gnome_print_line_stroked        (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568685"></a><h3><a name="gnome-print-line-stroked"></a>gnome_print_line_stroked ()</h3><a class="indexterm" name="id2568697"></a><pre class="programlisting">gint        gnome_print_line_stroked        (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x0,
                                              gdouble y0,
                                              gdouble x1,
@@ -618,10 +618,10 @@ A convenience function to draw a line.  Uses
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y0</tt></i> :</span></td><td> Y position of start point in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>x1</tt></i> :</span></td><td> X position of end point in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y1</tt></i> :</span></td><td> Y position of end point in user coordinates
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error code
          on failure.
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2549673"></a><h3><a name="gnome-print-rect-stroked"></a>gnome_print_rect_stroked ()</h3><a class="indexterm" name="id2549684"></a><pre class="programlisting">gint        gnome_print_rect_stroked        (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2568871"></a><h3><a name="gnome-print-rect-stroked"></a>gnome_print_rect_stroked ()</h3><a class="indexterm" name="id2568883"></a><pre class="programlisting">gint        gnome_print_rect_stroked        (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x,
                                              gdouble y,
                                              gdouble width,
@@ -634,10 +634,10 @@ A convenience function to draw a rectangle. Uses
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> Y position of origin of rectangle in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> Width of the rectangle
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Height of the rectange
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error code
          on failure. 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2549857"></a><h3><a name="gnome-print-rect-filled"></a>gnome_print_rect_filled ()</h3><a class="indexterm" name="id2549869"></a><pre class="programlisting">gint        gnome_print_rect_filled         (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2569057"></a><h3><a name="gnome-print-rect-filled"></a>gnome_print_rect_filled ()</h3><a class="indexterm" name="id2569068"></a><pre class="programlisting">gint        gnome_print_rect_filled         (<a href="libgnomeprint-gnome-print.html#GnomePrintContext">GnomePrintContext</a> *pc,
                                              gdouble x,
                                              gdouble y,
                                              gdouble width,
@@ -650,7 +650,7 @@ A convenience function to draw a filled rectangle. Uses
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>y</tt></i> :</span></td><td> Y position of origin of rectangle in user coordinates
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>width</tt></i> :</span></td><td> Width of the rectangle
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>height</tt></i> :</span></td><td> Height of the rectange
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <span class="type">GNOME_PRINT_OK</span> or positive value on success, negative error code
          on failure. 
 
 </td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnomeprint-gnome-print-paper.html"><b>&lt;&lt; gnome-print-paper</b></a></td><td align="right"><a accesskey="n" href="libgnomeprint-Pango-Integration.html"><b>Pango Integration &gt;&gt;</b></a></td></tr></table></body></html>

@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="GnomePrintConfig">GnomePrintConfig</link>;
+            <link linkend="GnomePrintConfig">GnomePrintConfig</link>;
 <link linkend="GnomePrintConfig">GnomePrintConfig</link>* <link linkend="gnome-print-config-default">gnome_print_config_default</link>
                                             (void);
 <link linkend="GnomePrintConfig">GnomePrintConfig</link>* <link linkend="gnome-print-config-ref">gnome_print_config_ref</link>    (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
@@ -53,34 +53,34 @@ struct      <link linkend="GnomePrintConfig">GnomePrintConfig</link>;
                                              <link linkend="gdouble">gdouble</link> val,
                                              const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *unit);
 <link linkend="void">void</link>        <link linkend="gnome-print-config-dump">gnome_print_config_dump</link>         (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *gpc);
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-SIZE-CAPS">GNOME_PRINT_KEY_PAPER_SIZE</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-WIDTH-CAPS">GNOME_PRINT_KEY_PAPER_WIDTH</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-HEIGHT-CAPS">GNOME_PRINT_KEY_PAPER_HEIGHT</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-ORIENTATION-CAPS">GNOME_PRINT_KEY_PAPER_ORIENTATION</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-ORIENTATION-MATRIX-CAPS">GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAGE-ORIENTATION-CAPS">GNOME_PRINT_KEY_PAGE_ORIENTATION</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAGE-ORIENTATION-MATRIX-CAPS">GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX</link>
-#define     <link linkend="GNOME-PRINT-KEY-ORIENTATION-CAPS">GNOME_PRINT_KEY_ORIENTATION</link>
-#define     <link linkend="GNOME-PRINT-KEY-LAYOUT-CAPS">GNOME_PRINT_KEY_LAYOUT</link>
-#define     <link linkend="GNOME-PRINT-KEY-LAYOUT-WIDTH-CAPS">GNOME_PRINT_KEY_LAYOUT_WIDTH</link>
-#define     <link linkend="GNOME-PRINT-KEY-LAYOUT-HEIGHT-CAPS">GNOME_PRINT_KEY_LAYOUT_HEIGHT</link>
-#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-CAPS">GNOME_PRINT_KEY_RESOLUTION</link>
-#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-DPI-CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI</link>
-#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-DPI-X-CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI_X</link>
-#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-DPI-Y-CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI_Y</link>
-#define     <link linkend="GNOME-PRINT-KEY-NUM-COPIES-CAPS">GNOME_PRINT_KEY_NUM_COPIES</link>
-#define     <link linkend="GNOME-PRINT-KEY-COLLATE-CAPS">GNOME_PRINT_KEY_COLLATE</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-LEFT-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_LEFT</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-RIGHT-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-TOP-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_TOP</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-BOTTOM-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-LEFT-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_LEFT</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-RIGHT-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-TOP-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_TOP</link>
-#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-BOTTOM-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM</link>
-#define     <link linkend="GNOME-PRINT-KEY-OUTPUT-FILENAME-CAPS">GNOME_PRINT_KEY_OUTPUT_FILENAME</link>
-#define     <link linkend="GNOME-PRINT-KEY-DOCUMENT-NAME-CAPS">GNOME_PRINT_KEY_DOCUMENT_NAME</link>
-#define     <link linkend="GNOME-PRINT-KEY-PREFERED-UNIT-CAPS">GNOME_PRINT_KEY_PREFERED_UNIT</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-SIZE:CAPS">GNOME_PRINT_KEY_PAPER_SIZE</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-WIDTH:CAPS">GNOME_PRINT_KEY_PAPER_WIDTH</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-HEIGHT:CAPS">GNOME_PRINT_KEY_PAPER_HEIGHT</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-ORIENTATION:CAPS">GNOME_PRINT_KEY_PAPER_ORIENTATION</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-ORIENTATION-MATRIX:CAPS">GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAGE-ORIENTATION:CAPS">GNOME_PRINT_KEY_PAGE_ORIENTATION</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAGE-ORIENTATION-MATRIX:CAPS">GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX</link>
+#define     <link linkend="GNOME-PRINT-KEY-ORIENTATION:CAPS">GNOME_PRINT_KEY_ORIENTATION</link>
+#define     <link linkend="GNOME-PRINT-KEY-LAYOUT:CAPS">GNOME_PRINT_KEY_LAYOUT</link>
+#define     <link linkend="GNOME-PRINT-KEY-LAYOUT-WIDTH:CAPS">GNOME_PRINT_KEY_LAYOUT_WIDTH</link>
+#define     <link linkend="GNOME-PRINT-KEY-LAYOUT-HEIGHT:CAPS">GNOME_PRINT_KEY_LAYOUT_HEIGHT</link>
+#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION:CAPS">GNOME_PRINT_KEY_RESOLUTION</link>
+#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-DPI:CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI</link>
+#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-DPI-X:CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI_X</link>
+#define     <link linkend="GNOME-PRINT-KEY-RESOLUTION-DPI-Y:CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI_Y</link>
+#define     <link linkend="GNOME-PRINT-KEY-NUM-COPIES:CAPS">GNOME_PRINT_KEY_NUM_COPIES</link>
+#define     <link linkend="GNOME-PRINT-KEY-COLLATE:CAPS">GNOME_PRINT_KEY_COLLATE</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-LEFT:CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_LEFT</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-RIGHT:CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-TOP:CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_TOP</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAGE-MARGIN-BOTTOM:CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-LEFT:CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_LEFT</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-RIGHT:CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-TOP:CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_TOP</link>
+#define     <link linkend="GNOME-PRINT-KEY-PAPER-MARGIN-BOTTOM:CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM</link>
+#define     <link linkend="GNOME-PRINT-KEY-OUTPUT-FILENAME:CAPS">GNOME_PRINT_KEY_OUTPUT_FILENAME</link>
+#define     <link linkend="GNOME-PRINT-KEY-DOCUMENT-NAME:CAPS">GNOME_PRINT_KEY_DOCUMENT_NAME</link>
+#define     <link linkend="GNOME-PRINT-KEY-PREFERED-UNIT:CAPS">GNOME_PRINT_KEY_PREFERED_UNIT</link>
 </synopsis>
 </refsynopsisdiv>
 
@@ -102,8 +102,8 @@ struct      <link linkend="GnomePrintConfig">GnomePrintConfig</link>;
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePrintConfig"/>struct GnomePrintConfig</title>
-<indexterm><primary>GnomePrintConfig</primary></indexterm><programlisting>struct GnomePrintConfig;</programlisting>
+<title><anchor id="GnomePrintConfig"/>GnomePrintConfig</title>
+<indexterm><primary>GnomePrintConfig</primary></indexterm><programlisting>typedef struct _GnomePrintConfig GnomePrintConfig;</programlisting>
 <para>
 
 </para></refsect2>
@@ -116,7 +116,7 @@ Creates a <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> 
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to a <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object with the default settings
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to a <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object with the default settings
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -131,7 +131,7 @@ Increase the reference count on the <link linkend="GnomePrintConfig"><type>Gnome
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara> The <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object to have its reference count increased
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object or <literal>NULL</literal> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object or <literal>NULL</literal> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -146,7 +146,7 @@ Decrease the reference count on the <link linkend="GnomePrintConfig"><type>Gnome
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara> The <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object to have its reference count decreased
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object or <literal>NULL</literal> on failure.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the <link linkend="GnomePrintConfig"><type>GnomePrintConfig</type></link> object or <literal>NULL</literal> on failure.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -163,7 +163,7 @@ using it.</para>
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara> The config to be copied
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A copy of config
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A copy of config
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -183,7 +183,7 @@ should be freed with <link linkend="g-free"><type>g_free</type></link> when you 
 <varlistentry><term><parameter>key</parameter>&nbsp;:</term>
 <listitem><simpara> String containing the path of key whose value is to be obtained
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The value of the key, <literal>NULL</literal> indicates failure.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The value of the key, <literal>NULL</literal> indicates failure.
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -206,7 +206,7 @@ Sets the value of string <parameter>key</parameter> in the <link linkend="GnomeP
 <varlistentry><term><parameter>value</parameter>&nbsp;:</term>
 <listitem><simpara> String containing the value to set
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -231,7 +231,7 @@ boolean value will be stored in the variable <parameter>val</parameter>.</para>
 <varlistentry><term><parameter>val</parameter>&nbsp;:</term>
 <listitem><simpara> Pointer to a boolean variable to store the value in.  Should initially be <literal>NULL</literal>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE-CAPS"><type>FALSE</type></link> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE:CAPS"><type>FALSE</type></link> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -256,7 +256,7 @@ to their integer equivalent.  The integer value will be stored in the variable
 <varlistentry><term><parameter>val</parameter>&nbsp;:</term>
 <listitem><simpara> Pointer to a integer variable to store the value in.  Should initially be <literal>NULL</literal>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE-CAPS"><type>FALSE</type></link> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE:CAPS"><type>FALSE</type></link> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -281,7 +281,7 @@ to their double equivalent.  The double value will be stored in the variable
 <varlistentry><term><parameter>val</parameter>&nbsp;:</term>
 <listitem><simpara> Pointer to a double variable to store the value in.  Should initially be <literal>NULL</literal>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE-CAPS"><type>FALSE</type></link> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE:CAPS"><type>FALSE</type></link> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -311,7 +311,7 @@ for <parameter>unit</parameter> before calling this function.</para>
 <varlistentry><term><parameter>unit</parameter>&nbsp;:</term>
 <listitem><simpara> Pointer to an already allocated <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> struct
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="TRUE-CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE-CAPS"><type>FALSE</type></link> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <link linkend="TRUE:CAPS"><type>TRUE</type></link> if a value was retrieved, <link linkend="FALSE:CAPS"><type>FALSE</type></link> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -334,7 +334,7 @@ Set a <parameter>boolean</parameter> value in the <link linkend="GnomePrintConfi
 <varlistentry><term><parameter>val</parameter>&nbsp;:</term>
 <listitem><simpara> Boolean containing the value to set
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -357,7 +357,7 @@ Set an <parameter>integer</parameter> value in the <link linkend="GnomePrintConf
 <varlistentry><term><parameter>val</parameter>&nbsp;:</term>
 <listitem><simpara> Integer containing the value to set
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -380,7 +380,7 @@ Set a <parameter>double</parameter> value in the <link linkend="GnomePrintConfig
 <varlistentry><term><parameter>val</parameter>&nbsp;:</term>
 <listitem><simpara> Double containing the value to set
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -408,7 +408,7 @@ conjunction with <link linkend="gnome-print-config-get-length"><type>gnome_print
 <varlistentry><term><parameter>unit</parameter>&nbsp;:</term>
 <listitem><simpara> Units to use when setting value
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> on success, <literal>FALSE</literal> on failure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -426,14 +426,14 @@ is to <literal>STDOUT</literal> and is limited to a depth of 20.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-SIZE-CAPS"/>GNOME_PRINT_KEY_PAPER_SIZE</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-SIZE:CAPS"/>GNOME_PRINT_KEY_PAPER_SIZE</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_SIZE</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_SIZE               "Settings.Output.Media.PhysicalSize" /* Paper name, such as A4 or Letter */
 </programlisting>
 <para>
 Convenience macro for key that contains the paper size, eg: A4, Letter.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-WIDTH-CAPS"/>GNOME_PRINT_KEY_PAPER_WIDTH</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-WIDTH:CAPS"/>GNOME_PRINT_KEY_PAPER_WIDTH</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_WIDTH</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_WIDTH              "Settings.Output.Media.PhysicalSize.Width" /* Arbitrary units - use conversion */
 </programlisting>
 <para>
@@ -441,7 +441,7 @@ Convenience macro for key that contains the width of the paper.  Units are
 arbitrary so use <link linkend="gnome-print-config-get-length"><type>gnome_print_config_get_length</type></link> and <link linkend="gnome-print-set-length"><type>gnome_print_set_length</type></link>.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-HEIGHT-CAPS"/>GNOME_PRINT_KEY_PAPER_HEIGHT</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-HEIGHT:CAPS"/>GNOME_PRINT_KEY_PAPER_HEIGHT</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_HEIGHT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_HEIGHT             "Settings.Output.Media.PhysicalSize.Height" /* Arbitrary units - use conversion */
 </programlisting>
 <para>
@@ -449,7 +449,7 @@ Convenience macro for key that contains the height of the paper.  Units are
 arbitrary so use <link linkend="gnome-print-config-get-length"><type>gnome_print_config_get_length</type></link> and <link linkend="gnome-print-set-length"><type>gnome_print_set_length</type></link>.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-ORIENTATION-CAPS"/>GNOME_PRINT_KEY_PAPER_ORIENTATION</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-ORIENTATION:CAPS"/>GNOME_PRINT_KEY_PAPER_ORIENTATION</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_ORIENTATION</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_ORIENTATION        "Settings.Output.Media.PhysicalOrientation" /* R0, R90, R180, R270 */
 </programlisting>
 <para>
@@ -457,14 +457,14 @@ Convenience macro for key that contains the orientation of the paper in terms
 of degrees of rotation, eg: R0, R90, R180, and R270.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-ORIENTATION-MATRIX-CAPS"/>GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-ORIENTATION-MATRIX:CAPS"/>GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX "Settings.Output.Media.PhysicalOrientation.Paper2PrinterTransform" /* 3x2 abstract matrix */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAGE-ORIENTATION-CAPS"/>GNOME_PRINT_KEY_PAGE_ORIENTATION</title>
+<title><anchor id="GNOME-PRINT-KEY-PAGE-ORIENTATION:CAPS"/>GNOME_PRINT_KEY_PAGE_ORIENTATION</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAGE_ORIENTATION</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAGE_ORIENTATION        "Settings.Document.Page.LogicalOrientation" /* R0, R90, R180, R270 */
 </programlisting>
 <para>
@@ -472,21 +472,21 @@ Convenience macro for the key that contains the orientation of the logical
 page in terms of degrees of rotation, eg: R0, R90, R180, and R270.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAGE-ORIENTATION-MATRIX-CAPS"/>GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX</title>
+<title><anchor id="GNOME-PRINT-KEY-PAGE-ORIENTATION-MATRIX:CAPS"/>GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX "Settings.Document.Page.LogicalOrientation.Page2LayoutTransform" /* 3x2 abstract matrix */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-ORIENTATION-CAPS"/>GNOME_PRINT_KEY_ORIENTATION</title>
+<title><anchor id="GNOME-PRINT-KEY-ORIENTATION:CAPS"/>GNOME_PRINT_KEY_ORIENTATION</title>
 <indexterm><primary>GNOME_PRINT_KEY_ORIENTATION</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_ORIENTATION GNOME_PRINT_KEY_PAGE_ORIENTATION
 </programlisting>
 <para>
-See <link linkend="GNOME-PRINT-KEY-PAGE-ORIENTATION-CAPS"><type>GNOME_PRINT_KEY_PAGE_ORIENTATION</type></link>.
+See <link linkend="GNOME-PRINT-KEY-PAGE-ORIENTATION:CAPS"><type>GNOME_PRINT_KEY_PAGE_ORIENTATION</type></link>.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-LAYOUT-CAPS"/>GNOME_PRINT_KEY_LAYOUT</title>
+<title><anchor id="GNOME-PRINT-KEY-LAYOUT:CAPS"/>GNOME_PRINT_KEY_LAYOUT</title>
 <indexterm><primary>GNOME_PRINT_KEY_LAYOUT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_LAYOUT        "Settings.Document.Page.Layout"        /* Id of layout ('Plain' is always no-special-layout) */
 </programlisting>
 <para>
@@ -494,7 +494,7 @@ Convenience macro for key that contains the name for the logical layout
 being used, eg: Plain.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-LAYOUT-WIDTH-CAPS"/>GNOME_PRINT_KEY_LAYOUT_WIDTH</title>
+<title><anchor id="GNOME-PRINT-KEY-LAYOUT-WIDTH:CAPS"/>GNOME_PRINT_KEY_LAYOUT_WIDTH</title>
 <indexterm><primary>GNOME_PRINT_KEY_LAYOUT_WIDTH</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_LAYOUT_WIDTH  "Settings.Document.Page.Layout.Width"  /* Double value */
 </programlisting>
 <para>
@@ -502,7 +502,7 @@ Convenience macro for key that contains the logical width of the page
 as used by the application.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-LAYOUT-HEIGHT-CAPS"/>GNOME_PRINT_KEY_LAYOUT_HEIGHT</title>
+<title><anchor id="GNOME-PRINT-KEY-LAYOUT-HEIGHT:CAPS"/>GNOME_PRINT_KEY_LAYOUT_HEIGHT</title>
 <indexterm><primary>GNOME_PRINT_KEY_LAYOUT_HEIGHT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_LAYOUT_HEIGHT "Settings.Document.Page.Layout.Height" /* Double value */
 </programlisting>
 <para>
@@ -510,7 +510,7 @@ Convenience macro for key that contains the logical height of the page
 as used by the application.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-CAPS"/>GNOME_PRINT_KEY_RESOLUTION</title>
+<title><anchor id="GNOME-PRINT-KEY-RESOLUTION:CAPS"/>GNOME_PRINT_KEY_RESOLUTION</title>
 <indexterm><primary>GNOME_PRINT_KEY_RESOLUTION</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_RESOLUTION       "Settings.Output.Resolution"       /* String value, like 300x300 or 300dpi */
 </programlisting>
 <para>
@@ -518,7 +518,7 @@ Convenience macro for key that contains a string representing the
 resolution of the printer, eg: 300x300 or 300dpi. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI-CAPS"/>GNOME_PRINT_KEY_RESOLUTION_DPI</title>
+<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI:CAPS"/>GNOME_PRINT_KEY_RESOLUTION_DPI</title>
 <indexterm><primary>GNOME_PRINT_KEY_RESOLUTION_DPI</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_RESOLUTION_DPI   "Settings.Output.Resolution.DPI"   /* Numeric value, like 300, if meaningful */
 </programlisting>
 <para>
@@ -526,7 +526,7 @@ Convenience macro for key that contains a numeric representation of
 the resolution, eg: 300.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI-X-CAPS"/>GNOME_PRINT_KEY_RESOLUTION_DPI_X</title>
+<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI-X:CAPS"/>GNOME_PRINT_KEY_RESOLUTION_DPI_X</title>
 <indexterm><primary>GNOME_PRINT_KEY_RESOLUTION_DPI_X</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_RESOLUTION_DPI_X "Settings.Output.Resolution.DPI.X" /* Numeric value */
 </programlisting>
 <para>
@@ -534,7 +534,7 @@ Convenience macro for key that contains a numeric representation of
 the X resolution, eg: 300.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI-Y-CAPS"/>GNOME_PRINT_KEY_RESOLUTION_DPI_Y</title>
+<title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI-Y:CAPS"/>GNOME_PRINT_KEY_RESOLUTION_DPI_Y</title>
 <indexterm><primary>GNOME_PRINT_KEY_RESOLUTION_DPI_Y</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_RESOLUTION_DPI_Y "Settings.Output.Resolution.DPI.Y" /* Numeric value */
 </programlisting>
 <para>
@@ -542,7 +542,7 @@ Convenience macro for key that contains a numeric representation of
 the Y resolution, eg: 300.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-NUM-COPIES-CAPS"/>GNOME_PRINT_KEY_NUM_COPIES</title>
+<title><anchor id="GNOME-PRINT-KEY-NUM-COPIES:CAPS"/>GNOME_PRINT_KEY_NUM_COPIES</title>
 <indexterm><primary>GNOME_PRINT_KEY_NUM_COPIES</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_NUM_COPIES "Settings.Output.Job.NumCopies" /* Number of copies */
 </programlisting>
 <para>
@@ -550,7 +550,7 @@ Convenience macro for key that contains the number of copies to
 output. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-COLLATE-CAPS"/>GNOME_PRINT_KEY_COLLATE</title>
+<title><anchor id="GNOME-PRINT-KEY-COLLATE:CAPS"/>GNOME_PRINT_KEY_COLLATE</title>
 <indexterm><primary>GNOME_PRINT_KEY_COLLATE</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_COLLATE    "Settings.Output.Job.Collate"   /* Boolean (true|yes|1 false|no|0) */
 </programlisting>
 <para>
@@ -558,7 +558,7 @@ Convenience macro for key that contains a boolean value indicating whether
 to collate the copies as they are output.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-LEFT-CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_LEFT</title>
+<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-LEFT:CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_LEFT</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAGE_MARGIN_LEFT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_LEFT   "Settings.Document.Page.Margins.Left"   /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -566,7 +566,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-RIGHT-CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT</title>
+<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-RIGHT:CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT  "Settings.Document.Page.Margins.Right"  /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -574,7 +574,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-TOP-CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_TOP</title>
+<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-TOP:CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_TOP</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAGE_MARGIN_TOP</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_TOP    "Settings.Document.Page.Margins.Top"    /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -582,7 +582,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-BOTTOM-CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM</title>
+<title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-BOTTOM:CAPS"/>GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM "Settings.Document.Page.Margins.Bottom" /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -590,7 +590,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-LEFT-CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_LEFT</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-LEFT:CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_LEFT</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_MARGIN_LEFT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_LEFT   "Settings.Output.Media.Margins.Left"   /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -598,7 +598,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-RIGHT-CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-RIGHT:CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT  "Settings.Output.Media.Margins.Right"  /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -606,7 +606,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-TOP-CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_TOP</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-TOP:CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_TOP</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_MARGIN_TOP</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_TOP    "Settings.Output.Media.Margins.Top"    /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -614,7 +614,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-BOTTOM-CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM</title>
+<title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-BOTTOM:CAPS"/>GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM</title>
 <indexterm><primary>GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM "Settings.Output.Media.Margins.Bottom" /* Length, i.e. use conversion */
 </programlisting>
 <para>
@@ -622,7 +622,7 @@ Ignored by libgnomeprint, but used by libgnomeprintui when populating
 margin symbols.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-OUTPUT-FILENAME-CAPS"/>GNOME_PRINT_KEY_OUTPUT_FILENAME</title>
+<title><anchor id="GNOME-PRINT-KEY-OUTPUT-FILENAME:CAPS"/>GNOME_PRINT_KEY_OUTPUT_FILENAME</title>
 <indexterm><primary>GNOME_PRINT_KEY_OUTPUT_FILENAME</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_OUTPUT_FILENAME "Settings.Output.Job.FileName"          /* Filename used when printing to file. */
 </programlisting>
 <para>
@@ -630,7 +630,7 @@ Convenience macro for the key that contains the name of the file
 being used when printing to a file.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-DOCUMENT-NAME-CAPS"/>GNOME_PRINT_KEY_DOCUMENT_NAME</title>
+<title><anchor id="GNOME-PRINT-KEY-DOCUMENT-NAME:CAPS"/>GNOME_PRINT_KEY_DOCUMENT_NAME</title>
 <indexterm><primary>GNOME_PRINT_KEY_DOCUMENT_NAME</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_DOCUMENT_NAME   "Settings.Document.Name"                /* The name of the document 'Cash flow 2002', `Grandma cookie recipies' */
 </programlisting>
 <para>
@@ -638,7 +638,7 @@ Convenience macro for the key that contains the name of the document
 being printed. 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-KEY-PREFERED-UNIT-CAPS"/>GNOME_PRINT_KEY_PREFERED_UNIT</title>
+<title><anchor id="GNOME-PRINT-KEY-PREFERED-UNIT:CAPS"/>GNOME_PRINT_KEY_PREFERED_UNIT</title>
 <indexterm><primary>GNOME_PRINT_KEY_PREFERED_UNIT</primary></indexterm><programlisting>#define GNOME_PRINT_KEY_PREFERED_UNIT   "Settings.Document.PreferedUnit"        /* Abbreviation for the preferred unit cm, in,... */
 </programlisting>
 <para>

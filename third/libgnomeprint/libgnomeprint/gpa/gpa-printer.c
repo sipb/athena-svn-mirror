@@ -29,10 +29,9 @@
 #include <locale.h>
 #include <string.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 #include <gmodule.h>
-#include <glibconfig.h>
+#include <glib.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 
@@ -385,8 +384,8 @@ module_error:
 static gboolean
 gpa_printer_list_load_from_module_dir (GPAList *printers, const gchar *dir_path)
 {
-	struct dirent *entry;
-	DIR *dir;
+	const char *entry;
+	GDir *dir;
 	gint ext_len = strlen (G_MODULE_SUFFIX);
 	g_assert (ext_len > 0);
 
@@ -396,30 +395,30 @@ gpa_printer_list_load_from_module_dir (GPAList *printers, const gchar *dir_path)
 		return FALSE;
 	}
 	
-	dir = opendir (dir_path);
+	dir = g_dir_open (dir_path, 0, NULL);
 	if (!dir) {
 		/* Not an error. since modules are optional */
 		return TRUE;
 	}
 
-	while ((entry = readdir (dir)) != NULL) {
+	while ((entry = g_dir_read_name (dir)) != NULL) {
 		gchar *path;
 		gint len;
 
-		len = strlen (entry->d_name);
+		len = strlen (entry);
 
 		if (len < ext_len + 2) /* 2 = one char + 1 for '.'*/
 			continue;
 
-		if (*(entry->d_name + len - ext_len - 1) != '.' || 
-		    strcmp (entry->d_name + len - ext_len, G_MODULE_SUFFIX))
+		if (*(entry + len - ext_len - 1) != '.' || 
+		    strcmp (entry + len - ext_len, G_MODULE_SUFFIX))
 			continue;
 		
-		path = g_build_filename (dir_path, entry->d_name, NULL);
+		path = g_build_filename (dir_path, entry, NULL);
 		gpa_printer_list_load_from_module (printers, path);
 		g_free (path);
 	}
-	closedir (dir);
+	g_dir_close (dir);
 	
 	return TRUE;
 }
@@ -436,26 +435,26 @@ gpa_printer_list_load_from_module_dir (GPAList *printers, const gchar *dir_path)
 static gboolean
 gpa_printer_list_load_from_dir (GPAList *printers, const gchar *dir_name)
 {
-	struct dirent *entry;
-	DIR *dir;
+	const char *entry;
+	GDir *dir;
 
-	dir = opendir (dir_name);
+	dir = g_dir_open (dir_name, 0, NULL);
 	if (!dir)
 		return FALSE;
 
-	while ((entry = readdir (dir))) {
+	while ((entry = g_dir_read_name (dir))) {
 		GPANode *printer;
 		gchar *file;
 		gint len;
 
-		len = strlen (entry->d_name);
+		len = strlen (entry);
 		if (len < 5)
 			continue;
 		
-		if (strcmp (entry->d_name + len - 4, ".xml"))
+		if (strcmp (entry + len - 4, ".xml"))
 			continue;
 
-		file = g_build_filename (dir_name, entry->d_name, NULL);
+		file = g_build_filename (dir_name, entry, NULL);
 		printer = gpa_printer_new_from_file (file);
 		g_free (file);
 
@@ -467,7 +466,7 @@ gpa_printer_list_load_from_dir (GPAList *printers, const gchar *dir_name)
 		if (strcmp (GPA_NODE_ID (printer), "GENERIC") == 0)
 		    gpa_list_set_default (printers, printer);
 	}
-	closedir (dir);
+	g_dir_close (dir);
 
 	return TRUE;
 }
@@ -487,6 +486,7 @@ gpa_printer_list_load (void)
 {
 	GPAList *printers;
 	GPANode *p;
+	gchar   *path;
 
 	if (gpa_root && gpa_root->printers != NULL) {
 		g_warning ("gpa_printer_list_load should only be called once");
@@ -495,7 +495,9 @@ gpa_printer_list_load (void)
 
 	printers = gpa_list_new (GPA_TYPE_PRINTER, "Printers", TRUE);
 
-	gpa_printer_list_load_from_dir        (printers, GPA_DATA_DIR "/printers");
+	path = g_build_filename (GPA_DATA_DIR, "printers", NULL);
+	gpa_printer_list_load_from_dir        (printers, path);
+	g_free (path);
 	gpa_printer_list_load_from_module_dir (printers, GPA_MODULES_DIR);
 
 	if (GPA_NODE (printers)->children == NULL) {

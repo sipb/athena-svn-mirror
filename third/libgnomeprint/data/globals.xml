@@ -367,6 +367,7 @@
             <Name xml:lang="es">2 páginas en 1</Name>
             <Name xml:lang="et">2 lk 1-l</Name>
             <Name xml:lang="eu">2 orri batean</Name>
+            <Name xml:lang="fa">‏۲ صفحه در یک صفحه</Name>
             <Name xml:lang="fi">kaksi sivua yhdelle</Name>
             <Name xml:lang="fr">2 pages sur 1</Name>
             <Name xml:lang="ga">2 leathanach go 1</Name>
@@ -438,6 +439,7 @@
             <Name xml:lang="es">4 páginas en 1</Name>
             <Name xml:lang="et">4 lk 1-l</Name>
             <Name xml:lang="eu">4 orri batean</Name>
+            <Name xml:lang="fa">‏۴ صفحه در یک صفحه</Name>
             <Name xml:lang="fi">neljä sivua yhdelle</Name>
             <Name xml:lang="fr">4 pages sur 1</Name>
             <Name xml:lang="ga">4 leathanach go 1</Name>
@@ -582,6 +584,7 @@
             <Name xml:lang="es">Doblado</Name>
             <Name xml:lang="et">Volditud</Name>
             <Name xml:lang="eu">Tolestua</Name>
+            <Name xml:lang="fa">تا شده</Name>
             <Name xml:lang="fi">Taitettu</Name>
             <Name xml:lang="fr">Plié</Name>
             <Name xml:lang="gu">વાળેલુ</Name>
@@ -725,6 +728,7 @@
           <Name xml:lang="es">US Carta</Name>
           <Name xml:lang="et">US kiri</Name>
           <Name xml:lang="eu">AEBetako gutuna</Name>
+          <Name xml:lang="fa">نامه‌ای ایالات متحده</Name>
           <Name xml:lang="fi">US Letter</Name>
           <Name xml:lang="fr">US Letter</Name>
           <Name xml:lang="ga">Litir SA(Stáit Aontaithe) </Name>
@@ -789,6 +793,7 @@
           <Name xml:lang="es">US Legal</Name>
           <Name xml:lang="et">US juriidiline</Name>
           <Name xml:lang="eu">US legala</Name>
+          <Name xml:lang="fa">حقوقی ایالات متحده</Name>
           <Name xml:lang="fi">US Legal</Name>
           <Name xml:lang="fr">US Legal</Name>
           <Name xml:lang="ga">Dlíthiúil SA(Stáit Aontaithe) </Name>
@@ -852,6 +857,7 @@
           <Name xml:lang="es">US Ejecutivo</Name>
           <Name xml:lang="et">US täidesaatev</Name>
           <Name xml:lang="eu">US betearazlea</Name>
+          <Name xml:lang="fa">اداری ایالات متحده</Name>
           <Name xml:lang="fi">US Executive</Name>
           <Name xml:lang="fr">US Executive</Name>
           <Name xml:lang="ga">Feidhmitheach SA(Stáit Aontaithe)</Name>
@@ -986,6 +992,7 @@
           <Name xml:lang="es">A0</Name>
           <Name xml:lang="et">A0</Name>
           <Name xml:lang="eu">A0</Name>
+          <Name xml:lang="fa">A0</Name>
           <Name xml:lang="fi">A0</Name>
           <Name xml:lang="fr">A0</Name>
           <Name xml:lang="ga">A0</Name>
@@ -1052,6 +1059,7 @@
           <Name xml:lang="es">A1</Name>
           <Name xml:lang="et">A1</Name>
           <Name xml:lang="eu">A1</Name>
+          <Name xml:lang="fa">A1</Name>
           <Name xml:lang="fi">A1</Name>
           <Name xml:lang="fr">A1</Name>
           <Name xml:lang="ga">A1</Name>
@@ -1118,6 +1126,7 @@
           <Name xml:lang="es">A2</Name>
           <Name xml:lang="et">A2</Name>
           <Name xml:lang="eu">A2</Name>
+          <Name xml:lang="fa">A2</Name>
           <Name xml:lang="fi">A2</Name>
           <Name xml:lang="fr">A2</Name>
           <Name xml:lang="ga">A2</Name>
@@ -1184,6 +1193,7 @@
           <Name xml:lang="es">A3</Name>
           <Name xml:lang="et">A3</Name>
           <Name xml:lang="eu">A3</Name>
+          <Name xml:lang="fa">A3</Name>
           <Name xml:lang="fi">A3</Name>
           <Name xml:lang="fr">A3</Name>
           <Name xml:lang="ga">A3</Name>
@@ -1250,6 +1260,7 @@
           <Name xml:lang="es">A5</Name>
           <Name xml:lang="et">A5</Name>
           <Name xml:lang="eu">A5</Name>
+          <Name xml:lang="fa">A5</Name>
           <Name xml:lang="fi">A5</Name>
           <Name xml:lang="fr">A5</Name>
           <Name xml:lang="ga">A5</Name>
@@ -1316,6 +1327,7 @@
           <Name xml:lang="es">A6</Name>
           <Name xml:lang="et">A6</Name>
           <Name xml:lang="eu">A6</Name>
+          <Name xml:lang="fa">A6</Name>
           <Name xml:lang="fi">A6</Name>
           <Name xml:lang="fr">A6</Name>
           <Name xml:lang="ga">A6</Name>
@@ -1382,6 +1394,7 @@
           <Name xml:lang="es">A7</Name>
           <Name xml:lang="et">A7</Name>
           <Name xml:lang="eu">A7</Name>
+          <Name xml:lang="fa">A7</Name>
           <Name xml:lang="fi">A7</Name>
           <Name xml:lang="fr">A7</Name>
           <Name xml:lang="ga">A7</Name>
@@ -1448,6 +1461,7 @@
           <Name xml:lang="es">A8</Name>
           <Name xml:lang="et">A8</Name>
           <Name xml:lang="eu">A8</Name>
+          <Name xml:lang="fa">A8</Name>
           <Name xml:lang="fi">A8</Name>
           <Name xml:lang="fr">A8</Name>
           <Name xml:lang="ga">A8</Name>
@@ -1514,6 +1528,7 @@
           <Name xml:lang="es">A9</Name>
           <Name xml:lang="et">A9</Name>
           <Name xml:lang="eu">A9</Name>
+          <Name xml:lang="fa">A9</Name>
           <Name xml:lang="fi">A9</Name>
           <Name xml:lang="fr">A9</Name>
           <Name xml:lang="ga">A9</Name>
@@ -1580,6 +1595,7 @@
           <Name xml:lang="es">A10</Name>
           <Name xml:lang="et">A10</Name>
           <Name xml:lang="eu">A10</Name>
+          <Name xml:lang="fa">A10</Name>
           <Name xml:lang="fi">A10</Name>
           <Name xml:lang="fr">A10</Name>
           <Name xml:lang="ga">A10</Name>
@@ -1647,6 +1663,7 @@
           <Name xml:lang="es">B0</Name>
           <Name xml:lang="et">B0</Name>
           <Name xml:lang="eu">B0</Name>
+          <Name xml:lang="fa">B0</Name>
           <Name xml:lang="fi">B0</Name>
           <Name xml:lang="fr">B0</Name>
           <Name xml:lang="ga">B0</Name>
@@ -1713,6 +1730,7 @@
           <Name xml:lang="es">B1</Name>
           <Name xml:lang="et">B1</Name>
           <Name xml:lang="eu">B1</Name>
+          <Name xml:lang="fa">B1</Name>
           <Name xml:lang="fi">B1</Name>
           <Name xml:lang="fr">B1</Name>
           <Name xml:lang="ga">B1</Name>
@@ -1779,6 +1797,7 @@
           <Name xml:lang="es">B2</Name>
           <Name xml:lang="et">B2</Name>
           <Name xml:lang="eu">B2</Name>
+          <Name xml:lang="fa">B2</Name>
           <Name xml:lang="fi">B2</Name>
           <Name xml:lang="fr">B2</Name>
           <Name xml:lang="ga">B2</Name>
@@ -1845,6 +1864,7 @@
           <Name xml:lang="es">B3</Name>
           <Name xml:lang="et">B3</Name>
           <Name xml:lang="eu">B3</Name>
+          <Name xml:lang="fa">B3</Name>
           <Name xml:lang="fi">B3</Name>
           <Name xml:lang="fr">B3</Name>
           <Name xml:lang="ga">B3</Name>
@@ -1911,6 +1931,7 @@
           <Name xml:lang="es">B4</Name>
           <Name xml:lang="et">B4</Name>
           <Name xml:lang="eu">B4</Name>
+          <Name xml:lang="fa">B4</Name>
           <Name xml:lang="fi">B4</Name>
           <Name xml:lang="fr">B4</Name>
           <Name xml:lang="ga">B4</Name>
@@ -1977,6 +1998,7 @@
           <Name xml:lang="es">B5</Name>
           <Name xml:lang="et">B5</Name>
           <Name xml:lang="eu">B5</Name>
+          <Name xml:lang="fa">B5</Name>
           <Name xml:lang="fi">B5</Name>
           <Name xml:lang="fr">B5</Name>
           <Name xml:lang="ga">B5</Name>
@@ -2043,6 +2065,7 @@
           <Name xml:lang="es">B6</Name>
           <Name xml:lang="et">B6</Name>
           <Name xml:lang="eu">B6</Name>
+          <Name xml:lang="fa">B6</Name>
           <Name xml:lang="fi">B6</Name>
           <Name xml:lang="fr">B6</Name>
           <Name xml:lang="ga">B6</Name>
@@ -2109,6 +2132,7 @@
           <Name xml:lang="es">B7</Name>
           <Name xml:lang="et">B7</Name>
           <Name xml:lang="eu">B7</Name>
+          <Name xml:lang="fa">B7</Name>
           <Name xml:lang="fi">B7</Name>
           <Name xml:lang="fr">B7</Name>
           <Name xml:lang="ga">B7</Name>
@@ -2175,6 +2199,7 @@
           <Name xml:lang="es">B8</Name>
           <Name xml:lang="et">B8</Name>
           <Name xml:lang="eu">B8</Name>
+          <Name xml:lang="fa">B8</Name>
           <Name xml:lang="fi">B8</Name>
           <Name xml:lang="fr">B8</Name>
           <Name xml:lang="ga">B8</Name>
@@ -2241,6 +2266,7 @@
           <Name xml:lang="es">B9</Name>
           <Name xml:lang="et">B9</Name>
           <Name xml:lang="eu">B9</Name>
+          <Name xml:lang="fa">B9</Name>
           <Name xml:lang="fi">B9</Name>
           <Name xml:lang="fr">B9</Name>
           <Name xml:lang="ga">B9</Name>
@@ -2307,6 +2333,7 @@
           <Name xml:lang="es">B10</Name>
           <Name xml:lang="et">B10</Name>
           <Name xml:lang="eu">B10</Name>
+          <Name xml:lang="fa">B10</Name>
           <Name xml:lang="fi">B10</Name>
           <Name xml:lang="fr">B10</Name>
           <Name xml:lang="ga">B10</Name>
@@ -2373,6 +2400,7 @@
           <Name xml:lang="es">C0</Name>
           <Name xml:lang="et">C0</Name>
           <Name xml:lang="eu">C0</Name>
+          <Name xml:lang="fa">C0</Name>
           <Name xml:lang="fi">C0</Name>
           <Name xml:lang="fr">C0</Name>
           <Name xml:lang="ga">C0</Name>
@@ -2438,6 +2466,7 @@
           <Name xml:lang="es">C1</Name>
           <Name xml:lang="et">C1</Name>
           <Name xml:lang="eu">C1</Name>
+          <Name xml:lang="fa">C1</Name>
           <Name xml:lang="fi">C1</Name>
           <Name xml:lang="fr">C1</Name>
           <Name xml:lang="ga">C1</Name>
@@ -2503,6 +2532,7 @@
           <Name xml:lang="es">C2</Name>
           <Name xml:lang="et">C2</Name>
           <Name xml:lang="eu">C2</Name>
+          <Name xml:lang="fa">C2</Name>
           <Name xml:lang="fi">C2</Name>
           <Name xml:lang="fr">C2</Name>
           <Name xml:lang="ga">C2</Name>
@@ -2568,6 +2598,7 @@
           <Name xml:lang="es">C3</Name>
           <Name xml:lang="et">C3</Name>
           <Name xml:lang="eu">C3</Name>
+          <Name xml:lang="fa">C3</Name>
           <Name xml:lang="fi">C3</Name>
           <Name xml:lang="fr">C3</Name>
           <Name xml:lang="ga">C3</Name>
@@ -2633,6 +2664,7 @@
           <Name xml:lang="es">C4</Name>
           <Name xml:lang="et">C4</Name>
           <Name xml:lang="eu">C4</Name>
+          <Name xml:lang="fa">C4</Name>
           <Name xml:lang="fi">C4</Name>
           <Name xml:lang="fr">C4</Name>
           <Name xml:lang="ga">C4</Name>
@@ -2698,6 +2730,7 @@
           <Name xml:lang="es">C5</Name>
           <Name xml:lang="et">C5</Name>
           <Name xml:lang="eu">C5</Name>
+          <Name xml:lang="fa">C5</Name>
           <Name xml:lang="fi">C5</Name>
           <Name xml:lang="fr">C5</Name>
           <Name xml:lang="ga">C5</Name>
@@ -2763,6 +2796,7 @@
           <Name xml:lang="es">C6</Name>
           <Name xml:lang="et">C6</Name>
           <Name xml:lang="eu">C6</Name>
+          <Name xml:lang="fa">C6</Name>
           <Name xml:lang="fi">C6</Name>
           <Name xml:lang="fr">C6</Name>
           <Name xml:lang="ga">C6</Name>
@@ -2828,6 +2862,7 @@
           <Name xml:lang="es">C7</Name>
           <Name xml:lang="et">C7</Name>
           <Name xml:lang="eu">C7</Name>
+          <Name xml:lang="fa">C7</Name>
           <Name xml:lang="fi">C7</Name>
           <Name xml:lang="fr">C7</Name>
           <Name xml:lang="ga">C7</Name>
@@ -2893,6 +2928,7 @@
           <Name xml:lang="es">C8</Name>
           <Name xml:lang="et">C8</Name>
           <Name xml:lang="eu">C8</Name>
+          <Name xml:lang="fa">C8</Name>
           <Name xml:lang="fi">C8</Name>
           <Name xml:lang="fr">C8</Name>
           <Name xml:lang="ga">C8</Name>
@@ -2958,6 +2994,7 @@
           <Name xml:lang="es">C9</Name>
           <Name xml:lang="et">C9</Name>
           <Name xml:lang="eu">C9</Name>
+          <Name xml:lang="fa">C9</Name>
           <Name xml:lang="fi">C9</Name>
           <Name xml:lang="fr">C9</Name>
           <Name xml:lang="ga">C9</Name>
@@ -3023,6 +3060,7 @@
           <Name xml:lang="es">C10</Name>
           <Name xml:lang="et">C10</Name>
           <Name xml:lang="eu">C10</Name>
+          <Name xml:lang="fa">C10</Name>
           <Name xml:lang="fi">C10</Name>
           <Name xml:lang="fr">C10</Name>
           <Name xml:lang="ga">C10</Name>
@@ -3089,6 +3127,7 @@
           <Name xml:lang="es">1/3 A4</Name>
           <Name xml:lang="et">1/3 A4</Name>
           <Name xml:lang="eu">1/3 A4</Name>
+          <Name xml:lang="fa">‏۱/۳ A4</Name>
           <Name xml:lang="fi">1/3 A4</Name>
           <Name xml:lang="fr">1/3 A4</Name>
           <Name xml:lang="ga">1/3</Name>
@@ -3154,6 +3193,7 @@
           <Name xml:lang="es">1/4 A4</Name>
           <Name xml:lang="et">1/4 A4</Name>
           <Name xml:lang="eu">1/4 A4</Name>
+          <Name xml:lang="fa">‏۱/۴ A4</Name>
           <Name xml:lang="fi">1/4 A4</Name>
           <Name xml:lang="fr">1/4 A4</Name>
           <Name xml:lang="ga">1/4 A4</Name>
@@ -3219,6 +3259,7 @@
           <Name xml:lang="es">1/8 A4</Name>
           <Name xml:lang="et">1/8 A4</Name>
           <Name xml:lang="eu">1/8 A4</Name>
+          <Name xml:lang="fa">‏‍۱/۸ A4</Name>
           <Name xml:lang="fi">1/8 A4</Name>
           <Name xml:lang="fr">1/8 A4</Name>
           <Name xml:lang="ga">1/8 A4</Name>
@@ -3284,6 +3325,7 @@
           <Name xml:lang="es">1/4 A3</Name>
           <Name xml:lang="et">1/4 A3</Name>
           <Name xml:lang="eu">1/4 A3</Name>
+          <Name xml:lang="fa">‏۱/۴ A3</Name>
           <Name xml:lang="fi">1/4 A3</Name>
           <Name xml:lang="fr">1/4 A3</Name>
           <Name xml:lang="ga">1/4 A3</Name>
@@ -3349,6 +3391,7 @@
           <Name xml:lang="es">1/3 A5</Name>
           <Name xml:lang="et">1/3 A5</Name>
           <Name xml:lang="eu">1/3 A5</Name>
+          <Name xml:lang="fa">۱/۳ A5</Name>
           <Name xml:lang="fi">1/3 A5</Name>
           <Name xml:lang="fr">1/3 A5</Name>
           <Name xml:lang="ga">1/3 A5</Name>
@@ -3415,6 +3458,7 @@
           <Name xml:lang="es">Sobre DL</Name>
           <Name xml:lang="et">DL ümbrik</Name>
           <Name xml:lang="eu">DL gutun-azala</Name>
+          <Name xml:lang="fa">پاکت DL</Name>
           <Name xml:lang="fi">DL-kirjekuori</Name>
           <Name xml:lang="fr">Enveloppe DL</Name>
           <Name xml:lang="ga">Cluadach DL</Name>
@@ -3480,6 +3524,7 @@
           <Name xml:lang="es">Sobre C6/C5</Name>
           <Name xml:lang="et">C6/C5 ümbrik</Name>
           <Name xml:lang="eu">C6/C5 gutun-azala</Name>
+          <Name xml:lang="fa">پاکت C6/C5</Name>
           <Name xml:lang="fi">C6/C5-kirjekuori</Name>
           <Name xml:lang="fr">Enveloppe C6/C5</Name>
           <Name xml:lang="ga">Clúdach C6/C5</Name>
@@ -3545,6 +3590,7 @@
           <Name xml:lang="es">Sobre nº 10</Name>
           <Name xml:lang="et">Ümbrik nr10</Name>
           <Name xml:lang="eu">10 zk.ko gutun-azala</Name>
+          <Name xml:lang="fa">پاکت شماره ۱۰</Name>
           <Name xml:lang="fi">Kirjekuori No10</Name>
           <Name xml:lang="fr">Enveloppe No10</Name>
           <Name xml:lang="ga">Cluadach Uimhir 10</Name>
@@ -3610,6 +3656,7 @@
           <Name xml:lang="es">Sobre de 6x9</Name>
           <Name xml:lang="et">Ümbik 6x9</Name>
           <Name xml:lang="eu">6x9 gutun-azala</Name>
+          <Name xml:lang="fa">پاکت ۹×۶</Name>
           <Name xml:lang="fi">Kirjekuori 6x9</Name>
           <Name xml:lang="fr">Enveloppe 6x9</Name>
           <Name xml:lang="ga">Cluadach 6x9</Name>

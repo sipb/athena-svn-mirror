@@ -13,3 +13,5 @@ endif
 LPD_DIR=lpd
 
 SUBDIRS=$(CUPS_DIR) $(PAPI_DIR) $(LPD_DIR)
+
+EXTRA_DIST = makefile.msc

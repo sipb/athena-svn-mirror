@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>;
+            <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>;
 <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>* <link linkend="gnome-pgl-from-gl">gnome_pgl_from_gl</link>        (const <link linkend="GnomeGlyphList">GnomeGlyphList</link> *gl,
                                              const <link linkend="gdouble">gdouble</link> *transform,
                                              <link linkend="guint">guint</link> flags);
@@ -62,8 +62,8 @@ struct      <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>;
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePosGlyphList"/>struct GnomePosGlyphList</title>
-<indexterm><primary>GnomePosGlyphList</primary></indexterm><programlisting>struct GnomePosGlyphList;</programlisting>
+<title><anchor id="GnomePosGlyphList"/>GnomePosGlyphList</title>
+<indexterm><primary>GnomePosGlyphList</primary></indexterm><programlisting>typedef struct _GnomePosGlyphList GnomePosGlyphList;</programlisting>
 <para>
 
 </para></refsect2>
@@ -84,7 +84,7 @@ struct      <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>;
 <varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -114,7 +114,7 @@ struct      <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>;
 <varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -136,7 +136,7 @@ struct      <link linkend="GnomePosGlyphList">GnomePosGlyphList</link>;
 <varlistentry><term><parameter>y</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

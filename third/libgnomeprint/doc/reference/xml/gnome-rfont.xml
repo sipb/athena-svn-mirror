@@ -15,15 +15,15 @@
 
 
 
-struct      <link linkend="GnomeRFont">GnomeRFont</link>;
-struct      <link linkend="GnomeRFontClass">GnomeRFontClass</link>;
+            <link linkend="GnomeRFont">GnomeRFont</link>;
+            <link linkend="GnomeRFontClass">GnomeRFontClass</link>;
 <link linkend="GnomeRFont">GnomeRFont</link>* <link linkend="gnome-font-get-rfont">gnome_font_get_rfont</link>            (<link linkend="GnomeFont">GnomeFont</link> *font,
                                              const <link linkend="gdouble">gdouble</link> *t);
 #define     <link linkend="gnome-rfont-ref">gnome_rfont_ref</link>                 (o)
 #define     <link linkend="gnome-rfont-unref">gnome_rfont_unref</link>               (o)
 #define     <link linkend="gnome-rfont-render-pgl-rgb8">gnome_rfont_render_pgl_rgb8</link>
 #define     <link linkend="gnome-rfont-render-pgl-rgba8">gnome_rfont_render_pgl_rgba8</link>
-#define     <link linkend="GNOME-RFONT-RENDER-DEFAULT-CAPS">GNOME_RFONT_RENDER_DEFAULT</link>
+#define     <link linkend="GNOME-RFONT-RENDER-DEFAULT:CAPS">GNOME_RFONT_RENDER_DEFAULT</link>
 <link linkend="GnomeFont">GnomeFont</link>*  <link linkend="gnome-rfont-get-font">gnome_rfont_get_font</link>            (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont);
 <link linkend="GnomeFontFace">GnomeFontFace</link>* <link linkend="gnome-rfont-get-face">gnome_rfont_get_face</link>         (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont);
 <link linkend="gdouble">gdouble</link>*    <link linkend="gnome-rfont-get-matrix">gnome_rfont_get_matrix</link>          (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont,
@@ -71,14 +71,14 @@ const <link linkend="ArtSVP">ArtSVP</link>* <link linkend="gnome-rfont-get-glyph
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeRFont"/>struct GnomeRFont</title>
-<indexterm><primary>GnomeRFont</primary></indexterm><programlisting>struct GnomeRFont;</programlisting>
+<title><anchor id="GnomeRFont"/>GnomeRFont</title>
+<indexterm><primary>GnomeRFont</primary></indexterm><programlisting>typedef struct _GnomeRFont GnomeRFont;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeRFontClass"/>struct GnomeRFontClass</title>
-<indexterm><primary>GnomeRFontClass</primary></indexterm><programlisting>struct GnomeRFontClass;</programlisting>
+<title><anchor id="GnomeRFontClass"/>GnomeRFontClass</title>
+<indexterm><primary>GnomeRFontClass</primary></indexterm><programlisting>typedef struct _GnomeRFontClass GnomeRFontClass;</programlisting>
 <para>
 
 </para></refsect2>
@@ -100,7 +100,7 @@ somewhere</para>
 <varlistentry><term><parameter>t</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the font created, NULL on error.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the font created, NULL on error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -140,7 +140,7 @@ somewhere</para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-RFONT-RENDER-DEFAULT-CAPS"/>GNOME_RFONT_RENDER_DEFAULT</title>
+<title><anchor id="GNOME-RFONT-RENDER-DEFAULT:CAPS"/>GNOME_RFONT_RENDER_DEFAULT</title>
 <indexterm><primary>GNOME_RFONT_RENDER_DEFAULT</primary></indexterm><programlisting>#define GNOME_RFONT_RENDER_DEFAULT 0
 </programlisting>
 <para>
@@ -155,7 +155,7 @@ somewhere</para>
 <varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -169,7 +169,7 @@ somewhere</para>
 <varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -187,7 +187,7 @@ somewhere</para>
 <varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -210,7 +210,7 @@ somewhere</para>
 <varlistentry><term><parameter>advance</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -232,7 +232,7 @@ somewhere</para>
 <varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -259,7 +259,7 @@ somewhere</para>
 <varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -277,7 +277,7 @@ somewhere</para>
 <varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -295,7 +295,7 @@ somewhere</para>
 <varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -314,7 +314,7 @@ somewhere</para>
 <varlistentry><term><parameter>map</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -329,7 +329,7 @@ somewhere</para>
 <varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

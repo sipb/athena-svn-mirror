@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* vim: set sw=8: -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  gnome-print-cups.c: A cups backend thingy
  *
@@ -489,47 +489,47 @@ gnome_print_cups_printer_list_append (gpointer printers_list,
 }
 
 static void
-gnome_print_cups_adjust_settings (GPASettings * settings,
+gnome_print_cups_adjust_settings (GPANode	   *settings,
 				  GnomeCupsPrinter *printer)
 {
-	char *value;
+	/* default to single sided */
+	gboolean duplex = FALSE, bind_short_edge = FALSE;
+	char *val;
 	
-	value = gnome_cups_printer_get_option_value (printer, "PageSize");
-	if (value != NULL) {
-		gpa_node_set_path_value (GPA_NODE (settings),
-					 "Output.Media.PhysicalSize", 
-					 value);
+	val = gnome_cups_printer_get_option_value (printer, "PageSize");
+	if (val != NULL) {
+		gpa_node_set_path_value (settings,
+			"Output.Media.PhysicalSize", val);
+		g_free (val);
 	}
-	g_free (value);
 
-	value = gnome_cups_printer_get_option_value (printer, "PageSize");
-	if (value != NULL) {
-		if (strcmp("two-sided-long-edge", value) == 0) {
-			gpa_node_set_path_value (GPA_NODE (settings),
-						 "Output.Job.Duplex", 
-						 "true");
-			gpa_node_set_path_value (GPA_NODE (settings),
-						 "Output.Job.Tumble", 
-						 "false");
+	/* this set is pulled from cups/options.c */
+	val = gnome_cups_printer_get_option_value (printer, "Duplex");	/* std */
+	if (NULL == val)
+		val = gnome_cups_printer_get_option_value (printer, "JCLDuplex");	/* Samsung */
+	if (NULL == val)
+		val = gnome_cups_printer_get_option_value (printer, "EFDuplex");	/* EFI */
+	if (NULL == val)
+		val = gnome_cups_printer_get_option_value (printer, "KD03Duplex");	/* Kodak */
+	if (NULL != val) {
+		/* we do not really need to ignore case, but it does not hurt */
+		if (g_ascii_strcasecmp (val, "None") == 0) {
+			/* this is the default */
+		} else if (g_ascii_strcasecmp (val, "DuplexNoTumble") == 0) {
+			duplex = TRUE;
+			bind_short_edge = FALSE;
+		} else if (g_ascii_strcasecmp (val, "DuplexTumble") == 0) {
+			duplex = TRUE;
+			bind_short_edge = TRUE;
+		} else {
+			g_warning ("Unknown Duplex setting == '%s'", val);
 		}
-		if (strcmp("two-sided-short-edge", value) == 0) {
-			gpa_node_set_path_value (GPA_NODE (settings),
-						 "Output.Job.Duplex", 
-						 "true");
-			gpa_node_set_path_value (GPA_NODE (settings),
-						 "Output.Job.Tumble", 
-						 "true");
-		}
-		if (strcmp("one-sided", value) == 0) {
-			gpa_node_set_path_value (GPA_NODE (settings),
-						 "Output.Job.Duplex", 
-						 "false");
-		}
+		g_free (val);
 	}
-	g_free (value);
-/* 	for (i=0; i < num_options; i++) { */
-/* 		g_print ("Option %s = %s\n", options[i].name, options[i].value); */
-/* 	} */
+	gpa_node_set_path_value (settings, "Output.Job.Duplex",
+		duplex ? "true" : "false");
+	gpa_node_set_path_value (settings, "Output.Job.Tumble",
+		(duplex && bind_short_edge) ? "true" : "false"); /* be anal */
 }
 
 static void
@@ -557,7 +557,7 @@ attributes_changed_cb (GnomeCupsPrinter *cupsprinter,
 		gpa_node_attach (state, jobcount);
 	}
 	len_str = g_strdup_printf ("%d", gnome_cups_printer_get_job_count (cupsprinter));
-	gpa_node_set_value (jobcount, str);
+	gpa_node_set_value (jobcount, len_str);
 	g_free (len_str);
 }
 
@@ -685,7 +685,7 @@ G_MODULE_EXPORT void gpa_module_load_data (GPAPrinter *printer)
 	if (settings == NULL)
 		goto gpa_module_load_data_exit;
 
-	gnome_print_cups_adjust_settings (GPA_SETTINGS (settings), cupsprinter);
+	gnome_print_cups_adjust_settings (settings, cupsprinter);
 
 	success = gpa_printer_complete_stub (printer, model, 
 					     GPA_SETTINGS (settings));

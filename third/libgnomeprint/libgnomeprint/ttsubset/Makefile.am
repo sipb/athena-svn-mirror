@@ -22,3 +22,5 @@ libttsubset_la_SOURCES = \
 	ttcr.c ttcr.h \
 	crc32.c crc32.h \
 	gnome-print-tt-subset.c gnome-print-tt-subset.h
+
+EXTRA_DIST = makefile.msc

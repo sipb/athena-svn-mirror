@@ -75,9 +75,9 @@ sub run_acroread
     my ($pdf_file, $quiet, $output_file_path, $version5) = (@_);
     my $ACROREAD_COMMAND;    
     if ($version5) {
-	   $ACROREAD_COMMAND = "acroread5 -toPostScript -pairs ";
+	   $ACROREAD_COMMAND = "acroread -toPostScript -pairs ";
     } else {
-	   $ACROREAD_COMMAND = "acroread4 -toPostScript -pairs ";
+	   $ACROREAD_COMMAND = "acroread -toPostScript -pairs ";
     }
     my $output_file;
     if ($output_file_path) {
@@ -303,9 +303,7 @@ sub my_check_output
 		   ["ps",   \&run_gs],
 		   ["meta", \&run_meta], # Always run meta before acroread because
 			                    # acroread overwrites the .ps files
-		   ["pdf",  \&run_acroread,  "acroread4"],
-		   ["pdf",  \&run_acroread5, "acroread5"],
-		   ["pdf",  \&run_pdfcheck,  "pdfcheck"],
+		   ["pdf",  \&run_acroread,  "acroread"],
 		   ["pdf",  \&run_gs,        "ghostscript"],
     );
 
@@ -642,7 +640,7 @@ sub my_check_environment
     # Check for acroread4
     # You should link acroread 4.x to a binary named acroread4
     print "  Checking for acroread4 ...";
-    my $command = "acroread4 --help > " . $check_result . " 2>&1";
+    my $command = "acroread --help > " . $check_result . " 2>&1";
     my $ret = &my_run_command ($command, 1);
     if ($ret ne 0) {
 	   print ("..failed\n\n");
@@ -657,7 +655,7 @@ sub my_check_environment
     # Check for acroread5
     # You should link acroread 5.x to a binary named acroread5
     print "  Checking for acroread5 ...";
-    my $command = "acroread5 --help > " . $check_result . " 2>&1";
+    my $command = "acroread --help > " . $check_result . " 2>&1";
     my $ret = &my_run_command ($command, 1);
     if ($ret ne 0) {
 	   print ("..failed\n\n");

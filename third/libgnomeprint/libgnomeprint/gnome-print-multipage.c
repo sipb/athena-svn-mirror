@@ -25,7 +25,6 @@
 #include <config.h>
 #include <string.h>
 #include <math.h>
-#include <ctype.h>
 
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>

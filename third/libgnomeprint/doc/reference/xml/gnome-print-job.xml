@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="GnomePrintJob">GnomePrintJob</link>;
+            <link linkend="GnomePrintJob">GnomePrintJob</link>;
 <link linkend="GnomePrintJob">GnomePrintJob</link>* <link linkend="gnome-print-job-new">gnome_print_job_new</link>          (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
 <link linkend="GnomePrintConfig">GnomePrintConfig</link>* <link linkend="gnome-print-job-get-config">gnome_print_job_get_config</link>
                                             (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);
@@ -58,8 +58,8 @@ struct      <link linkend="GnomePrintJob">GnomePrintJob</link>;
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePrintJob"/>struct GnomePrintJob</title>
-<indexterm><primary>GnomePrintJob</primary></indexterm><programlisting>struct GnomePrintJob;</programlisting>
+<title><anchor id="GnomePrintJob"/>GnomePrintJob</title>
+<indexterm><primary>GnomePrintJob</primary></indexterm><programlisting>typedef struct _GnomePrintJob GnomePrintJob;</programlisting>
 <para>
 
 </para></refsect2>
@@ -75,7 +75,7 @@ Creates a new GnomePrintJob.</para>
 <listitem><simpara> The job options, can be NULL in which case a
          default GnomePrintConfig is created
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new GnomePrintJob, NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A new GnomePrintJob, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -90,7 +90,7 @@ Gets a referenced pointer to the configuration of the job</para>
 <varlistentry><term><parameter>job</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a referenced GnomePrintConfig for this job, NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a referenced GnomePrintConfig for this job, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -109,7 +109,7 @@ The caller is responsible to unref the context when s/he is done with it.</para>
 <varlistentry><term><parameter>job</parameter>&nbsp;:</term>
 <listitem><simpara> An initialised GnomePrintJob.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The printing context, NULL on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The printing context, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -125,7 +125,7 @@ sending the drawing commands</para>
 <varlistentry><term><parameter>job</parameter>&nbsp;:</term>
 <listitem><simpara> A GnomePrintJob which has had printing performed
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -140,7 +140,7 @@ the phyisical printing device.</para>
 <varlistentry><term><parameter>job</parameter>&nbsp;:</term>
 <listitem><simpara> A closed GnomePrintJob.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_PRINT_OK on success GNOME_PRINT_ERROR_UNKNOWN otherwise
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> GNOME_PRINT_OK on success GNOME_PRINT_ERROR_UNKNOWN otherwise
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -159,7 +159,7 @@ Renders printout to specified context
 <varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -185,7 +185,7 @@ Renders the specified page <parameter>page</parameter></para>
 <varlistentry><term><parameter>pageops</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -202,7 +202,7 @@ can hold 4 pages per page, and 5 logical pages are printed
 <varlistentry><term><parameter>job</parameter>&nbsp;:</term>
 <listitem><simpara> An initialised and closed GnomePrintJob.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of pages, 0 on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the number of pages, 0 on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -225,7 +225,7 @@ Deprecated, use gnome_print_config_get_page_size</para>
 <varlistentry><term><parameter>height</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE on success, FALSE on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> TRUE on success, FALSE on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -241,7 +241,7 @@ Deprecated, use gnome_print_config_get_page_size</para>
 <varlistentry><term><parameter>output</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

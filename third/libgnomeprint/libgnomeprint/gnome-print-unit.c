@@ -41,7 +41,7 @@ static const GnomePrintUnit gp_units[] = {
 	{0, GNOME_PRINT_UNIT_DIMENSIONLESS, 0.01, N_("Percent"), N_("%"), N_("Percents"), N_("%")},
 	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0 / 25.4), N_("Millimeter"), N_("mm"), N_("Millimeters"), N_("mm")},
 	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0 / 2.54), N_("Centimeter"), N_("cm"), N_("Centimeters"), N_("cm")},
-	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0), N_("Inch"), N_("in"), N_("Inches"), N_("in")},
+	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0), N_("Inch"), N_("in"), N_("Inches"), N_("in")}
 };
 
 #define gp_num_units (sizeof (gp_units) / sizeof (gp_units[0]))

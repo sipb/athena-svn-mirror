@@ -15,10 +15,10 @@
 
 
 
-struct      <link linkend="GnomePrintUnit">GnomePrintUnit</link>;
+            <link linkend="GnomePrintUnit">GnomePrintUnit</link>;
 enum        <link linkend="GnomePrintUnitBase">GnomePrintUnitBase</link>;
-#define     <link linkend="GNOME-PRINT-PS-UNIT-CAPS">GNOME_PRINT_PS_UNIT</link>
-#define     <link linkend="GNOME-PRINT-UNITS-ALL-CAPS">GNOME_PRINT_UNITS_ALL</link>
+#define     <link linkend="GNOME-PRINT-PS-UNIT:CAPS">GNOME_PRINT_PS_UNIT</link>
+#define     <link linkend="GNOME-PRINT-UNITS-ALL:CAPS">GNOME_PRINT_UNITS_ALL</link>
 const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome-print-unit-get-identity">gnome_print_unit_get_identity</link>
                                             (<link linkend="guint">guint</link> base);
 const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome-print-unit-get-default">gnome_print_unit_get_default</link>
@@ -59,9 +59,8 @@ const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomePrintUnit"/>struct GnomePrintUnit</title>
-<indexterm><primary>GnomePrintUnit</primary></indexterm><programlisting>struct GnomePrintUnit {
-
+<title><anchor id="GnomePrintUnit"/>GnomePrintUnit</title>
+<indexterm><primary>GnomePrintUnit</primary></indexterm><programlisting>typedef struct {
 	guint version : 8; /* Has to be 0 at moment */
 	guint base : 8; /* Base */
 	gdouble unittobase;
@@ -70,7 +69,7 @@ const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome
 	guchar *abbr;
 	guchar *plural;
 	guchar *abbr_plural;
-};
+} GnomePrintUnit;
 </programlisting>
 <para>
 
@@ -88,14 +87,14 @@ const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-PS-UNIT-CAPS"/>GNOME_PRINT_PS_UNIT</title>
+<title><anchor id="GNOME-PRINT-PS-UNIT:CAPS"/>GNOME_PRINT_PS_UNIT</title>
 <indexterm><primary>GNOME_PRINT_PS_UNIT</primary></indexterm><programlisting>#define GNOME_PRINT_PS_UNIT   (gnome_print_unit_get_identity (GNOME_PRINT_UNIT_ABSOLUTE))
 </programlisting>
 <para>
 The <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> structure that represents the absolute units.
 </para></refsect2>
 <refsect2>
-<title><anchor id="GNOME-PRINT-UNITS-ALL-CAPS"/>GNOME_PRINT_UNITS_ALL</title>
+<title><anchor id="GNOME-PRINT-UNITS-ALL:CAPS"/>GNOME_PRINT_UNITS_ALL</title>
 <indexterm><primary>GNOME_PRINT_UNITS_ALL</primary></indexterm><programlisting>#define GNOME_PRINT_UNITS_ALL (GNOME_PRINT_UNIT_DIMENSIONLESS | GNOME_PRINT_UNIT_ABSOLUTE | GNOME_PRINT_UNIT_DEVICE | GNOME_PRINT_UNIT_USERSPACE)
 </programlisting>
 <para>
@@ -113,7 +112,7 @@ Retrieves the <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> 
 <varlistentry><term><parameter>base</parameter>&nbsp;:</term>
 <listitem><simpara> The base of the <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> to retrieve
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> structure representing <parameter>base</parameter>. <literal>NULL</literal> on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> structure representing <parameter>base</parameter>. <literal>NULL</literal> on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -125,7 +124,7 @@ Used to get the default <link linkend="GnomePrintUnit"><type>GnomePrintUnit</typ
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to the default <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> structure
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to the default <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link> structure
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -141,7 +140,7 @@ Get a unit based on its name, for example "Millimeter" or "Inches".</para>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> Name of the unit, as a string pointer
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A constant pointer to a <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link>, <literal>NULL</literal> on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A constant pointer to a <link linkend="GnomePrintUnit"><type>GnomePrintUnit</type></link>, <literal>NULL</literal> on error
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -157,7 +156,7 @@ Get a unit based on its abbreviation, for example "cm" "pts" or "in".</para>
 <varlistentry><term><parameter>abbreviation</parameter>&nbsp;:</term>
 <listitem><simpara> Abbreviation of the unit, as a string pointer
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A constant pointer to a GnomePrintUnit, <literal>NULL</literal> on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A constant pointer to a GnomePrintUnit, <literal>NULL</literal> on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -165,7 +164,7 @@ Get a unit based on its abbreviation, for example "cm" "pts" or "in".</para>
 <indexterm><primary>gnome_print_unit_get_list</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_print_unit_get_list       (<link linkend="guint">guint</link> bases);</programlisting>
 <para>
 Gets a list of the units represented by the bases <parameter>bases</parameter>.  To get
-a list of all units then use <link linkend="GNOME-PRINT-UNITS-ALL-CAPS"><type>GNOME_PRINT_UNITS_ALL</type></link>.  The list that
+a list of all units then use <link linkend="GNOME-PRINT-UNITS-ALL:CAPS"><type>GNOME_PRINT_UNITS_ALL</type></link>.  The list that
 is returned should be freed using <link linkend="gnome-print-unit-free-list"><type>gnome_print_unit_free_list</type></link>.</para>
 <para>
 
@@ -173,7 +172,7 @@ is returned should be freed using <link linkend="gnome-print-unit-free-list"><ty
 <varlistentry><term><parameter>bases</parameter>&nbsp;:</term>
 <listitem><simpara> The bases to include in the list
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A pointer to a <link linkend="GList"><type>GList</type></link>, <literal>NULL</literal> on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A pointer to a <link linkend="GList"><type>GList</type></link>, <literal>NULL</literal> on error
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -208,7 +207,7 @@ Check whether a conversion between <parameter>from</parameter> and <parameter>to
 <varlistentry><term><parameter>to</parameter>&nbsp;:</term>
 <listitem><simpara> Units to convert to
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the conversion is possible, <literal>FALSE</literal> if
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> if the conversion is possible, <literal>FALSE</literal> if
          it is not or on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -244,7 +243,7 @@ ctmscale is userspace->absolute, devicescale is device->absolute</para>
 <varlistentry><term><parameter>devicescale</parameter>&nbsp;:</term>
 <listitem><simpara> The device scale to use
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if the conversion is possible, <literal>FALSE</literal> if
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> <literal>TRUE</literal> if the conversion is possible, <literal>FALSE</literal> if
          it is not or on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>

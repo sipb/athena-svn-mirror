@@ -15,8 +15,8 @@
 
 
 
-struct      <link linkend="GnomeFont">GnomeFont</link>;
-struct      <link linkend="GnomeFontFace">GnomeFontFace</link>;
+            <link linkend="GnomeFont">GnomeFont</link>;
+            <link linkend="GnomeFontFace">GnomeFontFace</link>;
 #define     <link linkend="gnome-font-ref">gnome_font_ref</link>                  (f)
 #define     <link linkend="gnome-font-unref">gnome_font_unref</link>                (f)
 enum        <link linkend="GnomeFontWeight">GnomeFontWeight</link>;
@@ -106,14 +106,14 @@ const <link linkend="ArtBpath">ArtBpath</link>* <link linkend="gnome-font-get-gl
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeFont"/>struct GnomeFont</title>
-<indexterm><primary>GnomeFont</primary></indexterm><programlisting>struct GnomeFont;</programlisting>
+<title><anchor id="GnomeFont"/>GnomeFont</title>
+<indexterm><primary>GnomeFont</primary></indexterm><programlisting>typedef struct _GnomeFont GnomeFont;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeFontFace"/>struct GnomeFontFace</title>
-<indexterm><primary>GnomeFontFace</primary></indexterm><programlisting>struct GnomeFontFace;</programlisting>
+<title><anchor id="GnomeFontFace"/>GnomeFontFace</title>
+<indexterm><primary>GnomeFontFace</primary></indexterm><programlisting>typedef struct _GnomeFontFace GnomeFontFace;</programlisting>
 <para>
 
 </para></refsect2>
@@ -173,7 +173,7 @@ const <link linkend="ArtBpath">ArtBpath</link>* <link linkend="gnome-font-get-gl
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -187,7 +187,7 @@ const <link linkend="ArtBpath">ArtBpath</link>* <link linkend="gnome-font-get-gl
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -201,7 +201,7 @@ const <link linkend="ArtBpath">ArtBpath</link>* <link linkend="gnome-font-get-gl
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -215,7 +215,7 @@ const <link linkend="ArtBpath">ArtBpath</link>* <link linkend="gnome-font-get-gl
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -235,7 +235,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>unicode</parameter>&nbsp;:</term>
 <listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> glyph number, -1 if it is not mapped
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> glyph number, -1 if it is not mapped
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -255,7 +255,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>advance</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -277,7 +277,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -296,7 +296,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -322,7 +322,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -336,7 +336,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -350,7 +350,7 @@ Get the glyph number corresponding to a given unicode</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -404,7 +404,7 @@ deprecated.</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara> the GnomeFont to operate on
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The ascender of the font.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The ascender of the font.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -420,7 +420,7 @@ deprecated.</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara> the GnomeFont to operate on
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The descender of the font.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The descender of the font.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -437,7 +437,7 @@ deprecated.</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara> the GnomeFont to operate on
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The underline position of the font.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The underline position of the font.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -454,7 +454,7 @@ deprecated.</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara> the GnomeFont to operate on
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The underline thickness of the font.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The underline thickness of the font.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -470,7 +470,7 @@ deprecated.</para>
 <varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -492,7 +492,7 @@ deprecated.</para>
 <varlistentry><term><parameter>glyph2</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -519,7 +519,7 @@ deprecated.</para>
 <varlistentry><term><parameter>size</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -537,7 +537,7 @@ deprecated.</para>
 <varlistentry><term><parameter>size</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -555,7 +555,7 @@ deprecated.</para>
 <varlistentry><term><parameter>size</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -569,7 +569,7 @@ deprecated.</para>
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -598,7 +598,7 @@ fonts on disk.</para>
 <varlistentry><term><parameter>size</parameter>&nbsp;:</term>
 <listitem><simpara> size (in points) at which to load the font
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created font if the face could be located,
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created font if the face could be located,
  otherwise <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -612,7 +612,7 @@ fonts on disk.</para>
 <varlistentry><term><parameter>string</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -623,7 +623,7 @@ fonts on disk.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -646,7 +646,7 @@ fonts on disk.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -672,7 +672,7 @@ fonts on disk.</para>
 <varlistentry><term><parameter>family</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -698,7 +698,7 @@ fonts on disk.</para>
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -721,7 +721,7 @@ fonts on disk.</para>
 <varlistentry><term><parameter>dpi</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -740,7 +740,7 @@ fonts on disk.</para>
 <varlistentry><term><parameter>dpi</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

@@ -32,8 +32,19 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <libgnomeprint/gnome-print.h>
+#include <gmodule.h>
+
+#ifdef G_OS_WIN32
+#include <io.h>
+#endif
+
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 
 #include "gp-transport-file.h"
 
@@ -47,7 +58,7 @@ static gint gp_transport_file_open (GnomePrintTransport *transport);
 static gint gp_transport_file_close (GnomePrintTransport *transport);
 static gint gp_transport_file_write (GnomePrintTransport *transport, const guchar *buf, gint len);
 
-GType gnome_print__transport_get_type (void);
+G_MODULE_EXPORT GType gnome_print__transport_get_type (void);
 
 static GnomePrintTransportClass *parent_class = NULL;
 
@@ -144,10 +155,10 @@ gp_transport_file_open (GnomePrintTransport *transport)
 
 	g_return_val_if_fail (tf->name != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-#if defined(G_OS_WIN32) && defined(__MINGW32__)
-	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY);
+#if defined(G_OS_WIN32) && (defined(__MINGW32__) || defined _MSC_VER)
+	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, _S_IREAD | _S_IWRITE);
 #else
-	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	tf->fd = open (tf->name, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 #endif
 
 	if (tf->fd < 0) {
@@ -189,7 +200,7 @@ gp_transport_file_write (GnomePrintTransport *transport, const guchar *buf, gint
 
 	l = len;
 	while (l > 0) {
-		size_t written;
+		gint written;
 		written = write (tf->fd, buf, len);
 		if (written < 0) {
 			g_warning ("Writing output file failed");
@@ -202,7 +213,7 @@ gp_transport_file_write (GnomePrintTransport *transport, const guchar *buf, gint
 	return len;
 }
 
-GType
+G_MODULE_EXPORT GType
 gnome_print__transport_get_type (void)
 {
 	return GP_TYPE_TRANSPORT_FILE;

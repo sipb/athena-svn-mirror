@@ -42,3 +42,5 @@ libgpainc_HEADERS = \
 	gpa-reference.h \
 	gpa-root.h \
 	gpa-config.h
+
+EXTRA_DIST = makefile.msc

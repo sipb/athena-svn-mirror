@@ -29,7 +29,6 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <locale.h>
 
 #include <libart_lgpl/art_affine.h>
@@ -1139,7 +1138,7 @@ gnome_print_parse_transform (guchar *str, gdouble *transform)
 	if (!*p)
 		return FALSE;
 	for (i = 0; i < 6; i++) {
-		while (*p && isspace (*p)) p += 1;
+		while (*p && g_ascii_isspace (*p)) p += 1;
 		if (!strncmp (p, "SQRT2", 5)) {
 			t[i] = M_SQRT2;
 			e = p + 5;

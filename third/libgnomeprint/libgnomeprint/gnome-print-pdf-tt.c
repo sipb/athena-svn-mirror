@@ -27,7 +27,9 @@
 
 #include <config.h>
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-private.h>
@@ -53,7 +55,12 @@ gnome_print_pdf_tt_subset_embed (GnomePrintPdf *pdf,
 	nglyphs = pso->face->num_glyphs;
 
 	len = pso->encodedname ? strlen (pso->encodedname) : 0;
-	lower = (len > 3) ? atoi (pso->encodedname + len - 3) : 0;
+
+	if (len > 4)
+		lower = *(pso->encodedname + len - 4) == '_' ? atoi (pso->encodedname + len - 3) : 0;
+	else
+		lower = 0;
+
 	upper = lower + 1;
 
 	k = 1;

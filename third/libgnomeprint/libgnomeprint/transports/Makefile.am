@@ -46,3 +46,5 @@ libgnomeprint_custom_la_LDFLAGS = -avoid-version -module -no-undefined
 
 libgnomeprint_custom_la_LIBADD = ../libgnomeprint-2-2.la \
 	$(LIBGNOMEPRINT_LIBS)
+
+EXTRA_DIST = makefile.msc

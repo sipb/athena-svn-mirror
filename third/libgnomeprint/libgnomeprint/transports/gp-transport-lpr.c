@@ -30,8 +30,23 @@
 
 #include "config.h"
 #include <libgnomeprint/gnome-print.h>
+#include <gmodule.h>
 
 #include "gp-transport-lpr.h"
+
+#if !defined(HAVE_POPEN)
+#ifdef G_OS_WIN32
+#include <stdio.h>
+#define popen(f,m) _popen(f,m)
+#endif
+#endif
+
+#if !defined(HAVE_CLOSE)
+#ifdef G_OS_WIN32
+#include <stdio.h>
+#define pclose(f) _pclose(f)
+#endif
+#endif
 
 static void gp_transport_lpr_class_init (GPTransportLPRClass *klass);
 static void gp_transport_lpr_init (GPTransportLPR *tlpr);
@@ -42,8 +57,9 @@ static gint gp_transport_lpr_construct (GnomePrintTransport *transport);
 static gint gp_transport_lpr_open (GnomePrintTransport *transport);
 static gint gp_transport_lpr_close (GnomePrintTransport *transport);
 static gint gp_transport_lpr_write (GnomePrintTransport *transport, const guchar *buf, gint len);
+static gboolean gp_transport_lpr_exists (GnomePrintTransport const *transport);
 
-GType gnome_print__transport_get_type (void);
+G_MODULE_EXPORT GType gnome_print__transport_get_type (void);
 
 static GnomePrintTransportClass *parent_class = NULL;
 
@@ -83,6 +99,7 @@ gp_transport_lpr_class_init (GPTransportLPRClass *klass)
 	transport_class->open = gp_transport_lpr_open;
 	transport_class->close = gp_transport_lpr_close;
 	transport_class->write = gp_transport_lpr_write;
+	transport_class->exists = gp_transport_lpr_exists;
 }
 
 static void
@@ -130,29 +147,36 @@ gp_transport_lpr_construct (GnomePrintTransport *transport)
 	return GNOME_PRINT_OK;
 }
 
-static gint
-gp_transport_lpr_open (GnomePrintTransport *transport)
+static char *
+find_lpr (void)
 {
-	GPTransportLPR *tlpr = GP_TRANSPORT_LPR (transport);
-	gchar *exec = g_find_program_in_path ("lpr");
-	gchar *command;
+	gchar *lpr_path = g_find_program_in_path ("lpr");
 	const gchar *candidate;
 
 	/* This is the Solaris location, possibly not in PATH.  */
 	candidate = "/usr/ucb/lpr";
-	if (exec == NULL && g_file_test (candidate, G_FILE_TEST_IS_EXECUTABLE))
-		exec = g_strdup (candidate);
+	if (lpr_path == NULL && g_file_test (candidate, G_FILE_TEST_IS_EXECUTABLE))
+		return g_strdup (candidate);
+	return lpr_path;
+}
 
-	if (exec == NULL)
+static gint
+gp_transport_lpr_open (GnomePrintTransport *transport)
+{
+	GPTransportLPR *tlpr = GP_TRANSPORT_LPR (transport);
+	gchar *command;
+	char *lpr_path = find_lpr ();
+
+	if (lpr_path == NULL)
 		return GNOME_PRINT_ERROR_UNKNOWN;
 
 	if (tlpr->printer) {
 		/* FIXME: verify printer name?  */
-		command = g_strdup_printf ("%s '-P%s'", exec, tlpr->printer);
-		g_free (exec);
+		command = g_strdup_printf ("%s '-P%s'", lpr_path, tlpr->printer);
+		g_free (lpr_path);
 	} else {
-		command = exec;
-		exec = NULL;
+		command = lpr_path;
+		lpr_path = NULL;
 	}
 
 	tlpr->pipe = popen (command, "w");
@@ -207,7 +231,17 @@ gp_transport_lpr_write (GnomePrintTransport *transport, const guchar *buf, gint 
 	return len;
 }
 
-GType
+static gboolean
+gp_transport_lpr_exists (GnomePrintTransport const *transport)
+{
+	char *lpr_path = find_lpr ();
+	if (lpr_path == NULL)
+		return FALSE;
+	g_free (lpr_path);
+	return TRUE;
+}
+
+G_MODULE_EXPORT GType
 gnome_print__transport_get_type (void)
 {
 	return GP_TYPE_TRANSPORT_LPR;

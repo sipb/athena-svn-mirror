@@ -698,7 +698,7 @@ parse_command_line (int argc, const char ** argv, gint *num)
 		GList *list = NULL;
 		/* We crash, this is part of the sanity check that allows us verify that crashes
 		 * are treated as errors when they happen (Chema)*/
-		g_print ("Crashing ...\n");
+		g_print ("Crashing (On purpose)...\n");
 		list->next = NULL;
 	}
 	

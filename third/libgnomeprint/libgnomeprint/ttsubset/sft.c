@@ -33,7 +33,7 @@
  *
  */
 
-/* $Id: sft.c,v 1.1.1.1 2004-10-04 04:22:45 ghudson Exp $ */
+/* $Id: sft.c,v 1.1.1.2 2005-03-10 22:11:35 ghudson Exp $ */
 /* @(#)sft.c 1.17 03/01/08 SMI */
 
 /*
@@ -43,6 +43,7 @@
  * @version 1.0
  */
 
+#include <config.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -950,7 +951,7 @@ static int GetTTGlyphOutline(TrueTypeFont *ttf, uint32 glyphID, ControlPoint **p
 #ifdef DEBUG3
     {
         int i;
-        FILE *out = fopen("points.dat", "a");
+        FILE *out = fopen("points.dat", "ab");
         assert(out != 0);
         fprintf(out, "Glyph: %d\nPoints: %d\n", glyphID, res);
         for (i=0; i<res; i++) {

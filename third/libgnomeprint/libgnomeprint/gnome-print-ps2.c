@@ -31,7 +31,9 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <locale.h>
 
 #include <libart_lgpl/art_affine.h>
@@ -71,7 +73,7 @@ struct _GnomePrintPs2 {
 	gint gsave_level;
 
 	gboolean new_copy;
-	
+
 	/* Buffer */
 	FILE *buf;
 	gchar *bufname;
@@ -110,21 +112,33 @@ static gint gnome_print_ps2_showpage (GnomePrintContext *pc);
 static gint gnome_print_ps2_end_doc (GnomePrintContext *pc);
 static gint gnome_print_ps2_close (GnomePrintContext *pc);
 
-static gint gnome_print_ps2_set_color (GnomePrintPs2 *ps2);
-static gint gnome_print_ps2_set_line (GnomePrintPs2 *ps2);
-static gint gnome_print_ps2_set_dash (GnomePrintPs2 *ps2);
+static gboolean gnome_print_ps2_set_color (GnomePrintPs2 *ps2);
+static gboolean gnome_print_ps2_set_line (GnomePrintPs2 *ps2);
+static gboolean gnome_print_ps2_set_dash (GnomePrintPs2 *ps2);
 
-static gint gnome_print_ps2_set_color_real (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b);
+static gboolean gnome_print_ps2_set_color_real (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b);
 
-static gint gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, gboolean subfont_flag, gint subfont_number);
+static gboolean gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, gboolean subfont_flag, gint subfont_number);
 
-static gint gnome_print_ps2_print_bpath (GnomePrintPs2 *ps2, const ArtBpath *bpath);
+static gboolean gnome_print_ps2_print_bpath (GnomePrintPs2 *ps2, const ArtBpath *bpath);
 
 static gchar *gnome_print_ps2_get_date (void);
-static gint   gnome_print_ps2_fprintf (GnomePrintPs2 *ps2, const char *format, ...);
-static gint   gnome_print_ps2_print_double (GnomePrintPs2 *ps2, const gchar *format, gdouble x);
+static gboolean gnome_print_ps2_fprintf (GnomePrintPs2 *ps2, const char *format, ...);
+static gboolean gnome_print_ps2_print_double	 (GnomePrintPs2 *ps2, const gchar *format, gdouble x);
+static gboolean gnome_print_ps2_print_octal_byte (GnomePrintPs2 *ps2, guint8 c);
 
 static GnomePrintContextClass *parent_class;
+
+static inline gboolean
+gnome_print_ps2_puts (GnomePrintPs2 *ps2, const char *s)
+{
+	return fputs (s, ps2->buf) == EOF;
+}
+static inline gboolean
+gnome_print_ps2_putc (GnomePrintPs2 *ps2, int c)
+{
+	return fputc (c, ps2->buf) == EOF;
+}
 
 GType
 gnome_print_ps2_get_type (void)
@@ -155,7 +169,7 @@ gnome_print_ps2_class_init (GnomePrintPs2Class *klass)
 	pc_class = (GnomePrintContextClass *)klass;
 
 	parent_class = g_type_class_peek_parent (klass);
-	
+
 	object_class->finalize = gnome_print_ps2_finalize;
 
 	pc_class->construct = gnome_print_ps2_construct;
@@ -188,9 +202,7 @@ gnome_print_ps2_init (GnomePrintPs2 *ps2)
 static void
 gnome_print_ps2_finalize (GObject *object)
 {
-	GnomePrintPs2 *ps2;
-
-	ps2 = GNOME_PRINT_PS2 (object);
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (object);
 
 	if (ps2->buf) {
 		g_warning ("file %s: line %d: Destroying PS2 context with open buffer", __FILE__, __LINE__);
@@ -238,16 +250,14 @@ gnome_print_ps2_finalize (GObject *object)
 static gint
 gnome_print_ps2_construct (GnomePrintContext *ctx)
 {
-	GnomePrintPs2 *ps2;
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (ctx);
 	gchar *tmp;
 	gint ret, fd;
 
-	ps2 = GNOME_PRINT_PS2 (ctx);
-
 	ret = gnome_print_context_create_transport (ctx);
-	g_return_val_if_fail (ret >= 0, ret);
+	g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
 	ret = gnome_print_transport_open (ctx->transport);
-	g_return_val_if_fail (ret >= 0, ret);
+	g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
 
 	tmp = g_build_filename(g_get_tmp_dir (), "gnome-print-XXXXXX", NULL);
 	fd = g_mkstemp (tmp);
@@ -256,7 +266,7 @@ gnome_print_ps2_construct (GnomePrintContext *ctx)
 		g_free (tmp);
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
-	ps2->buf = fdopen (fd, "r+");
+	ps2->buf = fdopen (fd, "rb+");
 	ps2->bufname = tmp;
 
 	/* Set bbox to emty practical infinity */
@@ -264,10 +274,10 @@ gnome_print_ps2_construct (GnomePrintContext *ctx)
 	ps2->bbox.y0 = 0.0;
 	ps2->bbox.x1 = 210 * 72.0 / 25.4;
 	ps2->bbox.y1 = 297 * 72.0 / 25.4;
-	
+
 	gnome_print_config_get_length (ctx->config, GNOME_PRINT_KEY_PAPER_WIDTH,  &ps2->bbox.x1, NULL);
 	gnome_print_config_get_length (ctx->config, GNOME_PRINT_KEY_PAPER_HEIGHT, &ps2->bbox.y1, NULL);
-	
+
 	if (ctx->config) {
 		gdouble pp2pa[6];
 		art_affine_identity (pp2pa);
@@ -286,145 +296,120 @@ gnome_print_ps2_construct (GnomePrintContext *ctx)
 static gint
 gnome_print_ps2_gsave (GnomePrintContext *ctx)
 {
-	GnomePrintPs2 *ps2;
-
-	ps2 = GNOME_PRINT_PS2 (ctx);
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (ctx);
 
 	ps2->gsave_level += 1;
 
-	return gnome_print_ps2_fprintf (ps2, "q" EOL);
+	return gnome_print_ps2_puts (ps2, "q" EOL)
+	    ? GNOME_PRINT_ERROR_UNKNOWN : GNOME_PRINT_OK;
 }
 
 static gint
 gnome_print_ps2_grestore (GnomePrintContext *ctx)
 {
-	GnomePrintPs2 *ps2;
-
-	ps2 = GNOME_PRINT_PS2 (ctx);
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (ctx);
 
 	ps2->gsave_level -= 1;
 	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
-	return gnome_print_ps2_fprintf (ps2, "Q" EOL);
+	return gnome_print_ps2_puts (ps2, "Q" EOL)
+	    ? GNOME_PRINT_ERROR_UNKNOWN : GNOME_PRINT_OK;
 }
 
 static gint
 gnome_print_ps2_clip (GnomePrintContext *ctx, const ArtBpath *bpath, ArtWindRule rule)
 {
-	GnomePrintPs2 *ps2;
-	gint ret;
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (ctx);
+	gboolean problem;
 
-	ps2 = GNOME_PRINT_PS2 (ctx);
+	problem = gnome_print_ps2_print_bpath (ps2, bpath);
+	g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 
-	ret = gnome_print_ps2_print_bpath (ps2, bpath);
-	g_return_val_if_fail (ret >= 0, ret);
-
-	if (rule == ART_WIND_RULE_NONZERO) {
-		ret = gnome_print_ps2_fprintf (ps2, "W" EOL);
-	} else {
-		ret = gnome_print_ps2_fprintf (ps2, "W*" EOL);
-	}
-
-	return ret;
+	if (rule == ART_WIND_RULE_NONZERO)
+		problem = gnome_print_ps2_puts (ps2, "W" EOL);
+	else
+		problem = gnome_print_ps2_puts (ps2, "W*" EOL);
+	return problem ? GNOME_PRINT_ERROR_UNKNOWN : GNOME_PRINT_OK;
 }
 
 static gint
 gnome_print_ps2_fill (GnomePrintContext *ctx, const ArtBpath *bpath, ArtWindRule rule)
 {
-	GnomePrintPs2 *ps2;
-	gint ret = 0;
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (ctx);
+	gboolean problem;
 
-	ps2 = GNOME_PRINT_PS2 (ctx);
-
-	ret += gnome_print_ps2_set_color (ps2);
-	ret += gnome_print_ps2_print_bpath (ps2, bpath);
-
+	problem  = gnome_print_ps2_set_color (ps2);
+	problem |= gnome_print_ps2_print_bpath (ps2, bpath);
 	if (rule == ART_WIND_RULE_NONZERO) {
-		ret += gnome_print_ps2_fprintf (ps2, "f" EOL);
+		problem |= gnome_print_ps2_puts (ps2, "f" EOL);
 	} else {
-		ret += gnome_print_ps2_fprintf (ps2, "f*" EOL);
+		problem |= gnome_print_ps2_puts (ps2, "f*" EOL);
 	}
 
-	g_return_val_if_fail (ret >= 0, ret);
-	/* Update bbox */
-
-
-	return ret;
+	return problem ? GNOME_PRINT_ERROR_UNKNOWN : GNOME_PRINT_OK;
 }
 
 static gint
 gnome_print_ps2_stroke (GnomePrintContext *ctx, const ArtBpath *bpath)
 {
-	GnomePrintPs2 *ps2;
-	gint ret = 0;
-
-	ps2 = GNOME_PRINT_PS2 (ctx);
-
-	ret += gnome_print_ps2_set_color (ps2);
-	ret += gnome_print_ps2_set_line (ps2);
-	ret += gnome_print_ps2_set_dash (ps2);
-	ret += gnome_print_ps2_print_bpath (ps2, bpath);
-	
-	g_return_val_if_fail (ret >= 0, ret);
-
-	ret = gnome_print_ps2_fprintf (ps2, "S" EOL);
-
-	return ret;
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (ctx);
+	gboolean problem;
+	problem = gnome_print_ps2_set_color (ps2);
+	problem |= gnome_print_ps2_set_line (ps2);
+	problem |= gnome_print_ps2_set_dash (ps2);
+	problem |= gnome_print_ps2_print_bpath (ps2, bpath);
+	problem |= gnome_print_ps2_puts (ps2, "S" EOL);
+	return problem ? GNOME_PRINT_ERROR_UNKNOWN : GNOME_PRINT_OK;
 }
 
 static int
 gnome_print_ps2_image (GnomePrintContext *pc, const gdouble *ctm, const guchar *px, gint w, gint h, gint rowstride, gint ch)
 {
-	GnomePrintPs2 *ps2;
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (pc);
 	gchar *hex;
-	gint hex_size;
-	gint ret = 0;
-	gint r;
+	gint hex_size, r;
+	gboolean problem;
 
-	ps2 = GNOME_PRINT_PS2 (pc);
-
-	ret += gnome_print_ps2_fprintf (ps2, "q" EOL "[");
-	ret += gnome_print_ps2_print_double (ps2, "%g", ctm[0]);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%g", ctm[1]);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%g", ctm[2]);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%g", ctm[3]);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%g", ctm[4]);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%g", ctm[5]);
-	ret += gnome_print_ps2_fprintf (ps2, "]cm" EOL);
+	problem  = gnome_print_ps2_puts (ps2, "q" EOL "[");
+	problem |= gnome_print_ps2_print_double (ps2, "%g", ctm[0]);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%g", ctm[1]);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%g", ctm[2]);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%g", ctm[3]);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%g", ctm[4]);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%g", ctm[5]);
+	problem |= gnome_print_ps2_puts (ps2, "]cm" EOL);
 
 	/* Image commands */
-	ret += gnome_print_ps2_fprintf (ps2, "/buf %d string def" EOL "%d %d 8" EOL, w * ch, w, h);
-	ret += gnome_print_ps2_fprintf (ps2, "[%d 0 0 %d 0 %d]" EOL, w, -h, h);
-	ret += gnome_print_ps2_fprintf (ps2, "{ currentfile buf readhexstring pop }\n");
+	problem |= gnome_print_ps2_fprintf (ps2, "/buf %d string def" EOL "%d %d 8" EOL, w * ch, w, h);
+	problem |= gnome_print_ps2_fprintf (ps2, "[%d 0 0 %d 0 %d]" EOL, w, -h, h);
+	problem |= gnome_print_ps2_puts (ps2, "{ currentfile buf readhexstring pop }\n");
 
 	if (ch == 1) {
-		ret += gnome_print_ps2_fprintf (ps2, "image" EOL);
+		problem |= gnome_print_ps2_puts (ps2, "image" EOL);
 	} else {
-		ret += gnome_print_ps2_fprintf (ps2, "false %d colorimage" EOL, ch);
+		problem |= gnome_print_ps2_fprintf (ps2, "false %d colorimage" EOL, ch);
 	}
-	g_return_val_if_fail (ret >= 0, ret);
+	g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 
 	hex = g_new (gchar, gnome_print_encode_hex_wcs (w * ch));
 
 	for (r = 0; r < h; r++) {
 		hex_size = gnome_print_encode_hex (px + r * rowstride, hex, w * ch);
-		ret += fwrite (hex, sizeof (gchar), hex_size, ps2->buf);
-		ret += gnome_print_ps2_fprintf (ps2, EOL);
+		problem |= fwrite (hex, sizeof (gchar), hex_size, ps2->buf);
+		problem |= gnome_print_ps2_puts (ps2, EOL);
 	}
 
 	g_free (hex);
-	
-	ret = gnome_print_ps2_fprintf (ps2, "Q" EOL);
-	
-	g_return_val_if_fail (ret >= 0, ret);
 
-	return GNOME_PRINT_OK;
+	problem |= gnome_print_ps2_puts (ps2, "Q" EOL);
+
+	return problem ? GNOME_PRINT_ERROR_UNKNOWN : GNOME_PRINT_OK;
 }
 
 #define EPSILON 1e-9
@@ -437,31 +422,32 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, const gdouble *a, GnomeGlyphLi
 	GnomePosGlyphList *pgl;
 	gboolean identity;
 	gdouble dx, dy;
-	gint ret, s;
+	gint s;
+	gboolean problem;
 
 	ps2 = (GnomePrintPs2 *) pc;
 
 	identity = ((fabs (a[0] - 1.0) < EPSILON) && (fabs (a[1]) < EPSILON) && (fabs (a[2]) < EPSILON) && (fabs (a[3] - 1.0) < EPSILON));
 
 	if (!identity) {
-		ret = gnome_print_ps2_fprintf (ps2, "q" EOL);
-		g_return_val_if_fail (ret >= 0, ret);
+		problem = gnome_print_ps2_puts (ps2, "q" EOL);
+		g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 
-		ret  = gnome_print_ps2_fprintf (ps2, "[");
-		ret += gnome_print_ps2_print_double (ps2, "%g", a[0]);
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double (ps2, "%g", a[1]);
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double (ps2, "%g", a[2]);
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double (ps2, "%g", a[3]);
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double (ps2, "%g", a[4]);
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double (ps2, "%g", a[5]);
-		ret += gnome_print_ps2_fprintf (ps2, "]cm" EOL);
+		problem |= gnome_print_ps2_putc (ps2, '[');
+		problem |= gnome_print_ps2_print_double (ps2, "%g", a[0]);
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double (ps2, "%g", a[1]);
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double (ps2, "%g", a[2]);
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double (ps2, "%g", a[3]);
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double (ps2, "%g", a[4]);
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double (ps2, "%g", a[5]);
+		problem |= gnome_print_ps2_puts (ps2, "]cm" EOL);
 
-		g_return_val_if_fail (ret >= 0, ret);
+		g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 		dx = dy = 0.0;
 	} else {
 		dx = a[4];
@@ -479,101 +465,102 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, const gdouble *a, GnomeGlyphLi
 		font = gnome_rfont_get_font (ps->rfont);
 
 		if (!NEEDED_SUBSETTING(font)) {
-			ret = gnome_print_ps2_set_font_real (ps2, font, FALSE, 0);
-			g_return_val_if_fail (ret >= 0, ret);
+			problem = gnome_print_ps2_set_font_real (ps2, font, FALSE, 0);
+			g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 		}
 
-		ret = gnome_print_ps2_set_color_real (ps2,
+		problem = gnome_print_ps2_set_color_real (ps2,
 						((ps->color >> 24) & 0xff) / 255.0,
 						((ps->color >> 16) & 0xff) / 255.0,
 						((ps->color >>  8) & 0xff) / 255.0);
-		g_return_val_if_fail (ret >= 0, ret);
+		g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 
-		ret  = gnome_print_ps2_print_double 
+		problem  = gnome_print_ps2_print_double
 			(ps2, "%g", pgl->glyphs[ps->start].x + dx);
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double 
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double
 			(ps2, "%g", pgl->glyphs[ps->start].y + dy);
-		ret += gnome_print_ps2_fprintf (ps2, " m" EOL);
+		problem |= gnome_print_ps2_puts (ps2, " m" EOL);
 
-		g_return_val_if_fail (ret >= 0, ret);
+		g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 		/* Build string */
 
 		if (NEEDED_SUBSETTING(font)) {
 			for (i = ps->start; i < ps->start + ps->length; i++) {
 				gint master_glyph, glyph, page;
-                                master_glyph = pgl->glyphs[i].glyph; 
+                                master_glyph = pgl->glyphs[i].glyph;
                                 page = master_glyph / 255;
 
-                                if (i==ps->start) {
+                                if (i == ps->start) {
 					current_page = page;
-					gnome_print_ps2_set_font_real (ps2, font, TRUE, page);
-					ret = gnome_print_ps2_fprintf (ps2, "(");
+					problem  = gnome_print_ps2_set_font_real (ps2, font, TRUE, page);
+					problem |= gnome_print_ps2_putc (ps2, '(');
 				} else if (current_page != page) {
                                         current_page = page;
-                                        (void)gnome_print_ps2_fprintf (ps2, ")show" EOL);
-					gnome_print_ps2_set_font_real (ps2, font, TRUE, page);
-					ret = gnome_print_ps2_fprintf (ps2, "(");
+                                        problem = gnome_print_ps2_puts (ps2, ")show" EOL);
+					problem |= gnome_print_ps2_set_font_real (ps2, font, TRUE, page);
+					problem |= gnome_print_ps2_putc (ps2, '(');
 				}
 				gnome_font_face_pso_mark_glyph (ps2->selected_font->pso, master_glyph);
 				glyph = master_glyph ? master_glyph % 255 + 1 : master_glyph;
-				ret = gnome_print_ps2_fprintf (ps2, "\\%o", glyph);
-				g_return_val_if_fail (ret >= 0, ret);
-			}	
+				problem |= gnome_print_ps2_print_octal_byte (ps2, glyph);
+				g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
+			}
 		} else if (ps2->selected_font->pso->encodedbytes == 1) {
-			ret = gnome_print_ps2_fprintf (ps2, "(");
+			problem = gnome_print_ps2_putc (ps2, '(');
 			/* 8-bit encoding */
 			for (i = ps->start; i < ps->start + ps->length; i++) {
 				gint glyph;
 				glyph = pgl->glyphs[i].glyph & 0xff;
 				gnome_font_face_pso_mark_glyph (ps2->selected_font->pso, glyph);
-				ret = gnome_print_ps2_fprintf (ps2, "\\%o", glyph);
-				g_return_val_if_fail (ret >= 0, ret);
+				problem = gnome_print_ps2_print_octal_byte (ps2, glyph);
+				g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 			}
 		} else {
-			ret = gnome_print_ps2_fprintf (ps2, "(");
+			problem = gnome_print_ps2_putc (ps2, '(');
 			/* 16-bit encoding */
 			for (i = ps->start; i < ps->start + ps->length; i++) {
 				gint glyph, page;
 				gnome_font_face_pso_mark_glyph (ps2->selected_font->pso, pgl->glyphs[i].glyph);
 				glyph = pgl->glyphs[i].glyph & 0xff;
 				page = (pgl->glyphs[i].glyph >> 8) & 0xff;
-				ret = gnome_print_ps2_fprintf (ps2, "\\%o\\%o", page, glyph);
-				g_return_val_if_fail (ret >= 0, ret);
+				problem  = gnome_print_ps2_print_octal_byte (ps2, page);
+				problem |= gnome_print_ps2_print_octal_byte (ps2, glyph);
+				g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 			}
 		}
 
 		if (!NEEDED_SUBSETTING(font)) {
-			ret = gnome_print_ps2_fprintf (ps2, ")" EOL);
-			g_return_val_if_fail (ret >= 0, ret);
+			problem = gnome_print_ps2_puts (ps2, ")" EOL);
+			g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 			/* Build array */
-			ret = gnome_print_ps2_fprintf (ps2, "[");
-			g_return_val_if_fail (ret >= 0, ret);
+			problem = gnome_print_ps2_putc (ps2, '[');
+			g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 			for (i = ps->start + 1; i < ps->start + ps->length; i++) {
-				ret = gnome_print_ps2_print_double 
-					(ps2, "%g", 
+				problem = gnome_print_ps2_print_double
+					(ps2, "%g",
 					 pgl->glyphs[i].x - pgl->glyphs[i-1].x);
-				ret += gnome_print_ps2_fprintf (ps2, " ");
-				ret += gnome_print_ps2_print_double
+				problem |= gnome_print_ps2_putc (ps2, ' ');
+				problem |= gnome_print_ps2_print_double
 					(ps2, "%g",
 					 pgl->glyphs[i].y - pgl->glyphs[i-1].y);
-				ret += gnome_print_ps2_fprintf (ps2, " ");
-				g_return_val_if_fail (ret >= 0, ret);
+				problem |= gnome_print_ps2_putc (ps2, ' ');
+				g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 			}
-			ret = gnome_print_ps2_fprintf (ps2, "0 0] ");
-			g_return_val_if_fail (ret >= 0, ret);
+			problem = gnome_print_ps2_puts (ps2, "0 0] ");
+			g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 			/* xyshow */
-			ret = gnome_print_ps2_fprintf (ps2, "xyshow" EOL);
-			g_return_val_if_fail (ret >= 0, ret);
+			problem = gnome_print_ps2_puts (ps2, "xyshow" EOL);
+			g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 		} else {
-			ret = gnome_print_ps2_fprintf (ps2, ")show" EOL);
-			g_return_val_if_fail (ret >= 0, ret);
+			problem = gnome_print_ps2_puts (ps2, ")show" EOL);
+			g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 		}
 	}
 
 	if (!identity) {
-		ret = gnome_print_ps2_fprintf (ps2, "Q" EOL);
-		g_return_val_if_fail (ret >= 0, ret);
+		problem = gnome_print_ps2_puts (ps2, "Q" EOL);
+		g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 		ps2->selected_font = NULL;
 		ps2->private_color_flag = GP_GC_FLAG_UNSET;
 	}
@@ -591,21 +578,21 @@ gnome_print_ps2_setpagedevice_policies (GnomePrintContext *pc)
 	gboolean tumble = FALSE;
 	gboolean collate = FALSE;
 	int numcopies = 1;
-	
+
 	gint x = (ps2->bbox.x1 - ps2->bbox.x0);
 	gint y = (ps2->bbox.y1 - ps2->bbox.y0);
 
-	gnome_print_config_get_int (pc->config, 
+	gnome_print_config_get_int (pc->config,
 				    GNOME_PRINT_KEY_NUM_COPIES,
 				    &numcopies);
-	gnome_print_config_get_boolean (pc->config, 
-					GNOME_PRINT_KEY_COLLATE, 
+	gnome_print_config_get_boolean (pc->config,
+					GNOME_PRINT_KEY_COLLATE,
 					&collate);
-	gnome_print_config_get_boolean (pc->config, 
-					GNOME_PRINT_KEY_DUPLEX, 
+	gnome_print_config_get_boolean (pc->config,
+					GNOME_PRINT_KEY_DUPLEX,
 					&duplex);
-	gnome_print_config_get_boolean (pc->config, 
-					GNOME_PRINT_KEY_TUMBLE, 
+	gnome_print_config_get_boolean (pc->config,
+					GNOME_PRINT_KEY_TUMBLE,
 					&tumble);
 	if (collate)
 		numcopies = 1;
@@ -614,11 +601,11 @@ gnome_print_ps2_setpagedevice_policies (GnomePrintContext *pc)
 	gnome_print_transport_printf (pc->transport, "/PageSize [%d %d]" EOL,
 				      x, y);
 	gnome_print_transport_printf (pc->transport, "/ImagingBBox null" EOL);
-	gnome_print_transport_printf (pc->transport, "/Duplex %s" EOL, 
+	gnome_print_transport_printf (pc->transport, "/Duplex %s" EOL,
 				      duplex ? "true" : "false");
-	gnome_print_transport_printf (pc->transport, "/Tumble %s" EOL, 
+	gnome_print_transport_printf (pc->transport, "/Tumble %s" EOL,
 				      tumble ? "true" : "false");
-	gnome_print_transport_printf (pc->transport, 
+	gnome_print_transport_printf (pc->transport,
 				      "/NumCopies %i" EOL, numcopies);
 	gnome_print_transport_printf (pc->transport, "/Policies <<" EOL);
 	gnome_print_transport_printf (pc->transport, "/PolicyNotFound 1" EOL);
@@ -634,25 +621,25 @@ gnome_print_ps2_requirements (GnomePrintContext *pc)
 	gboolean tumble = FALSE;
 	gboolean collate = FALSE;
 	int numcopies = 1;
-	
-	gnome_print_config_get_int (pc->config, 
+
+	gnome_print_config_get_int (pc->config,
 				    GNOME_PRINT_KEY_NUM_COPIES,
 				    &numcopies);
-	gnome_print_config_get_boolean (pc->config, 
-					GNOME_PRINT_KEY_COLLATE, 
+	gnome_print_config_get_boolean (pc->config,
+					GNOME_PRINT_KEY_COLLATE,
 					&collate);
-	gnome_print_config_get_boolean (pc->config, 
-					GNOME_PRINT_KEY_DUPLEX, 
+	gnome_print_config_get_boolean (pc->config,
+					GNOME_PRINT_KEY_DUPLEX,
 					&duplex);
-	gnome_print_config_get_boolean (pc->config, 
-					GNOME_PRINT_KEY_TUMBLE, 
+	gnome_print_config_get_boolean (pc->config,
+					GNOME_PRINT_KEY_TUMBLE,
 					&tumble);
 	if (collate)
 		numcopies = 1;
 
 
-	gnome_print_transport_printf (pc->transport, 
-				      "%%%%Requirements: numcopies(%d)", 
+	gnome_print_transport_printf (pc->transport,
+				      "%%%%Requirements: numcopies(%d)",
 				      numcopies);
 	if (collate)
 		gnome_print_transport_printf (pc->transport," collate");
@@ -668,7 +655,7 @@ gnome_print_ps2_requirements (GnomePrintContext *pc)
 }
 
 
-static void
+static gboolean
 gnome_print_ps2_setpagedevice (GnomePrintContext *pc, gboolean allow_duplex)
 {
 	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (pc);
@@ -676,24 +663,23 @@ gnome_print_ps2_setpagedevice (GnomePrintContext *pc, gboolean allow_duplex)
 	gboolean tumble = FALSE;
 
 	if (allow_duplex) {
-		gnome_print_config_get_boolean (pc->config, 
-						GNOME_PRINT_KEY_DUPLEX, 
+		gnome_print_config_get_boolean (pc->config,
+						GNOME_PRINT_KEY_DUPLEX,
 						&duplex);
-		gnome_print_config_get_boolean (pc->config, 
-						GNOME_PRINT_KEY_TUMBLE, 
+		gnome_print_config_get_boolean (pc->config,
+						GNOME_PRINT_KEY_TUMBLE,
 						&tumble);
 	}
-	
-	gnome_print_ps2_fprintf (ps2, "<<" EOL);
-	gnome_print_ps2_fprintf (ps2, "/Duplex %s" EOL, 
-				 duplex ? "true" : "false");
-	gnome_print_ps2_fprintf (ps2, "/Tumble %s" EOL, 
-				 tumble ? "true" : "false");
-	
-	gnome_print_ps2_fprintf (ps2, ">> setpagedevice" EOL);
+
+	return gnome_print_ps2_puts (ps2, "<<" EOL) ||
+	    gnome_print_ps2_fprintf (ps2, "/Duplex %s" EOL,
+				     duplex ? "true" : "false") ||
+	    gnome_print_ps2_fprintf (ps2, "/Tumble %s" EOL,
+				     tumble ? "true" : "false") ||
+	    gnome_print_ps2_puts (ps2, ">> setpagedevice" EOL);
 }
 
-static gint 
+static gint
 gnome_print_ps2_end_doc (GnomePrintContext *pc)
 {
 	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (pc);
@@ -705,12 +691,10 @@ gnome_print_ps2_end_doc (GnomePrintContext *pc)
 static gint
 gnome_print_ps2_beginpage (GnomePrintContext *pc, const guchar *name)
 {
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (pc);
 	GnomePrintPs2Page *page;
-	GnomePrintPs2 *ps2;
 	gint number;
-	gint ret = 0;
-
-	ps2 = GNOME_PRINT_PS2 (pc);
+	gboolean problem;
 
 	number = ps2->pages ? ps2->pages->number : 0;
 
@@ -726,35 +710,35 @@ gnome_print_ps2_beginpage (GnomePrintContext *pc, const guchar *name)
 	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
-	ret += gnome_print_ps2_fprintf (ps2, "%%%%Page: %s %d" EOL, name, 
-					page->number);
-	ret += gnome_print_ps2_fprintf (ps2, "%%%%PageResources: (atend)" EOL);
-	
+	problem  = gnome_print_ps2_fprintf (ps2, "%%%%Page: %s %d" EOL, name,
+					    page->number);
+	problem |= gnome_print_ps2_puts (ps2, "%%%%PageResources: (atend)" EOL);
+
 	if (ps2->new_copy) {
 		gboolean duplex = FALSE;
-		gnome_print_config_get_boolean (pc->config, 
-						GNOME_PRINT_KEY_DUPLEX, 
+		gnome_print_config_get_boolean (pc->config,
+						GNOME_PRINT_KEY_DUPLEX,
 						&duplex);
-		
+
 		if (duplex) {
-			gnome_print_ps2_fprintf (ps2, "%%%%BeginPageSetup" EOL);
+			problem |= gnome_print_ps2_puts (ps2, "%%%%BeginPageSetup" EOL);
 			gnome_print_ps2_setpagedevice (pc, FALSE);
 			gnome_print_ps2_setpagedevice (pc, TRUE);
-			gnome_print_ps2_fprintf (ps2, "%%%%EndPageSetup" EOL);
+			problem |= gnome_print_ps2_puts (ps2, "%%%%EndPageSetup" EOL);
 		}
 		ps2->new_copy = FALSE;
 	}
-	ret += gnome_print_newpath (pc);
-	ret += gnome_print_moveto (pc, 0.0, 0.0);
-	ret += gnome_print_lineto (pc, ps2->bbox.x1, 0.0);
-	ret += gnome_print_lineto (pc, ps2->bbox.x1, ps2->bbox.y1);
-	ret += gnome_print_lineto (pc, 0.0, ps2->bbox.y1);
-	ret += gnome_print_lineto (pc, 0.0, 0.0);
-	ret += gnome_print_closepath (pc);
-	ret += gnome_print_clip (pc);
-	ret += gnome_print_newpath (pc);
-	
-	g_return_val_if_fail (ret >= 0, ret);
+	problem |= gnome_print_newpath (pc) ||
+	    gnome_print_moveto (pc, 0.0, 0.0) ||
+	    gnome_print_lineto (pc, ps2->bbox.x1, 0.0) ||
+	    gnome_print_lineto (pc, ps2->bbox.x1, ps2->bbox.y1) ||
+	    gnome_print_lineto (pc, 0.0, ps2->bbox.y1) ||
+	    gnome_print_lineto (pc, 0.0, 0.0) ||
+	    gnome_print_closepath (pc) ||
+	    gnome_print_clip (pc) ||
+	    gnome_print_newpath (pc);
+
+	g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
 
 	return GNOME_PRINT_OK;
 }
@@ -763,56 +747,52 @@ gnome_print_ps2_beginpage (GnomePrintContext *pc, const guchar *name)
 static gint
 gnome_print_ps2_showpage (GnomePrintContext *pc)
 {
-	GnomePrintPs2 *ps2;
-	gint ret = 0;
-
-	ps2 = GNOME_PRINT_PS2 (pc);
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (pc);
+	gboolean problem;
 
 	if (ps2->pages)
 		ps2->pages->shown = TRUE;
-	
+
 	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
-	ret += gnome_print_ps2_fprintf (ps2, "SP" EOL);
-	ret += gnome_print_ps2_fprintf (ps2, "%%%%PageTrailer" EOL);
-	ret += gnome_print_ps2_fprintf (ps2, "%%%%PageResources: procset gnome-print-procs-%s" EOL, VERSION);
+	problem  = gnome_print_ps2_puts (ps2, "SP" EOL) ||
+		   gnome_print_ps2_puts (ps2, "%%%%PageTrailer" EOL) ||
+		   gnome_print_ps2_fprintf (ps2, "%%%%PageResources: procset gnome-print-procs-%s" EOL, VERSION);
 
 	while (ps2->pages->usedfonts) {
 		GnomePrintPs2Font *font;
 		font = ps2->pages->usedfonts->data;
-		ret += gnome_print_ps2_fprintf (ps2, "%%%%+ font (%s) cvn" EOL, font->pso->encodedname);
+		problem |= gnome_print_ps2_fprintf (ps2, "%%%%+ font (%s) cvn" EOL, font->pso->encodedname);
 		ps2->pages->usedfonts = g_slist_remove (ps2->pages->usedfonts, ps2->pages->usedfonts->data);
 	}
 
-	g_return_val_if_fail (ret >= 0, ret);
-	
+	g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
+
 	return GNOME_PRINT_OK;
 }
 
 static gint
 gnome_print_ps2_close (GnomePrintContext *pc)
 {
+	GnomePrintPs2 *ps2 = GNOME_PRINT_PS2 (pc);
 	GnomePrintPs2Font *font;
-	GnomePrintPs2 *ps2;
 	gchar *date;
 	gchar *orientation;
 	gchar *name;
 	gint len, ret;
-
-	ps2 = GNOME_PRINT_PS2 (pc);
 
 	g_return_val_if_fail (pc->transport != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
 	if (!ps2->pages || !ps2->pages->shown) {
 		g_warning ("file %s: line %d: Closing PS2 context without final showpage", __FILE__, __LINE__);
 		ret = gnome_print_showpage (pc);
-		g_return_val_if_fail (ret >= 0, ret);
+		g_return_val_if_fail (ret != GNOME_PRINT_OK, ret);
 	}
 
 	/* Do header */
 	date = gnome_print_ps2_get_date ();
-	gnome_print_transport_printf (pc->transport, "%%!PS-Adobe-3.0" EOL);	
+	gnome_print_transport_printf (pc->transport, "%%!PS-Adobe-3.0" EOL);
 	/* DSC Comments */
 	gnome_print_transport_printf (pc->transport, "%%%%Creator: Gnome Print Version %s" EOL, VERSION);
 	gnome_print_transport_printf (pc->transport, "%%%%CreationDate: %s" EOL, date);
@@ -851,7 +831,7 @@ gnome_print_ps2_close (GnomePrintContext *pc)
 		gnome_print_transport_printf (pc->transport, "%%%%Title: %s" EOL, name);
 		g_free (name);
 	}
-	
+
 	gnome_print_transport_printf (pc->transport, "%%%%DocumentSuppliedResources: procset pnome-print-procs-%s" EOL, VERSION);
 	/* %%DocumentSuppliedResources: */
 	for (font = ps2->fonts; font != NULL; font = font->next) {
@@ -916,117 +896,104 @@ gnome_print_ps2_close (GnomePrintContext *pc)
 
 	gnome_print_transport_printf (pc->transport, "%%%%Trailer" EOL);
 	gnome_print_transport_printf (pc->transport, "%%%%EOF" EOL);
- 
+
  	gnome_print_transport_close (pc->transport);
 	g_object_unref (G_OBJECT (pc->transport));
 	pc->transport = NULL;
- 	
+
 	return GNOME_PRINT_OK;
 }
 
-static gint
+static gboolean
 gnome_print_ps2_set_color (GnomePrintPs2 *ps2)
 {
-	GnomePrintContext *ctx;
-	gint ret;
-
-	ctx = GNOME_PRINT_CONTEXT (ps2);
-
-	ret = gnome_print_ps2_set_color_real (ps2,
-					      gp_gc_get_red   (ctx->gc),
-					      gp_gc_get_green (ctx->gc),
-					      gp_gc_get_blue  (ctx->gc));
-
-	g_return_val_if_fail (ret == 0, ret);
-
-	return ret;
+	GnomePrintContext *ctx = GNOME_PRINT_CONTEXT (ps2);
+	return gnome_print_ps2_set_color_real (ps2,
+					       gp_gc_get_red   (ctx->gc),
+					       gp_gc_get_green (ctx->gc),
+					       gp_gc_get_blue  (ctx->gc));
 }
 
-static gint
+static gboolean
 gnome_print_ps2_set_line (GnomePrintPs2 *ps2)
 {
-	GnomePrintContext *ctx;
-	gint ret;
-
-	ctx = GNOME_PRINT_CONTEXT (ps2);
+	GnomePrintContext *ctx = GNOME_PRINT_CONTEXT (ps2);
+	gboolean problem;
 
 	if (gp_gc_get_line_flag (ctx->gc) == GP_GC_FLAG_CLEAR)
-		return 0;
+		return FALSE;
 
-	ret = gnome_print_ps2_print_double (ps2, "%g", 
+	problem  = gnome_print_ps2_print_double (ps2, "%g",
 					    gp_gc_get_linewidth (ctx->gc));
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_fprintf (ps2, "w %i J %i j ",
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_fprintf (ps2, "w %i J %i j ",
 					gp_gc_get_linecap (ctx->gc),
 					gp_gc_get_linejoin (ctx->gc));
-	ret += gnome_print_ps2_print_double (ps2, "%g", 
+	problem |= gnome_print_ps2_print_double (ps2, "%g",
 					     gp_gc_get_miterlimit (ctx->gc));
-	ret += gnome_print_ps2_fprintf (ps2, " M" EOL);
+	problem |= gnome_print_ps2_puts (ps2, " M" EOL);
 	gp_gc_set_line_flag (ctx->gc, GP_GC_FLAG_CLEAR);
 
-	return ret;
+	return problem;
 }
 
-static gint
+static gboolean
 gnome_print_ps2_set_dash (GnomePrintPs2 *ps2)
 {
-	GnomePrintContext *ctx;
+	GnomePrintContext *ctx = GNOME_PRINT_CONTEXT (ps2);
 	const ArtVpathDash *dash;
-	gint ret = 0, i;
-
-	ctx = GNOME_PRINT_CONTEXT (ps2);
+	gint i;
+	gboolean problem;
 
 	if (gp_gc_get_dash_flag (ctx->gc) == GP_GC_FLAG_CLEAR)
-		return 0;
+		return FALSE;
 
 	dash = gp_gc_get_dash (ctx->gc);
-	ret += gnome_print_ps2_fprintf (ps2, "[");
+	problem  = gnome_print_ps2_putc (ps2, '[');
 	for (i = 0; i < dash->n_dash; i++) {
-		ret += gnome_print_ps2_fprintf (ps2, " ");
-		ret += gnome_print_ps2_print_double 
+		problem |= gnome_print_ps2_putc (ps2, ' ');
+		problem |= gnome_print_ps2_print_double
 			(ps2, "%g", dash->dash[i]);
 	}
-	ret += gnome_print_ps2_fprintf (ps2, "]");
-	ret += gnome_print_ps2_print_double 
+	problem |= gnome_print_ps2_putc (ps2, ']');
+	problem |= gnome_print_ps2_print_double
 		(ps2, "%g", dash->n_dash > 0 ? dash->offset : 0.0);
-	ret += gnome_print_ps2_fprintf (ps2, " d" EOL);
+	problem |= gnome_print_ps2_puts (ps2, " d" EOL);
 	gp_gc_set_dash_flag (ctx->gc, GP_GC_FLAG_CLEAR);
 
-	g_return_val_if_fail (ret >= 0, ret);
-		
-	return ret;
+	g_return_val_if_fail (!problem, GNOME_PRINT_ERROR_UNKNOWN);
+
+	return problem;
 }
 
-static gint
+static gboolean
 gnome_print_ps2_set_color_real (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b)
 {
 	GnomePrintContext *ctx;
-	gint ret;
+	gboolean problem;
 
 	ctx = GNOME_PRINT_CONTEXT (ps2);
 
 	if ((ps2->private_color_flag == GP_GC_FLAG_CLEAR)
 	    && (r == ps2->r) && (g == ps2->g) && (b == ps2->b))
-		return GNOME_PRINT_OK;
-	
-	ret = gnome_print_ps2_print_double (ps2, "%.3g", r);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%.3g", g);
-	ret += gnome_print_ps2_fprintf (ps2, " ");
-	ret += gnome_print_ps2_print_double (ps2, "%.3g", b);
-	ret += gnome_print_ps2_fprintf (ps2, " rg" EOL);
+		return FALSE;
+
+	problem  = gnome_print_ps2_print_double (ps2, "%.3g", r);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%.3g", g);
+	problem |= gnome_print_ps2_putc (ps2, ' ');
+	problem |= gnome_print_ps2_print_double (ps2, "%.3g", b);
+	problem |= gnome_print_ps2_puts (ps2, " rg" EOL);
 
 	ps2->r = r;
 	ps2->g = g;
 	ps2->b = b;
 	ps2->private_color_flag = GP_GC_FLAG_CLEAR;
 
-	g_return_val_if_fail (ret >= 0, ret);
-	
-	return ret;
+	return problem;
 }
 
-static gint
+static gboolean
 gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, gboolean subfont_flag, gint subfont_number)
 {
 	const GnomeFontFace *face;
@@ -1034,15 +1001,15 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, 
 	GSList *l;
 	gint instance = 0;
 	guchar *encodedstring = NULL; /* placate gcc */
-	gint ret = 0;
+	gboolean problem;
 
 	face = gnome_font->face;
 
 	/*
-	 * In ps2->selected_font we already have the font with which the 
-	 * previous glyph (if one was there) is printed. Checks whether the 
-	 * gnome_font->face->psname and subfont_number combination 
-	 * (encodedstring) with which current glyph is to be printed matches 
+	 * In ps2->selected_font we already have the font with which the
+	 * previous glyph (if one was there) is printed. Checks whether the
+	 * gnome_font->face->psname and subfont_number combination
+	 * (encodedstring) with which current glyph is to be printed matches
 	 * the previous one. If that's the case all we need to check is there's
 	 * a match in the print font size too. If these matches we will just
 	 * return without doing anything.
@@ -1060,7 +1027,7 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, 
 
 			if (!strcmp (encodedstring, ps2->selected_font->pso->encodedname) && (gnome_font_get_size (gnome_font) == ps2->selected_font->currentsize)) {
 				g_free (encodedstring);
-				return 0;
+				return FALSE;
 			}
 		}
         }
@@ -1069,7 +1036,7 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, 
 	if (!subfont_flag && (ps2->selected_font) &&
 	    (ps2->selected_font->face == gnome_font->face) &&
 	    (ps2->selected_font->currentsize == gnome_font->size)) {
-		return 0;
+		return FALSE;
 	}
 
 	face = gnome_font_get_face (gnome_font);
@@ -1100,7 +1067,7 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, 
 	}
 
 	/*
-	 * The font with which we need to print the new glyph is not in 
+	 * The font with which we need to print the new glyph is not in
 	 * ps2->fonts font list and we need to create a new one and append
 	 * it to the list.
 	 */
@@ -1108,11 +1075,11 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, 
 	if (!font) {
 		/* No entry, so create one */
 		gnome_font_face_ref (face);
-		
+
 		font = g_new0 (GnomePrintPs2Font, 1);
 		font->next     = ps2->fonts;
 		font->face     = (GnomeFontFace *) face;
-		font->pso      = gnome_font_face_pso_new ((GnomeFontFace *) face, NULL, subfont_number);	
+		font->pso      = gnome_font_face_pso_new ((GnomeFontFace *) face, NULL, subfont_number);
 		font->instance = subfont_number;
 
 		g_return_val_if_fail (font->pso != NULL, GNOME_PRINT_ERROR_UNKNOWN);
@@ -1133,18 +1100,16 @@ gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font, 
 	 * Output the font/size etc. for printing.
 	 */
 
-	ret += gnome_print_ps2_fprintf (ps2, "(%s) cvn FF ", 
+	problem  = gnome_print_ps2_fprintf (ps2, "(%s) cvn FF ",
 					font->pso->encodedname);
-	ret += gnome_print_ps2_print_double (ps2, "%g", 
+	problem |= gnome_print_ps2_print_double (ps2, "%g",
 					     gnome_font_get_size (gnome_font));
-	ret += gnome_print_ps2_fprintf (ps2, " F" EOL);
+	problem |= gnome_print_ps2_puts (ps2, " F" EOL);
 
 	font->currentsize = gnome_font->size;
 	ps2->selected_font = font;
 
-	g_return_val_if_fail (ret >= 0, ret);
-	
-	return ret;
+	return problem;
 }
 
 GnomePrintContext *
@@ -1167,68 +1132,68 @@ gnome_print_ps2_new (GnomePrintConfig *config)
 	return ctx;
 }
 
-static gint
+static gboolean
 gnome_print_ps2_print_bpath (GnomePrintPs2 *ps2, const ArtBpath *bpath)
 {
-	gboolean started, closed;
-	
-	gnome_print_ps2_fprintf (ps2, "n" EOL);
+	gboolean started, closed, problem;
+
+	problem = gnome_print_ps2_puts (ps2, "n" EOL);
 
 	started = FALSE;
 	closed = FALSE;
-	while (bpath->code != ART_END) {
+	while (bpath->code != ART_END && !problem) {
 		switch (bpath->code) {
 		case ART_MOVETO_OPEN:
 			if (started && closed)
-				gnome_print_ps2_fprintf (ps2, "h" EOL);
+				problem |= gnome_print_ps2_puts (ps2, "h" EOL);
 			closed = FALSE;
 			started = FALSE;
-			gnome_print_ps2_print_double (ps2, "%g", bpath->x3);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->y3);
-			gnome_print_ps2_fprintf (ps2, " m" EOL);
+			problem |= gnome_print_ps2_print_double (ps2, "%g", bpath->x3) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->y3) ||
+				   gnome_print_ps2_puts (ps2, " m" EOL);
 			break;
 		case ART_MOVETO:
 			if (started && closed)
-				gnome_print_ps2_fprintf (ps2, "h" EOL);
+				problem |= gnome_print_ps2_puts (ps2, "h" EOL);
 			closed = TRUE;
 			started = TRUE;
-			gnome_print_ps2_print_double (ps2, "%g", bpath->x3);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->y3);
-			gnome_print_ps2_fprintf (ps2, " m" EOL);
+			problem |= gnome_print_ps2_print_double (ps2, "%g", bpath->x3) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->y3) ||
+				   gnome_print_ps2_puts (ps2, " m" EOL);
 			break;
 		case ART_LINETO:
-			gnome_print_ps2_print_double (ps2, "%g", bpath->x3);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->y3);
-			gnome_print_ps2_fprintf (ps2, " l" EOL);
+			problem |= gnome_print_ps2_print_double (ps2, "%g", bpath->x3) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->y3) ||
+				   gnome_print_ps2_puts (ps2, " l" EOL);
 			break;
 		case ART_CURVETO:
-			gnome_print_ps2_print_double (ps2, "%g", bpath->x1);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->y1);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->x2);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->y2);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->x3);
-			gnome_print_ps2_fprintf (ps2, " ");
-			gnome_print_ps2_print_double (ps2, "%g", bpath->y3);
-			gnome_print_ps2_fprintf (ps2, " c" EOL);
+			problem |= gnome_print_ps2_print_double (ps2, "%g", bpath->x1) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->y1) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->x2) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->y2) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->x3) ||
+				   gnome_print_ps2_putc (ps2, ' ') ||
+				   gnome_print_ps2_print_double (ps2, "%g", bpath->y3) ||
+				   gnome_print_ps2_puts (ps2, " c" EOL);
 			break;
 		default:
 			g_warning ("Path structure is corrupted");
-			return -1;
+			return TRUE;
 		}
 		bpath += 1;
 	}
 
 	if (started && closed)
-		gnome_print_ps2_fprintf (ps2, "h" EOL);
-	
-	return 0;
+		problem |= gnome_print_ps2_puts (ps2, "h" EOL);
+
+	return problem;
 }
 
 /* Other stuff */
@@ -1250,7 +1215,7 @@ gnome_print_ps2_get_date (void)
 	   know how protable this is. Chema */
 	gprint ("Timezone %s\n", tzname[0]);
 	gprint ("Timezone *%s*%s*%li*\n", tzname[1], timezone);
-#endif	
+#endif
 
 	clock = time (NULL);
 	now = localtime (&clock);
@@ -1269,35 +1234,42 @@ gnome_print_ps2_get_date (void)
 
 /* Note "format" should be locale independent, so it should not use %g */
 /* and friends */
-static gint
+static gboolean
 gnome_print_ps2_fprintf (GnomePrintPs2 *ps2, const char *format, ...)
 {
  	va_list arguments;
  	gchar *text;
-	gint len;
+	gboolean res;
 
  	va_start (arguments, format);
  	text = g_strdup_vprintf (format, arguments);
  	va_end (arguments);
 
-	len = fwrite (text, sizeof (gchar), strlen (text), ps2->buf);
-	g_free (text);
+	res = gnome_print_ps2_puts (ps2, text);
 
-	return GNOME_PRINT_OK;
+	g_free (text);
+	return res;
 }
 
-
 /* Allowed conversion specifiers are 'e', 'E', 'f', 'F', 'g' and 'G'. */
-static gint   
+static gboolean
 gnome_print_ps2_print_double (GnomePrintPs2 *ps2, const gchar *format, gdouble x)
 {
- 	gchar *text;
+ 	gchar buf [G_ASCII_DTOSTR_BUF_SIZE];
+	g_ascii_formatd (buf, sizeof (buf), format, x);
+	return gnome_print_ps2_puts (ps2, buf);
+}
 
-	text = g_new (gchar, G_ASCII_DTOSTR_BUF_SIZE);
-	g_ascii_formatd (text, G_ASCII_DTOSTR_BUF_SIZE, format, x);
-
-	fwrite (text, sizeof (gchar), strlen (text), ps2->buf);
-	g_free (text);
-
-	return GNOME_PRINT_OK;
+static gboolean
+gnome_print_ps2_print_octal_byte (GnomePrintPs2 *ps2, guint8 c)
+{
+ 	gchar buf [5], *ptr = buf;
+	*(ptr++) = '\\';
+	if (c >= 0100)
+		*(ptr++) = ((c >> 6) & 3) + '0';
+	if (c >= 010)
+		*(ptr++) = ((c >> 3) & 7) + '0';
+	*(ptr++) = ((c >> 0) & 7) + '0';
+	*ptr = '\0';
+	return gnome_print_ps2_puts (ps2, buf);
 }

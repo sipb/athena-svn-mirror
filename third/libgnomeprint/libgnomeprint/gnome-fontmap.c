@@ -215,15 +215,15 @@ fcpattern_to_gp_font_entry (FcPattern *font)
 	c = strrchr ((gchar *) fc_file, '.');
 	if (!c)
 		return NULL;
-	else if (strcasecmp (c, ".pfb") == 0)
+	else if (g_strcasecmp (c, ".pfb") == 0)
 		font_type = GP_FONT_ENTRY_TYPE1;
-	else if (strcasecmp (c, ".pfa") == 0)
+	else if (g_strcasecmp (c, ".pfa") == 0)
 		font_type = GP_FONT_ENTRY_TYPE1;
-	else if (strcasecmp (c, ".ttf") == 0)
+	else if (g_strcasecmp (c, ".ttf") == 0)
 		font_type = GP_FONT_ENTRY_TRUETYPE;
-	else if (strcasecmp (c, ".ttc") == 0)
+	else if (g_strcasecmp (c, ".ttc") == 0)
 		font_type = GP_FONT_ENTRY_TRUETYPE;
-	else if (strcasecmp (c, ".font") == 0) /* See #102400 */
+	else if (g_strcasecmp (c, ".font") == 0) /* See #102400 */
 		font_type = GP_FONT_ENTRY_TRUETYPE;
 	else {
 		return NULL;
@@ -571,7 +571,7 @@ gnome_font_family_list_free (GList * fontlist)
 static gint
 gp_fe_sortname (gconstpointer a, gconstpointer b)
 {
-	return strcasecmp (((GPFontEntry *) a)->name, ((GPFontEntry *) b)->name);
+	return g_strcasecmp (((GPFontEntry *) a)->name, ((GPFontEntry *) b)->name);
 }
 
 static gint
@@ -582,13 +582,13 @@ gp_fe_sortspecies (gconstpointer a, gconstpointer b)
 	if (((GPFontEntry *)b)->speciesname == NULL)
 		return 1;
 	
-	return strcasecmp (((GPFontEntry *) a)->speciesname, ((GPFontEntry *) b)->speciesname);
+	return g_strcasecmp (((GPFontEntry *) a)->speciesname, ((GPFontEntry *) b)->speciesname);
 }
 
 static gint
 gp_familyentry_sortname (gconstpointer a, gconstpointer b)
 {
-	return strcasecmp (((GPFamilyEntry *) a)->name, ((GPFamilyEntry *) b)->name);
+	return g_strcasecmp (((GPFamilyEntry *) a)->name, ((GPFamilyEntry *) b)->name);
 }
 
 GnomeFontWeight

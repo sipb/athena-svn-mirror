@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint 2.7.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 11:58-0400\n"
+"POT-Creation-Date: 2004-12-06 10:38-0500\n"
 "PO-Revision-Date: 2004-08-21 17:29+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -265,15 +265,15 @@ msgstr "Postscript genèric"
 msgid "Create a PDF document"
 msgstr "Crea un document PDF"
 
-#: libgnomeprint/gnome-font-face.c:495
+#: libgnomeprint/gnome-font-face.c:494
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "A la taula i al llit, al primer crit..."
 
-#: libgnomeprint/gnome-print-job.c:130
+#: libgnomeprint/gnome-print-job.c:129
 msgid "Job Configuration"
 msgstr "Configuració del treball"
 
-#: libgnomeprint/gnome-print-job.c:131
+#: libgnomeprint/gnome-print-job.c:130
 msgid "The configuration for the print job"
 msgstr "La configuració del treball d'impressió"
 

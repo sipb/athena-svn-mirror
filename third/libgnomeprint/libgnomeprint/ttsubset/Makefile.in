@@ -99,6 +99,7 @@ HAVE_GTK_DOC_TRUE = @HAVE_GTK_DOC_TRUE@
 HAVE_PAPI_FALSE = @HAVE_PAPI_FALSE@
 HAVE_PAPI_TRUE = @HAVE_PAPI_TRUE@
 HTML_DIR = @HTML_DIR@
+ICONV = @ICONV@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_META_PRINTER_FALSE = @INSTALL_META_PRINTER_FALSE@
 INSTALL_META_PRINTER_TRUE = @INSTALL_META_PRINTER_TRUE@
@@ -126,6 +127,7 @@ INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_NOMERGE_RULE = @INTLTOOL_XML_NOMERGE_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 LDFLAGS = @LDFLAGS@
 LIBGNOMECUPS_CFLAGS = @LIBGNOMECUPS_CFLAGS@
@@ -143,6 +145,7 @@ MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
+MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -204,6 +207,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localstatedir = @localstatedir@
 mandir = @mandir@
+mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
@@ -237,6 +241,8 @@ libttsubset_la_SOURCES = \
 	crc32.c crc32.h \
 	gnome-print-tt-subset.c gnome-print-tt-subset.h
 
+
+EXTRA_DIST = makefile.msc
 subdir = libgnomeprint/ttsubset
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

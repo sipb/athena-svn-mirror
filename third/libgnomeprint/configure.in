@@ -1,6 +1,6 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(libgnomeprint, 2.8.0,
+AC_INIT(libgnomeprint, 2.8.2,
 	http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-print)
 
 AM_CONFIG_HEADER(config.h)
@@ -39,6 +39,8 @@ dnl ====================================================
 dnl FIXME: Does this really belong here?. See bug #80577
 dnl ====================================================
 AC_CHECK_FUNC(bind_textdomain_codeset,,[AC_CHECK_LIB(intl,bind_textdomain_codeset)])
+
+AC_CHECK_FUNCS(popen pclose)
 
 AC_FUNC_MMAP
 
