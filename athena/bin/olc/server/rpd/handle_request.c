@@ -6,11 +6,26 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.12 1991-04-08 21:20:16 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.13 1991-04-10 14:20:25 lwvanels Exp $";
 #endif
 #endif
 
 #include "rpd.h"
+
+#ifndef KERBEROS
+/* Still need kerberos defs for compatabile protocols.. */
+
+#define         MAX_KTXT_LEN    1250
+
+struct ktext {
+    int length;             /* Length of the text */
+    unsigned char dat[MAX_KTXT_LEN];    /* The data itself */
+    unsigned long mbz;          /* zero to catch runaway strings */
+};
+
+typedef struct ktext *KTEXT;
+typedef struct ktext KTEXT_ST;
+#endif
 
 void
 handle_request(fd, from)
@@ -27,10 +42,10 @@ handle_request(fd, from)
   char *buf;
   int result;
 
-#ifdef KERBEROS
-  KTEXT_ST their_auth;
-  AUTH_DAT their_info;
   int ltr;
+  KTEXT_ST their_auth;
+#ifdef KERBEROS
+  AUTH_DAT their_info;
   int auth;
   char principal_buffer[ANAME_SZ+INST_SZ+REALM_SZ];
   static char instance_buffer[INST_SZ];
