@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.13 2000-04-11 22:44:11 ghudson Exp $
+# $Id: Makefile.athena,v 1.14 2001-03-26 20:21:02 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -17,7 +17,6 @@ all:
 	${MAKE} all
 
 check:
-	PERL_SKIP_TTY_TEST=true ${MAKE} check
 
 install:
 	${MAKE} install "DESTDIR=$$SRVD"
