@@ -1,6 +1,6 @@
 #ifndef lint
 static char     rcsid[] =
-"$Id: t_getline.c,v 1.4 1992-08-31 12:12:01 lwvanels Exp $";
+"$Id: t_getline.c,v 1.5 1995-08-23 20:18:06 cfields Exp $";
 #endif
 
 /* 
@@ -161,7 +161,9 @@ struct termio   tty, old_tty;
 #include <sgtty.h>
 struct sgttyb   tty, old_tty;
 #endif
+#ifndef sgi
 extern int      ioctl();
+#endif
 
 void
 gl_char_init()
