@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.6 2000-05-02 17:52:13 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.7 2000-06-22 13:37:07 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -484,6 +484,9 @@ xlogin.Geometry: 		580x325+205+105
 *omenuEntry10.callback:		signalConsoleCB(show)
 *omenuEntry11.label:		Shut Down Window System
 *omenuEntry11.callback:		WcExitCB(3)
+*omenuEntry12.label:		Restart X in 8-bit Mode
+*omenuEntry12.callback:		commandCB(touch /var/athena/x-8-bit), \
+				restartCB()
 
 *omenuEntry2.rightBitmap:	Shift-F1
 *omenuEntry3.rightBitmap:	Shift-F2
