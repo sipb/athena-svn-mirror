@@ -10,7 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
 "PO-Revision-Date: 2001-08-19 02:48+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -18,100 +19,92 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
 msgstr "Enviar informe de erro"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
 msgstr "Facer o informe só para vostede"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
 msgstr "Gardar o informe nun ficheiro"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
 msgstr "aplicación estragada"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
 msgstr "ficheiro core"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
 msgstr "nada"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "Crear un novo informe de erro"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "Engadir máis información a un informe xa existente"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
 msgstr "Nome de contacto"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "NOME"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
 msgstr "Enderezo de correo electrónico de contacto"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "EMAIL"
 msgstr "EMAIL"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "Package containing the program"
 msgstr "Paquete que contén o programa"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "PACKAGE"
 msgstr "PAQUETE"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "Version of the package"
 msgstr "Versión do paquete"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "VERSION"
 msgstr "VERSIÓN"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:83
 msgid "File name of crashed program"
 msgstr "Nome do ficheiro do programa estragado"
 
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
 msgid "FILE"
 msgstr "FICHEIRO"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID of crashed program"
 msgstr "PID do programa estragado"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
 msgstr "Ficheiro core dun programa"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
 msgstr "Ficheiro de texto para incluír no informe"
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
 msgstr ""
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
@@ -119,22 +112,22 @@ msgstr ""
 "gdb non rematou de obter a información de depuración.\n"
 "¿Matar o proceso gdb (a traza da pila non estará completa)?"
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
 msgstr "o gdb xa rematou"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
 msgstr ""
 
-#: src/bug-buddy.c:261
+#: src/bug-buddy.c:289
 #, fuzzy
 msgid "Please wait while Bug Buddy saves the stack trace..."
 msgstr ""
 "Agarde mentres o Bug Buddy actualiza a lista\n"
 "de productos para os sistemas de seguimento de erros."
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -144,79 +137,51 @@ msgid ""
 "Please try again, maybe with a different file name."
 msgstr ""
 
-#: src/bug-buddy.c:298
-#, fuzzy
-msgid "Show _Applications"
-msgstr "aplicación estragada"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-#, fuzzy
-msgid "Show _Products"
-msgstr "Producto"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
 msgstr ""
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
 msgstr ""
 
-#: src/bug-buddy.c:400
+#: src/bug-buddy.c:411
 #, fuzzy
 msgid "Hide Debugging Options"
 msgstr "Información de depuración"
 
-#: src/bug-buddy.c:401
+#: src/bug-buddy.c:412
 #, fuzzy
 msgid "Show Debugging Options"
 msgstr "Información de depuración"
 
 # Xa sei que 'obsoleto' non é o mesmo que "deprecated", pero non
 # atopo outra traducción, e 'deprecado' non ten nada que ver
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
+#, fuzzy
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_APPNAME está obsoleto.\n"
 "Use o argumento de liña de comandos --appname no seu lugar."
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
+#, fuzzy
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_PID está obsoleto.\n"
 "Use o argumento de liña de comandos --pid no seu lugar."
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
 
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
-msgstr ""
-
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr ""
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, fuzzy, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
@@ -225,59 +190,66 @@ msgstr ""
 "Non foi posible abrir '%s'.\n"
 "Comprobe que o Bug Buddy está instalado correctamente."
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
 msgstr "bug-buddy"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+#, fuzzy
+msgid "Report a bug in GNOME-based applications"
 msgstr "Informe dun erro de GNOME"
 
 #: src/bug-buddy.glade.h:1
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
 msgstr ""
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
 msgstr ""
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
 msgstr ""
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
 msgstr "Fenómeno Assbarn"
 
-#: src/bug-buddy.glade.h:9
+#: src/bug-buddy.glade.h:14
 #, fuzzy
 msgid "Binary file:"
 msgstr "Ficheiro binario"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:11
+#: src/bug-buddy.glade.h:16
 #, fuzzy
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
@@ -287,79 +259,101 @@ msgstr ""
 "As opcións correctas deberían estar seleccionadas automaticamente.\n"
 "Para máis información, prema o botón de axuda embaixo."
 
-#: src/bug-buddy.glade.h:13
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
+#: src/bug-buddy.glade.h:21
+#, fuzzy
+msgid "Cc:"
 msgstr "Cc"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
 msgstr "Ficheiro core"
 
-#: src/bug-buddy.glade.h:17
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr ""
+
+#: src/bug-buddy.glade.h:24
 msgid "Debug"
 msgstr "Depuración"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "Descrición"
 
-#: src/bug-buddy.glade.h:19
+#: src/bug-buddy.glade.h:26
 msgid "Downloading files"
 msgstr ""
 
-#: src/bug-buddy.glade.h:20
-msgid "Email"
+#: src/bug-buddy.glade.h:27
+#, fuzzy
+msgid "Email:"
 msgstr "Correo electrónico"
 
-#: src/bug-buddy.glade.h:21
+#: src/bug-buddy.glade.h:28
 msgid "Include a text file"
 msgstr "Incluír un ficheiro de texto"
 
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
+#: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
 msgstr ""
 
-#: src/bug-buddy.glade.h:23
-msgid "Name"
+#: src/bug-buddy.glade.h:30
+#, fuzzy
+msgid "Name:"
 msgstr "Nome"
 
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr ""
+#: src/bug-buddy.glade.h:31
+#, fuzzy
+msgid "Path of sendmail:"
+msgstr "Sendmail"
 
-#: src/bug-buddy.glade.h:25
+#: src/bug-buddy.glade.h:32
 msgid "Please choose a component, version, and severity level."
 msgstr "Escolla un compoñente, versión, e nivel de severidade."
 
-#: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
 msgstr ""
 
-#: src/bug-buddy.glade.h:27
+#: src/bug-buddy.glade.h:39
 msgid "Please make your bug report in English, if possible."
 msgstr "Por favor, faga o seu informe de erro en inglés, se é posible."
 
-#: src/bug-buddy.glade.h:28
+#: src/bug-buddy.glade.h:40
 #, fuzzy
 msgid ""
 "Please select the product or application for the bug you wish to report."
 msgstr "Seleccione o producto do que quere enviar o informe."
 
-#: src/bug-buddy.glade.h:29
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
@@ -367,139 +361,167 @@ msgstr ""
 "Agarde mentres o Bug Buddy actualiza a lista\n"
 "de productos para os sistemas de seguimento de erros."
 
-#: src/bug-buddy.glade.h:33
+#: src/bug-buddy.glade.h:45
 #, fuzzy
 msgid "Process ID:"
 msgstr "ID do proceso"
 
-#: src/bug-buddy.glade.h:34
+#: src/bug-buddy.glade.h:46
 #, fuzzy
-msgid "Save in"
+msgid "Save in:"
 msgstr "Gardando:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "Gardar o informe en..."
 
-#: src/bug-buddy.glade.h:36
+#: src/bug-buddy.glade.h:48
 #, fuzzy
 msgid "Saving: "
 msgstr "Gardando:"
 
-#: src/bug-buddy.glade.h:37
+#: src/bug-buddy.glade.h:49
 #, fuzzy
 msgid "Sendmail Settings"
 msgstr "Sendmail"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
+#: src/bug-buddy.glade.h:50
+#, fuzzy
+msgid "Severity:"
 msgstr "Severidade"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:51
+#, fuzzy
+msgid "Show _Applications"
+msgstr "aplicación estragada"
+
+#: src/bug-buddy.glade.h:52
 #, fuzzy
 msgid "Show _Debugging Details"
 msgstr "Información de depuración"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+#, fuzzy
+msgid "Show _Products"
+msgstr "Producto"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
 msgstr ""
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
 msgstr ""
 
-#: src/bug-buddy.glade.h:43
+#: src/bug-buddy.glade.h:56
 msgid "Start"
 msgstr ""
 
-#: src/bug-buddy.glade.h:44
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "Parar"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
 msgstr "Enviar outro erro"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
 msgstr ""
 
-#: src/bug-buddy.glade.h:47
-msgid "The product or application is not listed above."
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
 msgstr ""
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr "A"
-
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
 msgstr ""
 
-#: src/bug-buddy.glade.h:50
-msgid "Version"
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr ""
+
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "A:"
+
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr ""
+
+#: src/bug-buddy.glade.h:65
+#, fuzzy
+msgid "Version:"
 msgstr "Versión"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
 msgstr ""
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr ""
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
 msgstr ""
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
 msgstr "compoñente"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
 msgstr "desc"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
 msgstr "información de e-mail"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
 msgstr "finalizado"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "intro"
+
+#: src/bug-buddy.glade.h:75
 #, fuzzy
 msgid "mail config"
 msgstr "información de e-mail"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
 msgstr ""
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
 msgstr "producto"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
 msgstr ""
 
-#: src/bugzilla.c:687
+#: src/bugzilla.c:721
 #, fuzzy
 msgid "ID"
 msgstr "PID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
 msgstr "Producto"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
 msgstr "Compoñente"
 
-#: src/bugzilla.c:870
+#: src/bugzilla.c:898
 #, fuzzy, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
@@ -510,7 +532,7 @@ msgstr ""
 "Non foi posible abrir '%s'.\n"
 "Comprobe que o Bug Buddy foi instalado correctamente."
 
-#: src/bugzilla.c:915
+#: src/bugzilla.c:936
 #, fuzzy
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
@@ -522,7 +544,7 @@ msgstr ""
 "Non foi posible abrir '%s'.\n"
 "Comprobe que o Bug Buddy está instalado correctamente."
 
-#: src/bugzilla.c:994
+#: src/bugzilla.c:1015
 #, c-format
 msgid "Couldn't load icon for %s: %s"
 msgstr ""
@@ -543,12 +565,12 @@ msgstr ""
 msgid "If the URI has been visited before."
 msgstr ""
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
 msgstr "Obtendo a traza da pila... (%d)"
 
-#: src/gdb-buddy.c:175
+#: src/gdb-buddy.c:160
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
@@ -557,7 +579,7 @@ msgstr ""
 "Non se pode procesar o ficheiro core co gdb:\n"
 "'%s'"
 
-#: src/gdb-buddy.c:206
+#: src/gdb-buddy.c:185
 #, fuzzy, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
@@ -566,11 +588,19 @@ msgstr ""
 "Non se pode determinar o binario creado\n"
 "'%s'"
 
-#: src/gdb-buddy.c:238
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
 msgstr "Erro ao ler... abortando"
 
-#: src/gdb-buddy.c:290
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr ""
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr ""
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
@@ -578,7 +608,7 @@ msgstr ""
 "Non se atopou o GDB no seu sistema.\n"
 "Non se obterá a información de depuración."
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
@@ -586,7 +616,7 @@ msgstr ""
 "Non se atopou o ficheiro gdb-cmd.\n"
 "Probe a reinstalar o Bug Buddy."
 
-#: src/gdb-buddy.c:352
+#: src/gdb-buddy.c:310
 #, c-format
 msgid ""
 "There was an error running gdb:\n"
@@ -637,54 +667,66 @@ msgid "Welcome to Bug Buddy"
 msgstr "Benvido ao Bug Buddy"
 
 #: src/united-states-of-bug-buddy.c:55
+msgid "Collecting debug info"
+msgstr ""
+
+#: src/united-states-of-bug-buddy.c:56
 #, fuzzy
 msgid "Select a Product or Application"
 msgstr "Seleccionae unha acción"
 
-#: src/united-states-of-bug-buddy.c:56
+#: src/united-states-of-bug-buddy.c:57
 #, fuzzy
 msgid "Select a Component"
 msgstr "compoñente"
 
-#: src/united-states-of-bug-buddy.c:57
+#: src/united-states-of-bug-buddy.c:58
 msgid "Frequently Reported Bugs"
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:58
+#: src/united-states-of-bug-buddy.c:59
 msgid "Bug Description"
 msgstr "Descrición do erro"
 
-#: src/united-states-of-bug-buddy.c:59
+#: src/united-states-of-bug-buddy.c:60
 #, fuzzy
 msgid "Mail Configuration"
 msgstr "Configuración do sistema"
 
-#: src/united-states-of-bug-buddy.c:60
+#: src/united-states-of-bug-buddy.c:61
 #, fuzzy
 msgid "Confirmation"
 msgstr "Configuración do sistema"
 
-#: src/united-states-of-bug-buddy.c:61
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
 msgstr "¡Finalizado!"
 
-#: src/united-states-of-bug-buddy.c:105
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
 msgstr "A ferramenta gráfica de GNOME para comunicar erros."
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
 msgstr "A páxina web do Bug Buddy"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
 msgstr "Indique o seu nome."
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
 msgstr "Indique un enderezo de correo electrónico válido."
 
-#: src/united-states-of-bug-buddy.c:340
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
@@ -692,21 +734,21 @@ msgid ""
 "Please check the path to sendmail again."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:372
+#: src/united-states-of-bug-buddy.c:470
 #, fuzzy
 msgid "Please enter a valid email command."
 msgstr "Indique un enderezo de correo electrónico válido."
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
 msgstr "O ficheiro indicado non existe."
 
-#: src/united-states-of-bug-buddy.c:446
+#: src/united-states-of-bug-buddy.c:552
 #, c-format
 msgid "File is of type: %s"
 msgstr "O ficheiro é de tipo: %s"
 
-#: src/united-states-of-bug-buddy.c:453
+#: src/united-states-of-bug-buddy.c:556
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
@@ -714,29 +756,21 @@ msgid ""
 "Bug Buddy can only submit plaintext (text/*) files."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
 msgstr "Ten que incluír unha liña de asunto comprensible no informe."
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
 msgstr "Ten que incluír unha descrición comprensible no informe."
 
-#: src/united-states-of-bug-buddy.c:520
-msgid "Submit this bug report now?"
-msgstr "¿Enviar agora este informe de erro?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr ""
-
-#: src/united-states-of-bug-buddy.c:560
+#: src/united-states-of-bug-buddy.c:625
 #, fuzzy
 msgid "Please wait while Bug Buddy saves your bug report..."
 msgstr ""
 "Por favor, agarde mentres o Bug Buddy recolle información sobre o sistema."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -746,18 +780,18 @@ msgid ""
 "Please try again, maybe with a different file name."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:576
+#: src/united-states-of-bug-buddy.c:637
 #, fuzzy, c-format
 msgid "Your bug report was saved in %s"
 msgstr "O informe de erro foi gardado en '%s'"
 
-#: src/united-states-of-bug-buddy.c:584
+#: src/united-states-of-bug-buddy.c:645
 #, fuzzy
 msgid "Please wait while Bug Buddy submits your bug report..."
 msgstr ""
 "Por favor, agarde mentres o Bug Buddy recolle información sobre o sistema."
 
-#: src/united-states-of-bug-buddy.c:591
+#: src/united-states-of-bug-buddy.c:649
 #, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
@@ -765,65 +799,151 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:599
+#: src/united-states-of-bug-buddy.c:656
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"O informe de erro foi enviado a:\n"
-"\n"
-"        <%s>\n"
-"¡Graciñas!"
 
-#: src/united-states-of-bug-buddy.c:747
+#: src/united-states-of-bug-buddy.c:850
+#, fuzzy
+msgid "Please, select the core file or running application to debug."
+msgstr "Seleccione o producto do que quere enviar o informe."
+
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
 msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:771
+#: src/united-states-of-bug-buddy.c:930
 #, fuzzy
 msgid "Please choose a product for your bug report."
 msgstr "Ten que indicar un producto no informe."
 
-#: src/united-states-of-bug-buddy.c:785
+#: src/united-states-of-bug-buddy.c:934
+#, fuzzy, c-format
+msgid "Please choose a component, version, and severity level for product %s"
+msgstr "Escolla un compoñente, versión, e nivel de severidade."
+
+#: src/united-states-of-bug-buddy.c:943
 #, fuzzy
 msgid "Please choose an application for your bug report."
 msgstr "Ten que indicar un producto no informe."
 
-#: src/united-states-of-bug-buddy.c:804
+#: src/united-states-of-bug-buddy.c:947
+#, fuzzy, c-format
 msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
+"Please choose a component, version, and severity level for application %s"
+msgstr "Escolla un compoñente, versión, e nivel de severidade."
+
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:845
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
 msgstr "Ten que indicar un compoñente no informe."
 
-#: src/united-states-of-bug-buddy.c:859
-msgid "You must specify a version for your bug report."
-msgstr "Ten que indicar unha versión no informe."
+#: bug-buddy.schemas.in.h:1
+#, fuzzy
+msgid "Bug reporter name"
+msgstr "bug-buddy"
 
-#: src/united-states-of-bug-buddy.c:911
+#: bug-buddy.schemas.in.h:2
+#, fuzzy
+msgid "Email Address"
+msgstr "Enderezo de correo electrónico de contacto"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
 msgstr ""
-"¿Está seguro de que quere cancelar\n"
-"este informe de erro?"
 
-#~ msgid "To:"
-#~ msgstr "A:"
+#: bug-buddy.schemas.in.h:4
+#, fuzzy
+msgid "File to save bug reports"
+msgstr "Crear un novo informe de erro"
+
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr ""
+
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr ""
+
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr ""
+
+#~ msgid "Add more information to existing report"
+#~ msgstr "Engadir máis información a un informe xa existente"
+
+#~ msgid "To"
+#~ msgstr "A"
+
+#~ msgid "Submit this bug report now?"
+#~ msgstr "¿Enviar agora este informe de erro?"
+
+#~ msgid ""
+#~ "Your bug report has been submitted to:\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "\n"
+#~ "Thanks!"
+#~ msgstr ""
+#~ "O informe de erro foi enviado a:\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "¡Graciñas!"
+
+#~ msgid "You must specify a version for your bug report."
+#~ msgstr "Ten que indicar unha versión no informe."
+
+#~ msgid ""
+#~ "Are you sure you want to cancel\n"
+#~ "this bug report?"
+#~ msgstr ""
+#~ "¿Está seguro de que quere cancelar\n"
+#~ "este informe de erro?"
 
 #, fuzzy
 #~ msgid "Updating products list:"
@@ -835,10 +955,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Select a mailer"
 #~ msgstr "Seleccionae unha acción"
-
-#, fuzzy
-#~ msgid "sendmail"
-#~ msgstr "Sendmail"
 
 #~ msgid "All"
 #~ msgstr "Todo"
@@ -906,9 +1022,6 @@ msgstr ""
 
 #~ msgid "Version installed"
 #~ msgstr "Versión instalada"
-
-#~ msgid "intro"
-#~ msgstr "intro"
 
 #~ msgid "system"
 #~ msgstr "sistema"

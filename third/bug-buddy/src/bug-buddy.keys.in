@@ -1,5 +1,4 @@
-application/x-core-file:
-        icon-filename=@icondir@/mc/i-core.png
+application/x-core:
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=bug-buddy-core-file
 	short_list_application_ids_for_intermediate_user_level=bug-buddy-core-file

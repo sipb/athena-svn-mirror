@@ -1,9 +1,9 @@
 # Danish translation of bug-buddy.
-# Copyright (C) 1999, 2000, 01, 02, 03 Free Software Foundation, Inc.
+# Copyright (C) 1999, 2000, 01, 02, 03, 04 Free Software Foundation, Inc.
 # Kenneth Christiansen <kenneth@ripen.dk>, 1999.
 # Birger Langkjer <birger.langkjer@image.dk>, 2000.
 # Keld Simonsen <keld@dkuug.dk> 2000.
-# Ole Laursen <olau@hardworking.dk>, 2001, 02, 03.
+# Ole Laursen <olau@hardworking.dk>, 2001, 02, 03, 04.
 #
 # Konventioner:
 #
@@ -12,108 +12,101 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2003-01-01 18:25+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2004-07-06 20:37+0200\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
 msgstr "Send fejlrapport"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
 msgstr "Send kun rapport til dig selv"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
 msgstr "Gem rapport i fil"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
 msgstr "program der gik ned"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
 msgstr "core-fil"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
 msgstr "ingenting"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "Opret en ny fejlrapport"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "Tilføj oplysninger til en eksisterende rapport"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
 msgstr "Kontaktnavne"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "NAVN"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
 msgstr "Epostadresse på kontaktperson"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "EMAIL"
 msgstr "EPOST"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "Package containing the program"
 msgstr "Pakken indeholdende programmet"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "PACKAGE"
 msgstr "PAKKE"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "Version of the package"
 msgstr "Pakkeversion"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "VERSION"
 msgstr "VERSION"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:83
 msgid "File name of crashed program"
 msgstr "Filnavn på program der gik ned"
 
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
 msgid "FILE"
 msgstr "FIL"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID of crashed program"
 msgstr "Proces-id på program der gik ned"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
 msgstr "Core-fil fra programmet"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
 msgstr "Tekstfil der skal med i rapporten"
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
 msgstr "Kunne ikke finde kontrol ved navn %s i %s"
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
@@ -121,19 +114,19 @@ msgstr ""
 "GDB er ikke færdig med at hente fejlanalyseringsinformation.\n"
 "Skal GDB-processen dræbes (stakundersøgelsen vil mangle noget)?"
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
 msgstr "gdb er allerede afsluttet"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
 msgstr "Gem stakundersøgelse"
 
-#: src/bug-buddy.c:261
+#: src/bug-buddy.c:289
 msgid "Please wait while Bug Buddy saves the stack trace..."
 msgstr "Vent venligst mens stakundersøgelsen gemmes..."
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -148,82 +141,47 @@ msgstr ""
 "\n"
 "Prøv igen, evt. med et andet filnavn."
 
-#: src/bug-buddy.c:298
-msgid "Show _Applications"
-msgstr "Vis _programmer"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-msgid "Show _Products"
-msgstr "Vis _produkter"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
 msgstr "_Start postprogram"
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
 msgstr "_Send rapport"
 
-#: src/bug-buddy.c:400
+#: src/bug-buddy.c:411
 msgid "Hide Debugging Options"
 msgstr "Skjul fejlanalyseringsindstillinger"
 
-#: src/bug-buddy.c:401
+#: src/bug-buddy.c:412
 msgid "Show Debugging Options"
 msgstr "Vis fejlanalyseringsindstillinger"
 
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_APPNAME er forældet.\n"
 "Benyt venligst kommandolinjeparameteren --appname i stedet."
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_PID er forældet.\n"
 "Benyt venligst kommandolinjeparameteren --pid i stedet."
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
-"Velkommen til Fejl-Frede, et fejlrapporteringsværktøj til Gnome.\n"
-"Det vil bringe dig gennem udfærdigelsen af en fejlrapport."
+"For at analysere en proces skal programnavnet også gives.\n"
+"Angiv venligst en '--appname'-kommandolinjeparameter."
 
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-"\n"
-"\n"
-"Du ser dette fordi et andet program er gået ned."
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
-msgstr ""
-"\n"
-"\n"
-"Vent venligst et øjeblik mens fejlanalyseringsinformation hentes fra "
-"programmet. Dette gør det muligt at udfærdige en mere brugbar fejlrapport."
-
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr "Kunne ikke finde billede: %s (%d)\n"
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
@@ -232,7 +190,7 @@ msgstr ""
 "Fejl-Frede kunne ikke indlæse programmets brugergrænsefladefil (%s).\n"
 "Kontrollér at Fejl-Frede er korrekt installeret."
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
@@ -240,33 +198,44 @@ msgstr ""
 "Fejl-Frede kunne ikke opdatere fejloplysningerne.\n"
 "De gamle bliver brugt i stedet."
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr "Fejl-Frede opdaterede fejloplysningerne."
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
 msgstr "Fejlrapporteringsværktøj"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
-msgstr "Rapportér en fejl i Gnome"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+msgid "Report a bug in GNOME-based applications"
+msgstr "Rapportér en fejl i Gnome-baserede programmer"
 
 #: src/bug-buddy.glade.h:1
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"Velkommen til Fejl-Frede, et fejlrapporteringsværktøj til Gnome. Det vil "
+"bringe dig gennem rapporteringen af en fejl.\n"
+"\n"
+"Vælg den type problem du vil rapportere og tryk på knappen 'Fremad':\n"
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
 msgstr "*"
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
 msgstr "<span size=\"xx-large\">Fejl-Frede</span>"
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
 "<span weight=\"bold\" size=\"larger\">Opdatering af Fejl-Frede</span>\n"
 "\n"
@@ -274,23 +243,23 @@ msgstr ""
 "opdatere dem, 'Opdatér ikke' vil gennemtvinge at de gamle oplysninger bliver "
 "brugt.\n"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
 msgstr "Avanceret"
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
 msgstr "Assbarn-fænomen"
 
-#: src/bug-buddy.glade.h:9
+#: src/bug-buddy.glade.h:14
 msgid "Binary file:"
 msgstr "Kørbar fil:"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Fejl-Frede"
 
-#: src/bug-buddy.glade.h:11
+#: src/bug-buddy.glade.h:16
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
@@ -298,7 +267,19 @@ msgstr ""
 "Fejl-Frede kan sende fejlanalyseinformation med din rapport.\n"
 "De rigtige indstillinger skulle være blevet valgt for dig automatisk."
 
-#: src/bug-buddy.glade.h:13
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+"Fejl-Frede indsamler nu oplysninger om nedbruddet til fejlrapporten. Dette "
+"foregår automatisk og kan tage nogle få minutter. Når det er overstået, kan "
+"du trykke på 'Vis fejlanalysedetaljer' for at se oplysningerne eller "
+"'Fremad' for at gå til næste skridt i processen."
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
@@ -306,66 +287,82 @@ msgstr ""
 "Fejl-Frede bruger epost til at sende fejlrapporter.\n"
 "Vælg venligst hvordan Fejl-Frede skal sende brevene."
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
-msgstr "Kopi til"
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "Kopi til:"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
 msgstr "Core-fil"
 
-#: src/bug-buddy.glade.h:17
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr "_Fejlanalysér et nedbrudt eller kørende program (kun eksperter)"
+
+#: src/bug-buddy.glade.h:24
 msgid "Debug"
 msgstr "Fejlanalyse"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: src/bug-buddy.glade.h:19
+#: src/bug-buddy.glade.h:26
 msgid "Downloading files"
 msgstr "Henter filer"
 
-#: src/bug-buddy.glade.h:20
-msgid "Email"
-msgstr "Epost"
+#: src/bug-buddy.glade.h:27
+msgid "Email:"
+msgstr "Epost:"
 
-#: src/bug-buddy.glade.h:21
+#: src/bug-buddy.glade.h:28
 msgid "Include a text file"
 msgstr "Inkludér en tekstfil"
 
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr "Gem blot til en fil så jeg kan sende a fejlrapport manuelt"
+#: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr "_Gem blot til en fil så jeg kan sende a fejlrapport manuelt"
 
-#: src/bug-buddy.glade.h:23
-msgid "Name"
-msgstr "Navn"
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "Navn:"
 
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr "Sti til sendmail"
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "Sti til sendmail:"
 
-#: src/bug-buddy.glade.h:25
+#: src/bug-buddy.glade.h:32
 msgid "Please choose a component, version, and severity level."
-msgstr "Vælg venligst komponent, udgave og alvorlighed."
+msgstr "Vælg venligst en komponent, udgave og alvorlighed."
 
-#: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
-msgstr "Foretag evt. de sidste rettelser til fejlrapporten."
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
+msgstr ""
+"Evt. endelige rettelser til fejlrapporten kan foretages nu.\n"
+"Bemærk at den vil blive vist på http://bugzilla.gnome.org\n"
+"og vil inkludere dit navn samt epostadresse og muligvis\n"
+"nogle oplysninger om hvordan programmet gik ned. Hvis du\n"
+"arbejdede på et dokument med meget følsomme oplysninger,\n"
+"ønsker du måske ikke at indsende denne fejlrapport."
 
-#: src/bug-buddy.glade.h:27
+#: src/bug-buddy.glade.h:39
 msgid "Please make your bug report in English, if possible."
 msgstr "Skriv venligst din fejlrapport på engelsk, om muligt."
 
-#: src/bug-buddy.glade.h:28
+#: src/bug-buddy.glade.h:40
 msgid ""
 "Please select the product or application for the bug you wish to report."
 msgstr ""
 "Vælg venligst det produkt eller program du ønsker at rapportere en fejl i."
 
-#: src/bug-buddy.glade.h:29
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
@@ -375,7 +372,7 @@ msgstr ""
 "fejl.\n"
 "Hvis fejlen allerede er rapporteret, så rapportér den ikke igen."
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
@@ -383,132 +380,156 @@ msgstr ""
 "Vent venligst mens listen af produkter\n"
 "for fejlfølgningssystemerne opdateres."
 
-#: src/bug-buddy.glade.h:33
+#: src/bug-buddy.glade.h:45
 msgid "Process ID:"
 msgstr "Proces-id:"
 
-#: src/bug-buddy.glade.h:34
-msgid "Save in"
-msgstr "Gem i"
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "Gem i:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "Gem rapporten som..."
 
-#: src/bug-buddy.glade.h:36
+#: src/bug-buddy.glade.h:48
 msgid "Saving: "
 msgstr "Gemmer: "
 
-#: src/bug-buddy.glade.h:37
+#: src/bug-buddy.glade.h:49
 msgid "Sendmail Settings"
 msgstr "Sendmail-indstillinger"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
-msgstr "Alvorlighed"
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "Alvorlighed:"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "Vis _programmer"
+
+#: src/bug-buddy.glade.h:52
 msgid "Show _Debugging Details"
 msgstr "Vis fejl_analysedetaljer"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "Vis _produkter"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
 msgstr "Vis de oftest forekommende fejl i:"
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
 msgstr "Simpel"
 
-#: src/bug-buddy.glade.h:43
+#: src/bug-buddy.glade.h:56
 msgid "Start"
 msgstr "Start"
 
-#: src/bug-buddy.glade.h:44
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "Stop"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
 msgstr "Send én til fejlrapport"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
 msgstr "Resumé"
 
-#: src/bug-buddy.glade.h:47
-msgid "The product or application is not listed above."
-msgstr "Produktet eller programmet står ikke ovenfor."
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "_Programmet virker ikke korrekt"
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr "Til"
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "_Dokumentationen er forkert"
 
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
-msgstr "Brug sendmail direkte"
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "_Oversættelsen er forkert"
 
-#: src/bug-buddy.glade.h:50
-msgid "Version"
-msgstr "Version"
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "Til:"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr "Brug _sendmail direkte"
+
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
+msgstr "Version:"
+
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
 msgstr "Opdatér _ikke"
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "_Anmod om en manglende facilitet"
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
 msgstr "_Opdatér"
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
 msgstr "komponent"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
 msgstr "besk"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
 msgstr "epost-info"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
 msgstr "færdig"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "intro"
+
+#: src/bug-buddy.glade.h:75
 msgid "mail config"
 msgstr "epost-konfig"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
 msgstr "oftestfore"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
 msgstr "produkt"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
 msgstr "%d af %d"
 
-#: src/bugzilla.c:687
+#: src/bugzilla.c:721
 msgid "ID"
 msgstr "ID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
 msgstr "Produkt"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
 msgstr "Komponent"
 
-#: src/bugzilla.c:870
+#: src/bugzilla.c:898
 #, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
@@ -521,7 +542,7 @@ msgstr ""
 "\n"
 "Fejl-Frede vil nu afslutte."
 
-#: src/bugzilla.c:915
+#: src/bugzilla.c:936
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -534,7 +555,7 @@ msgstr ""
 "\n"
 "Fejl-Frede vil nu afslutte."
 
-#: src/bugzilla.c:994
+#: src/bugzilla.c:1015
 #, c-format
 msgid "Couldn't load icon for %s: %s"
 msgstr "Kunne ikke indlæse ikon for %s: %s"
@@ -555,12 +576,12 @@ msgstr "Besøgt"
 msgid "If the URI has been visited before."
 msgstr "Om URI'en er blevet besøgt før"
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
 msgstr "Skaffer stak-information... (%d)"
 
-#: src/gdb-buddy.c:175
+#: src/gdb-buddy.c:160
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
@@ -569,7 +590,7 @@ msgstr ""
 "Kunne ikke behandle core-filen med gdb:\n"
 "'%s'"
 
-#: src/gdb-buddy.c:206
+#: src/gdb-buddy.c:185
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
@@ -578,11 +599,19 @@ msgstr ""
 "GDB Kunne ikke afgøre hvilken kørbar fil der oprettede\n"
 "'%s'"
 
-#: src/gdb-buddy.c:238
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
 msgstr "Fejl ved læsning... afbryder"
 
-#: src/gdb-buddy.c:290
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr "Både en binær fil og en PID er påkrævet til analyse."
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr "Den binære fil blev ikke fundet. Prøv at bruge en absolut sti."
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
@@ -590,7 +619,7 @@ msgstr ""
 "Programmet GDB blev ikke fundet på systemet.\n"
 "Fejlanalyseinformation vil ikke blive indhentet."
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
@@ -598,7 +627,7 @@ msgstr ""
 "Kunne ikke finde gdb-cmd-filen.\n"
 "Prøv venligst at geninstallere Fejl-Frede."
 
-#: src/gdb-buddy.c:352
+#: src/gdb-buddy.c:310
 #, c-format
 msgid ""
 "There was an error running gdb:\n"
@@ -655,50 +684,62 @@ msgid "Welcome to Bug Buddy"
 msgstr "Velkommen til Fejl-Frede"
 
 #: src/united-states-of-bug-buddy.c:55
+msgid "Collecting debug info"
+msgstr "Indsamler fejlanalyseringsinfo"
+
+#: src/united-states-of-bug-buddy.c:56
 msgid "Select a Product or Application"
 msgstr "Vælg et produkt eller program"
 
-#: src/united-states-of-bug-buddy.c:56
+#: src/united-states-of-bug-buddy.c:57
 msgid "Select a Component"
 msgstr "Vælg en komponent"
 
-#: src/united-states-of-bug-buddy.c:57
+#: src/united-states-of-bug-buddy.c:58
 msgid "Frequently Reported Bugs"
 msgstr "Ofte rapporterede fejl"
 
-#: src/united-states-of-bug-buddy.c:58
+#: src/united-states-of-bug-buddy.c:59
 msgid "Bug Description"
 msgstr "Fejlbeskrivelse"
 
-#: src/united-states-of-bug-buddy.c:59
+#: src/united-states-of-bug-buddy.c:60
 msgid "Mail Configuration"
 msgstr "Postkonfiguration"
 
-#: src/united-states-of-bug-buddy.c:60
+#: src/united-states-of-bug-buddy.c:61
 msgid "Confirmation"
 msgstr "Bekræftelse"
 
-#: src/united-states-of-bug-buddy.c:61
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
 msgstr "Færdig!"
 
-#: src/united-states-of-bug-buddy.c:105
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr "Ole Laursen <olau@hardworking.dk>"
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
 msgstr "Gnomes grafiske fejlrapporteringsværktøj"
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
 msgstr "Fejl-Fredes kedelige hjemmeside"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
 msgstr "Indtast venligst dit navn."
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
 msgstr "Indtast venligst din epostadresse."
 
-#: src/united-states-of-bug-buddy.c:340
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
@@ -709,20 +750,20 @@ msgstr ""
 "\n"
 "Tjek venligst stien til sendmail igen."
 
-#: src/united-states-of-bug-buddy.c:372
+#: src/united-states-of-bug-buddy.c:470
 msgid "Please enter a valid email command."
 msgstr "Indtast venligst en gyldig epostkommando."
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
 msgstr "Den angivne fil eksisterer ikke."
 
-#: src/united-states-of-bug-buddy.c:446
+#: src/united-states-of-bug-buddy.c:552
 #, c-format
 msgid "File is of type: %s"
 msgstr "Filen er af typen: %s"
 
-#: src/united-states-of-bug-buddy.c:453
+#: src/united-states-of-bug-buddy.c:556
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
@@ -733,27 +774,19 @@ msgstr ""
 "\n"
 "Fejl-Frede kan kun sende almindelig tekstfiler (text/*)."
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
 msgstr "Du skal angive en beskrivende overskrift for rapporten."
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
 msgstr "Du skal angive en udtømmende beskrivelse i rapporten."
 
-#: src/united-states-of-bug-buddy.c:520
-msgid "Submit this bug report now?"
-msgstr "Send fejlrapport nu?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr "_Indsend"
-
-#: src/united-states-of-bug-buddy.c:560
+#: src/united-states-of-bug-buddy.c:625
 msgid "Please wait while Bug Buddy saves your bug report..."
 msgstr "Vent venligst mens fejlrapporten gemmes..."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -768,16 +801,16 @@ msgstr ""
 "\n"
 "Prøv igen, evt. med et andet filnavn."
 
-#: src/united-states-of-bug-buddy.c:576
+#: src/united-states-of-bug-buddy.c:637
 #, c-format
 msgid "Your bug report was saved in %s"
 msgstr "Din fejlrapport blev gemt i %s"
 
-#: src/united-states-of-bug-buddy.c:584
+#: src/united-states-of-bug-buddy.c:645
 msgid "Please wait while Bug Buddy submits your bug report..."
 msgstr "Vent venligst din fejlrapport indsendes..."
 
-#: src/united-states-of-bug-buddy.c:591
+#: src/united-states-of-bug-buddy.c:649
 #, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
@@ -788,71 +821,232 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/united-states-of-bug-buddy.c:599
+#: src/united-states-of-bug-buddy.c:656
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"Din fejlrapport er bevet indsendt til:n\n"
+"Din fejlrapport er blevet sendt til:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Mange tak!"
+"Fejlrapportering er en vigtig del af at skabe frie programmer. Tak for din "
+"hjælp!"
 
-#: src/united-states-of-bug-buddy.c:747
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
+msgstr "Vælg det produkt eller program du ønsker at rapportere en fejl i."
+
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
 msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
 msgstr ""
-"Eftersom Fejl-Frede ikke kender det produkt du ønsker at sende en "
-"fejlrapport for, bliver du nødt til at sætte adressen på rapporten manuelt."
+"%s\n"
+"\n"
+"Bemærk at det software du kører (%s) er ældre end seks måneder.\n"
+"Du kan overveje at opgradere til en nyere version of systemet %s"
 
-#: src/united-states-of-bug-buddy.c:771
+#: src/united-states-of-bug-buddy.c:930
 msgid "Please choose a product for your bug report."
-msgstr "Vælg venligst et produkt for din fejlrapport."
+msgstr "Vælg venligst et produkt til din fejlrapport."
 
-#: src/united-states-of-bug-buddy.c:785
-msgid "Please choose an application for your bug report."
-msgstr "Vælg venligst et program for din fejlrapport."
-
-#: src/united-states-of-bug-buddy.c:804
-msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
+#: src/united-states-of-bug-buddy.c:934
+#, c-format
+msgid "Please choose a component, version, and severity level for product %s"
 msgstr ""
-"Dette program indeholder ikke oplysninger om hvordan en fejl skal "
-"rapporteres.\n"
-"\n"
-"Hvis du kender en epostadresse som rapporten skal sendes til, kan du angive "
-"den senere.\n"
-"\n"
-"Du kan måske finde en i \"Om\"-vinduet for programmet (under menuen \"Hjælp"
-"\") eller i programmets dokumentation."
+"Vælg venligst en komponent, version og alvorlighedsgrad for produktet %s"
 
-#: src/united-states-of-bug-buddy.c:845
+#: src/united-states-of-bug-buddy.c:943
+msgid "Please choose an application for your bug report."
+msgstr "Vælg venligst et program til din fejlrapport."
+
+#: src/united-states-of-bug-buddy.c:947
+#, c-format
+msgid ""
+"Please choose a component, version, and severity level for application %s"
+msgstr ""
+"Vælg venligst en komponent, version og alvorlighedsgrad for programmet %s"
+
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
+msgstr ""
+"Dette program har fejloplysninger, men Fejl-Frede kender det ikke. Vælg "
+"venligst et andet program."
+
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
 msgstr "Du skal angive en komponent i din fejlrapport."
 
-#: src/united-states-of-bug-buddy.c:859
-msgid "You must specify a version for your bug report."
-msgstr "Du skal angive et versionsnummer for din fejlrapport."
+#: bug-buddy.schemas.in.h:1
+msgid "Bug reporter name"
+msgstr "Navn på fejlrapportør"
 
-#: src/united-states-of-bug-buddy.c:911
+#: bug-buddy.schemas.in.h:2
+msgid "Email Address"
+msgstr "Epostadresse"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
 msgstr ""
-"Er du sikker på at du vil annullere\n"
-"denne fejlrapport?"
+"Epostadresse som bruges til at indsende fejlrapporter til Gnomes centrale "
+"fejldatabase (Bugzilla). Adressen bliver benyttet til korrespondance "
+"angående den fejl du indsender. Hvis du allerede har en Gnome Bugzilla-"
+"konto, så brug venligst den som din epostadresse."
+
+#: bug-buddy.schemas.in.h:4
+msgid "File to save bug reports"
+msgstr "Fil til gemning af fejlrapporter"
+
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr ""
+"Fil som du ønsker at gemme din fejlrapport i for at kunne indsende den "
+"senere."
+
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr "Sidste gang Fejl-Frede tjekkede efter opdateringer"
+
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr "Sti i dit lokale filsystem til hvor sendmail el. lign. er placeret."
+
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr "Sti til sendmail-lignende postprogram"
+
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr "Rigtigt navn for brugeren der rapporterer fejlen."
+
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+"Dette er det sidste tidspunkt (Unix-tidsstempel) hvor Fejl-Frede "
+"kontrollerede efter opdateringer af Bugzilla-oplysningerne."
+
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+"Brug sendmail til at indsende fejlrapporter til Gnome Bugzilla. I øjeblikket "
+"er dette den eneste understøttede metode."
+
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr "Brug sendmail til at sende fejlrapporter"
+
+#~ msgid ""
+#~ "Are you sure you want to cancel\n"
+#~ "this bug report?"
+#~ msgstr ""
+#~ "Er du sikker på at du vil annullere\n"
+#~ "denne fejlrapport?"
+
+#~ msgid "Could not find pixmap: %s (%d)\n"
+#~ msgstr "Kunne ikke finde billede: %s (%d)\n"
+
+#~ msgid "Bug Buddy updated its bug information correctly."
+#~ msgstr "Fejl-Frede opdaterede fejloplysningerne."
+
+#~ msgid "The product or application is not listed above."
+#~ msgstr "Produktet eller programmet står ikke ovenfor."
+
+#~ msgid ""
+#~ "Since Bug Buddy doesn't know about the product you wish to submit a bug "
+#~ "report in, you will have to manually address the bug report."
+#~ msgstr ""
+#~ "Eftersom Fejl-Frede ikke kender det produkt du ønsker at sende en "
+#~ "fejlrapport for, bliver du nødt til at sætte adressen på rapporten "
+#~ "manuelt."
+
+#~ msgid ""
+#~ "This application has not included information about how to submit bugs.\n"
+#~ "\n"
+#~ "If you know an email address where bug reports should be sent, you will "
+#~ "be able to specify that later.\n"
+#~ "\n"
+#~ "You may be able to find one in an \"About\" box in the application, or in "
+#~ "the application's documentation."
+#~ msgstr ""
+#~ "Dette program indeholder ikke oplysninger om hvordan en fejl skal "
+#~ "rapporteres.\n"
+#~ "\n"
+#~ "Hvis du kender en epostadresse som rapporten skal sendes til, kan du "
+#~ "angive den senere.\n"
+#~ "\n"
+#~ "Du kan måske finde en i \"Om\"-vinduet for programmet (under menuen "
+#~ "\"Hjælp\") eller i programmets dokumentation."
+
+#~ msgid "You must specify a version for your bug report."
+#~ msgstr "Du skal angive et versionsnummer for din fejlrapport."
+
+#~ msgid "Add more information to existing report"
+#~ msgstr "Tilføj oplysninger til en eksisterende rapport"
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "You are seeing this because another application has crashed."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "Du ser dette fordi et andet program er gået ned."
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "Please wait a few moments while Bug Buddy obtains debugging information "
+#~ "from the applications.  This allows Bug Buddy to provide a more useful "
+#~ "bug report."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "Vent venligst et øjeblik mens fejlanalyseringsinformation hentes fra "
+#~ "programmet. Dette gør det muligt at udfærdige en mere brugbar fejlrapport."
+
+#~ msgid "Please make any final corrections to the bug report."
+#~ msgstr "Foretag evt. de sidste rettelser til fejlrapporten."
+
+#~ msgid "To"
+#~ msgstr "Til"
+
+#~ msgid "Submit this bug report now?"
+#~ msgstr "Send fejlrapport nu?"
+
+#~ msgid "_Submit"
+#~ msgstr "_Indsend"
+
+#~ msgid ""
+#~ "Your bug report has been submitted to:\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "\n"
+#~ "Thanks!"
+#~ msgstr ""
+#~ "Din fejlrapport er bevet indsendt til:n\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "\n"
+#~ "Mange tak!"
 
 #~ msgid ""
 #~ "There was an error showing the proxy settings:\n"
@@ -869,9 +1063,6 @@ msgstr ""
 
 #~ msgid "Proxy Settings..."
 #~ msgstr "Mellemværtsindstillinger..."
-
-#~ msgid "To:"
-#~ msgstr "Til:"
 
 #~ msgid "Updating products list:"
 #~ msgstr "Opdaterer produktlisten:"

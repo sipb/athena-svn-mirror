@@ -1,3 +1,6 @@
+# translation of mk.po to Macedonian
+# translation of bug-buddy.HEAD.mk.po to
+# translation of bug-buddy.HEAD.mk.po to Macedonian
 # translation of bug-buddy.HEAD.po to Macedonian
 # This file is distributed under the same license as the PACKAGE package.
 # Ime, 2002
@@ -9,115 +12,111 @@
 # Ime, 2002
 # Ime, 2002
 # Ime, 2002
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # Ime, 2002
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Ime Prezime <email@adresa.com>, 2003.
+# Darko Nikolovski <darkon@macedonia.homelinux.org>, 2003.
+# Tomislav Markovski <herrera@users.sourceforge.net>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy.HEAD\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2002-12-15 23:23+0100\n"
-"Last-Translator: Ime\n"
-"Language-Team: Macedonian <en@li.org>\n"
+"Project-Id-Version: mk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2004-08-03 22:50+0200\n"
+"Last-Translator: Tomislav Markovski <herrera@users.sourceforge.net>\n"
+"Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
+"X-Generator: KBabel 1.3.1\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
 msgstr "Испрати извештај за бубачка"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
 msgstr "Испрати репорт само на себе"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
 msgstr "Зачувај го извештајот во датотека"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
 msgstr "урната апликација"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
 msgstr "core датотека"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
 msgstr "ништо"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "Формирај нов извештај за бубачка"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "Додај повеќе информации во постоечкиот извештај"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
 msgstr "Име за контакт"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "ИМЕ"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
 msgstr "Е-пошта за контакт"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "EMAIL"
 msgstr "Е-пошта"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "Package containing the program"
 msgstr "Пакетот ја содржи програмата"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "PACKAGE"
 msgstr "ПАКЕТ"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "Version of the package"
 msgstr "Верзија на пакетот"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "VERSION"
 msgstr "Верзија"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:83
 msgid "File name of crashed program"
 msgstr "Име на датотека на падната програма"
 
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
 msgid "FILE"
 msgstr "ДАТОТЕКА"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID of crashed program"
 msgstr "PID на падната програма"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
 msgstr "Core датотека од програма"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
 msgstr "Текст датотека "
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
-msgstr ""
+msgstr "Неможе да се пронајде форми со име %s на %s"
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
@@ -125,19 +124,19 @@ msgstr ""
 "gdb го нема завршено примањето на дебагираната информација.\n"
 "Затвори го gdb процесот (трагањето по стекот ќе биде некомплетно)"
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
 msgstr "gdb има веќе излезено"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
 msgstr "Зачувај Траги"
 
-#: src/bug-buddy.c:261
+#: src/bug-buddy.c:289
 msgid "Please wait while Bug Buddy saves the stack trace..."
 msgstr "Почекај додека Bug Buddy го зачува трагањето по стекот"
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -152,82 +151,47 @@ msgstr ""
 "\n"
 "Пробај повторно, можеби со друго име на датотека."
 
-#: src/bug-buddy.c:298
-msgid "Show _Applications"
-msgstr "Покажи _Апликации"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-msgid "Show _Products"
-msgstr "Покажи _Продукти"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
 msgstr "_Стартувај Е-пошта"
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
 msgstr "_Испрати Извештај"
 
-#: src/bug-buddy.c:400
+#: src/bug-buddy.c:411
 msgid "Hide Debugging Options"
 msgstr "Скриј дебагирачки опции"
 
-#: src/bug-buddy.c:401
+#: src/bug-buddy.c:412
 msgid "Show Debugging Options"
 msgstr "Покажи дебагирачки опции"
 
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_APPNAME е застарено.\n"
 "Користи --appname команда."
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_PID е застарено.\n"
-"Користи --pid команда"
+"Користи --pid команда."
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
-"Добродојдовте во Bug Buddy, алатка за репортирање на бубачки за GNOME.\n"
-"Ова ќе ве воведе низ процесот за креирање на bug репорт."
+"За дебагирање на некој процес, мора да внесете име на апликацијата.\n"
+"Додадете го аргументот --appname."
 
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-"\n"
-"\n"
-"Ова го гледате бидејки друга апликација е падната."
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
-msgstr ""
-"\n"
-"\n"
-"Почекај неколку моменти додека Bug Buddy содржи дебагирачки информации од "
-"апликациите.  Ова му овозможува да создаде покорисен bug репорт. "
-
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr "Неможе да пронајде pixmap: %s (%d)\n"
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
@@ -236,69 +200,98 @@ msgstr ""
 "Bug Buddy неможе да ја вчита датотеката за кориснички интерфејс (%s).\n"
 "Проверите дали Bug Buddy е коректно инсталиран."
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Информациите за грешката не можепе да се ажурираат.\n"
+"Ќе се користат старите."
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
 msgstr "Алатка за Bug репорт"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
-msgstr "Репортирај bug во GNOME"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+msgid "Report a bug in GNOME-based applications"
+msgstr "Прати извештај за GNOME базирана апликација."
 
 #: src/bug-buddy.glade.h:1
-#, fuzzy
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"Добродојдовте во Bug Buddy, алатка за пријавување на бубачки за GNOMЕ, кој "
+"ќе ве води низ процесот за креирање на извештај за бубачката.\n"
+"\n"
+"Изберете, го типот на проблемот кој сакате да го пријавуте\"Следно\" копче:\n"
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
 msgstr "*"
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
 msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
+"\n"
+"Информациите за грешки снимени на вашиот систем се стари. Со бирање на "
+"\"Ажурирај\" ќе се освежат. Со бирање на \"Не ажурирај\" ќе се исшрати "
+"изветајот со старите податоци.\n"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
 msgstr "Напредно"
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
 msgstr "Assbarn Phenomenon"
 
-#: src/bug-buddy.glade.h:9
+#: src/bug-buddy.glade.h:14
 msgid "Binary file:"
 msgstr "Бинарна датотека"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:11
-#, fuzzy
+#: src/bug-buddy.glade.h:16
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
-"Bug Buddy може да испрати дебагирачка информација со твојот Bug извештај. \n"
-"Точните опции ќе бидат избрани автоматски.\n"
-"За повеќе информации кликни на Помош копчето."
+"Bug Buddy може да испрати информација за дебагирање со твојот Bug "
+"извештај. \n"
+"Точните опции ќе бидат избрани автоматски."
 
-#: src/bug-buddy.glade.h:13
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+"Bug Buddy собира информации за падот на системпт за да ги испрати на "
+"системот за отстранување на бубачки. Ова е автоматизиран процес, и може да "
+"потрае неколку минути. кога ќе се заврши со операциите можете да притиснете "
+"на 'Прикажи детали за дебагирање' за даги видите информациите или притиснете "
+"'Напред' за да продолжите со следниот чекор од процесот."
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
@@ -306,72 +299,81 @@ msgstr ""
 "Bug Buddy користи Е-пошта да ги исптрати bug извештаите.\n"
 "Одбери како сакаш да се праќа Е-поштата"
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
-msgstr "Cc"
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "Cc:"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
 msgstr "Core датотека"
 
-#: src/bug-buddy.glade.h:17
-#, fuzzy
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr "Де_багирај падната или апликација која се извршува (само за експерти)"
+
+#: src/bug-buddy.glade.h:24
 msgid "Debug"
 msgstr "Дебагирање"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
-#, fuzzy
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "Опис"
 
-#: src/bug-buddy.glade.h:19
-#, fuzzy
+#: src/bug-buddy.glade.h:26
 msgid "Downloading files"
-msgstr "Прогрес на превземање"
+msgstr "Превземање на датотеки"
 
-#: src/bug-buddy.glade.h:20
-#, fuzzy
-msgid "Email"
-msgstr "Е-пошта"
+#: src/bug-buddy.glade.h:27
+msgid "Email:"
+msgstr "Е-пошта:"
 
-#: src/bug-buddy.glade.h:21
+#: src/bug-buddy.glade.h:28
 msgid "Include a text file"
 msgstr "Придодади текст датотека"
 
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr ""
-"Само зачувај во датотека за да можам да го испратам bug извештајот рачно"
+#: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr "Само зачувај во датотека за да можам да го испратам извештајот рачно"
 
-#: src/bug-buddy.glade.h:23
-#, fuzzy
-msgid "Name"
-msgstr "Име"
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "Име:"
 
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr "Патека од sendmail"
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "Патека од sendmail:"
 
-#: src/bug-buddy.glade.h:25
-#, fuzzy
+#: src/bug-buddy.glade.h:32
 msgid "Please choose a component, version, and severity level."
-msgstr "и."
+msgstr "Иберете компонента, верзија, и ниво на грешка."
 
-#: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
-msgstr "Направи последни корекции на bug извештајот"
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
+msgstr ""
+"Направете последни поправки на вашиот извештај за грешка. \n"
+"Извештајот ќе биде прикажамн на http://bugzila.gnome.org\n"
+"Ќе го содржи вашето имем е-маил адреса, и можеби некои информации\n"
+" за апликацијата. Доколку документот на кои работевте\n"
+" содржел доверливи информации, можеби не треба \n"
+"да го пратите овој извештај"
 
-#: src/bug-buddy.glade.h:27
+#: src/bug-buddy.glade.h:39
 msgid "Please make your bug report in English, if possible."
 msgstr "Направи го bug извештајот на Англиски јазик, ако е возможно."
 
-#: src/bug-buddy.glade.h:28
+#: src/bug-buddy.glade.h:40
 msgid ""
 "Please select the product or application for the bug you wish to report."
 msgstr "Избери продукт или апликација за бубачката што сакаш да ја репортираш."
 
-#: src/bug-buddy.glade.h:29
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
@@ -381,7 +383,7 @@ msgstr ""
 "репортирани бубачки.\n"
 "Ако бубачката е репортирана, немој да ја репортираш повторно."
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
@@ -389,138 +391,156 @@ msgstr ""
 "Почекај додека Bug Buddy ја ажурира листата\n"
 "на продукти за системите за трагање на бубачки."
 
-#: src/bug-buddy.glade.h:33
+#: src/bug-buddy.glade.h:45
 msgid "Process ID:"
 msgstr "Process ID:"
 
-#: src/bug-buddy.glade.h:34
-msgid "Save in"
-msgstr "Зачувај во"
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "Зачувај во:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "Зачувај го извештајот во"
 
-#: src/bug-buddy.glade.h:36
-#, fuzzy
+#: src/bug-buddy.glade.h:48
 msgid "Saving: "
 msgstr "Зачувување:"
 
-#: src/bug-buddy.glade.h:37
+#: src/bug-buddy.glade.h:49
 msgid "Sendmail Settings"
 msgstr "Sendmail подесувања"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
-msgstr "Преќинување"
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "Ниво:"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "Покажи _Апликации"
+
+#: src/bug-buddy.glade.h:52
 msgid "Show _Debugging Details"
 msgstr "Покажи _дебагирачки детали"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "Покажи _Продукти"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
 msgstr "Покажи ги најфреквентните бубачки во:"
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
 msgstr "Просто"
 
-#: src/bug-buddy.glade.h:43
-#, fuzzy
+#: src/bug-buddy.glade.h:56
 msgid "Start"
 msgstr "Старт"
 
-#: src/bug-buddy.glade.h:44
-#, fuzzy
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "Стоп"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
 msgstr "Испрати друга бубачка"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
 msgstr "Резултати"
 
-#: src/bug-buddy.glade.h:47
-msgid "The product or application is not listed above."
-msgstr "Продуктот или апликацијата не е ислистана"
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "_Апликацијата не функционира како што треба"
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr "До"
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "_Документацијата е погрешна"
 
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "Преводот е погрешен"
+
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "До:"
+
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
 msgstr "Користи sendmail директно"
 
-#: src/bug-buddy.glade.h:50
-#, fuzzy
-msgid "Version"
-msgstr "Верзија"
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
+msgstr "Верзија:"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
-msgstr ""
+msgstr "_Немој да ажурираш"
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "_Побарај опција која недостасува"
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
-msgstr ""
+msgstr "_Ажурирај"
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
 msgstr "компонента"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
-msgstr ""
+msgstr "опис"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
-msgstr ""
+msgstr "Информации за е-маил"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
-msgstr ""
+msgstr "Завршено"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
-msgstr ""
+msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "Вовед"
+
+#: src/bug-buddy.glade.h:75
 msgid "mail config"
-msgstr ""
+msgstr "кон"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
-msgstr ""
+msgstr "најчесто"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
-msgstr ""
+msgstr "Продиукт"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d од %d"
 
-#: src/bugzilla.c:687
-#, fuzzy
+#: src/bugzilla.c:721
 msgid "ID"
 msgstr "ID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
-#, fuzzy
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
 msgstr "Производ"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
-msgstr ""
+msgstr "Компонента"
 
-#: src/bugzilla.c:870
+#: src/bugzilla.c:898
 #, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
@@ -528,229 +548,258 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
+"Неможеше да се отвори '%s'.\n"
+"Проверете дали Bug Buddy e правилно инсталирана.\n"
+"\n"
+"Bug Buddy ќе се исклучи."
 
-#: src/bugzilla.c:915
-#, fuzzy
+#: src/bugzilla.c:936
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
 "Please make sure Bug Buddy was installed correctly.\n"
 "\n"
 "Bug Buddy will now quit."
-msgstr "Вклучено до."
+msgstr ""
+"bug BUdy не можеше да пронајде информации за местото каде да ги поднесе "
+"грешките.\n"
+" \n"
+"Проверете дали Bug Budy е правилно инсталиран.\n"
+"\n"
+"Bug Budy ќе се исклучи."
 
-#: src/bugzilla.c:994
-#, fuzzy, c-format
+#: src/bugzilla.c:1015
+#, c-format
 msgid "Couldn't load icon for %s: %s"
-msgstr "икона за"
+msgstr "Неможе да се вчита иконата за %s %s"
 
 #: src/cell-renderer-uri.c:151
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 #: src/cell-renderer-uri.c:152
-#, fuzzy
 msgid "URI to show when clicked."
-msgstr "до."
+msgstr "URI за да се пркираже кога ќе се кликне."
 
 #: src/cell-renderer-uri.c:159
 msgid "Visited"
-msgstr ""
+msgstr "Посетено"
 
 #: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr ""
+msgstr "Ако URI било и претходно посетена."
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
-msgstr ""
+msgstr "Превземаwе на трагите од стакот... (%d)"
 
-#: src/gdb-buddy.c:175
-#, fuzzy, c-format
+#: src/gdb-buddy.c:160
+#, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
 "'%s'"
-msgstr "до"
+msgstr ""
+"Немое да се процесира фајлот со gdb: \n"
+"'%s'"
 
-#: src/gdb-buddy.c:206
-#, fuzzy, c-format
+#: src/gdb-buddy.c:185
+#, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
-msgstr "до"
+msgstr ""
+"GDB не може да утврди која бинарна датотека е создадена \n"
+"'%s'"
 
-#: src/gdb-buddy.c:238
-#, fuzzy
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
-msgstr "Грешка Вклучено"
+msgstr "Грешка при читање...Прекинувам"
 
-#: src/gdb-buddy.c:290
-#, fuzzy
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr "За дебагирање потребни се PID и бинарни датотеки."
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr "Бинарната датотека не постои. Користете апсолутна патека."
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
-msgstr "Вклучено."
+msgstr ""
+"GDB не е пронајден на вашиот систем \n"
+"Информациите за дебагирање неможе да се соберат."
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
 msgstr ""
+"Неможе да се се пронајде gdb-cmd датотеката.\n"
+"Повторно инсталирајте го Bug Buddy. "
 
-#: src/gdb-buddy.c:352
+#: src/gdb-buddy.c:310
 #, c-format
 msgid ""
 "There was an error running gdb:\n"
 "\n"
 "%s"
 msgstr ""
+"Имаше грешка при стартивањето на gdb \n"
+"\n"
+"%s"
 
 #: src/save-buddy.c:83
-#, fuzzy, c-format
+#, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr "врска за"
+msgstr "Неможе да се прочитаат информациите на симболичката врска за %s"
 
 #: src/save-buddy.c:125
-#, fuzzy
 msgid "The file has too many symbolic links."
-msgstr "линкови."
+msgstr "Датотеката има премногу симболички врски."
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr ""
+msgstr "Главниот loop не работи!"
 
 #: src/save-buddy.c:284
-#, fuzzy, c-format
+#, c-format
 msgid "Error setting up sigchld handler: %s"
-msgstr "Грешка горе"
+msgstr "Грешка при подесување на sigchld управувачот: %s"
 
 #: src/save-buddy.c:387
-#, fuzzy
 msgid "Invalid filename."
-msgstr "Неважечко."
+msgstr "Невалидно име на датотека."
 
 #: src/save-buddy.c:412
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There already exists a file name '%s'.\n"
 "\n"
 "Do you wish to overwrite this file?"
-msgstr "до?"
+msgstr ""
+"Веќе постпо датотека со име '%s'.\n"
+"\n"
+"Да се препише оваа датотека?"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr ""
+msgstr "_Препиши"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "Неможе да се создаде датотека за бекап."
 
 #: src/united-states-of-bug-buddy.c:54
-#, fuzzy
 msgid "Welcome to Bug Buddy"
-msgstr "Добродојдовте до"
+msgstr "Добродојдовте во Bug Buddy"
 
 #: src/united-states-of-bug-buddy.c:55
-#, fuzzy
-msgid "Select a Product or Application"
-msgstr "Избор Производ или"
+msgid "Collecting debug info"
+msgstr "Собирање на информации за дебагирање"
 
 #: src/united-states-of-bug-buddy.c:56
-#, fuzzy
-msgid "Select a Component"
-msgstr "Избор"
+msgid "Select a Product or Application"
+msgstr "Изберете производ или апликација"
 
 #: src/united-states-of-bug-buddy.c:57
-msgid "Frequently Reported Bugs"
-msgstr ""
+msgid "Select a Component"
+msgstr "Изберете компонента"
 
 #: src/united-states-of-bug-buddy.c:58
-msgid "Bug Description"
-msgstr ""
+msgid "Frequently Reported Bugs"
+msgstr "Често пријавувани грешки"
 
 #: src/united-states-of-bug-buddy.c:59
-#, fuzzy
-msgid "Mail Configuration"
-msgstr "Пошта"
+msgid "Bug Description"
+msgstr "Опис на грешката"
 
 #: src/united-states-of-bug-buddy.c:60
-msgid "Confirmation"
-msgstr ""
+msgid "Mail Configuration"
+msgstr "Конфигурација на пошта"
 
 #: src/united-states-of-bug-buddy.c:61
-#, fuzzy
+msgid "Confirmation"
+msgstr "Потврда"
+
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
 msgstr "Завршено!"
 
-#: src/united-states-of-bug-buddy.c:105
-#, fuzzy
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr "translator_credits-Томислав Марковски"
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
-msgstr "за GNOME."
+msgstr "Графича алатка за пријава на грешки на GNOME."
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
-msgstr ""
+msgstr "Интернет страницата на Bug Buddy"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
-msgstr ""
+msgstr "Внесете го вашето име."
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
-msgstr ""
+msgstr "Внесете валидна е-маил адреса."
 
-#: src/united-states-of-bug-buddy.c:340
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:446
+#, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
 "\n"
 "Please check the path to sendmail again."
-msgstr "до до."
+msgstr ""
+"'%s' не постои. \n"
+"\n"
+"Проверете ја патеката до 'sendmail'."
 
-#: src/united-states-of-bug-buddy.c:372
+#: src/united-states-of-bug-buddy.c:470
 msgid "Please enter a valid email command."
-msgstr ""
+msgstr "Внесете валидна команд за е-маил."
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
-msgstr ""
+msgstr "Датотеката не постои."
 
-#: src/united-states-of-bug-buddy.c:446
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:552
+#, c-format
 msgid "File is of type: %s"
-msgstr "Датотека од вид"
+msgstr "Датотеката е од вид: %s"
 
-#: src/united-states-of-bug-buddy.c:453
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:556
+#, c-format
 msgid ""
 "'%s' is a %s file.\n"
 "\n"
 "Bug Buddy can only submit plaintext (text/*) files."
-msgstr "текст."
+msgstr ""
+"'%s' e %s datoteka.\n"
+"\n"
+"Bug Buddy може да прача пораки само во текстуален формат"
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
-msgstr ""
+msgstr "Треба да внесете разбирлив наслов во вашиот извештај."
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
-msgstr ""
+msgstr "Треба да внесете разбирлив опис во вашиот извештај."
 
-#: src/united-states-of-bug-buddy.c:520
-#, fuzzy
-msgid "Submit this bug report now?"
-msgstr "Испрати?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr ""
-
-#: src/united-states-of-bug-buddy.c:560
+#: src/united-states-of-bug-buddy.c:625
 msgid "Please wait while Bug Buddy saves your bug report..."
-msgstr ""
+msgstr "Почекајте додека Bug Buddy го снима вачиот извештај..."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -759,100 +808,160 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"Извештајот не беше снимен во %s: \n"
+"\n"
+"%s\n"
+"\n"
+"Обидете се повторно, со друго име на датотека."
 
-#: src/united-states-of-bug-buddy.c:576
+#: src/united-states-of-bug-buddy.c:637
 #, c-format
 msgid "Your bug report was saved in %s"
-msgstr ""
+msgstr "Вашиот извештај беше снимен во %s"
 
-#: src/united-states-of-bug-buddy.c:584
+#: src/united-states-of-bug-buddy.c:645
 msgid "Please wait while Bug Buddy submits your bug report..."
-msgstr ""
+msgstr "Почекајте додека се праќа вашиот извештај..."
 
-#: src/united-states-of-bug-buddy.c:591
+#: src/united-states-of-bug-buddy.c:649
 #, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
 "\n"
 "%s"
 msgstr ""
+"Имаше грешка при поднесување на извештајот: \n"
+"\n"
+"%s"
 
-#: src/united-states-of-bug-buddy.c:599
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:656
+#, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"до\n"
-"!"
+"Вашиот извештај за грешка е поднесен до: \n"
+"\n"
+"        <%s>\n"
+"\n"
+"Пријавувањето на грешки е битен дел од производството на слободен софтвер. "
+"Ви благодариме на помошта."
 
-#: src/united-states-of-bug-buddy.c:747
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
+msgstr ""
+"Изберете ја главната датотека или апликацијата која треба да се се дебагира."
+
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
 msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
-msgstr "до до."
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
+msgstr ""
+"%s\n"
+"\n"
+"Софтверот кој го користите (%s) е постар од шест месеци.\n"
+"Можеби сакате да го надградите со нова верзија за системот %s"
 
-#: src/united-states-of-bug-buddy.c:771
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:930
 msgid "Please choose a product for your bug report."
-msgstr "за."
+msgstr "Изберте продукт за пријавување на грешката."
 
-#: src/united-states-of-bug-buddy.c:785
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:934
+#, c-format
+msgid "Please choose a component, version, and severity level for product %s"
+msgstr "Иберете компонента, верзија и ниво на грешка за производот %s"
+
+#: src/united-states-of-bug-buddy.c:943
 msgid "Please choose an application for your bug report."
-msgstr "за."
+msgstr "Изберете апликација за вашиот извештај за грешка.."
 
-#: src/united-states-of-bug-buddy.c:804
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:947
+#, c-format
 msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
-msgstr "до пратена до до За програмата или."
+"Please choose a component, version, and severity level for application %s"
+msgstr "Иберете компонента, верзија и ниво на грешка за апликацијата %s"
 
-#: src/united-states-of-bug-buddy.c:845
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
+msgstr ""
+"Апликацијата има податоци за бубачка, но Bug Buddy не знае за истите. Ве "
+"молам одберете друга апликација."
+
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
-msgstr "за."
+msgstr "Морате да специфицирате компонента за вачиот извештај."
 
-#: src/united-states-of-bug-buddy.c:859
-#, fuzzy
-msgid "You must specify a version for your bug report."
-msgstr "за."
+#: bug-buddy.schemas.in.h:1
+msgid "Bug reporter name"
+msgstr "Име на поднесувачот на бубачка"
 
-#: src/united-states-of-bug-buddy.c:911
-#, fuzzy
+#: bug-buddy.schemas.in.h:2
+msgid "Email Address"
+msgstr "Е-пошта"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
-msgstr "до откажи?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
+msgstr ""
+"Е-пошта за праќање бубачки до GNOME Bugzilla. Оваа адреса ќе биде "
+"искористена за кореспонденција за бубачката што ја праќате. Доколку имате "
+"сметка на GNOME Bugzilla, искористете ја таа адреса."
 
-#~ msgid ""
-#~ "There was an error showing the proxy settings:\n"
-#~ "\n"
-#~ "%s.\n"
-#~ "\n"
-#~ "Please make sure the GNOME Control Center is properly installed."
-#~ msgstr ""
-#~ "Има некоја грешка покажувајки ги proxy подесувањата: \n"
-#~ "\n"
-#~ "%s.\n"
-#~ "\n"
-#~ "Провери дали GNOME Контролениот Центар е правилно инсталиран."
+#: bug-buddy.schemas.in.h:4
+msgid "File to save bug reports"
+msgstr "Датотека за запишување на извештаи за бубачки"
 
-#~ msgid "Proxy Settings..."
-#~ msgstr "Proxy Поставки..."
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr ""
+"Датотека каде ќе се запишуваат извештаите за бубачките кои можат подоцна да "
+"бидат испратени."
 
-#~ msgid "To:"
-#~ msgstr "До:"
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr "Последен пат Bug Buddy направи ажурирање во"
 
-#~ msgid "Updating products list:"
-#~ msgstr "Aжурирање на листата на продукти"
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr ""
+"Патека во Вашиот систем каде што е лоциран sendmail или некој еквивалент."
+
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr "Патека до програма за пошта во sendmail формат"
+
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr "Полно име на испраќачот на бубачката."
+
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+"Ова е последниот пат (формат UNIX timestamp) кога Bug Buddy ажурираше за "
+"Bugzilla податоци."
+
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+"Користи sendmail за праќање извештај за бубачки до Bugzilla. Засега, само "
+"овој метод е поддржан."
+
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr "Користи sendmail за праќање извештаи за бубачки"

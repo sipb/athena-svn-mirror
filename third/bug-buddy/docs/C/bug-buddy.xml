@@ -1,16 +1,17 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?><!-- -*- indent-tabs-mode: nil -*- -->
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
 <!ENTITY legal SYSTEM "legal.xml">
-<!ENTITY appversion "2.1.6"> 
-<!ENTITY manversion "2.1.0">
-<!ENTITY date "May 2002">
+<!ENTITY appversion "2.8"> 
+<!ENTITY manversion "2.8">
+<!ENTITY date "September 2002">
 <!ENTITY app "Bug Buddy">
+<!ENTITY application "<application>Bug Buddy</application>">
 ]>
 
 <article id="index" lang="en">
   <articleinfo>
-	<title>&app; Manual V&manversion;</title>
+	<title>&app; Manual</title>
 	
 	<copyright>
 	  <year>2001</year>
@@ -25,6 +26,11 @@
 	<copyright>
 	  <year>2002</year>
 	  <holder>Eric Baudais</holder>
+	</copyright>
+
+	<copyright>
+	  <year>2004</year>
+	  <holder>Shaun McCance</holder>
 	</copyright>
 
  <!-- translators: uncomment this:
@@ -73,12 +79,29 @@
 		  </address>
 		</affiliation>
 	  </author>
+
+	  <author>
+	    <firstname>Shaun</firstname>
+	    <surname>McCance</surname>
+	    <affiliation>
+	      <orgname>GNOME Documentation Project</orgname>
+	    </affiliation>
+	    <email>shaunm@gnome.org</email>
+	  </author>
 	</authorgroup>
 
 	<revhistory>
 	  <revision>
-		<revnumber>&app; Manual V&manversion;</revnumber>
-		<date>&date;</date>
+	    <revnumber>Version &manversion;</revnumber>
+	    <date>&date;</date>
+	    <revdescription>
+	      <para role="author">Shaun McCance</para>
+	      <para role="publisher">GNOME Documentation Project</para>
+	    </revdescription>
+	  </revision>
+	  <revision>
+		<revnumber>&app; Manual V2.1.0</revnumber>
+		<date>May 2002</date>
 		<revdescription>
 		  <para role="author">Eric Baudais
 			<email>baudais@kkpsi.org</email>
@@ -104,786 +127,441 @@
 	</releaseinfo> 
   </articleinfo>
 
-  <sect1 id="intro">
-	<title>Introduction</title> 
+<sect1 id="intro">
+  <title>Introduction</title> 
 
-	<para>
-	  <application>&app;</application> is a tool which
-	  will guide you through making a bug report as painlessly as possible.
-	  You can alter things at any stage, and then either send, save, or
-	  abandon the resulting report. This document describes
-	  version &appversion; of <application>&app;</application>: note that
-	  it has changed substantially in appearance from earlier versions.
-	</para>
-	
-	<note>
-	  <title>Big Bug Buddy Changes</title>
-	  <para>
-		<application>Bug Buddy</application> has undergone major changes 
-		recently. 
-	  </para>
-	  <para>
-		The Gnome bug tracking system is moving from the email-based 
-		debbugs installation which it originally used to the web-based
-		<ulink url="http://bugzilla.gnome.org/" type="http">bugzilla 
-		  installation</ulink>. This is to help deal with bugs more efficiently.
-		This means <application>Bug Buddy</application> has been substantially 
-		rewritten to deal with the bugzilla system. It looks very similar in 
-		appearance and structure, but be aware that it now talks to bugzillas. 
-		Reports will only go to the old debbugs system for GNOME if bugzilla 
-		doesn't have a category for the bug. 
-	  </para>
-	  <para>
-		This also means that <application>Bug Buddy</application> has currently
-		lost the ability to send bugs to the KDE and Debian bug trackers
-		directly. Note that you can still save reports for those into a file 
-		and then mail the file to those trackers yourself.
-	  </para>
-	</note>
-	
-	<para>
-	  <application>&app;</application> can be started in a variety
-	  of ways:
-	</para>
-	<itemizedlist>
-	  <listitem>
-		<para>
-		  Open the <guimenu>main GNOME menu</guimenu> and select
-		  <menuchoice>
-			<guimenu>Applications</guimenu>
-			<guisubmenu>Programming</guisubmenu>
-			<guimenuitem>Bug Report Tool</guimenuitem>
-		  </menuchoice>
-		  .
-		</para>
-	  </listitem>
-	  
-	  <listitem>
-		<para>
-		  Run <command>bug-buddy</command> at the prompt in a terminal such
-		  as <application>gnome-terminal</application> or
-		  <application>xterm</application>.
-		</para>
-	  </listitem>
-	  
-	  <listitem>
-		<para>
-		  If you are using <application>Nautilus</application> you can 
-		  double-click your mouse on a core file to start it.
-		</para>
-	  </listitem>
-	  
-	  <listitem>
-		<para>
-		  When a GNOME program experiences a bad crash, a <guilabel>crash
-			dialog box</guilabel> is displayed. If 
-		  <application>&app;</application>
-		  is present on the system, then one of the options in the dialog
-		  box will be to make a bug-report. Selecting that will lead you
-		  to a further dialog box giving you details of the program which
-		  crashed. Continuing at this stage will invoke <application>Bug Buddy
-		  </application>.
-		</para>
-	  </listitem>
-	</itemizedlist>
+  <para>&application; is a tool which will guide you through making a bug
+  report as painlessly as possible.  You can alter things at any stage,
+  and then either send, save, or abandon the resulting report. This
+  document describes version &appversion; of &application;.</para>
+  <para>&application; can be started a number of ways:</para>
 
-	<para>
-	  <application>&app;</application> is a very structured program.
-	  At any stage you can continue forward or head backwards to correct
-	  earlier details, or you can click the <guibutton>Help button</guibutton>
-	  to bring up this document. 
-	</para>
+  <itemizedlist>
+    <listitem>
+      <para>Choose <menuchoice><guimenu>Programming</guimenu>
+      <guimenuitem>Bug Report Tool</guimenuitem></menuchoice>
+      from the <guimenu>Applications</guimenu> menu.</para>
+    </listitem>
+    <listitem>
+      <para>Run <command>bug-buddy</command> at the prompt in a terminal
+      such as <application>gnome-terminal</application> or from the
+      <application>Run Application</application> dialog.</para>
+    </listitem>
+    <listitem>
+      <para>If you are using the <application>Nautilus</application>
+      file manager, you can double-click on a core file to start
+      &application;.</para>
+    </listitem>
+    <listitem>
+      <para>When a GNOME program experiences a bad crash, a crash dialog
+      box is displayed. If &application; is present on
+      the system, then one of the options will be <guibutton>Inform
+      Developers</guibutton>.  This button will launch
+      &application;.</para>
+    </listitem>
+  </itemizedlist>
 
-	<para>
-	  The aim of all this is to be able to collect all the information
-	  which a developer will need to reproduce the same problem and be
-	  able to fix it. Some of the information generated may look a bit
-	  off-putting, but don't delete it. It will be useful.
-	</para>
-  </sect1>
+  <para>&application; is a structured program.  At any stage you can continue
+  forward or head backwards to correct earlier details.  The aim of all this
+  is to be able to collect all the information which a developer will need to
+  reproduce the same problem fix it.  Some of the information generated by
+  &application; may be unfamiliar to you, but don't delete it.  It will be
+  useful to the developers.</para>
+</sect1>
 
+<sect1 id="welcome">
+  <title>Welcome to Bug Buddy</title>
+
+  <para>&application; opens with a welcome and some
+  important buttons at the bottom of the screen.  The four buttons at
+  the very bottom of the screen will not change in
+  &application; while using the program.</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>The <guibutton>About</guibutton> button gives information about
+      <application>&app;'s</application> version and copyright holders.
+      There is a <guibutton>Credits</guibutton> button in the
+      <application>About Bug Buddy</application> dialog which lists the 
+      authors of the program and documentation.</para>
+    </listitem>
+    <listitem>
+      <para>The <guibutton>Cancel</guibutton> button is used to exit
+      &application; and cancel the bug report.</para>
+    </listitem>
+    <listitem>
+      <para>The <guibutton>Back</guibutton> button will bring up the previous
+      screen so you can change information earlier in the report.</para>
+    </listitem>
+    <listitem>
+      <para>The <guibutton>Forward</guibutton> button will bring up the next 
+      screen to continue your bug report.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>When you start &application;, you will be asked to select what kind
+  of report to file.  The following options are available:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term><guilabel>The application does not function
+      correctly</guilabel></term>
+      <listitem><para>Select this option if the application produced incorrect
+      results or otherwise behaved differently than you expected.
+      </para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>The documentation is wrong</guilabel></term>
+      <listitem><para>Select this option if the documentation does not
+      describe the actual behavior of the application, or if the documentation
+      is incomplete</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>The translation is wrong</guilabel></term>
+      <listitem><para>Select this option if you are using the application
+      in a language other than the application's native language, and the
+      translations in the application are incorrect.  Also select this
+      option if translated documentation is incorrect.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>Request a missing feature</guilabel></term>
+      <listitem><para>Select this option to request that a feature be
+      added to the application.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>Debug a crashed or running application</guilabel></term>
+      <listitem><para>Select this option to report an application crash.  Note
+      that if you start &application; from a crash dialog box, then this will
+      be selected automatically, and you will not see the first screen of
+      options.</para></listitem>
+    </varlistentry>
+  </variablelist>
+</sect1>
+
+<sect1 id="reporting-crash">
+  <title>Reporting a Crash</title>
+
+  <para>If you are reporting a crash, &application; will show the available
+  debugging options.  This allows you to perform back traces on a crashed
+  application or to include the core file created when the application
+  crashed.  &application; will add the back trace or core file to the bug
+  report automatically.</para>
+
+  <para>If &application; was started from a crash dialog box, then the
+  back trace for the application will automatically be included.  The
+  debugging information is hidden when &application; is started from a
+  crash dialog box.  You can click on the <guibutton>Show Debugging
+  Options</guibutton> button to show the them.</para>
+  <para>&application; has three options when reporting a crash:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term><guilabel>Debug nothing</guilabel></term>
+      <listitem><para>This is the default option. If you did not start
+      &application; following a crash and do not have a core file to debug,
+      select this option.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>Debug core file</guilabel></term>
+      <listitem><para>Select this if you have a core file which you know was
+      created as a result of the bug you are reporting.  After selecting this
+      option, you can click on the <guibutton>Browse</guibutton> button to
+      locate the core file on your system.  If you started &application;
+      by double-clicking on a core file in the file manager, this option
+      will be automatically selected.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>Debug crashed application</guilabel></term>
+      <listitem>
+        <para>If &application; was started from a crash dialog box, this
+        option will be automatically selected.  If this option is selected,
+        &application; will prompt you for a binary file and a process ID.
+        If &application; was started from a crash dialog box, these two
+        fields should be filled out automatically.  Otherwise, you will
+        need to enter the information manually.</para>
+
+        <variablelist>
+          <varlistentry>
+            <term><guilabel>Binary file</guilabel></term>
+            <listitem><para>This is the name of the application as you would
+            type it at a command prompt.  For example, if you are reporting
+            a crash in the <application>Nautilus</application> file manager,
+            you would enter <command>nautilus</command>.</para></listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><guilabel>Process ID</guilabel></term>
+            <listitem><para>This is the process ID, or <acronym>PID</acronym>,
+            of the running application.  The
+            <application>System Monitor</application> displays the process ID
+            of every running application.  You can start the <application>System
+            Monitor</application> by selecting <menuchoice><guimenu>System
+            Tools</guimenu><guimenuitem>System Monitor</guimenuitem></menuchoice>
+            from the <guimenu>Applications</guimenu> menu.</para></listitem>
+          </varlistentry>
+        </variablelist>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>This screen contains a text area where debugging options are displayed.
+  You can click on the <guibutton>Copy</guibutton> button to copy the contents
+  of the text area to the clipboard.  You can also click on the
+  <guibutton>Save</guibutton> to save the contents of the text area
+  to a file.</para>
+</sect1>
   
-  <sect1 id="welcome">
-	<title>Welcome to Bug Buddy</title>
-	<para>
-	  &app; opens with a welcome and some important buttons at the bottom of 
-	  the screen.  The four buttons at the very bottom of the screen will 
-	  not change in &app; while using the program.
-<!--
-	  <figure id="bug-buddy">
-		<title>&app; Startup Window</title>
-		<screenshot>
-		  <mediaobject>
-			<imageobject>
-			  <imagedata fileref="figures/bug-buddy-welcome.png" format="PNG"/>
-			</imageobject>
-			<textobject>
-			  <phrase>Shows &app;'s main window.  Contains the Debugging 
-				Options, About, Cancel, Back, and Forward buttons.</phrase>
-			</textobject>
-		  </mediaobject>
-		</screenshot>
-	  </figure>
--->
-	  <itemizedlist>
-		<listitem>
-		  <para>
-			The <guibutton>About</guibutton> button gives information about 
-			<application>&app;'s</application> version and copyright holders. 
-			There is a <guibutton>Credits</guibutton> button in the 
-			<guilabel>About Bug Buddy</guilabel> dialog which lists the 
-			authors of the program and documentation.
-<!--
-			<figure id="about-bug-buddy">
-			  <title>About Bug Buddy dialog</title>
-			  <screenshot>
-				<mediaobject>
-				  <imageobject>
-					<imagedata fileref="figures/about.png" format="PNG"/>
-				  </imageobject>
-				  <textobject>
-					<phrase>Shows the About Bug Buddy dialog with the Credits 
-					  and OK buttons.</phrase>
-				  </textobject>
-				</mediaobject>
-			  </screenshot>
-			</figure>
--->
-		  </para>
-		</listitem>
-		<listitem>
-		  <para>
-			The <guibutton>Cancel</guibutton> button is used to exit 
-			<application>&app;</application> and cancel the bug report.  The 
-			<guibutton>Cancel</guibutton> button brings up the 
-			<guilabel>Question</guilabel> dialog which asks if you really want 
-			to exit the program.  Pressing the <guibutton>No</guibutton> button 
-			will close the dialog and bring you back to the program so you can 
-			continue your bug report.  Pressing the <guibutton>Yes</guibutton> 
-			button will close the program and cancel the bug report you were 
-			making.
-<!--
-			<figure id="question-dialog">
-			  <title>Question Dialog</title>
-			  <screenshot>
-				<mediaobject>
-				  <imageobject>
-					<imagedata fileref="figures/question.png" format="PNG"/>
-				  </imageobject>
-				  <textobject>
-					<phrase>Shows the Question dialog.  Contains the No and 
-					  Yes buttons.</phrase>
-				  </textobject>
-				</mediaobject>
-			  </screenshot>
-			</figure>
--->
-		  </para>
-		</listitem>
-		<listitem>
-		  <para>
-			The <guibutton>Back</guibutton> button will bring up the previous 
-			screen so you can change your report.
-		  </para>
-		</listitem>
-		<listitem>
-		  <para>
-			The <guibutton>Forward</guibutton> button will bring up the next 
-			screen to continue your bug report.
-		  </para>
-		</listitem>
-	  </itemizedlist>
-	</para>
+<sect1 id="product">
+  <title>Selecting a Product</title>
 
-	<para>
-	  In <application>&app;'s</application> startup window the 
-	  <guibutton>Show Debugging Options</guibutton> button shows the debugging 
-	  options available.  This allows you to perform back traces on a crashed 
-	  application or to include the core file created when the application 
-	  crashed.  
-	  <application>&app;</application> will add the back trace or core file to 
-	  the bug report automatically.  If you do not want to include the back 
-	  trace or core file you can delete them in the 
-	  <xref linkend="confirmation"/>.  You can also copy the output of 
-	  <application>&app;'s</application> debugging window to the clipboard or 
-	  save it as a file.
-	</para>
+  <para>The product selection page provides a list of products from which you
+  can select.  You can choose to view the listing by product or by application.
+  To view by the products as stored in the bugs database, select the
+  <guibutton>Show Products</guibutton> radio button.  To view by applications
+  as they appear on your system, select the <guibutton>Show
+  Applications</guibutton> radio button.<!-- Note to translators:  The product
+  names and descriptions come from bugzilla, and are not translated.  You may
+  want to mention this in the translated documentation. --></para>
 
-	<para>
-	  <application>&app;</application> has three options when writing a bug 
-	  report.  When you are done with the debugging information click on the 
-	  <guibutton>Forward</guibutton> button to proceed to the next step in 
-	  submitting your bug.
-	
-	  <variablelist>
-		<varlistentry>
-		  <term>Debug nothing</term>
-		  <listitem>
-			<para>
-			  This is the default option. If you did not start
-			  <application>Bug Buddy</application> following a crash, and
-			  do not have a core file you want debugged, pick this.
-<!--
-			  <figure id="debug-nothing">
-				<title>Debug Nothing Window</title>
-				<screenshot>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="figures/debug-nothing.png" format="PNG"/>
-					</imageobject>
-					<textobject>
-					  <phrase>
-						Shows the pull down menu and the Hide Debugging 
-						Options button with the rest greyed out.</phrase>
-					</textobject>
-				  </mediaobject>
-				</screenshot>
-			  </figure>
--->
-			</para>
-		  </listitem>
-		</varlistentry>
-		<varlistentry>
-		  <term>Debug core file</term>
-		  <listitem>
-			<para>
-			  If <application>&app;</application> began because you 
-			  double-clicked on a file named <filename>core</filename> in the
-			  file manager, select this. Also select this if you have a core file
-			  which you know was created as a result of the bug you are reporting.
-			  An extra box will appear where you can tell it where the core file
-			  lives.
-<!--
-			  <figure id="debug-core-file">
-				<title>Debug Core File Window</title>
-				<screenshot>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="figures/debug-core-file.png" format="PNG"/>
-					</imageobject>
-					<textobject>
-					  <phrase>
-						Shows the startup window with the core file debugging 
-						options.  These include the pull down menu, Start 
-						button, Core File text box to enter the core file, 
-						Browse button, the main text box, Copy button, Save 
-						button, and Hide Debugging Options.</phrase>
-					</textobject>
-				  </mediaobject>
-				</screenshot>
-			  </figure>
--->
-			</para>
-		  </listitem>
-		</varlistentry>
-		
-		<varlistentry>
-		  <term>Debug crashed application</term>
-		  <listitem>
-			<para>
-			  If <application>Bug Buddy</application> began because you said
-			  yes to <quote>Report a bug</quote> in a dialog box telling you 
-			  something had crashed, select this. If you do so, you will be 
-			  prompted for two things. These should be filled in already for 
-			  you. If they are not, take a moment to fill in:
-			</para>
-			
-			<itemizedlist>
-			  <listitem>
-				<para>
-				  <guilabel>Binary</guilabel>: In this box you must type the
-				  name of the program as you would type it at the command-line.
-				  For example, if <application>Nautilus</application>
-				  crashed, you would need to type <command>nautilus</command> here.
-				</para>
-			  </listitem>
-			  <listitem>
-				<para>
-				  <guilabel>Process ID</guilabel>: In this box you must type
-				  the process ID or <acronym>PID</acronym>. This will probably
-				  be available from the original dialog box where you selected
-				  <quote>Report a bug</quote>. If you have closed that window, 
-				  you can find it by starting the 
-				  <application>Procman System Monitor</application> through 
-				  selecting
-				  <menuchoice>
-					<guimenu>Applications</guimenu>
-					<guisubmenu>System Tools</guisubmenu>
-					<guimenuitem>Procman System Monitor</guimenuitem>
-				  </menuchoice>
-				  or typing <command>procman</command> at the command line. You
-				  will find the PID in the right-hand column and the command
-				  in the left-hand column.
-				</para>
-			  </listitem>
-			</itemizedlist>
-		  </listitem>
-		</varlistentry>
-	  </variablelist>
-	</para>
-  </sect1>
+  <sect2 id="updating">
+    <title>Updating the Product Listing</title>
+
+    <para>&application; maintains a local list of products for bug reports.
+    Each time &application; starts, it checks this list of products against
+    checksums on the bug database servers.  If the checksums do not match,
+    &application; will offer to update the product listing.</para>
+    <para>To get the most recent list of products, you should select
+    <guibutton>Update</guibutton>.  However, you may choose not to update
+    the product listing at this time.</para>
+  </sect2>
+</sect1>
+
+<sect1 id="component">
+  <title>Selecting a Component</title>
+
+  <para>After selecting the product, you can select the component, version,
+  and severity of the problem you are reporting.</para>
+
+  <para>Each product will have one or more components associated with it.
+  For instance, the <application>Epiphany</application> web browser has the
+  <literal>Printing</literal> component for problems related to printing web
+  pages, the <literal>Bookmarks</literal> component for problems related to
+  the bookmarks system, and a number of other components for other types of
+  problems.  Some simple applications will only have one component, typically
+  named <literal>general</literal>.  Most products will contain a component
+  for documentation problems, typically named <literal>docs</literal>.  If
+  you are not sure which component to select for your report, select the
+  <literal>general</literal> component if it exists.<!-- Note to translators:
+  the componets and their descriptions are not translated.  when translating
+  this paragraph, you should maintain the strings inside the literal tags.
+  --></para>
+
+  <para>The <guilabel>Version</guilabel> drop-down box allows you to select
+  which version of the application is causing the problem.  You can find the
+  version of most applications by selecting <menuchoice><guimenu>Help</guimenu>
+  <guimenuitem>About</guimenuitem></menuchoice> in the application's main
+  window.  If you are unsure which version you are using, set the version
+  to <literal>unspecified</literal>.</para>
+
+  <para>You can set what you feel is the severity of the problem you are
+  reporting.  The <guilabel>Severity</guilabel> drop-down box has the
+  following choices:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term><guilabel>blocker</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select this if the problem blocks development or
+      testing work on the application.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>critical</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select this if the application crashed, or if the
+      problem causes a loss of data.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>major</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select his if the problem is a major loss of
+      functionality; for instance, if a menu item is broken, data
+      output is extremely incorrect, or the application is otherwise
+      difficult or impossible to use.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>normal</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select this if a minor part of the application is
+      nonfunctional or broken.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>minor</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select this if there is a minor loss of functionality,
+      or if an easy workaround for the problem is available.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>trivial</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select this if the problem is cosmetic; for instance,
+      if a word is misspelled or text is misaligned.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>enhancement</guilabel><!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Select this if the report is a request for a new feature
+      or new functionality.</para></listitem>
+    </varlistentry>
+  </variablelist>
+</sect1>
+
+<sect1 id="frequent-bugs">
+  <title>Frequently Reported Bugs</title>
+
+  <para>Before submitting your report, &application; will display a list of the
+  most common bugs reported to the GNOME bug tracking system.  Since GNOME is
+  being tested by people all over the world, somebody may have already reported
+  the problem you've found.  Please take a moment to review the most frequently
+  reported bugs to see if your problem is already reported.  If you find your
+  problem on this list, there is no need to report it again.</para>
+
+  <para>If your problem is listed, you can click on the bug number to show
+  the full report in your web browser.  If you have additional information
+  to add to the report, please use the web page to do so.</para>
+</sect1>
   
+<sect1 id="description">
+  <title>Bug Description</title>
+  <para>&application; will ask you to provide a summary and description of
+  the bug you are filing.  If at all possible, please make the report in
+  English.  Most developers speak English, although not necessarily as
+  their native language.  Filing your report in English will ensure that
+  all developers can understand the problem, which makes it more likely
+  that the problem will be fixed.</para>
+
+  <para>The <guilabel>Description</guilabel> text area allows you to
+  describe the problem fully.  &application; automatically inserts a
+  template into the description with the following headers:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>Description of Problem<!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Include a short paragraph providing a brief
+      description of the problem you are reporting.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>Steps to reproduce the problem<!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Include an itemized list of the steps to take to
+      reproduce the problem.  Developers cannot fix a problem if they
+      do not know how to reproduce it.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>Actual results<!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Include a short description of what the application
+      actually does when you execute the above steps.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>Expected results<!-- DO NOT TRANSLATE --></term>
+      <listitem><para>Include a short description of what you expect the
+      application to do when you execute the above steps.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>Additional information<!-- DO NOT TRANSLATE --></term>
+      <listitem><para>If you have any additional information about the
+      problem, please include that information here.  For instance, if
+      the programs gives any error messages, you should include that
+      information.</para></listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>You do not have to fill in all the fields, or follow the template
+  exactly.  However, the above information is what is generally useful to
+  developers in most bug reports.</para>
+
+  <para>If you have any suggestions on what caused the problem or how to
+  fix it, you can include that.  If not, don't worry.  Just explain what
+  happened.  If a developer needs more information, they may email you
+  back asking for it.</para>
+</sect1>
   
-  <sect1 id="product">
-	<title>Select a Product</title>
-	<para>
-	  This page gives you a list of products, from which you can select.  
-	  Select the product you want to report a bug in and click on the 
-	  <guibutton>Forward</guibutton> button to proceed to the next screen.
-<!--
-	  <figure id="select-product">
-		<title>Select a Product Window</title>
-		<screenshot>
-		  <mediaobject>
-			<imageobject>
-			  <imagedata fileref="figures/select-product.png" format="PNG"/>
-			</imageobject>
-			<textobject>
-			  <phrase>Shows the Select a Product main window with a list of 
-				the products to select from.</phrase>
-			</textobject>
-		  </mediaobject>
-		</screenshot>
-	  </figure>
--->
-	</para>
+<sect1 id="mail-config">
+  <title>Mail Configuration</title>
 
-	<para>
-	  If you wish to submit a bug, but the product isn't listed then click 
-	  on <guilabel>The product is not listed above</guilabel> checkbox.  
-	  You will skip the <link linkend="component">Component</link> section 
-	  and proceed directly to the <xref linkend="description"/>.
-	</para>
+  <para>&application; gives you two options.  You can either send the report
+  directly to the bugs database using <application>sendmail</application>,
+  or you can save the report to a file and submit it manually.</para>
 
-	<sect2 id="updating">
-	  <title>Updating Product Listing</title>
-	  <para>
-		If this is the first time you have run Bug Buddy, you will see
-		this page. It also appears if it has been two weeks since
-		the last update. Otherwise it will not appear. 
-	  </para>
-	  <para>
-		A dialog box telling you <application>Bug Buddy</application> wants   
-		to update its list of information will appear and gives you the option
-		to stop or configure the proxy settings. It will save this information 
-		by default into your 
-		<filename class="directory">.gnome2/bug-buddy.d/</filename> directory.
-		To get this information, it needs to talk to bugzilla, so your net
-		connection will have to be up.
-	  </para>
-	</sect2>
-  
-  </sect1>
-  
-  <sect1 id="component">
-	<title>Select a Component</title>
-	<para>
-	  There are three sections to fill in:
-	</para>
-	
-	<variablelist>
-	  <varlistentry>
-		<term>Component</term>
-		<listitem>
-		  <para>
-			The product selected will have one or more components to it.
-			If there is only one component (typically a general component),
-			click on it. If there are several components, select the most
-			likely looking one.
-		  </para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>Version</term>
-		<listitem>
-		  <para>
-			This is the version number for the program or package you're
-			reporting a bug in. It may already be filled in. If not, find
-			out the version through the package's <guilabel>About</guilabel> ]
-			box and fill it in here.
-		  </para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>Severity</term>
-		<listitem>
-		  <para>
-			This is the severity of the bug, as you feel it. There are several
-			choices in decreasing order:
-		  </para>
-		  <orderedlist>
-			<listitem>
-			  <para>
-				An enhancement bug is a request for enhancement rather than
-				a bug describing a problem. "It would be nice if.."
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				A trivial bug is precisely that: trivial. It is typically a
-				cosmetic problem such as misspelled words or misaligned text.
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				A minor bug involves either a minor loss of function, or a
-				larger problem but one which has an easy workaround.
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				A normal bug is the typical sort of bug. This is the default
-				and probably won't need increasing.
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				A major bug involves a major loss of function.
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				A critical bug is one which involves a crash, a severe memory
-				leak, or loss of data.
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				A blocker bug is rare and usually assigned as a blocker by a
-				developer. It is a bug which stops other things being fixed
-				and which must be fixed before other bugs can be closed.
-			  </para>
-			</listitem>
-		  </orderedlist>
-		</listitem>
-	  </varlistentry>
-	</variablelist>
-	
-	<para>
-	  When all three sections are filled in, the <guibutton>Forward</guibutton>
-	  button will become enabled, and you can continue. 
-	</para>
-  </sect1>
+  <para>If you want to send a bug report to bugzilla directly then you need to
+  fill out the <guilabel>Sendmail Settings</guilabel>.  &application; will try
+  to guess the values for these settings.  If the information is incorrect,
+  fill in the correct settings.</para>
 
-  <sect1 id="frequent-bugs">
-	<title>Frequently Reported Bugs</title>
+  <variablelist>
+    <varlistentry>
+      <term><guilabel>Name</guilabel></term>
+      <listitem><para>&application; will set this to your name as it is set
+      on your system.  If you want to use a different value, you can change
+      this setting.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>Email</guilabel></term>
+      <listitem><para>Please enter a valid email address where you can be
+      reached.  Developers may wish to request more information to help them
+      solve the problem you report.  You will also be notified when the bug
+      has been closed.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><guilabel>Path of sendmail</guilabel></term>
+      <listitem><para>&application; uses <application>sendmail</application>
+      to send email to the bug tracking system to submit the report.  This
+      field specifies the exact location of the <command>sendmail</command>
+      command on your system.  You will almost certainly not need to change
+      this.</para></listitem>
+    </varlistentry>
+  </variablelist>
+</sect1>
 
-	<para>
-	  There isn't any information to fill in, but take a moment to look 
-	  at the bugs displayed here.  These bugs are the most common bugs 
-	  reported in all of GNOME.  Look at the product and description to 
-	  determine if the bug you were going to report is similar to any of the 
-	  bugs displayed here.
-	</para>
+<sect1 id="confirmation">
+  <title>Confirmation</title>
 
+  <para>Once you have finished your report, you can review the report and decide
+  what to do with it.  You will probably want to submit it to the bug tracking
+  system, but you can send it elsewhere if you need to do so.</para>
 
-	<para>
-	  If you bug matches one of the bugs or is reasonably close you can click 
-	  on it to bring up bugzilla in your browser.  Then you should 
-	  add a comment to the existing bug instead of filing a new bug.  If 
-	  none of the bugs displayed here look like the bug you are going to 
-	  report then click on the <guibutton>Forward</guibutton> button to 
-	  continue to the next section.
-	</para>
+  <para>Your options on this screen will depend on what you chose on the previous
+  screen.  See <xref linkend="mail-config"/> for more information.</para>
 
-  </sect1>
-  
-  <sect1 id="description">
-	<title>Bug Description</title>
+  <sect2 id="confirmation-send">
+    <title>Sending the Report</title>
 
-	<para>
-	  There are four sections which need to be filled in:
-	</para>
-	
-	<variablelist>
-	  <varlistentry>
-		<term>Summary for the bug report</term>
-		<listitem>
-		  <para>
-			The <guilabel>Summary</guilabel> section
-			will be used as the <quote>Subject</quote> header of the emailed 
-			bug report, which will turn into a <quote>Summary</quote> line in 
-			Bugzilla. Good subject lines are specific and do not just say 
-			<quote>Bug</quote> or <quote>It crashed</quote>. 
-			<quote>Crash when I try to save</quote> or 
-			<quote>Forgets my preferences</quote> are much better. Hackers 
-			will read these summaries when looking for something they can fix 
-			and clear one-sentence summaries will catch their attention. You 
-			must fill this in. If you do not, <application>&app;</application>
-			will tell you to.
-		  </para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>Full description of the bug</term>
-		<listitem>
-		  <para>
-			The <guilabel>Description</guilabel> section is where
-			you describe what happened, what you did, and what you expected to
-			happen. You should write good concise sentences describing the bug 
-			as best as you can.  The section is divided into three parts:
-		  </para>
+    <para>If you selected <guilabel>Use sendmail directly</guilabel> on the
+    previous screen, you will see the <guibutton>Send report</guibutton> button.
+    &application; will provide <guilabel>To</guilabel> and <guilabel>Cc</guilabel>
+    fields.  You can use these fields to add recipients to the bug report email.
+    As in most mail clients, the proper format is a comma-seperated list of
+    email addresses.</para>
 
-		  <variablelist>
-			<varlistentry>
-			  <term>Description of Problem:</term>
-			  <listitem>
-				<para>
-				  The <guilabel>Description of Problem</guilabel> section 
-				  is where you describe what happened.  The bug produced some 
-				  unexpected behavior and you should describe exactly 
-				  the unexpected behavior.  This includes any error messages 
-				  or warnings.
-				</para>
-			  </listitem>
-			</varlistentry>
-			<varlistentry>
-			  <term>Steps to reproduce the problem:</term>
-			  <listitem>
-				<para>
-				  The <guilabel>Steps to reproduce the problem</guilabel> 
-				  section is where you describe what you did to make the 
-				  bug appear.  You should use short sentences telling exactly 
-				  what you did to produce the bug.  Be as particular as 
-				  possible in this section to describe exactly each step you 
-				  took to produce the bug.  Developers will use your 
-				  instructions to try and reproduce the bug on their systems.
-				</para>
-			  </listitem>
-			</varlistentry>
-			<varlistentry>
-			  <term>Actual Results</term>
-			  <listitem>
-				<para>
-				  The <guilabel>Actual Results</guilabel> section is where you 
-				  describe what you expected to happen.  The bug stopped you 
-				  from doing something and you should describe what you 
-				  wanted to happen here.  It can as simple as, (<quote>I 
-				  expected the application to load a PNG file</quote>).
-				</para>
-			  </listitem>
-			</varlistentry>
-		  </variablelist>
+    <para>Clicking the <guibutton>Send Report</guibutton> button will send your
+    report to the bug tracking system.  You will be sent an automated email from
+    the bug tracking system with a link to a web page where you can track the
+    status of the bug.</para>
+  </sect2>
+  <sect2 id="confirmation-save">
+    <title>Saving the Report</title>
 
-		  <para>
-			Other good things to include:
-		  </para>
-		  
-		  <itemizedlist>
-			<listitem>
-			  <para>
-				Exact copies of any error messages;
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				Your window manager name and version (especially if the bug involves 
-				moving things around the screen or mouse focus problems);
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				Any special versions of binary RPM, debs, or GNOME specific 
-				versions such as Ximian GNOME or Garnome.  Include the name and 
-				the version you installed;
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				If you can make it happen in one way, and not in another way,
-				include that. If there are two ways to do something (a menu
-				selection and a typed command, for example), and only one triggers
-				the bug, definitely include that;
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				Why you think it is a bug. What should have happened instead?
-				Whilst this is obvious for some things, (<quote>It shouldn't 
-				  crash when I try to save the file</quote>) it is not obvious 
-				for others. Give a better way for the program to behave. 
-				(<quote>If it can't save the file, it should tell me so that I 
-				  don't keep editing it without realizing I am wasting my 
-				  effort</quote>.);
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				Sometimes screen-shots can help demonstrate bugs. Please do not send one
-				in a Bug Buddy report! But if you have one, mention that you have it,
-				so that a bug-fixer who would like to see it can email you about it;
-			  </para>
-			</listitem>
-			<listitem>
-			  <para>
-				Sometimes a file won't load correctly or at all.  You should 
-				always include the file with these type of bugs.
-			  </para>
-			</listitem>
-		  </itemizedlist>
-		</listitem>
-	  </varlistentry>
-	</variablelist>
-	
-	<para>
-	  If you have any suggestions on what caused it or how to fix it,
-	  wonderful. If not, don't worry. Just explain what happened. If
-	  a developer needs more information, they can mail you back for
-	  it. 
-	</para>
-<!--	
-	<para>
-	  If you have a (short!) text file which contains information of use
-	  you can include it here, too. If you have a small HTML file which
-	  crashes your editor, or two sets of options for a program where one
-	  works and the other doesn't, these are the sort of things to include
-	  here. Just put the name of the file into the <guilabel>Include a 
-		text file</guilabel> box at the bottom. 
-	</para>
--->
-  </sect1>
-  
-  <sect1 id="mail-config">
-	<title>Mail Configuration</title>
+    <para>If you selected <guilabel>Just save to a file so I can submit
+    a bug report manually</guilabel> on the previous screen, you will
+    see a <guibutton>Save</guibutton> button.  To save the report, enter
+    a filename in the <guilabel>Save in</guilabel> field and click
+    <guibutton>Save</guibutton>.  &application; will save the report
+    to the specified file.  You can email this report to the bug
+    tracking system or to a developer at a later time.</para>
+  </sect2>
+</sect1>
 
-	<para>
-	  <application>&app;</application> gives you two options.  You can 
-	  <guilabel>Use sendmail directly</guilabel> or <guilabel>Just save to a 
-		file so I can submit a bug report manually</guilabel>.  If you want 
-	  to send the bug report to bugzilla then select the option 
-	  <guilabel>Use sendmail directly</guilabel>.  If you want to save the 
-	  bug report to a file and submit it by yourself you should select the 
-	  second option.
-	</para>
-	
-	<para>
-	  If you want to send a bug report to bugzilla directly then you need to 
-	  fill out these pieces of information.  It makes very good guesses so you 
-	  should be able to skip straight ahead. 
-	</para>
+<sect1 id="summary">
+  <title>Report Summary</title>
 
-	<variablelist>
-	  <varlistentry>
-		<term>Your name</term>
-		<listitem>
-		  <para>
-			Bug Buddy works this out itself, but if you want to change it you
-			can do this here.
-		  </para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>Email address</term>
-		<listitem>
-		  <para>
-			Please enter a valid email address for you here.  This is so developers
-			can request more information from you, or inform you of a fix for your bug.
-		  </para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>Full path of sendmail</term>
-		<listitem>
-		  <para>
-			This allows you to check that Bug Buddy is looking in the right
-			place when it tries to send email. You will almost certainly not
-			need to change this. 
-		  </para>
-		</listitem>
-	  </varlistentry>
-	  
-	</variablelist>
-	
-  </sect1>
+  <para>The final screen in &application; will provide a summary of what
+  was done with the report.  You can click <guibutton>Close</guibutton>
+  to close &application;.</para>
 
-  <sect1 id="confirmation">
-	<title>Confirmation</title>
-	<para>
-	  Once you have finished your report, you can review the report and
-	  decide what to do with it. You will probably want to submit it to 
-	  the bug tracking system, but if you want to send it elsewhere for
-	  some reason you can. You can choose from:
-	</para>
-	<variablelist>
-	  <varlistentry>
-		<term>Send report</term>
-		<listitem>
-		  <para>
-			If you selected to <guilabel>Use sendmail directly</guilabel> in 
-			the previous section you will see the 
-			<guibutton>Send report</guibutton> button where the 
-			<guibutton>Forward</guibutton> button usually is located.  
-			Clicking on <guibutton>Send report</guibutton>
-			will bring up a <guilabel>Question</guilabel> dialog.  Clicking on 
-			<guibutton>Submit</guibutton> will email the bug report to the 
-			bug tracker.  Clicking on <guibutton>Cancel</guibutton> will take 
-			you back to the <guilabel>Confirmation</guilabel> section.
-		  </para>
-		  <note>
-			<title>bugs.gnome.org and bugzilla.gnome.org</title>
-			<para>
-			  Even though the report should end up at bugzilla, you will see
-			  that the address is for bugs.gnome.org. This is fine. Don't change
-			  it. It's the staging-post which forwards reports on to bugzilla. 
-			  If bugzilla has no category for it, then bugs.gnome.org will keep
-			  it. 
-			</para>
-		  </note>
-		</listitem>
-	  </varlistentry>
-	  <varlistentry>
-		<term>Save</term>
-		<listitem>
-		  <para>
-			If you selected to <guilabel>Just save to a file so I can submit 
-			  the bug report manually</guilabel> in the previous section you 
-			will see a <guilabel>Save in</guilabel> text box.  Fill in the 
-			file where you want the bug report saved to or just click on 
-			<guibutton>Browse</guibutton>.  If the file already
-			exists, it will ask you whether to overwrite the file or not.  
-			Clicking on <guibutton>Save</guibutton> will save the bug report 
-			to the file.
-		  </para>
-		</listitem>
-	  </varlistentry>
-	</variablelist>
-  </sect1>
-  
-  
-  <sect1 id="summary">
-	<title>Summary</title>
-	<para>
-	  <application>Bug Buddy</application> will tell you what it has
-	  done with your bug report. That's it.
-	</para>
-	<para>
-	  Thank you for reporting your bug.
-	</para>
-  </sect1>
-  
-  <sect1 id="bugs">
-	<title>Known bugs and limitations</title>
-	
-	<para>
-	  <application>Bug Buddy</application> has very few bugs or limitations.
-	  Currently known:
-	</para>
-	
-	<itemizedlist>
-	  <listitem>
-		<para>
-		  There is an applet called <application>Tick-A-Stat</application>
-		  which can be set to look for core files and timestamp them with
-		  their origin and date. <application>Bug Buddy</application> cannot
-		  read files which <application>Tick-A-Stat</application> has done
-		  this to. 
-		</para>
-	  </listitem>
-	</itemizedlist>
-  </sect1>
+  <para>Thank you for taking the time to report your bug.  Reporting problems
+  with helps the developers create better applications for you.  By reporting
+  your problems and suggestions to the bug tracking system, you are playing an
+  important role in the development of free software.</para>
+</sect1>
 </article>

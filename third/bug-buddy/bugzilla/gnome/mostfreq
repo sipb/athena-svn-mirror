@@ -1,16 +1,64 @@
-<!DOCTYPE products SYSTEM "http://bugzilla.gnome.org/bugzilla.gnome.org/bugzilla-gnome-org.dtd">
+<!DOCTYPE products SYSTEM "http://bugzilla.gnome.org/bugzilla.dtd">
 <products>
   <product name="control-center">
     <component name="font properties">
       <bug bugid="86593">
         <desc>gnome-font-properties crashes on startup [gtk_window_set_icon_list]</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=86593</url>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=86593</url>
       </bug>
     </component>
     <component name="Keybinding">
       <bug bugid="86575">
         <desc>gnome-keybinding-properties crashes on startup</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=86575</url>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=86575</url>
+      </bug>
+    </component>
+  </product>
+  <product name="dia">
+    <component name="general">
+      <bug bugid="108640">
+        <desc>right-click tools/bezeiregon crashes</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=108640</url>
+      </bug>
+      <bug bugid="107733">
+        <desc>using dia - crashed when trying to modify</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=107733</url>
+      </bug>
+      <bug bugid="103807">
+        <desc>Dia 0.88 Crashes on using anything from Tools menu</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=103807</url>
+      </bug>
+      <bug bugid="95588">
+        <desc>Crashed when selected "Tools-&gt;Image" from context menu.</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=95588</url>
+      </bug>
+      <bug bugid="80538">
+        <desc>Dia crashes on Text tool</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=80538</url>
+      </bug>
+      <bug bugid="79266">
+        <desc>Crash while putting text in drawing</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=79266</url>
+      </bug>
+      <bug bugid="71229">
+        <desc>Dia crashed</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=71229</url>
+      </bug>
+      <bug bugid="69048">
+        <desc>crashed dia</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=69048</url>
+      </bug>
+      <bug bugid="66487">
+        <desc>Dia crashes whenever you use a tool menu</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=66487</url>
+      </bug>
+      <bug bugid="65051">
+        <desc>segfault when using any item of  tools submenu of rightclick menu</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=65051</url>
+      </bug>
+      <bug bugid="52836">
+        <desc>Crash after selecting zigzagline from right mouse button popup menu</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=52836</url>
       </bug>
     </component>
   </product>
@@ -18,15 +66,25 @@
     <component name="Gnome-Sound-Recorder">
       <bug bugid="103279">
         <desc>gnome-sound-recorder does not record any sounds</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=103279</url>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=103279</url>
       </bug>
     </component>
   </product>
   <product name="gnome-panel">
+    <component name="clock applet">
+      <bug bugid="136721">
+        <desc>Crash trying to open preferences for the clock-applet</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=136721</url>
+      </bug>
+    </component>
     <component name="Notification Area Applet">
+      <bug bugid="105421">
+        <desc>Notification Applet crashes when logging out of GNOME</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=105421</url>
+      </bug>
       <bug bugid="94625">
-        <desc>vertical panel with notification area crashes on login (gtk_obox_size_request())</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=94625</url>
+        <desc>vertical panel with notification area crashes on login (gtk_obox_size_request())   (fix now available from up2date)</desc>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=94625</url>
       </bug>
     </component>
   </product>
@@ -34,7 +92,7 @@
     <component name="Database plugin">
       <bug bugid="93524">
         <desc>gnumeric crashes while filtering to another spreadsheet</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=93524</url>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=93524</url>
       </bug>
     </component>
   </product>
@@ -42,21 +100,7 @@
     <component name="general">
       <bug bugid="79500">
         <desc>Clicking a task in window list a second time to minimize</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=79500</url>
-      </bug>
-    </component>
-  </product>
-  <product name="libzvt">
-    <component name="general">
-      <bug bugid="88029">
-        <desc>font selection no longer works with i18n branch</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=88029</url>
-      </bug>
-    </component>
-    <component name="internationalization">
-      <bug bugid="78007">
-        <desc>i18n input methods, font selection, display all broken</desc>
-        <url>http://bugzilla.gnome.org/show_bug.cgi?id=78007</url>
+        <url>http://bugzilla-test.gnome.org/show_bug.cgi?id=79500</url>
       </bug>
     </component>
   </product>

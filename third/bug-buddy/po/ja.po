@@ -1,134 +1,128 @@
-# bug-buddy ja.po
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# bug-buddy ja.po.
+# Copyright (C) 2000-2004 Free Software Foundation, Inc.
 # Akira TAGOH <at@ff.iij4u.or.jp>, 2000-2001.
 # Yukihiro Nakai <ynakai@gnome.gr.jp>, 2001.
 # Kin Taishin <taishin@imap.cc>, 2002.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003-2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy CVS-20021208\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2002-12-08 23:02+0900\n"
-"Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
-"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"Project-Id-Version: bug-buddy HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2004-06-03 01:14+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
-msgstr "バグ報告を送信"
+msgstr "バグ報告の送信"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
 msgstr "自分にだけ報告を送信する"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
-msgstr "ファイルに報告を保存する"
+msgstr "ファイルに保存する"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
 msgstr "クラッシュしたアプリケーション"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
 msgstr "core ファイル"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
 msgstr "なし"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "新しいバグ報告を作成する"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "既存のバグ報告に情報を追加する"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
 msgstr "連絡者の名前"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "名前"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
-msgstr "連絡用メールアドレス"
+msgstr "連絡用 E-メールアドレス"
+
+#: src/bug-buddy.c:80
+msgid "EMAIL"
+msgstr "EMAIL"
 
 #: src/bug-buddy.c:81
-msgid "EMAIL"
-msgstr "メール"
-
-#: src/bug-buddy.c:82
 msgid "Package containing the program"
 msgstr "プログラムを含むパッケージ"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "PACKAGE"
-msgstr "パッケージ"
+msgstr "PACKAGE"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "Version of the package"
 msgstr "パッケージのバージョン"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "VERSION"
-msgstr "バージョン"
+msgstr "VERSION"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:83
 msgid "File name of crashed program"
 msgstr "クラッシュしたプログラムのファイル名"
 
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
 msgid "FILE"
-msgstr "ファイル"
+msgstr "FILE"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID of crashed program"
 msgstr "クラッシュしたプログラムの PID"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
 msgstr "プログラムからの core ファイル"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
 msgstr "レポートに添付するテキストファイル"
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
-msgstr "%2$s で %1$s という名前のウィジェットが見つかりませんでした"
+msgstr "%s (%sにある) という名前のウィジットが見つかりませんでした"
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
 msgstr ""
 "gdb はデバッグ情報の収集を完了していません。\n"
-"gdb を終了しますか？(スタックトレースは不完全になります)"
+"gdb を終了しますか？ (スタック・トレースは不完全になります)"
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
-msgstr "gdb はすでに終了しています"
+msgstr "gdb は既に終了しています。"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
-msgstr "バックトレースを保存"
+msgstr "バックトレースを保存する"
 
-#: src/bug-buddy.c:261
+#: src/bug-buddy.c:289
 msgid "Please wait while Bug Buddy saves the stack trace..."
-msgstr "Bug Buddy がスタックトレースを保存するまでお待ちください..."
+msgstr "Bug Buddy がスタック・トレースを保存するまでお待ち下さい..."
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -137,369 +131,402 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
-"スタックトレースは %s に保存されていませんでした:\n"
+"スタック・トレースは %s に保存されませんでした:\n"
 "\n"
 "%s\n"
 "\n"
-"別のファイル名でやり直してください"
+"別のファイル名でやり直して下さい。"
 
-#: src/bug-buddy.c:298
-msgid "Show _Applications"
-msgstr "アプリケーションを表示(_A)"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-msgid "Show _Products"
-msgstr "プロダクトを表示(_P)"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
-msgstr "メールを起動(_S)"
+msgstr "メーラの起動(_S)"
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
-msgstr "報告を送信(_S)"
+msgstr "報告の送信(_S)"
 
-#: src/bug-buddy.c:400
+#: src/bug-buddy.c:411
 msgid "Hide Debugging Options"
-msgstr "デバッグオプションを隠す"
+msgstr "デバッグ・オプションを隠す"
 
-#: src/bug-buddy.c:401
+#: src/bug-buddy.c:412
 msgid "Show Debugging Options"
-msgstr "デバッグオプションを表示"
+msgstr "デバッグ・オプションの表示"
 
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
-"$GNOME_CRASHED_APPNAME は推奨されていません。\n"
-"代わりにコマンドラインオプションの --appname を使ってください"
+"$GNOME_CRASHED_APPNAME は破棄されました。\n"
+"代わりにコマンドライン・オプション --appname を使って下さい。"
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
-"$GNOME_CRASHED_PID は推奨されていません。\n"
-"代わりにコマンドラインオプションの --pid を使ってください"
+"$GNOME_CRASHED_PID は破棄されました。\n"
+"代わりにコマンドライン・オプション --pid を使って下さい。"
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
-"Bug Buddy はGNOME用バグ報告ツールです。\n"
-"バグ報告を送信する手続きをお手伝いします。"
+"プロセスをデバッグするには、アプリケーションの名前も必要です。\n"
+"さらにオプション --appname をコマンドラインに追加して下さい。"
 
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-"\n"
-"\n"
-"別のアプリケーションがクラッシュしました。"
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
-msgstr ""
-"\n"
-"\n"
-"Bug Buddy がアプリケーションからデバッグ情報を取得しています。これにより、さ"
-"らに有用なバグ報告を提供することができます。お待ちください..."
-
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr "画像を見つけることができませんでした: %s (%d)\n"
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
-"Bug Buddy はユーザインターフェースファイル (%s) を読み込むことができませんで"
-"した\n"
-"Bug Buddy が正しくインストールされたか確認してください"
+"Bug Buddy はユーザ・インターフェース・ファイル (%s) を読み込むことができませ"
+"んでした。\n"
+"Bug Buddy が正しくインストールされたか確認して下さい。"
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Bug Buddy はバグ情報を更新することができませんでした。\n"
+"古いバグ情報を使用します。"
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
 msgstr "バグ報告ツール"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
-msgstr "GNOMEのバグを報告する"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+msgid "Report a bug in GNOME-based applications"
+msgstr "GNOME アプリのバグを報告します"
 
 #: src/bug-buddy.glade.h:1
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"GNOME のバグ報告ツール、Bug Buddy へようこそ。\n"
+"バグ報告の流れをステップをふんでお手伝いします。\n"
+"\n"
+"報告する問題の種類を選択して、[進む] ボタンをクリックして下さい:\n"
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
 msgstr "*"
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
 msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy 情報の更新</span>\n"
+"\n"
+"お使いのシステムに保存されているバグ情報は古いようです。[更新する] をクリック"
+"すると新しい情報に更新します。[更新しない] をクリックすると強制的に古い情報を"
+"使ってバグを報告します。\n"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
 msgstr "上級"
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
 msgstr "Assbarn Phenomenon"
 
-#: src/bug-buddy.glade.h:9
+#: src/bug-buddy.glade.h:14
 msgid "Binary file:"
-msgstr "バイナリファイル"
+msgstr "バイナリ・ファイル:"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:11
-#, fuzzy
+#: src/bug-buddy.glade.h:16
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
-"Bug Buddy はバグ報告と共にデバッグ情報を送信することが出来ます。\n"
-"適切なオプションが自動的に選択されるようになっています。\n"
-"下のヘルプボタンをクリックすれば、より詳しい情報が得られます。"
+"Bug Buddy はバグ報告と共にデバッグ情報を送信することができます。\n"
+"自動的に適切なオプションが選択されるようになっています。"
 
-#: src/bug-buddy.glade.h:13
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+"Bug Buddy はバグ追跡システム (BTS) にバグを報告するために\n"
+"クラッシュした情報を収集しています。\n"
+"これは自動的に処理され、数分かかるかもしれません。\n"
+"完了したら、[デバッグ情報の詳細を表示する] をクリックして\n"
+"情報を参照したり、[進む] をクリックして次のステップに移行できます。"
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
-"Bug Buddy はメールでバグ報告を送信します。\n"
-"どのプログラムを使ってメールを送らせたいかを選択してください"
+"Bug Buddy は E-メールでバグ報告を送信します。\n"
+"バグ報告する方法を選択して下さい。"
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
-msgstr "Cc"
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "Cc:"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
 msgstr "core ファイル"
 
-#: src/bug-buddy.glade.h:17
-msgid "Debug"
-msgstr "デバッグ"
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr "クラッシュまたは実行中のアプリをデバッグする (エキスパート向け)(_E)"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
+#: src/bug-buddy.glade.h:24
+msgid "Debug"
+msgstr "デバッグ対象"
+
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "説明"
 
-#: src/bug-buddy.glade.h:19
-#, fuzzy
-msgid "Downloading files"
-msgstr "ダウンロード進行状況"
-
-#: src/bug-buddy.glade.h:20
-msgid "Email"
-msgstr "メールアドレス"
-
-#: src/bug-buddy.glade.h:21
-msgid "Include a text file"
-msgstr "テキストファイルを添付する"
-
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr "バグ報告をファイルに保存して、手動で送信できるようにする"
-
-#: src/bug-buddy.glade.h:23
-msgid "Name"
-msgstr "名前"
-
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr "Sendmailへのパス"
-
-#: src/bug-buddy.glade.h:25
-msgid "Please choose a component, version, and severity level."
-msgstr "コンポーネント、バージョン、重大性レベルを指定してください。"
-
 #: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
-msgstr "バグ報告の最終チェックをお願いします。"
+msgid "Downloading files"
+msgstr "ファイルのダウンロード中"
 
 #: src/bug-buddy.glade.h:27
+msgid "Email:"
+msgstr "E-メール:"
+
+#: src/bug-buddy.glade.h:28
+msgid "Include a text file"
+msgstr "テキスト・ファイルを添付する"
+
+#: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr "バグ報告をファイルに保存して、手動で送信できるようにする(_A)"
+
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "報告者:"
+
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "sendmail へのパス:"
+
+#: src/bug-buddy.glade.h:32
+msgid "Please choose a component, version, and severity level."
+msgstr "コンポーネント、バージョン、重大性レベルを指定して下さい。"
+
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
+msgstr ""
+"バグ報告の最終的な修正を行って下さい。\n"
+"http://bugzilla.gnome.org に次の内容、\n"
+"あなたのお名前、E-メール・アドレス、そして\n"
+"アプリがクラッシュする再現方法に対するいくつかの情報\n"
+"が表示される点に留意して下さい。\n"
+"もし公開できない重要な情報を含んでいる場合は、\n"
+"このバグ報告の提出を控えた方がいいかもしれません。"
+
+#: src/bug-buddy.glade.h:39
 msgid "Please make your bug report in English, if possible."
 msgstr "できれば英文でバグ報告を作成して下さい。"
 
-#: src/bug-buddy.glade.h:28
+#: src/bug-buddy.glade.h:40
 msgid ""
 "Please select the product or application for the bug you wish to report."
-msgstr "バグを報告したいアプリケーションあるいはプロダクトを選択してください"
+msgstr "バグを報告するプロダクトまたはアプリケーションを選択して下さい:"
 
-#: src/bug-buddy.glade.h:29
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
-"このバグが既に報告されているようなものかどうか調べるようにして下さい。\n"
+"このバグが既に報告されているかどうかを調べるようにして下さい。\n"
 "もし同じようなバグが報告されている場合、報告は控えるようお願いします。"
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
-"Bug Buddy がバグトラッキングシステムのプロダクトリスト\n"
-"を更新中です。お待ちください..."
+"Bug Buddy がバグ追跡システムの\n"
+"プロダクト一覧を更新中です。お待ち下さい..."
 
-#: src/bug-buddy.glade.h:33
+#: src/bug-buddy.glade.h:45
 msgid "Process ID:"
 msgstr "プロセス ID:"
 
-#: src/bug-buddy.glade.h:34
-msgid "Save in"
-msgstr "保存"
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "保存先:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "ファイルを指定して保存..."
 
-#: src/bug-buddy.glade.h:36
-#, fuzzy
+#: src/bug-buddy.glade.h:48
 msgid "Saving: "
-msgstr "保存中:"
+msgstr "保存中: "
 
-#: src/bug-buddy.glade.h:37
+#: src/bug-buddy.glade.h:49
 msgid "Sendmail Settings"
-msgstr "Sendmailの設定"
+msgstr "sendmail の設定"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
-msgstr "重大性"
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "重大性:"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "アプリケーションの表示(_A)"
+
+#: src/bug-buddy.glade.h:52
 msgid "Show _Debugging Details"
-msgstr "デバッグ情報の詳細を表示(_D)"
+msgstr "デバッグ情報の詳細を表示する(_D)"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "プロダクトの表示(_P)"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
 msgstr "よく報告されるバグの表示:"
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
 msgstr "シンプル"
 
-#: src/bug-buddy.glade.h:43
+#: src/bug-buddy.glade.h:56
 msgid "Start"
 msgstr "開始"
 
-#: src/bug-buddy.glade.h:44
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "停止"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
-msgstr "別のバグを報告"
+msgstr "別のバグを報告する"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
-msgstr "件名"
+msgstr "概要 (簡単な説明)"
 
-#: src/bug-buddy.glade.h:47
-msgid "The product or application is not listed above."
-msgstr "プロダクトあるいはアプリケーションはリストにありません"
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "アプリケーションが正しく機能しない(_A)"
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr "To"
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "ドキュメントが間違っている(_D)"
 
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
-msgstr "Sendmailを直接使用する"
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "日本語訳が間違っている(_T)"
 
-#: src/bug-buddy.glade.h:50
-msgid "Version"
-msgstr "バージョン"
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "To:"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr "`sendmail` を直接使用する(_S)"
+
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
+msgstr "バージョン:"
+
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
-msgstr ""
+msgstr "更新しない(_D)"
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "新しい機能をリクエストする(_R)"
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
-msgstr ""
+msgstr "更新する(_U)"
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
 msgstr "コンポーネント"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
 msgstr "説明"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
-msgstr "メールの情報"
+msgstr "E-メールの情報"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
 msgstr "完了"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
-msgid "mail config"
-msgstr "メール設定"
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "イントロ"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:75
+msgid "mail config"
+msgstr "E-メール設定"
+
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
 msgstr "よくあるバグ"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
 msgstr "プロダクト"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d / %d"
 
-#: src/bugzilla.c:687
+#: src/bugzilla.c:721
 msgid "ID"
 msgstr "ID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
 msgstr "プロダクト"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
 msgstr "コンポーネント"
 
-#: src/bugzilla.c:870
+#: src/bugzilla.c:898
 #, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
@@ -507,12 +534,12 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy は '%s' を開くことができませんでした\n"
-"Bug Buddy が正しくインストールされたか確認してください\n"
+"Bug Buddy は '%s' を開くことができませんでした。\n"
+"Bug Buddy が正しくインストールされたか確認して下さい。\n"
 "\n"
-"Bug Buddy は終了します"
+"Bug Buddy を終了します。"
 
-#: src/bugzilla.c:915
+#: src/bugzilla.c:936
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -520,13 +547,13 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"バグ報告の送信先に関する情報を見つけることができませんでした。\n"
+"バグを報告する送信先の情報を見つけることができませんでした。\n"
 "\n"
-"Bug Buddy が正しくインストールされているか確認してください。\n"
+"Bug Buddy が正しくインストールされているか確認して下さい。\n"
 "\n"
 "Bug Buddy を終了します。"
 
-#: src/bugzilla.c:994
+#: src/bugzilla.c:1015
 #, c-format
 msgid "Couldn't load icon for %s: %s"
 msgstr "%s のアイコンを読み込むことができませんでした: %s"
@@ -537,7 +564,7 @@ msgstr "URI"
 
 #: src/cell-renderer-uri.c:152
 msgid "URI to show when clicked."
-msgstr "クリックした時に表示するURI"
+msgstr "クリックした時に表示する URI"
 
 #: src/cell-renderer-uri.c:159
 msgid "Visited"
@@ -545,14 +572,14 @@ msgstr "訪問済み"
 
 #: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr "そのURIが既に訪問済みの場合"
+msgstr "その URI が既に訪問済みの場合"
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
-msgstr "スタックトレースを取得中... (%d)"
+msgstr "スタック・トレースの取得中... (%d)"
 
-#: src/gdb-buddy.c:175
+#: src/gdb-buddy.c:160
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
@@ -561,58 +588,66 @@ msgstr ""
 "gdb によって core ファイルを処理できません:\n"
 "'%s'"
 
-#: src/gdb-buddy.c:206
+#: src/gdb-buddy.c:185
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"GDB は作られたバイナリを解決することができませんでした\n"
+"gdb はどのバイナリが生成されたか検出できませんでした。\n"
 "'%s'"
 
-#: src/gdb-buddy.c:238
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
 msgstr "読み込みでエラー...中断します"
 
-#: src/gdb-buddy.c:290
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr "デバッグするにはバイナリ・ファイルと PID の両方が必要です。"
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr "バイナリ・ファイルが見つかりません。絶対パスで指定してみて下さい。"
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
 msgstr ""
-"GDB をシステム上で発見できませんでした。\n"
-"デバッグ情報の取得はできません。"
+"gdb がお使いのシステムにありませんでした。\n"
+"デバッグ情報の取得を中止します。"
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
 msgstr ""
-"gdb-cmd ファイルを見つけることが出来ませんでした\n"
-"Bug Buddy を再インストールしてください"
+"gdb-cmd ファイルを見つけることができませんでした。\n"
+"Bug Buddy を再インストールして下さい。"
 
-#: src/gdb-buddy.c:352
+#: src/gdb-buddy.c:310
 #, c-format
 msgid ""
 "There was an error running gdb:\n"
 "\n"
 "%s"
 msgstr ""
-"gdb 実行時にエラーが発生しました:\n"
+"gdb の実行時にエラーが発生しました:\n"
 "\n"
 "%s"
 
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr "%s のシンボリックリンク情報を読み込むことができませんでした"
+msgstr "%s のシンボリック・リンクを読み込むことができませんでした。"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
-msgstr "ファイルは多すぎるシンボリックリンクを持っています"
+msgstr "そのファイルへのシンボリック・リンクが多すぎます。"
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr "メインループが動作していません!"
+msgstr "メイン・ループが動作していません！"
 
 #: src/save-buddy.c:284
 #, c-format
@@ -621,7 +656,7 @@ msgstr "SIGCHLD ハンドラの設定でエラーがありました: %s"
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
-msgstr "無効なファイル名です"
+msgstr "ファイル名が無効です。"
 
 #: src/save-buddy.c:412
 #, c-format
@@ -630,91 +665,108 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
-"ファイル名 '%s' はすでに存在しています\n"
+"ファイル '%s' が既に存在しています。\n"
 "\n"
-"このファイルを上書きしてもよろしいですか?"
+"このファイルを上書きしても宜しいですか？"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr "上書き(_O)"
+msgstr "上書きする(_O)"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr "バックアップファイルを作成できませんでした"
+msgstr "バックアップ・ファイルを作成できませんでした。"
 
 #: src/united-states-of-bug-buddy.c:54
 msgid "Welcome to Bug Buddy"
-msgstr "Bug Buddyへようこそ"
+msgstr "Bug Buddy へようこそ"
 
 #: src/united-states-of-bug-buddy.c:55
-msgid "Select a Product or Application"
-msgstr "プロダクトあるいはアプリケーションを選択"
+msgid "Collecting debug info"
+msgstr "デバッグ情報の収集"
 
 #: src/united-states-of-bug-buddy.c:56
-msgid "Select a Component"
-msgstr "コンポーネントを選択"
+msgid "Select a Product or Application"
+msgstr "プロダクト/アプリケーションの選択"
 
 #: src/united-states-of-bug-buddy.c:57
+msgid "Select a Component"
+msgstr "コンポーネントの選択"
+
+#: src/united-states-of-bug-buddy.c:58
 msgid "Frequently Reported Bugs"
 msgstr "よく報告されるバグ"
 
-#: src/united-states-of-bug-buddy.c:58
+#: src/united-states-of-bug-buddy.c:59
 msgid "Bug Description"
 msgstr "バグの説明"
 
-#: src/united-states-of-bug-buddy.c:59
+#: src/united-states-of-bug-buddy.c:60
 msgid "Mail Configuration"
 msgstr "メールの設定"
 
-#: src/united-states-of-bug-buddy.c:60
+#: src/united-states-of-bug-buddy.c:61
 msgid "Confirmation"
 msgstr "確認"
 
-#: src/united-states-of-bug-buddy.c:61
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
-msgstr "完了しました!"
+msgstr "完了しました！"
 
-#: src/united-states-of-bug-buddy.c:105
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+"相花 毅 <aihana@gnome.gr.jp>\n"
+"Kin Taishin <taishin@imap.cc>\n"
+"Yukihiro Nakai <ynakai@gnome.gr.jp>\n"
+"Akira TAGOH <at@ff.iij4u.or.jp>\n"
+"日本GNOMEユーザー会 <http://www.gnome.gr.jp>"
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
-msgstr "GNOME 用バグ報告ツール"
+msgstr "GNOME 向けのバグ報告ツール"
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
-msgstr "Bug Buddy のウェブページ(手抜き)"
+msgstr "Bug Buddy のウェブページ (手抜き)"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
-msgstr "あなたの名前を入力してください。"
+msgstr "あなたの名前を入力して下さい。"
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
-msgstr "有効なメールアドレスを入力してください。"
+msgstr "有効なメールアドレスを入力して下さい。"
 
-#: src/united-states-of-bug-buddy.c:340
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
-"'%s' は存在しないようです\n"
+"'%s' は存在しないようです。\n"
 "\n"
-"sendmailのパスを確認してください"
+"`sendmail` へのパスを確認して下さい。"
 
-#: src/united-states-of-bug-buddy.c:372
+#: src/united-states-of-bug-buddy.c:470
 msgid "Please enter a valid email command."
-msgstr "有効なメールコマンドを入力してください。"
+msgstr "正しいコマンドを入力して下さい。"
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
 msgstr "指定されたファイルはありません。"
 
-#: src/united-states-of-bug-buddy.c:446
+#: src/united-states-of-bug-buddy.c:552
 #, c-format
 msgid "File is of type: %s"
 msgstr "ファイルの種類: %s"
 
-#: src/united-states-of-bug-buddy.c:453
+#: src/united-states-of-bug-buddy.c:556
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
@@ -723,29 +775,21 @@ msgid ""
 msgstr ""
 "'%s' は %s ファイルです\n"
 "\n"
-"Bug Buddy はプレインテキスト (text/*) ファイルだけを提出することができます"
+"Bug Buddy は通常のテキスト・ファイル (text/*) のみ提出することができます。"
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
-msgstr "分かりやすい件名を入力しなければなりません。"
+msgstr "分かりやすい件名を入力して下さい。"
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
-msgstr "わかりやすい説明を入力しなければなりません。"
+msgstr "わかりやすい説明を入力して下さい。"
 
-#: src/united-states-of-bug-buddy.c:520
-msgid "Submit this bug report now?"
-msgstr "このバグ報告を今すぐ送信しますか?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr "送信(_S)"
-
-#: src/united-states-of-bug-buddy.c:560
+#: src/united-states-of-bug-buddy.c:625
 msgid "Please wait while Bug Buddy saves your bug report..."
-msgstr "Bug Buddy がバグ報告を保存する間お待ちください..."
+msgstr "Bug Buddy がバグ報告を保存する間お待ち下さい..."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -758,112 +802,154 @@ msgstr ""
 "\n"
 "%s\n"
 "\n"
-"別のファイル名でやり直してください"
+"別のファイル名でやり直して下さい。"
 
-#: src/united-states-of-bug-buddy.c:576
+#: src/united-states-of-bug-buddy.c:637
 #, c-format
 msgid "Your bug report was saved in %s"
-msgstr "あなたのバグ報告は %s に保存されました"
+msgstr "あなたのバグ報告は %s に保存されました。"
 
-#: src/united-states-of-bug-buddy.c:584
+#: src/united-states-of-bug-buddy.c:645
 msgid "Please wait while Bug Buddy submits your bug report..."
-msgstr "Bug Buddy がバグ報告を提出する間お待ちください..."
+msgstr "Bug Buddy がバグ報告を提出する間お待ち下さい..."
 
-#: src/united-states-of-bug-buddy.c:591
+#: src/united-states-of-bug-buddy.c:649
 #, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
 "\n"
 "%s"
 msgstr ""
-"バグ報告を提出中にエラーがありました:\n"
+"バグの報告中にエラーがありました:\n"
 "\n"
 "%s"
 
-#: src/united-states-of-bug-buddy.c:599
+#: src/united-states-of-bug-buddy.c:656
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"あなたのバグ報告は以下へ提出されました:\n"
+"あなたのバグ報告が次に提出されました:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"ありがとうございます!"
+"バグ報告は Free Software にとって重要な位置を占めます。ご協力に感謝します。"
 
-#: src/united-states-of-bug-buddy.c:747
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
+msgstr "デバッグする core ファイルまたは実行中のアプリを選択して下さい。"
+
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
 msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
 msgstr ""
-"Bug Buddy はバグ報告の対象となるプロダクトに関する情報を持っていません。バグ"
-"報告の送信先を手動で入力しなければなりません。"
+"%s\n"
+"\n"
+"[注意] 実行中のソフトウェア (%s) は半年前のものです。\n"
+"%s システムの新しいバージョンへのアップデートを検討してみて下さい。"
 
-#: src/united-states-of-bug-buddy.c:771
+#: src/united-states-of-bug-buddy.c:930
 msgid "Please choose a product for your bug report."
-msgstr "バグ報告のためのプロダクトを選択してください"
+msgstr "バグ報告するプロダクトを選択して下さい。"
 
-#: src/united-states-of-bug-buddy.c:785
+#: src/united-states-of-bug-buddy.c:934
+#, c-format
+msgid "Please choose a component, version, and severity level for product %s"
+msgstr ""
+"プロダクト %s のコンポーネント、バージョン、重大性レベルを指定して下さい。"
+
+#: src/united-states-of-bug-buddy.c:943
 msgid "Please choose an application for your bug report."
-msgstr "バグ報告のためのアプリケーションを選択してください"
+msgstr "バグ報告するアプリケーションを選択して下さい。"
 
-#: src/united-states-of-bug-buddy.c:804
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:947
+#, c-format
 msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
+"Please choose a component, version, and severity level for application %s"
 msgstr ""
-"このアプリケーションはバグを提出する方法についての情報を含んでいません\n"
-"\n"
-"バグを送信すべきメールアドレスを知っている場合は、後でそれを指定することがで"
-"きます\n"
-"\n"
-"アプリケーション内の \"情報\" ボックスの中、あるいはアプリケーションのドキュ"
-"メント内にそれを発見できるかもしれません"
+"アプリケーション %s のコンポーネント、バージョン、重大性レベルを指定して下さ"
+"い。"
 
-#: src/united-states-of-bug-buddy.c:845
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
+msgstr ""
+"このアプリケーションにはバグ情報がありますが、Bug Buddy はその情報を認識でき"
+"ません。別のアプリケーションを選択して下さい。"
+
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
-msgstr "コンポーネントを指定しなければなりません。"
+msgstr "コンポーネントを指定して下さい。"
 
-#: src/united-states-of-bug-buddy.c:859
-msgid "You must specify a version for your bug report."
-msgstr "バージョンを指定しなければなりません。"
+#: bug-buddy.schemas.in.h:1
+msgid "Bug reporter name"
+msgstr "バグ報告の名前"
 
-#: src/united-states-of-bug-buddy.c:911
+#: bug-buddy.schemas.in.h:2
+msgid "Email Address"
+msgstr "E-メール・アドレス"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
 msgstr ""
-"本当にバグ報告をキャンセル\n"
-"してもよろしいですか?"
+"GNOME Bugzilla にバグを報告するための E-メール・アドレスです。このアドレスは"
+"報告したバグに関してやりとりするために使用します。既に GNOME Bugzilla のアカ"
+"ウントをお持ちならば、その E-メール・アドレスを使用して下さい。"
 
-#~ msgid ""
-#~ "There was an error showing the proxy settings:\n"
-#~ "\n"
-#~ "%s.\n"
-#~ "\n"
-#~ "Please make sure the GNOME Control Center is properly installed."
-#~ msgstr ""
-#~ "プロクシ設定を表示中にエラーがありました:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "GNOMEコントロールセンタが正しくインストールされているか確認してください"
+#: bug-buddy.schemas.in.h:4
+msgid "File to save bug reports"
+msgstr "バグ報告を保存するファイル"
 
-#~ msgid "Proxy Settings..."
-#~ msgstr "プロクシの設定..."
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr "後で報告するためにバグ報告を保存するファイルです。"
 
-#~ msgid "To:"
-#~ msgstr "To:"
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr "最後に Bug Buddy の更新を行った日付"
 
-#~ msgid "Updating products list:"
-#~ msgstr "プロダクトリストを更新中:"
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr "`sendmail` またはそれに相当するプログラムが格納されているパス名です。"
+
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr "`sendmail` 相当のメール配送プログラムのパス"
+
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr "ユーザがバグ報告した際の実際の名前です。"
+
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+"これは、Bugzilla 情報を更新するために Bug Buddy でチェックした最終日付 (UNIX "
+"タイムスタンプ) です。"
+
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+"GNOME Bugzilla にバグ報告を送信する際に `sendmail` を使用します。現在のとこ"
+"ろ、これしかサポートしていません。"
+
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr "バグ報告の送信に `sendmail` を使用する"

@@ -6,113 +6,106 @@
 #
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Pablo Saratxaga <srtxg@chanae.alphanet.ch> 2001
+# Pablo Saratxaga <pablo@walon.org>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bug-buddy 2.1.0\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2002-04-29 20:38MET\n"
-"Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
-"Language-Team: Walon <linux-wa@chanae.alphanet.ch>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2004-05-04 02:53+0200\n"
+"Last-Translator: Pablo Saratxaga <pablo@walon.org>\n"
+"Language-Team: Walloon <linux-wa@walon.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
 msgstr "Evoyî on rapoirt di bug"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
 msgstr "Evoyî li rapoirt rén k' a vos minme"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
 msgstr "Schaper li rapoirt en on fitchî"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
 msgstr "Programe k' a crashé"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
 msgstr "Fitchî core"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
 msgstr "rén"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "Fé on novea rapoirt di bug"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "Radjouter pus d' informåcions å rapoirt"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
 msgstr "No del sakî di contake"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "NO"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
 msgstr "Adresse emile del sakî di contake"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "EMAIL"
 msgstr "EMILE"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "Package containing the program"
-msgstr "Pacaedje k' a li probleme"
+msgstr "Pacaedje k' a l' problinme"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "PACKAGE"
 msgstr "PACAEDJE"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "Version of the package"
 msgstr "Modêye do pacaedje"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "VERSION"
 msgstr "MODÊYE"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:83
 msgid "File name of crashed program"
 msgstr "No di fitchî do programe k' a crashé"
 
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
 msgid "FILE"
 msgstr "FITCHÎ"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID of crashed program"
 msgstr "PID do programe k' a crashé"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
 msgstr "Fitchî core do programe k' a crashé"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
 msgstr "Fitchî tecse a stitchî el rapoirt"
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
 msgstr "Dji n' a savou trover ene ahesse lomêye %s so %s"
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
@@ -120,19 +113,19 @@ msgstr ""
 "gdb n' a nén co fini di prinde les informåcions di disbugaedje.\n"
 "Touwer li process gdb (li trace del pile srè adon nén complete)?"
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
 msgstr "gdb a ddja fini"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
-msgstr ""
+msgstr "Schaper li trace del pile"
 
-#: src/bug-buddy.c:261
+#: src/bug-buddy.c:289
 msgid "Please wait while Bug Buddy saves the stack trace..."
 msgstr ""
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -142,346 +135,384 @@ msgid ""
 "Please try again, maybe with a different file name."
 msgstr ""
 
-#: src/bug-buddy.c:298
-msgid "Show _Applications"
-msgstr "Håyner les pro_grames"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-msgid "Show _Products"
-msgstr "Håyner les _prodûts"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
 msgstr "_Enonder programe d' emilaedje"
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
 msgstr "_Evoyî rapoirt"
 
-#: src/bug-buddy.c:400
+#: src/bug-buddy.c:411
 msgid "Hide Debugging Options"
 msgstr "Catchî l' informåcion di disbugaedje"
 
-#: src/bug-buddy.c:401
+#: src/bug-buddy.c:412
 msgid "Show Debugging Options"
 msgstr "Mostrer l' informåcion di disbugaedje"
 
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_APPNAME ni s' eploye pus.\n"
 "Eployîz purade l' årgumint e roye di comande « --appname » s' i vs plait."
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_PID ni s' eploye pus.\n"
 "Eployîz purade l' årgumint e roye di comande « --pid » s' i vs plait."
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
-msgstr ""
-"Wilicome a Bug Buddy, ene usteye po fé des rapoirts di bugs po Gnome.\n"
-"I vos aidrè pate a pate dins l' fijhaedje et evoyaedje d' on rapoirt di bug."
-
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-"\n"
-"\n"
-"Vos voeyoz çouchal ca on ôte programe s' a crashé."
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
 
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr ""
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
 "Bug Buddy n' a nén savou tcherdjî si fitchî d' eterface uzeu (%s).\n"
-"Verifyîz ki Bug Buddy a stî astalé comufåt s' i vs plait."
+"Verifyîz ki Bug Buddy a stî astalé comifåt s' i vs plait."
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Bug Buddy èn pout nén mete a djoû si informåcion so les bugs.\n"
+"Li viye informåcion serè-st eployeye."
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
 msgstr "Usteye di rapoirt di bugs"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
-msgstr "Fé on rapoirt di bug po GNOME"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+msgid "Report a bug in GNOME-based applications"
+msgstr "Fé on rapoirt di bug po les programes GNOME"
 
 #: src/bug-buddy.glade.h:1
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"Wilicome a Bug Buddy, ene usteye po fé des rapoirts di bugs po Gnome. I vos "
+"aidrè pate a pate dins l' fijhaedje ey evoyaedje d' on rapoirt di bug.\n"
+"\n"
+"Tchoezixhoz li sôre di problinme ki vos vloz rapoirter eyet clitchîz sol "
+"boton «Shuvant» s' i vs plait:\n"
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
-msgstr ""
+msgstr "*"
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
-msgstr ""
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Metaedje a djoû di Bug Buddy</span>\n"
+"\n"
+"L' informåcion so les bugs k' est so voste éndjole est trop viye. Si vos "
+"tchoezixhoz «Mete a djoû» ele srè metowe a djoû; si vos tchoezixhoz «Èn nén "
+"mete a djoû» çoula va foirci li rapoirt di bug a-z eployî li viye "
+"informåcion.\n"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
-msgstr ""
+msgstr "Sipepieus"
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
-msgstr ""
+msgstr "Fenominne d' Assbarn"
 
-#: src/bug-buddy.glade.h:9
+#: src/bug-buddy.glade.h:14
 msgid "Binary file:"
-msgstr ""
+msgstr "Fitchî binaire:"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:11
+#: src/bug-buddy.glade.h:16
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
+"Bug Buddy pout evoyî des informåcions di disbugaedje avou vosse rapoirt.\n"
+"Les bounès tchuzes divrént esse metowes otomaticmint por vos."
 
-#: src/bug-buddy.glade.h:13
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
+"Bug Buddy evoye les rapoirts di bug pa emile.\n"
+"Tchoezixhoz cmint ki vos vloz ki Bug Buddy evoye les emiles."
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
-msgstr ""
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "Cc:"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
 msgstr "Fitchî core"
 
-#: src/bug-buddy.glade.h:17
-msgid "Debug"
-msgstr ""
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr "Dis_buguer on programe en alaedje ou k' a crashé (esperts seulmint)"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
+#: src/bug-buddy.glade.h:24
+msgid "Debug"
+msgstr "Disbuguer"
+
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "Discrijhaedje"
 
-#: src/bug-buddy.glade.h:19
-msgid "Downloading files"
-msgstr ""
-
-#: src/bug-buddy.glade.h:20
-msgid "Email"
-msgstr ""
-
-#: src/bug-buddy.glade.h:21
-msgid "Include a text file"
-msgstr ""
-
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr ""
-
-#: src/bug-buddy.glade.h:23
-msgid "Name"
-msgstr ""
-
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr ""
-
-#: src/bug-buddy.glade.h:25
-msgid "Please choose a component, version, and severity level."
-msgstr ""
-
 #: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
-msgstr ""
+msgid "Downloading files"
+msgstr "Aberbwetant les fitchîs"
 
 #: src/bug-buddy.glade.h:27
-msgid "Please make your bug report in English, if possible."
-msgstr ""
+msgid "Email:"
+msgstr "Emile:"
 
 #: src/bug-buddy.glade.h:28
-msgid ""
-"Please select the product or application for the bug you wish to report."
-msgstr ""
+msgid "Include a text file"
+msgstr "Sititchî on fitchî tecse"
 
 #: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr "Sch_aper simplumint en on fitchî, por mi evoyî l' rapoirt pus tård"
+
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "No:"
+
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "Tchimin po sendmail:"
+
+#: src/bug-buddy.glade.h:32
+msgid "Please choose a component, version, and severity level."
+msgstr "Tchoezixhoz on componint, ene modêye, eyet on livea d' impôrtance."
+
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
+msgstr ""
+
+#: src/bug-buddy.glade.h:39
+msgid "Please make your bug report in English, if possible."
+msgstr "Sicrijhoz vosse rapoirt di bug en inglès, si possibe."
+
+#: src/bug-buddy.glade.h:40
+msgid ""
+"Please select the product or application for the bug you wish to report."
+msgstr "Tchoezixhoz li prodût ou l' programe ki vos vloz fé on rapoirt di bug."
+
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
+"Prindoz ene miete di tins po vey si vosse bug n' est nén onk des cis les pus "
+"rapoirtés.\n"
+"Si l' bug a ddja stî rapoirté, nel rapoirtez nén èn ôte côp s' i vs plait."
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
+"Tårdjîz ene miete s' i vs plait, tins ki Bug Buddy mete\n"
+"a djoû si djivêye di prodûts pol sistinme di shuvaedje di bugs."
 
-#: src/bug-buddy.glade.h:33
+#: src/bug-buddy.glade.h:45
 msgid "Process ID:"
-msgstr ""
+msgstr "ID do process:"
 
-#: src/bug-buddy.glade.h:34
-msgid "Save in"
-msgstr ""
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "Schaper e:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "Schaper li rapoirt e..."
 
-#: src/bug-buddy.glade.h:36
+#: src/bug-buddy.glade.h:48
 msgid "Saving: "
 msgstr "Schapaedje: "
 
-#: src/bug-buddy.glade.h:37
+#: src/bug-buddy.glade.h:49
 msgid "Sendmail Settings"
 msgstr "Apontiaedjes di sendmail"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
-msgstr ""
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "Impôrtance:"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "Håyner les pro_grames"
+
+#: src/bug-buddy.glade.h:52
 msgid "Show _Debugging Details"
 msgstr "Mostrer les detays di _disbugaedje"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "Håyner les _prodûts"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
 msgstr "Mostrer les bugs les pus corants e:"
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
 msgstr "Simpe"
 
-#: src/bug-buddy.glade.h:43
+#: src/bug-buddy.glade.h:56
 msgid "Start"
 msgstr "Enonder"
 
-#: src/bug-buddy.glade.h:44
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "Arester"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
 msgstr "Evoyî èn ôte bug"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
 msgstr "Rascourti"
 
-#: src/bug-buddy.glade.h:47
-msgid "The product or application is not listed above."
-msgstr ""
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "Li _programe ni rote nén comifåt"
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr ""
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "Li _documintåcion est måle"
 
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
-msgstr ""
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "Li _ratournaedje est måva"
 
-#: src/bug-buddy.glade.h:50
-msgid "Version"
-msgstr "Modêye"
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "A:"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr "Eployî _sendmail directumint"
+
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
+msgstr "Modêye:"
+
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
-msgstr ""
+msgstr "Èn _nén mete a djoû"
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "_Dimander ene fonccionålité ki manke"
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
-msgstr ""
+msgstr "_Mete a djoû"
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
 msgstr "componint"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
 msgstr "disc"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
 msgstr "info emile"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
 msgstr "fini"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr ""
+
+#: src/bug-buddy.glade.h:75
 msgid "mail config"
 msgstr "apontiaedje emile"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
 msgstr "pus corants"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
 msgstr "prodût"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d di %d"
 
-#: src/bugzilla.c:687
+#: src/bugzilla.c:721
 msgid "ID"
 msgstr "ID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
 msgstr "Prodût"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
 msgstr "Componint"
 
-#: src/bugzilla.c:870
+#: src/bugzilla.c:898
 #, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
@@ -490,11 +521,11 @@ msgid ""
 "Bug Buddy will now quit."
 msgstr ""
 "Bug Buddy n' a nén savou drovi «%s».\n"
-"Verifyîz ki Bug Buddy a stî astalé comufåt s' i vs plait.\n"
+"Verifyîz ki Bug Buddy a stî astalé comifåt s' i vs plait.\n"
 "\n"
 "Bug Buddy va asteure si clôre."
 
-#: src/bugzilla.c:915
+#: src/bugzilla.c:936
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -505,11 +536,11 @@ msgstr ""
 "Bug Buddy n' a nén savou tropver des informåcions di wice evoyî les rapoirts "
 "di bug.\n"
 "\n"
-"Verifyîz ki Bug Buddy a stî astalé comufåt s' i vs plait.\n"
+"Verifyîz ki Bug Buddy a stî astalé comifåt s' i vs plait.\n"
 "\n"
 "Bug Buddy va asteure si clôre."
 
-#: src/bugzilla.c:994
+#: src/bugzilla.c:1015
 #, c-format
 msgid "Couldn't load icon for %s: %s"
 msgstr "Dji n' a savou tcherdjî l' imådjete po %s: %s"
@@ -530,12 +561,12 @@ msgstr "Vizité"
 msgid "If the URI has been visited before."
 msgstr "Si l' hårdêye a stî vizitêye divant."
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
 msgstr ""
 
-#: src/gdb-buddy.c:175
+#: src/gdb-buddy.c:160
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
@@ -544,7 +575,7 @@ msgstr ""
 "Nén possibe di processer li fitchî core avou gdb:\n"
 "«%s»"
 
-#: src/gdb-buddy.c:206
+#: src/gdb-buddy.c:185
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
@@ -553,11 +584,20 @@ msgstr ""
 "GDB n' a nén polou saveur ké programe a prodût\n"
 "«%s»"
 
-#: src/gdb-buddy.c:238
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
-msgstr "Åk n' a nén stî tot lejhant... dj' aresteye"
+msgstr "Åk n' a nén stî tot léjhant... dj' arestêye"
 
-#: src/gdb-buddy.c:290
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr "I vs fåt dner ambedeus on fitchî binaire eyet on PID pol disbugaedje."
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr ""
+"Li fitchî binaire n' a nén stî trové. Sayîz purade avou on tchmin absolou."
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
@@ -565,7 +605,7 @@ msgstr ""
 "GDB n' nén stî trové so vosse sistinme.\n"
 "I gn årè nole informåcion di disbugaedje sin lu."
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
@@ -573,7 +613,7 @@ msgstr ""
 "Dji n' a savou trover li fitchî gdb-cmd.\n"
 "Sayî di rastaler Bug Buddy."
 
-#: src/gdb-buddy.c:352
+#: src/gdb-buddy.c:310
 #, c-format
 msgid ""
 "There was an error running gdb:\n"
@@ -587,15 +627,15 @@ msgstr ""
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr ""
+msgstr "Dji n' a savou lére l' informåcion do loyén simbolike po %s"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
-msgstr ""
+msgstr "Li fitchî a pår trop di loyéns simbolikes."
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr ""
+msgstr "Li mwaisse blouke n' est nén en alaedje!"
 
 #: src/save-buddy.c:284
 #, c-format
@@ -604,7 +644,7 @@ msgstr ""
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
-msgstr ""
+msgstr "No d' fitchî nén valide."
 
 #: src/save-buddy.c:412
 #, c-format
@@ -613,119 +653,129 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
+"I gn a ddja on fitchî lomé «%s».\n"
+"\n"
+"El voloz vs sipotchî?"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr ""
+msgstr "Sip_otchî"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "Dji n' a nén savou fé on fitchî copeye di såvrité."
 
 #: src/united-states-of-bug-buddy.c:54
 msgid "Welcome to Bug Buddy"
 msgstr "Wilicome a Bug Buddy"
 
 #: src/united-states-of-bug-buddy.c:55
+msgid "Collecting debug info"
+msgstr "Dji ramexhnêye des informåcions di disbugaedje"
+
+#: src/united-states-of-bug-buddy.c:56
 msgid "Select a Product or Application"
 msgstr "Tchoezi on prodût ou on programe"
 
-#: src/united-states-of-bug-buddy.c:56
+#: src/united-states-of-bug-buddy.c:57
 msgid "Select a Component"
 msgstr "Tchoezi on componint"
 
-#: src/united-states-of-bug-buddy.c:57
+#: src/united-states-of-bug-buddy.c:58
 msgid "Frequently Reported Bugs"
 msgstr "Bugs les pus sovint rapoirtés"
 
-#: src/united-states-of-bug-buddy.c:58
+#: src/united-states-of-bug-buddy.c:59
 msgid "Bug Description"
 msgstr "Discrijhaedje do bug"
 
-#: src/united-states-of-bug-buddy.c:59
+#: src/united-states-of-bug-buddy.c:60
 msgid "Mail Configuration"
 msgstr "Apontiaedje di l' emilaedje"
 
-#: src/united-states-of-bug-buddy.c:60
+#: src/united-states-of-bug-buddy.c:61
 msgid "Confirmation"
 msgstr "Acertinaedje"
 
-#: src/united-states-of-bug-buddy.c:61
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
 msgstr "Fwait!"
 
-#: src/united-states-of-bug-buddy.c:105
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr "Pablo Saratxaga <pablo@walon.org>"
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
 msgstr "Usteye grafike di rapoirt di bugs po Gnome."
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
-msgstr ""
+msgstr "Li pådje waibe da Bug Buddy"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
 msgstr "Dinez l' no da vosse, s' i vs plait."
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
 msgstr "Dinez ene adresse emile valåbe, s' i vs plait."
 
-#: src/united-states-of-bug-buddy.c:340
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
-"I shonne ki «%s» n' egzisteye nén.\n"
+"I shonne ki «%s» n' egzistêye nén.\n"
 "\n"
 "Verifyîz li tchmin po «sendmail» s' i vs plait."
 
-#: src/united-states-of-bug-buddy.c:372
+#: src/united-states-of-bug-buddy.c:470
 msgid "Please enter a valid email command."
 msgstr "Dinez ene comande d' emilaedje valåbe, s' i vs plait."
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
-msgstr "Li fitchî specifyî n' egzisteye nén"
+msgstr "Li fitchî specifyî n' egzistêye nén"
 
-#: src/united-states-of-bug-buddy.c:446
+#: src/united-states-of-bug-buddy.c:552
 #, c-format
 msgid "File is of type: %s"
 msgstr "Li fitchî est del sôre: %s"
 
-#: src/united-states-of-bug-buddy.c:453
+#: src/united-states-of-bug-buddy.c:556
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
 "\n"
 "Bug Buddy can only submit plaintext (text/*) files."
 msgstr ""
-"«%s» e-st on fitchî %s.\n"
+"«%s» est on fitchî %s.\n"
 "\n"
 "Bug Buddy pout evoyî des fitchîs e peur tecse (text/*) seulmint."
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
-msgstr ""
+msgstr "Vos dvoz dner ene roye di sudjet dins vosse rapoirt di bug."
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
 msgstr ""
+"Vos dvoz dner on discrijhaedje k' on poye comprinde po vosse rapoirt di bug."
 
-#: src/united-states-of-bug-buddy.c:520
-msgid "Submit this bug report now?"
-msgstr "Evoyî ci rapoirt di bug tot d' shûte?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr ""
-
-#: src/united-states-of-bug-buddy.c:560
+#: src/united-states-of-bug-buddy.c:625
 msgid "Please wait while Bug Buddy saves your bug report..."
 msgstr ""
+"Tårdjîz ene miete s' i vs plait, tins k' Bug Buddy schape vosse rapoirt di "
+"bug..."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -734,17 +784,24 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"Li rapoirt di bug n' a nén stî schapé e %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Rissayîz cor on cop s' i vs plait, motoit avou èn ôte no d' fitchî."
 
-#: src/united-states-of-bug-buddy.c:576
+#: src/united-states-of-bug-buddy.c:637
 #, c-format
 msgid "Your bug report was saved in %s"
 msgstr "Vosse rapoirt di bug a stî schapé e «%s»"
 
-#: src/united-states-of-bug-buddy.c:584
+#: src/united-states-of-bug-buddy.c:645
 msgid "Please wait while Bug Buddy submits your bug report..."
 msgstr ""
+"Tårdjîz ene miete s' i vs plait, tins k' Bug Buddy evoye vosse rapoirt di "
+"bug..."
 
-#: src/united-states-of-bug-buddy.c:591
+#: src/united-states-of-bug-buddy.c:649
 #, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
@@ -755,103 +812,139 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/united-states-of-bug-buddy.c:599
+#: src/united-states-of-bug-buddy.c:656
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"Vosse rapoirt di bug a stî avoyî a:\n"
+"Vosse rapoirt di bu a stî evoyî a:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Gråces traze côps!"
+"Fé des rapoirts di bugs c' est ene sacwè d' consecant po les libès "
+"programes. Gråces po voste aidance."
 
-#: src/united-states-of-bug-buddy.c:747
-msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
 msgstr ""
+"Tchoezixhoz l' fitchî «core» oudonbén l' programe en alaedje a disbuguer."
 
-#: src/united-states-of-bug-buddy.c:771
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
+msgstr ""
+"%s\n"
+"\n"
+"Notez ki l' programe ki vos eployîz (%s) est pus d' shijh moes vî.\n"
+"Vos dvrîz motoit l' mete a djoû avou ene novele modêye do sistinme %s"
+
+#: src/united-states-of-bug-buddy.c:930
 msgid "Please choose a product for your bug report."
-msgstr ""
+msgstr "Tchoezixhoz on prodût po vosse rapoirt di bug."
 
-#: src/united-states-of-bug-buddy.c:785
+#: src/united-states-of-bug-buddy.c:934
+#, c-format
+msgid "Please choose a component, version, and severity level for product %s"
+msgstr ""
+"Tchoezixhoz on componint, ene modêye, eyet on livea d' impôrtance pol prodût "
+"%s"
+
+#: src/united-states-of-bug-buddy.c:943
 msgid "Please choose an application for your bug report."
-msgstr ""
+msgstr "Tchoezixhoz on programe po vosse rapoirt di bug."
 
-#: src/united-states-of-bug-buddy.c:804
+#: src/united-states-of-bug-buddy.c:947
+#, c-format
 msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
+"Please choose a component, version, and severity level for application %s"
 msgstr ""
+"Tchoezixhoz on componint, ene modêye, eyet on livea d' impôrtance pol "
+"programe %s"
 
-#: src/united-states-of-bug-buddy.c:845
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
+msgstr ""
+"Ci programe ci a des informåcions di bug, mins Bug Buddy nelzès cnoxhe nén. "
+"Tchoezixhoz èn ôte programe s' i vs plait."
+
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
-msgstr ""
+msgstr "Vos dvoz dner on componint po vosse rapoirt di bug."
 
-#: src/united-states-of-bug-buddy.c:859
-msgid "You must specify a version for your bug report."
-msgstr ""
+#: bug-buddy.schemas.in.h:1
+msgid "Bug reporter name"
+msgstr "No do rapoirteu do bug"
 
-#: src/united-states-of-bug-buddy.c:911
+#: bug-buddy.schemas.in.h:2
+msgid "Email Address"
+msgstr "Adresse emile"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
 msgstr ""
-"Estoz seur di voleur rinoncî a\n"
-"l' evoyaedje di ci rapoirt di bug chal?"
+"Adresse emile po l' evoyaedje di rapoirts di bug å Bugzilla di Gnome. Ciste "
+"adresse serè-st eployeye po les responses åd fwaits do bug ki vos fjhoz "
+"l' rapoirt. Si vos avoz ddja on conte avou l' Bugzilla di Gnome, eployîz "
+"ç' conte la come adresse emile."
 
-#~ msgid ""
-#~ "There was an error trying to save %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Please choose another file and try again."
-#~ msgstr ""
-#~ "Åk n' a nén stî cwand dji sayîve di schaper %s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Tchoezixhoz on ôte fitchî et sayîz co ene feye."
+#: bug-buddy.schemas.in.h:4
+msgid "File to save bug reports"
+msgstr "Fitchî po schaper les rapoirts di bugs"
 
-#~ msgid "Select a mailer"
-#~ msgstr "Tchoezi on programe d' emilaedje"
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr ""
+"Li fitchî wice ki vos vloz schaper vosse rapoirt di bug po l' evoyî pus tård."
 
-#~ msgid "Start in terminal"
-#~ msgstr "Enonder en on terminå"
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr "Date ki Bug Buddy a loukî pol dierin côp après des metaedjes a djoû"
 
-#~ msgid "gnome"
-#~ msgstr "gnome"
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr ""
+"Li tchmin so vosse sistinme wice k' on trove sendmail ou èn ôte programe "
+"d' emilaedje."
 
-#~ msgid "sendmail"
-#~ msgstr "sendmail"
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr "Tchimin pol programe d' emilaedje djinre sendmail"
 
-#~ msgid "All"
-#~ msgstr "Tot"
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr "Vraiy no di l' uzeu fjhant l' rapoirt di bug."
 
-#~ msgid ""
-#~ "Unable to open file '%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Dji n' sai nén drovi l' fitchî «%s»:\n"
-#~ "%s"
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+"Çouchal est li dierin moumint (e date UNIX) ki Bug Buddy a loukî après des "
+"metaedjes a djoû di l' informåcion di Bugzilla."
 
-#~ msgid "about to run '%s'"
-#~ msgstr "dji va enonder «%s»"
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+"Eployî sendmail po l' evoyaedje di rapoirts di bugs sol bugzilla di Gnome. "
+"Pol moumint, c' est li seule metôde di sopoirtêye."
 
-#~ msgid ""
-#~ "Unable to start mail program '%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Dji n' sai enonder li programe d' emilaedje: «%s»:\n"
-#~ "%s"
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr "Eployî sendmail po-z evoyî les rapoirts di bugs"

@@ -6,15 +6,15 @@
         <desc>Configurable date formats in components [Was: Alternative date format for Birthdays]</desc>
         <url>http://bugzilla.ximian.com/show_bug.cgi?id=5137</url>
       </bug>
-      <bug bugid="821">
-        <desc>We need a Notes component.</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=821</url>
+      <bug bugid="907">
+        <desc>Add support for recurring tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=907</url>
       </bug>
     </component>
     <component name="Contacts [was: Addressbook]">
-      <bug bugid="19865">
-        <desc>NAMES'S LIST</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=19865</url>
+      <bug bugid="32978">
+        <desc>Performing a search against an Active Directory LDAP server caused a crash.</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=32978</url>
       </bug>
     </component>
     <component name="Mailer">
@@ -29,32 +29,18 @@
         <url>http://bugzilla.ximian.com/show_bug.cgi?id=1167</url>
       </bug>
     </component>
-  </product>
-  <product name="Red Carpet">
-    <component name="Red Carpet">
-      <bug bugid="19284">
-        <desc>Crash on "Prev" when failing to install local packages</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=19284</url>
+    <component name="Tasks">
+      <bug bugid="4006">
+        <desc>Drag &amp; Drop EMail/Tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=4006</url>
       </bug>
+    </component>
+  </product>
+  <product name="Red Carpet 1.x">
+    <component name="Red Carpet">
       <bug bugid="7152">
         <desc>Crash with wrong libc (eg using Potato package on Woody)</desc>
         <url>http://bugzilla.ximian.com/show_bug.cgi?id=7152</url>
-      </bug>
-    </component>
-  </product>
-  <product name="Ximian Packages">
-    <component name="nautilus">
-      <bug bugid="29382">
-        <desc>nautilus crashes when you leave home folder</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=29382</url>
-      </bug>
-    </component>
-  </product>
-  <product name="Ximian Desktop">
-    <component name="nautilus">
-      <bug bugid="29382">
-        <desc>nautilus crashes when you leave home folder</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=29382</url>
       </bug>
     </component>
   </product>
@@ -64,9 +50,9 @@
         <desc>Configurable date formats in components [Was: Alternative date format for Birthdays]</desc>
         <url>http://bugzilla.ximian.com/show_bug.cgi?id=5137</url>
       </bug>
-      <bug bugid="821">
-        <desc>We need a Notes component.</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=821</url>
+      <bug bugid="907">
+        <desc>Add support for recurring tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=907</url>
       </bug>
     </component>
   </product>
@@ -76,9 +62,39 @@
         <desc>Configurable date formats in components [Was: Alternative date format for Birthdays]</desc>
         <url>http://bugzilla.ximian.com/show_bug.cgi?id=5137</url>
       </bug>
-      <bug bugid="821">
-        <desc>We need a Notes component.</desc>
-        <url>http://bugzilla.ximian.com/show_bug.cgi?id=821</url>
+      <bug bugid="907">
+        <desc>Add support for recurring tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=907</url>
+      </bug>
+    </component>
+    <component name="Tasks">
+      <bug bugid="4006">
+        <desc>Drag &amp; Drop EMail/Tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=4006</url>
+      </bug>
+    </component>
+  </product>
+  <product name="Evolution-Data-Server">
+    <component name="Calendar">
+      <bug bugid="5137">
+        <desc>Configurable date formats in components [Was: Alternative date format for Birthdays]</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=5137</url>
+      </bug>
+      <bug bugid="907">
+        <desc>Add support for recurring tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=907</url>
+      </bug>
+    </component>
+    <component name="Mailer">
+      <bug bugid="17540">
+        <desc>support for receiving in-line pgp</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=17540</url>
+      </bug>
+    </component>
+    <component name="Tasks">
+      <bug bugid="4006">
+        <desc>Drag &amp; Drop EMail/Tasks</desc>
+        <url>http://bugzilla.ximian.com/show_bug.cgi?id=4006</url>
       </bug>
     </component>
   </product>

@@ -32,9 +32,16 @@
 #include <math.h>
 #include <string.h>
 
+#if 0
 #include <libart_lgpl/libart.h>
+#endif
 
 #define d(x)
+
+static guint throbber_id = 0;
+
+static void get_trace_from_core (const gchar *core_file);
+static void get_trace_from_pair (const gchar *app, const gchar *extra);
 
 static gint
 animate (gpointer data)
@@ -53,31 +60,26 @@ animate (gpointer data)
 static void
 start_animation (void)
 {
-	g_return_if_fail (druid_data.throbber_id == 0);
+	g_return_if_fail (throbber_id == 0);
 
-	druid_data.throbber_id = gtk_timeout_add (150, animate, NULL);
+	throbber_id = gtk_timeout_add (150, animate, NULL);
 	gtk_widget_show (GET_WIDGET ("gdb-progress"));
-	gtk_widget_set_sensitive (GET_WIDGET ("gdb-copy-save-box"), FALSE);
 }
 
 static void
 stop_animation (void)
 {
-	g_return_if_fail (druid_data.throbber_id != 0);
+	g_return_if_fail (throbber_id != 0);
 
-	gtk_timeout_remove (druid_data.throbber_id);
-	druid_data.throbber_id = 0;
+	gtk_timeout_remove (throbber_id);
+	throbber_id = 0;
 	gtk_widget_hide (GET_WIDGET ("gdb-progress"));
-	gtk_widget_set_sensitive (GET_WIDGET ("gdb-copy-save-box"), TRUE);
 }
 
 void
 start_gdb (void)
 {
-	static gchar *old_app = NULL;
-	static gchar *old_extra = NULL;
-	static CrashType old_type = -1;
-	gchar *app = NULL, *extra = NULL;
+	gchar *app, *extra;
 
 	d(g_message (_("Obtaining stack trace... (%d)"), druid_data.crash_type));
 
@@ -89,33 +91,19 @@ start_gdb (void)
 		extra = buddy_get_text ("gdb-pid-entry");
 		druid_data.app_pid = atoi (extra);
 		kill (druid_data.app_pid, SIGCONT);
-		if (druid_data.explicit_dirty ||
-		    (old_type != CRASH_DIALOG) ||
-		    (!old_app || strcmp (app, old_app)) ||
-		    (!old_extra || strcmp (extra, old_extra))) {
-			get_trace_from_pair (app, extra);
-		}
+		get_trace_from_pair (app, extra);
+		g_free (app);
+		g_free (extra);
 		break;
 	case CRASH_CORE:
 		extra = buddy_get_text ("gdb-core-entry");
-		if (druid_data.explicit_dirty ||
-		    (old_type != CRASH_CORE) ||
-		    (!old_extra || strcmp (extra, old_extra))) {
-			get_trace_from_core (extra);
-		}
+		get_trace_from_core (extra);
+		g_free (extra);
 		break;
 	default:
 		g_assert_not_reached ();
 		break;
 	}
-
-	g_free (old_extra);
-	old_extra = extra;
-
-	g_free (old_app);
-	old_app = app;
-
-	old_type = druid_data.crash_type;
 }
 
 void
@@ -141,18 +129,19 @@ stop_gdb (void)
 		druid_data.app_pid = 0;
 	}
 
-	druid_set_sensitive (FALSE, TRUE, TRUE);
+	if (druid_data.bug_type != BUG_CRASH)
+		gtk_widget_set_sensitive (GET_WIDGET ("druid-prev"), TRUE);
+	gtk_widget_set_sensitive (GET_WIDGET ("druid-next"), TRUE);
+	gtk_widget_set_sensitive (GET_WIDGET ("gdb-copy-save-box"), TRUE);
 	stop_animation ();
 
 	druid_data.fd = 0;
 	druid_data.ioc = NULL;
 	gtk_widget_set_sensitive (GTK_WIDGET (GET_WIDGET ("gdb-stop")), FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (GET_WIDGET ("gdb-go")), TRUE);
-
-	return;
 }
 
-void 
+static void 
 get_trace_from_core (const gchar *core_file)
 {
 	gchar *gdb_cmd;
@@ -167,16 +156,10 @@ get_trace_from_core (const gchar *core_file)
 	g_free (gdb_cmd);
 
 	if (!f) {
-		GtkWidget *d;
-		d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-					    0,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Unable to process core file with gdb:\n"
-					      "'%s'"), core_file);
-		gtk_dialog_set_default_response (GTK_DIALOG (d), GTK_RESPONSE_OK);
-		gtk_dialog_run (GTK_DIALOG (d));
-		gtk_widget_destroy (d);
+		buddy_error (GET_WIDGET ("druid-window"),
+			     _("Unable to process core file with gdb:\n"
+			       "'%s'"),
+			     core_file);
 		return;
 	}
 
@@ -198,16 +181,10 @@ get_trace_from_core (const gchar *core_file)
 	status = pclose(f);
 
 	if (!binary) {
-		GtkWidget *d;
-		d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-					    0,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("GDB was unable to determine which binary created\n"
-					      "'%s'"), core_file);
-		gtk_dialog_set_default_response (GTK_DIALOG (d), GTK_RESPONSE_OK);
-		gtk_dialog_run (GTK_DIALOG (d));
-		gtk_widget_destroy (d);
+		buddy_error (GET_WIDGET ("druid-window"),
+			     _("GDB was unable to determine which binary created\n"
+			       "'%s'"),
+			     core_file);
 		return;
 	}	
 
@@ -249,13 +226,15 @@ handle_gdb_input (GIOChannel *ioc, GIOCondition condition, gpointer data)
 		GtkTextBuffer *buffy;
 		GtkTextView *tv;
 		char *utftext;
+		gsize localelen;
 		gsize utflen;
 
 		tv = GTK_TEXT_VIEW (GET_WIDGET ("gdb-text"));
 		buffy = gtk_text_view_get_buffer (tv);
 
 		gtk_text_buffer_get_end_iter (buffy, &end);
-		utftext = g_locale_to_utf8 (buf, len, NULL, &utflen, NULL);
+		/* gdb charset is ISO-8859-1 */
+		utftext = g_convert_with_fallback (buf, len, "UTF-8", "ISO-8859-1", NULL, &localelen, &utflen, NULL);
 		gtk_text_buffer_insert (buffy, &end, utftext, utflen);
 		g_free (utftext);
 	}
@@ -266,10 +245,9 @@ handle_gdb_input (GIOChannel *ioc, GIOCondition condition, gpointer data)
 	return retval;
 }
 
-void
+static void
 get_trace_from_pair (const gchar *app, const gchar *extra)
 {
-	GtkWidget *d;
 	char *s;
 	const char *short_app;
 	char *long_app;
@@ -279,36 +257,21 @@ get_trace_from_pair (const gchar *app, const gchar *extra)
 			 "--quiet",
 			 "--command=" BUDDY_DATADIR "/gdb-cmd",
 			 NULL, NULL, NULL };
-	args[0] = g_find_program_in_path ("gdb");
-	args[5] = (char *)extra;
 
-	if (!args[0]) {
-		d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-					    0,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("GDB could not be found on your system.\n"
-					      "Debugging information will not be obtained."));
-		d(g_message ("Path: %s", getenv ("PATH")));
-		gtk_dialog_set_default_response (GTK_DIALOG (d),
-						 GTK_RESPONSE_OK);
-		gtk_dialog_run (GTK_DIALOG (d));
-		gtk_widget_destroy (d);
+	if (!app || !extra || !*app || !*extra) {
+		buddy_error (GET_WIDGET ("druid-window"), 
+			     _("Both a binary file and PID are required to debug."));
 		return;
 	}
 
-	if (!app || !extra || !*app || !*extra)
-		return;
-	
-
-	if (*app == G_DIR_SEPARATOR) {
+	if (app[0] == G_DIR_SEPARATOR) {
 		long_app = g_strdup (app);
 		short_app = strrchr (app, G_DIR_SEPARATOR) + 1;
 	} else {
 		long_app = g_find_program_in_path (app);
-		if (!long_app) {
+		if (!long_app && g_getenv("GNOME2_PATH")) {
 			/* Applets are not in path... */
-			long_app = g_strconcat(g_getenv("GNOME_PATH"), "/libexec/", app);
+			long_app = g_strconcat(g_getenv("GNOME2_PATH"), "/libexec/", app, NULL);
 		}
 		short_app = app;
 	}	
@@ -317,66 +280,59 @@ get_trace_from_pair (const gchar *app, const gchar *extra)
 	druid_data.current_appname = g_strdup (short_app);
 
 	if (!long_app) {
-		g_free (args[0]);
+		buddy_error (GET_WIDGET ("druid-window"),
+			     _("The binary file could not be found. Try using an absolute path."));
 		return;
 	}
 
+	args[0] = g_find_program_in_path ("gdb");
 	args[4] = long_app;
+	args[5] = (char *)extra;
 
-	d(g_message ("About to debug '%s'", long_app));
+	if (!args[0]) {
+		buddy_error (GET_WIDGET ("druid-window"),
+			     _("GDB could not be found on your system.\n"
+			       "Debugging information will not be obtained."));
+		d(g_message ("Path: %s", getenv ("PATH")));
+	} else {
+		d(g_message ("About to debug '%s'", long_app));
 	
-	if (!g_file_test (BUDDY_DATADIR "/gdb-cmd", G_FILE_TEST_EXISTS)) {
-		d = gtk_message_dialog_new (GTK_WINDOW (GET_WIDGET ("druid-window")),
-					    0,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Could not find the gdb-cmd file.\n"
-					      "Please try reinstalling Bug Buddy."));
-		gtk_dialog_run (GTK_DIALOG (d));
-		gtk_dialog_set_default_response (GTK_DIALOG (d),
-						 GTK_RESPONSE_OK);
-		gtk_widget_destroy (d);
-		g_free (long_app);
-		return;
+		if (!g_file_test (BUDDY_DATADIR "/gdb-cmd", G_FILE_TEST_EXISTS)) {
+			buddy_error (GET_WIDGET ("druid-window"),
+				     _("Could not find the gdb-cmd file.\n"
+				       "Please try reinstalling Bug Buddy."));
+		} else if (!g_spawn_async_with_pipes (NULL, args, NULL, 0, NULL, NULL,
+					       &druid_data.gdb_pid,
+					       NULL, 
+					       &druid_data.fd, 
+					       NULL, &error)) {
+			buddy_error (GTK_WIDGET ("druid-window"),
+				     _("There was an error running gdb:\n\n%s"),
+				     error->message);
+			g_error_free (error);
+		} else {
+			druid_data.ioc = g_io_channel_unix_new (druid_data.fd);
+			g_io_channel_set_encoding (druid_data.ioc, NULL, NULL);
+		
+			s = g_strdup_printf ("Backtrace was generated from '%s'\n\n", long_app);
+			buddy_set_text ("gdb-text", s);
+			g_free (s);
+
+			g_io_add_watch (druid_data.ioc, G_IO_IN | G_IO_HUP,
+					handle_gdb_input, NULL);
+			g_io_channel_unref (druid_data.ioc);
+
+			gtk_widget_set_sensitive (GET_WIDGET ("druid-prev"), FALSE);
+			gtk_widget_set_sensitive (GET_WIDGET ("druid-next"), FALSE);
+			gtk_widget_set_sensitive (GET_WIDGET ("gdb-copy-save-box"), FALSE);
+
+			start_animation ();
+
+			gtk_widget_set_sensitive (GTK_WIDGET (GET_WIDGET ("gdb-stop")), TRUE);
+			gtk_widget_set_sensitive (GTK_WIDGET (GET_WIDGET ("gdb-go")), FALSE);
+		}
+		
+		g_free (args[0]);
 	}
-
-	if (!g_spawn_async_with_pipes (NULL, args, NULL, 0, NULL, NULL,
-				       &druid_data.gdb_pid,
-				       NULL, 
-				       &druid_data.fd, 
-				       NULL, &error)) {
-		d = gtk_message_dialog_new (GTK_WINDOW (GTK_WIDGET ("druid-window")),
-					    0,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("There was an error running gdb:\n\n%s"),
-					    error->message);
-		gtk_dialog_run (GTK_DIALOG (d));
-		gtk_dialog_set_default_response (GTK_DIALOG (d),
-						 GTK_RESPONSE_OK);
-		gtk_widget_destroy (d);
-		g_error_free (error);
-		g_free (long_app);
-		return;
-	}
-	
-	druid_data.ioc = g_io_channel_unix_new (druid_data.fd);
-	g_io_channel_set_encoding (druid_data.ioc, NULL, NULL);
-	
-	s = g_strdup_printf ("Backtrace was generated from '%s'\n\n", long_app);
-	buddy_set_text ("gdb-text", s);
-	g_free (s);
-	g_io_add_watch (druid_data.ioc, G_IO_IN | G_IO_HUP,
-			handle_gdb_input, NULL);
-	g_io_channel_unref (druid_data.ioc);
-
-	druid_set_sensitive (FALSE, FALSE, TRUE);
-	start_animation ();
-
-	gtk_widget_set_sensitive (GTK_WIDGET (GET_WIDGET ("gdb-stop")), TRUE);
-	gtk_widget_set_sensitive (GTK_WIDGET (GET_WIDGET ("gdb-go")), FALSE);
-
-	druid_data.explicit_dirty = FALSE;
-
 	g_free (long_app);
 }
