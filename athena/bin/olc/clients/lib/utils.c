@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.6 1989-11-17 14:20:58 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.7 1989-12-21 12:08:51 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -258,7 +258,7 @@ expand_hostname(hostname, instance, realm)
       (void) strcpy(instance, hostname);
 
 #ifdef KERBEROS
-      get_krbrlm(realm,1);
+      krb_get_lrealm(realm,1);
 #endif KERBEROS
 
     }
