@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.35 1991-01-15 17:59:31 lwvanels Exp $
+ *	$Id: olcd.c,v 1.36 1991-02-10 14:43:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.35 1991-01-15 17:59:31 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.36 1991-02-10 14:43:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -660,6 +660,7 @@ flush_olc_userlogs()
 	    /* (yet to be implemented) */
 	}
     }
+    closedir(dirp);
 }
 
 /*
