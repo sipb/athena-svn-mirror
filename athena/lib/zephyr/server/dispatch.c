@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.20 1988-06-15 23:12:35 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.21 1988-06-17 17:11:27 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -398,16 +398,16 @@ ZClient_t *client;
 	zdbug((LOG_DEBUG,"xmit"));
 
 
+	if (!(noticepack = (caddr_t) xmalloc(sizeof(ZPacket_t)))) {
+		syslog(LOG_ERR, "xmit malloc");
+		return;			/* DON'T put on nack list */
+	}
+
 	if (auth && client) {		/*
 					  we are distributing authentic and
 					  we have a pointer to auth info
 					 */
 #ifdef KERBEROS
-		if (!(noticepack = (caddr_t) xmalloc(sizeof(ZPacket_t)))) {
-			syslog(LOG_ERR, "xmit malloc");
-			return;			/* DON'T put on nack list */
-		}
-		packlen = sizeof(ZPacket_t);
 
 		if ((retval = ZFormatAuthenticNotice(notice,
 						     noticepack,
@@ -422,12 +422,13 @@ ZClient_t *client;
 		}
 #else /* !KERBEROS */
 		notice->z_auth = 1;
-		if ((retval = ZFormatRawNotice(notice,
-					       &noticepack,
-					       &packlen))
+		if ((retval = ZFormatSmallRawNotice(notice,
+						    noticepack,
+						    &packlen))
 		    != ZERR_NONE) {
 			syslog(LOG_ERR, "xmit auth/raw format: %s",
 			       error_message(retval));
+			xfree(noticepack);
 			return;
 		}
 #endif /* KERBEROS */
@@ -435,11 +436,12 @@ ZClient_t *client;
 		notice->z_auth = 0;
 		notice->z_authent_len = 0;
 		notice->z_ascii_authent = (char *)"";
-		if ((retval = ZFormatRawNotice(notice,
-					       &noticepack,
-					       &packlen)) != ZERR_NONE) {
+		if ((retval = ZFormatSmallRawNotice(notice,
+						    noticepack,
+						    &packlen)) != ZERR_NONE) {
 			syslog(LOG_ERR, "xmit format: %s",
 			       error_message(retval));
+			xfree(noticepack);
 			return;			/* DON'T put on nack list */
 		}
 	}
@@ -597,14 +599,16 @@ ZSentType sent;
 		break;
 	}
 
+	acknotice.z_multinotice = "";
+
 	/* leave room for the trailing null */
 	acknotice.z_message_len = strlen(acknotice.z_message) + 1;
 
 	packlen = sizeof(ackpack);
 
 	if ((retval = ZFormatSmallRawNotice(&acknotice,
-				       ackpack,
-				       &packlen)) != ZERR_NONE) {
+					    ackpack,
+					    &packlen)) != ZERR_NONE) {
 		syslog(LOG_ERR, "clt_ack format: %s",error_message(retval));
 		return;
 	}
