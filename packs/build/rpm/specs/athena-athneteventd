@@ -1,0 +1,22 @@
+Name: athena-athneteventd
+Summary: The Athena disconnected-status user event daemon
+Copyright: MIT
+Group: User Environment/Daemons
+
+%description
+The Athena disconnected-status user event daemon
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files; see prep/athena-neteventd
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts
+cp user-net-event.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/user-net-event
+
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/user-net-event
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" |
+  sort > rpm.filelist

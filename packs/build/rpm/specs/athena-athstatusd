@@ -1,0 +1,48 @@
+Name: athena-athstatusd
+Summary: The Athena disconnected-status daemon
+Copyright: MIT
+Group: System Environment/Daemons
+
+%description
+The Athena disconnected-status daemon
+
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files; see prep/athena-statusd
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts
+mkdir -p $RPM_BUILD_ROOT/sbin
+mkdir -p $RPM_BUILD_ROOT/etc/sysconfig/apm-scripts
+
+cp athstatusd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athstatusd
+cp ifup-local.sh $RPM_BUILD_ROOT/sbin/ifup-local
+cp ifdown-pre-local.sh $RPM_BUILD_ROOT/sbin/ifdown-pre-local
+cp apmcontinue.sh $RPM_BUILD_ROOT/etc/sysconfig/apm-scripts/apmcontinue
+cp net-event.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/net-event
+cp net-event.conf $RPM_BUILD_ROOT/etc/athena/network-scripts
+
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athstatusd
+chmod +x $RPM_BUILD_ROOT/sbin/ifup-local
+chmod +x $RPM_BUILD_ROOT/sbin/ifdown-pre-local
+chmod +x $RPM_BUILD_ROOT/etc/sysconfig/apm-scripts/apmcontinue
+chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/net-event
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/athena/network-scripts/net-event.conf|%config \0|" |
+  sort > rpm.filelist
+
+%post
+grep -q ^DISCONNECTABLE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+DISCONNECTABLE=false;	export DISCONNECTABLE		# Enable disconnected support
+EOF
+
+chkconfig --add athstatusd
+
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athstatusd
+fi
