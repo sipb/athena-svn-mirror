@@ -1,4 +1,4 @@
-# $Id: athena,v 1.11 1999-08-05 19:32:07 tb Exp $
+# $Id: athena,v 1.12 1999-08-12 15:47:47 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -67,13 +67,6 @@ if [ -f /etc/group.local ]; then
 	echo "Recovering group file... \c"
 	cp /etc/group.local /etc/group
 	echo "done."
-fi
-
-# Make sure /var/athena/core.root exists.
-if [ ! -r /var/athena/core.root ]; then
-	touch /var/athena/core.root
-	chmod 660 /var/athena/core.root
-	chown root:daemon /var/athena/core.root
 fi
 
 # Remove old cruft, locks, and login session records.
