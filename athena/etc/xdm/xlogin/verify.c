@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.51 1994-05-03 11:32:45 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.52 1994-05-04 22:42:27 cfields Exp $
  */
 
 #include <stdio.h>
@@ -129,6 +129,9 @@ char *malloc();
 int abort_verify();
 extern int attach_state, attach_pid, attachhelp_state, attachhelp_pid;
 extern int errno, quota_pid;
+#ifdef POSIX
+extern sigset_t sig_zero;
+#endif
 
 int homedir_status = HD_LOCAL;
 int added_to_passwd = FALSE;
@@ -346,7 +349,7 @@ char *display;
 	default:
 	    while (attach_state == -1)
 #ifdef POSIX
-	      sigsuspend((sigset_t *)0);
+	      sigsuspend(&sig_zero);
 #else
 	      sigpause(0);
 #endif
@@ -650,7 +653,7 @@ struct passwd *pwd;
 	default:
 	    while (attach_state == -1)
 #ifdef POSIX
-	      sigsuspend((sigset_t *)0);
+	      sigsuspend(&sig_zero);
 #else
 	      sigpause(0);
 #endif
@@ -963,7 +966,7 @@ struct passwd *pwd;
     }
     while (attach_state == -1) {
 #ifdef POSIX
-        sigsuspend((sigset_t *)0);
+        sigsuspend(&sig_zero);
 #else
 	sigpause(0);
 #endif
@@ -993,7 +996,7 @@ struct passwd *pwd;
 	}
 	while (attach_state == -1) {
 #ifdef POSIX
-	    sigsuspend((sigset_t *)0);
+	    sigsuspend(&sig_zero);
 #else
 	    sigpause(0);
 #endif
@@ -1044,7 +1047,7 @@ struct passwd *pwd;
 	}
 	while (attachhelp_state == -1)
 #ifdef POSIX
-	  sigsuspend((sigset_t *)0);
+	  sigsuspend(&sig_zero);
 #else
 	  sigpause(0);
 #endif
