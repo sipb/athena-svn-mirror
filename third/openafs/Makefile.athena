@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.10 2004-03-06 18:03:42 zacheiss Exp $
+# $Id: Makefile.athena,v 1.11 2004-03-11 04:14:34 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -34,7 +34,7 @@ all:
 	   ${MAKE} dest_nolibafs ; \
 	   ${MAKE} only_libafs_tree ; \
 	   for mp in SP MP; do \
-		for arch in BOOT i386 i586 i686 athlon; do \
+		for arch in BOOT i686 athlon; do \
 			./redhat-fix $$arch $$mp src/config/redhat-fix.h ; \
 			${MAKE} dest_only_libafs LOCAL_SMP_DEF=-DREDHAT_FIX \
 				LINUX_MODULE_NAME=".$$arch" MPS="$$mp" ; \
@@ -296,16 +296,10 @@ install:
 		$$SRVD/etc/rc.d/init.d/openafs ; \
 	   install -c -m 555 ${AFS_SYSNAME}/dest/root.client${VICE}/afs.conf \
 		$$SRVD/etc/sysconfig/openafs ; \
-	   for arch in i386 i586 i686 athlon; do \
+	   for arch in i686 athlon; do \
 		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.o $$SRVD${VICE}/modload ; \
 		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o ; \
 	   done ; \
-	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.o ; \
-	   ln -s libafs-$${LINUX_VERS}.i386.o \
-		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.o ; \
-	   rm -f $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.mp.o ; \
-	   ln -s libafs-$${LINUX_VERS}.i386.mp.o \
-		$$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.i486.mp.o \
 	   ;; \
 	sun4) \
 	   mkdir -p $$SRVD/kernel/fs/sparcv9 ; \
