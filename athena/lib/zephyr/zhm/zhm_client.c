@@ -15,11 +15,11 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.1 1987-10-06 20:37:56 opus Exp $";
+static char rcsid_hm_client_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_client.c,v 1.2 1987-10-07 15:31:30 opus Exp $";
 #endif SABER
 #endif lint
 
-extern int no_server, timeout_type, nclt;
+extern int no_server, timeout_type, nclt, deactivated;
 extern struct sockaddr_in cli_sin, serv_sin, from;
 
 transmission_tower(notice, packet, pak_len)
@@ -34,8 +34,10 @@ transmission_tower(notice, packet, pak_len)
 
       nclt++;
       if (notice->z_kind == HMCTL) {
-	    if (!strcmp(notice->z_opcode, CLIENT_FLUSH))
-	      send_flush_notice(HM_FLUSH);
+	    if (!strcmp(notice->z_opcode, CLIENT_FLUSH)) {
+		  send_flush_notice(HM_FLUSH);
+		  deactivated = 1;
+	    }
 	    else if (!strcmp(notice->z_opcode, CLIENT_NEW_SERVER))
 	      new_server(NULL);
 	    else

@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.1 1987-10-06 20:37:31 opus Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.2 1987-10-07 15:30:45 opus Exp $";
 #endif SABER
 #endif lint
 
@@ -23,6 +23,7 @@ int serv_loop = 0;
 extern u_short cli_port;
 extern struct sockaddr_in serv_sin, from;
 extern int timeout_type, hmdebug, nservchang, booting, nserv, no_server;
+extern int deactivated;
 extern char **serv_list, **cur_serv_list;
 extern char cur_serv[], prim_serv[];
 
@@ -233,3 +234,16 @@ send_back(notice)
       }
 }
 
+new_server(sugg_serv)
+     char *sugg_serv;
+{
+      no_server = 1;
+      syslog (LOG_INFO, "Server went down, finding new server.");
+      send_flush_notice(HM_DETACH);
+      find_next_server(sugg_serv);
+      if (booting) {
+	    send_boot_notice(HM_BOOT);
+	    deactivated = 0;
+      } else
+	send_boot_notice(HM_ATTACH);
+}
