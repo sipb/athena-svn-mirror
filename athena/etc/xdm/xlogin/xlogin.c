@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.74 1998-06-25 20:10:28 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.75 1998-09-12 00:16:37 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -29,6 +29,7 @@
 #include <X11/Shell.h>
 #include <X11/Xmu/Drawing.h>
 #include <X11/Xmu/Converters.h>
+#include <larv.h>
 #include "Clock.h"
 #include "owl.h"
 #include "environment.h"
@@ -78,9 +79,7 @@ extern pid_t fork_and_store(pid_t *var);
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
-#ifdef sgi
 void windowShutdownACT(), windowShutdownCB();
-#endif
 extern void add_converter ();
 
 
@@ -194,9 +193,7 @@ XtActionsRec actions[] = {
     { "setCorrectFocus", setcorrectfocus },
     { "signalConsoleACT", sigconsACT },
     { "callbackACT", callbackACT },
-#ifdef sgi
     { "windowShutdownACT", windowShutdownACT },
-#endif
 };
 
 
@@ -399,9 +396,7 @@ void main(argc, argv)
   WcRegisterCallback(app, "signalConsoleCB", sigconsCB, NULL);
   WcRegisterCallback(app, "idleResetCB", idleReset, NULL);
   WcRegisterCallback(app, "attachAndRunCB", attachandrunCB, NULL);
-#ifdef sgi
   WcRegisterCallback(app, "windowShutdownCB", windowShutdownCB, NULL);
-#endif
 
   /* Register all Athena widget classes. */
   AriRegisterAthena (app);
@@ -518,6 +513,8 @@ void main(argc, argv)
 	}
       XtFree(orig_dpy);
     }
+
+  larv_set_busy(0);
 
   /* This is just XtMainLoop() with a send_event filter. */
   while (1)
@@ -1125,6 +1122,7 @@ void runACT(w, event, p, n)
   fprintf(xdmstream, "%s", "nobody");
   fputc(0, xdmstream);
 
+  larv_set_busy(1);
   exit(0);
 #else
   pw = getpwnam("nobody");
@@ -1141,6 +1139,7 @@ void runACT(w, event, p, n)
       fprintf(stderr, "Unable to set user id.\n");
       return;
     }
+  larv_set_busy(1);
   execv("/bin/sh", argv);
   fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
   _exit(3);
@@ -1201,17 +1200,21 @@ void attachandrunCB(w, s, unused)
   runACT(w, NULL, &cmd, &i);
 }
 
-#ifdef sgi
 void windowShutdownCB(w, s, unused)
      Widget w;
      char *s;
      caddr_t unused;
 {
+  larv_set_busy(1);
+#ifdef sgi
   /* If this returns 0, the X server has been killed and it's time
    * to go. If not, we should probably pop up a dialog box.
    */
   if (!nanny_setConsoleMode())
     exit(0);
+#else
+  exit(3);
+#endif
 }
 
 void windowShutdownACT(w, event, p, n)
@@ -1220,10 +1223,14 @@ void windowShutdownACT(w, event, p, n)
      char **p;
      Cardinal *n;
 {
+  larv_set_busy(1);
+#ifdef sgi
   if (!nanny_setConsoleMode())
     exit(0);
-}
+#else
+  exit(3);
 #endif
+}
 
 void sigconsACT(w, event, p, n)
      Widget w;
