@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-media\n"
-"POT-Creation-Date: 2003-01-22 19:11+0100\n"
+"POT-Creation-Date: 2003-02-04 13:03+0100\n"
 "PO-Revision-Date: 2003-01-20 10:56+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"

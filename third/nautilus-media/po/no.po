@@ -4,12 +4,12 @@
 # package.
 # Christian Schaller <Uraeus@gnome.org>, 2002.
 #
-# $Id: no.po,v 1.1.1.1 2003-01-29 22:00:35 ghudson Exp $
+# $Id: no.po,v 1.1.1.2 2003-02-12 07:19:22 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-media\n"
-"POT-Creation-Date: 2003-01-22 19:11+0100\n"
+"POT-Creation-Date: 2003-02-04 13:03+0100\n"
 "PO-Revision-Date: 2003-01-02 19:30+0100\n"
 "Last-Translator: Christian Schaller <uraeus@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"

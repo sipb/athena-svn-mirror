@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-media\n"
-"POT-Creation-Date: 2003-01-22 19:11+0100\n"
+"POT-Creation-Date: 2003-02-04 13:03+0100\n"
 "PO-Revision-Date: 2003-01-18 04:11+0200\n"
 "Last-Translator: Evgeni Boevski <linkej@yahoo.com>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-media 0.1.1\n"
-"POT-Creation-Date: 2003-01-22 19:11+0100\n"
+"POT-Creation-Date: 2003-02-04 13:03+0100\n"
 "PO-Revision-Date: 2003-01-02 19:21+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
