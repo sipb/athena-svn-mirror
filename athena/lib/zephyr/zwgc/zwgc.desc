@@ -5,7 +5,7 @@
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
 #	$Author: raeburn $
-#	$Id: zwgc.desc,v 1.7 1990-05-21 23:11:39 raeburn Exp $
+#	$Id: zwgc.desc,v 1.8 1990-11-16 11:21:50 raeburn Exp $
 #
 #
 # Default WindowGram description file
@@ -113,7 +113,8 @@ match "message"
 	endif
 
 	print "@center(@bold("+$aval+") "+$type+" message at "+$time+
-		" on "+$date+" from "+$fromhost+")\n"+$ftext+"\n\n"
+		" on "+$date+"\n"+$ftext+" on "+$fromhost+"\nTo: "+
+		$recipient+")\n\n"
 	print $body
 	put
 	exit
