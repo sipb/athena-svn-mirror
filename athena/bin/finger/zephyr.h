@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/zephyr.h,v 1.1 1987-08-21 18:08:33 ambar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/zephyr.h,v 1.2 1987-08-27 16:56:51 ambar Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -18,11 +18,10 @@
 #include <zephyr/mit-copyright.h>
 #include <zephyr/zephyr_err.h>
 
+#include <errno.h>
 #ifndef _TYPES_
 #include <sys/types.h>
 #endif
-
-#include <errno.h>
 #ifndef IPPROTO_IP
 #include <netinet/in.h>
 #endif
@@ -30,7 +29,9 @@
 #include <stdio.h>
 #include <krb.h>
 
-#define ZVERSION	0
+#define ZVERSIONHDR	"ZEPH"
+#define ZVERSIONMAJOR	0
+#define ZVERSIONMINOR	0
 
 /* Types */
 
@@ -53,11 +54,15 @@ typedef struct _ZUnique_Id_t {
 	/* Checksum */
 typedef u_long ZChecksum_t;
 
+#define ZNUMFIELDS	15
+
 	/* Notice definition */
 typedef struct _ZNotice_t {
+	char		*z_version;
 	ZNotice_Kind_t	z_kind;
 	ZUnique_Id_t	z_uid;
 #define z_sender_addr	z_uid.zuid_addr
+	struct		timeval z_time;
 	u_short		z_port;
 	int		z_auth;
 	int		z_authent_len;
@@ -67,6 +72,7 @@ typedef struct _ZNotice_t {
 	char		*z_opcode;
 	char		*z_sender;
 	char		*z_recipient;
+	char		*z_default_format;
 	ZChecksum_t	z_checksum;
 	caddr_t		z_message;
 	int		z_message_len;
@@ -86,6 +92,7 @@ typedef int Code_t;
 typedef struct _ZLocations_t {
 	char		*host;
 	char		*time;
+	char		*tty;
 } ZLocations_t;
 
 	/* Socket file descriptor */
