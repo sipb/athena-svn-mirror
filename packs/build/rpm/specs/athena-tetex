@@ -2,7 +2,7 @@ Name: athena-tetex
 Summary: The TeX typesetting system and support utilities, for Athena
 License: Donald Knuth and others
 Group: Applications/Publishing
-Provides: tetex = 1.0.6
+Provides: tetex = 2.0.2
 
 %description
 The teTeX package of TeX typesetting system and support utilities, for
