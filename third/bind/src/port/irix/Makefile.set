@@ -9,7 +9,7 @@
 'DESTRUN=/etc'
 'LDS=:'
 'LEX=lex'
-'YACC=yacc'
+'YACC=yacc -d'
 'SYSLIBS=-ll'
 'INSTALL=bsdinst'
 'MANDIR=man'
