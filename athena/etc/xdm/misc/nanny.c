@@ -16,6 +16,7 @@
 #include "cons.h"
 #include "var.h"
 #include "cvt.h"
+#include "dpy.h"
 #include "nanny.h"
 #include <AL/AL.h>
 
@@ -26,12 +27,14 @@ typedef struct disp_state {
   pc_state *ps;
   pc_port *listener;
   cons_state *cs;
-  ALut ut;
-  ALsessionStruct sess;
-  int comSec, comSecNew;
-  int consolePreference;
+  ALut Xut, Cut;
+  ALsessionStruct Xsess, Csess;
+  int cUtWritten;		/* do we have an entry in utmp for console? */
+  int comSec, comSecNew;	/* is our com port considered secure? */
+  int consolePreference;	/* should the X console be running? */
   int shuttingDown;
   varlist *vars;
+  dpy_state *dpy;
 } disp_state;
 
 #define DPYNAME ":0.0"
@@ -57,9 +60,9 @@ char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
   int length;
 
   var_getValue(vin, name, &value, &length);
-  if (!ALsetUser(&ds->sess, value))
+  if (!ALsetUser(&ds->Xsess, value))
     {
-      pc_chprot(ds->listener, ALpw_uid(&ds->sess), ALpw_gid(&ds->sess), 0600);
+      pc_chprot(ds->listener, ALpw_uid(&ds->Xsess), ALpw_gid(&ds->Xsess), 0600);
       var_setValue(ds->vars, name, value, length);
       var_setString(vout, name, N_OK);
 
@@ -84,25 +87,59 @@ char *setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
    quite what they were thinking. */
 #define NANNYNAME "LOGIN"
 
-#define DOLINK
-static char *athconsole="/etc/athena/consdev";
+void init_consUtmp(disp_state *ds)
+{
+  if (dpy_consDevice(ds->dpy))
+    {
+      ds->Cut.user = NANNYNAME;
+      ds->Cut.host = "";
+      ds->Cut.line = dpy_consDevice(ds->dpy) + 5;
+      ds->Cut.type = ALutLOGIN_PROC;
+      ALsetUtmpInfo(&ds->Csess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE,
+		    &ds->Cut);
+      ALputUtmp(&ds->Csess);
+
+      ds->cUtWritten = 1;
+    }
+}
+
+void clear_consUtmp(disp_state *ds)
+{
+  if (dpy_consDevice(ds->dpy) && ds->cUtWritten)
+    {
+      ds->Cut.user = NANNYNAME;
+      ds->Cut.type = ALutDEAD_PROC;
+      ALsetUtmpInfo(&ds->Csess, ALutUSER | ALutTYPE, &ds->Cut);
+      ALputUtmp(&ds->Csess);
+      ds->cUtWritten = 0;
+    }
+}
 
 void init_utmp(disp_state *ds)
 {
-  ds->ut.user = NANNYNAME;
-  ds->ut.host = DPYNAME;
-  ds->ut.line = cons_name(ds->cs) + 5;
-  ds->ut.type = ALutLOGIN_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);
+  ds->Xut.user = NANNYNAME;
+  ds->Xut.host = DPYNAME;
+  ds->Xut.line = cons_name(ds->cs) + 5;
+  ds->Xut.type = ALutLOGIN_PROC;
+  ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE,
+		&ds->Xut);
+  ALputUtmp(&ds->Xsess);
 }
 
 void clear_utmp(disp_state *ds)
 {
-  ds->ut.user = NANNYNAME;
-  ds->ut.type = ALutDEAD_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);  
+  ds->Xut.user = NANNYNAME;
+  ds->Xut.type = ALutDEAD_PROC;
+  ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutTYPE, &ds->Xut);
+  ALputUtmp(&ds->Xsess);
+
+/* Hmmmm... This isn't quite right. What if the user is still logged
+   in? The normal model for doing things (which Irix is using in the
+   case of /bin/login) doesn't really allow for the-thing-that-cleans-
+   utmp to exit. Probably just trying to be too flexible, and don't
+   care about losing in this case. */
+
+  clear_consUtmp(ds);
 }
 
 /* Updating the tty information might be nice to have in AL. */
@@ -117,17 +154,17 @@ char *do_login(char *uname, disp_state *ds)
 #endif
 
   /* Write user login to utmp. */
-  ds->ut.user = uname;
-  ds->ut.type = ALutUSER_PROC;
-  ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
-  ALputUtmp(&ds->sess);
+  ds->Xut.user = uname;
+  ds->Xut.type = ALutUSER_PROC;
+  ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutTYPE, &ds->Xut);
+  ALputUtmp(&ds->Xsess);
 
   /* Update owner and times on the tty. */
   gr = getgrnam("tty");
-  if (chown(tty, ALpw_uid(&ds->sess), gr ? gr->gr_gid : ALpw_gid(&ds->sess))
+  if (chown(tty, ALpw_uid(&ds->Xsess), gr ? gr->gr_gid : ALpw_gid(&ds->Xsess))
       && debug > 3)
     syslog(LOG_INFO, "chown of %s (%d %d) failed (%m)",
-	   tty, ALpw_uid(&ds->sess), gr ? gr->gr_gid : ALpw_gid(&ds->sess));
+	   tty, ALpw_uid(&ds->Xsess), gr ? gr->gr_gid : ALpw_gid(&ds->Xsess));
 
 #ifdef SYSV
   times.actime = times.modtime = time(NULL);
@@ -146,14 +183,15 @@ char *do_logout(disp_state *ds)
 {
   char *value;
 
-  /* utmp changed by setting LOGGED_IN=TRUE */
+  /* utmp was changed by setting LOGGED_IN=TRUE, so we check to see
+     if it's true before removing. */
   var_getString(ds->vars, N_LOGGED_IN, &value);
   if (!strcmp(value, N_TRUE))
     {
-      ds->ut.user = NANNYNAME;
-      ds->ut.type = ALutLOGIN_PROC;
-      ALsetUtmpInfo(&ds->sess, ALutUSER | ALutTYPE, &ds->ut);
-      ALputUtmp(&ds->sess);
+      ds->Xut.user = NANNYNAME;
+      ds->Xut.type = ALutLOGIN_PROC;
+      ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutTYPE, &ds->Xut);
+      ALputUtmp(&ds->Xsess);
     }
 
   /* socket changed by setting USER=something */
@@ -163,8 +201,8 @@ char *do_logout(disp_state *ds)
   if (!var_getString(ds->vars, N_RMUSER, &value) && !strcmp(value, "1"))
     {
       /* AL isn't quite suitable for this yet. */
-      ALflagSet(&ds->sess, ALdidGetHesiodPasswd);
-      ALremovePasswdEntry(&ds->sess);
+      ALflagSet(&ds->Xsess, ALdidGetHesiodPasswd);
+      ALremovePasswdEntry(&ds->Xsess);
     }
 
   ds->comSecNew = COM_SECURE;
@@ -201,7 +239,7 @@ char *setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	var_setValue(ds->vars, N_USER, NULL, 0);
       }
     else
-      var_setString(vout, name, "BADVALUE");  
+      var_setString(vout, name, N_BADVALUE);  
 }
 
 char *startConsole(disp_state *ds)
@@ -258,11 +296,7 @@ char *setConsPref(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	var_setString(vout, name, stopConsole(ds));
       }
     else
-      var_setString(vout, name, "BADVALUE");
-}
-
-char *setConsMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
-{
+      var_setString(vout, name, N_BADVALUE);
 }
 
 char *setDebug(disp_state *ds, char *name, varlist *vin, varlist *vout)
@@ -284,16 +318,68 @@ void cleanShutdown(disp_state *ds)
 {
   clear_utmp(ds);
   stopConsole(ds);
-#ifdef DOLINK
-  unlink(athconsole);
-#endif
   cons_close(ds->cs);
   ds->shuttingDown = 1;
+}
+
+/*
+ * If dpy's state has gone to none, bring it up to date with Nanny's.
+ * Right now, this means set Nanny's mode to X and fire it up, since
+ * the console mode isn't persistent.
+ *
+ * This usually implies that the X console should be turned on as soon
+ * as X comes up. Under Irix, and we will be informed by xdm when X is
+ * running and the console will be started by other code. On other
+ * platforms, this routine may be called when we receive a signal from
+ * the X server, and we start the console here.
+ */
+void update_dpy(disp_state *ds)
+{
+  char *value;
+
+  clear_consUtmp(ds);
+  var_getString(ds->vars, N_MODE, &value);
+  if (!strcmp(value, N_NONE))
+    return;
+
+  if (dpy_startX(ds->dpy))
+    {
+      syslog(LOG_ERR, "couldn't start X, trying login");
+      init_consUtmp(ds);
+      if (dpy_startCons(ds->dpy))
+	{
+	  clear_consUtmp(ds);
+	  syslog(LOG_ERR, "couldn't start login either");
+	  var_setString(ds->vars, N_MODE, N_NONE);
+	  return;
+	}
+      var_setString(ds->vars, N_MODE, N_CONSOLE);
+      return;
+    }
+  var_setString(ds->vars, N_MODE, N_X);
+}
+
+char *forceNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
+{
+  void *value;
+  int length;
+
+  var_getValue(vin, name, &value, &length);
+  var_setValue(ds->vars, N_MODE, value, length);
+  var_setString(vout, name, N_OK);
 }
 
 char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   char *value;
+  char *current;
+
+  var_getString(ds->vars, N_LOGGED_IN, &value);
+  if (!strcmp(value, N_TRUE))
+    {
+      var_setString(vout, name, "can't change mode while logged in");
+      return;
+    }
 
   var_getString(vin, name, &value);
   if (!strcmp(value, N_DEAD))
@@ -306,6 +392,60 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	}
       else
 	var_setString(vout, name, "EPERM");
+      return;
+    }
+
+  var_getString(ds->vars, name, &current);
+  if (!strcmp(value, current))
+    var_setString(vout, name, "set already");
+  else
+    {
+      if (strcmp(value, N_CONSOLE) && strcmp(value, N_X) &&
+	  strcmp(value, N_NONE))
+	{
+	  var_setString(vout, name, N_BADVALUE);
+	  return;
+	}
+
+      /* Any change in mode means we want to shut down whatever's running. */
+      if (!strcmp(current, N_X)) /* XXX should shut down X console first */
+	if (dpy_stopX(ds->dpy))
+	  {
+	    var_setString(vout, name, "X shutdown failed");
+	    return;
+	  }
+
+      if (!strcmp(current, N_CONSOLE))
+	if (dpy_stopCons(ds->dpy))
+	  {
+	    var_setString(vout, name, "console shutdown failed");
+	    return;
+	  }
+	else
+	  clear_consUtmp(ds);
+
+      var_setString(ds->vars, name, N_NONE);
+
+      if (!strcmp(value, N_X))
+	if (dpy_startX(ds->dpy))
+	  {
+	    var_setString(vout, name, "X startup failed");
+	    return;
+	  }
+
+      if (!strcmp(value, N_CONSOLE))
+	{
+	  init_consUtmp(ds);
+	  if (dpy_startCons(ds->dpy))
+	    {
+	      clear_consUtmp(ds);
+	      var_setString(vout, name, "console startup failed");
+	      return;
+	    }
+	}
+
+      var_setString(ds->vars, name, value);
+      var_setString(vout, name, N_OK);
     }
 }
 
@@ -317,9 +457,9 @@ var_def vars[] = {
   { N_RMUSER,		SECURE_SET,	setStd },
   { N_TTY,		READ_ONLY,	setStd },
   { N_LOGGED_IN,	NONE,		setLogin },
-  { N_MODE,		NONE,		setNannyMode },
+  { N_MODE,		SECURE_SET,	setNannyMode },
+  { N_FMODE,		SECURE_SET,	forceNannyMode },
   { N_CONSPREF,		NONE,		setConsPref },
-/*{ N_CONSMODE,		NONE,		setConsMode }, */
   { N_DEBUG,		NONE,		setDebug },
   { N_RETRY,		READ_ONLY,	setStd },
   /* These aren't actually special, but they are in standard use,
@@ -457,7 +597,7 @@ void children(int sig, int code, struct sigcontext *sc)
     }
 }
 
-#define ALERROR() { com_err(argv[0], code, ALcontext(&ds.sess)); }
+#define ALERROR() { com_err(argv[0], code, ALcontext(&ds.Xsess)); }
 
 void dumpMessage(pc_message *message)
 {
@@ -492,32 +632,31 @@ void dumpMessage(pc_message *message)
 }
 
 char *xuptrans[] = {
-  "NANNY_MODE=X",
-  "XCONSOLE=ON",
+  N_LOGGED_IN "=" N_FALSE,
+  N_CONSPREF "=" N_ON,
   NULL
 };
 
 char *xdowntrans[] = {
-  "XCONSOLE=OFF",
-  "LOGGED_IN=FALSE",
-  "NANNY_MODE=NONE",
+  N_CONSPREF "=" N_OFF,
+  N_LOGGED_IN "=" N_FALSE,
   NULL
 };
 
 char *dietrans[] = {
-  "XCONSOLE=OFF",
-  "LOGGED_IN=FALSE",
-  "NANNY_MODE=DEAD",
+  N_CONSPREF "=" N_OFF,
+  N_LOGGED_IN "=" N_FALSE,
+  N_MODE "=" N_DEAD,
   NULL
 };
 
 char *starttrans[] = {
-  "NANNY_MODE=NONE",
+  N_MODE,
   NULL
 };
 
 char *pingtrans[] = {
-  "NANNY_MODE",
+  N_MODE,
   NULL
 };
 
@@ -590,7 +729,6 @@ int main(int argc, char **argv)
   ds.shuttingDown = 0;
 
   var_setString(ds.vars, N_MODE, N_NONE);
-  var_setString(ds.vars, N_CONSMODE, N_OFF);
   var_setString(ds.vars, N_LOGGED_IN, N_FALSE);
 
   retry.data = N_RETRY "=" N_TRUE;
@@ -656,7 +794,7 @@ int main(int argc, char **argv)
      exist, so just exit. */
   if (option == dietrans || (option == pingtrans))
     {
-      fprintf(stdout, "NANNY_MODE=DEAD\n");
+      fprintf(stdout, N_MODE "=" N_DEAD "\n");
       exit(0);
     }
 
@@ -667,10 +805,16 @@ int main(int argc, char **argv)
   code = ALinit();
   if (code) ALERROR();
 
-  code = ALinitSession(&ds.sess);
+  code = ALinitSession(&ds.Xsess);
   if (code) ALERROR();
 
-  code = ALinitUtmp(&ds.sess);
+  code = ALinitUtmp(&ds.Xsess);
+  if (code) ALERROR();
+
+  code = ALinitSession(&ds.Csess);
+  if (code) ALERROR();
+
+  code = ALinitUtmp(&ds.Csess);
   if (code) ALERROR();
 
   /* Initialize our port for new connections. */
@@ -683,17 +827,17 @@ int main(int argc, char **argv)
   ds.listener = inport;
   pc_addport(ds.ps, inport);
 
-  /* Initialize console handling. */
+  /* Initialize X console handling. */
   ds.cs = cons_init();
   cons_getpty(ds.cs);
 
   var_setString(ds.vars, N_TTY, cons_name(ds.cs));
 
-#ifdef DOLINK
-  unlink(athconsole);
-  symlink(cons_name(ds.cs), athconsole);
-#endif
+  /* Initialize display handling. */
+  ds.dpy = dpy_init();
+  ds.cUtWritten = 0;
 
+  /* Grab our X entry in utmp */
   init_utmp(&ds);
 
   /* Signal handlers. */
@@ -762,8 +906,10 @@ int main(int argc, char **argv)
 	      sigprocmask(SIG_BLOCK, &mask, &omask);
 	      while (numc)
 		{
-		  cons_child(ds.cs, cstack[numc-1].pid,
-			     &cstack[numc-1].status);
+		  if (cons_child(ds.cs, cstack[numc-1].pid,
+				 &cstack[numc-1].status))
+		    dpy_child(ds.dpy, cstack[numc-1].pid,
+			      &cstack[numc-1].status);
 		  numc--;
 		}
 	      sigprocmask(SIG_SETMASK, &omask, NULL);
@@ -771,6 +917,8 @@ int main(int argc, char **argv)
 	      if (cons_status(ds.cs) == CONS_DOWN &&
 		  ds.consolePreference == CONS_UP)
 		startConsole(&ds);
+	      if (dpy_status(ds.dpy) == DPY_NONE)
+		update_dpy(&ds);
 	    }
 	  break;
 	case PC_FD:
