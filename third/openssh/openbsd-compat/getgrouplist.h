@@ -1,0 +1,16 @@
+/* $Id: getgrouplist.h,v 1.1.1.1 2001-11-15 19:24:15 ghudson Exp $ */
+
+#ifndef _BSD_GETGROUPLIST_H
+#define _BSD_GETGROUPLIST_H
+
+#include "config.h"
+
+#ifndef HAVE_GETGROUPLIST
+
+#include <grp.h>
+
+int getgrouplist(const char *, gid_t, gid_t *, int *);
+
+#endif
+
+#endif
