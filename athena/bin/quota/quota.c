@@ -2,8 +2,11 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.7 1990-05-24 10:58:11 jnrees Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.8 1990-06-01 15:20:40 jnrees Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.7  90/05/24  10:58:11  jnrees
+ * Fixed potential bus error problem, dereferencing an unset pointer.
+ * 
  * Revision 1.6  90/05/23  12:25:41  jnrees
  * Changed output format.  '-i' flag no longer needed.
  * Added a usage message if command line is improper.
@@ -299,7 +302,7 @@ warn(mntp, qvp)
 {
   struct timeval tv;
   int i;
-  char buf[1024];
+  char buf[1024], idbuf[20];
   char *id_name, *id_type;
   struct rcquota *rqp;
 
@@ -310,10 +313,23 @@ warn(mntp, qvp)
 
   for(i=0; i<qvp->rq_ngrps; i++){
 
-    id_name = (qvp->rq_group ?
-	       getgrgid(qvp->gqr_rcquota[i].rq_id)->gr_name :
-	       getpwuid(qvp->gqr_rcquota[i].rq_id)->pw_name);
-  
+    if (qvp->rq_group){
+	if (getgrgid(qvp->gqr_rcquota[i].rq_id))
+	  id_name = getgrgid(qvp->gqr_rcquota[i].rq_id)->gr_name;
+	else{
+	  sprintf(idbuf, "#%d", qvp->gqr_rcquota[i].rq_id);
+	  id_name = idbuf;
+	}
+      }
+    else{
+      if (getpwuid(qvp->gqr_rcquota[i].rq_id))
+	id_name = getpwuid(qvp->gqr_rcquota[i].rq_id)->pw_name;
+      else{
+	sprintf(idbuf, "#%d", qvp->gqr_rcquota[i].rq_id);
+	id_name = idbuf;
+      }
+    }
+
     rqp = &(qvp->gqr_rcquota[i]);
 
     /* Correct for zero quotas... */
