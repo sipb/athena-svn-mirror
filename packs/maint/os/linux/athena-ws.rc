@@ -137,6 +137,7 @@ case "$1" in
 			&& rm -f /etc/nologin.persist \
 			&& rm -rf /etc/ssh_host_* \
 			&& rm -f /etc/ssh_random_seed \
+			&& rm -rf /etc/athena/orbitrc \
 			&& rm -f {/etc,/etc/athena,/etc/athena/login}/*.local \
 			&& chmod 600 /etc/shadow \
 			&& cp /dev/null /etc/X0.hosts \
