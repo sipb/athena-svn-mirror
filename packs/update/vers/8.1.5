@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	chmod 755 /
+	;;
+
+sgi)
+	# These files may have been created mode 666; fix that.
+	chmod go-w /var/athena/attachtab /etc/X0.hosts /etc/named.local
+	;;
+esac
