@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.2 1989-08-08 10:44:48 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.3 1989-08-20 15:57:01 tjcoppet Exp $
  */
 
 #include <stdio.h>                  
@@ -70,3 +70,5 @@ char **hes_resolve();
 #endif HESIOD
 
 void expand_hostname();
+
+
