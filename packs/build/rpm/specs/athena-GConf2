@@ -5,3 +5,7 @@ Group: System Environment/Base
 
 %description
 GConf is the GNOME Configuration database system.
+
+%post
+mkdir -p /etc/athena/gconf/gconf.xml.defaults
+mkdir -p /etc/athena/gconf/gconf.xml.mandatory
