@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.94 1997-07-26 03:03:52 ghudson Exp $
+ * $Id: login.c,v 1.95 1997-08-22 22:46:28 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.94 1997-07-26 03:03:52 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.95 1997-08-22 22:46:28 ghudson Exp $";
 #endif
 
 /*
@@ -2317,7 +2317,7 @@ get_groups()
 	char **cp,grbuf[4096],*ptr,*pwptr,*numptr,*lstptr;
 	char *grname[MAX_GROUPS], *grnum[MAX_GROUPS];
 	char grlst[4096],grtmp[4096],*tmpptr;
-	int ngroups,i,cnt,nalready, namelen;
+	int ngroups,i,cnt,nentries, namelen;
 	
 	if (inhibitflag)
 		return;
@@ -2361,10 +2361,9 @@ get_groups()
 			break;
 	}
 
-	/* Count the groups the user is currently in which aren't in our
-	 * list. */
+	/* Count the groups the user is currently in. */
 	namelen = strlen(pwd->pw_name);
-	nalready = 0;
+	nentries = 0;
 	while (fgets(grbuf,sizeof grbuf,grin)) {
 		/* Find the gid and user list. */
 		ptr = strchr(grbuf, ':');
@@ -2379,30 +2378,18 @@ get_groups()
 			break;
 		*ptr = 0;
 
-		/* If it's in our list of gids, we aren't interested. */
-		for (i = 0; i < ngroups; i++) {
-			if (grnum[i] && !strcmp(numptr, grnum[i]))
-				break;
-		}
-		if (i < ngroups)
-			break;
-
 		/* Now check if the user is in the user list. */
 		while (ptr) {
 			ptr++;
 			if (!strncmp(pwd->pw_name, ptr, namelen) &&
 			    (ptr[namelen] == ',' || ptr[namelen] == ' ' ||
 			     ptr[namelen] == '\n')) {
-				nalready++;
+				nentries++;
 				break;
 			}
 			ptr = strchr(ptr, ',');
 		}
 	}
-
-	/* Avoid putting the user in more than MAX_GROUPS groups total. */
-	if (ngroups > MAX_GROUPS - nalready)
-		ngroups = MAX_GROUPS - nalready;
 
 	rewind(grin);
 	while (fgets(grbuf,sizeof grbuf,grin) != 0) {
@@ -2422,37 +2409,43 @@ get_groups()
 			continue;
 		*lstptr++ = '\0';
 		strcpy(grlst,lstptr);
-		for (i=0;i<ngroups;i++) {
-			if (strcmp(grname[i],grbuf))
-				continue;
-			lstptr = grlst;
-			while (lstptr) {
-				strcpy(grtmp,lstptr);
-				tmpptr = strchr(grtmp,',');
-				if (tmpptr)
-					*tmpptr = '\0';
-				if (!strcmp(grtmp,pwd->pw_name)) {
-					grname[i] = "*";
-					break;
-				} 
-				lstptr = strchr(lstptr,',');
+		if (nentries < MAX_GROUPS) {
+			for (i=0;i<ngroups;i++) {
+				if (strcmp(grname[i],grbuf))
+					continue;
+				lstptr = grlst;
+				while (lstptr) {
+					strcpy(grtmp,lstptr);
+					tmpptr = strchr(grtmp,',');
+					if (tmpptr)
+						*tmpptr = '\0';
+					if (!strcmp(grtmp,pwd->pw_name)) {
+						grname[i] = "*";
+						break;
+					}
+					lstptr = strchr(lstptr,',');
+					if (lstptr)
+						lstptr++;
+				}
 				if (lstptr)
-					lstptr++;
-			}
-			if (lstptr)
+					break;
+				strcat(grlst,",");
+				strcat(grlst,pwd->pw_name);
+				grname[i] = "*";
+				nentries++;
 				break;
-			strcat(grlst,",");
-			strcat(grlst,pwd->pw_name);
-			grname[i] = "*";
-			break;
+			}
 		}
 		fprintf(grout,"%s:%s:%s:%s\n",grbuf,pwptr,numptr,grlst);
 	}
 
-	for (i=0;i<ngroups;i++)
-		if (strcmp(grname[i],"*"))
+	for (i=0;i<ngroups && nentries<MAX_GROUPS;i++) {
+		if (strcmp(grname[i],"*")) {
 			fprintf(grout,"%s:%s:%s:%s\n",grname[i],"*",
 				grnum[i],pwd->pw_name);
+			nentries++;
+		}
+	}
 
 	fclose(grin);
 	fclose(grout);
