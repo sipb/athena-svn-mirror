@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.4 1993-07-02 03:04:51 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.5 1993-07-02 03:51:21 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -27,7 +27,7 @@ static char *rcsid =
 #include <X11/Xj/warn.h>
 
 
-#if  defined(UltrixArchitcture) \
+#if  defined(UltrixArchitecture) \
   || defined(AIXArchitecture) \
   || defined(MacIIArchitecture) \
   || defined(SunArchitecture)
