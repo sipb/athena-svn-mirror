@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.21 1991-03-28 13:26:53 lwvanels Exp $
+ *	$Id: s_io.c,v 1.22 1991-04-08 21:13:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.21 1991-03-28 13:26:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.22 1991-04-08 21:13:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -136,24 +136,17 @@ read_request(fd, request)
       return(ERROR);
     }
 
-#ifdef KERBEROS
-  if (sread(fd, (char *) &(request->kticket.length), sizeof(int)) != 
-      sizeof(int)) 
-    {
-      log_error("error on read: klength failure: %s");
-      return(ERROR);
-    }
+/* Always read ticket data; may just be ignored if not using kerberos */
   
   request->kticket.length  = ntohl((u_long) request->kticket.length);
-
-  if (sread(fd, (char *) request->kticket.dat,request->kticket.length) !=
-      request->kticket.length)
-    {
+  
+  if (request->kticket.length != 0) {
+    if (sread(fd, (char *) request->kticket.dat,request->kticket.length) !=
+	request->kticket.length) {
       log_error("error on read: kdata failure: %s");
       return(ERROR);
     }
-#endif /* KERBEROS */
-
+  }
   return(SUCCESS);  
 }
 
