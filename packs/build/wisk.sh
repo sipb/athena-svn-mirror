@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.59 $
+# $Revision: 1.60 $
 
 umask 2
 
@@ -26,10 +26,8 @@ set SOURCE="/source"
 
 #set the path to include the right xmkmf and imake
 if ($machine == "sun4") then
-	set comp=compiler-80
 	set AFS="sun4m_53"
-	attach -n $comp sunsoft
-	setenv GCC_EXEC_PREFIX /mit/$comp/${machine}/lib/gcc-lib/
+	attach -n -q sunsoft
 else if ($machine == "decmips") then
 	set AFS="pmax_ul4"
 	setenv OSVER `uname -r | sed s/\\.//`
@@ -46,7 +44,7 @@ setenv LD_LIBRARY_PATH /usr/openwin/lib
 endif
 
 if ( $machine == "sun4" ) then
-	set path=( /usr/ccs/bin $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin /usr/athena/bin /bin/athena $path /mit/sunsoft/sun4bin  /mit/$comp/sun4bin)
+	set path=( /usr/ccs/bin $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin /usr/athena/bin /bin/athena $path /mit/sunsoft/sun4bin /usr/gcc/bin)
 else
 	set path=( $BUILD/bin $BUILD/supported/afs/$AFS/dest/bin /usr/athena/bin /bin/athena $path /usr/bin/X11)
 endif
@@ -108,7 +106,7 @@ set end="athena/man athena/dotfiles athena/config"
 # athena/bin/inittty is not listed now. Hopefully we have a better
 # solution now.
  
-mkdir $BUILD/LOGS
+mkdir -p $BUILD/LOGS
 set outfile="$BUILD/LOGS/washlog.`date '+%y.%m.%d.%H'`"
 set X="X11R4"
 set MOTIF="motif"
@@ -274,11 +272,12 @@ endif
 	endif
 
 	if ($machine == "sun4" ) then
+		mkdir -p $SRVD/usr/athena/include/rpc
 		(cd $BUILD/sun4/include; make install DESTDIR=$SRVD >>& $outfile)
-	if ($status == 1 ) then
-	        echo "We bombed in sun4/include" >>& $outfile
-		exit -1
-	endif
+		if ($status == 1 ) then
+		        echo "We bombed in sun4/include" >>& $outfile
+			exit -1
+		endif
 	endif
 
 	if ($machine == "sun4" ) then
@@ -336,7 +335,7 @@ endif
 	if ($machine == "sun4") then
 		cd $BUILD/bin
 		rm -f cc
-		ln -s /mit/compiler-80/sun4bin/gcc cc
+		cp -p $SOURCE/sun4/cc-for-build cc
 		rm -f suncc
 		cp -p $SOURCE/sun4/suncc .
 	endif
@@ -409,6 +408,7 @@ endif # installonly
 
 	case third/supported/kerberos5
 	((echo In $package : configure >>& $outfile) && \
+	((cd $BUILD/$package/src; rm -f config.cache) >>& $outfile) && \
 	((cd $BUILD/$package/src; ./configure --with-ccopts=-O --with-krb4=/usr/athena --enable-athena) >>& $outfile) && \
 	(echo In $package : make clean >>& $outfile ) && \
 	((cd $BUILD/$package/src;make clean) >>& $outfile ) && \
