@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.20 1991-03-27 16:01:53 lwvanels Exp $
+ *	$Id: backup.c,v 1.21 1991-04-08 21:09:17 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.20 1991-03-27 16:01:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.21 1991-04-08 21:09:17 lwvanels Exp $";
 #endif
 #endif
 
@@ -75,7 +75,7 @@ KNUCKLE *knuckle;
   if(write(fd,KNUCKLE_SEP,sizeof(char) * STRING_SIZE) != 
      sizeof(char) * STRING_SIZE)
     {
-      perror("write_knuckle_info");
+      log_error("write_knuckle_info: %m");
       return(ERROR);
     }
   
@@ -89,13 +89,13 @@ KNUCKLE *knuckle;
       if(write(fd,TRANS_SEP,sizeof(char) * STRING_SIZE) != 
 	 sizeof(char) * STRING_SIZE)
 	{
-	  perror("write_knuckle_info");
+	  log_error("write_knuckle_info: %m");
 	  return(ERROR);
 	}
       size = write(fd, (char *) knuckle->question, sizeof(QUESTION));
       if(size != sizeof(QUESTION))
 	{
-	  perror("write_knuckle_info");
+	  log_error("write_knuckle_info: %m");
 	  return(ERROR);
 	}
     }
@@ -103,7 +103,7 @@ KNUCKLE *knuckle;
     if(write(fd,BLANK_SEP,sizeof(char) * STRING_SIZE) !=  
        sizeof(char) * STRING_SIZE)
       {
-	perror("write_knuckle_info");
+	log_error("write_knuckle_info: %m");
 	return(ERROR);
       }
   
@@ -121,15 +121,14 @@ KNUCKLE *knuckle;
   size = read(fd, (char *) knuckle, sizeof(KNUCKLE));
   if (size != sizeof(KNUCKLE))
     {
-      log_error("read_knuckle_info: cannot read knuckle");
+      log_error("read_knuckle_info: cannot read knuckle: %m");
       return(ERROR);
     }
   
   if(read(fd, (char *) type, sizeof(char) * STRING_SIZE) != 
      sizeof(char) * STRING_SIZE)
     {
-      log_error("read_kncukle_info: cannot read type");
-      perror("read_knuckle");
+      log_error("read_kncukle_info: cannot read type: %m");
       type_error(fd,type);
       return(ERROR);
     }
@@ -139,13 +138,13 @@ KNUCKLE *knuckle;
       knuckle->question = (QUESTION *) malloc(sizeof(QUESTION));
       if(knuckle->question == (QUESTION *) NULL)
 	{
-	  perror("question malloc");
+	  log_error("question malloc");
 	  return(ERROR);
 	}
       size = read(fd,(char *) knuckle->question, sizeof(QUESTION));
       if(size != sizeof(QUESTION))
 	{
-	  log_error("read_knuckle_info: cannot read transaction");
+	  log_error("read_knuckle_info: cannot read transaction: %m");
 	  return(ERROR);
 	}	  
       knuckle->question->owner = knuckle;
@@ -198,7 +197,7 @@ USER *user;
   
   if (size != sizeof(USER))
     {
-      perror("barf on user ");
+      log_error("barf on user; size mismatch ");
       return(ERROR);
     }
   
@@ -323,8 +322,7 @@ void
   
   if ((fd = open(BACKUP_TEMP, O_CREAT | O_WRONLY | O_TRUNC, 0600)) < 0) 
     {
-      perror("backup_data");
-      log_error("backup_data: unable to open backup file.");
+      log_error("backup_data: unable to open backup file: %m");
       goto PUNT;
     }
   
@@ -350,7 +348,7 @@ void
   if(write(fd,DATA_SEP,sizeof(char) * STRING_SIZE) != 
      sizeof(char) * STRING_SIZE)
     {
-      log_error("backup_data: unable to write data sep");
+      log_error("backup_data: unable to write data sep: %m");
       goto PUNT;
     }
   needs_backup = 0;
@@ -389,8 +387,7 @@ void
   
   if ((fd = open(BACKUP_FILE, O_RDONLY, 0)) < 0) 
     {
-      perror("load_data");
-      log_error("load_data: unable to open backup file");
+      log_error("load_data: unable to open backup file: %m");
       return;
     }
   
@@ -403,8 +400,7 @@ void
 	    {
 	      if(status == -1)
 		break;
-	      log_error("load_data: unable to read type");
-	      perror("read_knuckle");
+	      log_error("load_data: unable to read type: %m");
 	      break;
 	    }
 	}
@@ -429,7 +425,7 @@ void
 	  uptr = (USER *) malloc(sizeof(USER));
 	  if(uptr == (USER *) NULL)
 	    {
-	      perror("load_data (failed malloc)");
+	      log_error("load_data (failed malloc)");
 	      goto PUNT;
 	    }
 	  status = read_user_info(fd,uptr);
@@ -528,7 +524,7 @@ char *string;
 	  bcopy(buf,type_buf,STRING_SIZE);
 	  if(cc == 0)
 	    skip = FALSE;
-	  log_error("type_error: brain damage\n");
+	  log_error("type_error: brain damage: %m");
 	  return;
 	}
       buf[STRING_SIZE-1] = buf2[0];

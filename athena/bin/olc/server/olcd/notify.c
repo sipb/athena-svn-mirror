@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.30 1991-03-27 14:26:47 lwvanels Exp $
+ *	$Id: notify.c,v 1.31 1991-04-08 21:09:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.30 1991-03-27 14:26:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.31 1991-04-08 21:09:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -155,7 +155,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	sin.sin_port = write_port;
 	fds = socket(host->h_addrtype, SOCK_STREAM, 0);
 	if (fds < 0) {
-		perror("socket");
+		log_error("write_message: socket: %m");
 		exit(1);
 	}
 
