@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.39 2001-10-23 23:32:37 rbasch Exp $
+# $Id: do-update.sh,v 1.40 2001-12-03 17:53:29 miki Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -249,7 +249,7 @@ if [ "$MINIROOT" = true ]; then
 		;;
 	esac
 
-	sh /srvd/usr/athena/lib/update/setup-swap-boot "$method" "$newvers"
+	sh /install/miniroot/setup-swap-boot "$method" "$newvers"
 	case "$?" in
 	0)
 		echo "Rebooting into swap to update OS files..."
