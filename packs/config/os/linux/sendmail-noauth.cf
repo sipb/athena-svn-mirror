@@ -1,4 +1,4 @@
-# $Id: sendmail-noauth.cf,v 1.1 2003-07-25 05:20:15 zacheiss Exp $
+# $Id: sendmail-noauth.cf,v 1.2 2003-10-22 22:25:52 jweiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -183,7 +183,7 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # deliver mail
 R$*<@$=w>$*		$#local$:$1			Local mail
-R$*<@$+>$*		$#smtp$@$(athconf relay$:$2$)$:$1<@$2>$3
+R$*<@$+>$*		$#smtp$@$(athconf relay $&{f}$:$2$)$:$1<@$2>$3
 
 #####################
 ###   Anti-spam   ###
