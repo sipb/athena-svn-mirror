@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/Imakefile,v $
- * $Id: Imakefile,v 1.3 1991-03-24 19:04:40 lwvanels Exp $
+ * $Id: Imakefile,v 1.4 1991-03-24 19:12:55 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -26,14 +26,12 @@ DEFINES=
 LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
 SYS_LIBRARIES= $(HesiodLib) $(KerberosLib)
 
-INCLUDES= -I.
-
 NormalProgramTarget(oreplay,$(OBJS),,$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 SaberProgramTarget(oreplay,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 depend: Makefile
-	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) *.[c] *.[h]
+	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) $(SRCS)
 
 LintTarget()
 
