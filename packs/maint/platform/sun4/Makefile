@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1997-04-11 20:18:08 ghudson Exp $
+# $Id: Makefile,v 1.6 1998-05-08 15:56:32 ghudson Exp $
 
 ATHRETCDIR=/etc/athena
 INITD=/etc/init.d
@@ -15,6 +15,7 @@ install:
 	mkdir -p ${DESTDIR}${RC2}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
+	install -c -m 0755 bind ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
 	install -c -m 0755 rpc ${DESTDIR}${INITD}
@@ -25,6 +26,8 @@ install:
 	ln -s ../init.d/athena.config ${DESTDIR}${RC0}/K95athena.config
 	rm -f ${DESTDIR}${RC2}/S13athena.config
 	ln -s ../init.d/athena.config ${DESTDIR}${RC2}/S13athena.config
+	rm -f ${DESTDIR}${RC2}/S72bind
+	ln -s ../init.d/bind ${DESTDIR}${RC2}/S72bind
 	rm -f ${DESTDIR}${RC2}/S70finish-update
 	ln -s ../init.d/finish-update ${DESTDIR}${RC2}/S70finish-update
 	rm -f ${DESTDIR}${RC2}/S90athena
