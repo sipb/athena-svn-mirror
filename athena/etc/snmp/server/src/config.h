@@ -1,7 +1,10 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.2 1990-04-26 15:43:32 tom Exp $
- *
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.3 1990-04-26 15:45:25 tom Exp $
+ *  $Author: tom $
+ *  $Locker:  $
+ *  $Log: not supported by cvs2svn $
+ * 
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
  */
