@@ -1,13 +1,22 @@
-# $Id: Makefile,v 1.6 1997-03-03 21:52:48 ghudson Exp $
+# $Id: Makefile,v 1.7 1997-03-03 22:16:03 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 ATHMANDIR=/usr/athena/man
 LIBX11=/usr/openwin/lib/X11
 USRLIBDIR=/usr/lib
-SUNSOFT=/afs/athena.mit.edu/software/sunsoft
 
-all:
+all: cc f77
+
+cc:
+	path=`athdir -c -p /mit/sunsoft -t bin`/cc; \
+		sed -e 's|@LOCKER@|sunsoft|g' -e "s|@PATH@|$$path|g" \
+		-e 's|@PROGRAM@|cc|g' ../../template.sh > $@
+
+f77:
+	path=`athdir -c -p /mit/sunsoft -t bin`/f77; \
+		sed -e 's|@LOCKER@|sunsoft|g' -e "s|@PATH@|$$path|g" \
+		-e 's|@PROGRAM@|f77|g' ../../template.sh > $@
 
 check:
 
@@ -17,10 +26,8 @@ install:
 	mkdir -p ${DESTDIR}${LIBX11}
 	mkdir -p ${DESTDIR}${USRLIBDIR}
 	install -c -m 555 answerbook.sh ${DESTDIR}${ATHBINDIR}/answerbook
-	rm -f ${DESTDIR}${ATHBINDIR}/cc
-	ln -s `athdir -c -p ${SUNSOFT} -t bin`/cc ${DESTDIR}${ATHBINDIR}/cc
-	rm -f ${DESTDIR}${ATHBINDIR}/f77
-	ln -s `athdir -c -p ${SUNSOFT} -t bin`/f77 ${DESTDIR}${ATHBINDIR}/f77
+	install -c -m 555 cc ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 f77 ${DESTDIR}${ATHBINDIR}
 	rm -f ${DESTDIR}${ATHBINDIR}/mwm
 	ln -s /opt/SUNWmfwm/bin/mwm ${DESTDIR}${ATHBINDIR}/mwm
 	rm -f ${DESTDIR}${ATHMANDIR}/man1/mwm.1X
