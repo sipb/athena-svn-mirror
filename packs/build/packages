@@ -1,4 +1,4 @@
-# $Id: packages,v 1.142 2001-11-26 06:23:15 zacheiss Exp $
+# $Id: packages,v 1.143 2001-11-29 20:00:18 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -180,7 +180,7 @@ third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
-third/openssh			requires openssl
+third/openssh			requires krb5,tcp_wrappers,openssl
 third/openssl			
 third/ORBit			requires glib,gettext
 third/patch			on solaris
@@ -195,7 +195,6 @@ third/rs
 third/sawfish			requires rep-gtk,gnome-libs,control-center
 third/scrollkeeper
 third/sendmail			requires hesiod,tcp_wrappers
-third/ssh			requires krb5,tcp_wrappers
 third/sysinfo			on solaris,irix,linux
 third/talk			on solaris,irix
 third/tcp_wrappers		except linux
