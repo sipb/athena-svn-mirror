@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xmark_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v 1.2 1989-11-02 01:58:01 marc Exp $";
+static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.3 1989-11-09 14:56:15 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -276,12 +276,12 @@ void xmarkClear()
    oldpixel[1]=markpixel[1];
    oldgram=markgram;
 
-   markblock[0]=-1;
-   markblock[1]=-1;
-   markchar[0]=-1;
-   markchar[1]=-1;
-   markpixel[0]=-1;
-   markpixel[1]=-1;
+   markblock[0] = -1;
+   markblock[1] = -1;
+   markchar[0] = -1;
+   markchar[1] = -1;
+   markpixel[0] = -1;
+   markpixel[1] = -1;
    markgram=NULL;
 }
 
