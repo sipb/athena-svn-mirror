@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.80 1996-08-10 05:35:07 ghudson Exp $
+ * $Id: login.c,v 1.81 1996-09-20 02:04:09 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.80 1996-08-10 05:35:07 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.81 1996-09-20 02:04:09 ghudson Exp $";
 #endif
 
 /*
@@ -77,7 +77,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #else
 #include <syslog.h>
 #endif
-#include <strings.h>
+#include <string.h>
 #include <krb.h>	
 #include <netdb.h>
 #include <netinet/in.h>
@@ -87,9 +87,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #endif
 
 #ifdef KRB5
-#include <krb5/krb5.h>
-#include <krb5/ext-proto.h>
-#include <krb5/los-proto.h>
+#include <krb5.h>
 #endif
 
 #ifdef ultrix
@@ -445,7 +443,7 @@ main(argc, argv)
 	if (strcmp(argv[1], "-h") == 0 && getuid() == 0) {
 #ifdef SYSV
           term1[0] = '\0';
-          tmp = index(argv[3], '=');
+          tmp = strchr(argv[3], '=');
           if (tmp != NULL) {
             strcpy(term1, tmp+1);
           }  
@@ -518,7 +516,7 @@ main(argc, argv)
     ttyn = ttyname(0);
     if (ttyn == (char *)0 || *ttyn == '\0')
 	ttyn = "/dev/tty??";
-    tty = rindex(ttyn, '/');
+    tty = strrchr(ttyn, '/');
     if (tty == NULL)
 	tty = ttyn;
     else
@@ -715,7 +713,7 @@ main(argc, argv)
 		    pwd->pw_passwd = namep = crypt(pp, saltc);
 	    } 
 			    
-	    bzero(pp, 8);		/* No, Senator, I don't recall
+	    memset(pp, 0, 8);		/* No, Senator, I don't recall
 					   anything of that nature ... */
 	    setpriority(PRIO_PROCESS, 0, 0);
 
@@ -750,8 +748,7 @@ main(argc, argv)
 		    }
 		}
 #endif
-		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
-            				    what his administration is doing */
+		memset(pp2, 0, MAXPWSIZE+1);
 		switch (krbval) {
 		case INTK_OK:
 			alarm(0);	/* Authentic, so don't time out. */
@@ -777,7 +774,7 @@ main(argc, argv)
 				    goto leavethis;
 				}
 #ifdef SYSV
-				bzero(pasname, sizeof(pasname));
+				memset(pasname, 0, sizeof(pasname));
 				pwd->pw_name = &pasname[0];
 				strncpy(pwd->pw_name, utmpx.ut_name, 8); 
 #else
@@ -878,8 +875,7 @@ main(argc, argv)
 			goto leavethis;
 		}
 	} else { /* root logging in or inhibited; check password */
-		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
-					    what his administration is doing */
+		memset(pp2, 0, MAXPWSIZE+1);
 		invalid = TRUE;
 	} 
 	    /* if password is good, user is good */
@@ -1059,7 +1055,7 @@ leavethis:
 #else /* is SYSV */
 /* Fill in the utmp/utmpx information */
     gettimeofday(&utmpx.ut_tv);
-    if (index(ttyn, 'c') == NULL ) {
+    if (strchr(ttyn, 'c') == NULL ) {
          strcpy(ptty, ttyn + 5);
          strcpy(utmpx_tty, ttyn);
       }
@@ -1079,7 +1075,7 @@ leavethis:
     utmpx.ut_pid = getpid();
     if (utx_tmp)
           strcpy(new_id, utx_tmp->ut_id);
-    p = index(new_id, '/');
+    p = strchr(new_id, '/');
     if (p)
            strcpy(p, "\0");
     strcpy(utmpx.ut_id , new_id);
@@ -1194,7 +1190,7 @@ leavethis:
     setenv("hosttype", "sgi", 1);
 #endif
 
-    if ((namep = rindex(pwd->pw_shell, '/')) == NULL)
+    if ((namep = strrchr(pwd->pw_shell, '/')) == NULL)
 	namep = pwd->pw_shell;
     else
 	namep++;
@@ -1451,10 +1447,10 @@ doKerberosLogin(host)
 	 * Kerberos autologin protocol.
 	 */
 
-	(void) bzero(&sin, sizeof(sin));
+	(void) memset(&sin, 0, sizeof(sin));
 
         if (hp)
-                (void) bcopy (hp->h_addr, &sin.sin_addr, sizeof(sin.sin_addr));
+                (void) memcpy(&sin.sin_addr, hp->h_addr, sizeof(sin.sin_addr));
         else
                 /*
 		 * No host addr prevents auth, so
@@ -1555,7 +1551,7 @@ doremoteterm(term, tp)
 
 	struct sgttyb *tp;
 {
-	register char *cp = index(term, '/'), **cpp;
+	register char *cp = strchr(term, '/'), **cpp;
 	char *speed;
 #ifdef SYSV
         strncpy(term1, term, cp-term);
@@ -1564,7 +1560,7 @@ doremoteterm(term, tp)
 	if (cp) {
 		*cp++ = '\0';
 		speed = cp;
-		cp = index(speed, '/');
+		cp = strchr(speed, '/');
 		if (cp)
 			*cp++ = '\0';
 		for (cpp = speeds; cpp < &speeds[NSPEEDS]; cpp++)
@@ -1593,15 +1589,15 @@ compatsiz(cp)
 	ws.ws_xpixel = ws.ws_ypixel = -1;
 	if (cp) {
 		ws.ws_row = atoi(cp);
-		cp = index(cp, ',');
+		cp = strchr(cp, ',');
 		if (cp == 0)
 			goto done;
 		ws.ws_col = atoi(++cp);
-		cp = index(cp, ',');
+		cp = strchr(cp, ',');
 		if (cp == 0)
 			goto done;
 		ws.ws_xpixel = atoi(++cp);
-		cp = index(cp, ',');
+		cp = strchr(cp, ',');
 		if (cp == 0)
 			goto done;
 		ws.ws_ypixel = atoi(++cp);
@@ -2376,7 +2372,7 @@ get_groups()
 
 	for (i=0,ptr=cp[0];i<ngroups;i++) {
 		grname[i] = ptr;
-		ptr = (char *)index(ptr,':');
+		ptr = strchr(ptr,':');
 		if (!ptr) {
 			fprintf(stderr,"Internal failure while initializing groups\n");
 			fclose(grin);
@@ -2388,7 +2384,7 @@ get_groups()
 		}
 		*ptr++ = '\0';
 		grnum[i] = ptr;
-		ptr = (char *)index(ptr,':');
+		ptr = strchr(ptr,':');
 		if (!ptr)
 			ptr = grnum[i]+strlen(grnum[i]);
 		*ptr++ = '\0';
@@ -2398,15 +2394,15 @@ get_groups()
 		if (!*grbuf)
 			break;
 		grbuf[strlen(grbuf)-1] = '\0';
-		pwptr = (char *)index(grbuf,':');
+		pwptr = strchr(grbuf,':');
 		if (!pwptr)
 			continue;
 		*pwptr++ = '\0';
-		numptr = (char *)index(pwptr,':');
+		numptr = strchr(pwptr,':');
 		if (!numptr)
 			continue;
 		*numptr++ = '\0';
-		lstptr = (char *)index(numptr,':');
+		lstptr = strchr(numptr,':');
 		if (!lstptr)
 			continue;
 		*lstptr++ = '\0';
@@ -2417,14 +2413,14 @@ get_groups()
 			lstptr = grlst;
 			while (lstptr) {
 				strcpy(grtmp,lstptr);
-				tmpptr = (char *)index(grtmp,',');
+				tmpptr = strchr(grtmp,',');
 				if (tmpptr)
 					*tmpptr = '\0';
 				if (!strcmp(grtmp,pwd->pw_name)) {
 					grname[i] = "*";
 					break;
 				} 
-				lstptr = (char *)index(lstptr,',');
+				lstptr = strchr(lstptr,',');
 				if (lstptr)
 					lstptr++;
 			}
@@ -2509,7 +2505,7 @@ int verify_krb_tgt (realm)
 	perror ("cannot retrieve local host address");
 	return -1;
     }
-    bcopy ((char *)hp->h_addr, (char *) &addr, sizeof (addr));
+    memcpy (&addr, hp->h_addr, sizeof (addr));
     /* Do we have rcmd.<host> keys? */
     have_keys = read_service_key (rcmd, phost, realm, 0, KEYFILE, key)
 	? 0 : 1;
@@ -2557,8 +2553,8 @@ int verify_krb_tgt (realm)
     retval = 1;
     /* do cleanup and return */
 EGRESS:
-    bzero (&ticket, sizeof (ticket));
-    bzero (&authdata, sizeof (authdata));
+    memset (&ticket, 0, sizeof (ticket));
+    memset (&authdata, 0, sizeof (authdata));
     return retval;
 }
 
@@ -2574,134 +2570,147 @@ EGRESS:
  *
  * ret_cache_name is an optional output argument in case the caller
  * wants to know the name of the actual V5 credentials cache (to put
- * into the KRB5CCNAME environment variable)
+ * into the KRB5_ENV_CCNAME environment variable)
  *
  * etext is a mandatory output variable which is filled in with
  * additional explanatory text in case of an error.
+ * 
  */
 krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
-                           ret_cache_name, etext)
-    char    *name;
-    char    *instance;
-    char    *realm;
-    int     lifetime;
-    char    *password;
-    char    **ret_cache_name;
-    char    **etext;
+			    ret_cache_name, etext)
+	char	*name;
+	char	*instance;
+	char	*realm;
+	int	lifetime;
+	char	*password;
+	char	**ret_cache_name;
+	char	**etext;
 {
-    krb5_error_code retval;
-    krb5_principal  me = 0, server = 0;
-    krb5_ccache     ccache = NULL;
-    krb5_creds      my_creds;
-    krb5_timestamp  now;
-    krb5_address    **my_addresses = 0;
-    char            *cache_name = krb5_cc_default_name();
+	krb5_context context;
+	krb5_error_code retval;
+	krb5_principal	me = 0, server = 0;
+	krb5_ccache	ccache = NULL;
+	krb5_creds my_creds;
+	krb5_timestamp now;
+	krb5_address **my_addresses = 0;
+	char *cache_name;
 
-    *etext = 0;
-    if (ret_cache_name)
-	*ret_cache_name = 0;
-    memset((char *)&my_creds, 0, sizeof(my_creds));
-    
-    krb5_init_ets();
-    
-    retval = krb5_425_conv_principal(name, instance, realm, &me);
-    if (retval) {
-	*etext = "while converting V4 principal";
-	goto cleanup;
-    }
-    
-    retval = krb5_cc_resolve (cache_name, &ccache);
-    if (retval) {
-	*etext = "while resolving ccache";
-	goto cleanup;
-    }
+	*etext = 0;
+	if (ret_cache_name)
+		*ret_cache_name = 0;
+	memset((char *)&my_creds, 0, sizeof(my_creds));
 
-    retval = krb5_cc_initialize (ccache, me);
-    if (retval) {
-	*etext = "while initializing cache";
-	goto cleanup;
-    }
+	krb5_init_context(&context);
+	cache_name = krb5_cc_default_name(context);
 
-    retval = krb5_build_principal_ext(&server,
-				      krb5_princ_realm(me)->length,
-				      krb5_princ_realm(me)->data,
-				      KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
-				      krb5_princ_realm(me)->length,
-				      krb5_princ_realm(me)->data,
-				      0);
-    if (retval)  {
-	*etext = "while building server name";
-	goto cleanup;
-    }
-
-    retval = krb5_os_localaddr(&my_addresses);
-    if (retval) {
-	*etext = "when getting my address";
-	goto cleanup;
-    }
-
-    retval = krb5_timeofday(&now);
-    if (retval) {
-	*etext = "while getting time of day";
-	goto cleanup;
-    }
-       
-    my_creds.client = me;
-    my_creds.server = server;
-    my_creds.times.starttime = 0;
-    my_creds.times.endtime = now + lifetime*5*60;
-    my_creds.times.renew_till = 0;
-       
-    retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
-					   ETYPE_DES_CBC_CRC,
-					   KEYTYPE_DES,
-					   password,
-					   ccache,
-					   &my_creds, 0);
-    if (retval) {
-	*etext = "while calling krb5_get_in_tkt_with_password";
-	goto cleanup;
-    }
-
-    if (ret_cache_name) {
-	*ret_cache_name = malloc(strlen(cache_name)+1);
-	if (!*ret_cache_name) {
-	    retval = ENOMEM;
-	    goto cleanup;
+	krb5_init_ets(context);
+	
+	retval = krb5_425_conv_principal(context, name, instance, realm, &me);
+	if (retval) {
+		*etext = "while converting V4 principal";
+		goto cleanup;
 	}
-	strcpy(*ret_cache_name, cache_name);
-    }
+    
+	retval = krb5_cc_resolve (context, cache_name, &ccache);
+	if (retval) {
+		*etext = "while resolving ccache";
+		goto cleanup;
+	}
 
- cleanup:
-    if (me)
-	krb5_free_principal(me);
-    if (server)
-	krb5_free_principal(server);
-    if (my_addresses)
-	krb5_free_addresses(my_addresses);
-    if (ccache)
-	krb5_cc_close(ccache);
-    my_creds.client = 0;
-    my_creds.server = 0;
-    krb5_free_cred_contents(&my_creds);
-    return retval;
+	retval = krb5_cc_initialize (context, ccache, me);
+	if (retval) {
+		*etext = "while initializing cache";
+		goto cleanup;
+	}
+
+	retval = krb5_build_principal_ext(context, &server,
+					  krb5_princ_realm(context,
+							   me)->length,
+					  krb5_princ_realm(context, me)->data,
+					  KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
+					  krb5_princ_realm(context,
+							   me)->length,
+					  krb5_princ_realm(context, me)->data,
+					  0);
+	if (retval)  {
+		*etext = "while building server name";
+		goto cleanup;
+	}
+
+	retval = krb5_os_localaddr(context, &my_addresses);
+	if (retval) {
+		*etext = "when getting my address";
+		goto cleanup;
+	}
+
+	retval = krb5_timeofday(context, &now);
+	if (retval) {
+		*etext = "while getting time of day";
+		goto cleanup;
+	}
+	
+	my_creds.client = me;
+	my_creds.server = server;
+	my_creds.times.starttime = 0;
+	my_creds.times.endtime = now + lifetime*5*60;
+	my_creds.times.renew_till = 0;
+	
+	retval = krb5_get_in_tkt_with_password(context, 0, my_addresses,
+					       NULL, NULL, password, ccache,
+					       &my_creds, 0);
+	if (retval) {
+		*etext = "while calling krb5_get_in_tkt_with_password";
+		goto cleanup;
+	}
+
+	if (ret_cache_name) {
+		*ret_cache_name = (char *) malloc(strlen(cache_name)+1);
+		if (!*ret_cache_name) {
+			retval = ENOMEM;
+			goto cleanup;
+		}
+		strcpy(*ret_cache_name, cache_name);
+	}
+
+cleanup:
+	if (me)
+		krb5_free_principal(context, me);
+	if (server)
+		krb5_free_principal(context, server);
+	if (my_addresses)
+		krb5_free_addresses(context, my_addresses);
+	if (ccache)
+		krb5_cc_close(context, ccache);
+	my_creds.client = 0;
+	my_creds.server = 0;
+	krb5_free_cred_contents(context, &my_creds);
+	krb5_free_context(context);
+	return retval;
 }
 
 krb5_error_code do_v5_kdestroy(cachename)
-    char    *cachename;
+	char	*cachename;
 {
-    krb5_error_code retval;
-    krb5_ccache cache;
-    
-    if (!cachename)
-	cachename = krb5_cc_default_name();
-    
-    krb5_init_ets();
-    
-    retval = krb5_cc_resolve (cachename, &cache);
-    if (!retval)
-	retval = krb5_cc_destroy(cache);
+	krb5_context context;
+	krb5_error_code retval;
+	krb5_ccache cache;
 
-    return retval;
+	krb5_init_context(&context);
+
+	if (!cachename)
+		cachename = krb5_cc_default_name(context);
+
+	krb5_init_ets(context);
+
+	retval = krb5_cc_resolve (context, cachename, &cache);
+	if (retval) {
+		krb5_free_context(context);
+		return retval;
+	}
+
+	retval = krb5_cc_destroy(context, cache);
+
+	krb5_free_context(context);
+	return retval;
 }
 #endif /* KRB5 */
