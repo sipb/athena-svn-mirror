@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.3 1990-04-16 11:47:34 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.4 1990-04-16 22:38:59 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.3 1990-04-16 11:47:34 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.4 1990-04-16 22:38:59 epeisach Exp $";
 #endif lint
 
 /*
@@ -465,6 +465,7 @@ printit(file)
 		case 'N':
 		case 'U':
 		case 'M':
+		case 'Z':
 			continue;
 		}
 
@@ -645,7 +646,7 @@ print(format, file)
 		        /* It appears to have been used on multics for */
 		        /* Multiple copies - we ignore */
 		(void) close(fi);
-		return(ERROR);
+		return(OK);
 	default:
 		(void) close(fi);
 		syslog(LOG_ERR, "%s: illegal format character '%c'",
@@ -1120,9 +1121,12 @@ int bombed;
 	notice.z_default_format=ZDEFAULTFORMAT;
 	notice.z_num_other_fields=0;
 
-	sprintf(zmessagetext,"Printer status for %s:\n\nJob name: %s\n%s",
-		printer,(*jobname ? jobname : "*Unknown*"),zerrtext[bombed+4]);
-
+	if(*jobname) 
+	    sprintf(zmessagetext,"Printer status for %s:\n\nJob name: %s\n%s",
+		    printer,jobname,zerrtext[bombed+4]);
+	else
+	    sprintf(zmessagetext,"Printer status for %s:\n\n%s",
+		    printer,zerrtext[bombed+4]);
 	zmessage[0]="Printer Daemon";
 	zmessage[1]=zmessagetext;
 	zmessage[2]=printer;
