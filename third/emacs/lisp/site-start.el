@@ -22,6 +22,10 @@
 ; DVI files.
 (setq tex-dvi-print-command "dvips")
 
+; Use htmlview to browse URLs.
+(setq browse-url-generic-program "htmlview")
+(setq browse-url-browser-function 'browse-url-generic)
+
 ; Athena likes different X paste behavior
 (setq mouse-yank-at-point t)
 
