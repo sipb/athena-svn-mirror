@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.6 1987-08-22 22:27:38 rfrench Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.7 1987-08-28 14:09:32 treese Exp $
 
 # First, source the standard login script.  If it can't be found, notify
 # the user and execute some backup commands.
@@ -39,7 +39,7 @@ stty dec			# Set DEC-style control characters
 # what the DISPLAY should be.
 
 if ( $term =~ xterm* ) then
-	if ( `tty` =~ ttyv* ) then
+	if ( `/usr/bin/tty` =~ /dev/ttyv* ) then
 		echo -n "Starting window manager: "
 		uwm &
 	else if (! $?DISPLAY) then
