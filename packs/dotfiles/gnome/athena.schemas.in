@@ -1,7 +1,7 @@
 # This is not what a GConf schemas file really looks like.  We process
 # it with gen-schemas.pl to produce the much more verbose XML format
 # used by schemas.  But this format lets the reader see what's going
-# on much better.
+# on much more easily.
 
 # Indentation is significant.  Blank lines and lines beginning with
 # '#' are ignored.  Don't use tabs.  Use "[foo]" lines to specify the
@@ -9,6 +9,11 @@
 # integers, booleans, quoted strings, or lists of strings.  List of
 # strings can be split across multiple lines for clarity.
 
+# screensaver defaults
+[schemas/apps/gnome_settings_daemon/screensaver]
+ start_screensaver = false
+
+# gnome-panel defaults
 [schemas/apps/panel/default_profiles/medium]
  [general]
   panel_id_list = [athena-edge]
@@ -24,13 +29,13 @@
   screen = 0
   monitor = 0
   screen_edge = "panel-edge-bottom"
-  hide_buttons_enabled = "false"
-  hide_buttons_pixmaps_enabled = "false"
+  hide_buttons_enabled = false
+  hide_buttons_pixmaps_enabled = false
   panel_background_type = "no-background"
   panel_background_pixmap = ""
-  panel_background_pixmap_fit = "true"
-  panel_background_pixmap_stretch = "false"
-  panel_background_pixmap_rotate = "true"
+  panel_background_pixmap_fit = true
+  panel_background_pixmap_stretch = false
+  panel_background_pixmap_rotate = true
   panel_background_color = "#ffffff"
   panel_background_color_alpha = 65535
 
