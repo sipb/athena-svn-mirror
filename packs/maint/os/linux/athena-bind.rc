@@ -28,6 +28,9 @@ RETVAL=0
 # See how we were called
 case "$1" in
   start)
+	# Generate /etc/rdnc.key so rndc works.
+	/usr/athena/etc/rndc-confgen -a
+
 	echo -n "Starting Athena named: "
 	daemon /etc/athena/named
 	RETVAL=$?
