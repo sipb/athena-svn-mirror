@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.19 2001-06-05 19:33:16 rbasch Exp $
+# $Id: bashrc,v 1.20 2001-06-12 17:47:54 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -178,7 +178,14 @@ if [ "${PS1+set}" = set ]; then
 		# Have no better way to do this at the moment.
 		stty sane intr ^C
 	fi
-	PS1="athena$ "
+	case $HOME in
+	/var/athena/tmphomedir/*)
+		PS1="athena (temporary homedir)$ "
+		;;
+	*)
+		PS1="athena$ "
+		;;
+	esac
 	HISTSIZE=20
 	CDPATH=.:~
 fi
