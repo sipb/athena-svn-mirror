@@ -82,6 +82,8 @@ fs		7100/tcp			# Font server
 # Standard services not included by Sun
 #
 qotd		17/tcp		quote
+bootp		67/udp		bootps bootser	# bootp server
+bootpc		68/udp		bootcli		# bootp client
 auth		113/tcp		authentication
 snmp		161/udp
 snmp-trap	162/udp		snmptrap
