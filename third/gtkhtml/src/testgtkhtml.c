@@ -18,12 +18,20 @@
 
 #define MEMDEBUG
 
+#include "config.h"
+
 #include <gnome.h>
 #include <gtk/gtk.h>
 
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-master.h>
 #include <libgnomeprint/gnome-print-master-preview.h>
+
+#include <libsoup/soup.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "gtkhtml.h"
@@ -33,20 +41,6 @@
 #include "gtkhtml-properties.h"
 
 #include "gtkhtmldebug.h"
-
-#undef PACKAGE
-#undef VERSION
-
-#include <WWWApp.h>
-#include <WWWLib.h>
-#include <WWWStream.h>
-#include <WWWInit.h>
-#undef PACKAGE
-#undef VERSION
-
-#include "config.h"
-
-#include <glibwww/glibwww.h>
 
 typedef struct {
   FILE *fil;
@@ -75,20 +69,13 @@ static void home_cb (GtkWidget *widget, gpointer data);
 static void reload_cb (GtkWidget *widget, gpointer data);
 static void redraw_cb (GtkWidget *widget, gpointer data);
 static void resize_cb (GtkWidget *widget, gpointer data);
+static void select_all_cb (GtkWidget *widget, gpointer data);
 static void title_changed_cb (GtkHTML *html, const gchar *title, gpointer data);
 static void url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer data);
 static void entry_goto_url(GtkWidget *widget, gpointer data);
 static void goto_url(const char *url, int back_or_forward);
 static void on_set_base (GtkHTML *html, const gchar *url, gpointer data);
 
-static int netin_stream_put_character (HTStream * me, char c);
-static int netin_stream_put_string (HTStream * me, const char * s);;
-static int netin_stream_write (HTStream * me, const char * s, int l);
-static int netin_stream_flush (HTStream * me);
-static int netin_stream_free (HTStream * me);
-static int netin_stream_abort (HTStream * me, HTList * e);
-static HTStream *netin_stream_new (GtkHTMLStream *handle, HTRequest *request);
-static int redirectFilter(HTRequest *request, HTResponse *response, void *param, int status);
 static gchar *parse_href (const gchar *s);
 
 static GtkHTML *html;
@@ -96,7 +83,7 @@ static GtkHTMLStream *html_stream_handle = NULL;
 static GtkWidget *animator, *entry;
 static GtkWidget *popup_menu, *popup_menu_back, *popup_menu_forward, *popup_menu_home;
 static GtkWidget *toolbar_back, *toolbar_forward;
-static HTMLURL *baseURL;
+static HTMLURL *baseURL = NULL;
 
 static GList *go_list;
 static int go_position;
@@ -154,6 +141,8 @@ static GnomeUIInfo debug_menu[] = {
 	  resize_cb, NULL, NULL, 0, 0, 0 },
 	{ GNOME_APP_UI_ITEM, "Force repaint", "Force a repaint event",
 	  redraw_cb, NULL, NULL, 0, 0, 0 },
+	{ GNOME_APP_UI_ITEM, "Select all", "Select all",
+	  select_all_cb, NULL, NULL, 0, 0, 0 },
 	GNOMEUIINFO_END
 };
 
@@ -287,20 +276,20 @@ create_toolbars (GtkWidget *app)
 
 }
 
-static gint page_num;
+static gint page_num, pages;
 static GnomeFont *font;
 
 static void
 print_footer (GtkHTML *html, GnomePrintContext *context,
 	      gdouble x, gdouble y, gdouble width, gdouble height, gpointer user_data)
 {
-	gchar *text = g_strdup_printf ("- %d -", page_num);
+	gchar *text = g_strdup_printf ("- %d of %d -", page_num, pages);
 	gdouble tw = gnome_font_get_width_string (font, "text");
 
 	if (font) {
 		gnome_print_newpath     (context);
 		gnome_print_setrgbcolor (context, .0, .0, .0);
-		gnome_print_moveto      (context, x + (width - tw)/2, y - (height + gnome_font_get_ascender (font))/2);
+		gnome_print_moveto      (context, x + (width - tw)/2, y - gnome_font_get_ascender (font));
 		gnome_print_setfont     (context, font);
 		gnome_print_show        (context, text);
 	}
@@ -324,8 +313,12 @@ print_preview_cb (GtkWidget *widget,
 	print_context = gnome_print_master_get_context (print_master);
 
 	page_num = 1;
+	pages = gtk_html_print_get_pages_num (html, print_context,
+					      .0, gnome_font_get_ascender (font) + gnome_font_get_descender (font));
 	font = gnome_font_new_closest ("Helvetica", GNOME_FONT_BOOK, FALSE, 12);
-	gtk_html_print_with_header_footer (html, print_context, .0, .03, NULL, print_footer, NULL);
+	gtk_html_print_with_header_footer (html, print_context,
+					   .0, gnome_font_get_ascender (font) + gnome_font_get_descender (font),
+					   NULL, print_footer, NULL);
 	if (font) gtk_object_unref (GTK_OBJECT (font));
 
 	preview = GTK_WIDGET (gnome_print_master_preview_new (print_master, "HTML Print Preview"));
@@ -360,6 +353,13 @@ resize_cb (GtkWidget *widget, gpointer data)
 }
 
 static void
+select_all_cb (GtkWidget *widget, gpointer data)
+{
+	g_print ("select all\n");
+	gtk_html_select_all (html);
+}
+
+static void
 redraw_cb (GtkWidget *widget, gpointer data)
 {
 	g_print ("forcing redraw\n");
@@ -390,9 +390,10 @@ entry_goto_url(GtkWidget *widget, gpointer data)
 	tmpurl = g_strdup (gtk_entry_get_text (GTK_ENTRY (widget)));
 
 	/* Add "http://" if no protocol is specified */
-	if(strchr(tmpurl, ':'))
+	if(strchr(tmpurl, ':')) {
+		on_set_base (NULL, tmpurl, NULL);
 		goto_url (tmpurl, 0);
-	else {
+	} else {
 		gchar *url;
 
 		url = g_strdup_printf("http://%s", tmpurl);
@@ -473,7 +474,7 @@ static void
 stop_cb (GtkWidget *widget, gpointer data)
 {
 	/* Kill all requests */
-	HTNet_killAll();
+	soup_shutdown ();
 	html_stream_handle = NULL;
 }
 
@@ -519,6 +520,8 @@ on_set_base (GtkHTML *html, const gchar *url, gpointer data)
 	if (baseURL)
 		html_url_destroy (baseURL);
 
+	if (html)
+		gtk_html_set_base (html, url);
 	baseURL = html_url_new (url);
 }
 
@@ -583,78 +586,6 @@ on_link_clicked (GtkHTML *html, const gchar *url, gpointer data)
 	goto_url (url, 0);
 }
 
-/* Lame hack */
-struct _HTStream {
-	const HTStreamClass *	isa;
-	GtkHTMLStream *handle;
-};
-
-static int
-netin_stream_put_character (HTStream * me, char c)
-{
-	return netin_stream_write(me, &c, 1);
-}
-
-static int
-netin_stream_put_string (HTStream * me, const char * s)
-{
-	return netin_stream_write(me, s, strlen(s));
-}
-
-static int
-netin_stream_write (HTStream * me, const char * s, int l)
-{
-	printf ("*** %s (%d)\n",__FUNCTION__, l);
-	gtk_html_write(html, me->handle, s, l);
-
-	return HT_OK;
-}
-
-static int
-netin_stream_flush (HTStream * me)
-{
-	return HT_OK;
-}
-
-static int
-netin_stream_free (HTStream * me)
-{
-	gtk_html_end(html, me->handle, GTK_HTML_STREAM_OK);
-	g_free(me);
-	
-	return HT_OK;
-}
-
-static int
-netin_stream_abort (HTStream * me, HTList * e)
-{
-	return HT_OK;
-}
-
-static const HTStreamClass netin_stream_class =
-{		
-	"netin_stream",
-	netin_stream_flush,
-	netin_stream_free,
-	netin_stream_abort,
-	netin_stream_put_character,
-	netin_stream_put_string,
-	netin_stream_write
-}; 
-
-static HTStream *
-netin_stream_new (GtkHTMLStream *handle, HTRequest *request)
-{
-	HTStream *retval;
-	
-	retval = g_new0(HTStream, 1);
-	
-	retval->isa = &netin_stream_class;
-	retval->handle = handle;
-
-	return retval;
-}
-
 /* simulate an async object isntantiation */
 static int
 object_timeout(GtkHTMLEmbedded *eb)
@@ -688,40 +619,66 @@ object_requested_cmd (GtkHTML *html, GtkHTMLEmbedded *eb, void *data)
 }
 
 static void
+got_data (SoupMessage *msg, gpointer user_data)
+{
+	GtkHTMLStream *handle = user_data;
+
+	if (!SOUP_ERROR_IS_SUCCESSFUL (msg->errorcode)) {
+		g_warning ("%d - %s", msg->errorcode, msg->errorphrase);
+		gtk_html_end (html, handle, GTK_HTML_STREAM_ERROR);
+		return;
+	}
+
+	gtk_html_write (html, handle, msg->response.body, msg->response.length);
+	gtk_html_end (html, handle, GTK_HTML_STREAM_OK);
+}
+
+static void
 url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer data)
 {
 	gchar *full_url = NULL;
-	HTRequest *newreq;
-	BOOL status;
 
-	newreq = HTRequest_new();
-	g_assert(newreq);
-	
- 	/* Need to catch redirections */
- 	/* Remove old filter if any */
- 	HTNet_deleteAfter(redirectFilter);
- 	/* Add new filters */
 	full_url = parse_href (url);
 
-	if (use_redirect_filter) {
-		
-		use_redirect_filter = FALSE;
-		
-		HTNet_addAfter(redirectFilter, full_url, NULL, HT_PERM_REDIRECT, HT_FILTER_FIRST);
-		HTNet_addAfter(redirectFilter, full_url, NULL, HT_TEMP_REDIRECT, HT_FILTER_FIRST);
-		HTNet_addAfter(redirectFilter, full_url, NULL, HT_SEE_OTHER, HT_FILTER_FIRST);
-		HTNet_addAfter(redirectFilter, full_url, NULL, HT_FOUND, HT_FILTER_FIRST);
-	}
+	if (full_url && !strncmp (full_url, "http", 4)) {
+		SoupContext *ctx;
+		SoupMessage *msg;
 
-	HTRequest_setOutputFormat(newreq, WWW_SOURCE);
-	{
-		HTStream *newstream = netin_stream_new(handle, newreq);
-		status = HTLoadToStream(full_url, newstream, newreq);
-		g_message("Loading URL %s to stream %p (status %d)", full_url, handle, status);
-	}
-	if (full_url)
-		g_free (full_url);
-	return;
+		ctx = soup_context_get (full_url);
+		msg = soup_message_new (ctx, SOUP_METHOD_GET);
+
+		soup_message_queue (msg, got_data, handle);
+	} else if (full_url && !strncmp (full_url, "file:", 5)) {
+		struct stat st;
+		char *buf;
+		int fd, nread, total;
+
+		fd = open (full_url + 5, O_RDONLY);
+		if (fd != -1 && fstat (fd, &st) != -1) {
+			buf = g_malloc (st.st_size);
+			for (nread = total = 0; total < st.st_size; total += nread) {
+				nread = read (fd, buf + total, st.st_size - total);
+				if (nread == -1) {
+					if (errno == EINTR)
+						continue;
+
+					g_warning ("read error: %s", g_strerror (errno));
+					gtk_html_end (html, handle, GTK_HTML_STREAM_ERROR);
+					break;
+				}
+				gtk_html_write (html, handle, buf + total, nread);
+			}
+			g_free (buf);
+			if (nread != -1)
+				gtk_html_end (html, handle, GTK_HTML_STREAM_OK);
+		} else
+			gtk_html_end (html, handle, GTK_HTML_STREAM_OK);
+		if (fd != -1)
+			close (fd);
+	} else
+		g_warning ("Unrecognized URL %s", full_url);
+
+	g_free (full_url);
 }
 
 static gchar *
@@ -732,7 +689,7 @@ parse_href (const gchar *s)
 	HTMLURL *tmpurl;
 
 	if(s == NULL || *s == 0)
-		return NULL;
+		return g_strdup ("");
 
 	if (s[0] == '#') {
 		tmpurl = html_url_dup (baseURL, HTML_URL_DUP_NOREFERENCE);
@@ -839,7 +796,7 @@ goto_url(const char *url, int back_or_forward)
 	gchar *full_url;
 
 	/* Kill all requests */
-	HTNet_killAll();
+	soup_shutdown ();
 
 	/* Remove any pending redirection */
 	if(redirect_timerId) {
@@ -852,13 +809,14 @@ goto_url(const char *url, int back_or_forward)
 
 	use_redirect_filter = TRUE;
 
-	html_stream_handle = gtk_html_begin (html);
+	html_stream_handle = gtk_html_begin_content (html, "text/html; charset=utf-8");
 
-	/* Yuck yuck yuck.  Well this code is butt-ugly already anyway.  */
-	url_requested (html, url, html_stream_handle, NULL);
+	/* Yuck yuck yuck.  Well this code is butt-ugly already
+	anyway.  */
 
 	full_url = parse_href (url);
 	on_set_base (NULL, full_url, NULL);
+	url_requested (html, url, html_stream_handle, NULL);
 
 	if(!back_or_forward) {
 		if(go_position) {
@@ -951,19 +909,22 @@ goto_url(const char *url, int back_or_forward)
 static void
 bug_cb (GtkWidget *widget, gpointer data)
 {
-	gchar *filename;
+	gchar cwd[PATH_MAX], *filename;
 
-	filename = g_strdup_printf ("%s/tests/bugs.html", HTGetCurrentDirectoryURL());
-	goto_url (filename, 0);
-	g_free (filename);
+	getcwd(cwd, sizeof (cwd));
+	filename = g_strdup_printf("file:%s/bugs.html", cwd);
+	goto_url(filename, 0);
+	g_free(filename);
 }
 
 static void
 test_cb (GtkWidget *widget, gpointer data)
 {
-	gchar *filename;
-	
-	filename = g_strdup_printf ("%s/tests/test%d.html", HTGetCurrentDirectoryURL(), GPOINTER_TO_INT (data));
+	gchar cwd[PATH_MAX], *filename;
+
+	getcwd(cwd, sizeof (cwd));
+	filename = g_strdup_printf ("file:%s/tests/test%d.html", cwd,
+				    GPOINTER_TO_INT (data));
 	goto_url(filename, 0);
 	g_free(filename);
 }
@@ -972,56 +933,6 @@ static void
 exit_cb (GtkWidget *widget, gpointer data)
 {
 	gtk_main_quit ();
-}
-
-static int request_terminater (HTRequest * request, HTResponse * response, void * param, int status) {
-	if (status!=HT_LOADED) 
-		g_print("Load couldn't be completed successfully (%p)\n", request);
-	
-	HTRequest_delete(request);
-	return HT_OK;
-}
-static int redirectFilter(HTRequest *request, HTResponse *response,
-		 void *param, int status)
-{
-	HTMethod method = HTRequest_method(request);
-	HTAnchor *new_anchor = HTResponse_redirection(response);
-	gchar *new_location;
-
-	if (!new_anchor)
-		return HT_OK;
-
-	if (!HTMethod_isSafe(method))
-		return HT_OK;
-
-	HTRequest_deleteCredentialsAll(request);
-	if (HTRequest_doRetry(request)) {
-		HTRequest_setAnchor(request, new_anchor);
-		HTLoad(request, NO);
-
-		new_location = HTAnchor_address(new_anchor);
-
-		g_print("******* Redirected to '%s' *****\n", new_location);
-
-		/* Update BASE url */
-
-		on_set_base (NULL, new_location, NULL);
-
-		/* Update filters */
-		HTNet_deleteAfter(redirectFilter);
-		HTNet_addAfter(redirectFilter, new_location, NULL, HT_PERM_REDIRECT, HT_FILTER_FIRST);
-		HTNet_addAfter(redirectFilter, new_location, NULL, HT_TEMP_REDIRECT, HT_FILTER_FIRST);
-		HTNet_addAfter(redirectFilter, new_location, NULL, HT_FOUND, HT_FILTER_FIRST);
-		HTNet_addAfter(redirectFilter, new_location, NULL, HT_SEE_OTHER, HT_FILTER_FIRST);
-		
-		free(new_location);
-
-	} else {
-		HTRequest_addError(request, ERR_FATAL, NO, HTERR_MAX_REDIRECT,
-				   NULL, 0, "HTRedirectFilter");
-		return HT_OK;
-	}
-	return HT_ERROR;
 }
 
 static struct poptOption options[] = {
@@ -1047,7 +958,6 @@ main (gint argc, gchar *argv[])
 #endif
 	gnome_init_with_popt_table (PACKAGE, VERSION,
 				    argc, argv, options, 0, &ctx);
-	glibwww_init (PACKAGE, VERSION);
 #ifdef GTKHTML_HAVE_GCONF
 	if (!gconf_init (argc, argv, &gconf_error)) {
 		g_assert (gconf_error != NULL);
@@ -1055,8 +965,6 @@ main (gint argc, gchar *argv[])
 		return FALSE;
 	}
 #endif
-
-	HTNet_addAfter(request_terminater, NULL, NULL, HT_ALL, HT_FILTER_LAST);
 
 	gdk_rgb_init ();
 	
@@ -1089,6 +997,7 @@ main (gint argc, gchar *argv[])
 
 	html_widget = gtk_html_new ();
 	html = GTK_HTML (html_widget);
+	gtk_html_set_allow_frameset (html, TRUE);
 	gtk_html_load_empty (html);
 	/* gtk_html_set_default_background_color (GTK_HTML (html_widget), &bgColor); */
 	/* gtk_html_set_editable (GTK_HTML (html_widget), TRUE); */

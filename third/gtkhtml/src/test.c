@@ -27,45 +27,67 @@
 #include <stdio.h>
 #include <gnome.h>
 #include "gtkhtml.h"
+#include "gtkhtml-stream.h"
 
-#define BUTTON_INDEX 5
+#define BUTTON_INDEX 6
 
 GtkWidget *html;
 
-gchar *html_files [] = {"test1.html", "test9.html", "test11.html", "test6.html"};
+gchar *html_files [] = {"test1.html", "test2.html", "test9.html", "test11.html", "test6.html"};
 
+static void
+url_requested (GtkHTML *html, const char *url, GtkHTMLStream *stream, gpointer data)
+{
+	int fd;
+	gchar *filename;
 
-static int
+	filename = g_strconcat ("tests/", url, NULL);
+	fd = open (filename, O_RDONLY);
+
+	if (fd != -1) {
+#define MY_BUF_SIZE 32768
+		gchar *buf;
+		size_t size;
+
+		buf = alloca (MY_BUF_SIZE);
+		while ((size = read (fd, buf, MY_BUF_SIZE)) > 0) {
+			gtk_html_stream_write (stream, buf, size);
+		}
+		gtk_html_stream_close (stream, size == -1 ? GTK_HTML_STREAM_ERROR : GTK_HTML_STREAM_OK);
+		close (fd);
+	} else
+		gtk_html_stream_close (stream, GTK_HTML_STREAM_ERROR);
+	g_free (filename);
+}
+
+static void
 read_html (GtkWidget *html, gint k)
 {
 	int fd, n;
 	gchar *html_file = g_strconcat ("tests/", html_files [k], NULL);
 	char ostr [BUFSIZ];
-	fd = open (html_file, 0);
+	fd = open (html_file, O_RDONLY);
 
-	n = read (fd, ostr, BUFSIZ);
-	gtk_html_load_from_string (GTK_HTML (html), ostr, n);
+	if (fd != -1) {
+		n = read (fd, ostr, BUFSIZ);
+		gtk_html_load_from_string (GTK_HTML (html), ostr, n);
 
-	close (fd);
-	
-	return 1;
-	
+		close (fd);
+	}
+	g_free (html_file);
 }
 
 static void
 button_cb (GtkWidget *button, gpointer data)
 {
-	gint *k = (gint *) data;
-	read_html (html, GPOINTER_TO_INT (k));
+	read_html (html, GPOINTER_TO_INT (data));
 }
 
 static void
 quit_cb (GtkWidget *button)
 {
 	gtk_main_quit ();
-}	
-
-
+}
 
 int
 main (int argc, char **argv)
@@ -75,16 +97,19 @@ main (int argc, char **argv)
 	GtkWidget *hbox;
 	GtkWidget *button [BUTTON_INDEX];
 	GtkWidget *swindow;
-	gchar *str []= {"Example 1", "Example 2", "Example 3", "Example 4", "Quit"};
+	gchar *str []= {"Example 1", "Example 2", "Example 3", "Example 4", "Example 5", "Quit"};
 	int i = 0;
 	 
 	gtk_init (&argc, &argv);
+	gdk_rgb_init ();
 	
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	vbox = gtk_vbox_new (FALSE, 0);
 	hbox = gtk_hbox_new (FALSE, 0);
 	swindow = gtk_scrolled_window_new (NULL, NULL);
 	html = gtk_html_new ();
+	gtk_signal_connect (GTK_OBJECT (html), "url_requested", GTK_SIGNAL_FUNC (url_requested), NULL);
+
 	for (; i < BUTTON_INDEX; i++)
 		button [i] = gtk_button_new_with_label (str [i]);
 		

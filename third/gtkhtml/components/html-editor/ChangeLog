@@ -1,3 +1,390 @@
+2002-10-28  Larry Ewing  <lewing@ximian.com>
+
+	* toolbar.c (toolbar_item_update_sensitivity): silence warning.
+
+	* properties.c: add missing header.
+
+2002-10-09  Radek Doulik  <rodo@ximian.com>
+
+	* body.c: added left_margin to template, replace templates test
+	and test 1 with 3 real templates.
+
+2002-10-14  Larry Ewing  <lewing@ximian.com>
+
+ 	* cell.c (cell_apply_cb): make changes accumulate over the life of
+ 	the dialog rather than reseting on apply otherwise the changing
+ 	row/column/table application will have no effect. (fixes #17612).
+	
+ 	* cell.c (fill_sample): Make example cell text translatable.
+ 
+2002-10-13  Larry Ewing  <lewing@ximian.com>
+
+	* text.c (fill_sample): always draw the current color and mark the
+	string for translation.
+	(text_properties): Set the color to the current insertion color.
+	Silence a critical warning in g_strconcat.
+	(set_style): clear styles if they have been unselected.
+
+2002-10-10  Larry Ewing  <lewing@ximian.com>
+
+	* image.c: use U_() and make the sample strings match.
+
+ 	* text.c: use U_() where appropriate.
+ 
+ 	* template.c: move the translatable messages out of the html. Use
+ 	U_() instead of _().   
+
+	* GNOME_GtkHTML_Editor.xml.in: remove bogus accelerator for strikeout.
+
+2002-10-04  Radek Doulik  <rodo@ximian.com>
+
+	* toolbar.c (toolbar_item_update_sensitivity): set unindent
+	sensitivity only when level > 0
+	(indentation_changed): new signal handler, cares about unindent
+	button sensitivity
+	(create_style_toolbar): connect indentation_changed
+
+2002-10-07  Larry Ewing  <lewing@ximian.com>
+
+	* spell.c (spell_create_language_menu): we cannot use the return
+	value if we get an exception.
+
+2002-10-02  Larry Ewing  <lewing@ximian.com>
+
+	* search.c (gtk_html_search_dialog_new): add window icon to
+	dialog.
+
+	* replace.c (ask_dialog_new): add icon to dialog.
+	(gtk_html_replace_dialog_new): add window icon to dialog.
+
+	* properties.c (gtk_html_edit_properties_dialog_new): add new
+	icon_path parameter to dialog creation.
+
+	* properties.h: fix prototype.
+
+	* popup.c (link_prop_dialog): add icons to property widgets.
+
+	* menubar.c: add icons to property widgets.
+
+	* editor-control-factory.c (release): add icon for properties
+	dialog.
+
+2002-09-30  Larry Ewing  <lewing@ximian.com>
+
+	* popup.c (prepare_properties_and_menu): move the cut/copy/paste
+	items and add undo/redo items.
+
+2002-09-26  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (file_dialog_ok): use html_engine_paste_text instead
+	of e-utils
+	(insert_file_dialog): open file selector in home directory instead
+	of cwd
+
+2002-09-25  Larry Ewing  <lewing@ximian.com>
+
+	* popup.c (copy): call with the widget not the engine.
+	(cut): same.
+
+	* GNOME_GtkHTML_Editor.xml.in: fix accelerator for Quotation
+	pasting.
+
+	* popup.c (prepare_properties_and_menu): fix the cut/copy/paste
+	items to use the CLIPBOARD selection and make them show up all the
+	time (use sensitivity if the selection is not active).
+
+2002-09-16  Radek Doulik  <rodo@ximian.com>
+
+	* popup.c (prepare_properties_and_menu): check if selection
+	contains link before including remove link
+	(prepare_properties_and_menu): always include "Insert link" menu
+	item
+
+2002-09-10  Larry Ewing  <lewing@ximian.com>
+
+	* test-html-editor-control.c (view_html_source_html_cb): add
+	another menu entry for viewing the output as html instead of plain
+	text.
+
+	* htmlsourveview.h: add a prototype for set_mode.
+
+	* htmlsourceview.c (html_source_view_set_mode): add a way to
+	toggle the display mode between displaying the input as html or
+	displaying the input as plain text.
+
+2002-08-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am (CLEANFILES): Use "=" instead of "+=" so it works
+	with newer Automakes.
+
+2002-08-22  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (file_dialog_ok): convert from locale to utf8
+
+2002-08-21  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (indent_more_cb): removed properties menu item as it
+	doesn't play nice with evo. now clients have to call capplet or
+	provide own settings if needed
+
+2002-07-10  Larry Ewing  <lewing@ximian.com>
+
+	* toolbar.c (editor_toolbar_indent_cb): pass the correct widget to
+	push.
+	(editor_toolbar_unindent_cb): see above.
+
+2002-07-08  Larry Ewing  <lewing@ximian.com>
+
+	* toolbar.c (editor_toolbar_indent_cb): use push level.
+	(editor_toolbar_unindent_cb): use pop level.
+
+2002-06-24  Larry Ewing  <lewing@ximian.com>
+
+	* menubar.c (paste_quotation_cb): add paste_quotation verb.
+
+	* GNOME_GtkHTML_Editor.xml.in: add paste quotation command and
+	menuitem.
+
+2002-06-14  Radek Doulik  <rodo@ximian.com>
+
+	* spell.c (spell_create_language_menu): check for exception as
+	well
+
+2002-06-12  Larry Ewing  <lewing@ximian.com>
+
+	* menubar.c (indent_less_cb): use the new
+	gtk_html_indent_level_pop function.
+	(indent_more_cb): use gtk_html_indent_level_push.
+
+2002-06-06  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c: added insert text/html file items and implemented
+	them
+
+2002-06-05  Radek Doulik  <rodo@ximian.com>
+
+	* persist-file-impl.c (pf_impl_load): use "text/html;
+	charset=utf-8" content type
+
+2002-06-02  Larry Ewing  <lewing@ximian.com>
+
+	* ChangeLog: merge the multicite branch.
+
+2002-05-21  Larry Ewing  <lewing@ximian.com>
+
+	* htmlsourceview.c (html_source_view_load): change the
+	e_text_to_html options to make the text preformatted.
+
+	* toolbar.c (toolbar_item_update_sensitivity): make the alignment
+	items sensitive now that alignment is reflected in the plain text
+	output.
+
+2002-05-28  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (menubar_update_format): take care of smiley menuitems
+
+	* GNOME_GtkHTML_Editor.xml.in: fix typo
+
+2002-05-16  Michael Meeks  <michael@ximian.com>
+
+        * engine.c (impl_set_listener): dup the CORBA reference we pass to
+	bonobo_object_client_from_corba - [ this method is just totally
+	broken, as is most of the object_client API ( gone in 2.0 ) ].
+
+2002-05-22  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c (paragraph_style_cb): don't set style if
+	block_font_style_change
+
+2002-05-15  Larry Ewing  <lewing@ximian.com>
+
+	* htmlsourceview.c: rename methods and add content type parameter
+	to set_source.
+	
+	* htmlsourceview.h: rename prototypes.
+
+	* test-html-editor-control.c (view_html_source_cb): specify html
+	output.
+	(view_plain_source_cb): specify plain output.
+	(view_source_dialog): pass the content type along to
+	html_view_source_set_source.
+
+2002-05-13  Larry Ewing  <lewing@ximian.com>
+
+	* test-html-editor-control.c (view_source_cb): new verb to start
+	up the source view.
+	(init_corba): set the version to the editor api version.
+	(main): initialize gconf.
+
+	* htmlsourceview.c: added.  This is a simple widget that pulls the
+	persist information from a control.
+
+	* htmlsourceview.h: added.
+
+	* e-html-utils.c: added, for e-text-to-html.
+
+	* e-html-utils.h: added.
+
+	* Makefile.am: add the new source files to the test-editor build.
+
+2002-05-07  Larry Ewing  <lewing@ximian.com>
+
+	* test-html-editor-control.c (save_through_persist_stream): use a
+	reasonable mode and truncate existing files.  
+	(save_through_plain_persist_stream): truncate existing stream. Wow
+	yet another way in which bonobo sucks.
+
+	* GNOME_GtkHTML_Editor.oaf.in: add Editor interface to the oaf
+	list.
+
+	* test-html-editor-control.c (save_through_plain_persist_stream):
+	give a reasonable mode for the new file.
+	add missing includes.
+
+2002-05-08  Radek Doulik  <rodo@ximian.com>
+
+	* GNOME_GtkHTML_Editor.xml.in: moved lists before hedings
+
+	* toolbar.c: moved lists before hedings
+
+2002-05-06  Radek Doulik  <rodo@ximian.com>
+
+	* spell.c (spell_check_word): check just for SYSTEM exception
+	(fill_suggestion_clist): ditto
+
+2002-05-01  Larry Ewing  <lewing@ximian.com>
+
+	* test-html-editor-control.c (HTML_EDITOR_CONTROL_ID): add the
+	EDITOR_API_VERSION to the string.
+
+	* GNOME_GtkHTML_Editor.oaf.in.in: add the Engine interface to the
+	list of oaf interfaces.
+
+2002-03-29  Larry Ewing  <lewing@ximian.com>
+
+	* html-editor-control.gnorba: remove from archive.
+
+2002-03-27  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (gladedir): add versioning to the glade files
+
+	* Makefile.am: use GTKHTML_DATADIR.
+
+2002-03-26  Larry Ewing  <lewing@ximian.com>
+
+	* test-html-editor-control.c (main): see below.
+
+	* editor-control-factory.c (main): use the GTKHTML_RELEASE_STRING
+	to bind in gettext.
+
+2002-03-15  Radek Doulik  <rodo@ximian.com>
+
+	* editor-control-factory.c: use EDITOR_API_VERSION
+
+	* Makefile.am: added install-exec-hook to rename component binary
+
+	* GNOME_GtkHTML_Editor.oaf.in.in: use EDITOR_API_VERSION
+
+2002-02-21  Larry Ewing  <lewing@ximian.com>
+
+	* image.c (insert_or_apply): initialize url properly.
+
+2002-02-13  Larry Ewing  <lewing@ximian.com>
+
+	* Editor.idl: remove references to resolver interface.
+
+	* Makefile.am: remove resolver references.
+
+	* test-html-editor-control.c (container_create): remove
+	resolver implementation and references.
+
+	* editor-control-factory.c (url_requested_cb): remove references
+	to resolver interface.
+
+2002-02-12  Radek Doulik  <rodo@ximian.com>
+
+	* engine.c (impl_has_undo): renamed from impl_is_dirty
+	(editor_engine_get_epv): updated to changed API
+
+	* Editor.idl: renamed isDirty flag to hasUndo and commented
+	dropUndo and hasUndo methods
+
+2002-02-08  Larry Ewing  <lewing@ximian.com>
+
+	* link.c (test_clicked): handler for new "Test URL" button.
+	(link_widget): add a button to the url frame to open the current
+	url.
+
+2002-01-31  Radek Doulik  <rodo@ximian.com>
+
+	* Editor.idl: undo_begin, undo_end --> undoBegin, undoEnd, added
+	ignoreWord method, which tells spell checker to ignore given word
+
+	* GNOME_GtkHTML_Editor.xml.in: added C-S-l for spell check document
+
+2002-01-30  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am (LDADD): removed unwanted -dynamic link flag
+
+2002-01-27  Larry Ewing  <lewing@ximian.com>
+
+	* editor-control-factory.c (editor_set_prop): add bonobo property
+	for the title.
+
+	* body.c (body_apply_cb): use gtk_html_set_title.
+
+2002-01-23  Radek Doulik  <rodo@ximian.com>
+
+	* added Text... and Paragraph... entries to menu
+
+	* editor-control-factory.c (editor_api_command): use
+	popup_show_at_cursor instead of popup_show
+
+	* popup.c (popup_show_at_cursor): new function, shows popup menu
+	at text cursor position
+	(set_position): helper function for popup_show_at_cursor
+
+2002-01-15  Ettore Perazzoli  <ettore@ximian.com>
+
+	* spell.c (spell_create_language_menu): Just return if cd->dict is
+	NIL.
+
+2002-01-14  Radek Doulik  <rodo@ximian.com>
+
+	* menubar.c: implemented Format/Page...
+
+	* GNOME_GtkHTML_Editor.xml.in: added Format/Page...
+
+2002-01-08  Radek Doulik  <rodo@ximian.com>
+
+	* dialog.c (run_dialog): run dialog to make it modal
+
+	* properties.c (gtk_html_edit_properties_dialog_new): set dialog parent
+
+	* dialog.c (run_dialog): set dialog parent
+
+2002-01-07  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am (GTKHTML_EDITOR_SOURCES_COMMON): removed link.[ch]
+
+	* text.c (text_properties): place bold/italic/underline/strikeout
+	in 2x2 table
+
+	* body.c (body_properties): set pixmap entry preview to FALSE
+
+2001-12-11  Radek Doulik  <rodo@ximian.com>
+
+	* added new link dialogs to glade, added new percent option value
+	in image editor - Follow, this makes dimension follow original
+	aspect ratio and other dimension
+
+2001-12-09  Radek Doulik  <rodo@ximian.com>
+
+	* image.c (get_data): avoid calling g_strconcat with NULL as 1st
+	parameter
+	(set_ui): avoid setting NULL as text for entries
+	(insert_or_apply): use Text color for non-linked images
+
 2001-11-20  Radek Doulik  <rodo@ximian.com>
 
 	* search.c (gtk_html_search_dialog_new): as below

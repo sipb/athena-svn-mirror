@@ -31,6 +31,15 @@
   it is bassicaly the same trick as used in GtkObject's
 */
 
+GtkWindow *
+get_parent_window (GtkWidget *w)
+{
+	while (w && ! GTK_IS_WINDOW (w))
+		w = w->parent;
+
+	return w ? GTK_WINDOW (w) : NULL;
+}
+
 void
 run_dialog (GnomeDialog ***dialog, GtkHTML *html, DialogCtor ctor, const gchar *title)
 {
@@ -39,8 +48,17 @@ run_dialog (GnomeDialog ***dialog, GtkHTML *html, DialogCtor ctor, const gchar *
 		gtk_widget_show (GTK_WIDGET (**dialog));
 		gdk_window_raise (GTK_WIDGET (**dialog)->window);
 	} else {
+		GtkWindow *parent;
+
 		*dialog = ctor (html);
 		gtk_window_set_title (GTK_WINDOW (**dialog), title);
+		parent = get_parent_window (GTK_WIDGET (html));
+		if (parent) {
+			gnome_dialog_set_parent (**dialog, parent);
+		}
+		/* gtk_window_set_transient_for (GTK_WINDOW (**dialog),
+		   GTK_WINDOW (gtk_widget_get_parent_window (GTK_WIDGET (html)))); */
 		gtk_widget_show (GTK_WIDGET (**dialog));
 	}
+	gnome_dialog_run (**dialog);
 }

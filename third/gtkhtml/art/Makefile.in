@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -69,6 +69,7 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EDITOR_API_VERSION = @EDITOR_API_VERSION@
 EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
@@ -77,8 +78,6 @@ GCONF_LIBS = @GCONF_LIBS@
 GENCAT = @GENCAT@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
-GLIBWWW_CFLAGS = @GLIBWWW_CFLAGS@
-GLIBWWW_LIBS = @GLIBWWW_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -101,6 +100,8 @@ GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_INCLUDEDIR = @GTKHTML_INCLUDEDIR@
 GTKHTML_LIBDIR = @GTKHTML_LIBDIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
+GTKHTML_RELEASE = @GTKHTML_RELEASE@
+GTKHTML_RELEASE_STRING = @GTKHTML_RELEASE_STRING@
 GTKHTML_REVISION = @GTKHTML_REVISION@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
 GT_NO = @GT_NO@
@@ -111,6 +112,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -127,24 +129,84 @@ PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-iconsdir = $(datadir)/gtkhtml/icons
-icons_DATA =  	16_cut.png				24_cut.png				16_copy.png				24_copy.png				16_paste.png				24_paste.png				bulb.png				empty_image.png				flowers.png				html-viewer.png				insert-table-16.png			insert-table-24.png			insert-image-16.png			insert-image-24.png			insert-link-16.png			insert-link-24.png			insert-object-16.png			insert-object-24.png			insert-rule-16.png			insert-rule-24.png			properties-16.png			redo-16.png				redo-24.png				rule-blue-left.png			rule-blue-center.png			rule-blue-right.png			rule-yellow-flowers-left.png		rule-yellow-flowers-center.png		rule-yellow-flowers-right.png		search-16.png				search-24.png				search-and-replace-16.png		search-and-replace-24.png		transparent.png				undo-16.png				undo-24.png
+iconsdir = $(GTKHTML_DATADIR)/icons
+icons_DATA = \
+	16_cut.png			\
+	24_cut.png			\
+	16_copy.png			\
+	24_copy.png			\
+	16_paste.png			\
+	24_paste.png			\
+	bulb.png			\
+	empty_image.png			\
+	flowers.png			\
+	html-viewer.png			\
+	insert-table-16.png		\
+	insert-table-24.png		\
+	insert-image-16.png		\
+	insert-image-24.png		\
+	insert-link-16.png		\
+	insert-link-24.png		\
+	insert-object-16.png		\
+	insert-object-24.png		\
+	insert-rule-16.png		\
+	insert-rule-24.png		\
+	properties-16.png		\
+	redo-16.png			\
+	redo-24.png			\
+	rule-blue-left.png		\
+	rule-blue-center.png		\
+	rule-blue-right.png		\
+	rule-yellow-flowers-left.png	\
+	rule-yellow-flowers-center.png	\
+	rule-yellow-flowers-right.png	\
+	search-16.png			\
+	search-24.png			\
+	search-and-replace-16.png	\
+	search-and-replace-24.png	\
+	smiley-1.png			\
+	smiley-2.png			\
+	smiley-3.png			\
+	smiley-4.png			\
+	smiley-5.png			\
+	smiley-6.png			\
+	smiley-8.png			\
+	smiley-9.png			\
+	smiley-10.png			\
+	smiley-11.png			\
+	transparent.png			\
+	undo-16.png			\
+	undo-24.png			\
+	paper.png			\
+	rect.png			\
+	texture.png
 
 
-EXTRA_DIST =  	$(icons_DATA)
+EXTRA_DIST = \
+	$(icons_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h

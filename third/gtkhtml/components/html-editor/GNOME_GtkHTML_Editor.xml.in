@@ -7,7 +7,8 @@
 			<cmd name="EditCut" _label="Cu_t" _tip="Cut the selection"/>
 			<cmd name="EditCopy" _label="_Copy" _tip="Copy the selection"/>
 			<cmd name="EditPaste" _label="_Paste" _tip="Paste the clipboard"/>
-	
+			<cmd name="EditPasteQuotation" _label="Paste _Quotation" _tip="Paste the clipboard as a quotation"/>
+
 			<cmd name="EditFind" _label="_Find..." _tip="Find"/>
 			<cmd name="EditFindRegex" _label="Find Regular E_xpression..." _tip="Find A Regular Expression"/>
 			<cmd name="EditFindAgain" _label="Find _Again" _tip="Find again"/>
@@ -15,59 +16,70 @@
 
 			<cmd name="EditSelectAll" _label="Select _All"
 			_tip="Select the entire contents of the document"/>
-			<cmd name="EditSpellCheck" _label="_Spell check document..."
-			_tip="Check spelling of the document"/>
-			<cmd name="EditProperties" _label="Pr_operties..." _tip="Modify the file's properties"/>
+			<cmd name="EditSpellCheck" _label="_Spell Check Document..."
+			_tip="Check spelling of the document" accel="*Ctrl**Shift*l"/>
 
 			<cmd name="InsertImage" _label="_Image..." _tip="Insert image into document..."/>
 			<cmd name="InsertLink"  _label="_Link..." _tip="Insert HTML link into document..."/>
 			<cmd name="InsertRule"  _label="_Rule..." _tip="Insert rule into document..."/>
 			<cmd name="InsertTable" _label="_Table..." _tip="Insert table into document..."/>
 			<cmd name="InsertTemplate" _label="Te_mplate..." _tip="Insert HTML template into document..."/>
+			<cmd name="InsertTextFile" _label="Te_xt file..." _tip="Insert text file into document..."/>
+			<cmd name="InsertHTMLFile" _label="_HTML file..." _tip="Insert HTML file into document..."/>
+			<cmd name="InsertSmiley3" _label="_Smile" _tip="Insert Smile smiley into document..."/>
+			<cmd name="InsertSmiley4" _label="_Wink" _tip="Insert Wink smiley into document..."/>
+			<cmd name="InsertSmiley5" _label="Su_rprised" _tip="Insert Surprised smiley into document..."/>
+			<cmd name="InsertSmiley1" _label="_Laughing" _tip="Insert Laughing smiley into document..."/>
+			<cmd name="InsertSmiley2" _label="Oh _no!" _tip="Insert Oh no! smiley into document..."/>
+			<cmd name="InsertSmiley6" _label="_Frown" _tip="Insert Frown smiley into document..."/>
+			<cmd name="InsertSmiley8" _label="_Indifferent" _tip="Insert Indifferent smiley into document..."/>
+			<cmd name="InsertSmiley9" _label="_Undecided" _tip="Insert Undecided smiley into document..."/>
+			<cmd name="InsertSmiley10" _label="Li_ck" _tip="Insert Lick smiley into document..."/>
+			<cmd name="InsertSmiley11" _label="Cr_ying" _tip="Insert Crying smiley into document..."/>
 
 			<cmd name="HeadingNormal" _label="Normal"
 		        _tip="Make the current Paragraph style Normal"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*0"/>
 			<cmd name="HeadingPreformat" _label="Preformat"
-		        _tip="Make the current Paragraph style Normal"
-		        type="radio" group="paragraph_heading"/>
+		        _tip="Make the current Paragraph style Preformat"
+		        type="radio" group="paragraph_heading" accel="*Ctrl*7"/>
 			<cmd name="HeadingH1" _label="Header _1"
 		        _tip="Make the current paragraph an H1 header"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*1"/>
 			<cmd name="HeadingH2" _label="Header _2"
 		        _tip="Make the current paragraph an H2 header"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*2"/>
 			<cmd name="HeadingH3" _label="Header _3"
 		        _tip="Make the current paragraph an H3 header"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*3"/>
 			<cmd name="HeadingH4" _label="Header _4"
 		        _tip="Make the current paragraph an H4 header"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*4"/>
 			<cmd name="HeadingH5" _label="Header _5"
 		        _tip="Make the current paragraph an H5 header"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*5"/>
 			<cmd name="HeadingH6" _label="Header _6"
 		        _tip="Make the current paragraph an H6 header"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*6"/>
 			<cmd name="HeadingAddress" _label="A_ddress"
 		        _tip="Make the current paragraph an address"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl*8"/>
 			<cmd name="HeadingBulletedList" 
 			_label="Bulleted List"
 		        _tip="Make the current paragraph a bulleted list"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl**Alt*1"/>
+			<cmd name="HeadingRomanList" 
+			_label="Roman Numeral List"
+		        _tip="Make the current paragraph a list with roman numerals"
+		        type="radio" group="paragraph_heading" accel="*Ctrl**Alt*2"/>
 			<cmd name="HeadingNumberedList" 
 			_label="Numbered List"
 		        _tip="Make the current paragraph a numbered list"
-		        type="radio" group="paragraph_heading"/>
-			<cmd name="HeadingRoman" 
-			_label="Roman Numeral List"
-		        _tip="Make the current paragraph a list with roman numerals"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl**Alt*3"/>
 			<cmd name="HeadingAlphabeticalList" 
 			_label="Alphabetical List"
 		        _tip="Make the current paragraph an alphabetical list"
-		        type="radio" group="paragraph_heading"/>
+		        type="radio" group="paragraph_heading" accel="*Ctrl**Alt*4"/>
 
 			<cmd name="AlignLeft" _label="_Left"
 			_tip="Left justifies the paragraphs"
@@ -79,12 +91,11 @@
 			_tip="Right justifies the paragraphs"
 			type="radio" group="paragraph_alignment"/>
 
-			<cmd name="FormatBold" _label="_Bold" type="toggle"/>
-			<cmd name="FormatItalic" _label="_Italic" type="toggle"/>
-			<cmd name="FormatUnderline" _label="_Underline" type="toggle"/>
-			<cmd name="FormatBold" _label="_Bold" type="toggle"/>
+			<cmd name="FormatBold" _label="_Bold" type="toggle" accel="*Ctrl*b"/>
+			<cmd name="FormatItalic" _label="_Italic" type="toggle" accel="*Ctrl*i"/>
+			<cmd name="FormatUnderline" _label="_Underline" type="toggle" accel="*Ctrl*u"/>
 			<cmd name="FormatStrikeout" _label="Strikeout" type="toggle"/>
-			<cmd name="FormatFixed" _label="Typewriter" type="toggle"/>
+			<cmd name="FormatFixed" _label="Typewriter" type="toggle" accel="*Ctrl*t"/>
 			<cmd name="FormatSubscript" _label="Subscript" type="toggle"/>
 			<cmd name="FormatSuperscript" _label="Superscript" type="toggle"/>
 
@@ -111,6 +122,7 @@
                                      pixtype="filename" pixname="@ICONSDIR@/16_copy.png"/>
 				     <menuitem name="EditPaste" verb="" accel="*Ctrl*V"
                                      pixtype="filename" pixname="@ICONSDIR@/16_paste.png"/>
+				     <menuitem name="EditPasteQuotation" verb=""/>
 				     <separator/>
 				     <menuitem name="EditSelectAll" verb="" accel="*Ctrl*A"/>
 			</placeholder>
@@ -126,9 +138,8 @@
 
 			<placeholder name="EditMisc">
 				     <menuitem name="EditSpellCheck" verb=""/>
-				     <separator/>
-				     <menuitem name="EditProperties" verb=""
-				     pixtype="filename" pixname="@ICONSDIR@/properties-16.png"/>
+				     <placeholder name="EditSpellLanguages">
+				     </placeholder>
 			</placeholder>
 		</submenu>
 
@@ -145,6 +156,31 @@
                                 pixtype="filename" pixname="@ICONSDIR@/insert-table-16.png"/>
 				<menuitem name="InsertTemplate" verb=""
                                 pixtype="filename" pixname="@ICONSDIR@/insert-object-16.png"/>
+				<menuitem name="InsertTextFile" verb=""/>
+				<menuitem name="InsertHTMLFile" verb=""/>
+				<submenu name="Smiley" _label="_Smiley"
+                                pixtype="filename" pixname="@ICONSDIR@/smiley-3.png">
+					<menuitem name="InsertSmiley3" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-3.png"/>
+					<menuitem name="InsertSmiley4" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-4.png"/>
+					<menuitem name="InsertSmiley5" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-5.png"/>
+					<menuitem name="InsertSmiley1" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-1.png"/>
+					<menuitem name="InsertSmiley2" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-2.png"/>
+					<menuitem name="InsertSmiley6" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-6.png"/>
+					<menuitem name="InsertSmiley8" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-8.png"/>
+					<menuitem name="InsertSmiley9" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-9.png"/>
+					<menuitem name="InsertSmiley10" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-10.png"/>
+					<menuitem name="InsertSmiley11" verb=""
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-11.png"/>
+				</submenu>
 			</placeholder>
 		</submenu>
 
@@ -193,12 +229,17 @@
 					<menuitem name="Other" verb="" _label="Other..."/>
 				</submenu>
 -->		
-                
+                			<menuitem name="FormatText" verb="" _label="_Text..."/>
+
 				<separator/>
                 
 				<submenu name="Heading" _label="_Heading">
 					<menuitem name="HeadingNormal" verb="" _label="_Normal"/> 
 					<menuitem name="HeadingPreformat" verb="" _label="_Preformat"/>
+					<menuitem name="HeadingBulletedList" verb="" _label="_Bulleted List"/>
+					<menuitem name="HeadingRomanList" verb="" _label="_Roman Numeral List"/> 
+ 					<menuitem name="HeadingNumberedList" verb="" _label="Numbered _List"/> 
+					<menuitem name="HeadingAlphabeticalList" verb="" _label="_Alphabetical List"/>
 					<menuitem name="HeadingH1" verb="" _label="Header _1"/>
 					<menuitem name="HeadingH2" verb="" _label="Header _2"/>
 					<menuitem name="HeadingH3" verb="" _label="Header _3"/>
@@ -206,11 +247,7 @@
 					<menuitem name="HeadingH5" verb="" _label="Header _5"/>
 					<menuitem name="HeadingH6" verb="" _label="Header _6"/>
 					<menuitem name="HeadingAddress" verb="" _label="A_ddress"/>
-					<menuitem name="HeadingBulletedList" verb="" _label="_Bulleted List"/>
- 					<menuitem name="HeadingNumberedList" verb="" _label="Numbered _List"/> 
-
-					<menuitem name="HeadingRomanList" verb="" _label="_Roman Numeral List"/> 
-					<menuitem name="HeadingAlphabeticalList" verb="" _label="_Alphabetical List"/> 				</submenu>
+				</submenu>
                 
 				<submenu name="Alignment" _label="_Alignment">
 					<menuitem name="AlignLeft" verb="" _label="_Left"/> 
@@ -218,10 +255,17 @@
 					<menuitem name="AlignRight" verb="" _label="_Right"/>
 				</submenu>
 
+				<menuitem name="FormatParagraph" verb="" _label="_Paragraph..."/>
+
 				<separator/>
 
-				<menuitem name="IndentMore" verb="" _label="_Increase Indent"/> 
-				<menuitem name="IndentLess" verb="" _label="_Decrease Indent"/>     
+				<menuitem name="IndentMore" verb="" _label="_Increase Indent" accel="*Ctrl*TAB"/>
+				<menuitem name="IndentLess" verb="" _label="_Decrease Indent" accel="*Shift**Ctrl*TAB"/>
+
+				<separator/>
+
+				<menuitem name="FormatPage" verb="" _label="_Page..."/>
+
 			</placeholder>
 		</submenu>
 	</menu>
@@ -263,4 +307,3 @@
 	</dockitem>
 
 </Root> 
-

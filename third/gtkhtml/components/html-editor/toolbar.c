@@ -49,6 +49,10 @@ static struct {
 } paragraph_style_items[] = {
 	{ GTK_HTML_PARAGRAPH_STYLE_NORMAL, N_("Normal") },
 	{ GTK_HTML_PARAGRAPH_STYLE_PRE, N_("Preformat") },
+	{ GTK_HTML_PARAGRAPH_STYLE_ITEMDOTTED, N_("Bulleted List") },
+	{ GTK_HTML_PARAGRAPH_STYLE_ITEMDIGIT, N_("Numbered List") },
+	{ GTK_HTML_PARAGRAPH_STYLE_ITEMROMAN, N_("Roman List") },
+	{ GTK_HTML_PARAGRAPH_STYLE_ITEMALPHA, N_("Alphabetical List") },
 	{ GTK_HTML_PARAGRAPH_STYLE_H1, N_("Header 1") },
 	{ GTK_HTML_PARAGRAPH_STYLE_H2, N_("Header 2") },
 	{ GTK_HTML_PARAGRAPH_STYLE_H3, N_("Header 3") },
@@ -56,10 +60,6 @@ static struct {
 	{ GTK_HTML_PARAGRAPH_STYLE_H5, N_("Header 5") },
 	{ GTK_HTML_PARAGRAPH_STYLE_H6, N_("Header 6") },
 	{ GTK_HTML_PARAGRAPH_STYLE_ADDRESS, N_("Address") },
-	{ GTK_HTML_PARAGRAPH_STYLE_ITEMDOTTED, N_("Bulleted List") },
-	{ GTK_HTML_PARAGRAPH_STYLE_ITEMDIGIT, N_("Numbered List") },
-	{ GTK_HTML_PARAGRAPH_STYLE_ITEMROMAN, N_("Roman List") },
-	{ GTK_HTML_PARAGRAPH_STYLE_ITEMALPHA, N_("Alphabetical List") },
 	{ GTK_HTML_PARAGRAPH_STYLE_NORMAL, NULL },
 };
 
@@ -227,14 +227,10 @@ setup_font_size_option_menu (GtkHTMLControlData *cd)
 }
 
 static void
-color_changed (GtkWidget *w, GdkColor *gdk_color, gboolean by_user, GtkHTMLControlData *cd)
+apply_color (GdkColor *gdk_color, GtkHTMLControlData *cd)
 {
 	HTMLColor *color;
 	
-	/* If the color was changed programatically there's not need to set things */
-	if (!by_user)
-		return;
-		
 	color = gdk_color
 		&& gdk_color != &html_colorset_get_color (cd->html->engine->settings->color_set, HTMLTextColor)->color
 		? html_color_new_from_gdk_color (gdk_color) : NULL;
@@ -242,6 +238,26 @@ color_changed (GtkWidget *w, GdkColor *gdk_color, gboolean by_user, GtkHTMLContr
 	gtk_html_set_color (cd->html, color);
 	if (color)
 		html_color_unref (color);
+}
+
+void
+toolbar_apply_color (GtkHTMLControlData *cd)
+{
+	GdkColor *color;
+
+	color = color_combo_get_color (COLOR_COMBO (cd->combo));
+	apply_color (color, cd);
+	if (color)
+		gdk_color_free (color);
+}
+
+static void
+color_changed (GtkWidget *w, GdkColor *gdk_color, gboolean by_user, GtkHTMLControlData *cd)
+{
+	/* If the color was changed programatically there's not need to set things */
+	if (!by_user)
+		return;
+	apply_color (gdk_color, cd);
 }
 
 static void
@@ -478,17 +494,18 @@ paragraph_alignment_changed_cb (GtkHTML *widget,
 /* Indentation group.  */
 
 static void
+
 editor_toolbar_indent_cb (GtkWidget *widget,
 			  GtkHTMLControlData *cd)
 {
-	gtk_html_modify_indent_by_delta (GTK_HTML (cd->html), +1);
+	gtk_html_indent_push_level (GTK_HTML (cd->html), HTML_LIST_TYPE_BLOCKQUOTE);
 }
 
 static void
 editor_toolbar_unindent_cb (GtkWidget *widget,
 			    GtkHTMLControlData *cd)
 {
-	gtk_html_modify_indent_by_delta (GTK_HTML (cd->html), -1);
+	gtk_html_indent_pop_level (GTK_HTML (cd->html));
 }
 
 
@@ -547,6 +564,12 @@ html_destroy_cb (GtkObject *object,
 	cd->html = NULL;
 } */
 
+static void
+indentation_changed (GtkWidget *w, guint level, GtkHTMLControlData *cd)
+{
+	gtk_widget_set_sensitive (cd->unindent_button, level != 0);
+}
+
 static GtkWidget *
 create_style_toolbar (GtkHTMLControlData *cd)
 {
@@ -593,6 +616,9 @@ create_style_toolbar (GtkHTMLControlData *cd)
 	cd->right_align_button = editor_toolbar_alignment_group[2].widget;
 
 	cd->unindent_button  = editor_toolbar_style_uiinfo [8].widget;
+	gtk_signal_connect (GTK_OBJECT (cd->html), "current_paragraph_indentation_changed",
+			    indentation_changed, cd);
+
 	cd->indent_button    = editor_toolbar_style_uiinfo [9].widget;
 
 	/* gtk_signal_connect (GTK_OBJECT (cd->html), "destroy",
@@ -613,10 +639,13 @@ toolbar_item_update_sensitivity (GtkWidget *widget, gpointer data)
 	GtkHTMLControlData *cd = (GtkHTMLControlData *)data;
 	gboolean sensitive;
 
-	sensitive = (cd->format_html
+	sensitive = ((cd->format_html && widget != cd->unindent_button)
 		     || widget == cd->paragraph_option
 		     || widget == cd->indent_button
-		     || widget == cd->unindent_button);
+		     || (widget == cd->unindent_button && gtk_html_get_paragraph_indentation (cd->html))
+		     || widget == cd->left_align_button
+		     || widget == cd->center_button
+		     || widget == cd->right_align_button);
 
 	gtk_widget_set_sensitive (widget, sensitive);
 }

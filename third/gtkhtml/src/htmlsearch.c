@@ -76,7 +76,12 @@ html_search_new (HTMLEngine *e, const gchar *text, gboolean case_sensitive, gboo
 	for (i=0; i<256; i++) {
 		ns->trans [i] = (case_sensitive) ? i : ((i>='A' && i<='Z') ? i+('a'-'A') : i);
 	}
-	ns->trans [ENTITY_NBSP] = ' ';
+	/* 
+	 * FIXME translating &nbsp; breaks horribly
+	 * with utf8 and nonutf8 regex (see bug #24446)
+	 * so we won't do it
+	 */
+	/* ns->trans [ENTITY_NBSP] = ' '; */
 
 	ns->regular = regular;
 	if (regular) {

@@ -29,25 +29,23 @@
 
 #include "gtkhtml-enums.h"
 #include "htmltypes.h"
-#include "htmlfontmanager.h"
 
-
 #define HTML_TYPE_PAINTER                 (html_painter_get_type ())
 #define HTML_PAINTER(obj)                 (GTK_CHECK_CAST ((obj), HTML_TYPE_PAINTER, HTMLPainter))
 #define HTML_PAINTER_CLASS(klass)         (GTK_CHECK_CLASS_CAST ((klass), HTML_TYPE_PAINTER, HTMLPainterClass))
 #define HTML_IS_PAINTER(obj)              (GTK_CHECK_TYPE ((obj), HTML_TYPE_PAINTER))
 #define HTML_IS_PAINTER_CLASS(klass)      (GTK_CHECK_CLASS_TYPE ((klass), HTML_TYPE_PAINTER))
 
-
 struct _HTMLPainter {
 	GtkObject base;
 
-	HTMLFontManager     font_manager;
 	HTMLColorSet       *color_set;
 	HTMLFontFace       *font_face;
 	GtkHTMLFontStyle    font_style;
 
 	gboolean focus;
+	gdouble  magnification;
+	HTMLFontManager *mag_fm;
 };
 
 struct _HTMLPainterClass {
@@ -56,9 +54,11 @@ struct _HTMLPainterClass {
 	void (* begin)            (HTMLPainter *painter, int x1, int y1, int x2, int y2);
 	void (* end)              (HTMLPainter *painter);
 
-        HTMLFont * (* alloc_font) (HTMLPainter *p, gchar *face_name, gdouble size, gboolean points, GtkHTMLFontStyle  style);
-	void       (* ref_font)   (HTMLPainter *p, HTMLFont *font);
-	void       (* unref_font) (HTMLPainter *p, HTMLFont *font);
+	/* static virtual methods */
+        HTMLFont * (* alloc_font) (gchar *face_name, gdouble size, gboolean points, GtkHTMLFontStyle  style);
+	void       (* ref_font)   (HTMLFont *font);
+	void       (* unref_font) (HTMLFont *font);
+	/* end of static methods */
 
 	void (* alloc_color)      (HTMLPainter *painter, GdkColor *color);
 	void (* free_color)       (HTMLPainter *painter, GdkColor *color);
@@ -67,6 +67,8 @@ struct _HTMLPainterClass {
 	guint (* calc_descent)    (HTMLPainter *p, GtkHTMLFontStyle f, HTMLFontFace *face);
 	guint (* calc_text_width) (HTMLPainter *p, const gchar *text, guint len,
 				   GtkHTMLFontStyle font_style, HTMLFontFace *face);
+	guint (* calc_text_width_bytes) (HTMLPainter *p, const gchar *text, guint len,
+					 HTMLFont *font, GtkHTMLFontStyle font_style);
 
 	void (* set_pen)          (HTMLPainter *painter, const GdkColor *color);
 	const GdkColor * (* get_black) (const HTMLPainter *painter);
@@ -96,6 +98,8 @@ struct _HTMLPainterClass {
 
 	guint (*get_page_width)     (HTMLPainter *painter, HTMLEngine *e);
 	guint (*get_page_height)    (HTMLPainter *painter, HTMLEngine *e);
+
+	HTMLFontManagerId (*get_font_manager_id) ();
 };
 
 
@@ -135,6 +139,9 @@ void              html_painter_set_font_style                          (HTMLPain
 GtkHTMLFontStyle  html_painter_get_font_style                          (HTMLPainter       *p);
 void              html_painter_set_font_face                           (HTMLPainter       *p,
 									HTMLFontFace      *f);
+HTMLFont         *html_painter_get_html_font                           (HTMLPainter       *painter,
+									HTMLFontFace      *face,
+									GtkHTMLFontStyle   style);
 gpointer          html_painter_get_font                                (HTMLPainter       *painter,
 									HTMLFontFace      *face,
 									GtkHTMLFontStyle   style);
@@ -150,6 +157,12 @@ guint             html_painter_calc_text_width                         (HTMLPain
 									gint              *line_offset,
 									GtkHTMLFontStyle   font_style,
 									HTMLFontFace      *face);
+guint             html_painter_calc_text_width_bytes                   (HTMLPainter       *p,
+									const gchar       *text,
+									guint              len,
+									gint              *line_offset,
+									HTMLFont          *font,
+									GtkHTMLFontStyle   font_style);
 
 /* The actual paint operations.  */
 void              html_painter_set_pen                                 (HTMLPainter       *painter,
@@ -226,14 +239,14 @@ gint              html_painter_draw_spell_error                        (HTMLPain
 									gint               y,
 									const gchar       *text,
 									gint               len);
-HTMLFont         *html_painter_alloc_font                              (HTMLPainter       *painter,
+HTMLFont         *html_painter_alloc_font                              (HTMLPainterClass  *pc,
 									gchar             *face_name,
 									gdouble            size,
 									gboolean           points,
 									GtkHTMLFontStyle   style);
-void              html_painter_ref_font                                (HTMLPainter       *painter,
+void              html_painter_ref_font                                (HTMLPainterClass  *pc,
 									HTMLFont          *font);
-void              html_painter_unref_font                              (HTMLPainter       *painter,
+void              html_painter_unref_font                              (HTMLPainterClass  *pc,
 									HTMLFont          *font);
 guint             html_painter_get_space_width                         (HTMLPainter       *painter,
 									GtkHTMLFontStyle   font_style,
@@ -248,4 +261,9 @@ guint             html_painter_get_page_height                         (HTMLPain
 								        HTMLEngine        *e);
 void              html_painter_set_focus                               (HTMLPainter       *painter,
 									gboolean           focus);
+HTMLPainterClass *html_painter_class_from_id                           (HTMLFontManagerId  id);
+HTMLFontManagerId html_painter_get_font_manager_id                     (HTMLPainter       *painter);
+void              html_painter_set_magnification                       (HTMLPainter       *painter,
+									GtkHTML           *html,
+									gdouble            magnification);
 #endif /* _HTMLPAINTER_H_ */

@@ -26,35 +26,19 @@
 #include "htmlshape.h"
 
 #define HTML_MAP(x) ((HTMLMap *) x)
-#define HTML_MAP_CLASS(x) ((HTMLMapClass *) x)
 
 struct _HTMLMap {
-	HTMLObject object;
-
 	char *name;
         GPtrArray *shapes;
 };
 
-struct _HTMLMapClass {
-	HTMLObjectClass object_class;
-};
-
-
-void         html_map_type_init   (void);
-void         html_map_class_init  (HTMLMapClass    *klass,
-				   HTMLType         type,
-				   guint            object_size);
-HTMLObject  *html_map_new         (const gchar     *name);
-void         html_map_init        (HTMLMap         *map,
-				   HTMLMapClass    *klass,
-				   const gchar     *name);
-
+HTMLMap     *html_map_new         (const gchar     *name);
+void         html_map_destroy     (HTMLMap         *map);
 char *       html_map_calc_point  (HTMLMap         *map,
 				   gint             x,
 				   gint             y);
-
-void          html_map_add_shape  (HTMLMap         *map,
-				   HTMLShape       *shape);
+void         html_map_add_shape  (HTMLMap          *map,
+				  HTMLShape        *shape);
 
 #endif /* _HTMLMAP_H */
 

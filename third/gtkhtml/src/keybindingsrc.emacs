@@ -59,6 +59,8 @@ binding "gtkhtml-bindings-emacs"
 
   bind "<Ctrl>k"              { "command" (cut-line) }
 
+  bind "<Ctrl>slash"	      { "command" (undo) }
+
   bind "<Ctrl><Alt>b"         { "command" (bold-toggle) }
   bind "<Ctrl><Alt>i"         { "command" (italic-toggle) }
   bind "<Ctrl><Alt>u"         { "command" (underline-toggle) }
@@ -76,19 +78,6 @@ binding "gtkhtml-bindings-emacs"
   bind "<Ctrl><Shift>ISO_Left_Tab"   { "command" (indent-less) }
   bind "<Shift>Tab"           { "command" (indent-less-or-prev-cell) }
   bind "<Shift>ISO_Left_Tab"  { "command" (indent-less-or-prev-cell) }
-
-  bind "<Ctrl>0"             { "command" (style-normal) }
-  bind "<Ctrl>1"             { "command" (style-header1) }
-  bind "<Ctrl>2"             { "command" (style-header2) }
-  bind "<Ctrl>3"             { "command" (style-header3) }
-  bind "<Ctrl>4"             { "command" (style-header4) }
-  bind "<Ctrl>5"             { "command" (style-header5) }
-  bind "<Ctrl>6"             { "command" (style-header6) }
-  bind "<Ctrl>7"             { "command" (style-pre) }
-  bind "<Ctrl>8"             { "command" (style-address) }
-  bind "<Ctrl><Alt>1"        { "command" (style-itemdot) }
-  bind "<Ctrl><Alt>2"        { "command" (style-itemroman) }
-  bind "<Ctrl><Alt>3"        { "command" (style-itemdigit) }
 
   bind "<Alt>1"              { "command" (size-minus-2) }
   bind "<Alt>2"              { "command" (size-minus-1) }
@@ -130,4 +119,22 @@ binding "gtkhtml-bindings-emacs"
   bind "<Ctrl><Shift>b"      { "command" (inc-border) }
   bind "<Ctrl><Alt>b"        { "command" (dec-border) }
   bind "<Alt><Shift>b"       { "command" (zero-border) }
+
+  bind "<Alt>d"              { "command" (kill-word) }
+  bind "<Alt>BackSpace"      { "command" (backward-kill-word) }
+
+  bind "<Ctrl>o"              { "command" (text-color-apply) }
+
+  bind "F12"                  { "command" (redo) }
+  bind "F14"                  { "command" (undo) }
+  bind "F16"                  { "command" (copy) }
+  bind "F18"                  { "command" (paste) }
+  bind "F20"                  { "command" (cut) }
+  
+# no bindings for these right now
+#  bind "F11"                  { "command" (stop) }
+#  bind "F13"                  { "command" (props) }
+#  bind "F17"                  { "command" (open) }
+#  bind "F15"                  { "command" (front) }
+#  bind "F19"		       { "command" (find) }
 }

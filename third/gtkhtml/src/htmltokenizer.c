@@ -757,7 +757,7 @@ add_unichar (HTMLTokenizer *t, gunichar wc)
 
 	p->utf8_length = 0;
 
-	if (wc != 0) {
+	if (wc != '\0') {
 		p->dest += g_unichar_to_utf8 (wc, p->dest);
 		*(p->dest) = 0;
 	}
@@ -871,7 +871,8 @@ in_entity (HTMLTokenizer *t, const gchar **src)
 		 */
 		if (entityValue) {
 			/* Insert plain char */
-			add_unichar (t, entityValue);
+			if (entityValue != TAG_ESCAPE)
+				add_unichar (t, entityValue);
 			if (**src == ';')
 				(*src)++;
 		}

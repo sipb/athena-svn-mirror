@@ -130,14 +130,16 @@ e_style (GtkHTMLFontStyle style)
 }
 
 static HTMLFont *
-alloc_fixed_font (HTMLPainter *painter, gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle style)
+alloc_fixed_font (gchar *face, gdouble size, gboolean points, GtkHTMLFontStyle style)
 {
-	return HTML_PAINTER_CLASS (parent_class)->alloc_font (painter, 
-							      face ? painter->font_manager.fixed.face : NULL,
-							      painter->font_manager.fix_size, painter->font_manager.fix_points,
-							      GTK_HTML_FONT_STYLE_DEFAULT); 
-}
+	HTMLFontManager *fm = html_engine_class_gdk_font_manager ();
+	gpointer plain_font;
 
+	plain_font = html_font_manager_get_font (fm, NULL, GTK_HTML_FONT_STYLE_SIZE_3 | GTK_HTML_FONT_STYLE_FIXED);
+	HTML_PAINTER_CLASS (parent_class)->ref_font (plain_font);
+
+	return plain_font;
+}
 
 static void
 draw_shade_line (HTMLPainter *painter,
@@ -217,6 +219,12 @@ get_page_height (HTMLPainter *painter, HTMLEngine *e)
 	return html_engine_get_view_height (e) + e->topBorder + e->bottomBorder;
 }
 
+static HTMLFontManagerId
+get_font_manager_id ()
+{
+	return HTML_FONT_MANAGER_ID_PLAIN;
+}
+
 static void
 class_init (GtkObjectClass *object_class)
 {
@@ -234,6 +242,7 @@ class_init (GtkObjectClass *object_class)
 	painter_class->draw_background = draw_background;
 	painter_class->get_page_width = get_page_width;
 	painter_class->get_page_height = get_page_height;
+	painter_class->get_font_manager_id = get_font_manager_id;
 
 	parent_class = gtk_type_class (html_gdk_painter_get_type ());
 }

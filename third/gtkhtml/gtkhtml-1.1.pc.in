@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: gtkhtml-@GTKHTML_RELEASE@
+Description: GTKHTML - HTML rendering library for GNOME 1.4
+Version: @VERSION@
+Libs: -L${libdir} -lgtkhtml-@GTKHTML_RELEASE@ @GTKHTML_LIBS@
+Cflags: -I${includedir}/gtkhtml-@GTKHTML_RELEASE@ @GTKHTML_INCLUDEDIR@
+
+gtkhtml_datadir=@GTKHTML_DATADIR@
+module_version=gtkhtml-@VERSION@

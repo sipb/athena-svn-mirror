@@ -163,10 +163,10 @@ html_engine_draw_image_cursor (HTMLEngine *e)
 			cr->object = io;
 		}
 
-		html_object_calc_abs_position (io, &cr->x1, &cr->y2);
-		cr->x2  = cr->x1 + io->width - 1;
-		cr->y2 --;
-		cr->y1  = cr->y2 - (io->ascent + io->descent) + 1;
+		html_object_calc_abs_position (io, &cr->x1, &cr->y1);
+		cr->x2 = cr->x1 + io->width - 1;
+		cr->y2 = cr->y1 + io->descent - 1;
+		cr->y1 -= io->ascent;
 
 		draw_cursor_rectangle (e, cr->x1, cr->y1, cr->x2, cr->y2,
 				       &image_stipple_active_on, &image_stipple_active_off, offset);

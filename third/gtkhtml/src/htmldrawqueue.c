@@ -22,10 +22,15 @@
 #include <config.h>
 #include <gtk/gtksignal.h>
 #include "htmlengine-edit-cursor.h"
+#include "htmlcolor.h"
 #include "htmldrawqueue.h"
 #include "htmlengine.h"
+#include "htmlgdkpainter.h"
+#include "htmlimage.h"
 #include "htmlpainter.h"
 #include "htmlobject.h"
+#include "htmltextslave.h"
+#include "htmlsettings.h"
 #include "gtkhtml.h"
 
 
@@ -212,7 +217,50 @@ html_draw_queue_add_clear_with_background  (HTMLDrawQueue *queue,
 	add_clear (queue, new);
 }
 
-
+static void
+draw_link_focus (HTMLObject *o, HTMLEngine *e, gint x, gint y)
+{
+	HTMLGdkPainter *p = HTML_GDK_PAINTER (e->painter);
+	GdkColor *c = &html_colorset_get_color (e->settings->color_set, HTMLTextColor)->color;
+	GdkGCValues values;
+	gchar dash [2];
+
+	/* printf ("draw_link_focus\n"); */
+
+	gdk_gc_set_foreground (p->gc, c);
+	gdk_gc_get_values (p->gc, &values);
+
+	dash [0] = 1;
+	dash [1] = 1;
+	gdk_gc_set_line_attributes (p->gc, 1, GDK_LINE_ON_OFF_DASH, values.cap_style, values.join_style);
+	gdk_gc_set_dashes (p->gc, 2, dash, 2);
+	gdk_draw_line (p->pixmap, p->gc, x, y, x + o->width, y);
+	gdk_draw_line (p->pixmap, p->gc, x, y, x, y + o->ascent + 1);
+	gdk_draw_line (p->pixmap, p->gc, x + o->width - 1, y, x + o->width - 1, y + o->ascent + 1);
+	gdk_gc_set_line_attributes (p->gc, 1, values.line_style, values.cap_style, values.join_style);
+}
+
+static void
+draw_image_focus (HTMLObject *o, HTMLEngine *e, gint x, gint y)
+{
+	HTMLGdkPainter *p = HTML_GDK_PAINTER (e->painter);
+	GdkColor *c = &html_colorset_get_color (e->settings->color_set, HTMLTextColor)->color;
+	GdkGCValues values;
+	gchar dash [2];
+
+	/* printf ("draw_image_focus\n"); */
+
+	gdk_gc_set_foreground (p->gc, c);
+	gdk_gc_get_values (p->gc, &values);
+
+	dash [0] = 1;
+	dash [1] = 1;
+	gdk_gc_set_line_attributes (p->gc, 1, GDK_LINE_ON_OFF_DASH, values.cap_style, values.join_style);
+	gdk_gc_set_dashes (p->gc, 2, dash, 2);
+	gdk_draw_rectangle (p->pixmap, p->gc, 0, x, y, o->width - 1, o->ascent + o->descent - 1);
+	gdk_gc_set_line_attributes (p->gc, 1, values.line_style, values.cap_style, values.join_style);
+}
+
 static void
 draw_obj (HTMLDrawQueue *queue,
 	  HTMLObject *obj)
@@ -264,8 +312,15 @@ draw_obj (HTMLDrawQueue *queue,
 	}
 #endif
 
-	/* Done.  */
 
+	if (HTML_IS_GDK_PAINTER (queue->engine->painter)) {
+		if (HTML_IS_TEXT_SLAVE (obj) && queue->engine->focus_object == HTML_OBJECT (HTML_TEXT_SLAVE (obj)->owner))
+			draw_link_focus (obj, queue->engine, obj->x + tx - x1, obj->y - obj->ascent + ty - y1);
+		else if (queue->engine->focus_object == obj && HTML_IS_IMAGE (obj))
+			draw_image_focus (obj, queue->engine, obj->x + tx - x1, obj->y - obj->ascent + ty - y1);
+	}
+
+	/* Done.  */
 	html_painter_end (e->painter);
 
 	if (e->editable)
@@ -333,6 +388,11 @@ void
 html_draw_queue_flush (HTMLDrawQueue *queue)
 {
 	GList *p;
+	GdkVisual *vis;
+
+	/* check to make sure we have something to draw on */
+
+	vis = queue->engine->window ? gdk_window_get_visual (queue->engine->window): NULL;
 
 	/* Draw clear areas.  */
 
@@ -340,14 +400,15 @@ html_draw_queue_flush (HTMLDrawQueue *queue)
 		HTMLDrawQueueClearElement *clear_elem;
 
 		clear_elem = p->data;
-		clear (queue, clear_elem);
+		if (vis)
+			clear (queue, clear_elem);
 		clear_element_destroy (clear_elem);
 	}
 
 
 	/* Draw objects.  */
 
-	if (GTK_WIDGET (queue->engine->widget)->window) {
+	if (vis) {
 		for (p = queue->elems; p != NULL; p = p->next) {
 			HTMLObject *obj = HTML_OBJECT (p->data);
 			

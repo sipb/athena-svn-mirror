@@ -23,44 +23,21 @@
 #include <config.h>
 #include <string.h>
 #include <glib.h>
-#include "htmltypes.h"
 #include "htmlmap.h"
 #include "htmlshape.h"
 
-HTMLMapClass html_map_class;
-static HTMLObjectClass *parent_class = NULL;
-
-static void
-destroy (HTMLObject *self)
+void
+html_map_destroy (HTMLMap *map)
 {
-	HTMLMap *map = HTML_MAP (self);
 	gint i;
 
-	for (i = 0; i < map->shapes->len; i++) {
+	for (i = 0; i < map->shapes->len; i++)
 		html_shape_destroy (g_ptr_array_index (map->shapes, i));
-	}
 	
 	g_ptr_array_free (map->shapes, FALSE);
 	map->shapes = NULL;
 
 	g_free (map->name);
-	(* parent_class->destroy) (self);
-}
-
-void
-html_map_class_init (HTMLMapClass *klass,
-		     HTMLType type,
-		     guint object_size)
-{
-	HTMLObjectClass *object_class;
-
-	object_class = HTML_OBJECT_CLASS (klass);
-
-	html_object_class_init (object_class, type, object_size);
-
-	object_class->destroy = destroy;
-
-	parent_class = &html_object_class;
 }
 
 void
@@ -87,39 +64,14 @@ html_map_calc_point (HTMLMap *map, gint x, gint y)
 	return NULL;
 }
 
-void
-html_map_type_init (void)
-{
-	html_map_class_init (&html_map_class, HTML_TYPE_MAP, sizeof (HTMLMap));
-}
-
-void
-html_map_init (HTMLMap *map,
-	       HTMLMapClass *klass,
-	       const gchar *name)
-{
-	html_object_init (HTML_OBJECT (map), HTML_OBJECT_CLASS (klass));
-
-	map->shapes = g_ptr_array_new ();
-	map->name = g_strdup (name);
-}
-
-HTMLObject *
+HTMLMap *
 html_map_new (const gchar *name)
 {
 	HTMLMap *map;
 
 	map = g_new (HTMLMap, 1);
-	html_map_init (map, &html_map_class, name);
+	map->shapes = g_ptr_array_new ();
+	map->name = g_strdup (name);
 
-	return HTML_OBJECT (map);
+	return map;
 }
-
-
-
-
-
-
-
-
-

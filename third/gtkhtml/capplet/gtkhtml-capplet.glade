@@ -405,7 +405,7 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>magic_check</name>
+	    <name>magic_links_check</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>toggled</name>
@@ -424,14 +424,14 @@
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>live_spell_check</name>
+	    <name>magic_smileys_check</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>toggled</name>
-	      <handler>live_changed</handler>
-	      <last_modification_time>Mon, 11 Dec 2000 14:27:03 GMT</last_modification_time>
+	      <handler>changed</handler>
+	      <last_modification_time>Thu, 23 May 2002 20:08:19 GMT</last_modification_time>
 	    </signal>
-	    <label>Enable spell checking</label>
+	    <label>Automatically insert smiley images</label>
 	    <active>False</active>
 	    <draw_indicator>True</draw_indicator>
 	    <child>
@@ -440,144 +440,43 @@
 	      <fill>False</fill>
 	    </child>
 	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkFrame</class>
-	<name>live_spell_frame</name>
-	<label>Spell Checking</label>
-	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-
-	<widget>
-	  <class>GtkTable</class>
-	  <name>table4</name>
-	  <border_width>4</border_width>
-	  <rows>2</rows>
-	  <columns>2</columns>
-	  <homogeneous>False</homogeneous>
-	  <row_spacing>4</row_spacing>
-	  <column_spacing>6</column_spacing>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label13</name>
-	    <label>Color</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkLabel</class>
-	    <name>label14</name>
-	    <label>Language</label>
-	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
-	    <xalign>0</xalign>
-	    <yalign>0.5</yalign>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <child>
-	      <left_attach>0</left_attach>
-	      <right_attach>1</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkEntry</class>
-	    <name>live_spell_entry</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>changed</name>
-	      <handler>changed</handler>
-	      <last_modification_time>Mon, 11 Dec 2000 14:30:12 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
-	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>False</xfill>
-	      <yfill>False</yfill>
-	    </child>
-	  </widget>
 
 	  <widget>
 	    <class>GtkHBox</class>
-	    <name>hbox1</name>
+	    <name>hbox4</name>
 	    <homogeneous>False</homogeneous>
 	    <spacing>0</spacing>
 	    <child>
-	      <left_attach>1</left_attach>
-	      <right_attach>2</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>False</yfill>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
 	    </child>
 
 	    <widget>
-	      <class>GnomeColorPicker</class>
-	      <name>live_spell_color</name>
+	      <class>GtkCheckButton</class>
+	      <name>live_spell_check</name>
 	      <can_focus>True</can_focus>
 	      <signal>
-		<name>color_set</name>
-		<handler>changed</handler>
-		<last_modification_time>Mon, 11 Dec 2000 14:29:32 GMT</last_modification_time>
+		<name>toggled</name>
+		<handler>live_changed</handler>
+		<last_modification_time>Mon, 11 Dec 2000 14:27:03 GMT</last_modification_time>
 	      </signal>
-	      <dither>True</dither>
-	      <use_alpha>False</use_alpha>
-	      <title>Pick a color</title>
+	      <label>Enable spell checking</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkButton</class>
+	      <name>button_configure_spell_checking</name>
+	      <can_focus>True</can_focus>
+	      <label>Configure spell checking</label>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -586,6 +485,22 @@
 	    </widget>
 	  </widget>
 	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox3</name>
+	<layout_style>GTK_BUTTONBOX_START</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
       </widget>
     </widget>
 
@@ -896,7 +811,7 @@
 
       <widget>
 	<class>GtkVBox</class>
-	<name>vbox_ks</name>
+	<name>vbox_ks_planned</name>
 	<border_width>3</border_width>
 	<homogeneous>False</homogeneous>
 	<spacing>3</spacing>

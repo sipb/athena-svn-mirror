@@ -41,12 +41,7 @@ struct _GtkHTMLPrivate {
 
 	gboolean update_styles;
 
-	gint last_selection_type;
-	/* Used to hold the primary selection when
-	** pasting within ourselves
-	*/
-	HTMLObject *primary;
-	guint       primary_len;
+	gint selection_type;
 
 	gchar *content_type;
 	char  *base_url;
@@ -58,11 +53,20 @@ struct _GtkHTMLPrivate {
 #ifdef GTKHTML_HAVE_GCONF
 	guint set_font_id;
 	guint notify_id;
+	guint notify_spell_id;
 #endif
 #ifdef GTK_HTML_USE_XIM
 	GdkICAttr *ic_attr;
 	GdkIC *ic;
 #endif
+
+	HTMLObject *dnd_object;
+	HTMLObject *dnd_real_object;
+	gboolean    dnd_in_progress;
+	gchar      *dnd_url;
+
+	guint32     event_time;
+	gboolean    selection_as_cite;
 };
 
 void  gtk_html_private_calc_scrollbars  (GtkHTML                 *html,
@@ -77,5 +81,3 @@ void  gtk_html_editor_event             (GtkHTML                 *html,
 void  gtk_html_api_set_language         (GtkHTML                 *html);
 
 #endif /* _GTKHTML_PRIVATE_H */
-
-

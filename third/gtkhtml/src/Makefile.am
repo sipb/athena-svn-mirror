@@ -3,27 +3,27 @@ NULL=
 INCLUDES = -I$(top_srcdir) -I$(srcdir) -I$(includedir) $(GNOME_INCLUDEDIR) \
 	$(EXTRA_GNOME_CFLAGS) \
 	$(IMLIB_CFLAGS)	\
-	-DG_LOG_DOMAIN=\"gtkhtml\" $(GLIBWWW_CFLAGS) \
+	-DG_LOG_DOMAIN=\"gtkhtml\" $(SOUP_CFLAGS) \
 	-DSRCDIR=\"$(srcdir)\" \
 	-DPREFIX=\"$(prefix)\"
 
-CFLAGS +=  $(GCONF_CFLAGS)
+CFLAGS +=  $(GCONF_CFLAGS) -DICONDIR=\"$(GTKHTML_DATADIR)/icons\"
 
-lib_LTLIBRARIES = libgtkhtml.la
+lib_LTLIBRARIES = libgtkhtml-1.1.la
 
-if GLIBWWW
-noinst_PROGRAMS = testgtkhtml gtest
-else
-noinst_PROGRAMS = 
+if SOUP
+soup_programs = testgtkhtml
 endif
+noinst_PROGRAMS = $(soup_programs) gtest
 
-libgtkhtmldir = $(includedir)/gtkhtml
+libgtkhtmldir = $(includedir)/$(GTKHTML_RELEASE_STRING)/gtkhtml/
 
 # FIXME not all the stuff should be installed!
 
 libgtkhtml_HEADERS =				\
 	gtkhtml-compat.h			\
 	gtkhtml-embedded.h			\
+	gtkhtml-propmanager.h			\
 	gtkhtml-enums.h				\
 	gtkhtml-im.h				\
 	gtkhtml-private.h			\
@@ -52,7 +52,6 @@ libgtkhtml_HEADERS =				\
 	htmlengine-edit-cursor.h		\
 	htmlengine-edit-cut-and-paste.h         \
 	htmlengine-edit-fontstyle.h		\
-	htmlengine-edit-images.c		\
 	htmlengine-edit-images.h		\
 	htmlengine-edit-movement.h		\
 	htmlengine-edit-rule.h			\
@@ -112,8 +111,9 @@ libgtkhtml_HEADERS =				\
 	htmlhspace.h				\
 	$(NULL)
 
-libgtkhtml_la_SOURCES =				\
+libgtkhtml_1_1_la_SOURCES =				\
 	gtkhtml-embedded.c			\
+	gtkhtml-propmanager.c			\
 	gtkhtml-im.c				\
 	gtkhtml-properties.c			\
 	gtkhtml-search.c			\
@@ -196,9 +196,9 @@ libgtkhtml_la_SOURCES =				\
 #	html-component.c			\
 #	htmlengine-edit-table.c			\
 
-libgtkhtml_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE)
+libgtkhtml_1_1_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE)
 
-libgtkhtml_la_LIBADD = $(EXTRA_GNOME_LIBS) $(GCONF_LIBS)
+libgtkhtml_1_1_la_LIBADD = $(EXTRA_GNOME_LIBS) $(GCONF_LIBS)
 
 # The test program.
 
@@ -207,22 +207,21 @@ testgtkhtml_SOURCES = 		\
 	htmlurl.h		\
 	htmlurl.c
 
-testgtkhtml_CFLAGS = $(GLIBWWW_CFLAGS)
+# testgtkhtml_LDFLAGS = -static
 testgtkhtml_LDADD =				\
-	libgtkhtml.la				\
+	libgtkhtml-@GTKHTML_RELEASE@.la		\
 	$(GNOMEUI_LIBS)				\
 	$(GNOME_LIBDIR)				\
 	$(EXTRA_GNOME_LIBS)                     \
-	$(GLIBWWW_LIBS)				\
+	$(SOUP_LIBS)				\
 	$(GCONF_LIBS)
 #	-lccmalloc -ldl
 #
 
 gtest_SOURCES = \
 	test.c
-testgtkhtml_CFLAGS = 
 gtest_LDADD =					\
-	libgtkhtml.la				\
+	libgtkhtml-@GTKHTML_RELEASE@.la		\
 	$(GNOMEUI_LIBS)				\
 	$(GNOME_LIBDIR)				\
 	$(GCONF_LIBS)				\
@@ -238,7 +237,7 @@ EXTRA_DIST = \
 	keybindingsrc.xemacs \
 	keybindingsrc.ms
 
-keybindingsdir = $(datadir)/gtkhtml
+keybindingsdir = $(GTKHTML_DATADIR)
 keybindings_DATA = \
 	keybindingsrc.emacs \
 	keybindingsrc.xemacs \

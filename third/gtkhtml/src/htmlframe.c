@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include "gtkhtml.h"
+#include "gtkhtml-stream.h"
 #include "htmltokenizer.h"
 #include "gtkhtml-private.h"
 #include "htmlcolorset.h"
@@ -34,6 +35,7 @@
 #include "htmlsearch.h"
 #include "htmlselection.h"
 #include "htmlsettings.h"
+#include <libgnome/gnome-i18n.h>
 
 #ifndef USE_SCROLLED_WINDOW
 #include <gal/widgets/e-scroll-frame.h>
@@ -48,84 +50,19 @@ frame_url_requested (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpoi
 {
 	HTMLFrame *frame = HTML_FRAME (data);
 	GtkHTML *parent = GTK_HTML (HTML_EMBEDDED(frame)->parent);
+
+	gtk_signal_emit_by_name (GTK_OBJECT (parent->engine), "url_requested",
+				 url, handle);
+}
+
+static void
+frame_set_base (GtkHTML *html, const gchar *url, gpointer data)
+{
 	char *new_url = NULL;
-	
-	/* FIXME this is not exactly the single safest method of expanding a relative url */
-	if (frame->url && !strstr (url, ":")) {
-		char *base = g_strdup (frame->url);
-		if (*url == '/' && strstr (base, ":")) {
-			int i = 0;
-			char *cur = base; 
-			
-			while (*cur != '\0') {
-				if (*cur == '/') i++;
-				
-				if (i == 3) {
-					*(++cur) = '\0';
-					break;
-				}
-				cur++;
-			}
-			new_url = g_strconcat (base, "/", url, NULL);
-		} else if (*url == '/' && (*base == '/' || *base == '\0')) {
-			new_url = NULL;
-		} else {
-			new_url = g_strconcat (base, "/", url, NULL);
-		}		
-		g_free (base);
-	}
-	g_warning ("url = %s, frame->url = %s, new_url = %s", url, frame->url, new_url);
-	
-	gtk_signal_emit_by_name (GTK_OBJECT (parent->engine), "url_requested", new_url ? new_url : url,
-				 handle);
-	
+
+	new_url = gtk_html_get_url_base_relative (html, url);
+	gtk_html_set_base (html, new_url);
 	g_free (new_url);
-}
-
-static void
-frame_set_base (GtkHTML *html, const gchar *base, gpointer data)
-{
-	HTMLFrame *frame = HTML_FRAME (data);
-	char *new_url = NULL;
-	char *cur;
-	
-	/* FIXME this is not exactly the single safest method of expanding a relative url */
-	if (frame->url && !strstr (base, ":"))
-		new_url = g_strconcat (frame->url, "/", base, NULL);
-	else 
-		new_url = g_strdup (base);
-
-	cur = new_url + strlen (new_url);
-	while (cur >= new_url) {
-		if (*cur == '/') {
-			break;
-		}
-		cur--;
-	}	
-	*(cur + 1)= '\0';
-			
-	g_warning ("base = %s, frame->url = %s, new_url = %s", base, frame->url, new_url);
-
-	g_free (frame->url);
-	frame->url = new_url;
-}
-
-static void
-frame_on_url (GtkHTML *html, const gchar *url, gpointer data)
-{
-	HTMLFrame *frame = HTML_FRAME (data);
-	GtkHTML *parent = GTK_HTML (HTML_EMBEDDED(frame)->parent);
-
-	gtk_signal_emit_by_name (GTK_OBJECT (parent), "on_url", url);
-}
-
-static void
-frame_link_clicked (GtkHTML *html, const gchar *url, gpointer data)
-{
-	HTMLFrame *frame = HTML_FRAME (data);
-	GtkHTML *parent = GTK_HTML (HTML_EMBEDDED(frame)->parent);
-
-	gtk_signal_emit_by_name (GTK_OBJECT (parent), "link_clicked", url);
 }
 
 static void
@@ -433,6 +370,17 @@ append_selection_string (HTMLObject *self,
 	html_object_append_selection_string (GTK_HTML (HTML_FRAME (self)->html)->engine->clue, buffer);
 }
 
+static void
+reparent (HTMLEmbedded *emb, GtkWidget *html)
+{
+	HTMLFrame *frame = HTML_FRAME (emb);
+
+	gtk_html_set_iframe_parent (GTK_HTML (frame->html), 
+				    html,
+				    GTK_HTML (frame->html)->frame);
+	(* HTML_EMBEDDED_CLASS (parent_class)->reparent) (emb, html);
+}
+
 static gboolean
 select_range (HTMLObject *self,
 	      HTMLEngine *engine,
@@ -525,6 +473,7 @@ html_frame_init (HTMLFrame *frame,
 	GtkHTML   *parent_html;
 	GtkHTMLStream *handle;
 	GtkWidget *scrolled_window;
+	gint depth;
 
 	g_assert (GTK_IS_HTML (parent));
 	parent_html = GTK_HTML (parent);
@@ -553,36 +502,37 @@ html_frame_init (HTMLFrame *frame,
 	gtk_html_set_default_content_type (new_html,
 					   parent_html->priv->content_type);
 	frame->html = new_widget;
-	gtk_html_set_iframe_parent (new_html, parent, HTML_OBJECT (frame));
+	depth = gtk_html_set_iframe_parent (new_html, parent, HTML_OBJECT (frame));
 	gtk_container_add (GTK_CONTAINER (scrolled_window), new_widget);
 	gtk_widget_show (new_widget);
 
+	frame->url = g_strdup (src);
 	frame->width = width;
 	frame->height = height;
 	frame->gdk_painter = NULL;
-	frame->url = NULL;
+	gtk_html_set_base (new_html, src);
 
-	if (src && strcmp (src, "")) {
-		handle = gtk_html_begin (new_html);
-		gtk_signal_emit_by_name (GTK_OBJECT (new_html->engine), 
-					 "url_requested", src, handle);
+	handle = gtk_html_begin (new_html);
+	gtk_html_set_base (new_html, src);
 
-		frame_set_base (new_html, src, frame);
-	} else {		
-		gtk_html_load_empty (new_html);
-	}
 	new_html->engine->clue->parent = HTML_OBJECT (frame);
 
 
 	gtk_signal_connect (GTK_OBJECT (new_html), "url_requested",
 			    GTK_SIGNAL_FUNC (frame_url_requested),
 			    (gpointer)frame);
+#if 0
+	/* NOTE: because of peculiarities of the frame/gtkhtml relationship
+	 * on_url and link_clicked are emitted from the toplevel widget not
+	 * proxied like url_requested is.
+	 */
 	gtk_signal_connect (GTK_OBJECT (new_html), "on_url",
 			    GTK_SIGNAL_FUNC (frame_on_url), 
 			    (gpointer)frame);
 	gtk_signal_connect (GTK_OBJECT (new_html), "link_clicked",
 			    GTK_SIGNAL_FUNC (frame_link_clicked),
 			    (gpointer)frame);	
+#endif
 	gtk_signal_connect (GTK_OBJECT (new_html), "size_changed",
 			    GTK_SIGNAL_FUNC (frame_size_changed),
 			    (gpointer)frame);	
@@ -592,16 +542,25 @@ html_frame_init (HTMLFrame *frame,
 	gtk_signal_connect (GTK_OBJECT (new_html), "submit",
 			    GTK_SIGNAL_FUNC (frame_submit),
 			    (gpointer)frame);
+	gtk_signal_connect (GTK_OBJECT (new_html), "set_base",
+			    GTK_SIGNAL_FUNC (frame_set_base), 
+			    (gpointer)frame);
 
 	html_frame_set_margin_height (frame, 0);
 	html_frame_set_margin_width (frame, 0);
-	/*
-	  gtk_signal_connect (GTK_OBJECT (new_html), "set_base",
-	  GTK_SIGNAL_FUNC (frame_set_base), (gpointer)frame);
 
+	/*
 	  gtk_signal_connect (GTK_OBJECT (html), "button_press_event",
 	  GTK_SIGNAL_FUNC (frame_button_press_event), frame);
 	*/
+
+	if (depth < 10) {
+		gtk_signal_emit_by_name (GTK_OBJECT (parent_html->engine), 
+					 "url_requested", src, handle);
+	} else {
+		gtk_html_stream_printf (handle, "%s", _("Error: maximium frame depth exceded"));
+		gtk_html_stream_close (handle, GTK_HTML_STREAM_OK);
+	}
 
 	gtk_widget_set_usize (scrolled_window, width, height);
 
@@ -672,6 +631,8 @@ html_frame_class_init (HTMLFrameClass *klass,
 	object_class->draw_background         = draw_background;
 	object_class->append_selection_string = append_selection_string;
 	object_class->select_range            = select_range;
+
+	embedded_class->reparent = reparent;
 }
 
 

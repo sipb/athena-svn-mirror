@@ -1,6 +1,6 @@
 # Basic setup
 
-gladedir = $(datadir)/gtkhtml
+gladedir = $(GTKHTML_DATADIR)
 glade_DATA = 	gtkhtml-editor-properties.glade
 
 INCLUDES =						\
@@ -14,7 +14,7 @@ INCLUDES =						\
 	$(GTK_CFLAGS)					\
 	-DGLADE_DATADIR=\"$(gladedir)\"
 
-CFLAGS +=  $(GCONF_CFLAGS) $(PSPELL_CFLAGS) -DICONDIR=\"$(datadir)/gtkhtml/icons\"
+CFLAGS +=  $(GCONF_CFLAGS) $(PSPELL_CFLAGS) -DICONDIR=\"$(GTKHTML_DATADIR)/icons\"
 
 # CORBA stuff
 
@@ -47,10 +47,8 @@ $(SPELL_IDL_GENERATED): $(SPELL_IDLS)
 	$(ORBIT_IDL) -I$(datadir)/idl `$(GNOME_CONFIG) --cflags idl`	\
 		-I$(srcdir) $(srcdir)/Spell.idl
 
-LDFLAGS += -dynamic
-
 LDADD =	\
-	$(top_builddir)/src/libgtkhtml.la	\
+	$(top_builddir)/src/libgtkhtml-@GTKHTML_RELEASE@.la	\
 	$(EXTRA_GNOME_LIBS)			\
 	$(GNOMEUI_LIBS)				\
 	$(GNOME_LIBS)				\
@@ -72,6 +70,8 @@ GTKHTML_EDITOR_SOURCES_COMMON =			\
 	control-data.h				\
 	dialog.c				\
 	dialog.h				\
+	e-html-utils.h				\
+	e-html-utils.c				\
 	editor-control-factory.c		\
 	engine.h				\
 	engine.c				\
@@ -95,8 +95,6 @@ GTKHTML_EDITOR_SOURCES_COMMON =			\
 	replace.h				\
 	html-stream-mem.h			\
 	html-stream-mem.c			\
-	resolver-progressive-impl.c		\
-	resolver-progressive-impl.h		\
 	rule.c					\
 	rule.h					\
 	search.c				\
@@ -120,11 +118,17 @@ lib_LTLIBRARIES = libgnome-gtkhtml-editor.la
 libgnome_gtkhtml_editor_la_SOURCES =		\
 	$(GTKHTML_EDITOR_SOURCES_COMMON)
 PRGS =
+install-exec-hook:
+
 else
 PRGS = gnome-gtkhtml-editor
 gnome_gtkhtml_editor_SOURCES =			\
 	$(GTKHTML_EDITOR_SOURCES_COMMON)
+install-exec-hook:
+	mv $(DESTDIR)$(bindir)/gnome-gtkhtml-editor $(DESTDIR)$(bindir)/gnome-gtkhtml-editor-@EDITOR_API_VERSION@
 endif
+
+libgnome_gtkhtml_editor_la_LDFLAGS = -release $(EDITOR_API_VERSION)
 
 bin_PROGRAMS = $(PRGS)
 
@@ -137,7 +141,7 @@ oafdir = $(datadir)/oaf
 @XML_I18N_MERGE_OAF_RULE@
 
 GNOME_GtkHTML_Editor.xml: GNOME_GtkHTML_Editor.xml.in Makefile
-	sed -e 's?\@ICONSDIR\@?$(GTKHTML_DATADIR)/gtkhtml/icons?g' \
+	sed -e 's?\@ICONSDIR\@?$(GTKHTML_DATADIR)/icons?g' \
 	      < $(srcdir)/GNOME_GtkHTML_Editor.xml.in > GNOME_GtkHTML_Editor.xml.tmp \
 	  && mv GNOME_GtkHTML_Editor.xml.tmp GNOME_GtkHTML_Editor.xml
 
@@ -151,8 +155,10 @@ noinst_PROGRAMS =				\
 
 test_editor_SOURCES =				\
 	$(IDL_GENERATED)			\
-	resolver.c				\
-	resolver.h				\
+	e-html-utils.c				\
+	e-html-utils.h				\
+	htmlsourceview.c			\
+	htmlsourceview.h			\
 	test-html-editor-control.c
 
 # Extra stuff to distribute.
@@ -168,10 +174,10 @@ EXTRA_DIST =					\
 	GNOME_GtkHTML_Editor.xml.in		\
 	gtkhtml-editor-properties.glade
 
-idldir = $(datadir)/gtkhtml
+idldir = $(GTKHTML_DATADIR)
 idl_DATA = $(IDLS)
 
-CLEANFILES += $(IDL_GENERATED) $(SPELL_IDL_GENERATED)
+CLEANFILES = $(IDL_GENERATED) $(SPELL_IDL_GENERATED)
 BUILT_SOURCE = $(IDL_GENERATED) $(SPELL_IDL_GENERATED)
 
 dist-hook:

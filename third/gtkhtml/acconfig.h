@@ -12,12 +12,15 @@
 #undef ENABLE_BONOBO
 #undef HAVE_IEEEFP_H
 #undef ENABLE_GNOME
-#undef HAVE_GLIBWWW
+#undef HAVE_SOUP
 #undef HAVE_GHTTP
 #undef HAVE_GNU_REGEX
 #undef USING_OAF
 #undef GTK_HTML_USE_XIM
 #undef GNOME_GTKHTML_EDITOR_SHLIB
+#undef EDITOR_API_VERSION
+#undef GTKHTML_RELEASE
+#undef GTKHTML_RELEASE_STRING
 
 @BOTTOM@
 /* This is from libglade */

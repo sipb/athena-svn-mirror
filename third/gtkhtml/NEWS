@@ -1,12 +1,55 @@
-Current version:
-----------------
+Version 1.1.7
+-------------
+ - Fix magic link segfaults.
+ - Cursor movement crashes.
 
- - Change selection color and focus change
- - Fixed scrolling
- - Rendering fixes
- - Improved links handling
- - Avoid empty dialogs in editor
- - Fixed search/replace in editor
+Version 1.1.6
+-------------
+ - Fix citation printing.
+ - Fix citation pasting.
+
+Version 1.1.5
+-------------
+ - Lots and lots of bug fixes (bugzilla is more accurate than I
+   would be.
+
+Version 1.1.4
+-------------
+ - fix gmo file names from 1.1.3.
+
+Version 1.1.3
+-------------
+
+ - Lot of bug fixes (see bugzilla).
+ - Editor UI Improvements.
+
+Version 1.1.2
+-------------
+
+ - spell checking quotation improved
+ - updated to new gnome-spell
+   - better language selection
+   - more than one language at once
+   - spell checking control updated
+ - <blockquote type=cite> support for improved quotation logic
+ - Cut & Paste of formatted html
+ - link insertion / editing completely reworked
+ - dirty flag for composer
+ - HUGE general speedup
+ - selection drawing speedup
+ - less flicker
+ - new commands and keybindings (delete-word, delete-word-backward, text-color-apply)
+ - UI usability enhanced
+ - gconf as default configuration backend
+ - smileys :-)
+ - DND for URL's
+ - printing API - gtk_html_get_pages_num
+ - title setting in editor
+ - body templates
+ - itemized list fixed
+ - animated images fixed (infinite loop)
+ - PRIMARY selection fixed
+ - header printing fixed
 
 Version 0.9, "Lighthouse", 2000-12-14
 -------------------------------------

@@ -35,28 +35,39 @@ struct _HTMLTextSlave {
 	guint posStart;
 	guint posLen;
 	guint start_word;
+	gchar *charStart;
 };
 
 struct _HTMLTextSlaveClass {
 	HTMLObjectClass object_class;
 };
 
-void        html_text_slave_type_init        (void);
-void        html_text_slave_class_init       (HTMLTextSlaveClass *klass,
-					      HTMLType            type,
-					      guint               object_size);
-void        html_text_slave_init             (HTMLTextSlave      *slave,
-					      HTMLTextSlaveClass *klass,
-					      HTMLText           *owner,
-					      guint               posStart,
-					      guint               posLen,
-					      guint               start_word);
-HTMLObject *html_text_slave_new              (HTMLText           *owner,
-					      guint               posStart,
-					      guint               posLen,
-					      guint               start_word);
-gint        html_text_slave_get_line_offset  (HTMLTextSlave      *slave,
-					      gint                line_offset,
-					      gint                offset,
-					      HTMLPainter        *p);
+void        html_text_slave_type_init             (void);
+void        html_text_slave_class_init            (HTMLTextSlaveClass *klass,
+						   HTMLType            type,
+						   guint               object_size);
+void        html_text_slave_init                  (HTMLTextSlave      *slave,
+						   HTMLTextSlaveClass *klass,
+						   HTMLText           *owner,
+						   guint               posStart,
+						   guint               posLen,
+						   guint               start_word);
+HTMLObject *html_text_slave_new                   (HTMLText           *owner,
+						   guint               posStart,
+						   guint               posLen,
+						   guint               start_word);
+gint        html_text_slave_get_line_offset       (HTMLTextSlave      *slave,
+						   gint                line_offset,
+						   gint                offset,
+						   HTMLPainter        *p);
+char       *html_text_slave_get_text              (HTMLTextSlave      *slave);
+gint        html_text_slave_nb_width              (HTMLTextSlave      *slave,
+						   HTMLPainter        *painter,
+						   gint                words);
+gchar      *html_text_slave_remove_leading_space  (HTMLTextSlave      *slave,
+						   HTMLPainter        *painter,
+						   gboolean            lineBegin);
+gint        html_text_slave_get_nb_width          (HTMLTextSlave      *slave,
+						   HTMLPainter        *painter,
+						   gboolean            lineBegin);
 #endif /* _HTMLTEXTSLAVE_H_ */

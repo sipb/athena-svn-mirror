@@ -74,7 +74,7 @@ calc_size (HTMLObject *clue, HTMLPainter *painter, GList **changed_objs)
 	changed = HTML_OBJECT_CLASS (&html_clue_class)->calc_size (clue, painter, changed_objs);
 
 	if (clue->parent != NULL)
-		lmargin = html_object_get_left_margin (clue->parent, painter, clue->y);
+		lmargin = html_object_get_left_margin (clue->parent, painter, clue->y, TRUE);
 
 	clue->width = lmargin + HTML_CLUEH (clue)->indent;
 	clue->descent = 0;
@@ -84,7 +84,7 @@ calc_size (HTMLObject *clue, HTMLPainter *painter, GList **changed_objs)
 		html_object_fit_line (obj,
 				      painter,
 				      (obj == HTML_CLUE (clue)->head),
-				      TRUE, -1);
+				      TRUE, FALSE, -1);
 		obj->x = clue->width;
 		clue->width += obj->width;
 		if (obj->ascent > a)

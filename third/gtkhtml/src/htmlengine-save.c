@@ -40,10 +40,8 @@
 
 /* This routine was originally written by Daniel Velliard, (C) 1998 World Wide
    Web Consortium.  */
-static gchar *
-encode_entities (const gchar *input,
-		 guint len,
-		 guint *encoded_len_return)
+gchar *
+html_encode_entities (const gchar *input, guint len, guint *encoded_len_return)
 {
 	gunichar uc;
 	const gchar *p;
@@ -121,7 +119,8 @@ encode_entities (const gchar *input,
 	}
 
 	*out = 0;
-	*encoded_len_return = out - buffer;
+	if (encoded_len_return)
+		*encoded_len_return = out - buffer;
 
 	return buffer;
 }
@@ -141,7 +140,7 @@ html_engine_save_encode (HTMLEngineSaveState *state,
 	if (length == 0)
 		return TRUE;
 
-	encoded_buffer = encode_entities ((const guchar *) buffer, length, &encoded_length);
+	encoded_buffer = html_encode_entities ((const guchar *) buffer, length, &encoded_length);
 	success = state->receiver (state->engine, encoded_buffer, encoded_length, state->user_data);
 
 	g_free (encoded_buffer);
@@ -162,7 +161,20 @@ html_engine_save_encode_string (HTMLEngineSaveState *state,
 	return html_engine_save_encode (state, s, len);
 }
 
+gboolean
+html_engine_save_output_stringv (HTMLEngineSaveState *state,
+				 const char *format,
+				 va_list ap)
+{
+	char *string;
+	gboolean retval;
 
+	string = g_strdup_vprintf (format, ap);
+	retval = state->receiver (state->engine, string, strlen (string), state->user_data);
+	g_free (string);
+
+	return retval;
+}
 
 gboolean
 html_engine_save_output_string (HTMLEngineSaveState *state,
@@ -170,19 +182,15 @@ html_engine_save_output_string (HTMLEngineSaveState *state,
 				...)
 {
   va_list args;
-  gchar *string;
   gboolean retval;
   
   g_return_val_if_fail (format != NULL, FALSE);
   g_return_val_if_fail (state != NULL, FALSE);
   
   va_start (args, format);
-  string = g_strdup_vprintf (format, args);
+  retval = html_engine_save_output_stringv (state, format, args);
   va_end (args);
   
-  retval = state->receiver (state->engine, string, strlen (string), state->user_data);
-
-  g_free (string);
   return retval;
 }
 
@@ -234,6 +242,7 @@ write_header (HTMLEngineSaveState *state)
 	gboolean retval = TRUE;
 	gchar *body;
 
+	html_engine_clear_all_class_data (state->engine);
 	/* Preface.  */
 	if (! html_engine_save_output_string
 	            (state,
@@ -278,6 +287,8 @@ write_end (HTMLEngineSaveState *state)
 	if (! html_engine_save_output_string (state, "</BODY>\n</HTML>\n"))
 		return FALSE;
 
+	html_engine_clear_all_class_data (state->engine);
+
 	return TRUE;
 }
 
@@ -299,6 +310,7 @@ html_engine_save (HTMLEngine *engine,
 	state.receiver = receiver;
 	state.br_count = 0;
 	state.error = FALSE;
+	state.inline_frames = FALSE;
 	state.user_data = user_data;
 	state.last_level = 0;
 
@@ -333,6 +345,7 @@ html_engine_save_plain (HTMLEngine *engine,
 	state.receiver = receiver;
 	state.br_count = 0;
 	state.error = FALSE;
+	state.inline_frames = FALSE;
 	state.user_data = user_data;
 	state.last_level = 0;
 
@@ -380,7 +393,7 @@ html_engine_save_buffer_peek_text (HTMLEngineSaveState *state)
 }
 
 HTMLEngineSaveState *
-html_engine_save_buffer_new (HTMLEngine *engine)
+html_engine_save_buffer_new (HTMLEngine *engine, gboolean inline_frames)
 {
 	HTMLEngineSaveState *state = g_new0 (HTMLEngineSaveState, 1);
 
@@ -389,6 +402,7 @@ html_engine_save_buffer_new (HTMLEngine *engine)
 		state->receiver = (HTMLEngineSaveReceiverFn)html_engine_save_buffer_receiver;
 		state->br_count = 0;
 		state->error = FALSE;
+		state->inline_frames = inline_frames;
 		state->user_data = (gpointer) g_string_new ("");
 		state->last_level = 0;
 	}

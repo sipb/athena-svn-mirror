@@ -74,7 +74,7 @@ new_link (HTMLText *t, gint begin, gint end)
 }
 
 static HTMLObject *
-op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
 	return html_text_op_copy_helper (HTML_TEXT (self), from, to, len, new_link);
 }
@@ -270,4 +270,13 @@ html_link_text_to_text (HTMLLinkText *link, HTMLEngine *e)
 	html_text_set_font_face (HTML_TEXT (new_text), HTML_TEXT (link)->face);
 
 	return new_text;
+}
+
+void
+html_link_text_set_url (HTMLLinkText *link, gchar *url, gchar *target)
+{
+	g_free (link->url);
+	g_free (link->target);
+	link->url = g_strdup (url);
+	link->target = g_strdup (target);
 }

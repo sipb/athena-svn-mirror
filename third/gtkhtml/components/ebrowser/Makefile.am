@@ -32,7 +32,7 @@ ebrowser_SOURCES = \
 	ebrowser.c ebrowser.h ebrowser-ui.c ebrowser-ui.h
 
 LDADD = \
-	$(top_builddir)/src/libgtkhtml.la \
+	$(top_builddir)/src/libgtkhtml-1.1.la \
 	$(EXTRA_GNOME_LIBS) \
 	$(GHTTP_LIBS)
 

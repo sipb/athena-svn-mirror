@@ -33,9 +33,12 @@
 #include "htmlcursor.h"
 #include "htmlengine.h"
 #include "htmlengine-edit.h"
+#include "htmlengine-save.h"
+#include "htmlframe.h"
 #include "htmlinterval.h"
 #include "htmlobject.h"
 #include "htmlpainter.h"
+#include "htmltable.h"
 #include "htmltext.h"
 #include "htmlrule.h"
 #include "htmltype.h"
@@ -51,12 +54,6 @@ HTMLObjectClass html_object_class;
 /* HTMLObject virtual methods.  */
 
 static void
-free_data (GQuark id, gpointer data, gpointer user_data)
-{
-	g_free (data);
-}
-
-static void
 destroy (HTMLObject *self)
 {
 #define GTKHTML_MEM_DEBUG 1
@@ -68,7 +65,6 @@ destroy (HTMLObject *self)
 	self->next = NULL;
 	self->prev = NULL;
 #endif
-	g_datalist_foreach (&self->object_data, free_data, NULL);
 	g_datalist_clear (&self->object_data);
 	
 	if (self->redraw_pending) {
@@ -106,7 +102,7 @@ copy (HTMLObject *self,
 }
 
 static HTMLObject *
-op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
 	if ((!from || GPOINTER_TO_INT (from->data) == 0)
 	    && (!to || GPOINTER_TO_INT (to->data) == html_object_get_length (self))) {
@@ -228,10 +224,11 @@ fit_line (HTMLObject *o,
 	  HTMLPainter *painter,
 	  gboolean start_of_line,
 	  gboolean first_run,
+	  gboolean next_to_floating,
 	  gint width_left)
 {
 	html_object_calc_size (o, painter, FALSE);
-	return (o->width <= width_left || first_run) ? HTML_FIT_COMPLETE : HTML_FIT_NONE;
+	return (o->width <= width_left || (first_run && !next_to_floating)) ? HTML_FIT_COMPLETE : HTML_FIT_NONE;
 }
 
 static gboolean
@@ -253,16 +250,6 @@ calc_preferred_width (HTMLObject *o, HTMLPainter *painter)
 	html_object_calc_size (o, painter, FALSE);
 	return o->width;
 }
-
-static void
-set_max_ascent (HTMLObject *o, HTMLPainter *painter, gint a)
-{
-}
-	
-static void
-set_max_descent (HTMLObject *o, HTMLPainter *painter, gint d)
-{
-}
 	
 static void
 set_max_width (HTMLObject *o, HTMLPainter *painter, gint max_width)
@@ -270,14 +257,19 @@ set_max_width (HTMLObject *o, HTMLPainter *painter, gint max_width)
 	o->max_width = max_width;
 }
 
+static void
+set_max_height (HTMLObject *o, HTMLPainter *painter, gint max_height)
+{
+}
+
 static gint
-get_left_margin (HTMLObject *self, HTMLPainter *painter, gint y)
+get_left_margin (HTMLObject *self, HTMLPainter *painter, gint y, gboolean with_aligned)
 {
 	return 0;
 }
 
 static gint
-get_right_margin (HTMLObject *self, HTMLPainter *painter, gint y)
+get_right_margin (HTMLObject *self, HTMLPainter *painter, gint y, gboolean with_aligned)
 {
 	return MAX (self->max_width, self->width);
 }
@@ -596,7 +588,12 @@ tail (HTMLObject *self)
 	return NULL;
 }
 
-
+static HTMLClearType
+get_clear (HTMLObject *self)
+{
+	return HTML_CLEAR_NONE;
+}
+
 /* Class initialization.  */
 
 void
@@ -629,9 +626,8 @@ html_object_class_init (HTMLObjectClass *klass,
 	klass->is_transparent = is_transparent;
 	klass->fit_line = fit_line;
 	klass->calc_size = calc_size;
-	klass->set_max_ascent = set_max_ascent;
-	klass->set_max_descent = set_max_descent;
 	klass->set_max_width = set_max_width;
+	klass->set_max_height = set_max_height;
 	klass->get_left_margin = get_left_margin;
 	klass->get_right_margin = get_right_margin;
 	klass->set_painter = set_painter;
@@ -668,6 +664,7 @@ html_object_class_init (HTMLObjectClass *klass,
 	klass->head = head;
 	klass->tail = tail;
 	klass->get_engine = get_engine;
+	klass->get_clear = get_clear;
 }
 
 void
@@ -732,9 +729,9 @@ html_object_dup (HTMLObject *object)
 }
 
 HTMLObject *
-html_object_op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+html_object_op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
-	return (* HO_CLASS (self)->op_copy) (self, e, from, to, len);
+	return (* HO_CLASS (self)->op_copy) (self, parent, e, from, to, len);
 }
 
 HTMLObject *
@@ -798,6 +795,10 @@ html_object_calc_abs_position (HTMLObject *o,
 	for (p = o->parent; p != NULL; p = p->parent) {
 		*x_return += p->x;
 		*y_return += p->y - p->ascent;
+		if (html_object_is_frame (p)) {
+			*x_return += GTK_HTML (HTML_FRAME (p)->html)->engine->leftBorder;
+			*y_return += GTK_HTML (HTML_FRAME (p)->html)->engine->topBorder;
+		}
 	}
 }
 
@@ -868,10 +869,10 @@ html_object_fit_line (HTMLObject *o,
 		      HTMLPainter *painter,
 		      gboolean start_of_line, 
 		      gboolean first_run,
+		      gboolean next_to_floating,
 		      gint width_left)
 {
-	return (* HO_CLASS (o)->fit_line) (o, painter, start_of_line,
-					   first_run, width_left);
+	return (* HO_CLASS (o)->fit_line) (o, painter, start_of_line, first_run, next_to_floating, width_left);
 }
 
 gboolean
@@ -886,33 +887,27 @@ html_object_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs
 }
 
 void
-html_object_set_max_ascent (HTMLObject *o, HTMLPainter *painter, gint a)
-{
-	(* HO_CLASS (o)->set_max_ascent) (o, painter, a);
-}
-
-void
-html_object_set_max_descent (HTMLObject *o, HTMLPainter *painter, gint d)
-{
-	(* HO_CLASS (o)->set_max_descent) (o, painter, d);
-}
-
-void
 html_object_set_max_width (HTMLObject *o, HTMLPainter *painter, gint max_width)
 {
 	(* HO_CLASS (o)->set_max_width) (o, painter, max_width);
 }
 
-gint
-html_object_get_left_margin (HTMLObject *self, HTMLPainter *painter, gint y)
+void
+html_object_set_max_height (HTMLObject *o, HTMLPainter *painter, gint max_height)
 {
-	return (* HO_CLASS (self)->get_left_margin) (self, painter, y);
+	(* HO_CLASS (o)->set_max_height) (o, painter, max_height);
 }
 
 gint
-html_object_get_right_margin (HTMLObject *self, HTMLPainter *painter, gint y)
+html_object_get_left_margin (HTMLObject *self, HTMLPainter *painter, gint y, gboolean with_aligned)
 {
-	return (* HO_CLASS (self)->get_right_margin) (self, painter, y);
+	return (* HO_CLASS (self)->get_left_margin) (self, painter, y, with_aligned);
+}
+
+gint
+html_object_get_right_margin (HTMLObject *self, HTMLPainter *painter, gint y, gboolean with_aligned)
+{
+	return (* HO_CLASS (self)->get_right_margin) (self, painter, y, with_aligned);
 }
 
 static void
@@ -973,6 +968,17 @@ const gchar *
 html_object_get_target (HTMLObject *o)
 {
 	return (* HO_CLASS (o)->get_target) (o);
+}
+
+gchar *
+html_object_get_complete_url (HTMLObject *o)
+{
+	const gchar *url, *target;
+
+	url = html_object_get_url (o);
+	target = html_object_get_target (o);
+	return url || target ? g_strconcat (url ? url : "#", url ? (target && *target ? "#" : NULL) : target,
+					      url ? target : NULL, NULL) : NULL;
 }
 
 const gchar *
@@ -1087,11 +1093,23 @@ html_object_append_selection_string (HTMLObject *self,
 	(* HO_CLASS (self)->append_selection_string) (self, buffer);
 }
 
-
 HTMLEngine *
 html_object_get_engine (HTMLObject *self, HTMLEngine *e)
 {
 	return (* HO_CLASS (self)->get_engine) (self, e);
+}
+
+HTMLEngine *
+html_object_engine (HTMLObject *o, HTMLEngine *e)
+{
+	while (o) {
+		e = html_object_get_engine (o, e);
+		if (html_object_is_frame (o))
+			break;
+		o = o->parent;
+	}
+
+	return e;
 }
 
 void
@@ -1475,10 +1493,7 @@ next_object_uptree_cursor (HTMLObject *obj, HTMLObject * (*next_fn ) (HTMLObject
 static HTMLObject *
 move_object_downtree_cursor (HTMLObject *obj, HTMLObject * (*down_fn ) (HTMLObject *))
 {
-	HTMLObject *down;
-
-	while ((down = (*down_fn) (obj))) {
-		obj = down;
+	while ((obj = (*down_fn) (obj))) {
 		if (html_object_accepts_cursor (obj))
 			break;
 	}
@@ -1492,30 +1507,41 @@ move_object_cursor (HTMLObject *obj, gint *offset, gboolean forward,
 {
 	HTMLObject *down, *before;
 
-	if (((*offset == 0 && forward) || (*offset && !forward)) && html_object_is_container (obj))
-		if ((down = (*down_fn) (obj))) {
-			down = move_object_downtree_cursor (down, down_fn);
-			if (down) {
-				if (html_object_is_container (down))
-					*offset = forward ? 0 : 1;
-				return down;
+	do {
+		gboolean found = FALSE;
+		if (((*offset == 0 && forward) || (*offset && !forward)) && html_object_is_container (obj))
+			if ((down = (*down_fn) (obj))) {
+				down = move_object_downtree_cursor (down, down_fn);
+				if (down) {
+					if (html_object_is_container (down))
+						*offset = forward ? 0 : 1;
+					return down;
+				}
 			}
-		}
 
-	before = obj;
-	obj = next_object_uptree_cursor (obj, next_fn);
-	if (obj) {
-		if (html_object_accepts_cursor (obj)) {
-			if (html_object_is_container (obj))
-				*offset = before->parent == obj->parent
-					? forward ? 0 : 1
-					: forward ? 1 : 0;
-		} else {
-			obj = move_object_downtree_cursor (obj, down_fn);
-			if (html_object_is_container (obj))
-				*offset = forward ? 0 : 1;
-		}
-	}
+		before = obj;
+		do {
+			obj = next_object_uptree_cursor (obj, next_fn);
+			if (obj) {
+				if (html_object_accepts_cursor (obj)) {
+					if (html_object_is_container (obj))
+						*offset = before->parent == obj->parent
+							? forward ? 0 : 1
+							: forward ? 1 : 0;
+					found = TRUE;
+				} else {
+					HTMLObject *down;
+					down = move_object_downtree_cursor (obj, down_fn);
+					if (down) {
+						if (html_object_is_container (down))
+							*offset = forward ? 0 : 1;
+						obj = down;
+						found = TRUE;
+					}
+				}
+			}
+		} while (obj && !found);
+	} while (obj && !html_object_accepts_cursor (obj));
 
 	return obj;
 }
@@ -1549,7 +1575,7 @@ html_object_get_index (HTMLObject *self, guint offset)
 void
 html_object_set_data (HTMLObject *object, const gchar *key, const gchar *value)
 {
-	g_datalist_set_data (&object->object_data, key, g_strdup (value));
+	g_datalist_set_data_full (&object->object_data, key, g_strdup (value), g_free);
 }
 
 gpointer
@@ -1563,13 +1589,81 @@ copy_data (GQuark key_id, gpointer data, gpointer user_data)
 {
 	HTMLObject *o = HTML_OBJECT (user_data);
 
-	g_datalist_id_set_data (&o->object_data, key_id, g_strdup ((gchar *)data));
+	/* printf ("copy key: '%s'\n", g_quark_to_string (key_id)); */
+	g_datalist_set_data_full (&o->object_data,
+				  g_strdup (g_quark_to_string (key_id)),
+				  g_strdup ((gchar *) data), g_free);
 }
 
 void
 html_object_copy_data_from_object (HTMLObject *dst, HTMLObject *src)
 {
 	g_datalist_foreach (&src->object_data, copy_data, dst);
+}
+
+static void
+object_save_data (GQuark key_id, gpointer data, gpointer user_data)
+{
+	HTMLEngineSaveState *state = (HTMLEngineSaveState *) user_data;
+	const gchar *str;
+
+	str = html_engine_get_class_data (state->engine, state->save_data_class_name, g_quark_to_string (key_id));
+	/* printf ("object %s %s\n", g_quark_to_string (key_id), str); */
+	if (!str) {
+		/* printf ("save %s %s -> %s\n", state->save_data_class_name, g_quark_to_string (key_id), (gchar *) data); */
+		html_engine_save_output_string (state, "<!--+GtkHTML:<DATA class=\"%s\" key=\"%s\" value=\"%s\">",
+						state->save_data_class_name, g_quark_to_string (key_id), data);
+		html_engine_set_class_data (state->engine, state->save_data_class_name, g_quark_to_string (key_id), data);
+	}
+}
+
+static void
+handle_object_data (gpointer key, gpointer value, gpointer data)
+{
+	HTMLEngineSaveState *state = (HTMLEngineSaveState *) data;
+	gchar *str;
+
+	str = html_object_get_data (HTML_OBJECT (state->save_data_object), key);
+	/* printf ("handle: %s %s %s %s\n", state->save_data_class_name, key, value, str); */
+	if (!str) {
+		/* printf ("clear\n"); */
+		html_engine_save_output_string (state, "<!--+GtkHTML:<DATA class=\"%s\" clear=\"%s\">",
+						state->save_data_class_name, key);
+		
+		state->data_to_remove = g_slist_prepend (state->data_to_remove, key);
+	} else if (strcmp (value, str)) {
+		/* printf ("change\n"); */
+		html_engine_save_output_string (state, "<!--+GtkHTML:<DATA class=\"%s\" key=\"%s\" value=\"%s\">",
+						state->save_data_class_name, key, str);
+		html_engine_set_class_data (state->engine, state->save_data_class_name, key, value);
+	}
+}
+
+static void
+clear_data (gchar *key, HTMLEngineSaveState *state)
+{
+	html_engine_clear_class_data (state->engine, state->save_data_class_name, key);
+}
+
+gboolean
+html_object_save_data (HTMLObject *self, HTMLEngineSaveState *state)
+{
+	if (state->engine->save_data) {
+		GHashTable *t;
+		state->save_data_class_name = html_type_name (self->klass->type);
+		state->save_data_object = self;
+		t = html_engine_get_class_table (state->engine, state->save_data_class_name);
+		if (t) {
+			state->data_to_remove = NULL;
+			g_hash_table_foreach (t, handle_object_data, state);
+			g_slist_foreach (state->data_to_remove, (GFunc) clear_data, state);
+			g_slist_free (state->data_to_remove);
+			state->data_to_remove = NULL;
+		}
+		g_datalist_foreach (&self->object_data, object_save_data, state);
+	}
+
+	return TRUE;
 }
 
 GList *
@@ -1861,4 +1955,60 @@ html_object_add_to_changed (GList **changed_objs, HTMLObject *o)
 	}
 
 	*changed_objs = g_list_prepend (*changed_objs, o);
+}
+
+HTMLClearType
+html_object_get_clear (HTMLObject *self)
+{
+	return (* HO_CLASS (self)->get_clear) (self);
+}
+
+static HTMLObject *
+next_prev_cursor_object (HTMLObject *o, HTMLEngine *e, gint *offset, gboolean forward)
+{
+	HTMLCursor cursor;
+	gboolean result;
+
+	html_cursor_init (&cursor, o, HTML_IS_TABLE (o) ? *offset : (forward ? html_object_get_length (o) : 0));
+
+	result = forward ? html_cursor_forward (&cursor, e) : html_cursor_backward (&cursor, e);
+	*offset = cursor.offset;
+
+	return result ? cursor.object : NULL;
+}
+
+HTMLObject *
+html_object_next_cursor_object (HTMLObject *o, HTMLEngine *e, gint *offset)
+{
+	return next_prev_cursor_object (o, e, offset, TRUE);
+}
+
+HTMLObject *
+html_object_prev_cursor_object (HTMLObject *o, HTMLEngine *e, gint *offset)
+{
+	return next_prev_cursor_object (o, e, offset, FALSE);
+}
+
+HTMLObject *
+html_object_next_cursor_leaf (HTMLObject *o, HTMLEngine *e)
+{
+	gint offset = html_object_get_length (o);
+
+	o = html_object_next_cursor_object (o, e, &offset);
+	while (o && html_object_is_container (o))
+		o = html_object_next_cursor_object (o, e, &offset);
+
+	return o;
+}
+
+HTMLObject *
+html_object_prev_cursor_leaf (HTMLObject *o, HTMLEngine *e)
+{
+	gint offset = html_object_get_length (o);
+
+	o = html_object_prev_cursor_object (o, e, &offset);
+	while (o && html_object_is_container (o))
+		o = html_object_prev_cursor_object (o, e, &offset);
+
+	return o;
 }

@@ -23,12 +23,15 @@
 #ifndef ENGINE_H_
 #define ENGINE_H_
 
+BEGIN_GNOME_DECLS
+
+typedef struct _EditorEngine EditorEngine;
+
 #include <libgnome/gnome-defs.h>
 #include <bonobo/bonobo-object.h>
 #include "Editor.h"
+#include "control-data.h"
 #include "gtkhtml.h"
-
-BEGIN_GNOME_DECLS
 
 #define EDITOR_ENGINE_TYPE        (editor_engine_get_type ())
 #define EDITOR_ENGINE(o)          (GTK_CHECK_CAST ((o), EDITOR_ENGINE_TYPE, EditorEngine))
@@ -36,23 +39,23 @@ BEGIN_GNOME_DECLS
 #define IS_EDITOR_ENGINE(o)       (GTK_CHECK_TYPE ((o), EDITOR_ENGINE_TYPE))
 #define IS_EDITOR_ENGINE_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), EDITOR_ENGINE_TYPE))
 
-typedef struct {
+struct _EditorEngine {
 	BonoboObject parent;
 
-	GtkHTML *html;
+	GtkHTMLControlData *cd;
 
 	BonoboObjectClient *listener_client;
 	GNOME_GtkHTML_Editor_Listener listener;
-} EditorEngine;
+};
 
 typedef struct {
 	BonoboObjectClass parent_class;
 } EditorEngineClass;
 
-GtkType                           editor_engine_get_type   (void);
-EditorEngine                 *editor_engine_construct  (EditorEngine        *engine,
+GtkType                               editor_engine_get_type   (void);
+EditorEngine                         *editor_engine_construct  (EditorEngine                *engine,
 								GNOME_GtkHTML_Editor_Engine  corba_engine);
-EditorEngine                 *editor_engine_new        (GtkHTML                 *html);
+EditorEngine                         *editor_engine_new        (GtkHTMLControlData          *cd);
 POA_GNOME_GtkHTML_Editor_Engine__epv *editor_engine_get_epv    (void);
 
 END_GNOME_DECLS

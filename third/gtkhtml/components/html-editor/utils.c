@@ -72,7 +72,7 @@ color_table_new (GtkSignalFunc f, gpointer data)
 	return table;
 }
 
-static void
+void
 url_requested (GtkHTML *html, const gchar *url, GtkHTMLStream *handle)
 {
 	GtkHTMLStreamStatus status;

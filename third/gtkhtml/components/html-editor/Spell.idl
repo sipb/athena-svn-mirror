@@ -25,6 +25,11 @@ module GNOME {
 	module Spell {
 
 		typedef sequence<string> StringSeq;
+		struct Language {
+			string name;
+			string abrev;
+		};
+		typedef sequence<Language> LanguageSeq;
 
 		interface Dictionary : Bonobo::Unknown {
 
@@ -32,12 +37,12 @@ module GNOME {
 				string error;
 			};
 
-			attribute boolean active;
+			LanguageSeq getLanguages ();
 
 			/**
-			 * sets various pspell tags - see pspell manual
+			 * sets language(s), language string could contain more languages separated by space
 			 */
-			void setTag (in string key, in string value);
+			void setLanguage (in string language);
 		
 			/**
 			 * checks word
@@ -61,40 +66,6 @@ module GNOME {
 			 * informs dictionary, that word 'word' will be replaced/corrected by word 'replacement'
 			 */
 			void setCorrection (in string word, in string replacement);
-		};
-
-		struct Suggestion {
-			StringSeq word;
-			Dictionary dictionary;
-		};
-
-		interface Checker : Bonobo::Unknown {
-
-			typedef sequence<Suggestion> SuggestionSeq;
-
-			exception SpellError {};
-
-			/**
-			 * adds dictionary to checker
-			 */
-			void addDictionary (in Dictionary dictionary) raises (SpellError);
-
-			/**
-			 * removes dictionary from checker
-			 */
-			void removeDictionary (in Dictionary dictionary);
-
-			/**
-			 * checks word
-			 *
-			 * returns true if word is valid for at least one (active) dictionary
-			 */
-			boolean checkWord (in string word) raises (SpellError);
-
-			/**
-			 * returns suggestions for word from all (active) dictionaries
-			 */
-			SuggestionSeq getSuggestions (in string word) raises (SpellError);
 		};
 	};
 };

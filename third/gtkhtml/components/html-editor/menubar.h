@@ -27,8 +27,10 @@
 #include "gtkhtml.h"
 #include "control-data.h"
 
-void  menubar_setup         (BonoboUIComponent  *uic,
-		             GtkHTMLControlData *cd);
-void  menubar_update_format (GtkHTMLControlData *cd);
-void  insert_table          (GtkHTMLControlData *cd);
+void  menubar_setup          (BonoboUIComponent  *uic,
+			      GtkHTMLControlData *cd);
+void  menubar_update_format  (GtkHTMLControlData *cd);
+void  menubar_set_languages  (GtkHTMLControlData *cd,
+			      const gchar        *lstr);
+void  insert_table           (GtkHTMLControlData *cd);
 #endif /* _MENUBAR_H */

@@ -67,4 +67,8 @@ HTMLObject *html_link_text_new_with_len  (const gchar       *text,
 					  const gchar       *target);
 HTMLObject *html_link_text_to_text       (HTMLLinkText      *link,
 					  HTMLEngine        *engine);
+void        html_link_text_set_url       (HTMLLinkText      *link,
+					  gchar             *url,
+					  gchar             *target);
+					  
 #endif /* _HTMLLINKTEXT_H_ */

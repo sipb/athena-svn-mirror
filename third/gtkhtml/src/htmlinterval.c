@@ -148,10 +148,15 @@ select_object (HTMLObject *o, HTMLEngine *e, gpointer data)
 
 	if (o == i->from.object)
 		etop->selected_in = TRUE;
-	if (etop->selected_in)
-		html_object_select_range (o, e,
-					  html_interval_get_start (i, o), html_interval_get_length (i, o),
-					  !html_engine_frozen (e));
+	if (etop->selected_in) {
+		gint len;
+
+		len = html_interval_get_length (i, o);
+		if (len)
+			html_object_select_range (o, e,
+						  html_interval_get_start (i, o), len,
+						  !html_engine_frozen (e));
+	}
 
 	if (o == i->to.object)
 		etop->selected_in = FALSE;
@@ -169,13 +174,16 @@ html_interval_select (HTMLInterval *i, HTMLEngine *e)
 static void
 unselect_object (HTMLObject *o, HTMLEngine *e, gpointer data)
 {
-	html_object_select_range (o, e, 0, 0, !html_engine_frozen (e));
+	if (html_interval_get_length ((HTMLInterval *) data, o))
+		html_object_select_range (o, e, 0, 0, !html_engine_frozen (e));
 }
 
 void
 html_interval_unselect (HTMLInterval *i, HTMLEngine *e)
 {
+	i = html_interval_flat (i);
 	html_interval_forall (i, e, unselect_object, i);
+	html_interval_destroy (i);
 }
 
 gint
@@ -333,8 +341,15 @@ html_point_max (HTMLPoint *a, HTMLPoint *b)
 	b_downline = get_downtree_line (b->object);
 	do_downtree_lines_intersection (&a_downline, &b_downline, NULL);
 
-	rv = html_object_children_max (HTML_OBJECT (a_downline->data), HTML_OBJECT (b_downline->data))
-		== HTML_OBJECT (a_downline->data) ? a : b;
+	if (a_downline == NULL)
+		/* it means that a is parent (container) of b */
+		rv = a->offset ? a : b;
+	else if (b_downline == NULL)
+		/* it means that b is parent (container) of a */
+		rv = b->offset ? b : a;
+	else
+		rv = html_object_children_max (HTML_OBJECT (a_downline->data), HTML_OBJECT (b_downline->data))
+			== HTML_OBJECT (a_downline->data) ? a : b;
 	g_slist_free (a_downline);
 	g_slist_free (b_downline);
 

@@ -356,7 +356,7 @@ html_select_set_text (HTMLSelect *select, gchar *text)
 		char *gtk_text;
 		item = GTK_CLIST(select->clist)->rows - 1;
 
-		gtk_text = e_utf8_from_gtk_string (select->clist, text);
+		gtk_text = e_utf8_to_gtk_string (select->clist, text);
 		gtk_clist_set_text (GTK_CLIST(select->clist), item, 0, gtk_text);
 		g_free (gtk_text);
 
@@ -375,14 +375,17 @@ html_select_set_text (HTMLSelect *select, gchar *text)
 		item = g_list_length (select->strings) - 1;
 
 		if (select->strings) {
+			char *longest;
+
 			g_list_last (select->strings)->data = e_utf8_to_gtk_string (w, text);
 
 			select->needs_update = TRUE;
 			gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(w)->entry), 
 					   g_list_nth(select->strings, select->default_selected)->data);
 
-			HTML_OBJECT(select)->width = gdk_string_width(w->style->font, 
-								      longest_string(select)) + 30;
+			longest = longest_string(select);
+			HTML_OBJECT(select)->width = (longest ? gdk_string_width(w->style->font, longest) : 0) + 30;
+				
 		}
 		gtk_widget_set_usize (GTK_WIDGET (w), HTML_OBJECT (select)->width, -2);
 	}

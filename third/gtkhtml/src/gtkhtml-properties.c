@@ -44,6 +44,7 @@ gtk_html_class_properties_new (void)
 
 	/* default values */
 	p->magic_links             = TRUE;
+	p->magic_smileys           = TRUE;
 	p->keybindings_theme       = g_strdup ("ms");
 	p->font_var                = var_name;
 	p->font_fix                = fix_name;
@@ -58,11 +59,15 @@ gtk_html_class_properties_new (void)
 	p->font_var_print_points   = FALSE;
 	p->font_fix_print_points   = FALSE;
 	p->animations              = TRUE;
+	p->link_color              = g_strdup ("#0000ff");
+	p->alink_color             = g_strdup ("#0000ff");
+	p->vlink_color             = g_strdup ("#0000ff");
 
 	p->live_spell_check        = TRUE;
 	p->spell_error_color.red   = 0xffff;
 	p->spell_error_color.green = 0;
 	p->spell_error_color.blue  = 0;
+
 	p->language                = g_strdup ("en");
 
 	return p;
@@ -83,6 +88,14 @@ gtk_html_class_properties_destroy (GtkHTMLClassProperties *p)
         gconf_value_free (val); } \
         g_free (key);
 
+#define GNOME_SPELL_GCONF_DIR "/GNOME/Spell"
+#define GETSP(t,x,prop,f,c) \
+        key = g_strconcat (GNOME_SPELL_GCONF_DIR, x, NULL); \
+        val = gconf_client_get_without_default (client, key, NULL); \
+        if (val) { f; p->prop = c (gconf_value_get_ ## t (val)); \
+        gconf_value_free (val); } \
+        g_free (key);
+
 void
 gtk_html_class_properties_load (GtkHTMLClassProperties *p, GConfClient *client)
 {
@@ -92,6 +105,7 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p, GConfClient *client)
 	g_assert (client);
 
 	GET (bool, "/magic_links", magic_links,,);
+	GET (bool, "/magic_smileys", magic_smileys,,);
 	GET (bool, "/animations", animations,,);
 	GET (string, "/keybindings_theme", keybindings_theme,
 	     g_free (p->keybindings_theme), g_strdup);
@@ -113,11 +127,17 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p, GConfClient *client)
 	GET (bool, "/font_fixed_print_points", font_fix_print_points,,);
 
 	GET (bool, "/live_spell_check", live_spell_check,,);
-	GET (int, "/spell_error_color_red",   spell_error_color.red,,);
-	GET (int, "/spell_error_color_green", spell_error_color.green,,);
-	GET (int, "/spell_error_color_blue",  spell_error_color.blue,,);
-	GET (string, "/language", language,
-	     g_free (p->language), g_strdup);
+
+	GET (string, "/link_color", link_color, g_free (p->link_color), g_strdup);
+	GET (string, "/alink_color", alink_color, g_free (p->alink_color), g_strdup);
+	GET (string, "/vlink_color", vlink_color, g_free (p->vlink_color), g_strdup);
+
+	GETSP (int, "/spell_error_color_red",   spell_error_color.red,,);
+	GETSP (int, "/spell_error_color_green", spell_error_color.green,,);
+	GETSP (int, "/spell_error_color_blue",  spell_error_color.blue,,);
+
+	GETSP (string, "/language", language,
+	       g_free (p->language), g_strdup);
 }
 
 #define SET(t,x,prop) \
@@ -135,6 +155,8 @@ gtk_html_class_properties_update (GtkHTMLClassProperties *p, GConfClient *client
 		SET (bool, "/animations", animations);
 	if (p->magic_links != old->magic_links)
 		SET (bool, "/magic_links", magic_links);
+	if (p->magic_smileys != old->magic_smileys)
+		SET (bool, "/magic_smileys", magic_smileys);
 	SET (string, "/keybindings_theme", keybindings_theme);
 	if (strcmp (p->font_var, old->font_var))
 		SET (string, "/font_variable", font_var);
@@ -160,16 +182,18 @@ gtk_html_class_properties_update (GtkHTMLClassProperties *p, GConfClient *client
 		SET (int, "/font_variable_size_print", font_var_size_print);
 	if (p->font_fix_size_print != old->font_fix_size_print || p->font_fix_print_points != old->font_fix_print_points)
 		SET (int, "/font_fixed_size_print", font_fix_size_print);
-
+	if (strcmp (p->link_color, old->link_color))
+		SET (string, "/link_color", link_color);
+	if (strcmp (p->alink_color, old->alink_color))
+		SET (string, "/alink_color", alink_color);
+	if (strcmp (p->vlink_color, old->vlink_color))
+		SET (string, "/vlink_color", vlink_color);
+	
+	
 	if (p->live_spell_check != old->live_spell_check)
 		SET (bool, "/live_spell_check", live_spell_check);
-	if (!gdk_color_equal (&p->spell_error_color, &old->spell_error_color)) {
-		SET (int, "/spell_error_color_red",   spell_error_color.red);
-		SET (int, "/spell_error_color_green", spell_error_color.green);
-		SET (int, "/spell_error_color_blue",  spell_error_color.blue);
-	}
-	if (strcmp (p->language, old->language))
-		SET (string, "/language", language);
+
+	gconf_client_suggest_sync (client, NULL);
 }
 
 #else
@@ -194,6 +218,7 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p)
 
 	gnome_config_push_prefix (GTK_HTML_GNOME_CONFIG_PREFIX);
 	GET  (bool, magic_links, "magic_links=true");
+	GET  (bool, magic_smileys, "magic_smileys=true");
 	GET  (bool, animations, "animations=true");
 	GETS (keybindings_theme, "keybindings_theme=ms");
 	GETS (font_var, var_default);
@@ -224,11 +249,17 @@ gtk_html_class_properties_load (GtkHTMLClassProperties *p)
 	GET  (bool, font_fix_points, "font_fixed_points=false");
 	GET  (bool, font_var_print_points, "font_variable_print_points=false");
 	GET  (bool, font_fix_print_points, "font_fixed_print_points=false");
+	
+	GETS (link_color, "link_color=#0000ff");
+	GETS (alink_color, "alink_color=#0000ff");
+	GETS (vlink_color, "vlink_color=#0000ff");
 
 	GET  (bool, live_spell_check, "live_spell_check=true");
+
 	GET  (int, spell_error_color.red,   "spell_error_color_red=65535");
 	GET  (int, spell_error_color.green, "spell_error_color_green=0");
 	GET  (int, spell_error_color.blue,  "spell_error_color_blue=0");
+
 	GETS (language, "language=en");
 
 	/* printf ("fonts:\n%s\n%s\n", p->font_var, p->font_fix); */
@@ -241,6 +272,7 @@ gtk_html_class_properties_save (GtkHTMLClassProperties *p)
 {
 	gnome_config_push_prefix (GTK_HTML_GNOME_CONFIG_PREFIX);
 	gnome_config_set_bool ("magic_links", p->magic_links);
+	gnome_config_set_bool ("magic_smileys", p->magic_smileys);
 	gnome_config_set_bool ("animations", p->animations);
 	gnome_config_set_string ("keybindings_theme", p->keybindings_theme);
 	gnome_config_set_string ("font_variable", p->font_var);
@@ -255,11 +287,16 @@ gtk_html_class_properties_save (GtkHTMLClassProperties *p)
 	gnome_config_set_bool ("font_fixed_points", p->font_fix_points);
 	gnome_config_set_bool ("font_variable_print_points", p->font_var_print_points);
 	gnome_config_set_bool ("font_fixed_print_points", p->font_fix_print_points);
+	gnome_config_set_string ("link_color", p->link_color);
+	gnome_config_set_string ("alink_color", p->alink_color);
+	gnome_config_set_string ("vlink_color", p->vlink_color);
 
 	gnome_config_set_bool ("live_spell_check", p->live_spell_check);
-	gnome_config_set_int  ("spell_error_color_red",   p->spell_error_color.red);
-	gnome_config_set_int  ("spell_error_color_green", p->spell_error_color.green);
-	gnome_config_set_int  ("spell_error_color_blue",  p->spell_error_color.blue);
+
+	gnome_config_set_int ("spell_error_color_red",   p->spell_error_color.red);
+	gnome_config_set_int ("spell_error_color_green", p->spell_error_color.green);
+	gnome_config_set_int ("spell_error_color_blue",  p->spell_error_color.blue);
+
 	gnome_config_set_string ("language", p->language);
 
 	gnome_config_pop_prefix ();
@@ -314,6 +351,9 @@ get_default_fonts (gchar **var_name, gchar **fix_name)
 		*fix_name = g_strdup_printf ("-*-courier-*-*-*-*-12-*-*-*-*-*-%s-%s", enc1, enc2);
 
 		/* printf ("default encoding %s-%s\n%s\n%s\n", enc1, enc2, *var_name, *fix_name); */
+		g_free (font_name);
+		g_free (enc1);
+		g_free (enc2);
 	} else {
 		*var_name = g_strdup ("-*-helvetica-*-*-*-*-12-*-*-*-*-*-*-*");
 		*fix_name = g_strdup ("-*-courier-*-*-*-*-12-*-*-*-*-*-*-*");
@@ -330,7 +370,9 @@ void
 gtk_html_class_properties_copy (GtkHTMLClassProperties *p1,
 				GtkHTMLClassProperties *p2)
 {
+	COPY  (animations)
 	COPY  (magic_links);
+	COPY  (magic_smileys);
 	COPYS (keybindings_theme);
 	COPYS (font_var);
 	COPYS (font_fix);
@@ -344,6 +386,9 @@ gtk_html_class_properties_copy (GtkHTMLClassProperties *p1,
 	COPY  (font_fix_points);
 	COPY  (font_var_print_points);
 	COPY  (font_fix_print_points);
+	COPYS  (link_color);
+	COPYS  (alink_color);
+	COPYS  (vlink_color);
 
 	COPY  (live_spell_check);
 	COPY  (spell_error_color);
@@ -507,6 +552,15 @@ static GtkEnumValue _gtk_html_command_values[] = {
   { GTK_HTML_COMMAND_DELETE_TABLE_COLUMN, "GTK_HTML_COMMAND_DELETE_TABLE_COLUMN", "delete-table-column" },
   { GTK_HTML_COMMAND_DELETE_TABLE_CELL_CONTENTS, "GTK_HTML_COMMAND_DELETE_TABLE_CELL_CONTENTS", "delete-cell-contents" },
   { GTK_HTML_COMMAND_GRAB_FOCUS, "GTK_HTML_COMMAND_GRAB_FOCUS", "grab-focus" },
+  { GTK_HTML_COMMAND_KILL_WORD, "GTK_HTML_COMMAND_KILL_WORD", "kill-word" },
+  { GTK_HTML_COMMAND_KILL_WORD_BACKWARD, "GTK_HTML_COMMAND_KILL_WORD_BACKWARD", "backward-kill-word" },
+  { GTK_HTML_COMMAND_TEXT_COLOR_APPLY, "GTK_HTML_COMMAND_TEXT_COLOR_APPLY", "text-color-apply" },
+  { GTK_HTML_COMMAND_SAVE_DATA_ON, "GTK_HTML_COMMAND_SAVE_DATA_ON", "save-data-on" },
+  { GTK_HTML_COMMAND_SAVE_DATA_OFF, "GTK_HTML_COMMAND_SAVE_DATA_OFF", "save-data-off" },
+  { GTK_HTML_COMMAND_SAVED, "GTK_HTML_COMMAND_SAVED", "saved" },
+  { GTK_HTML_COMMAND_IS_SAVED, "GTK_HTML_COMMAND_IS_SAVED", "is-saved" },
+  { GTK_HTML_COMMAND_SCROLL_BOD, "GTK_HTML_COMMAND_SCROLL_BOD", "scroll-bod" },
+  { GTK_HTML_COMMAND_SCROLL_EOD, "GTK_HTML_COMMAND_SCROLL_EOD", "scroll-eod" },
   { 0, NULL, NULL }
 };
 

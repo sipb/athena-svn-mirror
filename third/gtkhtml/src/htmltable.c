@@ -146,20 +146,20 @@ copy (HTMLObject *self, HTMLObject *dest)
 	copy_sized (self, dest, HTML_TABLE (self)->totalRows, HTML_TABLE (self)->totalCols);
 }
 
-static HTMLObject * op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len);
+static HTMLObject * op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len);
 
 static HTMLObject *
-copy_as_leaf (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+copy_as_leaf (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
 	if ((!from || GPOINTER_TO_INT (from->data) == 0)
 	    && (!to || GPOINTER_TO_INT (to->data) == html_object_get_length (self)))
-		return op_copy (self, e, NULL, NULL, len);
+		return op_copy (self, parent, e, NULL, NULL, len);
 	else
 		return html_engine_new_text_empty (e);
 }
 
 static HTMLObject *
-op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
 	HTMLTableCell *start, *end;
 	HTMLTable *nt, *t;
@@ -170,13 +170,13 @@ op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
 	if ((from || to)
 	    && (!from || !from->next)
 	    && (!to || !to->next))
-		return copy_as_leaf (self, e, from, to, len);
+		return copy_as_leaf (self, parent, e, from, to, len);
 
 	t  = HTML_TABLE (self);
 	nt = g_new0 (HTMLTable, 1);
 
-	start = HTML_TABLE_CELL (from ? from->data : html_object_head (self));
-	end   = HTML_TABLE_CELL (to   ? to->data   : html_object_tail (self));
+	start = HTML_TABLE_CELL ((from && from->next) ? from->data : html_object_head (self));
+	end   = HTML_TABLE_CELL ((to && to->next)     ? to->data   : html_object_tail (self));
 	rows  = end->row - start->row + 1;
 	cols  = end->row == start->row ? end->col - start->col + 1 : t->totalCols;
 
@@ -199,7 +199,7 @@ op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
 				if (cell->row == r + start->row && cell->col == c + start_col) {
 					HTMLTableCell *cell_copy;
 					cell_copy = HTML_TABLE_CELL
-						(html_object_op_copy (HTML_OBJECT (cell), e,
+						(html_object_op_copy (HTML_OBJECT (cell), HTML_OBJECT (nt), e,
 								      html_object_get_bound_list (HTML_OBJECT (cell), from),
 								      html_object_get_bound_list (HTML_OBJECT (cell), to),
 								      len));
@@ -389,6 +389,13 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 	dup_cell  = HTML_TABLE_CELL ((*right)->data);
 	cell      = HTML_TABLE_CELL ((*left)->data);
 
+	if (dup_cell->row == t->totalRows - 1 && dup_cell->col == t->totalCols - 1 && cell_is_empty (dup_cell)) {
+		dup = html_engine_new_text_empty (e);
+		html_object_destroy ((*right)->data);
+		g_list_free (*right);
+		*right = NULL;
+	} else {
+
 #ifdef GTKHTML_DEBUG_TABLE
 	printf ("before split\n");
 	printf ("-- self --\n");
@@ -449,7 +456,7 @@ split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, gint lev
 			}
 		}
 	}
-
+	}
 	html_clue_append_after (HTML_CLUE (self->parent), dup, self);
 
 	*left  = g_list_prepend (*left, self);
@@ -978,7 +985,7 @@ html_table_set_cells_position (HTMLTable *table, HTMLPainter *painter)
 				HTML_OBJECT (cell)->x = COLUMN_OPT (table, c) + pixel_size * border_extra;
 				HTML_OBJECT (cell)->y = ROW_HEIGHT (table, rl) + pixel_size * (- table->spacing)
 					- HTML_OBJECT (cell)->descent;
-				html_object_set_max_ascent (HTML_OBJECT (cell), painter,
+				html_object_set_max_height (HTML_OBJECT (cell), painter,
 							    ROW_HEIGHT (table, rl) - ROW_HEIGHT (table, cell->row)
 							    - pixel_size * (table->spacing + border_extra));
 			}
@@ -1004,6 +1011,13 @@ add_clear_area (GList **changed_objs, HTMLObject *o, gint x, gint w)
 	*changed_objs = g_list_prepend (*changed_objs, cr);
 	/* NULL meens: clear rectangle follows */
 	*changed_objs = g_list_prepend (*changed_objs, NULL);
+}
+
+static void
+html_table_set_max_height (HTMLObject *o, HTMLPainter *painter, gint height)
+{
+	/* for now just remember it, it will be passed down once size is calculated */
+	HTML_TABLE (o)->max_height = height;
 }
 
 static gboolean
@@ -1087,6 +1101,9 @@ get_bounds (HTMLTable *table, gint x, gint y, gint width, gint height, gint *sc,
 {
 	g_return_if_fail (table->rowHeights);
 	g_return_if_fail (table->columnOpt);
+	g_return_if_fail (table->rowHeights->data);
+	g_return_if_fail (table->columnOpt->data);
+
 
 	*sr = to_index (bin_search_index (table->rowHeights, 0, table->totalRows, y), 0, table->totalRows - 1);
 	if (y < ROW_HEIGHT (table, *sr) && (*sr) > 0)
@@ -1126,7 +1143,7 @@ draw (HTMLObject *o,
 	ty += o->y - o->ascent;
 
 	/* Draw the cells */
-	get_bounds (table, x, y, width, height, &start_col, &end_col, &start_row, &end_row);
+	get_bounds (table, x - o->x, y - o->y + o->ascent, width, height, &start_col, &end_col, &start_row, &end_row);
 	for (r = start_row; r <= end_row; r++) {
 		for (c = start_col; c <= end_col; c++) {
 			cell = table->cells[r][c];
@@ -1422,9 +1439,9 @@ divide_upto_preferred_width (HTMLTable *table, HTMLPainter *painter, GArray *pre
 					- pixel_size * (table->spacing + border_extra);
 				if (max_size [c] < pw) {
 					processed_pw += pw;
-					part = (LL min_fill * processed_pw) / min_pw;
-					if (LL min_fill * processed_pw - LL part * min_pw
-					    > LL (part + 1) * min_pw - LL min_fill * processed_pw)
+					part = (LL min_fill * processed_pw) / total_fill;
+					if (LL min_fill * processed_pw - LL part * total_fill
+					    > LL (part + 1) * total_fill - LL min_fill * processed_pw)
 						part ++;
 					part         -= added;
 					added        += part;
@@ -1627,7 +1644,7 @@ html_table_set_max_width (HTMLObject *o,
 	pixel_size   = html_painter_get_pixel_size (painter);
 	o->max_width = MAX (html_object_calc_min_width (o, painter), max_width);
 	max_width    = o->flags & HTML_OBJECT_FLAG_FIXEDWIDTH
-		? max_width = pixel_size * table->specified_width
+		? pixel_size * table->specified_width
 		: (o->percent
 		   ? ((gdouble) MIN (100, o->percent) / 100 * max_width)
 		   : MIN (html_object_calc_preferred_width (HTML_OBJECT (table), painter), max_width));
@@ -1716,13 +1733,37 @@ check_point (HTMLObject *self,
 	HTMLTableCell *cell;
 	HTMLObject *obj;
 	HTMLTable *table;
-	gint r, c, start_row, end_row, start_col, end_col;
+	gint r, c, start_row, end_row, start_col, end_col, hsb, hsa, tbc;
 
 	if (x < self->x || x >= self->x + self->width
 	    || y >= self->y + self->descent || y < self->y - self->ascent)
 		return NULL;
 
 	table = HTML_TABLE (self);
+	hsb = table->spacing >> 1;
+	hsa = hsb + (table->spacing & 1);
+	tbc = table->border ? 1 : 0;
+
+	if (for_cursor) {
+		/* table boundaries */
+		if (x == self->x || x == self->x + self->width - 1) {
+			if (offset_return)
+				*offset_return = x == self->x ? 0 : 1;
+			return self;
+		}
+
+		/* border */
+		if (x < self->x + table->border + hsb || y < self->y - self->ascent + table->border + hsb) {
+			if (offset_return)
+				*offset_return = 0;
+			return self;
+		}
+		if (x > self->x + self->width - table->border - hsa || y > self->y + self->descent - table->border - hsa) {
+			if (offset_return)
+				*offset_return = 1;
+			return self;
+		}
+	}
 
 	x -= self->x;
 	y -= self->y - self->ascent;
@@ -1730,6 +1771,9 @@ check_point (HTMLObject *self,
 	get_bounds (table, x, y, 0, 0, &start_col, &end_col, &start_row, &end_row);
 	for (r = start_row; r <= end_row; r++) {
 		for (c = 0; c < table->totalCols; c++) {
+			HTMLObject *co;
+			gint cx, cy;
+
 			cell = table->cells[r][c];
 			if (cell == NULL)
 				continue;
@@ -1739,45 +1783,22 @@ check_point (HTMLObject *self,
 			if (r < end_row - 1 && table->cells[r+1][c] == cell)
 				continue;
 
-			obj = html_object_check_point (HTML_OBJECT (cell), painter, x, y, offset_return, for_cursor);
+			/* correct to include cell spacing */
+			co = HTML_OBJECT (cell);
+			cx = x;
+			cy = y;
+			if (x < co->x && x >= co->x - hsa - tbc)
+				cx = co->x;
+			if (x >= co->x + co->width && x < co->x + co->width + hsb + tbc)
+				cx = co->x + co->width - 1;
+			if (y < co->y - co->ascent && y >= co->y - co->ascent - hsa - tbc)
+				cy = co->y - co->ascent;
+			if (y >= co->y + co->descent && y < co->y + co->descent + hsb + tbc)
+				cy = co->y + co->descent - 1;
+
+			obj = html_object_check_point (HTML_OBJECT (cell), painter, cx, cy, offset_return, for_cursor);
 			if (obj != NULL)
 				return obj;
-		}
-	}
-
-	if (for_cursor) {
-
-		/* check before */
-		for (c=0; c<table->totalCols; c++)
-			if (table->cells [start_row][c])
-				break;
-		if (c < table->totalCols && table->cells [start_row][c]) {
-			cell = table->cells [start_row][c];
-			if (x < HTML_OBJECT (cell)->x || y < HTML_OBJECT (cell)->y - HTML_OBJECT (cell)->ascent) {
-				obj = html_object_check_point (HTML_OBJECT (cell), painter,
-							       HTML_OBJECT (cell)->x,
-							       HTML_OBJECT (cell)->y - HTML_OBJECT (cell)->ascent,
-							       offset_return, for_cursor);
-				if (obj)
-					return obj;
-			}
-		}
-
-		/* check after */
-		for (c=table->totalCols - 1; c >= 0; c--)
-			if (table->cells [start_row][c])
-				break;
-		if (c >=0 && table->cells [start_row][c]) {
-			cell = table->cells [start_row][c];
-			if (x > HTML_OBJECT (cell)->x + HTML_OBJECT (cell)->width - 1
-			    || y > HTML_OBJECT (cell)->y + HTML_OBJECT (cell)->descent - 1) {
-				obj = html_object_check_point (HTML_OBJECT (cell), painter,
-							       HTML_OBJECT (cell)->x + HTML_OBJECT (cell)->width - 1,
-							       HTML_OBJECT (cell)->y + HTML_OBJECT (cell)->descent - 1,
-							       offset_return, for_cursor);
-				if (obj)
-					return obj;
-			}
 		}
 	}
 
@@ -1867,6 +1888,7 @@ fit_line (HTMLObject *o,
 	  HTMLPainter *painter,
 	  gboolean start_of_line,
 	  gboolean first_run,
+	  gboolean next_to_floating,
 	  gint width_left)
 {
 	return HTML_FIT_COMPLETE;
@@ -2159,6 +2181,7 @@ html_table_class_init (HTMLTableClass *klass,
 	object_class->calc_min_width = calc_min_width;
 	object_class->calc_preferred_width = calc_preferred_width;
 	object_class->set_max_width = html_table_set_max_width;
+	object_class->set_max_height = html_table_set_max_height;
 	object_class->reset = reset;
 	object_class->check_point = check_point;
 	object_class->find_anchor = find_anchor;
@@ -2274,17 +2297,21 @@ html_table_end_row (HTMLTable *table)
 	table->row++;
 }
 
-void
+gint
 html_table_end_table (HTMLTable *table)
 {
-	gint r, c;
+	gint r, c, cells = 0;
 
 	for (r = 0; r < table->totalRows; r ++)
 		for (c = 0; c < table->totalCols; c ++)
-			if (table->cells [r][c] && HTML_CLUE (table->cells [r][c])->head == NULL) {
-				HTMLTableCell *cell = table->cells [r][c];
+			if (table->cells [r][c]) {
+				if (HTML_CLUE (table->cells [r][c])->head == NULL) {
+					HTMLTableCell *cell = table->cells [r][c];
 
-				remove_cell (table, cell);
-				html_object_destroy (HTML_OBJECT (cell));
+					remove_cell (table, cell);
+					html_object_destroy (HTML_OBJECT (cell));
+				} else
+					cells ++;
 			}
+	return cells;
 }

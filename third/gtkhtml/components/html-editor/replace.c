@@ -21,6 +21,8 @@
 */
 
 #include <config.h>
+#include <gnome.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include "replace.h"
 #include "dialog.h"
 #include "htmlengine.h"
@@ -85,6 +87,7 @@ ask_dialog_new (HTMLEngine *e)
 						    GNOME_STOCK_BUTTON_CANCEL, NULL));
 	d->engine = e;
 
+	gnome_window_icon_set_from_file (GTK_WINDOW (d->dialog), ICONDIR "/search-and-replace-24.png");
 	gnome_dialog_button_connect (d->dialog, 0, replace_cb, d);
 	gnome_dialog_button_connect (d->dialog, 1, replace_all_cb, d);
 	gnome_dialog_button_connect (d->dialog, 2, next_cb, d);
@@ -174,6 +177,8 @@ gtk_html_replace_dialog_new (GtkHTML *html)
 	gtk_box_pack_start_defaults (GTK_BOX (dialog->dialog->vbox), hbox);
 	gtk_widget_show_all (table);
 	gtk_widget_show_all (hbox);
+
+	gnome_window_icon_set_from_file (GTK_WINDOW (dialog->dialog), ICONDIR "/search-and-replace-24.png");
 
 	gnome_dialog_button_connect (dialog->dialog, 0, button_replace_cb, dialog);
 	gnome_dialog_close_hides (dialog->dialog, TRUE);

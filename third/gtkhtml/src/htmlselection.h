@@ -24,31 +24,34 @@
 
 #include "htmltypes.h"
 
-void      html_engine_select_interval       (HTMLEngine *e,
-					     HTMLInterval *i);
-void      html_engine_select_region         (HTMLEngine *e,
-					     gint        x1,
-					     gint        y1,
-					     gint        x2,
-					     gint        y2);
-void      html_engine_select_word           (HTMLEngine *e);
-void      html_engine_select_line           (HTMLEngine *e);
-void      html_engine_unselect_all          (HTMLEngine *e);
-void      html_engine_clear_selection       (HTMLEngine *e);
-void      html_engine_deactivate_selection  (HTMLEngine *e);
-void      html_engine_disable_selection     (HTMLEngine *e);
-gchar    *html_engine_get_selection_string  (HTMLEngine *e);
-gboolean  html_engine_is_selection_active   (HTMLEngine *e);
-gboolean  html_engine_point_in_selection    (HTMLEngine *e,
-					     HTMLObject *obj,
-					     guint       offset);
-void      html_engine_activate_selection    (HTMLEngine *e,
-					     guint32     time);
-void      html_engine_block_selection       (HTMLEngine *e);
-void      html_engine_unblock_selection     (HTMLEngine *e);
-gboolean  html_selection_word               (gunichar    uc);
-gboolean  html_selection_spell_word         (gunichar    uc,
-					     gboolean   *cited);
-guint32   html_selection_current_time       (void);
+void      html_engine_select_interval                (HTMLEngine   *e,
+						      HTMLInterval *i);
+void      html_engine_select_region                  (HTMLEngine   *e,
+						      gint          x1,
+						      gint          y1,
+						      gint          x2,
+						      gint          y2);
+void      html_engine_select_word                    (HTMLEngine   *e);
+void      html_engine_select_line                    (HTMLEngine   *e);
+void      html_engine_select_all                     (HTMLEngine   *e);
+void      html_engine_unselect_all                   (HTMLEngine   *e);
+void      html_engine_clear_selection                (HTMLEngine   *e);
+void      html_engine_disable_selection              (HTMLEngine   *e);
+gchar    *html_engine_get_selection_string           (HTMLEngine   *e);
+gboolean  html_engine_is_selection_active            (HTMLEngine   *e);
+gboolean  html_engine_point_in_selection             (HTMLEngine   *e,
+						      HTMLObject   *obj,
+						      guint         offset);
+void      html_engine_activate_selection             (HTMLEngine   *e,
+						      guint32       time);
+void      html_engine_deactivate_selection           (HTMLEngine   *e);
+void      html_engine_update_selection_active_state  (HTMLEngine   *e,
+						      guint32       time);
+void      html_engine_block_selection                (HTMLEngine   *e);
+void      html_engine_unblock_selection              (HTMLEngine   *e);
+gboolean  html_selection_word                        (gunichar      uc);
+gboolean  html_selection_spell_word                  (gunichar      uc,
+						      gboolean     *cited);
+guint32   html_selection_current_time                (void);
 
 #endif

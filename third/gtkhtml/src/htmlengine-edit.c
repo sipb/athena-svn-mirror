@@ -26,21 +26,24 @@
 
 #include <config.h>
 #include <ctype.h>
+#include <string.h>
 #include <glib.h>
 
 #include "gtkhtml.h"
 #include "gtkhtml-properties.h"
 
-#include "htmlobject.h"
 #include "htmlclueflow.h"
+#include "htmlcolorset.h"
 #include "htmlcursor.h"
 #include "htmllinktext.h"
+#include "htmlobject.h"
 #include "htmltable.h"
 #include "htmltext.h"
 #include "htmltextslave.h"
 #include "htmlimage.h"
 #include "htmlinterval.h"
 #include "htmlselection.h"
+#include "htmlsettings.h"
 #include "htmlundo.h"
 
 #include "htmlengine-edit.h"
@@ -325,7 +328,34 @@ html_engine_clipboard_clear (HTMLEngine *e)
 HTMLObject *
 html_engine_new_text (HTMLEngine *e, const gchar *text, gint len)
 {
-	return html_text_new_with_len (text, len, e->insertion_font_style, e->insertion_color);
+	if (e->insertion_url && *e->insertion_url) {
+		return html_link_text_new_with_len (text, len, e->insertion_font_style, e->insertion_color,
+						    e->insertion_url, e->insertion_target);
+	} else
+		return html_text_new_with_len (text, len, e->insertion_font_style, e->insertion_color);
+}
+
+HTMLObject *
+html_engine_new_link (HTMLEngine *e, const gchar *text, gint len, gchar *url)
+{
+	HTMLObject *link;
+	gchar *real_url, *real_target;
+
+	real_target = strchr (text, '#');
+	if (real_target) {
+		real_url = g_strndup (url, real_target - url);
+		real_target ++;
+	} else
+		real_url = url;
+		
+	link = html_link_text_new_with_len (text, len, e->insertion_font_style,
+					    html_colorset_get_color (e->settings->color_set, HTMLLinkColor),
+					    real_url, real_target);
+
+	if (real_target)
+		g_free (real_url);
+
+	return link;
 }
 
 HTMLObject *
@@ -353,7 +383,7 @@ html_engine_get_indent (HTMLEngine *e)
 
 	return e->cursor->object && e->cursor->object->parent
 		&& HTML_OBJECT_TYPE (e->cursor->object->parent) == HTML_TYPE_CLUEFLOW
-		? HTML_CLUEFLOW (e->cursor->object->parent)->level : 0;
+		? html_clueflow_get_indentation (HTML_CLUEFLOW (e->cursor->object->parent)) : 0;
 }
 
 #define LINE_LEN 71
@@ -409,14 +439,17 @@ try_break_this_line (HTMLEngine *e, guint line_offset, guint last_space)
 }
 
 static void
-go_to_begin_of_pre_para (HTMLEngine *e)
+go_to_begin_of_para (HTMLEngine *e)
 {
 	HTMLObject *prev;
 
 	do {
+		gint offset;
 		html_cursor_beginning_of_paragraph (e->cursor, e);
-		prev = html_object_prev_leaf (e->cursor->object);
-		if (prev && html_object_get_length (prev))
+		offset = 0;
+		prev = html_object_prev_cursor (e->cursor->object, &offset);
+		if (prev && !html_object_is_container (prev) && html_object_get_length (prev)
+		    && html_clueflow_style_equals (HTML_CLUEFLOW (e->cursor->object->parent), HTML_CLUEFLOW (prev->parent)))
 			html_cursor_backward (e->cursor, e);
 		else
 			break;
@@ -424,31 +457,35 @@ go_to_begin_of_pre_para (HTMLEngine *e)
 }
 
 void
-html_engine_indent_pre_paragraph (HTMLEngine *e)
+html_engine_indent_paragraph (HTMLEngine *e)
 {
 	guint position;
 	guint line_offset;
 	guint last_space;
 
 	g_assert (e->cursor->object);
-	if (HTML_OBJECT_TYPE (e->cursor->object->parent) != HTML_TYPE_CLUEFLOW
-	    || html_clueflow_get_style (HTML_CLUEFLOW (e->cursor->object->parent)) != HTML_CLUEFLOW_STYLE_PRE)
+	if (!HTML_IS_CLUEFLOW (e->cursor->object->parent))
 		return;
 
 	html_engine_disable_selection (e);
 	position = e->cursor->position;
 
-	html_undo_level_begin (e->undo, "Indent PRE paragraph", "Reverse paragraph indentation");
+	html_undo_level_begin (e->undo, "Indent paragraph", "Reverse paragraph indentation");
 	html_engine_freeze (e);
 
-	go_to_begin_of_pre_para (e);
+	go_to_begin_of_para (e);
 
 	line_offset = 0;
 	last_space  = 0;
 	do {
+		HTMLObject *flow;
+
 		line_offset = try_break_this_line (e, line_offset, last_space);
+		flow = e->cursor->object->parent;
 		if (html_cursor_forward (e->cursor, e)
 		    && e->cursor->offset == 0 && html_object_get_length (e->cursor->object)
+		    && !html_object_is_container (e->cursor->object)
+		    && html_clueflow_style_equals (HTML_CLUEFLOW (e->cursor->object->parent), HTML_CLUEFLOW (flow))
 		    && html_object_prev_not_slave (e->cursor->object) == NULL) {
 			if (line_offset < LINE_LEN - 1) {
 				gunichar prev;
@@ -659,4 +696,13 @@ html_engine_prev_cell (HTMLEngine *e)
 	}
 
 	return FALSE;
+}
+
+void
+html_engine_set_title (HTMLEngine *e, const gchar *title)
+{
+	if (e->title)
+		g_string_free (e->title, TRUE);
+	e->title = g_string_new (title);
+	gtk_signal_emit_by_name (GTK_OBJECT (e), "title_changed");
 }

@@ -1,7 +1,7 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:GNOME_GtkHTML_Editor_Factory" type="exe"
-            location="gnome-gtkhtml-editor">
+<oaf_server iid="OAFIID:GNOME_GtkHTML_Editor_Factory:1.1" type="exe"
+            location="gnome-gtkhtml-editor-1.1">
 
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/GenericFactory:1.0"/>
@@ -10,9 +10,10 @@
 	<oaf_attribute name="name" type="string" _value="GNOME HTML Editor Factory"/>
 </oaf_server>
 
-<oaf_server iid="OAFIID:GNOME_GtkHTML_Editor" type="factory" location="OAFIID:GNOME_GtkHTML_Editor_Factory">
+<oaf_server iid="OAFIID:GNOME_GtkHTML_Editor:1.1" type="factory" location="OAFIID:GNOME_GtkHTML_Editor_Factory:1.1">
 
 	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/GtkHTML/Editor:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/PersistStream:1.0"/>

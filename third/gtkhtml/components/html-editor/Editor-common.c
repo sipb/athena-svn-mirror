@@ -5,46 +5,6 @@
 #include <string.h>
 #include "Editor.h"
 
-#if ( (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_0 == 'E') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_1 == 'd') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_2 == 'i') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_3 == 't') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_4 == 'o') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_5 == 'r') \
-) && !defined(TC_DEF_TC_GNOME_GtkHTML_Editor_Resolver)
-#define TC_DEF_TC_GNOME_GtkHTML_Editor_Resolver 1
-const struct CORBA_TypeCode_struct TC_GNOME_GtkHTML_Editor_Resolver_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_objref, "Resolver", "IDL:GNOME/GtkHTML/Editor/Resolver:1.0",
-   0, 0,
-   NULL,
-   NULL,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_0 == 'E') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_1 == 'd') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_2 == 'i') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_3 == 't') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_4 == 'o') \
-&& (TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_5 == 'r') \
-) && !defined(TC_DEF_TC_GNOME_GtkHTML_Editor_Resolver_NotFound)
-#define TC_DEF_TC_GNOME_GtkHTML_Editor_Resolver_NotFound 1
-const struct CORBA_TypeCode_struct
-   TC_GNOME_GtkHTML_Editor_Resolver_NotFound_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_except, "NotFound",
-      "IDL:GNOME/GtkHTML/Editor/Resolver/NotFound:1.0",
-   0, 0,
-   NULL,
-   NULL,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
 #if ( (TC_IMPL_TC_GNOME_GtkHTML_Editor_Listener_0 == 'E') \
 && (TC_IMPL_TC_GNOME_GtkHTML_Editor_Listener_1 == 'd') \
 && (TC_IMPL_TC_GNOME_GtkHTML_Editor_Listener_2 == 'i') \
@@ -91,8 +51,8 @@ const struct CORBA_TypeCode_struct TC_GNOME_GtkHTML_Editor_Engine_struct = {
 && (TC_IMPL_TC_GNOME_GtkHTML_Editor_URLRequestEvent_5 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_GtkHTML_Editor_URLRequestEvent)
 #define TC_DEF_TC_GNOME_GtkHTML_Editor_URLRequestEvent 1
-static const char *anon_subnames_array17[] = { "url", "stream" };
-static const CORBA_TypeCode anon_subtypes_array18[] =
+static const char *anon_subnames_array9[] = { "url", "stream" };
+static const CORBA_TypeCode anon_subtypes_array10[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct,
 (CORBA_TypeCode) & TC_Object_struct };
 const struct CORBA_TypeCode_struct
@@ -102,22 +62,12 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_struct, "URLRequestEvent",
       "IDL:GNOME/GtkHTML/Editor/URLRequestEvent:1.0",
    0, 2,
-   (const char **) anon_subnames_array17,
-   (CORBA_TypeCode *) anon_subtypes_array18,
+   (const char **) anon_subnames_array9,
+   (CORBA_TypeCode *) anon_subtypes_array10,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
-gpointer
-GNOME_GtkHTML_Editor_Resolver_NotFound__free(gpointer mem, gpointer dat,
-					     CORBA_boolean free_strings)
-{
-   GNOME_GtkHTML_Editor_Resolver_NotFound *var = mem;
-
-   return (gpointer) (var + 1);
-}
-
-CORBA_unsigned_long GNOME_GtkHTML_Editor_Resolver__classid = 0;
 CORBA_unsigned_long GNOME_GtkHTML_Editor_Listener__classid = 0;
 CORBA_unsigned_long GNOME_GtkHTML_Editor_Engine__classid = 0;
 gpointer

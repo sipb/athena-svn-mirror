@@ -28,6 +28,8 @@
 #include "gtkhtml.h"
 #include "gtkhtml-embedded.h"
 #include "htmlembedded.h"
+#include "htmlframe.h"
+#include "htmliframe.h"
 #include "htmlpainter.h"
 #include "htmlengine.h"
 
@@ -68,7 +70,7 @@ draw (HTMLObject *o,
 	if (!element->widget)
 		return;
 
-	if (element->widget) {
+	if (element->parent) {
 		new_x = GTK_LAYOUT (element->parent)->hadjustment->value + o->x + tx;
 		new_y = GTK_LAYOUT (element->parent)->vadjustment->value + o->y + ty - o->ascent;
 		
@@ -78,8 +80,10 @@ draw (HTMLObject *o,
 			else
 				gtk_widget_queue_draw (element->widget);
 		}
+	
 		element->abs_x = new_x;
 		element->abs_y = new_y;
+		
 		if (!element->widget->parent)
 			gtk_layout_put (GTK_LAYOUT(element->parent), element->widget, new_x, new_y);
 	}
@@ -178,11 +182,20 @@ calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 	return FALSE;
 }
 
-
-void
-html_embedded_reset (HTMLEmbedded *e)
+static gboolean
+accepts_cursor (HTMLObject *o)
 {
-	HTML_EMBEDDED_CLASS (HTML_OBJECT (e)->klass)->reset (e);
+	return TRUE;
+}
+
+static void
+reparent (HTMLEmbedded *e, GtkWidget *new_parent)
+{
+	e->parent = new_parent;
+	gtk_widget_ref (e->widget);
+	gtk_widget_unparent (e->widget);
+	gtk_layout_put (GTK_LAYOUT(e->parent), e->widget, 0, 0);
+	gtk_widget_unref (e->widget);
 }
 
 static gchar *
@@ -190,11 +203,23 @@ encode (HTMLEmbedded *e)
 {
 	return g_strdup ("");
 }
+
+void
+html_embedded_reset (HTMLEmbedded *e)
+{
+	HTML_EMBEDDED_CLASS (HTML_OBJECT (e)->klass)->reset (e);
+}
 
 gchar *
 html_embedded_encode (HTMLEmbedded *e)
 {
 	return HTML_EMBEDDED_CLASS (HTML_OBJECT (e)->klass)->encode (e);
+}
+
+void
+html_embedded_reparent (HTMLEmbedded *e, GtkWidget *new_parent)
+{
+	HTML_EMBEDDED_CLASS (HTML_OBJECT (e)->klass)->reparent (e, new_parent);
 }
 
 void
@@ -268,11 +293,13 @@ html_embedded_class_init (HTMLEmbeddedClass *klass,
 	/* HTMLEmbedded methods.   */
 	klass->reset = reset;
 	klass->encode = encode;
+	klass->reparent = reparent;
 
 	/* HTMLObject methods.   */
 	object_class->destroy = destroy;
 	object_class->copy = copy;
 	object_class->draw = draw;
+	object_class->accepts_cursor = accepts_cursor;
 	object_class->calc_size = calc_size;
 	object_class->calc_min_width = calc_min_width;
 
@@ -382,4 +409,33 @@ html_embedded_get_widget (HTMLEmbedded *e)
 	return e->widget;
 }
 
+gboolean
+html_object_is_embedded (HTMLObject *o)
+{
+	gboolean rv = FALSE;
 
+	switch (o->klass->type) {
+	case HTML_TYPE_EMBEDDED:
+	case HTML_TYPE_TEXTINPUT:
+	case HTML_TYPE_BUTTON:
+	case HTML_TYPE_IMAGEINPUT:
+	case HTML_TYPE_TEXTAREA:
+	case HTML_TYPE_HIDDEN:
+	case HTML_TYPE_RADIO:
+	case HTML_TYPE_CHECKBOX:
+	case HTML_TYPE_SELECT:
+	case HTML_TYPE_IFRAME:
+	case HTML_TYPE_FRAME:
+		rv = TRUE;
+	default:
+		;
+	}
+
+	return rv;
+}
+
+gboolean
+html_object_is_frame (HTMLObject *o)
+{
+	return HTML_IS_FRAME (o) || HTML_IS_IFRAME (o);
+}

@@ -28,20 +28,20 @@ _ORBIT_GNOME_Spell_Dictionary_Error_marshal(GIOPSendBuffer *
 }
 
 void
-_ORBIT_skel_GNOME_Spell_Dictionary__get_active(POA_GNOME_Spell_Dictionary *
-					       _ORBIT_servant,
-					       GIOPRecvBuffer *
-					       _ORBIT_recv_buffer,
-					       CORBA_Environment * ev,
-					       CORBA_boolean
-					       (*_impl__get_active)
-					       (PortableServer_Servant
-						_servant,
-						CORBA_Environment * ev))
+_ORBIT_skel_GNOME_Spell_Dictionary_getLanguages(POA_GNOME_Spell_Dictionary *
+						_ORBIT_servant,
+						GIOPRecvBuffer *
+						_ORBIT_recv_buffer,
+						CORBA_Environment * ev,
+						GNOME_Spell_LanguageSeq *
+						(*_impl_getLanguages)
+						(PortableServer_Servant
+						 _servant,
+						 CORBA_Environment * ev))
 {
-   CORBA_boolean _ORBIT_retval;
+   GNOME_Spell_LanguageSeq *_ORBIT_retval;
 
-   _ORBIT_retval = _impl__get_active(_ORBIT_servant, ev);
+   _ORBIT_retval = _impl_getLanguages(_ORBIT_servant, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -52,114 +52,147 @@ _ORBIT_skel_GNOME_Spell_Dictionary__get_active(POA_GNOME_Spell_Dictionary *
 				    request_id, ev->_major);
       if (_ORBIT_send_buffer) {
 	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    register CORBA_unsigned_long _ORBIT_tmpvar_0;
+	    register CORBA_unsigned_long _ORBIT_tmpvar_1;
+	    CORBA_unsigned_long _ORBIT_tmpvar_2;
+	    register CORBA_unsigned_long _ORBIT_tmpvar_3;
+	    CORBA_unsigned_long _ORBIT_tmpvar_4;
+
+	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+					     (_ORBIT_send_buffer), 4);
 	    {
 	       guchar *_ORBIT_t;
 
-	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
-	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       _ORBIT_t = alloca(sizeof((*_ORBIT_retval)._length));
+	       memcpy(_ORBIT_t, &((*_ORBIT_retval)._length),
+		      sizeof((*_ORBIT_retval)._length));
 	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
 					      (_ORBIT_send_buffer),
 					      (_ORBIT_t),
-					      sizeof(_ORBIT_retval));
+					      sizeof((*_ORBIT_retval).
+						     _length));
 	    }
+	    for (_ORBIT_tmpvar_0 = 0;
+		 _ORBIT_tmpvar_0 < (*_ORBIT_retval)._length;
+		 _ORBIT_tmpvar_0++) {
+	       _ORBIT_tmpvar_2 =
+		  strlen((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].name) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_2));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_2),
+			 sizeof(_ORBIT_tmpvar_2));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_2));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].
+			     name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+		  memcpy(_ORBIT_t,
+			 ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].name),
+			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].
+				name[_ORBIT_tmpvar_1]) * _ORBIT_tmpvar_2);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*_ORBIT_retval).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							name[_ORBIT_tmpvar_1])
+						 * _ORBIT_tmpvar_2);
+	       }
+	       _ORBIT_tmpvar_4 =
+		  strlen((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].abrev) + 1;
+	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
+						(_ORBIT_send_buffer), 4);
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_4));
+		  memcpy(_ORBIT_t, &(_ORBIT_tmpvar_4),
+			 sizeof(_ORBIT_tmpvar_4));
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof(_ORBIT_tmpvar_4));
+	       }
+	       {
+		  guchar *_ORBIT_t;
+
+		  _ORBIT_t =
+		     alloca(sizeof
+			    ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].
+			     abrev[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+		  memcpy(_ORBIT_t,
+			 ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].abrev),
+			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_0].
+				abrev[_ORBIT_tmpvar_3]) * _ORBIT_tmpvar_4);
+		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+						 (_ORBIT_send_buffer),
+						 (_ORBIT_t),
+						 sizeof((*_ORBIT_retval).
+							_buffer
+							[_ORBIT_tmpvar_0].
+							abrev
+							[_ORBIT_tmpvar_3]) *
+						 _ORBIT_tmpvar_4);
+	       }
+	    }
+
 	 } else
 	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
 	 giop_send_buffer_write(_ORBIT_send_buffer);
 	 giop_send_buffer_unuse(_ORBIT_send_buffer);
       }
+      if (ev->_major == CORBA_NO_EXCEPTION)
+	 CORBA_free(_ORBIT_retval);
    }
 }
 void
-_ORBIT_skel_GNOME_Spell_Dictionary__set_active(POA_GNOME_Spell_Dictionary *
+_ORBIT_skel_GNOME_Spell_Dictionary_setLanguage(POA_GNOME_Spell_Dictionary *
 					       _ORBIT_servant,
 					       GIOPRecvBuffer *
 					       _ORBIT_recv_buffer,
 					       CORBA_Environment * ev,
-					       void (*_impl__set_active)
+					       void (*_impl_setLanguage)
 					       (PortableServer_Servant
 						_servant,
-						const CORBA_boolean value,
+						const CORBA_char * language,
 						CORBA_Environment * ev))
 {
-   CORBA_boolean value;
+   CORBA_char *language;
 
    {				/* demarshalling */
       guchar *_ORBIT_curptr;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 value = *((CORBA_boolean *) _ORBIT_curptr);
-      } else {
-	 value = *((CORBA_boolean *) _ORBIT_curptr);
-      }
-   }
-   _impl__set_active(_ORBIT_servant, value, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-   }
-}
-void
-_ORBIT_skel_GNOME_Spell_Dictionary_setTag(POA_GNOME_Spell_Dictionary *
-					  _ORBIT_servant,
-					  GIOPRecvBuffer * _ORBIT_recv_buffer,
-					  CORBA_Environment * ev,
-					  void (*_impl_setTag)
-					  (PortableServer_Servant _servant,
-					   const CORBA_char * key,
-					   const CORBA_char * value,
-					   CORBA_Environment * ev))
-{
-   CORBA_char *key;
-   CORBA_char *value;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_4;
-      CORBA_unsigned_long _ORBIT_tmpvar_5;
-      register CORBA_unsigned_long _ORBIT_tmpvar_6;
-      CORBA_unsigned_long _ORBIT_tmpvar_7;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
 
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_5))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
-	 key = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_7))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 value = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(value[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
+	 language = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(language[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
       } else {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_5 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
-	 key = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(key[_ORBIT_tmpvar_4]) * _ORBIT_tmpvar_5;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_7 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 value = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(value[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
+	 language = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(language[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
       }
    }
-   _impl_setTag(_ORBIT_servant, key, value, ev);
+   _impl_setLanguage(_ORBIT_servant, language, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -567,367 +600,6 @@ _ORBIT_skel_GNOME_Spell_Dictionary_setCorrection(POA_GNOME_Spell_Dictionary *
       }
    }
 }
-void
-_ORBIT_GNOME_Spell_Checker_SpellError_marshal(GIOPSendBuffer *
-					      _ORBIT_send_buffer,
-					      CORBA_Environment * ev)
-{
-}
-void
-_ORBIT_skel_GNOME_Spell_Checker_addDictionary(POA_GNOME_Spell_Checker *
-					      _ORBIT_servant,
-					      GIOPRecvBuffer *
-					      _ORBIT_recv_buffer,
-					      CORBA_Environment * ev,
-					      void (*_impl_addDictionary)
-					      (PortableServer_Servant
-					       _servant,
-					       const GNOME_Spell_Dictionary
-					       dictionary,
-					       CORBA_Environment * ev))
-{
-   GNOME_Spell_Dictionary dictionary;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 dictionary =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 dictionary =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-   }
-   _impl_addDictionary(_ORBIT_servant, dictionary, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       =
-	       { {(const CORBA_TypeCode)
-		  &TC_GNOME_Spell_Checker_SpellError_struct,
-		  (gpointer) _ORBIT_GNOME_Spell_Checker_SpellError_marshal},
-	       {CORBA_OBJECT_NIL, NULL} };
-	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				      _ORBIT_user_exceptions);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      CORBA_Object_release((CORBA_Object) dictionary, ev);
-   }
-}
-void
-_ORBIT_skel_GNOME_Spell_Checker_removeDictionary(POA_GNOME_Spell_Checker *
-						 _ORBIT_servant,
-						 GIOPRecvBuffer *
-						 _ORBIT_recv_buffer,
-						 CORBA_Environment * ev,
-						 void
-						 (*_impl_removeDictionary)
-						 (PortableServer_Servant
-						  _servant,
-						  const GNOME_Spell_Dictionary
-						  dictionary,
-						  CORBA_Environment * ev))
-{
-   GNOME_Spell_Dictionary dictionary;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 dictionary =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 dictionary =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      }
-   }
-   _impl_removeDictionary(_ORBIT_servant, dictionary, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      CORBA_Object_release((CORBA_Object) dictionary, ev);
-   }
-}
-void
-_ORBIT_skel_GNOME_Spell_Checker_checkWord(POA_GNOME_Spell_Checker *
-					  _ORBIT_servant,
-					  GIOPRecvBuffer * _ORBIT_recv_buffer,
-					  CORBA_Environment * ev,
-					  CORBA_boolean(*_impl_checkWord)
-					  (PortableServer_Servant _servant,
-					   const CORBA_char * word,
-					   CORBA_Environment * ev))
-{
-   CORBA_boolean _ORBIT_retval;
-   CORBA_char *word;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 word = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(word[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 word = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(word[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      }
-   }
-   _ORBIT_retval = _impl_checkWord(_ORBIT_servant, word, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
-	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof(_ORBIT_retval));
-	    }
-	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       =
-	       { {(const CORBA_TypeCode)
-		  &TC_GNOME_Spell_Checker_SpellError_struct,
-		  (gpointer) _ORBIT_GNOME_Spell_Checker_SpellError_marshal},
-	       {CORBA_OBJECT_NIL, NULL} };
-	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				      _ORBIT_user_exceptions);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-   }
-}
-void
-_ORBIT_skel_GNOME_Spell_Checker_getSuggestions(POA_GNOME_Spell_Checker *
-					       _ORBIT_servant,
-					       GIOPRecvBuffer *
-					       _ORBIT_recv_buffer,
-					       CORBA_Environment * ev,
-					       GNOME_Spell_Checker_SuggestionSeq
-					       *
-					       (*_impl_getSuggestions)
-					       (PortableServer_Servant
-						_servant,
-						const CORBA_char * word,
-						CORBA_Environment * ev))
-{
-   GNOME_Spell_Checker_SuggestionSeq *_ORBIT_retval;
-   CORBA_char *word;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_10;
-      CORBA_unsigned_long _ORBIT_tmpvar_11;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 word = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(word[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
-      } else {
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_11 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 word = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(word[_ORBIT_tmpvar_10]) * _ORBIT_tmpvar_11;
-      }
-   }
-   _ORBIT_retval = _impl_getSuggestions(_ORBIT_servant, word, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	    register CORBA_unsigned_long _ORBIT_tmpvar_2;
-	    register CORBA_unsigned_long _ORBIT_tmpvar_3;
-	    register CORBA_unsigned_long _ORBIT_tmpvar_4;
-	    CORBA_unsigned_long _ORBIT_tmpvar_5;
-
-	    giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-					     (_ORBIT_send_buffer), 4);
-	    {
-	       guchar *_ORBIT_t;
-
-	       _ORBIT_t = alloca(sizeof((*_ORBIT_retval)._length));
-	       memcpy(_ORBIT_t, &((*_ORBIT_retval)._length),
-		      sizeof((*_ORBIT_retval)._length));
-	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-					      (_ORBIT_send_buffer),
-					      (_ORBIT_t),
-					      sizeof((*_ORBIT_retval).
-						     _length));
-	    }
-	    for (_ORBIT_tmpvar_2 = 0;
-		 _ORBIT_tmpvar_2 < (*_ORBIT_retval)._length;
-		 _ORBIT_tmpvar_2++) {
-	       giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-						(_ORBIT_send_buffer), 4);
-	       {
-		  guchar *_ORBIT_t;
-
-		  _ORBIT_t =
-		     alloca(sizeof
-			    ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].word.
-			     _length));
-		  memcpy(_ORBIT_t,
-			 &((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].word.
-			   _length),
-			 sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].
-				word._length));
-		  giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-						 (_ORBIT_send_buffer),
-						 (_ORBIT_t),
-						 sizeof((*_ORBIT_retval).
-							_buffer
-							[_ORBIT_tmpvar_2].
-							word._length));
-	       }
-	       for (_ORBIT_tmpvar_3 = 0;
-		    _ORBIT_tmpvar_3 <
-		    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].word._length;
-		    _ORBIT_tmpvar_3++) {
-		  _ORBIT_tmpvar_5 =
-		     strlen((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].word.
-			    _buffer[_ORBIT_tmpvar_3]) + 1;
-		  giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER
-						   (_ORBIT_send_buffer), 4);
-		  {
-		     guchar *_ORBIT_t;
-
-		     _ORBIT_t = alloca(sizeof(_ORBIT_tmpvar_5));
-		     memcpy(_ORBIT_t, &(_ORBIT_tmpvar_5),
-			    sizeof(_ORBIT_tmpvar_5));
-		     giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-						    (_ORBIT_send_buffer),
-						    (_ORBIT_t),
-						    sizeof(_ORBIT_tmpvar_5));
-		  }
-		  {
-		     guchar *_ORBIT_t;
-
-		     _ORBIT_t =
-			alloca(sizeof
-			       ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].
-				word.
-				_buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4]) *
-			       _ORBIT_tmpvar_5);
-		     memcpy(_ORBIT_t,
-			    ((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].word.
-			     _buffer[_ORBIT_tmpvar_3]),
-			    sizeof((*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].
-				   word.
-				   _buffer[_ORBIT_tmpvar_3][_ORBIT_tmpvar_4])
-			    * _ORBIT_tmpvar_5);
-		     giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
-						    (_ORBIT_send_buffer),
-						    (_ORBIT_t),
-						    sizeof((*_ORBIT_retval).
-							   _buffer
-							   [_ORBIT_tmpvar_2].
-							   word.
-							   _buffer
-							   [_ORBIT_tmpvar_3]
-							   [_ORBIT_tmpvar_4])
-						    * _ORBIT_tmpvar_5);
-		  }
-	       }
-
-	       ORBit_marshal_object(_ORBIT_send_buffer,
-				    (*_ORBIT_retval)._buffer[_ORBIT_tmpvar_2].
-				    dictionary);
-	    }
-
-	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       =
-	       { {(const CORBA_TypeCode)
-		  &TC_GNOME_Spell_Checker_SpellError_struct,
-		  (gpointer) _ORBIT_GNOME_Spell_Checker_SpellError_marshal},
-	       {CORBA_OBJECT_NIL, NULL} };
-	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				      _ORBIT_user_exceptions);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      if (ev->_major == CORBA_NO_EXCEPTION)
-	 CORBA_free(_ORBIT_retval);
-   }
-}
 static ORBitSkeleton
 get_skel_GNOME_Spell_Dictionary(POA_GNOME_Spell_Dictionary * servant,
 				GIOPRecvBuffer * _ORBIT_recv_buffer,
@@ -936,30 +608,6 @@ get_skel_GNOME_Spell_Dictionary(POA_GNOME_Spell_Dictionary * servant,
    gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
 
    switch (opname[0]) {
-     case '_':
-	switch (opname[1]) {
-	  case 'g':
-	     if (strcmp((opname + 2), "et_active"))
-		break;
-	     *impl =
-		(gpointer) servant->vepv->GNOME_Spell_Dictionary_epv->
-		_get_active;
-	     return (ORBitSkeleton)
-		_ORBIT_skel_GNOME_Spell_Dictionary__get_active;
-	     break;
-	  case 's':
-	     if (strcmp((opname + 2), "et_active"))
-		break;
-	     *impl =
-		(gpointer) servant->vepv->GNOME_Spell_Dictionary_epv->
-		_set_active;
-	     return (ORBitSkeleton)
-		_ORBIT_skel_GNOME_Spell_Dictionary__set_active;
-	     break;
-	  default:
-	     break;
-	}
-	break;
      case 'a':
 	switch (opname[1]) {
 	  case 'd':
@@ -1048,13 +696,40 @@ get_skel_GNOME_Spell_Dictionary(POA_GNOME_Spell_Dictionary * servant,
 	return (ORBitSkeleton) _ORBIT_skel_GNOME_Spell_Dictionary_checkWord;
 	break;
      case 'g':
-	if (strcmp((opname + 1), "etSuggestions"))
-	   break;
-	*impl =
-	   (gpointer) servant->vepv->GNOME_Spell_Dictionary_epv->
-	   getSuggestions;
-	return (ORBitSkeleton)
-	   _ORBIT_skel_GNOME_Spell_Dictionary_getSuggestions;
+	switch (opname[1]) {
+	  case 'e':
+	     switch (opname[2]) {
+	       case 't':
+		  switch (opname[3]) {
+		    case 'L':
+		       if (strcmp((opname + 4), "anguages"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  GNOME_Spell_Dictionary_epv->getLanguages;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_GNOME_Spell_Dictionary_getLanguages;
+		       break;
+		    case 'S':
+		       if (strcmp((opname + 4), "uggestions"))
+			  break;
+		       *impl =
+			  (gpointer) servant->vepv->
+			  GNOME_Spell_Dictionary_epv->getSuggestions;
+		       return (ORBitSkeleton)
+			  _ORBIT_skel_GNOME_Spell_Dictionary_getSuggestions;
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
 	break;
      case 'q':
 	if (strcmp((opname + 1), "ueryInterface"))
@@ -1083,14 +758,14 @@ get_skel_GNOME_Spell_Dictionary(POA_GNOME_Spell_Dictionary * servant,
 		       return (ORBitSkeleton)
 			  _ORBIT_skel_GNOME_Spell_Dictionary_setCorrection;
 		       break;
-		    case 'T':
-		       if (strcmp((opname + 4), "ag"))
+		    case 'L':
+		       if (strcmp((opname + 4), "anguage"))
 			  break;
 		       *impl =
 			  (gpointer) servant->vepv->
-			  GNOME_Spell_Dictionary_epv->setTag;
+			  GNOME_Spell_Dictionary_epv->setLanguage;
 		       return (ORBitSkeleton)
-			  _ORBIT_skel_GNOME_Spell_Dictionary_setTag;
+			  _ORBIT_skel_GNOME_Spell_Dictionary_setLanguage;
 		       break;
 		    default:
 		       break;
@@ -1144,112 +819,6 @@ POA_GNOME_Spell_Dictionary__init(PortableServer_Servant servant,
 void
 POA_GNOME_Spell_Dictionary__fini(PortableServer_Servant servant,
 				 CORBA_Environment * env)
-{
-   POA_Bonobo_Unknown__fini(servant, env);
-   PortableServer_ServantBase__fini(servant, env);
-}
-
-static ORBitSkeleton
-get_skel_GNOME_Spell_Checker(POA_GNOME_Spell_Checker * servant,
-			     GIOPRecvBuffer * _ORBIT_recv_buffer,
-			     gpointer * impl)
-{
-   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
-
-   switch (opname[0]) {
-     case 'a':
-	if (strcmp((opname + 1), "ddDictionary"))
-	   break;
-	*impl =
-	   (gpointer) servant->vepv->GNOME_Spell_Checker_epv->addDictionary;
-	return (ORBitSkeleton) _ORBIT_skel_GNOME_Spell_Checker_addDictionary;
-	break;
-     case 'c':
-	if (strcmp((opname + 1), "heckWord"))
-	   break;
-	*impl = (gpointer) servant->vepv->GNOME_Spell_Checker_epv->checkWord;
-	return (ORBitSkeleton) _ORBIT_skel_GNOME_Spell_Checker_checkWord;
-	break;
-     case 'g':
-	if (strcmp((opname + 1), "etSuggestions"))
-	   break;
-	*impl =
-	   (gpointer) servant->vepv->GNOME_Spell_Checker_epv->getSuggestions;
-	return (ORBitSkeleton) _ORBIT_skel_GNOME_Spell_Checker_getSuggestions;
-	break;
-     case 'q':
-	if (strcmp((opname + 1), "ueryInterface"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
-	break;
-     case 'r':
-	switch (opname[1]) {
-	  case 'e':
-	     switch (opname[2]) {
-	       case 'f':
-		  if (strcmp((opname + 3), ""))
-		     break;
-		  *impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
-		  return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
-		  break;
-	       case 'm':
-		  if (strcmp((opname + 3), "oveDictionary"))
-		     break;
-		  *impl =
-		     (gpointer) servant->vepv->GNOME_Spell_Checker_epv->
-		     removeDictionary;
-		  return (ORBitSkeleton)
-		     _ORBIT_skel_GNOME_Spell_Checker_removeDictionary;
-		  break;
-	       default:
-		  break;
-	     }
-	     break;
-	  default:
-	     break;
-	}
-	break;
-     case 'u':
-	if (strcmp((opname + 1), "nref"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
-	break;
-     default:
-	break;
-   }
-   return NULL;
-}
-
-static void
-init_local_objref_GNOME_Spell_Checker(CORBA_Object obj,
-				      POA_GNOME_Spell_Checker * servant)
-{
-   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
-   obj->vepv[GNOME_Spell_Checker__classid] =
-      servant->vepv->GNOME_Spell_Checker_epv;
-}
-
-void
-POA_GNOME_Spell_Checker__init(PortableServer_Servant servant,
-			      CORBA_Environment * env)
-{
-   static const PortableServer_ClassInfo class_info =
-      { (ORBit_impl_finder) & get_skel_GNOME_Spell_Checker,
-"IDL:GNOME/Spell/Checker:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Spell_Checker };
-   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
-				    env);
-   POA_Bonobo_Unknown__init(servant, env);
-   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
-      class_info = (PortableServer_ClassInfo *) & class_info;
-   if (!GNOME_Spell_Checker__classid)
-      GNOME_Spell_Checker__classid = ORBit_register_class(&class_info);
-}
-
-void
-POA_GNOME_Spell_Checker__fini(PortableServer_Servant servant,
-			      CORBA_Environment * env)
 {
    POA_Bonobo_Unknown__fini(servant, env);
    PortableServer_ServantBase__fini(servant, env);

@@ -22,6 +22,8 @@
 
 #include <config.h>
 #include <gal/widgets/e-unicode.h>
+#include <gnome.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include "search.h"
 #include "dialog.h"
 #include "htmlengine-search.h"
@@ -82,6 +84,8 @@ gtk_html_search_dialog_new (GtkHTML *html)
 	gtk_box_pack_start_defaults (GTK_BOX (dialog->dialog->vbox), hbox);
 	gtk_widget_show (dialog->entry);
 	gtk_widget_show_all (hbox);
+	
+	gnome_window_icon_set_from_file (GTK_WINDOW (dialog->dialog), ICONDIR "/search-24.png");
 
 	gnome_dialog_button_connect (dialog->dialog, 0, search_cb, dialog);
 	gnome_dialog_close_hides (dialog->dialog, TRUE);

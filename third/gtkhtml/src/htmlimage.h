@@ -160,21 +160,29 @@ gchar      *html_image_resolve_image_url  (GtkHTML          *html,
 
 void        html_image_edit_set_url        (HTMLImage       *image,
 					    const gchar     *url);
-
+guint       html_image_get_actual_width    (HTMLImage       *image,
+					    HTMLPainter     *painter);
+guint       html_image_get_actual_height   (HTMLImage       *image,
+					    HTMLPainter     *painter);
 /* FIXME move to htmlimagefactory.c */
-HTMLImageFactory *html_image_factory_new      (HTMLEngine       *e);
-void              html_image_factory_free     (HTMLImageFactory *factory);
-void              html_image_factory_cleanup  (HTMLImageFactory *factory); /* Does gc etc. - removes unused image entries */
-void              html_image_factory_stop_animations (HTMLImageFactory *factory);
-void              html_image_factory_deactivate_animations (HTMLImageFactory *factory);
-
-HTMLImagePointer *html_image_factory_register    (HTMLImageFactory *factory,
-						  HTMLImage        *i,
-						  const char       *filename,
-						  gboolean          reload);
-void              html_image_factory_unregister  (HTMLImageFactory *factory,
-						  HTMLImagePointer *pointer,
-						  HTMLImage        *i);
-void              html_image_factory_move_images (HTMLImageFactory *dst,
-						  HTMLImageFactory *src);
+HTMLImageFactory *html_image_factory_new                    (HTMLEngine       *e);
+void              html_image_factory_free                   (HTMLImageFactory *factory);
+void              html_image_factory_cleanup                (HTMLImageFactory *factory); /* Does gc etc. - removes unused image entries */
+void              html_image_factory_stop_animations        (HTMLImageFactory *factory);
+void              html_image_factory_deactivate_animations  (HTMLImageFactory *factory);
+HTMLImagePointer *html_image_factory_register               (HTMLImageFactory *factory,
+							     HTMLImage        *i,
+							     const char       *filename,
+							     gboolean          reload);
+void              html_image_factory_unregister             (HTMLImageFactory *factory,
+							     HTMLImagePointer *pointer,
+							     HTMLImage        *i);
+void              html_image_factory_move_images            (HTMLImageFactory *dst,
+							     HTMLImageFactory *src);
+void              html_image_factory_ref_all_images         (HTMLImageFactory *factory);
+void              html_image_factory_unref_all_images       (HTMLImageFactory *factory);
+void              html_image_factory_ref_image_ptr          (HTMLImageFactory *factory,
+							     const gchar      *url);
+void              html_image_factory_unref_image_ptr        (HTMLImageFactory *factory,
+							     const gchar      *url);
 #endif /* _HTMLIMAGE_H_ */
