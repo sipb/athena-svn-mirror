@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *	$Id: sort.c,v 1.12 1991-04-08 20:49:28 lwvanels Exp $
+ *	$Id: sort.c,v 1.13 1992-08-18 19:26:52 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.12 1991-04-08 20:49:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.13 1992-08-18 19:26:52 lwvanels Exp $";
 #endif
 #endif
 
@@ -61,6 +61,7 @@ static int foo (status)
   case OFF:
   case DUTY:
   case SECOND:
+  case URGENT:
     return 1;
   case REFERRED:
     return 3;
