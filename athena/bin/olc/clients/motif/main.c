@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.13 1991-04-18 21:51:51 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.14 1991-06-30 12:22:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -154,6 +154,10 @@ main(argc, argv)
   XtRealizeWidget(toplevel);
 
   olc_init();
+
+#ifdef LOG_USAGE
+  log_startup("xolc");
+#endif
 
 /*
  * Go into XtMainLoop.  This does not exit.  Rather, the user exits the
