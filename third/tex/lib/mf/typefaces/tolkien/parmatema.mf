@@ -1,0 +1,68 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)parmatema.mf	1.1   10/1/86
+
+beginchar("p", shortwidth,xht#,dep#); "The letter p (parma)";
+	pickup elvishpen;
+	telco(leadgap,shortstem, stemdepth);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;
+
+beginchar("b", 1em#,xht#,dep#); "The letter b (umbar)";
+	pickup elvishpen;
+	telco(leadgap,shortstem, stemdepth);
+	luva (bowpoint, bowsize*em, false);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;
+
+
+beginchar("f", shortwidth, cap#, 0); "the letter f (formen)";
+	pickup elvishpen;
+	telco(leadgap, longstem, stemdepth);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;
+
+beginchar("v", 1em#, cap#, 0); "the letter v (ampa)";
+	pickup elvishpen;
+	telco(leadgap, longstem, stemdepth);
+	luva (bowpoint, bowsize*em, false);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;
+
+
+beginchar (14, 1em#, cap#, dep#); "the word 'OF'";
+	pickup elvishpen;
+	telco(leadgap, longstem, stemdepth);
+	luva (bowpoint, bowsize*em, false);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;
+
+%
+% Should also be a related "of the" glyph
+%
+
+beginchar ("w", shortwidth, xht#, 0); "the letter w (vala)";
+	pickup elvishpen;
+	telco (leadgap, shortstem, stemdepth);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;
+
+beginchar ("m", 1em#, xht#, 0); "the letter m (malta)";
+	pickup elvishpen;
+	telco(leadgap, shortstem, stemdepth);
+	luva (bowpoint, bowsize*em, false);
+	luva (bowpoint, w, false);
+	underbar;
+endchar;

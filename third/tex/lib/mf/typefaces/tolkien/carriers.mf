@@ -1,0 +1,43 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)carriers.mf	1.1   10/1/86
+
+def commoncarrier=
+	pickup elvishpen;
+	x0=x1-thick; top y0=h;
+	x1=1/2[leadgap,w]; y1=y0;
+	x2=x1;  y2=-d/2;
+	x3=x0; y3=-d;
+	draw z0--z1{down}..z2{down}..z3;
+enddef;
+
+beginchar ("i",3*leadgap#,xht#,.2dep#);  "Short carrier";
+	begingroup;
+	save x,y;
+	commoncarrier;
+	endgroup;
+endchar;
+
+beginchar (16,3*leadgap#,xht#,dep#);  "Long carrier";
+	begingroup;
+	save x,y;
+	commoncarrier;
+	endgroup;
+endchar;
+
+beginchar (17,3*leadgap#,cap#,0); "Carrier Halla";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	x0=x1-thick/3; top y0=h;
+	x1=1/2[leadgap,w]; y1=y0;
+	x2=x1;  y2=-d;
+	draw z0--z1{down}..z2;
+	endgroup;
+endchar;

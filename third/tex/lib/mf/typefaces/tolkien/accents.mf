@@ -1,0 +1,223 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)accents.mf	1.1   10/1/86
+
+def centerpt=
+	(w-((w-leadgap)/2), xht+3.2thin)
+enddef;
+	
+beginchar (19, shortwidth, cap#, 0); "The acute accent (e)";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	z0 = centerpt;
+	top y1=h; %z1-z0=whatever*(dir tilt);
+	rt x1 = w;
+	draw z0--z1;
+	endgroup;
+endchar;
+
+beginchar ("}", shortwidth, cap#, 0); "The double acute accent (e')";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	z0 = centerpt;
+	top y1=h; %z1-z0=whatever*(dir tilt);
+	rt x1 = w;
+	draw z0--z1;
+	draw ((z0--z1) shifted (2.5*thin*right));
+	endgroup;
+endchar;
+
+
+beginchar ("_", shortwidth, cap#, 0); "The dot-above accent (i)";
+	begingroup;
+	save x,y;
+	pickup pensquare scaled thick rotated 45;
+	z0 = centerpt;
+	drawdot z0;
+	endgroup;
+endchar;
+
+beginchar (127, shortwidth, cap#, 0); "The umlaut accent (double i)";
+	begingroup;
+	save x, y;
+	pickup pensquare scaled thick rotated 45;
+	z0 = centerpt;
+	z1 = z0 + thick*left;
+	z2 = z0 + thick*right;
+	drawdot z1; drawdot z2;
+	endgroup;
+endchar;
+
+beginchar (25, shortwidth, 0, -6thin#); "The schwa accent (dot below)";
+	begingroup;
+	save x, y;
+	pickup pensquare scaled thick rotated 45;
+	z0 = centerpt;
+	x1 = x0;
+	y1 = -3thin;
+	drawdot z1; 
+	endgroup;
+endchar;
+
+beginchar (24, shortwidth, 0, -6thin#); "The 'y' accent (two dots below)";
+	begingroup;
+	save x, y;
+	pickup pensquare scaled thick rotated 45;
+	z0 = centerpt;
+	x1 = x0 - thick;
+	x2 = x0 + thick;
+	y1 = y2 = -3thin;
+	drawdot z1; drawdot z2;
+	endgroup;
+endchar;
+
+beginchar ("^", shortwidth, cap#, 0); "The circumflex (3-dot 'a')";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+
+	agap := w/6;
+	alength := 1.5*thick;
+
+	z0 = centerpt;
+
+	z1 = z0 + agap*left;
+	z2=z1+alength*(dir (tilt+90));
+
+	z3 = z0 + agap*up;
+	z4 = z3 + alength*up;
+
+	z5 = z0 + agap*right;
+	z6 = z5 + alength*(dir tilt);
+
+	draw z1--z2; draw z3--z4; draw z5--z6;
+	endgroup;
+endchar;
+
+beginchar (20, shortwidth, cap#, 0); "The right-loop accent (o)";
+	begingroup;
+	save x,y, rightcurl;
+	path rightcurl;
+	pickup elvishpen;
+	z0 = centerpt;
+	top y1=h; x1 = .7[x0, w];
+	rt x2=w; y2 = .7[y0, h];
+	x3 = .8[x0,w]; y1-y2 = y2-y3;
+	rightcurl = (z0..tension 2.0..z1{right}..z2..z3);
+	draw rightcurl;
+	endgroup;
+endchar;
+
+beginchar (22, shortwidth, cap#, 0); "The double right-loop accent (o')";
+	begingroup;
+	save x,y, rightcurl;
+	path rightcurl;
+	pickup elvishpen;
+	z0 = centerpt;
+	top y1=h; x1 = .7[x0, w];
+	rt x2=w; y2 = .7[y0, h];
+	x3 = .8[x0,w]; y1-y2 = y2-y3;
+	rightcurl = (z0..tension 2.0..z1{right}..z2..z3);
+	draw rightcurl;
+	draw (rightcurl shifted (3*thin,0));
+	endgroup;
+endchar;
+
+beginchar (21, shortwidth, cap#, 0); "The left-loop accent (u)";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	z0 = centerpt;
+	lft x1 = 1/3[leadgap, x0]; top y1 = 3/4[y0,h];
+	top y2 = h; x2 = x0;
+	y3 = y1; x3-x0 = x0-x1;
+	draw z1..z2{right}..z0{down};
+	endgroup;
+endchar;
+beginchar (23, shortwidth, cap#, 0); "The left-loop accent (u)";
+	begingroup;
+	save x,y, leftcurl;
+	path leftcurl;
+	pickup elvishpen;
+	z0 = centerpt;
+	lft x1 = 1/3[leadgap, x0]; top y1 = 3/4[y0,h];
+	top y2 = h; x2 = x0;
+	y3 = y1; x3-x0 = x0-x1;
+	leftcurl =  (z1..z2{right}..z0{down});
+	draw leftcurl;
+	draw leftcurl shifted ((x1-x0)*right);
+	endgroup;
+endchar;
+
+beginchar (28, .7shortwidth, 0, .8dep#);  "S-hook";
+	begingroup;
+	save x, y;
+	pickup elvishpen rotated 90;
+	x0 = leadgap; y0=0;
+	rt x1=w; y1=.7[y0,-d];
+	x2=.5[x0,x1]; y2=-d;
+	x3=x0+thin; y3=y1;
+	draw  z0..tension 2.0..z1{down}..z2..z3{up};
+	endgroup;
+endchar;
+
+beginchar (30, shortwidth, .5[xht#,cap#], 0); "Beleriandic W";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	x0=w-((w-leadgap)/2); y0=h;
+	lft x2=leadgap/2; top y1=y0+thick; z1=z2+whatever*(dir tilt);
+	y2=y3=y0;
+	rt x3=w-leadgap/2;
+	bot y4=y3-thick; z4=z3-whatever*(dir tilt);
+	draw z1.. z2..z0{right}..  z3..z4;
+	endgroup;
+oldendchar;
+	
+
+beginchar (8, shortwidth, 0, .4xht#); "Short bottom bar";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	lft x0 = leadgap; rt x1 = w;
+	y0=y1=-d;
+	draw z0--z1;
+	endgroup;
+endchar;
+
+beginchar (9, 1em#, 0, .4xht#); "Long bottom bar";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	lft x0 = leadgap; rt x1 = w;
+	y0=y1=-d;
+	draw z0--z1;
+	endgroup;
+endchar;
+
+beginchar (10, shortwidth, .4[xht#,cap#], 0); "Short top bar";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	lft x0 = leadgap; rt x1 = w;
+	y0=y1=h;
+	draw z0--z1;
+	endgroup;
+oldendchar;
+beginchar (11, 1em#, .4[xht#,cap#], 0); "Long top bar";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	lft x0 = leadgap; rt x1 = w;
+	y0=y1=h;
+	draw z0--z1;
+	endgroup;
+oldendchar;

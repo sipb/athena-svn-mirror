@@ -1,0 +1,197 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)numerals.mf	1.1   10/1/86
+
+def firstbow(expr start,finish,looped) =
+	begingroup;
+	save x,y,t;
+	x0 = start; top y0=xht;
+	x1 = x0; bot y1=0;
+	x2=finish; bot y2=0;
+	if looped:
+		t=1.0;
+	else:
+		t=1.0;
+	fi;
+	draw z0{down}..z1..tension t..z2;
+	bowpoint:=z1;
+	penlabels (0,1,2);
+	endgroup;
+enddef;
+
+def secondstem(expr start, finishpoint) =
+	begingroup;
+	save x,y, stem;
+	path stem;
+	z0=(start, h);
+	z1 = z0 + serifthick*left;
+	z2 = z0 + serifthick*right;
+	z3= (start, 0);
+	x4 = 1/2[x3, (xpart finishpoint)]; y4 = -d;
+	draw z1--z0;%--z2;
+	stem = ( z0..z3{down}..z4..tension 1.2..finishpoint);
+	draw stem;
+	top y5 = xht; 
+	barpoint := stem intersectionpoint
+		((-infinity,y5)--(infinity, y5));
+	penlabels (0,1,2,3,4);
+	
+	endgroup;
+enddef;
+
+
+def thirdstem(expr start)=
+	begingroup;
+	save x,y,stem;
+	path stem;
+	z0=(start, h);
+	z1 = z0 + serifthick*left;
+	z2 = z0 + serifthick*right;
+	z3= (start, 0);
+	x4 = .5[0,start]; y4 = -d;
+	x5=0; y5 = 1/2 (-d);
+	draw z1--z0;%--z2;
+	stem = ( z0..z3{down}..z4..z5);
+	draw stem;
+	bowpoint := stem intersectionpoint
+		((-infinity,bowstart)--(infinity, bowstart));
+	barpoint := stem intersectionpoint
+		((-infinity,0)--(infinity, 0));
+	penlabels (0,1,2,3,4,5);
+	endgroup;
+enddef;
+
+
+beginchar ("0", shortwidth, xht#, 1/2dep#); "The numeral 0";
+	begingroup;
+	save x,y;
+	pickup elvishpen;
+	lft x1=leadgap; y1=.5h;
+	x2 = 1/2[x1,w]; top y2=h;
+	rt x3=w; y3=0;
+	x4=leadgap; y4=-d;
+	draw z1..z2{right}..z3{down}..z4;
+	endgroup;
+endchar;
+
+beginchar ("1", shortwidth, xht#, 0); "The numeral 1";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	firstbow(leadgap, w-thick, true);
+	top y10=h;
+	barpoint:=(w,y10);
+	overbar;
+	endgroup;
+endchar;
+
+beginchar ("2", .75em#, xht#, 0); "The numeral 2";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	firstbow (1/2[leadgap,w], w-thick, true);
+	firstbow (leadgap, xpart bowpoint, false);
+	top y10=h;
+	barpoint:=(w,y10);
+	overbar;
+	endgroup;
+endchar;
+
+beginchar ("3", 1em#, xht#, 0); "The numeral 3";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	firstbow (2/3[leadgap,w], w-thick, true);
+	firstbow (1/3[leadgap,w], xpart bowpoint, false);
+	firstbow (leadgap, xpart bowpoint, false);
+	top y10=h;
+	barpoint:=(w,y10);
+	overbar;
+	endgroup;
+endchar;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+beginchar ("4", shortwidth, 3/4[xht#,cap#], 3/4xht#); "The numeral 4";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	rt x0 = w; y0 = -d/3;
+	secondstem (leadgap, z0);
+	endgroup;
+endchar;
+
+beginchar ("5", .75em#, 3/4[xht#, cap#], 3/4xht#); "The numeral 5";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	firstbow (1/2[leadgap,w], w-thick, true);
+	secondstem (leadgap, bowpoint);
+	top y10=xht;
+	draw barpoint--(w,y10);
+	endgroup;
+endchar;
+
+beginchar ("6", 1em#, 3/4[xht#, cap#], 3/4xht#); "The numeral 6";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	firstbow (2/3[leadgap,w], w-thick, true);
+	firstbow (1/3[leadgap,w], xpart bowpoint, false);
+	secondstem (leadgap, bowpoint);
+	top y10=xht;
+	draw barpoint--(w,y10);
+	endgroup;
+endchar;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+thirdwidth := 2.5*leadgap;
+
+beginchar ("7", 3*leadgap#, 3/4[xht#, cap#], 3/4xht#); "The numeral 7";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	thirdstem (thirdwidth);
+	endgroup;
+endchar;
+
+
+beginchar ("8", .75em#, 3/4[xht#, cap#], 3/4xht#); "The numeral 8";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	thirdstem (thirdwidth);
+	luva (bowpoint, w, false);
+	underbar;
+	endgroup;
+endchar;
+
+
+beginchar ("9", 1em#, 3/4[xht#, cap#], 3/4xht#); "The numeral 9";
+	begingroup;
+	save x, y;
+	pickup elvishpen;
+
+	thirdstem (thirdwidth);
+	luva (bowpoint, 1/2[thirdwidth,w], false);
+	luva (bowpoint, w, false);
+	underbar;
+	endgroup;
+endchar;
+
+
+
