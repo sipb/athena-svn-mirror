@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.15 1989-12-15 04:40:44 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.16 1990-01-11 04:11:58 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -819,9 +819,16 @@ int options;
 		    (void) pop(&dirp, sizeof(DIR *));
 		    continue;
 	       }
+#ifdef DEBUG
+	       else {
+		    fprintf(stderr,
+			    "do_recurs: %s isn't a mountpoint, following.\n",
+			    base);
+	       }
+#endif
 	  }
 #ifdef DEBUG
-	  printf("de_recurs: opening %s\n", base);
+	  printf("do_recurs: opening %s\n", base);
 #endif
 	  continue;
 	  
