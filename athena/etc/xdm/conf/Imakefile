@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.12 1992-04-30 10:34:20 lwvanels Exp $
+# $Id: Imakefile,v 1.13 1992-06-08 17:37:42 lwvanels Exp $
 
 USRSCRIPTS=mitvma
 
@@ -12,12 +12,12 @@ create_dir(/etc/athena/login)
 create_dir(/usr/athena/lib/login)
 
 #if defined(_IBMR2)
-install_script(Xsession.rsaix,,/etc/athena/login/Xsession)
 install_file(config.rsaix,/etc/athena/login/config)
 #else
-install_script(Xsession,,/etc/athena/login/Xsession)
 install_file(config,/etc/athena/login/config)
 #endif
+
+install_script(Xsession,,/etc/athena/login/Xsession)
 
 install::
 	-for i in $(USRSCRIPTS); do \
