@@ -582,7 +582,7 @@ user(name)
 		while ((cp = getusershell()) != NULL)
 			if (strcmp(cp, shell) == 0)
 				break;
-		/* endusershell(); */ /* this breaks on solaris 2.4 */
+		endusershell();
 #else
 		cp = shell;
 #endif
@@ -1443,7 +1443,7 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 		else in[0] = '\0';
 		strcat(in, buf);
 #ifdef KRB5_KRB4_COMPAT
-		if (strcmp(auth_type, "KERBEROS_V4") == 0)
+		if (strcmp(auth_type, "KERBEROS_V4") == 0) {
 		  if ((length = level == PROT_P ?
 		    krb_mk_priv((unsigned char *)in, (unsigned char *)out,
 				strlen(in), schedule, &kdata.session,
@@ -1454,7 +1454,8 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 			syslog(LOG_ERR, "krb_mk_%s failed for KERBEROS_V4",
 					level == PROT_P ? "priv" : "safe");
 			fputs(in,stdout);
-		  } else
+		  }
+		} else
 #endif /* KRB5_KRB4_COMPAT */
 #ifdef GSSAPI
 		/* reply (based on level) */
