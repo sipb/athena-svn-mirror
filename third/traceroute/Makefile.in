@@ -17,7 +17,7 @@
 #  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
 #  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 #
-# @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/Makefile.in,v 1.1.1.1 1997-09-24 06:24:33 ghudson Exp $ (LBL)
+# @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/Makefile.in,v 1.2 1997-09-24 22:20:10 ghudson Exp $ (LBL)
 
 #
 # Various configurable paths (remember to edit Makefile.in, not Makefile)
@@ -91,8 +91,6 @@ version.c: $(srcdir)/VERSION
 
 install: force
 	$(INSTALL) -m 4555 -o root -g bin traceroute $(DESTDIR)$(BINDEST)
-
-install-man: force
 	$(INSTALL) -m 444 -o bin -g bin traceroute.8 $(DESTDIR)$(MANDEST)/man8
 
 lint: $(GENSRC) force
