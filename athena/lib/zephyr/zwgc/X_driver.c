@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.c,v $
- *      $Author: raeburn $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.11 1990-10-20 06:47:11 raeburn Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.12 1991-03-24 14:27:09 jfc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -247,7 +247,7 @@ int open_display_and_load_resources(pargc, argv)
      char **argv;
 {
     XrmDatabase temp_db1, temp_db2, temp_db3;
-    char *filename;
+    char *filename, *res;
     extern char *getenv();
 
     /* Initialize X resource manager: */
@@ -286,6 +286,14 @@ int open_display_and_load_resources(pargc, argv)
      * application resources
      */
     XrmMergeDatabases(temp_db2, &temp_db1);
+
+#if XlibSpecificationRelease > 4
+    /* X11 R5 per-screen resources */
+    res = XScreenResourceString (DefaultScreenOfDisplay (dpy));
+    if (res != NULL)
+	XrmMergeDatabases(XrmGetStringDatabase(res), &temp_db1);
+#endif
+
     /*
      * Get XENVIRONMENT resources, if they exist, and merge
      */
