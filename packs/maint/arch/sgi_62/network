@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Id: network,v 1.1 1998-02-25 18:46:58 rbasch Exp $
+# $Id: network,v 1.2 1998-05-08 15:55:50 ghudson Exp $
 # (Based on SGI Revision 5.31)
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
@@ -480,9 +480,9 @@ case "$1" in
     # Berkeley Internet Name Domain server:
     #
     #   It has to be started before NIS and NFS so they can use hostnames
-    #   not in /etc/hosts.
-    if $IS_ON named && test -x /usr/sbin/named; then
-	/usr/sbin/named `cat $CONFIG/named.options 2> /dev/null` < /dev/null
+    #   not in /etc/hosts.  Local Athena change: run Athena named.
+    if $IS_ON named && test -x /etc/athena/named; then
+	/etc/athena/named `cat $CONFIG/named.options 2> /dev/null` < /dev/null
 						    $ECHO " named\c"
     fi
 
