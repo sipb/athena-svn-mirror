@@ -1,0 +1,715 @@
+<refentry id="gconf-gconf-changeset">
+<refmeta>
+<refentrytitle>GConfChangeSet</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GConfChangeSet</refname><refpurpose>
+a set of configuration changes to be made.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="GConfChangeSet">GConfChangeSet</link>;
+void        (<link linkend="GConfChangeSetForeachFunc">*GConfChangeSetForeachFunc</link>)    (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-engine-commit-change-set">gconf_engine_commit_change_set</link>  (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="gboolean">gboolean</link> remove_committed,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-change-set-new">gconf_change_set_new</link>        (void);
+void        <link linkend="gconf-change-set-ref">gconf_change_set_ref</link>            (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);
+void        <link linkend="gconf-change-set-unref">gconf_change_set_unref</link>          (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);
+void        <link linkend="gconf-change-set-clear">gconf_change_set_clear</link>          (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);
+<link linkend="guint">guint</link>       <link linkend="gconf-change-set-size">gconf_change_set_size</link>           (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);
+void        <link linkend="gconf-change-set-remove">gconf_change_set_remove</link>         (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key);
+void        <link linkend="gconf-change-set-foreach">gconf_change_set_foreach</link>        (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GConfChangeSetForeachFunc">GConfChangeSetForeachFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        <link linkend="gconf-change-set-set">gconf_change_set_set</link>            (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);
+void        <link linkend="gconf-change-set-set-nocopy">gconf_change_set_set_nocopy</link>     (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);
+void        <link linkend="gconf-change-set-unset">gconf_change_set_unset</link>          (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key);
+void        <link linkend="gconf-change-set-set-float">gconf_change_set_set_float</link>      (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val);
+void        <link linkend="gconf-change-set-set-int">gconf_change_set_set_int</link>        (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val);
+void        <link linkend="gconf-change-set-set-string">gconf_change_set_set_string</link>     (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val);
+void        <link linkend="gconf-change-set-set-bool">gconf_change_set_set_bool</link>       (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val);
+void        <link linkend="gconf-change-set-set-schema">gconf_change_set_set_schema</link>     (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfSchema">GConfSchema</link> *val);
+void        <link linkend="gconf-change-set-set-list">gconf_change_set_set_list</link>       (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list);
+void        <link linkend="gconf-change-set-set-pair">gconf_change_set_set_pair</link>       (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-change-set-check-value">gconf_change_set_check_value</link>    (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> **value_retloc);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-engine-change-set-from-currentv">gconf_engine_change_set_from_currentv</link>
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> **keys,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-engine-change-set-from-current">gconf_engine_change_set_from_current</link>
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GError">GError</link> **err,
+                                             const <link linkend="gchar">gchar</link> *first_key,
+                                             ...);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-engine-reverse-change-set">gconf_engine_reverse_change_set</link>
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GError">GError</link> **err);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+a <link linkend="GConfChangeSet">GConfChangeSet</link> allows you to collect a set of changes to
+configuration keys (set/unset operations). You can then commit 
+all the changes at once. This is convenient for something like a
+preferences dialog; you can collect all the pending changes in a
+<link linkend="GConfChangeSet">GConfChangeSet</link>, then when the user clicks "apply" send them all to
+the configuration database. The <link linkend="GConfChangeSet">GConfChangeSet</link> allows you to avoid
+sending every preferences setting when "apply" is clicked; you only 
+have to send the settings the user changed.
+</para>
+
+<para>
+In the future, GConf may also have optimizations so that
+changing a group of values with <link linkend="GConfChangeSet">GConfChangeSet</link> is faster than calling 
+<link linkend="gconf-engine-set">gconf_engine_set</link>() for each value. In the future, <link linkend="GConfChangeSet">GConfChangeSet</link> may also
+represent an atomic transaction, where all or none of the values are
+set; however, for now the operation is <emphasis>not</emphasis>
+atomic.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfChangeSet">struct GConfChangeSet</title>
+<programlisting>struct GConfChangeSet;</programlisting>
+<para>
+An opaque data type representing a set of changes to be made. 
+A change set can contain "set" and "unset" operations.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GConfChangeSetForeachFunc">GConfChangeSetForeachFunc ()</title>
+<programlisting>void        (*GConfChangeSetForeachFunc)    (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+The type of a function passed to <link linkend="gconf-change-set-foreach">gconf_change_set_foreach</link>(). 
+The <parameter>cs</parameter> argument is the <link linkend="GConfChangeSet">GConfChangeSet</link> you're iterating over. <parameter>key</parameter> is
+a key in the change set. <parameter>value</parameter> is the value the key will be set to,
+or <symbol>NULL</symbol> if the key will be unset. <parameter>user_data</parameter> is the
+user data passed to <link linkend="gconf-change-set-foreach">gconf_change_set_foreach</link>().
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>the <link linkend="GConfChangeSet">GConfChangeSet</link> being iterated over.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the current key.
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>the current value, or <symbol>NULL</symbol>.
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data passed to <link linkend="gconf-change-set-foreach">gconf_change_set_foreach</link>().
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-commit-change-set">gconf_engine_commit_change_set ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_engine_commit_change_set  (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="gboolean">gboolean</link> remove_committed,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Applies the changes in the change set to the <link linkend="GConfEngine">GConfEngine</link> passed as
+the first argument. If <parameter>remove_committed</parameter> is <symbol>TRUE</symbol>,
+then any successfully-committed changes are removed from the change
+set. If <parameter>remove_committed</parameter> is <symbol>FALSE</symbol>, the
+<link linkend="GConfChangeSet">GConfChangeSet</link> is left unmodified.
+</para>
+
+<para>
+If any set or unset operation results in an error, then processing
+terminates and the error is returned in <parameter>err</parameter> (unless <parameter>err</parameter> was
+<symbol>NULL</symbol>). If <parameter>remove_committed</parameter> was
+<symbol>TRUE</symbol>, then all the changes committed before the error
+occurred will have been removed from the set. If any error occurs,
+<symbol>FALSE</symbol> is returned.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>conf</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfEngine">GConfEngine</link>.
+</entry></row>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>remove_committed</parameter>&nbsp;:</entry>
+<entry>whether to remove successfully-committed changes from the set
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry><symbol>TRUE</symbol> on success, <symbol>FALSE</symbol> if an error occurs.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-new">gconf_change_set_new ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_change_set_new        (void);</programlisting>
+<para>
+Creates a new, empty <link linkend="GConfChangeSet">GConfChangeSet</link>. The caller assumes one reference
+count, and must call <link linkend="gconf-change-set-unref">gconf_change_set_unref</link>() eventually.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a new <link linkend="GConfChangeSet">GConfChangeSet</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-ref">gconf_change_set_ref ()</title>
+<programlisting>void        gconf_change_set_ref            (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);</programlisting>
+<para>
+Increases the reference count of a <link linkend="GConfChangeSet">GConfChangeSet</link> by one.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-unref">gconf_change_set_unref ()</title>
+<programlisting>void        gconf_change_set_unref          (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);</programlisting>
+<para>
+Decreases the reference count of a <link linkend="GConfChangeSet">GConfChangeSet</link> by one. If the
+reference count reaches 0, destroys the <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-clear">gconf_change_set_clear ()</title>
+<programlisting>void        gconf_change_set_clear          (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);</programlisting>
+<para>
+Clears all changes from a <link linkend="GConfChangeSet">GConfChangeSet</link>, so that committing the
+change set would have no effect.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-size">gconf_change_set_size ()</title>
+<programlisting><link linkend="guint">guint</link>       gconf_change_set_size           (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-remove">gconf_change_set_remove ()</title>
+<programlisting>void        gconf_change_set_remove         (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+Removes a change from a <link linkend="GConfChangeSet">GConfChangeSet</link>. The key given as the <parameter>key</parameter>
+argument will not be modified if this change set is committed.
+If <parameter>key</parameter> is not in the change set, this function has no effect.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>key to remove from the change set.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-foreach">gconf_change_set_foreach ()</title>
+<programlisting>void        gconf_change_set_foreach        (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GConfChangeSetForeachFunc">GConfChangeSetForeachFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Iterates over a <link linkend="GConfChangeSet">GConfChangeSet</link> by calling a
+<link linkend="GConfChangeSetForeachFunc">GConfChangeSetForeachFunc</link> for each change in the set. See the
+description of <link linkend="GConfChangeSetForeachFunc">GConfChangeSetForeachFunc</link> for details.  You may not
+call <link linkend="gconf-change-set-remove">gconf_change_set_remove</link>() during the iteration, because you'll
+confuse the internal data structures and cause memory corruption.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
+<entry>function to call for each change in the change set.
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data to pass to the <link linkend="GConfChangeSetForeachFunc">GConfChangeSetForeachFunc</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set">gconf_change_set_set ()</title>
+<programlisting>void        gconf_change_set_set            (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Adds a "set" operation to a change set. This function is similar to
+<link linkend="gconf-engine-set">gconf_engine_set</link>(), except that no errors can occur (errors occur later, when
+you try to commit the change set).
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to change.
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>the value to change the key to.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-nocopy">gconf_change_set_set_nocopy ()</title>
+<programlisting>void        gconf_change_set_set_nocopy     (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Like <link linkend="gconf-change-set-set">gconf_change_set_set</link>(), except that the <link linkend="GConfChangeSet">GConfChangeSet</link> takes
+ownership of the <link linkend="GConfValue">GConfValue</link>. You should not use the value again.  It
+will be destroyed when the change is removed from the <link linkend="GConfChangeSet">GConfChangeSet</link>,
+the change is modified, or the <link linkend="GConfChangeSet">GConfChangeSet</link> is destroyed.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to change.
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>the new value of <parameter>key</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-unset">gconf_change_set_unset ()</title>
+<programlisting>void        gconf_change_set_unset          (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key);</programlisting>
+<para>
+Adds an "unset" operation to a <link linkend="GConfChangeSet">GConfChangeSet</link>. This function
+schedules a <link linkend="gconf-engine-unset">gconf_engine_unset</link>().
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to unset.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-float">gconf_change_set_set_float ()</title>
+<programlisting>void        gconf_change_set_set_float      (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val);</programlisting>
+<para>
+Adds a "set" operation; takes a <link linkend="gdouble">gdouble</link> argument, so you can avoid
+creating a <link linkend="GConfValue">GConfValue</link>.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to set.
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>the new value of <parameter>key</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-int">gconf_change_set_set_int ()</title>
+<programlisting>void        gconf_change_set_set_int        (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val);</programlisting>
+<para>
+Adds a "set" operation; takes a <link linkend="gint">gint</link> argument, so you can avoid
+creating a <link linkend="GConfValue">GConfValue</link>.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to set.
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>the new value of <parameter>key</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-string">gconf_change_set_set_string ()</title>
+<programlisting>void        gconf_change_set_set_string     (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val);</programlisting>
+<para>
+Adds a "set" operation; takes a <link linkend="gchar">gchar</link>* argument, so you can avoid
+creating a <link linkend="GConfValue">GConfValue</link>.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to set.
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>the new value of <parameter>key</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-bool">gconf_change_set_set_bool ()</title>
+<programlisting>void        gconf_change_set_set_bool       (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val);</programlisting>
+<para>
+Adds a "set" operation; takes a <link linkend="gboolean">gboolean</link> argument, so you can avoid
+creating a <link linkend="GConfValue">GConfValue</link>.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to set.
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>the new value of <parameter>key</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-schema">gconf_change_set_set_schema ()</title>
+<programlisting>void        gconf_change_set_set_schema     (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfSchema">GConfSchema</link> *val);</programlisting>
+<para>
+Adds a "set" operation; takes a <link linkend="GConfSchema">GConfSchema</link> argument, so you can
+avoid creating a <link linkend="GConfValue">GConfValue</link>. The schema is copied, <parameter>val</parameter> is left
+unmodified.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfChangeSet">GConfChangeSet</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>the key to set.
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>the new value of <parameter>key</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-list">gconf_change_set_set_list ()</title>
+<programlisting>void        gconf_change_set_set_list       (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-set-pair">gconf_change_set_set_pair ()</title>
+<programlisting>void        gconf_change_set_set_pair       (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>car_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cdr_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>address_of_car</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>address_of_cdr</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-change-set-check-value">gconf_change_set_check_value ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_change_set_check_value    (<link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> **value_retloc);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>value_retloc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-change-set-from-currentv">gconf_engine_change_set_from_currentv ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_engine_change_set_from_currentv
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             const <link linkend="gchar">gchar</link> **keys,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>conf</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>keys</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-change-set-from-current">gconf_engine_change_set_from_current ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_engine_change_set_from_current
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GError">GError</link> **err,
+                                             const <link linkend="gchar">gchar</link> *first_key,
+                                             ...);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>conf</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>first_key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-engine-reverse-change-set">gconf_engine_reverse_change_set ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_engine_reverse_change_set
+                                            (<link linkend="GConfEngine">GConfEngine</link> *conf,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>conf</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

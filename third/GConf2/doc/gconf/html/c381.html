@@ -1,0 +1,679 @@
+<HTML
+><HEAD
+><TITLE
+>Schema Files</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="gconftool Utility Program"
+HREF="gconftool.html"><LINK
+REL="NEXT"
+TITLE="Installing Schemas"
+HREF="x462.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconftool.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x462.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="AEN381">Schema Files</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c381.html#AEN387"
+>Schema File Format</A
+></DT
+><DT
+><A
+HREF="x462.html"
+>Installing Schemas</A
+></DT
+><DT
+><A
+HREF="x485.html"
+>Schema File DTD</A
+></DT
+></DL
+></DIV
+><P
+>      This chapter covers the mechanics of writing and installing the
+      GConf schema files. Schema files describe your configuration
+      data and provide default values for it. See <A
+HREF="x42.html#CONCEPTS-SCHEMAS"
+>the Section called <I
+>Schemas</I
+> in the chapter called <I
+>Introduction to GConf</I
+></A
+> for an explanation of schemas.  The
+      schema file is not understood by the GConf client library;
+      rather, <SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> (see <A
+HREF="gconftool.html"
+>the chapter called <I
+><SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> Utility Program</I
+></A
+>) knows how to parse it, and then uses the GConf
+      client library to install the information in the GConf database.
+    </P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN387">Schema File Format</H1
+><P
+>        Here is a sample schema file for a hypothetical application, 
+        <SPAN
+CLASS="APPLICATION"
+>basic-gconf-app</SPAN
+>, one of the
+        examples that comes with the GConf distribution.
+        <DIV
+CLASS="EXAMPLE"
+><A
+NAME="AEN391"><P
+><B
+>Example 1. Sample schema file</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#D8F8D8"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;gconfschemafile&gt;
+    &lt;schemalist&gt;
+      &lt;schema&gt;
+      &lt;key&gt;/schemas/apps/basic-gconf-app/fooandbar&lt;/key&gt;
+      &lt;applyto&gt;/apps/basic-gconf-app/foo&lt;/applyto&gt;
+        &lt;applyto&gt;/apps/basic-gconf-app/bar&lt;/applyto&gt;
+      &lt;owner&gt;basic-gconf-app&lt;/owner&gt;
+      &lt;type&gt;string&lt;/type&gt;
+      &lt;locale name="C"&gt;
+        &lt;default&gt;Blah blah blurgh&lt;/default&gt;
+        &lt;short&gt;short description in C locale&lt;/short&gt;
+        &lt;long&gt;long description of foo and bar in C locale&lt;/long&gt;
+      &lt;/locale&gt;
+      &lt;locale name="no"&gt;
+        &lt;default&gt;some thing in norwegian&lt;/default&gt;
+        &lt;short&gt;short description in Norway&lt;/short&gt;
+        &lt;long&gt;Long description in Norway. long long long. this is a long sentence.&lt;/long&gt;
+      &lt;/locale&gt;
+    &lt;/schema&gt;
+      &lt;schema&gt;
+      &lt;key&gt;/schemas/apps/basic-gconf-app/baz&lt;/key&gt;
+      &lt;applyto&gt;/apps/basic-gconf-app/baz&lt;/applyto&gt;
+      &lt;owner&gt;basic-gconf-app&lt;/owner&gt;
+      &lt;type&gt;string&lt;/type&gt;
+      &lt;locale name="C"&gt;
+        &lt;default&gt;Zzzzzzzzzz&lt;/default&gt;
+        &lt;short&gt;short description in C locale&lt;/short&gt;
+        &lt;long&gt;long description of baz in C locale&lt;/long&gt;
+      &lt;/locale&gt;
+      &lt;locale name="no"&gt;
+        &lt;default&gt;some thing in norwegian&lt;/default&gt;
+        &lt;short&gt;short description in Norway&lt;/short&gt;
+        &lt;long&gt;Long description in Norway. long long long. this is a long sentence.&lt;/long&gt;
+      &lt;/locale&gt;
+    &lt;/schema&gt;
+      &lt;schema&gt;
+      &lt;key&gt;/schemas/apps/basic-gconf-app/blah&lt;/key&gt;
+      &lt;applyto&gt;/apps/basic-gconf-app/blah&lt;/applyto&gt;
+      &lt;owner&gt;basic-gconf-app&lt;/owner&gt;
+      &lt;type&gt;string&lt;/type&gt;
+      &lt;locale name="C"&gt;
+        &lt;default&gt;bllllllaaaaaaaaaaaaaaaaarrrrrrggggggghhhhh&lt;/default&gt;
+        &lt;short&gt;short description in C locale&lt;/short&gt;
+        &lt;long&gt;long description of blah in C locale&lt;/long&gt;
+      &lt;/locale&gt;
+      &lt;locale name="no"&gt;
+        &lt;default&gt;some thing in norwegian&lt;/default&gt;
+        &lt;short&gt;short description in Norway&lt;/short&gt;
+        &lt;long&gt;Long description in Norway. long long long. this is a long sentence.&lt;/long&gt;
+      &lt;/locale&gt;
+    &lt;/schema&gt;
+  &lt;/schemalist&gt;  
+&lt;/gconfschemafile&gt;
+          </PRE
+></TD
+></TR
+></TABLE
+></DIV
+>
+      </P
+><P
+>        The file format is straightforward. The root node must be
+        called <TT
+CLASS="LITERAL"
+>&lt;gconfschemafile&gt;</TT
+>. This
+        element contains one or more <TT
+CLASS="LITERAL"
+>&lt;schemalist&gt;</TT
+>
+        elements; I can't think of a reason to use multiple
+        <TT
+CLASS="LITERAL"
+>&lt;schemalist&gt;</TT
+> elements, but you can if 
+        you want, and <SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> will load
+        each one. The <TT
+CLASS="LITERAL"
+>&lt;schemalist&gt;</TT
+> in turn 
+        contains one or more <TT
+CLASS="LITERAL"
+>&lt;schema&gt;</TT
+>
+        elements. Each of these describes a single schema.        
+      </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>          <SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> is not very tolerant
+          about whitespace right now; in particular it won't strip
+          whitespace from around key names, type names, etc. This is
+          broken and will be fixed, just watch out for now.
+        </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>        Here are the fields of the <TT
+CLASS="LITERAL"
+>&lt;schema&gt;</TT
+>
+        element:
+
+<DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN406"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFFFFF"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;key&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The key <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>where the schema will be stored</I
+></SPAN
+>;
+                  see <A
+HREF="conventions.html"
+>the chapter called <I
+>GConf Conventions</I
+></A
+> for naming
+                  conventions. There may be only one key per schema.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;applyto&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A key <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>the schema will be applied to</I
+></SPAN
+>; that
+                  is, this schema <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>describes</I
+></SPAN
+> this
+                  key.  See <A
+HREF="conventions.html"
+>the chapter called <I
+>GConf Conventions</I
+></A
+> for naming
+                  conventions. There may be multiple &lt;applyto&gt;
+                  elements.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;owner&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Name of the application that uses this schema; may be the
+                  command line name, or a human-readable name. However
+                  you should use the same value for &lt;owner&gt; for
+                  all schemas your app installs. The primary purpose
+                  of this field is to enable sysadmins to locate the
+                  keys belonging to a given application.                  
+                </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;type&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The type of values described by this schema. i.e. keys 
+the schema is applied to should store values of this type.
+Allowed values are: <TT
+CLASS="LITERAL"
+>string</TT
+>, <TT
+CLASS="LITERAL"
+>int</TT
+>,
+<TT
+CLASS="LITERAL"
+>bool</TT
+>, <TT
+CLASS="LITERAL"
+>float</TT
+>,
+                  <TT
+CLASS="LITERAL"
+>list</TT
+>, <TT
+CLASS="LITERAL"
+>pair</TT
+>
+                </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;default&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The <TT
+CLASS="LITERAL"
+>&lt;default&gt;</TT
+> element may 
+appear below <TT
+CLASS="LITERAL"
+>&lt;schema&gt;</TT
+> (a default for all
+                  locales, often suitable for numeric values), 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>OR</I
+></SPAN
+> below a <TT
+CLASS="LITERAL"
+>&lt;locale&gt;</TT
+>
+element, if the default should be localized. It simply contains the
+                  default value for the keys the schema is applied to.
+                  
+                </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;locale&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>                  The <TT
+CLASS="LITERAL"
+>&lt;locale&gt;</TT
+> element 
+                  contains locale-specific data, including the
+                  human-readable short and long descriptions, 
+                  and optionally the default value
+                  (<TT
+CLASS="LITERAL"
+>&lt;default&gt;</TT
+> may also be
+                  placed directly underneath the
+                  <TT
+CLASS="LITERAL"
+>&lt;schema&gt;</TT
+> element).
+                  There should be one
+                  <TT
+CLASS="LITERAL"
+>&lt;locale&gt;</TT
+> element for each
+                  locale, with a <TT
+CLASS="LITERAL"
+>name</TT
+> attribute 
+                  specifying the locale name.
+                </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+>        
+
+        A <TT
+CLASS="LITERAL"
+>&lt;locale&gt;</TT
+> element can contain 
+a locale-specific <TT
+CLASS="LITERAL"
+>&lt;default&gt;</TT
+>, and may also 
+contain short and long descriptions as follows:
+<DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN451"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFFFFF"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;short&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A short description of the purpose of this key, around 
+40 characters long (about half a line).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&lt;long&gt;</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A long description of the configuration key, around a paragraph
+                  or two. Should describe the possible values of the 
+key and their effect on the application.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+> 
+
+      </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconftool.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x462.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> Utility Program</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Installing Schemas</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

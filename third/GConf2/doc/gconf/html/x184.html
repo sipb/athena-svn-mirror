@@ -1,0 +1,464 @@
+<HTML
+><HEAD
+><TITLE
+>The GConfEngine object</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="C Language Client Library"
+HREF="c120.html"><LINK
+REL="PREVIOUS"
+TITLE="C Language Client Library"
+HREF="c120.html"><LINK
+REL="NEXT"
+TITLE="The GConfValue Datatype"
+HREF="x236.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="c120.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c120.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x236.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN184">The <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> object</H1
+><P
+>        <SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> should be used instead of 
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> in most applications.
+        See <A
+HREF="gconf-client.html"
+>the chapter called <I
+><SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> higher-level API</I
+></A
+>. Because libgnome uses
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+>, apps using libgnome 
+        <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>MUST</I
+></SPAN
+> use
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+>.
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> gets confused if you poke 
+        at the <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> it "wraps."
+      </P
+><P
+>        A <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> object represents your
+        connection to a configuration database. Normally the database
+        you're connecting to is the user's default database, defined
+        by all the sources in their configuration source
+        path. <TT
+CLASS="FUNCTION"
+>gconf_engine_get_default()</TT
+> returns
+        a handle to this default
+        database. <TT
+CLASS="FUNCTION"
+>gconf_engine_get_default_with_address()</TT
+>
+        returns a handle to a single configuration source; normally,
+        applications will not use this function&mdash;it's intended
+        for system configuration tools and the like.
+      </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>        Nearly always, you should use
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> instead of
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+>.
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> has a default handler for
+        errors, and keeps a client-side cache of configuration values
+        to avoid remote queries.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>        <DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN206"><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;gconf/gconf.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><CODE
+CLASS="FUNCDEF"
+>GConfEngine*
+            gconf_engine_get_default
+          </CODE
+>(void);<P
+></P
+></DIV
+>        
+        <DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN211"><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;gconf/gconf.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><CODE
+CLASS="FUNCDEF"
+>GConfEngine*
+            gconf_engine_get_default_with_address
+          </CODE
+>(const gchar* address);<P
+></P
+></DIV
+>
+      </P
+><P
+>        The <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> object is reference
+        counted; it begins with a count of 1, and is destroyed when
+        the count reaches 0. In other words, the creator of the
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> "owns" a reference to the 
+        <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> as soon as it's created, and
+        should call <TT
+CLASS="FUNCTION"
+>gconf_engine_unref()</TT
+> to make it 
+        go away. <TT
+CLASS="FUNCTION"
+>gconf_engine_ref()</TT
+> creates a new
+        reference to the <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+>.
+        <DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN224"><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;gconf/gconf.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><CODE
+CLASS="FUNCDEF"
+>void
+            gconf_engine_ref
+          </CODE
+>(GConfEngine* conf);<P
+></P
+></DIV
+>
+
+        <DIV
+CLASS="FUNCSYNOPSIS"
+><A
+NAME="AEN230"><P
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &lt;gconf/gconf.h&gt;</PRE
+></TD
+></TR
+></TABLE
+><CODE
+CLASS="FUNCDEF"
+>void
+            gconf_engine_unref
+          </CODE
+>(GConfEngine* conf);<P
+></P
+></DIV
+>
+      </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="c120.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="c120.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x236.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>C Language Client Library</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>The <SPAN
+CLASS="STRUCTNAME"
+>GConfValue</SPAN
+> Datatype</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,7192 @@
+<HTML
+><HEAD
+><TITLE
+>GConf Core Interfaces</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GConf Reference Documentation"
+HREF="gconf-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="GConfEngine"
+HREF="gconf-gconf-engine.html"><LINK
+REL="NEXT"
+TITLE="GError"
+HREF="gconf-gconf-error.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-gconf-engine.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="gconf-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconf-gconf-error.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GCONF-GCONF">GConf Core Interfaces</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN658"
+></A
+><H2
+>Name</H2
+>GConf Core Interfaces&nbsp;--&nbsp;Basic functions to initialize GConf and get/set values</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN661"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-INIT"
+>gconf_init</A
+>                      (int argc,
+                                             char **argv,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+void        <A
+HREF="gconf-gconf.html#GCONF-PREINIT"
+>gconf_preinit</A
+>                   (<A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> app,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> mod_info);
+void        <A
+HREF="gconf-gconf.html#GCONF-POSTINIT"
+>gconf_postinit</A
+>                  (<A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> app,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> mod_info);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-IS-INITIALIZED"
+>gconf_is_initialized</A
+>            (void);
+void        (<A
+HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
+>*GConfNotifyFunc</A
+>)              (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> cnxn_id,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);
+<A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A>       <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *namespace_section,
+                                             <A
+HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
+>GConfNotifyFunc</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+void        <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-REMOVE"
+>gconf_engine_notify_remove</A
+>      (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> cnxn);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>                (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-WITH-LOCALE"
+>gconf_engine_get_with_locale</A
+>    (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *locale,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-WITHOUT-DEFAULT"
+>gconf_engine_get_without_default</A
+>
+                                            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>* <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-ENTRY"
+>gconf_engine_get_entry</A
+>          (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *locale,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> use_schema_default,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-DEFAULT-FROM-SCHEMA"
+>gconf_engine_get_default_from_schema</A
+>
+                                            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET"
+>gconf_engine_set</A
+>                (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-UNSET"
+>gconf_engine_unset</A
+>              (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-ASSOCIATE-SCHEMA"
+>gconf_engine_associate_schema</A
+>   (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *schema_key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     <A
+HREF="gconf-gconf.html#GCONF-ENGINE-ALL-ENTRIES"
+>gconf_engine_all_entries</A
+>        (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *dir,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     <A
+HREF="gconf-gconf.html#GCONF-ENGINE-ALL-DIRS"
+>gconf_engine_all_dirs</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *dir,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+void        <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SUGGEST-SYNC"
+>gconf_engine_suggest_sync</A
+>       (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-DIR-EXISTS"
+>gconf_engine_dir_exists</A
+>         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *dir,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-VALID-KEY"
+>gconf_valid_key</A
+>                 (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> **why_invalid);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-KEY-IS-BELOW"
+>gconf_key_is_below</A
+>              (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *above,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *below);
+<A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A>     <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-FLOAT"
+>gconf_engine_get_float</A
+>          (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-INT"
+>gconf_engine_get_int</A
+>            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-STRING"
+>gconf_engine_get_string</A
+>         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-BOOL"
+>gconf_engine_get_bool</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>* <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-SCHEMA"
+>gconf_engine_get_schema</A
+>        (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-LIST"
+>gconf_engine_get_list</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> list_type,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
+>gconf_engine_get_pair</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> car_type,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> cdr_type,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> car_retloc,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> cdr_retloc,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-FLOAT"
+>gconf_engine_set_float</A
+>          (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-INT"
+>gconf_engine_set_int</A
+>            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-STRING"
+>gconf_engine_set_string</A
+>         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-BOOL"
+>gconf_engine_set_bool</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-SCHEMA"
+>gconf_engine_set_schema</A
+>         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> *val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-LIST"
+>gconf_engine_set_list</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> list_type,
+                                             <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> *list,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-PAIR"
+>gconf_engine_set_pair</A
+>           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> car_type,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> cdr_type,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> address_of_car,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> address_of_cdr,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+struct      <A
+HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
+>GConfEnumStringPair</A
+>;
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf.html#GCONF-STRING-TO-ENUM"
+>gconf_string_to_enum</A
+>            (<A
+HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
+>GConfEnumStringPair</A
+> lookup_table[],
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *str,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *enum_value_retloc);
+const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* <A
+HREF="gconf-gconf.html#GCONF-ENUM-TO-STRING"
+>gconf_enum_to_string</A
+>           (<A
+HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
+>GConfEnumStringPair</A
+> lookup_table[],
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> enum_value);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN857"
+></A
+><H2
+>Description</H2
+><P
+>These functions initialize GConf, and communicate with the
+<SPAN
+CLASS="APPLICATION"
+>gconfd</SPAN
+> server via a
+<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> object. You can install a notification
+request on the server, get values, set values, list directories, and associate
+schema names with keys.</P
+><P
+>Most of this interface is replicated in the <A
+HREF=../gtk/gtkobject.html
+>GtkObject</A> wrapper
+(<A
+HREF="gconfclient.html"
+>GConfClient</A
+> object); an alternative to the value-setting functions
+is the <A
+HREF="gconf-gconf-changeset.html#GCONFCHANGESET"
+>GConfChangeSet</A
+> interface.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN866"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN868"
+></A
+><H3
+><A
+NAME="GCONF-INIT"
+></A
+>gconf_init ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_init                      (int argc,
+                                             char **argv,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+><TT
+CLASS="LITERAL"
+>gconf_init</TT
+> is deprecated and should not be used in newly-written code.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Initializes the GConf library. Creates a connection to a CORBA ORB, and
+initializes OAF (the object activation framework) if it isn't already
+initialized.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN878"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>argc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>argv</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> on success, <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> otherwise.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN903"
+></A
+><H3
+><A
+NAME="GCONF-PREINIT"
+></A
+>gconf_preinit ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_preinit                   (<A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> app,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> mod_info);</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+><TT
+CLASS="LITERAL"
+>gconf_preinit</TT
+> is deprecated and should not be used in newly-written code.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN913"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mod_info</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN926"
+></A
+><H3
+><A
+NAME="GCONF-POSTINIT"
+></A
+>gconf_postinit ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_postinit                  (<A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> app,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> mod_info);</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+><TT
+CLASS="LITERAL"
+>gconf_postinit</TT
+> is deprecated and should not be used in newly-written code.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN936"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>app</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mod_info</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN949"
+></A
+><H3
+><A
+NAME="GCONF-IS-INITIALIZED"
+></A
+>gconf_is_initialized ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_is_initialized            (void);</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+><TT
+CLASS="LITERAL"
+>gconf_is_initialized</TT
+> is deprecated and should not be used in newly-written code.</P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>Asks whether the library has been initialized.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN958"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> if the library has been initialized.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN968"
+></A
+><H3
+><A
+NAME="GCONFNOTIFYFUNC"
+></A
+>GConfNotifyFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GConfNotifyFunc)              (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> cnxn_id,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>A callback function invoked when a key's value changes. The <TT
+CLASS="PARAMETER"
+><I
+>cnxn_id</I
+></TT
+> parameter
+will be the connection ID returned from <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>(). <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> will be the
+full path of the changed key, <TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+> will be the new value if the key is set.
+If the key is unset, <TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+> will be the default value if one exists, or
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> otherwise. <TT
+CLASS="PARAMETER"
+><I
+>is_default</I
+></TT
+> indicates whether a value is a
+default setting or a user setting. If <TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+> is <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>,
+<TT
+CLASS="PARAMETER"
+><I
+>is_default</I
+></TT
+> will be <SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+>. <TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+> is the data passed to
+<A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN990"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> passed to <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cnxn_id</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the ID returned from <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>().</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the user data passed to <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>().</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1015"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-NOTIFY-ADD"
+></A
+>gconf_engine_notify_add ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A>       gconf_engine_notify_add         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *namespace_section,
+                                             <A
+HREF="gconf-gconf.html#GCONFNOTIFYFUNC"
+>GConfNotifyFunc</A
+> func,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> user_data,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Registers a notification request with the <SPAN
+CLASS="APPLICATION"
+>gconfd</SPAN
+>
+server.  The server will notify the client when any key at or below
+<TT
+CLASS="PARAMETER"
+><I
+>namespace_section</I
+></TT
+> is set or unset. Try to watch the smallest possible part of
+the namespace; otherwise you will slow down the server and your application with
+unnecessary notifications. Note that you should prefer <A
+HREF="gconfclient.html#GCONF-CLIENT-NOTIFY-ADD"
+>gconf_client_notify_add</A
+>()
+if you're using the <A
+HREF=../gtk/gtkobject.html
+>GtkObject</A> wrapper library, because
+<A
+HREF="gconfclient.html#GCONF-CLIENT-NOTIFY-ADD"
+>gconf_client_notify_add</A
+>() does not require a client-server conversation for
+every callback. <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>() requests a different server notification for
+every callback. The function returns an ID you can use to remove the
+notification request; 0 is an invalid ID, and is returned if an error occurs.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1032"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to monitor for changes.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>namespace_section</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the directory or key to watch; you will be notified of changes at or below this point.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>func</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the callback to invoke when a notification is received from the server.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the data to pass to the callback.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>an ID for the notification request, or 0 on error.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1064"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-NOTIFY-REMOVE"
+></A
+>gconf_engine_notify_remove ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_engine_notify_remove      (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             <A
+HREF=../glib/glib-basic-types.html#GUINT
+>guint</A> cnxn);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Removes a notification request.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1071"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> you were monitoring for changes.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cnxn</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The ID returned by <A
+HREF="gconf-gconf.html#GCONF-ENGINE-NOTIFY-ADD"
+>gconf_engine_notify_add</A
+>().
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1086"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET"
+></A
+>gconf_engine_get ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_engine_get                (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if no value is
+set. You must call <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-FREE"
+>gconf_value_free</A
+>() to free the returned value. If you know
+the expected type of the value, you probably want to use the type-specific
+convenience wrappers (<A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-INT"
+>gconf_engine_get_int</A
+>(), etc.)  because they will do the
+type-checking for you and return the appropriate type. Automatically returns the
+default value for a key, if the key is unset and a default exists.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1100"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to get the value from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to get.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>newly-allocated <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if unset and no default exists.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1126"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-WITH-LOCALE"
+></A
+>gconf_engine_get_with_locale ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_engine_get_with_locale    (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *locale,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the value appropriate for a particular locale. Right now,
+only values of type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+> are localized; the locale is
+meaningless for other value types. Also, <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>() automatically
+requests the value in the user's current locale. So this function is
+only useful if you want a schema for some locale other than the user's
+current locale. Except for the additional argument, this function is
+identical to <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>() in all respects.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1139"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to get the value from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to get.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>locale</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>preferred locale (as in the locale-related environment variables).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>newly-allocated <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if unset.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1169"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-WITHOUT-DEFAULT"
+></A
+>gconf_engine_get_without_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_engine_get_without_default
+                                            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Identical to <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>(), except that it will return <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> in
+place of the default value if the key is unset. Note that <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>() can also
+return <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if no default exists or an error occurs.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1182"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to get the value from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to get.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>newly-allocated <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if unset.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1208"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-ENTRY"
+></A
+>gconf_engine_get_entry ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>* gconf_engine_get_entry          (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *locale,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> use_schema_default,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Obtain the full <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> for a value.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1220"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>locale</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>use_schema_default</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1249"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-DEFAULT-FROM-SCHEMA"
+></A
+>gconf_engine_get_default_from_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_engine_get_default_from_schema
+                                            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the default value stored in the key's schema, if the key has a schema
+associated and the schema exists and the schema contains a default value.  Note
+that <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>(), <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-STRING"
+>gconf_engine_get_string</A
+>(), and so on already return the default value
+if no other value is found, so normally you do not need this function. This
+function is just for convenience; you could also get the <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> for the
+key, read the schema name from there, then look up the schema by name and
+extract the default value.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1261"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to get the value from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to get the default value for.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>newly-allocated <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if unset.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1287"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET"
+></A
+>gconf_engine_set ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set                (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> to <TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>. Does not modify the passed-in
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, you must free it yourself. You may prefer a type-specific
+convenience wrapper, such as <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SET-INT"
+>gconf_engine_set_int</A
+>().</P
+><P
+> An error of note is <TT
+CLASS="LITERAL"
+>GCONF_OVERRIDDEN</TT
+>, indicating that the system
+administrator has "forced" a value for this key. If no writable
+configuration sources exist, it is not an error, but GConf will just
+forget all your values; this allows users to have a configuration-free
+setup without a constant barrage of error messages.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1303"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to set the value in.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to set.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the new value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> on success, <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> on error.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1334"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-UNSET"
+></A
+>gconf_engine_unset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_unset              (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Unsets the value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>; if <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is already unset, has no effect.  An
+error of note is <TT
+CLASS="LITERAL"
+>GCONF_OVERRIDDEN</TT
+>, indicating that the system
+administrator has "forced" a value for this key.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1346"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to affect.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to unset.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> on success, <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> on error.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1372"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-ASSOCIATE-SCHEMA"
+></A
+>gconf_engine_associate_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_associate_schema   (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *schema_key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Directs GConf to find the schema for <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> at location
+<TT
+CLASS="PARAMETER"
+><I
+>schema_key</I
+></TT
+>. That is, the value stored at <TT
+CLASS="PARAMETER"
+><I
+>schema_key</I
+></TT
+> should have type
+GCONF_VALUE_SCHEMA, and be descriptive of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. Normally you don't
+call this function from C code; you can ship a special file with your
+application and ask <SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> to install
+schema associations into the database during "make install."</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1388"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to affect.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key to associate the schema with.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>schema_key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key where the schema will be stored.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> on success, <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> on error.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1418"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-ALL-ENTRIES"
+></A
+>gconf_engine_all_entries ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     gconf_engine_all_entries        (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *dir,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Lists the key-value pairs in <TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+>. Does not list subdirectories; for
+that use <A
+HREF="gconf-gconf.html#GCONF-ENGINE-ALL-DIRS"
+>gconf_engine_all_dirs</A
+>(). The returned list contains <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>
+objects. A <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> contains a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>relative</I
+></SPAN
+> key
+and a value. The list is not recursive, it contains only the immediate
+children of <TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+>.  To free the returned list, <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-FREE"
+>gconf_entry_free</A
+>()
+each list element, then <A
+HREF=../glib/glib-singly-linked-lists.html#G-SLIST-FREE
+>g_slist_free</A>() the list itself.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1435"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Directory to list.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>List of <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1460"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-ALL-DIRS"
+></A
+>gconf_engine_all_dirs ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     gconf_engine_all_dirs           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *dir,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Lists the subdirectories in <TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+>. The returned list contains allocated
+strings; you should <A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>() each string in the list, then
+<A
+HREF=../glib/glib-singly-linked-lists.html#G-SLIST-FREE
+>g_slist_free</A>() the list itself.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1472"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Directory to get subdirectories from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>List of allocated subdirectory names.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1496"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SUGGEST-SYNC"
+></A
+>gconf_engine_suggest_sync ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_engine_suggest_sync       (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Suggests to <SPAN
+CLASS="APPLICATION"
+>gconfd</SPAN
+> that you've just finished
+a block of changes, and it would be an optimal time to sync to
+permanent storage. This is only a suggestion; and
+<SPAN
+CLASS="APPLICATION"
+>gconfd</SPAN
+> will eventually sync even if you
+don't call <A
+HREF="gconf-gconf.html#GCONF-ENGINE-SUGGEST-SYNC"
+>gconf_engine_suggest_sync</A
+>(). This function is just a "hint"
+provided to <SPAN
+CLASS="APPLICATION"
+>gconfd</SPAN
+> to maximize efficiency
+and minimize data loss.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1507"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> to suggest syncing to.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1523"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-DIR-EXISTS"
+></A
+>gconf_engine_dir_exists ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_dir_exists         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *dir,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Queries whether the directory <TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+> exists in the GConf
+database. Returns <SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> or <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1535"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dir</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Directory to check for.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> or <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1561"
+></A
+><H3
+><A
+NAME="GCONF-VALID-KEY"
+></A
+>gconf_valid_key ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_valid_key                 (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> **why_invalid);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Asks whether a key is syntactically correct, that is, it ensures that
+the key consists of slash-separated strings and contains only legal
+characters. Normally you shouldn't need to call this function; the
+GConf functions all check this for you and return an error if the key
+is invalid. However, it may be useful to validate input to an entry
+field or the like. If you pass a non-<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> address as
+the <TT
+CLASS="PARAMETER"
+><I
+>why_invalid</I
+></TT
+> argument, an allocated string is returned explaining
+why the key is invalid, if it is. If the key is valid the <TT
+CLASS="PARAMETER"
+><I
+>why_invalid</I
+></TT
+>
+argument is unused.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1572"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key to check.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>why_invalid</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>return location for an explanation of the problem, if any. <A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>() the returned string.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> if the key is valid, or <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> if not.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1592"
+></A
+><H3
+><A
+NAME="GCONF-KEY-IS-BELOW"
+></A
+>gconf_key_is_below ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_key_is_below              (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *above,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *below);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Asks whether the key <TT
+CLASS="PARAMETER"
+><I
+>below</I
+></TT
+> would be found below the key <TT
+CLASS="PARAMETER"
+><I
+>above</I
+></TT
+>, were
+they both to exist in the database. For example, <SPAN
+CLASS="SYMBOL"
+>/foo</SPAN
+>
+is always found below <SPAN
+CLASS="SYMBOL"
+>/</SPAN
+> and above
+<SPAN
+CLASS="SYMBOL"
+>/foo/bar</SPAN
+>. This probably isn't useful but GConf uses
+it internally so here it is if you need it.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1605"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>above</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key on the "left hand side" of the predicate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>below</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key on the "right hand side."</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> or <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1624"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-FLOAT"
+></A
+>gconf_engine_get_float ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A>     gconf_engine_get_float          (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the floating point number (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+>) stored at
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. Automatically performs type-checking, so if a non-float is
+stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, an error is returned. On error, or if <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is unset, 
+0.0 is returned.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1637"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, or 0.0 if no value is obtained.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1662"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-INT"
+></A
+>gconf_engine_get_int ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        gconf_engine_get_int            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the integer (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+>) stored at
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. Automatically performs type-checking, so if a non-integer is
+stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, an error is returned. On error, or if <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is unset, 
+0 is returned.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1675"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, or 0 if no value is obtained.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1700"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-STRING"
+></A
+>gconf_engine_get_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gconf_engine_get_string         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the string (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+>) stored at
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. Automatically performs type-checking, so if a non-string is
+stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, an error is returned. On error, or if <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is unset, 
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is returned.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1714"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>allocated string (value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>), or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if no value is obtained.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1740"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-BOOL"
+></A
+>gconf_engine_get_bool ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_get_bool           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the boolean value (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+>) stored at
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>. Automatically performs type-checking, so if a non-bool is
+stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, an error is returned. On error, or if <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is unset, 
+<SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> is returned.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1754"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, or <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> if no value is obtained.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1780"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-SCHEMA"
+></A
+>gconf_engine_get_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>* gconf_engine_get_schema        (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the schema (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>) stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>.
+Automatically performs type-checking, so if a non-schema is stored at
+<TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, an error is returned. If no value is set or an error occurs,
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is returned.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1793"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the value of <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> as an allocated <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if no value was obtained.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1820"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-LIST"
+></A
+>gconf_engine_get_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     gconf_engine_get_list           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> list_type,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the list (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>) stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>.  Automatically
+performs type-checking, so if a non-list is stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, or the
+list does not contain elements of type <TT
+CLASS="PARAMETER"
+><I
+>list_type</I
+></TT
+>, an error is
+returned. If no value is set or an error occurs, <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>
+is returned. Note that <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is also the empty list,
+so if you need to distinguish the empty list from an unset value, you
+must use <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET"
+>gconf_engine_get</A
+>() to obtain a raw <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Remember that GConf lists can only store primitive types:
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+>, <TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+>, <TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+>,
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+>, <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>.</I
+></SPAN
+> Also remember
+that lists must be uniform, you may not mix types in the same list.</P
+><P
+>The type of the list elements depends on <TT
+CLASS="PARAMETER"
+><I
+>list_type</I
+></TT
+>. A <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>
+with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+> normally stores a list of more <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>
+objects. <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-LIST"
+>gconf_engine_get_list</A
+>() automatically converts to primitive C
+types. Thus, the list-&gt;data fields in the returned list 
+contain:
+ 
+<DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1851"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFFFFF"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The integer itself, converted with <A
+HREF=../glib/glib-type-conversion-macros.html#GINT-TO-POINTER-CAPS
+>GINT_TO_POINTER</A>()</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The bool itself, converted with <A
+HREF=../glib/glib-type-conversion-macros.html#GINT-TO-POINTER-CAPS
+>GINT_TO_POINTER</A>()</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A pointer to <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A>, which should be freed with <A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>()</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A pointer to <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>, which should be freed with <A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>()</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>A pointer to <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>, which should be freed with <A
+HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
+>gconf_schema_free</A
+>()</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+>
+
+In the <TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+> and <TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+> cases, you must
+<A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>() each list element. In the <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+> case you must
+<A
+HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
+>gconf_schema_free</A
+>() each element. In all cases you must free the
+list itself with <A
+HREF=../glib/glib-singly-linked-lists.html#G-SLIST-FREE
+>g_slist_free</A>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1890"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>type of each list element.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>an allocated list, with elements as described above.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1918"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-GET-PAIR"
+></A
+>gconf_engine_get_pair ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_get_pair           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> car_type,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> cdr_type,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> car_retloc,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> cdr_retloc,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Requests the pair (<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>) stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>.  Automatically
+performs type-checking, so if a non-pair is stored at <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>, or the
+pair does not have the right <TT
+CLASS="PARAMETER"
+><I
+>car_type</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>cdr_type</I
+></TT
+>, an error is
+returned. Remember that the <I
+CLASS="FIRSTTERM"
+>car</I
+> of a pair is
+its first value, and the <I
+CLASS="FIRSTTERM"
+>cdr</I
+> is its second
+value, in the Lisp tradition. </P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Remember that GConf pairs can only store primitive types:
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+>, <TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+>, <TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+>,
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+>, <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>.</I
+></SPAN
+></P
+><P
+><A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
+>gconf_engine_get_pair</A
+>() stores the two fields of the pair in the locations
+pointed to by <TT
+CLASS="PARAMETER"
+><I
+>car_retloc</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>cdr_retloc</I
+></TT
+>. The type of these pointers
+depends on the corresponding <TT
+CLASS="PARAMETER"
+><I
+>car_type</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>cdr_type</I
+></TT
+>:
+ 
+<DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1951"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFFFFF"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>pointer to <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>pointer to <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>pointer to <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>pointer to <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>pointer to <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>*</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+>
+
+In the <TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+> case, you must <A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>() the string(s)
+stored in the return location(s). In the <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+> case you
+must <A
+HREF="gconf-gconf-schema.html#GCONF-SCHEMA-FREE"
+>gconf_schema_free</A
+>() the returned schema. If there's an error
+or the value is unset, <TT
+CLASS="PARAMETER"
+><I
+>car_retloc</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>cdr_retloc</I
+></TT
+> are left unchanged.</P
+><P
+><A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
+>gconf_engine_get_pair</A
+>() returns <SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> on success.</P
+><P
+>An example of <A
+HREF="gconf-gconf.html#GCONF-ENGINE-GET-PAIR"
+>gconf_engine_get_pair</A
+>() in action:
+<TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>gdouble car = 10.0;
+gchar* cdr  = NULL; 
+GError* error = NULL;
+
+if (!gconf_engine_get_pair(conf, "/foo", 
+                    GCONF_VALUE_FLOAT,
+                    GCONF_VALUE_STRING, 
+                    &amp;car, &amp;cdr, &amp;error))
+  {
+    /* Note: car/cdr should be untouched, because an error occurred */
+    g_assert(error != NULL);
+    fprintf(stderr, "Error: <TT
+CLASS="LITERAL"
+>s</TT
+>\n", error-&#62;message);
+    g_error_free(error);
+    error = NULL;
+  }
+else
+  {
+    /* Note: car/cdr may be untouched even though there was no error, 
+       if no value was set for "/foo"
+     */
+    printf("Found pair (<TT
+CLASS="LITERAL"
+>g</TT
+>,<TT
+CLASS="LITERAL"
+>s</TT
+>)\n", car, cdr);
+    if (cdr != NULL)
+      g_free(cdr);
+  }</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1996"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>key you want the value of.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>car_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>desired type of the pair's first field (car).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cdr_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>desired type of the pair's second field (cdr).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>car_retloc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>address of a return location for the car.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cdr_retloc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>address of a return location for the cdr.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> on success, <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> on error.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2038"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-FLOAT"
+></A
+>gconf_engine_set_float ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_float          (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2048"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2076"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-INT"
+></A
+>gconf_engine_set_int ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_int            (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2086"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2114"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-STRING"
+></A
+>gconf_engine_set_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_string         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2124"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2152"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-BOOL"
+></A
+>gconf_engine_set_bool ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_bool           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2162"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2190"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-SCHEMA"
+></A
+>gconf_engine_set_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_schema         (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             const <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> *val,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2200"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2228"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-LIST"
+></A
+>gconf_engine_set_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_list           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> list_type,
+                                             <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> *list,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2239"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2271"
+></A
+><H3
+><A
+NAME="GCONF-ENGINE-SET-PAIR"
+></A
+>gconf_engine_set_pair ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_engine_set_pair           (<A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+> *conf,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> car_type,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> cdr_type,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> address_of_car,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> address_of_cdr,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2284"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>conf</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-engine.html#GCONFENGINE"
+>GConfEngine</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>car_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cdr_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address_of_car</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address_of_cdr</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the return location for an allocated <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A>, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> to ignore errors.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2324"
+></A
+><H3
+><A
+NAME="GCONFENUMSTRINGPAIR"
+></A
+>struct GConfEnumStringPair</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GConfEnumStringPair {
+  gint enum_value;
+  const gchar* str;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2329"
+></A
+><H3
+><A
+NAME="GCONF-STRING-TO-ENUM"
+></A
+>gconf_string_to_enum ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_string_to_enum            (<A
+HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
+>GConfEnumStringPair</A
+> lookup_table[],
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *str,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> *enum_value_retloc);</PRE
+></TD
+></TR
+></TABLE
+><P
+>It's best to store enumeration values as strings rather than integers. This is
+robust against changes in the enumeration, and also human-readable.
+This function makes it more convenient to store enums as strings.</P
+><P
+>The first argument is a lookup table, typically declared statically as follows:
+<TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>static GConfEnumStringPair foo_enum_lookup_table[] = {
+  { FOO_BLAH, "Blah" },
+  { FOO_BAR,  "Bar"  },
+  { 0, NULL }
+};</PRE
+></TD
+></TR
+></TABLE
+>
+Note that the last element of the table is <TT
+CLASS="LITERAL"
+>{ 0, NULL }</TT
+>.
+Typically the strings you use should be semi-human-readable, for GTK+ and GNOME
+stripping off the library prefix and converting to StudlyCaps is the recommended
+convention.</P
+><P
+>The function returns <SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> if a match for the string is found,
+and if a match is found the enum value is placed in <TT
+CLASS="PARAMETER"
+><I
+>enum_value_retloc</I
+></TT
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2344"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>lookup_table</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a lookup table mapping enum values to strings.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>str</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the string to convert to an enum value.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>enum_value_retloc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the address of an enum variable.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> if a match was found.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2366"
+></A
+><H3
+><A
+NAME="GCONF-ENUM-TO-STRING"
+></A
+>gconf_enum_to_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>* gconf_enum_to_string           (<A
+HREF="gconf-gconf.html#GCONFENUMSTRINGPAIR"
+>GConfEnumStringPair</A
+> lookup_table[],
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> enum_value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>See <A
+HREF="gconf-gconf.html#GCONF-STRING-TO-ENUM"
+>gconf_string_to_enum</A
+>() for background information on this function.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2375"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>lookup_table</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a lookup table mapping enum values to strings.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>enum_value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the enumeration value to convert to a string.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a pointer to the proper string in the lookup table, or <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> if no match was found.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-gconf-engine.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="gconf-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconf-gconf-error.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GConfEngine</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GError</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

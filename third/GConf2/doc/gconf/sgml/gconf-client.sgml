@@ -1,0 +1,1695 @@
+<refentry id="GConfClient">
+<refmeta>
+<refentrytitle>GConfClient</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GConfClient</refname><refpurpose>
+<link linkend="GtkObject-based">GtkObject-based</link> convenience wrapper</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+enum        <link linkend="GConfClientPreloadType">GConfClientPreloadType</link>;
+enum        <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link>;
+void        (<link linkend="GConfClientNotifyFunc">*GConfClientNotifyFunc</link>)        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn_id,
+                                             <link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        (<link linkend="GConfClientErrorHandlerFunc">*GConfClientErrorHandlerFunc</link>)  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);
+#define     <link linkend="GCONF-CLIENT-CAPS">GCONF_CLIENT</link>                    (obj)
+<link linkend="GConfClient">GConfClient</link>* <link linkend="gconf-client-get-default">gconf_client_get_default</link>       (void);
+<link linkend="GConfClient">GConfClient</link>* <link linkend="gconf-client-get-for-engine">gconf_client_get_for_engine</link>    (<link linkend="GConfEngine">GConfEngine</link> *engine);
+void        <link linkend="gconf-client-add-dir">gconf_client_add_dir</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> preload,
+                                             <link linkend="GError">GError</link> **err);
+void        <link linkend="gconf-client-remove-dir">gconf_client_remove_dir</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="guint">guint</link>       <link linkend="gconf-client-notify-add">gconf_client_notify_add</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *namespace_section,
+                                             <link linkend="GConfClientNotifyFunc">GConfClientNotifyFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GFreeFunc">GFreeFunc</link> destroy_notify,
+                                             <link linkend="GError">GError</link> **err);
+void        <link linkend="gconf-client-notify-remove">gconf_client_notify_remove</link>      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn);
+void        <link linkend="gconf-client-set-error-handling">gconf_client_set_error_handling</link> (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link> mode);
+void        <link linkend="gconf-client-set-global-default-error-handler">gconf_client_set_global_default_error_handler</link>
+                                            (<link linkend="GConfClientErrorHandlerFunc">GConfClientErrorHandlerFunc</link> func);
+void        <link linkend="gconf-client-clear-cache">gconf_client_clear_cache</link>        (<link linkend="GConfClient">GConfClient</link> *client);
+void        <link linkend="gconf-client-preload">gconf_client_preload</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dirname,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> type,
+                                             <link linkend="GError">GError</link> **err);
+void        <link linkend="gconf-client-set">gconf_client_set</link>                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-client-get">gconf_client_get</link>                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-client-get-without-default">gconf_client_get_without_default</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfEntry">GConfEntry</link>* <link linkend="gconf-client-get-entry">gconf_client_get_entry</link>          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfValue">GConfValue</link>* <link linkend="gconf-client-get-default-from-schema">gconf_client_get_default_from_schema</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-unset">gconf_client_unset</link>              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-client-all-entries">gconf_client_all_entries</link>        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-client-all-dirs">gconf_client_all_dirs</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+void        <link linkend="gconf-client-suggest-sync">gconf_client_suggest_sync</link>       (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-dir-exists">gconf_client_dir_exists</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gdouble">gdouble</link>     <link linkend="gconf-client-get-float">gconf_client_get_float</link>          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gint">gint</link>        <link linkend="gconf-client-get-int">gconf_client_get_int</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gchar">gchar</link>*      <link linkend="gconf-client-get-string">gconf_client_get_string</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-get-bool">gconf_client_get_bool</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfSchema">GConfSchema</link>* <link linkend="gconf-client-get-schema">gconf_client_get_schema</link>        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GSList">GSList</link>*     <link linkend="gconf-client-get-list">gconf_client_get_list</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-get-pair">gconf_client_get_pair</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-float">gconf_client_set_float</link>          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-int">gconf_client_set_int</link>            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-string">gconf_client_set_string</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-bool">gconf_client_set_bool</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-schema">gconf_client_set_schema</link>         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *val,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-list">gconf_client_set_list</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-set-pair">gconf_client_set_pair</link>           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);
+void        <link linkend="gconf-client-error">gconf_client_error</link>              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);
+void        <link linkend="gconf-client-unreturned-error">gconf_client_unreturned_error</link>   (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);
+void        <link linkend="gconf-client-value-changed">gconf_client_value_changed</link>      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-client-reverse-change-set">gconf_client_reverse_change_set</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-client-change-set-from-currentv">gconf_client_change_set_from_currentv</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> **keys,
+                                             <link linkend="GError">GError</link> **err);
+<link linkend="GConfChangeSet">GConfChangeSet</link>* <link linkend="gconf-client-change-set-from-current">gconf_client_change_set_from_current</link>
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err,
+                                             const <link linkend="gchar">gchar</link> *first_key,
+                                             ...);
+<link linkend="gboolean">gboolean</link>    <link linkend="gconf-client-commit-change-set">gconf_client_commit_change_set</link>  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="gboolean">gboolean</link> remove_committed,
+                                             <link linkend="GError">GError</link> **err);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----GConfClient
+</synopsis>
+
+</refsect1>
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GConfClient-error">error</link>&quot;     void        user_function      (<link linkend="GConfClient">GConfClient</link> *gconfclient,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GConfClient-unreturned-error">unreturned-error</link>&quot;
+            void        user_function      (<link linkend="GConfClient">GConfClient</link> *gconfclient,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="GConfClient-value-changed">value-changed</link>&quot;
+            void        user_function      (<link linkend="GConfClient">GConfClient</link> *gconfclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> arg2,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+<link linkend="GConfClient">GConfClient</link> adds the following features to plain GConf:
+<itemizedlist>
+<listitem>
+<para>
+A client-side cache for a specified list of directories you're interested in.
+You can "preload" entire directories into the cache, speeding things up even more.
+</para>
+</listitem>
+<listitem>
+<para>
+Some automatic error handling, if you request it.
+</para>
+</listitem>
+<listitem>
+<para>
+Signals when a value changes or an error occurs.
+</para>
+</listitem>
+</itemizedlist>
+</para>
+
+<warning>
+<para>
+If you use <link linkend="GConfClient">GConfClient</link>, you should not use the underlying <link linkend="GConfEngine">GConfEngine</link>
+directly, or you'll break things. This is why there's no
+<link linkend="gconf-client-get-engine">gconf_client_get_engine</link>() function; in fact, if you create the <link linkend="GConfClient">GConfClient</link> with
+<link linkend="gconf-client-get-default">gconf_client_get_default</link>(), there is no (legitimate) way to obtain a pointer to the
+underlying <link linkend="GConfEngine">GConfEngine</link>. If you create a <link linkend="GConfClient">GConfClient</link> from an existing engine,
+you'll have to be disciplined enough to avoid using that engine directly.
+<footnote>
+<para>
+This is all a white lie; <emphasis>some</emphasis> direct <link linkend="GConfEngine">GConfEngine</link>
+operations are safe. But it's complicated to know which, and if an operation
+isn't safe the resulting bugs will mangle the cache and cause weird bugs at an
+indeterminate time in the future; you don't want to risk this
+situation.
+</para>
+</footnote>
+</para>
+</warning>
+
+<para>
+A <link linkend="GConfClient">GConfClient</link> has a list of directories that it "watches." These directories
+are optionally pre-loaded into the cache, and monitored in order to emit the
+<link linkend="value-changed">value_changed</link> signal. The <link linkend="GConfClient">GConfClient</link> can also be used to access directories
+not in the list, but those directories won't be preloaded and the "value_changed"
+signal won't be emitted for them.
+</para>
+
+<para>
+There are two error-related signals in <link linkend="GConfClient">GConfClient</link>. The first is plain "error";
+it's emitted anytime an error occurs. The second is "unreturned_error"; this
+signal is emitted if you pass <symbol>NULL</symbol> as the <link linkend="GError">GError</link>** to any
+<link linkend="GConfClient">GConfClient</link> function. The idea is that you can have a global error handler
+attached to the "unreturned_error" signal; if you want to use this handler, you
+don't need to use the normal GConf error handling mechanism. However, if you
+ever need to handle errors for a specific function call, you can override the
+global handler by passing a non-<symbol>NULL</symbol> <link linkend="GError">GError</link>** to the
+function.  If you want an error handler that's <emphasis>always</emphasis>
+invoked, use the "error" signal.
+</para>
+
+<para>
+The "value_changed" signal is emitted whenever the server notifies your client
+program that a value has changed in the GConf database. There's one problem with
+this signal: the signal handler has to use <link linkend="strcmp">strcmp</link>() to determine whether the
+changed value is the one it was interested in. If you are interested in lots of
+values, then every time a value changes you'll be making lots of calls to
+<link linkend="strcmp">strcmp</link>() and getting O(n) performance. <link linkend="gconf-client-notify-add">gconf_client_notify_add</link>() is a superior
+interface in most cases for this reason. Note that calling <link linkend="gconf-client-set">gconf_client_set</link>()
+and its relatives will cause "value_changed" to be emitted, but "value_changed"
+is also emitted if another process changes the value.
+</para>
+
+<para>
+Most of the <link linkend="GConfClient">GConfClient</link> interface mirrors the functions you'd use to manipulate
+a <link linkend="GConfEngine">GConfEngine</link> (<link linkend="gconf-engine-get">gconf_engine_get</link>() and <link linkend="gconf-client-get">gconf_client_get</link>(), for example). These should
+all work just like the <link linkend="GConfEngine">GConfEngine</link> versions, except that they use the cache
+from <link linkend="GConfClient">GConfClient</link> and emit the <link linkend="GConfClient">GConfClient</link> signals.
+</para>
+
+<para>
+As always with GConf, applications based on <link linkend="GConfClient">GConfClient</link> should use a
+model-controller-view architecture. Typically, this means that areas of your
+application affected by a setting will monitor the relevant key and update
+themselves when necessary. The preferences dialog will simply change keys,
+allowing GConf to notify the rest of the application that changes have occurred.
+Here the application proper is the "view," GConf is the "model", and the
+preferences dialog is the "controller." In no case should you do this:
+<programlisting>
+ gconf_client_set(client, key, value);
+ <link linkend="application-update-to-reflect-setting">application_update_to_reflect_setting</link>();
+</programlisting>
+This breaks if a setting is changed <emphasis>outside</emphasis> your
+application&mdash;or even from a different part of your application.
+The correct way (in pseudo-code) is:
+<programlisting>
+ /* At application startup */
+ gconf_client_notify_add(client, key, application_update_to_reflect_setting, data);
+
+ /* From preferences dialog */
+ gconf_client_set(client, key, value);
+</programlisting>
+See the example programs that come with GConf for more details.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfClientPreloadType">enum GConfClientPreloadType</title>
+<programlisting>typedef enum { /*&lt; prefix=GCONF_CLIENT &gt;*/
+  GCONF_CLIENT_PRELOAD_NONE,     /* don't preload anything */
+  GCONF_CLIENT_PRELOAD_ONELEVEL, /* load entries directly under the directory. */
+  GCONF_CLIENT_PRELOAD_RECURSIVE /* recurse the directory tree; possibly quite expensive! */
+} GConfClientPreloadType;
+</programlisting>
+<para>
+The <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> is used to tell <link linkend="GConfClient">GConfClient</link> how to preload one of
+its directories. As a rule of thumb, if you plan to get the value of almost all the
+keys in a directory, preloading that directory will probably enhance
+performance. If you plan to use only half the keys, preloading is likely a bad
+idea. <parameter>GCONF_CLIENT_PRELOAD_NONE</parameter> specifies that no preload occurs,
+<parameter>GCONF_CLIENT_PRELOAD_ONELEVEL</parameter> loads the immediate children of the directory,
+<parameter>GCONF_CLIENT_PRELOAD_RECURSIVE</parameter> loads <emphasis>all</emphasis> children of the
+directory and its subdirectories, recursively.
+</para><informaltable pgwide="1" frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>GCONF_CLIENT_PRELOAD_NONE</literal></entry>
+<entry>preload nothing.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_CLIENT_PRELOAD_ONELEVEL</literal></entry>
+<entry>preload immediate children of the directory.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_CLIENT_PRELOAD_RECURSIVE</literal></entry>
+<entry>recursively preload everything in and below the directory.
+
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GConfClientErrorHandlingMode">enum GConfClientErrorHandlingMode</title>
+<programlisting>typedef enum { /*&lt; prefix=GCONF_CLIENT &gt;*/
+  GCONF_CLIENT_HANDLE_NONE,
+  GCONF_CLIENT_HANDLE_UNRETURNED,
+  GCONF_CLIENT_HANDLE_ALL
+} GConfClientErrorHandlingMode;
+</programlisting>
+<para>
+<link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link> is used to control <link linkend="GConfClient">GConfClient</link>'s default error
+handling.  <link linkend="GConfClient">GConfClient</link> can pop up a dialog in the default signal handler for
+"error" or "unreturned_error." You can specify that no errors are handled, only
+unreturned errors are handled, or all errors are handled with this enumeration.
+You can prevent specific errors from being handled automatically by stopping the
+signal emission before the default signal handler is called (see the GTK+
+documentation, <link linkend="gtk-signal-emit-stop-by-name">gtk_signal_emit_stop_by_name</link>() for example).
+</para><informaltable pgwide="1" frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>GCONF_CLIENT_HANDLE_NONE</literal></entry>
+<entry>never run a default error handler.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_CLIENT_HANDLE_UNRETURNED</literal></entry>
+<entry>run a default error handler for unreturned errors ("unreturned_error" signal).
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_CLIENT_HANDLE_ALL</literal></entry>
+<entry>run a default error handler for all errors ("error" signal).
+
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GConfClientNotifyFunc">GConfClientNotifyFunc ()</title>
+<programlisting>void        (*GConfClientNotifyFunc)        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn_id,
+                                             <link linkend="GConfEntry">GConfEntry</link> *entry,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+This is the signature of a user function added with <link linkend="gconf-client-notify-add">gconf_client_notify_add</link>().
+The notify function is invoked when the value of a key changes. The <parameter>value</parameter>
+argument is the new value, or <symbol>NULL</symbol> if the key was unset.  The
+<parameter>value</parameter> argument should not be modified, and should be copied if you want to keep
+it around (the <link linkend="GConfClient">GConfClient</link> will destroy it sometime after your notify function
+is called).
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>the <link linkend="GConfClient">GConfClient</link> notifying us.
+</entry></row>
+<row><entry align="right"><parameter>cnxn_id</parameter>&nbsp;:</entry>
+<entry>connection ID from <link linkend="gconf-client-notify-add">gconf_client_notify_add</link>().
+</entry></row>
+<row><entry align="right"><parameter>entry</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data from <link linkend="gconf-client-notify-add">gconf_client_notify_add</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GConfClientErrorHandlerFunc">GConfClientErrorHandlerFunc ()</title>
+<programlisting>void        (*GConfClientErrorHandlerFunc)  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GCONF-CLIENT-CAPS">GCONF_CLIENT()</title>
+<programlisting>#define GCONF_CLIENT(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GCONF_TYPE_CLIENT, GConfClient))
+</programlisting>
+<para>
+Casts a pointer to a <link linkend="GConfClient">GConfClient</link>*.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-default">gconf_client_get_default ()</title>
+<programlisting><link linkend="GConfClient">GConfClient</link>* gconf_client_get_default       (void);</programlisting>
+<para>
+Creates a new <link linkend="GConfClient">GConfClient</link> using the default <link linkend="GConfEngine">GConfEngine</link>. Normally this is the
+engine you want. If someone else is already using the default
+<link linkend="GConfClient">GConfClient</link>, this function returns the same one they're using, but 
+with the reference count incremented. So you have to unref either way.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a new <link linkend="GConfClient">GConfClient</link>. <link linkend="g-object-unref">g_object_unref</link>() when you're done.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-for-engine">gconf_client_get_for_engine ()</title>
+<programlisting><link linkend="GConfClient">GConfClient</link>* gconf_client_get_for_engine    (<link linkend="GConfEngine">GConfEngine</link> *engine);</programlisting>
+<para>
+Creates a new <link linkend="GConfClient">GConfClient</link> with a specific <link linkend="GConfEngine">GConfEngine</link>. Only specialized
+configuration-related programs should need to call this function. The
+returned <link linkend="GConfClient">GConfClient</link> should be unref'd when you're done with <link linkend="g-object-unref">g_object_unref</link>().
+Remember to avoid using the <link linkend="GConfEngine">GConfEngine</link> directly once you have a <link linkend="GConfClient">GConfClient</link>
+wrapper.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>engine</parameter>&nbsp;:</entry>
+<entry>the <link linkend="GConfEngine">GConfEngine</link> to use.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a new <link linkend="GConfClient">GConfClient</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-add-dir">gconf_client_add_dir ()</title>
+<programlisting>void        gconf_client_add_dir            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> preload,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Add a directory to the list of directories the <link linkend="GConfClient">GConfClient</link> will watch. Any
+changes to keys below this directory will cause the "value_changed" signal to be
+emitted.  When you add the directory, you can request that the <link linkend="GConfClient">GConfClient</link>
+preload its contents; see <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> for details.
+</para>
+
+<para>
+Added directories may not overlap. That is, if you add "/foo", you may not add
+"/foo/bar". However you can add "/foo" and "/bar". You can also add "/foo"
+multiple times; if you add a directory multiple times, it will not be removed
+until you call <link linkend="gconf-client-remove-dir">gconf_client_remove_dir</link>() an equal number of times.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
+<entry>directory to add to the list.
+</entry></row>
+<row><entry align="right"><parameter>preload</parameter>&nbsp;:</entry>
+<entry>degree of preload.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-remove-dir">gconf_client_remove_dir ()</title>
+<programlisting>void        gconf_client_remove_dir         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Remove a directory from the list created with <link linkend="gconf-client-add-dir">gconf_client_add_dir</link>().  If any
+notifications have been added below this directory with
+<link linkend="gconf-client-notify-add">gconf_client_notify_add</link>(), those notifications will be disabled until you re-add
+the removed directory.  Note that if a directory has been added multiple times,
+you must remove it the same number of times before the remove takes effect.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
+<entry>directory to remove.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-notify-add">gconf_client_notify_add ()</title>
+<programlisting><link linkend="guint">guint</link>       gconf_client_notify_add         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *namespace_section,
+                                             <link linkend="GConfClientNotifyFunc">GConfClientNotifyFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GFreeFunc">GFreeFunc</link> destroy_notify,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Request notification of changes to <parameter>namespace_section</parameter>. This includes the key
+<parameter>namespace_section</parameter> itself, and any keys below it (the behavior is identical to
+<link linkend="gconf-engine-notify-add">gconf_engine_notify_add</link>(), but while <link linkend="gconf-engine-notify-add">gconf_engine_notify_add</link>() places a notification request
+on the server for every notify function, <link linkend="GConfClient">GConfClient</link> requests server
+notification for directories added with <link linkend="gconf-client-add-dir">gconf_client_add_dir</link>() and keeps the
+list of <link linkend="GConfClientNotifyFunc">GConfClientNotifyFunc</link> on the client side). 
+</para>
+
+<para>
+For the notification to happen, <parameter>namespace_section</parameter> must be equal to or below one
+of the directories added with <link linkend="gconf-client-add-dir">gconf_client_add_dir</link>(). You can still call
+<link linkend="gconf-client-notify-add">gconf_client_notify_add</link>() for other directories, but no notification will be
+received until you add a directory above or equal to <parameter>namespace_section</parameter>.  One
+implication of this is that <link linkend="gconf-client-remove-dir">gconf_client_remove_dir</link>() temporarily disables
+notifications that were below the removed directory.
+</para>
+
+<para>
+The function returns a connection ID you can use to call
+<link linkend="gconf-client-notify-remove">gconf_client_notify_remove</link>().
+</para>
+
+<para>
+See the description of <link linkend="GConfClientNotifyFunc">GConfClientNotifyFunc</link> for details on how the
+notification function is called.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>namespace_section</parameter>&nbsp;:</entry>
+<entry>where to listen for changes.
+</entry></row>
+<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
+<entry>function to call when changes occur.
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data to pass to <parameter>func</parameter>.
+</entry></row>
+<row><entry align="right"><parameter>destroy_notify</parameter>&nbsp;:</entry>
+<entry>function to call on <parameter>user_data</parameter> when the notify is removed or the <link linkend="GConfClient">GConfClient</link> is destroyed, or <symbol>NULL</symbol> for none.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a connection ID for removing the notification.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-notify-remove">gconf_client_notify_remove ()</title>
+<programlisting>void        gconf_client_notify_remove      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="guint">guint</link> cnxn);</programlisting>
+<para>
+Remove a notification using the ID returned from
+<link linkend="gconf-client-notify-add">gconf_client_notify_add</link>(). Invokes the destroy notify function on the
+notification's user data, if appropriate.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>cnxn</parameter>&nbsp;:</entry>
+<entry>connection ID.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-error-handling">gconf_client_set_error_handling ()</title>
+<programlisting>void        gconf_client_set_error_handling (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link> mode);</programlisting>
+<para>
+Controls the default error handling for <link linkend="GConfClient">GConfClient</link>. See
+<link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link> and <link linkend="GConfClientParentWindowFunc">GConfClientParentWindowFunc</link> for details on this.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>mode</parameter>&nbsp;:</entry>
+<entry>error handling mode.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-global-default-error-handler">gconf_client_set_global_default_error_handler ()</title>
+<programlisting>void        gconf_client_set_global_default_error_handler
+                                            (<link linkend="GConfClientErrorHandlerFunc">GConfClientErrorHandlerFunc</link> func);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>func</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-clear-cache">gconf_client_clear_cache ()</title>
+<programlisting>void        gconf_client_clear_cache        (<link linkend="GConfClient">GConfClient</link> *client);</programlisting>
+<para>
+Dumps everything out of the <link linkend="GConfClient">GConfClient</link> client-side cache. If you know you're
+done using the <link linkend="GConfClient">GConfClient</link> for a while, you can call this function to save some
+memory.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-preload">gconf_client_preload ()</title>
+<programlisting>void        gconf_client_preload            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dirname,
+                                             <link linkend="GConfClientPreloadType">GConfClientPreloadType</link> type,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Preloads a directory. Normally you do this when you call <link linkend="gconf-client-add-dir">gconf_client_add_dir</link>(),
+but if you've called <link linkend="gconf-client-clear-cache">gconf_client_clear_cache</link>() there may be a reason to do it
+again.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>dirname</parameter>&nbsp;:</entry>
+<entry>directory to preload.
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry>degree of preload.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set">gconf_client_set ()</title>
+<programlisting>void        gconf_client_set                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfValue">GConfValue</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Sets the value of a configuration key. Just like <link linkend="gconf-engine-set">gconf_engine_set</link>(), but uses
+<link linkend="GConfClient">GConfClient</link> caching and error-handling features. The <parameter>val</parameter> argument will not be
+modified.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>key to set.
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>new value.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get">gconf_client_get ()</title>
+<programlisting><link linkend="GConfValue">GConfValue</link>* gconf_client_get                (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-without-default">gconf_client_get_without_default ()</title>
+<programlisting><link linkend="GConfValue">GConfValue</link>* gconf_client_get_without_default
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-entry">gconf_client_get_entry ()</title>
+<programlisting><link linkend="GConfEntry">GConfEntry</link>* gconf_client_get_entry          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *locale,
+                                             <link linkend="gboolean">gboolean</link> use_schema_default,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>locale</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>use_schema_default</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-default-from-schema">gconf_client_get_default_from_schema ()</title>
+<programlisting><link linkend="GConfValue">GConfValue</link>* gconf_client_get_default_from_schema
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-unset">gconf_client_unset ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_unset              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-all-entries">gconf_client_all_entries ()</title>
+<programlisting><link linkend="GSList">GSList</link>*     gconf_client_all_entries        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-all-dirs">gconf_client_all_dirs ()</title>
+<programlisting><link linkend="GSList">GSList</link>*     gconf_client_all_dirs           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-suggest-sync">gconf_client_suggest_sync ()</title>
+<programlisting>void        gconf_client_suggest_sync       (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-dir-exists">gconf_client_dir_exists ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_dir_exists         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *dir,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>dir</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-float">gconf_client_get_float ()</title>
+<programlisting><link linkend="gdouble">gdouble</link>     gconf_client_get_float          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-int">gconf_client_get_int ()</title>
+<programlisting><link linkend="gint">gint</link>        gconf_client_get_int            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-string">gconf_client_get_string ()</title>
+<programlisting><link linkend="gchar">gchar</link>*      gconf_client_get_string         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-bool">gconf_client_get_bool ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_get_bool           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-schema">gconf_client_get_schema ()</title>
+<programlisting><link linkend="GConfSchema">GConfSchema</link>* gconf_client_get_schema        (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-list">gconf_client_get_list ()</title>
+<programlisting><link linkend="GSList">GSList</link>*     gconf_client_get_list           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-get-pair">gconf_client_get_pair ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_get_pair           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gpointer">gpointer</link> car_retloc,
+                                             <link linkend="gpointer">gpointer</link> cdr_retloc,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>car_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cdr_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>car_retloc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cdr_retloc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-float">gconf_client_set_float ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_float          (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gdouble">gdouble</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-int">gconf_client_set_int ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_int            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gint">gint</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-string">gconf_client_set_string ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_string         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="gchar">gchar</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-bool">gconf_client_set_bool ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_bool           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="gboolean">gboolean</link> val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-schema">gconf_client_set_schema ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_schema         (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             const <link linkend="GConfSchema">GConfSchema</link> *val,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>val</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-list">gconf_client_set_list ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_list           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> list_type,
+                                             <link linkend="GSList">GSList</link> *list,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-set-pair">gconf_client_set_pair ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_set_pair           (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValueType">GConfValueType</link> car_type,
+                                             <link linkend="GConfValueType">GConfValueType</link> cdr_type,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_car,
+                                             <link linkend="gconstpointer">gconstpointer</link> address_of_cdr,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>car_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cdr_type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>address_of_car</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>address_of_cdr</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-error">gconf_client_error ()</title>
+<programlisting>void        gconf_client_error              (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);</programlisting>
+<para>
+Emits the "error" signal. Rarely useful.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
+<entry>error to pass to signal handlers.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-unreturned-error">gconf_client_unreturned_error ()</title>
+<programlisting>void        gconf_client_unreturned_error   (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> *error);</programlisting>
+<para>
+Emits the "unreturned_error" signal. Rarely useful.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>error</parameter>&nbsp;:</entry>
+<entry>error to pass to signal handlers.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-value-changed">gconf_client_value_changed ()</title>
+<programlisting>void        gconf_client_value_changed      (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> *key,
+                                             <link linkend="GConfValue">GConfValue</link> *value);</programlisting>
+<para>
+Emits the "value_changed" signal. Rarely useful.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>key to pass to signal handlers.
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>value of <parameter>key</parameter> to pass to signal handlers.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-reverse-change-set">gconf_client_reverse_change_set ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_client_reverse_change_set
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Creates a change set that would reverse <parameter>cs</parameter>. That is, for each change in <parameter>cs</parameter>,
+save the current state of that key in the returned change set.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>change set to create the reverse of.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>a new change set that would restore the current state of each key in <parameter>cs</parameter>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-change-set-from-currentv">gconf_client_change_set_from_currentv ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_client_change_set_from_currentv
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             const <link linkend="gchar">gchar</link> **keys,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+Creates a change set that will change the keys in
+<symbol>NULL</symbol>-terminated array <parameter>keys</parameter> to their current state. Use this to
+save the current state of a collection of keys; then you can later revert to the
+current state by committing the returned change set.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>keys</parameter>&nbsp;:</entry>
+<entry><symbol>NULL</symbol>-terminated array of key names.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>new change set that changes all the <parameter>keys</parameter> to their current state.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-change-set-from-current">gconf_client_change_set_from_current ()</title>
+<programlisting><link linkend="GConfChangeSet">GConfChangeSet</link>* gconf_client_change_set_from_current
+                                            (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GError">GError</link> **err,
+                                             const <link linkend="gchar">gchar</link> *first_key,
+                                             ...);</programlisting>
+<para>
+Convenient varargs version of <link linkend="gconf-client-change-set-from-currentv">gconf_client_change_set_from_currentv</link>().
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfClient">GConfClient</link>.
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>the return location for an allocated <link linkend="GError">GError</link>, or <symbol>NULL</symbol> to ignore errors.
+</entry></row>
+<row><entry align="right"><parameter>first_key</parameter>&nbsp;:</entry>
+<entry>first key to save the current state of.
+</entry></row>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry><symbol>NULL</symbol>-terminated list of additional keys.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>new change set that changes all the keys to their current state.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-client-commit-change-set">gconf_client_commit_change_set ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gconf_client_commit_change_set  (<link linkend="GConfClient">GConfClient</link> *client,
+                                             <link linkend="GConfChangeSet">GConfChangeSet</link> *cs,
+                                             <link linkend="gboolean">gboolean</link> remove_committed,
+                                             <link linkend="GError">GError</link> **err);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cs</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>remove_committed</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GConfClient-error">The &quot;error&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GConfClient">GConfClient</link> *gconfclient,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Emitted whenever an error occurs inside a <link linkend="GConfClient">GConfClient</link> function. Depending on
+the <link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link>, the default handler for this signal may or
+may not display an error dialog.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gconfclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GError">GError</link>* (the error).
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GConfClient-unreturned-error">The &quot;unreturned-error&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GConfClient">GConfClient</link> *gconfclient,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Emitted when you pass <symbol>NULL</symbol> for the <link linkend="GError">GError</link>** argument to
+any <link linkend="GConfClient">GConfClient</link> function, and an error occurs. Depending on the
+<link linkend="GConfClientErrorHandlingMode">GConfClientErrorHandlingMode</link>, the default handler for this signal may or may
+not display an error dialog.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gconfclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GError">GError</link>* (the unhandled error).
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="GConfClient-value-changed">The &quot;value-changed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="GConfClient">GConfClient</link> *gconfclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> arg2,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Emitted when a key below one of the directories added with
+<link linkend="gconf-client-add-dir">gconf_client_add_dir</link>() receives a new value or is unset. Because your signal
+handler will have to use <link linkend="strcmp">strcmp</link>() to decide whether it cares about the
+particular value that changed, it can be much more efficient to use
+<link linkend="gconf-client-notify-add">gconf_client_notify_add</link>().
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>gconfclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>a const <link linkend="gchar">gchar</link>* representing the changed key name
+</entry></row>
+<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
+<entry>a <link linkend="GConfValue">GConfValue</link>* representing the new value, or <symbol>NULL</symbol> for unset.
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+
+</refentry>

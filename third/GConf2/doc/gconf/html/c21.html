@@ -1,0 +1,328 @@
+<HTML
+><HEAD
+><TITLE
+>Introduction to GConf</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="NEXT"
+TITLE="Terms and Concepts"
+HREF="x42.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x42.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="AEN21">Introduction to GConf</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c21.html#AEN25"
+>Motivation</A
+></DT
+><DT
+><A
+HREF="x42.html"
+>Terms and Concepts</A
+></DT
+></DL
+></DIV
+><P
+>      This chapter introduces GConf, including the basic terms and
+      concepts. After reading it, if you're a GNOME programmer looking
+      to dive in quickly, you might skip to <A
+HREF="gconf-client.html#GCONFCLIENT-EXAMPLE"
+>the Section called <I
+>A Complete Example</I
+> in the chapter called <I
+><SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> higher-level API</I
+></A
+>. If you want to have
+      comprehensive knowledge of GConf, you might want to read the
+      whole manual.
+    </P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN25">Motivation</H1
+><P
+>   
+        GConf is intended to store key-value pairs, where keys are
+        located in an infinite tree-structured namespace (similar to the
+        UNIX filesystem). It offers several useful features:
+        <P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+><P
+>              Users can select a variety of data storage backends, such as XML
+              text files, ACAP, or databases (LDAP, DB, etc.). This makes it
+              easy to adapt GConf to local needs. It also avoids the age-old
+              "text files vs. binary registry" debate. (Note: the current GConf
+              only has an XML backend implemented, other backends are easy to
+              write though.)
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              GConf offers a notification service, so applications can 
+              ask to be notified when the value of a key changes. 
+              This allows settings to be applied to groups of
+              applications, without restarting them and without 
+              ugly hacks. It also allows a clean model-view
+              architecture for applications.              
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              Each user has a "GConf search path" which is a list of 
+              configuration sources to scan for each value. 
+              For example, the configuration engine might look for 
+              values first in the local machine's database and 
+              then in a network-wide database.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              GConf is implemented as a per-user daemon, which makes 
+              locking a non-issue and allows aggressive caching.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              The client API is simple and very abstract, which allows us to
+              change its implementation at a later time without a big headache.
+              Because a good implementation is a complex problem, this is
+              important.
+            </P
+></LI
+></UL
+>
+      </P
+><P
+>        GConf was inspired by Wichert Akkerman's configuration system
+        specification, originally developed for the Debian project. See <A
+HREF="http://www.debian.org/~wakkerma/config6"
+TARGET="_top"
+>http://www.debian.org/~wakkerma/config6</A
+> for his
+        specification. Other sources of ideas include the Windows registry, 
+        the ACAP specification, and Emacs customize mode (try typing
+        <TT
+CLASS="LITERAL"
+>M-x customize-browse</TT
+> in Emacs). Windows
+        XP's registry has some features such as documentation that
+        GConf has as well - maybe they copied GConf - hey, it's
+        possible. ;-)
+      </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="x42.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GConf Manual</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Terms and Concepts</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
