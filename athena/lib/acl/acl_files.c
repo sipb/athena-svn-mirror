@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.5 1989-10-25 22:05:09 probe Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.6 1989-11-26 22:17:59 epeisach Exp $";
 #endif lint
 
 /*
@@ -113,7 +113,7 @@ char *canon;
 	strncpy(canon, atsign, len);
 	canon += len;
 	*canon++ = '\0';
-    } else if(get_krbrlm(canon, 1) != KSUCCESS) {
+    } else if(krb_get_lrealm(canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }
 }
