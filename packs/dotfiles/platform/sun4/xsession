@@ -3,7 +3,7 @@
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 # $Author: probe $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.18 1990-12-15 11:57:34 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/platform/sun4/xsession,v 1.19 1990-12-17 16:27:37 probe Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -160,8 +160,13 @@ if (! $?skip_x_startup) then
 	if ($?verbose_login) echo "Running standard startup activities..."
 	# Start Zephyr client, and if zephyr started okay, send
 	# message of the day as windowgram
-	( /usr/etc/zwgc; \
-		if ($status == 0) /bin/athena/get_message -new -zephyr &)
+	if ($?NOCALLS) then
+		( /usr/etc/zwgc -f /usr/athena/lib/zephyr/zwgc.desc \
+				-subfile /dev/null && \
+		  /bin/athena/get_message -new -zephyr &)
+	else
+		( /usr/etc/zwgc && /bin/athena/get_message -new -zephyr &)
+	endif
 	sleep $sleep_time
 	/usr/new/mh/bin/msgchk -nonotify nomail		# Check for mail
 	(/usr/athena/olc who &) >& /dev/null		# Ping the OLC server
