@@ -35,6 +35,7 @@
 
 #define PRINTOPTIONS
 #include "telnetd.h"
+#include <sys/utsname.h>
 
 /*
  * utility functions performing io related tasks
@@ -448,6 +449,9 @@ putf(cp, where)
 	char *slash;
 	time_t t;
 	char db[100];
+	struct utsname utsinfo;
+
+	uname(&utsinfo);
 
 	putlocation = where;
 
@@ -479,6 +483,22 @@ putf(cp, where)
 			(void)time(&t);
 			(void)strftime(db, sizeof(db), fmtstr, localtime(&t));
 			putstr(db);
+			break;
+
+		case 's':
+			putstr(utsinfo.sysname);
+			break;
+
+		case 'm':
+			putstr(utsinfo.machine);
+			break;
+
+		case 'r':
+			putstr(utsinfo.release);
+			break;
+
+		case 'v':
+			putstr(utsinfo.version);
 			break;
 
 		case '%':
