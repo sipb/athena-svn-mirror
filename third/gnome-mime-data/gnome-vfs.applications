@@ -109,7 +109,7 @@ freeamp
 	expects_uris=true
 	requires_terminal=false
 	supported_uri_schemes=http,file
-	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-wav
+	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-wav,audio/mpeg
 
 freeamp-no-uris
 	command=freeamp
@@ -195,7 +195,7 @@ gnumeric
 	mime_types=application/x-gnumeric,application/x-applix-spreadsheet,application/vnd.ms-excel,application/vnd.lotus-1-2-3,application/x-oleo,application/x-xbase,text/spreadsheet,text/x-comma-separated-values,text/tab-separated-values
 
 grecord
-	command=gnome-sound-recorder
+	command=gnome-sound-recorder -p
 	name=Sound Recorder
 	can_open_multiple_files=false
 	expects_uris=false
@@ -367,7 +367,7 @@ mpg123
 	expects_uris=non-file
 	requires_terminal=false
 	supported_uri_schemes=http,ftp,file
-	mime_types=audio/x-mp3,audio/x-mpeg
+	mime_types=audio/x-mp3,audio/x-mpeg,audio/mpeg
 
 mswordview
 	command=gathrun mimeutils mswordview-wrapper
@@ -571,7 +571,7 @@ xmms
 	expects_uris=true
 	requires_terminal=false
 	supported_uri_schemes=http,ftp,file
-	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-wav,audio/x-riff
+	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-wav,audio/x-riff,audio/mpeg
 
 xmms-no-uris
 	command=xmms
@@ -587,7 +587,7 @@ xmps
 	can_open_multiple_files=true
 	expects_uris=false
 	requires_terminal=false
-	mime_types=video/x-msvideo,video/x-ms-asf,video/mpeg,audio/x-mp3,audio/ac3,audio/x-wav
+	mime_types=video/x-msvideo,video/x-ms-asf,video/mpeg,audio/x-mp3,audio/ac3,audio/x-wav,audio/mpeg
 
 xpdf
 	command=xpdf

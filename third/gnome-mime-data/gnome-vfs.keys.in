@@ -5,6 +5,10 @@
 # Conventions used in this file are described in detail in
 # gnome-vfs/doc/mime-descriptions-guidelines.txt.
 
+*/*
+	can_be_executable=TRUE
+	_description=unknown type
+
 application/andrew-inset
 	_category=Documents
 	_description=Andrew Toolkit inset
@@ -466,6 +470,15 @@ application/x-executable-binary
 	can_be_executable=TRUE
 	_description=binary program
 
+application/x-flac
+	_description=FLAC audio
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=gst-player
+	short_list_application_ids_for_intermediate_user_level=gst-player
+	short_list_application_ids_for_advanced_user_level=gst-player
+	_category=Audio
+	use_category_default=no
+
 application/x-font-afm
 	_description=Adobe font metrics
 	icon_filename=gnome-font-afm
@@ -489,6 +502,10 @@ application/x-font-libgrx
 
 application/x-font-linux-psf
 	_description=Linux PSF console font
+	_category=User Interface/Fonts
+
+application/x-font-otf
+	_description=OpenType font
 	_category=User Interface/Fonts
 
 application/x-font-pcf
@@ -611,6 +628,9 @@ application/x-gzip
 application/x-hdf
 	_description=HDF document
 	_category=Documents/Numeric
+
+application/x-iso-image
+	_description=ISO image
 
 # also application/x-class-file
 application/x-java-byte-code
@@ -947,6 +967,16 @@ audio/basic
 	icon_filename=gnome-audio
 	_category=Audio
 
+# also audio/x-mpeg
+audio/mpeg
+	_description=MPEG audio
+	icon_filename=i-music
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=xmms,freeamp,mpg123
+	short_list_application_ids_for_intermediate_user_level=xmms,freeamp,mpg123
+	short_list_application_ids_for_advanced_user_level=xmms,freeamp,mpg123
+	_category=Audio
+
 audio/prs.sid
 	_description=Commodore 64 Audio
 	icon_filename=i-music
@@ -992,7 +1022,6 @@ audio/x-mod
 	short_list_application_ids_for_advanced_user_level=soundtracker
 	_category=Audio
 
-# also audio/x-mpeg
 audio/x-mp3
 	_description=MP3 audio
 	icon_filename=i-music
@@ -1011,9 +1040,9 @@ audio/x-mp3-playlist
 	short_list_application_ids_for_advanced_user_level=xmms-no-uris,freeamp-no-uris
 	_category=Audio
 
-# also audio/x-mp3
+# also audio/mpeg
 audio/x-mpeg
-	_description=MP3 audio
+	_description=MPEG audio
 	icon_filename=i-music
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=xmms,freeamp,mpg123
@@ -1027,6 +1056,10 @@ audio/x-mpegurl
 	short_list_application_ids_for_novice_user_level=xmms-no-uris,freeamp-no-uris
 	short_list_application_ids_for_intermediate_user_level=xmms-no-uris,freeamp-no-uris
 	short_list_application_ids_for_advanced_user_level=xmms-no-uris,freeamp-no-uris
+	_category=Audio
+
+audio/x-ms-asx
+	_description=Playlist
 	_category=Audio
 
 # also application/vnd.rn-realmedia, audio/x-real-audio
@@ -1839,6 +1872,7 @@ text/x-tcl
 text/x-tex
 	_description=TeX document
 	_category=Documents/Text Markup
+	icon_filename=gnome-tex
 
 text/x-texinfo
 	_description=TeXInfo document
