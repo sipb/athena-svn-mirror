@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1.2.2 1997-12-02 20:43:32 ghudson Exp $
+# $Id: Makefile,v 1.1.2.3 1998-03-09 22:49:34 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -9,6 +9,7 @@ APPDEFS=${X11LIB}/app-defaults
 FONTS=${X11LIB}/fonts/100dpi
 CRONTABS=/var/spool/cron/crontabs
 NCS=/var/ncs
+XDMDIR=/var/X11/xdm
 
 all:
 
@@ -22,7 +23,9 @@ install:
 	-mkdir -p ${DESTDIR}${FONTS}
 	-mkdir -p ${DESTDIR}${CRONTABS}
 	-mkdir -p ${DESTDIR}${SGICONFIG}
+	-mkdir -p ${DESTDIR}${XDMDIR}
 	install -c -m 0644 4DWm ${DESTDIR}${APPDEFS}
+	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
 	install -c -m 0644 Toolchest ${DESTDIR}${APPDEFS}
 	install -c -m 0644 appletalk ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 bsdlpr ${DESTDIR}${SGICONFIG}
