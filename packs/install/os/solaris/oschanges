@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Copy some files and remove some files after the os pkgs were installed
-# $Id: oschanges,v 1.13 2001-05-09 04:02:56 zacheiss Exp $
+# $Id: oschanges,v 1.14 2001-08-27 22:21:54 ghudson Exp $
 
 # copied from AFS
 rm -f $UPDATE_ROOT/usr/ucblib/libucb.so.1
@@ -11,6 +11,7 @@ ln -s libucb.so.1 $UPDATE_ROOT/usr/ucblib/libucb.so
 
 
 # removed
+rm -f $UPDATE_ROOT/etc/rc2.d/S76nscd
 rm -f $UPDATE_ROOT/etc/rc2.d/S85power
 rm -f $UPDATE_ROOT/etc/rc2.d/S88sendmail
 rm -f $UPDATE_ROOT/etc/rc2.d/S89bdconfig
@@ -19,7 +20,6 @@ rm -f $UPDATE_ROOT/etc/rc2.d/S80lp
 rm -f $UPDATE_ROOT/etc/rc2.d/S90wbem
 rm -f $UPDATE_ROOT/etc/rc3.d/S76snmpdx
 rm -f $UPDATE_ROOT/etc/rc3.d/S77dmi
-rm -f $UPDATE_ROOT/etc/rc3.d/S76nscd
 
 rm -f $UPDATE_ROOT/usr/openwin/lib/X11/fonts/75dpi/*
 rm -f $UPDATE_ROOT/usr/openwin/lib/X11/fonts/misc/*
