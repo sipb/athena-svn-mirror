@@ -20,18 +20,20 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.17 1992-01-28 20:37:07 lwvanels Exp $
+ *	$Id: c_io.c,v 1.18 1992-02-04 19:54:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.17 1992-01-28 20:37:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.18 1992-02-04 19:54:45 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
-#if defined(__STDC__) && !defined(ibm032)
+#if defined(__STDC__) && !defined(__HIGHC__) && !defined(SABER)
+/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+/* Ditto for saber */
 #include <stdlib.h>
 #endif
 
@@ -625,6 +627,8 @@ int sread(fd, buf, nbytes)
       }
     
     n_read = read(fd, (char *)(buf + tot_read), nbytes);
+    if (n_read < 0)
+      return(tot_read);
     tot_read += n_read;
     nbytes = nbytes - n_read;
   } while (nbytes != 0);
@@ -676,6 +680,8 @@ int swrite(fd, buf, nbytes)
       }
     
     n_wrote = write(fd, (char *)(buf + tot_wrote), nbytes);
+    if (n_wrote < 0)
+      return(tot_wrote);
     tot_wrote += n_wrote;
     nbytes = nbytes - n_wrote;
   } while (nbytes != 0);
