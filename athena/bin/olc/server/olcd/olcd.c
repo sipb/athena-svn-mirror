@@ -47,7 +47,9 @@ extern "C" {
 #endif
 
 #include <netdb.h>		/* Network database defs. */
+#ifndef DIRSIZ
 #include <sys/dir.h>		/* Directory entry format */
+#endif
 #include <arpa/inet.h>		/* inet_* defs */
 
 #if is_cplusplus
@@ -55,7 +57,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.9 1990-01-05 06:23:00 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.10 1990-01-10 13:49:53 raeburn Exp $";
 
 /* Global variables. */
 
@@ -110,7 +112,11 @@ int punt(int sig);
  *	request table as they are received.
  */
 	
-main(int argc, char **argv)
+#if __STDC__
+int main(int argc, char **argv)
+#else
+    main (argc, argv) char **argv;
+#endif
 {
   struct sockaddr_in from;           /* Socket address for input. */
   struct servent *service;           /* Network service entry. */
@@ -411,7 +417,12 @@ main(int argc, char **argv)
  *	request in the request table.
  */
 
-static void process_request(int fd, struct sockaddr_in *from)
+static void
+#if __STDC__
+process_request(int fd, struct sockaddr_in *from)
+#else
+    process_request (fd, from) struct sockaddr_in *from;
+#endif
 {
   REQUEST request;	/* Request structure from client. */
   int type;		/* Type of request. */
@@ -495,7 +506,7 @@ static void process_request(int fd, struct sockaddr_in *from)
 }
 
 
-static void flush_olc_userlogs(void)
+static void flush_olc_userlogs()
 {
   /* placeholder until this is really written */
   /*
@@ -539,8 +550,11 @@ static void flush_olc_userlogs(void)
  *	processing the current request.
  */
 
-int
-punt(int sig)
+#if __STDC__
+int punt(int sig)
+#else
+    punt(sig)
+#endif
 {
   olc_broadcast_message("syslog",
 			fmt ("%s shutting down on signal %d.", ME, sig),
@@ -570,7 +584,11 @@ punt(int sig)
  */
 
 
+#if __STDC__
 authenticate(REQUEST *request, long unsigned int addr)
+#else
+    authenticate(request, addr) REQUEST*request; unsigned long addr;
+#endif
 {
 
 #ifdef KERBEROS
@@ -601,7 +619,7 @@ authenticate(REQUEST *request, long unsigned int addr)
 
 #ifdef KERBEROS
 int
-get_kerberos_ticket(void)
+get_kerberos_ticket()
 {
   int ret;
   char sinstance[INST_SZ];
