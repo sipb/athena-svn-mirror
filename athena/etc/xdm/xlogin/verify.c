@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.99 1999-01-22 23:16:25 ghudson Exp $ */
+/* $Id: verify.c,v 1.100 1999-01-29 18:00:52 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,6 +28,9 @@
 #endif
 #include <errno.h>
 #include <syslog.h>
+#ifdef BSD4_4
+#include <util.h>
+#endif
 
 #include <krb.h>
 #include <hesiod.h>
@@ -72,7 +75,12 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/b
 #ifdef sgi
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/usr/bin:/bin:/etc:/usr/etc:/usr/bin/X11:/usr/andrew/bin:.";
 #else
+#if defined(__NetBSD__) || defined(__linux__)
+char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/
+sbin:/usr/X11R6/bin:/usr/andrew/bin:.";
+#else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
+#endif
 #endif
 #endif
 
@@ -582,6 +590,12 @@ char *dologin(user, passwd, option, script, tty, session, display)
     chown(NETDEV, pwd->pw_uid, SYS);
 #endif
 
+#ifdef BSD4_4
+  i = setlogin(pwd->pw_name);
+  if (i)
+    return(lose("Unable to set your login credentials.\n"));
+#endif
+
   i = setuid(pwd->pw_uid);
   if (i)
     return lose("Unable to set your user ID.\n");
@@ -824,6 +838,9 @@ add_utmp(user, tty, display)
   ut_entry.ut_type = USER_PROCESS;
 #endif
 
+#ifdef BSD4_4
+  login(&ut_entry);
+#else
   f = open(UTMP, O_RDWR);
   if (f >= 0)
     {
@@ -844,6 +861,7 @@ add_utmp(user, tty, display)
       write(f, (char *)&ut_entry, sizeof(ut_entry));
       close(f);
     }
+#endif /* BSD4_4 */
 #endif /* SYSV */
 }
 
