@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.8 1987-07-14 17:13:18 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.9 1987-07-14 18:16:00 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -204,6 +204,11 @@ extern ZNotAcked_t *nacklist;		/* list of not ack'ed packets */
 extern ZServerDesc_t *otherservers;	/* array of servers */
 extern int me_server_idx;		/* me (in the array of servers) */
 extern int nservers;			/* number of other servers*/
+
+#ifdef DEBUG
+/* found in dispatch.c */
+extern char *pktypes[];			/* names of the packet types */
+#endif DEBUG
 
 /* useful defines */
 
