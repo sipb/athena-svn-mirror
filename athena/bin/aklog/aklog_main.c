@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.14 1991-07-16 06:24:49 probe Exp $
+ * $Id: aklog_main.c,v 1.15 1991-08-24 20:55:18 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.14 1991-07-16 06:24:49 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.15 1991-08-24 20:55:18 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -262,7 +262,10 @@ static int auth_to_cell(cell, realm)
 	 * afs style authenticator.
 	 */
 	status = params.get_cred(name, instance, realm_of_cell, &c);
-	
+	if (status == KDC_PR_UNKNOWN)
+	    /* afs.<cell>@<realm> key failed; try afs@<realm> */
+	    status = params.get_cred(name, "", realm_of_cell, &c);
+
 	if (status != KSUCCESS) {
 	    if (dflag) {
 		sprintf(msgbuf, 
