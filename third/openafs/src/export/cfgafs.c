@@ -13,8 +13,9 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/export/cfgafs.c,v 1.1.1.1 2002-01-31 21:49:01 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/export/cfgafs.c,v 1.2 2003-03-20 00:09:37 zacheiss Exp $");
 
+#include <errno.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -26,7 +27,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/export/cfga
 #include <signal.h>
 
 extern char    *malloc(), *optarg;
-extern int	errno;
+
 extern int	sysconfig(int cmd, void *arg, int len);
 
 #include "AFS_component_version_number.c"

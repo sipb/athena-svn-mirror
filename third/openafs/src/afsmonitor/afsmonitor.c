@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsmonitor/afsmonitor.c,v 1.1.1.2 2002-12-13 20:40:59 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsmonitor/afsmonitor.c,v 1.2 2003-03-20 00:09:35 zacheiss Exp $");
 
 #include <stdio.h>
 #include <math.h>
@@ -209,7 +209,7 @@ struct cm_Display_Data *prev_cmData = (struct cm_Display_Data *)0;
 /* EXTERN DEFINITIONS */
 
 extern struct hostent *hostutil_GetHostByName(); 
-extern int errno;
+
 
 
 /* routines from afsmon-output.c */

@@ -10,9 +10,10 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.1.1.2 2002-12-13 20:40:01 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/kdump.c,v 1.2 2003-03-20 00:09:44 zacheiss Exp $");
 
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>	/* for malloc() */
 
 #ifdef AFS_LINUX24_ENV
@@ -518,7 +519,6 @@ void print_cmstats();
 #ifndef AFS_KDUMP_LIB
 extern struct cmd_syndesc *cmd_CreateSyntax();
 #endif
-extern int errno;
 int opencore();
 
 /* Note: this should agree with the definition in afs_buffer.c */

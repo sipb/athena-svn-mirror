@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partition.c,v 1.1.1.2 2002-12-13 20:41:16 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partition.c,v 1.2 2003-03-20 00:09:46 zacheiss Exp $");
 
 #include <ctype.h>
 #ifdef AFS_NT40_ENV
@@ -59,7 +59,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partiti
 #endif
 #endif /* AFS_VFSINCL_ENV */
 #endif	/* AFS_OSF_ENV */
-#include <sys/errno.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <sys/file.h>
@@ -811,7 +811,6 @@ void VSetPartitionDiskUsage_r(register struct DiskPartition *dp)
 #else
 void VSetPartitionDiskUsage_r(register struct DiskPartition *dp)
 {
-    extern int errno;
     int fd, totalblks, free, used, availblks, bsize, code;
     int reserved;
 #if AFS_HAVE_STATVFS

@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/object_test.c,v 1.1.1.1 2002-01-31 21:49:03 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/object_test.c,v 1.2 2003-03-20 00:09:38 zacheiss Exp $");
 
 #include "gtxscreenobj.h"     /*Gator screen object interface*/
 #include "gtxtextobj.h"       /*Gator text object interface*/
@@ -23,10 +23,10 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/object_
 #include "gtxcurseswin.h"    /*Gator curses window package*/
 #include "gtxdumbwin.h"      /*Gator dumb terminal window package*/
 #include "gtxX11win.h"       /*Gator X11 window package*/
+#include <errno.h>
 #include <stdio.h>                  /*Standard I/O stuff*/
 #include <cmd.h>		    /*Command interpretation library*/
 
-extern int errno;
 
 /*
  * Command line parameter indicies.
