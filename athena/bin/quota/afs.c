@@ -17,76 +17,86 @@ extern int heading_printed;
 
 void *
 getafsquota(ap)
-     struct _attachtab *ap;
+    struct _attachtab *ap;
 {
-  static struct VolumeStatus vs;
-  struct ViceIoctl ibuf;
-  int code;
+    static struct VolumeStatus vs;
+    struct ViceIoctl ibuf;
+    int code;
 
-  ibuf.out_size=sizeof(struct VolumeStatus);
-  ibuf.in_size=0;
-  ibuf.out=(caddr_t) &vs;
-  code = pioctl(ap->mntpt,VIOCGETVOLSTAT,&ibuf,1);
-  if (code) {
-    fprintf(stderr, "Error getting AFS quota:");
-    perror(ap->mntpt);
-    return(NULL);
-  }
-  return((void *)&vs);
+    ibuf.out_size=sizeof(struct VolumeStatus);
+    ibuf.in_size=0;
+    ibuf.out=(caddr_t) &vs;
+    code = pioctl(ap->mntpt,VIOCGETVOLSTAT,&ibuf,1);
+    if (code) {
+	fprintf(stderr, "Error getting AFS quota:");
+	perror(ap->mntpt);
+	return(NULL);
+    }
+    return((void *)&vs);
 }
 
 void
 prafsquota(ap,foo,heading_id,heading_name)
-     struct _attachtab *ap;
-     void *foo;
-     int heading_id;
-     char *heading_name;
+    struct _attachtab *ap;
+    void *foo;
+    int heading_id;
+    char *heading_name;
 {
-  struct VolumeStatus *vs;
-  char *cp;
+    struct VolumeStatus *vs;
+    char *cp;
 
-  vs = (struct VolumeStatus *) foo;
-  cp = ap->mntpt;
-  if (!user_and_groups) {
-    if (!heading_printed) simpleheading(heading_id,heading_name);
-    if (strlen(ap->mntpt) > 15){
-      printf("%s\n",cp);
-      cp = "";
+    vs = (struct VolumeStatus *) foo;
+    cp = ap->mntpt;
+    if (!user_and_groups) {
+	if (!heading_printed) simpleheading(heading_id,heading_name);
+	if (strlen(ap->mntpt) > 15){
+	    printf("%s\n",cp);
+	    cp = "";
+	}
+	printf("%-14s %5d%7d%7d%12s\n",
+	       cp,
+	       vs->BlocksInUse,
+	       vs->MaxQuota,
+	       vs->MaxQuota,
+	       (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)
+		? "Expired" : ""));
+    } else {
+	if (!heading_printed) heading(heading_id,heading_name);
+	if (strlen(cp) > 15){
+	    printf("%s\n", cp);
+	    cp =  "";
+	}
+	printf("%-15s %-17s %6d %6d %6d%-2s\n",
+	       cp, "volume",
+	       vs->BlocksInUse,
+	       vs->MaxQuota,
+	       vs->MaxQuota,
+	       (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)
+		? "<<" : ""));
     }
-    printf("%-14s %5d%7d%7d%12s\n",
-	   cp,
-	   vs->BlocksInUse,
-	   vs->MaxQuota,
-	   vs->MaxQuota,
-	   ((vs->BlocksInUse < vs->MaxQuota)?"":"Expired"));
-  } else {
-    if (!heading_printed) heading(heading_id,heading_name);
-    if (strlen(cp) > 15){
-      printf("%s\n", cp);
-      cp =  "";
-    }
-    printf("%-15s %-17s %6d %6d %6d%-2s\n",
-	   cp, "volume",
-	   vs->BlocksInUse,
-	   vs->MaxQuota,
-	   vs->MaxQuota,
-	   ((vs->BlocksInUse >= vs->MaxQuota) ? "<<" : ""));
-  }
 }
 
 void
 afswarn(ap,foo,name)
-     struct _attachtab *ap;
-     void *foo;
-     char *name;
+    struct _attachtab *ap;
+    void *foo;
+    char *name;
 {
-  struct VolumeStatus *vs;
-  char buf[1024];
+    struct VolumeStatus *vs;
+    char buf[1024];
+    int i;
+    uid_t uid=getuid();
 
-  vs = (struct VolumeStatus *) foo;
-  if (vs->BlocksInUse > vs->MaxQuota) {
-    sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
-	    ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
-    putwarning(buf);
-  }
+    vs = (struct VolumeStatus *) foo;
+    if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)) {
+	/* Only print a warning if the user attached the locker */
+	for (i = 0; i < ap->nowners; i++) {
+	    if (uid != ap->owners[i])
+		continue;
+	    sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
+		    ap->mntpt, (vs->BlocksInUse - vs->MaxQuota));
+	    putwarning(buf);
+	    break;
+	}
+    }
 }  
