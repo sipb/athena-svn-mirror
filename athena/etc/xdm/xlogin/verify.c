@@ -1,4 +1,6 @@
-/* $Id: verify.c,v 1.101 1999-04-12 13:41:14 rbasch Exp $ */
+/* $Id: verify.c,v 1.101.4.1 2000-02-05 06:58:19 tb Exp $ */
+
+#define _GNU_SOURCE /* make [UW]TMPX_FILE visible */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +8,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <fcntl.h>
-#ifdef SYSV
+#if defined (SYSV) || defined (__linux__)
 #include <shadow.h>
 #include <limits.h>
 #include <utmpx.h>
@@ -30,6 +32,10 @@
 #include <syslog.h>
 #ifdef BSD4_4
 #include <util.h>
+#endif
+
+#ifdef __linux__
+#include <shadow.h>
 #endif
 
 #include <krb.h>
@@ -99,7 +105,7 @@ extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
 
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(__linux__)
 struct passwd *get_pwnam(usr)
      char *usr;
 {
@@ -772,7 +778,7 @@ add_utmp(user, tty, display)
      char *display;
 {
   struct utmp ut_entry;
-#ifndef SYSV
+#if !defined (SYSV) && !defined (__linux__)
   struct utmp ut_tmp;
 #else
   struct utmp *ut_tmp;
@@ -781,7 +787,7 @@ add_utmp(user, tty, display)
 #endif /* SYSV */
   int f;
 
-#ifdef SYSV
+#if defined (SYSV) || defined (__linux__)
   memset(&utx_entry, 0, sizeof(utx_entry));
 
   strncpy(utx_entry.ut_line, tty, sizeof(utx_entry.ut_line));

@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.1.4.1 1999-12-14 19:03:22 tb Exp $
+! $Id: Xlogin.linux.presed,v 1.1.4.2 2000-02-05 06:58:19 tb Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -662,12 +662,12 @@ xlogin.Geometry: 		580x325+205+105
 !
 
 *login*background:		white
-*login*foreground:		black,gray55,red
+*login*foreground:		black,gray55,black
 
 *login.logo.foreground:		black,gray15,red
 *login.eyes.foreground:		black,gray15,red
 *login.version.foreground:	black,gray15,red
-*login.logo2.foreground:	black,gray15,black
+*login.logo2.foreground:	black,gray15,red
 
 ! savershell is the big black window that covers the screen when the xlogin
 ! "screensaver" kicks in.
