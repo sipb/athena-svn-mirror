@@ -13,6 +13,14 @@
 #include "gquota_db.h"
 #include "quota.h"
 
+/* These have to be defined here because quota_dba.o declares them */
+/* extern.   Normally, the are declared in qmain.c. */
+#ifdef DEBUG
+char *progname = "gbill_db";
+int quota_debug=1;
+int gquota_debug=1;
+#endif
+
 /* Define all codes that that the bursar files will use. */
 #define STUFF "SU1"
 #define ATHCODE "385"

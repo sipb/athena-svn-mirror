@@ -9,6 +9,14 @@
 #include <signal.h>
 #include "gquota_db.h"
 
+/* These have to be defined here because quota_dba.o declares them */
+/* extern.   Normally, the are declared in qmain.c. */
+#ifdef DEBUG
+char *progname = "gdump_db";
+int quota_debug=1;
+int gquota_debug=1;
+#endif
+
 FILE *fp;
 int clean;
 static char *filename;

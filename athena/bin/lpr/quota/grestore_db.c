@@ -9,6 +9,14 @@
 #include <strings.h>
 #include "gquota_db.h"
 
+/* These have to be defined here because quota_dba.o declares them */
+/* extern.   Normally, the are declared in qmain.c. */
+#ifdef DEBUG
+char *progname = "grestore_db";
+int quota_debug=1;
+int gquota_debug=1;
+#endif
+
 int gquota_db_create(), gquota_db_set_name();
 
 main(argc, argv)
@@ -17,7 +25,7 @@ char *argv[];
 {
   FILE *fp;
   gquota_rec qrec;
-  char temp_string[10], title[20], title_num[3];
+  char temp_string[10], title[20], title_num[4];
   long temp_account;
   int i, trip=0, temp_num;
 
