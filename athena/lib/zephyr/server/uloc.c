@@ -18,7 +18,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_uloc_c[] =
-"$Id: uloc.c,v 1.53 1997-09-14 21:54:34 ghudson Exp $";
+"$Id: uloc.c,v 1.53.2.1 1998-07-15 18:54:59 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -1158,6 +1158,8 @@ uloc_dump_locs(fp)
 	dump_quote(locations[i].machine->string, fp);
 	fputs("' '", fp);
 	dump_quote(locations[i].time, fp);
+	fputs("' '", fp);
+	dump_quote(locations[i].tty->string, fp);
 	fputs("' ", fp);
 	switch (locations[i].exposure) {
 	  case OPSTAFF_VIS:
