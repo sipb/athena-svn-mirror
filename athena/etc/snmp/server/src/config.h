@@ -1,9 +1,14 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.5 1990-07-15 17:55:44 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 1.6 1990-07-17 14:17:18 tom Exp $
  *  $Author: tom $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ * Revision 1.5  90/07/15  17:55:44  tom
+ * set the sysObjectID to be 'athena'. It may be useful to use this for
+ * various types of machines.. but I doubt rel-eng will ever want to deal
+ * with that.
+ * 
  * Revision 1.4  90/05/26  13:42:02  tom
  * athena release 7.0e + patch 15
  * 
@@ -36,9 +41,9 @@
  */
 
 #ifdef MIT
-/*
- * This is a bogus way to do it.
- */
+#if defined(decmips)    
+#define ULTRIX3
+#endif
 #endif MIT
 
 /*#define GATEWAY		/* gives larger routing tables */
