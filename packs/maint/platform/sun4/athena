@@ -187,13 +187,21 @@ if [ "${PUBLIC}" = "true" ]; then
 	cp -p /srvd/etc/inet/inetd.conf /etc/inet/inetd.conf
 	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
 	cp -p /srvd/etc/minor_perm /etc/minor_perm
-	cp -p /srvd/etc/passwd.std /etc/passwd.local
+	if [ -r /srvd/etc/passwd ]; then
+	  cp -p /srvd/etc/passwd /etc/passwd.local
+	  chmod 644 /etc/passwd.local
+	  chown root /etc/passwd.local
+	fi
+	if [ -r /srvd/etc/shadow ]; then
+	  cp -p /srvd/etc/shadow /etc/shadow.local
+	  chmod 600 /etc/shadow.local
+	  chown root /etc/shadow.local
+	fi
 	cp -p /etc/passwd.local /etc/passwd
-	cp -p /srvd/etc/shadow.std /etc/shadow.local
 	cp -p /etc/shadow.local /etc/shadow
 	chmod 600 /etc/shadow
 	chmod 666 /dev/audio /dev/audioctl
-	cp -p /srvd/etc/group.std /etc/group.local
+	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
 	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
 
