@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.4 1997-10-30 23:58:57 ghudson Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.5 1997-10-31 00:03:23 ghudson Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -58,6 +58,7 @@ int al__get_session_record(const char *username,
   char *session_file, *buf = NULL, *ptr1;
   struct flock fl;
   sigset_t smask;
+  struct sigaction action;
 
   /* No POSIX limit on username size; allocate space for filename. */
   session_file = malloc(strlen(al__session_dir) + strlen(username) + 2);
@@ -237,6 +238,10 @@ int al__get_session_record(const char *username,
   sigaddset(&smask, SIGALRM);
   sigaddset(&smask, SIGCHLD);
   sigprocmask(SIG_BLOCK, &smask, &(record->mask));
+  sigemptyset(&action.sa_mask);
+  action.sa_flags = 0;
+  action.sa_handler = SIG_DFL;
+  sigaction(SIGCHLD, &action, &(record->sigchld_action));
 
   record->exists = 1;
   return AL_SUCCESS;
@@ -313,7 +318,8 @@ int al__put_session_record(struct al_record *record)
     free(record->pids);
 
   /* Restore the signal mask in record->mask. */
-  sigprocmask(SIG_SETMASK, &(record->mask), 0);
+  sigaction(SIGCHLD, &(record->sigchld_action), NULL);
+  sigprocmask(SIG_SETMASK, &(record->mask), NULL);
 
   return AL_SUCCESS;
 }

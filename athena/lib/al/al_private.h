@@ -1,4 +1,4 @@
-/* $Id: al_private.h,v 1.2 1997-10-30 23:59:18 ghudson Exp $ */
+/* $Id: al_private.h,v 1.3 1997-10-31 00:03:21 ghudson Exp $ */
 
 /* Copyright 1997 by the Massachusetts Institute of Technology.
  *
@@ -53,6 +53,7 @@ struct passwd;
 struct al_record {
   FILE *fp;
   sigset_t mask;
+  struct sigaction sigchld_action;
   int exists;
   int passwd_added;
   int attached;
