@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.16 1991-06-28 20:26:03 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.17 1991-07-19 16:15:14 epeisach Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -27,7 +27,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.16 1991-06-28 20:26:03 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.17 1991-07-19 16:15:14 epeisach Exp $";
 #endif
 
 #ifndef NULL
@@ -143,17 +143,17 @@ char **argv;
     p = getconf(conf, "X");
     if (p == NULL)
       console_login("\ndm: Can't find X command line\n");
-    xargv = parseargs(p, NULL);
+    xargv = parseargs(p, NULL, NULL, NULL);
     if (console) {
 	p = getconf(conf, "console");
 	if (p == NULL)
 	  console_login("\ndm: Can't find console command line\n");
-	consoleargv = parseargs(p, NULL);
+	consoleargv = parseargs(p, NULL, NULL, NULL);
     }
     p = getconf(conf, "login");
     if (p == NULL)
       console_login("\ndm: Can't find login command line\n");
-    loginargv = parseargs(p, logintty);
+    loginargv = parseargs(p, logintty, "-tty", logintty);
 
     /* Signal Setup */
     signal(SIGTSTP, SIG_IGN);
@@ -660,6 +660,7 @@ char **argv;
 	open("/tmp/console.err", O_CREAT|O_APPEND|O_WRONLY, 0644);
 	dup2(1, 2);
 #endif
+	setregid(DAEMON, DAEMON);
 	setreuid(DAEMON, DAEMON);
 	sigsetmask(0);
 	execv(argv[0], argv);
@@ -964,9 +965,11 @@ char *login;
  * of strings.  The array is in malloc'ed memory.
  */
 
-char **parseargs(line, extra)
+char **parseargs(line, extra, extra1, extra2)
 char *line;
 char *extra;
+char *extra1;
+char *extra2;
 {
     int i = 0;
     char *p = line;
@@ -978,7 +981,7 @@ char *extra;
 	while (*p && !isspace(*p)) p++;
 	i++;
     }
-    ret = (char **) malloc(sizeof(char *) * (i + 2));
+    ret = (char **) malloc(sizeof(char *) * (i + 4));
 
     p = line;
     i = 0;
@@ -992,6 +995,11 @@ char *extra;
     }
     if (extra)
       ret[i++] = extra;
+    if (extra1)
+      ret[i++] = extra1;
+    if (extra2)
+      ret[i++] = extra2;
+
     ret[i] = NULL;
     return(ret);
 }
