@@ -55,7 +55,7 @@ CreateWellKnownSockets ()
     registerHostname (name, strlen (name));
     RegisterCloseOnFork (xdmcpFd);
     /* zero out the entire structure; this avoids 4.4 incompatibilities */
-    bzero ((char *) &sock_addr, sizeof (sock_addr));
+    memset ((char *) &sock_addr, 0, sizeof (sock_addr));
     sock_addr.sin_family = AF_INET;
     sock_addr.sin_port = htons ((short) request_port);
     sock_addr.sin_addr.s_addr = htonl (INADDR_ANY);
@@ -92,7 +92,7 @@ GetChooserAddr (addr, lenp)
     len = sizeof in_addr;
     if (getsockname (chooserFd, &in_addr, &len) < 0)
 	return -1;
-    bcopy ((char *) &in_addr, addr, len);
+    memcpy (addr, (char *) &in_addr, len);
     *lenp = len;
     return 0;
 }
