@@ -1,15 +1,16 @@
 /* 
- * $Id: aklog_main.c,v 1.26 1994-09-06 14:20:09 probe Exp $
+ * $Id: aklog_main.c,v 1.27 1996-08-10 05:36:21 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.26 1994-09-06 14:20:09 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.27 1996-08-10 05:36:21 ghudson Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -93,7 +94,7 @@ static char *copy_cellinfo(cellinfo)
     cellinfo_t *new_cellinfo;
 
     if (new_cellinfo = (cellinfo_t *)malloc(sizeof(cellinfo_t)))
-	bcopy(cellinfo, new_cellinfo, sizeof(cellinfo_t));
+	memcpy(new_cellinfo, cellinfo, sizeof(cellinfo_t));
     
     return ((char *)new_cellinfo);
 }
@@ -127,8 +128,8 @@ static int get_cellconfig(cell, cellconfig, local_cell)
     int status = AKLOG_SUCCESS;
     struct afsconf_dir *configdir;
 
-    bzero(local_cell, sizeof(local_cell));
-    bzero((char *)cellconfig, sizeof(*cellconfig));
+    memset(local_cell, 0, sizeof(local_cell));
+    memset(cellconfig, 0, sizeof(*cellconfig));
 
     if (!(configdir = afsconf_Open(AFSCONF_CLIENTNAME))) {
 	sprintf(msgbuf, 
@@ -191,10 +192,10 @@ static int auth_to_cell(cell, realm)
     struct ktc_principal aclient;
     struct ktc_token atoken, btoken;
     
-    bzero(name, sizeof(name));
-    bzero(instance, sizeof(instance));
-    bzero(realm_of_user, sizeof(realm_of_user));
-    bzero(realm_of_cell, sizeof(realm_of_cell));
+    memset(name, 0, sizeof(name));
+    memset(instance, 0, sizeof(instance));
+    memset(realm_of_user, 0, sizeof(realm_of_user));
+    memset(realm_of_cell, 0, sizeof(realm_of_cell));
 
     /* NULL or empty cell returns information on local cell */
     if (status = get_cellconfig(cell, &ak_cellconfig, local_cell))
@@ -303,24 +304,24 @@ static int auth_to_cell(cell, realm)
 
 	strcpy (username, c.pname);
 	if (c.pinst[0]) {
-	    strcat (username, ".");
-	    strcat (username, c.pinst);
+	    strcat(username, ".");
+	    strcat(username, c.pinst);
 	}
 
 	atoken.kvno = c.kvno;
 	atoken.startTime = c.issue_date;
 	/* ticket lifetime is in five-minutes blocks. */
 	atoken.endTime = c.issue_date + ((unsigned char)c.lifetime * 5 * 60);
-	bcopy (c.session, &atoken.sessionKey, 8);
+	memcpy(&atoken.sessionKey, c.session, 8);
 	atoken.ticketLen = c.ticket_st.length;
-	bcopy (c.ticket_st.dat, atoken.ticket, atoken.ticketLen);
+	memcpy(atoken.ticket, c.ticket_st.dat, atoken.ticketLen);
 	
 	if (!force &&
 	    !ktc_GetToken(&aserver, &btoken, sizeof(btoken), &aclient) &&
 	    atoken.kvno == btoken.kvno &&
 	    atoken.ticketLen == btoken.ticketLen &&
-	    !bcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
-	    !bcmp(atoken.ticket, btoken.ticket, atoken.ticketLen)) {
+	    !memcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
+	    !memcmp(atoken.ticket, btoken.ticket, atoken.ticketLen)) {
 
 	    if (dflag) {
 		sprintf(msgbuf, "Identical tokens already exist; skipping.\n");
@@ -427,7 +428,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
     struct ViceIoctl vio;
     char cellname[BUFSIZ];
 
-    bzero(our_file, sizeof(our_file));
+    memset(our_file, 0, sizeof(our_file));
     strcpy(our_file, file);
 
     if (last_component = strrchr(our_file, DIR)) {
@@ -439,7 +440,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
 	parent_dir = ".";
     }    
     
-    bzero(cellname, sizeof(cellname));
+    memset(cellname, 0, sizeof(cellname));
 
     vio.in = last_component;
     vio.in_size = strlen(last_component)+1;
@@ -456,7 +457,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
 	    if (!pioctl(file, VIOC_FILE_CELL_NAME, &vio, 1)) {
 		strcat(cellname, VOLMARKERSTRING);
 		strcat(cellname, mountpoint + 1);
-		bzero(mountpoint + 1, size - 1);
+		memset(mountpoint + 1, 0, size - 1);
 		strcpy(mountpoint + 1, cellname);
 	    }
 	}
@@ -496,8 +497,8 @@ static char *next_path(origpath)
     
     /* If we are given something for origpath, we are initializing only. */
     if (origpath) {
-	bzero(path, sizeof(path));
-	bzero(pathtocheck, sizeof(pathtocheck));
+	memset(path, 0, sizeof(path));
+	memset(pathtocheck, 0, sizeof(pathtocheck));
 	strcpy(path, origpath);
 	last_comp = path;
 	symlinkcount = 0;
@@ -516,7 +517,7 @@ static char *next_path(origpath)
 	len = (elast_comp = strchr(last_comp, DIR)) 
 	    ? elast_comp - last_comp : strlen(last_comp);
 	strncat(pathtocheck, last_comp, len);
-	bzero(linkbuf, sizeof(linkbuf));
+	memset(linkbuf, 0, sizeof(linkbuf));
 	if (link = (params.readlink(pathtocheck, linkbuf, 
 				    sizeof(linkbuf)) > 0)) {
 	    if (++symlinkcount > MAXSYMLINKS) {
@@ -524,7 +525,7 @@ static char *next_path(origpath)
 		params.pstderr(msgbuf);
 		params.exitprog(AKLOG_BADPATH);
 	    }
-	    bzero(tmpbuf, sizeof(tmpbuf));
+	    memset(tmpbuf, 0, sizeof(tmpbuf));
 	    if (elast_comp)
 		strcpy(tmpbuf, elast_comp);
 	    if (linkbuf[0] == DIR) {
@@ -532,12 +533,12 @@ static char *next_path(origpath)
 		 * If this is a symbolic link to an absolute path, 
 		 * replace what we have by the absolute path.
 		 */
-		bzero(path, strlen(path));
-		bcopy(linkbuf, path, sizeof(linkbuf));
+		memset(path, 0, strlen(path));
+		memcpy(path, linkbuf, sizeof(linkbuf));
 		strcat(path, tmpbuf);
 		last_comp = path;
 		elast_comp = NULL;
-		bzero(pathtocheck, sizeof(pathtocheck));
+		memset(pathtocheck, 0, sizeof(pathtocheck));
 	    }
 	    else {
 		/* 
@@ -549,10 +550,10 @@ static char *next_path(origpath)
 		elast_comp = NULL;
 		if (t = strrchr(pathtocheck, DIR)) {
 		    t++;
-		    bzero(t, strlen(t));
+		    memset(t, 0, strlen(t));
 		}
 		else
-		    bzero(pathtocheck, sizeof(pathtocheck));
+		    memset(pathtocheck, 0, sizeof(pathtocheck));
 	    }
 	}
 	else
@@ -577,7 +578,7 @@ static void add_hosts(file)
     struct hostent *hp;
     struct in_addr in;
     
-    bzero(outbuf, sizeof(outbuf));
+    memset(outbuf, 0, sizeof(outbuf));
 
     vio.out_size = sizeof(outbuf);
     vio.in_size = 0;
@@ -792,11 +793,11 @@ void aklog(argc, argv, a_params)
     linked_list paths;		/* List of paths to log to */
     ll_node *cur_node;
 
-    bzero(&cellinfo, sizeof(cellinfo));
+    memset(&cellinfo, 0, sizeof(cellinfo));
 
-    bzero(realm, sizeof(realm));
-    bzero(cell, sizeof(cell));
-    bzero(path, sizeof(path));
+    memset(realm, 0, sizeof(realm));
+    memset(cell, 0, sizeof(cell));
+    memset(path, 0, sizeof(path));
 
     ll_init(&cells);
     ll_init(&paths);
@@ -810,7 +811,7 @@ void aklog(argc, argv, a_params)
     else
 	progname = argv[0];
 
-    bcopy((char *)a_params, (char *)&params, sizeof(aklog_params));
+    memcpy(&params, a_params, sizeof(aklog_params));
 
     /* Initialize list of cells to which we have authenticated */
     (void)ll_init(&authedcells);
@@ -889,10 +890,10 @@ void aklog(argc, argv, a_params)
 		params.pstderr(msgbuf);
 		params.exitprog(AKLOG_MISC);
 	    }
-	    bzero(&cellinfo, sizeof(cellinfo));
+	    memset(&cellinfo, 0, sizeof(cellinfo));
 	    cmode = FALSE;
-	    bzero(cell, sizeof(cell));
-	    bzero(realm, sizeof(realm));
+	    memset(cell, 0, sizeof(cell));
+	    memset(realm, 0, sizeof(realm));
 	}
 	else if (pmode) {
 	    /* Add this path to list of paths */
@@ -914,7 +915,7 @@ void aklog(argc, argv, a_params)
 		params.exitprog(AKLOG_MISC);
 	    }
 	    pmode = FALSE;
-	    bzero(path, sizeof(path));
+	    memset(path, 0, sizeof(path));
 	}
     }
 
@@ -924,7 +925,7 @@ void aklog(argc, argv, a_params)
     else {
 	/* Log to all cells in the cells list first */
 	for (cur_node = cells.first; cur_node; cur_node = cur_node->next) {
-	    bcopy(cur_node->data, (char *)&cellinfo, sizeof(cellinfo));
+	    memcpy(&cellinfo, cur_node->data, sizeof(cellinfo));
 	    if (status = auth_to_cell(cellinfo.cell, cellinfo.realm))
 		somethingswrong++;
 	}
