@@ -10,8 +10,11 @@
 
 # Source function library
 . /etc/rc.d/init.d/functions
+. /etc/athena/rc.conf
 
 PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+[ "$SYNCCONFIG" = true ] || exit 0
 
 RETVAL=0
 
