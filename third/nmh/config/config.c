@@ -2,7 +2,7 @@
 /*
  * config.c -- master nmh configuration file
  *
- * $Id: config.c,v 1.1.1.1 1999-02-07 18:14:07 danw Exp $
+ * $Id: config.c,v 1.2 1999-06-01 19:11:58 danw Exp $
  */
 
 #include <h/mh.h>
@@ -265,7 +265,7 @@ char *packproc = nmhbindir (/packf);
  * deliver mail to users.  This is the interface to the MTS.
  */
 
-char *postproc = nmhlibdir (/post);
+char *postproc = nmhlibdir (/spost);
 
 /*
  * This is program is called by slocal to handle
