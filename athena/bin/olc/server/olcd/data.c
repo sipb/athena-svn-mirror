@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.19 1991-01-06 02:41:02 lwvanels Exp $
+ *	$Id: data.c,v 1.20 1991-01-21 01:21:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.19 1991-01-06 02:41:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.20 1991-01-21 01:21:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -74,6 +74,7 @@ PROC Proc_List[] =
   OLC_SET_USER_STATUS, olc_set_user_status,  "olc set login/out status",
   OLC_GET_HOURS,       olc_get_hours,	     "olc get hours",
   OLC_CHANGE_HOURS,    olc_change_hours,     "olc change hours",
+  OLC_VERSION,	       olc_version,          "olc version",
 #ifdef __STDC__
   UNKNOWN_REQUEST,     (FUNCTION) NULL,  (char *) NULL,
 #else
