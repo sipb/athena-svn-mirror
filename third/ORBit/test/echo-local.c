@@ -78,7 +78,7 @@ main (int argc, char *argv[])
 	      printf("we got exception %d from release!\n", ev._major);
 	      return 1;
 	    } else
-	      g_message("[client] %d", rv);
+	      g_message("[client] %f", rv);
 
 	    echo_client = bec; bec = CORBA_OBJECT_NIL;
     }

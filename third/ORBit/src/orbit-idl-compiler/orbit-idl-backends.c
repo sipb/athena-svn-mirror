@@ -18,7 +18,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: orbit-idl-backends.c,v 1.1.1.1 2000-11-10 00:48:53 ghudson Exp $
+    $Id: orbit-idl-backends.c,v 1.1.1.2 2001-02-12 02:04:53 ghudson Exp $
 
 ***************************************************************************/
 
@@ -34,7 +34,7 @@ static OIDL_Backend_Info orbit_idl_builtin_backends[] = {
   {NULL, NULL}
 };
 
-OIDL_Backend_Info *orbit_idl_backend_for_lang(const char *lang)
+OIDL_Backend_Info *orbit_idl_backend_for_lang(const char *lang,const char* backend_dir)
 {
   int i;
   int ret;
@@ -51,7 +51,7 @@ OIDL_Backend_Info *orbit_idl_backend_for_lang(const char *lang)
 
   ctmp = alloca(sizeof("orbit-idl--backend") + strlen(lang));
   sprintf(ctmp, "orbit-idl-%s-backend", lang);
-  fname = g_module_build_path(ORBITLIBDIR, ctmp);
+  fname = g_module_build_path(backend_dir, ctmp);
   g_assert(fname);
   gmod = g_module_open(fname, G_MODULE_BIND_LAZY);
 

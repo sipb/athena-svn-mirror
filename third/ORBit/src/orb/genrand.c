@@ -13,8 +13,6 @@ static gboolean
 genrand_dev(guchar *buffer, int buf_len)
 {
   int fd;
-  int readlen = 0;
-  guchar *curbuf;
 
   fd = open("/dev/urandom", O_RDONLY);
   if(fd < 0)
@@ -73,8 +71,6 @@ genrand_unix(guchar *buffer, int buf_len)
 
   for(i = 0, min = LONG_MAX, max = 0; i < buf_len; i++)
     {
-      long mycount;
-
       received_alarm = 0;
       setitimer(ITIMER_REAL, &it, NULL);
       for(counts[i] = 0; !received_alarm; counts[i]++);

@@ -562,7 +562,7 @@ fi
 
 ORBIT_MAJOR_VERSION=0
 ORBIT_MINOR_VERSION=5
-ORBIT_MICRO_VERSION=6
+ORBIT_MICRO_VERSION=7
 ORBIT_INTERFACE_AGE=0
 ORBIT_BINARY_AGE=0
 ORBIT_VERSION=$ORBIT_MAJOR_VERSION.$ORBIT_MINOR_VERSION.$ORBIT_MICRO_VERSION
@@ -4652,6 +4652,7 @@ src/daemons/interface_repository/Makefile
 test/Makefile
 test/idl/Makefile
 test/test-poa/Makefile
+test/everything/Makefile
 ORBit.pc
 ORBit.spec config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
@@ -4802,6 +4803,7 @@ src/daemons/interface_repository/Makefile
 test/Makefile
 test/idl/Makefile
 test/test-poa/Makefile
+test/everything/Makefile
 ORBit.pc
 ORBit.spec"}
 EOF

@@ -397,7 +397,7 @@ cbe_tc_generate(CBETCGenInfo *tci)
 	  n++;
 	} else {
 	  /* default case */
-	  fprintf(tci->of, "{(CORBA_TypeCode)&TC_CORBA_octet_struct, (int *)&zero_int, CORBA_FALSE}");
+	  fprintf(tci->of, "{(CORBA_TypeCode)&TC_CORBA_octet_struct, (int *)&ORBit_zero_int, CORBA_FALSE}");
 	}
 
 	if(IDL_LIST(curlabel).next || IDL_LIST(curitem).next)

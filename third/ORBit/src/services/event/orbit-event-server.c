@@ -1,6 +1,7 @@
 /* Bug Dick Porter <dick@cymru.net> with any problem reports. GPL'd. */
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "CosEventChannel.h"
 
 /* The following is mostly taken from CosEventChannel-impl.c as

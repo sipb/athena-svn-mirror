@@ -20,7 +20,7 @@ AC_PREREQ(2.12) # required version of autoconf
 
 ORBIT_MAJOR_VERSION=0
 ORBIT_MINOR_VERSION=5
-ORBIT_MICRO_VERSION=6
+ORBIT_MICRO_VERSION=7
 ORBIT_INTERFACE_AGE=0
 ORBIT_BINARY_AGE=0
 ORBIT_VERSION=$ORBIT_MAJOR_VERSION.$ORBIT_MINOR_VERSION.$ORBIT_MICRO_VERSION
@@ -347,5 +347,6 @@ src/daemons/interface_repository/Makefile
 test/Makefile
 test/idl/Makefile
 test/test-poa/Makefile
+test/everything/Makefile
 ORBit.pc
 ORBit.spec)

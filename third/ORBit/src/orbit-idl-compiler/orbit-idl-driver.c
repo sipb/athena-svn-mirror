@@ -18,7 +18,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: orbit-idl-driver.c,v 1.1.1.1 2000-11-10 00:49:04 ghudson Exp $
+    $Id: orbit-idl-driver.c,v 1.1.1.2 2001-02-12 02:04:53 ghudson Exp $
 
 ***************************************************************************/
 
@@ -45,7 +45,7 @@ orbit_idl_to_backend(const char *filename, OIDL_Run_Info *rinfo)
   char *basename, *ctmp;
   OIDL_Output_Tree otree;
 
-  binfo = orbit_idl_backend_for_lang(rinfo->output_language);
+  binfo = orbit_idl_backend_for_lang(rinfo->output_language,rinfo->backend_directory);
 
   g_return_val_if_fail(binfo && binfo->op_output, 0);
 

@@ -337,17 +337,17 @@ cc_output_alloc_type_dcl(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
       if(fixlen) {
 	fprintf(ci->fh, "gpointer retval = ((guchar *)mem) + sizeof(%s);\n", tname);
       } else {
-	fprintf(ci->fh, "gpointer retval = mem;\n");
 	for(i = 0; i < n; i++) {
 	  fprintf(ci->fh, "int n%d;\n", i);
 	}
+	fprintf(ci->fh, "gpointer retval = ((guchar *)mem) + sizeof(%s);\n", tname);
 
 	for(i = 0, ttmp = IDL_TYPE_ARRAY(node).size_list; i < n; i++, ttmp = IDL_LIST(ttmp).next) {
 	  fprintf(ci->fh, "for(n%d = 0; n%d < %" IDL_LL "d; n%d++) {\n",
 		  i, i, IDL_INTEGER(IDL_LIST(ttmp).data).value, i);
 	}
       
-	fprintf(ci->fh, "retval = %s__free(&((%s_slice *)retval)", ctmp, tname);
+	fprintf(ci->fh, "%s__free(&((%s_slice *)mem)", ctmp, tname);
 	for(i = 0; i < n; i++)
 	  fprintf(ci->fh, "[n%d]", i);
 	fprintf(ci->fh, ", NULL, free_strings);\n");
@@ -379,14 +379,10 @@ cc_output_alloc_type_dcl(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
 	IDL_tree curitem;
 
 	curitem = IDL_TYPE_ARRAY(node).size_list;
-	fprintf(ci->fh, "%s__free, GUINT_TO_POINTER(%" IDL_LL "d", tname, IDL_INTEGER(IDL_LIST(curitem).data).value);
-	for(; curitem; curitem = IDL_LIST(curitem).next)
-	  fprintf(ci->fh, "*%" IDL_LL "d", IDL_INTEGER(IDL_LIST(curitem).data).value);
-	fprintf(ci->fh, "));\n");
+	fprintf(ci->fh, "%s__free, GUINT_TO_POINTER(1));\n", tname);
 
 	curitem = IDL_TYPE_ARRAY(node).size_list;
-	fprintf(ci->fh, "memset(retval, '\\0', sizeof(%s_slice) * %" IDL_LL "d);\n", tname,
-		IDL_INTEGER(IDL_LIST(curitem).data).value);
+	fprintf(ci->fh, "memset(retval, '\\0', sizeof(%s));\n", tname);
       }
 
       fprintf(ci->fh, "return retval;\n");

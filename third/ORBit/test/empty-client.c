@@ -11,8 +11,6 @@ main (int argc, char *argv[])
 {
     CORBA_Environment ev;
     CORBA_ORB orb;
-    CORBA_long rv;
-    char buf[30];
     int i;
 
     int niters = 100;

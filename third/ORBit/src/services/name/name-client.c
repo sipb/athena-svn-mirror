@@ -23,6 +23,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <limits.h>
+#include <stdlib.h>
 
 /* how many bindings to fetch at once */
 #define FETCH_AT_ONCE 10

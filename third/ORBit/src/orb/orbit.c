@@ -263,8 +263,6 @@ ORBit_value_equivalent (gpointer *a, gpointer *b,
 	}
 
 	case CORBA_tk_union: {
-		gpointer a_val, b_val;
-		CORBA_Principal *ap, *bp;
 		gint   union_align = ORBit_find_alignment (tc);
 		size_t union_size = ORBit_gather_alloc_info (tc);
 
@@ -533,14 +531,14 @@ int ORBit_parse_inet(CORBA_Object obj, char *hostname, unsigned short port,
 	return 0;
 }
 
-static const CORBA_unsigned_long zero_int = 0;
-struct iovec ORBit_default_principal_iovec = {(gpointer)&zero_int, sizeof(zero_int)};
+/* public */ const CORBA_unsigned_long ORBit_zero_int = 0;
+struct iovec ORBit_default_principal_iovec = {(gpointer)&ORBit_zero_int, sizeof(ORBit_zero_int)};
 
 void ORBit_set_default_principal(CORBA_Principal *principal)
 {
 	gpointer t;
 
-	if((gpointer)ORBit_default_principal_iovec.iov_base != (gpointer)&zero_int)
+	if((gpointer)ORBit_default_principal_iovec.iov_base != (gpointer)&ORBit_zero_int)
 		g_free(ORBit_default_principal_iovec.iov_base);
 
 	ORBit_default_principal_iovec.iov_len = principal->_length

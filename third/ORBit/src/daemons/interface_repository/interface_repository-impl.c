@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <orb/interface_repository.h>
 
 /*** App-specific servant structures ***/
@@ -2902,7 +2903,6 @@ static void container_contents_internal(gpointer item, gpointer data)
 {
 	IfaceRepoContents *contents=(IfaceRepoContents *)item;
 	ContainedIterData *iter_data=(ContainedIterData *)data;
-	CORBA_Environment ev;
 	CORBA_long level;
 	
 	if(container_add_to_list(iter_data, contents)) {
@@ -2937,6 +2937,8 @@ static void container_contents_internal(gpointer item, gpointer data)
 			g_slist_foreach(((impl_POA_CORBA_InterfaceDef *)contents)->inherited, container_contents_internal, data);
 		}
 		break;
+	default:
+	  break;
 	}
 
 	iter_data->levels_to_search=level;

@@ -234,6 +234,8 @@ static RegisteredName *rn_new(CosNaming_NameComponent *nc,
 }
 
 static void
+rn_print(CosNaming_NameComponent *nc, RegisteredName *nom) G_GNUC_UNUSED;
+static void
 rn_print(CosNaming_NameComponent *nc, RegisteredName *nom)
 {
   g_print("id %s kind %s ptr %p [%p]\n", nc->id, nc->kind,

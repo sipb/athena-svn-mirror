@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #include <orb/orbit.h>
 
@@ -9,7 +10,7 @@ static void print_object_key(int len, guchar *buf);
 int main(int argc, char **argv)
 {
 	CORBA_char *type_id, *host;
-	CORBA_short port;
+	CORBA_unsigned_short port;
 	CDR_Codec *codec, *encaps_codec = NULL;
 	CORBA_octet *buffer, *keybuffer, endian, iiop_major, iiop_minor;
 	int i, j;

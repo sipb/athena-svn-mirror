@@ -142,7 +142,7 @@ CORBA_RepositoryId CORBA_TypeCode_id(CORBA_TypeCode obj, CORBA_Environment *ev)
 		bad_kind (ev);
 		return NULL;
 	}
-	return obj->repo_id;
+	return (CORBA_RepositoryId)obj->repo_id;
 }
 
 CORBA_Identifier CORBA_TypeCode_name(CORBA_TypeCode obj, CORBA_Environment *ev)
@@ -154,7 +154,7 @@ CORBA_Identifier CORBA_TypeCode_name(CORBA_TypeCode obj, CORBA_Environment *ev)
 		return NULL;
 	}
 
-	return obj->name;
+	return (CORBA_Identifier)obj->name;
 }
 
 CORBA_unsigned_long CORBA_TypeCode_member_count(CORBA_TypeCode obj, CORBA_Environment *ev)
@@ -193,7 +193,7 @@ CORBA_Identifier CORBA_TypeCode_member_name(CORBA_TypeCode obj, CORBA_unsigned_l
 		bounds_error (ev);
 		return NULL;
 	}
-	return obj->subnames[index];
+	return (CORBA_Identifier)obj->subnames[index];
 }
 
 CORBA_TypeCode CORBA_TypeCode_member_type(CORBA_TypeCode obj, CORBA_unsigned_long index, CORBA_Environment *ev)

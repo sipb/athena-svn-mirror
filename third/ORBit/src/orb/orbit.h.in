@@ -81,6 +81,8 @@ extern const guint orbit_major_version,
 	orbit_micro_version;
 extern const char orbit_version[];
 
+extern const CORBA_unsigned_long ORBit_zero_int;
+
 extern void CORBA_any_set_release(
 	CORBA_any *,
 	CORBA_boolean);

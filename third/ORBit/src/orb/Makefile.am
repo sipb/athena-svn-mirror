@@ -119,3 +119,5 @@ CLEANFILES=my_ir_stuff
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
+
+CFLAGS=-g -O0

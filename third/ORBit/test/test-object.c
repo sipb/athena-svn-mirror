@@ -10,7 +10,7 @@
 
 int main(int argc, char **argv)
 {
-	CORBA_Object obj, o1, o2;
+	CORBA_Object obj;
 	CORBA_Environment env;
        
 
