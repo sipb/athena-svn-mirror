@@ -2,7 +2,7 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.6 1999-05-12 18:29:00 danw Exp $
+#* $Id: Makefile.in,v 1.7 1999-10-23 16:07:00 ghudson Exp $
 #
 
 
@@ -33,7 +33,7 @@ DEFS=@DEFS@
 CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS) -DADMINDIR=\"$(ADMINDIR)\"
 
 # libraries you will need (found by config), add more to end
-LIBS=-L$(ATHTOOLROOT)/usr/athena/lib -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lhesiod @LIBS@
+LIBS=-L$(ATHTOOLROOT)/usr/athena/lib -lzephyr -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err -lhesiod @LIBS@
 
 INSTALLCMD=@INSTALL@
 SHELL = @SHELL@
