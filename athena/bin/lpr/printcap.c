@@ -15,7 +15,7 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #include <stdio.h>
 #ifdef HESIOD
 #include <hesiod.h>
-#include "lp.local.h"	/* for DEFLP */
+#include "lp.local.h"
 #endif
 /*
  * termcap - routines for dealing with the terminal capability data base
