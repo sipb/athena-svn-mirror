@@ -1,3 +1,83 @@
+2005-02-14  JP Rosevear  <jpr@novell.com>
+
+	* zh_CN.po: add missing \n
+
+2005-02-09  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2005-01-25  Hendrik Brandt  <heb@gnome-de.org>
+
+	* de.po: Updated German translation.
+
+2004-12-30  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation by GNOME PL Team.
+
+2004-12-14  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation updated.
+
+2004-12-10  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2004-12-07  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2004-11-15  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Updated Catalan translation.
+
+2004-10-28  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-26  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Added Indonesian translation
+
+2004-10-21  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+2004-10-21  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation.
+
+2004-10-21  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-10-20  David Lodge <dave@cirt.net>
+                                                                                
+        * en_GB.po: Updated British English translation.
+                                                                                
+2004-10-20  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+2004-10-06  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-09-22  Craig Jeffares  <cjeffares@novell.com>
+
+        * zh_TW.po: Updated Chinese Traditional translation.
+
+2004-09-15  Arafat Medini  <lumina@silverpen.de>
+
+	* ar.po: Updated Arabic translation.
+
+2004-09-12  Laszlo Dvornik  <dvornik@gnome.hu>
+
+	* hu.po: Updated Hungarian translation by Gabor Kelemen.
+
+2004-09-10  Baris Cicek <baris@teamforce.name.tr>
+
+	* tr.po: Updated Turkish Translation by Onur Can Cakmak
+
 2004-09-06  Nikos Charonitakis  <charosn@her.forthnet.gr>
                                                                                
         * el.po: Updated Greek Translation.

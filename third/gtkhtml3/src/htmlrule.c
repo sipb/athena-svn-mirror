@@ -81,7 +81,7 @@ fit_line (HTMLObject *o,
 {
 	if (!start_of_line)
 		return HTML_FIT_NONE;
-	o->width = width_left;
+	o->width = MIN (width_left, o->max_width);
 
 	if (o->percent == 0) {
 		gint pixel_size = html_painter_get_pixel_size (painter);

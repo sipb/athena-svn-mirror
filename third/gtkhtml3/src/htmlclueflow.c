@@ -1890,7 +1890,7 @@ save_plain (HTMLObject *self,
 
 						if (wl > clen && wl < slen && html_text_is_line_break (lattrs [wl])) {
 							wi = MIN (wl, clen + max_len);
-							while (wi > 0 && lattrs [wi - 1].is_white)
+							while (wi > clen && lattrs [wi - 1].is_white)
 								wi --;
 							len = wi - clen;
 							skip = wl - wi;

@@ -310,6 +310,12 @@ void               html_text_calc_text_size        (HTMLText              *t,
 						    gint                  *width,
 						    gint                  *asc,
 						    gint                  *dsc);
+void               html_text_change_attrs          (PangoAttrList         *attr_list,
+						    GtkHTMLFontStyle       style,
+						    HTMLEngine            *e,
+						    gint                   start_index,
+						    gint                   end_index,
+						    gboolean               avoid_default_size);
 
 gboolean  html_text_is_line_break                (PangoLogAttr  attr);
 void      html_text_remove_unwanted_line_breaks  (char         *s,

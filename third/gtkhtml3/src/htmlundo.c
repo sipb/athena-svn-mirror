@@ -42,6 +42,8 @@ struct _HTMLUndo {
 	guint     level;
 	guint     in_redo;
 	gint      step_counter;
+
+	gint      freeze_count; /* Freeze counter for im context */
 };
 
 #ifdef UNDO_DEBUG
@@ -150,6 +152,9 @@ html_undo_do_undo (HTMLUndo *undo,
 	g_return_if_fail (undo != NULL);
 	g_return_if_fail (engine != NULL);
 
+	if (undo->freeze_count > 0)
+		return;
+
 	if (undo->undo.size > 0) {
 #ifdef UNDO_DEBUG
 		if (!undo->level) {
@@ -176,6 +181,9 @@ html_undo_do_redo (HTMLUndo *undo,
 {
 	g_return_if_fail (undo != NULL);
 	g_return_if_fail (engine != NULL);
+
+	if (undo->freeze_count > 0)
+		return;
 
 	if (undo->redo.size > 0) {
 #ifdef UNDO_DEBUG
@@ -206,6 +214,9 @@ html_undo_discard_redo (HTMLUndo *undo)
 {
 	g_return_if_fail (undo != NULL);
 
+	if (undo->freeze_count > 0)
+		return;
+
 	if (undo->redo.stack == NULL)
 		return;
 
@@ -220,6 +231,9 @@ html_undo_add_undo_action  (HTMLUndo *undo, HTMLUndoAction *action)
 {
 	g_return_if_fail (undo != NULL);
 	g_return_if_fail (action != NULL);
+
+	if (undo->freeze_count > 0)
+		return;
 
 	if (undo->level == 0) {
 		if (undo->in_redo == 0 && undo->redo.size > 0)
@@ -261,6 +275,9 @@ html_undo_add_redo_action  (HTMLUndo *undo,
 	g_return_if_fail (undo != NULL);
 	g_return_if_fail (action != NULL);
 
+	if (undo->freeze_count > 0)
+		return;
+
 	undo->redo.stack = g_list_prepend (undo->redo.stack, action);
 	undo->redo.size ++;
 }
@@ -268,10 +285,25 @@ html_undo_add_redo_action  (HTMLUndo *undo,
 void
 html_undo_add_action  (HTMLUndo *undo, HTMLUndoAction *action, HTMLUndoDirection dir)
 {
+	if (undo->freeze_count > 0)
+		return;
+
 	if (dir == HTML_UNDO_UNDO)
 		html_undo_add_undo_action (undo, action);
 	else
 		html_undo_add_redo_action (undo, action);
+}
+
+void
+html_undo_freeze  (HTMLUndo *undo)
+{
+	undo->freeze_count ++;
+}
+
+void
+html_undo_thaw  (HTMLUndo *undo)
+{
+	undo->freeze_count --;
 }
 
 /*

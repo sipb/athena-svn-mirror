@@ -1805,7 +1805,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=$PACKAGE
- VERSION=3.2.1
+ VERSION=3.2.5
 
 
 cat >>confdefs.h <<_ACEOF
@@ -20291,7 +20291,7 @@ CFLAGS="$CFLAGS $warning_flags"
 
 
 
-ALL_LINGUAS="am ar az be bg bn ca cs da de el en_CA en_GB es et eu fi fr ga gl gu he hi hr hu it ja ko lt lv ms nb nl nn no pa pl pt pt_BR ru sk sl sq sr sr@Latn sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn ca cs da de el en_CA en_GB es et eu fi fr ga gl gu he hi hr hu id it ja ko lt lv ms nb nl nn no pa pl pt pt_BR ru sk sl sq sr sr@Latn sv ta tr uk vi zh_CN zh_TW"
 
 
 for ac_header in locale.h
@@ -22339,11 +22339,11 @@ fi
 
 
 
-GTKHTML_CURRENT=11
+GTKHTML_CURRENT=12
 
-GTKHTML_REVISION=4
+GTKHTML_REVISION=6
 
-GTKHTML_AGE=0
+GTKHTML_AGE=1
 
 
 

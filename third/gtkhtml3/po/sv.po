@@ -3,152 +3,19 @@
 # Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003, 2004.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000.
 #
-# $Id: sv.po,v 1.1.1.4 2004-10-16 17:40:31 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5 2005-03-10 21:14:13 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2004-06-02 19:38+0200\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-12-10 18:24+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<Ingen>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "Kunde inte läsa in glade-filen."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Lägg till tangentbordsgenvägar"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Upptäck länkar automatiskt"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Beteende"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Redigeraregenskaper"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Planerade redigeraregenskaper"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Konfigurera stavningskontroll"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Använd stavningskontroll"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Fast breddsteg"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Typsnitt"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "För utskrift"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Fånga tangenter"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Information"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Tangentbordsgenvägar"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Diverse"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Ny genväg:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "På skärm"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Välj HTML-typsnitt med fast breddsteg"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Välj HTML-typsnitt för utskrift med fast breddsteg"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Välj HTML-typsnitt med variabelt breddsteg"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Välj HTML-typsnitt för utskrift med variabelt breddsteg"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "_Typ av genvägar:"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Visa animerade bilder"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Variabelt breddsteg"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Lägg till"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "_Ta bort"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"Kan inte köra GNOME Spell-kontrollpanelsprogrammet.\n"
-"Försök installera GNOME Spell om du inte redan har det installerat."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -597,7 +464,7 @@ msgstr "Gör om den ångrade åtgärden"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Ersätt"
 
@@ -1052,6 +919,13 @@ msgstr "Bakgrundsbild"
 msgid "_Source:"
 msgstr "_Källa:"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "Kunde inte läsa in glade-filen."
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr "Genomskinlig"
@@ -1291,6 +1165,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1736,19 +1614,19 @@ msgstr "_Nästa"
 msgid "_Replace"
 msgstr "_Ersätt"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "Sök _bakåt"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "Gör _skillnad på gemener/VERSALER"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "Ersätt:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "Med:"
 
@@ -1760,15 +1638,23 @@ msgstr "_Bakåt"
 msgid "_Regular Expression"
 msgstr "_Reguljärt uttryck"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+"Kan inte lägga till ord i ordboken,\n"
+"språkinställningarna är trasiga.\n"
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "Inget felstavat ord hittades"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "Stavningskontroll"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "Aktuella _språk"
 
@@ -1876,90 +1762,90 @@ msgstr ""
 "Det redigerade objektet har tagits bort från dokumentet.\n"
 "Kan inte verkställa dina ändringar."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Mozilla-URL:en som släpptes på redigeraren hade felaktigt format (%d) eller "
 "längd (%d)\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "Redigerbar"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "Huruvida html-koden kan redigeras"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "Dokumenttitel"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "Titeln på det aktuella dokumentet"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "Dokumentbas"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "Bas-URL:en för relativa referenser"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "Målbas"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "Bas-URL:en för målramen"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "Typsnitt med fast breddsteg"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "Typsnittet med fast breddsteg som ska användas för skrivmaskinstext"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "Färg för ny länk"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "Färgen på nya länkelement"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "Färg för besökt länk"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "Färgen på besökta länkelement"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "Färg för aktiv länk"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "Färgen på aktiva länkelement"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "Stavfelsfärg"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "Färgen på markörerna för stavfel"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "Citatfärg"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "Färgen på den citerade texten"
 
@@ -2039,6 +1925,97 @@ msgstr "Förhandsgranska"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "GtkHTML-testprogram"
+
+#~ msgid "<None>"
+#~ msgstr "<Ingen>"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "Lägg till tangentbordsgenvägar"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "Upptäck länkar automatiskt"
+
+#~ msgid "Behavior"
+#~ msgstr "Beteende"
+
+#~ msgid "Composer Properties"
+#~ msgstr "Redigeraregenskaper"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "Planerade redigeraregenskaper"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "Konfigurera stavningskontroll"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "Använd stavningskontroll"
+
+#~ msgid "Fixed width"
+#~ msgstr "Fast breddsteg"
+
+#~ msgid "Fonts"
+#~ msgstr "Typsnitt"
+
+#~ msgid "For printing"
+#~ msgstr "För utskrift"
+
+#~ msgid "Grab keys"
+#~ msgstr "Fånga tangenter"
+
+#~ msgid "Information"
+#~ msgstr "Information"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "Tangentbordsgenvägar"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Diverse"
+
+#~ msgid "New shortcut:"
+#~ msgstr "Ny genväg:"
+
+#~ msgid "On screen"
+#~ msgstr "På skärm"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Välj HTML-typsnitt med fast breddsteg"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Välj HTML-typsnitt för utskrift med fast breddsteg"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Välj HTML-typsnitt med variabelt breddsteg"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Välj HTML-typsnitt för utskrift med variabelt breddsteg"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "_Typ av genvägar:"
+
+#~ msgid "Show animated images"
+#~ msgstr "Visa animerade bilder"
+
+#~ msgid "Variable width"
+#~ msgstr "Variabelt breddsteg"
+
+#~ msgid "_Add"
+#~ msgstr "_Lägg till"
+
+#~ msgid "_Delete"
+#~ msgstr "_Ta bort"
+
+#~ msgid ""
+#~ "Cannot execute GNOME Spell control applet\n"
+#~ "Try to install GNOME Spell if you don't have it installed."
+#~ msgstr ""
+#~ "Kan inte köra GNOME Spell-kontrollpanelsprogrammet.\n"
+#~ "Försök installera GNOME Spell om du inte redan har det installerat."
 
 #~ msgid "Plain"
 #~ msgstr "Enkel"

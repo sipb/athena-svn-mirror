@@ -398,6 +398,7 @@ html_engine_set_base_cb (HTMLEngine *engine, const gchar *base, gpointer data)
 	GtkHTML *gtk_html;
 
 	gtk_html = GTK_HTML (data);
+	gtk_html_set_base (gtk_html, base);
 	g_signal_emit (gtk_html, signals[SET_BASE], 0, base);
 }
 
@@ -1035,11 +1036,20 @@ static void
 gtk_html_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
 	HTMLEngine *e = GTK_HTML (widget)->engine;
-
 	if (!e->writing) {
+		int old_width, old_height;
+
+		old_width = e->width;
+		old_height = e->height;
 		e->width = requisition->width;
 		e->height = requisition->height;
 		html_engine_calc_size (e, NULL);
+		requisition->width = html_engine_get_doc_width (e);
+		requisition->height = html_engine_get_doc_height (e);
+		e->width = old_width;
+		e->height = old_height;
+		html_engine_calc_size (e, NULL);
+	} else {
 		requisition->width = html_engine_get_doc_width (e);
 		requisition->height = html_engine_get_doc_height (e);
 	}
@@ -1383,6 +1393,33 @@ collapse_path (char *url)
 }
 #endif
 
+static gboolean
+url_is_absolute (const char *url)
+{
+	/*
+	  URI Syntactic Components
+
+	  The URI syntax is dependent upon the scheme.  In general, absolute
+	  URI are written as follows:
+
+	  <scheme>:<scheme-specific-part>
+
+	  scheme        = alpha *( alpha | digit | "+" | "-" | "." )
+	*/
+
+	if (!url)
+		return FALSE;
+
+	if (!isalpha (*url))
+		return FALSE;
+	url ++;
+
+	while (*url && (isalnum (*url) || *url == '+' || *url == '-' || *url == '.'))
+		url ++;
+
+	return *url && *url == ':';
+}
+
 static char *
 expand_relative (const char *base, const char *url)
 {
@@ -1390,7 +1427,7 @@ expand_relative (const char *base, const char *url)
 	size_t base_len, url_len;
 	gboolean absolute = FALSE;
 
-	if (!base || (url && strstr (url, ":"))) {
+	if (!base || url_is_absolute (url)) {
 		/*
 		  g_warning ("base = %s url = %s new_url = %s",
 		  base, url, new_url);
@@ -2505,6 +2542,7 @@ drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	if (!selection_data->data || selection_data->length < 0 || !html_engine_get_editable (engine))
 		return;
 
+	gdk_window_get_pointer (GTK_LAYOUT (widget)->bin_window, &x, &y, NULL);
 	move_before_paste (widget, x, y);
 
 	switch (info) {
@@ -2999,6 +3037,18 @@ gtk_html_im_commit_cb (GtkIMContext *context, const gchar *str, GtkHTML *html)
 	gboolean state = html->priv->im_block_reset;
 	gint pos;
 
+        if (html->priv->im_pre_len > 0) {
+                D_IM (printf ("IM delete last preedit %d + %d\n", html->priv->im_pre_pos, html->priv->im_pre_len);)
+                                                                                
+                html_undo_freeze (html->engine->undo);
+                html_cursor_jump_to_position_no_spell (html->engine->cursor, html->engine, html->priv->im_pre_pos);
+                html_engine_set_mark (html->engine);
+                html_cursor_jump_to_position_no_spell (html->engine->cursor, html->engine, html->priv->im_pre_pos + html->priv->im_pre_len);
+                html_engine_delete (html->engine);
+                html->priv->im_pre_len = 0;
+                html_undo_thaw (html->engine->undo);
+        }
+
 	pos = html->engine->cursor->position;
 	if (html->engine->mark && html->engine->mark->position > pos)
 		pos = html->engine->mark->position;
@@ -3045,6 +3095,8 @@ gtk_html_im_preedit_changed_cb (GtkIMContext *context, GtkHTML *html)
 	initial_position = html->engine->cursor->position;
 	D_IM (printf ("IM initial position %d\n", initial_position);)
 
+	html_undo_freeze (html->engine->undo);
+
 	if (html->priv->im_pre_len > 0) {
 		D_IM (printf ("IM delete last preedit %d + %d\n", html->priv->im_pre_pos, html->priv->im_pre_len);)
 		
@@ -3088,6 +3140,8 @@ gtk_html_im_preedit_changed_cb (GtkIMContext *context, GtkHTML *html)
 		html_engine_thaw_idle_flush (html->engine);
 	/* FIXME gtk_im_context_set_cursor_location (im_context, &area); */
 	html->priv->im_block_reset = state;
+
+	html_undo_thaw (html->engine->undo);
 
 	D_IM (printf ("IM preedit changed cb [end] cursor %d(%p) mark %d(%p) active: %d\n",
 		      html->engine->cursor ? html->engine->cursor->position : 0, html->engine->cursor,

@@ -11,155 +11,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
 "PO-Revision-Date: 2000-09-22 23:58+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<Ningún>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:7
-#, fuzzy
-msgid "Behavior"
-msgstr "Comportamento"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-#, fuzzy
-msgid "Composer Properties"
-msgstr "Propiedades"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:10
-#, fuzzy
-msgid "Configure spell checking"
-msgstr "comprobación ortográfica instantánea"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-#, fuzzy
-msgid "Enable spell checking"
-msgstr "comprobación ortográfica instantánea"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-#, fuzzy
-msgid "Fixed width"
-msgstr "Fonte de anchura fixa"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:14
-#, fuzzy
-msgid "For printing"
-msgstr "para imprimir"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-#, fuzzy
-msgid "Grab keys"
-msgstr "Capturar tecla"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Varios"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Selección da fonte de anchura fixa de HTML"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Selección da fonte de anchura fixa de HTML para imprimir"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Selección da fonte de anchura variable de HTML"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Selección da fonte de anchura variable de HTML para imprimir"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr ""
-
-#: capplet/gtkhtml-capplet.glade.h:26
-#, fuzzy
-msgid "Show animated images"
-msgstr "Animacións"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-#, fuzzy
-msgid "Variable width"
-msgstr "Fonte de anchura variable"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-#, fuzzy
-msgid "_Add"
-msgstr "Engadir"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-#, fuzzy
-msgid "_Delete"
-msgstr "Borrar"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -633,7 +491,7 @@ msgstr "Reface-la operación desfeita do editor"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Substituír"
 
@@ -1137,6 +995,13 @@ msgstr "Imaxe de fondo"
 msgid "_Source:"
 msgstr ""
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr ""
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr ""
@@ -1391,6 +1256,10 @@ msgstr ""
 #: components/html-editor/gtkhtml-editor-properties.glade.h:3
 #, no-c-format
 msgid "%"
+msgstr ""
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
 msgstr ""
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
@@ -1882,22 +1751,22 @@ msgstr "Seguinte"
 msgid "_Replace"
 msgstr "Substituír"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 #, fuzzy
 msgid "Search _backward"
 msgstr "buscar para atrás"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 #, fuzzy
 msgid "Case _sensitive"
 msgstr "distinguir maiúsc/minúsc"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 #, fuzzy
 msgid "Replace:"
 msgstr "Substituír"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 #, fuzzy
 msgid "With:"
 msgstr "con"
@@ -1912,16 +1781,22 @@ msgstr "buscar para atrás"
 msgid "_Regular Expression"
 msgstr "Busca de expresión regular"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr ""
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 #, fuzzy
 msgid "Spell checker"
 msgstr "Comprobación ortográfica"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 #, fuzzy
 msgid "Current _Languages"
 msgstr "Comprobación ortográfica"
@@ -2035,91 +1910,91 @@ msgid ""
 "Cannot apply your changes."
 msgstr ""
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr ""
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr ""
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr ""
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr ""
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr ""
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr ""
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr ""
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr ""
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 #, fuzzy
 msgid "Fixed Width Font"
 msgstr "Fonte de anchura fixa"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr ""
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr ""
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr ""
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr ""
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr ""
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr ""
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr ""
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 #, fuzzy
 msgid "Spelling Error Color"
 msgstr "cor da comprobación ortográfica"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr ""
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 #, fuzzy
 msgid "Cite Quotation Color"
 msgstr "Cor"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr ""
 
@@ -2209,6 +2084,68 @@ msgstr "Previsualizar impresión"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr ""
+
+#~ msgid "<None>"
+#~ msgstr "<Ningún>"
+
+#, fuzzy
+#~ msgid "Behavior"
+#~ msgstr "Comportamento"
+
+#, fuzzy
+#~ msgid "Composer Properties"
+#~ msgstr "Propiedades"
+
+#, fuzzy
+#~ msgid "Configure spell checking"
+#~ msgstr "comprobación ortográfica instantánea"
+
+#, fuzzy
+#~ msgid "Enable spell checking"
+#~ msgstr "comprobación ortográfica instantánea"
+
+#, fuzzy
+#~ msgid "Fixed width"
+#~ msgstr "Fonte de anchura fixa"
+
+#, fuzzy
+#~ msgid "For printing"
+#~ msgstr "para imprimir"
+
+#, fuzzy
+#~ msgid "Grab keys"
+#~ msgstr "Capturar tecla"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Varios"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Selección da fonte de anchura fixa de HTML"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Selección da fonte de anchura fixa de HTML para imprimir"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Selección da fonte de anchura variable de HTML"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Selección da fonte de anchura variable de HTML para imprimir"
+
+#, fuzzy
+#~ msgid "Show animated images"
+#~ msgstr "Animacións"
+
+#, fuzzy
+#~ msgid "Variable width"
+#~ msgstr "Fonte de anchura variable"
+
+#, fuzzy
+#~ msgid "_Add"
+#~ msgstr "Engadir"
+
+#, fuzzy
+#~ msgid "_Delete"
+#~ msgstr "Borrar"
 
 #, fuzzy
 #~ msgid "Plain"

@@ -9,147 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2004-06-05 19:04+0900\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-12-07 11:00+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<無し>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "Glade ファイル (.glade) を読み込めませんでした。"
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "キーボード・ショートカットの追加"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "リンクの自動検出"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "動作"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "コンポーザ・プロパティ"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "構築済のコンポーザ・プロパティ"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "スペルチェックの設定"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "スペルチェックを有効にする"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "等幅フォント"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "フォント"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "印刷用"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "キーの取得"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "情報"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "キーボード・ショートカット"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "その他"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "新しいショートカット:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "画面表示用"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "HTML 等幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "印刷用 HTML 等幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "HTML 可変幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "印刷用 HTML 可変幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "ショートカットの型(_T):"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "画像のアニメーションを表示する"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "可変幅フォント"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "追加(_A)"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "削除(_D)"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"GNOME スペルチェッカ・アプレットを実行できません\n"
-"GNOME スペルチェッカがインストールされていない場合は、インストールしてみて下"
-"さい。"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -596,7 +462,7 @@ msgstr "前の操作をやり直します"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "置換"
 
@@ -1051,6 +917,13 @@ msgstr "背景の画像"
 msgid "_Source:"
 msgstr "ソース(_S):"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "Glade ファイル (.glade) を読み込めませんでした。"
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr "透明"
@@ -1290,6 +1163,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1734,19 +1611,19 @@ msgstr "次へ(_N)"
 msgid "_Replace"
 msgstr "置換(_R)"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "後方検索する(_B)"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "大/小文字を区別する(_S)"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "置換元:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "置換先:"
 
@@ -1758,15 +1635,23 @@ msgstr "後方検索する(_B)"
 msgid "_Regular Expression"
 msgstr "正規表現(_R)"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+"単語を辞書に追加できません\n"
+"(言語設定がおかしいです)。\n"
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "スペル間違いの単語はありません"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "スペル・チェッカ"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "現在の言語(_L)"
 
@@ -1874,90 +1759,90 @@ msgstr ""
 "編集したテキストがドキュメントから削除されました。\n"
 "変更点を適用することができません。"
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
 "コンポーザにドロップした Mozilla の URL の書式 (%d) またはサイズ (%d) が間"
 "違っています\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "編集可"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "HTML が編集可能かどうか"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "文書のタイトル"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "このドキュメントのタイトルです"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "ドキュメント・ベース"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "関連するリファレンスのベース URL です"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "ターゲット・ベース"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "ターゲット・フレームのベース URL です"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "等幅フォント"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "タイプライタのテキストに使用する等幅フォントです"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "新しいリンクの色"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "新しいリンク要素の色です"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "訪問済みリンクの色"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "訪問したリンク要素の色です"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "アクティブなリンクの色"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "有効なリンク要素の色です"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "スペルミスの色"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "スペル・チェックでエラーとなった色です"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "引用の色"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "引用したテキストの色です"
 

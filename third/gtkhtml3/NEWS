@@ -1,3 +1,53 @@
+gtkhtml-3.2.5 "Adiantum" 2005-02-14
+------------------------------------------------
+
+New in this release
+
+   * Updated translations
+	fr (Christophe Merlet)
+	de (Hendrik Brandt)
+	pl (Artur Flinta)
+	nl (Vincent van Adrighem)
+	sv (Christian Rose)
+	ja (Takeshi AIHANA)
+
+gtkhtml-3.2.4 "Adiantum" 2004-12-06
+------------------------------------------------
+
+New in this release
+
+   * fixed capitalizing, lowering, upping functions
+   * fixed crash with broken spell checking settings
+   * fixed crash when pasting multiline text
+   * fixed few memory leaks
+   * fixed crash related to aligned images
+   * fixed multiple replace dialogs appearing
+   * fixed dnd position inside scrolled window
+
+gtkhtml-3.2.3 "Frond" 2004-10-11
+------------------------------------------------
+
+New in this release
+
+   * fixed crash occuring in autosave after paste
+   * expose api version in pkgconfig file
+   * more line breaking touches
+   * fixed embedded widgets not shown problem
+
+gtkhtml-3.2.2 "Sporophyte" 2004-09-23
+------------------------------------------------
+
+New in this release
+
+   * fixed TT style editing
+   * fixed monospaced printing
+   * avoid infinite loop in table layout code
+   * IM fix from Yukihiro Nakai
+   * fixed rule layout
+   * fixed text proerties dialog, style buttons
+   * fixed base url support
+   * tuned line breaking
+
 gtkhtml-3.2.1 "Gone stable" 2004-09-10
 ------------------------------------------------
 

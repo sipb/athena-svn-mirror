@@ -101,6 +101,17 @@ spell_add_to_session (GtkHTML *html, const gchar *word, gpointer data)
 	CORBA_exception_free (&ev);
 }
 
+static void
+spell_add_to_personal_no_language ()
+{
+	GtkWidget *info;
+
+	info = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO,
+				       GTK_BUTTONS_OK, _("Unable to add word to dictionary,\nlanguage settings are broken.\n"));
+	gtk_dialog_run (GTK_DIALOG (info));
+	gtk_widget_destroy (info);
+}
+
 void
 spell_add_to_personal (GtkHTML *html, const gchar *word, const gchar *language, gpointer data)
 {
@@ -112,9 +123,12 @@ spell_add_to_personal (GtkHTML *html, const gchar *word, const gchar *language, 
 	if (!cd->dict)
 		return;
 
-	CORBA_exception_init (&ev);
-	GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, word, language, &ev);
-	CORBA_exception_free (&ev);
+	if (language) {
+		CORBA_exception_init (&ev);
+		GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, word, language, &ev);
+		CORBA_exception_free (&ev);
+	} else
+		spell_add_to_personal_no_language ();
 }
 
 void
@@ -210,14 +224,20 @@ static void
 add_cb (BonoboListener *listener, const char *event_name, const CORBA_any *arg, CORBA_Environment *ev, gpointer user_data)
 {
 	GtkHTMLControlData *cd = (GtkHTMLControlData *) user_data;
-	gchar *word;
+	gchar *word, *language;
 
 	word = html_engine_get_spell_word (cd->html->engine);
 	g_return_if_fail (word);
 
-	GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, word, BONOBO_ARG_GET_STRING (arg), ev);
+	language = BONOBO_ARG_GET_STRING (arg);
+
+	if (language) {
+		GNOME_Spell_Dictionary_addWordToPersonal (cd->dict, word, language, ev);
+		check_next_word ((GtkHTMLControlData *) user_data, TRUE, TRUE);
+	} else
+		spell_add_to_personal_no_language ();
+
 	g_free (word);
-	check_next_word ((GtkHTMLControlData *) user_data, TRUE, TRUE);
 }
 
 static void 

@@ -1,156 +1,25 @@
+# translation of gtkhtml.gnome-2-8.po to Dutch
 # The one and only funky gtkhtml dutch translation!
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Dennis Smit <synap@area101.penguin.nl>, 2000.
-# Tino Meinen <a.t.meinen@chello.nl>, 2002-2004.
-#  
+# Copyright (C) 2000, 2004 Free Software Foundation, Inc.
+#
 # TODO
 #  	snelkoppelingen
+# Dennis Smit <synap@area101.penguin.nl>, 2000.
+# Tino Meinen <a.t.meinen@chello.nl>, 2002-2004.
+# Vincent van Adrighem <adrighem@gnome.org>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gtkhtml cvs\n"
+"Project-Id-Version: gtkhtml.gnome-2-8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2004-05-29 01:26+0200\n"
-"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
-"Language-Team: Dutch <vertaling@nl.linux.org>\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-12-14 21:29+0100\n"
+"Last-Translator: Vincent van Adrighem <adrighem@gnome.org>\n"
+"Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<Geen>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "Kon glade-bestand niet laden"
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Sneltoetsen toevoegen"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Automatisch links detecteren"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Gedrag"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Composer eigenschappen"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Composer eigenschappen gepland"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Configureer spellingscontrole"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Directe spellingscontrole"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Vaste breedte"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Lettertypen"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "Voor afdrukken"
-
-# Toetsen grijpen?
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Pluk een toets"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Informatie"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Sneltoetsen"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Diversen"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Nieuwe sneltoets:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "Op het beeldscherm"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Selecteer HTML vaste breedte-lettertype"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Selecteer HTML vaste breedte-lettertype voor printen"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Selecteer HTML variabele breedte-lettertype"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Selecteer HTML variabele breedte-lettertype voor printen"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "Snelkoppelings_type"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Animaties tonen"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Variabele breedte"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Toevoegen"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "_Verwijderen"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"Kon GNOME Spellingscontrole niet uitvoeren.\n"
-"Probeer GNOME Spell te installeren als u dit nog niet heeft gedaan."
+"X-Generator: KBabel 1.9.1\n"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -597,7 +466,7 @@ msgstr "De ongedaan gemaakte actie opnieuw uitvoeren"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Vervangen"
 
@@ -1053,6 +922,13 @@ msgstr "Achtergrondafbeelding"
 msgid "_Source:"
 msgstr "_Bron:"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "Kon glade-bestand niet laden"
+
 # Doorzichtig
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
@@ -1294,6 +1170,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1746,20 +1626,20 @@ msgstr "_Volgende"
 msgid "_Replace"
 msgstr "_Vervangen"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "_Achteruit zoeken"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "Hoofdletterge_voelig"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "Vervangen:"
 
 # replace with
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "Door:"
 
@@ -1771,15 +1651,23 @@ msgstr "_Achteruit"
 msgid "_Regular Expression"
 msgstr "_Reguliere expressie"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+"Kan woord niet toevoegen aan woordenboek.\n"
+"Taalinstellingen staan verkeerd.\n"
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "Geen foutief gespelde woorden gevonden"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "Spellingscontrole"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "Huidige _talen"
 
@@ -1888,7 +1776,7 @@ msgstr ""
 "Het bewerkte object is verwijderd uit het document.\n"
 "Kan uw aanpassingen niet toepassen."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
@@ -1896,83 +1784,83 @@ msgstr ""
 "d)\n"
 
 # Bewerkbaar? Kan bewerkt/aangepast worden?
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "Kan bewerken"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "Of de html bewerkt kan worden"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "Documenttitel"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "De titel van het huidige document"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "Documentbasis"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "De basis-URL voor relatieve verwijzingen"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "Doelbasis"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "De basis-URL van het doelframe"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "Lettertype met vaste breedte"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "Het lettertype (monospace) voor typemachine-tekst"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "Kleur nieuwe link"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "De kleur van nieuwe links"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "Kleur bezochte link"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "De kleur van bezochte links"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "Kleur actieve link"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "De kleur van een actieve link"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "Kleur van spelfout"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "De kleur van de markering voor spelfouten"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "Kleur citaat"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "De kleur van de geciteerde text"
 
@@ -2052,222 +1940,3 @@ msgstr "Afdrukvoorbeeld"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "GtkHTML test-toepassing"
-
-#~ msgid "Plain"
-#~ msgstr "Gewoon"
-
-#~ msgid ""
-#~ "@link_begin@<img@alt@@width@@height@@align@ "
-#~ "border=@border@@padh@@padv@@src@>@link_end@"
-#~ msgstr ""
-#~ "@link_begin@<img@alt@@width@@height@@align@ "
-#~ "border=@border@@padh@@padv@@src@>@link_end@"
-
-#~ msgid "Frame"
-#~ msgstr "Frame"
-
-#~ msgid ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-#~ "table></center>"
-#~ msgstr ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-#~ "table></center>"
-
-#~ msgid "Caption"
-#~ msgstr "Onderschrift"
-
-#~ msgid ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place "
-#~ "your comment here]</td></tr></table></td></tr></table></center>"
-#~ msgstr ""
-#~ "<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-#~ "cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-#~ "cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-#~ "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Zet "
-#~ "hier uw opmerkingen]</td></tr></table></td></tr></table></center>"
-
-#~ msgid "Find A Regular Expression"
-#~ msgstr "Een Reguliere Expressie Zoeken"
-
-#~ msgid "Find Regular E_xpression..."
-#~ msgstr "Zoeken Reguliere E_xpressie..."
-
-#~ msgid ""
-#~ "The quick brown <a href=\"mailto:fox\">fox</a> jumps over the lazy <a "
-#~ "href=\"mailto:dog\">dog</a>."
-#~ msgstr ""
-#~ "Pa's wijze <a href=\"mailto:lynx\">lynx</a> bezag vroom het fikse <a href="
-#~ "\"mailto:aquaduct\">aquaduct</a>."
-
-#~ msgid "The quick brown fox jumps over the lazy dog."
-#~ msgstr "Pa's wijze lynx bezag vroom het fikse aquaduct."
-
-#~ msgid "Other"
-#~ msgstr "Andere"
-
-#~ msgid ""
-#~ "The editted cell was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "De bewerkte cel is verwijderd uit het document.\n"
-#~ "Kan uw veranderingen niet toepassen."
-
-#~ msgid "************"
-#~ msgstr "************"
-
-#~ msgid "***text***"
-#~ msgstr "***tekst***"
-
-#~ msgid "Apply changes to:"
-#~ msgstr "Veranderingen toepassen op:"
-
-#~ msgid "Border"
-#~ msgstr "Rand"
-
-#~ msgid "Click will follow this URL"
-#~ msgstr "Klikken om de URL te volgen"
-
-#~ msgid "Click will follow this URL:"
-#~ msgstr "Klikken om de URL te volgen:"
-
-#~ msgid "Don't wrap"
-#~ msgstr "Geen doorloop"
-
-#~ msgid "Font size"
-#~ msgstr "Grootte Lettertype"
-
-#~ msgid "Foreground color"
-#~ msgstr "Voorgrondkleur"
-
-#~ msgid "Header"
-#~ msgstr "Kop"
-
-#~ msgid "Link insert"
-#~ msgstr "Link invoeging"
-
-#~ msgid "Location"
-#~ msgstr "Lokatie"
-
-#~ msgid "Padding"
-#~ msgstr "Uitvullen"
-
-#~ msgid "Percent %"
-#~ msgstr "Percentage %"
-
-#~ msgid "Pixmap:"
-#~ msgstr "Pixmap:"
-
-#~ msgid "Points"
-#~ msgstr "Punten"
-
-#~ msgid "Scope"
-#~ msgstr "Bereik"
-
-#~ msgid "Spacing"
-#~ msgstr "Spatiëring"
-
-#~ msgid "Style:"
-#~ msgstr "Stijl:"
-
-#~ msgid "Table Insert"
-#~ msgstr "Tabel-invoeging"
-
-#~ msgid "Test URL..."
-#~ msgstr "Test URL..."
-
-#~ msgid "Wrap"
-#~ msgstr "Doorloop"
-
-#~ msgid "Wrapping:"
-#~ msgstr "Doorlopend:"
-
-#~ msgid "xxxxxxxxx"
-#~ msgstr "xxxxxxxxx"
-
-#~ msgid ""
-#~ "This is sample text, designed to show you how text would flow around this "
-#~ "image if you insert the image into your message."
-#~ msgstr ""
-#~ "Dit is voorbeeldtekst ontworpen om te laten zien hoe tekst rond deze "
-#~ "afbeeld zou worden gezet als u deze afbeelding in uw bericht zou invoegen."
-
-#~ msgid "No image selected"
-#~ msgstr "Geen afbeelding geselecteerd"
-
-#~ msgid ""
-#~ "The editted image was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "De bewerkte afbeelding is verwijderd uit het document.\n"
-#~ "Kan uw veranderingen niet toepassen."
-
-# Link = bijv.nmwrd
-#~ msgid "Link text"
-#~ msgstr "Link-tekst"
-
-#~ msgid ""
-#~ "The editted link was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "De bewerkte link is verwijderd uit het document.\n"
-#~ "Kan uw veranderingen niet toepassen."
-
-#~ msgid "Please fill 'Link text' and 'URL' entries"
-#~ msgstr "U moet de velden 'link-tekst' en 'URL' nog invullen"
-
-#~ msgid "Align"
-#~ msgstr "Uitlijnen"
-
-#~ msgid ""
-#~ "The editted paragraph was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "De bewerkte paragraaf is verwijderd uit het document.\n"
-#~ "Kan uw veranderingen niet toepassen."
-
-#~ msgid "Blue 3D"
-#~ msgstr "Blauw 3D"
-
-#~ msgid "Yellow, flowers"
-#~ msgstr "Geel, bloemen"
-
-#~ msgid ""
-#~ "The editted rule was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "De bewerkte regel is verwijderd uit het document.\n"
-#~ "Kan uw veranderingen niet toepassen."
-
-#~ msgid "Flat gray"
-#~ msgstr "Egaal grijs"
-
-#~ msgid "Dark header"
-#~ msgstr "Donkere kop"
-
-#~ msgid ""
-#~ "The editted table was removed from the document.\n"
-#~ "Cannot apply your changes."
-#~ msgstr ""
-#~ "De bewerkte tabel is verwijderd uit het document.\n"
-#~ "Kan uw veranderingen niet toepassen."
-
-#~ msgid "Color"
-#~ msgstr "Kleur"
-
-#~ msgid "The quick brown fox jumps over the lazy dog.</div>"
-#~ msgstr "Pa's wijze lynx bezag vroom het fikse aquaduct.</dev>"
-
-#~ msgid "Rectangles"
-#~ msgstr "Rechthoeken"
-
-#~ msgid "The quick brown fox jumped over the lazy dog."
-#~ msgstr "Pa's wijze lynx bezag vroom het fikse aquaduct."

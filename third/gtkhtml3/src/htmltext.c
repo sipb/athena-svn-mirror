@@ -57,7 +57,6 @@ static void         spell_error_destroy     (SpellError *se);
 static void         move_spell_errors       (GList *spell_errors, guint offset, gint delta);
 static GList *      remove_spell_errors     (GList *spell_errors, guint offset, guint len);
 static void         remove_text_slaves      (HTMLObject *self);
-static void         html_text_change_attrs  (PangoAttrList *attr_list, GtkHTMLFontStyle style, HTMLEngine *e, gint start_index, gint end_index, gboolean avoid_default_size);
 
 /* void
 debug_spell_errors (GList *se)
@@ -96,6 +95,7 @@ html_text_pango_info_destroy (HTMLTextPangoInfo *pi)
 		pango_item_free (pi->entries [i].item);
 		g_free (pi->entries [i].widths);
 	}
+	g_free (pi->entries);
 	g_free (pi->attrs);
 	g_free (pi);
 }
@@ -918,7 +918,19 @@ html_text_calc_text_size (HTMLText *t, HTMLPainter *painter,
 		char *text = t->text + start_byte_offset;
 
 		if (HTML_IS_PRINTER (painter)) {
+			HTMLClueFlow *flow = NULL;
+			HTMLEngine *e = NULL;
+
 			attrs = html_text_get_attr_list (t, start_byte_offset, start_byte_offset + (g_utf8_offset_to_pointer (text, len) - text));
+
+			if (painter->widget && GTK_IS_HTML (painter->widget))
+				e = GTK_HTML (painter->widget)->engine;
+
+			if (HTML_OBJECT (t)->parent && HTML_IS_CLUEFLOW (HTML_OBJECT (t)->parent))
+				flow = HTML_CLUEFLOW (HTML_OBJECT (t)->parent);
+
+			if (flow && e)
+				html_text_change_attrs (attrs, html_clueflow_get_default_font_style (flow), GTK_HTML (painter->widget)->engine, 0, t->text_bytes, TRUE);
 		}
 		
 		html_painter_calc_text_size (painter, text, len, pi, attrs, glyphs,
@@ -1151,10 +1163,19 @@ html_text_remove_unwanted_line_breaks (char *s, int len, PangoLogAttr *attrs)
 
 		if (attrs [i].is_line_break) {
 			if (last_uc == '.' || last_uc == '/' ||
-			    last_uc == '(' || last_uc == ')' ||
-			    last_uc == '{' || last_uc == '}' ||
-			    last_uc == '[' || last_uc == ']' ||
-			    last_uc == '<' || last_uc == '>')
+			    last_uc == '-' || last_uc == '$' ||
+			    last_uc == '+' || last_uc == '?' ||
+			    last_uc == ')' ||
+			    last_uc == '}' ||
+			    last_uc == ']' ||
+			    last_uc == '>')
+				attrs [i].is_line_break = 0;
+			else if ((uc == '(' ||
+				  uc == '{' ||
+				  uc == '[' ||
+				  uc == '<'
+				  )
+				 && i > 0 && !attrs [i - 1].is_white)
 				attrs [i].is_line_break = 0;
 		}
 		s = g_utf8_next_char (s);
@@ -2414,8 +2435,8 @@ html_text_init (HTMLText *text,
 	html_object_init (HTML_OBJECT (text), HTML_OBJECT_CLASS (klass));
 
 	text->text_len      = text_len (&str, len);
-	text->text_bytes    = strlen (str);
-	text->text          = g_strndup (str, g_utf8_offset_to_pointer (str, text->text_len) - str);
+	text->text_bytes    = g_utf8_offset_to_pointer (str, text->text_len) - str;
+	text->text          = g_strndup (str, text->text_bytes);
 	text->font_style    = font_style;
 	text->face          = NULL;
 	text->color         = color;
@@ -3156,6 +3177,9 @@ style_from_attrs (PangoAttrIterator *iter)
 		case PANGO_ATTR_SIZE:
 			style |= ((HTMLPangoAttrFontSize *) attr)->style;
 			break;
+		case PANGO_ATTR_FAMILY:
+			style |= GTK_HTML_FONT_STYLE_FIXED;
+			break;
 		default:
 			break;
 		}
@@ -3212,7 +3236,7 @@ html_text_get_style_conflicts (HTMLText *text, GtkHTMLFontStyle style, gint star
 	return conflicts;
 }
 
-static void
+void
 html_text_change_attrs (PangoAttrList *attr_list, GtkHTMLFontStyle style, HTMLEngine *e, gint start_index, gint end_index, gboolean avoid_default_size)
 {
 	PangoAttribute *attr;
@@ -3300,6 +3324,10 @@ unset_style_filter (PangoAttribute *attr, gpointer data)
 		break;
 	case PANGO_ATTR_SIZE:
 		if (((HTMLPangoAttrFontSize *) attr)->style & style)
+			return TRUE;
+		break;
+	case PANGO_ATTR_FAMILY:
+		if (style & GTK_HTML_FONT_STYLE_FIXED)
 			return TRUE;
 		break;
 	default:

@@ -169,13 +169,13 @@ text_properties (GtkHTMLControlData *cd, gpointer *set_data)
 	g_signal_connect (d->check_bold, "toggled", G_CALLBACK (bold_changed), d);
 
 	d->check_italic = glade_xml_get_widget (xml, "check_italic");
-	g_signal_connect (d->check_bold, "toggled", G_CALLBACK (italic_changed), d);
+	g_signal_connect (d->check_italic, "toggled", G_CALLBACK (italic_changed), d);
 
 	d->check_underline = glade_xml_get_widget (xml, "check_underline");
-	g_signal_connect (d->check_bold, "toggled", G_CALLBACK (underline_changed), d);
+	g_signal_connect (d->check_underline, "toggled", G_CALLBACK (underline_changed), d);
 
 	d->check_strikeout = glade_xml_get_widget (xml, "check_strikeout");
-	g_signal_connect (d->check_bold, "toggled", G_CALLBACK (strikeout_changed), d);
+	g_signal_connect (d->check_strikeout, "toggled", G_CALLBACK (strikeout_changed), d);
 
 	d->option_size = glade_xml_get_widget (xml, "option_size");
 	g_signal_connect (gtk_option_menu_get_menu (GTK_OPTION_MENU (d->option_size)), "selection-done",

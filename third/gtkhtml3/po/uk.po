@@ -7,146 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
 "PO-Revision-Date: 2004-08-23 00:29+0300\n"
 "Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<Немає>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "Не вдається завантажити файл формату Glade."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Додавання комбінацій клавіш"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Автоматично виявляти посилання"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Поведінка"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Властивості редактора"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Заплановані властивості редактора"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Перевірка орфографії"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Увімкнути перевірку орфографії"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Шрифт фіксованої ширини"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Шрифти"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "Для друку"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Захопити клавішу"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Інформація"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Комбінації клавіш"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Різне"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Нова комбінація клавіш:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "На екрані"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Вибір шрифту фіксованої ширини HTML"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Вибір шрифту фіксованої ширини HTML для друку"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Вибір шрифту змінної ширини HTML"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Вибір шрифту змінної ширини HTML для друку"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "_Тип комбінації клавіш:"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Показувати анімовані зображення"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Шрифт змінної ширини"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Додати"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "В_идалити"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"Не вдається виконати аплет керування GNOME Spell.\n"
-"Спробуйте встановити GNOME Spell, якщо він не встановлений."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -593,7 +460,7 @@ msgstr "Повторити відмінену операцію"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Замінити"
 
@@ -1048,6 +915,13 @@ msgstr "Зображення на тлі"
 msgid "_Source:"
 msgstr "Д_жерело:"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "Не вдається завантажити файл формату Glade."
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr "Прозорий"
@@ -1287,6 +1161,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1731,19 +1609,19 @@ msgstr "Да_лі"
 msgid "_Replace"
 msgstr "_Замінити"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "З_воротний пошук"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "Враховувати _регістр"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "Замінити:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "Ширина:"
 
@@ -1755,15 +1633,21 @@ msgstr "З_воротний пошук"
 msgid "_Regular Expression"
 msgstr "_Регулярний вираз"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "Не знайдено некоректних слів"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "Перевірка орфографії"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "Поточні _мови"
 
@@ -1871,90 +1755,90 @@ msgstr ""
 "Редагований об'єкт було видалено з документу.\n"
 "Не вдається застосувати зміни."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
 "Mozilla url перетягнений на Composer має неправильний формат (%d) або "
 "довжину (%d)\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "Редагується"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "Чи може текст редагуватись"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "Заголовок документу"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "Заголовок поточного елемента"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "База документа"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "Базове посилання (URL) для відносних посилань"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "База цілі"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "Базове посилання (URL) для цільової рамки"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "Шрифт фіксованої ширини"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "Моноширинний шрифт для відображення тексту друкарської машинки"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "Колір не відвіданого посилання"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "Колір ще не відвіданого посилання"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "Колір відвіданого посилання"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "Колір вже відвіданого посилання"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "Колір активного посилання"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "Колір елементів активного посилання"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "Колір неправильного посилання"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "Колір, що означає помилки орфографії"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "Колір цитування"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "Колір цитованого тексту"
 
@@ -2034,3 +1918,94 @@ msgstr "Попередній перегляд"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "Програма перевірки GtkHTML"
+
+#~ msgid "<None>"
+#~ msgstr "<Немає>"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "Додавання комбінацій клавіш"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "Автоматично виявляти посилання"
+
+#~ msgid "Behavior"
+#~ msgstr "Поведінка"
+
+#~ msgid "Composer Properties"
+#~ msgstr "Властивості редактора"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "Заплановані властивості редактора"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "Перевірка орфографії"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "Увімкнути перевірку орфографії"
+
+#~ msgid "Fixed width"
+#~ msgstr "Шрифт фіксованої ширини"
+
+#~ msgid "Fonts"
+#~ msgstr "Шрифти"
+
+#~ msgid "For printing"
+#~ msgstr "Для друку"
+
+#~ msgid "Grab keys"
+#~ msgstr "Захопити клавішу"
+
+#~ msgid "Information"
+#~ msgstr "Інформація"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "Комбінації клавіш"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Різне"
+
+#~ msgid "New shortcut:"
+#~ msgstr "Нова комбінація клавіш:"
+
+#~ msgid "On screen"
+#~ msgstr "На екрані"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Вибір шрифту фіксованої ширини HTML"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Вибір шрифту фіксованої ширини HTML для друку"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Вибір шрифту змінної ширини HTML"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Вибір шрифту змінної ширини HTML для друку"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "_Тип комбінації клавіш:"
+
+#~ msgid "Show animated images"
+#~ msgstr "Показувати анімовані зображення"
+
+#~ msgid "Variable width"
+#~ msgstr "Шрифт змінної ширини"
+
+#~ msgid "_Add"
+#~ msgstr "_Додати"
+
+#~ msgid "_Delete"
+#~ msgstr "В_идалити"
+
+#~ msgid ""
+#~ "Cannot execute GNOME Spell control applet\n"
+#~ "Try to install GNOME Spell if you don't have it installed."
+#~ msgstr ""
+#~ "Не вдається виконати аплет керування GNOME Spell.\n"
+#~ "Спробуйте встановити GNOME Spell, якщо він не встановлений."

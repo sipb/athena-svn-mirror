@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
 "PO-Revision-Date: 2004-09-06 12:03-0300\n"
 "Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
 "Language-Team:  <nls@tux.hellug.gr>\n"
@@ -19,144 +19,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3.1\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<Κανένα>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "Αδυναμία φόρτωσης αρχείου glade."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Προσθήκη Συντομεύσεων Πληκτρολογίου"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Αυτόματος εντοπισμός συνδέσμων"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Συμπεριφορά"
-
-#
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Ιδιότητες Composer"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Σχεδιαζόμενες Ιδιότητες Composer"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Ρύθμιση ελέγχου ορθογραφίας"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Ενεργοποίηση ελέγχου ορθογραφίας"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Σταθερoύ πλάτους"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Γραμματοσειρές"
-
-#
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "Για εκτύπωση"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Αρπαγή πλήκτρων"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Πληροφορίες"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Συντομεύσεις Πληκτρολογίου"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Διάφορα"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Νέα συντόμευση:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "Στην οθόνη"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Επιλογή γραμματοσειράς HTML σταθερού πλάτους"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Επιλογή γραμματοσειράς HTML σταθερού πλάτους για εκτύπωση"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Επιλογή γραμματοσειράς HTML μεταβλητού πλάτους"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Επιλογή γραμματοσειράς HTML μεταβλητού πλάτους για εκτύπωση"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "_Είδος συντομεύσεων:"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Εμφάνιση κινούμενων εικόνων"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Μεταβλητού πλάτους"
-
-#
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Προσθήκη"
-
-#
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "_Διαγραφή"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"Αδυναμία εκτέλεσης εφαρμογιδίου ελέγχου ορθογραφίας του GNOME\n"
-"Προσπαθείστε να εγκαταστήσετε το GNOME Spell αν δεν το έχετε εγκαταστήσει "
-"ακόμη."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -613,7 +475,7 @@ msgstr "Ακύρωση της ανηρημένης ενέργειας"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Αντικατάσταση"
 
@@ -1081,6 +943,13 @@ msgstr "Εικόνα Παρασκηνίου"
 msgid "_Source:"
 msgstr "_Πηγή:"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "Αδυναμία φόρτωσης αρχείου glade."
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr "Διάφανο"
@@ -1326,6 +1195,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1785,19 +1658,19 @@ msgstr "Επόμε_νο"
 msgid "_Replace"
 msgstr "_Αντικατάσταση"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "Αναζήτηση προς τα _πίσω"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "_Διάκριση πεζών/κεφαλαίων"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "Αντικατάσταση:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "Με:"
 
@@ -1809,15 +1682,21 @@ msgstr "_Προς τα πίσω"
 msgid "_Regular Expression"
 msgstr "_Κανονική Έκφραση"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "Δε βρέθηκε ανορθόγραφη λέξη"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "Έλεγκτής ορθογραφίας"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "Τρέχουσες Γ_λώσσες"
 
@@ -1932,88 +1811,88 @@ msgstr ""
 "Το επεξεργασμένο αντικείμενο αφαιρέθηκε από το έγγραφο.\n"
 "Αδύνατη η εφαρμογή των αλλαγών."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr "Το url του Moziila έχει εσφαλμένη μορφή (%d) ή μήκος (%d)\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "Επεξεργάσιμο"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "Αν θα μπορεί να γίνει επεξεργασία στο html"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "Τίτλος Εγγράφου"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "Ο τίτλος του τρέχοντος εγγράφου"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "Βάση Εγγράφου"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "Το URL βάσης γα σχετικές αναφορές"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "Βάση Στόχου"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "Το URL βάσης του πλαισίου στόχου"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "Γραμματοσειρά Σταθερού Πλάτους"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "Η γραμματοσειρά Monospace που χρησιμοποιείται για κείμενο γραφομηχανής"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "Χρώμα Νέου Συνδέσμου"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "Το χρώμα για στοιχεία νέων συνδέσμων"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "Χρώμα Αναγνωσμένου Συνδέσμου"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "Το χρώμα για στοιχεία αναγνωσμένων συνδέσμων"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "Χρώμα Ενεργού Συνδέσμου"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "Το χρώμα για στοιχεία ενεργών συνδέσμων"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "Χρώμα Ορθογραφικού Λάθους"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "Το χρώμα σήμανσης ορθογραφικών λαθών"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "Χρώμα Παράθεσης"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "Το χρώμα για το κείμενο σε παράθεση"
 
@@ -2101,3 +1980,99 @@ msgstr "Προεπισκόπηση εκτύπωσης"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "Εφαρμογή Δοκιμής GtkHTML"
+
+#~ msgid "<None>"
+#~ msgstr "<Κανένα>"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "Προσθήκη Συντομεύσεων Πληκτρολογίου"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "Αυτόματος εντοπισμός συνδέσμων"
+
+#~ msgid "Behavior"
+#~ msgstr "Συμπεριφορά"
+
+#
+#~ msgid "Composer Properties"
+#~ msgstr "Ιδιότητες Composer"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "Σχεδιαζόμενες Ιδιότητες Composer"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "Ρύθμιση ελέγχου ορθογραφίας"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "Ενεργοποίηση ελέγχου ορθογραφίας"
+
+#~ msgid "Fixed width"
+#~ msgstr "Σταθερoύ πλάτους"
+
+#~ msgid "Fonts"
+#~ msgstr "Γραμματοσειρές"
+
+#
+#~ msgid "For printing"
+#~ msgstr "Για εκτύπωση"
+
+#~ msgid "Grab keys"
+#~ msgstr "Αρπαγή πλήκτρων"
+
+#~ msgid "Information"
+#~ msgstr "Πληροφορίες"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "Συντομεύσεις Πληκτρολογίου"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Διάφορα"
+
+#~ msgid "New shortcut:"
+#~ msgstr "Νέα συντόμευση:"
+
+#~ msgid "On screen"
+#~ msgstr "Στην οθόνη"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Επιλογή γραμματοσειράς HTML σταθερού πλάτους"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Επιλογή γραμματοσειράς HTML σταθερού πλάτους για εκτύπωση"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Επιλογή γραμματοσειράς HTML μεταβλητού πλάτους"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Επιλογή γραμματοσειράς HTML μεταβλητού πλάτους για εκτύπωση"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "_Είδος συντομεύσεων:"
+
+#~ msgid "Show animated images"
+#~ msgstr "Εμφάνιση κινούμενων εικόνων"
+
+#~ msgid "Variable width"
+#~ msgstr "Μεταβλητού πλάτους"
+
+#
+#~ msgid "_Add"
+#~ msgstr "_Προσθήκη"
+
+#
+#~ msgid "_Delete"
+#~ msgstr "_Διαγραφή"
+
+#~ msgid ""
+#~ "Cannot execute GNOME Spell control applet\n"
+#~ "Try to install GNOME Spell if you don't have it installed."
+#~ msgstr ""
+#~ "Αδυναμία εκτέλεσης εφαρμογιδίου ελέγχου ορθογραφίας του GNOME\n"
+#~ "Προσπαθείστε να εγκαταστήσετε το GNOME Spell αν δεν το έχετε εγκαταστήσει "
+#~ "ακόμη."

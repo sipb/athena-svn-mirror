@@ -1,3 +1,27 @@
+2005-02-14  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version
+
+2004-10-26  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* configure.in: Added "id" (Indonesian) to ALL_LINGUAS
+	* po/id.po: Added Indonesian translation
+
+2004-10-11  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: prepare for release 3.2.3
+
+2004-09-23  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: bumped version to 3.2.2
+	incremented revision
+
+	* NEWS: updated
+
+2004-08-21  Jayaradha  <njaya@redhat.com>
+
+	* configure.in: Add ta to ALL_LINGUAS.
+
 2004-09-10  JP Rosevear  <jpr@novell.com>
 
 	* configure.in: bump version

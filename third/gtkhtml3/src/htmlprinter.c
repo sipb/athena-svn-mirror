@@ -594,6 +594,14 @@ process_attrs (HTMLPrinter *printer, GSList *attrs, GtkHTMLFontStyle *style, gbo
 			if (style)
 				*style |= ((HTMLPangoAttrFontSize *) attr)->style;
 			break;
+		case PANGO_ATTR_FAMILY: {
+			PangoAttrString *as = (PangoAttrString *) attr;
+
+			if (!strcmp (as->value, "Monospace")
+			    || (HTML_PAINTER (printer)->font_manager.fixed.face && !strcmp (as->value, HTML_PAINTER (printer)->font_manager.fixed.face)))
+				*style |= GTK_HTML_FONT_STYLE_FIXED;
+		}
+		break;
 		default:
 			break;
 		}

@@ -7,146 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
-"PO-Revision-Date: 2004-06-10 20:10+0100\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
+"PO-Revision-Date: 2004-11-15 00:45+0100\n"
 "Last-Translator: Xavier Conde Rueda <xaviconde@eresmas.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<Cap>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "No s'ha pogut carregar el fitxer glade."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Afegeix dreceres de teclat"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Detecta els enllaços automàticament"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Comportament"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Propietats del redactor"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Propietats planejades del redactor"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Configura la comprovació ortogràfica"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Habilita la comprovació ortogràfica"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Amplada fixa"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Tipus de lletra"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "Per imprimir"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Captura tecles"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Informació"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Dreceres de teclat"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Miscel·lània"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Nova drecera de teclat:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "A la pantalla"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Seleccioneu el tipus de lletra d'amplada fixa HTML"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Seleccioneu el tipus de lletra d'amplada fixa HTML per imprimir"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Seleccioneu el tipus de lletra d'amplada variable HTML"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Seleccioneu el tipus de lletra d'amplada variable HTML per imprimir"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "_Tipus de drecera de teclat:"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Anima les imatges"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Amplada variable"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Afegeix"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "_Suprimeix"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"No es pot executar la miniaplicació de control GNOME Spell.\n"
-"Proveu d'instal·lar GNOME Spell si no el teniu ja instal·lat."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -430,7 +297,7 @@ msgstr "Justifica a l'esquerra els paràgrafs"
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:54
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
 msgid "Li_ck"
-msgstr "Llengua _fora"
+msgstr "Ll_engot"
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:55
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
@@ -593,7 +460,7 @@ msgstr "Torna a fer l'acció desfeta"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Reemplaça"
 
@@ -1048,6 +915,13 @@ msgstr "Imatge de fons"
 msgid "_Source:"
 msgstr "Ori_gen:"
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "No s'ha pogut carregar el fitxer glade."
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr "Transparent"
@@ -1287,6 +1161,10 @@ msgstr "    "
 #, no-c-format
 msgid "%"
 msgstr "%"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1731,19 +1609,19 @@ msgstr "Següe_nt"
 msgid "_Replace"
 msgstr "_Reemplaça"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "Ce_rca endarerre"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "Con_sidera diferents majúscules i minúscules"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "Reemplaça:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "Amb:"
 
@@ -1755,15 +1633,21 @@ msgstr "_Endarrere"
 msgid "_Regular Expression"
 msgstr "Exp_ressió regular"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "No s'ha trobat cap paraula escrita incorrectament"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "Corrector ortogràfic"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "Idiomes actua_ls"
 
@@ -1871,90 +1755,90 @@ msgstr ""
 "L'objecte editat s'ha suprimit del document.\n"
 "No es poden aplicar els vostres canvis."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
 "L'URL del Mozilla que s'ha deixat anar sobre el redactor tenia el format "
 "incorrecte (%d) o la longitud incorrecta (%d)\n"
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "Editable"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "Si es pot editar l'html"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "Nom del document"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "El nom del document actual"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "Base del document"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "L'URL base per a referències relatives"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "Base destí"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "La URL base del marc destí"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "Amplada de lletra fixa"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "El tipus de lletra monoespai per a text de màquina d'escriure"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "Color del nou enllaç"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "El color dels nous elements d'enllaç"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "Color de l'enllaç visitat"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "El color dels elements d'enllaç visitats"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "Color de l'enllaç actiu"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "El color dels elements d'enllaç actius"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "Color de l'error ortogràfic"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "El color dels marcadors d'error ortogràfic"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 msgid "Cite Quotation Color"
 msgstr "Color de la cita"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 msgid "The color of the cited text"
 msgstr "El color del text citat"
 
@@ -2034,3 +1918,94 @@ msgstr "Previsualització d'impressió"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "Aplicació de prova de GtkHTML"
+
+#~ msgid "<None>"
+#~ msgstr "<Cap>"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "Afegeix dreceres de teclat"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "Detecta els enllaços automàticament"
+
+#~ msgid "Behavior"
+#~ msgstr "Comportament"
+
+#~ msgid "Composer Properties"
+#~ msgstr "Propietats del redactor"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "Propietats planejades del redactor"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "Configura la comprovació ortogràfica"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "Habilita la comprovació ortogràfica"
+
+#~ msgid "Fixed width"
+#~ msgstr "Amplada fixa"
+
+#~ msgid "Fonts"
+#~ msgstr "Tipus de lletra"
+
+#~ msgid "For printing"
+#~ msgstr "Per imprimir"
+
+#~ msgid "Grab keys"
+#~ msgstr "Captura tecles"
+
+#~ msgid "Information"
+#~ msgstr "Informació"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "Dreceres de teclat"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Miscel·lània"
+
+#~ msgid "New shortcut:"
+#~ msgstr "Nova drecera de teclat:"
+
+#~ msgid "On screen"
+#~ msgstr "A la pantalla"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Seleccioneu el tipus de lletra d'amplada fixa HTML"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Seleccioneu el tipus de lletra d'amplada fixa HTML per imprimir"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Seleccioneu el tipus de lletra d'amplada variable HTML"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Seleccioneu el tipus de lletra d'amplada variable HTML per imprimir"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "_Tipus de drecera de teclat:"
+
+#~ msgid "Show animated images"
+#~ msgstr "Anima les imatges"
+
+#~ msgid "Variable width"
+#~ msgstr "Amplada variable"
+
+#~ msgid "_Add"
+#~ msgstr "_Afegeix"
+
+#~ msgid "_Delete"
+#~ msgstr "_Suprimeix"
+
+#~ msgid ""
+#~ "Cannot execute GNOME Spell control applet\n"
+#~ "Try to install GNOME Spell if you don't have it installed."
+#~ msgstr ""
+#~ "No es pot executar la miniaplicació de control GNOME Spell.\n"
+#~ "Proveu d'instal·lar GNOME Spell si no el teniu ja instal·lat."

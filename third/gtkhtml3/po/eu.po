@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 10:09-0400\n"
+"POT-Creation-Date: 2005-02-14 10:12-0500\n"
 "PO-Revision-Date: 2004-04-16 11:03+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
@@ -14,140 +14,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
-
-#: capplet/gnome-bindings-prop.c:157
-msgid "<None>"
-msgstr "<bat ere ez>"
-
-#: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:333 components/html-editor/image.c:350
-#: components/html-editor/link.c:182 components/html-editor/rule.c:174
-#: components/html-editor/table.c:220 components/html-editor/template.c:271
-#: components/html-editor/text.c:159
-msgid "Could not load glade file."
-msgstr "Ezin izan da glade fitxategia kargatu."
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:4
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "Gehitu laster-teklak"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "Automatikoki detektatu estekak"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "Portaera"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "Mezu-prestatzailearen propietateak"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "Mezu-prestatzailearen propietate planifikatuak"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "Konfiguratu ortografia-egiaztapena"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "Gaitu ortografia-egiaztapena"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "Zabalera finkoa"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "Letra-tipoak"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "Inprimatzeko"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "Hartu teklak"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "Informazioa"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "Laster-teklak"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-msgid "Miscellaneous"
-msgstr "Hainbat"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "Lasterbide berria:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "pantailan"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "Hautatu HTML zabalera finkoko letra-tipoa"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "Hautatu HTML zabalera finkoko letra-tipoa inprimatzeko"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "Hautatu HTML zabalera aldakorreko letra-tipoa"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "Hautatu HTML zabalera aldakorreko letra-tipoa inprimatzeko"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "Lasterbide-_mota:"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "Erakutsi irudi-animazioak"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "Zabalera aldakorra"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "_Gehitu"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "Ez_abatu"
-
-#: capplet/main.c:226
-msgid ""
-"Cannot execute GNOME Spell control applet\n"
-"Try to install GNOME Spell if you don't have it installed."
-msgstr ""
-"Ezin da exekutatu GNOMEren ortografia-kontrolaren applet-a\n"
-"Instalatuta ez badaukazu, saia zaitez GNOMEren ortografia-egiaztatzailea "
-"instalatzen."
 
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
@@ -595,7 +461,7 @@ msgstr "Desegindako ekintza berregiten du"
 #. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
 #: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
-#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+#: components/html-editor/replace.c:163 components/html-editor/replace.c:225
 msgid "Replace"
 msgstr "Ordeztu"
 
@@ -1055,6 +921,13 @@ msgstr "Atzeko planoko irudia"
 msgid "_Source:"
 msgstr ""
 
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
+msgid "Could not load glade file."
+msgstr "Ezin izan da glade fitxategia kargatu."
+
 #: components/html-editor/cell.c:350 components/html-editor/table.c:231
 msgid "Transparent"
 msgstr ""
@@ -1294,6 +1167,10 @@ msgstr ""
 #, no-c-format
 msgid "%"
 msgstr ""
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:8
 msgid "+4"
@@ -1765,19 +1642,19 @@ msgstr "_Hurrengoa"
 msgid "_Replace"
 msgstr "_Ordeztu"
 
-#: components/html-editor/replace.c:169
+#: components/html-editor/replace.c:171
 msgid "Search _backward"
 msgstr "Bilatu g_orantz"
 
-#: components/html-editor/replace.c:170 components/html-editor/search.c:114
+#: components/html-editor/replace.c:172 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "_Bereizi maiuskulak eta minuskulak"
 
-#: components/html-editor/replace.c:180
+#: components/html-editor/replace.c:182
 msgid "Replace:"
 msgstr "Ordeztu:"
 
-#: components/html-editor/replace.c:183
+#: components/html-editor/replace.c:185
 msgid "With:"
 msgstr "Honekin:"
 
@@ -1790,15 +1667,21 @@ msgstr "_Gorantz"
 msgid "_Regular Expression"
 msgstr "Bilatu adierazpen erregularra"
 
-#: components/html-editor/spell.c:278
+#: components/html-editor/spellchecker.c:110
+msgid ""
+"Unable to add word to dictionary,\n"
+"language settings are broken.\n"
+msgstr ""
+
+#: components/html-editor/spellchecker.c:298
 msgid "No misspelled word found"
 msgstr "Ez da oker idatzitako hitzik aurkitu"
 
-#: components/html-editor/spell.c:285
+#: components/html-editor/spellchecker.c:305
 msgid "Spell checker"
 msgstr "Ortografia-egiaztatzailea"
 
-#: components/html-editor/spell.c:378
+#: components/html-editor/spellchecker.c:398
 msgid "Current _Languages"
 msgstr "_Uneko hizkuntzak"
 
@@ -1907,89 +1790,89 @@ msgstr ""
 "Editatutako testua kendu egin da dokumentutik.\n"
 "Egindako aldaketak ezin dira aplikatu."
 
-#: src/gtkhtml.c:2531
+#: src/gtkhtml.c:2569
 #, c-format
 msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
 msgstr ""
 
-#: src/gtkhtml.c:2853
+#: src/gtkhtml.c:2891
 msgid "Editable"
 msgstr "Editagarria"
 
-#: src/gtkhtml.c:2854
+#: src/gtkhtml.c:2892
 msgid "Whether the html can be edited"
 msgstr "HTMLa edita daitekeen"
 
-#: src/gtkhtml.c:2860
+#: src/gtkhtml.c:2898
 msgid "Document Title"
 msgstr "Dokumentuaren titulua"
 
-#: src/gtkhtml.c:2861
+#: src/gtkhtml.c:2899
 msgid "The title of the current document"
 msgstr "Uneko dokumentuaren titulua"
 
-#: src/gtkhtml.c:2867
+#: src/gtkhtml.c:2905
 msgid "Document Base"
 msgstr "Dokumentuaren oinarria"
 
-#: src/gtkhtml.c:2868
+#: src/gtkhtml.c:2906
 msgid "The base URL for relative references"
 msgstr "Erreferentzia erlatiboetarako oinarrizko URLa"
 
-#: src/gtkhtml.c:2874
+#: src/gtkhtml.c:2912
 msgid "Target Base"
 msgstr "Helburuaren oinarria"
 
-#: src/gtkhtml.c:2875
+#: src/gtkhtml.c:2913
 msgid "The base URL of the targe frame"
 msgstr "Helburuko markoaren oinarriko URLa"
 
-#: src/gtkhtml.c:2884
+#: src/gtkhtml.c:2922
 msgid "Fixed Width Font"
 msgstr "Zabalera finkoko letra-tipoa"
 
-#: src/gtkhtml.c:2885
+#: src/gtkhtml.c:2923
 msgid "The Monospace font to use for typewriter text"
 msgstr "Idazmakinako testuetan erabiltzeko tarte bakarreko letra-tipoa"
 
-#: src/gtkhtml.c:2891
+#: src/gtkhtml.c:2929
 msgid "New Link Color"
 msgstr "Esteka berrien kolorea"
 
-#: src/gtkhtml.c:2892
+#: src/gtkhtml.c:2930
 msgid "The color of new link elements"
 msgstr "Esteka berriek izango duten kolorea"
 
-#: src/gtkhtml.c:2897
+#: src/gtkhtml.c:2935
 msgid "Visited Link Color"
 msgstr "Bisitatutako esteken kolorea"
 
-#: src/gtkhtml.c:2898
+#: src/gtkhtml.c:2936
 msgid "The color of visited link elements"
 msgstr "Bisitatutako estekek izango duten kolorea"
 
-#: src/gtkhtml.c:2903
+#: src/gtkhtml.c:2941
 msgid "Active Link Color"
 msgstr "Esteka aktiboen kolorea"
 
-#: src/gtkhtml.c:2904
+#: src/gtkhtml.c:2942
 msgid "The color of active link elements"
 msgstr "Esteka aktiboek izango duten kolorea"
 
-#: src/gtkhtml.c:2909
+#: src/gtkhtml.c:2947
 msgid "Spelling Error Color"
 msgstr "Ortografia-akatsen kolorea"
 
-#: src/gtkhtml.c:2910
+#: src/gtkhtml.c:2948
 msgid "The color of the spelling error markers"
 msgstr "Ortografia-akatsen markek izango duten kolorea"
 
-#: src/gtkhtml.c:2915
+#: src/gtkhtml.c:2953
 #, fuzzy
 msgid "Cite Quotation Color"
 msgstr "Itsatsi aipamena"
 
-#: src/gtkhtml.c:2916
+#: src/gtkhtml.c:2954
 #, fuzzy
 msgid "The color of the cited text"
 msgstr "Esteka aktiboek izango duten kolorea"
@@ -2070,6 +1953,98 @@ msgstr "Inprimatzeko aurrebista"
 #: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "GtkHTML probako aplikazioa"
+
+#~ msgid "<None>"
+#~ msgstr "<bat ere ez>"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "Gehitu laster-teklak"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "Automatikoki detektatu estekak"
+
+#~ msgid "Behavior"
+#~ msgstr "Portaera"
+
+#~ msgid "Composer Properties"
+#~ msgstr "Mezu-prestatzailearen propietateak"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "Mezu-prestatzailearen propietate planifikatuak"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "Konfiguratu ortografia-egiaztapena"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "Gaitu ortografia-egiaztapena"
+
+#~ msgid "Fixed width"
+#~ msgstr "Zabalera finkoa"
+
+#~ msgid "Fonts"
+#~ msgstr "Letra-tipoak"
+
+#~ msgid "For printing"
+#~ msgstr "Inprimatzeko"
+
+#~ msgid "Grab keys"
+#~ msgstr "Hartu teklak"
+
+#~ msgid "Information"
+#~ msgstr "Informazioa"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "Laster-teklak"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Hainbat"
+
+#~ msgid "New shortcut:"
+#~ msgstr "Lasterbide berria:"
+
+#~ msgid "On screen"
+#~ msgstr "pantailan"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "Hautatu HTML zabalera finkoko letra-tipoa"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "Hautatu HTML zabalera finkoko letra-tipoa inprimatzeko"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "Hautatu HTML zabalera aldakorreko letra-tipoa"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "Hautatu HTML zabalera aldakorreko letra-tipoa inprimatzeko"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "Lasterbide-_mota:"
+
+#~ msgid "Show animated images"
+#~ msgstr "Erakutsi irudi-animazioak"
+
+#~ msgid "Variable width"
+#~ msgstr "Zabalera aldakorra"
+
+#~ msgid "_Add"
+#~ msgstr "_Gehitu"
+
+#~ msgid "_Delete"
+#~ msgstr "Ez_abatu"
+
+#~ msgid ""
+#~ "Cannot execute GNOME Spell control applet\n"
+#~ "Try to install GNOME Spell if you don't have it installed."
+#~ msgstr ""
+#~ "Ezin da exekutatu GNOMEren ortografia-kontrolaren applet-a\n"
+#~ "Instalatuta ez badaukazu, saia zaitez GNOMEren ortografia-egiaztatzailea "
+#~ "instalatzen."
 
 #~ msgid "Plain"
 #~ msgstr "Soila"
