@@ -35,6 +35,7 @@ static char *rcsid_commands_c = "$Header: ";
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */
 #include <strings.h>			/* String defs. */
+#include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <errno.h>			/* System error codes. */
 
@@ -49,7 +50,7 @@ static char *rcsid_commands_c = "$Header: ";
 
 print_help()
 {
-  int comm_index;				/* Index in command table. */
+  int comm_ind;				/* Index in command table. */
   FILE *file;
   char filename[100];
 
@@ -58,10 +59,10 @@ print_help()
     message(2, "Unable to create help file, sorry.");
   
   fprintf(file, "Commands are:\n");
-  for (comm_index = 0; comm_index < Command_Count; comm_index++)
+  for (comm_ind = 0; comm_ind < Command_Count; comm_ind++)
     {
-      fprintf(file, "     %c   %s\n", Command_Table[comm_index].command,
-	     Command_Table[comm_index].help_string);
+      fprintf(file, "     %c   %s\n", Command_Table[comm_ind].command,
+	     Command_Table[comm_ind].help_string);
     }
   fprintf(file, "  <C-L>  Redisplay the screen.\n");
   fprintf(file, "  <DEL>  Display previous page of index.\n");
@@ -88,7 +89,7 @@ print_help()
 top()
 {
   set_current_dir(Root_Dir);
-  Index_Start = Current_Index = 1;
+  Ind_Start = Current_Ind = 1;
   make_display();
 }
 
@@ -100,12 +101,12 @@ top()
 
 prev_entry()
 {
-  int new_index;				/* New entry index. */
+  int new_ind;				/* New entry index. */
   
-  if ( (new_index = Current_Index - 1) < 1)
+  if ( (new_ind = Current_Ind - 1) < 1)
     messages("", "Beginning of entries.");
   else
-    display_entry(new_index);
+    display_entry(new_ind);
 }
 
 /* Function:	next_entry() displays the next CREF entry.
@@ -116,12 +117,12 @@ prev_entry()
 
 next_entry()
 {
-  int new_index;				/* New entry index. */
+  int new_ind;				/* New entry index. */
   
-  if ( (new_index = Current_Index + 1) > Entry_Count)
+  if ( (new_ind = Current_Ind + 1) > Entry_Count)
     messages("", "No more entries.");
   else
-    display_entry(new_index);
+    display_entry(new_ind);
 }
 
 /* Function:	up_level() moves up one level in the CREF hierarchy.
@@ -143,8 +144,8 @@ up_level()
       if ( strlen(new_dir) >= strlen(Root_Dir) )
 	{
 	  set_current_dir(new_dir);
-	  Index_Start = Current_Index = Previous_Index;
-	  Previous_Index = 1;
+	  Ind_Start = Current_Ind = Previous_Ind;
+	  Previous_Ind = 1;
 	}
     }
   make_display();
@@ -162,7 +163,7 @@ save_to_file()
   int fd;				/* Input file descriptor. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   char error[ERRSIZE];			/* Error message. */
-  int save_index;			/* Index of desired entry. */
+  int save_ind;			/* Index of desired entry. */
   char msg[LINE_LENGTH];		/* Message for saving file. */
   char filename[FILENAME_SIZE];		/* Name of file to use. */
 
@@ -171,8 +172,8 @@ save_to_file()
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
-  save_index = atoi(inbuf);
-  if ( (save_entry = get_entry(save_index)) == NULL)
+  save_ind = atoi(inbuf);
+  if ( (save_entry = get_entry(save_ind)) == NULL)
     {
       messages("", "Invalid entry number.");
       return;
@@ -216,10 +217,10 @@ next_page()
   if (Entry_Count <= MAX_INDEX_LINES)
     return;
 
-  if (Index_Start + MAX_INDEX_LINES > Entry_Count)
+  if (Ind_Start + MAX_INDEX_LINES > Entry_Count)
     return;
 
-  Index_Start += (MAX_INDEX_LINES - 2);
+  Ind_Start += (MAX_INDEX_LINES - 2);
   make_display();
 }
 
@@ -231,9 +232,9 @@ next_page()
 
 prev_page()
 {
-  Index_Start -= (MAX_INDEX_LINES - 1);
-  if (Index_Start < 1)
-    Index_Start = 1;
+  Ind_Start -= (MAX_INDEX_LINES - 1);
+  if (Ind_Start < 1)
+    Ind_Start = 1;
   make_display();
 }
 
@@ -288,7 +289,7 @@ goto_entry()
 	  if (check_cref_dir(new_dir) == TRUE)
 	    {
 	      set_current_dir(new_dir);
-	      Previous_Index = Current_Index = Index_Start = 1;
+	      Previous_Ind = Current_Ind = Ind_Start = 1;
 	      make_display();
 	      message(1,"");
 	      return;
@@ -320,7 +321,7 @@ add_abbrev()
   FILE *fp;				/* File pointer. */
   char error[ERRSIZE];			/* Error message. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
-  int index;				/* Entry index. */
+  int ind;				/* Entry index. */
   ENTRY *entry;				/* Entry to get abbreviation. */
   int i;				/* Abbrev count variable*/
 
@@ -336,8 +337,8 @@ add_abbrev()
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
-  index = atoi(inbuf);
-  if ( (entry = get_entry(index)) == NULL)
+  ind = atoi(inbuf);
+  if ( (entry = get_entry(ind)) == NULL)
     {
       message(2, "Invalid entry number.");
       return;
@@ -386,14 +387,14 @@ add_abbrev()
 
 list_abbrevs()
 {
-  int index;				/* Index in abbrev. table. */
+  int ind;				/* Index in abbrev. table. */
   int curr_line;			/* Current screen line. */
 
   clear();
   refresh();
   curr_line = 0;
   printf("Abbreviations are:\n\n");
-  for (index = 0; index < Abbrev_Count; index++, curr_line++)
+  for (ind = 0; ind < Abbrev_Count; ind++, curr_line++)
     {
       if (curr_line > LINES - 2)
 	{
@@ -401,8 +402,8 @@ list_abbrevs()
 	  clear();
 	  curr_line = 0;
 	}
-      printf("%s\t%s\n", Abbrev_Table[index].abbrev,
-	     Abbrev_Table[index].filename);
+      printf("%s\t%s\n", Abbrev_Table[ind].abbrev,
+	     Abbrev_Table[ind].filename);
     }
   wait_for_key();
   clear();
@@ -421,7 +422,7 @@ insert_entry()
   FILE *fp;				/* File pointer. */
   char contents[FILENAME_SIZE];		/* Contents filename. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
-  int index;				/* Entry index. */
+  int ind;				/* Entry index. */
   int i;				/* Index variable. */
   char curr_type[LINE_LENGTH];		/* Current type string. */
   int type;				/* Type of entry. */
@@ -470,8 +471,8 @@ insert_entry()
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
-  index = atoi(inbuf);
-  if ( index < 1 )
+  ind = atoi(inbuf);
+  if ( ind < 1 )
     {
       message(2, "Invalid entry number.");
       return;
@@ -565,7 +566,7 @@ insert_entry()
 
 
 
-  if (index > Entry_Count)
+  if (ind > Entry_Count)
     {
       if ( (fp = fopen(contents, "a")) == (FILE *) NULL)
 	{
@@ -611,7 +612,7 @@ else
     i = 0;
     while (i < Entry_Count)
       {
-	if (i == (index - 1))
+	if (i == (ind - 1))
 	  {
 	    fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
 		    title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
@@ -664,7 +665,7 @@ delete_entry()
   FILE *fp;				/* File pointer. */
   char contents[FILENAME_SIZE];		/* Contents filename. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
-  int index;				/* Entry index. */
+  int ind;				/* Entry index. */
   int i;				/* Index variable. */
   char curr_type[LINE_LENGTH];		/* Current type string. */
   ENTRY *entry;				/* Entry to be removed. */
@@ -701,8 +702,8 @@ delete_entry()
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
-  index = atoi(inbuf);
-  if ( (entry = get_entry(index)) == (ENTRY *) NULL )
+  ind = atoi(inbuf);
+  if ( (entry = get_entry(ind)) == (ENTRY *) NULL )
     {
       message(2, "Invalid entry number.");
       return;
@@ -734,7 +735,7 @@ delete_entry()
       extract_tail(fullpath,ptail);
 
 
-      if (i == index)
+      if (i == ind)
 	{
 	  if (unlink(entry->filename) < 0)
 	    {
